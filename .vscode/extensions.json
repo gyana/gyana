@@ -1,0 +1,11 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=827846
+  // for the documentation about the extensions.json format
+  "recommendations": [
+    "ms-python.python",
+    "esbenp.prettier-vscode",
+    "skellock.just",
+    "dbaeumer.vscode-eslint",
+    "batisteo.vscode-django"
+  ]
+}
