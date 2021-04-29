@@ -3,12 +3,6 @@
 {% block app %}
 <h1>Detail</h1>
 <p>{{ object.name }}</p>
-<div class="w-1/2 h-96 overflow-scroll">
-  <turbo-frame
-    id="datasets-table"
-    src="{% url 'datasets:table' object.id %}"
-  ></turbo-frame>
-</div>
 <div class="w-full h-96 overflow-scroll">
   <turbo-frame
     id="datasets-grid"
