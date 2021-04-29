@@ -44,11 +44,6 @@ urlpatterns = [
         views.ReactObjectLifecycleView.as_view(),
         name="react_object_lifecycle_w_path",
     ),
-    path(
-        "objects/vue/",
-        views.VueObjectLifecycleView.as_view(),
-        name="vue_object_lifecycle",
-    ),
     path("charts/", views.ChartsView.as_view(), name="charts"),
     path("tasks/", views.TasksView.as_view(), name="tasks"),
     path("tasks/api/", views.tasks_api, name="tasks_api"),

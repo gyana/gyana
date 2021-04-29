@@ -37,22 +37,6 @@ class ReactObjectLifecycleView(ObjectLifecycleView):
         return context
 
 
-class VueObjectLifecycleView(ObjectLifecycleView):
-    template_name = "pegasus/examples/objects/vue_object_lifecycle.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update(
-            {
-                "framework_url": "https://vuejs.org/",
-                "framework_name": "Vue.js",
-                "framework_icon": static("images/pegasus/vue-icon.png"),
-                "active_tab": "vue_object_lifecycle",
-            }
-        )
-        return context
-
-
 @method_decorator(login_required, name="dispatch")
 class ChartsView(TemplateView):
     template_name = "pegasus/examples/objects/charts.html"

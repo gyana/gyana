@@ -1,67 +1,29 @@
 # Gyana
 
-No-code data science
+No-code data science tool or "Figma meets Domo"
+More information can found on [our slab page](https://gyana.slab.com/topics/tech-mlhaecw3)
 
-## Installation
+## Development
 
-Install and set up [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/), note
-this requires your default python version to be version 3 or higher.
+For more in-depth instructions refer to [DEVELOPMENT.md](DEVELOPMENT.md)
 
-Setup a virtualenv and install requirements:
+In short:
 
 ```bash
+# Create a virtual environment
 mkvirtualenv --no-site-packages gyana -p python3
-pip install -r requirements.txt
-```
 
-## Running server
+# Install poetry and yarn dependencies
+poetry install
+yarn install
 
-```bash
-./manage.py runserver
-```
+# Create a local database and run migrations
+createdb gyana
+python manage.py migrate
 
-## Building front-end
+# Build the client
+yarn dev
 
-To build JavaScript and CSS files, first install npm packages:
-
-```bash
-npm install
-```
-
-Then to build (and watch for changes locally) just run:
-
-```bash
-npm run dev-watch
-```
-
-## Running Celery
-
-Celery can be used to run background tasks. To run it you can use:
-
-```bash
-celery -A gyana worker -l INFO
-```
-
-## Google Authentication Setup
-
-To setup Google Authentication, follow the [instructions here](https://django-allauth.readthedocs.io/en/latest/providers.html#google).
-
-## Running Tests
-
-To run tests simply run:
-
-```bash
-./manage.py test
-```
-
-Or to test a specific app/module:
-
-```bash
-./manage.py test apps.utils.tests.test_slugs
-```
-
-On Linux-based systems you can watch for changes using the following:
-
-```bash
-find . -name '*.py' | entr python ./manage.py test
+# Run the app
+just dev
 ```

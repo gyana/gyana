@@ -1,19 +1,19 @@
+/**
+ * Tailwind configuration file.
+ *
+ * @see https://tailwindcss.com/docs/configuration
+ */
 module.exports = {
-  purge: [
-    './assets/**/*.js',
-    './assets/**/*.vue',
-    './templates/**/*.html',
-  ],
-  darkMode: false, // or 'media' or 'class'
+  purge: ["./assets/**/*.js", "./templates/**/*.html"],
+  darkMode: false,
   theme: {
     extend: {},
     container: {
       center: true,
-      // padding: '2rem',
     },
   },
   variants: {
     extend: {},
   },
   plugins: [],
-}
+};
