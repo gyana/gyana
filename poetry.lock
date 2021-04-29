@@ -1210,8 +1210,8 @@ brotli = ["brotli"]
 
 [metadata]
 lock-version = "1.1"
-python-versions = "3.8*"
-content-hash = "90629b6a69659f42b2c3a8211eb78638991e3e4e9fdb8564e3372325e3b79e0f"
+python-versions = "3.8.*"
+content-hash = "b590cc3a7553127373542123705dc774c6f147d02d93e69987ad44376c80831c"
 
 [metadata.files]
 amqp = [
