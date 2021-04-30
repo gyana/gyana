@@ -24,8 +24,15 @@ const DnDFlow = ({ client }) => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState(initialElements);
   const onConnect = (params) => setElements((els) => addEdge(params, els));
-  const onElementsRemove = (elementsToRemove) =>
+
+  const onElementsRemove = (elementsToRemove) => {
     setElements((els) => removeElements(elementsToRemove, els));
+    elementsToRemove.forEach((el) => {
+      client.action(window.schema, ["dataflows", "api", "nodes", "delete"], {
+        id: el.id,
+      });
+    });
+  };
 
   const onLoad = (_reactFlowInstance) =>
     setReactFlowInstance(_reactFlowInstance);
@@ -33,6 +40,29 @@ const DnDFlow = ({ client }) => {
   const onDragOver = (event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
+  };
+
+  const getPosition = (event) => {
+    const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+    return reactFlowInstance.project({
+      x: event.clientX - reactFlowBounds.left,
+      y: event.clientY - reactFlowBounds.top,
+    });
+  };
+
+  const onDragStop = (event, node) => {
+    const position = getPosition(event);
+
+    client.action(
+      window.schema,
+      ["dataflows", "api", "nodes", "partial_update"],
+      {
+        id: node.id,
+        x: position.x,
+        y: position.y,
+      }
+    );
+    console.log(event, node, position);
   };
 
   useEffect(() => {
@@ -52,12 +82,8 @@ const DnDFlow = ({ client }) => {
   const onDrop = async (event) => {
     event.preventDefault();
 
-    const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const type = event.dataTransfer.getData("application/reactflow");
-    const position = reactFlowInstance.project({
-      x: event.clientX - reactFlowBounds.left,
-      y: event.clientY - reactFlowBounds.top,
-    });
+    const position = getPosition(event);
 
     const result = await client.action(
       window.schema,
@@ -91,6 +117,7 @@ const DnDFlow = ({ client }) => {
             onLoad={onLoad}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            onNodeDragStop={onDragStop}
             onElementClick={(event, element) => {
               document.getElementById("dataflow-node").setAttribute(
                 "src",
