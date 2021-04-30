@@ -10,20 +10,17 @@ import Sidebar from "./sidebar";
 
 import "./dnd.css";
 
-const initialElements = [
-  {
-    id: "0",
-    type: "input",
-    data: { label: "input node" },
-    position: { x: 250, y: 5 },
-  },
-];
-
 const DnDFlow = ({ client }) => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const [elements, setElements] = useState(initialElements);
-  const onConnect = (params) => setElements((els) => addEdge(params, els));
+  const [elements, setElements] = useState([]);
+  const onConnect = (params) => {
+    setElements((els) => addEdge(params, els));
+  };
+
+  const dataflowId = JSON.parse(
+    document.getElementById("dataflow-id").textContent
+  );
 
   const onElementsRemove = (elementsToRemove) => {
     setElements((els) => removeElements(elementsToRemove, els));
@@ -62,7 +59,6 @@ const DnDFlow = ({ client }) => {
         y: position.y,
       }
     );
-    console.log(event, node, position);
   };
 
   useEffect(() => {
@@ -90,7 +86,7 @@ const DnDFlow = ({ client }) => {
       ["dataflows", "api", "nodes", "create"],
       {
         kind: type,
-        dataflow: 1,
+        dataflow: dataflowId,
         x: position.x,
         y: position.y,
       }
@@ -122,7 +118,7 @@ const DnDFlow = ({ client }) => {
               document.getElementById("dataflow-node").setAttribute(
                 "src",
                 // TODO: populate URL from django reverse
-                `http://localhost:8000/dataflows/1/nodes/${element.id}`
+                `http://localhost:8000/dataflows/${dataflowId}/nodes/${element.id}`
               );
             }}
           >

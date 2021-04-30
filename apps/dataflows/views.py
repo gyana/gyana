@@ -26,6 +26,14 @@ class DataflowCreate(TurboCreateView):
     form_class = DataflowForm
     success_url = reverse_lazy("dataflows:list")
 
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        # new_node = Node(dataflow=self.object, kind="input", x=0, y=0)
+        # new_node.save()
+        return self.success_url
+
 
 class DataflowDetail(DetailView):
     template_name = "dataflows/detail.html"

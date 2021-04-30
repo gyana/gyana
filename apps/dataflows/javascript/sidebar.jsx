@@ -1,5 +1,7 @@
 import React from "react";
 
+const NODES = JSON.parse(document.getElementById("nodes").textContent);
+
 export default () => {
   const onDragStart = (event, nodeType) => {
     event.dataTransfer.setData("application/reactflow", nodeType);
@@ -9,14 +11,7 @@ export default () => {
   return (
     <aside>
       <div className="description">
-        You can drag these nodes to the pane on the right.
-      </div>
-      <div
-        className="dndnode input"
-        onDragStart={(event) => onDragStart(event, "input")}
-        draggable
-      >
-        Input Node
+        You can drag these nodes to the pane on the left.
       </div>
       {NODES.map(({ value, label }) => (
         <div
@@ -28,13 +23,6 @@ export default () => {
           {label}
         </div>
       ))}
-      <div
-        className="dndnode output"
-        onDragStart={(event) => onDragStart(event, "output")}
-        draggable
-      >
-        Output Node
-      </div>
     </aside>
   );
 };

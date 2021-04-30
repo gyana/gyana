@@ -17,6 +17,7 @@ class Node(models.Model):
     class Kind(models.TextChoices):
         PIVOT = "pivot", "Pivot"
         UNPIVOT = "unpivot", "Unpivot"
+        INPUT = "input", "Input"
 
     dataflow = models.ForeignKey(Dataflow, on_delete=models.CASCADE)
     kind = models.CharField(max_length=16, choices=Kind.choices)
