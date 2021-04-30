@@ -18,9 +18,7 @@ const DnDFlow = ({ client }) => {
     setElements((els) => addEdge(params, els));
   };
 
-  const dataflowId = JSON.parse(
-    document.getElementById("dataflow-id").textContent
-  );
+  const dataflowId = window.location.pathname.split("/")[2];
 
   const onElementsRemove = (elementsToRemove) => {
     setElements((els) => removeElements(elementsToRemove, els));

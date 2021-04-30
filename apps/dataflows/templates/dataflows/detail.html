@@ -10,7 +10,7 @@
   <div id="react-app" class="flex-auto h-96"></div>
 </div>
 <a href="{% url 'dataflows:list' %}">List</a>
-{{ nodes|json_script:'nodes' }} {{ dataflow.id|json_script:'dataflow-id'}}
+{{ nodes|json_script:'nodes' }}
 <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
 <script src="{% url 'api_schemajs' %}"></script>
 <script src="{% static 'js/dataflow-bundle.js' %}"></script>
