@@ -24,3 +24,6 @@ class Node(models.Model):
     x = models.FloatField()
     y = models.FloatField()
     config = models.JSONField(null=True)
+    parents = models.ManyToManyField(
+        "self", symmetrical=False, related_name="children", blank=True
+    )

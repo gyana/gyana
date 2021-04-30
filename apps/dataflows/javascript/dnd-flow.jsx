@@ -14,8 +14,23 @@ const DnDFlow = ({ client }) => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState([]);
+
   const onConnect = (params) => {
-    setElements((els) => addEdge(params, els));
+    const parents = elements
+      .filter((el) => el.target === params.target)
+      .map((el) => el.source);
+
+    client.action(
+      window.schema,
+      ["dataflows", "api", "nodes", "partial_update"],
+      {
+        id: params.target,
+        parents: [...parents, params.source],
+      }
+    );
+    setElements((els) =>
+      addEdge({ ...params, arrowHeadType: "arrowclosed" }, els)
+    );
   };
 
   const dataflowId = window.location.pathname.split("/")[2];
@@ -69,7 +84,23 @@ const DnDFlow = ({ client }) => {
           data: { label: r.kind },
           position: { x: r.x, y: r.y },
         }));
-        setElements((es) => es.concat(newElements));
+
+        const edges = result.results
+          .filter((r) => r.parents.length)
+          .reduce((acc, curr) => {
+            return [
+              ...acc,
+              ...curr.parents.map((p) => ({
+                id: `reactflow__edge-${p}null-${curr.id}null`,
+                source: p.toString(),
+                sourceHandle: null,
+                targetHandle: null,
+                arrowHeadType: "arrowclosed",
+                target: curr.id.toString(),
+              })),
+            ];
+          }, []);
+        setElements((els) => els.concat([...newElements, ...edges]));
       });
   }, []);
 

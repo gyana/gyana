@@ -9,4 +9,4 @@ class NodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Node
-        fields = ("id", "kind", "x", "y", "dataflow")
+        fields = ("id", "kind", "x", "y", "dataflow", "parents")
