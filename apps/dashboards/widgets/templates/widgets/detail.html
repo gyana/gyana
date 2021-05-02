@@ -8,5 +8,10 @@
   src="{% url 'dashboards:widgets:config' dashboard.id object.id %}"
 >
 </turbo-frame>
+<turbo-frame
+  id="widgets:output-{{ widget.id }}"
+  src="{% url 'dashboards:widgets:output' dashboard.id object.id %}"
+>
+</turbo-frame>
 <a href="{% url 'dashboards:widgets:list' dashboard.id %}">List</a>
 {% endblock %}

@@ -1,7 +1,10 @@
 from functools import lru_cache
 
 import google.auth
+import ibis
+import ibis_bigquery
 from django.conf import settings
+from django.forms.widgets import Widget
 from google.cloud import bigquery
 
 
@@ -32,3 +35,14 @@ def query_sheet(id, sheet_url):
     sql = "SELECT * FROM `{}` LIMIT 100".format(table_id)
 
     return client.query(sql, job_config=job_config).to_dataframe()
+
+
+def query_widget(widget: Widget):
+
+    conn = ibis_bigquery.connect(
+        project_id=settings.GCP_PROJECT, auth_external_data=True
+    )
+
+    us_table = conn.table("us_states", database="test")
+
+    return conn.execute(us_table.limit(10))

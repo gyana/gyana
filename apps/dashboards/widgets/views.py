@@ -3,6 +3,8 @@ from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
+from lib.bigquery import query_widget
+from lib.chart import to_chart
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .forms import WidgetConfigForm, WidgetForm
@@ -66,3 +68,17 @@ class WidgetConfig(DashboardMixin, TurboUpdateView):
         return reverse(
             "dashboards:widgets:config", args=(self.dashboard.id, self.object.id)
         )
+
+
+class WidgetOutput(DashboardMixin, DetailView):
+    template_name = "widgets/output.html"
+    model = Widget
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        df = query_widget(self.object)
+        chart = to_chart(df, self.object)
+        context_data["chart"] = chart.render()
+
+        return context_data
