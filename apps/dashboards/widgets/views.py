@@ -1,6 +1,6 @@
 from apps.dashboards.mixins import DashboardMixin
 from django.db.models.query import QuerySet
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from turbo_response.views import TurboCreateView, TurboUpdateView
@@ -22,10 +22,14 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
     template_name = "widgets/create.html"
     model = Widget
     form_class = WidgetForm
-    success_url = reverse_lazy("dashboards:widgets:list")
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial["dashboard"] = self.dashboard
+        return initial
 
     def get_success_url(self) -> str:
-        return reverse("dashboards:widgets:list", args=(self.dashboard.id))
+        return reverse("dashboards:widgets:list", args=(self.dashboard.id, ))
 
 
 class WidgetDetail(DashboardMixin, DetailView):
@@ -39,7 +43,7 @@ class WidgetUpdate(DashboardMixin, TurboUpdateView):
     form_class = WidgetForm
 
     def get_success_url(self) -> str:
-        return reverse("dashboards:widgets:list", args=(self.dashboard.id))
+        return reverse("dashboards:widgets:list", args=(self.dashboard.id, ))
 
 
 class WidgetDelete(DashboardMixin, DeleteView):
@@ -47,4 +51,4 @@ class WidgetDelete(DashboardMixin, DeleteView):
     model = Widget
 
     def get_success_url(self) -> str:
-        return reverse("dashboards:widgets:list", args=(self.dashboard.id))
+        return reverse("dashboards:widgets:list", args=(self.dashboard.id, ))

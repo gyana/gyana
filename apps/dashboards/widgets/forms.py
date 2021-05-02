@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.widgets import HiddenInput
 
 from .models import Widget
 
@@ -6,4 +7,5 @@ from .models import Widget
 class WidgetForm(forms.ModelForm):
     class Meta:
         model = Widget
-        fields = ['name']
+        fields = ["name", "dashboard", "dataset"]
+        widgets = {"dashboard": HiddenInput()}
