@@ -6,6 +6,12 @@
 <ul>
   {% for object in object_list %}
   <li>
+    <turbo-frame
+      id="widgets:output-{{ object.id }}"
+      src="{% url 'dashboards:widgets:output' dashboard.id object.id %}"
+    >
+      Loading...
+    </turbo-frame>
     {{ object }}
     <a href="{% url 'dashboards:widgets:detail' dashboard.id object.pk %}"
       >Details</a

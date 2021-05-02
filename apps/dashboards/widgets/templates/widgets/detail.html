@@ -12,6 +12,7 @@
   id="widgets:output-{{ widget.id }}"
   src="{% url 'dashboards:widgets:output' dashboard.id object.id %}"
 >
+  Loading...
 </turbo-frame>
 <a href="{% url 'dashboards:widgets:list' dashboard.id %}">List</a>
 {% endblock %}
