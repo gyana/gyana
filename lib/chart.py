@@ -26,7 +26,7 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     }
 
     return FusionCharts(
-        "column2d",
+        widget.kind,
         widget.name,
         DEFAULT_WIDTH,
         DEFAULT_HEIGHT,
