@@ -16,8 +16,8 @@ class Widget(models.Model):
 
     kind = models.CharField(max_length=32, choices=Kind.choices)
     # maximum length of bigquery column name
-    label = models.CharField(max_length=300, null=True)
-    value = models.CharField(max_length=300, null=True)
+    label = models.CharField(max_length=300, null=True, blank=True)
+    value = models.CharField(max_length=300, null=True, blank=True)
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)

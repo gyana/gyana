@@ -7,11 +7,11 @@ from .models import Widget
 class WidgetForm(forms.ModelForm):
     class Meta:
         model = Widget
-        fields = ["name", "dashboard", "dataset", "kind"]
+        fields = ["name", "dashboard", "dataset"]
         widgets = {"dashboard": HiddenInput()}
 
 
 class WidgetConfigForm(forms.ModelForm):
     class Meta:
         model = Widget
-        fields = ["label", "value"]
+        fields = ["kind", "label", "value"]
