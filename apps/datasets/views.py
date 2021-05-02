@@ -3,7 +3,7 @@ import json
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
-from lib.bigquery import bigquery_client
+from lib.bigquery import query_sheet
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .forms import DatasetForm
@@ -45,8 +45,6 @@ class DatasetDelete(DeleteView):
 
 # Turbo frames
 
-QUERY = "select * from google_sheets_142f9521_ffbd_47e1_be92_d34995bd16a1.sheets_table"
-
 
 class DatasetTable(DetailView):
     template_name = "datasets/table.html"
@@ -54,7 +52,8 @@ class DatasetTable(DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        df = bigquery_client().query(QUERY).to_dataframe()
+
+        df = query_sheet(self.object.id, self.object.url)
         context_data["table"] = df.to_html()
         return context_data
 
@@ -65,7 +64,7 @@ class DatasetGrid(DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        df = bigquery_client().query(QUERY).to_dataframe()
+        df = query_sheet(self.object.id, self.object.url)
 
         context_data["columns"] = json.dumps([{"field": col} for col in df.columns])
         context_data["rows"] = df.to_json(orient="records")
