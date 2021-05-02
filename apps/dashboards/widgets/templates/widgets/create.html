@@ -1,15 +1,15 @@
-{% extends "web/app/app_base.html" %}
+{% extends "widgets/base.html" %}
 <!---->
 {% load tailwind_filters %}
 <!---->
-{% block app %}
+{% block widgets %}
 <h1>Create/Update</h1>
 <form
   method="post"
-  action="{% url 'widgets:create' %}"
+  action="{% url 'dashboards:widgets:create' dashboard.id %}"
   class="form"
 >
   {% csrf_token %} {{ form|crispy }}
   <button type="submit" class="btn btn-primary">Create</button>
 </form>
-{% endblock %} 
+{% endblock %}

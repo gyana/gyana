@@ -3,7 +3,11 @@
 {% block app %}
 <h1>Detail</h1>
 <p>{{ object.name }}</p>
-<a href="{% url 'dashboards:list' %}"
-  >List</a
->
-{% endblock %} 
+<div class="border border-gray-400">
+  <turbo-frame
+    id="widgets"
+    src="{% url 'dashboards:widgets:list' dashboard.id %}"
+  ></turbo-frame>
+</div>
+<a href="{% url 'dashboards:list' %}">List</a>
+{% endblock %}

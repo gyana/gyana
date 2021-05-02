@@ -1,24 +1,19 @@
-{% extends "web/app/app_base.html" %}
+{% extends "widgets/base.html" %}
 <!---->
-{% block app %}
+{% block widgets %}
 <h1>Listing</h1>
-<a href="{% url 'widgets:create' %}"
-  >Create</a
->
+<a href="{% url 'dashboards:widgets:create' dashboard.id %}">Create</a>
 <ul>
   {% for object in object_list %}
   <li>
     {{ object }}
-    <a
-      href="{% url 'widgets:detail' object.pk %}"
+    <a href="{% url 'dashboards:widgets:detail' dashboard.id object.pk %}"
       >Details</a
     >
-    <a
-      href="{% url 'widgets:update' object.pk %}"
+    <a href="{% url 'dashboards:widgets:update' dashboard.id object.pk %}"
       >Update</a
     >
-    <a
-      href="{% url 'widgets:delete' object.pk %}"
+    <a href="{% url 'dashboards:widgets:delete' dashboard.id object.pk %}"
       >Delete</a
     >
   </li>
@@ -32,7 +27,7 @@
   <span class="page-links">
     {% if page_obj.has_previous %}
     <a
-      href="{% url 'widgets:list' %}?page={{ page_obj.previous_page_number }}"
+      href="{% url 'dashboards:widgets:list' dashboard.id %}?page={{ page_obj.previous_page_number }}"
       >previous</a
     >
     {% endif %}
@@ -41,10 +36,10 @@
     </span>
     {% if page_obj.has_next %}
     <a
-      href="{% url 'widgets:list' %}?page={{ page_obj.next_page_number }}"
+      href="{% url 'dashboards:widgets:list' dashboard.id %}?page={{ page_obj.next_page_number }}"
       >next</a
     >
     {% endif %}
   </span>
 </div>
-{% endif %} {% endblock %} 
+{% endif %} {% endblock %}

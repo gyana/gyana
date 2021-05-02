@@ -72,7 +72,7 @@ PROJECT_APPS = [
     "apps.datasets",
     "apps.dataflows",
     "apps.dashboards",
-    "apps.widgets",
+    "apps.dashboards.widgets",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PEGASUS_APPS + PROJECT_APPS

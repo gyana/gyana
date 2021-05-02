@@ -1,0 +1,7 @@
+{% extends "widgets/base.html" %}
+<!---->
+{% block widgets %}
+<h1>Detail</h1>
+<p>{{ object.name }}</p>
+<a href="{% url 'dashboards:widgets:list' dashboard.id %}">List</a>
+{% endblock %}

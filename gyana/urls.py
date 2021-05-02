@@ -31,7 +31,6 @@ urlpatterns = [
     path("datasets/", include("apps.datasets.urls")),
     path("dataflows/", include("apps.dataflows.urls")),
     path("dashboards/", include("apps.dashboards.urls")),
-    path("widgets/", include("apps.widgets.urls")),
     path("", include("apps.web.urls")),
     path("pegasus/", include("pegasus.apps.examples.urls")),
     path("celery-progress/", include("celery_progress.urls")),

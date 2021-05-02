@@ -1,18 +1,18 @@
-{% extends "web/app/app_base.html" %}
+{% extends "widgets/base.html" %}
 <!---->
-{% block app %}
+{% block widgets %}
 <h1>Delete</h1>
 <p>Are you sure you want to delete?</p>
 <form
   method="post"
-  action="{% url 'widgets:delete' object.id %}"
+  action="{% url 'dashboards:widgets:delete' dashboard.id object.id %}"
 >
   {% csrf_token %}
   <input type="submit" value="Yes" class="btn btn-danger" />
   <a
-    href="{% url 'widgets:list' %}"
+    href="{% url 'dashboards:widgets:list' dashboard.id %}"
     class="btn btn-default"
     >No</a
   >
 </form>
-{% endblock %} 
+{% endblock %}
