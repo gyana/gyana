@@ -1,7 +1,12 @@
 {% extends "widgets/base.html" %}
 <!---->
-{% block widgets %}
+{% block app %}
 <h1>Detail</h1>
 <p>{{ object.name }}</p>
+<turbo-frame
+  id="widgets:config"
+  src="{% url 'dashboards:widgets:config' dashboard.id object.id %}"
+>
+</turbo-frame>
 <a href="{% url 'dashboards:widgets:list' dashboard.id %}">List</a>
 {% endblock %}

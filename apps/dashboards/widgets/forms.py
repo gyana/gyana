@@ -9,3 +9,9 @@ class WidgetForm(forms.ModelForm):
         model = Widget
         fields = ["name", "dashboard", "dataset", "kind"]
         widgets = {"dashboard": HiddenInput()}
+
+
+class WidgetConfigForm(forms.ModelForm):
+    class Meta:
+        model = Widget
+        fields = ["label", "value"]

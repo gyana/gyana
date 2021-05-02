@@ -9,4 +9,5 @@ urlpatterns = [
     path("<int:pk>", views.WidgetDetail.as_view(), name="detail"),
     path("<int:pk>/update", views.WidgetUpdate.as_view(), name="update"),
     path("<int:pk>/delete", views.WidgetDelete.as_view(), name="delete"),
+    path("<int:pk>/config", views.WidgetConfig.as_view(), name="config"),
 ]

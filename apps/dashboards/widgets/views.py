@@ -5,7 +5,7 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .forms import WidgetForm
+from .forms import WidgetConfigForm, WidgetForm
 from .models import Widget
 
 
@@ -29,7 +29,7 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
         return initial
 
     def get_success_url(self) -> str:
-        return reverse("dashboards:widgets:list", args=(self.dashboard.id, ))
+        return reverse("dashboards:widgets:list", args=(self.dashboard.id,))
 
 
 class WidgetDetail(DashboardMixin, DetailView):
@@ -43,7 +43,7 @@ class WidgetUpdate(DashboardMixin, TurboUpdateView):
     form_class = WidgetForm
 
     def get_success_url(self) -> str:
-        return reverse("dashboards:widgets:list", args=(self.dashboard.id, ))
+        return reverse("dashboards:widgets:list", args=(self.dashboard.id,))
 
 
 class WidgetDelete(DashboardMixin, DeleteView):
@@ -51,4 +51,18 @@ class WidgetDelete(DashboardMixin, DeleteView):
     model = Widget
 
     def get_success_url(self) -> str:
-        return reverse("dashboards:widgets:list", args=(self.dashboard.id, ))
+        return reverse("dashboards:widgets:list", args=(self.dashboard.id,))
+
+
+# Turbo frames
+
+
+class WidgetConfig(DashboardMixin, TurboUpdateView):
+    template_name = "widgets/config.html"
+    model = Widget
+    form_class = WidgetConfigForm
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "dashboards:widgets:config", args=(self.dashboard.id, self.object.id)
+        )
