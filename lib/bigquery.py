@@ -3,9 +3,13 @@ from functools import lru_cache
 import google.auth
 import ibis
 import ibis_bigquery
+from apps.datasets.models import Dataset
 from django.conf import settings
 from django.forms.widgets import Widget
 from google.cloud import bigquery
+
+DATASET_ID = "google_sheets"
+DEFAULT_LIMIT = 10
 
 
 @lru_cache
@@ -23,26 +27,48 @@ def bigquery_client():
     return bigquery.Client(credentials=credentials, project=project)
 
 
-def query_sheet(id, sheet_url):
+@lru_cache
+def ibis_client():
+    return ibis_bigquery.connect(
+        project_id=settings.GCP_PROJECT, auth_external_data=True
+    )
+
+
+def create_external_table(dataset: Dataset):
+
     client = bigquery_client()
+
+    bq_dataset = client.get_dataset(DATASET_ID)
+    table_id = f"table_{dataset.id}"
+
+    table = bigquery.Table(bq_dataset.table(table_id))
 
     # https://cloud.google.com/bigquery/external-data-drive#python
     external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
-    external_config.source_uris = [sheet_url]
+    external_config.source_uris = [dataset.url]
     external_config.autodetect = True
-    table_id = f"temporary_{id}"
-    job_config = bigquery.QueryJobConfig(table_definitions={table_id: external_config})
-    sql = "SELECT * FROM `{}` LIMIT 100".format(table_id)
 
-    return client.query(sql, job_config=job_config).to_dataframe()
+    table.external_data_configuration = external_config
+    table = client.create_table(table, exists_ok=True)
+
+    dataset.table_id = table_id
+    dataset.save()
+
+
+def query_sheet(dataset: Dataset):
+
+    if dataset.table_id is None:
+        create_external_table(dataset)
+
+    conn = ibis_client()
+    table = conn.table(dataset.table_id, database=DATASET_ID)
+
+    return conn.execute(table.limit(DEFAULT_LIMIT))
 
 
 def query_widget(widget: Widget):
 
-    conn = ibis_bigquery.connect(
-        project_id=settings.GCP_PROJECT, auth_external_data=True
-    )
+    conn = ibis_client()
+    table = conn.table(widget.dataset.table_id, database=DATASET_ID)
 
-    us_table = conn.table("us_states", database="test")
-
-    return conn.execute(us_table.limit(10))
+    return conn.execute(table.group_by(widget.label).count(widget.value))

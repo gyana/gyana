@@ -53,7 +53,7 @@ class DatasetTable(DetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        df = query_sheet(self.object.id, self.object.url)
+        df = query_sheet(self.object)
         context_data["table"] = df.to_html()
         return context_data
 
@@ -64,7 +64,7 @@ class DatasetGrid(DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        df = query_sheet(self.object.id, self.object.url)
+        df = query_sheet(self.object)
 
         context_data["columns"] = json.dumps([{"field": col} for col in df.columns])
         context_data["rows"] = df.to_json(orient="records")
