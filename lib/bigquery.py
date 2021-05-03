@@ -1,14 +1,13 @@
 from functools import lru_cache
 
 import google.auth
-import ibis
 import ibis_bigquery
 from apps.datasets.models import Dataset
 from django.conf import settings
 from django.forms.widgets import Widget
 from google.cloud import bigquery
 
-DATASET_ID = "google_sheets"
+DATASET_ID = "datasets"
 DEFAULT_LIMIT = 10
 
 
@@ -43,9 +42,16 @@ def create_external_table(dataset: Dataset):
 
     table = bigquery.Table(bq_dataset.table(table_id))
 
-    # https://cloud.google.com/bigquery/external-data-drive#python
-    external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
-    external_config.source_uris = [dataset.url]
+    if dataset.kind == Dataset.Kind.GOOGLE_SHEETS:
+        # https://cloud.google.com/bigquery/external-data-drive#python
+        external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
+        external_config.source_uris = [dataset.url]
+    elif dataset.kind == Dataset.Kind.CSV:
+        external_config = bigquery.ExternalConfig("CSV")
+        external_config.source_uris = [
+            f"gs://{settings.GS_BUCKET_NAME}/{dataset.file.name}"
+        ]
+
     external_config.autodetect = True
 
     table.external_data_configuration = external_config
