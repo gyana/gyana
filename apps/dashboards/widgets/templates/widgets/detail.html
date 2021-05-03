@@ -9,6 +9,11 @@
 >
 </turbo-frame>
 <turbo-frame
+  id="filters"
+  src="{% url 'dashboards:widgets:filters:list' dashboard.id object.id %}"
+>
+</turbo-frame>
+<turbo-frame
   id="widgets:output-{{ widget.id }}"
   src="{% url 'dashboards:widgets:output' dashboard.id object.id %}"
 >
