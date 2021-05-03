@@ -3,7 +3,7 @@ from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
-from lib.bigquery import query_widget
+from lib.bigquery import get_columns, query_widget
 from lib.chart import to_chart
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
@@ -63,6 +63,11 @@ class WidgetConfig(DashboardMixin, TurboUpdateView):
     template_name = "widgets/config.html"
     model = Widget
     form_class = WidgetConfigForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["columns"] = get_columns(self.object.dataset)
+        return kwargs
 
     def get_success_url(self) -> str:
         return reverse(

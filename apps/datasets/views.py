@@ -1,10 +1,9 @@
 import json
 
-from django.http import request
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
-from lib.bigquery import query_sheet
+from lib.bigquery import query_dataset
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .forms import CSVForm, GoogleSheetsForm
@@ -26,7 +25,7 @@ class DatasetCreate(TurboCreateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data['dataset_kind'] = Dataset.Kind
+        context_data["dataset_kind"] = Dataset.Kind
         return context_data
 
     def get_initial(self):
@@ -77,7 +76,7 @@ class DatasetTable(DetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        df = query_sheet(self.object)
+        df = query_dataset(self.object)
         context_data["table"] = df.to_html()
         return context_data
 
@@ -88,7 +87,7 @@ class DatasetGrid(DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        df = query_sheet(self.object)
+        df = query_dataset(self.object)
 
         context_data["columns"] = json.dumps([{"field": col} for col in df.columns])
         context_data["rows"] = df.to_json(orient="records")

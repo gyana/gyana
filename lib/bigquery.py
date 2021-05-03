@@ -61,7 +61,7 @@ def create_external_table(dataset: Dataset):
     dataset.save()
 
 
-def query_sheet(dataset: Dataset):
+def query_dataset(dataset: Dataset):
 
     if dataset.table_id is None:
         create_external_table(dataset)
@@ -78,3 +78,11 @@ def query_widget(widget: Widget):
     table = conn.table(widget.dataset.table_id, database=DATASET_ID)
 
     return conn.execute(table.group_by(widget.label).count(widget.value))
+
+
+def get_columns(dataset: Dataset):
+    client = bigquery_client()
+
+    bq_table = client.get_table(f"{DATASET_ID}.{dataset.table_id}")
+
+    return [(field.name, field.name) for field in bq_table.schema]
