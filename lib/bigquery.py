@@ -85,4 +85,4 @@ def get_columns(dataset: Dataset):
 
     bq_table = client.get_table(f"{DATASET_ID}.{dataset.table_id}")
 
-    return [(field.name, field.name) for field in bq_table.schema]
+    return bq_table.schema

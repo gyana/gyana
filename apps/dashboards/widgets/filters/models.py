@@ -4,8 +4,8 @@ from django.db import models
 
 class Filter(models.Model):
     class Type(models.TextChoices):
-        INTEGER = "integer", "Integer"
-        STRING = "string", "String"
+        INTEGER = "INTEGER", "Integer"
+        STRING = "STRING", "String"
 
     class IntegerPredicate(models.TextChoices):
         EQUAL = "equal", "is equal to"
