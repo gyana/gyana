@@ -1,13 +1,40 @@
+from apps.dashboards.widgets.models import Widget
 from django.db import models
 
 
 class Filter(models.Model):
-    name = models.CharField(max_length=255)
+    class Type(models.TextChoices):
+        INTEGER = "integer", "Integer"
+        STRING = "string", "String"
+
+    class IntegerPredicate(models.TextChoices):
+        EQUAL = "equal", "is equal to"
+        NEQUAL = "nequal", "is not equal to"
+
+    class StringPredicate(models.TextChoices):
+        STARTSWITH = "starts_with", "starts with"
+        ENDSWITH = "ends_with", "ends with"
+
+    widget = models.ForeignKey(Widget, on_delete=models.CASCADE)
+
+    column = models.CharField(max_length=300)
+    type = models.CharField(max_length=8, choices=Type.choices)
+
+    integer_predicate = models.CharField(
+        max_length=16, choices=IntegerPredicate.choices, null=True
+    )
+    integer_value = models.BigIntegerField(null=True)
+
+    string_predicate = models.CharField(
+        max_length=16, choices=StringPredicate.choices, null=True
+    )
+    string_value = models.TextField(null=True)
+
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
 
     class Meta:
-        ordering = ('-created', )
+        ordering = ("-created",)
 
     def __str__(self):
-        return self.name
+        return self.column
