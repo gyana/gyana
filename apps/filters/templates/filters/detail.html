@@ -3,7 +3,5 @@
 {% block app %}
 <h1>Detail</h1>
 <p>{{ object.name }}</p>
-<a href="{% url 'dashboards:widgets:filters:list' dashboard.id widget.id %}"
-  >List</a
->
+<a href="{% url 'filters:list' %}">List</a>
 {% endblock %}

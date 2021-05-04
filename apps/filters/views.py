@@ -1,5 +1,3 @@
-from apps.dashboards.mixins import DashboardMixin
-from apps.widgets.mixins import WidgetMixin
 from django import forms
 from django.http import HttpResponse
 from django.shortcuts import redirect
@@ -13,13 +11,13 @@ from .forms import get_filter_form
 from .models import Filter
 
 
-class FilterList(DashboardMixin, WidgetMixin, ListView):
+class FilterList(ListView):
     template_name = "filters/list.html"
     model = Filter
     paginate_by = 20
 
 
-class FilterCreate(DashboardMixin, WidgetMixin, TurboCreateView):
+class FilterCreate(TurboCreateView):
     template_name = "filters/create.html"
     model = Filter
 
@@ -54,17 +52,15 @@ class FilterCreate(DashboardMixin, WidgetMixin, TurboCreateView):
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse(
-            "dashboards:widgets:filters:list", args=(self.dashboard.id, self.widget.id)
-        )
+        return reverse("filters:list")
 
 
-class FilterDetail(DashboardMixin, WidgetMixin, DetailView):
+class FilterDetail(DetailView):
     template_name = "filters/detail.html"
     model = Filter
 
 
-class FilterUpdate(DashboardMixin, WidgetMixin, TurboUpdateView):
+class FilterUpdate(TurboUpdateView):
     template_name = "filters/update.html"
     model = Filter
 
@@ -86,17 +82,12 @@ class FilterUpdate(DashboardMixin, WidgetMixin, TurboUpdateView):
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse(
-            "dashboards:widgets:filters:update",
-            args=(self.dashboard.id, self.widget.id, self.object.id),
-        )
+        return reverse("filters:update", args=(self.object.id,))
 
 
-class FilterDelete(DashboardMixin, WidgetMixin, DeleteView):
+class FilterDelete(DeleteView):
     template_name = "filters/delete.html"
     model = Filter
 
     def get_success_url(self) -> str:
-        return reverse(
-            "dashboards:widgets:filters:list", args=(self.dashboard.id, self.widget.id)
-        )
+        return reverse("filters:list")

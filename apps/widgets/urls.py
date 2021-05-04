@@ -11,11 +11,4 @@ urlpatterns = [
     path("<int:pk>/delete", views.WidgetDelete.as_view(), name="delete"),
     path("<int:pk>/config", views.WidgetConfig.as_view(), name="config"),
     path("<int:pk>/output", views.WidgetOutput.as_view(), name="output"),
-    path(
-        "<int:widget_id>/filters/",
-        include(
-            "apps.widgets.filters.urls",
-            namespace="filters",
-        ),
-    ),
 ]
