@@ -21,14 +21,14 @@ class Filter(models.Model):
     type = models.CharField(max_length=8, choices=Type.choices)
 
     integer_predicate = models.CharField(
-        max_length=16, choices=IntegerPredicate.choices, null=True
+        max_length=16, choices=IntegerPredicate.choices, null=True, blank=True
     )
-    integer_value = models.BigIntegerField(null=True)
+    integer_value = models.BigIntegerField(null=True, blank=True)
 
     string_predicate = models.CharField(
-        max_length=16, choices=StringPredicate.choices, null=True
+        max_length=16, choices=StringPredicate.choices, null=True, blank=True
     )
-    string_value = models.TextField(null=True)
+    string_value = models.TextField(null=True, blank=True)
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)

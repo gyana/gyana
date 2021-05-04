@@ -49,6 +49,10 @@ class FilterCreate(DashboardMixin, WidgetMixin, TurboCreateView):
             initial[key] = self.request.GET[key]
         return initial
 
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        form.instance.type = self.column_type
+        return super().form_valid(form)
+
     def get_success_url(self) -> str:
         return reverse(
             "dashboards:widgets:filters:list", args=(self.dashboard.id, self.widget.id)
@@ -64,6 +68,11 @@ class FilterUpdate(DashboardMixin, WidgetMixin, TurboUpdateView):
     template_name = "filters/update.html"
     model = Filter
 
+    @property
+    def column_type(self):
+        schema = get_columns(self.widget.dataset)
+        return [c.field_type for c in schema if c.name == self.object.column][0]
+
     def get_form_class(self):
         return get_filter_form(self.object.type)
 
@@ -72,9 +81,14 @@ class FilterUpdate(DashboardMixin, WidgetMixin, TurboUpdateView):
         kwargs["columns"] = [(f.name, f.name) for f in get_columns(self.widget.dataset)]
         return kwargs
 
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        form.instance.type = self.column_type
+        return super().form_valid(form)
+
     def get_success_url(self) -> str:
         return reverse(
-            "dashboards:widgets:filters:list", args=(self.dashboard.id, self.widget.id)
+            "dashboards:widgets:filters:update",
+            args=(self.dashboard.id, self.widget.id, self.object.id),
         )
 
 

@@ -5,11 +5,14 @@
 {% block app %}
 <h1>Create/Update</h1>
 <form
+  data-controller="live-update"
   method="post"
   action="{% url 'dashboards:widgets:filters:update' dashboard.id widget.id object.id %}"
   class="form"
 >
   {% csrf_token %} {{ form|crispy }}
-  <button type="submit" class="btn btn-primary">Save changes</button>
+  <a href="{% url 'dashboards:widgets:filters:list' dashboard.id widget.id %}"
+    ><button type="button" class="btn btn-primary">Save changes</button></a
+  >
 </form>
 {% endblock %}
