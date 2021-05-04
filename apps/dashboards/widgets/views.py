@@ -66,7 +66,7 @@ class WidgetConfig(DashboardMixin, TurboUpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["columns"] = get_columns(self.object.dataset)
+        kwargs["columns"] = [(f.name, f.name) for f in get_columns(self.object.dataset)]
         return kwargs
 
     def get_success_url(self) -> str:

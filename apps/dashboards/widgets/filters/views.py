@@ -27,13 +27,10 @@ class FilterCreate(DashboardMixin, WidgetMixin, TurboCreateView):
     def column(self):
         return self.request.GET.get("column")
 
-    def get_column_type(self, column):
-        schema = get_columns(self.widget.dataset)
-        return [c.field_type for c in schema if c.name == column][0]
-
     @property
     def column_type(self):
-        return self.request.GET.get("column_type") or self.get_column_type(self.column)
+        schema = get_columns(self.widget.dataset)
+        return [c.field_type for c in schema if c.name == self.column][0]
 
     def get_form_class(self):
         if self.column is not None:
@@ -48,21 +45,9 @@ class FilterCreate(DashboardMixin, WidgetMixin, TurboCreateView):
     def get_initial(self):
         initial = super().get_initial()
         initial["widget"] = self.widget
-        initial["column"] = self.column
+        for key in self.request.GET:
+            initial[key] = self.request.GET[key]
         return initial
-
-    def form_valid(self, form: forms.Form) -> HttpResponse:
-        if hasattr(form.instance, "integer_predicate") or hasattr(
-            form.instance, "string_predicate"
-        ):
-            return super().form_valid(form)
-        url = reverse(
-            "dashboards:widgets:filters:create",
-            args=(self.dashboard.id, self.widget.id),
-        )
-        return redirect(
-            f"{url}?column={form.instance.column}&column_type={self.get_column_type(form.instance.column)}"
-        )
 
     def get_success_url(self) -> str:
         return reverse(
