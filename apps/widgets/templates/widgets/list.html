@@ -1,0 +1,50 @@
+{% extends "widgets/base.html" %}
+<!---->
+{% block app %}
+<h1>Listing</h1>
+<a href="{% url 'widgets:create' %}">Create</a>
+<ul>
+  {% for object in object_list %}
+  <li>
+    <turbo-frame
+      id="widgets:output-{{ object.id }}"
+      src="{% url 'widgets:output' object.id %}"
+    >
+      Loading...
+    </turbo-frame>
+    {{ object }}
+    <a
+      data-controller="url-search-params"
+      data-url-search-params-key-value="widget_id"
+      data-url-search-params-val-value="{{ object.pk }}"
+      data-action="click->url-search-params#add"
+      href="{% url 'widgets:detail' object.pk %}"
+      >Details</a
+    >
+    <a href="{% url 'widgets:update' object.pk %}">Update</a>
+    <a href="{% url 'widgets:delete' object.pk %}">Delete</a>
+  </li>
+  {% empty %}
+  <p>No items.</p>
+  {% endfor %}
+</ul>
+
+{% if is_paginated %}
+<div class="pagination">
+  <span class="page-links">
+    {% if page_obj.has_previous %}
+    <a href="{% url 'widgets:list' %}?page={{ page_obj.previous_page_number }}"
+      >previous</a
+    >
+    {% endif %}
+    <span class="page-current">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+    </span>
+    {% if page_obj.has_next %}
+    <a href="{% url 'widgets:list' %}?page={{ page_obj.next_page_number }}"
+      >next</a
+    >
+    {% endif %}
+  </span>
+</div>
+{% endif %} {% endblock %}

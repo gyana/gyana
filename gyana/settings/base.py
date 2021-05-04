@@ -72,6 +72,8 @@ PROJECT_APPS = [
     "apps.datasets",
     "apps.dataflows",
     "apps.dashboards",
+    "apps.widgets",
+    "apps.filters",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PEGASUS_APPS + PROJECT_APPS
@@ -305,3 +307,6 @@ GCP_PROJECT = "gyana-1511894275181"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 
 CRISPY_TEMPLATE_PACK = "tailwind"
+
+DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+GS_BUCKET_NAME = "gyana-local"

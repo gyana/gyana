@@ -3,10 +3,10 @@ import json
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
-from lib.bigquery import bigquery_client
+from lib.bigquery import query_dataset
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .forms import DatasetForm
+from .forms import CSVForm, GoogleSheetsForm
 from .models import Dataset
 
 # CRUDL
@@ -21,8 +21,26 @@ class DatasetList(ListView):
 class DatasetCreate(TurboCreateView):
     template_name = "datasets/create.html"
     model = Dataset
-    form_class = DatasetForm
     success_url = reverse_lazy("datasets:list")
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["dataset_kind"] = Dataset.Kind
+        return context_data
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial["kind"] = self.request.GET.get("kind")
+        return initial
+
+    def get_form_class(self):
+        if (kind := self.request.GET.get("kind")) is not None:
+            if kind == Dataset.Kind.GOOGLE_SHEETS:
+                return GoogleSheetsForm
+            elif kind == Dataset.Kind.CSV:
+                return CSVForm
+
+        return CSVForm
 
 
 class DatasetDetail(DetailView):
@@ -33,8 +51,13 @@ class DatasetDetail(DetailView):
 class DatasetUpdate(TurboUpdateView):
     template_name = "datasets/update.html"
     model = Dataset
-    form_class = DatasetForm
     success_url = reverse_lazy("datasets:list")
+
+    def get_form_class(self):
+        if self.object.kind == Dataset.Kind.GOOGLE_SHEETS:
+            return GoogleSheetsForm
+        elif self.object.kind == Dataset.Kind.CSV:
+            return CSVForm
 
 
 class DatasetDelete(DeleteView):
@@ -45,8 +68,6 @@ class DatasetDelete(DeleteView):
 
 # Turbo frames
 
-QUERY = "select * from google_sheets_142f9521_ffbd_47e1_be92_d34995bd16a1.sheets_table"
-
 
 class DatasetTable(DetailView):
     template_name = "datasets/table.html"
@@ -54,7 +75,8 @@ class DatasetTable(DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        df = bigquery_client().query(QUERY).to_dataframe()
+
+        df = query_dataset(self.object)
         context_data["table"] = df.to_html()
         return context_data
 
@@ -65,7 +87,7 @@ class DatasetGrid(DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        df = bigquery_client().query(QUERY).to_dataframe()
+        df = query_dataset(self.object)
 
         context_data["columns"] = json.dumps([{"field": col} for col in df.columns])
         context_data["rows"] = df.to_json(orient="records")

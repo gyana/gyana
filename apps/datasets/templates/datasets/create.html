@@ -4,12 +4,19 @@
 <!---->
 {% block app %}
 <h1>Create/Update</h1>
+{% if request.GET.kind %}
 <form
   method="post"
   action="{% url 'datasets:create' %}"
   class="form"
+  {% if request.GET.kind == dataset_kind.CSV %} enctype="multipart/form-data" {% endif %} 
 >
   {% csrf_token %} {{ form|crispy }}
   <button type="submit" class="btn btn-primary">Create</button>
 </form>
-{% endblock %} 
+{% else %} Choose kind:
+<a href="{% url 'datasets:create' %}?kind={{ dataset_kind.GOOGLE_SHEETS }}"
+  >Google Sheets</a
+>
+<a href="{% url 'datasets:create' %}?kind={{ dataset_kind.CSV }}">CSV</a>
+{% endif %} {% endblock %}

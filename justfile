@@ -1,3 +1,19 @@
+service_account := "gyana-1511894275181-50f107d4db00.json"
+
+# Encrypt or decrypt file via GCP KMS
+gcloud_kms OP FILE:
+    gcloud kms {{OP}} --location global --keyring gyana-kms --key gyana-kms --ciphertext-file {{FILE}}.enc --plaintext-file {{FILE}}
+
+# Decrypt environment file and export it to local env
+env:
+    just gcloud_kms decrypt .env
+    just gcloud_kms decrypt {{service_account}}
+
+# Encrypt .env file using KMS
+enc_env:
+    just gcloud_kms encrypt .env
+    just gcloud_kms encrypt {{service_account}}
+    
 dev:
     python ./manage.py runserver
 

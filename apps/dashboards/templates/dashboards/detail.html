@@ -1,9 +1,19 @@
 {% extends "web/app/app_base.html" %}
+{% load static %}
 <!---->
 {% block app %}
 <h1>Detail</h1>
 <p>{{ object.name }}</p>
-<a href="{% url 'dashboards:list' %}"
-  >List</a
->
-{% endblock %} 
+<div class="border border-gray-400">
+  <turbo-frame
+    id="widgets"
+    src="{% url 'widgets:list' %}"
+  ></turbo-frame>
+</div>
+<a href="{% url 'dashboards:list' %}">List</a>
+{% endblock %}
+{% block page_js %}
+<script src="{% static "fusioncharts/fusioncharts.js" %}"></script>
+<script src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
+<script src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
+{% endblock %}
