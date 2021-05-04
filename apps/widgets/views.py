@@ -1,5 +1,6 @@
 from urllib.parse import urlparse
 
+from apps.dashboards.models import Dashboard
 from django.db.models.query import QuerySet
 from django.urls import resolve, reverse
 from django.views.generic import DetailView, ListView
@@ -12,17 +13,23 @@ from .forms import WidgetConfigForm, WidgetForm
 from .models import Widget
 
 
-class WidgetList(ListView):
+class DashboardMixin:
+    @property
+    def dashboard(self):
+        resolver_match = resolve(urlparse(self.request.META["HTTP_REFERER"]).path)
+        return Dashboard.objects.get(pk=resolver_match.kwargs["pk"])
+
+
+class WidgetList(DashboardMixin, ListView):
     template_name = "widgets/list.html"
     model = Widget
     paginate_by = 20
 
     def get_queryset(self) -> QuerySet:
-        resolver_match = resolve(urlparse(self.request.META["HTTP_REFERER"]).path)
-        return Widget.objects.filter(dashboard_id=resolver_match.kwargs['pk']).all()
+        return Widget.objects.filter(dashboard=self.dashboard).all()
 
 
-class WidgetCreate(TurboCreateView):
+class WidgetCreate(DashboardMixin, TurboCreateView):
     template_name = "widgets/create.html"
     model = Widget
     form_class = WidgetForm

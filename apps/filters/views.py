@@ -1,6 +1,9 @@
+from urllib.parse import parse_qs, urlparse
+
+from apps.widgets.models import Widget
 from django import forms
+from django.db.models.query import QuerySet
 from django.http import HttpResponse
-from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
@@ -11,13 +14,23 @@ from .forms import get_filter_form
 from .models import Filter
 
 
-class FilterList(ListView):
+class WidgetMixin:
+    @property
+    def widget(self):
+        params = parse_qs(urlparse(self.request.META["HTTP_REFERER"]).query)
+        return Widget.objects.get(pk=params["widget_id"][0])
+
+
+class FilterList(WidgetMixin, ListView):
     template_name = "filters/list.html"
     model = Filter
     paginate_by = 20
 
+    def get_queryset(self) -> QuerySet:
+        return Filter.objects.filter(widget=self.widget).all()
 
-class FilterCreate(TurboCreateView):
+
+class FilterCreate(WidgetMixin, TurboCreateView):
     template_name = "filters/create.html"
     model = Filter
 
@@ -60,7 +73,7 @@ class FilterDetail(DetailView):
     model = Filter
 
 
-class FilterUpdate(TurboUpdateView):
+class FilterUpdate(WidgetMixin, TurboUpdateView):
     template_name = "filters/update.html"
     model = Filter
 

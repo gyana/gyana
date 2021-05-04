@@ -13,7 +13,14 @@
       Loading...
     </turbo-frame>
     {{ object }}
-    <a href="{% url 'widgets:detail' object.pk %}">Details</a>
+    <a
+      data-controller="url-search-params"
+      data-url-search-params-key-value="widget_id"
+      data-url-search-params-val-value="{{ object.pk }}"
+      data-action="click->url-search-params#add"
+      href="{% url 'widgets:detail' object.pk %}"
+      >Details</a
+    >
     <a href="{% url 'widgets:update' object.pk %}">Update</a>
     <a href="{% url 'widgets:delete' object.pk %}">Delete</a>
   </li>

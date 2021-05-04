@@ -12,5 +12,11 @@
 >
   Loading...
 </turbo-frame>
-<a href="{% url 'widgets:list' %}">List</a>
+<a
+  data-controller="url-search-params"
+  data-url-search-params-key-value="widget_id"
+  data-action="click->url-search-params#remove"
+  href="{% url 'widgets:list' %}"
+  >List</a
+>
 {% endblock %}
