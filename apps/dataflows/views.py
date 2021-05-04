@@ -5,6 +5,7 @@ from apps.dataflows.serializers import NodeSerializer
 from django.urls import resolve, reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from turbo_response.views import TurboCreateView, TurboFormView, TurboUpdateView
@@ -62,18 +63,10 @@ class DataflowDelete(DeleteView):
 # Nodes
 
 
-class DataflowMixin:
-    @property
-    def dataflow(self):
-        resolver_match = resolve(urlparse(self.request.META["HTTP_REFERER"]).path)
-        return Dataflow.objects.get(pk=resolver_match.kwargs["pk"])
-
-
 class NodeViewSet(DataflowMixin, viewsets.ModelViewSet):
     serializer_class = NodeSerializer
-
-    def get_queryset(self):
-        return Node.objects.filter(dataflow=self.dataflow).all()
+    queryset = Node.objects.all()
+    filterset_fields = ["dataflow"]
 
 
 class NodeUpdate(TurboFormView):

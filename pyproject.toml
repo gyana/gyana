@@ -28,6 +28,7 @@ pandas = "^1.2.4"
 pyarrow = "^4.0.0"
 ibis-bigquery = "^0.1.1"
 django-storages = {extras = ["google"], version = "^1.11.1"}
+django-filter = "^2.4.0"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
