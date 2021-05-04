@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "rootDir": "./",
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "pretty": true,
+    "sourceMap": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "preserve",
+    "lib": ["dom", "scripthost", "es2015", "es2016", "es2017", "es2019"],
+    "typeRoots": ["node_modules/@types"],
+    "noUnusedParameters": false,
+    "resolveJsonModule": true,
+    "strict": false,
+    "strictNullChecks": true,
+    "paths": {
+      "@assets/*": ["assets/*"]
+    },
+    "allowJs": false,
+    "skipLibCheck": true,
+    "noEmit": false,
+    "isolatedModules": true,
+    "downlevelIteration": true
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}
