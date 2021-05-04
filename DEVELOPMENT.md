@@ -79,3 +79,7 @@ For more in-depth information see [DEPLOYMENT.md](DEPLOYMENT.md)
 
 Run `just export` and push to main. View errors on
 [Heroku](https://dashboard.heroku.com/apps/gyana-mvp).
+
+## Adding new data science nodes
+
+To add new nodes, you need to add the new node kind to the model choices and the required fields as new columns. The current naming convention for these columns is `_<kind>_property`. You can then add a form object to the `KIND_TO_FORM` map in _dataflows/forms.py_. Inheriting from `ModelForm` is the easiest way to implement these forms.

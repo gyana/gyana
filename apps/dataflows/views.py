@@ -66,12 +66,9 @@ class NodeViewSet(viewsets.ModelViewSet):
     queryset = Node.objects.all()
 
 
-class NodeUpdate(TurboFormView):
+class NodeUpdate(TurboUpdateView):
     template_name = "dataflows/node.html"
-
-    @cached_property
-    def node(self):
-        return get_object_or_404(Node, pk=self.kwargs["pk"])
+    model = Node
 
     @cached_property
     def dataflow(self):
@@ -80,20 +77,11 @@ class NodeUpdate(TurboFormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["dataflow"] = self.dataflow
-        context["node"] = self.node
+        context["node"] = self.object
         return context
 
     def get_form_class(self):
-        return KIND_TO_FORM[self.node.kind]
-
-    def get_initial(self):
-        return self.node.config
-
-    def form_valid(self, form):
-        self.node.config = form.cleaned_data
-        self.node.save()
-
-        return super().form_valid(form)
+        return KIND_TO_FORM[self.object.kind]
 
     def get_success_url(self) -> str:
-        return reverse("dataflows:node", args=(self.dataflow.id, self.node.id))
+        return reverse("dataflows:node", args=(self.dataflow.id, self.object.id))
