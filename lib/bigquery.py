@@ -2,6 +2,7 @@ from functools import lru_cache
 
 import google.auth
 import ibis_bigquery
+from apps.dashboards.widgets.filters.models import Filter
 from apps.datasets.models import Dataset
 from django.conf import settings
 from django.forms.widgets import Widget
@@ -76,6 +77,18 @@ def query_widget(widget: Widget):
 
     conn = ibis_client()
     table = conn.table(widget.dataset.table_id, database=DATASET_ID)
+
+    for filter in widget.filter_set.all():
+        if filter.type == Filter.Type.INTEGER:
+            if filter.integer_predicate == Filter.IntegerPredicate.EQUAL:
+                table = table[table[filter.column] == filter.integer_value]
+            elif filter.integer_predicate == Filter.IntegerPredicate.EQUAL:
+                table = table[table[filter.column] != filter.integer_value]
+        elif filter.type == Filter.Type.STRING:
+            if filter.string_predicate == Filter.StringPredicate.STARTSWITH:
+                table = table[table[filter.column].str.startswith(filter.string_value)]
+            elif filter.string_predicate == Filter.StringPredicate.ENDSWITH:
+                table = table[table[filter.column].str.endswith(filter.string_value)]
 
     return conn.execute(table.group_by(widget.label).count(widget.value))
 
