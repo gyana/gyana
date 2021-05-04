@@ -10,10 +10,20 @@
   <div id="react-app" class="flex-auto h-96"></div>
 </div>
 <a href="{% url 'dataflows:list' %}">List</a>
-<turbo-frame id="node-sql">No node selected</turbo-frame>
+<turbo-frame id="datasets-grid">No node selected</turbo-frame>
 {{ nodes|json_script:'nodes' }}
 <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
 <script src="{% url 'api_schemajs' %}"></script>
 <script src="{% static 'js/dataflow-bundle.js' %}"></script>
 <link rel="stylesheet" href="{% static 'css/dataflow.css' %}" />
+<!--ag-grid-->
+<script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css"
+/>
 {% endblock %}

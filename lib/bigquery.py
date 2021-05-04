@@ -30,7 +30,7 @@ def bigquery_client():
 @lru_cache
 def ibis_client():
     return ibis_bigquery.connect(
-        project_id=settings.GCP_PROJECT, auth_external_data=True
+        project_id=settings.GCP_PROJECT, auth_external_data=True, dataset_id=DATASET_ID
     )
 
 
@@ -68,7 +68,7 @@ def query_dataset(dataset: Dataset):
         create_external_table(dataset)
 
     conn = ibis_client()
-    table = conn.table(dataset.table_id, database=DATASET_ID)
+    table = conn.table(dataset.table_id)
 
     return conn.execute(table.limit(DEFAULT_LIMIT))
 
@@ -76,7 +76,7 @@ def query_dataset(dataset: Dataset):
 def query_widget(widget: Widget):
 
     conn = ibis_client()
-    table = conn.table(widget.dataset.table_id, database=DATASET_ID)
+    table = conn.table(widget.dataset.table_id)
 
     for filter in widget.filter_set.all():
         if filter.type == Filter.Type.INTEGER:

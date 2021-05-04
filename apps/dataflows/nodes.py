@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from apps.datasets.models import Dataset
+from lib.bigquery import ibis_client
 
 
 class Node(ABC):
@@ -19,10 +20,8 @@ class Input(Node):
 
     def get_query(self):
         dataset = Dataset.objects.get(pk=int(self.dataset))
-        # TODO: add path to dataset for now hardcoded here
-        path = "google_sheets_142f9521_ffbd_47e1_be92_d34995bd16a1.sheets_table"
-
-        return f"select * from {self.dataset}"
+        conn = ibis_client()
+        return conn.table(dataset.table_id)
 
 
 NODE_FROM_CONFIG = {"input": Input}

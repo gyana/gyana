@@ -150,10 +150,10 @@ const DnDFlow = ({ client }) => {
                 `http://localhost:8000/dataflows/${dataflowId}/nodes/${element.id}`
               );
 
-              document.getElementById("node-sql").setAttribute(
+              document.getElementById("datasets-grid").setAttribute(
                 "src",
                 // TODO: populate URL from django reverse
-                `http://localhost:8000/dataflows/${dataflowId}/nodes/${element.id}/sql`
+                `http://localhost:8000/dataflows/${dataflowId}/nodes/${element.id}/grid`
               );
             }}
           >

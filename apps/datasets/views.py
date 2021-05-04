@@ -69,18 +69,6 @@ class DatasetDelete(DeleteView):
 # Turbo frames
 
 
-class DatasetTable(DetailView):
-    template_name = "datasets/table.html"
-    model = Dataset
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-
-        df = query_dataset(self.object)
-        context_data["table"] = df.to_html()
-        return context_data
-
-
 class DatasetGrid(DetailView):
     template_name = "datasets/grid.html"
     model = Dataset

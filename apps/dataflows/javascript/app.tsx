@@ -7,7 +7,7 @@ let auth = new coreapi.auth.SessionAuthentication({
   csrfCookieName: "csrftoken",
   csrfHeaderName: "X-CSRFToken",
 });
-console.log(auth);
+
 let client = new coreapi.Client({ auth: auth });
 let domContainer = document.querySelector("#react-app");
 domContainer
