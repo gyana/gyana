@@ -63,7 +63,7 @@ class DataflowDelete(DeleteView):
 # Nodes
 
 
-class NodeViewSet(DataflowMixin, viewsets.ModelViewSet):
+class NodeViewSet(viewsets.ModelViewSet):
     serializer_class = NodeSerializer
     queryset = Node.objects.all()
     filterset_fields = ["dataflow"]
