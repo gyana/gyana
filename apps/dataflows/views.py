@@ -97,3 +97,17 @@ class NodeUpdate(TurboFormView):
 
     def get_success_url(self) -> str:
         return reverse("dataflows:node", args=(self.dataflow.id, self.node.id))
+
+
+class NodeSQL(DetailView):
+    template_name = "dataflows/sql.html"
+    queryset = Node.objects.all()
+
+    @cached_property
+    def node(self):
+        return get_object_or_404(Node, pk=self.kwargs["pk"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["sql"] = self.node.get_query()
+        return context

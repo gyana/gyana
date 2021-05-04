@@ -149,6 +149,12 @@ const DnDFlow = ({ client }) => {
                 // TODO: populate URL from django reverse
                 `http://localhost:8000/dataflows/${dataflowId}/nodes/${element.id}`
               );
+
+              document.getElementById("node-sql").setAttribute(
+                "src",
+                // TODO: populate URL from django reverse
+                `http://localhost:8000/dataflows/${dataflowId}/nodes/${element.id}/sql`
+              );
             }}
           >
             <Controls />

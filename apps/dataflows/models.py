@@ -1,3 +1,4 @@
+from apps.dataflows.nodes import NODE_FROM_CONFIG
 from django.db import models
 
 
@@ -27,3 +28,7 @@ class Node(models.Model):
     parents = models.ManyToManyField(
         "self", symmetrical=False, related_name="children", blank=True
     )
+
+    def get_query(self):
+        node = NODE_FROM_CONFIG[self.kind](**self.config)
+        return node.get_query()

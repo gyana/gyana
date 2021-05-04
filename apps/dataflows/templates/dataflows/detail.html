@@ -5,11 +5,12 @@
 <p>{{ object.name }}</p>
 <div class="flex">
   <div class="w-36">
-    <turbo-frame id="dataflow-node"> </turbo-frame>
+    <turbo-frame id="dataflow-node"></turbo-frame>
   </div>
   <div id="react-app" class="flex-auto h-96"></div>
 </div>
 <a href="{% url 'dataflows:list' %}">List</a>
+<turbo-frame id="node-sql">No node selected</turbo-frame>
 {{ nodes|json_script:'nodes' }}
 <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
 <script src="{% url 'api_schemajs' %}"></script>
