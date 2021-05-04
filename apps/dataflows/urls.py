@@ -16,6 +16,6 @@ urlpatterns = [
 
 # drf config
 router = routers.DefaultRouter()
-router.register("api/nodes", views.NodeViewSet)
+router.register("api/nodes", views.NodeViewSet, basename="Node")
 
 urlpatterns += router.urls

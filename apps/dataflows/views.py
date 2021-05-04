@@ -1,7 +1,8 @@
 from functools import cached_property
+from urllib.parse import urlparse
 
 from apps.dataflows.serializers import NodeSerializer
-from django.urls import reverse, reverse_lazy
+from django.urls import resolve, reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from rest_framework import viewsets
@@ -61,9 +62,18 @@ class DataflowDelete(DeleteView):
 # Nodes
 
 
-class NodeViewSet(viewsets.ModelViewSet):
+class DataflowMixin:
+    @property
+    def dataflow(self):
+        resolver_match = resolve(urlparse(self.request.META["HTTP_REFERER"]).path)
+        return Dataflow.objects.get(pk=resolver_match.kwargs["pk"])
+
+
+class NodeViewSet(DataflowMixin, viewsets.ModelViewSet):
     serializer_class = NodeSerializer
-    queryset = Node.objects.all()
+
+    def get_queryset(self):
+        return Node.objects.filter(dataflow=self.dataflow).all()
 
 
 class NodeUpdate(TurboFormView):
