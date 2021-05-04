@@ -1,0 +1,15 @@
+<div id="myGrid" class="ag-theme-balham h-96 w-full" />
+<script id="columns" type="application/json">
+  {{ columns|safe }}
+</script>
+<script id="rows" type="application/json">
+  {{ rows|safe }}
+</script>
+<div data-controller="turbo-issue-186-workaround">
+  <script type="text/javascript" charset="utf-8">
+    new agGrid.Grid(document.querySelector("#myGrid"), {
+      columnDefs: JSON.parse(document.getElementById("columns").innerHTML),
+      rowData: JSON.parse(document.getElementById("rows").innerHTML),
+    });
+  </script>
+</div>
