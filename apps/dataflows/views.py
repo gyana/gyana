@@ -1,9 +1,11 @@
 from functools import cached_property
+from urllib.parse import urlparse
 
 from apps.dataflows.serializers import NodeSerializer
-from django.urls import reverse, reverse_lazy
+from django.urls import resolve, reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from turbo_response.views import TurboCreateView, TurboFormView, TurboUpdateView
@@ -64,6 +66,7 @@ class DataflowDelete(DeleteView):
 class NodeViewSet(viewsets.ModelViewSet):
     serializer_class = NodeSerializer
     queryset = Node.objects.all()
+    filterset_fields = ["dataflow"]
 
 
 class NodeUpdate(TurboUpdateView):
