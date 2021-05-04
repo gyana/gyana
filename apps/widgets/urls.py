@@ -14,7 +14,7 @@ urlpatterns = [
     path(
         "<int:widget_id>/filters/",
         include(
-            "apps.dashboards.widgets.filters.urls",
+            "apps.widgets.filters.urls",
             namespace="filters",
         ),
     ),

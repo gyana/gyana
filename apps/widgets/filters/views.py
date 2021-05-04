@@ -1,5 +1,5 @@
 from apps.dashboards.mixins import DashboardMixin
-from apps.dashboards.widgets.mixins import WidgetMixin
+from apps.widgets.mixins import WidgetMixin
 from django import forms
 from django.http import HttpResponse
 from django.shortcuts import redirect

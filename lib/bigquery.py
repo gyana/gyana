@@ -2,8 +2,8 @@ from functools import lru_cache
 
 import google.auth
 import ibis_bigquery
-from apps.dashboards.widgets.filters.models import Filter
 from apps.datasets.models import Dataset
+from apps.widgets.filters.models import Filter
 from django.conf import settings
 from django.forms.widgets import Widget
 from google.cloud import bigquery

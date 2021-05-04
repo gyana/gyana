@@ -3,7 +3,7 @@
   <h1>Create/Update</h1>
   <form
     method="post"
-    action="{% url 'dashboards:widgets:config' dashboard.id object.id %}"
+    action="{% url 'widgets:config' object.id %}"
     class="form"
   >
     {% csrf_token %} {{ form|crispy }}

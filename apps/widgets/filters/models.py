@@ -1,4 +1,4 @@
-from apps.dashboards.widgets.models import Widget
+from apps.widgets.models import Widget
 from django.db import models
 
 
