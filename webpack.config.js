@@ -1,20 +1,22 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 
 module.exports = {
   resolve: {
-    extensions: [".js", ".jsx"],
+    extensions: [".ts", ".tsx", ".js", ".jsx"],
+    plugins: [new TsconfigPathsPlugin()],
   },
   entry: {
     global: "./assets/styles/global.scss",
     tailwind: "./assets/styles/tailwind.css",
-    app: "./assets/javascript/app.js",
-    teams: "./assets/javascript/teams/teams.js",
-    pegasus: "./assets/javascript/pegasus/pegasus.js",
+    app: "./assets/javascript/app.ts",
+    teams: "./assets/javascript/teams/teams.tsx",
+    pegasus: "./assets/javascript/pegasus/pegasus.ts",
     "react-object-lifecycle":
-      "./assets/javascript/pegasus/examples/react/react-object-lifecycle.js",
-    stimulus: "./assets/javascript/stimulus.js",
-    dataflow: "./apps/dataflows/javascript/app.jsx",
+      "./assets/javascript/pegasus/examples/react/react-object-lifecycle.tsx",
+    stimulus: "./assets/javascript/stimulus.ts",
+    dataflow: "./apps/dataflows/javascript/app.tsx",
   },
   output: {
     path: path.resolve(__dirname, "./static"),
@@ -24,11 +26,15 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(ts|tsx|js|jsx)$/,
         exclude: /node_modules/,
         loader: "babel-loader",
         options: {
-          presets: ["@babel/env", "@babel/preset-react"],
+          presets: [
+            "@babel/env",
+            "@babel/preset-react",
+            "@babel/preset-typescript",
+          ],
           plugins: [
             "@babel/plugin-proposal-class-properties",
             "@babel/plugin-transform-runtime",
