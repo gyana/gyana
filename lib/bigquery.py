@@ -1,3 +1,4 @@
+from datetime import datetime
 from functools import lru_cache
 
 import google.auth
@@ -34,15 +35,27 @@ def ibis_client():
     )
 
 
+def sync_table(dataset: Dataset):
+
+    client = bigquery_client()
+
+    client.query(
+        f"CREATE OR REPLACE TABLE {DATASET_ID}.{dataset.table_id} AS SELECT * FROM {DATASET_ID}.{dataset.external_table_id}"
+    )
+
+    if not dataset.has_initial_sync:
+        dataset.has_initial_sync = True
+    dataset.last_synced = datetime.now()
+    dataset.save()
+
+
 def create_external_table(dataset: Dataset):
 
     client = bigquery_client()
 
     bq_dataset = client.get_dataset(DATASET_ID)
-    external_table_id = f"table_{dataset.id}_external"
-    table_id = f"table_{dataset.id}"
 
-    external_table = bigquery.Table(bq_dataset.table(external_table_id))
+    external_table = bigquery.Table(bq_dataset.table(dataset.external_table_id))
 
     if dataset.kind == Dataset.Kind.GOOGLE_SHEETS:
         # https://cloud.google.com/bigquery/external-data-drive#python
@@ -59,18 +72,12 @@ def create_external_table(dataset: Dataset):
     external_table.external_data_configuration = external_config
     external_table = client.create_table(external_table, exists_ok=True)
 
-    client.query(
-        f"CREATE OR REPLACE TABLE {DATASET_ID}.{table_id} AS SELECT * FROM {DATASET_ID}.{external_table_id}"
-    )
-
-    dataset.table_id = table_id
-    dataset.save()
-
 
 def query_dataset(dataset: Dataset):
 
-    if dataset.table_id is None:
+    if not dataset.has_initial_sync:
         create_external_table(dataset)
+        sync_table(dataset)
 
     conn = ibis_client()
     table = conn.table(dataset.table_id, database=DATASET_ID)

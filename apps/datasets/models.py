@@ -15,7 +15,8 @@ class Dataset(models.Model):
     url = models.URLField(null=True)
     file = models.FileField(upload_to="datasets", null=True)
 
-    table_id = models.CharField(max_length=300, null=True)
+    has_initial_sync = models.BooleanField(default=False)
+    last_synced = models.DateTimeField(null=True)
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
@@ -25,3 +26,11 @@ class Dataset(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def table_id(self):
+        return f"table_{self.pk}"
+
+    @property
+    def external_table_id(self):
+        return f"table_{self.pk}_external"

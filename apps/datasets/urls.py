@@ -11,4 +11,5 @@ urlpatterns = [
     path("<int:pk>/delete", views.DatasetDelete.as_view(), name="delete"),
     path("<int:pk>/table", views.DatasetTable.as_view(), name="table"),
     path("<int:pk>/grid", views.DatasetGrid.as_view(), name="grid"),
+    path("<int:pk>/sync", views.DatasetSync.as_view(), name="sync"),
 ]

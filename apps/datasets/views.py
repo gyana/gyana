@@ -2,10 +2,10 @@ import json
 
 from apps.projects.mixins import ProjectMixin
 from django.db.models.query import QuerySet
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
-from lib.bigquery import query_dataset
+from lib.bigquery import query_dataset, sync_table
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .forms import CSVForm, GoogleSheetsForm
@@ -99,3 +99,16 @@ class DatasetGrid(DetailView):
         context_data["rows"] = df.to_json(orient="records")
 
         return context_data
+
+
+class DatasetSync(TurboUpdateView):
+    template_name = "datasets/sync.html"
+    model = Dataset
+    fields = []
+
+    def form_valid(self, form):
+        sync_table(self.object)
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse("datasets:sync", args=(self.object.id,))

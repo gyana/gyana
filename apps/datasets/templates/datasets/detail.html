@@ -9,6 +9,11 @@
     src="{% url 'datasets:grid' object.id %}"
   ></turbo-frame>
 </div>
+{% if object.kind == 'google_sheets' %}<turbo-frame
+  id="datasets:sync"
+  src="{% url 'datasets:sync' object.id %}"
+></turbo-frame
+>{% endif %}
 <a href="{% url 'datasets:list' %}">List</a>
 <!--ag-grid-->
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
