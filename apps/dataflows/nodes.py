@@ -3,7 +3,7 @@ from lib.bigquery import ibis_client
 
 def get_input_query(node):
     conn = ibis_client()
-    return conn.table(node._input_dataset.table_id)
+    return conn.table(node.input_dataset.table_id)
 
 
 def get_duplicate_names(left, right):
@@ -28,9 +28,9 @@ def get_join_query(node):
 
     # Adding 1/2 to left/right if the column exists in both tables
     left, right, left_col, right_col = rename_duplicates(
-        left, right, node._join_left, node._join_right
+        left, right, node.join_left, node.join_right
     )
-    how = node._join_how
+    how = node.join_how
     if how == "inner":
         to_join = left.inner_join
     elif how == "outer":

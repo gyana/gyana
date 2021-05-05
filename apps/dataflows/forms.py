@@ -20,15 +20,15 @@ def get_datasets():
 class InputNode(forms.ModelForm):
     class Meta:
         model = Node
-        fields = ["_input_dataset"]
-        labels = {"_input_dataset": "Dataset"}
+        fields = ["input_dataset"]
+        labels = {"input_dataset": "Dataset"}
 
 
 class JoinNode(forms.ModelForm):
     class Meta:
         model = Node
-        fields = ["_join_how", "_join_left", "_join_right"]
-        labels = {"_join_how": "How", "_join_left": "Left", "_join_right": "Right"}
+        fields = ["join_how", "join_left", "join_right"]
+        labels = {"join_how": "How", "join_left": "Left", "join_right": "Right"}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -36,8 +36,8 @@ class JoinNode(forms.ModelForm):
         node = self.instance
         self.left_columns = [(col, col) for col in node.parents.first().get_schema()]
         self.right_columns = [(col, col) for col in node.parents.last().get_schema()]
-        self.fields["_join_left"].choices = self.left_columns
-        self.fields["_join_right"].choices = self.right_columns
+        self.fields["join_left"].choices = self.left_columns
+        self.fields["join_right"].choices = self.right_columns
 
 
 KIND_TO_FORM = {"input": InputNode, "join": JoinNode}

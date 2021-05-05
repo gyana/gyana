@@ -29,8 +29,13 @@ class Node(models.Model):
     parents = models.ManyToManyField(
         "self", symmetrical=False, related_name="children", blank=True
     )
-    _input_dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, null=True)
-    _join_how = models.CharField(
+    # ======== Node specific columns ========= #
+
+    # Input
+    input_dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, null=True)
+
+    # Join
+    join_how = models.CharField(
         max_length=12,
         choices=[
             ("inner", "Inner"),
@@ -40,8 +45,8 @@ class Node(models.Model):
         ],
         default="inner",
     )
-    _join_left = models.CharField(max_length=300, null=True, blank=True)
-    _join_right = models.CharField(max_length=300, null=True, blank=True)
+    join_left = models.CharField(max_length=300, null=True, blank=True)
+    join_right = models.CharField(max_length=300, null=True, blank=True)
 
     def get_query(self):
         func = NODE_FROM_CONFIG[self.kind]
