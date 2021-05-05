@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 
 from apps.dashboards.models import Dashboard
+from apps.datasets.models import Dataset
 from django.db.models.query import QuerySet
 from django.urls import resolve, reverse
 from django.views.generic import DetailView, ListView
@@ -33,6 +34,11 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
     template_name = "widgets/create.html"
     model = Widget
     form_class = WidgetForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["project"] = self.dashboard.project
+        return kwargs
 
     def get_initial(self):
         initial = super().get_initial()
