@@ -1,3 +1,6 @@
+from django import forms
+from django.db.models.query import QuerySet
+from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
@@ -12,12 +15,20 @@ class ProjectList(ListView):
     model = Project
     paginate_by = 20
 
+    def get_queryset(self) -> QuerySet:
+        return Project.objects.filter(team=self.request.user.teams.first()).all()
+
 
 class ProjectCreate(TurboCreateView):
     template_name = "projects/create.html"
     model = Project
     form_class = ProjectForm
-    success_url = reverse_lazy('projects:list')
+    success_url = reverse_lazy("projects:list")
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial["team"] = self.request.user.teams.first()
+        return initial
 
 
 class ProjectDetail(DetailView):
@@ -29,10 +40,10 @@ class ProjectUpdate(TurboUpdateView):
     template_name = "projects/update.html"
     model = Project
     form_class = ProjectForm
-    success_url = reverse_lazy('projects:list')
+    success_url = reverse_lazy("projects:list")
 
 
 class ProjectDelete(DeleteView):
     template_name = "projects/delete.html"
     model = Project
-    success_url = reverse_lazy('projects:list')
+    success_url = reverse_lazy("projects:list")
