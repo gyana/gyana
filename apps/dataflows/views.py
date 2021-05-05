@@ -88,11 +88,11 @@ class NodeUpdate(TurboUpdateView):
         return KIND_TO_FORM[self.object.kind]
 
     def get_success_url(self) -> str:
-        return reverse("dataflows:node", args=(self.dataflow.id, self.node.id))
+        return reverse("dataflows:node", args=(self.dataflow.id, self.object.id))
 
 
 class NodeGrid(DetailView):
-    template_name = "datasets/grid.html"
+    template_name = "dataflows/grid.html"
     model = Node
 
     def get_context_data(self, **kwargs):

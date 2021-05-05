@@ -5,9 +5,8 @@ from lib.bigquery import ibis_client
 
 
 class Node(ABC):
-    @abstractmethod
-    def __init__(self):
-        pass
+    def __init__(self, node):
+        self.node = node
 
     @abstractmethod
     def get_query(self):
@@ -24,4 +23,9 @@ class Input(Node):
         return conn.table(dataset.table_id)
 
 
-NODE_FROM_CONFIG = {"input": Input}
+def get_input_query(node):
+    conn = ibis_client()
+    return conn.table(node._input_dataset.table_id)
+
+
+NODE_FROM_CONFIG = {"input": get_input_query}

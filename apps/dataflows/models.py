@@ -31,5 +31,5 @@ class Node(models.Model):
     _input_dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, null=True)
 
     def get_query(self):
-        node = NODE_FROM_CONFIG[self.kind](**self.config)
-        return node.get_query()
+        func = NODE_FROM_CONFIG[self.kind]
+        return func(self)
