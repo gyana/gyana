@@ -8,7 +8,7 @@
 {% if request.GET.kind %}
 <form
   method="post"
-  action="{% url 'datasets:create' %}"
+  action="{{ request.get_full_path }}"
   class="form"
   {% if request.GET.kind == dataset_kind.CSV %} enctype="multipart/form-data" {% endif %} 
 >
