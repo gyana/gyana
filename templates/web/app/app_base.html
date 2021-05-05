@@ -1,21 +1,27 @@
 {% extends "web/base.html" %} {% load static %}
 <!-- -->
-{% block body %} {% block notifications %} {% endblock %}
+{% block body %}
+<!--  -->
+{% block notifications %}{% endblock %}
 <section class="section">
   <div class="container app-two-column">
     <div id="app-nav">
       {% block sidebar-nav %}
       <!-- -->
-      {% include "web/components/app_nav.html" %} {% endblock %}
+      {% include "web/components/app_nav.html" %}
+      <!--  -->
+      {% endblock %}
     </div>
     <div id="app-content">
       {% if object.project %}
-      <div class="text-sm">
+      <span class="text-sm">
         <a href="{% url 'projects:detail' object.project.id %}">Back</a> |
         {{object.project.name }}
-      </div>
-      {% endif %}{% block app %} {% endblock %}
+      </span>
+      {% endif %}
+      <!--  -->
+      {% block app %} {% endblock %}
     </div>
   </div>
 </section>
-{% endblock %}
+{% endblock body %}
