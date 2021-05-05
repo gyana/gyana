@@ -1,11 +1,14 @@
 {
-    "python.pythonPath": ".venv/bin/python",
-    "editor.formatOnSave": true,
-    "[python]": {
-      "editor.codeActionsOnSave": {
-          "source.organizeImports": true
-      }
-    },
-    "python.formatting.provider": "black",
-    "python.languageServer": "Pylance"
+  "python.pythonPath": ".venv/bin/python",
+  "editor.formatOnSave": true,
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "python.formatting.provider": "black",
+  "python.languageServer": "Pylance",
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  }
 }
