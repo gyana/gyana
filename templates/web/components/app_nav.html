@@ -4,21 +4,10 @@
   </p>
   <ul class="menu-list">
       <li>
-          <a href="{% url 'datasets:list' %}" {% if request.resolver_match.app_name == 'datasets' %}class="is-active"{% endif %}>
-              <span class="icon"><i class="fa fa-home"></i></span><span class="is-hidden-tablet-only">Datasets</span>
+          <a href="{% url 'projects:list' %}" {% if request.resolver_match.app_name == 'projects' %}class="is-active"{% endif %}>
+              <span class="icon"><i class="fa fa-home"></i></span><span class="is-hidden-tablet-only">Projects</span>
           </a>
       </li>
-      <li>
-          <a href="{% url 'dataflows:list' %}" {% if request.resolver_match.app_name == 'dataflows' %}class="is-active"{% endif %}>
-              <span class="icon"><i class="fa fa-home"></i></span><span class="is-hidden-tablet-only">Dataflows</span>
-          </a>
-      </li>
-      <li>
-          <a href="{% url 'dashboards:list' %}" {% if request.resolver_match.app_name == 'dashboards' %}class="is-active"{% endif %}>
-              <span class="icon"><i class="fa fa-home"></i></span><span class="is-hidden-tablet-only">Dashboards</span>
-          </a>
-      </li>
-
   </ul>
   <p class="menu-label is-hidden-tablet-only">
     Application

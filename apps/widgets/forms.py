@@ -1,3 +1,4 @@
+from apps.datasets.models import Dataset
 from django import forms
 from django.forms.widgets import HiddenInput
 
@@ -9,6 +10,12 @@ class WidgetForm(forms.ModelForm):
         model = Widget
         fields = ["name", "dashboard", "dataset"]
         widgets = {"dashboard": HiddenInput()}
+
+    def __init__(self, *args, **kwargs):
+        project = kwargs.pop("project", None)
+        super().__init__(*args, **kwargs)
+        if project:
+            self.fields["dataset"].queryset = Dataset.objects.filter(project=project)
 
 
 class WidgetConfigForm(forms.ModelForm):

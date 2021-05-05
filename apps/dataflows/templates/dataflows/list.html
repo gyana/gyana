@@ -1,50 +1,47 @@
 {% extends "web/app/app_base.html" %}
 <!---->
 {% block app %}
-<h1>Listing</h1>
-<a href="{% url 'dataflows:create' %}"
-  >Create</a
->
-<ul>
-  {% for object in object_list %}
-  <li>
-    {{ object }}
-    <a
-      href="{% url 'dataflows:detail' object.pk %}"
-      >Details</a
-    >
-    <a
-      href="{% url 'dataflows:update' object.pk %}"
-      >Update</a
-    >
-    <a
-      href="{% url 'dataflows:delete' object.pk %}"
-      >Delete</a
-    >
-  </li>
-  {% empty %}
-  <p>No items.</p>
-  {% endfor %}
-</ul>
+<turbo-frame id="dataflows">
+  <h1>Listing</h1>
+  <a href="{% url 'dataflows:create' %}">Create</a>
+  <ul>
+    {% for object in object_list %}
+    <li>
+      {{ object }}
+      <a href="{% url 'dataflows:detail' object.pk %}" data-turbo-frame="_top"
+        >Details</a
+      >
+      <a href="{% url 'dataflows:update' object.pk %}" data-turbo-frame="_top"
+        >Update</a
+      >
+      <a href="{% url 'dataflows:delete' object.pk %}" data-turbo-frame="_top"
+        >Delete</a
+      >
+    </li>
+    {% empty %}
+    <p>No items.</p>
+    {% endfor %}
+  </ul>
 
-{% if is_paginated %}
-<div class="pagination">
-  <span class="page-links">
-    {% if page_obj.has_previous %}
-    <a
-      href="{% url 'dataflows:list' %}?page={{ page_obj.previous_page_number }}"
-      >previous</a
-    >
-    {% endif %}
-    <span class="page-current">
-      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+  {% if is_paginated %}
+  <div class="pagination">
+    <span class="page-links">
+      {% if page_obj.has_previous %}
+      <a
+        href="{% url 'dataflows:list' %}?page={{ page_obj.previous_page_number }}"
+        >previous</a
+      >
+      {% endif %}
+      <span class="page-current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+      {% if page_obj.has_next %}
+      <a href="{% url 'dataflows:list' %}?page={{ page_obj.next_page_number }}"
+        >next</a
+      >
+      {% endif %}
     </span>
-    {% if page_obj.has_next %}
-    <a
-      href="{% url 'dataflows:list' %}?page={{ page_obj.next_page_number }}"
-      >next</a
-    >
-    {% endif %}
-  </span>
-</div>
-{% endif %} {% endblock %} 
+  </div>
+  {% endif %}</turbo-frame
+>
+{% endblock %}

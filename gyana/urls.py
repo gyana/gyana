@@ -28,6 +28,7 @@ urlpatterns = [
     path("users/", include("apps.users.urls")),
     path("subscriptions/", include("apps.subscriptions.urls")),
     path("teams/", include("apps.teams.urls")),
+    path("projects/", include("apps.projects.urls")),
     path("datasets/", include("apps.datasets.urls")),
     path("dataflows/", include("apps.dataflows.urls")),
     path("dashboards/", include("apps.dashboards.urls")),

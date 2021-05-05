@@ -55,6 +55,7 @@ THIRD_PARTY_APPS = [
     "celery_progress",
     "crispy_forms",
     "crispy_tailwind",
+    "django_filters",
     # stripe integration
     "djstripe",
 ]
@@ -69,6 +70,7 @@ PROJECT_APPS = [
     "apps.users.apps.UserConfig",
     "apps.web",
     "apps.teams.apps.TeamConfig",
+    "apps.projects",
     "apps.datasets",
     "apps.dataflows",
     "apps.dashboards",
@@ -248,6 +250,7 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 100,
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 

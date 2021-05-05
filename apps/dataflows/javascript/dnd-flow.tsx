@@ -76,7 +76,9 @@ const DnDFlow = ({ client }) => {
 
   useEffect(() => {
     client
-      .action(window.schema, ["dataflows", "api", "nodes", "list"])
+      .action(window.schema, ["dataflows", "api", "nodes", "list"], {
+        dataflow: dataflowId,
+      })
       .then((result) => {
         const newElements = result.results.map((r) => ({
           id: `${r.id}`,

@@ -14,7 +14,7 @@ export default class extends Controller {
 
   remove() {
     const params = new URLSearchParams(location.search);
-    params.remove(this.keyValue);
+    params.delete(this.keyValue);
     history.replaceState({}, "", `${location.pathname}?${params.toString()}`);
   }
 }

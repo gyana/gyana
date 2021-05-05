@@ -3,11 +3,12 @@
 {% load tailwind_filters %}
 <!---->
 {% block app %}
+<turbo-frame id="datasets">
 <h1>Create/Update</h1>
 {% if request.GET.kind %}
 <form
   method="post"
-  action="{% url 'datasets:create' %}"
+  action="{{ request.get_full_path }}"
   class="form"
   {% if request.GET.kind == dataset_kind.CSV %} enctype="multipart/form-data" {% endif %} 
 >
@@ -19,4 +20,4 @@
   >Google Sheets</a
 >
 <a href="{% url 'datasets:create' %}?kind={{ dataset_kind.CSV }}">CSV</a>
-{% endif %} {% endblock %}
+{% endif %} <turbo-frame>{% endblock %}
