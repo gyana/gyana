@@ -1,5 +1,7 @@
 import json
 
+from apps.projects.mixins import ProjectMixin
+from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
@@ -12,10 +14,13 @@ from .models import Dataset
 # CRUDL
 
 
-class DatasetList(ListView):
+class DatasetList(ProjectMixin, ListView):
     template_name = "datasets/list.html"
     model = Dataset
     paginate_by = 20
+
+    def get_queryset(self) -> QuerySet:
+        return Dataset.objects.filter(project=self.project).all()
 
 
 class DatasetCreate(TurboCreateView):
