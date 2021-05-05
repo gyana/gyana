@@ -39,8 +39,14 @@ def sync_table(dataset: Dataset):
 
     client = bigquery_client()
 
+    external_config = create_external_config(dataset)
+    job_config = bigquery.QueryJobConfig(
+        table_definitions={dataset.external_table_id: external_config}
+    )
+
     client.query(
-        f"CREATE OR REPLACE TABLE {DATASET_ID}.{dataset.table_id} AS SELECT * FROM {DATASET_ID}.{dataset.external_table_id}"
+        f"CREATE OR REPLACE TABLE {DATASET_ID}.{dataset.table_id} AS SELECT * FROM {DATASET_ID}.{dataset.external_table_id}",
+        job_config=job_config,
     ).result()
 
     if not dataset.has_initial_sync:
@@ -49,14 +55,7 @@ def sync_table(dataset: Dataset):
     dataset.save()
 
 
-def create_external_table(dataset: Dataset):
-
-    client = bigquery_client()
-
-    bq_dataset = client.get_dataset(DATASET_ID)
-
-    external_table = bigquery.Table(bq_dataset.table(dataset.external_table_id))
-
+def create_external_config(dataset: Dataset):
     if dataset.kind == Dataset.Kind.GOOGLE_SHEETS:
         # https://cloud.google.com/bigquery/external-data-drive#python
         external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
@@ -68,6 +67,19 @@ def create_external_table(dataset: Dataset):
         ]
 
     external_config.autodetect = True
+
+    return external_config
+
+
+def create_external_table(dataset: Dataset):
+
+    client = bigquery_client()
+
+    bq_dataset = client.get_dataset(DATASET_ID)
+
+    external_table = bigquery.Table(bq_dataset.table(dataset.external_table_id))
+
+    external_config = create_external_config(dataset)
 
     external_table.external_data_configuration = external_config
     external_table = client.create_table(external_table, exists_ok=True)
