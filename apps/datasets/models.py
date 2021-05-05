@@ -1,3 +1,4 @@
+from apps.projects.models import Project
 from django.db import models
 
 
@@ -7,6 +8,7 @@ class Dataset(models.Model):
         CSV = "csv", "CSV"
 
     name = models.CharField(max_length=255)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     kind = models.CharField(max_length=32, choices=Kind.choices)
 
     # either a URL or file upload
