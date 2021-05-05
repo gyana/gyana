@@ -8,7 +8,7 @@ import ReactFlow, {
 
 import Sidebar from "./sidebar";
 
-import "./dnd.css";
+import "./dnd.scss";
 
 const DnDFlow = ({ client }) => {
   const reactFlowWrapper = useRef(null);

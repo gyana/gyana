@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* styles to mimic bulma */
-
 @layer components {
   .icon {
     @apply w-6 h-6 inline-flex justify-center items-center;
@@ -122,13 +120,6 @@
 
 /* overall site layout */
 @layer components {
-  .navbar-menu {
-    @apply h-full flex items-center space-x-2;
-  }
-  .navbar-item {
-    @apply h-full inline-block align-middle px-4 text-blue-700 flex items-center;
-  }
-
   .app {
     @apply m-4;
   }
@@ -214,12 +205,4 @@
   .pg-table {
     @apply w-full table-auto border-gray-500;
   }
-}
-
-/* set pegasus css variables to tailwind colors */
-
-:root {
-  --primary: #3b82f6; /* tailwind blue-500 */
-  --danger: #ef4444; /* tailwind red-500 */
-  --success: #10b981; /* tailwind green-500 */
 }

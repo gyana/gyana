@@ -8,8 +8,7 @@ module.exports = {
     plugins: [new TsconfigPathsPlugin()],
   },
   entry: {
-    global: "./assets/styles/global.scss",
-    tailwind: "./assets/styles/tailwind.css",
+    style: "./assets/styles/style.scss",
     app: "./assets/javascript/app.ts",
     teams: "./assets/javascript/teams/teams.tsx",
     pegasus: "./assets/javascript/pegasus/pegasus.ts",
@@ -43,11 +42,12 @@ module.exports = {
       },
       {
         test: /\.scss$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
-      },
-      {
-        test: /\.css$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          "postcss-loader",
+          "sass-loader",
+        ],
       },
     ],
   },

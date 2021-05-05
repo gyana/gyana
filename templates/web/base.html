@@ -8,10 +8,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!--Mobile friendly-->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-{% include 'web/components/meta.html' %}
-{% include 'web/components/favicon.html' %}
-    <link rel="stylesheet" href="{% static 'css/global.css' %}">
-    <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
+    {% include 'web/components/meta.html' %}
+    {% include 'web/components/favicon.html' %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <script src="https://use.fontawesome.com/72135c02f1.js"></script>
     <script type="module">
       import * as hotwiredTurbo from "https://cdn.skypack.dev/@hotwired/turbo";
@@ -26,7 +25,7 @@
 <body>
 {% block body_wrapper %}
 {% block top_nav %}
-  {% include 'web/components/top_nav.html' %}
+  {% include 'web/components/navbar.html' %}
 {% endblock %}
 {% block messages %}
   {% include 'web/components/messages.html' %}

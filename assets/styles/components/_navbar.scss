@@ -1,0 +1,17 @@
+@layer components {
+  .navbar {
+    @apply shadow-md;
+
+    &__title {
+      @apply text-blue-700 uppercase text-2xl font-bold tracking-widest;
+    }
+
+    &__menu {
+      @apply h-full flex items-center space-x-2;
+    }
+    
+    &__item {
+      @apply h-full align-middle px-4 text-blue-700 flex items-center;
+    }
+  }
+}
