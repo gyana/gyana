@@ -1,6 +1,7 @@
+from apps import widgets
 from apps.datasets.models import Dataset
 from django import forms
-from django.forms.widgets import HiddenInput
+from django.forms.widgets import CheckboxSelectMultiple, HiddenInput, Select
 
 from .models import Dataflow, Node
 
@@ -24,6 +25,28 @@ class InputNode(forms.ModelForm):
         labels = {"input_dataset": "Dataset"}
 
 
+class SelectNode(forms.ModelForm):
+    class Meta:
+        model = Node
+        fields = ["select_columns"]
+        labels = {"select_columns": "Selected columns"}
+        # widgets = {"select_columns": Select(choices=())}
+
+    select_columns = Select(choices=())
+
+    def __init__(self, *args, **kwargs):
+        self.columns = kwargs.pop("columns")
+        # django metaclass magic to construct fields
+        super().__init__(*args, **kwargs)
+
+        print(self.fields)
+
+        self.fields["select_columns"] = self.columns
+
+        # Now you can get your choices based on that object id
+        # self.fields['my_choice_field'].choices = your_get_choices_function(self.object_id)
+
+
 class JoinNode(forms.ModelForm):
     class Meta:
         model = Node
@@ -40,4 +63,4 @@ class JoinNode(forms.ModelForm):
         self.fields["join_right"].choices = self.right_columns
 
 
-KIND_TO_FORM = {"input": InputNode, "join": JoinNode}
+KIND_TO_FORM = {"input": InputNode, "select": SelectNode, "join": JoinNode}

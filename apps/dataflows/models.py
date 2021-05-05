@@ -1,6 +1,7 @@
 from apps.dataflows.nodes import NODE_FROM_CONFIG
 from apps.datasets.models import Dataset
 from apps.projects.models import Project
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
@@ -20,6 +21,7 @@ class Dataflow(models.Model):
 class Node(models.Model):
     class Kind(models.TextChoices):
         INPUT = "input", "Input"
+        SELECT = "select", "Select"
         JOIN = "join", "Join"
 
     dataflow = models.ForeignKey(Dataflow, on_delete=models.CASCADE)
@@ -33,6 +35,9 @@ class Node(models.Model):
 
     # Input
     input_dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, null=True)
+
+    # Select
+    select_columns = ArrayField(models.TextField(blank=False), null=True)
 
     # Join
     join_how = models.CharField(

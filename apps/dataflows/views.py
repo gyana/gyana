@@ -84,6 +84,17 @@ class NodeUpdate(TurboUpdateView):
         context["node"] = self.object
         return context
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+
+        if self.object.kind == "select":
+            query = self.object.parents.first().get_query()
+            kwargs["columns"] = (
+                [(name, name) for name in query.schema()] if query is not None else []
+            )
+
+        return kwargs
+
     def get_form_class(self):
         return KIND_TO_FORM[self.object.kind]
 
@@ -98,7 +109,13 @@ class NodeGrid(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         conn = ibis_client()
-        df = conn.execute(self.object.get_query().limit(100))
+
+        if (query := self.object.get_query()) is None:
+            context["columns"] = []
+            context["rows"] = []
+            return context
+
+        df = conn.execute(query.limit(100))
         context["columns"] = json.dumps([{"field": col} for col in df.columns])
         context["rows"] = df.to_json(orient="records")
         return context

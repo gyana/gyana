@@ -3,7 +3,13 @@ from lib.bigquery import ibis_client
 
 def get_input_query(node):
     conn = ibis_client()
-    return conn.table(node.input_dataset.table_id)
+    # The input can have no selected dataset
+    return conn.table(node.input_dataset.table_id) if node.input_dataset else None
+
+
+def get_select_query(node):
+    parent_query = node.parents.first().get_query()
+    return parent_query.projection(node.select_columns or [])
 
 
 def get_duplicate_names(left, right):
@@ -45,4 +51,8 @@ def get_join_query(node):
     return to_join(right, left[left_col] == right[right_col]).materialize()
 
 
-NODE_FROM_CONFIG = {"input": get_input_query, "join": get_join_query}
+NODE_FROM_CONFIG = {
+    "input": get_input_query,
+    "select": get_select_query,
+    "join": get_join_query,
+}
