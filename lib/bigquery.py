@@ -41,7 +41,7 @@ def sync_table(dataset: Dataset):
 
     client.query(
         f"CREATE OR REPLACE TABLE {DATASET_ID}.{dataset.table_id} AS SELECT * FROM {DATASET_ID}.{dataset.external_table_id}"
-    )
+    ).result()
 
     if not dataset.has_initial_sync:
         dataset.has_initial_sync = True
