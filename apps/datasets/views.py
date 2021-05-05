@@ -23,7 +23,7 @@ class DatasetList(ProjectMixin, ListView):
         return Dataset.objects.filter(project=self.project).all()
 
 
-class DatasetCreate(TurboCreateView):
+class DatasetCreate(ProjectMixin, TurboCreateView):
     template_name = "datasets/create.html"
     model = Dataset
     success_url = reverse_lazy("datasets:list")
@@ -36,6 +36,7 @@ class DatasetCreate(TurboCreateView):
     def get_initial(self):
         initial = super().get_initial()
         initial["kind"] = self.request.GET.get("kind")
+        initial["project"] = self.project
         return initial
 
     def get_form_class(self):

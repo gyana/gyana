@@ -1,16 +1,22 @@
 {% extends "web/app/app_base.html" %}
 <!---->
 {% block app %}
-<turbo-frame id="dashboards:list">
+<turbo-frame id="dashboards">
   <h1>Listing</h1>
   <a href="{% url 'dashboards:create' %}">Create</a>
   <ul>
     {% for object in object_list %}
     <li>
       {{ object }}
-      <a href="{% url 'dashboards:detail' object.pk %}">Details</a>
-      <a href="{% url 'dashboards:update' object.pk %}">Update</a>
-      <a href="{% url 'dashboards:delete' object.pk %}">Delete</a>
+      <a href="{% url 'dashboards:detail' object.pk %}" data-turbo-frame="_top"
+        >Details</a
+      >
+      <a href="{% url 'dashboards:update' object.pk %}" data-turbo-frame="_top"
+        >Update</a
+      >
+      <a href="{% url 'dashboards:delete' object.pk %}" data-turbo-frame="_top"
+        >Delete</a
+      >
     </li>
     {% empty %}
     <p>No items.</p>

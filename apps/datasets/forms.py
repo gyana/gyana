@@ -7,8 +7,8 @@ from .models import Dataset
 class GoogleSheetsForm(forms.ModelForm):
     class Meta:
         model = Dataset
-        fields = ["name", "url", "kind"]
-        widgets = {"kind": HiddenInput()}
+        fields = ["name", "url", "kind", "project"]
+        widgets = {"kind": HiddenInput(), "project": HiddenInput()}
         help_texts = {
             "url": "Needs to be public (TODO: share with service account)",
         }
@@ -17,5 +17,5 @@ class GoogleSheetsForm(forms.ModelForm):
 class CSVForm(forms.ModelForm):
     class Meta:
         model = Dataset
-        fields = ["name", "file", "kind"]
-        widgets = {"kind": HiddenInput()}
+        fields = ["name", "file", "kind", "project"]
+        widgets = {"kind": HiddenInput(), "project": HiddenInput()}

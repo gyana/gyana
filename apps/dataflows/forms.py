@@ -1,5 +1,6 @@
 from apps.datasets.models import Dataset
 from django import forms
+from django.forms.widgets import HiddenInput
 
 from .models import Dataflow, Node
 
@@ -7,7 +8,8 @@ from .models import Dataflow, Node
 class DataflowForm(forms.ModelForm):
     class Meta:
         model = Dataflow
-        fields = ["name"]
+        fields = ["name", "project"]
+        widgets = {"project": HiddenInput()}
 
 
 # Using a callable to refresh selection when a new dataset is added

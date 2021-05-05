@@ -18,11 +18,16 @@ class DashboardList(ProjectMixin, ListView):
         return Dashboard.objects.filter(project=self.project).all()
 
 
-class DashboardCreate(TurboCreateView):
+class DashboardCreate(ProjectMixin, TurboCreateView):
     template_name = "dashboards/create.html"
     model = Dashboard
     form_class = DashboardForm
     success_url = reverse_lazy("dashboards:list")
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial["project"] = self.project
+        return initial
 
 
 class DashboardDetail(DetailView):

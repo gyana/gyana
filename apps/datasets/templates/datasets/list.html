@@ -1,16 +1,22 @@
 {% extends "web/app/app_base.html" %}
 <!---->
 {% block app %}
-<turbo-frame id="datasets:list">
+<turbo-frame id="datasets">
   <h1>Listing</h1>
   <a href="{% url 'datasets:create' %}">Create</a>
   <ul>
     {% for object in object_list %}
     <li>
       {{ object }}
-      <a href="{% url 'datasets:detail' object.pk %}">Details</a>
-      <a href="{% url 'datasets:update' object.pk %}">Update</a>
-      <a href="{% url 'datasets:delete' object.pk %}">Delete</a>
+      <a href="{% url 'datasets:detail' object.pk %}" data-turbo-frame="_top"
+        >Details</a
+      >
+      <a href="{% url 'datasets:update' object.pk %}" data-turbo-frame="_top"
+        >Update</a
+      >
+      <a href="{% url 'datasets:delete' object.pk %}" data-turbo-frame="_top"
+        >Delete</a
+      >
     </li>
     {% empty %}
     <p>No items.</p>

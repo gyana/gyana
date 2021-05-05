@@ -1,16 +1,22 @@
 {% extends "web/app/app_base.html" %}
 <!---->
 {% block app %}
-<turbo-frame id="dataflows:list">
+<turbo-frame id="dataflows">
   <h1>Listing</h1>
   <a href="{% url 'dataflows:create' %}">Create</a>
   <ul>
     {% for object in object_list %}
     <li>
       {{ object }}
-      <a href="{% url 'dataflows:detail' object.pk %}">Details</a>
-      <a href="{% url 'dataflows:update' object.pk %}">Update</a>
-      <a href="{% url 'dataflows:delete' object.pk %}">Delete</a>
+      <a href="{% url 'dataflows:detail' object.pk %}" data-turbo-frame="_top"
+        >Details</a
+      >
+      <a href="{% url 'dataflows:update' object.pk %}" data-turbo-frame="_top"
+        >Update</a
+      >
+      <a href="{% url 'dataflows:delete' object.pk %}" data-turbo-frame="_top"
+        >Delete</a
+      >
     </li>
     {% empty %}
     <p>No items.</p>
