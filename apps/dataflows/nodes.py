@@ -25,6 +25,8 @@ def rename_duplicates(left, right, left_col, right_col):
 def get_join_query(node):
     left = node.parents.first().get_query()
     right = node.parents.last().get_query()
+
+    # Adding 1/2 to left/right if the column exists in both tables
     left, right, left_col, right_col = rename_duplicates(
         left, right, node._join_left, node._join_right
     )
