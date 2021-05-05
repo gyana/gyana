@@ -5,15 +5,15 @@
 <p>{{ object.name }}</p>
 <div class="border border-gray-500">
   <h2 class="text-xl font-bold">Datasets</h2>
-  <turbo-frame id="datasets:list" src="{% url 'datasets:list' %}"></turbo-frame>
+  <turbo-frame id="datasets:list" src="{% url 'datasets:list' %}" target="_top"></turbo-frame>
 </div>
 <div class="border border-gray-500">
   <h2 class="text-xl font-bold">Dataflows</h2>
-  <turbo-frame id="dataflows:list" src="{% url 'dataflows:list' %}"></turbo-frame>
+  <turbo-frame id="dataflows:list" src="{% url 'dataflows:list' %}" target="_top"></turbo-frame>
 </div>
 <div class="border border-gray-500">
   <h2 class="text-xl font-bold">Dashboards</h2>
-  <turbo-frame id="dashboards:list" src="{% url 'dashboards:list' %}"></turbo-frame>
+  <turbo-frame id="dashboards:list" src="{% url 'dashboards:list' %}" target="_top"></turbo-frame>
 </div>
 <a href="{% url 'projects:list' %}">List</a>
 {% endblock %}
