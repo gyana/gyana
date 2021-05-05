@@ -13,7 +13,7 @@
 </p>
 <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
 {% csrf_token %}
-    <button class="button is-primary" type="submit">{% trans 'Confirm' %}</button>
+    <button class="button button--primary" type="submit">{% trans 'Confirm' %}</button>
 </form>
 {% else %}
 {% url 'account_email' as email_url %}
