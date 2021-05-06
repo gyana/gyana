@@ -70,8 +70,8 @@ class NodeViewSet(viewsets.ModelViewSet):
     filterset_fields = ["dataflow"]
 
 
-class NodeUpdate(TurboUpdateView):
-    template_name = "dataflows/node.html"
+class DefaultNodeUpdate(TurboUpdateView):
+    template_name = "dataflows/sidebar/base.html"
     model = Node
 
     @cached_property
@@ -89,6 +89,10 @@ class NodeUpdate(TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse("dataflows:node", args=(self.dataflow.id, self.object.id))
+
+
+def node_update(request, *args, **kwargs):
+    return DefaultNodeUpdate.as_view()(request, *args, **kwargs)
 
 
 class NodeGrid(DetailView):

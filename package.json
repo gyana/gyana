@@ -1,15 +1,15 @@
 {
-  "name": "pegasus",
-  "version": "1.0.0",
+  "name": "Gyana",
+  "version": "0.0.1",
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
-    "build": "webpack --mode development",
-    "build:watch": "webpack --mode development --watch",
-    "build:prod": "NODE_ENV=production webpack --mode production"
+    "build": "webpack --mode=development",
+    "build:watch": "webpack --mode=development --watch",
+    "build:prod": "NODE_ENV=production webpack --mode=production"
   },
-  "author": "",
-  "homepage": "http://example.com/",
+  "author": "Gyana",
+  "homepage": "https://app.gyana.com/",
   "license": "UNLICENSED",
   "private": "true",
   "devDependencies": {

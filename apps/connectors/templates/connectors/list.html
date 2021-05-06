@@ -1,0 +1,46 @@
+{% extends "web/app/app_base.html" %}
+<!---->
+{% block app %}
+<turbo-frame id="connectors">
+  <h1>Listing</h1>
+  <a href="{% url 'connectors:create' %}">Create</a>
+  <ul>
+    {% for object in object_list %}
+    <li>
+      {{ object }}
+      <a href="{% url 'connectors:detail' object.pk %}" data-turbo-frame="_top"
+        >Details</a
+      >
+      <a href="{% url 'connectors:update' object.pk %}" data-turbo-frame="_top"
+        >Update</a
+      >
+      <a href="{% url 'connectors:delete' object.pk %}" data-turbo-frame="_top"
+        >Delete</a
+      >
+    </li>
+    {% empty %}
+    <p>No items.</p>
+    {% endfor %}
+  </ul>
+
+  {% if is_paginated %}
+  <div class="pagination">
+    <span class="page-links">
+      {% if page_obj.has_previous %}
+      <a
+        href="{% url 'connectors:list' %}?page={{ page_obj.previous_page_number }}"
+        >previous</a
+      >
+      {% endif %}
+      <span class="page-current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+      {% if page_obj.has_next %}
+      <a href="{% url 'connectors:list' %}?page={{ page_obj.next_page_number }}"
+        >next</a
+      >
+      {% endif %}
+    </span>
+  </div>
+</turbo-frame>
+{% endif %} {% endblock %}

@@ -1,0 +1,13 @@
+@layer components {
+  .button {
+    @apply appearance-none;
+    @apply inline-block px-4 py-2 rounded-md border border-gray-300 hover:border-gray-500 focus:outline-none;
+
+    &--primary {
+      @apply px-4 py-2 rounded-md outline-none bg-blue-500 text-white hover:bg-blue-700;
+    }
+
+    &--outlined {
+    }
+  }
+}

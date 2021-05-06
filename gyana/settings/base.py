@@ -72,6 +72,7 @@ PROJECT_APPS = [
     "apps.teams.apps.TeamConfig",
     "apps.projects",
     "apps.datasets",
+    "apps.connectors",
     "apps.dataflows",
     "apps.dashboards",
     "apps.widgets",
@@ -313,3 +314,15 @@ CRISPY_TEMPLATE_PACK = "tailwind"
 
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 GS_BUCKET_NAME = "gyana-local"
+
+FIVETRAN_KEY = os.environ.get("FIVETRAN_KEY", "<your fivetran key>")
+FIVETRAN_URL = "https://api.fivetran.com/v1"
+FIVETRAN_GROUP = "general_candor"
+FIVETRAN_HEADERS = {"Authorization": f"Basic {FIVETRAN_KEY}"}
+
+EXTERNAL_URL = "http://localhost:8000"
+# for local development
+MOCK_FIVETRAN = os.environ.get("MOCK_FIVETRAN", "False") == "True"
+MOCK_FIVETRAN_ID = "crumb_watery"
+MOCK_FIVETRAN_SCHEMA = "google_sheets_d11948f3_be03_48c1_9985_ead1909d67e9"
+MOCK_FIVETRAN_HISTORICAL_SYNC_SECONDS = 10

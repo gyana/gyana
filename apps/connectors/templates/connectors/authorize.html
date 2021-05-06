@@ -1,0 +1,13 @@
+<turbo-frame id="connectors:authorize" target="_top"
+  ><form
+    action="{% url 'connectors:authorize-fivetran' connector.id %}"
+    method="get"
+  >
+    <input
+      type="hidden"
+      name="original_uri"
+      value="{{request.GET.original_uri}}"
+    />
+    <input type="submit" value="Authorize" />
+  </form>
+</turbo-frame>
