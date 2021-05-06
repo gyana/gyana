@@ -18,3 +18,5 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 DEBUG = False
 ALLOWED_HOSTS = ["gyana.com", "gyana-mvp.herokuapp.com"]
+
+EXTERNAL_URL = "https://gyana-mvp.herokuapp.com"

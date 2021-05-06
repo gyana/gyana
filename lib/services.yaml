@@ -1,0 +1,6 @@
+google_sheets:
+  name: Google Sheets
+  color: "#53A169"
+  icon: TBD
+  static_config:
+    table: "sheets_table"

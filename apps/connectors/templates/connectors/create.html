@@ -1,0 +1,23 @@
+{% extends "web/app/app_base.html" %}
+<!---->
+{% load tailwind_filters %}
+<!---->
+{% block app %}
+<turbo-frame id="connectors">
+  {% if not request.GET.service %}
+  <ul>
+    {% for service_id, service in services.items %}
+    <a href="{% url 'connectors:create' %}?service={{ service_id }}"
+      ><li>{{ service.name }}</li></a
+    >
+    {% endfor %}
+  </ul>
+  {% else %}
+  <h1>Create/Update</h1>
+  <form method="post" action="{% url 'connectors:create' %}" class="form">
+    {% csrf_token %} {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Create</button>
+  </form>
+  {% endif %}
+</turbo-frame>
+{% endblock %}

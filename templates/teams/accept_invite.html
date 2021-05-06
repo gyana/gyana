@@ -17,15 +17,15 @@
             <form action="{% url 'teams:accept_invitation_confirm' invitation.id %}" method="post">
               {% csrf_token %}
               {% if request.user.email == invitation.email %}
-                <input type="submit" class="button is-primary is-large" value="Accept Invitation"/>
+                <input type="submit" class="button button--primary is-large" value="Accept Invitation"/>
               {% else %}
                 <p >
                   This invitation was sent to {{ invitation.email }} but you're logged in as {{ request.user.email }}.
                   What would you like to do?
                 </p>
                 <p class="buttons my-3">
-                  <input type="submit" class="button is-primary" value="Accept as {{ request.user.email }}"/>
-                  <a class="button is-primary is-outlined" href="{% url 'account_signup' %}?invitation_id={{ invitation.id }}">
+                  <input type="submit" class="button button--primary" value="Accept as {{ request.user.email }}"/>
+                  <a class="button button--primary is-outlined" href="{% url 'account_signup' %}?invitation_id={{ invitation.id }}">
                     Sign out
                   </a>
                 </p>
@@ -33,7 +33,7 @@
             </form>
           {% else %}
             <p class="buttons">
-              <a class="button is-primary" href="{% url 'account_signup' %}?invitation_id={{ invitation.id }}">
+              <a class="button button--primary" href="{% url 'account_signup' %}?invitation_id={{ invitation.id }}">
                 Create Account to Accept
               </a>
             </p>

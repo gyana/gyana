@@ -34,6 +34,7 @@ urlpatterns = [
     path("dashboards/", include("apps.dashboards.urls")),
     path("widgets/", include("apps.widgets.urls")),
     path("filters/", include("apps.filters.urls")),
+    path("connectors/", include("apps.connectors.urls")),
     path("", include("apps.web.urls")),
     path("pegasus/", include("pegasus.apps.examples.urls")),
     path("celery-progress/", include("celery_progress.urls")),

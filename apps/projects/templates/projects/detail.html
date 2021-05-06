@@ -4,6 +4,10 @@
 <h1 class="text-2xl font-bold">Project</h2>
 <p>{{ object.name }}</p>
 <div class="border border-gray-500">
+  <h2 class="text-xl font-bold">Connectors</h2>
+  <turbo-frame id="connectors" src="{% url 'connectors:list' %}"></turbo-frame>
+</div>
+<div class="border border-gray-500">
   <h2 class="text-xl font-bold">Datasets</h2>
   <turbo-frame id="datasets" src="{% url 'datasets:list' %}"></turbo-frame>
 </div>

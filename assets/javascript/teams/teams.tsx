@@ -203,7 +203,7 @@ class TeamApplication extends React.Component {
             <h2 className="subtitle">Create your first team below to get started.</h2>
 
             <p>
-              <a className="button is-primary" onClick={() => this._newTeam()}>
+              <a className="button button--primary" onClick={() => this._newTeam()}>
                 <span className="icon is-small"><i className="fa fa-plus"></i></span>
                 <span>Create Team</span>
               </a>

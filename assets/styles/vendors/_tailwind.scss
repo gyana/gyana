@@ -71,20 +71,6 @@
     }
   }
 
-  .button {
-    @apply inline-block px-4 py-2 rounded-md border border-gray-300 hover:border-gray-500 focus:outline-none;
-  }
-
-  .button.is-primary {
-    @apply px-4 py-2 rounded-md outline-none;
-    @apply bg-blue-500 text-white hover:bg-blue-700;
-  }
-
-  .button.is-primary.is-outlined {
-    @apply px-4 py-2 rounded-md outline-none;
-    @apply bg-transparent text-blue-500 border border-blue-500 hover:text-blue-700 hover:border-blue-700 hover:bg-blue-50;
-  }
-
   .is-primary {
     @apply text-blue-500;
   }
@@ -155,8 +141,7 @@
   }
 }
 
-/* subscriptions */
-
+// TODO: Remove all of these.
 @layer components {
   .subscription-plan-selector-buttons {
     @apply flex justify-center space-x-4 my-4;
@@ -171,8 +156,7 @@
   }
 }
 
-/* pegasus stuff */
-
+// TODO: Remove all of these.
 @layer components {
   .pg-title {
     @apply text-4xl font-bold text-gray-900;

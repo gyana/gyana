@@ -1,0 +1,6 @@
+<turbo-frame id="dataflow-node">
+  <form method="post" action="{% url 'dataflows:node' dataflow.id node.id %}">
+    {% csrf_token %} {% block sidebar %} {{ form.as_p }} {% endblock %}
+    <input type="submit" value="Update" />
+  </form>
+</turbo-frame>

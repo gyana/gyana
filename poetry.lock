@@ -70,6 +70,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "backoff"
+version = "1.10.0"
+description = "Function decoration for backoff and retry"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[[package]]
 name = "billiard"
 version = "3.6.4.0"
 description = "Python multiprocessing fork with improvements and bugfixes"
@@ -715,10 +723,10 @@ regex = "*"
 toolz = "*"
 
 [package.extras]
-all = ["google-cloud-bigquery[pandas,bqstorage] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
-bigquery = ["google-cloud-bigquery[pandas,bqstorage] (>=1.12.0,<2.0.0dev)", "pydata-google-auth"]
+all = ["google-cloud-bigquery[bqstorage,pandas] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
+bigquery = ["google-cloud-bigquery[bqstorage,pandas] (>=1.12.0,<2.0.0dev)", "pydata-google-auth"]
 clickhouse = ["clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
-develop = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash", "google-cloud-bigquery[pandas,bqstorage] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "black", "click", "pydocstyle (==4.0.1)", "flake8", "isort", "mypy", "pre-commit", "pygit2", "pytest (>=4.5)"]
+develop = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash", "google-cloud-bigquery[bqstorage,pandas] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "black", "click", "pydocstyle (==4.0.1)", "flake8", "isort", "mypy", "pre-commit", "pygit2", "pytest (>=4.5)"]
 geospatial = ["geoalchemy2", "geopandas", "shapely"]
 hdf5 = ["tables (>=3.0.0)"]
 impala = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)"]
@@ -1404,7 +1412,7 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.*"
-content-hash = "ef622a9a2dbe26ff9630cebfb5f9f116a4e35263a1ec17ce8f01eaadd538807a"
+content-hash = "b6689a0a5b2605bf03175431bd358259c49508a785b47ab55153c7d85ce81da4"
 
 [metadata.files]
 amqp = [
@@ -1433,6 +1441,10 @@ autoflake = [
 backcall = [
     {file = "backcall-0.2.0-py2.py3-none-any.whl", hash = "sha256:fbbce6a29f263178a1f7915c1940bde0ec2b2a967566fe1c65c1dfb7422bd255"},
     {file = "backcall-0.2.0.tar.gz", hash = "sha256:5cbdbf27be5e7cfadb448baf0aa95508f91f2bbc6c6437cd9cd06e2a4c215e1e"},
+]
+backoff = [
+    {file = "backoff-1.10.0-py2.py3-none-any.whl", hash = "sha256:5e73e2cbe780e1915a204799dba0a01896f45f4385e636bcca7a0614d879d0cd"},
+    {file = "backoff-1.10.0.tar.gz", hash = "sha256:b8fba021fac74055ac05eb7c7bfce4723aedde6cd0a504e5326bcb0bdd6d19a4"},
 ]
 billiard = [
     {file = "billiard-3.6.4.0-py3-none-any.whl", hash = "sha256:87103ea78fa6ab4d5c751c4909bcff74617d985de7fa8b672cf8618afd5a875b"},

@@ -1,0 +1,21 @@
+{% extends "web/app/app_base.html" %}
+<!---->
+{% block app %}
+<h1>Detail</h1>
+<p>{{ object.name }}</p>
+<div>
+  {% if object.historical_sync_complete %}
+  <div>Ready</div>
+  {% elif object.fivetran_authorized %}
+  <div>Syncing</div>
+  {% else %}
+  <turbo-frame
+    id="connectors:authorize"
+    src="{% url 'connectors:authorize' connector.id %}?original_uri={{ request.get_full_path }}"
+    target="_top"
+  >
+  </turbo-frame>
+  {% endif %}
+</div>
+<a href="{% url 'connectors:list' %}">List</a>
+{% endblock %}
