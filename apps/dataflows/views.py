@@ -97,13 +97,13 @@ class DefaultNodeUpdate(TurboUpdateView):
 
         return kwargs
 
+    # TODO: Move this form_valid to a separate NodeUpdate inherited class
     def form_valid(self, form: forms.Form) -> HttpResponse:
         if self.object.kind == "select":
             self.object.select_columns.all().delete()
             self.object.select_columns.set(
                 [Column(name=name) for name in form.cleaned_data["select_columns"]],
                 bulk=False,
-                clear=True,
             )
 
         return super().form_valid(form)
