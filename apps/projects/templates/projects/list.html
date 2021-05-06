@@ -2,25 +2,14 @@
 <!---->
 {% block app %}
 <h1>Listing</h1>
-<a href="{% url 'projects:create' %}"
-  >Create</a
->
+<a href="{% url 'projects:create' %}">Create</a>
 <ul>
   {% for object in object_list %}
   <li>
     {{ object }}
-    <a
-      href="{% url 'projects:detail' object.pk %}"
-      >Details</a
-    >
-    <a
-      href="{% url 'projects:update' object.pk %}"
-      >Update</a
-    >
-    <a
-      href="{% url 'projects:delete' object.pk %}"
-      >Delete</a
-    >
+    <a href="{% url 'projects:detail' object.pk %}">Details</a>
+    <a href="{% url 'projects:update' object.pk %}">Update</a>
+    <a href="{% url 'projects:delete' object.pk %}">Delete</a>
   </li>
   {% empty %}
   <p>No items.</p>
@@ -31,8 +20,7 @@
 <div class="pagination">
   <span class="page-links">
     {% if page_obj.has_previous %}
-    <a
-      href="{% url 'projects:list' %}?page={{ page_obj.previous_page_number }}"
+    <a href="{% url 'projects:list' %}?page={{ page_obj.previous_page_number }}"
       >previous</a
     >
     {% endif %}
@@ -40,11 +28,10 @@
       Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
     </span>
     {% if page_obj.has_next %}
-    <a
-      href="{% url 'projects:list' %}?page={{ page_obj.next_page_number }}"
+    <a href="{% url 'projects:list' %}?page={{ page_obj.next_page_number }}"
       >next</a
     >
     {% endif %}
   </span>
 </div>
-{% endif %} {% endblock %} 
+{% endif %} {% endblock %}

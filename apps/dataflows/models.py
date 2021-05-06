@@ -1,6 +1,7 @@
 from apps.dataflows.nodes import NODE_FROM_CONFIG
 from apps.datasets.models import Dataset
 from apps.projects.models import Project
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
@@ -23,6 +24,7 @@ DEFAULT_COL_NAME_LENGTH = 300
 class Node(models.Model):
     class Kind(models.TextChoices):
         INPUT = "input", "Input"
+        SELECT = "select", "Select"
         JOIN = "join", "Join"
         GROUP = "group", "Group"
 
@@ -37,6 +39,9 @@ class Node(models.Model):
 
     # Input
     input_dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, null=True)
+
+    # Select
+    # select_columns exists on Column as FK
 
     # Join
     join_how = models.CharField(
@@ -63,6 +68,12 @@ class Node(models.Model):
     def get_schema(self):
         return self.get_query().schema()
 
+
+class Column(models.Model):
+    name = models.TextField(blank=False, null=False)
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="select_columns"
+    )
 
 class Groups(models.Model):
     node = models.ForeignKey(Node, on_delete=models.CASCADE)

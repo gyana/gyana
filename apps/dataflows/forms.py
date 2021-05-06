@@ -1,6 +1,7 @@
+from apps import widgets
 from apps.datasets.models import Dataset
 from django import forms
-from django.forms.widgets import HiddenInput
+from django.forms.widgets import CheckboxSelectMultiple, HiddenInput, Select
 
 from .models import AGGREGATIONS, Aggregations, Dataflow, Groups, Node
 
@@ -22,6 +23,29 @@ class InputNode(forms.ModelForm):
         model = Node
         fields = ["input_dataset"]
         labels = {"input_dataset": "Dataset"}
+
+
+class SelectNode(forms.ModelForm):
+    class Meta:
+        model = Node
+        fields = []
+
+    def __init__(self, *args, **kwargs):
+        self.columns = kwargs.pop("columns")
+        # django metaclass magic to construct fields
+        super().__init__(*args, **kwargs)
+
+        self.fields["select_columns"] = forms.MultipleChoiceField(
+            choices=self.columns,
+            widget=CheckboxSelectMultiple,
+            initial=list(
+                self.instance.select_columns.all().values_list("name", flat=True)
+            ),
+        )
+        # Select(choices=self.columns)
+
+        # Now you can get your choices based on that object id
+        # self.fields['my_choice_field'].choices = your_get_choices_function(self.object_id)
 
 
 class JoinNode(forms.ModelForm):
@@ -47,4 +71,4 @@ AggregationForms = forms.inlineformset_factory(
 GroupForms = forms.inlineformset_factory(Node, Groups, fields=("column",), extra=1)
 
 
-KIND_TO_FORM = {"input": InputNode, "join": JoinNode}
+KIND_TO_FORM = {"input": InputNode, "select": SelectNode, "join": JoinNode}
