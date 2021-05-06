@@ -28,20 +28,21 @@ class InputNode(forms.ModelForm):
 class SelectNode(forms.ModelForm):
     class Meta:
         model = Node
-        fields = ["select_columns"]
-        labels = {"select_columns": "Selected columns"}
-        # widgets = {"select_columns": Select(choices=())}
-
-    select_columns = Select(choices=())
+        fields = []
 
     def __init__(self, *args, **kwargs):
         self.columns = kwargs.pop("columns")
         # django metaclass magic to construct fields
         super().__init__(*args, **kwargs)
 
-        print(self.fields)
-
-        self.fields["select_columns"] = self.columns
+        self.fields["select_columns"] = forms.MultipleChoiceField(
+            choices=self.columns,
+            widget=CheckboxSelectMultiple,
+            initial=list(
+                self.instance.select_columns.all().values_list("name", flat=True)
+            ),
+        )
+        # Select(choices=self.columns)
 
         # Now you can get your choices based on that object id
         # self.fields['my_choice_field'].choices = your_get_choices_function(self.object_id)

@@ -37,7 +37,7 @@ class Node(models.Model):
     input_dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, null=True)
 
     # Select
-    select_columns = ArrayField(models.TextField(blank=False), null=True)
+    # select_columns exists on Column as FK
 
     # Join
     join_how = models.CharField(
@@ -59,3 +59,10 @@ class Node(models.Model):
 
     def get_schema(self):
         return self.get_query().schema()
+
+
+class Column(models.Model):
+    name = models.TextField(blank=False, null=False)
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="select_columns"
+    )

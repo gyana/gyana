@@ -9,7 +9,9 @@ def get_input_query(node):
 
 def get_select_query(node):
     parent_query = node.parents.first().get_query()
-    return parent_query.projection(node.select_columns or [])
+    return parent_query.projection(
+        [col.name for col in node.select_columns.all()] or []
+    )
 
 
 def get_duplicate_names(left, right):
