@@ -6,7 +6,7 @@ class Connector(models.Model):
 
     name = models.CharField(max_length=255)
 
-    service = models.TextField(unique=True)
+    service = models.TextField(max_length=255)
     fivetran_id = models.TextField(null=True)
     schema = models.TextField(null=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)

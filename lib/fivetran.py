@@ -1,13 +1,21 @@
 import time
 from dataclasses import dataclass
+from functools import lru_cache
 from uuid import uuid4
 
 import backoff
 import requests
+import yaml
+from apps.connectors.models import Connector
 from django.conf import settings
 from django.shortcuts import redirect
 
-from apps.connector.models import Connector
+SERVICES = "lib/services.yaml"
+
+
+@lru_cache
+def get_services():
+    return yaml.load(open(SERVICES, "r"))
 
 
 @dataclass
@@ -36,17 +44,18 @@ class FivetranClient:
 
     def create(self):
 
-        connector_template = self.connector.connector_template
+        service = self.connector.service
+        service_conf = get_services()[service]
 
-        schema = f"{connector_template.service}_{str(uuid4()).replace('-', '_')}"
+        schema = f"{service}_{str(uuid4()).replace('-', '_')}"
 
         res = requests.post(
             f"{settings.FIVETRAN_URL}/connectors",
             json={
-                "service": connector_template.service,
+                "service": service,
                 "group_id": settings.FIVETRAN_GROUP,
                 # "run_setup_tests": False,
-                "config": {"schema": schema, **connector_template.static_config},
+                "config": {"schema": schema, **service_conf.static_config},
             },
             headers=settings.FIVETRAN_HEADERS,
         ).json()

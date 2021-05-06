@@ -1,6 +1,8 @@
-from apps.connector.models import Connector
+from apps.connectors.models import Connector
 from celery import shared_task
+from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from lib.fivetran import FivetranClient
 
 
@@ -11,8 +13,13 @@ def poll_fivetran_historical_sync(self, connector_id):
 
     FivetranClient(connector).block_until_synced()
 
-    for report in connector.reports.all():
-        if report.connectors_ready():
-            report.notify()
+    url = reverse("connectors:detail", args=(connector_id,))
+
+    send_mail(
+        "Ready",
+        f"Your connector has completed the initial sync - click here {url}",
+        "Anymail Sender <from@example.com>",
+        ["to@example.com"],
+    )
 
     return connector_id
