@@ -55,7 +55,7 @@ class FivetranClient:
                 "service": service,
                 "group_id": settings.FIVETRAN_GROUP,
                 # "run_setup_tests": False,
-                "config": {"schema": schema, **service_conf.static_config},
+                "config": {"schema": schema, **service_conf["static_config"]},
             },
             headers=settings.FIVETRAN_HEADERS,
         ).json()
