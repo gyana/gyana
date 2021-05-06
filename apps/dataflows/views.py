@@ -4,6 +4,7 @@ from functools import cached_property
 from apps.dataflows.serializers import NodeSerializer
 from apps.projects.mixins import ProjectMixin
 from django.db.models.query import QuerySet
+from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
@@ -11,7 +12,7 @@ from lib.bigquery import ibis_client
 from rest_framework import viewsets
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .forms import KIND_TO_FORM, DataflowForm
+from .forms import KIND_TO_FORM, AggregationForms, DataflowForm, GroupForms
 from .models import Dataflow, Node
 
 # CRUDL
@@ -92,6 +93,9 @@ class DefaultNodeUpdate(TurboUpdateView):
 
 
 def node_update(request, *args, **kwargs):
+    node = get_object_or_404(Node, pk=kwargs["pk"])
+    if NODE_VIEWS.get(node.kind):
+        return NODE_VIEWS.get(node.kind)(request, *args, **kwargs)
     return DefaultNodeUpdate.as_view()(request, *args, **kwargs)
 
 
@@ -106,3 +110,33 @@ class NodeGrid(DetailView):
         context["columns"] = json.dumps([{"field": col} for col in df.columns])
         context["rows"] = df.to_json(orient="records")
         return context
+
+
+class GroupView(TurboUpdateView):
+    template_name = "dataflows/sidebar/group.html"
+    model = Node
+    fields = ["kind"]
+
+    @cached_property
+    def dataflow(self):
+        return Dataflow.objects.get(pk=self.kwargs["dataflow_id"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["dataflow"] = self.dataflow
+        context["node"] = self.object
+        if self.request.POST:
+            context["group_form"] = GroupForms(self.request.POST, instance=self.object)
+        else:
+            context["group_form"] = GroupForms(instance=self.object)
+        # context["aggregation_form"] = AggregationForms
+        return context
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("dataflows:node", args=(self.dataflow.id, self.object.id))
+
+
+NODE_VIEWS = {"group": GroupView.as_view()}

@@ -2,7 +2,7 @@ from apps.datasets.models import Dataset
 from django import forms
 from django.forms.widgets import HiddenInput
 
-from .models import AGGREGATIONS, Dataflow, Groups, Node
+from .models import AGGREGATIONS, Aggregations, Dataflow, Groups, Node
 
 
 class DataflowForm(forms.ModelForm):
@@ -40,17 +40,11 @@ class JoinNode(forms.ModelForm):
         self.fields["join_right"].choices = self.right_columns
 
 
-class GroupNode(forms.Form):
+AggregationForms = forms.inlineformset_factory(
+    Node, Aggregations, fields=("aggregation", "column")
+)
 
-    aggregations = forms.ChoiceField(choices=AGGREGATIONS)
-
-    def __init__(self, *args, **kwargs):
-        self.node = kwargs.pop("instance")
-        super().__init__(*args, **kwargs)
-        parent = self.node.parents.first()
-        self.fields["groups"] = forms.MultipleChoiceField(
-            choices=[(col, col) for col in parent.get_schema()]
-        )
+GroupForms = forms.inlineformset_factory(Node, Groups, fields=("column",), extra=1)
 
 
-KIND_TO_FORM = {"input": InputNode, "join": JoinNode, "group": GroupNode}
+KIND_TO_FORM = {"input": InputNode, "join": JoinNode}
