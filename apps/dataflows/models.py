@@ -17,10 +17,14 @@ class Dataflow(models.Model):
         return self.name
 
 
+DEFAULT_COL_NAME_LENGTH = 300
+
+
 class Node(models.Model):
     class Kind(models.TextChoices):
         INPUT = "input", "Input"
         JOIN = "join", "Join"
+        GROUP = "group", "Group"
 
     dataflow = models.ForeignKey(Dataflow, on_delete=models.CASCADE)
     kind = models.CharField(max_length=16, choices=Kind.choices)
@@ -45,8 +49,12 @@ class Node(models.Model):
         ],
         default="inner",
     )
-    join_left = models.CharField(max_length=300, null=True, blank=True)
-    join_right = models.CharField(max_length=300, null=True, blank=True)
+    join_left = models.CharField(
+        max_length=DEFAULT_COL_NAME_LENGTH, null=True, blank=True
+    )
+    join_right = models.CharField(
+        max_length=DEFAULT_COL_NAME_LENGTH, null=True, blank=True
+    )
 
     def get_query(self):
         func = NODE_FROM_CONFIG[self.kind]
@@ -54,3 +62,17 @@ class Node(models.Model):
 
     def get_schema(self):
         return self.get_query().schema()
+
+
+class Groups(models.Model):
+    node = models.ForeignKey(Node, on_delete=models.CASCADE)
+    column = models.CharField(max_length=DEFAULT_COL_NAME_LENGTH, null=True, blank=True)
+
+
+AGGREGATIONS = [("sum", "Sum"), ("count", "Count")]
+
+
+class Aggregations(models.Model):
+    node = models.ForeignKey(Node, on_delete=models.CASCADE)
+    aggregation = models.CharField(max_length=20, choices=AGGREGATIONS)
+    column = models.CharField(max_length=DEFAULT_COL_NAME_LENGTH, null=True, blank=True)

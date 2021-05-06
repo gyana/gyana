@@ -45,4 +45,16 @@ def get_join_query(node):
     return to_join(right, left[left_col] == right[right_col]).materialize()
 
 
-NODE_FROM_CONFIG = {"input": get_input_query, "join": get_join_query}
+def get_group_query(node):
+    query = node.parents.first().get_query()
+    groups = node.groups_set.all()
+    if groups:
+        query = query.group_by([g.column for g in groups])
+    return query.size()
+
+
+NODE_FROM_CONFIG = {
+    "input": get_input_query,
+    "join": get_join_query,
+    "group": get_group_query,
+}
