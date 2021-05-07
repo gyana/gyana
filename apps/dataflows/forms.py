@@ -3,9 +3,17 @@ from apps.utils.formset_layout import Formset
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Fieldset, Layout
 from django import forms
-from django.forms.widgets import CheckboxSelectMultiple, HiddenInput, Select
+from django.forms.models import BaseInlineFormSet
+from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
 
 from .models import Column, Dataflow, FunctionColumn, Node
+
+
+class CrispModelForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
 
 
 class DataflowForm(forms.ModelForm):
@@ -20,14 +28,14 @@ def get_datasets():
     return ((d.id, d.name) for d in Dataset.objects.all())
 
 
-class InputNodeForm(forms.ModelForm):
+class InputNodeForm(CrispModelForm):
     class Meta:
         model = Node
         fields = ["input_dataset"]
         labels = {"input_dataset": "Dataset"}
 
 
-class SelectNodeForm(forms.ModelForm):
+class SelectNodeForm(CrispModelForm):
     class Meta:
         model = Node
         fields = []
@@ -48,7 +56,7 @@ class SelectNodeForm(forms.ModelForm):
         # self.fields['my_choice_field'].choices = your_get_choices_function(self.object_id)
 
 
-class JoinNodeForm(forms.ModelForm):
+class JoinNodeForm(CrispModelForm):
     class Meta:
         model = Node
         fields = ["join_how", "join_left", "join_right"]
@@ -64,24 +72,43 @@ class JoinNodeForm(forms.ModelForm):
         self.fields["join_right"].choices = self.right_columns
 
 
+class InlineColumnFormset(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.form.base_fields["name"] = forms.ChoiceField(
+            choices=[
+                ("", "No column selected"),
+                *[(col, col) for col in self.instance.parents.first().get_schema()],
+            ]
+        )
+
+
 FunctionColumnFormSet = forms.inlineformset_factory(
-    Node, FunctionColumn, fields=("name", "function"), extra=1, can_delete=True
+    Node,
+    FunctionColumn,
+    fields=("name", "function"),
+    extra=1,
+    can_delete=True,
+    formset=InlineColumnFormset,
 )
 
 ColumnFormSet = forms.inlineformset_factory(
-    Node, Column, fields=("name",), extra=1, can_delete=True
+    Node,
+    Column,
+    fields=("name",),
+    extra=1,
+    can_delete=True,
+    formset=InlineColumnFormset,
 )
 
 
-class GroupNodeForm(forms.ModelForm):
+class GroupNodeForm(CrispModelForm):
     class Meta:
         model = Node
         fields = []
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
         self.helper.layout = Layout(
             Fieldset("Add columns", Formset("column_form_form_set")),
             Fieldset("Add aggregates", Formset("function_column_form_form_set")),
