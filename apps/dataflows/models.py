@@ -81,4 +81,6 @@ class FunctionColumn(models.Model):
 
     name = models.CharField(max_length=DEFAULT_COL_NAME_LENGTH)
     function = models.CharField(max_length=20, choices=Functions.choices)
-    node = models.ForeignKey(Node, on_delete=models.CASCADE)
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="aggregations"
+    )

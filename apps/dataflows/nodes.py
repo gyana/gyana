@@ -51,11 +51,24 @@ def get_join_query(node):
     return to_join(right, left[left_col] == right[right_col]).materialize()
 
 
+def aggregate(query, colname, computation):
+    column = getattr(query, colname)
+    if computation == "sum":
+        return column.sum().name(colname)
+    elif computation == "count":
+        return column.count().name(colname)
+
+
 def get_group_query(node):
     query = node.parents.first().get_query()
     groups = node.columns.all()
+    aggregations = [
+        aggregate(query, agg.name, agg.function) for agg in node.aggregations.all()
+    ]
     if groups:
         query = query.group_by([g.name for g in groups])
+    if aggregations:
+        return query.aggregate(aggregations)
     return query.size()
 
 
