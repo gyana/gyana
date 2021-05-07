@@ -3,7 +3,7 @@ from functools import cached_property
 from apps.datasets.models import Dataset
 from apps.utils.formset_layout import Formset
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Fieldset, Layout
+from crispy_forms.layout import Fieldset, Layout, Submit
 from django import forms
 from django.forms.models import BaseInlineFormSet
 from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
@@ -11,11 +11,12 @@ from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
 from .models import Column, Dataflow, FunctionColumn, Node
 
 
-class CrispModelForm(forms.ModelForm):
+class NodeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+        self.helper.add_input(Submit("submit", "Update"))
 
     @cached_property
     def columns(self):
@@ -35,14 +36,14 @@ def get_datasets():
     return ((d.id, d.name) for d in Dataset.objects.all())
 
 
-class InputNodeForm(CrispModelForm):
+class InputNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["input_dataset"]
         labels = {"input_dataset": "Dataset"}
 
 
-class SelectNodeForm(CrispModelForm):
+class SelectNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = []
@@ -61,7 +62,7 @@ class SelectNodeForm(CrispModelForm):
         # self.fields['my_choice_field'].choices = your_get_choices_function(self.object_id)
 
 
-class JoinNodeForm(CrispModelForm):
+class JoinNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["join_how", "join_left", "join_right"]
@@ -107,7 +108,7 @@ ColumnFormSet = forms.inlineformset_factory(
 )
 
 
-class GroupNodeForm(CrispModelForm):
+class GroupNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = []

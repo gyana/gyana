@@ -5,6 +5,5 @@
   <form method="post" action="{% url 'dataflows:node' dataflow.id node.id %}">
     {% csrf_token %}
       {% crispy form %}
-    <input type="submit" value="Update" />
   </form>
 </turbo-frame>
