@@ -26,12 +26,12 @@ dev-celery:
 export:
     poetry export -f requirements.txt --output requirements.txt
 
-migrate:
-    python manage.py migrate
-
-update: migrate
+update:
     yarn install
     poetry install
+
+migrate: update
+    python manage.py migrate
 
 format:
     # autoflake --in-place --recursive --remove-all-unused-imports --ignore-init-module-imports .
