@@ -1,3 +1,5 @@
+from functools import cached_property
+
 from apps.datasets.models import Dataset
 from apps.utils.formset_layout import Formset
 from crispy_forms.helper import FormHelper
@@ -14,6 +16,11 @@ class CrispModelForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+
+    @cached_property
+    def columns(self):
+        """Returns the schema for the first parent."""
+        return self.instance.parents.first().get_schema()
 
 
 class DataflowForm(forms.ModelForm):
@@ -41,12 +48,10 @@ class SelectNodeForm(CrispModelForm):
         fields = []
 
     def __init__(self, *args, **kwargs):
-        self.columns = kwargs.pop("columns")
-        # django metaclass magic to construct fields
         super().__init__(*args, **kwargs)
 
         self.fields["select_columns"] = forms.MultipleChoiceField(
-            choices=self.columns,
+            choices=[(col, col) for col in self.columns],
             widget=CheckboxSelectMultiple,
             initial=list(self.instance.columns.all().values_list("name", flat=True)),
         )

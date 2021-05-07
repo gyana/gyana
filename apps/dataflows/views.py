@@ -101,17 +101,6 @@ class NodeUpdate(TurboUpdateView):
 
         return context
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-
-        if self.object.kind == "select":
-            query = self.object.parents.first().get_query()
-            kwargs["columns"] = (
-                [(name, name) for name in query.schema()] if query is not None else []
-            )
-
-        return kwargs
-
     # TODO: Move this form_valid to a separate NodeUpdate inherited class
     def form_valid(self, form: forms.Form) -> HttpResponse:
         if self.object.kind == "select":
