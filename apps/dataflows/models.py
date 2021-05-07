@@ -70,20 +70,15 @@ class Node(models.Model):
 
 
 class Column(models.Model):
-    name = models.TextField(blank=False, null=False)
-    node = models.ForeignKey(
-        Node, on_delete=models.CASCADE, related_name="select_columns"
-    )
+    name = models.CharField(max_length=DEFAULT_COL_NAME_LENGTH)
+    node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="columns")
 
-class Groups(models.Model):
+
+class FunctionColumn(models.Model):
+    class Functions(models.TextChoices):
+        SUM = "sum", "Sum"
+        COUNT = "count", "Count"
+
+    name = models.CharField(max_length=DEFAULT_COL_NAME_LENGTH)
+    function = models.CharField(max_length=20, choices=Functions.choices)
     node = models.ForeignKey(Node, on_delete=models.CASCADE)
-    column = models.CharField(max_length=DEFAULT_COL_NAME_LENGTH, null=True, blank=True)
-
-
-AGGREGATIONS = [("sum", "Sum"), ("count", "Count")]
-
-
-class Aggregations(models.Model):
-    node = models.ForeignKey(Node, on_delete=models.CASCADE)
-    aggregation = models.CharField(max_length=20, choices=AGGREGATIONS)
-    column = models.CharField(max_length=DEFAULT_COL_NAME_LENGTH, null=True, blank=True)

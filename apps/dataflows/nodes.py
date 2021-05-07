@@ -9,9 +9,7 @@ def get_input_query(node):
 
 def get_select_query(node):
     parent_query = node.parents.first().get_query()
-    return parent_query.projection(
-        [col.name for col in node.select_columns.all()] or []
-    )
+    return parent_query.projection([col.name for col in node.columns.all()] or [])
 
 
 def get_duplicate_names(left, right):
@@ -55,9 +53,9 @@ def get_join_query(node):
 
 def get_group_query(node):
     query = node.parents.first().get_query()
-    groups = node.groups_set.all()
+    groups = node.columns.all()
     if groups:
-        query = query.group_by([g.column for g in groups])
+        query = query.group_by([g.name for g in groups])
     return query.size()
 
 

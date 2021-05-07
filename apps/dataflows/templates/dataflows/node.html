@@ -1,6 +1,15 @@
+{% load crispy_forms_tags %}
+
+<!-- prettier-ignore -->
 <turbo-frame id="dataflow-node">
   <form method="post" action="{% url 'dataflows:node' dataflow.id node.id %}">
-    {% csrf_token %} {{ form.as_p }}
+    {% csrf_token %}
+    {% comment %} TODO: migrate all node forms to crispy {% endcomment %}
+    {% if object.kind == "group" %}
+      {% crispy form %}
+    {% else %}
+      {{ form|crispy }}
+    {% endif %}
     <input type="submit" value="Update" />
   </form>
 </turbo-frame>

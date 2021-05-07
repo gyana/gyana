@@ -1,12 +1,14 @@
 import json
 from functools import cached_property
 
+import inflection
 from apps.dataflows.serializers import NodeSerializer
 from apps.projects.mixins import ProjectMixin
 from django import forms
+from django.db import transaction
 from django.db.models.query import QuerySet
-from django.shortcuts import get_object_or_404
 from django.http.response import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
@@ -14,7 +16,7 @@ from lib.bigquery import ibis_client
 from rest_framework import viewsets
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .forms import KIND_TO_FORM, AggregationForms, DataflowForm, GroupForms
+from .forms import KIND_TO_FORM, KIND_TO_FORMSETS, DataflowForm
 from .models import Column, Dataflow, Node
 
 # CRUDL
@@ -73,18 +75,30 @@ class NodeViewSet(viewsets.ModelViewSet):
     filterset_fields = ["dataflow"]
 
 
-class DefaultNodeUpdate(TurboUpdateView):
-    template_name = "dataflows/sidebar/base.html"
+class NodeUpdate(TurboUpdateView):
+    template_name = "dataflows/node.html"
     model = Node
 
     @cached_property
     def dataflow(self):
         return Dataflow.objects.get(pk=self.kwargs["dataflow_id"])
 
+    @cached_property
+    def formsets(self):
+        return KIND_TO_FORMSETS.get(self.object.kind, [])
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["dataflow"] = self.dataflow
         context["node"] = self.object
+
+        for formset in self.formsets:
+            context[inflection.underscore(formset.__name__)] = (
+                formset(self.request.POST, instance=self.object)
+                if self.request.POST
+                else formset(instance=self.object)
+            )
+
         return context
 
     def get_form_kwargs(self):
@@ -101,11 +115,22 @@ class DefaultNodeUpdate(TurboUpdateView):
     # TODO: Move this form_valid to a separate NodeUpdate inherited class
     def form_valid(self, form: forms.Form) -> HttpResponse:
         if self.object.kind == "select":
-            self.object.select_columns.all().delete()
-            self.object.select_columns.set(
+            self.object.columns.all().delete()
+            self.object.columns.set(
                 [Column(name=name) for name in form.cleaned_data["select_columns"]],
                 bulk=False,
             )
+
+        context = self.get_context_data()
+
+        if self.formsets:
+            with transaction.atomic():
+                self.object = form.save()
+                for formset_cls in self.formsets:
+                    formset = context[inflection.underscore(formset_cls.__name__)]
+                    if formset.is_valid():
+                        formset.instance = self.object
+                        formset.save()
 
         return super().form_valid(form)
 
@@ -114,13 +139,6 @@ class DefaultNodeUpdate(TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse("dataflows:node", args=(self.dataflow.id, self.object.id))
-
-
-def node_update(request, *args, **kwargs):
-    node = get_object_or_404(Node, pk=kwargs["pk"])
-    if NODE_VIEWS.get(node.kind):
-        return NODE_VIEWS.get(node.kind)(request, *args, **kwargs)
-    return DefaultNodeUpdate.as_view()(request, *args, **kwargs)
 
 
 class NodeGrid(DetailView):
@@ -140,33 +158,3 @@ class NodeGrid(DetailView):
         context["columns"] = json.dumps([{"field": col} for col in df.columns])
         context["rows"] = df.to_json(orient="records")
         return context
-
-
-class GroupView(TurboUpdateView):
-    template_name = "dataflows/sidebar/group.html"
-    model = Node
-    fields = ["kind"]
-
-    @cached_property
-    def dataflow(self):
-        return Dataflow.objects.get(pk=self.kwargs["dataflow_id"])
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["dataflow"] = self.dataflow
-        context["node"] = self.object
-        if self.request.POST:
-            context["group_form"] = GroupForms(self.request.POST, instance=self.object)
-        else:
-            context["group_form"] = GroupForms(instance=self.object)
-        # context["aggregation_form"] = AggregationForms
-        return context
-
-    def form_valid(self, form):
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse("dataflows:node", args=(self.dataflow.id, self.object.id))
-
-
-NODE_VIEWS = {"group": GroupView.as_view()}
