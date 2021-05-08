@@ -7,7 +7,6 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
-from lib.bigquery import get_columns
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .forms import get_filter_form
@@ -40,7 +39,7 @@ class FilterCreate(WidgetMixin, TurboCreateView):
 
     @property
     def column_type(self):
-        schema = get_columns(self.widget.table)
+        schema = self.widget.table.get_schema()
         return [c.field_type for c in schema if c.name == self.column][0]
 
     def get_form_class(self):
@@ -50,7 +49,7 @@ class FilterCreate(WidgetMixin, TurboCreateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["columns"] = [(f.name, f.name) for f in get_columns(self.widget.table)]
+        kwargs["columns"] = [(f.name, f.name) for f in self.widget.table.get_schema()]
         return kwargs
 
     def get_initial(self):
@@ -79,7 +78,7 @@ class FilterUpdate(WidgetMixin, TurboUpdateView):
 
     @property
     def column_type(self):
-        schema = get_columns(self.widget.table)
+        schema = self.widget.table.get_schema()
         return [c.field_type for c in schema if c.name == self.object.column][0]
 
     def get_form_class(self):
@@ -87,7 +86,7 @@ class FilterUpdate(WidgetMixin, TurboUpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["columns"] = [(f.name, f.name) for f in get_columns(self.widget.table)]
+        kwargs["columns"] = [(f.name, f.name) for f in self.widget.table.get_schema()]
         return kwargs
 
     def form_valid(self, form: forms.Form) -> HttpResponse:

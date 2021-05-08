@@ -1,15 +1,11 @@
 from urllib.parse import urlparse
 
 from apps.dashboards.models import Dashboard
-from apps.dataflows.models import Node
-from apps.datasets.models import Dataset
-from django import forms
 from django.db.models.query import QuerySet
-from django.http.response import HttpResponse
 from django.urls import resolve, reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
-from lib.bigquery import get_columns, query_widget
+from lib.bigquery import query_widget
 from lib.chart import to_chart
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
@@ -89,7 +85,7 @@ class WidgetConfig(TurboUpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["columns"] = [(name, name) for name in get_columns(self.object.table)]
+        kwargs["columns"] = [(name, name) for name in self.object.table.get_schema()]
         return kwargs
 
     def get_success_url(self) -> str:

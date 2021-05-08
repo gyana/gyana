@@ -122,6 +122,7 @@ def run_dataflow(dataflow: Dataflow):
 
     dataflow.last_run = datetime.now()
 
+
 def query_widget(widget: Widget):
 
     conn = ibis_client()
@@ -141,7 +142,3 @@ def query_widget(widget: Widget):
                 table = table[table[filter.column].str.endswith(filter.string_value)]
 
     return conn.execute(table.group_by(widget.label).count(widget.value))
-
-
-def get_columns(source: Table):
-    return source.get_schema()
