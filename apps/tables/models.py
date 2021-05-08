@@ -5,11 +5,17 @@ from lib.clients import ibis_client
 
 
 class Table(models.Model):
+    class Source(models.TextChoices):
+        DATASET = "dataset", "Dataset"
+        DATAFLOW_NODE = "dataflow_node", "Dataflow node"
+        CONNECTOR = "connector", "Connector"
+
     bq_table = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
     bq_dataset = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
+    source = models.CharField(max_length=16, choices=Source.choices)
     # TODO: delete table in bigquery on deletion
     dataset = models.OneToOneField(
         "datasets.Dataset", on_delete=models.CASCADE, null=True
@@ -28,7 +34,7 @@ class Table(models.Model):
         ordering = ("-created",)
 
     def __str__(self):
-        return f"{self.bq_dataset}.{self.bq_table}"
+        return getattr(self, self.source).get_table_name()
 
     @property
     def bq_id(self):

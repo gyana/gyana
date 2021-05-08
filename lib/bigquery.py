@@ -36,6 +36,7 @@ def sync_table(dataset: Dataset, external_table_id: str):
             dataset.table
         except Table.DoesNotExist:
             table = Table(
+                source=Table.Source.DATASET,
                 bq_table=table_id,
                 bq_dataset=DATASET_ID,
                 project=dataset.project,
@@ -113,6 +114,7 @@ def run_dataflow(dataflow: Dataflow):
             ).result()
 
             table = Table(
+                source=Table.Source.DATAFLOW_NODE,
                 bq_table=table_id,
                 bq_dataset=DATAFLOW_ID,
                 project=dataflow.project,

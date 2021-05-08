@@ -34,7 +34,7 @@ class Node(models.Model):
     parents = models.ManyToManyField(
         "self", symmetrical=False, related_name="children", blank=True
     )
-    
+
     # ======== Node specific columns ========= #
 
     # Input
@@ -70,6 +70,9 @@ class Node(models.Model):
 
     def get_schema(self):
         return self.get_query().schema()
+
+    def get_table_name(self):
+        return f"Dataflow:{self.dataflow.name}:{self.output_name}"
 
 
 class Column(models.Model):

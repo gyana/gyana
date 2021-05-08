@@ -34,3 +34,6 @@ class Dataset(models.Model):
 
     def get_schema(self):
         return self.get_query().schema()
+
+    def get_table_name(self):
+        return f"Dataset:{self.name}"
