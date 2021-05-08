@@ -1,6 +1,7 @@
 from apps.dataflows.nodes import NODE_FROM_CONFIG
 from apps.datasets.models import Dataset
 from apps.projects.models import Project
+from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
@@ -16,9 +17,6 @@ class Dataflow(models.Model):
 
     def __str__(self):
         return self.name
-
-
-DEFAULT_COL_NAME_LENGTH = 300
 
 
 class Node(models.Model):
@@ -59,10 +57,10 @@ class Node(models.Model):
         default="inner",
     )
     join_left = models.CharField(
-        max_length=DEFAULT_COL_NAME_LENGTH, null=True, blank=True
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
     )
     join_right = models.CharField(
-        max_length=DEFAULT_COL_NAME_LENGTH, null=True, blank=True
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
     )
 
     def get_query(self):
@@ -74,7 +72,7 @@ class Node(models.Model):
 
 
 class Column(models.Model):
-    name = models.CharField(max_length=DEFAULT_COL_NAME_LENGTH)
+    name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="columns")
 
 
@@ -83,7 +81,7 @@ class FunctionColumn(models.Model):
         SUM = "sum", "Sum"
         COUNT = "count", "Count"
 
-    name = models.CharField(max_length=DEFAULT_COL_NAME_LENGTH)
+    name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     function = models.CharField(max_length=20, choices=Functions.choices)
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="aggregations"
