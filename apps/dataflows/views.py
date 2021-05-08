@@ -4,15 +4,16 @@ from functools import cached_property
 import inflection
 from apps.dataflows.serializers import NodeSerializer
 from apps.projects.mixins import ProjectMixin
+from apps.tables.models import Table
 from django import forms
 from django.db import transaction
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
-from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import DeleteView
-from lib.clients import ibis_client
+from django.views.generic.edit import DeleteView, UpdateView
+from lib.bigquery import run_dataflow
+from lib.clients import DATAFLOW_ID, bigquery_client, ibis_client
 from rest_framework import viewsets
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
@@ -147,3 +148,16 @@ class NodeGrid(DetailView):
         context["columns"] = json.dumps([{"field": col} for col in df.columns])
         context["rows"] = df.to_json(orient="records")
         return context
+
+
+class DataflowRun(UpdateView):
+    template_name = "dataflows/run.html"
+    model = Dataflow
+    fields = []
+
+    def form_valid(self, form) -> HttpResponse:
+        run_dataflow(self.object)
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse("dataflows:run", args=(self.object.id,))

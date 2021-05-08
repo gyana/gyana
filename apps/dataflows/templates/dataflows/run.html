@@ -1,0 +1,7 @@
+<turbo-frame id="dataflows:run">
+  <p>Last run: {{ object.last_run|default_if_none:'Never' }}</p>
+  <form method="post" action="{% url 'dataflows:run' object.id %}">
+    {% csrf_token %}
+    <input type="submit" value="Run" />
+  </form>
+</turbo-frame>

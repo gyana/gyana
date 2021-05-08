@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from apps.dataflows.models import Dataflow, Node
 from apps.datasets.models import Dataset
 from apps.filters.models import Filter
 from apps.tables.models import Table
@@ -8,7 +9,7 @@ from django.conf import settings
 from django.db import transaction
 from google.cloud import bigquery
 
-from lib.clients import DATASET_ID, bigquery_client, ibis_client
+from lib.clients import DATAFLOW_ID, DATASET_ID, bigquery_client, ibis_client
 
 DEFAULT_LIMIT = 10
 
@@ -92,6 +93,34 @@ def query_dataset(dataset: Dataset):
 
     return conn.execute(table.limit(DEFAULT_LIMIT))
 
+
+def run_dataflow(dataflow: Dataflow):
+    output_nodes = dataflow.node_set.filter(kind=Node.Kind.OUTPUT).all()
+
+    for node in output_nodes:
+        client = bigquery_client()
+        query = node.get_query().compile()
+
+        try:
+            client.query(
+                f"CREATE OR REPLACE TABLE {DATAFLOW_ID}.{node.table.bq_table} as ({query})"
+            ).result()
+
+        except Table.DoesNotExist:
+            table_id = f"table_{node.pk}"
+            client.query(
+                f"CREATE OR REPLACE TABLE {DATAFLOW_ID}.{table_id} as ({query})"
+            ).result()
+
+            table = Table(
+                bq_table=table_id,
+                bq_dataset=DATAFLOW_ID,
+                project=dataflow.project,
+                dataflow_node=node,
+            )
+            table.save()
+
+    dataflow.last_run = datetime.now()
 
 def query_widget(widget: Widget):
 

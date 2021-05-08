@@ -3,6 +3,10 @@
 {% block app %}
 <h1>Detail</h1>
 <p>{{ object.name }}</p>
+<turbo-frame
+  id="dataflows:run"
+  src="{% url 'dataflows:run' object.id %}"
+></turbo-frame>
 <div class="flex">
   <div class="w-64">
     <turbo-frame id="dataflow-node"></turbo-frame>
@@ -18,6 +22,12 @@
 <link rel="stylesheet" href="{% static 'css/dataflow.css' %}" />
 <!--ag-grid-->
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css" />
-<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css" />
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css"
+/>
 {% endblock %}

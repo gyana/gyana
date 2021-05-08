@@ -6,6 +6,7 @@ from django.conf import settings
 from google.cloud import bigquery
 
 DATASET_ID = "datasets"
+DATAFLOW_ID = "dataflows"
 
 
 @lru_cache

@@ -8,6 +8,7 @@ from django.db import models
 class Dataflow(models.Model):
     name = models.CharField(max_length=255)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    last_run = models.DateTimeField(null=True)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
 
@@ -33,6 +34,7 @@ class Node(models.Model):
     parents = models.ManyToManyField(
         "self", symmetrical=False, related_name="children", blank=True
     )
+    
     # ======== Node specific columns ========= #
 
     # Input
