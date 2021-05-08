@@ -48,14 +48,6 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
         initial["dashboard"] = self.dashboard
         return initial
 
-    def form_valid(self, form: forms.Form) -> HttpResponse:
-        widget = form.save(commit=False)
-        source_type, source_key = form.cleaned_data["source"].split("_")
-        Model = Dataset if source_type == "dataset" else Node
-        setattr(widget, source_type, Model.objects.get(pk=source_key))
-
-        return super().form_valid(form)
-
     def get_success_url(self) -> str:
         return reverse("widgets:list")
 
@@ -78,17 +70,6 @@ class WidgetUpdate(DashboardMixin, TurboUpdateView):
     def get_success_url(self) -> str:
         return reverse("widgets:list")
 
-    def form_valid(self, form: forms.Form) -> HttpResponse:
-        source_type, source_key = form.cleaned_data["source"].split("_")
-        self.object.dataset = (
-            None if source_type != "dataset" else Dataset.objects.get(pk=source_key)
-        )
-        self.object.node = (
-            None if source_type != "node" else Node.objects.get(pk=source_key)
-        )
-
-        return super().form_valid(form)
-
 
 class WidgetDelete(DeleteView):
     template_name = "widgets/delete.html"
@@ -108,7 +89,7 @@ class WidgetConfig(TurboUpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["columns"] = [(name, name) for name in get_columns(self.object.source)]
+        kwargs["columns"] = [(name, name) for name in get_columns(self.object.table)]
         return kwargs
 
     def get_success_url(self) -> str:
