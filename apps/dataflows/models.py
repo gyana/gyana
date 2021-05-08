@@ -1,8 +1,7 @@
 from apps.dataflows.nodes import NODE_FROM_CONFIG
-from apps.datasets.models import Dataset
 from apps.projects.models import Project
+from apps.tables.models import Table
 from django.conf import settings
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
@@ -37,7 +36,7 @@ class Node(models.Model):
     # ======== Node specific columns ========= #
 
     # Input
-    input_dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, null=True)
+    input_table = models.ForeignKey(Table, on_delete=models.CASCADE, null=True)
 
     # Output
     output_name = models.CharField(max_length=100, null=True)

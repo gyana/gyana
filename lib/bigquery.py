@@ -2,8 +2,10 @@ from datetime import datetime
 
 from apps.datasets.models import Dataset
 from apps.filters.models import Filter
-from apps.widgets.models import Widget, WidgetSource
+from apps.tables.models import Table
+from apps.widgets.models import Widget
 from django.conf import settings
+from django.db import transaction
 from google.cloud import bigquery
 
 from lib.clients import DATASET_ID, bigquery_client, ibis_client
@@ -11,24 +13,37 @@ from lib.clients import DATASET_ID, bigquery_client, ibis_client
 DEFAULT_LIMIT = 10
 
 
-def sync_table(dataset: Dataset):
+def sync_table(dataset: Dataset, external_table_id: str):
 
     client = bigquery_client()
 
+    table_id = f"table_{dataset.pk}"
+
     external_config = create_external_config(dataset)
     job_config = bigquery.QueryJobConfig(
-        table_definitions={dataset.external_table_id: external_config}
+        table_definitions={external_table_id: external_config}
     )
 
     client.query(
-        f"CREATE OR REPLACE TABLE {DATASET_ID}.{dataset.table_id} AS SELECT * FROM {DATASET_ID}.{dataset.external_table_id}",
+        f"CREATE OR REPLACE TABLE {DATASET_ID}.{table_id} AS SELECT * FROM {DATASET_ID}.{external_table_id}",
         job_config=job_config,
     ).result()
 
-    if not dataset.has_initial_sync:
-        dataset.has_initial_sync = True
-    dataset.last_synced = datetime.now()
-    dataset.save()
+    with transaction.atomic():
+
+        try:
+            dataset.table
+        except Table.DoesNotExist:
+            table = Table(
+                bq_table=table_id,
+                bq_dataset=DATASET_ID,
+                project=dataset.project,
+                dataset=dataset,
+            )
+            table.save()
+
+        dataset.last_synced = datetime.now()
+        dataset.save()
 
 
 def create_external_config(dataset: Dataset):
@@ -47,28 +62,33 @@ def create_external_config(dataset: Dataset):
     return external_config
 
 
-def create_external_table(dataset: Dataset):
+def create_external_table(dataset: Dataset) -> str:
 
     client = bigquery_client()
+    external_table_id = f"table_{dataset.pk}_external"
 
     bq_dataset = client.get_dataset(DATASET_ID)
 
-    external_table = bigquery.Table(bq_dataset.table(dataset.external_table_id))
+    external_table = bigquery.Table(bq_dataset.table(external_table_id))
 
     external_config = create_external_config(dataset)
 
     external_table.external_data_configuration = external_config
     external_table = client.create_table(external_table, exists_ok=True)
 
+    return external_table_id
+
 
 def query_dataset(dataset: Dataset):
 
-    if not dataset.has_initial_sync:
-        create_external_table(dataset)
-        sync_table(dataset)
+    try:
+        dataset.table
+    except Table.DoesNotExist:
+        external_table_id = create_external_table(dataset)
+        sync_table(dataset, external_table_id)
 
     conn = ibis_client()
-    table = conn.table(dataset.table_id)
+    table = conn.table(dataset.table.bq_table)
 
     return conn.execute(table.limit(DEFAULT_LIMIT))
 
@@ -77,8 +97,7 @@ def query_widget(widget: Widget):
 
     conn = ibis_client()
 
-    source = widget.dataset or widget.node
-    table = source.get_query()
+    table = widget.table.get_query()
 
     for filter in widget.filter_set.all():
         if filter.type == Filter.Type.INTEGER:
@@ -95,5 +114,5 @@ def query_widget(widget: Widget):
     return conn.execute(table.group_by(widget.label).count(widget.value))
 
 
-def get_columns(source: WidgetSource):
+def get_columns(source):
     return source.get_schema()

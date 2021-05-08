@@ -34,11 +34,3 @@ class Dataset(models.Model):
 
     def get_schema(self):
         return self.get_query().schema()
-
-    @property
-    def table_id(self):
-        return f"table_{self.pk}"
-
-    @property
-    def external_table_id(self):
-        return f"table_{self.pk}_external"

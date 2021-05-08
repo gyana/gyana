@@ -20,7 +20,7 @@ def bigquery_client():
     )
 
     # return bigquery.Client(project=settings.GCP_PROJECT)
-    return bigquery.Client(credentials=credentials, project=project)
+    return bigquery.Client(credentials=credentials, project=project, location="EU")
 
 
 @lru_cache

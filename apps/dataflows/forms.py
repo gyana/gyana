@@ -39,8 +39,8 @@ def get_datasets():
 class InputNodeForm(NodeForm):
     class Meta:
         model = Node
-        fields = ["input_dataset"]
-        labels = {"input_dataset": "Dataset"}
+        fields = ["input_table"]
+        labels = {"input_table": "Dataset"}
 
 
 class OutputNodeForm(NodeForm):

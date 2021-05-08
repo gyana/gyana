@@ -4,7 +4,7 @@ from lib.clients import ibis_client
 def get_input_query(node):
     conn = ibis_client()
     # The input can have no selected dataset
-    return conn.table(node.input_dataset.table_id) if node.input_dataset else None
+    return conn.table(node.input_table.table_id) if node.input_table else None
 
 
 def get_output_query(node):
