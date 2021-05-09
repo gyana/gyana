@@ -1,8 +1,8 @@
 from allauth.account.signals import user_signed_up
 from django.dispatch import receiver
 
-from .invitations import get_invitation_id_from_request, process_invitation
 from .models import Invitation
+from .invitations import process_invitation, get_invitation_id_from_request
 
 
 @receiver(user_signed_up)

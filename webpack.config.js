@@ -11,6 +11,7 @@ module.exports = {
     style: "./assets/styles/style.scss",
     app: "./assets/javascript/app.ts",
     teams: "./assets/javascript/teams/teams.tsx",
+    "edit-team": "./assets/javascript/teams/edit-team.tsx",
     stimulus: "./assets/javascript/stimulus.ts",
     dataflow: "./apps/dataflows/javascript/app.tsx",
   },

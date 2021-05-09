@@ -1,8 +1,8 @@
 from django.urls import reverse
 
 from apps.users.adapter import EmailAsUsernameAdapter
-
 from .invitations import clear_invite_from_session
+
 
 
 class AcceptInvitationAdapter(EmailAsUsernameAdapter):
@@ -15,16 +15,12 @@ class AcceptInvitationAdapter(EmailAsUsernameAdapter):
 
     def get_login_redirect_url(self, request):
         from .models import Invitation
-
-        if request.session.get("invitation_id"):
-            invite_id = request.session.get("invitation_id")
+        if request.session.get('invitation_id'):
+            invite_id = request.session.get('invitation_id')
             try:
                 invite = Invitation.objects.get(id=invite_id)
                 if not invite.is_accepted:
-                    return reverse(
-                        "teams:accept_invitation",
-                        args=[request.session["invitation_id"]],
-                    )
+                    return reverse('teams:accept_invitation', args=[request.session['invitation_id']])
                 else:
                     clear_invite_from_session(request)
             except Invitation.DoesNotExist:

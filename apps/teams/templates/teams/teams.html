@@ -3,6 +3,7 @@
 {% load i18n %}
 {% block app %}
   <div id="team-content"></div>
+  {{ api_urls|json_script:'api-urls' }}
 {% endblock %}
 {% block page_js %}
 {# NOTE: the rest framework imports must precede the react bundle #}
@@ -12,10 +13,7 @@
     const STATIC_FILES = {
         'undraw_team': "{% static 'images/undraw/undraw_team.svg' %}",
     };
-    const inviteUrlTemplate = "{% url 'teams:resend_invitation' '__team_slug__' '__invite_id__' %}";
-    const getInviteUrl = function (teamSlug, inviteId) {
-      return inviteUrlTemplate.replace('__team_slug__', teamSlug).replace('__invite_id__', inviteId);
-    };
+    const urlBase = "{% url 'teams:manage_teams' %}";
 </script>
 <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
 <script src="{% url 'api_schemajs' %}"></script>

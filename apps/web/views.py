@@ -1,11 +1,10 @@
+from apps.teams.decorators import login_and_team_required
+from apps.teams.util import get_default_team
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-
-from apps.teams.decorators import login_and_team_required, team_admin_required
-from apps.teams.util import get_default_team
 
 
 def home(request):
@@ -13,7 +12,7 @@ def home(request):
 
         team = get_default_team(request)
         if team:
-            return HttpResponseRedirect(reverse("web:team_home", args=[team.slug]))
+            return HttpResponseRedirect(reverse("web_team:home", args=[team.slug]))
         else:
             messages.info(
                 request,
@@ -37,18 +36,5 @@ def team_home(request, team_slug):
         context={
             "team": request.team,
             "active_tab": "dashboard",
-        },
-    )
-
-
-@team_admin_required
-def team_admin_home(request, team_slug):
-    assert request.team.slug == team_slug
-    return render(
-        request,
-        "web/team_admin.html",
-        context={
-            "active_tab": "team-admin",
-            "team": request.team,
         },
     )

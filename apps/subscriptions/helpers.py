@@ -11,7 +11,6 @@ class SubscriptionModelMixin:
     Assumes that the associated subclass is a django model containing a
     subscription field that is a ForeignKey to a djstripe.Subscription object.
     """
-
     # subclass should override with appropriate foreign keys as needed
     subscription = None
 

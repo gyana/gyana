@@ -1,34 +1,34 @@
 from django.urls import path
-from rest_framework import routers
-
 from . import views
 
-app_name = "teams"
+from rest_framework import routers
+
+
+app_name = 'teams'
 
 urlpatterns = [
-    path("", views.manage_teams, name="manage_teams"),
-    path("list/", views.list_teams, name="list_teams"),
-    path("create/", views.create_team, name="create_team"),
-    path("<slug:team_slug>/manage/", views.manage_team, name="manage_team"),
-    path(
-        "<slug:team_slug>/resend-invite/<slug:invitation_id>/",
-        views.resend_invitation,
-        name="resend_invitation",
-    ),
-    path(
-        "invitation/<slug:invitation_id>/",
-        views.accept_invitation,
-        name="accept_invitation",
-    ),
-    path(
-        "invitation/<slug:invitation_id>/confirm/",
-        views.accept_invitation_confirm,
-        name="accept_invitation_confirm",
-    ),
+    path('manage/', views.manage_teams, name='manage_teams'),
+    path('manage/<path:path>', views.manage_teams, name='manage_teams'),
+    path('list/', views.list_teams, name='list_teams'),
+    path('create/', views.create_team, name='create_team'),
+    path('invitation/<slug:invitation_id>/', views.accept_invitation, name='accept_invitation'),
+    path('invitation/<slug:invitation_id>/confirm/', views.accept_invitation_confirm,
+         name='accept_invitation_confirm'),
 ]
+
+team_urlpatterns = ([
+    path('', views.manage_team_react, name='manage_team_react'),
+    path('manage', views.manage_team, name='manage_team'),
+    path('resend-invite/<slug:invitation_id>/', views.resend_invitation,
+         name='resend_invitation'),
+], 'single_team')
+
 
 # drf config
 router = routers.DefaultRouter()
-router.register("api/teams", views.TeamViewSet)
-router.register("api/invitations", views.InvitationViewSet)
+router.register('api/teams', views.TeamViewSet)
 urlpatterns += router.urls
+
+single_team_router = routers.DefaultRouter()
+single_team_router.register('api/invitations', views.InvitationViewSet)
+team_urlpatterns[0].extend(single_team_router.urls)
