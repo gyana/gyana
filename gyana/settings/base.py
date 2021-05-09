@@ -60,10 +60,6 @@ THIRD_PARTY_APPS = [
     "djstripe",
 ]
 
-PEGASUS_APPS = [
-    "pegasus.apps.examples.apps.PegasusExamplesConfig",
-]
-
 # Put your project-specific apps here
 PROJECT_APPS = [
     "apps.subscriptions.apps.SubscriptionConfig",
@@ -80,7 +76,7 @@ PROJECT_APPS = [
     "apps.tables",
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PEGASUS_APPS + PROJECT_APPS
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -330,4 +326,4 @@ MOCK_FIVETRAN_HISTORICAL_SYNC_SECONDS = 10
 
 BIGQUERY_COLUMN_NAME_LENGTH = 300
 BIGQUERY_TABLE_NAME_LENGTH = 1024
-BIGQUERY_LOCATION = 'EU'
+BIGQUERY_LOCATION = "EU"

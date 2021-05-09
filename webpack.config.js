@@ -11,9 +11,6 @@ module.exports = {
     style: "./assets/styles/style.scss",
     app: "./assets/javascript/app.ts",
     teams: "./assets/javascript/teams/teams.tsx",
-    pegasus: "./assets/javascript/pegasus/pegasus.ts",
-    "react-object-lifecycle":
-      "./assets/javascript/pegasus/examples/react/react-object-lifecycle.tsx",
     stimulus: "./assets/javascript/stimulus.ts",
     dataflow: "./apps/dataflows/javascript/app.tsx",
   },

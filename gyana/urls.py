@@ -37,7 +37,6 @@ urlpatterns = [
     path("connectors/", include("apps.connectors.urls")),
     path("tables/", include("apps.tables.urls")),
     path("", include("apps.web.urls")),
-    path("pegasus/", include("pegasus.apps.examples.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     # API docs
     # these are needed for schema.js
