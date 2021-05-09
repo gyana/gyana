@@ -1,7 +1,7 @@
 from apps.projects.models import Project
 from django.conf import settings
 from django.db import models
-from lib.clients import ibis_client
+from lib.clients import bigquery_client, ibis_client
 
 
 class Table(models.Model):
@@ -46,3 +46,8 @@ class Table(models.Model):
 
     def get_schema(self):
         return self.get_query().schema()
+
+    def get_bq_schema(self):
+        client = bigquery_client()
+        bq_table = client.get_table(f"{self.bq_dataset}.{self.bq_table}")
+        return bq_table.schema
