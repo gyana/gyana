@@ -8,8 +8,11 @@
     <div id="app-content">
       {% if object.project %}
       <span class="text-sm">
-        <a href="{% url 'projects:detail' object.project.id %}">Back</a> |
-        {{object.project.name }}
+        <a
+          href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}"
+          >Back</a
+        >
+        | {{object.project.name }} > {{ request.resolver_match.app_name|title }}
       </span>
       {% endif %}
       <!--  -->
