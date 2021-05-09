@@ -1,0 +1,6 @@
+{% extends "projects/base.html" %} {% block details %}
+<div class="border border-gray-500">
+  <h2 class="text-xl font-bold">Connectors</h2>
+  <turbo-frame id="connectors" src="{% url 'connectors:list' %}"></turbo-frame>
+</div>
+{% endblock %}

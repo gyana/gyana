@@ -1,0 +1,31 @@
+{% extends "web/app/app_base.html" %} {% block app %}
+<p><a href="{% url 'projects:list' %}"> Back </a> | Project</p>
+<h1 class="text-2xl font-bold">{{ object.name }}</h1>
+<div class="flex space-x-4">
+  <a
+    class="{% if request.resolver_match.url_name == 'detail' %} text-blue-700 {% endif %}"
+    href="{% url 'projects:detail' object.id %}"
+    >Overview</a
+  >
+  <a
+    class="{% if request.resolver_match.url_name == 'connectors' %} text-blue-700 {% endif %}"
+    href="{% url 'projects:connectors' object.id %}"
+    >Connectors</a
+  >
+  <a
+    class="{% if request.resolver_match.url_name == 'datasets' %} text-blue-700 {% endif %}"
+    href="{% url 'projects:datasets' object.id %}"
+    >Datasets</a
+  >
+  <a
+    class="{% if request.resolver_match.url_name == 'dataflows' %} text-blue-700 {% endif %}"
+    href="{% url 'projects:dataflows' object.id %}"
+    >Dataflows</a
+  >
+  <a
+    class="{% if request.resolver_match.url_name == 'dashboards' %} text-blue-700 {% endif %}"
+    href="{% url 'projects:dashboards' object.id %}"
+    >Dashboards</a
+  >
+</div>
+{% block details %}{% endblock %} {% endblock %}

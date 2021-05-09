@@ -47,3 +47,23 @@ class ProjectDelete(DeleteView):
     template_name = "projects/delete.html"
     model = Project
     success_url = reverse_lazy("projects:list")
+
+
+class ProjectConnectors(DetailView):
+    template_name = "projects/connectors.html"
+    model = Project
+
+
+class ProjectDatasets(DetailView):
+    template_name = "projects/datasets.html"
+    model = Project
+
+
+class ProjectDataflows(DetailView):
+    template_name = "projects/dataflows.html"
+    model = Project
+
+
+class ProjectDashboards(DetailView):
+    template_name = "projects/dashboards.html"
+    model = Project

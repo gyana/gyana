@@ -5,7 +5,7 @@
 <a class="button--primary" href="{% url 'projects:create' %}">Create</a>
 <ul>
   {% for object in object_list %}
-  <li>
+  <li class="border border-gray-500">
     {{ object }}
     <a href="{% url 'projects:detail' object.pk %}">Details</a>
     <a href="{% url 'projects:update' object.pk %}">Update</a>

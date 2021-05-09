@@ -1,0 +1,6 @@
+{% extends "projects/base.html" %} {% block details %}
+<div class="border border-gray-500">
+  <h2 class="text-xl font-bold">Datasets</h2>
+  <turbo-frame id="datasets" src="{% url 'datasets:list' %}"></turbo-frame>
+</div>
+{% endblock %}

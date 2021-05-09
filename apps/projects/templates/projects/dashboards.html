@@ -1,0 +1,6 @@
+{% extends "projects/base.html" %} {% block details %}
+<div class="border border-gray-500">
+  <h2 class="text-xl font-bold">Dashboards</h2>
+  <turbo-frame id="dashboards" src="{% url 'dashboards:list' %}"></turbo-frame>
+</div>
+{% endblock %}
