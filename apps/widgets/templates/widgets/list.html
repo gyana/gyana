@@ -1,11 +1,10 @@
 {% extends "widgets/base.html" %}
 <!---->
 {% block app %}
-<h1>Listing</h1>
 <a href="{% url 'widgets:create' %}">Create</a>
-<ul>
+<ul class="flex flex-wrap">
   {% for object in object_list %}
-  <li>
+  <li class="w-1/2">
     <turbo-frame
       id="widgets:output-{{ object.id }}"
       src="{% url 'widgets:output' object.id %}"

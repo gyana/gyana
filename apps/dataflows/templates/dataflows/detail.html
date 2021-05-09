@@ -1,8 +1,7 @@
 {% extends "web/app/app_base.html" %} {% load static %}
 <!---->
 {% block app %}
-<h1>Detail</h1>
-<p>{{ object.name }}</p>
+<h1 class="text-2xl text-bold">{{ object.name }}</h1>
 <turbo-frame
   id="dataflows:run"
   src="{% url 'dataflows:run' object.id %}"
@@ -13,7 +12,6 @@
   </div>
   <div id="react-app" class="flex-auto h-96"></div>
 </div>
-<a href="{% url 'dataflows:list' %}">List</a>
 <turbo-frame id="dataflows-grid">No node selected</turbo-frame>
 {{ nodes|json_script:'nodes' }}
 <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
