@@ -1,43 +1,45 @@
-{% extends "web/app/app_base.html" %}
-{% load static %}
-{% block app %}
-{% if teams %}
+{% extends "web/app/settings_base.html" %} {% load static %} {% block app %} {%
+if teams %}
 <h1 class="title is-size-4">Your Teams</h1>
 <table class="table is-striped is-fullwidth">
-    <thead>
+  <thead>
     <tr>
-        <th>Name</th>
+      <th>Name</th>
     </tr>
-    </thead>
-    <tbody>
+  </thead>
+  <tbody>
     {% for team in teams %}
     <tr>
-        <td><a href="{% url 'teams:manage_team' team.slug %}">{{team.name}}</a></td>
+      <td>
+        <a href="{% url 'teams:manage_team' team.slug %}">{{team.name}}</a>
+      </td>
     </tr>
     {% endfor %}
-    </tbody>
+  </tbody>
 </table>
 <a class="button is-primary is-outlined" href="{% url 'teams:create_team' %}">
-    <span class="icon is-small"><i class="fa fa-plus"></i></span>
-    <span>New Team</span>
+  <span class="icon is-small"><i class="fa fa-plus"></i></span>
+  <span>New Team</span>
 </a>
 {% else %}
 <div id="dashboard-content">
-    <div class="columns">
-        <div class="column is-one-third">
-            <img alt="Nothing Here" src="{% static 'images/undraw/undraw_team.svg' %}">
-        </div>
-        <div class="column is-two-thirds">
-            <h1 class="title is-4">No Teams Yet!</h1>
-            <h2 class="subtitle">Create your first team below to get started.</h2>
-            <p>
-                <a class="button is-primary" href="{% url 'teams:create_team' %}">
-                    <span class="icon is-small"><i class="fa fa-plus"></i></span>
-                    <span>Create Team</span>
-                </a>
-            </p>
-        </div>
+  <div class="columns">
+    <div class="column is-one-third">
+      <img
+        alt="Nothing Here"
+        src="{% static 'images/undraw/undraw_team.svg' %}"
+      />
     </div>
+    <div class="column is-two-thirds">
+      <h1 class="title is-4">No Teams Yet!</h1>
+      <h2 class="subtitle">Create your first team below to get started.</h2>
+      <p>
+        <a class="button is-primary" href="{% url 'teams:create_team' %}">
+          <span class="icon is-small"><i class="fa fa-plus"></i></span>
+          <span>Create Team</span>
+        </a>
+      </p>
+    </div>
+  </div>
 </div>
-{% endif %}
-{% endblock %}
+{% endif %} {% endblock %}

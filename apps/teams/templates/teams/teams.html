@@ -1,19 +1,15 @@
-{% extends "web/app/app_base.html" %}
-{% load static %}
-{% load i18n %}
-{% block app %}
-  <div id="team-content"></div>
-  {{ api_urls|json_script:'api-urls' }}
-{% endblock %}
-{% block page_js %}
-{# NOTE: the rest framework imports must precede the react bundle #}
+{% extends "web/app/settings_base.html" %} {% load static %} {% load i18n %} {%
+block app %}
+<div id="team-content"></div>
+{{ api_urls|json_script:'api-urls' }} {% endblock %} {% block page_js %} {#
+NOTE: the rest framework imports must precede the react bundle #}
 <script type="application/javascript">
-    // initialize any page specific stuff here
-    // static files that are used by the page javascript.
-    const STATIC_FILES = {
-        'undraw_team': "{% static 'images/undraw/undraw_team.svg' %}",
-    };
-    const urlBase = "{% url 'teams:manage_teams' %}";
+  // initialize any page specific stuff here
+  // static files that are used by the page javascript.
+  const STATIC_FILES = {
+    undraw_team: "{% static 'images/undraw/undraw_team.svg' %}",
+  };
+  const urlBase = "{% url 'teams:manage_teams' %}";
 </script>
 <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
 <script src="{% url 'api_schemajs' %}"></script>

@@ -1,17 +1,14 @@
-{% extends "web/app/app_base.html" %}
-{% load static %}
-{% block app %}
+{% extends "web/app/settings_base.html" %} {% load static %} {% block app %}
 <section class="app-card">
   {% include 'account/components/profile_form.html' %}
 </section>
-{% endblock %}
-{% block page_js %}
+{% endblock %} {% block page_js %}
 <script src="{% static 'js/app-bundle.js' %}"></script>
 <script type="application/javascript">
   const App = SiteJS.app;
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener("DOMContentLoaded", () => {
     const uploadUrl = '{% url "users:upload_profile_image" %}';
-    document.getElementById("profile-upload").onchange = function() {
+    document.getElementById("profile-upload").onchange = function () {
       let files = document.getElementById("profile-upload").files;
       let file = files[0];
       if (file) {
@@ -23,9 +20,9 @@
       // https://stackoverflow.com/a/4459419/8207
       let reader = new FileReader();
       reader.onload = function (e) {
-        let avatars = document.getElementsByClassName('avatar');
+        let avatars = document.getElementsByClassName("avatar");
         for (let i = 0; i < avatars.length; i++) {
-          avatars[i].setAttribute('src', e.target.result);
+          avatars[i].setAttribute("src", e.target.result);
         }
       };
       reader.readAsDataURL(file);
@@ -33,31 +30,38 @@
 
     function uploadImage(file) {
       // update UI
-      let uploadlabel = document.getElementById("profile-upload-label")
-      uploadlabel.innerHTML = '<span class="icon"><i class="fa fa-refresh"></i></span><span>Uploading...</span>';
-      uploadlabel.classList.add('is-active');
+      let uploadlabel = document.getElementById("profile-upload-label");
+      uploadlabel.innerHTML =
+        '<span class="icon"><i class="fa fa-refresh"></i></span><span>Uploading...</span>';
+      uploadlabel.classList.add("is-active");
       // upload to server
       let formData = new FormData();
       formData.append("avatar", file);
-      formData.append('csrfmiddlewaretoken', App.Cookies.get('csrftoken'));
-      fetch(uploadUrl, {method: "POST", body: formData, credentials: 'same-origin'}).then(
-        function (response) {
-          if (response.ok) {
-            response.text().then(function (text) {
-              // update UI
-              uploadlabel.innerHTML = '<span class="icon"><i class="fa fa-check"></i></span><span>' + text + '</span>';
-              uploadlabel.classList.remove('is-active');
-              uploadlabel.classList.add('has-text-success');
-            });
-          } else {
-            response.text().then(function (errorText) {
-              console.error(errorText);
-              uploadlabel.innerHTML = '<span class="icon"><i class="fa fa-times"></i></span><span>Upload failed!</span>';
-              uploadlabel.classList.add('has-text-danger');
-            });
-          }
+      formData.append("csrfmiddlewaretoken", App.Cookies.get("csrftoken"));
+      fetch(uploadUrl, {
+        method: "POST",
+        body: formData,
+        credentials: "same-origin",
+      }).then(function (response) {
+        if (response.ok) {
+          response.text().then(function (text) {
+            // update UI
+            uploadlabel.innerHTML =
+              '<span class="icon"><i class="fa fa-check"></i></span><span>' +
+              text +
+              "</span>";
+            uploadlabel.classList.remove("is-active");
+            uploadlabel.classList.add("has-text-success");
+          });
+        } else {
+          response.text().then(function (errorText) {
+            console.error(errorText);
+            uploadlabel.innerHTML =
+              '<span class="icon"><i class="fa fa-times"></i></span><span>Upload failed!</span>';
+            uploadlabel.classList.add("has-text-danger");
+          });
         }
-      );
+      });
     }
   });
 </script>

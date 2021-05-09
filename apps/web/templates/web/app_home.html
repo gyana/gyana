@@ -1,26 +1,28 @@
-{% extends "web/app/app_base.html" %}
-{% load static %}
-{% block app %}
+{% extends "web/app/settings_base.html" %} {% load static %} {% block app %}
 <section class="app-card">
-    <div class="columns is-vcentered columns-reversed">
-        <div class="column">
-            <img src="{% static 'images/undraw/undraw_outer_space.svg' %}" alt="Fly Away!">
-        </div>
-        <div class="column">
-            <h1 class="title is-size-2">You're Signed In!</h1>
-            <h2 class="subtitle is-size-4">
-                This is your application's logged in home page.
-            </h2>
-            <p>
-                You're logged into the "{{ team.name }}" Team.
-            </p>
-        </div>
+  <div class="columns is-vcentered columns-reversed">
+    <div class="column">
+      <img
+        src="{% static 'images/undraw/undraw_outer_space.svg' %}"
+        alt="Fly Away!"
+      />
     </div>
+    <div class="column">
+      <h1 class="title is-size-2">You're Signed In!</h1>
+      <h2 class="subtitle is-size-4">
+        This is your application's logged in home page.
+      </h2>
+      <p>You're logged into the "{{ team.name }}" Team.</p>
+    </div>
+  </div>
 </section>
 <section class="app-card">
-    <div class="content">
-        <p>To add more to this page you can make new sections like this one.</p>
-        <p>Tip: the source of this page can be found at <code>templates/web/app_home.html</code></p>
-    </div>
+  <div class="content">
+    <p>To add more to this page you can make new sections like this one.</p>
+    <p>
+      Tip: the source of this page can be found at
+      <code>templates/web/app_home.html</code>
+    </p>
+  </div>
 </section>
 {% endblock %}

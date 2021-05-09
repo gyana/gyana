@@ -1,29 +1,33 @@
-{% extends "web/app/app_base.html" %}
-{% load static %}
-{% block app %}
+{% extends "web/app/settings_base.html" %} {% load static %} {% block app %}
 <section class="app-card">
   <div class="columns columns-reversed">
     <div class="column is-one-quarter">
-        <img src="{% static 'images/undraw/undraw_joyride.svg' %}" alt="Yay!">
+      <img src="{% static 'images/undraw/undraw_joyride.svg' %}" alt="Yay!" />
     </div>
     <div class="column is-three-quarters">
       <h1 class="title is-size-4">My Subscription</h1>
-      <h2 class="subtitle">You're subscribed to a plan. Thanks for the support!</h2>
+      <h2 class="subtitle">
+        You're subscribed to a plan. Thanks for the support!
+      </h2>
       {% if subscription %}
-        <p class="heading">Subscription Details</p>
-        {% include 'subscriptions/components/subscription_details.html' %}
-      {% endif %}
+      <p class="heading">Subscription Details</p>
+      {% include 'subscriptions/components/subscription_details.html' %} {%
+      endif %}
     </div>
   </div>
   {% if subscription %}
-  <form method="POST" action="{{ subscription_urls.create_stripe_portal_session }}">
+  <form
+    method="POST"
+    action="{{ subscription_urls.create_stripe_portal_session }}"
+  >
     {% csrf_token %}
     <button type="submit" class="button is-outlined">Manage billing</button>
   </form>
   {% elif subscription.cancel_at_period_end %}
   <p class="notification is-primary is-light">
-      Your current subscription will expire on {{ subscription.current_period_end.date }}.
-    </p>
+    Your current subscription will expire on {{
+    subscription.current_period_end.date }}.
+  </p>
   {% endif %}
 </section>
 {% endblock %}
