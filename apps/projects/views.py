@@ -49,21 +49,14 @@ class ProjectDelete(DeleteView):
     success_url = reverse_lazy("projects:list")
 
 
-class ProjectConnectors(DetailView):
-    template_name = "projects/connectors.html"
+class ProjectTab(DetailView):
+    template_name = "projects/tab.html"
     model = Project
 
+    def get_context_data(self, **kwargs):
 
-class ProjectDatasets(DetailView):
-    template_name = "projects/datasets.html"
-    model = Project
+        context = super().get_context_data(**kwargs)
+        context["tab"] = self.kwargs["tab"]
+        context["src"] = f'{self.kwargs["tab"]}:list'
 
-
-class ProjectDataflows(DetailView):
-    template_name = "projects/dataflows.html"
-    model = Project
-
-
-class ProjectDashboards(DetailView):
-    template_name = "projects/dashboards.html"
-    model = Project
+        return context

@@ -1,0 +1,5 @@
+{% extends "projects/base.html" %} {% block details %}
+<div class="border border-gray-500 h-96">
+  <turbo-frame id="{{ tab }}" src="{% url src %}"> Loading... </turbo-frame>
+</div>
+{% endblock %}

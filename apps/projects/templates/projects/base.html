@@ -8,23 +8,23 @@
     >Overview</a
   >
   <a
-    class="{% if request.resolver_match.url_name == 'connectors' %} text-blue-700 {% endif %}"
-    href="{% url 'projects:connectors' object.id %}"
+    class="{% if request.resolver_match.kwargs.tab == 'connectors' %} text-blue-700 {% endif %}"
+    href="{% url 'projects:tab' object.id 'connectors' %}"
     >Connectors</a
   >
   <a
-    class="{% if request.resolver_match.url_name == 'datasets' %} text-blue-700 {% endif %}"
-    href="{% url 'projects:datasets' object.id %}"
+    class="{% if request.resolver_match.kwargs.tab == 'datasets' %} text-blue-700 {% endif %}"
+    href="{% url 'projects:tab' object.id 'datasets' %}"
     >Datasets</a
   >
   <a
-    class="{% if request.resolver_match.url_name == 'dataflows' %} text-blue-700 {% endif %}"
-    href="{% url 'projects:dataflows' object.id %}"
+    class="{% if request.resolver_match.kwargs.tab == 'dataflows' %} text-blue-700 {% endif %}"
+    href="{% url 'projects:tab' object.id 'dataflows' %}"
     >Dataflows</a
   >
   <a
-    class="{% if request.resolver_match.url_name == 'dashboards' %} text-blue-700 {% endif %}"
-    href="{% url 'projects:dashboards' object.id %}"
+    class="{% if request.resolver_match.kwargs.tab == 'dashboards' %} text-blue-700 {% endif %}"
+    href="{% url 'projects:tab' object.id 'dashboards' %}"
     >Dashboards</a
   >
 </div>
