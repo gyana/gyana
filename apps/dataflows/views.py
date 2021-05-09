@@ -36,15 +36,17 @@ class DataflowCreate(ProjectMixin, TurboCreateView):
     template_name = "dataflows/create.html"
     model = Dataflow
     form_class = DataflowForm
-    success_url = reverse_lazy("dataflows:list")
 
     def get_initial(self):
         initial = super().get_initial()
         initial["project"] = self.project
         return initial
 
+    def get_success_url(self) -> str:
+        return reverse("dataflows:list", args=(self.project.id,))
 
-class DataflowDetail(DetailView):
+
+class DataflowDetail(ProjectMixin, DetailView):
     template_name = "dataflows/detail.html"
     model = Dataflow
 
@@ -54,17 +56,21 @@ class DataflowDetail(DetailView):
         return context
 
 
-class DataflowUpdate(TurboUpdateView):
+class DataflowUpdate(ProjectMixin, TurboUpdateView):
     template_name = "dataflows/update.html"
     model = Dataflow
     form_class = DataflowForm
-    success_url = reverse_lazy("dataflows:list")
+
+    def get_success_url(self) -> str:
+        return reverse("dataflows:list", args=(self.project.id,))
 
 
-class DataflowDelete(DeleteView):
+class DataflowDelete(ProjectMixin, DeleteView):
     template_name = "dataflows/delete.html"
     model = Dataflow
-    success_url = reverse_lazy("dataflows:list")
+
+    def get_success_url(self) -> str:
+        return reverse("dataflows:list", args=(self.project.id,))
 
 
 # Nodes

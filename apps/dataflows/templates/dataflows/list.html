@@ -2,18 +2,24 @@
 <!---->
 {% block app %}
 <turbo-frame id="dataflows">
-  <a href="{% url 'dataflows:create' %}">Create</a>
+  <a href="{% url 'dataflows:create' project.id  %}">Create</a>
   <ul>
     {% for object in object_list %}
     <li>
       <p class="font-bold">{{ object }}</p>
-      <a href="{% url 'dataflows:detail' object.pk %}" data-turbo-frame="_top"
+      <a
+        href="{% url 'dataflows:detail' project.id object.pk %}"
+        data-turbo-frame="_top"
         >Details</a
       >
-      <a href="{% url 'dataflows:update' object.pk %}" data-turbo-frame="_top"
+      <a
+        href="{% url 'dataflows:update' project.id object.pk %}"
+        data-turbo-frame="_top"
         >Update</a
       >
-      <a href="{% url 'dataflows:delete' object.pk %}" data-turbo-frame="_top"
+      <a
+        href="{% url 'dataflows:delete' project.id object.pk %}"
+        data-turbo-frame="_top"
         >Delete</a
       >
     </li>
@@ -27,7 +33,7 @@
     <span class="page-links">
       {% if page_obj.has_previous %}
       <a
-        href="{% url 'dataflows:list' %}?page={{ page_obj.previous_page_number }}"
+        href="{% url 'dataflows:list' project.id  %}?page={{ page_obj.previous_page_number }}"
         >previous</a
       >
       {% endif %}
@@ -35,7 +41,8 @@
         Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
       </span>
       {% if page_obj.has_next %}
-      <a href="{% url 'dataflows:list' %}?page={{ page_obj.next_page_number }}"
+      <a
+        href="{% url 'dataflows:list' project.id  %}?page={{ page_obj.next_page_number }}"
         >next</a
       >
       {% endif %}

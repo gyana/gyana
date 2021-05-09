@@ -9,22 +9,22 @@
   >
   <a
     class="{% if request.resolver_match.kwargs.tab == 'connectors' %} text-blue-700 {% endif %}"
-    href="{% url 'projects:tab' object.id 'connectors' %}"
+    href="{% url 'connectors:list' project.id %}"
     >Connectors</a
   >
   <a
     class="{% if request.resolver_match.kwargs.tab == 'datasets' %} text-blue-700 {% endif %}"
-    href="{% url 'projects:tab' object.id 'datasets' %}"
+    href="{% url 'datasets:list' project.id %}"
     >Datasets</a
   >
   <a
     class="{% if request.resolver_match.kwargs.tab == 'dataflows' %} text-blue-700 {% endif %}"
-    href="{% url 'projects:tab' object.id 'dataflows' %}"
+    href="{% url 'dataflows:list' project.id %}"
     >Dataflows</a
   >
   <a
     class="{% if request.resolver_match.kwargs.tab == 'dashboards' %} text-blue-700 {% endif %}"
-    href="{% url 'projects:tab' object.id 'dashboards' %}"
+    href="{% url 'dashboards:list' project.id %}"
     >Dashboards</a
   >
 </div>

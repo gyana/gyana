@@ -3,9 +3,11 @@
 {% block app %}
 <h1>Delete</h1>
 <p>Are you sure you want to delete?</p>
-<form method="post" action="{% url 'dashboards:delete' object.id %}">
+<form method="post" action="{% url 'dashboards:delete' project.id object.id %}">
   {% csrf_token %}
   <input type="submit" value="Yes" class="btn btn-danger" />
-  <a href="{% url 'dashboards:list' %}" class="btn btn-default">No</a>
+  <a href="{% url 'dashboards:list' project.id %}" class="btn btn-default"
+    >No</a
+  >
 </form>
 {% endblock %}

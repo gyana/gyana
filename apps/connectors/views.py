@@ -27,7 +27,6 @@ class ConnectorCreate(ProjectMixin, TurboCreateView):
     template_name = "connectors/create.html"
     model = Connector
     form_class = ConnectorForm
-    success_url = reverse_lazy("connectors:list")
 
     def get_context_data(self, **kwargs):
 
@@ -47,23 +46,30 @@ class ConnectorCreate(ProjectMixin, TurboCreateView):
 
         return initial
 
+    def get_success_url(self) -> str:
+        return reverse("connectors:list", args=(self.project.id,))
 
-class ConnectorDetail(DetailView):
+
+class ConnectorDetail(ProjectMixin, DetailView):
     template_name = "connectors/detail.html"
     model = Connector
 
 
-class ConnectorUpdate(TurboUpdateView):
+class ConnectorUpdate(ProjectMixin, TurboUpdateView):
     template_name = "connectors/update.html"
     model = Connector
     form_class = ConnectorForm
-    success_url = reverse_lazy("connectors:list")
+
+    def get_success_url(self) -> str:
+        return reverse("connectors:list", args=(self.project.id,))
 
 
-class ConnectorDelete(DeleteView):
+class ConnectorDelete(ProjectMixin, DeleteView):
     template_name = "connectors/delete.html"
     model = Connector
-    success_url = reverse_lazy("connectors:list")
+
+    def get_success_url(self) -> str:
+        return reverse("connectors:list", args=(self.project.id,))
 
 
 # Turbo frames
@@ -87,10 +93,10 @@ class ConnectorAuthorize(DetailView):
 # Endpoints
 
 
-def authorize_fivetran(request: HttpRequest, pk: int):
+def authorize_fivetran(request: HttpRequest, project_id: int, pk: int):
 
     connector = get_object_or_404(Connector, pk=pk)
-    uri = reverse("connectors:authorize-fivetran-redirect", args=(pk,))
+    uri = reverse("connectors:authorize-fivetran-redirect", args=(project_id, pk))
     redirect_uri = (
         f"{settings.EXTERNAL_URL}{uri}?original_uri={request.GET.get('original_uri')}"
     )
@@ -98,7 +104,7 @@ def authorize_fivetran(request: HttpRequest, pk: int):
     return FivetranClient(connector).authorize(redirect_uri)
 
 
-def authorize_fivetran_redirect(request: HttpRequest, pk: int):
+def authorize_fivetran_redirect(request: HttpRequest, project_id: int, pk: int):
 
     connector = get_object_or_404(Connector, pk=pk)
     connector.fivetran_authorized = True

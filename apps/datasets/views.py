@@ -26,7 +26,6 @@ class DatasetList(ProjectMixin, ListView):
 class DatasetCreate(ProjectMixin, TurboCreateView):
     template_name = "datasets/create.html"
     model = Dataset
-    success_url = reverse_lazy("datasets:list")
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -48,16 +47,18 @@ class DatasetCreate(ProjectMixin, TurboCreateView):
 
         return CSVForm
 
+    def get_success_url(self) -> str:
+        return reverse("datasets:list", args=(self.project.id,))
 
-class DatasetDetail(DetailView):
+
+class DatasetDetail(ProjectMixin, DetailView):
     template_name = "datasets/detail.html"
     model = Dataset
 
 
-class DatasetUpdate(TurboUpdateView):
+class DatasetUpdate(ProjectMixin, TurboUpdateView):
     template_name = "datasets/update.html"
     model = Dataset
-    success_url = reverse_lazy("datasets:list")
 
     def get_form_class(self):
         if self.object.kind == Dataset.Kind.GOOGLE_SHEETS:
@@ -65,11 +66,16 @@ class DatasetUpdate(TurboUpdateView):
         elif self.object.kind == Dataset.Kind.CSV:
             return CSVForm
 
+    def get_success_url(self) -> str:
+        return reverse("datasets:list", args=(self.project.id,))
 
-class DatasetDelete(DeleteView):
+
+class DatasetDelete(ProjectMixin, DeleteView):
     template_name = "datasets/delete.html"
     model = Dataset
-    success_url = reverse_lazy("datasets:list")
+
+    def get_success_url(self) -> str:
+        return reverse("datasets:list", args=(self.project.id,))
 
 
 # Turbo frames

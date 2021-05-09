@@ -31,6 +31,13 @@ team_urlpatterns = [
     path("team/", include(single_team_urls)),
 ]
 
+project_urlpatterns = [
+    path("", include("apps.projects.urls")),
+    path("<int:project_id>/connectors/", include("apps.connectors.urls")),
+    path("<int:project_id>/datasets/", include("apps.datasets.urls")),
+    path("<int:project_id>/dataflows/", include("apps.dataflows.urls")),
+    path("<int:project_id>/dashboards/", include("apps.dashboards.urls")),
+]
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -39,13 +46,9 @@ urlpatterns = [
     path("users/", include("apps.users.urls")),
     path("subscriptions/", include("apps.subscriptions.urls")),
     path("teams/", include("apps.teams.urls")),
-    path("projects/", include("apps.projects.urls")),
-    path("datasets/", include("apps.datasets.urls")),
-    path("dataflows/", include("apps.dataflows.urls")),
-    path("dashboards/", include("apps.dashboards.urls")),
+    path("projects/", include(project_urlpatterns)),
     path("widgets/", include("apps.widgets.urls")),
     path("filters/", include("apps.filters.urls")),
-    path("connectors/", include("apps.connectors.urls")),
     path("tables/", include("apps.tables.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),

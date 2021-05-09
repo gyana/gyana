@@ -1,12 +1,14 @@
-from urllib.parse import urlparse
-
-from django.urls import resolve
+from functools import cached_property
 
 from .models import Project
 
 
 class ProjectMixin:
-    @property
+    @cached_property
     def project(self):
-        resolver_match = resolve(urlparse(self.request.META["HTTP_REFERER"]).path)
-        return Project.objects.get(pk=resolver_match.kwargs["pk"])
+        return Project.objects.get(pk=self.kwargs["project_id"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["project"] = self.project
+        return context
