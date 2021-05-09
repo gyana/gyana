@@ -2,12 +2,11 @@
 <!---->
 {% block app %}
 <turbo-frame id="datasets">
-  <h1>Listing</h1>
   <a href="{% url 'datasets:create' %}">Create</a>
   <ul>
     {% for object in object_list %}
     <li>
-      {{ object }}
+      <p class="font-bold">{{ object }}</p>
       <a href="{% url 'datasets:detail' object.pk %}" data-turbo-frame="_top"
         >Details</a
       >

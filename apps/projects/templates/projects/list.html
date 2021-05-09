@@ -1,12 +1,16 @@
 {% extends "web/app/app_base.html" %}
 <!---->
 {% block app %}
-<h1 class="text-2xl font-bold">Projects</h1>
-<a class="button--primary" href="{% url 'projects:create' %}">Create</a>
+<div class="flex flex-row space-x-4">
+  <h1 class="text-3xl font-bold mb-2">Projects</h1>
+  <button>
+    <a class="button--primary" href="{% url 'projects:create' %}">Create</a>
+  </button>
+</div>
 <ul>
   {% for object in object_list %}
-  <li class="border border-gray-500">
-    {{ object }}
+  <li class="border border-gray-500 p-2">
+    <p class="font-bold">{{ object }}</p>
     <a href="{% url 'projects:detail' object.pk %}">Details</a>
     <a href="{% url 'projects:update' object.pk %}">Update</a>
     <a href="{% url 'projects:delete' object.pk %}">Delete</a>

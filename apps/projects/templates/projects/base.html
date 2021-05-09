@@ -1,7 +1,7 @@
 {% extends "web/app/app_base.html" %} {% block app %}
-<p><a href="{% url 'projects:list' %}"> Back </a> | Project</p>
-<h1 class="text-2xl font-bold">{{ object.name }}</h1>
-<div class="flex space-x-4">
+<p><a class="text-sm" href="{% url 'projects:list' %}"> Back to projects</a></p>
+<h1 class="text-3xl font-bold mb-2">{{ object.name }}</h1>
+<div class="flex space-x-4 mb-2">
   <a
     class="{% if request.resolver_match.url_name == 'detail' %} text-blue-700 {% endif %}"
     href="{% url 'projects:detail' object.id %}"
@@ -28,4 +28,7 @@
     >Dashboards</a
   >
 </div>
-{% block details %}{% endblock %} {% endblock %}
+<div class="border border-gray-500 h-96 p-2">
+  {% block details %}{% endblock %}
+</div>
+{% endblock %}
