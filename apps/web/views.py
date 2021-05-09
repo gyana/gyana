@@ -12,7 +12,7 @@ def home(request):
 
         team = get_default_team(request)
         if team:
-            return HttpResponseRedirect(reverse("web_team:home", args=[team.slug]))
+            return HttpResponseRedirect(reverse("projects:list"))
         else:
             messages.info(
                 request,
