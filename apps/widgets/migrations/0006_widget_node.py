@@ -7,14 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dataflows', '0014_auto_20210507_1044'),
-        ('widgets', '0005_auto_20210502_0405'),
+        ("dataflows", "0014_auto_20210507_1044"),
+        ("widgets", "0005_auto_20210502_0405"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='widget',
-            name='node',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='dataflows.node'),
+            model_name="widget",
+            name="node",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="dataflows.node",
+            ),
         ),
     ]

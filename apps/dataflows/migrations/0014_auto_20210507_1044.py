@@ -7,23 +7,36 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dataflows', '0013_auto_20210507_0211'),
+        ("dataflows", "0013_auto_20210507_0211"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='node',
-            name='output_name',
+            model_name="node",
+            name="output_name",
             field=models.CharField(max_length=100, null=True),
         ),
         migrations.AlterField(
-            model_name='functioncolumn',
-            name='node',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='aggregations', to='dataflows.node'),
+            model_name="functioncolumn",
+            name="node",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="aggregations",
+                to="dataflows.node",
+            ),
         ),
         migrations.AlterField(
-            model_name='node',
-            name='kind',
-            field=models.CharField(choices=[('input', 'Input'), ('output', 'Output'), ('select', 'Select'), ('join', 'Join'), ('group', 'Group')], max_length=16),
+            model_name="node",
+            name="kind",
+            field=models.CharField(
+                choices=[
+                    ("input", "Input"),
+                    ("output", "Output"),
+                    ("select", "Select"),
+                    ("join", "Join"),
+                    ("group", "Group"),
+                ],
+                max_length=16,
+            ),
         ),
     ]

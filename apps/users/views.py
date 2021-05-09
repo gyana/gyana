@@ -5,8 +5,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
 from .forms import CustomUserChangeForm, UploadAvatarForm
-from .helpers import (require_email_confirmation,
-                      user_has_confirmed_email_address)
+from .helpers import require_email_confirmation, user_has_confirmed_email_address
 from .models import CustomUser
 
 

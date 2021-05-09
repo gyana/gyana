@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dataflows', '0003_auto_20210430_1330'),
+        ("dataflows", "0003_auto_20210430_1330"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='node',
-            name='parents',
-            field=models.ManyToManyField(blank=True, related_name='children', to='dataflows.Node'),
+            model_name="node",
+            name="parents",
+            field=models.ManyToManyField(
+                blank=True, related_name="children", to="dataflows.Node"
+            ),
         ),
     ]

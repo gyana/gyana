@@ -6,22 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datasets', '0005_dataset_project'),
+        ("datasets", "0005_dataset_project"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='dataset',
-            name='table_id',
+            model_name="dataset",
+            name="table_id",
         ),
         migrations.AddField(
-            model_name='dataset',
-            name='has_initial_sync',
+            model_name="dataset",
+            name="has_initial_sync",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='dataset',
-            name='last_synced',
+            model_name="dataset",
+            name="last_synced",
             field=models.DateTimeField(null=True),
         ),
     ]

@@ -7,6 +7,7 @@ class redirect_subscription_errors(object):
     """
     Meant to be used with django views only.
     """
+
     def __init__(self, f):
         self.f = f
 
@@ -14,4 +15,6 @@ class redirect_subscription_errors(object):
         try:
             return self.f(request, *args, **kwargs)
         except SubscriptionConfigError as e:
-            return render(request, 'subscriptions/bad_config.html', {'error': str(e)}, status=500)
+            return render(
+                request, "subscriptions/bad_config.html", {"error": str(e)}, status=500
+            )

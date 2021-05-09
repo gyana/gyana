@@ -6,28 +6,28 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dataflows', '0008_auto_20210505_0851'),
+        ("dataflows", "0008_auto_20210505_0851"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='node',
-            old_name='_input_dataset',
-            new_name='input_dataset',
+            model_name="node",
+            old_name="_input_dataset",
+            new_name="input_dataset",
         ),
         migrations.RenameField(
-            model_name='node',
-            old_name='_join_how',
-            new_name='join_how',
+            model_name="node",
+            old_name="_join_how",
+            new_name="join_how",
         ),
         migrations.RenameField(
-            model_name='node',
-            old_name='_join_left',
-            new_name='join_left',
+            model_name="node",
+            old_name="_join_left",
+            new_name="join_left",
         ),
         migrations.RenameField(
-            model_name='node',
-            old_name='_join_right',
-            new_name='join_right',
+            model_name="node",
+            old_name="_join_right",
+            new_name="join_right",
         ),
     ]

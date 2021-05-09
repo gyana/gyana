@@ -7,22 +7,26 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tables', '0002_auto_20210508_0154'),
-        ('widgets', '0006_widget_node'),
+        ("tables", "0002_auto_20210508_0154"),
+        ("widgets", "0006_widget_node"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='widget',
-            name='dataset',
+            model_name="widget",
+            name="dataset",
         ),
         migrations.RemoveField(
-            model_name='widget',
-            name='node',
+            model_name="widget",
+            name="node",
         ),
         migrations.AddField(
-            model_name='widget',
-            name='table',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='tables.table'),
+            model_name="widget",
+            name="table",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="tables.table",
+            ),
         ),
     ]

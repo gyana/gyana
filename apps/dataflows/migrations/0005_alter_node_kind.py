@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dataflows', '0004_alter_node_parents'),
+        ("dataflows", "0004_alter_node_parents"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='node',
-            name='kind',
-            field=models.CharField(choices=[('input', 'Input')], max_length=16),
+            model_name="node",
+            name="kind",
+            field=models.CharField(choices=[("input", "Input")], max_length=16),
         ),
     ]

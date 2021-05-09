@@ -7,15 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('projects', '0001_initial'),
-        ('datasets', '0004_auto_20210503_0008'),
+        ("projects", "0001_initial"),
+        ("datasets", "0004_auto_20210503_0008"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dataset',
-            name='project',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='projects.project'),
+            model_name="dataset",
+            name="project",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="projects.project",
+            ),
             preserve_default=False,
         ),
     ]

@@ -6,24 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('widgets', '0003_widget_dataset'),
+        ("widgets", "0003_widget_dataset"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='widget',
-            name='kind',
-            field=models.CharField(choices=[('column2d', 'Column'), ('line', 'Line'), ('pie2d', 'Pie')], default='column2d', max_length=32),
+            model_name="widget",
+            name="kind",
+            field=models.CharField(
+                choices=[("column2d", "Column"), ("line", "Line"), ("pie2d", "Pie")],
+                default="column2d",
+                max_length=32,
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='widget',
-            name='label',
+            model_name="widget",
+            name="label",
             field=models.CharField(max_length=300, null=True),
         ),
         migrations.AddField(
-            model_name='widget',
-            name='value',
+            model_name="widget",
+            name="value",
             field=models.CharField(max_length=300, null=True),
         ),
     ]

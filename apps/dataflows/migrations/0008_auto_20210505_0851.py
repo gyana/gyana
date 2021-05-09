@@ -6,28 +6,39 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dataflows', '0007_dataflow_project'),
+        ("dataflows", "0007_dataflow_project"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='node',
-            name='_join_how',
-            field=models.CharField(choices=[('inner', 'Inner'), ('outer', 'Outer'), ('left', 'Left'), ('right', 'Right')], default='inner', max_length=12),
+            model_name="node",
+            name="_join_how",
+            field=models.CharField(
+                choices=[
+                    ("inner", "Inner"),
+                    ("outer", "Outer"),
+                    ("left", "Left"),
+                    ("right", "Right"),
+                ],
+                default="inner",
+                max_length=12,
+            ),
         ),
         migrations.AddField(
-            model_name='node',
-            name='_join_left',
+            model_name="node",
+            name="_join_left",
             field=models.CharField(blank=True, max_length=300, null=True),
         ),
         migrations.AddField(
-            model_name='node',
-            name='_join_right',
+            model_name="node",
+            name="_join_right",
             field=models.CharField(blank=True, max_length=300, null=True),
         ),
         migrations.AlterField(
-            model_name='node',
-            name='kind',
-            field=models.CharField(choices=[('input', 'Input'), ('join', 'Join')], max_length=16),
+            model_name="node",
+            name="kind",
+            field=models.CharField(
+                choices=[("input", "Input"), ("join", "Join")], max_length=16
+            ),
         ),
     ]

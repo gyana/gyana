@@ -1,11 +1,10 @@
-
-ROLE_ADMIN = 'admin'
-ROLE_MEMBER = 'member'
+ROLE_ADMIN = "admin"
+ROLE_MEMBER = "member"
 
 ROLE_CHOICES = (
     # customize roles here
-    (ROLE_ADMIN, 'Administrator'),
-    (ROLE_MEMBER, 'Member'),
+    (ROLE_ADMIN, "Administrator"),
+    (ROLE_MEMBER, "Member"),
 )
 
 
@@ -23,4 +22,5 @@ def is_member(user, team):
 
 def is_admin(user, team):
     from .models import Membership
+
     return Membership.objects.filter(team=team, user=user, role=ROLE_ADMIN).exists()

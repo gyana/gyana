@@ -7,18 +7,22 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datasets', '0004_auto_20210503_0008'),
-        ('dataflows', '0005_alter_node_kind'),
+        ("datasets", "0004_auto_20210503_0008"),
+        ("dataflows", "0005_alter_node_kind"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='node',
-            name='config',
+            model_name="node",
+            name="config",
         ),
         migrations.AddField(
-            model_name='node',
-            name='_input_dataset',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='datasets.dataset'),
+            model_name="node",
+            name="_input_dataset",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="datasets.dataset",
+            ),
         ),
     ]

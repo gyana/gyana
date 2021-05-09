@@ -21,36 +21,35 @@ def update_customer_plan(event, **kwargs):
 
     # find associated subscription and change the plan details accordingly
     dj_subscription = Subscription.objects.get(id=subscription_id)
-    dj_subscription.plan = Plan.objects.get(id=new_plan['id'])
+    dj_subscription.plan = Plan.objects.get(id=new_plan["id"])
     dj_subscription.cancel_at_period_end = get_cancel_at_period_end(event.data)
     dj_subscription.save()
 
 
-@djstripe_hooks.handler('customer.subscription.deleted')
+@djstripe_hooks.handler("customer.subscription.deleted")
 def email_admins_when_subscriptions_canceled(event, **kwargs):
     # example webhook handler to notify admins when a subscription is deleted/canceled
     try:
-        customer_email = Customer.objects.get(id=event.data['object']['customer']).email
+        customer_email = Customer.objects.get(id=event.data["object"]["customer"]).email
     except Customer.DoesNotExist:
-        customer_email = 'unavailable'
+        customer_email = "unavailable"
 
     mail_admins(
-        'Someone just canceled their subscription!',
-        f'Their email was {customer_email}'
+        "Someone just canceled their subscription!", f"Their email was {customer_email}"
     )
 
 
 def get_plan_data(stripe_event_data):
-    return stripe_event_data['object']['items']['data'][0]['plan']
+    return stripe_event_data["object"]["items"]["data"][0]["plan"]
 
 
 def get_previous_plan_data(stripe_event_data):
-    return stripe_event_data['previous_attributes']['items']['data'][0]['plan']
+    return stripe_event_data["previous_attributes"]["items"]["data"][0]["plan"]
 
 
 def get_subscription_id(stripe_event_data):
-    return stripe_event_data['object']['items']['data'][0]['subscription']
+    return stripe_event_data["object"]["items"]["data"][0]["subscription"]
 
 
 def get_cancel_at_period_end(stripe_event_data):
-    return stripe_event_data['object']['cancel_at_period_end']
+    return stripe_event_data["object"]["cancel_at_period_end"]

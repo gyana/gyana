@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datasets', '0002_dataset_url'),
+        ("datasets", "0002_dataset_url"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dataset',
-            name='table_id',
+            model_name="dataset",
+            name="table_id",
             field=models.CharField(max_length=300, null=True),
         ),
     ]

@@ -6,21 +6,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dataflows', '0011_merge_0010_auto_20210505_1432_0010_auto_20210506_1614'),
+        ("dataflows", "0011_merge_0010_auto_20210505_1432_0010_auto_20210506_1614"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='Aggregations',
-            new_name='Aggregation',
+            old_name="Aggregations",
+            new_name="Aggregation",
         ),
         migrations.RenameModel(
-            old_name='Groups',
-            new_name='Group',
+            old_name="Groups",
+            new_name="Group",
         ),
         migrations.AlterField(
-            model_name='node',
-            name='kind',
-            field=models.CharField(choices=[('input', 'Input'), ('select', 'Select'), ('join', 'Join'), ('group', 'Group')], max_length=16),
+            model_name="node",
+            name="kind",
+            field=models.CharField(
+                choices=[
+                    ("input", "Input"),
+                    ("select", "Select"),
+                    ("join", "Join"),
+                    ("group", "Group"),
+                ],
+                max_length=16,
+            ),
         ),
     ]

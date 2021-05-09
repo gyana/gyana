@@ -7,15 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('projects', '0001_initial'),
-        ('dataflows', '0006_auto_20210504_2105'),
+        ("projects", "0001_initial"),
+        ("dataflows", "0006_auto_20210504_2105"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dataflow',
-            name='project',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='projects.project'),
+            model_name="dataflow",
+            name="project",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="projects.project",
+            ),
             preserve_default=False,
         ),
     ]

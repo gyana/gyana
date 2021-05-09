@@ -6,24 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datasets', '0003_dataset_table_id'),
+        ("datasets", "0003_dataset_table_id"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dataset',
-            name='file',
-            field=models.FileField(null=True, upload_to='datasets'),
+            model_name="dataset",
+            name="file",
+            field=models.FileField(null=True, upload_to="datasets"),
         ),
         migrations.AddField(
-            model_name='dataset',
-            name='kind',
-            field=models.CharField(choices=[('google_sheets', 'Google Sheets'), ('csv', 'CSV')], default='google_sheets', max_length=32),
+            model_name="dataset",
+            name="kind",
+            field=models.CharField(
+                choices=[("google_sheets", "Google Sheets"), ("csv", "CSV")],
+                default="google_sheets",
+                max_length=32,
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='dataset',
-            name='url',
+            model_name="dataset",
+            name="url",
             field=models.URLField(null=True),
         ),
     ]

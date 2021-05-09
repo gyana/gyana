@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dataflows', '0016_auto_20210508_0211'),
+        ("dataflows", "0016_auto_20210508_0211"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dataflow',
-            name='last_run',
+            model_name="dataflow",
+            name="last_run",
             field=models.DateTimeField(null=True),
         ),
     ]

@@ -8,4 +8,4 @@ class ConnectorForm(forms.ModelForm):
     class Meta:
         model = Connector
         fields = ["name", "service", "project"]
-        widgets = {"service": HiddenInput(), 'project': HiddenInput()}
+        widgets = {"service": HiddenInput(), "project": HiddenInput()}

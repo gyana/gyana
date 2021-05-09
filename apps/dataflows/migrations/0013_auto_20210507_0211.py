@@ -7,37 +7,59 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dataflows', '0012_auto_20210507_0203'),
+        ("dataflows", "0012_auto_20210507_0203"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='FunctionColumn',
+            name="FunctionColumn",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=300)),
-                ('function', models.CharField(choices=[('sum', 'Sum'), ('count', 'Count')], max_length=20)),
-                ('node', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='dataflows.node')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=300)),
+                (
+                    "function",
+                    models.CharField(
+                        choices=[("sum", "Sum"), ("count", "Count")], max_length=20
+                    ),
+                ),
+                (
+                    "node",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="dataflows.node"
+                    ),
+                ),
             ],
         ),
         migrations.RemoveField(
-            model_name='group',
-            name='node',
+            model_name="group",
+            name="node",
         ),
         migrations.AlterField(
-            model_name='column',
-            name='name',
+            model_name="column",
+            name="name",
             field=models.CharField(max_length=300),
         ),
         migrations.AlterField(
-            model_name='column',
-            name='node',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='columns', to='dataflows.node'),
+            model_name="column",
+            name="node",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="columns",
+                to="dataflows.node",
+            ),
         ),
         migrations.DeleteModel(
-            name='Aggregation',
+            name="Aggregation",
         ),
         migrations.DeleteModel(
-            name='Group',
+            name="Group",
         ),
     ]

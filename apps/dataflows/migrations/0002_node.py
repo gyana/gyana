@@ -7,19 +7,39 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dataflows', '0001_initial'),
+        ("dataflows", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Node',
+            name="Node",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('kind', models.CharField(choices=[('pivot', 'Pivot'), ('unpivot', 'Unpivot')], max_length=16)),
-                ('x', models.FloatField()),
-                ('y', models.FloatField()),
-                ('config', models.JSONField(null=True)),
-                ('dataflow', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='dataflows.dataflow')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "kind",
+                    models.CharField(
+                        choices=[("pivot", "Pivot"), ("unpivot", "Unpivot")],
+                        max_length=16,
+                    ),
+                ),
+                ("x", models.FloatField()),
+                ("y", models.FloatField()),
+                ("config", models.JSONField(null=True)),
+                (
+                    "dataflow",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="dataflows.dataflow",
+                    ),
+                ),
             ],
         ),
     ]

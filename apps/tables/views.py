@@ -17,7 +17,7 @@ class TableCreate(TurboCreateView):
     template_name = "tables/create.html"
     model = Table
     form_class = TableForm
-    success_url = reverse_lazy('tables:list')
+    success_url = reverse_lazy("tables:list")
 
 
 class TableDetail(DetailView):
@@ -29,10 +29,10 @@ class TableUpdate(TurboUpdateView):
     template_name = "tables/update.html"
     model = Table
     form_class = TableForm
-    success_url = reverse_lazy('tables:list')
+    success_url = reverse_lazy("tables:list")
 
 
 class TableDelete(DeleteView):
     template_name = "tables/delete.html"
     model = Table
-    success_url = reverse_lazy('tables:list')
+    success_url = reverse_lazy("tables:list")

@@ -6,18 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dataflows', '0002_node'),
+        ("dataflows", "0002_node"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='node',
-            name='parents',
-            field=models.ManyToManyField(related_name='children', to='dataflows.Node'),
+            model_name="node",
+            name="parents",
+            field=models.ManyToManyField(related_name="children", to="dataflows.Node"),
         ),
         migrations.AlterField(
-            model_name='node',
-            name='kind',
-            field=models.CharField(choices=[('pivot', 'Pivot'), ('unpivot', 'Unpivot'), ('input', 'Input')], max_length=16),
+            model_name="node",
+            name="kind",
+            field=models.CharField(
+                choices=[
+                    ("pivot", "Pivot"),
+                    ("unpivot", "Unpivot"),
+                    ("input", "Input"),
+                ],
+                max_length=16,
+            ),
         ),
     ]

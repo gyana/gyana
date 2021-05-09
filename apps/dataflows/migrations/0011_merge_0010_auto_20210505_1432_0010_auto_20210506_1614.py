@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dataflows', '0010_auto_20210505_1432'),
-        ('dataflows', '0010_auto_20210506_1614'),
+        ("dataflows", "0010_auto_20210505_1432"),
+        ("dataflows", "0010_auto_20210506_1614"),
     ]
 
-    operations = [
-    ]
+    operations = []

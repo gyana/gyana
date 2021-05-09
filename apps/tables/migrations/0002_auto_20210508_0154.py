@@ -7,49 +7,65 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datasets', '0006_auto_20210505_0416'),
-        ('connectors', '0002_alter_connector_service'),
-        ('projects', '0002_project_team'),
-        ('dataflows', '0015_auto_20210508_0154'),
-        ('tables', '0001_initial'),
+        ("datasets", "0006_auto_20210505_0416"),
+        ("connectors", "0002_alter_connector_service"),
+        ("projects", "0002_project_team"),
+        ("dataflows", "0015_auto_20210508_0154"),
+        ("tables", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='table',
-            name='name',
+            model_name="table",
+            name="name",
         ),
         migrations.AddField(
-            model_name='table',
-            name='bq_dataset',
-            field=models.CharField(default='datasets', max_length=1024),
+            model_name="table",
+            name="bq_dataset",
+            field=models.CharField(default="datasets", max_length=1024),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='table',
-            name='bq_table',
+            model_name="table",
+            name="bq_table",
             field=models.CharField(default=None, max_length=1024),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='table',
-            name='connector',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='connectors.connector'),
+            model_name="table",
+            name="connector",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="connectors.connector",
+            ),
         ),
         migrations.AddField(
-            model_name='table',
-            name='dataflow_node',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to='dataflows.node'),
+            model_name="table",
+            name="dataflow_node",
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="dataflows.node",
+            ),
         ),
         migrations.AddField(
-            model_name='table',
-            name='dataset',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to='datasets.dataset'),
+            model_name="table",
+            name="dataset",
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="datasets.dataset",
+            ),
         ),
         migrations.AddField(
-            model_name='table',
-            name='project',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='projects.project'),
+            model_name="table",
+            name="project",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="projects.project",
+            ),
             preserve_default=False,
         ),
     ]

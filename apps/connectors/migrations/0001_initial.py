@@ -9,24 +9,38 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('projects', '0002_project_team'),
+        ("projects", "0002_project_team"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Connector',
+            name="Connector",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('service', models.TextField(unique=True)),
-                ('fivetran_id', models.TextField(null=True)),
-                ('schema', models.TextField(null=True)),
-                ('fivetran_authorized', models.BooleanField(default=False)),
-                ('fivetran_poll_historical_sync_task_id', models.UUIDField(null=True)),
-                ('historical_sync_complete', models.BooleanField(default=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='projects.project')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("service", models.TextField(unique=True)),
+                ("fivetran_id", models.TextField(null=True)),
+                ("schema", models.TextField(null=True)),
+                ("fivetran_authorized", models.BooleanField(default=False)),
+                ("fivetran_poll_historical_sync_task_id", models.UUIDField(null=True)),
+                ("historical_sync_complete", models.BooleanField(default=False)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="projects.project",
+                    ),
+                ),
             ],
         ),
     ]

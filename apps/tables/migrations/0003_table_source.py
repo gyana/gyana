@@ -6,14 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tables', '0002_auto_20210508_0154'),
+        ("tables", "0002_auto_20210508_0154"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='table',
-            name='source',
-            field=models.CharField(choices=[('dataset', 'Dataset'), ('dataflow_node', 'Dataflow node'), ('connector', 'Connector')], default='dataset', max_length=16),
+            model_name="table",
+            name="source",
+            field=models.CharField(
+                choices=[
+                    ("dataset", "Dataset"),
+                    ("dataflow_node", "Dataflow node"),
+                    ("connector", "Connector"),
+                ],
+                default="dataset",
+                max_length=16,
+            ),
             preserve_default=False,
         ),
     ]

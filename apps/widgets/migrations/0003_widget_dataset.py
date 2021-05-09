@@ -7,14 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datasets', '0002_dataset_url'),
-        ('widgets', '0002_widget_dashboard'),
+        ("datasets", "0002_dataset_url"),
+        ("widgets", "0002_widget_dashboard"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='widget',
-            name='dataset',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='datasets.dataset'),
+            model_name="widget",
+            name="dataset",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="datasets.dataset",
+            ),
         ),
     ]

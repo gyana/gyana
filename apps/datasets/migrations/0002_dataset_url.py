@@ -6,14 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datasets', '0001_initial'),
+        ("datasets", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dataset',
-            name='url',
-            field=models.URLField(default='https://docs.google.com/spreadsheets/d/1NoIIegrxgtIaQS2H_iEEl56eUn-4htUZxDd2KblvQjM/edit#gid=0'),
+            model_name="dataset",
+            name="url",
+            field=models.URLField(
+                default="https://docs.google.com/spreadsheets/d/1NoIIegrxgtIaQS2H_iEEl56eUn-4htUZxDd2KblvQjM/edit#gid=0"
+            ),
             preserve_default=False,
         ),
     ]
