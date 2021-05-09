@@ -6,7 +6,11 @@
 <div class="border border-gray-400">
   <turbo-frame
     id="widgets"
+    {% if request.GET.widget_id %}
+    src="{% url 'widgets:detail' request.GET.widget_id %}"
+    {% else %}
     src="{% url 'widgets:list' %}"
+    {% endif %}
   ></turbo-frame>
 </div>
 {% endblock %}
