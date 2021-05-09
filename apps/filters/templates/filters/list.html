@@ -1,7 +1,6 @@
 {% extends "filters/base.html" %}
 <!---->
 {% block app %}
-<h1>Listing</h1>
 <a href="{% url 'filters:create' %}">Create</a>
 <ul>
   {% for object in object_list %}

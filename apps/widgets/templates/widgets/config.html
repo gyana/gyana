@@ -1,6 +1,5 @@
 {% load tailwind_filters %} {% block app %}
 <turbo-frame id="widgets:config">
-  <h1>Create/Update</h1>
   <form
     method="post"
     action="{% url 'widgets:config' object.id %}"
