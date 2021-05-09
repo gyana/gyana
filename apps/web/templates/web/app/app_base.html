@@ -7,16 +7,18 @@
   <div class="container">
     <div id="app-content">
       {% if object.project %}
-      <span class="text-sm">
-        <a href="{% url 'projects:detail' object.project.id %}"
-          >{{object.project.name }}</a
+      <p class="text-sm mb-2">
+        <a
+          href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}"
+          >Back to {{object.project.name }}</a
         >
-        >
+      </p>
+      <p>
         <a
           href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}"
           >{{ request.resolver_match.app_name|title }}</a
         >
-      </span>
+      </p>
       {% endif %}
       <!--  -->
       {% block app %} {% endblock %}

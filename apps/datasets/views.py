@@ -5,7 +5,7 @@ from django.db.models.query import QuerySet
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
-from lib.bigquery import query_dataset, sync_table
+from lib.bigquery import create_external_table, query_dataset, sync_table
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .forms import CSVForm, GoogleSheetsForm
@@ -95,7 +95,8 @@ class DatasetSync(TurboUpdateView):
     fields = []
 
     def form_valid(self, form):
-        sync_table(self.object)
+        external_table_id = create_external_table(self.object)
+        sync_table(self.object, external_table_id)
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
