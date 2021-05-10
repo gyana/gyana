@@ -134,9 +134,7 @@ class NodeUpdate(TurboUpdateView):
         return KIND_TO_FORM[self.object.kind]
 
     def get_success_url(self) -> str:
-        return reverse(
-            "projects:dataflows:node", args=(self.dataflow.id, self.object.id)
-        )
+        return reverse("dataflows:node", args=(self.dataflow.id, self.object.id))
 
 
 class NodeGrid(DetailView):
@@ -168,4 +166,4 @@ class DataflowRun(UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse("projects:dataflows:run", args=(self.object.id,))
+        return reverse("dataflows:run", args=(self.object.id,))

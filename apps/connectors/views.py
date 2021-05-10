@@ -93,12 +93,10 @@ class ConnectorAuthorize(DetailView):
 # Endpoints
 
 
-def authorize_fivetran(request: HttpRequest, project_id: int, pk: int):
+def authorize_fivetran(request: HttpRequest, pk: int):
 
     connector = get_object_or_404(Connector, pk=pk)
-    uri = reverse(
-        "projects:connectors:authorize-fivetran-redirect", args=(project_id, pk)
-    )
+    uri = reverse("connectors:authorize-fivetran-redirect", args=(pk,))
     redirect_uri = (
         f"{settings.EXTERNAL_URL}{uri}?original_uri={request.GET.get('original_uri')}"
     )
@@ -106,7 +104,7 @@ def authorize_fivetran(request: HttpRequest, project_id: int, pk: int):
     return FivetranClient(connector).authorize(redirect_uri)
 
 
-def authorize_fivetran_redirect(request: HttpRequest, project_id: int, pk: int):
+def authorize_fivetran_redirect(request: HttpRequest, pk: int):
 
     connector = get_object_or_404(Connector, pk=pk)
     connector.fivetran_authorized = True
