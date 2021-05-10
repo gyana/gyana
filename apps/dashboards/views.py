@@ -23,7 +23,7 @@ class DashboardCreate(ProjectMixin, TurboCreateView):
     template_name = "dashboards/create.html"
     model = Dashboard
     form_class = DashboardForm
-    success_url = reverse_lazy("dashboards:list")
+    success_url = reverse_lazy("projects:dashboards:list")
 
     def get_initial(self):
         initial = super().get_initial()
@@ -31,7 +31,7 @@ class DashboardCreate(ProjectMixin, TurboCreateView):
         return initial
 
     def get_success_url(self) -> str:
-        return reverse("dashboards:list", args=(self.project.id,))
+        return reverse("projects:dashboards:list", args=(self.project.id,))
 
 
 class DashboardDetail(ProjectMixin, DetailView):
@@ -45,7 +45,7 @@ class DashboardUpdate(ProjectMixin, TurboUpdateView):
     form_class = DashboardForm
 
     def get_success_url(self) -> str:
-        return reverse("dashboards:list", args=(self.project.id,))
+        return reverse("projects:dashboards:list", args=(self.project.id,))
 
 
 class DashboardDelete(ProjectMixin, DeleteView):
@@ -53,4 +53,4 @@ class DashboardDelete(ProjectMixin, DeleteView):
     model = Dashboard
 
     def get_success_url(self) -> str:
-        return reverse("dashboards:list", args=(self.project.id,))
+        return reverse("projects:dashboards:list", args=(self.project.id,))

@@ -5,14 +5,11 @@
 {% if object.kind == 'google_sheets' %}
 <turbo-frame
   id="datasets:sync"
-  src="{% url 'datasets:sync' project.id object.id %}"
+  src="{% url 'datasets:sync' object.id %}"
 ></turbo-frame>
 {% endif %}
 <div class="w-full h-96 overflow-scroll">
-  <turbo-frame
-    id="datasets-grid"
-    src="{% url 'datasets:grid' project.id object.id %}"
-  >
+  <turbo-frame id="datasets-grid" src="{% url 'datasets:grid' object.id %}">
     Loading...
   </turbo-frame>
 </div>

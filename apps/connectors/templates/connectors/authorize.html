@@ -1,6 +1,6 @@
-<turbo-frame id="connectors:authorize" target="_top"
+<turbo-frame id="projects:connectors:authorize" target="_top"
   ><form
-    action="{% url 'connectors:authorize-fivetran' project.id connector.id %}"
+    action="{% url 'projects:connectors:authorize-fivetran' project.id connector.id %}"
     method="get"
   >
     <input

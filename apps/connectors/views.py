@@ -47,7 +47,7 @@ class ConnectorCreate(ProjectMixin, TurboCreateView):
         return initial
 
     def get_success_url(self) -> str:
-        return reverse("connectors:list", args=(self.project.id,))
+        return reverse("projects:connectors:list", args=(self.project.id,))
 
 
 class ConnectorDetail(ProjectMixin, DetailView):
@@ -61,7 +61,7 @@ class ConnectorUpdate(ProjectMixin, TurboUpdateView):
     form_class = ConnectorForm
 
     def get_success_url(self) -> str:
-        return reverse("connectors:list", args=(self.project.id,))
+        return reverse("projects:connectors:list", args=(self.project.id,))
 
 
 class ConnectorDelete(ProjectMixin, DeleteView):
@@ -69,7 +69,7 @@ class ConnectorDelete(ProjectMixin, DeleteView):
     model = Connector
 
     def get_success_url(self) -> str:
-        return reverse("connectors:list", args=(self.project.id,))
+        return reverse("projects:connectors:list", args=(self.project.id,))
 
 
 # Turbo frames
@@ -96,7 +96,9 @@ class ConnectorAuthorize(DetailView):
 def authorize_fivetran(request: HttpRequest, project_id: int, pk: int):
 
     connector = get_object_or_404(Connector, pk=pk)
-    uri = reverse("connectors:authorize-fivetran-redirect", args=(project_id, pk))
+    uri = reverse(
+        "projects:connectors:authorize-fivetran-redirect", args=(project_id, pk)
+    )
     redirect_uri = (
         f"{settings.EXTERNAL_URL}{uri}?original_uri={request.GET.get('original_uri')}"
     )

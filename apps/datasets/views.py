@@ -48,7 +48,7 @@ class DatasetCreate(ProjectMixin, TurboCreateView):
         return CSVForm
 
     def get_success_url(self) -> str:
-        return reverse("datasets:list", args=(self.project.id,))
+        return reverse("projects:datasets:list", args=(self.project.id,))
 
 
 class DatasetDetail(ProjectMixin, DetailView):
@@ -67,7 +67,7 @@ class DatasetUpdate(ProjectMixin, TurboUpdateView):
             return CSVForm
 
     def get_success_url(self) -> str:
-        return reverse("datasets:list", args=(self.project.id,))
+        return reverse("projects:datasets:list", args=(self.project.id,))
 
 
 class DatasetDelete(ProjectMixin, DeleteView):
@@ -75,7 +75,7 @@ class DatasetDelete(ProjectMixin, DeleteView):
     model = Dataset
 
     def get_success_url(self) -> str:
-        return reverse("datasets:list", args=(self.project.id,))
+        return reverse("projects:datasets:list", args=(self.project.id,))
 
 
 # Turbo frames

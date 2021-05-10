@@ -16,23 +16,23 @@
         >Overview</a
       >
       <a
-        class="{% if request.resolver_match.app_name == 'connectors' %} text-blue-700 {% endif %}"
-        href="{% url 'connectors:list' project.id %}"
+        class="{% if request.resolver_match.app_name == 'projects:connectors' %} text-blue-700 {% endif %}"
+        href="{% url 'projects:connectors:list' project.id %}"
         >Connectors</a
       >
       <a
-        class="{% if request.resolver_match.app_name == 'datasets' %} text-blue-700 {% endif %}"
-        href="{% url 'datasets:list' project.id %}"
+        class="{% if request.resolver_match.app_name == 'projects:datasets' %} text-blue-700 {% endif %}"
+        href="{% url 'projects:datasets:list' project.id %}"
         >Datasets</a
       >
       <a
-        class="{% if request.resolver_match.app_name == 'dataflows' %} text-blue-700 {% endif %}"
-        href="{% url 'dataflows:list' project.id %}"
+        class="{% if request.resolver_match.app_name == 'projects:dataflows' %} text-blue-700 {% endif %}"
+        href="{% url 'projects:dataflows:list' project.id %}"
         >Dataflows</a
       >
       <a
-        class="{% if request.resolver_match.app_name == 'dashboards' %} text-blue-700 {% endif %}"
-        href="{% url 'dashboards:list' project.id %}"
+        class="{% if request.resolver_match.app_name == 'projects:dashboards' %} text-blue-700 {% endif %}"
+        href="{% url 'projects:dashboards:list' project.id %}"
         >Dashboards</a
       >
     </div>

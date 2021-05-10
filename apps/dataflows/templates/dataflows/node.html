@@ -2,7 +2,7 @@
 
 <!-- prettier-ignore -->
 <turbo-frame id="dataflow-node">
-  <form method="post" action="{% url 'dataflows:node' dataflow.id node.id %}">
+  <form method="post" action="{% url 'projects:dataflows:node' dataflow.id node.id %}">
     {% csrf_token %}
       {% crispy form %}
   </form>

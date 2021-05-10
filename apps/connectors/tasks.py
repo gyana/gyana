@@ -13,7 +13,7 @@ def poll_fivetran_historical_sync(self, connector_id):
 
     FivetranClient(connector).block_until_synced()
 
-    url = reverse("connectors:detail", args=(connector_id,))
+    url = reverse("projects:connectors:detail", args=(connector_id,))
 
     send_mail(
         "Ready",

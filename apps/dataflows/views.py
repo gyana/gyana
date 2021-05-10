@@ -43,7 +43,7 @@ class DataflowCreate(ProjectMixin, TurboCreateView):
         return initial
 
     def get_success_url(self) -> str:
-        return reverse("dataflows:list", args=(self.project.id,))
+        return reverse("projects:dataflows:list", args=(self.project.id,))
 
 
 class DataflowDetail(ProjectMixin, DetailView):
@@ -62,7 +62,7 @@ class DataflowUpdate(ProjectMixin, TurboUpdateView):
     form_class = DataflowForm
 
     def get_success_url(self) -> str:
-        return reverse("dataflows:list", args=(self.project.id,))
+        return reverse("projects:dataflows:list", args=(self.project.id,))
 
 
 class DataflowDelete(ProjectMixin, DeleteView):
@@ -70,7 +70,7 @@ class DataflowDelete(ProjectMixin, DeleteView):
     model = Dataflow
 
     def get_success_url(self) -> str:
-        return reverse("dataflows:list", args=(self.project.id,))
+        return reverse("projects:dataflows:list", args=(self.project.id,))
 
 
 # Nodes
@@ -134,7 +134,9 @@ class NodeUpdate(TurboUpdateView):
         return KIND_TO_FORM[self.object.kind]
 
     def get_success_url(self) -> str:
-        return reverse("dataflows:node", args=(self.dataflow.id, self.object.id))
+        return reverse(
+            "projects:dataflows:node", args=(self.dataflow.id, self.object.id)
+        )
 
 
 class NodeGrid(DetailView):
@@ -166,4 +168,4 @@ class DataflowRun(UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse("dataflows:run", args=(self.object.id,))
+        return reverse("projects:dataflows:run", args=(self.object.id,))

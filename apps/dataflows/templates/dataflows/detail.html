@@ -3,8 +3,8 @@
 {% block app %}
 <h1 class="text-2xl text-bold">{{ object.name }}</h1>
 <turbo-frame
-  id="dataflows:run"
-  src="{% url 'dataflows:run' project.id object.id %}"
+  id="projects:dataflows:run"
+  src="{% url 'projects:dataflows:run' project.id object.id %}"
 ></turbo-frame>
 <div class="flex">
   <div class="w-64">

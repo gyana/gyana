@@ -6,7 +6,7 @@
 <h1>Create/Update</h1>
 <form
   method="post"
-  action="{% url 'dashboards:create' project.id %}"
+  action="{% url 'projects:dashboards:create' project.id %}"
   class="form"
 >
   {% csrf_token %} {{ form|crispy }}

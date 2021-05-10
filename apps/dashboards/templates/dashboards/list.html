@@ -2,23 +2,23 @@
 <!---->
 {% block app %}
 <h1 class="text-2xl font-bold">Dashboards</h1>
-<a href="{% url 'dashboards:create' project.id %}">Create</a>
+<a href="{% url 'projects:dashboards:create' project.id %}">Create</a>
 <ul>
   {% for object in object_list %}
   <li>
     <p class="font-bold">{{ object }}</p>
     <a
-      href="{% url 'dashboards:detail' project.id object.pk %}"
+      href="{% url 'projects:dashboards:detail' project.id object.pk %}"
       data-turbo-frame="_top"
       >Details</a
     >
     <a
-      href="{% url 'dashboards:update' project.id object.pk %}"
+      href="{% url 'projects:dashboards:update' project.id object.pk %}"
       data-turbo-frame="_top"
       >Update</a
     >
     <a
-      href="{% url 'dashboards:delete' project.id object.pk %}"
+      href="{% url 'projects:dashboards:delete' project.id object.pk %}"
       data-turbo-frame="_top"
       >Delete</a
     >
@@ -33,7 +33,7 @@
   <span class="page-links">
     {% if page_obj.has_previous %}
     <a
-      href="{% url 'dashboards:list' project.id %}?page={{ page_obj.previous_page_number }}"
+      href="{% url 'projects:dashboards:list' project.id %}?page={{ page_obj.previous_page_number }}"
       >previous</a
     >
     {% endif %}
@@ -42,7 +42,7 @@
     </span>
     {% if page_obj.has_next %}
     <a
-      href="{% url 'dashboards:list' project.id %}?page={{ page_obj.next_page_number }}"
+      href="{% url 'projects:dashboards:list' project.id %}?page={{ page_obj.next_page_number }}"
       >next</a
     >
     {% endif %}

@@ -5,7 +5,8 @@
 {% block app %} {% if not request.GET.service %}
 <ul>
   {% for service_id, service in services.items %}
-  <a href="{% url 'connectors:create' project.id %}?service={{ service_id }}"
+  <a
+    href="{% url 'projects:connectors:create' project.id %}?service={{ service_id }}"
     ><li>{{ service.name }}</li></a
   >
   {% endfor %}
@@ -14,7 +15,7 @@
 <h1>Create/Update</h1>
 <form
   method="post"
-  action="{% url 'connectors:create' project.id %}"
+  action="{% url 'projects:connectors:create' project.id %}"
   class="form"
 >
   {% csrf_token %} {{ form|crispy }}

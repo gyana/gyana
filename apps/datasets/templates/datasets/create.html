@@ -15,8 +15,8 @@
   <button type="submit" class="btn btn-primary">Create</button>
 </form>
 {% else %} Choose kind:
-<a href="{% url 'datasets:create' project.id %}?kind={{ dataset_kind.GOOGLE_SHEETS }}"
+<a href="{% url 'projects:datasets:create' project.id %}?kind={{ dataset_kind.GOOGLE_SHEETS }}"
   >Google Sheets</a
 >
-<a href="{% url 'datasets:create' project.id %}?kind={{ dataset_kind.CSV }}">CSV</a>
+<a href="{% url 'projects:datasets:create' project.id %}?kind={{ dataset_kind.CSV }}">CSV</a>
 {% endif %}{% endblock %}
