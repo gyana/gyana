@@ -1,6 +1,4 @@
-from django import forms
 from django.db.models.query import QuerySet
-from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.urls.base import reverse
 from django.views.generic import DetailView, ListView
@@ -24,12 +22,14 @@ class ProjectCreate(TurboCreateView):
     template_name = "projects/create.html"
     model = Project
     form_class = ProjectForm
-    success_url = reverse_lazy("projects:list")
 
     def get_initial(self):
         initial = super().get_initial()
         initial["team"] = self.request.user.teams.first()
         return initial
+
+    def get_success_url(self) -> str:
+        return reverse("projects:detail", args=(self.object.id,))
 
 
 class ProjectDetail(DetailView):

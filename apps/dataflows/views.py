@@ -45,7 +45,9 @@ class DataflowCreate(ProjectMixin, TurboCreateView):
         return initial
 
     def get_success_url(self) -> str:
-        return reverse("projects:dataflows:list", args=(self.project.id,))
+        return reverse(
+            "projects:dataflows:detail", args=(self.project.id, self.object.id)
+        )
 
 
 class DataflowDetail(ProjectMixin, DetailView):
@@ -64,7 +66,9 @@ class DataflowUpdate(ProjectMixin, TurboUpdateView):
     form_class = DataflowForm
 
     def get_success_url(self) -> str:
-        return reverse("projects:dataflows:list", args=(self.project.id,))
+        return reverse(
+            "projects:dataflows:detail", args=(self.project.id, self.object.id)
+        )
 
 
 class DataflowDelete(ProjectMixin, DeleteView):

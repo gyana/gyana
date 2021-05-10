@@ -34,7 +34,9 @@ class DashboardCreate(ProjectMixin, TurboCreateView):
         return initial
 
     def get_success_url(self) -> str:
-        return reverse("projects:dashboards:list", args=(self.project.id,))
+        return reverse(
+            "projects:dashboards:detail", args=(self.project.id, self.object.id)
+        )
 
 
 class DashboardDetail(ProjectMixin, DetailView):
@@ -48,7 +50,9 @@ class DashboardUpdate(ProjectMixin, TurboUpdateView):
     form_class = DashboardForm
 
     def get_success_url(self) -> str:
-        return reverse("projects:dashboards:list", args=(self.project.id,))
+        return reverse(
+            "projects:dashboards:detail", args=(self.project.id, self.object.id)
+        )
 
 
 class DashboardDelete(ProjectMixin, DeleteView):

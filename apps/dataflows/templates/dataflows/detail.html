@@ -2,6 +2,14 @@
 <!---->
 {% block app %}
 <h1 class="text-2xl text-bold">{{ object.name }}</h1>
+<a
+    href="{% url 'projects:dataflows:update' project.id object.pk %}"
+    >Update</a
+>
+<a
+    href="{% url 'projects:dataflows:delete' project.id object.pk %}"
+    >Delete</a
+>
 <turbo-frame
   id="dataflows:run"
   src="{% url 'dataflows:run' object.id %}"

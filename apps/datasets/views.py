@@ -65,7 +65,9 @@ class DatasetCreate(ProjectMixin, TurboCreateView):
         return CSVForm
 
     def get_success_url(self) -> str:
-        return reverse("projects:datasets:list", args=(self.project.id,))
+        return reverse(
+            "projects:datasets:detail", args=(self.project.id, self.object.id)
+        )
 
 
 class DatasetDetail(ProjectMixin, DetailView):
