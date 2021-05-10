@@ -19,3 +19,14 @@ class CSVForm(forms.ModelForm):
         model = Dataset
         fields = ["name", "file", "kind", "project"]
         widgets = {"kind": HiddenInput(), "project": HiddenInput()}
+
+
+class FivetranForm(forms.ModelForm):
+    class Meta:
+        model = Dataset
+        fields = ["name", "service", "kind", "project"]
+        widgets = {
+            "kind": HiddenInput(),
+            "service": HiddenInput(),
+            "project": HiddenInput(),
+        }

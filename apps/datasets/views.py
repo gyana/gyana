@@ -1,14 +1,19 @@
 import json
 
+from apps.datasets.tasks import poll_fivetran_historical_sync
 from apps.projects.mixins import ProjectMixin
+from django.conf import settings
 from django.db.models.query import QuerySet
-from django.urls import reverse, reverse_lazy
+from django.http import HttpRequest
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from lib.bigquery import create_external_table, query_dataset, sync_table
+from lib.fivetran import FivetranClient, get_services
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .forms import CSVForm, GoogleSheetsForm
+from .forms import CSVForm, FivetranForm, GoogleSheetsForm
 from .models import Dataset
 
 # CRUDL
@@ -30,11 +35,18 @@ class DatasetCreate(ProjectMixin, TurboCreateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["dataset_kind"] = Dataset.Kind
+
+        if (
+            self.request.GET.get("kind") == Dataset.Kind.FIVETRAN
+            and self.request.GET.get("service") is None
+        ):
+            context_data["services"] = get_services()
         return context_data
 
     def get_initial(self):
         initial = super().get_initial()
         initial["kind"] = self.request.GET.get("kind")
+        initial["service"] = self.request.GET.get("service")
         initial["project"] = self.project
         return initial
 
@@ -44,6 +56,8 @@ class DatasetCreate(ProjectMixin, TurboCreateView):
                 return GoogleSheetsForm
             elif kind == Dataset.Kind.CSV:
                 return CSVForm
+            elif kind == Dataset.Kind.FIVETRAN:
+                return FivetranForm
 
         return CSVForm
 
@@ -107,3 +121,48 @@ class DatasetSync(TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse("datasets:sync", args=(self.object.id,))
+
+
+# Turbo frames
+
+
+class DatasetAuthorize(DetailView):
+
+    model = Dataset
+    template_name = "datasets/authorize.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        dataset = context["dataset"]
+
+        if dataset.fivetran_id is None:
+            FivetranClient(dataset).create()
+
+        return context
+
+
+# Endpoints
+
+
+def authorize_fivetran(request: HttpRequest, pk: int):
+
+    dataset = get_object_or_404(Dataset, pk=pk)
+    uri = reverse("datasets:authorize-fivetran-redirect", args=(pk,))
+    redirect_uri = (
+        f"{settings.EXTERNAL_URL}{uri}?original_uri={request.GET.get('original_uri')}"
+    )
+
+    return FivetranClient(dataset).authorize(redirect_uri)
+
+
+def authorize_fivetran_redirect(request: HttpRequest, pk: int):
+
+    dataset = get_object_or_404(Dataset, pk=pk)
+    dataset.fivetran_authorized = True
+
+    result = poll_fivetran_historical_sync.delay(dataset.id)
+    dataset.fivetran_poll_historical_sync_task_id = result.task_id
+
+    dataset.save()
+
+    return redirect(request.GET.get("original_uri"))

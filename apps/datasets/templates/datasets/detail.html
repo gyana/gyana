@@ -7,6 +7,21 @@
   id="datasets:sync"
   src="{% url 'datasets:sync' object.id %}"
 ></turbo-frame>
+{% endif %} {% if object.kind == 'fivetran' %}
+<div>
+  {% if object.historical_sync_complete %}
+  <div>Ready</div>
+  {% elif object.fivetran_authorized %}
+  <div>Syncing</div>
+  {% else %}
+  <turbo-frame
+    id="datasets:authorize"
+    src="{% url 'datasets:authorize' dataset.id %}?original_uri={{ request.get_full_path }}"
+    target="_top"
+  >
+  </turbo-frame>
+  {% endif %}
+</div>
 {% endif %}
 <div class="w-full h-96 overflow-scroll">
   <turbo-frame id="datasets-grid" src="{% url 'datasets:grid' object.id %}">

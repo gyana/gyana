@@ -7,6 +7,7 @@ class Dataset(models.Model):
     class Kind(models.TextChoices):
         GOOGLE_SHEETS = "google_sheets", "Google Sheets"
         CSV = "csv", "CSV"
+        FIVETRAN = "fivetran", "Fivetran"
 
     name = models.CharField(max_length=255)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -16,8 +17,17 @@ class Dataset(models.Model):
     url = models.URLField(null=True)
     file = models.FileField(upload_to="datasets", null=True)
 
+    # bigquery external tables
     has_initial_sync = models.BooleanField(default=False)
     last_synced = models.DateTimeField(null=True)
+
+    # fivetran
+    service = models.TextField(max_length=255, null=True)
+    fivetran_id = models.TextField(null=True)
+    schema = models.TextField(null=True)
+    fivetran_authorized = models.BooleanField(default=False)
+    fivetran_poll_historical_sync_task_id = models.UUIDField(null=True)
+    historical_sync_complete = models.BooleanField(default=False)
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)

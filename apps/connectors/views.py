@@ -1,4 +1,4 @@
-from apps.connectors.tasks import poll_fivetran_historical_sync
+# from apps.connectors.tasks import poll_fivetran_historical_sync
 from apps.projects.mixins import ProjectMixin
 from django.conf import settings
 from django.db.models.query import QuerySet

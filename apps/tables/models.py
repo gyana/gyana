@@ -8,7 +8,6 @@ class Table(models.Model):
     class Source(models.TextChoices):
         DATASET = "dataset", "Dataset"
         DATAFLOW_NODE = "dataflow_node", "Dataflow node"
-        CONNECTOR = "connector", "Connector"
 
     bq_table = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
     bq_dataset = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
@@ -17,14 +16,9 @@ class Table(models.Model):
 
     source = models.CharField(max_length=16, choices=Source.choices)
     # TODO: delete table in bigquery on deletion
-    dataset = models.OneToOneField(
-        "datasets.Dataset", on_delete=models.CASCADE, null=True
-    )
+    dataset = models.ForeignKey("datasets.Dataset", on_delete=models.CASCADE, null=True)
     dataflow_node = models.OneToOneField(
         "dataflows.Node", on_delete=models.CASCADE, null=True
-    )
-    connector = models.ForeignKey(
-        "connectors.Connector", on_delete=models.CASCADE, null=True
     )
 
     created = models.DateTimeField(auto_now_add=True, editable=False)

@@ -5,18 +5,30 @@
 {% block app %}
 <h1>Create/Update</h1>
 {% if request.GET.kind %}
-<form
-  method="post"
-  action="{{ request.get_full_path }}"
-  class="form"
-  {% if request.GET.kind == dataset_kind.CSV %} enctype="multipart/form-data" {% endif %} 
->
-  {% csrf_token %} {{ form|crispy }}
-  <button type="submit" class="btn btn-primary">Create</button>
-</form>
+  {% if request.GET.kind == dataset_kind.FIVETRAN and not request.GET.service %}
+  <ul>
+    {% for service_id, service in services.items %}
+    <a
+      href="{% url 'projects:datasets:create' project.id %}?kind={{ dataset_kind.FIVETRAN }}&service={{ service_id }}"
+      ><li>{{ service.name }}</li></a
+    >
+    {% endfor %}
+  </ul>
+  {% else %}
+  <form
+    method="post"
+    action="{{ request.get_full_path }}"
+    class="form"
+    {% if request.GET.kind == dataset_kind.CSV %} enctype="multipart/form-data" {% endif %} 
+  >
+    {% csrf_token %} {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Create</button>
+  </form>
+  {% endif %}
 {% else %} Choose kind:
 <a href="{% url 'projects:datasets:create' project.id %}?kind={{ dataset_kind.GOOGLE_SHEETS }}"
   >Google Sheets</a
 >
 <a href="{% url 'projects:datasets:create' project.id %}?kind={{ dataset_kind.CSV }}">CSV</a>
+<a href="{% url 'projects:datasets:create' project.id %}?kind={{ dataset_kind.FIVETRAN }}">Fivetran</a>
 {% endif %}{% endblock %}
