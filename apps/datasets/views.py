@@ -1,5 +1,6 @@
 import json
 
+from apps.datasets.tables import DatasetTable
 from apps.datasets.tasks import poll_fivetran_historical_sync
 from apps.projects.mixins import ProjectMixin
 from django.conf import settings
@@ -9,6 +10,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
+from django_tables2 import SingleTableView
 from lib.bigquery import create_external_table, query_dataset, sync_table
 from lib.fivetran import FivetranClient, get_services
 from turbo_response.views import TurboCreateView, TurboUpdateView
@@ -19,9 +21,10 @@ from .models import Dataset
 # CRUDL
 
 
-class DatasetList(ProjectMixin, ListView):
+class DatasetList(ProjectMixin, SingleTableView):
     template_name = "datasets/list.html"
     model = Dataset
+    table_class = DatasetTable
     paginate_by = 20
 
     def get_queryset(self) -> QuerySet:
@@ -81,7 +84,9 @@ class DatasetUpdate(ProjectMixin, TurboUpdateView):
             return CSVForm
 
     def get_success_url(self) -> str:
-        return reverse("projects:datasets:settings", args=(self.project.id, self.object.id))
+        return reverse(
+            "projects:datasets:settings", args=(self.project.id, self.object.id)
+        )
 
 
 class DatasetDelete(ProjectMixin, DeleteView):

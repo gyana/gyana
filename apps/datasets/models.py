@@ -1,5 +1,6 @@
 from apps.projects.models import Project
 from django.db import models
+from django.urls import reverse
 from lib.clients import ibis_client
 
 
@@ -47,3 +48,6 @@ class Dataset(models.Model):
 
     def get_table_name(self):
         return f"Dataset:{self.name}"
+
+    def get_absolute_url(self):
+        return reverse("projects:datasets:detail", args=(self.project.id, self.id))

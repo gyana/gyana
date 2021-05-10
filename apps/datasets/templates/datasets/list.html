@@ -1,51 +1,7 @@
 {% extends "web/app/project_base.html" %}
-<!---->
+{% load render_table from django_tables2 %}
 {% block app %}
 <h1 class="text-2xl font-bold">Datasets</h1>
 <a href="{% url 'projects:datasets:create' project.id %}">Create</a>
-<ul>
-  {% for object in object_list %}
-  <li>
-    <p class="font-bold">{{ object }}</p>
-    <a
-      href="{% url 'projects:datasets:detail' project.id object.pk %}"
-      data-turbo-frame="_top"
-      >Details</a
-    >
-    <a
-      href="{% url 'projects:datasets:update' project.id object.pk %}"
-      data-turbo-frame="_top"
-      >Update</a
-    >
-    <a
-      href="{% url 'projects:datasets:delete' project.id object.pk %}"
-      data-turbo-frame="_top"
-      >Delete</a
-    >
-  </li>
-  {% empty %}
-  <p>No items.</p>
-  {% endfor %}
-</ul>
-
-{% if is_paginated %}
-<div class="pagination">
-  <span class="page-links">
-    {% if page_obj.has_previous %}
-    <a
-      href="{% url 'projects:datasets:list' project.id %}?page={{ page_obj.previous_page_number }}"
-      >previous</a
-    >
-    {% endif %}
-    <span class="page-current">
-      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-    </span>
-    {% if page_obj.has_next %}
-    <a
-      href="{% url 'projects:datasets:list' project.id %}?page={{ page_obj.next_page_number }}"
-      >next</a
-    >
-    {% endif %}
-  </span>
-</div>
-{% endif %} {% endblock %}
+{% render_table table %}
+{% endblock %}
