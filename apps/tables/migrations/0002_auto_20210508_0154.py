@@ -31,15 +31,15 @@ class Migration(migrations.Migration):
             field=models.CharField(default=None, max_length=1024),
             preserve_default=False,
         ),
-        migrations.AddField(
-            model_name="table",
-            name="connector",
-            field=models.ForeignKey(
-                null=True,
-                on_delete=django.db.models.deletion.CASCADE,
-                to="connectors.connector",
-            ),
-        ),
+        # migrations.AddField(
+        #     model_name="table",
+        #     name="connector",
+        #     field=models.ForeignKey(
+        #         null=True,
+        #         on_delete=django.db.models.deletion.CASCADE,
+        #         to="connectors.connector",
+        #     ),
+        # ),
         migrations.AddField(
             model_name="table",
             name="dataflow_node",
