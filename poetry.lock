@@ -458,6 +458,20 @@ libcloud = ["apache-libcloud"]
 sftp = ["paramiko"]
 
 [[package]]
+name = "django-tables2"
+version = "2.3.4"
+description = "Table/data-grid framework for Django"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Django = ">=1.11"
+
+[package.extras]
+tablib = ["tablib"]
+
+[[package]]
 name = "django-turbo-allauth"
 version = "0.0.9"
 description = "Hotwired/Turbo subclasses for allauth views"
@@ -723,10 +737,10 @@ regex = "*"
 toolz = "*"
 
 [package.extras]
-all = ["google-cloud-bigquery[bqstorage,pandas] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
-bigquery = ["google-cloud-bigquery[bqstorage,pandas] (>=1.12.0,<2.0.0dev)", "pydata-google-auth"]
+all = ["google-cloud-bigquery[pandas,bqstorage] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
+bigquery = ["google-cloud-bigquery[pandas,bqstorage] (>=1.12.0,<2.0.0dev)", "pydata-google-auth"]
 clickhouse = ["clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
-develop = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash", "google-cloud-bigquery[bqstorage,pandas] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "black", "click", "pydocstyle (==4.0.1)", "flake8", "isort", "mypy", "pre-commit", "pygit2", "pytest (>=4.5)"]
+develop = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash", "google-cloud-bigquery[pandas,bqstorage] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "black", "click", "pydocstyle (==4.0.1)", "flake8", "isort", "mypy", "pre-commit", "pygit2", "pytest (>=4.5)"]
 geospatial = ["geoalchemy2", "geopandas", "shapely"]
 hdf5 = ["tables (>=3.0.0)"]
 impala = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)"]
@@ -1420,7 +1434,7 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.*"
-content-hash = "18b89efed3600cf26a98e488a295a1bf3eb9f2e2745d502cb72bceef735dead0"
+content-hash = "6db7c3c24cd17a23c7e1a890ee63e917dcc80aca390327c4c2732e66841c6e72"
 
 [metadata.files]
 amqp = [
@@ -1606,6 +1620,10 @@ django-heroku = [
 django-storages = [
     {file = "django-storages-1.11.1.tar.gz", hash = "sha256:c823dbf56c9e35b0999a13d7e05062b837bae36c518a40255d522fbe3750fbb4"},
     {file = "django_storages-1.11.1-py3-none-any.whl", hash = "sha256:f28765826d507a0309cfaa849bd084894bc71d81bf0d09479168d44785396f80"},
+]
+django-tables2 = [
+    {file = "django-tables2-2.3.4.tar.gz", hash = "sha256:50ccadbd13740a996d8a4d4f144ef80134745cd0b5ec278061537e341f5ef7a2"},
+    {file = "django_tables2-2.3.4-py2.py3-none-any.whl", hash = "sha256:af5f70a9845fd8690c6b44120b065e55b9771cae99c1dcd0eb4f1cfa3f0a71e4"},
 ]
 django-turbo-allauth = [
     {file = "django-turbo-allauth-0.0.9.tar.gz", hash = "sha256:4bb666e81b2f3e035e40e5a63cb5843778e9236dcdd078e354a7b7aa164851db"},

@@ -124,6 +124,9 @@ django-heroku==0.3.1 \
 django-storages==1.11.1; python_version >= "3.5" \
     --hash=sha256:c823dbf56c9e35b0999a13d7e05062b837bae36c518a40255d522fbe3750fbb4 \
     --hash=sha256:f28765826d507a0309cfaa849bd084894bc71d81bf0d09479168d44785396f80
+django-tables2==2.3.4 \
+    --hash=sha256:50ccadbd13740a996d8a4d4f144ef80134745cd0b5ec278061537e341f5ef7a2 \
+    --hash=sha256:af5f70a9845fd8690c6b44120b065e55b9771cae99c1dcd0eb4f1cfa3f0a71e4
 django-turbo-allauth==0.0.9; python_version >= "3.8" \
     --hash=sha256:4bb666e81b2f3e035e40e5a63cb5843778e9236dcdd078e354a7b7aa164851db \
     --hash=sha256:834d072978aa877ea6b876a023ef2d2ebcfcb5db4e16e76786fdea20ea707569
