@@ -1,9 +1,8 @@
 {% load crispy_forms_tags %}
 
-<!-- prettier-ignore -->
 <turbo-frame id="dataflow-node">
   <form method="post" action="{% url 'dataflows:node' dataflow.id node.id %}">
     {% csrf_token %}
-      {% crispy form %}
+    {% crispy form %}
   </form>
 </turbo-frame>

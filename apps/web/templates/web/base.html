@@ -1,43 +1,45 @@
 {% load static %}
 <!DOCTYPE html>
-<!--prettier-ignore-->
-<html>
+<html class="h-full">
+
 <head>
-    <meta charset="utf-8">
-    <!--IE compatibility-->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!--Mobile friendly-->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    {% include 'web/components/meta.html' %}
-    {% include 'web/components/favicon.html' %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <script src="https://use.fontawesome.com/72135c02f1.js"></script>
-    <script type="module">
-      import * as hotwiredTurbo from "https://cdn.skypack.dev/@hotwired/turbo";
-    </script>
-    <script src="{% static 'js/stimulus-bundle.js' %}"></script>
-    {% if GOOGLE_ANALYTICS_ID %}
-        {% include 'web/components/google_analytics.html' %}
-    {% endif %}
-    {% block page_head %}
-    {% endblock %}
+  <meta charset="utf-8">
+  <!--IE compatibility-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!--Mobile friendly-->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% include 'web/components/meta.html' %}
+  {% include 'web/components/favicon.html' %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <script src="https://use.fontawesome.com/72135c02f1.js"></script>
+  <script type="module">
+    import * as hotwiredTurbo from "https://cdn.skypack.dev/@hotwired/turbo";
+  </script>
+  <script src="{% static 'js/stimulus-bundle.js' %}"></script>
+  {% if GOOGLE_ANALYTICS_ID %}
+  {% include 'web/components/google_analytics.html' %}
+  {% endif %}
+  {% block page_head %}
+  {% endblock %}
 </head>
-<body>
-{% block body_wrapper %}
-{% block top_nav %}
+
+<body class="flex flex-col h-full">
+  {% block body_wrapper %}
+  {% block top_nav %}
   {% include 'web/components/navbar.html' %}
-{% endblock %}
-{% block messages %}
+  {% endblock %}
+  {% block messages %}
   {% include 'web/components/messages.html' %}
-{% endblock messages %}
-{% block body %}
-{% endblock body %}
-{% block footer %}
+  {% endblock messages %}
+  {% block body %}
+  {% endblock body %}
+  {% block footer %}
   {% include 'web/components/footer.html' %}
-{% endblock footer %}
-{% endblock body_wrapper %}
-{% block page_js %}
-{% endblock page_js %}
+  {% endblock footer %}
+  {% endblock body_wrapper %}
+  {% block page_js %}
+  {% endblock page_js %}
   {% include 'web/components/messages-js.html' %}
 </body>
+
 </html>
