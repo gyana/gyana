@@ -40,7 +40,6 @@ urlpatterns = [
     path("teams/", include("apps.teams.urls")),
     path("projects/", include("apps.projects.urls")),
     path("datasets/", include("apps.datasets.urls.root")),
-    path("connectors/", include("apps.connectors.urls.root")),
     path("dataflows/", include("apps.dataflows.urls.root")),
     path("dashboards/", include("apps.dashboards.urls.root")),
     path("widgets/", include("apps.widgets.urls")),

@@ -16,11 +16,6 @@
         >Overview</a
       >
       <a
-        class="{% if request.resolver_match.app_name == 'projects:connectors' %} text-blue-700 {% endif %}"
-        href="{% url 'projects:connectors:list' project.id %}"
-        >Connectors</a
-      >
-      <a
         class="{% if request.resolver_match.app_name == 'projects:datasets' %} text-blue-700 {% endif %}"
         href="{% url 'projects:datasets:list' project.id %}"
         >Datasets</a

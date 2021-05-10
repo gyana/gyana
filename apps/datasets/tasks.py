@@ -15,7 +15,7 @@ def poll_fivetran_historical_sync(self, connector_id):
     FivetranClient(dataset).block_until_synced()
 
     url = reverse(
-        "projects:connectors:detail",
+        "projects:datasets:detail",
         args=(
             dataset.project.id,
             connector_id,

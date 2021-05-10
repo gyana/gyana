@@ -6,7 +6,7 @@ from uuid import uuid4
 import backoff
 import requests
 import yaml
-from apps.connectors.models import Connector
+from apps.datasets.models import Dataset
 from django.conf import settings
 from django.shortcuts import redirect
 
@@ -21,7 +21,7 @@ def get_services():
 @dataclass
 class MockFivetranClient:
 
-    connector: Connector
+    connector: Dataset
 
     def create(self):
         self.connector.fivetran_id = settings.MOCK_FIVETRAN_ID
@@ -40,7 +40,7 @@ class MockFivetranClient:
 @dataclass
 class FivetranClient:
 
-    connector: Connector
+    connector: Dataset
 
     def create(self):
 
