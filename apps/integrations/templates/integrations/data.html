@@ -1,0 +1,19 @@
+{% extends "integrations/base.html" %}
+<!---->
+{% block tab %}
+<div class="w-full h-96 overflow-scroll">
+  <turbo-frame id="integrations-grid" src="{% url 'integrations:grid' object.id %}">
+    Loading...
+  </turbo-frame>
+</div>
+<!--ag-grid-->
+<script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css"
+/>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "integrations/base.html" %}
+<!---->
+{% block tab %}
+<a
+    href="{% url 'projects:integrations:update' project.id object.pk %}"
+    >Update</a
+>
+<a
+    href="{% url 'projects:integrations:delete' project.id object.pk %}"
+    >Delete</a
+>
+{% endblock %}

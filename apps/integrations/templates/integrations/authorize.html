@@ -1,0 +1,13 @@
+<turbo-frame id="integrations:authorize" target="_top"
+  ><form
+    action="{% url 'integrations:authorize-fivetran' integration.id %}"
+    method="get"
+  >
+    <input
+      type="hidden"
+      name="original_uri"
+      value="{{request.GET.original_uri}}"
+    />
+    <input type="submit" value="Authorize" />
+  </form>
+</turbo-frame>

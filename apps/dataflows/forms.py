@@ -1,6 +1,6 @@
 from functools import cached_property
 
-from apps.datasets.models import Dataset
+from apps.integrations.models import Integration
 from apps.utils.formset_layout import Formset
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Fieldset, Layout, Submit
@@ -35,7 +35,7 @@ class InputNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["input_table"]
-        labels = {"input_table": "Dataset"}
+        labels = {"input_table": "Integration"}
 
 
 class OutputNodeForm(NodeForm):

@@ -1,7 +1,0 @@
-<turbo-frame id="datasets:sync">
-  <p>Latest sync: {{ object.last_synced }}</p>
-  <form method="post" action="{% url 'datasets:sync' object.id %}">
-    {% csrf_token %}
-    <input type="submit" value="Sync" />
-  </form>
-</turbo-frame>

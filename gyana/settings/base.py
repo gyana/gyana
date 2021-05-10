@@ -70,7 +70,7 @@ PROJECT_APPS = [
     "apps.web",
     "apps.teams.apps.TeamConfig",
     "apps.projects",
-    "apps.datasets",
+    "apps.integrations",
     "apps.dataflows",
     "apps.dashboards",
     "apps.widgets",

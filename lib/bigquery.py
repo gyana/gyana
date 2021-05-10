@@ -1,8 +1,8 @@
 from datetime import datetime
 
 from apps.dataflows.models import Dataflow, Node
-from apps.datasets.models import Dataset
 from apps.filters.models import Filter
+from apps.integrations.models import Integration
 from apps.tables.models import Table
 from apps.widgets.models import Widget
 from django.conf import settings
@@ -14,13 +14,13 @@ from lib.clients import DATAFLOW_ID, DATASET_ID, bigquery_client, ibis_client
 DEFAULT_LIMIT = 10
 
 
-def sync_table(dataset: Dataset, external_table_id: str):
+def sync_table(integration: Integration, external_table_id: str):
 
     client = bigquery_client()
 
-    table_id = f"table_{dataset.pk}"
+    table_id = f"table_{integration.pk}"
 
-    external_config = create_external_config(dataset)
+    external_config = create_external_config(integration)
     job_config = bigquery.QueryJobConfig(
         table_definitions={external_table_id: external_config}
     )
@@ -32,29 +32,29 @@ def sync_table(dataset: Dataset, external_table_id: str):
 
     with transaction.atomic():
 
-        if not dataset.table_set.exists():
+        if not integration.table_set.exists():
             table = Table(
                 source=Table.Source.DATASET,
                 bq_table=table_id,
                 bq_dataset=DATASET_ID,
-                project=dataset.project,
-                dataset=dataset,
+                project=integration.project,
+                integration=integration,
             )
             table.save()
 
-        dataset.last_synced = datetime.now()
-        dataset.save()
+        integration.last_synced = datetime.now()
+        integration.save()
 
 
-def create_external_config(dataset: Dataset):
-    if dataset.kind == Dataset.Kind.GOOGLE_SHEETS:
+def create_external_config(integration: Integration):
+    if integration.kind == Integration.Kind.GOOGLE_SHEETS:
         # https://cloud.google.com/bigquery/external-data-drive#python
         external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
-        external_config.source_uris = [dataset.url]
-    elif dataset.kind == Dataset.Kind.CSV:
+        external_config.source_uris = [integration.url]
+    elif integration.kind == Integration.Kind.CSV:
         external_config = bigquery.ExternalConfig("CSV")
         external_config.source_uris = [
-            f"gs://{settings.GS_BUCKET_NAME}/{dataset.file.name}"
+            f"gs://{settings.GS_BUCKET_NAME}/{integration.file.name}"
         ]
 
     external_config.autodetect = True
@@ -62,16 +62,16 @@ def create_external_config(dataset: Dataset):
     return external_config
 
 
-def create_external_table(dataset: Dataset) -> str:
+def create_external_table(integration: Integration) -> str:
 
     client = bigquery_client()
-    external_table_id = f"table_{dataset.pk}_external"
+    external_table_id = f"table_{integration.pk}_external"
 
     bq_dataset = client.get_dataset(DATASET_ID)
 
     external_table = bigquery.Table(bq_dataset.table(external_table_id))
 
-    external_config = create_external_config(dataset)
+    external_config = create_external_config(integration)
 
     external_table.external_data_configuration = external_config
     external_table = client.create_table(external_table, exists_ok=True)
@@ -79,14 +79,14 @@ def create_external_table(dataset: Dataset) -> str:
     return external_table_id
 
 
-def query_dataset(dataset: Dataset):
+def query_integration(integration: Integration):
 
-    if not dataset.table_set.exists():
-        external_table_id = create_external_table(dataset)
-        sync_table(dataset, external_table_id)
+    if not integration.table_set.exists():
+        external_table_id = create_external_table(integration)
+        sync_table(integration, external_table_id)
 
     conn = ibis_client()
-    table = conn.table(dataset.table_set.first().bq_table)
+    table = conn.table(integration.table_set.first().bq_table)
 
     return conn.execute(table.limit(DEFAULT_LIMIT))
 

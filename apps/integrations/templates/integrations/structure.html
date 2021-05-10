@@ -1,0 +1,29 @@
+{% extends "integrations/base.html" %}
+<!---->
+{% block tab %}
+{% for table in object.table_set.all %}
+    <div class="border border-gray-500">
+    <h2 class="text-lg font-bold"> {{ table.bq_table }} </h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for field in table.get_bq_schema %}
+            <tr>
+                <td>
+                {{ field.field_type }}
+                </td>
+                <td>
+                {{ field.name }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
+
+{% endblock %}
