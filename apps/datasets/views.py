@@ -92,6 +92,16 @@ class DatasetDelete(ProjectMixin, DeleteView):
         return reverse("projects:datasets:list", args=(self.project.id,))
 
 
+class DatasetStructure(ProjectMixin, DetailView):
+    template_name = "datasets/structure.html"
+    model = Dataset
+
+
+class DatasetData(ProjectMixin, DetailView):
+    template_name = "datasets/data.html"
+    model = Dataset
+
+
 # Turbo frames
 
 

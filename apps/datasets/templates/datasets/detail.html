@@ -1,7 +1,6 @@
-{% extends "web/app/project_base.html" %}
+{% extends "datasets/base.html" %}
 <!---->
-{% block app %}
-<h1 class="text-2xl text-bold">{{ object.name }}</h1>
+{% block tab %}
 {% if object.kind == 'google_sheets' %}
 <turbo-frame
   id="datasets:sync"
@@ -23,19 +22,4 @@
   {% endif %}
 </div>
 {% endif %}
-<div class="w-full h-96 overflow-scroll">
-  <turbo-frame id="datasets-grid" src="{% url 'datasets:grid' object.id %}">
-    Loading...
-  </turbo-frame>
-</div>
-<!--ag-grid-->
-<script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css"
-/>
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css"
-/>
 {% endblock %}
