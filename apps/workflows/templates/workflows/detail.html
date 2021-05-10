@@ -3,29 +3,29 @@
 {% block app %}
 <h1 class="text-2xl text-bold">{{ object.name }}</h1>
 <a
-    href="{% url 'projects:dataflows:update' project.id object.pk %}"
+    href="{% url 'projects:workflows:update' project.id object.pk %}"
     >Update</a
 >
 <a
-    href="{% url 'projects:dataflows:delete' project.id object.pk %}"
+    href="{% url 'projects:workflows:delete' project.id object.pk %}"
     >Delete</a
 >
 <turbo-frame
-  id="dataflows:run"
-  src="{% url 'dataflows:run' object.id %}"
+  id="workflows:run"
+  src="{% url 'workflows:run' object.id %}"
 ></turbo-frame>
 <div class="flex">
   <div class="w-64">
-    <turbo-frame id="dataflow-node"></turbo-frame>
+    <turbo-frame id="workflow-node"></turbo-frame>
   </div>
   <div id="react-app" class="flex-auto h-96"></div>
 </div>
-<turbo-frame id="dataflows-grid">No node selected</turbo-frame>
+<turbo-frame id="workflows-grid">No node selected</turbo-frame>
 {{ nodes|json_script:'nodes' }}
 <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
 <script src="{% url 'api_schemajs' %}"></script>
-<script src="{% static 'js/dataflow-bundle.js' %}"></script>
-<link rel="stylesheet" href="{% static 'css/dataflow.css' %}" />
+<script src="{% static 'js/workflow-bundle.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/workflow.css' %}" />
 <!--ag-grid-->
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
 <link

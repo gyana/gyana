@@ -2,8 +2,8 @@ import json
 from functools import cached_property
 
 import inflection
-from apps.dataflows.serializers import NodeSerializer
-from apps.dataflows.tables import DataflowTable
+from apps.workflows.serializers import NodeSerializer
+from apps.workflows.tables import WorkflowTable
 from apps.projects.mixins import ProjectMixin
 from django import forms
 from django.db import transaction
@@ -13,31 +13,31 @@ from django.urls import reverse
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView, UpdateView
 from django_tables2 import SingleTableView
-from lib.bigquery import run_dataflow
+from lib.bigquery import run_workflow
 from lib.clients import ibis_client
 from rest_framework import viewsets
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .forms import KIND_TO_FORM, KIND_TO_FORMSETS, DataflowForm
-from .models import Column, Dataflow, Node
+from .forms import KIND_TO_FORM, KIND_TO_FORMSETS, WorkflowForm
+from .models import Column, Workflow, Node
 
 # CRUDL
 
 
-class DataflowList(ProjectMixin, SingleTableView):
-    template_name = "dataflows/list.html"
-    model = Dataflow
-    table_class = DataflowTable
+class WorkflowList(ProjectMixin, SingleTableView):
+    template_name = "workflows/list.html"
+    model = Workflow
+    table_class = WorkflowTable
     paginate_by = 20
 
     def get_queryset(self) -> QuerySet:
-        return Dataflow.objects.filter(project=self.project).all()
+        return Workflow.objects.filter(project=self.project).all()
 
 
-class DataflowCreate(ProjectMixin, TurboCreateView):
-    template_name = "dataflows/create.html"
-    model = Dataflow
-    form_class = DataflowForm
+class WorkflowCreate(ProjectMixin, TurboCreateView):
+    template_name = "workflows/create.html"
+    model = Workflow
+    form_class = WorkflowForm
 
     def get_initial(self):
         initial = super().get_initial()
@@ -46,13 +46,13 @@ class DataflowCreate(ProjectMixin, TurboCreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "projects:dataflows:detail", args=(self.project.id, self.object.id)
+            "projects:workflows:detail", args=(self.project.id, self.object.id)
         )
 
 
-class DataflowDetail(ProjectMixin, DetailView):
-    template_name = "dataflows/detail.html"
-    model = Dataflow
+class WorkflowDetail(ProjectMixin, DetailView):
+    template_name = "workflows/detail.html"
+    model = Workflow
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -60,23 +60,23 @@ class DataflowDetail(ProjectMixin, DetailView):
         return context
 
 
-class DataflowUpdate(ProjectMixin, TurboUpdateView):
-    template_name = "dataflows/update.html"
-    model = Dataflow
-    form_class = DataflowForm
+class WorkflowUpdate(ProjectMixin, TurboUpdateView):
+    template_name = "workflows/update.html"
+    model = Workflow
+    form_class = WorkflowForm
 
     def get_success_url(self) -> str:
         return reverse(
-            "projects:dataflows:detail", args=(self.project.id, self.object.id)
+            "projects:workflows:detail", args=(self.project.id, self.object.id)
         )
 
 
-class DataflowDelete(ProjectMixin, DeleteView):
-    template_name = "dataflows/delete.html"
-    model = Dataflow
+class WorkflowDelete(ProjectMixin, DeleteView):
+    template_name = "workflows/delete.html"
+    model = Workflow
 
     def get_success_url(self) -> str:
-        return reverse("projects:dataflows:list", args=(self.project.id,))
+        return reverse("projects:workflows:list", args=(self.project.id,))
 
 
 # Nodes
@@ -85,16 +85,16 @@ class DataflowDelete(ProjectMixin, DeleteView):
 class NodeViewSet(viewsets.ModelViewSet):
     serializer_class = NodeSerializer
     queryset = Node.objects.all()
-    filterset_fields = ["dataflow"]
+    filterset_fields = ["workflow"]
 
 
 class NodeUpdate(TurboUpdateView):
-    template_name = "dataflows/node.html"
+    template_name = "workflows/node.html"
     model = Node
 
     @cached_property
-    def dataflow(self):
-        return Dataflow.objects.get(pk=self.kwargs["dataflow_id"])
+    def workflow(self):
+        return Workflow.objects.get(pk=self.kwargs["workflow_id"])
 
     @cached_property
     def formsets(self):
@@ -102,7 +102,7 @@ class NodeUpdate(TurboUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["dataflow"] = self.dataflow
+        context["workflow"] = self.workflow
         context["node"] = self.object
 
         for formset in self.formsets:
@@ -140,11 +140,11 @@ class NodeUpdate(TurboUpdateView):
         return KIND_TO_FORM[self.object.kind]
 
     def get_success_url(self) -> str:
-        return reverse("dataflows:node", args=(self.dataflow.id, self.object.id))
+        return reverse("workflows:node", args=(self.workflow.id, self.object.id))
 
 
 class NodeGrid(DetailView):
-    template_name = "dataflows/grid.html"
+    template_name = "workflows/grid.html"
     model = Node
 
     def get_context_data(self, **kwargs):
@@ -162,14 +162,14 @@ class NodeGrid(DetailView):
         return context
 
 
-class DataflowRun(UpdateView):
-    template_name = "dataflows/run.html"
-    model = Dataflow
+class WorkflowRun(UpdateView):
+    template_name = "workflows/run.html"
+    model = Workflow
     fields = []
 
     def form_valid(self, form) -> HttpResponse:
-        run_dataflow(self.object)
+        run_workflow(self.object)
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse("dataflows:run", args=(self.object.id,))
+        return reverse("workflows:run", args=(self.object.id,))

@@ -5,12 +5,12 @@
 <p>Are you sure you want to delete?</p>
 <form
   method="post"
-  action="{% url 'projects:dataflows:delete' project.id object.id %}"
+  action="{% url 'projects:workflows:delete' project.id object.id %}"
 >
   {% csrf_token %}
   <input type="submit" value="Yes" class="btn btn-danger" />
   <a
-    href="{% url 'projects:dataflows:list' project.id %}"
+    href="{% url 'projects:workflows:list' project.id %}"
     class="btn btn-default"
     >No</a
   >

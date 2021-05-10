@@ -1,4 +1,4 @@
-from apps.dataflows.nodes import NODE_FROM_CONFIG
+from apps.workflows.nodes import NODE_FROM_CONFIG
 from apps.projects.models import Project
 from apps.tables.models import Table
 from django.conf import settings
@@ -6,7 +6,7 @@ from django.db import models
 from django.urls import reverse
 
 
-class Dataflow(models.Model):
+class Workflow(models.Model):
     name = models.CharField(max_length=255)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     last_run = models.DateTimeField(null=True)
@@ -20,7 +20,7 @@ class Dataflow(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("projects:dataflows:detail", args=(self.project.id, self.id))
+        return reverse("projects:workflows:detail", args=(self.project.id, self.id))
 
 
 class Node(models.Model):
@@ -31,7 +31,7 @@ class Node(models.Model):
         JOIN = "join", "Join"
         GROUP = "group", "Group"
 
-    dataflow = models.ForeignKey(Dataflow, on_delete=models.CASCADE)
+    workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE)
     kind = models.CharField(max_length=16, choices=Kind.choices)
     x = models.FloatField()
     y = models.FloatField()
@@ -76,7 +76,7 @@ class Node(models.Model):
         return self.get_query().schema()
 
     def get_table_name(self):
-        return f"Dataflow:{self.dataflow.name}:{self.output_name}"
+        return f"Workflow:{self.workflow.name}:{self.output_name}"
 
 
 class Column(models.Model):

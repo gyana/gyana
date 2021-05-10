@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from apps.dataflows.models import Dataflow, Node
+from apps.workflows.models import Workflow, Node
 from apps.filters.models import Filter
 from apps.integrations.models import Integration
 from apps.tables.models import Table
@@ -91,8 +91,8 @@ def query_integration(integration: Integration):
     return conn.execute(table.limit(DEFAULT_LIMIT))
 
 
-def run_dataflow(dataflow: Dataflow):
-    output_nodes = dataflow.node_set.filter(kind=Node.Kind.OUTPUT).all()
+def run_workflow(workflow: Workflow):
+    output_nodes = workflow.node_set.filter(kind=Node.Kind.OUTPUT).all()
 
     for node in output_nodes:
         client = bigquery_client()
@@ -113,12 +113,12 @@ def run_dataflow(dataflow: Dataflow):
                 source=Table.Source.DATAFLOW_NODE,
                 bq_table=table_id,
                 bq_dataset=DATAFLOW_ID,
-                project=dataflow.project,
-                dataflow_node=node,
+                project=workflow.project,
+                workflow_node=node,
             )
             table.save()
 
-    dataflow.last_run = datetime.now()
+    workflow.last_run = datetime.now()
 
 
 def query_widget(widget: Widget):

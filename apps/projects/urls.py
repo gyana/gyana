@@ -11,6 +11,6 @@ urlpatterns = [
     path("<int:pk>/delete", views.ProjectDelete.as_view(), name="delete"),
     path("<int:pk>/settings/", views.ProjectSettings.as_view(), name="settings"),
     path("<int:project_id>/integrations/", include("apps.integrations.urls.projects")),
-    path("<int:project_id>/dataflows/", include("apps.dataflows.urls.projects")),
+    path("<int:project_id>/workflows/", include("apps.workflows.urls.projects")),
     path("<int:project_id>/dashboards/", include("apps.dashboards.urls.projects")),
 ]

@@ -9,27 +9,64 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('dataflows', '0001_initial'),
-        ('projects', '0002_project_team'),
-        ('integrations', '0001_initial'),
+        ("workflows", "0001_initial"),
+        ("projects", "0002_project_team"),
+        ("integrations", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Table',
+            name="Table",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('bq_table', models.CharField(max_length=1024)),
-                ('bq_dataset', models.CharField(max_length=1024)),
-                ('source', models.CharField(choices=[('integration', 'Integration'), ('dataflow_node', 'Dataflow node')], max_length=16)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('dataflow_node', models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to='dataflows.node')),
-                ('integration', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='integrations.integration')),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='projects.project')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("bq_table", models.CharField(max_length=1024)),
+                ("bq_dataset", models.CharField(max_length=1024)),
+                (
+                    "source",
+                    models.CharField(
+                        choices=[
+                            ("integration", "Integration"),
+                            ("workflow_node", "Workflow node"),
+                        ],
+                        max_length=16,
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                (
+                    "workflow_node",
+                    models.OneToOneField(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="workflows.node",
+                    ),
+                ),
+                (
+                    "integration",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="integrations.integration",
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="projects.project",
+                    ),
+                ),
             ],
             options={
-                'ordering': ('-created',),
+                "ordering": ("-created",),
             },
         ),
     ]

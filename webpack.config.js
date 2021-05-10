@@ -13,7 +13,7 @@ module.exports = {
     teams: "./assets/javascript/teams/teams.tsx",
     "edit-team": "./assets/javascript/teams/edit-team.tsx",
     stimulus: "./assets/javascript/stimulus.ts",
-    dataflow: "./apps/dataflows/javascript/app.tsx",
+    workflow: "./apps/workflows/javascript/app.tsx",
   },
   output: {
     path: path.resolve(__dirname, "./static"),

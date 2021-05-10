@@ -71,7 +71,7 @@ PROJECT_APPS = [
     "apps.teams.apps.TeamConfig",
     "apps.projects",
     "apps.integrations",
-    "apps.dataflows",
+    "apps.workflows",
     "apps.dashboards",
     "apps.widgets",
     "apps.filters",

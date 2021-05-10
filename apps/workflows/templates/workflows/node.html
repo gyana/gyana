@@ -1,0 +1,8 @@
+{% load crispy_forms_tags %}
+
+<turbo-frame id="workflow-node">
+  <form method="post" action="{% url 'workflows:node' workflow.id node.id %}">
+    {% csrf_token %}
+    {% crispy form %}
+  </form>
+</turbo-frame>

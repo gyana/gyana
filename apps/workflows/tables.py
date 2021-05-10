@@ -1,12 +1,12 @@
 import django_tables2 as tables
 from apps.utils.table import NaturalDatetimeColumn
 
-from .models import Dataflow
+from .models import Workflow
 
 
-class DataflowTable(tables.Table):
+class WorkflowTable(tables.Table):
     class Meta:
-        model = Dataflow
+        model = Workflow
         fields = ("name", "last_run", "created", "updated")
 
     name = tables.Column(linkify=True)
