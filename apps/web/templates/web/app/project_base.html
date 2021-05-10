@@ -1,0 +1,42 @@
+{% extends "web/base.html" %} {% load static %}
+<!-- -->
+{% block body %}
+<!--  -->
+{% block notifications %}{% endblock %}
+<section class="flex h-screen w-screen">
+  <nav class="w-64 border-r border-gray-500 p-2">
+    <p>
+      <a class="text-sm" href="{% url 'projects:list' %}"> Back to projects</a>
+    </p>
+    <h1 class="text-lg font-medium mb-2">{{ project.name }}</h1>
+    <div class="space-y-2 mb-2 flex flex-col">
+      <a
+        class="{% if request.resolver_match.app_name == 'projects' %} text-blue-700 {% endif %}"
+        href="{% url 'projects:detail' project.id %}"
+        >Overview</a
+      >
+      <a
+        class="{% if request.resolver_match.app_name == 'connectors' %} text-blue-700 {% endif %}"
+        href="{% url 'connectors:list' project.id %}"
+        >Connectors</a
+      >
+      <a
+        class="{% if request.resolver_match.app_name == 'datasets' %} text-blue-700 {% endif %}"
+        href="{% url 'datasets:list' project.id %}"
+        >Datasets</a
+      >
+      <a
+        class="{% if request.resolver_match.app_name == 'dataflows' %} text-blue-700 {% endif %}"
+        href="{% url 'dataflows:list' project.id %}"
+        >Dataflows</a
+      >
+      <a
+        class="{% if request.resolver_match.app_name == 'dashboards' %} text-blue-700 {% endif %}"
+        href="{% url 'dashboards:list' project.id %}"
+        >Dashboards</a
+      >
+    </div>
+  </nav>
+  <div class="p-4 w-full">{% block app %} {% endblock %}</div>
+</section>
+{% endblock body %}

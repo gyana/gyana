@@ -15,6 +15,9 @@ const DnDFlow = ({ client }) => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState([]);
 
+  const projectId = window.location.pathname.split("/")[2];
+  const dataflowId = window.location.pathname.split("/")[4];
+
   const onConnect = (params) => {
     const parents = elements
       .filter((el) => el.target === params.target)
@@ -22,7 +25,7 @@ const DnDFlow = ({ client }) => {
 
     client.action(
       window.schema,
-      ["dataflows", "api", "nodes", "partial_update"],
+      ["projects", "dataflows", "api", "nodes", "partial_update"],
       {
         id: params.target,
         parents: [...parents, params.source],
@@ -33,14 +36,16 @@ const DnDFlow = ({ client }) => {
     );
   };
 
-  const dataflowId = window.location.pathname.split("/")[2];
-
   const onElementsRemove = (elementsToRemove) => {
     setElements((els) => removeElements(elementsToRemove, els));
     elementsToRemove.forEach((el) => {
-      client.action(window.schema, ["dataflows", "api", "nodes", "delete"], {
-        id: el.id,
-      });
+      client.action(
+        window.schema,
+        ["projects", "dataflows", "api", "nodes", "delete"],
+        {
+          id: el.id,
+        }
+      );
     });
   };
 
@@ -60,12 +65,14 @@ const DnDFlow = ({ client }) => {
     });
   };
 
+  console.error(window.schema);
+
   const onDragStop = (event, node) => {
     const position = getPosition(event);
 
     client.action(
       window.schema,
-      ["dataflows", "api", "nodes", "partial_update"],
+      ["projects", "dataflows", "api", "nodes", "partial_update"],
       {
         id: node.id,
         x: position.x,
@@ -76,9 +83,13 @@ const DnDFlow = ({ client }) => {
 
   useEffect(() => {
     client
-      .action(window.schema, ["dataflows", "api", "nodes", "list"], {
-        dataflow: dataflowId,
-      })
+      .action(
+        window.schema,
+        ["projects", "dataflows", "api", "nodes", "list"],
+        {
+          dataflow: dataflowId,
+        }
+      )
       .then((result) => {
         const newElements = result.results.map((r) => ({
           id: `${r.id}`,
@@ -114,7 +125,7 @@ const DnDFlow = ({ client }) => {
 
     const result = await client.action(
       window.schema,
-      ["dataflows", "api", "nodes", "create"],
+      ["projects", "dataflows", "api", "nodes", "create"],
       {
         kind: type,
         dataflow: dataflowId,
@@ -149,13 +160,13 @@ const DnDFlow = ({ client }) => {
               document.getElementById("dataflow-node").setAttribute(
                 "src",
                 // TODO: populate URL from django reverse
-                `http://localhost:8000/dataflows/${dataflowId}/nodes/${element.id}`
+                `http://localhost:8000/projects/${projectId}/dataflows/${dataflowId}/nodes/${element.id}`
               );
 
               document.getElementById("dataflows-grid").setAttribute(
                 "src",
                 // TODO: populate URL from django reverse
-                `http://localhost:8000/dataflows/${dataflowId}/nodes/${element.id}/grid`
+                `http://localhost:8000/projects/${projectId}/dataflows/${dataflowId}/nodes/${element.id}/grid`
               );
             }}
           >

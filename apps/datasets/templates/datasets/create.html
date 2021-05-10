@@ -1,9 +1,8 @@
-{% extends "web/app/app_base.html" %}
+{% extends "web/app/project_base.html" %}
 <!---->
 {% load tailwind_filters %}
 <!---->
 {% block app %}
-<turbo-frame id="datasets">
 <h1>Create/Update</h1>
 {% if request.GET.kind %}
 <form
@@ -20,4 +19,4 @@
   >Google Sheets</a
 >
 <a href="{% url 'datasets:create' project.id %}?kind={{ dataset_kind.CSV }}">CSV</a>
-{% endif %} <turbo-frame>{% endblock %}
+{% endif %}{% endblock %}

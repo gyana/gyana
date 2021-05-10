@@ -47,16 +47,3 @@ class ProjectDelete(DeleteView):
     template_name = "projects/delete.html"
     model = Project
     success_url = reverse_lazy("projects:list")
-
-
-class ProjectTab(DetailView):
-    template_name = "projects/tab.html"
-    model = Project
-
-    def get_context_data(self, **kwargs):
-
-        context = super().get_context_data(**kwargs)
-        context["tab"] = self.kwargs["tab"]
-        context["src"] = f'{self.kwargs["tab"]}:list'
-
-        return context
