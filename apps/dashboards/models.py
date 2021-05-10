@@ -1,5 +1,6 @@
 from apps.projects.models import Project
 from django.db import models
+from django.urls import reverse
 
 
 class Dashboard(models.Model):
@@ -13,3 +14,6 @@ class Dashboard(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse("projects:dashboards:detail", args=(self.project.id, self.id))
