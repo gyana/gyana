@@ -60,8 +60,6 @@ const DnDFlow = ({ client }) => {
     });
   };
 
-  console.error(window.schema);
-
   const onDragStop = (event, node) => {
     const position = getPosition(event);
 
