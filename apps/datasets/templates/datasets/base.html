@@ -14,7 +14,10 @@
         href="{% url 'projects:datasets:data' project.id object.id %}">
         Data
     </a>
-    <a>Settings</a>
+    <a class="{% if request.resolver_match.url_name == 'settings' %} text-blue-700 {% endif %}"
+        href="{% url 'projects:datasets:settings' project.id object.id %}">
+        Settings
+    </a>
 </nav>
 {% block tab %}{% endblock %}
 {% endblock %}

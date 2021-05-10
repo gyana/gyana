@@ -81,7 +81,7 @@ class DatasetUpdate(ProjectMixin, TurboUpdateView):
             return CSVForm
 
     def get_success_url(self) -> str:
-        return reverse("projects:datasets:list", args=(self.project.id,))
+        return reverse("projects:datasets:settings", args=(self.project.id, self.object.id))
 
 
 class DatasetDelete(ProjectMixin, DeleteView):
@@ -99,6 +99,11 @@ class DatasetStructure(ProjectMixin, DetailView):
 
 class DatasetData(ProjectMixin, DetailView):
     template_name = "datasets/data.html"
+    model = Dataset
+
+
+class DatasetSettings(ProjectMixin, DetailView):
+    template_name = "datasets/settings.html"
     model = Dataset
 
 

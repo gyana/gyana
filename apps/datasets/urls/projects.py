@@ -11,4 +11,5 @@ urlpatterns = [
     path("<int:pk>/delete", views.DatasetDelete.as_view(), name="delete"),
     path("<int:pk>/structure", views.DatasetStructure.as_view(), name="structure"),
     path("<int:pk>/data", views.DatasetData.as_view(), name="data"),
+    path("<int:pk>/settings", views.DatasetSettings.as_view(), name="settings"),
 ]
