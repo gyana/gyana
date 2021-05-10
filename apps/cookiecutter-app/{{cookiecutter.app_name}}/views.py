@@ -6,6 +6,7 @@ from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .forms import {{ cookiecutter.model_name }}Form
 from .models import {{ cookiecutter.model_name }}
+from .tables import {{ cookiecutter.model_name }}Table
 
 
 class {{ cookiecutter.model_name }}List(SingleTableView):
