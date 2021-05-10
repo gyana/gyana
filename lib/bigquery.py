@@ -32,9 +32,7 @@ def sync_table(dataset: Dataset, external_table_id: str):
 
     with transaction.atomic():
 
-        try:
-            dataset.table
-        except Table.DoesNotExist:
+        if not dataset.table_set.exists():
             table = Table(
                 source=Table.Source.DATASET,
                 bq_table=table_id,
@@ -83,14 +81,12 @@ def create_external_table(dataset: Dataset) -> str:
 
 def query_dataset(dataset: Dataset):
 
-    try:
-        dataset.table
-    except Table.DoesNotExist:
+    if not dataset.table_set.exists():
         external_table_id = create_external_table(dataset)
         sync_table(dataset, external_table_id)
 
     conn = ibis_client()
-    table = conn.table(dataset.table.bq_table)
+    table = conn.table(dataset.table_set.first().bq_table)
 
     return conn.execute(table.limit(DEFAULT_LIMIT))
 
