@@ -3,6 +3,7 @@ from apps.projects.models import Project
 from apps.tables.models import Table
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 
 
 class Dataflow(models.Model):
@@ -17,6 +18,9 @@ class Dataflow(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse("projects:dataflows:detail", args=(self.project.id, self.id))
 
 
 class Node(models.Model):

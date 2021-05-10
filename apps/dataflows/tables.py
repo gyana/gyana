@@ -1,15 +1,15 @@
 import django_tables2 as tables
 from apps.utils.table import NaturalDatetimeColumn
 
-from .models import Dataset
+from .models import Dataflow
 
 
-class DatasetTable(tables.Table):
+class DataflowTable(tables.Table):
     class Meta:
-        model = Dataset
-        fields = ("name", "kind", "last_synced", "created", "updated")
+        model = Dataflow
+        fields = ("name", "last_run", "created", "updated")
 
     name = tables.Column(linkify=True)
-    last_synced = NaturalDatetimeColumn()
+    last_run = NaturalDatetimeColumn()
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()

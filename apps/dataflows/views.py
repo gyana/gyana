@@ -3,17 +3,18 @@ from functools import cached_property
 
 import inflection
 from apps.dataflows.serializers import NodeSerializer
+from apps.dataflows.tables import DataflowTable
 from apps.projects.mixins import ProjectMixin
-from apps.tables.models import Table
 from django import forms
 from django.db import transaction
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
-from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView, ListView
+from django.urls import reverse
+from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView, UpdateView
+from django_tables2 import SingleTableView
 from lib.bigquery import run_dataflow
-from lib.clients import DATAFLOW_ID, bigquery_client, ibis_client
+from lib.clients import ibis_client
 from rest_framework import viewsets
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
@@ -23,9 +24,10 @@ from .models import Column, Dataflow, Node
 # CRUDL
 
 
-class DataflowList(ProjectMixin, ListView):
+class DataflowList(ProjectMixin, SingleTableView):
     template_name = "dataflows/list.html"
     model = Dataflow
+    table_class = DataflowTable
     paginate_by = 20
 
     def get_queryset(self) -> QuerySet:
