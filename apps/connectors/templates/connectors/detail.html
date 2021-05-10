@@ -11,11 +11,11 @@
   {% else %}
   <turbo-frame
     id="connectors:authorize"
-    src="{% url 'connectors:authorize' project.id connector.id %}?original_uri={{ request.get_full_path }}"
+    src="{% url 'connectors:authorize' connector.id %}?original_uri={{ request.get_full_path }}"
     target="_top"
   >
   </turbo-frame>
   {% endif %}
 </div>
-<a href="{% url 'connectors:list' project.id %}">List</a>
+<a href="{% url 'projects:connectors:list' project.id %}">List</a>
 {% endblock %}

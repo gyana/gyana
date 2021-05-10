@@ -99,7 +99,7 @@ class FivetranClient:
 
         backoff.on_predicate(backoff.expo, lambda x: x, max_time=3600)(
             self._is_historical_synced
-        )(self.connector.fivetran_id)
+        )()
 
         self.connector.historical_sync_complete = True
         self.connector.save()
