@@ -1,5 +1,5 @@
 {% extends "web/app/app_base.html" %}
-<!---->
+{% load humanize %}
 {% block app %}
 <div class="flex flex-row space-x-4">
   <h1 class="text-3xl font-bold mb-2">Projects</h1>
@@ -10,10 +10,8 @@
 <ul>
   {% for object in object_list %}
   <li class="border border-gray-500 p-2">
-    <p class="font-bold">{{ object }}</p>
-    <a href="{% url 'projects:detail' object.pk %}">Details</a>
-    <a href="{% url 'projects:update' object.pk %}">Update</a>
-    <a href="{% url 'projects:delete' object.pk %}">Delete</a>
+    <a href="{% url 'projects:detail' object.pk %}" class="font-bold">{{ object }}</a>
+    <p> created {{ object.created|naturaltime }} • update {{ object.updated|naturaltime }} </p>
   </li>
   {% empty %}
   <p>No items.</p>

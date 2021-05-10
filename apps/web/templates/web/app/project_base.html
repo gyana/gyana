@@ -30,6 +30,11 @@
         href="{% url 'projects:dashboards:list' project.id %}"
         >Dashboards</a
       >
+      <a
+        class="{% if request.resolver_match.app_name == 'projects' %} text-blue-700 {% endif %}"
+        href="{% url 'projects:settings' project.id %}"
+        >Settings</a
+      >
     </div>
   </nav>
   <div class="p-4 w-full">{% block app %} {% endblock %}</div>
