@@ -1,10 +1,10 @@
 from datetime import datetime
 
-from apps.workflows.models import Workflow, Node
 from apps.filters.models import Filter
 from apps.integrations.models import Integration
 from apps.tables.models import Table
 from apps.widgets.models import Widget
+from apps.workflows.models import Node, Workflow
 from django.conf import settings
 from django.db import transaction
 from google.cloud import bigquery
@@ -34,7 +34,7 @@ def sync_table(integration: Integration, external_table_id: str):
 
         if not integration.table_set.exists():
             table = Table(
-                source=Table.Source.DATASET,
+                source=Table.Source.INTEGRATION,
                 bq_table=table_id,
                 bq_dataset=DATASET_ID,
                 project=integration.project,
@@ -110,7 +110,7 @@ def run_workflow(workflow: Workflow):
             ).result()
 
             table = Table(
-                source=Table.Source.DATAFLOW_NODE,
+                source=Table.Source.WORKFLOW_NODE,
                 bq_table=table_id,
                 bq_dataset=DATAFLOW_ID,
                 project=workflow.project,

@@ -1,8 +1,12 @@
-{% extends "web/app/settings_base.html" %} {% load static %} {% load i18n %} {%
-block app %}
+{% extends "web/app/settings_base.html" %}
+{% load static %}
+{% load i18n %}
+{% block app %}
 <div id="team-content"></div>
-{{ api_urls|json_script:'api-urls' }} {% endblock %} {% block page_js %} {#
-NOTE: the rest framework imports must precede the react bundle #}
+{{ api_urls|json_script:'api-urls' }}
+{% endblock %}
+{% block page_js %}
+{# NOTE: the rest framework imports must precede the react bundle #}
 <script type="application/javascript">
   // initialize any page specific stuff here
   // static files that are used by the page javascript.

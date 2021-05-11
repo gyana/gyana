@@ -1,9 +1,14 @@
-{% extends "web/app/settings_base.html" %} {% load static %} {% load i18n %} {%
-block app %}
+{% extends "web/app/settings_base.html" %}
+{% load static %}
+{% load i18n %}
+{% block app %}
 <section class="app-card">
   <h1 class="title is-size-4">
-    {% if create %} {% trans "Create Team" %} {% else %} {% trans "Edit Team
-    Details" %} {% endif %}
+    {% if create %}
+      {% trans "Create Team" %}
+    {% else %}
+      {% trans "Edit Team Details" %}
+    {% endif %}
   </h1>
   <form method="post">
     {% csrf_token %}
@@ -30,8 +35,8 @@ block app %}
 </section>
 {% if not create %}
 <div id="team-content"></div>
-{% endif %} {% endblock %} {% block page_js %} {# NOTE: the rest framework
-imports must precede the react bundle #}
+{% endif %} {% endblock %} {% block page_js %}
+{# NOTE: the rest framework imports must precede the react bundle #}
 <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
 <script src="{% url 'api_schemajs' %}"></script>
 <script src="{% static 'js/teams-bundle.js' %}"></script>

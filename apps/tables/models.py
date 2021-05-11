@@ -6,8 +6,8 @@ from lib.clients import bigquery_client, ibis_client
 
 class Table(models.Model):
     class Source(models.TextChoices):
-        DATASET = "integration", "Integration"
-        DATAFLOW_NODE = "workflow_node", "Workflow node"
+        INTEGRATION = "integration", "Integration"
+        WORKFLOW_NODE = "workflow_node", "Workflow node"
 
     bq_table = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
     bq_dataset = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
