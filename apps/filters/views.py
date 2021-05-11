@@ -49,7 +49,9 @@ class FilterCreate(WidgetMixin, TurboCreateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["columns"] = [(f.name, f.name) for f in self.widget.table.get_bq_schema()]
+        kwargs["columns"] = [
+            (f.name, f.name) for f in self.widget.table.get_bq_schema()
+        ]
         return kwargs
 
     def get_initial(self):
@@ -86,7 +88,9 @@ class FilterUpdate(WidgetMixin, TurboUpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["columns"] = [(f.name, f.name) for f in self.widget.table.get_bq_schema()]
+        kwargs["columns"] = [
+            (f.name, f.name) for f in self.widget.table.get_bq_schema()
+        ]
         return kwargs
 
     def form_valid(self, form: forms.Form) -> HttpResponse:

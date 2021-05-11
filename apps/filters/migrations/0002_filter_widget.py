@@ -9,14 +9,16 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('filters', '0001_initial'),
-        ('widgets', '0001_initial'),
+        ("filters", "0001_initial"),
+        ("widgets", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='filter',
-            name='widget',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='widgets.widget'),
+            model_name="filter",
+            name="widget",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="widgets.widget"
+            ),
         ),
     ]
