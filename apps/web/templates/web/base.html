@@ -28,17 +28,19 @@
   {% block top_nav %}
   {% include 'web/components/navbar.html' %}
   {% endblock %}
+
   {% block messages %}
   {% include 'web/components/messages.html' %}
   {% endblock messages %}
-  {% block body %}
-  {% endblock body %}
+
+  {% block body %}{% endblock body %}
+
   {% block footer %}
   {% include 'web/components/footer.html' %}
   {% endblock footer %}
+
   {% endblock body_wrapper %}
-  {% block page_js %}
-  {% endblock page_js %}
+  {% block page_js %}{% endblock page_js %}
   {% include 'web/components/messages-js.html' %}
 </body>
 

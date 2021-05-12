@@ -1,5 +1,10 @@
 {% extends "web/base.html" %}
 {% load static %}
+
+{% block top_nav %}
+{# Getting rid of the top navigation bar here. #}
+{% endblock %}
+
 {% block body %}
-  {% include 'web/components/hero.html' %}
+{% include 'web/components/hero.html' %}
 {% endblock %}
