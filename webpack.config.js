@@ -9,6 +9,7 @@ module.exports = {
   },
   entry: {
     style: "./assets/styles/style.scss",
+    tailwind: "./assets/styles/vendors/tailwind.pcss",
     app: "./assets/javascript/app.ts",
     teams: "./assets/javascript/teams/teams.tsx",
     "edit-team": "./assets/javascript/teams/edit-team.tsx",
@@ -43,8 +44,15 @@ module.exports = {
         use: [
           MiniCssExtractPlugin.loader,
           "css-loader",
-          "postcss-loader",
           "sass-loader",
+        ],
+      },
+      {
+        test: /\.pcss$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          "postcss-loader",
         ],
       },
     ],
