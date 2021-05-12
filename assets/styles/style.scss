@@ -1,7 +1,7 @@
 @charset "utf-8";
 
-@import "utilities/colours";
-@import "utilities/variables";
+@use "utilities/colours";
+@use "utilities/variables";
 
-@import "components/navbar";
-@import "components/button";
+@use "components/navbar";
+@use "components/button";

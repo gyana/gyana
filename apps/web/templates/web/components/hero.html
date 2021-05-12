@@ -4,11 +4,12 @@
     <div class="w-1/2 px-4">
       <h1 class="title">{{ project_meta.NAME }}</h1>
       <h2 class="subtitle py-2">{{ project_meta.DESCRIPTION }}</h2>
+
       <div class="flex items-center space-x-4 my-2">
-        <a href="{% url 'account_signup' %}" class="button button--primary text-2xl">
+        <a href="{% url 'account_signup' %}" class="button button--filled">
           Create account
         </a>
-        <a href="{% url 'account_login' %}" class="button button--primary is-outlined text-2xl">
+        <a href="{% url 'account_login' %}" class="button">
           Sign in
         </a>
       </div>
