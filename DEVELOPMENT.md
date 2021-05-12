@@ -48,6 +48,14 @@ createdb gyana
 python manage.py migrate
 ```
 
+Make sure to authenticate using gcloud and generate the relevant env variables:
+
+```bash
+gcloud auth login
+gcloud config set project gyana-1511894275181
+just env
+```
+
 Next create a bigquery dataset. We use the git config email as slug to effectively namespace dev environments from eachother in the cloud.
 
 ```bash
