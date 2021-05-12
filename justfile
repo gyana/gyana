@@ -1,4 +1,11 @@
+# Repository-wide commands.
+# Read https://github.com/casey/just#quick-start before editing.
+
 service_account := "gyana-1511894275181-50f107d4db00.json"
+
+# Default command, do not add any commands above it.
+default:
+  @just dev
 
 mk_bq:
     python ./manage.py make_bq_dataset
