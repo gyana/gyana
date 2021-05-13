@@ -1,17 +1,19 @@
-@layer components {
-  .navbar {
-    @apply shadow-md;
+.navbar {
+  align-items: center;
+  border-bottom: 1px solid var(--c-gray);
+  display: flex;
+  height: 3.25rem;
+  padding: 0 1rem;
 
-    &__title {
-      @apply text-blue-700 uppercase text-2xl  tracking-widest;
-    }
+  &__title {
+    color: var(--c-blue);
+    margin: 0 auto 0 0;
+    text-transform: uppercase;
+  }
 
-    &__menu {
-      @apply h-full flex items-center space-x-2;
-    }
-    
-    &__item {
-      @apply h-full align-middle px-4 text-blue-700 flex items-center;
-    }
+  &__menu {
+    align-items: center;
+    display: inline-flex;
+    gap: 1rem;
   }
 }

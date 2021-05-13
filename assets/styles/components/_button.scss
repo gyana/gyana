@@ -15,6 +15,7 @@ $button-colors: (
   display: inline-flex;
   font-size: 1rem;
   font-weight: 500;
+  gap: 0.5em;
   justify-content: center;
   line-height: 20px;
   padding: 0.625em 1.875em;
@@ -50,23 +51,26 @@ $button-colors: (
       --button-color: #{$value};
     }
   }
-}
 
-// Variants
-.button--square {
-  padding: 0.75em 1.875em;
-  border-radius: 6px;
-}
-
-.button--circle {
-  height: 2em;
-  padding: 0.625em;
-  width: 2em;
+  &--tertiary {
+    border-color: var(--c-gray);
+  }
 }
 
 // Sizes
 .button--sm {
   font-size: 0.875rem;
-  line-height: 16px;
+  line-height: 1rem;
+  max-height: 2em;
   padding: 0.571428571em 1.14285714em;
+}
+
+// Variants 
+.button--square {
+  border-radius: 6px;
+  padding: 0.75em 1.875em;
+}
+
+.button--circle {
+  width: 2em;
 }
