@@ -3,7 +3,7 @@
 
 {% block notifications %}{% endblock %}
 
-<section class="flex h-screen w-screen overflow-hidden">
+<section class="flex flex-auto overflow-hidden">
   <nav class="w-52 flex-shrink-0 border-r border-gray pl-5 p-2 bg-white">
     <a class="text-sm text-blue hover:text-blue-50 transition-colors duration-100" href="{% url 'projects:list' %}">Back to projects</a>
     <h1 class="text-lg font-medium mb-2">{{ project.name }}</h1>
