@@ -1,8 +1,7 @@
 {% extends "web/base.html" %} {% load static %}
-<!-- -->
 {% block body %}
-<!--  -->
 {% block notifications %}{% endblock %}
+
 <section class="flex h-screen w-screen">
   <nav class="w-64 border-r border-gray-500 p-2">
     <p>
@@ -10,31 +9,20 @@
     </p>
     <h1 class="text-lg font-medium mb-2">{{ project.name }}</h1>
     <div class="space-y-2 mb-2 flex flex-col">
-      <a
-        class="{% if request.resolver_match.app_name == 'projects' %} text-blue-700 {% endif %}"
-        href="{% url 'projects:detail' project.id %}"
-        >Overview</a
-      >
-      <a
-        class="{% if request.resolver_match.app_name == 'projects:integrations' %} text-blue-700 {% endif %}"
-        href="{% url 'projects:integrations:list' project.id %}"
-        >Integrations</a
-      >
-      <a
-        class="{% if request.resolver_match.app_name == 'projects:workflows' %} text-blue-700 {% endif %}"
-        href="{% url 'projects:workflows:list' project.id %}"
-        >Workflows</a
-      >
-      <a
-        class="{% if request.resolver_match.app_name == 'projects:dashboards' %} text-blue-700 {% endif %}"
-        href="{% url 'projects:dashboards:list' project.id %}"
-        >Dashboards</a
-      >
-      <a
-        class="{% if request.resolver_match.app_name == 'projects' %} text-blue-700 {% endif %}"
-        href="{% url 'projects:settings' project.id %}"
-        >Settings</a
-      >
+      <a class="{% if request.resolver_match.app_name == 'projects' %} text-blue-700 {% endif %}"
+        href="{% url 'projects:detail' project.id %}">Overview</a>
+
+      <a class="{% if request.resolver_match.app_name == 'projects:integrations' %} text-blue-700 {% endif %}"
+        href="{% url 'projects:integrations:list' project.id %}">Integrations</a>
+
+      <a class="{% if request.resolver_match.app_name == 'projects:workflows' %} text-blue-700 {% endif %}"
+        href="{% url 'projects:workflows:list' project.id %}">Workflows</a>
+
+      <a class="{% if request.resolver_match.app_name == 'projects:dashboards' %} text-blue-700 {% endif %}"
+        href="{% url 'projects:dashboards:list' project.id %}">Dashboards</a>
+
+      <a class="{% if request.resolver_match.app_name == 'projects' %} text-blue-700 {% endif %}"
+        href="{% url 'projects:settings' project.id %}">Settings</a>
     </div>
   </nav>
   <div class="p-4 w-full">{% block app %} {% endblock %}</div>

@@ -1,17 +1,21 @@
 {% extends "web/app/app_base.html" %}
 {% load humanize %}
 {% block app %}
-<div class="flex flex-row space-x-4">
-  <h1 class="text-3xl font-bold mb-2">Projects</h1>
-  <button>
-    <a class="button--primary" href="{% url 'projects:create' %}">Create</a>
-  </button>
+
+<div class="flex items-center mt-4 mb-8">
+  <h1 class="inline text-3xl font-bold mr-4">Projects</h1>
+  <a class="button button--filled button--sm button--primary" href="{% url 'projects:create' %}">Create</a>
 </div>
+
 <ul>
   {% for object in object_list %}
-  <li class="border border-gray-500 p-2">
-    <a href="{% url 'projects:detail' object.pk %}" class="font-bold">{{ object }}</a>
-    <p> created {{ object.created|naturaltime }} • update {{ object.updated|naturaltime }} </p>
+
+  <li>
+    <a class="card" href="{% url 'projects:detail' object.pk %}">
+      <strong>{{ object }}</strong>
+
+      <p> created {{ object.created|naturaltime }} • update {{ object.updated|naturaltime }} </p>
+    </a>
   </li>
   {% empty %}
   <p>No items.</p>
@@ -22,17 +26,13 @@
 <div class="pagination">
   <span class="page-links">
     {% if page_obj.has_previous %}
-    <a href="{% url 'projects:list' %}?page={{ page_obj.previous_page_number }}"
-      >previous</a
-    >
+    <a href="{% url 'projects:list' %}?page={{ page_obj.previous_page_number }}">previous</a>
     {% endif %}
     <span class="page-current">
       Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
     </span>
     {% if page_obj.has_next %}
-    <a href="{% url 'projects:list' %}?page={{ page_obj.next_page_number }}"
-      >next</a
-    >
+    <a href="{% url 'projects:list' %}?page={{ page_obj.next_page_number }}">next</a>
     {% endif %}
   </span>
 </div>
