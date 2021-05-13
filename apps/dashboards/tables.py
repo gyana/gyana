@@ -8,6 +8,7 @@ class DashboardTable(tables.Table):
     class Meta:
         model = Dashboard
         fields = ("name", "created", "updated")
+        attrs = {"class": "table"}
 
     name = tables.Column(linkify=True)
     created = NaturalDatetimeColumn()

@@ -8,6 +8,7 @@ class IntegrationTable(tables.Table):
     class Meta:
         model = Integration
         fields = ("name", "kind", "last_synced", "created", "updated")
+        attrs = {"class": "table"}
 
     name = tables.Column(linkify=True)
     last_synced = NaturalDatetimeColumn()
