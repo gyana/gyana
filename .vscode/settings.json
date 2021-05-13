@@ -9,8 +9,13 @@
   "python.formatting.provider": "black",
   "python.languageServer": "Pylance",
   "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features"
+    "editor.defaultFormatter": "vscode.html-language-features",
+    "editor.rulers": [120]
   },
+  "html.format.templating": true,
+  "html.format.endWithNewline": true,
+  "html.format.wrapAttributes": "aligned-multiple",
+  "editor.linkedEditing": true,
   "files.associations": {
     "**/*.html": "html",
     "**/templates/**/*.html": "html",
