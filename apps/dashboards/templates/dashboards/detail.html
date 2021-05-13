@@ -1,8 +1,9 @@
 {% extends "web/app/project_base.html" %}
 {% load static %}
-<!---->
+
 {% block app %}
-<div class="flex items-center gap-4 mb-4">
+
+<div class="flex items-center gap-4 mb-8">
   <h1 class="text-2xl text-bold mr-auto">{{ object.name }}</h1>
 
   <a class="button button--square button--filled button--sm" data-turbo-frame="widgets"
@@ -17,7 +18,9 @@
   <turbo-frame id="widgets" {% if request.GET.widget_id %} src="{% url 'widgets:detail' request.GET.widget_id %}"
                {% else %} src="{% url 'widgets:list' %}" {% endif %}></turbo-frame>
 </div>
+
 {% endblock %}
+
 {% block page_js %}
 <script src="{% static "fusioncharts/fusioncharts.js" %}"></script>
 <script src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>

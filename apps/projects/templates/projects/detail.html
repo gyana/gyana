@@ -1,7 +1,15 @@
 {% extends "web/app/project_base.html" %}
 {% block app %}
 
-<h1>{{ project.name }}</h1>
+
+<div class="flex items-center gap-4 mb-8">
+  <h1 class="mr-auto">{{ project.name }}</h1>
+
+  <a class="button button--square button--sm button--filled" href="{% url 'projects:update' project.id %}">Update</a>
+  <a class="button button--square button--sm button--filled button--pink"
+     href="{% url 'projects:delete' project.id %}">Delete</a>
+</div>
+
 TODO: Project overview
 
 {% endblock %}
