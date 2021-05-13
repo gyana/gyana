@@ -4,6 +4,7 @@
 <!---->
 {% block app %}
 <h1>Create/Update</h1>
+<a href="{% url 'projects:dashboards:detail' project.id object.id %}">Back</a>
 <form
   method="post"
   action="{% url 'projects:dashboards:update' project.id object.id %}"

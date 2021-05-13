@@ -16,8 +16,7 @@
 
   <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-  <script src="https://use.fontawesome.com/72135c02f1.js"></script>
+  <script src="https://kit.fontawesome.com/b03f4cc8cd.js" crossorigin="anonymous"></script>
   <script type="module">
     import * as hotwiredTurbo from "https://cdn.skypack.dev/@hotwired/turbo";
   </script>
@@ -41,9 +40,7 @@
 
   {% block body %}{% endblock body %}
 
-  {% block footer %}
-  {% include 'web/components/footer.html' %}
-  {% endblock footer %}
+  {% block footer %}{% endblock footer %}
 
   {% endblock body_wrapper %}
   {% block page_js %}{% endblock page_js %}

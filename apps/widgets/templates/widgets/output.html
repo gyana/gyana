@@ -1,4 +1,13 @@
 <turbo-frame id="widgets:output-{{ widget.id }}">
-  <div id="{{widget.name}}-container" />
-  <div data-controller="turbo-issue-186-workaround">{{ chart|safe }}</div>
+  {% if chart %}
+  <div style="min-height:16rem;">
+    <div id="{{widget.name}}-container" />
+    <div data-controller="turbo-issue-186-workaround">{{ chart|safe }}</div>
+  </div>
+  {% else %}
+  <div class='flex flex-col items-center justify-center' style="min-height:16rem;">
+    <i class="far fa-lightbulb-exclamation text-yellow-300 mb-1 fa-2x"></i>
+    <p class="text-base text-gray-500">This widget needs to be <a class='text-blue underline' data-turbo-frame="widgets" href="{% url 'widgets:detail' object.pk %}">configured</a>!</p>
+  </div>
+  {% endif %}
 </turbo-frame>

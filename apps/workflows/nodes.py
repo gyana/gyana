@@ -61,12 +61,7 @@ def get_join_query(node):
 
 def aggregate(query, colname, computation):
     column = getattr(query, colname)
-    if computation == "sum":
-        return column.sum().name(colname)
-    elif computation == "count":
-        return column.count().name(colname)
-    elif computation == "average":
-        return column.mean().name(colname)
+    return getattr(column, computation)().name(colname)
 
 
 def get_group_query(node):

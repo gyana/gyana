@@ -1,6 +1,6 @@
-from apps.workflows.nodes import NODE_FROM_CONFIG
 from apps.projects.models import Project
 from apps.tables.models import Table
+from apps.workflows.nodes import NODE_FROM_CONFIG
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -86,9 +86,11 @@ class Column(models.Model):
 
 class FunctionColumn(models.Model):
     class Functions(models.TextChoices):
+        # These functions need to correspond to ibis Column methods
+        # https://ibis-project.org/docs/api.html
         SUM = "sum", "Sum"
         COUNT = "count", "Count"
-        AVG = "average", "Average"
+        MEAN = "mean", "Average"
 
     name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     function = models.CharField(max_length=20, choices=Functions.choices)

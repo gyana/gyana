@@ -1,30 +1,40 @@
 {% extends "widgets/base.html" %}
 <!---->
 {% block app %}
-<a href="{% url 'widgets:create' %}">Create</a>
 <ul class="flex flex-wrap">
   {% for object in object_list %}
-  <li class="w-1/2">
-    <turbo-frame
-      id="widgets:output-{{ object.id }}"
-      src="{% url 'widgets:output' object.id %}"
-    >
-      Loading...
-    </turbo-frame>
-    {{ object }}
-    <a
-      data-controller="url-search-params"
-      data-url-search-params-key-value="widget_id"
-      data-url-search-params-val-value="{{ object.pk }}"
-      data-action="click->url-search-params#add"
-      href="{% url 'widgets:detail' object.pk %}"
-      >Details</a
-    >
-    <a href="{% url 'widgets:update' object.pk %}">Update</a>
-    <a href="{% url 'widgets:delete' object.pk %}">Delete</a>
+  <li class="w-1/2 p-2 flex-grow">
+    <div class="flex flex-row border rounded-md border-gray-200">
+      <div class='flex flex-col p-4 w-full border-r border-gray-200'>
+        <div class="flex flex-row">
+          <h3 class="text-base font-medium">{{ object }}</h3>
+        </div>
+        <turbo-frame id="widgets:output-{{ object.id }}" src="{% url 'widgets:output' object.id %}">
+          <div class='w-full h-64 flex flex-col justify-center items-center'>
+            <i class="fad fa-spinner-third fa-spin mb-1"></i>
+            <p class='text-base text-gray-500'>Loading visualisation...</p>
+          </div>
+        </turbo-frame>
+      </div>
+      <div class='flex flex-col flex-shrink-0 bg-gray-50 p-4'>
+        <a class="my-1 text-sm text-gray-400 hover:text-gray-500" data-controller="url-search-params"
+          data-url-search-params-key-value="widget_id" data-url-search-params-val-value="{{ object.pk }}"
+          data-action="click->url-search-params#add" href="{% url 'widgets:detail' object.pk %}">Details</a>
+        <a class="my-1 text-sm text-gray-400 hover:text-gray-500" href="{% url 'widgets:update' object.pk %}">Update</a>
+        <a class="my-1 text-sm text-gray-400 hover:text-gray-500" href="{% url 'widgets:delete' object.pk %}">Delete</a>
+      </div>
+    </div>
   </li>
   {% empty %}
-  <p>No items.</p>
+  <div class="w-1/2 p-2">
+    <div class="flex flex-row border rounded-md border-gray-200">
+      <div class='w-full h-64 flex flex-col justify-center items-center'>
+        <i class="far fa-map-marker-question mb-1 fa-2x"></i>
+        <p class='text-base text-gray-500 mb-1'>This dashboard needs some widgets!</p>
+        <a class='text-blue underline' href="{% url 'widgets:create' %}">Create one</a>
+      </div>
+    </div>
+  </div>
   {% endfor %}
 </ul>
 
@@ -32,17 +42,13 @@
 <div class="pagination">
   <span class="page-links">
     {% if page_obj.has_previous %}
-    <a href="{% url 'widgets:list' %}?page={{ page_obj.previous_page_number }}"
-      >previous</a
-    >
+    <a href="{% url 'widgets:list' %}?page={{ page_obj.previous_page_number }}">previous</a>
     {% endif %}
     <span class="page-current">
       Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
     </span>
     {% if page_obj.has_next %}
-    <a href="{% url 'widgets:list' %}?page={{ page_obj.next_page_number }}"
-      >next</a
-    >
+    <a href="{% url 'widgets:list' %}?page={{ page_obj.next_page_number }}">next</a>
     {% endif %}
   </span>
 </div>

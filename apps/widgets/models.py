@@ -15,7 +15,7 @@ class Widget(models.Model):
         # https://ibis-project.org/docs/api.html#id2
         NONE = "none", "None"
         SUM = "sum", "Sum"
-        AVG = "mean", "Average"
+        MEAN = "mean", "Average"
 
     name = models.CharField(max_length=255)
     dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE)
@@ -36,3 +36,7 @@ class Widget(models.Model):
 
     def __str__(self):
         return self.name
+
+    def is_valid(self) -> bool:
+        """Returns bool stating whether this Widget is ready to be displayed"""
+        return self.kind and self.label and self.value and self.aggregator

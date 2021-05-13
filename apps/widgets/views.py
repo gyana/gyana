@@ -99,8 +99,9 @@ class WidgetOutput(DetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        df = query_widget(self.object)
-        chart = to_chart(df, self.object)
-        context_data["chart"] = chart.render()
+        if self.object.is_valid():
+            df = query_widget(self.object)
+            chart = to_chart(df, self.object)
+            context_data["chart"] = chart.render()
 
         return context_data

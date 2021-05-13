@@ -10,5 +10,13 @@
   "python.languageServer": "Pylance",
   "[html]": {
     "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[django-html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "files.associations": {
+    "**/*.html": "html",
+    "**/templates/**/*.html": "django-html",
+    "**/templates/**/*": "django-txt"
   }
 }
