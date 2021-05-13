@@ -82,7 +82,7 @@ const DnDFlow = ({ client }) => {
       .then((result) => {
         const newElements = result.results.map((r) => ({
           id: `${r.id}`,
-          type: "default",
+          type: ["input", "output"].includes(r.kind) ? r.kind : "default",
           data: { label: r.kind },
           position: { x: r.x, y: r.y },
         }));

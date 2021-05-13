@@ -38,6 +38,11 @@
 .dndflow .reactflow-wrapper {
   flex-grow: 1;
   height: 100%;
+  @apply bg-gray-50;
+}
+
+.react-flow__node {
+  @apply w-24 h-24;
 }
 
 @media screen and (min-width: 768px) {

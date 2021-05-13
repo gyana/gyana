@@ -8,7 +8,7 @@ from django import forms
 from django.forms.models import BaseInlineFormSet
 from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
 
-from .models import Column, Workflow, FunctionColumn, Node
+from .models import Column, FunctionColumn, Node, Workflow
 
 
 class WorkflowForm(forms.ModelForm):
@@ -58,10 +58,14 @@ class SelectNodeForm(NodeForm):
             widget=CheckboxSelectMultiple,
             initial=list(self.instance.columns.all().values_list("name", flat=True)),
         )
-        # Select(choices=self.columns)
 
-        # Now you can get your choices based on that object id
-        # self.fields['my_choice_field'].choices = your_get_choices_function(self.object_id)
+    def save(self, *args, **kwargs):
+        self.instance.columns.all().delete()
+        self.instance.columns.set(
+            [Column(name=name) for name in self.cleaned_data["select_columns"]],
+            bulk=False,
+        )
+        return super().save(*args, **kwargs)
 
 
 class JoinNodeForm(NodeForm):
