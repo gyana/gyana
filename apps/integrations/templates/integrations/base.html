@@ -6,6 +6,7 @@
     href="{% url 'projects:integrations:detail' project.id object.id %}">
     Overview
   </a>
+  {% if object.table_set.exists %}
   <a class="{% if request.resolver_match.url_name == 'structure' %} text-blue {% endif %}"
     href="{% url 'projects:integrations:structure' project.id object.id %}">
     Structure
@@ -14,6 +15,7 @@
     href="{% url 'projects:integrations:data' project.id object.id %}">
     Data
   </a>
+  {% endif %}
   <a class="{% if request.resolver_match.url_name == 'settings' %} text-blue {% endif %}"
     href="{% url 'projects:integrations:settings' project.id object.id %}">
     Settings

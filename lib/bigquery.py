@@ -81,10 +81,6 @@ def create_external_table(integration: Integration) -> str:
 
 def query_integration(integration: Integration):
 
-    if not integration.table_set.exists():
-        external_table_id = create_external_table(integration)
-        sync_table(integration, external_table_id)
-
     conn = ibis_client()
     table = conn.table(integration.table_set.first().bq_table)
 

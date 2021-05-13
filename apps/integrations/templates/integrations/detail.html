@@ -1,9 +1,12 @@
 {% extends "integrations/base.html" %}
-<!---->
 {% block tab %}
+{% if not object.table_set.exists %}
+Import your initial data:
+{% endif %}
 {% if object.kind == 'google_sheets' %}
 <turbo-frame id="integrations:sync" src="{% url 'integrations:sync' object.id %}"></turbo-frame>
-{% endif %} {% if object.kind == 'fivetran' %}
+{% endif %}
+{% if object.kind == 'fivetran' %}
 <div>
   {% if object.historical_sync_complete %}
   <div>Ready</div>
@@ -11,8 +14,8 @@
   <div>Syncing</div>
   {% else %}
   <turbo-frame id="integrations:authorize"
-               src="{% url 'integrations:authorize' integration.id %}?original_uri={{ request.get_full_path }}"
-               target="_top">
+              src="{% url 'integrations:authorize' integration.id %}?original_uri={{ request.get_full_path }}"
+              target="_top">
   </turbo-frame>
   {% endif %}
 </div>
