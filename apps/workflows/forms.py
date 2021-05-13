@@ -127,11 +127,19 @@ class GroupNodeForm(NodeForm):
         )
 
 
+class UnionNodeForm(NodeForm):
+    class Meta:
+        model = Node
+        fields = ["union_distinct"]
+        labels = {"union_distinct": "distinct"}
+
+
 KIND_TO_FORM = {
     "input": InputNodeForm,
     "output": OutputNodeForm,
     "select": SelectNodeForm,
     "join": JoinNodeForm,
     "group": GroupNodeForm,
+    "union": UnionNodeForm,
 }
 KIND_TO_FORMSETS = {"group": [FunctionColumnFormSet, ColumnFormSet]}

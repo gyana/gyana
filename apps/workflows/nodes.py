@@ -77,10 +77,21 @@ def get_group_query(node):
     return query.size()
 
 
+def get_union_query(node):
+    parents = node.parents.all()
+    query = parents[0].get_query()
+    colnames = query.schema()
+    for parent in parents[1:]:
+        query = query.union(parent.get_query(), distinct=node.union_distinct)
+    # Need to `select *`` so we can operate on the query
+    return query.projection(colnames)
+
+
 NODE_FROM_CONFIG = {
     "input": get_input_query,
     "output": get_output_query,
     "join": get_join_query,
     "group": get_group_query,
     "select": get_select_query,
+    "union": get_union_query,
 }

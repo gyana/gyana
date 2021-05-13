@@ -30,6 +30,7 @@ class Node(models.Model):
         SELECT = "select", "Select"
         JOIN = "join", "Join"
         GROUP = "group", "Group"
+        UNION = "union", "Union"
 
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE)
     kind = models.CharField(max_length=16, choices=Kind.choices)
@@ -67,6 +68,10 @@ class Node(models.Model):
     join_right = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
     )
+
+    # Union
+
+    union_distinct = models.BooleanField(default=False)
 
     def get_query(self):
         func = NODE_FROM_CONFIG[self.kind]
