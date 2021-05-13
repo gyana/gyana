@@ -8,7 +8,9 @@
 @use "components/button";
 @use "components/card";
 @use "components/navbar";
+@use "components/table";
 
 :root {
   background-color: var(--c-gray-10);
+  color: var(--c-black);
 }

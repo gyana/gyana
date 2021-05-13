@@ -1,0 +1,38 @@
+.table {
+  display: table;
+  width: 100%;
+
+  thead {
+    width: 100%;
+
+    th {
+      padding: 1em 0;
+      font-size: 0.75rem;
+      line-height: 0.875rem;
+      color: var(--c-black-20);
+      font-weight: normal;
+      text-align: left;
+    }
+  }
+
+  tbody {
+
+    td {
+      font-size: 0.875rem;
+      line-height: 1.125rem;
+    }
+
+    .even {
+      background-color: var(--c-gray-10);
+    }
+  }
+
+  td {
+    padding: 0.625em 0;
+  }
+
+  th:first-child,
+  td:first-child {
+    padding-left: 1em;
+  }
+}
