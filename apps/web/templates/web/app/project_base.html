@@ -11,7 +11,7 @@
     <div class="space-y-2 flex flex-col">
     {% with link_style="py-3 px-4 rounded-l-sm rounded-md" active_link_style="border-l-2 bg-blue-10 border-blue text-blue" inactive_link_style="border-l-2 border-transparent transition-colors duration-100 hover:border-blue hover:bg-blue-10 hover:text-blue" %}
       <a
-        class="{{link_style}} {% if request.resolver_match.app_name == 'projects' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
+        class="{{link_style}} {% if request.resolver_match.url_name == 'detail' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
         href="{% url 'projects:detail' project.id %}"
         >Overview</a
       >
@@ -31,7 +31,7 @@
         >Dashboards</a
       >
       <a
-        class="{{link_style}} {% if request.resolver_match.app_name == 'projects' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
+        class="{{link_style}} {% if request.resolver_match.url_name == 'settings' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
         href="{% url 'projects:settings' project.id %}"
         >Settings</a
       >
