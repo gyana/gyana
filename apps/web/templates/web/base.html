@@ -4,10 +4,9 @@
 
 <head>
   <meta charset="utf-8">
-  <!--IE compatibility-->
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <!--Mobile friendly-->
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   {% include 'web/components/meta.html' %}
   {% include 'web/components/favicon.html' %}
 
@@ -16,16 +15,18 @@
 
   <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
   <script src="https://kit.fontawesome.com/b03f4cc8cd.js" crossorigin="anonymous"></script>
   <script type="module">
     import * as hotwiredTurbo from "https://cdn.skypack.dev/@hotwired/turbo";
   </script>
   <script src="{% static 'js/stimulus-bundle.js' %}"></script>
+
   {% if GOOGLE_ANALYTICS_ID %}
   {% include 'web/components/google_analytics.html' %}
   {% endif %}
-  {% block page_head %}
-  {% endblock %}
+
+  {% block page_head %}{% endblock %}
 </head>
 
 <body class="flex flex-col h-full">
