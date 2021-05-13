@@ -8,7 +8,7 @@ $button-colors: (
 
 .button {
   --button-color: var(--c-blue);
-  --button-background: var(--c-white);
+  --button-background: var(--c-transparent);
 
   align-items: center;
   border-radius: 50px;
@@ -32,7 +32,7 @@ $button-colors: (
   &:disabled,
   &.disabled {
     --button-color: var(--c-black-10);
-    --button-background: var(--c-white);
+    --button-background: var(--c-transparent);
   }
 
   &[href] {
