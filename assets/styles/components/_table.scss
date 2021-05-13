@@ -1,34 +1,30 @@
 .table {
-  display: table;
+  display: table; // Reset just in case another class overrides this.
   width: 100%;
 
   thead {
     width: 100%;
 
     th {
-      padding: 1em 0;
-      font-size: 0.75rem;
-      line-height: 0.875rem;
       color: var(--c-black-20);
+      font-size: 0.75rem;
       font-weight: normal;
+      line-height: 0.875rem;
+      padding: 1em 0;
       text-align: left;
     }
   }
 
   tbody {
-
     td {
       font-size: 0.875rem;
       line-height: 1.125rem;
+      padding: 0.625em 0;
     }
 
     .even {
       background-color: var(--c-gray-10);
     }
-  }
-
-  td {
-    padding: 0.625em 0;
   }
 
   th:first-child,
