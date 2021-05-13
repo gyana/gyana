@@ -2,16 +2,10 @@
 {% load humanize %}
 {% block app %}
 
-<section class="page-list">
-  <h1 class="page-list__title">Projects</h1>
-
-  <a class="button button--orange">
-    Click me
-  </a>
-</section>
-
-<h1 class="inline">Projects</h1>
-<a class="button button--sm ml-4" href="{% url 'projects:create' %}">Create</a>
+<div class="flex items-center">
+  <h1 class="mr-auto">Projects</h1>
+  <a class="button button--square button--filled button--sm" href="{% url 'projects:create' %}">Create</a>
+</div>
 
 <ul class="card mt-4">
   {% for object in object_list %}
