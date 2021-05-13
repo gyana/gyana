@@ -1,28 +1,26 @@
-{% extends "web/base.html" %} {% load static %}
-<!-- -->
+{% extends "web/base.html" %}
+{% load static %}
 {% block body %}
-<!--  -->
+
 {% block notifications %}{% endblock %}
-<section class="section">
-  <div class="container">
+
+<section>
+  <div class="p-4">
     <div id="app-content">
       {% if object.project %}
       <p class="text-sm mb-2">
-        <a
-          href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}"
-          >Back to {{object.project.name }}</a
-        >
+        <a href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}">Back to
+          {{object.project.name }}</a>
       </p>
       <p>
-        <a
-          href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}"
-          >{{ request.resolver_match.app_name|title }}</a
-        >
+        <a href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}">{{
+          request.resolver_match.app_name|title }}</a>
       </p>
       {% endif %}
-      <!--  -->
-      {% block app %} {% endblock %}
+
+      {% block app %}{% endblock %}
     </div>
   </div>
 </section>
+
 {% endblock body %}

@@ -5,14 +5,14 @@
 <h1 class="inline">Projects</h1>
 <a class="button button--sm ml-4" href="{% url 'projects:create' %}">Create</a>
 
-<ul>
+<ul class="card mt-4">
   {% for object in object_list %}
 
-  <li>
-    <a class="card" href="{% url 'projects:detail' object.pk %}">
+  <li class="mb-4">
+    <a class="inline-block" href="{% url 'projects:detail' object.pk %}">
       <strong>{{ object }}</strong>
 
-      <p> created {{ object.created|naturaltime }} • update {{ object.updated|naturaltime }} </p>
+      <p>created {{ object.created|naturaltime }} • updated {{ object.updated|naturaltime }}</p>
     </a>
   </li>
   {% empty %}
