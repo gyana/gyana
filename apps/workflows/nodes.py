@@ -83,8 +83,16 @@ def get_union_query(node):
     colnames = query.schema()
     for parent in parents[1:]:
         query = query.union(parent.get_query(), distinct=node.union_distinct)
-    # Need to `select *`` so we can operate on the query
+    # Need to `select *` so we can operate on the query
     return query.projection(colnames)
+
+
+def get_sort_query(node):
+    query = node.parents.first().get_query()
+    sort_columns = [
+        (getattr(query, s.name), s.ascending) for s in node.sort_columns.all()
+    ]
+    return query.sort_by(sort_columns)
 
 
 NODE_FROM_CONFIG = {
@@ -94,4 +102,5 @@ NODE_FROM_CONFIG = {
     "group": get_group_query,
     "select": get_select_query,
     "union": get_union_query,
+    "sort": get_sort_query,
 }

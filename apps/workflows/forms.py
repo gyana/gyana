@@ -8,7 +8,7 @@ from django import forms
 from django.forms.models import BaseInlineFormSet
 from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
 
-from .models import Column, FunctionColumn, Node, Workflow
+from .models import Column, FunctionColumn, Node, SortColumn, Workflow
 
 
 class WorkflowForm(forms.ModelForm):
@@ -127,6 +127,28 @@ class GroupNodeForm(NodeForm):
         )
 
 
+SortColumnFormSet = forms.inlineformset_factory(
+    Node,
+    SortColumn,
+    fields=("name", "ascending"),
+    can_delete=True,
+    extra=1,
+    formset=InlineColumnFormset,
+)
+
+
+class SortNodeForm(NodeForm):
+    class Meta:
+        model = Node
+        fields = []
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper.layout = Layout(
+            Fieldset("Add columns", Formset("sort_column_form_form_set")),
+        )
+
+
 class UnionNodeForm(NodeForm):
     class Meta:
         model = Node
@@ -141,5 +163,9 @@ KIND_TO_FORM = {
     "join": JoinNodeForm,
     "group": GroupNodeForm,
     "union": UnionNodeForm,
+    "sort": SortNodeForm,
 }
-KIND_TO_FORMSETS = {"group": [FunctionColumnFormSet, ColumnFormSet]}
+KIND_TO_FORMSETS = {
+    "group": [FunctionColumnFormSet, ColumnFormSet],
+    "sort": [SortColumnFormSet],
+}
