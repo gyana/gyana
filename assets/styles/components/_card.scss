@@ -4,4 +4,9 @@
   border: 1px solid var(--c-gray);
   display: block;
   padding: 1.875rem;
+
+  // Sizes
+  &--sm {
+    padding: 1rem;
+  }
 }
