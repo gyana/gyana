@@ -42,7 +42,7 @@ $button-colors: (
   &--filled {
     background-color: var(--button-color);
     border: 1px solid transparent;
-    color: var(--button-background);
+    color: var(--c-white);
   }
 
   // Colour variant generation
