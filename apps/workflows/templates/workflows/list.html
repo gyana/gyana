@@ -1,6 +1,6 @@
 {% extends "web/app/project_base.html" %}
 {% load render_table from django_tables2 %}
 {% block app %}
-<h1 class="text-2xl font-bold">Workflows</h1>
-<a href="{% url 'projects:workflows:create' project.id  %}">Create</a>
+<h1 class="inline">Workflows</h1>
+<a class="button button--sm ml-4" href="{% url 'projects:workflows:create' project.id  %}">Create</a>
 {% render_table table %}{% endblock %}

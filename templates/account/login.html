@@ -3,49 +3,49 @@
 {% load socialaccount %}
 
 {% block body %}
-  <div class="flex justify-center my-8 ">
-    <div class="w-96 px-4 py-4 bg-white">
-      <div>
-        <h2 class="mt-6 text-center text-2xl font-bold text-gray-900">
-          Sign in
-        </h2>
-        <form class="mt-6 space-y-6" method="post">
-          {% csrf_token %}
-          {{ form.non_field_errors }}
-          <div class="">
-            <div>
-              <label for="email-address" class="sr-only">Email address</label>
-              {{ form.login }}
-              {{ form.login.errors }}
-            </div>
-            <div>
-              <label for="password" class="sr-only">Password</label>
-              {{ form.password }}
-              {{ form.password.errors }}
-            </div>
+<div class="flex justify-center my-8 ">
+  <div class="w-96 px-4 py-4 bg-white">
+    <div>
+      <h2 class="mt-6 text-center text-2xl  text-gray-900">
+        Sign in
+      </h2>
+      <form class="mt-6 space-y-6" method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="">
+          <div>
+            <label for="email-address" class="sr-only">Email address</label>
+            {{ form.login }}
+            {{ form.login.errors }}
           </div>
           <div>
-            <button type="submit"
-                    class="button button--primary w-full">
-              Sign in
-            </button>
-
-
-            <p class="text-center text-gray-500 my-2">or</p>
-            <a class="button button--primary is-outlined w-full flex justify-center" href="{% provider_login_url 'google' %}">
-               <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
-              Sign In with Google
-            </a>
-
-
+            <label for="password" class="sr-only">Password</label>
+            {{ form.password }}
+            {{ form.password.errors }}
           </div>
-        </form>
-        <div class="text-sm mt-4">
-          <a href="{% url 'account_reset_password' %}" class="font-medium text-blue-700 hover:text-blue-500">
-            Forgot password?
-          </a>
         </div>
+        <div>
+          <button type="submit" class="button button--primary w-full">
+            Sign in
+          </button>
+
+
+          <p class="text-center text-gray-500 my-2">or</p>
+          <a class="button button--primary is-outlined w-full flex justify-center"
+            href="{% provider_login_url 'google' %}">
+            <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
+            Sign In with Google
+          </a>
+
+
+        </div>
+      </form>
+      <div class="text-sm mt-4">
+        <a href="{% url 'account_reset_password' %}" class="font-medium text-blue-700 hover:text-blue-500">
+          Forgot password?
+        </a>
       </div>
     </div>
   </div>
+</div>
 {% endblock %}

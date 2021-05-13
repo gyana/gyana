@@ -1,27 +1,19 @@
 {% extends "widgets/base.html" %}
 <!---->
 {% block app %}
-<a
-  data-controller="url-search-params"
-  data-url-search-params-key-value="widget_id"
-  data-action="click->url-search-params#remove"
-  href="{% url 'widgets:list' %}"
-  >Back</a
->
-<h2 class="text-xl font-bold">{{ object.name }}</h2>
+<a data-controller="url-search-params" data-url-search-params-key-value="widget_id"
+  data-action="click->url-search-params#remove" href="{% url 'widgets:list' %}">Back</a>
+<h2 class="text-xl ">{{ object.name }}</h2>
 <div class="flex flex-wrap">
   <div class="w-1/2">
-    <h3 class="font-bold">Config</h3>
+    <h3 class="">Config</h3>
     <turbo-frame id="widgets:config" src="{% url 'widgets:config' object.id %}">
     </turbo-frame>
-    <h3 class="font-bold">Filters</h3>
+    <h3 class="">Filters</h3>
     <turbo-frame id="filters" src="{% url 'filters:list' %}"> </turbo-frame>
   </div>
   <div class="w-1/2">
-    <turbo-frame
-      id="widgets:output-{{ widget.id }}"
-      src="{% url 'widgets:output' object.id %}"
-    >
+    <turbo-frame id="widgets:output-{{ widget.id }}" src="{% url 'widgets:output' object.id %}">
       Loading...
     </turbo-frame>
   </div>

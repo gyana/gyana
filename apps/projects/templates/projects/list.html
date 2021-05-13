@@ -2,10 +2,8 @@
 {% load humanize %}
 {% block app %}
 
-<div class="flex items-center mt-4 mb-8">
-  <h1 class="inline text-3xl font-bold mr-4">Projects</h1>
-  <a class="button button--filled button--sm button--primary" href="{% url 'projects:create' %}">Create</a>
-</div>
+<h1 class="inline">Projects</h1>
+<a class="button button--sm ml-4" href="{% url 'projects:create' %}">Create</a>
 
 <ul>
   {% for object in object_list %}

@@ -9,7 +9,7 @@
     </p>
     <h1 class="text-lg font-medium mb-2">{{ project.name }}</h1>
     <div class="space-y-2 flex flex-col">
-    {% with link_style="py-3 px-4 border-l-2 my-2 rounded-l-sm rounded-md border-transparent" active_link_style="bg-blue-100 border-blue-600 text-blue-700" inactive_link_style="transition-colors duration-100 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600" %}
+    {% with link_style="py-3 px-4 border-l-2 rounded-l-sm rounded-md border-transparent" active_link_style="bg-blue-100 border-blue-600 text-blue-700" inactive_link_style="transition-colors duration-100 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600" %}
       <a
         class="{{link_style}} {% if request.resolver_match.app_name == 'projects' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
         href="{% url 'projects:detail' project.id %}"
