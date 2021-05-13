@@ -7,6 +7,15 @@ This section will be extended in the future, for now I reccomend reading:
 
 A great file to get to grips with the BEM methadology is [navbar.scss](components/_navbar.scss)
 
+## Component styling
+
+Simple, visual components should have their own SCSS stylesheet (see `_button.scss`), following
+bootstrap conventions in creating a base style with generated colour variants on top.
+
+## Page styling
+
+TBD
+
 ## React styling
 
 React components should use the individual stylesheets located in the same directory as the
