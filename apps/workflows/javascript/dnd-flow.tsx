@@ -4,6 +4,9 @@ import ReactFlow, {
   addEdge,
   removeElements,
   Controls,
+  Handle,
+  NodeProps,
+  Position,
 } from "react-flow-renderer";
 
 import Sidebar from "./sidebar";
@@ -138,6 +141,7 @@ const DnDFlow = ({ client }) => {
       <ReactFlowProvider>
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
           <ReactFlow
+            nodeTypes={defaultNodeTypes}
             elements={elements}
             onConnect={onConnect}
             onElementsRemove={onElementsRemove}
@@ -166,6 +170,55 @@ const DnDFlow = ({ client }) => {
       </ReactFlowProvider>
     </div>
   );
+};
+
+const InputNode = ({ data, isConnectable }: NodeProps) => (
+  <>
+    {data.label}
+    <Handle
+      type="source"
+      position={Position.Right}
+      isConnectable={isConnectable}
+    />
+  </>
+);
+
+const OutputNode = ({ data, isConnectable }: NodeProps) => (
+  <>
+    <Handle
+      type="target"
+      position={Position.Left}
+      isConnectable={isConnectable}
+    />
+    {data.label}
+  </>
+);
+
+const DefaultNode = ({
+  data,
+  isConnectable,
+  targetPosition = Position.Left,
+  sourcePosition = Position.Right,
+}: NodeProps) => (
+  <>
+    <Handle
+      type="target"
+      position={targetPosition}
+      isConnectable={isConnectable}
+    />
+    {data.label}
+    <Handle
+      type="source"
+      position={sourcePosition}
+      isConnectable={isConnectable}
+    />
+  </>
+);
+
+const defaultNodeTypes = {
+  input: InputNode,
+  output: OutputNode,
+  default: DefaultNode,
 };
 
 export default DnDFlow;
