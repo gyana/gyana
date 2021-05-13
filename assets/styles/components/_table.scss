@@ -13,6 +13,25 @@
       padding: 1em 0;
       text-align: left;
     }
+
+    .orderable {
+      a::after {
+        content: '\f0dc';
+        display: inline;
+        font-family: "Font Awesome 5 Pro";
+        font-weight: 900;
+        margin-left: 0.5em;
+        position: relative;
+      }
+
+      &.asc a::after {
+        content: '\f0de';
+      }
+
+      &.desc a::after {
+        content: '\f0dd';
+      }
+    }
   }
 
   tbody {
