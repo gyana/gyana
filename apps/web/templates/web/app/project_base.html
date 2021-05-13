@@ -1,15 +1,15 @@
 {% extends "web/base.html" %} {% load static %}
 {% block body %}
+
 {% block notifications %}{% endblock %}
 
 <section class="flex h-screen w-screen overflow-hidden">
-  <nav class="w-52 flex-shrink-0 border-r border-gray-300 pl-5 p-2 bg-white">
-    <p>
-      <a class="text-sm text-blue-600 hover:text-blue-700 transition-colors duration-100" href="{% url 'projects:list' %}">Back to projects</a>
-    </p>
+  <nav class="w-52 flex-shrink-0 border-r border-gray pl-5 p-2 bg-white">
+    <a class="text-sm text-blue hover:text-blue-50 transition-colors duration-100" href="{% url 'projects:list' %}">Back to projects</a>
     <h1 class="text-lg font-medium mb-2">{{ project.name }}</h1>
+
     <div class="space-y-2 flex flex-col">
-    {% with link_style="py-3 px-4 border-l-2 rounded-l-sm rounded-md border-transparent" active_link_style="bg-blue-100 border-blue-600 text-blue-700" inactive_link_style="transition-colors duration-100 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600" %}
+    {% with link_style="py-3 px-4 border-l-2 rounded-l-sm rounded-md border-transparent" active_link_style="bg-blue-10 border-blue text-blue" inactive_link_style="transition-colors duration-100 hover:border-blue hover:bg-blue-50 hover:text-blue" %}
       <a
         class="{{link_style}} {% if request.resolver_match.app_name == 'projects' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
         href="{% url 'projects:detail' project.id %}"
