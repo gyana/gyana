@@ -5,6 +5,11 @@
   </a>
 
   <div class="navbar__menu">
+    <a class="navbar__item {% if 'projects' in request.resolver_match.route %} navbar__item--active {% endif %}"
+      href="{% url 'projects:list' %}">Projects</a>
+  </div>
+
+  <div class="navbar__menu">
     {% if user.is_authenticated %}
     <a class="button button--tertiary button--sm" href="{% url 'users:user_profile' %}">
       <i class="fas fa-fw fa-cog"></i> Settings
@@ -16,154 +21,8 @@
     <a href="{% url 'account_login' %}" class="button"> Sign in </a>
     {% endif %}
 
-    <a class="navbar__item button button--tertiary button--circle button--sm" href="https://gyana.com/">
+    <a class="button button--tertiary button--circle button--sm" href="https://gyana.com/">
       <i class="fas fa-fw fa-question"></i>
     </a>
   </div>
 </nav>
-
-{% comment %}
-<nav class="bg-blue-50">
-  <div class="flex items-center justify-between max-w-7xl mx-auto px-2 flex-wrap sm:px-6 lg:px-8 py-4">
-    <a class="font-semibold text-xl tracking-tight flex-shrink-0 text-blue-500 mr-6 hover:text-blue"
-      href="{% url 'web:home' %}">
-      {{project_meta.NAME}}
-    </a>
-    <div class="block lg:hidden">
-      <button
-        class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white">
-        <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <title>Menu</title>
-          <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-        </svg>
-      </button>
-    </div>
-    <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
-      <div class="text-sm lg:flex-grow">
-        {#
-        <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">#}
-          {# Docs#} {# </a>#} {#
-        <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">#}
-          {# Examples#} {# </a>#} {#
-        <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white">#} {#
-          Blog#} {# </a>#}
-      </div>
-      <div>
-        <a href="{% url 'account_signup' %}"
-          class="ml-3 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700">
-          Sign up
-        </a>
-        <a href="{% url 'account_login' %}"
-          class="px-4 py-2 rounded-md whitespace-nowrap text-base font-medium text-blue-500 hover:text-blue">
-          Sign in
-        </a>
-      </div>
-    </div>
-  </div>
-</nav>
-{% endcomment %} {% comment %}
-<nav class="bg-gray-800">
-  <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-    <div class="relative flex items-center justify-between h-16">
-      <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
-        <!-- Mobile menu button-->
-        <button
-          class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-          aria-expanded="false">
-          <span class="sr-only">Open main menu</span>
-          <!-- Icon when menu is closed. -->
-          <!--
-            Heroicon name: menu
-
-            Menu open: "hidden", Menu closed: "block"
-          -->
-          <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-          <!-- Icon when menu is open. -->
-          <!--
-            Heroicon name: x
-
-            Menu open: "block", Menu closed: "hidden"
-          -->
-          <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-      <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-        <a class="flex-shrink-0 flex items-center text-white hover:text-white px-3 py-2 rounded-md hover:bg-gray-700"
-          href="{% url 'web:home' %}">
-          {{project_meta.NAME}}
-        </a>
-      </div>
-      <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-        {% if user.is_authenticated %}
-        <a href="#"
-          class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">Examples
-          Gallery</a>
-        <!-- Profile dropdown -->
-        <div class="ml-3 relative">
-          <div>
-            <button
-              class="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
-              id="user-menu" aria-haspopup="true">
-              <span class="sr-only">Open user menu</span>
-              <img class="h-8 w-8 rounded-full"
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt="" />
-            </button>
-          </div>
-          <!--
-            Profile dropdown panel, show/hide based on dropdown state.
-
-            Entering: "transition ease-out duration-100"
-              From: "transform opacity-0 scale-95"
-              To: "transform opacity-100 scale-100"
-            Leaving: "transition ease-in duration-75"
-              From: "transform opacity-100 scale-100"
-              To: "transform opacity-0 scale-95"
-          -->
-          <div
-            class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5"
-            role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your Profile</a>
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
-          </div>
-        </div>
-        {% else %}
-        <div class="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
-          <a href="{% url 'account_signup' %}"
-            class="ml-3 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">
-            Sign up
-          </a>
-          <a href="{% url 'account_login' %}"
-            class="px-4 py-2 rounded-md whitespace-nowrap text-base font-medium text-gray-300 hover:text-white">
-            Sign in
-          </a>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-  <!--
-    Mobile menu, toggle classes based on menu state.
-
-    Menu open: "block", Menu closed: "hidden"
-  -->
-  <div class="hidden sm:hidden">
-    <div class="px-2 pt-2 pb-3 space-y-1">
-      <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-gray-900">Dashboard</a>
-      <a href="#"
-        class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Team</a>
-      <a href="#"
-        class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Projects</a>
-      <a href="#"
-        class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Calendar</a>
-    </div>
-  </div>
-</nav>
-{% endcomment %}
