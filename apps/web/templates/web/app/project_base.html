@@ -5,37 +5,23 @@
 
 <section class="flex flex-auto overflow-hidden">
   <nav class="w-52 flex-shrink-0 border-r border-gray pl-5 p-2 bg-white">
-    <a class="text-sm text-blue hover:text-blue-50 transition-colors duration-100" href="{% url 'projects:list' %}">Back to projects</a>
+    <a class="text-sm text-blue hover:text-blue-50 transition-colors duration-100" href="{% url 'projects:list' %}">Back
+      to projects</a>
     <h1 class="text-lg font-medium mb-2">{{ project.name }}</h1>
 
     <div class="space-y-2 flex flex-col">
-    {% with link_style="py-3 px-4 rounded-l-sm rounded-md" active_link_style="border-l-2 bg-blue-10 border-blue text-blue" inactive_link_style="border-l-2 border-transparent transition-colors duration-100 hover:border-blue hover:bg-blue-10 hover:text-blue" %}
-      <a
-        class="{{link_style}} {% if request.resolver_match.url_name == 'detail' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
-        href="{% url 'projects:detail' project.id %}"
-        >Overview</a
-      >
-      <a
-        class="{{link_style}} {% if request.resolver_match.app_name == 'projects:integrations' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
-        href="{% url 'projects:integrations:list' project.id %}"
-        >Integrations</a
-      >
-      <a
-        class="{{link_style}} {% if request.resolver_match.app_name == 'projects:workflows' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
-        href="{% url 'projects:workflows:list' project.id %}"
-        >Workflows</a
-      >
-      <a
-        class="{{link_style}} {% if request.resolver_match.app_name == 'projects:dashboards' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
-        href="{% url 'projects:dashboards:list' project.id %}"
-        >Dashboards</a
-      >
-      <a
-        class="{{link_style}} {% if request.resolver_match.url_name == 'settings' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
-        href="{% url 'projects:settings' project.id %}"
-        >Settings</a
-      >
-    {% endwith %}
+      {% with link_style="py-3 px-4 rounded-l-sm rounded-md" active_link_style="border-l-2 bg-blue-10 border-blue text-blue" inactive_link_style="border-l-2 border-transparent transition-colors duration-100 hover:border-blue hover:bg-blue-10 hover:text-blue" %}
+      <a class="{{link_style}} {% if request.resolver_match.app_name == 'projects' and request.resolver_match.url_name == 'detail' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
+         href="{% url 'projects:detail' project.id %}">Overview</a>
+      <a class="{{link_style}} {% if request.resolver_match.app_name == 'projects:integrations' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
+         href="{% url 'projects:integrations:list' project.id %}">Integrations</a>
+      <a class="{{link_style}} {% if request.resolver_match.app_name == 'projects:workflows' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
+         href="{% url 'projects:workflows:list' project.id %}">Workflows</a>
+      <a class="{{link_style}} {% if request.resolver_match.app_name == 'projects:dashboards' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
+         href="{% url 'projects:dashboards:list' project.id %}">Dashboards</a>
+      <a class="{{link_style}} {% if request.resolver_match.url_name == 'settings' %} {{active_link_style}} {% else %} {{inactive_link_style}} {% endif %}"
+         href="{% url 'projects:settings' project.id %}">Settings</a>
+      {% endwith %}
     </div>
   </nav>
   <div class="p-4 w-full overflow-auto">{% block app %} {% endblock %}</div>
