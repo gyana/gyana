@@ -48,6 +48,16 @@ $button-colors: (
   }
 }
 
+// Variants
+.button--square {
+  padding: 0.75em 1.875em;
+  border-radius: 6px;
+}
+
+.button--circle {
+  padding: 0.625em;
+}
+
 // Sizes
 .button--sm {
   font-size: 0.875rem;
