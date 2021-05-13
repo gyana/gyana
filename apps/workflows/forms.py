@@ -156,6 +156,13 @@ class UnionNodeForm(NodeForm):
         labels = {"union_distinct": "distinct"}
 
 
+class LimitNodeForm(NodeForm):
+    class Meta:
+        model = Node
+        fields = ["limit_limit", "limit_offset"]
+        labels = {"limit_limit": "Limit", "limit_offset": "Offset"}
+
+
 KIND_TO_FORM = {
     "input": InputNodeForm,
     "output": OutputNodeForm,
@@ -164,6 +171,7 @@ KIND_TO_FORM = {
     "group": GroupNodeForm,
     "union": UnionNodeForm,
     "sort": SortNodeForm,
+    "limit": LimitNodeForm,
 }
 KIND_TO_FORMSETS = {
     "group": [FunctionColumnFormSet, ColumnFormSet],

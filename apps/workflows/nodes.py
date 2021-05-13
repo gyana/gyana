@@ -95,6 +95,14 @@ def get_sort_query(node):
     return query.sort_by(sort_columns)
 
 
+def get_limit_query(node):
+    query = node.parents.first().get_query()
+    # Need to project again to make sure limit isn't overwritten
+    return query.limit(node.limit_limit, offset=node.limit_offset or 0).projection(
+        query.schema()
+    )
+
+
 NODE_FROM_CONFIG = {
     "input": get_input_query,
     "output": get_output_query,
@@ -103,4 +111,5 @@ NODE_FROM_CONFIG = {
     "select": get_select_query,
     "union": get_union_query,
     "sort": get_sort_query,
+    "limit": get_limit_query,
 }

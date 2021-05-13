@@ -32,6 +32,7 @@ class Node(models.Model):
         GROUP = "group", "Group"
         UNION = "union", "Union"
         SORT = "sort", "Sort"
+        LIMIT = "limit", "Limit"
 
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE)
     kind = models.CharField(max_length=16, choices=Kind.choices)
@@ -76,6 +77,11 @@ class Node(models.Model):
 
     # Sort
     # handled via ForeignKey on SortModel
+
+    # Limit
+
+    limit_limit = models.IntegerField(default=100)
+    limit_offset = models.IntegerField(null=True)
 
     def get_query(self):
         func = NODE_FROM_CONFIG[self.kind]
