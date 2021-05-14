@@ -1,3 +1,5 @@
+from functools import cached_property
+
 from apps.projects.models import Project
 from apps.tables.models import Table
 from apps.workflows.nodes import NODE_FROM_CONFIG
@@ -87,7 +89,8 @@ class Node(models.Model):
         func = NODE_FROM_CONFIG[self.kind]
         return func(self)
 
-    def get_schema(self):
+    @cached_property
+    def schema(self):
         return self.get_query().schema()
 
     def get_table_name(self):

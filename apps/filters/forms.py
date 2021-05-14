@@ -3,8 +3,8 @@ from django.forms.widgets import HiddenInput
 
 from .models import Filter
 
-BIGQUERY_TO_PREDICATE = {"STRING": "string_predicate", "INTEGER": "integer_predicate"}
-BIGQUERY_TO_VALUE = {"STRING": "string_value", "INTEGER": "integer_value"}
+IBIS_TO_PREDICATE = {"String": "string_predicate", "Int64": "integer_predicate"}
+IBIS_TO_VALUE = {"String": "string_value", "Int64": "integer_value"}
 
 
 class ColumnChoices:
@@ -21,7 +21,7 @@ def get_filter_form(column_type=None):
 
     fields = ["widget", "column"]
     if column_type is not None:
-        fields += [BIGQUERY_TO_PREDICATE[column_type], BIGQUERY_TO_VALUE[column_type]]
+        fields += [IBIS_TO_PREDICATE[column_type.name], IBIS_TO_VALUE[column_type.name]]
 
     meta = type(
         "Meta",

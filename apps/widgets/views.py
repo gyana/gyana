@@ -85,7 +85,7 @@ class WidgetConfig(TurboUpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["columns"] = [(name, name) for name in self.object.table.get_schema()]
+        kwargs["columns"] = [(name, name) for name in self.object.table.schema]
         return kwargs
 
     def get_success_url(self) -> str:

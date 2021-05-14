@@ -1,3 +1,5 @@
+from functools import cached_property
+
 from apps.projects.models import Project
 from django.conf import settings
 from django.db import models
@@ -40,10 +42,6 @@ class Table(models.Model):
         conn = ibis_client()
         return conn.table(self.bq_table, database=self.bq_dataset)
 
-    def get_schema(self):
+    @cached_property
+    def schema(self):
         return self.get_query().schema()
-
-    def get_bq_schema(self):
-        client = bigquery_client()
-        bq_table = client.get_table(f"{self.bq_dataset}.{self.bq_table}")
-        return bq_table.schema

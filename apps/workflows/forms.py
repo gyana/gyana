@@ -28,7 +28,7 @@ class NodeForm(forms.ModelForm):
     @cached_property
     def columns(self):
         """Returns the schema for the first parent."""
-        return self.instance.parents.first().get_schema()
+        return self.instance.parents.first().schema
 
 
 class InputNodeForm(NodeForm):
@@ -78,8 +78,8 @@ class JoinNodeForm(NodeForm):
         super().__init__(*args, **kwargs)
         # https://stackoverflow.com/a/30766247/15425660
         node = self.instance
-        self.left_columns = [(col, col) for col in node.parents.first().get_schema()]
-        self.right_columns = [(col, col) for col in node.parents.last().get_schema()]
+        self.left_columns = [(col, col) for col in node.parents.first().schema]
+        self.right_columns = [(col, col) for col in node.parents.last().schema]
         self.fields["join_left"].choices = self.left_columns
         self.fields["join_right"].choices = self.right_columns
 
@@ -90,7 +90,7 @@ class InlineColumnFormset(BaseInlineFormSet):
         self.form.base_fields["name"] = forms.ChoiceField(
             choices=[
                 ("", "No column selected"),
-                *[(col, col) for col in self.instance.parents.first().get_schema()],
+                *[(col, col) for col in self.instance.parents.first().schema],
             ]
         )
 

@@ -39,8 +39,8 @@ class FilterCreate(WidgetMixin, TurboCreateView):
 
     @property
     def column_type(self):
-        schema = self.widget.table.get_bq_schema()
-        return [c.field_type for c in schema if c.name == self.column][0]
+        schema = self.widget.table.schema
+        return schema[self.column]
 
     def get_form_class(self):
         if self.column is not None:
@@ -49,9 +49,7 @@ class FilterCreate(WidgetMixin, TurboCreateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["columns"] = [
-            (f.name, f.name) for f in self.widget.table.get_bq_schema()
-        ]
+        kwargs["columns"] = [(col, col) for col in self.widget.table.schema]
         return kwargs
 
     def get_initial(self):
@@ -80,17 +78,15 @@ class FilterUpdate(WidgetMixin, TurboUpdateView):
 
     @property
     def column_type(self):
-        schema = self.widget.table.get_bq_schema()
-        return [c.field_type for c in schema if c.name == self.object.column][0]
+        schema = self.widget.table.schema
+        return schema[self.object.column]
 
     def get_form_class(self):
         return get_filter_form(self.object.type)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["columns"] = [
-            (f.name, f.name) for f in self.widget.table.get_bq_schema()
-        ]
+        kwargs["columns"] = [(col, col) for col in self.widget.table.schema]
         return kwargs
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
