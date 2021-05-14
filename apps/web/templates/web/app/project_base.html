@@ -24,6 +24,9 @@
       {% endwith %}
     </div>
   </nav>
-  <div class="p-4 w-full overflow-auto">{% block app %} {% endblock %}</div>
+
+  <section class="flex flex-col p-4 w-full overflow-auto {% block app-class %}{% endblock %}">
+    {% block app %}{% endblock %}
+  </section>
 </section>
 {% endblock body %}

@@ -1,0 +1,13 @@
+.dnd-sidebar {
+  background-color: var(--c-white);
+  border-left: 1px solid var(--c-gray);
+  display: flex;
+  flex-flow: column;
+  gap: 0.875em;
+  padding: 1em;
+  width: 12em;
+
+  &__node {
+    cursor: grab;
+  }
+}

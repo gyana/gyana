@@ -1,0 +1,29 @@
+.workflow {
+
+  &-detail {
+    padding: 0;
+
+    &__header {
+      align-items: center;
+      background-color: var(--c-white);
+      border-bottom: 1px solid var(--c-gray);
+      display: flex;
+      gap: 1em;
+      height: 3.25em;
+      padding: 0 1em;
+    }
+
+    &__sidebar {
+      background-color: var(--c-white);
+      border-right: 1px solid var(--c-gray);
+      width: 12em;
+      padding: 1em;
+    }
+
+    &__table {
+      background-color: var(--c-white);
+      border-top: 1px solid var(--c-gray);
+      height: 18em;
+    }
+  }
+}

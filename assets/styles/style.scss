@@ -13,6 +13,8 @@
 @use "components/widget_card";
 @use "components/placeholder_screen";
 
+@use "pages/workflow";
+
 :root {
   background-color: var(--c-gray-10);
   color: var(--c-black);
