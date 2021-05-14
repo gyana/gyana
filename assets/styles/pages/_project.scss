@@ -1,0 +1,40 @@
+.project {
+  display: flex;
+  flex: 1 1 auto;
+
+  &__sidebar {
+    background-color: var(--c-white);
+    border-right: 1px solid var(--c-gray);
+    display: flex;
+    flex-flow: column;
+    overflow: auto;
+    width: 12em;
+  }
+  
+  &__footer {
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid var(--c-gray);
+    margin-top: auto;
+    padding: 1.125rem;
+  }
+  
+  &__nav {
+    display: flex;
+    padding: 1em 1.125rem;
+    flex-flow: column;
+    gap: 1em;
+  }
+
+  &__link {
+
+    &--active {
+      color: var(--c-blue);
+      font-weight: 500;
+    }
+
+    &:hover {
+      color: var(--c-blue);
+    }
+  }
+}
