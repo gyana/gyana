@@ -1,11 +1,20 @@
 # Gyana styling
 
-This section will be extended in the future, for now I reccomend reading:
+We have a variety of options for writing CSS styles in this project, generally speaking your choice
+of styling should follow this pattern:
+
+- **Use existing components** first (button, card, etc.) as classes.
+- **Create/Modify components** when needed (if reusable).
+- **Create page-specific stylesheets** when you require specific overwrites for a single page.
+- **Use tailwind** as a last resort for extremely specific and one-off cases.
+
+Prototype quickly with tailwind classes, use existing components where possible and then migrate all
+tailwind classes to a standalone stylesheet (avoid using `@apply`).
+
+This section will be extended in the future, for now I reccomend reading these:
 
 - <https://www.easeout.co/blog/2020-08-25-structuring-your-sass-projects/>
 - <https://css-tricks.com/bem-101/>
-
-A great file to get to grips with the BEM methadology is [navbar.scss](components/_navbar.scss)
 
 ## Component styling
 
