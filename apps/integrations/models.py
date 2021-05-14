@@ -53,10 +53,6 @@ class Integration(models.Model):
         self.save()
 
     @property
-    def is_empty(self):
-        return not self.table_set.exists()
-
-    @property
     def is_syncing(self):
         if self.external_table_sync_task_id is None:
             return False
