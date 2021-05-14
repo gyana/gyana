@@ -9,10 +9,10 @@ from django.urls import reverse
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
-from lib.fivetran import FivetranClient, get_services
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .bigquery import query_integration
+from .fivetran import FivetranClient, get_services
 from .forms import CSVForm, FivetranForm, GoogleSheetsForm
 from .models import Integration
 from .tables import IntegrationTable
