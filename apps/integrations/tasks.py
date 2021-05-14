@@ -1,3 +1,4 @@
+from apps.integrations.bigquery import sync_integration
 from celery import shared_task
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
@@ -8,9 +9,9 @@ from .models import Integration
 
 
 @shared_task(bind=True)
-def poll_fivetran_historical_sync(self, connector_id):
+def poll_fivetran_historical_sync(self, integration_id):
 
-    integration = get_object_or_404(Integration, pk=connector_id)
+    integration = get_object_or_404(Integration, pk=integration_id)
 
     FivetranClient(integration).block_until_synced()
 
@@ -18,7 +19,7 @@ def poll_fivetran_historical_sync(self, connector_id):
         "projects:integrations:detail",
         args=(
             integration.project.id,
-            connector_id,
+            integration_id,
         ),
     )
 
@@ -29,4 +30,11 @@ def poll_fivetran_historical_sync(self, connector_id):
         ["to@example.com"],
     )
 
-    return connector_id
+    return integration_id
+
+@shared_task(bind=True)
+def run_external_table_sync(self, integration_id):
+
+    integration = get_object_or_404(Integration, pk=integration_id)
+
+    sync_integration(integration)

@@ -1,8 +1,8 @@
 from apps.projects.models import Project
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from lib.clients import ibis_client
-from django.conf import settings
 
 
 class Integration(models.Model):
@@ -41,6 +41,11 @@ class Integration(models.Model):
 
     def __str__(self):
         return self.name
+
+    def start_sync(self):
+        from apps.integrations.tasks import run_external_table_sync
+
+        run_external_table_sync.delay(self.id)
 
     def get_query(self):
         conn = ibis_client()
