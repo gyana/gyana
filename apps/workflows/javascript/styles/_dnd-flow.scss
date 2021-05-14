@@ -27,22 +27,10 @@
   cursor: grab;
 }
 
-.dndflow .dndnode.input {
-  border-color: #0041d0;
-}
-
-.dndflow .dndnode.output {
-  border-color: #ff0072;
-}
-
 .dndflow .reactflow-wrapper {
   flex-grow: 1;
   height: 100%;
   @apply bg-gray-50;
-}
-
-.react-flow__node {
-  @apply w-24 h-24;
 }
 
 @media screen and (min-width: 768px) {

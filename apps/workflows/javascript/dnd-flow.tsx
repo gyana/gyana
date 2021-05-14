@@ -11,7 +11,8 @@ import ReactFlow, {
 
 import Sidebar from "./sidebar";
 
-import "./dnd.scss";
+import "./styles/_dnd-flow.scss";
+import "./styles/_react-flow.scss";
 
 const DnDFlow = ({ client }) => {
   const reactFlowWrapper = useRef(null);
@@ -34,7 +35,7 @@ const DnDFlow = ({ client }) => {
       }
     );
     setElements((els) =>
-      addEdge({ ...params, arrowHeadType: "arrowclosed" }, els)
+      addEdge({ ...params, arrowHeadType: "arrow" }, els)
     );
   };
 
@@ -99,8 +100,9 @@ const DnDFlow = ({ client }) => {
                 id: `reactflow__edge-${p}null-${curr.id}null`,
                 source: p.toString(),
                 sourceHandle: null,
+                type: 'smoothstep',
                 targetHandle: null,
-                arrowHeadType: "arrowclosed",
+                arrowHeadType: "arrow",
                 target: curr.id.toString(),
               })),
             ];
