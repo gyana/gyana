@@ -1,7 +1,18 @@
+{% load humanize %}
+
 <turbo-frame id="integrations:sync">
+{% if not object.table_set.exists %}
+  You need to sync your data
+{% else %}
+  You can re-sync your data if anything has changed
+{% endif %}
+{% if not object.is_syncing %}
   <form method="post" action="{% url 'integrations:sync' object.id %}">
     {% csrf_token %}
     <input type="submit" value="Sync" />
   </form>
-  <p>Latest sync: {{ object.last_synced }}</p>
+{% else %}
+  Syncing, you'll get an email when it is ready
+{% endif %}
+  <p>Latest sync: {{ object.last_synced|naturaltime }}</p>
 </turbo-frame>

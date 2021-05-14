@@ -1,3 +1,4 @@
+import celery
 from apps.projects.models import Project
 from django.conf import settings
 from django.db import models
@@ -22,6 +23,7 @@ class Integration(models.Model):
     )
 
     # bigquery external tables
+    external_table_sync_task_id = models.UUIDField(null=True)
     has_initial_sync = models.BooleanField(default=False)
     last_synced = models.DateTimeField(null=True)
 
@@ -45,7 +47,24 @@ class Integration(models.Model):
     def start_sync(self):
         from apps.integrations.tasks import run_external_table_sync
 
-        run_external_table_sync.delay(self.id)
+        result = run_external_table_sync.delay(self.id)
+        self.external_table_sync_task_id = result.task_id
+
+        self.save()
+
+    @property
+    def is_empty(self):
+        return not self.table_set.exists()
+
+    @property
+    def is_syncing(self):
+        if self.external_table_sync_task_id is None:
+            return False
+
+        # TODO: Possibly fails for out of date task ids
+        # https://stackoverflow.com/a/38267978/15425660
+        result = celery.result.AsyncResult(str(self.external_table_sync_task_id))
+        return result.status == "PENDING"
 
     def get_query(self):
         conn = ibis_client()

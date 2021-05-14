@@ -1,8 +1,5 @@
 {% extends "integrations/base.html" %}
 {% block tab %}
-{% if not object.table_set.exists %}
-Import your initial data:
-{% endif %}
 {% if object.kind == 'google_sheets' %}
 <turbo-frame id="integrations:sync" src="{% url 'integrations:sync' object.id %}"></turbo-frame>
 {% endif %}
