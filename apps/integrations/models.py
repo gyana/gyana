@@ -3,7 +3,7 @@ from apps.projects.models import Project
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
-from lib.clients import ibis_client
+from lib.clients import DATASET_ID, ibis_client
 
 
 class Integration(models.Model):
@@ -64,6 +64,8 @@ class Integration(models.Model):
 
     def get_query(self):
         conn = ibis_client()
+        if self.kind == Integration.Kind.FIVETRAN:
+            return conn.table(self.table_id, database=self.schema)
         return conn.table(self.table_id)
 
     def get_schema(self):

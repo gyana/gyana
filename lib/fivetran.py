@@ -7,8 +7,12 @@ import backoff
 import requests
 import yaml
 from apps.integrations.models import Integration
+from apps.tables.models import Table
 from django.conf import settings
 from django.shortcuts import redirect
+from django.utils import translation
+
+from lib.clients import DATASET_ID, bigquery_client
 
 SERVICES = "lib/services.yaml"
 
@@ -21,33 +25,33 @@ def get_services():
 @dataclass
 class MockFivetranClient:
 
-    connector: Integration
+    integration: Integration
 
     def create(self):
-        self.connector.fivetran_id = settings.MOCK_FIVETRAN_ID
-        self.connector.schema = settings.MOCK_FIVETRAN_SCHEMA
-        self.connector.save()
+        self.integration.fivetran_id = settings.MOCK_FIVETRAN_ID
+        self.integration.schema = settings.MOCK_FIVETRAN_SCHEMA
+        self.integration.save()
 
     def authorize(self, redirect_uri):
         return redirect(redirect_uri)
 
     def block_until_synced(self):
         time.sleep(settings.MOCK_FIVETRAN_HISTORICAL_SYNC_SECONDS)
-        self.connector.historical_sync_complete = True
-        self.connector.save()
+        self.integration.historical_sync_complete = True
+        self.integration.save()
 
 
 @dataclass
 class FivetranClient:
 
-    connector: Integration
+    integration: Integration
 
     def create(self):
 
-        service = self.connector.service
+        service = self.integration.service
         service_conf = get_services()[service]
 
-        schema = f"{service}_{str(uuid4()).replace('-', '_')}"
+        schema = f"{self.integration.project.team.slug}_{service}_{self.integration.pk}"
 
         res = requests.post(
             f"{settings.FIVETRAN_URL}/connectors",
@@ -64,14 +68,14 @@ class FivetranClient:
             # TODO
             pass
 
-        self.connector.fivetran_id = res["data"]["id"]
-        self.connector.schema = schema
-        self.connector.save()
+        self.integration.fivetran_id = res["data"]["id"]
+        self.integration.schema = schema
+        self.integration.save()
 
     def authorize(self, redirect_uri):
 
         card = requests.post(
-            f"{settings.FIVETRAN_URL}/connectors/{self.connector.fivetran_id}/connect-card-token",
+            f"{settings.FIVETRAN_URL}/connectors/{self.integration.fivetran_id}/connect-card-token",
             headers=settings.FIVETRAN_HEADERS,
         )
         connect_card_token = card.json()["token"]
@@ -83,7 +87,7 @@ class FivetranClient:
     def _is_historical_synced(self):
 
         res = requests.get(
-            f"{settings.FIVETRAN_URL}/connectors/{self.connector.fivetran_id}",
+            f"{settings.FIVETRAN_URL}/connectors/{self.integration.fivetran_id}",
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 
@@ -101,8 +105,8 @@ class FivetranClient:
             self._is_historical_synced
         )()
 
-        self.connector.historical_sync_complete = True
-        self.connector.save()
+        self.integration.historical_sync_complete = True
+        self.integration.save()
 
 
 if settings.MOCK_FIVETRAN:

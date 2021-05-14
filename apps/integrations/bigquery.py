@@ -85,6 +85,30 @@ def sync_integration(integration: Integration):
 def query_integration(integration: Integration):
 
     conn = ibis_client()
-    table = conn.table(integration.table_set.first().bq_table)
+
+    table = conn.table(
+        integration.table_set.first().bq_table,
+        database=integration.schema
+        if integration.kind == Integration.Kind.FIVETRAN
+        else DATASET_ID,
+    )
 
     return conn.execute(table.limit(DEFAULT_LIMIT))
+
+
+def get_tables_in_dataset(integration):
+
+    client = bigquery_client()
+    bq_tables = list(client.list_tables(integration.schema))
+
+    with transaction.atomic():
+
+        for bq_table in bq_tables:
+            table = Table(
+                source=Table.Source.INTEGRATION,
+                bq_table=bq_table.table_id,
+                bq_dataset=integration.schema,
+                project=integration.project,
+                integration=integration,
+            )
+            table.save()
