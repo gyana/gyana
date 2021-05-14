@@ -1,3 +1,4 @@
+from apps.filters.get_filter_query import create_filter_query
 from lib.clients import ibis_client
 
 
@@ -103,6 +104,10 @@ def get_limit_query(node):
     )
 
 
+def get_filter_query(node):
+    return create_filter_query(node.parents.first().get_query(), node.filters.all())
+
+
 NODE_FROM_CONFIG = {
     "input": get_input_query,
     "output": get_output_query,
@@ -112,4 +117,5 @@ NODE_FROM_CONFIG = {
     "union": get_union_query,
     "sort": get_sort_query,
     "limit": get_limit_query,
+    "filter": get_filter_query,
 }

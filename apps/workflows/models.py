@@ -35,6 +35,7 @@ class Node(models.Model):
         UNION = "union", "Union"
         SORT = "sort", "Sort"
         LIMIT = "limit", "Limit"
+        FILTER = "filter", "Filter"
 
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE)
     kind = models.CharField(max_length=16, choices=Kind.choices)
@@ -79,6 +80,9 @@ class Node(models.Model):
 
     # Sort
     # handled via ForeignKey on SortModel
+
+    # Filter
+    # handled by the Filter model in *apps/filters/models.py*
 
     # Limit
 

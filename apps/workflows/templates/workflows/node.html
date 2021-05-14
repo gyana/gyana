@@ -1,8 +1,12 @@
 {% load crispy_forms_tags %}
 
 <turbo-frame id="workflow-node">
+  {% if node.kind == "filter" %}
+  <turbo-frame id="filters" src="{% url 'filters:list' %}"> </turbo-frame>
+  {% else %}
   <form method="post" action="{% url 'workflows:node' workflow.id node.id %}">
     {% csrf_token %}
     {% crispy form %}
   </form>
+  {% endif %}
 </turbo-frame>

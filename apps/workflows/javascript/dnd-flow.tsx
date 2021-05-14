@@ -12,6 +12,7 @@ import ReactFlow, {
 import Sidebar from "./sidebar";
 
 import "./dnd.scss";
+import { addParam } from "./util";
 
 const DnDFlow = ({ client }) => {
   const reactFlowWrapper = useRef(null);
@@ -155,6 +156,8 @@ const DnDFlow = ({ client }) => {
                 // TODO: populate URL from django reverse
                 `http://localhost:8000/workflows/${workflowId}/nodes/${element.id}`
               );
+
+              addParam("node_id", element.id);
 
               document.getElementById("workflows-grid").setAttribute(
                 "src",

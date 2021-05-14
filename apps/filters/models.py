@@ -15,7 +15,13 @@ class Filter(models.Model):
         STARTSWITH = "starts_with", "starts with"
         ENDSWITH = "ends_with", "ends with"
 
-    widget = models.ForeignKey(Widget, on_delete=models.CASCADE)
+    widget = models.ForeignKey(
+        Widget, on_delete=models.CASCADE, null=True, related_name="filters"
+    )
+    # Use string reference to avoid circular import
+    node = models.ForeignKey(
+        "workflows.Node", on_delete=models.CASCADE, related_name="filters", null=True
+    )
 
     column = models.CharField(max_length=300)
     type = models.CharField(max_length=8, choices=Type.choices)

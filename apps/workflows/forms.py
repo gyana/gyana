@@ -163,6 +163,12 @@ class LimitNodeForm(NodeForm):
         labels = {"limit_limit": "Limit", "limit_offset": "Offset"}
 
 
+class DefaultNodeForm(NodeForm):
+    class Meta:
+        model = Node
+        fields = []
+
+
 KIND_TO_FORM = {
     "input": InputNodeForm,
     "output": OutputNodeForm,
@@ -172,6 +178,9 @@ KIND_TO_FORM = {
     "union": UnionNodeForm,
     "sort": SortNodeForm,
     "limit": LimitNodeForm,
+    # Is defined in the filter app and will be rendered via a
+    # different turbo frame
+    "filter": DefaultNodeForm,
 }
 KIND_TO_FORMSETS = {
     "group": [FunctionColumnFormSet, ColumnFormSet],
