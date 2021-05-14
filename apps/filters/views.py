@@ -13,6 +13,8 @@ from turbo_response.views import TurboCreateView, TurboUpdateView
 from .forms import get_filter_form
 from .models import Filter
 
+IBIS_TO_TYPE = {"Int64": "INTEGER", "String": "STRING"}
+
 
 class ParentMixin:
     @property
@@ -25,8 +27,8 @@ class ParentMixin:
     @property
     def schema(self):
         if isinstance(self.parent, Widget):
-            return self.parent.table.get_bq_schema()
-        return self.parent.get_schema()
+            return self.parent.table.schema
+        return self.parent.schema
 
 
 class FilterList(ParentMixin, ListView):
@@ -53,8 +55,8 @@ class FilterCreate(ParentMixin, TurboCreateView):
 
     def get_form_class(self):
         if self.column is not None:
-            return get_filter_form(self.column_type)
-        return get_filter_form()
+            return get_filter_form(self.parent, self.column_type)
+        return get_filter_form(self.parent)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -63,13 +65,16 @@ class FilterCreate(ParentMixin, TurboCreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        initial["widget"] = self.parent
+        if isinstance(self.parent, Widget):
+            initial["widget"] = self.parent
+        else:
+            initial["node"] = self.parent
         for key in self.request.GET:
             initial[key] = self.request.GET[key]
         return initial
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
-        form.instance.type = self.column_type
+        form.instance.type = IBIS_TO_TYPE[self.column_type.name]
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
@@ -91,7 +96,7 @@ class FilterUpdate(ParentMixin, TurboUpdateView):
         return schema[self.object.column]
 
     def get_form_class(self):
-        return get_filter_form(self.object.type)
+        return get_filter_form(self.parent, self.column_type)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -99,7 +104,7 @@ class FilterUpdate(ParentMixin, TurboUpdateView):
         return kwargs
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
-        form.instance.type = self.column_type
+        form.instance.type = IBIS_TO_TYPE[self.column_type.name]
         return super().form_valid(form)
 
     def get_success_url(self) -> str:

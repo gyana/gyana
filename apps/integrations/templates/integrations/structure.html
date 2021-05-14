@@ -12,7 +12,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for field in table.get_bq_schema %}
+      {% for field in table.get_schema %}
       <tr>
         <td>
           {{ field.field_type }}

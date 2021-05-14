@@ -1,3 +1,4 @@
+from apps.widgets.models import Widget
 from django import forms
 from django.forms.widgets import HiddenInput
 
@@ -17,23 +18,24 @@ class ColumnChoices:
             self.fields["column"].choices = self.columns
 
 
-def get_filter_form(column_type=None):
+def get_filter_form(parent, column_type=None):
 
-    fields = ["widget", "column"]
+    fields = ["column", "widget" if isinstance(parent, Widget) else "node"]
     if column_type is not None:
         fields += [IBIS_TO_PREDICATE[column_type.name], IBIS_TO_VALUE[column_type.name]]
 
+    widgets = (
+        {"widget": HiddenInput()}
+        if isinstance(parent, Widget)
+        else {"node": HiddenInput()}
+    )
     meta = type(
         "Meta",
         (),
-        {
-            "model": Filter,
-            "fields": fields,
-            "widgets": {"widget": HiddenInput()},
-        },
+        {"model": Filter, "fields": fields, "widgets": widgets},
     )
 
-    filter_form = type(
+    return type(
         "FilterForm",
         (
             ColumnChoices,
@@ -41,5 +43,3 @@ def get_filter_form(column_type=None):
         ),
         {"Meta": meta, "column": forms.ChoiceField(choices=())},
     )
-
-    return filter_form
