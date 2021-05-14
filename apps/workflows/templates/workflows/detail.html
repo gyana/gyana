@@ -1,9 +1,12 @@
 {% extends "web/app/project_base.html" %}
 {% load static %}
+
+{% block app-class%}workflow-detail{% endblock %}
+
 {% block app %}
 
-<div class="flex items-center gap-4 mb-8">
-  <h1 class="mr-auto">{{ object.name }}</h1>
+<div class="workflow-detail__header">
+  <h3 class="mr-auto">{{ object.name }}</h3>
 
   <turbo-frame id="workflows:run" src="{% url 'workflows:run' object.id %}"></turbo-frame>
   <a class="button button--square button--sm button--filled"
@@ -12,20 +15,28 @@
      href="{% url 'projects:workflows:delete' project.id object.pk %}">Delete</a>
 </div>
 
-<div class="flex">
-  <div class="w-64">
+<div class="flex flex-1">
+  <div class="workflow-detail__sidebar">
     <turbo-frame id="workflow-node"></turbo-frame>
   </div>
-  <div id="react-app" class="flex-auto h-96"></div>
+
+  <div id="react-app" class="flex-auto"></div>
 </div>
-<turbo-frame id="workflows-grid">No node selected</turbo-frame>
+
+<div class="workflow-detail__table">
+  <turbo-frame id="workflows-grid">No node selected</turbo-frame>
+</div>
+
 {{ nodes|json_script:'nodes' }}
+
 <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
 <script src="{% url 'api_schemajs' %}"></script>
 <script src="{% static 'js/workflow-bundle.js' %}"></script>
 <link rel="stylesheet" href="{% static 'css/workflow.css' %}" />
+
 <!--ag-grid-->
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css" />
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css" />
+
 {% endblock %}

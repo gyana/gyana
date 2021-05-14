@@ -1,0 +1,66 @@
+.react-flow {
+  background: var(--c-gray-10);
+
+  .react-flow__node {
+    align-items: center;
+    border-radius: 10px;
+    border: 2px solid var(--c-transparent);
+    box-shadow: 4px 10px 30px rgba(0, 0, 0, 0.08);
+    color: var(--c-blue-50);
+    display: flex;
+    font-weight: 500;
+    justify-content: center;
+    text-transform: uppercase;
+
+    padding: 2.1875em;
+    height: 110px; // todo
+    width: 110px; // todo
+
+    &.selected {
+      color: var(--c-blue);
+      border: 2px solid var(--c-blue);
+    }
+
+    &-output {
+      color: var(--c-pink-50);
+ 
+      &.selected {
+        color: var(--c-pink);
+        border: 2px solid var(--c-pink);
+      }
+    }
+
+    &-input {
+      // TODO
+      .selected {
+        // TODO
+      }
+    }
+
+    &-default.selected:hover,
+    &-output.selected:hover,
+    &-input.selected:hover {
+      box-shadow: 4px 10px 30px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  .react-flow__handle {
+    background-color: white;
+    border: 2px solid var(--c-black-20);
+    width: 11px; // tood
+    height: 11px; // todo
+    right: -6px;
+
+    &-left {
+      left: -6px;
+    }
+  }
+
+  .react-flow__edges {
+    .react-flow__connection-path,
+    .react-flow__edge-path {
+      stroke: var(--c-black-20);
+      stroke-width: 3;
+    }
+  }
+}

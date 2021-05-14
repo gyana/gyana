@@ -1,5 +1,7 @@
 import React from "react";
 
+import "./styles/_dnd-sidebar.scss";
+
 const NODES = JSON.parse(document.getElementById("nodes").textContent);
 
 export default () => {
@@ -9,14 +11,13 @@ export default () => {
   };
 
   return (
-    <aside>
-      <div className="description">
-        You can drag these nodes to the pane on the left.
-      </div>
+    <aside className="dnd-sidebar">
+      <p>You can drag these nodes to the pane on the left.</p>
+
       {NODES.map(({ value, label }) => (
         <div
           key={value}
-          className="dndnode"
+          className="dnd-sidebar__node button button--sm button--tertiary"
           onDragStart={(event) => onDragStart(event, value)}
           draggable
         >

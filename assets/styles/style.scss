@@ -4,6 +4,7 @@
 
 @use "utilities/colours";
 @use "utilities/variables";
+@use "utilities/shadows";
 
 @use "components/button";
 @use "components/card";
@@ -11,6 +12,8 @@
 @use "components/table";
 @use "components/widget_card";
 @use "components/placeholder_screen";
+
+@use "pages/workflow";
 
 :root {
   background-color: var(--c-gray-10);
