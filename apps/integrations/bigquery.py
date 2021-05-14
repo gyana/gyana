@@ -10,38 +10,6 @@ from lib.clients import DATASET_ID, bigquery_client, ibis_client
 DEFAULT_LIMIT = 10
 
 
-def sync_table(integration: Integration, external_table_id: str):
-
-    client = bigquery_client()
-
-    table_id = f"table_{integration.pk}"
-
-    external_config = create_external_config(integration)
-    job_config = bigquery.QueryJobConfig(
-        table_definitions={external_table_id: external_config}
-    )
-
-    client.query(
-        f"CREATE OR REPLACE TABLE {DATASET_ID}.{table_id} AS SELECT * FROM {DATASET_ID}.{external_table_id}",
-        job_config=job_config,
-    ).result()
-
-    with transaction.atomic():
-
-        if not integration.table_set.exists():
-            table = Table(
-                source=Table.Source.INTEGRATION,
-                bq_table=table_id,
-                bq_dataset=DATASET_ID,
-                project=integration.project,
-                integration=integration,
-            )
-            table.save()
-
-        integration.last_synced = datetime.now()
-        integration.save()
-
-
 def create_external_config(integration: Integration):
     if integration.kind == Integration.Kind.GOOGLE_SHEETS:
         # https://cloud.google.com/bigquery/external-data-drive#python
@@ -75,9 +43,43 @@ def create_external_table(integration: Integration) -> str:
     return external_table_id
 
 
+def copy_table_from_external_table(integration: Integration, external_table_id: str):
+
+    client = bigquery_client()
+
+    table_id = f"table_{integration.pk}"
+
+    external_config = create_external_config(integration)
+    job_config = bigquery.QueryJobConfig(
+        table_definitions={external_table_id: external_config}
+    )
+
+    client.query(
+        f"CREATE OR REPLACE TABLE {DATASET_ID}.{table_id} AS SELECT * FROM {DATASET_ID}.{external_table_id}",
+        job_config=job_config,
+    ).result()
+
+    return table_id
+
+
 def sync_integration(integration: Integration):
     external_table_id = create_external_table(integration)
-    sync_table(integration, external_table_id)
+    table_id = copy_table_from_external_table(integration, external_table_id)
+
+    with transaction.atomic():
+
+        if not integration.table_set.exists():
+            table = Table(
+                source=Table.Source.INTEGRATION,
+                bq_table=table_id,
+                bq_dataset=DATASET_ID,
+                project=integration.project,
+                integration=integration,
+            )
+            table.save()
+
+        integration.last_synced = datetime.now()
+        integration.save()
 
 
 def query_integration(integration: Integration):
