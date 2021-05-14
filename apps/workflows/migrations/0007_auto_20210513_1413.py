@@ -6,23 +6,35 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('workflows', '0006_auto_20210513_1402'),
+        ("workflows", "0006_auto_20210513_1402"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='node',
-            name='limit_limit',
+            model_name="node",
+            name="limit_limit",
             field=models.IntegerField(default=100),
         ),
         migrations.AddField(
-            model_name='node',
-            name='limit_offset',
+            model_name="node",
+            name="limit_offset",
             field=models.IntegerField(null=True),
         ),
         migrations.AlterField(
-            model_name='node',
-            name='kind',
-            field=models.CharField(choices=[('input', 'Input'), ('output', 'Output'), ('select', 'Select'), ('join', 'Join'), ('group', 'Group'), ('union', 'Union'), ('sort', 'Sort'), ('limit', 'Limit')], max_length=16),
+            model_name="node",
+            name="kind",
+            field=models.CharField(
+                choices=[
+                    ("input", "Input"),
+                    ("output", "Output"),
+                    ("select", "Select"),
+                    ("join", "Join"),
+                    ("group", "Group"),
+                    ("union", "Union"),
+                    ("sort", "Sort"),
+                    ("limit", "Limit"),
+                ],
+                max_length=16,
+            ),
         ),
     ]

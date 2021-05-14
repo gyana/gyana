@@ -6,18 +6,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('integrations', '0003_alter_integration_file'),
+        ("integrations", "0003_alter_integration_file"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='integration',
-            name='external_table_sync_task_id',
+            model_name="integration",
+            name="external_table_sync_task_id",
             field=models.UUIDField(null=True),
         ),
         migrations.AlterField(
-            model_name='integration',
-            name='file',
-            field=models.FileField(null=True, upload_to='davidambrosekell@gmail.com/integrations'),
+            model_name="integration",
+            name="file",
+            field=models.FileField(
+                null=True, upload_to="davidambrosekell@gmail.com/integrations"
+            ),
         ),
     ]

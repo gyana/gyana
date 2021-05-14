@@ -1,18 +1,13 @@
 import time
 from dataclasses import dataclass
 from functools import lru_cache
-from uuid import uuid4
 
 import backoff
 import requests
 import yaml
 from apps.integrations.models import Integration
-from apps.tables.models import Table
 from django.conf import settings
 from django.shortcuts import redirect
-from django.utils import translation
-
-from lib.clients import DATASET_ID, bigquery_client
 
 SERVICES = "lib/services.yaml"
 

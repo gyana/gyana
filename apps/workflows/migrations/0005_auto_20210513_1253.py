@@ -6,18 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('workflows', '0004_alter_functioncolumn_function'),
+        ("workflows", "0004_alter_functioncolumn_function"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='node',
-            name='union_distinct',
+            model_name="node",
+            name="union_distinct",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='node',
-            name='kind',
-            field=models.CharField(choices=[('input', 'Input'), ('output', 'Output'), ('select', 'Select'), ('join', 'Join'), ('group', 'Group'), ('union', 'Union')], max_length=16),
+            model_name="node",
+            name="kind",
+            field=models.CharField(
+                choices=[
+                    ("input", "Input"),
+                    ("output", "Output"),
+                    ("select", "Select"),
+                    ("join", "Join"),
+                    ("group", "Group"),
+                    ("union", "Union"),
+                ],
+                max_length=16,
+            ),
         ),
     ]

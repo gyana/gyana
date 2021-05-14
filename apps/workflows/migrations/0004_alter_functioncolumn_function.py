@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('workflows', '0003_alter_functioncolumn_function'),
+        ("workflows", "0003_alter_functioncolumn_function"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='functioncolumn',
-            name='function',
-            field=models.CharField(choices=[('sum', 'Sum'), ('count', 'Count'), ('mean', 'Average')], max_length=20),
+            model_name="functioncolumn",
+            name="function",
+            field=models.CharField(
+                choices=[("sum", "Sum"), ("count", "Count"), ("mean", "Average")],
+                max_length=20,
+            ),
         ),
     ]
