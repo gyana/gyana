@@ -3,8 +3,6 @@ from functools import cached_property
 
 import inflection
 from apps.projects.mixins import ProjectMixin
-from apps.workflows.serializers import NodeSerializer
-from apps.workflows.tables import WorkflowTable
 from django import forms
 from django.db import transaction
 from django.db.models.query import QuerySet
@@ -13,13 +11,15 @@ from django.urls import reverse
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView, UpdateView
 from django_tables2 import SingleTableView
-from lib.bigquery import run_workflow
 from lib.clients import ibis_client
 from rest_framework import viewsets
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
+from .bigquery import run_workflow
 from .forms import KIND_TO_FORM, KIND_TO_FORMSETS, WorkflowForm
 from .models import Column, Node, Workflow
+from .serializers import NodeSerializer
+from .tables import WorkflowTable
 
 # CRUDL
 

@@ -5,10 +5,10 @@ from django.db.models.query import QuerySet
 from django.urls import resolve, reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
-from lib.bigquery import query_widget
 from lib.chart import to_chart
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
+from .bigquery import query_widget
 from .forms import WidgetConfigForm, WidgetForm
 from .models import Widget
 
