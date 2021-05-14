@@ -18,21 +18,16 @@ class ColumnChoices:
             self.fields["column"].choices = self.columns
 
 
-def get_filter_form(parent, column_type=None):
+def get_filter_form(parent_fk, column_type=None):
 
-    fields = ["column", "widget" if isinstance(parent, Widget) else "node"]
+    fields = ["column", parent_fk]
     if column_type is not None:
         fields += [IBIS_TO_PREDICATE[column_type.name], IBIS_TO_VALUE[column_type.name]]
 
-    widgets = (
-        {"widget": HiddenInput()}
-        if isinstance(parent, Widget)
-        else {"node": HiddenInput()}
-    )
     meta = type(
         "Meta",
         (),
-        {"model": Filter, "fields": fields, "widgets": widgets},
+        {"model": Filter, "fields": fields, "widgets": {parent_fk: HiddenInput()}},
     )
 
     return type(

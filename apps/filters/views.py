@@ -4,7 +4,7 @@ from apps.widgets.models import Widget
 from apps.workflows.models import Node
 from django import forms
 from django.db.models.query import QuerySet
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
@@ -22,13 +22,19 @@ class ParentMixin:
         params = parse_qs(urlparse(self.request.META["HTTP_REFERER"]).query)
         if "widget_id" in params:
             return Widget.objects.get(pk=params["widget_id"][0])
-        return Node.objects.get(pk=params["node_id"][0])
+        if "node_id" in params:
+            return Node.objects.get(pk=params["node_id"][0])
+        raise Http404("No filter parent specified")
 
     @property
     def schema(self):
         if isinstance(self.parent, Widget):
             return self.parent.table.schema
         return self.parent.schema
+
+    @property
+    def parent_fk(self):
+        return "widget" if isinstance(self.parent, Widget) else "node"
 
 
 class FilterList(ParentMixin, ListView):
@@ -55,8 +61,8 @@ class FilterCreate(ParentMixin, TurboCreateView):
 
     def get_form_class(self):
         if self.column is not None:
-            return get_filter_form(self.parent, self.column_type)
-        return get_filter_form(self.parent)
+            return get_filter_form(self.parent_fk, self.column_type)
+        return get_filter_form(self.parent_fk)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -65,10 +71,8 @@ class FilterCreate(ParentMixin, TurboCreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        if isinstance(self.parent, Widget):
-            initial["widget"] = self.parent
-        else:
-            initial["node"] = self.parent
+        initial[self.parent_fk] = self.parent
+
         for key in self.request.GET:
             initial[key] = self.request.GET[key]
         return initial
@@ -96,7 +100,7 @@ class FilterUpdate(ParentMixin, TurboUpdateView):
         return schema[self.object.column]
 
     def get_form_class(self):
-        return get_filter_form(self.parent, self.column_type)
+        return get_filter_form(self.parent_fk, self.column_type)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
