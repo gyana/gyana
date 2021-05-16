@@ -15,8 +15,8 @@
      href="{% url 'projects:workflows:delete' project.id object.pk %}">Delete</a>
 </div>
 
-<div class="flex flex-1">
-  <div class="workflow-detail__sidebar">
+<div data-controller="tf-modal" class="flex flex-1">
+  <div data-tf-modal-target="modal" class="hidden workflow-detail__sidebar">
     <turbo-frame id="workflow-node"></turbo-frame>
   </div>
 

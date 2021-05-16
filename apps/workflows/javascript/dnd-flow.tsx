@@ -175,48 +175,75 @@ const DnDFlow = ({ client }) => {
   );
 };
 
-const InputNode = ({ data, isConnectable }: NodeProps) => (
-  <>
-    {data.label}
-    <Handle
-      type="source"
-      position={Position.Right}
-      isConnectable={isConnectable}
-    />
-  </>
-);
+const useParentStimulusModal = () => {
+  const ref = useRef<HTMLDivElement>();
 
-const OutputNode = ({ data, isConnectable }: NodeProps) => (
-  <>
-    <Handle
-      type="target"
-      position={Position.Left}
-      isConnectable={isConnectable}
-    />
-    {data.label}
-  </>
-);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.parentElement?.setAttribute(
+        "data-action",
+        "click->tf-modal#open"
+      );
+    }
+  }, [ref.current]);
+
+  return ref;
+};
+
+const InputNode = ({ data, isConnectable }: NodeProps) => {
+  const ref = useParentStimulusModal();
+
+  return (
+    <div ref={ref}>
+      {data.label}
+      <Handle
+        type="source"
+        position={Position.Right}
+        isConnectable={isConnectable}
+      />
+    </div>
+  );
+};
+
+const OutputNode = ({ data, isConnectable }: NodeProps) => {
+  const ref = useParentStimulusModal();
+
+  return (
+    <div ref={ref}>
+      <Handle
+        type="target"
+        position={Position.Left}
+        isConnectable={isConnectable}
+      />
+      {data.label}
+    </div>
+  );
+};
 
 const DefaultNode = ({
   data,
   isConnectable,
   targetPosition = Position.Left,
   sourcePosition = Position.Right,
-}: NodeProps) => (
-  <>
-    <Handle
-      type="target"
-      position={targetPosition}
-      isConnectable={isConnectable}
-    />
-    {data.label}
-    <Handle
-      type="source"
-      position={sourcePosition}
-      isConnectable={isConnectable}
-    />
-  </>
-);
+}: NodeProps) => {
+  const ref = useParentStimulusModal();
+
+  return (
+    <div ref={ref}>
+      <Handle
+        type="target"
+        position={targetPosition}
+        isConnectable={isConnectable}
+      />
+      {data.label}
+      <Handle
+        type="source"
+        position={sourcePosition}
+        isConnectable={isConnectable}
+      />
+    </div>
+  );
+};
 
 const defaultNodeTypes = {
   input: InputNode,
