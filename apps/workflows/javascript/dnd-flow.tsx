@@ -150,9 +150,6 @@ const DnDFlow = ({ client }) => {
             onDrop={onDrop}
             onDragOver={onDragOver}
             onNodeDragStop={onDragStop}
-            onElementClick={(event, element) => {
-              addParam("node_id", element.id);
-            }}
           >
             <Controls />
           </ReactFlow>
@@ -169,8 +166,11 @@ const OpenButton = ({ id }) => {
   return (
     <button
       className="absolute -bottom-8"
-      data-action="click->tf-modal#open"
       data-src={`/workflows/${workflowId}/nodes/${id}`}
+      data-controller="url-search-params"
+      data-url-search-params-key-value="node_id"
+      data-url-search-params-val-value={id}
+      data-action="click->tf-modal#open click->url-search-params#add"
     >
       Open
     </button>

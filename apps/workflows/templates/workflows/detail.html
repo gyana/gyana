@@ -15,10 +15,15 @@
      href="{% url 'projects:workflows:delete' project.id object.pk %}">Delete</a>
 </div>
 
-<div data-controller="tf-modal" class="flex flex-1">
+<div data-controller="tf-modal url-search-params" class="flex flex-1">
   <div data-tf-modal-target="modal" class="hidden fixed h-full w-full p-24 z-10">
     <div class="bg-white">
-      <button data-action="click->tf-modal#close">Close</button>
+      <button 
+        data-controller="url-search-params"
+        data-url-search-params-key-value="node_id"
+        data-action="click->tf-modal#close click->url-search-params#remove">
+        Close
+      </button>
       <turbo-frame id="workflow-node" data-tf-modal-target="turboFrame"></turbo-frame> 
     </div>
   </div>  
