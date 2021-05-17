@@ -42,4 +42,10 @@ $card-colors: (
   &--sm {
     padding: 1rem;
   }
+
+  &__header {
+    height: 52px; // TODO
+    background-color: var(--c-white);
+    border-bottom: 1px solid var(--c-gray);
+  }
 }

@@ -1,3 +1,11 @@
 .tf-modal {
-  background-color: rgba(black, 0.1);
+  background-color: rgba(black, 0.5);
+  left: 0;
+  position: absolute;
+  top: 0;
+
+  &__close {
+    color: var(--c-black-20);
+    text-align: right;
+  }
 }
