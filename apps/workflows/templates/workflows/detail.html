@@ -27,7 +27,6 @@
           <i class="fal fa-times"></i>
         </button>
       </div>
-
       <turbo-frame id="workflow-node" data-tf-modal-target="turboFrame" {% if request.GET.node_id %}
                    src="{% url 'workflows:node' workflow.id request.GET.node_id %}" {% endif %}></turbo-frame>
     </div>
