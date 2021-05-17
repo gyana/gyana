@@ -13,10 +13,10 @@
   
   &__footer {
     display: flex;
-    justify-content: center;
     border-top: 1px solid var(--c-gray);
     margin-top: auto;
     padding: 1.125rem;
+    justify-content: space-between;
   }
   
   &__nav {
