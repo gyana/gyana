@@ -30,7 +30,8 @@
     {% endwith %}
 
     <footer class="project__footer">
-      <a class="button button--orange button--filled" href="{% url 'projects:settings' project.id %}">Settings</a>
+      <a class="button button--sm button--orange button--filled"
+         href="{% url 'projects:settings' project.id %}">Settings</a>
     </footer>
   </nav>
 

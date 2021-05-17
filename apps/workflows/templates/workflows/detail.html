@@ -20,7 +20,7 @@
 <div data-controller="tf-modal url-search-params" class=" relative flex flex-1">
   <div data-tf-modal-target="modal"
        class="tf-modal {% if not request.GET.node_id %} hidden {% endif %} absolute h-full w-full p-12 py-24 bg-transparent z-10">
-    <div class="card bg-white h-full">
+    <div class="card flex flex-col h-full">
       <button class="card__close" data-controller="url-search-params" data-url-search-params-key-value="node_id"
               data-action="click->tf-modal#close click->url-search-params#remove">
         <i class="fal fa-times"></i>

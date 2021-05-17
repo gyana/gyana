@@ -1,5 +1,5 @@
 .workflow {
-
+  
   &-detail {
     padding: 0;
 
@@ -16,14 +16,22 @@
     &__sidebar {
       background-color: var(--c-white);
       border-right: 1px solid var(--c-gray);
-      width: 12em;
+      overflow-y: auto;
       padding: 1em;
+      width: 14em;
     }
 
     &__table {
       background-color: var(--c-white);
       border-top: 1px solid var(--c-gray);
-      height: 18em;
+      height: 100%;
+      width: 100%;
+    }
+
+    #workflow-node {
+      display: flex;
+      overflow: hidden;
+      flex: 1 1 0%;
     }
   }
 }
