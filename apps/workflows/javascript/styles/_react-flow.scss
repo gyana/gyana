@@ -42,6 +42,14 @@
     &-input.selected:hover {
       box-shadow: 4px 10px 30px rgba(0, 0, 0, 0.08);
     }
+
+    button {
+      color: var(--c-black-50);
+
+      &:hover {
+        color: var(--c-blue);
+      }
+    }
   }
 
   .react-flow__handle {

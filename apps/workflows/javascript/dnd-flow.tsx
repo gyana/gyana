@@ -172,7 +172,7 @@ const OpenButton = ({ id }) => {
       data-url-search-params-val-value={id}
       data-action="click->tf-modal#open click->url-search-params#add"
     >
-      Open
+      <i className="fas fa-cog"></i>
     </button>
   );
 };

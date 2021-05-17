@@ -15,9 +15,9 @@
      href="{% url 'projects:workflows:delete' project.id object.pk %}">Delete</a>
 </div>
 
-<div data-controller="tf-modal url-search-params" class="flex flex-1">
-  <div data-tf-modal-target="modal" class="{% if not request.GET.node_id %} hidden {% endif %} fixed h-full w-full p-24 z-10">
-    <div class="bg-white">
+<div data-controller="tf-modal url-search-params" class=" relative flex flex-1">
+  <div data-tf-modal-target="modal" class="tf-modal {% if not request.GET.node_id %} hidden {% endif %} absolute h-full w-full p-12 py-24 bg-transparent z-10">
+    <div class="card bg-white h-full">
       <button 
         data-controller="url-search-params"
         data-url-search-params-key-value="node_id"
