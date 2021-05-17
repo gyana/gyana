@@ -151,12 +151,6 @@ const DnDFlow = ({ client }) => {
             onDragOver={onDragOver}
             onNodeDragStop={onDragStop}
             onElementClick={(event, element) => {
-              document.getElementById("workflow-node").setAttribute(
-                "src",
-                // TODO: populate URL from django reverse
-                `http://localhost:8000/workflows/${workflowId}/nodes/${element.id}`
-              );
-
               addParam("node_id", element.id);
 
               document.getElementById("workflows-grid").setAttribute(
@@ -175,8 +169,9 @@ const DnDFlow = ({ client }) => {
   );
 };
 
-const useParentStimulusModal = () => {
+const useParentStimulusModal = (id: string) => {
   const ref = useRef<HTMLDivElement>();
+  const workflowId = window.location.pathname.split("/")[4];
 
   useEffect(() => {
     if (ref.current) {
@@ -184,14 +179,18 @@ const useParentStimulusModal = () => {
         "data-action",
         "click->tf-modal#open"
       );
+      ref.current.parentElement?.setAttribute(
+        "data-src",
+        `/workflows/${workflowId}/nodes/${id}`
+      );
     }
   }, [ref.current]);
 
   return ref;
 };
 
-const InputNode = ({ data, isConnectable }: NodeProps) => {
-  const ref = useParentStimulusModal();
+const InputNode = ({ id, data, isConnectable }: NodeProps) => {
+  const ref = useParentStimulusModal(id);
 
   return (
     <div ref={ref}>
@@ -205,8 +204,8 @@ const InputNode = ({ data, isConnectable }: NodeProps) => {
   );
 };
 
-const OutputNode = ({ data, isConnectable }: NodeProps) => {
-  const ref = useParentStimulusModal();
+const OutputNode = ({ id, data, isConnectable }: NodeProps) => {
+  const ref = useParentStimulusModal(id);
 
   return (
     <div ref={ref}>
@@ -221,12 +220,13 @@ const OutputNode = ({ data, isConnectable }: NodeProps) => {
 };
 
 const DefaultNode = ({
+  id,
   data,
   isConnectable,
   targetPosition = Position.Left,
   sourcePosition = Position.Right,
 }: NodeProps) => {
-  const ref = useParentStimulusModal();
+  const ref = useParentStimulusModal(id);
 
   return (
     <div ref={ref}>
