@@ -50,4 +50,13 @@
   td:first-child {
     padding-left: 1em;
   }
+
+  td a[href] {
+    color: var(--c-blue);
+    padding: 0.625em 0; 
+    
+    &:hover {
+      font-weight: 500;
+    }
+  }
 }
