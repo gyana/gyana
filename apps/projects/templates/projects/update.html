@@ -2,7 +2,8 @@
 {% load tailwind_filters %}
 
 {% block app %}
-<h1>Create/Update</h1>
+<h1>Edit</h1>
+
 <form method="post" action="{% url 'projects:update' object.id %}" class="form">
   {% csrf_token %} {{ form|crispy }}
 

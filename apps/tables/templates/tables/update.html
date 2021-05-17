@@ -1,7 +1,6 @@
 {% extends "web/app/settings_base.html" %}
-<!---->
 {% load tailwind_filters %}
-<!---->
+
 {% block app %}
 <h1>Create/Update</h1>
 <form method="post" action="{% url 'tables:update' object.id %}" class="form">
