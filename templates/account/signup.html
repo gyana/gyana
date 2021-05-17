@@ -1,9 +1,14 @@
 {% extends "web/base.html" %}
 {% load static %}
 {% load socialaccount %}
+
+{% block top_nav %}
+{# Getting rid of the top navigation bar here. #}
+{% endblock %}
+
 {% block body %}
-<div class="flex justify-center my-8 ">
-  <div class="w-96 px-4 py-4 bg-white">
+<div class="flex justify-center items-center h-full my-8">
+  <div class="card w-96">
     <div>
       <h2 class="mt-6 text-center text-2xl  text-gray-900">
         Sign up
@@ -43,7 +48,7 @@
 
           <p class="text-center text-gray-500 my-2">or</p>
           <a class="button button--primary is-outlined w-full flex justify-center"
-            href="{% provider_login_url 'google' %}">
+             href="{% provider_login_url 'google' %}">
             <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
             Sign In with Google
           </a>
