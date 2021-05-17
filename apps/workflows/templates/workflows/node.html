@@ -12,6 +12,6 @@
     {% endif %}
   </div>
   <div class="workflow-detail__table">
-    <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id object.id %}">No node selected</turbo-frame>
+    <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id object.id %}">Loading...</turbo-frame>
   </div>
 </turbo-frame>
