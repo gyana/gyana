@@ -11,7 +11,6 @@ import ReactFlow, {
 
 import Sidebar from "./sidebar";
 
-import { addParam } from "./util";
 import "./styles/_dnd-flow.scss";
 import "./styles/_react-flow.scss";
 

@@ -5,15 +5,26 @@ from django.db import models
 class Filter(models.Model):
     class Type(models.TextChoices):
         INTEGER = "INTEGER", "Integer"
+        FLOAT = "FLOAT", "Float"
         STRING = "STRING", "String"
+        BOOL = "BOOL", "Bool"
 
-    class IntegerPredicate(models.TextChoices):
+    class NumericPredicate(models.TextChoices):
         EQUAL = "equal", "is equal to"
         NEQUAL = "nequal", "is not equal to"
+        GREATERTHAN = (
+            "greaterthan",
+            "greater than",
+        )
+        GREATERTHANEQUAL = "greaterthanequal", "greater than or equal to"
+        LESSTHAN = "lessthan", "less than"
+        LESSTHANEQUAL = "lessthanequal", "less than or equal"
 
     class StringPredicate(models.TextChoices):
-        STARTSWITH = "starts_with", "starts with"
-        ENDSWITH = "ends_with", "ends with"
+        EQUAL = "equal", "is equal to"
+        NEQUAL = "nequal", "is not equal to"
+        CONTAINS = "contains", "contains"
+        NOTCONTAINS = "notcontains", "does not contain"
 
     widget = models.ForeignKey(
         Widget, on_delete=models.CASCADE, null=True, related_name="filters"
@@ -26,15 +37,19 @@ class Filter(models.Model):
     column = models.CharField(max_length=300)
     type = models.CharField(max_length=8, choices=Type.choices)
 
-    integer_predicate = models.CharField(
-        max_length=16, choices=IntegerPredicate.choices, null=True, blank=True
+    numeric_predicate = models.CharField(
+        max_length=16, choices=NumericPredicate.choices, null=True, blank=True
     )
+
+    float_value = models.FloatField(null=True, blank=True)
     integer_value = models.BigIntegerField(null=True, blank=True)
 
     string_predicate = models.CharField(
         max_length=16, choices=StringPredicate.choices, null=True, blank=True
     )
     string_value = models.TextField(null=True, blank=True)
+
+    bool_value = models.BooleanField(null=True, blank=True)
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)

@@ -4,7 +4,7 @@ from django.forms.widgets import HiddenInput
 
 from .models import Filter
 
-IBIS_TO_PREDICATE = {"String": "string_predicate", "Int64": "integer_predicate"}
+IBIS_TO_PREDICATE = {"String": "string_predicate", "Int64": "numeric_predicate"}
 IBIS_TO_VALUE = {"String": "string_value", "Int64": "integer_value"}
 
 
