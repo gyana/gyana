@@ -47,7 +47,7 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
         return initial
 
     def get_success_url(self) -> str:
-        return reverse("widgets:list")
+        return reverse("widgets:detail", args=(self.object.id,))
 
 
 class WidgetDetail(DetailView):
@@ -96,7 +96,7 @@ class WidgetConfig(TurboUpdateView):
 
 def last_modified_widget_output(request, pk):
     widget = Widget.objects.get(pk=pk)
-    return max(widget.updated, widget.table.updated)
+    return max(widget.updated, widget.table.data_updated)
 
 
 def etag_widget_output(request, pk):

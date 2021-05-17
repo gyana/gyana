@@ -1,8 +1,12 @@
 {% extends "widgets/base.html" %}
 <!---->
 {% block app %}
-<a data-controller="url-search-params" data-url-search-params-key-value="widget_id"
-  data-action="click->url-search-params#remove" href="{% url 'widgets:list' %}">Back</a>
+<a data-controller="url-search-params"
+   data-url-search-params-key-value="widget_id"
+   data-action="click->url-search-params#remove"
+   href="{% url 'widgets:list' %}">
+   Back
+</a>
 <h2 class="text-xl ">{{ object.name }}</h2>
 <div class="flex flex-wrap">
   <div class="w-1/2">

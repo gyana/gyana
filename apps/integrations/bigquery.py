@@ -77,6 +77,10 @@ def sync_integration(integration: Integration):
                 integration=integration,
             )
             table.save()
+        else:
+            for table in integration.table_set.all():
+                table.data_updated = datetime.now()
+                table.save()
 
         integration.last_synced = datetime.now()
         integration.save()

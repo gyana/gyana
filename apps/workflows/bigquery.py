@@ -16,6 +16,8 @@ def run_workflow(workflow: Workflow):
             client.query(
                 f"CREATE OR REPLACE TABLE {DATAFLOW_ID}.{node.table.bq_table} as ({query})"
             ).result()
+            node.table.data_updated = datetime.now()
+            node.table.save()
 
         except Table.DoesNotExist:
             table_id = f"table_{node.pk}"
