@@ -12,12 +12,15 @@ export default () => {
 
   return (
     <aside className="dnd-sidebar">
-      <p>You can drag these nodes to the pane on the left.</p>
+      <hgroup>
+        <h2>Nodes</h2>
+        <p>You can drag these onto the pane on your left.</p>
+      </hgroup>
 
       {NODES.map(({ value, label }) => (
         <div
           key={value}
-          className="dnd-sidebar__node button button--sm button--tertiary"
+          className="dnd-sidebar__node button button--sm button--square button--tertiary"
           onDragStart={(event) => onDragStart(event, value)}
           draggable
         >
