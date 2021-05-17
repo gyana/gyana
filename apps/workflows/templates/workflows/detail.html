@@ -16,7 +16,7 @@
 </div>
 
 <div data-controller="tf-modal url-search-params" class="flex flex-1">
-  <div data-tf-modal-target="modal" class="hidden fixed h-full w-full p-24 z-10">
+  <div data-tf-modal-target="modal" class="{% if not request.GET.node_id %} hidden {% endif %} fixed h-full w-full p-24 z-10">
     <div class="bg-white">
       <button 
         data-controller="url-search-params"
@@ -24,7 +24,11 @@
         data-action="click->tf-modal#close click->url-search-params#remove">
         Close
       </button>
-      <turbo-frame id="workflow-node" data-tf-modal-target="turboFrame"></turbo-frame> 
+      <turbo-frame
+        id="workflow-node"
+        data-tf-modal-target="turboFrame"
+        {% if request.GET.node_id %} src="{% url 'workflows:node' workflow.id request.GET.node_id %}" {% endif %}
+      ></turbo-frame> 
     </div>
   </div>  
 
