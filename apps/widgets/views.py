@@ -4,6 +4,7 @@ from apps.dashboards.models import Dashboard
 from apps.widgets.visuals import VISUAL_TO_OUTPUT
 from django.db.models.query import QuerySet
 from django.urls import resolve, reverse
+from django.views.decorators.http import condition
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from lib.chart import to_chart
@@ -91,6 +92,21 @@ class WidgetConfig(TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse("widgets:config", args=(self.object.id,))
+
+
+def last_modified_widget_output(request, pk):
+    widget = Widget.objects.get(pk=pk)
+    return max(widget.updated, widget.table.updated)
+
+
+def etag_widget_output(request, pk):
+    last_modified = last_modified_widget_output(request, pk)
+    return f"{int(last_modified.timestamp() * 1_000_000)}"
+
+
+widget_output_condition = condition(
+    etag_func=etag_widget_output, last_modified_func=last_modified_widget_output
+)
 
 
 class WidgetOutput(DetailView):
