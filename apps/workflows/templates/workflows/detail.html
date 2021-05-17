@@ -6,9 +6,11 @@
 {% block app %}
 
 <div class="workflow-detail__header">
-  <h3 class="mr-auto">{{ object.name }}</h3>
+  <h3>{{ object.name }}</h3>
+  <div class="mr-auto">
+    <turbo-frame id="workflows:run" src="{% url 'workflows:run' object.id %}"></turbo-frame>
+  </div>
 
-  <turbo-frame id="workflows:run" src="{% url 'workflows:run' object.id %}"></turbo-frame>
   <a class="button button--square button--sm button--filled"
      href="{% url 'projects:workflows:update' project.id object.pk %}">Update</a>
   <a class="button button--square button--sm button--filled button--pink"
@@ -16,21 +18,18 @@
 </div>
 
 <div data-controller="tf-modal url-search-params" class=" relative flex flex-1">
-  <div data-tf-modal-target="modal" class="tf-modal {% if not request.GET.node_id %} hidden {% endif %} absolute h-full w-full p-12 py-24 bg-transparent z-10">
+  <div data-tf-modal-target="modal"
+       class="tf-modal {% if not request.GET.node_id %} hidden {% endif %} absolute h-full w-full p-12 py-24 bg-transparent z-10">
     <div class="card bg-white h-full">
-      <button 
-        data-controller="url-search-params"
-        data-url-search-params-key-value="node_id"
-        data-action="click->tf-modal#close click->url-search-params#remove">
-        Close
+      <button class="card__close" data-controller="url-search-params" data-url-search-params-key-value="node_id"
+              data-action="click->tf-modal#close click->url-search-params#remove">
+        <i class="fal fa-times"></i>
       </button>
-      <turbo-frame
-        id="workflow-node"
-        data-tf-modal-target="turboFrame"
-        {% if request.GET.node_id %} src="{% url 'workflows:node' workflow.id request.GET.node_id %}" {% endif %}
-      ></turbo-frame> 
+
+      <turbo-frame id="workflow-node" data-tf-modal-target="turboFrame" {% if request.GET.node_id %}
+                   src="{% url 'workflows:node' workflow.id request.GET.node_id %}" {% endif %}></turbo-frame>
     </div>
-  </div>  
+  </div>
 
   <div id="react-app" class="flex-auto"></div>
 </div>
