@@ -20,7 +20,7 @@
 <form method="post" action="{{ request.get_full_path }}" class="form" {% if request.GET.kind == integration_kind.CSV %}
       enctype="multipart/form-data" {% endif %}>
   {% csrf_token %} {{ form|crispy }}
-  <button type="submit" class="btn btn-primary">Create</button>
+  <button type="submit" class="button">Create</button>
 </form>
 {% endif %}
 {% else %}

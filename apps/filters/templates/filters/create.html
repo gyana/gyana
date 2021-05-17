@@ -4,18 +4,9 @@
 <!---->
 {% block app %}
 <h1>Create/Update</h1>
-<form
-  data-controller="live-create"
-  method="get"
-  action="{{ request.get_full_path }}"
-  class="form"
->
+<form data-controller="live-create" method="get" action="{{ request.get_full_path }}" class="form">
   {% csrf_token %} {{ form|crispy }}
-  <button
-    type="button"
-    data-action="click->live-create#create"
-    class="btn btn-primary"
-  >
+  <button type="button" data-action="click->live-create#create" class="button">
     Create
   </button>
 </form>

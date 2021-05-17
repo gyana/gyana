@@ -4,12 +4,8 @@
 <!---->
 {% block app %}
 <h1>Create/Update</h1>
-<form
-  method="post"
-  action="{% url '{% endraw %}{{cookiecutter.app_name}}{% raw %}:create' %}"
-  class="form"
->
+<form method="post" action="{% url '{% endraw %}{{cookiecutter.app_name}}{% raw %}:create' %}" class="form">
   {% csrf_token %} {{ form|crispy }}
-  <button type="submit" class="btn btn-primary">Create</button>
+  <button type="submit" class="button">Create</button>
 </form>
 {% endblock %} {% endraw %}
