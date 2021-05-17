@@ -6,5 +6,23 @@
 {% endblock %}
 
 {% block body %}
-{% include 'web/components/hero.html' %}
+
+<div class="landing">
+  <img class="landing__logo" src="{% static 'images/logo.png' %}">
+
+  <div>
+    <h1 class="landing__title">{{ project_meta.NAME }}</h1>
+    <h2 class="mb-8">{{ project_meta.DESCRIPTION }}</h2>
+
+    <div class="flex items-center space-x-4">
+      <a href="{% url 'account_signup' %}" class="button button--filled">
+        Create account
+      </a>
+      <a href="{% url 'account_login' %}" class="button">
+        Sign in
+      </a>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
