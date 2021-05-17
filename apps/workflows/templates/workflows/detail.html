@@ -17,18 +17,16 @@
      href="{% url 'projects:workflows:delete' project.id object.pk %}">Delete</a>
 </div>
 
-<div data-controller="tf-modal url-search-params" class="flex flex-1">
+<div data-controller="tf-modal" class="flex flex-1">
   <div data-tf-modal-target="modal"
-       class="tf-modal {% if not request.GET.node_id %} hidden {% endif %} absolute h-full w-full p-12 py-24 bg-transparent z-10">
+       class="tf-modal hidden absolute h-full w-full p-12 py-24 bg-transparent z-10">
     <div class="card flex flex-col h-full">
       <div class="flex justify-end">
-        <button class="tf-modal__close" data-controller="url-search-params" data-url-search-params-key-value="node_id"
-                data-action="click->tf-modal#close click->url-search-params#remove">
+        <button class="tf-modal__close" data-action="click->tf-modal#close">
           <i class="fal fa-times"></i>
         </button>
       </div>
-      <turbo-frame id="workflow-node" data-tf-modal-target="turboFrame" {% if request.GET.node_id %}
-                   src="{% url 'workflows:node' workflow.id request.GET.node_id %}" {% endif %}></turbo-frame>
+      <turbo-frame id="workflow-node" data-tf-modal-target="turboFrame"></turbo-frame>
     </div>
   </div>
 

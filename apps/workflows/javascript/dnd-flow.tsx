@@ -174,10 +174,7 @@ const OpenButton = ({ id }) => {
   return (
     <button
       data-src={`/workflows/${workflowId}/nodes/${id}`}
-      data-controller="url-search-params"
-      data-url-search-params-key-value="node_id"
-      data-url-search-params-val-value={id}
-      data-action="click->tf-modal#open click->url-search-params#add"
+      data-action="click->tf-modal#open"
     >
       Settings
     </button>
@@ -190,8 +187,8 @@ const Buttons = ({ id }) => {
       <OpenButton id={id} />
       <DeleteButton id={id} />
     </div>
-  )
-}
+  );
+};
 
 const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
   <>
