@@ -27,7 +27,6 @@
   }
 
   &__link {
-
     &--active {
       color: var(--c-blue);
       font-weight: 500;
@@ -41,11 +40,13 @@
 
 .project-list {
   margin: 0 auto;
+  width: 56rem;
   max-width: 56rem;
 
   &__projects {
     display: grid;
     gap: 1em;
     grid-template-columns: 1fr 1fr 1fr;
+    grid-auto-rows: 1fr;
   }
 }

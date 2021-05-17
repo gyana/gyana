@@ -12,16 +12,11 @@
 <div class="project-list__projects">
   {% for object in object_list %}
   <a class="card" href="{% url 'projects:detail' object.pk %}">
-    <strong>{{ object }}</strong>
+    <h3 class="mb-4">{{object}}</h3>
 
-    <p>created {{ object.created|naturaltime }} • updated {{ object.updated|naturaltime }}</p>
+    <p>Created {{ object.created|naturaltime }}</p>
+    <p>Updated {{ object.updated|naturaltime }}</p>
   </a>
-  {% empty %}
-  <div class="card">
-    <strong>You have no projects yet</strong>
-
-    <a class="button button--square button--filled button--sm" href="{% url 'projects:create' %}">Create one</a>
-  </div>
   {% endfor %}
 
   <a class="card card--primary card--center" href="{% url 'projects:create' %}">
