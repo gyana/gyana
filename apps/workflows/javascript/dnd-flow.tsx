@@ -189,35 +189,43 @@ const useParentStimulusModal = (id: string) => {
   return ref;
 };
 
-const InputNode = ({ id, data, isConnectable }: NodeProps) => {
-  const ref = useParentStimulusModal(id);
+const OpenButton = (id) => {
+  const workflowId = window.location.pathname.split("/")[4];
 
   return (
-    <div ref={ref}>
-      {data.label}
-      <Handle
-        type="source"
-        position={Position.Right}
-        isConnectable={isConnectable}
-      />
-    </div>
+    <button
+      className="absolute -bottom-8"
+      data-action="click->tf-modal#open"
+      data-src={`/workflows/${workflowId}/nodes/${id}`}
+    >
+      Open
+    </button>
   );
 };
 
-const OutputNode = ({ id, data, isConnectable }: NodeProps) => {
-  const ref = useParentStimulusModal(id);
+const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
+  <>
+    {selected && <OpenButton id={id} />}
+    {data.label}
+    <Handle
+      type="source"
+      position={Position.Right}
+      isConnectable={isConnectable}
+    />
+  </>
+);
 
-  return (
-    <div ref={ref}>
-      <Handle
-        type="target"
-        position={Position.Left}
-        isConnectable={isConnectable}
-      />
-      {data.label}
-    </div>
-  );
-};
+const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
+  <>
+    {selected && <OpenButton id={id} />}
+    <Handle
+      type="target"
+      position={Position.Left}
+      isConnectable={isConnectable}
+    />
+    {data.label}
+  </>
+);
 
 const DefaultNode = ({
   id,
@@ -225,25 +233,23 @@ const DefaultNode = ({
   isConnectable,
   targetPosition = Position.Left,
   sourcePosition = Position.Right,
-}: NodeProps) => {
-  const ref = useParentStimulusModal(id);
-
-  return (
-    <div ref={ref}>
-      <Handle
-        type="target"
-        position={targetPosition}
-        isConnectable={isConnectable}
-      />
-      {data.label}
-      <Handle
-        type="source"
-        position={sourcePosition}
-        isConnectable={isConnectable}
-      />
-    </div>
-  );
-};
+  selected,
+}: NodeProps) => (
+  <>
+    {selected && <OpenButton id={id} />}
+    <Handle
+      type="target"
+      position={targetPosition}
+      isConnectable={isConnectable}
+    />
+    {data.label}
+    <Handle
+      type="source"
+      position={sourcePosition}
+      isConnectable={isConnectable}
+    />
+  </>
+);
 
 const defaultNodeTypes = {
   input: InputNode,
