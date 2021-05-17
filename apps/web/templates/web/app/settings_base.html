@@ -1,21 +1,11 @@
-{% extends "web/base.html" %} {% load static %}
-<!-- -->
-{% block body %}
-<!--  -->
-{% block notifications %}{% endblock %}
-<section class="section">
-  <div class="container app-two-column">
+{% extends "web/base.html" %}
+{% load static %}
 
-    <div id="app-content">
-      {% if object.project %}
-      <span class="text-sm">
-        <a href="{% url 'projects:detail' object.project.id %}">Back</a> |
-        {{object.project.name }}
-      </span>
-      {% endif %}
-      <!--  -->
-      {% block app %} {% endblock %}
-    </div>
-  </div>
+{% block body %}
+
+{% block notifications %}{% endblock %}
+
+<section>
+  {% block app %} {% endblock %}
 </section>
 {% endblock body %}
