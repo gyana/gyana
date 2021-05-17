@@ -1,9 +1,9 @@
 {% if messages %}
-{% for message in messages %}
-<section
-         class="toast {% if message.tags %}is-{% if message.level_tag == 'error' %}danger{% else %}{{ message.level_tag }}{% endif %}{% endif %} {{ message.extra_tags }}">
-  <button class="delete"></button>
-  {{ message }}
-</section>
-{% endfor %}
+<ul class="toast-container">
+  {% for message in messages %}
+  <li class="toast {{messages.tags}} {{ message.extra_tags }}">
+    {{ message }}
+  </li>
+  {% endfor %}
+</ul>
 {% endif %}
