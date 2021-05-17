@@ -4,7 +4,7 @@
 
 {% block notifications %}{% endblock %}
 
-<section>
+<section class="{% block app-class %}{% endblock %}">
   <div class="p-4">
     <div id="app-content">
       {% if object.project %}

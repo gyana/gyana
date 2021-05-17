@@ -1,9 +1,20 @@
+$card-colors: (
+  "primary": var(--c-blue),
+  "green": var(--c-green),
+  "pink": var(--c-pink),
+  "orange": var(--c-orange),
+  "tertiary": var(--c-black),
+) !default;
+
 .card {
-  background: var(--c-white);
-  border-radius: 10px;
-  border: 1px solid var(--c-gray);
+  --card-color: var(--c-gray);
+
   display: block;
   padding: 1.875rem;
+
+  background: var(--c-white);
+  border-radius: 10px;
+  border: 1px solid var(--card-color);
 
   &--inline {
     display: inline-flex;
@@ -11,6 +22,21 @@
 
   &[href]:hover {
     opacity: 0.5;
+  }
+
+  // Colour variant generation
+  @each $color, $value in $card-colors {
+    &--#{$color} {
+      --card-color: #{$value};
+      color: var(--card-color);
+    }
+  }
+
+  // Layout
+  &--center {
+    align-items: center;
+    display: flex;
+    justify-content: center;
   }
 
   // Sizes

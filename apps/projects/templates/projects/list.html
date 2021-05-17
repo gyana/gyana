@@ -1,26 +1,33 @@
 {% extends "web/app/app_base.html" %}
 {% load humanize %}
+
+{% block app-class%}project-list{% endblock %}
+
 {% block app %}
 
-<div class="flex items-center">
+<div class="flex items-center mb-4">
   <h1 class="mr-auto">Projects</h1>
-  <a class="button button--square button--filled button--sm" href="{% url 'projects:create' %}">Create</a>
 </div>
 
-<ul class="card mt-4">
+<div class="project-list__projects">
   {% for object in object_list %}
+  <a class="card" href="{% url 'projects:detail' object.pk %}">
+    <strong>{{ object }}</strong>
 
-  <li class="mb-4">
-    <a class="inline-block" href="{% url 'projects:detail' object.pk %}">
-      <strong>{{ object }}</strong>
-
-      <p>created {{ object.created|naturaltime }} • updated {{ object.updated|naturaltime }}</p>
-    </a>
-  </li>
+    <p>created {{ object.created|naturaltime }} • updated {{ object.updated|naturaltime }}</p>
+  </a>
   {% empty %}
-  <p>No items.</p>
+  <div class="card">
+    <strong>You have no projects yet</strong>
+
+    <a class="button button--square button--filled button--sm" href="{% url 'projects:create' %}">Create one</a>
+  </div>
   {% endfor %}
-</ul>
+
+  <a class="card card--primary card--center" href="{% url 'projects:create' %}">
+    <i class="fas fa-plus mr-4"></i><strong>Create new Project</strong>
+  </a>
+</div>
 
 {% if is_paginated %}
 <div class="pagination">

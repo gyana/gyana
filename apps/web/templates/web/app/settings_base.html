@@ -7,11 +7,12 @@
   <div class="container app-two-column">
     <div id="app-nav">
       {% block sidebar-nav %}
-      <!-- -->
+
       {% include "web/components/app_nav.html" %}
-      <!--  -->
+
       {% endblock %}
     </div>
+
     <div id="app-content">
       {% if object.project %}
       <span class="text-sm">
