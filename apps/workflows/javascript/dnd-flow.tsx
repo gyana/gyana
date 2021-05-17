@@ -152,12 +152,6 @@ const DnDFlow = ({ client }) => {
             onNodeDragStop={onDragStop}
             onElementClick={(event, element) => {
               addParam("node_id", element.id);
-
-              document.getElementById("workflows-grid").setAttribute(
-                "src",
-                // TODO: populate URL from django reverse
-                `http://localhost:8000/workflows/${workflowId}/nodes/${element.id}/grid`
-              );
             }}
           >
             <Controls />
@@ -169,27 +163,7 @@ const DnDFlow = ({ client }) => {
   );
 };
 
-const useParentStimulusModal = (id: string) => {
-  const ref = useRef<HTMLDivElement>();
-  const workflowId = window.location.pathname.split("/")[4];
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.parentElement?.setAttribute(
-        "data-action",
-        "click->tf-modal#open"
-      );
-      ref.current.parentElement?.setAttribute(
-        "data-src",
-        `/workflows/${workflowId}/nodes/${id}`
-      );
-    }
-  }, [ref.current]);
-
-  return ref;
-};
-
-const OpenButton = (id) => {
+const OpenButton = ({ id }) => {
   const workflowId = window.location.pathname.split("/")[4];
 
   return (
