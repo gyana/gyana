@@ -14,7 +14,7 @@
     align-items: center;
     padding: 0.25em;
   }
-  .icon {
+  &__icon {
     color: var(--c-blue);
     padding: 0.6em;
     border-radius: 6px;
@@ -22,13 +22,13 @@
     margin-right: 1em;
   }
 
-  .name {
+  &__name {
     font-weight: 600;
   }
 
-  .description {
+  &__description {
     font-weight: 400;
-    font-size: 0.8em;
-    opacity: 0.8;
+    font-size: 0.75em;
+    color: var(--c-black-50);
   }
 }
