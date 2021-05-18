@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  createContext,
+  useContext,
+} from "react";
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -44,6 +50,11 @@ const DnDFlow = ({ client }) => {
         id: el.id,
       });
     });
+  };
+
+  const removeById = (id: string) => {
+    const elemenToRemove = elements.filter((el) => el.id === id);
+    onElementsRemove(elemenToRemove);
   };
 
   const onLoad = (_reactFlowInstance) =>
@@ -140,18 +151,20 @@ const DnDFlow = ({ client }) => {
     <div className="dndflow">
       <ReactFlowProvider>
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <ReactFlow
-            nodeTypes={defaultNodeTypes}
-            elements={elements}
-            onConnect={onConnect}
-            onElementsRemove={onElementsRemove}
-            onLoad={onLoad}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onNodeDragStop={onDragStop}
-          >
-            <Controls />
-          </ReactFlow>
+          <ActionContext.Provider value={{ removeById }}>
+            <ReactFlow
+              nodeTypes={defaultNodeTypes}
+              elements={elements}
+              onConnect={onConnect}
+              onElementsRemove={onElementsRemove}
+              onLoad={onLoad}
+              onDrop={onDrop}
+              onDragOver={onDragOver}
+              onNodeDragStop={onDragStop}
+            >
+              <Controls />
+            </ReactFlow>
+          </ActionContext.Provider>
         </div>
         <Sidebar />
       </ReactFlowProvider>
@@ -159,10 +172,10 @@ const DnDFlow = ({ client }) => {
   );
 };
 
-// TODO: Implement this.
 const DeleteButton = ({ id }) => {
+  const { removeById } = useContext(ActionContext);
   return (
-    <button>
+    <button onClick={() => removeById(id)}>
       <i className="fal fa-times fa-lg"></i>
     </button>
   );
@@ -221,27 +234,31 @@ const DefaultNode = ({
   targetPosition = Position.Left,
   sourcePosition = Position.Right,
   selected,
-}: NodeProps) => (
-  <>
-    {selected && <Buttons id={id} />}
-    <Handle
-      type="target"
-      position={targetPosition}
-      isConnectable={isConnectable}
-    />
-    {data.label}
-    <Handle
-      type="source"
-      position={sourcePosition}
-      isConnectable={isConnectable}
-    />
-  </>
-);
+}: NodeProps) => {
+  return (
+    <>
+      {selected && <Buttons id={id} />}
+      <Handle
+        type="target"
+        position={targetPosition}
+        isConnectable={isConnectable}
+      />
+      {data.label}
+      <Handle
+        type="source"
+        position={sourcePosition}
+        isConnectable={isConnectable}
+      />
+    </>
+  );
+};
 
 const defaultNodeTypes = {
   input: InputNode,
   output: OutputNode,
   default: DefaultNode,
 };
+
+const ActionContext = createContext({ removeById: (id: string) => {} });
 
 export default DnDFlow;
