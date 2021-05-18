@@ -33,42 +33,42 @@ NodeConfig = {
     },
     "output": {
         "displayName": "Output",
-        "icon": "fa-layer-group",
+        "icon": "fa-table",
         "description": "Save an output to use in a dashboard",
     },
     "select": {
         "displayName": "Select",
-        "icon": "fa-layer-group",
+        "icon": "fa-lasso",
         "description": "Select columns",
     },
     "join": {
         "displayName": "Join",
-        "icon": "fa-layer-group",
+        "icon": "fa-link",
         "description": "Join two nodes",
     },
     "group": {
         "displayName": "Group",
-        "icon": "fa-layer-group",
+        "icon": "fa-cheeseburger",
         "description": "Aggregate by groups",
     },
     "union": {
         "displayName": "Union",
-        "icon": "fa-layer-group",
+        "icon": "fa-union",
         "description": "Concatenate two nodes",
     },
     "sort": {
         "displayName": "Sort",
-        "icon": "fa-layer-group",
+        "icon": "fa-sort-numeric-up",
         "description": "Sort your data",
     },
     "limit": {
         "displayName": "Limit",
-        "icon": "fa-layer-group",
+        "icon": "fa-joint",
         "description": "Limit your data",
     },
-    "Filter": {
+    "filter": {
         "displayName": "Filter",
-        "icon": "fa-layer-group",
+        "icon": "fa-filter",
         "description": "Filter your data",
     },
 }

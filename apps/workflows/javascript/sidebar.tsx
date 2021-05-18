@@ -17,16 +17,23 @@ export default () => {
         <p>You can drag these onto the pane on your left.</p>
       </hgroup>
 
-      {NODES.map(({ value, label }) => (
-        <div
-          key={value}
-          className="dnd-sidebar__node button button--sm button--square button--tertiary"
-          onDragStart={(event) => onDragStart(event, value)}
-          draggable
-        >
-          {label}
-        </div>
-      ))}
+      {Object.keys(NODES).map((key) => {
+        const node = NODES[key];
+        return (
+          <div
+            key={key}
+            className="dnd-sidebar__node "
+            onDragStart={(event) => onDragStart(event, key)}
+            draggable
+          >
+            <i className={`icon fad ${node.icon}`}></i>
+            <div className="flex flex-col">
+              <span className="name">{node.displayName}</span>
+              <span className="description">{node.description}</span>
+            </div>
+          </div>
+        );
+      })}
     </aside>
   );
 };

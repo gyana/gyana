@@ -5,9 +5,29 @@
   flex-flow: column;
   gap: 0.875em;
   padding: 1em;
-  width: 12em;
+  width: 20em;
 
   &__node {
+    display: flex;
+    flex-direction: row;
     cursor: grab;
+    align-items: center;
+  }
+  .icon {
+    color: var(--c-blue);
+    padding: 0.6em;
+    border-radius: 6px;
+    border: 1px solid var(--c-gray);
+    margin-right: 1em;
+  }
+
+  .name {
+    font-weight: 600;
+  }
+
+  .description {
+    font-weight: 400;
+    font-size: 0.8em;
+    opacity: 0.8;
   }
 }
