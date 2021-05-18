@@ -24,7 +24,18 @@
       background-color: var(--c-white);
       border-top: 1px solid var(--c-gray);
       height: 100%;
+
       width: 100%;
+    }
+
+    &__warning {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      align-items: center;
+      .fa-stethoscope {
+        color: var(--c-orange);
+      }
     }
 
     #workflow-node {

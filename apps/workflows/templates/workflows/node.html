@@ -1,6 +1,7 @@
 {% load crispy_forms_tags %}
 
 <turbo-frame id="workflow-node">
+{% if node.kind != "input" and node.parents.all %}
   <div class="workflow-detail__sidebar">
     {% if node.kind == "filter" %}
     <turbo-frame id="node-{{ object.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
@@ -15,4 +16,10 @@
   <div class="workflow-detail__table">
     <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id object.id %}">Loading...</turbo-frame>
   </div>
+  {% else %}
+  <div class='workflow-detail__warning'>
+    <span>You need to <strong>connect</strong> this node before you can configure it.</span>
+    <span class='mt-12'><i class="fad fa-stethoscope fa-10x"></i></span>
+  </div>
+  {% endif %}
 </turbo-frame>
