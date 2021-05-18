@@ -3,7 +3,7 @@
 <turbo-frame id="workflow-node">
   <div class="workflow-detail__sidebar">
     {% if node.kind == "filter" %}
-    <turbo-frame id="filters" src="{% url 'filters:list' %}"> </turbo-frame>
+    <turbo-frame id="node-{{ object.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
     {% else %}
     <form method="post" action="{% url 'workflows:node' workflow.id node.id %}">
       {% csrf_token %}

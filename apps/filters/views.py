@@ -19,11 +19,11 @@ IBIS_TO_TYPE = {"Int64": "INTEGER", "String": "STRING"}
 class ParentMixin:
     @property
     def parent(self):
-        params = parse_qs(urlparse(self.request.META["HTTP_REFERER"]).query)
-        if "widget_id" in params:
-            return Widget.objects.get(pk=params["widget_id"][0])
-        if "node_id" in params:
-            return Node.objects.get(pk=params["node_id"][0])
+        entity, pk, _ = self.request.META["HTTP_TURBO_FRAME"].split("-")
+        if entity == "widget":
+            return Widget.objects.get(pk=pk)
+        if entity == "node":
+            return Node.objects.get(pk=pk)
         raise Http404("No filter parent specified")
 
     @property
