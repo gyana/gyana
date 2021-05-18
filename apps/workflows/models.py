@@ -48,7 +48,7 @@ NodeConfig = {
     },
     "group": {
         "displayName": "Group",
-        "icon": "fa-cheeseburger",
+        "icon": "fa-object-group",
         "description": "Aggregate by groups",
     },
     "union": {
@@ -63,7 +63,7 @@ NodeConfig = {
     },
     "limit": {
         "displayName": "Limit",
-        "icon": "fa-joint",
+        "icon": "fa-sliders-h-square",
         "description": "Limit your data",
     },
     "filter": {
