@@ -1,7 +1,7 @@
 {% load crispy_forms_tags %}
 
 <turbo-frame id="workflow-node">
-{% if node.kind != "input" and node.parents.all %}
+{% if node.kind == "input" or node.parents.all %}
   <div class="workflow-detail__sidebar">
     {% if node.kind == "filter" %}
     <turbo-frame id="node-{{ object.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
