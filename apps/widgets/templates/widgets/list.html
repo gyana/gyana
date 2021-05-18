@@ -15,9 +15,7 @@
         </turbo-frame>
       </div>
       <div class='widget-card__commands'>
-        <a class="my-1" data-controller="url-search-params" data-url-search-params-key-value="widget_id"
-           data-url-search-params-val-value="{{ object.pk }}" data-action="click->url-search-params#add"
-           href="{% url 'widgets:detail' object.pk %}">Details</a>
+        <a class="my-1" href="{% url 'widgets:detail' object.pk %}">Details</a>
         <a class="my-1" href="{% url 'widgets:update' object.pk %}">Update</a>
         <a class="my-1" href="{% url 'widgets:delete' object.pk %}">Delete</a>
       </div>
