@@ -20,8 +20,8 @@ from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .bigquery import run_workflow
 from .forms import KIND_TO_FORM, KIND_TO_FORMSETS, WorkflowForm
-from .models import Column, Node, NodeConfig, Workflow
-from .serializers import NodeConfigSerializer, NodeSerializer
+from .models import Node, NodeConfig, Workflow
+from .serializers import NodeSerializer
 from .tables import WorkflowTable
 
 # CRUDL
@@ -174,15 +174,15 @@ class WorkflowRun(UpdateView):
         return reverse("workflows:run", args=(self.object.id,))
 
 
-@api_view(["GET"])
-def node_details(request, pk, *args, **kwargs):
-    node = get_object_or_404(Node, pk=pk)
-    if fields := NodeConfig[node.kind].get("info_fields"):
-        data = {
-            key: value
-            for (key, value) in NodeConfigSerializer(node).data.items()
-            if key in fields
-        }
+# @api_view(["GET"])
+# def node_details(request, pk, *args, **kwargs):
+#     node = get_object_or_404(Node, pk=pk)
+#     if fields := NodeConfig[node.kind].get("info_fields"):
+#         data = {
+#             key: value
+#             for (key, value) in NodeConfigSerializer(node).data.items()
+#             if key in fields
+#         }
 
-        return Response(data)
-    return Response({"no": "data"})
+#         return Response(data)
+#     return Response({"no": "data"})

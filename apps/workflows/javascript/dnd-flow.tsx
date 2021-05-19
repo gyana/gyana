@@ -25,8 +25,6 @@ import Sidebar from "./sidebar";
 import "./styles/_dnd-flow.scss";
 import "./styles/_react-flow.scss";
 
-const ClientContext = createContext(null);
-
 const DnDFlow = ({ client }) => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -209,34 +207,32 @@ const DnDFlow = ({ client }) => {
 
   return (
     <div className="dndflow">
-      <ClientContext.Provider value={client}>
-        <ReactFlowProvider>
-          <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-            <ActionContext.Provider value={{ removeById }}>
-              <ReactFlow
-                nodeTypes={defaultNodeTypes}
-                elements={elements}
-                onConnect={onConnect}
-                onElementsRemove={onElementsRemove}
-                onEdgeUpdate={onEdgeUpdate}
-                onLoad={onLoad}
-                onDrop={onDrop}
-                onDragOver={onDragOver}
-                onNodeDragStop={onDragStop}
-              >
-                <Controls />
-              </ReactFlow>
-            </ActionContext.Provider>
-          </div>
-          <Sidebar />
-        </ReactFlowProvider>
-      </ClientContext.Provider>
+      <ReactFlowProvider>
+        <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+          <NodeContext.Provider value={{ removeById, client }}>
+            <ReactFlow
+              nodeTypes={defaultNodeTypes}
+              elements={elements}
+              onConnect={onConnect}
+              onElementsRemove={onElementsRemove}
+              onEdgeUpdate={onEdgeUpdate}
+              onLoad={onLoad}
+              onDrop={onDrop}
+              onDragOver={onDragOver}
+              onNodeDragStop={onDragStop}
+            >
+              <Controls />
+            </ReactFlow>
+          </NodeContext.Provider>
+        </div>
+        <Sidebar />
+      </ReactFlowProvider>
     </div>
   );
 };
 
 const DeleteButton = ({ id }) => {
-  const { removeById } = useContext(ActionContext);
+  const { removeById } = useContext(NodeContext);
   return (
     <button onClick={() => removeById(id)}>
       <i className="fal fa-times fa-lg"></i>
@@ -258,7 +254,7 @@ const OpenButton = ({ id }) => {
 };
 
 const Description = ({ id, data }) => {
-  const client = useContext(ClientContext);
+  const { client } = useContext(NodeContext);
   const workflowId = window.location.pathname.split("/")[4];
 
   const [description, setDescription] = useState();
@@ -277,10 +273,16 @@ const Description = ({ id, data }) => {
   };
 
   useEffect(() => {
-    window.addEventListener(`node-updated-${id}`, onNodeConfigUpdate, false);
+    const eventName = `node-updated-${id}`;
+    window.addEventListener(eventName, onNodeConfigUpdate, false);
+    return () => window.removeEventListener(eventName, onNodeConfigUpdate);
   }, []);
 
-  return <span>{description || data.description}</span>;
+  return (
+    <span className="text-black-50 font-light text-xs normal-case overflow-ellipsis">
+      {description || data.description}
+    </span>
+  );
 };
 
 const Buttons = ({ id }) => {
@@ -295,8 +297,10 @@ const Buttons = ({ id }) => {
 const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
   <>
     {selected && <Buttons id={id} />}
-    {data.label}
-    <Description id={id} data={data} />
+    <div className="flex flex-col h-full justify-center">
+      {data.label}
+      <Description id={id} data={data} />
+    </div>
     <Handle
       type="source"
       position={Position.Right}
@@ -313,8 +317,10 @@ const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
       position={Position.Left}
       isConnectable={isConnectable}
     />
-    {data.label}
-    <Description id={id} data={data} />
+    <div className="flex flex-col h-full justify-center">
+      {data.label}
+      <Description id={id} data={data} />
+    </div>
   </>
 );
 
@@ -326,14 +332,6 @@ const DefaultNode = ({
   sourcePosition = Position.Right,
   selected,
 }: NodeProps) => {
-  const { client } = useContext(ActionContext);
-  const [nodeData, setNodeData] = useState({});
-  useEffect(() => {
-    client
-      .get(`http://localhost:8000/projects/1/workflows/1/nodes/${id}/details`)
-      .then((res) => setNodeData(res));
-  }, []);
-
   return (
     <>
       {selected && <Buttons id={id} />}
@@ -342,8 +340,10 @@ const DefaultNode = ({
         position={targetPosition}
         isConnectable={isConnectable}
       />
-      {data.label}
-      <Description id={id} data={data} />
+      <div className="flex flex-col h-full justify-center">
+        {data.label}
+        <Description id={id} data={data} />
+      </div>
       <Handle
         type="source"
         position={sourcePosition}
@@ -359,7 +359,7 @@ const defaultNodeTypes = {
   default: DefaultNode,
 };
 
-const ActionContext = createContext({
+const NodeContext = createContext({
   removeById: (id: string) => {},
   client: null,
 });

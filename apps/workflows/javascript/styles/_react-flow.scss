@@ -12,7 +12,7 @@
     justify-content: center;
     text-transform: uppercase;
 
-    padding: 2.1875em;
+    padding: 0.5em;
     height: 110px; // todo
     width: 110px; // todo
 
@@ -23,7 +23,7 @@
 
     &-output {
       color: var(--c-pink-50);
- 
+
       &.selected {
         color: var(--c-pink);
         border: 2px solid var(--c-pink);

@@ -9,9 +9,9 @@ urlpatterns = [
     path("<int:pk>", views.WorkflowDetail.as_view(), name="detail"),
     path("<int:pk>/update", views.WorkflowUpdate.as_view(), name="update"),
     path("<int:pk>/delete", views.WorkflowDelete.as_view(), name="delete"),
-    path(
-        "<int:workflow_id>/nodes/<int:pk>/details",
-        views.node_details,
-        name="node-detail",
-    ),
+    # path(
+    #     "<int:workflow_id>/nodes/<int:pk>/details",
+    #     views.node_details,
+    #     name="node-detail",
+    # ),
 ]
