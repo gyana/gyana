@@ -112,6 +112,10 @@ class NodeUpdate(TurboUpdateView):
                 else formset(instance=self.object)
             )
 
+        context["preview_node_id"] = int(
+            self.request.GET.get("preview_node_id", self.object.id)
+        )
+
         return context
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
