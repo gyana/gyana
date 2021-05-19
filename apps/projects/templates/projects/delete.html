@@ -1,11 +1,13 @@
 {% extends "web/app/project_base.html" %}
 <!---->
 {% block app %}
-<h1>Delete</h1>
-<p>Are you sure you want to delete?</p>
-<form method="post" action="{% url 'projects:delete' object.id %}">
-  {% csrf_token %}
-  <input type="submit" value="Yes" class="btn btn-danger" />
-  <a href="{% url 'projects:list' %}" class="btn btn-default">No</a>
-</form>
+<div class="p-4">
+  <h1>Delete</h1>
+  <p>Are you sure you want to delete?</p>
+  <form method="post" action="{% url 'projects:delete' object.id %}">
+    {% csrf_token %}
+    <input type="submit" value="Yes" class="btn btn-danger" />
+    <a href="{% url 'projects:list' %}" class="btn btn-default">No</a>
+  </form>
+</div>
 {% endblock %}

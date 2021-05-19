@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 
 from apps.integrations.models import Integration
@@ -116,3 +117,8 @@ def get_tables_in_dataset(integration):
                 integration=integration,
             )
             table.save()
+
+
+def get_sheets_id_from_url(url):
+    p = re.compile(r"[-\w]{25,}")
+    return res.group(0) if (res := p.search(url)) else ""

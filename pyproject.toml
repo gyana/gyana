@@ -33,6 +33,7 @@ backoff = "^1.10.0"
 PyYAML = "^5.4.1"
 inflection = "^0.5.1"
 django-tables2 = "^2.3.4"
+google-api-python-client = "^2.4.0"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

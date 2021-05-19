@@ -306,6 +306,9 @@ DJSTRIPE_USE_NATIVE_JSONFIELD = True  # change to False if not a new installatio
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 GCP_PROJECT = "gyana-1511894275181"
+GCP_BQ_SVC_ACCOUNT = os.environ.get(
+    "GCP_BQ_SVC_ACCOUNT", "gyana-local@gyana-1511894275181.iam.gserviceaccount.com"
+)
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 

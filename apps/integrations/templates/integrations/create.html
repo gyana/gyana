@@ -3,42 +3,54 @@
 
 {% block app %}
 
-<h1 class="mb-4">Create/Update</h1>
+<div class='flex flex-row h-full'>
 
-{% if request.GET.kind %}
+  <div class='flex flex-col w-full p-4'>
+    <h1 class="mb-4">Create</h1>
 
-{% if request.GET.kind == integration_kind.FIVETRAN and not request.GET.service %}
-<ul>
-  {% for service_id, service in services.items %}
-  <a
-     href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.FIVETRAN }}&service={{ service_id }}">
-    <li>{{ service.name }}</li>
-  </a>
-  {% endfor %}
-</ul>
-{% else %}
-<form method="post" action="{{ request.get_full_path }}" class="form" {% if request.GET.kind == integration_kind.CSV %}
-      enctype="multipart/form-data" {% endif %}>
-  {% csrf_token %} {{ form|crispy }}
-  <button type="submit" class="button">Create</button>
-</form>
-{% endif %}
-{% else %}
+    {% if request.GET.kind %}
 
-<div>
-  <p>Choose kind:</p>
+      {% if request.GET.kind == integration_kind.FIVETRAN and not request.GET.service %}
+        <ul>
+          {% for service_id, service in services.items %}
+          <a
+            href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.FIVETRAN }}&service={{ service_id }}">
+            <li>{{ service.name }}</li>
+          </a>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <form method="post" action="{{ request.get_full_path }}" class="form" {% if request.GET.kind == integration_kind.CSV %}
+              enctype="multipart/form-data" {% endif %}>
+          {% csrf_token %} {{ form|crispy }}
+          <button type="submit" class="button">Create</button>
+        </form>
+      {% endif %}
 
-  <div class="grid grid-cols-2 gap-4">
-    <a class="card card--inline"
-       href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.GOOGLE_SHEETS }}">Google
-      Sheets</a>
-    <a class="card card--inline"
-       href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.CSV }}">CSV</a>
-    <a class="card card--inline"
-       href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.FIVETRAN }}">Fivetran</a>
+    {% else %}
+
+      <div>
+        <p>Choose kind:</p>
+
+        <div class="grid grid-cols-2 gap-4">
+          <a class="card card--inline"
+            href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.GOOGLE_SHEETS }}">Google
+            Sheets</a>
+          <a class="card card--inline"
+            href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.CSV }}">CSV</a>
+          <a class="card card--inline"
+            href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.FIVETRAN }}">Fivetran</a>
+        </div>
+      </div>
+    {% endif %}
   </div>
-</div>
 
-{% endif %}
+  {% if request.GET.kind == integration_kind.GOOGLE_SHEETS %}
+    <div class='flex flex-shrink-0 h-full overflow-hidden'>
+      {% include 'integrations/guides/sheets_guide.html' %}
+    </div>
+  {% endif %}
+
+</div>
 
 {% endblock %}

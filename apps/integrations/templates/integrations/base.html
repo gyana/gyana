@@ -1,25 +1,27 @@
 {% extends "web/app/project_base.html" %}
 {% block app %}
-<h1 class="text-2xl text-bold">{{ object.name }}</h1>
-<nav class="flex space-x-2 border-b border-gray-500">
-  <a class="{% if request.resolver_match.url_name == 'detail' %} text-blue {% endif %}"
-    href="{% url 'projects:integrations:detail' project.id object.id %}">
-    Overview
-  </a>
-  {% if object.table_set.exists %}
-  <a class="{% if request.resolver_match.url_name == 'structure' %} text-blue {% endif %}"
-    href="{% url 'projects:integrations:structure' project.id object.id %}">
-    Structure
-  </a>
-  <a class="{% if request.resolver_match.url_name == 'data' %} text-blue {% endif %}"
-    href="{% url 'projects:integrations:data' project.id object.id %}">
-    Data
-  </a>
-  {% endif %}
-  <a class="{% if request.resolver_match.url_name == 'settings' %} text-blue {% endif %}"
-    href="{% url 'projects:integrations:settings' project.id object.id %}">
-    Settings
-  </a>
-</nav>
-{% block tab %}{% endblock %}
+<div class="p-4">
+  <h1 class="text-2xl text-bold">{{ object.name }}</h1>
+  <nav class="flex space-x-2 border-b border-gray-500">
+    <a class="{% if request.resolver_match.url_name == 'detail' %} text-blue {% endif %}"
+      href="{% url 'projects:integrations:detail' project.id object.id %}">
+      Overview
+    </a>
+    {% if object.table_set.exists %}
+    <a class="{% if request.resolver_match.url_name == 'structure' %} text-blue {% endif %}"
+      href="{% url 'projects:integrations:structure' project.id object.id %}">
+      Structure
+    </a>
+    <a class="{% if request.resolver_match.url_name == 'data' %} text-blue {% endif %}"
+      href="{% url 'projects:integrations:data' project.id object.id %}">
+      Data
+    </a>
+    {% endif %}
+    <a class="{% if request.resolver_match.url_name == 'settings' %} text-blue {% endif %}"
+      href="{% url 'projects:integrations:settings' project.id object.id %}">
+      Settings
+    </a>
+  </nav>
+  {% block tab %}{% endblock %}
+</div>
 {% endblock %}

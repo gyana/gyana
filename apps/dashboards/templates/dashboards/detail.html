@@ -2,23 +2,23 @@
 {% load static %}
 
 {% block app %}
+<div class="p-4">
+   <div class="flex items-center gap-4 mb-8">
+   <h1 class="text-2xl text-bold mr-auto">{{ object.name }}</h1>
 
-<div class="flex items-center gap-4 mb-8">
-  <h1 class="text-2xl text-bold mr-auto">{{ object.name }}</h1>
-
-  <a class="button button--square button--filled button--sm" data-turbo-frame="widgets"
-     href="{% url 'widgets:create' %}">Add
-    widget</a>
-  <a class="button button--square button--filled button--sm"
-     href="{% url 'projects:dashboards:update' project.id object.pk %}">Update</a>
-  <a class="button button--square button--filled button--sm button--pink"
-     href="{% url 'projects:dashboards:delete' project.id object.pk %}">Delete</a>
+   <a class="button button--square button--filled button--sm" data-turbo-frame="widgets"
+      href="{% url 'widgets:create' %}">Add
+      widget</a>
+   <a class="button button--square button--filled button--sm"
+      href="{% url 'projects:dashboards:update' project.id object.pk %}">Update</a>
+   <a class="button button--square button--filled button--sm button--pink"
+      href="{% url 'projects:dashboards:delete' project.id object.pk %}">Delete</a>
+   </div>
+   <div>
+   <turbo-frame id="widgets" {% if request.GET.widget_id %} src="{% url 'widgets:detail' request.GET.widget_id %}"
+                  {% else %} src="{% url 'widgets:list' %}" {% endif %}></turbo-frame>
+   </div>
 </div>
-<div>
-  <turbo-frame id="widgets" {% if request.GET.widget_id %} src="{% url 'widgets:detail' request.GET.widget_id %}"
-               {% else %} src="{% url 'widgets:list' %}" {% endif %}></turbo-frame>
-</div>
-
 {% endblock %}
 
 {% block page_js %}

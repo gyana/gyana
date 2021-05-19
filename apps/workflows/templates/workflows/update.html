@@ -2,11 +2,13 @@
 {% load tailwind_filters %}
 
 {% block app %}
-<h1>Edit</h1>
+<div class="p-4">
+  <h1>Edit</h1>
 
-<form method="post" action="{% url 'projects:workflows:update' project.id object.id %}" class="form">
-  {% csrf_token %} {{ form|crispy }}
+  <form method="post" action="{% url 'projects:workflows:update' project.id object.id %}" class="form">
+    {% csrf_token %} {{ form|crispy }}
 
-  <button type="submit" class="button button--filled button--green">Save changes</button>
-</form>
+    <button type="submit" class="button button--filled button--green">Save changes</button>
+  </form>
+</div>
 {% endblock %}

@@ -1,7 +1,9 @@
 {% extends "web/app/project_base.html" %}
 <!-- -->
 {% block app %}
-<h1 class="text-3xl ">Settings</h1>
-<a href="{% url 'projects:update' object.pk %}">Update</a>
-<a href="{% url 'projects:delete' object.pk %}">Delete</a>
+<div class="p-4">
+  <h1 class="text-3xl ">Settings</h1>
+  <a href="{% url 'projects:update' object.pk %}">Update</a>
+  <a href="{% url 'projects:delete' object.pk %}">Delete</a>
+</div>
 {% endblock %}

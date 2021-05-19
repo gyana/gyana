@@ -1,5 +1,9 @@
+import googleapiclient
+from apps.integrations.bigquery import get_sheets_id_from_url
 from django import forms
+from django.core.exceptions import ValidationError
 from django.forms.widgets import FileInput, HiddenInput
+from lib.clients import sheets_client
 
 from .models import Integration
 
@@ -12,6 +16,23 @@ class GoogleSheetsForm(forms.ModelForm):
         help_texts = {
             "url": "Needs to be public (TODO: share with service account)",
         }
+
+    def clean_url(self):
+        url = self.cleaned_data["url"]
+        sheet_id = get_sheets_id_from_url(url)
+
+        if sheet_id == "":
+            raise ValidationError("The URL to the sheet seems to be invalid.")
+
+        client = sheets_client()
+        try:
+            client.spreadsheets().get(spreadsheetId=sheet_id).execute()
+        except googleapiclient.errors.HttpError as e:
+            raise ValidationError(
+                "We couldn't access the sheet using the URL provided! Did you give access to the right email?"
+            )
+
+        return url
 
 
 class CSVForm(forms.ModelForm):

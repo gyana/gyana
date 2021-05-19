@@ -3,6 +3,7 @@
   background-color: var(--c-white);
   border-bottom: 1px solid var(--c-gray);
   display: flex;
+  flex-shrink: 0;
   height: 3.25rem;
   padding: 0 1rem;
 

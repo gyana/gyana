@@ -12,4 +12,7 @@ urlpatterns = [
     path("<int:pk>/structure", views.IntegrationStructure.as_view(), name="structure"),
     path("<int:pk>/data", views.IntegrationData.as_view(), name="data"),
     path("<int:pk>/settings", views.IntegrationSettings.as_view(), name="settings"),
+    path(
+        "<int:pk>/sheet-verify", views.IntegrationDetail.as_view(), name="sheet-verify"
+    ),
 ]

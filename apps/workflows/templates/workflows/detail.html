@@ -4,7 +4,6 @@
 {% block app-class%}workflow-detail{% endblock %}
 
 {% block app %}
-
 <div class="workflow-detail__header">
   <h3>{{ object.name }}</h3>
   <div class="mr-auto">
@@ -12,14 +11,14 @@
   </div>
 
   <a class="button button--square button--sm button--filled"
-     href="{% url 'projects:workflows:update' project.id object.pk %}">Update</a>
+    href="{% url 'projects:workflows:update' project.id object.pk %}">Update</a>
   <a class="button button--square button--sm button--filled button--pink"
-     href="{% url 'projects:workflows:delete' project.id object.pk %}">Delete</a>
+    href="{% url 'projects:workflows:delete' project.id object.pk %}">Delete</a>
 </div>
 
 <div data-controller="tf-modal" class="flex flex-1">
   <div data-tf-modal-target="modal"
-       class="tf-modal hidden absolute h-full w-full p-12 py-24 bg-transparent z-10">
+      class="tf-modal hidden absolute h-full w-full p-12 py-24 bg-transparent z-10">
     <div class="card flex flex-col h-full">
       <div class="flex justify-end">
         <button class="tf-modal__close" data-action="click->tf-modal#close">
@@ -32,7 +31,6 @@
 
   <div id="react-app" class="flex-auto"></div>
 </div>
-
 {{ nodes|json_script:'nodes' }}
 
 <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>

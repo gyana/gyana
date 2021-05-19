@@ -1,15 +1,15 @@
 {% extends "web/app/project_base.html" %}
 {% load render_table from django_tables2 %}
 {% block app %}
+<div class="p-4">
+  <div class="flex items-center mb-4">
+    <h1 class="mr-auto">Workflows</h1>
+    <a class="button button--square button--filled button--sm ml-4"
+      href="{% url 'projects:workflows:create' project.id  %}">Create</a>
+  </div>
 
-<div class="flex items-center mb-4">
-  <h1 class="mr-auto">Workflows</h1>
-  <a class="button button--square button--filled button--sm ml-4"
-     href="{% url 'projects:workflows:create' project.id  %}">Create</a>
+  <div class="card card--sm">
+    {% render_table table %}
+  </div>
 </div>
-
-<div class="card card--sm">
-  {% render_table table %}
-</div>
-
 {% endblock %}

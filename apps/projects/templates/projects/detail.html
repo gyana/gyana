@@ -1,24 +1,24 @@
 {% extends "web/app/project_base.html" %}
 {% block app %}
+<div class="p-4">
+  <div class="flex items-center gap-4 mb-8">
+    <h1 class="mr-auto">{{ project.name }}</h1>
 
-<div class="flex items-center gap-4 mb-8">
-  <h1 class="mr-auto">{{ project.name }}</h1>
+    <a class="button button--square button--sm button--filled" href="{% url 'projects:update' project.id %}">Edit</a>
+    <a class="button button--square button--sm button--filled button--danger"
+      href="{% url 'projects:delete' project.id %}">Delete</a>
+  </div>
 
-  <a class="button button--square button--sm button--filled" href="{% url 'projects:update' project.id %}">Edit</a>
-  <a class="button button--square button--sm button--filled button--danger"
-     href="{% url 'projects:delete' project.id %}">Delete</a>
+  <div class="grid grid-cols-3 gap-4">
+    <div class="card">
+      <h2>TODO: Integrations table</h2>
+    </div>
+    <div class="card">
+      <h2>TODO: Workflows table</h2>
+    </div>
+    <div class="card">
+      <h2>TODO: Dashboards table</h2>
+    </div>
+  </div>
 </div>
-
-<div class="grid grid-cols-3 gap-4">
-  <div class="card">
-    <h2>TODO: Integrations table</h2>
-  </div>
-  <div class="card">
-    <h2>TODO: Workflows table</h2>
-  </div>
-  <div class="card">
-    <h2>TODO: Dashboards table</h2>
-  </div>
-</div>
-
 {% endblock %}
