@@ -154,7 +154,7 @@ const DnDFlow = ({ client }) => {
         const newElements = result.results.map((r) => ({
           id: `${r.id}`,
           type: ["input", "output"].includes(r.kind) ? r.kind : "default",
-          data: { label: r.kind },
+          data: { label: r.kind, description: r.description },
           position: { x: r.x, y: r.y },
         }));
 
@@ -266,6 +266,7 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
   <>
     {selected && <Buttons id={id} />}
     {data.label}
+    {data.description}
     <Handle
       type="source"
       position={Position.Right}
@@ -283,6 +284,7 @@ const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
       isConnectable={isConnectable}
     />
     {data.label}
+    {data.description}
   </>
 );
 
@@ -303,6 +305,7 @@ const DefaultNode = ({
         isConnectable={isConnectable}
       />
       {data.label}
+      {data.description}
       <Handle
         type="source"
         position={sourcePosition}
