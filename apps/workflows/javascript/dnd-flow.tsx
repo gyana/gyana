@@ -145,7 +145,7 @@ const DnDFlow = ({ client }) => {
     );
   };
 
-  useEffect(() => {
+  const loadGraph = () =>
     client
       .action(window.schema, ["workflows", "api", "nodes", "list"], {
         workflow: workflowId,
@@ -176,6 +176,9 @@ const DnDFlow = ({ client }) => {
           }, []);
         setElements((els) => els.concat([...newElements, ...edges]));
       });
+
+  useEffect(() => {
+    loadGraph();
   }, []);
 
   const onDrop = async (event) => {
@@ -204,6 +207,14 @@ const DnDFlow = ({ client }) => {
 
     setElements((es) => es.concat(newNode));
   };
+
+  const onNodeConfigUpdate = () => {
+    loadGraph();
+  };
+
+  useEffect(() => {
+    window.addEventListener("node-updated", onNodeConfigUpdate, false);
+  }, []);
 
   return (
     <div className="dndflow">
