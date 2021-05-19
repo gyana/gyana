@@ -45,6 +45,7 @@ NodeConfig = {
         "displayName": "Join",
         "icon": "fa-link",
         "description": "Join two nodes",
+        "maxParents": 2,
     },
     "group": {
         "displayName": "Group",
@@ -55,6 +56,7 @@ NodeConfig = {
         "displayName": "Union",
         "icon": "fa-union",
         "description": "Concatenate two nodes",
+        "maxParents": -1,
     },
     "sort": {
         "displayName": "Sort",

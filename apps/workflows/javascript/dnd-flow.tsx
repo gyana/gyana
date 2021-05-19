@@ -18,12 +18,15 @@ import ReactFlow, {
   Edge,
   Node,
   isEdge,
+  getIncomers,
 } from "react-flow-renderer";
 
 import Sidebar from "./sidebar";
 
 import "./styles/_dnd-flow.scss";
 import "./styles/_react-flow.scss";
+
+const NODES = JSON.parse(document.getElementById("nodes").textContent);
 
 const DnDFlow = ({ client }) => {
   const reactFlowWrapper = useRef(null);
@@ -43,13 +46,29 @@ const DnDFlow = ({ client }) => {
       }
     );
 
-  const onConnect = (params) => {
-    const parents = elements
-      .filter((el) => isEdge(el) && el.target === params.target)
-      .map((el) => el.source);
+  const getIncomingNodes = (target: string) => {
+    const targetElement = elements.filter(
+      (el) => isNode(el) && el.id === target
+    )[0] as Node;
+    return [targetElement, getIncomers(targetElement, elements)] as [
+      Node,
+      Node[]
+    ];
+  };
 
-    updateParents(params.target, [...parents, params.source]);
-    setElements((els) => addEdge({ ...params, arrowHeadType: "arrow" }, els));
+  const onConnect = (params) => {
+    const [targetElement, incomingNodes] = getIncomingNodes(params.target);
+
+    // All nodes except Join (2) and Union (inf) can only have one parent
+    const maxParents = NODES[targetElement.data.label].maxParents || 1;
+    if (maxParents === -1 || incomingNodes.length < maxParents) {
+      const parents = elements
+        .filter((el) => isEdge(el) && el.target === params.target)
+        .map((el) => el.source);
+
+      updateParents(params.target, [...parents, params.source]);
+      setElements((els) => addEdge({ ...params, arrowHeadType: "arrow" }, els));
+    }
   };
 
   const onElementsRemove = (elementsToRemove) => {
@@ -79,20 +98,30 @@ const DnDFlow = ({ client }) => {
     if (oldEdge.source === newEdge.source) {
       // We need to remove the source from the previous target and
       // add it to the new one
-      const oldParents = elements
-        .filter(
-          (el) =>
-            isEdge(el) &&
-            el.target === oldEdge.target &&
-            el.source !== oldEdge.source
-        )
-        .map((el) => el.source);
-      updateParents(oldEdge.target, oldParents);
 
-      const newParents = elements
-        .filter((el) => isEdge(el) && el.target === newEdge.target)
-        .map((el) => el.source);
-      updateParents(newEdge.target, [...newParents, newEdge.source]);
+      const [targetElement, incomingNodes] = getIncomingNodes(newEdge.target);
+
+      // All nodes except Join (2) and Union (inf) can only have one parent
+      const maxParents = NODES[targetElement.data.label].maxParents || 1;
+
+      if (maxParents === -1 || incomingNodes.length < maxParents) {
+        const oldParents = elements
+          .filter(
+            (el) =>
+              isEdge(el) &&
+              el.target === oldEdge.target &&
+              el.source !== oldEdge.source
+          )
+          .map((el) => el.source);
+        updateParents(oldEdge.target, oldParents);
+
+        const newParents = elements
+          .filter((el) => isEdge(el) && el.target === newEdge.target)
+          .map((el) => el.source);
+
+        updateParents(newEdge.target, [...newParents, newEdge.source]);
+        setElements((els) => updateEdge(oldEdge, newEdge, els));
+      }
     }
     // User changed the source
     else {
@@ -105,9 +134,10 @@ const DnDFlow = ({ client }) => {
             el.source !== oldEdge.source
         )
         .map((el) => el.source);
+
       updateParents(newEdge.target, [...parents, newEdge.source]);
+      setElements((els) => updateEdge(oldEdge, newEdge, els));
     }
-    setElements((els) => updateEdge(oldEdge, newEdge, els));
   };
 
   const removeById = (id: string) => {
