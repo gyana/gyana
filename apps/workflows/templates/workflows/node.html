@@ -25,7 +25,7 @@
       {% endfor %}
       <a class="{% if preview_node_id == node.id %}text-blue{% endif %}"
         href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ node.id }}">
-        Output
+        Result
       </a>
     </div>
     
