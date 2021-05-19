@@ -8,7 +8,11 @@
     {% if node.kind == "filter" %}
     <turbo-frame id="node-{{ node.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
     {% else %}
-    <form method="post" action="{% url 'workflows:node' workflow.id node.id %}" data-action="submit->click-trigger#trigger">
+    <form method="post"
+      action="{% url 'workflows:node' workflow.id node.id %}"
+      data-controller="trigger"
+      data-trigger-event-value="node-updated-{{ node.id }}"
+      data-action="submit->trigger#dispatch">
       {% csrf_token %}
       {% crispy form %}
     </form>

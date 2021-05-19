@@ -25,6 +25,8 @@ import Sidebar from "./sidebar";
 import "./styles/_dnd-flow.scss";
 import "./styles/_react-flow.scss";
 
+const ClientContext = createContext(null);
+
 const DnDFlow = ({ client }) => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -145,7 +147,7 @@ const DnDFlow = ({ client }) => {
     );
   };
 
-  const loadGraph = () =>
+  useEffect(() => {
     client
       .action(window.schema, ["workflows", "api", "nodes", "list"], {
         workflow: workflowId,
@@ -174,11 +176,8 @@ const DnDFlow = ({ client }) => {
               })),
             ];
           }, []);
-        setElements([...newElements, ...edges]);
+        setElements((els) => els.concat([...newElements, ...edges]));
       });
-
-  useEffect(() => {
-    loadGraph();
   }, []);
 
   const onDrop = async (event) => {
@@ -208,36 +207,30 @@ const DnDFlow = ({ client }) => {
     setElements((es) => es.concat(newNode));
   };
 
-  const onNodeConfigUpdate = () => {
-    loadGraph();
-  };
-
-  useEffect(() => {
-    window.addEventListener("node-updated", onNodeConfigUpdate, false);
-  }, []);
-
   return (
     <div className="dndflow">
-      <ReactFlowProvider>
-        <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <ActionContext.Provider value={{ removeById }}>
-            <ReactFlow
-              nodeTypes={defaultNodeTypes}
-              elements={elements}
-              onConnect={onConnect}
-              onElementsRemove={onElementsRemove}
-              onEdgeUpdate={onEdgeUpdate}
-              onLoad={onLoad}
-              onDrop={onDrop}
-              onDragOver={onDragOver}
-              onNodeDragStop={onDragStop}
-            >
-              <Controls />
-            </ReactFlow>
-          </ActionContext.Provider>
-        </div>
-        <Sidebar />
-      </ReactFlowProvider>
+      <ClientContext.Provider value={client}>
+        <ReactFlowProvider>
+          <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+            <ActionContext.Provider value={{ removeById }}>
+              <ReactFlow
+                nodeTypes={defaultNodeTypes}
+                elements={elements}
+                onConnect={onConnect}
+                onElementsRemove={onElementsRemove}
+                onEdgeUpdate={onEdgeUpdate}
+                onLoad={onLoad}
+                onDrop={onDrop}
+                onDragOver={onDragOver}
+                onNodeDragStop={onDragStop}
+              >
+                <Controls />
+              </ReactFlow>
+            </ActionContext.Provider>
+          </div>
+          <Sidebar />
+        </ReactFlowProvider>
+      </ClientContext.Provider>
     </div>
   );
 };
@@ -264,6 +257,32 @@ const OpenButton = ({ id }) => {
   );
 };
 
+const Description = ({ id, data }) => {
+  const client = useContext(ClientContext);
+  const workflowId = window.location.pathname.split("/")[4];
+
+  const [description, setDescription] = useState();
+
+  const onNodeConfigUpdate = async () => {
+    const result = await client.action(
+      window.schema,
+      ["workflows", "api", "nodes", "read"],
+      {
+        workflow: workflowId,
+        id,
+      }
+    );
+
+    setDescription(result.description);
+  };
+
+  useEffect(() => {
+    window.addEventListener(`node-updated-${id}`, onNodeConfigUpdate, false);
+  }, []);
+
+  return <span>{description || data.description}</span>;
+};
+
 const Buttons = ({ id }) => {
   return (
     <div className="absolute -bottom-6 flex gap-4">
@@ -277,7 +296,7 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
   <>
     {selected && <Buttons id={id} />}
     {data.label}
-    {data.description}
+    <Description id={id} data={data} />
     <Handle
       type="source"
       position={Position.Right}
@@ -295,7 +314,7 @@ const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
       isConnectable={isConnectable}
     />
     {data.label}
-    {data.description}
+    <Description id={id} data={data} />
   </>
 );
 
@@ -316,7 +335,7 @@ const DefaultNode = ({
         isConnectable={isConnectable}
       />
       {data.label}
-      {data.description}
+      <Description id={id} data={data} />
       <Handle
         type="source"
         position={sourcePosition}

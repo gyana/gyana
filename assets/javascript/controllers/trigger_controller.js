@@ -7,7 +7,7 @@ export default class extends Controller {
     event: String,
   };
 
-  trigger() {
+  dispatch() {
     window.dispatchEvent(new Event(this.eventValue));
   }
 }
