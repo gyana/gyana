@@ -175,7 +175,34 @@ const DnDFlow = ({ client }) => {
     );
   };
 
-  useEffect(() => {
+  const createElements = (nodes) => {
+    const newElements = nodes.map((r) => ({
+      id: `${r.id}`,
+      type: ["input", "output"].includes(r.kind) ? r.kind : "default",
+      data: { label: r.kind, description: r.description, error: r.error },
+      position: { x: r.x, y: r.y },
+    }));
+
+    const edges = nodes
+      .filter((r) => r.parents.length)
+      .reduce((acc, curr) => {
+        return [
+          ...acc,
+          ...curr.parents.map((p) => ({
+            id: `reactflow__edge-${p}null-${curr.id}null`,
+            source: p.toString(),
+            sourceHandle: null,
+            type: "smoothstep",
+            targetHandle: null,
+            arrowHeadType: "arrow",
+            target: curr.id.toString(),
+          })),
+        ];
+      }, []);
+    setElements((els) => els.concat([...newElements, ...edges]));
+  };
+
+  const syncElements = () =>
     client
       .action(window.schema, ["workflows", "api", "nodes", "list"], {
         workflow: workflowId,
@@ -184,7 +211,7 @@ const DnDFlow = ({ client }) => {
         const newElements = result.results.map((r) => ({
           id: `${r.id}`,
           type: ["input", "output"].includes(r.kind) ? r.kind : "default",
-          data: { label: r.kind, description: r.description },
+          data: { label: r.kind, description: r.description, error: r.error },
           position: { x: r.x, y: r.y },
         }));
 
@@ -204,8 +231,18 @@ const DnDFlow = ({ client }) => {
               })),
             ];
           }, []);
-        setElements((els) => els.concat([...newElements, ...edges]));
+        setElements([...newElements, ...edges]);
       });
+
+  useEffect(() => {
+    // Add event listener to show errors
+    const eventName = `workflow-run-${workflowId}`;
+    window.addEventListener(eventName, syncElements, false);
+
+    syncElements();
+
+    // Cleanup event listener
+    return () => window.removeEventListener(eventName, syncElements);
   }, []);
 
   const onDrop = async (event) => {
@@ -324,9 +361,19 @@ const Buttons = ({ id }) => {
   );
 };
 
+const ErrorIcon = ({ text }) => (
+  <div
+    title={text}
+    className="flex items-center justify-around absolute -top-2 -right-2 bg-red-10 rounded-full w-6 h-6 text-red"
+  >
+    <i className="fad fa-bug "></i>
+  </div>
+);
+
 const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
   <>
     {selected && <Buttons id={id} />}
+    {data.error && <ErrorIcon text={data.error} />}
     <div className="flex flex-col h-full justify-center">
       {data.label}
       <Description id={id} data={data} />
@@ -342,6 +389,7 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
 const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
   <>
     {selected && <Buttons id={id} />}
+    {data.error && <ErrorIcon text={data.error} />}
     <Handle
       type="target"
       position={Position.Left}
@@ -365,6 +413,7 @@ const DefaultNode = ({
   return (
     <>
       {selected && <Buttons id={id} />}
+      {data.error && <ErrorIcon text={data.error} />}
       <Handle
         type="target"
         position={targetPosition}

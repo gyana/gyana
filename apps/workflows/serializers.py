@@ -11,7 +11,7 @@ class NodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Node
-        fields = ("id", "kind", "x", "y", "workflow", "parents", "description")
+        fields = ("id", "kind", "x", "y", "workflow", "parents", "description", "error")
 
     def get_description(self, obj):
         return DESCRIPTIONS[obj.kind](obj)

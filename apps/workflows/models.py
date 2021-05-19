@@ -5,6 +5,7 @@ from apps.tables.models import Table
 from apps.workflows.nodes import NODE_FROM_CONFIG
 from django.conf import settings
 from django.db import models
+from django.db.models.fields import related
 from django.urls import reverse
 
 
@@ -23,6 +24,10 @@ class Workflow(models.Model):
 
     def get_absolute_url(self):
         return reverse("projects:workflows:detail", args=(self.project.id, self.id))
+
+    @property
+    def failed(self):
+        return any(node.error is not None for node in self.nodes.all())
 
 
 NodeConfig = {
@@ -88,13 +93,16 @@ class Node(models.Model):
         LIMIT = "limit", "Limit"
         FILTER = "filter", "Filter"
 
-    workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE)
+    workflow = models.ForeignKey(
+        Workflow, on_delete=models.CASCADE, related_name="nodes"
+    )
     kind = models.CharField(max_length=16, choices=Kind.choices)
     x = models.FloatField()
     y = models.FloatField()
     parents = models.ManyToManyField(
         "self", symmetrical=False, related_name="children", blank=True
     )
+    error = models.CharField(max_length=300, null=True)
 
     # ======== Node specific columns ========= #
 
@@ -146,7 +154,15 @@ class Node(models.Model):
 
     def get_query(self):
         func = NODE_FROM_CONFIG[self.kind]
-        return func(self)
+        try:
+            query = func(self)
+            if self.error:
+                self.error = None
+                self.save()
+            return query
+        except Exception as err:
+            self.error = str(err)
+            self.save()
 
     @cached_property
     def schema(self):
