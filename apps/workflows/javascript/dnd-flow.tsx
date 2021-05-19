@@ -174,7 +174,7 @@ const DnDFlow = ({ client }) => {
               })),
             ];
           }, []);
-        setElements((els) => els.concat([...newElements, ...edges]));
+        setElements([...newElements, ...edges]);
       });
 
   useEffect(() => {
