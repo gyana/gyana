@@ -7,18 +7,21 @@ from django import forms
 from django.db import transaction
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView, UpdateView
 from django_tables2 import SingleTableView
 from lib.clients import ibis_client
 from rest_framework import viewsets
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .bigquery import run_workflow
 from .forms import KIND_TO_FORM, KIND_TO_FORMSETS, WorkflowForm
 from .models import Column, Node, NodeConfig, Workflow
-from .serializers import NodeSerializer
+from .serializers import NodeConfigSerializer, NodeSerializer
 from .tables import WorkflowTable
 
 # CRUDL
@@ -165,3 +168,17 @@ class WorkflowRun(UpdateView):
 
     def get_success_url(self) -> str:
         return reverse("workflows:run", args=(self.object.id,))
+
+
+@api_view(["GET"])
+def node_details(request, pk, *args, **kwargs):
+    node = get_object_or_404(Node, pk=pk)
+    if fields := NodeConfig[node.kind].get("info_fields"):
+        data = {
+            key: value
+            for (key, value) in NodeConfigSerializer(node).data.items()
+            if key in fields
+        }
+
+        return Response(data)
+    return Response({"no": "data"})

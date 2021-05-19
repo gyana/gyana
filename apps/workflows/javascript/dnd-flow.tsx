@@ -25,6 +25,8 @@ import Sidebar from "./sidebar";
 import "./styles/_dnd-flow.scss";
 import "./styles/_react-flow.scss";
 
+const NODES = JSON.parse(document.getElementById("nodes").textContent);
+
 const DnDFlow = ({ client }) => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -48,7 +50,7 @@ const DnDFlow = ({ client }) => {
       .filter((el) => isEdge(el) && el.target === params.target)
       .map((el) => el.source);
 
-    updateParents(params.target, parents);
+    updateParents(params.target, [...parents, params.source]);
     setElements((els) => addEdge({ ...params, arrowHeadType: "arrow" }, els));
   };
 
@@ -209,7 +211,7 @@ const DnDFlow = ({ client }) => {
     <div className="dndflow">
       <ReactFlowProvider>
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <ActionContext.Provider value={{ removeById }}>
+          <ActionContext.Provider value={{ removeById, client }}>
             <ReactFlow
               nodeTypes={defaultNodeTypes}
               elements={elements}
@@ -274,17 +276,28 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
   </>
 );
 
-const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
-  <>
-    {selected && <Buttons id={id} />}
-    <Handle
-      type="target"
-      position={Position.Left}
-      isConnectable={isConnectable}
-    />
-    {data.label}
-  </>
-);
+const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
+  const { client } = useContext(ActionContext);
+  const [nodeData, setNodeData] = useState({});
+
+  useEffect(() => {
+    client
+      .get(`http://localhost:8000/projects/1/workflows/1/nodes/${id}/details`)
+      .then((res) => setNodeData(res));
+  }, []);
+  return (
+    <>
+      {selected && <Buttons id={id} />}
+      <Handle
+        type="target"
+        position={Position.Left}
+        isConnectable={isConnectable}
+      />
+      {data.label}
+      {nodeData["output_name"]}
+    </>
+  );
+};
 
 const DefaultNode = ({
   id,
@@ -294,6 +307,14 @@ const DefaultNode = ({
   sourcePosition = Position.Right,
   selected,
 }: NodeProps) => {
+  const { client } = useContext(ActionContext);
+  const [nodeData, setNodeData] = useState({});
+  useEffect(() => {
+    client
+      .get(`http://localhost:8000/projects/1/workflows/1/nodes/${id}/details`)
+      .then((res) => setNodeData(res));
+  }, []);
+
   return (
     <>
       {selected && <Buttons id={id} />}
@@ -318,6 +339,9 @@ const defaultNodeTypes = {
   default: DefaultNode,
 };
 
-const ActionContext = createContext({ removeById: (id: string) => {} });
+const ActionContext = createContext({
+  removeById: (id: string) => {},
+  client: null,
+});
 
 export default DnDFlow;

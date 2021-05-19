@@ -30,46 +30,63 @@ NodeConfig = {
         "displayName": "Input",
         "icon": "fa-layer-group",
         "description": "Connect to one of your integrations",
+        "info_fields": ["input_table"],
     },
     "output": {
         "displayName": "Output",
         "icon": "fa-table",
         "description": "Save an output to use in a dashboard",
+        "info_fields": ["output_name"],
     },
     "select": {
         "displayName": "Select",
         "icon": "fa-lasso",
         "description": "Select columns",
+        "info_fields": ["columns"],
     },
     "join": {
         "displayName": "Join",
         "icon": "fa-link",
         "description": "Join two nodes",
+        "info_fields": ["join_how", "join_left", "join_right"],
     },
     "group": {
         "displayName": "Group",
         "icon": "fa-object-group",
         "description": "Aggregate by groups",
+        "info_fields": ["columns", "aggregations"],
     },
     "union": {
         "displayName": "Union",
         "icon": "fa-union",
         "description": "Concatenate two nodes",
+        "info_fields": ["union_distinct"],
     },
     "sort": {
         "displayName": "Sort",
         "icon": "fa-sort-numeric-up",
         "description": "Sort your data",
+        "info_fields": ["sort_columns"],
     },
     "limit": {
         "displayName": "Limit",
         "icon": "fa-sliders-h-square",
         "description": "Limit your data",
+        "info_fields": ["limit_limit", "limit_offset"],
     },
     "filter": {
         "displayName": "Filter",
         "icon": "fa-filter",
         "description": "Filter your data",
+        "info_field": [
+            "column",
+            "numeric_predicate",
+            "float_value",
+            "integer_value",
+            "string_predicate",
+            "string_value",
+            "bool_value",
+        ],
     },
 }
 
@@ -104,6 +121,10 @@ class Node(models.Model):
 
     # Select
     # columns exists on Column as FK
+
+    # Group
+    # columns exists on Column as FK
+    # aggregations exists on FunctionColumn as FK
 
     # Join
     join_how = models.CharField(
