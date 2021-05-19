@@ -1,0 +1,9 @@
+input {
+  background-color: var(--c-white);
+  border: 1px solid var(--c-gray);
+  border-radius: 5px;
+
+  &:focus {
+    border-color: var(--c-blue);
+  }
+}
