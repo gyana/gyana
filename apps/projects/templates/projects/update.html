@@ -1,14 +1,13 @@
 {% extends "web/app/project_base.html" %}
-{% load tailwind_filters %}
 
 {% block app %}
 <div class="max-w-3xl p-4">
-  <h1>Editing {{ object.name }}</h1>
+  <h1 class="mb-8">Editing {{ object.name }}</h1>
 
   <form method="post" action="{% url 'projects:update' object.id %}" class="form">
     {% csrf_token %}
 
-    {{ form }}
+    {% include "django/forms/default_form.html" %}
 
     <button type="submit" class="button button--green button--filled">Save changes</button>
   </form>

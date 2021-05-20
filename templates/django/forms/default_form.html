@@ -1,0 +1,12 @@
+{% for field in form %}
+
+<div class="input-group">
+  <label>
+    <span>{{field.label}}</span>
+
+    {{ field }}
+  </label>
+  {{ field.errors }}
+</div>
+
+{% endfor %}
