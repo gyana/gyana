@@ -19,6 +19,8 @@ import ReactFlow, {
   Node,
   isEdge,
   getIncomers,
+  useZoomPanHelper,
+  Background,
 } from "react-flow-renderer";
 
 import Sidebar from "./sidebar";
@@ -27,11 +29,15 @@ import "./styles/_dnd-flow.scss";
 import "./styles/_react-flow.scss";
 
 const NODES = JSON.parse(document.getElementById("nodes").textContent);
-
+const GRID_GAP = 20;
 const DnDFlow = ({ client }) => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState<(Edge | Node)[]>([]);
+  const { fitView } = useZoomPanHelper();
+
+  // State whether the initial element load has been done
+  const [initialLoad, setInitialLoad] = useState(false);
 
   // TODO: Make more robust to url changes
   const workflowId = window.location.pathname.split("/")[4];
@@ -162,7 +168,7 @@ const DnDFlow = ({ client }) => {
   };
 
   const onDragStop = (event, node) => {
-    const position = getPosition(event);
+    const { position } = node;
 
     client.action(
       window.schema,
@@ -175,45 +181,20 @@ const DnDFlow = ({ client }) => {
     );
   };
 
-  const createElements = (nodes) => {
-    const newElements = nodes.map((r) => ({
-      id: `${r.id}`,
-      type: ["input", "output"].includes(r.kind) ? r.kind : "default",
-      data: { label: r.kind, description: r.description, error: r.error },
-      position: { x: r.x, y: r.y },
-    }));
-
-    const edges = nodes
-      .filter((r) => r.parents.length)
-      .reduce((acc, curr) => {
-        return [
-          ...acc,
-          ...curr.parents.map((p) => ({
-            id: `reactflow__edge-${p}null-${curr.id}null`,
-            source: p.toString(),
-            sourceHandle: null,
-            type: "smoothstep",
-            targetHandle: null,
-            arrowHeadType: "arrow",
-            target: curr.id.toString(),
-          })),
-        ];
-      }, []);
-    setElements((els) => els.concat([...newElements, ...edges]));
-  };
-
   const syncElements = () =>
     client
       .action(window.schema, ["workflows", "api", "nodes", "list"], {
         workflow: workflowId,
       })
       .then((result) => {
-        const newElements = result.results.map((r) => ({
-          id: `${r.id}`,
-          type: ["input", "output"].includes(r.kind) ? r.kind : "default",
-          data: { label: r.kind, description: r.description, error: r.error },
-          position: { x: r.x, y: r.y },
-        }));
+        const newElements = result.results.map((r) => {
+          return {
+            id: `${r.id}`,
+            type: ["input", "output"].includes(r.kind) ? r.kind : "default",
+            data: { label: r.kind, description: r.description, error: r.error },
+            position: { x: r.x, y: r.y },
+          };
+        });
 
         const edges = result.results
           .filter((r) => r.parents.length)
@@ -232,6 +213,7 @@ const DnDFlow = ({ client }) => {
             ];
           }, []);
         setElements([...newElements, ...edges]);
+        setInitialLoad(true);
       });
 
   useEffect(() => {
@@ -240,14 +222,16 @@ const DnDFlow = ({ client }) => {
     window.addEventListener(eventName, syncElements, false);
 
     syncElements();
-
     // Cleanup event listener
     return () => window.removeEventListener(eventName, syncElements);
   }, []);
 
+  useEffect(() => {
+    fitView();
+  }, [initialLoad]);
+
   const onDrop = async (event) => {
     event.preventDefault();
-
     const type = event.dataTransfer.getData("application/reactflow");
     const position = getPosition(event);
 
@@ -274,26 +258,27 @@ const DnDFlow = ({ client }) => {
 
   return (
     <div className="dndflow">
-      <ReactFlowProvider>
-        <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <NodeContext.Provider value={{ removeById, client }}>
-            <ReactFlow
-              nodeTypes={defaultNodeTypes}
-              elements={elements}
-              onConnect={onConnect}
-              onElementsRemove={onElementsRemove}
-              onEdgeUpdate={onEdgeUpdate}
-              onLoad={onLoad}
-              onDrop={onDrop}
-              onDragOver={onDragOver}
-              onNodeDragStop={onDragStop}
-            >
-              <Controls />
-            </ReactFlow>
-          </NodeContext.Provider>
-        </div>
-        <Sidebar />
-      </ReactFlowProvider>
+      <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+        <NodeContext.Provider value={{ removeById, client }}>
+          <ReactFlow
+            nodeTypes={defaultNodeTypes}
+            elements={elements}
+            onConnect={onConnect}
+            onElementsRemove={onElementsRemove}
+            onEdgeUpdate={onEdgeUpdate}
+            onLoad={onLoad}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onNodeDragStop={onDragStop}
+            snapToGrid={true}
+            snapGrid={[GRID_GAP, GRID_GAP]}
+          >
+            <Controls />
+            <Background gap={GRID_GAP} />
+          </ReactFlow>
+        </NodeContext.Provider>
+      </div>
+      <Sidebar />
     </div>
   );
 };
