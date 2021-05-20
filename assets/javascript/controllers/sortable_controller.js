@@ -18,6 +18,7 @@ export default class extends Controller {
     this.client = new coreapi.Client({ auth: auth });
 
     this.sortable = Sortable.create(this.element, {
+      handle: ".sortable-handle",
       onUpdate: (event) => {
         this.client.action(
           window.schema,

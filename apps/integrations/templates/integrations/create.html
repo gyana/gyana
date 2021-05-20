@@ -38,8 +38,10 @@
             Sheets</a>
           <a class="card card--inline"
             href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.CSV }}">CSV</a>
+          {% if FF_ALPHA %}
           <a class="card card--inline"
             href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.FIVETRAN }}">Fivetran</a>
+          {% endif %}
         </div>
       </div>
     {% endif %}

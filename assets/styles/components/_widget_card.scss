@@ -1,16 +1,21 @@
 .widget-card {
-  background: var(--c-white);
-  border-radius: 10px;
-  border: 1px solid var(--c-gray);
   display: flex;
 
+  &:hover > &__commands {
+    visibility: initial;
+  }
+
   &__visual {
-    @apply flex flex-col p-4 w-full border-r;
+    @apply flex flex-col p-4 w-full;
+    background: var(--c-white);
+    border-radius: 10px;
+    border: 1px solid var(--c-gray);
     border-color: var(--c-gray);
   }
 
   &__commands {
-    @apply flex flex-col flex-shrink-0 bg-gray-50 p-4;
+    @apply flex flex-col flex-shrink-0 pl-2 py-2;
+    visibility: hidden;
     color: var(--c-black-20);
 
     a:hover {

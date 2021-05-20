@@ -28,3 +28,5 @@ ALLOWED_HOSTS = [
 ]
 
 EXTERNAL_URL = os.environ.get("EXTERNAL_URL", "https://gyana-mvp.herokuapp.com")
+
+FF_ALPHA = False

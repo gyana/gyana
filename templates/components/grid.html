@@ -17,11 +17,17 @@
     href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css"
   />
   <script type="text/javascript" charset="utf-8">
-    window.addEventListener('agGrid:load', function (e) {
-      new agGrid.Grid(document.querySelector("#myGrid"), {
-        columnDefs: JSON.parse(document.getElementById("columns").innerHTML),
-        rowData: JSON.parse(document.getElementById("rows").innerHTML),
-      });
-    }, { once: true });
+    window.addEventListener(
+      "agGrid:load",
+      function (e) {
+        if (!document.querySelector(".ag-root-wrapper")) {
+          new agGrid.Grid(document.querySelector("#myGrid"), {
+            columnDefs: JSON.parse(document.getElementById("columns").innerHTML),
+            rowData: JSON.parse(document.getElementById("rows").innerHTML),
+          });
+        }
+      },
+      { once: true }
+    );
   </script>
 </div>

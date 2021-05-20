@@ -107,6 +107,7 @@ TEMPLATES = [
                 "apps.web.context_processors.project_meta",
                 # this line can be removed if not using google analytics
                 "apps.web.context_processors.google_analytics_id",
+                "gyana.context_processors.django_settings",
             ],
         },
     },
@@ -335,3 +336,6 @@ BIGQUERY_LOCATION = "EU"
 
 # Namespace based on git email to avoid collisions in PKs on local dev
 CLOUD_NAMESPACE = os.environ.get("CLOUD_NAMESPACE", "local")
+
+# Feature flag for Alpha features
+FF_ALPHA = True
