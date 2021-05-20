@@ -8,6 +8,7 @@ from django.views.decorators.http import condition
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from lib.chart import to_chart
+from rest_framework import generics
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .bigquery import query_widget
@@ -28,7 +29,14 @@ class WidgetList(DashboardMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self) -> QuerySet:
-        return Widget.objects.filter(dashboard=self.dashboard).all()
+        widgets = Widget.objects.filter(dashboard=self.dashboard).all()
+        widget_dict = {widget.pk: widget for widget in widgets}
+        return [widget_dict[idx] for idx in self.dashboard.sort_order]
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["dashboard"] = self.dashboard
+        return context_data
 
 
 class WidgetCreate(DashboardMixin, TurboCreateView):

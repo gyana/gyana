@@ -1,9 +1,9 @@
 {% extends "widgets/base.html" %}
-<!---->
+{% load static %}
 {% block app %}
-<ul class="flex flex-wrap">
+<ul class="flex flex-wrap" data-controller="sortable" data-sortable-id-value="{{ dashboard.id }}">
   {% for object in object_list %}
-  <li class="w-1/2 p-2 flex-grow">
+  <li class="w-1/2 p-2 flex-grow" data-id="{{ object.id }}">
     <div class="widget-card">
       <div class='widget-card__visual'>
         <h3 class="text-base">{{ object }}</h3>
