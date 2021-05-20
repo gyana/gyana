@@ -1,3 +1,4 @@
+from functools import cached_property
 from urllib.parse import parse_qs, urlparse
 
 from apps.widgets.models import Widget
@@ -17,7 +18,7 @@ IBIS_TO_TYPE = {"Int64": "INTEGER", "String": "STRING"}
 
 
 class ParentMixin:
-    @property
+    @cached_property
     def parent(self):
         entity, pk, *_ = self.request.META["HTTP_TURBO_FRAME"].split("-")
         if entity == "widget":
@@ -26,13 +27,13 @@ class ParentMixin:
             return Node.objects.get(pk=pk)
         raise Exception("No filter parent specified")
 
-    @property
+    @cached_property
     def schema(self):
         if isinstance(self.parent, Widget):
             return self.parent.table.schema
         return self.parent.schema
 
-    @property
+    @cached_property
     def parent_fk(self):
         return "widget" if isinstance(self.parent, Widget) else "node"
 
