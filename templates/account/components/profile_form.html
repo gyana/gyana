@@ -1,41 +1,23 @@
-<div class="columns">
-  <div id="profile-picture" class="column is-one-quarter">
-    <div>
-      <img class="avatar" src="{{ user.avatar_url }}">
-      <div id='profile-upload-holder' class="has-text-centered">
-        <label for="profile-upload">
-          <a id='profile-upload-label'>
-            Change Picture
-          </a>
-        </label>
+<h1 class="mb-8">My Details</h1>
+
+<div>
+  <div id="profile-picture" class="flex gap-4 mb-8">
+    <img class="avatar" src="{{ user.avatar_url }}">
+    <div id='profile-upload-holder' class="has-text-centered">
+      <label for="profile-upload">
+        <span>Change Picture</span>
         <input id="profile-upload" type="file" accept="image/*" />
-      </div>
+      </label>
     </div>
   </div>
+
   <div class="column">
-    <h1 class="title is-size-4">My Details</h1>
+
     <form method="post">
       {% csrf_token %}
-      <div class="field">
-        <div class="control">
-          {{ form.email }}
-        </div>
-        {{ form.email.errors }}
-      </div>
-      <div class="field">
-        <label class="label">First Name</label>
-        <div class="control">
-          {{ form.first_name }}
-        </div>
-        {{ form.first_name.errors }}
-      </div>
-      <div class="field">
-        <label class="label">Last Name</label>
-        <div class="control">
-          {{ form.last_name }}
-        </div>
-        {{ form.last_name.errors }}
-      </div>
+
+      {% include "django/forms/default_form.html" %}
+
       <div class="field is-grouped">
         <div class="control">
           <input class="button button--primary" type="submit" value="Save">

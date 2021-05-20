@@ -1,10 +1,14 @@
 {% extends "web/app/app_base.html" %}
-<!---->
-<!---->
 {% block app %}
-<h1>Create/Update</h1>
-<form method="post" action="{% url 'projects:create' %}" class="form">
-  {% csrf_token %} {{ form }}
-  <button type="submit" class="button">Create</button>
-</form>
+<div class="max-w-lg">
+  <h1 class="mb-4">New Project</h1>
+
+  <form method="post" action="{% url 'projects:create' %}" class="form">
+    {% csrf_token %}
+
+    {% include "django/forms/default_form.html" %}
+
+    <button type="submit" class="button button--filled button--green">Create</button>
+  </form>
+</div>
 {% endblock %}

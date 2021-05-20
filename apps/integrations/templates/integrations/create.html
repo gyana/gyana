@@ -20,9 +20,11 @@
     </ul>
     {% else %}
     <form method="post" action="{{ request.get_full_path }}" class="form"
-          {% if request.GET.kind == integration_kind.CSV %}
-          enctype="multipart/form-data" {% endif %}>
-      {% csrf_token %} {{ form }}
+          {% if request.GET.kind == integration_kind.CSV %} enctype="multipart/form-data" {% endif %}>
+      {% csrf_token %}
+
+      {% include "django/forms/default_form.html" %}
+
       <button type="submit" class="button">Create</button>
     </form>
     {% endif %}
@@ -30,16 +32,19 @@
     {% else %}
 
     <div>
-      <p>Choose kind:</p>
-
       <div class="grid grid-cols-2 gap-4">
         <a class="card card--inline"
-           href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.GOOGLE_SHEETS }}">Google
-          Sheets</a>
+           href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.GOOGLE_SHEETS }}">
+          Google Sheets
+        </a>
         <a class="card card--inline"
-           href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.CSV }}">CSV</a>
+           href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.CSV }}">
+          CSV
+        </a>
         <a class="card card--inline"
-           href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.FIVETRAN }}">Fivetran</a>
+           href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.FIVETRAN }}">
+          Fivetran
+        </a>
       </div>
     </div>
     {% endif %}

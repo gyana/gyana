@@ -1,12 +1,14 @@
-{% for field in form %}
-
+{% for field in form.visible_fields %}
 <div class="input-group">
   <label>
-    <span>{{field.label}}</span>
-
+    <span>{{ field.label }}</span>
     {{ field }}
   </label>
+  <p class="input__help-text">{{ field.help_text }}</p>
   {{ field.errors }}
 </div>
+{% endfor %}
 
+{% for hidden in form.hidden_fields %}
+{{hidden}}
 {% endfor %}
