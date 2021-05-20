@@ -31,15 +31,35 @@
 
     {% else %}
     <div>
-      <div class="grid grid-cols-2 gap-4">
-        <a class="card card--inline"
-           href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.GOOGLE_SHEETS }}">Google
-          Sheets</a>
-        <a class="card card--inline"
-           href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.CSV }}">CSV</a>
+      <div class="grid grid-cols-2 gap-4 max-w-md">
+        <a class="card card--inline card--square"
+           href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.GOOGLE_SHEETS }}">
+          <div class="flex flex-col items-center">
+            <i class="fas fa-question fa-3x mb-4"></i>
+            <span class="block">
+              Google Sheets
+            </span>
+          </div>
+        </a>
+        <a class="card card--inline card--square"
+           href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.CSV }}">
+          <div class="flex flex-col items-center">
+            <i class="fas fa-question fa-3x mb-4"></i>
+            <span class="block">
+              CSV
+            </span>
+          </div>
+        </a>
         {% if FF_ALPHA %}
-        <a class="card card--inline"
-           href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.FIVETRAN }}">Fivetran</a>
+        <a class="card card--inline card--square"
+           href="{% url 'projects:integrations:create' project.id %}?kind={{ integration_kind.FIVETRAN }}">
+          <div class="flex flex-col items-center">
+            <i class="fas fa-question fa-3x mb-4"></i>
+            <span class="block">
+              Fivetran
+            </span>
+          </div>
+        </a>
         {% endif %}
       </div>
     </div>

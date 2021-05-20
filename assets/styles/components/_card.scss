@@ -1,3 +1,5 @@
+@use "utilities/shadows";
+
 $card-colors: (
   "primary": var(--c-blue),
   "green": var(--c-green),
@@ -10,13 +12,31 @@ $card-colors: (
   --card-color: var(--c-gray);
 
   padding: 1.875rem;
-
+  
   background: var(--c-white);
   border-radius: 10px;
   border: 1px solid var(--card-color);
-
+  
+  @include shadows.shadow;
+  
   &--inline {
     display: inline-flex;
+  }
+  
+  &--square {
+    justify-content: center;
+    align-items: center;
+    color: var(--c-black-50);
+
+    &::before {
+      content: "";
+      display: block;
+      padding-bottom: 100%;
+    }
+
+    .fas {
+      display: block;
+    }
   }
 
   &[href]:hover {
