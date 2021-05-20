@@ -6,7 +6,7 @@
 <h1>Update</h1>
 <a href="{% url 'widgets:list' %}">Back</a>
 <form method="post" action="{% url 'widgets:update' object.id %}" class="form">
-  {% csrf_token %} {{ form|crispy }}
+  {% csrf_token %} {{ form }}
   <button type="submit" class="button">Save changes</button>
 </form>
 {% endblock %}

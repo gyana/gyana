@@ -3,12 +3,12 @@
     <div>
       <img class="avatar" src="{{ user.avatar_url }}">
       <div id='profile-upload-holder' class="has-text-centered">
-        <label for="profile-upload" >
+        <label for="profile-upload">
           <a id='profile-upload-label'>
             Change Picture
           </a>
         </label>
-        <input id="profile-upload" type="file" accept="image/*"/>
+        <input id="profile-upload" type="file" accept="image/*" />
       </div>
     </div>
   </div>
@@ -17,7 +17,6 @@
     <form method="post">
       {% csrf_token %}
       <div class="field">
-        <label class="label">Email</label>
         <div class="control">
           {{ form.email }}
         </div>

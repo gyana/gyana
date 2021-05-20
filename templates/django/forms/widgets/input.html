@@ -1,1 +1,5 @@
-<input {% if widget.type in 'text,password,email,tel,number' %}class="my-2 px-3 py-2 border border-gray-300 focus:border-blue-500 focus:outline-none focus:ring-blue-500 w-full rounded-none sm:text-sm"{% endif %} type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %}>
+<input type="{{ widget.type }}"
+       name="{{ widget.name }}"
+       {% if widget.value != None %}
+       value="{{ widget.value|stringformat:'s' }}"
+       {% endif %}>

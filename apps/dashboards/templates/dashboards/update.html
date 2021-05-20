@@ -6,7 +6,7 @@
   <h1>Edit</h1>
 
   <form method="post" action="{% url 'projects:dashboards:update' project.id object.id %}" class="form">
-    {% csrf_token %} {{ form|crispy }}
+    {% csrf_token %} {{ form }}
 
     <button type="submit" class="button button--filled button--green">Save changes</button>
   </form>

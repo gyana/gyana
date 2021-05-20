@@ -1,8 +1,13 @@
-{% extends "web/app/settings_base.html" %} {% load static %} {% block app %}
+{% extends "web/app/settings_base.html" %}
+{% load static %}
+
+{% block app %}
 <section class="app-card">
-  {% include 'account/components/profile_form.html' %}
+  {{form}}
 </section>
-{% endblock %} {% block page_js %}
+{% endblock %}
+
+{% block page_js %}
 <script src="{% static 'js/app-bundle.js' %}"></script>
 <script type="application/javascript">
   const App = SiteJS.app;

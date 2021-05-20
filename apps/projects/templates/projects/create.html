@@ -5,7 +5,7 @@
 {% block app %}
 <h1>Create/Update</h1>
 <form method="post" action="{% url 'projects:create' %}" class="form">
-  {% csrf_token %} {{ form|crispy }}
+  {% csrf_token %} {{ form }}
   <button type="submit" class="button">Create</button>
 </form>
 {% endblock %}

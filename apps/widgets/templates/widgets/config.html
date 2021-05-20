@@ -1,7 +1,7 @@
 {% load tailwind_filters %} {% block app %}
 <turbo-frame id="widgets:config">
   <form method="post" action="{% url 'widgets:config' object.id %}" class="form">
-    {% csrf_token %} {{ form|crispy }}
+    {% csrf_token %} {{ form }}
     <button type="submit" class="button">Save changes</button>
   </form>
 </turbo-frame>
