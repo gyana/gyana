@@ -19,12 +19,12 @@ IBIS_TO_TYPE = {"Int64": "INTEGER", "String": "STRING"}
 class ParentMixin:
     @property
     def parent(self):
-        entity, pk, _ = self.request.META["HTTP_TURBO_FRAME"].split("-")
+        entity, pk, *_ = self.request.META["HTTP_TURBO_FRAME"].split("-")
         if entity == "widget":
             return Widget.objects.get(pk=pk)
         if entity == "node":
             return Node.objects.get(pk=pk)
-        raise Http404("No filter parent specified")
+        raise Exception("No filter parent specified")
 
     @property
     def schema(self):
@@ -40,7 +40,6 @@ class ParentMixin:
 class FilterList(ParentMixin, ListView):
     template_name = "filters/list.html"
     model = Filter
-    paginate_by = 20
 
     def get_queryset(self) -> QuerySet:
         return self.parent.filters.all()
