@@ -1,9 +1,8 @@
 {% extends "filters/base.html" %}
-<!---->
 {% block app %}
 <h1>Delete</h1>
 <p>Are you sure you want to delete?</p>
-<form method="post" action="{% url 'filters:delete' object.id %}">
+<form method="post" action="{% url 'filters:delete' object.id %}" data-action="submit->tf-refresh#refresh">
   {% csrf_token %}
   <input type="submit" value="Yes" class="btn btn-danger" />
   <a href="{% url 'filters:list' %}" class="btn btn-default">No</a>
