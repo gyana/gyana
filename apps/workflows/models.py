@@ -184,6 +184,9 @@ class FunctionColumn(models.Model):
         SUM = "sum", "Sum"
         COUNT = "count", "Count"
         MEAN = "mean", "Average"
+        MAX = "max", "Maximum"
+        MIN = "min", "Minimum"
+        STD = "std", "Standard deviation"
 
     name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     function = models.CharField(max_length=20, choices=Functions.choices)
