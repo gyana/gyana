@@ -1,3 +1,4 @@
+from apps.dashboards.serializers import DashboardSerializer
 from apps.dashboards.tables import DashboardTable
 from apps.projects.mixins import ProjectMixin
 from django.db.models.query import QuerySet
@@ -6,6 +7,7 @@ from django.urls.base import reverse
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
+from rest_framework import generics
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .forms import DashboardForm
@@ -61,3 +63,11 @@ class DashboardDelete(ProjectMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("projects:dashboards:list", args=(self.project.id,))
+
+
+# APIs
+
+
+class DashboardSort(generics.UpdateAPIView):
+    queryset = Dashboard.objects.all()
+    serializer_class = DashboardSerializer

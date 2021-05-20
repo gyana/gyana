@@ -33,8 +33,6 @@
 </div>
 {{ nodes|json_script:'nodes' }}
 
-<script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
-<script src="{% url 'api_schemajs' %}"></script>
 <script src="{% static 'js/workflow-bundle.js' %}"></script>
 <link rel="stylesheet" href="{% static 'css/workflow.css' %}" />
 {% endblock %}

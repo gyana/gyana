@@ -1,9 +1,9 @@
 {% extends "widgets/base.html" %}
-<!---->
+{% load static %}
 {% block app %}
-<ul class="flex flex-wrap">
+<ul class="flex flex-wrap" data-controller="sortable" data-sortable-id-value="{{ dashboard.id }}">
   {% for object in object_list %}
-  <li class="w-1/2 p-2 flex-grow">
+  <li class="w-1/2 p-2 flex-grow" data-id="{{ object.id }}">
     <div class="widget-card">
       <div class='widget-card__visual'>
         <h3 class="text-base">{{ object }}</h3>
@@ -15,9 +15,10 @@
         </turbo-frame>
       </div>
       <div class='widget-card__commands'>
-        <a class="my-1" href="{% url 'widgets:detail' object.pk %}">Details</a>
-        <a class="my-1" href="{% url 'widgets:update' object.pk %}">Update</a>
-        <a class="my-1" href="{% url 'widgets:delete' object.pk %}">Delete</a>
+        <i class="my-1 cursor-move fas fa-arrows sortable-handle"></i>
+        <a class="my-1" href="{% url 'widgets:detail' object.pk %}" ><i class="fas fa-cog"></i></a>
+        <a class="my-1" href="{% url 'widgets:update' object.pk %}"><i class="fas fa-edit"></i></a>
+        <a class="my-1" href="{% url 'widgets:delete' object.pk %}"><i class="fas fa-trash"></i></a>
       </div>
     </div>
   </li>

@@ -25,6 +25,8 @@ class Filter(models.Model):
         NEQUAL = "nequal", "is not equal to"
         CONTAINS = "contains", "contains"
         NOTCONTAINS = "notcontains", "does not contain"
+        STARTSWITH = "startswith", "starts with"
+        ENDSWITH = "endswith", "ends with"
 
     widget = models.ForeignKey(
         Widget, on_delete=models.CASCADE, null=True, related_name="filters"

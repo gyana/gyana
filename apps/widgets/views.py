@@ -1,13 +1,16 @@
+from functools import cached_property
 from urllib.parse import urlparse
 
 from apps.dashboards.models import Dashboard
 from apps.widgets.visuals import VISUAL_TO_OUTPUT
+from django.db import transaction
 from django.db.models.query import QuerySet
 from django.urls import resolve, reverse
 from django.views.decorators.http import condition
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from lib.chart import to_chart
+from rest_framework import generics
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .bigquery import query_widget
@@ -16,7 +19,7 @@ from .models import Widget
 
 
 class DashboardMixin:
-    @property
+    @cached_property
     def dashboard(self):
         resolver_match = resolve(urlparse(self.request.META["HTTP_REFERER"]).path)
         return Dashboard.objects.get(pk=resolver_match.kwargs["pk"])
@@ -28,7 +31,14 @@ class WidgetList(DashboardMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self) -> QuerySet:
-        return Widget.objects.filter(dashboard=self.dashboard).all()
+        widgets = Widget.objects.filter(dashboard=self.dashboard).all()
+        widget_dict = {widget.pk: widget for widget in widgets}
+        return [widget_dict[idx] for idx in self.dashboard.sort_order]
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["dashboard"] = self.dashboard
+        return context_data
 
 
 class WidgetCreate(DashboardMixin, TurboCreateView):
@@ -45,6 +55,14 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
         initial = super().get_initial()
         initial["dashboard"] = self.dashboard
         return initial
+
+    def form_valid(self, form):
+        with transaction.atomic():
+            response = super().form_valid(form)
+            self.dashboard.sort_order.append(self.object.id)
+            self.dashboard.save()
+
+        return response
 
     def get_success_url(self) -> str:
         return reverse("widgets:detail", args=(self.object.id,))
@@ -69,9 +87,17 @@ class WidgetUpdate(DashboardMixin, TurboUpdateView):
         return reverse("widgets:list")
 
 
-class WidgetDelete(DeleteView):
+class WidgetDelete(DashboardMixin, DeleteView):
     template_name = "widgets/delete.html"
     model = Widget
+
+    def delete(self, request, *args, **kwargs):
+        with transaction.atomic():
+            self.dashboard.sort_order.remove(self.get_object().id)
+            self.dashboard.save()
+            response = super().delete(request, *args, **kwargs)
+
+        return response
 
     def get_success_url(self) -> str:
         return reverse("widgets:list")

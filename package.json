@@ -44,6 +44,7 @@
     "react-dom": "^16.13.1",
     "react-flow-renderer": "^9.5.3",
     "react-router-dom": "^5.2.0",
+    "sortablejs": "^1.13.0",
     "stimulus": "^2.0.0",
     "tailwindcss": "^2.1.2"
   }

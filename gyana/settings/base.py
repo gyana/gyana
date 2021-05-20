@@ -107,6 +107,7 @@ TEMPLATES = [
                 "apps.web.context_processors.project_meta",
                 # this line can be removed if not using google analytics
                 "apps.web.context_processors.google_analytics_id",
+                "gyana.context_processors.django_settings",
             ],
         },
     },
@@ -305,7 +306,7 @@ DJSTRIPE_USE_NATIVE_JSONFIELD = True  # change to False if not a new installatio
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
-GCP_PROJECT = "gyana-1511894275181"
+GCP_PROJECT = os.environ.get("GCP_PROJECT", "gyana-1511894275181")
 GCP_BQ_SVC_ACCOUNT = os.environ.get(
     "GCP_BQ_SVC_ACCOUNT", "gyana-local@gyana-1511894275181.iam.gserviceaccount.com"
 )
@@ -315,7 +316,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
 
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
-GS_BUCKET_NAME = "gyana-local"
+GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME", "gyana-local")
 
 FIVETRAN_KEY = os.environ.get("FIVETRAN_KEY", "<your fivetran key>")
 FIVETRAN_URL = "https://api.fivetran.com/v1"
@@ -335,3 +336,6 @@ BIGQUERY_LOCATION = "EU"
 
 # Namespace based on git email to avoid collisions in PKs on local dev
 CLOUD_NAMESPACE = os.environ.get("CLOUD_NAMESPACE", "local")
+
+# Feature flag for Alpha features
+FF_ALPHA = True

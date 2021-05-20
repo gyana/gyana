@@ -18,6 +18,9 @@ import ReactFlow, {
   Edge,
   Node,
   isEdge,
+  getIncomers,
+  useZoomPanHelper,
+  Background,
 } from "react-flow-renderer";
 
 import Sidebar from "./sidebar";
@@ -25,10 +28,16 @@ import Sidebar from "./sidebar";
 import "./styles/_dnd-flow.scss";
 import "./styles/_react-flow.scss";
 
+const NODES = JSON.parse(document.getElementById("nodes").textContent);
+const GRID_GAP = 20;
 const DnDFlow = ({ client }) => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState<(Edge | Node)[]>([]);
+  const { fitView } = useZoomPanHelper();
+
+  // State whether the initial element load has been done
+  const [initialLoad, setInitialLoad] = useState(false);
 
   // TODO: Make more robust to url changes
   const workflowId = window.location.pathname.split("/")[4];
@@ -43,13 +52,29 @@ const DnDFlow = ({ client }) => {
       }
     );
 
-  const onConnect = (params) => {
-    const parents = elements
-      .filter((el) => isEdge(el) && el.target === params.target)
-      .map((el) => el.source);
+  const getIncomingNodes = (target: string) => {
+    const targetElement = elements.filter(
+      (el) => isNode(el) && el.id === target
+    )[0] as Node;
+    return [targetElement, getIncomers(targetElement, elements)] as [
+      Node,
+      Node[]
+    ];
+  };
 
-    updateParents(params.target, [...parents, params.source]);
-    setElements((els) => addEdge({ ...params, arrowHeadType: "arrow" }, els));
+  const onConnect = (params) => {
+    const [targetElement, incomingNodes] = getIncomingNodes(params.target);
+
+    // All nodes except Join (2) and Union (inf) can only have one parent
+    const maxParents = NODES[targetElement.data.label].maxParents || 1;
+    if (maxParents === -1 || incomingNodes.length < maxParents) {
+      const parents = elements
+        .filter((el) => isEdge(el) && el.target === params.target)
+        .map((el) => el.source);
+
+      updateParents(params.target, [...parents, params.source]);
+      setElements((els) => addEdge({ ...params, arrowHeadType: "arrow" }, els));
+    }
   };
 
   const onElementsRemove = (elementsToRemove) => {
@@ -79,20 +104,30 @@ const DnDFlow = ({ client }) => {
     if (oldEdge.source === newEdge.source) {
       // We need to remove the source from the previous target and
       // add it to the new one
-      const oldParents = elements
-        .filter(
-          (el) =>
-            isEdge(el) &&
-            el.target === oldEdge.target &&
-            el.source !== oldEdge.source
-        )
-        .map((el) => el.source);
-      updateParents(oldEdge.target, oldParents);
 
-      const newParents = elements
-        .filter((el) => isEdge(el) && el.target === newEdge.target)
-        .map((el) => el.source);
-      updateParents(newEdge.target, [...newParents, newEdge.source]);
+      const [targetElement, incomingNodes] = getIncomingNodes(newEdge.target);
+
+      // All nodes except Join (2) and Union (inf) can only have one parent
+      const maxParents = NODES[targetElement.data.label].maxParents || 1;
+
+      if (maxParents === -1 || incomingNodes.length < maxParents) {
+        const oldParents = elements
+          .filter(
+            (el) =>
+              isEdge(el) &&
+              el.target === oldEdge.target &&
+              el.source !== oldEdge.source
+          )
+          .map((el) => el.source);
+        updateParents(oldEdge.target, oldParents);
+
+        const newParents = elements
+          .filter((el) => isEdge(el) && el.target === newEdge.target)
+          .map((el) => el.source);
+
+        updateParents(newEdge.target, [...newParents, newEdge.source]);
+        setElements((els) => updateEdge(oldEdge, newEdge, els));
+      }
     }
     // User changed the source
     else {
@@ -105,9 +140,10 @@ const DnDFlow = ({ client }) => {
             el.source !== oldEdge.source
         )
         .map((el) => el.source);
+
       updateParents(newEdge.target, [...parents, newEdge.source]);
+      setElements((els) => updateEdge(oldEdge, newEdge, els));
     }
-    setElements((els) => updateEdge(oldEdge, newEdge, els));
   };
 
   const removeById = (id: string) => {
@@ -132,7 +168,7 @@ const DnDFlow = ({ client }) => {
   };
 
   const onDragStop = (event, node) => {
-    const position = getPosition(event);
+    const { position } = node;
 
     client.action(
       window.schema,
@@ -145,18 +181,20 @@ const DnDFlow = ({ client }) => {
     );
   };
 
-  useEffect(() => {
+  const syncElements = () =>
     client
       .action(window.schema, ["workflows", "api", "nodes", "list"], {
         workflow: workflowId,
       })
       .then((result) => {
-        const newElements = result.results.map((r) => ({
-          id: `${r.id}`,
-          type: ["input", "output"].includes(r.kind) ? r.kind : "default",
-          data: { label: r.kind, description: r.description },
-          position: { x: r.x, y: r.y },
-        }));
+        const newElements = result.results.map((r) => {
+          return {
+            id: `${r.id}`,
+            type: ["input", "output"].includes(r.kind) ? r.kind : "default",
+            data: { label: r.kind, description: r.description, error: r.error },
+            position: { x: r.x, y: r.y },
+          };
+        });
 
         const edges = result.results
           .filter((r) => r.parents.length)
@@ -174,13 +212,26 @@ const DnDFlow = ({ client }) => {
               })),
             ];
           }, []);
-        setElements((els) => els.concat([...newElements, ...edges]));
+        setElements([...newElements, ...edges]);
+        setInitialLoad(true);
       });
+
+  useEffect(() => {
+    // Add event listener to show errors
+    const eventName = `workflow-run-${workflowId}`;
+    window.addEventListener(eventName, syncElements, false);
+
+    syncElements();
+    // Cleanup event listener
+    return () => window.removeEventListener(eventName, syncElements);
   }, []);
+
+  useEffect(() => {
+    fitView();
+  }, [initialLoad]);
 
   const onDrop = async (event) => {
     event.preventDefault();
-
     const type = event.dataTransfer.getData("application/reactflow");
     const position = getPosition(event);
 
@@ -207,26 +258,27 @@ const DnDFlow = ({ client }) => {
 
   return (
     <div className="dndflow">
-      <ReactFlowProvider>
-        <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <NodeContext.Provider value={{ removeById, client }}>
-            <ReactFlow
-              nodeTypes={defaultNodeTypes}
-              elements={elements}
-              onConnect={onConnect}
-              onElementsRemove={onElementsRemove}
-              onEdgeUpdate={onEdgeUpdate}
-              onLoad={onLoad}
-              onDrop={onDrop}
-              onDragOver={onDragOver}
-              onNodeDragStop={onDragStop}
-            >
-              <Controls />
-            </ReactFlow>
-          </NodeContext.Provider>
-        </div>
-        <Sidebar />
-      </ReactFlowProvider>
+      <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+        <NodeContext.Provider value={{ removeById, client }}>
+          <ReactFlow
+            nodeTypes={defaultNodeTypes}
+            elements={elements}
+            onConnect={onConnect}
+            onElementsRemove={onElementsRemove}
+            onEdgeUpdate={onEdgeUpdate}
+            onLoad={onLoad}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onNodeDragStop={onDragStop}
+            snapToGrid={true}
+            snapGrid={[GRID_GAP, GRID_GAP]}
+          >
+            <Controls />
+            <Background gap={GRID_GAP} />
+          </ReactFlow>
+        </NodeContext.Provider>
+      </div>
+      <Sidebar />
     </div>
   );
 };
@@ -235,7 +287,7 @@ const DeleteButton = ({ id }) => {
   const { removeById } = useContext(NodeContext);
   return (
     <button onClick={() => removeById(id)}>
-      <i className="fal fa-times fa-lg"></i>
+      <i className="fas fa-trash fa-lg"></i>
     </button>
   );
 };
@@ -244,11 +296,11 @@ const OpenButton = ({ id }) => {
   const workflowId = window.location.pathname.split("/")[4];
 
   return (
-    <button
-      data-src={`/workflows/${workflowId}/nodes/${id}`}
-      data-action="click->tf-modal#open"
-    >
-      Settings
+    <button data-action="click->tf-modal#open">
+      <i
+        data-src={`/workflows/${workflowId}/nodes/${id}`}
+        className="fas fa-cog fa-lg"
+      ></i>
     </button>
   );
 };
@@ -294,9 +346,19 @@ const Buttons = ({ id }) => {
   );
 };
 
+const ErrorIcon = ({ text }) => (
+  <div
+    title={text}
+    className="flex items-center justify-around absolute -top-2 -right-2 bg-red-10 rounded-full w-6 h-6 text-red"
+  >
+    <i className="fad fa-bug "></i>
+  </div>
+);
+
 const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
   <>
     {selected && <Buttons id={id} />}
+    {data.error && <ErrorIcon text={data.error} />}
     <div className="flex flex-col h-full justify-center">
       {data.label}
       <Description id={id} data={data} />
@@ -312,6 +374,7 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
 const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
   <>
     {selected && <Buttons id={id} />}
+    {data.error && <ErrorIcon text={data.error} />}
     <Handle
       type="target"
       position={Position.Left}
@@ -335,6 +398,7 @@ const DefaultNode = ({
   return (
     <>
       {selected && <Buttons id={id} />}
+      {data.error && <ErrorIcon text={data.error} />}
       <Handle
         type="target"
         position={targetPosition}

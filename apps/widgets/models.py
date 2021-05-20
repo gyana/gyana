@@ -1,6 +1,7 @@
 from apps.dashboards.models import Dashboard
 from apps.tables.models import Table
 from django.db import models
+from django.db.models.aggregates import Max
 
 
 class Widget(models.Model):

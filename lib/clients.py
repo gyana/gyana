@@ -7,6 +7,8 @@ from django.utils.text import slugify
 from google.cloud import bigquery
 from googleapiclient import discovery
 
+from .compiler import *
+
 SLUG = slugify(settings.CLOUD_NAMESPACE)
 DATASET_ID = f"{SLUG}_integrations"
 DATAFLOW_ID = f"{SLUG}_dataflows"
