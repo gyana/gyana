@@ -24,7 +24,8 @@
       </h2>
       <div class="flex items-center mb-4 space-x-1">
         {% for integration in project.integration_set.all %}
-        <a class="relative tooltip tooltip--bottom" href="{% url 'projects:integrations:detail' project.id integration.id %}">
+        <a class="relative tooltip tooltip--bottom"
+           href="{% url 'projects:integrations:detail' project.id integration.id %}">
           <img class="h-8 w-8" src="{% static integration.icon %}" title="{{ integration.name }}" />
           {% if not integration.last_synced %}
           <i class="fa fa-exclamation-circle absolute -top-1 right-0 text-orange"></i>

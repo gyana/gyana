@@ -30,6 +30,13 @@ class WorkflowList(ProjectMixin, SingleTableView):
     table_class = WorkflowTable
     paginate_by = 20
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        context_data["workflow_count"] = Workflow.objects.filter(project=self.project).count()
+
+        return context_data
+
     def get_queryset(self) -> QuerySet:
         return Workflow.objects.filter(project=self.project).all()
 
