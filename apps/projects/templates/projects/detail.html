@@ -5,13 +5,13 @@
     <h1 class="text-2xl">{{ project.name }}</h1>
     <div class="flex items-center space-x-2">
       <a class="hover:underline" href="{% url 'projects:integrations:list' project.id %}">
-        <strong>{{ project.integration_set.count }}</strong> integrations
+        <strong>{{ integration_count }}</strong> integration{{ integration_count|pluralize }}
       </a>
       <a class="hover:underline" href="{% url 'projects:workflows:list' project.id %}">
-        <strong>{{ project.workflow_set.count }}</strong> workflows
+        <strong>{{ workflow_count }}</strong> workflow{{ workflow_count|pluralize }}
       </a>
       <a class="hover:underline" href="{% url 'projects:dashboards:list' project.id %}">
-        <strong>{{ project.dashboard_set.count }}</strong> dashboards
+        <strong>{{ dashboard_count }}</strong> dashboard{{ dashboard_count|pluralize }}
       </a>
     </div>
     <p>{{ project.description }}</p>

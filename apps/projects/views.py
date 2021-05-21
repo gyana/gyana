@@ -36,6 +36,13 @@ class ProjectDetail(DetailView):
     template_name = "projects/detail.html"
     model = Project
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        object = self.get_object()
+
+        context_data["integration_count"] = object.integration_set.count()
+        context_data["workflow_count"] = object.workflow_set.count()
+        context_data["dashboard_count"] = object.dashboard_set.count()
 
 class ProjectUpdate(TurboUpdateView):
     template_name = "projects/update.html"
