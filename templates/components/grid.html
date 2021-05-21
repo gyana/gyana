@@ -1,10 +1,11 @@
-<div id="myGrid" class="ag-theme-balham h-full w-full" />
+<div id="myGrid" class="ag-theme-balham h-full w-full overflow-auto" />
 <script id="columns" type="application/json">
   {{ columns|safe }}
 </script>
 <script id="rows" type="application/json">
   {{ rows|safe }}
 </script>
+
 <div data-controller="turbo-issue-186-workaround">
   <!--ag-grid-->
   <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"
