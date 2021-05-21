@@ -3,7 +3,10 @@
 
 {% block app %}
 <div class="workflow-detail__header">
-  <h3 class="mr-auto">{{object.name}}</h3>
+  <h3 class="mr-auto tooltip tooltip--bottom">
+    {{object.name}}
+    <span class="tooltip__content">This is an example tooltip</span>
+  </h3>
 
   <a class="button button--square button--filled button--sm" data-turbo-frame="widgets"
      href="{% url 'widgets:create' %}">Add

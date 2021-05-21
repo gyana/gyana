@@ -1,0 +1,86 @@
+%arrow {
+  background-color: var(--c-black);
+  content: '';
+  display: block;
+  height: 0.3rem;
+  position: absolute;
+  width: 0.3rem;
+}
+
+.tooltip {
+  position: relative;
+  white-space: nowrap;
+  z-index: 1;
+
+  &:hover &__content {
+    display: block;
+  }
+
+  &__content {
+    background: var(--c-black);
+    border-radius: 5px;
+    color: var(--c-white);
+    display: none;
+    font-size: 0.5rem;
+    padding: 0.225rem 0.5rem;
+    position: absolute;
+    text-align: center;
+    z-index: 999;
+  }
+
+  &--top &__content {
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, calc(-100% - 0.25rem));
+
+    &::after {
+      @extend %arrow;
+
+      bottom: 0.2rem;
+      left: 50%;
+      transform: translate(-50%, 100%) rotate(45deg);
+    }
+  }
+
+  &--bottom &__content {
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, calc(100% + 0.25rem));
+
+    &::after {
+      @extend %arrow;
+
+      left: 50%;
+      top: 0.2rem;
+      transform: translate(-50%, -100%) rotate(45deg);
+    }
+  }
+
+  &--left &__content {
+    top: 50%;
+    left: 0;
+    transform: translate(calc(-100% - 0.25rem), -50%);
+
+    &::after {
+      @extend %arrow;
+
+      right: 0.2rem;
+      top: 50%;
+      transform: translate(100%, -50%) rotate(45deg);
+    }
+  }
+
+  &--right &__content {
+    top: 50%;
+    right: 0;
+    transform: translate(calc(100% + 0.25rem), -50%);
+
+    &::after {
+      @extend %arrow;
+
+      left: 0.2rem;
+      top: 50%;
+      transform: translate(-100%, -50%) rotate(45deg);
+    }
+  }
+}
