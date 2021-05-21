@@ -5,11 +5,18 @@
   <div class="flex items-center mb-4">
     <h1 class="mr-auto">Workflows</h1>
     <a class="button button--square button--filled button--sm ml-4"
-      href="{% url 'projects:workflows:create' project.id  %}">Create</a>
+       href="{% url 'projects:workflows:create' project.id  %}">Create</a>
   </div>
 
   <div class="card card--sm">
     {% render_table table %}
+
+    {% if workflow_count == 0 %}
+    <div class="p-3 text-center">
+      <p>You have no workflows yet, <a href="{% url 'projects:workflows:create' project.id  %}" class="text-blue">create
+          one</a> to see it here</p>
+    </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

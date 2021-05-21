@@ -17,6 +17,12 @@
     <p>Created {{ object.created|naturaltime }}</p>
     <p>Updated {{ object.updated|naturaltime }}</p>
   </a>
+  {% empty %}
+  <div class="card card-tertiary">
+    <h3 class="mb-4">No projects found</h3>
+
+    <p>Why not create one using the button to the right?</p>
+  </div>
   {% endfor %}
 
   <a class="card card--primary card--center" href="{% url 'projects:create' %}">

@@ -1,7 +1,8 @@
 {% extends "web/app/app_base.html" %}
 {% block app %}
 <div class="max-w-lg mx-auto">
-  <h1 class="mb-4">New Project</h1>
+  <h1>New Project</h1>
+  <p class="mb-4">Projects contain integrations, workflows, and dashboards. Think of them as separate workspaces.</p>
 
   <form method="post" action="{% url 'projects:create' %}" class="form">
     {% csrf_token %}

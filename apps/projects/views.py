@@ -43,7 +43,7 @@ class ProjectUpdate(TurboUpdateView):
     form_class = ProjectForm
 
     def get_success_url(self) -> str:
-        return reverse("projects:settings", args=(self.object.id,))
+        return reverse("projects:detail", args=(self.object.id,))
 
 
 class ProjectDelete(DeleteView):

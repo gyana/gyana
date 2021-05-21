@@ -1,8 +1,11 @@
 {% extends "widgets/base.html" %}
-<!---->
+
 {% block app %}
-<a href="{% url 'widgets:list' %}">Back</a>
-<h2 class="text-xl ">{{ object.name }}</h2>
+<div class="flex gap-4 mb-4">
+  <h1>{{ object.name }}</h1>
+  <a href="{% url 'widgets:list' %}" class="button button--sm button--green">Back</a>
+</div>
+
 <div data-controller="tf-refresh" class="flex flex-wrap">
   <div class="w-1/2">
     <h3 class="">Config</h3>
@@ -12,7 +15,8 @@
     <turbo-frame id="widget-{{ object.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
   </div>
   <div class="w-1/2">
-    <turbo-frame data-tf-refresh-target="turboFrame" id="widgets:output-{{ widget.id }}" src="{% url 'widgets:output' object.id %}">
+    <turbo-frame data-tf-refresh-target="turboFrame" id="widgets:output-{{ widget.id }}"
+                 src="{% url 'widgets:output' object.id %}">
       Loading...
     </turbo-frame>
   </div>
