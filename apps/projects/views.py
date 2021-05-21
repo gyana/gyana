@@ -44,6 +44,18 @@ class ProjectDetail(DetailView):
         context_data["workflow_count"] = object.workflow_set.count()
         context_data["dashboard_count"] = object.dashboard_set.count()
 
+        context_data["integration_pending"] = object.integration_set.filter(
+            last_synced=None
+        ).count()
+        context_data["workflow_pending"] = object.workflow_set.filter(
+            last_run=None
+        ).count()
+        context_data["workflow_error"] = object.workflow_set.filter(
+            nodes__error__isnull=False
+        ).count()
+        return context_data
+
+
 class ProjectUpdate(TurboUpdateView):
     template_name = "projects/update.html"
     model = Project
