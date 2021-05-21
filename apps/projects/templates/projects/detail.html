@@ -24,11 +24,13 @@
       </h2>
       <div class="flex items-center mb-4 space-x-1">
         {% for integration in project.integration_set.all %}
-        <a class="relative" href="{% url 'projects:integrations:detail' project.id integration.id %}">
+        <a class="relative tooltip tooltip--bottom" href="{% url 'projects:integrations:detail' project.id integration.id %}">
           <img class="h-8 w-8" src="{% static integration.icon %}" title="{{ integration.name }}" />
           {% if not integration.last_synced %}
           <i class="fa fa-exclamation-circle absolute -top-1 right-0 text-orange"></i>
           {% endif %}
+
+          <span class="tooltip__content">{{ integration.name }}</span>
         </a>
         {% endfor %}
       </div>
@@ -37,6 +39,7 @@
         are incomplete</div>
       {% endif %}
     </div>
+
     <div class="card">
       <h2 class="text-xl mb-2">
         <strong>{{ workflow_count }}</strong> Workflow{{ workflow_count|pluralize }}
@@ -52,8 +55,10 @@
             </tr>
             <tr>
               {% for integration in project.integration_set.all %}
-              <th class="w-8">
+              <th class="w-8 tooltip tooltip--bottom">
                 <img class="h-6 w-6" src="{% static integration.icon %}" title="{{ integration.name }}" />
+
+                <span class="tooltip__content">{{ integration.name }}</span>
               </th>
               {% endfor %}
               {% for node in project.output_nodes.all %}
