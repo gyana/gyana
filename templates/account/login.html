@@ -13,35 +13,22 @@
       <h2 class="mt-6 text-center text-2xl  text-gray-900">
         Sign in
       </h2>
-      <form class="mt-6 space-y-6" method="post">
+      <form class="form mt-6" method="post">
         {% csrf_token %}
-        {{ form.non_field_errors }}
-        <div class="">
-          <div>
-            <label for="email-address" class="sr-only">Email address</label>
-            {{ form.login }}
-            {{ form.login.errors }}
-          </div>
-          <div>
-            <label for="password" class="sr-only">Password</label>
-            {{ form.password }}
-            {{ form.password.errors }}
-          </div>
-        </div>
-        <div>
-          <button type="submit" class="button button--primary w-full">
+
+        {% include "django/forms/default_form.html" %}
+
+        <div class="flex flex-col w-full gap-2">
+          <button type="submit" class="button button--primary button--filled w-full">
             Sign in
           </button>
 
-
-          <p class="text-center text-gray-500 my-2">or</p>
+          <p class="text-center text-black-50">or</p>
           <a class="button button--primary is-outlined w-full flex justify-center"
              href="{% provider_login_url 'google' %}">
             <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
             Sign In with Google
           </a>
-
-
         </div>
       </form>
       <div class="text-sm mt-4">

@@ -32,6 +32,10 @@ input[type="email"] {
   @extend %input;
 }
 
+input[type="password"] {
+  @extend %input;
+}
+
 .input__help-text {
   color: var(--c-black-20);
   font-size: 0.875rem;

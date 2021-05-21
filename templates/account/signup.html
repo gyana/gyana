@@ -13,47 +13,22 @@
       <h2 class="mt-6 text-center text-2xl  text-gray-900">
         Sign up
       </h2>
-      <form class="mt-6 space-y-6" method="post">
+      <form class="form mt-6" method="post">
         {% csrf_token %}
-        {{ form.non_field_errors }}
-        <div>
-          <div>
-            <label for="email-address" class="sr-only">Email address</label>
-            {{ form.email }}
-            {{ form.email.errors }}
-          </div>
-          <div>
-            <label for="password" class="sr-only">Password</label>
-            {{ form.password1 }}
-            {{ form.password1.errors }}
-          </div>
-        </div>
 
+        {% include "django/forms/default_form.html" %}
 
-        {% if request.GET.invitation_id %}
-        <input type="hidden" name="invitation_id" value="{{ request.GET.invitation_id }}">
-        {{ form.invitation_id.errors }}
-        {% else %}
-        <div>
-          <label for="team-name">Team Name (Optional)</label>
-          {{ form.team_name }}
-          {{ form.team_name.errors }}
-        </div>
-        {% endif %}
-
-        <div>
-          <button type="submit" class="button button--primary w-full">
+        <div class="flex flex-col gap-1 w-full">
+          <button type="submit" class="button button--filled w-full">
             Sign up
           </button>
 
-          <p class="text-center text-gray-500 my-2">or</p>
+          <p class="text-center text-black-50">or</p>
           <a class="button button--primary is-outlined w-full flex justify-center"
              href="{% provider_login_url 'google' %}">
             <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
             Sign In with Google
           </a>
-
-
         </div>
       </form>
       <div class="text-sm mt-4">
