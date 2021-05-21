@@ -29,6 +29,12 @@ class Workflow(models.Model):
     def failed(self):
         return any(node.error is not None for node in self.nodes.all())
 
+    def input_nodes(self):
+        return self.nodes.filter(kind=Node.Kind.INPUT).all()
+
+    def output_nodes(self):
+        return self.nodes.filter(kind=Node.Kind.OUTPUT).all()
+
 
 NodeConfig = {
     "input": {

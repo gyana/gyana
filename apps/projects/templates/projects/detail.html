@@ -1,34 +1,56 @@
 {% extends "web/app/project_base.html" %}
+{% load static %}
 {% block app %}
-<div class="p-4">
-  <div class="flex items-center gap-4 mb-8">
-    <h1 class="mr-auto">{{ project.name }}</h1>
+<div class="p-4 flex flex-col items-center ">
+  <div class="w-full max-w-5xl flex flex-col space-y-4">
+    <div class="flex items-center gap-4 mb-8">
+      <h1 class="mr-auto">{{ project.name }}</h1>
 
-    <a class="button button--square button--sm button--filled" href="{% url 'projects:update' project.id %}">Edit</a>
-    <a class="button button--square button--sm button--filled button--danger"
-      href="{% url 'projects:delete' project.id %}">Delete</a>
-  </div>
+      <a class="button button--square button--sm button--filled" href="{% url 'projects:update' project.id %}">Edit</a>
+      <a class="button button--square button--sm button--filled button--danger"
+        href="{% url 'projects:delete' project.id %}">Delete</a>
+    </div>
 
-  <div class="mb-4">
-    <div> Shared with: TODO </div>
-    <div> Total rows: TODO </div>
-  </div>
+    <div class="mb-4">
+      <div> Shared with: TODO </div>
+      <div> Total rows: TODO </div>
+    </div>
 
-  <div class="grid grid-cols-1 gap-4">
+  
     <div class="card">
-      <h2 class="text-xl mb-2"><strong>{{ project.integration_set.count }}</strong> Integrations</h2>
+      <h2 class="text-xl mb-2"><strong>{{ integration_count }}</strong> Integration{{ integration_count|pluralize }}</h2>
+      <div class="flex items-center mb-2">
+        {% for integration in project.integration_set.all %}
+          <img class="h-6 w-6" src="{% static integration.icon %}" title="{{ integration.name }}"/>
+        {% endfor %}
+      </div>
       {% if integration_pending > 0 %}
-        <span class="bg-red-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> {{ integration_pending }} integrations are incomplete</span>
+        <div class="bg-red-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> {{ integration_pending }} integrations are incomplete</div>
       {% endif %}
     </div>
     <div class="card">
-      <h2 class="text-xl mb-2"><strong>{{ project.workflow_set.count }}</strong> Workflows</h2>
+      <h2 class="text-xl mb-2"><strong>{{ workflow_count }}</strong> Workflow{{ workflow_count|pluralize }}</h2>
+      <div class="mb-2">
+        {% for workflow in project.workflow_set.all %}
+          <div class="mx-2 flex items-center space-x-1">
+            <span>{{ workflow.name }}</span>
+            {% for node in workflow.input_nodes %}
+              <img class="h-6 w-6" src="{% static node.input_table.integration.icon %}" title="{{ node.input_table.integration.name }}"/>
+            {% endfor %}
+            <i class="fa fa-arrow-right"></i>
+            {% for node in workflow.output_nodes %}
+              <i class="fa fa-table" title="{{ node.output_name }}"></i>
+              {% comment %} <img class="h-6 w-6" src="{% static node.output_name %}" title="{{ node.output_name }}"/> {% endcomment %}
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
       {% if workflow_error > 0 %}
-        <span class="bg-red-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> {{ workflow_error }} workflows are failing</span>
+        <div class="bg-red-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> {{ workflow_error }} workflows are failing</div>
       {% endif %}
     </div>
     <div class="card">
-      <h2 class="text-xl"><strong>{{ project.workflow_set.count }}</strong> Dashboards</h2>
+      <h2 class="text-xl"><strong>{{ dashboard_count }}</strong> Dashboard{{ dashboard_count|pluralize }}</h2>
     </div>
   </div>
 </div>

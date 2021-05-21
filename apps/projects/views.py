@@ -38,12 +38,18 @@ class ProjectDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["integration_pending"] = (
-            self.get_object().integration_set.filter(last_synced=None).count()
-        )
-        context_data["workflow_error"] = (
-            self.get_object().workflow_set.filter(nodes__error__isnull=False).count()
-        )
+        object = self.get_object()
+
+        context_data["integration_count"] = object.integration_set.count()
+        context_data["workflow_count"] = object.workflow_set.count()
+        context_data["dashboard_count"] = object.dashboard_set.count()
+
+        context_data["integration_pending"] = object.integration_set.filter(
+            last_synced=None
+        ).count()
+        context_data["workflow_error"] = object.workflow_set.filter(
+            nodes__error__isnull=False
+        ).count()
         return context_data
 
 
