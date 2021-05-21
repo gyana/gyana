@@ -5,7 +5,9 @@
   <h1>Edit</h1>
 
   <form method="post" action="{% url 'projects:dashboards:update' project.id object.id %}" class="form">
-    {% csrf_token %} {{ form }}
+    {% csrf_token %}
+
+    {% include "django/forms/default_form.html" %}
 
     <button type="submit" class="button button--filled button--green">Save changes</button>
   </form>

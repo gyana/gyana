@@ -5,15 +5,20 @@ form {
   gap: 1rem;
 }
 
+%input {
+  background-color: var(--c-white);
+  border-radius: 5px;
+  border: 1px solid var(--c-black-20);
+  color: var(--c-black-50);
+}
+
 input[type="submit"] {
   cursor: pointer;
 }
 
 input[type="text"] {
-  background-color: var(--c-white);
-  border-radius: 5px;
-  border: 1px solid var(--c-black-20);
-  color: var(--c-black-50);
+  @extend %input;
+
   font-size: 0.875rem;
   padding: 0.75rem 1rem;
   width: 100%;
