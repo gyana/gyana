@@ -35,7 +35,6 @@
           <div class="mx-2 flex items-center space-x-1">
             <span>{{ workflow.name }}</span>
             {% for node in workflow.input_nodes %}
-            {{ node.input_table.source}}
               {% if node.input_table.source == node.input_table.Source.INTEGRATION %}
                 <img class="h-6 w-6" src="{% static node.input_table.integration.icon %}" title="{{ node.input_table.integration.name }}"/>
               {% else %}
