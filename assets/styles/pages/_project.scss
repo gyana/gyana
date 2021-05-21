@@ -51,3 +51,16 @@
     grid-auto-rows: 1fr;
   }
 }
+
+.project-settings {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 0%;
+  max-width: 32rem;
+  overflow: auto;
+  padding: 1rem;
+
+  &__title {
+    margin-bottom: 1rem;
+  }
+}
