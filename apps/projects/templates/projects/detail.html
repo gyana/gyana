@@ -18,13 +18,18 @@
 
   
     <div class="card">
-      <h2 class="text-xl mb-2">
+      <h2 class="text-xl mb-4">
         <strong>{{ integration_count }}</strong> Integration{{ integration_count|pluralize }}
         <a href="{% url 'projects:integrations:list' project.id %}"><i class="fa fa-arrow-right"></i></a>
       </h2>
-      <div class="flex items-center mb-2">
+      <div class="flex items-center mb-4 space-x-1">
         {% for integration in project.integration_set.all %}
-          <img class="h-6 w-6" src="{% static integration.icon %}" title="{{ integration.name }}"/>
+          <a class="relative" href="{% url 'projects:integrations:detail' project.id integration.id %}">
+            <img class="h-8 w-8" src="{% static integration.icon %}" title="{{ integration.name }}"/>
+            {% if not integration.last_synced %}
+              <i class="fa fa-exclamation-circle absolute -top-1 right-0 text-orange"></i>
+            {% endif %}
+          </a>
         {% endfor %}
       </div>
       {% if integration_pending > 0 %}
