@@ -17,7 +17,7 @@
      href="{% url 'projects:dashboards:delete' project.id object.pk %}">Delete</a>
 </div>
 
-<div class="p-4">
+<div class="p-4 overflow-auto">
   <div>
     <turbo-frame id="widgets" {% if request.GET.widget_id %} src="{% url 'widgets:detail' request.GET.widget_id %}"
                  {% else %} src="{% url 'widgets:list' %}" {% endif %}></turbo-frame>
