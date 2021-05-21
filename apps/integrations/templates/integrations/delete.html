@@ -1,20 +1,13 @@
-{% extends "web/app/project_base.html" %}
+{% extends "web/app/project_settings_base.html" %}
 <!---->
 {% block app %}
 <div class="p-4">
   <h1>Delete</h1>
   <p>Are you sure you want to delete?</p>
-  <form
-    method="post"
-    action="{% url 'projects:integrations:delete' project.id object.id %}"
-  >
+  <form method="post" action="{% url 'projects:integrations:delete' project.id object.id %}">
     {% csrf_token %}
     <input type="submit" value="Yes" class="btn btn-danger" />
-    <a
-      href="{% url 'projects:integrations:list' project.id %}"
-      class="btn btn-default"
-      >No</a
-    >
+    <a href="{% url 'projects:integrations:list' project.id %}" class="btn btn-default">No</a>
   </form>
 </div>
 {% endblock %}

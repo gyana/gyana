@@ -1,0 +1,32 @@
+<nav class="project__sidebar">
+
+  {% with app_name=request.resolver_match.app_name %}
+  <ul class="project__nav">
+    <li>
+      <h1>{{ project.name }}</h1>
+    </li>
+
+    <li><a
+         class="project__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}project__link--active{% endif %}"
+         href="{% url 'projects:detail' project.id %}">Overview</a></li>
+
+    <li><a class="project__link {% if app_name == "projects:integrations" %}project__link--active{% endif %}"
+         href="{% url 'projects:integrations:list' project.id %}">Integrations</a></li>
+
+    <li><a class="project__link {% if app_name == "projects:workflows" %}project__link--active{% endif %}"
+         href="{% url 'projects:workflows:list' project.id %}">Workflows</a></li>
+
+    <li><a class="project__link {% if app_name == "projects:dashboards" %}project__link--active{% endif %}"
+         href="{% url 'projects:dashboards:list' project.id %}">Dashboards</a></li>
+  </ul>
+  {% endwith %}
+
+  <footer class="project__footer">
+    <a class="button button--circle button--orange button--filled" href="{% url 'projects:settings' project.id %}"><i
+         class="fas fa-cog"></i></a>
+
+    <a class="button button--circle button--orange button--filled disabled"></a>
+
+    <a class="button button--circle button--orange button--filled disabled"></a>
+  </footer>
+</nav>

@@ -1,27 +1,34 @@
 {% extends "web/app/project_base.html" %}
 {% block app %}
+<div class="bg-white w-full p-4 border-b border-gray">
+  <h1>
+    {{object.name}}
+  </h1>
+</div>
+
+<nav class="tabbar">
+  <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
+     href="{% url 'projects:integrations:detail' project.id object.id %}">
+    Overview
+  </a>
+  {% if object.table_set.exists %}
+  <a class="tabbar__link {% if request.resolver_match.url_name == 'structure' %} tabbar__link--active {% endif %}"
+     href="{% url 'projects:integrations:structure' project.id object.id %}">
+    Structure
+  </a>
+  <a class="tabbar__link {% if request.resolver_match.url_name == 'data' %} tabbar__link--active {% endif %}"
+     href="{% url 'projects:integrations:data' project.id object.id %}">
+    Data
+  </a>
+  {% endif %}
+  <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
+     href="{% url 'projects:integrations:settings' project.id object.id %}">
+    Settings
+  </a>
+</nav>
+
 <div class="p-4">
-  <h1 class="text-2xl text-bold">{{ object.name }}</h1>
-  <nav class="tabbar">
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
-      href="{% url 'projects:integrations:detail' project.id object.id %}">
-      Overview
-    </a>
-    {% if object.table_set.exists %}
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'structure' %} tabbar__link--active {% endif %}"
-      href="{% url 'projects:integrations:structure' project.id object.id %}">
-      Structure
-    </a>
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'data' %} tabbar__link--active {% endif %}"
-      href="{% url 'projects:integrations:data' project.id object.id %}">
-      Data
-    </a>
-    {% endif %}
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
-      href="{% url 'projects:integrations:settings' project.id object.id %}">
-      Settings
-    </a>
-  </nav>
+
   {% block tab %}{% endblock %}
 </div>
 {% endblock %}
