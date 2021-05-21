@@ -25,7 +25,7 @@
         {% endfor %}
       </div>
       {% if integration_pending > 0 %}
-        <div class="bg-red-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> {{ integration_pending }} integrations are incomplete</div>
+        <div class="bg-orange-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> {{ integration_pending }} integrations are incomplete</div>
       {% endif %}
     </div>
     <div class="card">
@@ -35,18 +35,25 @@
           <div class="mx-2 flex items-center space-x-1">
             <span>{{ workflow.name }}</span>
             {% for node in workflow.input_nodes %}
-              <img class="h-6 w-6" src="{% static node.input_table.integration.icon %}" title="{{ node.input_table.integration.name }}"/>
+            {{ node.input_table.source}}
+              {% if node.input_table.source == node.input_table.Source.INTEGRATION %}
+                <img class="h-6 w-6" src="{% static node.input_table.integration.icon %}" title="{{ node.input_table.integration.name }}"/>
+              {% else %}
+                <i class="fa fa-table" title="{{ node.input_table.workflow_node.output_name }}"></i>
+              {% endif %}
             {% endfor %}
             <i class="fa fa-arrow-right"></i>
             {% for node in workflow.output_nodes %}
               <i class="fa fa-table" title="{{ node.output_name }}"></i>
-              {% comment %} <img class="h-6 w-6" src="{% static node.output_name %}" title="{{ node.output_name }}"/> {% endcomment %}
-            {% endfor %}
+            {% endfor %}  
           </div>
         {% endfor %}
       </div>
       {% if workflow_error > 0 %}
-        <div class="bg-red-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> {{ workflow_error }} workflows are failing</div>
+        <div class="bg-orange-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> You haven't run {{ workflow_pending }} workflow{{ workflow_pending|pluralize }} yet</div>
+      {% endif %}
+      {% if workflow_error > 0 %}
+        <div class="bg-red-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> {{ workflow_error }} workflow{{ workflow_error|pluralize }} failing</div>
       {% endif %}
     </div>
     <div class="card">

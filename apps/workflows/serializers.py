@@ -22,7 +22,7 @@ def get_limit_desc(obj):
 
 
 def get_input_desc(obj):
-    return f"{obj.input_table.integration.name}" if obj.input_table else ""
+    return f"{obj.input_table.owner_name}" if obj.input_table else ""
 
 
 def get_output_desc(obj):

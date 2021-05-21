@@ -47,6 +47,9 @@ class ProjectDetail(DetailView):
         context_data["integration_pending"] = object.integration_set.filter(
             last_synced=None
         ).count()
+        context_data["workflow_pending"] = object.workflow_set.filter(
+            last_run=None
+        ).count()
         context_data["workflow_error"] = object.workflow_set.filter(
             nodes__error__isnull=False
         ).count()
