@@ -47,3 +47,9 @@ class Table(models.Model):
     @cached_property
     def schema(self):
         return self.get_query().schema()
+
+    @property
+    def owner_name(self):
+        if self.source == self.Source.INTEGRATION:
+            return self.integration.name
+        return self.workflow_node.output_name
