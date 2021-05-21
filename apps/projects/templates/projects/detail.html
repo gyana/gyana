@@ -1,22 +1,22 @@
 {% extends "web/app/project_base.html" %}
 {% load static %}
 {% block app %}
-<div class="p-4 flex flex-col items-center ">
+<div class="p-4">
   <div class="w-full max-w-5xl flex flex-col space-y-4">
     <div class="flex items-center gap-4 mb-8">
       <h1 class="mr-auto">{{ project.name }}</h1>
 
       <a class="button button--square button--sm button--filled" href="{% url 'projects:update' project.id %}">Edit</a>
       <a class="button button--square button--sm button--filled button--danger"
-        href="{% url 'projects:delete' project.id %}">Delete</a>
+         href="{% url 'projects:delete' project.id %}">Delete</a>
     </div>
 
     <div class="mb-4">
-      <div> Shared with: TODO </div>
-      <div> Total rows: TODO </div>
+      <p>Shared with: TODO</p>
+      <p>Total rows: TODO</p>
     </div>
 
-  
+
     <div class="card">
       <h2 class="text-xl mb-4">
         <strong>{{ integration_count }}</strong> Integration{{ integration_count|pluralize }}
@@ -24,16 +24,17 @@
       </h2>
       <div class="flex items-center mb-4 space-x-1">
         {% for integration in project.integration_set.all %}
-          <a class="relative" href="{% url 'projects:integrations:detail' project.id integration.id %}">
-            <img class="h-8 w-8" src="{% static integration.icon %}" title="{{ integration.name }}"/>
-            {% if not integration.last_synced %}
-              <i class="fa fa-exclamation-circle absolute -top-1 right-0 text-orange"></i>
-            {% endif %}
-          </a>
+        <a class="relative" href="{% url 'projects:integrations:detail' project.id integration.id %}">
+          <img class="h-8 w-8" src="{% static integration.icon %}" title="{{ integration.name }}" />
+          {% if not integration.last_synced %}
+          <i class="fa fa-exclamation-circle absolute -top-1 right-0 text-orange"></i>
+          {% endif %}
+        </a>
         {% endfor %}
       </div>
       {% if integration_pending > 0 %}
-        <div class="bg-orange-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> {{ integration_pending }} integrations are incomplete</div>
+      <div class="bg-orange-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> {{ integration_pending }} integrations
+        are incomplete</div>
       {% endif %}
     </div>
     <div class="card">
@@ -44,56 +45,59 @@
       <div class="mb-2">
         <table>
           <thead>
-              <tr>  
-                <th rowspan="2"></th>
-                <th colspan="{{ integration_count }}">Integrations</th>
-                <th colspan="{{ project.output_nodes.count }}">Tables</th>
-              </tr>
-              <tr>
-                {% for integration in project.integration_set.all %}
-                  <th class="w-8">
-                    <img class="h-6 w-6" src="{% static integration.icon %}" title="{{ integration.name }}"/>
-                  </th>
-                {% endfor %}
-                {% for node in project.output_nodes.all %}
-                  <th class="w-8">
-                    <i class="fa fa-table" title="{{ node.output_name }}">
-                  </th>
-                {% endfor %}
-              </tr>
+            <tr>
+              <th rowspan="2"></th>
+              <th colspan="{{ integration_count }}">Integrations</th>
+              <th colspan="{{ project.output_nodes.count }}">Tables</th>
+            </tr>
+            <tr>
+              {% for integration in project.integration_set.all %}
+              <th class="w-8">
+                <img class="h-6 w-6" src="{% static integration.icon %}" title="{{ integration.name }}" />
+              </th>
+              {% endfor %}
+              {% for node in project.output_nodes.all %}
+              <th class="w-8">
+                <i class="fa fa-table" title="{{ node.output_name }}">
+              </th>
+              {% endfor %}
+            </tr>
           </thead>
           <tbody>
             {% for workflow in project.workflow_set.all %}
-              <tr class="h-5">
-                <td class="pr-2 text-right">
-                  {{ workflow.name }}
-                  {% if not workflow.last_run %}<i class="fa fa-exclamation-circle text-orange"></i>{% endif %}
-                  {% if not workflow.failed %}<i class="fa fa-exclamation-circle text-red"></i>{% endif %}
-                </td>
-                  {% for integration in project.integration_set.all %}
-                    <td>
-                      <div class="rounded-full h-6 w-6 {% if integration in workflow.integrations.all %}bg-black-10{% endif %}">
-                    </td>
-                  {% endfor %}
-                  {% for node in project.output_nodes.all %}
-                    <td>
-                      <div class="rounded-full h-6 w-6
+            <tr class="h-5">
+              <td class="pr-2 text-right">
+                {{ workflow.name }}
+                {% if not workflow.last_run %}<i class="fa fa-exclamation-circle text-orange"></i>{% endif %}
+                {% if not workflow.failed %}<i class="fa fa-exclamation-circle text-red"></i>{% endif %}
+              </td>
+              {% for integration in project.integration_set.all %}
+              <td>
+                <div
+                     class="rounded-full h-6 w-6 {% if integration in workflow.integrations.all %}bg-black-10{% endif %}">
+              </td>
+              {% endfor %}
+              {% for node in project.output_nodes.all %}
+              <td>
+                <div class="rounded-full h-6 w-6
                         {% if node in workflow.output_nodes.all %}bg-green-50
                         {% elif node in workflow.used_outputs.all %}bg-black-10 
                         {% endif %}">
-                      </td>
-                  {% endfor %}
-              </tr>
+              </td>
+              {% endfor %}
+            </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
       <div class="flex flex-col space-y-2">
         {% if workflow_error > 0 %}
-          <div class="bg-orange-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> You haven't run {{ workflow_pending }} workflow{{ workflow_pending|pluralize }} yet</div>
+        <div class="bg-orange-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> You haven't run
+          {{ workflow_pending }} workflow{{ workflow_pending|pluralize }} yet</div>
         {% endif %}
         {% if workflow_error > 0 %}
-          <div class="bg-red-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> {{ workflow_error }} workflow{{ workflow_error|pluralize }} failing</div>
+        <div class="bg-red-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> {{ workflow_error }}
+          workflow{{ workflow_error|pluralize }} failing</div>
         {% endif %}
       </div>
     </div>
@@ -104,18 +108,18 @@
       </h2>
       <div class="mb-2">
         {% for dashboard in project.dashboard_set.all %}
-          <a href="{% url 'projects:dashboards:detail' project.id dashboard.id %}">
-            <span>
-              {{ dashboard.name }}
-            </span>
-            {% for widget in dashboard.widget_set.all %}
-              {% if widget.visual_kind == widget.VisualKind.TABLE %}
-                <i class="fa fa-table" title="{{ widget.name }}"></i>
-              {% else %}
-                <i class="fa fa-chart-bar" title="{{ widget.name }}"></i>
-              {% endif %}
-            {% endfor %}  
-          </a>
+        <a href="{% url 'projects:dashboards:detail' project.id dashboard.id %}">
+          <span>
+            {{ dashboard.name }}
+          </span>
+          {% for widget in dashboard.widget_set.all %}
+          {% if widget.visual_kind == widget.VisualKind.TABLE %}
+          <i class="fa fa-table" title="{{ widget.name }}"></i>
+          {% else %}
+          <i class="fa fa-chart-bar" title="{{ widget.name }}"></i>
+          {% endif %}
+          {% endfor %}
+        </a>
         {% endfor %}
       </div>
     </div>
