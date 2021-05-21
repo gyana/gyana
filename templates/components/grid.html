@@ -7,11 +7,9 @@
 </script>
 <div data-controller="turbo-issue-186-workaround">
   <!--ag-grid-->
-  <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js" onload="window.dispatchEvent(new Event('agGrid:load'))"></script>
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css"
-  />
+  <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"
+          onload="window.dispatchEvent(new Event('agGrid:load'))"></script>
+  <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css" />
   <script type="text/javascript" charset="utf-8">
     window.addEventListener(
       "agGrid:load",
@@ -20,6 +18,7 @@
           new agGrid.Grid(document.querySelector("#myGrid"), {
             columnDefs: JSON.parse(document.getElementById("columns").innerHTML),
             rowData: JSON.parse(document.getElementById("rows").innerHTML),
+            domLayout: 'autoHeight',
           });
         }
       },
