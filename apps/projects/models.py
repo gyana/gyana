@@ -14,8 +14,3 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
-
-    def output_nodes(self):
-        from apps.workflows.models import Node
-
-        return Node.objects.filter(workflow__project=self, kind=Node.Kind.OUTPUT)
