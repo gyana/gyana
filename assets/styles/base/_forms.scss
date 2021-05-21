@@ -7,8 +7,8 @@ form {
 
 %input {
   background-color: var(--c-white);
-  border-radius: 5px;
   border: 1px solid var(--c-black-20);
+  border-radius: 5px;
   color: var(--c-black-50);
   font-size: 0.875rem;
   padding: 0.75rem 1rem;
@@ -17,6 +17,7 @@ form {
   &:focus {
     border-color: var(--c-blue);
     color: var(--c-black);
+    outline: none;
   }
 }
 
