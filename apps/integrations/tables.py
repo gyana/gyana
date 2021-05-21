@@ -14,3 +14,12 @@ class IntegrationTable(tables.Table):
     last_synced = NaturalDatetimeColumn()
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
+
+
+class StructureTable(tables.Table):
+    class Meta:
+        fields = ("type", "name")
+        attrs = {"class": "table"}
+
+    type = tables.Column()
+    name = tables.Column()

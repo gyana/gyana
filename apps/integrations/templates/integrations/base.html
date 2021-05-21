@@ -2,22 +2,22 @@
 {% block app %}
 <div class="p-4">
   <h1 class="text-2xl text-bold">{{ object.name }}</h1>
-  <nav class="flex space-x-2 border-b border-gray-500">
-    <a class="{% if request.resolver_match.url_name == 'detail' %} text-blue {% endif %}"
+  <nav class="tabbar">
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
       href="{% url 'projects:integrations:detail' project.id object.id %}">
       Overview
     </a>
     {% if object.table_set.exists %}
-    <a class="{% if request.resolver_match.url_name == 'structure' %} text-blue {% endif %}"
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'structure' %} tabbar__link--active {% endif %}"
       href="{% url 'projects:integrations:structure' project.id object.id %}">
       Structure
     </a>
-    <a class="{% if request.resolver_match.url_name == 'data' %} text-blue {% endif %}"
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'data' %} tabbar__link--active {% endif %}"
       href="{% url 'projects:integrations:data' project.id object.id %}">
       Data
     </a>
     {% endif %}
-    <a class="{% if request.resolver_match.url_name == 'settings' %} text-blue {% endif %}"
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
       href="{% url 'projects:integrations:settings' project.id object.id %}">
       Settings
     </a>

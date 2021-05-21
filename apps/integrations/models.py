@@ -83,3 +83,6 @@ class Integration(models.Model):
 
     def get_absolute_url(self):
         return reverse("projects:integrations:detail", args=(self.project.id, self.id))
+
+    def icon(self):
+        return f"images/integrations/{self.kind}.svg"

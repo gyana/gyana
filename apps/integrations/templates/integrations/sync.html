@@ -9,7 +9,7 @@
 {% if not object.is_syncing %}
   <form method="post" action="{% url 'integrations:sync' object.id %}">
     {% csrf_token %}
-    <input type="submit" value="Sync" />
+    <button class="button button--square button--sm button--filled" type="submit" >Sync</button>
   </form>
 {% else %}
   Syncing, you'll get an email when it is ready

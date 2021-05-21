@@ -15,7 +15,7 @@ from .bigquery import query_integration
 from .fivetran import FivetranClient, get_services
 from .forms import CSVForm, FivetranForm, GoogleSheetsForm
 from .models import Integration
-from .tables import IntegrationTable
+from .tables import IntegrationTable, StructureTable
 from .tasks import poll_fivetran_historical_sync
 
 # CRUDL
@@ -110,6 +110,22 @@ class IntegrationDelete(ProjectMixin, DeleteView):
 class IntegrationStructure(ProjectMixin, DetailView):
     template_name = "integrations/structure.html"
     model = Integration
+    table_class = StructureTable
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["tables"] = []
+
+        for table in self.object.table_set.all():
+            table_data = [
+                {"type": str(field_type), "name": field_name}
+                for field_name, field_type in table.schema.items()
+            ]
+            context_data["tables"].append(
+                {"title": table.bq_table, "table_struct": StructureTable(table_data)}
+            )
+
+        return context_data
 
 
 class IntegrationData(ProjectMixin, DetailView):

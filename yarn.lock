@@ -1467,6 +1467,11 @@ acorn@^7.0.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
+ag-grid-community@^25.2.1:
+  version "25.2.1"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-25.2.1.tgz#abb239335a44a39c647f8776fe7c7bb8215d55f4"
+  integrity sha512-flITh0x6LRxU8VECJ1Xisbx3zGp7P5Rz4RwKgkkRk3k2C+6qv2doFgeeiQoR5Ffu9qXnSPaVcXIHGY1xVn/R7Q==
+
 ajv-errors@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-1.0.1.tgz#f35986aceb91afadec4102fbd85014950cefa64d"

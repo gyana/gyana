@@ -1,0 +1,18 @@
+.tabbar {
+  @apply flex;
+  display: flex;
+  border-bottom: 1px solid var(--c-black-20);
+
+  &__link {
+    margin: 0 0.3em;
+    padding: 0 0.5em;
+    line-height: 3em;
+    color: var(--c-black-50);
+
+    &--active {
+      border-bottom: 2px solid var(--c-blue);
+      font-weight: 500;
+      color: var(--c-black);
+    }
+  }
+}

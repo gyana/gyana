@@ -1,29 +1,12 @@
 {% extends "integrations/base.html" %}
+{% load render_table from django_tables2 %}
 <!---->
 {% block tab %}
-{% for table in object.table_set.all %}
-<div class="border border-gray-500">
-  <h2 class="text-lg "> {{ table.bq_table }} </h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for field in table.get_schema %}
-      <tr>
-        <td>
-          {{ field.field_type }}
-        </td>
-        <td>
-          {{ field.name }}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% endfor %}
+{% for table in tables %}
+<div class='card mt-4'>
+  <h1 class=""> {{ table.title }}</h1>
+  {% render_table table.table_struct %}
+</div>
+{% endfor %}
 
   {% endblock %}

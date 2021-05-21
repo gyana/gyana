@@ -1,12 +1,10 @@
 {% extends "integrations/base.html" %}
 <!---->
 {% block tab %}
-<a
-    href="{% url 'projects:integrations:update' project.id object.pk %}"
-    >Update</a
->
-<a
-    href="{% url 'projects:integrations:delete' project.id object.pk %}"
-    >Delete</a
->
+<div class="flex flex-col space-y-2 mt-4">
+    <div><a class="button button--square button--sm button--filled"
+           href="{% url 'projects:integrations:update' project.id object.pk %}">Update</a></div>
+    <div><a class="button button--square button--sm button--filled button--pink"
+           href="{% url 'projects:integrations:delete' project.id object.pk %}">Delete</a></div>
+</div>
 {% endblock %}
