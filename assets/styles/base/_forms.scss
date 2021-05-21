@@ -40,6 +40,10 @@ input[type="url"] {
   @extend %input;
 }
 
+select {
+  @extend %input;
+}
+
 .input__help-text {
   color: var(--c-black-20);
   font-size: 0.875rem;
