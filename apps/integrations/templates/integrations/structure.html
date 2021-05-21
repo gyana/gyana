@@ -1,12 +1,13 @@
 {% extends "integrations/base.html" %}
 {% load render_table from django_tables2 %}
-<!---->
+
 {% block tab %}
+
 {% for table in tables %}
-<div class='card mt-4'>
-  <h1 class=""> {{ table.title }}</h1>
+<h1 class="mt-4 mb-2"> {{ table.title }}</h1>
+<div class='card card--sm'>
   {% render_table table.table_struct %}
 </div>
 {% endfor %}
 
-  {% endblock %}
+{% endblock %}

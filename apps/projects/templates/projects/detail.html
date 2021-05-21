@@ -2,20 +2,20 @@
 {% load static %}
 {% block app %}
 <div class="p-4">
+  <div class="flex items-center gap-4 mb-8">
+    <h1 class="mr-auto">{{ project.name }}</h1>
+
+    <a class="button button--square button--sm button--orange button--filled"
+       href="{% url 'projects:update' project.id %}">Edit</a>
+    <a class="button button--square button--sm button--filled button--danger"
+       href="{% url 'projects:delete' project.id %}">Delete</a>
+  </div>
+
   <div class="w-full max-w-5xl flex flex-col space-y-4">
-    <div class="flex items-center gap-4 mb-8">
-      <h1 class="mr-auto">{{ project.name }}</h1>
-
-      <a class="button button--square button--sm button--filled" href="{% url 'projects:update' project.id %}">Edit</a>
-      <a class="button button--square button--sm button--filled button--danger"
-         href="{% url 'projects:delete' project.id %}">Delete</a>
-    </div>
-
     <div class="mb-4">
       <p>Shared with: TODO</p>
       <p>Total rows: TODO</p>
     </div>
-
 
     <div class="card">
       <h2 class="text-xl mb-4">

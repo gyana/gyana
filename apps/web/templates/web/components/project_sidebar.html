@@ -22,11 +22,9 @@
   {% endwith %}
 
   <footer class="project__footer">
-    <a class="button button--circle button--orange button--filled" href="{% url 'projects:settings' project.id %}"><i
+    <a class="button button--circle button--orange button--filled" href="{% url 'projects:update' project.id %}"><i
          class="fas fa-cog"></i></a>
-
     <a class="button button--circle button--orange button--filled disabled"></a>
-
     <a class="button button--circle button--orange button--filled disabled"></a>
   </footer>
 </nav>
