@@ -2,7 +2,10 @@ import os
 import time
 
 import celery
+from apps.dashboards.models import Dashboard
 from apps.projects.models import Project
+from apps.users.models import CustomUser
+from apps.workflows.models import Workflow
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -42,6 +45,8 @@ class Integration(models.Model):
     fivetran_poll_historical_sync_task_id = models.UUIDField(null=True)
     historical_sync_complete = models.BooleanField(default=False)
 
+    created_by = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
+
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
 
@@ -68,6 +73,18 @@ class Integration(models.Model):
         # https://stackoverflow.com/a/38267978/15425660
         result = celery.result.AsyncResult(str(self.external_table_sync_task_id))
         return result.status == "PENDING"
+
+    @property
+    def used_in_workflows(self):
+        return Workflow.objects.filter(
+            nodes__input_table__in=self.table_set.all()
+        ).distinct()
+
+    @property
+    def used_in_dashboards(self):
+        return Dashboard.objects.filter(
+            widget__table__in=self.table_set.all()
+        ).distinct()
 
     def get_query(self):
         conn = ibis_client()

@@ -1,19 +1,67 @@
 {% extends "integrations/base.html" %}
+{% load static %}
+{% load humanize %}
 {% block tab %}
-{% if object.kind == 'fivetran' %}
-  <div>
-    {% if object.historical_sync_complete %}
-    <div>Ready</div>
-    {% elif object.fivetran_authorized %}
-    <div>Syncing</div>
+<div class="card mt-4">
+  <div class="flex flex-row">
+    <div class="flex flex-col border-r border-gray flex-grow mr-4">
+      <div class="flex flex-row">
+        <img class="h-16 w-16" src="{% static integration.icon %}" title="{{ integration.name }}" />
+        <div class="flex flex-col ml-6">
+          <h1>{{ integration.name }}</h1>
+          <p>{{ integration.created|naturaltime }}</p>
+          <h2>{{ integration.created_by.username }}</h2>
+          {% if integration.kind == "google_sheets" %}
+          <a href="{{ integration.url }}" class="text-blue"><i class="fas fa-link fa-sm mr-1"></i>Sheet Source</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <h1 class="mt-4">
+        {% if integration.used_in_workflows or integration.used_in_dashboards %}
+        Used in
+        {% else %}
+        Not used anywhere (yet)
+        {% endif %}
+      </h1>
+      {% if integration.used_in_workflows %}
+      <h2>Workflows</h2>
+      <div class="flex flex-row flex-wrap mt-1">
+        {% for workflow in integration.used_in_workflows %}
+        <a href="{% url 'projects:workflows:detail' project.id workflow.id %}"
+           class="card card--sm m-1">{{ workflow.name }}</a>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if integration.used_in_dashboards %}
+      <h2>Dashboards</h2>
+      <div class="flex flex-row flex-wrap mt-1">
+        {% for dashboard in integration.used_in_dashboards %}
+        <a href="{% url 'projects:dashboards:detail' project.id dashboard.id %}"
+           class="card card--sm m-1">{{ dashboard.name }}</a>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+
+    <div class="flex flex-col flex-shrink-0">
+      {% if object.kind == 'fivetran' %}
+      {% if object.historical_sync_complete %}
+      <div>Ready</div>
+      {% elif object.fivetran_authorized %}
+      <div>Syncing</div>
+      {% else %}
+      <turbo-frame id="integrations:authorize"
+                   src="{% url 'integrations:authorize' integration.id %}?original_uri={{ request.get_full_path }}"
+                   target="_top">
+      </turbo-frame>
+      {% endif %}
+    </div>
     {% else %}
-    <turbo-frame id="integrations:authorize"
-                src="{% url 'integrations:authorize' integration.id %}?original_uri={{ request.get_full_path }}"
-                target="_top">
-    </turbo-frame>
+    <turbo-frame id="integrations:sync" src="{% url 'integrations:sync' object.id %}"></turbo-frame>
     {% endif %}
   </div>
-{% else %}
-  <turbo-frame id="integrations:sync" src="{% url 'integrations:sync' object.id %}"></turbo-frame>
-{% endif %}
+</div>
 {% endblock %}

@@ -1,18 +1,18 @@
 {% load humanize %}
 
 <turbo-frame id="integrations:sync">
-{% if not object.table_set.exists %}
-  You need to sync your data
-{% else %}
-  You can re-sync your data if anything has changed
-{% endif %}
-{% if not object.is_syncing %}
-  <form method="post" action="{% url 'integrations:sync' object.id %}">
+  {% if not object.table_set.exists %}
+  <p>You need to sync your data</p>
+  {% else %}
+  <p>You can re-sync your data if anything has changed</p>
+  {% endif %}
+  {% if not object.is_syncing %}
+  <form class="my-2" method="post" action="{% url 'integrations:sync' object.id %}">
     {% csrf_token %}
-    <button class="button button--square button--sm button--filled" type="submit" >Sync</button>
+    <button class="button button--square button--sm button--filled" type="submit">Sync</button>
   </form>
-{% else %}
-  Syncing, you'll get an email when it is ready
-{% endif %}
+  {% else %}
+  <p><i class="fad fa-spinner-third fa-spin"></i> Syncing, you'll get an email when it is ready</p>
+  {% endif %}
   <p>Latest sync: {{ object.last_synced|naturaltime }}</p>
 </turbo-frame>
