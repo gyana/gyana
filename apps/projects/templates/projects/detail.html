@@ -42,7 +42,7 @@
         <a href="{% url 'projects:workflows:list' project.id %}"><i class="fa fa-arrow-right"></i></a>
       </h2>
       <div class="mb-2">
-        {% for workflow in project.workflow_set.all %}
+        {% comment %} {% for workflow in project.workflow_set.all %}
           <a href="{% url 'projects:workflows:detail' project.id workflow.id %}">
             <div class="mx-2 flex items-center space-x-1">
               <span>{{ workflow.name }}</span>
@@ -59,7 +59,37 @@
               {% endfor %}  
             </div>
           </a>
-        {% endfor %}
+        {% endfor %} {% endcomment %}
+        <table>
+          <thead>
+              <tr>  
+                <th rowspan="2"></th>
+                <th colspan="{{ integration_count }}">Integrations</th>
+                <th colspan="{{ project.output_nodes.count }}">Tables</th>
+              </tr>
+              <tr>
+                {% for integration in project.integration_set.all %}
+                  <th class="w-8"><img class="h-6 w-6" src="{% static integration.icon %}" title="{{ integration.name }}"/></th>
+                {% endfor %}
+                {% for node in project.output_nodes.all %}
+                  <th class="w-8"><i class="fa fa-table" title="{{ node.output_name }}"></th>
+                {% endfor %}
+              </tr>
+          </thead>
+          <tbody>
+            {% for workflow in project.workflow_set.all %}
+              <tr class="h-5">
+                <td class="pr-2 text-right"> {{ workflow.name }} </td>
+                  {% for integration in project.integration_set.all %}
+                    <td class="bg-green"></td>
+                  {% endfor %}
+                  {% for node in project.output_nodes.all %}
+                    <td class="bg-green"></td>
+                  {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
       {% if workflow_error > 0 %}
         <div class="bg-orange-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> You haven't run {{ workflow_pending }} workflow{{ workflow_pending|pluralize }} yet</div>
