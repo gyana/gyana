@@ -18,7 +18,10 @@
 
   
     <div class="card">
-      <h2 class="text-xl mb-2"><strong>{{ integration_count }}</strong> Integration{{ integration_count|pluralize }}</h2>
+      <h2 class="text-xl mb-2">
+        <strong>{{ integration_count }}</strong> Integration{{ integration_count|pluralize }}
+        <a href="{% url 'projects:integrations:list' project.id %}"><i class="fa fa-arrow-right"></i></a>
+      </h2>
       <div class="flex items-center mb-2">
         {% for integration in project.integration_set.all %}
           <img class="h-6 w-6" src="{% static integration.icon %}" title="{{ integration.name }}"/>
@@ -29,23 +32,28 @@
       {% endif %}
     </div>
     <div class="card">
-      <h2 class="text-xl mb-2"><strong>{{ workflow_count }}</strong> Workflow{{ workflow_count|pluralize }}</h2>
+      <h2 class="text-xl mb-2">
+        <strong>{{ workflow_count }}</strong> Workflow{{ workflow_count|pluralize }}
+        <a href="{% url 'projects:workflows:list' project.id %}"><i class="fa fa-arrow-right"></i></a>
+      </h2>
       <div class="mb-2">
         {% for workflow in project.workflow_set.all %}
-          <div class="mx-2 flex items-center space-x-1">
-            <span>{{ workflow.name }}</span>
-            {% for node in workflow.input_nodes %}
-              {% if node.input_table.source == node.input_table.Source.INTEGRATION %}
-                <img class="h-6 w-6" src="{% static node.input_table.integration.icon %}" title="{{ node.input_table.integration.name }}"/>
-              {% else %}
-                <i class="fa fa-table" title="{{ node.input_table.workflow_node.output_name }}"></i>
-              {% endif %}
-            {% endfor %}
-            <i class="fa fa-arrow-right"></i>
-            {% for node in workflow.output_nodes %}
-              <i class="fa fa-table" title="{{ node.output_name }}"></i>
-            {% endfor %}  
-          </div>
+          <a href="{% url 'projects:workflows:detail' project.id workflow.id %}">
+            <div class="mx-2 flex items-center space-x-1">
+              <span>{{ workflow.name }}</span>
+              {% for node in workflow.input_nodes %}
+                {% if node.input_table.source == node.input_table.Source.INTEGRATION %}
+                  <img class="h-6 w-6" src="{% static node.input_table.integration.icon %}" title="{{ node.input_table.integration.name }}"/>
+                {% else %}
+                  <i class="fa fa-table" title="{{ node.input_table.workflow_node.output_name }}"></i>
+                {% endif %}
+              {% endfor %}
+              <i class="fa fa-arrow-right"></i>
+              {% for node in workflow.output_nodes %}
+                <i class="fa fa-table" title="{{ node.output_name }}"></i>
+              {% endfor %}  
+            </div>
+          </a>
         {% endfor %}
       </div>
       {% if workflow_error > 0 %}
@@ -56,7 +64,24 @@
       {% endif %}
     </div>
     <div class="card">
-      <h2 class="text-xl"><strong>{{ dashboard_count }}</strong> Dashboard{{ dashboard_count|pluralize }}</h2>
+      <h2 class="text-xl">
+        <strong>{{ dashboard_count }}</strong> Dashboard{{ dashboard_count|pluralize }}
+        <a href="{% url 'projects:dashboards:list' project.id %}"><i class="fa fa-arrow-right"></i></a>
+      </h2>
+      <div class="mb-2">
+        {% for dashboard in project.dashboard_set.all %}
+          <a href="{% url 'projects:dashboards:detail' project.id dashboard.id %}">
+            <span>{{ dashboard.name }}</span>
+            {% for widget in dashboard.widget_set.all %}
+              {% if widget.visual_kind == widget.VisualKind.TABLE %}
+                <i class="fa fa-table"></i>
+              {% else %}
+                <i class="fa fa-chart-bar"></i>
+              {% endif %}
+            {% endfor %}  
+          </a>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>
