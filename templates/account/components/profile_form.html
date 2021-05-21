@@ -18,10 +18,12 @@
 
       {% include "django/forms/default_form.html" %}
 
-      <div class="field is-grouped">
-        <div class="control">
-          <input class="button button--primary" type="submit" value="Save">
-        </div>
+      <div class="flex w-full">
+        <input class="button button--green button--filled mr-auto" type="submit" value="Save">
+
+        <a href="{% url 'account_logout' %}" class="button button--danger">
+          Sign out
+        </a>
       </div>
     </form>
   </div>

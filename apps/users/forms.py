@@ -5,12 +5,12 @@ from .models import CustomUser
 
 
 class CustomUserChangeForm(UserChangeForm):
-    email = forms.EmailField(label="testing testing 123", required=True)
+    email = forms.EmailField(required=True)
+    password = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
         model = CustomUser
         fields = ["email", "first_name", "last_name"]
-        labels = {"email": "Email"}
 
 
 class UploadAvatarForm(forms.Form):

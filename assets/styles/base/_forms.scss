@@ -10,15 +10,6 @@ form {
   border-radius: 5px;
   border: 1px solid var(--c-black-20);
   color: var(--c-black-50);
-}
-
-input[type="submit"] {
-  cursor: pointer;
-}
-
-input[type="text"] {
-  @extend %input;
-
   font-size: 0.875rem;
   padding: 0.75rem 1rem;
   width: 100%;
@@ -27,6 +18,18 @@ input[type="text"] {
     border-color: var(--c-blue);
     color: var(--c-black);
   }
+}
+
+input[type="submit"] {
+  cursor: pointer;
+}
+
+input[type="text"] {
+  @extend %input;
+}
+
+input[type="email"] {
+  @extend %input;
 }
 
 .input__help-text {
