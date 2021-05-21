@@ -48,11 +48,6 @@ class Table(models.Model):
     def schema(self):
         return self.get_query().schema()
 
-    def owner(self):
-        if self.source == self.Source.INTEGRATION:
-            return self.integration
-        return self.workflow_node
-
     @property
     def owner_name(self):
         if self.source == self.Source.INTEGRATION:

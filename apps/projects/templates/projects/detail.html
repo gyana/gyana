@@ -78,8 +78,8 @@
                   {% for node in project.output_nodes.all %}
                     <td>
                       <div class="rounded-full h-6 w-6
-                        {% if node in workflow.output_nodes %}bg-green-50
-                        {% elif node in workflow.used_outputs %}bg-black-10 
+                        {% if node in workflow.output_nodes.all %}bg-green-50
+                        {% elif node in workflow.used_outputs.all %}bg-black-10 
                         {% endif %}">
                       </td>
                   {% endfor %}

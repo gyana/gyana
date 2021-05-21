@@ -40,10 +40,10 @@ class Workflow(models.Model):
         return Node.objects.filter(table__node__workflow=self)
 
     def input_nodes(self):
-        return self.nodes.filter(kind=Node.Kind.INPUT).all()
+        return self.nodes.filter(kind=Node.Kind.INPUT)
 
     def output_nodes(self):
-        return self.nodes.filter(kind=Node.Kind.OUTPUT).all()
+        return self.nodes.filter(kind=Node.Kind.OUTPUT)
 
 
 NodeConfig = {
