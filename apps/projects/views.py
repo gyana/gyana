@@ -36,6 +36,16 @@ class ProjectDetail(DetailView):
     template_name = "projects/detail.html"
     model = Project
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["integration_pending"] = (
+            self.get_object().integration_set.filter(last_synced=None).count()
+        )
+        context_data["workflow_error"] = (
+            self.get_object().workflow_set.filter(nodes__error__isnull=False).count()
+        )
+        return context_data
+
 
 class ProjectUpdate(TurboUpdateView):
     template_name = "projects/update.html"

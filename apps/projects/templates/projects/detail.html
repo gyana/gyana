@@ -9,15 +9,26 @@
       href="{% url 'projects:delete' project.id %}">Delete</a>
   </div>
 
-  <div class="grid grid-cols-3 gap-4">
+  <div class="mb-4">
+    <div> Shared with: TODO </div>
+    <div> Total rows: TODO </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4">
     <div class="card">
-      <h2>TODO: Integrations table</h2>
+      <h2 class="text-xl mb-2"><strong>{{ project.integration_set.count }}</strong> Integrations</h2>
+      {% if integration_pending > 0 %}
+        <span class="bg-red-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> {{ integration_pending }} integrations are incomplete</span>
+      {% endif %}
     </div>
     <div class="card">
-      <h2>TODO: Workflows table</h2>
+      <h2 class="text-xl mb-2"><strong>{{ project.workflow_set.count }}</strong> Workflows</h2>
+      {% if workflow_error > 0 %}
+        <span class="bg-red-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i> {{ workflow_error }} workflows are failing</span>
+      {% endif %}
     </div>
     <div class="card">
-      <h2>TODO: Dashboards table</h2>
+      <h2 class="text-xl"><strong>{{ project.workflow_set.count }}</strong> Dashboards</h2>
     </div>
   </div>
 </div>
