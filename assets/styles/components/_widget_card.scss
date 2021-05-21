@@ -1,8 +1,4 @@
-@use "components/card";
-
 .widget-card {
-  @extend .card;
-
   display: flex;
 
   &:hover > &__commands {
