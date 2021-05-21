@@ -21,6 +21,7 @@
     display: flex;
     flex-flow: column;
     flex-shrink: 0;
+    gap: 1rem;
     padding-bottom: 0.5rem;
     padding-left: 0.5rem;
     padding-top: 0.5rem;
@@ -28,6 +29,10 @@
 
     a:hover {
       color: var(--c-black-50);
+    }
+
+    i {
+      display: block;
     }
   }
 }
