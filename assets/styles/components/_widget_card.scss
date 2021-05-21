@@ -1,4 +1,8 @@
+@use "components/card";
+
 .widget-card {
+  @extend .card;
+
   display: flex;
 
   &:hover > &__commands {
@@ -6,17 +10,25 @@
   }
 
   &__visual {
-    @apply flex flex-col p-4 w-full;
     background: var(--c-white);
+    border-color: var(--c-gray);
     border-radius: 10px;
     border: 1px solid var(--c-gray);
-    border-color: var(--c-gray);
+    display: flex;
+    flex-flow: column;
+    padding: 1rem;
+    width: 100%;
   }
 
   &__commands {
-    @apply flex flex-col flex-shrink-0 pl-2 py-2;
-    visibility: hidden;
     color: var(--c-black-20);
+    display: flex;
+    flex-flow: column;
+    flex-shrink: 0;
+    padding-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    padding-top: 0.5rem;
+    visibility: hidden;
 
     a:hover {
       color: var(--c-black-50);

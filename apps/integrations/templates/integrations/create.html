@@ -3,8 +3,7 @@
 {% block app %}
 
 <div class='flex flex-row h-full'>
-
-  <div class='flex flex-col w-full p-4'>
+  <div class='flex flex-col w-full'>
     <h1 class="mb-4">Create</h1>
 
     {% if request.GET.kind %}
@@ -68,7 +67,7 @@
 </div>
 
 {% if request.GET.kind == integration_kind.GOOGLE_SHEETS %}
-<div class='flex flex-shrink-0 h-full overflow-hidden'>
+<div class='flex flex-shrink-0 h-full overflow-hidden -m-4 ml-4'>
   {% include 'integrations/guides/sheets_guide.html' %}
 </div>
 {% endif %}

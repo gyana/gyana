@@ -1,8 +1,8 @@
 {% extends "web/app/project_settings_base.html" %}
 
 {% block app %}
-<div class="p-4">
-  <h1>Edit</h1>
+<div class="project-settings__form">
+  <h1 class="project-settings__title">Edit {{ object.name }}</h1>
 
   <form method="post" action="{% url 'projects:dashboards:update' project.id object.id %}" class="form">
     {% csrf_token %}

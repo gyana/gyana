@@ -36,10 +36,15 @@ input[type="password"] {
   @extend %input;
 }
 
+input[type="url"] {
+  @extend %input;
+}
+
 .input__help-text {
   color: var(--c-black-20);
   font-size: 0.875rem;
   line-height: 1rem;
+  display: block;
 }
 
 label {
@@ -58,10 +63,11 @@ label {
 
 .input-group {
   display: flex;
+  flex-flow: column;
   gap: 0.5rem;
   width: 100%;
 
-  &--col {
-    flex-flow: column;
+  &--row {
+    flex-flow: row;
   }
 }
