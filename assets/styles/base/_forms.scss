@@ -43,6 +43,10 @@ input[type="url"] {
 
 select {
   @extend %input;
+
+  option {
+    color: var(--c-black-50);
+  }
 }
 
 .input__help-text {
