@@ -10,6 +10,7 @@
         <div class="flex flex-col ml-6">
           <h1>{{ integration.name }}</h1>
           <p>{{ integration.created|naturaltime }}</p>
+          {% if integration.num_rows %}<p> <strong>{{ integration.num_rows }}</strong> row{{ integration.num_rows|pluralize }}</p>{% endif %}
           <h2>{{ integration.created_by.username }}</h2>
           {% if integration.kind == "google_sheets" %}
           <a href="{{ integration.url }}" class="text-blue"><i class="fas fa-link fa-sm mr-1"></i>Sheet Source</a>

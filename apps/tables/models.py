@@ -25,6 +25,7 @@ class Table(models.Model):
         "workflows.Node", on_delete=models.CASCADE, null=True
     )
 
+    num_rows = models.IntegerField()
     data_updated = models.DateTimeField(auto_now_add=True)
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
@@ -36,9 +37,17 @@ class Table(models.Model):
     def __str__(self):
         return getattr(self, self.source).get_table_name()
 
+    def save(self, *args, **kwargs):
+        self.num_rows = self.bq_obj.num_rows
+        super().save(*args, **kwargs)
+
     @property
     def bq_id(self):
         return f"{self.bq_dataset}.{self.bq_table}"
+
+    @property
+    def bq_obj(self):
+        return bigquery_client().get_table(self.bq_id)
 
     def get_query(self):
         conn = ibis_client()
