@@ -30,12 +30,18 @@ class IntegrationList(ProjectMixin, SingleTableView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        context_data["integration_count"] = Integration.objects.filter(project=self.project).count()
+        context_data["integration_count"] = Integration.objects.filter(
+            project=self.project
+        ).count()
 
         return context_data
 
     def get_queryset(self) -> QuerySet:
-        return Integration.objects.filter(project=self.project).all()
+        return (
+            Integration.objects.filter(project=self.project)
+            .prefetch_related("table_set")
+            .all()
+        )
 
 
 class IntegrationCreate(ProjectMixin, TurboCreateView):

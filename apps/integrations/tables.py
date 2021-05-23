@@ -7,7 +7,7 @@ from .models import Integration
 class IntegrationTable(tables.Table):
     class Meta:
         model = Integration
-        fields = ("name", "kind", "last_synced", "created", "updated")
+        fields = ("name", "kind", "num_rows", "last_synced", "created", "updated")
         attrs = {"class": "table"}
 
     name = tables.Column(linkify=True)
