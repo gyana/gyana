@@ -1,4 +1,5 @@
 {% extends "web/app/project_base.html" %}
+{% load humanize %}
 {% block app %}
 <div class="p-4 flex flex-col items-center space-y-4">
   <div class="card w-full max-w-5xl flex flex-col space-y-2">
@@ -12,6 +13,9 @@
       </a>
       <a class="hover:underline" href="{% url 'projects:dashboards:list' project.id %}">
         <strong>{{ dashboard_count }}</strong> dashboard{{ dashboard_count|pluralize }}
+      </a>
+      <a class="hover:underline" href="#">
+        <strong>{{ project.num_rows|intcomma }}</strong> row{{ project.num_rows|pluralize }}
       </a>
     </div>
     <p>{{ project.description }}</p>

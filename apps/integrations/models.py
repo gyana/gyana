@@ -8,7 +8,6 @@ from apps.users.models import CustomUser
 from apps.workflows.models import Workflow
 from django.conf import settings
 from django.db import models
-from django.db.models import Sum
 from django.urls import reverse
 from django.utils.text import slugify
 from lib.clients import ibis_client
@@ -59,7 +58,7 @@ class Integration(models.Model):
 
     @property
     def num_rows(self):
-        return self.table_set.all().aggregate(Sum("num_rows"))["num_rows__sum"]
+        return self.table_set.all().aggregate(models.Sum("num_rows"))["num_rows__sum"]
 
     def start_sync(self):
         from apps.integrations.tasks import run_external_table_sync

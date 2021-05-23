@@ -16,3 +16,10 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+
+    def num_rows(self):
+        from apps.tables.models import Table
+
+        return Table.objects.filter(integration__project=self).aggregate(
+            models.Sum("num_rows")
+        )["num_rows__sum"]
