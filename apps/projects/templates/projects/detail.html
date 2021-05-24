@@ -1,10 +1,13 @@
 {% extends "web/app/project_base.html" %}
 {% load humanize %}
+
 {% block app %}
-<div class="p-4 flex flex-col items-center space-y-4">
-  <div class="card w-full max-w-5xl flex flex-col space-y-2">
-    <h1 class="text-2xl">{{ project.name }}</h1>
-    <div class="flex items-center space-x-2">
+
+<div class="p-4">
+  <h1 class="mb-4">{{ project.name }}</h1>
+
+  <div class="card w-full max-w-5xl flex flex-col">
+    <div class="flex items-center gap-4">
       <a class="hover:underline" href="{% url 'projects:integrations:list' project.id %}">
         <strong>{{ integration_count }}</strong> integration{{ integration_count|pluralize }}
       </a>
@@ -22,10 +25,10 @@
   </div>
 
   {% if integration_pending > 0 %}
-    <div class="bg-orange-20 p-2 rounded-lg">
-      <i class="fa fa-exclamation"></i>
-        Setup is incomplete for {{ integration_pending }} integration{{ integration_pending|pluralize }}
-    </div>
+  <div class="bg-orange-20 p-2 rounded-lg">
+    <i class="fa fa-exclamation"></i>
+    Setup is incomplete for {{ integration_pending }} integration{{ integration_pending|pluralize }}
+  </div>
   {% endif %}
 
   {% if workflow_error > 0 %}

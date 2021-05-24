@@ -26,17 +26,18 @@ $button-colors: (
   border: 1px solid var(--button-color);
   color: var(--button-color);
 
-  &:hover {
-    opacity: 0.5;
-  }
-
+  
   &:disabled,
   &.disabled {
     --button-color: var(--c-black-10);
     --button-background: var(--c-transparent);
   }
 
-  &[href] {
+  &[href]:hover {
+    opacity: 0.5;
+  }
+  
+  &[href]{
     cursor: pointer;
   }
 

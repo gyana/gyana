@@ -39,3 +39,12 @@ p,
   font-size: 0.875rem;
   color: var(--c-black-50);
 }
+
+.link {
+  color: var(--c-blue);
+
+  &:hover {
+    color: var(--c-blue-50);
+    text-decoration: underline;
+  }
+}
