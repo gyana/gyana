@@ -38,7 +38,7 @@ def get_join_desc(obj):
 
 
 def get_group_desc(obj):
-    return f"Group by {', '.join([col.name for col in obj.columns.all()])} aggregate {[f'{agg.function}({agg.name}' for agg in obj.aggregations.all()]}"
+    return f"Group by {', '.join([col.name for col in obj.columns.all()])} aggregate {', '.join([f'{agg.function}({agg.name}' for agg in obj.aggregations.all()])}"
 
 
 def get_union_desc(obj):

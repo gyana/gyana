@@ -1,0 +1,10 @@
+{% load crispy_forms_tags %}
+
+<form method="post"
+      action="{% url 'workflows:node' workflow.id node.id %}"
+      data-controller="trigger live-update"
+      data-trigger-event-value="node-updated-{{ node.id }}"
+      data-action="submit->trigger#dispatch submit->tf-refresh#refresh">
+      {% csrf_token %}
+      {% crispy form %}
+</form>

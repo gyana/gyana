@@ -93,7 +93,7 @@ class JoinNodeForm(NodeForm):
 
 class InlineColumnFormset(BaseInlineFormSet):
     def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+        super(InlineColumnFormset, self).__init__(*args, **kwargs)
         self.form.base_fields["name"] = forms.ChoiceField(
             choices=[
                 ("", "No column selected"),
@@ -102,13 +102,33 @@ class InlineColumnFormset(BaseInlineFormSet):
         )
 
 
+AGGS = FunctionColumn.Functions
+
+AGGREGATION_TYPES = {
+    "int64": [AGGS.SUM, AGGS.MAX, AGGS.MIN, AGGS.MEAN, AGGS.STD, AGGS.COUNT],
+    "string": [AGGS.COUNT],
+}
+
+
+class InlineAggregationFormset(InlineColumnFormset):
+    def __init__(self, *args, **kwargs) -> None:
+        super(InlineAggregationFormset, self).__init__(*args, **kwargs)
+        for id, form in enumerate(self.forms):
+            selected_column = form.data.get(f"columns-{id}-name")
+            if selected_column:
+                column_type = self.instance.parents.first().schema[selected_column]
+                form.fields["function"].choices = [
+                    (a.value, a.label) for a in AGGREGATION_TYPES[str(column_type)]
+                ]
+
+
 FunctionColumnFormSet = forms.inlineformset_factory(
     Node,
     FunctionColumn,
     fields=("name", "function"),
     extra=1,
     can_delete=True,
-    formset=InlineColumnFormset,
+    formset=InlineAggregationFormset,
 )
 
 ColumnFormSet = forms.inlineformset_factory(
@@ -127,7 +147,7 @@ class GroupNodeForm(NodeForm):
         fields = []
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(GroupNodeForm, self).__init__(*args, **kwargs)
         self.helper.layout = Layout(
             Fieldset("Add columns", Formset("column_form_form_set")),
             Fieldset("Add aggregates", Formset("function_column_form_form_set")),

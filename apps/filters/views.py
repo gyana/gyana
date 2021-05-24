@@ -14,7 +14,7 @@ from turbo_response.views import TurboCreateView, TurboUpdateView
 from .forms import get_filter_form
 from .models import Filter
 
-IBIS_TO_TYPE = {"Int64": "INTEGER", "String": "STRING"}
+IBIS_TO_TYPE = {"Int64": "INTEGER", "String": "STRING", "Bool": "BOOL"}
 
 
 class ParentMixin:
