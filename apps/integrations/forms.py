@@ -37,6 +37,8 @@ class GoogleSheetsForm(forms.ModelForm):
     def clean_cell_range(self):
         cell_range = self.cleaned_data["cell_range"]
 
+        # If validation on the url field fails url, cleaned_data won't
+        # have the url populated.
         if not (url := self.cleaned_data.get("url")):
             return cell_range
 
