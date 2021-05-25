@@ -8,32 +8,58 @@
 
 {% block body %}
 <div class="landing">
-  <div class="card">
-    <h1 class="text-center">Sign in</h1>
+  <div class="landing__container">
+    <div class="flex flex-col self-start gap-8">
+      <div class="flex items-center">
+        <img class="landing__logo" src="{% static 'images/logo.png' %}">
 
-    <form method="post">
-      {% csrf_token %}
-
-      {% include "django/forms/default_form.html" %}
-
-      <div class="flex flex-col w-full gap-2">
-        <button type="submit" class="button button--primary button--filled w-full">
-          Sign in
-        </button>
-
-        <p class="text-center text-black-50">or</p>
-        <a class="button button--primary is-outlined w-full flex justify-center"
-           href="{% provider_login_url 'google' %}">
-          <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
-          Sign In with Google
-        </a>
+        <hgroup>
+          <h2>Gyana</h2>
+          <p>No-code data science</p>
+        </hgroup>
       </div>
-    </form>
 
-    <a class="text-center block text-blue hover:underline" href="{% url 'account_reset_password' %}">
-      Forgot password?
-    </a>
+      <div>
+        <p>Welcome to Gyana, we do data science and some cool tech stuff.</p>
+        <br>
+        <p>If you'd like to learn more, give our <a class="link" href="https://gyana.com/">website</a> a
+          visit.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h1 class="text-center">Sign in</h1>
+
+      <form method="post">
+        {% csrf_token %}
+
+        {% include "django/forms/default_form.html" %}
+
+        <div class="flex flex-col w-full gap-2">
+          <button type="submit" class="button button--primary button--filled w-full">
+            Sign in
+          </button>
+
+          <p class="text-center text-black-50">or</p>
+          <a class="button button--primary is-outlined w-full flex justify-center"
+             href="{% provider_login_url 'google' %}">
+            <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
+            Sign In with Google
+          </a>
+        </div>
+      </form>
+
+      <a class="text-center block bold text-blue hover:underline" href="{% url 'account_reset_password' %}">
+        Forgot password?
+      </a>
+
+      <p class="text-center">
+        No account yet? No problem,
+        <a class="bold text-blue hover:underline" href="{% url 'account_reset_password' %}">
+          create one here
+        </a>
+      </p>
+    </div>
   </div>
-</div>
 </div>
 {% endblock %}
