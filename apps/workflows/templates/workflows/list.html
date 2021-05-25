@@ -12,9 +12,11 @@
     {% render_table table %}
 
     {% if workflow_count == 0 %}
-    <div class="p-3 text-center">
-      <p>You have no workflows yet, <a href="{% url 'projects:workflows:create' project.id  %}" class="text-blue">create
-          one</a> to see it here</p>
+    <div class="text-center pad--sm">
+      <small>
+        You have no workflows yet, <a href="{% url 'projects:workflows:create' project.id  %}" class="link">create
+          one</a> to see it here
+      </small>
     </div>
     {% endif %}
   </div>
