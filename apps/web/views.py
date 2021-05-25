@@ -2,7 +2,7 @@ from apps.teams.decorators import login_and_team_required
 from apps.teams.util import get_default_team
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
@@ -24,7 +24,7 @@ def home(request):
             return HttpResponseRedirect(reverse("teams:manage_teams"))
 
     else:
-        return render(request, "web/landing_page.html")
+        return redirect('/accounts/login')
 
 
 @login_and_team_required
