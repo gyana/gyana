@@ -1,16 +1,16 @@
-"use strict";
-import React from "react";
-import ReactDOM from "react-dom";
-import { ReactFlowProvider } from "react-flow-renderer";
-import DnDFlow from "./dnd-flow";
+'use strict'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { ReactFlowProvider } from 'react-flow-renderer'
+import DnDFlow from './dnd-flow'
 
 let auth = new coreapi.auth.SessionAuthentication({
-  csrfCookieName: "csrftoken",
-  csrfHeaderName: "X-CSRFToken",
-});
+  csrfCookieName: 'csrftoken',
+  csrfHeaderName: 'X-CSRFToken',
+})
 
-let client = new coreapi.Client({ auth: auth });
-let domContainer = document.querySelector("#react-app");
+let client = new coreapi.Client({ auth: auth })
+let domContainer = document.querySelector('#react-app')
 domContainer
   ? ReactDOM.render(
       <ReactFlowProvider>
@@ -18,4 +18,4 @@ domContainer
       </ReactFlowProvider>,
       domContainer
     )
-  : null;
+  : null

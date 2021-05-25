@@ -7,7 +7,7 @@
     "build": "webpack --mode=development --progress",
     "build:watch": "webpack --mode=development --watch --progress",
     "build:prod": "NODE_ENV=production webpack --mode=production --progress",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write ./**/*.{ts,tsx}"
   },
   "author": "Gyana",
   "homepage": "https://app.gyana.com/",
