@@ -11,11 +11,13 @@
 
 <div class="project-list__projects">
   {% for object in object_list %}
-  <a class="card" href="{% url 'projects:detail' object.pk %}">
-    <h3 class="mb-4">{{object}}</h3>
+  <a class="card card--sm justify-between" href="{% url 'projects:detail' object.pk %}">
+    <h3>{{object}}</h3>
 
-    <p>Created {{ object.created|naturaltime }}</p>
-    <p>Updated {{ object.updated|naturaltime }}</p>
+    <div>
+      <p>Created {{ object.created|naturaltime }}</p>
+      <p>Updated {{ object.updated|naturaltime }}</p>
+    </div>
   </a>
   {% empty %}
   <div class="card card-tertiary">
@@ -25,7 +27,7 @@
   </div>
   {% endfor %}
 
-  <a class="card card--primary card--center" href="{% url 'projects:create' %}">
+  <a class="card card--sm card--primary card--center" href="{% url 'projects:create' %}">
     <i class="fas fa-plus mr-4"></i><strong>Create new Project</strong>
   </a>
 </div>

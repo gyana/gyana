@@ -43,8 +43,8 @@ export default () => {
               >
                 <i className={`dnd-sidebar__icon fad ${node.icon}`}></i>
                 <div className='flex flex-col'>
-                  <span className='dnd-sidebar__name'>{node.displayName}</span>
-                  <span className='dnd-sidebar__description'>{node.description}</span>
+                  <h3 className='dnd-sidebar__name'>{node.displayName}</h3>
+                  <p className='dnd-sidebar__description'>{node.description}</p>
                 </div>
               </div>
             )

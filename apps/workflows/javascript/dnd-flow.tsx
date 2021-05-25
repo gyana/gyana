@@ -1,4 +1,11 @@
-import React, { useState, useRef, useEffect, createContext, useContext } from 'react'
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  createContext,
+  useContext,
+} from "react";
+
 import ReactFlow, {
   addEdge,
   removeElements,
@@ -58,8 +65,8 @@ const DnDFlow = ({ client }) => {
         .filter((el) => isEdge(el) && el.target === params.target)
         .map((el) => el.source)
 
-      updateParents(params.target, [...parents, params.source])
-      setElements((els) => addEdge({ ...params, arrowHeadType: 'arrow' }, els))
+      updateParents(params.target, [...parents, params.source]);
+      setElements((els) => addEdge({ ...params, arrowHeadType: "arrow", type: "smoothstep" }, els))
     }
   }
 
@@ -290,15 +297,15 @@ const Description = ({ id, data }) => {
   }, [])
 
   return (
-    <span className='text-black-50 font-light text-xs normal-case overflow-ellipsis'>
+    <p className="overflow-ellipsis">
       {description || data.description}
-    </span>
-  )
-}
+    </p>
+  );
+};
 
 const Buttons = ({ id }) => {
   return (
-    <div className='absolute -bottom-6 flex gap-4'>
+    <div className="react-flow__buttons">
       <OpenButton id={id} />
       <DeleteButton id={id} />
     </div>
@@ -318,23 +325,14 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
   <>
     {selected && <Buttons id={id} />}
     {data.error && <ErrorIcon text={data.error} />}
-    <div className='flex flex-col h-full justify-center'>
-      {data.label}
-      <Description id={id} data={data} />
-    </div>
-    <Handle type='source' position={Position.Right} isConnectable={isConnectable} />
-  </>
-)
+    <h3>{data.label}</h3>
+    <Description id={id} data={data} />
 
-const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
-  <>
-    {selected && <Buttons id={id} />}
-    {data.error && <ErrorIcon text={data.error} />}
-    <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
-    <div className='flex flex-col h-full justify-center'>
-      {data.label}
-      <Description id={id} data={data} />
-    </div>
+    <Handle
+      type="source"
+      position={Position.Right}
+      isConnectable={isConnectable}
+    />
   </>
 )
 

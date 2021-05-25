@@ -1,19 +1,26 @@
 .placeholder-scr {
-  @apply h-64 flex flex-col justify-center items-center;
+  align-items: center;
+  display: flex;
+  flex-flow: column;
+  font-size: 1.4rem;
+  height: 100%;
+  justify-content: center;
+  min-height: 18rem;
 
   &__icon {
-    @apply mb-1;
+    margin-bottom: 1rem;
   }
 
   &__title {
-    @apply text-base text-black-50;
+    color: var(--c-black-50);
   }
 
   &__subtext {
-    @apply text-blue underline;
+    color: var(--c-blue);
+    text-decoration: underline;
   }
 
   &--fillscreen {
-    @apply w-full;
+    width: 100%;
   }
 }

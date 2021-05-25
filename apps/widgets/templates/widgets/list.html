@@ -6,7 +6,7 @@
   <li class="w-1/2 p-2 flex-grow" data-id="{{ object.id }}">
     <div class="widget-card">
       <div class='widget-card__visual'>
-        <h3 class="text-base">{{ object }}</h3>
+        <h3 class="mb-2">{{ object }}</h3>
         <turbo-frame id="widgets:output-{{ object.id }}" src="{% url 'widgets:output' object.id %}">
           <div class='placeholder-scr placeholder-scr--fillscreen'>
             <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
@@ -14,11 +14,12 @@
           </div>
         </turbo-frame>
       </div>
+
       <div class='widget-card__commands'>
-        <i class="cursor-move fas fa-arrows sortable-handle"></i>
-        <a href="{% url 'widgets:detail' object.pk %}"><i class="fas fa-cog"></i></a>
-        <a href="{% url 'widgets:update' object.pk %}"><i class="fas fa-edit"></i></a>
-        <a href="{% url 'widgets:delete' object.pk %}"><i class="fas fa-trash"></i></a>
+        <i class="cursor-move fas fa-fw fa-arrows sortable-handle"></i>
+        <a href="{% url 'widgets:detail' object.pk %}"><i class="fas fa-fw fa-cog"></i></a>
+        <a href="{% url 'widgets:update' object.pk %}"><i class="fas fa-fw fa-edit"></i></a>
+        <a href="{% url 'widgets:delete' object.pk %}" class="mt-auto"><i class="fas fa-fw fa-trash"></i></a>
       </div>
     </div>
   </li>

@@ -5,6 +5,7 @@
 
 @use "utilities/colours";
 @use "utilities/variables";
+@use "utilities/padding";
 @use "utilities/shadows";
 
 @use "components/button";
@@ -27,4 +28,7 @@
 :root {
   background-color: var(--c-gray-10);
   color: var(--c-black);
+
+  // Why do we do this? TODO
+  font-size: 62.5%;
 }

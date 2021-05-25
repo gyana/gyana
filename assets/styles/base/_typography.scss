@@ -8,36 +8,52 @@ h1,
 h2,
 h3,
 h4,
-h5,
-h6,
 .h1,
 .h2,
 .h3,
-.h4,
-.h5,
-.h6 {
+.h4 {
   @extend %heading;
 }
 
 h1,
 .h1 {
-  font-size: 1.25rem;
+  font-size: 2.6rem;
 }
 
 h2,
 .h2 {
-  font-size: 1rem;
+  font-size: 2.0rem;
 }
 
 h3,
 .h3 {
-  font-size: 1rem;
+  font-size: 1.8rem;
+}
+
+h4,
+.h4 {
+  font-size: 1.6rem;
 }
 
 p,
 .p {
-  font-size: 0.875rem;
-  color: var(--c-black-50);
+  font-size: 1.4rem;
+}
+
+a {
+  font-size: 1.4rem;
+}
+
+small,
+.small {
+  font-size: 1.2rem;
+}
+
+b,
+strong,
+.bold,
+.strong {
+  font-weight: 500;
 }
 
 .link {

@@ -10,13 +10,13 @@
   </div>
 
   <div class="navbar__menu">
-    <a class="button button--tertiary button--circle button--sm" href="https://gyana.com/">
+    <a class="button button--tertiary button--circle" href="https://gyana.com/">
       <i class="fas fa-fw fa-question"></i>
     </a>
 
     {% if user.is_authenticated %}
     <a class="button button--tertiary button--sm" href="{% url 'users:user_profile' %}">
-      {{user.username}} <i class="fas fa-fw fa-cog"></i>
+      {{user.username}}
     </a>
     {% else %}
     <a href="{% url 'account_signup' %}" class="button button--sm is-outlined">

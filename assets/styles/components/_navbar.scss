@@ -4,19 +4,19 @@
   border-bottom: 1px solid var(--c-gray);
   display: flex;
   flex-shrink: 0;
-  height: 3.25rem;
-  padding: 0 1rem;
+  height: 4.2rem;
+  padding: 0 1.6rem;
 
   &__title {
     color: var(--c-blue);
-    margin: 0 1rem 0 0;
+    margin: 0 1.6rem 0 0;
     text-transform: uppercase;
   }
 
   &__menu {
     align-items: center;
     display: inline-flex;
-    gap: 1rem;
+    gap: 1.6rem;
     height: 100%;
 
     &:last-child {
@@ -28,10 +28,10 @@
     align-items: center;
     color: var(--c-black-50);
     display: inline-flex;
-    font-size: 0.875rem;
+    font-size: 1.4rem;
     height: 100%;
-    line-height: 1em;
-    padding: 0 0.5em;
+    line-height: 1.6rem;
+    padding: 0 1rem;
 
     &:hover,
     &--active {
