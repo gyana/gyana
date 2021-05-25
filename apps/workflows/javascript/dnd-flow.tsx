@@ -6,7 +6,6 @@ import React, {
   useContext,
 } from "react";
 import ReactFlow, {
-  ReactFlowProvider,
   addEdge,
   removeElements,
   Controls,
@@ -22,14 +21,16 @@ import ReactFlow, {
   useZoomPanHelper,
   Background,
 } from "react-flow-renderer";
+import { INode } from "./interfaces";
 
 import Sidebar from "./sidebar";
 
 import "./styles/_dnd-flow.scss";
 import "./styles/_react-flow.scss";
 
-const NODES = JSON.parse(document.getElementById("nodes").textContent);
+const NODES = JSON.parse(document.getElementById("nodes").textContent) as INode;
 const GRID_GAP = 20;
+
 const DnDFlow = ({ client }) => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);

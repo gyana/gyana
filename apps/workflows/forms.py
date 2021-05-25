@@ -181,7 +181,7 @@ KIND_TO_FORM = {
     "output": OutputNodeForm,
     "select": SelectNodeForm,
     "join": JoinNodeForm,
-    "group": GroupNodeForm,
+    "aggregation": GroupNodeForm,
     "union": UnionNodeForm,
     "sort": SortNodeForm,
     "limit": LimitNodeForm,
@@ -190,6 +190,6 @@ KIND_TO_FORM = {
     "filter": DefaultNodeForm,
 }
 KIND_TO_FORMSETS = {
-    "group": [FunctionColumnFormSet, ColumnFormSet],
+    "aggregation": [FunctionColumnFormSet, ColumnFormSet],
     "sort": [SortColumnFormSet],
 }
