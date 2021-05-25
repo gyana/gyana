@@ -1,0 +1,11 @@
+.landing {
+  // flex justify-center items-center h-full my-8
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+
+  .card {
+    width: 36rem;
+  }
+}
