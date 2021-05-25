@@ -1,0 +1,7 @@
+.heads {
+  display: flex;
+
+  &__item + &__item {
+    margin-left: -0.8rem;
+  }
+}
