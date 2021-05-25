@@ -33,7 +33,9 @@ class WorkflowList(ProjectMixin, SingleTableView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        context_data["workflow_count"] = Workflow.objects.filter(project=self.project).count()
+        context_data["workflow_count"] = Workflow.objects.filter(
+            project=self.project
+        ).count()
 
         return context_data
 
@@ -143,7 +145,11 @@ class NodeUpdate(TurboUpdateView):
         return KIND_TO_FORM[self.object.kind]
 
     def get_success_url(self) -> str:
-        return reverse("workflows:node", args=(self.workflow.id, self.object.id))
+        base_url = reverse("workflows:node", args=(self.workflow.id, self.object.id))
+        if "save-preview" in self.request.POST:
+            preview_node_id = self.get_context_data()["preview_node_id"]
+            return f"{base_url}?preview_node_id={preview_node_id}&preview=true"
+        return base_url
 
 
 class NodeGrid(DetailView):

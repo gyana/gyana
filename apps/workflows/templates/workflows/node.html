@@ -14,10 +14,23 @@
       {% csrf_token %}
       {% include "django/forms/default_form.html" %}
       <div className='flex flex-row'>
-        <button type='submit' class="button button--filled button--sm"  data-action="click->tf-modal#close">Save</button>
-        <a href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ preview_node_id }}&preview=true">
-          <button type='submit' class="button button--filled button--green button--sm">Save & Preview</button>
-        </a>
+        <button 
+          type='submit' 
+          class="button button--filled button--sm" 
+          value='save' 
+          name='save-close' 
+          data-action="click->tf-modal#close"
+        >
+          Save 
+        </button>
+        <button 
+          type='submit' 
+          class="button button--filled button--green button--sm" 
+          name='save-preview'
+          value='save-preview'
+        >
+          Save & Preview  
+        </button>
       </div>
     </form>
     {% endif %}
