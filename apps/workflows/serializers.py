@@ -37,7 +37,7 @@ def get_join_desc(obj):
     return f"{obj.join_left}={obj.join_right} {obj.join_how}"
 
 
-def get_group_desc(obj):
+def get_aggregation_desc(obj):
     return f"Group by {', '.join([col.name for col in obj.columns.all()])} aggregate {[f'{agg.function}({agg.name}' for agg in obj.aggregations.all()]}"
 
 
@@ -73,7 +73,7 @@ DESCRIPTIONS = {
     "output": get_output_desc,
     "select": get_select_desc,
     "join": get_join_desc,
-    "group": get_group_desc,
+    "aggregation": get_aggregation_desc,
     "union": get_union_desc,
     "sort": get_sort_desc,
     "filter": get_filter_desc,

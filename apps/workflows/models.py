@@ -34,49 +34,58 @@ NodeConfig = {
     "input": {
         "displayName": "Input",
         "icon": "fa-layer-group",
-        "description": "Connect to one of your integrations",
+        "description": "Select a table from an Integration or previous Workflow",
+        "section": "Input/Output",
     },
     "output": {
         "displayName": "Output",
         "icon": "fa-table",
-        "description": "Save an output to use in a dashboard",
+        "description": "Save result as a new table",
+        "section": "Input/Output",
     },
     "select": {
         "displayName": "Select",
         "icon": "fa-lasso",
-        "description": "Select columns",
+        "description": "Select columns from the table",
+        "section": "Table manipulations",
     },
     "join": {
         "displayName": "Join",
         "icon": "fa-link",
-        "description": "Join two nodes",
+        "description": "Combine rows from two tables based on a common column",
         "maxParents": 2,
+        "section": "Table manipulations",
     },
-    "group": {
-        "displayName": "Group",
+    "aggregation": {
+        "displayName": "Aggregation",
         "icon": "fa-object-group",
-        "description": "Aggregate by groups",
+        "description": "Aggregate values by grouping columns",
+        "section": "Table manipulations",
     },
     "union": {
         "displayName": "Union",
         "icon": "fa-union",
-        "description": "Concatenate two nodes",
+        "description": "Combine two or more tables on top of each other",
         "maxParents": -1,
+        "section": "Table manipulations",
     },
     "sort": {
         "displayName": "Sort",
         "icon": "fa-sort-numeric-up",
-        "description": "Sort your data",
+        "description": "Sort rows by the values of the specified columns",
+        "section": "Table manipulations",
     },
     "limit": {
         "displayName": "Limit",
         "icon": "fa-sliders-h-square",
-        "description": "Limit your data",
+        "description": "Keep a set number of of rows",
+        "section": "Table manipulations",
     },
     "filter": {
         "displayName": "Filter",
         "icon": "fa-filter",
-        "description": "Filter your data",
+        "description": "Filter rows by specified criteria",
+        "section": "Table manipulations",
     },
 }
 
@@ -87,7 +96,7 @@ class Node(models.Model):
         OUTPUT = "output", "Output"
         SELECT = "select", "Select"
         JOIN = "join", "Join"
-        GROUP = "group", "Group"
+        AGGREGATION = "aggregation", "Aggregation"
         UNION = "union", "Union"
         SORT = "sort", "Sort"
         LIMIT = "limit", "Limit"
@@ -115,7 +124,7 @@ class Node(models.Model):
     # Select
     # columns exists on Column as FK
 
-    # Group
+    # Aggregation
     # columns exists on Column as FK
     # aggregations exists on FunctionColumn as FK
 
