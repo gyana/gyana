@@ -150,9 +150,27 @@ class IntegrationData(ProjectMixin, DetailView):
     model = Integration
 
 
-class IntegrationSettings(ProjectMixin, DetailView):
+class IntegrationSettings(ProjectMixin, TurboUpdateView):
     template_name = "integrations/settings.html"
     model = Integration
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["integration_kind"] = Integration.Kind
+        context_data["service_account"] = settings.GCP_BQ_SVC_ACCOUNT
+
+        return context_data
+
+    def get_form_class(self):
+        if self.object.kind == Integration.Kind.GOOGLE_SHEETS:
+            return GoogleSheetsForm
+        elif self.object.kind == Integration.Kind.CSV:
+            return CSVForm
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "projects:integrations:settings", args=(self.project.id, self.object.id)
+        )
 
 
 # Turbo frames

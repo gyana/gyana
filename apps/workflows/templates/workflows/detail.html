@@ -10,15 +10,16 @@
     <turbo-frame id="workflows:run" src="{% url 'workflows:run' object.id %}"></turbo-frame>
   </div>
 
-  <a class="button button--square button--sm button--filled"
-     href="{% url 'projects:workflows:update' project.id object.pk %}">Update</a>
+  <a href="{% url 'projects:workflows:update' project.id object.pk %}" class="button button--circle button--tertiary">
+    <i class="fas fa-pen"></i>
+  </a>
   <a class="button button--square button--sm button--filled button--danger"
      href="{% url 'projects:workflows:delete' project.id object.pk %}">Delete</a>
 </div>
 
 <div data-controller="tf-modal" class="flex flex-1">
   <div data-tf-modal-target="modal" class="tf-modal hidden absolute h-full w-full p-12 py-24 bg-transparent z-10">
-    <div class="card flex flex-col h-full">
+    <div class="card card--inline w-full flex-col h-full">
       <div class="flex justify-end">
         <button class="tf-modal__close" data-action="click->tf-modal#close">
           <i class="fal fa-times"></i>
