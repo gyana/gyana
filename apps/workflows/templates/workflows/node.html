@@ -1,5 +1,3 @@
-{% load crispy_forms_tags %}
-
 {% with parents=node.parents.all %}
 
 <turbo-frame id="workflow-node">
@@ -14,7 +12,7 @@
       data-trigger-event-value="node-updated-{{ node.id }}"
       data-action="submit->trigger#dispatch">
       {% csrf_token %}
-      {% crispy form %}
+      {% include "django/forms/default_form.html" %}
       <div className='flex flex-row'>
         <button type='submit' class="button button--filled button--sm"  data-action="click->tf-modal#close">Save</button>
         <a href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ preview_node_id }}&preview=true">
