@@ -23,7 +23,6 @@ class NodeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.add_input(Submit("submit", "Update"))
 
     @cached_property
     def columns(self):

@@ -15,6 +15,12 @@
       data-action="submit->trigger#dispatch">
       {% csrf_token %}
       {% crispy form %}
+      <div className='flex flex-row'>
+        <button type='submit' class="button button--filled button--sm"  data-action="click->tf-modal#close">Save</button>
+        <a href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ preview_node_id }}&preview=true">
+          <button type='submit' class="button button--filled button--green button--sm">Save & Preview</button>
+        </a>
+      </div>
     </form>
     {% endif %}
   </div>
