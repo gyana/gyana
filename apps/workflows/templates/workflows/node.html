@@ -53,7 +53,15 @@
     {% if request.GET.preview %}
       <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id preview_node_id %}">Loading...</turbo-frame>
     {% else %}
-      <a href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ preview_node_id }}&preview=true">Preview</a>
+    <div class='workflow-detail__load-preview'>
+      <a 
+        class='flex flex-row items-center'
+        href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ preview_node_id }}&preview=true"
+      >
+        <i class='fad fa-redo fa-lg'></i>
+        <span class='font-semibold text-black-50'>Load preview</span>
+        </a>
+    </div>
     {% endif %}
   </div>
 {% else %}
