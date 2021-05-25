@@ -34,49 +34,49 @@ NodeConfig = {
     "input": {
         "displayName": "Input",
         "icon": "fa-layer-group",
-        "description": "Connect to one of your integrations",
+        "description": "Select a table from an Integration",
     },
     "output": {
         "displayName": "Output",
         "icon": "fa-table",
-        "description": "Save an output to use in a dashboard",
+        "description": "Save result as a new table",
     },
     "select": {
         "displayName": "Select",
         "icon": "fa-lasso",
-        "description": "Select columns",
+        "description": "Select columns from the table",
     },
     "join": {
         "displayName": "Join",
         "icon": "fa-link",
-        "description": "Join two nodes",
+        "description": "Combine rows from two tables based on a common column",
         "maxParents": 2,
     },
     "group": {
         "displayName": "Group",
         "icon": "fa-object-group",
-        "description": "Aggregate by groups",
+        "description": "Aggregate values by grouping columns",
     },
     "union": {
         "displayName": "Union",
         "icon": "fa-union",
-        "description": "Concatenate two nodes",
+        "description": "Combine two or more tables on top of each other",
         "maxParents": -1,
     },
     "sort": {
         "displayName": "Sort",
         "icon": "fa-sort-numeric-up",
-        "description": "Sort your data",
+        "description": "Sort rows by the values of the specified columns",
     },
     "limit": {
         "displayName": "Limit",
         "icon": "fa-sliders-h-square",
-        "description": "Limit your data",
+        "description": "Keep a set number of of rows",
     },
     "filter": {
         "displayName": "Filter",
         "icon": "fa-filter",
-        "description": "Filter your data",
+        "description": "Filter rows by specified criteria",
     },
 }
 
