@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, createContext, useContext } from 'react'
 import ReactFlow, {
-  ReactFlowProvider,
   addEdge,
   removeElements,
   Controls,
