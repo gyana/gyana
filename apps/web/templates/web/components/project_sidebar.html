@@ -1,10 +1,8 @@
 <nav class="project__sidebar">
-  <h2 class="pad">{{ project.name }}</h2>
+  <h3 class="project__title">{{ project.name }}</h3>
 
-  <hr>
   {% with app_name=request.resolver_match.app_name %}
   <ul class="project__nav">
-
     <li>
       <a class="project__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}project__link--active{% endif %}"
          href="{% url 'projects:detail' project.id %}">

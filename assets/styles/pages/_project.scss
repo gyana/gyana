@@ -3,6 +3,14 @@
   flex: 1 1 auto;
   overflow: hidden;
 
+  &__title {
+    align-items: center;
+    display: flex;
+    height: 5.2rem;
+    padding: 0 1.6rem;
+    border-bottom: 1px solid var(--c-gray);
+  }
+
   &__sidebar {
     background-color: var(--c-white);
     border-right: 1px solid var(--c-gray);

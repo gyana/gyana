@@ -4,10 +4,10 @@
 <div class="workflow-detail__header">
   <h3 class="mr-auto">{{object.name}}</h3>
 
-  <a class="button button--square button--sm button--orange button--filled"
-     href="{% url 'projects:integrations:update' project.id object.pk %}">Edit</a>
-  <a class="button button--square button--sm button--filled button--danger"
-     href="{% url 'projects:integrations:delete' project.id object.pk %}">Delete</a>
+  <a class="button button--circle button--tertiary"
+     href="{% url 'projects:integrations:update' project.id object.pk %}">
+    <i class="fas fa-pen"></i>
+  </a>
 </div>
 
 <nav class="tabbar">
@@ -25,6 +25,10 @@
     Data
   </a>
   {% endif %}
+  <a class="tabbar__link {% if request.resolver_match.url_name == 'data' %} tabbar__link--active {% endif %}"
+     href="{% url 'projects:integrations:settings' project.id object.id %}">
+    Settings
+  </a>
 </nav>
 
 <div class="flex flex-col flex-1 p-4 overflow-auto">
