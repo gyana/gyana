@@ -1,10 +1,9 @@
 <nav class="project__sidebar">
+  <h2 class="pad">{{ project.name }}</h2>
 
+  <hr>
   {% with app_name=request.resolver_match.app_name %}
   <ul class="project__nav">
-    <li>
-      <h1>{{ project.name }}</h1>
-    </li>
 
     <li><a
          class="project__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}project__link--active{% endif %}"
@@ -22,6 +21,6 @@
   {% endwith %}
 
   <footer class="project__footer">
-    <a class="button w-full" href="{% url 'projects:update' project.id %}">Settings <i class="fas fa-cog"></i></a>
+    <a class="project__link" href="{% url 'projects:update' project.id %}">Settings</a>
   </footer>
 </nav>
