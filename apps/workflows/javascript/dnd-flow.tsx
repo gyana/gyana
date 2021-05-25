@@ -328,11 +328,17 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
     <h3>{data.label}</h3>
     <Description id={id} data={data} />
 
-    <Handle
-      type="source"
-      position={Position.Right}
-      isConnectable={isConnectable}
-    />
+    <Handle type='source' position={Position.Right} isConnectable={isConnectable} />
+  </>
+)
+
+const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
+  <>
+    {selected && <Buttons id={id} />}
+    {data.error && <ErrorIcon text={data.error} />}
+    <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
+    <h3>{data.label}</h3>
+    <Description id={id} data={data} />
   </>
 )
 
