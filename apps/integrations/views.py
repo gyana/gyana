@@ -80,7 +80,10 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        # after the model is saved by the super call, we start syncing it.
+        form.instance.start_sync()
+        return response
 
     def get_success_url(self) -> str:
         return reverse(
