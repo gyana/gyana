@@ -6,8 +6,15 @@
     {{ bound_field }}
   </label>
   <p class="input__help-text">{{ bound_field.help_text }}</p>
+
   {{ bound_field.errors }}
 </div>
+{% endfor %}
+
+{% for error in form.non_field_errors %}
+<p class="text-red">
+  {{error|escape}}
+</p>
 {% endfor %}
 
 {% for hidden_field in form.hidden_fields %}
