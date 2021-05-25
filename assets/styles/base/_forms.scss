@@ -10,8 +10,8 @@ form {
   border: 1px solid var(--c-black-20);
   border-radius: 5px;
   color: var(--c-black-50);
-  font-size: 0.875rem;
-  padding: 0.75rem 1rem;
+  font-size: 1.4rem;
+  padding: 1.2rem 1.6rem;
   width: 100%;
 
   &:focus {
@@ -41,6 +41,10 @@ input[type="url"] {
   @extend %input;
 }
 
+textarea {
+  @extend %input;
+}
+
 select {
   @extend %input;
 
@@ -60,9 +64,9 @@ label {
   color: var(--c-black-20);
   display: flex;
   flex-flow: column;
-  font-size: 0.875rem;
-  gap: 0.5rem;
-  line-height: 1rem;
+  font-size: 1.4rem;
+  gap: 0.8rem;
+  line-height: 1.6rem;
   width: 100%;
 
   &:focus-within {

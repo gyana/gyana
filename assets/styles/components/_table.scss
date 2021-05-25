@@ -7,10 +7,10 @@
 
     th {
       color: var(--c-black-20);
-      font-size: 0.75rem;
+      font-size: 1.2rem;
       font-weight: normal;
-      line-height: 0.875rem;
-      padding: 1em 0;
+      line-height: 1.4rem;
+      padding: 1.6rem 0;
       text-align: left;
     }
 
@@ -36,9 +36,9 @@
 
   tbody {
     td {
-      font-size: 0.875rem;
-      line-height: 1.125rem;
-      padding: 0.625em 0;
+      font-size: 1.2rem;
+      line-height: 1.4rem;
+      padding: 1rem 0;
     }
 
     .even {
@@ -48,12 +48,12 @@
 
   th:first-child,
   td:first-child {
-    padding-left: 1em;
+    padding-left: 1.2rem;
   }
 
   td a[href] {
     color: var(--c-blue);
-    padding: 0.625em 0; 
+    padding: 1.2rem 0; 
     
     &:hover {
       font-weight: 500;

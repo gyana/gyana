@@ -14,18 +14,18 @@ $button-colors: (
   align-items: center;
   border-radius: 50px;
   display: inline-flex;
-  font-size: 1rem;
+  font-size: 1.6rem;
   font-weight: 500;
   gap: 0.5em;
   justify-content: center;
-  line-height: 20px;
-  padding: 0.625em 1.875em;
+  line-height: 1.9rem;
+  max-height: 3.9rem;
+  padding: 1rem 3rem;
   text-align: center;
 
   background-color: var(--button-background);
   border: 1px solid var(--button-color);
   color: var(--button-color);
-
   
   &:disabled,
   &.disabled {
@@ -61,20 +61,26 @@ $button-colors: (
 
 // Sizes
 .button--sm {
-  font-size: 0.875rem;
-  line-height: 1rem;
-  max-height: 2em;
-  padding: 0.571428571em 1.14285714em;
+  font-size: 1.4rem;
+  line-height: 1.6rem;
+  max-height: 3.2rem;
+  padding: 0.8rem 1.6rem;
 }
 
 // Variants
 .button--square {
   border-radius: 6px;
-  padding: 0.75em 1.875em;
 }
 
 .button--circle {
-  height: 2em;
+  font-size: 1.4rem;
+  height: 3.2rem;
   padding: 1em;
-  width: 2em;
+  width: 3.2rem;
+
+  &.button--sm {
+    font-size: 1.2rem;
+    height: 2.4rem;
+    width: 2.4rem;
+  }
 }

@@ -11,7 +11,7 @@ $card-colors: (
 .card {
   --card-color: var(--c-gray);
 
-  padding: 1.875rem;
+  padding: 3rem;
   
   background: var(--c-white);
   border-radius: 10px;
@@ -27,6 +27,7 @@ $card-colors: (
     justify-content: center;
     align-items: center;
     color: var(--c-black-50);
+    text-align: center;
 
     &::before {
       content: "";

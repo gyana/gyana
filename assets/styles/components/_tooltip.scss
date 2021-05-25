@@ -2,15 +2,15 @@
   background-color: var(--c-black);
   content: '';
   display: block;
-  height: 0.5rem;
+  height: 1rem;
   position: absolute;
-  width: 0.5rem;
+  width: 1rem;
 }
 
 .tooltip {
   position: relative;
   white-space: nowrap;
-  z-index: 1;
+  z-index: 99;
 
   &:hover &__content {
     display: block;
@@ -21,8 +21,8 @@
     border-radius: 5px;
     color: var(--c-white);
     display: none;
-    font-size: 0.75rem;
-    padding: 0.5rem 0.5rem;
+    font-size: 1.2rem;
+    padding: 1rem;
     position: absolute;
     text-align: center;
     z-index: 999;
@@ -31,12 +31,12 @@
   &--top &__content {
     top: 0;
     left: 50%;
-    transform: translate(-50%, calc(-100% - 0.25rem));
+    transform: translate(-50%, calc(-100% - 0.5rem));
 
     &::after {
       @extend %arrow;
 
-      bottom: 0.3rem;
+      bottom: 0.5rem;
       left: 50%;
       transform: translate(-50%, 100%) rotate(45deg);
     }
@@ -45,13 +45,13 @@
   &--bottom &__content {
     bottom: 0;
     left: 50%;
-    transform: translate(-50%, calc(100% + 0.25rem));
+    transform: translate(-50%, calc(100% + 0.5rem));
 
     &::after {
       @extend %arrow;
 
       left: 50%;
-      top: 0.3rem;
+      top: 0.5rem;
       transform: translate(-50%, -100%) rotate(45deg);
     }
   }
@@ -59,12 +59,12 @@
   &--left &__content {
     top: 50%;
     left: 0;
-    transform: translate(calc(-100% - 0.25rem), -50%);
+    transform: translate(calc(-100% - 0.5rem), -50%);
 
     &::after {
       @extend %arrow;
 
-      right: 0.3rem;
+      right: 0.5rem;
       top: 50%;
       transform: translate(100%, -50%) rotate(45deg);
     }
@@ -73,12 +73,12 @@
   &--right &__content {
     top: 50%;
     right: 0;
-    transform: translate(calc(100% + 0.25rem), -50%);
+    transform: translate(calc(100% + 0.5rem), -50%);
 
     &::after {
       @extend %arrow;
 
-      left: 0.3rem;
+      left: 0.5rem;
       top: 50%;
       transform: translate(-100%, -50%) rotate(45deg);
     }

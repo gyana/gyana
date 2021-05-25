@@ -26,12 +26,13 @@ export default () => {
             onDragStart={(event) => onDragStart(event, key)}
             draggable
           >
-            <i className={`dnd-sidebar__icon fad ${node.icon}`}></i>
+            <i className={`dnd-sidebar__icon fad fa-fw ${node.icon}`}></i>
+
             <div className="flex flex-col">
-              <span className="dnd-sidebar__name">{node.displayName}</span>
-              <span className="dnd-sidebar__description">
+              <h3>{node.displayName}</h3>
+              <p className="dnd-sidebar__description">
                 {node.description}
-              </span>
+              </p>
             </div>
           </div>
         );

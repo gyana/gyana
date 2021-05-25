@@ -12,9 +12,9 @@
     border: 1px solid var(--c-gray);
     display: flex;
     flex-flow: column;
-    padding: 1rem;
+    padding: 1.6rem;
     width: 100%;
-    z-index: 10;
+    z-index: 1;
   }
 
   &__commands {
@@ -26,11 +26,12 @@
     display: flex;
     flex-flow: column;
     flex-shrink: 0;
-    gap: 1rem;
-    margin-left: -1.2rem;
-    padding: 0.5rem 0.3rem 0 1.5rem;
+    font-size: 1.4rem;
+    gap: 1.6rem;
+    margin-left: -2.5rem;
+    padding: 1rem 0.5rem 1rem 3rem;
     visibility: hidden;
-    z-index: 9;
+    z-index: 0;
 
     a:hover {
       color: var(--c-black-50);

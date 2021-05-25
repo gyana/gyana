@@ -7,24 +7,23 @@
       background-color: var(--c-white);
       border-bottom: 1px solid var(--c-gray);
       display: flex;
-      gap: 1em;
-      height: 3.25em;
-      padding: 0 1em;
+      gap: 1.6rem;
+      height: 5.2rem;
+      padding: 0 1.6rem;
     }
 
     &__sidebar {
       background-color: var(--c-white);
       border-right: 1px solid var(--c-gray);
       overflow-y: auto;
-      padding: 1em;
-      width: 18em;
+      padding: 1.6rem;
+      width: 18rem;
     }
 
     &__table {
       background-color: var(--c-white);
       border-top: 1px solid var(--c-gray);
       height: 100%;
-
       width: 100%;
     }
 
@@ -33,6 +32,7 @@
       flex-direction: column;
       width: 100%;
       align-items: center;
+
       .fa-stethoscope {
         color: var(--c-orange);
       }
@@ -40,8 +40,8 @@
 
     #workflow-node {
       display: flex;
-      overflow: hidden;
       flex: 1 1 0%;
+      overflow: hidden;
     }
   }
 }
