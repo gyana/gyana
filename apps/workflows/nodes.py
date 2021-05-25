@@ -65,7 +65,7 @@ def aggregate(query, colname, computation):
     return getattr(column, computation)().name(colname)
 
 
-def get_group_query(node):
+def get_aggregation_query(node):
     query = node.parents.first().get_query()
     groups = node.columns.all()
     aggregations = [
@@ -112,7 +112,7 @@ NODE_FROM_CONFIG = {
     "input": get_input_query,
     "output": get_output_query,
     "join": get_join_query,
-    "group": get_group_query,
+    "aggregation": get_aggregation_query,
     "select": get_select_query,
     "union": get_union_query,
     "sort": get_sort_query,

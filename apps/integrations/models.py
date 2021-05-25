@@ -32,6 +32,9 @@ class Integration(models.Model):
     url = models.URLField(null=True)
     file = models.FileField(upload_to=get_file_path, null=True)
 
+    # Sheets config
+    cell_range = models.CharField(max_length=64, null=True, blank=True)
+
     # bigquery external tables
     external_table_sync_task_id = models.UUIDField(null=True)
     has_initial_sync = models.BooleanField(default=False)

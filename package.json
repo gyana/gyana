@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --mode=development --progress",
     "build:watch": "webpack --mode=development --watch --progress",
-    "build:prod": "NODE_ENV=production webpack --mode=production --progress"
+    "build:prod": "NODE_ENV=production webpack --mode=production --progress",
+    "prettier": "prettier --write ./**/*.{ts,tsx}"
   },
   "author": "Gyana",
   "homepage": "https://app.gyana.com/",
@@ -25,6 +26,7 @@
     "css-loader": "^2.1.1",
     "cssnano": "^5.0.2",
     "mini-css-extract-plugin": "^1.3.1",
+    "prettier": "^2.3.0",
     "postcss": "^8.2.13",
     "postcss-import": "^13.0.0",
     "postcss-loader": "^4.0.4",

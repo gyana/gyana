@@ -16,6 +16,9 @@ def create_external_config(integration: Integration):
         # https://cloud.google.com/bigquery/external-data-drive#python
         external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
         external_config.source_uris = [integration.url]
+        # Only include cell range when it exists
+        if integration.cell_range:
+            external_config.options.range = integration.cell_range
     elif integration.kind == Integration.Kind.CSV:
         external_config = bigquery.ExternalConfig("CSV")
         external_config.source_uris = [
