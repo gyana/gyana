@@ -11,6 +11,7 @@ from .models import (
     EditColumn,
     FunctionColumn,
     Node,
+    RenameColumn,
     SortColumn,
     Workflow,
 )
@@ -149,6 +150,16 @@ AddColumnFormSet = forms.inlineformset_factory(
 )
 
 
+RenameColumnFormSet = forms.inlineformset_factory(
+    Node,
+    RenameColumn,
+    fields=("name", "new_name"),
+    can_delete=True,
+    extra=1,
+    formset=InlineColumnFormset,
+)
+
+
 class UnionNodeForm(NodeForm):
     class Meta:
         model = Node
@@ -183,10 +194,12 @@ KIND_TO_FORM = {
     "filter": DefaultNodeForm,
     "edit": DefaultNodeForm,
     "add": DefaultNodeForm,
+    "rename": DefaultNodeForm,
 }
 KIND_TO_FORMSETS = {
     "aggregation": [FunctionColumnFormSet, ColumnFormSet],
     "sort": [SortColumnFormSet],
     "edit": [EditColumnFormSet],
     "add": [AddColumnFormSet],
+    "rename": [RenameColumnFormSet],
 }

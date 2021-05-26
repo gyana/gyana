@@ -99,6 +99,12 @@ NodeConfig = {
         "description": "Add new columns to the table",
         "section": "Column manipulations",
     },
+    "rename": {
+        "displayName": "Rename",
+        "icon": "fa-keyboard",
+        "description": "Rename columns",
+        "section": "Column manipulations",
+    },
 }
 
 
@@ -115,6 +121,7 @@ class Node(models.Model):
         FILTER = "filter", "Filter"
         EDIT = "edit", "Edit"
         ADD = "add", "Add"
+        RENAME = "rename", "Rename"
 
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"
@@ -164,14 +171,11 @@ class Node(models.Model):
 
     union_distinct = models.BooleanField(default=False)
 
-    # Sort
-    # handled via ForeignKey on SortModel
-
     # Filter
     # handled by the Filter model in *apps/filters/models.py*
 
-    # Edit and Add
-    # handled via ForeignKey on EditModel
+    # Sort, Edit, Add, and Rename
+    # handled via ForeignKey on SortColumn EditColumn, AddColumn, and RenameColumn respectively
 
     # Limit
 
@@ -259,6 +263,17 @@ class AddColumn(models.Model):
     name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     function = models.CharField(max_length=20, choices=Operations.choices)
     label = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        validators=[bigquery_column_regex],
+    )
+
+
+class RenameColumn(models.Model):
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="rename_columns"
+    )
+    name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    new_name = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         validators=[bigquery_column_regex],
     )
