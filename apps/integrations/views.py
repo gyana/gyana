@@ -16,7 +16,7 @@ from .fivetran import FivetranClient, get_services
 from .forms import CSVForm, FivetranForm, GoogleSheetsForm
 from .models import Integration
 from .tables import IntegrationTable, StructureTable
-from .tasks import poll_fivetran_historical_sync
+from .tasks import poll_fivetran_historical_sync, run_mock_loader
 
 # CRUDL
 
@@ -179,6 +179,16 @@ class IntegrationSync(TurboUpdateView):
     template_name = "integrations/sync.html"
     model = Integration
     fields = []
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data[
+            "external_table_sync_task_id"
+        ] = self.object.external_table_sync_task_id
+
+        context_data["mock_task"] = run_mock_loader.delay()
+
+        return context_data
 
     def form_valid(self, form):
         self.object.start_sync()

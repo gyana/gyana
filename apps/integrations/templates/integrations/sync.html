@@ -1,4 +1,5 @@
 {% load humanize %}
+{% load static %}
 
 <turbo-frame id="integrations:sync">
   {% if not object.table_set.exists %}
@@ -14,5 +15,18 @@
   {% else %}
   <p><i class="fad fa-spinner-third fa-spin"></i> Syncing, you'll get an email when it is ready</p>
   {% endif %}
+  <div class='progress-wrapper'>
+    <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+  </div>
+  <div id="progress-bar-message">Waiting for progress to start...</div>
   <p>Latest sync: {{ object.last_synced|naturaltime }}</p>
-</turbo-frame>
+  <div data-controller="turbo-issue-186-workaround">
+    <script src="{% static 'celery_progress/celery_progress.js' %}"
+            onload="window.dispatchEvent(new Event('celeryProgress:load'))"></script>
+    <script>
+      window.addEventListener("celeryProgress:load", function () {
+        var progressUrl = "/celery-progress/d6072d83-b1c4-482a-a0fc-c78bae9eebe3/";
+        CeleryProgressBar.initProgressBar(progressUrl);
+      }, { once: true });</script>
+  </div>
+  </turbo - frame>

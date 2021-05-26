@@ -58,17 +58,22 @@ def copy_table_from_external_table(integration: Integration, external_table_id: 
         table_definitions={external_table_id: external_config}
     )
 
-    client.query(
+    query_job = client.query(
         f"CREATE OR REPLACE TABLE {DATASET_ID}.{table_id} AS SELECT * FROM {DATASET_ID}.{external_table_id}",
         job_config=job_config,
-    ).result()
+    )
 
-    return table_id
+    return table_id, query_job
 
 
 def sync_integration(integration: Integration):
     external_table_id = create_external_table(integration)
-    table_id = copy_table_from_external_table(integration, external_table_id)
+    table_id, query_job = copy_table_from_external_table(integration, external_table_id)
+
+    yield query_job
+
+    # this halts the function until the query_job is completed
+    query_job.result()
 
     with transaction.atomic():
 
