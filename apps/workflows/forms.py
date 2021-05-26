@@ -1,9 +1,6 @@
 from functools import cached_property
 
 from apps.tables.models import Table
-from apps.utils.formset_layout import Formset
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Fieldset, Layout, Submit
 from django import forms
 from django.forms.models import BaseInlineFormSet
 from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
@@ -19,11 +16,6 @@ class WorkflowForm(forms.ModelForm):
 
 
 class NodeForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-
     @cached_property
     def columns(self):
         """Returns the schema for the first parent."""
@@ -125,13 +117,6 @@ class GroupNodeForm(NodeForm):
         model = Node
         fields = []
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper.layout = Layout(
-            Fieldset("Add columns", Formset("column_form_form_set")),
-            Fieldset("Add aggregates", Formset("function_column_form_form_set")),
-        )
-
 
 SortColumnFormSet = forms.inlineformset_factory(
     Node,
@@ -147,12 +132,6 @@ class SortNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = []
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper.layout = Layout(
-            Fieldset("Add columns", Formset("sort_column_form_form_set")),
-        )
 
 
 class UnionNodeForm(NodeForm):
