@@ -4,8 +4,8 @@ from apps.projects.models import Project
 from apps.tables.models import Table
 from apps.workflows.nodes import NODE_FROM_CONFIG
 from django.conf import settings
+from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models.fields import related
 from django.urls import reverse
 
 
@@ -248,9 +248,17 @@ class EditColumn(models.Model):
     function = models.CharField(max_length=20, choices=Operations.choices)
 
 
+bigquery_column_regex = RegexValidator(
+    r"^[a-zA-Z_][0-9a-zA-Z_]*$", "Only numbers, letters and underscores allowed."
+)
+
+
 class AddColumn(models.Model):
 
     node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="add_columns")
     name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     function = models.CharField(max_length=20, choices=Operations.choices)
-    label = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    label = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        validators=[bigquery_column_regex],
+    )
