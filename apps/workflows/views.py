@@ -9,7 +9,7 @@ from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
 from django.urls import reverse
 from django.views.generic import DetailView
-from django.views.generic.edit import DeleteView, UpdateView
+from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from lib.clients import ibis_client
 from rest_framework import viewsets
@@ -172,19 +172,6 @@ class NodeGrid(DetailView):
         context["columns"] = json.dumps([{"field": col} for col in df.columns])
         context["rows"] = df.to_json(orient="records")
         return context
-
-
-class WorkflowRun(UpdateView):
-    template_name = "workflows/run.html"
-    model = Workflow
-    fields = []
-
-    def form_valid(self, form) -> HttpResponse:
-        run_workflow(self.object)
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        return reverse("workflows:run", args=(self.object.id,))
 
 
 @api_view(http_method_names=["POST"])

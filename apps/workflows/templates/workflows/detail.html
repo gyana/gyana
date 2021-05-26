@@ -6,10 +6,7 @@
 {% block app %}
 <div class="workflow-detail__header">
   <h3>{{ object.name }}</h3>
-  <div class="mr-auto">
-    <turbo-frame id="workflows:run" src="{% url 'workflows:run' object.id %}"></turbo-frame>
-  </div>
-
+  <p class="text-black-50 mr-auto">Last run: {{ object.last_run|default_if_none:'Never' }}</p>
   <a class="button button--square button--sm button--filled"
      href="{% url 'projects:workflows:update' project.id object.pk %}">Update</a>
   <a class="button button--square button--sm button--filled button--danger"
