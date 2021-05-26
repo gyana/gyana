@@ -5,6 +5,20 @@
 
 {% block app %}
 
+<ul class="flex items-center space-x-4 mb-4">
+{% for iter_team in request.user.teams.all %}
+  <li>
+    <a class="{% if iter_team.slug == team.slug %}text-blue{% endif %}"
+      href="{% url 'single_team:projects:list' iter_team.slug %}">
+      {{ iter_team.name }}
+    </a>
+  </li>
+{% endfor %}
+  <li>
+    <a href="{% url 'teams:manage_teams' %}"><i class="fa fa-plus"></i></a>
+  </li>
+</ul>
+
 <div class="flex items-center mb-4">
   <h1 class="mr-auto">Projects</h1>
 </div>
@@ -44,7 +58,7 @@
   </li>
   {% endfor %}
   <li>
-    <a class="card card--sm card--primary card--center" href="{% url 'projects:create' %}">
+    <a class="card card--sm card--primary card--center" href="{% url 'single_team:projects:create' team.slug %}">
       <i class="fas fa-plus mr-4"></i><strong>Create new Project</strong>
     </a>
   </li>
@@ -54,13 +68,13 @@
 <div class="pagination">
   <span class="page-links">
     {% if page_obj.has_previous %}
-    <a href="{% url 'projects:list' %}?page={{ page_obj.previous_page_number }}">previous</a>
+    <a href="{% url 'single_team:projects:list' team.slug %}?page={{ page_obj.previous_page_number }}">previous</a>
     {% endif %}
     <span class="page-current">
       Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
     </span>
     {% if page_obj.has_next %}
-    <a href="{% url 'projects:list' %}?page={{ page_obj.next_page_number }}">next</a>
+    <a href="{% url 'single_team:projects:list' team.slug %}?page={{ page_obj.next_page_number }}">next</a>
     {% endif %}
   </span>
 </div>

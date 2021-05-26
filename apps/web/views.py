@@ -12,7 +12,9 @@ def home(request):
 
         team = get_default_team(request)
         if team:
-            return HttpResponseRedirect(reverse("projects:list"))
+            return HttpResponseRedirect(
+                reverse("single_team:projects:list", args=(team.slug,))
+            )
         else:
             messages.info(
                 request,
@@ -24,7 +26,7 @@ def home(request):
             return HttpResponseRedirect(reverse("teams:manage_teams"))
 
     else:
-        return redirect('/accounts/login')
+        return redirect("/accounts/login")
 
 
 @login_and_team_required

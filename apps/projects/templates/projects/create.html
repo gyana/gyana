@@ -4,7 +4,7 @@
   <h1>New Project</h1>
   <p class="mb-4">Projects contain integrations, workflows, and dashboards. Think of them as separate workspaces.</p>
 
-  <form method="post" action="{% url 'projects:create' %}" class="form">
+  <form method="post" action="{% url 'single_team:projects:create' team.slug %}" class="form">
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}

@@ -4,10 +4,10 @@
     {{project_meta.NAME}}
   </a>
 
-  <div class="navbar__menu">
+  {% comment %} <div class="navbar__menu">
     <a class="navbar__item {% if 'projects' in request.resolver_match.route %} navbar__item--active {% endif %}"
-       href="{% url 'projects:list' %}">Projects</a>
-  </div>
+       href="{% url 'single_team:projects:list' team.slug|default_if_none:project.team.slug %}">Projects</a>
+  </div> {% endcomment %}
 
   <div class="navbar__menu">
     <a class="button button--tertiary button--circle" href="https://gyana.com/">

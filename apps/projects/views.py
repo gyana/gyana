@@ -1,3 +1,4 @@
+from apps.teams.mixins import TeamMixin
 from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 from django.urls.base import reverse
@@ -9,23 +10,23 @@ from .forms import ProjectForm
 from .models import Project
 
 
-class ProjectList(ListView):
+class ProjectList(TeamMixin, ListView):
     template_name = "projects/list.html"
     model = Project
     paginate_by = 20
 
     def get_queryset(self) -> QuerySet:
-        return Project.objects.filter(team=self.request.user.teams.first()).all()
+        return Project.objects.filter(team=self.team).all()
 
 
-class ProjectCreate(TurboCreateView):
+class ProjectCreate(TeamMixin, TurboCreateView):
     template_name = "projects/create.html"
     model = Project
     form_class = ProjectForm
 
     def get_initial(self):
         initial = super().get_initial()
-        initial["team"] = self.request.user.teams.first()
+        initial["team"] = self.team
         return initial
 
     def get_success_url(self) -> str:

@@ -1,8 +1,7 @@
-from django.urls import path
-from . import views
-
+from django.urls import include, path
 from rest_framework import routers
 
+from . import views
 
 app_name = "teams"
 
@@ -32,6 +31,7 @@ team_urlpatterns = (
             views.resend_invitation,
             name="resend_invitation",
         ),
+        path("projects/", include("apps.projects.urls.teams")),
     ],
     "single_team",
 )
