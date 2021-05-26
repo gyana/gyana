@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
@@ -10,12 +10,13 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from .api_url_helpers import get_team_api_url_templates
 from .decorators import login_and_team_required, team_admin_required
-from .invitations import send_invitation, process_invitation, clear_invite_from_session
 from .forms import TeamChangeForm
-from .models import Team, Invitation
+from .invitations import (clear_invite_from_session, process_invitation,
+                          send_invitation)
+from .models import Invitation, Team
 from .permissions import TeamAccessPermissions, TeamModelAccessPermissions
 from .roles import is_admin, is_member
-from .serializers import TeamSerializer, InvitationSerializer
+from .serializers import InvitationSerializer, TeamSerializer
 
 
 @login_required
@@ -45,7 +46,7 @@ def create_team(request):
             team = form.save()
             team.members.add(request.user, through_defaults={"role": "admin"})
             team.save()
-            return HttpResponseRedirect(reverse("teams:list_teams"))
+            return HttpResponseRedirect(reverse("single_team:projects:list", args=(team.slug, )))
     else:
         form = TeamChangeForm()
     return render(

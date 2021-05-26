@@ -13,7 +13,7 @@
     {% for team in teams %}
     <tr>
       <td>
-        <a href="{% url 'teams:manage_team' team.slug %}">{{team.name}}</a>
+        <a href="{% url 'teams:manage_teams' team.slug %}">{{team.name}}</a>
       </td>
     </tr>
     {% endfor %}
