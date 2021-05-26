@@ -10,6 +10,29 @@
           data-trigger-event-value="node-updated-{{ node.id }}" data-action="submit->trigger#dispatch">
       {% csrf_token %}
       {% include "django/forms/default_form.html" %}
+      
+      {% if column_form_form_set %}
+        <fieldset>
+          <label>Add columns</label>
+          {% include "components/formset.html" with formset=column_form_form_set %}
+        </fieldset>
+      {% endif %}
+
+      {% if function_column_form_form_set %}
+        <fieldset>
+          <label>Add aggregates</label>
+          {% include "components/formset.html" with formset=function_column_form_form_set %}
+        </fieldset>
+      {% endif %}
+
+      {% if sort_column_form_form_set %}
+        <fieldset>
+          <label>Add columns</label>
+          {% include "components/formset.html" with formset=sort_column_form_form_set %}
+        </fieldset>
+      {% endif %}
+      
+
       <div className='flex flex-row'>
         <button 
           type='submit' 

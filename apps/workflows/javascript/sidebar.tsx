@@ -9,11 +9,13 @@ const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
 const SECTIONS = Object.keys(NODES).reduce((sections, key) => {
   const node = NODES[key]
   const section = node.section
+
   if (!sections[section]) {
     sections[section] = [key]
   } else {
     sections[section] = [...sections[section], key]
   }
+
   return sections
 }, {})
 
@@ -72,27 +74,34 @@ const Sidebar: React.FC<{
       </hgroup>
 
       {Object.keys(SECTIONS).map((section) => (
-        <div className='flex flex-col' key={section}>
-          <span className='font-semibold text-lg'>{section}</span>
-          {SECTIONS[section].map((kind) => {
-            const node = NODES[kind]
+        <>
+          <hgroup>
+            <h3>{section}</h3>
+            <p>TODO: Section description</p>
+          </hgroup>
 
-            return (
-              <div
-                key={kind}
-                className='dnd-sidebar__node '
-                onDragStart={(event) => onDragStart(event, kind)}
-                draggable
-              >
-                <i className={`dnd-sidebar__icon fad ${node.icon}`}></i>
-                <div className='flex flex-col'>
-                  <h3 className='dnd-sidebar__name'>{node.displayName}</h3>
-                  <p className='dnd-sidebar__description'>{node.description}</p>
+          <div className='grid' style={{ gridAutoRows: '1fr' }} key={section}>
+            {SECTIONS[section].map((kind) => {
+              const node = NODES[kind]
+
+              return (
+                <div
+                  key={kind}
+                  className='dnd-sidebar__node '
+                  onDragStart={(event) => onDragStart(event, kind)}
+                  draggable
+                >
+                  <i className={`dnd-sidebar__icon fad fa-fw ${node.icon}`}></i>
+                  <div className='flex flex-col'>
+                    <h4 className='dnd-sidebar__name'>{node.displayName}</h4>
+                    <p className='dnd-sidebar__description'>{node.description}</p>
+                  </div>
                 </div>
-              </div>
-            )
-          })}
-        </div>
+              )
+            })}
+          </div>
+          <hr />
+        </>
       ))}
     </aside>
   )
