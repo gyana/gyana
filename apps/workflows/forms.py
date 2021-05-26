@@ -5,7 +5,15 @@ from django import forms
 from django.forms.models import BaseInlineFormSet
 from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
 
-from .models import Column, EditColumn, FunctionColumn, Node, SortColumn, Workflow
+from .models import (
+    AddColumn,
+    Column,
+    EditColumn,
+    FunctionColumn,
+    Node,
+    SortColumn,
+    Workflow,
+)
 
 
 class WorkflowForm(forms.ModelForm):
@@ -131,6 +139,15 @@ EditColumnFormSet = forms.inlineformset_factory(
     formset=InlineColumnFormset,
 )
 
+AddColumnFormSet = forms.inlineformset_factory(
+    Node,
+    AddColumn,
+    fields=("name", "function", "label"),
+    can_delete=True,
+    extra=1,
+    formset=InlineColumnFormset,
+)
+
 
 class UnionNodeForm(NodeForm):
     class Meta:
@@ -165,9 +182,11 @@ KIND_TO_FORM = {
     # different turbo frame
     "filter": DefaultNodeForm,
     "edit": DefaultNodeForm,
+    "add": DefaultNodeForm,
 }
 KIND_TO_FORMSETS = {
     "aggregation": [FunctionColumnFormSet, ColumnFormSet],
     "sort": [SortColumnFormSet],
     "edit": [EditColumnFormSet],
+    "add": [AddColumnFormSet],
 }

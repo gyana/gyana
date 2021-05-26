@@ -93,6 +93,12 @@ NodeConfig = {
         "description": "Change a columns value",
         "section": "Column manipulations",
     },
+    "add": {
+        "displayName": "Add",
+        "icon": "fa-plus",
+        "description": "Add new columns to the table",
+        "section": "Column manipulations",
+    },
 }
 
 
@@ -108,6 +114,7 @@ class Node(models.Model):
         LIMIT = "limit", "Limit"
         FILTER = "filter", "Filter"
         EDIT = "edit", "Edit"
+        ADD = "add", "Add"
 
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"
@@ -163,7 +170,7 @@ class Node(models.Model):
     # Filter
     # handled by the Filter model in *apps/filters/models.py*
 
-    # Edit
+    # Edit and Add
     # handled via ForeignKey on EditModel
 
     # Limit
@@ -222,18 +229,28 @@ class SortColumn(models.Model):
     name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
 
 
+class Operations(models.TextChoices):
+    LOWER = "lower", "to lowercase"
+    UPPER = "upper", "to uppercase"
+    ISNULL = "isnull", "is null"
+    CUMMAX = "cummax", "cummulative max"
+    CUMMIN = "cummin", "cummulative min"
+    ABS = "abs", "absolute value"
+    SQRT = "sqrt", "square root"
+
+
 class EditColumn(models.Model):
-    class Functions(models.TextChoices):
-        LOWER = "lower", "to lowercase"
-        UPPER = "upper", "to uppercase"
-        ISNULL = "isnull", "is null"
-        CUMMAX = "cummax", "cummulative max"
-        CUMMIN = "cummin", "cummulative min"
-        ABS = "abs", "absolute value"
-        SQRT = "sqrt", "square root"
 
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="edit_columns"
     )
     name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
-    function = models.CharField(max_length=20, choices=Functions.choices)
+    function = models.CharField(max_length=20, choices=Operations.choices)
+
+
+class AddColumn(models.Model):
+
+    node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="add_columns")
+    name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    function = models.CharField(max_length=20, choices=Operations.choices)
+    label = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)

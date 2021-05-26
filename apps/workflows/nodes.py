@@ -118,6 +118,16 @@ def get_edit_query(node):
     return query[columns]
 
 
+def get_add_query(node):
+    query = node.parents.first().get_query()
+    return query.mutate(
+        [
+            getattr(query[add.name], add.function)().name(add.label)
+            for add in node.add_columns.all()
+        ]
+    )
+
+
 NODE_FROM_CONFIG = {
     "input": get_input_query,
     "output": get_output_query,
@@ -129,4 +139,5 @@ NODE_FROM_CONFIG = {
     "limit": get_limit_query,
     "filter": get_filter_query,
     "edit": get_edit_query,
+    "add": get_add_query,
 }

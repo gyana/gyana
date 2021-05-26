@@ -71,6 +71,10 @@ def get_edit_desc(obj):
     return f"Edit {' ,'.join([f'{edit.name} {edit.function}' for edit in obj.edit_columns.all()])}"
 
 
+def get_add_desc(obj):
+    return f"Add {' ,'.join([f'{add.name} {add.function}' for add in obj.add_columns.all()])}"
+
+
 DESCRIPTIONS = {
     "input": get_input_desc,
     "limit": get_limit_desc,
@@ -82,4 +86,5 @@ DESCRIPTIONS = {
     "sort": get_sort_desc,
     "filter": get_filter_desc,
     "edit": get_edit_desc,
+    "add": get_add_desc,
 }
