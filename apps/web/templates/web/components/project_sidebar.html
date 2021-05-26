@@ -1,27 +1,39 @@
 <nav class="project__sidebar">
+  <h3 class="project__title">{{ project.name }}</h3>
 
   {% with app_name=request.resolver_match.app_name %}
   <ul class="project__nav">
     <li>
-      <h1>{{ project.name }}</h1>
+      <a class="project__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}project__link--active{% endif %}"
+         href="{% url 'projects:detail' project.id %}">
+        <i class="far fa-file mr-4"></i>Overview
+      </a>
     </li>
 
-    <li><a
-         class="project__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}project__link--active{% endif %}"
-         href="{% url 'projects:detail' project.id %}">Overview</a></li>
+    <li>
+      <a class="project__link {% if app_name == "projects:integrations" %}project__link--active{% endif %}"
+         href="{% url 'projects:integrations:list' project.id %}">
+        <i class="far fa-link mr-4"></i>Integrations
+      </a>
+    </li>
 
-    <li><a class="project__link {% if app_name == "projects:integrations" %}project__link--active{% endif %}"
-         href="{% url 'projects:integrations:list' project.id %}">Integrations</a></li>
+    <li>
+      <a class="project__link {% if app_name == "projects:workflows" %}project__link--active{% endif %}"
+         href="{% url 'projects:workflows:list' project.id %}">
+        <i class="far fa-stream mr-4"></i>Workflows
+      </a>
+    </li>
 
-    <li><a class="project__link {% if app_name == "projects:workflows" %}project__link--active{% endif %}"
-         href="{% url 'projects:workflows:list' project.id %}">Workflows</a></li>
-
-    <li><a class="project__link {% if app_name == "projects:dashboards" %}project__link--active{% endif %}"
-         href="{% url 'projects:dashboards:list' project.id %}">Dashboards</a></li>
+    <li>
+      <a class="project__link {% if app_name == "projects:dashboards" %}project__link--active{% endif %}"
+         href="{% url 'projects:dashboards:list' project.id %}">
+        <i class="far fa-presentation mr-4"></i>Dashboards
+      </a>
+    </li>
   </ul>
   {% endwith %}
 
   <footer class="project__footer">
-    <a class="button w-full" href="{% url 'projects:update' project.id %}">Settings <i class="fas fa-cog"></i></a>
+    <a class="button button--sm button--tertiary w-full" href="{% url 'projects:update' project.id %}">Settings</a>
   </footer>
 </nav>

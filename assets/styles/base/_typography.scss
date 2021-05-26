@@ -38,6 +38,10 @@ h4,
 p,
 .p {
   font-size: 1.4rem;
+
+  + p {
+    margin-top: 1.6rem;
+  }
 }
 
 a {
@@ -47,6 +51,7 @@ a {
 small,
 .small {
   font-size: 1.2rem;
+  line-height: 1.4rem;
 }
 
 b,
@@ -56,6 +61,11 @@ strong,
   font-weight: 500;
 }
 
+hgroup {
+  display: flex;
+  flex-flow: column;
+}
+
 .link {
   color: var(--c-blue);
 
@@ -63,4 +73,8 @@ strong,
     color: var(--c-blue-50);
     text-decoration: underline;
   }
+}
+
+hr {
+  color: var(--c-gray);
 }

@@ -4,15 +4,16 @@
   flex-flow: column;
   gap: 1em;
   left: 0;
-  margin: 1em;
+  margin: 1.6rem;
   position: absolute;
 }
 
 .toast {
-  padding: 1em;
   background-color: var(--c-white);
-  border: 1px solid var(--c-gray);
   border-left: 3px solid var(--c-blue);
   border-radius: 4px;
+  border: 1px solid var(--c-gray);
   box-shadow: 4px 10px 30px rgba(0, 0, 0, 0.08);
+  font-size: 1.4rem;
+  padding: 1.6rem;
 }

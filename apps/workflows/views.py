@@ -9,10 +9,13 @@ from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
 from django.urls import reverse
 from django.views.generic import DetailView
-from django.views.generic.edit import DeleteView, UpdateView
+from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from lib.clients import ibis_client
 from rest_framework import viewsets
+from rest_framework.decorators import api_view
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .bigquery import run_workflow
@@ -171,14 +174,8 @@ class NodeGrid(DetailView):
         return context
 
 
-class WorkflowRun(UpdateView):
-    template_name = "workflows/run.html"
-    model = Workflow
-    fields = []
-
-    def form_valid(self, form) -> HttpResponse:
-        run_workflow(self.object)
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        return reverse("workflows:run", args=(self.object.id,))
+@api_view(http_method_names=["POST"])
+def workflow_run(request, pk):
+    workflow = get_object_or_404(Workflow, pk=pk)
+    errors = run_workflow(workflow)
+    return Response(errors or {})

@@ -1,4 +1,4 @@
-{% extends "web/base.html" %}
+{% extends "web/landing.html" %}
 {% load static %}
 {% load socialaccount %}
 
@@ -6,37 +6,46 @@
 {# Getting rid of the top navigation bar here. #}
 {% endblock %}
 
-{% block body %}
-<div class="flex justify-center items-center h-full my-8">
-  <div class="card w-96">
-    <div>
-      <h2 class="mt-6 text-center text-2xl  text-gray-900">
+{% block description %}
+<div>
+  <p>Welcome to Gyana, we do data science and some cool tech stuff.</p>
+  <p>If you'd like to learn more, give our <a class="link" href="https://gyana.com/">website</a> a visit.</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h1 class="text-center">Sign in</h1>
+
+  <a class="button button--primary is-outlined w-full flex justify-center" href="{% provider_login_url 'google' %}">
+    <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
+    Sign In with Google
+  </a>
+  <p class="text-center text-black-50">or</p>
+
+  <form class="mb-8" method="post">
+    {% csrf_token %}
+
+    {% include "django/forms/default_form.html" %}
+
+    <div class="flex flex-col w-full gap-2">
+      <button type="submit" class="button button--primary button--filled w-full">
         Sign in
-      </h2>
-      <form class="form mt-6" method="post">
-        {% csrf_token %}
-
-        {% include "django/forms/default_form.html" %}
-
-        <div class="flex flex-col w-full gap-2">
-          <button type="submit" class="button button--primary button--filled w-full">
-            Sign in
-          </button>
-
-          <p class="text-center text-black-50">or</p>
-          <a class="button button--primary is-outlined w-full flex justify-center"
-             href="{% provider_login_url 'google' %}">
-            <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
-            Sign In with Google
-          </a>
-        </div>
-      </form>
-      <div class="text-sm mt-4">
-        <a href="{% url 'account_reset_password' %}" class="font-medium text-blue hover:text-blue-500">
-          Forgot password?
-        </a>
-      </div>
+      </button>
     </div>
-  </div>
+  </form>
+
+  <p class="text-center">
+    <a class="link" href="{% url 'account_reset_password' %}">
+      Forgot password?
+    </a>
+  </p>
+
+  <p class="text-center">
+    No account yet? No problem,
+    <a class="link" href="{% url 'account_signup' %}">
+      create one here!
+    </a>
+  </p>
 </div>
 {% endblock %}

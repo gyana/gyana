@@ -4,8 +4,8 @@ from apps.projects.models import Project
 from apps.tables.models import Table
 from apps.workflows.nodes import NODE_FROM_CONFIG
 from django.conf import settings
+from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models.fields import related
 from django.urls import reverse
 
 
@@ -87,6 +87,18 @@ NodeConfig = {
         "description": "Filter rows by specified criteria",
         "section": "Table manipulations",
     },
+    "edit": {
+        "displayName": "Edit",
+        "icon": "fa-edit",
+        "description": "Change a columns value",
+        "section": "Column manipulations",
+    },
+    "add": {
+        "displayName": "Add",
+        "icon": "fa-plus",
+        "description": "Add new columns to the table",
+        "section": "Column manipulations",
+    },
 }
 
 
@@ -101,6 +113,8 @@ class Node(models.Model):
         SORT = "sort", "Sort"
         LIMIT = "limit", "Limit"
         FILTER = "filter", "Filter"
+        EDIT = "edit", "Edit"
+        ADD = "add", "Add"
 
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"
@@ -156,6 +170,9 @@ class Node(models.Model):
     # Filter
     # handled by the Filter model in *apps/filters/models.py*
 
+    # Edit and Add
+    # handled via ForeignKey on EditModel
+
     # Limit
 
     limit_limit = models.IntegerField(default=100)
@@ -210,3 +227,38 @@ class SortColumn(models.Model):
     )
     ascending = models.BooleanField(default=True)
     name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+
+
+class Operations(models.TextChoices):
+    LOWER = "lower", "to lowercase"
+    UPPER = "upper", "to uppercase"
+    ISNULL = "isnull", "is null"
+    CUMMAX = "cummax", "cummulative max"
+    CUMMIN = "cummin", "cummulative min"
+    ABS = "abs", "absolute value"
+    SQRT = "sqrt", "square root"
+
+
+class EditColumn(models.Model):
+
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="edit_columns"
+    )
+    name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    function = models.CharField(max_length=20, choices=Operations.choices)
+
+
+bigquery_column_regex = RegexValidator(
+    r"^[a-zA-Z_][0-9a-zA-Z_]*$", "Only numbers, letters and underscores allowed."
+)
+
+
+class AddColumn(models.Model):
+
+    node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="add_columns")
+    name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    function = models.CharField(max_length=20, choices=Operations.choices)
+    label = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        validators=[bigquery_column_regex],
+    )

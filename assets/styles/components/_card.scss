@@ -12,7 +12,8 @@ $card-colors: (
   --card-color: var(--c-gray);
 
   padding: 3rem;
-  
+
+  display: block;
   background: var(--c-white);
   border-radius: 10px;
   border: 1px solid var(--card-color);

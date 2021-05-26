@@ -1,43 +1,39 @@
-{% extends "web/base.html" %}
+{% extends "web/landing.html" %}
 {% load static %}
 {% load socialaccount %}
 
-{% block top_nav %}
-{# Getting rid of the top navigation bar here. #}
+{% block description %}
+<div>
+  <p>Welcome to Gyana, we do data science and some cool tech stuff.</p>
+  <p>If you'd like to learn more, give our <a class="link" href="https://gyana.com/">website</a> a visit.</p>
+</div>
 {% endblock %}
 
-{% block body %}
-<div class="flex justify-center items-center h-full my-8">
-  <div class="card w-96">
-    <div>
-      <h2 class="mt-6 text-center text-2xl  text-gray-900">
-        Sign up
-      </h2>
-      <form class="form mt-6" method="post">
-        {% csrf_token %}
+{% block content %}
+<div class="card">
+  <h1 class="text-center">Sign up</h1>
 
-        {% include "django/forms/default_form.html" %}
+  <a class="button button--primary is-outlined w-full flex justify-center" href="{% provider_login_url 'google' %}">
+    <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
+    Sign In with Google
+  </a>
+  <p class="text-center text-black-50">or</p>
+  <form method="post">
+    {% csrf_token %}
 
-        <div class="flex flex-col gap-1 w-full">
-          <button type="submit" class="button button--filled w-full">
-            Sign up
-          </button>
+    {% include "django/forms/default_form.html" %}
 
-          <p class="text-center text-black-50">or</p>
-          <a class="button button--primary is-outlined w-full flex justify-center"
-             href="{% provider_login_url 'google' %}">
-            <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
-            Sign In with Google
-          </a>
-        </div>
-      </form>
-      <div class="text-sm mt-4">
-        Already have account?
-        <a href="{% url 'account_login' %}" class="font-medium text-blue hover:text-blue-500">
-          Go to sign in.
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
+    <button type="submit" class="button button--filled w-full">
+      Sign up
+    </button>
+
+  </form>
+
+  <p class="text-center">
+    Already have account?
+    <a href="{% url 'account_login' %}" class="font-medium text-blue hover:text-blue-500">
+      Go to sign in.
+    </a>
+  </p>
+</div>s
 {% endblock %}

@@ -1,20 +1,18 @@
 .landing {
+  // flex justify-center items-center h-full my-8
   align-items: center;
   display: flex;
   height: 100%;
   justify-content: center;
 
-  &__logo {
-    height: 11rem;
-    margin-right: 2rem;
+  &__container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 72rem;
   }
 
-  &__title {
-    color: var(--c-blue);
-    display: inline;
-    font-size: 5rem;
-    line-height: 1;
-    margin-bottom: 0;
-    text-transform: uppercase;
+  &__logo {
+    max-height: 6rem;
+    margin-right: 1.6rem;
   }
 }

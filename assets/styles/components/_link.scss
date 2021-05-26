@@ -1,0 +1,15 @@
+.link {
+  color: var(--c-blue);
+  font-size: inherit;
+  display: inline-block;
+  font-weight: 500;
+
+  &:focus {
+    outline-offset: 2px;
+    outline: var(--c-blue-20) dashed 1px;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

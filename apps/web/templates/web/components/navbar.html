@@ -1,5 +1,5 @@
 <nav class="navbar">
-  <a class="h1 navbar__title navbar__title {% if request.path == '/' %}border-b-2 border-blue-700{% endif %} hover:text-blue-500"
+  <a class="h2 navbar__title navbar__title {% if request.path == '/' %}border-b-2 border-blue-700{% endif %} hover:text-blue-500"
      href="{% url 'web:home' %}">
     {{project_meta.NAME}}
   </a>
@@ -14,15 +14,8 @@
       <i class="fas fa-fw fa-question"></i>
     </a>
 
-    {% if user.is_authenticated %}
     <a class="button button--tertiary button--sm" href="{% url 'users:user_profile' %}">
       {{user.username}}
     </a>
-    {% else %}
-    <a href="{% url 'account_signup' %}" class="button button--sm is-outlined">
-      Sign up
-    </a>
-    <a href="{% url 'account_login' %}" class="button button--sm"> Sign in </a>
-    {% endif %}
   </div>
 </nav>

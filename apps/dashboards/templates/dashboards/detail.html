@@ -9,10 +9,12 @@
   </h3>
 
   <a class="button button--square button--filled button--sm" data-turbo-frame="widgets"
-     href="{% url 'widgets:create' %}">Add
-    widget</a>
-  <a class="button button--square button--filled button--sm"
-     href="{% url 'projects:dashboards:update' project.id object.pk %}">Update</a>
+     href="{% url 'widgets:create' %}">
+    Add widget
+  </a>
+  <a class="button button--circle button--tertiary" href="{% url 'projects:dashboards:update' project.id object.pk %}">
+    <i class="fas fa-pen"></i>
+  </a>
   <a class="button button--square button--filled button--sm button--danger"
      href="{% url 'projects:dashboards:delete' project.id object.pk %}">Delete</a>
 </div>

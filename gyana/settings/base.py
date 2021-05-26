@@ -171,6 +171,7 @@ ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 ACCOUNT_FORMS = {
+    "login": "apps.users.forms.UserLoginForm",
     "signup": "apps.teams.forms.TeamSignupForm",
 }
 

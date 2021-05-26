@@ -33,12 +33,19 @@ $button-colors: (
     --button-background: var(--c-transparent);
   }
 
-  &[href]:hover {
+  &:hover {
     opacity: 0.5;
   }
-  
-  &[href]{
+
+  &[type="submit"],
+  &[href] {
     cursor: pointer;
+  }
+
+  &:focus,
+  &:active {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--c-white), 0 0 0 4px var(--button-color);
   }
 
   &--filled {

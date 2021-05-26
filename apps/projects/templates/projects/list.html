@@ -9,28 +9,46 @@
   <h1 class="mr-auto">Projects</h1>
 </div>
 
-<div class="project-list__projects">
+<ul class="project-list__projects">
   {% for object in object_list %}
-  <a class="card card--sm justify-between" href="{% url 'projects:detail' object.pk %}">
-    <h3>{{object}}</h3>
+  <li>
+    <a class="card card--sm" href="{% url 'projects:detail' object.pk %}">
+      <div class="flex flex-1 justify-between">
+        <h3>{{object}}</h3>
 
-    <div>
-      <p>Created {{ object.created|naturaltime }}</p>
-      <p>Updated {{ object.updated|naturaltime }}</p>
-    </div>
-  </a>
+        <!-- TODO: Add team icons -->
+        <div class="heads">
+          <button class="heads__item button button--sm button--circle button--filled disabled"></button>
+          <button class="heads__item button button--sm button--circle button--filled disabled"></button>
+          <button class="heads__item button button--sm button--circle button--filled disabled"></button>
+          <button class="heads__item button button--sm button--circle button--filled disabled"></button>
+          <button class="heads__item button button--sm button--circle button--filled disabled"></button>
+        </div>
+      </div>
+
+      <span class="flex-1"></span>
+
+      <div class="flex-1">
+        <span>Created {{ object.created|naturaltime }} | </span>
+        <span>Updated {{ object.updated|naturaltime }}</span>
+      </div>
+    </a>
+  </li>
   {% empty %}
-  <div class="card card-tertiary">
-    <h3 class="mb-4">No projects found</h3>
+  <li>
+    <div class="card card-tertiary">
+      <h3 class="mb-4">No projects found</h3>
 
-    <p>Why not create one using the button to the right?</p>
-  </div>
+      <p>Why not create one using the button to the right?</p>
+    </div>
+  </li>
   {% endfor %}
-
-  <a class="card card--sm card--primary card--center" href="{% url 'projects:create' %}">
-    <i class="fas fa-plus mr-4"></i><strong>Create new Project</strong>
-  </a>
-</div>
+  <li>
+    <a class="card card--sm card--primary card--center" href="{% url 'projects:create' %}">
+      <i class="fas fa-plus mr-4"></i><strong>Create new Project</strong>
+    </a>
+  </li>
+</ul>
 
 {% if is_paginated %}
 <div class="pagination">

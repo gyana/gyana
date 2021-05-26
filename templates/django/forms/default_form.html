@@ -1,14 +1,22 @@
-{% for field in form.visible_fields %}
+<!-- https://docs.djangoproject.com/en/2.2/_modules/django/forms/boundfield/#BoundField -->
+{% for bound_field in form.visible_fields %}
 <div class="input-group">
   <label>
-    <span>{{ field.label }}</span>
-    {{ field }}
+    <span>{{ bound_field.label }} {% if bound_field.field.required %}*{% endif %}</span>
+    {{ bound_field }}
   </label>
-  <p class="input__help-text">{{ field.help_text }}</p>
-  {{ field.errors }}
+  <p class="input__help-text">{{ bound_field.help_text }}</p>
+
+  {{ bound_field.errors }}
 </div>
 {% endfor %}
 
-{% for hidden in form.hidden_fields %}
-{{hidden}}
+{% for error in form.non_field_errors %}
+<p class="text-red">
+  {{error|escape}}
+</p>
+{% endfor %}
+
+{% for hidden_field in form.hidden_fields %}
+{{ hidden_field }}
 {% endfor %}

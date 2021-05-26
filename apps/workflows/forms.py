@@ -1,14 +1,19 @@
 from functools import cached_property
 
 from apps.tables.models import Table
-from apps.utils.formset_layout import Formset
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Fieldset, Layout, Submit
 from django import forms
 from django.forms.models import BaseInlineFormSet
 from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
 
-from .models import Column, FunctionColumn, Node, SortColumn, Workflow
+from .models import (
+    AddColumn,
+    Column,
+    EditColumn,
+    FunctionColumn,
+    Node,
+    SortColumn,
+    Workflow,
+)
 
 
 class WorkflowForm(forms.ModelForm):
@@ -19,11 +24,6 @@ class WorkflowForm(forms.ModelForm):
 
 
 class NodeForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-
     @cached_property
     def columns(self):
         """Returns the schema for the first parent."""
@@ -120,19 +120,6 @@ ColumnFormSet = forms.inlineformset_factory(
 )
 
 
-class GroupNodeForm(NodeForm):
-    class Meta:
-        model = Node
-        fields = []
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper.layout = Layout(
-            Fieldset("Add columns", Formset("column_form_form_set")),
-            Fieldset("Add aggregates", Formset("function_column_form_form_set")),
-        )
-
-
 SortColumnFormSet = forms.inlineformset_factory(
     Node,
     SortColumn,
@@ -143,16 +130,23 @@ SortColumnFormSet = forms.inlineformset_factory(
 )
 
 
-class SortNodeForm(NodeForm):
-    class Meta:
-        model = Node
-        fields = []
+EditColumnFormSet = forms.inlineformset_factory(
+    Node,
+    EditColumn,
+    fields=("name", "function"),
+    can_delete=True,
+    extra=1,
+    formset=InlineColumnFormset,
+)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper.layout = Layout(
-            Fieldset("Add columns", Formset("sort_column_form_form_set")),
-        )
+AddColumnFormSet = forms.inlineformset_factory(
+    Node,
+    AddColumn,
+    fields=("name", "function", "label"),
+    can_delete=True,
+    extra=1,
+    formset=InlineColumnFormset,
+)
 
 
 class UnionNodeForm(NodeForm):
@@ -180,15 +174,19 @@ KIND_TO_FORM = {
     "output": OutputNodeForm,
     "select": SelectNodeForm,
     "join": JoinNodeForm,
-    "aggregation": GroupNodeForm,
+    "aggregation": DefaultNodeForm,
     "union": UnionNodeForm,
-    "sort": SortNodeForm,
+    "sort": DefaultNodeForm,
     "limit": LimitNodeForm,
     # Is defined in the filter app and will be rendered via a
     # different turbo frame
     "filter": DefaultNodeForm,
+    "edit": DefaultNodeForm,
+    "add": DefaultNodeForm,
 }
 KIND_TO_FORMSETS = {
     "aggregation": [FunctionColumnFormSet, ColumnFormSet],
     "sort": [SortColumnFormSet],
+    "edit": [EditColumnFormSet],
+    "add": [AddColumnFormSet],
 }
