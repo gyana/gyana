@@ -31,7 +31,6 @@
           {% include "components/formset.html" with formset=sort_column_form_form_set %}
         </fieldset>
       {% endif %}
-      
 
       {% if edit_column_form_form_set %}
         <fieldset>
@@ -44,6 +43,13 @@
         <fieldset>
           <label>Add columns</label>
           {% include "components/formset.html" with formset=add_column_form_form_set %}
+        </fieldset>
+      {% endif %}
+
+      {% if rename_column_form_form_set %}
+        <fieldset>
+          <label>Rename columns</label>
+          {% include "components/formset.html" with formset=rename_column_form_form_set %}
         </fieldset>
       {% endif %}
 

@@ -75,6 +75,11 @@ def get_add_desc(obj):
     return f"Add {' ,'.join([f'{add.name} {add.function}' for add in obj.add_columns.all()])}"
 
 
+def get_rename_desc(obj):
+    texts = [f"{r.name} to {r.new_name}" for r in obj.rename_columns.all()]
+    return f"Rename {' ,'.join(texts)}"
+
+
 DESCRIPTIONS = {
     "input": get_input_desc,
     "limit": get_limit_desc,
@@ -87,4 +92,5 @@ DESCRIPTIONS = {
     "filter": get_filter_desc,
     "edit": get_edit_desc,
     "add": get_add_desc,
+    "rename": get_rename_desc,
 }

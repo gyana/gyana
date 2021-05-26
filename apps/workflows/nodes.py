@@ -128,6 +128,17 @@ def get_add_query(node):
     )
 
 
+def get_rename_query(node):
+    query = node.parents.first().get_query()
+    parent = node.parents.first()
+    columns = [name for name in parent.schema]
+
+    for rename in node.rename_columns.all():
+        idx = columns.index(rename.name)
+        columns[idx] = query[rename.name].name(rename.new_name)
+    return query[columns]
+
+
 NODE_FROM_CONFIG = {
     "input": get_input_query,
     "output": get_output_query,
@@ -140,4 +151,5 @@ NODE_FROM_CONFIG = {
     "filter": get_filter_query,
     "edit": get_edit_query,
     "add": get_add_query,
+    "rename": get_rename_query,
 }
