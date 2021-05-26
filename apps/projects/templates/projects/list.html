@@ -15,6 +15,9 @@
   </li>
 {% endfor %}
   <li>
+    <a href="{% url 'single_team:manage_team_react' team.slug %}"><i class="fa fa-cog"></i></a>
+  </li>
+  <li>
     <a href="{% url 'teams:manage_teams' %}"><i class="fa fa-plus"></i></a>
   </li>
 </ul>
