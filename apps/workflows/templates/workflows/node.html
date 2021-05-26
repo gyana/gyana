@@ -33,6 +33,13 @@
       {% endif %}
       
 
+      {% if edit_column_form_form_set %}
+        <fieldset>
+          <label>Edit columns</label>
+          {% include "components/formset.html" with formset=edit_column_form_form_set %}
+        </fieldset>
+      {% endif %}
+
       <div className='flex flex-row'>
         <button 
           type='submit' 

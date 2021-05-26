@@ -72,9 +72,8 @@ const Sidebar: React.FC<{
         <h2>Nodes</h2>
         <p>You can drag these onto the pane on your left.</p>
       </hgroup>
-
       {Object.keys(SECTIONS).map((section) => (
-        <>
+        <React.Fragment key={section}>
           <hgroup>
             <h3>{section}</h3>
             <p>TODO: Section description</p>
@@ -101,7 +100,7 @@ const Sidebar: React.FC<{
             })}
           </div>
           <hr />
-        </>
+        </React.Fragment>
       ))}
     </aside>
   )

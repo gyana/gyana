@@ -67,6 +67,10 @@ def get_filter_desc(obj):
     return f"Filter by {' and '.join(filter_descriptions)}"
 
 
+def get_edit_desc(obj):
+    return f"Edit {' ,'.join([f'{edit.name} {edit.function}' for edit in obj.edit_columns.all()])}"
+
+
 DESCRIPTIONS = {
     "input": get_input_desc,
     "limit": get_limit_desc,
@@ -77,4 +81,5 @@ DESCRIPTIONS = {
     "union": get_union_desc,
     "sort": get_sort_desc,
     "filter": get_filter_desc,
+    "edit": get_edit_desc,
 }

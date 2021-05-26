@@ -1,7 +1,6 @@
 .project {
   display: flex;
   flex: 1 1 auto;
-  overflow: hidden;
 
   &__title {
     align-items: center;
@@ -19,7 +18,7 @@
     overflow: auto;
     width: 18rem;
   }
-  
+
   &__footer {
     border-top: 1px solid var(--c-gray);
     display: flex;
@@ -27,7 +26,7 @@
     margin-top: auto;
     padding: 1.6rem;
   }
-  
+
   &__nav {
     display: flex;
     flex-flow: column;
@@ -39,13 +38,13 @@
     font-size: 1.4rem;
     line-height: 1.6rem;
     padding: 1.6rem;
-    
+
     &--active {
       border-color: var(--c-blue);
       color: var(--c-blue);
       font-weight: 500;
     }
-    
+
     &:hover {
       background-color: var(--c-gray-10);
       text-decoration: underline;

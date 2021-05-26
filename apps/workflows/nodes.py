@@ -108,6 +108,16 @@ def get_filter_query(node):
     return create_filter_query(node.parents.first().get_query(), node.filters.all())
 
 
+def get_edit_query(node):
+    parent = node.parents.first()
+    columns = [name for name in parent.schema]
+    query = parent.get_query()
+    for edit in node.edit_columns.all():
+        idx = columns.index(edit.name)
+        columns[idx] = getattr(query[edit.name], edit.function)().name(edit.name)
+    return query[columns]
+
+
 NODE_FROM_CONFIG = {
     "input": get_input_query,
     "output": get_output_query,
@@ -118,4 +128,5 @@ NODE_FROM_CONFIG = {
     "sort": get_sort_query,
     "limit": get_limit_query,
     "filter": get_filter_query,
+    "edit": get_edit_query,
 }
