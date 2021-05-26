@@ -7,6 +7,15 @@
   padding: 1.6rem;
   width: 32rem;
 
+  &__top {
+    box-sizing: border-box;
+    margin-left: -1.6em;
+    margin-right: -1.6em;
+    padding: 1.6em;
+    padding-top: 0;
+    border-bottom: 1px solid var(--c-gray);
+  }
+
   &__node {
     align-items: center;
     cursor: grab;

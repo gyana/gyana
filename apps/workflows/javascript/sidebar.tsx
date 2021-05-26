@@ -1,4 +1,5 @@
 import React from 'react'
+import { Edge, isNode, Node } from 'react-flow-renderer'
 import { INode } from './interfaces'
 
 import './styles/_dnd-sidebar.scss'
@@ -15,7 +16,14 @@ const SECTIONS = Object.keys(NODES).reduce((sections, key) => {
   }
   return sections
 }, {})
-export default () => {
+
+const Sidebar: React.FC<{
+  hasOutput: boolean
+  workflowId: string
+  client
+  elements: (Node | Edge)[]
+  setElements: (elements: (Node | Edge)[]) => void
+}> = ({ hasOutput, workflowId, client, elements, setElements }) => {
   const onDragStart = (event, nodeType) => {
     event.dataTransfer.setData('application/reactflow', nodeType)
     event.dataTransfer.effectAllowed = 'move'
@@ -23,6 +31,41 @@ export default () => {
 
   return (
     <aside className='dnd-sidebar'>
+      <div className='dnd-sidebar__top'>
+        <button
+          disabled={!hasOutput}
+          onClick={() =>
+            client
+              .action(window.schema, ['workflows', 'run_workflow', 'create'], {
+                id: workflowId,
+              })
+              .then((res) => {
+                if (res) {
+                  setElements(
+                    elements.map((el) => {
+                      if (isNode(el)) {
+                        const error = res[parseInt(el.id)]
+                        // Add error to node if necessary
+                        if (error) {
+                          el.data['error'] = error
+                        }
+                        // Remove error if necessary
+                        else if (el.data.error) {
+                          delete el.data['error']
+                        }
+                      }
+                      return el
+                    })
+                  )
+                }
+              })
+          }
+          title='Workflow needs output node to run'
+          className='button button--sm button--green button--square'
+        >
+          Run
+        </button>
+      </div>
       <hgroup>
         <h2>Nodes</h2>
         <p>You can drag these onto the pane on your left.</p>
@@ -54,3 +97,5 @@ export default () => {
     </aside>
   )
 }
+
+export default Sidebar
