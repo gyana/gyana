@@ -94,6 +94,9 @@ def sync_integration(integration: Integration):
         integration.last_synced = datetime.now()
         integration.save()
 
+    # yielding true to signify the end of the integration sync
+    yield True
+
 
 def query_integration(integration: Integration):
 

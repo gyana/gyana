@@ -7,7 +7,6 @@ from celery_progress.backend import ProgressRecorder
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from google.cloud.bigquery.job.query import QueryPlanEntry
 
 from .fivetran import FivetranClient
 from .models import Integration
@@ -45,7 +44,8 @@ def run_external_table_sync(self, integration_id):
     integration = get_object_or_404(Integration, pk=integration_id)
 
     progress_recorder = ProgressRecorder(self)
-    query_job = next(sync_integration(integration))
+    sync_generator = sync_integration(integration)
+    query_job = next(sync_generator)
 
     def calc_progress(jobs):
         return reduce(
@@ -65,6 +65,9 @@ def run_external_table_sync(self, integration_id):
 
     progress_recorder.set_progress(*calc_progress(query_job.query_plan))
 
+    # The next yield happens when the sync has finalised, only then we finish this task
+    next(sync_generator)
+
     url = reverse(
         "projects:integrations:detail",
         args=(
@@ -81,15 +84,3 @@ def run_external_table_sync(self, integration_id):
     )
 
     return integration_id
-
-
-@shared_task(bind=True)
-def run_mock_loader(self):
-    seconds = 20
-    progress_recorder = ProgressRecorder(self)
-    result = 0
-    for i in range(seconds):
-        time.sleep(1)
-        result += i
-        progress_recorder.set_progress(i + 1, seconds, description="Some text for fun")
-    return result

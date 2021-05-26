@@ -13,20 +13,23 @@
     <button class="button button--square button--sm button--filled" type="submit">Sync</button>
   </form>
   {% else %}
-  <p><i class="fad fa-spinner-third fa-spin"></i> Syncing, you'll get an email when it is ready</p>
+  <div data-controller="progress-bar"
+       data-progress-bar-task-url-value="{% url 'celery_progress:task_status' external_table_sync_task_id %}"
+       data-progress-bar-script-url-value="{% static 'celery_progress/celery_progress.js' %}">
+    <div class="progress-inprogress">
+      <p><i class="fad fa-spinner-third fa-spin"></i> Syncing, you'll get an email when it is ready</p>
+    </div>
+    <div class='progress-wrapper'>
+      <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+    </div>
+    <p id="progress-bar-message">Waiting for sync to start...</p>
+    <div class="progress-success">
+      <button class="button button--square button--sm button--filled" onclick="window.location.reload();"><i
+           class="far fa-sync"></i> Reload to see
+        results</button>
+    </div>
+  </div>
   {% endif %}
-  <div class='progress-wrapper'>
-    <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
-  </div>
-  <div id="progress-bar-message">Waiting for progress to start...</div>
   <p>Latest sync: {{ object.last_synced|naturaltime }}</p>
-  <div data-controller="turbo-issue-186-workaround">
-    <script src="{% static 'celery_progress/celery_progress.js' %}"
-            onload="window.dispatchEvent(new Event('celeryProgress:load'))"></script>
-    <script>
-      window.addEventListener("celeryProgress:load", function () {
-        var progressUrl = "/celery-progress/d6072d83-b1c4-482a-a0fc-c78bae9eebe3/";
-        CeleryProgressBar.initProgressBar(progressUrl);
-      }, { once: true });</script>
-  </div>
-  </turbo - frame>
+
+</turbo-frame>
