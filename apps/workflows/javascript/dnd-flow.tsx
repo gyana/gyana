@@ -188,13 +188,7 @@ const DnDFlow = ({ client }) => {
       })
 
   useEffect(() => {
-    // Add event listener to show errors
-    const eventName = `workflow-run-${workflowId}`
-    window.addEventListener(eventName, syncElements, false)
-
     syncElements()
-    // Cleanup event listener
-    return () => window.removeEventListener(eventName, syncElements)
   }, [])
 
   useEffect(() => {
