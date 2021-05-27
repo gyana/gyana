@@ -135,7 +135,7 @@ EditColumnFormSet = forms.inlineformset_factory(
     formset=InlineColumnFormset,
 )
 
-IBIS_TO_PREDICATE = {"String": "string_function", "Int64": "integer_function"}
+IBIS_TO_PREFIX = {"String": "string_", "Int64": "integer_"}
 
 
 class AddColumnForm(forms.ModelForm):
@@ -148,21 +148,25 @@ class AddColumnForm(forms.ModelForm):
 
         super().__init__(*args, **kwargs)
 
+        column_type = None
+
+        # live form
         if (data := kwargs.get("data")) is not None:
             name = data[f"{kwargs['prefix']}-name"]
             if name in self.schema:
                 column_type = self.schema[name].name
-                if column_type == "Int64":
-                    del self.fields["string_function"]
-                    return
 
+        # initial render
         elif self.instance.name in self.schema:
             column_type = self.schema[self.instance.name].name
-            if column_type == "Int64":
-                del self.fields["string_function"]
-                return
 
-        del self.fields["integer_function"]
+        # remove all fields that do are not for this type
+        deletions = [v for k, v in IBIS_TO_PREFIX.items() if k != column_type]
+
+        for deletion in deletions:
+            self.fields = {
+                k: v for k, v in self.fields.items() if not k.startswith(deletion)
+            }
 
 
 AddColumnFormSet = forms.inlineformset_factory(
