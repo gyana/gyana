@@ -72,6 +72,14 @@ label {
   &:focus-within {
     color: var(--c-blue);
   }
+  
+  &.label--row {
+    flex-flow: row;
+  }
+
+  ul li {
+    padding: 0.4rem 0;
+  }
 }
 
 .input-group {

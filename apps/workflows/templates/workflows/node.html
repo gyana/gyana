@@ -6,70 +6,63 @@
     {% if node.kind == "filter" %}
     <turbo-frame id="node-{{ node.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
     {% else %}
-    <form class="h-full" method="post" action="{% url 'workflows:node' workflow.id node.id %}" data-controller="trigger"
-          data-trigger-event-value="node-updated-{{ node.id }}" data-action="submit->trigger#dispatch">
+    <form class="h-full overflow-auto" method="post" action="{% url 'workflows:node' workflow.id node.id %}"
+          data-controller="trigger" data-trigger-event-value="node-updated-{{ node.id }}"
+          data-action="submit->trigger#dispatch">
       {% csrf_token %}
+
       {% include "django/forms/default_form.html" %}
-      
+
       {% if column_form_form_set %}
-        <fieldset>
-          <label>Add columns</label>
-          {% include "components/formset.html" with formset=column_form_form_set %}
-        </fieldset>
+      <fieldset>
+        <label>Add columns</label>
+        {% include "components/formset.html" with formset=column_form_form_set %}
+      </fieldset>
       {% endif %}
 
       {% if function_column_form_form_set %}
-        <fieldset>
-          <label>Add aggregates</label>
-          {% include "components/formset.html" with formset=function_column_form_form_set %}
-        </fieldset>
+      <fieldset>
+        <label>Add aggregates</label>
+        {% include "components/formset.html" with formset=function_column_form_form_set %}
+      </fieldset>
       {% endif %}
 
       {% if sort_column_form_form_set %}
-        <fieldset>
-          <label>Add columns</label>
-          {% include "components/formset.html" with formset=sort_column_form_form_set %}
-        </fieldset>
+      <fieldset>
+        <label>Add columns</label>
+        {% include "components/formset.html" with formset=sort_column_form_form_set %}
+      </fieldset>
       {% endif %}
 
       {% if edit_column_form_form_set %}
-        <fieldset>
-          <label>Edit columns</label>
-          {% include "components/formset.html" with formset=edit_column_form_form_set %}
-        </fieldset>
+      <fieldset>
+        <label>Edit columns</label>
+        {% include "components/formset.html" with formset=edit_column_form_form_set %}
+      </fieldset>
       {% endif %}
 
       {% if add_column_form_form_set %}
-        <fieldset>
-          <label>Add columns</label>
-          {% include "components/formset.html" with formset=add_column_form_form_set %}
-        </fieldset>
+      <fieldset>
+        <label>Add columns</label>
+        {% include "components/formset.html" with formset=add_column_form_form_set %}
+      </fieldset>
       {% endif %}
 
       {% if rename_column_form_form_set %}
-        <fieldset>
-          <label>Rename columns</label>
-          {% include "components/formset.html" with formset=rename_column_form_form_set %}
-        </fieldset>
+      <fieldset>
+        <label>Rename columns</label>
+        {% include "components/formset.html" with formset=rename_column_form_form_set %}
+      </fieldset>
       {% endif %}
 
-      <div className='flex flex-row'>
-        <button 
-          type='submit' 
-          class="button button--filled button--sm" 
-          value='save' 
-          name='save-close' 
-          data-action="click->tf-modal#close"
-        >
-          Save 
+      <div class='flex flex-row gap-4 flex-1 items-end'>
+        <button type='submit' class="button button--filled button--sm" value='save' name='save-close'
+                data-action="click->tf-modal#close">
+          Save
         </button>
-        <button 
-          type='submit' 
-          class="button button--filled button--green button--sm" 
-          name='save-preview'
-          value='save-preview'
-        >
-          Save & Preview  
+        <button type='submit' class="button button--filled button--green button--sm" name='save-preview'
+                value='save-preview'>
+          Save & Preview
         </button>
       </div>
     </form>
@@ -79,29 +72,27 @@
   <div class="workflow-detail__table">
     <nav class="tabbar">
       {% for parent in parents %}
-        <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
-          href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ parent.id }}{% if request.GET.preview %}&preview=true{% endif %}">
-          Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
-        </a> 
+      <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
+         href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ parent.id }}{% if request.GET.preview %}&preview=true{% endif %}">
+        Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
+      </a>
       {% endfor %}
       <a class="tabbar__link  {% if preview_node_id == node.id %} tabbar__link--active {% endif %}"
-        href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ node.id }}{% if request.GET.preview %}&preview=true{% endif %}">
+         href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ node.id }}{% if request.GET.preview %}&preview=true{% endif %}">
         Result
       </a>
     </nav>
-    
+
     {% if request.GET.preview %}
     <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id preview_node_id %}">Loading...
     </turbo-frame>
     {% else %}
     <div class='workflow-detail__load-preview'>
-      <a 
-        class='flex flex-row items-center'
-        href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ preview_node_id }}&preview=true"
-      >
+      <a class='flex flex-row items-center'
+         href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ preview_node_id }}&preview=true">
         <i class='fad fa-redo fa-lg'></i>
         <span class='font-semibold text-black-50'>Load preview</span>
-        </a>
+      </a>
     </div>
     {% endif %}
   </div>

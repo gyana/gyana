@@ -1,11 +1,17 @@
 <!-- https://docs.djangoproject.com/en/2.2/_modules/django/forms/boundfield/#BoundField -->
 {% for bound_field in form.visible_fields %}
 <div class="input-group">
+  {% if bound_field.subwidgets|length == 1 %}
   <label>
     <span>{{ bound_field.label }} {% if bound_field.field.required %}*{% endif %}</span>
     {{ bound_field }}
   </label>
-  <p class="input__help-text">{{ bound_field.help_text }}</p>
+  {% else %}
+  <label for="{{ bound_field.id_for_label }}">{{ bound_field.label }}</label>
+  {{ bound_field }}
+  {% endif %}
+
+  <p class=" input__help-text">{{ bound_field.help_text }}</p>
 
   {{ bound_field.errors }}
 </div>

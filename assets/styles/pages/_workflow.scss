@@ -15,16 +15,18 @@
     &__sidebar {
       background-color: var(--c-white);
       border-right: 1px solid var(--c-gray);
-      overflow-y: auto;
-      padding: 1.6rem;
-      padding-left: 0;
+      padding: 0 1.6rem 0 0;
       width: 36rem;
     }
 
     &__table {
       background-color: var(--c-white);
-      border-top: 1px solid var(--c-gray);
+      border-left: 0;
+      border: 1px solid var(--c-gray);
+      display: flex;
+      flex-flow: column;
       height: 100%;
+      overflow: hidden;
       width: 100%;
     }
 
@@ -54,8 +56,11 @@
 
     #workflow-node {
       display: flex;
-      flex: 1 1 0%;
-      overflow: hidden;
+      height: 100%;
+    }
+
+    #workflows-grid {
+      overflow: auto;
     }
   }
 }
