@@ -5,16 +5,8 @@ from django import forms
 from django.forms.models import BaseInlineFormSet
 from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
 
-from .models import (
-    AddColumn,
-    Column,
-    EditColumn,
-    FunctionColumn,
-    Node,
-    RenameColumn,
-    SortColumn,
-    Workflow,
-)
+from .models import (AddColumn, Column, EditColumn, FunctionColumn, Node,
+                     RenameColumn, SortColumn, Workflow)
 
 
 class WorkflowForm(forms.ModelForm):
@@ -140,10 +132,32 @@ EditColumnFormSet = forms.inlineformset_factory(
     formset=InlineColumnFormset,
 )
 
+IBIS_TO_PREDICATE = {"String": "string_function", "Int64": "integer_function"}
+
+
+class AddColumnForm(forms.ModelForm):
+    class Meta:
+        fields = ("name", "string_function", "integer_function", "label")
+
+    def __init__(self, *args, **kwargs):
+
+        self.schema = kwargs.pop("schema")
+
+        super().__init__(*args, **kwargs)
+
+        if (data := kwargs.get("data")) is not None:
+            name = data[f"{kwargs['prefix']}-name"]
+            column_type = self.schema[name].name
+            if column_type == "String":
+                del self.fields["integer_function"]
+            else:
+                del self.fields["string_function"]
+
+
 AddColumnFormSet = forms.inlineformset_factory(
     Node,
     AddColumn,
-    fields=("name", "function", "label"),
+    form=AddColumnForm,
     can_delete=True,
     extra=1,
     formset=InlineColumnFormset,

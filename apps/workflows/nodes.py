@@ -122,7 +122,7 @@ def get_add_query(node):
     query = node.parents.first().get_query()
     return query.mutate(
         [
-            getattr(query[add.name], add.function)().name(add.label)
+            getattr(query[add.name], add.string_function)().name(add.label)
             for add in node.add_columns.all()
         ]
     )

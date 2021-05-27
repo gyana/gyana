@@ -123,12 +123,18 @@ class NodeUpdate(TurboUpdateView):
                 formset(
                     self.request.POST,
                     instance=self.object,
+                    form_kwargs={"schema": self.object.schema},
                 )
                 if self.request.POST
-                else formset(self.request.GET, instance=self.object)
+                else formset(
+                    self.request.GET,
+                    instance=self.object,
+                    form_kwargs={"schema": self.object.schema},
+                )
                 if self.request.GET
                 else formset(
                     instance=self.object,
+                    form_kwargs={"schema": self.object.schema},
                 )
             )
 

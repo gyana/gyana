@@ -258,10 +258,26 @@ bigquery_column_regex = RegexValidator(
 
 
 class AddColumn(models.Model):
+    class StringOperations(models.TextChoices):
+        LOWER = "lower", "to lowercase"
+        UPPER = "upper", "to uppercase"
+        ISNULL = "isnull", "is null"
+
+    class IntegerOperations(models.TextChoices):
+        ISNULL = "isnull", "is null"
+        CUMMAX = "cummax", "cummulative max"
+        CUMMIN = "cummin", "cummulative min"
+        ABS = "abs", "absolute value"
+        SQRT = "sqrt", "square root"
 
     node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="add_columns")
     name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
-    function = models.CharField(max_length=20, choices=Operations.choices)
+    string_function = models.CharField(
+        max_length=20, choices=StringOperations.choices, null=True
+    )
+    integer_function = models.CharField(
+        max_length=20, choices=IntegerOperations.choices, null=True
+    )
     label = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         validators=[bigquery_column_regex],
