@@ -80,12 +80,12 @@
     <nav class="tabbar">
       {% for parent in parents %}
         <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
-          href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ parent.id }}">
+          href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ parent.id }}{% if request.GET.preview %}&preview=true{% endif %}">
           Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
         </a> 
       {% endfor %}
       <a class="tabbar__link  {% if preview_node_id == node.id %} tabbar__link--active {% endif %}"
-        href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ node.id }}">
+        href="{% url 'workflows:node' workflow.id node.id %}?preview_node_id={{ node.id }}{% if request.GET.preview %}&preview=true{% endif %}">
         Result
       </a>
     </nav>
