@@ -14,7 +14,7 @@ from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from lib.clients import ibis_client
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, schema
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from turbo_response.views import TurboCreateView, TurboUpdateView
@@ -118,23 +118,25 @@ class NodeUpdate(TurboUpdateView):
         context["workflow"] = self.workflow
         context["node"] = self.object
 
+        schema = self.object.parents.first().schema
+
         for formset in self.formsets:
             context[inflection.underscore(formset.__name__)] = (
                 formset(
                     self.request.POST,
                     instance=self.object,
-                    form_kwargs={"schema": self.object.schema},
+                    form_kwargs={"schema": schema},
                 )
                 if self.request.POST
                 else formset(
                     self.request.GET,
                     instance=self.object,
-                    form_kwargs={"schema": self.object.schema},
+                    form_kwargs={"schema": schema},
                 )
                 if f"{formset.get_default_prefix()}-TOTAL_FORMS" in self.request.GET
                 else formset(
                     instance=self.object,
-                    form_kwargs={"schema": self.object.schema},
+                    form_kwargs={"schema": schema},
                 )
             )
 
