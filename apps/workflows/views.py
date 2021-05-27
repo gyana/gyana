@@ -6,6 +6,7 @@ from apps.projects.mixins import ProjectMixin
 from django import forms
 from django.db import transaction
 from django.db.models.query import QuerySet
+from django.http import request
 from django.http.response import HttpResponse
 from django.urls import reverse
 from django.views.generic import DetailView
@@ -119,9 +120,16 @@ class NodeUpdate(TurboUpdateView):
 
         for formset in self.formsets:
             context[inflection.underscore(formset.__name__)] = (
-                formset(self.request.POST, instance=self.object)
+                formset(
+                    self.request.POST,
+                    instance=self.object,
+                )
                 if self.request.POST
-                else formset(instance=self.object)
+                else formset(self.request.GET, instance=self.object)
+                if self.request.GET
+                else formset(
+                    instance=self.object,
+                )
             )
 
         context["preview_node_id"] = int(

@@ -6,7 +6,7 @@
     {% if node.kind == "filter" %}
     <turbo-frame id="node-{{ node.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
     {% else %}
-    <form class="h-full" method="post" action="{% url 'workflows:node' workflow.id node.id %}" data-controller="trigger"
+    <form data-controller="live-create" method="get" class="h-full" method="post" action="{% url 'workflows:node' workflow.id node.id %}" data-controller="trigger"
           data-trigger-event-value="node-updated-{{ node.id }}" data-action="submit->trigger#dispatch">
       {% csrf_token %}
       {% include "django/forms/default_form.html" %}
@@ -59,7 +59,7 @@
           class="button button--filled button--sm" 
           value='save' 
           name='save-close' 
-          data-action="click->tf-modal#close"
+          data-action="click->tf-modal#close click->live-create#create"
         >
           Save 
         </button>
@@ -68,6 +68,7 @@
           class="button button--filled button--green button--sm" 
           name='save-preview'
           value='save-preview'
+          data-action="click->live-create#create"
         >
           Save & Preview  
         </button>
