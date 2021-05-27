@@ -1,6 +1,7 @@
 .project {
   display: flex;
   flex: 1 1 auto;
+  overflow: hidden;
 
   &__title {
     align-items: center;
