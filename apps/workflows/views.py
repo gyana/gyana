@@ -131,7 +131,7 @@ class NodeUpdate(TurboUpdateView):
                     instance=self.object,
                     form_kwargs={"schema": self.object.schema},
                 )
-                if self.request.GET
+                if f"{formset.get_default_prefix()}-TOTAL_FORMS" in self.request.GET
                 else formset(
                     instance=self.object,
                     form_kwargs={"schema": self.object.schema},
