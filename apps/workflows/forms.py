@@ -156,6 +156,12 @@ class AddColumnForm(forms.ModelForm):
                     del self.fields["string_function"]
                     return
 
+        elif self.instance.name in self.schema:
+            column_type = self.schema[self.instance.name].name
+            if column_type == "Int64":
+                del self.fields["string_function"]
+                return
+
         del self.fields["integer_function"]
 
 
