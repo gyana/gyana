@@ -64,6 +64,11 @@ $button-colors: (
   &--tertiary {
     border-color: var(--c-gray);
   }
+
+  img {
+    width: 1.9rem;
+    border-radius: 10px;
+  }
 }
 
 // Sizes
