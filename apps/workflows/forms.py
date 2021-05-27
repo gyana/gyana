@@ -5,16 +5,11 @@ from django import forms
 from django.forms.models import BaseInlineFormSet
 from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
 
-from .models import (
-    AddColumn,
-    Column,
-    EditColumn,
-    FunctionColumn,
-    Node,
-    RenameColumn,
-    SortColumn,
-    Workflow,
-)
+# fmt: off
+from .models import (AddColumn, Column, EditColumn, FunctionColumn, Node,
+                     RenameColumn, SortColumn, Workflow)
+
+# fmt: on
 
 
 class WorkflowForm(forms.ModelForm):
