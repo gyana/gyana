@@ -77,15 +77,17 @@ const Sidebar: React.FC<{
               title='This workflow has been updated since the last run'
               className='absolute -top-3 -right-3 text-orange'
             >
-              <i className='fad fa-exclamation-triangle' />
+              <i className='fas fa-exclamation-triangle bg-white p-1' />
             </div>
           )}
         </button>
       </div>
+
       <hgroup>
         <h2>Nodes</h2>
         <p>You can drag these onto the pane on your left.</p>
       </hgroup>
+
       {Object.keys(SECTIONS).map((section) => (
         <React.Fragment key={section}>
           <hgroup>
