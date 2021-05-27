@@ -6,14 +6,14 @@
 {% block app %}
 
 <ul class="flex items-center space-x-4 mb-4">
-{% for iter_team in request.user.teams.all %}
+  {% for iter_team in request.user.teams.all %}
   <li>
     <a class="{% if iter_team.slug == team.slug %}text-blue{% endif %}"
-      href="{% url 'single_team:projects:list' iter_team.slug %}">
+       href="{% url 'single_team:projects:list' iter_team.slug %}">
       {{ iter_team.name }}
     </a>
   </li>
-{% endfor %}
+  {% endfor %}
   <li>
     <a href="{% url 'single_team:manage_team_react' team.slug %}"><i class="fa fa-cog"></i></a>
   </li>
@@ -23,15 +23,15 @@
 </ul>
 
 <div class="flex items-center mb-4">
-  <h1 class="mr-auto">Projects</h1>
+  <h1 class="mr-auto">My Projects</h1>
 </div>
 
 <ul class="project-list__projects">
   {% for object in object_list %}
   <li>
-    <a class="card card--sm" href="{% url 'projects:detail' object.pk %}">
+    <a class="card" href="{% url 'projects:detail' object.pk %}">
       <div class="flex flex-1 justify-between">
-        <h3>{{object}}</h3>
+        <h3>{{ object }}</h3>
 
         <!-- TODO: Add team icons -->
         <div class="heads">
@@ -42,8 +42,6 @@
           <button class="heads__item button button--sm button--circle button--filled disabled"></button>
         </div>
       </div>
-
-      <span class="flex-1"></span>
 
       <div class="flex-1">
         <span>Created {{ object.created|naturaltime }} | </span>
@@ -66,6 +64,7 @@
     </a>
   </li>
 </ul>
+
 
 {% if is_paginated %}
 <div class="pagination">
