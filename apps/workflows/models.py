@@ -186,6 +186,10 @@ class Node(models.Model):
     limit_limit = models.IntegerField(default=100)
     limit_offset = models.IntegerField(null=True)
 
+    def save(self, *args, **kwargs):
+        super(Node, self).save(*args, **kwargs)
+        self.workflow.save()
+
     def get_query(self):
         func = NODE_FROM_CONFIG[self.kind]
         try:
