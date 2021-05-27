@@ -1,5 +1,7 @@
+from django import forms
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -7,56 +9,30 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 from rest_framework import viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from turbo_response.views import TurboCreateView
 
 from .api_url_helpers import get_team_api_url_templates
 from .decorators import login_and_team_required, team_admin_required
 from .forms import TeamChangeForm
-from .invitations import (clear_invite_from_session, process_invitation,
-                          send_invitation)
+from .invitations import clear_invite_from_session, process_invitation, send_invitation
 from .models import Invitation, Team
 from .permissions import TeamAccessPermissions, TeamModelAccessPermissions
 from .roles import is_admin, is_member
 from .serializers import InvitationSerializer, TeamSerializer
 
 
-@login_required
-def manage_teams(request, path=""):
-    return render(
-        request, "teams/teams.html", {"api_urls": get_team_api_url_templates()}
-    )
+class TeamCreate(LoginRequiredMixin, TurboCreateView):
+    model = Team
+    form_class = TeamChangeForm
+    template_name = "teams/manage_team.html"
 
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        form.save()
+        form.instance.members.add(self.request.user, through_defaults={"role": "admin"})
+        return super().form_valid(form)
 
-@login_required
-def list_teams(request):
-    teams = request.user.teams.all()
-    return render(
-        request,
-        "teams/list_teams.html",
-        {
-            "teams": teams,
-        },
-    )
-
-
-@login_required
-def create_team(request):
-    if request.method == "POST":
-        form = TeamChangeForm(request.POST)
-        if form.is_valid():
-            team = form.save()
-            team.members.add(request.user, through_defaults={"role": "admin"})
-            team.save()
-            return HttpResponseRedirect(reverse("single_team:projects:list", args=(team.slug, )))
-    else:
-        form = TeamChangeForm()
-    return render(
-        request,
-        "teams/manage_team.html",
-        {
-            "form": form,
-            "create": True,
-        },
-    )
+    def get_success_url(self) -> str:
+        return reverse("single_team:projects:list", args=(self.object.slug,))
 
 
 @login_and_team_required

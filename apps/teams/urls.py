@@ -6,10 +6,7 @@ from . import views
 app_name = "teams"
 
 urlpatterns = [
-    path("manage/", views.manage_teams, name="manage_teams"),
-    path("manage/<path:path>", views.manage_teams, name="manage_teams"),
-    path("list/", views.list_teams, name="list_teams"),
-    path("create/", views.create_team, name="create_team"),
+    path("create/", views.TeamCreate.as_view(), name="create_team"),
     path(
         "invitation/<slug:invitation_id>/",
         views.accept_invitation,
