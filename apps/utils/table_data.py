@@ -1,6 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.html import escape
 from django.utils.http import urlencode
+from django_tables2 import Column, Table
 from django_tables2.data import TableData
 from django_tables2.templatetags.django_tables2 import QuerystringNode
 from lib.clients import ibis_client
@@ -91,3 +92,17 @@ class BigQueryTableData(TableData):
         together properly.
         """
         self.table = table
+
+
+def get_table(schema, query, **kwargs):
+    """Dynamically creates a table class and adds the correct table data
+
+    See https://django-tables2.readthedocs.io/en/stable/_modules/django_tables2/views.html
+    """
+    # Inspired by https://stackoverflow.com/questions/16696066/django-tables2-dynamically-adding-columns-to-table-not-adding-attrs-to-table
+    attrs = {name: Column() for name in schema}
+    attrs["Meta"] = type("Meta", (), {"attrs": {"class": "table"}})
+    table_class = type("DynamicTable", (Table,), attrs)
+
+    table_data = BigQueryTableData(query)
+    return table_class(data=table_data, **kwargs)

@@ -102,14 +102,12 @@ def query_integration(integration: Integration):
 
     conn = ibis_client()
 
-    table = conn.table(
+    return conn.table(
         integration.table_set.first().bq_table,
         database=integration.schema
         if integration.kind == Integration.Kind.FIVETRAN
         else DATASET_ID,
     )
-
-    return conn.execute(table.limit(DEFAULT_LIMIT))
 
 
 def get_tables_in_dataset(integration):

@@ -3,7 +3,7 @@ from functools import cached_property
 
 import inflection
 from apps.projects.mixins import ProjectMixin
-from apps.workflows.table_data import BigQueryTableData
+from apps.utils.table_data import get_table
 from django import forms
 from django.db import transaction
 from django.db.models.query import QuerySet
@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
-from django_tables2 import Column, SingleTableView, Table
+from django_tables2 import SingleTableView
 from django_tables2.config import RequestConfig
 from django_tables2.views import SingleTableMixin
 from rest_framework import viewsets
@@ -167,18 +167,7 @@ class NodeGrid(SingleTableMixin, TemplateView):
         return super().get_context_data(**kwargs)
 
     def get_table(self, **kwargs):
-        """Dynamically creates a table class and adds the correct table data
-
-        See https://django-tables2.readthedocs.io/en/stable/_modules/django_tables2/views.html
-        """
-        # Inspired by https://stackoverflow.com/questions/16696066/django-tables2-dynamically-adding-columns-to-table-not-adding-attrs-to-table
-        attrs = {name: Column() for name in self.node.schema}
-        attrs["Meta"] = type("Meta", (), {"attrs": {"class": "table"}})
-        table_class = type("DynamicTable", (Table,), attrs)
-
-        table_data = BigQueryTableData(self.node.get_query())
-
-        table = table_class(data=table_data, **kwargs)
+        table = get_table(self.node.schema, self.node.get_query(), **kwargs)
 
         return RequestConfig(
             self.request, paginate=self.get_table_pagination(table)

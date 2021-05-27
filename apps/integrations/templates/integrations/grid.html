@@ -1,2 +1,5 @@
-<turbo-frame id="integrations-grid">{% include 'components/grid.html' %}
+{% load render_table from django_tables2 %}
+
+<turbo-frame id="integrations-grid">
+  {% render_table table %}
 </turbo-frame>
