@@ -150,14 +150,13 @@ class AddColumnForm(forms.ModelForm):
 
         if (data := kwargs.get("data")) is not None:
             name = data[f"{kwargs['prefix']}-name"]
-            column_type = self.schema[name].name
-            if column_type == "String":
-                del self.fields["integer_function"]
-            else:
-                del self.fields["string_function"]
+            if name in self.schema:
+                column_type = self.schema[name].name
+                if column_type == "Int64":
+                    del self.fields["string_function"]
+                    return
 
-        else:
-            del self.fields["integer_function"]
+        del self.fields["integer_function"]
 
 
 AddColumnFormSet = forms.inlineformset_factory(
