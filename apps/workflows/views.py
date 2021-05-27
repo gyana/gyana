@@ -160,16 +160,26 @@ class NodeUpdate(TurboUpdateView):
 
 class NodeGrid(SingleTableMixin, TemplateView):
     template_name = "workflows/grid.html"
+    paginate_by = 15
 
     def get_context_data(self, **kwargs):
         self.node = Node.objects.get(id=kwargs["pk"])
         return super().get_context_data(**kwargs)
 
     def get_table(self, **kwargs):
+        """Dynamically creates a table class and adds the correct table data
+
+        See https://django-tables2.readthedocs.io/en/stable/_modules/django_tables2/views.html
+        """
+        # Inspired by https://stackoverflow.com/questions/16696066/django-tables2-dynamically-adding-columns-to-table-not-adding-attrs-to-table
         attrs = {name: Column() for name in self.node.schema}
+        attrs["Meta"] = type("Meta", (), {"attrs": {"class": "table"}})
         table_class = type("DynamicTable", (Table,), attrs)
+
         table_data = BigQueryTableData(self.node.get_query())
+
         table = table_class(data=table_data, **kwargs)
+
         return RequestConfig(
             self.request, paginate=self.get_table_pagination(table)
         ).configure(table)

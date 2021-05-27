@@ -91,7 +91,8 @@
     </nav>
     
     {% if request.GET.preview %}
-    <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id preview_node_id %}">Loading...
+    <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id preview_node_id %}">
+      Loading...
     </turbo-frame>
     {% else %}
     <div class='workflow-detail__load-preview'>
