@@ -10,6 +10,7 @@ urlpatterns = [
         "<int:workflow_id>/nodes/<int:pk>/grid", views.NodeGrid.as_view(), name="grid"
     ),
     path("<int:pk>/run_workflow", views.workflow_run, name="run_workflow"),
+    path("<int:pk>/out_of_date", views.worflow_out_of_date, name="worflow_out_of_date"),
 ]
 
 

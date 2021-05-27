@@ -179,3 +179,9 @@ def workflow_run(request, pk):
     workflow = get_object_or_404(Workflow, pk=pk)
     errors = run_workflow(workflow)
     return Response(errors or {})
+
+
+@api_view(http_method_names=["GET"])
+def worflow_out_of_date(request, pk):
+    workflow = get_object_or_404(Workflow, pk=pk)
+    return Response({"isOutOfDate": workflow.out_of_date})

@@ -29,6 +29,10 @@ class Workflow(models.Model):
     def failed(self):
         return any(node.error is not None for node in self.nodes.all())
 
+    @property
+    def out_of_date(self):
+        return self.last_run < self.updated if self.last_run else True
+
 
 NodeConfig = {
     "input": {

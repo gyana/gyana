@@ -31,7 +31,7 @@ const DnDFlow = ({ client }) => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null)
   const [elements, setElements] = useState<(Edge | Node)[]>([])
   const { fitView } = useZoomPanHelper()
-
+  const [isOutOfDate, setIsOutOfDate] = useState(false)
   // State whether the initial element load has been done
   const [initialLoad, setInitialLoad] = useState(false)
 
@@ -81,6 +81,7 @@ const DnDFlow = ({ client }) => {
         updateParents(el.target, parents)
       }
     })
+    setIsOutOfDate(true)
   }
 
   const onEdgeUpdate = (oldEdge, newEdge) => {
@@ -120,6 +121,7 @@ const DnDFlow = ({ client }) => {
       updateParents(newEdge.target, [...parents, newEdge.source])
       setElements((els) => updateEdge(oldEdge, newEdge, els))
     }
+    setIsOutOfDate(true)
   }
 
   const removeById = (id: string) => {
@@ -189,6 +191,10 @@ const DnDFlow = ({ client }) => {
 
   useEffect(() => {
     syncElements()
+
+    client
+      .action(window.schema, ['workflows', 'out_of_date', 'list'], { id: workflowId })
+      .then((res) => setIsOutOfDate(res.isOutOfDate))
   }, [])
 
   useEffect(() => {
@@ -215,6 +221,7 @@ const DnDFlow = ({ client }) => {
     }
 
     setElements((es) => es.concat(newNode))
+    setIsOutOfDate(true)
   }
 
   const hasOutput = elements.some((el) => el.type === 'output')
@@ -247,6 +254,8 @@ const DnDFlow = ({ client }) => {
         workflowId={workflowId}
         elements={elements}
         setElements={setElements}
+        isOutOfDate={isOutOfDate}
+        setIsOutOfDate={setIsOutOfDate}
       />
     </div>
   )

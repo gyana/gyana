@@ -25,7 +25,9 @@ const Sidebar: React.FC<{
   client
   elements: (Node | Edge)[]
   setElements: (elements: (Node | Edge)[]) => void
-}> = ({ hasOutput, workflowId, client, elements, setElements }) => {
+  isOutOfDate: boolean
+  setIsOutOfDate: (x: boolean) => void
+}> = ({ hasOutput, workflowId, client, elements, setElements, isOutOfDate, setIsOutOfDate }) => {
   const onDragStart = (event, nodeType) => {
     event.dataTransfer.setData('application/reactflow', nodeType)
     event.dataTransfer.effectAllowed = 'move'
@@ -59,13 +61,24 @@ const Sidebar: React.FC<{
                       return el
                     })
                   )
+                  if (Object.keys(res).length === 0) {
+                    setIsOutOfDate(false)
+                  }
                 }
               })
           }
           title='Workflow needs output node to run'
-          className='button button--sm button--green button--square'
+          className='button button--sm button--green button--square relative'
         >
           Run
+          {isOutOfDate && (
+            <div
+              title='This workflow has been updated since the last run'
+              className='absolute -top-3 -right-3 text-orange'
+            >
+              <i className='fad fa-exclamation-triangle' />
+            </div>
+          )}
         </button>
       </div>
       <hgroup>
