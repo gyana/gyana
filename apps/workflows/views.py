@@ -3,15 +3,18 @@ from functools import cached_property
 
 import inflection
 from apps.projects.mixins import ProjectMixin
+from apps.workflows.table_data import BigQueryTableData
 from django import forms
 from django.db import transaction
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
 from django.urls import reverse
 from django.views.generic import DetailView
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
-from django_tables2 import SingleTableView
-from lib.clients import ibis_client
+from django_tables2 import Column, SingleTableView, Table
+from django_tables2.config import RequestConfig
+from django_tables2.views import SingleTableMixin
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
@@ -155,23 +158,21 @@ class NodeUpdate(TurboUpdateView):
         return base_url
 
 
-class NodeGrid(DetailView):
+class NodeGrid(SingleTableMixin, TemplateView):
     template_name = "workflows/grid.html"
-    model = Node
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        conn = ibis_client()
+        self.node = Node.objects.get(id=kwargs["pk"])
+        return super().get_context_data(**kwargs)
 
-        if (query := self.object.get_query()) is None:
-            context["columns"] = []
-            context["rows"] = []
-            return context
-
-        df = conn.execute(query.limit(100))
-        context["columns"] = json.dumps([{"field": col} for col in df.columns])
-        context["rows"] = df.to_json(orient="records")
-        return context
+    def get_table(self, **kwargs):
+        attrs = {name: Column() for name in self.node.schema}
+        table_class = type("DynamicTable", (Table,), attrs)
+        table_data = BigQueryTableData(self.node.get_query())
+        table = table_class(data=table_data, **kwargs)
+        return RequestConfig(
+            self.request, paginate=self.get_table_pagination(table)
+        ).configure(table)
 
 
 @api_view(http_method_names=["POST"])
