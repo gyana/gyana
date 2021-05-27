@@ -174,6 +174,11 @@ class NodeGrid(DetailView):
         return context
 
 
+class WorkflowLastRun(DetailView):
+    template_name = "workflows/last_run.html"
+    model = Workflow
+
+
 @api_view(http_method_names=["POST"])
 def workflow_run(request, pk):
     workflow = get_object_or_404(Workflow, pk=pk)

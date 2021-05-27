@@ -63,6 +63,7 @@ const Sidebar: React.FC<{
                   )
                   if (Object.keys(res).length === 0) {
                     setIsOutOfDate(false)
+                    window.dispatchEvent(new Event('workflow-run'))
                   }
                 }
               })
