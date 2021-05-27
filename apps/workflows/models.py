@@ -283,6 +283,10 @@ class AddColumn(models.Model):
         validators=[bigquery_column_regex],
     )
 
+    @property
+    def function(self):
+        return self.string_function or self.integer_function
+
 
 class RenameColumn(models.Model):
     node = models.ForeignKey(

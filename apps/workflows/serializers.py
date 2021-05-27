@@ -72,7 +72,7 @@ def get_edit_desc(obj):
 
 
 def get_add_desc(obj):
-    return f"Add {' ,'.join([f'{add.name} {add.string_function}' for add in obj.add_columns.all()])}"
+    return f"Add {' ,'.join([f'{add.name} {add.function}' for add in obj.add_columns.all()])}"
 
 
 def get_rename_desc(obj):

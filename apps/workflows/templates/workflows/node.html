@@ -6,8 +6,13 @@
     {% if node.kind == "filter" %}
     <turbo-frame id="node-{{ node.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
     {% else %}
-    <form data-controller="live-create" method="get" class="h-full" method="post" action="{% url 'workflows:node' workflow.id node.id %}" data-controller="trigger"
-          data-trigger-event-value="node-updated-{{ node.id }}" data-action="submit->trigger#dispatch">
+    <form class="h-full" action="{% url 'workflows:node' workflow.id node.id %}" 
+      {% if add_column_form_form_set %}
+      data-controller="live-create trigger" method="get"
+      {% else %}
+      method="post"
+      {% endif %}
+      data-trigger-event-value="node-updated-{{ node.id }}" data-action="submit->trigger#dispatch">
       {% csrf_token %}
       {% include "django/forms/default_form.html" %}
       
