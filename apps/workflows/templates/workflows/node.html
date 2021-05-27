@@ -10,9 +10,10 @@
       {% if add_column_form_form_set %}
       data-controller="live-create trigger" method="get"
       {% else %}
-      method="post"
+      data-controller="trigger" method="post"
       {% endif %}
-      data-trigger-event-value="node-updated-{{ node.id }}" data-action="submit->trigger#dispatch">
+      data-trigger-event-value="node-updated-{{ node.id }}" data-action="submit->trigger#dispatch"
+      >
       {% csrf_token %}
       {% include "django/forms/default_form.html" %}
       
@@ -60,20 +61,29 @@
 
       <div className='flex flex-row'>
         <button 
+          {% if add_column_form_form_set %}
+          type="button"
+          data-action="click->tf-modal#close click->live-create#create click->trigger#dispatch"
+          {% else %}
           type='submit' 
+          data-action="click->tf-modal#close"
+          {% endif %}
           class="button button--filled button--sm" 
           value='save' 
-          name='save-close' 
-          data-action="click->tf-modal#close click->live-create#create"
+          name='save-close'
         >
           Save 
         </button>
         <button 
+          {% if add_column_form_form_set %}
+          type="button"
+          data-action="click->live-create#create_preview click->trigger#dispatch"
+          {% else %}
           type='submit' 
+          {% endif %}
           class="button button--filled button--green button--sm" 
           name='save-preview'
           value='save-preview'
-          data-action="click->live-create#create"
         >
           Save & Preview  
         </button>
