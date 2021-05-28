@@ -1,14 +1,18 @@
 import json
 
 from apps.projects.mixins import ProjectMixin
+from apps.utils.table_data import get_table
 from django.conf import settings
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import DetailView
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
+from django_tables2.config import RequestConfig
+from django_tables2.views import SingleTableMixin
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .bigquery import query_integration
@@ -179,18 +183,20 @@ class IntegrationSettings(ProjectMixin, TurboUpdateView):
 # Turbo frames
 
 
-class IntegrationGrid(DetailView):
+class IntegrationGrid(SingleTableMixin, TemplateView):
     template_name = "integrations/grid.html"
-    model = Integration
+    paginate_by = 15
 
     def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        df = query_integration(self.object)
+        self.integration = Integration.objects.get(id=kwargs["pk"])
+        return super().get_context_data(**kwargs)
 
-        context_data["columns"] = json.dumps([{"field": col} for col in df.columns])
-        context_data["rows"] = df.to_json(orient="records")
-
-        return context_data
+    def get_table(self, **kwargs):
+        query = query_integration(self.integration)
+        table = get_table(query.schema(), query, **kwargs)
+        return RequestConfig(
+            self.request, paginate=self.get_table_pagination(table)
+        ).configure(table)
 
 
 class IntegrationSync(TurboUpdateView):

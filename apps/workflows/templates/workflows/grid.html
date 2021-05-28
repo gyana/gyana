@@ -1,3 +1,5 @@
+{% load render_table from django_tables2 %}
+
 <turbo-frame id="workflows-grid">
-  {% include 'components/grid.html' %}
+  {% render_table table %}
 </turbo-frame>

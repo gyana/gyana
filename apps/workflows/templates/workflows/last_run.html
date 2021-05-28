@@ -1,0 +1,7 @@
+<turbo-frame id="workflow-last-run">
+  <p 
+    class="text-black-50"
+  >
+    Last run: {{ object.last_run|default_if_none:'Never' }}
+  </p>
+</turbo-frame>

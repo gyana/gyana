@@ -25,7 +25,9 @@ const Sidebar: React.FC<{
   client
   elements: (Node | Edge)[]
   setElements: (elements: (Node | Edge)[]) => void
-}> = ({ hasOutput, workflowId, client, elements, setElements }) => {
+  isOutOfDate: boolean
+  setIsOutOfDate: (x: boolean) => void
+}> = ({ hasOutput, workflowId, client, elements, setElements, isOutOfDate, setIsOutOfDate }) => {
   const onDragStart = (event, nodeType) => {
     event.dataTransfer.setData('application/reactflow', nodeType)
     event.dataTransfer.effectAllowed = 'move'
@@ -59,19 +61,33 @@ const Sidebar: React.FC<{
                       return el
                     })
                   )
+                  if (Object.keys(res).length === 0) {
+                    setIsOutOfDate(false)
+                    window.dispatchEvent(new Event('workflow-run'))
+                  }
                 }
               })
           }
           title='Workflow needs output node to run'
-          className='button button--sm button--green button--square'
+          className='button button--sm button--green button--square relative'
         >
           Run
+          {isOutOfDate && (
+            <div
+              title='This workflow has been updated since the last run'
+              className='absolute -top-3 -right-3 text-orange'
+            >
+              <i className='fas fa-exclamation-triangle bg-white p-1' />
+            </div>
+          )}
         </button>
       </div>
+
       <hgroup>
         <h2>Nodes</h2>
         <p>You can drag these onto the pane on your left.</p>
       </hgroup>
+
       {Object.keys(SECTIONS).map((section) => (
         <React.Fragment key={section}>
           <hgroup>

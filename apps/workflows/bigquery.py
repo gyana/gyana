@@ -36,7 +36,9 @@ def run_workflow(workflow: Workflow):
                 )
                 table.save()
 
-    workflow.last_run = datetime.now()
-
     if workflow.failed:
         return {node.id: node.error for node in workflow.nodes.all() if node.error}
+
+    workflow.last_run = datetime.now()
+    # Use fields to not trigger auto_now on the updated field
+    workflow.save(update_fields=["last_run"])

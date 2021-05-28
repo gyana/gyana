@@ -15,7 +15,8 @@
     </a>
 
     <a class="button button--tertiary button--sm" href="{% url 'users:user_profile' %}">
-      {{user.username}}
+      {{ user.username }}
+      <img src="{{ user.avatar_url }}" alt="">
     </a>
   </div>
 </nav>

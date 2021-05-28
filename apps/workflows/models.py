@@ -29,6 +29,10 @@ class Workflow(models.Model):
     def failed(self):
         return any(node.error is not None for node in self.nodes.all())
 
+    @property
+    def out_of_date(self):
+        return self.last_run < self.updated if self.last_run else True
+
 
 NodeConfig = {
     "input": {
@@ -181,6 +185,10 @@ class Node(models.Model):
 
     limit_limit = models.IntegerField(default=100)
     limit_offset = models.IntegerField(null=True)
+
+    def save(self, *args, **kwargs):
+        super(Node, self).save(*args, **kwargs)
+        self.workflow.save()
 
     def get_query(self):
         func = NODE_FROM_CONFIG[self.kind]

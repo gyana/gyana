@@ -4,24 +4,28 @@
 {% block app %}
 
 <div class="pad">
-  <h1 class="mb-4">{{ project.name }}</h1>
+  <hgroup class="mb-4">
+    <h1>{{ project.name }}</h1>
+    {% if project.description %}
+    <p>{{ project.description }}</p>
+    {% endif %}
+  </hgroup>
 
   <div class="card w-full max-w-5xl flex flex-col">
-    <div class="flex items-center gap-4">
-      <a class="hover:underline" href="{% url 'projects:integrations:list' project.id %}">
+    <p class="flex items-center gap-4">
+      <a class="link" href="{% url 'projects:integrations:list' project.id %}">
         <strong>{{ integration_count }}</strong> integration{{ integration_count|pluralize }}
       </a>
-      <a class="hover:underline" href="{% url 'projects:workflows:list' project.id %}">
+      <a class="link" href="{% url 'projects:workflows:list' project.id %}">
         <strong>{{ workflow_count }}</strong> workflow{{ workflow_count|pluralize }}
       </a>
-      <a class="hover:underline" href="{% url 'projects:dashboards:list' project.id %}">
+      <a class="link" href="{% url 'projects:dashboards:list' project.id %}">
         <strong>{{ dashboard_count }}</strong> dashboard{{ dashboard_count|pluralize }}
       </a>
-      <a class="hover:underline" href="#">
+      <a>
         <strong>{{ project.num_rows|intcomma }}</strong> row{{ project.num_rows|pluralize }}
       </a>
-    </div>
-    <p>{{ project.description }}</p>
+    </p>
   </div>
 
   {% if integration_pending > 0 %}
