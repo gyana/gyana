@@ -116,26 +116,28 @@ class NodeUpdate(TurboUpdateView):
 
     def get_formset_instance(self, formset):
 
-        schema = self.object.parents.first().schema
+        form_kwargs = {}
+        if formset.get_default_prefix() == "add_columns":
+            form_kwargs = {"schema": self.object.parents.first().schema}
 
         # POST request for form creation
         if self.request.POST:
             return formset(
                 self.request.POST,
                 instance=self.object,
-                form_kwargs={"schema": schema},
+                form_kwargs=form_kwargs,
             )
         # GET request in live form
         if f"{formset.get_default_prefix()}-TOTAL_FORMS" in self.request.GET:
             return formset(
                 self.request.GET,
                 instance=self.object,
-                form_kwargs={"schema": schema},
+                form_kwargs=form_kwargs,
             )
         # initial render
         return formset(
             instance=self.object,
-            form_kwargs={"schema": schema},
+            form_kwargs=form_kwargs,
         )
 
     def get_context_data(self, **kwargs):

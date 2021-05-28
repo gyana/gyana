@@ -7,7 +7,7 @@
     <turbo-frame id="node-{{ node.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
     {% else %}
     <form class="h-full overflow-auto" action="{% url 'workflows:node' workflow.id node.id %}" 
-      {% if add_column_formset %}
+      {% if add_columns_formset %}
       data-controller="live-create trigger" method="get"
       {% else %}
       data-controller="trigger" method="post"
@@ -18,51 +18,51 @@
 
       {% include "django/forms/default_form.html" %}
 
-      {% if column_formset %}
+      {% if columns_formset %}
       <fieldset>
         <label>Add columns</label>
-        {% include "components/formset.html" with formset=column_formset %}
+        {% include "components/formset.html" with formset=columns_formset %}
       </fieldset>
       {% endif %}
 
-      {% if function_column_formset %}
+      {% if aggregations_formset %}
       <fieldset>
         <label>Add aggregates</label>
-        {% include "components/formset.html" with formset=function_column_formset %}
+        {% include "components/formset.html" with formset=aggregations_formset %}
       </fieldset>
       {% endif %}
 
-      {% if sort_column_formset %}
+      {% if sort_columns_formset %}
       <fieldset>
         <label>Add columns</label>
-        {% include "components/formset.html" with formset=sort_column_formset %}
+        {% include "components/formset.html" with formset=sort_columns_formset %}
       </fieldset>
       {% endif %}
 
-      {% if edit_column_formset %}
+      {% if edit_columns_formset %}
       <fieldset>
         <label>Edit columns</label>
-        {% include "components/formset.html" with formset=edit_column_formset %}
+        {% include "components/formset.html" with formset=edit_columns_formset %}
       </fieldset>
       {% endif %}
 
-      {% if add_column_formset %}
+      {% if add_columns_formset %}
       <fieldset>
         <label>Add columns</label>
-        {% include "components/formset.html" with formset=add_column_formset %}
+        {% include "components/formset.html" with formset=add_columns_formset %}
       </fieldset>
       {% endif %}
 
-      {% if rename_column_formset %}
+      {% if rename_columns_formset %}
       <fieldset>
         <label>Rename columns</label>
-        {% include "components/formset.html" with formset=rename_column_formset %}
+        {% include "components/formset.html" with formset=rename_columns_formset %}
       </fieldset>
       {% endif %}
 
       <div className='flex flex-row gap-4 flex-1 items-end'>
         <button 
-          {% if add_column_formset %}
+          {% if add_columns_formset %}
           type="button"
           data-action="click->tf-modal#close click->live-create#create click->trigger#dispatch"
           {% else %}
@@ -76,7 +76,7 @@
           Save 
         </button>
         <button 
-          {% if add_column_formset %}
+          {% if add_columns_formset %}
           type="button"
           data-action="click->live-create#create_preview click->trigger#dispatch"
           {% else %}
