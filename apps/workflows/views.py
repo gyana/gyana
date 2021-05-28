@@ -1,7 +1,5 @@
-import json
 from functools import cached_property
 
-import inflection
 from apps.projects.mixins import ProjectMixin
 from apps.utils.table_data import get_table
 from django import forms
@@ -147,7 +145,7 @@ class NodeUpdate(TurboUpdateView):
 
         for formset in self.formsets:
             context[
-                inflection.underscore(formset.__name__)
+                f"{formset.get_default_prefix()}_formset"
             ] = self.get_formset_instance(formset)
 
         context["preview_node_id"] = int(
@@ -163,7 +161,7 @@ class NodeUpdate(TurboUpdateView):
             with transaction.atomic():
                 self.object = form.save()
                 for formset_cls in self.formsets:
-                    formset = context[inflection.underscore(formset_cls.__name__)]
+                    formset = context[f"{formset_cls.get_default_prefix()}_formset"]
                     if formset.is_valid():
                         formset.instance = self.object
                         formset.save()
