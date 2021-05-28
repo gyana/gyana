@@ -1,6 +1,3 @@
-from django.core.exceptions import ImproperlyConfigured
-from django.utils.html import escape
-from django.utils.http import urlencode
 from django_tables2 import Column, Table
 from django_tables2.data import TableData
 from django_tables2.templatetags.django_tables2 import QuerystringNode
@@ -10,42 +7,17 @@ from lib.clients import ibis_client
 # Without this links only lead to the whole document url and add query parameter
 # instead we want to link to the turbo-frame/request url
 
-context_processor_error_msg = (
-    "Tag {%% %s %%} requires django.template.context_processors.request to be "
-    "in the template configuration in "
-    "settings.TEMPLATES[]OPTIONS.context_processors) in order for the included "
-    "template tags to function correctly."
-)
+
+old_render = QuerystringNode.render
 
 
-def render(self, context):
-    if "request" not in context:
-        raise ImproperlyConfigured(context_processor_error_msg % "querystring")
-
-    params = dict(context["request"].GET)
-    for key, value in self.updates.items():
-        if isinstance(key, str):
-            params[key] = value
-            continue
-        key = key.resolve(context)
-        value = value.resolve(context)
-        if key not in ("", None):
-            params[key] = value
-    for removal in self.removals:
-        params.pop(removal.resolve(context), None)
-
-    value = escape("?" + urlencode(params, doseq=True))
-
-    if self.asvar:
-        context[str(self.asvar)] = value
-        return ""
-    else:
-        # This is the only change in this function
-        # we are adding the whole path instead of only the query parameters
-        return context["request"].path + value
+def new_render(self, context):
+    value = old_render(self, context)
+    # we are adding the whole path instead of only the query parameters
+    return context["request"].path + value
 
 
-QuerystringNode.render = render
+QuerystringNode.render = new_render
 
 
 class BigQueryTableData(TableData):
