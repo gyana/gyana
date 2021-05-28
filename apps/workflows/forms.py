@@ -150,17 +150,17 @@ class AddColumnForm(forms.ModelForm):
 
         column_type = None
 
-        # live form
+        # data populated by GET request in live form
         if (data := kwargs.get("data")) is not None:
             name = data[f"{kwargs['prefix']}-name"]
             if name in self.schema:
                 column_type = self.schema[name].name
 
-        # initial render
+        # data populated from database in initial render
         elif self.instance.name in self.schema:
             column_type = self.schema[self.instance.name].name
 
-        # remove all fields that do are not for this type
+        # remove all fields that are not for this type
         deletions = [v for k, v in IBIS_TO_PREFIX.items() if k != column_type]
 
         for deletion in deletions:

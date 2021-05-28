@@ -113,32 +113,39 @@ class NodeUpdate(TurboUpdateView):
     def formsets(self):
         return KIND_TO_FORMSETS.get(self.object.kind, [])
 
+    def get_formset_instance(self, formset):
+
+        schema = self.object.parents.first().schema
+
+        # POST request for form creation
+        if self.request.POST:
+            return formset(
+                self.request.POST,
+                instance=self.object,
+                form_kwargs={"schema": schema},
+            )
+        # GET request in live form
+        if f"{formset.get_default_prefix()}-TOTAL_FORMS" in self.request.GET:
+            return formset(
+                self.request.GET,
+                instance=self.object,
+                form_kwargs={"schema": schema},
+            )
+        # initial render
+        return formset(
+            instance=self.object,
+            form_kwargs={"schema": schema},
+        )
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["workflow"] = self.workflow
         context["node"] = self.object
 
-        schema = self.object.parents.first().schema
-
         for formset in self.formsets:
-            context[inflection.underscore(formset.__name__)] = (
-                formset(
-                    self.request.POST,
-                    instance=self.object,
-                    form_kwargs={"schema": schema},
-                )
-                if self.request.POST
-                else formset(
-                    self.request.GET,
-                    instance=self.object,
-                    form_kwargs={"schema": schema},
-                )
-                if f"{formset.get_default_prefix()}-TOTAL_FORMS" in self.request.GET
-                else formset(
-                    instance=self.object,
-                    form_kwargs={"schema": schema},
-                )
-            )
+            context[
+                inflection.underscore(formset.__name__)
+            ] = self.get_formset_instance(formset)
 
         context["preview_node_id"] = int(
             self.request.GET.get("preview_node_id", self.object.id)
