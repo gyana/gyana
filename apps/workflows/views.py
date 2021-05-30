@@ -102,23 +102,16 @@ class NodeViewSet(viewsets.ModelViewSet):
     filterset_fields = ["workflow"]
 
 
-class NodeUpdate(TurboUpdateView):
-    template_name = "workflows/node.html"
-    model = Node
-
-    @cached_property
-    def workflow(self):
-        return Workflow.objects.get(pk=self.kwargs["workflow_id"])
-
-    @cached_property
+class LiveInlineFormsetViewMixin:
     def formsets(self):
-        return KIND_TO_FORMSETS.get(self.object.kind, [])
+        raise NotImplementedError()
+
+    def get_formset_kwargs(self, formset):
+        raise NotImplementedError()
 
     def get_formset_instance(self, formset):
 
-        form_kwargs = {}
-        if formset.get_default_prefix() == "add_columns":
-            form_kwargs = {"schema": self.object.parents.first().schema}
+        form_kwargs = self.get_formset_kwargs(formset)
 
         # POST request for form creation
         if self.request.POST:
@@ -142,17 +135,11 @@ class NodeUpdate(TurboUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["workflow"] = self.workflow
-        context["node"] = self.object
 
         for formset in self.formsets:
             context[
                 f"{formset.get_default_prefix()}_formset"
             ] = self.get_formset_instance(formset)
-
-        context["preview_node_id"] = int(
-            self.request.GET.get("preview_node_id", self.object.id)
-        )
 
         return context
 
@@ -169,6 +156,38 @@ class NodeUpdate(TurboUpdateView):
                         formset.save()
 
         return super().form_valid(form)
+
+
+class NodeUpdate(LiveInlineFormsetViewMixin, TurboUpdateView):
+    template_name = "workflows/node.html"
+    model = Node
+
+    @cached_property
+    def workflow(self):
+        return Workflow.objects.get(pk=self.kwargs["workflow_id"])
+
+    @cached_property
+    def formsets(self):
+        return KIND_TO_FORMSETS.get(self.object.kind, [])
+
+    def get_formset_kwargs(self, formset):
+
+        if formset.get_default_prefix() == "add_columns":
+            return {"schema": self.object.parents.first().schema}
+
+        return {}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["workflow"] = self.workflow
+        context["node"] = self.object
+
+        context["preview_node_id"] = int(
+            self.request.GET.get("preview_node_id", self.object.id)
+        )
+
+        return context
 
     def get_form_class(self):
         return KIND_TO_FORM[self.object.kind]

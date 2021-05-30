@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 
 from apps.dashboards.models import Dashboard
 from apps.widgets.visuals import VISUAL_TO_OUTPUT
+from apps.workflows.views import LiveInlineFormsetViewMixin
 from django.db import transaction
 from django.db.models.query import QuerySet
 from django.urls import resolve, reverse
@@ -14,7 +15,7 @@ from rest_framework import generics
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .bigquery import query_widget
-from .forms import WidgetConfigForm, WidgetForm
+from .forms import FilterFormset, WidgetConfigForm, WidgetForm
 from .models import Widget
 
 
@@ -41,10 +42,17 @@ class WidgetList(DashboardMixin, ListView):
         return context_data
 
 
-class WidgetCreate(DashboardMixin, TurboCreateView):
+class WidgetCreate(LiveInlineFormsetViewMixin, DashboardMixin, TurboCreateView):
     template_name = "widgets/create.html"
     model = Widget
     form_class = WidgetForm
+
+    @property
+    def formsets(self):
+        return [FilterFormset]
+
+    def get_formset_kwargs(self, formset):
+        return {'schema': []}
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

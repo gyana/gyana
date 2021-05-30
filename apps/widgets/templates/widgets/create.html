@@ -6,11 +6,20 @@
   <a href="{% url 'widgets:list' %}" class="button button--sm button--green">Back</a>
 </div>
 
-<form method="post" action="{% url 'widgets:create' %}" class="form">
+<form data-controller="live-create trigger" method="get" action="{% url 'widgets:create' %}" class="form">
   {% csrf_token %}
 
   {% include "django/forms/default_form.html" %}
 
-  <button type="submit" class="button button--filled button--green">Create</button>
+  <fieldset>
+    <label>Add filters</label>
+    {% include "components/formset.html" with formset=filters_formset %}
+  </fieldset>  
+
+  <button type="button"
+    data-action="click->live-create#create"
+    class="button button--filled button--green">
+    Create
+  </button>
 </form>
 {% endblock %}

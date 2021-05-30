@@ -1,5 +1,8 @@
+from apps.filters.forms import FilterForm
+from apps.filters.models import Filter
 from apps.tables.models import Table
 from django import forms
+from django.forms.models import BaseInlineFormSet
 from django.forms.widgets import HiddenInput
 
 from .models import Widget
@@ -16,6 +19,27 @@ class WidgetForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if project:
             self.fields["table"].queryset = Table.objects.filter(project=project)
+
+
+class InlineFilterFormset(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.form.base_fields["column"] = forms.ChoiceField(
+            choices=[
+                ("", "No column selected"),
+                *[(col, col) for col in self.instance.parents.first().schema],
+            ]
+        )
+
+
+FilterFormset = forms.inlineformset_factory(
+    Widget,
+    Filter,
+    form=FilterForm,
+    can_delete=True,
+    extra=1,
+    # formset=InlineFilterFormset,
+)
 
 
 class WidgetConfigForm(forms.ModelForm):
