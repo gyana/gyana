@@ -14,6 +14,11 @@ class WidgetForm(forms.ModelForm):
         fields = ["name", "dashboard", "table", "visual_kind"]
         widgets = {"dashboard": HiddenInput()}
 
+    def get_formsets(self):
+        if (self.initial.get("table") or self.instance.table) is not None:
+            return [FilterFormset]
+        return []
+
     def __init__(self, *args, **kwargs):
         project = kwargs.pop("project", None)
         super().__init__(*args, **kwargs)

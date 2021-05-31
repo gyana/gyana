@@ -144,7 +144,7 @@ class LiveInlineFormsetViewMixin:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        for formset in self.formsets:
+        for formset in self.get_form().get_formsets():
             context[
                 f"{formset.get_default_prefix()}_formset"
             ] = self.get_formset_instance(formset)
