@@ -11,7 +11,15 @@ from .models import Widget
 class WidgetForm(forms.ModelForm):
     class Meta:
         model = Widget
-        fields = ["name", "dashboard", "table", "visual_kind"]
+        fields = [
+            "dashboard",
+            "table",
+            "kind",
+            "label",
+            "value",
+            "aggregator",
+            "description",
+        ]
         widgets = {"dashboard": HiddenInput()}
 
     def get_formsets(self):
