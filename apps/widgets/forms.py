@@ -15,7 +15,9 @@ class WidgetForm(forms.ModelForm):
         widgets = {"dashboard": HiddenInput()}
 
     def get_formsets(self):
-        if (self.initial.get("table") or self.instance.table) is not None:
+        if (
+            self.data.get("table") or self.initial.get("table") or self.instance.table
+        ) is not None:
             return [FilterFormset]
         return []
 
