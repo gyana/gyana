@@ -12,6 +12,10 @@ class WidgetConfigForm(forms.ModelForm):
 
     def get_live_field(self, name):
 
+        # data populated by POST request in update
+        if name in self.data:
+            return self.data[name]
+
         # data populated by GET request in live form
         if name in self.initial:
             return self.initial[name]
