@@ -25,7 +25,7 @@
     </li>
 
     <li>
-      <a class="project__link {% if app_name == "projects:dashboards" %}project__link--active{% endif %}"
+      <a class="project__link {% if app_name == "projects:dashboards" or app_name == "projects:dashboards:widgets" %}project__link--active{% endif %}"
          href="{% url 'projects:dashboards:list' project.id %}">
         <i class="far fa-presentation mr-4"></i>Dashboards
       </a>

@@ -6,6 +6,7 @@ from django.db.models.aggregates import Max
 
 class Widget(models.Model):
     class Kind(models.TextChoices):
+        TABLE = "table", "Table"
         # using fusioncharts name for database
         TABLE = "table", "Table"
         COLUMN = "column2d", "Column"
@@ -23,6 +24,7 @@ class Widget(models.Model):
 
     table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True)
 
+    # Chart attributes
     kind = models.CharField(max_length=32, choices=Kind.choices)
 
     # != Kind.TABLE attributes
@@ -40,7 +42,7 @@ class Widget(models.Model):
         ordering = ("-created",)
 
     def __str__(self):
-        return self.name
+        return f"<Widget {self.kind} on {self.table}>"
 
     def is_valid(self) -> bool:
         """Returns bool stating whether this Widget is ready to be displayed"""

@@ -1,4 +1,3 @@
-{% block app %}
 <turbo-frame id="widgets:config">
   <form data-action="submit->tf-refresh#refresh" method="post" action="{% url 'widgets:config' object.id %}"
         class="form">
@@ -9,4 +8,3 @@
     <button type="submit" class="button button--filled button--green">Save changes</button>
   </form>
 </turbo-frame>
-{% endblock %}
