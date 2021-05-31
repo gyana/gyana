@@ -6,8 +6,6 @@ from .models import Filter
 IBIS_TO_PREDICATE = {"String": "string_predicate", "Int64": "numeric_predicate"}
 IBIS_TO_VALUE = {"String": "string_value", "Int64": "integer_value"}
 
-IBIS_TO_PREFIX = {"String": "string_", "Int64": "integer_"}
-
 
 class ColumnChoices:
     def __init__(self, *args, **kwargs):
@@ -31,6 +29,31 @@ class FilterForm(forms.ModelForm):
             "integer_value",
         )
 
+    def get_field_from_kwargs(self, name, kwargs):
+
+        # data populated by GET request in live form
+        if (data := kwargs.get("data")) is not None:
+            return data[f"{kwargs['prefix']}-{name}"]
+
+        # data populated from database in initial render
+        return getattr(self.instance, name, None)
+
+    def get_fields(self, kwargs):
+
+        fields = ["column"]
+
+        column = self.get_field_from_kwargs("column", kwargs)
+        column_type = None
+        if column in self.schema:
+            column_type = self.schema[column].name
+
+        if column_type == "String":
+            fields += ["string_predicate", "string_value"]
+        elif column_type == "Int64":
+            fields += ["numeric_predicate", "integer_value"]
+
+        return fields
+
     def __init__(self, *args, **kwargs):
 
         self.schema = kwargs.pop("schema")
@@ -39,25 +62,9 @@ class FilterForm(forms.ModelForm):
 
         self.fields["column"].choices = [(col, col) for col in self.schema]
 
-        column_type = None
+        keep_fields = self.get_fields(kwargs)
 
-        # data populated by GET request in live form
-        if (data := kwargs.get("data")) is not None:
-            column = data[f"{kwargs['prefix']}-column"]
-            if column in self.schema:
-                column_type = self.schema[column].name
-
-        # data populated from database in initial render
-        elif self.instance.column in self.schema:
-            column_type = self.schema[self.instance.column].name
-
-        # remove all fields that are not for this type
-        deletions = [v for k, v in IBIS_TO_PREFIX.items() if k != column_type]
-
-        for deletion in deletions:
-            self.fields = {
-                k: v for k, v in self.fields.items() if not k.startswith(deletion)
-            }
+        self.fields = {k: v for k, v in self.fields.items() if k in keep_fields}
 
 
 def get_filter_form(parent_fk, column_type=None):
