@@ -61,6 +61,9 @@ class WidgetCreate(LiveInlineFormsetViewMixin, DashboardMixin, TurboCreateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["project"] = self.dashboard.project
+        table = self.get_latest_attr("table")
+        if table:
+            kwargs["schema"] = Table.objects.get(pk=table).schema
         return kwargs
 
     def get_initial(self):

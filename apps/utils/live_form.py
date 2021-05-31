@@ -22,7 +22,7 @@ class LiveInlineFormsetViewMixin:
         return (
             self.request.POST.get(attr)
             or self.request.GET.get(attr)
-            or getattr(self.object, attr)
+            # or getattr(self.object, attr)
         )
 
     def get_formset_instance(self, formset):

@@ -9,6 +9,9 @@ from .models import Widget
 
 
 class WidgetForm(forms.ModelForm):
+    label = forms.ChoiceField(choices=())
+    value = forms.ChoiceField(choices=())
+
     class Meta:
         model = Widget
         fields = [
@@ -31,9 +34,14 @@ class WidgetForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         project = kwargs.pop("project", None)
+        schema = kwargs.pop("schema", None)
         super().__init__(*args, **kwargs)
         if project:
             self.fields["table"].queryset = Table.objects.filter(project=project)
+        if schema:
+            columns = [("", "")] + [(col, col) for col in schema]
+            self.fields["label"].choices = columns
+            self.fields["value"].choices = columns
 
 
 class InlineFilterFormset(BaseInlineFormSet):
