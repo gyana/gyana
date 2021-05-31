@@ -5,6 +5,8 @@ export default class extends Controller {
     // requestSubmit required for turbo-frame
     const csrf = this.element.querySelector('[name=csrfmiddlewaretoken]')
     if (csrf) csrf.remove()
+
+    this.element.setAttribute('novalidate', '')
     this.element.requestSubmit()
   }
 
