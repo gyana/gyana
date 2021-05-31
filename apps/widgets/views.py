@@ -56,21 +56,25 @@ class WidgetDetail(DashboardMixin, DetailView):
     model = Widget
 
 
-class WidgetUpdate(DashboardMixin, TurboUpdateView):
+class WidgetUpdate(DashboardMixin, LiveUpdateView):
     template_name = "widgets/update.html"
     model = Widget
-    fields = []
+    form_class = WidgetConfigForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["project"] = self.dashboard.project
+        kwargs["project"] = self.get_object().dashboard.project
+
+        table = self.get_latest_attr("table")
+        if table:
+            kwargs["schema"] = Table.objects.get(
+                pk=table.pk if isinstance(table, Table) else table
+            ).schema
+
         return kwargs
 
     def get_success_url(self) -> str:
-        return reverse(
-            "projects:dashboards:widgets:list",
-            args=(self.project.id, self.dashboard.id),
-        )
+        return reverse("widgets:config", args=(self.object.id,))
 
 
 class WidgetDelete(DashboardMixin, DeleteView):
@@ -93,27 +97,6 @@ class WidgetDelete(DashboardMixin, DeleteView):
 
 
 # Turbo frames
-
-
-class WidgetConfig(LiveUpdateView):
-    template_name = "widgets/config.html"
-    model = Widget
-    form_class = WidgetConfigForm
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["project"] = self.get_object().dashboard.project
-
-        table = self.get_latest_attr("table")
-        if table:
-            kwargs["schema"] = Table.objects.get(
-                pk=table.pk if isinstance(table, Table) else table
-            ).schema
-
-        return kwargs
-
-    def get_success_url(self) -> str:
-        return reverse("widgets:config", args=(self.object.id,))
 
 
 def last_modified_widget_output(request, pk):

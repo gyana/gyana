@@ -1,11 +1,10 @@
-from django.urls import include, path
+from django.urls import path
 from django.views.decorators.cache import cache_control
 
 from .. import views
 
 app_name = "widgets"
 urlpatterns = [
-    path("<int:pk>/config", views.WidgetConfig.as_view(), name="config"),
     # No cache header tells browser to always re-validate the resource
     # https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#controlling_caching
     # https://web.dev/http-cache/#flowchart
