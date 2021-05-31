@@ -3,6 +3,8 @@ import { Controller } from 'stimulus'
 export default class extends Controller {
   listener = () => {
     // requestSubmit required for turbo-frame
+    const csrf = this.element.querySelector('[name=csrfmiddlewaretoken]')
+    if (csrf) csrf.remove()
     this.element.requestSubmit()
   }
 

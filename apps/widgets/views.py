@@ -52,7 +52,7 @@ class WidgetCreate(LiveInlineFormsetViewMixin, DashboardMixin, TurboCreateView):
         return [FilterFormset]
 
     def get_formset_kwargs(self, formset):
-        return {'schema': []}
+        return {"schema": []}
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

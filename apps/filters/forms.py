@@ -1,4 +1,3 @@
-from apps.widgets.models import Widget
 from django import forms
 from django.forms.widgets import HiddenInput
 
@@ -40,9 +39,9 @@ class FilterForm(forms.ModelForm):
 
         # data populated by GET request in live form
         if (data := kwargs.get("data")) is not None:
-            name = data[f"{kwargs['prefix']}-name"]
-            if name in self.schema:
-                column_type = self.schema[name].name
+            column = data[f"{kwargs['prefix']}-column"]
+            if column in self.schema:
+                column_type = self.schema[column].column
 
         # data populated from database in initial render
         elif self.instance.column in self.schema:

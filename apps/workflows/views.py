@@ -109,6 +109,14 @@ class LiveInlineFormsetViewMixin:
     def get_formset_kwargs(self, formset):
         raise NotImplementedError()
 
+    def get_initial(self):
+        initial = super().get_initial()
+
+        for key in self.request.GET:
+            initial[key] = self.request.GET[key]
+
+        return initial
+
     def get_formset_instance(self, formset):
 
         form_kwargs = self.get_formset_kwargs(formset)
