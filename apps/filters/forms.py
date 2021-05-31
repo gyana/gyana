@@ -20,6 +20,8 @@ class ColumnChoices:
 
 
 class FilterForm(forms.ModelForm):
+    column = forms.ChoiceField(choices=[])
+
     class Meta:
         fields = (
             "column",
@@ -34,6 +36,8 @@ class FilterForm(forms.ModelForm):
         self.schema = kwargs.pop("schema")
 
         super().__init__(*args, **kwargs)
+
+        self.fields["column"].choices = [(col, col) for col in self.schema]
 
         column_type = None
 

@@ -2,6 +2,7 @@ from functools import cached_property
 from urllib.parse import urlparse
 
 from apps.dashboards.models import Dashboard
+from apps.tables.models import Table
 from apps.utils.live_form import LiveInlineFormsetViewMixin
 from apps.widgets.visuals import VISUAL_TO_OUTPUT
 from django.db import transaction
@@ -52,6 +53,9 @@ class WidgetCreate(LiveInlineFormsetViewMixin, DashboardMixin, TurboCreateView):
         return [FilterFormset]
 
     def get_formset_kwargs(self, formset):
+        table = self.get_latest_attr("table")
+        if table:
+            return {"schema": Table.objects.get(pk=table).schema}
         return {"schema": []}
 
     def get_form_kwargs(self):

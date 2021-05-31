@@ -18,6 +18,13 @@ class LiveInlineFormsetViewMixin:
 
         return initial
 
+    def get_latest_attr(self, attr):
+        return (
+            self.request.POST.get(attr)
+            or self.request.GET.get(attr)
+            or getattr(self.object, attr)
+        )
+
     def get_formset_instance(self, formset):
 
         form_kwargs = self.get_formset_kwargs(formset)
