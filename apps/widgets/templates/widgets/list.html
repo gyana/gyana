@@ -7,7 +7,9 @@
     <li class="w-1/2 p-2 flex-grow" data-id="{{ object.id }}">
       <div class="widget-card">
         <div class='widget-card__visual'>
-          <h3 class="mb-2">{{ object }}</h3>
+          {% if object.description %}
+            <h3 class="mb-2">{{ object.description }}</h3>
+          {% endif %}
           <turbo-frame id="widgets:output-{{ object.id }}" src="{% url 'widgets:output' object.id %}">
             <div class='placeholder-scr placeholder-scr--fillscreen'>
               <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>

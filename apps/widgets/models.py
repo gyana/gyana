@@ -39,7 +39,7 @@ class Widget(models.Model):
         ordering = ("-created",)
 
     def __str__(self):
-        return self.name
+        return f"<Widget {self.kind} on {self.table}>"
 
     def is_valid(self) -> bool:
         """Returns bool stating whether this Widget is ready to be displayed"""

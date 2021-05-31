@@ -139,8 +139,8 @@ class WidgetOutput(DetailView):
 
         if self.object.is_valid():
             if self.object.kind == Widget.Kind.TABLE:
-                context_data["table"] = table_to_output(self.object)
+                context_data.update(table_to_output(self.object))
             else:
-                context_data["chart"] = chart_to_output(self.object)
+                context_data.update(chart_to_output(self.object))
 
         return context_data
