@@ -1,5 +1,5 @@
 from apps.dashboards.mixins import DashboardMixin
-from apps.widgets.visuals import VISUAL_TO_OUTPUT
+from apps.widgets.visuals import chart_to_output, table_to_output
 from django.db import transaction
 from django.db.models.query import QuerySet
 from django.urls import reverse
@@ -138,6 +138,9 @@ class WidgetOutput(DetailView):
         context_data = super().get_context_data(**kwargs)
 
         if self.object.is_valid():
-            context_data.update(VISUAL_TO_OUTPUT[self.object.visual_kind](self.object))
+            if self.object.kind == Widget.Kind.TABLE:
+                context_data["table"] = table_to_output(self.object)
+            else:
+                context_data["chart"] = chart_to_output(self.object)
 
         return context_data

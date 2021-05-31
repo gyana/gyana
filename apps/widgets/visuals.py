@@ -25,9 +25,3 @@ def table_to_output(widget: Widget) -> Dict[str, Any]:
         "columns": json.dumps([{"field": col} for col in df.columns]),
         "rows": df.to_json(orient="records"),
     }
-
-
-VISUAL_TO_OUTPUT = {
-    Widget.VisualKind.CHART: chart_to_output,
-    Widget.VisualKind.TABLE: table_to_output,
-}

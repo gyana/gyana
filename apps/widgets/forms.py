@@ -8,7 +8,7 @@ from .models import Widget
 class WidgetForm(forms.ModelForm):
     class Meta:
         model = Widget
-        fields = ["name", "dashboard", "table", "visual_kind"]
+        fields = ["dashboard", "table"]
         widgets = {"dashboard": HiddenInput()}
 
     def __init__(self, *args, **kwargs):
@@ -21,7 +21,7 @@ class WidgetForm(forms.ModelForm):
 class WidgetConfigForm(forms.ModelForm):
     class Meta:
         model = Widget
-        fields = ["kind", "aggregator", "label", "value"]
+        fields = ["kind", "aggregator", "label", "value", "description"]
 
     def __init__(self, *args, **kwargs):
         # https://stackoverflow.com/a/30766247/15425660
