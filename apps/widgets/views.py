@@ -106,7 +106,9 @@ class WidgetConfig(LiveUpdateView):
 
         table = self.get_latest_attr("table")
         if table:
-            kwargs["schema"] = Table.objects.get(pk=table).schema
+            kwargs["schema"] = Table.objects.get(
+                pk=table.pk if isinstance(table, Table) else table
+            ).schema
 
         return kwargs
 
