@@ -1,4 +1,6 @@
 from apps.dashboards.mixins import DashboardMixin
+from apps.tables.models import Table
+from apps.utils.live_update_view import LiveUpdateView
 from apps.widgets.visuals import chart_to_output, table_to_output
 from django.db import transaction
 from django.db.models.query import QuerySet
@@ -93,7 +95,7 @@ class WidgetDelete(DashboardMixin, DeleteView):
 # Turbo frames
 
 
-class WidgetConfig(TurboUpdateView):
+class WidgetConfig(LiveUpdateView):
     template_name = "widgets/config.html"
     model = Widget
     form_class = WidgetConfigForm
@@ -101,11 +103,11 @@ class WidgetConfig(TurboUpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["project"] = self.get_object().dashboard.project
-        kwargs["columns"] = (
-            [(name, name) for name in self.object.table.schema]
-            if self.object.table is not None
-            else []
-        )
+
+        table = self.get_latest_attr("table")
+        if table:
+            kwargs["schema"] = Table.objects.get(pk=table).schema
+
         return kwargs
 
     def get_success_url(self) -> str:

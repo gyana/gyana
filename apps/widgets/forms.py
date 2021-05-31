@@ -12,16 +12,18 @@ class WidgetConfigForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         # https://stackoverflow.com/a/30766247/15425660
-        columns = kwargs.pop("columns", None)
         project = kwargs.pop("project", None)
+        schema = kwargs.pop("schema", None)
 
         super().__init__(*args, **kwargs)
 
-        self.fields["label"].choices = columns
-        self.fields["value"].choices = columns
-
         if project:
             self.fields["table"].queryset = Table.objects.filter(project=project)
+
+        if schema:
+            columns = [(column, column) for column in schema]
+            self.fields["label"].choices = columns
+            self.fields["value"].choices = columns
 
     label = forms.ChoiceField(choices=())
     value = forms.ChoiceField(choices=())

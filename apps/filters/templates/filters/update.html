@@ -7,7 +7,7 @@
   <a href="{% url 'filters:list' %}" class="button button--sm button--green">Back</a>
 </div>
 
-<form data-controller="live-update" method="post" action="{% url 'filters:update' object.id %}" class="form"
+<form data-controller="auto-save" method="post" action="{% url 'filters:update' object.id %}" class="form"
       data-action="submit->tf-refresh#refresh">
   {% csrf_token %}
 
