@@ -8,7 +8,28 @@ from .models import Widget
 class WidgetConfigForm(forms.ModelForm):
     class Meta:
         model = Widget
-        fields = ["table", "kind", "aggregator", "label", "value", "description"]
+        fields = ["table", "kind", "label", "aggregator", "value", "description"]
+
+    def get_live_field(self, name):
+
+        # data populated by GET request in live form
+        if name in self.initial:
+            return self.initial[name]
+
+        # data populated from database in initial render
+        return getattr(self.instance, name, None)
+
+    def get_live_fields(self):
+
+        fields = ["table", "kind", "description"]
+
+        table = self.get_live_field("table")
+        kind = self.get_live_field("kind")
+
+        if table and kind and kind != Widget.Kind.TABLE:
+            fields += ["label", "aggregator", "value"]
+
+        return fields
 
     def __init__(self, *args, **kwargs):
         # https://stackoverflow.com/a/30766247/15425660
@@ -24,6 +45,10 @@ class WidgetConfigForm(forms.ModelForm):
             columns = [(column, column) for column in schema]
             self.fields["label"].choices = columns
             self.fields["value"].choices = columns
+
+        live_fields = self.get_live_fields()
+
+        self.fields = {k: v for k, v in self.fields.items() if k in live_fields}
 
     label = forms.ChoiceField(choices=())
     value = forms.ChoiceField(choices=())
