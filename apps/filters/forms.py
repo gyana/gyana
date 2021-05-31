@@ -45,7 +45,7 @@ class FilterForm(forms.ModelForm):
         if (data := kwargs.get("data")) is not None:
             column = data[f"{kwargs['prefix']}-column"]
             if column in self.schema:
-                column_type = self.schema[column].column
+                column_type = self.schema[column].name
 
         # data populated from database in initial render
         elif self.instance.column in self.schema:
