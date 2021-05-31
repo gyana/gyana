@@ -8,7 +8,7 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .forms import WidgetConfigForm, WidgetForm
+from .forms import WidgetConfigForm
 from .models import Widget
 
 
@@ -26,19 +26,11 @@ class WidgetList(DashboardMixin, ListView):
 class WidgetCreate(DashboardMixin, TurboCreateView):
     template_name = "widgets/create.html"
     model = Widget
-    form_class = WidgetForm
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["project"] = self.dashboard.project
-        return kwargs
-
-    def get_initial(self):
-        initial = super().get_initial()
-        initial["dashboard"] = self.dashboard
-        return initial
+    fields = []
 
     def form_valid(self, form):
+        form.instance.dashboard = self.dashboard
+
         with transaction.atomic():
             response = super().form_valid(form)
             self.dashboard.sort_order.append(self.object.id)
@@ -65,7 +57,7 @@ class WidgetDetail(DashboardMixin, DetailView):
 class WidgetUpdate(DashboardMixin, TurboUpdateView):
     template_name = "widgets/update.html"
     model = Widget
-    form_class = WidgetForm
+    fields = []
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -108,7 +100,12 @@ class WidgetConfig(TurboUpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["columns"] = [(name, name) for name in self.object.table.schema]
+        kwargs["project"] = self.get_object().dashboard.project
+        kwargs["columns"] = (
+            [(name, name) for name in self.object.table.schema]
+            if self.object.table is not None
+            else []
+        )
         return kwargs
 
     def get_success_url(self) -> str:

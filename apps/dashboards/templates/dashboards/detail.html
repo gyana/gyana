@@ -7,10 +7,13 @@
     <span class="tooltip__content">This is an example tooltip</span>
   </h3>
 
-  <a class="button button--square button--filled button--sm"
-     href="{% url 'projects:dashboards:widgets:create' project.id object.id %}">
-    Add widget
-  </a>
+  <form method="post" action="{% url 'projects:dashboards:widgets:create' project.id dashboard.id %}" class="form">
+    {% csrf_token %}
+
+    {% include "django/forms/default_form.html" %}
+
+    <button type="submit" class="button button--square button--filled button--sm">Add widget</button>
+  </form>
   <a class="button button--circle button--tertiary" href="{% url 'projects:dashboards:update' project.id object.pk %}">
     <i class="fas fa-pen"></i>
   </a>
