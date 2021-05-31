@@ -3,6 +3,7 @@ import { Controller } from 'stimulus'
 export default class extends Controller {
   listener = () => {
     // requestSubmit required for turbo-frame
+    this.element.setAttribute('novalidate', '')
     this.element.requestSubmit()
   }
 
