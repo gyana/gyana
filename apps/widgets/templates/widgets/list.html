@@ -20,7 +20,7 @@
 
         <div class='widget-card__commands'>
           <i class="cursor-move fas fa-fw fa-arrows sortable-handle"></i>
-          <a href="{% url 'projects:dashboards:widgets:detail' project.id dashboard.id object.pk %}"><i class="fas fa-fw fa-cog"></i></a>
+          <a href="{% url 'projects:dashboards:widgets:detail' project.id dashboard.id object.pk %}"><i class="fas fa-fw fa-eye"></i></a>
           <a href="{% url 'projects:dashboards:widgets:update' project.id dashboard.id object.pk %}"><i class="fas fa-fw fa-edit"></i></a>
           <a href="{% url 'projects:dashboards:widgets:delete' project.id dashboard.id object.pk %}" class="mt-auto"><i class="fas fa-fw fa-trash"></i></a>
         </div>
