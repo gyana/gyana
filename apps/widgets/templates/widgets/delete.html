@@ -5,6 +5,6 @@
 <form method="post" action="{% url 'projects:dashboards:widgets:delete' project.id dashboard.id object.id %}">
   {% csrf_token %}
   <input type="submit" value="Yes" class="btn btn-danger" />
-  <a href="{% url 'projects:dashboards:widgets:list' project.id dashboard.id %}" class="btn btn-default">No</a>
+  <a href="{% url 'projects:dashboards:detail' project.id dashboard.id %}" class="btn btn-default">No</a>
 </form>
 {% endblock %}

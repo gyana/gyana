@@ -42,7 +42,7 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "projects:dashboards:widgets:detail",
+            "projects:dashboards:widgets:update",
             args=(
                 self.project.id,
                 self.dashboard.id,
@@ -103,7 +103,7 @@ class WidgetDelete(DashboardMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "projects:dashboards:widgets:list",
+            "projects:dashboards:detail",
             args=(self.project.id, self.dashboard.id),
         )
 
