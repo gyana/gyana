@@ -1,28 +1,15 @@
-from functools import cached_property
-from urllib.parse import urlparse
-
-from apps.dashboards.models import Dashboard
+from apps.dashboards.mixins import DashboardMixin
 from apps.widgets.visuals import VISUAL_TO_OUTPUT
 from django.db import transaction
 from django.db.models.query import QuerySet
-from django.urls import resolve, reverse
+from django.urls import reverse
 from django.views.decorators.http import condition
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
-from lib.chart import to_chart
-from rest_framework import generics
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .bigquery import query_widget
 from .forms import WidgetConfigForm, WidgetForm
 from .models import Widget
-
-
-class DashboardMixin:
-    @cached_property
-    def dashboard(self):
-        resolver_match = resolve(urlparse(self.request.META["HTTP_REFERER"]).path)
-        return Dashboard.objects.get(pk=resolver_match.kwargs["pk"])
 
 
 class WidgetList(DashboardMixin, ListView):
@@ -34,11 +21,6 @@ class WidgetList(DashboardMixin, ListView):
         widgets = Widget.objects.filter(dashboard=self.dashboard).all()
         widget_dict = {widget.pk: widget for widget in widgets}
         return [widget_dict[idx] for idx in self.dashboard.sort_order]
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data["dashboard"] = self.dashboard
-        return context_data
 
 
 class WidgetCreate(DashboardMixin, TurboCreateView):
@@ -65,10 +47,17 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
         return response
 
     def get_success_url(self) -> str:
-        return reverse("widgets:detail", args=(self.object.id,))
+        return reverse(
+            "projects:dashboards:widgets:detail",
+            args=(
+                self.project.id,
+                self.dashboard.id,
+                self.object.id,
+            ),
+        )
 
 
-class WidgetDetail(DetailView):
+class WidgetDetail(DashboardMixin, DetailView):
     template_name = "widgets/detail.html"
     model = Widget
 
@@ -84,7 +73,10 @@ class WidgetUpdate(DashboardMixin, TurboUpdateView):
         return kwargs
 
     def get_success_url(self) -> str:
-        return reverse("widgets:list")
+        return reverse(
+            "projects:dashboards:widgets:list",
+            args=(self.project.id, self.dashboard.id),
+        )
 
 
 class WidgetDelete(DashboardMixin, DeleteView):
@@ -100,7 +92,10 @@ class WidgetDelete(DashboardMixin, DeleteView):
         return response
 
     def get_success_url(self) -> str:
-        return reverse("widgets:list")
+        return reverse(
+            "projects:dashboards:widgets:list",
+            args=(self.project.id, self.dashboard.id),
+        )
 
 
 # Turbo frames

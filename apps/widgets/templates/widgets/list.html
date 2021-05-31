@@ -1,53 +1,56 @@
 {% extends "widgets/base.html" %}
 {% load static %}
-{% block app %}
-<ul class="flex flex-wrap" data-controller="sortable" data-sortable-id-value="{{ dashboard.id }}">
-  {% for object in object_list %}
-  <li class="w-1/2 p-2 flex-grow" data-id="{{ object.id }}">
-    <div class="widget-card">
-      <div class='widget-card__visual'>
-        <h3 class="mb-2">{{ object }}</h3>
-        <turbo-frame id="widgets:output-{{ object.id }}" src="{% url 'widgets:output' object.id %}">
-          <div class='placeholder-scr placeholder-scr--fillscreen'>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-            <p class='placeholder-scr__title'>Loading visualisation...</p>
-          </div>
-        </turbo-frame>
-      </div>
+{% block widget %}
+<turbo-frame id="widgets" target="_top">
+  <ul class="flex flex-wrap" data-controller="sortable" data-sortable-id-value="{{ dashboard.id }}">
+    {% for object in object_list %}
+    <li class="w-1/2 p-2 flex-grow" data-id="{{ object.id }}">
+      <div class="widget-card">
+        <div class='widget-card__visual'>
+          <h3 class="mb-2">{{ object }}</h3>
+          <turbo-frame id="widgets:output-{{ object.id }}" src="{% url 'widgets:output' object.id %}">
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+              <p class='placeholder-scr__title'>Loading visualisation...</p>
+            </div>
+          </turbo-frame>
+        </div>
 
-      <div class='widget-card__commands'>
-        <i class="cursor-move fas fa-fw fa-arrows sortable-handle"></i>
-        <a href="{% url 'widgets:detail' object.pk %}"><i class="fas fa-fw fa-cog"></i></a>
-        <a href="{% url 'widgets:update' object.pk %}"><i class="fas fa-fw fa-edit"></i></a>
-        <a href="{% url 'widgets:delete' object.pk %}" class="mt-auto"><i class="fas fa-fw fa-trash"></i></a>
+        <div class='widget-card__commands'>
+          <i class="cursor-move fas fa-fw fa-arrows sortable-handle"></i>
+          <a href="{% url 'projects:dashboards:widgets:detail' project.id dashboard.id object.pk %}"><i class="fas fa-fw fa-cog"></i></a>
+          <a href="{% url 'projects:dashboards:widgets:update' project.id dashboard.id object.pk %}"><i class="fas fa-fw fa-edit"></i></a>
+          <a href="{% url 'projects:dashboards:widgets:delete' project.id dashboard.id object.pk %}" class="mt-auto"><i class="fas fa-fw fa-trash"></i></a>
+        </div>
+      </div>
+    </li>
+    {% empty %}
+    <div class="w-full p-2">
+      <div class="widget-card">
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon far fa-map-marker-question fa-2x"></i>
+          <p class='placeholder-scr__title'>This dashboard needs some widgets!</p>
+          <a class='placeholder-scr__subtext' href="{% url 'projects:dashboards:widgets:create' project.id dashboard.id  %}">Create one</a>
+        </div>
       </div>
     </div>
-  </li>
-  {% empty %}
-  <div class="w-full p-2">
-    <div class="widget-card">
-      <div class='placeholder-scr placeholder-scr--fillscreen'>
-        <i class="placeholder-scr__icon far fa-map-marker-question fa-2x"></i>
-        <p class='placeholder-scr__title'>This dashboard needs some widgets!</p>
-        <a class='placeholder-scr__subtext' href="{% url 'widgets:create' %}">Create one</a>
-      </div>
-    </div>
-  </div>
-  {% endfor %}
-</ul>
+    {% endfor %}
+  </ul>
 
-{% if is_paginated %}
-<div class="pagination">
-  <span class="page-links">
-    {% if page_obj.has_previous %}
-    <a href="{% url 'widgets:list' %}?page={{ page_obj.previous_page_number }}">previous</a>
-    {% endif %}
-    <span class="page-current">
-      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+  {% if is_paginated %}
+  <div class="pagination">
+    <span class="page-links">
+      {% if page_obj.has_previous %}
+      <a href="{% url 'projects:dashboards:widgets:list' project.id dashboard.id %}?page={{ page_obj.previous_page_number }}">previous</a>
+      {% endif %}
+      <span class="page-current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+      {% if page_obj.has_next %}
+      <a href="{% url 'projects:dashboards:widgets:list' project.id dashboard.id  %}?page={{ page_obj.next_page_number }}">next</a>
+      {% endif %}
     </span>
-    {% if page_obj.has_next %}
-    <a href="{% url 'widgets:list' %}?page={{ page_obj.next_page_number }}">next</a>
-    {% endif %}
-  </span>
-</div>
-{% endif %} {% endblock %}
+  </div>
+  {% endif %}
+</turbo-frame>
+{% endblock %}

@@ -1,5 +1,4 @@
 {% extends "web/app/project_base.html" %}
-{% load static %}
 
 {% block app %}
 <div class="workflow-detail__header">
@@ -9,7 +8,7 @@
   </h3>
 
   <a class="button button--square button--filled button--sm" data-turbo-frame="widgets"
-     href="{% url 'widgets:create' %}">
+     href="{% url 'projects:dashboards:widgets:create' project.id object.id %}">
     Add widget
   </a>
   <a class="button button--circle button--tertiary" href="{% url 'projects:dashboards:update' project.id object.pk %}">
@@ -20,13 +19,6 @@
 </div>
 
 <div class="p-4 overflow-auto">
-  <turbo-frame id="widgets" {% if request.GET.widget_id %} src="{% url 'widgets:detail' request.GET.widget_id %}"
-               {% else %} src="{% url 'widgets:list' %}" {% endif %}></turbo-frame>
+  <turbo-frame id="widgets" src="{% url 'projects:dashboards:widgets:list' project.id object.id %}" target="_top"></turbo-frame>
 </div>
-{% endblock %}
-
-{% block page_js %}
-<script src="{% static "fusioncharts/fusioncharts.js" %}"></script>
-<script src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
-<script src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
 {% endblock %}

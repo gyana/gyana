@@ -1,12 +1,12 @@
 {% extends "widgets/base.html" %}
 
-{% block app %}
+{% block widget %}
 <div class="flex items-center gap-4 mb-4">
   <h1>Update</h1>
-  <a href="{% url 'widgets:list' %}" class="button button--sm button--green">Back</a>
+  <a href="{% url 'projects:dashboards:widgets:list' project.id dashboard.id %}" class="button button--sm button--green">Back</a>
 </div>
 
-<form method="post" action="{% url 'widgets:update' object.id %}" class="form">
+<form method="post" action="{% url 'projects:dashboards:widgets:update' project.id dashboard.id object.id %}" class="form">
   {% csrf_token %}
 
   {% include "django/forms/default_form.html" %}

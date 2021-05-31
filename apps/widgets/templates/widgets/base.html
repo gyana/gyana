@@ -1,1 +1,5 @@
-<turbo-frame id="widgets"> {% block app %}{% endblock %} </turbo-frame>
+{% extends "web/app/project_base.html" %}
+{% block app %}
+    {% block widget %}
+    {% endblock %}
+{% endblock app %}
