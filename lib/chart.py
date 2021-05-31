@@ -27,10 +27,10 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
 
     return FusionCharts(
         widget.kind,
-        widget.name,
+        f"chart-{widget.pk}",
         DEFAULT_WIDTH,
         DEFAULT_HEIGHT,
-        f"{widget.name}-container",
+        f"chart-{widget.pk}-container",
         "json",
         dataSource,
     )
