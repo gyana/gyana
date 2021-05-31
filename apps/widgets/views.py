@@ -2,8 +2,8 @@ from functools import cached_property
 from urllib.parse import urlparse
 
 from apps.dashboards.models import Dashboard
+from apps.utils.live_form import LiveInlineFormsetViewMixin
 from apps.widgets.visuals import VISUAL_TO_OUTPUT
-from apps.workflows.views import LiveInlineFormsetViewMixin
 from django.db import transaction
 from django.db.models.query import QuerySet
 from django.urls import resolve, reverse
