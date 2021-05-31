@@ -74,7 +74,19 @@ class WidgetUpdate(DashboardMixin, LiveUpdateView):
         return kwargs
 
     def get_success_url(self) -> str:
-        return reverse("widgets:config", args=(self.object.id,))
+        if "save-preview" in self.request.POST:
+            return reverse(
+                "projects:dashboards:widgets:update",
+                args=(
+                    self.project.id,
+                    self.dashboard.id,
+                    self.object.id,
+                ),
+            )
+        return reverse(
+            "projects:dashboards:detail",
+            args=(self.project.id, self.dashboard.id),
+        )
 
 
 class WidgetDelete(DashboardMixin, DeleteView):
