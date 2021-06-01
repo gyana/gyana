@@ -25,7 +25,6 @@ export default class extends Controller {
 
   update(event) {
     this.element.removeEventListener('change', this.listener)
-    this.element.method = 'post'
 
     // provide information to server on clicked button
     const hidden_input = document.createElement('input')

@@ -11,7 +11,7 @@
     <h3 class="">Config</h3>
     <turbo-frame id="widgets:update">
       <form data-controller="live-update"
-        method="get"
+        method="post"
         action="{% url 'projects:dashboards:widgets:update' project.id dashboard.id object.id %}"
         class="form">
           {% csrf_token %}

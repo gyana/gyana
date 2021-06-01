@@ -6,6 +6,8 @@ from .models import Widget
 
 
 class WidgetConfigForm(forms.ModelForm):
+    live = forms.CharField(widget=forms.HiddenInput(), required=True)
+
     class Meta:
         model = Widget
         fields = ["table", "kind", "label", "aggregator", "value", "description"]
@@ -16,12 +18,8 @@ class WidgetConfigForm(forms.ModelForm):
         if name in self.data:
             return self.data[name]
 
-        # data populated by GET request in live form
-        if name in self.initial:
-            return self.initial[name]
-
-        # data populated from database in initial render
-        return getattr(self.instance, name, None)
+        # data populated from database
+        return self.initial[name]
 
     def get_live_fields(self):
 
@@ -39,6 +37,7 @@ class WidgetConfigForm(forms.ModelForm):
         # https://stackoverflow.com/a/30766247/15425660
         project = kwargs.pop("project", None)
         schema = kwargs.pop("schema", None)
+        remove_live = kwargs.pop("remove-live", None)
 
         super().__init__(*args, **kwargs)
 
@@ -51,6 +50,9 @@ class WidgetConfigForm(forms.ModelForm):
             self.fields["value"].choices = columns
 
         live_fields = self.get_live_fields()
+
+        if not remove_live:
+            live_fields += ["live"]
 
         self.fields = {k: v for k, v in self.fields.items() if k in live_fields}
 

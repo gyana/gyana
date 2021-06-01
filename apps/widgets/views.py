@@ -56,10 +56,13 @@ class WidgetDetail(DashboardMixin, DetailView):
     model = Widget
 
 
-class WidgetUpdate(DashboardMixin, LiveUpdateView):
+class WidgetUpdate(DashboardMixin, TurboUpdateView):
     template_name = "widgets/update.html"
     model = Widget
     form_class = WidgetConfigForm
+
+    def get_latest_attr(self, attr):
+        return self.request.POST.get(attr) or getattr(self.object, attr)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -70,6 +73,9 @@ class WidgetUpdate(DashboardMixin, LiveUpdateView):
             kwargs["schema"] = Table.objects.get(
                 pk=table.pk if isinstance(table, Table) else table
             ).schema
+
+        if "save-preview" in self.request.POST or "save-close" in self.request.POST:
+            kwargs["remove-live"] = True
 
         return kwargs
 
