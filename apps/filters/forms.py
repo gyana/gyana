@@ -34,8 +34,8 @@ class FilterForm(forms.ModelForm):
     def get_live_field(self, name):
 
         # data populated by POST request in update
-        if name in self.data:
-            return self.data[name]
+        if (prefix_name := f"{self.prefix}-{name}") in self.data:
+            return self.data[prefix_name]
 
         # data populated by GET request in live form
         if name in self.initial:
@@ -64,6 +64,7 @@ class FilterForm(forms.ModelForm):
 
         project = kwargs.pop("project", None)
         self.schema = kwargs.pop("schema")
+        self.prefix = kwargs["prefix"]
 
         super().__init__(*args, **kwargs)
 

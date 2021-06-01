@@ -12,7 +12,7 @@ class LiveUpdateView(TurboUpdateView):
         return self.get_form().get_live_formsets()
 
     def get_formset_kwargs(self, formset):
-        return self.get_form_kwargs()
+        return {}
 
     def get_initial(self):
         initial = super().get_initial()

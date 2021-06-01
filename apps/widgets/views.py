@@ -10,7 +10,7 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .forms import WidgetConfigForm
+from .forms import FilterFormset, WidgetConfigForm
 from .models import Widget
 
 
@@ -72,6 +72,17 @@ class WidgetUpdate(DashboardMixin, LiveUpdateView):
             ).schema
 
         return kwargs
+
+    def get_formset_kwargs(self, formset):
+        table = self.get_latest_attr("table")
+        if table:
+            return {
+                "schema": Table.objects.get(
+                    pk=table.pk if isinstance(table, Table) else table
+                ).schema
+            }
+
+        return {}
 
     def get_success_url(self) -> str:
         if "save-preview" in self.request.POST:
