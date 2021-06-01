@@ -41,7 +41,13 @@
         <div class='placeholder-scr placeholder-scr--fillscreen'>
           <i class="placeholder-scr__icon far fa-map-marker-question fa-2x"></i>
           <p class='placeholder-scr__title'>This dashboard needs some widgets!</p>
-          <a class='placeholder-scr__subtext' href="{% url 'projects:dashboards:widgets:create' project.id dashboard.id  %}">Create one</a>
+          <form method="post" action="{% url 'projects:dashboards:widgets:create' project.id dashboard.id %}" class="form">
+            {% csrf_token %}
+
+            {% include "django/forms/default_form.html" %}
+
+            <button type="submit" class='placeholder-scr__subtext'>Create one</button>
+          </form>
         </div>
       </div>
     </div>
