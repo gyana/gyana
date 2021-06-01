@@ -65,22 +65,10 @@ class WidgetConfigForm(forms.ModelForm):
     value = forms.ChoiceField(choices=())
 
 
-class InlineFilterFormset(BaseInlineFormSet):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.form.base_fields["column"] = forms.ChoiceField(
-            choices=[
-                ("", "No column selected"),
-                *[(col, col) for col in self.instance.parents.first().schema],
-            ]
-        )
-
-
 FilterFormset = forms.inlineformset_factory(
     Widget,
     Filter,
     form=FilterForm,
     can_delete=True,
     extra=1,
-    # formset=InlineFilterFormset,
 )
