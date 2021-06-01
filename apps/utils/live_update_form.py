@@ -20,9 +20,10 @@ class LiveUpdateForm(forms.ModelForm):
 
         self.fields = {k: v for k, v in self.fields.items() if k in live_fields}
 
+    @property
     def is_live(self):
         # the "submit" value is populated when the user clicks the button
-        return "submit" in self.data
+        return "submit" not in self.data
 
     def get_live_field(self, name):
 
