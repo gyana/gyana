@@ -1,10 +1,22 @@
 import { Controller } from 'stimulus'
+import morphdom from 'morphdom'
 
 export default class extends Controller {
-  listener = () => {
+  listener = async () => {
     // requestSubmit required for turbo-frame
-    this.element.setAttribute('novalidate', '')
-    this.element.requestSubmit()
+    const data = new FormData(this.element)
+    const result = await fetch(this.element.action, {
+      method: 'POST',
+      body: data,
+    })
+    const text = await result.text()
+
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(text, 'text/html')
+
+    const newForm = doc.querySelector('form')
+
+    morphdom(this.element, newForm)
   }
 
   connect() {

@@ -1,66 +1,49 @@
-const path = require("path");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+const path = require('path')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 
 module.exports = {
   resolve: {
-    extensions: [".ts", ".tsx", ".js", ".jsx"],
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
     plugins: [new TsconfigPathsPlugin()],
   },
   entry: {
-    style: "./assets/styles/style.scss",
-    tailwind: "./assets/styles/vendors/tailwind.pcss",
-    app: "./assets/javascript/app.ts",
-    teams: "./assets/javascript/teams/teams.tsx",
-    "edit-team": "./assets/javascript/teams/edit-team.tsx",
-    stimulus: "./assets/javascript/stimulus.ts",
-    workflow: "./apps/workflows/javascript/app.tsx",
+    style: './assets/styles/style.scss',
+    tailwind: './assets/styles/vendors/tailwind.pcss',
+    app: './assets/javascript/app.ts',
+    'edit-team': './assets/javascript/teams/edit-team.tsx',
+    stimulus: './assets/javascript/stimulus.ts',
+    workflow: './apps/workflows/javascript/app.tsx',
   },
   output: {
-    path: path.resolve(__dirname, "./static"),
-    filename: "js/[name]-bundle.js",
-    library: ["SiteJS", "[name]"],
+    path: path.resolve(__dirname, './static'),
+    filename: 'js/[name]-bundle.js',
+    library: ['SiteJS', '[name]'],
   },
   module: {
     rules: [
       {
         test: /\.(ts|tsx|js|jsx)$/,
         exclude: /node_modules/,
-        loader: "babel-loader",
+        loader: 'babel-loader',
         options: {
-          presets: [
-            "@babel/env",
-            "@babel/preset-react",
-            "@babel/preset-typescript",
-          ],
-          plugins: [
-            "@babel/plugin-proposal-class-properties",
-            "@babel/plugin-transform-runtime",
-          ],
+          presets: ['@babel/env', '@babel/preset-react', '@babel/preset-typescript'],
+          plugins: ['@babel/plugin-proposal-class-properties', '@babel/plugin-transform-runtime'],
         },
       },
       {
         test: /\.scss$/i,
-        use: [
-          MiniCssExtractPlugin.loader,
-          "css-loader",
-          "postcss-loader",
-          "sass-loader",
-        ],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
       },
       {
         test: /\.pcss$/i,
-        use: [
-          MiniCssExtractPlugin.loader,
-          "css-loader",
-          "postcss-loader",
-        ],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
       },
     ],
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "css/[name].css",
+      filename: 'css/[name].css',
     }),
   ],
-};
+}
