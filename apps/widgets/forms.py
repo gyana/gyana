@@ -9,17 +9,17 @@ class LiveForm(forms.ModelForm):
     live = forms.CharField(widget=forms.HiddenInput(), required=True)
 
     def __init__(self, *args, **kwargs):
-        # https://stackoverflow.com/a/30766247/15425660
-        remove_live = kwargs.pop("remove-live", None)
-
         super().__init__(*args, **kwargs)
 
         live_fields = self.get_live_fields()
 
-        if not remove_live:
+        if self.is_live:
             live_fields += ["live"]
 
         self.fields = {k: v for k, v in self.fields.items() if k in live_fields}
+
+    def is_live(self):
+        return "submit" in self.data
 
     def get_live_field(self, name):
 

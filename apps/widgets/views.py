@@ -67,14 +67,10 @@ class WidgetUpdate(DashboardMixin, TurboUpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["project"] = self.get_object().dashboard.project
-
-        if "save-preview" in self.request.POST or "save-close" in self.request.POST:
-            kwargs["remove-live"] = True
-
         return kwargs
 
     def get_success_url(self) -> str:
-        if "save-preview" in self.request.POST:
+        if self.request.POST.get("submit") == "Save & Preview":
             return reverse(
                 "projects:dashboards:widgets:update",
                 args=(
