@@ -116,7 +116,11 @@ class NodeUpdate(TurboUpdateView):
     def get_formset_instance(self, formset):
 
         form_kwargs = {}
-        if formset.get_default_prefix() in ["add_columns", "edit_columns"]:
+        if formset.get_default_prefix() in [
+            "add_columns",
+            "edit_columns",
+            "aggregations",
+        ]:
             form_kwargs = {"schema": self.object.parents.first().schema}
 
         # POST request for form creation

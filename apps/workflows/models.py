@@ -241,16 +241,6 @@ class SortColumn(models.Model):
     name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
 
 
-class Operations(models.TextChoices):
-    LOWER = "lower", "to lowercase"
-    UPPER = "upper", "to uppercase"
-    ISNULL = "isnull", "is null"
-    CUMMAX = "cummax", "cummulative max"
-    CUMMIN = "cummin", "cummulative min"
-    ABS = "abs", "absolute value"
-    SQRT = "sqrt", "square root"
-
-
 class AbstractOperationColumn(models.Model):
     class Meta:
         abstract = True
