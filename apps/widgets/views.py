@@ -68,12 +68,6 @@ class WidgetUpdate(DashboardMixin, TurboUpdateView):
         kwargs = super().get_form_kwargs()
         kwargs["project"] = self.get_object().dashboard.project
 
-        table = self.get_latest_attr("table")
-        if table:
-            kwargs["schema"] = Table.objects.get(
-                pk=table.pk if isinstance(table, Table) else table
-            ).schema
-
         if "save-preview" in self.request.POST or "save-close" in self.request.POST:
             kwargs["remove-live"] = True
 
