@@ -54,7 +54,9 @@ class FilterForm(LiveUpdateForm):
 
         super().__init__(*args, **kwargs)
 
-        self.fields["column"].choices = [(col, col) for col in self.schema]
+        self.fields["column"].choices = [
+            ("", "No column selected"),
+        ] + [(col, col) for col in self.schema]
 
 
 def get_filter_form(parent_fk, column_type=None):
