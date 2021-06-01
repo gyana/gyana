@@ -8,6 +8,8 @@ class LiveUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.prefix = kwargs.pop("prefix", None)
+
         # the rendered fields are determined by the values of the other fields
         live_fields = self.get_live_fields()
 
@@ -27,12 +29,13 @@ class LiveUpdateForm(forms.ModelForm):
 
     def get_live_field(self, name):
 
-        # data populated by POST request in update
-        if name in self.data:
-            return self.data[name]
+        # formset data is prefixed
+        if self.prefix is not None:
+            name = f"{self.prefix}-{name}"
 
+        # data populated by POST request in update
         # data populated from database
-        return self.initial[name]
+        return self.data.get(name) or self.initial.get(name)
 
     def get_live_fields(self):
         raise NotImplementedError()

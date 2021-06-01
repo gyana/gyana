@@ -1,5 +1,6 @@
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
+from apps.utils.formset_update_view import FormsetUpdateView
 from apps.utils.live_update_view import LiveUpdateView
 from apps.widgets.visuals import chart_to_output, table_to_output
 from django.db import transaction
@@ -10,7 +11,7 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .forms import WidgetConfigForm
+from .forms import FilterFormset, WidgetConfigForm
 from .models import Widget
 
 
@@ -56,13 +57,25 @@ class WidgetDetail(DashboardMixin, DetailView):
     model = Widget
 
 
-class WidgetUpdate(DashboardMixin, TurboUpdateView):
+class WidgetUpdate(DashboardMixin, FormsetUpdateView):
     template_name = "widgets/update.html"
     model = Widget
     form_class = WidgetConfigForm
 
-    def get_latest_attr(self, attr):
-        return self.request.POST.get(attr) or getattr(self.object, attr)
+    @property
+    def formsets(self):
+        return [FilterFormset]
+
+    def get_formset_kwargs(self, formset):
+        table = self.request.POST.get("table") or getattr(self.object, "table")
+        if table:
+            return {
+                "schema": Table.objects.get(
+                    pk=table.pk if isinstance(table, Table) else table
+                ).schema
+            }
+
+        return {}
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

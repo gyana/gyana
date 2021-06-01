@@ -1,3 +1,5 @@
+from apps.filters.forms import FilterForm
+from apps.filters.models import Filter
 from apps.tables.models import Table
 from apps.utils.live_update_form import LiveUpdateForm
 from django import forms
@@ -42,3 +44,8 @@ class WidgetConfigForm(LiveUpdateForm):
             fields += ["label", "aggregator", "value"]
 
         return fields
+
+
+FilterFormset = forms.inlineformset_factory(
+    Widget, Filter, form=FilterForm, can_delete=True, extra=1
+)

@@ -1,6 +1,7 @@
+from apps.utils.live_update_form import LiveUpdateForm
 from apps.widgets.models import Widget
 from django import forms
-from django.forms.widgets import HiddenInput
+from django.forms.widgets import HiddenInput, TextInput
 
 from .models import Filter
 
@@ -16,6 +17,44 @@ class ColumnChoices:
             self.columns = kwargs.pop("columns")
             super().__init__(*args, **kwargs)
             self.fields["column"].choices = self.columns
+
+
+class FilterForm(LiveUpdateForm):
+    column = forms.ChoiceField(choices=[])
+
+    class Meta:
+        fields = (
+            "column",
+            "string_predicate",
+            "numeric_predicate",
+            "string_value",
+            "integer_value",
+        )
+        widgets = {"string_value": TextInput()}
+
+    def get_live_fields(self):
+
+        fields = ["column"]
+
+        column = self.get_live_field("column")
+        column_type = None
+        if column in self.schema:
+            column_type = self.schema[column].name
+
+        if column_type == "String":
+            fields += ["string_predicate", "string_value"]
+        elif column_type == "Int64":
+            fields += ["numeric_predicate", "integer_value"]
+
+        return fields
+
+    def __init__(self, *args, **kwargs):
+
+        self.schema = kwargs.pop("schema")
+
+        super().__init__(*args, **kwargs)
+
+        self.fields["column"].choices = [(col, col) for col in self.schema]
 
 
 def get_filter_form(parent_fk, column_type=None):

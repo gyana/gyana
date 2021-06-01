@@ -17,6 +17,13 @@
 
           {% include "django/forms/default_form.html" %}
 
+          {% if filters_formset %}
+            <fieldset>
+              <label>Add filters</label>
+              {% include "components/formset.html" with formset=filters_formset %}
+            </fieldset>  
+          {% endif %}
+
           <input type="submit"
             name="submit"
             value="Save"
