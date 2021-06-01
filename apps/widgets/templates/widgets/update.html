@@ -38,10 +38,17 @@
     <turbo-frame id="widget-{{ object.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
   </div>
   <div class="w-1/2">
-    <turbo-frame id="widgets:output-{{ widget.id }}"
-      src="{% url 'widgets:output' object.id %}">
-      Loading...
-    </turbo-frame>
+    {% if widget.is_valid %}
+      <turbo-frame id="widgets:output-{{ widget.id }}"
+        src="{% url 'widgets:output' object.id %}">
+        Loading...
+      </turbo-frame>
+    {% else %}
+      <div class='flex flex-col items-center justify-center' style="min-height:16rem;">
+        <i class="far fa-lightbulb-exclamation text-yellow-300 mb-1 fa-2x"></i>
+        <p class="text-base text-gray-500">This widget needs to be configured</p>
+      </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

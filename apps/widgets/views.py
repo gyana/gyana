@@ -133,7 +133,7 @@ class WidgetOutput(DetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        if self.object.is_valid():
+        if self.object.is_valid:
             if self.object.kind == Widget.Kind.TABLE:
                 context_data.update(table_to_output(self.object))
             else:

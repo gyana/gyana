@@ -41,6 +41,7 @@ class Widget(models.Model):
     def __str__(self):
         return f"<Widget {self.kind} on {self.table}>"
 
+    @property
     def is_valid(self) -> bool:
         """Returns bool stating whether this Widget is ready to be displayed"""
         if self.kind == self.Kind.TABLE:
