@@ -142,31 +142,48 @@ class AddColumnForm(forms.ModelForm):
     class Meta:
         fields = ("name", "string_function", "integer_function", "label")
 
+    def get_live_field(self, name):
+
+        # data populated by POST request in update
+        if (prefix_name := f"{self.prefix}-{name}") in self.data:
+            return self.data[prefix_name]
+
+        # data populated by GET request in live form
+        if name in self.initial:
+            return self.initial[name]
+
+        # data populated from database in initial render
+        return getattr(self.instance, name, None)
+
+    def get_live_fields(self):
+
+        fields = ["name"]
+
+        column = self.get_live_field("name")
+        column_type = None
+        if column in self.schema:
+            column_type = self.schema[column].name
+
+        if column_type == "String":
+            fields += ["string_function"]
+        elif column_type == "Int64":
+            fields += ["integer_function"]
+
+        if column_type:
+            fields += ["label"]
+
+        return fields
+
     def __init__(self, *args, **kwargs):
 
         self.schema = kwargs.pop("schema")
+        self.prefix = kwargs["prefix"]
 
         super().__init__(*args, **kwargs)
 
-        column_type = None
+        keep_fields = self.get_live_fields()
 
-        # data populated by GET request in live form
-        if (data := kwargs.get("data")) is not None:
-            name = data[f"{kwargs['prefix']}-name"]
-            if name in self.schema:
-                column_type = self.schema[name].name
-
-        # data populated from database in initial render
-        elif self.instance.name in self.schema:
-            column_type = self.schema[self.instance.name].name
-
-        # remove all fields that are not for this type
-        deletions = [v for k, v in IBIS_TO_PREFIX.items() if k != column_type]
-
-        for deletion in deletions:
-            self.fields = {
-                k: v for k, v in self.fields.items() if not k.startswith(deletion)
-            }
+        self.fields = {k: v for k, v in self.fields.items() if k in keep_fields}
 
 
 AddColumnFormSet = forms.inlineformset_factory(
