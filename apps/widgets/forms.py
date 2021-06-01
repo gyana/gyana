@@ -1,6 +1,8 @@
+from apps.filters.forms import FilterForm
+from apps.filters.models import Filter
 from apps.tables.models import Table
 from django import forms
-from django.forms.widgets import HiddenInput
+from django.forms.models import BaseInlineFormSet
 
 from .models import Widget
 
@@ -35,6 +37,11 @@ class WidgetConfigForm(forms.ModelForm):
 
         return fields
 
+    def get_live_formsets(self):
+        if self.get_live_field("table") is not None:
+            return [FilterFormset]
+        return []
+
     def __init__(self, *args, **kwargs):
         # https://stackoverflow.com/a/30766247/15425660
         project = kwargs.pop("project", None)
@@ -56,3 +63,24 @@ class WidgetConfigForm(forms.ModelForm):
 
     label = forms.ChoiceField(choices=())
     value = forms.ChoiceField(choices=())
+
+
+class InlineFilterFormset(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.form.base_fields["column"] = forms.ChoiceField(
+            choices=[
+                ("", "No column selected"),
+                *[(col, col) for col in self.instance.parents.first().schema],
+            ]
+        )
+
+
+FilterFormset = forms.inlineformset_factory(
+    Widget,
+    Filter,
+    form=FilterForm,
+    can_delete=True,
+    extra=1,
+    # formset=InlineFilterFormset,
+)

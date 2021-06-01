@@ -18,6 +18,11 @@
 
           {% include "django/forms/default_form.html" %}
 
+          <fieldset>
+            <label>Add filters</label>
+            {% include "components/formset.html" with formset=filters_formset %}
+          </fieldset>  
+
           <button type="button"
             data-action="click->live-update#update"
             data-name="save-close"
