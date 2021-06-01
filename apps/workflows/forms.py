@@ -126,21 +126,16 @@ SortColumnFormSet = forms.inlineformset_factory(
 )
 
 
-EditColumnFormSet = forms.inlineformset_factory(
-    Node,
-    EditColumn,
-    fields=("name", "function"),
-    can_delete=True,
-    extra=1,
-    formset=InlineColumnFormset,
-)
-
 IBIS_TO_PREFIX = {"String": "string_", "Int64": "integer_"}
 
 
-class AddColumnForm(forms.ModelForm):
+class OperationColumnForm(forms.ModelForm):
     class Meta:
-        fields = ("name", "string_function", "integer_function", "label")
+        fields = (
+            "name",
+            "string_function",
+            "integer_function",
+        )
 
     def __init__(self, *args, **kwargs):
 
@@ -167,6 +162,21 @@ class AddColumnForm(forms.ModelForm):
             self.fields = {
                 k: v for k, v in self.fields.items() if not k.startswith(deletion)
             }
+
+
+EditColumnFormSet = forms.inlineformset_factory(
+    Node,
+    EditColumn,
+    form=OperationColumnForm,
+    can_delete=True,
+    extra=1,
+    formset=InlineColumnFormset,
+)
+
+
+class AddColumnForm(OperationColumnForm):
+    class Meta:
+        fields = ("name", "string_function", "integer_function", "label")
 
 
 AddColumnFormSet = forms.inlineformset_factory(
