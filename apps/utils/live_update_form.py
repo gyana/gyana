@@ -30,12 +30,11 @@ class LiveUpdateForm(forms.ModelForm):
     def get_live_field(self, name):
 
         # formset data is prefixed
-        if self.prefix is not None:
-            name = f"{self.prefix}-{name}"
+        key_ = f"{self.prefix}-{name}" if self.prefix else name
 
         # data populated by POST request in update
         # data populated from database
-        return self.data.get(name) or self.initial.get(name)
+        return self.data.get(key_) or self.initial.get(key_) or getattr(self.instance, name)
 
     def get_live_fields(self):
         raise NotImplementedError()
