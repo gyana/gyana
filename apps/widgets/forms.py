@@ -1,5 +1,5 @@
 from apps.tables.models import Table
-from apps.utils.live_form import LiveUpdateForm
+from apps.utils.live_update_form import LiveUpdateForm
 from django import forms
 
 from .models import Widget
