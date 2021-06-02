@@ -62,8 +62,8 @@ class FilterForm(LiveUpdateForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
 
-        if (column := self.data["column"]) in self.schema:
-            instance.type = IBIS_TO_TYPE[self.schema[column].name]
+        if instance.column in self.schema:
+            instance.type = IBIS_TO_TYPE[self.schema[instance.column].name]
 
         if commit:
             instance.save()
