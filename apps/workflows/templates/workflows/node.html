@@ -6,6 +6,7 @@
     {% if node.kind == "filter" %}
     <turbo-frame id="node-{{ node.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
     {% else %}
+    <div data-controller="turbo-issue-186-workaround">{{ form.media }}</div>
     <form class="h-full overflow-auto" action="{% url 'workflows:node' workflow.id node.id %}" 
       {% if add_columns_formset or edit_columns_formset or aggregations_formset%}
       data-controller="live-create trigger" method="get"
