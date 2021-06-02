@@ -1,6 +1,7 @@
 from functools import cached_property
 
 from apps.tables.models import Table
+from apps.utils.live_update_form import LiveUpdateForm
 from apps.workflows.widgets import SourceSelect
 from django import forms
 from django.forms.models import BaseInlineFormSet
@@ -115,34 +116,34 @@ AGGREGATION_TYPE_MAP = {
 }
 
 
-class FunctionColumnForm(forms.ModelForm):
+class FunctionColumnForm(LiveUpdateForm):
     class Meta:
         fields = ("name", "function")
 
+    @property
+    def column_type(self):
+        column = self.get_live_field("name")
+        if column in self.schema:
+            return self.schema[column].name
+        return None
+
+    def get_live_fields(self):
+        fields = ["name"]
+
+        if self.column_type is not None:
+            fields += ["function"]
+
+        return fields
+
     def __init__(self, *args, **kwargs):
-        schema = kwargs.pop("schema")
+        self.schema = kwargs.pop("schema")
 
         super().__init__(*args, **kwargs)
 
-        column_type = None
-
-        # data populated by GET request in live form
-        if (data := kwargs.get("data")) is not None:
-            name = data[f"{kwargs['prefix']}-name"]
-            if name in schema:
-                column_type = schema[name].name
-
-        # data populated from database in initial render
-        elif self.instance.name in schema:
-            column_type = schema[self.instance.name].name
-
-        if column_type is None:
-            self.fields.pop("function")
-
-        else:
+        if self.column_type is not None:
             self.fields["function"].choices = [
                 (choice.value, choice.name)
-                for choice in AGGREGATION_TYPE_MAP[column_type]
+                for choice in AGGREGATION_TYPE_MAP[self.column_type]
             ]
 
 

@@ -7,14 +7,17 @@
     <turbo-frame id="node-{{ node.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
     {% else %}
     <div data-controller="turbo-issue-186-workaround">{{ form.media }}</div>
-    <form class="h-full overflow-auto" action="{% url 'workflows:node' workflow.id node.id %}" 
+    <form class="h-full overflow-auto" action="{% url 'workflows:node' workflow.id node.id %}"  method="post"
       {% if add_columns_formset or edit_columns_formset or aggregations_formset%}
-      data-controller="live-create trigger" method="get"
+      data-controller="live-update trigger" 
       {% else %}
-      data-controller="trigger" method="post"
+      data-controller="trigger"
       {% endif %}
       data-trigger-event-value="node-updated-{{ node.id }}" data-action="submit->trigger#dispatch"
       >
+      <div class="h-6">
+        <span data-live-update-target="loading" class="hidden"><i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
+      </div>
       {% csrf_token %}
 
       {% include "django/forms/default_form.html" %}
@@ -62,33 +65,19 @@
       {% endif %}
 
       <div className='flex flex-row gap-4 flex-1 items-end'>
-        <button 
-          {% if add_columns_formset or edit_columns_formset or aggregations_formset%}
-          type="button"
-          data-action="click->tf-modal#close click->live-create#create click->trigger#dispatch"
-          {% else %}
+        <input
           type='submit' 
           data-action="click->tf-modal#close"
-          {% endif %}
           class="button button--filled button--sm" 
-          value='save' 
-          name='save-close'
-        >
-          Save 
-        </button>
-        <button 
-          {% if add_columns_formset or edit_columns_formset or aggregations_formset%}
-          type="button"
-          data-action="click->live-create#create_preview click->trigger#dispatch"
-          {% else %}
-          type='submit' 
-          {% endif %}
+          name='submit' 
+          value='Save'
+        />
+        <input
+          type='submit'
           class="button button--filled button--green button--sm" 
-          name='save-preview'
-          value='save-preview'
-        >
-          Save & Preview  
-        </button>
+          name='submit'
+          value='Save & Preview'
+        />
       </div>
     </form>
     {% endif %}
