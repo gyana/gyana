@@ -3,7 +3,9 @@ import { Listbox, Transition } from '@headlessui/react'
 import ReactDOM from 'react-dom'
 
 const SourceSelect_: React.FC<{ options; selected: number }> = ({ options, selected }) => {
-  const [option, setOption] = useState(() => options.filter((o) => o.id === selected)[0])
+  const [option, setOption] = useState(
+    () => options.filter((o) => o.id === selected)[0] || { id: '', label: '-----------' }
+  )
 
   return (
     <Listbox value={option} onChange={setOption}>
@@ -62,7 +64,7 @@ class SourceSelect extends HTMLElement {
     // Because the Select dropdown will be absolute positioned we need to make the outer div relative
     mountPoint.setAttribute('class', 'relative')
 
-    const options = JSON.parse(this.attributes['options'].value)
+    const options = JSON.parse(this.querySelector('#options').innerHTML)
     const selected = parseInt(this.attributes['selected'].value)
 
     this.appendChild(mountPoint)

@@ -11,10 +11,11 @@ class SourceSelect(ChoiceWidget):
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        options = [
+
+        context["widget"]["options"] = [
             {"type": option.source, "id": option.id, "label": option.owner_name}
             for option in self.choices.queryset
         ]
-        context["widget"]["options"] = json.dumps(options)
+
         context["widget"]["selected"] = value
         return context
