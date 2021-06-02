@@ -1,7 +1,6 @@
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
 from apps.utils.formset_update_view import FormsetUpdateView
-from apps.utils.live_update_view import LiveUpdateView
 from apps.widgets.visuals import chart_to_output, table_to_output
 from django.db import transaction
 from django.db.models.query import QuerySet
@@ -9,7 +8,7 @@ from django.urls import reverse
 from django.views.decorators.http import condition
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
-from turbo_response.views import TurboCreateView, TurboUpdateView
+from turbo_response.views import TurboCreateView
 
 from .forms import FilterFormset, WidgetConfigForm
 from .models import Widget
