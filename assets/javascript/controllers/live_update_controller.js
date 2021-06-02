@@ -2,11 +2,15 @@ import { Controller } from 'stimulus'
 import morphdom from 'morphdom'
 
 export default class extends Controller {
+  static targets = ['loading']
+
   listener = async (event) => {
     const form = this.element
 
     // manually POST the form and get HTML response
     const data = new FormData(form)
+
+    this.loadingTarget.classList.remove('hidden')
 
     let disabled = false
 
@@ -34,6 +38,8 @@ export default class extends Controller {
         }
       },
     })
+
+    this.loadingTarget.classList.add('hidden')
   }
 
   connect() {
