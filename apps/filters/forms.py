@@ -7,6 +7,7 @@ from .models import Filter
 
 IBIS_TO_PREDICATE = {"String": "string_predicate", "Int64": "numeric_predicate"}
 IBIS_TO_VALUE = {"String": "string_value", "Int64": "integer_value"}
+IBIS_TO_TYPE = {"Int64": "INTEGER", "String": "STRING"}
 
 
 class ColumnChoices:
@@ -57,6 +58,16 @@ class FilterForm(LiveUpdateForm):
         self.fields["column"].choices = [
             ("", "No column selected"),
         ] + [(col, col) for col in self.schema]
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        if (column := self.data["column"]) in self.schema:
+            instance.type = IBIS_TO_TYPE[self.schema[column].name]
+
+        if commit:
+            instance.save()
+        return instance
 
 
 def get_filter_form(parent_fk, column_type=None):
