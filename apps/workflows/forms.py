@@ -99,10 +99,57 @@ class InlineColumnFormset(BaseInlineFormSet):
         )
 
 
+NUMERIC_AGGREGATIONS = [
+    FunctionColumn.Functions.COUNT,
+    FunctionColumn.Functions.SUM,
+    FunctionColumn.Functions.MEAN,
+    FunctionColumn.Functions.MAX,
+    FunctionColumn.Functions.MIN,
+    FunctionColumn.Functions.STD,
+]
+
+AGGREGATION_TYPE_MAP = {
+    "String": [FunctionColumn.Functions.COUNT],
+    "Int64": NUMERIC_AGGREGATIONS,
+    "Float64": NUMERIC_AGGREGATIONS,
+}
+
+
+class FunctionColumnForm(forms.ModelForm):
+    class Meta:
+        fields = ("name", "function")
+
+    def __init__(self, *args, **kwargs):
+        schema = kwargs.pop("schema")
+
+        super().__init__(*args, **kwargs)
+
+        column_type = None
+
+        # data populated by GET request in live form
+        if (data := kwargs.get("data")) is not None:
+            name = data[f"{kwargs['prefix']}-name"]
+            if name in schema:
+                column_type = schema[name].name
+
+        # data populated from database in initial render
+        elif self.instance.name in schema:
+            column_type = schema[self.instance.name].name
+
+        if column_type is None:
+            self.fields.pop("function")
+
+        else:
+            self.fields["function"].choices = [
+                (choice.value, choice.name)
+                for choice in AGGREGATION_TYPE_MAP[column_type]
+            ]
+
+
 FunctionColumnFormSet = forms.inlineformset_factory(
     Node,
     FunctionColumn,
-    fields=("name", "function"),
+    form=FunctionColumnForm,
     extra=1,
     can_delete=True,
     formset=InlineColumnFormset,
@@ -128,21 +175,16 @@ SortColumnFormSet = forms.inlineformset_factory(
 )
 
 
-EditColumnFormSet = forms.inlineformset_factory(
-    Node,
-    EditColumn,
-    fields=("name", "function"),
-    can_delete=True,
-    extra=1,
-    formset=InlineColumnFormset,
-)
-
 IBIS_TO_PREFIX = {"String": "string_", "Int64": "integer_"}
 
 
-class AddColumnForm(forms.ModelForm):
+class OperationColumnForm(forms.ModelForm):
     class Meta:
-        fields = ("name", "string_function", "integer_function", "label")
+        fields = (
+            "name",
+            "string_function",
+            "integer_function",
+        )
 
     def __init__(self, *args, **kwargs):
 
@@ -169,6 +211,21 @@ class AddColumnForm(forms.ModelForm):
             self.fields = {
                 k: v for k, v in self.fields.items() if not k.startswith(deletion)
             }
+
+
+EditColumnFormSet = forms.inlineformset_factory(
+    Node,
+    EditColumn,
+    form=OperationColumnForm,
+    can_delete=True,
+    extra=1,
+    formset=InlineColumnFormset,
+)
+
+
+class AddColumnForm(OperationColumnForm):
+    class Meta:
+        fields = ("name", "string_function", "integer_function", "label")
 
 
 AddColumnFormSet = forms.inlineformset_factory(

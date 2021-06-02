@@ -241,31 +241,10 @@ class SortColumn(models.Model):
     name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
 
 
-class Operations(models.TextChoices):
-    LOWER = "lower", "to lowercase"
-    UPPER = "upper", "to uppercase"
-    ISNULL = "isnull", "is null"
-    CUMMAX = "cummax", "cummulative max"
-    CUMMIN = "cummin", "cummulative min"
-    ABS = "abs", "absolute value"
-    SQRT = "sqrt", "square root"
+class AbstractOperationColumn(models.Model):
+    class Meta:
+        abstract = True
 
-
-class EditColumn(models.Model):
-
-    node = models.ForeignKey(
-        Node, on_delete=models.CASCADE, related_name="edit_columns"
-    )
-    name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
-    function = models.CharField(max_length=20, choices=Operations.choices)
-
-
-bigquery_column_regex = RegexValidator(
-    r"^[a-zA-Z_][0-9a-zA-Z_]*$", "Only numbers, letters and underscores allowed."
-)
-
-
-class AddColumn(models.Model):
     class StringOperations(models.TextChoices):
         LOWER = "lower", "to lowercase"
         UPPER = "upper", "to uppercase"
@@ -278,22 +257,37 @@ class AddColumn(models.Model):
         ABS = "abs", "absolute value"
         SQRT = "sqrt", "square root"
 
-    node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="add_columns")
     name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+
     string_function = models.CharField(
         max_length=20, choices=StringOperations.choices, null=True
     )
     integer_function = models.CharField(
         max_length=20, choices=IntegerOperations.choices, null=True
     )
-    label = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
-        validators=[bigquery_column_regex],
-    )
 
     @property
     def function(self):
         return self.string_function or self.integer_function
+
+
+class EditColumn(AbstractOperationColumn):
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="edit_columns"
+    )
+
+
+bigquery_column_regex = RegexValidator(
+    r"^[a-zA-Z_][0-9a-zA-Z_]*$", "Only numbers, letters and underscores allowed."
+)
+
+
+class AddColumn(AbstractOperationColumn):
+    node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="add_columns")
+    label = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        validators=[bigquery_column_regex],
+    )
 
 
 class RenameColumn(models.Model):

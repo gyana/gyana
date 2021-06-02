@@ -44,6 +44,7 @@
     "@tailwindcss/forms": "^0.3.2",
     "ag-grid-community": "^25.2.1",
     "js-cookie": "^2.2.1",
+    "morphdom": "^2.6.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-flow-renderer": "^9.5.3",

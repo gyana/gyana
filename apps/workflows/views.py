@@ -5,7 +5,6 @@ from apps.utils.table_data import get_table
 from django import forms
 from django.db import transaction
 from django.db.models.query import QuerySet
-from django.http import request
 from django.http.response import HttpResponse
 from django.urls import reverse
 from django.views.generic import DetailView
@@ -15,7 +14,7 @@ from django_tables2 import SingleTableView
 from django_tables2.config import RequestConfig
 from django_tables2.views import SingleTableMixin
 from rest_framework import viewsets
-from rest_framework.decorators import api_view, schema
+from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from turbo_response.views import TurboCreateView, TurboUpdateView
@@ -117,7 +116,11 @@ class NodeUpdate(TurboUpdateView):
     def get_formset_instance(self, formset):
 
         form_kwargs = {}
-        if formset.get_default_prefix() == "add_columns":
+        if formset.get_default_prefix() in [
+            "add_columns",
+            "edit_columns",
+            "aggregations",
+        ]:
             form_kwargs = {"schema": self.object.parents.first().schema}
 
         # POST request for form creation

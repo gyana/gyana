@@ -9,39 +9,41 @@
 <div class="flex flex-wrap">
   <div class="w-1/2">
     <h3 class="">Config</h3>
-    <turbo-frame id="widgets:update">
       <form data-controller="live-update"
-        method="get"
+        method="post"
         action="{% url 'projects:dashboards:widgets:update' project.id dashboard.id object.id %}"
         class="form">
           {% csrf_token %}
 
           {% include "django/forms/default_form.html" %}
 
-          <button type="button"
-            data-action="click->live-update#update"
-            data-name="save-close"
+          {% if filters_formset %}
+            <fieldset>
+              <label>Add filters</label>
+              {% include "components/formset.html" with formset=filters_formset %}
+            </fieldset>  
+          {% endif %}
+
+          <input type="submit"
+            name="submit"
+            value="Save"
             class="button button--filled button--green"
-            >
-            Save
-          </button>
-          <button type="button"
-            data-action="click->live-update#update"
-            data-name="save-preview"
+            />
+          <input type="submit"
+            name="submit"
+            value="Save & Preview"
             class="button button--filled button--green"
-            >
-            Save & Preview
-          </button>
+            />
       </form>
-    </turbo-frame>
-    <h3 class="">Filters</h3>
-    <turbo-frame id="widget-{{ object.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
   </div>
   <div class="w-1/2">
     {% if widget.is_valid %}
       <turbo-frame id="widgets:output-{{ widget.id }}"
         src="{% url 'widgets:output' object.id %}">
-        Loading...
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          <p class='placeholder-scr__title'>Loading widget...</p>
+        </div>
       </turbo-frame>
     {% else %}
       <div class='flex flex-col items-center justify-center' style="min-height:16rem;">

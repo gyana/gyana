@@ -7,7 +7,7 @@
     <turbo-frame id="node-{{ node.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
     {% else %}
     <form class="h-full overflow-auto" action="{% url 'workflows:node' workflow.id node.id %}" 
-      {% if add_columns_formset %}
+      {% if add_columns_formset or edit_columns_formset or aggregations_formset%}
       data-controller="live-create trigger" method="get"
       {% else %}
       data-controller="trigger" method="post"
@@ -62,7 +62,7 @@
 
       <div className='flex flex-row gap-4 flex-1 items-end'>
         <button 
-          {% if add_columns_formset %}
+          {% if add_columns_formset or edit_columns_formset or aggregations_formset%}
           type="button"
           data-action="click->tf-modal#close click->live-create#create click->trigger#dispatch"
           {% else %}
@@ -76,7 +76,7 @@
           Save 
         </button>
         <button 
-          {% if add_columns_formset %}
+          {% if add_columns_formset or edit_columns_formset or aggregations_formset%}
           type="button"
           data-action="click->live-create#create_preview click->trigger#dispatch"
           {% else %}

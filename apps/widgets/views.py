@@ -1,6 +1,6 @@
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
-from apps.utils.live_update_view import LiveUpdateView
+from apps.utils.formset_update_view import FormsetUpdateView
 from apps.widgets.visuals import chart_to_output, table_to_output
 from django.db import transaction
 from django.db.models.query import QuerySet
@@ -8,9 +8,9 @@ from django.urls import reverse
 from django.views.decorators.http import condition
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
-from turbo_response.views import TurboCreateView, TurboUpdateView
+from turbo_response.views import TurboCreateView
 
-from .forms import WidgetConfigForm
+from .forms import FilterFormset, WidgetConfigForm
 from .models import Widget
 
 
@@ -56,25 +56,33 @@ class WidgetDetail(DashboardMixin, DetailView):
     model = Widget
 
 
-class WidgetUpdate(DashboardMixin, LiveUpdateView):
+class WidgetUpdate(DashboardMixin, FormsetUpdateView):
     template_name = "widgets/update.html"
     model = Widget
     form_class = WidgetConfigForm
 
+    @property
+    def formsets(self):
+        return [FilterFormset]
+
+    def get_formset_kwargs(self, formset):
+        table = self.request.POST.get("table") or getattr(self.object, "table")
+        if table:
+            return {
+                "schema": Table.objects.get(
+                    pk=table.pk if isinstance(table, Table) else table
+                ).schema
+            }
+
+        return {}
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["project"] = self.get_object().dashboard.project
-
-        table = self.get_latest_attr("table")
-        if table:
-            kwargs["schema"] = Table.objects.get(
-                pk=table.pk if isinstance(table, Table) else table
-            ).schema
-
         return kwargs
 
     def get_success_url(self) -> str:
-        if "save-preview" in self.request.POST:
+        if self.request.POST.get("submit") == "Save & Preview":
             return reverse(
                 "projects:dashboards:widgets:update",
                 args=(

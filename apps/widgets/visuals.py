@@ -1,6 +1,7 @@
 import json
 from typing import Any, Dict
 
+from apps.filters.get_filter_query import create_filter_query
 from apps.integrations.bigquery import DEFAULT_LIMIT
 from lib.chart import to_chart
 from lib.clients import ibis_client
@@ -18,7 +19,7 @@ def chart_to_output(widget: Widget) -> Dict[str, Any]:
 def table_to_output(widget: Widget) -> Dict[str, Any]:
     conn = ibis_client()
 
-    table = widget.table.get_query()
+    table = create_filter_query(widget.table.get_query(), widget.filters.all())
     df = conn.execute(table.limit(DEFAULT_LIMIT))
 
     return {
