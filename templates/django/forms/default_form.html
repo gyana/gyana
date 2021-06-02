@@ -13,7 +13,9 @@
 
   <p class=" input__help-text">{{ bound_field.help_text }}</p>
 
-  {{ bound_field.errors }}
+  {% if not form.is_live %}
+    {{ bound_field.errors }}
+  {% endif %}
 </div>
 {% endfor %}
 

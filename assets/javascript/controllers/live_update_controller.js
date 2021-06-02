@@ -15,7 +15,14 @@ export default class extends Controller {
     const parser = new DOMParser()
     const doc = parser.parseFromString(text, 'text/html')
     const newForm = doc.querySelector('form')
-    morphdom(this.element, newForm)
+    morphdom(this.element, newForm, {
+      // https://github.com/patrick-steele-idem/morphdom/issues/16#issuecomment-132630185
+      onBeforeMorphEl: function (fromEl, toEl) {
+        if (toEl.tagName === 'INPUT') {
+          toEl.value = fromEl.value
+        }
+      },
+    })
   }
 
   connect() {
