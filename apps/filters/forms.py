@@ -39,7 +39,7 @@ class FilterForm(LiveUpdateForm):
 
         column = self.get_live_field("column")
         column_type = None
-        if column in self.schema:
+        if self.schema and column in self.schema:
             column_type = self.schema[column].name
 
         if column_type == "String":
@@ -51,13 +51,14 @@ class FilterForm(LiveUpdateForm):
 
     def __init__(self, *args, **kwargs):
 
-        self.schema = kwargs.pop("schema")
+        self.schema = kwargs.pop("schema", None)
 
         super().__init__(*args, **kwargs)
 
-        self.fields["column"].choices = [
-            ("", "No column selected"),
-        ] + [(col, col) for col in self.schema]
+        if self.schema:
+            self.fields["column"].choices = [
+                ("", "No column selected"),
+            ] + [(col, col) for col in self.schema]
 
     def save(self, commit=True):
         instance = super().save(commit=False)
