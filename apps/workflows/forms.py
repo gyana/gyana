@@ -1,6 +1,7 @@
 from functools import cached_property
 
 from apps.tables.models import Table
+from apps.workflows.widgets import SourceSelect
 from django import forms
 from django.forms.models import BaseInlineFormSet
 from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
@@ -31,6 +32,7 @@ class InputNodeForm(NodeForm):
         model = Node
         fields = ["input_table"]
         labels = {"input_table": "Integration"}
+        widgets = {"input_table": SourceSelect()}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

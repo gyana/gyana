@@ -40,6 +40,7 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
+    "@headlessui/react": "^1.2.0",
     "@tailwindcss/forms": "^0.3.2",
     "ag-grid-community": "^25.2.1",
     "js-cookie": "^2.2.1",
