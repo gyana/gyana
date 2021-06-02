@@ -10,11 +10,11 @@ module.exports = {
   entry: {
     style: "./assets/styles/style.scss",
     tailwind: "./assets/styles/vendors/tailwind.pcss",
-    app: "./assets/javascript/app.ts",
-    teams: "./assets/javascript/teams/teams.tsx",
+    app: "./assets/javascript/app.ts",  
     "edit-team": "./assets/javascript/teams/edit-team.tsx",
     stimulus: "./assets/javascript/stimulus.ts",
     workflow: "./apps/workflows/javascript/app.tsx",
+    templates: "./templates/javascript/app.tsx",
   },
   output: {
     path: path.resolve(__dirname, "./static"),
