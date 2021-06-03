@@ -56,6 +56,11 @@ class BigQueryTableData(TableData):
             yield self[offset]
         return
 
+    def order_by(self, aliases):
+        self.data = self.data.sort_by(
+            [(alias.replace("-", ""), alias.startswith("-")) for alias in aliases]
+        )
+
     def set_table(self, table):
         """
         `Table.__init__` calls this method to inject an instance of itself into the
