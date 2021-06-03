@@ -15,6 +15,7 @@ import ReactFlow, {
   getIncomers,
   useZoomPanHelper,
   Background,
+  ConnectionLineType,
 } from 'react-flow-renderer'
 import { INode } from './interfaces'
 
@@ -233,6 +234,7 @@ const DnDFlow = ({ client }) => {
           <ReactFlow
             nodeTypes={defaultNodeTypes}
             elements={elements}
+            connectionLineType={ConnectionLineType.SmoothStep}
             onConnect={onConnect}
             onElementsRemove={onElementsRemove}
             onEdgeUpdate={onEdgeUpdate}

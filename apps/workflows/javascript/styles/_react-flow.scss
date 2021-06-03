@@ -57,14 +57,44 @@
   }
 
   .react-flow__handle {
-    background-color: white;
-    border: 2px solid var(--c-black-20);
-    width: 1.2rem;
-    height: 1.2rem;
-    right: calc(-0.6rem - 1px); // 2 pixel border of the parent needs to be taken into account.
+    background-color: var(--c-transparent);
+    border-radius: 0;
+    border: 0;
+    height: 100%;
+    right: 0;
+    width: 50%;
+
+    &::after {
+      background-color: var(--c-white);
+      border-radius: 100%;
+      border: 2px solid var(--c-black-20);
+      content: '';
+      display: block;
+      height: 1.2rem;
+      position: absolute;
+      top: 50%;
+      transform: translate(0, -50%);
+      width: 1.2rem;
+    }
 
     &-left {
-      left: calc(-0.6rem - 1px);
+      left: -0.7rem;
+
+      &::after {
+        left: calc(0.1rem - 1px);
+      }
+    }
+
+    &-right {
+      right: -0.7rem;
+
+      &::after {
+        right: calc(0.1rem - 1px);
+      }
+    }
+
+    &-connecting::after {
+      border-color: var(--c-blue);
     }
   }
 
