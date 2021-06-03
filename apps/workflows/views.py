@@ -120,21 +120,20 @@ class NodeUpdate(FormsetUpdateView):
             "add_columns",
             "edit_columns",
             "aggregations",
-            "filters"
+            "filters",
         ]:
             return {"schema": self.object.parents.first().schema}
 
         return {}
 
+    @property
+    def preview_node_id(self):
+        return int(self.request.GET.get("preview_node_id", self.object.id))
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["workflow"] = self.workflow
-        context["node"] = self.object
-
-        context["preview_node_id"] = int(
-            self.request.GET.get("preview_node_id", self.object.id)
-        )
-
+        context["preview_node_id"] = self.preview_node_id
         return context
 
     def get_form_class(self):
@@ -143,8 +142,7 @@ class NodeUpdate(FormsetUpdateView):
     def get_success_url(self) -> str:
         base_url = reverse("workflows:node", args=(self.workflow.id, self.object.id))
         if self.request.POST.get("submit") == "Save & Preview":
-            preview_node_id = self.get_context_data()["preview_node_id"]
-            return f"{base_url}?preview_node_id={preview_node_id}&preview=true"
+            return f"{base_url}?preview_node_id={self.preview_node_id}&preview=true"
         return base_url
 
 
