@@ -42,4 +42,4 @@ class LiveUpdateForm(forms.ModelForm):
 
     def get_live_fields(self):
         # by default the behaviour is a normal form
-        return list([f for f in self.fields.keys() if f != "hidden_live"])
+        return [f for f in self.fields.keys() if f != "hidden_live"]

@@ -24,7 +24,7 @@ class Widget(models.Model):
     table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True)
 
     # Chart attributes
-    kind = models.CharField(max_length=32, choices=Kind.choices)
+    kind = models.CharField(max_length=32, choices=Kind.choices, default=Kind.COLUMN)
     aggregator = models.CharField(max_length=32, choices=Aggregator.choices)
     # maximum length of bigquery column name
     label = models.CharField(max_length=300, null=True, blank=True)
