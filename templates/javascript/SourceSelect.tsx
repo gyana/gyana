@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import ReactDOM from 'react-dom'
 
-const SourceSelect_: React.FC<{ options; selected: number; field: string }> = ({
+const SourceSelect_: React.FC<{ options; selected: number; name: string }> = ({
   options,
   selected,
   name,
@@ -14,7 +14,7 @@ const SourceSelect_: React.FC<{ options; selected: number; field: string }> = ({
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    if (inputRef.current) {
+    if (inputRef.current && option.id != selected) {
       // Manually fire the input change event for live update form
       // https://stackoverflow.com/a/36648958/15425660
       inputRef.current.dispatchEvent(new Event('change', { bubbles: true }))
