@@ -32,9 +32,14 @@ export default class extends Controller {
     const newForm = doc.querySelector('form')
     morphdom(form, newForm, {
       // https://github.com/patrick-steele-idem/morphdom/issues/16#issuecomment-132630185
-      onBeforeMorphEl: function (fromEl, toEl) {
+      onBeforeElUpdated: function (fromEl, toEl) {
         if (toEl.tagName === 'INPUT') {
           toEl.value = fromEl.value
+        }
+        // Do not overwrite web component
+        // TODO: Replace the entire node to re-trigger connectedCallback
+        if (toEl.tagName.includes('-')) {
+          return false
         }
       },
     })

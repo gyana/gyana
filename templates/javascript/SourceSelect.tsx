@@ -53,7 +53,7 @@ const SourceSelect_: React.FC<{ options; selected: number }> = ({ options, selec
           ))}
         </Listbox.Options>
       </Transition>
-      <input type='hidden' name='input_table' value={option.id} />
+      <input type='hidden' name='table' id='id_table' value={option.id} />
     </Listbox>
   )
 }

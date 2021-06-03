@@ -2,7 +2,7 @@ from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
 from apps.tables.models import Table
 from apps.utils.live_update_form import LiveUpdateForm
-from apps.widgets.widgets import VisualSelect
+from apps.widgets.widgets import SourceSelect, VisualSelect
 from django import forms
 
 from .models import Widget
@@ -16,7 +16,7 @@ class WidgetConfigForm(LiveUpdateForm):
     class Meta:
         model = Widget
         fields = ["description", "table", "kind", "label", "aggregator", "value"]
-        widgets = {"kind": VisualSelect()}
+        widgets = {"kind": VisualSelect(), "table": SourceSelect()}
 
     def __init__(self, *args, **kwargs):
         # https://stackoverflow.com/a/30766247/15425660
