@@ -118,16 +118,23 @@ AGGREGATION_TYPE_MAP = {
 }
 
 
-class FunctionColumnForm(LiveUpdateForm):
-    class Meta:
-        fields = ("name", "function")
-
+class SchemaMixin:
     @property
     def column_type(self):
         column = self.get_live_field("name")
         if column in self.schema:
             return self.schema[column].name
         return None
+
+    def __init__(self, *args, **kwargs):
+        self.schema = kwargs.pop("schema")
+
+        super().__init__(*args, **kwargs)
+
+
+class FunctionColumnForm(SchemaMixin, LiveUpdateForm):
+    class Meta:
+        fields = ("name", "function")
 
     def get_live_fields(self):
         fields = ["name"]
@@ -138,7 +145,6 @@ class FunctionColumnForm(LiveUpdateForm):
         return fields
 
     def __init__(self, *args, **kwargs):
-        self.schema = kwargs.pop("schema")
 
         super().__init__(*args, **kwargs)
 
@@ -181,7 +187,7 @@ SortColumnFormSet = forms.inlineformset_factory(
 IBIS_TO_PREFIX = {"String": "string_", "Int64": "integer_"}
 
 
-class OperationColumnForm(LiveUpdateForm):
+class OperationColumnForm(SchemaMixin, LiveUpdateForm):
     class Meta:
         fields = (
             "name",
@@ -189,27 +195,14 @@ class OperationColumnForm(LiveUpdateForm):
             "integer_function",
         )
 
-    def __init__(self, *args, **kwargs):
-
-        self.schema = kwargs.pop("schema")
-
-        super().__init__(*args, **kwargs)
-
-    @property
-    def column_type(self):
-        column = self.get_live_field("name")
-        if column in self.schema:
-            return self.schema[column].name
-        return None
-
     def get_live_fields(self):
         fields = ["name"]
 
         if self.column_type == "Int64":
-            return fields + ["integer_function"]
+            fields += ["integer_function"]
 
-        if self.column_type == "String":
-            return fields + ["string_function"]
+        elif self.column_type == "String":
+            fields += ["string_function"]
 
         return fields
 
@@ -224,18 +217,24 @@ EditColumnFormSet = forms.inlineformset_factory(
 )
 
 
-class AddColumnForm(OperationColumnForm):
+class AddColumnForm(SchemaMixin, LiveUpdateForm):
     class Meta:
         fields = ("name", "string_function", "integer_function", "label")
 
     def get_live_fields(self):
-        fields = super().get_live_fields()
+        fields = ["name"]
 
-        if (
-            self.get_live_field("integer_function")
-            or self.get_live_field("string_function")
-        ) is not None:
-            return fields + ["label"]
+        if self.column_type == "Int64":
+            fields += ["integer_function"]
+
+            if self.get_live_field("integer_function") is not None:
+                fields += ["label"]
+
+        elif self.column_type == "String":
+            fields += ["string_function"]
+
+            if self.get_live_field("string_function") is not None:
+                fields += ["label"]
 
         return fields
 
