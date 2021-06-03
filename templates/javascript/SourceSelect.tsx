@@ -1,11 +1,25 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import ReactDOM from 'react-dom'
 
-const SourceSelect_: React.FC<{ options; selected: number }> = ({ options, selected }) => {
+const SourceSelect_: React.FC<{ options; selected: number; name: string }> = ({
+  options,
+  selected,
+  name,
+}) => {
   const [option, setOption] = useState(
     () => options.filter((o) => o.id === selected)[0] || { id: '', label: '-----------' }
   )
+
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (inputRef.current && option.id != selected) {
+      // Manually fire the input change event for live update form
+      // https://stackoverflow.com/a/36648958/15425660
+      inputRef.current.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+  }, [option.id])
 
   return (
     <Listbox value={option} onChange={setOption}>
@@ -53,7 +67,7 @@ const SourceSelect_: React.FC<{ options; selected: number }> = ({ options, selec
           ))}
         </Listbox.Options>
       </Transition>
-      <input type='hidden' name='table' id='id_table' value={option.id} />
+      <input ref={inputRef} type='hidden' name={name} id={`id_${name}`} value={option.id} />
     </Listbox>
   )
 }
@@ -66,9 +80,10 @@ class SourceSelect extends HTMLElement {
 
     const options = JSON.parse(this.querySelector('#options').innerHTML)
     const selected = parseInt(this.attributes['selected'].value)
+    const name = this.attributes['name'].value
 
     this.appendChild(mountPoint)
-    ReactDOM.render(<SourceSelect_ options={options} selected={selected} />, mountPoint)
+    ReactDOM.render(<SourceSelect_ options={options} selected={selected} name={name} />, mountPoint)
   }
 }
 
