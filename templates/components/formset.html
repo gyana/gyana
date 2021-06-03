@@ -13,7 +13,10 @@
       {{ hidden }}
       {% endfor %}
       {% endif %}
-      {{ field.errors.as_ul }}
+      
+      {% if not form.is_live %}
+        {{ field.errors.as_ul }}
+      {% endif %}
       {{ field }}
     </td>
     {% endfor %}

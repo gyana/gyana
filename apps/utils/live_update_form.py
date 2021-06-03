@@ -34,7 +34,11 @@ class LiveUpdateForm(forms.ModelForm):
 
         # data populated by POST request in update
         # data populated from database
-        return self.data.get(key_) or self.initial.get(key_) or getattr(self.instance, name)
+        return (
+            self.data.get(key_)
+            or self.initial.get(key_)
+            or getattr(self.instance, name)
+        )
 
     def get_live_fields(self):
-        raise NotImplementedError()
+        return list([f for f in self.fields.keys() if f != "hidden_live"])

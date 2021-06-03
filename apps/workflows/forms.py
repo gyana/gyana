@@ -21,7 +21,7 @@ class WorkflowForm(forms.ModelForm):
         widgets = {"project": HiddenInput()}
 
 
-class NodeForm(forms.ModelForm):
+class NodeForm(LiveUpdateForm):
     @cached_property
     def columns(self):
         """Returns the schema for the first parent."""
@@ -225,6 +225,17 @@ EditColumnFormSet = forms.inlineformset_factory(
 class AddColumnForm(OperationColumnForm):
     class Meta:
         fields = ("name", "string_function", "integer_function", "label")
+
+    def get_live_fields(self):
+        fields = super().get_live_fields()
+
+        if (
+            self.get_live_field("integer_function")
+            or self.get_live_field("string_function")
+        ) is not None:
+            return fields + ["label"]
+
+        return fields
 
 
 AddColumnFormSet = forms.inlineformset_factory(

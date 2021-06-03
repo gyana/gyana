@@ -7,13 +7,10 @@
     <turbo-frame id="node-{{ node.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
     {% else %}
     <div data-controller="turbo-issue-186-workaround">{{ form.media }}</div>
-    <form class="h-full overflow-auto" action="{% url 'workflows:node' workflow.id node.id %}"  method="post"
-      {% if add_columns_formset or edit_columns_formset or aggregations_formset%}
-      data-controller="live-update trigger" 
-      {% else %}
-      data-controller="trigger"
-      {% endif %}
-      data-trigger-event-value="node-updated-{{ node.id }}" data-action="submit->trigger#dispatch"
+    <form class="h-full overflow-auto"
+      action="{% url 'workflows:node' workflow.id node.id %}" 
+      method="post"
+      data-controller="live-update"
       >
       <div class="h-6">
         <span data-live-update-target="loading" class="hidden"><i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
@@ -99,7 +96,10 @@
 
     {% if request.GET.preview %}
     <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id preview_node_id %}">
-      Loading...
+      <div class='placeholder-scr placeholder-scr--fillscreen'>
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+        <p class='placeholder-scr__title'>Loading preview...</p>
+      </div>
     </turbo-frame>
     {% else %}
     <div class='workflow-detail__load-preview'>
