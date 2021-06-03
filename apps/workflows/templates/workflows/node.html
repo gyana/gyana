@@ -8,7 +8,7 @@
       action="{% url 'workflows:node' workflow.id node.id %}" 
       method="post"
       {% if add_columns_formset or edit_columns_formset or aggregations_formset or filters_formset %}
-      data-controller="live-create trigger"
+      data-controller="live-update trigger"
       {% else %}
       data-controller="trigger"
       {% endif %}
