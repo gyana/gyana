@@ -211,7 +211,7 @@ class Node(models.Model):
 
 
 class Column(models.Model):
-    name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="columns")
 
 
@@ -226,7 +226,7 @@ class FunctionColumn(models.Model):
         MIN = "min", "Minimum"
         STD = "std", "Standard deviation"
 
-    name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     function = models.CharField(max_length=20, choices=Functions.choices)
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="aggregations"
@@ -238,7 +238,7 @@ class SortColumn(models.Model):
         Node, on_delete=models.CASCADE, related_name="sort_columns"
     )
     ascending = models.BooleanField(default=True)
-    name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
 
 
 class AbstractOperationColumn(models.Model):
@@ -257,7 +257,7 @@ class AbstractOperationColumn(models.Model):
         ABS = "abs", "absolute value"
         SQRT = "sqrt", "square root"
 
-    name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
 
     string_function = models.CharField(
         max_length=20, choices=StringOperations.choices, null=True
@@ -294,7 +294,7 @@ class RenameColumn(models.Model):
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="rename_columns"
     )
-    name = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     new_name = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         validators=[bigquery_column_regex],

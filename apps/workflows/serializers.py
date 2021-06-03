@@ -30,7 +30,7 @@ def get_output_desc(obj):
 
 
 def get_select_desc(obj):
-    return f"Selected {', '.join([col.name for col in obj.columns.all()])}"
+    return f"Selected {', '.join([col.column for col in obj.columns.all()])}"
 
 
 def get_join_desc(obj):
@@ -38,7 +38,7 @@ def get_join_desc(obj):
 
 
 def get_aggregation_desc(obj):
-    return f"Group by {', '.join([col.name for col in obj.columns.all()])} aggregate {[f'{agg.function}({agg.name}' for agg in obj.aggregations.all()]}"
+    return f"Group by {', '.join([col.column for col in obj.columns.all()])} aggregate {[f'{agg.function}({agg.column}' for agg in obj.aggregations.all()]}"
 
 
 def get_union_desc(obj):
@@ -46,7 +46,7 @@ def get_union_desc(obj):
 
 
 def get_sort_desc(obj):
-    return f"Sort by {', '.join([s.name + ' '  + ('Ascending' if s.ascending else 'Descending') for s in obj.sort_columns.all()])}"
+    return f"Sort by {', '.join([s.column + ' '  + ('Ascending' if s.ascending else 'Descending') for s in obj.sort_columns.all()])}"
 
 
 def get_filter_desc(obj):
@@ -68,15 +68,15 @@ def get_filter_desc(obj):
 
 
 def get_edit_desc(obj):
-    return f"Edit {' ,'.join([f'{edit.name} {edit.function}' for edit in obj.edit_columns.all()])}"
+    return f"Edit {' ,'.join([f'{edit.column} {edit.function}' for edit in obj.edit_columns.all()])}"
 
 
 def get_add_desc(obj):
-    return f"Add {' ,'.join([f'{add.name} {add.function}' for add in obj.add_columns.all()])}"
+    return f"Add {' ,'.join([f'{add.column} {add.function}' for add in obj.add_columns.all()])}"
 
 
 def get_rename_desc(obj):
-    texts = [f"{r.name} to {r.new_name}" for r in obj.rename_columns.all()]
+    texts = [f"{r.column} to {r.new_name}" for r in obj.rename_columns.all()]
     return f"Rename {' ,'.join(texts)}"
 
 

@@ -18,7 +18,7 @@ def get_output_query(node):
 
 def get_select_query(node):
     parent_query = node.parents.first().get_query()
-    return parent_query.projection([col.name for col in node.columns.all()] or [])
+    return parent_query.projection([col.column for col in node.columns.all()] or [])
 
 
 def get_duplicate_names(left, right):
@@ -69,10 +69,10 @@ def get_aggregation_query(node):
     query = node.parents.first().get_query()
     groups = node.columns.all()
     aggregations = [
-        aggregate(query, agg.name, agg.function) for agg in node.aggregations.all()
+        aggregate(query, agg.column, agg.function) for agg in node.aggregations.all()
     ]
     if groups:
-        query = query.group_by([g.name for g in groups])
+        query = query.group_by([g.column for g in groups])
     if aggregations:
         return query.aggregate(aggregations)
     return query.size()
@@ -91,7 +91,7 @@ def get_union_query(node):
 def get_sort_query(node):
     query = node.parents.first().get_query()
     sort_columns = [
-        (getattr(query, s.name), s.ascending) for s in node.sort_columns.all()
+        (getattr(query, s.column), s.ascending) for s in node.sort_columns.all()
     ]
     return query.sort_by(sort_columns)
 
@@ -113,8 +113,8 @@ def get_edit_query(node):
     columns = [name for name in parent.schema]
     query = parent.get_query()
     for edit in node.edit_columns.all():
-        idx = columns.index(edit.name)
-        columns[idx] = getattr(query[edit.name], edit.function)().name(edit.name)
+        idx = columns.index(edit.column)
+        columns[idx] = getattr(query[edit.column], edit.function)().name(edit.column)
     return query[columns]
 
 
@@ -122,7 +122,7 @@ def get_add_query(node):
     query = node.parents.first().get_query()
     return query.mutate(
         [
-            getattr(query[add.name], add.function)().name(add.label)
+            getattr(query[add.column], add.function)().name(add.label)
             for add in node.add_columns.all()
         ]
     )
@@ -134,8 +134,8 @@ def get_rename_query(node):
     columns = [name for name in parent.schema]
 
     for rename in node.rename_columns.all():
-        idx = columns.index(rename.name)
-        columns[idx] = query[rename.name].name(rename.new_name)
+        idx = columns.index(rename.column)
+        columns[idx] = query[rename.column].name(rename.new_name)
     return query[columns]
 
 

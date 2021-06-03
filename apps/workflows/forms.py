@@ -4,6 +4,7 @@ from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
 from apps.tables.models import Table
 from apps.utils.live_update_form import LiveUpdateForm
+from apps.utils.schema_form_mixin import SchemaFormMixin
 from apps.workflows.widgets import SourceSelect
 from django import forms
 from django.forms.models import BaseInlineFormSet
@@ -63,13 +64,13 @@ class SelectNodeForm(NodeForm):
         self.fields["select_columns"] = forms.MultipleChoiceField(
             choices=[(col, col) for col in self.columns],
             widget=CheckboxSelectMultiple,
-            initial=list(self.instance.columns.all().values_list("name", flat=True)),
+            initial=list(self.instance.columns.all().values_list("column", flat=True)),
         )
 
     def save(self, *args, **kwargs):
         self.instance.columns.all().delete()
         self.instance.columns.set(
-            [Column(name=name) for name in self.cleaned_data["select_columns"]],
+            [Column(column=column) for column in self.cleaned_data["select_columns"]],
             bulk=False,
         )
         return super().save(*args, **kwargs)
@@ -94,7 +95,7 @@ class JoinNodeForm(NodeForm):
 class InlineColumnFormset(BaseInlineFormSet):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.form.base_fields["name"] = forms.ChoiceField(
+        self.form.base_fields["column"] = forms.ChoiceField(
             choices=[
                 ("", "No column selected"),
                 *[(col, col) for col in self.instance.parents.first().schema],
@@ -118,26 +119,12 @@ AGGREGATION_TYPE_MAP = {
 }
 
 
-class SchemaMixin:
-    @property
-    def column_type(self):
-        column = self.get_live_field("name")
-        if column in self.schema:
-            return self.schema[column].name
-        return None
-
-    def __init__(self, *args, **kwargs):
-        self.schema = kwargs.pop("schema")
-
-        super().__init__(*args, **kwargs)
-
-
-class FunctionColumnForm(SchemaMixin, LiveUpdateForm):
+class FunctionColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
-        fields = ("name", "function")
+        fields = ("column", "function")
 
     def get_live_fields(self):
-        fields = ["name"]
+        fields = ["column"]
 
         if self.column_type is not None:
             fields += ["function"]
@@ -167,7 +154,7 @@ FunctionColumnFormSet = forms.inlineformset_factory(
 ColumnFormSet = forms.inlineformset_factory(
     Node,
     Column,
-    fields=("name",),
+    fields=("column",),
     extra=1,
     can_delete=True,
     formset=InlineColumnFormset,
@@ -177,7 +164,7 @@ ColumnFormSet = forms.inlineformset_factory(
 SortColumnFormSet = forms.inlineformset_factory(
     Node,
     SortColumn,
-    fields=("name", "ascending"),
+    fields=("column", "ascending"),
     can_delete=True,
     extra=1,
     formset=InlineColumnFormset,
@@ -187,16 +174,16 @@ SortColumnFormSet = forms.inlineformset_factory(
 IBIS_TO_PREFIX = {"String": "string_", "Int64": "integer_"}
 
 
-class OperationColumnForm(SchemaMixin, LiveUpdateForm):
+class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
         fields = (
-            "name",
+            "column",
             "string_function",
             "integer_function",
         )
 
     def get_live_fields(self):
-        fields = ["name"]
+        fields = ["column"]
 
         if self.column_type == "Int64":
             fields += ["integer_function"]
@@ -217,12 +204,12 @@ EditColumnFormSet = forms.inlineformset_factory(
 )
 
 
-class AddColumnForm(SchemaMixin, LiveUpdateForm):
+class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
-        fields = ("name", "string_function", "integer_function", "label")
+        fields = ("column", "string_function", "integer_function", "label")
 
     def get_live_fields(self):
-        fields = ["name"]
+        fields = ["column"]
 
         if self.column_type == "Int64":
             fields += ["integer_function"]
@@ -235,6 +222,8 @@ class AddColumnForm(SchemaMixin, LiveUpdateForm):
 
             if self.get_live_field("string_function") is not None:
                 fields += ["label"]
+
+        print(fields)
 
         return fields
 
@@ -252,7 +241,7 @@ AddColumnFormSet = forms.inlineformset_factory(
 RenameColumnFormSet = forms.inlineformset_factory(
     Node,
     RenameColumn,
-    fields=("name", "new_name"),
+    fields=("column", "new_name"),
     can_delete=True,
     extra=1,
     formset=InlineColumnFormset,

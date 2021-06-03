@@ -1,11 +1,12 @@
 from apps.utils.live_update_form import LiveUpdateForm
+from apps.utils.schema_form_mixin import SchemaFormMixin
 from django import forms
 from django.forms.widgets import TextInput
 
 IBIS_TO_TYPE = {"Int64": "INTEGER", "String": "STRING"}
 
 
-class FilterForm(LiveUpdateForm):
+class FilterForm(SchemaFormMixin, LiveUpdateForm):
     column = forms.ChoiceField(choices=[])
 
     class Meta:
@@ -22,21 +23,14 @@ class FilterForm(LiveUpdateForm):
 
         fields = ["column"]
 
-        column = self.get_live_field("column")
-        column_type = None
-        if self.schema and column in self.schema:
-            column_type = self.schema[column].name
-
-        if column_type == "String":
+        if self.column_type == "String":
             fields += ["string_predicate", "string_value"]
-        elif column_type == "Int64":
+        elif self.column_type == "Int64":
             fields += ["numeric_predicate", "integer_value"]
 
         return fields
 
     def __init__(self, *args, **kwargs):
-
-        self.schema = kwargs.pop("schema", None)
 
         super().__init__(*args, **kwargs)
 
