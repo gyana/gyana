@@ -24,7 +24,7 @@ const SourceSelect_: React.FC<{ options; selected: number; name: string }> = ({
         leaveFrom='opacity-100'
         leaveTo='opacity-0'
       >
-        <Listbox.Options className='absolute text-lg w-full py-1 mt-1 overflow-auto bg-white rounded-md max-h-60 focus:outline-none border border-gray'>
+        <Listbox.Options className='absolute z-10 text-lg w-full py-1 mt-1 overflow-auto bg-white rounded-md max-h-60 focus:outline-none border border-gray'>
           {options.map((o) => (
             <Listbox.Option
               key={o.id}

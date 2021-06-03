@@ -29,7 +29,7 @@ const VisualSelect_: React.FC<{ selected: Kind }> = ({ selected }) => {
         leaveFrom='opacity-100'
         leaveTo='opacity-0'
       >
-        <Listbox.Options className='absolute text-lg w-full py-1 mt-1 overflow-auto bg-white rounded-md max-h-100 focus:outline-none border border-gray'>
+        <Listbox.Options className='absolute z-10 text-lg w-full py-1 mt-1 overflow-auto bg-white rounded-md max-h-100 focus:outline-none border border-gray'>
           {VisualKinds.map((k) => (
             <Listbox.Option
               key={k.id}
