@@ -3,9 +3,6 @@
 <turbo-frame id="workflow-node">
   {% if node.kind == "input" or parents %}
   <div class="workflow-detail__sidebar">
-    {% if node.kind == "filter" %}
-    <turbo-frame id="node-{{ node.id }}-filters" src="{% url 'filters:list' %}"> </turbo-frame>
-    {% else %}
     <div data-controller="turbo-issue-186-workaround">{{ form.media }}</div>
     <form class="h-full overflow-auto"
       action="{% url 'workflows:node' workflow.id node.id %}" 
@@ -61,6 +58,13 @@
       </fieldset>
       {% endif %}
 
+      {% if filters_formset %}
+      <fieldset>
+        <label>Add filters</label>
+        {% include "components/formset.html" with formset=filters_formset %}
+      </fieldset>
+      {% endif %}
+
       <div className='flex flex-row gap-4 flex-1 items-end'>
         <input
           type='submit' 
@@ -77,7 +81,6 @@
         />
       </div>
     </form>
-    {% endif %}
   </div>
 
   <div class="workflow-detail__table">

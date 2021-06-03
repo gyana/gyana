@@ -1,5 +1,7 @@
 from functools import cached_property
 
+from apps.filters.forms import FilterForm
+from apps.filters.models import Filter
 from apps.tables.models import Table
 from apps.utils.live_update_form import LiveUpdateForm
 from apps.workflows.widgets import SourceSelect
@@ -257,6 +259,10 @@ RenameColumnFormSet = forms.inlineformset_factory(
     formset=InlineColumnFormset,
 )
 
+FilterFormSet = forms.inlineformset_factory(
+    Node, Filter, form=FilterForm, can_delete=True, extra=1
+)
+
 
 class UnionNodeForm(NodeForm):
     class Meta:
@@ -300,4 +306,5 @@ KIND_TO_FORMSETS = {
     "edit": [EditColumnFormSet],
     "add": [AddColumnFormSet],
     "rename": [RenameColumnFormSet],
+    "filter": [FilterFormSet],
 }
