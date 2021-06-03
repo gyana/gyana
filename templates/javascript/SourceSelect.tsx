@@ -2,7 +2,11 @@ import React, { Fragment, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import ReactDOM from 'react-dom'
 
-const SourceSelect_: React.FC<{ options; selected: number }> = ({ options, selected }) => {
+const SourceSelect_: React.FC<{ options; selected: number; field: string }> = ({
+  options,
+  selected,
+  name,
+}) => {
   const [option, setOption] = useState(
     () => options.filter((o) => o.id === selected)[0] || { id: '', label: '-----------' }
   )
@@ -53,7 +57,7 @@ const SourceSelect_: React.FC<{ options; selected: number }> = ({ options, selec
           ))}
         </Listbox.Options>
       </Transition>
-      <input type='hidden' name='table' id='id_table' value={option.id} />
+      <input type='hidden' name={name} id={`id_${name}`} value={option.id} />
     </Listbox>
   )
 }
@@ -66,9 +70,10 @@ class SourceSelect extends HTMLElement {
 
     const options = JSON.parse(this.querySelector('#options').innerHTML)
     const selected = parseInt(this.attributes['selected'].value)
+    const name = this.attributes['name'].value
 
     this.appendChild(mountPoint)
-    ReactDOM.render(<SourceSelect_ options={options} selected={selected} />, mountPoint)
+    ReactDOM.render(<SourceSelect_ options={options} selected={selected} name={name} />, mountPoint)
   }
 }
 
