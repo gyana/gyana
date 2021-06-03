@@ -10,10 +10,10 @@ enum Kind {
 }
 
 const VisualKinds = [
-  { id: Kind.Table, name: 'Table', icon: 'fa-table', caption: 'Show your data in a table' },
-  { id: Kind.Column, name: 'Bar', icon: 'fa-chart-bar', caption: 'Plot data using a Bar Chart' },
-  { id: Kind.Pie, name: 'Pie', icon: 'fa-chart-pie', caption: 'Plot data using a Pie Chart' },
-  { id: Kind.Line, name: 'Line', icon: 'fa-chart-line', caption: 'Plot data using a Line Chart' },
+  { id: Kind.Table, name: 'Table', icon: 'fa-table' },
+  { id: Kind.Column, name: 'Bar', icon: 'fa-chart-bar' },
+  { id: Kind.Pie, name: 'Pie', icon: 'fa-chart-pie' },
+  { id: Kind.Line, name: 'Line', icon: 'fa-chart-line' },
 ]
 
 const VisualSelect_: React.FC<{ selected: Kind }> = ({ selected }) => {
@@ -46,13 +46,10 @@ const VisualSelect_: React.FC<{ selected: Kind }> = ({ selected }) => {
             >
               {({ selected, active }) => (
                 <div className='flex flex-row items-center'>
-                  <i className={`fad ${k.icon} w-16 fa-3x text-blue mr-4`} />
-                  <div className='flex flex-col'>
-                    <h2 className={`${selected ? 'font-medium' : 'font-normal'} block truncate`}>
-                      {k.name}
-                    </h2>
-                    <span>{k.caption}</span>
-                  </div>
+                  <i className={`fad ${k.icon} text-blue mr-4`} />
+                  <span className={`${selected ? 'font-medium' : 'font-normal'} block truncate`}>
+                    {k.name}
+                  </span>
                 </div>
               )}
             </Listbox.Option>
