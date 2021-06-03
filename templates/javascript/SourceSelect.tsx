@@ -1,6 +1,8 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import ReactDOM from 'react-dom'
+import useLiveUpdate from './useLiveUpdate'
+import SelectButton from './SelectButton'
 
 const SourceSelect_: React.FC<{ options; selected: number; name: string }> = ({
   options,
@@ -11,24 +13,11 @@ const SourceSelect_: React.FC<{ options; selected: number; name: string }> = ({
     () => options.filter((o) => o.id === selected)[0] || { id: '', label: '-----------' }
   )
 
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (inputRef.current && option.id != selected) {
-      // Manually fire the input change event for live update form
-      // https://stackoverflow.com/a/36648958/15425660
-      inputRef.current.dispatchEvent(new Event('change', { bubbles: true }))
-    }
-  }, [option.id])
+  const inputRef = useLiveUpdate(option.id, selected)
 
   return (
     <Listbox value={option} onChange={setOption}>
-      <Listbox.Button className='relative w-full py-2 pl-3 pr-10 text-left text-lg bg-white rounded-lg border border-gray focus:outline-none'>
-        <span className='block truncate'>{option.label}</span>
-        <span className='absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none'>
-          <i className='text-gray fa fa-chevron-down' />
-        </span>
-      </Listbox.Button>
+      <SelectButton>{option.label}</SelectButton>
       <Transition
         as={Fragment}
         leave='transition ease-in duration-100'
@@ -78,7 +67,7 @@ class SourceSelect extends HTMLElement {
     // Because the Select dropdown will be absolute positioned we need to make the outer div relative
     mountPoint.setAttribute('class', 'relative')
 
-    const options = JSON.parse(this.querySelector('#options').innerHTML)
+    const options = JSON.parse(this.querySelector('#options')?.innerHTML || '[]')
     const selected = parseInt(this.attributes['selected'].value)
     const name = this.attributes['name'].value
 

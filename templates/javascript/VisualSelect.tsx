@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom'
 import React, { Fragment, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
+import SelectButton from './SelectButton'
 
 enum Kind {
   Table = 'table',
@@ -21,12 +22,7 @@ const VisualSelect_: React.FC<{ selected: Kind }> = ({ selected }) => {
 
   return (
     <Listbox value={kind} onChange={setKind}>
-      <Listbox.Button className='relative w-full text-2xl py-4 pl-8 pr-10 text-left bg-white rounded-lg border border-gray focus:outline-none'>
-        <span className='block truncate'>{kind.name}</span>
-        <span className='absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none'>
-          <i className='text-gray fa fa-chevron-down' />
-        </span>
-      </Listbox.Button>
+      <SelectButton>{kind.name}</SelectButton>
       <Transition
         as={Fragment}
         leave='transition ease-in duration-100'
