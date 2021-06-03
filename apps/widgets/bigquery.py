@@ -1,4 +1,4 @@
-from apps.filters.get_filter_query import create_filter_query
+from apps.filters.bigquery import create_filter_query
 from apps.filters.models import Filter
 from apps.widgets.models import Widget
 from lib.clients import ibis_client

@@ -1,7 +1,7 @@
 import json
 from typing import Any, Dict
 
-from apps.filters.get_filter_query import create_filter_query
+from apps.filters.bigquery import create_filter_query
 from apps.integrations.bigquery import DEFAULT_LIMIT
 from lib.chart import to_chart
 from lib.clients import ibis_client
