@@ -14,7 +14,7 @@ module.exports = {
     "edit-team": "./assets/javascript/teams/edit-team.tsx",
     stimulus: "./assets/javascript/stimulus.ts",
     workflow: "./apps/workflows/javascript/app.tsx",
-    templates: "./templates/javascript/app.tsx",
+    templates: "./templates/javascript/index.tsx",
   },
   output: {
     path: path.resolve(__dirname, './static'),
