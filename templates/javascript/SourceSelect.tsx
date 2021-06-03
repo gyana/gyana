@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import ReactDOM from 'react-dom'
 
@@ -10,6 +10,16 @@ const SourceSelect_: React.FC<{ options; selected: number; field: string }> = ({
   const [option, setOption] = useState(
     () => options.filter((o) => o.id === selected)[0] || { id: '', label: '-----------' }
   )
+
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (inputRef.current) {
+      // Manually fire the input change event for live update form
+      // https://stackoverflow.com/a/36648958/15425660
+      inputRef.current.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+  }, [option.id])
 
   return (
     <Listbox value={option} onChange={setOption}>
@@ -57,7 +67,7 @@ const SourceSelect_: React.FC<{ options; selected: number; field: string }> = ({
           ))}
         </Listbox.Options>
       </Transition>
-      <input type='hidden' name={name} id={`id_${name}`} value={option.id} />
+      <input ref={inputRef} type='hidden' name={name} id={`id_${name}`} value={option.id} />
     </Listbox>
   )
 }
