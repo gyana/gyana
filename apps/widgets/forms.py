@@ -2,7 +2,8 @@ from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
 from apps.tables.models import Table
 from apps.utils.live_update_form import LiveUpdateForm
-from apps.widgets.widgets import SourceSelect, VisualSelect
+from apps.widgets.widgets import VisualSelect
+from apps.workflows.widgets import SourceSelect
 from django import forms
 
 from .models import Widget
