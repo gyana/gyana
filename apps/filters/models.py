@@ -1,4 +1,5 @@
 from apps.widgets.models import Widget
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
@@ -21,6 +22,8 @@ class Filter(models.Model):
         LESSTHANEQUAL = "lessthanequal", "less than or equal"
         ISNULL = "isnull", "is empty"
         NOTNULL = "notnull", "is not empty"
+        ISIN = "isin", "is any of"
+        NOTIN = "notin", "is none of"
 
     class StringPredicate(models.TextChoices):
         EQUAL = "equal", "is equal to"
@@ -31,6 +34,8 @@ class Filter(models.Model):
         ENDSWITH = "endswith", "ends with"
         ISNULL = "isnull", "is empty"
         NOTNULL = "notnull", "is not empty"
+        ISIN = "isin", "is any of"
+        NOTIN = "notin", "is none of"
 
     widget = models.ForeignKey(
         Widget, on_delete=models.CASCADE, null=True, related_name="filters"
@@ -48,12 +53,15 @@ class Filter(models.Model):
     )
 
     float_value = models.FloatField(null=True, blank=True)
+    float_values = ArrayField(models.FloatField(), null=True)
     integer_value = models.BigIntegerField(null=True, blank=True)
+    integer_values = ArrayField(models.BigIntegerField(), null=True)
 
     string_predicate = models.CharField(
         max_length=16, choices=StringPredicate.choices, null=True, blank=True
     )
     string_value = models.TextField(null=True, blank=True)
+    string_values = ArrayField(models.TextField(), null=True)
 
     bool_value = models.BooleanField(null=True, blank=True)
 

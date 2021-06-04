@@ -16,6 +16,8 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             "numeric_predicate",
             "string_value",
             "integer_value",
+            "string_values",
+            "integer_values",
         )
         widgets = {"string_value": TextInput()}
 
@@ -23,7 +25,6 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
 
         fields = ["column"]
         predicate = None
-        value = None
         if self.column_type == "String":
             predicate = "string_predicate"
             value = "string_value"
@@ -35,10 +36,18 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
 
         if (
             self.column_type
+            and predicate
             and (pred := self.get_live_field(predicate)) is not None
-            and pred not in ["isnull", "notnull"]
+            and pred
+            not in [
+                "isnull",
+                "notnull",
+            ]
         ):
-            fields += [value]
+            if pred in ["isin", "notin"]:
+                fields += [value + "s"]
+            else:
+                fields += [value]
 
         return fields
 

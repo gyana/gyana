@@ -7,6 +7,7 @@ def numeric_filter(query, filter_):
         if filter_.type == Filter.Type.INTEGER
         else filter_.float_value
     )
+
     if filter_.numeric_predicate == Filter.NumericPredicate.EQUAL:
         return query[query[filter_.column] == value]
     if filter_.numeric_predicate == Filter.NumericPredicate.NEQUAL:
@@ -23,6 +24,17 @@ def numeric_filter(query, filter_):
         return query[query[filter_.column].isnull()]
     if filter_.numeric_predicate == Filter.NumericPredicate.NOTNULL:
         return query[query[filter_.column].notnull()]
+
+    values = (
+        filter_.integer_values
+        if filter_.type == Filter.Type.INTEGER
+        else filter_.float_values
+    )
+    if filter_.numeric_predicate == Filter.NumericPredicate.ISIN:
+        return query[query[filter_.column].isin(values)]
+
+    if filter_.numeric_predicate == Filter.NumericPredicate.NOTIN:
+        return query[query[filter_.column].notin(values)]
 
 
 def create_filter_query(query, filters):
@@ -42,10 +54,14 @@ def create_filter_query(query, filters):
                 query = query[query[filter_.column].startswith(filter_.string_value)]
             elif filter_.string_predicate == Filter.StringPredicate.ENDSWITH:
                 query = query[query[filter_.column].endswith(filter_.string_value)]
-            if filter_.string_predicate == Filter.StringPredicate.ISNULL:
-                return query[query[filter_.column].isnull()]
-            if filter_.string_predicate == Filter.StringPredicate.NOTNULL:
-                return query[query[filter_.column].notnull()]
+            elif filter_.string_predicate == Filter.StringPredicate.ISNULL:
+                query = query[query[filter_.column].isnull()]
+            elif filter_.string_predicate == Filter.StringPredicate.NOTNULL:
+                query = query[query[filter_.column].notnull()]
+            elif filter_.string_predicate == Filter.StringPredicate.ISIN:
+                query = query[query[filter_.column].isin(filter_.string_values)]
+            elif filter_.string_predicate == Filter.StringPredicate.NOTIN:
+                query = query[query[filter_.column].notin(filter_.string_values)]
         elif filter_.type == Filter.Type.BOOL:
             query = query[query[filter_.column] == filter_.bool_value]
     return query
