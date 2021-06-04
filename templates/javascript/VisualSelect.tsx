@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom'
-import React, { Fragment, useState } from 'react'
-import { Listbox, Transition } from '@headlessui/react'
-import SelectButton from './SelectButton'
+import React, { useState } from 'react'
+import { Listbox } from '@headlessui/react'
+import { SelectButton, SelectOption, SelectOptions, SelectTransition } from './SelectComponents'
 
 enum Kind {
   Table = 'table',
@@ -23,23 +23,10 @@ const VisualSelect_: React.FC<{ selected: Kind }> = ({ selected }) => {
   return (
     <Listbox value={kind} onChange={setKind}>
       <SelectButton>{kind.name}</SelectButton>
-      <Transition
-        as={Fragment}
-        leave='transition ease-in duration-100'
-        leaveFrom='opacity-100'
-        leaveTo='opacity-0'
-      >
-        <Listbox.Options className='absolute z-10 text-lg w-full py-1 mt-1 overflow-auto bg-white rounded-md max-h-100 focus:outline-none border border-gray'>
+      <SelectTransition>
+        <SelectOptions>
           {VisualKinds.map((k) => (
-            <Listbox.Option
-              key={k.id}
-              value={k}
-              className={({ active, selected }) =>
-                `${active ? 'text-black bg-gray-20' : 'text-black-50'}
-                ${selected && 'bg-gray-50'}
-         cursor-default select-none relative py-2 pl-4 pr-4 flex flex-row items-center`
-              }
-            >
+            <SelectOption key={k.id} value={k}>
               {({ selected, active }) => (
                 <div className='flex flex-row items-center'>
                   <i className={`fad ${k.icon} text-blue mr-4`} />
@@ -48,10 +35,10 @@ const VisualSelect_: React.FC<{ selected: Kind }> = ({ selected }) => {
                   </span>
                 </div>
               )}
-            </Listbox.Option>
+            </SelectOption>
           ))}
-        </Listbox.Options>
-      </Transition>
+        </SelectOptions>
+      </SelectTransition>
       <input type='hidden' name='kind' value={kind.id} />
     </Listbox>
   )

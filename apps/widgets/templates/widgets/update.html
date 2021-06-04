@@ -1,7 +1,6 @@
 {% extends "widgets/base.html" %}
 {% load static %}
 {% block widget %}
-{{ form.media }}
 <div class="flex items-center gap-4 mb-4">
   <h1>{{ object.name }}</h1>
   <a href="{% url 'projects:dashboards:detail' project.id dashboard.id %}" class="button button--sm button--green">Back</a>
