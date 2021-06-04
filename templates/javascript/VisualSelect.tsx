@@ -1,7 +1,8 @@
 import ReactDOM from 'react-dom'
 import React, { useState } from 'react'
 import { Listbox } from '@headlessui/react'
-import { SelectButton, SelectOption, SelectOptions, SelectTransition } from './SelectComponents'
+import { SelectButton, SelectOption, SelectTransition } from './SelectComponents'
+import useLiveUpdate from './useLiveUpdate'
 
 enum Kind {
   Table = 'table',
@@ -20,11 +21,13 @@ const VisualKinds = [
 const VisualSelect_: React.FC<{ selected: Kind }> = ({ selected }) => {
   const [kind, setKind] = useState(VisualKinds.filter((k) => k.id === selected)[0])
 
+  const inputRef = useLiveUpdate(kind.id, selected)
+
   return (
     <Listbox value={kind} onChange={setKind}>
       <SelectButton>{kind.name}</SelectButton>
       <SelectTransition>
-        <SelectOptions>
+        <Listbox.Options className='absolute z-10 text-lg w-full py-1 mt-1 overflow-auto bg-white rounded-md max-h-60 focus:outline-none border border-gray'>
           {VisualKinds.map((k) => (
             <SelectOption key={k.id} value={k}>
               {({ selected, active }) => (
@@ -37,9 +40,9 @@ const VisualSelect_: React.FC<{ selected: Kind }> = ({ selected }) => {
               )}
             </SelectOption>
           ))}
-        </SelectOptions>
+        </Listbox.Options>
       </SelectTransition>
-      <input type='hidden' name='kind' value={kind.id} />
+      <input ref={inputRef} type='hidden' name='kind' value={kind.id} />
     </Listbox>
   )
 }
