@@ -9,6 +9,12 @@
     height: 5.2rem;
     padding: 0 1.6rem;
     border-bottom: 1px solid var(--c-gray);
+
+    :first-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: pre;
+    }
   }
 
   &__sidebar {

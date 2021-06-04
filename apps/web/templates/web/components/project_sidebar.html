@@ -1,5 +1,7 @@
 <nav class="project__sidebar">
-  <h3 class="project__title">{{ project.name }}</h3>
+  <div class="project__title">
+    <h3 title="{{ project.name }}">{{ project.name }}</h3>
+  </div>
 
   {% with app_name=request.resolver_match.app_name %}
   <ul class="project__nav">
