@@ -42,7 +42,7 @@ const VisualSelect_: React.FC<{ selected: Kind }> = ({ selected }) => {
           ))}
         </Listbox.Options>
       </SelectTransition>
-      <input ref={inputRef} type='hidden' name='kind' value={kind.id} />
+      <input ref={inputRef} type='hidden' name='kind' id='id_kind' value={kind.id} />
     </Listbox>
   )
 }
