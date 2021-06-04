@@ -1,7 +1,15 @@
 .heads {
   display: flex;
 
-  &__item + &__item {
-    margin-left: -0.8rem;
+  &__item {
+    z-index: 1;
+
+    &:hover {
+      z-index: 10;
+    }
+
+    & + & {
+      margin-left: -0.8rem;
+    }
   }
 }
