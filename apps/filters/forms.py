@@ -22,11 +22,23 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
     def get_live_fields(self):
 
         fields = ["column"]
-
+        predicate = None
+        value = None
         if self.column_type == "String":
-            fields += ["string_predicate", "string_value"]
+            predicate = "string_predicate"
+            value = "string_value"
+            fields += [predicate]
         elif self.column_type == "Int64":
-            fields += ["numeric_predicate", "integer_value"]
+            predicate = "numeric_predicate"
+            value = "integer_value"
+            fields += ["numeric_predicate"]
+
+        if (
+            self.column_type
+            and (pred := self.get_live_field(predicate)) is not None
+            and pred not in ["isnull", "notnull"]
+        ):
+            fields += [value]
 
         return fields
 

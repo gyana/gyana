@@ -19,6 +19,10 @@ def numeric_filter(query, filter_):
         return query[query[filter_.column] < value]
     if filter_.numeric_predicate == Filter.NumericPredicate.LESSTHANEQUAL:
         return query[query[filter_.column] <= value]
+    if filter_.numeric_predicate == Filter.NumericPredicate.ISNULL:
+        return query[query[filter_.column].isnull()]
+    if filter_.numeric_predicate == Filter.NumericPredicate.NOTNULL:
+        return query[query[filter_.column].notnull()]
 
 
 def create_filter_query(query, filters):
@@ -38,6 +42,10 @@ def create_filter_query(query, filters):
                 query = query[query[filter_.column].startswith(filter_.string_value)]
             elif filter_.string_predicate == Filter.StringPredicate.ENDSWITH:
                 query = query[query[filter_.column].endswith(filter_.string_value)]
+            if filter_.string_predicate == Filter.StringPredicate.ISNULL:
+                return query[query[filter_.column].isnull()]
+            if filter_.string_predicate == Filter.StringPredicate.NOTNULL:
+                return query[query[filter_.column].notnull()]
         elif filter_.type == Filter.Type.BOOL:
             query = query[query[filter_.column] == filter_.bool_value]
     return query

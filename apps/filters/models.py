@@ -19,6 +19,8 @@ class Filter(models.Model):
         GREATERTHANEQUAL = "greaterthanequal", "greater than or equal to"
         LESSTHAN = "lessthan", "less than"
         LESSTHANEQUAL = "lessthanequal", "less than or equal"
+        ISNULL = "isnull", "is empty"
+        NOTNULL = "notnull", "is not empty"
 
     class StringPredicate(models.TextChoices):
         EQUAL = "equal", "is equal to"
@@ -27,6 +29,8 @@ class Filter(models.Model):
         NOTCONTAINS = "notcontains", "does not contain"
         STARTSWITH = "startswith", "starts with"
         ENDSWITH = "endswith", "ends with"
+        ISNULL = "isnull", "is empty"
+        NOTNULL = "notnull", "is not empty"
 
     widget = models.ForeignKey(
         Widget, on_delete=models.CASCADE, null=True, related_name="filters"
