@@ -6,7 +6,7 @@
 module.exports = {
   purge: [
     './assets/**/*.js',
-    './templates/**/*.html',
+    './templates/**/*.{html,tsx}',
     './apps/*/templates/**/*.html',
     './apps/*/javascript/**/*.tsx',
   ],
