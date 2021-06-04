@@ -41,6 +41,10 @@ input[type="url"] {
   @extend %input;
 }
 
+input[type="file"] {
+  @extend %input;
+}
+
 textarea {
   @extend %input;
 }
