@@ -87,6 +87,7 @@ class Integration(models.Model):
             Workflow.objects.filter(nodes__input_table__in=self.table_set.all())
             .distinct()
             .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Workflow", output_field=models.CharField()))
         )
 
     @property
@@ -95,6 +96,7 @@ class Integration(models.Model):
             Dashboard.objects.filter(widget__table__in=self.table_set.all())
             .distinct()
             .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Dashboard", output_field=models.CharField()))
         )
 
     @property

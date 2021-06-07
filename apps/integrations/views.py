@@ -99,7 +99,13 @@ class UsedInTable(Table):
     class Meta:
         model = Integration
         attrs = {"class": "table"}
-        fields = ("name", "project", "created", "updated")
+        fields = (
+            "name",
+            "project",
+            "kind",
+            "created",
+            "updated",
+        )
 
 
 class IntegrationDetail(ProjectMixin, DetailView):
