@@ -279,7 +279,7 @@ const OpenButton = ({ id }) => {
 
   return (
     <button data-action='click->tf-modal#open'>
-      <i data-src={`/workflows/${workflowId}/nodes/${id}`} className='fas fa-cog fa-lg'></i>
+      <i data-src={`/workflows/${workflowId}/nodes/${id}`} className='fas fa-edit fa-lg'></i>
     </button>
   )
 }
