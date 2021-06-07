@@ -9,6 +9,7 @@ from apps.workflows.widgets import SourceSelect
 from django import forms
 from django.forms.models import BaseInlineFormSet
 from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
+from django.urls.base import reverse
 
 # fmt: off
 from .models import (AddColumn, Column, EditColumn, FunctionColumn, Node,
@@ -222,8 +223,6 @@ class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
 
             if self.get_live_field("string_function") is not None:
                 fields += ["label"]
-
-        print(fields)
 
         return fields
 
