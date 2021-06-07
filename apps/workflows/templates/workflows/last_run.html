@@ -2,6 +2,10 @@
   <p 
     class="text-black-50"
   >
-    Last run: {{ object.last_run|default_if_none:'Never' }}
+    {% if object.last_run %}
+    Last run: {{ object.last_run }}
+    {% else %}
+    You have not run this workflow
+    {% endif %}
   </p>
 </turbo-frame>
