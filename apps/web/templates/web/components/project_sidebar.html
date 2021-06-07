@@ -1,41 +1,54 @@
-<nav class="project__sidebar">
-  <div class="project__title">
-    <h3 title="{{ project.name }}">{{ project.name }}</h3>
-  </div>
+<div class="sidebar-container">
+  <input type="checkbox" id="project-sidebar-toggle" role="button" checked hidden>
+  <label for="project-sidebar-toggle">
+    <i class="fas fa-fw fa-sm fa-chevron-right"></i>
+  </label>
 
-  {% with app_name=request.resolver_match.app_name %}
-  <ul class="project__nav">
-    <li>
-      <a class="project__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}project__link--active{% endif %}"
-         href="{% url 'projects:detail' project.id %}">
-        <i class="far fa-fw fa-file mr-4"></i>Overview
-      </a>
-    </li>
+  <nav class="project__sidebar">
+    <div class="project__title">
+      <h3 class="text-blue">Gyana</h3>
+    </div>
 
-    <li>
-      <a class="project__link {% if app_name == "projects:integrations" %}project__link--active{% endif %}"
-         href="{% url 'projects:integrations:list' project.id %}">
-        <i class="far fa-fw fa-link mr-4"></i>Integrations
-      </a>
-    </li>
+    <div class=" project__title">
+      <h3 title="{{ project.name }}">{{ project.name }}</h3>
+    </div>
 
-    <li>
-      <a class="project__link {% if app_name == "projects:workflows" %}project__link--active{% endif %}"
-         href="{% url 'projects:workflows:list' project.id %}">
-        <i class="far fa-fw fa-stream mr-4"></i>Workflows
-      </a>
-    </li>
+    {% with app_name=request.resolver_match.app_name %}
+    <ul class="project__nav">
+      <li>
+        <a class="project__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}project__link--active{% endif %}"
+           href="{% url 'projects:detail' project.id %}">
+          <i class="far fa-fw fa-file mr-6"></i>Overview
+        </a>
+      </li>
 
-    <li>
-      <a class="project__link {% if app_name == "projects:dashboards" or app_name == "projects:dashboards:widgets" %}project__link--active{% endif %}"
-         href="{% url 'projects:dashboards:list' project.id %}">
-        <i class="far fa-fw fa-presentation mr-4"></i>Dashboards
-      </a>
-    </li>
-  </ul>
-  {% endwith %}
+      <li>
+        <a class="project__link {% if app_name == "projects:integrations" %}project__link--active{% endif %}"
+           href="{% url 'projects:integrations:list' project.id %}">
+          <i class="far fa-fw fa-link mr-6"></i>Integrations
+        </a>
+      </li>
 
-  <footer class="project__footer">
-    <a class="button button--sm button--tertiary w-full" href="{% url 'projects:update' project.id %}">Settings</a>
-  </footer>
-</nav>
+      <li>
+        <a class="project__link {% if app_name == "projects:workflows" %}project__link--active{% endif %}"
+           href="{% url 'projects:workflows:list' project.id %}">
+          <i class="far fa-fw fa-stream mr-6"></i>Workflows
+        </a>
+      </li>
+
+      <li>
+        <a class="project__link {% if app_name == "projects:dashboards" or app_name == "projects:dashboards:widgets" %}project__link--active{% endif %}"
+           href="{% url 'projects:dashboards:list' project.id %}">
+          <i class="far fa-fw fa-presentation mr-6"></i>Dashboards
+        </a>
+      </li>
+    </ul>
+    {% endwith %}
+
+    <footer class="project__footer">
+      <a class="button button--sm button--tertiary w-full" href="{% url 'projects:update' project.id %}">Settings</a>
+      <a class="button button--sm button--tertiary w-full"
+         href="{% url 'projects:update' project.id %}">{{user.email}}</a>
+    </footer>
+  </nav>
+</div>
