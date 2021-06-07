@@ -3,9 +3,11 @@
   height: 100%;
 
   &__run-button {
+    background-color: var(--c-white);
     position: absolute;
-    top: 1em;
-    right: 1em;
+    right: 1.6rem;
+    top: 1.6rem;
+    z-index: 20;
   }
 }
 
