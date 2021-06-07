@@ -1,6 +1,12 @@
 .dndflow {
   display: flex;
   height: 100%;
+
+  &__run-button {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+  }
 }
 
 .dndflow .reactflow-wrapper {

@@ -18,6 +18,7 @@ import ReactFlow, {
   ConnectionLineType,
 } from 'react-flow-renderer'
 import { INode } from './interfaces'
+import RunButton from './RunButton'
 
 import Sidebar from './sidebar'
 
@@ -247,18 +248,19 @@ const DnDFlow = ({ client }) => {
           >
             <Controls />
             <Background gap={GRID_GAP} />
+            <RunButton
+              hasOutput={hasOutput}
+              client={client}
+              workflowId={workflowId}
+              elements={elements}
+              setElements={setElements}
+              isOutOfDate={isOutOfDate}
+              setIsOutOfDate={setIsOutOfDate}
+            />
           </ReactFlow>
         </NodeContext.Provider>
       </div>
-      <Sidebar
-        hasOutput={hasOutput}
-        client={client}
-        workflowId={workflowId}
-        elements={elements}
-        setElements={setElements}
-        isOutOfDate={isOutOfDate}
-        setIsOutOfDate={setIsOutOfDate}
-      />
+      <Sidebar />
     </div>
   )
 }
