@@ -1,5 +1,6 @@
 {% extends "widgets/base.html" %}
 {% load static %}
+
 {% block widget %}
 <turbo-frame id="widgets" target="_top">
   <ul class="flex flex-wrap" data-controller="sortable" data-sortable-id-value="{{ dashboard.id }}">
