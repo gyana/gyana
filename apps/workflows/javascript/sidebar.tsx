@@ -35,7 +35,6 @@ const Sidebar: React.FC = () => {
         <React.Fragment key={section}>
           <hgroup>
             <h3>{section}</h3>
-            <p>TODO: Section description</p>
           </hgroup>
 
           <div className='grid' style={{ gridAutoRows: '1fr' }} key={section}>
