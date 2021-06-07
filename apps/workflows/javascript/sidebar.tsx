@@ -26,11 +26,6 @@ const Sidebar: React.FC = () => {
 
   return (
     <aside className='dnd-sidebar'>
-      <hgroup>
-        <h2>Nodes</h2>
-        <p>You can drag these onto the pane on your left.</p>
-      </hgroup>
-
       {Object.keys(SECTIONS).map((section) => (
         <React.Fragment key={section}>
           <hgroup>
