@@ -44,7 +44,7 @@ const RunButton: React.FC<{
             }
           })
       }
-      className='button button--sm button--green button--square tooltip tooltip--bottom'
+      className='button button--green button--square tooltip tooltip--bottom'
     >
       Run
       {isOutOfDate && (
