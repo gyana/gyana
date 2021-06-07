@@ -303,7 +303,14 @@ const Description = ({ id, data }) => {
     return () => window.removeEventListener(eventName, onNodeConfigUpdate)
   }, [])
 
-  return <p className='overflow-ellipsis'>{description || data.description}</p>
+  return (
+    <p
+      title={description || data.description}
+      className='max-w-full overflow-hidden whitespace-pre overflow-ellipsis'
+    >
+      {description || data.description}
+    </p>
+  )
 }
 
 const Buttons = ({ id }) => {
