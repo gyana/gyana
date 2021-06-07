@@ -337,7 +337,7 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
   <>
     {selected && <Buttons id={id} />}
     {data.error && <ErrorIcon text={data.error} />}
-    <h4>{data.label}</h4>
+    <h4 className='capitalize'>{data.label}</h4>
     <Description id={id} data={data} />
 
     <Handle type='source' position={Position.Right} isConnectable={isConnectable} />
@@ -350,7 +350,7 @@ const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
     {data.error && <ErrorIcon text={data.error} />}
     <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
 
-    <h4>{data.label}</h4>
+    <h4 className='capitalize'>{data.label}</h4>
     <Description id={id} data={data} />
   </>
 )
@@ -369,7 +369,7 @@ const DefaultNode = ({
       {data.error && <ErrorIcon text={data.error} />}
       <Handle type='target' position={targetPosition} isConnectable={isConnectable} />
 
-      <h4>{data.label}</h4>
+      <h4 className='capitalize'>{data.label}</h4>
       <Description id={id} data={data} />
 
       <Handle type='source' position={sourcePosition} isConnectable={isConnectable} />
