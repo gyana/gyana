@@ -12,13 +12,14 @@ export default class extends Controller {
 
     this.loadingTarget.classList.remove('hidden')
 
-    let disabled = false
+    // TODO: Fix this for web components
+    // let disabled = false
 
-    // disable editing on all following elements elements
-    for (const element of form.elements) {
-      if (disabled) element.disabled = true
-      if (element === event.target) disabled = true
-    }
+    // // disable editing on all following elements elements
+    // for (const element of form.elements) {
+    //   if (disabled) element.disabled = true
+    //   if (element === event.target) disabled = true
+    // }
 
     const result = await fetch(form.action, {
       method: 'POST',

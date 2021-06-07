@@ -5,9 +5,10 @@
  */
 module.exports = {
   purge: [
-    "./assets/**/*.js",
-    "./templates/**/*.html",
-    "./apps/*/templates/**/*.html",
+    './assets/**/*.js',
+    './templates/**/*.{html,tsx}',
+    './apps/*/templates/**/*.html',
+    './apps/*/javascript/**/*.tsx',
   ],
   darkMode: false,
   theme: {
@@ -69,4 +70,4 @@ module.exports = {
     extend: {},
   },
   plugins: [],
-};
+}

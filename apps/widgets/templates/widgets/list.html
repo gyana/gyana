@@ -1,5 +1,6 @@
 {% extends "widgets/base.html" %}
 {% load static %}
+
 {% block widget %}
 <turbo-frame id="widgets" target="_top">
   <ul class="flex flex-wrap" data-controller="sortable" data-sortable-id-value="{{ dashboard.id }}">
@@ -8,30 +9,34 @@
       <div class="widget-card">
         <div class='widget-card__visual'>
           {% if object.description %}
-            <h3 class="mb-2">{{ object.description }}</h3>
+          <h3 class="mb-2">{{ object.description }}</h3>
           {% endif %}
           {% if object.is_valid %}
-              <turbo-frame id="widgets:output-{{ object.id }}" src="{% url 'widgets:output' object.id %}">
-              <div class='placeholder-scr placeholder-scr--fillscreen'>
-                <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-                <p class='placeholder-scr__title'>Loading visualisation...</p>
-              </div>
-            </turbo-frame>
-          {% else %}
-            <div class='flex flex-col items-center justify-center' style="min-height:16rem;">
-              <i class="far fa-lightbulb-exclamation text-yellow-300 mb-1 fa-2x"></i>
-              <p class="text-base text-gray-500">This widget needs to be
-                <a class='text-blue underline' href="{% url 'projects:dashboards:widgets:update' project.id dashboard.id object.pk %}">configured</a>!
-              </p>
+          <turbo-frame id="widgets:output-{{ object.id }}" src="{% url 'widgets:output' object.id %}">
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+              <p class='placeholder-scr__title'>Loading visualisation...</p>
             </div>
+          </turbo-frame>
+          {% else %}
+          <div class='flex flex-col items-center justify-center' style="min-height:16rem;">
+            <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
+            <p>This widget needs to be
+              <a class='text-blue underline'
+                 href="{% url 'projects:dashboards:widgets:update' project.id dashboard.id object.pk %}">configured</a>!
+            </p>
+          </div>
           {% endif %}
         </div>
 
         <div class='widget-card__commands'>
           <i class="cursor-move fas fa-fw fa-arrows sortable-handle"></i>
-          <a href="{% url 'projects:dashboards:widgets:detail' project.id dashboard.id object.pk %}"><i class="fas fa-fw fa-eye"></i></a>
-          <a href="{% url 'projects:dashboards:widgets:update' project.id dashboard.id object.pk %}"><i class="fas fa-fw fa-edit"></i></a>
-          <a href="{% url 'projects:dashboards:widgets:delete' project.id dashboard.id object.pk %}" class="mt-auto"><i class="fas fa-fw fa-trash"></i></a>
+          <a href="{% url 'projects:dashboards:widgets:detail' project.id dashboard.id object.pk %}"><i
+               class="fas fa-fw fa-eye"></i></a>
+          <a href="{% url 'projects:dashboards:widgets:update' project.id dashboard.id object.pk %}"><i
+               class="fas fa-fw fa-edit"></i></a>
+          <a href="{% url 'projects:dashboards:widgets:delete' project.id dashboard.id object.pk %}" class="mt-auto"><i
+               class="fas fa-fw fa-trash"></i></a>
         </div>
       </div>
     </li>
@@ -41,7 +46,8 @@
         <div class='placeholder-scr placeholder-scr--fillscreen'>
           <i class="placeholder-scr__icon far fa-map-marker-question fa-2x"></i>
           <p class='placeholder-scr__title'>This dashboard needs some widgets!</p>
-          <form method="post" action="{% url 'projects:dashboards:widgets:create' project.id dashboard.id %}" class="form">
+          <form method="post" action="{% url 'projects:dashboards:widgets:create' project.id dashboard.id %}"
+                class="form">
             {% csrf_token %}
 
             {% include "django/forms/default_form.html" %}
@@ -58,13 +64,15 @@
   <div class="pagination">
     <span class="page-links">
       {% if page_obj.has_previous %}
-      <a href="{% url 'projects:dashboards:detail' project.id dashboard.id %}?page={{ page_obj.previous_page_number }}">previous</a>
+      <a
+         href="{% url 'projects:dashboards:detail' project.id dashboard.id %}?page={{ page_obj.previous_page_number }}">previous</a>
       {% endif %}
       <span class="page-current">
         Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
       </span>
       {% if page_obj.has_next %}
-      <a href="{% url 'projects:dashboards:detail' project.id dashboard.id  %}?page={{ page_obj.next_page_number }}">next</a>
+      <a
+         href="{% url 'projects:dashboards:detail' project.id dashboard.id  %}?page={{ page_obj.next_page_number }}">next</a>
       {% endif %}
     </span>
   </div>

@@ -83,15 +83,25 @@ class Integration(models.Model):
 
     @property
     def used_in_workflows(self):
-        return Workflow.objects.filter(
-            nodes__input_table__in=self.table_set.all()
-        ).distinct()
+        return (
+            Workflow.objects.filter(nodes__input_table__in=self.table_set.all())
+            .distinct()
+            .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Workflow", output_field=models.CharField()))
+        )
 
     @property
     def used_in_dashboards(self):
-        return Dashboard.objects.filter(
-            widget__table__in=self.table_set.all()
-        ).distinct()
+        return (
+            Dashboard.objects.filter(widget__table__in=self.table_set.all())
+            .distinct()
+            .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Dashboard", output_field=models.CharField()))
+        )
+
+    @property
+    def used_in(self):
+        return self.used_in_workflows.union(self.used_in_dashboards)
 
     def get_query(self):
         conn = ibis_client()

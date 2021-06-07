@@ -62,7 +62,7 @@
     border: 0;
     height: 100%;
     right: 0;
-    width: 50%;
+    width: 15%;
 
     &::after {
       background-color: var(--c-white);
@@ -111,5 +111,10 @@
     gap: 1.6rem;
     position: absolute;
     top: calc(100% + 1rem);
+  }
+
+  .react-flow__controls {
+    bottom: 1.6rem;
+    left: 1.6rem;
   }
 }

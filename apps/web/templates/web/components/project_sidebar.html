@@ -1,33 +1,35 @@
 <nav class="project__sidebar">
-  <h3 class="project__title">{{ project.name }}</h3>
+  <div class="project__title">
+    <h3 title="{{ project.name }}">{{ project.name }}</h3>
+  </div>
 
   {% with app_name=request.resolver_match.app_name %}
   <ul class="project__nav">
     <li>
       <a class="project__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}project__link--active{% endif %}"
          href="{% url 'projects:detail' project.id %}">
-        <i class="far fa-file mr-4"></i>Overview
+        <i class="far fa-fw fa-file mr-4"></i>Overview
       </a>
     </li>
 
     <li>
       <a class="project__link {% if app_name == "projects:integrations" %}project__link--active{% endif %}"
          href="{% url 'projects:integrations:list' project.id %}">
-        <i class="far fa-link mr-4"></i>Integrations
+        <i class="far fa-fw fa-link mr-4"></i>Integrations
       </a>
     </li>
 
     <li>
       <a class="project__link {% if app_name == "projects:workflows" %}project__link--active{% endif %}"
          href="{% url 'projects:workflows:list' project.id %}">
-        <i class="far fa-stream mr-4"></i>Workflows
+        <i class="far fa-fw fa-stream mr-4"></i>Workflows
       </a>
     </li>
 
     <li>
       <a class="project__link {% if app_name == "projects:dashboards" or app_name == "projects:dashboards:widgets" %}project__link--active{% endif %}"
          href="{% url 'projects:dashboards:list' project.id %}">
-        <i class="far fa-presentation mr-4"></i>Dashboards
+        <i class="far fa-fw fa-presentation mr-4"></i>Dashboards
       </a>
     </li>
   </ul>

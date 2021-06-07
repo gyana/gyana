@@ -21,12 +21,6 @@ export const SelectTransition = ({ children }) => (
   </Transition>
 )
 
-export const SelectOptions = ({ children }) => (
-  <Listbox.Options className='absolute z-10 text-lg w-full py-1 mt-1 overflow-auto bg-white rounded-md max-h-60 focus:outline-none border border-gray'>
-    {children}
-  </Listbox.Options>
-)
-
 export const SelectOption = ({ children, value }) => (
   <Listbox.Option
     value={value}

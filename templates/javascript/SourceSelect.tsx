@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Listbox } from '@headlessui/react'
 import ReactDOM from 'react-dom'
 import useLiveUpdate from './useLiveUpdate'
-import { SelectButton, SelectOption, SelectOptions, SelectTransition } from './SelectComponents'
+import { SelectButton, SelectOption, SelectTransition } from './SelectComponents'
 
 const SourceSelect_: React.FC<{ options; selected: number; name: string }> = ({
   options,
@@ -19,7 +19,7 @@ const SourceSelect_: React.FC<{ options; selected: number; name: string }> = ({
     <Listbox value={option} onChange={setOption}>
       <SelectButton>{option.label}</SelectButton>
       <SelectTransition>
-        <SelectOptions>
+        <Listbox.Options className='absolute z-10 text-lg w-full py-1 mt-1 overflow-auto bg-white rounded-md max-h-60 focus:outline-none border border-gray'>
           {options.map((o) => (
             <SelectOption key={o.id} value={o}>
               {({ selected, active }) => (
@@ -42,7 +42,7 @@ const SourceSelect_: React.FC<{ options; selected: number; name: string }> = ({
               )}
             </SelectOption>
           ))}
-        </SelectOptions>
+        </Listbox.Options>
       </SelectTransition>
       <input ref={inputRef} type='hidden' name={name} id={`id_${name}`} value={option.id} />
     </Listbox>

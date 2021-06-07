@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
-from django_tables2 import SingleTableView
+from django_tables2 import SingleTableView, Table
 from django_tables2.config import RequestConfig
 from django_tables2.views import SingleTableMixin
 from turbo_response.views import TurboCreateView, TurboUpdateView
@@ -95,9 +95,27 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
         )
 
 
+class UsedInTable(Table):
+    class Meta:
+        model = Integration
+        attrs = {"class": "table"}
+        fields = (
+            "name",
+            "project",
+            "kind",
+            "created",
+            "updated",
+        )
+
+
 class IntegrationDetail(ProjectMixin, DetailView):
     template_name = "integrations/detail.html"
     model = Integration
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["table"] = UsedInTable(self.object.used_in)
+        return context
 
 
 class IntegrationUpdate(ProjectMixin, TurboUpdateView):

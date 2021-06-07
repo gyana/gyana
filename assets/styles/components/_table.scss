@@ -10,8 +10,9 @@
       font-size: 1.2rem;
       font-weight: normal;
       line-height: 1.4rem;
-      padding: 1.6rem 0;
+      padding: 1.6rem 0.8rem;
       text-align: left;
+      white-space: nowrap;
     }
 
     .orderable {
@@ -38,7 +39,7 @@
     td {
       font-size: 1.2rem;
       line-height: 1.4rem;
-      padding: 1rem 0;
+      padding: 1rem 0.8rem;
     }
 
     .even {
@@ -56,7 +57,28 @@
     padding: 1.2rem 0; 
     
     &:hover {
-      font-weight: 500;
+      text-decoration: underline;
+    }
+  }
+}
+
+.pagination {
+  display: flex;
+  padding: 1.6rem;
+  justify-content: center;
+  width: 100%;
+
+  li.active a {
+    color: var(--c-blue);
+    font-weight: 500;
+  }
+
+  a {
+    padding: 1.6rem;
+
+    &:hover {
+      text-decoration: underline;
+      color: var(--c-blue-50);
     }
   }
 }
