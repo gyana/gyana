@@ -44,17 +44,19 @@ const RunButton: React.FC<{
             }
           })
       }
-      title='Workflow needs output node to run'
-      className='button button--sm button--green button--square relative bg-white'
+      className='button button--sm button--green button--square tooltip tooltip--bottom'
     >
       Run
       {isOutOfDate && (
-        <div
-          title='This workflow has been updated since the last run'
-          className='absolute -top-3 -right-3 text-orange'
-        >
-          <i className='fas fa-exclamation-triangle bg-white p-1' />
-        </div>
+        <>
+          <div
+            title='This workflow has been updated since the last run'
+            className='absolute -top-3 -right-3 text-orange'
+          >
+            <i className='fas fa-exclamation-triangle bg-white p-1' />
+          </div>
+          <span className='tooltip__content'>Workflow needs output node to run</span>
+        </>
       )}
     </button>
   </div>
