@@ -21,16 +21,6 @@
           {% endif %}
         </div>
       </div>
-
-      {% if integration.used_in_workflows %}
-      <h2>Workflows</h2>
-      <div class="flex flex-row flex-wrap mt-1">
-        {% for workflow in integration.used_in_workflows %}
-        <a href="{% url 'projects:workflows:detail' project.id workflow.id %}"
-           class="card card--sm m-1">{{ workflow.name }}</a>
-        {% endfor %}
-      </div>
-      {% endif %}
     </div>
 
     {% if object.kind == 'fivetran' %}
