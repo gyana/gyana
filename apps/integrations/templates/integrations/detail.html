@@ -54,20 +54,11 @@
 
 <div class="flex flex-row gap-8">
   <div class="card flex-1">
-    <h2>Dashboards</h2>
-    <p>The dashboards this integration is used in.</p>
+    <h2>Used in</h2>
+    <p>Where this integration is used in.</p>
 
     <div class="mt-8">
-      {% render_table integration.used_in_dashboards %}
-    </div>
-  </div>
-
-  <div class="card flex-1">
-    <h2>Workflows</h2>
-    <p>The workflows this integration is used in.</p>
-
-    <div class="mt-8">
-      {% render_table integration.used_in_workflows %}
+      {% render_table table %}
     </div>
   </div>
 </div>
