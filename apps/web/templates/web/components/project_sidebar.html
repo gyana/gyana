@@ -6,7 +6,7 @@
 
   <nav class="project__sidebar">
     <div class="project__title">
-      <h3 class="text-blue">Gyana</h3>
+      <a class="h3 text-blue uppercase" href="{% url 'web:home' %}">Gyana</a>
     </div>
 
     <div class=" project__title">
@@ -47,8 +47,17 @@
 
     <footer class="project__footer">
       <a class="button button--sm button--tertiary w-full" href="{% url 'projects:update' project.id %}">Settings</a>
-      <a class="button button--sm button--tertiary w-full"
-         href="{% url 'projects:update' project.id %}">{{user.email}}</a>
+
+      <div class="flex justify-between">
+        <a class="button button--tertiary button--circle" href="https://gyana.com/">
+          <i class="fas fa-fw fa-question"></i>
+        </a>
+
+        <a class="button button--tertiary button--sm" href="{% url 'users:user_profile' %}">
+          <img src="{{ user.avatar_url }}" alt="">
+          <i class="fas fa-fw fa-chevron-down"></i>
+        </a>
+      </div>
     </footer>
   </nav>
 </div>
