@@ -7,45 +7,51 @@ def numeric_filter(query, filter_):
         if filter_.type == Filter.Type.INTEGER
         else filter_.float_value
     )
+    column = filter_.column
     if filter_.numeric_predicate == Filter.NumericPredicate.EQUAL:
-        return query[query[filter_.column] == value]
+        return query[query[column] == value]
     if filter_.numeric_predicate == Filter.NumericPredicate.NEQUAL:
-        return query[query[filter_.column] != value]
+        return query[query[column] != value]
     if filter_.numeric_predicate == Filter.NumericPredicate.GREATERTHAN:
-        return query[query[filter_.column] > value]
+        return query[query[column] > value]
     if filter_.numeric_predicate == Filter.NumericPredicate.GREATERTHANEQUAL:
-        return query[query[filter_.column] >= value]
+        return query[query[column] >= value]
     if filter_.numeric_predicate == Filter.NumericPredicate.LESSTHAN:
-        return query[query[filter_.column] < value]
+        return query[query[column] < value]
     if filter_.numeric_predicate == Filter.NumericPredicate.LESSTHANEQUAL:
-        return query[query[filter_.column] <= value]
+        return query[query[column] <= value]
     if filter_.numeric_predicate == Filter.NumericPredicate.ISNULL:
-        return query[query[filter_.column].isnull()]
+        return query[query[column].isnull()]
     if filter_.numeric_predicate == Filter.NumericPredicate.NOTNULL:
-        return query[query[filter_.column].notnull()]
+        return query[query[column].notnull()]
 
 
 def create_filter_query(query, filters):
     for filter_ in filters:
+        column = filter_.column
         if filter_.type in [Filter.Type.INTEGER, Filter.Type.FLOAT]:
             query = numeric_filter(query, filter_)
         elif filter_.type == Filter.Type.STRING:
             if filter_.string_predicate == Filter.StringPredicate.EQUAL:
-                query = query[query[filter_.column] == filter_.string_value]
+                query = query[query[column] == filter_.string_value]
             elif filter_.string_predicate == Filter.StringPredicate.NEQUAL:
-                query = query[query[filter_.column] != filter_.string_value]
+                query = query[query[column] != filter_.string_value]
             elif filter_.string_predicate == Filter.StringPredicate.CONTAINS:
-                query = query[query[filter_.column].contains(filter_.string_value)]
+                query = query[query[column].contains(filter_.string_value)]
             elif filter_.string_predicate == Filter.StringPredicate.NOTCONTAINS:
-                query = query[~query[filter_.column].contains(filter_.string_value)]
+                query = query[~query[column].contains(filter_.string_value)]
             elif filter_.string_predicate == Filter.StringPredicate.STARTSWITH:
-                query = query[query[filter_.column].startswith(filter_.string_value)]
+                query = query[query[column].startswith(filter_.string_value)]
             elif filter_.string_predicate == Filter.StringPredicate.ENDSWITH:
-                query = query[query[filter_.column].endswith(filter_.string_value)]
-            if filter_.string_predicate == Filter.StringPredicate.ISNULL:
-                return query[query[filter_.column].isnull()]
-            if filter_.string_predicate == Filter.StringPredicate.NOTNULL:
-                return query[query[filter_.column].notnull()]
+                query = query[query[column].endswith(filter_.string_value)]
+            elif filter_.string_predicate == Filter.StringPredicate.ISNULL:
+                query = query[query[column].isnull()]
+            elif filter_.string_predicate == Filter.StringPredicate.NOTNULL:
+                query = query[query[column].notnull()]
+            elif filter_.string_predicate == Filter.StringPredicate.ISUPPERCASE:
+                query = query[query[column] == query[column].upper()]
+            elif filter_.string_predicate == Filter.StringPredicate.ISLOWERCASE:
+                query = query[query[column] == query[column].lower()]
         elif filter_.type == Filter.Type.BOOL:
-            query = query[query[filter_.column] == filter_.bool_value]
+            query = query[query[column] == filter_.bool_value]
     return query

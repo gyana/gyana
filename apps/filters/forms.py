@@ -36,7 +36,7 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
         if (
             self.column_type
             and (pred := self.get_live_field(predicate)) is not None
-            and pred not in ["isnull", "notnull"]
+            and pred not in ["isnull", "notnull", "isupper", "islower"]
         ):
             fields += [value]
 

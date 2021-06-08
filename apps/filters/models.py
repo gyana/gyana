@@ -31,6 +31,8 @@ class Filter(models.Model):
         ENDSWITH = "endswith", "ends with"
         ISNULL = "isnull", "is empty"
         NOTNULL = "notnull", "is not empty"
+        ISUPPERCASE = "isupper", "is uppercase"
+        ISLOWERCASE = "islower", "is lowercase"
 
     widget = models.ForeignKey(
         Widget, on_delete=models.CASCADE, null=True, related_name="filters"
