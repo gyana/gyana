@@ -16,6 +16,7 @@
     height: 12rem;
     width: 12rem;
 
+    &:hover,
     &.selected {
       color: var(--c-blue);
       border: 2px solid var(--c-blue);
@@ -23,7 +24,8 @@
 
     &-output {
       color: var(--c-pink-50);
-
+      
+      &:hover,
       &.selected {
         color: var(--c-pink);
         border: 2px solid var(--c-pink);
@@ -64,6 +66,17 @@
 
     p {
       color: var(--c-black-50);
+    }
+
+    & > i.fas {
+      font-size: 6rem;
+    }
+
+    &:hover,
+    &.selected {
+      .react-flow__buttons {
+        display: flex;
+      }
     }
   }
 
@@ -118,10 +131,13 @@
   }
 
   .react-flow__buttons {
-    display: flex;
+    display: none;
     gap: 1.6rem;
+    justify-content: center;
+    padding: 1.6rem;
     position: absolute;
-    top: calc(100% + 1rem);
+    top: 100%;
+    width: 100%;
   }
 
   .react-flow__controls {
