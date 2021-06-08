@@ -1,35 +1,13 @@
 from apps.utils.live_update_form import LiveUpdateForm
 from apps.utils.schema_form_mixin import SchemaFormMixin
-from dal import autocomplete
 from django import forms
 from django.forms.widgets import TextInput
 
 IBIS_TO_TYPE = {"Int64": "INTEGER", "String": "STRING"}
 
 
-def get_choice_list():
-    return [
-        ["France_value", "France"],
-        ["Fiji_value", "Fiji"],
-        ["Finland_value", "Finland"],
-        ["Switzerland_value", "Switzerland"],
-    ]
-
-
 class FilterForm(SchemaFormMixin, LiveUpdateForm):
     column = forms.ChoiceField(choices=[])
-    string_values = autocomplete.Select2ListChoiceField(
-        choice_list=get_choice_list,
-        widget=autocomplete.ListSelect2(url="workflows:array_autocomplete"),
-    )
-    integer_values = autocomplete.Select2ListChoiceField(
-        choice_list=get_choice_list,
-        widget=autocomplete.ListSelect2(url="workflows:array_autocomplete"),
-    )
-    float_values = autocomplete.Select2ListChoiceField(
-        choice_list=get_choice_list,
-        widget=autocomplete.ListSelect2(url="workflows:array_autocomplete"),
-    )
 
     class Meta:
         fields = (
@@ -41,9 +19,7 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             "string_values",
             "integer_values",
         )
-        widgets = {
-            "string_value": TextInput(),
-        }
+        widgets = {"string_value": TextInput()}
 
     def get_live_fields(self):
 

@@ -3,7 +3,6 @@ from functools import cached_property
 from apps.projects.mixins import ProjectMixin
 from apps.utils.formset_update_view import FormsetUpdateView
 from apps.utils.table_data import get_table
-from dal import autocomplete
 from django import forms
 from django.db import transaction
 from django.db.models.query import QuerySet
@@ -179,13 +178,3 @@ def workflow_run(request, pk):
 def worflow_out_of_date(request, pk):
     workflow = get_object_or_404(Workflow, pk=pk)
     return Response({"isOutOfDate": workflow.out_of_date})
-
-
-class ArrayAutocomplete(autocomplete.Select2ListView):
-    def get_list(self):
-        return [
-            ["France_value", "France"],
-            ["Fiji_value", "Fiji"],
-            ["Finland_value", "Finland"],
-            ["Switzerland_value", "Switzerland"],
-        ]

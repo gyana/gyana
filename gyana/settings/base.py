@@ -34,10 +34,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 DJANGO_APPS = [
-    # dal and dal_select2 need to be added before django.contrib.admin
-    # https://django-autocomplete-light.readthedocs.io/en/master/install.html#configuration
-    "dal",
-    "dal_select2",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
