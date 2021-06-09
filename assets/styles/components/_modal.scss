@@ -3,6 +3,7 @@
   left: 0;
   position: absolute;
   top: 0;
+  z-index: 1000;
 
   &__close {
     color: var(--c-black-20);
