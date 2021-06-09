@@ -36,6 +36,7 @@ urlpatterns = [
     path("a/<slug:team_slug>/", include(team_urlpatterns)),
     path("accounts/", include("turbo_allauth.urls")),
     path("users/", include("apps.users.urls")),
+    path("filters/", include("apps.filters.urls")),
     path("subscriptions/", include("apps.subscriptions.urls")),
     path("teams/", include("apps.teams.urls")),
     path("projects/", include("apps.projects.urls.root")),

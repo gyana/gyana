@@ -3,10 +3,7 @@ from functools import cached_property
 from apps.projects.mixins import ProjectMixin
 from apps.utils.formset_update_view import FormsetUpdateView
 from apps.utils.table_data import get_table
-from django import forms
-from django.db import transaction
 from django.db.models.query import QuerySet
-from django.http.response import HttpResponse
 from django.urls import reverse
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView

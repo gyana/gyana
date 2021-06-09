@@ -3,7 +3,12 @@
 <turbo-frame id="workflow-node">
   {% if node.kind == "input" or parents %}
   <div class="workflow-detail__sidebar">
-    <div data-controller="turbo-issue-186-workaround">{{ form.media }}</div>
+    <div data-controller="turbo-issue-186-workaround">
+      {{ form.media }}
+      {% if filters_formset %}
+        {{ filters_formset.media }}
+      {% endif %}
+    </div>
     <form class="h-full overflow-auto"
       action="{% url 'workflows:node' workflow.id node.id %}" 
       method="post"

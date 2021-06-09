@@ -223,8 +223,6 @@ class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
             if self.get_live_field("string_function") is not None:
                 fields += ["label"]
 
-        print(fields)
-
         return fields
 
 
