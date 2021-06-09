@@ -53,7 +53,10 @@ def notin(query, column, values):
     return query[query[column].notin(values)]
 
 
-ARRAY_FILTER = {Filter.NumericPredicate.ISIN: isin, Filter.NumericPredicate.ISIN: notin}
+ARRAY_FILTER = {
+    Filter.NumericPredicate.ISIN: isin,
+    Filter.NumericPredicate.NOTIN: notin,
+}
 
 
 def numeric_filter(query, filter_):
