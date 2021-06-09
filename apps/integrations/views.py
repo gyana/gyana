@@ -1,6 +1,11 @@
 import json
 
+import analytics
 from apps.projects.mixins import ProjectMixin
+from apps.utils.segment_analytics import (
+    INTEGRATION_CREATED_EVENT,
+    NEW_INTEGRATION_START_EVENT,
+)
 from apps.utils.table_data import get_table
 from django.conf import settings
 from django.db.models.query import QuerySet
@@ -73,6 +78,10 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
 
     def get_form_class(self):
         if (kind := self.request.GET.get("kind")) is not None:
+            analytics.track(
+                self.request.user.id, NEW_INTEGRATION_START_EVENT, {"type": kind}
+            )
+
             if kind == Integration.Kind.GOOGLE_SHEETS:
                 return GoogleSheetsForm
             elif kind == Integration.Kind.CSV:
@@ -87,6 +96,17 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
         response = super().form_valid(form)
         # after the model is saved by the super call, we start syncing it.
         form.instance.start_sync()
+
+        analytics.track(
+            self.request.user.id,
+            INTEGRATION_CREATED_EVENT,
+            {
+                "id": form.instance.id,
+                "type": form.instance.kind,
+                "name": form.instance.name,
+            },
+        )
+
         return response
 
     def get_success_url(self) -> str:

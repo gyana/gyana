@@ -1,6 +1,8 @@
+import analytics
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
 from apps.utils.formset_update_view import FormsetUpdateView
+from apps.utils.segment_analytics import WIDGET_CONFIGURED_EVENT, WIDGET_CREATED_EVENT
 from apps.widgets.visuals import chart_to_output, table_to_output
 from django.db import transaction
 from django.db.models.query import QuerySet
@@ -37,6 +39,15 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
             response = super().form_valid(form)
             self.dashboard.sort_order.append(self.object.id)
             self.dashboard.save()
+
+        analytics.track(
+            self.request.user.id,
+            WIDGET_CREATED_EVENT,
+            {
+                "id": form.instance.id,
+                "dashboard_id": self.dashboard.id,
+            },
+        )
 
         return response
 
@@ -95,6 +106,21 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
             "projects:dashboards:detail",
             args=(self.project.id, self.dashboard.id),
         )
+
+    def form_valid(self, form):
+        r = super().form_valid(form)
+
+        analytics.track(
+            self.request.user.id,
+            WIDGET_CONFIGURED_EVENT,
+            {
+                "id": form.instance.id,
+                "dashboard_id": self.dashboard.id,
+                "type": form.instance.kind,
+            },
+        )
+
+        return r
 
 
 class WidgetDelete(DashboardMixin, DeleteView):

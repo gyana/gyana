@@ -1,3 +1,5 @@
+import analytics
+from apps.utils.segment_analytics import SIGNED_UP_EVENT, identify_user
 from allauth.account.forms import SignupForm
 from django import forms
 from django.core.exceptions import ValidationError
@@ -31,6 +33,14 @@ class TeamSignupForm(SignupForm):
                     )
                 )
         return invitation_id
+
+    def save(self, request):
+        user = super().save(request)
+        identify_user(user)
+
+        analytics.track(user.id, SIGNED_UP_EVENT)
+
+        return user
 
 
 class TeamChangeForm(forms.ModelForm):

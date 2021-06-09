@@ -18,7 +18,7 @@ class IntegrationTable(tables.Table):
 
 class StructureTable(tables.Table):
     class Meta:
-        fields = ("type", "name")
+        fields = ("name", "type")
         attrs = {"class": "table"}
 
     type = tables.Column()

@@ -34,6 +34,8 @@
     justify-content: space-between;
     margin-top: auto;
     padding: 1.6rem;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   &__nav {
@@ -46,7 +48,7 @@
     display: block;
     font-size: 1.4rem;
     line-height: 1.6rem;
-    padding: 1.6rem;
+    padding: 1.6rem 1.6rem 1.6rem 1rem;
 
     &--active {
       border-color: var(--c-blue);
@@ -87,4 +89,34 @@
   &__form {
     max-width: 32rem;
   }
+}
+
+// TODO: abstract to collapsable component
+.sidebar-container {
+  display: flex;
+  flex-flow: row-reverse;
+}
+
+label[for="project-sidebar-toggle"] {
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  flex-basis: 0;
+  border-right: 1px solid var(--c-gray);
+
+  &:hover ~ .project__sidebar {
+    width: 1rem;
+  }
+}
+
+#project-sidebar-toggle ~ .project__sidebar {
+  overflow: hidden;
+  transition: width 0.25s ease;
+  white-space: nowrap;
+  width: 4.8rem;
+}
+
+#project-sidebar-toggle:checked ~ .project__sidebar {
+  width: 18rem;
 }

@@ -11,7 +11,17 @@ class NodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Node
-        fields = ("id", "kind", "x", "y", "workflow", "parents", "description", "error")
+        fields = (
+            "id",
+            "kind",
+            "x",
+            "y",
+            "workflow",
+            "parents",
+            "description",
+            "error",
+            "text_text",
+        )
 
     def get_description(self, obj):
         return DESCRIPTIONS[obj.kind](obj)
@@ -80,6 +90,10 @@ def get_rename_desc(obj):
     return f"Rename {' ,'.join(texts)}"
 
 
+def get_text_desc(obj):
+    return obj.text_text
+
+
 DESCRIPTIONS = {
     "input": get_input_desc,
     "limit": get_limit_desc,
@@ -93,4 +107,5 @@ DESCRIPTIONS = {
     "edit": get_edit_desc,
     "add": get_add_desc,
     "rename": get_rename_desc,
+    "text": get_text_desc,
 }

@@ -1,19 +1,24 @@
-from django import forms
 from allauth.account.forms import LoginForm
+from django import forms
 from django.contrib.auth.forms import UserChangeForm
+
+from apps.utils.segment_analytics import identify_user
 
 from .models import CustomUser
 
+
 class UserLoginForm(LoginForm):
     error_messages = {
-        'account_inactive': "This account is currently inactive.",
-        'email_password_mismatch': "The e-mail address and/or password you specified are not correct.",
-        'username_password_mismatch': "The username sdas dsad asd asd as and/or password you specified are not correct.",
-        'username_email_password_mismatch': "The login ad asdsad asd asd asd as and/or password you specified are not correct."
+        "account_inactive": "This account is currently inactive.",
+        "email_password_mismatch": "The e-mail address and/or password you specified are not correct.",
+        "username_password_mismatch": "The username sdas dsad asd asd as and/or password you specified are not correct.",
+        "username_email_password_mismatch": "The login ad asdsad asd asd asd as and/or password you specified are not correct.",
     }
 
     def login(self, *args, **kwargs):
+        identify_user(self.user)
         return super(UserLoginForm, self).login(*args, **kwargs)
+
 
 class CustomUserChangeForm(UserChangeForm):
     email = forms.EmailField(required=True)

@@ -1,7 +1,17 @@
+import json
 from functools import cached_property
 
+import analytics
 from apps.projects.mixins import ProjectMixin
 from apps.utils.formset_update_view import FormsetUpdateView
+from apps.utils.segment_analytics import (
+    NODE_CONNECTED_EVENT,
+    NODE_CREATED_EVENT,
+    NODE_UPDATED_EVENT,
+    WORFKLOW_RUN_EVENT,
+    WORKFLOW_CREATED_EVENT,
+    track_node,
+)
 from apps.utils.table_data import get_table
 from django.db.models.query import QuerySet
 from django.urls import reverse
@@ -60,6 +70,16 @@ class WorkflowCreate(ProjectMixin, TurboCreateView):
             "projects:workflows:detail", args=(self.project.id, self.object.id)
         )
 
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        r = super().form_valid(form)
+        analytics.track(
+            self.request.user.id,
+            WORKFLOW_CREATED_EVENT,
+            {"id": form.instance.id, "name": form.instance.name},
+        )
+
+        return r
+
 
 class WorkflowDetail(ProjectMixin, DetailView):
     template_name = "workflows/detail.html"
@@ -97,6 +117,25 @@ class NodeViewSet(viewsets.ModelViewSet):
     serializer_class = NodeSerializer
     queryset = Node.objects.all()
     filterset_fields = ["workflow"]
+
+    def perform_create(self, serializer):
+        node: Node = serializer.save()
+        track_node(self.request.user, node, NODE_CREATED_EVENT)
+
+    def perform_update(self, serializer):
+        node: Node = serializer.save()
+
+        # if the parents get updated we know the user is connecting nodes to eachother
+        if "parents" in self.request.data:
+            track_node(
+                self.request.user,
+                node,
+                NODE_CONNECTED_EVENT,
+                parent_ids=json.dumps(list(node.parents.values_list("id", flat=True))),
+                parent_kinds=json.dumps(
+                    list(node.parents.values_list("kind", flat=True))
+                ),
+            )
 
 
 class NodeUpdate(FormsetUpdateView):
@@ -136,6 +175,11 @@ class NodeUpdate(FormsetUpdateView):
     def get_form_class(self):
         return KIND_TO_FORM[self.object.kind]
 
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        r = super().form_valid(form)
+        track_node(self.request.user, form.instance, NODE_UPDATED_EVENT)
+        return r
+
     def get_success_url(self) -> str:
         base_url = reverse("workflows:node", args=(self.workflow.id, self.object.id))
         if self.request.POST.get("submit") == "Save & Preview":
@@ -167,8 +211,19 @@ class WorkflowLastRun(DetailView):
 @api_view(http_method_names=["POST"])
 def workflow_run(request, pk):
     workflow = get_object_or_404(Workflow, pk=pk)
-    errors = run_workflow(workflow)
-    return Response(errors or {})
+    errors = run_workflow(workflow) or {}
+
+    analytics.track(
+        request.user.id,
+        WORFKLOW_RUN_EVENT,
+        {
+            "id": workflow.id,
+            "success": not bool(errors),
+            **{f"error_{idx}": errors[key] for idx, key in enumerate(errors.keys())},
+        },
+    )
+
+    return Response(errors)
 
 
 @api_view(http_method_names=["GET"])

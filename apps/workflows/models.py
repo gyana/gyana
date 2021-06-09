@@ -109,6 +109,13 @@ NodeConfig = {
         "description": "Rename columns",
         "section": "Column manipulations",
     },
+    "text": {
+        "displayName": "Text",
+        "icon": "fa-text",
+        "description": "Annotate your workflow",
+        "section": "Annotation",
+        "maxParents": 0,
+    },
 }
 
 
@@ -126,6 +133,7 @@ class Node(models.Model):
         EDIT = "edit", "Edit"
         ADD = "add", "Add"
         RENAME = "rename", "Rename"
+        TEXT = "text", "Text"
 
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"
@@ -185,6 +193,9 @@ class Node(models.Model):
 
     limit_limit = models.IntegerField(default=100)
     limit_offset = models.IntegerField(null=True)
+
+    # Text
+    text_text = models.TextField(null=True)
 
     def save(self, *args, **kwargs):
         super(Node, self).save(*args, **kwargs)

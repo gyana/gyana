@@ -91,6 +91,26 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {"simple": {"format": "%(levelname)s %(message)s"}},
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        }
+    },
+    "loggers": {
+        "segment": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
+        }
+    },
+}
+
 ROOT_URLCONF = "gyana.urls"
 
 TEMPLATES = [
@@ -340,3 +360,8 @@ CLOUD_NAMESPACE = os.environ.get("CLOUD_NAMESPACE", "local")
 
 # Feature flag for Alpha features
 FF_ALPHA = True
+
+# django write key
+SEGMENT_ANALYTICS_WRITE_KEY = os.environ.get("SEGMENT_ANALYTICS_WRITE_KEY", "")
+# web write key
+SEGMENT_ANALYTICS_JS_WRITE_KEY = os.environ.get("SEGMENT_ANALYTICS_JS_WRITE_KEY", "")

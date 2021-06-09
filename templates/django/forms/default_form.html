@@ -3,7 +3,11 @@
 <div class="input-group">
   {% if bound_field.subwidgets|length == 1 %}
   <label>
-    <span>{{ bound_field.label }} {% if bound_field.field.required %}*{% endif %}</span>
+    <span>
+      {{ bound_field.label }}
+      {% if not bound_field.field.required %}<small>(optional)</small>{% endif %}
+    </span>
+
     {{ bound_field }}
   </label>
   {% else %}
@@ -14,7 +18,7 @@
   <p class=" input__help-text">{{ bound_field.help_text }}</p>
 
   {% if not form.is_live %}
-    {{ bound_field.errors }}
+  {{ bound_field.errors }}
   {% endif %}
 </div>
 {% endfor %}

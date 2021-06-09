@@ -1,7 +1,9 @@
 import time
 from functools import reduce
 
+import analytics
 from apps.integrations.bigquery import get_tables_in_dataset, sync_integration
+from apps.utils.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 from django.core.mail import send_mail
@@ -40,8 +42,10 @@ def poll_fivetran_historical_sync(self, integration_id):
 
 @shared_task(bind=True)
 def run_external_table_sync(self, integration_id):
-
     integration = get_object_or_404(Integration, pk=integration_id)
+
+    # We track the time it takes to sync for our analytics
+    sync_start_time = time.time()
 
     progress_recorder = ProgressRecorder(self)
     sync_generator = sync_integration(integration)
@@ -68,6 +72,8 @@ def run_external_table_sync(self, integration_id):
     # The next yield happens when the sync has finalised, only then we finish this task
     next(sync_generator)
 
+    sync_end_time = time.time()
+
     url = reverse(
         "projects:integrations:detail",
         args=(
@@ -81,6 +87,17 @@ def run_external_table_sync(self, integration_id):
         f"Your integration has completed the initial sync - click here {url}",
         "Anymail Sender <from@example.com>",
         ["to@example.com"],
+    )
+
+    analytics.track(
+        integration.created_by.id,
+        INTEGRATION_SYNC_SUCCESS_EVENT,
+        {
+            "id": integration.id,
+            "kind": integration.kind,
+            "row_count": integration.num_rows,
+            "time_to_sync": int(sync_end_time - sync_start_time),
+        },
     )
 
     return integration_id

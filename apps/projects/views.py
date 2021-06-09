@@ -1,4 +1,6 @@
+import analytics
 from apps.teams.mixins import TeamMixin
+from apps.utils.segment_analytics import PROJECT_CREATED_EVENT
 from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 from django.urls.base import reverse
@@ -31,6 +33,14 @@ class ProjectCreate(TeamMixin, TurboCreateView):
 
     def get_success_url(self) -> str:
         return reverse("projects:detail", args=(self.object.id,))
+
+    def form_valid(self, form):
+        redirect = super().form_valid(form)
+        analytics.track(
+            self.request.user.id, PROJECT_CREATED_EVENT, {"id", form.instance.id}
+        )
+
+        return redirect
 
 
 class ProjectDetail(DetailView):

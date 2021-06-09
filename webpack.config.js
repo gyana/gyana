@@ -8,19 +8,20 @@ module.exports = {
     plugins: [new TsconfigPathsPlugin()],
   },
   entry: {
-    style: "./assets/styles/style.scss",
-    tailwind: "./assets/styles/vendors/tailwind.pcss",
-    app: "./assets/javascript/app.ts",  
-    "edit-team": "./assets/javascript/teams/edit-team.tsx",
-    stimulus: "./assets/javascript/stimulus.ts",
-    workflow: "./apps/workflows/javascript/app.tsx",
-    templates: "./templates/javascript/index.tsx",
+    style: './assets/styles/style.scss',
+    tailwind: './assets/styles/vendors/tailwind.pcss',
+    app: './assets/javascript/app.ts',
+    'edit-team': './assets/javascript/teams/edit-team.tsx',
+    stimulus: './assets/javascript/stimulus.ts',
+    workflow: './apps/workflows/javascript/app.tsx',
+    templates: './templates/javascript/index.tsx',
   },
   output: {
     path: path.resolve(__dirname, './static'),
     filename: 'js/[name]-bundle.js',
     library: ['SiteJS', '[name]'],
   },
+  devtool: 'source-map',
   module: {
     rules: [
       {

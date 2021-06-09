@@ -36,6 +36,8 @@ class Filter(models.Model):
         NOTNULL = "notnull", "is not empty"
         ISIN = "isin", "is any of"
         NOTIN = "notin", "is none of"
+        ISUPPERCASE = "isupper", "is uppercase"
+        ISLOWERCASE = "islower", "is lowercase"
 
     widget = models.ForeignKey(
         Widget, on_delete=models.CASCADE, null=True, related_name="filters"
