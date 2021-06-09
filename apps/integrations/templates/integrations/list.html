@@ -9,6 +9,11 @@
        href="{% url 'projects:integrations:create' project.id %}">Create</a>
   </div>
 
+  <p class="mb-8">
+    Integrations serve as the first source of all data in your project. They can be processed in
+    workflows, or used directly in dashboards.
+  </p>
+
   <div class="card card--sm">
     {% render_table table %}
 
