@@ -24,7 +24,8 @@
 
     &-output {
       color: var(--c-pink-50);
-      
+      border-radius: 100%;
+
       &:hover,
       &.selected {
         color: var(--c-pink);
@@ -33,9 +34,13 @@
     }
 
     &-input {
-      // TODO
-      .selected {
-        // TODO
+      color: var(--c-green-50);
+      border-radius: 100%;
+
+      &:hover,
+      &.selected {
+        color: var(--c-green);
+        border: 2px solid var(--c-green);
       }
     }
 
@@ -122,7 +127,7 @@
     }
   }
 
-  .react-flow__edges {    
+  .react-flow__edges {
     .react-flow__connection-path,
     .react-flow__edge-path {
       stroke: var(--c-black-20);

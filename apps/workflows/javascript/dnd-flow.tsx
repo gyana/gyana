@@ -167,6 +167,7 @@ const DnDFlow = ({ client }) => {
             data: {
               label: r.kind,
               description: r.description,
+              icon: NODES[r.kind].icon,
               error: r.error,
               ...(r.kind === 'text' ? { text: r.text_text } : {}),
             },

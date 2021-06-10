@@ -79,7 +79,7 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
     <Buttons id={id} />
     {data.error && <ErrorIcon text={data.error} />}
 
-    <i className='fas fa-fw fa-layer-group'></i>
+    <i className={`fas fa-fw ${data.icon}`}></i>
     <h4 className='capitalize'>{data.label}</h4>
 
     {/* <Description id={id} data={data} /> */}
@@ -94,7 +94,7 @@ const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
     {data.error && <ErrorIcon text={data.error} />}
     <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
 
-    <i className='fas fa-fw fa-table'></i>
+    <i className={`fas fa-fw ${data.icon}`}></i>
     <h4 className='capitalize'>{data.label}</h4>
     {/* <Description id={id} data={data} /> */}
   </>
@@ -114,8 +114,8 @@ const DefaultNode = ({
       {data.error && <ErrorIcon text={data.error} />}
       <Handle type='target' position={targetPosition} isConnectable={isConnectable} />
 
+      <i className={`fas fa-fw ${data.icon}`}></i>
       <h4 className='capitalize'>{data.label}</h4>
-      <Description id={id} data={data} />
 
       <Handle type='source' position={sourcePosition} isConnectable={isConnectable} />
     </>
