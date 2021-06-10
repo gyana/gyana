@@ -127,6 +127,27 @@ def string_filter(query, filter_):
     return func(query, column, values)
 
 
+def time_filter(query, filter_):
+    value = filter_.time_value
+    column = filter_.column
+    func = NUMERIC_FILTER[filter_.datetime_predicate]
+    return func(query, column, value)
+
+
+def date_filter(query, filter_):
+    value = filter_.date_value
+    column = filter_.column
+    func = NUMERIC_FILTER[filter_.datetime_predicate]
+    return func(query, column, value)
+
+
+def datetime_filter(query, filter_):
+    value = filter_.datetime_value
+    column = filter_.column
+    func = NUMERIC_FILTER[filter_.datetime_predicate]
+    return func(query, column, value)
+
+
 def create_filter_query(query, filters):
     for filter_ in filters:
         column = filter_.column
@@ -136,4 +157,10 @@ def create_filter_query(query, filters):
             query = string_filter(query, filter_)
         elif filter_.type == Filter.Type.BOOL:
             query = query[query[column] == filter_.bool_value]
+        elif filter_.type == Filter.Type.TIME:
+            query = time_filter(query, filter_)
+        elif filter_.type == Filter.Type.DATE:
+            query = date_filter(query, filter_)
+        elif filter_.type == Filter.Type.DATETIME:
+            query = datetime_filter(query, filter_)
     return query
