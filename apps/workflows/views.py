@@ -30,7 +30,7 @@ from rest_framework.response import Response
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .bigquery import run_workflow
-from .forms import KIND_TO_FORM, KIND_TO_FORMSETS, WorkflowForm
+from .forms import KIND_TO_FORM, KIND_TO_FORMSETS, WorkflowForm, WorkflowFormCreate
 from .models import Node, NodeConfig, Workflow
 from .serializers import NodeSerializer
 from .tables import WorkflowTable
@@ -60,7 +60,7 @@ class WorkflowList(ProjectMixin, SingleTableView):
 class WorkflowCreate(ProjectMixin, TurboCreateView):
     template_name = "workflows/create.html"
     model = Workflow
-    form_class = WorkflowForm
+    form_class = WorkflowFormCreate
 
     def get_initial(self):
         initial = super().get_initial()

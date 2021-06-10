@@ -1,15 +1,9 @@
-{% extends "web/app/project_settings_base.html" %}
-
-{% block app %}
-<div class="project-settings__form">
-  <h1 class="mb-4">Create</h1>
-
+<turbo-frame id='workflow-create'>
   <form method="post" action="{% url 'projects:workflows:create' project.id %}" class="form">
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}
 
-    <button type="submit" class="button button--green button--filled">Create</button>
+    <button type="submit" class="button button--square button--filled button--sm ml-4">Create</button>
   </form>
-</div>
-{% endblock %}
+</turbo-frame>

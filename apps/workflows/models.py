@@ -10,7 +10,7 @@ from django.urls import reverse
 
 
 class Workflow(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, default="Untitled")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     last_run = models.DateTimeField(null=True)
     created = models.DateTimeField(auto_now_add=True, editable=False)

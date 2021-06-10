@@ -17,11 +17,17 @@ from .models import (AddColumn, Column, EditColumn, FunctionColumn, Node,
 # fmt: on
 
 
+class WorkflowFormCreate(forms.ModelForm):
+    class Meta:
+        model = Workflow
+        fields = ["project"]
+        widgets = {"project": HiddenInput()}
+
+
 class WorkflowForm(forms.ModelForm):
     class Meta:
         model = Workflow
-        fields = ["name", "project"]
-        widgets = {"project": HiddenInput()}
+        fields = ["name"]
 
 
 class NodeForm(LiveUpdateForm):
