@@ -11,6 +11,7 @@ let auth = new coreapi.auth.SessionAuthentication({
 
 let client = new coreapi.Client({ auth: auth })
 let domContainer = document.querySelector('#react-app')
+
 domContainer
   ? ReactDOM.render(
       <ReactFlowProvider>

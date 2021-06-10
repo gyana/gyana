@@ -10,7 +10,6 @@
 .tooltip {
   position: relative;
   white-space: nowrap;
-  z-index: 99;
 
   &:hover &__content {
     display: block;
@@ -25,7 +24,7 @@
     padding: 1rem;
     position: absolute;
     text-align: center;
-    z-index: 999;
+    z-index: var(--z-ui);
   }
 
   &--top &__content {

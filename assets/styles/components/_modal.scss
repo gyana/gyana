@@ -1,9 +1,12 @@
 .tf-modal {
   background-color: rgba(black, 0.5);
+  height: 100%;
   left: 0;
+  padding: 3.2rem;
   position: absolute;
   top: 0;
-  z-index: 1000;
+  width: 100%;
+  z-index: var(--z-modal);
 
   &__close {
     color: var(--c-black-20);

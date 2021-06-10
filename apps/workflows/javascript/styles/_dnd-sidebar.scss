@@ -7,7 +7,7 @@
   padding: 1.6rem;
   width: 32rem;
   overflow: auto;
-  z-index: 10;
+  z-index: var(--z-default);
 
   &__node {
     align-items: center;

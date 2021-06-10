@@ -19,7 +19,8 @@
     img {
       display: inline;
       margin-right: 1.5rem;
-      width: 2.4rem;
+      width: 1.75rem;
+      min-width: 1.75rem;
     }
   }
 
@@ -72,15 +73,14 @@
       border-radius: 100%;
       display: inline;
       margin-right: 1.5rem;
-      width: 1.6rem;
+      width: 1.75rem;
+      min-width: 1.75rem;
     }
   }
 }
 
 .project-list {
-  margin: 0 auto;
-  max-width: 96rem;
-  width: 96rem;
+  padding: 1.6rem;
 
   &__projects {
     display: flex;
