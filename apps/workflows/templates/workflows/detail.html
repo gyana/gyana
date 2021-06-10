@@ -5,15 +5,17 @@
 
 {% block app %}
 <div class="workflow-detail__header">
-  <h3>{{ object.name }}</h3>
+  <form method="post" action="{% url 'projects:workflows:detail' project.id object.id %}" class="form">
+    {% csrf_token %}
+
+    <input class='input__inline' id="name" type="text" name="name" value="{{ object.name }}"></input>
+
+  </form>
   <div data-controller='event-refresh' data-event-refresh-event-value='workflow-run' class='mr-auto'>
     <turbo-frame id="workflow-last-run" src="{% url 'workflows:last_run' object.id %}"
                  data-event-refresh-target="turboFrame">
     </turbo-frame>
   </div>
-  <a href="{% url 'projects:workflows:update' project.id object.pk %}" class="button button--circle button--tertiary">
-    <i class="fas fa-pen"></i>
-  </a>
   <a class="button button--square button--sm button--filled button--danger"
      href="{% url 'projects:workflows:delete' project.id object.pk %}">Delete</a>
 </div>

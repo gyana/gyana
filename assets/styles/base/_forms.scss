@@ -21,27 +21,27 @@ form {
   }
 }
 
-input[type="submit"] {
+input[type='submit'] {
   cursor: pointer;
 }
 
-input[type="text"] {
+input[type='text'] {
   @extend %input;
 }
 
-input[type="email"] {
+input[type='email'] {
   @extend %input;
 }
 
-input[type="password"] {
+input[type='password'] {
   @extend %input;
 }
 
-input[type="url"] {
+input[type='url'] {
   @extend %input;
 }
 
-input[type="file"] {
+input[type='file'] {
   @extend %input;
 }
 
@@ -76,7 +76,7 @@ label {
   &:focus-within {
     color: var(--c-blue);
   }
-  
+
   &.label--row {
     flex-flow: row;
   }
@@ -95,4 +95,11 @@ label {
   &--row {
     flex-flow: row;
   }
+}
+
+input.input__inline {
+  border: none;
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: var(--c-black);
 }

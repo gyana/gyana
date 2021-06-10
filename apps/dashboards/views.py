@@ -62,13 +62,8 @@ class DashboardCreate(ProjectMixin, TurboCreateView):
         return r
 
 
-class DashboardDetail(ProjectMixin, DetailView):
+class DashboardDetail(ProjectMixin, TurboUpdateView):
     template_name = "dashboards/detail.html"
-    model = Dashboard
-
-
-class DashboardUpdate(ProjectMixin, TurboUpdateView):
-    template_name = "dashboards/update.html"
     model = Dashboard
     form_class = DashboardForm
 

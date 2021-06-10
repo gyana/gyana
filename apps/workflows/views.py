@@ -83,20 +83,15 @@ class WorkflowCreate(ProjectMixin, TurboCreateView):
         return r
 
 
-class WorkflowDetail(ProjectMixin, DetailView):
+class WorkflowDetail(ProjectMixin, TurboUpdateView):
     template_name = "workflows/detail.html"
     model = Workflow
+    form_class = WorkflowForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["nodes"] = NodeConfig
         return context
-
-
-class WorkflowUpdate(ProjectMixin, TurboUpdateView):
-    template_name = "workflows/update.html"
-    model = Workflow
-    form_class = WorkflowForm
 
     def get_success_url(self) -> str:
         return reverse(
