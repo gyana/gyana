@@ -72,6 +72,12 @@ def get_filter_desc(obj):
             text = f"{column} {filter_.string_predicate} {filter_.string_value}"
         elif filter_.type == Filter.Type.BOOL:
             text = f"{column} is {filter_.bool_value}"
+        elif filter_.type == Filter.Type.TIME:
+            text = f"{column} is {filter_.time_value}"
+        elif filter_.type == Filter.Type.DATETIME:
+            text = f"{column} is {filter_.datetime_value}"
+        elif filter_.type == Filter.Type.DATE:
+            text = f"{column} is {filter_.date_value}"
         filter_descriptions.append(text)
 
     return f"Filter by {' and '.join(filter_descriptions)}"

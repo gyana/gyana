@@ -1,11 +1,19 @@
+from apps.filters.models import PREDICATE_MAP, Filter
 from apps.utils.live_update_form import LiveUpdateForm
 from apps.utils.schema_form_mixin import SchemaFormMixin
 from django import forms
-from django.forms.widgets import TextInput
+from django.forms.widgets import TextInput, TimeInput
 
 from .widgets import SelectAutocomplete
 
-IBIS_TO_TYPE = {"Int64": "INTEGER", "String": "STRING"}
+IBIS_TO_TYPE = {
+    "Int64": Filter.Type.INTEGER,
+    "String": Filter.Type.STRING,
+    "Timestamp": Filter.Type.DATETIME,
+    "Time": Filter.Type.TIME,
+    "Date": Filter.Type.DATE,
+    "Float64": Filter.Type.FLOAT,
+}
 
 
 class FilterForm(SchemaFormMixin, LiveUpdateForm):
@@ -22,6 +30,10 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             "column",
             "string_predicate",
             "numeric_predicate",
+            "datetime_predicate",
+            "time_value",
+            "date_value",
+            "datetime_value",
             "string_value",
             "integer_value",
             "string_values",
@@ -32,26 +44,21 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
     def get_live_fields(self):
 
         fields = ["column"]
-        predicate = None
-        if self.column_type == "String":
-            predicate = "string_predicate"
-            value = "string_value"
+        if self.column_type:
+            filter_type = IBIS_TO_TYPE[self.column_type]
+            predicate = PREDICATE_MAP[filter_type]
+            value = f"{filter_type.lower()}_value"
             fields += [predicate]
-        elif self.column_type == "Int64":
-            predicate = "numeric_predicate"
-            value = "integer_value"
-            fields += ["numeric_predicate"]
 
-        if (
-            self.column_type
-            and predicate
-            and (pred := self.get_live_field(predicate)) is not None
-            and pred not in ["isnull", "notnull", "isupper", "islower"]
-        ):
-            if pred in ["isin", "notin"]:
-                fields += [value + "s"]
-            else:
-                fields += [value]
+            if (
+                predicate
+                and (pred := self.get_live_field(predicate)) is not None
+                and pred not in ["isnull", "notnull", "isupper", "islower"]
+            ):
+                if pred in ["isin", "notin"]:
+                    fields += [value + "s"]
+                else:
+                    fields += [value]
 
         return fields
 
