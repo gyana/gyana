@@ -1,26 +1,50 @@
 {% extends "web/base.html" %}
 {% load static %}
+
+{% block sidebar_content %}
+{% for user_team in request.user.teams.all %}
+<li>
+  <a class="project__link {% if user_team.slug == team.slug %}project__link--active{% endif %}"
+     href="{% url 'single_team:projects:list' user_team.slug %}">
+    <i class="fas fa-fw fa-question mr-6"></i>{{ user_team.name }}
+  </a>
+</li>
+{% endfor %}
+<li>
+  <a class="project__link" href="{% url 'teams:create_team' %}">
+    <i class="fas fa-fw fa-plus mr-6"></i>New Team
+  </a>
+</li>
+{% endblock %}
+
+{% block sidebar_footer %}
+<li>
+  <a class="project__link" href="{% url 'single_team:manage_team_react' team.slug %}">
+    <i class="fa fa-fw fa-cog mr-6"></i>Settings</a>
+</li>
+
+<li>
+  <hr>
+</li>
+{% endblock %}
+
 {% block body %}
 
 {% block notifications %}{% endblock %}
 
 <section class="{% block app-class %}{% endblock %}">
-  <div class="p-4">
-    <div id="app-content">
-      {% if object.project %}
-      <p class="text-sm mb-2">
-        <a href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}">Back to
-          {{object.project.name }}</a>
-      </p>
-      <p>
-        <a href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}">{{
+  {% if object.project %}
+  <p class="text-sm mb-2">
+    <a href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}">Back to
+      {{object.project.name }}</a>
+  </p>
+  <p>
+    <a href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}">{{
           request.resolver_match.app_name|title }}</a>
-      </p>
-      {% endif %}
+  </p>
+  {% endif %}
 
-      {% block app %}{% endblock %}
-    </div>
-  </div>
+  {% block app %}{% endblock %}
 </section>
 
 {% endblock body %}

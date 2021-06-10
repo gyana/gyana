@@ -11,7 +11,8 @@
       <a class="h3 text-blue uppercase" href="{% url 'web:home' %}" title="View all your projects"><img
              src="{% static 'images/logo.png' %}" alt="">Gyana</a>
     </div>
-    </ul>
-    {% endwith %}
+
+    {% block sidebar %}
+    {% endblock %}
   </nav>
 </div>

@@ -36,15 +36,53 @@
   {% block page_head %}{% endblock %}
 </head>
 
-<body class="flex flex-col h-full">
+<body class="flex flex-row h-full">
   {% block body_wrapper %}
-  {% block top_nav %}
-  {% include 'web/components/navbar.html' %}
-  {% endblock %}
+
+  {% block top_nav %}{% endblock %}
 
   {% block messages %}
   {% include 'web/components/messages.html' %}
   {% endblock messages %}
+
+  <div class="sidebar-container">
+    <input type="checkbox" id="project-sidebar-toggle" role="button" checked hidden>
+    <label for="project-sidebar-toggle">
+      <i class="fas fa-fw fa-sm fa-chevron-right"></i>
+    </label>
+
+    <nav class="project__sidebar">
+      <div class="project__title">
+        <a class="h3 text-blue uppercase" href="{% url 'web:home' %}" title="View all your projects"><img
+               src="{% static 'images/logo.png' %}" alt="">Gyana</a>
+      </div>
+
+      {% block sidebar_content %}{% endblock %}
+
+      <li class="mt-auto">
+        <hr>
+      </li>
+
+      {% block sidebar_footer %}{% endblock %}
+
+      <li>
+        <a class="project__link {% if app_name == "users" %}project__link--active{% endif %}"
+           href="{% url 'users:user_profile' %}">
+          <img src="{{ user.avatar_url }}" alt="">{{user.email}}
+        </a>
+      </li>
+
+      <li>
+        <hr>
+      </li>
+
+      <li>
+        <a class="project__link" href="https://gyana.com/">
+          <i class="fas fa-fw fa-question mr-6"></i>Help
+        </a>
+      </li>
+    </nav>
+  </div>
 
   {% block body %}{% endblock body %}
 

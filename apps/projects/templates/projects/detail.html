@@ -6,6 +6,7 @@
 <div class="pad">
   <hgroup class="mb-4">
     <h1>{{ project.name }}</h1>
+
     {% if project.description %}
     <p>{{ project.description }}</p>
     {% endif %}
@@ -23,7 +24,7 @@
         <strong>{{ dashboard_count }}</strong> dashboard{{ dashboard_count|pluralize }}
       </a>
       <a>
-        <strong>{{ project.num_rows|intcomma }}</strong> row{{ project.num_rows|pluralize }}
+        <strong>{{ project.num_rows|default_if_none:'0'|intcomma }}</strong> row{{ project.num_rows|pluralize }}
       </a>
     </p>
   </div>
