@@ -8,7 +8,7 @@ from django.db import transaction
 from google.cloud import bigquery
 from lib.clients import DATASET_ID, bigquery_client, ibis_client
 
-DEFAULT_LIMIT = 10
+DEFAULT_LIMIT = 50
 
 
 def create_external_config(integration: Integration):

@@ -1,5 +1,6 @@
 from django.urls import path
 from django.views.decorators.cache import cache_control
+from rest_framework import routers
 
 from .. import views
 
@@ -16,3 +17,10 @@ urlpatterns = [
         name="output",
     ),
 ]
+
+# drf config
+router = routers.DefaultRouter()
+router.register("api", views.WidgetPartialUpdate, basename="Widget")
+
+
+urlpatterns += router.urls

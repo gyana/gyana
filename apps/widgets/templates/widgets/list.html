@@ -3,16 +3,18 @@
 
 {% block widget %}
 <turbo-frame id="widgets" target="_top">
-  <ul class="flex flex-wrap" data-controller="sortable" data-sortable-id-value="{{ dashboard.id }}">
+  <react-rnd>
     {% for object in object_list %}
-    <li class="w-1/2 p-2 flex-grow" data-id="{{ object.id }}">
-      <div class="widget-card">
+    <div class="p-2 h-full w-full" data-id="{{ object.id }}" data-x="{{object.x}}" data-y="{{object.y}}"
+         data-width="{{object.width}}" data-height="{{object.height}}">
+      <div class="widget-card h-full">
         <div class='widget-card__visual'>
           {% if object.description %}
           <h3 class="mb-2">{{ object.description }}</h3>
           {% endif %}
           {% if object.is_valid %}
-          <turbo-frame id="widgets:output-{{ object.id }}" src="{% url 'widgets:output' object.id %}">
+          <turbo-frame id="widgets:output-{{ object.id }}" src="{% url 'widgets:output' object.id %}"
+                       style="flex: 1 1 0%; min-height: 0;">
             <div class='placeholder-scr placeholder-scr--fillscreen'>
               <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
               <p class='placeholder-scr__title'>Loading visualisation...</p>
@@ -30,7 +32,7 @@
         </div>
 
         <div class='widget-card__commands'>
-          <i class="cursor-move fas fa-fw fa-arrows sortable-handle"></i>
+          <i class="cursor-move fas fa-fw fa-arrows rnd-handle"></i>
           <a href="{% url 'projects:dashboards:widgets:detail' project.id dashboard.id object.pk %}"><i
                class="fas fa-fw fa-eye"></i></a>
           <a href="{% url 'projects:dashboards:widgets:update' project.id dashboard.id object.pk %}"><i
@@ -39,7 +41,7 @@
                class="fas fa-fw fa-trash"></i></a>
         </div>
       </div>
-    </li>
+    </div>
     {% empty %}
     <div class="w-full p-2">
       <div class="widget-card">
@@ -58,7 +60,7 @@
       </div>
     </div>
     {% endfor %}
-  </ul>
+  </react-rnd>
 
   {% if is_paginated %}
   <div class="pagination">

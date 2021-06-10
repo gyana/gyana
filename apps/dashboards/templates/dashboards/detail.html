@@ -21,12 +21,13 @@
      href="{% url 'projects:dashboards:delete' project.id object.pk %}">Delete</a>
 </div>
 
-<div class="p-4 overflow-auto">
+<div class="p-4 overflow-auto w-full h-full">
   <turbo-frame id="widgets" src="{% url 'projects:dashboards:widgets:list' project.id object.id %}" target="_top"></turbo-frame>
 </div>
 {% endblock %}
 
 {% block page_js %}
+<script src="{% static 'js/templates-bundle.js' %}"></script>
 <script src="{% static "fusioncharts/fusioncharts.js" %}"></script>
 <script src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
 <script src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>

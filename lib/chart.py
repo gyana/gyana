@@ -7,7 +7,7 @@ from django.forms.widgets import Widget
 from lib.fusioncharts import FusionCharts
 
 DEFAULT_WIDTH = "100%"
-DEFAULT_HEIGHT = "400"
+DEFAULT_HEIGHT = "100%"
 
 
 def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:

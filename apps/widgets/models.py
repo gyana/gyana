@@ -3,6 +3,9 @@ from apps.tables.models import Table
 from django.db import models
 from django.db.models.aggregates import Max
 
+DEFAULT_WIDTH = 50
+DEFAULT_HEIGHT = 400
+
 
 class Widget(models.Model):
     class Kind(models.TextChoices):
@@ -31,6 +34,24 @@ class Widget(models.Model):
     value = models.CharField(max_length=300, null=True, blank=True)
 
     description = models.CharField(max_length=255, null=True, blank=True)
+
+    # display state
+    width = models.IntegerField(
+        default=DEFAULT_WIDTH,
+        help_text="The width is relative. Relative widths avoid overflow on different displays",
+    )
+    height = models.IntegerField(
+        default=DEFAULT_HEIGHT,
+        help_text="The height is absolute. We allow for scrollable dashboards in the y-axis.",
+    )
+    x = models.IntegerField(
+        default=0,
+        help_text="The x field is relative, this avoids overflow on the x-axis in a dashboard.",
+    )
+    y = models.IntegerField(
+        default=0,
+        help_text="The y field is absolute, we allow for overflow on the y-axis in a dashboard.",
+    )
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)

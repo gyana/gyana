@@ -1,8 +1,10 @@
-<div id="myGrid" class="ag-theme-balham h-full w-full overflow-auto" />
-<script id="columns" type="application/json">
+{% load random_number from maths_utils %}
+{% random_number as temp_id %}
+<div id="myGrid-{{temp_id}}" class="ag-theme-balham h-full w-full overflow-auto" />
+<script id="columns-{{temp_id}}" type="application/json">
   {{ columns|safe }}
 </script>
-<script id="rows" type="application/json">
+<script id="rows-{{temp_id}}" type="application/json">
   {{ rows|safe }}
 </script>
 
@@ -15,10 +17,10 @@
     window.addEventListener(
       "agGrid:load",
       function (e) {
-        if (!document.querySelector(".ag-root-wrapper")) {
-          new agGrid.Grid(document.querySelector("#myGrid"), {
-            columnDefs: JSON.parse(document.getElementById("columns").innerHTML),
-            rowData: JSON.parse(document.getElementById("rows").innerHTML),
+        if (!document.querySelector("#myGrid-{{temp_id}} .ag-root-wrapper")) {
+          new agGrid.Grid(document.querySelector("#myGrid-{{temp_id}}"), {
+            columnDefs: JSON.parse(document.getElementById("columns-{{temp_id}}").innerHTML),
+            rowData: JSON.parse(document.getElementById("rows-{{temp_id}}").innerHTML),
             domLayout: 'autoHeight',
           });
         }

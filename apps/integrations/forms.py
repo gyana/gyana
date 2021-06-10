@@ -11,10 +11,11 @@ from .models import Integration
 class GoogleSheetsForm(forms.ModelForm):
     class Meta:
         model = Integration
-        fields = ["name", "url", "cell_range", "kind", "project"]
+        fields = ["url", "name", "cell_range", "kind", "project"]
         widgets = {"kind": HiddenInput(), "project": HiddenInput()}
         help_texts = {
             "url": "Needs to be public",
+            "cell_range": "TODO",
         }
 
     def clean_url(self):

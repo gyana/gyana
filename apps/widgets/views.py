@@ -3,6 +3,7 @@ from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
 from apps.utils.formset_update_view import FormsetUpdateView
 from apps.utils.segment_analytics import WIDGET_CONFIGURED_EVENT, WIDGET_CREATED_EVENT
+from apps.widgets.serializers import WidgetSerializer
 from apps.widgets.visuals import chart_to_output, table_to_output
 from django.db import transaction
 from django.db.models.query import QuerySet
@@ -10,6 +11,7 @@ from django.urls import reverse
 from django.views.decorators.http import condition
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
+from rest_framework import mixins, viewsets
 from turbo_response.views import TurboCreateView
 
 from .forms import FilterFormset, WidgetConfigForm
@@ -22,9 +24,7 @@ class WidgetList(DashboardMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self) -> QuerySet:
-        widgets = Widget.objects.filter(dashboard=self.dashboard).all()
-        widget_dict = {widget.pk: widget for widget in widgets}
-        return [widget_dict[idx] for idx in self.dashboard.sort_order]
+        return Widget.objects.filter(dashboard=self.dashboard)
 
 
 class WidgetCreate(DashboardMixin, TurboCreateView):
@@ -37,7 +37,6 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
 
         with transaction.atomic():
             response = super().form_valid(form)
-            self.dashboard.sort_order.append(self.object.id)
             self.dashboard.save()
 
         analytics.track(
@@ -129,7 +128,6 @@ class WidgetDelete(DashboardMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         with transaction.atomic():
-            self.dashboard.sort_order.remove(self.get_object().id)
             self.dashboard.save()
             response = super().delete(request, *args, **kwargs)
 
@@ -140,6 +138,11 @@ class WidgetDelete(DashboardMixin, DeleteView):
             "projects:dashboards:detail",
             args=(self.project.id, self.dashboard.id),
         )
+
+
+class WidgetPartialUpdate(viewsets.GenericViewSet, mixins.UpdateModelMixin):
+    serializer_class = WidgetSerializer
+    queryset = Widget.objects.all()
 
 
 # Turbo frames

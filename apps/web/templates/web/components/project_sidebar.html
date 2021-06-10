@@ -1,3 +1,5 @@
+{% load static %}
+
 <div class="sidebar-container">
   <input type="checkbox" id="project-sidebar-toggle" role="button" checked hidden>
   <label for="project-sidebar-toggle">
@@ -6,10 +8,11 @@
 
   <nav class="project__sidebar">
     <div class="project__title">
-      <a class="h3 text-blue uppercase" href="{% url 'web:home' %}">Gyana</a>
+      <a class="h3 text-blue uppercase" href="{% url 'web:home' %}" title="View all your projects"><img
+             src="{% static 'images/logo.png' %}" alt="">Gyana</a>
     </div>
 
-    <div class=" project__title">
+    <div class="project__title">
       <h3 title="{{ project.name }}">{{ project.name }}</h3>
     </div>
 
@@ -42,22 +45,39 @@
           <i class="far fa-fw fa-presentation mr-6"></i>Dashboards
         </a>
       </li>
+
+      <li class="mt-auto">
+        <hr>
+      </li>
+
+      <li>
+        <a class="project__link {% if app_name == "projects" and request.resolver_match.url_name == 'update' %}project__link--active{% endif %}"
+           href="{% url 'projects:update' project.id %}">
+          <i class="far fa-fw fa-cog mr-6"></i>Settings
+        </a>
+      </li>
+
+      <li>
+        <hr>
+      </li>
+
+      <li>
+        <a class="project__link {% if app_name == "users" %}project__link--active{% endif %}"
+           href="{% url 'users:user_profile' %}">
+          <img src="{{ user.avatar_url }}" alt="">{{user.email}}
+        </a>
+      </li>
+
+      <li>
+        <hr>
+      </li>
+
+      <li>
+        <a class="project__link" href="https://gyana.com/">
+          <i class="fas fa-fw fa-question mr-6"></i>Help
+        </a>
+      </li>
     </ul>
     {% endwith %}
-
-    <footer class="project__footer">
-      <a class="button button--sm button--tertiary w-full" href="{% url 'projects:update' project.id %}">Settings</a>
-
-      <div class="flex justify-between">
-        <a class="button button--tertiary button--circle" href="https://gyana.com/">
-          <i class="fas fa-fw fa-question"></i>
-        </a>
-
-        <a class="button button--tertiary button--sm" href="{% url 'users:user_profile' %}">
-          <img src="{{ user.avatar_url }}" alt="">
-          <i class="fas fa-fw fa-chevron-down"></i>
-        </a>
-      </div>
-    </footer>
   </nav>
 </div>

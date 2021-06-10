@@ -122,11 +122,15 @@
     }
   }
 
-  .react-flow__edges {
+  .react-flow__edges {    
     .react-flow__connection-path,
     .react-flow__edge-path {
       stroke: var(--c-black-20);
       stroke-width: 3;
+    }
+
+    .react-flow__edge.selected .react-flow__edge-path {
+      stroke: var(--c-black);
     }
   }
 

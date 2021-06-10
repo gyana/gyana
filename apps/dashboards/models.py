@@ -9,7 +9,6 @@ class Dashboard(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
-    sort_order = ArrayField(models.IntegerField(), default=list)
 
     class Meta:
         ordering = ("-created",)
