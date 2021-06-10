@@ -2,10 +2,7 @@
 {% load static %}
 {% block app %}
 <div class="workflow-detail__header">
-  <form 
-  method="post" 
-  action="{% url 'projects:dashboards:detail' project.id object.id %}" 
-  class="form mr-auto">
+  <form method="post" action="{% url 'projects:dashboards:detail' project.id object.id %}" class="form mr-auto">
     {% csrf_token %}
 
     <input class='input__inline' id="name" type="text" name="name" value="{{ object.name }}"></input>
@@ -17,12 +14,15 @@
 
     <button type="submit" class="button button--square button--filled button--sm">Add widget</button>
   </form>
-  <a class="button button--square button--filled button--sm button--danger"
-     href="{% url 'projects:dashboards:delete' project.id object.pk %}">Delete</a>
+
+  <a class="button button--circle button--tertiary" href="{% url 'projects:dashboards:delete' project.id object.pk %}">
+    <i class="far fa-fw fa-trash"></i>
+  </a>
 </div>
 
-<div class="p-4 pb-0 overflow-auto w-full h-full">
-  <turbo-frame id="widgets" src="{% url 'projects:dashboards:widgets:list' project.id object.id %}" target="_top"></turbo-frame>
+<div class="overflow-auto flex-1">
+  <turbo-frame id="widgets" src="{% url 'projects:dashboards:widgets:list' project.id object.id %}" target="_top">
+  </turbo-frame>
 </div>
 {% endblock %}
 

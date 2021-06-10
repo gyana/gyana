@@ -16,8 +16,9 @@
                  data-event-refresh-target="turboFrame">
     </turbo-frame>
   </div>
-  <a class="button button--square button--sm button--filled button--danger"
-     href="{% url 'projects:workflows:delete' project.id object.pk %}">Delete</a>
+  <a class="button button--circle button--tertiary" href="{% url 'projects:workflows:delete' project.id object.pk %}">
+    <i class="far fa-fw fa-trash"></i>
+  </a>
 </div>
 
 <div data-controller="tf-modal" class="flex flex-1 overflow-hidden">

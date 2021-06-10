@@ -3,6 +3,7 @@
 
 {% block widget %}
 <turbo-frame id="widgets" target="_top">
+  {% if object_list %}
   <react-rnd>
     {% for object in object_list %}
     <div class="p-2 h-full w-full" data-id="{{ object.id }}" data-x="{{object.x}}" data-y="{{object.y}}"
@@ -42,7 +43,8 @@
         </div>
       </div>
     </div>
-    {% empty %}
+    {% endfor %}
+    {% else %}
     <div class="w-full p-2">
       <div class="widget-card">
         <div class='placeholder-scr placeholder-scr--fillscreen'>
@@ -54,12 +56,12 @@
 
             {% include "django/forms/default_form.html" %}
 
-            <button type="submit" class='placeholder-scr__subtext'>Create one</button>
+            <button type="submit" class='placeholder-scr__subtext'>Add widget</button>
           </form>
         </div>
       </div>
     </div>
-    {% endfor %}
+    {% endif %}
   </react-rnd>
 
   {% if is_paginated %}
