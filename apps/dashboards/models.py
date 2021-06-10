@@ -5,7 +5,7 @@ from django.urls import reverse
 
 
 class Dashboard(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, default="Untitled")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)

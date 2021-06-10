@@ -12,7 +12,7 @@ from django_tables2 import SingleTableView
 from rest_framework import generics
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .forms import DashboardForm
+from .forms import DashboardForm, DashboardFormCreate
 from .models import Dashboard
 
 
@@ -38,8 +38,7 @@ class DashboardList(ProjectMixin, SingleTableView):
 class DashboardCreate(ProjectMixin, TurboCreateView):
     template_name = "dashboards/create.html"
     model = Dashboard
-    form_class = DashboardForm
-    success_url = reverse_lazy("projects:dashboards:list")
+    form_class = DashboardFormCreate
 
     def get_initial(self):
         initial = super().get_initial()
