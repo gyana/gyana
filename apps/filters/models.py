@@ -95,3 +95,13 @@ class Filter(models.Model):
 
     def __str__(self):
         return self.column
+
+
+PREDICATE_MAP = {
+    Filter.Type.DATETIME: "datetime_predicate",
+    Filter.Type.TIME: "datetime_predicate",
+    Filter.Type.DATE: "datetime_predicate",
+    Filter.Type.STRING: "string_predicate",
+    Filter.Type.FLOAT: "numeric_predicate",
+    Filter.Type.INTEGER: "numeric_predicate",
+}

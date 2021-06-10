@@ -1,4 +1,4 @@
-from apps.filters.models import Filter
+from apps.filters.models import PREDICATE_MAP, Filter
 from apps.utils.live_update_form import LiveUpdateForm
 from apps.utils.schema_form_mixin import SchemaFormMixin
 from django import forms
@@ -44,38 +44,21 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
     def get_live_fields(self):
 
         fields = ["column"]
-        predicate = None
-        if self.column_type == "String":
-            predicate = "string_predicate"
-            value = "string_value"
-            fields += [predicate]
-        elif self.column_type == "Int64":
-            predicate = "numeric_predicate"
-            value = "integer_value"
-            fields += [predicate]
-        elif self.column_type == "Time":
-            predicate = "datetime_predicate"
-            value = "time_value"
-            fields += [predicate]
-        elif self.column_type == "Timestamp":
-            predicate = "datetime_predicate"
-            value = "datetime_value"
-            fields += [predicate]
-        elif self.column_type == "Date":
-            predicate = "datetime_predicate"
-            value = "date"
+        if self.column_type:
+            filter_type = IBIS_TO_TYPE[self.column_type]
+            predicate = PREDICATE_MAP[filter_type]
+            value = f"{filter_type.lower()}_value"
             fields += [predicate]
 
-        if (
-            self.column_type
-            and predicate
-            and (pred := self.get_live_field(predicate)) is not None
-            and pred not in ["isnull", "notnull", "isupper", "islower"]
-        ):
-            if pred in ["isin", "notin"]:
-                fields += [value + "s"]
-            else:
-                fields += [value]
+            if (
+                predicate
+                and (pred := self.get_live_field(predicate)) is not None
+                and pred not in ["isnull", "notnull", "isupper", "islower"]
+            ):
+                if pred in ["isin", "notin"]:
+                    fields += [value + "s"]
+                else:
+                    fields += [value]
 
         return fields
 
