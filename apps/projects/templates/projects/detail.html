@@ -12,21 +12,43 @@
     {% endif %}
   </hgroup>
 
-  <div class="card w-full max-w-5xl flex flex-col">
-    <p class="flex items-center gap-4">
-      <a class="link" href="{% url 'projects:integrations:list' project.id %}">
-        <strong>{{ integration_count }}</strong> integration{{ integration_count|pluralize }}
-      </a>
-      <a class="link" href="{% url 'projects:workflows:list' project.id %}">
-        <strong>{{ workflow_count }}</strong> workflow{{ workflow_count|pluralize }}
-      </a>
-      <a class="link" href="{% url 'projects:dashboards:list' project.id %}">
-        <strong>{{ dashboard_count }}</strong> dashboard{{ dashboard_count|pluralize }}
-      </a>
-      <a>
-        <strong>{{ project.num_rows|default_if_none:'0'|intcomma }}</strong> row{{ project.num_rows|pluralize }}
-      </a>
-    </p>
+  <div class="grid grid-cols-4 gap-7">
+    <div class="card card--center flex-col">
+      <h3>{{ project.num_rows|default_if_none:'0'|intcomma }}</h3>
+      <p>Rows</p>
+    </div>
+
+    <div class="card card--center flex-col">
+      <h3>{{ project.created|naturaltime }}</h3>
+      <p>First created</p>
+    </div>
+
+    <div class="card card--center flex-col">
+      <h3>{{ project.updated|naturaltime }}</h3>
+      <p>Last update</p>
+    </div>
+
+    <div class="card card--center flex-col">
+      <h3>{{ integration_count }}</h3>
+      <p><a class="link"
+           href="{% url 'projects:integrations:list' project.id %}">Integration{{ integration_count|pluralize }}</a>
+      </p>
+    </div>
+
+    <div class="card card--center flex-col">
+      <h3>{{ workflow_count }}</h3>
+      <p><a class="link"
+           href="{% url 'projects:workflows:list' project.id %}">Workflow{{ workflow_count|pluralize }}</a>
+      </p>
+    </div>
+
+    <div class="card card--center flex-col">
+      <h3>{{ dashboard_count }}</h3>
+      <p><a class="link"
+           href="{% url 'projects:dashboards:list' project.id %}">Dashboard{{ dashboard_count|pluralize }}</a>
+      </p>
+    </div>
+
   </div>
 
   {% if integration_pending > 0 %}

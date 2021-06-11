@@ -1,10 +1,13 @@
-{% extends "web/app/settings_base.html" %}
+{% extends "web/app/app_base.html" %}
 {% load static %}
+
 {% block app %}
-<div id="manage-team-content"></div>
+<div class="pad" id="manage-team-content"></div>
+
 {{ team_json|json_script:'team' }}
 {{ api_urls|json_script:'api-urls' }}
 {% endblock %}
+
 {% block page_js %}
 {# NOTE: the rest framework imports must precede the react bundle #}
 <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>

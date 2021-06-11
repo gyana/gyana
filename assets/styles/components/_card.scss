@@ -65,6 +65,10 @@ $card-colors: (
     padding: 1rem;
   }
 
+  &--custom {
+    padding: 0;
+  }
+
   &__header {
     height: 52px; // TODO
     background-color: var(--c-white);
