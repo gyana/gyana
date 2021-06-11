@@ -1,5 +1,5 @@
 'use strict'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { TeamMemberList } from './TeamMembers'
 import { InvitationList } from './Invitations'
@@ -81,16 +81,15 @@ const TeamDetails = function (props) {
             ></input>
             <p className='help form-text'>Your team name.</p>
           </div>
+
           {renderIdField()}
+
           {canEditTeam ? (
             <div className='pg-inline-buttons'>
               <button
-                className={creatingNewTeam ? 'pg-button-primary' : 'pg-button-secondary'}
+                className={'button button--square button--filled button--green'}
                 onClick={saveTeam}
               >
-                <span className='icon is-small'>
-                  <i className={`fa ${creatingNewTeam ? 'fa-plus' : 'fa-check'}`}></i>
-                </span>
                 <span>{getSaveButtonText()}</span>
               </button>
               {renderCancel()}
