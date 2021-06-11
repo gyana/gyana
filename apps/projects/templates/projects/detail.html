@@ -21,6 +21,13 @@
     <div class="card card--center flex-col">
       <h3>{{ project.created|naturaltime }}</h3>
       <p>First created</p>
+
+      <!-- This is an example "help" tooltip for a card. -->
+      <div class="card__help tooltip tooltip--bottom">
+        <i class="fas fa-fw fa-question"></i>
+
+        <span class="tooltip__content">The date this project was first created</span>
+      </div>
     </div>
 
     <div class="card card--center flex-col">

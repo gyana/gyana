@@ -13,10 +13,11 @@ $card-colors: (
 
   padding: 3rem;
 
-  display: block;
   background: var(--c-white);
   border-radius: 10px;
   border: 1px solid var(--card-color);
+  display: block;
+  position: relative;
   
   @include shadows.shadow;
   
@@ -74,5 +75,12 @@ $card-colors: (
     height: 52px; // TODO
     background-color: var(--c-white);
     border-bottom: 1px solid var(--c-gray);
+  }
+
+  &__help {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.8rem;
   }
 }
