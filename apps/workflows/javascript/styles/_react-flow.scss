@@ -1,6 +1,7 @@
 .react-flow {
   background: var(--c-gray-10);
   overflow: visible;
+  z-index: var(--z-default);
 
   .react-flow__node {
     align-items: center;
