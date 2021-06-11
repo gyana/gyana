@@ -6,7 +6,7 @@
   &__title {
     align-items: center;
     display: flex;
-    height: 5.2rem;
+    height: 4.8rem;
     padding: 0 1.6rem;
     border-bottom: 1px solid var(--c-gray);
 
@@ -122,6 +122,14 @@ label[for="project-sidebar-toggle"] {
   &:hover ~ .project__sidebar {
     width: 1rem;
   }
+
+  i::before {
+    content: '\f054';
+  }
+}
+
+#project-sidebar-toggle:checked ~ label[for="project-sidebar-toggle"] i::before {
+  content: '\f053';
 }
 
 #project-sidebar-toggle ~ .project__sidebar {
@@ -134,3 +142,4 @@ label[for="project-sidebar-toggle"] {
 #project-sidebar-toggle:checked ~ .project__sidebar {
   width: 18rem;
 }
+
