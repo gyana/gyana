@@ -8,28 +8,28 @@
 
 {% with app_name=request.resolver_match.app_name %}
 <li>
-  <a class="project__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}project__link--active{% endif %}"
+  <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
      href="{% url 'projects:detail' project.id %}">
     <i class="far fa-fw fa-file mr-6"></i>Overview
   </a>
 </li>
 
 <li>
-  <a class="project__link {% if app_name == "projects:integrations" %}project__link--active{% endif %}"
+  <a class="sidebar__link {% if app_name == "projects:integrations" %}sidebar__link--active{% endif %}"
      href="{% url 'projects:integrations:list' project.id %}">
     <i class="far fa-fw fa-link mr-6"></i>Integrations
   </a>
 </li>
 
 <li>
-  <a class="project__link {% if app_name == "projects:workflows" %}project__link--active{% endif %}"
+  <a class="sidebar__link {% if app_name == "projects:workflows" %}sidebar__link--active{% endif %}"
      href="{% url 'projects:workflows:list' project.id %}">
     <i class="far fa-fw fa-stream mr-6"></i>Workflows
   </a>
 </li>
 
 <li>
-  <a class="project__link {% if app_name == "projects:dashboards" or app_name == "projects:dashboards:widgets" %}project__link--active{% endif %}"
+  <a class="sidebar__link {% if app_name == "projects:dashboards" or app_name == "projects:dashboards:widgets" %}sidebar__link--active{% endif %}"
      href="{% url 'projects:dashboards:list' project.id %}">
     <i class="far fa-fw fa-presentation mr-6"></i>Dashboards
   </a>
@@ -39,7 +39,7 @@
 
 {% block sidebar_footer %}
 <li>
-  <a class="project__link {% if app_name == "projects" and request.resolver_match.url_name == 'update' %}project__link--active{% endif %}"
+  <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
      href="{% url 'projects:update' project.id %}">
     <i class="far fa-fw fa-cog mr-6"></i>Settings
   </a>

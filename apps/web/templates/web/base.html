@@ -45,14 +45,14 @@
   {% include 'web/components/messages.html' %}
   {% endblock messages %}
 
-  <div class="sidebar-container" data-controller="sidebar">
-    <input type="checkbox" id="project-sidebar-toggle" role="button" hidden data-sidebar-target="toggle">
-    <label for="project-sidebar-toggle" data-action="click->sidebar#toggle">
+  <div class="sidebar" data-controller="sidebar">
+    <input type="checkbox" id="sidebar-toggle" role="button" hidden data-sidebar-target="toggle">
+    <label for="sidebar-toggle" data-action="click->sidebar#toggle">
       <i class="fas fa-fw fa-sm"></i>
     </label>
 
-    <nav class="project__sidebar">
-      <div class="project__title">
+    <nav class="sidebar__body">
+      <div class="sidebar__title">
         <a class="h3 text-blue uppercase" href="{% url 'web:home' %}" title="View all your projects"><img
                src="{% static 'images/logo.png' %}" alt="">Gyana</a>
       </div>
@@ -66,7 +66,7 @@
       {% block sidebar_footer %}{% endblock %}
 
       <li>
-        <a class="project__link {% if app_name == "users" %}project__link--active{% endif %}"
+        <a class="sidebar__link {% if app_name == "users" %}sidebar__link--active{% endif %}"
            href="{% url 'users:user_profile' %}">
           <img src="{{ user.avatar_url }}" alt="">{{user.email}}
         </a>
@@ -77,7 +77,7 @@
       </li>
 
       <li>
-        <a class="project__link" href="https://gyana.com/">
+        <a class="sidebar__link" href="https://gyana.com/">
           <i class="fas fa-fw fa-question mr-6"></i>Help
         </a>
       </li>

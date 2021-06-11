@@ -4,14 +4,14 @@
 {% block sidebar_content %}
 {% for user_team in request.user.teams.all %}
 <li>
-  <a class="project__link {% if user_team.slug == team.slug %}project__link--active{% endif %}"
+  <a class="sidebar__link {% if user_team.slug == team.slug %}sidebar__link--active{% endif %}"
      href="{% url 'single_team:projects:list' user_team.slug %}">
     <i class="fas fa-fw fa-users mr-6"></i>{{ user_team.name }}
   </a>
 </li>
 {% endfor %}
 <li>
-  <a class="project__link" href="{% url 'teams:create_team' %}">
+  <a class="sidebar__link" href="{% url 'teams:create_team' %}">
     <i class="fas fa-fw fa-plus mr-6"></i>New Team
   </a>
 </li>
@@ -20,7 +20,7 @@
 {% block sidebar_footer %}
 {% if team %}
 <li>
-  <a class="project__link" href="{% url 'single_team:manage_team_react' team.slug %}">
+  <a class="sidebar__link" href="{% url 'single_team:manage_team_react' team.slug %}">
     <i class="fa fa-fw fa-cog mr-6"></i>Settings</a>
 </li>
 

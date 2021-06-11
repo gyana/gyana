@@ -12,25 +12,45 @@
 <ul class="project-list__projects">
   {% for object in object_list %}
   <li>
-    <a class="card" href="{% url 'projects:detail' object.pk %}">
-      <div class="flex flex-1 justify-between">
-        <h3>{{ object }}</h3>
-
-        <!-- TODO: Add team icons -->
-        <div class="heads">
-          <button class="heads__item button button--sm button--circle button--filled disabled"></button>
-          <button class="heads__item button button--sm button--circle button--filled disabled"></button>
-          <button class="heads__item button button--sm button--circle button--filled disabled"></button>
-          <button class="heads__item button button--sm button--circle button--filled disabled"></button>
-          <button class="heads__item button button--sm button--circle button--filled disabled"></button>
-        </div>
+    <div class="card card--custom">
+      <div class="flex flex-1 justify-between p-7 pb-0">
+        <a href="{% url 'projects:detail' object.pk %}" class="h3">{{ object }}</a>
       </div>
 
-      <div class="flex-1">
+      <div class="tabbar">
+        <a href="{% url 'projects:integrations:list' object.id %}"
+           class="tabbar__link flex-1 tabbar__link--active">Integrations</a>
+        <a href="{% url 'projects:integrations:list' object.id %}" class="tabbar__link flex-1">Workflows</a>
+        <a href="{% url 'projects:integrations:list' object.id %}" class="tabbar__link flex-1">Dashboards</a>
+      </div>
+
+      <div class="pb-2">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Updated</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Something</td>
+              <td>10.10</td>
+              <td>10.11</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- <hr>
+
+      <div class="flex-1 pad">
         <span>Created {{ object.created|naturaltime }} | </span>
         <span>Updated {{ object.updated|naturaltime }}</span>
-      </div>
-    </a>
+      </div> -->
+    </div>
   </li>
   {% empty %}
   <li>
