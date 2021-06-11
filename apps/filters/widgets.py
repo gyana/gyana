@@ -29,5 +29,5 @@ class DatetimeInput(Input):
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        context["widget"]["value"] = value.isoformat()
+        context["widget"]["value"] = value.isoformat() if value else None
         return context
