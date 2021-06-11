@@ -3,12 +3,13 @@ import React, { Fragment, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { SelectButton, SelectOption } from './SelectComponents'
 
-const AutocompleteMultiSelect_: React.FC<{ id: number; name: string; selected; column }> = ({
-  id,
-  name,
-  selected,
-  column,
-}) => {
+const AutocompleteMultiSelect_: React.FC<{
+  parentType: string
+  parentId: string
+  name: string
+  selected
+  column
+}> = ({ parentType, parentId, name, selected, column }) => {
   const [options, setOptions] = useState<string[]>([])
   const [search, setSearch] = useState('')
   const [selectedOptions, setSelectedOptions] = useState<string[]>(selected)
@@ -35,7 +36,9 @@ const AutocompleteMultiSelect_: React.FC<{ id: number; name: string; selected; c
 
   useEffect(() => {
     setLoading(true)
-    fetch(`/filters/${id}/autocomplete?q=${search}&column=${column}`)
+    fetch(
+      `/filters/autocomplete?q=${search}&column=${column}&parentType=${parentType}&parentId=${parentId}`
+    )
       .then((res) => res.json())
       .then((r) => {
         setOptions(r)
@@ -143,13 +146,22 @@ class AutocompleteMultiSelect extends HTMLElement {
     // Because the Select dropdown will be absolute positioned we need to make the outer div relative
     mountPoint.setAttribute('class', 'relative')
     const selected = JSON.parse(this.querySelector('#selected')?.innerHTML || '[]')
-    const filterId = parseInt(this.attributes['id'].value)
+
+    const parentType = this.attributes['parent-type'].value
+    const parentId = this.attributes['parent'].value
+
     const name = this.attributes['name'].value
     const column = this.attributes['column'].value
 
     this.appendChild(mountPoint)
     ReactDOM.render(
-      <AutocompleteMultiSelect_ id={filterId} name={name} selected={selected} column={column} />,
+      <AutocompleteMultiSelect_
+        parentType={parentType}
+        parentId={parentId}
+        name={name}
+        selected={selected}
+        column={column}
+      />,
       mountPoint
     )
   }

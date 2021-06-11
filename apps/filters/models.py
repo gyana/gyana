@@ -96,6 +96,14 @@ class Filter(models.Model):
     def __str__(self):
         return self.column
 
+    @property
+    def parent_type(self):
+        return "widget" if self.widget else "node"
+
+    @property
+    def parent(self):
+        return self.widget or self.node
+
 
 PREDICATE_MAP = {
     Filter.Type.DATETIME: "datetime_predicate",

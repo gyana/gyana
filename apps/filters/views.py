@@ -1,25 +1,31 @@
 import ibis.expr.datatypes as dt
 from apps.widgets.models import Widget
+from apps.workflows.models import Node
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from .models import Filter
-
 
 @api_view(http_method_names=["GET"])
-def autocomplete_options(request, pk):
+def autocomplete_options(request):
     """
     Receives a query and returns a list of values
     """
+
     q = request.GET["q"].lower()
     # We have to provide the selected column via the request
     # Because it's only set on the filter_ object after saving
     column = request.GET["column"]
 
-    filter_ = get_object_or_404(Filter, pk=pk)
-    source = filter_.widget or filter_.node.parents.first()
-    query = (source.table if isinstance(source, Widget) else source).get_query()
+    # Instead of using the filter we need to use send the parent via the request
+    # For filters that are just being created and can't be fetched
+    # from the DB yet
+    parent = (
+        get_object_or_404(Widget, pk=request.GET["parentId"]).table
+        if request.GET["parentId"] == "widget"
+        else get_object_or_404(Node, pk=request.GET["parentId"])
+    )
+    query = parent.get_query()
 
     options = (
         query[query[column].cast(dt.String()).lower().startswith(q)]
