@@ -9,65 +9,56 @@
   <h1 class="mr-auto">Projects</h1>
 </div>
 
-<ul class="project-list__projects">
-  {% for object in object_list %}
-  <li>
-    <div class="card card--custom">
-      <div class="flex flex-1 justify-between p-7 pb-0">
-        <a href="{% url 'projects:detail' object.pk %}" class="h3">{{ object }}</a>
+<div class="flex justify-start items-start gap-7">
+  <ul class="project-list__projects">
+    {% for object in object_list %}
+    <li>
+      <div class="card card--custom">
+        <div class="flex flex-col justify-between pad">
+          <a href="{% url 'projects:detail' object.pk %}" class="h3">{{ object }}</a>
+
+          <div class="flex-1">
+            <span>Created {{ object.created|naturaltime }} | </span>
+            <span>Updated {{ object.updated|naturaltime }}</span>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="tabbar tabbar--full tabbar--sm">
+          <a href="{% url 'projects:integrations:list' object.id %}"
+             class="tabbar__link flex-1">{{ object.integration_count }}
+            Integration{{ object.integration_count|pluralize }}</a>
+          <a href="{% url 'projects:workflows:list' object.id %}"
+             class="tabbar__link flex-1">{{ object.workflow_count }}
+            Workflow{{ object.workflow_count|pluralize }}</a>
+          <a href="{% url 'projects:dashboards:list' object.id %}"
+             class="tabbar__link flex-1">{{ object.dashboard_count }}
+            Dashboard{{ object.dashboard_count|pluralize }}</a>
+        </div>
       </div>
+    </li>
+    {% empty %}
+    <li>
+      <div class="card card-tertiary">
+        <h3 class="mb-4">No projects found</h3>
 
-      <div class="tabbar">
-        <a href="{% url 'projects:integrations:list' object.id %}"
-           class="tabbar__link flex-1 tabbar__link--active">Integrations</a>
-        <a href="{% url 'projects:integrations:list' object.id %}" class="tabbar__link flex-1">Workflows</a>
-        <a href="{% url 'projects:integrations:list' object.id %}" class="tabbar__link flex-1">Dashboards</a>
+        <p>Why not create one using the button to the right?</p>
       </div>
+    </li>
+    {% endfor %}
+    <li>
+      <a class="card card--sm card--primary card--center" href="{% url 'single_team:projects:create' team.slug %}">
+        <i class="fas fa-plus mr-4"></i><strong>Create new Project</strong>
+      </a>
+    </li>
+  </ul>
 
-      <div class="pb-2">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Updated</th>
-              <th>Created</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>Something</td>
-              <td>10.10</td>
-              <td>10.11</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- <hr>
-
-      <div class="flex-1 pad">
-        <span>Created {{ object.created|naturaltime }} | </span>
-        <span>Updated {{ object.updated|naturaltime }}</span>
-      </div> -->
-    </div>
-  </li>
-  {% empty %}
-  <li>
-    <div class="card card-tertiary">
-      <h3 class="mb-4">No projects found</h3>
-
-      <p>Why not create one using the button to the right?</p>
-    </div>
-  </li>
-  {% endfor %}
-  <li>
-    <a class="card card--sm card--primary card--center" href="{% url 'single_team:projects:create' team.slug %}">
-      <i class="fas fa-plus mr-4"></i><strong>Create new Project</strong>
-    </a>
-  </li>
-</ul>
-
+  <div class="card card--center flex-col">
+    <h3>{{ team.sorted_memberships|length }}</h3>
+    <p>Team members</p>
+  </div>
+</div>
 
 {% if is_paginated %}
 <div class="pagination">

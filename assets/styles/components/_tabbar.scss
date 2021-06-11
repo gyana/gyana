@@ -16,10 +16,30 @@
     padding: 1.6rem;
     text-align: center;
 
+    &:hover {
+      background-color: var(--c-gray-50);
+    }
+
     &--active {
       border-bottom: 2px solid var(--c-blue);
       color: var(--c-black);
       font-weight: 500;
     }
+  }
+
+  &--full &__link {
+    border: none;
+  }
+
+  &--full {
+    &::after {
+      display: none;
+    }
+  }
+
+  &--sm &__link {
+    font-size: 1.2rem;
+    line-height: 1.4rem;
+    padding: 1rem;
   }
 }
