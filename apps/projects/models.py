@@ -17,6 +17,21 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+    def integration_count(self):
+        from apps.integrations.models import Integration
+
+        return Integration.objects.filter(project=self).count()
+
+    def workflow_count(self):
+        from apps.workflows.models import Workflow
+
+        return Workflow.objects.filter(project=self).count()
+
+    def dashboard_count(self):
+        from apps.dashboards.models import Dashboard
+
+        return Dashboard.objects.filter(project=self).count()
+
     def num_rows(self):
         from apps.tables.models import Table
 
