@@ -32,7 +32,7 @@ class TeamCreate(LoginRequiredMixin, TurboCreateView):
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse("single_team:projects:list", args=(self.object.slug,))
+        return reverse("team_projects:list", args=(self.object.slug,))
 
 
 @login_and_team_required

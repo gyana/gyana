@@ -64,7 +64,7 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "projects:dashboards:widgets:update",
+            "project_dashboards:widgets:update",
             args=(
                 self.project.id,
                 self.dashboard.id,
@@ -106,7 +106,7 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
     def get_success_url(self) -> str:
         if self.request.POST.get("submit") == "Save & Preview":
             return reverse(
-                "projects:dashboards:widgets:update",
+                "project_dashboards:widgets:update",
                 args=(
                     self.project.id,
                     self.dashboard.id,
@@ -114,7 +114,7 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
                 ),
             )
         return reverse(
-            "projects:dashboards:detail",
+            "project_dashboards:detail",
             args=(self.project.id, self.dashboard.id),
         )
 
@@ -147,7 +147,7 @@ class WidgetDelete(DashboardMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "projects:dashboards:detail",
+            "project_dashboards:detail",
             args=(self.project.id, self.dashboard.id),
         )
 

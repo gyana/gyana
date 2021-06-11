@@ -12,7 +12,7 @@
         <div class='placeholder-scr placeholder-scr--fillscreen'>
           <i class="placeholder-scr__icon far fa-map-marker-question fa-2x"></i>
           <p class='placeholder-scr__title'>This dashboard needs some widgets!</p>
-          <form method="post" action="{% url 'projects:dashboards:widgets:create' project.id dashboard.id %}"
+          <form method="post" action="{% url 'project_dashboards:widgets:create' project.id dashboard.id %}"
                 class="form">
             {% csrf_token %}
 
@@ -31,14 +31,14 @@
     <span class="page-links">
       {% if page_obj.has_previous %}
       <a
-         href="{% url 'projects:dashboards:detail' project.id dashboard.id %}?page={{ page_obj.previous_page_number }}">previous</a>
+         href="{% url 'project_dashboards:detail' project.id dashboard.id %}?page={{ page_obj.previous_page_number }}">previous</a>
       {% endif %}
       <span class="page-current">
         Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
       </span>
       {% if page_obj.has_next %}
       <a
-         href="{% url 'projects:dashboards:detail' project.id dashboard.id  %}?page={{ page_obj.next_page_number }}">next</a>
+         href="{% url 'project_dashboards:detail' project.id dashboard.id  %}?page={{ page_obj.next_page_number }}">next</a>
       {% endif %}
     </span>
   </div>

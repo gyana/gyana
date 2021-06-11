@@ -1,5 +1,5 @@
 <turbo-frame id='dashboard-create'>
-  <form method="post" action="{% url 'projects:dashboards:create' project.id %}" class="form">
+  <form method="post" action="{% url 'project_dashboards:create' project.id %}" class="form">
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}

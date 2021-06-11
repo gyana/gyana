@@ -19,7 +19,7 @@
           <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
           <p>This widget needs to be
             <a class='text-blue underline'
-                href="{% url 'projects:dashboards:widgets:update' project.id dashboard.id object.pk %}">configured</a>!
+                href="{% url 'project_dashboards:widgets:update' project.id dashboard.id object.pk %}">configured</a>!
           </p>
         </div>
         {% endif %}
@@ -27,11 +27,11 @@
 
       <div class='widget-card__commands'>
         <i class="cursor-move fas fa-fw fa-arrows rnd-handle"></i>
-        <a href="{% url 'projects:dashboards:widgets:detail' project.id dashboard.id object.pk %}"><i
+        <a href="{% url 'project_dashboards:widgets:detail' project.id dashboard.id object.pk %}"><i
               class="fas fa-fw fa-eye"></i></a>
-        <a href="{% url 'projects:dashboards:widgets:update' project.id dashboard.id object.pk %}"><i
+        <a href="{% url 'project_dashboards:widgets:update' project.id dashboard.id object.pk %}"><i
               class="fas fa-fw fa-edit"></i></a>
-        <a href="{% url 'projects:dashboards:widgets:delete' project.id dashboard.id object.pk %}" class="mt-auto"><i
+        <a href="{% url 'project_dashboards:widgets:delete' project.id dashboard.id object.pk %}" class="mt-auto"><i
               class="fas fa-fw fa-trash"></i></a>
       </div>
     </div>

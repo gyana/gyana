@@ -28,7 +28,6 @@ team_urlpatterns = (
             views.resend_invitation,
             name="resend_invitation",
         ),
-        path("projects/", include("apps.projects.urls.teams")),
     ],
     "single_team",
 )

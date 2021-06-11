@@ -32,7 +32,7 @@
           <a href="{% url 'projects:workflows:list' object.id %}"
              class="tabbar__link flex-1">{{ object.workflow_count }}
             Workflow{{ object.workflow_count|pluralize }}</a>
-          <a href="{% url 'projects:dashboards:list' object.id %}"
+          <a href="{% url 'project_dashboards:list' object.id %}"
              class="tabbar__link flex-1">{{ object.dashboard_count }}
             Dashboard{{ object.dashboard_count|pluralize }}</a>
         </div>
@@ -47,7 +47,7 @@
     </li>
     {% endfor %}
     <li>
-      <a class="card card--sm card--primary card--center" href="{% url 'single_team:projects:create' team.slug %}">
+      <a class="card card--sm card--primary card--center" href="{% url 'team_projects:create' team.slug %}">
         <i class="fas fa-plus mr-4"></i><strong>Create new Project</strong>
       </a>
     </li>
@@ -63,13 +63,13 @@
 <div class="pagination">
   <span class="page-links">
     {% if page_obj.has_previous %}
-    <a href="{% url 'single_team:projects:list' team.slug %}?page={{ page_obj.previous_page_number }}">previous</a>
+    <a href="{% url 'team_projects:list' team.slug %}?page={{ page_obj.previous_page_number }}">previous</a>
     {% endif %}
     <span class="page-current">
       Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
     </span>
     {% if page_obj.has_next %}
-    <a href="{% url 'single_team:projects:list' team.slug %}?page={{ page_obj.next_page_number }}">next</a>
+    <a href="{% url 'team_projects:list' team.slug %}?page={{ page_obj.next_page_number }}">next</a>
     {% endif %}
   </span>
 </div>

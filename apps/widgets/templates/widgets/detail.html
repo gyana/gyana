@@ -5,7 +5,7 @@
   {% if object.description %}
     <h1>{{ object.description }}</h1>
   {% endif %}
-  <a href="{% url 'projects:dashboards:detail' project.id dashboard.id %}" class="button button--sm button--green">Back</a>
+  <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}" class="button button--sm button--green">Back</a>
 </div>
 <div class="w-full">
   <turbo-frame id="widgets:output-{{ widget.id }}" src="{% url 'widgets:output' object.id %}">

@@ -4,7 +4,7 @@
   </p>
   {% comment %} <ul class="menu-list">
       <li>
-          <a href="{% url 'single_team:projects:list' request.resolver_match.kwargs.team_slug %}" {% if request.resolver_match.app_name == 'projects' %}class="is-active"{% endif %}>
+          <a href="{% url 'team_projects:list' request.resolver_match.kwargs.team_slug %}" {% if request.resolver_match.app_name == 'projects' %}class="is-active"{% endif %}>
               <span class="icon"><i class="fa fa-home"></i></span><span class="is-hidden-tablet-only">Projects</span>
           </a>
       </li>

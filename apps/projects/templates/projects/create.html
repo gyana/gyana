@@ -3,7 +3,7 @@
 <div class="max-w-lg mx-auto">
   <h1>New Project</h1>
 
-  <form method="post" action="{% url 'single_team:projects:create' team.slug %}" class="form">
+  <form method="post" action="{% url 'team_projects:create' team.slug %}" class="form">
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}

@@ -64,7 +64,7 @@
     <div class="card card--center flex-col">
       <h3>{{ dashboard_count }}</h3>
       <p><a class="link"
-           href="{% url 'projects:dashboards:list' project.id %}">Dashboard{{ dashboard_count|pluralize }}</a>
+           href="{% url 'project_dashboards:list' project.id %}">Dashboard{{ dashboard_count|pluralize }}</a>
       </p>
     </div>
 

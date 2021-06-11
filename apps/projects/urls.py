@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from .. import views
+from . import views
 
 app_name = "projects"
 urlpatterns = [
@@ -10,5 +10,12 @@ urlpatterns = [
     path("<int:pk>/settings/", views.ProjectSettings.as_view(), name="settings"),
     path("<int:project_id>/integrations/", include("apps.integrations.urls.projects")),
     path("<int:project_id>/workflows/", include("apps.workflows.urls.projects")),
-    path("<int:project_id>/dashboards/", include("apps.dashboards.urls.projects")),
 ]
+
+team_urlpatterns = (
+    [
+        path("", views.ProjectList.as_view(), name="list"),
+        path("new", views.ProjectCreate.as_view(), name="create"),
+    ],
+    "team_projects",
+)

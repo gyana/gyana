@@ -5,7 +5,7 @@
 {% for user_team in request.user.teams.all %}
 <li>
   <a class="sidebar__link {% if user_team.slug == team.slug %}sidebar__link--active{% endif %}"
-     href="{% url 'single_team:projects:list' user_team.slug %}">
+     href="{% url 'team_projects:list' user_team.slug %}">
     <i class="fas fa-fw fa-users mr-6"></i>{{ user_team.name }}
   </a>
 </li>
