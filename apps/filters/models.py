@@ -51,6 +51,12 @@ class Filter(models.Model):
         AFTERON = "lessthanequal", "is on or after"
         ISNULL = "isnull", "is empty"
         NOTNULL = "notnull", "is not empty"
+        TODAY = "today", "today"
+        TOMORROW = "tomorrow", "tomorrow"
+        YESTERDAY = "yesterday", "yesterday"
+        ONEWEEKAGO = "oneweekago", "one week ago"
+        ONEMONTHAGO = "onemonthago", "one month ago"
+        ONEYEARAGO = "oneyearago", "one year ago"
 
     widget = models.ForeignKey(
         Widget, on_delete=models.CASCADE, null=True, related_name="filters"

@@ -53,7 +53,16 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             if (
                 predicate
                 and (pred := self.get_live_field(predicate)) is not None
-                and pred not in ["isnull", "notnull", "isupper", "islower"]
+                and pred
+                not in [
+                    "isnull",
+                    "notnull",
+                    "isupper",
+                    "islower",
+                    "today",
+                    "tomorrow",
+                    "yesterday",
+                ]
             ):
                 if pred in ["isin", "notin"]:
                     fields += [value + "s"]
