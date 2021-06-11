@@ -40,6 +40,12 @@
       <p><a class="link"
            href="{% url 'projects:integrations:list' project.id %}">Integration{{ integration_count|pluralize }}</a>
       </p>
+
+      {% if integration_pending > 0 %}
+      <div class="card__help">
+        <i class="fas fa-fw fa-exclamation-triangle text-orange"></i>
+      </div>
+      {% endif %}
     </div>
 
     <div class="card card--center flex-col">
@@ -47,6 +53,12 @@
       <p><a class="link"
            href="{% url 'projects:workflows:list' project.id %}">Workflow{{ workflow_count|pluralize }}</a>
       </p>
+
+      {% if workflow_error > 0 %}
+      <div class="card__help">
+        <i class="fas fa-fw fa-exclamation-triangle text-red"></i>
+      </div>
+      {% endif %}
     </div>
 
     <div class="card card--center flex-col">
@@ -56,23 +68,27 @@
       </p>
     </div>
 
+    <!-- {% if integration_pending > 0 %}
+    <div class="card card--center card--warning flex-col p-2 rounded-lg">
+      <h3>
+        <i class="fa fa-exclamation"></i>
+      </h3>
+      <p>
+        Setup is incomplete for <strong>{{ integration_pending }}</strong>
+        integration{{ integration_pending|pluralize }}
+      </p>
+    </div>
+    {% endif %}
+
+    {% if workflow_error > 0 %}
+    <div class="bg-orange-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i>
+      No initial run for {{ workflow_pending }} workflow{{ workflow_pending|pluralize }}</div>
+    {% endif %}
+
+    {% if workflow_error > 0 %}
+    <div class="bg-red-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i>
+      There are errors in {{ workflow_error }} workflow{{ workflow_error|pluralize }}</div>
+    {% endif %} -->
   </div>
-
-  {% if integration_pending > 0 %}
-  <div class="bg-orange-20 p-2 rounded-lg">
-    <i class="fa fa-exclamation"></i>
-    Setup is incomplete for {{ integration_pending }} integration{{ integration_pending|pluralize }}
-  </div>
-  {% endif %}
-
-  {% if workflow_error > 0 %}
-  <div class="bg-orange-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i>
-    No initial run for {{ workflow_pending }} workflow{{ workflow_pending|pluralize }}</div>
-  {% endif %}
-
-  {% if workflow_error > 0 %}
-  <div class="bg-red-20 p-2 rounded-lg"><i class="fa fa-exclamation"></i>
-    There are errors in {{ workflow_error }} workflow{{ workflow_error|pluralize }}</div>
-  {% endif %}
 </div>
 {% endblock %}
