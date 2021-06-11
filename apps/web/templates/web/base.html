@@ -45,9 +45,9 @@
   {% include 'web/components/messages.html' %}
   {% endblock messages %}
 
-  <div class="sidebar-container">
-    <input type="checkbox" id="project-sidebar-toggle" role="button" checked hidden>
-    <label for="project-sidebar-toggle">
+  <div class="sidebar-container" data-controller="sidebar">
+    <input type="checkbox" id="project-sidebar-toggle" role="button" hidden data-sidebar-target="toggle">
+    <label for="project-sidebar-toggle" data-action="click->sidebar#toggle">
       <i class="fas fa-fw fa-sm fa-chevron-right"></i>
     </label>
 
