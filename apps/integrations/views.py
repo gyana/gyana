@@ -15,7 +15,7 @@ from django.urls import reverse
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
-from django_tables2 import SingleTableView, Table
+from django_tables2 import SingleTableView, Table, Column
 from django_tables2.config import RequestConfig
 from django_tables2.views import SingleTableMixin
 from turbo_response.views import TurboCreateView, TurboUpdateView
@@ -127,6 +127,8 @@ class UsedInTable(Table):
             "updated",
         )
 
+    name = Column(linkify=True)
+
 
 class IntegrationDetail(ProjectMixin, DetailView):
     template_name = "integrations/detail.html"
@@ -135,6 +137,7 @@ class IntegrationDetail(ProjectMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["table"] = UsedInTable(self.object.used_in)
+
         return context
 
 
