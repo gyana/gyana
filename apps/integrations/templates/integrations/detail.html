@@ -4,25 +4,9 @@
 {% load humanize %}
 
 {% block tab %}
-<div class="card mt-4 mb-8">
-  <div class="flex flex-row">
-    <div class="flex flex-col border-r border-gray flex-grow mr-4">
-      <div class="flex flex-row">
-        <img class="h-16 w-16" src="{% static integration.icon %}" title="{{ integration.name }}" />
 
-        <div class="flex flex-col ml-6">
-          <h1>{{ integration.name }}</h1>
-          <p>{{ integration.created|naturaltime }}</p>
-          {% if integration.num_rows %}<p> <strong>{{ integration.num_rows }}</strong>
-            row{{ integration.num_rows|pluralize }}</p>{% endif %}
-          <h2>{{ integration.created_by.username }}</h2>
-          {% if integration.kind == "google_sheets" %}
-          <a href="{{ integration.url }}" class="link"><i class="fas fa-link fa-sm mr-1"></i>Sheet Source</a>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-
+<div class="flex gap-7 mb-7">
+  <div class="card">
     {% if object.kind == 'fivetran' %}
     <div class="flex flex-col flex-shrink-0">
       {% if object.historical_sync_complete %}
@@ -40,14 +24,34 @@
     <turbo-frame id="integrations:sync" src="{% url 'integrations:sync' object.id %}"></turbo-frame>
     {% endif %}
   </div>
+
+  <div class="card card--center flex-1 flex-col">
+    <h2>{{integration.created|naturaltime}}</h2>
+    <p>First created</p>
+  </div>
+
+  {% if integration.num_rows %}
+  <div class="card card--center flex-1 flex-col">
+    <h2>{{ integration.num_rows }}</h2>
+    <p>Rows</p>
+  </div>
+  {% endif %}
+
+  <div class="card card--center flex-1 flex-col">
+    <h2>{{ integration.created_by.username }}</h2>
+    <p>Created this</p>
+  </div>
 </div>
 
-<div class="flex flex-row gap-8">
-  <div class="card flex-1">
-    <h2>Used in</h2>
-    <p>Where this integration is used in.</p>
 
-    <div class="mt-8">
+<div class="flex flex-row gap-8">
+  <div class="card card--sm flex-1">
+    <div class="p-4">
+      <h2>Referenced</h2>
+      <p>All the places this integration is used in</p>
+    </div>
+
+    <div class="mt-0">
       {% render_table table %}
     </div>
   </div>
