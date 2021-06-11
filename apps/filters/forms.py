@@ -4,7 +4,7 @@ from apps.utils.schema_form_mixin import SchemaFormMixin
 from django import forms
 from django.forms.widgets import TextInput, TimeInput
 
-from .widgets import SelectAutocomplete
+from .widgets import DatetimeInput, SelectAutocomplete
 
 IBIS_TO_TYPE = {
     "Int64": Filter.Type.INTEGER,
@@ -39,7 +39,7 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             "string_values",
             "integer_values",
         )
-        widgets = {"string_value": TextInput()}
+        widgets = {"string_value": TextInput(), "datetime_value": DatetimeInput()}
 
     def get_live_fields(self):
 
