@@ -23,7 +23,7 @@ class Workflow(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("projects:workflows:detail", args=(self.project.id, self.id))
+        return reverse("project_workflows:detail", args=(self.project.id, self.id))
 
     @property
     def failed(self):

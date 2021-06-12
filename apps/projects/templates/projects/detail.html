@@ -51,7 +51,7 @@
     <div class="card card--center flex-col">
       <h3>{{ workflow_count }}</h3>
       <p><a class="link"
-           href="{% url 'projects:workflows:list' project.id %}">Workflow{{ workflow_count|pluralize }}</a>
+           href="{% url 'project_workflows:list' project.id %}">Workflow{{ workflow_count|pluralize }}</a>
       </p>
 
       {% if workflow_error > 0 %}

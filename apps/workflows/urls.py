@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework import routers
 
-from .. import views
+from . import views
 
 app_name = "workflows"
 urlpatterns = [
@@ -13,6 +13,16 @@ urlpatterns = [
     path("<int:pk>/out_of_date", views.worflow_out_of_date, name="worflow_out_of_date"),
     path("<int:pk>/last_run", views.WorkflowLastRun.as_view(), name="last_run"),
 ]
+
+project_urlpatterns = (
+    [
+        path("", views.WorkflowList.as_view(), name="list"),
+        path("new", views.WorkflowCreate.as_view(), name="create"),
+        path("<int:pk>", views.WorkflowDetail.as_view(), name="detail"),
+        path("<int:pk>/delete", views.WorkflowDelete.as_view(), name="delete"),
+    ],
+    "project_workflows",
+)
 
 
 # drf config

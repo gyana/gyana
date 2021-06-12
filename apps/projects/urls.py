@@ -8,7 +8,6 @@ urlpatterns = [
     path("<int:pk>/update", views.ProjectUpdate.as_view(), name="update"),
     path("<int:pk>/delete", views.ProjectDelete.as_view(), name="delete"),
     path("<int:pk>/settings/", views.ProjectSettings.as_view(), name="settings"),
-    path("<int:project_id>/workflows/", include("apps.workflows.urls.projects")),
 ]
 
 team_urlpatterns = (

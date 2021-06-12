@@ -69,7 +69,7 @@ class WorkflowCreate(ProjectMixin, TurboCreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "projects:workflows:detail", args=(self.project.id, self.object.id)
+            "project_workflows:detail", args=(self.project.id, self.object.id)
         )
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
@@ -95,7 +95,7 @@ class WorkflowDetail(ProjectMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "projects:workflows:detail", args=(self.project.id, self.object.id)
+            "project_workflows:detail", args=(self.project.id, self.object.id)
         )
 
 
@@ -104,7 +104,7 @@ class WorkflowDelete(ProjectMixin, DeleteView):
     model = Workflow
 
     def get_success_url(self) -> str:
-        return reverse("projects:workflows:list", args=(self.project.id,))
+        return reverse("project_workflows:list", args=(self.project.id,))
 
 
 # Nodes

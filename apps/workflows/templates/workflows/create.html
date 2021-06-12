@@ -1,5 +1,5 @@
 <turbo-frame id='workflow-create'>
-  <form method="post" action="{% url 'projects:workflows:create' project.id %}" class="form">
+  <form method="post" action="{% url 'project_workflows:create' project.id %}" class="form">
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}

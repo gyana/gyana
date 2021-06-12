@@ -6,7 +6,7 @@
     <h1 class="mr-auto">Workflows</h1>
     <turbo-frame 
       id='workflow-create'
-      src="{% url 'projects:workflows:create' project.id  %}"
+      src="{% url 'project_workflows:create' project.id  %}"
       target="_top"
     >
       <i class='fad fa-spinner-third fa-spin'></i>
@@ -23,7 +23,7 @@
     {% if workflow_count == 0 %}
     <div class="text-center pad--sm">
       <small>
-        You have no workflows yet, <a href="{% url 'projects:workflows:create' project.id  %}" class="link">create
+        You have no workflows yet, <a href="{% url 'project_workflows:create' project.id  %}" class="link">create
           one</a> to see it here
       </small>
     </div>

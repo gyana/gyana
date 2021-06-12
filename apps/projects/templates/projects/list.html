@@ -29,7 +29,7 @@
           <a href="{% url 'project_integrations:list' object.id %}"
              class="tabbar__link flex-1">{{ object.integration_count }}
             Integration{{ object.integration_count|pluralize }}</a>
-          <a href="{% url 'projects:workflows:list' object.id %}"
+          <a href="{% url 'project_workflows:list' object.id %}"
              class="tabbar__link flex-1">{{ object.workflow_count }}
             Workflow{{ object.workflow_count|pluralize }}</a>
           <a href="{% url 'project_dashboards:list' object.id %}"
