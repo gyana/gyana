@@ -26,7 +26,7 @@
         <hr>
 
         <div class="tabbar tabbar--full tabbar--sm">
-          <a href="{% url 'projects:integrations:list' object.id %}"
+          <a href="{% url 'project_integrations:list' object.id %}"
              class="tabbar__link flex-1">{{ object.integration_count }}
             Integration{{ object.integration_count|pluralize }}</a>
           <a href="{% url 'projects:workflows:list' object.id %}"

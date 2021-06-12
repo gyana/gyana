@@ -23,7 +23,7 @@ def poll_fivetran_historical_sync(self, integration_id):
     get_tables_in_dataset(integration)
 
     url = reverse(
-        "projects:integrations:detail",
+        "project_integrations:detail",
         args=(
             integration.project.id,
             integration_id,
@@ -75,7 +75,7 @@ def run_external_table_sync(self, integration_id):
     sync_end_time = time.time()
 
     url = reverse(
-        "projects:integrations:detail",
+        "project_integrations:detail",
         args=(
             integration.project.id,
             integration_id,

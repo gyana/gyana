@@ -5,7 +5,7 @@
   <h2>Edit</h2>
   <p>You can edit this integration's settings here</p>
 
-  <form method="post" action="{% url 'projects:integrations:update' project.id object.id %}" class="form">
+  <form method="post" action="{% url 'project_integrations:update' project.id object.id %}" class="form">
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}
@@ -19,7 +19,7 @@
   <p>If you'd like to <strong>delete</strong> this integration, press the button below.</p>
 
   <a class="button button--sm button--filled button--danger"
-     href="{% url 'projects:integrations:delete' project.id object.pk %}">
+     href="{% url 'project_integrations:delete' project.id object.pk %}">
     Delete
   </a>
 </div>

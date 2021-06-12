@@ -17,21 +17,21 @@
 
 <nav class="tabbar">
   <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
-     href="{% url 'projects:integrations:detail' project.id object.id %}">
+     href="{% url 'project_integrations:detail' project.id object.id %}">
     Overview
   </a>
   {% if object.table_set.exists %}
   <a class="tabbar__link {% if request.resolver_match.url_name == 'structure' %} tabbar__link--active {% endif %}"
-     href="{% url 'projects:integrations:structure' project.id object.id %}">
+     href="{% url 'project_integrations:structure' project.id object.id %}">
     Structure
   </a>
   <a class="tabbar__link {% if request.resolver_match.url_name == 'data' %} tabbar__link--active {% endif %}"
-     href="{% url 'projects:integrations:data' project.id object.id %}">
+     href="{% url 'project_integrations:data' project.id object.id %}">
     Data
   </a>
   {% endif %}
   <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
-     href="{% url 'projects:integrations:settings' project.id object.id %}">
+     href="{% url 'project_integrations:settings' project.id object.id %}">
     Settings
   </a>
 </nav>

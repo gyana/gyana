@@ -6,7 +6,7 @@
   <div class="flex items-center mb-4">
     <h1 class="mr-auto">Integrations</h1>
     <a class="button button--square button--filled button--sm ml-4"
-       href="{% url 'projects:integrations:create' project.id %}">Create</a>
+       href="{% url 'project_integrations:create' project.id %}">Create</a>
   </div>
 
   <p class="mb-8">
@@ -20,7 +20,7 @@
     {% if integration_count == 0 %}
     <div class="text-center pad--sm">
       <small>
-        You have no integrations yet, <a href="{% url 'projects:integrations:create' project.id %}" class="link">create
+        You have no integrations yet, <a href="{% url 'project_integrations:create' project.id %}" class="link">create
           one</a> to see it here
       </small>
     </div>

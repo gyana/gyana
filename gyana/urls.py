@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from apps.dashboards import urls as dashboard_urls
+from apps.integrations import urls as integration_urls
 from apps.projects import urls as project_urls
 from apps.subscriptions.urls import team_urlpatterns as subscriptions_team_urls
 from apps.teams.urls import team_urlpatterns as single_team_urls
@@ -36,6 +37,9 @@ team_urlpatterns = [
 
 project_urlpatterns = [
     path("", include("apps.projects.urls")),
+    path(
+        "<int:project_id>/integrations/", include(integration_urls.project_urlpatterns)
+    ),
     path("<int:project_id>/dashboards/", include(dashboard_urls.project_urlpatterns)),
 ]
 
@@ -48,7 +52,7 @@ urlpatterns = [
     path("subscriptions/", include("apps.subscriptions.urls")),
     path("teams/", include("apps.teams.urls")),
     path("projects/", include(project_urlpatterns)),
-    path("integrations/", include("apps.integrations.urls.root")),
+    path("integrations/", include("apps.integrations.urls")),
     path("workflows/", include("apps.workflows.urls.root")),
     path("dashboards/", include("apps.dashboards.urls")),
     path("widgets/", include("apps.widgets.urls.root")),

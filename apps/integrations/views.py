@@ -111,7 +111,7 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "projects:integrations:detail", args=(self.project.id, self.object.id)
+            "project_integrations:detail", args=(self.project.id, self.object.id)
         )
 
 
@@ -160,7 +160,7 @@ class IntegrationUpdate(ProjectMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "projects:integrations:settings", args=(self.project.id, self.object.id)
+            "project_integrations:settings", args=(self.project.id, self.object.id)
         )
 
 
@@ -169,7 +169,7 @@ class IntegrationDelete(ProjectMixin, DeleteView):
     model = Integration
 
     def get_success_url(self) -> str:
-        return reverse("projects:integrations:list", args=(self.project.id,))
+        return reverse("project_integrations:list", args=(self.project.id,))
 
 
 class IntegrationStructure(ProjectMixin, DetailView):
@@ -217,7 +217,7 @@ class IntegrationSettings(ProjectMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "projects:integrations:settings", args=(self.project.id, self.object.id)
+            "project_integrations:settings", args=(self.project.id, self.object.id)
         )
 
 

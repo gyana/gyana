@@ -38,7 +38,7 @@
     <div class="card card--center flex-col">
       <h3>{{ integration_count }}</h3>
       <p><a class="link"
-           href="{% url 'projects:integrations:list' project.id %}">Integration{{ integration_count|pluralize }}</a>
+           href="{% url 'project_integrations:list' project.id %}">Integration{{ integration_count|pluralize }}</a>
       </p>
 
       {% if integration_pending > 0 %}

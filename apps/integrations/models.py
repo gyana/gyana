@@ -116,7 +116,7 @@ class Integration(models.Model):
         return f"Integration:{self.name}"
 
     def get_absolute_url(self):
-        return reverse("projects:integrations:detail", args=(self.project.id, self.id))
+        return reverse("project_integrations:detail", args=(self.project.id, self.id))
 
     def icon(self):
         return f"images/integrations/{self.kind}.svg"
