@@ -2,7 +2,7 @@ from django.urls import path
 from django.views.decorators.cache import cache_control
 from rest_framework import routers
 
-from .. import views
+from . import views
 
 app_name = "widgets"
 urlpatterns = [
@@ -24,3 +24,14 @@ router.register("api", views.WidgetPartialUpdate, basename="Widget")
 
 
 urlpatterns += router.urls
+
+dashboard_urlpatterns = (
+    [
+        path("", views.WidgetList.as_view(), name="list"),
+        path("new", views.WidgetCreate.as_view(), name="create"),
+        path("<int:pk>", views.WidgetDetail.as_view(), name="detail"),
+        path("<int:pk>/update", views.WidgetUpdate.as_view(), name="update"),
+        path("<int:pk>/delete", views.WidgetDelete.as_view(), name="delete"),
+    ],
+    "dashboard_widgets",
+)

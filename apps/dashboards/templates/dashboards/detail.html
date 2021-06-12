@@ -21,7 +21,7 @@
     <ul data-popover-target="body" class="list list--bordered" style="display:none;z-index:1;margin-top:6px;">
       {% for id, txt, icon in choices %}
       <li class="list__item list__item--interactive" data-id="{{id}}">
-        <form method="post" action="{% url 'project_dashboards:widgets:create' project.id dashboard.id %}" class="form">
+        <form method="post" action="{% url 'dashboard_widgets:create' project.id dashboard.id %}" class="form">
           {% csrf_token %}
           <input type='hidden' name='kind' id='id_kind' value="{{id}}" />
           <button type="submit"><p><i class="fas {{icon}} text-blue mr-2"></i> {{txt}}</p></button>
@@ -36,7 +36,7 @@
 </div>
 
 <div class="p-4 pb-0 overflow-auto w-full h-full">
-  <turbo-frame id="widgets" src="{% url 'project_dashboards:widgets:list' project.id object.id %}" target="_top">
+  <turbo-frame id="widgets" src="{% url 'dashboard_widgets:list' project.id object.id %}" target="_top">
   </turbo-frame>
 </div>
 {% endblock %}

@@ -12,7 +12,7 @@
         <div class='placeholder-scr placeholder-scr--fillscreen'>
           <i class="placeholder-scr__icon far fa-map-marker-question fa-2x"></i>
           <p class='placeholder-scr__title'>This dashboard needs some widgets!</p>
-          <form method="post" action="{% url 'project_dashboards:widgets:create' project.id dashboard.id %}"
+          <form method="post" action="{% url 'dashboard_widgets:create' project.id dashboard.id %}"
                 class="form">
             {% csrf_token %}
 

@@ -14,6 +14,13 @@ urlpatterns = [
     path("<int:pk>/last_run", views.WorkflowLastRun.as_view(), name="last_run"),
 ]
 
+# drf config
+router = routers.DefaultRouter()
+router.register("api/nodes", views.NodeViewSet, basename="Node")
+
+
+urlpatterns += router.urls
+
 project_urlpatterns = (
     [
         path("", views.WorkflowList.as_view(), name="list"),
@@ -23,11 +30,3 @@ project_urlpatterns = (
     ],
     "project_workflows",
 )
-
-
-# drf config
-router = routers.DefaultRouter()
-router.register("api/nodes", views.NodeViewSet, basename="Node")
-
-
-urlpatterns += router.urls

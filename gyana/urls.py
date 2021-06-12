@@ -19,6 +19,7 @@ from apps.projects import urls as project_urls
 from apps.subscriptions.urls import team_urlpatterns as subscriptions_team_urls
 from apps.teams.urls import team_urlpatterns as single_team_urls
 from apps.web.urls import team_urlpatterns as web_team_urls
+from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 from django.conf import settings
 from django.conf.urls.static import static
@@ -43,6 +44,10 @@ project_urlpatterns = [
     ),
     path("<int:project_id>/workflows/", include(workflow_urls.project_urlpatterns)),
     path("<int:project_id>/dashboards/", include(dashboard_urls.project_urlpatterns)),
+    path(
+        "<int:project_id>/dashboards/<int:dashboard_id>/widgets/",
+        include(widget_urls.dashboard_urlpatterns),
+    ),
 ]
 
 urlpatterns = [
@@ -57,7 +62,7 @@ urlpatterns = [
     path("integrations/", include("apps.integrations.urls")),
     path("workflows/", include("apps.workflows.urls")),
     path("dashboards/", include("apps.dashboards.urls")),
-    path("widgets/", include("apps.widgets.urls.root")),
+    path("widgets/", include("apps.widgets.urls")),
     path("tables/", include("apps.tables.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
