@@ -37,6 +37,7 @@ team_urlpatterns = [
     path("team/", include(single_team_urls)),
 ]
 
+# urls that are scoped within a project
 project_urlpatterns = [
     path("", include("apps.projects.urls")),
     path(
