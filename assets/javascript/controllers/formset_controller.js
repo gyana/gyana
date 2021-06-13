@@ -35,7 +35,7 @@ export default class extends Controller {
     const wrapper = e.target.closest(this.wrapperSelector)
 
     // If the field has `data-new-record` set, then it was added dynamically. Otherwise we
-    // need to check the hidden delete input. Django will then delete it on the post request.
+    // need to "check" the hidden delete input. Django will then delete it on the post request.
 
     if (wrapper.dataset.newRecord === 'true') {
       wrapper.remove()
