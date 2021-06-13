@@ -19,8 +19,12 @@ export default class extends Controller {
     const TOTAL_FORMS = this.element.querySelector('#id_filters-TOTAL_FORMS')
     const total = parseInt(TOTAL_FORMS.value)
 
+    // The HTML <template> is an empty form with a __prefix__ placeholder for the index
+
     const content = this.templateTarget.innerHTML.replace(/__prefix__/g, total)
     this.targetTarget.insertAdjacentHTML('beforeend', content)
+
+    // Increment the total forms index, for consistency with live update form
 
     TOTAL_FORMS.value = parseInt(total) + 1
   }
@@ -28,8 +32,10 @@ export default class extends Controller {
   remove(e) {
     e.preventDefault()
 
-    // @ts-ignore
     const wrapper = e.target.closest(this.wrapperSelector)
+
+    // If the field has `data-new-record` set, then it was added dynamically. Otherwise we
+    // need to check the hidden delete input. Django will then delete it on the post request.
 
     if (wrapper.dataset.newRecord === 'true') {
       wrapper.remove()

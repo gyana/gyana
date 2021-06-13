@@ -2,6 +2,10 @@
 {% load crispy_forms_tags %}
 <div data-controller="formset">
 
+  {% comment %}
+    `formset.empty_form` is an empty form with a `__prefix__` placeholder
+  {% endcomment %}
+
   <template data-formset-target="template">
     <tr class="formset-wrapper" data-new-record>
       {% for field in formset.empty_form.visible_fields %}
