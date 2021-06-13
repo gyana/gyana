@@ -45,10 +45,6 @@ export default class extends Controller {
       },
     })
 
-    $(function () {
-      $('.form-container').formset()
-    })
-
     this.loadingTarget.classList.add('hidden')
   }
 
