@@ -1,10 +1,10 @@
 {% load static %}
 {% load crispy_forms_tags %}
-<table>
+<table data-controller="django-dynamic-formset">
   {{ formset.management_form }}
 
   {% for form in formset.forms %}
-  <tr class="{% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}">
+  <tr class="form-container {% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}">
     {% for field in form.visible_fields %}
     <td>
       {# Include the hidden fields in the form #}
