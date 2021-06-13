@@ -5,6 +5,13 @@ import { Controller } from 'stimulus'
 
 export default class extends Controller {
   static targets = ['target', 'template']
+  static values = {
+    wrapperSelector: String,
+  }
+
+  initialize() {
+    this.wrapperSelector = this.wrapperSelectorValue || '.formset-wrapper'
+  }
 
   add(e) {
     e.preventDefault()
@@ -16,5 +23,22 @@ export default class extends Controller {
     this.targetTarget.insertAdjacentHTML('beforeend', content)
 
     TOTAL_FORMS.value = parseInt(total) + 1
+  }
+
+  remove(e) {
+    e.preventDefault()
+
+    // @ts-ignore
+    const wrapper = e.target.closest(this.wrapperSelector)
+
+    if (wrapper.dataset.newRecord === 'true') {
+      wrapper.remove()
+    } else {
+      wrapper.style.display = 'none'
+
+      const input = wrapper.querySelector("input[name*='-DELETE']")
+      input.value = 'on'
+      input.setAttribute('checked', '')
+    }
   }
 }

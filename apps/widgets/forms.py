@@ -50,5 +50,5 @@ class WidgetConfigForm(LiveUpdateForm):
 
 
 FilterFormset = forms.inlineformset_factory(
-    Widget, Filter, form=FilterForm, can_delete=True, extra=1
+    Widget, Filter, form=FilterForm, can_delete=True, extra=0
 )

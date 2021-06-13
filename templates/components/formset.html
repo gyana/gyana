@@ -3,9 +3,9 @@
 <div data-controller="formset">
 
   <template data-formset-target="template">
-    <tr class="form-container">
+    <tr class="formset-wrapper" data-new-record>
       {% for field in formset.empty_form.visible_fields %}
-      <td>
+      <td {% if field.name == 'DELETE' %} style="display: none;" {% endif %}>
         {# Include the hidden fields in the form #}
         {% if forloop.first %}
         {% for hidden in formset.empty_form.hidden_fields %}
@@ -16,6 +16,11 @@
         {{ field }}
       </td>
       {% endfor %}
+      <td>  
+        <button type="button" data-action="click->formset#remove">
+          <i class="far fa-fw fa-trash"></i>
+        </button>
+      </td>
     </tr>
   </template>
 
@@ -23,9 +28,9 @@
     {{ formset.management_form }}
     <tbody data-formset-target="target">
       {% for form in formset.forms %}
-      <tr class="form-container {% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}">
+      <tr class="formset-wrapper {% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}" {% if form.DELETE.value %} style="display: none;" {% endif %}>
         {% for field in form.visible_fields %}
-        <td>
+        <td {% if field.name == 'DELETE' %} style="display: none;" {% endif %}>
           {# Include the hidden fields in the form #}
           {% if forloop.first %}
           {% for hidden in form.hidden_fields %}
@@ -39,12 +44,17 @@
           {{ field }}
         </td>
         {% endfor %}
+        <td>  
+          <button type="button" data-action="click->formset#remove">
+            <i class="far fa-fw fa-trash"></i>
+          </button>
+        </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 
   <button type="button" data-action="click->formset#add">
-    Add todo
+    <i class="far fa-fw fa-plus"></i> 
   </button>
 </div>
