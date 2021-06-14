@@ -164,9 +164,7 @@ const DnDFlow = ({ client }) => {
         workflow: workflowId,
       })
       .then((result) => {
-        const newElements = result.results.map((r) => {
-          return createNewNode(r, { x: r.x, y: r.y })
-        })
+        const newElements = result.results.map((r) => createNewNode(r, { x: r.x, y: r.y }))
 
         const edges = result.results
           .filter((r) => r.parents.length)
@@ -271,10 +269,14 @@ const createNewNode = (res, position) => ({
   id: `${res.id}`,
   type: ['input', 'output', 'text'].includes(res.kind) ? res.kind : 'default',
   description: res.description,
-  data: { label: res.name || capitalize(res.kind), icon: NODES[res.kind].icon, kind: res.kind },
+  data: {
+    label: res.name || capitalize(res.kind),
+    icon: NODES[res.kind].icon,
+    kind: res.kind,
+    error: res.error,
+    ...(res.kind === 'text' ? { text: res.text_text } : {}),
+  },
   position,
-  error: res.error,
-  ...(res.kind === 'text' ? { text: res.text_text } : {}),
 })
 
 export default DnDFlow
