@@ -218,7 +218,7 @@ const DnDFlow = ({ client }) => {
       x: position.x,
       y: position.y,
     })
-    console.log()
+
     const newNode = {
       id: `${result.id}`,
       type: ['input', 'output', 'text'].includes(type) ? type : 'default',
