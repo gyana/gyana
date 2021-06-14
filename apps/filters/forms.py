@@ -30,6 +30,7 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             "column",
             "string_predicate",
             "numeric_predicate",
+            "time_predicate",
             "datetime_predicate",
             "time_value",
             "date_value",
