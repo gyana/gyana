@@ -7,6 +7,7 @@ export default class extends Controller {
   static targets = ['target', 'template']
   static values = {
     wrapperSelector: String,
+    prefix: String,
   }
 
   initialize() {
@@ -16,7 +17,7 @@ export default class extends Controller {
   add(e) {
     e.preventDefault()
 
-    const TOTAL_FORMS = this.element.querySelector('#id_filters-TOTAL_FORMS')
+    const TOTAL_FORMS = this.element.querySelector(`#id_${this.prefixValue}-TOTAL_FORMS`)
     const total = parseInt(TOTAL_FORMS.value)
 
     // The HTML <template> is an empty form with a __prefix__ placeholder for the index
