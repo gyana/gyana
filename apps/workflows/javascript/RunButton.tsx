@@ -47,7 +47,7 @@ const RunButton: React.FC<{
       className='button button--green button--square tooltip tooltip--bottom'
     >
       Run
-      {isOutOfDate && (
+      {isOutOfDate && hasOutput && (
         <>
           <div
             title='This workflow has been updated since the last run'
