@@ -14,6 +14,7 @@ class NodeSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "kind",
+            "name",
             "x",
             "y",
             "workflow",

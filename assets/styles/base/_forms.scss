@@ -120,3 +120,12 @@ input.input__inline {
   font-weight: 500;
   color: var(--c-black);
 }
+
+input.input__contenteditable {
+  border: none;
+  font-size: 1.6rem;
+  font-weight: 500;
+  background-color: transparent;
+  text-align: center;
+  outline: none;
+}

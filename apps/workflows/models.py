@@ -138,6 +138,7 @@ class Node(models.Model):
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"
     )
+    name = models.CharField(max_length=64, null=True, blank=True)
     kind = models.CharField(max_length=16, choices=Kind.choices)
     x = models.FloatField()
     y = models.FloatField()
