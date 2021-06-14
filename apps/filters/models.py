@@ -42,7 +42,7 @@ class Filter(models.Model):
         ISUPPERCASE = "isupper", "is uppercase"
         ISLOWERCASE = "islower", "is lowercase"
 
-    class DatetimePredicate(models.TextChoices):
+    class TimePredicate(models.TextChoices):
         ON = "equal", "is"
         NOTON = "nequal", "is not"
         BEFORE = "greaterthan", "is before"
@@ -51,6 +51,8 @@ class Filter(models.Model):
         AFTERON = "lessthanequal", "is on or after"
         ISNULL = "isnull", "is empty"
         NOTNULL = "notnull", "is not empty"
+
+    class DatetimePredicate(models.TextChoices):
         TODAY = "today", "today"
         TOMORROW = "tomorrow", "tomorrow"
         YESTERDAY = "yesterday", "yesterday"
@@ -78,9 +80,16 @@ class Filter(models.Model):
     integer_value = models.BigIntegerField(null=True, blank=True)
     integer_values = ArrayField(models.BigIntegerField(), null=True)
 
-    datetime_predicate = models.CharField(
-        max_length=16, choices=DatetimePredicate.choices, null=True, blank=True
+    time_predicate = models.CharField(
+        max_length=16, choices=TimePredicate.choices, null=True, blank=True
     )
+    datetime_predicate = models.CharField(
+        max_length=16,
+        choices=TimePredicate.choices + DatetimePredicate.choices,
+        null=True,
+        blank=True,
+    )
+
     time_value = models.TimeField(null=True, blank=True)
     date_value = models.DateField(null=True, blank=True)
     datetime_value = models.DateTimeField(null=True, blank=True)
@@ -113,7 +122,7 @@ class Filter(models.Model):
 
 PREDICATE_MAP = {
     Filter.Type.DATETIME: "datetime_predicate",
-    Filter.Type.TIME: "datetime_predicate",
+    Filter.Type.TIME: "time_predicate",
     Filter.Type.DATE: "datetime_predicate",
     Filter.Type.STRING: "string_predicate",
     Filter.Type.FLOAT: "numeric_predicate",

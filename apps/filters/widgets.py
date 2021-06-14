@@ -1,3 +1,5 @@
+import datetime as dt
+
 from django.forms.widgets import Input, Widget
 
 
@@ -30,5 +32,7 @@ class DatetimeInput(Input):
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        context["widget"]["value"] = value.isoformat() if value else None
+        context["widget"]["value"] = (
+            value.isoformat() if isinstance(value, dt.datetime) else value
+        )
         return context
