@@ -152,7 +152,7 @@ FunctionColumnFormSet = forms.inlineformset_factory(
     Node,
     FunctionColumn,
     form=FunctionColumnForm,
-    extra=1,
+    extra=0,
     can_delete=True,
     formset=InlineColumnFormset,
 )
@@ -161,7 +161,7 @@ ColumnFormSet = forms.inlineformset_factory(
     Node,
     Column,
     fields=("column",),
-    extra=1,
+    extra=0,
     can_delete=True,
     formset=InlineColumnFormset,
 )
@@ -172,7 +172,7 @@ SortColumnFormSet = forms.inlineformset_factory(
     SortColumn,
     fields=("column", "ascending"),
     can_delete=True,
-    extra=1,
+    extra=0,
     formset=InlineColumnFormset,
 )
 
@@ -205,7 +205,7 @@ EditColumnFormSet = forms.inlineformset_factory(
     EditColumn,
     form=OperationColumnForm,
     can_delete=True,
-    extra=1,
+    extra=0,
     formset=InlineColumnFormset,
 )
 
@@ -237,7 +237,7 @@ AddColumnFormSet = forms.inlineformset_factory(
     AddColumn,
     form=AddColumnForm,
     can_delete=True,
-    extra=1,
+    extra=0,
     formset=InlineColumnFormset,
 )
 
@@ -247,12 +247,12 @@ RenameColumnFormSet = forms.inlineformset_factory(
     RenameColumn,
     fields=("column", "new_name"),
     can_delete=True,
-    extra=1,
+    extra=0,
     formset=InlineColumnFormset,
 )
 
 FilterFormSet = forms.inlineformset_factory(
-    Node, Filter, form=FilterForm, can_delete=True, extra=1
+    Node, Filter, form=FilterForm, can_delete=True, extra=0
 )
 
 
