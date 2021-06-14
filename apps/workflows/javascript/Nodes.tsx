@@ -4,7 +4,7 @@ import { Handle, NodeProps, Position, Node } from 'react-flow-renderer'
 export const NodeContext = createContext({
   removeById: (id: string) => {},
   client: null,
-  getIncomingNodes: (id: string) => [] as [Node, Node[]],
+  getIncomingNodes: (id: string): [Node, Node[]] | null => null,
 })
 
 const DeleteButton = ({ id }) => {
@@ -76,11 +76,11 @@ const ErrorIcon = ({ text }) => (
 )
 
 const WarningIcon = ({ text }) => (
-  <div className='flex items-center justify-around absolute -top-2 -left-2 rounded-full w-6 h-6 text-orange'>
-    <div className='tooltip tooltip--bottom'>
-      <i className='fas fa-exclamation-triangle bg-white'></i>
-      <span className='tooltip__content capitalize'>{text}</span>
-    </div>
+  <div
+    className='flex items-center justify-around absolute -top-2 -left-2 rounded-full w-6 h-6 text-orange cursor-pointer'
+    title={text}
+  >
+    <i className='fas fa-exclamation-triangle bg-white'></i>
   </div>
 )
 
@@ -100,9 +100,9 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
 
 const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
   const { getIncomingNodes } = useContext(NodeContext)
-  const [, incomingNodes] = getIncomingNodes(id)
+  const incoming = getIncomingNodes(id)
 
-  const showWarning = incomingNodes.length < 1
+  const showWarning = incoming && incoming[1].length < 1
   return (
     <>
       <Buttons id={id} />
@@ -125,9 +125,10 @@ const DefaultNode = ({
   sourcePosition = Position.Right,
 }: NodeProps) => {
   const { getIncomingNodes } = useContext(NodeContext)
-  const [, incomingNodes] = getIncomingNodes(id)
+  const incoming = getIncomingNodes(id)
 
-  const showWarning = data.label === 'join' ? incomingNodes.length != 2 : incomingNodes.length == 0
+  const showWarning =
+    incoming && (data.label === 'join' ? incoming[1].length != 2 : incoming[1].length == 0)
 
   return (
     <>

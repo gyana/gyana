@@ -46,8 +46,12 @@ const DnDFlow = ({ client }) => {
     })
 
   const getIncomingNodes = (target: string) => {
-    const targetElement = elements.filter((el) => isNode(el) && el.id === target)[0] as Node
-    return [targetElement, getIncomers(targetElement, elements)] as [Node, Node[]]
+    const targetElement = elements.filter((el) => isNode(el) && el.id === target)[0] as
+      | Node
+      | undefined
+    return targetElement
+      ? ([targetElement, getIncomers(targetElement, elements)] as [Node, Node[]])
+      : null
   }
 
   const onConnect = (params) => {
@@ -261,6 +265,8 @@ const DnDFlow = ({ client }) => {
 
             <RunButton
               hasOutput={hasOutput}
+              hasBeenRun={hasBeenRun}
+              setHasBeenRun={setHasBeenRun}
               client={client}
               workflowId={workflowId}
               elements={elements}
