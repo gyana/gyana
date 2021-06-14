@@ -32,6 +32,7 @@ const DnDFlow = ({ client }) => {
   const [elements, setElements] = useState<(Edge | Node)[]>([])
   const { fitView } = useZoomPanHelper()
   const [isOutOfDate, setIsOutOfDate] = useState(false)
+  const [hasBeenRun, setHasBeenRun] = useState(false)
   // State whether the initial element load has been done
   const [initialLoad, setInitialLoad] = useState(false)
 
@@ -200,7 +201,10 @@ const DnDFlow = ({ client }) => {
 
     client
       .action(window.schema, ['workflows', 'out_of_date', 'list'], { id: workflowId })
-      .then((res) => setIsOutOfDate(res.isOutOfDate))
+      .then((res) => {
+        setHasBeenRun(res.hasBeenRun)
+        setIsOutOfDate(res.isOutOfDate)
+      })
   }, [])
 
   useEffect(() => {
