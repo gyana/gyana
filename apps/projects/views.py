@@ -37,7 +37,7 @@ class ProjectCreate(TeamMixin, TurboCreateView):
     def form_valid(self, form):
         redirect = super().form_valid(form)
         analytics.track(
-            self.request.user.id, PROJECT_CREATED_EVENT, {"id", form.instance.id}
+            self.request.user.id, PROJECT_CREATED_EVENT, {"id": form.instance.id}
         )
 
         return redirect
