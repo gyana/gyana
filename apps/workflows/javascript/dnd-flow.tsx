@@ -235,7 +235,7 @@ const DnDFlow = ({ client }) => {
   return (
     <div className='dndflow'>
       <div className='reactflow-wrapper' ref={reactFlowWrapper}>
-        <NodeContext.Provider value={{ removeById, client }}>
+        <NodeContext.Provider value={{ removeById, client, getIncomingNodes }}>
           <ReactFlow
             nodeTypes={defaultNodeTypes}
             elements={elements}

@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { Handle, NodeProps, Position } from 'react-flow-renderer'
+import { Handle, NodeProps, Position, Node } from 'react-flow-renderer'
 
 export const NodeContext = createContext({
   removeById: (id: string) => {},
   client: null,
+  getIncomingNodes: (id: string) => [] as [Node, Node[]],
 })
 
 const DeleteButton = ({ id }) => {
@@ -74,6 +75,15 @@ const ErrorIcon = ({ text }) => (
   </div>
 )
 
+const WarningIcon = ({ text }) => (
+  <div className='flex items-center justify-around absolute -top-2 -left-2 rounded-full w-6 h-6 text-orange'>
+    <div className='tooltip tooltip--bottom'>
+      <i className='fas fa-exclamation-triangle bg-white'></i>
+      <span className='tooltip__content capitalize'>{text}</span>
+    </div>
+  </div>
+)
+
 const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
   <>
     <Buttons id={id} />
@@ -88,17 +98,24 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
   </>
 )
 
-const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
-  <>
-    <Buttons id={id} />
-    {data.error && <ErrorIcon text={data.error} />}
-    <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
+const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
+  const { getIncomingNodes } = useContext(NodeContext)
+  const [, incomingNodes] = getIncomingNodes(id)
 
-    <i className={`fas fa-fw ${data.icon}`}></i>
-    <h4 className='capitalize'>{data.label}</h4>
-    {/* <Description id={id} data={data} /> */}
-  </>
-)
+  const showWarning = incomingNodes.length < 1
+  return (
+    <>
+      <Buttons id={id} />
+      {data.error && <ErrorIcon text={data.error} />}
+      {showWarning && <WarningIcon text='Output needs to be connected!' />}
+      <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
+
+      <i className={`fas fa-fw ${data.icon}`}></i>
+      <h4 className='capitalize'>{data.label}</h4>
+      {/* <Description id={id} data={data} /> */}
+    </>
+  )
+}
 
 const DefaultNode = ({
   id,
@@ -106,12 +123,17 @@ const DefaultNode = ({
   isConnectable,
   targetPosition = Position.Left,
   sourcePosition = Position.Right,
-  selected,
 }: NodeProps) => {
+  const { getIncomingNodes } = useContext(NodeContext)
+  const [, incomingNodes] = getIncomingNodes(id)
+
+  const showWarning = data.label === 'join' ? incomingNodes.length != 2 : incomingNodes.length == 0
+
   return (
     <>
       <Buttons id={id} />
       {data.error && <ErrorIcon text={data.error} />}
+      {showWarning && <WarningIcon text={`${data.label} node needs to be connected to a node`} />}
       <Handle type='target' position={targetPosition} isConnectable={isConnectable} />
 
       <i className={`fas fa-fw ${data.icon}`}></i>
