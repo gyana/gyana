@@ -132,7 +132,12 @@ const TextNode = ({ id, data, selected }: NodeProps) => {
       text_text: text,
     })
 
-  return <textarea value={text} onChange={(e) => setText(e.target.value)} onBlur={update} />
+  return (
+    <>
+      <textarea value={text} onChange={(e) => setText(e.target.value)} onBlur={update} />
+      <DeleteButton id={id} />
+    </>
+  )
 }
 
 const defaultNodeTypes = {
