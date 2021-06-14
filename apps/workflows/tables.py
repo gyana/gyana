@@ -1,7 +1,7 @@
 import django_tables2 as tables
 from apps.utils.table import NaturalDatetimeColumn
 
-from .models import Workflow
+from .models import Node, Workflow
 
 
 class WorkflowTable(tables.Table):
@@ -14,3 +14,7 @@ class WorkflowTable(tables.Table):
     last_run = NaturalDatetimeColumn()
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
+    incomplete = tables.Column(empty_values=())
+
+    def render_incomplete(self, value, record):
+        return any((node.kind == Node.Kind.OUTPUT for node in record.nodes.iterator()))
