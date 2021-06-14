@@ -272,7 +272,7 @@ const createNewNode = (res, position) => ({
   id: `${res.id}`,
   type: ['input', 'output', 'text'].includes(res.kind) ? res.kind : 'default',
   description: res.description,
-  data: { label: res.name || capitalize(res.kind), icon: NODES[res.kind].icon },
+  data: { label: res.name || capitalize(res.kind), icon: NODES[res.kind].icon, kind: res.kind },
   position,
   error: res.error,
   ...(res.kind === 'text' ? { text: res.text_text } : {}),
