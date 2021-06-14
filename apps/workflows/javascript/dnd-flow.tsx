@@ -58,7 +58,7 @@ const DnDFlow = ({ client }) => {
     const [targetElement, incomingNodes] = getIncomingNodes(params.target)
 
     // All nodes except Join (2) and Union (inf) can only have one parent
-    const maxParents = NODES[targetElement.data.label].maxParents || 1
+    const maxParents = NODES[targetElement.data.kind].maxParents || 1
     if (maxParents === -1 || incomingNodes.length < maxParents) {
       const parents = elements
         .filter((el) => isEdge(el) && el.target === params.target)
@@ -96,9 +96,8 @@ const DnDFlow = ({ client }) => {
       // add it to the new one
 
       const [targetElement, incomingNodes] = getIncomingNodes(newEdge.target)
-
       // All nodes except Join (2) and Union (inf) can only have one parent
-      const maxParents = NODES[targetElement.data.label].maxParents || 1
+      const maxParents = NODES[targetElement.data.kind].maxParents || 1
 
       if (maxParents === -1 || incomingNodes.length < maxParents) {
         const oldParents = elements
