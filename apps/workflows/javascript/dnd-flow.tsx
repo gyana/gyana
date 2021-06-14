@@ -32,6 +32,7 @@ const DnDFlow = ({ client }) => {
   const [elements, setElements] = useState<(Edge | Node)[]>([])
   const { fitView } = useZoomPanHelper()
   const [isOutOfDate, setIsOutOfDate] = useState(false)
+  const [hasBeenRun, setHasBeenRun] = useState(false)
   // State whether the initial element load has been done
   const [initialLoad, setInitialLoad] = useState(false)
 
@@ -45,8 +46,12 @@ const DnDFlow = ({ client }) => {
     })
 
   const getIncomingNodes = (target: string) => {
-    const targetElement = elements.filter((el) => isNode(el) && el.id === target)[0] as Node
-    return [targetElement, getIncomers(targetElement, elements)] as [Node, Node[]]
+    const targetElement = elements.filter((el) => isNode(el) && el.id === target)[0] as
+      | Node
+      | undefined
+    return targetElement
+      ? ([targetElement, getIncomers(targetElement, elements)] as [Node, Node[]])
+      : null
   }
 
   const onConnect = (params) => {
@@ -189,7 +194,10 @@ const DnDFlow = ({ client }) => {
 
     client
       .action(window.schema, ['workflows', 'out_of_date', 'list'], { id: workflowId })
-      .then((res) => setIsOutOfDate(res.isOutOfDate))
+      .then((res) => {
+        setHasBeenRun(res.hasBeenRun)
+        setIsOutOfDate(res.isOutOfDate)
+      })
   }, [])
 
   useEffect(() => {
@@ -219,7 +227,7 @@ const DnDFlow = ({ client }) => {
   return (
     <div className='dndflow'>
       <div className='reactflow-wrapper' ref={reactFlowWrapper}>
-        <NodeContext.Provider value={{ removeById, client }}>
+        <NodeContext.Provider value={{ removeById, client, getIncomingNodes }}>
           <ReactFlow
             nodeTypes={defaultNodeTypes}
             elements={elements}
@@ -241,6 +249,8 @@ const DnDFlow = ({ client }) => {
 
             <RunButton
               hasOutput={hasOutput}
+              hasBeenRun={hasBeenRun}
+              setHasBeenRun={setHasBeenRun}
               client={client}
               workflowId={workflowId}
               elements={elements}

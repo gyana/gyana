@@ -1,16 +1,27 @@
 import { Edge, isNode, Node } from 'react-flow-renderer'
 import React from 'react'
-import { INode } from './interfaces'
 
 const RunButton: React.FC<{
   hasOutput: boolean
+  hasBeenRun: boolean
+  setHasBeenRun: (x: boolean) => void
   workflowId: string
   client
   elements: (Node | Edge)[]
   setElements: (elements: (Node | Edge)[]) => void
   isOutOfDate: boolean
   setIsOutOfDate: (x: boolean) => void
-}> = ({ hasOutput, workflowId, client, elements, setElements, isOutOfDate, setIsOutOfDate }) => (
+}> = ({
+  hasOutput,
+  hasBeenRun,
+  setHasBeenRun,
+  workflowId,
+  client,
+  elements,
+  setElements,
+  isOutOfDate,
+  setIsOutOfDate,
+}) => (
   <div className='dndflow__run-button'>
     <button
       disabled={!hasOutput}
@@ -39,6 +50,7 @@ const RunButton: React.FC<{
               )
               if (Object.keys(res).length === 0) {
                 setIsOutOfDate(false)
+                setHasBeenRun(false)
                 window.dispatchEvent(new Event('workflow-run'))
               }
             }
@@ -47,7 +59,7 @@ const RunButton: React.FC<{
       className='button button--green button--square tooltip tooltip--bottom'
     >
       Run
-      {isOutOfDate && hasOutput && (
+      {isOutOfDate && hasOutput && hasBeenRun && (
         <>
           <div
             title='This workflow has been updated since the last run'
