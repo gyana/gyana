@@ -116,9 +116,13 @@ label {
 input.input__inline {
   border: none;
   font-size: 1.8rem;
-  padding: inherit;
+  padding: 0.4rem;
   font-weight: 500;
   color: var(--c-black);
+
+  &:hover {
+    background-color: var(--c-gray-50);
+  }
 }
 
 input.input__contenteditable {
