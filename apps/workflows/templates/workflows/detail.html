@@ -12,8 +12,11 @@
 
   </form>
   <div data-controller='event-refresh' data-event-refresh-event-value='workflow-run' class='mr-auto'>
-    <turbo-frame id="workflow-last-run" src="{% url 'workflows:last_run' object.id %}"
-                 data-event-refresh-target="turboFrame">
+    <turbo-frame 
+      id="workflow-last-run" 
+      src="{% url 'workflows:last_run' object.id %}"
+      data-event-refresh-target="turboFrame"
+    >
     </turbo-frame>
   </div>
   <a class="button button--circle button--tertiary" href="{% url 'project_workflows:delete' project.id object.pk %}">
@@ -30,7 +33,11 @@
         </button>
       </div>
 
-      <turbo-frame id="workflow-node" data-tf-modal-target="turboFrame"></turbo-frame>
+      <turbo-frame 
+        id="workflow-node" 
+        data-tf-modal-target="turboFrame"
+      >
+      </turbo-frame>
     </div>
   </div>
 
