@@ -3,11 +3,24 @@
   border-left: 1px solid var(--c-gray);
   display: flex;
   flex-flow: column;
-  gap: 0.8rem;
-  padding: 1.6rem;
   width: 32rem;
   overflow: auto;
   z-index: var(--z-default);
+
+  &__header {
+    display: flex;
+    gap: 1.6rem;
+    position: sticky;
+    padding: 0.8rem;
+    top: 0;
+    border-bottom: 1px solid var(--c-gray);
+    background-color: var(--c-white);
+    z-index: var(--z-ui);
+
+    > * {
+      padding: 0.8rem;
+    }
+  }
 
   &__node {
     align-items: center;
@@ -17,7 +30,6 @@
     grid-template-columns: 1fr 6fr;
     flex-direction: row;
     font-size: 1.4rem;
-    padding: 0.25em;
 
     &:hover {
       background: var(--c-blue-10);
