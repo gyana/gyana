@@ -260,14 +260,27 @@ class AbstractOperationColumn(models.Model):
     class StringOperations(models.TextChoices):
         LOWER = "lower", "to lowercase"
         UPPER = "upper", "to uppercase"
-        ISNULL = "isnull", "is null"
+        LENGTH = "length", "length"
+        REVERSE = "reverse", "reverse"
+        STRIP = "strip", "strip"
+        LSTRIP = "lstrip", "lstrip"
+        RSTRIP = "rstrip", "rstrip"
+        ISNULL = "isnull", "is empty"
+        NOTNULL = "notnull", "is not empty"
 
     class IntegerOperations(models.TextChoices):
         ISNULL = "isnull", "is null"
+        NOTNULL = "notnull", "is not empty"
         CUMMAX = "cummax", "cummulative max"
         CUMMIN = "cummin", "cummulative min"
         ABS = "abs", "absolute value"
         SQRT = "sqrt", "square root"
+        CEIL = "ceil", "ceiling"
+        FLOOR = "floor", "floor"
+        LN = "ln", "ln"
+        LOG2 = "log2", "log2"
+        LOG10 = "log10", "log10"
+        EXP = "exp", "exp"
 
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
 

@@ -110,12 +110,12 @@ def bigquery(node):
 
 def get_edit_query(node):
     parent = node.parents.first()
-    columns = [name for name in parent.schema]
     query = parent.get_query()
-    for edit in node.edit_columns.all():
-        idx = columns.index(edit.column)
-        columns[idx] = getattr(query[edit.column], edit.function)().name(edit.column)
-    return query[columns]
+    columns = {
+        edit.column: getattr(query[edit.column], edit.function)().name(edit.column)
+        for edit in node.edit_columns.iterator()
+    }
+    return query.mutate(**columns)
 
 
 def get_add_query(node):
