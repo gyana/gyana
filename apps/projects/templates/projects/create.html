@@ -1,7 +1,8 @@
 {% extends "web/app/app_base.html" %}
+
 {% block app %}
-<div class="max-w-lg mx-auto">
-  <h1>New Project</h1>
+<div class="pad max-w-lg">
+  <h1 class="mb-7">Create a new project</h1>
 
   <form method="post" action="{% url 'team_projects:create' team.slug %}" class="form">
     {% csrf_token %}
