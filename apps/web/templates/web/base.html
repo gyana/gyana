@@ -46,7 +46,7 @@
   {% endblock messages %}
 
   {% block sidebar %}
-  <div class="sidebar" data-controller="sidebar">
+  <div class="sidebar" data-controller="sidebar" data-turbo-permanent>
     <input type="checkbox" id="sidebar-toggle" role="button" hidden data-sidebar-target="toggle">
     <label for="sidebar-toggle" data-action="click->sidebar#toggle">
       <i class="fas fa-fw fa-sm"></i>

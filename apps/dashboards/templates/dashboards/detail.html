@@ -10,11 +10,8 @@
   </form>
 
   <div data-controller='popover'>
-    <button 
-      data-popover-target="trigger" 
-      class="button button--square button--filled button--sm"
-      data-action="popover#trigger"
-    >
+    <button data-popover-target="trigger" class="button button--square button--filled button--sm"
+            data-action="popover#trigger">
       Add widget <i class="fas fa-angle-up fa-rotate-180"></i>
     </button>
 
@@ -24,7 +21,9 @@
         <form method="post" action="{% url 'dashboard_widgets:create' project.id dashboard.id %}" class="form">
           {% csrf_token %}
           <input type='hidden' name='kind' id='id_kind' value="{{id}}" />
-          <button type="submit"><p><i class="fas {{icon}} text-blue mr-2"></i> {{txt}}</p></button>
+          <button type="submit">
+            <p><i class="fas {{icon}} text-blue mr-2"></i> {{txt}}</p>
+          </button>
         </form>
       </li>
       {% endfor %}
@@ -35,7 +34,7 @@
   </a>
 </div>
 
-<div class="p-4 pb-0 overflow-auto w-full h-full">
+<div class="p-4 pb-0 overflow-auto w-full">
   <turbo-frame id="widgets" src="{% url 'dashboard_widgets:list' project.id object.id %}" target="_top">
   </turbo-frame>
 </div>
