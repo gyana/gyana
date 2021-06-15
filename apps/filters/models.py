@@ -1,9 +1,10 @@
 from apps.widgets.models import Widget
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from model_clone import CloneMixin
 
 
-class Filter(models.Model):
+class Filter(CloneMixin, models.Model):
     class Type(models.TextChoices):
         INTEGER = "INTEGER", "Integer"
         FLOAT = "FLOAT", "Float"

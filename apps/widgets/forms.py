@@ -58,11 +58,3 @@ class WidgetDuplicateForm(forms.ModelForm):
     class Meta:
         model = Widget
         fields = ()
-
-    def is_valid(self) -> bool:
-        if result := super().is_valid():
-            instance = self.instance
-            instance.pk = None
-            instance.description = "Copy of " + instance.description
-            instance.save()
-        return result

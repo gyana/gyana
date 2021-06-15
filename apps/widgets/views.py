@@ -88,10 +88,18 @@ class WidgetDetail(DashboardMixin, UpdateView):
     model = Widget
     form_class = WidgetDuplicateForm
 
+    def form_valid(self, form):
+        clone = self.object.make_clone(
+            attrs={"description": "Copy of " + self.object.description}
+        )
+        clone.save()
+        self.clone = clone
+        return super().form_valid(form)
+
     def get_success_url(self) -> str:
         return reverse(
             "dashboard_widgets:update",
-            args=(self.project.id, self.dashboard.id, self.object.id),
+            args=(self.project.id, self.dashboard.id, self.clone.id),
         )
 
 
@@ -149,24 +157,6 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
         )
 
         return r
-
-
-class WidgetDelete(DashboardMixin, DeleteView):
-    template_name = "widgets/delete.html"
-    model = Widget
-
-    def delete(self, request, *args, **kwargs):
-        with transaction.atomic():
-            self.dashboard.save()
-            response = super().delete(request, *args, **kwargs)
-
-        return response
-
-    def get_success_url(self) -> str:
-        return reverse(
-            "project_dashboards:detail",
-            args=(self.project.id, self.dashboard.id),
-        )
 
 
 class WidgetDelete(DashboardMixin, DeleteView):
