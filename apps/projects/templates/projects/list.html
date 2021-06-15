@@ -7,6 +7,8 @@
 
 <div class="flex items-center mb-4">
   <h1 class="mr-auto">Projects</h1>
+  <a class="button button--square button--filled button--sm ml-4"
+     href="{% url 'team_projects:create' team.slug %}">Create</a>
 </div>
 
 <div class="flex justify-start items-start gap-7">
@@ -29,8 +31,7 @@
           <a href="{% url 'project_integrations:list' object.id %}"
              class="tabbar__link flex-1">{{ object.integration_count }}
             Integration{{ object.integration_count|pluralize }}</a>
-          <a href="{% url 'project_workflows:list' object.id %}"
-             class="tabbar__link flex-1">{{ object.workflow_count }}
+          <a href="{% url 'project_workflows:list' object.id %}" class="tabbar__link flex-1">{{ object.workflow_count }}
             Workflow{{ object.workflow_count|pluralize }}</a>
           <a href="{% url 'project_dashboards:list' object.id %}"
              class="tabbar__link flex-1">{{ object.dashboard_count }}
@@ -42,21 +43,27 @@
     <li>
       <div class="card">
         <h3>No projects found</h3>
-        <p>Why not create one using the button below?</p>
+        <p>Why not create one one using the button in the top right corner?</p>
       </div>
     </li>
     {% endfor %}
-    <li>
-      <a class="card card--sm card--primary card--center" href="{% url 'team_projects:create' team.slug %}">
-        <i class="fas fa-plus mr-4"></i><strong>Create new Project</strong>
-      </a>
-    </li>
   </ul>
 
-  <div class="card card--center flex-col">
-    <h3>{{ team.sorted_memberships|length }}</h3>
-    <p>Team members</p>
+  <div class="flex flex-col gap-7">
+    <div class="card card--center flex-col">
+      <h3>{{ team.sorted_memberships|length }}</h3>
+      <p>Team member{{ team.sorted_memberships|length|pluralize }}</p>
+    </div>
+    <div class="card card--center flex-col">
+      <h3>{{ team.sorted_memberships|length }}</h3>
+      <p>Team member{{ team.sorted_memberships|length|pluralize }}</p>
+    </div>
+    <div class="card card--center flex-col">
+      <h3>{{ team.sorted_memberships|length }}</h3>
+      <p>Team member{{ team.sorted_memberships|length|pluralize }}</p>
+    </div>
   </div>
+
 </div>
 
 {% if is_paginated %}
