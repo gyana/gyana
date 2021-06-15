@@ -5,14 +5,15 @@ from apps.filters.models import Filter
 from apps.tables.models import Table
 from apps.utils.live_update_form import LiveUpdateForm
 from apps.utils.schema_form_mixin import SchemaFormMixin
+from apps.workflows.nodes import AllOperations
 from apps.workflows.widgets import SourceSelect
 from django import forms
 from django.forms.models import BaseInlineFormSet
 from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
 
 # fmt: off
-from .models import (AddColumn, Column, EditColumn, FunctionColumn, Node,
-                     RenameColumn, SortColumn, Workflow)
+from .models import (AbstractOperationColumn, AddColumn, Column, EditColumn,
+                     FunctionColumn, Node, RenameColumn, SortColumn, Workflow)
 
 # fmt: on
 
@@ -196,6 +197,9 @@ class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
             "date_function",
             "time_function",
             "datetime_function",
+            "integer_value",
+            "float_value",
+            "string_value",
         )
 
     def get_live_fields(self):
@@ -203,6 +207,9 @@ class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
 
         if self.column_type and (function_field := IBIS_TO_FUNCTION[self.column_type]):
             fields += [function_field]
+            operation = AllOperations[self.get_live_field(function_field)]
+            if operation.arguments == 1:
+                fields += [operation.value_field]
 
         return fields
 
@@ -226,7 +233,18 @@ EditColumnFormSet = forms.inlineformset_factory(
 
 class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
-        fields = ("column", "string_function", "integer_function", "label")
+        fields = (
+            "column",
+            "string_function",
+            "integer_function",
+            "date_function",
+            "time_function",
+            "datetime_function",
+            "integer_value",
+            "float_value",
+            "string_value",
+            "label",
+        )
 
     def get_live_fields(self):
         fields = ["column"]

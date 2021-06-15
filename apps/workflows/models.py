@@ -2,7 +2,15 @@ from functools import cached_property
 
 from apps.projects.models import Project
 from apps.tables.models import Table
-from apps.workflows.nodes import NODE_FROM_CONFIG
+from apps.workflows.nodes import (
+    NODE_FROM_CONFIG,
+    CommonOperations,
+    DateOperations,
+    DatetimeOperations,
+    NumericOperations,
+    StringOperations,
+    TimeOperations,
+)
 from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models
@@ -257,77 +265,57 @@ class AbstractOperationColumn(models.Model):
     class Meta:
         abstract = True
 
-    class CommonOperations(models.TextChoices):
-        ISNULL = "isnull", "is empty"
-        NOTNULL = "notnull", "is not empty"
-
-    class StringOperations(models.TextChoices):
-        LOWER = "lower", "to lowercase"
-        UPPER = "upper", "to uppercase"
-        LENGTH = "length", "length"
-        REVERSE = "reverse", "reverse"
-        STRIP = "strip", "strip"
-        LSTRIP = "lstrip", "lstrip"
-        RSTRIP = "rstrip", "rstrip"
-
-    class IntegerOperations(models.TextChoices):
-        CUMMAX = "cummax", "cummulative max"
-        CUMMIN = "cummin", "cummulative min"
-        ABS = "abs", "absolute value"
-        SQRT = "sqrt", "square root"
-        CEIL = "ceil", "ceiling"
-        FLOOR = "floor", "floor"
-        LN = "ln", "ln"
-        LOG2 = "log2", "log2"
-        LOG10 = "log10", "log10"
-        EXP = "exp", "exp"
-
-    class DateOperations(models.TextChoices):
-        YEAR = "year", "year"
-        MONTH = "month", "month"
-        DAY = "day", "day"
-
-    class TimeOperations(models.TextChoices):
-        HOUR = "hour", "hour"
-        MINUTE = "minute", "minute"
-        SECOND = "second", "second"
-        MILLISECOND = "millisecond", "millisecond"
-
-    class DatetimeOperations(models.TextChoices):
-        EPOCH_SECONDS = "epoch_seconds", "epoch seconds"
-        TIME = "time"
-        DATE = "date"
-
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
 
     string_function = models.CharField(
         max_length=20,
-        choices=CommonOperations.choices + StringOperations.choices,
+        choices=(
+            (key, value.label)
+            for key, value in {**CommonOperations, **StringOperations}.items()
+        ),
         null=True,
     )
     integer_function = models.CharField(
         max_length=20,
-        choices=CommonOperations.choices + IntegerOperations.choices,
+        choices=(
+            (key, value.label)
+            for key, value in {**CommonOperations, **NumericOperations}.items()
+        ),
         null=True,
     )
     date_function = models.CharField(
         max_length=20,
-        choices=CommonOperations.choices + DateOperations.choices,
+        choices=(
+            (key, value.label)
+            for key, value in {**CommonOperations, **DateOperations}.items()
+        ),
         null=True,
     )
     time_function = models.CharField(
         max_length=20,
-        choices=CommonOperations.choices + TimeOperations.choices,
+        choices=(
+            (key, value.label)
+            for key, value in {**CommonOperations, **TimeOperations}.items()
+        ),
         null=True,
     )
     datetime_function = models.CharField(
         max_length=20,
-        choices=CommonOperations.choices
-        + TimeOperations.choices
-        + DateOperations.choices
-        + DatetimeOperations.choices,
+        choices=(
+            (key, value.label)
+            for key, value in {
+                **CommonOperations,
+                **TimeOperations,
+                **DateOperations,
+                **DatetimeOperations,
+            }.items()
+        ),
         null=True,
     )
+
+    integer_value = models.BigIntegerField(null=True, blank=True)
+    float_value = models.FloatField(null=True, blank=True)
+    string_value = models.TextField(null=True, blank=True)
 
     @property
     def function(self):
