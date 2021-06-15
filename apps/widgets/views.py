@@ -10,13 +10,13 @@ from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.views.decorators.http import condition
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import DeleteView
+from django.views.generic.edit import DeleteView, UpdateView
 from rest_framework import mixins, viewsets
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 from turbo_response.views import TurboCreateView
 
-from .forms import FilterFormset, WidgetConfigForm
+from .forms import FilterFormset, WidgetConfigForm, WidgetDuplicateForm
 from .models import WIDGET_CHOICES_ARRAY, Widget
 
 
@@ -83,9 +83,16 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
         )
 
 
-class WidgetDetail(DashboardMixin, DetailView):
+class WidgetDetail(DashboardMixin, UpdateView):
     template_name = "widgets/detail.html"
     model = Widget
+    form_class = WidgetDuplicateForm
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "dashboard_widgets:update",
+            args=(self.project.id, self.dashboard.id, self.object.id),
+        )
 
 
 class WidgetUpdate(DashboardMixin, FormsetUpdateView):
@@ -142,6 +149,24 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
         )
 
         return r
+
+
+class WidgetDelete(DashboardMixin, DeleteView):
+    template_name = "widgets/delete.html"
+    model = Widget
+
+    def delete(self, request, *args, **kwargs):
+        with transaction.atomic():
+            self.dashboard.save()
+            response = super().delete(request, *args, **kwargs)
+
+        return response
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_dashboards:detail",
+            args=(self.project.id, self.dashboard.id),
+        )
 
 
 class WidgetDelete(DashboardMixin, DeleteView):

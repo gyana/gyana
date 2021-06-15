@@ -27,12 +27,21 @@
 
       <div class='widget-card__commands'>
         <i class="cursor-move fas fa-fw fa-arrows rnd-handle"></i>
-        <a href="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}"><i
-              class="fas fa-fw fa-eye"></i></a>
-        <a href="{% url 'dashboard_widgets:update' project.id dashboard.id object.pk %}"><i
-              class="fas fa-fw fa-edit"></i></a>
-        <a href="{% url 'dashboard_widgets:delete' project.id dashboard.id object.pk %}" class="mt-auto"><i
-              class="fas fa-fw fa-trash"></i></a>
+        <a href="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
+          <i class="fas fa-fw fa-eye"></i>
+        </a>
+        <a href="{% url 'dashboard_widgets:update' project.id dashboard.id object.pk %}">
+          <i class="fas fa-fw fa-edit"></i>
+        </a>
+        <form method='post' action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
+          {% csrf_token %}
+          <button type='submit'>
+            <i class="fas fa-fw fa-copy"></i>
+          </button>
+        </form>
+        <a href="{% url 'dashboard_widgets:delete' project.id dashboard.id object.pk %}" class="mt-auto">
+          <i class="fas fa-fw fa-trash"></i>
+        </a>
       </div>
     </div>
   </div>
