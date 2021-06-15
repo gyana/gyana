@@ -177,6 +177,24 @@ class WidgetDelete(DashboardMixin, DeleteView):
         )
 
 
+class WidgetDelete(DashboardMixin, DeleteView):
+    template_name = "widgets/delete.html"
+    model = Widget
+
+    def delete(self, request, *args, **kwargs):
+        with transaction.atomic():
+            self.dashboard.save()
+            response = super().delete(request, *args, **kwargs)
+
+        return response
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_dashboards:detail",
+            args=(self.project.id, self.dashboard.id),
+        )
+
+
 class WidgetPartialUpdate(viewsets.GenericViewSet, mixins.UpdateModelMixin):
     serializer_class = WidgetSerializer
     queryset = Widget.objects.all()

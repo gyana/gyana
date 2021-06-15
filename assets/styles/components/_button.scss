@@ -7,6 +7,10 @@ $button-colors: (
   "tertiary": var(--c-black),
 ) !default;
 
+button:focus {
+  outline: none;
+}
+
 .button {
   --button-color: var(--c-blue);
   --button-background: var(--c-transparent);

@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.views.generic import DetailView
 from django.views.decorators.http import require_POST
 from rest_framework import viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -33,6 +34,11 @@ class TeamCreate(LoginRequiredMixin, TurboCreateView):
 
     def get_success_url(self) -> str:
         return reverse("team_projects:list", args=(self.object.slug,))
+
+
+class TeamDetail(DetailView):
+    template_name = "teams/detail.html"
+    model = Team
 
 
 @login_and_team_required

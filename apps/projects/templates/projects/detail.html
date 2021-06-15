@@ -1,4 +1,5 @@
 {% extends "web/app/project_base.html" %}
+{% load render_table from django_tables2 %}
 {% load humanize %}
 
 {% block app %}
@@ -12,7 +13,7 @@
     {% endif %}
   </hgroup>
 
-  <div class="grid grid-cols-4 auto-rows-fr gap-7">
+  <div class="grid grid-cols-3 auto-rows-fr gap-7 mb-7">
     <div class="card card--center flex-col">
       <h3>{{ project.num_rows|default_if_none:'0'|intcomma }}</h3>
       <p>Rows</p>
@@ -34,7 +35,9 @@
       <h3>{{ project.updated|naturaltime }}</h3>
       <p>Last update</p>
     </div>
+  </div>
 
+  <div class="grid  grid-cols-2 gap-7">
     <div class="card card--center flex-col">
       <h3>{{ integration_count }}</h3>
       <p><a class="link"
@@ -50,8 +53,8 @@
 
     <div class="card card--center flex-col">
       <h3>{{ workflow_count }}</h3>
-      <p><a class="link"
-           href="{% url 'project_workflows:list' project.id %}">Workflow{{ workflow_count|pluralize }}</a>
+      <p>
+        <a class="link" href="{% url 'project_workflows:list' project.id %}">Workflow{{ workflow_count|pluralize }}</a>
       </p>
 
       {% if workflow_error > 0 %}

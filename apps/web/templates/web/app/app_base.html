@@ -10,22 +10,18 @@
   </a>
 </li>
 {% endfor %}
+
 <li>
   <a class="sidebar__link" href="{% url 'teams:create_team' %}">
     <i class="fas fa-fw fa-plus mr-6"></i>New Team
   </a>
 </li>
-{% endblock %}
 
-{% block sidebar_footer %}
 {% if team %}
 <li>
-  <a class="sidebar__link" href="{% url 'single_team:manage_team_react' team.slug %}">
-    <i class="fa fa-fw fa-cog mr-6"></i>Settings</a>
-</li>
-
-<li>
-  <hr>
+  <a class="sidebar__link {% if request.resolver_match.url_name == 'team' %}sidebar__link--active{% endif %}"
+     href="{% url 'single_team:manage_team_react' team.slug %}">
+    <i class="fa fa-fw fa-users-cog mr-6"></i>Settings</a>
 </li>
 {%endif%}
 {% endblock %}
@@ -34,7 +30,7 @@
 
 {% block notifications %}{% endblock %}
 
-<section class="{% block app-class %}{% endblock %}">
+<section class="flex-1 {% block app-class %}{% endblock %}">
   {% if object.project %}
   <p class="text-sm mb-2">
     <a href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}">Back to

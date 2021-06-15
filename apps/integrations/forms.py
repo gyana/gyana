@@ -13,10 +13,7 @@ class GoogleSheetsForm(forms.ModelForm):
         model = Integration
         fields = ["url", "name", "cell_range", "kind", "project"]
         widgets = {"kind": HiddenInput(), "project": HiddenInput()}
-        help_texts = {
-            "url": "Needs to be public",
-            "cell_range": "TODO",
-        }
+        help_texts = {}
 
     def clean_url(self):
         url = self.cleaned_data["url"]

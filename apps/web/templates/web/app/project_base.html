@@ -3,7 +3,7 @@
 
 {% block sidebar_content %}
 <div class="sidebar__title">
-  <h3 title="{{ project.name }}">{{ project.name }}</h3>
+  <a href="{% url 'projects:detail' project.id %}"><h3 title="{{ project.name }}">{{ project.name }}</h3></a>
 </div>
 
 {% with app_name=request.resolver_match.app_name %}
@@ -34,20 +34,14 @@
     <i class="far fa-fw fa-presentation mr-6"></i>Dashboards
   </a>
 </li>
-{% endwith %}
-{% endblock %}
 
-{% block sidebar_footer %}
 <li>
   <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
      href="{% url 'projects:update' project.id %}">
     <i class="far fa-fw fa-cog mr-6"></i>Settings
   </a>
 </li>
-
-<li>
-  <hr>
-</li>
+{% endwith %}
 {% endblock %}
 
 {% block body %}

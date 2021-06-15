@@ -39,7 +39,7 @@ class WorkflowTable(tables.Table):
             text = "Uptodate"
 
         return mark_safe(
-            f"<div class='tooltip tooltip--bottom px-6'>"
+            f"<div class='tooltip tooltip--bottom'>"
             f"<i class='fa {icon}'></i>"
             f"<span class='tooltip__content'>{text}</span>"
             f"</div>"

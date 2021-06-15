@@ -6,6 +6,7 @@ from . import views
 app_name = "teams"
 
 urlpatterns = [
+    path("<slug:slug>", views.TeamDetail.as_view(), name="detail"),
     path("create/", views.TeamCreate.as_view(), name="create_team"),
     path(
         "invitation/<slug:invitation_id>/",

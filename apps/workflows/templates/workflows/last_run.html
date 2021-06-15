@@ -1,11 +1,9 @@
 <turbo-frame id="workflow-last-run">
-  <p 
-    class="text-black-50"
-  >
+  <p class="text-black-50">
     {% if object.last_run %}
     Last run: {{ object.last_run }}
     {% else %}
-    You have not run this workflow
+    Press the run button after adding some nodes to run this worlflow
     {% endif %}
   </p>
 </turbo-frame>
