@@ -121,7 +121,6 @@ class UsedInTable(Table):
         attrs = {"class": "table"}
         fields = (
             "name",
-            "project",
             "kind",
             "created",
             "updated",
