@@ -13,16 +13,23 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from rest_framework import mixins, viewsets
 from turbo_response import TurboStream
+from turbo_response.response import TurboStreamResponse
 from turbo_response.views import TurboCreateView
 
 from .forms import FilterFormset, WidgetConfigForm
-from .models import WIDGET_KIND_TO_WEB, Widget
+from .models import WIDGET_CHOICES_ARRAY, Widget
 
 
 class WidgetList(DashboardMixin, ListView):
     template_name = "widgets/list.html"
     model = Widget
     paginate_by = 20
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["choices"] = WIDGET_CHOICES_ARRAY
+
+        return context_data
 
     def get_queryset(self) -> QuerySet:
         return Widget.objects.filter(dashboard=self.dashboard)
@@ -49,17 +56,20 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
             },
         )
 
-        return (
-            TurboStream("dashboard-widget-container")
-            .append.template(
-                "widgets/widget_component.html",
-                {
-                    "object": form.instance,
-                    "project": self.dashboard.project,
-                    "dashboard": self.dashboard,
-                },
-            )
-            .response(self.request)
+        return TurboStreamResponse(
+            [
+                TurboStream("dashboard-widget-placeholder").remove.render(),
+                TurboStream("dashboard-widget-container")
+                .append.template(
+                    "widgets/widget_component.html",
+                    {
+                        "object": form.instance,
+                        "project": self.dashboard.project,
+                        "dashboard": self.dashboard,
+                    },
+                )
+                .render(),
+            ]
         )
 
     def get_success_url(self) -> str:

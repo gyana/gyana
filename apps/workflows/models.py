@@ -2,7 +2,15 @@ from functools import cached_property
 
 from apps.projects.models import Project
 from apps.tables.models import Table
-from apps.workflows.nodes import NODE_FROM_CONFIG
+from apps.workflows.nodes import (
+    NODE_FROM_CONFIG,
+    CommonOperations,
+    DateOperations,
+    DatetimeOperations,
+    NumericOperations,
+    StringOperations,
+    TimeOperations,
+)
 from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models
@@ -257,30 +265,67 @@ class AbstractOperationColumn(models.Model):
     class Meta:
         abstract = True
 
-    class StringOperations(models.TextChoices):
-        LOWER = "lower", "to lowercase"
-        UPPER = "upper", "to uppercase"
-        ISNULL = "isnull", "is null"
-
-    class IntegerOperations(models.TextChoices):
-        ISNULL = "isnull", "is null"
-        CUMMAX = "cummax", "cummulative max"
-        CUMMIN = "cummin", "cummulative min"
-        ABS = "abs", "absolute value"
-        SQRT = "sqrt", "square root"
-
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
 
     string_function = models.CharField(
-        max_length=20, choices=StringOperations.choices, null=True
+        max_length=20,
+        choices=(
+            (key, value.label)
+            for key, value in {**CommonOperations, **StringOperations}.items()
+        ),
+        null=True,
     )
     integer_function = models.CharField(
-        max_length=20, choices=IntegerOperations.choices, null=True
+        max_length=20,
+        choices=(
+            (key, value.label)
+            for key, value in {**CommonOperations, **NumericOperations}.items()
+        ),
+        null=True,
     )
+    date_function = models.CharField(
+        max_length=20,
+        choices=(
+            (key, value.label)
+            for key, value in {**CommonOperations, **DateOperations}.items()
+        ),
+        null=True,
+    )
+    time_function = models.CharField(
+        max_length=20,
+        choices=(
+            (key, value.label)
+            for key, value in {**CommonOperations, **TimeOperations}.items()
+        ),
+        null=True,
+    )
+    datetime_function = models.CharField(
+        max_length=20,
+        choices=(
+            (key, value.label)
+            for key, value in {
+                **CommonOperations,
+                **TimeOperations,
+                **DateOperations,
+                **DatetimeOperations,
+            }.items()
+        ),
+        null=True,
+    )
+
+    integer_value = models.BigIntegerField(null=True, blank=True)
+    float_value = models.FloatField(null=True, blank=True)
+    string_value = models.TextField(null=True, blank=True)
 
     @property
     def function(self):
-        return self.string_function or self.integer_function
+        return (
+            self.string_function
+            or self.integer_function
+            or self.date_function
+            or self.time_function
+            or self.datetime_function
+        )
 
 
 class EditColumn(AbstractOperationColumn):

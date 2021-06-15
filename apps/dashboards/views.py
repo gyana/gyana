@@ -3,11 +3,9 @@ from apps.dashboards.serializers import DashboardSerializer
 from apps.dashboards.tables import DashboardTable
 from apps.projects.mixins import ProjectMixin
 from apps.utils.segment_analytics import DASHBOARD_CREATED_EVENT
-from apps.widgets.models import WIDGET_KIND_TO_WEB, Widget
+from apps.widgets.models import WIDGET_CHOICES_ARRAY
 from django.db.models.query import QuerySet
-from django.urls import reverse_lazy
 from django.urls.base import reverse
-from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from rest_framework import generics
@@ -70,10 +68,7 @@ class DashboardDetail(ProjectMixin, TurboUpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["choices"] = [
-            (choices + WIDGET_KIND_TO_WEB[choices[0]])
-            for choices in Widget.Kind.choices
-        ]
+        context_data["choices"] = WIDGET_CHOICES_ARRAY
 
         return context_data
 

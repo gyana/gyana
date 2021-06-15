@@ -84,3 +84,7 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.LINE.value: ("fa-chart-line",),
     Widget.Kind.PIE.value: ("fa-chart-pie",),
 }
+
+WIDGET_CHOICES_ARRAY = [
+    (choices + WIDGET_KIND_TO_WEB[choices[0]]) for choices in Widget.Kind.choices
+]
