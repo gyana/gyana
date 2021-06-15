@@ -33,6 +33,8 @@
   }
 
   &--full {
+  height: auto;
+  
     &::after {
       display: none;
     }
