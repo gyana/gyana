@@ -257,6 +257,10 @@ class AbstractOperationColumn(models.Model):
     class Meta:
         abstract = True
 
+    class CommonOperations(models.TextChoices):
+        ISNULL = "isnull", "is empty"
+        NOTNULL = "notnull", "is not empty"
+
     class StringOperations(models.TextChoices):
         LOWER = "lower", "to lowercase"
         UPPER = "upper", "to uppercase"
@@ -265,12 +269,8 @@ class AbstractOperationColumn(models.Model):
         STRIP = "strip", "strip"
         LSTRIP = "lstrip", "lstrip"
         RSTRIP = "rstrip", "rstrip"
-        ISNULL = "isnull", "is empty"
-        NOTNULL = "notnull", "is not empty"
 
     class IntegerOperations(models.TextChoices):
-        ISNULL = "isnull", "is null"
-        NOTNULL = "notnull", "is not empty"
         CUMMAX = "cummax", "cummulative max"
         CUMMIN = "cummin", "cummulative min"
         ABS = "abs", "absolute value"
@@ -282,18 +282,62 @@ class AbstractOperationColumn(models.Model):
         LOG10 = "log10", "log10"
         EXP = "exp", "exp"
 
+    class DateOperations(models.TextChoices):
+        YEAR = "year", "year"
+        MONTH = "month", "month"
+        DAY = "day", "day"
+
+    class TimeOperations(models.TextChoices):
+        HOUR = "hour", "hour"
+        MINUTE = "minute", "minute"
+        SECOND = "second", "second"
+        MILLISECOND = "millisecond", "millisecond"
+
+    class DatetimeOperations(models.TextChoices):
+        EPOCH_SECONDS = "epoch_seconds", "epoch seconds"
+        TIME = "time"
+        DATE = "date"
+
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
 
     string_function = models.CharField(
-        max_length=20, choices=StringOperations.choices, null=True
+        max_length=20,
+        choices=CommonOperations.choices + StringOperations.choices,
+        null=True,
     )
     integer_function = models.CharField(
-        max_length=20, choices=IntegerOperations.choices, null=True
+        max_length=20,
+        choices=CommonOperations.choices + IntegerOperations.choices,
+        null=True,
+    )
+    date_function = models.CharField(
+        max_length=20,
+        choices=CommonOperations.choices + DateOperations.choices,
+        null=True,
+    )
+    time_function = models.CharField(
+        max_length=20,
+        choices=CommonOperations.choices + TimeOperations.choices,
+        null=True,
+    )
+    datetime_function = models.CharField(
+        max_length=20,
+        choices=CommonOperations.choices
+        + TimeOperations.choices
+        + DateOperations.choices
+        + DatetimeOperations.choices,
+        null=True,
     )
 
     @property
     def function(self):
-        return self.string_function or self.integer_function
+        return (
+            self.string_function
+            or self.integer_function
+            or self.date_function
+            or self.time_function
+            or self.datetime_function
+        )
 
 
 class EditColumn(AbstractOperationColumn):

@@ -177,7 +177,14 @@ SortColumnFormSet = forms.inlineformset_factory(
 )
 
 
-IBIS_TO_PREFIX = {"String": "string_", "Int64": "integer_"}
+IBIS_TO_FUNCTION = {
+    "String": "string_function",
+    "Int64": "integer_function",
+    "Float64": "integer_function",
+    "Timestamp": "datetime_function",
+    "Date": "date_function",
+    "Time": "time_function",
+}
 
 
 class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
@@ -186,18 +193,25 @@ class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
             "column",
             "string_function",
             "integer_function",
+            "date_function",
+            "time_function",
+            "datetime_function",
         )
 
     def get_live_fields(self):
         fields = ["column"]
 
-        if self.column_type == "Int64":
-            fields += ["integer_function"]
-
-        elif self.column_type == "String":
-            fields += ["string_function"]
+        if self.column_type and (function_field := IBIS_TO_FUNCTION[self.column_type]):
+            fields += [function_field]
 
         return fields
+
+    def save(self, commit: bool):
+        # Make sure only one function is set and turn the others to Null
+        for field in self.base_fields:
+            if field.endswith("function") and f"{self.prefix}-{field}" not in self.data:
+                setattr(self.instance, field, None)
+        return super().save(commit=commit)
 
 
 EditColumnFormSet = forms.inlineformset_factory(
