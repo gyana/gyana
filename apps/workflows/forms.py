@@ -207,8 +207,8 @@ class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
 
         if self.column_type and (function_field := IBIS_TO_FUNCTION[self.column_type]):
             fields += [function_field]
-            operation = AllOperations[self.get_live_field(function_field)]
-            if operation.arguments == 1:
+            operation = AllOperations.get(self.get_live_field(function_field))
+            if operation and operation.arguments == 1:
                 fields += [operation.value_field]
 
         return fields
