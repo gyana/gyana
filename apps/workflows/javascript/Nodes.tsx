@@ -3,7 +3,7 @@ import { Handle, NodeProps, Position, Node } from 'react-flow-renderer'
 import { useDebouncedCallback } from 'use-debounce'
 
 export const NodeContext = createContext({
-  removeById: (id: string) => {},
+  removeById: (id: string) => { },
   client: null,
   getIncomingNodes: (id: string): [Node, Node[]] | null => null,
 })
@@ -44,7 +44,7 @@ const NodeName = ({ name, id }: { name: string; id: string }) => {
 
   return (
     <input
-      className='input__contenteditable absolute -top-10'
+      className='input__contenteditable absolute -top-12'
       value={text}
       onChange={(e) => setText(e.target.value)}
     />
