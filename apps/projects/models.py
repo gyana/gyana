@@ -1,5 +1,6 @@
 from apps.teams.models import Team
 from django.db import models
+from django.urls import reverse
 
 
 class Project(models.Model):
@@ -38,3 +39,6 @@ class Project(models.Model):
         return Table.objects.filter(integration__project=self).aggregate(
             models.Sum("num_rows")
         )["num_rows__sum"]
+    
+    def get_absolute_url(self):
+        return reverse("projects:detail", args=(self.id, ))

@@ -1,7 +1,9 @@
 {% extends "teams/base.html" %}
+{% load humanize %}
+{% load render_table from django_tables2 %}
 
 {% block tab %}
-<div>
-    TODO: Team details
+<div class="card card--sm">
+    {% render_table team_projects %}
 </div>
 {% endblock %}
