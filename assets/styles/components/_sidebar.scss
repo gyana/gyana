@@ -63,16 +63,12 @@
   }
 
   label[for="sidebar-toggle"] {
-    background-color: var(--c-gray-20);
+    background-color: var(--c-white);
     border-right: 1px solid var(--c-gray);
     border-top: 1px solid var(--c-gray);
     color: var(--c-black);
-    padding: 1.6rem;
     cursor: pointer;
-    display: flex;
-    flex-basis: 0;
-    height: 100%;
-    justify-content: center;
+    display: block;
 
     i::before {
       content: '\f054';
@@ -80,8 +76,8 @@
   }
 }
 
-#sidebar-toggle:checked ~ label[for="sidebar-toggle"] i::before {
-  content: '\f053';
+#sidebar-toggle:checked ~ .sidebar__body label[for="sidebar-toggle"] i::before {
+  content: '\f053'
 }
 
 #sidebar-toggle ~ .sidebar__body {

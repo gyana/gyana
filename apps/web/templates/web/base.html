@@ -48,9 +48,6 @@
   {% block sidebar %}
   <div class="sidebar" data-controller="sidebar" data-turbo-permanent>
     <input type="checkbox" id="sidebar-toggle" role="button" hidden data-sidebar-target="toggle">
-    <label for="sidebar-toggle" data-action="click->sidebar#toggle">
-      <i class="fas fa-fw fa-sm"></i>
-    </label>
 
     <nav class="sidebar__body">
       <div class="sidebar__title">
@@ -82,6 +79,13 @@
           <i class="fas fa-fw fa-question mr-6"></i>Help
         </a>
       </li>
+
+      <li>
+        <label class="sidebar__link" for="sidebar-toggle" data-action="click->sidebar#toggle">
+          <i class="fas fa-fw mr-6"></i>Collapse
+        </label>
+      </li>
+
     </nav>
   </div>
   {% endblock %}
