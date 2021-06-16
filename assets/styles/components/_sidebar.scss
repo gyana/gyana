@@ -1,7 +1,7 @@
 .sidebar {
   background-color: var(--c-white);
   display: flex;
-  flex-flow: row-reverse;
+  flex-flow: column-reverse;
 
   &__body {
     border-right: 1px solid var(--c-gray);
@@ -10,6 +10,7 @@
     overflow: auto;
     width: 18rem;
     list-style-type: none;
+    flex: 1 1 0%;
   }
 
   &__link {
@@ -64,6 +65,9 @@
   label[for="sidebar-toggle"] {
     background-color: var(--c-gray-20);
     border-right: 1px solid var(--c-gray);
+    border-top: 1px solid var(--c-gray);
+    color: var(--c-black);
+    padding: 1.6rem;
     cursor: pointer;
     display: flex;
     flex-basis: 0;
