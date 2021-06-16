@@ -26,6 +26,11 @@
       color: var(--c-black);
       font-weight: 500;
     }
+
+    &--disabled {
+      background-color: var(--c-gray-50);
+      cursor: not-allowed;
+    }
   }
 
   &--full &__link {

@@ -4,16 +4,18 @@
 {% block app %}
 <div class="workflow-detail__header">
   <h3 class="mr-auto flex justify-center items-center">
-    {{ object.name }}
+    {{ team.name }}
   </h3>
 </div>
 
 <nav class="tabbar">
   <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
-     href="{% url 'team_projects:list' object.id %}">
+     href="{% url 'teams:detail' team.slug %}">
     Projects
   </a>
-  <a class="tabbar__link">
+  <a class="tabbar__link tabbar__link--disabled">Members</a>
+  <a class="tabbar__link {% if request.resolver_match.url_name == 'manage_team_react' %} tabbar__link--active {% endif %}"
+     href="{% url 'single_team:manage_team_react' team.slug %}">
     Settings
   </a>
 </nav>

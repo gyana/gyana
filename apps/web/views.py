@@ -10,9 +10,11 @@ def home(request):
     if request.user.is_authenticated:
         if (team := get_default_team(request)) :
             return HttpResponseRedirect(
-                reverse("team_projects:list", args=(team.slug,))
+                reverse("teams:detail", args=(team.slug,))
             )
+
         return HttpResponseRedirect(reverse("teams:create_team"))
+
     return redirect("/accounts/login")
 
 

@@ -1,8 +1,8 @@
-{% extends "web/app/app_base.html" %}
+{% extends "teams/base.html" %}
 {% load static %}
 
-{% block app %}
-<div class="pad" id="manage-team-content"></div>
+{% block tab %}
+<div id="manage-team-content"></div>
 
 {{ team_json|json_script:'team' }}
 {{ api_urls|json_script:'api-urls' }}

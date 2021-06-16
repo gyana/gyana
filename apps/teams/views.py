@@ -67,6 +67,7 @@ class TeamDetail(DetailView):
 @login_and_team_required
 def manage_team_react(request, team_slug):
     team = request.team
+
     return render(
         request,
         "teams/manage_team_react.html",
