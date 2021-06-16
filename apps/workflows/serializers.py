@@ -101,6 +101,10 @@ def get_text_desc(obj):
     return obj.text_text
 
 
+def get_formula_desc(obj):
+    return f"Add {' ,'.join([f'{formula.formula} as {formula.label}' for formula in obj.formula_columns.all()])}"
+
+
 DESCRIPTIONS = {
     "input": get_input_desc,
     "limit": get_limit_desc,
@@ -115,4 +119,5 @@ DESCRIPTIONS = {
     "add": get_add_desc,
     "rename": get_rename_desc,
     "text": get_text_desc,
+    "formula": get_formula_desc,
 }

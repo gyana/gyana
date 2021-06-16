@@ -222,6 +222,10 @@ def get_rename_query(node):
     return query[columns]
 
 
+def get_formula_query(node):
+    return node.parents.first().get_query()
+
+
 NODE_FROM_CONFIG = {
     "input": get_input_query,
     "output": get_output_query,
@@ -235,4 +239,5 @@ NODE_FROM_CONFIG = {
     "edit": get_edit_query,
     "add": get_add_query,
     "rename": get_rename_query,
+    "formula": get_formula_query,
 }

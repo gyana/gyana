@@ -124,6 +124,12 @@ NodeConfig = {
         "section": "Annotation",
         "maxParents": 0,
     },
+    "formula": {
+        "displayName": "Formula",
+        "icon": "fa-function",
+        "description": "Add a new column using a formula",
+        "section": "Column manipulations",
+    },
 }
 
 
@@ -142,6 +148,7 @@ class Node(models.Model):
         ADD = "add", "Add"
         RENAME = "rename", "Rename"
         TEXT = "text", "Text"
+        FORMULA = "formula", "Formula"
 
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"
@@ -353,6 +360,17 @@ class RenameColumn(models.Model):
     )
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     new_name = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        validators=[bigquery_column_regex],
+    )
+
+
+class FormulaColumn(models.Model):
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="formula_columns"
+    )
+    formula = models.TextField(null=True, blank=True)
+    label = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         validators=[bigquery_column_regex],
     )

@@ -8,6 +8,9 @@
       {% if filters_formset %}
         {{ filters_formset.media }}
       {% endif %}
+      {% if formula_columns_formset %}
+        {{ formula_columns_formset.media }}
+      {% endif %}
     </div>
     <form class="h-full overflow-auto"
       action="{% url 'workflows:node' workflow.id node.id %}" 
@@ -65,6 +68,13 @@
       <fieldset>
         <label>Rename columns</label>
         {% include "components/formset.html" with formset=rename_columns_formset %}
+      </fieldset>
+      {% endif %}
+
+     {% if formula_columns_formset %}
+      <fieldset>
+        <label>Add columns</label>
+        {% include "components/formset.html" with formset=formula_columns_formset %}
       </fieldset>
       {% endif %}
 

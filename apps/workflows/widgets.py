@@ -1,4 +1,4 @@
-from django.forms.widgets import ChoiceWidget
+from django.forms.widgets import ChoiceWidget, Textarea
 
 
 class SourceSelect(ChoiceWidget):
@@ -18,3 +18,7 @@ class SourceSelect(ChoiceWidget):
         context["widget"]["selected"] = value
         context["widget"]["name"] = name
         return context
+
+
+class CodeMirror(Textarea):
+    template_name = "django/forms/widgets/codemirror.html"
