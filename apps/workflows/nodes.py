@@ -111,10 +111,6 @@ def bigquery(node):
     return create_filter_query(node.parents.first().get_query(), node.filters.all())
 
 
-def add(query, edit):
-    return query[edit.column].add(edit.integer_value)
-
-
 @dataclass
 class Operation:
     label: str
@@ -211,7 +207,7 @@ def get_edit_query(node):
 def get_add_query(node):
     query = node.parents.first().get_query()
     return query.mutate(
-        [compile_function(query, add).edit(add.label) for add in node.add_columns.all()]
+        [compile_function(query, add).name(add.label) for add in node.add_columns.all()]
     )
 
 
