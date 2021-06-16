@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from apps.filters.bigquery import create_filter_query
 from django.db.models.fields import IntegerField
 from lib.clients import ibis_client
+from lib.formulas import parser
 
 
 def get_input_query(node):
@@ -223,6 +224,8 @@ def get_rename_query(node):
 
 
 def get_formula_query(node):
+    for formula in node.formula_columns.iterator():
+        parser.parse(formula.formula)
     return node.parents.first().get_query()
 
 
