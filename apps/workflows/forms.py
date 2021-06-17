@@ -281,7 +281,7 @@ class FormulaColumnForm(LiveUpdateForm):
 
     class Meta:
         fields = ("formula", "label")
-        widgets = {"formula": CodeMirror}
+        widgets = {"formula": CodeMirror()}
 
 
 FormulaColumnFormSet = forms.inlineformset_factory(

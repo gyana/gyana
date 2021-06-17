@@ -3,7 +3,6 @@
   name="{{ widget.name }}"    
   {% include "django/forms/widgets/attrs.html" %}
   data-controller='codemirror'
-  data-action="click->codemirror#printDoc"
 >
   {% if widget.value %}{{ widget.value }}{% endif %}
 </textarea>

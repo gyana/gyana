@@ -86,7 +86,9 @@ class TreeToIbis(Transformer):
 
     @staticmethod
     def number(token):
-        return ibis.literal(token.value)
+        if "." in token.value:
+            return float(token.value)
+        return int(token.value)
 
     # -----------------------------------------------------------------------
     # Logical
