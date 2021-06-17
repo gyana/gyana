@@ -1,1 +1,1 @@
-from .parser import parser
+from .parser import to_ibis

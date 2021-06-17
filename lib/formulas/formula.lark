@@ -18,7 +18,7 @@
 ?num_atom  : NUMBER                                    -> number
            | "-" num_atom                              -> negate
            | "(" sum ")"                               -> brackets
-           | COLUMN
+           | column
            | function
 
 ?boolean   : formula "<"  formula                      -> lt
@@ -27,17 +27,17 @@
            | formula ">=" formula                      -> ge
            | formula "<=" formula                      -> le
            | formula "!=" formula                      -> ne
-           | "FALSE"i                                  -> false
-           | "TRUE"i                                   -> true
+           | "FALSE"                                   -> false
+           | "TRUE"                                    -> true
 
 
 // Following the standards defined here https://en.wikipedia.org/wiki/ISO_8601 
-DATETIME   : date"T"time 
+DATETIME   : DATE"T"TIME 
 DATE       : /\d{4}-\d{2}-\d{2}/
 TIME       : /\d{2}:\d{2}:\d{2}\.\d{3}/
 function   : CNAME"(" [formula ("," formula)*] ")"
 STRING     : /"[^"]*"/
-COLUMN     : /^[a-zA-Z_][0-9a-zA-Z_]*$/
+column     : /[a-zA-Z_][0-9a-zA-Z_]*/
 
 
 %import common.CNAME
