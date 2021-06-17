@@ -27,7 +27,7 @@ const Sidebar: React.FC = () => {
   return (
     <aside className='dnd-sidebar'>
       <div className='dnd-sidebar__header'>
-        {SECTIONS["Input/Output"].map((kind) => {
+        {SECTIONS['Input/Output'].map((kind) => {
           const node = NODES[kind]
 
           return (
@@ -39,7 +39,7 @@ const Sidebar: React.FC = () => {
             >
               <i className={`dnd-sidebar__icon fad fa-fw ${node.icon}`}></i>
               <div className='flex flex-col'>
-                <div className="flex items-center">
+                <div className='flex items-center'>
                   <h4 className='dnd-sidebar__name'>{node.displayName}</h4>
                 </div>
               </div>
@@ -48,39 +48,46 @@ const Sidebar: React.FC = () => {
         })}
       </div>
 
-      {Object.keys(SECTIONS).filter((section) => section != "Input/Output").map((section) => (
-        <React.Fragment key={section}>
-          <div className="pad" data-controller="collapsable">
-            <h3 data-action="click->collapsable#toggle">{section}</h3>
+      {Object.keys(SECTIONS)
+        .filter((section) => section != 'Input/Output')
+        .map((section) => (
+          <React.Fragment key={section}>
+            <div className='pad' data-controller='collapsable'>
+              <h3 className='cursor-pointer' data-action='click->collapsable#toggle'>
+                {section}
+              </h3>
 
-            <div className='collapsable flex flex-col gap-2 max-h-0 overflow-hidden' data-collapsable-target="body" key={section}>
-              {SECTIONS[section].map((kind) => {
-                const node = NODES[kind]
+              <div
+                className='collapsable flex flex-col gap-2 max-h-0 overflow-hidden'
+                data-collapsable-target='body'
+                key={section}
+              >
+                {SECTIONS[section].map((kind) => {
+                  const node = NODES[kind]
 
-                return (
-                  <div
-                    key={kind}
-                    className='dnd-sidebar__node'
-                    onDragStart={(event) => onDragStart(event, kind)}
-                    draggable
-                  >
-                    <i className={`dnd-sidebar__icon fad fa-fw ${node.icon}`}></i>
-                    <div className='flex flex-col'>
-                      <div className="flex items-center">
-                        <h4 className='dnd-sidebar__name'>{node.displayName}</h4>
+                  return (
+                    <div
+                      key={kind}
+                      className='dnd-sidebar__node'
+                      onDragStart={(event) => onDragStart(event, kind)}
+                      draggable
+                    >
+                      <i className={`dnd-sidebar__icon fad fa-fw ${node.icon}`}></i>
+                      <div className='flex flex-col'>
+                        <div className='flex items-center'>
+                          <h4 className='dnd-sidebar__name'>{node.displayName}</h4>
+                        </div>
+                        <p className='dnd-sidebar__description'>{node.description}</p>
                       </div>
-                      <p className='dnd-sidebar__description'>{node.description}</p>
                     </div>
-                  </div>
-                )
-              })}
+                  )
+                })}
+              </div>
             </div>
-          </div>
-          <hr />
-        </React.Fragment>
-      ))
-      }
-    </aside >
+            <hr />
+          </React.Fragment>
+        ))}
+    </aside>
   )
 }
 
