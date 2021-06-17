@@ -1,0 +1,8 @@
+<textarea 
+  class="textarea" 
+  name="{{ widget.name }}"    
+  {% include "django/forms/widgets/attrs.html" %}
+  data-controller='codemirror'
+>
+  {% if widget.value %}{{ widget.value }}{% endif %}
+</textarea>

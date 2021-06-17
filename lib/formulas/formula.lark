@@ -1,0 +1,46 @@
+?formula   : "(" formula ")"                           -> brackets
+// Order matters here, e.g. dates need to be parsed before subtract or negate
+           | datetime
+           | date
+           | time
+           | sum
+           | boolean
+           | string
+
+?sum       : product
+           | sum "+" product                           -> add
+           | sum "-" product                           -> subtract
+
+?product   : num_atom
+           | product "*" num_atom                      -> multiply
+           | product "/" num_atom                      -> divide
+
+?num_atom  : NUMBER                                    -> number
+           | "-" num_atom                              -> negate
+           | "(" sum ")"                               -> brackets
+           | column
+           | function
+
+?boolean   : formula "<"  formula                      -> lt
+           | formula ">"  formula                      -> gt
+           | formula "=" formula                       -> eq
+           | formula ">=" formula                      -> ge
+           | formula "<=" formula                      -> le
+           | formula "!=" formula                      -> ne
+           | "FALSE"                                   -> false
+           | "TRUE"                                    -> true
+
+
+// Following the standards defined here https://en.wikipedia.org/wiki/ISO_8601 
+datetime   : date"T"time 
+date       : /\d{4}-\d{2}-\d{2}/
+time       : /\d{2}:\d{2}:\d{2}\.\d{3}/
+function   : CNAME"(" [formula ("," formula)*] ")"
+string     : /"[^"]*"/
+column     : /[a-zA-Z_][0-9a-zA-Z_]*/
+
+
+%import common.CNAME
+%import common.NUMBER
+%import common.WS
+%ignore WS

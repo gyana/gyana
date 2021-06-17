@@ -1,0 +1,13 @@
+div.CodeMirror {
+  font-size: 1.4rem;
+  height: auto;
+  width: 24rem;
+}
+
+.cm-s-default .cm-operator {
+  color: var(--c-blue);
+}
+
+.cm-s-default .cm-variable {
+  color: var(--c-pink);
+}

@@ -6,14 +6,15 @@ from apps.tables.models import Table
 from apps.utils.live_update_form import LiveUpdateForm
 from apps.utils.schema_form_mixin import SchemaFormMixin
 from apps.workflows.nodes import AllOperations
-from apps.workflows.widgets import SourceSelect
+from apps.workflows.widgets import CodeMirror, SourceSelect
 from django import forms
 from django.forms.models import BaseInlineFormSet
 from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
 
 # fmt: off
 from .models import (AbstractOperationColumn, AddColumn, Column, EditColumn,
-                     FunctionColumn, Node, RenameColumn, SortColumn, Workflow)
+                     FormulaColumn, FunctionColumn, Node, RenameColumn,
+                     SortColumn, Workflow)
 
 # fmt: on
 
@@ -274,6 +275,24 @@ AddColumnFormSet = forms.inlineformset_factory(
 )
 
 
+class FormulaColumnForm(LiveUpdateForm):
+    class Media:
+        css = {"all": ("codemirror/lib/codemirror.css",)}
+
+    class Meta:
+        fields = ("formula", "label")
+        widgets = {"formula": CodeMirror()}
+
+
+FormulaColumnFormSet = forms.inlineformset_factory(
+    Node,
+    FormulaColumn,
+    form=FormulaColumnForm,
+    fields=("formula", "label"),
+    can_delete=True,
+    extra=0,
+)
+
 RenameColumnFormSet = forms.inlineformset_factory(
     Node,
     RenameColumn,
@@ -323,6 +342,7 @@ KIND_TO_FORM = {
     "edit": DefaultNodeForm,
     "add": DefaultNodeForm,
     "rename": DefaultNodeForm,
+    "formula": DefaultNodeForm,
     "distinct": SelectNodeForm,
 }
 
@@ -333,4 +353,5 @@ KIND_TO_FORMSETS = {
     "add": [AddColumnFormSet],
     "rename": [RenameColumnFormSet],
     "filter": [FilterFormSet],
+    "formula": [FormulaColumnFormSet],
 }

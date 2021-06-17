@@ -243,7 +243,7 @@ USE_TZ = True
 STATIC_ROOT = BASE_DIR / "static_root"
 STATIC_URL = "/static/"
 
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = [BASE_DIR / "static", BASE_DIR / "node_modules"]
 # uncomment to use manifest storage to bust cache when file change
 # note: this may break some image references in sass files which is why it is not enabled by default
 # STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'

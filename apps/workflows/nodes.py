@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
 from apps.filters.bigquery import create_filter_query
-from django.db.models.fields import IntegerField
 from lib.clients import ibis_client
+from lib.formulas import to_ibis
 
 
 def get_input_query(node):
@@ -222,6 +222,16 @@ def get_rename_query(node):
     return query[columns]
 
 
+def get_formula_query(node):
+    query = node.parents.first().get_query()
+    new_columns = {
+        formula.label: to_ibis(query, formula.formula)
+        for formula in node.formula_columns.iterator()
+    }
+
+    return query.mutate(**new_columns)
+
+
 def get_distinct_query(node):
     query = node.parents.first().get_query()
     distinct_columns = [column.column for column in node.columns.all()]
@@ -246,5 +256,6 @@ NODE_FROM_CONFIG = {
     "edit": get_edit_query,
     "add": get_add_query,
     "rename": get_rename_query,
+    "formula": get_formula_query,
     "distinct": get_distinct_query,
 }
