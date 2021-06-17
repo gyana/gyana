@@ -56,7 +56,7 @@ const RunButton: React.FC<{
               }
             })
         }
-        className='button button--green tooltip tooltip--bottom'
+        className='button button--outline button--success tooltip tooltip--bottom'
       >
         Run
         {isOutOfDate && hasOutput && hasBeenRun && (
