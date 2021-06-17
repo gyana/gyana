@@ -50,10 +50,10 @@ const Sidebar: React.FC = () => {
 
       {Object.keys(SECTIONS).filter((section) => section != "Input/Output").map((section) => (
         <React.Fragment key={section}>
-          <div className="pad" key={section}>
-            <h3 className="mb-7">{section}</h3>
+          <div className="pad" data-controller="collapsable">
+            <h3 data-action="click->collapsable#toggle">{section}</h3>
 
-            <div className='grid auto-rows-fr' key={section}>
+            <div className='collapsable flex flex-col gap-2 max-h-0 overflow-hidden' data-collapsable-target="body" key={section}>
               {SECTIONS[section].map((kind) => {
                 const node = NODES[kind]
 
@@ -78,8 +78,9 @@ const Sidebar: React.FC = () => {
           </div>
           <hr />
         </React.Fragment>
-      ))}
-    </aside>
+      ))
+      }
+    </aside >
   )
 }
 
