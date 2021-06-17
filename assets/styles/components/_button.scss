@@ -1,6 +1,7 @@
 $button-colors: (
   "primary": var(--c-blue),
   "green": var(--c-green),
+  "success": var(--c-green),
   "pink": var(--c-pink),
   "danger": var(--c-red),
   "warning": var(--c-orange),
@@ -16,7 +17,7 @@ button:focus {
   --button-background: var(--c-transparent);
 
   align-items: center;
-  border-radius: 50px;
+  border-radius: 6px;
   display: inline-flex;
   font-size: 1.6rem;
   font-weight: 500;
@@ -84,8 +85,8 @@ button:focus {
 }
 
 // Variants
-.button--square {
-  border-radius: 6px;
+.button--rounded {
+  border-radius: 50px;
 }
 
 .button--circle {

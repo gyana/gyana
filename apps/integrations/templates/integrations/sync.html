@@ -10,7 +10,7 @@
   {% if not object.is_syncing %}
   <form class="my-2" method="post" action="{% url 'integrations:sync' object.id %}">
     {% csrf_token %}
-    <button class="button button--square button--sm button--filled" type="submit">Sync</button>
+    <button class="button button--sm button--filled" type="submit">Sync</button>
   </form>
   {% else %}
   <div data-controller="progress-bar"
@@ -24,9 +24,9 @@
     </div>
     <p id="progress-bar-message">Waiting for sync to start...</p>
     <div class="progress-success">
-      <button class="button button--square button--sm button--filled" onclick="window.location.reload();"><i
-           class="far fa-sync"></i> Reload to see
-        results</button>
+      <button class="button button--sm button--filled" onclick="window.location.reload();">
+        <i class="far fa-sync"></i> Reload to see results
+      </button>
     </div>
   </div>
   {% endif %}

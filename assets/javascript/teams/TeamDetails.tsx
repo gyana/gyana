@@ -87,7 +87,7 @@ const TeamDetails = function (props) {
           {canEditTeam ? (
             <div className='pg-inline-buttons'>
               <button
-                className={'button button--square button--filled button--green'}
+                className={'button button--filled button--green'}
                 onClick={saveTeam}
               >
                 <span>{getSaveButtonText()}</span>
