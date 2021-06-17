@@ -28,7 +28,7 @@
     }
 
     &--disabled {
-      background-color: var(--c-gray-50);
+      opacity: 0.5;
       cursor: not-allowed;
     }
   }
