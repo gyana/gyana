@@ -67,7 +67,9 @@ button:focus {
   }
 
   &--tertiary {
-    border-color: var(--c-gray);
+    background-color: var(--button-background);
+    border: 1px solid var(--c-gray);
+    color: var(--button-color);
   }
 
   img {
@@ -93,6 +95,7 @@ button:focus {
   font-size: 1.4rem;
   height: 3.2rem;
   padding: 1em;
+  border-radius: 50px;
   width: 3.2rem;
 
   &.button--sm {
