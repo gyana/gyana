@@ -101,6 +101,10 @@ def get_text_desc(obj):
     return obj.text_text
 
 
+def get_distinct_desc(obj):
+    return f"distinct on {', '.join([col.column for col in obj.columns.all()])}"
+
+
 DESCRIPTIONS = {
     "input": get_input_desc,
     "limit": get_limit_desc,
@@ -115,4 +119,5 @@ DESCRIPTIONS = {
     "add": get_add_desc,
     "rename": get_rename_desc,
     "text": get_text_desc,
+    "distinct": get_distinct_desc,
 }

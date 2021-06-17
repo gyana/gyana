@@ -21,6 +21,7 @@ var/
 .installed.cfg
 *.egg
 *.pyc
+*.ipynb
 
 # Webpack output
 static/css/
