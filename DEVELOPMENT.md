@@ -17,6 +17,7 @@ Optional / Recommended
 - Virtualenvwrapper
 - Watchexec
 - Heroku-cli
+- Direnv
 
 ## Setup
 
