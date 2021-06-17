@@ -9,14 +9,10 @@
     {% csrf_token %}
 
     <input class='input__inline' id="name" type="text" name="name" value="{{ object.name }}"></input>
-
   </form>
   <div data-controller='event-refresh' data-event-refresh-event-value='workflow-run' class='mr-auto'>
-    <turbo-frame 
-      id="workflow-last-run" 
-      src="{% url 'workflows:last_run' object.id %}"
-      data-event-refresh-target="turboFrame"
-    >
+    <turbo-frame id="workflow-last-run" src="{% url 'workflows:last_run' object.id %}"
+                 data-event-refresh-target="turboFrame">
     </turbo-frame>
   </div>
   <a class="button button--circle button--tertiary" href="{% url 'project_workflows:delete' project.id object.pk %}">
@@ -33,10 +29,7 @@
         </button>
       </div>
 
-      <turbo-frame 
-        id="workflow-node" 
-        data-tf-modal-target="turboFrame"
-      >
+      <turbo-frame id="workflow-node" data-tf-modal-target="turboFrame">
         <div class='placeholder-scr placeholder-scr--fillscreen'>
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x"></i>
         </div>
