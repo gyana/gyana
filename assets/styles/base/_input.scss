@@ -14,6 +14,38 @@
   }
 }
 
+.input {
+  @extend %input;
+
+  &__inline {
+    border: none;
+    color: var(--c-black);
+    font-size: 1.8rem;
+    font-weight: 500;
+    padding: 0.4rem;
+
+    &:hover {
+      background-color: var(--c-gray-50);
+    }
+  }
+
+  &__contenteditable {
+    background-color: transparent;
+    border: none;
+    font-size: 1.6rem;
+    font-weight: 500;
+    outline: none;
+    text-align: center;
+  }
+
+  &__help-text {
+    color: var(--c-black-20);
+    display: block;
+    font-size: 1.2rem;
+    line-height: 1.4rem;
+  }
+}
+
 input[type='submit'] {
   cursor: pointer;
 }
@@ -66,13 +98,6 @@ select {
   }
 }
 
-.input__help-text {
-  color: var(--c-black-20);
-  display: block;
-  font-size: 1.2rem;
-  line-height: 1.4rem;
-}
-
 label {
   color: var(--c-black);
   display: flex;
@@ -93,25 +118,4 @@ label {
   ul li {
     padding: 0.4rem 0;
   }
-}
-
-input.input__inline {
-  border: none;
-  font-size: 1.8rem;
-  padding: 0.4rem;
-  font-weight: 500;
-  color: var(--c-black);
-
-  &:hover {
-    background-color: var(--c-gray-50);
-  }
-}
-
-input.input__contenteditable {
-  border: none;
-  font-size: 1.6rem;
-  font-weight: 500;
-  background-color: transparent;
-  text-align: center;
-  outline: none;
 }
