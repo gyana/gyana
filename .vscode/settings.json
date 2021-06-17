@@ -10,7 +10,10 @@
   "python.languageServer": "Pylance",
   "[html]": {
     "editor.defaultFormatter": "vscode.html-language-features",
-    "editor.rulers": [120]
+    "editor.rulers": [
+      120
+    ],
+    "editor.tabSize": 2,
   },
   "html.format.templating": true,
   "html.format.endWithNewline": true,
