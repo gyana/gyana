@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { Handle, NodeProps, Position, Node } from 'react-flow-renderer'
+import { Handle, NodeProps, Position, Node, useStoreState } from 'react-flow-renderer'
 import { useDebouncedCallback } from 'use-debounce'
 
 export const NodeContext = createContext({
@@ -109,21 +109,28 @@ const WarningIcon = ({ text }) => (
   </div>
 )
 
-const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => (
-  <>
-    <Buttons id={id} />
-    {data.error && <ErrorIcon text={data.error} />}
+const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
+  const [, , zoom] = useStoreState((state) => state.transform);
+  const showContent = zoom >= 1.8;
 
-    <i className={`fas fa-fw ${data.icon}`}></i>
-    <NodeName id={id} name={data.label} />
+  return (
+    <>
+      <Buttons id={id} />
+      {data.error && <ErrorIcon text={data.error} />}
+      <NodeName id={id} name={data.label} />
 
-    {/* <Description id={id} data={data} /> */}
+      {!showContent && <i className={`fas fa-fw ${data.icon}`}></i>}
+      {showContent && <Description id={id} data={data} />}
 
-    <Handle type='source' position={Position.Right} isConnectable={isConnectable} />
-  </>
-)
+      <Handle type='source' position={Position.Right} isConnectable={isConnectable} />
+    </>
+  )
+}
 
 const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
+  const [, , zoom] = useStoreState((state) => state.transform);
+  const showContent = zoom >= 1.8;
+
   const { getIncomingNodes } = useContext(NodeContext)
   const incoming = getIncomingNodes(id)
 
@@ -135,9 +142,10 @@ const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
       {showWarning && <WarningIcon text='Output needs to be connected!' />}
       <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
 
-      <i className={`fas fa-fw ${data.icon}`}></i>
+      {!showContent && <i className={`fas fa-fw ${data.icon}`}></i>}
+      {showContent && <Description id={id} data={data} />}
+
       <NodeName id={id} name={data.label} />
-      {/* <Description id={id} data={data} /> */}
     </>
   )
 }
