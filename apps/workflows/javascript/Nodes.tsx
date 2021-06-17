@@ -121,7 +121,7 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
       {data.error && <ErrorIcon text={data.error} />}
       <NodeName id={id} name={data.label} />
 
-      {!showContent && <i data-action='click->tf-modal#open' data-src={`/workflows/${workflowId}/nodes/${id}`} className={`fas fa-fw ${data.icon}`}></i>}
+      {!showContent && <i data-action='dblclick->tf-modal#open' data-src={`/workflows/${workflowId}/nodes/${id}`} className={`fas fa-fw ${data.icon}`}></i>}
       {showContent && <Description id={id} data={data} />}
 
       <Handle type='source' position={Position.Right} isConnectable={isConnectable} />
@@ -146,7 +146,7 @@ const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
       {showWarning && <WarningIcon text='Output needs to be connected!' />}
       <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
 
-      {!showContent && <i data-action='click->tf-modal#open' data-src={`/workflows/${workflowId}/nodes/${id}`} className={`fas fa-fw ${data.icon}`}></i>}
+      {!showContent && <i data-action='dblclick->tf-modal#open' data-src={`/workflows/${workflowId}/nodes/${id}`} className={`fas fa-fw ${data.icon}`}></i>}
       {showContent && <Description id={id} data={data} />}
 
       <NodeName id={id} name={data.label} />
@@ -179,7 +179,7 @@ const DefaultNode = ({
       {showWarning && <WarningIcon text={`${data.label} node needs to be connected to a node`} />}
       <Handle type='target' position={targetPosition} isConnectable={isConnectable} />
 
-      {!showContent && <i data-action='click->tf-modal#open' data-src={`/workflows/${workflowId}/nodes/${id}`} className={`fas fa-fw ${data.icon}`}></i>}
+      {!showContent && <i data-action='dblclick->tf-modal#open' data-src={`/workflows/${workflowId}/nodes/${id}`} className={`fas fa-fw ${data.icon}`}></i>}
       {showContent && <Description id={id} data={data} />}
 
       <NodeName id={id} name={data.label} />

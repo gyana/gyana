@@ -21,4 +21,10 @@ export default class extends Controller {
   close() {
     this.modalTarget.classList.add('hidden')
   }
+
+  onInput(event) {
+    if (event.key == 'Escape') {
+      this.modalTarget.classList.add('hidden')
+    }
+  }
 }

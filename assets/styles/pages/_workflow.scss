@@ -56,7 +56,15 @@
 
     #workflow-node {
       display: flex;
-      height: 100%;
+      flex-flow: column;
+      flex: 1 1 0%;
+
+      .workflow-node {
+        &__header {
+          text-transform: capitalize;
+          width: 100%;
+        }
+      }
     }
 
     #workflows-grid {
