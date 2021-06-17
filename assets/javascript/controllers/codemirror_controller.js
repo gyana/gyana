@@ -16,8 +16,8 @@ CodeMirror.defineSimpleMode('simplemode', {
 
     // { regex: /(function)(\s+)([a-z$][\w$]*)/, token: ['keyword', null, 'variable-2'] },
 
-    { regex: /(?:lower)\b\(.*\)/, token: 'keyword' },
-    { regex: /[a-zA-Z_][0-9a-zA-Z_]*/, token: 'variable-2' },
+    { regex: /(?:[a-zA-Z]+)\b\(.*\)/, token: 'keyword' },
+    { regex: /[a-zA-Z_][0-9a-zA-Z_]*/, token: 'variable' },
     { regex: /TRUE|FALSE/, token: 'atom' },
     { regex: /[0-9]+/i, token: 'number' },
     // { regex: /\/\/.*/, token: 'comment' },
