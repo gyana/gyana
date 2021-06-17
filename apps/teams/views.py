@@ -83,6 +83,7 @@ def manage_team_react(request, team_slug):
 @login_and_team_required
 def manage_team(request, team_slug):
     team = request.team
+
     if request.method == "POST":
         form = TeamChangeForm(request.POST, instance=team)
         if form.is_valid():
@@ -90,9 +91,10 @@ def manage_team(request, team_slug):
             return HttpResponseRedirect(reverse("teams:list_teams"))
     else:
         form = TeamChangeForm(instance=team)
+
     return render(
         request,
-        "teams/manage_team.html",
+        "teams/settings.html",
         {
             "team": team,
             "form": form,

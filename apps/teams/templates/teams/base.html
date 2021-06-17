@@ -14,8 +14,8 @@
     Projects
   </a>
   <a class="tabbar__link tabbar__link--disabled">Members</a>
-  <a class="tabbar__link {% if request.resolver_match.url_name == 'manage_team_react' %} tabbar__link--active {% endif %}"
-     href="{% url 'single_team:manage_team_react' team.slug %}">
+  <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
+     href="{% url 'teams:settings' team.slug %}">
     Settings
   </a>
 </nav>

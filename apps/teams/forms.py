@@ -47,3 +47,6 @@ class TeamChangeForm(forms.ModelForm):
     class Meta:
         model = Team
         fields = ("name", "slug")
+        help_texts = {
+            "slug": "Your team slug is what appears in the various URLs your team uses. No spaces or special characters are allowed."
+        }
