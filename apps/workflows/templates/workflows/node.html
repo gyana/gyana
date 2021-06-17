@@ -18,17 +18,22 @@
       <div data-controller="turbo-issue-186-workaround">
         {{ form.media }}
         {% if filters_formset %}
-        {{ filters_formset.media }}
+          {{ filters_formset.media }}
         {% endif %}
         {% if formula_columns_formset %}
-        {{ formula_columns_formset.media }}
+          {{ formula_columns_formset.media }}
         {% endif %}
       </div>
-
-      <form class="h-full overflow-auto" action="{% url 'workflows:node' workflow.id node.id %}" method="post"
-            {% if add_columns_formset or edit_columns_formset or aggregations_formset or filters_formset %}
-            data-controller="live-update trigger" {% else %} data-controller="trigger" {% endif %}
-            data-trigger-event-value="node-updated-{{ node.id }}" data-action="submit->trigger#dispatch">
+      <form class="h-full overflow-auto"
+        action="{% url 'workflows:node' workflow.id node.id %}" 
+        method="post"
+        {% if add_columns_formset or edit_columns_formset or aggregations_formset or filters_formset %}
+        data-controller="live-update trigger"
+        {% else %}
+        data-controller="trigger"
+        {% endif %}
+        data-trigger-event-value="node-updated-{{ node.id }}" data-action="submit->trigger#dispatch"
+        >
         <span data-live-update-target="loading" class="hidden">
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
         </span>
@@ -71,12 +76,14 @@
         </fieldset>
         {% endif %}
 
-        <label>Rename columns</label>
-        {% include "components/formset.html" with formset=rename_columns_formset %}
+        {% if rename_columns_formset %}
+        <fieldset>
+          <label>Rename columns</label>
+          {% include "components/formset.html" with formset=rename_columns_formset %}
         </fieldset>
         {% endif %}
 
-        {% if formula_columns_formset %}
+      {% if formula_columns_formset %}
         <fieldset>
           <label>Add columns</label>
           {% include "components/formset.html" with formset=formula_columns_formset %}
@@ -96,12 +103,12 @@
       <nav class="tabbar">
         {% for parent in parents %}
         <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
-           href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ parent.id }}{% if request.GET.preview %}&preview=true{% endif %}">
+          href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ parent.id }}{% if request.GET.preview %}&preview=true{% endif %}">
           Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
         </a>
         {% endfor %}
         <a class="tabbar__link  {% if preview_node_id == object.id %} tabbar__link--active {% endif %}"
-           href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ object.id }}{% if request.GET.preview %}&preview=true{% endif %}">
+          href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ object.id }}{% if request.GET.preview %}&preview=true{% endif %}">
           Result
         </a>
       </nav>
@@ -116,7 +123,7 @@
       {% else %}
       <div class='workflow-detail__load-preview'>
         <a class='flex flex-row items-center'
-           href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ preview_node_id }}&preview=true">
+          href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ preview_node_id }}&preview=true">
           <i class='fad fa-redo fa-lg'></i>
           <span class='font-semibold text-black-50'>Load preview</span>
         </a>
