@@ -9,9 +9,9 @@ form {
   background-color: var(--c-white);
   border: 1px solid var(--c-black-20);
   border-radius: 5px;
-  color: var(--c-black-50);
+  color: var(--c-black);
   font-size: 1.4rem;
-  padding: 1.2rem 1.6rem;
+  padding: 1.2rem 0.8rem;
   width: 100%;
 
   &:focus {
@@ -81,7 +81,7 @@ select {
 }
 
 label {
-  color: var(--c-black-20);
+  color: var(--c-black);
   display: flex;
   flex-flow: column;
   font-size: 1.4rem;
