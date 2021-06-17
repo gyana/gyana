@@ -2,9 +2,18 @@
 
 <turbo-frame id="workflow-node">
   {% if node.kind == "input" or parents %}
-  <h3 class="workflow-node__header">{{ node.kind }} - {{ node.name }}</h3>
+  <div class="workflow-node__header">
+    <h3>{{ node.kind }} {% if node.name %}- {{ node.name }}{% endif %}</h3>
 
-  <div class="flex">
+    <div class='flex gap-7'>
+      <input type='submit' data-action=" click->tf-modal#close" class="button button--filled button--sm" name='submit'
+             value='Save' />
+      <input type='submit' class="button button--filled button--green button--sm" name='submit'
+             value='Save & Preview' />
+    </div>
+  </div>
+
+  <div class="flex flex-1">
     <div class="workflow-detail__sidebar">
       <div data-controller="turbo-issue-186-workaround">
         {{ form.media }}
@@ -16,10 +25,8 @@
             {% if add_columns_formset or edit_columns_formset or aggregations_formset or filters_formset %}
             data-controller="live-update trigger" {% else %} data-controller="trigger" {% endif %}
             data-trigger-event-value="node-updated-{{ node.id }}" data-action="submit->trigger#dispatch">
-        <div class="h-6">
-          <span data-live-update-target="loading" class="hidden"><i
-               class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
-        </div>
+        <span data-live-update-target="loading" class="hidden"><i
+             class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
         {% csrf_token %}
 
         {% include "django/forms/default_form.html" %}
@@ -72,13 +79,6 @@
           {% include "components/formset.html" with formset=filters_formset %}
         </fieldset>
         {% endif %}
-
-        <div className='flex flex-row gap-4 flex-1 items-end' data-action="keydown@window->tf-modal#onInput">
-          <input type='submit' data-action=" click->tf-modal#close" class="button button--filled button--sm"
-                 name='submit' value='Save' />
-          <input type='submit' class="button button--filled button--green button--sm" name='submit'
-                 value='Save & Preview' />
-        </div>
       </form>
     </div>
 

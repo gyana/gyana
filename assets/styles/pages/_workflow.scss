@@ -14,7 +14,7 @@
 
     &__sidebar {
       background-color: var(--c-white);
-      border-right: 1px solid var(--c-gray);
+      flex: 1 1 0%;
       padding: 0 1.6rem 0 0;
       width: 72rem;
     }
@@ -25,6 +25,7 @@
       border: 1px solid var(--c-gray);
       display: flex;
       flex-flow: column;
+      flex: 1 1 0%;
       height: 100%;
       overflow: hidden;
       width: 100%;
@@ -56,13 +57,19 @@
 
     #workflow-node {
       display: flex;
-      flex-flow: column;
+      flex-direction: column;
       flex: 1 1 0%;
 
       .workflow-node {
         &__header {
+          display: flex;
+          align-items: center;
           text-transform: capitalize;
-          width: 100%;
+          margin-bottom: 1.6rem;
+
+          h3 {
+            margin-right: auto;
+          }
         }
       }
     }
