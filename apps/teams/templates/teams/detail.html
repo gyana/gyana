@@ -4,6 +4,13 @@
 
 {% block tab %}
 <div class="card card--sm">
-    {% render_table team_projects %}
+  {% render_table team_projects %}
+
+  <div class="pt-2 pad--sm">
+    <small>
+      <a href="{% url 'team_projects:create' team.slug %}" class="link">
+        <i class="fa fa-fw fa-plus mr-2"></i>New Project</a>
+    </small>
+  </div>
 </div>
 {% endblock %}
