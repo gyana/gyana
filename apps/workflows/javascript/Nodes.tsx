@@ -110,6 +110,8 @@ const WarningIcon = ({ text }) => (
 )
 
 const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
+  const workflowId = window.location.pathname.split('/')[4]
+
   const [, , zoom] = useStoreState((state) => state.transform);
   const showContent = zoom >= 1.8;
 
@@ -119,7 +121,7 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
       {data.error && <ErrorIcon text={data.error} />}
       <NodeName id={id} name={data.label} />
 
-      {!showContent && <i className={`fas fa-fw ${data.icon}`}></i>}
+      {!showContent && <i data-action='click->tf-modal#open' data-src={`/workflows/${workflowId}/nodes/${id}`} className={`fas fa-fw ${data.icon}`}></i>}
       {showContent && <Description id={id} data={data} />}
 
       <Handle type='source' position={Position.Right} isConnectable={isConnectable} />
@@ -128,6 +130,8 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
 }
 
 const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
+  const workflowId = window.location.pathname.split('/')[4]
+
   const [, , zoom] = useStoreState((state) => state.transform);
   const showContent = zoom >= 1.8;
 
@@ -142,7 +146,7 @@ const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
       {showWarning && <WarningIcon text='Output needs to be connected!' />}
       <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
 
-      {!showContent && <i className={`fas fa-fw ${data.icon}`}></i>}
+      {!showContent && <i data-action='click->tf-modal#open' data-src={`/workflows/${workflowId}/nodes/${id}`} className={`fas fa-fw ${data.icon}`}></i>}
       {showContent && <Description id={id} data={data} />}
 
       <NodeName id={id} name={data.label} />
@@ -157,6 +161,11 @@ const DefaultNode = ({
   targetPosition = Position.Left,
   sourcePosition = Position.Right,
 }: NodeProps) => {
+  const workflowId = window.location.pathname.split('/')[4]
+
+  const [, , zoom] = useStoreState((state) => state.transform);
+  const showContent = zoom >= 1.8;
+
   const { getIncomingNodes } = useContext(NodeContext)
   const incoming = getIncomingNodes(id)
 
@@ -170,7 +179,9 @@ const DefaultNode = ({
       {showWarning && <WarningIcon text={`${data.label} node needs to be connected to a node`} />}
       <Handle type='target' position={targetPosition} isConnectable={isConnectable} />
 
-      <i className={`fas fa-fw ${data.icon}`}></i>
+      {!showContent && <i data-action='click->tf-modal#open' data-src={`/workflows/${workflowId}/nodes/${id}`} className={`fas fa-fw ${data.icon}`}></i>}
+      {showContent && <Description id={id} data={data} />}
+
       <NodeName id={id} name={data.label} />
 
       <Handle type='source' position={sourcePosition} isConnectable={isConnectable} />
