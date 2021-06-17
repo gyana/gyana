@@ -25,16 +25,10 @@
         {% endif %}
       </div>
 
-      <form class="h-full overflow-auto"
-            action="{% url 'workflows:node' workflow.id node.id %}"
-            method="post"
+      <form class="h-full overflow-auto" action="{% url 'workflows:node' workflow.id node.id %}" method="post"
             {% if add_columns_formset or edit_columns_formset or aggregations_formset or filters_formset %}
-            data-controller="live-update trigger"
-            {% else %}
-            data-controller="trigger"
-            {% endif %}
-            data-trigger-event-value="node-updated-{{ node.id }}"
-            data-action="submit->trigger#dispatch">
+            data-controller="live-update trigger" {% else %} data-controller="trigger" {% endif %}
+            data-trigger-event-value="node-updated-{{ node.id }}" data-action="submit->trigger#dispatch">
         <span data-live-update-target="loading" class="hidden">
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
         </span>
@@ -77,33 +71,24 @@
         </fieldset>
         {% endif %}
 
-        <<<<<<< HEAD {% if rename_columns_formset %} <fieldset>
-          <label>Rename columns</label>
-          {% include "components/formset.html" with formset=rename_columns_formset %}
-          </fieldset>
-          {% endif %}
-          =======
-          {% if formula_columns_formset %}
-          <fieldset>
-            <label>Add columns</label>
-            {% include "components/formset.html" with formset=formula_columns_formset %}
-          </fieldset>
-          {% endif %}
+        <label>Rename columns</label>
+        {% include "components/formset.html" with formset=rename_columns_formset %}
+        </fieldset>
+        {% endif %}
 
-          {% if filters_formset %}
-          <fieldset>
-            <label>Add filters</label>
-            {% include "components/formset.html" with formset=filters_formset %}
-          </fieldset>
-          {% endif %}
-          >>>>>>> main
+        {% if formula_columns_formset %}
+        <fieldset>
+          <label>Add columns</label>
+          {% include "components/formset.html" with formset=formula_columns_formset %}
+        </fieldset>
+        {% endif %}
 
-          {% if filters_formset %}
-          <fieldset>
-            <label>Add filters</label>
-            {% include "components/formset.html" with formset=filters_formset %}
-          </fieldset>
-          {% endif %}
+        {% if filters_formset %}
+        <fieldset>
+          <label>Add filters</label>
+          {% include "components/formset.html" with formset=filters_formset %}
+        </fieldset>
+        {% endif %}
       </form>
     </div>
 
