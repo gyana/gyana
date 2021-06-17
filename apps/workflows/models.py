@@ -130,6 +130,12 @@ NodeConfig = {
         "description": "Add a new column using a formula",
         "section": "Column manipulations",
     },
+    "distinct": {
+        "displayName": "Distinct",
+        "icon": "fa-fingerprint",
+        "description": "Select unqiue values from selected columns",
+        "section": "Table manipulations",
+    },
 }
 
 
@@ -149,6 +155,7 @@ class Node(models.Model):
         RENAME = "rename", "Rename"
         TEXT = "text", "Text"
         FORMULA = "formula", "Formula"
+        DISTINCT = "distinct", "Distinct"
 
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"
@@ -170,7 +177,7 @@ class Node(models.Model):
     # Output
     output_name = models.CharField(max_length=100, null=True)
 
-    # Select
+    # Select, Distinct
     # columns exists on Column as FK
 
     # Aggregation

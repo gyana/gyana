@@ -1,6 +1,6 @@
 import ibis.expr.rules as rlz
-from ibis.expr.operations import Arg, ValueOp
-from ibis.expr.types import StringValue
+from ibis.expr.operations import Arg, Reduction, ValueOp
+from ibis.expr.types import ColumnExpr, StringValue
 from ibis_bigquery import BigQueryExprTranslator
 
 compiles = BigQueryExprTranslator.compiles
@@ -50,3 +50,24 @@ def _endswith(t, expr):
     t_start = t.translate(start_string)
     # return a SQL expression that calls the BigQuery STARTS_WITH function
     return f"ENDS_WITH({t_value}, {t_start})"
+
+
+class AnyValue(Reduction):
+    arg = Arg(rlz.column(rlz.any))
+
+    def output_type(self):
+        return self.arg.type().scalar_type()
+
+
+def any_value(arg):
+    return AnyValue(arg).to_expr()
+
+
+ColumnExpr.any_value = any_value
+
+
+@compiles(AnyValue)
+def _any_value(t, expr):
+    (arg,) = expr.op().args
+
+    return f"ANY_VALUE({t.translate(arg)})"

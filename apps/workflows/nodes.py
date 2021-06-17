@@ -229,6 +229,17 @@ def get_formula_query(node):
     return node.parents.first().get_query()
 
 
+def get_distinct_query(node):
+    query = node.parents.first().get_query()
+    distinct_columns = [column.column for column in node.columns.all()]
+    columns = [
+        query[column].any_value().name(column)
+        for column in query.schema()
+        if column not in distinct_columns
+    ]
+    return query.group_by(distinct_columns).aggregate(columns)
+
+
 NODE_FROM_CONFIG = {
     "input": get_input_query,
     "output": get_output_query,
@@ -243,4 +254,5 @@ NODE_FROM_CONFIG = {
     "add": get_add_query,
     "rename": get_rename_query,
     "formula": get_formula_query,
+    "distinct": get_distinct_query,
 }

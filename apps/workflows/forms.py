@@ -343,7 +343,9 @@ KIND_TO_FORM = {
     "add": DefaultNodeForm,
     "rename": DefaultNodeForm,
     "formula": DefaultNodeForm,
+    "distinct": SelectNodeForm,
 }
+
 KIND_TO_FORMSETS = {
     "aggregation": [FunctionColumnFormSet, ColumnFormSet],
     "sort": [SortColumnFormSet],
