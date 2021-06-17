@@ -188,10 +188,14 @@ const TextNode = ({ id, data, selected }: NodeProps) => {
       text_text: text,
     })
 
+  // TODO: Resizing is broken so it's disabled.
   return (
     <>
-      <textarea value={text} onChange={(e) => setText(e.target.value)} onBlur={update} />
-      <DeleteButton id={id} />
+      <textarea value={text} onChange={(e) => setText(e.target.value)} onBlur={update} placeholder={"Leave a note to annotate the workflow..."} style={{ resize: 'none', borderRadius: '10px' }} />
+
+      <div className='react-flow__buttons'>
+        <DeleteButton id={id} />
+      </div>
     </>
   )
 }
