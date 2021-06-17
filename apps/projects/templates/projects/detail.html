@@ -6,69 +6,68 @@
 
 <div class="pad">
   <hgroup class="mb-4">
-    <h1>Overview</h1>
+    <h1>{{ project.name }}</h1>
 
     {% if project.description %}
     <p>{{ project.description }}</p>
     {% endif %}
   </hgroup>
 
-  <div class="grid grid-cols-3 auto-rows-fr gap-7 mb-7">
-    <div class="card card--center flex-col">
-      <h3>{{ project.num_rows|default_if_none:'0'|intcomma }}</h3>
-      <p>Rows</p>
-    </div>
 
-    <div class="card card--center flex-col">
-      <h3>{{ project.created|naturaltime }}</h3>
-      <p>First created</p>
-
-      <!-- This is an example "help" tooltip for a card. -->
-      <div class="card__help tooltip tooltip--bottom">
-        <i class="fas fa-fw fa-question"></i>
-
-        <span class="tooltip__content">The date this project was first created</span>
-      </div>
-    </div>
-
-    <div class="card card--center flex-col">
-      <h3>{{ project.updated|naturaltime }}</h3>
-      <p>Last update</p>
-    </div>
-  </div>
-
-  <div class="grid  grid-cols-2 gap-7">
-    <div class="card card--center flex-col">
-      <h3>{{ integration_count }}</h3>
-      <p><a class="link"
+  <div class="flex gap-7 flex-1">
+    <div class="card card--center flex-1">
+      <p class="mr-auto">
+        {{ integration_count }}
+        <a class="link"
            href="{% url 'project_integrations:list' project.id %}">Integration{{ integration_count|pluralize }}</a>
       </p>
 
+      <a class="button button--filled button--sm" href="{% url 'project_integrations:create' project.id %}">
+        <i class="fas fa-fw fa-plus"></i> New Integration
+      </a>
+
       {% if integration_pending > 0 %}
-      <div class="card__help">
-        <i class="fas fa-fw fa-exclamation-triangle text-orange"></i>
-      </div>
+      <p class="card__help card__help--bottom">
+        <i class="fas fa-fw fa-exclamation-triangle text-orange"></i><small>
+          Some of your integrations are not set up
+        </small>
+      </p>
       {% endif %}
     </div>
 
-    <div class="card card--center flex-col">
-      <h3>{{ workflow_count }}</h3>
-      <p>
+    <div class="flex justify-center items-center -mx-5"><i class="fas fa-fw fa-2x fa-chevron-right"></i></div>
+
+    <div class="card card--center flex-1">
+      <p class="mr-auto">
+        {{ workflow_count }}
         <a class="link" href="{% url 'project_workflows:list' project.id %}">Workflow{{ workflow_count|pluralize }}</a>
       </p>
 
+      <turbo-frame id='workflow-create' src="{% url 'project_workflows:create' project.id  %}" target="_top">
+        <i class='fad fa-spinner-third fa-spin'></i>
+      </turbo-frame>
+
       {% if workflow_error > 0 %}
-      <div class="card__help">
-        <i class="fas fa-fw fa-exclamation-triangle text-red"></i>
-      </div>
+      <p class="card__help card__help--bottom">
+        <i class="fas fa-fw fa-exclamation-triangle text-red"></i><small>
+          Some of your workflows have errors
+        </small>
+      </p>
       {% endif %}
     </div>
 
-    <div class="card card--center flex-col">
-      <h3>{{ dashboard_count }}</h3>
-      <p><a class="link"
+    <div class="flex justify-center items-center -mx-5"><i class="fas fa-fw fa-2x fa-chevron-right"></i></div>
+
+    <div class="card card--center flex-1">
+      <p class="mr-auto">
+        {{ dashboard_count }}
+        <a class="link"
            href="{% url 'project_dashboards:list' project.id %}">Dashboard{{ dashboard_count|pluralize }}</a>
       </p>
+
+      <turbo-frame id='dashboard-create' src="{% url 'project_dashboards:create' project.id %}" target="_top">
+        <i class='fad fa-spinner-third fa-spin'></i>
+      </turbo-frame>
     </div>
 
     <!-- {% if integration_pending > 0 %}
