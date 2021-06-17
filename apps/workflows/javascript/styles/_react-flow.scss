@@ -8,7 +8,7 @@
     border-radius: 10px;
     border: 2px solid var(--c-gray-20);
     box-shadow: 4px 10px 30px rgba(0, 0, 0, 0.08);
-    color: var(--c-blue-50);
+    color: var(--c-blue);
     display: flex;
     flex-flow: column;
     justify-content: center;
@@ -19,28 +19,25 @@
 
     &:hover,
     &.selected {
-      color: var(--c-blue);
       border: 2px solid var(--c-blue);
     }
 
     &-output {
-      color: var(--c-pink-50);
+      color: var(--c-pink);
       border-radius: 100%;
 
       &:hover,
       &.selected {
-        color: var(--c-pink);
         border: 2px solid var(--c-pink);
       }
     }
 
     &-input {
-      color: var(--c-green-50);
+      color: var(--c-green);
       border-radius: 100%;
 
       &:hover,
       &.selected {
-        color: var(--c-green);
         border: 2px solid var(--c-green);
       }
     }
