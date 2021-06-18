@@ -23,7 +23,7 @@ def autocomplete_options(request):
     # from the DB yet
     parent = (
         get_object_or_404(Widget, pk=request.GET["parentId"]).table
-        if request.GET["parentId"] == "widget"
+        if request.GET["parentType"] == "widget"
         else get_object_or_404(Node, pk=request.GET["parentId"])
     )
     query = parent.get_query()
