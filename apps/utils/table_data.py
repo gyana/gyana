@@ -1,7 +1,7 @@
 from django_tables2 import Column, Table
 from django_tables2.data import TableData
 from django_tables2.templatetags.django_tables2 import QuerystringNode
-from lib.clients import bigquery_client, ibis_client
+from lib.clients import bigquery_client, get_dataframe, ibis_client
 
 # Monkey path the querystring templatetag for the pagination links
 # Without this links only lead to the whole document url and add query parameter
@@ -33,25 +33,19 @@ class BigQueryTableData(TableData):
         data,
     ):
         self.data = data
-        self.client = bigquery_client()
 
     def __getitem__(self, page: slice):
         """Fetches the data for the current page"""
-        df = (
-            self.client.query(
-                self.data.limit(page.stop - page.start, offset=page.start).compile()
-            )
-            .result()
-            .to_dataframe(create_bqstorage_client=False)
+        df = get_dataframe(
+            self.data.limit(page.stop - page.start, offset=page.start).compile()
         )
         return df.to_dict(orient="records")
 
     # TODO: This request slows down the loading of data a lot.
     def __len__(self):
         """Fetches the total size from BigQuery"""
-        return self.client.query(self.data.count().compile()).to_dataframe(
-            create_bqstorage_client=False
-        )
+        client = bigquery_client()
+        return client.query(self.data.compile()).result().total_rows
 
     # Not sure when or whether this is used at the moment
     def __iter__(self):

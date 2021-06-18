@@ -4,7 +4,7 @@ from typing import Any, Dict
 from apps.filters.bigquery import create_filter_query
 from apps.integrations.bigquery import DEFAULT_LIMIT
 from lib.chart import to_chart
-from lib.clients import ibis_client
+from lib.clients import get_dataframe
 
 from .bigquery import query_widget
 from .models import Widget
@@ -17,10 +17,9 @@ def chart_to_output(widget: Widget) -> Dict[str, Any]:
 
 
 def table_to_output(widget: Widget) -> Dict[str, Any]:
-    conn = ibis_client()
-
     table = create_filter_query(widget.table.get_query(), widget.filters.all())
-    df = conn.execute(table.limit(DEFAULT_LIMIT))
+
+    df = get_dataframe(table.limit(DEFAULT_LIMIT).compile())
 
     return {
         "columns": json.dumps([{"field": col} for col in df.columns]),

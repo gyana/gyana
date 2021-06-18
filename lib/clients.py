@@ -52,3 +52,8 @@ def ibis_client():
 def get_bucket():
     client = storage.Client()
     return client.get_bucket(settings.GS_BUCKET_NAME)
+
+
+def get_dataframe(query):
+    client = bigquery_client()
+    return client.query(query).result().to_dataframe(create_bqstorage_client=False)
