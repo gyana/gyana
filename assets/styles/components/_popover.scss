@@ -1,0 +1,9 @@
+.popover-body {
+  z-index: 50;
+  margin-top: 6px;
+  background-color: white;
+  width: 24em;
+  border: 1px solid --var(--c-gray);
+  border-radius: 5px;
+  color: var(--c-black);
+}

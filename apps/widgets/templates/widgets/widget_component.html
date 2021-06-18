@@ -41,9 +41,16 @@
             <i class="fas fa-fw fa-copy"></i>
           </button>
         </form>
-        <a href="{% url 'dashboard_widgets:delete' project.id dashboard.id object.pk %}" class="mt-auto">
-          <i class="fas fa-fw fa-trash"></i>
-        </a>
+        <div data-controller="popover" class='mt-auto'>
+          <span data-popover-target="trigger" data-action="click->popover#trigger">
+            <i class="fas fa-fw fa-trash cursor-pointer"></i>
+          </span>
+          <div data-popover-target="body" hidden class="popover-body shadow-sm">
+            {% block widget %}
+            {% include 'widgets/_delete.html' %}
+            {% endblock %}
+          </div>
+        </div>
       </div>
     </div>
   </div>

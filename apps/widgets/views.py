@@ -68,7 +68,7 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
                         "dashboard": self.dashboard,
                     },
                 )
-                .render(),
+                .render(request=self.request),
             ]
         )
 
@@ -90,7 +90,7 @@ class WidgetDetail(DashboardMixin, UpdateView):
 
     def form_valid(self, form):
         clone = self.object.make_clone(
-            attrs={"description": "Copy of " + self.object.description}
+            attrs={"description": "Copy of " + (self.object.description or "")}
         )
         clone.save()
         self.clone = clone
@@ -170,23 +170,9 @@ class WidgetDelete(DashboardMixin, DeleteView):
 
         return response
 
-    def get_success_url(self) -> str:
-        return reverse(
-            "project_dashboards:detail",
-            args=(self.project.id, self.dashboard.id),
-        )
-
-
-class WidgetDelete(DashboardMixin, DeleteView):
-    template_name = "widgets/delete.html"
-    model = Widget
-
-    def delete(self, request, *args, **kwargs):
-        with transaction.atomic():
-            self.dashboard.save()
-            response = super().delete(request, *args, **kwargs)
-
-        return response
+    def form_valid(self, form):
+        super().form_valid(form)
+        return TurboStream(f"dashboard-widget-{self.object.id}").remove.render()
 
     def get_success_url(self) -> str:
         return reverse(
