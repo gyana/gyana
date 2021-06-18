@@ -27,12 +27,14 @@
 
       <div class='widget-card__commands'>
         <i class="cursor-move fas fa-fw fa-arrows rnd-handle"></i>
-        <a href="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
-          <i class="fas fa-fw fa-eye"></i>
-        </a>
-        <a href="{% url 'dashboard_widgets:update' project.id dashboard.id object.pk %}">
-          <i class="fas fa-fw fa-edit"></i>
-        </a>
+        {% if object.kind != "text" %}
+          <a href="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
+            <i class="fas fa-fw fa-eye"></i>
+          </a>
+          <a href="{% url 'dashboard_widgets:update' project.id dashboard.id object.pk %}">
+            <i class="fas fa-fw fa-edit"></i>
+          </a>
+        {% endif %}
         <form method='post' action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
           {% csrf_token %}
           <button type='submit'>
