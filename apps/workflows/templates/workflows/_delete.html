@@ -1,0 +1,11 @@
+<h1>Delete</h1>
+<p class="mb-6">Are you sure you want to delete?</p>
+
+<form method="post" action="{% url 'project_workflows:delete' project.id object.id %}">
+  {% csrf_token %}
+
+  <div class="flex gap-6">
+    <a href="{% url 'project_workflows:list' project.id %}" class="button">No</a>
+    <button type="submit" class="button button--danger button--filled">Yes</button>
+  </div>
+</form>

@@ -9,10 +9,18 @@
   </form>
 
   {% include 'dashboards/_add_widget.html' with choices=choices %}
-
-  <a class="button button--circle button--tertiary" href="{% url 'project_dashboards:delete' project.id object.pk %}">
-    <i class="far fa-fw fa-trash"></i>
-  </a>
+  <div data-controller='popover'>
+    <span 
+      data-popover-target="trigger" 
+      data-action="click->popover#trigger" 
+      class="button button--circle button--tertiary"
+    >
+      <i class="far fa-fw fa-trash"></i>
+    </span>
+    <div data-popover-target="body" hidden class="popover-body shadow-sm">
+      {% include 'dashboards/_delete.html' %}
+    </div>
+  </div>
 </div>
 
 <div class="flex-1 p-4 pb-0 overflow-auto">
