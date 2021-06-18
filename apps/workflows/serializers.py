@@ -33,11 +33,11 @@ def get_limit_desc(obj):
 
 
 def get_input_desc(obj):
-    return f"{obj.input_table.owner_name}" if obj.input_table else ""
+    return f"{obj.input_table.owner_name if obj.input_table else 'No input'} selected"
 
 
 def get_output_desc(obj):
-    return f"{obj.output_name}"
+    return f"{obj.output_name or 'No name'} selected"
 
 
 def get_select_desc(obj):

@@ -3,7 +3,7 @@ import { Handle, NodeProps, Position, Node, useStoreState } from 'react-flow-ren
 import { useDebouncedCallback } from 'use-debounce'
 
 export const NodeContext = createContext({
-  removeById: (id: string) => { },
+  removeById: (id: string) => {},
   client: null,
   getIncomingNodes: (id: string): [Node, Node[]] | null => null,
 })
@@ -75,7 +75,7 @@ const Description = ({ id, data }) => {
   return (
     <p
       title={description || data.description}
-      className='max-w-full overflow-hidden whitespace-pre overflow-ellipsis'
+      className='max-w-full overflow-hidden h-full overflow-ellipsis text-xs'
     >
       {description || data.description}
     </p>
@@ -112,8 +112,8 @@ const WarningIcon = ({ text }) => (
 const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
   const workflowId = window.location.pathname.split('/')[4]
 
-  const [, , zoom] = useStoreState((state) => state.transform);
-  const showContent = zoom >= 1.8;
+  const [, , zoom] = useStoreState((state) => state.transform)
+  const showContent = zoom >= 1.8
 
   return (
     <>
@@ -121,8 +121,18 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
       {data.error && <ErrorIcon text={data.error} />}
       <NodeName id={id} name={data.label} />
 
-      {!showContent && <i data-action='dblclick->tf-modal#open' data-src={`/workflows/${workflowId}/nodes/${id}`} className={`fas fa-fw ${data.icon}`}></i>}
-      {showContent && <Description id={id} data={data} />}
+      {!showContent && (
+        <i
+          data-action='dblclick->tf-modal#open'
+          data-src={`/workflows/${workflowId}/nodes/${id}`}
+          className={`fas fa-fw ${data.icon}`}
+        ></i>
+      )}
+      {showContent && (
+        <div className='p-2'>
+          <Description id={id} data={data} />
+        </div>
+      )}
 
       <Handle type='source' position={Position.Right} isConnectable={isConnectable} />
     </>
@@ -132,8 +142,8 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
 const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
   const workflowId = window.location.pathname.split('/')[4]
 
-  const [, , zoom] = useStoreState((state) => state.transform);
-  const showContent = zoom >= 1.8;
+  const [, , zoom] = useStoreState((state) => state.transform)
+  const showContent = zoom >= 1.8
 
   const { getIncomingNodes } = useContext(NodeContext)
   const incoming = getIncomingNodes(id)
@@ -146,8 +156,18 @@ const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
       {showWarning && <WarningIcon text='Output needs to be connected!' />}
       <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
 
-      {!showContent && <i data-action='dblclick->tf-modal#open' data-src={`/workflows/${workflowId}/nodes/${id}`} className={`fas fa-fw ${data.icon}`}></i>}
-      {showContent && <Description id={id} data={data} />}
+      {!showContent && (
+        <i
+          data-action='dblclick->tf-modal#open'
+          data-src={`/workflows/${workflowId}/nodes/${id}`}
+          className={`fas fa-fw ${data.icon}`}
+        ></i>
+      )}
+      {showContent && (
+        <div className='p-2'>
+          <Description id={id} data={data} />
+        </div>
+      )}
 
       <NodeName id={id} name={data.label} />
     </>
@@ -163,8 +183,8 @@ const DefaultNode = ({
 }: NodeProps) => {
   const workflowId = window.location.pathname.split('/')[4]
 
-  const [, , zoom] = useStoreState((state) => state.transform);
-  const showContent = zoom >= 1.8;
+  const [, , zoom] = useStoreState((state) => state.transform)
+  const showContent = zoom >= 1.8
 
   const { getIncomingNodes } = useContext(NodeContext)
   const incoming = getIncomingNodes(id)
@@ -179,7 +199,13 @@ const DefaultNode = ({
       {showWarning && <WarningIcon text={`${data.label} node needs to be connected to a node`} />}
       <Handle type='target' position={targetPosition} isConnectable={isConnectable} />
 
-      {!showContent && <i data-action='dblclick->tf-modal#open' data-src={`/workflows/${workflowId}/nodes/${id}`} className={`fas fa-fw ${data.icon}`}></i>}
+      {!showContent && (
+        <i
+          data-action='dblclick->tf-modal#open'
+          data-src={`/workflows/${workflowId}/nodes/${id}`}
+          className={`fas fa-fw ${data.icon}`}
+        ></i>
+      )}
       {showContent && <Description id={id} data={data} />}
 
       <NodeName id={id} name={data.label} />
@@ -202,7 +228,13 @@ const TextNode = ({ id, data, selected }: NodeProps) => {
   // TODO: Resizing is broken so it's disabled.
   return (
     <>
-      <textarea value={text} onChange={(e) => setText(e.target.value)} onBlur={update} placeholder={"Leave a note to annotate the workflow..."} style={{ resize: 'none', borderRadius: '10px' }} />
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onBlur={update}
+        placeholder={'Leave a note to annotate the workflow...'}
+        style={{ resize: 'none', borderRadius: '10px' }}
+      />
 
       <div className='react-flow__buttons'>
         <DeleteButton id={id} />
