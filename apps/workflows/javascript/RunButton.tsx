@@ -27,7 +27,7 @@ const RunButton: React.FC<{
   return (
     <div className='dndflow__run-button'>
       <button
-        disabled={!hasOutput || loading}
+        disabled={!hasOutput || loading || !isOutOfDate}
         onClick={() => {
           setLoading(true)
 
@@ -72,16 +72,8 @@ const RunButton: React.FC<{
         )}
         <div className={loading ? 'invisible' : undefined}>
           Run
-          {isOutOfDate && hasOutput && hasBeenRun && (
-            <>
-              <div
-                title='This workflow has been updated since the last run'
-                className='absolute -top-3 -right-3 text-orange'
-              >
-                <i className='fas fa-exclamation-triangle bg-white p-1' />
-              </div>
-              <span className='tooltip__content'>Workflow needs output node to run</span>
-            </>
+          {!hasOutput && hasBeenRun && (
+            <span className='tooltip__content'>Workflow needs output node to run</span>
           )}
         </div>
       </button>
