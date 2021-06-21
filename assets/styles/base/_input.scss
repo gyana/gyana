@@ -120,3 +120,26 @@ input.input,
     line-height: 1.4rem;
   }
 }
+
+label.checkbox {
+  border: 1px solid var(--c-gray);
+  border-radius: 5px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  color: var(--c-black-50);
+  margin-bottom: 0.1rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--c-gray-20);
+  }
+}
+
+label.checkbox__checked {
+  border: 1px solid var(--c-blue);
+  color: var(--c-black);
+  i {
+    color: var(--c-blue);
+  }
+}

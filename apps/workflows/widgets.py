@@ -1,5 +1,7 @@
 from django.forms.widgets import ChoiceWidget, Textarea
 
+ICONS = {"integration": "far fa-link", "workflow_node": "far fa-stream"}
+
 
 class SourceSelect(ChoiceWidget):
     class Media:
@@ -11,7 +13,7 @@ class SourceSelect(ChoiceWidget):
         context = super().get_context(name, value, attrs)
 
         context["widget"]["options"] = [
-            {"type": option.source, "id": option.id, "label": option.owner_name}
+            {"icon": ICONS[option.source], "id": option.id, "label": option.owner_name}
             for option in self.choices.queryset
         ]
 
