@@ -1,4 +1,4 @@
-[data-controller='collapsable'] {
+[data-controller="collapsable"] {
   position: relative;
 
   [data-action] {
@@ -8,7 +8,7 @@
   [data-action]::after {
     content: '\f078';
     display: inline;
-    font-family: 'Font Awesome 5 Pro';
+    font-family: "Font Awesome 5 Pro";
     font-weight: 900;
     margin-left: 0.5em;
     position: absolute;
@@ -20,6 +20,7 @@
   }
 
   .collapsable {
+    max-height: 0;
     transition: max-height 0.25s ease;
   }
 }

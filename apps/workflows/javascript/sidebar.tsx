@@ -58,7 +58,7 @@ const Sidebar: React.FC = () => {
               </h3>
 
               <div
-                className='collapsable flex flex-col gap-2 overflow-hidden'
+                className='collapsable flex flex-col gap-2 max-h-0 overflow-hidden'
                 data-collapsable-target='body'
                 key={section}
               >
