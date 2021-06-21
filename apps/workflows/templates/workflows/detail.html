@@ -5,11 +5,13 @@
 
 {% block app %}
 <div class="workflow-detail__header">
-  <form method="post" action="{% url 'project_workflows:detail' project.id object.id %}" class="form">
-    {% csrf_token %}
+  <turbo-frame id="workflow-name">
+    <form method="post" action="{% url 'project_workflows:detail' project.id object.id %}" class="form">
+      {% csrf_token %}
 
-    <input class='input__inline' id="name" type="text" name="name" value="{{ object.name }}"></input>
-  </form>
+      <input class='input__inline' id="name" type="text" name="name" value="{{ object.name }}"></input>
+    </form>
+  </turbo-frame>
   <div data-controller='event-refresh' data-event-refresh-event-value='workflow-run' class='mr-auto'>
     <turbo-frame id="workflow-last-run" src="{% url 'workflows:last_run' object.id %}"
                  data-event-refresh-target="turboFrame">
