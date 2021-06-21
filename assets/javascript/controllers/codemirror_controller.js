@@ -11,22 +11,15 @@ export default class extends Controller {
 CodeMirror.defineSimpleMode('simplemode', {
   // The start state contains the rules that are initially used
   start: [
-    // The regex matches the token, the token property contains the type
     { regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: 'string' },
-
-    // { regex: /(function)(\s+)([a-z$][\w$]*)/, token: ['keyword', null, 'variable-2'] },
-
-    { regex: /(?:[a-zA-Z]+)\b\(.*\)/, token: 'keyword' },
+    {
+      regex:
+        /(?:abs|add|between|case|cast|ceil|coalesce|date|day|day_of_week|div|epoch_seconds|exp|find|floor|fillna|hash|hour|ifelse|isnull|join|left|length|like|ln|log|log2|log10|lower|lpad|lstrip|millisecond|minute|month|mul|notnull|pow|re_extract|re_replace|re_search|repeat|rlike|replace|reverse|right|round|rpad|rstrip|second|sqrt|strftime|strip|sub|substitute|substr|time|translate|truncate|upper|year+)\(/,
+      token: 'keyword',
+    },
     { regex: /[a-zA-Z_][0-9a-zA-Z_]*/, token: 'variable' },
     { regex: /TRUE|FALSE/, token: 'atom' },
     { regex: /[0-9]+/i, token: 'number' },
-    // { regex: /\/\/.*/, token: 'comment' },
-    // { regex: /\/(?:[^\\]|\\.)*?\//, token: 'variable-3' },
-    // // A next property will cause the mode to move to a different state
-    // { regex: /\/\*/, token: 'comment', next: 'comment' },
     { regex: /[-+\/*=<>!]+/, token: 'operator' },
-    // // indent and dedent properties guide autoindentation
-    // { regex: /[\{\[\(]/, indent: true },
-    // { regex: /[\}\]\)]/, dedent: true },
   ],
 })
