@@ -27,16 +27,15 @@ $card-colors: (
   }
   
   &--square {
-    justify-content: center;
     align-items: center;
     color: var(--c-black-50);
+    display: flex;
+    flex-flow: column;
+    height: 15rem;
+    justify-content: center;
     text-align: center;
-
-    &::before {
-      content: "";
-      display: block;
-      padding-bottom: 100%;
-    }
+    width: 15rem;
+    gap: 1.6rem;
 
     .fas {
       display: block;
@@ -51,7 +50,10 @@ $card-colors: (
   @each $color, $value in $card-colors {
     &--#{$color} {
       --card-color: #{$value};
-      color: var(--card-color);
+
+      .fa-fw {
+        color: var(--card-color);
+      }
     }
   }
 
