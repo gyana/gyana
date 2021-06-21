@@ -2,38 +2,38 @@
 
 <turbo-frame id="workflow-node">
   {% if node.kind == "input" or parents %}
-  <div class="workflow-node__header">
-    <h3>{{ node.kind }} {% if node.name %}- {{ node.name }}{% endif %}</h3>
-
-    <div class='flex gap-7'>
-      <input type='submit' data-action=" click->tf-modal#close" class="button button--filled button--sm" name='submit'
-             value='Save' />
-      <input type='submit' class="button button--filled button--green button--sm" name='submit'
-             value='Save & Preview' />
-    </div>
-  </div>
-
-  <div class="flex flex-1">
-    <div class="workflow-detail__sidebar">
-      <div data-controller="turbo-issue-186-workaround">
-        {{ form.media }}
-        {% if filters_formset %}
-          {{ filters_formset.media }}
-        {% endif %}
-        {% if formula_columns_formset %}
-          {{ formula_columns_formset.media }}
-        {% endif %}
-      </div>
-      <form class="h-full overflow-auto"
-        action="{% url 'workflows:node' workflow.id node.id %}" 
+  <form class="form--no-layout flex flex-col h-full overflow-auto"
+        action="{% url 'workflows:node' workflow.id node.id %}"
         method="post"
         {% if add_columns_formset or edit_columns_formset or aggregations_formset or filters_formset %}
         data-controller="live-update trigger"
         {% else %}
         data-controller="trigger"
         {% endif %}
-        data-trigger-event-value="node-updated-{{ node.id }}" data-action="submit->trigger#dispatch"
-        >
+        data-trigger-event-value="node-updated-{{ node.id }}"
+        data-action="submit->trigger#dispatch">
+    <div class="workflow-node__header">
+      <h3>{{ node.kind }} {% if node.name %}- {{ node.name }}{% endif %}</h3>
+
+      <div class='flex gap-7'>
+        <input type='submit' data-action=" click->tf-modal#close" class="button button--filled button--sm" name='submit'
+               value='Save' />
+        <input type='submit' class="button button--filled button--green button--sm" name='submit'
+               value='Save & Preview' />
+      </div>
+    </div>
+
+    <div class="flex flex-1">
+      <div class="workflow-detail__sidebar">
+        <div data-controller="turbo-issue-186-workaround">
+          {{ form.media }}
+          {% if filters_formset %}
+          {{ filters_formset.media }}
+          {% endif %}
+          {% if formula_columns_formset %}
+          {{ formula_columns_formset.media }}
+          {% endif %}
+        </div>
         <span data-live-update-target="loading" class="hidden">
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
         </span>
@@ -83,7 +83,7 @@
         </fieldset>
         {% endif %}
 
-      {% if formula_columns_formset %}
+        {% if formula_columns_formset %}
         <fieldset>
           <label>Add columns</label>
           {% include "components/formset.html" with formset=formula_columns_formset %}
@@ -96,47 +96,47 @@
           {% include "components/formset.html" with formset=filters_formset %}
         </fieldset>
         {% endif %}
-      </form>
-    </div>
-
-    <div class="workflow-detail__table">
-      <nav class="tabbar">
-        {% for parent in parents %}
-        <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
-          href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ parent.id }}{% if request.GET.preview %}&preview=true{% endif %}">
-          Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
-        </a>
-        {% endfor %}
-        <a class="tabbar__link  {% if preview_node_id == object.id %} tabbar__link--active {% endif %}"
-          href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ object.id }}{% if request.GET.preview %}&preview=true{% endif %}">
-          Result
-        </a>
-      </nav>
-
-      {% if request.GET.preview %}
-      <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id preview_node_id %}">
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-          <p class='placeholder-scr__title'>Loading preview...</p>
-        </div>
-      </turbo-frame>
-      {% else %}
-      <div class='workflow-detail__load-preview'>
-        <a class='flex flex-row items-center'
-          href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ preview_node_id }}&preview=true">
-          <i class='fad fa-redo fa-lg'></i>
-          <span class='font-semibold text-black-50'>Load preview</span>
-        </a>
       </div>
-      {% endif %}
+
+      <div class="workflow-detail__table">
+        <nav class="tabbar">
+          {% for parent in parents %}
+          <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
+             href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ parent.id }}{% if request.GET.preview %}&preview=true{% endif %}">
+            Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
+          </a>
+          {% endfor %}
+          <a class="tabbar__link  {% if preview_node_id == object.id %} tabbar__link--active {% endif %}"
+             href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ object.id }}{% if request.GET.preview %}&preview=true{% endif %}">
+            Result
+          </a>
+        </nav>
+
+        {% if request.GET.preview %}
+        <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id preview_node_id %}">
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+            <p class='placeholder-scr__title'>Loading preview...</p>
+          </div>
+        </turbo-frame>
+        {% else %}
+        <div class='workflow-detail__load-preview'>
+          <a class='flex flex-row items-center'
+             href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ preview_node_id }}&preview=true">
+            <i class='fad fa-redo fa-lg'></i>
+            <span class='font-semibold text-black-50'>Load preview</span>
+          </a>
+        </div>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class='workflow-detail__warning'>
+        <span>You need to <strong>connect</strong> this node before you can configure it.</span>
+        <span class='mt-12'><i class="fad fa-stethoscope fa-10x"></i></span>
+      </div>
     </div>
-    {% else %}
-    <div class='workflow-detail__warning'>
-      <span>You need to <strong>connect</strong> this node before you can configure it.</span>
-      <span class='mt-12'><i class="fad fa-stethoscope fa-10x"></i></span>
-    </div>
-    {% endif %}
-  </div>
+  </form>
+  {% endif %}
 </turbo-frame>
 
 {% endwith %}

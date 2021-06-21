@@ -5,6 +5,13 @@ form {
   gap: 1rem;
 }
 
+form.form--no-layout {
+  display: flex;
+  flex-flow: column;
+  gap: initial;
+  align-items: initial;
+}
+
 .input-group {
   display: flex;
   flex-flow: column;
