@@ -238,7 +238,7 @@ const DnDFlow = ({ client }) => {
             onNodeDragStop={onDragStop}
             snapToGrid={true}
             snapGrid={[GRID_GAP, GRID_GAP]}
-            maxZoom={10}
+            maxZoom={2}
             minZoom={0.05}
           >
             <Controls />
