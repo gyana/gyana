@@ -4,7 +4,7 @@
 {% block app %}
 
 <div class="flex flex-row flex-1 overflow-hidden">
-  <div class='flex flex-col flex-1 pad'>
+  <div class='flex flex-col flex-1 pad overflow-auto'>
     <h2 class="mb-4">Create a new integration</h2>
 
     <div class='flex flex-col flex-1'>
@@ -23,7 +23,7 @@
       {% else %}
       <div id='create-container'>
         <form id="create-form" method="post" action="{{ request.get_full_path }}" class="form max-w-xl"
-          {% if request.GET.kind == integration_kind.FIVETRAN %} data-turbo="false" {% endif %}>
+              {% if request.GET.kind == integration_kind.FIVETRAN %} data-turbo="false" {% endif %}>
           {% csrf_token %}
 
           {% include "django/forms/default_form.html" %}
@@ -35,37 +35,34 @@
       {% endif %}
 
       {% else %}
-      <div class="h-full w-full flex justify-center items-center">
-        <div class="flex-1 grid grid-cols-6 gap-4">
-          <a 
-            class="card card--inline card--square card--green"
-            href="{% url 'project_integrations:create' project.id %}?kind={{ integration_kind.GOOGLE_SHEETS }}"
-          >
-            <div class="flex flex-col items-center">
-              <i class="fab fa-fw fa-google fa-3x mb-4"></i>
-              <span class="block">
+      <div class="flex flex-1 justify-center items-center">
+        <div class="flex-1 grid grid-cols-5 auto-rows-fr gap-7 max-w-7xl">
+          <a class="card card--inline card--square card--green"
+             href="{% url 'project_integrations:create' project.id %}?kind={{ integration_kind.GOOGLE_SHEETS }}">
+            <div class="flex flex-col flex-1 items-center">
+              <i class="fab fa-fw fa-google fa-2x mb-4 flex-1"></i>
+              <span class="block flex-1">
                 Google Sheets
               </span>
             </div>
           </a>
           <a class="card card--inline card--square card--primary"
              href="{% url 'project_integrations:create' project.id %}?kind={{ integration_kind.CSV }}">
-            <div class="flex flex-col items-center">
-              <i class="fas fa-fw fa-file-csv fa-3x mb-4"></i>
-              <span class="block">
+            <div class="flex flex-col flex-1 items-center">
+              <i class="fas fa-fw fa-file-csv fa-2x mb-4 flex-1"></i>
+              <span class="block flex-1">
                 CSV
               </span>
             </div>
           </a>
           {% if FF_ALPHA %}
           {% for service_id, service in services.items %}
-          <a
-            class="card card--inline card--square card--tertiary"
-            style="border-color:{{ service.color }};color:{{ service.color }};"
-            href="{% url 'project_integrations:create' project.id %}?kind={{ integration_kind.FIVETRAN }}&service={{ service_id }}"
-          >
+          <a class="card card--inline card--square card--tertiary" style="border-color:{{ service.color }};"
+             href="{% url 'project_integrations:create' project.id %}?kind={{ integration_kind.FIVETRAN }}&service={{ service_id }}">
             <div class="flex flex-col items-center">
-              <img class="mb-4" style="height:50px;" src="{% static 'images/integrations/fivetran/'|add:service_id|add:'.svg' %}" alt="{{ service.name }}" />
+              <img class="mb-4" style="height:30px;"
+                   src="{% static 'images/integrations/fivetran/'|add:service_id|add:'.svg' %}"
+                   alt="{{ service.name }}" />
               <span class="block">{{ service.name }}</span>
             </div>
           </a>
