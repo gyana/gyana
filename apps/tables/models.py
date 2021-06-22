@@ -10,6 +10,7 @@ class Table(models.Model):
     class Source(models.TextChoices):
         INTEGRATION = "integration", "Integration"
         WORKFLOW_NODE = "workflow_node", "Workflow node"
+        PIVOT_NODE = "pivot_node", "Pivot Node"
 
     bq_table = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
     bq_dataset = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)

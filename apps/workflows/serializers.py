@@ -106,7 +106,14 @@ def get_formula_desc(obj):
 
 
 def get_distinct_desc(obj):
-    return f"distinct on {', '.join([col.column for col in obj.columns.all()])}"
+    return f"Distinct on {', '.join([col.column for col in obj.columns.all()])}"
+
+
+def get_pivot_desc(obj):
+    return (
+        f"Pivoting {obj.pivot_column} with {obj.pivot_aggregation}({obj.pivot_value})"
+        f"{'over '+ obj.pivot_index if obj.pivot_index else ''}"
+    )
 
 
 DESCRIPTIONS = {
@@ -125,4 +132,5 @@ DESCRIPTIONS = {
     "text": get_text_desc,
     "formula": get_formula_desc,
     "distinct": get_distinct_desc,
+    "pivot": get_pivot_desc,
 }

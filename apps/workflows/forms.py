@@ -278,6 +278,7 @@ AddColumnFormSet = forms.inlineformset_factory(
 class FormulaColumnForm(LiveUpdateForm):
     class Meta:
         fields = ("formula", "label")
+        # TODO: add descriptive labels
         widgets = {"formula": CodeMirror()}
 
 
@@ -318,6 +319,15 @@ class LimitNodeForm(NodeForm):
         labels = {"limit_limit": "Limit", "limit_offset": "Offset"}
 
 
+class PivotNodeForm(NodeForm):
+    class Meta:
+        model = Node
+        fields = ["pivot_index", "pivot_column", "pivot_value", "pivot_aggregation"]
+        # TODO: Add labels
+
+    # TODO: Add get_live_fields with column choices
+
+
 class DefaultNodeForm(NodeForm):
     class Meta:
         model = Node
@@ -341,6 +351,7 @@ KIND_TO_FORM = {
     "rename": DefaultNodeForm,
     "formula": DefaultNodeForm,
     "distinct": SelectNodeForm,
+    "pivot": PivotNodeForm,
 }
 
 KIND_TO_FORMSETS = {

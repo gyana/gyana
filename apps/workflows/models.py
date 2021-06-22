@@ -136,6 +136,12 @@ NodeConfig = {
         "description": "Select unqiue values from selected columns",
         "section": "Table manipulations",
     },
+    "pivot": {
+        "displayName": "Pivot",
+        "icon": "fa-redo-alt",
+        "description": "Pivot your table",
+        "section": "Table manipulations",
+    },
 }
 
 
@@ -156,6 +162,7 @@ class Node(models.Model):
         TEXT = "text", "Text"
         FORMULA = "formula", "Formula"
         DISTINCT = "distinct", "Distinct"
+        PIVOT = "pivot", "Pivot"
 
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"
@@ -219,6 +226,21 @@ class Node(models.Model):
 
     # Text
     text_text = models.TextField(null=True)
+
+    # Pivot
+    pivot_index = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+    )
+    pivot_column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+    )
+    pivot_value = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+    )
+    pivot_aggregation = models.CharField(max_length=20, null=True, blank=True)
+    pivot_table = models.ForeignKey(
+        Table, on_delete=models.CASCADE, null=True, related_name="pivot_table"
+    )
 
     def save(self, *args, **kwargs):
         super(Node, self).save(*args, **kwargs)

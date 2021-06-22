@@ -1,7 +1,9 @@
 from dataclasses import dataclass
+from datetime import datetime as dt
 
 from apps.filters.bigquery import create_filter_query
-from lib.clients import ibis_client
+from apps.tables.models import Table
+from lib.clients import DATAFLOW_ID, bigquery_client, ibis_client
 from lib.formulas import to_ibis
 
 
@@ -243,6 +245,52 @@ def get_distinct_query(node):
     return query.group_by(distinct_columns).aggregate(columns)
 
 
+def get_pivot_query(node):
+    client = bigquery_client()
+    parent = node.parents.first().get_query()
+    names_query = {
+        str(row.values()[0]) if row.values()[0] is not None else "null"
+        for row in client.query(parent[node.pivot_column].compile()).result()
+    }
+    selection = ", ".join(
+        filter(None, (node.pivot_index, node.pivot_column, node.pivot_value))
+    )
+
+    query = (
+        f"SELECT * FROM"
+        f"  (SELECT {selection} FROM ({parent.compile()}))"
+        f"  PIVOT({node.pivot_aggregation}({node.pivot_value})"
+        f"      FOR {node.pivot_column} IN ({' ,'.join(names_query)})"
+        f"  )"
+    )
+    table = node.pivot_table
+    if table:
+        client.query(
+            f"CREATE OR REPLACE TABLE {DATAFLOW_ID}.{table.bq_table} as ({query})"
+        ).result()
+        node.pivot_table.data_updated = dt.now()
+        node.pivot_table.save()
+    else:
+        table_id = f"table_pivot_{node.pk}"
+        client.query(
+            f"CREATE OR REPLACE TABLE {DATAFLOW_ID}.{table_id} as ({query})"
+        ).result()
+
+        table = Table(
+            source=Table.Source.PIVOT_NODE,
+            bq_table=table_id,
+            bq_dataset=DATAFLOW_ID,
+            project=node.workflow.project,
+            workflow_node=node,
+        )
+        table.save()
+        node.pivot_table = table
+        node.save()
+
+    conn = ibis_client()
+    return conn.table(node.pivot_table.bq_table, database=node.pivot_table.bq_dataset)
+
+
 NODE_FROM_CONFIG = {
     "input": get_input_query,
     "output": get_output_query,
@@ -258,4 +306,5 @@ NODE_FROM_CONFIG = {
     "rename": get_rename_query,
     "formula": get_formula_query,
     "distinct": get_distinct_query,
+    "pivot": get_pivot_query,
 }
