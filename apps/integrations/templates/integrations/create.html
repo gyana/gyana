@@ -20,7 +20,7 @@
         {% endfor %}
       </ul>
       {% else %}
-      <div id='create-container pad'>
+      <div class="pad" id='create-container'>
         <form id="create-form" method="post" action="{{ request.get_full_path }}" class="form max-w-xl"
               {% if request.GET.kind == integration_kind.FIVETRAN %} data-turbo="false" {% endif %}>
           {% csrf_token %}
