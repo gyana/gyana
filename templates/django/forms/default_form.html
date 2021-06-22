@@ -1,7 +1,16 @@
 <!-- https://docs.djangoproject.com/en/2.2/_modules/django/forms/boundfield/#BoundField -->
 {% for bound_field in form.visible_fields %}
 <div class="input-group">
-  {% if bound_field.subwidgets|length == 1 %}
+  {% if bound_field.widget_type == "checkbox" %}
+  <label class="flex flex-row">
+    {{ bound_field }}
+
+    <span>
+      {{ bound_field.label }}
+      {% if not bound_field.field.required %}<small><i>- optional</i></small>{% endif %}
+    </span>
+  </label>
+  {% elif bound_field.subwidgets|length == 1 %}
   <label>
     <span>
       {{ bound_field.label }}
@@ -25,7 +34,7 @@
 
 {% for error in form.non_field_errors %}
 <p class="text-red">
-  {{error|escape}}
+  {{ error|escape }}
 </p>
 {% endfor %}
 
