@@ -6,7 +6,7 @@
 <li>
   <a class="sidebar__link {% if user_team.slug == team.slug %}sidebar__link--active{% endif %}"
      href="{% url 'teams:detail' user_team.slug %}">
-    <i class="fas fa-fw fa-users mr-6"></i>{{ user_team.name }}
+    <span class="inline-block fa-fw mr-6">{{ user_team.name|slice:1 }}.</span>{{ user_team.name }}
   </a>
 </li>
 {% endfor %}
