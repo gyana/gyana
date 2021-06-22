@@ -92,10 +92,11 @@ button:focus {
 }
 
 .button--circle {
+  align-items: center;
+  border-radius: 50px;
   font-size: 1.4rem;
   height: 3.2rem;
   padding: 1em;
-  border-radius: 50px;
   width: 3.2rem;
 
   &.button--sm {
