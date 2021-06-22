@@ -1,0 +1,20 @@
+<fieldset name={{widget.name}} data-controller="checkbox">
+ {% for option in widget.options %}
+    <label 
+      data-checkbox-target="label"
+      class="checkbox {% if option.id == widget.selected %}checkbox__checked{% endif %}" 
+      id="{{option.id}}"
+      data-action="click->checkbox#select"
+    >
+      <i class="{{ option.icon }}"></i>{{option.label }}
+    </label>
+ {% endfor %}
+  <input 
+      data-checkbox-target="input"
+      id="id_{{widget.name}}" 
+      name="{{ widget.name }}" 
+      value="{{ widget.selected }}" 
+      type="hidden" 
+    >
+    </input>
+</fieldset>

@@ -22,5 +22,9 @@ class SourceSelect(ChoiceWidget):
         return context
 
 
+class InputNode(SourceSelect):
+    template_name = "django/forms/widgets/input_node.html"
+
+
 class CodeMirror(Textarea):
     template_name = "django/forms/widgets/codemirror.html"

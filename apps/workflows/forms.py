@@ -6,15 +6,14 @@ from apps.tables.models import Table
 from apps.utils.live_update_form import LiveUpdateForm
 from apps.utils.schema_form_mixin import SchemaFormMixin
 from apps.workflows.nodes import AllOperations
-from apps.workflows.widgets import CodeMirror, SourceSelect
+from apps.workflows.widgets import CodeMirror, InputNode
 from django import forms
 from django.forms.models import BaseInlineFormSet
 from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
 
 # fmt: off
-from .models import (AbstractOperationColumn, AddColumn, Column, EditColumn,
-                     FormulaColumn, FunctionColumn, Node, RenameColumn,
-                     SortColumn, Workflow)
+from .models import (AddColumn, Column, EditColumn, FormulaColumn,
+                     FunctionColumn, Node, RenameColumn, SortColumn, Workflow)
 
 # fmt: on
 
@@ -44,7 +43,7 @@ class InputNodeForm(NodeForm):
         model = Node
         fields = ["input_table"]
         labels = {"input_table": "Integration"}
-        widgets = {"input_table": SourceSelect()}
+        widgets = {"input_table": InputNode()}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
