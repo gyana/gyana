@@ -1,10 +1,12 @@
 from apps.widgets.models import Widget
+from dirtyfields import DirtyFieldsMixin
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.utils import timezone
 from model_clone import CloneMixin
 
 
-class Filter(CloneMixin, models.Model):
+class Filter(CloneMixin, DirtyFieldsMixin, models.Model):
     class Type(models.TextChoices):
         INTEGER = "INTEGER", "Integer"
         FLOAT = "FLOAT", "Float"
@@ -119,6 +121,13 @@ class Filter(CloneMixin, models.Model):
     @property
     def parent(self):
         return self.widget or self.node
+
+    def save(self, *args, **kwargs) -> None:
+        if self.node and self.is_dirty():
+            self.node.updated = timezone.now()
+            self.node.save()
+
+        return super().save(*args, **kwargs)
 
 
 PREDICATE_MAP = {
