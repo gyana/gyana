@@ -174,6 +174,10 @@ class Node(models.Model):
     parents = models.ManyToManyField(
         "self", symmetrical=False, related_name="children", blank=True
     )
+
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    updated = models.DateTimeField(auto_now=True, editable=False)
+
     error = models.CharField(max_length=300, null=True)
 
     # ======== Node specific columns ========= #

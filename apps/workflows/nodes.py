@@ -1,8 +1,9 @@
 from dataclasses import dataclass
-from datetime import datetime as dt
 
 from apps.filters.bigquery import create_filter_query
 from apps.tables.models import Table
+from django.utils import timezone
+from ibis.expr.datatypes import String
 from lib.clients import DATAFLOW_ID, bigquery_client, ibis_client
 from lib.formulas import to_ibis
 
@@ -245,30 +246,57 @@ def get_distinct_query(node):
     return query.group_by(distinct_columns).aggregate(columns)
 
 
-def get_pivot_query(node):
-    client = bigquery_client()
+def _create_ibis_literal(value, type_):
+    if value is None:
+        return "null"
+    if isinstance(type_, String):
+        return f'"{value}" {value.replace(" ", "_")}'
+    return str(value)
+
+
+def _create_pivot_query(node, client):
+
     parent = node.parents.first().get_query()
+    column_type = parent[node.pivot_column].type()
     names_query = {
-        str(row.values()[0]) if row.values()[0] is not None else "null"
+        _create_ibis_literal(row.values()[0], column_type)
         for row in client.query(parent[node.pivot_column].compile()).result()
     }
+
     selection = ", ".join(
         filter(None, (node.pivot_index, node.pivot_column, node.pivot_value))
     )
 
-    query = (
+    return (
         f"SELECT * FROM"
         f"  (SELECT {selection} FROM ({parent.compile()}))"
         f"  PIVOT({node.pivot_aggregation}({node.pivot_value})"
         f"      FOR {node.pivot_column} IN ({' ,'.join(names_query)})"
         f"  )"
     )
+
+
+def walk_parents(node):
+    yield node.updated
+    if node.kind == "input":
+        yield node.input_table.data_updated
+    for parent in node.parents.all():
+        yield from walk_parents(parent)
+
+
+def get_pivot_query(node):
+    client = bigquery_client()
     table = node.pivot_table
+    conn = ibis_client()
+    if table and table.data_updated > max(tuple(walk_parents(node))):
+        return conn.table(table.bq_table, database=table.bq_dataset)
+
+    query = _create_pivot_query(node, client)
     if table:
         client.query(
             f"CREATE OR REPLACE TABLE {DATAFLOW_ID}.{table.bq_table} as ({query})"
         ).result()
-        node.pivot_table.data_updated = dt.now()
+        node.pivot_table.data_updated = timezone.now()
         node.pivot_table.save()
     else:
         table_id = f"table_pivot_{node.pk}"
@@ -287,7 +315,6 @@ def get_pivot_query(node):
         node.pivot_table = table
         node.save()
 
-    conn = ibis_client()
     return conn.table(node.pivot_table.bq_table, database=node.pivot_table.bq_dataset)
 
 
