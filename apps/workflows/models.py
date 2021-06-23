@@ -279,18 +279,29 @@ class Node(DirtyFieldsMixin, models.Model):
             "error",
         }
 
-        if dirty_fields:
+        if dirty_fields and "updated" not in dirty_fields:
             self.updated = timezone.now()
 
         return super().save(*args, **kwargs)
 
 
-class Column(models.Model):
+class SaveParentModel(DirtyFieldsMixin, models.Model):
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs) -> None:
+        if self.is_dirty():
+            self.node.updated = timezone.now()
+            self.node.save()
+        return super().save(*args, **kwargs)
+
+
+class Column(SaveParentModel):
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="columns")
 
 
-class FunctionColumn(models.Model):
+class FunctionColumn(SaveParentModel):
     class Functions(models.TextChoices):
         # These functions need to correspond to ibis Column methods
         # https://ibis-project.org/docs/api.html
@@ -308,7 +319,7 @@ class FunctionColumn(models.Model):
     )
 
 
-class SortColumn(models.Model):
+class SortColumn(SaveParentModel):
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="sort_columns"
     )
@@ -316,7 +327,7 @@ class SortColumn(models.Model):
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
 
 
-class AbstractOperationColumn(models.Model):
+class AbstractOperationColumn(SaveParentModel):
     class Meta:
         abstract = True
 
@@ -402,7 +413,7 @@ class AddColumn(AbstractOperationColumn):
     )
 
 
-class RenameColumn(models.Model):
+class RenameColumn(SaveParentModel):
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="rename_columns"
     )
@@ -413,7 +424,7 @@ class RenameColumn(models.Model):
     )
 
 
-class FormulaColumn(models.Model):
+class FormulaColumn(SaveParentModel):
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="formula_columns"
     )
