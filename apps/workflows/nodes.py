@@ -311,9 +311,9 @@ def get_pivot_query(node):
             project=node.workflow.project,
             workflow_node=node,
         )
-        table.save()
         node.pivot_table = table
         node.save()
+        table.save()
 
     return conn.table(node.pivot_table.bq_table, database=node.pivot_table.bq_dataset)
 

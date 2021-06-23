@@ -135,7 +135,7 @@ python-versions = "~=3.5"
 
 [[package]]
 name = "celery"
-version = "5.1.0"
+version = "5.1.1"
 description = "Distributed Task Queue."
 category = "main"
 optional = false
@@ -458,6 +458,17 @@ description = "Best way to have Django DRY forms"
 category = "main"
 optional = false
 python-versions = ">=3.5"
+
+[[package]]
+name = "django-dirtyfields"
+version = "1.7.0"
+description = "Tracking dirty fields on a Django model instance."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+Django = ">=1.11"
 
 [[package]]
 name = "django-filter"
@@ -1551,7 +1562,7 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.*"
-content-hash = "b07f4931c10507894b24cbf408f6d0ddc5a2a65075cc0257dd6fc7446c9546b1"
+content-hash = "8d119b90a3dd61ca4fc16340db2907fc62952106f73e6063470dc8c60d23c479"
 
 [metadata.files]
 amqp = [
@@ -1601,8 +1612,8 @@ cachetools = [
     {file = "cachetools-4.2.2.tar.gz", hash = "sha256:61b5ed1e22a0924aed1d23b478f37e8d52549ff8a961de2909c69bf950020cff"},
 ]
 celery = [
-    {file = "celery-5.1.0-py3-none-any.whl", hash = "sha256:1329de1edeaf734ef859e630cb42df2c116d53e59d2f46433b13aed196e85620"},
-    {file = "celery-5.1.0.tar.gz", hash = "sha256:65f061c04578cf189cd7352c192e1a79fdeb370b916bff792bcc769560e81184"},
+    {file = "celery-5.1.1-py3-none-any.whl", hash = "sha256:b5399d76cf70d5cfac3ec993f8796ec1aa90d4cef55972295751f384758a80d7"},
+    {file = "celery-5.1.1.tar.gz", hash = "sha256:54436cd97b031bf2e08064223240e2a83d601d9414bcb1b702f94c6c33c29485"},
 ]
 celery-progress = [
     {file = "celery_progress-0.1.0-py3-none-any.whl", hash = "sha256:01bc7ecb2483ed7085b957413a392f85b7e1002fc8ce6d24f3d1ff264173002d"},
@@ -1737,6 +1748,10 @@ django-clone = [
 django-crispy-forms = [
     {file = "django-crispy-forms-1.11.2.tar.gz", hash = "sha256:88efa857ce6111bd696cc4f74057539a3456102fe9c3a3ece8868e1e4579e70a"},
     {file = "django_crispy_forms-1.11.2-py3-none-any.whl", hash = "sha256:3db71ab06d17ec9d0195c086d3ad454da300ac268752ac3a4f63d72f7a490254"},
+]
+django-dirtyfields = [
+    {file = "django-dirtyfields-1.7.0.tar.gz", hash = "sha256:76fd01c69e077fd39f49376d9684d04188b821dafd342bf82d935036ff2f5946"},
+    {file = "django_dirtyfields-1.7.0-py3-none-any.whl", hash = "sha256:ed8d780d439281372ca1dd301b21d6536b950dad3c32f95740e8236c0ed423bc"},
 ]
 django-filter = [
     {file = "django-filter-2.4.0.tar.gz", hash = "sha256:84e9d5bb93f237e451db814ed422a3a625751cbc9968b484ecc74964a8696b06"},

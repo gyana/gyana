@@ -11,10 +11,12 @@ from apps.workflows.nodes import (
     StringOperations,
     TimeOperations,
 )
+from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 
 class Workflow(models.Model):
@@ -145,7 +147,7 @@ NodeConfig = {
 }
 
 
-class Node(models.Model):
+class Node(DirtyFieldsMixin, models.Model):
     class Kind(models.TextChoices):
         INPUT = "input", "Input"
         OUTPUT = "output", "Output"
@@ -176,7 +178,7 @@ class Node(models.Model):
     )
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
-    updated = models.DateTimeField(auto_now=True, editable=False)
+    updated = models.DateTimeField(auto_now_add=True, editable=False)
 
     error = models.CharField(max_length=300, null=True)
 
@@ -268,6 +270,19 @@ class Node(models.Model):
 
     def get_table_name(self):
         return f"Workflow:{self.workflow.name}:{self.output_name}"
+
+    def save(self, *args, **kwargs) -> None:
+        dirty_fields = set(self.get_dirty_fields(check_relationship=True).keys()) - {
+            "name",
+            "x",
+            "y",
+            "error",
+        }
+
+        if dirty_fields:
+            self.updated = timezone.now()
+
+        return super().save(*args, **kwargs)
 
 
 class Column(models.Model):
