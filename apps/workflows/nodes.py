@@ -246,7 +246,11 @@ def get_distinct_query(node):
     return query.group_by(distinct_columns).aggregate(columns)
 
 
-def _create_ibis_literal(value, type_):
+def _format_literal(value, type_):
+    """Formats a value to the right SQL type to be used in a string query.
+
+    Wraps a string in quotes and replaces spaces from values with `_`
+    """
     if value is None:
         return "null"
     if isinstance(type_, String):
@@ -255,14 +259,16 @@ def _create_ibis_literal(value, type_):
 
 
 def _create_pivot_query(node, client):
-
+    """Creates the pivot query in BigQuery syntax"""
     parent = node.parents.first().get_query()
     column_type = parent[node.pivot_column].type()
+
+    # The new column names consist of the values inside the selected column
     names_query = {
-        _create_ibis_literal(row.values()[0], column_type)
+        _format_literal(row.values()[0], column_type)
         for row in client.query(parent[node.pivot_column].compile()).result()
     }
-
+    # `pivot_index` is optional and won't be displayed if not selected
     selection = ", ".join(
         filter(None, (node.pivot_index, node.pivot_column, node.pivot_value))
     )
@@ -276,19 +282,26 @@ def _create_pivot_query(node, client):
     )
 
 
-def walk_parents(node):
+def _get_parent_updated(node):
+    """Walks through the node and its parents and returns the `updated` value."""
     yield node.updated
+
+    # For an input node check whether the input_table has changed
+    # e.g. whether a file has been synced again or a workflow ran
     if node.kind == "input":
         yield node.input_table.data_updated
+
     for parent in node.parents.all():
-        yield from walk_parents(parent)
+        yield from _get_parent_updated(parent)
 
 
 def get_pivot_query(node):
     client = bigquery_client()
     table = node.pivot_table
     conn = ibis_client()
-    if table and table.data_updated > max(tuple(walk_parents(node))):
+
+    # If the table doesn't need updating we can simply return the previous computed pivot table
+    if table and table.data_updated > max(tuple(_get_parent_updated(node))):
         return conn.table(table.bq_table, database=table.bq_dataset)
 
     query = _create_pivot_query(node, client)

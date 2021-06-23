@@ -319,13 +319,29 @@ class LimitNodeForm(NodeForm):
         labels = {"limit_limit": "Limit", "limit_offset": "Offset"}
 
 
-class PivotNodeForm(NodeForm):
+class PivotNodeForm(LiveUpdateForm):
     class Meta:
         model = Node
         fields = ["pivot_index", "pivot_column", "pivot_value", "pivot_aggregation"]
         # TODO: Add labels
 
-    # TODO: Add get_live_fields with column choices
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        column_choices = [
+            ("", "No column selected"),
+            *[(col, col) for col in self.instance.parents.first().schema],
+        ]
+        self.fields["pivot_index"] = forms.ChoiceField(
+            choices=column_choices, required=False
+        )
+        self.fields["pivot_column"] = forms.ChoiceField(choices=column_choices)
+        self.fields["pivot_value"] = forms.ChoiceField(choices=column_choices)
+
+    def get_live_fields(self):
+        fields = ["pivot_index", "pivot_column", "pivot_value"]
+        if self.get_live_field("pivot_value") is not None:
+            fields += "pivot_aggregation"
+        return fields
 
 
 class DefaultNodeForm(NodeForm):
