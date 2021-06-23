@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import time
 
 from apps.filters.bigquery import create_filter_query
 from apps.tables.models import Table
@@ -322,11 +323,13 @@ def get_pivot_query(node):
             bq_table=table_id,
             bq_dataset=DATAFLOW_ID,
             project=node.workflow.project,
-            workflow_node=node,
+            pivot_node=node,
         )
         node.pivot_table = table
-        node.save()
         table.save()
+
+    node.updated = timezone.now()
+    node.save()
 
     return conn.table(node.pivot_table.bq_table, database=node.pivot_table.bq_dataset)
 

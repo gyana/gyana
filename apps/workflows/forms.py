@@ -51,7 +51,7 @@ class InputNodeForm(NodeForm):
         instance = kwargs.get("instance")
         self.fields["input_table"].queryset = Table.objects.filter(
             project=instance.workflow.project
-        )
+        ).exclude(source="pivot_node")
 
 
 class OutputNodeForm(NodeForm):
@@ -340,7 +340,7 @@ class PivotNodeForm(LiveUpdateForm):
     def get_live_fields(self):
         fields = ["pivot_index", "pivot_column", "pivot_value"]
         if self.get_live_field("pivot_value") is not None:
-            fields += "pivot_aggregation"
+            fields += ["pivot_aggregation"]
         return fields
 
 

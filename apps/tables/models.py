@@ -26,7 +26,10 @@ class Table(models.Model):
         "workflows.Node", on_delete=models.CASCADE, null=True
     )
     pivot_node = models.OneToOneField(
-        "workflows.Node", on_delete=models.CASCADE, null=True, related_name="pivot_node"
+        "workflows.Node",
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="pivot_node",
     )
 
     num_rows = models.IntegerField()
