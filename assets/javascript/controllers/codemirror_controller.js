@@ -2,7 +2,8 @@ import { Controller } from 'stimulus'
 import CodeMirror from 'codemirror/lib/codemirror.js'
 import 'codemirror/addon/mode/simple.js'
 import 'codemirror/addon/hint/show-hint.js'
-
+import 'codemirror/addon/edit/closebrackets.js'
+import 'codemirror/addon/edit/matchbrackets.js'
 export default class extends Controller {
   static targets = ['textarea']
   connect() {
@@ -16,6 +17,8 @@ export default class extends Controller {
       hintOptions: {
         hint: autocomplete(columns),
       },
+      autoCloseBrackets: true,
+      matchBrackets: true,
     })
     // From https://stackoverflow.com/a/54377763
     this.CodeMirror.on('inputRead', function (instance) {
@@ -99,7 +102,7 @@ CodeMirror.defineSimpleMode('gyanaformula', {
   start: [
     { regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: 'string' },
     {
-      regex: new RegExp(`(?:${operations.join('|')}+)\\(`),
+      regex: new RegExp(`\(${operations.join('|')}\)\\(`),
       token: 'keyword',
     },
     { regex: /[a-zA-Z_][0-9a-zA-Z_]*/, token: 'variable' },
@@ -108,7 +111,6 @@ CodeMirror.defineSimpleMode('gyanaformula', {
     { regex: /[-+\/*=<>!]+/, token: 'operator' },
   ],
 })
-
 const operationCompletions = operations.map((op) => ({ text: op, className: 'text-blue' }))
 
 const autocomplete = (columns) => (editor, option) => {

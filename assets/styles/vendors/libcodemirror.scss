@@ -163,9 +163,6 @@
   text-decoration: line-through;
 }
 
-.cm-s-default .cm-keyword {
-  color: #708;
-}
 .cm-s-default .cm-atom {
   color: #219;
 }
@@ -180,7 +177,10 @@
 }
 
 .cm-s-default .cm-punctuation,
-.cm-s-default .cm-property,
+.cm-s-default .cm-property {
+}
+
+.cm-s-default .cm-keyword,
 .cm-s-default .cm-operator {
   color: var(--c-blue);
 }
