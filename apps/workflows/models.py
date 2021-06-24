@@ -147,6 +147,17 @@ NodeConfig = {
 }
 
 
+class AggregationFunctions(models.TextChoices):
+    # These functions need to correspond to ibis Column methods
+    # https://ibis-project.org/docs/api.html
+    SUM = "sum", "Sum"
+    COUNT = "count", "Count"
+    MEAN = "mean", "Average"
+    MAX = "max", "Maximum"
+    MIN = "min", "Minimum"
+    STD = "std", "Standard deviation"
+
+
 class Node(DirtyFieldsMixin, models.Model):
     class Kind(models.TextChoices):
         INPUT = "input", "Input"
@@ -243,7 +254,9 @@ class Node(DirtyFieldsMixin, models.Model):
     pivot_value = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
     )
-    pivot_aggregation = models.CharField(max_length=20, null=True, blank=True)
+    pivot_aggregation = models.CharField(
+        max_length=20, choices=AggregationFunctions.choices, null=True, blank=True
+    )
     pivot_table = models.ForeignKey(
         Table, on_delete=models.CASCADE, null=True, related_name="pivot_table"
     )
@@ -302,18 +315,9 @@ class Column(SaveParentModel):
 
 
 class FunctionColumn(SaveParentModel):
-    class Functions(models.TextChoices):
-        # These functions need to correspond to ibis Column methods
-        # https://ibis-project.org/docs/api.html
-        SUM = "sum", "Sum"
-        COUNT = "count", "Count"
-        MEAN = "mean", "Average"
-        MAX = "max", "Maximum"
-        MIN = "min", "Minimum"
-        STD = "std", "Standard deviation"
 
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
-    function = models.CharField(max_length=20, choices=Functions.choices)
+    function = models.CharField(max_length=20, choices=AggregationFunctions.choices)
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="aggregations"
     )
