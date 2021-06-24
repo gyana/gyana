@@ -2,7 +2,6 @@ import { Controller } from 'stimulus'
 import CodeMirror from 'codemirror/lib/codemirror.js'
 import 'codemirror/addon/mode/simple.js'
 import 'codemirror/addon/hint/show-hint.js'
-import 'codemirror/addon/hint/show-hint.css'
 
 export default class extends Controller {
   static targets = ['textarea']

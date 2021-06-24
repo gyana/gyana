@@ -12,11 +12,11 @@ from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.views.decorators.http import condition
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import DeleteView, UpdateView
+from django.views.generic.edit import UpdateView
 from rest_framework import mixins, viewsets
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
-from turbo_response.views import TurboCreateView
+from turbo_response.views import TurboCreateView, TurboStreamDeleteView
 
 from .forms import FilterFormset, WidgetConfigForm, WidgetDuplicateForm
 from .models import WIDGET_CHOICES_ARRAY, Widget
@@ -167,9 +167,12 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
         return r
 
 
-class WidgetDelete(DashboardMixin, DeleteView):
+class WidgetDelete(DashboardMixin, TurboStreamDeleteView):
     template_name = "widgets/delete.html"
     model = Widget
+
+    def get_turbo_stream_target(self):
+        return f"widget-{self.object.pk}"
 
     def delete(self, request, *args, **kwargs):
         with transaction.atomic():
@@ -177,10 +180,6 @@ class WidgetDelete(DashboardMixin, DeleteView):
             response = super().delete(request, *args, **kwargs)
 
         return response
-
-    def form_valid(self, form):
-        super().form_valid(form)
-        return TurboStream(f"dashboard-widget-{self.object.id}").remove.render()
 
     def get_success_url(self) -> str:
         return reverse(
