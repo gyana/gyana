@@ -284,8 +284,8 @@ def _create_pivot_query(node, client):
 
 
 def _get_parent_updated(node):
-    """Walks through the node and its parents and returns the `updated` value."""
-    yield node.updated
+    """Walks through the node and its parents and returns the `data_updated` value."""
+    yield node.data_updated
 
     # For an input node check whether the input_table has changed
     # e.g. whether a file has been synced again or a workflow ran
@@ -328,7 +328,7 @@ def get_pivot_query(node):
         node.pivot_table = table
         table.save()
 
-    node.updated = timezone.now()
+    node.data_updated = timezone.now()
     node.save()
 
     return conn.table(node.pivot_table.bq_table, database=node.pivot_table.bq_dataset)

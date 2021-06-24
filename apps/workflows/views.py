@@ -168,6 +168,15 @@ class NodeUpdate(FormsetUpdateView):
         context = super().get_context_data(**kwargs)
         context["workflow"] = self.workflow
         context["preview_node_id"] = self.preview_node_id
+
+        # Add node type to list if it requires live updates
+        context["do_live_updates"] = self.object.kind in [
+            "pivot",
+            "add",
+            "edit",
+            "aggregation",
+            "filter",
+        ]
         return context
 
     def get_form_class(self):

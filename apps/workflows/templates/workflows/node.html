@@ -5,7 +5,11 @@
   <form class="form--no-layout flex flex-col h-full overflow-auto"
         action="{% url 'workflows:node' workflow.id node.id %}"
         method="post" 
-        data-controller="live-update trigger"
+        {% if do_live_updates %}
+          data-controller="live-update trigger"
+        {% else %}
+          data-controller="trigger"
+        {% endif %}
         data-trigger-event-value="node-updated-{{ node.id }}"
         data-action="submit->trigger#dispatch">
     <div class="workflow-node__header">

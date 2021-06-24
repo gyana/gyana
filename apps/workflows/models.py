@@ -189,7 +189,7 @@ class Node(DirtyFieldsMixin, models.Model):
     )
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
-    updated = models.DateTimeField(auto_now_add=True, editable=False)
+    data_updated = models.DateTimeField(auto_now_add=True, editable=False)
 
     error = models.CharField(max_length=300, null=True)
 
@@ -292,8 +292,8 @@ class Node(DirtyFieldsMixin, models.Model):
             "error",
         }
 
-        if dirty_fields and "updated" not in dirty_fields:
-            self.updated = timezone.now()
+        if dirty_fields and "data_updated" not in dirty_fields:
+            self.data_updated = timezone.now()
 
         return super().save(*args, **kwargs)
 
@@ -304,7 +304,7 @@ class SaveParentModel(DirtyFieldsMixin, models.Model):
 
     def save(self, *args, **kwargs) -> None:
         if self.is_dirty():
-            self.node.updated = timezone.now()
+            self.node.data_updated = timezone.now()
             self.node.save()
         return super().save(*args, **kwargs)
 
