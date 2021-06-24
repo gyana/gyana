@@ -347,7 +347,7 @@ class PivotNodeForm(LiveUpdateForm):
 
             self.fields["pivot_aggregation"].choices = [
                 (choice.value, choice.name)
-                for choice in AGGREGATION_TYPE_MAP[self.column_type]
+                for choice in AGGREGATION_TYPE_MAP[column_type]
             ]
 
     def get_live_fields(self):
