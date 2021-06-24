@@ -3,9 +3,12 @@
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
-  height: 300px;
-  color: black;
+  color: var(--c-black);
   direction: ltr;
+  height: auto;
+  width: 28rem;
+  border: 1px solid var(--c-gray);
+  border-radius: 5px;
 }
 
 /* PADDING */
@@ -172,10 +175,14 @@
 .cm-s-default .cm-def {
   color: #00f;
 }
-.cm-s-default .cm-variable,
+.cm-s-default .cm-variable {
+  color: var(--c-pink);
+}
+
 .cm-s-default .cm-punctuation,
 .cm-s-default .cm-property,
 .cm-s-default .cm-operator {
+  color: var(--c-blue);
 }
 .cm-s-default .cm-variable-2 {
   color: #05a;
@@ -515,11 +522,10 @@ span.CodeMirror-selectedtext {
   padding: 0 4px;
   border-radius: 2px;
   white-space: pre;
-  color: black;
   cursor: pointer;
 }
 
 li.CodeMirror-hint-active {
-  background: #08f;
-  color: white;
+  background: var(--c-blue-50);
+  color: var(--c-white);
 }

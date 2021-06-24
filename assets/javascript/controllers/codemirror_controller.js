@@ -9,6 +9,7 @@ export default class extends Controller {
     const columns = JSON.parse(this.element.querySelector('#columns').innerHTML).map((column) => ({
       text: column,
       loweredText: column.toLowerCase(),
+      className: 'text-pink',
     }))
     this.CodeMirror = CodeMirror.fromTextArea(this.textareaTarget, {
       mode: 'gyanaformula',
@@ -108,6 +109,8 @@ CodeMirror.defineSimpleMode('gyanaformula', {
   ],
 })
 
+const operationCompletions = operations.map((op) => ({ text: op, className: 'text-blue' }))
+
 const autocomplete = (columns) => (editor, option) => {
   let cursor = editor.getCursor(),
     line = editor.getLine(cursor.line)
@@ -117,9 +120,10 @@ const autocomplete = (columns) => (editor, option) => {
   while (start && /\w/.test(line.charAt(start - 1))) --start
   // get the end of the word
   while (end < line.length && /\w/.test(line.charAt(end))) ++end
+
   const word = line.slice(start, end).toLowerCase()
   if (word) {
-    const list = operations.filter((op) => op.startsWith(word)) || []
+    const list = operationCompletions.filter((op) => op.text.startsWith(word)) || []
     list.push(...(columns.filter((column) => column.loweredText.startsWith(word)) || []))
     return {
       list,
