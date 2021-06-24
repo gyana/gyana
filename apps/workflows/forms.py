@@ -274,10 +274,14 @@ AddColumnFormSet = forms.inlineformset_factory(
 )
 
 
-class FormulaColumnForm(LiveUpdateForm):
+class FormulaColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
         fields = ("formula", "label")
-        widgets = {"formula": CodeMirror()}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["formula"].widget = CodeMirror(self.schema)
 
 
 FormulaColumnFormSet = forms.inlineformset_factory(
