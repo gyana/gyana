@@ -8,14 +8,14 @@
         {% endif %}
         {% if object.is_valid %}
         <turbo-frame id="widgets:output-{{ object.id }}" src="{% url 'widgets:output' object.id %}"
-                      style="flex: 1 1 0%; min-height: 0;">
+            target="_top" style="display: flex; flex: 1 1 0%; min-height: 0;">
           <div class='placeholder-scr placeholder-scr--fillscreen'>
             <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
             <p class='placeholder-scr__title'>Loading visualisation...</p>
           </div>
         </turbo-frame>
         {% else %}
-        <div class='flex flex-col items-center justify-center' style="min-height:16rem;">
+        <div class='flex flex-col items-center justify-center flex-1'>
           <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
           <p>This widget needs to be
             <a class='text-blue underline'

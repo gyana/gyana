@@ -11,7 +11,7 @@ $card-colors: (
 .card {
   --card-color: var(--c-gray);
 
-  padding: 3rem;
+  padding: 3.2rem;
 
   background: var(--c-white);
   border-radius: 10px;
@@ -67,10 +67,10 @@ $card-colors: (
 
   // Sizes
   &--sm {
-    padding: 1rem;
+    padding: 1.6rem;
   }
-
-  &--custom {
+  
+  &--none {
     padding: 0;
   }
 

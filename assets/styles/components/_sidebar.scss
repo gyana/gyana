@@ -19,6 +19,7 @@
     font-size: 1.4rem;
     line-height: 1.6rem;
     padding: 1.6rem 1.6rem 1.6rem 1rem;
+    text-align: left;
 
     &--active {
       border-color: var(--c-blue);
@@ -62,7 +63,7 @@
     }
   }
 
-  label[for="sidebar-toggle"] {
+  label[for='sidebar-toggle'] {
     background-color: var(--c-white);
     color: var(--c-black);
     cursor: pointer;
@@ -74,8 +75,8 @@
   }
 }
 
-#sidebar-toggle:checked ~ .sidebar__body label[for="sidebar-toggle"] i::before {
-  content: '\f053'
+#sidebar-toggle:checked ~ .sidebar__body label[for='sidebar-toggle'] i::before {
+  content: '\f053';
 }
 
 #sidebar-toggle ~ .sidebar__body {

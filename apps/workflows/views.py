@@ -154,6 +154,7 @@ class NodeUpdate(FormsetUpdateView):
             "edit_columns",
             "aggregations",
             "filters",
+            "formula_columns",
         ]:
             return {"schema": self.object.parents.first().schema}
 

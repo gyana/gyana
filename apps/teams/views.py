@@ -6,9 +6,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DetailView
 from django.views.decorators.http import require_POST
-from django_tables2 import Table, Column
+from django.views.generic import DetailView
+from django_tables2 import Column, Table
 from rest_framework import viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from turbo_response.views import TurboCreateView
@@ -26,7 +26,7 @@ from .serializers import InvitationSerializer, TeamSerializer
 class TeamCreate(LoginRequiredMixin, TurboCreateView):
     model = Team
     form_class = TeamChangeForm
-    template_name = "teams/manage_team.html"
+    template_name = "teams/settings.html"
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
         form.save()
@@ -52,6 +52,7 @@ class TeamProjectsTable(Table):
 
     name = Column(linkify=True)
 
+
 class TeamDetail(DetailView):
     template_name = "teams/detail.html"
     model = Team
@@ -60,9 +61,12 @@ class TeamDetail(DetailView):
         from apps.projects.models import Project
 
         context = super().get_context_data(**kwargs)
-        context["team_projects"] = TeamProjectsTable(Project.objects.filter(team=self.object))
+        context["team_projects"] = TeamProjectsTable(
+            Project.objects.filter(team=self.object)
+        )
 
         return context
+
 
 @login_and_team_required
 def manage_team_react(request, team_slug):

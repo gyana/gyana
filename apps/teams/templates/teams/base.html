@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block app %}
+{% if team.slug %}
 <div class="workflow-detail__header">
   <h3 class="mr-auto flex justify-center items-center">
     {{ team.name }}
@@ -19,6 +20,7 @@
     Settings
   </a>
 </nav>
+{% endif %}
 
 <div class="flex flex-col flex-1 overflow-auto pad">
   {% block tab %}{% endblock %}

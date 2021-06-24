@@ -78,7 +78,7 @@ def get_table(schema, query, **kwargs):
     See https://django-tables2.readthedocs.io/en/stable/_modules/django_tables2/views.html
     """
     # Inspired by https://stackoverflow.com/questions/16696066/django-tables2-dynamically-adding-columns-to-table-not-adding-attrs-to-table
-    attrs = {name: Column() for name in schema}
+    attrs = {name: Column(verbose_name=name) for name in schema}
     attrs["Meta"] = type("Meta", (), {"attrs": {"class": "table"}})
     table_class = type("DynamicTable", (Table,), attrs)
 

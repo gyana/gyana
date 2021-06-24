@@ -17,7 +17,10 @@
   },
   "html.format.templating": true,
   "html.format.endWithNewline": true,
-  "html.format.wrapAttributes": "aligned-multiple",
+  "html.format.wrapAttributes": "preserve-aligned",
+  "[scss]": {
+    "editor.tabSize": 2,
+  },
   "editor.linkedEditing": true,
   "files.associations": {
     "**/*.html": "html",
