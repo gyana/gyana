@@ -263,13 +263,11 @@ const DnDFlow = ({ client }) => {
   )
 }
 
-const capitalize = (string: string) => string.charAt(0).toUpperCase() + string.slice(1)
-
 const createNewNode = (res, position) => ({
   id: `${res.id}`,
   type: ['input', 'output', 'text'].includes(res.kind) ? res.kind : 'default',
   data: {
-    label: res.name || capitalize(res.kind),
+    label: res.name || NODES[res.kind].displayName,
     icon: NODES[res.kind].icon,
     kind: res.kind,
     error: res.error,

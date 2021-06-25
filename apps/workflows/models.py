@@ -53,7 +53,7 @@ NodeConfig = {
         "section": "Input/Output",
     },
     "output": {
-        "displayName": "Save table",
+        "displayName": "Save data",
         "icon": "fa-save",
         "description": "Save result as a new table",
         "section": "Input/Output",
