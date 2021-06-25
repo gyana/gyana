@@ -79,7 +79,10 @@ class ProjectUpdate(TurboUpdateView):
 class ProjectDelete(DeleteView):
     template_name = "projects/delete.html"
     model = Project
-    success_url = reverse_lazy("projects:list")
+
+
+    def get_success_url(self) -> str:
+        return reverse("teams:detail", args=(self.object.team.slug,))
 
 
 class ProjectSettings(DetailView):
