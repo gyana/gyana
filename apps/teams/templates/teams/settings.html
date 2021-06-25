@@ -1,7 +1,7 @@
 {% extends "teams/base.html" %}
 
 {% block tab %}
-<div class="max-w-lg">
+<div class="max-w-lg mb-auto">
   <form method="post" class="form">
     {% csrf_token %}
 
@@ -9,5 +9,14 @@
 
     <button type="submit" class="button button--sm button--filled button--green mt-7">Save</button>
   </form>
+</div>
+
+<div>
+  <h2 class="text-red">Danger zone:</h2>
+  <p class="mb-7">If you'd like to <strong>delete</strong> this team, press the button below.</p>
+
+  <a class="button button--sm button--filled button--danger" href="{% url 'teams:delete' team.slug %}">
+    Delete
+  </a>
 </div>
 {% endblock %}

@@ -1,0 +1,14 @@
+{% extends "teams/base.html" %}
+
+{% block tab %}
+<h1 class="mb-7">Create your new team</h1>
+<div class="max-w-lg mb-auto">
+  <form method="post" class="form">
+    {% csrf_token %}
+
+    {% include "django/forms/default_form.html" %}
+
+    <button type="submit" class="button button--sm button--filled button--green mt-7">Create</button>
+  </form>
+</div>
+{% endblock %}
