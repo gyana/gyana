@@ -5,10 +5,9 @@
   <div class="flex items-center mb-4">
     <h1 class="mr-auto">Dashboards</h1>
     <turbo-frame
-      id='dashboard-create'
-      src="{% url 'project_dashboards:create' project.id %}"
-      target="_top"
-    >
+                 id='dashboard-create'
+                 src="{% url 'project_dashboards:create' project.id %}"
+                 target="_top">
       <i class='fad fa-spinner-third fa-spin'></i>
     </turbo-frame>
   </div>
@@ -17,7 +16,7 @@
     Your data's output, dashboards provide a way to showcase your data in a clean way.
   </p>
 
-  <div class="card card--sm">
+  <div class="card card--none">
     {% render_table table %}
 
     {% if dashboard_count == 0 %}

@@ -4,15 +4,21 @@
 
   thead {
     width: 100%;
+    border-bottom: 1px solid var(--c-gray);
 
     th {
       color: var(--c-black-20);
       font-size: 1.2rem;
       font-weight: normal;
       line-height: 1.4rem;
-      padding: 1rem 0.8rem 1.6rem;
+      padding: 1.2rem 1.6rem;
       text-align: left;
       white-space: nowrap;
+      min-width: 15%;
+      
+      &:last-child {
+        width: 100%;
+      }
     }
 
     .orderable {
@@ -39,17 +45,14 @@
     td {
       font-size: 1.2rem;
       line-height: 1.4rem;
-      padding: 1rem 0.8rem;
-    }
+      padding: 1.2rem 1.6rem;
+      white-space: nowrap;
 
-    .even {
-      background-color: var(--c-gray-10);
+      > * {
+        font-size: inherit;
+        line-height: inherit;
+      }
     }
-  }
-
-  th:first-child,
-  td:first-child {
-    padding-left: 1.2rem;
   }
 
   td a[href] {
@@ -79,6 +82,84 @@
     &:hover {
       text-decoration: underline;
       color: var(--c-blue-50);
+    }
+  }
+}
+
+.table-formal {
+  display: table;
+  position: relative;
+  width: 100%;
+
+  thead {
+    width: 100%;
+    border-bottom: 1px solid var(--c-gray);
+    background-color: var(--c-gray-50);
+
+    th {
+      color: var(--c-black);
+      font-size: 1.4rem;
+      font-weight: normal;
+      line-height: 1.4rem;
+      padding: 0.8rem 1.6rem;
+      position: sticky;
+      text-align: left;
+      top: 0;
+      white-space: nowrap;
+
+      & + th {
+        border-left: 1px solid var(--c-gray);
+      }
+
+      &:last-child {
+        width: 100%;
+      }
+    }
+
+    .orderable {
+      a::after {
+        content: '\f0dc';
+        display: inline;
+        font-family: "Font Awesome 5 Pro";
+        font-weight: 900;
+        margin-left: 0.5em;
+        position: relative;
+      }
+
+      &.asc a::after {
+        content: '\f0de';
+      }
+
+      &.desc a::after {
+        content: '\f0dd';
+      }
+    }
+  }
+
+  tbody {
+    td {
+      font-size: 1.2rem;
+      line-height: 1.4rem;
+      padding: 1.2rem 1.6rem;
+      white-space: nowrap;
+
+      > * {
+        font-size: inherit;
+        line-height: inherit;
+      }
+
+      & + td {
+        border-left: 1px solid var(--c-gray);
+      }
+    }
+  }
+
+  td a[href] {
+    color: var(--c-blue);
+    padding: 1.2rem 0; 
+    
+    &:hover {
+      text-decoration: underline;
     }
   }
 }
