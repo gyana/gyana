@@ -32,7 +32,7 @@ from turbo_response.stream import TurboStream
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .bigquery import query_integration
-from .fivetran import FivetranClient, get_services
+from .fivetran import FivetranClient, get_services, get_service_categories
 from .forms import (
     FORM_CLASS_MAP,
     CSVCreateForm,
@@ -79,6 +79,7 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
         context_data["integration_kind"] = Integration.Kind
         context_data["service_account"] = settings.GCP_BQ_SVC_ACCOUNT
         context_data["services"] = get_services()
+        context_data["service_categories"] = get_service_categories()
 
         return context_data
 

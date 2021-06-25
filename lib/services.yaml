@@ -3,30 +3,35 @@ amplitude:
   color: '#10069F'
   internal: f
   requires_schema_prefix: f
+  category: analytics
   static_config:
 asana:
   name: Asana
   color: '#6772e5'
   internal: f
   requires_schema_prefix: f
+  category: other
   static_config:
 facebook_ad_account:
   name: Facebook Ad Account
   color: '#4867AA'
   internal: f
   requires_schema_prefix: f
+  category: CRM & accounting
   static_config:
 facebook_pages:
   name: Facebook Pages
   color: '#4867AA'
   internal: f
   requires_schema_prefix: f
+  category: CRM & accounting
   static_config:
 google_analytics:
   name: Google Analytics
   color: '#e37400'
   internal: f
   requires_schema_prefix: f
+  category: analytics
   static_config:
     sync_mode: AllAccounts
     timeframe_months: ALL_TIME
@@ -66,12 +71,14 @@ google_cloud_postgresql:
   color: '#33668f'
   internal: f
   requires_schema_prefix: t
+  category: databases
   static_config:
 google_sheets:
   name: Google Sheets
   color: '#53A169'
   internal: f
   requires_schema_prefix: f
+  category: other
   static_config:
     table: sheets_table
 heap:
@@ -79,118 +86,138 @@ heap:
   color: '#e7455d'
   internal: f
   requires_schema_prefix: f
+  category: analytics
   static_config:
 hubspot:
   name: Hubspot
   color: '#ff7959'
   internal: f
   requires_schema_prefix: f
+  category: CRM & accounting
   static_config:
 intercom:
   name: Intercom
   color: '#296efa'
   internal: f
   requires_schema_prefix: f
+  category: CRM & accounting
   static_config:
 klaviyo:
   name: Klaviyo
   color: '#7CC156'
   internal: f
   requires_schema_prefix: f
+  category: CRM & accounting
   static_config:
 linkedin_ads:
   name: LinkedIn Ads
   color: '#2867b2'
   internal: f
   requires_schema_prefix: f
+  category: CRM & accounting
   static_config:
 mailchimp:
   name: Mailchimp
   color: '#ffe018'
   internal: f
   requires_schema_prefix: f
+  category: CRM & accounting
   static_config:
 mixpanel:
   name: Mixpanel
   color: '#1868fb'
   internal: f
   requires_schema_prefix: f
+  category: analytics
   static_config:
 mysql:
   name: MySQL
   color: '#00758f'
   internal: f
   requires_schema_prefix: t
+  category: databases
   static_config:
 optimizely:
   name: Optimizely
   color: '#0036FF'
   internal: f
   requires_schema_prefix: f
+  category: CRM & accounting
   static_config:
 pinterest_ads:
   name: Pinterest Ads
   color: '#E60023'
   internal: f
   requires_schema_prefix: f
+  category: CRM & accounting
   static_config:
 postgres:
   name: Postgres
   color: '#33668f'
   internal: f
   requires_schema_prefix: t
+  category: databases
   static_config:
 salesforce:
   name: Salesforce
   color: '#0092da'
   internal: f
   requires_schema_prefix: f
+  category: CRM & accounting
   static_config:
 segment:
   name: Segment
   color: '#52bc94'
   internal: f
   requires_schema_prefix: f
+  category: analytics
   static_config:
 shopify:
   name: Shopify
   color: '#95BF47'
   internal: f
   requires_schema_prefix: f
+  category: other
   static_config:
 snapchat_ads:
   name: Snapchat Ads
   color: '#F7F400'
   internal: f
   requires_schema_prefix: f
+  category: CRM & accounting
   static_config:
 snowplow:
   name: Snowplow
   color: '#9700d6'
   internal: f
   requires_schema_prefix: f
+  category: analytics
   static_config:
 square:
   name: Square
   color: '#000000'
   internal: f
   requires_schema_prefix: f
+  category: accounting & payments
   static_config:
 stripe:
   name: Stripe
   color: '#6772e5'
   internal: f
   requires_schema_prefix: f
+  category: accounting & payments
   static_config:
 xero:
   name: Xero
   color: '#00B7E2'
   internal: f
   requires_schema_prefix: f
+  category: accounting & payments
   static_config:
 zendesk:
   name: Zendesk
   color: '#00333a'
   internal: f
   requires_schema_prefix: f
+  category: CRM & accounting
   static_config:

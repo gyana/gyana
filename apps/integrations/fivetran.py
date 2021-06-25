@@ -21,6 +21,18 @@ def get_services():
     }
 
 
+@lru_cache
+def get_service_categories():
+    services = get_services()
+    service_categories = []
+
+    for service in services:
+        if services[service]["category"] not in service_categories:
+            service_categories.append(services[service]["category"])
+
+    return service_categories
+
+
 @dataclass
 class MockFivetranClient:
 
