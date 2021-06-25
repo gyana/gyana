@@ -5,7 +5,7 @@
   font-family: monospace;
   color: var(--c-black);
   direction: ltr;
-  height: auto;
+  height: 300px;
   width: 28rem;
   border: 1px solid var(--c-gray);
   border-radius: 5px;
@@ -528,4 +528,12 @@ span.CodeMirror-selectedtext {
 li.CodeMirror-hint-active {
   background: var(--c-blue-50);
   color: var(--c-white);
+}
+
+// https://github.com/codemirror/CodeMirror/blob/master/demo/placeholder.html
+.CodeMirror-empty,
+.CodeMirror-empty.CodeMirror-focused {
+}
+.CodeMirror pre.CodeMirror-placeholder {
+  color: var(--c-black-50);
 }

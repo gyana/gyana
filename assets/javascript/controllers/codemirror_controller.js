@@ -4,6 +4,8 @@ import 'codemirror/addon/mode/simple.js'
 import 'codemirror/addon/hint/show-hint.js'
 import 'codemirror/addon/edit/closebrackets.js'
 import 'codemirror/addon/edit/matchbrackets.js'
+import 'codemirror/addon/display/placeholder.js'
+
 export default class extends Controller {
   static targets = ['textarea']
   connect() {
@@ -12,6 +14,7 @@ export default class extends Controller {
       loweredText: column.toLowerCase(),
       className: 'text-pink',
     }))
+
     this.CodeMirror = CodeMirror.fromTextArea(this.textareaTarget, {
       mode: 'gyanaformula',
       hintOptions: {
@@ -20,6 +23,7 @@ export default class extends Controller {
       autoCloseBrackets: true,
       matchBrackets: true,
     })
+
     // From https://stackoverflow.com/a/54377763
     this.CodeMirror.on('inputRead', function (instance) {
       if (instance.state.completionActive) {
