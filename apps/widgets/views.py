@@ -1,3 +1,5 @@
+import logging
+
 import analytics
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
@@ -10,11 +12,11 @@ from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.views.decorators.http import condition
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import DeleteView, UpdateView
+from django.views.generic.edit import UpdateView
 from rest_framework import mixins, viewsets
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
-from turbo_response.views import TurboCreateView
+from turbo_response.views import TurboCreateView, TurboStreamDeleteView
 
 from .forms import FilterFormset, WidgetConfigForm, WidgetDuplicateForm
 from .models import WIDGET_CHOICES_ARRAY, Widget
@@ -43,6 +45,12 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
     def form_valid(self, form):
         form.instance.dashboard = self.dashboard
 
+        # give different dimensions to text widget
+        # TODO: make an abstraction with default values per widget kind
+        if form.instance.kind == Widget.Kind.TEXT:
+            form.instance.width = 30
+            form.instance.height = 200
+
         with transaction.atomic():
             super().form_valid(form)
             self.dashboard.save()
@@ -66,6 +74,7 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
                         "object": form.instance,
                         "project": self.dashboard.project,
                         "dashboard": self.dashboard,
+                        "is_new": True,
                     },
                 )
                 .render(request=self.request),
@@ -159,20 +168,12 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
         return r
 
 
-class WidgetDelete(DashboardMixin, DeleteView):
+class WidgetDelete(TurboStreamDeleteView):
     template_name = "widgets/delete.html"
     model = Widget
 
-    def delete(self, request, *args, **kwargs):
-        with transaction.atomic():
-            self.dashboard.save()
-            response = super().delete(request, *args, **kwargs)
-
-        return response
-
-    def form_valid(self, form):
-        super().form_valid(form)
-        return TurboStream(f"dashboard-widget-{self.object.id}").remove.render()
+    def get_turbo_stream_target(self):
+        return f"widget-{self.object.pk}"
 
     def get_success_url(self) -> str:
         return reverse(
@@ -215,12 +216,17 @@ class WidgetOutput(DetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        if self.object.is_valid:
-            if self.object.kind == Widget.Kind.TABLE:
-                context_data.update(table_to_output(self.object))
-            elif self.object.kind == Widget.Kind.TEXT:
-                pass
-            else:
-                context_data.update(chart_to_output(self.object))
+        try:
+
+            if self.object.is_valid:
+                if self.object.kind == Widget.Kind.TABLE:
+                    context_data.update(table_to_output(self.object))
+                elif self.object.kind == Widget.Kind.TEXT:
+                    pass
+                else:
+                    context_data.update(chart_to_output(self.object))
+        except Exception as e:
+            context_data["is_error"] = True
+            logging.warning(e, exc_info=e)
 
         return context_data

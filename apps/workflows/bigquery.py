@@ -1,7 +1,6 @@
-from datetime import datetime
-
 from apps.tables.models import Table
 from apps.workflows.models import Node, Workflow
+from django.utils import timezone
 from lib.clients import DATAFLOW_ID, bigquery_client
 
 
@@ -18,7 +17,7 @@ def run_workflow(workflow: Workflow):
                 client.query(
                     f"CREATE OR REPLACE TABLE {DATAFLOW_ID}.{node.table.bq_table} as ({query})"
                 ).result()
-                node.table.data_updated = datetime.now()
+                node.table.data_updated = timezone.now()
                 node.table.save()
 
             except Table.DoesNotExist:
@@ -39,6 +38,6 @@ def run_workflow(workflow: Workflow):
     if workflow.failed:
         return {node.id: node.error for node in workflow.nodes.all() if node.error}
 
-    workflow.last_run = datetime.now()
+    workflow.last_run = timezone.now()
     # Use fields to not trigger auto_now on the updated field
     workflow.save(update_fields=["last_run"])

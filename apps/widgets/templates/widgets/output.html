@@ -1,9 +1,20 @@
 <turbo-frame id="widgets:output-{{ widget.id }}">
-  {% if widget.kind == "table" %}
-    {% include 'widgets/visuals/grid.html' %}
-  {% elif widget.kind == "text" %}
-    {% include 'widgets/visuals/text.html' %}
-  {% elif widget.kind %}
-    {% include 'widgets/visuals/chart.html' %}
+  {% if is_error %}
+    <div class='flex flex-col items-center justify-center flex-1'>
+      <i class="far fa-exclamation-triangle mb-1 fa-2x"></i>
+      <p>The 
+        <a class='text-blue underline'
+            href="{% url 'dashboard_widgets:update' widget.dashboard.project.id widget.dashboard.id widget.pk %}" >configuration</a>
+            for this widget is faulty!
+      </p>
+    </div>
+  {% else %}
+    {% if widget.kind == "table" %}
+      {% include 'widgets/visuals/grid.html' %}
+    {% elif widget.kind == "text" %}
+      {% include 'widgets/visuals/text.html' %}
+    {% elif widget.kind %}
+      {% include 'widgets/visuals/chart.html' %}
+    {% endif %}
   {% endif %}
 </turbo-frame>

@@ -16,6 +16,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
   children,
   root,
 }) => {
+  const mode = new URLSearchParams(window.location.search).get('mode') || 'view'
   const id = children.props['data-id']
   // Utilised to decide the clamping on interaction as well as clamps for placement
   const stepSize = Math.floor(root.offsetWidth / GRID_COLS)
@@ -30,6 +31,9 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
 
   return (
     <ReactRnd
+      data-zindex-target='entity'
+      enableResizing={mode !== 'view'}
+      disableDragging={mode === 'view'}
       default={{
         width,
         height,

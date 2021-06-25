@@ -1,8 +1,12 @@
-<textarea 
-  class="textarea" 
-  name="{{ widget.name }}"    
-  {% include "django/forms/widgets/attrs.html" %}
-  data-controller='codemirror'
->
-  {% if widget.value %}{{ widget.value }}{% endif %}
-</textarea>
+<div  data-controller='codemirror'> 
+  {{ columns|json_script:"columns" }}
+  <textarea 
+    data-codemirror-target='textarea'
+    class="textarea" 
+    name="{{ widget.name }}"    
+    {% include "django/forms/widgets/attrs.html" %}
+
+  > 
+    {% if widget.value %}{{ widget.value }}{% endif %}
+  </textarea>
+</div>

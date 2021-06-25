@@ -3,9 +3,12 @@
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
-  height: 300px;
-  color: black;
+  color: var(--c-black);
   direction: ltr;
+  height: auto;
+  width: 28rem;
+  border: 1px solid var(--c-gray);
+  border-radius: 5px;
 }
 
 /* PADDING */
@@ -160,9 +163,6 @@
   text-decoration: line-through;
 }
 
-.cm-s-default .cm-keyword {
-  color: #708;
-}
 .cm-s-default .cm-atom {
   color: #219;
 }
@@ -172,10 +172,17 @@
 .cm-s-default .cm-def {
   color: #00f;
 }
-.cm-s-default .cm-variable,
+.cm-s-default .cm-variable {
+  color: var(--c-pink);
+}
+
 .cm-s-default .cm-punctuation,
-.cm-s-default .cm-property,
+.cm-s-default .cm-property {
+}
+
+.cm-s-default .cm-keyword,
 .cm-s-default .cm-operator {
+  color: var(--c-blue);
 }
 .cm-s-default .cm-variable-2 {
   color: #05a;
@@ -485,4 +492,40 @@ div.CodeMirror-dragcursors {
 /* Help users use markselection to safely style text background */
 span.CodeMirror-selectedtext {
   background: none;
+}
+
+.CodeMirror-hints {
+  position: absolute;
+  z-index: 200;
+  overflow: hidden;
+  list-style: none;
+
+  margin: 0;
+  padding: 2px;
+
+  -webkit-box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  border: 1px solid silver;
+
+  background: white;
+  font-size: 1.2rem;
+  font-family: monospace;
+
+  max-height: 30em;
+  overflow-y: auto;
+}
+
+.CodeMirror-hint {
+  margin: 0;
+  padding: 0 4px;
+  border-radius: 2px;
+  white-space: pre;
+  cursor: pointer;
+}
+
+li.CodeMirror-hint-active {
+  background: var(--c-blue-50);
+  color: var(--c-white);
 }

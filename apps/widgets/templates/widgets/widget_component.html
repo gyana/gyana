@@ -1,4 +1,4 @@
-<gy-widget id="widget-{{ object.id }}">
+<gy-widget id="widget-{{ object.id }}" {% if is_new %}data-action="mousedown->zindex#register:once"{% endif %}>
   <div class="p-2 h-full w-full" data-id="{{ object.id }}" data-x="{{object.x}}" data-y="{{object.y}}"
         data-width="{{object.width}}" data-height="{{object.height}}">
     <div class="widget-card h-full">
@@ -8,14 +8,14 @@
         {% endif %}
         {% if object.is_valid %}
         <turbo-frame id="widgets:output-{{ object.id }}" src="{% url 'widgets:output' object.id %}"
-                      style="flex: 1 1 0%; min-height: 0;">
+            target="_top" style="display: flex; flex: 1 1 0%; min-height: 0;">
           <div class='placeholder-scr placeholder-scr--fillscreen'>
             <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
             <p class='placeholder-scr__title'>Loading visualisation...</p>
           </div>
         </turbo-frame>
         {% else %}
-        <div class='flex flex-col items-center justify-center' style="min-height:16rem;">
+        <div class='flex flex-col items-center justify-center flex-1'>
           <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
           <p>This widget needs to be
             <a class='text-blue underline'
@@ -25,6 +25,7 @@
         {% endif %}
       </div>
 
+      {% if request.GET.mode == 'edit' %}
       <div class='widget-card__commands'>
         <i class="cursor-move fas fa-fw fa-arrows rnd-handle"></i>
         {% if object.kind != "text" %}
@@ -50,6 +51,7 @@
           </div>
         </div>
       </div>
+      {% endif %}
     </div>
   </div>
 </gy-widget>

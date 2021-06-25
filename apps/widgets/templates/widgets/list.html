@@ -3,7 +3,10 @@
 
 {% block widget %}
 <turbo-frame id="widgets" target="_top">
-  <div id="dashboard-widget-container" style="position:relative;display:block;width:100%;height:100%;overflow-x:hidden;overflow-y:auto;">
+  <div 
+    id="dashboard-widget-container" 
+    style="position:relative;display:block;width:100%;height:100%;overflow-x:hidden;overflow-y:auto;"
+    data-controller="zindex">
     {% for object in object_list %}
     {% include 'widgets/widget_component.html' %}
     {% empty %}

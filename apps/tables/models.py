@@ -10,19 +10,26 @@ class Table(models.Model):
     class Source(models.TextChoices):
         INTEGRATION = "integration", "Integration"
         WORKFLOW_NODE = "workflow_node", "Workflow node"
+        PIVOT_NODE = "intermediate_node", "Intermediate node"
 
     bq_table = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
     bq_dataset = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
-    source = models.CharField(max_length=16, choices=Source.choices)
+    source = models.CharField(max_length=18, choices=Source.choices)
     # TODO: delete table in bigquery on deletion
     integration = models.ForeignKey(
         "integrations.Integration", on_delete=models.CASCADE, null=True
     )
     workflow_node = models.OneToOneField(
         "workflows.Node", on_delete=models.CASCADE, null=True
+    )
+    intermediate_node = models.OneToOneField(
+        "workflows.Node",
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="intermediate_node",
     )
 
     num_rows = models.IntegerField()
