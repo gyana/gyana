@@ -116,6 +116,10 @@ def get_pivot_desc(obj):
     )
 
 
+def get_unpivot_desc(obj):
+    return f"Unpivoting {' ,'.join([col.column for col in obj.columns.all()])} to {obj.unpivot_value})"
+
+
 DESCRIPTIONS = {
     "input": get_input_desc,
     "limit": get_limit_desc,
@@ -133,4 +137,5 @@ DESCRIPTIONS = {
     "formula": get_formula_desc,
     "distinct": get_distinct_desc,
     "pivot": get_pivot_desc,
+    "unpivot": get_unpivot_desc,
 }

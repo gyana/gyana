@@ -14,7 +14,7 @@ from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
 # fmt: off
 from .models import (AddColumn, AggregationFunctions, Column, EditColumn,
                      FormulaColumn, FunctionColumn, Node, RenameColumn,
-                     SortColumn, Workflow)
+                     SecondaryColumn, SortColumn, Workflow)
 
 # fmt: on
 
@@ -51,7 +51,7 @@ class InputNodeForm(NodeForm):
         instance = kwargs.get("instance")
         self.fields["input_table"].queryset = Table.objects.filter(
             project=instance.workflow.project
-        ).exclude(source="pivot_node")
+        ).exclude(source="intermediate_node")
 
 
 class OutputNodeForm(NodeForm):
@@ -322,6 +322,7 @@ class LimitNodeForm(NodeForm):
         labels = {"limit_limit": "Limit", "limit_offset": "Offset"}
 
 
+# TODO: Use Nodeform instead
 class PivotNodeForm(LiveUpdateForm):
     class Meta:
         model = Node
@@ -357,6 +358,31 @@ class PivotNodeForm(LiveUpdateForm):
         return fields
 
 
+class UnpivotNodeForm(LiveUpdateForm):
+    class Meta:
+        model = Node
+        fields = ["unpivot_value", "unpivot_column"]
+
+
+SelectColumnFormSet = forms.inlineformset_factory(
+    Node,
+    SecondaryColumn,
+    fields=("column",),
+    can_delete=True,
+    extra=0,
+    formset=InlineColumnFormset,
+)
+
+UnpivotColumnFormSet = forms.inlineformset_factory(
+    Node,
+    Column,
+    fields=("column",),
+    can_delete=True,
+    extra=0,
+    formset=InlineColumnFormset,
+)
+
+
 class DefaultNodeForm(NodeForm):
     class Meta:
         model = Node
@@ -381,6 +407,7 @@ KIND_TO_FORM = {
     "formula": DefaultNodeForm,
     "distinct": SelectNodeForm,
     "pivot": PivotNodeForm,
+    "unpivot": UnpivotNodeForm,
 }
 
 KIND_TO_FORMSETS = {
@@ -391,4 +418,5 @@ KIND_TO_FORMSETS = {
     "rename": [RenameColumnFormSet],
     "filter": [FilterFormSet],
     "formula": [FormulaColumnFormSet],
+    "unpivot": [UnpivotColumnFormSet, SelectColumnFormSet],
 }

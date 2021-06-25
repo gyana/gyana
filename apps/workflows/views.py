@@ -176,6 +176,7 @@ class NodeUpdate(FormsetUpdateView):
             "edit",
             "aggregation",
             "filter",
+            "unpivot",
         ]
         return context
 

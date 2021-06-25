@@ -31,7 +31,7 @@ class WidgetConfigForm(LiveUpdateForm):
         if project:
             self.fields["table"].queryset = Table.objects.filter(
                 project=project
-            ).exclude(source="pivot_node")
+            ).exclude(source="intermediate_node")
 
         if schema and "label" in self.fields:
             columns = [(column, column) for column in schema]

@@ -1,3 +1,4 @@
+import logging
 from functools import cached_property
 
 from apps.projects.models import Project
@@ -144,6 +145,12 @@ NodeConfig = {
         "description": "Pivot your table",
         "section": "Table manipulations",
     },
+    "unpivot": {
+        "displayName": "Unpivot",
+        "icon": "fa-redo-alt",
+        "description": "Unpivot your table",
+        "section": "Table manipulations",
+    },
 }
 
 
@@ -176,6 +183,7 @@ class Node(DirtyFieldsMixin, models.Model):
         FORMULA = "formula", "Formula"
         DISTINCT = "distinct", "Distinct"
         PIVOT = "pivot", "Pivot"
+        UNPIVOT = "unpivot", "Unpivot"
 
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"
@@ -192,7 +200,9 @@ class Node(DirtyFieldsMixin, models.Model):
     data_updated = models.DateTimeField(auto_now_add=True, editable=False)
 
     error = models.CharField(max_length=300, null=True)
-
+    intermediate_table = models.ForeignKey(
+        Table, on_delete=models.CASCADE, null=True, related_name="intermediate_table"
+    )
     # ======== Node specific columns ========= #
 
     # Input
@@ -257,8 +267,12 @@ class Node(DirtyFieldsMixin, models.Model):
     pivot_aggregation = models.CharField(
         max_length=20, choices=AggregationFunctions.choices, null=True, blank=True
     )
-    pivot_table = models.ForeignKey(
-        Table, on_delete=models.CASCADE, null=True, related_name="pivot_table"
+
+    unpivot_value = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+    )
+    unpivot_column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
     )
 
     def save(self, *args, **kwargs):
@@ -276,6 +290,7 @@ class Node(DirtyFieldsMixin, models.Model):
         except Exception as err:
             self.error = str(err)
             self.save()
+            logging.error(err, exc_info=err)
 
     @cached_property
     def schema(self):
@@ -312,6 +327,13 @@ class SaveParentModel(DirtyFieldsMixin, models.Model):
 class Column(SaveParentModel):
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="columns")
+
+
+class SecondaryColumn(SaveParentModel):
+    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="secondary_columns"
+    )
 
 
 class FunctionColumn(SaveParentModel):
