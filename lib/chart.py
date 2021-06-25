@@ -1,8 +1,5 @@
-import json
-from typing import Any
-
 import pandas as pd
-from django.forms.widgets import Widget
+from apps.widgets.models import Widget
 
 from lib.fusioncharts import FusionCharts
 
@@ -13,8 +10,22 @@ DEFAULT_HEIGHT = "100%"
 def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
 
     """Render a chart from a table."""
-
-    df = df.rename(columns={widget.label: "label", widget.value: "value"})
+    if widget.kind in [Widget.Kind.SCATTER.value]:
+        data = {
+            "dataset": [
+                {
+                    "data": df.rename(
+                        columns={widget.label: "x", widget.value: "y"}
+                    ).to_dict(orient="records")
+                }
+            ]
+        }
+    else:
+        data = {
+            "data": df.rename(
+                columns={widget.label: "label", widget.value: "value"}
+            ).to_dict(orient="records")
+        }
 
     dataSource = {
         "chart": {
@@ -22,7 +33,7 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
             "xAxisName": widget.label,
             "yAxisName": widget.value,
         },
-        "data": df.to_dict(orient="records"),
+        **data,
     }
 
     return FusionCharts(

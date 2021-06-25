@@ -18,6 +18,9 @@ class Widget(CloneMixin, models.Model):
         COLUMN = "column2d", "Column"
         LINE = "line", "Line"
         PIE = "pie2d", "Pie"
+        AREA = "area2d", "Area"
+        DONUT = "doughnut2d", "Donut"
+        SCATTER = "scatter", "Scatter"
 
     class Aggregator(models.TextChoices):
         # These aggregators should reflect the names described in the ibis api, none is an exception
@@ -86,6 +89,9 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.COLUMN.value: ("fa-chart-bar",),
     Widget.Kind.LINE.value: ("fa-chart-line",),
     Widget.Kind.PIE.value: ("fa-chart-pie",),
+    Widget.Kind.AREA.value: ("fa-chart-area",),
+    Widget.Kind.DONUT.value: ("fa-dot-circle",),
+    Widget.Kind.SCATTER.value: ("fa-chart-scatter",),
 }
 
 WIDGET_CHOICES_ARRAY = [
