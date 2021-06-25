@@ -6,8 +6,13 @@
   <p>Are you sure you want to delete?</p>
   <form method="post" action="{% url 'project_integrations:delete' project.id object.id %}">
     {% csrf_token %}
-    <input type="submit" value="Yes" class="btn btn-danger" />
-    <a href="{% url 'project_integrations:list' project.id %}" class="btn btn-default">No</a>
+    <div className='flex flex-row'>
+      <button type="submit" class="button button--danger">Yes</button>
+      <a href="{% url 'project_integrations:list' project.id %}"
+         class="button button--tertiary">
+        No
+      </a>
+    </div>
   </form>
 </div>
 {% endblock %}

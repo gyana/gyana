@@ -5,10 +5,8 @@
     {% csrf_token %}
     <div class="flex flex-row">
       <input type="submit" value="Yes" class="button button--danger" />
-      <a 
-        href="{% url 'project_dashboards:detail' project.id dashboard.id %}" 
-        class="button button-default ml-2"
-      >
+      <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}"
+         class="button button-default ml-2">
         No
       </a>
     </div>

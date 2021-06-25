@@ -4,11 +4,9 @@
   <form method="post" action="{% url 'project_dashboards:delete' project.id object.id %}">
     {% csrf_token %}
     <div className='flex flex-row'>
-      <input type="submit" value="Yes" class="button button--danger" />
-      <a 
-        href="{% url 'project_dashboards:detail' project.id dashboard.id %}" 
-        class="button"
-      >
+      <button type="submit" class="button button--danger">Yes</button>
+      <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}"
+         class="button button--tertiary">
         No
       </a>
     </div>

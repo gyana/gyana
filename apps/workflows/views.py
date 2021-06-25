@@ -65,6 +65,7 @@ class WorkflowCreate(ProjectMixin, TurboCreateView):
     def get_initial(self):
         initial = super().get_initial()
         initial["project"] = self.project
+
         return initial
 
     def get_success_url(self) -> str:
