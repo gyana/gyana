@@ -44,14 +44,14 @@ class Workflow(models.Model):
 
 NodeConfig = {
     "input": {
-        "displayName": "Input",
-        "icon": "fa-layer-group",
+        "displayName": "Get data",
+        "icon": "fa-file",
         "description": "Select a table from an Integration or previous Workflow",
         "section": "Input/Output",
     },
     "output": {
-        "displayName": "Output",
-        "icon": "fa-table",
+        "displayName": "Save table",
+        "icon": "fa-save",
         "description": "Save result as a new table",
         "section": "Input/Output",
     },
