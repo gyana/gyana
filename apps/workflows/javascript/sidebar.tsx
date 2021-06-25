@@ -52,7 +52,7 @@ const Sidebar: React.FC = () => {
         .filter((section) => section != 'Input/Output')
         .map((section) => (
           <React.Fragment key={section}>
-            <div className='pad' data-controller='collapsable'>
+            <div className='active pad' data-controller='collapsable'>
               <h3 className='cursor-pointer' data-action='click->collapsable#toggle'>
                 {section}
               </h3>
