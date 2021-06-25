@@ -10,7 +10,7 @@ DEFAULT_HEIGHT = "100%"
 def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
 
     """Render a chart from a table."""
-    if widget.kind in [Widget.Kind.SCATTER.value]:
+    if widget.kind == Widget.Kind.SCATTER.value:
         data = {
             "dataset": [
                 {
@@ -19,6 +19,17 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
                     ).to_dict(orient="records")
                 }
             ]
+        }
+    elif widget.kind == Widget.Kind.RADAR.value:
+        data = {
+            "categories": [
+                {"category": [{"label": label} for label in df[widget.label].to_list()]}
+            ],
+            "dataset": [
+                {
+                    "data": [{"value": value} for value in df[widget.value].to_list()],
+                }
+            ],
         }
     else:
         data = {
