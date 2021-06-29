@@ -19,8 +19,19 @@
     {% if workflow_count == 0 %}
     <div class="text-center pad--sm">
       <small>
-        You have no workflows yet, <a href="{% url 'project_workflows:create' project.id  %}" class="link">create
-          one</a> to see it here
+        You have no workflows yet,  
+        <form 
+          class="inline"
+          method="post" 
+          action="{% url 'project_workflows:create' project.id  %}"
+        >
+          {% csrf_token %}
+          <input type="hidden" name="project" value="{{ project.id }}"></input>
+          <button type="submit" class="link">
+            create one
+          </button>
+        </form> 
+        to see it here
       </small>
     </div>
     {% endif %}
