@@ -18,11 +18,10 @@
     </turbo-frame>
   </div>
   <div data-controller='popover'>
-    <span 
-      data-popover-target="trigger" 
-      data-action="click->popover#trigger"
-      class="button button--circle button--tertiary cursor-pointer"
-    >
+    <span
+          data-popover-target="trigger"
+          data-action="click->popover#trigger"
+          class="button button--circle button--tertiary cursor-pointer">
       <i class="far fa-fw fa-trash"></i>
     </span>
     <div data-popover-target="body" hidden class="popover-body shadow-sm">
@@ -33,14 +32,14 @@
 
 <div data-controller="tf-modal" class="flex flex-1 overflow-hidden">
   <div data-tf-modal-target="modal" class="tf-modal hidden">
-    <div class="card card--inline w-full flex-col h-full relative">
+    <div class="card card--none flex-col h-full">
       <div class="absolute top-0 right-0">
         <button class="tf-modal__close" data-action="click->tf-modal#close keydown@window->tf-modal#onInput">
           <i class="fal fa-times fa-2x"></i>
         </button>
       </div>
 
-      <turbo-frame id="workflow-node" data-tf-modal-target="turboFrame">
+      <turbo-frame id="workflow-modal" data-tf-modal-target="turboFrame">
         <div class='placeholder-scr placeholder-scr--fillscreen'>
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x"></i>
         </div>

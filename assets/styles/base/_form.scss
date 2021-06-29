@@ -6,10 +6,10 @@ form {
 }
 
 form.form--no-layout {
-  display: flex;
-  flex-flow: column;
-  gap: initial;
-  align-items: initial;
+  display: inherit;
+  flex-flow: inherit;
+  gap: inherit;
+  align-items: inherit;
 }
 
 .input-group {

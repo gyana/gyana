@@ -1,29 +1,22 @@
 {% with parents=node.parents.all %}
 
-<turbo-frame id="workflow-node">
+<turbo-frame id="workflow-modal">
   {% if node.kind == "input" or parents %}
-  <form class="form--no-layout flex flex-col h-full overflow-auto"
+  <form class="form--no-layout flex-1 overflow-auto"
         action="{% url 'workflows:node' workflow.id node.id %}"
-        method="post" 
+        method="post"
         {% if do_live_updates %}
-          data-controller="live-update trigger"
+        data-controller="live-update trigger"
         {% else %}
-          data-controller="trigger"
+        data-controller="trigger"
         {% endif %}
         data-trigger-event-value="node-updated-{{ node.id }}"
         data-action="submit->trigger#dispatch">
-    <div class="workflow-node__header">
-      <h3>{{ node.kind }} {% if node.name %}- {{ node.name }}{% endif %}</h3>
-
-      <div class='flex gap-7'>
-        <input type='submit' data-action=" click->tf-modal#close" class="button button--filled button--sm" name='submit'
-               value='Save' />
-        <input type='submit' class="button button--filled button--green button--sm" name='submit'
-               value='Save & Preview' />
+    <div class="workflow-modal__section">
+      <div class="pad">
+        <h3>{{ node.kind }} {% if node.name %}- {{ node.name }}{% endif %}</h3>
       </div>
-    </div>
 
-    <div class="flex flex-1">
       <div class="workflow-detail__sidebar">
         <div data-controller="turbo-issue-186-workaround">
           {{ form.media }}
@@ -105,7 +98,18 @@
         {% endif %}
       </div>
 
-      <div class="workflow-detail__table">
+      <div class='workflow-modal__footer'>
+        <div class="flex flex-1 gap-7 pad">
+          <input type='submit' class="button button--sm button--success" data-action=" click->tf-modal#close"
+                 name='submit'
+                 value='Save' />
+          <input type='submit' class="button button--sm button--success" name='submit' value='Save & Preview' />
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow-modal__section">
+      <div class="workflow-modal__table">
         <nav class="tabbar">
           {% for parent in parents %}
           <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
