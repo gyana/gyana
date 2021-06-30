@@ -25,6 +25,7 @@ class Widget(CloneMixin, models.Model):
         FUNNEL = "funnel", "Funnel"
         PYRAMID = "pyramid", "Pyramid"
         RADAR = "radar", "Radar"
+        BUBBLE = "bubble", "Bubble"
 
     class Aggregator(models.TextChoices):
         # These aggregators should reflect the names described in the ibis api, none is an exception
@@ -71,6 +72,10 @@ class Widget(CloneMixin, models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
 
+    bubble_z = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+    )
+
     class Meta:
         ordering = ("-created",)
 
@@ -106,6 +111,7 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.FUNNEL.value: ("fa-filter",),
     Widget.Kind.PYRAMID.value: ("fa-triangle",),
     Widget.Kind.RADAR.value: ("fa-radar",),
+    Widget.Kind.BUBBLE.value: ("fa-soap",),
 }
 
 WIDGET_CHOICES_ARRAY = [

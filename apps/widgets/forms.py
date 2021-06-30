@@ -16,7 +16,7 @@ class WidgetConfigForm(LiveUpdateForm):
 
     class Meta:
         model = Widget
-        fields = ["description", "table", "kind", "label", "aggregator"]
+        fields = ["description", "table", "kind", "label", "aggregator", "bubble_z"]
         widgets = {"kind": VisualSelect(), "table": SourceSelect()}
 
     def __init__(self, *args, **kwargs):
@@ -36,6 +36,8 @@ class WidgetConfigForm(LiveUpdateForm):
         if schema and "label" in self.fields:
             columns = [(column, column) for column in schema]
             self.fields["label"].choices = columns
+            if "bubble_z" in self.fields:
+                self.fields["bubble_z"].choices = columns
 
     def get_live_fields(self):
 
@@ -49,6 +51,9 @@ class WidgetConfigForm(LiveUpdateForm):
                 "label",
                 "aggregator",
             ]
+
+            if kind == Widget.Kind.BUBBLE:
+                fields += ["bubble_z"]
 
         return fields
 

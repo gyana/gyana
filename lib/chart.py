@@ -14,6 +14,8 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
         data = to_scatter(widget, df)
     elif widget.kind == Widget.Kind.RADAR.value:
         data = to_radar(widget, df)
+    elif widget.kind == Widget.Kind.BUBBLE.value:
+        data = to_bubble(widget, df)
     elif widget.kind in MULTI_VALUES_CHARTS:
         data = to_multi_value_data(widget, df)
     else:
@@ -92,5 +94,17 @@ def to_single_value(widget, df):
     return {
         "data": df.rename(
             columns={widget.label: "label", widget.values.first().column: "value"}
+        ).to_dict(orient="records")
+    }
+
+
+def to_bubble(widget, df):
+    return {
+        "data": df.rename(
+            columns={
+                widget.label: "x",
+                widget.values.first().column: "y",
+                widget.bubble_z: "z",
+            }
         ).to_dict(orient="records")
     }
