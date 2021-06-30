@@ -12,6 +12,7 @@ urlpatterns = [
     path("<int:pk>/run_workflow", views.workflow_run, name="run_workflow"),
     path("<int:pk>/out_of_date", views.worflow_out_of_date, name="worflow_out_of_date"),
     path("<int:pk>/last_run", views.WorkflowLastRun.as_view(), name="last_run"),
+    path("<int:pk>/duplicate_node", views.duplicate_node, name="duplicate_node"),
 ]
 
 # drf config

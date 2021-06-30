@@ -1,7 +1,6 @@
 from apps.dashboards.models import Dashboard
 from apps.tables.models import Table
 from django.db import models
-from django.db.models.aggregates import Max
 from model_clone import CloneMixin
 
 DEFAULT_WIDTH = 50
