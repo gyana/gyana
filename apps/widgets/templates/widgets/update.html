@@ -20,6 +20,13 @@
 
       {% include "django/forms/default_form.html" %}
 
+      {% if values_formset %}
+      <fieldset>
+        <label>Add values</label>
+        {% include "components/formset.html" with formset=values_formset %}
+      </fieldset>
+      {% endif %}
+
       {% if filters_formset %}
       <fieldset>
         <label>Add filters</label>

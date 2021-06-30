@@ -1,7 +1,7 @@
 from apps.dashboards.models import Dashboard
 from apps.tables.models import Table
+from django.conf import settings
 from django.db import models
-from django.db.models.aggregates import Max
 from model_clone import CloneMixin
 
 DEFAULT_WIDTH = 50
@@ -15,8 +15,8 @@ class Widget(CloneMixin, models.Model):
         TEXT = "text", "Text"
         TABLE = "table", "Table"
         # using fusioncharts name for database
-        COLUMN = "column2d", "Column"
-        LINE = "line", "Line"
+        COLUMN = "mscolumn2d", "Column"
+        LINE = "msline", "Line"
         PIE = "pie2d", "Pie"
         AREA = "area2d", "Area"
         DONUT = "doughnut2d", "Donut"
@@ -78,12 +78,17 @@ class Widget(CloneMixin, models.Model):
     @property
     def is_valid(self) -> bool:
         """Returns bool stating whether this Widget is ready to be displayed"""
-        if self.kind == self.Kind.TABLE or self.kind == self.Kind.TEXT:
+        if self.kind in [self.Kind.TABLE, self.Kind.TEXT]:
             return True
         elif self.kind is not None:
             return self.kind and self.label and self.value and self.aggregator
 
         return False
+
+
+class MultiValues(CloneMixin, models.Model):
+    widget = models.ForeignKey(Widget, on_delete=models.CASCADE, related_name="values")
+    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
 
 
 WIDGET_KIND_TO_WEB = {
@@ -102,4 +107,11 @@ WIDGET_KIND_TO_WEB = {
 
 WIDGET_CHOICES_ARRAY = [
     (choices + WIDGET_KIND_TO_WEB[choices[0]]) for choices in Widget.Kind.choices
+]
+
+MULTI_VALUES_CHARTS = [
+    Widget.Kind.COLUMN,
+    Widget.Kind.SCATTER,
+    Widget.Kind.LINE,
+    Widget.Kind.AREA,
 ]

@@ -18,8 +18,8 @@ from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 from turbo_response.views import TurboCreateView, TurboStreamDeleteView
 
-from .forms import FilterFormset, WidgetConfigForm, WidgetDuplicateForm
-from .models import WIDGET_CHOICES_ARRAY, Widget
+from .forms import FilterFormset, ValueFormset, WidgetConfigForm, WidgetDuplicateForm
+from .models import MULTI_VALUES_CHARTS, WIDGET_CHOICES_ARRAY, Widget
 
 
 class WidgetList(DashboardMixin, ListView):
@@ -119,7 +119,7 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
 
     @property
     def formsets(self):
-        return [FilterFormset]
+        return [FilterFormset, ValueFormset]
 
     def get_formset_kwargs(self, formset):
         table = self.request.POST.get("table") or getattr(self.object, "table")
