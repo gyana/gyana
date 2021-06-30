@@ -5,117 +5,116 @@
   <div class="workflow-modal__section">
     <div class="pad">
       <turbo-frame id="node-name">
-        <form method="PATCH" action="/workflows/api/nodes/{{ node.id }}/"
-              class="form"
-              enctype="application/json">
+        <form method="patch" action="/workflows/api/nodes/{{ node.id }}/" class="form">
           {% csrf_token %}
+
           <input class='input__inline' id="name" type="text" name="name"
                  value="{% if node.name %}{{ node.name }}{% else %}{{ node.kind|capfirst }}{% endif %}"></input>
         </form>
       </turbo-frame>
     </div>
 
-    <div class="workflow-detail__sidebar">
-      <div data-controller="turbo-issue-186-workaround">
-        {{ form.media }}
-        {% if filters_formset %}
-        {{ filters_formset.media }}
+    <form class="form--no-layout flex-1"
+          action="{% url 'workflows:node' workflow.id node.id %}"
+          method="post"
+          {% if do_live_updates %}
+          data-controller="live-update trigger"
+          {% else %}
+          data-controller="trigger"
+          {% endif %}
+          data-trigger-event-value="node-updated-{{ node.id }}"
+          data-action="submit->trigger#dispatch">
+      <div class="workflow-detail__sidebar">
+        <div data-controller="turbo-issue-186-workaround">
+          {{ form.media }}
+          {% if filters_formset %}
+          {{ filters_formset.media }}
+          {% endif %}
+          {% if formula_columns_formset %}
+          {{ formula_columns_formset.media }}
+          {% endif %}
+        </div>
+        <span data-live-update-target="loading" class="hidden">
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+        </span>
+        {% csrf_token %}
+
+        {% include "django/forms/default_form.html" %}
+
+        {% if columns_formset %}
+        <fieldset>
+          <label>Add columns</label>
+          {% include "components/formset.html" with formset=columns_formset %}
+        </fieldset>
         {% endif %}
+
+        {% if aggregations_formset %}
+        <fieldset>
+          <label>Add aggregates</label>
+          {% include "components/formset.html" with formset=aggregations_formset %}
+        </fieldset>
+        {% endif %}
+
+        {% if sort_columns_formset %}
+        <fieldset>
+          <label>Add columns</label>
+          {% include "components/formset.html" with formset=sort_columns_formset %}
+        </fieldset>
+        {% endif %}
+
+        {% if edit_columns_formset %}
+        <fieldset>
+          <label>Edit columns</label>
+          {% include "components/formset.html" with formset=edit_columns_formset %}
+        </fieldset>
+        {% endif %}
+
+        {% if add_columns_formset %}
+        <fieldset>
+          <label>Add columns</label>
+          {% include "components/formset.html" with formset=add_columns_formset %}
+        </fieldset>
+        {% endif %}
+
+        {% if rename_columns_formset %}
+        <fieldset>
+          <label>Rename columns</label>
+          {% include "components/formset.html" with formset=rename_columns_formset %}
+        </fieldset>
+        {% endif %}
+
         {% if formula_columns_formset %}
-        {{ formula_columns_formset.media }}
+        <fieldset>
+          <label>Add columns</label>
+          {% include "components/formset.html" with formset=formula_columns_formset %}
+        </fieldset>
+        {% endif %}
+
+        {% if filters_formset %}
+        <fieldset>
+          <label>Add filters</label>
+          {% include "components/formset.html" with formset=filters_formset %}
+        </fieldset>
+        {% endif %}
+
+        {% if secondary_columns_formset %}
+        <fieldset>
+          <label>Select specific columns</label>
+          {% include "components/formset.html" with formset=secondary_columns_formset %}
+        </fieldset>
         {% endif %}
       </div>
-      <span data-live-update-target="loading" class="hidden">
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-      </span>
-      {% csrf_token %}
 
-      {% include "django/forms/default_form.html" %}
-
-      {% if columns_formset %}
-      <fieldset>
-        <label>Add columns</label>
-        {% include "components/formset.html" with formset=columns_formset %}
-      </fieldset>
-      {% endif %}
-
-      {% if aggregations_formset %}
-      <fieldset>
-        <label>Add aggregates</label>
-        {% include "components/formset.html" with formset=aggregations_formset %}
-      </fieldset>
-      {% endif %}
-
-      {% if sort_columns_formset %}
-      <fieldset>
-        <label>Add columns</label>
-        {% include "components/formset.html" with formset=sort_columns_formset %}
-      </fieldset>
-      {% endif %}
-
-      {% if edit_columns_formset %}
-      <fieldset>
-        <label>Edit columns</label>
-        {% include "components/formset.html" with formset=edit_columns_formset %}
-      </fieldset>
-      {% endif %}
-
-      {% if add_columns_formset %}
-      <fieldset>
-        <label>Add columns</label>
-        {% include "components/formset.html" with formset=add_columns_formset %}
-      </fieldset>
-      {% endif %}
-
-      {% if rename_columns_formset %}
-      <fieldset>
-        <label>Rename columns</label>
-        {% include "components/formset.html" with formset=rename_columns_formset %}
-      </fieldset>
-      {% endif %}
-
-      {% if formula_columns_formset %}
-      <fieldset>
-        <label>Add columns</label>
-        {% include "components/formset.html" with formset=formula_columns_formset %}
-      </fieldset>
-      {% endif %}
-
-      {% if filters_formset %}
-      <fieldset>
-        <label>Add filters</label>
-        {% include "components/formset.html" with formset=filters_formset %}
-      </fieldset>
-      {% endif %}
-
-      {% if secondary_columns_formset %}
-      <fieldset>
-        <label>Select specific columns</label>
-        {% include "components/formset.html" with formset=secondary_columns_formset %}
-      </fieldset>
-      {% endif %}
-    </div>
-
-    <div class='workflow-modal__footer'>
-      <div class="flex flex-1 gap-7 pad">
-        <form class="form--no-layout flex-1"
-              action="{% url 'workflows:node' workflow.id node.id %}"
-              method="post"
-              {% if do_live_updates %}
-              data-controller="live-update trigger"
-              {% else %}
-              data-controller="trigger"
-              {% endif %}
-              data-trigger-event-value="node-updated-{{ node.id }}"
-              data-action="submit->trigger#dispatch">
+      <div class='workflow-modal__footer'>
+        <div class="flex flex-1 gap-7 pad">
           <input type='submit' class="button button--success"
                  data-action=" click->tf-modal#close"
                  name='submit'
                  value='Save & Close' />
           <input type='submit' class="button button--outline button--success" name='submit' value='Save & Preview' />
+        </div>
       </div>
-      </form>
-    </div>
+    </form>
   </div>
 
   <div class="workflow-modal__section">
