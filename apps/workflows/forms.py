@@ -43,7 +43,7 @@ class InputNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["input_table"]
-        labels = {"input_table": "Integration"}
+        labels = {"input_table": "Select an integration to get data from:"}
         widgets = {"input_table": InputNode()}
 
     def __init__(self, *args, **kwargs):

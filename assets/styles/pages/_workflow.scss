@@ -15,7 +15,8 @@
     &__sidebar {
       background-color: var(--c-white);
       flex: 1 1 0%;
-      padding: 1.6rem;
+      padding: 0 1.6rem;
+      overflow: auto;
     }
 
     &__load-preview {
