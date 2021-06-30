@@ -243,3 +243,20 @@ def worflow_out_of_date(request, pk):
             "hasBeenRun": workflow.last_run is not None,
         }
     )
+
+
+@api_view(http_method_names=["POST"])
+def duplicate_node(request, pk):
+    node = get_object_or_404(Node, pk=pk)
+    clone = node.make_clone(
+        attrs={
+            "name": "Copy of " + (node.name or NodeConfig[node.kind]["displayName"]),
+            "x": node.x + 50,
+            "y": node.y + 50,
+        }
+    )
+
+    # Add more M2M here if necessary
+    for parent in node.parents.iterator():
+        clone.parents.add(parent)
+    return Response(NodeSerializer(clone).data)

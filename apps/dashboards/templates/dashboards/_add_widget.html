@@ -5,13 +5,13 @@
 
   <ul data-popover-target="body" class="list list--bordered" hidden style="z-index:1;margin-top:6px;">
     {% for id, txt, icon in choices %}
-    <li class="list__item list__item--interactive" data-id="{{ id }}">
+    <li data-id="{{ id }}">
       <form method="post" action="{% url 'dashboard_widgets:create' project.id dashboard.id %}?mode=edit" class="form">
         {% csrf_token %}
 
         <input type='hidden' name='kind' id='id_kind' value="{{ id }}" />
 
-        <button type="submit">
+        <button type="submit" class="list__item list__item--interactive w-full">
           <p><i class="fas {{ icon }} text-blue mr-2"></i> {{txt}}</p>
         </button>
       </form>

@@ -4,12 +4,7 @@
 <div class="pad">
   <div class="flex items-center mb-4">
     <h1 class="mr-auto">Dashboards</h1>
-    <turbo-frame
-                 id='dashboard-create'
-                 src="{% url 'project_dashboards:create' project.id %}"
-                 target="_top">
-      <i class='fad fa-spinner-third fa-spin'></i>
-    </turbo-frame>
+    {% include 'dashboards/create.html' %}
   </div>
 
   <p class="mb-8">
@@ -26,7 +21,7 @@
         <form 
           method="post"
           class="inline"
-          action="{% url 'project_dashboards:create' project.id %}"
+          action="{% url 'project_dashboards:create' project.id %}?mode=edit"
         >
           {% csrf_token %}
           <input type="hidden" name="project" value="{{ project.id }}"></input>

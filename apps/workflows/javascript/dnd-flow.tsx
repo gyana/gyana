@@ -220,11 +220,23 @@ const DnDFlow = ({ client }) => {
   }
 
   const hasOutput = elements.some((el) => el.type === 'output')
-
+  const addNode = (data) => {
+    const node = createNewNode(data, { x: data.x, y: data.y })
+    const edges = data.parents.map((p) => ({
+      id: `reactflow__edge-${p}null-${node.id}null`,
+      source: p.toString(),
+      sourceHandle: null,
+      type: 'smoothstep',
+      targetHandle: null,
+      arrowHeadType: 'arrow',
+      target: node.id.toString(),
+    }))
+    setElements((es) => es.concat(node, edges))
+  }
   return (
     <div className='dndflow'>
       <div className='reactflow-wrapper' ref={reactFlowWrapper}>
-        <NodeContext.Provider value={{ removeById, client, getIncomingNodes }}>
+        <NodeContext.Provider value={{ removeById, client, getIncomingNodes, addNode }}>
           <ReactFlow
             nodeTypes={defaultNodeTypes}
             elements={elements}

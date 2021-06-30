@@ -51,6 +51,9 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
             form.instance.width = 30
             form.instance.height = 200
 
+        if lowest_widget := self.dashboard.widget_set.order_by("-y").first():
+            form.instance.y = lowest_widget.y + lowest_widget.height
+
         with transaction.atomic():
             super().form_valid(form)
             self.dashboard.save()
