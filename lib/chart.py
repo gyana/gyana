@@ -100,11 +100,15 @@ def to_single_value(widget, df):
 
 def to_bubble(widget, df):
     return {
-        "data": df.rename(
-            columns={
-                widget.label: "x",
-                widget.values.first().column: "y",
-                widget.bubble_z: "z",
+        "dataset": [
+            {
+                "data": df.rename(
+                    columns={
+                        widget.label: "x",
+                        widget.values.first().column: "y",
+                        widget.bubble_z: "z",
+                    }
+                ).to_dict(orient="records")
             }
-        ).to_dict(orient="records")
+        ],
     }
