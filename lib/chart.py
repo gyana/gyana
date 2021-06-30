@@ -109,7 +109,7 @@ def to_bubble(widget, df):
                     columns={
                         widget.label: "x",
                         widget.values.first().column: "y",
-                        widget.bubble_z: "z",
+                        widget.z: "z",
                     }
                 ).to_dict(orient="records")
             }
@@ -125,7 +125,7 @@ def to_heatmap(widget, df):
         columns={
             widget.label: "rowid",
             widget.values.first().column: "columnid",
-            widget.bubble_z: "value",
+            widget.z: "value",
         }
     ).sort_values(["rowid", "columnid"])
 

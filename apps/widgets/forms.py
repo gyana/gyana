@@ -13,11 +13,11 @@ from .models import MULTI_VALUES_CHARTS, MultiValues, Widget
 class WidgetConfigForm(LiveUpdateForm):
 
     label = forms.ChoiceField(choices=())
-    bubble_z = forms.ChoiceField(choices=())
+    z = forms.ChoiceField(choices=())
 
     class Meta:
         model = Widget
-        fields = ["description", "table", "kind", "label", "aggregator", "bubble_z"]
+        fields = ["description", "table", "kind", "label", "aggregator", "z"]
         widgets = {"kind": VisualSelect(), "table": SourceSelect()}
 
     def __init__(self, *args, **kwargs):
@@ -37,8 +37,8 @@ class WidgetConfigForm(LiveUpdateForm):
         if schema and "label" in self.fields:
             columns = [(column, column) for column in schema]
             self.fields["label"].choices = columns
-            if "bubble_z" in self.fields:
-                self.fields["bubble_z"].choices = columns
+            if "z" in self.fields:
+                self.fields["z"].choices = columns
 
     def get_live_fields(self):
 
@@ -54,7 +54,7 @@ class WidgetConfigForm(LiveUpdateForm):
             ]
 
             if kind in [Widget.Kind.BUBBLE, Widget.Kind.HEATMAP]:
-                fields += ["bubble_z"]
+                fields += ["z"]
 
         return fields
 

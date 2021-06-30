@@ -73,7 +73,7 @@ class Widget(CloneMixin, models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
 
-    bubble_z = models.CharField(
+    z = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
     )
 
