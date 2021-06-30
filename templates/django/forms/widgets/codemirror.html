@@ -1,10 +1,9 @@
-<div  data-controller='codemirror'> 
+<div data-controller='codemirror'>
   {{ columns|json_script:"columns" }}
-  <textarea 
-    data-codemirror-target='textarea'
-    class="textarea" 
-    name="{{ widget.name }}"
-    placeholder="Type your formula here e.g. (Column_A + Column_B)/100 ..."
-   
-  >{% if widget.value %}{{ widget.value }}{% endif %}</textarea>
+  <textarea data-codemirror-target='textarea'
+            class="textarea"
+            name="{{ widget.name }}"
+            placeholder="Type your formula here e.g. (Column_A + Column_B)/100 ...">
+      {% if widget.value %}{{ widget.value }}{% endif %}
+  </textarea>
 </div>

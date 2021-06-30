@@ -72,6 +72,7 @@ class SelectNodeForm(NodeForm):
         self.fields["select_columns"] = forms.MultipleChoiceField(
             choices=[(col, col) for col in self.columns],
             widget=CheckboxSelectMultiple,
+            label="Select the columns you want to use:",
             initial=list(self.instance.columns.all().values_list("column", flat=True)),
         )
 

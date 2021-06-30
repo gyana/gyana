@@ -1,4 +1,5 @@
-<tr class="formset-wrapper {% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}" {% if form.DELETE.value %} style="display: none;" {% endif %}>
+<tr class="formset-wrapper {% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}" {% if form.DELETE.value %}
+    style="display: none;" {% endif %}>
     {% for field in form.visible_fields %}
     <td {% if field.name == 'DELETE' %} style="display: none;" {% endif %}>
         {# Include the hidden fields in the form #}
@@ -7,16 +8,17 @@
         {{ hidden }}
         {% endfor %}
         {% endif %}
-        
+
         {% if not form.is_live %}
         {{ field.errors.as_ul }}
         {% endif %}
         {{ field }}
     </td>
     {% endfor %}
-    <td>  
-        <button type="button" data-action="click->formset#remove">
-        <i class="far fa-fw fa-trash"></i>
+    <td>
+        <button class="button button--sm button--circle button--danger ml-4" type="button"
+                data-action="click->formset#remove">
+            <i class="far fa-fw fa-trash"></i>
         </button>
     </td>
 </tr>

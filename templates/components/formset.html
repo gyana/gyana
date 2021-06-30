@@ -1,9 +1,8 @@
 {% load static %}
 {% load crispy_forms_tags %}
 <div data-controller="formset" data-formset-prefix-value="{{ formset.get_default_prefix }}">
-
   {% comment %}
-    `formset.empty_form` is an empty form with a `__prefix__` placeholder
+  `formset.empty_form` is an empty form with a `__prefix__` placeholder
   {% endcomment %}
 
   <template data-formset-target="template">
@@ -14,12 +13,12 @@
     {{ formset.management_form }}
     <tbody data-formset-target="target">
       {% for form in formset.forms %}
-        {% include 'components/formset_row.html' with form=form %}
+      {% include 'components/formset_row.html' with form=form %}
       {% endfor %}
     </tbody>
   </table>
 
-  <button type="button" data-action="click->formset#add">
-    <i class="far fa-fw fa-plus"></i> 
+  <button type="button" class="button button--sm button--circle my-4" data-action="click->formset#add">
+    <i class="far fa-fw fa-plus"></i>
   </button>
 </div>
