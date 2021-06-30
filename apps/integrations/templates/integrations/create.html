@@ -34,7 +34,7 @@
       {% endif %}
 
       {% else %}
-      <div class="grid grid-cols-2 gap-7 pad">
+      <div class="flex flex-wrap gap-16 pad">
         <div class="flex flex-col gap-7">
           <h3>First-party</h3>
           <div class="flex flex-1 flex-wrap gap-7">
@@ -53,7 +53,7 @@
         {% for category in service_categories %}
         <div class="flex flex-col gap-7">
           <h3>{{ category|capfirst }}</h3>
-          <div class="flex flex-1 flex-wrap gap-7">
+          <div class="flex flex-1 flex-wrap content-start gap-7">
             {% for service_id, service in services.items %}
             {% if service.category == category %}
             <a class="card card--inline card--square"

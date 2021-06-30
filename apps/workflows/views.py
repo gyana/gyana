@@ -190,8 +190,10 @@ class NodeUpdate(FormsetUpdateView):
 
     def get_success_url(self) -> str:
         base_url = reverse("workflows:node", args=(self.workflow.id, self.object.id))
+
         if self.request.POST.get("submit") == "Save & Preview":
             return f"{base_url}?preview_node_id={self.preview_node_id}&preview=true"
+
         return base_url
 
 

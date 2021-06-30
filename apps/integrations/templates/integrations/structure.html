@@ -4,8 +4,8 @@
 {% block tab %}
 
 {% for table in tables %}
-<h1 class="mt-4 mb-2"> {{ table.title }}</h1>
-<div class='card card--none'>
+<h1 class="mb-2"> {{ table.title }}</h1>
+<div class='card card--none mb-7'>
   {% render_table table.table_struct %}
 </div>
 {% endfor %}

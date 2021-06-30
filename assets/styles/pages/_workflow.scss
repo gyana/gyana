@@ -58,8 +58,9 @@
     display: flex;
     flex-flow: column;
     flex: 1 1 0%;
-
+    
     & + & {
+      overflow: hidden;
       flex: 3 1 0%;
     }
   }

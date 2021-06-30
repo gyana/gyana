@@ -12,15 +12,6 @@ from .forms import ProjectForm
 from .models import Project
 
 
-class ProjectList(TeamMixin, ListView):
-    template_name = "projects/list.html"
-    model = Project
-    paginate_by = 20
-
-    def get_queryset(self) -> QuerySet:
-        return Project.objects.filter(team=self.team).all()
-
-
 class ProjectCreate(TeamMixin, TurboCreateView):
     template_name = "projects/create.html"
     model = Project
@@ -48,12 +39,16 @@ class ProjectDetail(DetailView):
     model = Project
 
     def get_context_data(self, **kwargs):
+        from apps.integrations.tables import IntegrationTable
+        from apps.workflows.tables import WorkflowTable
+        from apps.dashboards.tables import DashboardTable
+
         context_data = super().get_context_data(**kwargs)
         object = self.get_object()
 
-        context_data["integration_count"] = object.integration_set.count()
-        context_data["workflow_count"] = object.workflow_set.count()
-        context_data["dashboard_count"] = object.dashboard_set.count()
+        context_data["integrations"] = IntegrationTable(object.integration_set.all()[:3])
+        context_data["workflows"] = WorkflowTable(object.workflow_set.all()[:3])
+        context_data["dashboards"] = DashboardTable(object.dashboard_set.all()[:3])
 
         context_data["integration_pending"] = object.integration_set.filter(
             last_synced=None
@@ -64,6 +59,7 @@ class ProjectDetail(DetailView):
         context_data["workflow_error"] = object.workflow_set.filter(
             nodes__error__isnull=False
         ).count()
+
         return context_data
 
 
@@ -79,7 +75,6 @@ class ProjectUpdate(TurboUpdateView):
 class ProjectDelete(DeleteView):
     template_name = "projects/delete.html"
     model = Project
-
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.team.slug,))

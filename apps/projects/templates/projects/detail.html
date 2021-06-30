@@ -4,8 +4,8 @@
 
 {% block app %}
 
-<div class="pad">
-  <hgroup class="mb-4">
+<div class="flex flex-col gap-7 pad">
+  <hgroup>
     <h1>{{ project.name }}</h1>
 
     {% if project.description %}
@@ -13,61 +13,70 @@
     {% endif %}
   </hgroup>
 
+  <hr>
 
-  <div class="flex gap-7 flex-1">
-    <div class="card card--center flex-1">
-      <p class="mr-auto">
-        {{ integration_count }}
-        <a class="link"
-           href="{% url 'project_integrations:list' project.id %}">Integration{{ integration_count|pluralize }}</a>
-      </p>
+  <div class="flex flex-col gap-7 flex-1">
+    <div class="flex gap-7">
+      <div class="flex-1">
+        <div class="flex mb-3">
+          <h2>Integrations</h2>
+        </div>
+        <div class="card card--none flex-1">
+          {% render_table integrations %}
+          <!-- {% if integration_pending > 0 %}
+          <p class="card__help card__help--bottom">
+            <i class="fas fa-fw fa-exclamation-triangle text-orange"></i><small>
+              Some of your integrations are not set up
+            </small>
+          </p>
+          {% endif %} -->
+        </div>
+      </div>
 
-      <a class="button button--filled button--sm" href="{% url 'project_integrations:create' project.id %}">
-        <i class="fas fa-fw fa-plus"></i> New Integration
-      </a>
+      <div class="flex-1">
+        <div class="flex mb-3">
+          <h2>Workflows</h2>
+        </div>
+        <div class="card card--none flex-1">
+          {% render_table workflows %}
 
-      {% if integration_pending > 0 %}
-      <p class="card__help card__help--bottom">
-        <i class="fas fa-fw fa-exclamation-triangle text-orange"></i><small>
-          Some of your integrations are not set up
-        </small>
-      </p>
-      {% endif %}
+          <!-- <p class="mr-auto">
+            {{ workflow_count }}
+            <a class="link" href="{% url 'project_workflows:list' project.id %}">Workflow{{ workflow_count|pluralize }}</a>
+          </p>
+    
+          <turbo-frame id='workflow-create' src="{% url 'project_workflows:create' project.id  %}" target="_top">
+            <i class='fad fa-spinner-third fa-spin'></i>
+          </turbo-frame>
+    
+          {% if workflow_error > 0 %}
+          <p class="card__help card__help--bottom">
+            <i class="fas fa-fw fa-exclamation-triangle text-red"></i><small>
+              Some of your workflows have errors
+            </small>
+          </p>
+          {% endif %} -->
+        </div>
+      </div>
     </div>
 
-    <div class="flex justify-center items-center -mx-5"><i class="fas fa-fw fa-2x fa-chevron-right"></i></div>
+    <div>
+      <div class="flex mb-3">
+        <h3>Dashboards</h3>
+      </div>
+      <div class="card card--none flex-1">
+        {% render_table dashboards %}
 
-    <div class="card card--center flex-1">
-      <p class="mr-auto">
-        {{ workflow_count }}
-        <a class="link" href="{% url 'project_workflows:list' project.id %}">Workflow{{ workflow_count|pluralize }}</a>
-      </p>
-
-      <turbo-frame id='workflow-create' src="{% url 'project_workflows:create' project.id  %}" target="_top">
-        <i class='fad fa-spinner-third fa-spin'></i>
-      </turbo-frame>
-
-      {% if workflow_error > 0 %}
-      <p class="card__help card__help--bottom">
-        <i class="fas fa-fw fa-exclamation-triangle text-red"></i><small>
-          Some of your workflows have errors
-        </small>
-      </p>
-      {% endif %}
-    </div>
-
-    <div class="flex justify-center items-center -mx-5"><i class="fas fa-fw fa-2x fa-chevron-right"></i></div>
-
-    <div class="card card--center flex-1">
-      <p class="mr-auto">
-        {{ dashboard_count }}
-        <a class="link"
-           href="{% url 'project_dashboards:list' project.id %}">Dashboard{{ dashboard_count|pluralize }}</a>
-      </p>
-
-      <turbo-frame id='dashboard-create' src="{% url 'project_dashboards:create' project.id %}" target="_top">
-        <i class='fad fa-spinner-third fa-spin'></i>
-      </turbo-frame>
+        <!-- <p class="mr-auto">
+          {{ dashboard_count }}
+          <a class="link"
+             href="{% url 'project_dashboards:list' project.id %}">Dashboard{{ dashboard_count|pluralize }}</a>
+        </p>
+  
+        <turbo-frame id='dashboard-create' src="{% url 'project_dashboards:create' project.id %}" target="_top">
+          <i class='fad fa-spinner-third fa-spin'></i>
+        </turbo-frame> -->
+      </div>
     </div>
   </div>
 </div>
