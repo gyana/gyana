@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from apps.widgets.models import MULTI_VALUES_CHARTS, Widget
 
@@ -16,6 +17,8 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
         data = to_radar(widget, df)
     elif widget.kind == Widget.Kind.BUBBLE.value:
         data = to_bubble(widget, df)
+    elif widget.kind == Widget.Kind.HEATMAP.value:
+        data = to_heatmap(widget, df)
     elif widget.kind in MULTI_VALUES_CHARTS:
         data = to_multi_value_data(widget, df)
     else:
@@ -111,4 +114,37 @@ def to_bubble(widget, df):
                 ).to_dict(orient="records")
             }
         ],
+    }
+
+
+COLOR_CODES = ["0155E8", "2BA8E8", "21C451", "FFD315", "E8990C", "C24314", "FF0000"]
+
+
+def to_heatmap(widget, df):
+    df = df.rename(
+        columns={
+            widget.label: "rowid",
+            widget.values.first().column: "columnid",
+            widget.bubble_z: "value",
+        }
+    ).sort_values(["rowid", "columnid"])
+
+    df[["rowid", "columnid"]] = df[["rowid", "columnid"]].astype(str)
+    min_value, max_value = df.value.min(), df.value.max()
+    min_values = np.linspace(min_value, max_value, len(COLOR_CODES) + 1)
+    return {
+        "dataset": [{"data": df.to_dict(orient="records")}],
+        "colorrange": {
+            "gradient": "0",
+            "minvalue": str(min_value),
+            "code": "E24B1A",
+            "color": [
+                {
+                    "code": code,
+                    "minvalue": str(min_values[i]),
+                    "maxvalue": str(min_values[i + 1]),
+                }
+                for i, code in enumerate(COLOR_CODES)
+            ],
+        },
     }

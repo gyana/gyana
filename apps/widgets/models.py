@@ -26,6 +26,7 @@ class Widget(CloneMixin, models.Model):
         PYRAMID = "pyramid", "Pyramid"
         RADAR = "radar", "Radar"
         BUBBLE = "bubble", "Bubble"
+        HEATMAP = "heatmap", "Heatmap"
 
     class Aggregator(models.TextChoices):
         # These aggregators should reflect the names described in the ibis api, none is an exception
@@ -112,6 +113,7 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.PYRAMID.value: ("fa-triangle",),
     Widget.Kind.RADAR.value: ("fa-radar",),
     Widget.Kind.BUBBLE.value: ("fa-soap",),
+    Widget.Kind.HEATMAP.value: ("fa-map",),
 }
 
 WIDGET_CHOICES_ARRAY = [

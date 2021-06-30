@@ -13,6 +13,7 @@ from .models import MULTI_VALUES_CHARTS, MultiValues, Widget
 class WidgetConfigForm(LiveUpdateForm):
 
     label = forms.ChoiceField(choices=())
+    bubble_z = forms.ChoiceField(choices=())
 
     class Meta:
         model = Widget
@@ -52,7 +53,7 @@ class WidgetConfigForm(LiveUpdateForm):
                 "aggregator",
             ]
 
-            if kind == Widget.Kind.BUBBLE:
+            if kind in [Widget.Kind.BUBBLE, Widget.Kind.HEATMAP]:
                 fields += ["bubble_z"]
 
         return fields
