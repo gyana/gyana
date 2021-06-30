@@ -58,7 +58,7 @@
     </div>
 
     {% if integration.used_in|length == 0 %}
-    <div class="text-center pad--sm">
+    <div class="text-center pad pad--sm">
       <small>
         This integration is not used anywhere yet, you can create a <a class="link"
            href="{% url 'project_workflows:create' project.id %}">workflow</a>

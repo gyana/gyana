@@ -25,7 +25,7 @@
     {% render_table table %}
 
     {% if integration_count == 0 %}
-    <div class="text-center pad--sm">
+    <div class="text-center pad pad--sm">
       <small>
         You have no integrations yet, <a href="{% url 'project_integrations:create' project.id %}" class="link">create
           one</a> to see it here
