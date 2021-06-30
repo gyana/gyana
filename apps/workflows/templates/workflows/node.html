@@ -3,27 +3,20 @@
 <turbo-frame id="workflow-modal">
   {% if node.kind == "input" or parents %}
   <div class="workflow-modal__section">
-    <div class="pad">
-      <turbo-frame id="node-name">
-        <form method="patch" action="/workflows/api/nodes/{{ node.id }}/" class="form">
-          {% csrf_token %}
-
-          <input class='input__inline' id="name" type="text" name="name"
-                 value="{% if node.name %}{{ node.name }}{% else %}{{ node.kind|capfirst }}{% endif %}"></input>
-        </form>
-      </turbo-frame>
-    </div>
-
+      <div class="pad">
+        <h3>{{ node.kind }} {% if node.name %}- {{ node.name }}{% endif %}</h3>
+      </div>
     <form class="form--no-layout flex-1"
-          action="{% url 'workflows:node' workflow.id node.id %}"
-          method="post"
-          {% if do_live_updates %}
-          data-controller="live-update trigger"
-          {% else %}
-          data-controller="trigger"
-          {% endif %}
-          data-trigger-event-value="node-updated-{{ node.id }}"
-          data-action="submit->trigger#dispatch">
+      action="{% url 'workflows:node' workflow.id node.id %}"
+      method="post"
+      {% if do_live_updates %}
+      data-controller="live-update trigger"
+      {% else %}
+      data-controller="trigger"
+      {% endif %}
+      data-trigger-event-value="node-updated-{{ node.id }}"
+      data-action="submit->trigger#dispatch"
+    >
       <div class="workflow-detail__sidebar">
         <div data-controller="turbo-issue-186-workaround">
           {{ form.media }}
@@ -108,10 +101,16 @@
       <div class='workflow-modal__footer'>
         <div class="flex flex-1 gap-7 pad">
           <input type='submit' class="button button--success"
-                 data-action=" click->tf-modal#close"
-                 name='submit'
-                 value='Save & Close' />
-          <input type='submit' class="button button--outline button--success" name='submit' value='Save & Preview' />
+            data-action=" click->tf-modal#close"
+            name='submit'
+            value='Save & Close' 
+          />
+          <input 
+            type='submit' 
+            class="button button--outline button--success" 
+            name='submit' 
+            value='Save & Preview' 
+          />
         </div>
       </div>
     </form>
