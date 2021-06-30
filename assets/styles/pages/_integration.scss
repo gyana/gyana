@@ -1,0 +1,27 @@
+.integration {
+  &__file-upload {
+    display: flex;
+    flex-flow: column;
+    gap: 1.6rem;
+  }
+
+  &__file-progress {
+    position: relative;
+    display: flex;
+    justify-content: center;
+
+    svg {
+      stroke: var(--c-blue);
+      transform: rotate(-90deg);
+      stroke-dasharray: 471;
+      stroke-dashoffset: 471;
+    }  
+
+    h3 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+}

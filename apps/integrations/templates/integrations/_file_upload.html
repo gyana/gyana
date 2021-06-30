@@ -1,27 +1,19 @@
 <div id="uploader-{{ integration.id }}"
+     class="integration__file-upload"
      data-controller='file-upload'
      data-file-upload-file-id-value="{{ integration.id }}"
      data-file-upload-file-input-id-value="{{ file_input_id }}"
      data-file-upload-signed-url-value="{{ signed_url }}"
      data-file-upload-redirect-to-value="{{ redirect }}">
-  <h1>{{integration.name}}</h1>
-  <div class="flex flex-row items-center">
-    <p>Uploading file: <strong class='font-semibold' id="progress">0%</strong></p>
+  <div class="integration__file-progress mb-7">
+    <svg height="150" width="150" id="progress-bar">
+      <circle cx="75" cy="75" r="70" stroke-width="6" fill="transparent" />
+    </svg>
+    <h3 id="progress">0%</h3>
   </div>
-  <p>Uploading the file might take a while, make sure to stay on the page.</p>
 
-  <svg height="100" width="100" id="progress-bar">
-    <circle cx="50" cy="50" r="40" stroke-width="6" fill="transparent" />
-  </svg>
+  <div>
+    <h1>Uploading your file...</h1>
+    <p>Uploading the file might take a while, make sure to stay on the page.</p>
+  </div>
 </div>
-
-<style>
-  svg {
-    stroke: var(--c-blue);
-    transform: rotate(-90deg);
-    stroke-dasharray: 251;
-    stroke-dashoffset: 251;
-    animation: offsettozero 5s linear forwards;
-  }
-
-</style>
