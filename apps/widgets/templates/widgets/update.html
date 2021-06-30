@@ -21,7 +21,7 @@
       {% include "django/forms/default_form.html" %}
 
       {% if values_formset %}
-      <fieldset>
+    <fieldset>
         <label>Add values</label>
         {% include "components/formset.html" with formset=values_formset %}
       </fieldset>
@@ -33,9 +33,10 @@
         {% include "components/formset.html" with formset=filters_formset %}
       </fieldset>
       {% endif %}
-
-      <input type="submit" name="submit" value="Save & Close" class="button button--green" />
-      <input type="submit" name="submit" value="Save & Preview" class="button button--outline button--green" />
+      <div class="flex flex-1 gap-7 pad">
+        <input type="submit" name="submit" value="Save & Close" class="button button--green" />
+        <input type="submit" name="submit" value="Save & Preview" class="button button--outline button--green" />
+      </div>
     </form>
   </div>
   <div class="w-1/2">

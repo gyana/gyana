@@ -16,6 +16,7 @@ class Widget(CloneMixin, models.Model):
         TABLE = "table", "Table"
         # using fusioncharts name for database
         COLUMN = "mscolumn2d", "Column"
+        BAR = "msbar2d", "Bar"
         LINE = "msline", "Line"
         PIE = "pie2d", "Pie"
         AREA = "area2d", "Area"
@@ -24,6 +25,8 @@ class Widget(CloneMixin, models.Model):
         FUNNEL = "funnel", "Funnel"
         PYRAMID = "pyramid", "Pyramid"
         RADAR = "radar", "Radar"
+        BUBBLE = "bubble", "Bubble"
+        HEATMAP = "heatmap", "Heatmap"
 
     class Aggregator(models.TextChoices):
         # These aggregators should reflect the names described in the ibis api, none is an exception
@@ -70,6 +73,10 @@ class Widget(CloneMixin, models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
 
+    z = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+    )
+
     class Meta:
         ordering = ("-created",)
 
@@ -96,6 +103,7 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.TEXT.value: ("fa-text",),
     Widget.Kind.TABLE.value: ("fa-table",),
     Widget.Kind.COLUMN.value: ("fa-chart-bar",),
+    Widget.Kind.BAR.value: ("fa-chart-bar",),
     Widget.Kind.LINE.value: ("fa-chart-line",),
     Widget.Kind.PIE.value: ("fa-chart-pie",),
     Widget.Kind.AREA.value: ("fa-chart-area",),
@@ -104,6 +112,8 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.FUNNEL.value: ("fa-filter",),
     Widget.Kind.PYRAMID.value: ("fa-triangle",),
     Widget.Kind.RADAR.value: ("fa-radar",),
+    Widget.Kind.BUBBLE.value: ("fa-soap",),
+    Widget.Kind.HEATMAP.value: ("fa-map",),
 }
 
 WIDGET_CHOICES_ARRAY = [
@@ -115,4 +125,5 @@ MULTI_VALUES_CHARTS = [
     Widget.Kind.SCATTER,
     Widget.Kind.LINE,
     Widget.Kind.AREA,
+    Widget.Kind.BAR,
 ]
