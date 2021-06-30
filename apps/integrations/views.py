@@ -39,6 +39,7 @@ from .forms import (
     CSVForm,
     FivetranForm,
     GoogleSheetsForm,
+    IntegrationForm
 )
 from .models import Integration
 from .tables import IntegrationTable, StructureTable
@@ -207,15 +208,21 @@ class UsedInTable(Table):
     name = Column(linkify=True)
 
 
-class IntegrationDetail(ProjectMixin, DetailView):
+class IntegrationDetail(ProjectMixin, TurboUpdateView):
     template_name = "integrations/detail.html"
     model = Integration
+    form_class = IntegrationForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["table"] = UsedInTable(self.object.used_in)
 
         return context
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_integrations:detail", args=(self.project.id, self.object.id)
+        )
 
 
 class IntegrationUpdate(ProjectMixin, TurboUpdateView):

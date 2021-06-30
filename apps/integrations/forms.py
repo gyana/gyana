@@ -10,6 +10,12 @@ from pathvalidate import validate_filename
 from .models import Integration
 
 
+class IntegrationForm(forms.ModelForm):
+    class Meta:
+        model = Integration
+        fields = ["name"]
+
+
 class GoogleSheetsForm(forms.ModelForm):
     class Meta:
         model = Integration
