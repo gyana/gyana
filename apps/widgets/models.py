@@ -43,8 +43,9 @@ class Widget(CloneMixin, models.Model):
     kind = models.CharField(max_length=32, choices=Kind.choices, default=Kind.COLUMN)
     aggregator = models.CharField(max_length=32, choices=Aggregator.choices)
     # maximum length of bigquery column name
-    label = models.CharField(max_length=300, null=True, blank=True)
-    value = models.CharField(max_length=300, null=True, blank=True)
+    label = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+    )
 
     description = models.CharField(max_length=255, null=True, blank=True)
 
@@ -81,7 +82,7 @@ class Widget(CloneMixin, models.Model):
         if self.kind in [self.Kind.TABLE, self.Kind.TEXT]:
             return True
         elif self.kind is not None:
-            return self.kind and self.label and self.value and self.aggregator
+            return self.kind and self.label and self.values.first() and self.aggregator
 
         return False
 

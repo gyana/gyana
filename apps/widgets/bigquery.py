@@ -11,15 +11,11 @@ def query_widget(widget: Widget):
             table.projection(
                 [
                     widget.label,
-                    *(
-                        [widget.value]
-                        if widget.kind not in MULTI_VALUES_CHARTS
-                        else [value.column for value in widget.values.all()]
-                    ),
+                    *[value.column for value in widget.values.all()],
                 ]
             ).compile()
         )
-    if widget.kind in MULTI_VALUES_CHARTS:
+    else:
         return get_dataframe(
             table.group_by(widget.label)
             .aggregate(
@@ -27,14 +23,6 @@ def query_widget(widget: Widget):
                     getattr(table[value.column], widget.aggregator)().name(value.column)
                     for value in widget.values.all()
                 ]
-            )
-            .compile()
-        )
-    else:
-        return get_dataframe(
-            table.group_by(widget.label)
-            .aggregate(
-                getattr(table[widget.value], widget.aggregator)().name(widget.value)
             )
             .compile()
         )

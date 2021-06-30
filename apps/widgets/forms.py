@@ -6,7 +6,6 @@ from apps.utils.schema_form_mixin import SchemaFormMixin
 from apps.widgets.widgets import VisualSelect
 from apps.workflows.widgets import SourceSelect
 from django import forms
-from django.forms.widgets import HiddenInput
 
 from .models import MULTI_VALUES_CHARTS, MultiValues, Widget
 
@@ -14,11 +13,10 @@ from .models import MULTI_VALUES_CHARTS, MultiValues, Widget
 class WidgetConfigForm(LiveUpdateForm):
 
     label = forms.ChoiceField(choices=())
-    value = forms.ChoiceField(choices=())
 
     class Meta:
         model = Widget
-        fields = ["description", "table", "kind", "label", "aggregator", "value"]
+        fields = ["description", "table", "kind", "label", "aggregator"]
         widgets = {"kind": VisualSelect(), "table": SourceSelect()}
 
     def __init__(self, *args, **kwargs):
@@ -38,8 +36,6 @@ class WidgetConfigForm(LiveUpdateForm):
         if schema and "label" in self.fields:
             columns = [(column, column) for column in schema]
             self.fields["label"].choices = columns
-            if self.instance.kind not in MULTI_VALUES_CHARTS:
-                self.fields["value"].choices = columns
 
     def get_live_fields(self):
 
@@ -53,14 +49,12 @@ class WidgetConfigForm(LiveUpdateForm):
                 "label",
                 "aggregator",
             ]
-            if kind not in MULTI_VALUES_CHARTS:
-                fields += ["value"]
 
         return fields
 
 
 class ValueForm(SchemaFormMixin, LiveUpdateForm):
-    column = HiddenInput()
+    column = forms.ChoiceField(choices=())
 
     class Meta:
         model = MultiValues
@@ -68,11 +62,9 @@ class ValueForm(SchemaFormMixin, LiveUpdateForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        kind = self.get_live_field("kind")
-        if kind in MULTI_VALUES_CHARTS:
-            self.fields["column"] = forms.ChoiceField(
-                choices=[(column, column) for column in self.schema]
-            )
+        self.fields["column"] = forms.ChoiceField(
+            choices=[(column, column) for column in self.schema]
+        )
 
 
 FilterFormset = forms.inlineformset_factory(

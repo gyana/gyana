@@ -23,7 +23,7 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
         "chart": {
             "theme": "fusion",
             "xAxisName": widget.label,
-            "yAxisName": widget.value,
+            "yAxisName": widget.values.first().column,
         },
         **data,
     }
@@ -56,14 +56,19 @@ def to_multi_value_data(widget, df):
 
 
 def to_scatter(widget, df):
+    values = widget.values.all()
+    df = df.rename(columns={widget.label: "x"})
     return {
+        "categories": [{"category": [{"label": label} for label in df.x.to_list()]}],
         "dataset": [
             {
-                "data": df.rename(
-                    columns={widget.label: "x", widget.value: "y"}
-                ).to_dict(orient="records")
+                **({"seriesname": value.column} if len(values) > 1 else dict()),
+                "data": df.rename(columns={value.column: "y"})[["x", "y"]].to_dict(
+                    orient="records"
+                ),
             }
-        ]
+            for value in values
+        ],
     }
 
 
@@ -74,7 +79,10 @@ def to_radar(widget, df):
         ],
         "dataset": [
             {
-                "data": [{"value": value} for value in df[widget.value].to_list()],
+                "data": [
+                    {"value": value}
+                    for value in df[widget.values.first().column].to_list()
+                ],
             }
         ],
     }
@@ -83,6 +91,6 @@ def to_radar(widget, df):
 def to_single_value(widget, df):
     return {
         "data": df.rename(
-            columns={widget.label: "label", widget.value: "value"}
+            columns={widget.label: "label", widget.values.first().column: "value"}
         ).to_dict(orient="records")
     }
