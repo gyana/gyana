@@ -45,10 +45,6 @@
             <a class="link" href="{% url 'project_workflows:list' project.id %}">Workflow{{ workflow_count|pluralize }}</a>
           </p>
     
-          <turbo-frame id='workflow-create' src="{% url 'project_workflows:create' project.id  %}" target="_top">
-            <i class='fad fa-spinner-third fa-spin'></i>
-          </turbo-frame>
-    
           {% if workflow_error > 0 %}
           <p class="card__help card__help--bottom">
             <i class="fas fa-fw fa-exclamation-triangle text-red"></i><small>

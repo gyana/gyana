@@ -6,8 +6,7 @@
 <li>
   <a class="sidebar__link {% if user_team.slug == team.slug %}sidebar__link--active{% endif %}"
      href="{% url 'teams:detail' user_team.slug %}">
-    <span class="inline-block fa-fw mr-6 uppercase bold">{{ user_team.name|slice:1 }}.</span>
-    {{ user_team.name }}
+    <span class="inline-block fa-fw mr-6 uppercase bold">{{ user_team.name|slice:1 }}.</span>{{ user_team.name }}
   </a>
 </li>
 {% endfor %}
@@ -27,7 +26,7 @@
   {% if object.project %}
   <p class="text-sm mb-2">
     <a href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}">Back to
-      {{object.project.name }}</a>
+      {{ object.project.name }}</a>
   </p>
   <p>
     <a href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}">{{

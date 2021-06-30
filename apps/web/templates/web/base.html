@@ -51,7 +51,7 @@
 
     <nav class="sidebar__body">
       <div class="sidebar__title">
-        <a class="h3 text-blue uppercase" href="{% url 'web:home' %}" title="View all your projects"><img
+        <a class="h3 text-blue uppercase" href="{% url 'web:home' %}" title="View your teams"><img
                src="{% static 'images/logo.png' %}" alt="">Gyana</a>
       </div>
 
@@ -66,7 +66,7 @@
       <li>
         <a class="sidebar__link {% if app_name == "users" %}sidebar__link--active{% endif %}"
            href="{% url 'users:user_profile' %}">
-          <img src="{{ user.avatar_url }}" alt="">{{user.email}}
+          <img src="{{ user.avatar_url }}" alt="">{{ user.email }}
         </a>
       </li>
 

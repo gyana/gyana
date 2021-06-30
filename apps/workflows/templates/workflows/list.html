@@ -4,9 +4,7 @@
 <div class="pad">
   <div class="flex items-center mb-4">
     <h1 class="mr-auto">Workflows</h1>
-    <turbo-frame id='workflow-create' src="{% url 'project_workflows:create' project.id  %}" target="_top">
-      <i class='fad fa-spinner-third fa-spin'></i>
-    </turbo-frame>
+    {% include 'workflows/create.html' %}
   </div>
 
   <p class="mb-8">

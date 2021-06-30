@@ -1,11 +1,9 @@
-<turbo-frame id='workflow-create'>
-  <form method="post" action="{% url 'project_workflows:create' project.id %}" class="form">
-    {% csrf_token %}
+<form method="post" action="{% url 'project_workflows:create' project.id %}" class="form">
+  {% csrf_token %}
 
-    {% include "django/forms/default_form.html" %}
+  <input type="hidden" name="project" value="{{ project.id }}"></input>
 
-    <button type="submit" class="button button--filled button--sm ml-4">
-      <i class="fas fa-fw fa-plus"></i> New Workflow
-    </button>
-  </form>
-</turbo-frame>
+  <button type="submit" class="button button--filled button--sm ml-4">
+    <i class="fas fa-fw fa-plus"></i> New Workflow
+  </button>
+</form>

@@ -1,5 +1,6 @@
 <form method="post" action="{% url 'project_dashboards:create' project.id %}?mode=edit" class="form">
   {% csrf_token %}
+
   <input type="hidden" name="project" value="{{ project.id }}"></input>
 
   <button type="submit" class="button button--filled button--sm ml-4">
