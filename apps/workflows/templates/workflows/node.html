@@ -7,7 +7,7 @@
       <h3>{{ node.kind|capfirst }} {% if node.name %}- {{ node.name }}{% endif %}</h3>
     </div>
 
-    <form class="form--no-layout flex-1"
+    <form class="form--no-layout overflow-hidden flex-1"
           action="{% url 'workflows:node' workflow.id node.id %}"
           method="post"
           {% if do_live_updates %}
