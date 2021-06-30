@@ -12,15 +12,6 @@ from .forms import ProjectForm
 from .models import Project
 
 
-class ProjectList(TeamMixin, ListView):
-    template_name = "projects/list.html"
-    model = Project
-    paginate_by = 20
-
-    def get_queryset(self) -> QuerySet:
-        return Project.objects.filter(team=self.team).all()
-
-
 class ProjectCreate(TeamMixin, TurboCreateView):
     template_name = "projects/create.html"
     model = Project

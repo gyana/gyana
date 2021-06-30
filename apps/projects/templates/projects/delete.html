@@ -10,7 +10,7 @@
 
     <div class="input-group">
       <input type="submit" value="Yes" class="button button--filled button--danger" />
-      <a href="{% url 'team_projects:list' object.team.slug %}" class="button button--tertiary">No</a>
+      <a href="{% url 'teams:detail' object.team.slug %}" class="button button--tertiary">No</a>
     </div>
   </form>
 </div>
