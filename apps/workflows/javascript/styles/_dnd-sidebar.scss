@@ -30,6 +30,7 @@
     grid-template-columns: 1fr 6fr;
     flex-direction: row;
     font-size: 1.4rem;
+    min-height: 6.8rem;
 
     &:hover {
       background: var(--c-blue-10);

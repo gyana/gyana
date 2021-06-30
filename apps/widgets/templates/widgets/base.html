@@ -1,11 +1,13 @@
 {% extends "web/app/project_base.html" %}
+
 {% block app %}
-    <div class="workflow-detail__header">
-        <h3 class="mr-auto tooltip tooltip--bottom">
-            {{dashboard.name}}
-            <span class="tooltip__content">This is an example tooltip</span>
-        </h3>
-    </div>
+<div class="workflow-detail__header">
+    <h3 class="mr-auto">{{dashboard.name}}</h3>
+</div>
+
+<div class="pad overflow-auto">
     {% block widget %}
     {% endblock %}
+</div>
+
 {% endblock app %}

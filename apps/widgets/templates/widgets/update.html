@@ -7,7 +7,7 @@
      class="button button--sm button--green">Back</a>
 </div>
 
-<div class="flex flex-wrap">
+<div class="flex flex-wrap mb-4">
   <div class="w-1/2">
     <h3 class="">Config</h3>
     <form data-controller="live-update" method="post"
@@ -21,7 +21,7 @@
       {% include "django/forms/default_form.html" %}
 
       {% if values_formset %}
-    <fieldset>
+      <fieldset>
         <label>Add values</label>
         {% include "components/formset.html" with formset=values_formset %}
       </fieldset>
@@ -33,7 +33,7 @@
         {% include "components/formset.html" with formset=filters_formset %}
       </fieldset>
       {% endif %}
-      <div class="flex flex-1 gap-7 pad">
+      <div class="flex flex-1 gap-7">
         <input type="submit" name="submit" value="Save & Close" class="button button--green" />
         <input type="submit" name="submit" value="Save & Preview" class="button button--outline button--green" />
       </div>

@@ -1,13 +1,16 @@
 {% extends "widgets/base.html" %}
 {% load static %}
+
 {% block widget %}
 <div class="flex items-center gap-4 mb-4">
   {% if object.description %}
-    <h1>{{ object.description }}</h1>
+  <h1>{{ object.description }}</h1>
   {% endif %}
-  <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}" class="button button--sm button--green">Back</a>
+  <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}"
+     class="button button--sm button--green">Back</a>
 </div>
-<div class="w-full">
+
+<div class="w-full mb-4">
   <turbo-frame id="widgets:output-{{ widget.id }}" src="{% url 'widgets:output' object.id %}">
     Loading...
   </turbo-frame>
@@ -15,7 +18,7 @@
 {% endblock %}
 
 {% block page_js %}
-<script src="{% static "fusioncharts/fusioncharts.js" %}"></script>
-<script src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
-<script src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
+<script src="{% static 'fusioncharts/fusioncharts.js' %}"></script>
+<script src="{% static 'fusioncharts/fusioncharts.charts.js' %}"></script>
+<script src="{% static 'fusioncharts/themes/fusioncharts.theme.fusion.js' %}"></script>
 {% endblock %}

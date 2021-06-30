@@ -3,7 +3,8 @@
 {% block widget %}
 <div class="flex items-center gap-4 mb-4">
   <h1>Add a new widget</h1>
-  <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}" class="button button--sm button--green">Back</a>
+  <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}"
+     class="button button--sm button--green">Back</a>
 </div>
 
 <form method="post" action="{% url 'dashboard_widgets:create' project.id dashboard.id %}" class="form">
