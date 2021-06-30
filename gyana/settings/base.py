@@ -281,7 +281,7 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 PROJECT_METADATA = {
     "NAME": "Gyana",
     "URL": "http://gyana.com",
-    "DESCRIPTION": "No-code data science",
+    "DESCRIPTION": "No-Code Data Analytics",
     "IMAGE": "https://upload.wikimedia.org/wikipedia/commons/2/20/PEO-pegasus_black.svg",
     "KEYWORDS": "SaaS, django",
     "CONTACT_EMAIL": "developers@gyana.com",

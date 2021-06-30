@@ -1,6 +1,6 @@
 # Gyana
 
-No-code data science tool or "Figma meets Domo"
+No-Code Data Analytics tool or "Figma meets Domo"
 More information can found on [our slab page](https://gyana.slab.com/topics/tech-mlhaecw3)
 
 ## Development

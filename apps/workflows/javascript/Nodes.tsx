@@ -6,6 +6,7 @@ export const NodeContext = createContext({
   removeById: (id: string) => {},
   client: null,
   getIncomingNodes: (id: string): [Node, Node[]] | null => null,
+  addNode: (node) => {},
 })
 
 const DeleteButton = ({ id }) => {
@@ -23,6 +24,23 @@ const OpenButton = ({ id }) => {
   return (
     <button data-action='click->tf-modal#open'>
       <i data-src={`/workflows/${workflowId}/nodes/${id}`} className='fas fa-edit fa-lg'></i>
+    </button>
+  )
+}
+
+const DuplicateButton = ({ id }) => {
+  const { client, addNode } = useContext(NodeContext)
+  return (
+    <button
+      onClick={() =>
+        client
+          .action(window.schema, ['workflows', 'duplicate_node', 'create'], {
+            id,
+          })
+          .then((res) => addNode(res))
+      }
+    >
+      <i className='fas fa-copy fa-lg' />
     </button>
   )
 }
@@ -86,6 +104,7 @@ const Buttons = ({ id }) => {
   return (
     <div className='react-flow__buttons'>
       <OpenButton id={id} />
+      <DuplicateButton id={id} />
       <DeleteButton id={id} />
     </div>
   )

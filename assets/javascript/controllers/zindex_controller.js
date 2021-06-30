@@ -20,7 +20,7 @@ export default class extends Controller {
       }
     })
 
-    // event is defined it means this function is called form a dom element
+    // When event is defined it means this function is called from a DOM element
     // which then means that we need to register a new entity. To make sure
     // we keep the overlap consistent for this new element we manually set
     // the zindex for the closest entity target
@@ -31,8 +31,6 @@ export default class extends Controller {
       })
       closest.style.zIndex = 1
     }
-
-    console.log(event, this)
   }
 
   connect() {

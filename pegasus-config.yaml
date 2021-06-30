@@ -4,7 +4,7 @@ default_context:
   css_framework: tailwind
   database: postgres
   deploy_platform: heroku
-  description: No-code data science
+  description: No-code Data Analytics
   domain_name: gyana.com
   email: developers@gyana.com
   enable_google_login: y

@@ -1,3 +1,4 @@
+from apps.utils.table import NaturalDatetimeColumn
 from django import forms
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -76,6 +77,8 @@ class TeamProjectsTable(Table):
         )
 
     name = Column(linkify=True)
+    created = NaturalDatetimeColumn()
+    updated = NaturalDatetimeColumn()
 
 
 class TeamDetail(DetailView):

@@ -18,6 +18,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from model_clone import CloneMixin
 
 
 class Workflow(models.Model):
@@ -165,7 +166,7 @@ class AggregationFunctions(models.TextChoices):
     STD = "std", "Standard deviation"
 
 
-class Node(DirtyFieldsMixin, models.Model):
+class Node(DirtyFieldsMixin, CloneMixin, models.Model):
     class Kind(models.TextChoices):
         INPUT = "input", "Input"
         OUTPUT = "output", "Output"
@@ -184,6 +185,19 @@ class Node(DirtyFieldsMixin, models.Model):
         DISTINCT = "distinct", "Distinct"
         PIVOT = "pivot", "Pivot"
         UNPIVOT = "unpivot", "Unpivot"
+
+    # You have to add new many-to-one relations here
+    _clone_m2o_or_o2m_fields = [
+        "filters",
+        "columns",
+        "secondary_columns",
+        "aggregations",
+        "sort_columns",
+        "edit_columns",
+        "add_columns",
+        "rename_columns",
+        "formula_columns",
+    ]
 
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"
@@ -313,7 +327,7 @@ class Node(DirtyFieldsMixin, models.Model):
         return super().save(*args, **kwargs)
 
 
-class SaveParentModel(DirtyFieldsMixin, models.Model):
+class SaveParentModel(DirtyFieldsMixin, CloneMixin, models.Model):
     class Meta:
         abstract = True
 

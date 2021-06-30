@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "gyana"
 version = "0.1.0"
-description = "No-code data science"
+description = "No-Code Data Analytics"
 authors = ["Gyana Developers <developers@gyana.com>"]
 
 [tool.poetry.dependencies]

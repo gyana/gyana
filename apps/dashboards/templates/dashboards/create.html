@@ -1,11 +1,8 @@
-<turbo-frame id='dashboard-create'>
-  <form method="post" action="{% url 'project_dashboards:create' project.id %}" class="form">
-    {% csrf_token %}
+<form method="post" action="{% url 'project_dashboards:create' project.id %}?mode=edit" class="form">
+  {% csrf_token %}
+  <input type="hidden" name="project" value="{{ project.id }}"></input>
 
-    {% include "django/forms/default_form.html" %}
-
-    <button type="submit" class="button button--filled button--sm ml-4">
-      <i class="fas fa-fw fa-plus"></i> New Dashboard
-    </button>
-  </form>
-</turbo-frame>
+  <button type="submit" class="button button--filled button--sm ml-4">
+    <i class="fas fa-fw fa-plus"></i> New Dashboard
+  </button>
+</form>
