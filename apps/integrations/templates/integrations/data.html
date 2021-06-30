@@ -1,7 +1,7 @@
 {% extends "integrations/base.html" %}
 
 {% block tab %}
-<div class="card card--sm py-4 flex-1 overflow-auto">
+<div class="card card--none py-4 flex-1 overflow-auto">
   <turbo-frame id="integrations-grid" src="{% url 'integrations:grid' object.id %}">
     <div class='placeholder-scr placeholder-scr--fillscreen'>
       <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>

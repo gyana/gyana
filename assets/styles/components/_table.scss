@@ -98,6 +98,7 @@
     background-color: var(--c-gray-50);
 
     th {
+      background-color: var(--c-gray-50);
       color: var(--c-black);
       font-size: 1.4rem;
       font-weight: normal;
@@ -105,7 +106,7 @@
       padding: 0.8rem 1.6rem;
       position: sticky;
       text-align: left;
-      top: 0;
+      top: -1.6rem;
       white-space: nowrap;
 
       & + th {

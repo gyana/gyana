@@ -5,7 +5,7 @@
 
 {% for table in tables %}
 <h1 class="mt-4 mb-2"> {{ table.title }}</h1>
-<div class='card card--sm'>
+<div class='card card--none'>
   {% render_table table.table_struct %}
 </div>
 {% endfor %}
