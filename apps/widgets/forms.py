@@ -68,9 +68,10 @@ class ValueForm(SchemaFormMixin, LiveUpdateForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["column"] = forms.ChoiceField(
-            choices=[(column, column) for column in self.schema]
-        )
+        if self.schema:
+            self.fields["column"] = forms.ChoiceField(
+                choices=[(column, column) for column in self.schema]
+            )
 
 
 FilterFormset = forms.inlineformset_factory(
