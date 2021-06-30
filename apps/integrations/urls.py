@@ -25,6 +25,7 @@ project_urlpatterns = (
     [
         path("", views.IntegrationList.as_view(), name="list"),
         path("new", views.IntegrationCreate.as_view(), name="create"),
+        path("upload", views.IntegrationUpload.as_view(), name="upload"),
         path("<int:pk>", views.IntegrationDetail.as_view(), name="detail"),
         path("<int:pk>/update", views.IntegrationUpdate.as_view(), name="update"),
         path("<int:pk>/delete", views.IntegrationDelete.as_view(), name="delete"),

@@ -66,6 +66,7 @@ export default class extends Controller {
     }
     this.progressCall = (progress) => {
       self.element.querySelector('#progress').innerHTML = progress + '%'
+      self.element.querySelector('#progress-bar').style.strokeDashoffset = 251 - (progress * 2.51)
     }
     this.successCall = () => {
       getApiClient().action(window.schema, ['integrations', 'start-sync', 'create'], {

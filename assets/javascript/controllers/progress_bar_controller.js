@@ -46,6 +46,7 @@ export default class extends Controller {
 
     progressBarElement.style.backgroundColor = '#68a9ef'
     progressBarElement.style.width = progress.percent + '%'
+
     if (progress.current == 0) {
       if (progress.pending === true) {
         progressBarMessageElement.textContent = 'Waiting for sync to start...'

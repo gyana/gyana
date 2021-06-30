@@ -69,6 +69,61 @@ class IntegrationList(ProjectMixin, SingleTableView):
             .all()
         )
 
+class IntegrationUpload(ProjectMixin, TurboCreateView):
+    template_name = "integrations/upload.html"
+    model = Integration
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["integration_kind"] = Integration.Kind.CSV
+
+        return context_data
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial["kind"] = Integration.Kind.CSV
+        initial["project"] = self.project
+
+        return initial
+
+    def get_form_class(self):
+        analytics.track(
+            self.request.user.id, NEW_INTEGRATION_START_EVENT, {"type": Integration.Kind.CSV}
+        )
+
+        return CSVCreateForm
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        response = super().form_valid(form)
+
+        analytics.track(
+            self.request.user.id,
+            INTEGRATION_CREATED_EVENT,
+            {
+                "id": form.instance.id,
+                "type": form.instance.kind,
+                "name": form.instance.name,
+            },
+        )
+
+        return (
+            TurboStream("create-container")
+            .append.template(
+                "integrations/_file_upload.html",
+                {
+                    "integration": form.instance,
+                    "file_input_id": "id_file",
+                    "redirect": self.get_success_url(),
+                },
+            )
+            .response(self.request)
+        )
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_integrations:detail", args=(self.project.id, self.object.id)
+        )
 
 class IntegrationCreate(ProjectMixin, TurboCreateView):
     template_name = "integrations/create.html"
@@ -88,6 +143,7 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
         initial["kind"] = self.request.GET.get("kind")
         initial["service"] = self.request.GET.get("service")
         initial["project"] = self.project
+
         return initial
 
     def get_form_class(self):
@@ -98,12 +154,10 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
 
             if kind == Integration.Kind.GOOGLE_SHEETS:
                 return GoogleSheetsForm
-            elif kind == Integration.Kind.CSV:
-                return CSVCreateForm
             elif kind == Integration.Kind.FIVETRAN:
                 return FivetranForm
 
-        return CSVCreateForm
+        return GoogleSheetsForm
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
@@ -127,20 +181,6 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
             )
             redirect = client.authorize(f"{settings.EXTERNAL_URL}{internal_redirect}")
             return redirect
-
-        if form.instance.kind == Integration.Kind.CSV:
-            return (
-                TurboStream("create-container")
-                .append.template(
-                    "integrations/_file_upload.html",
-                    {
-                        "integration": form.instance,
-                        "file_input_id": "id_file",
-                        "redirect": self.get_success_url(),
-                    },
-                )
-                .response(self.request)
-            )
 
         if form.instance.kind == Integration.Kind.GOOGLE_SHEETS:
             form.instance.start_sync()

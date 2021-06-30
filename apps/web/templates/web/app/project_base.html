@@ -3,7 +3,9 @@
 
 {% block sidebar_content %}
 <div class="sidebar__title">
-  <a href="{% url 'projects:detail' project.id %}"><h3 title="{{ project.name }}">{{ project.name }}</h3></a>
+  <a href="{% url 'projects:detail' project.id %}">
+    <h3 title="{{ project.name }}">{{ project.name }}</h3>
+  </a>
 </div>
 
 {% with app_name=request.resolver_match.app_name %}
@@ -49,7 +51,7 @@
 {% block notifications %}{% endblock %}
 
 <section class="project">
-  <section class="flex flex-col flex-1 overflow-hidden {% block app-class %}{% endblock %}">
+  <section class="flex flex-col flex-1 overflow-auto {% block app-class %}{% endblock %}">
     {% block app %}{% endblock %}
   </section>
 </section>

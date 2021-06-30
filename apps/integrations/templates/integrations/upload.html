@@ -1,0 +1,25 @@
+{% extends "web/app/project_settings_base.html" %}
+{% load static %}
+
+{% block app %}
+
+<div class="flex flex-row flex-1 overflow-hidden">
+  <div class='flex flex-col flex-1 overflow-auto'>
+    <h2 class="pad">Upload a CSV file</h2>
+
+    <div class='flex flex-col flex-1'>
+      <div class="flex flex-1 justify-center items-center pad" id='create-container'>
+        <form id="create-form" method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
+          {% csrf_token %}
+
+          {% include "django/forms/default_form.html" %}
+
+          <p>It may take a moment to upload your file. To keep the upload going, stay within the app.</p>
+          <button type="submit" class="button button--success">Upload</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
