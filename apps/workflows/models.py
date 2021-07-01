@@ -310,6 +310,14 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
     def schema(self):
         return self.get_query().schema()
 
+    @property
+    def display_name(self):
+        return NodeConfig[self.kind]["displayName"]
+
+    @property
+    def icon(self):
+        return NodeConfig[self.kind]["icon"]
+
     def get_table_name(self):
         return f"Workflow:{self.workflow.name}:{self.output_name}"
 
