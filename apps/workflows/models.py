@@ -148,7 +148,7 @@ NodeConfig = {
     },
     "unpivot": {
         "displayName": "Unpivot",
-        "icon": "fa-redo-alt",
+        "icon": "fa-undo-alt",
         "description": "Unpivot your table",
         "section": "Table manipulations",
     },
