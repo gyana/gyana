@@ -12,35 +12,35 @@
 <li>
   <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
      href="{% url 'projects:detail' project.id %}">
-    <i class="far fa-fw fa-file mr-6"></i>Overview
+    <i class="far fa-fw fa-book-open mr-6"></i>Overview
   </a>
 </li>
 
 <li>
   <a class="sidebar__link {% if app_name == "project_integrations" %}sidebar__link--active{% endif %}"
      href="{% url 'project_integrations:list' project.id %}">
-    <i class="far fa-fw fa-link mr-6"></i>Integrations
+    <i class="far fa-fw fa-cabinet-filing mr-6"></i>Integrations
   </a>
 </li>
 
 <li>
   <a class="sidebar__link {% if app_name == "project_workflows" %}sidebar__link--active{% endif %}"
      href="{% url 'project_workflows:list' project.id %}">
-    <i class="far fa-fw fa-stream mr-6"></i>Workflows
+    <i class="far fa-fw fa-sitemap mr-6"></i>Workflows
   </a>
 </li>
 
 <li>
   <a class="sidebar__link {% if app_name == "project_dashboards" or app_name == "dashboard_widgets" %}sidebar__link--active{% endif %}"
      href="{% url 'project_dashboards:list' project.id %}">
-    <i class="far fa-fw fa-presentation mr-6"></i>Dashboards
+    <i class="far fa-fw fa-file-chart-pie mr-6"></i>Dashboards
   </a>
 </li>
 
 <li>
   <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
      href="{% url 'projects:update' project.id %}">
-    <i class="far fa-fw fa-cog mr-6"></i>Settings
+    <i class="far fa-fw fa-cogs mr-6"></i>Settings
   </a>
 </li>
 {% endwith %}
