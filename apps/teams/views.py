@@ -22,6 +22,8 @@ from .models import Invitation, Team
 from .permissions import TeamAccessPermissions, TeamModelAccessPermissions
 from .roles import is_admin, is_member
 from .serializers import InvitationSerializer, TeamSerializer
+from apps.projects.models import Project
+
 
 
 class TeamCreate(LoginRequiredMixin, TurboCreateView):
@@ -65,13 +67,13 @@ class TeamDelete(LoginRequiredMixin, DeleteView):
 
 class TeamProjectsTable(Table):
     class Meta:
-        model = Team
+        model = Project
         attrs = {"class": "table"}
         fields = (
             "name",
-            "integrations",
-            "workflows",
-            "dashboards",
+            "integration_count",
+            "workflow_count",
+            "dashboard_count",
             "created",
             "updated",
         )
@@ -79,6 +81,9 @@ class TeamProjectsTable(Table):
     name = Column(linkify=True)
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
+    integration_count = Column(verbose_name="Integrations")
+    workflow_count = Column(verbose_name="Workflows")
+    dashboard_count = Column(verbose_name="Dashboards")
 
 
 class TeamDetail(DetailView):
