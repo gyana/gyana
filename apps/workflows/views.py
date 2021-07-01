@@ -3,6 +3,7 @@ from functools import cached_property
 
 import analytics
 from apps.projects.mixins import ProjectMixin
+from apps.projects.models import Project
 from apps.utils.formset_update_view import FormsetUpdateView
 from apps.utils.segment_analytics import (
     NODE_CONNECTED_EVENT,
@@ -133,6 +134,18 @@ class NodeViewSet(viewsets.ModelViewSet):
                     list(node.parents.values_list("kind", flat=True))
                 ),
             )
+
+
+class NodeName(TurboUpdateView):
+    model = Node
+    fields = ("name",)
+    template_name = "workflows/node_name.html"
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "workflows:node_name",
+            args=(self.object.id,),
+        )
 
 
 class NodeUpdate(FormsetUpdateView):
