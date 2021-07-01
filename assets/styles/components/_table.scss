@@ -5,6 +5,7 @@
   thead {
     width: 100%;
     border-bottom: 1px solid var(--c-gray);
+    background-color: var(--c-gray-50);
 
     th {
       color: var(--c-black);
@@ -48,7 +49,7 @@
       line-height: 1.4rem;
       padding: 1.2rem 1.6rem;
       white-space: nowrap;
-      border-bottom: 1px solid var(--c-gray-20);
+      border-bottom: 1px solid var(--c-gray-50);
 
       > * {
         font-size: inherit;
@@ -95,8 +96,8 @@
 
   thead {
     width: 100%;
-    border-bottom: 1px solid var(--c-gray);
-    background-color: var(--c-gray-50);
+    border-bottom: 1px solid var(--c-black-50);
+    background-color: var(--c-gray);
 
     th {
       background-color: var(--c-gray-50);

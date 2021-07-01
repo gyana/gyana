@@ -15,7 +15,6 @@
     &__sidebar {
       background-color: var(--c-white);
       flex: 1 1 0%;
-      padding: 0 1.6rem;
       overflow: auto;
     }
 
@@ -66,9 +65,18 @@
     }
   }
 
-  &__footer {
+  &__header {
+    align-items: center;
+    border-bottom: 1px solid var(--c-gray);
     display: flex;
+    height: 4.8rem;
+    max-height: 4.8rem;
+    padding: 1.6rem;
+  }
+
+  &__footer {
     border-top: 1px solid var(--c-gray);
+    display: flex;
     margin-top: auto;
 
     input.button {
