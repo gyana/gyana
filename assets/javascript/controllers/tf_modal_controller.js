@@ -3,7 +3,11 @@ import { Controller } from 'stimulus'
 // Open a modal with the content populated by a turbo-frame
 
 export default class extends Controller {
-  static targets = ['modal', 'turboFrame']
+  static targets = ['modal', 'turboFrame', 'closingWarning']
+
+  connect() {
+    this.changed = false
+  }
 
   open(event) {
     if (event.target.getAttribute('data-src') !== this.turboFrameTarget.getAttribute('src')) {
@@ -18,13 +22,34 @@ export default class extends Controller {
     this.modalTarget.classList.remove('hidden')
   }
 
+  change() {
+    this.changed = true
+  }
+
   close() {
+    if (this.changed) {
+      this.closingWarningTarget.classList.remove('hidden')
+    } else {
+      this.forceClose()
+    }
+  }
+
+  forceClose() {
+    this.changed = false
     this.modalTarget.classList.add('hidden')
+  }
+
+  closeWarning() {
+    this.closingWarningTarget.classList.add('hidden')
   }
 
   onInput(event) {
     if (event.key == 'Escape') {
       this.modalTarget.classList.add('hidden')
     }
+  }
+
+  save() {
+    this.changed = false
   }
 }
