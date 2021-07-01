@@ -9,20 +9,9 @@ DEFAULT_HEIGHT = "100%"
 
 
 def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
-
     """Render a chart from a table."""
-    if widget.kind == Widget.Kind.SCATTER.value:
-        data = to_scatter(widget, df)
-    elif widget.kind == Widget.Kind.RADAR.value:
-        data = to_radar(widget, df)
-    elif widget.kind == Widget.Kind.BUBBLE.value:
-        data = to_bubble(widget, df)
-    elif widget.kind == Widget.Kind.HEATMAP.value:
-        data = to_heatmap(widget, df)
-    elif widget.kind in MULTI_VALUES_CHARTS:
-        data = to_multi_value_data(widget, df)
-    else:
-        data = to_single_value(widget, df)
+
+    data = CHART_DATA[widget.kind](widget, df)
 
     dataSource = {
         "chart": {
@@ -148,3 +137,19 @@ def to_heatmap(widget, df):
             ],
         },
     }
+
+
+CHART_DATA = {
+    Widget.Kind.BUBBLE: to_bubble,
+    Widget.Kind.HEATMAP: to_heatmap,
+    Widget.Kind.SCATTER: to_scatter,
+    Widget.Kind.RADAR: to_radar,
+    Widget.Kind.FUNNEL: to_single_value,
+    Widget.Kind.PYRAMID: to_single_value,
+    Widget.Kind.PIE: to_single_value,
+    Widget.Kind.DONUT: to_single_value,
+    Widget.Kind.COLUMN: to_multi_value_data,
+    Widget.Kind.BAR: to_multi_value_data,
+    Widget.Kind.AREA: to_multi_value_data,
+    Widget.Kind.LINE: to_multi_value_data,
+}
