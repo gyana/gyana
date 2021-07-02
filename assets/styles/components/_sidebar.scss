@@ -25,6 +25,10 @@
       border-color: var(--c-blue);
       color: var(--c-blue);
       font-weight: 500;
+
+      .fa-fw {
+        font-weight: 900;
+      }
     }
 
     &:hover {
