@@ -192,7 +192,11 @@ class WidgetPartialUpdate(viewsets.GenericViewSet, mixins.UpdateModelMixin):
 
 # Turbo frames
 
-
+# ====== Not used right now =======
+# TODO: decide whether we want to cache the output of the chart or
+# Remove this. You will also need to add back the caching logic in urls.py.
+# We removed this for now because with the modal we are rendering the same FusionChart
+# Twice which leads to an id conflict
 def last_modified_widget_output(request, pk):
     widget = Widget.objects.get(pk=pk)
     return (
@@ -211,7 +215,7 @@ widget_output_condition = condition(
     etag_func=etag_widget_output, last_modified_func=last_modified_widget_output
 )
 
-
+# ==================================================
 class WidgetOutput(DetailView):
     template_name = "widgets/output.html"
     model = Widget
@@ -227,7 +231,9 @@ class WidgetOutput(DetailView):
                 elif self.object.kind == Widget.Kind.TEXT:
                     pass
                 else:
-                    context_data.update(chart_to_output(self.object))
+                    chart, chart_id = chart_to_output(self.object)
+                    context_data.update(chart)
+                    context_data["chart_id"] = chart_id
         except Exception as e:
             context_data["is_error"] = True
             logging.warning(e, exc_info=e)

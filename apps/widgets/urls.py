@@ -1,5 +1,4 @@
 from django.urls import path
-from django.views.decorators.cache import cache_control
 from rest_framework import routers
 
 from . import views
@@ -11,9 +10,7 @@ urlpatterns = [
     # https://web.dev/http-cache/#flowchart
     path(
         "<int:pk>/output",
-        cache_control(no_cache=True)(
-            views.widget_output_condition(views.WidgetOutput.as_view())
-        ),
+        views.WidgetOutput.as_view(),
         name="output",
     ),
 ]

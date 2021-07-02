@@ -1,8 +1,18 @@
+import random
+import string
+
 import numpy as np
 import pandas as pd
 from apps.widgets.models import MULTI_VALUES_CHARTS, Widget
 
 from lib.fusioncharts import FusionCharts
+
+
+def short_hash():
+    return "".join(
+        random.choice(string.ascii_letters + string.digits) for n in range(6)
+    )
+
 
 DEFAULT_WIDTH = "100%"
 DEFAULT_HEIGHT = "100%"
@@ -22,14 +32,18 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
         **data,
     }
 
-    return FusionCharts(
-        widget.kind,
-        f"chart-{widget.pk}",
-        DEFAULT_WIDTH,
-        DEFAULT_HEIGHT,
-        f"chart-{widget.pk}-container",
-        "json",
-        dataSource,
+    chart_id = f"{widget.pk}-{short_hash()}"
+    return (
+        FusionCharts(
+            widget.kind,
+            f"chart-{chart_id}",
+            DEFAULT_WIDTH,
+            DEFAULT_HEIGHT,
+            f"chart-{chart_id}-container",
+            "json",
+            dataSource,
+        ),
+        chart_id,
     )
 
 

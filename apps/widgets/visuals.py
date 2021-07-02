@@ -12,8 +12,8 @@ from .models import Widget
 
 def chart_to_output(widget: Widget) -> Dict[str, Any]:
     df = query_widget(widget)
-    chart = to_chart(df, widget)
-    return {"chart": chart.render()}
+    chart, chart_id = to_chart(df, widget)
+    return {"chart": chart.render()}, chart_id
 
 
 def table_to_output(widget: Widget) -> Dict[str, Any]:
