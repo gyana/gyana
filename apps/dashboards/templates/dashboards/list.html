@@ -15,19 +15,22 @@
     {% render_table table %}
 
     {% if dashboard_count == 0 %}
-    <div class="text-center pad pad--sm">
-      <small>
-        You have no dashboards yet,
-        <form
-              method="post"
-              class="inline"
-              action="{% url 'project_dashboards:create' project.id %}?mode=edit">
-          {% csrf_token %}
-          <input type="hidden" name="project" value="{{ project.id }}"></input>
-          <button type="submit" class="link">create one</button>
-        </form>
-        to see it here
-      </small>
+    <div class="table__empty">
+      <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
+      <h3>You have no dashboards yet</h3>
+      <form class="inline"
+            method="post"
+            action="{% url 'project_dashboards:create' project.id %}?mode=edit">
+        {% csrf_token %}
+        <input type="hidden" name="project" value="{{ project.id }}"></input>
+        <p>
+          You can
+          <button type="submit" class="link">
+            create one
+          </button>
+          now
+        </p>
+      </form>
     </div>
     {% endif %}
   </div>

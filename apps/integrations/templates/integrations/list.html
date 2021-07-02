@@ -25,11 +25,14 @@
     {% render_table table %}
 
     {% if integration_count == 0 %}
-    <div class="text-center pad pad--sm">
-      <small>
-        You have no integrations yet, <a href="{% url 'project_integrations:create' project.id %}" class="link">create
-          one</a> to see it here
-      </small>
+    <div class="table__empty">
+      <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
+      <h3>You have no integrations</h3>
+      <p>
+        <a href="{% url 'project_integrations:upload' project.id %}" class="link">Upload a CSV</a>, or
+        <a href="{% url 'project_integrations:create' project.id %}" class="link">create an integration</a> to see it
+        here.
+      </p>
     </div>
     {% endif %}
   </div>

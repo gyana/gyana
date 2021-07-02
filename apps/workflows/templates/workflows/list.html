@@ -15,21 +15,21 @@
     {% render_table table %}
 
     {% if workflow_count == 0 %}
-    <div class="text-center pad pad--sm">
-      <small>
-        You have no workflows yet,
-        <form
-              class="inline"
-              method="post"
-              action="{% url 'project_workflows:create' project.id  %}">
-          {% csrf_token %}
-          <input type="hidden" name="project" value="{{ project.id }}"></input>
+    <div class="table__empty">
+      <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
+      <h3>You have no workflows</h3>
+      <form class="inline"
+            method="post"
+            action="{% url 'project_workflows:create' project.id  %}">
+        {% csrf_token %}
+        <input type="hidden" name="project" value="{{ project.id }}"></input>
+        <p>
+          Why not
           <button type="submit" class="link">
             create one
-          </button>
-        </form>
-        to see it here
-      </small>
+          </button>?
+        </p>
+      </form>
     </div>
     {% endif %}
   </div>

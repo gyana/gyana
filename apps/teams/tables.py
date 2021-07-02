@@ -1,6 +1,22 @@
-from apps.utils.table import NaturalDatetimeColumn
+from apps.users.models import CustomUser
 from apps.projects.models import Project
+from apps.utils.table import NaturalDatetimeColumn
 from django_tables2 import Column, Table
+
+
+class TeamMembersTable(Table):
+    class Meta:
+        model = CustomUser
+        attrs = {"class": "table"}
+        fields = (
+            "email",
+            "last_login",
+            "date_joined",
+        )
+
+    email = Column(verbose_name="Email")
+    last_login = NaturalDatetimeColumn()
+    date_joined = NaturalDatetimeColumn()
 
 class TeamProjectsTable(Table):
     class Meta:
