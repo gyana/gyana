@@ -10,13 +10,16 @@ let auth = new coreapi.auth.SessionAuthentication({
 })
 
 let client = new coreapi.Client({ auth: auth })
-let domContainer = document.querySelector('#react-app')
-
-domContainer
-  ? ReactDOM.render(
+class ReactDndFlow extends HTMLElement {
+  connectedCallback() {
+    // this.appendChild(mountPoint)
+    ReactDOM.render(
       <ReactFlowProvider>
         <DnDFlow client={client} />
       </ReactFlowProvider>,
-      domContainer
+      this
     )
-  : null
+  }
+}
+
+customElements.get('dnd-flow') || customElements.define('dnd-flow', ReactDndFlow)
