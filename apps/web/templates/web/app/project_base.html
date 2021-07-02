@@ -3,9 +3,7 @@
 
 {% block sidebar_content %}
 <div class="sidebar__title">
-  <a href="{% url 'projects:detail' project.id %}">
-    <h3 title="{{ project.name }}">{{ project.name }}</h3>
-  </a>
+  <a class="h3" title="{{ project.name }}" href="{% url 'projects:detail' project.id %}">{{ project.name }}</a>
 </div>
 
 {% with app_name=request.resolver_match.app_name %}
