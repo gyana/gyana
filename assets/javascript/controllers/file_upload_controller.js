@@ -13,7 +13,7 @@ export default class extends Controller {
   static values = {
     fileInputId: String,
     fileId: String,
-    redirectTo: String,
+    inhibitUpload: Boolean,
   }
 
   initialize() {
@@ -35,61 +35,63 @@ export default class extends Controller {
    * need to carefully manage the registered listeners to avoid multiple callbacks.
    */
   async connect() {
-    if (!window.gyanaFileState[this.fileIdValue]) {
-      const file = document.getElementById(this.fileInputIdValue).files[0]
+    if (!this.inhibitUploadValue) {
+      if (!window.gyanaFileState[this.fileIdValue]) {
+        const file = document.getElementById(this.fileInputIdValue).files[0]
 
-      // Now that we got the file we don't need the form anymore.
-      document.getElementById('create-form').remove()
+        // Now that we got the file we don't need the form anymore.
+        document.getElementById('create-form').remove()
 
-      const { url: target } = await getApiClient().action(
-        window.schema,
-        ['integrations', 'generate-signed-url', 'create'],
-        {
-          session_key: this.fileIdValue,
-          filename: file.name,
-        }
-      )
+        const { url: target } = await getApiClient().action(
+          window.schema,
+          ['integrations', 'generate-signed-url', 'create'],
+          {
+            session_key: this.fileIdValue,
+            filename: file.name,
+          }
+        )
 
-      const uploader = (window.gyanaFileState[this.fileIdValue] = new GoogleUploader({
-        target,
-        file,
-      }))
+        const uploader = (window.gyanaFileState[this.fileIdValue] = new GoogleUploader({
+          target,
+          file,
+        }))
 
-      uploader.start()
+        uploader.start()
+      }
+
+      const self = this
+      // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload
+      this.onUnloadCall = (e) => {
+        e.preventDefault()
+        e.returnValue = ''
+      }
+      this.progressCall = (progress) => {
+        self.element.querySelector('#progress').innerHTML = progress + '%'
+        self.element.querySelector('#progress-bar').style.strokeDashoffset = 220 - progress * 2.2
+      }
+      this.successCall = async () => {
+        const html = await getApiClient().action(
+          window.schema,
+          ['integrations', 'start-sync', 'create'],
+          {
+            session_key: this.fileIdValue,
+          }
+        )
+        window.removeEventListener('beforeunload', self.onUnloadCall)
+        Turbo.renderStreamMessage(html)
+      }
+      // This unload call spawns a warning when the user tries to unload the page (visiting another url, refreshing the page, etc..)
+      window.addEventListener('beforeunload', this.onUnloadCall)
+      window.gyanaFileState[this.fileIdValue].on('progress', this.progressCall)
+      window.gyanaFileState[this.fileIdValue].on('success', this.successCall)
     }
-
-    const self = this
-    // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload
-    this.onUnloadCall = (e) => {
-      e.preventDefault()
-      e.returnValue = ''
-    }
-    this.progressCall = (progress) => {
-      self.element.querySelector('#progress').innerHTML = progress + '%'
-      self.element.querySelector('#progress-bar').style.strokeDashoffset =
-        471 - progress * 4.39822971503
-    }
-    this.successCall = async () => {
-      const { redirect } = await getApiClient().action(
-        window.schema,
-        ['integrations', 'start-sync', 'create'],
-        {
-          session_key: this.fileIdValue,
-        }
-      )
-      window.removeEventListener('beforeunload', self.onUnloadCall)
-      // After the upload is successful we redirect to the right location.
-      if (redirect) Turbo.visit(redirect)
-    }
-    // This unload call spawns a warning when the user tries to unload the page (visiting another url, refreshing the page, etc..)
-    window.addEventListener('beforeunload', this.onUnloadCall)
-    window.gyanaFileState[this.fileIdValue].on('progress', this.progressCall)
-    window.gyanaFileState[this.fileIdValue].on('success', this.successCall)
   }
 
   disconnect() {
-    window.gyanaFileState[this.fileIdValue].off(this.progressCall)
-    window.gyanaFileState[this.fileIdValue].off(this.successCall)
-    window.removeEventListener('beforeunload', this.onUnloadCall)
+    if (!this.inhibitUploadValue) {
+      window.gyanaFileState[this.fileIdValue].off(this.progressCall)
+      window.gyanaFileState[this.fileIdValue].off(this.successCall)
+      window.removeEventListener('beforeunload', this.onUnloadCall)
+    }
   }
 }

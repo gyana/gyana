@@ -8,6 +8,7 @@
 
     th {
       color: var(--c-black);
+      background-color: var(--c-gray-50);
       font-size: 1.2rem;
       font-weight: normal;
       line-height: 1.4rem;
@@ -15,9 +16,14 @@
       padding: 1.2rem 1.6rem;
       text-align: left;
       white-space: nowrap;
+
+      &:first-child {
+        border-top-left-radius: 10px;
+      }
       
       &:last-child {
         width: 100%;
+        border-top-right-radius: 10px;
       }
     }
 
@@ -48,7 +54,7 @@
       line-height: 1.4rem;
       padding: 1.2rem 1.6rem;
       white-space: nowrap;
-      border-bottom: 1px solid var(--c-gray-20);
+      border-bottom: 1px solid var(--c-gray-50);
 
       > * {
         font-size: inherit;
@@ -95,8 +101,8 @@
 
   thead {
     width: 100%;
-    border-bottom: 1px solid var(--c-gray);
-    background-color: var(--c-gray-50);
+    border-bottom: 1px solid var(--c-black-50);
+    background-color: var(--c-gray);
 
     th {
       background-color: var(--c-gray-50);

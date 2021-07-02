@@ -1,7 +1,7 @@
 %input {
   background-color: var(--c-white);
-  border: 1px solid var(--c-black-20);
-  border-radius: 5px;
+  border: 1px solid var(--c-gray);
+  border-radius: 6px;
   color: var(--c-black);
   font-size: 1.4rem;
   padding: 1.2rem 0.8rem;
@@ -71,7 +71,7 @@ label {
   display: flex;
   flex-flow: column;
   font-size: 1.4rem;
-  gap: 0.8rem;
+  gap: 0.4rem;
   line-height: 1.6rem;
   width: 100%;
 
@@ -122,14 +122,14 @@ input.input,
 }
 
 label.checkbox {
-  border: 1px solid var(--c-gray);
   border-radius: 5px;
-  padding: 0.5rem;
+  border: 1px solid var(--c-gray);
+  color: var(--c-black-50);
+  cursor: pointer;
   display: flex;
   flex-direction: row;
-  color: var(--c-black-50);
   margin-bottom: 0.1rem;
-  cursor: pointer;
+  padding: 0.5rem;
 
   &:hover {
     background-color: var(--c-gray-20);
@@ -139,6 +139,7 @@ label.checkbox {
 label.checkbox__checked {
   border: 1px solid var(--c-blue);
   color: var(--c-black);
+
   i {
     color: var(--c-blue);
   }
