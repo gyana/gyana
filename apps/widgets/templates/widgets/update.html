@@ -1,65 +1,60 @@
-{% extends "widgets/base.html" %}
 {% load static %}
-{% block widget %}
-<div class="flex items-center gap-4 mb-4">
-  <h1>{{ object.name }}</h1>
-  <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}"
-     class="button button--sm button--green">Back</a>
-</div>
 
-<div class="flex flex-wrap mb-4">
-  <div class="w-1/2">
-    <h3 class="">Config</h3>
-    <form data-controller="live-update" method="post"
-          action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" class="form">
-      <div class="h-6">
-        <span data-live-update-target="loading" class="hidden"><i
-             class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
-      </div>
-      {% csrf_token %}
-
-      {% include "django/forms/default_form.html" %}
-
-      {% if values_formset %}
-      <fieldset>
-        <label>Add values</label>
-        {% include "components/formset.html" with formset=values_formset %}
-      </fieldset>
-      {% endif %}
-
-      {% if filters_formset %}
-      <fieldset>
-        <label>Add filters</label>
-        {% include "components/formset.html" with formset=filters_formset %}
-      </fieldset>
-      {% endif %}
-      <div class="flex flex-1 gap-7">
-        <input type="submit" name="submit" value="Save & Close" class="button button--green" />
-        <input type="submit" name="submit" value="Save & Preview" class="button button--outline button--green" />
-      </div>
-    </form>
+<turbo-frame id='widget-modal'>
+  <div data-controller="turbo-issue-186-workaround">  
+    {{ form.media.js }}
   </div>
-  <div class="w-1/2">
-    {% if widget.is_valid %}
-    <turbo-frame id="widgets:output-{{ widget.id }}" src="{% url 'widgets:output' object.id %}">
-      <div class='placeholder-scr placeholder-scr--fillscreen'>
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-        <p class='placeholder-scr__title'>Loading widget...</p>
-      </div>
-    </turbo-frame>
-    {% else %}
-    <div class='flex flex-col items-center justify-center' style="min-height:16rem;">
-      <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
-      <p>This widget needs to be configured</p>
+  
+  <div class="flex items-center gap-4 mb-4">
+    <h1>{{ object.name }}</h1>
+  </div>
+
+  <div class="flex flex-wrap mb-4">
+    <div class="w-1/2">
+      <h3 class="">Config</h3>
+      <form data-controller="live-update" method="post"
+            action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" class="form">
+        <div class="h-6">
+          <span data-live-update-target="loading" class="hidden"><i
+              class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
+        </div>
+        {% csrf_token %}
+
+        {% include "django/forms/default_form.html" %}
+
+        {% if values_formset %}
+        <fieldset>
+          <label>Add values</label>
+          {% include "components/formset.html" with formset=values_formset %}
+        </fieldset>
+        {% endif %}
+
+        {% if filters_formset %}
+        <fieldset>
+          <label>Add filters</label>
+          {% include "components/formset.html" with formset=filters_formset %}
+        </fieldset>
+        {% endif %}
+        <div class="flex flex-1 gap-7">
+          <input type="submit" name="submit" value="Save & Close" class="button button--green" />
+          <input type="submit" name="submit" value="Save & Preview" class="button button--outline button--green" />
+        </div>
+      </form>
     </div>
-    {% endif %}
+    <div class="w-1/2">
+      {% if widget.is_valid %}
+      <turbo-frame id="widgets:output-{{ widget.id }}" src="{% url 'widgets:output' object.id %}">
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          <p class='placeholder-scr__title'>Loading widget...</p>
+        </div>
+      </turbo-frame>
+      {% else %}
+      <div class='flex flex-col items-center justify-center' style="min-height:16rem;">
+        <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
+        <p>This widget needs to be configured</p>
+      </div>
+      {% endif %}
+    </div>
   </div>
-</div>
-{% endblock %}
-
-{% block page_js %}
-{{ form.media.js }}
-<script src="{% static "fusioncharts/fusioncharts.js" %}"></script>
-<script src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
-<script src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
-{% endblock %}
+</turbo-frame>

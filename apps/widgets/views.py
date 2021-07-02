@@ -204,7 +204,7 @@ def last_modified_widget_output(request, pk):
 
 def etag_widget_output(request, pk):
     last_modified = last_modified_widget_output(request, pk)
-    return f"{int(last_modified.timestamp() * 1_000_000)}"
+    return str(int(last_modified.timestamp() * 1_000_000))
 
 
 widget_output_condition = condition(
