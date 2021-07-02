@@ -172,3 +172,13 @@
     }
   }
 }
+
+.table__empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1.6rem;
+  margin: 1.6rem 0;
+  color: var(--c-black-50);
+}
