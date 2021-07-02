@@ -1,0 +1,26 @@
+{% load static %}
+
+<div 
+  class='integration__file-validate {% if stage != "validate" %}inactive{% endif %}'
+  data-controller="file-validate"
+  {% if stage == "validate" %}
+  data-file-validate-task-url-value="{% url 'celery_progress:task_status' external_table_sync_task_id %}"
+  data-file-validate-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
+  {% endif %}
+  data-file-validate-redirect-url-value="{{ redirect_url }}"
+  data-file-validate-inhibit-validate-value="{% if stage != "validate" %}true{% else %}false{% endif %}">
+  {% if stage == "validate" %}
+  <i class="fad fa-spinner-third fa-spin text-blue text-4xl"></i>
+  <div class='flex flex-col ml-4'>
+    <h1>Validating your file...</h1>
+    <p>Validation of the file might take a while, make sure to stay on the page.</p>
+  </div>
+  {% elif stage == "upload" %}
+  <i class="fad fa-spinner-third text-blue-50 pr-4"></i>
+  <p>Validating uploaded CSV file</p>
+  {% else %}
+  <i class="fas fa-check text-green mr-4"></i>
+  <p>File successfully validated</p>
+  {% endif %}
+  <div id='progress-bar' style='display:none;'><div id="progress-bar-message"></div></div>
+</div>

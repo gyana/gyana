@@ -23,15 +23,16 @@
 @use "components/placeholder_screen";
 @use "components/guide";
 @use "components/tabbar";
-@use "components/aggrid";
 @use "components/list";
-@use "components/codemirror";
 @use "components/popover";
 
 @use "pages/landing";
 @use "pages/integration";
 @use "pages/project";
 @use "pages/workflow";
+
+@use "components/overrides/codemirror";
+@use "components/overrides/aggrid";
 
 @use "vendors/libcodemirror";
 

@@ -16,12 +16,13 @@
   <hr>
 
   <div class="flex flex-col gap-7 flex-1">
-    <div class="flex gap-7">
-      <div class="flex-1">
+    <div class="flex flex-wrap gap-7">
+      <div class="flex-1 overflow-hidden">
         <div class="flex mb-3">
           <h2>Integrations</h2>
         </div>
-        <div class="card card--none flex-1">
+
+        <div class="card card--none flex-1 overflow-auto">
           {% render_table integrations %}
           <!-- {% if integration_pending > 0 %}
           <p class="card__help card__help--bottom">
@@ -33,11 +34,11 @@
         </div>
       </div>
 
-      <div class="flex-1">
+      <div class="flex-1 overflow-hidden">
         <div class="flex mb-3">
           <h2>Workflows</h2>
         </div>
-        <div class="card card--none flex-1">
+        <div class="card card--none flex-1 overflow-auto">
           {% render_table workflows %}
 
           <!-- <p class="mr-auto">

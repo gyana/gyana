@@ -4,15 +4,25 @@
      data-file-upload-file-id-value="{{ instance_session_key }}"
      data-file-upload-file-input-id-value="{{ file_input_id }}"
      data-file-upload-signed-url-value="{{ signed_url }}"
-  <div class="integration__file-progress mb-7">
-    <svg height="150" width="150" id="progress-bar">
-      <circle cx="75" cy="75" r="70" stroke-width="6" fill="transparent" />
+     data-file-upload-inhibit-upload-value="{% if stage != "upload" %}true{% else %}false{% endif %}"
+     >
+  {% if stage == "upload" %}
+  <div class="integration__file-progress mr-4">
+    <svg height="80" width="80" id="progress-bar">
+      <circle cx="40" cy="40" r="35" stroke-width="3" fill="transparent" />
     </svg>
-    <h3 id="progress">0%</h3>
+    <h4 id="progress">0%</h4>
   </div>
+  {% else %}
+  <i class="fas fa-check text-green text-xl mr-4"></i>
+  {% endif %}
 
   <div>
+    {% if stage == "upload" %}
     <h1>Uploading your file...</h1>
     <p>Uploading the file might take a while, make sure to stay on the page.</p>
+    {% else %}
+    <h4>File uploaded</h4>
+    {% endif %}
   </div>
 </div>

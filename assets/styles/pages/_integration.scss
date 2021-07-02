@@ -1,8 +1,13 @@
 .integration {
-  &__file-upload {
+  &__create-flow {
     display: flex;
     flex-flow: column;
     gap: 1.6rem;
+  }
+
+  &__file-upload {
+    display: flex;
+    align-items: center;
   }
 
   &__file-progress {
@@ -13,15 +18,31 @@
     svg {
       stroke: var(--c-blue);
       transform: rotate(-90deg);
-      stroke-dasharray: 471;
-      stroke-dashoffset: 471;
-    }  
+      stroke-dasharray: 220;
+      stroke-dashoffset: 220;
+    }
 
-    h3 {
+    h4 {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+    }
+
+    &.done {
+      h4,
+      svg {
+        display: none;
+      }
+    }
+  }
+
+  &__file-validate {
+    display: flex;
+    align-items: center;
+
+    &.inactive {
+      opacity: 0.5;
     }
   }
 }

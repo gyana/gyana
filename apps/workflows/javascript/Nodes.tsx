@@ -56,9 +56,27 @@ const NodeName = ({ name, id }: { name: string; id: string }) => {
       300
   })
 
+  const workflowId = window.location.pathname.split('/')[4]
+
   useEffect(() => {
     text !== name && updateName(text)
   }, [text])
+
+  useEffect(() => {
+    const eventName = `node-name-update-${id}`
+
+    const updateText = () => {
+      client
+        .action(window.schema, ['workflows', 'api', 'nodes', 'read'], {
+          workflow: workflowId,
+          id,
+        })
+        .then((res) => setText(res.name))
+    }
+
+    window.addEventListener(eventName, updateText, false)
+    return () => window.removeEventListener(eventName, updateText)
+  }, [])
 
   return (
     <input

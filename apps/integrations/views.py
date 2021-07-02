@@ -14,6 +14,7 @@ from apps.utils.table_data import get_table
 from django.conf import settings
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
+from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.text import slugify
@@ -98,9 +99,10 @@ class IntegrationUpload(ProjectMixin, TurboCreateView):
         return CSVCreateForm
 
     def form_valid(self, form):
-        form.instance.created_by = self.request.user
-
         instance_session_key = uuid.uuid4().hex
+
+        if not form.is_valid():
+            return HttpResponseBadRequest()
 
         self.request.session[instance_session_key] = {
             **form.cleaned_data,
@@ -120,11 +122,11 @@ class IntegrationUpload(ProjectMixin, TurboCreateView):
         return (
             TurboStream("create-container")
             .append.template(
-                "integrations/_file_upload.html",
+                "integrations/_create_flow.html",
                 {
                     "instance_session_key": instance_session_key,
                     "file_input_id": "id_file",
-                    # "redirect": self.get_success_url(),
+                    "stage": "upload",
                 },
             )
             .response(self.request)
@@ -397,7 +399,7 @@ def generate_signed_url(request: Request, session_key: str):
         method="RESUMABLE",
     )
 
-    request.session[session_key]["file"] = path
+    request.session[session_key] = {**request.session[session_key], "file": path}
 
     return Response({"url": url})
 
@@ -407,15 +409,27 @@ def start_sync(request: Request, session_key: str):
     form_data = request.session[session_key]
 
     integration = CSVCreateForm(data=form_data).save()
+    integration.file = form_data["file"]
+    integration.created_by = request.user
+    integration.save()
     integration.start_sync()
 
-    return Response(
-        {
-            "redirect": reverse(
-                "project_integrations:detail",
-                args=(integration.project.id, integration.id),
-            )
-        }
+    return (
+        TurboStream("integration-validate-flow")
+        .replace.template(
+            "integrations/_create_flow.html",
+            {
+                "instance_session_key": session_key,
+                "file_input_id": "id_file",
+                "stage": "validate",
+                "external_table_sync_task_id": integration.external_table_sync_task_id,
+                "redirect_url": reverse(
+                    "project_integrations:detail",
+                    args=(integration.project.id, integration.id),
+                ),
+            },
+        )
+        .response(request)
     )
 
 
