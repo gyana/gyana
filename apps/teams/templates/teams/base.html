@@ -14,7 +14,8 @@
      href="{% url 'teams:detail' team.slug %}">
     Projects
   </a>
-  <a class="tabbar__link tabbar__link--disabled">Members</a>
+  <a class="tabbar__link {% if request.resolver_match.url_name == 'members' %} tabbar__link--active {% endif %}"
+     href="{% url 'teams:members' team.slug %}">Members</a>
   <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
      href="{% url 'teams:settings' team.slug %}">
     Settings
