@@ -1,6 +1,9 @@
 import analytics
 from apps.teams.mixins import TeamMixin
 from apps.utils.segment_analytics import PROJECT_CREATED_EVENT
+from apps.integrations.models import Integration
+from apps.workflows.models import Workflow
+from apps.dashboards.models import Dashboard
 from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 from django.urls.base import reverse
@@ -10,6 +13,7 @@ from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .forms import ProjectForm
 from .models import Project
+from .tables import ProjectIntegrationTable, ProjectWorkflowTable, ProjectDashboardTable
 
 
 class ProjectCreate(TeamMixin, TurboCreateView):
@@ -39,16 +43,12 @@ class ProjectDetail(DetailView):
     model = Project
 
     def get_context_data(self, **kwargs):
-        from apps.integrations.tables import IntegrationTable
-        from apps.workflows.tables import WorkflowTable
-        from apps.dashboards.tables import DashboardTable
-
         context_data = super().get_context_data(**kwargs)
         object = self.get_object()
 
-        context_data["integrations"] = IntegrationTable(object.integration_set.all()[:3])
-        context_data["workflows"] = WorkflowTable(object.workflow_set.all()[:3])
-        context_data["dashboards"] = DashboardTable(object.dashboard_set.all()[:3])
+        context_data["integrations"] = ProjectIntegrationTable(object.integration_set.all()[:3])
+        context_data["workflows"] = ProjectWorkflowTable(object.workflow_set.all()[:3])
+        context_data["dashboards"] = ProjectDashboardTable(object.dashboard_set.all()[:3])
 
         context_data["integration_pending"] = object.integration_set.filter(
             last_synced=None
