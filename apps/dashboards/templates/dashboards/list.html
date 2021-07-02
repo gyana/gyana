@@ -1,17 +1,21 @@
 {% extends "web/app/project_base.html" %}
 {% load render_table from django_tables2 %}
+
 {% block app %}
-<div class="pad">
-  <div class="flex items-center mb-4">
-    <h1 class="mr-auto">Dashboards</h1>
-    {% include 'dashboards/create.html' %}
+<div class="page-header">
+  <div class="mr-auto">
+    <h1>Dashboards</h1>
+
+    <p>
+      Your data's output, dashboards provide a way to showcase your data in a clean way.
+    </p>
   </div>
 
-  <p class="mb-8">
-    Your data's output, dashboards provide a way to showcase your data in a clean way.
-  </p>
+  {% include 'dashboards/create.html' %}
+</div>
 
-  <div class="card card--none">
+<div class="pad overflow-auto">
+  <div class="card card--none mb-8">
     {% render_table table %}
 
     {% if dashboard_count == 0 %}

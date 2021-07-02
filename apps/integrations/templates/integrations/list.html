@@ -2,26 +2,28 @@
 {% load render_table from django_tables2 %}
 
 {% block app %}
-<div class="pad">
-  <div class="flex items-center mb-4">
-    <h1 class="mr-auto">Integrations</h1>
+<div class="page-header">
+  <div class="mr-auto">
+    <h1>Integrations</h1>
 
-    <div class="flex gap-7 ml-4">
-      <a class="button button--sm" href="{% url 'project_integrations:upload' project.id %}">
-        <i class="fas fa-fw fa-upload"></i> Upload CSV
-      </a>
-      <a class="button button--sm" href="{% url 'project_integrations:create' project.id %}">
-        <i class="fas fa-fw fa-plus"></i> New Integration
-      </a>
-    </div>
+    <p>
+      Integrations serve as the first source of all data in your project. They can be processed in
+      workflows, or used directly in dashboards.
+    </p>
   </div>
 
-  <p class="mb-8">
-    Integrations serve as the first source of all data in your project. They can be processed in
-    workflows, or used directly in dashboards.
-  </p>
+  <div class="flex gap-7 ml-4">
+    <a class="button button--sm" href="{% url 'project_integrations:upload' project.id %}">
+      <i class="fas fa-fw fa-upload"></i> Upload CSV
+    </a>
+    <a class="button button--sm" href="{% url 'project_integrations:create' project.id %}">
+      <i class="fas fa-fw fa-plus"></i> New Integration
+    </a>
+  </div>
+</div>
 
-  <div class="card card--none">
+<div class="pad overflow-auto">
+  <div class="card card--none mb-8">
     {% render_table table %}
 
     {% if integration_count == 0 %}

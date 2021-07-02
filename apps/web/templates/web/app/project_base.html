@@ -17,7 +17,7 @@
 <li>
   <a class="sidebar__link {% if app_name == "project_integrations" %}sidebar__link--active{% endif %}"
      href="{% url 'project_integrations:list' project.id %}">
-    <i class="far fa-fw fa-cabinet-filing mr-6"></i>Integrations
+    <i class="far fa-fw fa-database mr-6"></i>Integrations
   </a>
 </li>
 
@@ -31,14 +31,14 @@
 <li>
   <a class="sidebar__link {% if app_name == "project_dashboards" or app_name == "dashboard_widgets" %}sidebar__link--active{% endif %}"
      href="{% url 'project_dashboards:list' project.id %}">
-    <i class="far fa-fw fa-file-chart-pie mr-6"></i>Dashboards
+    <i class="far fa-fw fa-chart-pie mr-6"></i>Dashboards
   </a>
 </li>
 
 <li>
   <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
      href="{% url 'projects:update' project.id %}">
-    <i class="far fa-fw fa-cogs mr-6"></i>Settings
+    <i class="far fa-fw fa-cog mr-6"></i>Settings
   </a>
 </li>
 {% endwith %}

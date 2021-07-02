@@ -1,17 +1,22 @@
 {% extends "web/app/project_base.html" %}
 {% load render_table from django_tables2 %}
+
 {% block app %}
-<div class="pad">
-  <div class="flex items-center mb-4">
-    <h1 class="mr-auto">Workflows</h1>
-    {% include 'workflows/create.html' %}
+
+<div class="page-header">
+  <div class="mr-auto">
+    <h1>Workflows</h1>
+
+    <p>
+      Workflows are the life-blood of your data flow. Clean, process, compute data to be presented in your dashboards.
+    </p>
   </div>
 
-  <p class="mb-8">
-    Workflows are the life-blood of your data flow. Clean, process, compute data to be presented in your dashboards.
-  </p>
+  {% include 'workflows/create.html' %}
+</div>
 
-  <div class="card card--none">
+<div class="pad overflow-auto">
+  <div class="card card--none mb-8">
     {% render_table table %}
 
     {% if workflow_count == 0 %}

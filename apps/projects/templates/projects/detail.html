@@ -4,17 +4,17 @@
 
 {% block app %}
 
-<div class="flex flex-col flex-1 gap-7 pad">
-  <hgroup>
+<hgroup class="page-header">
+  <div class="mr-auto">
     <h1>{{ project.name }}</h1>
 
     {% if project.description %}
     <p>{{ project.description }}</p>
     {% endif %}
-  </hgroup>
+  </div>
+</hgroup>
 
-  <hr>
-
+<div class="flex flex-col flex-1 gap-7 pad">
   <div class="flex flex-col gap-7 flex-1">
     <div class="flex flex-wrap gap-7">
       <div class="flex-1 overflow-hidden">
