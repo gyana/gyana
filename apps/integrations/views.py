@@ -21,7 +21,7 @@ from django.utils.text import slugify
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
-from django_tables2 import Column, SingleTableView, Table
+from django_tables2 import SingleTableView
 from django_tables2.config import RequestConfig
 from django_tables2.views import SingleTableMixin
 from lib.clients import get_bucket
@@ -206,26 +206,14 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
         )
 
 
-class UsedInTable(Table):
-    class Meta:
-        model = Integration
-        attrs = {"class": "table"}
-        fields = (
-            "name",
-            "kind",
-            "created",
-            "updated",
-        )
-
-    name = Column(linkify=True)
-
-
 class IntegrationDetail(ProjectMixin, TurboUpdateView):
     template_name = "integrations/detail.html"
     model = Integration
     form_class = IntegrationForm
 
     def get_context_data(self, **kwargs):
+        from .tables import UsedInTable
+
         context = super().get_context_data(**kwargs)
         context["table"] = UsedInTable(self.object.used_in)
 
