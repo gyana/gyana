@@ -46,16 +46,14 @@
 </div>
 
 
-<div class="flex flex-row gap-8">
-  <div class="card card--none flex-1">
-    <div class="pad">
-      <h2>Referenced</h2>
-      <p>All the places this integration is used in</p>
-    </div>
+<div class="flex flex-col">
+  <div class="mb-7">
+    <h2>Referenced</h2>
+    <p>All the places this integration is used in</p>
+  </div>
 
-    <div class="mt-0">
-      {% render_table table %}
-    </div>
+  <div class="card card--none flex-1">
+    {% render_table table %}
 
     {% if integration.used_in|length == 0 %}
     <div class="text-center pad pad--sm">
