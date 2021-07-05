@@ -11,10 +11,10 @@
 
   <div data-controller='popover'>
     <button data-popover-target="trigger" class="button button--outline button--sm" data-action="popover#trigger">
-      {% if request.GET.mode == 'edit' %}
-        <i class="fas fa-pen"></i> Edit
-      {% else %}
+      {% if request.GET.mode == 'view' %}
         <i class="fas fa-eye"></i> View
+      {% else %}
+        <i class="fas fa-pen"></i> Edit
       {% endif %}
       <i class="fas fa-angle-up fa-rotate-180"></i>
     </button>
@@ -26,7 +26,7 @@
         <a href="?mode={{ mode.0 }}">
           <div class="flex flex-row items-center p-4">
             <div class="w-8 mr-6">
-              {% if request.GET.mode|default:'view' == mode.0 %}
+              {% if request.GET.mode|default:'edit' == mode.0 %}
                 <i class="fas fa-check text-blue"></i>
               {% endif %}
             </div>
@@ -59,7 +59,7 @@
 </div>
 
 <div class="flex-1 p-4 pb-0 overflow-auto">
-  <turbo-frame id="widgets" src="{% url 'dashboard_widgets:list' project.id object.id %}?mode={{ request.GET.mode|default:'view' }}" target="_top">
+  <turbo-frame id="widgets" src="{% url 'dashboard_widgets:list' project.id object.id %}?mode={{ request.GET.mode|default:'edit' }}" target="_top">
   </turbo-frame>
 </div>
 {% endblock %}
