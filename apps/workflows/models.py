@@ -211,7 +211,7 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
     )
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
-    data_updated = models.DateTimeField(auto_now_add=True, editable=False)
+    data_updated = models.DateTimeField(null=True, editable=False)
 
     error = models.CharField(max_length=300, null=True)
     intermediate_table = models.ForeignKey(

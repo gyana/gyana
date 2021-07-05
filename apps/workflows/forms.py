@@ -86,6 +86,13 @@ class SelectNodeForm(NodeForm):
 
 
 class JoinNodeForm(NodeForm):
+    join_left = forms.ChoiceField(
+        choices=(),
+    )
+    join_right = forms.ChoiceField(
+        choices=(),
+    )
+
     class Meta:
         model = Node
         fields = ["join_how", "join_left", "join_right"]
