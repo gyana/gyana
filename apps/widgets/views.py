@@ -167,7 +167,27 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
                 "type": form.instance.kind,
             },
         )
+        if self.request.POST.get("submit") == "Save & Preview":
+            return r
 
+        context = {"widget": self.object}
+        add_output_context(context, self.object)
+        return (
+            TurboStream(f"widgets-output-{self.object.id}")
+            .replace.template("widgets/output.html", context)
+            .response(request=self.request)
+        )
+
+    def form_invalid(self, form):
+        r = super().form_invalid(form)
+        if self.request.POST.get("close"):
+            context = {"widget": self.object}
+            add_output_context(context, self.object)
+            return (
+                TurboStream(f"widgets-output-{self.object.id}")
+                .replace.template("widgets/output.html", context)
+                .response(request=self.request)
+            )
         return r
 
 
@@ -216,6 +236,20 @@ widget_output_condition = condition(
 )
 
 # ==================================================
+
+
+def add_output_context(context, widget):
+    if widget.is_valid:
+        if widget.kind == Widget.Kind.TABLE:
+            context.update(table_to_output(widget))
+        elif widget.kind == Widget.Kind.TEXT:
+            pass
+        else:
+            chart, chart_id = chart_to_output(widget)
+            context.update(chart)
+            context["chart_id"] = chart_id
+
+
 class WidgetOutput(DetailView):
     template_name = "widgets/output.html"
     model = Widget
@@ -224,16 +258,8 @@ class WidgetOutput(DetailView):
         context_data = super().get_context_data(**kwargs)
 
         try:
+            add_output_context(context_data, self.object)
 
-            if self.object.is_valid:
-                if self.object.kind == Widget.Kind.TABLE:
-                    context_data.update(table_to_output(self.object))
-                elif self.object.kind == Widget.Kind.TEXT:
-                    pass
-                else:
-                    chart, chart_id = chart_to_output(self.object)
-                    context_data.update(chart)
-                    context_data["chart_id"] = chart_id
         except Exception as e:
             context_data["is_error"] = True
             logging.warning(e, exc_info=e)
