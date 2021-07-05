@@ -4,7 +4,6 @@
     <form 
       method="POST" 
       action="{% url 'workflows:node_name' object.id %}"
-      class="form"
       data-controller="trigger"
       data-action="submit->trigger#dispatch"
       data-trigger-event-value="node-name-update-{{ object.id }}"
