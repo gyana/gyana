@@ -1,5 +1,3 @@
-from apps.utils.slug import get_next_unique_slug
-
 from .models import Team
 
 

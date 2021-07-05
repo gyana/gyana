@@ -7,6 +7,3 @@ from .models import Invite
 class InviteAdmin(admin.ModelAdmin):
     list_display = ["id", "team", "email", "role", "is_accepted"]
     list_filter = ["team", "is_accepted"]
-
-
-admin.site.register(Invite, InviteAdmin)

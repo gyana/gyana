@@ -1,12 +1,12 @@
 import analytics
 from allauth.account.forms import SignupForm
+from apps.invites.models import Invite
 from apps.utils.segment_analytics import SIGNED_UP_EVENT, identify_user
 from django import forms
 from django.core.exceptions import ValidationError
-from django.forms.widgets import HiddenInput
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Invite, Team
+from .models import Team
 
 
 class TeamSignupForm(SignupForm):
