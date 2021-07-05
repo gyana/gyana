@@ -1,9 +1,9 @@
 import json
 from functools import cached_property
+from logging import error
 
 import analytics
 from apps.projects.mixins import ProjectMixin
-from apps.projects.models import Project
 from apps.utils.formset_update_view import FormsetUpdateView
 from apps.utils.segment_analytics import (
     NODE_CONNECTED_EVENT,
@@ -14,7 +14,7 @@ from apps.utils.segment_analytics import (
     track_node,
 )
 from apps.utils.table_data import get_table
-from django import forms
+from django import forms, template
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
 from django.urls import reverse
@@ -211,6 +211,14 @@ class NodeUpdate(FormsetUpdateView):
         return base_url
 
 
+def template_exists(template_name):
+    try:
+        template.loader.get_template(template_name)
+        return True
+    except template.TemplateDoesNotExist:
+        return False
+
+
 class NodeGrid(SingleTableMixin, TemplateView):
     template_name = "workflows/grid.html"
     paginate_by = 15
@@ -219,6 +227,9 @@ class NodeGrid(SingleTableMixin, TemplateView):
         self.node = Node.objects.get(id=kwargs["pk"])
         context = super().get_context_data(**kwargs)
         context["node"] = self.node
+        error_template = f"workflows/errors/{self.node.kind}.html"
+        if template_exists(error_template):
+            context["error_template"] = error_template
         return context
 
     def get_table(self, **kwargs):
@@ -229,6 +240,7 @@ class NodeGrid(SingleTableMixin, TemplateView):
                 self.request, paginate=self.get_table_pagination(table)
             ).configure(table)
         except Exception as err:
+            # We have to return
             return type("DynamicTable", (Table,), {})(data=[])
 
 

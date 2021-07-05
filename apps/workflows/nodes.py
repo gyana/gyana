@@ -44,6 +44,14 @@ def rename_duplicates(left, right, left_col, right_col):
     return left, right, left_col, right_col
 
 
+JOINS = {
+    "inner": "inner_join",
+    "outer": "outer_join",
+    "left": "left_join",
+    "right": "right_join",
+}
+
+
 def get_join_query(node):
     left = node.parents.first().get_query()
     right = node.parents.last().get_query()
@@ -53,16 +61,7 @@ def get_join_query(node):
         left, right, node.join_left, node.join_right
     )
     how = node.join_how
-    if how == "inner":
-        to_join = left.inner_join
-    elif how == "outer":
-        to_join = left.outer_join
-    elif how == "left":
-        to_join = left.left_join
-    elif how == "right":
-        to_join = left.right_join
-    else:
-        raise NotImplemented(f"Method {how} doesn't exist.")
+    to_join = getattr(left, JOINS[how])
 
     return to_join(right, left[left_col] == right[right_col]).materialize()
 

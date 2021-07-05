@@ -4,7 +4,11 @@
   {% if node.error %}
     <div class='workflow-node__error'>
       <i class="fad fa-exclamation-triangle fa-6x text-red"></i>
-      <span>Oh no an error appeared try reconfiguring your workflow</span>
+      {% if error_template %}
+        {% include error_template %}
+      {% else %}
+        <span>Oh no an error appeared try reconfiguring your workflow</span>
+      {% endif %}
     </div>
   {% else %}
     {% render_table table %}
