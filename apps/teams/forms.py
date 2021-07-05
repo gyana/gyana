@@ -1,10 +1,11 @@
 import analytics
-from apps.utils.segment_analytics import SIGNED_UP_EVENT, identify_user
 from allauth.account.forms import SignupForm
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
 from django.forms.widgets import HiddenInput
+from django.utils.translation import ugettext_lazy as _
+
+from apps.utils.segment_analytics import SIGNED_UP_EVENT, identify_user
 
 from .models import Invitation, Team
 
@@ -47,7 +48,4 @@ class TeamSignupForm(SignupForm):
 class TeamChangeForm(forms.ModelForm):
     class Meta:
         model = Team
-        fields = ("name", "slug")
-        help_texts = {
-            "slug": "Your team slug is what appears in the various URLs your team uses. No spaces or special characters are allowed."
-        }
+        fields = ("name",)

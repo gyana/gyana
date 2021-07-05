@@ -1,9 +1,9 @@
 import analytics
+from apps.dashboards.models import Dashboard
+from apps.integrations.models import Integration
 from apps.teams.mixins import TeamMixin
 from apps.utils.segment_analytics import PROJECT_CREATED_EVENT
-from apps.integrations.models import Integration
 from apps.workflows.models import Workflow
-from apps.dashboards.models import Dashboard
 from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 from django.urls.base import reverse
@@ -13,7 +13,7 @@ from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .forms import ProjectForm
 from .models import Project
-from .tables import ProjectIntegrationTable, ProjectWorkflowTable, ProjectDashboardTable
+from .tables import ProjectDashboardTable, ProjectIntegrationTable, ProjectWorkflowTable
 
 
 class ProjectCreate(TeamMixin, TurboCreateView):
@@ -46,9 +46,13 @@ class ProjectDetail(DetailView):
         context_data = super().get_context_data(**kwargs)
         object = self.get_object()
 
-        context_data["integrations"] = ProjectIntegrationTable(object.integration_set.all()[:3])
+        context_data["integrations"] = ProjectIntegrationTable(
+            object.integration_set.all()[:3]
+        )
         context_data["workflows"] = ProjectWorkflowTable(object.workflow_set.all()[:3])
-        context_data["dashboards"] = ProjectDashboardTable(object.dashboard_set.all()[:3])
+        context_data["dashboards"] = ProjectDashboardTable(
+            object.dashboard_set.all()[:3]
+        )
 
         context_data["integration_pending"] = object.integration_set.filter(
             last_synced=None
@@ -77,7 +81,7 @@ class ProjectDelete(DeleteView):
     model = Project
 
     def get_success_url(self) -> str:
-        return reverse("teams:detail", args=(self.object.team.slug,))
+        return reverse("teams:detail", args=(self.object.team.id,))
 
 
 class ProjectSettings(DetailView):

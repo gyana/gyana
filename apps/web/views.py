@@ -8,10 +8,8 @@ from django.utils.translation import ugettext_lazy as _
 
 def home(request):
     if request.user.is_authenticated:
-        if (team := get_default_team(request)):
-            return HttpResponseRedirect(
-                reverse("teams:detail", args=(team.slug,))
-            )
+        if (team := get_default_team(request)) :
+            return HttpResponseRedirect(reverse("teams:detail", args=(team.id,)))
 
         return HttpResponseRedirect(reverse("teams:create_team"))
 

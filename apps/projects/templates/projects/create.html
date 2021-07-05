@@ -4,7 +4,7 @@
 <div class="pad max-w-lg">
   <h1 class="mb-7">Create a new project</h1>
 
-  <form method="post" action="{% url 'team_projects:create' team.slug %}" class="form">
+  <form method="post" action="{% url 'team_projects:create' team.id %}" class="form">
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}

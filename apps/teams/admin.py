@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Team, Membership, Invitation
+from .models import Invitation, Membership, Team
 
 
 @admin.register(Membership)
@@ -22,5 +22,5 @@ class MembershipInlineAdmin(admin.TabularInline):
 
 @admin.register(Team)
 class TeamAdmin(admin.ModelAdmin):
-    list_display = ["name", "slug", "subscription"]
+    list_display = ["name", "subscription"]
     inlines = (MembershipInlineAdmin,)

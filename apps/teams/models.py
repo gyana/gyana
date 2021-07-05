@@ -7,8 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from apps.subscriptions.helpers import SubscriptionModelMixin
 from apps.utils.models import BaseModel
-
-
 from apps.web.meta import absolute_url
 
 from . import roles
@@ -47,7 +45,7 @@ class Team(SubscriptionModelMixin, BaseModel):
 
     @property
     def dashboard_url(self):
-        return reverse("web_team:home", args=[self.slug])
+        return reverse("web_team:home", args=[self.id])
 
 
 class Membership(BaseModel):

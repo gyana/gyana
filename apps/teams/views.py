@@ -7,10 +7,12 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
-from django.views.generic import DetailView, DeleteView, UpdateView
+from django.views.generic import DeleteView, DetailView, UpdateView
 from rest_framework import viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from turbo_response.views import TurboCreateView
+
+from apps.projects.models import Project
 
 from .api_url_helpers import get_team_api_url_templates
 from .decorators import login_and_team_required, team_admin_required
@@ -20,8 +22,6 @@ from .models import Invitation, Team
 from .permissions import TeamAccessPermissions, TeamModelAccessPermissions
 from .roles import is_admin, is_member
 from .serializers import InvitationSerializer, TeamSerializer
-from apps.projects.models import Project
-
 
 
 class TeamCreate(LoginRequiredMixin, TurboCreateView):
@@ -36,7 +36,7 @@ class TeamCreate(LoginRequiredMixin, TurboCreateView):
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse("teams:detail", args=(self.object.slug,))
+        return reverse("teams:detail", args=(self.object.id,))
 
 
 class TeamUpdate(LoginRequiredMixin, UpdateView):
@@ -52,7 +52,7 @@ class TeamUpdate(LoginRequiredMixin, UpdateView):
         return TeamChangeForm
 
     def get_success_url(self) -> str:
-        return reverse("teams:settings", args=(self.object.slug,))
+        return reverse("teams:settings", args=(self.object.id,))
 
 
 class TeamDelete(LoginRequiredMixin, DeleteView):
@@ -68,8 +68,9 @@ class TeamDetail(DetailView):
     model = Team
 
     def get_context_data(self, **kwargs):
-        from .tables import TeamProjectsTable
         from apps.projects.models import Project
+
+        from .tables import TeamProjectsTable
 
         context = super().get_context_data(**kwargs)
         context["team_projects"] = TeamProjectsTable(
@@ -80,8 +81,6 @@ class TeamDetail(DetailView):
         return context
 
 
-
-
 class TeamMembers(DetailView):
     template_name = "teams/members.html"
     model = Team
@@ -90,9 +89,7 @@ class TeamMembers(DetailView):
         from .tables import TeamMembersTable
 
         context = super().get_context_data(**kwargs)
-        context["team_members"] = TeamMembersTable(
-            self.object.members.all()
-        )
+        context["team_members"] = TeamMembersTable(self.object.members.all())
 
         return context
 

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block app %}
-{% if team.slug %}
+{% if team.id %}
 <div class="workflow-detail__header">
   <h3 class="mr-auto flex justify-center items-center">
     {{ team.name }}
@@ -11,13 +11,13 @@
 
 <nav class="tabbar">
   <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
-     href="{% url 'teams:detail' team.slug %}">
+     href="{% url 'teams:detail' team.id %}">
     Projects
   </a>
   <a class="tabbar__link {% if request.resolver_match.url_name == 'members' %} tabbar__link--active {% endif %}"
-     href="{% url 'teams:members' team.slug %}">Members</a>
+     href="{% url 'teams:members' team.id %}">Members</a>
   <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
-     href="{% url 'teams:settings' team.slug %}">
+     href="{% url 'teams:settings' team.id %}">
     Settings
   </a>
 </nav>
