@@ -3,15 +3,15 @@ import morphdom from 'morphdom'
 
 export default class extends Controller {
   static targets = ['loading']
-
+  static values = {
+    form: String,
+  }
   listener = async (event) => {
     const form = this.element
 
     // manually POST the form and get HTML response
     const data = new FormData(form)
-
     this.loadingTarget.classList.remove('hidden')
-
     // TODO: Fix this for web components
     // let disabled = false
 
@@ -30,7 +30,9 @@ export default class extends Controller {
     // Extract the form element and morph into the DOM
     const parser = new DOMParser()
     const doc = parser.parseFromString(text, 'text/html')
-    const newForm = doc.querySelector('form')
+    const querySelector = this.hasFormValue ? `#${this.formValue}` : 'form'
+    const newForm = doc.querySelector(querySelector)
+
     morphdom(form, newForm, {
       // https://github.com/patrick-steele-idem/morphdom/issues/16#issuecomment-132630185
       onBeforeElUpdated: function (fromEl, toEl) {
