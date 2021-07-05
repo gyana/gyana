@@ -23,6 +23,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from django_tables2.config import RequestConfig
+from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
@@ -205,7 +206,7 @@ class NodeUpdate(FormsetUpdateView):
         base_url = reverse("workflows:node", args=(self.workflow.id, self.object.id))
 
         if self.request.POST.get("submit") == "Save & Preview":
-            return f"{base_url}?preview_node_id={self.preview_node_id}&preview=true"
+            return f"{base_url}?preview_node_id={self.preview_node_id}"
 
         return base_url
 
@@ -216,14 +217,19 @@ class NodeGrid(SingleTableMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         self.node = Node.objects.get(id=kwargs["pk"])
-        return super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
+        context["node"] = self.node
+        return context
 
     def get_table(self, **kwargs):
-        table = get_table(self.node.schema, self.node.get_query(), **kwargs)
+        try:
+            table = get_table(self.node.schema, self.node.get_query(), **kwargs)
 
-        return RequestConfig(
-            self.request, paginate=self.get_table_pagination(table)
-        ).configure(table)
+            return RequestConfig(
+                self.request, paginate=self.get_table_pagination(table)
+            ).configure(table)
+        except Exception as err:
+            return type("DynamicTable", (Table,), {})(data=[])
 
 
 class WorkflowLastRun(DetailView):
