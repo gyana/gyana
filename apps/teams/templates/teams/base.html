@@ -16,6 +16,8 @@
   </a>
   <a class="tabbar__link {% if request.resolver_match.url_name == 'members' %} tabbar__link--active {% endif %}"
      href="{% url 'teams:members' team.id %}">Members</a>
+  <a class="tabbar__link {% if request.resolver_match.app_name == 'teams:team_invites' %} tabbar__link--active {% endif %}"
+     href="{% url 'teams:team_invites:list' team.id %}">Invites</a>
   <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
      href="{% url 'teams:settings' team.id %}">
     Settings

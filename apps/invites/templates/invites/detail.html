@@ -1,0 +1,9 @@
+{% extends "teams/base.html" %}
+<!---->
+{% block tab %}
+<h1>Detail</h1>
+<p>{{ object.name }}</p>
+<a href="{% url 'teams:team_invites:list' team.id %}"
+  >List</a
+>
+{% endblock %} 

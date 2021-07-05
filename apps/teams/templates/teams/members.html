@@ -6,7 +6,5 @@
 <div class="card card--none">
   {% render_table team_members %}
 </div>
-<turbo-frame id="team-invite" src="{% url 'teams:invite' object.id %}">
-  Loading...
-</turbo-frame>
+<a href="{% url 'teams:team_invites:list' team.id %}">Invite team members</button>
 {% endblock %}

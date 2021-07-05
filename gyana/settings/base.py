@@ -77,6 +77,7 @@ PROJECT_APPS = [
     "apps.widgets",
     "apps.filters",
     "apps.tables",
+    "apps.invites",
     "apps.utils",
 ]
 
