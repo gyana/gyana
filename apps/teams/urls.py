@@ -6,10 +6,11 @@ from . import views
 app_name = "teams"
 
 urlpatterns = [
-    path("<slug:pk>", views.TeamDetail.as_view(), name="detail"),
-    path("<slug:pk>/members", views.TeamMembers.as_view(), name="members"),
-    path("<slug:pk>/settings", views.TeamUpdate.as_view(), name="settings"),
-    path("<slug:pk>/delete", views.TeamDelete.as_view(), name="delete"),
+    path("<int:pk>", views.TeamDetail.as_view(), name="detail"),
+    path("<int:pk>/members", views.TeamMembers.as_view(), name="members"),
+    path("<int:pk>/settings", views.TeamUpdate.as_view(), name="settings"),
+    path("<int:pk>/delete", views.TeamDelete.as_view(), name="delete"),
+    path("<int:team_id>/invite", views.TeamInvite.as_view(), name="invite"),
     path("create/", views.TeamCreate.as_view(), name="create_team"),
     path(
         "invitation/<slug:invitation_id>/",
@@ -25,8 +26,8 @@ urlpatterns = [
 
 team_urlpatterns = (
     [
-        path("", views.manage_team_react, name="manage_team_react"),
-        path("manage", views.manage_team, name="manage_team"),
+        # path("", views.manage_team_react, name="manage_team_react"),
+        # path("manage", views.manage_team, name="manage_team"),
         path(
             "resend-invite/<slug:invitation_id>/",
             views.resend_invitation,

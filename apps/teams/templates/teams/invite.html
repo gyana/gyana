@@ -1,0 +1,9 @@
+<turbo-frame id="team-invite">
+    <form method="post" class="form" action="{% url 'teams:invite' team.id %}">
+      {% csrf_token %}
+
+      {% include "django/forms/default_form.html" %}
+
+      <button type="submit" class="button button--filled button--green mt-7">Create</button>
+    </form>
+</turbo-frame>
