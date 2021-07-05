@@ -290,8 +290,18 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
     )
 
     def save(self, *args, **kwargs):
-        super(Node, self).save(*args, **kwargs)
-        self.workflow.save()
+        dirty_fields = set(self.get_dirty_fields(check_relationship=True).keys()) - {
+            "name",
+            "x",
+            "y",
+            "error",
+        }
+        if dirty_fields:
+            self.workflow.save()
+        if dirty_fields and "data_updated" not in dirty_fields:
+            self.data_updated = timezone.now()
+
+        return super().save(*args, **kwargs)
 
     def get_query(self):
         func = NODE_FROM_CONFIG[self.kind]
@@ -320,19 +330,6 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
 
     def get_table_name(self):
         return f"Workflow:{self.workflow.name}:{self.output_name}"
-
-    def save(self, *args, **kwargs) -> None:
-        dirty_fields = set(self.get_dirty_fields(check_relationship=True).keys()) - {
-            "name",
-            "x",
-            "y",
-            "error",
-        }
-
-        if dirty_fields and "data_updated" not in dirty_fields:
-            self.data_updated = timezone.now()
-
-        return super().save(*args, **kwargs)
 
 
 class SaveParentModel(DirtyFieldsMixin, CloneMixin, models.Model):

@@ -101,16 +101,23 @@
 
       <div class='workflow-modal__footer'>
         <div class="flex flex-1 gap-7 pad">
-          <input type='submit' class="button button--success"
-                 data-action=" click->tf-modal#forceClose"
-                 name='submit'
-                 value='Save & Close' />
+          <input 
+            type='submit' class="button button--success"
+            data-controller="trigger"
+            data-action="click->tf-modal#forceClose click->trigger#dispatch"
+            data-trigger-event-value="update-workflow"
+            name='submit'
+            value='Save & Close' 
+          />
           <input
-                 type='submit'
-                 class="button button--outline button--success"
-                 name='submit'
-                 data-action=" click->tf-modal#save"
-                 value='Save & Preview' />
+            type='submit'
+            class="button button--outline button--success"
+            name='submit'
+            data-controller="trigger"
+            data-action=" click->tf-modal#save click->trigger#dispatch"
+            data-trigger-event-value="update-workflow"
+            value='Save & Preview' 
+          />
         </div>
       </div>
     </form>

@@ -1,5 +1,5 @@
 import { Edge, isNode, Node } from 'react-flow-renderer'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const RunButton: React.FC<{
   hasOutput: boolean
@@ -23,7 +23,13 @@ const RunButton: React.FC<{
   setIsOutOfDate,
 }) => {
   const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    const eventValue = 'update-workflow'
+    const update = () => setIsOutOfDate(true)
 
+    window.addEventListener(eventValue, update)
+    return () => window.removeEventListener(eventValue, update)
+  })
   return (
     <div className='dndflow__run-button'>
       <button
