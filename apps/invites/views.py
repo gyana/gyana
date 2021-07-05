@@ -1,5 +1,5 @@
-from apps.teams.mixins import TeamMixin
 from django.contrib import messages
+from django.db.models.query import QuerySet
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
@@ -8,6 +8,8 @@ from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from turbo_response.views import TurboCreateView, TurboUpdateView
+
+from apps.teams.mixins import TeamMixin
 
 from .forms import InviteForm
 from .invitations import clear_invite_from_session, process_invitation, send_invitation
@@ -20,6 +22,9 @@ class InviteList(TeamMixin, SingleTableView):
     model = Invite
     table_class = InviteTable
     paginate_by = 20
+
+    def get_queryset(self) -> QuerySet:
+        return Invite.objects.filter(team=self.team)
 
 
 class InviteCreate(TeamMixin, TurboCreateView):
@@ -95,9 +100,7 @@ def accept_invitation_confirm(request, invitation_id):
         messages.success(
             request, _("You successfully joined {}").format(invitation.team.name)
         )
-        return HttpResponseRedirect(
-            reverse("web_team:home", args=[invitation.team.slug])
-        )
+        return HttpResponseRedirect(reverse("teams:detail", args=[invitation.team.id]))
 
 
 # @team_admin_required

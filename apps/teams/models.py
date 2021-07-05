@@ -43,7 +43,7 @@ class Team(SubscriptionModelMixin, BaseModel):
 
     @property
     def dashboard_url(self):
-        return reverse("web_team:home", args=[self.id])
+        return reverse("teams:detail", args=[self.id])
 
 
 class Membership(BaseModel):
