@@ -12,7 +12,8 @@ from turbo_response.views import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 
 from .forms import InviteForm
-from .invitations import clear_invite_from_session, process_invitation, send_invitation
+from .invitations import (clear_invite_from_session, process_invitation,
+                          send_invitation)
 from .models import Invite
 from .tables import InviteTable
 
@@ -69,20 +70,20 @@ class InviteDelete(TeamMixin, DeleteView):
         return reverse("teams:team_invites:list", args=(self.team.id,))
 
 
-def accept_invitation(request, invitation_id):
-    invitation = get_object_or_404(Invite, id=invitation_id)
-    if not invitation.is_accepted:
-        # set invitation in the session in case needed later
-        request.session["invitation_id"] = invitation_id
-    else:
-        clear_invite_from_session(request)
-    return render(
-        request,
-        "teams/accept_invite.html",
-        {
-            "invitation": invitation,
-        },
-    )
+class InviteAccept(DetailView):
+    template = "invites/accept.html"
+    model = Invite
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if not self.object.is_accepted:
+            # set invitation in the session in case needed later
+            self.request.session["invitation_id"] = self.object.id
+        else:
+            clear_invite_from_session(self.request)
+
+        return context
 
 
 # @login_required

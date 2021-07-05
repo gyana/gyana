@@ -16,12 +16,12 @@ team_urlpatterns = (
 
 urlpatterns = [
     path(
-        "invitation/<slug:invitation_id>/",
-        views.accept_invitation,
-        name="accept_invitation",
+        "<slug:pk>/",
+        views.InviteAccept.as_view(),
+        name="accept",
     ),
     path(
-        "invitation/<slug:invitation_id>/confirm/",
+        "<slug:invitation_id>/confirm/",
         views.accept_invitation_confirm,
         name="accept_invitation_confirm",
     ),

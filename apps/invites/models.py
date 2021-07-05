@@ -1,17 +1,15 @@
 import uuid
 
-from apps.teams import roles
-from apps.teams.models import Team
-from apps.web.meta import absolute_url
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
+from apps.teams import roles
+from apps.teams.models import Team
+from apps.web.meta import absolute_url
+
 
 class Invite(models.Model):
-    name = models.CharField(max_length=255)
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    updated = models.DateTimeField(auto_now=True, editable=False)
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="invitations")
@@ -33,8 +31,11 @@ class Invite(models.Model):
         blank=True,
     )
 
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    updated = models.DateTimeField(auto_now=True, editable=False)
+
     def get_url(self):
-        return absolute_url(reverse("invites:accept_invitation", args=[self.id]))
+        return absolute_url(reverse("invites:accept", args=[self.id]))
 
     class Meta:
         unique_together = ("team", "email")

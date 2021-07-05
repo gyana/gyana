@@ -22,7 +22,7 @@ class AcceptInviteAdapter(EmailAsUsernameAdapter):
                 invite = Invite.objects.get(id=invite_id)
                 if not invite.is_accepted:
                     return reverse(
-                        "invites:accept_invitation",
+                        "invites:accept",
                         args=[request.session["invitation_id"]],
                     )
                 else:
