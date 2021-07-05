@@ -1,13 +1,12 @@
 import analytics
 from allauth.account.forms import SignupForm
+from apps.utils.segment_analytics import SIGNED_UP_EVENT, identify_user
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms.widgets import HiddenInput
 from django.utils.translation import ugettext_lazy as _
 
-from apps.utils.segment_analytics import SIGNED_UP_EVENT, identify_user
-
-from .models import Invitation, Team
+from .models import Invite, Team
 
 
 class TeamSignupForm(SignupForm):
@@ -17,7 +16,7 @@ class TeamSignupForm(SignupForm):
         invitation_id = self.cleaned_data.get("invitation_id")
         if invitation_id:
             try:
-                invite = Invitation.objects.get(id=invitation_id)
+                invite = Invite.objects.get(id=invitation_id)
                 if invite.is_accepted:
                     raise forms.ValidationError(
                         _(
@@ -25,7 +24,7 @@ class TeamSignupForm(SignupForm):
                             "Please request a new invitation or sign in to continue."
                         )
                     )
-            except (Invitation.DoesNotExist, ValidationError):
+            except (Invite.DoesNotExist, ValidationError):
                 # ValidationError is raised if the ID isn't a valid UUID, which should be treated the same
                 # as not found
                 raise forms.ValidationError(

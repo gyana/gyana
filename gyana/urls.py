@@ -17,7 +17,6 @@ from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
 from apps.projects import urls as project_urls
 from apps.subscriptions.urls import team_urlpatterns as subscriptions_team_urls
-from apps.teams.urls import team_urlpatterns as single_team_urls
 from apps.web.urls import team_urlpatterns as web_team_urls
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
@@ -34,7 +33,6 @@ team_urlpatterns = [
     path("", include(web_team_urls)),
     path("subscription/", include(subscriptions_team_urls)),
     path("team/projects/", include(project_urls.team_urlpatterns)),
-    path("team/", include(single_team_urls)),
 ]
 
 # urls that are scoped within a project
@@ -65,6 +63,7 @@ urlpatterns = [
     path("dashboards/", include("apps.dashboards.urls")),
     path("widgets/", include("apps.widgets.urls")),
     path("tables/", include("apps.tables.urls")),
+    path("invites/", include("apps.invites.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     # API docs

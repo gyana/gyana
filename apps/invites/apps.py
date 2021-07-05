@@ -1,9 +1,9 @@
 from django.apps import AppConfig
 
 
-class TeamConfig(AppConfig):
-    name = "apps.teams"
-    label = "teams"
+class InvitesConfig(AppConfig):
+    name = "apps.invites"
+    label = "invites"
 
     def ready(self):
         from . import signals

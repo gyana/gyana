@@ -13,3 +13,21 @@ team_urlpatterns = (
     ],
     "team_invites",
 )
+
+urlpatterns = [
+    path(
+        "invitation/<slug:invitation_id>/",
+        views.accept_invitation,
+        name="accept_invitation",
+    ),
+    path(
+        "invitation/<slug:invitation_id>/confirm/",
+        views.accept_invitation_confirm,
+        name="accept_invitation_confirm",
+    ),
+    path(
+        "resend-invite/<slug:invitation_id>/",
+        views.resend_invitation,
+        name="resend_invitation",
+    ),
+]

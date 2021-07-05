@@ -1,12 +1,16 @@
-from apps.teams.invitations import send_invitation
 from apps.teams.mixins import TeamMixin
+from django.contrib import messages
+from django.http.response import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .forms import InviteForm
+from .invitations import clear_invite_from_session, process_invitation, send_invitation
 from .models import Invite
 from .tables import InviteTable
 
@@ -58,3 +62,53 @@ class InviteDelete(TeamMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("teams:team_invites:list", args=(self.team.id,))
+
+
+def accept_invitation(request, invitation_id):
+    invitation = get_object_or_404(Invite, id=invitation_id)
+    if not invitation.is_accepted:
+        # set invitation in the session in case needed later
+        request.session["invitation_id"] = invitation_id
+    else:
+        clear_invite_from_session(request)
+    return render(
+        request,
+        "teams/accept_invite.html",
+        {
+            "invitation": invitation,
+        },
+    )
+
+
+# @login_required
+# @require_POST
+def accept_invitation_confirm(request, invitation_id):
+    invitation = get_object_or_404(Invite, id=invitation_id)
+    if invitation.is_accepted:
+        messages.error(
+            request, _("Sorry, it looks like that invitation link has expired.")
+        )
+        return HttpResponseRedirect(reverse("web:home"))
+    else:
+        process_invitation(invitation, request.user)
+        clear_invite_from_session(request)
+        messages.success(
+            request, _("You successfully joined {}").format(invitation.team.name)
+        )
+        return HttpResponseRedirect(
+            reverse("web_team:home", args=[invitation.team.slug])
+        )
+
+
+# @team_admin_required
+def resend_invitation(request, team, invitation_id):
+    invitation = get_object_or_404(Invite, id=invitation_id)
+    if invitation.team != request.team:
+        raise ValueError(
+            _("Request team {team} did not match invitation team {invite_team}").format(
+                team=request.team.slug,
+                invite_team=invitation.team.slug,
+            )
+        )
+    send_invitation(invitation)
+    return HttpResponse("Ok")

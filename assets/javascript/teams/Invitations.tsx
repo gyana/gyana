@@ -92,7 +92,7 @@ export const InvitationList = function (props) {
 
   const resendInvitation = function (index) {
     const inviteUrl = getInviteUrl(
-      props.apiUrls['single_team:resend_invitation'],
+      props.apiUrls['invites:resend_invitation'],
       props.team.slug,
       invitations[index].id
     )

@@ -1,13 +1,11 @@
 import uuid
 
+from apps.subscriptions.helpers import SubscriptionModelMixin
+from apps.utils.models import BaseModel
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-
-from apps.subscriptions.helpers import SubscriptionModelMixin
-from apps.utils.models import BaseModel
-from apps.web.meta import absolute_url
 
 from . import roles
 
@@ -57,33 +55,3 @@ class Membership(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     role = models.CharField(max_length=100, choices=roles.ROLE_CHOICES)
     # your additional membership fields go here.
-
-
-class Invitation(BaseModel):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    team = models.ForeignKey(
-        Team, on_delete=models.CASCADE, related_name="old_invitations"
-    )
-    email = models.EmailField()
-    role = models.CharField(
-        max_length=100, choices=roles.ROLE_CHOICES, default=roles.ROLE_MEMBER
-    )
-    invited_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="old_sent_invitations",
-    )
-    is_accepted = models.BooleanField(default=False)
-    accepted_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="old_accepted_invitations",
-        null=True,
-        blank=True,
-    )
-
-    def get_url(self):
-        return absolute_url(reverse("teams:accept_invitation", args=[self.id]))
-
-    class Meta:
-        unique_together = ("team", "email")

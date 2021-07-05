@@ -34,7 +34,7 @@ class Invite(models.Model):
     )
 
     def get_url(self):
-        return absolute_url(reverse("teams:accept_invitation", args=[self.id]))
+        return absolute_url(reverse("invites:accept_invitation", args=[self.id]))
 
     class Meta:
         unique_together = ("team", "email")

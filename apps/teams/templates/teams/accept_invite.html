@@ -14,7 +14,7 @@
             You've been invited to join {{ invitation.team.name }} by {{ invitation.invited_by.get_display_name }}.
           </h2>
           {% if request.user.is_authenticated %}
-            <form action="{% url 'teams:accept_invitation_confirm' invitation.id %}" method="post">
+            <form action="{% url 'invites:accept_invitation_confirm' invitation.id %}" method="post">
               {% csrf_token %}
               {% if request.user.email == invitation.email %}
                 <input type="submit" class="button is-primary is-large" value="Accept Invitation"/>

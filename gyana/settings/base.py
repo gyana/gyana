@@ -69,7 +69,7 @@ PROJECT_APPS = [
     "apps.subscriptions.apps.SubscriptionConfig",
     "apps.users.apps.UserConfig",
     "apps.web",
-    "apps.teams.apps.TeamConfig",
+    "apps.teams",
     "apps.projects",
     "apps.integrations",
     "apps.workflows",
@@ -77,7 +77,7 @@ PROJECT_APPS = [
     "apps.widgets",
     "apps.filters",
     "apps.tables",
-    "apps.invites",
+    "apps.invites.apps.InvitesConfig",
     "apps.utils",
 ]
 
@@ -181,7 +181,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Allauth setup
 
-ACCOUNT_ADAPTER = "apps.teams.adapter.AcceptInvitationAdapter"
+ACCOUNT_ADAPTER = "apps.invites.adapter.AcceptInviteAdapter"
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
