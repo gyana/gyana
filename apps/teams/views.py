@@ -38,7 +38,7 @@ class TeamUpdate(LoginRequiredMixin, UpdateView):
         return TeamChangeForm
 
     def get_success_url(self) -> str:
-        return reverse("teams:settings", args=(self.object.id,))
+        return reverse("teams:update", args=(self.object.id,))
 
 
 class TeamDelete(LoginRequiredMixin, DeleteView):

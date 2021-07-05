@@ -7,6 +7,7 @@ from .models import {{ cookiecutter.model_name }}
 class {{ cookiecutter.model_name }}Table(tables.Table):
     class Meta:
         model = {{ cookiecutter.model_name }}
+        attrs = {"class": "table"}
         fields = ("name", "created", "updated")
 
     name = tables.Column(linkify=True)

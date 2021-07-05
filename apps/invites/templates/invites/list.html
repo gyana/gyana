@@ -5,4 +5,7 @@
 <a href="{% url 'teams:team_invites:create' team.id %}"
   >Invite</a
 >
-{% render_table table %} {% endblock %} 
+<div class="card card--none">
+{% render_table table %} 
+</div>
+{% endblock %} 

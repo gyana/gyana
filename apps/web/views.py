@@ -11,7 +11,7 @@ def home(request):
         if (team := get_default_team(request)) :
             return HttpResponseRedirect(reverse("teams:detail", args=(team.id,)))
 
-        return HttpResponseRedirect(reverse("teams:create_team"))
+        return HttpResponseRedirect(reverse("teams:create"))
 
     return redirect("/accounts/login")
 
