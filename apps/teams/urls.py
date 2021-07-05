@@ -8,7 +8,7 @@ app_name = "teams"
 urlpatterns = [
     path("<slug:pk>", views.TeamDetail.as_view(), name="detail"),
     path("<slug:pk>/members", views.TeamMembers.as_view(), name="members"),
-    path("<slug:pk>/settings", views.manage_team, name="settings"),
+    path("<slug:pk>/settings", views.TeamUpdate.as_view(), name="settings"),
     path("<slug:pk>/delete", views.TeamDelete.as_view(), name="delete"),
     path("create/", views.TeamCreate.as_view(), name="create_team"),
     path(
@@ -38,10 +38,10 @@ team_urlpatterns = (
 
 
 # drf config
-router = routers.DefaultRouter()
-router.register("api/teams", views.TeamViewSet)
-urlpatterns += router.urls
+# router = routers.DefaultRouter()
+# router.register("api/teams", views.TeamViewSet)
+# urlpatterns += router.urls
 
-single_team_router = routers.DefaultRouter()
-single_team_router.register("api/invitations", views.InvitationViewSet)
-team_urlpatterns[0].extend(single_team_router.urls)
+# single_team_router = routers.DefaultRouter()
+# single_team_router.register("api/invitations", views.InvitationViewSet)
+# team_urlpatterns[0].extend(single_team_router.urls)
