@@ -16,7 +16,6 @@ Including another URLconf
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
 from apps.projects import urls as project_urls
-from apps.subscriptions.urls import team_urlpatterns as subscriptions_team_urls
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 from django.conf import settings
@@ -29,7 +28,6 @@ schemajs_view = get_schemajs_view(title="API")
 
 # urls that are unique to using a team should go here
 team_urlpatterns = [
-    path("subscription/", include(subscriptions_team_urls)),
     path("team/projects/", include(project_urls.team_urlpatterns)),
 ]
 
@@ -53,7 +51,6 @@ urlpatterns = [
     path("accounts/", include("turbo_allauth.urls")),
     path("users/", include("apps.users.urls")),
     path("filters/", include("apps.filters.urls")),
-    path("subscriptions/", include("apps.subscriptions.urls")),
     path("teams/", include("apps.teams.urls")),
     path("projects/", include(project_urlpatterns)),
     path("integrations/", include("apps.integrations.urls")),

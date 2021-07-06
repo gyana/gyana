@@ -16,5 +16,5 @@ class MembershipInlineAdmin(admin.TabularInline):
 
 @admin.register(Team)
 class TeamAdmin(admin.ModelAdmin):
-    list_display = ["name", "subscription"]
+    list_display = ["name"]
     inlines = (MembershipInlineAdmin,)
