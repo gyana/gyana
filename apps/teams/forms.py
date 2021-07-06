@@ -1,40 +1,13 @@
 import analytics
 from allauth.account.forms import SignupForm
-from apps.invites.models import Invite
 from apps.utils.segment_analytics import SIGNED_UP_EVENT, identify_user
 from django import forms
-from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from .models import Team
 
 
 class TeamSignupForm(SignupForm):
-    invitation_id = forms.CharField(widget=forms.HiddenInput(), required=False)
-
-    def clean_invitation_id(self):
-        invitation_id = self.cleaned_data.get("invitation_id")
-        if invitation_id:
-            try:
-                invite = Invite.objects.get(id=invitation_id)
-                if invite.is_accepted:
-                    raise forms.ValidationError(
-                        _(
-                            "It looks like that invitation link has expired. "
-                            "Please request a new invitation or sign in to continue."
-                        )
-                    )
-            except (Invite.DoesNotExist, ValidationError):
-                # ValidationError is raised if the ID isn't a valid UUID, which should be treated the same
-                # as not found
-                raise forms.ValidationError(
-                    _(
-                        "That invitation could not be found. "
-                        "Please double check your invitation link or sign in to continue."
-                    )
-                )
-        return invitation_id
-
     def save(self, request):
         user = super().save(request)
         identify_user(user)
