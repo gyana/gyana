@@ -3,7 +3,7 @@
 {% block tab %}
 <h1>Detail</h1>
 <p>{{ object.name }}</p>
-<a href="{% url 'teams:team_invites:list' team.id %}"
+<a href="{% url 'team_invites:list' team.id %}"
   >List</a
 >
 {% endblock %} 

@@ -1,6 +1,4 @@
-from apps.invites import urls as invite_urls
-from apps.projects import urls as project_urls
-from django.urls import include, path
+from django.urls import path
 
 from . import views
 
@@ -12,6 +10,4 @@ urlpatterns = [
     path("<int:pk>/update", views.TeamUpdate.as_view(), name="update"),
     path("<int:pk>/delete", views.TeamDelete.as_view(), name="delete"),
     path("<int:pk>/members", views.TeamMembers.as_view(), name="members"),
-    path("<int:team_id>/invites/", include(invite_urls.team_urlpatterns)),
-    path("<int:team_id>/projects", include(project_urls.team_urlpatterns)),
 ]

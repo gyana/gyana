@@ -6,5 +6,5 @@
 <div class="card card--none">
   {% render_table team_members %}
 </div>
-<a href="{% url 'teams:team_invites:list' team.id %}">Invite team members</button>
+<a href="{% url 'team_invites:list' team.id %}">Invite team members</button>
 {% endblock %}

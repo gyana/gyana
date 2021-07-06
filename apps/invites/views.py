@@ -31,7 +31,7 @@ class InviteCreate(TeamMixin, TurboCreateView):
     template_name = "invites/create.html"
     model = Invite
     form_class = InviteForm
-    success_url = reverse_lazy("teams:team_invites:list")
+    success_url = reverse_lazy("team_invites:list")
 
     def form_valid(self, form):
         form.instance.inviter = self.request.user
@@ -44,7 +44,7 @@ class InviteCreate(TeamMixin, TurboCreateView):
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse("teams:team_invites:list", args=(self.team.id,))
+        return reverse("team_invites:list", args=(self.team.id,))
 
 
 class InviteDetail(TeamMixin, DetailView):
@@ -56,10 +56,10 @@ class InviteUpdate(TeamMixin, TurboUpdateView):
     template_name = "invites/update.html"
     model = Invite
     form_class = InviteForm
-    success_url = reverse_lazy("teams:team_invites:list")
+    success_url = reverse_lazy("team_invites:list")
 
     def get_success_url(self) -> str:
-        return reverse("teams:team_invites:list", args=(self.team.id,))
+        return reverse("team_invites:list", args=(self.team.id,))
 
 
 class InviteDelete(TeamMixin, DeleteView):
@@ -67,4 +67,4 @@ class InviteDelete(TeamMixin, DeleteView):
     model = Invite
 
     def get_success_url(self) -> str:
-        return reverse("teams:team_invites:list", args=(self.team.id,))
+        return reverse("team_invites:list", args=(self.team.id,))

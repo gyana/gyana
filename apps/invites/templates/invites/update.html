@@ -3,7 +3,7 @@
 
 {% block tab %}
 <h1>Update</h1>
-<form method="post" action="{% url 'teams:team_invites:update' team.id object.id %}" class="form">
+<form method="post" action="{% url 'team_invites:update' team.id object.id %}" class="form">
   {% csrf_token %}
 
   {% include "django/forms/default_form.html" %}

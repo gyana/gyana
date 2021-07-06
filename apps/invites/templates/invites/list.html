@@ -2,7 +2,7 @@
 {% load render_table from django_tables2 %}
 {% block tab %}
 <h1>Listing</h1>
-<a href="{% url 'teams:team_invites:create' team.id %}"
+<a href="{% url 'team_invites:create' team.id %}"
   >Invite</a
 >
 <div class="card card--none">

@@ -15,6 +15,7 @@ Including another URLconf
 """
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
+from apps.invites import urls as invite_urls
 from apps.projects import urls as project_urls
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
@@ -40,12 +41,18 @@ project_urlpatterns = [
     ),
 ]
 
+teams_urlpatterns = [
+    path("", include("apps.teams.urls")),
+    path("<int:team_id>/invites/", include(invite_urls.team_urlpatterns)),
+    path("<int:team_id>/projects", include(project_urls.team_urlpatterns)),
+]
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("turbo_allauth.urls")),
     path("users/", include("apps.users.urls")),
     path("filters/", include("apps.filters.urls")),
-    path("teams/", include("apps.teams.urls")),
+    path("teams/", include(teams_urlpatterns)),
     path("projects/", include(project_urlpatterns)),
     path("integrations/", include("apps.integrations.urls")),
     path("workflows/", include("apps.workflows.urls")),
