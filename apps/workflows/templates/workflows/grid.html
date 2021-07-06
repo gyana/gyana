@@ -1,7 +1,7 @@
 {% load render_table from django_tables2 %}
 
 <turbo-frame id="workflows-grid">
-  {% if node.data_update is None%}
+  {% if node.data_updated is None%}
     <div class='workflow-node__visual'>
       <i class="fad fa-construction fa-6x text-orange-50"></i>
       <span class="text-black-50 text-center">You have not set up this node.<br />
@@ -14,7 +14,7 @@
       {% if error_template %}
         {% include error_template %}
       {% else %}
-        <span>Oh no an error appeared try reconfiguring your workflow</span>
+        <span class="text-center">Oh no an error appeared try reconfiguring your workflow</span>
       {% endif %}
     </div>
   {% else %}
