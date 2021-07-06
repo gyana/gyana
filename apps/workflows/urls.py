@@ -5,15 +5,23 @@ from . import views
 
 app_name = "workflows"
 urlpatterns = [
-    path("<int:workflow_id>/nodes/<int:pk>", views.NodeUpdate.as_view(), name="node"),
     path(
-        "<int:workflow_id>/nodes/<int:pk>/grid", views.NodeGrid.as_view(), name="grid"
+        "<hashid:workflow_id>/nodes/<hashid:pk>",
+        views.NodeUpdate.as_view(),
+        name="node",
     ),
-    path("<int:pk>/run_workflow", views.workflow_run, name="run_workflow"),
-    path("<int:pk>/out_of_date", views.worflow_out_of_date, name="worflow_out_of_date"),
-    path("<int:pk>/last_run", views.WorkflowLastRun.as_view(), name="last_run"),
-    path("<int:pk>/duplicate_node", views.duplicate_node, name="duplicate_node"),
-    path("<int:pk>/node_name", views.NodeName.as_view(), name="node_name"),
+    path(
+        "<hashid:workflow_id>/nodes/<hashid:pk>/grid",
+        views.NodeGrid.as_view(),
+        name="grid",
+    ),
+    path("<hashid:pk>/run_workflow", views.workflow_run, name="run_workflow"),
+    path(
+        "<hashid:pk>/out_of_date", views.worflow_out_of_date, name="worflow_out_of_date"
+    ),
+    path("<hashid:pk>/last_run", views.WorkflowLastRun.as_view(), name="last_run"),
+    path("<hashid:pk>/duplicate_node", views.duplicate_node, name="duplicate_node"),
+    path("<hashid:pk>/node_name", views.NodeName.as_view(), name="node_name"),
 ]
 
 # drf config
@@ -27,8 +35,8 @@ project_urlpatterns = (
     [
         path("", views.WorkflowList.as_view(), name="list"),
         path("new", views.WorkflowCreate.as_view(), name="create"),
-        path("<int:pk>", views.WorkflowDetail.as_view(), name="detail"),
-        path("<int:pk>/delete", views.WorkflowDelete.as_view(), name="delete"),
+        path("<hashid:pk>", views.WorkflowDetail.as_view(), name="detail"),
+        path("<hashid:pk>/delete", views.WorkflowDelete.as_view(), name="delete"),
     ],
     "project_workflows",
 )

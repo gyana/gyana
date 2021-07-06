@@ -4,10 +4,10 @@ from . import views
 
 app_name = "projects"
 urlpatterns = [
-    path("<int:pk>", views.ProjectDetail.as_view(), name="detail"),
-    path("<int:pk>/update", views.ProjectUpdate.as_view(), name="update"),
-    path("<int:pk>/delete", views.ProjectDelete.as_view(), name="delete"),
-    path("<int:pk>/settings/", views.ProjectSettings.as_view(), name="settings"),
+    path("<hashid:pk>", views.ProjectDetail.as_view(), name="detail"),
+    path("<hashid:pk>/update", views.ProjectUpdate.as_view(), name="update"),
+    path("<hashid:pk>/delete", views.ProjectDelete.as_view(), name="delete"),
+    path("<hashid:pk>/settings/", views.ProjectSettings.as_view(), name="settings"),
 ]
 
 team_urlpatterns = (

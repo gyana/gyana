@@ -367,3 +367,6 @@ DJSTRIPE_FOREIGN_KEY_TO_FIELD = (
     "id"  # change to 'djstripe_id' if not a new installation
 )
 DJSTRIPE_USE_NATIVE_JSONFIELD = True  # change to False if not a new installation
+
+
+HASHIDS_SALT = "this-is-salt"

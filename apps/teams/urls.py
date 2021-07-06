@@ -6,8 +6,8 @@ app_name = "teams"
 
 urlpatterns = [
     path("new/", views.TeamCreate.as_view(), name="create"),
-    path("<int:pk>", views.TeamDetail.as_view(), name="detail"),
-    path("<int:pk>/update", views.TeamUpdate.as_view(), name="update"),
-    path("<int:pk>/delete", views.TeamDelete.as_view(), name="delete"),
-    path("<int:pk>/members", views.TeamMembers.as_view(), name="members"),
+    path("<hashid:pk>", views.TeamDetail.as_view(), name="detail"),
+    path("<hashid:pk>/update", views.TeamUpdate.as_view(), name="update"),
+    path("<hashid:pk>/delete", views.TeamDelete.as_view(), name="delete"),
+    path("<hashid:pk>/members", views.TeamMembers.as_view(), name="members"),
 ]

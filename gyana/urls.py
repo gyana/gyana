@@ -13,17 +13,23 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+from apps.utils.converters import HashIdConverter
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import include, path, register_converter
+from django.urls.converters import IntConverter
+from rest_framework.documentation import get_schemajs_view, include_docs_urls
+
+register_converter(HashIdConverter, "hashid")
+
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
 from apps.invites import urls as invite_urls
 from apps.projects import urls as project_urls
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
-from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib import admin
-from django.urls import include, path
-from rest_framework.documentation import get_schemajs_view, include_docs_urls
 
 schemajs_view = get_schemajs_view(title="API")
 
@@ -31,20 +37,23 @@ schemajs_view = get_schemajs_view(title="API")
 project_urlpatterns = [
     path("", include("apps.projects.urls")),
     path(
-        "<int:project_id>/integrations/", include(integration_urls.project_urlpatterns)
+        "<hashid:project_id>/integrations/",
+        include(integration_urls.project_urlpatterns),
     ),
-    path("<int:project_id>/workflows/", include(workflow_urls.project_urlpatterns)),
-    path("<int:project_id>/dashboards/", include(dashboard_urls.project_urlpatterns)),
+    path("<hashid:project_id>/workflows/", include(workflow_urls.project_urlpatterns)),
     path(
-        "<int:project_id>/dashboards/<int:dashboard_id>/widgets/",
+        "<hashid:project_id>/dashboards/", include(dashboard_urls.project_urlpatterns)
+    ),
+    path(
+        "<hashid:project_id>/dashboards/<hashid:dashboard_id>/widgets/",
         include(widget_urls.dashboard_urlpatterns),
     ),
 ]
 
 teams_urlpatterns = [
     path("", include("apps.teams.urls")),
-    path("<int:team_id>/invites/", include(invite_urls.team_urlpatterns)),
-    path("<int:team_id>/projects", include(project_urls.team_urlpatterns)),
+    path("<hashid:team_id>/invites/", include(invite_urls.team_urlpatterns)),
+    path("<hashid:team_id>/projects", include(project_urls.team_urlpatterns)),
 ]
 
 urlpatterns = [
@@ -59,7 +68,6 @@ urlpatterns = [
     path("dashboards/", include("apps.dashboards.urls")),
     path("widgets/", include("apps.widgets.urls")),
     path("tables/", include("apps.tables.urls")),
-    # path("invites/", include("apps.invites.urls")),
     path("invitations/", include("invitations.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
