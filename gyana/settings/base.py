@@ -61,8 +61,6 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "django_tables2",
     "invitations",
-    # stripe integration
-    "djstripe",
 ]
 
 # Put your project-specific apps here
@@ -297,30 +295,6 @@ GOOGLE_ANALYTICS_ID = (
     ""  # replace with your google analytics ID to connect to Google Analytics
 )
 
-
-# Stripe config
-
-# modeled to be the same as https://github.com/dj-stripe/dj-stripe
-STRIPE_LIVE_PUBLIC_KEY = os.environ.get(
-    "STRIPE_LIVE_PUBLIC_KEY", "<your publishable key>"
-)
-STRIPE_LIVE_SECRET_KEY = os.environ.get("STRIPE_LIVE_SECRET_KEY", "<your secret key>")
-STRIPE_TEST_PUBLIC_KEY = os.environ.get(
-    "STRIPE_TEST_PUBLIC_KEY", "pk_test_<your publishable key>"
-)
-STRIPE_TEST_SECRET_KEY = os.environ.get(
-    "STRIPE_TEST_SECRET_KEY", "sk_test_<your secret key>"
-)
-STRIPE_LIVE_MODE = False  # Change to True in production
-
-# Get it from the section in the Stripe dashboard where you added the webhook endpoint
-# or from the stripe CLI when testing
-DJSTRIPE_WEBHOOK_SECRET = os.environ.get("DJSTRIPE_WEBHOOK_SECRET", "whsec_xxx")
-
-DJSTRIPE_FOREIGN_KEY_TO_FIELD = (
-    "id"  # change to 'djstripe_id' if not a new installation
-)
-DJSTRIPE_USE_NATIVE_JSONFIELD = True  # change to False if not a new installation
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

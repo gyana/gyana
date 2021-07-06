@@ -69,6 +69,4 @@ urlpatterns = [
     # these are needed for schema.js
     path("docs/", include_docs_urls(title="API Docs")),
     path("schemajs/", schemajs_view, name="api_schemajs"),
-    # djstripe urls - for webhooks
-    path("stripe/", include("djstripe.urls", namespace="djstripe")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
