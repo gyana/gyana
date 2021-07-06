@@ -1,9 +1,7 @@
 {% load static %}
 
-<turbo-frame id="widget-modal">
-  <div data-controller="turbo-issue-186-workaround">  
-    {{ form.media.js }}
-  </div>
+<turbo-frame id="widget-modal">  
+  {{ form.media.js }}
   <div class="flex items-center gap-4 mb-4">
     <h1>{{ object.name }}</h1>
   </div>

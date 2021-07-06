@@ -57,9 +57,7 @@
   </div>
 </gy-widget>
 {% if is_new %}
-<div data-controller="turbo-issue-186-workaround">
   <script>
     document.getElementById("widget-{{object.id}}").children[0].scrollIntoView()
   </script>
-</div>
 {% endif %}

@@ -8,24 +8,22 @@
   {{ rows|safe }}
 </script>
 
-<div data-controller="turbo-issue-186-workaround">
-  <!--ag-grid-->
-  <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"
-          onload="window.dispatchEvent(new Event('agGrid:load'))"></script>
-  <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css" />
-  <script type="text/javascript" charset="utf-8">
-    window.addEventListener(
-      "agGrid:load",
-      function (e) {
-        if (!document.querySelector("#myGrid-{{temp_id}} .ag-root-wrapper")) {
-          new agGrid.Grid(document.querySelector("#myGrid-{{temp_id}}"), {
-            columnDefs: JSON.parse(document.getElementById("columns-{{temp_id}}").innerHTML),
-            rowData: JSON.parse(document.getElementById("rows-{{temp_id}}").innerHTML),
-            domLayout: 'autoHeight',
-          });
-        }
-      },
-      { once: true }
-    );
-  </script>
-</div>
+<!--ag-grid-->
+<script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"
+        onload="window.dispatchEvent(new Event('agGrid:load'))"></script>
+<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css" />
+<script type="text/javascript" charset="utf-8">
+  window.addEventListener(
+    "agGrid:load",
+    function (e) {
+      if (!document.querySelector("#myGrid-{{temp_id}} .ag-root-wrapper")) {
+        new agGrid.Grid(document.querySelector("#myGrid-{{temp_id}}"), {
+          columnDefs: JSON.parse(document.getElementById("columns-{{temp_id}}").innerHTML),
+          rowData: JSON.parse(document.getElementById("rows-{{temp_id}}").innerHTML),
+          domLayout: 'autoHeight',
+        });
+      }
+    },
+    { once: true }
+  );
+</script>

@@ -124,7 +124,7 @@ class Filter(CloneMixin, DirtyFieldsMixin, models.Model):
 
     def save(self, *args, **kwargs) -> None:
         if self.node and self.is_dirty():
-            self.node.updated = timezone.now()
+            self.node.data_updated = timezone.now()
             self.node.save()
 
         return super().save(*args, **kwargs)
