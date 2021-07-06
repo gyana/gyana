@@ -1,13 +1,17 @@
+import http
+
+from django import forms
 from django.contrib import messages
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
+from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView, FormView
 from django_tables2 import SingleTableView
-from turbo_response.views import TurboCreateView, TurboUpdateView
+from turbo_response.views import TurboCreateView, TurboFormView, TurboUpdateView
 
 from apps.teams.mixins import TeamMixin
 
@@ -27,48 +31,52 @@ class InviteList(TeamMixin, SingleTableView):
         return Invite.objects.filter(team=self.team)
 
 
-class InviteCreate(TeamMixin, FormView):
-    template_name = "invites/create.html"
-    form_class = InviteForm
-
-    def form_valid(self, form):
-        email = form.cleaned_data["email"]
-
-        try:
-            invite = form.save(email, self.team)
-            invite.inviter = self.request.user
-            invite.save()
-            invite.send_invitation(self.request)
-
-        except Exception:
-            return self.form_invalid(form)
-        return self.render_to_response(
-            self.get_context_data(
-                success_message=_("%(email)s has been invited") % {"email": email}
-            )
-        )
-
-    def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form=form))
-
-
-# class InviteCreate(TeamMixin, TurboCreateView):
+# class InviteCreate(TeamMixin, TurboFormView):
 #     template_name = "invites/create.html"
-#     model = Invite
 #     form_class = InviteForm
-#     success_url = reverse_lazy("teams:team_invites:list")
 
 #     def form_valid(self, form):
-#         form.instance.invited_by = self.request.user
-#         form.instance.team = self.team
-#         form.save()
+#         email = form.cleaned_data["email"]
 
-#         form.instance.send_invitation(self.request)
+#         try:
+#             invite = form.save(email, self.team)
+#             invite.inviter = self.request.user
+#             invite.save()
+#             invite.send_invitation(self.request)
 
-#         return super().form_valid(form)
+#         except Exception:
+#             return self.form_invalid(form)
+#         return self.render_to_response(
+#             self.get_context_data(
+#                 success_message=_("%(email)s has been invited") % {"email": email}
+#             )
+#         )
 
-#     def get_success_url(self) -> str:
-#         return reverse("teams:team_invites:list", args=(self.team.id,))
+#     def form_invalid(self, form: forms.Form):
+#         return self.render_to_response(self.get_context_data(form=form))
+
+# Modified from SendInvite view
+# https://github.com/bee-keeper/django-invitations/blob/master/invitations/views.py
+
+
+class InviteCreate(TeamMixin, TurboCreateView):
+    template_name = "invites/create.html"
+    model = Invite
+    form_class = InviteForm
+    success_url = reverse_lazy("teams:team_invites:list")
+
+    def form_valid(self, form):
+        form.instance.inviter = self.request.user
+        form.instance.team = self.team
+        form.instance.key = get_random_string(64).lower()
+        form.save()
+
+        form.instance.send_invitation(self.request)
+
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse("teams:team_invites:list", args=(self.team.id,))
 
 
 class InviteDetail(TeamMixin, DetailView):
