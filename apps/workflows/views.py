@@ -182,7 +182,7 @@ class NodeUpdate(FormsetUpdateView):
         context = super().get_context_data(**kwargs)
         context["workflow"] = self.workflow
         context["preview_node_id"] = self.preview_node_id
-
+        context["show_docs"] = self.request.GET.get("show_docs", False) == "true"
         # Add node type to list if it requires live updates
         context["do_live_updates"] = self.object.kind in [
             "pivot",
