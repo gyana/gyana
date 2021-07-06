@@ -56,8 +56,6 @@ const NodeName = ({ name, id }: { name: string; id: string }) => {
       300
   })
 
-  const workflowId = window.location.pathname.split('/')[4]
-
   useEffect(() => {
     text !== name && updateName(text)
   }, [text])
@@ -65,13 +63,9 @@ const NodeName = ({ name, id }: { name: string; id: string }) => {
   useEffect(() => {
     const eventName = `node-name-update-${id}`
 
-    const updateText = () => {
-      client
-        .action(window.schema, ['workflows', 'api', 'nodes', 'read'], {
-          workflow: workflowId,
-          id,
-        })
-        .then((res) => setText(res.name))
+    const updateText = (event) => {
+      const { value } = event.detail
+      setText(value)
     }
 
     window.addEventListener(eventName, updateText, false)

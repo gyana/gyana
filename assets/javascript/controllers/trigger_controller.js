@@ -7,7 +7,10 @@ export default class extends Controller {
     event: String,
   }
 
-  dispatch() {
-    window.dispatchEvent(new Event(this.eventValue))
+  static targets = ['event']
+
+  dispatch(event) {
+    const value = this.hasEventTarget ? this.eventTarget.value : null
+    window.dispatchEvent(new CustomEvent(this.eventValue, { detail: { value } }))
   }
 }
