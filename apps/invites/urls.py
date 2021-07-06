@@ -10,24 +10,7 @@ team_urlpatterns = (
         path("<int:pk>", views.InviteDetail.as_view(), name="detail"),
         path("<int:pk>/update", views.InviteUpdate.as_view(), name="update"),
         path("<int:pk>/delete", views.InviteDelete.as_view(), name="delete"),
+        path("<int:pk>/resend", views.InviteResend.as_view(), name="resend"),
     ],
     "team_invites",
 )
-
-# urlpatterns = [
-#     path(
-#         "<slug:pk>/",
-#         views.InviteAccept.as_view(),
-#         name="accept",
-#     ),
-#     path(
-#         "<slug:invitation_id>/confirm/",
-#         views.accept_invitation_confirm,
-#         name="accept_invitation_confirm",
-#     ),
-#     path(
-#         "resend-invite/<slug:invitation_id>/",
-#         views.resend_invitation,
-#         name="resend_invitation",
-#     ),
-# ]

@@ -34,8 +34,8 @@ class Invite(AbstractBaseInvitation):
         return expiration_date <= timezone.now()
 
     @property
-    def status(self):
-        return "Expired" if self.key_expired() else "Valid"
+    def expired(self):
+        return self.key_expired()
 
     def send_invitation(self, request, **kwargs):
         current_site = kwargs.pop("site", Site.objects.get_current())

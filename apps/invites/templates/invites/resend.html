@@ -1,0 +1,10 @@
+{% load humanize %}
+
+<turbo-frame id="resend-{{ record.id }}">
+    {% if record.expired %}Expired{% endif %}
+    Last sent: {{ record.sent|naturaltime }}
+    <form method="post" action="{% url 'team_invites:resend' record.team.id record.id %}" class="form">
+        {% csrf_token %}
+        <button type="submit">Resend</button>
+    </form>
+</turbo-frame>

@@ -1,5 +1,8 @@
+from datetime import timezone
+
 from django.db.models.query import QuerySet
-from django.urls import reverse, reverse_lazy
+from django.http.response import HttpResponseRedirect
+from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
@@ -31,7 +34,6 @@ class InviteCreate(TeamMixin, TurboCreateView):
     template_name = "invites/create.html"
     model = Invite
     form_class = InviteForm
-    success_url = reverse_lazy("team_invites:list")
 
     def form_valid(self, form):
         form.instance.inviter = self.request.user
@@ -56,10 +58,28 @@ class InviteUpdate(TeamMixin, TurboUpdateView):
     template_name = "invites/update.html"
     model = Invite
     form_class = InviteForm
-    success_url = reverse_lazy("team_invites:list")
 
     def get_success_url(self) -> str:
         return reverse("team_invites:list", args=(self.team.id,))
+
+
+class InviteResend(TeamMixin, TurboUpdateView):
+    template_name = "invites/resend.html"
+    model = Invite
+    fields = []
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["record"] = context["object"]
+        return context
+
+    def form_valid(self, form):
+        self.get_object().send_invitation(self.request)
+        # Don't save the form
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self) -> str:
+        return reverse("team_invites:resend", args=(self.team.id, self.object.id))
 
 
 class InviteDelete(TeamMixin, DeleteView):
