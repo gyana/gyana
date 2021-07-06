@@ -33,6 +33,10 @@ class Invite(AbstractBaseInvitation):
         )
         return expiration_date <= timezone.now()
 
+    @property
+    def status(self):
+        return "Expired" if self.key_expired() else "Valid"
+
     def send_invitation(self, request, **kwargs):
         current_site = kwargs.pop("site", Site.objects.get_current())
         invite_url = reverse("invitations:accept-invite", args=[self.key])
@@ -53,6 +57,9 @@ class Invite(AbstractBaseInvitation):
         get_invitations_adapter().send_mail(email_template, self.email, ctx)
         self.sent = timezone.now()
         self.save()
+
+    def get_absolute_url(self):
+        return reverse("team_invites:update", args=(self.team.id, self.id))
 
     class Meta:
         unique_together = ("team", "email")

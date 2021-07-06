@@ -20,7 +20,7 @@ class InviteList(TeamMixin, SingleTableView):
     paginate_by = 20
 
     def get_queryset(self) -> QuerySet:
-        return Invite.objects.filter(team=self.team)
+        return Invite.objects.filter(team=self.team, accepted=False)
 
 
 # Modified from SendInvite view
