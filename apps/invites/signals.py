@@ -12,7 +12,7 @@ def add_user_to_accepted_teams(user: CustomUser):
     teams = user.teams.all()
     for invite in Invite.objects.filter(email=user.email, accepted=True).all():
         if not invite.team in teams:
-            user.teams.add(invite.team)
+            invite.team.members.add(user, through_defaults={"role": invite.role})
 
     user.save()
 
