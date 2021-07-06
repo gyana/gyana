@@ -341,8 +341,9 @@ SEGMENT_ANALYTICS_WRITE_KEY = os.environ.get("SEGMENT_ANALYTICS_WRITE_KEY", "")
 SEGMENT_ANALYTICS_JS_WRITE_KEY = os.environ.get("SEGMENT_ANALYTICS_JS_WRITE_KEY", "")
 
 INVITATIONS_INVITATION_MODEL = "invites.Invite"
-INVITATIONS_INVITATION_EXPIRY = 3
+INVITATIONS_INVITATION_EXPIRY = 7
 
+HASHIDS_SALT = os.environ.get("HASHIDS_SALT", "")
 
 # TODO: Delete stripe config once djstripe is uninstalled
 
@@ -367,6 +368,3 @@ DJSTRIPE_FOREIGN_KEY_TO_FIELD = (
     "id"  # change to 'djstripe_id' if not a new installation
 )
 DJSTRIPE_USE_NATIVE_JSONFIELD = True  # change to False if not a new installation
-
-
-HASHIDS_SALT = "this-is-salt"

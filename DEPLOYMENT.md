@@ -109,6 +109,7 @@ These config variables are set in the [Settings](https://dashboard.heroku.com/ap
 - `SENDGRID_API_KEY` = `<sendgrid_api_secret>`
 - `SEGMENT_ANALYTICS_JS_WRITE_KEY` = `<segment_js_secret>`
 - `SEGMENT_ANALYTICS_WRITE_KEY` = `<segment_py_secret>`
+- `HASHIDS_SALT` = `<django.utils.crypto.get_random_string(32)>`
 
 #### **Deploy**
 

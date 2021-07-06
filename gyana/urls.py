@@ -22,7 +22,7 @@ from django.urls import include, path, register_converter
 from django.urls.converters import IntConverter
 from rest_framework.documentation import get_schemajs_view, include_docs_urls
 
-register_converter(HashIdConverter, "hashid")
+register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "hashid")
 
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
