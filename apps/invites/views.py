@@ -5,15 +5,14 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView
-from django.views.generic.edit import DeleteView
+from django.views.generic.edit import DeleteView, FormView
 from django_tables2 import SingleTableView
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from apps.teams.mixins import TeamMixin
 
 from .forms import InviteForm
-from .invitations import (clear_invite_from_session, process_invitation,
-                          send_invitation)
+from .invitations import clear_invite_from_session, process_invitation, send_invitation
 from .models import Invite
 from .tables import InviteTable
 
@@ -28,23 +27,48 @@ class InviteList(TeamMixin, SingleTableView):
         return Invite.objects.filter(team=self.team)
 
 
-class InviteCreate(TeamMixin, TurboCreateView):
+class InviteCreate(TeamMixin, FormView):
     template_name = "invites/create.html"
-    model = Invite
     form_class = InviteForm
-    success_url = reverse_lazy("teams:team_invites:list")
 
     def form_valid(self, form):
-        form.instance.invited_by = self.request.user
-        form.instance.team = self.team
-        form.save()
+        email = form.cleaned_data["email"]
 
-        form.instance.send_invitation(self.request)
+        try:
+            invite = form.save(email, self.team)
+            invite.inviter = self.request.user
+            invite.save()
+            invite.send_invitation(self.request)
 
-        return super().form_valid(form)
+        except Exception:
+            return self.form_invalid(form)
+        return self.render_to_response(
+            self.get_context_data(
+                success_message=_("%(email)s has been invited") % {"email": email}
+            )
+        )
 
-    def get_success_url(self) -> str:
-        return reverse("teams:team_invites:list", args=(self.team.id,))
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+
+# class InviteCreate(TeamMixin, TurboCreateView):
+#     template_name = "invites/create.html"
+#     model = Invite
+#     form_class = InviteForm
+#     success_url = reverse_lazy("teams:team_invites:list")
+
+#     def form_valid(self, form):
+#         form.instance.invited_by = self.request.user
+#         form.instance.team = self.team
+#         form.save()
+
+#         form.instance.send_invitation(self.request)
+
+#         return super().form_valid(form)
+
+#     def get_success_url(self) -> str:
+#         return reverse("teams:team_invites:list", args=(self.team.id,))
 
 
 class InviteDetail(TeamMixin, DetailView):
