@@ -39,7 +39,7 @@ class InviteCreate(TeamMixin, TurboCreateView):
         form.instance.team = self.team
         form.save()
 
-        send_invitation(form.instance)
+        form.instance.send_invitation(self.request)
 
         return super().form_valid(form)
 
@@ -70,49 +70,49 @@ class InviteDelete(TeamMixin, DeleteView):
         return reverse("teams:team_invites:list", args=(self.team.id,))
 
 
-class InviteAccept(DetailView):
-    template = "invites/accept.html"
-    model = Invite
+# class InviteAccept(DetailView):
+#     template = "invites/accept.html"
+#     model = Invite
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
 
-        if not self.object.is_accepted:
-            # set invitation in the session in case needed later
-            self.request.session["invitation_id"] = self.object.id
-        else:
-            clear_invite_from_session(self.request)
+#         if not self.object.is_accepted:
+#             # set invitation in the session in case needed later
+#             self.request.session["invitation_id"] = self.object.id
+#         else:
+#             clear_invite_from_session(self.request)
 
-        return context
-
-
-# @login_required
-# @require_POST
-def accept_invitation_confirm(request, invitation_id):
-    invitation = get_object_or_404(Invite, id=invitation_id)
-    if invitation.is_accepted:
-        messages.error(
-            request, _("Sorry, it looks like that invitation link has expired.")
-        )
-        return HttpResponseRedirect(reverse("web:home"))
-    else:
-        process_invitation(invitation, request.user)
-        clear_invite_from_session(request)
-        messages.success(
-            request, _("You successfully joined {}").format(invitation.team.name)
-        )
-        return HttpResponseRedirect(reverse("teams:detail", args=[invitation.team.id]))
+#         return context
 
 
-# @team_admin_required
-def resend_invitation(request, team, invitation_id):
-    invitation = get_object_or_404(Invite, id=invitation_id)
-    if invitation.team != request.team:
-        raise ValueError(
-            _("Request team {team} did not match invitation team {invite_team}").format(
-                team=request.team.slug,
-                invite_team=invitation.team.slug,
-            )
-        )
-    send_invitation(invitation)
-    return HttpResponse("Ok")
+# # @login_required
+# # @require_POST
+# def accept_invitation_confirm(request, invitation_id):
+#     invitation = get_object_or_404(Invite, id=invitation_id)
+#     if invitation.is_accepted:
+#         messages.error(
+#             request, _("Sorry, it looks like that invitation link has expired.")
+#         )
+#         return HttpResponseRedirect(reverse("web:home"))
+#     else:
+#         process_invitation(invitation, request.user)
+#         clear_invite_from_session(request)
+#         messages.success(
+#             request, _("You successfully joined {}").format(invitation.team.name)
+#         )
+#         return HttpResponseRedirect(reverse("teams:detail", args=[invitation.team.id]))
+
+
+# # @team_admin_required
+# def resend_invitation(request, team, invitation_id):
+#     invitation = get_object_or_404(Invite, id=invitation_id)
+#     if invitation.team != request.team:
+#         raise ValueError(
+#             _("Request team {team} did not match invitation team {invite_team}").format(
+#                 team=request.team.slug,
+#                 invite_team=invitation.team.slug,
+#             )
+#         )
+#     send_invitation(invitation)
+#     return HttpResponse("Ok")

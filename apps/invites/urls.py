@@ -14,20 +14,20 @@ team_urlpatterns = (
     "team_invites",
 )
 
-urlpatterns = [
-    path(
-        "<slug:pk>/",
-        views.InviteAccept.as_view(),
-        name="accept",
-    ),
-    path(
-        "<slug:invitation_id>/confirm/",
-        views.accept_invitation_confirm,
-        name="accept_invitation_confirm",
-    ),
-    path(
-        "resend-invite/<slug:invitation_id>/",
-        views.resend_invitation,
-        name="resend_invitation",
-    ),
-]
+# urlpatterns = [
+#     path(
+#         "<slug:pk>/",
+#         views.InviteAccept.as_view(),
+#         name="accept",
+#     ),
+#     path(
+#         "<slug:invitation_id>/confirm/",
+#         views.accept_invitation_confirm,
+#         name="accept_invitation_confirm",
+#     ),
+#     path(
+#         "resend-invite/<slug:invitation_id>/",
+#         views.resend_invitation,
+#         name="resend_invitation",
+#     ),
+# ]

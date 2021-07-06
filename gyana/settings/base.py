@@ -60,6 +60,7 @@ THIRD_PARTY_APPS = [
     "crispy_tailwind",
     "django_filters",
     "django_tables2",
+    "invitations",
     # stripe integration
     "djstripe",
 ]
@@ -181,7 +182,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Allauth setup
 
-ACCOUNT_ADAPTER = "apps.invites.adapter.AcceptInviteAdapter"
+ACCOUNT_ADAPTER = "invitations.models.InvitationsAdapter"
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True

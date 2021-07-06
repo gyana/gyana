@@ -9,8 +9,6 @@ class InviteTable(tables.Table):
     class Meta:
         model = Invite
         attrs = {"class": "table"}
-        fields = ("email", "role", "created", "updated")
+        fields = ("email", "role", "sent")
 
-    name = tables.Column(linkify=True)
-    created = NaturalDatetimeColumn()
-    updated = NaturalDatetimeColumn()
+    sent = NaturalDatetimeColumn()
