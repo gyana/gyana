@@ -3,29 +3,9 @@
 
 {% block widget %}
 <turbo-frame id="widgets" target="_top">
-  <div 
-    id="dashboard-widget-container" 
-    style="position:relative;display:block;width:100%;height:100%;overflow-x:hidden;overflow-y:auto;"
-    data-controller="zindex tf-modal"
-  >
-    {% for object in object_list %}
-    {% include 'widgets/widget_component.html' %}
-    {% empty %}
-    <div id='dashboard-widget-placeholder' class="w-full p-2">
-      <div class="widget-card">
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class="placeholder-scr__icon far fa-map-marker-question fa-2x"></i>
-          <p class='placeholder-scr__title mb-2'>This dashboard needs some widgets!</p>
-
-          {% include 'dashboards/_add_widget.html' with choices=choices %}
-
-        </div>
-      </div>
-    </div>
-    {% endfor %}
+  <div class="widgets" data-controller="tf-modal">
     <div data-tf-modal-target="modal" class="tf-modal hidden">
       <div class="card card--sm flex-col h-full">
-
         <turbo-frame 
           id="widget-modal" 
           data-tf-modal-target="turboFrame"
@@ -36,8 +16,28 @@
         </turbo-frame>
       </div>
     </div>
-  </div>
+    <div 
+      id="dashboard-widget-container" 
+      style="position:relative;display:block;width:100%;height:100%;overflow-x:hidden;overflow-y:auto;"
+      data-controller="zindex"
+    >
+      {% for object in object_list %}
+      {% include 'widgets/widget_component.html' %}
+      {% empty %}
+      <div id='dashboard-widget-placeholder' class="w-full p-2">
+        <div class="widget-card">
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon far fa-map-marker-question fa-2x"></i>
+            <p class='placeholder-scr__title mb-2'>This dashboard needs some widgets!</p>
 
+            {% include 'dashboards/_add_widget.html' with choices=choices %}
+
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
   {% if is_paginated %}
   <div class="pagination">
     <span class="page-links">

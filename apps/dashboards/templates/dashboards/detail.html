@@ -41,7 +41,7 @@
     </ul>
   </div>
 
-  {% if request.GET.mode == 'edit' %}
+  {% if request.GET.mode != 'view' %}
     {% include 'dashboards/_add_widget.html' with choices=choices %}
   {% endif %}
   <div data-controller='popover'>
