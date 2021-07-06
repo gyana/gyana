@@ -12,7 +12,6 @@ class Team(BaseModel):
     """
 
     name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True)
 
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL, related_name="teams", through="Membership"
