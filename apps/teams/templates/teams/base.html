@@ -1,5 +1,6 @@
 {% extends "web/app/app_base.html" %}
 {% load static %}
+{% load team_tags %}
 
 {% block app %}
 {% if team.id %}
@@ -16,10 +17,10 @@
   </a>
   <a class="tabbar__link {% if request.resolver_match.url_name == 'members' %} tabbar__link--active {% endif %}"
      href="{% url 'teams:members' team.id %}">Members</a>
-  {% comment %} {% if request.user|is_admin_of:team %} {% endcomment %}
+  {% if request.user|is_admin_of:team %}
     <a class="tabbar__link {% if request.resolver_match.app_name == 'teams:team_invites' %} tabbar__link--active {% endif %}"
       href="{% url 'teams:team_invites:list' team.id %}">Invites</a>
-  {% comment %} {% endif %} {% endcomment %}
+  {% endif %}
   <a class="tabbar__link {% if request.resolver_match.url_name == 'update' %} tabbar__link--active {% endif %}"
      href="{% url 'teams:update' team.id %}">
     Settings
