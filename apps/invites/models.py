@@ -64,3 +64,6 @@ class Invite(AbstractBaseInvitation):
     class Meta:
         unique_together = ("team", "email")
         ordering = ("-created",)
+
+    def __str__(self):
+        return "Invite: {0}".format(self.email)
