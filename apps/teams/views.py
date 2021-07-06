@@ -26,16 +26,9 @@ class TeamCreate(LoginRequiredMixin, TurboCreateView):
 
 
 class TeamUpdate(LoginRequiredMixin, UpdateView):
-    template_name = "teams/settings.html"
+    template_name = "teams/update.html"
+    form_class = TeamChangeForm
     model = Team
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-
-        return context_data
-
-    def get_form_class(self):
-        return TeamChangeForm
 
     def get_success_url(self) -> str:
         return reverse("teams:update", args=(self.object.id,))
