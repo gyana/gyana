@@ -170,7 +170,11 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
         if self.request.POST.get("submit") == "Save & Preview":
             return r
 
-        context = {"widget": self.object}
+        context = {
+            "widget": self.object,
+            "project": self.project,
+            "dashboard": self.dashboard,
+        }
         add_output_context(context, self.object)
         return (
             TurboStream(f"widgets-output-{self.object.id}")
@@ -181,7 +185,11 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
     def form_invalid(self, form):
         r = super().form_invalid(form)
         if self.request.POST.get("close"):
-            context = {"widget": self.object}
+            context = {
+                "widget": self.object,
+                "project": self.project,
+                "dashboard": self.dashboard,
+            }
             add_output_context(context, self.object)
             return (
                 TurboStream(f"widgets-output-{self.object.id}")
@@ -250,18 +258,18 @@ def add_output_context(context, widget):
             context["chart_id"] = chart_id
 
 
-class WidgetOutput(DetailView):
+class WidgetOutput(DashboardMixin, DetailView):
     template_name = "widgets/output.html"
     model = Widget
 
     def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-
+        context = super().get_context_data(**kwargs)
+        context["project"] = self.get_object().dashboard.project
         try:
-            add_output_context(context_data, self.object)
+            add_output_context(context, self.object)
 
         except Exception as e:
-            context_data["is_error"] = True
+            context["is_error"] = True
             logging.warning(e, exc_info=e)
 
-        return context_data
+        return context

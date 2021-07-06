@@ -4,18 +4,6 @@
 {% block widget %}
 <turbo-frame id="widgets" target="_top">
   <div class="widgets" data-controller="tf-modal">
-    <div data-tf-modal-target="modal" class="tf-modal hidden">
-      <div class="card card--sm flex-col h-full">
-        <turbo-frame 
-          id="widget-modal" 
-          data-tf-modal-target="turboFrame"
-        >
-          <div class='placeholder-scr placeholder-scr--fillscreen'>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x"></i>
-          </div>
-        </turbo-frame>
-      </div>
-    </div>
     <div 
       id="dashboard-widget-container" 
       style="position:relative;display:block;width:100%;height:100%;overflow-x:hidden;overflow-y:auto;"
@@ -36,6 +24,22 @@
         </div>
       </div>
       {% endfor %}
+    </div>
+    {% comment %}
+      The modal needs to below the container because otherwise the 
+      updated output turbo-stream would update the chart inside the modal.
+    {% endcomment %}
+    <div data-tf-modal-target="modal" class="tf-modal hidden">
+      <div class="card card--sm flex-col h-full">
+        <turbo-frame 
+          id="widget-modal" 
+          data-tf-modal-target="turboFrame"
+        >
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x"></i>
+          </div>
+        </turbo-frame>
+      </div>
     </div>
   </div>
   {% if is_paginated %}

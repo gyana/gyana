@@ -1,20 +1,33 @@
 <turbo-frame id="widgets-output-{{ widget.id }}">
-  {% if is_error %}
-    <div class='flex flex-col items-center justify-center flex-1'>
-      <i class="far fa-exclamation-triangle mb-1 fa-2x"></i>
-      <p>The 
-        <a class='text-blue underline'
-            href="{% url 'dashboard_widgets:update' widget.dashboard.project.id widget.dashboard.id widget.pk %}" >configuration</a>
-            for this widget is faulty!
-      </p>
-    </div>
-  {% else %}
-    {% if widget.kind == "table" %}
-      {% include 'widgets/visuals/grid.html' %}
-    {% elif widget.kind == "text" %}
-      {% include 'widgets/visuals/text.html' %}
-    {% elif widget.kind %}
-      {% include 'widgets/visuals/chart.html' %}
+  {% if widget.is_valid %}
+    {% if is_error %}
+      <div class='flex flex-col items-center justify-center flex-1'>
+        <i class="far fa-exclamation-triangle mb-1 fa-2x"></i>
+        <p>The 
+          <a class='text-blue underline'
+              href="{% url 'dashboard_widgets:update' project.id dashboard.id widget.id %}" >configuration</a>
+              for this widget is faulty!
+        </p>
+      </div>
+    {% else %}
+      {% if widget.kind == "table" %}
+        {% include 'widgets/visuals/grid.html' %}
+      {% elif widget.kind == "text" %}
+        {% include 'widgets/visuals/text.html' %}
+      {% elif widget.kind %}
+        {% include 'widgets/visuals/chart.html' %}
+      {% endif %}
     {% endif %}
+{% else %}
+  <div class='flex flex-col items-center justify-center flex-1'>
+    <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
+    <p>This widget needs to be
+      <button 
+        data-action="click->tf-modal#open" 
+        class='link'
+        data-src="{% url "dashboard_widgets:update" project.id dashboard.id widget.id %}"
+      >configured</button>!
+    </p>
+  </div>
   {% endif %}
 </turbo-frame>

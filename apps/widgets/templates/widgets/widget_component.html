@@ -9,10 +9,9 @@
         {% if object.description %}
         <h3 class="mb-2">{{ object.description }}</h3>
         {% endif %}
-        {% if object.is_valid %}
         <turbo-frame 
           id="widgets-output-{{ object.id }}" 
-          src="{% url 'widgets:output' object.id %}"
+          src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}"
           target="_top" 
           style="display: flex; flex: 1 1 0%; min-height: 0;"
         >
@@ -21,15 +20,6 @@
             <p class='placeholder-scr__title'>Loading visualisation...</p>
           </div>
         </turbo-frame>
-        {% else %}
-        <div class='flex flex-col items-center justify-center flex-1'>
-          <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
-          <p>This widget needs to be
-            <a class='text-blue underline'
-                href="{% url 'dashboard_widgets:update' project.id dashboard.id object.pk %}">configured</a>!
-          </p>
-        </div>
-        {% endif %}
       </div>
 
       {% if request.GET.mode == 'edit' %}

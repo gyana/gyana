@@ -11,7 +11,7 @@
 </div>
 
 <div class="w-full mb-4">
-  <turbo-frame id="widgets-output-{{ widget.id }}" src="{% url 'widgets:output' object.id %}">
+  <turbo-frame id="widgets-output-{{ widget.id }}" src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}">
     Loading...
   </turbo-frame>
 </div>

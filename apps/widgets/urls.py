@@ -4,16 +4,7 @@ from rest_framework import routers
 from . import views
 
 app_name = "widgets"
-urlpatterns = [
-    # No cache header tells browser to always re-validate the resource
-    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#controlling_caching
-    # https://web.dev/http-cache/#flowchart
-    path(
-        "<int:pk>/output",
-        views.WidgetOutput.as_view(),
-        name="output",
-    ),
-]
+urlpatterns = []
 
 # drf config
 router = routers.DefaultRouter()
@@ -29,6 +20,14 @@ dashboard_urlpatterns = (
         path("<int:pk>", views.WidgetDetail.as_view(), name="detail"),
         path("<int:pk>/update", views.WidgetUpdate.as_view(), name="update"),
         path("<int:pk>/delete", views.WidgetDelete.as_view(), name="delete"),
+        # No cache header tells browser to always re-validate the resource
+        # https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#controlling_caching
+        # https://web.dev/http-cache/#flowchart
+        path(
+            "<int:pk>/output",
+            views.WidgetOutput.as_view(),
+            name="output",
+        ),
     ],
     "dashboard_widgets",
 )
