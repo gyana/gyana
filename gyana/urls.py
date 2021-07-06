@@ -26,11 +26,6 @@ from rest_framework.documentation import get_schemajs_view, include_docs_urls
 
 schemajs_view = get_schemajs_view(title="API")
 
-# urls that are unique to using a team should go here
-team_urlpatterns = [
-    path("team/projects/", include(project_urls.team_urlpatterns)),
-]
-
 # urls that are scoped within a project
 project_urlpatterns = [
     path("", include("apps.projects.urls")),
@@ -47,7 +42,6 @@ project_urlpatterns = [
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("a/<slug:team_slug>/", include(team_urlpatterns)),
     path("accounts/", include("turbo_allauth.urls")),
     path("users/", include("apps.users.urls")),
     path("filters/", include("apps.filters.urls")),
