@@ -7,7 +7,7 @@
 
     {% include "django/forms/default_form.html" %}
 
-    <button type="submit" class="button button--sm button--filled button--green mt-7">Save</button>
+    <button type="submit" class="button button--sm button--green">Save</button>
   </form>
 </div>
 
@@ -15,7 +15,7 @@
   <h2 class="text-red">Danger zone:</h2>
   <p class="mb-7">If you'd like to <strong>delete</strong> this team, press the button below.</p>
 
-  <a class="button button--sm button--filled button--danger" href="{% url 'teams:delete' team.id %}">
+  <a class="button button--sm button--danger" href="{% url 'teams:delete' team.id %}">
     Delete
   </a>
 </div>
