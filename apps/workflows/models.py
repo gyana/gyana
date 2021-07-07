@@ -225,7 +225,11 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
     # Output
     output_name = models.CharField(max_length=100, null=True)
 
-    # Select, Distinct
+    # Select also uses columns
+    select_mode = models.CharField(
+        max_length=8, choices=(("keep", "keep"), ("exclude", "exclude")), default="keep"
+    )
+    # Distinct
     # columns exists on Column as FK
 
     # Aggregation

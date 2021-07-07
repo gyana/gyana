@@ -148,3 +148,17 @@ label.checkbox__checked {
     color: var(--c-blue);
   }
 }
+// based on https://www.sarasoueidan.com/blog/inclusively-hiding-and-styling-checkboxes-and-radio-buttons/
+.checkbox__hidden {
+  /* remove the checkbox from flow */
+  position: absolute;
+
+  /* hide it visually */
+  opacity: 0;
+}
+
+// Inspired by https://css-tricks.com/the-checkbox-hack/
+.checkbox__hidden:checked ~ label.checkbox {
+  border: 1px solid var(--c-blue);
+  color: var(--c-black);
+}

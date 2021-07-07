@@ -25,7 +25,14 @@ def get_output_query(node):
 
 def get_select_query(node):
     parent_query = node.parents.first().get_query()
-    return parent_query.projection([col.column for col in node.columns.all()] or [])
+    columns = [col.column for col in node.columns.all()]
+
+    if node.select_mode == "keep":
+        return parent_query.projection(columns or [])
+
+    return parent_query.projection(
+        [col for col in parent_query.schema() if col not in columns]
+    )
 
 
 def get_duplicate_names(left, right):

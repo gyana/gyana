@@ -6,10 +6,10 @@ from apps.tables.models import Table
 from apps.utils.live_update_form import LiveUpdateForm
 from apps.utils.schema_form_mixin import SchemaFormMixin
 from apps.workflows.nodes import AllOperations
-from apps.workflows.widgets import CodeMirror, InputNode
+from apps.workflows.widgets import CodeMirror, InputNode, MultiSelect
 from django import forms
 from django.forms.models import BaseInlineFormSet
-from django.forms.widgets import CheckboxSelectMultiple, HiddenInput
+from django.forms.widgets import HiddenInput
 
 # fmt: off
 from .models import (AddColumn, AggregationFunctions, Column, EditColumn,
@@ -64,14 +64,14 @@ class OutputNodeForm(NodeForm):
 class SelectNodeForm(NodeForm):
     class Meta:
         model = Node
-        fields = []
+        fields = ("select_mode",)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields["select_columns"] = forms.MultipleChoiceField(
             choices=[(col, col) for col in self.columns],
-            widget=CheckboxSelectMultiple,
+            widget=MultiSelect,
             label="Select the columns you want to use:",
             initial=list(self.instance.columns.all().values_list("column", flat=True)),
         )
