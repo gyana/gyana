@@ -1,17 +1,9 @@
-{% extends "web/base.html" %}
+{% extends "web/landing.html" %}
 {% load static %}
+
 {% block body %}
-<section class="section container">
-    <div class="columns is-vcentered columns-reversed">
-        <div class="column">
-            <img src="{% static 'images/undraw/undraw_alert.svg' %}" alt="Uh-Oh">
-        </div>
-        <div class="column">
-            <h1 class="title is-size-2">Shucks. That's an error.</h1>
-            <h2 class="subtitle is-size-4">
-                Please try again, and if you continue to get this message, contact support.
-            </h2>
-        </div>
-    </div>
+<section class="pad">
+    <h1>500 - Server Error</h1>
+    <p>The server encountered an error, head <a class="link" href="/">back home</a> and try again later.</p>
 </section>
 {% endblock%}

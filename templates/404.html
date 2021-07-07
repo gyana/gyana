@@ -1,18 +1,9 @@
-{% extends "web/base.html" %}
+{% extends "web/landing.html" %}
 {% load static %}
+
 {% block body %}
-<section class="section container">
-    <div class="columns is-vcentered columns-reversed">
-        <div class="column">
-            <img src="{% static 'images/undraw/undraw_alert.svg' %}" alt="Uh-Oh">
-        </div>
-        <div class="column">
-            <h1 class="title is-size-2">Shucks. We couldn't find that.</h1>
-            <h2 class="subtitle is-size-4">
-                If you think this page should exist, double-check that you are signed in as the
-                right person.
-            </h2>
-        </div>
-    </div>
+<section class="pad">
+    <h1>404 - Not Found</h1>
+    <p>Sorry, this page could not be found. Head <a class="link" href="/">back home</a>?</p>
 </section>
 {% endblock%}
