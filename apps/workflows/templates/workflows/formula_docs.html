@@ -1,3 +1,4 @@
+{% load custom_tags %}
 <div class="workflow-node__formula">
   <h1>Formula Docs</h2>
   <span class="text-xl">
@@ -39,5 +40,15 @@
       >join(strip(first_name), " ", strip(last_name))</textarea>
   </div>
   </span>
-</div>
+  <h2>Functions</h2>
+  <div class="overflow-y-auto">
+    <div class="functions">
+      {%for function in "lib/functions.json"|read_json %}
+        <div class='function-pill'>
+          <h4>{{function.id}}</h4>
+          <span>{{ function.description }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
 </div>

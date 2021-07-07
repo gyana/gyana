@@ -112,7 +112,25 @@
       display: flex;
       flex-flow: column;
       padding: 1.6rem;
-      font-size: 2rem;
+    }
+  }
+}
+
+.functions {
+  display: grid;
+  grid-auto-rows: minmax(0, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+
+  .function-pill {
+    border: 1px solid var(--c-gray);
+    border-radius: 5px;
+    padding: 0.6rem;
+    display: flex;
+    flex-flow: column;
+    &:hover {
+      border: 1px solid var(--c-blue-50);
+      background-color: var(--c-gray-10);
     }
   }
 }

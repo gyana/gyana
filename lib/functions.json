@@ -1,0 +1,84 @@
+[
+  { "id": "abs", "description": "Calculate the absolute value" },
+  { "id": "add", "description": "Add two values" },
+  { "id": "between", "description": "Check if value falls between the lower/upper bounds passed" },
+  { "id": "cast", "description": "Change type of a column to a different data type" },
+  { "id": "ceil", "description": "Round up" },
+  {
+    "id": "coalesce",
+    "description": "Compute the first non-null value(s) from the passed arguments in left-to-right order."
+  },
+  { "id": "date", "description": "Get date from timestamp" },
+  { "id": "day", "description": "Get day from date or timestamp" },
+  { "id": "day_of_week", "description": "Get day of the week from date or timestamp" },
+  { "id": "div", "description": "Divide value by value" },
+  {
+    "id": "epoch_seconds",
+    "description": "Seconds since 00:00:00 UTC on 1 January 1970 also called UNIX time"
+  },
+  { "id": "exp", "description": "Calculate exponential value" },
+  {
+    "id": "find",
+    "description": "Returns position (0 indexed) of first occurence of subtext, optionally after a particular position (0 indexed)"
+  },
+  { "id": "floor", "description": "Round down" },
+  { "id": "fillna", "description": "Replace nulls with value" },
+  { "id": "hash", "description": "Hash value" },
+  { "id": "hour", "description": "Get the hour from date or timestamp" },
+  { "id": "ifelse", "description": "If condition then use first value if not then second" },
+  { "id": "isnull", "description": "Check value is null" },
+  { "id": "join", "description": "Concatenate text using first text as delimiter" },
+  { "id": "left", "description": "Return up to n characters starting from start of each text" },
+  { "id": "length", "description": "Calculate character length from text" },
+  { "id": "like", "description": "Compare text with another text" },
+  { "id": "ln", "description": "Natural logarithm" },
+  { "id": "log", "description": "Logarithm with base `base`" },
+  { "id": "log2", "description": "Logarithm with base 2" },
+  { "id": "log10", "description": "Logarithm with base 10" },
+  { "id": "lower", "description": "Text to lowercase" },
+  {
+    "id": "lpad",
+    "description": "Returns string of given length by truncating (on left) or padding (on left) original string"
+  },
+  { "id": "lstrip", "description": "Remove white space on the left of text" },
+  { "id": "millisecond", "description": "Get the milliseconds from date or timestamp" },
+  { "id": "minute", "description": "Get the minute from date or timestamp" },
+  { "id": "month", "description": "Get the month from date or timestamp" },
+  { "id": "mul", "description": "Multiply values" },
+  { "id": "notnull", "description": "Check whether a value is null" },
+  { "id": "pow", "description": "Calculate the power of a value" },
+  {
+    "id": "re_extract",
+    "description": "Returns specified index, 0 indexed, from string based on regex pattern given"
+  },
+  { "id": "re_replace", "description": "Replaces match found by regex with replacement string." },
+  { "id": "re_search", "description": "Search string values using a regular expression." },
+  { "id": "repeat", "description": "Repeat text n times" },
+  { "id": "replace", "description": "Replace text with another text" },
+  { "id": "reverse", "description": "Reverse text order" },
+  { "id": "right", "description": "Return up to n characters starting from end of each text." },
+  { "id": "round", "description": "Round value to n decimal" },
+  {
+    "id": "rpad",
+    "description": "Returns string of given length by truncating (on right) or padding (on right) original string"
+  },
+  { "id": "rstrip", "description": "Remove white space on the right of text" },
+  { "id": "second", "description": "Get the seconds from time or timestamp" },
+  { "id": "sqrt", "description": "Calculate the square root" },
+  { "id": "strftime", "description": "Format timestamp into string with given format" },
+  { "id": "strip", "description": "Remove white space surrounding the text" },
+  { "id": "sub", "description": "Substract value from value" },
+  { "id": "substitute", "description": "Replace one or more values" },
+  {
+    "id": "substr",
+    "description": "Pull substrings out of each string value by position and maximum length."
+  },
+  { "id": "time", "description": "Get the month from a timestamp" },
+  {
+    "id": "translate",
+    "description": "Returns text with set of ‘from’ characters replaced by set of ‘to’ characters."
+  },
+  { "id": "truncate", "description": "Zero out smaller-size units beyond indicated unit" },
+  { "id": "upper", "description": "Capitalize text." },
+  { "id": "year", "description": "Get the year from date" }
+]
