@@ -19,7 +19,7 @@ class IntegrationTable(Table):
 class StructureTable(Table):
     class Meta:
         fields = ("name", "type")
-        attrs = {"class": "table-formal"}
+        attrs = {"class": "table-data"}
 
     type = Column()
     name = Column()

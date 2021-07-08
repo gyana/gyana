@@ -318,13 +318,18 @@ class IntegrationGrid(SingleTableMixin, TemplateView):
     template_name = "integrations/grid.html"
     paginate_by = 15
 
+    def get_table_kwargs(self):
+        return {'attrs': {"class": "table-data"}}
+
     def get_context_data(self, **kwargs):
         self.integration = Integration.objects.get(id=kwargs["pk"])
+
         return super().get_context_data(**kwargs)
 
     def get_table(self, **kwargs):
         query = query_integration(self.integration)
         table = get_table(query.schema(), query, **kwargs)
+
         return RequestConfig(
             self.request, paginate=self.get_table_pagination(table)
         ).configure(table)

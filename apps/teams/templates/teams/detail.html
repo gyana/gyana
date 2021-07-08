@@ -9,7 +9,7 @@
   {% if project_count == 0 %}
   <div class="table__empty">
     <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
-    <h3>You have no projects</h3>
+    <h3>This team has no projects</h3>
     <p>Why not <a href="{% url 'team_projects:create' team.id %}" class="link">create a new one</a>?</p>
   </div>
   {% else %}

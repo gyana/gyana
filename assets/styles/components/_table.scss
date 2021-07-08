@@ -61,6 +61,10 @@
         line-height: inherit;
       }
     }
+
+    tr:hover {
+      background-color: var(--c-gray-10);
+    }
   }
 
   td a[href] {
@@ -69,6 +73,26 @@
     
     &:hover {
       text-decoration: underline;
+    }
+  }
+}
+
+.table-data {
+  @extend .table;
+
+  thead th {
+    padding: 1.2rem 0.8rem;
+
+    & + th {
+      border-left: 1px solid var(--c-gray);
+    }
+  }
+
+  tbody td {
+    padding: 0.8rem;
+
+    & + td {
+      border-left: 1px solid var(--c-gray);
     }
   }
 }
@@ -90,85 +114,6 @@
     &:hover {
       text-decoration: underline;
       color: var(--c-blue-50);
-    }
-  }
-}
-
-.table-formal {
-  display: table;
-  position: relative;
-  width: 100%;
-
-  thead {
-    width: 100%;
-    border-bottom: 1px solid var(--c-black-50);
-    background-color: var(--c-gray);
-
-    th {
-      background-color: var(--c-gray-50);
-      color: var(--c-black);
-      font-size: 1.4rem;
-      font-weight: normal;
-      line-height: 1.4rem;
-      padding: 0.8rem 1.6rem;
-      position: sticky;
-      text-align: left;
-      top: -1.6rem;
-      white-space: nowrap;
-
-      & + th {
-        border-left: 1px solid var(--c-gray);
-      }
-
-      &:last-child {
-        width: 100%;
-      }
-    }
-
-    .orderable {
-      a::after {
-        content: '\f0dc';
-        display: inline;
-        font-family: "Font Awesome 5 Pro";
-        font-weight: 900;
-        margin-left: 0.5em;
-        position: relative;
-      }
-
-      &.asc a::after {
-        content: '\f0de';
-      }
-
-      &.desc a::after {
-        content: '\f0dd';
-      }
-    }
-  }
-
-  tbody {
-    td {
-      font-size: 1.2rem;
-      line-height: 1.4rem;
-      padding: 1.2rem 1.6rem;
-      white-space: nowrap;
-
-      > * {
-        font-size: inherit;
-        line-height: inherit;
-      }
-
-      & + td {
-        border-left: 1px solid var(--c-gray);
-      }
-    }
-  }
-
-  td a[href] {
-    color: var(--c-blue);
-    padding: 1.2rem 0; 
-    
-    &:hover {
-      text-decoration: underline;
     }
   }
 }
