@@ -256,6 +256,11 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
 
     # Union
 
+    union_mode = models.CharField(
+        max_length=8,
+        choices=(("keep", "keep"), ("exclude", "exclude")),
+        default="except",
+    )
     union_distinct = models.BooleanField(default=False)
 
     # Filter

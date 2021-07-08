@@ -319,8 +319,11 @@ FilterFormSet = forms.inlineformset_factory(
 class UnionNodeForm(NodeForm):
     class Meta:
         model = Node
-        fields = ["union_distinct"]
-        labels = {"union_distinct": "distinct"}
+        fields = [
+            "union_mode",
+            "union_distinct",
+        ]
+        labels = {"union_distinct": "distinct", "union_mode": "mode"}
 
 
 class LimitNodeForm(NodeForm):

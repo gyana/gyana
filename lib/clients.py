@@ -8,6 +8,7 @@ from google.cloud import bigquery, storage
 from googleapiclient import discovery
 
 from .compiler import *
+from .patch import *
 
 SLUG = slugify(settings.CLOUD_NAMESPACE)
 DATASET_ID = f"{SLUG}_integrations"

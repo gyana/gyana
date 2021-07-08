@@ -96,7 +96,10 @@ def get_union_query(node):
     query = parents[0].get_query()
     colnames = query.schema()
     for parent in parents[1:]:
-        query = query.union(parent.get_query(), distinct=node.union_distinct)
+        if node.union_mode == "keep":
+            query = query.union(parent.get_query(), distinct=node.union_distinct)
+        else:
+            query = query.difference(parent.get_query())
     # Need to `select *` so we can operate on the query
     return query.projection(colnames)
 

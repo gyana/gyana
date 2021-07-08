@@ -138,7 +138,7 @@ label.checkbox {
   &::after {
     color: var(--c-gray);
     content: '\f0c8';
-    font-family: "Font Awesome 5 Pro";
+    font-family: 'Font Awesome 5 Pro';
     font-size: 1.8rem;
     font-weight: 500;
     margin-left: auto;
@@ -151,7 +151,6 @@ label.checkbox {
       content: '\f14a';
     }
   }
-
 }
 
 label.checkbox__checked {
@@ -172,7 +171,7 @@ label.checkbox__checked {
   &:checked ~ label.checkbox {
     border: 1px solid var(--c-blue);
     color: var(--c-black);
-  
+
     &::after {
       color: var(--c-blue);
       content: '\f14a';
