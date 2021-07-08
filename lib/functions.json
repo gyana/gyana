@@ -1,84 +1,408 @@
 [
-  { "id": "abs", "description": "Calculate the absolute value" },
-  { "id": "add", "description": "Add two values" },
-  { "id": "between", "description": "Check if value falls between the lower/upper bounds passed" },
-  { "id": "cast", "description": "Change type of a column to a different data type" },
-  { "id": "ceil", "description": "Round up" },
+  {
+    "id": "abs",
+    "name": "abs",
+    "categories": "numeric",
+    "arguments": ["value"],
+    "description": "Calculate the absolute value"
+  },
+  {
+    "id": "add",
+    "name": "add",
+    "categories": "numeric",
+    "arguments": ["addend", "addend"],
+    "description": "Add two values"
+  },
+  {
+    "id": "between",
+    "name": "between",
+    "categories": "generic",
+    "arguments": ["lower", "upper"],
+    "description": "Check if value falls between the lower/upper bounds passed"
+  },
+  {
+    "id": "cast",
+    "name": "cast",
+    "categories": "generic",
+    "arguments": ["value", "type"],
+    "description": "Change type of a column to a different data type"
+  },
+  {
+    "id": "ceil",
+    "name": "ceil",
+    "categories": "numeric",
+    "arguments": ["value"],
+    "description": "Round up to the nearest integer value greater than or equal to this value"
+  },
   {
     "id": "coalesce",
+    "name": "coalesce",
+    "categories": "generic",
+    "arguments": ["value", "..."],
     "description": "Compute the first non-null value(s) from the passed arguments in left-to-right order."
   },
-  { "id": "date", "description": "Get date from timestamp" },
-  { "id": "day", "description": "Get day from date or timestamp" },
-  { "id": "day_of_week", "description": "Get day of the week from date or timestamp" },
-  { "id": "div", "description": "Divide value by value" },
+  {
+    "id": "date",
+    "name": "date",
+    "categories": "date and time",
+    "arguments": ["date"],
+    "description": "Get date from timestamp"
+  },
+  {
+    "id": "day",
+    "name": "day",
+    "categories": "date and time",
+    "arguments": ["date"],
+    "description": "Get day from date or timestamp"
+  },
+  {
+    "id": "day_of_week",
+    "name": "day_of_week",
+    "categories": "date and time",
+    "arguments": ["date"],
+    "description": "Get day of the week from date or timestamp"
+  },
+  {
+    "id": "div",
+    "name": "divide",
+    "categories": "numeric",
+    "arguments": ["dividend", "divisor"],
+    "description": "Divide value by value"
+  },
   {
     "id": "epoch_seconds",
+    "name": "epoch_seconds",
+    "categories": "date and time",
+    "arguments": ["datetime"],
     "description": "Seconds since 00:00:00 UTC on 1 January 1970 also called UNIX time"
   },
-  { "id": "exp", "description": "Calculate exponential value" },
+  {
+    "id": "exp",
+    "name": "exp",
+    "categories": "numeric",
+    "arguments": ["value"],
+    "description": "Calculate exponential value"
+  },
   {
     "id": "find",
+    "name": "find",
+    "categories": "text",
+    "arguments": ["text", "searchtext", "*start", "*end"],
     "description": "Returns position (0 indexed) of first occurence of subtext, optionally after a particular position (0 indexed)"
   },
-  { "id": "floor", "description": "Round down" },
-  { "id": "fillna", "description": "Replace nulls with value" },
-  { "id": "hash", "description": "Hash value" },
-  { "id": "hour", "description": "Get the hour from date or timestamp" },
-  { "id": "ifelse", "description": "If condition then use first value if not then second" },
-  { "id": "isnull", "description": "Check value is null" },
-  { "id": "join", "description": "Concatenate text using first text as delimiter" },
-  { "id": "left", "description": "Return up to n characters starting from start of each text" },
-  { "id": "length", "description": "Calculate character length from text" },
-  { "id": "like", "description": "Compare text with another text" },
-  { "id": "ln", "description": "Natural logarithm" },
-  { "id": "log", "description": "Logarithm with base `base`" },
-  { "id": "log2", "description": "Logarithm with base 2" },
-  { "id": "log10", "description": "Logarithm with base 10" },
-  { "id": "lower", "description": "Text to lowercase" },
+  {
+    "id": "floor",
+    "name": "floor",
+    "categories": "numeric",
+    "arguments": ["value"],
+    "description": "Round down"
+  },
+  {
+    "id": "fillna",
+    "name": "fillna",
+    "categories": "generic",
+    "arguments": ["value", "fill_value"],
+    "description": "Replace nulls with value"
+  },
+  {
+    "id": "hash",
+    "name": "hash",
+    "categories": "generic",
+    "arguments": ["value"],
+    "description": "Hash value"
+  },
+  {
+    "id": "hour",
+    "name": "hour",
+    "categories": "date and time",
+    "arguments": ["time"],
+    "description": "Get the hour from date or timestamp"
+  },
+  {
+    "id": "ifelse",
+    "name": "ifelse",
+    "categories": "generic",
+    "arguments": ["condition", "true_value", "false_value"],
+    "description": "If condition then use first value if not then second"
+  },
+  {
+    "id": "isnull",
+    "name": "isnull",
+    "categories": "generic",
+    "arguments": ["value"],
+    "description": "Check value is null"
+  },
+  {
+    "id": "join",
+    "name": "join",
+    "categories": "text",
+    "arguments": ["delimiter", "text", "..."],
+    "description": "Concatenate text using first text as delimiter"
+  },
+  {
+    "id": "left",
+    "name": "left",
+    "categories": "text",
+    "arguments": ["text", "nchars"],
+    "description": "Return up to n characters starting from start of each text"
+  },
+  {
+    "id": "length",
+    "name": "length",
+    "categories": "text",
+    "arguments": ["text"],
+    "description": "Calculate character length from text"
+  },
+  {
+    "id": "like",
+    "name": "like",
+    "categories": "text",
+    "arguments": ["text", "pattern"],
+    "description": "Compare text with another text"
+  },
+  {
+    "id": "ln",
+    "name": "ln",
+    "categories": "numeric",
+    "arguments": ["value"],
+    "description": "Natural logarithm"
+  },
+  {
+    "id": "log",
+    "name": "log",
+    "categories": "numeric",
+    "arguments": ["value", "base"],
+    "description": "Logarithm with base `base`"
+  },
+  {
+    "id": "log2",
+    "name": "log2",
+    "categories": "numeric",
+    "arguments": ["value"],
+    "description": "Logarithm with base 2"
+  },
+  {
+    "id": "log10",
+    "name": "log10",
+    "categories": "numeric",
+    "arguments": ["value"],
+    "description": "Logarithm with base 10"
+  },
+  {
+    "id": "lower",
+    "name": "lower",
+    "categories": "text",
+    "arguments": ["text"],
+    "description": "Text to lowercase"
+  },
   {
     "id": "lpad",
+    "name": "lpad",
+    "categories": "text",
+    "arguments": ["text", "length", "*fillchar"],
     "description": "Returns string of given length by truncating (on left) or padding (on left) original string"
   },
-  { "id": "lstrip", "description": "Remove white space on the left of text" },
-  { "id": "millisecond", "description": "Get the milliseconds from date or timestamp" },
-  { "id": "minute", "description": "Get the minute from date or timestamp" },
-  { "id": "month", "description": "Get the month from date or timestamp" },
-  { "id": "mul", "description": "Multiply values" },
-  { "id": "notnull", "description": "Check whether a value is null" },
-  { "id": "pow", "description": "Calculate the power of a value" },
+  {
+    "id": "lstrip",
+    "name": "lstrip",
+    "categories": "text",
+    "arguments": ["text"],
+    "description": "Remove white space on the left of text"
+  },
+  {
+    "id": "millisecond",
+    "name": "millisecond",
+    "categories": "date and time",
+    "arguments": ["time"],
+    "description": "Get the milliseconds from date or timestamp"
+  },
+  {
+    "id": "minute",
+    "name": "minute",
+    "categories": "date and time",
+    "arguments": ["time"],
+    "description": "Get the minute from date or timestamp"
+  },
+  {
+    "id": "month",
+    "name": "month",
+    "categories": "date and time",
+    "arguments": ["date"],
+    "description": "Get the month from date or timestamp"
+  },
+  {
+    "id": "mul",
+    "name": "mul",
+    "categories": "numeric",
+    "arguments": ["factor", "factor"],
+    "description": "Multiply values"
+  },
+  {
+    "id": "notnull",
+    "name": "notnull",
+    "categories": "generic",
+    "arguments": ["value"],
+    "description": "Check whether a value is null"
+  },
+  {
+    "id": "pow",
+    "name": "pow",
+    "categories": "numeric",
+    "arguments": ["value", "power"],
+    "description": "Calculate the power of a value"
+  },
   {
     "id": "re_extract",
+    "name": "re_extract",
+    "categories": "text",
+    "arguments": ["text", "pattern", "index"],
     "description": "Returns specified index, 0 indexed, from string based on regex pattern given"
   },
-  { "id": "re_replace", "description": "Replaces match found by regex with replacement string." },
-  { "id": "re_search", "description": "Search string values using a regular expression." },
-  { "id": "repeat", "description": "Repeat text n times" },
-  { "id": "replace", "description": "Replace text with another text" },
-  { "id": "reverse", "description": "Reverse text order" },
-  { "id": "right", "description": "Return up to n characters starting from end of each text." },
-  { "id": "round", "description": "Round value to n decimal" },
+  {
+    "id": "re_replace",
+    "name": "re_replace",
+    "categories": "text",
+    "arguments": ["text", "pattern", "relacement"],
+    "description": "Replaces match found by regex with replacement string."
+  },
+  {
+    "id": "re_search",
+    "name": "re_search",
+    "categories": "text",
+    "arguments": ["text", "pattern"],
+    "description": "Search string values using a regular expression."
+  },
+  {
+    "id": "repeat",
+    "name": "repeat",
+    "categories": "text",
+    "arguments": ["text", "n"],
+    "description": "Repeat text n times"
+  },
+  {
+    "id": "replace",
+    "name": "replace",
+    "categories": "text",
+    "arguments": ["text", "pattern", "replacement"],
+    "description": "Replaces each exactly occurrence of pattern with given replacement string."
+  },
+  {
+    "id": "reverse",
+    "name": "reverse",
+    "categories": "text",
+    "arguments": ["text"],
+    "description": "Reverse text order"
+  },
+  {
+    "id": "right",
+    "name": "right",
+    "categories": "text",
+    "arguments": ["text", "nchars"],
+    "description": "Return up to n characters starting from end of each text."
+  },
+  {
+    "id": "round",
+    "name": "round",
+    "categories": "numeric",
+    "arguments": ["value", "digits"],
+    "description": "Round value to n decimal"
+  },
   {
     "id": "rpad",
+    "name": "rpad",
+    "categories": "text",
+    "arguments": ["text", "length", "*fillchar"],
     "description": "Returns string of given length by truncating (on right) or padding (on right) original string"
   },
-  { "id": "rstrip", "description": "Remove white space on the right of text" },
-  { "id": "second", "description": "Get the seconds from time or timestamp" },
-  { "id": "sqrt", "description": "Calculate the square root" },
-  { "id": "strftime", "description": "Format timestamp into string with given format" },
-  { "id": "strip", "description": "Remove white space surrounding the text" },
-  { "id": "sub", "description": "Substract value from value" },
-  { "id": "substitute", "description": "Replace one or more values" },
+  {
+    "id": "rstrip",
+    "name": "rstrip",
+    "categories": "text",
+    "arguments": ["text"],
+    "description": "Remove white space on the right of text"
+  },
+  {
+    "id": "second",
+    "name": "second",
+    "categories": "date and time",
+    "arguments": ["time"],
+    "description": "Get the seconds from time or timestamp"
+  },
+  {
+    "id": "sqrt",
+    "name": "sqrt",
+    "categories": "numeric",
+    "arguments": ["value"],
+    "description": "Calculate the square root"
+  },
+  {
+    "id": "strftime",
+    "name": "strftime",
+    "categories": "date and time",
+    "arguments": ["datetime", "format"],
+    "description": "Format timestamp into string with given format"
+  },
+  {
+    "id": "strip",
+    "name": "strip",
+    "categories": "text",
+    "arguments": ["text"],
+    "description": "Remove white space surrounding the text"
+  },
+  {
+    "id": "sub",
+    "name": "sub",
+    "categories": "numeric",
+    "arguments": ["minuend", "subtrahend"],
+    "description": "Substract value from value"
+  },
+  {
+    "id": "substitute",
+    "name": "substitute",
+    "categories": "text",
+    "arguments": ["text", "value", "*replace", "*else"],
+    "description": "Replace one or more values"
+  },
   {
     "id": "substr",
+    "name": "substr",
+    "categories": "text",
+    "arguments": ["text", "start", "*length"],
     "description": "Pull substrings out of each string value by position and maximum length."
   },
-  { "id": "time", "description": "Get the month from a timestamp" },
+  {
+    "id": "time",
+    "name": "time",
+    "categories": "date and time",
+    "arguments": ["datetime"],
+    "description": "Get the month from a timestamp"
+  },
   {
     "id": "translate",
-    "description": "Returns text with set of ‘from’ characters replaced by set of ‘to’ characters."
+    "name": "translate",
+    "categories": "text",
+    "arguments": ["from", "to"],
+    "description": "Returns text with set of \\u2018from\\u2019 characters replaced by set of \\u2018to\\u2019 characters."
   },
-  { "id": "truncate", "description": "Zero out smaller-size units beyond indicated unit" },
-  { "id": "upper", "description": "Capitalize text." },
-  { "id": "year", "description": "Get the year from date" }
+  {
+    "id": "truncate",
+    "name": "truncate",
+    "categories": "date and time",
+    "arguments": ["datetime", "unit"],
+    "description": "Zero out smaller-size units beyond indicated unit"
+  },
+  {
+    "id": "upper",
+    "name": "upper",
+    "categories": "text",
+    "arguments": ["text"],
+    "description": "Capitalize text."
+  },
+  {
+    "id": "year",
+    "name": "year",
+    "categories": "date and time",
+    "arguments": ["date"],
+    "description": "Get the year from date"
+  }
 ]

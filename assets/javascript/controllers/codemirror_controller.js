@@ -15,6 +15,8 @@ export default class extends Controller {
       className: 'text-pink',
     }))
 
+    const readOnly = this.textareaTarget.attributes['readonly'] ? 'nocursor' : false
+
     this.CodeMirror = CodeMirror.fromTextArea(this.textareaTarget, {
       mode: 'gyanaformula',
       hintOptions: {
@@ -22,6 +24,7 @@ export default class extends Controller {
       },
       autoCloseBrackets: true,
       matchBrackets: true,
+      readOnly,
     })
 
     // From https://stackoverflow.com/a/54377763

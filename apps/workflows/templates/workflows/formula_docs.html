@@ -20,8 +20,10 @@
       ["Revenue", "Cost", "Tax"]
     </script>
       <textarea data-codemirror-target='textarea'
-                class="textarea"
-                name="{{ widget.name }}">(Revenue - Cost)*(Tax/100)</textarea>
+        class="textarea"
+        name="{{ widget.name }}"
+        readonly
+      >(Revenue - Cost)*(Tax/100)</textarea>
     </div>
 
     <h4>Create full names</h4>
@@ -34,15 +36,19 @@
       ["last_name", "first_name"]
     </script>
         <textarea data-codemirror-target='textarea'
-                  class="textarea"
-                  name="{{ widget.name }}">join(strip(first_name), " ", strip(last_name))</textarea>
+          class="textarea"
+          name="{{ widget.name }}"
+          readonly
+        >join(strip(first_name), " ", strip(last_name))</textarea>
       </div>
     </span>
     <h2>Functions</h2>
     <div class="functions">
       {%for function in "lib/functions.json"|read_json %}
       <div class='function-pill'>
-        <h4>{{function.id}}</h4>
+        <h4>{{function.name}}(<em>
+          {{function.arguments|join:", "}}
+        </em>)</h4>
         <span>{{ function.description }}</span>
       </div>
       {% endfor %}
