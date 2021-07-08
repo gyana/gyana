@@ -103,6 +103,26 @@
   }
 }
 
+.table-data {
+  @extend .table;
+
+  thead th {
+    padding: 1.2rem 0.8rem;
+
+    & + th {
+      border-left: 1px solid var(--c-gray);
+    }
+  }
+
+  tbody td {
+    padding: 0.8rem;
+
+    & + td {
+      border-left: 1px solid var(--c-gray);
+    }
+  }
+}
+
 .pagination {
   display: flex;
   padding: 1.6rem;
