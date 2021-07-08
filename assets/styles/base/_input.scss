@@ -126,18 +126,32 @@ input.input,
 }
 
 label.checkbox {
-  border-radius: 5px;
+  border-radius: 6px;
   border: 1px solid var(--c-gray);
   color: var(--c-black-50);
   cursor: pointer;
   display: flex;
   flex-direction: row;
-  margin-bottom: 0.1rem;
-  padding: 0.5rem;
+  margin-top: 0.6rem;
+  padding: 0.8rem;
+
+  &::after {
+    color: var(--c-gray);
+    content: '\f0c8';
+    font-family: "Font Awesome 5 Pro";
+    font-size: 1.8rem;
+    font-weight: 500;
+    margin-left: auto;
+  }
 
   &:hover {
     background-color: var(--c-gray-20);
+
+    &::after {
+      content: '\f14a';
+    }
   }
+
 }
 
 label.checkbox__checked {
@@ -148,17 +162,20 @@ label.checkbox__checked {
     color: var(--c-blue);
   }
 }
+
 // based on https://www.sarasoueidan.com/blog/inclusively-hiding-and-styling-checkboxes-and-radio-buttons/
 .checkbox__hidden {
-  /* remove the checkbox from flow */
+  opacity: 0;
   position: absolute;
 
-  /* hide it visually */
-  opacity: 0;
-}
-
-// Inspired by https://css-tricks.com/the-checkbox-hack/
-.checkbox__hidden:checked ~ label.checkbox {
-  border: 1px solid var(--c-blue);
-  color: var(--c-black);
+  // Inspired by https://css-tricks.com/the-checkbox-hack/
+  &:checked ~ label.checkbox {
+    border: 1px solid var(--c-blue);
+    color: var(--c-black);
+  
+    &::after {
+      color: var(--c-blue);
+      content: '\f14a';
+    }
+  }
 }
