@@ -21,4 +21,8 @@ form.form--no-layout {
   &--row {
     flex-flow: row;
   }
+
+  & + & {
+    margin-top: 0.6rem;
+  }
 }
