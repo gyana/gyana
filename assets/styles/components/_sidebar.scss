@@ -45,6 +45,21 @@
     }
   }
 
+  &__bar {
+    position: relative;
+
+    &::after {
+      background-color: var(--c-gray);
+      content: '';
+      height: 1.6rem;
+      left: 2.3rem;
+      position: absolute;
+      top: 50%;
+      transform: translate(0, -50%);
+      width: 0.3rem;
+    }
+  }
+
   &__title {
     align-items: center;
     border-bottom: 1px solid var(--c-gray);

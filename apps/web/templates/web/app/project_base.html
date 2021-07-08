@@ -21,12 +21,16 @@
   </a>
 </li>
 
+<li class="sidebar__bar"></li>
+
 <li>
   <a class="sidebar__link {% if app_name == "project_workflows" %}sidebar__link--active{% endif %}"
      href="{% url 'project_workflows:list' project.id %}">
     <i class="far fa-fw fa-sitemap mr-6"></i>Workflows
   </a>
 </li>
+
+<li class="sidebar__bar"></li>
 
 <li>
   <a class="sidebar__link {% if app_name == "project_dashboards" or app_name == "dashboard_widgets" %}sidebar__link--active{% endif %}"
