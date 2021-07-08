@@ -8,19 +8,18 @@
     </div>
 
     <form class="form--no-layout overflow-hidden flex-1"
-      action="{% url 'workflows:node' workflow.id node.id %}"
-      method="post"
-      {% if do_live_updates %}
-      data-controller="live-update trigger"
-      {% else %}
-      data-controller="trigger"
-      {% endif %}
-      data-trigger-event-value="node-updated-{{ node.id }}"
-      data-action="submit->trigger#dispatch change->tf-modal#change"
-      data-tf-modal-target='form'
-      id="config-form"
-      data-live-update-form-value="config-form"
-    >
+          action="{% url 'workflows:node' workflow.id node.id %}"
+          method="post"
+          {% if do_live_updates %}
+          data-controller="live-update trigger"
+          {% else %}
+          data-controller="trigger"
+          {% endif %}
+          data-trigger-event-value="node-updated-{{ node.id }}"
+          data-action="submit->trigger#dispatch change->tf-modal#change"
+          data-tf-modal-target='form'
+          id="config-form"
+          data-live-update-form-value="config-form">
       <div class="workflow-detail__sidebar">
         {{ form.media }}
         {% if filters_formset %}
@@ -102,36 +101,31 @@
 
       <div class='workflow-modal__footer'>
         <div class="flex flex-1 gap-7 pad">
-          <input 
-            type='submit' class="button button--success"
-            data-controller="trigger"
-            data-action="click->tf-modal#forceClose click->trigger#dispatch"
-            data-trigger-event-value="update-workflow"
-            name='submit'
-            value='Save & Close' 
-          />
-          <input
-            type='submit'
-            class="button button--outline button--success"
-            name='submit'
-            data-controller="trigger"
-            data-action="click->tf-modal#save click->trigger#dispatch"
-            data-trigger-event-value="update-workflow"
-            value='Save & Preview' 
-          />
+          <input type='submit' class="button button--success"
+                 data-controller="trigger"
+                 data-action="click->tf-modal#forceClose click->trigger#dispatch"
+                 data-trigger-event-value="update-workflow"
+                 name='submit'
+                 value='Save & Close' />
+          <input type='submit'
+                 class="button button--outline button--success"
+                 name='submit'
+                 data-controller="trigger"
+                 data-action="click->tf-modal#save click->trigger#dispatch"
+                 data-trigger-event-value="update-workflow"
+                 value='Save & Preview' />
         </div>
       </div>
     </form>
-  </div>  
+  </div>
 
   <div class="workflow-modal__section">
     <div class="workflow-modal__table">
       <nav class="tabbar">
         {% if node.kind == "formula"%}
         <a class="tabbar__link {% if show_docs %} tabbar__link--active {% endif %}"
-           href="{% url 'workflows:node' workflow.id object.id %}?show_docs=true"
-        >
-          Docs
+           href="{% url 'workflows:node' workflow.id object.id %}?show_docs=true">
+          Formula Help
         </a>
         {% endif %}
         {% for parent in parents %}
@@ -146,14 +140,14 @@
         </a>
       </nav>
       {% if show_docs%}
-        {% include "workflows/formula_docs.html" %}
+      {% include "workflows/formula_docs.html" %}
       {% else%}
-        <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id preview_node_id %}">
-          <div class='placeholder-scr placeholder-scr--fillscreen'>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-            <p class='placeholder-scr__title'>Loading preview...</p>
-          </div>
-        </turbo-frame>
+      <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id preview_node_id %}">
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          <p class='placeholder-scr__title'>Loading preview...</p>
+        </div>
+      </turbo-frame>
       {% endif %}
     </div>
     {% else %}

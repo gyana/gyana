@@ -1,54 +1,50 @@
 {% load custom_tags %}
 <div class="workflow-node__formula">
   <h1>Formula Docs</h2>
-  <span class="text-xl">
-    The formula node supports arbitrary arithmetic operations between numeric
-    columns and column transformations through function library (see below).
-  </span>
+    <span class="text-xl">
+      The formula node supports arbitrary arithmetic operations between numeric
+      columns and column transformations through function library (see below).
+    </span>
 
-  <h3>Examples</h3>
+    <h3>Examples</h3>
 
-  <h4>Payable tax</h4>
+    <h4>Payable tax</h4>
 
-  <span class="text-xl">
-    To calculate the payable tax on our profits, we can substract the 
-    <strong>Cost</strong> from <strong>Revenue</strong> and multiple the resulting 
-    <strong>Profit</strong> with the <strong>Tax</strong> value.
-  </span>
-  <div data-controller='codemirror'>
-    <script id="columns" type="application/json">
+    <span class="text-xl">
+      To calculate the payable tax on our profits, we can substract the
+      <strong>Cost</strong> from <strong>Revenue</strong> and multiple the resulting
+      <strong>Profit</strong> with the <strong>Tax</strong> value.
+    </span>
+    <div data-controller='codemirror'>
+      <script id="columns" type="application/json">
       ["Revenue", "Cost", "Tax"]
     </script>
-    <textarea data-codemirror-target='textarea'
-      class="textarea"
-      name="{{ widget.name }}"
-      >(Revenue - Cost)*(Tax/100)</textarea>
-  </div>
+      <textarea data-codemirror-target='textarea'
+                class="textarea"
+                name="{{ widget.name }}">(Revenue - Cost)*(Tax/100)</textarea>
+    </div>
 
-  <h4>Create full names</h4>
-  <span class="text-xl">
-  To generate full names, we can combine the <strong>first_name</strong>
-  and <strong>last_name</strong> columns. We also clean the names from unnecessary
-  whitespace.
-  <div data-controller='codemirror'>
-    <script id="columns" type="application/json">
+    <h4>Create full names</h4>
+    <span class="text-xl">
+      To generate full names, we can combine the <strong>first_name</strong>
+      and <strong>last_name</strong> columns. We also clean the names from unnecessary
+      whitespace.
+      <div data-controller='codemirror'>
+        <script id="columns" type="application/json">
       ["last_name", "first_name"]
     </script>
-    <textarea data-codemirror-target='textarea'
-      class="textarea"
-      name="{{ widget.name }}"
-      >join(strip(first_name), " ", strip(last_name))</textarea>
-  </div>
-  </span>
-  <h2>Functions</h2>
-  <div class="overflow-y-auto">
+        <textarea data-codemirror-target='textarea'
+                  class="textarea"
+                  name="{{ widget.name }}">join(strip(first_name), " ", strip(last_name))</textarea>
+      </div>
+    </span>
+    <h2>Functions</h2>
     <div class="functions">
       {%for function in "lib/functions.json"|read_json %}
-        <div class='function-pill'>
-          <h4>{{function.id}}</h4>
-          <span>{{ function.description }}</span>
-        </div>
+      <div class='function-pill'>
+        <h4>{{function.id}}</h4>
+        <span>{{ function.description }}</span>
+      </div>
       {% endfor %}
     </div>
-  </div>
 </div>
