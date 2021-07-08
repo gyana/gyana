@@ -16,14 +16,9 @@
       padding: 1.2rem 1.6rem;
       text-align: left;
       white-space: nowrap;
-
-      &:first-child {
-        border-top-left-radius: 10px;
-      }
       
       &:last-child {
         width: 100%;
-        border-top-right-radius: 10px;
       }
     }
 
@@ -73,6 +68,17 @@
     
     &:hover {
       text-decoration: underline;
+    }
+  }
+
+  .card & thead th {
+    &:first-child {
+      border-top-left-radius: 10px;
+    }
+    
+    &:last-child {
+      width: 100%;
+      border-top-right-radius: 10px;
     }
   }
 }
