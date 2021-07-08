@@ -12,10 +12,10 @@ let auth = new coreapi.auth.SessionAuthentication({
 let client = new coreapi.Client({ auth: auth })
 class ReactDndFlow extends HTMLElement {
   connectedCallback() {
-    // this.appendChild(mountPoint)
+    const workflowId = this.attributes['workflowId'].value
     ReactDOM.render(
       <ReactFlowProvider>
-        <DnDFlow client={client} />
+        <DnDFlow client={client} workflowId={workflowId} />
       </ReactFlowProvider>,
       this
     )

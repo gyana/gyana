@@ -19,9 +19,10 @@
   </div>
   <div data-controller='popover'>
     <span
-          data-popover-target="trigger"
-          data-action="click->popover#trigger"
-          class="button button--circle button--tertiary cursor-pointer">
+      data-popover-target="trigger"
+      data-action="click->popover#trigger"
+      class="button button--circle button--tertiary cursor-pointer"
+    >
       <i class="far fa-fw fa-trash"></i>
     </span>
     <div data-popover-target="body" hidden class="popover-body shadow-sm">
@@ -58,7 +59,7 @@
     </div>
   </div>
 
-  <dnd-flow class='w-full'></dnd-flow>
+  <dnd-flow class='w-full' workflowId="{{ object.id }}"></dnd-flow>
 </div>
 {{ nodes|json_script:'nodes' }}
 

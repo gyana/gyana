@@ -26,7 +26,7 @@ import './styles/_react-flow.scss'
 const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
 const GRID_GAP = 20
 
-const DnDFlow = ({ client }) => {
+const DnDFlow = ({ client, workflowId }) => {
   const reactFlowWrapper = useRef(null)
   const [reactFlowInstance, setReactFlowInstance] = useState(null)
   const [elements, setElements] = useState<(Edge | Node)[]>([])
@@ -35,9 +35,6 @@ const DnDFlow = ({ client }) => {
   const [hasBeenRun, setHasBeenRun] = useState(false)
   // State whether the initial element load has been done
   const [initialLoad, setInitialLoad] = useState(false)
-
-  // TODO: Make more robust to url changes
-  const workflowId = window.location.pathname.split('/')[4]
 
   const updateParents = (id: string, parents: string[]) =>
     client.action(window.schema, ['workflows', 'api', 'nodes', 'partial_update'], {
@@ -236,7 +233,7 @@ const DnDFlow = ({ client }) => {
   return (
     <div className='dndflow'>
       <div className='reactflow-wrapper' ref={reactFlowWrapper}>
-        <NodeContext.Provider value={{ removeById, client, getIncomingNodes, addNode }}>
+        <NodeContext.Provider value={{ removeById, client, getIncomingNodes, addNode, workflowId }}>
           <ReactFlow
             nodeTypes={defaultNodeTypes}
             elements={elements}
