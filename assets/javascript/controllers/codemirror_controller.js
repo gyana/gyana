@@ -6,6 +6,9 @@ import 'codemirror/addon/edit/closebrackets.js'
 import 'codemirror/addon/edit/matchbrackets.js'
 import 'codemirror/addon/display/placeholder.js'
 
+// TODO: can we make this not relative ?
+const functions = require('../../../lib/functions.json')
+
 export default class extends Controller {
   static targets = ['textarea']
   connect() {
@@ -41,68 +44,7 @@ export default class extends Controller {
   }
 }
 
-const operations = [
-  'abs',
-  'add',
-  'between',
-  'case',
-  'cast',
-  'ceil',
-  'coalesce',
-  'date',
-  'day',
-  'day_of_week',
-  'div',
-  'epoch_seconds',
-  'exp',
-  'find',
-  'floor',
-  'fillna',
-  'hash',
-  'hour',
-  'ifelse',
-  'isnull',
-  'join',
-  'left',
-  'length',
-  'like',
-  'ln',
-  'log',
-  'log2',
-  'log10',
-  'lower',
-  'lpad',
-  'lstrip',
-  'millisecond',
-  'minute',
-  'month',
-  'mul',
-  'notnull',
-  'pow',
-  're_extract',
-  're_replace',
-  're_search',
-  'repeat',
-  'rlike',
-  'replace',
-  'reverse',
-  'right',
-  'round',
-  'rpad',
-  'rstrip',
-  'second',
-  'sqrt',
-  'strftime',
-  'strip',
-  'sub',
-  'substitute',
-  'substr',
-  'time',
-  'translate',
-  'truncate',
-  'upper',
-  'year',
-]
+const operations = functions.map((f) => f.name)
 
 CodeMirror.defineSimpleMode('gyanaformula', {
   // The start state contains the rules that are initially used
@@ -118,6 +60,7 @@ CodeMirror.defineSimpleMode('gyanaformula', {
     { regex: /[-+\/*=<>!]+/, token: 'operator' },
   ],
 })
+
 const operationCompletions = operations.map((op) => ({ text: op, className: 'text-blue' }))
 
 const autocomplete = (columns) => (editor, option) => {

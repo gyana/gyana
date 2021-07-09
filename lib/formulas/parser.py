@@ -1,7 +1,14 @@
+import json
+
 import ibis
 from lark import Lark, Transformer, v_args
 
 parser = Lark.open("formula.lark", rel_to=__file__, start="formula")
+
+with open("lib/functions.json", "r") as file:
+    data = file.read()
+
+FUNCTIONS = json.loads(data)
 
 
 @v_args(inline=True)
@@ -27,7 +34,11 @@ class TreeToIbis(Transformer):
     def function(self, token, *args):
         args = list(args)
         caller = args.pop(0)
-        func = getattr(caller, token.value.lower())
+        function_name = token.value.lower()
+        function_id = next(filter(lambda f: f["name"] == function_name, FUNCTIONS))[
+            "id"
+        ]
+        func = getattr(caller, function_id)
 
         return func(*args)
 
