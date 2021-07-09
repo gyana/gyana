@@ -160,6 +160,11 @@ label.checkbox__checked {
   i {
     color: var(--c-blue);
   }
+
+  &::after {
+    color: var(--c-blue);
+    content: '\f14a';
+  }
 }
 
 // based on https://www.sarasoueidan.com/blog/inclusively-hiding-and-styling-checkboxes-and-radio-buttons/
