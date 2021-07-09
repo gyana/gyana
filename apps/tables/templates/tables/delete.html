@@ -6,7 +6,8 @@
   <p>Are you sure you want to delete?</p>
   <form method="post" action="{% url 'tables:delete' object.id %}">
     {% csrf_token %}
-    <div className='flex flex-row'>
+
+    <div class='flex flex-row'>
       <button type="submit" class="button button--danger">Yes</button>
       <a href="{% url 'tables:list' %}"
          class="button button--tertiary">

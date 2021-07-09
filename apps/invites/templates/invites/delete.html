@@ -1,14 +1,18 @@
-
 {% extends "teams/base.html" %}
 
 {% block tab %}
 <h1>Delete</h1>
-<p>Are you sure you want to delete?</p>
+<p>Are you sure you want to delete this invite?</p>
 <form method="post"
       action="{% url 'team_invites:delete' team.id object.id %}">
-  {% csrf_token %}
-  <input type="submit" value="Yes" class="btn btn-danger" />
-  <a href="{% url 'team_invites:list' team.id %}"
-     class="btn btn-default">No</a>
+    {% csrf_token %}
+
+    <div class='flex flex-row gap-7 mt-7'>
+        <button type="submit" class="button button--outline button--danger">Yes</button>
+        <a href="% url 'team_invites:list' team.id %}"
+           class="button">
+            No
+        </a>
+    </div>
 </form>
-{% endblock %} 
+{% endblock %}
