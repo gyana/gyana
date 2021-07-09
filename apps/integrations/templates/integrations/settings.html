@@ -2,9 +2,6 @@
 
 {% block tab %}
 <div class="mb-auto">
-  <h2>Edit</h2>
-  <p>You can edit this integration's settings here</p>
-
   <form method="post" action="{% url 'project_integrations:update' project.id object.id %}" class="form">
     {% csrf_token %}
 
