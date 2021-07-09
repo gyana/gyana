@@ -71,7 +71,7 @@
     }
   }
 
-  .card & thead th {
+  .card > .table-container & thead th {
     &:first-child {
       border-top-left-radius: 10px;
     }
