@@ -7,6 +7,7 @@
 
     <span>
       {{ bound_field.label }}
+      <p class=" input__help-text">{{ bound_field.help_text }}</p>
       {% if not bound_field.field.required %}<small><i>- optional</i></small>{% endif %}
     </span>
   </label>
@@ -14,17 +15,19 @@
   <label>
     <span>
       {{ bound_field.label }}
+      <p class=" input__help-text">{{ bound_field.help_text }}</p>
       {% if not bound_field.field.required %}<small><i>- optional</i></small>{% endif %}
     </span>
 
     {{ bound_field }}
   </label>
   {% else %}
-  <label for="{{ bound_field.id_for_label }}">{{ bound_field.label }}</label>
+  <label for="{{ bound_field.id_for_label }}">
+    {{ bound_field.label }}
+    <p class=" input__help-text">{{ bound_field.help_text }}</p>
+  </label>
   {{ bound_field }}
   {% endif %}
-
-  <p class=" input__help-text">{{ bound_field.help_text }}</p>
 
   {% if not form.is_live %}
   {{ bound_field.errors }}

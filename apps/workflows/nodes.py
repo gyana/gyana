@@ -30,14 +30,12 @@ def get_select_query(node):
     if node.select_mode == "keep":
         return parent_query.projection(columns or [])
 
-    return parent_query.projection(
-        [col for col in parent_query.schema() if col not in columns]
-    )
+    return parent_query.drop(columns)
 
 
 def get_duplicate_names(left, right):
-    left_names = {name for name in left.schema()}
-    right_names = {name for name in right.schema()}
+    left_names = set(left.schema())
+    right_names = set(right.schema())
     return left_names & right_names
 
 
@@ -238,7 +236,7 @@ def get_add_query(node):
 def get_rename_query(node):
     query = node.parents.first().get_query()
     parent = node.parents.first()
-    columns = [name for name in parent.schema]
+    columns = parent.schema.names
 
     for rename in node.rename_columns.all():
         idx = columns.index(rename.column)

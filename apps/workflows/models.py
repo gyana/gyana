@@ -228,14 +228,23 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
     # ======== Node specific columns ========= #
 
     # Input
-    input_table = models.ForeignKey(Table, on_delete=models.CASCADE, null=True)
+    input_table = models.ForeignKey(
+        Table, on_delete=models.CASCADE, null=True, help_text="Select a data source"
+    )
 
     # Output
-    output_name = models.CharField(max_length=100, null=True)
+    output_name = models.CharField(
+        max_length=100,
+        null=True,
+        help_text="Name your output, this name will be refered to in other workflows or dashboards.",
+    )
 
     # Select also uses columns
     select_mode = models.CharField(
-        max_length=8, choices=(("keep", "keep"), ("exclude", "exclude")), default="keep"
+        max_length=8,
+        choices=(("keep", "keep"), ("exclude", "exclude")),
+        default="keep",
+        help_text="Either keep or exclude the selected columns",
     )
     # Distinct
     # columns exists on Column as FK
@@ -254,12 +263,19 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
             ("right", "Right"),
         ],
         default="inner",
+        help_text="Select the join method, more information in the docs",
     )
     join_left = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="The column from the first parent you want to join on.",
     )
     join_right = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="The column from the second parent you want to join on.",
     )
 
     # Union
@@ -268,8 +284,11 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
         max_length=8,
         choices=(("keep", "keep"), ("exclude", "exclude")),
         default="except",
+        help_text="Either keep or exclude the common rows",
     )
-    union_distinct = models.BooleanField(default=False)
+    union_distinct = models.BooleanField(
+        default=False, help_text="Ignore common rows if selected"
+    )
 
     # Filter
     # handled by the Filter model in *apps/filters/models.py*
@@ -279,31 +298,54 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
 
     # Limit
 
-    limit_limit = models.IntegerField(default=100)
-    limit_offset = models.IntegerField(null=True)
+    limit_limit = models.IntegerField(
+        default=100, help_text="Limits rows to selected number"
+    )
+    limit_offset = models.IntegerField(
+        null=True, help_text="From where to start the limit"
+    )
 
     # Text
     text_text = models.TextField(null=True)
 
     # Pivot
     pivot_index = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="Which column to keep as index",
     )
     pivot_column = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="The column whose values create the new column names",
     )
     pivot_value = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="The column containing the values for the new pivot cells",
     )
     pivot_aggregation = models.CharField(
-        max_length=20, choices=AggregationFunctions.choices, null=True, blank=True
+        max_length=20,
+        choices=AggregationFunctions.choices,
+        null=True,
+        blank=True,
+        help_text="Select an aggregation to be applied to the new cells",
     )
 
     unpivot_value = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="Name of the new value column",
     )
     unpivot_column = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="Name of the new category column",
     )
 
     def save(self, *args, **kwargs):
@@ -361,7 +403,9 @@ class SaveParentModel(DirtyFieldsMixin, CloneMixin, models.Model):
 
 
 class Column(SaveParentModel):
-    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, help_text="Select columns"
+    )
     node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="columns")
 
 
@@ -385,8 +429,13 @@ class SortColumn(SaveParentModel):
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="sort_columns"
     )
-    ascending = models.BooleanField(default=True)
-    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    ascending = models.BooleanField(
+        default=True, help_text="Select to sort ascendingly"
+    )
+    column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        help_text="Select column to sort on",
+    )
 
 
 class AbstractOperationColumn(SaveParentModel):
