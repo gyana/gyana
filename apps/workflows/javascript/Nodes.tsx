@@ -3,10 +3,10 @@ import { Handle, NodeProps, Position, Node, useStoreState } from 'react-flow-ren
 import { useDebouncedCallback } from 'use-debounce'
 
 export const NodeContext = createContext({
-  removeById: (id: string) => {},
+  removeById: (id: string) => { },
   client: null,
   getIncomingNodes: (id: string): [Node, Node[]] | null => null,
-  addNode: (node) => {},
+  addNode: (node) => { },
   workflowId: '',
 })
 
@@ -149,13 +149,7 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
       {data.error && <ErrorIcon text={data.error} />}
       <NodeName id={id} name={data.label} />
 
-      {!showContent && (
-        <i
-          data-action='dblclick->tf-modal#open'
-          data-src={`/workflows/${workflowId}/nodes/${id}`}
-          className={`fas fa-fw ${data.icon}`}
-        ></i>
-      )}
+      <i className={`fas fa-fw ${data.icon} ${showContent && 'absolute opacity-10'}`}></i>
       {showContent && (
         <div className='p-2'>
           <Description id={id} data={data} />
@@ -182,13 +176,12 @@ const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
       {showWarning && <WarningIcon text='Output needs to be connected!' />}
       <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
 
-      {!showContent && (
-        <i
-          data-action='dblclick->tf-modal#open'
-          data-src={`/workflows/${workflowId}/nodes/${id}`}
-          className={`fas fa-fw ${data.icon}`}
-        ></i>
-      )}
+
+      <i
+        data-action='dblclick->tf-modal#open'
+        data-src={`/workflows/${workflowId}/nodes/${id}`}
+        className={`fas fa-fw ${data.icon} ${showContent && 'absolute opacity-10'}`}
+      ></i>
       {showContent && (
         <div className='p-2'>
           <Description id={id} data={data} />
@@ -223,13 +216,11 @@ const DefaultNode = ({
       {showWarning && <WarningIcon text={`${data.label} node needs to be connected to a node`} />}
       <Handle type='target' position={targetPosition} isConnectable={isConnectable} />
 
-      {!showContent && (
-        <i
-          data-action='dblclick->tf-modal#open'
-          data-src={`/workflows/${workflowId}/nodes/${id}`}
-          className={`fas fa-fw ${data.icon}`}
-        ></i>
-      )}
+      <i
+        data-action='dblclick->tf-modal#open'
+        data-src={`/workflows/${workflowId}/nodes/${id}`}
+        className={`fas fa-fw ${data.icon} ${showContent && 'absolute opacity-10'}`}
+      ></i>
       {showContent && <Description id={id} data={data} />}
 
       <NodeName id={id} name={data.label} />
