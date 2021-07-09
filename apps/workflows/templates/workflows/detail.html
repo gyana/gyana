@@ -19,10 +19,9 @@
   </div>
   <div data-controller='popover'>
     <span
-      data-popover-target="trigger"
-      data-action="click->popover#trigger"
-      class="button button--circle button--tertiary cursor-pointer"
-    >
+          data-popover-target="trigger"
+          data-action="click->popover#trigger"
+          class="button button--circle button--tertiary cursor-pointer">
       <i class="far fa-fw fa-trash"></i>
     </span>
     <div data-popover-target="body" hidden class="popover-body shadow-sm">
@@ -47,13 +46,17 @@
       </turbo-frame>
     </div>
     <div data-tf-modal-target='closingWarning' class='tf-modal flex items-center justify-center hidden'>
-      <div class='card card--sm card--inline flex flex-col items-center'>
-        <span class='text-xl font-medium'>
-          You have unsaved changes that will be lost on closing!
-        </span>
-        <div class='flex flex-row gap-7 pad'>
-          <button class='button button--warning button--sm' data-action="click->tf-modal#forceClose click->tf-modal#closeWarning" >Close anyway</button>
-          <button class='button button--success button--sm' data-action="click->tf-modal#closeWarning">Go back</button>
+      <div class='card card--sm card--inline flex flex-col'>
+        <h3>Be careful!</h3>
+        <p class="mb-7">You have unsaved changes that will be lost on closing!</p>
+        <div class='flex flex-row gap-7'>
+          <button class='button button--success button--sm flex-1' data-action="click->tf-modal#closeWarning">
+            Stay
+          </button>
+          <button class='button button--danger button--outline button--sm flex-1'
+                  data-action="click->tf-modal#forceClose click->tf-modal#closeWarning">
+            Close Anyway
+          </button>
         </div>
       </div>
     </div>
