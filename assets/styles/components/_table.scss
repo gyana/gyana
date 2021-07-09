@@ -62,7 +62,7 @@
     }
   }
 
-  td a[href] {
+  td a[href]:not(.button) {
     color: var(--c-blue);
     padding: 1.2rem 0; 
     

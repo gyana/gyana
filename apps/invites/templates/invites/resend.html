@@ -1,10 +1,19 @@
 {% load humanize %}
 
-<turbo-frame id="resend-{{ record.id }}">
-    {% if record.expired %}Expired{% endif %}
-    Last sent: {{ record.sent|naturaltime }}
-    <form method="post" action="{% url 'team_invites:resend' record.team.id record.id %}" class="form">
-        {% csrf_token %}
-        <button type="submit">Resend</button>
-    </form>
-</turbo-frame>
+<div class="flex gap-3">
+    <turbo-frame id="resend-{{ record.id }}">
+        {% if record.expired %}Expired{% endif %}
+        <form method="post" action="{% url 'team_invites:resend' record.team.id record.id %}" class="form">
+            {% csrf_token %}
+            <button class="button button--sm button--circle" type="submit" title="Re-send invite">
+                <i class="fas fa-fw fa-redo-alt"></i>
+            </button>
+        </form>
+    </turbo-frame>
+
+    <a href="{% url 'team_invites:delete' record.team.id record.id %}"
+       class="button button--sm button--danger button--circle"
+       title="Delete invite">
+        <i class="fas fa-fw fa-trash"></i>
+    </a>
+</div>
