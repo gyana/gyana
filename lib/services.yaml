@@ -42,8 +42,8 @@ facebook:
   requires_schema_prefix: f
   category: CRM & marketing
   static_config:
-facebook_ad_account:
-  name: Facebook Ad Account
+facebook_ads:
+  name: Facebook Ads
   color: '#4867AA'
   internal: f
   requires_schema_prefix: f

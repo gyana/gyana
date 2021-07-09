@@ -66,13 +66,17 @@ class FivetranClient:
             f"team_{self.integration.project.team.pk}_{service}_{self.integration.pk}"
         )
 
+        config = {"schema": schema, **(service_conf["static_config"] or {})}
+        if service_conf["requires_schema_prefix"] == "t":
+            config["schema_prefix"] = schema + "_"
+
         res = requests.post(
             f"{settings.FIVETRAN_URL}/connectors",
             json={
                 "service": service,
                 "group_id": settings.FIVETRAN_GROUP,
                 "run_setup_tests": False,
-                "config": {"schema": schema, **(service_conf["static_config"] or {})},
+                "config": config,
             },
             headers=settings.FIVETRAN_HEADERS,
         ).json()
