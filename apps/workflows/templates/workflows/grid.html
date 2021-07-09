@@ -1,14 +1,7 @@
 {% load render_table from django_tables2 %}
 
 <turbo-frame id="workflows-grid">
-  {% if node.data_updated is None and node.kind != "union" and node.kind != "intersect" %}
-    <div class='workflow-node__visual'>
-      <i class="fad fa-construction fa-6x text-orange-50"></i>
-      <span class="text-black-50 text-center">You have not set up this node.<br />
-      Fill out the form on the left 
-      and click <strong>Save & Preview</strong> to see the resulting table.</span>
-    </div>
-  {% elif node.error %}
+  {% if node.error %}
     <div class='workflow-node__visual'>
       <i class="fad fa-exclamation-triangle fa-6x text-red"></i>
       {% if error_template %}

@@ -123,12 +123,10 @@
   <div class="workflow-modal__section">
     <div class="workflow-modal__table">
       <nav class="tabbar">
-        {% if node.kind == "formula"%}
         <a class="tabbar__link {% if show_docs %} tabbar__link--active {% endif %}"
            href="{% url 'workflows:node' workflow.id object.id %}?show_docs=true">
-          Formula Help
+          Help
         </a>
-        {% endif %}
         {% for parent in parents %}
         <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
            href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ parent.id }}">
@@ -141,7 +139,7 @@
         </a>
       </nav>
       {% if show_docs%}
-      {% include "workflows/formula_docs.html" %}
+      {% include help_template %}
       {% else%}
       <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id preview_node_id %}">
         <div class='placeholder-scr placeholder-scr--fillscreen'>
