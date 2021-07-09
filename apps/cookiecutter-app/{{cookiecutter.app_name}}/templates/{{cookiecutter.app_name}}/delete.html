@@ -2,13 +2,15 @@
 {% extends "web/app/settings_base.html" %}
 
 {% block app %}
-<h1>Delete</h1>
-<p>Are you sure you want to delete?</p>
-<form method="post"
-      action="{% url '{% endraw %}{{cookiecutter.app_name}}{% raw %}:delete' object.id %}">
-  {% csrf_token %}
-  <input type="submit" value="Yes" class="btn btn-danger" />
-  <a href="{% url '{% endraw %}{{ cookiecutter.app_name }}{% raw %}:list' %}"
-     class="btn btn-default">No</a>
-</form>
+<div class="card card--sm">
+    <h1>Delete</h1>
+    <p>Are you sure you want to delete?</p>
+    <form method="post"
+          action="{% url '{% endraw %}{{cookiecutter.app_name}}{% raw %}:delete' object.id %}">
+        {% csrf_token %}
+        <input type="submit" value="Yes" class="btn btn-danger" />
+        <a href="{% url '{% endraw %}{{ cookiecutter.app_name }}{% raw %}:list' %}"
+           class="btn btn-default">No</a>
+    </form>
+</div>
 {% endblock %} {% endraw %}
