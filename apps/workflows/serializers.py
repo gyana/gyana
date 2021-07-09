@@ -1,7 +1,7 @@
 from apps.filters.models import Filter
 from rest_framework import serializers
 
-from .models import Node, Workflow
+from .models import Node, NodeConfig, Workflow
 
 
 class NodeSerializer(serializers.ModelSerializer):
@@ -120,6 +120,10 @@ def get_unpivot_desc(obj):
     return f"Unpivoting {' ,'.join([col.column for col in obj.columns.all()])} to {obj.unpivot_value})"
 
 
+def get_intersection_desc(obj):
+    return f"Intersection between {' ,'.join((parent.name or NodeConfig[parent.kind]['displayName'] for parent in obj.parents.all()))}"
+
+
 DESCRIPTIONS = {
     "input": get_input_desc,
     "limit": get_limit_desc,
@@ -138,4 +142,5 @@ DESCRIPTIONS = {
     "distinct": get_distinct_desc,
     "pivot": get_pivot_desc,
     "unpivot": get_unpivot_desc,
+    "intersect": get_intersection_desc,
 }

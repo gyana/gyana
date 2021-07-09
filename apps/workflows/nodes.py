@@ -104,6 +104,17 @@ def get_union_query(node):
     return query.projection(colnames)
 
 
+def get_intersect_query(node):
+    parents = node.parents.all()
+    query = parents[0].get_query()
+    colnames = query.schema()
+    for parent in parents[1:]:
+        query = query.intersect(parent.get_query())
+
+    # Need to `select *` so we can operate on the query
+    return query.projection(colnames)
+
+
 def get_sort_query(node):
     query = node.parents.first().get_query()
     sort_columns = [
@@ -391,4 +402,5 @@ NODE_FROM_CONFIG = {
     "distinct": get_distinct_query,
     "pivot": get_pivot_query,
     "unpivot": get_unpivot_query,
+    "intersect": get_intersect_query,
 }

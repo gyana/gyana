@@ -419,6 +419,7 @@ KIND_TO_FORM = {
     "distinct": SelectNodeForm,
     "pivot": PivotNodeForm,
     "unpivot": UnpivotNodeForm,
+    "intersect": DefaultNodeForm,
 }
 
 KIND_TO_FORMSETS = {

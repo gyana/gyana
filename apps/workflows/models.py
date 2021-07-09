@@ -152,6 +152,13 @@ NodeConfig = {
         "description": "Unpivot your table",
         "section": "Table manipulations",
     },
+    "intersect": {
+        "displayName": "Intersection",
+        "icon": "fa-intersection",
+        "description": "Find the common rows between tables",
+        "section": "Table manipulations",
+        "maxParents": -1,
+    },
 }
 
 
@@ -168,8 +175,8 @@ class AggregationFunctions(models.TextChoices):
 
 class Node(DirtyFieldsMixin, CloneMixin, models.Model):
     class Kind(models.TextChoices):
-        INPUT = "input", "Input"
-        OUTPUT = "output", "Output"
+        INPUT = "input", "Get data"
+        OUTPUT = "output", "Save data"
         SELECT = "select", "Select"
         JOIN = "join", "Join"
         AGGREGATION = "aggregation", "Aggregation"
@@ -185,6 +192,7 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
         DISTINCT = "distinct", "Distinct"
         PIVOT = "pivot", "Pivot"
         UNPIVOT = "unpivot", "Unpivot"
+        INTERSECT = "intersect", "Intersection"
 
     # You have to add new many-to-one relations here
     _clone_m2o_or_o2m_fields = [

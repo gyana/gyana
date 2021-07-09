@@ -17,7 +17,14 @@ def _collect_Difference(self, expr, toplevel=False):
         raise NotImplementedError()
 
 
+def _collect_Intersection(self, expr, toplevel=False):
+    if toplevel:
+        raise NotImplementedError()
+
+
 compiler.SelectBuilder._collect_Difference = _collect_Difference
+compiler.SelectBuilder._collect_Intersection = _collect_Intersection
+
 
 compiler.QueryBuilder.intersect_class = Intersection
 compiler.QueryBuilder.difference_class = Difference
