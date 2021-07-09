@@ -17,7 +17,6 @@
     height: 12rem;
     width: 12rem;
 
-    &:hover,
     &.selected {
       border: 2px solid var(--c-blue);
     }
@@ -26,7 +25,6 @@
       color: var(--c-pink);
       border-radius: 100%;
 
-      &:hover,
       &.selected {
         border: 2px solid var(--c-pink);
       }
@@ -36,7 +34,6 @@
       color: var(--c-green);
       border-radius: 100%;
 
-      &:hover,
       &.selected {
         border: 2px solid var(--c-green);
       }
@@ -89,40 +86,48 @@
     border: 0;
     height: 100%;
     right: 0;
-    width: 15%;
+    display: flex;
+    justify-content: center;
+    width: 1.5rem;
 
     &::after {
-      background-color: var(--c-white);
+      background-color: var(--c-black-20);
       border-radius: 100%;
-      border: 2px solid var(--c-black-20);
       content: '';
       display: block;
-      height: 1.2rem;
+      height: 1.5rem;
       position: absolute;
       top: 50%;
       transform: translate(0, -50%);
-      width: 1.2rem;
+      width: 1.5rem;
     }
 
+    // Input
     &-left {
-      left: -0.7rem;
-
+      left: calc(-1px - 0.75rem);
+      
       &::after {
-        left: calc(0.1rem - 1px);
+        background-color: var(--c-green);
       }
     }
 
+    // Output
     &-right {
-      right: -0.7rem;
-
+      right: calc(-1px - 0.75rem);
+      
       &::after {
-        right: calc(0.1rem - 1px);
+        background-color: var(--c-pink);
       }
     }
 
     &-connecting::after {
       border-color: var(--c-blue);
     }
+  }
+
+  .react-flow__arrowhead polyline {
+    stroke: var(--c-black-20);
+    fill: var(--c-black-20);
   }
 
   .react-flow__edges {

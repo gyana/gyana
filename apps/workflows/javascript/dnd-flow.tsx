@@ -62,7 +62,7 @@ const DnDFlow = ({ client, workflowId }) => {
         .map((el) => el.source)
 
       updateParents(params.target, [...parents, params.source])
-      setElements((els) => addEdge({ ...params, arrowHeadType: 'arrow', type: 'smoothstep' }, els))
+      setElements((els) => addEdge({ ...params, arrowHeadType: 'arrowclosed', type: 'smoothstep' }, els))
     }
   }
 
@@ -174,7 +174,7 @@ const DnDFlow = ({ client, workflowId }) => {
                 sourceHandle: null,
                 type: 'smoothstep',
                 targetHandle: null,
-                arrowHeadType: 'arrow',
+                arrowHeadType: 'arrowclosed',
                 target: curr.id.toString(),
               })),
             ]
