@@ -2,27 +2,13 @@
 {% load static %}
 {% load socialaccount %}
 
-{% block top_nav %}
-{# Getting rid of the top navigation bar here. #}
-{% endblock %}
-
-{% block description %}
-<div>
-  <p>Welcome to Gyana, we do data science and some cool tech stuff.</p>
-  <p>If you'd like to learn more, give our <a class="link" href="https://gyana.com/">website</a> a visit.</p>
-</div>
-{% endblock %}
-
 {% block content %}
-<div class="card">
-  <h1 class="text-center">Sign in</h1>
-
-  <a class="button button--primary button--outline w-full flex justify-center" href="{% provider_login_url 'google' %}">
+<section>
+  <a class="button button--primary button--outline button--google w-full" href="{% provider_login_url 'google' %}">
     <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
     Sign In with Google
   </a>
-  <p class="text-center text-black-50">or</p>
-
+  <p class="text-center text-black-50 my-4">or</p>
   <form class="mb-8" method="post">
     {% csrf_token %}
 
@@ -47,5 +33,5 @@
       create one here!
     </a>
   </p>
-</div>
+</section>
 {% endblock %}

@@ -9,21 +9,11 @@
 {% block body %}
 <div class="landing">
   <div class="landing__container">
-    <div class="flex flex-col self-start gap-8">
-      <div class="flex items-center">
-        <img class="landing__logo" src="{% static 'images/logo.png' %}">
-
-        <hgroup>
-          <h2>Gyana</h2>
-          <p>No-Code Data Analytics</p>
-        </hgroup>
-      </div>
-
-      {% block description %}{% endblock %}
-    </div>
-
     {% block content %}
     {% endblock content %}
+
+    <div>
+      <img src="{% static 'images/landing.svg' %}" />
+    </div>
   </div>
-</div>
-{% endblock %}
+  {% endblock %}

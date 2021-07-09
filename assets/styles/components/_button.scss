@@ -60,6 +60,11 @@ button:focus {
     color: var(--button-color);
   }
 
+  &--google {
+    background-color: white;
+    align-items: center;
+  }
+
   // Colour variant generation
   @each $color, $value in $button-colors {
     &--#{$color} {

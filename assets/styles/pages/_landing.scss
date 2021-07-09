@@ -9,6 +9,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     max-width: 72rem;
+    gap: 3.2rem;
+    align-items: center;
   }
 
   &__logo {

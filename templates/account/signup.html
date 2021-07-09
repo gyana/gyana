@@ -2,30 +2,21 @@
 {% load static %}
 {% load socialaccount %}
 
-{% block description %}
-<div>
-  <p>Welcome to Gyana, we do data science and some cool tech stuff.</p>
-  <p>If you'd like to learn more, give our <a class="link" href="https://gyana.com/">website</a> a visit.</p>
-</div>
-{% endblock %}
-
 {% block content %}
-<div class="card">
-  <h1 class="text-center">Sign up</h1>
-
-  <a class="button button--primary button--outline w-full flex justify-center" href="{% provider_login_url 'google' %}">
+<section>
+  <a class="button button--primary button--outline button--google w-full" href="{% provider_login_url 'google' %}">
     <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
     Sign In with Google
   </a>
   <p class="text-center text-black-50">or</p>
 
-  <form method="post">
+  <form method="post" class="mb-8">
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}
 
     <button type="submit" class="button button--filled w-full">
-      Sign up
+      Create Account
     </button>
 
   </form>
@@ -36,5 +27,5 @@
       Go to sign in.
     </a>
   </p>
-</div>s
+</section>
 {% endblock %}
