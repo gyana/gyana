@@ -359,7 +359,7 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
             "error",
         }
         if dirty_fields:
-            self.worflow.data_updated = timezone.now()
+            self.workflow.data_updated = timezone.now()
             self.workflow.save()
         if dirty_fields and "data_updated" not in dirty_fields:
             self.data_updated = timezone.now()

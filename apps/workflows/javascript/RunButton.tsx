@@ -66,8 +66,12 @@ const RunButton: React.FC<{
                 }
                 setLoading(false)
               }
+              alert('Workflow finished running!')
             })
-            .catch(() => setLoading(false))
+            .catch(() => {
+              setLoading(false)
+              alert('Workflow failed running')
+            })
         }}
         className='button button--outline button--success tooltip tooltip--bottom'
       >
