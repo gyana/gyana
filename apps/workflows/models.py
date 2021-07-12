@@ -27,6 +27,9 @@ class Workflow(models.Model):
     last_run = models.DateTimeField(null=True)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
+    data_updated = models.DateTimeField(
+        auto_now_add=True,
+    )
 
     class Meta:
         ordering = ("-created",)
@@ -43,7 +46,7 @@ class Workflow(models.Model):
 
     @property
     def out_of_date(self):
-        return self.last_run < self.updated if self.last_run else True
+        return self.last_run < self.data_updated if self.last_run else True
 
 
 NodeConfig = {
@@ -356,6 +359,7 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
             "error",
         }
         if dirty_fields:
+            self.worflow.data_updated = timezone.now()
             self.workflow.save()
         if dirty_fields and "data_updated" not in dirty_fields:
             self.data_updated = timezone.now()
