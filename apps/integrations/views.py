@@ -6,6 +6,7 @@ import uuid
 import analytics
 import coreapi
 from apps.projects.mixins import ProjectMixin
+from apps.tables.models import Table
 from apps.utils.segment_analytics import (
     INTEGRATION_CREATED_EVENT,
     NEW_INTEGRATION_START_EVENT,
@@ -25,7 +26,8 @@ from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from django_tables2.config import RequestConfig
 from django_tables2.views import SingleTableMixin
-from lib.clients import get_bucket
+from lib.bigquery import query_table
+from lib.clients import DATASET_ID, get_bucket
 from rest_framework.decorators import api_view, schema
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -291,6 +293,12 @@ class IntegrationData(ProjectMixin, DetailView):
     template_name = "integrations/data.html"
     model = Integration
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["tables"] = self.object.table_set.all()
+
+        return context_data
+
 
 class IntegrationSettings(ProjectMixin, TurboUpdateView):
     template_name = "integrations/settings.html"
@@ -325,10 +333,27 @@ class IntegrationGrid(SingleTableMixin, TemplateView):
     def get_context_data(self, **kwargs):
         self.integration = Integration.objects.get(id=kwargs["pk"])
 
-        return super().get_context_data(**kwargs)
+        table_id = self.request.GET.get("table_id")
+        try:
+            self.table_instance = (
+                self.integration.table_set.get(pk=table_id)
+                if table_id
+                else self.integration.table_set.first()
+            )
+        except (Table.DoesNotExist, ValueError):
+            self.table_instance = self.integration.table_set.first()
+
+        context_data = super().get_context_data(**kwargs)
+        context_data["table_instance"] = self.table_instance
+        return context_data
 
     def get_table(self, **kwargs):
-        query = query_integration(self.integration)
+        query = query_table(
+            self.table_instance.bq_table,
+            self.integration.schema
+            if self.integration.kind == Integration.Kind.FIVETRAN
+            else DATASET_ID,
+        )
         table = get_table(query.schema(), query, **kwargs)
 
         return RequestConfig(

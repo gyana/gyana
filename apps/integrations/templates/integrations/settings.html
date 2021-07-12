@@ -1,7 +1,7 @@
 {% extends "integrations/base.html" %}
 
 {% block tab %}
-<div class="mb-auto">
+<div class="mb-auto pad">
   <form method="post" action="{% url 'project_integrations:update' project.id object.id %}" class="form">
     {% csrf_token %}
 

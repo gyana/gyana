@@ -4,67 +4,68 @@
 {% load humanize %}
 
 {% block tab %}
-
-<div class="flex gap-7 mb-7">
-  {% if not object.kind == 'csv' %}
-  <div class="card">
-    {% if object.kind == 'fivetran' %}
-    <div class="flex flex-col flex-shrink-0">
-      {% if object.historical_sync_complete %}
-      <div>Ready</div>
-      {% elif object.fivetran_authorized %}
-      <div>Syncing</div>
+<div class="pad">
+  <div class="flex gap-7 mb-7">
+    {% if not object.kind == 'csv' %}
+    <div class="card">
+      {% if object.kind == 'fivetran' %}
+      <div class="flex flex-col flex-shrink-0">
+        {% if object.historical_sync_complete %}
+        <div>Ready</div>
+        {% elif object.fivetran_authorized %}
+        <div>Syncing</div>
+        {% else %}
+        <turbo-frame id="integrations:authorize"
+                    src="{% url 'integrations:authorize' integration.id %}?original_uri={{ request.get_full_path }}"
+                    target="_top">
+        </turbo-frame>
+        {% endif %}
+      </div>
       {% else %}
-      <turbo-frame id="integrations:authorize"
-                   src="{% url 'integrations:authorize' integration.id %}?original_uri={{ request.get_full_path }}"
-                   target="_top">
-      </turbo-frame>
+      <turbo-frame id="integrations:sync" src="{% url 'integrations:sync' object.id %}"></turbo-frame>
       {% endif %}
     </div>
-    {% else %}
-    <turbo-frame id="integrations:sync" src="{% url 'integrations:sync' object.id %}"></turbo-frame>
     {% endif %}
-  </div>
-  {% endif %}
 
-  <div class="card card--center flex-1 flex-col">
-    <h2>{{integration.created|naturaltime}}</h2>
-    <p>First created</p>
-  </div>
+    <div class="card card--center flex-1 flex-col">
+      <h2>{{integration.created|naturaltime}}</h2>
+      <p>First created</p>
+    </div>
 
-  {% if integration.num_rows %}
-  <div class="card card--center flex-1 flex-col">
-    <h2>{{ integration.num_rows }}</h2>
-    <p>Rows</p>
-  </div>
-  {% endif %}
-
-  <div class="card card--center flex-1 flex-col">
-    <h2>{{ integration.created_by.username }}</h2>
-    <p>Created this</p>
-  </div>
-</div>
-
-
-<div class="flex flex-col">
-  <div class="mb-7">
-    <h2>Referenced</h2>
-    <p>All the places this integration is used in</p>
-  </div>
-
-  <div class="card card--none flex-1">
-    {% render_table table %}
-
-    {% if integration.used_in|length == 0 %}
-    <div class="text-center pad pad--sm">
-      <small>
-        This integration is not used anywhere yet, you can create a <a class="link"
-           href="{% url 'project_workflows:create' project.id %}">workflow</a>
-        or
-        <a class="link" href="{% url 'project_dashboards:create' project.id %}">dashboard</a> to start using it now!
-      </small>
+    {% if integration.num_rows %}
+    <div class="card card--center flex-1 flex-col">
+      <h2>{{ integration.num_rows }}</h2>
+      <p>Rows</p>
     </div>
     {% endif %}
+
+    <div class="card card--center flex-1 flex-col">
+      <h2>{{ integration.created_by.username }}</h2>
+      <p>Created this</p>
+    </div>
+  </div>
+
+
+  <div class="flex flex-col">
+    <div class="mb-7">
+      <h2>Referenced</h2>
+      <p>All the places this integration is used in</p>
+    </div>
+
+    <div class="card card--none flex-1">
+      {% render_table table %}
+
+      {% if integration.used_in|length == 0 %}
+      <div class="text-center pad pad--sm">
+        <small>
+          This integration is not used anywhere yet, you can create a <a class="link"
+            href="{% url 'project_workflows:create' project.id %}">workflow</a>
+          or
+          <a class="link" href="{% url 'project_dashboards:create' project.id %}">dashboard</a> to start using it now!
+        </small>
+      </div>
+      {% endif %}
+    </div>
   </div>
 </div>
 
