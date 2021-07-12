@@ -1,9 +1,13 @@
-<div class='workflow-node__visual'>
-    <h1>Help center</h1>
-    <span class="text-black-50 text-center mb-4">You have not set up this node.<br />
-    Fill out the form on the left 
-    and click <strong>Save & Preview</strong> to see the resulting table.</span>
-    <i class="fad fa-construction fa-6x text-orange-50"></i>
-    <span class="text-black-50 text-center mt-4">More specific help coming soon</span>
-    <span class="text-black-50 text-center">Or reach out to <a class="link" href = "mailto: support@gyana.com">support@gyana.com</a></span>
+<div class='workflow-node__help'>
+  <h1>{{object.display_name}}</h1>
+
+  {% block help_main%}
+  <span class="text-xl mb-4">You have not set up this node.<br />
+  Fill out the form on the left 
+  and click <strong>Save & Preview</strong> to see the resulting table.</span>
+  <span class="text-xl mt-4">More specific help coming soon</span>
+
+  <i class="fad fa-construction fa-6x text-orange-50"></i>
+  {% endblock %}
+  <span class="text-xl">Still have questions reach out to <a class="link" href = "mailto: support@gyana.com">support@gyana.com</a></span>
 </div>
