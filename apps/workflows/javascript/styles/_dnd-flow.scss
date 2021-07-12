@@ -9,6 +9,14 @@
     top: 1.6rem;
     z-index: var(--z-ui);
   }
+
+  &__order-button {
+    background-color: var(--c-white);
+    position: absolute;
+    right: 1.6rem;
+    bottom: 1.6rem;
+    z-index: var(--z-ui);
+  }
 }
 
 .dndflow .reactflow-wrapper {

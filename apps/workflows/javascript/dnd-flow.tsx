@@ -15,6 +15,7 @@ import ReactFlow, {
   ConnectionLineType,
 } from 'react-flow-renderer'
 import { INode } from './interfaces'
+import LayoutButton from './LayoutButton'
 import defaultNodeTypes, { NodeContext } from './Nodes'
 import RunButton from './RunButton'
 
@@ -34,7 +35,7 @@ const DnDFlow = ({ client, workflowId }) => {
   const [isOutOfDate, setIsOutOfDate] = useState(false)
   const [hasBeenRun, setHasBeenRun] = useState(false)
   // State whether the initial element load has been done
-  const [initialLoad, setInitialLoad] = useState(false)
+  const [viewHasChanged, setViewHasChanged] = useState(false)
 
   const updateParents = (id: string, parents: string[]) =>
     client.action(window.schema, ['workflows', 'api', 'nodes', 'partial_update'], {
@@ -62,7 +63,9 @@ const DnDFlow = ({ client, workflowId }) => {
         .map((el) => el.source)
 
       updateParents(params.target, [...parents, params.source])
-      setElements((els) => addEdge({ ...params, arrowHeadType: 'arrowclosed', type: 'smoothstep' }, els))
+      setElements((els) =>
+        addEdge({ ...params, arrowHeadType: 'arrowclosed', type: 'smoothstep' }, els)
+      )
     }
   }
 
@@ -180,7 +183,7 @@ const DnDFlow = ({ client, workflowId }) => {
             ]
           }, [])
         setElements([...newElements, ...edges])
-        setInitialLoad(true)
+        setViewHasChanged(true)
       })
 
   useEffect(() => {
@@ -195,8 +198,11 @@ const DnDFlow = ({ client, workflowId }) => {
   }, [])
 
   useEffect(() => {
-    fitView()
-  }, [initialLoad])
+    if (viewHasChanged) {
+      fitView()
+      setViewHasChanged(false)
+    }
+  }, [viewHasChanged])
 
   const onDrop = async (event) => {
     event.preventDefault()
@@ -230,6 +236,7 @@ const DnDFlow = ({ client, workflowId }) => {
     }))
     setElements((es) => es.concat(node, edges))
   }
+
   return (
     <div className='dndflow'>
       <div className='reactflow-wrapper' ref={reactFlowWrapper}>
@@ -252,7 +259,12 @@ const DnDFlow = ({ client, workflowId }) => {
           >
             <Controls />
             <Background gap={GRID_GAP} />
-
+            <LayoutButton
+              elements={elements}
+              setElements={setElements}
+              client={client}
+              setViewHasChanged={setViewHasChanged}
+            />
             <RunButton
               hasOutput={hasOutput}
               hasBeenRun={hasBeenRun}

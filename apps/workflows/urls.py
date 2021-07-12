@@ -22,6 +22,7 @@ urlpatterns = [
     path("<hashid:pk>/last_run", views.WorkflowLastRun.as_view(), name="last_run"),
     path("<hashid:pk>/duplicate_node", views.duplicate_node, name="duplicate_node"),
     path("<hashid:pk>/node_name", views.NodeName.as_view(), name="node_name"),
+    path("update_positions", views.update_positions, name="update_positions"),
 ]
 
 # drf config

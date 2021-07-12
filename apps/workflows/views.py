@@ -3,6 +3,7 @@ from functools import cached_property
 from logging import error
 
 import analytics
+import coreapi
 from apps.projects.mixins import ProjectMixin
 from apps.utils.formset_update_view import FormsetUpdateView
 from apps.utils.segment_analytics import (
@@ -26,9 +27,10 @@ from django_tables2.config import RequestConfig
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, schema
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
+from rest_framework.schemas import AutoSchema
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .bigquery import run_workflow
@@ -303,3 +305,27 @@ def duplicate_node(request, pk):
     for parent in node.parents.iterator():
         clone.parents.add(parent)
     return Response(NodeSerializer(clone).data)
+
+
+@api_view(http_method_names=["POST"])
+@schema(
+    AutoSchema(
+        manual_fields=[
+            coreapi.Field(
+                name="nodes",
+                required=True,
+                location="body",
+                description="List of node ids and position to update",
+            ),
+        ]
+    )
+)
+def update_positions(request):
+    ids = [d["id"] for d in request.data]
+    nodes = Node.objects.filter(id__in=ids)
+    for node in nodes:
+        position = next(filter(lambda x: x["id"] == str(node.id), request.data))
+        node.x = position["x"]
+        node.y = position["y"]
+    Node.objects.bulk_update(nodes, ["x", "y"])
+    return Response({}, status=200)
