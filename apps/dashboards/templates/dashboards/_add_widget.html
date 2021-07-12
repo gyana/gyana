@@ -9,7 +9,7 @@
       <form method="post" action="{% url 'dashboard_widgets:create' project.id dashboard.id %}?mode=edit" class="form">
         {% csrf_token %}
 
-        <input type='hidden' name='kind' id='id_kind' value="{{ id }}" />
+        <input type='hidden' name='kind' id="id_kind_{{ forloop.counter }}" value="{{ id }}" />
 
         <button type="submit" class="list__item list__item--interactive w-full">
           <p><i class="fas {{ icon }} text-blue mr-2"></i> {{txt}}</p>
