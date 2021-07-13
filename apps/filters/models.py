@@ -1,3 +1,4 @@
+from apps.utils.models import BaseModel
 from apps.widgets.models import Widget
 from dirtyfields import DirtyFieldsMixin
 from django.contrib.postgres.fields import ArrayField
@@ -6,7 +7,7 @@ from django.utils import timezone
 from model_clone import CloneMixin
 
 
-class Filter(CloneMixin, DirtyFieldsMixin, models.Model):
+class Filter(CloneMixin, DirtyFieldsMixin, BaseModel):
     class Type(models.TextChoices):
         INTEGER = "INTEGER", "Integer"
         FLOAT = "FLOAT", "Float"
@@ -104,12 +105,6 @@ class Filter(CloneMixin, DirtyFieldsMixin, models.Model):
     string_values = ArrayField(models.TextField(), null=True)
 
     bool_value = models.BooleanField(null=True, blank=True)
-
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    updated = models.DateTimeField(auto_now=True, editable=False)
-
-    class Meta:
-        ordering = ("-created",)
 
     def __str__(self):
         return self.column

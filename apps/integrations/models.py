@@ -1,20 +1,16 @@
-import os
-import time
-
 import celery
 from apps.dashboards.models import Dashboard
 from apps.integrations.utils import get_services
 from apps.projects.models import Project
 from apps.users.models import CustomUser
+from apps.utils.models import BaseModel
 from apps.workflows.models import Workflow
-from django.conf import settings
 from django.db import models
 from django.urls import reverse
-from django.utils.text import slugify
 from lib.clients import ibis_client
 
 
-class Integration(models.Model):
+class Integration(BaseModel):
     class Kind(models.TextChoices):
         GOOGLE_SHEETS = "google_sheets", "Google Sheets"
         CSV = "csv", "CSV"
@@ -48,12 +44,6 @@ class Integration(models.Model):
     historical_sync_complete = models.BooleanField(default=False)
 
     created_by = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
-
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    updated = models.DateTimeField(auto_now=True, editable=False)
-
-    class Meta:
-        ordering = ("-created",)
 
     def __str__(self):
         return self.name

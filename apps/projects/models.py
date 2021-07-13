@@ -1,19 +1,14 @@
 from apps.teams.models import Team
+from apps.utils.models import BaseModel
 from django.db import models
 from django.urls import reverse
 
 
-class Project(models.Model):
+class Project(BaseModel):
     name = models.CharField(max_length=255)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
     description = models.TextField(blank=True)
-
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    updated = models.DateTimeField(auto_now=True, editable=False)
-
-    class Meta:
-        ordering = ("-created",)
 
     def __str__(self):
         return self.name
@@ -39,6 +34,6 @@ class Project(models.Model):
         return Table.objects.filter(integration__project=self).aggregate(
             models.Sum("num_rows")
         )["num_rows__sum"]
-    
+
     def get_absolute_url(self):
-        return reverse("projects:detail", args=(self.id, ))
+        return reverse("projects:detail", args=(self.id,))

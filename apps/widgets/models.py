@@ -1,5 +1,6 @@
 from apps.dashboards.models import Dashboard
 from apps.tables.models import Table
+from apps.utils.models import BaseModel
 from django.conf import settings
 from django.db import models
 from model_clone import CloneMixin
@@ -8,7 +9,7 @@ DEFAULT_WIDTH = 50
 DEFAULT_HEIGHT = 400
 
 
-class Widget(CloneMixin, models.Model):
+class Widget(CloneMixin, BaseModel):
     _clone_m2o_or_o2m_fields = ["filters"]
 
     class Kind(models.TextChoices):
@@ -70,15 +71,9 @@ class Widget(CloneMixin, models.Model):
         help_text="The y field is absolute, we allow for overflow on the y-axis in a dashboard.",
     )
 
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    updated = models.DateTimeField(auto_now=True, editable=False)
-
     z = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
     )
-
-    class Meta:
-        ordering = ("-created",)
 
     def __str__(self):
         return f"<Widget {self.kind} on {self.table}>"
@@ -94,7 +89,7 @@ class Widget(CloneMixin, models.Model):
         return False
 
 
-class MultiValues(CloneMixin, models.Model):
+class MultiValues(CloneMixin, BaseModel):
     widget = models.ForeignKey(Widget, on_delete=models.CASCADE, related_name="values")
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
 

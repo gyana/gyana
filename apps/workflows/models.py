@@ -4,6 +4,7 @@ from functools import cached_property
 # fmt: off
 from apps.projects.models import Project
 from apps.tables.models import Table
+from apps.utils.models import BaseModel
 from apps.workflows.nodes import (NODE_FROM_CONFIG, CommonOperations,
                                   DateOperations, DatetimeOperations,
                                   NumericOperations, StringOperations,
@@ -21,18 +22,13 @@ from lib.cache import get_cache_key
 from model_clone import CloneMixin
 
 
-class Workflow(models.Model):
+class Workflow(BaseModel):
     name = models.CharField(max_length=255, default="Untitled")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     last_run = models.DateTimeField(null=True)
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    updated = models.DateTimeField(auto_now=True, editable=False)
     data_updated = models.DateTimeField(
         auto_now_add=True,
     )
-
-    class Meta:
-        ordering = ("-created",)
 
     def __str__(self):
         return self.name
@@ -182,7 +178,7 @@ class AggregationFunctions(models.TextChoices):
     STD = "std", "Standard deviation"
 
 
-class Node(DirtyFieldsMixin, CloneMixin, models.Model):
+class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     class Kind(models.TextChoices):
         INPUT = "input", "Get data"
         OUTPUT = "output", "Save data"
@@ -228,8 +224,6 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
         "self", symmetrical=False, related_name="children", blank=True
     )
 
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    updated = models.DateTimeField(auto_now=True, editable=False)
     data_updated = models.DateTimeField(null=True, editable=False)
 
     error = models.CharField(max_length=300, null=True)
@@ -418,7 +412,7 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
         return f"Workflow:{self.workflow.name}:{self.output_name}"
 
 
-class SaveParentModel(DirtyFieldsMixin, CloneMixin, models.Model):
+class SaveParentModel(DirtyFieldsMixin, CloneMixin, BaseModel):
     class Meta:
         abstract = True
 

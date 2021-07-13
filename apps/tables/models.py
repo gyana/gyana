@@ -1,6 +1,7 @@
 from functools import cached_property
 
 from apps.projects.models import Project
+from apps.utils.models import BaseModel
 from django.conf import settings
 from django.core.cache import cache
 from django.db import models
@@ -8,7 +9,7 @@ from lib.cache import get_cache_key
 from lib.clients import bigquery_client, ibis_client
 
 
-class Table(models.Model):
+class Table(BaseModel):
     class Source(models.TextChoices):
         INTEGRATION = "integration", "Integration"
         WORKFLOW_NODE = "workflow_node", "Workflow node"
@@ -37,12 +38,6 @@ class Table(models.Model):
     num_rows = models.IntegerField()
     data_updated = models.DateTimeField(auto_now_add=True)
 
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    updated = models.DateTimeField(auto_now=True, editable=False)
-
-    class Meta:
-        ordering = ("-created",)
-
     def __str__(self):
         return getattr(self, self.source).get_table_name()
 
@@ -61,7 +56,6 @@ class Table(models.Model):
     def get_query(self):
         conn = ibis_client()
         return conn.table(self.bq_table, database=self.bq_dataset)
-
 
     @property
     def cache_key(self):
