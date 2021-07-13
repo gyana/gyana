@@ -1,3 +1,4 @@
+import json
 import re
 
 from django import template
@@ -60,3 +61,10 @@ def do_expr(parser, token):
 
 
 do_expr = register.tag("expr", do_expr)
+
+
+@register.filter("read_json")
+def read_json(path):
+    with open(path, "r") as file:
+        data = file.read()
+    return json.loads(data)
