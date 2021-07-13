@@ -12,14 +12,15 @@ export default class extends Controller {
     // manually POST the form and get HTML response
     const data = new FormData(form)
     this.loadingTarget.classList.remove('hidden')
-    // TODO: Fix this for web components
-    // let disabled = false
 
-    // // disable editing on all following elements elements
-    // for (const element of form.elements) {
-    //   if (disabled) element.disabled = true
-    //   if (element === event.target) disabled = true
-    // }
+    let disabled = false
+
+    // disable editing on all following elements
+    // unless element is hidden (e.g. within web component)
+    for (const element of form.elements) {
+      if (disabled) element.disabled = true
+      if (element === event.target && element.type !== 'hidden') disabled = true
+    }
 
     const result = await fetch(form.action, {
       method: 'POST',
