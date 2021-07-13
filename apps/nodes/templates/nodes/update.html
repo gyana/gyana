@@ -4,11 +4,11 @@
   {% if node.kind == "input" or parents %}
   <div class="workflow-modal__section">
     <div class="workflow-modal__header">
-      {% include 'workflows/node_name.html' %}
+      {% include 'nodes/name.html' %}
     </div>
 
     <form class="form--no-layout overflow-hidden flex-1"
-      action="{% url 'workflows:node' workflow.id node.id %}"
+      action="{% url 'nodes:update' workflow.id node.id %}"
       method="post"
       {% if do_live_updates %}
       data-controller="live-update trigger"
@@ -131,17 +131,17 @@
     <div class="workflow-modal__table">
       <nav class="tabbar">
         <a class="tabbar__link {% if show_docs %} tabbar__link--active {% endif %}"
-           href="{% url 'workflows:node' workflow.id object.id %}?show_docs=true">
+           href="{% url 'nodes:update' workflow.id object.id %}?show_docs=true">
           Help
         </a>
         {% for parent in parents %}
         <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
-           href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ parent.id }}">
+           href="{% url 'nodes:update' workflow.id object.id %}?preview_node_id={{ parent.id }}">
           Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
         </a>
         {% endfor %}
         <a class="tabbar__link  {% if preview_node_id == object.id and not show_docs %} tabbar__link--active {% endif %}"
-           href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ object.id }}">
+           href="{% url 'nodes:update' workflow.id object.id %}?preview_node_id={{ object.id }}">
           Result
         </a>
       </nav>

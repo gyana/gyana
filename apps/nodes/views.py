@@ -3,12 +3,9 @@ from functools import cached_property
 
 import coreapi
 from apps.utils.formset_update_view import FormsetUpdateView
-from apps.utils.segment_analytics import (
-    NODE_CONNECTED_EVENT,
-    NODE_CREATED_EVENT,
-    NODE_UPDATED_EVENT,
-    track_node,
-)
+from apps.utils.segment_analytics import (NODE_CONNECTED_EVENT,
+                                          NODE_CREATED_EVENT,
+                                          NODE_UPDATED_EVENT, track_node)
 from apps.utils.table_data import get_table
 from django import forms, template
 from django.http.response import HttpResponse
@@ -61,7 +58,7 @@ class NodeName(TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "workflows:node_name",
+            "nodes:node_name",
             args=(self.object.id,),
         )
 
@@ -132,7 +129,7 @@ class NodeUpdate(FormsetUpdateView):
         return r
 
     def get_success_url(self) -> str:
-        base_url = reverse("workflows:node", args=(self.workflow.id, self.object.id))
+        base_url = reverse("nodes:update", args=(self.workflow.id, self.object.id))
 
         if self.request.POST.get("submit") == "Save & Preview":
             return f"{base_url}?preview_node_id={self.preview_node_id}"
