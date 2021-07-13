@@ -61,7 +61,6 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "django_tables2",
     "invitations",
-    "djstripe",
 ]
 
 # Put your project-specific apps here
@@ -346,29 +345,5 @@ INVITATIONS_INVITATION_MODEL = "invites.Invite"
 INVITATIONS_INVITATION_EXPIRY = 7
 
 HASHIDS_SALT = os.environ.get("HASHIDS_SALT", "")
-
-# TODO: Delete stripe config once djstripe is uninstalled
-
-# modeled to be the same as https://github.com/dj-stripe/dj-stripe
-STRIPE_LIVE_PUBLIC_KEY = os.environ.get(
-    "STRIPE_LIVE_PUBLIC_KEY", "<your publishable key>"
-)
-STRIPE_LIVE_SECRET_KEY = os.environ.get("STRIPE_LIVE_SECRET_KEY", "<your secret key>")
-STRIPE_TEST_PUBLIC_KEY = os.environ.get(
-    "STRIPE_TEST_PUBLIC_KEY", "pk_test_<your publishable key>"
-)
-STRIPE_TEST_SECRET_KEY = os.environ.get(
-    "STRIPE_TEST_SECRET_KEY", "sk_test_<your secret key>"
-)
-STRIPE_LIVE_MODE = False  # Change to True in production
-
-# Get it from the section in the Stripe dashboard where you added the webhook endpoint
-# or from the stripe CLI when testing
-DJSTRIPE_WEBHOOK_SECRET = os.environ.get("DJSTRIPE_WEBHOOK_SECRET", "whsec_xxx")
-
-DJSTRIPE_FOREIGN_KEY_TO_FIELD = (
-    "id"  # change to 'djstripe_id' if not a new installation
-)
-DJSTRIPE_USE_NATIVE_JSONFIELD = True  # change to False if not a new installation
 
 FUSIONCHARTS_LICENCE = os.environ.get("FUSIONCHARTS_LICENCE")
