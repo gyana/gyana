@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from datetime import time
 
+import ibis
 from apps.filters.bigquery import create_filter_query
 from apps.tables.models import Table
 from django.utils import timezone
@@ -382,6 +382,20 @@ def get_unpivot_query(node):
     return conn.table(table.bq_table, database=table.bq_dataset)
 
 
+def get_window_query(node):
+    query = node.parents.first().get_query()
+    for window in node.window_columns.all():
+        aggregation = aggregate(query, window.column, window.function).name(
+            window.label
+        )
+
+        if window.group_by or window.order_by:
+            w = ibis.window(group_by=window.group_by, order_by=window.order_by)
+            aggregation = aggregation.over(w)
+        query = query.mutate([aggregation])
+    return query
+
+
 NODE_FROM_CONFIG = {
     "input": get_input_query,
     "output": get_output_query,
@@ -400,4 +414,5 @@ NODE_FROM_CONFIG = {
     "pivot": get_pivot_query,
     "unpivot": get_unpivot_query,
     "intersect": get_intersect_query,
+    "window": get_window_query,
 }

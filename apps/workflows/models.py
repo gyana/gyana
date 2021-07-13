@@ -162,6 +162,12 @@ NodeConfig = {
         "section": "Table manipulations",
         "maxParents": -1,
     },
+    "window": {
+        "displayName": "Window",
+        "icon": "fa-window-frame",
+        "description": "Calculate analytics over groups without aggregating",
+        "section": "Column manipulations",
+    },
 }
 
 
@@ -196,6 +202,7 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
         PIVOT = "pivot", "Pivot"
         UNPIVOT = "unpivot", "Unpivot"
         INTERSECT = "intersect", "Intersection"
+        WINDOW = "window", "Window"
 
     # You have to add new many-to-one relations here
     _clone_m2o_or_o2m_fields = [
@@ -544,6 +551,28 @@ class FormulaColumn(SaveParentModel):
         Node, on_delete=models.CASCADE, related_name="formula_columns"
     )
     formula = models.TextField(null=True, blank=True)
+    label = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        validators=[bigquery_column_regex],
+    )
+
+
+class WindowColumn(SaveParentModel):
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="window_columns"
+    )
+
+    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    function = models.CharField(max_length=20, choices=AggregationFunctions.choices)
+    group_by = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+    )
+    order_by = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+    )
+    ascending = models.BooleanField(
+        default=True, help_text="Select to sort ascendingly"
+    )
     label = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         validators=[bigquery_column_regex],

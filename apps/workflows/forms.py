@@ -14,7 +14,7 @@ from django.forms.widgets import HiddenInput
 # fmt: off
 from .models import (AddColumn, AggregationFunctions, Column, EditColumn,
                      FormulaColumn, FunctionColumn, Node, RenameColumn,
-                     SecondaryColumn, SortColumn, Workflow)
+                     SecondaryColumn, SortColumn, WindowColumn, Workflow)
 
 # fmt: on
 
@@ -394,6 +394,43 @@ UnpivotColumnFormSet = forms.inlineformset_factory(
 )
 
 
+class WindowForm(SchemaFormMixin, LiveUpdateForm):
+    class Meta:
+        fields = ("column", "function", "group_by", "order_by", "ascending", "label")
+        model = WindowColumn
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        column_field = forms.ChoiceField(
+            choices=[
+                ("", "No column selected"),
+                *[(col, col) for col in self.schema],
+            ]
+        )
+        self.fields["column"] = column_field
+        if self.column_type is not None:
+            self.fields["function"].choices = [
+                (choice.value, choice.name)
+                for choice in AGGREGATION_TYPE_MAP[self.column_type]
+            ]
+            self.fields["group_by"] = column_field
+            self.fields["order_by"] = column_field
+
+    def get_live_fields(self):
+        fields = ["column"]
+
+        if self.column_type is not None:
+            fields += ["function", "group_by", "order_by", "ascending", "label"]
+
+        return fields
+
+
+WindowColumnFormSet = forms.inlineformset_factory(
+    Node, WindowColumn, can_delete=True, extra=True, form=WindowForm
+)
+
+
 class DefaultNodeForm(NodeForm):
     class Meta:
         model = Node
@@ -420,6 +457,7 @@ KIND_TO_FORM = {
     "pivot": PivotNodeForm,
     "unpivot": UnpivotNodeForm,
     "intersect": DefaultNodeForm,
+    "window": DefaultNodeForm,
 }
 
 KIND_TO_FORMSETS = {
@@ -431,4 +469,5 @@ KIND_TO_FORMSETS = {
     "filter": [FilterFormSet],
     "formula": [FormulaColumnFormSet],
     "unpivot": [UnpivotColumnFormSet, SelectColumnFormSet],
+    "window": [WindowColumnFormSet],
 }

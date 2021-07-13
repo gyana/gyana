@@ -98,6 +98,12 @@
           {% include "components/formset.html" with formset=secondary_columns_formset %}
         </fieldset>
         {% endif %}
+        {% if window_columns_formset %}
+        <fieldset>
+          <label>Add window columns</label>
+          {% include "components/formset.html" with formset=window_columns_formset %}
+        </fieldset>
+        {% endif %}
       </div>
 
       <div class='workflow-modal__footer'>

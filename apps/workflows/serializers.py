@@ -124,6 +124,14 @@ def get_intersection_desc(obj):
     return f"Intersection between {' ,'.join((parent.name or NodeConfig[parent.kind]['displayName'] for parent in obj.parents.all()))}"
 
 
+def get_window_desc(obj):
+    texts = [
+        f'{window.label}: {window.function}({window.column}) OVER({"PARTION BY " + window.group_by if window.group_by else ""} {"ORDER BY " + window.order_by if window.order_by else ""})'
+        for window in obj.window_columns.all()
+    ]
+    return f"Add window columns: {', '.join(texts)}"
+
+
 DESCRIPTIONS = {
     "input": get_input_desc,
     "limit": get_limit_desc,
@@ -143,4 +151,5 @@ DESCRIPTIONS = {
     "pivot": get_pivot_desc,
     "unpivot": get_unpivot_desc,
     "intersect": get_intersection_desc,
+    "window": get_window_desc,
 }

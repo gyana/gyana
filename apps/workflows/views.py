@@ -171,6 +171,7 @@ class NodeUpdate(FormsetUpdateView):
             "aggregations",
             "filters",
             "formula_columns",
+            "window_columns",
         ]:
             return {"schema": self.object.parents.first().schema}
 
@@ -203,6 +204,7 @@ class NodeUpdate(FormsetUpdateView):
             "aggregation",
             "filter",
             "unpivot",
+            "window",
         ]
         return context
 
