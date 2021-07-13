@@ -10,7 +10,7 @@ let auth = new coreapi.auth.SessionAuthentication({
 let client = new coreapi.Client({ auth: auth })
 
 // The grid layout (on any screen) has 20 columns
-const GRID_GAP = 20
+const GRID_COLS = 40
 
 const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> = ({
   children,
@@ -18,7 +18,8 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
 }) => {
   const mode = new URLSearchParams(window.location.search).get('mode') || 'edit'
   const id = children.props['data-id']
-
+  // Utilised to decide the clamping on interaction as well as clamps for placement
+  const stepSize = Math.floor(root.offsetWidth / GRID_COLS)
   const [x, setX] = useState(
     () => (parseInt(children.props['data-x']) * root.clientWidth) / 100 || 0
   )
@@ -47,16 +48,16 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
         width,
         height,
       }}
-      resizeGrid={[GRID_GAP, GRID_GAP]}
-      dragGrid={[GRID_GAP, GRID_GAP]}
+      resizeGrid={[stepSize, stepSize]}
+      dragGrid={[stepSize, stepSize]}
       minHeight='200'
       minWidth='200'
       onResizeStop={(...args) => {
         const node = args[2]
         const parent = root
         // Clamp the dimensions to the allowed stepSize/grid
-        const width = Math.round(node.offsetWidth / GRID_GAP) * GRID_GAP,
-          height = Math.round(node.offsetHeight / GRID_GAP) * GRID_GAP
+        const width = Math.round(node.offsetWidth / stepSize) * stepSize,
+          height = Math.round(node.offsetHeight / stepSize) * stepSize
         const { x } = args[4]
 
         const newWidth = width > parent.offsetWidth ? parent.offsetWidth : width
@@ -67,7 +68,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
         const newX =
           x + newWidth > parent.offsetWidth
             ? parent.offsetWidth - newWidth
-            : Math.round(x / GRID_GAP) * GRID_GAP
+            : Math.round(x / stepSize) * stepSize
         setX(newX)
 
         client.action(window.schema, ['widgets', 'api', 'partial_update'], {
@@ -85,10 +86,10 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
             ? 0
             : parent && x + node.clientWidth > parent.offsetWidth
             ? parent.offsetWidth - node.clientWidth
-            : Math.round(x / GRID_GAP) * GRID_GAP
+            : Math.round(x / stepSize) * stepSize
         )
         // Snaps the y value to the top of the parent element
-        const newY = Math.floor(y > 0 ? Math.round(y / GRID_GAP) * GRID_GAP : 0)
+        const newY = Math.floor(y > 0 ? Math.round(y / stepSize) * stepSize : 0)
         setX(newX)
         setY(newY)
 
