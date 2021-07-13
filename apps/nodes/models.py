@@ -1,13 +1,450 @@
+import logging
+from functools import cached_property
+
+from apps.nodes.config import NodeConfig
+from apps.nodes.nodes import (
+    NODE_FROM_CONFIG,
+    CommonOperations,
+    DateOperations,
+    DatetimeOperations,
+    NumericOperations,
+    StringOperations,
+    TimeOperations,
+)
+
+# fmt: off
+from apps.tables.models import Table
 from apps.utils.models import BaseModel
+from apps.workflows.models import Workflow
+# fmt: on
+from dirtyfields import DirtyFieldsMixin
+from django.conf import settings
+from django.core.cache import cache
+from django.core.validators import RegexValidator
 from django.db import models
-from django.urls import reverse
+from django.db.models import Max
+from django.utils import timezone
+from lib.cache import get_cache_key
+from model_clone import CloneMixin
 
 
-class Node(BaseModel):
-    name = models.CharField(max_length=255)
+class AggregationFunctions(models.TextChoices):
+    # These functions need to correspond to ibis Column methods
+    # https://ibis-project.org/docs/api.html
+    SUM = "sum", "Sum"
+    COUNT = "count", "Count"
+    MEAN = "mean", "Average"
+    MAX = "max", "Maximum"
+    MIN = "min", "Minimum"
+    STD = "std", "Standard deviation"
 
-    def __str__(self):
-        return self.name
 
-    def get_absolute_url(self):
-        return reverse("nodes:detail", args=(self.pk, ))
+class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
+    class Kind(models.TextChoices):
+        INPUT = "input", "Get data"
+        OUTPUT = "output", "Save data"
+        SELECT = "select", "Select"
+        JOIN = "join", "Join"
+        AGGREGATION = "aggregation", "Aggregation"
+        UNION = "union", "Union"
+        SORT = "sort", "Sort"
+        LIMIT = "limit", "Limit"
+        FILTER = "filter", "Filter"
+        EDIT = "edit", "Edit"
+        ADD = "add", "Add"
+        RENAME = "rename", "Rename"
+        TEXT = "text", "Text"
+        FORMULA = "formula", "Formula"
+        DISTINCT = "distinct", "Distinct"
+        PIVOT = "pivot", "Pivot"
+        UNPIVOT = "unpivot", "Unpivot"
+        INTERSECT = "intersect", "Intersection"
+        WINDOW = "window", "Window"
+
+    # You have to add new many-to-one relations here
+    _clone_m2o_or_o2m_fields = [
+        "filters",
+        "columns",
+        "secondary_columns",
+        "aggregations",
+        "sort_columns",
+        "edit_columns",
+        "add_columns",
+        "rename_columns",
+        "formula_columns",
+    ]
+
+    workflow = models.ForeignKey(
+        Workflow, on_delete=models.CASCADE, related_name="nodes"
+    )
+    name = models.CharField(max_length=64, null=True, blank=True)
+    kind = models.CharField(max_length=16, choices=Kind.choices)
+    x = models.FloatField()
+    y = models.FloatField()
+    parents = models.ManyToManyField(
+        "self", symmetrical=False, related_name="children", blank=True
+    )
+
+    data_updated = models.DateTimeField(null=True, editable=False)
+
+    error = models.CharField(max_length=300, null=True)
+    intermediate_table = models.ForeignKey(
+        Table, on_delete=models.CASCADE, null=True, related_name="intermediate_table"
+    )
+    # ======== Node specific columns ========= #
+
+    # Input
+    input_table = models.ForeignKey(
+        Table, on_delete=models.CASCADE, null=True, help_text="Select a data source"
+    )
+
+    # Output
+    output_name = models.CharField(
+        max_length=100,
+        null=True,
+        help_text="Name your output, this name will be refered to in other workflows or dashboards.",
+    )
+
+    # Select also uses columns
+    select_mode = models.CharField(
+        max_length=8,
+        choices=(("keep", "keep"), ("exclude", "exclude")),
+        default="keep",
+        help_text="Either keep or exclude the selected columns",
+    )
+    # Distinct
+    # columns exists on Column as FK
+
+    # Aggregation
+    # columns exists on Column as FK
+    # aggregations exists on FunctionColumn as FK
+
+    # Join
+    join_how = models.CharField(
+        max_length=12,
+        choices=[
+            ("inner", "Inner"),
+            ("outer", "Outer"),
+            ("left", "Left"),
+            ("right", "Right"),
+        ],
+        default="inner",
+        help_text="Select the join method, more information in the docs",
+    )
+    join_left = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="The column from the first parent you want to join on.",
+    )
+    join_right = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="The column from the second parent you want to join on.",
+    )
+
+    # Union
+
+    union_mode = models.CharField(
+        max_length=8,
+        choices=(("keep", "keep"), ("exclude", "exclude")),
+        default="except",
+        help_text="Either keep or exclude the common rows",
+    )
+    union_distinct = models.BooleanField(
+        default=False, help_text="Ignore common rows if selected"
+    )
+
+    # Filter
+    # handled by the Filter model in *apps/filters/models.py*
+
+    # Sort, Edit, Add, and Rename
+    # handled via ForeignKey on SortColumn EditColumn, AddColumn, and RenameColumn respectively
+
+    # Limit
+
+    limit_limit = models.IntegerField(
+        default=100, help_text="Limits rows to selected number"
+    )
+    limit_offset = models.IntegerField(
+        null=True, help_text="From where to start the limit"
+    )
+
+    # Text
+    text_text = models.TextField(null=True)
+
+    # Pivot
+    pivot_index = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="Which column to keep as index",
+    )
+    pivot_column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="The column whose values create the new column names",
+    )
+    pivot_value = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="The column containing the values for the new pivot cells",
+    )
+    pivot_aggregation = models.CharField(
+        max_length=20,
+        choices=AggregationFunctions.choices,
+        null=True,
+        blank=True,
+        help_text="Select an aggregation to be applied to the new cells",
+    )
+
+    unpivot_value = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="Name of the new value column",
+    )
+    unpivot_column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="Name of the new category column",
+    )
+
+    def save(self, *args, **kwargs):
+        dirty_fields = set(self.get_dirty_fields(check_relationship=True).keys()) - {
+            "name",
+            "x",
+            "y",
+            "error",
+        }
+        if dirty_fields:
+            self.workflow.data_updated = timezone.now()
+            self.workflow.save()
+        if dirty_fields and "data_updated" not in dirty_fields:
+            self.data_updated = timezone.now()
+
+        return super().save(*args, **kwargs)
+
+    def get_query(self):
+        func = NODE_FROM_CONFIG[self.kind]
+        try:
+            query = func(self)
+            if self.error:
+                self.error = None
+                self.save()
+            return query
+        except Exception as err:
+            self.error = str(err)
+            self.save()
+            logging.error(err, exc_info=err)
+
+    @cached_property
+    def schema(self):
+
+        # in theory, we only need to fetch all parent nodes recursively
+        # in practice, this is faster and less error prone
+        nodes_last_updated = self.workflow.nodes.all().aggregate(Max("updated"))
+        input_nodes = self.workflow.nodes.filter(input_table__isnull=False).all()
+
+        cache_key = get_cache_key(
+            nodes_last_updated=str(nodes_last_updated["updated__max"]),
+            input_tables=[node.input_table.cache_key for node in input_nodes],
+        )
+
+        if (res := cache.get(cache_key)) is None:
+            res = self.get_query().schema()
+            cache.set(cache_key, res, 30)
+
+        return res
+
+    @property
+    def display_name(self):
+        return NodeConfig[self.kind]["displayName"]
+
+    @property
+    def icon(self):
+        return NodeConfig[self.kind]["icon"]
+
+    def get_table_name(self):
+        return f"Workflow:{self.workflow.name}:{self.output_name}"
+
+
+class SaveParentModel(DirtyFieldsMixin, CloneMixin, BaseModel):
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs) -> None:
+        if self.is_dirty():
+            self.node.data_updated = timezone.now()
+            self.node.save()
+        return super().save(*args, **kwargs)
+
+
+class Column(SaveParentModel):
+    column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, help_text="Select columns"
+    )
+    node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="columns")
+
+
+class SecondaryColumn(SaveParentModel):
+    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="secondary_columns"
+    )
+
+
+class FunctionColumn(SaveParentModel):
+
+    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    function = models.CharField(max_length=20, choices=AggregationFunctions.choices)
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="aggregations"
+    )
+
+
+class SortColumn(SaveParentModel):
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="sort_columns"
+    )
+    ascending = models.BooleanField(
+        default=True, help_text="Select to sort ascendingly"
+    )
+    column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        help_text="Select column to sort on",
+    )
+
+
+class AbstractOperationColumn(SaveParentModel):
+    class Meta:
+        abstract = True
+
+    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+
+    string_function = models.CharField(
+        max_length=20,
+        choices=(
+            (key, value.label)
+            for key, value in {**CommonOperations, **StringOperations}.items()
+        ),
+        null=True,
+    )
+    integer_function = models.CharField(
+        max_length=20,
+        choices=(
+            (key, value.label)
+            for key, value in {**CommonOperations, **NumericOperations}.items()
+        ),
+        null=True,
+    )
+    date_function = models.CharField(
+        max_length=20,
+        choices=(
+            (key, value.label)
+            for key, value in {**CommonOperations, **DateOperations}.items()
+        ),
+        null=True,
+    )
+    time_function = models.CharField(
+        max_length=20,
+        choices=(
+            (key, value.label)
+            for key, value in {**CommonOperations, **TimeOperations}.items()
+        ),
+        null=True,
+    )
+    datetime_function = models.CharField(
+        max_length=20,
+        choices=(
+            (key, value.label)
+            for key, value in {
+                **CommonOperations,
+                **TimeOperations,
+                **DateOperations,
+                **DatetimeOperations,
+            }.items()
+        ),
+        null=True,
+    )
+
+    integer_value = models.BigIntegerField(null=True, blank=True)
+    float_value = models.FloatField(null=True, blank=True)
+    string_value = models.TextField(null=True, blank=True)
+
+    @property
+    def function(self):
+        return (
+            self.string_function
+            or self.integer_function
+            or self.date_function
+            or self.time_function
+            or self.datetime_function
+        )
+
+
+class EditColumn(AbstractOperationColumn):
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="edit_columns"
+    )
+
+
+bigquery_column_regex = RegexValidator(
+    r"^[a-zA-Z_][0-9a-zA-Z_]*$", "Only numbers, letters and underscores allowed."
+)
+
+
+class AddColumn(AbstractOperationColumn):
+    node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="add_columns")
+    label = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        validators=[bigquery_column_regex],
+    )
+
+
+class RenameColumn(SaveParentModel):
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="rename_columns"
+    )
+    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    new_name = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        validators=[bigquery_column_regex],
+    )
+
+
+class FormulaColumn(SaveParentModel):
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="formula_columns"
+    )
+    formula = models.TextField(null=True, blank=True)
+    label = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        validators=[bigquery_column_regex],
+    )
+
+
+class WindowColumn(SaveParentModel):
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="window_columns"
+    )
+
+    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    function = models.CharField(max_length=20, choices=AggregationFunctions.choices)
+    group_by = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+    )
+    order_by = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+    )
+    ascending = models.BooleanField(
+        default=True, help_text="Select to sort ascendingly"
+    )
+    label = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        validators=[bigquery_column_regex],
+    )

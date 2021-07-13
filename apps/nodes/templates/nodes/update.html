@@ -1,14 +1,168 @@
+{% with parents=node.parents.all %}
 
-{% extends "web/app/settings_base.html" %}
+<turbo-frame id="workflow-modal">
+  {% if node.kind == "input" or parents %}
+  <div class="workflow-modal__section">
+    <div class="workflow-modal__header">
+      {% include 'workflows/node_name.html' %}
+    </div>
 
-{% block app %}
-<h1>Update</h1>
-<form method="post" action="{% url 'nodes:update' object.id %}" class="form">
-  {% csrf_token %}
+    <form class="form--no-layout overflow-hidden flex-1"
+      action="{% url 'workflows:node' workflow.id node.id %}"
+      method="post"
+      {% if do_live_updates %}
+      data-controller="live-update trigger"
+      {% else %}
+      data-controller="trigger"
+      {% endif %}
+      data-trigger-event-value="node-updated-{{ node.id }}"
+      data-action="submit->trigger#dispatch change->tf-modal#change"
+      data-tf-modal-target='form'
+      id="config-form"
+      data-live-update-form-value="config-form"
+    >
+      <div class="workflow-detail__sidebar">
+        {{ form.media }}
+        {% if filters_formset %}
+        {{ filters_formset.media }}
+        {% endif %}
+        {% if formula_columns_formset %}
+        {{ formula_columns_formset.media }}
+        {% endif %}
+        <div class="h-6">
+          <span data-live-update-target="loading" class="hidden"><i
+              class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
+        </div>
+        {% csrf_token %}
 
-  {% include "django/forms/default_form.html" %}
+        {% include "django/forms/default_form.html" %}
 
-  <button type="submit" class="button">Save changes</button>
-</form>
-{% endblock %}
+        {% if columns_formset %}
+        <fieldset>
+          <label>Add columns</label>
+          {% include "components/formset.html" with formset=columns_formset %}
+        </fieldset>
+        {% endif %}
 
+        {% if aggregations_formset %}
+        <fieldset>
+          <label>Add aggregates</label>
+          {% include "components/formset.html" with formset=aggregations_formset %}
+        </fieldset>
+        {% endif %}
+
+        {% if sort_columns_formset %}
+        <fieldset>
+          <label>Add columns</label>
+          {% include "components/formset.html" with formset=sort_columns_formset %}
+        </fieldset>
+        {% endif %}
+
+        {% if edit_columns_formset %}
+        <fieldset>
+          <label>Edit columns</label>
+          {% include "components/formset.html" with formset=edit_columns_formset %}
+        </fieldset>
+        {% endif %}
+
+        {% if add_columns_formset %}
+        <fieldset>
+          <label>Add columns</label>
+          {% include "components/formset.html" with formset=add_columns_formset %}
+        </fieldset>
+        {% endif %}
+
+        {% if rename_columns_formset %}
+        <fieldset>
+          <label>Rename columns</label>
+          {% include "components/formset.html" with formset=rename_columns_formset %}
+        </fieldset>
+        {% endif %}
+
+        {% if formula_columns_formset %}
+        <fieldset>
+          <label>Add columns</label>
+          {% include "components/formset.html" with formset=formula_columns_formset %}
+        </fieldset>
+        {% endif %}
+
+        {% if filters_formset %}
+        <fieldset>
+          <label>Add filters</label>
+          {% include "components/formset.html" with formset=filters_formset %}
+        </fieldset>
+        {% endif %}
+
+        {% if secondary_columns_formset %}
+        <fieldset>
+          <label>Select specific columns</label>
+          {% include "components/formset.html" with formset=secondary_columns_formset %}
+        </fieldset>
+        {% endif %}
+        {% if window_columns_formset %}
+        <fieldset>
+          <label>Add window columns</label>
+          {% include "components/formset.html" with formset=window_columns_formset %}
+        </fieldset>
+        {% endif %}
+      </div>
+
+      <div class='workflow-modal__footer'>
+        <div class="flex flex-1 gap-7 pad">
+          <input type='submit' class="button button--success"
+                 data-controller="trigger"
+                 data-action="click->tf-modal#forceClose click->trigger#dispatch"
+                 data-trigger-event-value="update-workflow"
+                 name='submit'
+                 value='Save & Close' />
+          <input type='submit'
+                 class="button button--outline button--success"
+                 name='submit'
+                 data-controller="trigger"
+                 data-action="click->tf-modal#save click->trigger#dispatch"
+                 data-trigger-event-value="update-workflow"
+                 value='Save & Preview' />
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="workflow-modal__section">
+    <div class="workflow-modal__table">
+      <nav class="tabbar">
+        <a class="tabbar__link {% if show_docs %} tabbar__link--active {% endif %}"
+           href="{% url 'workflows:node' workflow.id object.id %}?show_docs=true">
+          Help
+        </a>
+        {% for parent in parents %}
+        <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
+           href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ parent.id }}">
+          Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
+        </a>
+        {% endfor %}
+        <a class="tabbar__link  {% if preview_node_id == object.id and not show_docs %} tabbar__link--active {% endif %}"
+           href="{% url 'workflows:node' workflow.id object.id %}?preview_node_id={{ object.id }}">
+          Result
+        </a>
+      </nav>
+      {% if show_docs%}
+      {% include help_template %}
+      {% else%}
+      <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id preview_node_id %}">
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          <p class='placeholder-scr__title'>Loading preview...</p>
+        </div>
+      </turbo-frame>
+      {% endif %}
+    </div>
+    {% else %}
+    <div class='workflow-detail__warning'>
+      <span>You need to <strong>connect</strong> this node before you can configure it.</span>
+      <span class='mt-12'><i class="fad fa-stethoscope fa-10x"></i></span>
+    </div>
+  </div>
+  {% endif %}
+</turbo-frame>
+
+{% endwith %}
