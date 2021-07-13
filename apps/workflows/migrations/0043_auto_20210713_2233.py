@@ -181,7 +181,11 @@ class Migration(migrations.Migration):
                 )
             ],
             database_operations=[
-                migrations.AlterModelTable(name="Node", table="nodes_node")
+                migrations.AlterModelTable(name="Node", table="nodes_node"),
+                migrations.RunSQL(
+                    sql="ALTER TABLE workflows_node_parents RENAME TO nodes_node_parents",
+                    reverse_sql="ALTER TABLE nodes_node_parents RENAME TO workflows_node_parents",
+                ),
             ],
         ),
         migrations.SeparateDatabaseAndState(
