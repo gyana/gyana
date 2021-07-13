@@ -3,9 +3,12 @@ from functools import cached_property
 
 import coreapi
 from apps.utils.formset_update_view import FormsetUpdateView
-from apps.utils.segment_analytics import (NODE_CONNECTED_EVENT,
-                                          NODE_CREATED_EVENT,
-                                          NODE_UPDATED_EVENT, track_node)
+from apps.utils.segment_analytics import (
+    NODE_CONNECTED_EVENT,
+    NODE_CREATED_EVENT,
+    NODE_UPDATED_EVENT,
+    track_node,
+)
 from apps.utils.table_data import get_table
 from django import forms, template
 from django.http.response import HttpResponse
@@ -68,10 +71,6 @@ class NodeUpdate(FormsetUpdateView):
     model = Node
 
     @cached_property
-    def workflow(self):
-        return Workflow.objects.get(pk=self.kwargs["workflow_id"])
-
-    @cached_property
     def formsets(self):
         return KIND_TO_FORMSETS.get(self.object.kind, [])
 
@@ -95,7 +94,7 @@ class NodeUpdate(FormsetUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["workflow"] = self.workflow
+        context["workflow"] = self.object.workflow
         context["preview_node_id"] = self.preview_node_id
         context["show_docs"] = self.request.GET.get("show_docs", False) == "true" or (
             self.object.data_updated is None
@@ -129,7 +128,7 @@ class NodeUpdate(FormsetUpdateView):
         return r
 
     def get_success_url(self) -> str:
-        base_url = reverse("nodes:update", args=(self.workflow.id, self.object.id))
+        base_url = reverse("nodes:update", args=(self.object.id,))
 
         if self.request.POST.get("submit") == "Save & Preview":
             return f"{base_url}?preview_node_id={self.preview_node_id}"

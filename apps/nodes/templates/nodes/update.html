@@ -8,7 +8,7 @@
     </div>
 
     <form class="form--no-layout overflow-hidden flex-1"
-      action="{% url 'nodes:update' workflow.id node.id %}"
+      action="{% url 'nodes:update' node.id %}"
       method="post"
       {% if do_live_updates %}
       data-controller="live-update trigger"
@@ -131,24 +131,24 @@
     <div class="workflow-modal__table">
       <nav class="tabbar">
         <a class="tabbar__link {% if show_docs %} tabbar__link--active {% endif %}"
-           href="{% url 'nodes:update' workflow.id object.id %}?show_docs=true">
+           href="{% url 'nodes:update' object.id %}?show_docs=true">
           Help
         </a>
         {% for parent in parents %}
         <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
-           href="{% url 'nodes:update' workflow.id object.id %}?preview_node_id={{ parent.id }}">
+           href="{% url 'nodes:update' object.id %}?preview_node_id={{ parent.id }}">
           Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
         </a>
         {% endfor %}
         <a class="tabbar__link  {% if preview_node_id == object.id and not show_docs %} tabbar__link--active {% endif %}"
-           href="{% url 'nodes:update' workflow.id object.id %}?preview_node_id={{ object.id }}">
+           href="{% url 'nodes:update' object.id %}?preview_node_id={{ object.id }}">
           Result
         </a>
       </nav>
       {% if show_docs%}
       {% include help_template %}
       {% else%}
-      <turbo-frame id="workflows-grid" src="{% url 'workflows:grid' workflow.id preview_node_id %}">
+      <turbo-frame id="workflows-grid" src="{% url 'nodes:grid' preview_node_id %}">
         <div class='placeholder-scr placeholder-scr--fillscreen'>
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
           <p class='placeholder-scr__title'>Loading preview...</p>

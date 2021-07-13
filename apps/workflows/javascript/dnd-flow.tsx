@@ -38,7 +38,7 @@ const DnDFlow = ({ client, workflowId }) => {
   const [viewHasChanged, setViewHasChanged] = useState(false)
 
   const updateParents = (id: string, parents: string[]) =>
-    client.action(window.schema, ['workflows', 'api', 'nodes', 'partial_update'], {
+    client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
       id,
       parents,
     })
@@ -73,7 +73,7 @@ const DnDFlow = ({ client, workflowId }) => {
     setElements((els) => removeElements(elementsToRemove, els))
     elementsToRemove.forEach((el) => {
       if (isNode(el)) {
-        client.action(window.schema, ['workflows', 'api', 'nodes', 'delete'], {
+        client.action(window.schema, ['nodes', 'api', 'nodes', 'delete'], {
           id: el.id,
         })
       } else {
@@ -151,7 +151,7 @@ const DnDFlow = ({ client, workflowId }) => {
   const onDragStop = (event, node) => {
     const { position } = node
 
-    client.action(window.schema, ['workflows', 'api', 'nodes', 'partial_update'], {
+    client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
       id: node.id,
       x: position.x,
       y: position.y,
@@ -160,7 +160,7 @@ const DnDFlow = ({ client, workflowId }) => {
 
   const syncElements = () =>
     client
-      .action(window.schema, ['workflows', 'api', 'nodes', 'list'], {
+      .action(window.schema, ['nodes', 'api', 'nodes', 'list'], {
         workflow: workflowId,
       })
       .then((result) => {
@@ -209,7 +209,7 @@ const DnDFlow = ({ client, workflowId }) => {
     const type = event.dataTransfer.getData('application/reactflow')
     const position = getPosition(event)
 
-    const result = await client.action(window.schema, ['workflows', 'api', 'nodes', 'create'], {
+    const result = await client.action(window.schema, ['nodes', 'api', 'nodes', 'create'], {
       kind: type,
       workflow: workflowId,
       x: position.x,

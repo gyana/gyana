@@ -5,6 +5,8 @@ from . import views
 
 app_name = "nodes"
 urlpatterns = [
+    path("<hashid:pk>", views.NodeUpdate.as_view(), name="update"),
+    path("<hashid:pk>/grid", views.NodeGrid.as_view(), name="grid"),
     path("<hashid:pk>/duplicate_node", views.duplicate_node, name="duplicate_node"),
     path("<hashid:pk>/node_name", views.NodeName.as_view(), name="node_name"),
     path("update_positions", views.update_positions, name="update_positions"),
@@ -17,8 +19,3 @@ router.register("api/nodes", views.NodeViewSet, basename="Node")
 
 
 urlpatterns += router.urls
-
-workflow_urlpatterns = [
-    path("<hashid:pk>", views.NodeUpdate.as_view(), name="node"),
-    path("<hashid:pk>/grid", views.NodeGrid.as_view(), name="grid"),
-]

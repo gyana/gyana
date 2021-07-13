@@ -27,7 +27,6 @@ register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "h
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
 from apps.invites import urls as invite_urls
-from apps.nodes import urls as node_urls
 from apps.projects import urls as project_urls
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
@@ -42,10 +41,6 @@ project_urlpatterns = [
         include(integration_urls.project_urlpatterns),
     ),
     path("<hashid:project_id>/workflows/", include(workflow_urls.project_urlpatterns)),
-    path(
-        "<hashid:project_id>/workflows/<hashid:workflow_id>/nodes/",
-        include(node_urls.workflow_urlpatterns),
-    ),
     path(
         "<hashid:project_id>/dashboards/", include(dashboard_urls.project_urlpatterns)
     ),

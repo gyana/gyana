@@ -3,10 +3,10 @@ import { Handle, NodeProps, Position, Node, useStoreState } from 'react-flow-ren
 import { useDebouncedCallback } from 'use-debounce'
 
 export const NodeContext = createContext({
-  removeById: (id: string) => { },
+  removeById: (id: string) => {},
   client: null,
   getIncomingNodes: (id: string): [Node, Node[]] | null => null,
-  addNode: (node) => { },
+  addNode: (node) => {},
   workflowId: '',
 })
 
@@ -24,7 +24,7 @@ const OpenButton = ({ id }) => {
 
   return (
     <button data-action='click->tf-modal#open'>
-      <i data-src={`/workflows/${workflowId}/nodes/${id}`} className='fas fa-edit fa-lg'></i>
+      <i data-src={`/nodes/${id}`} className='fas fa-edit fa-lg'></i>
     </button>
   )
 }
@@ -176,10 +176,9 @@ const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
       {showWarning && <WarningIcon text='Output needs to be connected!' />}
       <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
 
-
       <i
         data-action='dblclick->tf-modal#open'
-        data-src={`/workflows/${workflowId}/nodes/${id}`}
+        data-src={`/nodes/${id}`}
         className={`fas fa-fw ${data.icon} ${showContent && 'absolute opacity-10'}`}
       ></i>
       {showContent && (
@@ -218,7 +217,7 @@ const DefaultNode = ({
 
       <i
         data-action='dblclick->tf-modal#open'
-        data-src={`/workflows/${workflowId}/nodes/${id}`}
+        data-src={`/nodes/${id}`}
         className={`fas fa-fw ${data.icon} ${showContent && 'absolute opacity-10'}`}
       ></i>
       {showContent && <Description id={id} data={data} />}
