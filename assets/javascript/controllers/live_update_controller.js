@@ -1,11 +1,37 @@
 import { Controller } from 'stimulus'
 import morphdom from 'morphdom'
 
+const get_formset_row = (element) => element.closest('[data-formset-index]')
+
 export default class extends Controller {
   static targets = ['loading']
   static values = {
     form: String,
   }
+
+  disable = (event) => {
+    const form = this.element
+
+    let flag_disabled = false
+
+    const formset_row = get_formset_row(event.target)
+
+    // Disable editing on all elements *after* the edited element
+    // Skip non-hidden elements (typically within web components)
+    // For formsets, only disable within that row
+    // But always disable the submit buttons
+
+    for (const element of form.elements) {
+      if (flag_disabled && formset_row && get_formset_row(element) !== formset_row)
+        flag_disabled = false
+
+      if (element.type === 'submit' || (flag_disabled && element.type !== 'hidden'))
+        element.disabled = true
+
+      if (element === event.target) flag_disabled = true
+    }
+  }
+
   listener = async (event) => {
     const form = this.element
 
@@ -13,14 +39,7 @@ export default class extends Controller {
     const data = new FormData(form)
     this.loadingTarget.classList.remove('hidden')
 
-    let disabled = false
-
-    // disable editing on all following elements
-    // unless element is hidden (e.g. within web component)
-    for (const element of form.elements) {
-      if (disabled) element.disabled = true
-      if (element === event.target && element.type !== 'hidden') disabled = true
-    }
+    this.disable(event)
 
     const result = await fetch(form.action, {
       method: 'POST',
