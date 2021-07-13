@@ -1,8 +1,9 @@
 import django_tables2 as tables
+from apps.nodes.models import Node
 from apps.utils.table import NaturalDatetimeColumn
 from django.utils.safestring import mark_safe
 
-from .models import Node, Workflow
+from .models import Workflow
 
 ICONS = {
     "success": "fa-check-circle text-green",

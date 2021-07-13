@@ -2,11 +2,9 @@ from functools import cached_property
 
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
-from apps.nodes.nodes import AllOperations
 from apps.tables.models import Table
 from apps.utils.live_update_form import LiveUpdateForm
 from apps.utils.schema_form_mixin import SchemaFormMixin
-from apps.workflows.widgets import CodeMirror, InputNode, MultiSelect
 from django import forms
 from django.forms.models import BaseInlineFormSet
 
@@ -14,6 +12,8 @@ from django.forms.models import BaseInlineFormSet
 from .models import (AddColumn, AggregationFunctions, Column, EditColumn,
                      FormulaColumn, FunctionColumn, Node, RenameColumn,
                      SecondaryColumn, SortColumn, WindowColumn)
+from .nodes import AllOperations
+from .widgets import CodeMirror, InputNode, MultiSelect
 
 # fmt: on
 

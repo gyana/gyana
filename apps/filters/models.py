@@ -69,7 +69,7 @@ class Filter(CloneMixin, DirtyFieldsMixin, BaseModel):
     )
     # Use string reference to avoid circular import
     node = models.ForeignKey(
-        "workflows.Node", on_delete=models.CASCADE, related_name="filters", null=True
+        "nodes.Node", on_delete=models.CASCADE, related_name="filters", null=True
     )
 
     column = models.CharField(max_length=300)

@@ -1,7 +1,8 @@
 from apps.filters.models import Filter
 from rest_framework import serializers
 
-from .models import Node, NodeConfig, Workflow
+from .config import NodeConfig
+from .models import Node, Workflow
 
 
 class NodeSerializer(serializers.ModelSerializer):

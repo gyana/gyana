@@ -1,10 +1,10 @@
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
+from apps.nodes.widgets import SourceSelect
 from apps.tables.models import Table
 from apps.utils.live_update_form import LiveUpdateForm
 from apps.utils.schema_form_mixin import SchemaFormMixin
 from apps.widgets.widgets import VisualSelect
-from apps.workflows.widgets import SourceSelect
 from django import forms
 
 from .models import MULTI_VALUES_CHARTS, MultiValues, Widget

@@ -1,8 +1,8 @@
 from typing import Final
 
 import analytics
+from apps.nodes.models import Node
 from apps.users.models import CustomUser
-from apps.workflows.models import Node
 
 # General
 SIGNED_UP_EVENT: Final = "Signed up"

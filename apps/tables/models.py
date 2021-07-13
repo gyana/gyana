@@ -26,10 +26,10 @@ class Table(BaseModel):
         "integrations.Integration", on_delete=models.CASCADE, null=True
     )
     workflow_node = models.OneToOneField(
-        "workflows.Node", on_delete=models.CASCADE, null=True
+        "nodes.Node", on_delete=models.CASCADE, null=True
     )
     intermediate_node = models.OneToOneField(
-        "workflows.Node",
+        "nodes.Node",
         on_delete=models.CASCADE,
         null=True,
         related_name="intermediate_node",

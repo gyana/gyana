@@ -1,4 +1,5 @@
 import analytics
+from apps.nodes.config import NodeConfig
 from apps.projects.mixins import ProjectMixin
 from apps.utils.segment_analytics import WORFKLOW_RUN_EVENT, WORKFLOW_CREATED_EVENT
 from django import forms
@@ -15,7 +16,7 @@ from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .bigquery import run_workflow
 from .forms import WorkflowForm, WorkflowFormCreate
-from .models import NodeConfig, Workflow
+from .models import Workflow
 from .tables import WorkflowTable
 
 # CRUDL

@@ -1,5 +1,6 @@
+from apps.nodes.models import Node
 from apps.tables.models import Table
-from apps.workflows.models import Node, Workflow
+from apps.workflows.models import Workflow
 from django.utils import timezone
 from lib.clients import DATAFLOW_ID, bigquery_client
 

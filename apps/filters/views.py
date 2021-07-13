@@ -1,6 +1,6 @@
 import ibis.expr.datatypes as dt
+from apps.nodes.models import Node
 from apps.widgets.models import Widget
-from apps.workflows.models import Node
 from lib.clients import get_dataframe
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
