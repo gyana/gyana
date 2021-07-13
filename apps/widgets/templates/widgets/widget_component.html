@@ -11,7 +11,7 @@
         {% endif %}
         <turbo-frame 
           id="widgets-output-{{ object.id }}" 
-          src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}"
+          src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
           target="_top" 
           style="display: flex; flex: 1 1 0%; min-height: 0;"
         >

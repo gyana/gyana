@@ -9,8 +9,8 @@ let auth = new coreapi.auth.SessionAuthentication({
 
 let client = new coreapi.Client({ auth: auth })
 
-// The grid layout (on any screen) has 20 columns
-const GRID_COLS = 40
+// The grid layout (on any screen) has 50 columns
+const GRID_COLS = 80
 
 const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> = ({
   children,

@@ -20,14 +20,18 @@
     {% endif %}
 {% else %}
   <div class='flex flex-col items-center justify-center flex-1'>
-    <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
-    <p>This widget needs to be
-      <button 
-        data-action="click->tf-modal#open" 
-        class='link'
-        data-src="{% url "dashboard_widgets:update" project.id dashboard.id widget.id %}"
-      >configured</button>!
-    </p>
+    {% if request.GET.mode == 'edit' %}
+      <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
+      <p>This widget needs to be
+        <button 
+          data-action="click->tf-modal#open" 
+          class='link'
+          data-src="{% url "dashboard_widgets:update" project.id dashboard.id widget.id %}"
+        >configured</button>!
+      </p>
+    {% else %}
+      <p>No widget to display!</p>
+    {% endif %}
   </div>
   {% endif %}
 </turbo-frame>
