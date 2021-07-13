@@ -1,23 +1,23 @@
 import logging
 from functools import cached_property
 
+# fmt: off
 from apps.projects.models import Project
 from apps.tables.models import Table
-from apps.workflows.nodes import (
-    NODE_FROM_CONFIG,
-    CommonOperations,
-    DateOperations,
-    DatetimeOperations,
-    NumericOperations,
-    StringOperations,
-    TimeOperations,
-)
+from apps.workflows.nodes import (NODE_FROM_CONFIG, CommonOperations,
+                                  DateOperations, DatetimeOperations,
+                                  NumericOperations, StringOperations,
+                                  TimeOperations)
+# fmt: on
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
+from django.core.cache import cache
 from django.core.validators import RegexValidator
 from django.db import models
+from django.db.models import Max
 from django.urls import reverse
 from django.utils import timezone
+from lib.cache import get_cache_key
 from model_clone import CloneMixin
 
 
@@ -229,6 +229,7 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
     )
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
+    updated = models.DateTimeField(auto_now=True, editable=False)
     data_updated = models.DateTimeField(null=True, editable=False)
 
     error = models.CharField(max_length=300, null=True)
@@ -388,7 +389,22 @@ class Node(DirtyFieldsMixin, CloneMixin, models.Model):
 
     @cached_property
     def schema(self):
-        return self.get_query().schema()
+
+        # in theory, we only need to fetch all parent nodes recursively
+        # in practice, this is faster and less error prone
+        nodes_last_updated = self.workflow.nodes.all().aggregate(Max("updated"))
+        input_nodes = self.workflow.nodes.filter(input_table__isnull=False).all()
+
+        cache_key = get_cache_key(
+            nodes_last_updated=str(nodes_last_updated["updated__max"]),
+            input_tables=[node.input_table.cache_key for node in input_nodes],
+        )
+
+        if (res := cache.get(cache_key)) is None:
+            res = self.get_query().schema()
+            cache.set(cache_key, res, 30)
+
+        return res
 
     @property
     def display_name(self):

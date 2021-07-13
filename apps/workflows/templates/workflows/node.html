@@ -29,9 +29,6 @@
         {% if formula_columns_formset %}
         {{ formula_columns_formset.media }}
         {% endif %}
-        <span data-live-update-target="loading" class="hidden">
-          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-        </span>
         {% csrf_token %}
 
         {% include "django/forms/default_form.html" %}
@@ -104,6 +101,9 @@
           {% include "components/formset.html" with formset=window_columns_formset %}
         </fieldset>
         {% endif %}
+        <span data-live-update-target="loading" class="hidden">
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+        </span>
       </div>
 
       <div class='workflow-modal__footer'>

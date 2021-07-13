@@ -2,7 +2,9 @@ from functools import cached_property
 
 from apps.projects.models import Project
 from django.conf import settings
+from django.core.cache import cache
 from django.db import models
+from lib.cache import get_cache_key
 from lib.clients import bigquery_client, ibis_client
 
 
@@ -60,9 +62,19 @@ class Table(models.Model):
         conn = ibis_client()
         return conn.table(self.bq_table, database=self.bq_dataset)
 
+
+    @property
+    def cache_key(self):
+        return get_cache_key(id=self.id, data_updated=str(self.data_updated))
+
     @cached_property
     def schema(self):
-        return self.get_query().schema()
+
+        if (res := cache.get(self.cache_key)) is None:
+            res = self.get_query().schema()
+            cache.set(self.cache_key, res, 30)
+
+        return res
 
     @property
     def owner_name(self):
