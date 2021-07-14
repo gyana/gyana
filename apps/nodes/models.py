@@ -72,6 +72,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         "add_columns",
         "rename_columns",
         "formula_columns",
+        "window_columns",
     ]
 
     workflow = models.ForeignKey(
