@@ -105,14 +105,7 @@ class InlineColumnFormset(BaseInlineFormSet):
         )
 
 
-NUMERIC_AGGREGATIONS = [
-    AggregationFunctions.COUNT,
-    AggregationFunctions.SUM,
-    AggregationFunctions.MEAN,
-    AggregationFunctions.MAX,
-    AggregationFunctions.MIN,
-    AggregationFunctions.STD,
-]
+NUMERIC_AGGREGATIONS = list(AggregationFunctions)
 
 AGGREGATION_TYPE_MAP = {
     "String": [AggregationFunctions.COUNT],
