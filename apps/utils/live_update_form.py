@@ -6,6 +6,9 @@ class LiveUpdateForm(forms.ModelForm):
     hidden_live = forms.CharField(widget=forms.HiddenInput(), required=True)
 
     def __init__(self, *args, **kwargs):
+
+        self.parent_instance = kwargs.pop("parent_instance", None)
+
         super().__init__(*args, **kwargs)
 
         self.prefix = kwargs.pop("prefix", None)
