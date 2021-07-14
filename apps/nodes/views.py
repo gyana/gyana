@@ -61,7 +61,7 @@ class NodeName(TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "nodes:node_name",
+            "nodes:name",
             args=(self.object.id,),
         )
 

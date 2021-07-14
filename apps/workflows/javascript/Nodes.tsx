@@ -33,7 +33,7 @@ const DuplicateButton = ({ id }) => {
     <button
       onClick={() =>
         client
-          .action(window.schema, ['nodes', 'duplicate_node', 'create'], {
+          .action(window.schema, ['nodes', 'duplicate', 'create'], {
             id,
           })
           .then((res) => addNode(res))
