@@ -5,6 +5,7 @@ import 'codemirror/addon/hint/show-hint.js'
 import 'codemirror/addon/edit/closebrackets.js'
 import 'codemirror/addon/edit/matchbrackets.js'
 import 'codemirror/addon/display/placeholder.js'
+import 'codemirror/addon/lint/lint.js'
 
 // TODO: can we make this not relative ?
 const functions = require('../../../lib/functions.json')
@@ -20,6 +21,8 @@ export default class extends Controller {
 
     const readOnly = this.textareaTarget.attributes['readonly'] ? 'nocursor' : false
 
+    registerLinter(columns)
+
     this.CodeMirror = CodeMirror.fromTextArea(this.textareaTarget, {
       mode: 'gyanaformula',
       hintOptions: {
@@ -27,6 +30,8 @@ export default class extends Controller {
       },
       autoCloseBrackets: true,
       matchBrackets: true,
+      lint: true,
+      selfContain: true,
       readOnly,
     })
 
@@ -45,16 +50,18 @@ export default class extends Controller {
 }
 
 const operations = functions.map((f) => f.name)
-
+const operationRegex = new RegExp(`\(${operations.join('|')}\)\(?=\\(\)`)
+const stringRegex = /"(?:[^\\]|\\.)*?(?:"|$)/
+const columnRegex = /[a-zA-Z_][0-9a-zA-Z_]*/g
 CodeMirror.defineSimpleMode('gyanaformula', {
   // The start state contains the rules that are initially used
   start: [
-    { regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: 'string' },
+    { regex: stringRegex, token: 'string' },
     {
-      regex: new RegExp(`\(${operations.join('|')}\)\\(`),
+      regex: operationRegex,
       token: 'keyword',
     },
-    { regex: /[a-zA-Z_][0-9a-zA-Z_]*/, token: 'variable' },
+    { regex: columnRegex, token: 'variable' },
     { regex: /TRUE|FALSE/, token: 'atom' },
     { regex: /[0-9]+/i, token: 'number' },
     { regex: /[-+\/*=<>!]+/, token: 'operator' },
@@ -84,3 +91,43 @@ const autocomplete = (columns) => (editor, option) => {
     }
   }
 }
+const incorrectOperationRegex = /([A-Za-z0-9_]*)(?=\()/g
+
+const registerLinter = (columns) =>
+  CodeMirror.registerHelper('lint', 'gyanaformula', function (text) {
+    const result = []
+    const columnNames = columns.map((c) => c.text)
+
+    text.split('\n').forEach((newline, lineIdx) => {
+      const operationMatches = [...newline.matchAll(incorrectOperationRegex)]
+      operationMatches.forEach((m) => {
+        if (m[0] && !(m[0] + '(').match(operationRegex)) {
+          result.push({
+            message: `Function ${m[0]} does not exist`,
+            severity: 'error',
+            from: CodeMirror.Pos(lineIdx, m.index),
+            to: CodeMirror.Pos(lineIdx, m.index + m[0].length),
+          })
+        }
+      })
+
+      const columnMatches = [...newline.matchAll(columnRegex)]
+
+      columnMatches.forEach((m) => {
+        if (
+          newline[m.index + m[0].length] != '(' &&
+          !columnNames.includes(m[0]) &&
+          !(newline[m.index + m[0].length] == '"' && newline[m.index - 1] == '"')
+        ) {
+          result.push({
+            message: `Column ${m[0]} does not exist`,
+            severity: 'error',
+            from: CodeMirror.Pos(lineIdx, m.index),
+            to: CodeMirror.Pos(lineIdx, m.index + m[0].length),
+          })
+        }
+      })
+    })
+
+    return result
+  })
