@@ -1,5 +1,4 @@
-from django.forms.fields import MultipleChoiceField
-from django.forms.widgets import ChoiceWidget, Textarea
+from django.forms.widgets import ChoiceWidget
 
 ICONS = {"integration": "far fa-link", "workflow_node": "far fa-stream"}
 
@@ -25,19 +24,6 @@ class SourceSelect(ChoiceWidget):
 
 class InputNode(SourceSelect):
     template_name = "django/forms/widgets/input_node.html"
-
-
-class CodeMirror(Textarea):
-    template_name = "django/forms/widgets/codemirror.html"
-
-    def __init__(self, schema) -> None:
-        self.schema = schema
-        super().__init__()
-
-    def get_context(self, name: str, value, attrs):
-        context = super().get_context(name, value, attrs)
-        context["columns"] = [name for name in self.schema]
-        return context
 
 
 class MultiSelect(ChoiceWidget):

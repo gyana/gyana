@@ -24,8 +24,9 @@ from rest_framework.response import Response
 from rest_framework.schemas import AutoSchema
 from turbo_response.views import TurboUpdateView
 
-from .forms import KIND_TO_FORM, KIND_TO_FORMSETS
-from .models import Node, NodeConfig, Workflow
+from .forms import KIND_TO_FORM
+from .formsets import KIND_TO_FORMSETS
+from .models import Node, NodeConfig
 from .serializers import NodeSerializer
 
 

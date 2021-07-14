@@ -1,21 +1,12 @@
 from functools import cached_property
 
-from apps.filters.forms import FilterForm
-from apps.filters.models import Filter
+from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.tables.models import Table
 from apps.utils.live_update_form import LiveUpdateForm
-from apps.utils.schema_form_mixin import SchemaFormMixin
 from django import forms
-from django.forms.models import BaseInlineFormSet
 
-# fmt: off
-from .models import (AddColumn, AggregationFunctions, Column, EditColumn,
-                     FormulaColumn, FunctionColumn, Node, RenameColumn,
-                     SecondaryColumn, SortColumn, WindowColumn)
-from .nodes import AllOperations
-from .widgets import CodeMirror, InputNode, MultiSelect
-
-# fmt: on
+from .models import Column, Node
+from .widgets import InputNode, MultiSelect
 
 
 class NodeForm(LiveUpdateForm):
@@ -23,6 +14,12 @@ class NodeForm(LiveUpdateForm):
     def columns(self):
         """Returns the schema for the first parent."""
         return self.instance.parents.first().schema
+
+
+class DefaultNodeForm(NodeForm):
+    class Meta:
+        model = Node
+        fields = []
 
 
 class InputNodeForm(NodeForm):
@@ -94,207 +91,6 @@ class JoinNodeForm(NodeForm):
         self.fields["join_right"].choices = self.right_columns
 
 
-class InlineColumnFormset(BaseInlineFormSet):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.form.base_fields["column"] = forms.ChoiceField(
-            choices=[
-                ("", "No column selected"),
-                *[(col, col) for col in self.instance.parents.first().schema],
-            ]
-        )
-
-
-NUMERIC_AGGREGATIONS = list(AggregationFunctions)
-
-AGGREGATION_TYPE_MAP = {
-    "String": [AggregationFunctions.COUNT],
-    "Int64": NUMERIC_AGGREGATIONS,
-    "Float64": NUMERIC_AGGREGATIONS,
-}
-
-
-class FunctionColumnForm(SchemaFormMixin, LiveUpdateForm):
-    class Meta:
-        fields = ("column", "function")
-
-    def get_live_fields(self):
-        fields = ["column"]
-
-        if self.column_type is not None:
-            fields += ["function"]
-
-        return fields
-
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs)
-
-        if self.column_type is not None:
-            self.fields["function"].choices = [
-                (choice.value, choice.name)
-                for choice in AGGREGATION_TYPE_MAP[self.column_type]
-            ]
-
-
-FunctionColumnFormSet = forms.inlineformset_factory(
-    Node,
-    FunctionColumn,
-    form=FunctionColumnForm,
-    extra=0,
-    can_delete=True,
-    formset=InlineColumnFormset,
-)
-
-ColumnFormSet = forms.inlineformset_factory(
-    Node,
-    Column,
-    fields=("column",),
-    extra=0,
-    can_delete=True,
-    formset=InlineColumnFormset,
-)
-
-
-SortColumnFormSet = forms.inlineformset_factory(
-    Node,
-    SortColumn,
-    fields=("column", "ascending"),
-    can_delete=True,
-    extra=0,
-    formset=InlineColumnFormset,
-)
-
-
-IBIS_TO_FUNCTION = {
-    "String": "string_function",
-    "Int64": "integer_function",
-    "Float64": "integer_function",
-    "Timestamp": "datetime_function",
-    "Date": "date_function",
-    "Time": "time_function",
-}
-
-
-class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
-    class Meta:
-        fields = (
-            "column",
-            "string_function",
-            "integer_function",
-            "date_function",
-            "time_function",
-            "datetime_function",
-            "integer_value",
-            "float_value",
-            "string_value",
-        )
-
-    def get_live_fields(self):
-        fields = ["column"]
-
-        if self.column_type and (function_field := IBIS_TO_FUNCTION[self.column_type]):
-            fields += [function_field]
-            operation = AllOperations.get(self.get_live_field(function_field))
-            if operation and operation.arguments == 1:
-                fields += [operation.value_field]
-
-        return fields
-
-    def save(self, commit: bool):
-        # Make sure only one function is set and turn the others to Null
-        for field in self.base_fields:
-            if field.endswith("function") and f"{self.prefix}-{field}" not in self.data:
-                setattr(self.instance, field, None)
-        return super().save(commit=commit)
-
-
-EditColumnFormSet = forms.inlineformset_factory(
-    Node,
-    EditColumn,
-    form=OperationColumnForm,
-    can_delete=True,
-    extra=0,
-    formset=InlineColumnFormset,
-)
-
-
-class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
-    class Meta:
-        fields = (
-            "column",
-            "string_function",
-            "integer_function",
-            "date_function",
-            "time_function",
-            "datetime_function",
-            "integer_value",
-            "float_value",
-            "string_value",
-            "label",
-        )
-
-    def get_live_fields(self):
-        fields = ["column"]
-
-        if self.column_type == "Int64":
-            fields += ["integer_function"]
-
-            if self.get_live_field("integer_function") is not None:
-                fields += ["label"]
-
-        elif self.column_type == "String":
-            fields += ["string_function"]
-
-            if self.get_live_field("string_function") is not None:
-                fields += ["label"]
-
-        return fields
-
-
-AddColumnFormSet = forms.inlineformset_factory(
-    Node,
-    AddColumn,
-    form=AddColumnForm,
-    can_delete=True,
-    extra=0,
-    formset=InlineColumnFormset,
-)
-
-
-class FormulaColumnForm(SchemaFormMixin, LiveUpdateForm):
-    class Meta:
-        fields = ("formula", "label")
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields["formula"].widget = CodeMirror(self.schema)
-
-
-FormulaColumnFormSet = forms.inlineformset_factory(
-    Node,
-    FormulaColumn,
-    form=FormulaColumnForm,
-    fields=("formula", "label"),
-    can_delete=True,
-    extra=0,
-)
-
-RenameColumnFormSet = forms.inlineformset_factory(
-    Node,
-    RenameColumn,
-    fields=("column", "new_name"),
-    can_delete=True,
-    extra=0,
-    formset=InlineColumnFormset,
-)
-
-FilterFormSet = forms.inlineformset_factory(
-    Node, Filter, form=FilterForm, can_delete=True, extra=0
-)
-
-
 class UnionNodeForm(NodeForm):
     class Meta:
         model = Node
@@ -354,68 +150,6 @@ class UnpivotNodeForm(LiveUpdateForm):
         fields = ["unpivot_value", "unpivot_column"]
 
 
-SelectColumnFormSet = forms.inlineformset_factory(
-    Node,
-    SecondaryColumn,
-    fields=("column",),
-    can_delete=True,
-    extra=0,
-    formset=InlineColumnFormset,
-)
-
-UnpivotColumnFormSet = forms.inlineformset_factory(
-    Node,
-    Column,
-    fields=("column",),
-    can_delete=True,
-    extra=0,
-    formset=InlineColumnFormset,
-)
-
-
-class WindowForm(SchemaFormMixin, LiveUpdateForm):
-    class Meta:
-        fields = ("column", "function", "group_by", "order_by", "ascending", "label")
-        model = WindowColumn
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        column_field = forms.ChoiceField(
-            choices=[
-                ("", "No column selected"),
-                *[(col, col) for col in self.schema],
-            ]
-        )
-        self.fields["column"] = column_field
-        if self.column_type is not None:
-            self.fields["function"].choices = [
-                (choice.value, choice.name)
-                for choice in AGGREGATION_TYPE_MAP[self.column_type]
-            ]
-            self.fields["group_by"] = column_field
-            self.fields["order_by"] = column_field
-
-    def get_live_fields(self):
-        fields = ["column"]
-
-        if self.column_type is not None:
-            fields += ["function", "group_by", "order_by", "ascending", "label"]
-
-        return fields
-
-
-WindowColumnFormSet = forms.inlineformset_factory(
-    Node, WindowColumn, can_delete=True, extra=True, form=WindowForm
-)
-
-
-class DefaultNodeForm(NodeForm):
-    class Meta:
-        model = Node
-        fields = []
-
-
 KIND_TO_FORM = {
     "input": InputNodeForm,
     "output": OutputNodeForm,
@@ -437,16 +171,4 @@ KIND_TO_FORM = {
     "unpivot": UnpivotNodeForm,
     "intersect": DefaultNodeForm,
     "window": DefaultNodeForm,
-}
-
-KIND_TO_FORMSETS = {
-    "aggregation": [FunctionColumnFormSet, ColumnFormSet],
-    "sort": [SortColumnFormSet],
-    "edit": [EditColumnFormSet],
-    "add": [AddColumnFormSet],
-    "rename": [RenameColumnFormSet],
-    "filter": [FilterFormSet],
-    "formula": [FormulaColumnFormSet],
-    "unpivot": [UnpivotColumnFormSet, SelectColumnFormSet],
-    "window": [WindowColumnFormSet],
 }

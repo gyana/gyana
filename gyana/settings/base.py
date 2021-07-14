@@ -78,6 +78,7 @@ PROJECT_APPS = [
     "apps.invites.apps.InvitesConfig",
     "apps.utils",
     "apps.nodes",
+    "apps.columns",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
