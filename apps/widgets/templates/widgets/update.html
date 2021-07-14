@@ -9,6 +9,14 @@
   <div class="flex flex-wrap mb-4 h-full">
     <div class="w-1/2">
       <h3>Config</h3>
+      <div class="absolute top-0 right-0">
+        <button 
+          class="tf-modal__close"
+          data-action="click->tf-modal#close keydown@window->tf-modal#onInput"
+        >
+          <i class="fal fa-times fa-2x"></i>
+        </button>
+      </div>
       <form 
         data-controller="live-update" 
         method="post"
@@ -16,19 +24,7 @@
         class="form"
         data-tf-modal-target='form'
         data-action="change->tf-modal#change"
-      >  
-        <div class="absolute top-0 right-0">
-          <button 
-            class="tf-modal__close" 
-            type="submit"
-            formnovalidate
-            name="close"
-            value="close"
-            data-action="click->tf-modal#close keydown@window->tf-modal#onInput"
-          >
-            <i class="fal fa-times fa-2x"></i>
-          </button>
-        </div>
+      > 
         <div class="h-6">
           <span data-live-update-target="loading" class="hidden"><i
               class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
@@ -56,7 +52,8 @@
             name="submit" 
             value="Save & Close" 
             class="button button--green" 
-            data-action="click->tf-modal#close"
+            data-refresh-id="widgets-output-{{ object.id }}" 
+            data-action="click->tf-modal#forceClose click->tf-modal#refresh"
           ></input>
           <input type="submit" name="submit" value="Save & Preview" class="button button--outline button--green"></input>
         </div>

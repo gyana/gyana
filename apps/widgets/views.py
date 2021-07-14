@@ -167,35 +167,6 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
                 "type": form.instance.kind,
             },
         )
-        if self.request.POST.get("submit") == "Save & Preview":
-            return r
-
-        context = {
-            "widget": self.object,
-            "project": self.project,
-            "dashboard": self.dashboard,
-        }
-        add_output_context(context, self.object)
-        return (
-            TurboStream(f"widgets-output-{self.object.id}")
-            .replace.template("widgets/output.html", context)
-            .response(request=self.request)
-        )
-
-    def form_invalid(self, form):
-        r = super().form_invalid(form)
-        if self.request.POST.get("close"):
-            context = {
-                "widget": self.object,
-                "project": self.project,
-                "dashboard": self.dashboard,
-            }
-            add_output_context(context, self.object)
-            return (
-                TurboStream(f"widgets-output-{self.object.id}")
-                .replace.template("widgets/output.html", context)
-                .response(request=self.request)
-            )
         return r
 
 

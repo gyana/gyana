@@ -3,10 +3,24 @@ import { Controller } from 'stimulus'
 // Open a modal with the content populated by a turbo-frame
 
 export default class extends Controller {
-  static targets = ['modal', 'turboFrame', 'closingWarning']
+  static targets = ['modal', 'turboFrame', 'closingWarning', 'refresh']
 
   connect() {
     this.changed = false
+  }
+
+  refresh(event) {
+    const refreshId = event.target.getAttribute('data-refresh-id')
+    const refreshTarget = this.refreshTargets.find((t) => t.id === refreshId)
+    const src = refreshTarget.src
+    refreshTarget.removeAttribute('src')
+    refreshTarget.innerHTML = `
+    <div class='placeholder-scr placeholder-scr--fillscreen'>
+      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+      <p class='placeholder-scr__title'>Loading visualisation...</p>
+    </div>
+    `
+    refreshTarget.setAttribute('src', src)
   }
 
   open(event) {
