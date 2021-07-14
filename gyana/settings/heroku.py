@@ -37,7 +37,7 @@ ANYMAIL = {"SENDGRID_API_KEY": os.environ.get("SENDGRID_API_KEY")}
 
 FIVETRAN_GROUP = os.environ.get("FIVETRAN_GROUP", "general_candor")
 
-USE_HASHIDS = False
+USE_HASHIDS = True
 
 HONEYBADGER = {
     "API_KEY": os.environ.get("HONEYBADGER_API_KEY"),

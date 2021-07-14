@@ -5,10 +5,10 @@ from . import views
 
 app_name = "nodes"
 urlpatterns = [
-    path("<hashid:pk>", views.NodeUpdate.as_view(), name="update"),
-    path("<hashid:pk>/grid", views.NodeGrid.as_view(), name="grid"),
-    path("<hashid:pk>/duplicate", views.duplicate_node, name="duplicate"),
-    path("<hashid:pk>/name", views.NodeName.as_view(), name="name"),
+    path("<int:pk>", views.NodeUpdate.as_view(), name="update"),
+    path("<int:pk>/grid", views.NodeGrid.as_view(), name="grid"),
+    path("<int:pk>/duplicate", views.duplicate_node, name="duplicate"),
+    path("<int:pk>/name", views.NodeName.as_view(), name="name"),
     path("update_positions", views.update_positions, name="update_positions"),
 ]
 
