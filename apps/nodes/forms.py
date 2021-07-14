@@ -1,11 +1,12 @@
 from functools import cached_property
 
 from apps.columns.forms import AGGREGATION_TYPE_MAP
+from apps.columns.models import Column
 from apps.tables.models import Table
 from apps.utils.live_update_form import LiveUpdateForm
 from django import forms
 
-from .models import Column, Node
+from .models import Node
 from .widgets import InputNode, MultiSelect
 
 

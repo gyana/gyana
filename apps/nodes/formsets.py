@@ -2,18 +2,16 @@
 from apps.columns.forms import (AddColumnForm, FormulaColumnForm,
                                 FunctionColumnForm, OperationColumnForm,
                                 WindowColumnForm)
+from apps.columns.models import (AddColumn, Column, EditColumn, FormulaColumn,
+                                 FunctionColumn, RenameColumn, SecondaryColumn,
+                                 SortColumn, WindowColumn)
 # fmt: on
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
 from django import forms
 from django.forms.models import BaseInlineFormSet
 
-# fmt: off
-from .models import (AddColumn, Column, EditColumn, FormulaColumn,
-                     FunctionColumn, Node, RenameColumn, SecondaryColumn,
-                     SortColumn, WindowColumn)
-
-# fmt: on
+from .models import Node
 
 
 class InlineColumnFormset(BaseInlineFormSet):
