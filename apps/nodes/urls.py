@@ -38,7 +38,7 @@ urlpatterns = [
 
 # drf config
 router = routers.DefaultRouter()
-# TODO: How to prevent access? Directly on the viewset?
+# Access should be handled on the viewset
 router.register("api/nodes", views.NodeViewSet, basename="Node")
 
 

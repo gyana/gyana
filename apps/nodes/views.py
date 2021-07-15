@@ -32,8 +32,15 @@ from .serializers import NodeSerializer
 
 class NodeViewSet(viewsets.ModelViewSet):
     serializer_class = NodeSerializer
-    queryset = Node.objects.all()
     filterset_fields = ["workflow"]
+
+    def get_queryset(self):
+        # To create schema this is called without a request
+        if self.request is None:
+            return Node.objects.all()
+        return Node.objects.filter(
+            workflow__project__team__in=self.request.user.teams.all()
+        ).all()
 
     def perform_create(self, serializer):
         node: Node = serializer.save()
