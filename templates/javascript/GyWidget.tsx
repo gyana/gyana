@@ -9,7 +9,8 @@ let auth = new coreapi.auth.SessionAuthentication({
 
 let client = new coreapi.Client({ auth: auth })
 
-// The grid layout (on any screen) has 50 columns
+// Should be the same as in the grid-size controller
+// TODO: somehow inject the value from the controller into this component
 const GRID_COLS = 80
 
 const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> = ({
@@ -20,6 +21,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
   const id = children.props['data-id']
   // Utilised to decide the clamping on interaction as well as clamps for placement
   const stepSize = Math.floor(root.offsetWidth / GRID_COLS)
+
   const [x, setX] = useState(
     () => (parseInt(children.props['data-x']) * root.clientWidth) / 100 || 0
   )

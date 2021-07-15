@@ -6,8 +6,9 @@
   <div class="widgets" data-controller="tf-modal">
     <div 
       id="dashboard-widget-container" 
-      style="position:relative;display:block;width:100%;height:100%;overflow-x:hidden;overflow-y:auto;"
-      data-controller="zindex"
+      class="widgets--canvas {% if request.GET.mode != 'view' %}widgets--grid{%endif%}"
+      data-controller="zindex grid-size"
+      edited
     >
       {% for object in object_list %}
       {% include 'widgets/widget_component.html' %}
