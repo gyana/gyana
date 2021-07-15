@@ -67,7 +67,6 @@ urlpatterns = [
     path("workflows/", include("apps.workflows.urls")),
     path("dashboards/", include("apps.dashboards.urls")),
     path("widgets/", include("apps.widgets.urls")),
-    path("tables/", include("apps.tables.urls")),
     path("invitations/", include("invitations.urls")),
     path("nodes/", include("apps.nodes.urls")),
     path("", include("apps.web.urls")),

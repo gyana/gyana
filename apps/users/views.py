@@ -1,5 +1,4 @@
 from allauth.account.utils import send_email_confirmation
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
@@ -9,7 +8,6 @@ from .helpers import require_email_confirmation, user_has_confirmed_email_addres
 from .models import CustomUser
 
 
-@login_required
 def profile(request):
     if request.method == "POST":
         form = CustomUserChangeForm(request.POST, instance=request.user)
@@ -37,7 +35,6 @@ def profile(request):
     )
 
 
-@login_required
 @require_POST
 def upload_profile_image(request):
     user = request.user

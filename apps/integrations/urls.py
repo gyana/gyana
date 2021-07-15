@@ -47,6 +47,7 @@ urlpatterns = [
         login_and_integration_required(views.start_fivetran_integration),
         name="start-fivetran-integration",
     ),
+    # TODO: access control?
     path("<str:session_key>/generate-signed-url", views.generate_signed_url),
     path("<str:session_key>/start-sync", views.start_sync),
 ]
