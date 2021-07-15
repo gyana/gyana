@@ -2,6 +2,7 @@ from django.urls import path
 
 from . import views
 
+# TODO: Control access
 app_name = "tables"
 urlpatterns = [
     path("", views.TableList.as_view(), name="list"),
