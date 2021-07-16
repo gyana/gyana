@@ -6,6 +6,9 @@ const dagreGraph = new dagre.graphlib.Graph()
 dagreGraph.setDefaultEdgeLabel(() => ({}))
 dagreGraph.setGraph({ rankdir: 'LR' })
 
+// Add some additional spacing for the absolute positioned buttons
+const BUTTON_SPACING = 40
+
 const LayoutButton: React.FC<{
   elements
   setElements
@@ -43,7 +46,7 @@ const getLayoutedElements = (elements, nodes) => {
   elements.forEach((el) => {
     if (isNode(el)) {
       const node = nodes.find((node) => node.id === el.id)
-      dagreGraph.setNode(el.id, { width: node.__rf.width, height: node.__rf.height })
+      dagreGraph.setNode(el.id, { width: node.__rf.width, height: node.__rf.height+BUTTON_SPACING })
     } else {
       dagreGraph.setEdge(el.source, el.target)
     }
@@ -57,12 +60,13 @@ const getLayoutedElements = (elements, nodes) => {
       el.targetPosition = 'left'
       el.sourcePosition = 'right'
       const node = nodes.find((node) => node.id === el.id)
+
       // unfortunately we need this little hack to pass a slightly different position
       // to notify react flow about the change. Moreover we are shifting the dagre node position
       // (anchor=center center) to the top left so it matches the react flow node anchor point (top left).
       el.position = {
         x: nodeWithPosition.x - node.__rf.width / 2 + Math.random() / 1000,
-        y: nodeWithPosition.y - node.__rf.height / 2,
+        y: nodeWithPosition.y - (node.__rf.height + BUTTON_SPACING) / 2,
       }
     }
 
