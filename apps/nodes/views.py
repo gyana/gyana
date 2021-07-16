@@ -34,6 +34,8 @@ class NodeViewSet(viewsets.ModelViewSet):
     serializer_class = NodeSerializer
     filterset_fields = ["workflow"]
 
+    # Overwriting queryset to prevent access to nodes that don't belong to
+    # the user's team
     def get_queryset(self):
         # To create schema this is called without a request
         if self.request is None:
