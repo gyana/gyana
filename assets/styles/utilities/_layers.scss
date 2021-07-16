@@ -1,3 +1,9 @@
+// Simple z-index layering system.
+// Avoid creating new layers, only create one when there is a new group of items.
+// For one off layering adjustments you can simply use `calc`:
+// `z-index: calc(var(--z-default) + 1)`
+// 
+// `z-index: var(--z-default);`
 :root {
   --z-background: -1;
   --z-default: 0;
