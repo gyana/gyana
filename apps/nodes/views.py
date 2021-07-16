@@ -207,7 +207,7 @@ def duplicate_node(request, pk):
         ]
     )
 )
-def update_positions(request):
+def update_positions(request, workflow_id):
     ids = [d["id"] for d in request.data]
     nodes = Node.objects.filter(id__in=ids)
     for node in nodes:

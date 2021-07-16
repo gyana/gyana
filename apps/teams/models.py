@@ -20,9 +20,6 @@ class Team(BaseModel):
     def __str__(self):
         return self.name
 
-    def get_queryset(self):
-        return super().get_queryset()
-
 
 class Membership(BaseModel):
     """

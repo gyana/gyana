@@ -27,6 +27,7 @@ register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "h
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
 from apps.invites import urls as invite_urls
+from apps.nodes import urls as node_urls
 from apps.projects import urls as project_urls
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
@@ -56,6 +57,7 @@ teams_urlpatterns = [
     path("<hashid:team_id>/projects/", include(project_urls.team_urlpatterns)),
 ]
 
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("turbo_allauth.urls")),
@@ -65,6 +67,7 @@ urlpatterns = [
     path("projects/", include(project_urlpatterns)),
     path("integrations/", include("apps.integrations.urls")),
     path("workflows/", include("apps.workflows.urls")),
+    path("workflows/<int:workflow_id>/", include(node_urls.workflow_urlpatterns)),
     path("dashboards/", include("apps.dashboards.urls")),
     path("widgets/", include("apps.widgets.urls")),
     path("invitations/", include("invitations.urls")),

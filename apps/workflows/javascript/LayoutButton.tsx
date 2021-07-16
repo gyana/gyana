@@ -1,6 +1,6 @@
 import dagre from 'dagre'
 import React, { useCallback } from 'react'
-import { isNode, useStoreState, useZoomPanHelper } from 'react-flow-renderer'
+import { isNode, useStoreState } from 'react-flow-renderer'
 
 const dagreGraph = new dagre.graphlib.Graph()
 dagreGraph.setDefaultEdgeLabel(() => ({}))
@@ -11,14 +11,16 @@ const LayoutButton: React.FC<{
   setElements
   client
   setViewHasChanged
-}> = ({ elements, setElements, client, setViewHasChanged }) => {
+  workflowId
+}> = ({ elements, setElements, client, setViewHasChanged, workflowId }) => {
   const nodes = useStoreState((state) => state.nodes)
 
   const onLayout = useCallback(() => {
     const layoutedElements = getLayoutedElements(elements, nodes)
     setElements(layoutedElements)
-
-    client.action(window.schema, ['nodes', 'update_positions', 'create'], {
+    
+    client.action(window.schema, ['workflows', 'update_positions', 'create'], {
+      workflow_id: workflowId,
       nodes: layoutedElements
         .filter(isNode)
         .map((el) => ({ id: el.id, x: el.position.x, y: el.position.y })),
