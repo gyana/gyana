@@ -236,11 +236,12 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
         # in theory, we only need to fetch all parent nodes recursively
         # in practice, this is faster and less error prone
-        nodes_last_updated = self.workflow.nodes.all().aggregate(Max("updated"))
+        nodes_last_updated = self.workflow.nodes.all().aggregate(Max("data_updated"))
         input_nodes = self.workflow.nodes.filter(input_table__isnull=False).all()
 
         cache_key = get_cache_key(
-            nodes_last_updated=str(nodes_last_updated["updated__max"]),
+            node_id=self.id,
+            nodes_last_updated=str(nodes_last_updated["data_updated__max"]),
             input_tables=[node.input_table.cache_key for node in input_nodes],
         )
 

@@ -1,13 +1,8 @@
 import analytics
-from apps.dashboards.models import Dashboard
-from apps.integrations.models import Integration
 from apps.teams.mixins import TeamMixin
 from apps.utils.segment_analytics import PROJECT_CREATED_EVENT
-from apps.workflows.models import Workflow
-from django.db.models.query import QuerySet
-from django.urls import reverse_lazy
 from django.urls.base import reverse
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
@@ -53,16 +48,6 @@ class ProjectDetail(DetailView):
         context_data["dashboards"] = ProjectDashboardTable(
             object.dashboard_set.all()[:3]
         )
-
-        context_data["integration_pending"] = object.integration_set.filter(
-            last_synced=None
-        ).count()
-        context_data["workflow_pending"] = object.workflow_set.filter(
-            last_run=None
-        ).count()
-        context_data["workflow_error"] = object.workflow_set.filter(
-            nodes__error__isnull=False
-        ).count()
 
         return context_data
 

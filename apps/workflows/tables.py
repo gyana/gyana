@@ -2,14 +2,9 @@ import django_tables2 as tables
 from apps.nodes.models import Node
 from apps.utils.table import NaturalDatetimeColumn
 from django.utils.safestring import mark_safe
+from lib.icons import ICONS, icon_html
 
 from .models import Workflow
-
-ICONS = {
-    "success": "fa-check-circle text-green",
-    "error": "fa-times-hexagon text-red",
-    "warning": "fa-exclamation-triangle text-orange",
-}
 
 
 class WorkflowTable(tables.Table):
@@ -39,9 +34,4 @@ class WorkflowTable(tables.Table):
             icon = ICONS["success"]
             text = "Uptodate"
 
-        return mark_safe(
-            f"<div class='tooltip tooltip--bottom'>"
-            f"<i class='fa {icon}'></i>"
-            f"<span class='tooltip__content'>{text}</span>"
-            f"</div>"
-        )
+        return mark_safe(icon_html.format(icon=icon, text=text))
