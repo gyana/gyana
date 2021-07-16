@@ -127,6 +127,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "apps.web.context_processors.user_meta",
                 "apps.web.context_processors.project_meta",
                 # this line can be removed if not using google analytics
                 "apps.web.context_processors.google_analytics_id",

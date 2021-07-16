@@ -47,7 +47,10 @@
 
   {% block sidebar %}
   <div class="sidebar" data-controller="sidebar" data-turbo-permanent>
-    <input type="checkbox" id="sidebar-toggle" role="button" hidden data-sidebar-target="toggle">
+    <input type="checkbox" id="sidebar-toggle" role="button"
+           hidden
+           data-sidebar-target="toggle"
+           {% if sidebar_collapsed %}checked{% endif %}>
 
     <nav class="sidebar__body">
       <div class="sidebar__title">
