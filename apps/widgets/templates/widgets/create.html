@@ -4,7 +4,7 @@
 <div class="flex items-center gap-4 mb-4">
   <h1>Add a new widget</h1>
   <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}"
-     class="button button--sm button--green">Back</a>
+     class="button button--sm button--success">Back</a>
 </div>
 
 <form method="post" action="{% url 'dashboard_widgets:create' project.id dashboard.id %}" class="form">
@@ -12,6 +12,6 @@
 
   {% include "django/forms/default_form.html" %}
 
-  <button type="submit" class="button button--filled button--green">Create</button>
+  <button type="submit" class="button button--filled button--success">Create</button>
 </form>
 {% endblock %}

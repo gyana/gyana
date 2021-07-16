@@ -1,6 +1,5 @@
 $button-colors: (
   "primary": var(--c-blue),
-  "green": var(--c-green),
   "success": var(--c-green),
   "pink": var(--c-pink),
   "danger": var(--c-red),
@@ -8,10 +7,13 @@ $button-colors: (
   "tertiary": var(--c-black),
 ) !default;
 
-button:focus {
-  outline: none;
-}
-
+// Generic button component.
+//
+// See `$button-colors` for available themes to be used as classes.
+//
+// ```
+// <button class="button button--sm"/>Small Button</button>
+// ```
 .button {
   --button-color: var(--c-blue);
   --button-background: var(--c-transparent);

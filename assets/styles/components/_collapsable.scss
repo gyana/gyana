@@ -1,3 +1,17 @@
+// Collapsable element that "drops down" it's contents when toggled.
+//
+// Note the minimal structure required for this to work here:
+// ```
+// <div data-controller='collapsable'>
+// <button data-action='click->collapsable#toggle'>
+//   Toggle Button
+// </button>
+// 
+// <div class="collapsable" data-collapsable-target='body'>
+//   Collapsable content!
+// </div>
+// </div>
+// ```
 [data-controller="collapsable"] {
   position: relative;
 

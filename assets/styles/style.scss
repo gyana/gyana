@@ -1,15 +1,21 @@
 @charset "utf-8";
 
+// Base styles that apply throughout the entire site.
+// Minimal classes should be present here, usually mirroring default elements.
+// i.e `strong, .strong { ... }`
+@use "base/reset";
 @use "base/typography";
 @use "base/form";
 @use "base/input";
 
+// SCSS specific code/styles. Functions/mixins/variables belong here.
 @use "utilities/layers";
 @use "utilities/colours";
 @use "utilities/variables";
 @use "utilities/padding";
 @use "utilities/shadows";
 
+// Reusable components, accompanied by usage documentation.
 @use "components/button";
 @use "components/link";
 @use "components/tooltip";
@@ -26,20 +32,21 @@
 @use "components/list";
 @use "components/popover";
 
+// Page-specific code, not used anywhere else but a specific view or a set of them..
 @use "pages/landing";
 @use "pages/integration";
 @use "pages/project";
 @use "pages/workflow";
 @use "pages/widget";
 
+// Vendor overrides
 @use "components/overrides/aggrid";
 
+// Third-party libraries.
 @use "vendors/libcodemirror";
+// @use "vendors/tailwind"; // Do NOT uncomment. This is to showcase Tailwind is present.
 
 :root {
   background-color: var(--c-gray-10);
   color: var(--c-black);
-
-  // Why do we do this? TODO
-  font-size: 62.5%;
 }
