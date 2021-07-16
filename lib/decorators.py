@@ -5,7 +5,10 @@ from django.shortcuts import render
 from django.urls import reverse
 
 
+# Inspired by SaaSPegasus
 def _get_decorated_function(view_func, permission_test_function):
+    """Creates a decorator that tests whether a user is logged in and a has the right permissions to access a view"""
+
     @wraps(view_func)
     def _inner(request, *args, **kwargs):
         user = request.user
