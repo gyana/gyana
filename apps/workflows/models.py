@@ -2,15 +2,18 @@ from apps.projects.models import Project
 from apps.utils.models import BaseModel
 from django.db import models
 from django.urls import reverse
+from model_clone import CloneMixin
 
 
-class Workflow(BaseModel):
+class Workflow(CloneMixin, BaseModel):
     name = models.CharField(max_length=255, default="Untitled")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     last_run = models.DateTimeField(null=True)
     data_updated = models.DateTimeField(
         auto_now_add=True,
     )
+
+    _clone_m2o_or_o2m_fields = ["nodes"]
 
     def __str__(self):
         return self.name

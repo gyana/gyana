@@ -15,7 +15,7 @@
         action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
         class="form"
         data-tf-modal-target='form'
-        data-action="change->tf-modal#change"
+        data-action="change->tf-modal#change submit->tf-modal#save"
       >  
         <div class="absolute top-0 right-0">
           <button 

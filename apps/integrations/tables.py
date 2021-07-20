@@ -1,9 +1,23 @@
 from apps.utils.table import NaturalDatetimeColumn
-from django.utils.safestring import mark_safe
-from django_tables2 import Column, Table
-from lib.icons import ICONS, icon_html
+from django.template import Context
+from django.template.loader import get_template
+from django_tables2 import Column, Table, TemplateColumn
+from lib.icons import ICONS
 
 from .models import Integration
+
+
+class StatusColumn(TemplateColumn):
+    def render(self, record, table, **kwargs):
+        context = getattr(table, "context", Context())
+        if record.last_synced is None:
+            context["icon"] = ICONS["warning"]
+            context["text"] = "Integration has not been synced yet."
+        else:
+            context["icon"] = ICONS["success"]
+            context["text"] = "Synced and ready to be used."
+
+        return get_template(self.template_name).render(context.flatten())
 
 
 class IntegrationTable(Table):
@@ -22,18 +36,9 @@ class IntegrationTable(Table):
     name = Column(linkify=True)
     kind = Column(accessor="display_kind")
     last_synced = NaturalDatetimeColumn()
-    status = Column(empty_values=())
-    created = NaturalDatetimeColumn()
+    status = StatusColumn(template_name="columns/status.html")
+    created = StatusColumn(template_name="columns/status.html")
     updated = NaturalDatetimeColumn()
-
-    def render_status(self, value, record):
-        if record.last_synced is None:
-            icon = ICONS["warning"]
-            text = "Integration has not been synced yet."
-        else:
-            icon = ICONS["success"]
-            text = "Synced and ready to be used."
-        return mark_safe(icon_html.format(icon=icon, text=text))
 
 
 class StructureTable(Table):

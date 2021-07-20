@@ -21,11 +21,7 @@ class ProjectIntegrationTable(IntegrationTable):
 
 class ProjectWorkflowTable(WorkflowTable):
     class Meta(WorkflowTable.Meta):
-        exclude = (
-            "last_run",
-            "last_sync",
-            "created",
-        )
+        exclude = ("last_run", "last_sync", "created", "duplicate")
         sequence = ("name", "status", "updated")
 
 

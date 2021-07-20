@@ -34,6 +34,11 @@ urlpatterns = [
         login_and_workflow_required(views.worflow_out_of_date),
         name="worflow_out_of_date",
     ),
+    path(
+        "<hashid:pk>/duplicate",
+        login_and_workflow_required(views.WorkflowDuplicate.as_view()),
+        name="duplicate",
+    ),
 ]
 
 
