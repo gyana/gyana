@@ -115,7 +115,9 @@ class WorkflowDuplicate(UpdateView):
             },
         )
 
-        clone = self.object.make_clone(attrs={"name": "Copy of " + self.object.name})
+        clone = self.object.make_clone(
+            attrs={"name": "Copy of " + self.object.name, "last_run": None}
+        )
         clone.save()
         return r
 

@@ -28,6 +28,13 @@ class StatusColumn(tables.TemplateColumn):
         return get_template(self.template_name).render(context.flatten())
 
 
+class DuplicateColumn(tables.TemplateColumn):
+    def render(self, record, table, **kwargs):
+        context = getattr(table, "context", Context())
+        context["object"] = record
+        return get_template(self.template_name).render(context.flatten())
+
+
 class WorkflowTable(tables.Table):
     class Meta:
         model = Workflow
@@ -39,4 +46,4 @@ class WorkflowTable(tables.Table):
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
     status = StatusColumn(template_name="columns/status.html")
-    duplicate = tables.TemplateColumn(template_name="workflows/duplicate.html")
+    duplicate = DuplicateColumn(template_name="workflows/duplicate.html")
