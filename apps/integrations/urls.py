@@ -3,7 +3,7 @@ from apps.projects.access import login_and_project_required
 from apps.teams.roles import user_can_access_team
 from django.shortcuts import get_object_or_404
 from django.urls import path
-from lib.decorators import login_and_permission_to_access
+from lib.decorators import login_and_permission_to_access, login_and_teamid_in_session
 
 from . import views
 
@@ -34,12 +34,12 @@ urlpatterns = [
     ),
     path(
         "<str:session_key>/start-fivetran-integration",
-        views.start_fivetran_integration,
+        login_and_teamid_in_session(views.start_fivetran_integration),
         name="start-fivetran-integration",
     ),
     path(
         "<str:session_key>/finalise-fivetran-integration",
-        views.finalise_fivetran_integration,
+        login_and_teamid_in_session(views.finalise_fivetran_integration),
         name="finalise-fivetran-integration",
     ),
     # TODO: access control?
