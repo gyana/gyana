@@ -14,7 +14,8 @@ class NodeForm(LiveUpdateForm):
     @cached_property
     def columns(self):
         """Returns the schema for the first parent."""
-        return self.instance.parents.first().schema
+        parent = self.instance.parents.first()
+        return parent.schema if parent else {}
 
 
 class DefaultNodeForm(NodeForm):
