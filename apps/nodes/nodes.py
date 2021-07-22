@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 import ibis
 from apps.filters.bigquery import create_filter_query
 from apps.tables.models import Table
@@ -8,6 +6,8 @@ from ibis.expr.datatypes import String
 from lib.bigquery import query_table
 from lib.clients import DATAFLOW_ID, bigquery_client, ibis_client
 from lib.formulas import to_ibis
+from lib.operations import compile_function
+from lib.utils import JOINS, get_aggregate_expr, rename_duplicates
 
 
 def get_input_query(node):
@@ -31,30 +31,6 @@ def get_select_query(node, parent):
     return parent.drop(columns)
 
 
-def get_duplicate_names(left, right):
-    left_names = set(left.schema())
-    right_names = set(right.schema())
-    return left_names & right_names
-
-
-def rename_duplicates(left, right, left_col, right_col):
-    duplicates = get_duplicate_names(left, right)
-    left = left.relabel({d: f"{d}_1" for d in duplicates})
-    right = right.relabel({d: f"{d}_2" for d in duplicates})
-    left_col = f"{left_col}_1" if left_col in duplicates else left_col
-    right_col = f"{right_col}_2" if right_col in duplicates else right_col
-
-    return left, right, left_col, right_col
-
-
-JOINS = {
-    "inner": "inner_join",
-    "outer": "outer_join",
-    "left": "left_join",
-    "right": "right_join",
-}
-
-
 def get_join_query(node, left, right):
 
     # Adding 1/2 to left/right if the column exists in both tables
@@ -67,15 +43,11 @@ def get_join_query(node, left, right):
     return to_join(right, left[left_col] == right[right_col]).materialize()
 
 
-def aggregate(query, colname, computation):
-    column = getattr(query, colname)
-    return getattr(column, computation)().name(colname)
-
-
 def get_aggregation_query(node, query):
     groups = node.columns.all()
     aggregations = [
-        aggregate(query, agg.column, agg.function) for agg in node.aggregations.all()
+        get_aggregate_expr(query, agg.column, agg.function)
+        for agg in node.aggregations.all()
     ]
     if groups:
         query = query.group_by([g.column for g in groups])
@@ -118,91 +90,8 @@ def get_limit_query(node, query):
     )
 
 
-def bigquery(node, query):
+def get_filter_query(node, query):
     return create_filter_query(query, node.filters.all())
-
-
-@dataclass
-class Operation:
-    label: str
-    arguments: int = 0
-    value_field: str = None
-
-
-CommonOperations = {
-    "isnull": Operation("is empty"),
-    "notnull": Operation("is not empty"),
-    "fillna": Operation("fill empty values", 1, "string_value"),
-}
-
-StringOperations = {
-    "lower": Operation("to lowercase"),
-    "upper": Operation("to uppercase"),
-    "length": Operation("length"),
-    "reverse": Operation("reverse"),
-    "strip": Operation("strip"),
-    "lstrip": Operation("lstrip"),
-    "rstrip": Operation("rstrip"),
-    "like": Operation("like", 1, "string_value"),
-    "contains": Operation("contains", 1, "string_value"),
-    "left": Operation("left", 1, "integer_value"),
-    "right": Operation("right", 1, "integer_value"),
-    "repeat": Operation("repeat", 1, "integer_value"),
-}
-
-NumericOperations = {
-    "cummax": Operation("cummax"),
-    "cummin": Operation("cummin"),
-    "abs": Operation("absolute value"),
-    "sqrt": Operation("square root"),
-    "ceil": Operation("ceiling"),
-    "floor": Operation("floor"),
-    "ln": Operation("ln"),
-    "log2": Operation("log2"),
-    "log10": Operation("log10"),
-    "log": Operation("log", 1, "float_value"),
-    "exp": Operation("exponent"),
-    "add": Operation("add", 1, "float_value"),
-    "sub": Operation("subtract", 1, "float_value"),
-    "mul": Operation("multiply", 1, "float_value"),
-    "div": Operation("divide", 1, "float_value"),
-}
-
-DateOperations = {
-    "year": Operation("year"),
-    "month": Operation("month"),
-    "day": Operation("day"),
-}
-
-TimeOperations = {
-    "hour": Operation("hour"),
-    "minute": Operation("minute"),
-    "second": Operation("second"),
-    "millisecond": Operation("millisecond"),
-}
-
-DatetimeOperations = {
-    "epoch_seconds": Operation("epoch seconds"),
-    "time": Operation("time"),
-    "date": Operation("date"),
-}
-
-AllOperations = {
-    **CommonOperations,
-    **NumericOperations,
-    **StringOperations,
-    **DateOperations,
-    **TimeOperations,
-    **DatetimeOperations,
-}
-
-
-def compile_function(query, edit):
-    func = getattr(query[edit.column], edit.function)
-    if value_field := AllOperations[edit.function].value_field:
-        arg = getattr(edit, value_field)
-        return func(arg)
-    return func()
 
 
 def get_edit_query(node, query):
@@ -367,7 +256,7 @@ def get_unpivot_query(node):
 
 def get_window_query(node, query):
     for window in node.window_columns.all():
-        aggregation = aggregate(query, window.column, window.function).name(
+        aggregation = get_aggregate_expr(query, window.column, window.function).name(
             window.label
         )
 
@@ -387,7 +276,7 @@ NODE_FROM_CONFIG = {
     "union": get_union_query,
     "sort": get_sort_query,
     "limit": get_limit_query,
-    "filter": bigquery,
+    "filter": get_filter_query,
     "edit": get_edit_query,
     "add": get_add_query,
     "rename": get_rename_query,
