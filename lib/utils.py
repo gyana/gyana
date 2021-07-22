@@ -22,6 +22,10 @@ JOINS = {
 }
 
 
+def get_join_expr(parent, how):
+    return getattr(parent, JOINS[how])
+
+
 def get_aggregate_expr(query, colname, computation):
     column = getattr(query, colname)
     return getattr(column, computation)().name(colname)

@@ -42,6 +42,9 @@ def get_query_from_node(node: Node):
 
         results[node] = func(node, *args)
 
+        # input node zero state
+        assert results[node] is not None
+
     return results[node]
 
 

@@ -6,7 +6,7 @@ from lib.dag import create_or_replace_intermediate_table, get_parent_updated
 from lib.formulas import to_ibis
 from lib.operations import compile_function
 from lib.pivot import create_pivot_query, create_unpivot_query
-from lib.utils import JOINS, get_aggregate_expr, rename_duplicates
+from lib.utils import JOINS, get_aggregate_expr, get_join_expr, rename_duplicates
 
 
 def get_input_query(node):
@@ -36,8 +36,7 @@ def get_join_query(node, left, right):
     left, right, left_col, right_col = rename_duplicates(
         left, right, node.join_left, node.join_right
     )
-    how = node.join_how
-    to_join = getattr(left, JOINS[how])
+    to_join = get_join_expr(left, node.join_how)
 
     return to_join(right, left[left_col] == right[right_col]).materialize()
 
