@@ -1,8 +1,8 @@
-from apps.nodes.nodes import AllOperations
 from apps.utils.live_update_form import LiveUpdateForm
 from apps.utils.schema_form_mixin import SchemaFormMixin
 from django import forms
 from django.forms.models import BaseInlineFormSet
+from lib.operations import AllOperations
 
 from .models import AggregationFunctions
 from .widgets import CodeMirror

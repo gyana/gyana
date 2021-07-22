@@ -13,7 +13,7 @@ def get_all_parents(node: Node):
 
 def validate_arity(func, len_args):
 
-    params = inspect.signature(func).parameters.values()
+    node_arg, *params = inspect.signature(func).parameters.values()
 
     # testing for "*args" in signature
     if any(param.kind == inspect.Parameter.VAR_POSITIONAL for param in params):

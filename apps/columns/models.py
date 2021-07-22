@@ -1,5 +1,11 @@
 from apps.nodes.models import AggregationFunctions, Node
-from apps.nodes.nodes import (
+from apps.utils.models import BaseModel
+from dirtyfields import DirtyFieldsMixin
+from django.conf import settings
+from django.core.validators import RegexValidator
+from django.db import models
+from django.utils import timezone
+from lib.operations import (
     CommonOperations,
     DateOperations,
     DatetimeOperations,
@@ -7,12 +13,6 @@ from apps.nodes.nodes import (
     StringOperations,
     TimeOperations,
 )
-from apps.utils.models import BaseModel
-from dirtyfields import DirtyFieldsMixin
-from django.conf import settings
-from django.core.validators import RegexValidator
-from django.db import models
-from django.utils import timezone
 from model_clone import CloneMixin
 
 bigquery_column_regex = RegexValidator(
