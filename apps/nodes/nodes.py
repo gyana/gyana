@@ -148,9 +148,8 @@ def _format_literal(value, type_):
     return str(value)
 
 
-def _create_pivot_query(node, client):
+def _create_pivot_query(node, parent, client):
     """Creates the pivot query in BigQuery syntax"""
-    parent = node.parents.first().get_query()
     column_type = parent[node.pivot_column].type()
 
     # The new column names consist of the values inside the selected column
@@ -216,7 +215,7 @@ def _get_parent_updated(node):
         yield from _get_parent_updated(parent)
 
 
-def get_pivot_query(node):
+def get_pivot_query(node, query):
     table = node.intermediate_table
     conn = ibis_client()
 
@@ -225,13 +224,13 @@ def get_pivot_query(node):
         return conn.table(table.bq_table, database=table.bq_dataset)
 
     client = bigquery_client()
-    query = _create_pivot_query(node, client)
+    query = _create_pivot_query(node, query, client)
     table = _create_or_replace_intermediate_table(table, node, query)
 
     return conn.table(table.bq_table, database=table.bq_dataset)
 
 
-def get_unpivot_query(node):
+def get_unpivot_query(node, query):
     table = node.intermediate_table
     conn = ibis_client()
 
@@ -246,7 +245,7 @@ def get_unpivot_query(node):
         else "*"
     )
     query = (
-        f"SELECT {selection} FROM ({node.parents.first().get_query().compile()})"
+        f"SELECT {selection} FROM ({query.compile()})"
         f" UNPIVOT({node.unpivot_value} FOR {node.unpivot_column} IN ({' ,'.join([col.column for col in node.columns.all()])}))"
     )
     table = _create_or_replace_intermediate_table(table, node, query)
