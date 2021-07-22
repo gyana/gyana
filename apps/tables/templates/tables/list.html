@@ -1,37 +1,7 @@
-{% extends "web/app/settings_base.html" %}
-<!---->
-{% block app %}
-<h1>Listing</h1>
-<a href="{% url 'tables:create' %}">Create</a>
-<ul>
-  {% for object in object_list %}
-  <li>
-    {{ object }}
-    <a href="{% url 'tables:detail' object.pk %}">Details</a>
-    <a href="{% url 'tables:update' object.pk %}">Update</a>
-    <a href="{% url 'tables:delete' object.pk %}">Delete</a>
-  </li>
-  {% empty %}
-  <p>No items.</p>
-  {% endfor %}
-</ul>
+{% load render_table from django_tables2 %}
 
-{% if is_paginated %}
-<div class="pagination">
-  <span class="page-links">
-    {% if page_obj.has_previous %}
-    <a href="{% url 'tables:list' %}?page={{ page_obj.previous_page_number }}"
-      >previous</a
-    >
-    {% endif %}
-    <span class="page-current">
-      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-    </span>
-    {% if page_obj.has_next %}
-    <a href="{% url 'tables:list' %}?page={{ page_obj.next_page_number }}"
-      >next</a
-    >
-    {% endif %}
-  </span>
-</div>
-{% endif %} {% endblock %}
+<turbo-frame id="tables-list">
+  <div class="card card--none mb-8">
+      {% render_table table %}
+  </div>
+</turbo-frame>

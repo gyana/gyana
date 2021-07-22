@@ -1,5 +1,5 @@
 <div id="uploader-{{ instance_session_key }}"
-     class="integration__file-upload"
+     class="integration__file-upload {% if stage != "upload" %}inactive{% endif %}"
      data-controller='file-upload'
      data-file-upload-file-id-value="{{ instance_session_key }}"
      data-file-upload-file-input-id-value="{{ file_input_id }}"

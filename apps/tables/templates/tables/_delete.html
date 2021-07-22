@@ -1,0 +1,7 @@
+<form method="post" action="{% url "project_tables:delete" object.project.id object.id %}{% if integration %}?on-integration=true{% endif %}" class="form">
+  {% csrf_token %}
+  <button type="submit" class='tooltip tooltip--bottom text-center' onclick="return confirm('Confirm deletion of \'{{ object.bq_table }}\'.')">
+    <i class='fa fa-trash text-red'></i>
+    <span class='tooltip__content'>Delete this integration table</span>
+  </button>
+</form>

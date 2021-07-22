@@ -1,13 +1,17 @@
 import analytics
 from apps.nodes.config import NodeConfig
 from apps.projects.mixins import ProjectMixin
-from apps.utils.segment_analytics import WORFKLOW_RUN_EVENT, WORKFLOW_CREATED_EVENT
+from apps.utils.segment_analytics import (
+    WORFKLOW_RUN_EVENT,
+    WORKFLOW_CREATED_EVENT,
+    WORKFLOW_DUPLICATED_EVENT,
+)
 from django import forms
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
 from django.urls import reverse
 from django.views.generic import DetailView
-from django.views.generic.edit import DeleteView
+from django.views.generic.edit import DeleteView, UpdateView
 from django_tables2 import SingleTableView
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
@@ -94,6 +98,31 @@ class WorkflowDelete(ProjectMixin, DeleteView):
 class WorkflowLastRun(DetailView):
     template_name = "workflows/last_run.html"
     model = Workflow
+
+
+class WorkflowDuplicate(UpdateView):
+    template_name = "workflows/duplicate.html"
+    model = Workflow
+    fields = []
+
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        r = super().form_valid(form)
+        analytics.track(
+            self.request.user.id,
+            WORKFLOW_DUPLICATED_EVENT,
+            {
+                "id": form.instance.id,
+            },
+        )
+
+        clone = self.object.make_clone(
+            attrs={"name": "Copy of " + self.object.name, "last_run": None}
+        )
+        clone.save()
+        return r
+
+    def get_success_url(self) -> str:
+        return reverse("project_workflows:list", args=(self.object.project.id,))
 
 
 @api_view(http_method_names=["POST"])

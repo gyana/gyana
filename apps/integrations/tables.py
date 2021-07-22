@@ -1,7 +1,23 @@
 from apps.utils.table import NaturalDatetimeColumn
-from django_tables2 import Column, Table
+from django.template import Context
+from django.template.loader import get_template
+from django_tables2 import Column, Table, TemplateColumn
+from lib.icons import ICONS
 
 from .models import Integration
+
+
+class StatusColumn(TemplateColumn):
+    def render(self, record, table, **kwargs):
+        context = getattr(table, "context", Context())
+        if record.last_synced is None:
+            context["icon"] = ICONS["warning"]
+            context["text"] = "Integration has not been synced yet."
+        else:
+            context["icon"] = ICONS["success"]
+            context["text"] = "Synced and ready to be used."
+
+        return get_template(self.template_name).render(context.flatten())
 
 
 class IntegrationTable(Table):
@@ -20,7 +36,8 @@ class IntegrationTable(Table):
     name = Column(linkify=True)
     kind = Column(accessor="display_kind")
     last_synced = NaturalDatetimeColumn()
-    created = NaturalDatetimeColumn()
+    status = StatusColumn(template_name="columns/status.html")
+    created = StatusColumn(template_name="columns/status.html")
     updated = NaturalDatetimeColumn()
 
 

@@ -71,7 +71,7 @@ class FivetranClient:
         connect_card_token = card.json()["token"]
 
         return redirect(
-            f"https://fivetran.com/connect-card/setup?redirect_uri={redirect_uri}&auth={connect_card_token}&hide_setup_guide=true"
+            f"https://fivetran.com/connect-card/setup?redirect_uri={redirect_uri}&auth={connect_card_token}"
         )
 
     def _is_historical_synced(self):
@@ -167,12 +167,26 @@ class FivetranClient:
 
         return res
 
+    def update_table_config(self, table_name: str, enabled: bool):
+        res = requests.patch(
+            f"{settings.FIVETRAN_URL}/connectors/{self.integration.fivetran_id}/schemas/{self.integration.schema}/tables/{table_name}",
+            json={
+                "enabled": enabled,
+            },
+            headers=settings.FIVETRAN_HEADERS,
+        ).json()
+
+        # Future note: If we write this to raise an error table deletion will stop working
+        # for tables that fivetran won't allow to stop being synced. (This is on the TableDelete view)
+        if res["code"] != "Success":
+            # TODO
+            pass
+
+        return res
+
 
 @dataclass
-class MockFivetranClient:
-
-    integration: Integration
-
+class MockFivetranClient(FivetranClient):
     def create(self):
         self.integration.fivetran_id = settings.MOCK_FIVETRAN_ID
         self.integration.schema = settings.MOCK_FIVETRAN_SCHEMA
@@ -187,5 +201,5 @@ class MockFivetranClient:
         self.integration.save()
 
 
-# if settings.MOCK_FIVETRAN:
-#     FivetranClient = MockFivetranClient
+if settings.MOCK_FIVETRAN:
+    FivetranClient = MockFivetranClient

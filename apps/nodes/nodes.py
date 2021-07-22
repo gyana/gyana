@@ -317,7 +317,7 @@ def _create_or_replace_intermediate_table(table, node, query):
 
         table = Table(
             source=Table.Source.PIVOT_NODE,
-            bq_table=table_id,
+            _bq_table=table_id,
             bq_dataset=DATAFLOW_ID,
             project=node.workflow.project,
             intermediate_node=node,

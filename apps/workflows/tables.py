@@ -1,15 +1,38 @@
 import django_tables2 as tables
 from apps.nodes.models import Node
 from apps.utils.table import NaturalDatetimeColumn
+from django.template import Context
+from django.template.loader import get_template
 from django.utils.safestring import mark_safe
+from lib.icons import ICONS
 
 from .models import Workflow
 
-ICONS = {
-    "success": "fa-check-circle text-green",
-    "error": "fa-times-hexagon text-red",
-    "warning": "fa-exclamation-triangle text-orange",
-}
+
+class StatusColumn(tables.TemplateColumn):
+    def render(self, record, table, **kwargs):
+        context = getattr(table, "context", Context())
+        if record.failed:
+            context["icon"] = ICONS["error"]
+            context["text"] = "One of the nodes in this workflow failed."
+        elif all((node.kind != Node.Kind.OUTPUT for node in record.nodes.iterator())):
+            context["icon"] = ICONS["warning"]
+            context["text"] = "Workflow has no output node and is incomplete."
+        elif record.out_of_date:
+            context["icon"] = ICONS["warning"]
+            context["text"] = "Workflow has been updated since it's last run."
+        else:
+            context["icon"] = ICONS["success"]
+            context["text"] = "Uptodate"
+
+        return get_template(self.template_name).render(context.flatten())
+
+
+class DuplicateColumn(tables.TemplateColumn):
+    def render(self, record, table, **kwargs):
+        context = getattr(table, "context", Context())
+        context["object"] = record
+        return get_template(self.template_name).render(context.flatten())
 
 
 class WorkflowTable(tables.Table):
@@ -22,26 +45,5 @@ class WorkflowTable(tables.Table):
     last_run = NaturalDatetimeColumn()
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
-    status = tables.Column(empty_values=())
-
-    def render_status(self, value, record):
-        if record.failed:
-            icon = ICONS["error"]
-            text = "One of the nodes in this workflow failed."
-        elif all((node.kind != Node.Kind.OUTPUT for node in record.nodes.iterator())):
-            icon = ICONS["warning"]
-            text = "Workflow has no output node and is incomplete."
-        elif record.out_of_date:
-            icon = ICONS["warning"]
-            text = "Workflow has been updated since it's last run."
-
-        else:
-            icon = ICONS["success"]
-            text = "Uptodate"
-
-        return mark_safe(
-            f"<div class='tooltip tooltip--bottom'>"
-            f"<i class='fa {icon}'></i>"
-            f"<span class='tooltip__content'>{text}</span>"
-            f"</div>"
-        )
+    status = StatusColumn(template_name="columns/status.html")
+    duplicate = DuplicateColumn(template_name="workflows/duplicate.html")

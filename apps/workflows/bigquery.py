@@ -29,7 +29,7 @@ def run_workflow(workflow: Workflow):
 
                 table = Table(
                     source=Table.Source.WORKFLOW_NODE,
-                    bq_table=table_id,
+                    _bq_table=table_id,
                     bq_dataset=DATAFLOW_ID,
                     project=workflow.project,
                     workflow_node=node,

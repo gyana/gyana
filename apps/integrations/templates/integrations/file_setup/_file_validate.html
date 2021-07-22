@@ -4,11 +4,11 @@
      class='integration__file-validate {% if stage != "validate" %}inactive{% endif %}'
      data-controller="celery-progress"
      {% if stage == "validate" %}
-     data-celery-progress-task-url-value="{% url 'celery_progress:task_status' external_table_sync_task_id %}"
+     data-celery-progress-task-url-value="{% url 'celery_progress:task_status' file_sync_task_id %}"
      {% endif %}
      data-celery-progress-dont-start-value="{% if stage != "validate" %}true{% else %}false{% endif %}"
      data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
-     data-celery-progress-redirect-url-value="{{ redirect_url }}">
+     data-celery-progress-turbo-stream-url-value="{{ turbo_stream_url }}">
   {% if stage == "validate" %}
   <i class="fad fa-spinner-third fa-spin text-blue text-4xl"></i>
   <div class='flex flex-col ml-4'>
@@ -20,7 +20,7 @@
   <p>Validating uploaded CSV file</p>
   {% else %}
   <i class="fas fa-check text-green mr-4"></i>
-  <p>File successfully validated</p>
+  <h4>File successfully validated</h4>
   {% endif %}
   <template id="success-template">
     <i class="fas fa-check text-green text-xl mr-4"></i>
@@ -28,6 +28,9 @@
   </template>
   <template id="failure-template">
     <i class="fas fa-times text-red text-xl mr-4"></i>
+    <div class="flex flex-col">
     <h4>Errors occurred when validating your file</h4>
+    <p>If you are trying to upload a complex csv file, using our Google Sheets connector is the way to go.</p>
+    </div>
   </template>
 </div>

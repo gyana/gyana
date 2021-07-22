@@ -44,7 +44,7 @@ export default class extends Controller {
 
         const { url: target } = await getApiClient().action(
           window.schema,
-          ['integrations', 'generate-signed-url', 'create'],
+          ['integrations', 'file', 'generate-signed-url', 'create'],
           {
             session_key: this.fileIdValue,
             filename: file.name,
@@ -72,7 +72,7 @@ export default class extends Controller {
       this.successCall = async () => {
         const html = await getApiClient().action(
           window.schema,
-          ['integrations', 'start-sync', 'create'],
+          ['integrations', 'file', 'start-sync', 'create'],
           {
             session_key: this.fileIdValue,
           }

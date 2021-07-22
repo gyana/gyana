@@ -9,13 +9,14 @@
   <div class="flex flex-wrap mb-4 h-full">
     <div class="w-1/2">
       <h3>Config</h3>
-      <form
-            data-controller="live-update"
-            method="post"
-            action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}"
-            class="form"
-            data-tf-modal-target='form'
-            data-action="change->tf-modal#change">
+      <form 
+        data-controller="live-update" 
+        method="post"
+        action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
+        class="form"
+        data-tf-modal-target='form'
+        data-action="change->tf-modal#change submit->tf-modal#save"
+      >  
         <div class="absolute top-0 right-0">
           <button
                   class="tf-modal__close"

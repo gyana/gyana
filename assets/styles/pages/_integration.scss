@@ -8,6 +8,10 @@
   &__file-upload {
     display: flex;
     align-items: center;
+
+    &.inactive {
+      opacity: 0.5;
+    }
   }
 
   &__file-progress {

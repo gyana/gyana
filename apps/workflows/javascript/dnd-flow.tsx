@@ -264,6 +264,7 @@ const DnDFlow = ({ client, workflowId }) => {
               setElements={setElements}
               client={client}
               setViewHasChanged={setViewHasChanged}
+              workflowId={workflowId}
             />
             <RunButton
               hasOutput={hasOutput}

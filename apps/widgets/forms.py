@@ -6,6 +6,7 @@ from apps.utils.live_update_form import LiveUpdateForm
 from apps.utils.schema_form_mixin import SchemaFormMixin
 from apps.widgets.widgets import VisualSelect
 from django import forms
+from django.forms.models import BaseInlineFormSet
 
 from .models import MULTI_VALUES_CHARTS, MultiValues, Widget
 
@@ -74,8 +75,21 @@ class ValueForm(SchemaFormMixin, LiveUpdateForm):
             )
 
 
+class RequiredInlineFormset(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for form in self.forms:
+            form.empty_permitted = False
+            form.use_required_attribute = True
+
+
 FilterFormset = forms.inlineformset_factory(
-    Widget, Filter, form=FilterForm, can_delete=True, extra=0
+    Widget,
+    Filter,
+    form=FilterForm,
+    can_delete=True,
+    extra=0,
+    formset=RequiredInlineFormset,
 )
 
 ValueFormset = forms.inlineformset_factory(

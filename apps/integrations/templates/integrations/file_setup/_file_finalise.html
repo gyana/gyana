@@ -1,0 +1,32 @@
+{% load static %}
+
+<div
+     class='integration__file-validate {% if stage != "finalise" %}inactive{% endif %}'
+     data-controller="celery-progress"
+     {% if stage == "finalise" %}
+     data-celery-progress-task-url-value="{% url 'celery_progress:task_status' finalise_upload_task_id %}"
+     {% endif %}
+     data-celery-progress-dont-start-value="{% if stage != "finalise" %}true{% else %}false{% endif %}"
+     data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
+     data-celery-progress-redirect-url-value="{{ redirect_url }}">
+  {% if stage == "finalise" %}
+  <i class="fad fa-spinner-third fa-spin text-blue text-4xl"></i>
+  <div class='flex flex-col ml-4'>
+    <h1>Finalising your integration...</h1>
+    <p>We're almost there!</p>
+  </div>
+  {% elif stage != "finalise" %}
+  <i class="fad fa-spinner-third text-blue-50 pr-4"></i>
+  <p>Finalise your integration</p>
+  {% endif %}
+
+
+  <template id="success-template">
+    <i class="fas fa-check text-green text-xl mr-4"></i>
+    <h4>Integration successfully created</h4>
+  </template>
+  <template id="failure-template">
+    <i class="fas fa-times text-red text-xl mr-4"></i>
+    <h4>Errors occurred when creating your integration</h4>
+  </template>
+</div>

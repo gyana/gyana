@@ -15,6 +15,7 @@ INTEGRATION_SYNC_SUCCESS_EVENT: Final = "Integration sync succeeded"
 
 # Workflows
 WORKFLOW_CREATED_EVENT: Final = "Workflow created"
+WORKFLOW_DUPLICATED_EVENT: Final = "Workflow duplicated"
 NODE_CREATED_EVENT: Final = "Node created"
 NODE_UPDATED_EVENT: Final = "Node updated"
 NODE_CONNECTED_EVENT: Final = "Node connected"

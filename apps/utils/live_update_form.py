@@ -6,6 +6,9 @@ class LiveUpdateForm(forms.ModelForm):
     hidden_live = forms.CharField(widget=forms.HiddenInput(), required=True)
 
     def __init__(self, *args, **kwargs):
+
+        self.parent_instance = kwargs.pop("parent_instance", None)
+
         super().__init__(*args, **kwargs)
 
         self.prefix = kwargs.pop("prefix", None)
@@ -21,6 +24,10 @@ class LiveUpdateForm(forms.ModelForm):
             live_fields += ["hidden_live"]
 
         self.fields = {k: v for k, v in self.fields.items() if k in live_fields}
+
+        # TODO: Make this opt-in if models have optional fields
+        for field in self.fields.values():
+            field.required = True
 
     @property
     def is_live(self):

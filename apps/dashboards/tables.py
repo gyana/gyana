@@ -1,7 +1,22 @@
 import django_tables2 as tables
 from apps.utils.table import NaturalDatetimeColumn
+from django.template import Context
+from django.template.loader import get_template
+from lib.icons import ICONS
 
 from .models import Dashboard
+
+
+class StatusColumn(tables.TemplateColumn):
+    def render(self, record, table, **kwargs):
+        context = getattr(table, "context", Context())
+        if any(not widget.is_valid for widget in record.widget_set.iterator()):
+            context["icon"] = ICONS["warning"]
+            context["text"] = "This dashboard contains at least one incomplete widget."
+        else:
+            context["icon"] = ICONS["success"]
+            context["text"] = "This dashboard is ready to be viewed."
+        return get_template(self.template_name).render(context.flatten())
 
 
 class DashboardTable(tables.Table):
@@ -11,5 +26,6 @@ class DashboardTable(tables.Table):
         attrs = {"class": "table"}
 
     name = tables.Column(linkify=True)
+    status = StatusColumn(template_name="columns/status.html")
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()

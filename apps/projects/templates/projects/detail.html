@@ -24,13 +24,6 @@
 
         <div class="card card--none flex-1 overflow-auto">
           {% render_table integrations %}
-          <!-- {% if integration_pending > 0 %}
-          <p class="card__help card__help--bottom">
-            <i class="fas fa-fw fa-exclamation-triangle text-orange"></i><small>
-              Some of your integrations are not set up
-            </small>
-          </p>
-          {% endif %} -->
         </div>
       </div>
 
@@ -40,19 +33,6 @@
         </div>
         <div class="card card--none flex-1 overflow-auto">
           {% render_table workflows %}
-
-          <!-- <p class="mr-auto">
-            {{ workflow_count }}
-            <a class="link" href="{% url 'project_workflows:list' project.id %}">Workflow{{ workflow_count|pluralize }}</a>
-          </p>
-    
-          {% if workflow_error > 0 %}
-          <p class="card__help card__help--bottom">
-            <i class="fas fa-fw fa-exclamation-triangle text-red"></i><small>
-              Some of your workflows have errors
-            </small>
-          </p>
-          {% endif %} -->
         </div>
       </div>
     </div>
@@ -63,16 +43,6 @@
       </div>
       <div class="card card--none flex-1">
         {% render_table dashboards %}
-
-        <!-- <p class="mr-auto">
-          {{ dashboard_count }}
-          <a class="link"
-             href="{% url 'project_dashboards:list' project.id %}">Dashboard{{ dashboard_count|pluralize }}</a>
-        </p>
-  
-        <turbo-frame id='dashboard-create' src="{% url 'project_dashboards:create' project.id %}" target="_top">
-          <i class='fad fa-spinner-third fa-spin'></i>
-        </turbo-frame> -->
       </div>
     </div>
   </div>

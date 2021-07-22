@@ -1,24 +1,29 @@
 import dagre from 'dagre'
 import React, { useCallback } from 'react'
-import { isNode, useStoreState, useZoomPanHelper } from 'react-flow-renderer'
+import { isNode, useStoreState } from 'react-flow-renderer'
 
 const dagreGraph = new dagre.graphlib.Graph()
 dagreGraph.setDefaultEdgeLabel(() => ({}))
 dagreGraph.setGraph({ rankdir: 'LR' })
+
+// Add some additional spacing for the absolute positioned buttons
+const BUTTON_SPACING = 40
 
 const LayoutButton: React.FC<{
   elements
   setElements
   client
   setViewHasChanged
-}> = ({ elements, setElements, client, setViewHasChanged }) => {
+  workflowId
+}> = ({ elements, setElements, client, setViewHasChanged, workflowId }) => {
   const nodes = useStoreState((state) => state.nodes)
 
   const onLayout = useCallback(() => {
     const layoutedElements = getLayoutedElements(elements, nodes)
     setElements(layoutedElements)
-
-    client.action(window.schema, ['nodes', 'update_positions', 'create'], {
+    
+    client.action(window.schema, ['workflows', 'update_positions', 'create'], {
+      workflow_id: workflowId,
       nodes: layoutedElements
         .filter(isNode)
         .map((el) => ({ id: el.id, x: el.position.x, y: el.position.y })),
@@ -41,7 +46,7 @@ const getLayoutedElements = (elements, nodes) => {
   elements.forEach((el) => {
     if (isNode(el)) {
       const node = nodes.find((node) => node.id === el.id)
-      dagreGraph.setNode(el.id, { width: node.__rf.width, height: node.__rf.height })
+      dagreGraph.setNode(el.id, { width: node.__rf.width, height: node.__rf.height+BUTTON_SPACING })
     } else {
       dagreGraph.setEdge(el.source, el.target)
     }
@@ -55,12 +60,13 @@ const getLayoutedElements = (elements, nodes) => {
       el.targetPosition = 'left'
       el.sourcePosition = 'right'
       const node = nodes.find((node) => node.id === el.id)
+
       // unfortunately we need this little hack to pass a slightly different position
       // to notify react flow about the change. Moreover we are shifting the dagre node position
       // (anchor=center center) to the top left so it matches the react flow node anchor point (top left).
       el.position = {
         x: nodeWithPosition.x - node.__rf.width / 2 + Math.random() / 1000,
-        y: nodeWithPosition.y - node.__rf.height / 2,
+        y: nodeWithPosition.y - (node.__rf.height + BUTTON_SPACING) / 2,
       }
     }
 

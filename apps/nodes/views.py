@@ -32,8 +32,17 @@ from .serializers import NodeSerializer
 
 class NodeViewSet(viewsets.ModelViewSet):
     serializer_class = NodeSerializer
-    queryset = Node.objects.all()
     filterset_fields = ["workflow"]
+
+    # Overwriting queryset to prevent access to nodes that don't belong to
+    # the user's team
+    def get_queryset(self):
+        # To create schema this is called without a request
+        if self.request is None:
+            return Node.objects.all()
+        return Node.objects.filter(
+            workflow__project__team__in=self.request.user.teams.all()
+        ).all()
 
     def perform_create(self, serializer):
         node: Node = serializer.save()
@@ -200,7 +209,7 @@ def duplicate_node(request, pk):
         ]
     )
 )
-def update_positions(request):
+def update_positions(request, workflow_id):
     ids = [d["id"] for d in request.data]
     nodes = Node.objects.filter(id__in=ids)
     for node in nodes:
