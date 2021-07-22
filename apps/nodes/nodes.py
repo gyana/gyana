@@ -18,18 +18,17 @@ def get_input_query(node):
     )
 
 
-def get_output_query(node):
-    return node.parents.first().get_query()
+def get_output_query(node, parent):
+    return parent
 
 
-def get_select_query(node):
-    parent_query = node.parents.first().get_query()
+def get_select_query(node, parent):
     columns = [col.column for col in node.columns.all()]
 
     if node.select_mode == "keep":
-        return parent_query.projection(columns or [])
+        return parent.projection(columns or [])
 
-    return parent_query.drop(columns)
+    return parent.drop(columns)
 
 
 def get_duplicate_names(left, right):
@@ -56,9 +55,7 @@ JOINS = {
 }
 
 
-def get_join_query(node):
-    left = node.parents.first().get_query()
-    right = node.parents.last().get_query()
+def get_join_query(node, left, right):
 
     # Adding 1/2 to left/right if the column exists in both tables
     left, right, left_col, right_col = rename_duplicates(
@@ -75,8 +72,7 @@ def aggregate(query, colname, computation):
     return getattr(column, computation)().name(colname)
 
 
-def get_aggregation_query(node):
-    query = node.parents.first().get_query()
+def get_aggregation_query(node, query):
     groups = node.columns.all()
     aggregations = [
         aggregate(query, agg.column, agg.function) for agg in node.aggregations.all()
@@ -88,11 +84,9 @@ def get_aggregation_query(node):
     return query.size()
 
 
-def get_union_query(node):
-    parents = node.parents.all()
-    query = parents[0].get_query()
+def get_union_query(node, query, *queries):
     colnames = query.schema()
-    for parent in parents[1:]:
+    for parent in queries:
         if node.union_mode == "keep":
             query = query.union(parent.get_query(), distinct=node.union_distinct)
         else:
@@ -101,35 +95,31 @@ def get_union_query(node):
     return query.projection(colnames)
 
 
-def get_intersect_query(node):
-    parents = node.parents.all()
-    query = parents[0].get_query()
+def get_intersect_query(node, query, *queries):
     colnames = query.schema()
-    for parent in parents[1:]:
+    for parent in queries:
         query = query.intersect(parent.get_query())
 
     # Need to `select *` so we can operate on the query
     return query.projection(colnames)
 
 
-def get_sort_query(node):
-    query = node.parents.first().get_query()
+def get_sort_query(node, query):
     sort_columns = [
         (getattr(query, s.column), s.ascending) for s in node.sort_columns.all()
     ]
     return query.sort_by(sort_columns)
 
 
-def get_limit_query(node):
-    query = node.parents.first().get_query()
+def get_limit_query(node, query):
     # Need to project again to make sure limit isn't overwritten
     return query.limit(node.limit_limit, offset=node.limit_offset or 0).projection(
         query.schema()
     )
 
 
-def bigquery(node):
-    return create_filter_query(node.parents.first().get_query(), node.filters.all())
+def bigquery(node, query):
+    return create_filter_query(query, node.filters.all())
 
 
 @dataclass
@@ -215,9 +205,7 @@ def compile_function(query, edit):
     return func()
 
 
-def get_edit_query(node):
-    parent = node.parents.first()
-    query = parent.get_query()
+def get_edit_query(node, query):
     columns = {
         edit.column: compile_function(query, edit).name(edit.column)
         for edit in node.edit_columns.iterator()
@@ -225,17 +213,14 @@ def get_edit_query(node):
     return query.mutate(**columns)
 
 
-def get_add_query(node):
-    query = node.parents.first().get_query()
+def get_add_query(node, query):
     return query.mutate(
         [compile_function(query, add).name(add.label) for add in node.add_columns.all()]
     )
 
 
-def get_rename_query(node):
-    query = node.parents.first().get_query()
-    parent = node.parents.first()
-    columns = parent.schema.names
+def get_rename_query(node, query):
+    columns = query.schema().names
 
     for rename in node.rename_columns.all():
         idx = columns.index(rename.column)
@@ -243,8 +228,7 @@ def get_rename_query(node):
     return query[columns]
 
 
-def get_formula_query(node):
-    query = node.parents.first().get_query()
+def get_formula_query(node, query):
     new_columns = {
         formula.label: to_ibis(query, formula.formula)
         for formula in node.formula_columns.iterator()
@@ -253,8 +237,7 @@ def get_formula_query(node):
     return query.mutate(**new_columns)
 
 
-def get_distinct_query(node):
-    query = node.parents.first().get_query()
+def get_distinct_query(node, query):
     distinct_columns = [column.column for column in node.columns.all()]
     columns = [
         query[column].any_value().name(column)
@@ -382,8 +365,7 @@ def get_unpivot_query(node):
     return conn.table(table.bq_table, database=table.bq_dataset)
 
 
-def get_window_query(node):
-    query = node.parents.first().get_query()
+def get_window_query(node, query):
     for window in node.window_columns.all():
         aggregation = aggregate(query, window.column, window.function).name(
             window.label

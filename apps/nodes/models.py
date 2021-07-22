@@ -219,9 +219,10 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         return super().save(*args, **kwargs)
 
     def get_query(self):
-        func = NODE_FROM_CONFIG[self.kind]
+        from lib.dag import get_query_from_node
+
         try:
-            query = func(self)
+            query = get_query_from_node(self)
             if self.error:
                 self.error = None
                 self.save()
