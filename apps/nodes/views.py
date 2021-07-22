@@ -107,7 +107,8 @@ class NodeUpdate(FormsetUpdateView):
         context["workflow"] = self.object.workflow
         context["preview_node_id"] = self.preview_node_id
         context["show_docs"] = self.request.GET.get("show_docs", False) == "true" or (
-            self.object.data_updated is None
+            not self.request.GET.get("preview_node_id", False)
+            and self.object.data_updated is None
             and self.object.kind not in ["union", "intersect"]
         )
         help_template = f"nodes/help/{self.object.kind}.html"
