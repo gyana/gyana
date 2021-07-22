@@ -44,13 +44,13 @@ def get_join_query(node, left, right):
 
 
 def get_aggregation_query(node, query):
-    groups = node.columns.all()
+    groups = [col.column for col in node.columns.all()]
     aggregations = [
         get_aggregate_expr(query, agg.column, agg.function)
         for agg in node.aggregations.all()
     ]
     if groups:
-        query = query.group_by([g.column for g in groups])
+        query = query.group_by(groups)
     if aggregations:
         return query.aggregate(aggregations)
     return query.size()
@@ -60,9 +60,9 @@ def get_union_query(node, query, *queries):
     colnames = query.schema()
     for parent in queries:
         if node.union_mode == "keep":
-            query = query.union(parent.get_query(), distinct=node.union_distinct)
+            query = query.union(parent, distinct=node.union_distinct)
         else:
-            query = query.difference(parent.get_query())
+            query = query.difference(parent)
     # Need to `select *` so we can operate on the query
     return query.projection(colnames)
 
@@ -70,7 +70,7 @@ def get_union_query(node, query, *queries):
 def get_intersect_query(node, query, *queries):
     colnames = query.schema()
     for parent in queries:
-        query = query.intersect(parent.get_query())
+        query = query.intersect(parent)
 
     # Need to `select *` so we can operate on the query
     return query.projection(colnames)
