@@ -183,3 +183,7 @@ label.checkbox__checked {
     }
   }
 }
+
+button:focus {
+  outline: none;
+}

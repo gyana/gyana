@@ -1,6 +1,6 @@
 {% load static %}
 
-<turbo-frame id="widget-modal">  
+<turbo-frame id="widget-modal">
   {{ form.media.js }}
   <div class="flex items-center gap-4 mb-4 flex-shrink-0">
     <h1>{{ object.name }}</h1>
@@ -18,20 +18,19 @@
         data-action="change->tf-modal#change submit->tf-modal#save"
       >  
         <div class="absolute top-0 right-0">
-          <button 
-            class="tf-modal__close" 
-            type="submit"
-            formnovalidate
-            name="close"
-            value="close"
-            data-action="click->tf-modal#close keydown@window->tf-modal#onInput"
-          >
+          <button
+                  class="tf-modal__close"
+                  type="submit"
+                  formnovalidate
+                  name="close"
+                  value="close"
+                  data-action="click->tf-modal#close keydown@window->tf-modal#onInput">
             <i class="fal fa-times fa-2x"></i>
           </button>
         </div>
         <div class="h-6">
           <span data-live-update-target="loading" class="hidden"><i
-              class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
+               class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
         </div>
         {% csrf_token %}
 
@@ -51,20 +50,21 @@
         </fieldset>
         {% endif %}
         <div class="flex flex-1 gap-7">
-          <input 
-            type="submit" 
-            name="submit" 
-            value="Save & Close" 
-            class="button button--green" 
-            data-action="click->tf-modal#close"
-          ></input>
-          <input type="submit" name="submit" value="Save & Preview" class="button button--outline button--green"></input>
+          <input
+                 type="submit"
+                 name="submit"
+                 value="Save & Close"
+                 class="button button--success"
+                 data-action="click->tf-modal#close"></input>
+          <input type="submit" name="submit" value="Save & Preview"
+                 class="button button--outline button--success"></input>
         </div>
       </form>
     </div>
     <div class="w-1/2 h-full overflow-y-auto">
       {% if widget.is_valid %}
-      <turbo-frame id="widgets-output-{{ widget.id }}" src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}">
+      <turbo-frame id="widgets-output-{{ widget.id }}"
+                   src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}">
         <div class='placeholder-scr placeholder-scr--fillscreen'>
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
           <p class='placeholder-scr__title'>Loading widget...</p>

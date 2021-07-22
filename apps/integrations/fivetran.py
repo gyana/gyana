@@ -185,7 +185,6 @@ class FivetranClient:
 
 @dataclass
 class MockFivetranClient(FivetranClient):
-
     service: str
     team_id: int
 

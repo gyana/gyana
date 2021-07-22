@@ -7,6 +7,7 @@ from . import views
 app_name = "web"
 urlpatterns = [
     path("", views.home, name="home"),
+    path("toggle-sidebar", views.toggle_sidebar),
 ]
 
 # Users should not be able to access error pages directly.

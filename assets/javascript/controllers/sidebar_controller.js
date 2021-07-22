@@ -1,4 +1,5 @@
 import { Controller } from "stimulus"
+import { getApiClient } from '../api'
 
 export default class extends Controller {
   static targets = ["toggle"]
@@ -12,5 +13,10 @@ export default class extends Controller {
   toggle() {
     localStorage.setItem("sidebar_collapsed", !this.sidebar_collapsed)
     this.sidebar_collapsed = !this.sidebar_collapsed
+
+
+    getApiClient().action(window.schema,
+      ['toggle-sidebar', 'create']
+    )
   }
 }
