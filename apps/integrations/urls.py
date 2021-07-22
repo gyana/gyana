@@ -79,7 +79,7 @@ project_urlpatterns = (
         ),
         path(
             "<str:session_key>/setup",
-            login_and_project_required(views.IntegrationSetup.as_view()),
+            login_and_project_required(views.ConnectorSetup.as_view()),
             name="setup",
         ),
         path(

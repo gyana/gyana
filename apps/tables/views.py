@@ -40,7 +40,7 @@ class TableDelete(ProjectMixin, DeleteView):
         table = self.get_object()
         integration = table.integration
         # Stop syncing the table on the Fivetran connector
-        client = FivetranClient(integration.service, table.project.team.id)
+        client = FivetranClient()
         # This call will return an error when the table being deleted
         # cannot be unselected in the Fivetran schema. This is fine and
         # we can ignore the error.

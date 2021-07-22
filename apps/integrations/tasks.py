@@ -24,9 +24,7 @@ def poll_fivetran_historical_sync(self, integration_id):
 
     integration = get_object_or_404(Integration, pk=integration_id)
 
-    FivetranClient(integration.service, integration.project.team.id).block_until_synced(
-        integration
-    )
+    FivetranClient().block_until_synced(integration)
     get_tables_in_dataset(integration)
 
     url = reverse(
@@ -48,17 +46,15 @@ def poll_fivetran_historical_sync(self, integration_id):
 
 
 @shared_task(bind=True)
-def update_integration_fivetran_schema(
-    self, service, team_id, fivetran_id, updated_checkboxes
-):
-    FivetranClient(service, team_id).update_schema(fivetran_id, updated_checkboxes)
+def update_integration_fivetran_schema(self, fivetran_id, updated_checkboxes):
+    FivetranClient().update_schema(fivetran_id, updated_checkboxes)
 
     return
 
 
 @shared_task(bind=True)
-def start_fivetran_integration_task(self, service, team_id, fivetran_id):
-    FivetranClient(service, team_id).start(fivetran_id)
+def start_fivetran_integration_task(self, fivetran_id):
+    FivetranClient().start(fivetran_id)
 
     return
 

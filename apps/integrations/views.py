@@ -130,16 +130,6 @@ class IntegrationUpload(ProjectMixin, TurboCreateView):
             "project": form.cleaned_data["project"].id,
         }
 
-        analytics.track(
-            self.request.user.id,
-            INTEGRATION_CREATED_EVENT,
-            {
-                "id": form.instance.id,
-                "type": form.instance.kind,
-                "name": form.instance.name,
-            },
-        )
-
         return (
             TurboStream("create-container")
             .append.template(
@@ -221,10 +211,10 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
             )
 
             if form.instance.kind == Integration.Kind.FIVETRAN:
-                client = FivetranClient(
+                client = FivetranClient()
+                fivetran_config = client.create(
                     form.cleaned_data["service"], form.instance.project.team.id
                 )
-                fivetran_config = client.create()
 
                 self.request.session[instance_session_key] = {
                     **form.cleaned_data,
@@ -340,21 +330,20 @@ class IntegrationSchema(ProjectMixin, DetailView):
     template_name = "integrations/schema.html"
     model = Integration
 
-    def get_context_data(self, session_key, **kwargs):
+    def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
         context_data["integration"] = self.get_object()
-        context_data["schemas"] = FivetranClient(
-            context_data["integration"]
-        ).get_schema(self.request.session[session_key]["fivetran_id"])
+        context_data["schemas"] = FivetranClient().get_schema(self.object.fivetran_id)
 
         return context_data
 
     def post(self, request, *args, **kwargs):
         integration = self.get_object()
-        client = FivetranClient(integration)
+        client = FivetranClient()
         client.update_schema(
-            [key for key in request.POST.keys() if key != "csrfmiddlewaretoken"]
+            integration.fivetran_id,
+            [key for key in request.POST.keys() if key != "csrfmiddlewaretoken"],
         )
 
         return TurboStream(f"{integration.id}-schema-update-message").replace.response(
@@ -363,31 +352,25 @@ class IntegrationSchema(ProjectMixin, DetailView):
         )
 
 
-class IntegrationSetup(ProjectMixin, TemplateResponseMixin, View):
+class ConnectorSetup(ProjectMixin, TemplateResponseMixin, View):
     template_name = "integrations/setup.html"
 
     def get_context_data(self, project_id, session_key, **kwargs):
-        session = self.request.session[session_key]
-        context = {
-            "service": session["service"],
-            "schemas": FivetranClient(
-                session["service"], session["team_id"]
-            ).get_schema(session["fivetran_id"]),
+        integration_data = self.request.session[session_key]
+        return {
+            "service": integration_data["service"],
+            "schemas": FivetranClient().get_schema(integration_data["fivetran_id"]),
             "project": self.project,
         }
-
-        return context
 
     def get(self, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
 
     def post(self, request, session_key, **kwargs):
-        session = self.request.session[session_key]
+        integration_data = self.request.session[session_key]
         task_id = update_integration_fivetran_schema.delay(
-            session["service"],
-            session["team_id"],
-            session["fivetran_id"],
+            integration_data["fivetran_id"],
             [key for key in request.POST.keys() if key != "csrfmiddlewaretoken"],
         )
 
@@ -497,11 +480,9 @@ class IntegrationTablesList(ProjectMixin, SingleTableView):
     paginate_by = 20
 
     def get_queryset(self) -> QuerySet:
-        queryset = Table.objects.filter(
+        return Table.objects.filter(
             project=self.project, integration_id=self.kwargs["pk"]
         )
-
-        return queryset
 
 
 class IntegrationAuthorize(DetailView):
@@ -513,7 +494,7 @@ class IntegrationAuthorize(DetailView):
         context = super().get_context_data(**kwargs)
 
         if self.object.fivetran_id is None:
-            FivetranClient(self.object.service, self.object.projec.team.id).create()
+            FivetranClient().create(self.object.service, self.object.projec.team.id)
 
         return context
 
@@ -628,11 +609,9 @@ def upload_complete(request: Request, session_key: str):
 
 @api_view(["GET"])
 def start_fivetran_integration(request: HttpRequest, session_key: str):
-    session = request.session[session_key]
+    integration_data = request.session[session_key]
 
-    task_id = start_fivetran_integration_task.delay(
-        session["service"], session["team_id"], session["fivetran_id"]
-    )
+    task_id = start_fivetran_integration_task.delay(integration_data["fivetran_id"])
 
     return (
         TurboStream("integration-setup-container")
@@ -652,16 +631,26 @@ def start_fivetran_integration(request: HttpRequest, session_key: str):
 
 @api_view(["GET"])
 def finalise_fivetran_integration(request: HttpRequest, session_key: str):
-    session = request.session[session_key]
+    integration_data = request.session[session_key]
     # Create integration
-    integration = FivetranForm(data=session).save()
-    integration.schema = session["schema"]
-    integration.fivetran_id = session["fivetran_id"]
+    integration = FivetranForm(data=integration_data).save()
+    integration.schema = integration_data["schema"]
+    integration.fivetran_id = integration_data["fivetran_id"]
     integration.created_by = request.user
     # Start polling
     task_id = poll_fivetran_historical_sync.delay(integration.id)
     integration.fivetran_poll_historical_sync_task_id = str(task_id)
     integration.save()
+
+    analytics.track(
+        request.user.id,
+        INTEGRATION_CREATED_EVENT,
+        {
+            "id": integration.id,
+            "type": integration.kind,
+            "name": integration.name,
+        },
+    )
 
     return HttpResponseRedirect(
         reverse(
