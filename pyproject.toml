@@ -5,7 +5,7 @@ description = "No-Code Data Analytics"
 authors = ["Gyana Developers <developers@gyana.com>"]
 
 [tool.poetry.dependencies]
-python = "3.8.*"
+python = "3.9.*"
 attrs = "^20.3.0"
 Django = "^3.1.7"
 django-allauth = "^0.44.0"
