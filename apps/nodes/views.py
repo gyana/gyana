@@ -13,6 +13,7 @@ from apps.utils.table_data import get_table
 from django import forms, template
 from django.http.response import HttpResponse
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic.base import TemplateView
 from django_tables2.config import RequestConfig
 from django_tables2.tables import Table
@@ -62,6 +63,9 @@ class NodeViewSet(viewsets.ModelViewSet):
                     list(node.parents.values_list("kind", flat=True))
                 ),
             )
+            # Explicitly update node when parents are updated
+            node.data_updated = timezone.now()
+            node.save()
 
 
 class NodeName(TurboUpdateView):
@@ -107,8 +111,7 @@ class NodeUpdate(FormsetUpdateView):
         context["workflow"] = self.object.workflow
         context["preview_node_id"] = self.preview_node_id
         context["show_docs"] = self.request.GET.get("show_docs", False) == "true" or (
-            not self.request.GET.get("preview_node_id", False)
-            and self.object.data_updated is None
+            self.object.data_updated is None
             and self.object.kind not in ["union", "intersect"]
         )
         help_template = f"nodes/help/{self.object.kind}.html"
