@@ -38,12 +38,15 @@ class TableDelete(ProjectMixin, DeleteView):
         keep the BigQuery table, otherwise we throw it all away :).
         """
         table = self.get_object()
+        integration = table.integration
         # Stop syncing the table on the Fivetran connector
-        client = FivetranClient(table.integration)
+        client = FivetranClient(integration.service, table.project.team.id)
         # This call will return an error when the table being deleted
         # cannot be unselected in the Fivetran schema. This is fine and
         # we can ignore the error.
-        res = client.update_table_config(table.bq_table, False)
+        res = client.update_table_config(
+            integration.fivetran_id, integration.schema, table.bq_table, False
+        )
 
         if res["code"] == "Success":
             # TODO: Delete the table in Big Query

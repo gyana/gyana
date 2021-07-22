@@ -1,4 +1,5 @@
 import time
+import uuid
 from dataclasses import dataclass
 
 import backoff
@@ -12,16 +13,14 @@ from django.shortcuts import redirect
 @dataclass
 class FivetranClient:
 
-    integration: Integration
+    service: str
+    team_id: int
 
     def create(self):
 
-        service = self.integration.service
-        service_conf = get_services()[service]
+        service_conf = get_services()[self.service]
 
-        schema = (
-            f"team_{self.integration.project.team.pk}_{service}_{self.integration.pk}"
-        )
+        schema = f"team_{self.team_id}_{self.service}_{uuid.uuid4().hex}"
 
         config = {"schema": schema, **(service_conf["static_config"] or {})}
         if service_conf["requires_schema_prefix"] == "t":
@@ -30,7 +29,7 @@ class FivetranClient:
         res = requests.post(
             f"{settings.FIVETRAN_URL}/connectors",
             json={
-                "service": service,
+                "service": self.service,
                 "group_id": settings.FIVETRAN_GROUP,
                 "run_setup_tests": False,
                 "paused": True,
@@ -43,13 +42,11 @@ class FivetranClient:
             # TODO
             pass
 
-        self.integration.fivetran_id = res["data"]["id"]
-        self.integration.schema = schema
-        self.integration.save()
+        return {"fivetran_id": res["data"]["id"], "schema": schema}
 
-    def start(self):
+    def start(self, fivetran_id):
         res = requests.patch(
-            f"{settings.FIVETRAN_URL}/connectors/{self.integration.fivetran_id}",
+            f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}",
             json={
                 "paused": False,
             },
@@ -62,10 +59,10 @@ class FivetranClient:
 
         return res
 
-    def authorize(self, redirect_uri):
+    def authorize(self, fivetran_id, redirect_uri):
 
         card = requests.post(
-            f"{settings.FIVETRAN_URL}/connectors/{self.integration.fivetran_id}/connect-card-token",
+            f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/connect-card-token",
             headers=settings.FIVETRAN_HEADERS,
         )
         connect_card_token = card.json()["token"]
@@ -74,10 +71,10 @@ class FivetranClient:
             f"https://fivetran.com/connect-card/setup?redirect_uri={redirect_uri}&auth={connect_card_token}"
         )
 
-    def _is_historical_synced(self):
+    def _is_historical_synced(self, fivetran_id):
 
         res = requests.get(
-            f"{settings.FIVETRAN_URL}/connectors/{self.integration.fivetran_id}",
+            f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}",
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 
@@ -89,18 +86,19 @@ class FivetranClient:
 
         return status["is_historical_sync"]
 
-    def block_until_synced(self):
+    def block_until_synced(self, integration):
 
         backoff.on_predicate(backoff.expo, lambda x: x, max_time=3600)(
             self._is_historical_synced
-        )()
+        )(integration.fivetran_id)
 
-        self.integration.historical_sync_complete = True
-        self.integration.save()
+        integration.historical_sync_complete = True
+        integration.save()
 
-    def get_schema(self):
+    def get_schema(self, fivetran_id):
+        """Gets all the tables of a connector"""
         res = requests.get(
-            f"{settings.FIVETRAN_URL}/connectors/{self.integration.fivetran_id}/schemas",
+            f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/schemas",
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 
@@ -108,7 +106,7 @@ class FivetranClient:
             # First try a reload in case this connector is new
             # https://fivetran.com/docs/rest-api/connectors#reloadaconnectorschemaconfig
             res = requests.post(
-                f"{settings.FIVETRAN_URL}/connectors/{self.integration.fivetran_id}/schemas/reload",
+                f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/schemas/reload",
                 headers=settings.FIVETRAN_HEADERS,
             ).json()
 
@@ -118,7 +116,7 @@ class FivetranClient:
 
         return res["data"].get("schemas", {})
 
-    def update_schema(self, updated_checkboxes):
+    def update_schema(self, fivetran_id, updated_checkboxes):
         """
         Transforms an array of schema and schema-table combinations to the correct Fivetran
         format. When checkboxes are unticked they're excluded and therefore assumed to be
@@ -130,7 +128,7 @@ class FivetranClient:
 
         Refer to `integrations/_schema.html` for an example of the structure.
         """
-        schema = self.get_schema()
+        schema = self.get_schema(fivetran_id)
 
         # Construct a dictionary with all allowed schema changes and set them to false
         # By default when checkboxes are checked they are sent in a post request, if they
@@ -156,7 +154,7 @@ class FivetranClient:
                 update[key]["enabled"] = True
 
         res = requests.patch(
-            f"{settings.FIVETRAN_URL}/connectors/{self.integration.fivetran_id}/schemas",
+            f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/schemas",
             json={"schemas": update},
             headers=settings.FIVETRAN_HEADERS,
         ).json()
@@ -167,9 +165,9 @@ class FivetranClient:
 
         return res
 
-    def update_table_config(self, table_name: str, enabled: bool):
+    def update_table_config(self, fivetran_id, schema, table_name: str, enabled: bool):
         res = requests.patch(
-            f"{settings.FIVETRAN_URL}/connectors/{self.integration.fivetran_id}/schemas/{self.integration.schema}/tables/{table_name}",
+            f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/schemas/{schema}/tables/{table_name}",
             json={
                 "enabled": enabled,
             },
@@ -188,21 +186,23 @@ class FivetranClient:
 @dataclass
 class MockFivetranClient(FivetranClient):
 
-    integration: Integration
+    service: str
+    team_id: int
 
     def create(self):
-        self.integration.fivetran_id = settings.MOCK_FIVETRAN_ID
-        self.integration.schema = settings.MOCK_FIVETRAN_SCHEMA
-        self.integration.save()
+        return {
+            "fivetran_id": settings.MOCK_FIVETRAN_ID,
+            "schema": settings.MOCK_FIVETRAN_SCHEMA,
+        }
 
     def authorize(self, redirect_uri):
         return redirect(redirect_uri)
 
-    def block_until_synced(self):
+    def block_until_synced(self, integration):
         time.sleep(settings.MOCK_FIVETRAN_HISTORICAL_SYNC_SECONDS)
-        self.integration.historical_sync_complete = True
-        self.integration.save()
+        integration.historical_sync_complete = True
+        integration.save()
 
 
-if settings.MOCK_FIVETRAN:
-    FivetranClient = MockFivetranClient
+# if settings.MOCK_FIVETRAN:
+#     FivetranClient = MockFivetranClient

@@ -33,19 +33,14 @@ urlpatterns = [
         name="authorize",
     ),
     path(
-        "<hashid:pk>/authorize-fivetran",
-        login_and_integration_required(views.authorize_fivetran),
-        name="authorize-fivetran",
-    ),
-    path(
-        "<hashid:pk>/authorize-fivetran-redirect",
-        login_and_integration_required(views.authorize_fivetran_redirect),
-        name="authorize-fivetran-redirect",
-    ),
-    path(
-        "<hashid:pk>/start-fivetran-integration",
-        login_and_integration_required(views.start_fivetran_integration),
+        "<str:session_key>/start-fivetran-integration",
+        views.start_fivetran_integration,
         name="start-fivetran-integration",
+    ),
+    path(
+        "<str:session_key>/finalise-fivetran-integration",
+        views.finalise_fivetran_integration,
+        name="finalise-fivetran-integration",
     ),
     # TODO: access control?
     path("file/<str:session_key>/generate-signed-url", views.generate_signed_url),
@@ -83,7 +78,7 @@ project_urlpatterns = (
             name="detail",
         ),
         path(
-            "<hashid:pk>/setup",
+            "<str:session_key>/setup",
             login_and_project_required(views.IntegrationSetup.as_view()),
             name="setup",
         ),
