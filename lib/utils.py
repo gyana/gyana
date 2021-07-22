@@ -1,3 +1,6 @@
+from ibis.expr.datatypes import String
+
+
 def get_duplicate_names(left, right):
     left_names = set(left.schema())
     right_names = set(right.schema())
@@ -29,3 +32,15 @@ def get_join_expr(parent, how):
 def get_aggregate_expr(query, colname, computation):
     column = getattr(query, colname)
     return getattr(column, computation)().name(colname)
+
+
+def format_literal(value, type_):
+    """Formats a value to the right SQL type to be used in a string query.
+
+    Wraps a string in quotes and replaces spaces from values with `_`
+    """
+    if value is None:
+        return "null"
+    if isinstance(type_, String):
+        return f'"{value}" {value.replace(" ", "_")}'
+    return str(value)

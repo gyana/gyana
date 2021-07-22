@@ -1,11 +1,12 @@
 import inspect
+from functools import wraps
 
 from apps.nodes.models import Node
 from apps.nodes.nodes import NODE_FROM_CONFIG
 from apps.tables.models import Table
 from django.utils import timezone
 
-from lib.clients import DATAFLOW_ID, bigquery_client
+from lib.clients import DATAFLOW_ID, bigquery_client, ibis_client
 
 
 def get_all_parents(node: Node):
@@ -90,3 +91,22 @@ def get_parent_updated(node):
 
     for parent in node.parents.all():
         yield from get_parent_updated(parent)
+
+
+def use_intermediate_table(func):
+    @wraps
+    def wrapper(node, parent):
+
+        table = node.intermediate_table
+        conn = ibis_client()
+
+        # if the table doesn't need updating we can simply return the previous computed pivot table
+        if table and table.data_updated > max(tuple(get_parent_updated(node))):
+            return conn.table(table.bq_table, database=table.bq_dataset)
+
+        query = func(node, parent)
+        table = create_or_replace_intermediate_table(table, node, query)
+
+        return conn.table(table.bq_table, database=table.bq_dataset)
+
+    return wrapper
