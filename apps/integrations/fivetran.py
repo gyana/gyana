@@ -194,7 +194,7 @@ class MockFivetranClient(FivetranClient):
             "schema": settings.MOCK_FIVETRAN_SCHEMA,
         }
 
-    def authorize(self, redirect_uri):
+    def authorize(self, fivetran_id, redirect_uri):
         return redirect(redirect_uri)
 
     def block_until_synced(self, integration):
