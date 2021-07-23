@@ -20,7 +20,8 @@
 
   & > :first-child {
     animation: scale-in-center 0.125s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-    flex: 1 1 0%;
+    max-height: 100%;
+    max-width: 100%;
   }
 }
 
