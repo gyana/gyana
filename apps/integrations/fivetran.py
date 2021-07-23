@@ -1,26 +1,19 @@
 import time
 import uuid
-from dataclasses import dataclass
 
 import backoff
 import requests
-from apps.integrations.models import Integration
 from apps.integrations.utils import get_services
 from django.conf import settings
 from django.shortcuts import redirect
 
 
-@dataclass
 class FivetranClient:
+    def create(self, service, team_id):
 
-    service: str
-    team_id: int
+        service_conf = get_services()[service]
 
-    def create(self):
-
-        service_conf = get_services()[self.service]
-
-        schema = f"team_{self.team_id}_{self.service}_{uuid.uuid4().hex}"
+        schema = f"team_{team_id}_{service}_{uuid.uuid4().hex}"
 
         config = {"schema": schema, **(service_conf["static_config"] or {})}
         if service_conf["requires_schema_prefix"] == "t":
@@ -29,7 +22,7 @@ class FivetranClient:
         res = requests.post(
             f"{settings.FIVETRAN_URL}/connectors",
             json={
-                "service": self.service,
+                "service": service,
                 "group_id": settings.FIVETRAN_GROUP,
                 "run_setup_tests": False,
                 "paused": True,
@@ -183,12 +176,8 @@ class FivetranClient:
         return res
 
 
-@dataclass
 class MockFivetranClient(FivetranClient):
-    service: str
-    team_id: int
-
-    def create(self):
+    def create(self, service, team_id):
         return {
             "fivetran_id": settings.MOCK_FIVETRAN_ID,
             "schema": settings.MOCK_FIVETRAN_SCHEMA,
