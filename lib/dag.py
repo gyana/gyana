@@ -18,8 +18,6 @@ def validate_arity(func, len_args):
 
     node_arg, *params = inspect.signature(func).parameters.values()
 
-    print(node_arg, params)
-
     # testing for "*args" in signature
     if any(param.kind == inspect.Parameter.VAR_POSITIONAL for param in params):
         assert len_args >= len(params) - 1
