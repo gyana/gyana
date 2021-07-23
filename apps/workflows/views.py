@@ -118,6 +118,22 @@ class WorkflowDuplicate(UpdateView):
         clone = self.object.make_clone(
             attrs={"name": "Copy of " + self.object.name, "last_run": None}
         )
+
+        node_map = {}
+
+        nodes = self.object.nodes.all()
+        # First create the mapping between original and cloned nodes
+        for node in nodes:
+            node_clone = node.make_clone()
+            node_map[node] = node_clone
+            clone.nodes.add(node_clone)
+
+        # Then copy the relationships
+        for node in nodes:
+            node_clone = node_map[node]
+            for parent in node.parents.iterator():
+                node_clone.parents.add(node_map[parent])
+
         clone.save()
         return r
 

@@ -13,8 +13,6 @@ class Workflow(CloneMixin, BaseModel):
         auto_now_add=True,
     )
 
-    _clone_m2o_or_o2m_fields = ["nodes"]
-
     def __str__(self):
         return self.name
 
