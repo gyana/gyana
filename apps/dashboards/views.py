@@ -101,7 +101,13 @@ class DashboardDuplicate(UpdateView):
     def form_valid(self, form):
         r = super().form_valid(form)
 
-        clone = self.object.make_clone(attrs={"name": "Copy of " + self.object.name})
+        clone = self.object.make_clone(
+            attrs={
+                "name": "Copy of " + self.object.name,
+                "shared_id": None,
+                "shared_status": Dashboard.SharedStatus.PRIVATE,
+            }
+        )
 
         clone.save()
 
@@ -151,12 +157,11 @@ class DashboardPublic(DetailView):
     model = Dashboard
 
     def get_object(self):
-        return self.model.objects.filter(shared_id=self.kwargs["shared_id"]).first()
+        return self.kwargs["dashboard"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["project"] = self.object.project
-        context["dashboard"] = self.object
         return context
 
 

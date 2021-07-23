@@ -1,6 +1,8 @@
+from functools import wraps
+
 from apps.projects.access import login_and_project_required
 from apps.teams.roles import user_can_access_team
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import path
 from lib.decorators import login_and_permission_to_access
 
@@ -14,6 +16,21 @@ def dashboard_of_team(user, pk, *args, **kwargs):
 
 
 login_and_dashboard_required = login_and_permission_to_access(dashboard_of_team)
+
+
+def dashboard_is_public(view_func):
+    """Returns a decorator that checks whether a dashboard is public."""
+
+    @wraps(view_func)
+    def decorator(request, *args, **kwargs):
+        dashboard = Dashboard.objects.get(shared_id=kwargs["shared_id"])
+        if dashboard and dashboard.shared_status == Dashboard.SharedStatus.PUBLIC:
+            kwargs["dashboard"] = dashboard
+            return view_func(request, *args, **kwargs)
+        return render(request, "404.html", status=404)
+
+    return decorator
+
 
 app_name = "dashboards"
 
@@ -33,7 +50,11 @@ urlpatterns = [
         login_and_dashboard_required(views.DashboardShare.as_view()),
         name="share",
     ),
-    path("<str:shared_id>", views.DashboardPublic.as_view(), name="public"),
+    path(
+        "<str:shared_id>",
+        dashboard_is_public(views.DashboardPublic.as_view()),
+        name="public",
+    ),
 ]
 
 project_urlpatterns = (
