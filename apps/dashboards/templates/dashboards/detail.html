@@ -44,6 +44,10 @@
   {% if request.GET.mode != 'view' %}
     {% include 'dashboards/_add_widget.html' with choices=choices %}
   {% endif %}
+
+  <span class="button button--circle button--tertiary cursor-pointer">
+      {% include 'dashboards/duplicate.html'%}
+  </span>
   <div data-controller='popover'>
     <span 
       data-popover-target="trigger" 

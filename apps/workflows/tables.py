@@ -3,7 +3,7 @@ from apps.nodes.models import Node
 from apps.utils.table import NaturalDatetimeColumn
 from django.template import Context
 from django.template.loader import get_template
-from django.utils.safestring import mark_safe
+from lib.formulas.columns import DuplicateColumn
 from lib.icons import ICONS
 
 from .models import Workflow
@@ -25,13 +25,6 @@ class StatusColumn(tables.TemplateColumn):
             context["icon"] = ICONS["success"]
             context["text"] = "Uptodate"
 
-        return get_template(self.template_name).render(context.flatten())
-
-
-class DuplicateColumn(tables.TemplateColumn):
-    def render(self, record, table, **kwargs):
-        context = getattr(table, "context", Context())
-        context["object"] = record
         return get_template(self.template_name).render(context.flatten())
 
 

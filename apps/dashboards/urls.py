@@ -23,6 +23,11 @@ urlpatterns = [
         login_and_dashboard_required(views.DashboardSort.as_view()),
         name="sort",
     ),
+    path(
+        "<hashid:pk>/duplicate",
+        login_and_dashboard_required(views.DashboardDuplicate.as_view()),
+        name="duplicate",
+    ),
 ]
 
 project_urlpatterns = (

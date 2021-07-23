@@ -2,11 +2,14 @@ import analytics
 from apps.dashboards.serializers import DashboardSerializer
 from apps.dashboards.tables import DashboardTable
 from apps.projects.mixins import ProjectMixin
-from apps.utils.segment_analytics import DASHBOARD_CREATED_EVENT
+from apps.utils.segment_analytics import (
+    DASHBOARD_CREATED_EVENT,
+    DASHBOARD_DUPLICATED_EVENT,
+)
 from apps.widgets.models import WIDGET_CHOICES_ARRAY
 from django.db.models.query import QuerySet
 from django.urls.base import reverse
-from django.views.generic.edit import DeleteView
+from django.views.generic.edit import DeleteView, UpdateView
 from django_tables2 import SingleTableView
 from rest_framework import generics
 from turbo_response.views import TurboCreateView, TurboUpdateView
@@ -85,6 +88,31 @@ class DashboardDelete(ProjectMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("project_dashboards:list", args=(self.project.id,))
+
+
+class DashboardDuplicate(UpdateView):
+    template_name = "dashboards/duplicate.html"
+    model = Dashboard
+    fields = []
+
+    def form_valid(self, form):
+        r = super().form_valid(form)
+
+        clone = self.object.make_clone(attrs={"name": "Copy of " + self.object.name})
+
+        clone.save()
+
+        analytics.track(
+            self.request.user.id,
+            DASHBOARD_DUPLICATED_EVENT,
+            {
+                "id": form.instance.id,
+            },
+        )
+        return r
+
+    def get_success_url(self) -> str:
+        return reverse("project_dashboards:list", args=(self.object.project.id,))
 
 
 # APIs

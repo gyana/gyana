@@ -10,7 +10,7 @@ DEFAULT_HEIGHT = 400
 
 
 class Widget(CloneMixin, BaseModel):
-    _clone_m2o_or_o2m_fields = ["filters"]
+    _clone_m2o_or_o2m_fields = ["filters", "values"]
 
     class Kind(models.TextChoices):
         TEXT = "text", "Text"

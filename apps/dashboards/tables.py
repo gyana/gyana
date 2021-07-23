@@ -2,6 +2,7 @@ import django_tables2 as tables
 from apps.utils.table import NaturalDatetimeColumn
 from django.template import Context
 from django.template.loader import get_template
+from lib.formulas.columns import DuplicateColumn
 from lib.icons import ICONS
 
 from .models import Dashboard
@@ -29,3 +30,4 @@ class DashboardTable(tables.Table):
     status = StatusColumn(template_name="columns/status.html")
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
+    duplicate = DuplicateColumn(template_name="dashboards/duplicate.html")
