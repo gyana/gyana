@@ -97,7 +97,6 @@ def get_parent_updated(node):
 
 
 def use_intermediate_table(func):
-    @wraps
     def wrapper(node, parent):
 
         table = node.intermediate_table
@@ -112,4 +111,4 @@ def use_intermediate_table(func):
 
         return conn.table(table.bq_table, database=table.bq_dataset)
 
-    return wrapper
+    return wraps(wrapper)
