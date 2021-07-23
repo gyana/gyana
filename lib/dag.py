@@ -2,7 +2,6 @@ import inspect
 from functools import wraps
 
 from apps.nodes.models import Node
-from apps.nodes.nodes import NODE_FROM_CONFIG
 from apps.tables.models import Table
 from django.utils import timezone
 
@@ -28,6 +27,8 @@ def validate_arity(func, len_args):
 
 
 def get_query_from_node(node: Node):
+
+    from apps.nodes.nodes import NODE_FROM_CONFIG
 
     nodes = get_all_parents(node)
     # remove duplicates (python dicts are insertion ordered)

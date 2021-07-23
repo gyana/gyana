@@ -2,7 +2,6 @@ import logging
 from functools import cached_property
 
 from apps.nodes.config import NodeConfig
-from apps.nodes.nodes import NODE_FROM_CONFIG
 from apps.tables.models import Table
 from apps.utils.models import BaseModel
 from apps.workflows.models import Workflow
