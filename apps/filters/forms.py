@@ -39,6 +39,8 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             "integer_value",
             "string_values",
             "integer_values",
+            "float_value",
+            "float_values",
         )
         widgets = {"string_value": TextInput(), "datetime_value": DatetimeInput()}
 
