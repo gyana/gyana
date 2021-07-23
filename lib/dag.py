@@ -1,5 +1,4 @@
 import inspect
-from functools import wraps
 
 from apps.nodes.models import Node
 from apps.tables.models import Table
@@ -111,4 +110,4 @@ def use_intermediate_table(func):
 
         return conn.table(table.bq_table, database=table.bq_dataset)
 
-    return wraps(wrapper)
+    return wrapper
