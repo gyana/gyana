@@ -1,16 +1,51 @@
 import ibis
 from apps.filters.bigquery import create_filter_query
+from ibis.expr.datatypes import String
 from lib.bigquery import query_table
 from lib.clients import bigquery_client
 from lib.dag import use_intermediate_table
 from lib.formulas import to_ibis
 from lib.operations import compile_function
 
-# fmt: off
-from lib.utils import (format_literal, get_aggregate_expr, get_join_expr,
-                       rename_duplicates)
+JOINS = {
+    "inner": "inner_join",
+    "outer": "outer_join",
+    "left": "left_join",
+    "right": "right_join",
+}
 
-# fmt: on
+
+def _get_duplicate_names(left, right):
+    left_names = set(left.schema())
+    right_names = set(right.schema())
+    return left_names & right_names
+
+
+def _rename_duplicates(left, right, left_col, right_col):
+    duplicates = _get_duplicate_names(left, right)
+    left = left.relabel({d: f"{d}_1" for d in duplicates})
+    right = right.relabel({d: f"{d}_2" for d in duplicates})
+    left_col = f"{left_col}_1" if left_col in duplicates else left_col
+    right_col = f"{right_col}_2" if right_col in duplicates else right_col
+
+    return left, right, left_col, right_col
+
+
+def _get_aggregate_expr(query, colname, computation):
+    column = getattr(query, colname)
+    return getattr(column, computation)().name(colname)
+
+
+def _format_literal(value, type_):
+    """Formats a value to the right SQL type to be used in a string query.
+
+    Wraps a string in quotes and replaces spaces from values with `_`
+    """
+    if value is None:
+        return "null"
+    if isinstance(type_, String):
+        return f'"{value}" {value.replace(" ", "_")}'
+    return str(value)
 
 
 def get_input_query(node):
@@ -37,10 +72,10 @@ def get_select_query(node, parent):
 def get_join_query(node, left, right):
 
     # Adding 1/2 to left/right if the column exists in both tables
-    left, right, left_col, right_col = rename_duplicates(
+    left, right, left_col, right_col = _rename_duplicates(
         left, right, node.join_left, node.join_right
     )
-    to_join = get_join_expr(left, node.join_how)
+    to_join = getattr(left, JOINS[node.join_how])
 
     return to_join(right, left[left_col] == right[right_col]).materialize()
 
@@ -48,7 +83,7 @@ def get_join_query(node, left, right):
 def get_aggregation_query(node, query):
     groups = [col.column for col in node.columns.all()]
     aggregations = [
-        get_aggregate_expr(query, agg.column, agg.function)
+        _get_aggregate_expr(query, agg.column, agg.function)
         for agg in node.aggregations.all()
     ]
     if groups:
@@ -145,7 +180,7 @@ def get_pivot_query(node, parent):
 
     # the new column names consist of the values inside the selected column
     names_query = {
-        format_literal(row.values()[0], column_type)
+        _format_literal(row.values()[0], column_type)
         for row in client.query(parent[node.pivot_column].compile()).result()
     }
     # `pivot_index` is optional and won't be displayed if not selected
@@ -178,7 +213,7 @@ def get_unpivot_query(node, parent):
 
 def get_window_query(node, query):
     for window in node.window_columns.all():
-        aggregation = get_aggregate_expr(query, window.column, window.function).name(
+        aggregation = _get_aggregate_expr(query, window.column, window.function).name(
             window.label
         )
 
