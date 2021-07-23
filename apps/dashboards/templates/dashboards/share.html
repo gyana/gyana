@@ -1,0 +1,30 @@
+<turbo-frame id='dashboard-share'>
+  <div data-controller='popover'
+    data-popover-dont-hide-body-value="{{dont_hide_body}}"
+  >
+    <button 
+      data-popover-target="trigger" 
+      class="button button--circle button--tertiary cursor-pointer" 
+      data-action="popover#trigger"
+    >
+      {% if  object.shared_status == 'private' %}<i class='fas fa-lock fa-lg'></i>
+      {% elif object.shared_status == 'public' %}<i class='fas fa-eye fa-lg'></i>
+      {% endif %}
+    </button>
+    <div data-popover-target="body" class="popover-body shadow-sm card card--sm">
+      <span>This dashboard is currently {{object.shared_status }}.</span>
+    
+      <form method="post" action="{% url 'dashboards:share' object.id %}">
+        {% csrf_token %}
+
+        {% if  object.shared_status == 'private' %}
+          <input class="button" type='submit' value="Share"></input>
+        {% else %}
+          <input class="button" type='submit' value="Unshare"></input>
+          <span>dashboards/{{object.shared_id}}</span>
+        {% endif %}
+        
+      </form>
+    </div>
+  </div>
+</turbo-frame>

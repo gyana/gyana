@@ -1,0 +1,13 @@
+{% extends 'web/base.html' %}
+{% block body %}
+<div class='widgets'>
+  <div 
+    id="dashboard-widget-container" 
+    class="widgets--canvas"
+  >
+    {% for widget in object.widget_set.all %}
+      {% include 'widgets/widget_component.html' with object=widget %}
+    {% endfor %}
+  </div>  
+</div>
+{% endblock body %}

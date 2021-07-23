@@ -2,6 +2,9 @@ import { Controller } from 'stimulus'
 
 export default class extends Controller {
   static targets = ['trigger', 'body']
+  static values = {
+    dontHideBody: String
+  }
 
   connect() {
     this.element.style.position = 'relative'
@@ -14,7 +17,10 @@ export default class extends Controller {
 
     window.addEventListener('click', this.listener)
 
-    this.bodyTarget.style.display = 'none'
+    if (this.dontHideBodyValue!=="True"){
+      this.bodyTarget.style.display = 'none'
+    }
+    
     this.bodyTarget.style.position = 'absolute'
     this.bodyTarget.style.right = 0
   }

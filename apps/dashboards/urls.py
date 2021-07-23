@@ -28,6 +28,12 @@ urlpatterns = [
         login_and_dashboard_required(views.DashboardDuplicate.as_view()),
         name="duplicate",
     ),
+    path(
+        "<hashid:pk>",
+        login_and_dashboard_required(views.DashboardShare.as_view()),
+        name="share",
+    ),
+    path("<str:shared_id>", views.DashboardPublic.as_view(), name="public"),
 ]
 
 project_urlpatterns = (

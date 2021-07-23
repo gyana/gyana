@@ -1,3 +1,5 @@
+import uuid
+
 import analytics
 from apps.dashboards.serializers import DashboardSerializer
 from apps.dashboards.tables import DashboardTable
@@ -9,6 +11,7 @@ from apps.utils.segment_analytics import (
 from apps.widgets.models import WIDGET_CHOICES_ARRAY
 from django.db.models.query import QuerySet
 from django.urls.base import reverse
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, UpdateView
 from django_tables2 import SingleTableView
 from rest_framework import generics
@@ -113,6 +116,48 @@ class DashboardDuplicate(UpdateView):
 
     def get_success_url(self) -> str:
         return reverse("project_dashboards:list", args=(self.object.project.id,))
+
+
+class DashboardShare(UpdateView):
+    template_name = "dashboards/share.html"
+    model = Dashboard
+    fields = []
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["dont_hide_body"] = True
+        return context
+
+    def form_valid(self, form):
+        r = super().form_valid(form)
+        if self.object.shared_status == Dashboard.SharedStatus.PRIVATE:
+            self.object.shared_status = Dashboard.SharedStatus.PUBLIC
+            self.object.shared_id = self.object.shared_id or uuid.uuid4()
+        else:
+            self.object.shared_status = Dashboard.SharedStatus.PRIVATE
+        self.object.save()
+        return r
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "dashboards:share",
+            args=(self.object.id,),
+        )
+
+
+class DashboardPublic(DetailView):
+    template_name = "dashboards/public.html"
+    model = Dashboard
+
+    def get_object(self):
+        return self.model.objects.filter(shared_id=self.kwargs["shared_id"]).first()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["project"] = self.object.project
+        context["dashboard"] = self.object
+        return context
 
 
 # APIs
