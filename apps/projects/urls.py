@@ -1,8 +1,8 @@
 from apps.teams.access import login_and_team_required
 from apps.teams.roles import user_can_access_team
+from apps.utils.access import login_and_permission_to_access
 from django.shortcuts import get_object_or_404
 from django.urls import path
-from lib.decorators import login_and_permission_to_access
 
 from . import views
 from .models import Project

@@ -1,8 +1,8 @@
 from apps.teams.roles import user_can_access_team
+from apps.utils.access import login_and_permission_to_access
 from apps.workflows.models import Workflow
 from django.shortcuts import get_object_or_404
 from django.urls import path
-from lib.decorators import login_and_permission_to_access
 from rest_framework import routers
 
 from . import views

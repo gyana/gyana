@@ -1,7 +1,7 @@
+from apps.utils.access import login_and_permission_to_access
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.urls import path
-from lib.decorators import login_and_permission_to_access
 
 from . import views
 from .models import Team
