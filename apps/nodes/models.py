@@ -2,6 +2,7 @@ from functools import cached_property
 
 from apps.nodes.config import NODE_CONFIG
 from apps.tables.models import Table
+from apps.utils.cache import get_cache_key
 from apps.utils.models import BaseModel
 from apps.workflows.models import Workflow
 from dirtyfields import DirtyFieldsMixin
@@ -10,7 +11,6 @@ from django.core.cache import cache
 from django.db import models
 from django.db.models import Max
 from django.utils import timezone
-from lib.cache import get_cache_key
 from model_clone import CloneMixin
 
 
