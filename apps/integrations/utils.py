@@ -2,7 +2,7 @@ from functools import lru_cache
 
 import yaml
 
-SERVICES = "lib/services.yaml"
+SERVICES = "apps/integrations/services.yaml"
 
 
 @lru_cache

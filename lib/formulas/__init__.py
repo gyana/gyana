@@ -1,1 +1,0 @@
-from .parser import to_ibis

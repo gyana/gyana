@@ -3,6 +3,12 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.template import Context
 from django.template.loader import get_template
 
+ICONS = {
+    "success": "fa-check-circle text-green",
+    "error": "fa-times-hexagon text-red",
+    "warning": "fa-exclamation-triangle text-orange",
+}
+
 
 class NaturalDatetimeColumn(tables.Column):
     def render(self, value):

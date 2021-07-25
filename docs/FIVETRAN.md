@@ -8,7 +8,7 @@ The following two steps allow for easy adding of a connector
 
 ### **Create connector config in `services.yaml`**
 
-New connectors can be added in [services.yaml](../lib/services.yaml). All the Fivetran connectors can be found in the [Fivetran API](https://fivetran.com/docs/rest-api/connectors/config). The `service` key in the fivetran docs is the key in `services.yaml`.
+New connectors can be added in [services.yaml](../apps/integrations/services.yaml). All the Fivetran connectors can be found in the [Fivetran API](https://fivetran.com/docs/rest-api/connectors/config). The `service` key in the fivetran docs is the key in `services.yaml`.
 
 The `services.yaml` spec is as follows:
 
