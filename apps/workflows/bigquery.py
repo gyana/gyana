@@ -3,7 +3,7 @@ from apps.tables.models import Table
 from apps.workflows.models import Workflow
 from django.utils import timezone
 from lib.clients import DATAFLOW_ID, bigquery_client
-from lib.dag import get_query_from_node
+from apps.nodes.bigquery import get_query_from_node
 
 
 def run_workflow(workflow: Workflow):

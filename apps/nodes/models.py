@@ -219,7 +219,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     @cached_property
     def schema(self):
 
-        from lib.dag import get_query_from_node
+        from .bigquery import get_query_from_node
 
         # in theory, we only need to fetch all parent nodes recursively
         # in practice, this is faster and less error prone
@@ -248,8 +248,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     @property
     def has_enough_parents(self):
-        from apps.nodes.nodes import NODE_FROM_CONFIG
-        from lib.dag import get_arity_from_node_func
+        from apps.nodes.bigquery import NODE_FROM_CONFIG, get_arity_from_node_func
 
         func = NODE_FROM_CONFIG[self.kind]
         min_arity, _ = get_arity_from_node_func(func)

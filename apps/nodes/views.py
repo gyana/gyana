@@ -18,7 +18,6 @@ from django.views.generic.base import TemplateView
 from django_tables2.config import RequestConfig
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
-from lib.dag import get_query_from_node
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, schema
 from rest_framework.generics import get_object_or_404
@@ -26,6 +25,7 @@ from rest_framework.response import Response
 from rest_framework.schemas import AutoSchema
 from turbo_response.views import TurboUpdateView
 
+from .bigquery import get_query_from_node
 from .forms import KIND_TO_FORM
 from .formsets import KIND_TO_FORMSETS
 from .models import NODE_CONFIG, Node
