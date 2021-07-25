@@ -1,4 +1,3 @@
-import logging
 from functools import cached_property
 
 from apps.nodes.config import NODE_CONFIG
@@ -246,6 +245,15 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     @property
     def icon(self):
         return NODE_CONFIG[self.kind]["icon"]
+
+    @property
+    def has_enough_parents(self):
+        from apps.nodes.nodes import NODE_FROM_CONFIG
+        from lib.dag import get_arity_from_node_func
+
+        func = NODE_FROM_CONFIG[self.kind]
+        min_arity, _ = get_arity_from_node_func(func)
+        return self.parents.count() >= min_arity
 
     def get_table_name(self):
         return f"Workflow:{self.workflow.name}:{self.output_name}"

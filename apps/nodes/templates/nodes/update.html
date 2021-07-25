@@ -1,7 +1,7 @@
 {% with parents=node.parents.all %}
 
 <turbo-frame id="workflow-modal">
-  {% if node.kind == "input" or parents %}
+  {% if node.kind == "input" or node.has_enough_parents %}
   <div class="workflow-modal__section">
     <div class="workflow-modal__header">
       {% include 'nodes/name.html' %}
@@ -158,7 +158,7 @@
     </div>
     {% else %}
     <div class='workflow-detail__warning'>
-      <span>You need to <strong>connect</strong> this node before you can configure it.</span>
+      <span>You need to <strong>connect</strong> this to more nodes before you can configure it.</span>
       <span class='mt-12'><i class="fad fa-stethoscope fa-10x"></i></span>
     </div>
   </div>
