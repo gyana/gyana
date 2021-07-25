@@ -1,9 +1,11 @@
 import analytics
-from apps.nodes.config import NodeConfig, get_node_config_with_arity
+from apps.nodes.config import get_node_config_with_arity
 from apps.projects.mixins import ProjectMixin
-from apps.utils.segment_analytics import (WORFKLOW_RUN_EVENT,
-                                          WORKFLOW_CREATED_EVENT,
-                                          WORKFLOW_DUPLICATED_EVENT)
+from apps.utils.segment_analytics import (
+    WORFKLOW_RUN_EVENT,
+    WORKFLOW_CREATED_EVENT,
+    WORKFLOW_DUPLICATED_EVENT,
+)
 from django import forms
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponse

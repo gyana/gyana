@@ -1,7 +1,7 @@
 from apps.filters.models import Filter
 from rest_framework import serializers
 
-from .config import NodeConfig
+from .config import NODE_CONFIG
 from .models import Node, Workflow
 
 
@@ -122,7 +122,7 @@ def get_unpivot_desc(obj):
 
 
 def get_intersection_desc(obj):
-    return f"Intersection between {' ,'.join((parent.name or NodeConfig[parent.kind]['displayName'] for parent in obj.parents.all()))}"
+    return f"Intersection between {' ,'.join((parent.name or NODE_CONFIG[parent.kind]['displayName'] for parent in obj.parents.all()))}"
 
 
 def get_window_desc(obj):

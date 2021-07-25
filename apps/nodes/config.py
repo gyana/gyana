@@ -1,4 +1,6 @@
-NodeConfig = {
+import functools
+
+NODE_CONFIG = {
     "input": {
         "displayName": "Get data",
         "icon": "fa-file",
@@ -126,5 +128,6 @@ def _add_max_parents(name):
     return -1 if variable_args else min_arity
 
 
+@functools.cache
 def get_node_config_with_arity():
-    return {k: {**v, "maxParents": _add_max_parents(k)} for k, v in NodeConfig.items()}
+    return {k: {**v, "maxParents": _add_max_parents(k)} for k, v in NODE_CONFIG.items()}

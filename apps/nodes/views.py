@@ -28,7 +28,7 @@ from turbo_response.views import TurboUpdateView
 
 from .forms import KIND_TO_FORM
 from .formsets import KIND_TO_FORMSETS
-from .models import Node, NodeConfig
+from .models import NODE_CONFIG, Node
 from .serializers import NodeSerializer
 
 
@@ -191,7 +191,7 @@ def duplicate_node(request, pk):
     node = get_object_or_404(Node, pk=pk)
     clone = node.make_clone(
         attrs={
-            "name": "Copy of " + (node.name or NodeConfig[node.kind]["displayName"]),
+            "name": "Copy of " + (node.name or NODE_CONFIG[node.kind]["displayName"]),
             "x": node.x + 50,
             "y": node.y + 50,
         }

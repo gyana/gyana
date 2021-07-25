@@ -1,7 +1,7 @@
 import logging
 from functools import cached_property
 
-from apps.nodes.config import NodeConfig
+from apps.nodes.config import NODE_CONFIG
 from apps.tables.models import Table
 from apps.utils.models import BaseModel
 from apps.workflows.models import Workflow
@@ -241,11 +241,11 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     @property
     def display_name(self):
-        return NodeConfig[self.kind]["displayName"]
+        return NODE_CONFIG[self.kind]["displayName"]
 
     @property
     def icon(self):
-        return NodeConfig[self.kind]["icon"]
+        return NODE_CONFIG[self.kind]["icon"]
 
     def get_table_name(self):
         return f"Workflow:{self.workflow.name}:{self.output_name}"
