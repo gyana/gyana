@@ -3,8 +3,8 @@ from apps.filters.bigquery import create_filter_query
 from ibis.expr.datatypes import String
 from lib.bigquery import query_table
 from lib.clients import bigquery_client
-from lib.dag import use_intermediate_table
 from lib.formulas import to_ibis
+from lib.intermediate import use_intermediate_table
 from lib.operations import compile_function
 
 JOINS = {
