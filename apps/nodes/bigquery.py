@@ -4,11 +4,11 @@ import logging
 import ibis
 from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import create_filter_query
+from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
+from apps.utils.clients import DATAFLOW_ID, bigquery_client, ibis_client
 from django.utils import timezone
 from ibis.expr.datatypes import String
-from lib.bigquery import query_table
-from apps.utils.clients import DATAFLOW_ID, bigquery_client, ibis_client
 
 JOINS = {
     "inner": "inner_join",
@@ -114,11 +114,7 @@ def use_intermediate_table(func):
 
 
 def get_input_query(node):
-    return (
-        query_table(node.input_table.bq_table, node.input_table.bq_dataset)
-        if node.input_table
-        else None
-    )
+    return get_query_from_table(node.input_table) if node.input_table else None
 
 
 def get_output_query(node, parent):

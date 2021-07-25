@@ -6,8 +6,10 @@ import uuid
 import analytics
 import coreapi
 from apps.projects.mixins import ProjectMixin
+from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
 from apps.tables.tables import TableTable
+from apps.utils.clients import get_bucket
 from apps.utils.segment_analytics import (
     INTEGRATION_CREATED_EVENT,
     NEW_INTEGRATION_START_EVENT,
@@ -28,8 +30,6 @@ from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from django_tables2.config import RequestConfig
 from django_tables2.views import SingleTableMixin
-from lib.bigquery import query_table
-from apps.utils.clients import DATASET_ID, get_bucket
 from rest_framework.decorators import api_view, schema
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -438,12 +438,7 @@ class IntegrationGrid(SingleTableMixin, TemplateView):
         return context_data
 
     def get_table(self, **kwargs):
-        query = query_table(
-            self.table_instance.bq_table,
-            self.integration.schema
-            if self.integration.kind == Integration.Kind.FIVETRAN
-            else DATASET_ID,
-        )
+        query = get_query_from_table(self.table_instance)
         table = get_table(query.schema(), query, **kwargs)
 
         return RequestConfig(

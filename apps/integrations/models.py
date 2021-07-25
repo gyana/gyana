@@ -109,11 +109,6 @@ class Integration(BaseModel):
             else get_services()[self.service]["name"]
         )
 
-    def get_schema(self):
-        from .bigquery import get_query_from_integration
-
-        return get_query_from_integration(self).schema()
-
     def get_table_name(self):
         return f"Integration:{self.name}"
 

@@ -3,11 +3,10 @@ from datetime import datetime
 
 from apps.integrations.models import Integration
 from apps.tables.models import Table
+from apps.utils.clients import DATASET_ID, bigquery_client, ibis_client
 from django.conf import settings
 from django.db import transaction
 from google.cloud import bigquery
-from lib.bigquery import query_table
-from apps.utils.clients import DATASET_ID, bigquery_client, ibis_client
 
 DEFAULT_LIMIT = 50
 
@@ -111,15 +110,6 @@ def sync_table(
 
     # yielding true to signify the end of the integration sync
     yield True
-
-
-def query_integration(integration: Integration):
-    return query_table(
-        integration.table_set.first().bq_table,
-        integration.schema
-        if integration.kind == Integration.Kind.FIVETRAN
-        else DATASET_ID,
-    )
 
 
 def get_tables_in_dataset(integration):
