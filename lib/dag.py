@@ -42,14 +42,11 @@ def get_query_from_node(node: Node):
 
         _validate_arity(func, len(args))
 
-        results[node] = func(node, *args)
-
         try:
-            query = get_query_from_node(node)
+            results[node] = func(node, *args)
             if node.error:
                 node.error = None
                 node.save()
-            return query
         except Exception as err:
             node.error = str(err)
             node.save()
