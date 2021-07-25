@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from apps.widgets.models import MULTI_VALUES_CHARTS, Widget
 
-from lib.fusioncharts import FusionCharts
+from .fusioncharts import FusionCharts
 
 
 def short_hash():
