@@ -74,10 +74,6 @@ class Table(BaseModel):
     def bq_obj(self):
         return bigquery_client().get_table(self.bq_id)
 
-    def get_query(self):
-        conn = ibis_client()
-        return conn.table(self.bq_table, database=self.bq_dataset)
-
     @property
     def cache_key(self):
         return get_cache_key(id=self.id, data_updated=str(self.data_updated))
@@ -85,8 +81,10 @@ class Table(BaseModel):
     @cached_property
     def schema(self):
 
+        from lib.dag import get_query_from_table
+
         if (res := cache.get(self.cache_key)) is None:
-            res = self.get_query().schema()
+            res = get_query_from_table(self).schema()
             cache.set(self.cache_key, res, 30)
 
         return res

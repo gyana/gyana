@@ -4,6 +4,8 @@ import logging
 from apps.nodes.models import Node
 from apps.nodes.nodes import NODE_FROM_CONFIG
 
+from lib.clients import ibis_client
+
 
 def _get_all_parents(node: Node):
     # yield parents before child => topological order
@@ -59,3 +61,19 @@ def get_query_from_node(node: Node):
         assert results[node] is not None
 
     return results[node]
+
+
+def get_query_from_table(table):
+
+    conn = ibis_client()
+    return conn.table(table.bq_table, database=table.bq_dataset)
+
+
+def get_query_from_integration(integration):
+
+    from apps.integrations.models import Integration
+
+    conn = ibis_client()
+    if integration.kind == Integration.Kind.FIVETRAN:
+        return conn.table(integration.table_id, database=integration.schema)
+    return conn.table(integration.table_id)

@@ -8,6 +8,7 @@ from apps.workflows.models import Workflow
 from django.db import models
 from django.urls import reverse
 from lib.clients import ibis_client
+from lib.dag import get_query_from_integration
 
 
 class Integration(BaseModel):
@@ -110,14 +111,8 @@ class Integration(BaseModel):
             else get_services()[self.service]["name"]
         )
 
-    def get_query(self):
-        conn = ibis_client()
-        if self.kind == Integration.Kind.FIVETRAN:
-            return conn.table(self.table_id, database=self.schema)
-        return conn.table(self.table_id)
-
     def get_schema(self):
-        return self.get_query().schema()
+        return get_query_from_integration(self).schema()
 
     def get_table_name(self):
         return f"Integration:{self.name}"
