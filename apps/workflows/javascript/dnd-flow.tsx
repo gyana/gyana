@@ -56,7 +56,7 @@ const DnDFlow = ({ client, workflowId }) => {
     const [targetElement, incomingNodes] = getIncomingNodes(params.target)
 
     // All nodes except Join (2) and Union (inf) can only have one parent
-    const maxParents = NODES[targetElement.data.kind].maxParents || 1
+    const maxParents = NODES[targetElement.data.kind].maxParents
     if (maxParents === -1 || incomingNodes.length < maxParents) {
       const parents = elements
         .filter((el) => isEdge(el) && el.target === params.target)

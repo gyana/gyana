@@ -1,11 +1,9 @@
 import analytics
-from apps.nodes.config import NodeConfig
+from apps.nodes.config import NodeConfig, get_node_config_with_arity
 from apps.projects.mixins import ProjectMixin
-from apps.utils.segment_analytics import (
-    WORFKLOW_RUN_EVENT,
-    WORKFLOW_CREATED_EVENT,
-    WORKFLOW_DUPLICATED_EVENT,
-)
+from apps.utils.segment_analytics import (WORFKLOW_RUN_EVENT,
+                                          WORKFLOW_CREATED_EVENT,
+                                          WORKFLOW_DUPLICATED_EVENT)
 from django import forms
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
@@ -78,7 +76,7 @@ class WorkflowDetail(ProjectMixin, TurboUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["nodes"] = NodeConfig
+        context["nodes"] = get_node_config_with_arity()
         return context
 
     def get_success_url(self) -> str:
