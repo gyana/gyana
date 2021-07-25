@@ -7,8 +7,6 @@ from apps.utils.models import BaseModel
 from apps.workflows.models import Workflow
 from django.db import models
 from django.urls import reverse
-from lib.clients import ibis_client
-from lib.dag import get_query_from_integration
 
 
 class Integration(BaseModel):
@@ -112,6 +110,8 @@ class Integration(BaseModel):
         )
 
     def get_schema(self):
+        from .bigquery import get_query_from_integration
+
         return get_query_from_integration(self).schema()
 
     def get_table_name(self):

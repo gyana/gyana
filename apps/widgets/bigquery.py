@@ -1,7 +1,7 @@
 from apps.filters.bigquery import create_filter_query
 from apps.widgets.models import MULTI_VALUES_CHARTS, Widget
 from lib.clients import get_dataframe
-from lib.dag import get_query_from_table
+from apps.tables.bigquery import get_query_from_table
 
 
 def query_widget(widget: Widget):

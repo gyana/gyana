@@ -81,7 +81,7 @@ class Table(BaseModel):
     @cached_property
     def schema(self):
 
-        from lib.dag import get_query_from_table
+        from apps.tables.bigquery import get_query_from_table
 
         if (res := cache.get(self.cache_key)) is None:
             res = get_query_from_table(self).schema()

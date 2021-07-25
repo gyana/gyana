@@ -7,7 +7,7 @@ from django.conf import settings
 from django.db import transaction
 from google.cloud import bigquery
 from lib.bigquery import query_table
-from lib.clients import DATASET_ID, bigquery_client
+from lib.clients import DATASET_ID, bigquery_client, ibis_client
 
 DEFAULT_LIMIT = 50
 
@@ -150,3 +150,11 @@ def get_tables_in_dataset(integration):
 def get_sheets_id_from_url(url):
     p = re.compile(r"[-\w]{25,}")
     return res.group(0) if (res := p.search(url)) else ""
+
+
+def get_query_from_integration(integration):
+
+    conn = ibis_client()
+    if integration.kind == Integration.Kind.FIVETRAN:
+        return conn.table(integration.table_id, database=integration.schema)
+    return conn.table(integration.table_id)

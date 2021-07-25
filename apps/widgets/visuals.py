@@ -5,7 +5,7 @@ from apps.filters.bigquery import create_filter_query
 from apps.integrations.bigquery import DEFAULT_LIMIT
 from lib.chart import to_chart
 from lib.clients import get_dataframe
-from lib.dag import get_query_from_table
+from apps.tables.bigquery import get_query_from_table
 
 from .bigquery import query_widget
 from .models import Widget
