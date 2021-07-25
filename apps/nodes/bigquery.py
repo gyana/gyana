@@ -3,7 +3,7 @@ import logging
 
 import ibis
 from apps.columns.bigquery import compile_formula, compile_function
-from apps.filters.bigquery import create_filter_query
+from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
 from apps.utils.clients import DATAFLOW_ID, bigquery_client, ibis_client
@@ -189,7 +189,7 @@ def get_limit_query(node, query):
 
 
 def get_filter_query(node, query):
-    return create_filter_query(query, node.filters.all())
+    return get_query_from_filters(query, node.filters.all())
 
 
 def get_edit_query(node, query):

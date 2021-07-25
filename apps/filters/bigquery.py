@@ -1,4 +1,6 @@
 import datetime as dt
+import functools
+from typing import List
 
 from apps.filters.models import PREDICATE_MAP, Filter
 from ibis.expr.types import TimestampValue
@@ -139,15 +141,17 @@ FILTER_MAP = {
 }
 
 
-def create_filter_query(query, filters):
-    for filter_ in filters:
-        column = filter_.column
+def get_query_from_filter(query, filter: Filter):
 
-        predicate = getattr(filter_, PREDICATE_MAP[filter_.type])
-        func = FILTER_MAP[predicate]
-        if predicate in ["isin", "notin"]:
-            value = getattr(filter_, f"{filter_.type.lower()}_values")
-        else:
-            value = getattr(filter_, f"{filter_.type.lower()}_value")
-        query = func(query, column, value)
-    return query
+    column = filter.column
+
+    predicate = getattr(filter, PREDICATE_MAP[filter.type])
+    func = FILTER_MAP[predicate]
+    value_str = "values" if predicate in ["isin", "notin"] else "value"
+    value = getattr(filter, f"{filter.type.lower()}_{value_str}")
+
+    return func(query, column, value)
+
+
+def get_query_from_filters(query, filters: List[Filter]):
+    return functools.reduce(get_query_from_filter, filters, query)
