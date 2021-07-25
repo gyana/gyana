@@ -12,15 +12,23 @@ def _get_all_parents(node: Node):
     yield node
 
 
-def _validate_arity(func, len_args):
+def get_arity_from_node_func(func):
 
     node_arg, *params = inspect.signature(func).parameters.values()
 
     # testing for "*args" in signature
-    if any(param.kind == inspect.Parameter.VAR_POSITIONAL for param in params):
-        assert len_args >= len(params) - 1
-    else:
-        assert len_args == len(params)
+    variable_args = any(
+        param.kind == inspect.Parameter.VAR_POSITIONAL for param in params
+    )
+    min_arity = len(params) - 1 if variable_args else len(params)
+
+    return min_arity, variable_args
+
+
+def _validate_arity(func, len_args):
+
+    min_arity, variable_args = get_arity_from_node_func(func)
+    assert len_args >= min_arity if variable_args else len_args == min_arity
 
 
 def get_query_from_node(node: Node):
