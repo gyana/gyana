@@ -5,7 +5,9 @@ from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils import timezone
-from lib.operations import (
+from model_clone import CloneMixin
+
+from .bigquery import (
     CommonOperations,
     DateOperations,
     DatetimeOperations,
@@ -13,7 +15,6 @@ from lib.operations import (
     StringOperations,
     TimeOperations,
 )
-from model_clone import CloneMixin
 
 bigquery_column_regex = RegexValidator(
     r"^[a-zA-Z_][0-9a-zA-Z_]*$", "Only numbers, letters and underscores allowed."
