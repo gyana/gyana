@@ -1,5 +1,10 @@
 from dataclasses import dataclass
 
+from apps.columns.transformer import TreeToIbis
+from lark import Lark
+
+parser = Lark.open("formula.lark", rel_to=__file__, start="formula")
+
 
 @dataclass
 class Operation:
@@ -82,3 +87,9 @@ def compile_function(query, edit):
         arg = getattr(edit, value_field)
         return func(arg)
     return func()
+
+
+def compile_formula(query, formula):
+    tree = parser.parse(formula)
+
+    return TreeToIbis(query).transform(tree)

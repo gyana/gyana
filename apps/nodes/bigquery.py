@@ -2,14 +2,13 @@ import inspect
 import logging
 
 import ibis
+from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import create_filter_query
 from apps.tables.models import Table
 from django.utils import timezone
 from ibis.expr.datatypes import String
 from lib.bigquery import query_table
 from lib.clients import DATAFLOW_ID, bigquery_client, ibis_client
-from lib.formulas import to_ibis
-from lib.operations import compile_function
 
 JOINS = {
     "inner": "inner_join",
@@ -222,7 +221,7 @@ def get_rename_query(node, query):
 
 def get_formula_query(node, query):
     new_columns = {
-        formula.label: to_ibis(query, formula.formula)
+        formula.label: compile_formula(query, formula.formula)
         for formula in node.formula_columns.iterator()
     }
 

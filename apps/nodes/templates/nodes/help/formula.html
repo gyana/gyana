@@ -43,7 +43,7 @@
     </span>
     <h2>Functions</h2>
     <div class="functions">
-      {%for function in "lib/functions.json"|read_json %}
+      {%for function in "apps/columns/functions.json"|read_json %}
       <div class='function-pill'>
         <h4>{{function.name}}(<em>
           {{function.arguments|join:", "}}
