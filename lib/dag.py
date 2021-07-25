@@ -1,4 +1,5 @@
 import inspect
+import logging
 
 from apps.nodes.models import Node
 from apps.tables.models import Table
@@ -42,6 +43,17 @@ def get_query_from_node(node: Node):
         _validate_arity(func, len(args))
 
         results[node] = func(node, *args)
+
+        try:
+            query = get_query_from_node(node)
+            if node.error:
+                node.error = None
+                node.save()
+            return query
+        except Exception as err:
+            node.error = str(err)
+            node.save()
+            logging.error(err, exc_info=err)
 
         # input node zero state
         assert results[node] is not None

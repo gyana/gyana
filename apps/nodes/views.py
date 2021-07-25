@@ -18,6 +18,7 @@ from django.views.generic.base import TemplateView
 from django_tables2.config import RequestConfig
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
+from lib.dag import get_query_from_node
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, schema
 from rest_framework.generics import get_object_or_404
@@ -173,7 +174,9 @@ class NodeGrid(SingleTableMixin, TemplateView):
 
     def get_table(self, **kwargs):
         try:
-            table = get_table(self.node.schema, self.node.get_query(), **kwargs)
+            table = get_table(
+                self.node.schema, get_query_from_node(self.node), **kwargs
+            )
 
             return RequestConfig(
                 self.request, paginate=self.get_table_pagination(table)

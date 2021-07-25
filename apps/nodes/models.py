@@ -217,22 +217,10 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
         return super().save(*args, **kwargs)
 
-    def get_query(self):
-        from lib.dag import get_query_from_node
-
-        try:
-            query = get_query_from_node(self)
-            if self.error:
-                self.error = None
-                self.save()
-            return query
-        except Exception as err:
-            self.error = str(err)
-            self.save()
-            logging.error(err, exc_info=err)
-
     @cached_property
     def schema(self):
+
+        from lib.dag import get_query_from_node
 
         # in theory, we only need to fetch all parent nodes recursively
         # in practice, this is faster and less error prone
@@ -246,7 +234,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         )
 
         if (res := cache.get(cache_key)) is None:
-            res = self.get_query().schema()
+            res = get_query_from_node(self).schema()
             cache.set(cache_key, res, 30)
 
         return res
