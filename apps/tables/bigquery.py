@@ -1,4 +1,4 @@
-from lib.clients import ibis_client
+from apps.utils.clients import ibis_client
 
 
 def get_query_from_table(table):

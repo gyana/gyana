@@ -29,7 +29,7 @@ from django_tables2 import SingleTableView
 from django_tables2.config import RequestConfig
 from django_tables2.views import SingleTableMixin
 from lib.bigquery import query_table
-from lib.clients import DATASET_ID, get_bucket
+from apps.utils.clients import DATASET_ID, get_bucket
 from rest_framework.decorators import api_view, schema
 from rest_framework.request import Request
 from rest_framework.response import Response

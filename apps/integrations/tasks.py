@@ -13,7 +13,7 @@ from django.core.mail import EmailMessage, send_mail
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from google.api_core.exceptions import GoogleAPICallError
-from lib.clients import DATASET_ID
+from apps.utils.clients import DATASET_ID
 
 from .fivetran import FivetranClient
 from .models import Integration

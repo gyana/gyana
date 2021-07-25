@@ -7,7 +7,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.db import models
 from google.api_core.exceptions import NotFound
-from lib.clients import bigquery_client, ibis_client
+from apps.utils.clients import bigquery_client, ibis_client
 
 
 class Table(BaseModel):

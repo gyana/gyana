@@ -1,6 +1,6 @@
 from ibis.expr.types import TableExpr
 
-from lib.clients import ibis_client
+from apps.utils.clients import ibis_client
 
 # https://fivetran.com/docs/getting-started/system-columns-and-tables#systemcolumns
 FIVETRAN_COLUMNS = set(

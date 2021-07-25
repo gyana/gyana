@@ -8,7 +8,7 @@ from apps.tables.models import Table
 from django.utils import timezone
 from ibis.expr.datatypes import String
 from lib.bigquery import query_table
-from lib.clients import DATAFLOW_ID, bigquery_client, ibis_client
+from apps.utils.clients import DATAFLOW_ID, bigquery_client, ibis_client
 
 JOINS = {
     "inner": "inner_join",

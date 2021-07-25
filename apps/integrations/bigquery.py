@@ -7,7 +7,7 @@ from django.conf import settings
 from django.db import transaction
 from google.cloud import bigquery
 from lib.bigquery import query_table
-from lib.clients import DATASET_ID, bigquery_client, ibis_client
+from apps.utils.clients import DATASET_ID, bigquery_client, ibis_client
 
 DEFAULT_LIMIT = 50
 

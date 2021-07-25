@@ -2,7 +2,7 @@ import ibis.expr.datatypes as dt
 from apps.nodes.bigquery import get_query_from_node
 from apps.nodes.models import Node
 from apps.widgets.models import Widget
-from lib.clients import get_dataframe
+from apps.utils.clients import get_dataframe
 from apps.tables.bigquery import get_query_from_table
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404

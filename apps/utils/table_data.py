@@ -1,7 +1,7 @@
 from django_tables2 import Column, Table
 from django_tables2.data import TableData
 from django_tables2.templatetags.django_tables2 import QuerystringNode
-from lib.clients import bigquery_client, get_dataframe, ibis_client
+from apps.utils.clients import bigquery_client, get_dataframe, ibis_client
 
 # Monkey patch the querystring templatetag for the pagination links
 # Without this links only lead to the whole document url and add query parameter

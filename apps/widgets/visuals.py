@@ -4,7 +4,7 @@ from typing import Any, Dict
 from apps.filters.bigquery import create_filter_query
 from apps.integrations.bigquery import DEFAULT_LIMIT
 from apps.tables.bigquery import get_query_from_table
-from lib.clients import get_dataframe
+from apps.utils.clients import get_dataframe
 
 from .bigquery import query_widget
 from .chart import to_chart
