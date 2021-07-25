@@ -7,14 +7,14 @@ from django.utils import timezone
 from lib.clients import DATAFLOW_ID, bigquery_client, ibis_client
 
 
-def get_all_parents(node: Node):
+def _get_all_parents(node: Node):
     # yield parents before child => topological order
     for parent in node.parents.all():
-        yield from get_all_parents(parent)
+        yield from _get_all_parents(parent)
     yield node
 
 
-def validate_arity(func, len_args):
+def _validate_arity(func, len_args):
 
     node_arg, *params = inspect.signature(func).parameters.values()
 
@@ -29,7 +29,7 @@ def get_query_from_node(node: Node):
 
     from apps.nodes.nodes import NODE_FROM_CONFIG
 
-    nodes = get_all_parents(node)
+    nodes = _get_all_parents(node)
     # remove duplicates (python dicts are insertion ordered)
     nodes = list(dict.fromkeys(nodes))
 
@@ -39,7 +39,7 @@ def get_query_from_node(node: Node):
         func = NODE_FROM_CONFIG[node.kind]
         args = [results[parent] for parent in node.parents.all()]
 
-        validate_arity(func, len(args))
+        _validate_arity(func, len(args))
 
         results[node] = func(node, *args)
 
@@ -49,7 +49,7 @@ def get_query_from_node(node: Node):
     return results[node]
 
 
-def create_or_replace_intermediate_table(table, node, query):
+def _create_or_replace_intermediate_table(table, node, query):
     """Creates a new intermediate table or replaces an existing one"""
     client = bigquery_client()
     if table:
@@ -80,7 +80,7 @@ def create_or_replace_intermediate_table(table, node, query):
     return table
 
 
-def get_parent_updated(node):
+def _get_parent_updated(node):
     """Walks through the node and its parents and returns the `data_updated` value."""
     yield node.data_updated
 
@@ -90,7 +90,7 @@ def get_parent_updated(node):
         yield node.input_table.data_updated
 
     for parent in node.parents.all():
-        yield from get_parent_updated(parent)
+        yield from _get_parent_updated(parent)
 
 
 def use_intermediate_table(func):
@@ -100,11 +100,11 @@ def use_intermediate_table(func):
         conn = ibis_client()
 
         # if the table doesn't need updating we can simply return the previous computed pivot table
-        if table and table.data_updated > max(tuple(get_parent_updated(node))):
+        if table and table.data_updated > max(tuple(_get_parent_updated(node))):
             return conn.table(table.bq_table, database=table.bq_dataset)
 
         query = func(node, parent)
-        table = create_or_replace_intermediate_table(table, node, query)
+        table = _create_or_replace_intermediate_table(table, node, query)
 
         return conn.table(table.bq_table, database=table.bq_dataset)
 
