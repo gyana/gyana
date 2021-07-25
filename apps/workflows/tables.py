@@ -1,9 +1,8 @@
 import django_tables2 as tables
 from apps.nodes.models import Node
-from apps.utils.table import NaturalDatetimeColumn
+from apps.utils.table import DuplicateColumn, NaturalDatetimeColumn
 from django.template import Context
 from django.template.loader import get_template
-from lib.formulas.columns import DuplicateColumn
 from lib.icons import ICONS
 
 from .models import Workflow
