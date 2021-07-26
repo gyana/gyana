@@ -20,5 +20,11 @@ describe('sign up', () => {
     cy.get('input[type=password]').type('seewhatmatters')
 
     cy.contains('Create Account').click()
+    cy.url().should('contain', '/teams/new')
+
+    cy.get('input[type=text]').type('Gyana')
+    cy.get('button[type=submit]').click()
+
+    cy.url().should('contain', '/teams/1')
   })
 })
