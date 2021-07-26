@@ -3,8 +3,7 @@ from .base import *
 USE_HASHIDS = False
 
 # Enables us to use `./manage.py testserver` to setup the test server
-# and `./manage.py flush && ./manage.py loaddata` to reset database
-# state between the tests.
+# and `./manage.py dumpdata` generate fixtures.
 
 DATABASES = {
     "default": {
