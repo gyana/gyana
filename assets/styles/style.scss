@@ -3,40 +3,16 @@
 // Base styles that apply throughout the entire site.
 // Minimal classes should be present here, usually mirroring default elements.
 // i.e `strong, .strong { ... }`
-@use "base/reset";
-@use "base/typography";
-@use "base/form";
-@use "base/input";
+@use "base";
 
 // SCSS specific code/styles. Functions/mixins/variables belong here.
-@use "utilities/layers";
-@use "utilities/colours";
-@use "utilities/variables";
-@use "utilities/padding";
-@use "utilities/shadows";
+@use "utilities";
 
 // Reusable components, accompanied by usage documentation.
-@use "components/button";
-@use "components/link";
-@use "components/tooltip";
-@use "components/card";
-@use "components/sidebar";
-@use "components/collapsable";
-@use "components/modal";
-@use "components/table";
-@use "components/widget_card";
-@use "components/toast";
-@use "components/placeholder_screen";
-@use "components/tabbar";
-@use "components/list";
-@use "components/popover";
+@use "components";
 
 // Page-specific code, not used anywhere else but a specific view or a set of them..
-@use "pages/landing";
-@use "pages/integration";
-@use "pages/project";
-@use "pages/workflow";
-@use "pages/widget";
+@use "pages";
 
 // Vendor overrides
 @use "components/overrides/aggrid";
