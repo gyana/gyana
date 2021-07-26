@@ -17,10 +17,7 @@ describe('sign up', () => {
   })
 
   it('signs up to app', () => {
-    cy.visit('/')
-
-    cy.contains('create one here!').click()
-    cy.url().should('contain', '/accounts/signup')
+    cy.visit('/accounts/signup')
 
     cy.get('input[type=email]').type('test@gyana.com')
     cy.get('input[type=password]').type('seewhatmatters')
