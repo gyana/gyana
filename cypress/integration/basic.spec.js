@@ -2,7 +2,7 @@
 
 describe('sign up', () => {
   it('signs up to app', () => {
-    cy.visit('http://localhost:8000')
+    cy.visit('/')
 
     cy.contains('create one here!').click()
     cy.url().should('contain', '/accounts/signup')
