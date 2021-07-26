@@ -50,3 +50,6 @@ format:
 
 startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
+
+testserver:
+    ./manage.py testserver --noinput --settings gyana.settings.test cypress/fixtures/fixture.json
