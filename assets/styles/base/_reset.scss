@@ -3,3 +3,7 @@
 //
 // https://necolas.github.io/normalize.css/
 // https://meyerweb.com/eric/tools/css/reset/
+
+*, *::after, *::before {
+  box-sizing: inherit;
+}

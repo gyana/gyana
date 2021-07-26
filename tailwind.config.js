@@ -69,5 +69,8 @@ module.exports = {
   variants: {
     extend: {},
   },
+  corePlugins: {
+    preflight: true // To be removed in the future before deprecating Tailwind.
+  },
   plugins: [],
 }
