@@ -52,4 +52,7 @@ startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
 
 testserver:
-    ./manage.py testserver --noinput --settings gyana.settings.test cypress/fixtures/fixture.json
+    ./manage.py testserver --noinput --settings gyana.settings.test cypress/fixtures/fixtures.json
+
+fixtures:
+    ./manage.py dumpdata --exclude auth --exclude contenttypes --exclude sites --settings gyana.settings.test > cypress/fixtures/fixtures.json

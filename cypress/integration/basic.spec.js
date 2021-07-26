@@ -6,7 +6,7 @@ describe('sign up', () => {
     // explicit path required https://stackoverflow.com/a/55295044/15425660
     cy.exec('./.venv/bin/python manage.py flush --settings gyana.settings.test --noinput')
     cy.exec(
-      './.venv/bin/python manage.py loaddata --settings gyana.settings.test cypress/fixtures/fixture.json'
+      './.venv/bin/python manage.py loaddata --settings gyana.settings.test cypress/fixtures/fixtures.json'
     )
   })
 
