@@ -10,6 +10,12 @@ describe('sign up', () => {
     )
   })
 
+  it('signs in headlessly', () => {
+    cy.login()
+
+    cy.visit('/')
+  })
+
   it('signs up to app', () => {
     cy.visit('/')
 

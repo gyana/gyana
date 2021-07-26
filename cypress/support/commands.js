@@ -7,19 +7,32 @@
 // commands please read more here:
 // https://on.cypress.io/custom-commands
 // ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+const TEST_EMAIL = 'test@gyana.com'
+const TEST_PASSWORD = 'seewhatmatters'
+
+const login = (email = TEST_EMAIL, password = TEST_PASSWORD) => {
+  // https://github.com/cypress-io/cypress-example-recipes/tree/master/examples/logging-in__csrf-tokens
+  cy.request('/accounts/login/')
+    .its('body')
+    .then((body) => {
+      const $html = Cypress.$(body)
+      const csrfmiddlewaretoken = $html.find('input[name=csrfmiddlewaretoken]').val()
+
+      cy.request({
+        method: 'POST',
+        url: '/accounts/login/',
+        failOnStatusCode: false,
+        form: true,
+        body: {
+          login: email,
+          password,
+          csrfmiddlewaretoken,
+        },
+      }).then((resp) => {
+        expect(resp.status).to.eq(200)
+      })
+    })
+}
+
+Cypress.Commands.add('login', login)

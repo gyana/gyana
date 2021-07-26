@@ -55,4 +55,4 @@ testserver:
     ./manage.py testserver --noinput --settings gyana.settings.test cypress/fixtures/fixtures.json
 
 fixtures:
-    ./manage.py dumpdata --exclude auth --exclude contenttypes --exclude sites --settings gyana.settings.test > cypress/fixtures/fixtures.json
+    ./manage.py dumpdata -e auth -e contenttypes -e sessions -e sites --settings gyana.settings.test > cypress/fixtures/fixtures.json
