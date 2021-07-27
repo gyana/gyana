@@ -43,13 +43,11 @@ describe('teams', () => {
     cy.get('button[type=submit]').click()
     cy.get('#sidebar').contains('Agni').should('not.exist')
   })
-  it.only('invite new and existing members to team', () => {
+  it('invite new user to team', () => {
     cy.visit('/')
 
     cy.contains('Invites').click()
     cy.url().should('contain', '/teams/1/invites')
-
-    // new
 
     cy.contains('New Invite').click()
     cy.url().should('contain', '/teams/1/invites/new')
@@ -57,19 +55,11 @@ describe('teams', () => {
     cy.get('input[type=email]').type('invite@gyana.com')
     cy.get('button[type=submit]').click()
 
-    // existing
-
-    cy.contains('New Invite').click()
-    cy.url().should('contain', '/teams/1/invites/new')
-
-    cy.get('input[type=email]').type('alone@gyana.com')
-    cy.get('button[type=submit]').click()
-
     cy.logout()
 
     cy.outbox()
       .then((outbox) => outbox.count)
-      .should('eq', 2)
+      .should('eq', 1)
 
     cy.outbox().then((outbox) => {
       const msg = outbox['messages'][0]
@@ -85,8 +75,27 @@ describe('teams', () => {
     cy.get('button[type=submit]').click()
 
     cy.url().should('contain', '/teams/1')
+    cy.contains('Vayu')
+  })
+  it.only('invite existing user to team', () => {
+    cy.visit('/')
+
+    cy.contains('Invites').click()
+    cy.url().should('contain', '/teams/1/invites')
+
+    cy.contains('New Invite').click()
+    cy.url().should('contain', '/teams/1/invites/new')
+
+    cy.get('input[type=email]').type('alone@gyana.com')
+    cy.get('button[type=submit]').click()
 
     cy.logout()
+
+    cy.login('alone@gyana.com', 'seewhatmatters')
+
+    cy.outbox()
+      .then((outbox) => outbox.count)
+      .should('eq', 1)
 
     cy.outbox().then((outbox) => {
       const msg = outbox['messages'][0]
