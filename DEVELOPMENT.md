@@ -104,9 +104,9 @@ Run cypress + app with hot-reloading:
 
 The app is seeded with the fixtures defined in `cypress/fixtures/fixtures.json`. To modify the fixtures:
 
-- Reset the database `just celery-setup`
+- Reset the database `just cypress-setup`
 - Go to the app in the browser and modify it
-- Dump the fixtures `just celery-fixtures`
+- Dump the fixtures `just cypress-fixtures`
 - Manually the fixtures file to format with prettier (better diff)
 - Commit
 
