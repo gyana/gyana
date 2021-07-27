@@ -9,12 +9,12 @@ const turboEnabled = (el) => !el.closest('[data-turbo=false]') // check all pare
 // Wait for turbo:load event before running original function
 const click = (originalFn, subject, ...args) => {
   var lastArg = args.length ? args[args.length - 1] : {}
+  const el = subject[0]
   // check if turbo could be active for this click event
-  console.log('TURBO ENABLED', subject[0].getAttribute('data-turbo'))
   if (
     (typeof lastArg !== 'object' || !lastArg['noWaiting']) &&
-    (isLink(subject[0]) || isFormSubmit(subject[0])) &&
-    turboEnabled(subject[0])
+    (isLink(el) || isFormSubmit(el)) &&
+    turboEnabled(el)
   ) {
     cy.document({ log: false }).then(($document) => {
       Cypress.log({
