@@ -20,8 +20,8 @@
     "model": "users.customuser",
     "pk": 1,
     "fields": {
-      "password": "pbkdf2_sha256$260000$F1jS3AcsNy5L6q3FqJzYY4$anVIJbqFZLBnMVhyA5ihuiS14q6QG7As5UtxO2gnDBQ=",
-      "last_login": "2021-07-27T11:15:00.521Z",
+      "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
+      "last_login": "2021-07-27T12:36:09.782Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",

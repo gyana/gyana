@@ -1,10 +1,14 @@
 /// <reference types="cypress" />
 
-describe('sign up', () => {
-  it('signs in headlessly', () => {
-    cy.login()
-
+describe('users', () => {
+  it.only('signs in to app', () => {
     cy.visit('/')
+
+    cy.get('input[type=email]').type('test@gyana.com')
+    cy.get('input[type=password]').type('seewhatmatters')
+    cy.get('button[type=submit]').click()
+
+    cy.url().should('contain', '/teams/1')
   })
 
   it('signs up to app', () => {
@@ -20,7 +24,7 @@ describe('sign up', () => {
     cy.url().should('contain', '/teams/2')
   })
 
-  it('does this', () => {
+  it('resets password', () => {
     cy.visit('/')
 
     cy.contains('Forgot password?').click()
@@ -57,5 +61,11 @@ describe('sign up', () => {
     cy.get('button[type=submit]').click()
 
     cy.url().should('contain', '/teams/1')
+  })
+
+  it('signs out', () => {
+    cy.login()
+
+    cy.visit('/')
   })
 })
