@@ -1,1 +1,77 @@
-[{"model": "account.emailaddress", "pk": 1, "fields": {"user": 1, "email": "test@gyana.com", "verified": false, "primary": true}}, {"model": "users.customuser", "pk": 1, "fields": {"password": "pbkdf2_sha256$260000$B2Muve7USNCn2T2swf3ZrF$AU/6ICoQGZvErnoCoMAW4kb/wmbQ5KvNWDKKwhO/mQ4=", "last_login": "2021-07-26T14:53:33.859Z", "is_superuser": false, "username": "test", "first_name": "", "last_name": "", "email": "test@gyana.com", "is_staff": false, "is_active": true, "date_joined": "2021-07-26T14:53:33.713Z", "avatar": "", "groups": [], "user_permissions": []}}, {"model": "teams.team", "pk": 1, "fields": {"created": "2021-07-26T14:53:37.577Z", "updated": "2021-07-26T14:53:37.587Z", "name": "Gyana"}}, {"model": "teams.membership", "pk": 1, "fields": {"created": "2021-07-26T14:53:37.584Z", "updated": "2021-07-26T14:53:37.584Z", "team": 1, "user": 1, "role": "admin"}}]
+[
+  {
+    "model": "account.emailaddress",
+    "pk": 1,
+    "fields": { "user": 1, "email": "test@gyana.com", "verified": false, "primary": true }
+  },
+  {
+    "model": "socialaccount.socialapp",
+    "pk": 1,
+    "fields": {
+      "provider": "google",
+      "name": "Google",
+      "client_id": "766404612569-gn5hok52al6q1ob04rfmha8k4bns09me.apps.googleusercontent.com",
+      "secret": "l9xbaHAi5xf4WuRji3PiTq-z",
+      "key": "",
+      "sites": [1]
+    }
+  },
+  {
+    "model": "users.customuser",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$F1jS3AcsNy5L6q3FqJzYY4$anVIJbqFZLBnMVhyA5ihuiS14q6QG7As5UtxO2gnDBQ=",
+      "last_login": "2021-07-27T11:15:00.521Z",
+      "is_superuser": false,
+      "username": "test",
+      "first_name": "",
+      "last_name": "",
+      "email": "test@gyana.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2021-07-26T14:53:33.713Z",
+      "avatar": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.customuser",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$N2BmQRuSSYGvpQnPKCw9fj$UhUCkfx7qdzWPNYP/XUbi3L4hvP5/7f+N4nmrqTPceM=",
+      "last_login": "2021-07-27T12:09:55.602Z",
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "",
+      "last_name": "",
+      "email": "admin@gyana.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2021-07-27T12:09:25.731Z",
+      "avatar": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "teams.team",
+    "pk": 1,
+    "fields": {
+      "created": "2021-07-26T14:53:37.577Z",
+      "updated": "2021-07-26T14:53:37.587Z",
+      "name": "Gyana"
+    }
+  },
+  {
+    "model": "teams.membership",
+    "pk": 1,
+    "fields": {
+      "created": "2021-07-26T14:53:37.584Z",
+      "updated": "2021-07-26T14:53:37.584Z",
+      "team": 1,
+      "user": 1,
+      "role": "admin"
+    }
+  }
+]
