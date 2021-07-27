@@ -63,7 +63,6 @@ describe('teams', () => {
 
     cy.outbox().then((outbox) => {
       const msg = outbox['messages'][0]
-      console.log(msg)
       const url = msg['payload']
         .split('\n')
         .slice(-1)[0]
@@ -77,7 +76,7 @@ describe('teams', () => {
     cy.url().should('contain', '/teams/1')
     cy.contains('Vayu')
   })
-  it.only('invite existing user to team', () => {
+  it('invite existing user to team', () => {
     cy.visit('/')
 
     cy.contains('Invites').click()
@@ -99,7 +98,6 @@ describe('teams', () => {
 
     cy.outbox().then((outbox) => {
       const msg = outbox['messages'][0]
-      console.log(msg)
       const url = msg['payload']
         .split('\n')
         .slice(-1)[0]
@@ -108,5 +106,42 @@ describe('teams', () => {
     })
 
     cy.url().should('contain', '/teams/1')
+  })
+  it('resend and delete invite', () => {
+    cy.visit('/')
+
+    cy.contains('Invites').click()
+    cy.url().should('contain', '/teams/1/invites')
+
+    cy.contains('New Invite').click()
+    cy.url().should('contain', '/teams/1/invites/new')
+
+    cy.get('input[type=email]').type('invite@gyana.com')
+    cy.get('button[type=submit]').click()
+
+    cy.get('.fa-redo-alt').click()
+    cy.wait(500)
+
+    cy.outbox()
+      .then((outbox) => outbox.count)
+      .should('eq', 2)
+
+    cy.get('.fa-trash').click()
+    cy.contains('Yes').click()
+
+    cy.wait(1000)
+
+    cy.logout()
+
+    cy.outbox().then((outbox) => {
+      const msg = outbox['messages'][1]
+      const url = msg['payload']
+        .split('\n')
+        .slice(-1)[0]
+        .replace("If you'd like to join, please go to ", '')
+      cy.request({ url, failOnStatusCode: false })
+        .then((response) => response.status)
+        .should('eq', 410)
+    })
   })
 })
