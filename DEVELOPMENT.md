@@ -93,7 +93,7 @@ Create a new CRUDL Django app with `just startapp`.
 Setup your test app:
 
 - `createdb cypress_gyana`
-- `just celery-setup`
+- `just cypress-setup`
 
 Run cypress + app with hot-reloading:
 
@@ -107,6 +107,7 @@ The app is seeded with the fixtures defined in `cypress/fixtures/fixtures.json`.
 - Reset the database `just celery-setup`
 - Go to the app in the browser and modify it
 - Dump the fixtures `just celery-fixtures`
+- Manually the fixtures file to format with prettier (better diff)
 - Commit
 
 ## Deployment
