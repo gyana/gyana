@@ -2,10 +2,21 @@
 {% load static %}
 {% block app %}
 <div class="workflow-detail__header">
-  <form method="post" action="{% url 'project_dashboards:detail' project.id object.id %}" class="form mr-auto">
+  <form method="post" action="{% url 'project_dashboards:detail' project.id object.id %}" class="form--no-layout w-full">
     {% csrf_token %}
 
-    <input class='input__inline' id="name" type="text" name="name" value="{{ object.name }}"></input>
+    <input class='input__inline mr-auto' id="name" type="text" name="name" value="{{ object.name }}"></input>
+    <div data-controller="popover">
+      <button type="button" data-popover-target="trigger" class="button button--circle button--tertiary" data-action="popover#trigger">
+      <i class="fas fa-edit fa-lg"></i>
+      </button>
+      <div data-popover-target="body" class="popover-body shadow-sm card card--sm">
+        <span class="text-xl">Configure the dashboard's canvas dimension</span>
+        <input id="width" type="number" name="width" value="{{ object.width}}"></input>
+        <input id="height" type="number" name="height" value="{{ object.height}}"></input>
+        <button class="button button--sm" type='submit' >Update</button>
+      </div>
+    </div>
   </form>
 
 
