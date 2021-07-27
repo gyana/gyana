@@ -5,9 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ("nodes", "0001_initial"),
-    ]
+    dependencies = [("nodes", "0001_initial"), ("workflows", "0043_auto_20210713_2233")]
     operations = [
         migrations.SeparateDatabaseAndState(
             state_operations=[
