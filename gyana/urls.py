@@ -16,6 +16,7 @@ Including another URLconf
 
 from apps.utils.converters import HashIdConverter
 from django.conf import settings
+from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, register_converter
@@ -26,10 +27,10 @@ register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "h
 
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
-from apps.tables import urls as tables_urls
 from apps.invites import urls as invite_urls
 from apps.nodes import urls as node_urls
 from apps.projects import urls as project_urls
+from apps.tables import urls as tables_urls
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
@@ -81,3 +82,8 @@ urlpatterns = [
     path("docs/", include_docs_urls(title="API Docs")),
     path("schemajs/", schemajs_view, name="api_schemajs"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.CYPRESS_URLS:
+    urlpatterns += [
+        path("cypress/", include("apps.utils.cypress_urls")),
+    ]

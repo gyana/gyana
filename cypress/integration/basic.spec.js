@@ -3,8 +3,10 @@
 describe('sign up', () => {
   beforeEach(() => {
     // reset and seed the database prior to every test
-    // explicit path required https://stackoverflow.com/a/55295044/15425660
-    cy.exec('./.venv/bin/python manage.py cypress_reset')
+    cy.request({
+      method: 'GET',
+      url: '/cypress/resetdb',
+    })
   })
 
   it('signs in headlessly', () => {

@@ -51,8 +51,16 @@ format:
 startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
 
-cypress:
-    ./manage.py cypress_server --noinput --settings gyana.settings.test cypress/fixtures/fixtures.json
+cypress-setup:
+    ./manage.py migrate --settings gyana.settings.cypress
+    ./manage.py flush --settings gyana.settings.cypress --noinput
+    ./manage.py loaddata --settings gyana.settings.cypress cypress/fixtures/fixtures.json
 
-fixtures:
-    ./manage.py dumpdata -e auth -e contenttypes -e sessions -e sites --settings gyana.settings.test > cypress/fixtures/fixtures.json
+cypress-server:
+    ./manage.py runserver --settings gyana.settings.cypress
+
+# cypress-celery:
+#     watchexec -w apps -e py -r "celery -A gyana worker -l info"
+
+cypress-fixtures:
+    ./manage.py dumpdata -e auth -e contenttypes -e sessions -e sites --settings gyana.settings.cypress > cypress/fixtures/fixtures.json
