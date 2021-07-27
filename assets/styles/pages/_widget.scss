@@ -1,15 +1,16 @@
 .widgets {
   width: 100%;
   height: 100%;
+  background-color: var(--c-gray-20);
 }
 
 .widgets--canvas {
   position: relative;
   display: block;
-  width: 100%;
-  height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
+  background-color: var(--c-white);
+  border: 1px solid var(--c-gray);
 }
 
 .widgets--grid {

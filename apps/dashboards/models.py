@@ -17,6 +17,8 @@ class Dashboard(CloneMixin, BaseModel):
         max_length=16, default=SharedStatus.PRIVATE, choices=SharedStatus.choices
     )
     shared_id = models.UUIDField(null=True, blank=True)
+    width = models.IntegerField(default=1200)
+    height = models.IntegerField(default=840)
     _clone_m2o_or_o2m_fields = ["widget_set"]
 
     def __str__(self):

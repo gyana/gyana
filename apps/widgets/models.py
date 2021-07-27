@@ -56,19 +56,19 @@ class Widget(CloneMixin, BaseModel):
     # display state
     width = models.IntegerField(
         default=DEFAULT_WIDTH,
-        help_text="The width is relative. Relative widths avoid overflow on different displays",
+        help_text="The width is in absolute pixel value.",
     )
     height = models.IntegerField(
         default=DEFAULT_HEIGHT,
-        help_text="The height is absolute. We allow for scrollable dashboards in the y-axis.",
+        help_text="The height is in absolute pixel value.",
     )
     x = models.IntegerField(
         default=0,
-        help_text="The x field is relative, this avoids overflow on the x-axis in a dashboard.",
+        help_text="The x field is in absolute pixel value.",
     )
     y = models.IntegerField(
         default=0,
-        help_text="The y field is absolute, we allow for overflow on the y-axis in a dashboard.",
+        help_text="The y field is in absolute pixel value.",
     )
 
     z = models.CharField(

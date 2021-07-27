@@ -17,19 +17,18 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
   children,
   root,
 }) => {
-  
-  const mode: 'view' | 'edit'| 'public' = new URLSearchParams(window.location.search).get('mode') || window.location.href.includes('projects')? 'edit': 'public'
+  const mode: 'view' | 'edit' | 'public' =
+    new URLSearchParams(window.location.search).get('mode') ||
+    window.location.href.includes('projects')
+      ? 'edit'
+      : 'public'
   const id = children.props['data-id']
   // Utilised to decide the clamping on interaction as well as clamps for placement
   const stepSize = Math.floor(root.offsetWidth / GRID_COLS)
 
-  const [x, setX] = useState(
-    () => (parseInt(children.props['data-x']) * root.clientWidth) / 100 || 0
-  )
+  const [x, setX] = useState(() => parseInt(children.props['data-x']) || 0)
   const [y, setY] = useState(() => parseInt(children.props['data-y']) || 0)
-  const [width, setWidth] = useState(
-    () => (parseInt(children.props['data-width']) * root.clientWidth) / 100 || 200
-  )
+  const [width, setWidth] = useState(() => parseInt(children.props['data-width']) || 200)
   const [height, setHeight] = useState(() => parseInt(children.props['data-height']) || 200)
 
   return (
@@ -76,8 +75,8 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
 
         client.action(window.schema, ['widgets', 'api', 'partial_update'], {
           id,
-          x: Math.floor((newX / root.clientWidth) * 100),
-          width: Math.floor((newWidth / root.clientWidth) * 100),
+          x: Math.floor(newX),
+          width: Math.floor(newWidth),
           height: height,
         })
       }}
@@ -98,7 +97,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
 
         client.action(window.schema, ['widgets', 'api', 'partial_update'], {
           id,
-          x: Math.floor((newX / root.clientWidth) * 100),
+          x: Math.floor(newX),
           y: newY,
         })
       }}

@@ -8,6 +8,7 @@
       id="dashboard-widget-container" 
       class="widgets--canvas {% if request.GET.mode != 'view' %}widgets--grid{%endif%}"
       data-controller="zindex grid-size"
+      style="width:{{dashboard.width}}px;height:{{dashboard.height}}px;"
     >
       {% for object in object_list %}
       {% include 'widgets/widget_component.html' %}
