@@ -43,4 +43,61 @@ describe('teams', () => {
     cy.get('button[type=submit]').click()
     cy.get('#sidebar').contains('Agni').should('not.exist')
   })
+  it.only('invite new and existing members to team', () => {
+    cy.visit('/')
+
+    cy.contains('Invites').click()
+    cy.url().should('contain', '/teams/1/invites')
+
+    // new
+
+    cy.contains('New Invite').click()
+    cy.url().should('contain', '/teams/1/invites/new')
+
+    cy.get('input[type=email]').type('invite@gyana.com')
+    cy.get('button[type=submit]').click()
+
+    // existing
+
+    cy.contains('New Invite').click()
+    cy.url().should('contain', '/teams/1/invites/new')
+
+    cy.get('input[type=email]').type('alone@gyana.com')
+    cy.get('button[type=submit]').click()
+
+    cy.logout()
+
+    cy.outbox()
+      .then((outbox) => outbox.count)
+      .should('eq', 2)
+
+    cy.outbox().then((outbox) => {
+      const msg = outbox['messages'][0]
+      console.log(msg)
+      const url = msg['payload']
+        .split('\n')
+        .slice(-1)[0]
+        .replace("If you'd like to join, please go to ", '')
+      cy.visit(url)
+    })
+
+    cy.get('input[type=password]').type('seewhatmatters')
+    cy.get('button[type=submit]').click()
+
+    cy.url().should('contain', '/teams/1')
+
+    cy.logout()
+
+    cy.outbox().then((outbox) => {
+      const msg = outbox['messages'][0]
+      console.log(msg)
+      const url = msg['payload']
+        .split('\n')
+        .slice(-1)[0]
+        .replace("If you'd like to join, please go to ", '')
+      cy.visit(url)
+    })
+
+    cy.url().should('contain', '/teams/1')
+  })
 })

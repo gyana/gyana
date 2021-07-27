@@ -37,6 +37,14 @@ const login = (email = TEST_EMAIL, password = TEST_PASSWORD) => {
 
 Cypress.Commands.add('login', login)
 
+const logout = () => {
+  cy.request('/accounts/logout').then((resp) => {
+    expect(resp.status).to.eq(200)
+  })
+}
+
+Cypress.Commands.add('logout', logout)
+
 const outbox = () => cy.request('/cypress/outbox').then((response) => response.body)
 
 Cypress.Commands.add('outbox', outbox)

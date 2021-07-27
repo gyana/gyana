@@ -5,6 +5,11 @@
     "fields": { "user": 1, "email": "test@gyana.com", "verified": false, "primary": true }
   },
   {
+    "model": "account.emailaddress",
+    "pk": 2,
+    "fields": { "user": 3, "email": "alone@gyana.com", "verified": false, "primary": true }
+  },
+  {
     "model": "socialaccount.socialapp",
     "pk": 1,
     "fields": {
@@ -49,6 +54,25 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2021-07-27T12:09:25.731Z",
+      "avatar": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.customuser",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$GxH7SNPn0rTyr5oBBwd2th$LoeRmOzRhgkQ2t9Y+SBV6YO6sYFb/b5+vsfZ/KkOuyY=",
+      "last_login": "2021-07-27T14:46:12.276Z",
+      "is_superuser": false,
+      "username": "alone",
+      "first_name": "",
+      "last_name": "",
+      "email": "alone@gyana.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2021-07-27T14:46:12.143Z",
       "avatar": "",
       "groups": [],
       "user_permissions": []
