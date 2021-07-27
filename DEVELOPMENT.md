@@ -88,6 +88,27 @@ Commands:
 
 Create a new CRUDL Django app with `just startapp`.
 
+## Testing with Cypress
+
+Setup your test app:
+
+- `createdb cypress_gyana`
+- `just celery-setup`
+
+Run cypress + app with hot-reloading:
+
+- `just cypress-server`
+- `just cypress-celery`
+- `yarn build:watch`
+- `yarn cypress:open`
+
+The app is seeded with the fixtures defined in `cypress/fixtures/fixtures.json`. To modify the fixtures:
+
+- Reset the database `just celery-setup`
+- Go to the app in the browser and modify it
+- Dump the fixtures `just celery-fixtures`
+- Commit
+
 ## Deployment
 
 For more in-depth information see [DEPLOYMENT.md](DEPLOYMENT.md)
