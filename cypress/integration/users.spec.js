@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe('users', () => {
-  it.only('signs in to app', () => {
+  it('signs in to app', () => {
     cy.visit('/')
 
     cy.get('input[type=email]').type('test@gyana.com')
@@ -63,9 +63,20 @@ describe('users', () => {
     cy.url().should('contain', '/teams/1')
   })
 
-  it('signs out', () => {
+  it.only('signs out', () => {
     cy.login()
 
     cy.visit('/')
+
+    cy.get('#sidebar-profile').click()
+    cy.url().should('contain', '/users/profile')
+
+    cy.contains('Sign out').click()
+
+    cy.url().should('contain', '/accounts/login')
+
+    cy.visit('/users/profile')
+
+    cy.url().should('contain', '/accounts/login')
   })
 })
