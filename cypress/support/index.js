@@ -15,6 +15,7 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+import './turbo'
 
 beforeEach(() => {
   // reset and seed the database prior to every test

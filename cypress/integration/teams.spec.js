@@ -120,7 +120,6 @@ describe('teams', () => {
     cy.get('button[type=submit]').click()
 
     cy.get('.fa-redo-alt').click()
-    cy.wait(500)
 
     cy.outbox()
       .then((outbox) => outbox.count)
@@ -128,8 +127,6 @@ describe('teams', () => {
 
     cy.get('.fa-trash').click()
     cy.contains('Yes').click()
-
-    cy.wait(1000)
 
     cy.logout()
 
