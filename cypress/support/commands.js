@@ -36,3 +36,7 @@ const login = (email = TEST_EMAIL, password = TEST_PASSWORD) => {
 }
 
 Cypress.Commands.add('login', login)
+
+const outbox = () => cy.request('/cypress/outbox').then((response) => response.body)
+
+Cypress.Commands.add('outbox', outbox)

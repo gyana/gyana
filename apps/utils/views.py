@@ -7,7 +7,10 @@ from rest_framework.request import Request
 
 
 def _msg_to_dict(msg):
-    return {k: v for k, v in msg.message().items()}
+    return {
+        "payload": msg.message().get_payload(),
+        **{k: v for k, v in msg.message().items()},
+    }
 
 
 @api_view(["GET"])
@@ -20,7 +23,9 @@ def resetdb(request: Request):
     # Import the fixture data into the database.
     call_command("loaddata", "cypress/fixtures/fixtures.json")
 
-    return JsonResponse()
+    mail.outbox = []
+
+    return JsonResponse({})
 
 
 @api_view(["GET"])
