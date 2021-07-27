@@ -19,3 +19,5 @@ DATABASES = {
 # each ./manage.py command is 2-3s, whereas the actual reset/seed is 350ms.
 
 CYPRESS_URLS = True
+
+EMAIL_BACKEND = "django.core.mail.backends.locmema.EmailBackend"

@@ -9,4 +9,5 @@ urlpatterns = [
         views.resetdb,
         name="resetdb",
     ),
+    path("outbox", views.outbox, name="outbox"),
 ]

@@ -21,4 +21,15 @@ describe('sign up', () => {
 
     cy.url().should('contain', '/teams/2')
   })
+
+  it.only('does this', () => {
+    cy.visit('/')
+
+    cy.contains('Forgot password?').click()
+    cy.url().should('contain', '/accounts/password/reset')
+    cy.contains('Password Reset')
+
+    cy.get('input[type=email]').type('test@gyana.com')
+    cy.get('button[type=submit]').click()
+  })
 })
