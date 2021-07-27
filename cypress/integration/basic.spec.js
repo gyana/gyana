@@ -1,14 +1,6 @@
 /// <reference types="cypress" />
 
 describe('sign up', () => {
-  beforeEach(() => {
-    // reset and seed the database prior to every test
-    cy.request({
-      method: 'GET',
-      url: '/cypress/resetdb',
-    })
-  })
-
   it('signs in headlessly', () => {
     cy.login()
 
