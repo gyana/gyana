@@ -46,7 +46,8 @@ $button-colors: (
   }
 
   &[type="submit"],
-  &[href] {
+  &[href],
+  &[data-action] {
     cursor: pointer;
   }
 
