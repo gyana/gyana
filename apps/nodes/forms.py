@@ -13,7 +13,7 @@ from .widgets import InputNode, MultiSelect
 class NodeForm(LiveUpdateForm):
     @property
     def required_fields(self):
-        return self.Required.required if hasattr(self, "Required") else []
+        return []
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -54,8 +54,9 @@ class OutputNodeForm(NodeForm):
         fields = ["output_name"]
         labels = {"output_name": "Output name"}
 
-    class Required:
-        required = ["output_name"]
+    @property
+    def required_fields(self):
+        return ["output_name"]
 
 
 class SelectNodeForm(NodeForm):
@@ -95,8 +96,9 @@ class JoinNodeForm(NodeForm):
         fields = ["join_how", "join_left", "join_right"]
         labels = {"join_how": "How", "join_left": "Left", "join_right": "Right"}
 
-    class Required:
-        required = ["join_how", "join_left", "join_right"]
+    @property
+    def required_fields(self):
+        return ["join_how", "join_left", "join_right"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -165,6 +167,10 @@ class UnpivotNodeForm(LiveUpdateForm):
     class Meta:
         model = Node
         fields = ["unpivot_value", "unpivot_column"]
+
+    @property
+    def required_fields(self):
+        return ["unpivot_value", "unpivot_column"]
 
 
 KIND_TO_FORM = {
