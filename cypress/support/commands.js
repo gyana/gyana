@@ -40,3 +40,33 @@ Cypress.Commands.add('login', login)
 const outbox = () => cy.request('/cypress/outbox').then((response) => response.body)
 
 Cypress.Commands.add('outbox', outbox)
+
+const dataTransfer = new DataTransfer()
+
+Cypress.Commands.add('drag', (selector) => {
+  return cy.get(selector).trigger('dragstart', { dataTransfer }).trigger('drag', { dataTransfer })
+})
+
+Cypress.Commands.add('drop', (selector) => {
+  return cy.get(selector).trigger('drop', { dataTransfer })
+})
+
+// https://github.com/wbkd/react-flow/blob/main/cypress/support/commands.js
+Cypress.Commands.add('reactFlowDrag', (selector, { x, y }) => {
+  return cy
+    .get(selector)
+    .trigger('mousedown', { which: 1 })
+    .trigger('mousemove', { clientX: x, clientY: y })
+    .trigger('mouseup', { force: true })
+})
+
+Cypress.Commands.add('connectNodes', (source, target) => {
+  cy.get(source).find('.react-flow__handle.source').trigger('mousedown', { which: 1 })
+
+  cy.get(target)
+    .find('.react-flow__handle.target')
+    .trigger('mousemove', { dataTransfer })
+    .trigger('mouseup', { force: true, dataTransfer })
+})
+
+Cypress.Commands.add('story', (text) => cy.log(`📚 **${text}**`))

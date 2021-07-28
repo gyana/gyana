@@ -145,7 +145,11 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
       {data.error && <ErrorIcon text={data.error} />}
       <NodeName id={id} name={data.label} />
 
-      <i className={`fas fa-fw ${data.icon} ${showContent && 'absolute opacity-10'}`}></i>
+      <i
+        className={`fas fa-fw ${data.icon}  ${showContent && 'absolute opacity-10'}`}
+        data-src={`/nodes/${id}`}
+        data-action='dblclick->tf-modal#open'
+      ></i>
       {showContent && (
         <div className='p-2'>
           <Description id={id} data={data} />

@@ -21,7 +21,7 @@ const LayoutButton: React.FC<{
   const onLayout = useCallback(() => {
     const layoutedElements = getLayoutedElements(elements, nodes)
     setElements(layoutedElements)
-    
+
     client.action(window.schema, ['workflows', 'update_positions', 'create'], {
       workflow_id: workflowId,
       nodes: layoutedElements
@@ -46,7 +46,10 @@ const getLayoutedElements = (elements, nodes) => {
   elements.forEach((el) => {
     if (isNode(el)) {
       const node = nodes.find((node) => node.id === el.id)
-      dagreGraph.setNode(el.id, { width: node.__rf.width, height: node.__rf.height+BUTTON_SPACING })
+      dagreGraph.setNode(el.id, {
+        width: node.__rf.width,
+        height: node.__rf.height + BUTTON_SPACING,
+      })
     } else {
       dagreGraph.setEdge(el.source, el.target)
     }

@@ -64,3 +64,4 @@ cypress-celery:
 
 cypress-fixtures:
     ./manage.py dumpdata -e auth -e contenttypes -e sessions -e sites --settings gyana.settings.cypress > cypress/fixtures/fixtures.json
+    yarn prettier --write cypress/fixtures/fixtures.json

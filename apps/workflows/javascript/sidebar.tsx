@@ -32,6 +32,7 @@ const Sidebar: React.FC = () => {
 
           return (
             <div
+              id={`dnd-node-${kind}`}
               key={kind}
               className='dnd-sidebar__node'
               onDragStart={(event) => onDragStart(event, kind)}
@@ -67,6 +68,7 @@ const Sidebar: React.FC = () => {
 
                   return (
                     <div
+                      id={`dnd-node-${kind}`}
                       key={kind}
                       className='dnd-sidebar__node'
                       onDragStart={(event) => onDragStart(event, kind)}
