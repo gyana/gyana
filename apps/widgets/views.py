@@ -13,13 +13,15 @@ from django.urls import reverse
 from django.views.decorators.http import condition
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import UpdateView
+from django_tables2.config import RequestConfig
+from django_tables2.views import SingleTableMixin
 from rest_framework import mixins, viewsets
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 from turbo_response.views import TurboCreateView, TurboStreamDeleteView
 
 from .forms import FilterFormset, ValueFormset, WidgetConfigForm, WidgetDuplicateForm
-from .models import MULTI_VALUES_CHARTS, WIDGET_CHOICES_ARRAY, Widget
+from .models import WIDGET_CHOICES_ARRAY, Widget
 
 
 class WidgetList(DashboardMixin, ListView):
@@ -48,7 +50,7 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
         # give different dimensions to text widget
         # TODO: make an abstraction with default values per widget kind
         if form.instance.kind == Widget.Kind.TEXT:
-            form.instance.width = 30
+            form.instance.width = 300
             form.instance.height = 200
 
         if lowest_widget := self.dashboard.widget_set.order_by("-y").first():
@@ -258,9 +260,7 @@ widget_output_condition = condition(
 
 def add_output_context(context, widget):
     if widget.is_valid:
-        if widget.kind == Widget.Kind.TABLE:
-            context.update(table_to_output(widget))
-        elif widget.kind == Widget.Kind.TEXT:
+        if widget.kind in [Widget.Kind.TABLE, Widget.Kind.TEXT]:
             pass
         else:
             chart, chart_id = chart_to_output(widget)
@@ -268,9 +268,10 @@ def add_output_context(context, widget):
             context["chart_id"] = chart_id
 
 
-class WidgetOutput(DashboardMixin, DetailView):
+class WidgetOutput(DashboardMixin, SingleTableMixin, DetailView):
     template_name = "widgets/output.html"
     model = Widget
+    paginate_by = 15
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -283,3 +284,11 @@ class WidgetOutput(DashboardMixin, DetailView):
             logging.warning(e, exc_info=e)
 
         return context
+
+    def get_table(self, **kwargs):
+        if self.object.kind == Widget.Kind.TABLE:
+            table = table_to_output(self.object)
+            return RequestConfig(
+                self.request, paginate=self.get_table_pagination(table)
+            ).configure(table)
+        return type("DynamicTable", (Table,), {})(data=[])

@@ -1,5 +1,4 @@
-<turbo-frame id="widgets-grid" style="display:flex;flex:1 1 0%;">
-  <div style="height:100%;width:100%;">
-    {% include 'components/grid.html' %}
-  </div>
-</turbo-frame>
+{% load render_table from django_tables2 %}
+<div style="height:100%;width:100%; overflow:auto;">
+  {% render_table table %}
+</div>

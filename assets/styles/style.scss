@@ -14,9 +14,6 @@
 // Page-specific code, not used anywhere else but a specific view or a set of them..
 @use "pages";
 
-// Vendor overrides
-@use "components/overrides/aggrid";
-
 // Third-party libraries.
 @use "vendors/libcodemirror";
 // @use "vendors/tailwind"; // Do NOT uncomment. This is to showcase Tailwind is present.
