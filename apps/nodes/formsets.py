@@ -8,6 +8,7 @@ from apps.columns.models import (AddColumn, Column, EditColumn, FormulaColumn,
 # fmt: on
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
+from apps.utils.live_update_form import LiveUpdateForm
 from django import forms
 from django.forms.models import BaseInlineFormSet
 
@@ -47,6 +48,7 @@ ColumnFormSet = forms.inlineformset_factory(
 SortColumnFormSet = forms.inlineformset_factory(
     Node,
     SortColumn,
+    form=LiveUpdateForm,
     fields=("column", "ascending"),
     can_delete=True,
     extra=0,

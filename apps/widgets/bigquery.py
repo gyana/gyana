@@ -3,6 +3,16 @@ from apps.tables.bigquery import get_query_from_table
 from apps.widgets.models import Widget
 
 
+def _sort(query, widget):
+    column = (
+        query[widget.label]
+        if widget.sort_by == "label"
+        else query[widget.values.first().column]
+    )
+    sort_column = [(column, widget.sort_ascending)]
+    return query.sort_by(sort_column)
+
+
 def get_query_from_widget(widget: Widget):
 
     query = get_query_from_table(widget.table)
@@ -13,8 +23,11 @@ def get_query_from_widget(widget: Widget):
         values += [widget.z]
 
     if widget.aggregator == Widget.Aggregator.NONE:
-        return query.projection([widget.label, *values])
+        return _sort(query.projection([widget.label, *values]), widget)
 
-    return query.group_by(widget.label).aggregate(
-        [getattr(query[value], widget.aggregator)().name(value) for value in values]
+    return _sort(
+        query.group_by(widget.label).aggregate(
+            [getattr(query[value], widget.aggregator)().name(value) for value in values]
+        ),
+        widget,
     )

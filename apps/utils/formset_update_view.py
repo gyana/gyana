@@ -16,7 +16,7 @@ class FormsetUpdateView(TurboUpdateView):
 
         forms_kwargs = {
             # provide a reference to parent instance in live update forms
-            "parent_instance": self.get_form_kwargs()['instance'],
+            "parent_instance": self.get_form_kwargs()["instance"],
             **self.get_formset_kwargs(formset),
         }
 
