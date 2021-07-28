@@ -119,7 +119,7 @@ describe('teams', () => {
     cy.get('input[type=email]').type('invite@gyana.com')
     cy.get('button[type=submit]').click()
 
-    cy.get('button[title="Re-send invite"]').click()
+    cy.get('.fa-redo-alt').click()
 
     cy.outbox()
       .then((outbox) => outbox.count)
