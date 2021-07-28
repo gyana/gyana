@@ -8,6 +8,9 @@
 // SCSS specific code/styles. Functions/mixins/variables belong here.
 @use "utilities";
 
+// Components responsible for site-wide layout.
+@use "layout";
+
 // Reusable components, accompanied by usage documentation.
 @use "components";
 
