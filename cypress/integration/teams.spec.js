@@ -1,5 +1,19 @@
 /// <reference types="cypress" />
 
+const parseUrlFromMsg = (msg) =>
+  msg['payload'].split('\n').slice(-1)[0].replace("If you'd like to join, please go to ", '')
+
+const inviteByEmail = (email) => {
+  cy.contains('Invites').click()
+  cy.url().should('contain', '/teams/1/invites')
+
+  cy.contains('New Invite').click()
+  cy.url().should('contain', '/teams/1/invites/new')
+
+  cy.get('input[type=email]').type(email)
+  cy.get('button[type=submit]').click()
+}
+
 describe('teams', () => {
   beforeEach(() => {
     cy.login()
@@ -24,11 +38,11 @@ describe('teams', () => {
     cy.get('#sidebar').within(() => {
       cy.contains('Vayu').click()
     })
-    cy.get('#heading').within(() => cy.contains('Vayu'))
+    cy.url().should('contain', '/teams/1')
     cy.get('#sidebar').within(() => {
       cy.contains('Neera').click()
     })
-    cy.get('#heading').within(() => cy.contains('Neera'))
+    cy.url().should('contain', '/teams/2')
 
     // update
     cy.contains('Settings').click()
@@ -46,14 +60,7 @@ describe('teams', () => {
   it('invite new user to team', () => {
     cy.visit('/')
 
-    cy.contains('Invites').click()
-    cy.url().should('contain', '/teams/1/invites')
-
-    cy.contains('New Invite').click()
-    cy.url().should('contain', '/teams/1/invites/new')
-
-    cy.get('input[type=email]').type('invite@gyana.com')
-    cy.get('button[type=submit]').click()
+    inviteByEmail('invite@gyana.com')
 
     cy.logout()
 
@@ -62,11 +69,7 @@ describe('teams', () => {
       .should('eq', 1)
 
     cy.outbox().then((outbox) => {
-      const msg = outbox['messages'][0]
-      const url = msg['payload']
-        .split('\n')
-        .slice(-1)[0]
-        .replace("If you'd like to join, please go to ", '')
+      const url = parseUrlFromMsg(outbox['messages'][0])
       cy.visit(url)
     })
 
@@ -79,14 +82,7 @@ describe('teams', () => {
   it('invite existing user to team', () => {
     cy.visit('/')
 
-    cy.contains('Invites').click()
-    cy.url().should('contain', '/teams/1/invites')
-
-    cy.contains('New Invite').click()
-    cy.url().should('contain', '/teams/1/invites/new')
-
-    cy.get('input[type=email]').type('alone@gyana.com')
-    cy.get('button[type=submit]').click()
+    inviteByEmail('alone@gyana.com')
 
     cy.logout()
 
@@ -97,11 +93,7 @@ describe('teams', () => {
       .should('eq', 1)
 
     cy.outbox().then((outbox) => {
-      const msg = outbox['messages'][0]
-      const url = msg['payload']
-        .split('\n')
-        .slice(-1)[0]
-        .replace("If you'd like to join, please go to ", '')
+      const url = parseUrlFromMsg(outbox['messages'][0])
       cy.visit(url)
     })
 
@@ -110,14 +102,7 @@ describe('teams', () => {
   it('resend and delete invite', () => {
     cy.visit('/')
 
-    cy.contains('Invites').click()
-    cy.url().should('contain', '/teams/1/invites')
-
-    cy.contains('New Invite').click()
-    cy.url().should('contain', '/teams/1/invites/new')
-
-    cy.get('input[type=email]').type('invite@gyana.com')
-    cy.get('button[type=submit]').click()
+    inviteByEmail('invite@gyana.com')
 
     cy.get('.fa-redo-alt').click()
 
@@ -131,11 +116,7 @@ describe('teams', () => {
     cy.logout()
 
     cy.outbox().then((outbox) => {
-      const msg = outbox['messages'][1]
-      const url = msg['payload']
-        .split('\n')
-        .slice(-1)[0]
-        .replace("If you'd like to join, please go to ", '')
+      const url = parseUrlFromMsg(outbox['messages'][1])
       cy.request({ url, failOnStatusCode: false })
         .then((response) => response.status)
         .should('eq', 410)
