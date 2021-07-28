@@ -11,6 +11,15 @@ from .widgets import InputNode, MultiSelect
 
 
 class NodeForm(LiveUpdateForm):
+    @property
+    def required_fields(self):
+        return self.Required.required if hasattr(self, "Required") else []
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.required_fields:
+            self.fields[field].required = True
+
     @cached_property
     def columns(self):
         """Returns the schema for the first parent."""
@@ -44,6 +53,9 @@ class OutputNodeForm(NodeForm):
         model = Node
         fields = ["output_name"]
         labels = {"output_name": "Output name"}
+
+    class Required:
+        required = ["output_name"]
 
 
 class SelectNodeForm(NodeForm):
@@ -82,6 +94,9 @@ class JoinNodeForm(NodeForm):
         model = Node
         fields = ["join_how", "join_left", "join_right"]
         labels = {"join_how": "How", "join_left": "Left", "join_right": "Right"}
+
+    class Required:
+        required = ["join_how", "join_left", "join_right"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

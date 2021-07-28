@@ -25,10 +25,6 @@ class LiveUpdateForm(forms.ModelForm):
 
         self.fields = {k: v for k, v in self.fields.items() if k in live_fields}
 
-        # TODO: Make this opt-in if models have optional fields
-        for field in self.fields.values():
-            field.required = True
-
     @property
     def is_live(self):
         # the "submit" value is populated when the user clicks the button
