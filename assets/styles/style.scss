@@ -8,14 +8,14 @@
 // SCSS specific code/styles. Functions/mixins/variables belong here.
 @use "utilities";
 
+// Components responsible for site-wide layout.
+@use "layout";
+
 // Reusable components, accompanied by usage documentation.
 @use "components";
 
 // Page-specific code, not used anywhere else but a specific view or a set of them..
 @use "pages";
-
-// Vendor overrides
-@use "components/overrides/aggrid";
 
 // Third-party libraries.
 @use "vendors/libcodemirror";

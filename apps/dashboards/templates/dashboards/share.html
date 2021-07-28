@@ -1,31 +1,30 @@
 <turbo-frame id='dashboard-share'>
   <div data-controller='popover'
-    data-popover-dont-hide-body-value="{{dont_hide_body}}"
-  >
-    <button 
-      data-popover-target="trigger" 
-      class="button button--circle button--tertiary cursor-pointer" 
-      data-action="popover#trigger"
-    >
-      {% if  object.shared_status == 'private' %}<i class='fas fa-lock fa-lg'></i>
-      {% elif object.shared_status == 'public' %}<i class='fas fa-eye fa-lg'></i>
+       data-popover-dont-hide-body-value="{{dont_hide_body}}">
+    <button
+            data-popover-target="trigger"
+            class="button button--circle button--tertiary"
+            data-action="popover#trigger">
+      {% if  object.shared_status == 'private' %}<i class='far fa-fw fa-lock'></i>
+      {% elif object.shared_status == 'public' %}<i class='far fa-fw fa-eye'></i>
       {% endif %}
     </button>
     <div data-popover-target="body" class="popover-body shadow-sm card card--sm">
       <span class="text-xl">This dashboard is currently {{object.shared_status }}.</span>
-    
+
       <form method="post" action="{% url 'dashboards:share' object.id %}">
         {% csrf_token %}
 
         {% if  object.shared_status == 'private' %}
         <span class="text-xl">Click <strong>Share</strong> to create shareable link that is accessible publicly.</span>
-          <button class="button button--sm" type='submit' >Share</button>
+        <button class="button button--sm" type='submit'>Share</button>
         {% else %}
-          <span class="text-xl">Everyone with the link can see it. Click <strong>Unshare</strong> to make this dashboard private again.</span>
-          <button class="button button--sm" type='submit' >Unshare</button>
-          <span>{{ request.META.HTTP_HOST }}/dashboards/{{object.shared_id}}</span>
+        <span class="text-xl">Everyone with the link can see it. Click <strong>Unshare</strong> to make this dashboard
+          private again.</span>
+        <button class="button button--sm" type='submit'>Unshare</button>
+        <span>{{ request.META.HTTP_HOST }}/dashboards/{{object.shared_id}}</span>
         {% endif %}
-        
+
       </form>
     </div>
   </div>

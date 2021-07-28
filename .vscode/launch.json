@@ -5,11 +5,19 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Django",
+      "name": "Gyana-Development",
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
       "args": ["runserver"],
+      "django": true
+    },
+    {
+      "name": "Gyana-Cypress",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["runserver", "--settings", "gyana.settings.cypress"],
       "django": true
     }
   ]

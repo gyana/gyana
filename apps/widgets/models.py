@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import models
 from model_clone import CloneMixin
 
-DEFAULT_WIDTH = 50
+DEFAULT_WIDTH = 500
 DEFAULT_HEIGHT = 400
 
 
