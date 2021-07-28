@@ -12,7 +12,10 @@ describe('users', () => {
   })
 
   it('signs up to app', () => {
-    cy.visit('/accounts/signup')
+    cy.visit('/')
+
+    cy.contains('create one here').click()
+    cy.url().should('contain', '/accounts/signup')
 
     cy.get('input[type=email]').type('new@gyana.com')
     cy.get('input[type=password]').type('seewhatmatters')
@@ -29,12 +32,10 @@ describe('users', () => {
 
     cy.contains('Forgot password?').click()
     cy.url().should('contain', '/accounts/password/reset')
-    cy.contains('Password Reset')
 
     cy.get('input[type=email]').type('test@gyana.com')
     cy.get('button[type=submit]').click()
     cy.url().should('contain', '/accounts/password/reset/done')
-    cy.contains('Password Reset')
 
     cy.outbox()
       .then((outbox) => outbox.count)
@@ -46,13 +47,11 @@ describe('users', () => {
       cy.visit(url)
     })
     cy.url().should('contain', 'accounts/password/reset/key/1-set-password')
-    cy.contains('Change Password')
 
     cy.get('input[type=password]').first().type('senseknowdecide')
     cy.get('input[type=password]').last().type('senseknowdecide')
     cy.get('input[type=submit]').click()
     cy.url().should('contain', 'accounts/password/reset/key/done')
-    cy.contains('Your password has been changed.')
 
     cy.visit('/')
 
@@ -63,7 +62,7 @@ describe('users', () => {
     cy.url().should('contain', '/teams/1')
   })
 
-  it.only('signs out', () => {
+  it('signs out', () => {
     cy.login()
 
     cy.visit('/')
