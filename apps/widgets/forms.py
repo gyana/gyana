@@ -18,7 +18,16 @@ class WidgetConfigForm(LiveUpdateForm):
 
     class Meta:
         model = Widget
-        fields = ["description", "table", "kind", "label", "aggregator", "z"]
+        fields = [
+            "description",
+            "table",
+            "kind",
+            "label",
+            "aggregator",
+            "z",
+            "sort_by",
+            "sort_ascending",
+        ]
         widgets = {"kind": VisualSelect(), "table": SourceSelect()}
 
     def __init__(self, *args, **kwargs):
@@ -50,6 +59,8 @@ class WidgetConfigForm(LiveUpdateForm):
 
         if table and kind and kind != Widget.Kind.TABLE:
             fields += [
+                "sort_by",
+                "sort_ascending",
                 "label",
                 "aggregator",
             ]
