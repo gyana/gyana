@@ -1,3 +1,5 @@
+from functools import cached_property
+
 from django import forms
 from django.db import transaction
 from django.http.response import HttpResponse
@@ -5,9 +7,9 @@ from turbo_response.views import TurboUpdateView
 
 
 class FormsetUpdateView(TurboUpdateView):
-    @property
+    @cached_property
     def formsets(self):
-        return []
+        return self.get_form().get_live_formsets()
 
     def get_formset_kwargs(self, formset):
         return {}

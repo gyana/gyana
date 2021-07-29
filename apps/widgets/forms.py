@@ -43,6 +43,9 @@ class GenericWidgetForm(LiveUpdateForm):
     def get_live_fields(self):
         return ["table", "kind", "description"]
 
+    def get_live_formsets(self):
+        return [FilterFormset, ValueFormset]
+
 
 class TwoDimensionForm(GenericWidgetForm):
     def __init__(self, *args, **kwargs):

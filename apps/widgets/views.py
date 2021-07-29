@@ -122,10 +122,6 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
     template_name = "widgets/update.html"
     model = Widget
 
-    @property
-    def formsets(self):
-        return [FilterFormset, ValueFormset]
-
     def get_form_class(self):
         return FORMS[self.request.POST.get("kind") or self.object.kind]
 
