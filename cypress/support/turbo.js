@@ -49,6 +49,7 @@ const click = (originalFn, subject, ...args) => {
           resolve()
         }
         $document.addEventListener(event, onTurboLoad)
+        $document.addEventListener('turbo:before-stream-render', onTurboLoad)
         originalFn(subject, ...args)
       })
     })

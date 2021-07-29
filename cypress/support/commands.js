@@ -8,6 +8,8 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 
+import 'cypress-file-upload'
+
 const TEST_EMAIL = 'test@gyana.com'
 const TEST_PASSWORD = 'seewhatmatters'
 
