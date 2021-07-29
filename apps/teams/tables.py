@@ -18,7 +18,7 @@ class TeamMembershipTable(Table):
 
     user__email = LinkColumn(
         verbose_name="Email",
-        viewname="teams:members:update",
+        viewname="team_members:update",
         args=(A("team__id"), A("id")),
     )
     user__last_login = NaturalDatetimeColumn(verbose_name="Last login")

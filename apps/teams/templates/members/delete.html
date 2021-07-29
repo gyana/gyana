@@ -5,12 +5,12 @@
   <h1>Delete</h1>
   <p>Are you sure you want to delete?</p>
 
-  <form method="post" action="{% url 'teams:members:delete' team.id object.id %}">
+  <form method="post" action="{% url 'team_members:delete' team.id object.id %}">
     {% csrf_token %}
 
     <div className='flex flex-row'>
       <button type="submit" class="button button--danger">Yes</button>
-      <a href="{% url 'teams:members:list' team.id %}" class="button button--tertiary">
+      <a href="{% url 'team_members:list' team.id %}" class="button button--tertiary">
         No
       </a>
     </div>

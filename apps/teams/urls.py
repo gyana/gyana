@@ -24,7 +24,7 @@ membership_urlpatterns = (
             name="delete",
         ),
     ],
-    "members",
+    "team_members",
 )
 
 urlpatterns = [
@@ -44,5 +44,4 @@ urlpatterns = [
         login_and_team_required(views.TeamDelete.as_view()),
         name="delete",
     ),
-    path("<hashid:team_id>/members", include(membership_urlpatterns)),
 ]

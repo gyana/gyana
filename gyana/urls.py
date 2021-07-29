@@ -31,6 +31,7 @@ from apps.invites import urls as invite_urls
 from apps.nodes import urls as node_urls
 from apps.projects import urls as project_urls
 from apps.tables import urls as tables_urls
+from apps.teams import urls as team_urls
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
@@ -58,6 +59,7 @@ teams_urlpatterns = [
     path("", include("apps.teams.urls")),
     path("<hashid:team_id>/invites/", include(invite_urls.team_urlpatterns)),
     path("<hashid:team_id>/projects/", include(project_urls.team_urlpatterns)),
+    path("<hashid:team_id>/members", include(team_urls.membership_urlpatterns)),
 ]
 
 

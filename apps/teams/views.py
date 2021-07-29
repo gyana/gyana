@@ -82,7 +82,7 @@ class MembershipUpdate(TeamMixin, TurboUpdateView):
     form_class = MembershipUpdateForm
 
     def get_success_url(self) -> str:
-        return reverse("teams:members:list", args=(self.team.id,))
+        return reverse("team_members:list", args=(self.team.id,))
 
 
 class MembershipDelete(TeamMixin, DeleteView):
