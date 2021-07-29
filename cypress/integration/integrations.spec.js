@@ -36,7 +36,7 @@ describe('integrations', () => {
     cy.url().should('contain', '/projects/1/integrations/2')
     cy.contains("Syncing, you'll get an email when it is ready")
     cy.contains('tasks processed')
-    cy.get('Reload to see results').click()
+    cy.contains('Reload to see results').click()
 
     cy.contains('Structure')
     cy.contains('Data')
