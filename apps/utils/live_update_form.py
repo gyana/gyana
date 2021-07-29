@@ -7,15 +7,19 @@ class LiveUpdateForm(forms.ModelForm):
     hidden_live = forms.CharField(widget=forms.HiddenInput(), required=True)
 
     def update_data(self):
+        """Updates the form's data missing fields with the initial values.
+
+        Because LiveForms don't hold data for fields that haven't been displayed,
+        we need to manually add these values."""
         data = MultiValueDict({**self.data})
         for field in self.get_live_fields():
-            if (
-                field not in self.data
-                and self.initial.get(field)
-                and not isinstance(self.fields[field], forms.BooleanField)
-            ):
+            #
+            if field not in self.data and self.initial.get(field):
                 data[field] = self.initial[field]
-
+            # HTML forms usually just omit unchecked checkboxes
+            # For us this is undistinguishable from the field not having been shown before
+            # In the LiveFormController we manually add these fields to the form data
+            # Just to remove them here again
             elif (
                 isinstance(self.fields[field], forms.BooleanField)
                 and self.data.get(field) == "false"
@@ -29,9 +33,6 @@ class LiveUpdateForm(forms.ModelForm):
         self.parent_instance = kwargs.pop("parent_instance", None)
 
         super().__init__(*args, **kwargs)
-        # self.data = MultiValueDict(
-        #     {**{key: [value] for key, value in self.initial.items()}, **self.data}
-        # )
 
         self.prefix = kwargs.pop("prefix", None)
 
@@ -59,11 +60,7 @@ class LiveUpdateForm(forms.ModelForm):
         # data populated by POST request in update
         # is also populated by initial data from the database
         # in the init method
-        return (
-            self.data.get(key_)
-            or self.initial.get(key_)
-            or getattr(self.instance, name)
-        )
+        return self.data.get(key_) or getattr(self.instance, name)
 
     def get_live_fields(self):
         # by default the behaviour is a normal form

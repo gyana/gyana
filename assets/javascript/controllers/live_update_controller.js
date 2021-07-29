@@ -37,7 +37,9 @@ export default class extends Controller {
 
     // manually POST the form and get HTML response
     const data = new FormData(form)
-
+    // HTML forms just omit unchecked checkboxes which for us
+    // Is indistinguishable from the field not being rendered
+    // So we add the fields to the form data manually
     form.querySelectorAll('input[type=checkbox]:not(:checked)').forEach((el) => {
       data.append(el.name, false)
     })

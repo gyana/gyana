@@ -4,6 +4,7 @@ from apps.widgets.models import Widget
 
 
 def _sort(query, widget):
+    """Sort widget data by label or value"""
     column = (
         query[widget.label]
         if widget.sort_by == "label"
