@@ -45,7 +45,10 @@ class GenericWidgetForm(LiveUpdateForm):
         return ["table", "kind", "description"]
 
     def get_live_formsets(self):
-        return [FilterFormset, ValueFormset]
+        formsets = [FilterFormset]
+        if self.instance.kind != Widget.Kind.TABLE:
+            formsets += [ValueFormset]
+        return formsets
 
 
 class TwoDimensionForm(GenericWidgetForm):
