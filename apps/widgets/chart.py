@@ -51,7 +51,11 @@ def to_multi_value_data(widget, df):
     values = widget.values.all()
     return {
         "categories": [
-            {"category": [{"label": label} for label in df[widget.label].to_list()]}
+            {
+                "category": [
+                    {"label": str(label)} for label in df[widget.label].to_list()
+                ]
+            }
         ],
         "dataset": [
             {
