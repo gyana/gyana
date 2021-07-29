@@ -4,7 +4,8 @@ import analytics
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
 from apps.utils.formset_update_view import FormsetUpdateView
-from apps.utils.segment_analytics import WIDGET_CONFIGURED_EVENT, WIDGET_CREATED_EVENT
+from apps.utils.segment_analytics import (WIDGET_CONFIGURED_EVENT,
+                                          WIDGET_CREATED_EVENT)
 from apps.widgets.serializers import WidgetSerializer
 from apps.widgets.visuals import chart_to_output, table_to_output
 from django.db import transaction
@@ -18,9 +19,11 @@ from django_tables2.views import SingleTableMixin
 from rest_framework import mixins, viewsets
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
-from turbo_response.views import TurboCreateView, TurboStreamDeleteView
+from turbo_response.views import (TurboCreateView, TurboStreamDeleteView,
+                                  TurboUpdateView)
 
-from .forms import FilterFormset, ValueFormset, WidgetConfigForm, WidgetDuplicateForm
+from .forms import (FilterFormset, ValueFormset, WidgetConfigForm,
+                    WidgetDuplicateForm)
 from .models import WIDGET_CHOICES_ARRAY, Widget
 
 
@@ -97,7 +100,7 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
         )
 
 
-class WidgetDetail(DashboardMixin, UpdateView):
+class WidgetDetail(DashboardMixin, TurboUpdateView):
     template_name = "widgets/detail.html"
     model = Widget
     form_class = WidgetDuplicateForm

@@ -36,8 +36,13 @@ urlpatterns = [
         name="delete",
     ),
     path(
-        "<hashid:pk>/members",
-        login_and_team_required(views.TeamMembers.as_view()),
+        "<hashid:team_id>/members",
+        views.MembershipList.as_view(),
         name="members",
+    ),
+    path(
+        "<hashid:team_id>/members/<hashid:pk>/update",
+        login_and_team_required(views.MembershipUpdate.as_view()),
+        name="members-update",
     ),
 ]

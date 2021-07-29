@@ -4,15 +4,13 @@ import analytics
 from apps.dashboards.serializers import DashboardSerializer
 from apps.dashboards.tables import DashboardTable
 from apps.projects.mixins import ProjectMixin
-from apps.utils.segment_analytics import (
-    DASHBOARD_CREATED_EVENT,
-    DASHBOARD_DUPLICATED_EVENT,
-)
+from apps.utils.segment_analytics import (DASHBOARD_CREATED_EVENT,
+                                          DASHBOARD_DUPLICATED_EVENT)
 from apps.widgets.models import WIDGET_CHOICES_ARRAY
 from django.db.models.query import QuerySet
 from django.urls.base import reverse
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import DeleteView, UpdateView
+from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from rest_framework import generics
 from turbo_response.views import TurboCreateView, TurboUpdateView
@@ -93,7 +91,7 @@ class DashboardDelete(ProjectMixin, DeleteView):
         return reverse("project_dashboards:list", args=(self.project.id,))
 
 
-class DashboardDuplicate(UpdateView):
+class DashboardDuplicate(TurboUpdateView):
     template_name = "dashboards/duplicate.html"
     model = Dashboard
     fields = []
@@ -124,7 +122,7 @@ class DashboardDuplicate(UpdateView):
         return reverse("project_dashboards:list", args=(self.object.project.id,))
 
 
-class DashboardShare(UpdateView):
+class DashboardShare(TurboUpdateView):
     template_name = "dashboards/share.html"
     model = Dashboard
     fields = []

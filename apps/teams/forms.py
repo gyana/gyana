@@ -4,7 +4,7 @@ from apps.utils.segment_analytics import SIGNED_UP_EVENT, identify_user
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Team
+from .models import Membership, Team
 
 
 class TeamSignupForm(SignupForm):
@@ -21,3 +21,9 @@ class TeamChangeForm(forms.ModelForm):
     class Meta:
         model = Team
         fields = ("name",)
+
+
+class MembershipUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Membership
+        fields = ("role",)
