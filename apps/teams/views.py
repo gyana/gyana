@@ -1,13 +1,16 @@
+from apps.teams.mixins import TeamMixin
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DeleteView, DetailView, UpdateView
-from turbo_response.views import TurboCreateView
+from django.views.generic import DeleteView, DetailView
+from django_tables2.views import SingleTableView
+from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .forms import TeamChangeForm
-from .models import Team
+from .forms import MembershipUpdateForm, TeamChangeForm
+from .models import Membership, Team
+from .tables import TeamMembershipTable
 
 
 class TeamCreate(LoginRequiredMixin, TurboCreateView):
@@ -25,10 +28,11 @@ class TeamCreate(LoginRequiredMixin, TurboCreateView):
         return reverse("teams:detail", args=(self.object.id,))
 
 
-class TeamUpdate(LoginRequiredMixin, UpdateView):
+class TeamUpdate(LoginRequiredMixin, TurboUpdateView):
     template_name = "teams/update.html"
     form_class = TeamChangeForm
     model = Team
+    pk_url_kwarg = "team_id"
 
     def get_success_url(self) -> str:
         return reverse("teams:update", args=(self.object.id,))
@@ -37,6 +41,7 @@ class TeamUpdate(LoginRequiredMixin, UpdateView):
 class TeamDelete(LoginRequiredMixin, DeleteView):
     template_name = "teams/delete.html"
     model = Team
+    pk_url_kwarg = "team_id"
 
     def get_success_url(self) -> str:
         return reverse("web:home")
@@ -45,6 +50,7 @@ class TeamDelete(LoginRequiredMixin, DeleteView):
 class TeamDetail(DetailView):
     template_name = "teams/detail.html"
     model = Team
+    pk_url_kwarg = "team_id"
 
     def get_context_data(self, **kwargs):
         from apps.projects.models import Project
@@ -60,14 +66,28 @@ class TeamDetail(DetailView):
         return context
 
 
-class TeamMembers(DetailView):
-    template_name = "teams/members.html"
-    model = Team
+class MembershipList(TeamMixin, SingleTableView):
+    template_name = "members/list.html"
+    model = Membership
+    table_class = TeamMembershipTable
+    paginate_by = 20
 
-    def get_context_data(self, **kwargs):
-        from .tables import TeamMembersTable
+    def get_queryset(self):
+        return Membership.objects.filter(team=self.team).all()
 
-        context = super().get_context_data(**kwargs)
-        context["team_members"] = TeamMembersTable(self.object.members.all())
 
-        return context
+class MembershipUpdate(TeamMixin, TurboUpdateView):
+    template_name = "members/update.html"
+    model = Membership
+    form_class = MembershipUpdateForm
+
+    def get_success_url(self) -> str:
+        return reverse("team_members:list", args=(self.team.id,))
+
+
+class MembershipDelete(TeamMixin, DeleteView):
+    template_name = "members/delete.html"
+    model = Membership
+
+    def get_success_url(self) -> str:
+        return reverse("team_members:list", args=(self.team.id,))

@@ -11,7 +11,7 @@ from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
 from django.urls import reverse
 from django.views.generic import DetailView
-from django.views.generic.edit import DeleteView, UpdateView
+from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
@@ -100,7 +100,7 @@ class WorkflowLastRun(DetailView):
     model = Workflow
 
 
-class WorkflowDuplicate(UpdateView):
+class WorkflowDuplicate(TurboUpdateView):
     template_name = "workflows/duplicate.html"
     model = Workflow
     fields = []

@@ -15,9 +15,9 @@
      href="{% url 'teams:detail' team.id %}">
     Projects
   </a>
-  <a class="tabbar__link {% if request.resolver_match.url_name == 'members' %} tabbar__link--active {% endif %}"
-     href="{% url 'teams:members' team.id %}">Members</a>
   {% if request.user|is_admin_of:team %}
+  <a class="tabbar__link {% if request.resolver_match.url_name == 'members' %} tabbar__link--active {% endif %}"
+     href="{% url 'team_members:list' team.id %}">Members</a>
     <a class="tabbar__link {% if request.resolver_match.app_name == 'team_invites' %} tabbar__link--active {% endif %}"
       href="{% url 'team_invites:list' team.id %}">Invites</a>
   <a class="tabbar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'update' %} tabbar__link--active {% endif %}"

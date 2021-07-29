@@ -122,4 +122,49 @@ describe('teams', () => {
         .should('eq', 410)
     })
   })
+  it('change member role and check restricted permissions', () => {
+    cy.visit('/')
+
+    cy.contains('Members').click()
+
+    cy.contains('member@gyana.com').click()
+
+    cy.get('select').select('Member')
+    cy.get('button[type=submit]').click()
+
+    cy.logout()
+    cy.login('member@gyana.com', 'seewhatmatters')
+
+    cy.visit('/')
+
+    cy.wrap(['Members', 'Invites', 'Settings']).each((page) =>
+      cy.contains(page).should('not.exist')
+    )
+
+    cy.wrap(['members', 'invites', 'update']).each((url) => {
+      cy.request({ url: `/teams/1/${url}`, failOnStatusCode: false })
+        .then((response) => response.status)
+        .should('eq', 404)
+    })
+  })
+  it('remove member', () => {
+    cy.visit('/teams/1/members')
+
+    cy.contains('member@gyana.com').click()
+
+    cy.contains('Delete').click()
+    cy.contains('Yes').click()
+
+    cy.contains('member@gyana.com').should('not.exist')
+
+    cy.logout()
+    cy.login('member@gyana.com', 'seewhatmatters')
+
+    cy.visit('/')
+    cy.contains('Vayu').should('not.exist')
+
+    cy.request({ url: '/teams/1', failOnStatusCode: false })
+      .then((response) => response.status)
+      .should('eq', 404)
+  })
 })

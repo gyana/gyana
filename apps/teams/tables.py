@@ -1,22 +1,29 @@
-from apps.users.models import CustomUser
 from apps.projects.models import Project
+from apps.teams.models import Membership
+from apps.users.models import CustomUser
 from apps.utils.table import NaturalDatetimeColumn
-from django_tables2 import Column, Table
+from django_tables2 import Column, LinkColumn, Table
+from django_tables2.utils import A
 
 
-class TeamMembersTable(Table):
+class TeamMembershipTable(Table):
     class Meta:
-        model = CustomUser
+        model = Membership
         attrs = {"class": "table"}
         fields = (
-            "email",
-            "last_login",
-            "date_joined",
+            A("user__email"),
+            A("user__last_login"),
+            A("user__date_joined"),
         )
 
-    email = Column(verbose_name="Email")
-    last_login = NaturalDatetimeColumn()
-    date_joined = NaturalDatetimeColumn()
+    user__email = LinkColumn(
+        verbose_name="Email",
+        viewname="team_members:update",
+        args=(A("team__id"), A("id")),
+    )
+    user__last_login = NaturalDatetimeColumn(verbose_name="Last login")
+    user__date_joined = NaturalDatetimeColumn(verbose_name="Date joined")
+
 
 class TeamProjectsTable(Table):
     class Meta:

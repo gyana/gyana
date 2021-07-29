@@ -19,7 +19,7 @@ from django_tables2.views import SingleTableMixin
 from rest_framework import mixins, viewsets
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
-from turbo_response.views import TurboCreateView, TurboStreamDeleteView
+from turbo_response.views import TurboCreateView, TurboStreamDeleteView, TurboUpdateView
 
 from .forms import FORMS, FilterFormset, ValueFormset, WidgetDuplicateForm
 from .models import WIDGET_CHOICES_ARRAY, Widget
@@ -98,7 +98,7 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
         )
 
 
-class WidgetDetail(DashboardMixin, UpdateView):
+class WidgetDetail(DashboardMixin, TurboUpdateView):
     template_name = "widgets/detail.html"
     model = Widget
     form_class = WidgetDuplicateForm
