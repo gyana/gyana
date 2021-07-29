@@ -32,6 +32,7 @@ class TeamUpdate(LoginRequiredMixin, TurboUpdateView):
     template_name = "teams/update.html"
     form_class = TeamChangeForm
     model = Team
+    pk_url_kwarg = "team_id"
 
     def get_success_url(self) -> str:
         return reverse("teams:update", args=(self.object.id,))
@@ -40,6 +41,7 @@ class TeamUpdate(LoginRequiredMixin, TurboUpdateView):
 class TeamDelete(LoginRequiredMixin, DeleteView):
     template_name = "teams/delete.html"
     model = Team
+    pk_url_kwarg = "team_id"
 
     def get_success_url(self) -> str:
         return reverse("web:home")
@@ -48,6 +50,7 @@ class TeamDelete(LoginRequiredMixin, DeleteView):
 class TeamDetail(DetailView):
     template_name = "teams/detail.html"
     model = Team
+    pk_url_kwarg = "team_id"
 
     def get_context_data(self, **kwargs):
         from apps.projects.models import Project
@@ -64,7 +67,7 @@ class TeamDetail(DetailView):
 
 
 class MembershipList(TeamMixin, SingleTableView):
-    template_name = "teams/members.html"
+    template_name = "members/list.html"
     model = Membership
     table_class = TeamMembershipTable
     paginate_by = 20
@@ -74,11 +77,14 @@ class MembershipList(TeamMixin, SingleTableView):
 
 
 class MembershipUpdate(TeamMixin, TurboUpdateView):
-    template_name = "teams/membership_update.html"
+    template_name = "members/update.html"
     model = Membership
     form_class = MembershipUpdateForm
 
     def get_success_url(self) -> str:
-        return reverse("teams:members", args=(self.team.id,))
+        return reverse("teams:members:list", args=(self.team.id,))
+
 
 class MembershipDelete(TeamMixin, DeleteView):
+    template_name = "members/delete.html"
+    model = Membership
