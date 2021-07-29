@@ -8,5 +8,5 @@ class UserConfig(AppConfig):
     label = "users"
 
     def ready(self):
-        analytics.debug = settings.DEBUG and settings.SEGMENT_ANALYTICS_WRITE_KEY
+        analytics.debug = bool(settings.DEBUG and settings.SEGMENT_ANALYTICS_WRITE_KEY)
         analytics.write_key = settings.SEGMENT_ANALYTICS_WRITE_KEY or ""
