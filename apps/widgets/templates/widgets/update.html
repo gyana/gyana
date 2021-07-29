@@ -35,20 +35,7 @@
         {% csrf_token %}
 
         {% include "django/forms/default_form.html" %}
-
-        {% if values_formset %}
-        <fieldset>
-          <label>Add values</label>
-          {% include "components/formset.html" with formset=values_formset %}
-        </fieldset>
-        {% endif %}
-
-        {% if filters_formset %}
-        <fieldset>
-          <label>Add filters</label>
-          {% include "components/formset.html" with formset=filters_formset %}
-        </fieldset>
-        {% endif %}
+        
         <div class="flex flex-1 gap-7">
           <input
                  type="submit"

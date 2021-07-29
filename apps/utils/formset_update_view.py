@@ -31,10 +31,10 @@ class FormsetUpdateView(TurboUpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        for formset in self.formsets:
-            context[
-                f"{formset.get_default_prefix()}_formset"
-            ] = self.get_formset_instance(formset)
+        context["formsets"] = {
+            formset.get_default_prefix(): self.get_formset_instance(formset)
+            for formset in self.formsets
+        }
 
         return context
 

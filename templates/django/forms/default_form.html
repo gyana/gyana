@@ -35,6 +35,13 @@
 </div>
 {% endfor %}
 
+{% for key, formset in formsets.items %}
+  <fieldset>
+    <label>Add {{ key }}</label>
+    {% include "components/formset.html" with formset=formset %}
+  </fieldset>
+{% endfor %}
+
 {% for error in form.non_field_errors %}
 <p class="text-red">
   {{ error|escape }}
