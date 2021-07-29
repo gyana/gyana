@@ -21,7 +21,7 @@ from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 from turbo_response.views import TurboCreateView, TurboStreamDeleteView, TurboUpdateView
 
-from .forms import FORMS, FilterFormset, ValueFormset, WidgetDuplicateForm
+from .forms import FORMS, WidgetDuplicateForm
 from .models import WIDGET_CHOICES_ARRAY, Widget
 
 
