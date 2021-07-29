@@ -54,8 +54,6 @@ class TwoDimensionForm(GenericWidgetForm):
         if schema and "label" in self.fields:
             columns = [(column, column) for column in schema]
             self.fields["label"].choices = columns
-            if "z" in self.fields:
-                self.fields["z"].choices = columns
 
     def get_live_fields(self):
         fields = super().get_live_fields()
