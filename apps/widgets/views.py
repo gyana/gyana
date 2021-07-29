@@ -21,7 +21,7 @@ from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 from turbo_response.views import TurboCreateView, TurboStreamDeleteView
 
-from .forms import FilterFormset, ValueFormset, WidgetConfigForm, WidgetDuplicateForm
+from .forms import FORMS, FilterFormset, ValueFormset, WidgetDuplicateForm
 from .models import WIDGET_CHOICES_ARRAY, Widget
 
 
@@ -121,11 +121,13 @@ class WidgetDetail(DashboardMixin, UpdateView):
 class WidgetUpdate(DashboardMixin, FormsetUpdateView):
     template_name = "widgets/update.html"
     model = Widget
-    form_class = WidgetConfigForm
 
     @property
     def formsets(self):
         return [FilterFormset, ValueFormset]
+
+    def get_form_class(self):
+        return FORMS[self.request.POST.get("kind") or self.object.kind]
 
     def get_formset_kwargs(self, formset):
         table = self.request.POST.get("table") or getattr(self.object, "table")

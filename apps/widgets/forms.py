@@ -11,8 +11,7 @@ from django.forms.models import BaseInlineFormSet
 from .models import MULTI_VALUES_CHARTS, MultiValues, Widget
 
 
-class WidgetConfigForm(LiveUpdateForm):
-
+class GenericWidgetForm(LiveUpdateForm):
     label = forms.ChoiceField(choices=())
     z = forms.ChoiceField(choices=())
 
@@ -36,13 +35,21 @@ class WidgetConfigForm(LiveUpdateForm):
 
         super().__init__(*args, **kwargs)
 
-        table = self.get_live_field("table")
-        schema = Table.objects.get(pk=table).schema if table else None
-
         if project:
             self.fields["table"].queryset = Table.objects.filter(
                 project=project
             ).exclude(source="intermediate_node")
+
+    def get_live_fields(self):
+        return ["table", "kind", "description"]
+
+
+class TwoDimensionForm(GenericWidgetForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        table = self.get_live_field("table")
+        schema = Table.objects.get(pk=table).schema if table else None
 
         if schema and "label" in self.fields:
             columns = [(column, column) for column in schema]
@@ -51,24 +58,50 @@ class WidgetConfigForm(LiveUpdateForm):
                 self.fields["z"].choices = columns
 
     def get_live_fields(self):
+        fields = super().get_live_fields()
+        table = self.get_live_field("table")
 
-        fields = ["table", "kind", "description"]
+        if table:
+            fields += ["sort_by", "sort_ascending", "label", "aggregator"]
+        return fields
+
+
+class ThreeDimensionForm(GenericWidgetForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         table = self.get_live_field("table")
-        kind = self.get_live_field("kind")
+        schema = Table.objects.get(pk=table).schema if table else None
 
-        if table and kind and kind != Widget.Kind.TABLE:
-            fields += [
-                "sort_by",
-                "sort_ascending",
-                "label",
-                "aggregator",
-            ]
+        if schema:
+            columns = [(column, column) for column in schema]
+            self.fields["label"].choices = columns
+            self.fields["z"].choices = columns
 
-            if kind in [Widget.Kind.BUBBLE, Widget.Kind.HEATMAP]:
-                fields += ["z"]
+    def get_live_fields(self):
+        fields = super().get_live_fields()
+        table = self.get_live_field("table")
 
+        if table:
+            fields += ["sort_by", "sort_ascending", "label", "aggregator", "z"]
         return fields
+
+
+FORMS = {
+    Widget.Kind.TABLE: GenericWidgetForm,
+    Widget.Kind.BAR: TwoDimensionForm,
+    Widget.Kind.COLUMN: TwoDimensionForm,
+    Widget.Kind.LINE: TwoDimensionForm,
+    Widget.Kind.PIE: TwoDimensionForm,
+    Widget.Kind.AREA: TwoDimensionForm,
+    Widget.Kind.DONUT: TwoDimensionForm,
+    Widget.Kind.SCATTER: TwoDimensionForm,
+    Widget.Kind.FUNNEL: TwoDimensionForm,
+    Widget.Kind.PYRAMID: TwoDimensionForm,
+    Widget.Kind.RADAR: TwoDimensionForm,
+    Widget.Kind.HEATMAP: ThreeDimensionForm,
+    Widget.Kind.BUBBLE: ThreeDimensionForm,
+}
 
 
 class ValueForm(SchemaFormMixin, LiveUpdateForm):
