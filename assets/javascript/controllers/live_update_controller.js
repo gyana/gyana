@@ -37,6 +37,11 @@ export default class extends Controller {
 
     // manually POST the form and get HTML response
     const data = new FormData(form)
+
+    form.querySelectorAll('input[type=checkbox]:not(:checked)').forEach((el) => {
+      data.append(el.name, false)
+    })
+
     this.loadingTarget.classList.remove('hidden')
 
     this.disable(event)

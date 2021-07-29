@@ -53,7 +53,7 @@ class Widget(CloneMixin, BaseModel):
 
     description = models.CharField(max_length=255, null=True, blank=True)
     sort_by = models.CharField(
-        max_length=12, choices=(("label", "Label"), ("value", "Value")), default="value"
+        max_length=12, choices=(("label", "Label"), ("value", "Value")), default="label"
     )
     sort_ascending = models.BooleanField(default=True)
 
