@@ -17,7 +17,9 @@ class Widget(CloneMixin, BaseModel):
         TABLE = "table", "Table"
         # using fusioncharts name for database
         COLUMN = "mscolumn2d", "Column"
+        STACKED_COLUMN = "stackedcolumn2d", "Stacked Column"
         BAR = "msbar2d", "Bar"
+        STACKED_BAR = "stackedbar2d", "Stacked Bar"
         LINE = "msline", "Line"
         PIE = "pie2d", "Pie"
         AREA = "area2d", "Area"
@@ -102,7 +104,9 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.TEXT.value: ("fa-text",),
     Widget.Kind.TABLE.value: ("fa-table",),
     Widget.Kind.COLUMN.value: ("fa-chart-bar",),
+    Widget.Kind.STACKED_COLUMN.value: ("fa-chart-bar",),
     Widget.Kind.BAR.value: ("fa-chart-bar",),
+    Widget.Kind.STACKED_BAR.value: ("fa-chart-bar",),
     Widget.Kind.LINE.value: ("fa-chart-line",),
     Widget.Kind.PIE.value: ("fa-chart-pie",),
     Widget.Kind.AREA.value: ("fa-chart-area",),

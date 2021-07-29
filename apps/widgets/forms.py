@@ -85,10 +85,36 @@ class ThreeDimensionForm(GenericWidgetForm):
         return fields
 
 
+class StackedChartForm(GenericWidgetForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        table = self.get_live_field("table")
+        schema = Table.objects.get(pk=table).schema if table else None
+
+        if schema:
+            columns = [(column, column) for column in schema]
+            self.fields["label"].choices = columns
+            self.fields["z"].choices = [("", "No column selected"), *columns]
+            # Can't overwrite label in Meta because we would have to overwrite the whole thing
+            self.fields["z"].label = "Colour"
+            self.fields["z"].required = False
+
+    def get_live_fields(self):
+        fields = super().get_live_fields()
+        table = self.get_live_field("table")
+
+        if table:
+            fields += ["sort_by", "sort_ascending", "label", "aggregator", "z"]
+        return fields
+
+
 FORMS = {
     Widget.Kind.TABLE: GenericWidgetForm,
     Widget.Kind.BAR: TwoDimensionForm,
+    Widget.Kind.STACKED_COLUMN: StackedChartForm,
     Widget.Kind.COLUMN: TwoDimensionForm,
+    Widget.Kind.STACKED_BAR: StackedChartForm,
     Widget.Kind.LINE: TwoDimensionForm,
     Widget.Kind.PIE: TwoDimensionForm,
     Widget.Kind.AREA: TwoDimensionForm,

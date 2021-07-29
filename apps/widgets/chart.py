@@ -157,6 +157,24 @@ def to_heatmap(widget, df):
     }
 
 
+def to_stack(widget, df):
+    pivoted = df.pivot(
+        index=widget.label, columns=widget.z, values=widget.values.first().column
+    )
+    return {
+        "categories": [
+            {"category": [{"label": str(label)} for label in pivoted.index]}
+        ],
+        "dataset": [
+            {
+                "seriesname": str(color),
+                "data": [{"value": value} for value in pivoted[color].to_list()],
+            }
+            for color in pivoted.columns
+        ],
+    }
+
+
 CHART_DATA = {
     Widget.Kind.BUBBLE: to_bubble,
     Widget.Kind.HEATMAP: to_heatmap,
@@ -167,7 +185,9 @@ CHART_DATA = {
     Widget.Kind.PIE: to_single_value,
     Widget.Kind.DONUT: to_single_value,
     Widget.Kind.COLUMN: to_multi_value_data,
+    Widget.Kind.STACKED_COLUMN: to_stack,
     Widget.Kind.BAR: to_multi_value_data,
+    Widget.Kind.STACKED_BAR: to_stack,
     Widget.Kind.AREA: to_multi_value_data,
     Widget.Kind.LINE: to_multi_value_data,
 }

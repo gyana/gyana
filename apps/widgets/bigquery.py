@@ -23,11 +23,16 @@ def get_query_from_widget(widget: Widget):
     if widget.kind in [Widget.Kind.BUBBLE, Widget.Kind.HEATMAP]:
         values += [widget.z]
 
+    groups = [widget.label]
+
+    if widget.kind in [Widget.Kind.STACKED_BAR, Widget.Kind.STACKED_COLUMN]:
+        groups += [widget.z]
+
     if widget.aggregator == Widget.Aggregator.NONE:
-        return _sort(query.projection([widget.label, *values]), widget)
+        return _sort(query.projection([*groups, *values]), widget)
 
     return _sort(
-        query.group_by(widget.label).aggregate(
+        query.group_by(groups).aggregate(
             [getattr(query[value], widget.aggregator)().name(value) for value in values]
         ),
         widget,
