@@ -1,3 +1,4 @@
+import json
 import time
 import uuid
 
@@ -176,12 +177,15 @@ class FivetranClient:
         return res
 
 
-class MockFivetranClient(FivetranClient):
+class MockFivetranClient:
     def create(self, service, team_id):
         return {
             "fivetran_id": settings.MOCK_FIVETRAN_ID,
             "schema": settings.MOCK_FIVETRAN_SCHEMA,
         }
+
+    def start(self, fivetran_id):
+        pass
 
     def authorize(self, fivetran_id, redirect_uri):
         return redirect(redirect_uri)
@@ -191,6 +195,15 @@ class MockFivetranClient(FivetranClient):
         integration.historical_sync_complete = True
         integration.save()
 
+    def get_schema(self, fivetran_id):
+        with open('cypress/fixtures/google_analytics_schema.json', 'r') as f:
+            return json.load(f)
+
+    def update_schema(self, fivetran_id, updated_checkboxes):
+        pass
+
+    def update_table_config(self, fivetran_id, schema, table_name: str, enabled: bool):
+        pass
 
 if settings.MOCK_FIVETRAN:
     FivetranClient = MockFivetranClient
