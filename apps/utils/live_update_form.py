@@ -6,15 +6,18 @@ class LiveUpdateForm(forms.ModelForm):
 
     hidden_live = forms.CharField(widget=forms.HiddenInput(), required=True)
 
-    def update_data(self):
+    def _update_data_with_initial(self):
         """Updates the form's data missing fields with the initial values.
 
         Because LiveForms don't hold data for fields that haven't been displayed,
         we need to manually add these values."""
+        # self.data hold data from request.POST and can be a MultiValueDict or a QueryDict
         data = MultiValueDict({**self.data})
         for field in self.get_live_fields():
-            #
-            if field not in self.data and self.initial.get(field):
+            # self.initial is a dict holding the model data that
+            # For the additional formset rows that added as placeholders
+            # self.initial is empty.
+            if field not in self.data and self.initial.get(field) is not None:
                 data[field] = self.initial[field]
             # HTML forms usually just omit unchecked checkboxes
             # For us this is undistinguishable from the field not having been shown before
@@ -38,7 +41,7 @@ class LiveUpdateForm(forms.ModelForm):
 
         # the rendered fields are determined by the values of the other fields
         live_fields = self.get_live_fields()
-        self.update_data()
+        self._update_data_with_initial()
         # - when the Stimulus controller makes a POST request, it will always be invalid
         # and re-render the same form with the updated values
         # - when the form is valid and the user clicks a submit button, the live field is
@@ -53,13 +56,13 @@ class LiveUpdateForm(forms.ModelForm):
         return "submit" not in self.data
 
     def get_live_field(self, name):
-
+        # potentially called before self._update_data_with_initial
         # formset data is prefixed
         key_ = f"{self.prefix}-{name}" if self.prefix else name
 
         # data populated by POST request in update
-        # is also populated by initial data from the database
-        # in the init method
+        # as a fallback we are using the database value
+
         return self.data.get(key_) or getattr(self.instance, name)
 
     def get_live_fields(self):
