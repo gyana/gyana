@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.urls import include, path
+from django.urls import path
 
 from . import views
 from .access import login_and_team_required
