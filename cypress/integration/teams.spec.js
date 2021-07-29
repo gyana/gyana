@@ -147,4 +147,24 @@ describe('teams', () => {
         .should('eq', 404)
     })
   })
+  it('remove member', () => {
+    cy.visit('/teams/1/members')
+
+    cy.contains('member@gyana.com').click()
+
+    cy.contains('Delete').click()
+    cy.contains('Yes').click()
+
+    cy.contains('member@gyana.com').should('not.exist')
+
+    cy.logout()
+    cy.login('member@gyana.com', 'seewhatmatters')
+
+    cy.visit('/')
+    cy.contains('Vayu').should('not.exist')
+
+    cy.request({ url: '/teams/1', failOnStatusCode: false })
+      .then((response) => response.status)
+      .should('eq', 404)
+  })
 })

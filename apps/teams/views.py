@@ -88,3 +88,6 @@ class MembershipUpdate(TeamMixin, TurboUpdateView):
 class MembershipDelete(TeamMixin, DeleteView):
     template_name = "members/delete.html"
     model = Membership
+
+    def get_success_url(self) -> str:
+        return reverse("team_members:list", args=(self.team.id,))
