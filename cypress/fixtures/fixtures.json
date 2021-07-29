@@ -10,6 +10,11 @@
     "fields": { "user": 3, "email": "alone@gyana.com", "verified": false, "primary": true }
   },
   {
+    "model": "account.emailaddress",
+    "pk": 3,
+    "fields": { "user": 4, "email": "member@gyana.com", "verified": false, "primary": true }
+  },
+  {
     "model": "socialaccount.socialapp",
     "pk": 1,
     "fields": {
@@ -26,7 +31,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-07-27T12:36:09.782Z",
+      "last_login": "2021-07-29T09:32:34.862Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -79,6 +84,25 @@
     }
   },
   {
+    "model": "users.customuser",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$mzRk8DimFweyuPdaz1ZpOr$Wm/yfXGSKaJwG9zGEsLxLlWhsn8x0PRZCEWIrd7d8po=",
+      "last_login": "2021-07-29T09:34:08.397Z",
+      "is_superuser": false,
+      "username": "member",
+      "first_name": "",
+      "last_name": "",
+      "email": "member@gyana.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2021-07-29T09:34:08.258Z",
+      "avatar": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
     "model": "teams.team",
     "pk": 1,
     "fields": {
@@ -96,6 +120,17 @@
       "team": 1,
       "user": 1,
       "role": "admin"
+    }
+  },
+  {
+    "model": "teams.membership",
+    "pk": 2,
+    "fields": {
+      "created": "2021-07-29T09:34:08.392Z",
+      "updated": "2021-07-29T09:34:08.392Z",
+      "team": 1,
+      "user": 4,
+      "role": "member"
     }
   },
   {
@@ -149,6 +184,21 @@
       "intermediate_node": null,
       "num_rows": 15,
       "data_updated": "2021-07-27T13:17:27.679Z"
+    }
+  },
+  {
+    "model": "invites.invite",
+    "pk": 1,
+    "fields": {
+      "accepted": true,
+      "key": "ygr7agub5cippprocdbilirifuxzikuzrifk3cjur0pbdlovqv7mym5loz8mgtsm",
+      "sent": "2021-07-29T09:32:54.990Z",
+      "inviter": 1,
+      "email": "member@gyana.com",
+      "team": 1,
+      "role": "member",
+      "created": "2021-07-29T09:32:54.971Z",
+      "updated": "2021-07-29T09:33:49.004Z"
     }
   }
 ]
