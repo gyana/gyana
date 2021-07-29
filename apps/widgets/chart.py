@@ -25,6 +25,7 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
 
     dataSource = {
         "chart": {
+            "stack100Percent": "1" if widget.stack_100_percent else "0",
             "theme": "fusion",
             "xAxisName": widget.label,
             "yAxisName": widget.values.first().column,

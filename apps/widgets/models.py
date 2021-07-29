@@ -81,6 +81,8 @@ class Widget(CloneMixin, BaseModel):
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
     )
 
+    stack_100_percent = models.BooleanField(default=False)
+
     def __str__(self):
         return f"<Widget {self.kind} on {self.table}>"
 

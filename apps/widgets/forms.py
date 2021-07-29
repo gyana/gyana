@@ -26,6 +26,7 @@ class GenericWidgetForm(LiveUpdateForm):
             "z",
             "sort_by",
             "sort_ascending",
+            "stack_100_percent",
         ]
         widgets = {"kind": VisualSelect(), "table": SourceSelect()}
 
@@ -81,7 +82,13 @@ class ThreeDimensionForm(GenericWidgetForm):
         table = self.get_live_field("table")
 
         if table:
-            fields += ["sort_by", "sort_ascending", "label", "aggregator", "z"]
+            fields += [
+                "sort_by",
+                "sort_ascending",
+                "label",
+                "aggregator",
+                "z",
+            ]
         return fields
 
 
@@ -105,7 +112,14 @@ class StackedChartForm(GenericWidgetForm):
         table = self.get_live_field("table")
 
         if table:
-            fields += ["sort_by", "sort_ascending", "label", "aggregator", "z"]
+            fields += [
+                "sort_by",
+                "sort_ascending",
+                "label",
+                "aggregator",
+                "z",
+                "stack_100_percent",
+            ]
         return fields
 
 
