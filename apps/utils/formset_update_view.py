@@ -6,6 +6,26 @@ from django.forms.utils import ErrorDict
 from django.http.response import HttpResponse
 from turbo_response.views import TurboUpdateView
 
+# temporary overrides for formset labels
+FORMSET_LABELS = {
+    "columns": "Columns",
+    "aggregations": "Aggregrations",
+    "sort_columns": "Sort columns",
+    "edit_columns": "Edit columns",
+    "add_columns": "Add columns",
+    "rename_columns": "Rename columns",
+    "formula_columns": "Formula columns",
+    "filters": "Filters",
+    "secondary_columns": "Select specific columns",
+    "window_columns": "Window columns",
+    "values": "Values",
+}
+
+
+def _get_formset_label(formset):
+    prefix = formset.get_default_prefix()
+    return FORMSET_LABELS.get(prefix, prefix)
+
 
 class FormsetUpdateView(TurboUpdateView):
     @cached_property
@@ -41,7 +61,7 @@ class FormsetUpdateView(TurboUpdateView):
         context = super().get_context_data(**kwargs)
 
         context["formsets"] = {
-            formset.get_default_prefix(): self.get_formset_instance(formset)
+            _get_formset_label(formset): self.get_formset_instance(formset)
             for formset in self.formsets
         }
 

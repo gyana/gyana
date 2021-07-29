@@ -35,9 +35,9 @@
 </div>
 {% endfor %}
 
-{% for key, formset in formsets.items %}
+{% for label, formset in formsets.items %}
   <fieldset>
-    <label>Add {{ key }}</label>
+    <label>{{ label }}</label>
     {% include "components/formset.html" with formset=formset %}
   </fieldset>
 {% endfor %}

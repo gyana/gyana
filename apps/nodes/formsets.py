@@ -38,6 +38,7 @@ FunctionColumnFormSet = forms.inlineformset_factory(
 ColumnFormSet = forms.inlineformset_factory(
     Node,
     Column,
+    form=LiveUpdateForm,
     fields=("column",),
     extra=0,
     can_delete=True,
@@ -86,6 +87,7 @@ FormulaColumnFormSet = forms.inlineformset_factory(
 RenameColumnFormSet = forms.inlineformset_factory(
     Node,
     RenameColumn,
+    form=LiveUpdateForm,
     fields=("column", "new_name"),
     can_delete=True,
     extra=0,
