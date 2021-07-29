@@ -2,6 +2,7 @@ from functools import cached_property
 
 from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column
+from apps.nodes.formsets import KIND_TO_FORMSETS
 from apps.tables.models import Table
 from apps.utils.live_update_form import LiveUpdateForm
 from django import forms
@@ -21,6 +22,9 @@ class NodeForm(LiveUpdateForm):
         """Returns the schema for the first parent."""
         parent = self.instance.parents.first()
         return parent.schema if parent else {}
+
+    def get_live_formsets(self):
+        return KIND_TO_FORMSETS.get(self.instance.kind, [])
 
 
 class DefaultNodeForm(NodeForm):

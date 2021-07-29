@@ -3,12 +3,9 @@ from functools import cached_property
 
 import coreapi
 from apps.utils.formset_update_view import FormsetUpdateView
-from apps.utils.segment_analytics import (
-    NODE_CONNECTED_EVENT,
-    NODE_CREATED_EVENT,
-    NODE_UPDATED_EVENT,
-    track_node,
-)
+from apps.utils.segment_analytics import (NODE_CONNECTED_EVENT,
+                                          NODE_CREATED_EVENT,
+                                          NODE_UPDATED_EVENT, track_node)
 from apps.utils.table_data import get_table
 from django import forms, template
 from django.http.response import HttpResponse
@@ -27,7 +24,6 @@ from turbo_response.views import TurboUpdateView
 
 from .bigquery import get_query_from_node
 from .forms import KIND_TO_FORM
-from .formsets import KIND_TO_FORMSETS
 from .models import NODE_CONFIG, Node
 from .serializers import NodeSerializer
 
@@ -84,10 +80,6 @@ class NodeName(TurboUpdateView):
 class NodeUpdate(FormsetUpdateView):
     template_name = "nodes/update.html"
     model = Node
-
-    @cached_property
-    def formsets(self):
-        return KIND_TO_FORMSETS.get(self.object.kind, [])
 
     def get_formset_kwargs(self, formset):
 
