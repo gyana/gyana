@@ -8,7 +8,7 @@ import 'codemirror/addon/display/placeholder.js'
 import 'codemirror/addon/lint/lint.js'
 
 // TODO: can we make this not relative ?
-const functions = require('../../../apps/columns/functions.json')
+const functions = require('../../functions.json')
 
 export default class extends Controller {
   static targets = ['textarea']
