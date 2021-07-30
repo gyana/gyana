@@ -19,7 +19,7 @@
     <div class="flex flex-wrap gap-7">
       <div class="flex-1 overflow-hidden">
         <div class="flex mb-3">
-          <h2>Integrations</h2>
+          <h3>Recent Integrations</h3>
         </div>
 
         <div class="card card--none flex-1 overflow-auto">
@@ -39,7 +39,7 @@
 
       <div class="flex-1 overflow-hidden">
         <div class="flex mb-3">
-          <h2>Workflows</h2>
+          <h3>Recent Workflows</h3>
         </div>
 
         <div class="card card--none flex-1 overflow-auto">
@@ -68,10 +68,10 @@
 
     <div>
       <div class="flex mb-3">
-        <h3>Dashboards</h3>
+        <h3>Recent Dashboards</h3>
       </div>
 
-      <div class="card card--none flex-1">
+      <div class="card card--none flex-1 overflow-auto">
         {% render_table dashboards %}
 
         {% if dashboards.rows|length == 0 %}
