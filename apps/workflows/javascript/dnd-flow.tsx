@@ -22,7 +22,6 @@ import RunButton from './RunButton'
 import Sidebar from './sidebar'
 
 import './styles/_dnd-flow.scss'
-import './styles/_react-flow.scss'
 
 const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
 const GRID_GAP = 20
