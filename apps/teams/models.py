@@ -21,7 +21,11 @@ class Team(BaseModel):
 
     @cached_property
     def num_rows(self):
-        return sum(project.num_rows for project in self.project_set.all())
+        from apps.tables.models import Table
+
+        return Table.objects.filter(integration__project__team=self).aggregate(
+            models.Sum("num_rows")
+        )["num_rows__sum"]
 
     def __str__(self):
         return self.name
