@@ -1,3 +1,5 @@
+from functools import cached_property
+
 from apps.teams.models import Team
 from apps.utils.models import BaseModel
 from django.db import models
@@ -28,6 +30,7 @@ class Project(BaseModel):
 
         return Dashboard.objects.filter(project=self).count()
 
+    @cached_property
     def num_rows(self):
         from apps.tables.models import Table
 

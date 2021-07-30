@@ -1,3 +1,5 @@
+from functools import cached_property
+
 from apps.utils.models import BaseModel
 from django.conf import settings
 from django.db import models
@@ -16,6 +18,14 @@ class Team(BaseModel):
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL, related_name="teams", through="Membership"
     )
+
+    @cached_property
+    def num_rows(self):
+        from apps.tables.models import Table
+
+        return Table.objects.filter(integration__project__team=self).aggregate(
+            models.Sum("num_rows")
+        )["num_rows__sum"]
 
     def __str__(self):
         return self.name

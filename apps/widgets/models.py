@@ -52,8 +52,9 @@ class Widget(CloneMixin, BaseModel):
     label = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
     )
+    value = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True)
 
-    description = models.CharField(max_length=255, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
     sort_by = models.CharField(
         max_length=12, choices=(("label", "Label"), ("value", "Value")), default="label"
     )
@@ -92,7 +93,7 @@ class Widget(CloneMixin, BaseModel):
         if self.kind in [self.Kind.TABLE, self.Kind.TEXT]:
             return True
         elif self.kind is not None:
-            return self.kind and self.label and self.values.first() and self.aggregator
+            return self.kind and self.label and self.value and self.aggregator
 
         return False
 

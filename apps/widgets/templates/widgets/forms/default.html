@@ -1,0 +1,114 @@
+<form 
+  data-controller="live-update" 
+  method="post"
+  action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
+  class="form"
+  data-tf-modal-target='form'
+  data-action="change->tf-modal#change submit->tf-modal#save"
+>  
+  <div class="absolute top-0 right-0">
+    <button
+      class="tf-modal__close"
+      type="submit"
+      formnovalidate
+      name="close"
+      value="close"
+      data-action="click->tf-modal#close keydown@window->tf-modal#onInput"
+    >
+      <i class="fal fa-times fa-2x"></i>
+    </button>
+  </div>
+  <div class="h-6">
+    <span data-live-update-target="loading" class="hidden"><i
+          class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
+  </div>
+  {% csrf_token %}
+  <h3 class="flex flex-row items-center">
+    Configure 
+    <input class='input__inline ml-3' id="name" type="text" name="name" placeholder="Untitled widget">{% if object.name%}{{ object.name }}{%endif%}</input>
+  </h3>
+  <div class="flex flex-row w-full">
+    <div class="w-1/2">
+      <label for="{{ bound_fields.table.id_for_label }}">
+        {{ bound_fields.table.label }}
+        <p class=" input__help-text">{{ bound_fields.table.help_text }}</p>
+      </label>
+      {{bound_fields.table}}
+    </div>
+    <div class="w-1/2">
+      <label for="{{ bound_fields.table.id_for_label }}">
+        {{ bound_fields.kind.label }}
+        <p class=" input__help-text">{{ bound_fields.kind.help_text }}</p>
+      </label>
+      {{bound_fields.kind}}
+    </div>
+  </div>
+  
+  {% for key, bound_field in bound_fields.items %}
+  {% with array='name kind table'%}
+  {% if key not in array.split %}
+    <div class="input-group">
+      {% if bound_field.widget_type == "checkbox" %}
+      <label class="flex flex-row">
+        {{ bound_field }}
+        <span>
+          {{ bound_field.label }}
+          <p class=" input__help-text">{{ bound_field.help_text }}</p>
+          {% if not bound_field.field.required %}<small><i>- optional</i></small>{% endif %}
+        </span>
+      </label>
+      {% elif bound_field.subwidgets|length == 1 %}
+      <label>
+        <span>
+          {{ bound_field.label }}
+          <p class=" input__help-text">{{ bound_field.help_text }}</p>
+          {% if not bound_field.field.required %}<small><i>- optional</i></small>{% endif %}
+        </span>
+
+        {{ bound_field }}
+      </label>
+      {% else %}
+      <label for="{{ bound_field.id_for_label }}">
+        {{ bound_field.label }}
+        <p class=" input__help-text">{{ bound_field.help_text }}</p>
+      </label>
+      {{ bound_field }}
+      {% endif %}
+
+      {% if not form.is_live %}
+      {{ bound_field.errors }}
+      {% endif %}
+    </div>
+  {% endif %}
+  {% endwith %}
+  {% endfor %}
+
+  {% for label, formset in formsets.items %}
+    <fieldset>
+      <label>{{ label }}</label>
+      {% include "components/formset.html" with formset=formset %}
+    </fieldset>
+  {% endfor %}
+
+  {% for error in form.non_field_errors %}
+  <p class="text-red">
+    {{ error|escape }}
+  </p>
+  {% endfor %}
+
+  {% for hidden_field in form.hidden_fields %}
+    {{ hidden_field }}
+  {% endfor %}
+  
+  <div class="flex flex-1 gap-7">
+    <input
+      type="submit"
+      name="submit"
+      value="Save & Close"
+      class="button button--success"
+      data-action="click->tf-modal#forceClose"
+    ></input>
+    <input type="submit" name="submit" value="Save & Preview"
+            class="button button--outline button--success"></input>
+  </div>
+</form>

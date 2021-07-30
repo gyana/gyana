@@ -41,8 +41,8 @@
             >
               <div class="widget-card h-full">
                 <div class='widget-card__visual'>
-                  {% if widget.description %}
-                  <h3 class="mb-2">{{ widget.description }}</h3>
+                  {% if widget.name %}
+                  <h3 class="mb-2">{{ widget.name }}</h3>
                   {% endif %}
                   <turbo-frame 
                     id="widgets-output-{{ widget.id }}" 
