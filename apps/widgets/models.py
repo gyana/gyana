@@ -52,8 +52,9 @@ class Widget(CloneMixin, BaseModel):
     label = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
     )
+    value = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True)
 
-    description = models.CharField(max_length=255, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
     sort_by = models.CharField(
         max_length=12, choices=(("label", "Label"), ("value", "Value")), default="label"
     )
