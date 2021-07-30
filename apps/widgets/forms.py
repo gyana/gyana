@@ -13,6 +13,7 @@ from .models import MULTI_VALUES_CHARTS, MultiValues, Widget
 
 class GenericWidgetForm(LiveUpdateForm):
     label = forms.ChoiceField(choices=())
+    value = forms.ChoiceField(choices=())
     z = forms.ChoiceField(choices=())
 
     class Meta:
@@ -23,6 +24,7 @@ class GenericWidgetForm(LiveUpdateForm):
             "kind",
             "label",
             "aggregator",
+            "value",
             "z",
             "sort_by",
             "sort_ascending",
@@ -46,7 +48,17 @@ class GenericWidgetForm(LiveUpdateForm):
 
     def get_live_formsets(self):
         formsets = [FilterFormset]
-        if self.instance.kind != Widget.Kind.TABLE:
+        if self.instance.kind not in [
+            Widget.Kind.TABLE,
+            Widget.Kind.FUNNEL,
+            Widget.Kind.PYRAMID,
+            Widget.Kind.PIE,
+            Widget.Kind.BUBBLE,
+            Widget.Kind.DONUT,
+            Widget.Kind.HEATMAP,
+            Widget.Kind.STACKED_BAR,
+            Widget.Kind.STACKED_COLUMN,
+        ]:
             formsets += [ValueFormset]
         return formsets
 
@@ -61,13 +73,14 @@ class TwoDimensionForm(GenericWidgetForm):
         if schema and "label" in self.fields:
             columns = [(column, column) for column in schema]
             self.fields["label"].choices = columns
+            self.fields["value"].choices = columns
 
     def get_live_fields(self):
         fields = super().get_live_fields()
         table = self.get_live_field("table")
 
         if table:
-            fields += ["sort_by", "sort_ascending", "label", "aggregator"]
+            fields += ["sort_by", "sort_ascending", "label", "aggregator", "value"]
         return fields
 
 

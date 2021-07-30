@@ -93,7 +93,7 @@ class Widget(CloneMixin, BaseModel):
         if self.kind in [self.Kind.TABLE, self.Kind.TEXT]:
             return True
         elif self.kind is not None:
-            return self.kind and self.label and self.values.first() and self.aggregator
+            return self.kind and self.label and self.value and self.aggregator
 
         return False
 
