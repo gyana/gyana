@@ -107,7 +107,7 @@
       left: calc(-1px - 0.75rem);
       
       &::after {
-        background-color: var(--c-green);
+        background-color: var(--c-black-20);
       }
     }
 
@@ -116,7 +116,7 @@
       right: calc(-1px - 0.75rem);
       
       &::after {
-        background-color: var(--c-pink);
+        background-color: var(--c-black-20);
       }
     }
 
@@ -126,8 +126,8 @@
   }
 
   .react-flow__arrowhead polyline {
-    stroke: var(--c-black-20);
-    fill: var(--c-black-20);
+    stroke: var(--c-transparent);
+    fill: var(--c-transparent);
   }
 
   .react-flow__edges {
