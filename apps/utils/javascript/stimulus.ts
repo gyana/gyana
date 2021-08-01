@@ -3,18 +3,18 @@ import { definitionsFromContext } from 'stimulus/webpack-helpers'
 
 const application = Application.start()
 
-const APPS = [
-  'columns',
-  'dashboards',
-  'integrations',
-  'nodes',
-  'utils',
-  'web',
-  'widgets',
-  'workflows',
+// for webpack, arguments to require.context are string literals
+// https://webpack.js.org/guides/dependency-management/#requirecontext
+
+const CONTEXTS = [
+  require.context('../../columns/javascript/controllers', true, /\.js$/),
+  require.context('../../dashboards/javascript/controllers', true, /\.js$/),
+  require.context('../../integrations/javascript/controllers', true, /\.js$/),
+  require.context('../../nodes/javascript/controllers', true, /\.js$/),
+  require.context('../../utils/javascript/controllers', true, /\.js$/),
+  require.context('../../web/javascript/controllers', true, /\.js$/),
+  require.context('../../widgets/javascript/controllers', true, /\.js$/),
+  require.context('../../workflows/javascript/controllers', true, /\.js$/),
 ]
 
-for (const app of APPS) {
-  const context = require.context(`../../${app}/javascript/controllers`, true, /\.js$/)
-  application.load(definitionsFromContext(context))
-}
+for (const context of CONTEXTS) application.load(definitionsFromContext(context))
