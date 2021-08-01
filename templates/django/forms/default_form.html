@@ -7,16 +7,16 @@
 
     <span>
       {{ bound_field.label }}
-      <p class=" input__help-text">{{ bound_field.help_text }}</p>
-      {% if not bound_field.field.required %}<small><i>- optional</i></small>{% endif %}
+      {% if not bound_field.field.required %}<small><i>- optional</></small>{% endif %}
+      <p class="input__help-text">{{ bound_field.help_text }}</p>
     </span>
   </label>
   {% elif bound_field.subwidgets|length == 1 %}
   <label>
     <span>
       {{ bound_field.label }}
-      <p class=" input__help-text">{{ bound_field.help_text }}</p>
       {% if not bound_field.field.required %}<small><i>- optional</i></small>{% endif %}
+      <p class="input__help-text">{{ bound_field.help_text }}</p>
     </span>
 
     {{ bound_field }}
@@ -36,10 +36,10 @@
 {% endfor %}
 
 {% for label, formset in formsets.items %}
-  <fieldset>
-    <label>{{ label }}</label>
-    {% include "components/formset.html" with formset=formset %}
-  </fieldset>
+<fieldset>
+  <label>{{ label }}</label>
+  {% include "components/formset.html" with formset=formset %}
+</fieldset>
 {% endfor %}
 
 {% for error in form.non_field_errors %}

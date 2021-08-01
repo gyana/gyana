@@ -8,19 +8,18 @@
     </div>
 
     <form class="form--no-layout overflow-hidden flex-1"
-      action="{% url 'nodes:update' node.id %}"
-      method="post"
-      {% if do_live_updates %}
-      data-controller="live-update trigger"
-      {% else %}
-      data-controller="trigger"
-      {% endif %}
-      data-trigger-event-value="node-updated-{{ node.id }}"
-      data-action="submit->trigger#dispatch change->tf-modal#change"
-      data-tf-modal-target='form'
-      id="config-form"
-      data-live-update-form-value="config-form"
-    >
+          action="{% url 'nodes:update' node.id %}"
+          method="post"
+          {% if do_live_updates %}
+          data-controller="live-update trigger"
+          {% else %}
+          data-controller="trigger"
+          {% endif %}
+          data-trigger-event-value="node-updated-{{ node.id }}"
+          data-action="submit->trigger#dispatch change->tf-modal#change"
+          data-tf-modal-target='form'
+          id="config-form"
+          data-live-update-form-value="config-form">
       <div class="workflow-detail__sidebar">
         {{ form.media }}
         {% if filters_formset %}
@@ -29,10 +28,8 @@
         {% if formula_columns_formset %}
         {{ formula_columns_formset.media }}
         {% endif %}
-        <div class="h-6">
-          <span data-live-update-target="loading" class="hidden"><i
-              class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
-        </div>
+        <span data-live-update-target="loading" class="h-6 hidden"><i
+             class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
         {% csrf_token %}
 
         {% include "django/forms/default_form.html" %}

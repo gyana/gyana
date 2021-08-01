@@ -5,7 +5,9 @@
     <td {% if field.name == 'DELETE' %} style="display: none;" {% endif %}>
         {# Include the hidden fields in the form #}
         {% if forloop.first %}
-        <p class=" input__help-text">{{ field.help_text }}</p>
+        {% if field.help_text %}
+        <p class="input__help-text">{{ field.help_text }}</p>
+        {% endif %}
         {% for hidden in form.hidden_fields %}
         {{ hidden }}
         {% endfor %}

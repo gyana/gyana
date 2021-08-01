@@ -19,30 +19,78 @@
     <div class="flex flex-wrap gap-7">
       <div class="flex-1 overflow-hidden">
         <div class="flex mb-3">
-          <h2>Integrations</h2>
+          <h3>Recent Integrations</h3>
         </div>
 
         <div class="card card--none flex-1 overflow-auto">
           {% render_table integrations %}
+
+          {% if integrations.rows|length == 0 %}
+          <div class="table__empty">
+            <h3>Step 1</h3>
+            <p>
+              <a href="{% url 'project_integrations:upload' project.id %}" class="link">Upload a CSV</a>, or
+              <a href="{% url 'project_integrations:new' project.id %}" class="link">create an integration</a>
+            </p>
+          </div>
+          {% endif %}
         </div>
       </div>
 
       <div class="flex-1 overflow-hidden">
         <div class="flex mb-3">
-          <h2>Workflows</h2>
+          <h3>Recent Workflows</h3>
         </div>
+
         <div class="card card--none flex-1 overflow-auto">
           {% render_table workflows %}
+
+          {% if workflows.rows|length == 0 %}
+          <div class="table__empty">
+            <h3>Step 2</h3>
+            <form class="inline"
+                  method="post"
+                  action="{% url 'project_workflows:create' project.id  %}">
+              {% csrf_token %}
+              <input type="hidden" name="project" value="{{ project.id }}"></input>
+              <p>
+                Use your data to
+                <button type="submit" class="link">
+                  create a workflow
+                </button>
+              </p>
+            </form>
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>
 
     <div>
       <div class="flex mb-3">
-        <h3>Dashboards</h3>
+        <h3>Recent Dashboards</h3>
       </div>
-      <div class="card card--none flex-1">
+
+      <div class="card card--none flex-1 overflow-auto">
         {% render_table dashboards %}
+
+        {% if dashboards.rows|length == 0 %}
+        <div class="table__empty">
+          <h3>Step 3</h3>
+          <form class="inline"
+                method="post"
+                action="{% url 'project_dashboards:create' project.id %}?mode=edit">
+            {% csrf_token %}
+            <input type="hidden" name="project" value="{{ project.id }}"></input>
+            <p>
+              Visualise all your data
+              <button type="submit" class="link">
+                in a dashboard
+              </button>
+            </p>
+          </form>
+        </div>
+        {% endif %}
       </div>
     </div>
   </div>

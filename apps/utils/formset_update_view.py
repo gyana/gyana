@@ -18,7 +18,7 @@ FORMSET_LABELS = {
     "filters": "Filters",
     "secondary_columns": "Select specific columns",
     "window_columns": "Window columns",
-    "values": "Values",
+    "values": "Additional values",
 }
 
 
@@ -73,8 +73,7 @@ class FormsetUpdateView(TurboUpdateView):
         if self.formsets:
             with transaction.atomic():
                 self.object = form.save()
-                for formset_cls in self.formsets:
-                    formset = context[f"{formset_cls.get_default_prefix()}_formset"]
+                for _, formset in context["formsets"].items():
                     if formset.is_valid():
                         formset.instance = self.object
                         formset.save()
