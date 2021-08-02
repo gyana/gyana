@@ -1,20 +1,18 @@
-<gy-widget id="widget-{{ object.id }}" {% if is_new %}data-action="mousedown->zindex#register:once"{% endif %}>
-  <div 
-    class="h-full w-full" 
-    data-id="{{ object.id }}" data-x="{{object.x}}" data-y="{{object.y}}"
-    data-width="{{object.width}}" data-height="{{object.height}}"
-  >
+<gy-widget id="widget-{{ object.id }}" {% if is_new %}data-action="mousedown->zindex#register:once" {% endif %}>
+  <div
+       class="h-full w-full"
+       data-id="{{ object.id }}" data-x="{{object.x}}" data-y="{{object.y}}"
+       data-width="{{object.width}}" data-height="{{object.height}}">
     <div class="widget-card h-full">
       <div class='widget-card__visual'>
         {% if object.description %}
         <h3 class="mb-2">{{ object.description }}</h3>
         {% endif %}
-        <turbo-frame 
-          id="widgets-output-{{ object.id }}" 
-          src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
-          target="_top" 
-          style="display: flex; flex: 1 1 0%; min-height: 0;"
-        >
+        <turbo-frame
+                     id="widgets-output-{{ object.id }}"
+                     src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
+                     target="_top"
+                     style="display: flex; flex: 1 1 0%; min-height: 0;">
           <div class='placeholder-scr placeholder-scr--fillscreen'>
             <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
             <p class='placeholder-scr__title'>Loading visualisation...</p>
@@ -25,16 +23,15 @@
       {% if request.GET.mode == 'edit' %}
       <div class='widget-card__commands'>
         {% if object.kind != "text" %}
-          <a href="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
-            <i class="fas fa-fw fa-eye"></i>
-          </a>
-            <button data-action="click->tf-modal#open" >
-              <i 
-                class="fas fa-fw fa-edit" 
-                data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
-              ></i>
-            </button>
-            
+        <a href="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
+          <i class="fas fa-fw fa-eye"></i>
+        </a>
+        <button data-action="click->tf-modal#open">
+          <i
+             class="fas fa-fw fa-edit"
+             data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"></i>
+        </button>
+
         {% endif %}
         <form method='post' action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
           {% csrf_token %}
@@ -43,9 +40,9 @@
           </button>
         </form>
         <div data-controller="popover" class='mt-auto'>
-          <span data-popover-target="trigger" data-action="click->popover#trigger">
+          <button data-popover-target="trigger" data-action="click->popover#trigger">
             <i class="fas fa-fw fa-trash cursor-pointer"></i>
-          </span>
+          </button>
           <div data-popover-target="body" hidden class="popover-body shadow-sm">
             {% include 'widgets/_delete.html' %}
           </div>
@@ -56,7 +53,7 @@
   </div>
 </gy-widget>
 {% if is_new %}
-  <script>
-    document.getElementById("widget-{{object.id}}").children[0].scrollIntoView()
-  </script>
+<script>
+  document.getElementById("widget-{{object.id}}").children[0].scrollIntoView()
+</script>
 {% endif %}

@@ -10,32 +10,37 @@
     flex-flow: column;
     flex-grow: 1;
     overflow: hidden;
-    padding: 1.6rem;
     width: 100%;
     z-index: calc(var(--z-default) + 1);
   }
 
   &__commands {
     background-color: var(--c-gray-20);
-    border-left: 0;
-    border-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    color: var(--c-black-50);
     border: 1px solid var(--c-gray);
-    color: var(--c-black-20);
-    display: flex;
     flex-flow: column;
-    flex-shrink: 0;
     font-size: 1.4rem;
     gap: 1.6rem;
-    margin-left: -2.5rem;
-    padding: 1rem 0.5rem 1rem 3rem;
-    z-index: var(--z-default);
+    height: 100%;
+    padding: 1.6rem 1rem;
+    position: absolute;
+    right: 0;
+    display: none;
+    z-index: var(--z-ui);
 
+    button:hover,
     a:hover {
-      color: var(--c-black-50);
+      color: var(--c-black);
     }
 
     i {
       display: block;
     }
+  }
+
+  &:hover &__commands {
+    display: flex;
   }
 }
