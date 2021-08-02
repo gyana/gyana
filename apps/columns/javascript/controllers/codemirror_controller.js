@@ -7,8 +7,9 @@ import 'codemirror/addon/edit/matchbrackets.js'
 import 'codemirror/addon/display/placeholder.js'
 import 'codemirror/addon/lint/lint.js'
 
-// TODO: can we make this not relative ?
 const functions = require('../../functions.json')
+
+// Codemirror editor for formula language with auto-complete, syntax highlighting and linting.
 
 export default class extends Controller {
   static targets = ['textarea']
@@ -49,10 +50,13 @@ export default class extends Controller {
   }
 }
 
+// Syntax highlighting
+
 const operations = functions.map((f) => f.name)
 const operationRegex = new RegExp(`\(${operations.join('|')}\)\(?=\\(\)`)
 const stringRegex = /"(?:[^\\]|\\.)*?(?:"|$)/
 const columnRegex = /[a-zA-Z_][0-9a-zA-Z_]*/g
+
 CodeMirror.defineSimpleMode('gyanaformula', {
   // The start state contains the rules that are initially used
   start: [
@@ -67,6 +71,8 @@ CodeMirror.defineSimpleMode('gyanaformula', {
     { regex: /[-+\/*=<>!]+/, token: 'operator' },
   ],
 })
+
+// Autocomplete
 
 const operationCompletions = operations.map((op) => ({ text: op, className: 'text-blue' }))
 
@@ -91,6 +97,9 @@ const autocomplete = (columns) => (editor, option) => {
     }
   }
 }
+
+// Linter
+
 const incorrectOperationRegex = /([A-Za-z0-9_]*)(?=\()/g
 
 const registerLinter = (columns) =>
