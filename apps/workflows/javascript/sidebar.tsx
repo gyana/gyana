@@ -38,7 +38,7 @@ const Sidebar: React.FC = () => {
               onDragStart={(event) => onDragStart(event, kind)}
               draggable
             >
-              <i className={`dnd-sidebar__icon fad fa-fw ${node.icon}`}></i>
+              <i className={`dnd-sidebar__icon fas fa-fw fa-lg ${node.icon}`}></i>
               <div className='flex flex-col'>
                 <div className='flex items-center'>
                   <h4 className='dnd-sidebar__name'>{node.displayName}</h4>
@@ -59,7 +59,7 @@ const Sidebar: React.FC = () => {
               </h3>
 
               <div
-                className='collapsable flex flex-col gap-2 max-h-0 overflow-hidden'
+                className='collapsable flex flex-col max-h-0 overflow-hidden'
                 data-collapsable-target='body'
                 key={section}
               >
@@ -74,7 +74,7 @@ const Sidebar: React.FC = () => {
                       onDragStart={(event) => onDragStart(event, kind)}
                       draggable
                     >
-                      <i className={`dnd-sidebar__icon fad fa-fw ${node.icon}`}></i>
+                      <i className={`dnd-sidebar__icon fas fa-fw fa-lg ${node.icon}`}></i>
                       <div className='flex flex-col'>
                         <div className='flex items-center'>
                           <h4 className='dnd-sidebar__name'>{node.displayName}</h4>
