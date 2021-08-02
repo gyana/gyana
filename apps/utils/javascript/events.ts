@@ -1,6 +1,6 @@
-const GYANA = 'gyana'
-
-export const WORKFLOW_RUN_EVENT = `${GYANA}:run-workflow`
-export const WORKFLOW_UPDATED_EVENT = `${GYANA}:update-workflow`
-export const NODE_UPDATED_EVENT_PREFIX = `${GYANA}:update-node`
-export const NODE_NAME_UPDATED_EVENT_PREFIX = `${GYANA}:update-node-name`
+export const GyanaEvents = {
+  RUN_WORKFLOW: 'gyana:run-workflow',
+  UPDATE_WORKFLOW: 'gyana:update-workflow',
+  UPDATE_NODE: 'gyana:update-node',
+  UPDATE_NODE_NAME: 'gyana:update-node-name',
+}

@@ -5,9 +5,6 @@ const get_formset_row = (element) => element.closest('[data-formset-index]')
 
 export default class extends Controller {
   static targets = ['loading']
-  static values = {
-    form: String,
-  }
 
   disable = (event) => {
     const form = this.element
@@ -58,8 +55,7 @@ export default class extends Controller {
     // Extract the form element and morph into the DOM
     const parser = new DOMParser()
     const doc = parser.parseFromString(text, 'text/html')
-    const querySelector = this.hasFormValue ? `#${this.formValue}` : 'form'
-    const newForm = doc.querySelector(querySelector)
+    const newForm = doc.querySelector(`#${this.element.id}`)
 
     morphdom(form, newForm, {
       // https://github.com/patrick-steele-idem/morphdom/issues/16#issuecomment-132630185

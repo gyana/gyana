@@ -1,5 +1,5 @@
 import { Controller } from 'stimulus'
-import { WORKFLOW_RUN_EVENT } from 'apps/utils/javascript/events'
+import { GyanaEvents } from 'apps/utils/javascript/events'
 
 // Reload the Turbo Frame on workflow run event.
 
@@ -13,10 +13,10 @@ export default class extends Controller {
 
   connect() {
     const refresh = this.refresh.bind(this)
-    window.addEventListener(WORKFLOW_RUN_EVENT, refresh)
+    window.addEventListener(GyanaEvents.RUN_WORKFLOW, refresh)
   }
 
   disconnect() {
-    window.removeEventListener(WORKFLOW_RUN_EVENT, this.refresh)
+    window.removeEventListener(GyanaEvents.RUN_WORKFLOW, this.refresh)
   }
 }

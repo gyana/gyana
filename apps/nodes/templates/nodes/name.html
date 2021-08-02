@@ -2,10 +2,9 @@
   <div class="flex flex-row items-center">
     <i class='fad {{object.icon}} fa-3x text-blue mr-2'></i>
     <form 
+      id="node-name-update-form"
       method="POST" 
       action="{% url 'nodes:name' object.id %}"
-      data-controller="dispatch-on-node-name-update"
-      data-dispatch-on-node-name-update-node-value="{{ object.id }}"
     >
     {% csrf_token %}
       <input 
