@@ -101,12 +101,9 @@ class ThreeDimensionForm(GenericWidgetForm):
     def get_live_fields(self):
         fields = super().get_live_fields()
         table = self.get_live_field("table")
-        kind = self.get_live_field("kind")
 
         if table:
-            fields += ["sort_by", "sort_ascending", "label", "z"]
-            if kind in [Widget.Kind.BUBBLE, Widget.Kind.HEATMAP]:
-                fields += ["z_aggregator"]
+            fields += ["sort_by", "sort_ascending", "label", "z", "z_aggregator"]
         return fields
 
 
