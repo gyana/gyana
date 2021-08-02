@@ -5,10 +5,11 @@ import { GyanaEvents } from 'apps/utils/javascript/events'
 
 export default class extends Controller {
   refresh() {
-    const src = this.element.src
-    this.element.removeAttribute('src')
-    this.element.innerHTML = 'Loading ...'
-    this.element.setAttribute('src', src)
+    const frame = this.element.querySelector('turbo-frame')
+    const src = frame.src
+    frame.removeAttribute('src')
+    frame.innerHTML = 'Loading ...'
+    frame.setAttribute('src', src)
   }
 
   connect() {
