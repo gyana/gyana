@@ -1,8 +1,6 @@
-import json
 from typing import Any, Dict
 
 from apps.filters.bigquery import get_query_from_filters
-from apps.integrations.bigquery import DEFAULT_LIMIT
 from apps.tables.bigquery import get_query_from_table
 from apps.utils.clients import get_dataframe
 from apps.utils.table_data import get_table

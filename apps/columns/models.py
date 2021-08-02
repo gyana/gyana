@@ -1,5 +1,7 @@
-from apps.nodes.models import AggregationFunctions, Node
+from apps.nodes.models import Node
+from apps.utils.aggregations import AggregationFunctions
 from apps.utils.models import BaseModel
+from apps.widgets.models import Widget
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.core.validators import RegexValidator
@@ -27,9 +29,13 @@ class SaveParentModel(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     def save(self, *args, **kwargs) -> None:
         if self.is_dirty():
-            self.node.data_updated = timezone.now()
-            self.node.save()
+            self.parent.data_updated = timezone.now()
+            self.parent.save()
         return super().save(*args, **kwargs)
+
+    @property
+    def parent(self):
+        return getattr(self, "node") or self.widget
 
 
 class AbstractOperationColumn(SaveParentModel):
@@ -118,7 +124,10 @@ class FunctionColumn(SaveParentModel):
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     function = models.CharField(max_length=20, choices=AggregationFunctions.choices)
     node = models.ForeignKey(
-        Node, on_delete=models.CASCADE, related_name="aggregations"
+        Node, on_delete=models.CASCADE, related_name="aggregations", null=True
+    )
+    widget = models.ForeignKey(
+        Widget, on_delete=models.CASCADE, related_name="aggregations", null=True
     )
 
 

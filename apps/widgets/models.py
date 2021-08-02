@@ -1,5 +1,6 @@
 from apps.dashboards.models import Dashboard
 from apps.tables.models import Table
+from apps.utils.aggregations import AggregationFunctions
 from apps.utils.models import BaseModel
 from django.conf import settings
 from django.db import models
@@ -81,6 +82,9 @@ class Widget(CloneMixin, BaseModel):
     z = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
     )
+    z_aggregator = models.CharField(
+        max_length=20, choices=AggregationFunctions.choices, null=True, blank=True
+    )
 
     stack_100_percent = models.BooleanField(default=False)
 
@@ -93,14 +97,9 @@ class Widget(CloneMixin, BaseModel):
         if self.kind in [self.Kind.TABLE, self.Kind.TEXT]:
             return True
         elif self.kind is not None:
-            return self.kind and self.label and self.value and self.aggregator
+            return self.kind and self.label and self.aggregations.first()
 
         return False
-
-
-class MultiValues(CloneMixin, BaseModel):
-    widget = models.ForeignKey(Widget, on_delete=models.CASCADE, related_name="values")
-    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
 
 
 WIDGET_KIND_TO_WEB = {
@@ -124,12 +123,4 @@ WIDGET_KIND_TO_WEB = {
 
 WIDGET_CHOICES_ARRAY = [
     (choices + WIDGET_KIND_TO_WEB[choices[0]]) for choices in Widget.Kind.choices
-]
-
-MULTI_VALUES_CHARTS = [
-    Widget.Kind.COLUMN,
-    Widget.Kind.SCATTER,
-    Widget.Kind.LINE,
-    Widget.Kind.AREA,
-    Widget.Kind.BAR,
 ]
