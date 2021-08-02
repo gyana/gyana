@@ -6,6 +6,7 @@
   background-color: var(--c-white);
   display: flex;
   flex-flow: column-reverse;
+  border-right: 1px solid var(--c-gray);
 
   &__body {
     display: flex;
