@@ -8,7 +8,6 @@ const application = Application.start()
 
 const CONTEXTS = [
   require.context('../../columns/javascript/controllers', true, /\.js$/),
-  require.context('../../dashboards/javascript/controllers', true, /\.js$/),
   require.context('../../integrations/javascript/controllers', true, /\.js$/),
   require.context('../../nodes/javascript/controllers', true, /\.js$/),
   require.context('../../utils/javascript/controllers', true, /\.js$/),
