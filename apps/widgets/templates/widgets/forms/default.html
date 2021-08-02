@@ -1,10 +1,9 @@
 <form 
   id="widget-update-form"
-  data-controller="live-update" 
-  method="post"
-  action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
   class="form"
-  data-tf-modal-target='form'
+  action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
+  method="post"
+  data-controller="live-update" 
   data-action="change->tf-modal#change submit->tf-modal#save"
 >  
   <div class="absolute top-0 right-0">
@@ -20,8 +19,9 @@
     </button>
   </div>
   <div class="h-6">
-    <span data-live-update-target="loading" class="hidden"><i
-          class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
+    <span data-live-update-target="loading" class="hidden">
+      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+    </span>
   </div>
   {% csrf_token %}
   <h3 class="flex flex-row items-center">

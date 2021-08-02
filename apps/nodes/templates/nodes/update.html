@@ -14,11 +14,13 @@
           {% if do_live_updates %}
           data-controller="live-update"
           {% endif %}
-          data-action="change->tf-modal#change"
-          data-tf-modal-target='form'>
+          data-action="change->tf-modal#change">
+      
       <div class="workflow-detail__sidebar">
-        <span data-live-update-target="loading" class="h-6 hidden"><i
-             class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
+        <span data-live-update-target="loading" class="h-6 hidden">
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+        </span>
+        
         {% csrf_token %}
 
         {% include "django/forms/default_form.html" %}
