@@ -60,7 +60,7 @@ const NodeName = ({ name, id }: { name: string; id: string }) => {
   }, [text])
 
   useEffect(() => {
-    const eventName = `node-name-update-${id}`
+    const eventName = `gyana:update-node-name-${id}`
 
     const updateText = (event) => {
       const { value } = event.detail

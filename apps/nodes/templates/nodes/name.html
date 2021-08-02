@@ -4,9 +4,8 @@
     <form 
       method="POST" 
       action="{% url 'nodes:name' object.id %}"
-      data-controller="dispatch"
-      data-action="submit->dispatch#dispatch"
-      data-dispatch-event-value="node-name-update-{{ object.id }}"
+      data-controller="dispatch-on-node-name-update"
+      data-dispatch-on-node-name-update-node-value="{{ object.id }}"
     >
     {% csrf_token %}
       <input 
@@ -14,7 +13,6 @@
         id="name" 
         type="text" 
         name="name"
-        data-dispatch-target="event"
         value="{% if object.name %}{{ object.name }}{% else %}{{ object.display_name|capfirst }}{% endif %}"
       ></input>
     </form>
