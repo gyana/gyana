@@ -62,7 +62,7 @@ const RunButton: React.FC<{
                 if (Object.keys(res).length === 0) {
                   setIsOutOfDate(false)
                   setHasBeenRun(false)
-                  window.dispatchEvent(new Event('workflow-run'))
+                  window.dispatchEvent(new Event('gyana:run-workflow'))
                 }
                 setLoading(false)
               }
