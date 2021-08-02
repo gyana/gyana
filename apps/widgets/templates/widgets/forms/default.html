@@ -88,7 +88,7 @@
   {% endblock %}
 
   {% for label, formset in formsets.items %}
-  {% if label != "Additional values" %}
+  {% if label != "Aggregations" %}
     <fieldset>
       <label>{{ label }}</label>
       {% include "components/formset.html" with formset=formset %}

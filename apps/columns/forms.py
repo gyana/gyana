@@ -1,19 +1,11 @@
+from apps.utils.aggregations import AGGREGATION_TYPE_MAP
 from apps.utils.live_update_form import LiveUpdateForm
 from apps.utils.schema_form_mixin import SchemaFormMixin
 from django import forms
 from django.forms.models import BaseInlineFormSet
 
 from .bigquery import AllOperations
-from .models import AggregationFunctions
 from .widgets import CodeMirror
-
-NUMERIC_AGGREGATIONS = list(AggregationFunctions)
-
-AGGREGATION_TYPE_MAP = {
-    "String": [AggregationFunctions.COUNT],
-    "Int64": NUMERIC_AGGREGATIONS,
-    "Float64": NUMERIC_AGGREGATIONS,
-}
 
 IBIS_TO_FUNCTION = {
     "String": "string_function",

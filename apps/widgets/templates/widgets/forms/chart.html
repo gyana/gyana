@@ -5,26 +5,37 @@
   {{ form.label.label }}
 </label>
 {{form.label}}
-<div class="flex flex-row w-full">
-  <div class="w-1/3">
-    <label for="{{ form.aggregator.id_for_label }}">
-      {{ form.aggregator.label}}
-    </label>
-    {{ form.aggregator }}
-  </div>
-  <div class="w-2/3">
-    <label for="{{ form.value.id_for_label }}">
-      {{ form.value.label}}
-    </label>
-    {{ form.value }}
-  </div>
-</div>
 <fieldset>
-  {% with formset=formsets|dict_key:"Additional values" %}
-    <label>Additional values</label>
+  {% with formset=formsets.Aggregations %}
+    <label>Values</label>
     {% include "components/formset.html" with formset=formset %}
   {% endwith %}
 </fieldset>
+{% if form.z %}
+  <div class="flex flex-row w-full">
+    {% if form.z_aggregator %}
+    <div class="w-1/3">
+      <label for="{{ form.aggregator.id_for_label }}">
+        {{ form.z_aggregator.label}}
+      </label>
+      {{ form.z_aggregator }}
+    </div>
+    {% else %}
+    <div>
+      <label for="{{ form.stack_100_percent.id_for_label }}">
+        {{ form.stack_100_percent.label}}
+      </label>
+      {{ form.stack_100_percent }}
+    </div>
+    {% endif %}
+    <div class="{% if form.z_aggregator %}w-2/3 {% else %}w-full{% endif %}">
+      <label for="{{ form.z.id_for_label }}">
+        {{ form.z.label}}
+      </label>
+      {{ form.z }}
+    </div>
+  </div>
+{% endif %}
 <div class="flex flex-row w-full items-center">
   <div class='w-full'>
     <label for="{{ form.sort_by.id_for_label }}">

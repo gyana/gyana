@@ -198,11 +198,6 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
             )
         return r
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["bound_fields"] = {f.name: f for f in context["form"].visible_fields()}
-        return context
-
 
 class WidgetDelete(TurboStreamDeleteView):
     template_name = "widgets/delete.html"
