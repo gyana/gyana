@@ -1,21 +1,21 @@
-import { Controller } from "stimulus";
+import { Controller } from 'stimulus'
 
-// Trigger an event on click
+// Reload a Turbo Frame on a Javascript event.
 
 export default class extends Controller {
   static values = {
     event: String,
-  };
-  static targets = ["turboFrame"];
+  }
+  static targets = ['turboFrame']
 
   refresh() {
-    const src = this.turboFrameTarget.src;
-    this.turboFrameTarget.removeAttribute("src");
-    this.turboFrameTarget.innerHTML = "Loading ...";
-    this.turboFrameTarget.setAttribute("src", src);
+    const src = this.turboFrameTarget.src
+    this.turboFrameTarget.removeAttribute('src')
+    this.turboFrameTarget.innerHTML = 'Loading ...'
+    this.turboFrameTarget.setAttribute('src', src)
   }
 
-  connect(){
+  connect() {
     const refresh = this.refresh.bind(this)
     window.addEventListener(this.eventValue, refresh)
   }
