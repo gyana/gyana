@@ -21,13 +21,6 @@
           id="config-form"
           data-live-update-form-value="config-form">
       <div class="workflow-detail__sidebar">
-        {{ form.media }}
-        {% if filters_formset %}
-        {{ filters_formset.media }}
-        {% endif %}
-        {% if formula_columns_formset %}
-        {{ formula_columns_formset.media }}
-        {% endif %}
         <span data-live-update-target="loading" class="h-6 hidden"><i
              class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
         {% csrf_token %}

@@ -1,8 +1,7 @@
 import { Controller } from 'stimulus'
+import { WORKFLOW_RUN_EVENT } from 'apps/utils/javascript/events'
 
 // Reload the Turbo Frame on workflow run event.
-
-const WORKFLOW_RUN_EVENT = 'gyana:run-workflow'
 
 export default class extends Controller {
   refresh() {

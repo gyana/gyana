@@ -1,8 +1,7 @@
 import { Controller } from 'stimulus'
+import { NODE_NAME_UPDATED_EVENT_PREFIX } from 'apps/utils/javascript/events'
 
 // Manually dispatch event on node name update
-
-const NODE_NAME_UPDATED_EVENT_PREFIX = 'gyana:update-node-name'
 
 export default class extends Controller {
   static values = {

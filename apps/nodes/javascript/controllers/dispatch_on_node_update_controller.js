@@ -1,9 +1,7 @@
 import { Controller } from 'stimulus'
+import { WORKFLOW_UPDATED_EVENT, NODE_UPDATED_EVENT_PREFIX } from 'apps/utils/javascript/events'
 
 // Manually dispatch events when the node is updated
-
-const WORKFLOW_UPDATED_EVENT = 'gyana:update-workflow'
-const NODE_UPDATED_EVENT_PREFIX = 'gyana:update-node'
 
 export default class extends Controller {
   static values = {

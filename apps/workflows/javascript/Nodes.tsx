@@ -1,3 +1,7 @@
+import {
+  NODE_NAME_UPDATED_EVENT_PREFIX,
+  NODE_UPDATED_EVENT_PREFIX,
+} from 'apps/utils/javascript/events'
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { Handle, NodeProps, Position, Node, useStoreState } from 'react-flow-renderer'
 import { useDebouncedCallback } from 'use-debounce'
@@ -60,7 +64,7 @@ const NodeName = ({ name, id }: { name: string; id: string }) => {
   }, [text])
 
   useEffect(() => {
-    const eventName = `gyana:update-node-name-${id}`
+    const eventName = `${NODE_NAME_UPDATED_EVENT_PREFIX}-${id}`
 
     const updateText = (event) => {
       const { value } = event.detail
@@ -95,7 +99,7 @@ const Description = ({ id, data }) => {
   }
 
   useEffect(() => {
-    const eventName = `gyana:update-node-${id}`
+    const eventName = `${NODE_UPDATED_EVENT_PREFIX}-${id}`
     window.addEventListener(eventName, onNodeConfigUpdate, false)
     return () => window.removeEventListener(eventName, onNodeConfigUpdate)
   }, [])

@@ -1,5 +1,6 @@
 import { Edge, isNode, Node } from 'react-flow-renderer'
 import React, { useEffect, useState } from 'react'
+import { WORKFLOW_RUN_EVENT, WORKFLOW_UPDATED_EVENT } from 'apps/utils/javascript/events'
 
 const RunButton: React.FC<{
   hasOutput: boolean
@@ -24,11 +25,10 @@ const RunButton: React.FC<{
 }) => {
   const [loading, setLoading] = useState(false)
   useEffect(() => {
-    const eventValue = 'gyana:update-workflow'
     const update = () => setIsOutOfDate(true)
 
-    window.addEventListener(eventValue, update)
-    return () => window.removeEventListener(eventValue, update)
+    window.addEventListener(WORKFLOW_UPDATED_EVENT, update)
+    return () => window.removeEventListener(WORKFLOW_UPDATED_EVENT, update)
   })
   return (
     <div className='dndflow__run-button'>
@@ -62,7 +62,7 @@ const RunButton: React.FC<{
                 if (Object.keys(res).length === 0) {
                   setIsOutOfDate(false)
                   setHasBeenRun(false)
-                  window.dispatchEvent(new Event('gyana:run-workflow'))
+                  window.dispatchEvent(new Event(WORKFLOW_RUN_EVENT))
                 }
                 setLoading(false)
               }
