@@ -95,7 +95,7 @@ const Description = ({ id, data }) => {
   }
 
   useEffect(() => {
-    const eventName = `node-updated-${id}`
+    const eventName = `gyana:update-node-${id}`
     window.addEventListener(eventName, onNodeConfigUpdate, false)
     return () => window.removeEventListener(eventName, onNodeConfigUpdate)
   }, [])

@@ -11,12 +11,12 @@
           action="{% url 'nodes:update' node.id %}"
           method="post"
           {% if do_live_updates %}
-          data-controller="live-update dispatch"
+          data-controller="live-update dispatch-on-node-update"
           {% else %}
-          data-controller="dispatch"
+          data-controller="dispatch-on-node-update"
           {% endif %}
-          data-dispatch-event-value="node-updated-{{ node.id }}"
-          data-action="submit->dispatch#dispatch change->tf-modal#change"
+          data-dispatch-on-node-update-node-value="{{ node.id }}"
+          data-action="change->tf-modal#change"
           data-tf-modal-target='form'
           id="config-form"
           data-live-update-form-value="config-form">
@@ -38,17 +38,13 @@
       <div class='workflow-modal__footer'>
         <div class="flex flex-1 gap-7 pad">
           <input type='submit' class="button button--success"
-                 data-controller="dispatch"
-                 data-action="click->tf-modal#forceClose click->dispatch#dispatch"
-                 data-dispatch-event-value="update-workflow"
+                 data-action="click->tf-modal#forceClose"
                  name='submit'
                  value='Save & Close' />
           <input type='submit'
                  class="button button--outline button--success"
                  name='submit'
-                 data-controller="dispatch"
-                 data-action="click->tf-modal#save click->dispatch#dispatch"
-                 data-dispatch-event-value="update-workflow"
+                 data-action="click->tf-modal#save"
                  value='Save & Preview' />
         </div>
       </div>

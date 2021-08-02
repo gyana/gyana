@@ -24,7 +24,7 @@ const RunButton: React.FC<{
 }) => {
   const [loading, setLoading] = useState(false)
   useEffect(() => {
-    const eventValue = 'update-workflow'
+    const eventValue = 'gyana:update-workflow'
     const update = () => setIsOutOfDate(true)
 
     window.addEventListener(eventValue, update)
