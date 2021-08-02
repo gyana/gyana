@@ -12,7 +12,6 @@ from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.views.decorators.http import condition
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import UpdateView
 from django_tables2.config import RequestConfig
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin

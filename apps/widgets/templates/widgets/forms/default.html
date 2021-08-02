@@ -43,9 +43,11 @@
       {{form.kind}}
     </div>
   </div>
-  
-  {% for bound_field in form.visible_fields %}
+
+  {% block widget_form %}
+
   {% with array='name kind table'%}
+  {% for bound_field in form.visible_fields %}
   {% if bound_field.name not in array.split %}
     <div class="input-group">
       {% if bound_field.widget_type == "checkbox" %}
@@ -80,14 +82,18 @@
       {% endif %}
     </div>
   {% endif %}
-  {% endwith %}
   {% endfor %}
+  {% endwith %}
+  
+  {% endblock %}
 
   {% for label, formset in formsets.items %}
+  {% if label != "Additional values" %}
     <fieldset>
       <label>{{ label }}</label>
       {% include "components/formset.html" with formset=formset %}
     </fieldset>
+  {% endif %}
   {% endfor %}
 
   {% for error in form.non_field_errors %}
