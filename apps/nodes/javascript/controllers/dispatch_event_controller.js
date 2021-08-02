@@ -1,6 +1,6 @@
 import { Controller } from 'stimulus'
 
-// Trigger an event on click
+// Manually dispatch event on user interaction
 
 export default class extends Controller {
   static values = {
