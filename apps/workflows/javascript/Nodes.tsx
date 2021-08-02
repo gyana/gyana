@@ -3,10 +3,10 @@ import { Handle, NodeProps, Position, Node, useStoreState } from 'react-flow-ren
 import { useDebouncedCallback } from 'use-debounce'
 
 export const NodeContext = createContext({
-  removeById: (id: string) => {},
+  removeById: (id: string) => { },
   client: null,
   getIncomingNodes: (id: string): [Node, Node[]] | null => null,
-  addNode: (node) => {},
+  addNode: (node) => { },
   workflowId: '',
 })
 
