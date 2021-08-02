@@ -1,8 +1,10 @@
 {% if messages %}
 <ul class="toast-container">
   {% for message in messages %}
-  <li class="toast {{messages.tags}} {{ message.extra_tags }}">
-    {{ message }}
+  <li class="toast {{ messages.tags|default:'' }} {{ message.extra_tags|default:'' }}">
+    <p>{{ message }}</p>
+
+    <i class="fal fa-times fa-fw fa-lg toast__close"></i>
   </li>
   {% endfor %}
 </ul>
