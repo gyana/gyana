@@ -2,15 +2,15 @@
 
 <turbo-frame id="workflows-grid">
   {% if node.error %}
-    <div class='workflow-node__visual'>
-      <i class="fad fa-exclamation-triangle fa-6x text-red"></i>
-      {% if error_template %}
-        {% include error_template %}
-      {% else %}
-        <span class="text-center">Oh no an error appeared try reconfiguring your workflow</span>
-      {% endif %}
-    </div>
+  <div class='workflow-node__visual'>
+    <i class="far fa-comment-exclamation fa-10x text-red"></i>
+    {% if error_template %}
+    {% include error_template %}
+    {% else %}
+    <p class="mt-12">There seems to be an error with this node, try reconfiguring your workflow</p>
+    {% endif %}
+  </div>
   {% else %}
-    {% render_table table %}
+  {% render_table table %}
   {% endif %}
 </turbo-frame>
