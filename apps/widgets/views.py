@@ -104,7 +104,7 @@ class WidgetDetail(DashboardMixin, TurboUpdateView):
 
     def form_valid(self, form):
         clone = self.object.make_clone(
-            attrs={"description": "Copy of " + (self.object.description or "")}
+            attrs={"name": "Copy of " + (self.object.name or "")}
         )
         clone.save()
         self.clone = clone
