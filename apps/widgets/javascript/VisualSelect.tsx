@@ -1,8 +1,12 @@
 import ReactDOM from 'react-dom'
 import React, { useState } from 'react'
 import { Listbox } from '@headlessui/react'
-import { SelectButton, SelectOption, SelectTransition } from './SelectComponents'
-import useLiveUpdate from './useLiveUpdate'
+import {
+  SelectButton,
+  SelectOption,
+  SelectTransition,
+} from 'apps/utils/javascript/SelectComponents'
+import useLiveUpdate from 'apps/utils/javascript/useLiveUpdate'
 
 const VisualSelect_: React.FC<{
   selected: string

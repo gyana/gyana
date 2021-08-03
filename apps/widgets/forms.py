@@ -2,16 +2,14 @@ from apps.columns.forms import FunctionColumnForm
 from apps.columns.models import FunctionColumn
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
-from apps.nodes.widgets import SourceSelect
 from apps.tables.models import Table
 from apps.utils.aggregations import AGGREGATION_TYPE_MAP
 from apps.utils.live_update_form import LiveUpdateForm
-from apps.utils.schema_form_mixin import SchemaFormMixin
-from apps.widgets.widgets import VisualSelect
 from django import forms
 from django.forms.models import BaseInlineFormSet
 
 from .models import Widget
+from .widgets import SourceSelect, VisualSelect
 
 
 class GenericWidgetForm(LiveUpdateForm):
