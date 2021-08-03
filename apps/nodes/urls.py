@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import path
 from rest_framework import routers
 
-from . import views
+from . import frames, rest
 from .models import Node
 
 
@@ -25,19 +25,21 @@ login_and_workflow_required = login_and_permission_to_access(workflow_of_team)
 
 app_name = "nodes"
 urlpatterns = [
+    # frames
     path(
-        "<int:pk>", login_and_node_required(views.NodeUpdate.as_view()), name="update"
+        "<int:pk>", login_and_node_required(frames.NodeUpdate.as_view()), name="update"
     ),
     path(
-        "<int:pk>/grid", login_and_node_required(views.NodeGrid.as_view()), name="grid"
+        "<int:pk>/grid", login_and_node_required(frames.NodeGrid.as_view()), name="grid"
     ),
+    path(
+        "<int:pk>/name", login_and_node_required(frames.NodeName.as_view()), name="name"
+    ),
+    # rest
     path(
         "<int:pk>/duplicate",
-        login_and_node_required(views.duplicate_node),
+        login_and_node_required(rest.duplicate_node),
         name="duplicate",
-    ),
-    path(
-        "<int:pk>/name", login_and_node_required(views.NodeName.as_view()), name="name"
     ),
 ]
 
@@ -45,7 +47,7 @@ urlpatterns = [
 # drf config
 router = routers.DefaultRouter()
 # Access should be handled on the viewset
-router.register("api/nodes", views.NodeViewSet, basename="Node")
+router.register("api/nodes", rest.NodeViewSet, basename="Node")
 
 
 urlpatterns += router.urls
@@ -53,7 +55,7 @@ urlpatterns += router.urls
 workflow_urlpatterns = [
     path(
         "update_positions",
-        login_and_workflow_required(views.update_positions),
+        login_and_workflow_required(rest.update_positions),
         name="update_positions",
     ),
 ]
