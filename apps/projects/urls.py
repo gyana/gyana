@@ -7,22 +7,22 @@ from .access import login_and_project_required
 app_name = "projects"
 urlpatterns = [
     path(
-        "<hashid:pk>",
+        "<hashid:project_id>",
         login_and_project_required(views.ProjectDetail.as_view()),
         name="detail",
     ),
     path(
-        "<hashid:pk>/update",
+        "<hashid:project_id>/update",
         login_and_project_required(views.ProjectUpdate.as_view()),
         name="update",
     ),
     path(
-        "<hashid:pk>/delete",
+        "<hashid:project_id>/delete",
         login_and_project_required(views.ProjectDelete.as_view()),
         name="delete",
     ),
     path(
-        "<hashid:pk>/settings/",
+        "<hashid:project_id>/settings/",
         login_and_project_required(views.ProjectSettings.as_view()),
         name="settings",
     ),
