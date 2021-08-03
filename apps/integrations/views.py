@@ -1,39 +1,20 @@
-import datetime
-import os
-import time
 import uuid
 
 import analytics
-import coreapi
 from apps.projects.mixins import ProjectMixin
-from apps.tables.bigquery import get_query_from_table
-from apps.tables.models import Table
-from apps.tables.tables import TableTable
-from apps.utils.clients import get_bucket
 from apps.utils.segment_analytics import (
     INTEGRATION_CREATED_EVENT,
     NEW_INTEGRATION_START_EVENT,
 )
-from apps.utils.table_data import get_table
-from celery.result import AsyncResult
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.query import QuerySet
-from django.http import HttpRequest
-from django.http.response import HttpResponseBadRequest, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.http.response import HttpResponseBadRequest
 from django.urls import reverse
-from django.utils.text import slugify
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateResponseMixin, TemplateView, View
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
-from django_tables2.config import RequestConfig
-from django_tables2.views import SingleTableMixin
-from rest_framework.decorators import api_view, schema
-from rest_framework.request import Request
-from rest_framework.response import Response
-from rest_framework.schemas import AutoSchema
 from turbo_response.stream import TurboStream
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
@@ -47,13 +28,7 @@ from .forms import (
 )
 from .models import Integration
 from .tables import IntegrationTable, StructureTable
-from .tasks import (
-    file_sync,
-    poll_fivetran_historical_sync,
-    send_integration_email,
-    start_fivetran_integration_task,
-    update_integration_fivetran_schema,
-)
+from .tasks import update_integration_fivetran_schema
 from .utils import get_service_categories, get_services
 
 # CRUDL
@@ -408,248 +383,3 @@ class IntegrationSettings(ProjectMixin, TurboUpdateView):
         return reverse(
             "project_integrations:settings", args=(self.project.id, self.object.id)
         )
-
-
-# Turbo frames
-
-
-class IntegrationGrid(SingleTableMixin, TemplateView):
-    template_name = "integrations/grid.html"
-    paginate_by = 15
-
-    def get_table_kwargs(self):
-        return {"attrs": {"class": "table-data"}}
-
-    def get_context_data(self, **kwargs):
-        self.integration = Integration.objects.get(id=kwargs["pk"])
-
-        table_id = self.request.GET.get("table_id")
-        try:
-            self.table_instance = (
-                self.integration.table_set.get(pk=table_id)
-                if table_id
-                else self.integration.table_set.first()
-            )
-        except (Table.DoesNotExist, ValueError):
-            self.table_instance = self.integration.table_set.first()
-
-        context_data = super().get_context_data(**kwargs)
-        context_data["table_instance"] = self.table_instance
-        return context_data
-
-    def get_table(self, **kwargs):
-        query = get_query_from_table(self.table_instance)
-        table = get_table(query.schema(), query, **kwargs)
-
-        return RequestConfig(
-            self.request, paginate=self.get_table_pagination(table)
-        ).configure(table)
-
-
-class IntegrationSync(TurboUpdateView):
-    template_name = "integrations/sync.html"
-    model = Integration
-    fields = []
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data[
-            "external_table_sync_task_id"
-        ] = self.object.external_table_sync_task_id
-
-        return context_data
-
-    def form_valid(self, form):
-        if self.object.kind == Integration.Kind.GOOGLE_SHEETS:
-            self.object.start_sheets_sync()
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        return reverse("integrations:sync", args=(self.object.id,))
-
-
-class IntegrationTablesList(ProjectMixin, SingleTableView):
-    template_name = "tables/list.html"
-    model = Integration
-    table_class = TableTable
-    paginate_by = 20
-
-    def get_queryset(self) -> QuerySet:
-        return Table.objects.filter(
-            project=self.project, integration_id=self.kwargs["pk"]
-        )
-
-
-class IntegrationAuthorize(DetailView):
-
-    model = Integration
-    template_name = "integrations/authorize.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        if self.object.fivetran_id is None:
-            FivetranClient().create(self.object.service, self.object.projec.team.id)
-
-        return context
-
-
-# Endpoints
-
-
-@api_view(["POST"])
-@schema(
-    AutoSchema(
-        manual_fields=[
-            coreapi.Field(
-                name="filename",
-                required=True,
-                location="form",
-            ),
-        ]
-    )
-)
-def generate_signed_url(request: Request, session_key: str):
-    filename = request.data["filename"]
-    filename, file_extension = os.path.splitext(filename)
-    path = f"{settings.CLOUD_NAMESPACE}/integrations/{filename}-{slugify(time.time())}{file_extension}"
-
-    blob = get_bucket().blob(path)
-    # This signed URL allows the client to create a Session URI to use as upload pointer.
-    # Delegating this to the client, because geographic location matters when starting a session
-    # https://cloud.google.com/storage/docs/access-control/signed-urls#signing-resumable
-    url = blob.generate_signed_url(
-        version="v4",
-        expiration=datetime.timedelta(minutes=15),
-        method="RESUMABLE",
-    )
-
-    request.session[session_key] = {**request.session[session_key], "file": path}
-
-    return Response({"url": url})
-
-
-@api_view(["POST"])
-def start_sync(request: Request, session_key: str):
-    form_data = request.session[session_key]
-
-    file_sync_task_id = file_sync.delay(form_data["file"], form_data["project"])
-
-    request.session[session_key] = {
-        **request.session[session_key],
-        "file_sync_task_id": str(file_sync_task_id),
-    }
-
-    return (
-        TurboStream("integration-validate-flow")
-        .replace.template(
-            "integrations/file_setup/_create_flow.html",
-            {
-                "instance_session_key": session_key,
-                "file_input_id": "id_file",
-                "stage": "validate",
-                "file_sync_task_id": file_sync_task_id,
-                "turbo_stream_url": reverse(
-                    "integrations:upload_complete",
-                    args=(session_key,),
-                ),
-            },
-        )
-        .response(request)
-    )
-
-
-@api_view(["GET"])
-def upload_complete(request: Request, session_key: str):
-    form_data = request.session[session_key]
-    file_sync_task_result = AsyncResult(
-        request.session[session_key]["file_sync_task_id"]
-    )
-
-    if file_sync_task_result.state == "SUCCESS":
-        table_id, time_elapsed = file_sync_task_result.get()
-        table = get_object_or_404(Table, pk=table_id)
-
-        integration = CSVCreateForm(data=form_data).save()
-        integration.file = form_data["file"]
-        integration.created_by = request.user
-        integration.last_synced = datetime.datetime.now()
-        integration.save()
-
-        table.integration = integration
-        table.save()
-
-        finalise_upload_task_id = send_integration_email.delay(
-            integration.id, time_elapsed
-        )
-
-        return (
-            TurboStream("integration-validate-flow")
-            .replace.template(
-                "integrations/file_setup/_create_flow.html",
-                {
-                    "instance_session_key": session_key,
-                    "file_input_id": "id_file",
-                    "stage": "finalise",
-                    "finalise_upload_task_id": finalise_upload_task_id,
-                    "redirect_url": reverse(
-                        "project_integrations:detail",
-                        args=(integration.project.id, integration.id),
-                    ),
-                },
-            )
-            .response(request)
-        )
-
-
-@api_view(["GET"])
-def start_fivetran_integration(request: HttpRequest, session_key: str):
-    integration_data = request.session[session_key]
-
-    task_id = start_fivetran_integration_task.delay(integration_data["fivetran_id"])
-
-    return (
-        TurboStream("integration-setup-container")
-        .replace.template(
-            "integrations/fivetran_setup/_flow.html",
-            {
-                "connector_start_task_id": task_id,
-                "redirect_url": reverse(
-                    "integrations:finalise-fivetran-integration",
-                    args=(session_key,),
-                ),
-            },
-        )
-        .response(request)
-    )
-
-
-@api_view(["GET"])
-def finalise_fivetran_integration(request: HttpRequest, session_key: str):
-    integration_data = request.session[session_key]
-    # Create integration
-    integration = FivetranForm(data=integration_data).save()
-    integration.schema = integration_data["schema"]
-    integration.fivetran_id = integration_data["fivetran_id"]
-    integration.created_by = request.user
-    # Start polling
-    task_id = poll_fivetran_historical_sync.delay(integration.id)
-    integration.fivetran_poll_historical_sync_task_id = str(task_id)
-    integration.save()
-
-    analytics.track(
-        request.user.id,
-        INTEGRATION_CREATED_EVENT,
-        {
-            "id": integration.id,
-            "type": integration.kind,
-            "name": integration.name,
-        },
-    )
-
-    return HttpResponseRedirect(
-        reverse(
-            "project_integrations:detail",
-            args=(integration.project.id, integration.id),
-        )
-    )

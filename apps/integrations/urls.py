@@ -1,62 +1,47 @@
-from apps.integrations.models import Integration
 from apps.projects.access import login_and_project_required
-from apps.teams.roles import user_can_access_team
-from apps.utils.access import (
-    login_and_permission_to_access,
-    login_and_teamid_in_session,
-)
-from django.shortcuts import get_object_or_404
+from apps.utils.access import login_and_teamid_in_session
 from django.urls import path
 
-from . import views
-
-
-def integration_of_team(user, pk, *args, **kwargs):
-    integration = get_object_or_404(Integration, pk=pk)
-    return user_can_access_team(user, integration.project.team)
-
-
-login_and_integration_required = login_and_permission_to_access(integration_of_team)
+from . import frames, rest, views
+from .access import login_and_integration_required
 
 app_name = "integrations"
 urlpatterns = [
+    # frames
     path(
         "<hashid:pk>/grid",
-        login_and_integration_required(views.IntegrationGrid.as_view()),
+        login_and_integration_required(frames.IntegrationGrid.as_view()),
         name="grid",
     ),
     path(
         "<hashid:pk>/sync",
-        login_and_integration_required(views.IntegrationSync.as_view()),
+        login_and_integration_required(frames.IntegrationSync.as_view()),
         name="sync",
     ),
-    path(
-        "<hashid:pk>/authorize",
-        login_and_integration_required(views.IntegrationAuthorize.as_view()),
-        name="authorize",
-    ),
+    # rest
+    # TODO: access control?
     path(
         "<str:session_key>/start-fivetran-integration",
-        login_and_teamid_in_session(views.start_fivetran_integration),
+        login_and_teamid_in_session(rest.start_fivetran_integration),
         name="start-fivetran-integration",
     ),
     path(
         "<str:session_key>/finalise-fivetran-integration",
-        login_and_teamid_in_session(views.finalise_fivetran_integration),
+        login_and_teamid_in_session(rest.finalise_fivetran_integration),
         name="finalise-fivetran-integration",
     ),
-    # TODO: access control?
-    path("file/<str:session_key>/generate-signed-url", views.generate_signed_url),
-    path("file/<str:session_key>/start-sync", views.start_sync),
+    path("file/<str:session_key>/generate-signed-url", rest.generate_signed_url),
+    path("file/<str:session_key>/start-sync", rest.start_sync),
     path(
         "file/<str:session_key>/upload-complete",
-        views.upload_complete,
+        rest.upload_complete,
         name="upload_complete",
     ),
 ]
 
 project_urlpatterns = (
     [
+        # views
         path(
             "", login_and_project_required(views.IntegrationList.as_view()), name="list"
         ),
@@ -116,14 +101,15 @@ project_urlpatterns = (
             name="settings",
         ),
         path(
-            "<hashid:pk>/tables",
-            login_and_project_required(views.IntegrationTablesList.as_view()),
-            name="tables",
-        ),
-        path(
             "<hashid:pk>/sheet-verify",
             login_and_project_required(views.IntegrationDetail.as_view()),
             name="sheet-verify",
+        ),
+        # frames
+        path(
+            "<hashid:pk>/tables",
+            login_and_project_required(frames.IntegrationTablesList.as_view()),
+            name="tables",
         ),
     ],
     "project_integrations",
