@@ -1,8 +1,11 @@
 from django.urls import path
 
-from . import views
+from . import rest
 
 app_name = "filters"
 
 # TODO: Control access
-urlpatterns = [path("autocomplete", views.autocomplete_options, name="autocomplete")]
+urlpatterns = [
+    # rest
+    path("autocomplete", rest.autocomplete_options, name="autocomplete")
+]
