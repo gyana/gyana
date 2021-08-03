@@ -1,17 +1,13 @@
+import { getApiClient } from 'apps/utils/javascript/api'
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import ReactHtmlParser from 'react-html-parser'
 import { Rnd as ReactRnd } from 'react-rnd'
-let auth = new coreapi.auth.SessionAuthentication({
-  csrfCookieName: 'csrftoken',
-  csrfHeaderName: 'X-CSRFToken',
-})
 
-let client = new coreapi.Client({ auth: auth })
+const client = getApiClient()
 
-// Should be the same as in the grid-size controller
-// TODO: somehow inject the value from the controller into this component
-const GRID_COLS = 80
+// Should be the same as in the _variables.scss
+const GRID_SIZE = 15
 
 const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> = ({
   children,
@@ -24,7 +20,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
       : 'public'
   const id = children.props['data-id']
   // Utilised to decide the clamping on interaction as well as clamps for placement
-  const stepSize = Math.floor(root.offsetWidth / GRID_COLS)
+  const stepSize = GRID_SIZE
 
   const [x, setX] = useState(() => parseInt(children.props['data-x']) || 0)
   const [y, setY] = useState(() => parseInt(children.props['data-y']) || 0)
@@ -33,7 +29,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
 
   return (
     <ReactRnd
-      data-zindex-target='entity'
+      data-widget-list-target='widget'
       enableResizing={mode === 'edit'}
       disableDragging={mode !== 'edit'}
       default={{

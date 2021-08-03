@@ -1,14 +1,17 @@
+from apps.columns.forms import FunctionColumnForm
+from apps.columns.models import FunctionColumn
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
 from apps.nodes.widgets import SourceSelect
 from apps.tables.models import Table
+from apps.utils.aggregations import AGGREGATION_TYPE_MAP
 from apps.utils.live_update_form import LiveUpdateForm
 from apps.utils.schema_form_mixin import SchemaFormMixin
 from apps.widgets.widgets import VisualSelect
 from django import forms
 from django.forms.models import BaseInlineFormSet
 
-from .models import MULTI_VALUES_CHARTS, MultiValues, Widget
+from .models import Widget
 
 
 class GenericWidgetForm(LiveUpdateForm):
@@ -23,9 +26,8 @@ class GenericWidgetForm(LiveUpdateForm):
             "table",
             "kind",
             "label",
-            "aggregator",
-            "value",
             "z",
+            "z_aggregator",
             "sort_by",
             "sort_ascending",
             "stack_100_percent",
@@ -50,16 +52,8 @@ class GenericWidgetForm(LiveUpdateForm):
         formsets = [FilterFormset]
         if self.instance.kind not in [
             Widget.Kind.TABLE,
-            Widget.Kind.FUNNEL,
-            Widget.Kind.PYRAMID,
-            Widget.Kind.PIE,
-            Widget.Kind.BUBBLE,
-            Widget.Kind.DONUT,
-            Widget.Kind.HEATMAP,
-            Widget.Kind.STACKED_BAR,
-            Widget.Kind.STACKED_COLUMN,
         ]:
-            formsets += [ValueFormset]
+            formsets += [FunctionColumnFormset]
         return formsets
 
 
@@ -73,14 +67,13 @@ class TwoDimensionForm(GenericWidgetForm):
         if schema and "label" in self.fields:
             columns = [(column, column) for column in schema]
             self.fields["label"].choices = columns
-            self.fields["value"].choices = columns
 
     def get_live_fields(self):
         fields = super().get_live_fields()
         table = self.get_live_field("table")
 
         if table:
-            fields += ["sort_by", "sort_ascending", "label", "aggregator", "value"]
+            fields += ["sort_by", "sort_ascending", "label"]
         return fields
 
 
@@ -96,18 +89,21 @@ class ThreeDimensionForm(GenericWidgetForm):
             self.fields["label"].choices = columns
             self.fields["z"].choices = columns
 
+            kind = self.get_live_field("kind")
+            if kind in [Widget.Kind.BUBBLE, Widget.Kind.HEATMAP] and (
+                z := self.get_live_field("z")
+            ):
+                self.fields["z_aggregator"].choices = [
+                    (choice.value, choice.name)
+                    for choice in AGGREGATION_TYPE_MAP[schema[z].name]
+                ]
+
     def get_live_fields(self):
         fields = super().get_live_fields()
         table = self.get_live_field("table")
 
         if table:
-            fields += [
-                "sort_by",
-                "sort_ascending",
-                "label",
-                "aggregator",
-                "z",
-            ]
+            fields += ["sort_by", "sort_ascending", "label", "z", "z_aggregator"]
         return fields
 
 
@@ -135,7 +131,6 @@ class StackedChartForm(GenericWidgetForm):
                 "sort_by",
                 "sort_ascending",
                 "label",
-                "aggregator",
                 "z",
                 "stack_100_percent",
             ]
@@ -161,27 +156,23 @@ FORMS = {
 }
 
 
-class ValueForm(SchemaFormMixin, LiveUpdateForm):
-    column = forms.ChoiceField(choices=())
-
-    class Meta:
-        model = MultiValues
-        fields = ("column",)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.schema:
-            self.fields["column"] = forms.ChoiceField(
-                choices=[(column, column) for column in self.schema]
-            )
-
-
 class RequiredInlineFormset(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for form in self.forms:
             form.empty_permitted = False
             form.use_required_attribute = True
+
+
+class InlineColumnFormset(RequiredInlineFormset):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.form.base_fields["column"] = forms.ChoiceField(
+            choices=[
+                ("", "No column selected"),
+                *[(col, col) for col in self.instance.table.schema],
+            ]
+        )
 
 
 FilterFormset = forms.inlineformset_factory(
@@ -193,8 +184,13 @@ FilterFormset = forms.inlineformset_factory(
     formset=RequiredInlineFormset,
 )
 
-ValueFormset = forms.inlineformset_factory(
-    Widget, MultiValues, form=ValueForm, can_delete=True, extra=0
+FunctionColumnFormset = forms.inlineformset_factory(
+    Widget,
+    FunctionColumn,
+    form=FunctionColumnForm,
+    can_delete=True,
+    extra=0,
+    formset=InlineColumnFormset,
 )
 
 

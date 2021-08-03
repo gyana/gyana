@@ -10,8 +10,7 @@ module.exports = {
   entry: {
     style: './assets/styles/style.scss',
     tailwind: './assets/styles/vendors/tailwind.pcss',
-
-    stimulus: './assets/javascript/stimulus.ts',
+    stimulus: './apps/utils/javascript/stimulus.ts',
     workflow: './apps/workflows/javascript/app.tsx',
     templates: './templates/javascript/index.tsx',
   },

@@ -9,7 +9,7 @@ from turbo_response.views import TurboUpdateView
 # temporary overrides for formset labels
 FORMSET_LABELS = {
     "columns": "Columns",
-    "aggregations": "Aggregrations",
+    "aggregations": "Aggregations",
     "sort_columns": "Sort columns",
     "edit_columns": "Edit columns",
     "add_columns": "Add columns",

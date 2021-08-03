@@ -4,7 +4,11 @@
   {{ form.media.js }}
   <div class="flex flex-wrap mb-4 h-full">
     <div class="w-1/2">
-      {% include 'widgets/forms/default.html' %}
+      {% if widget.kind == "table" %}
+        {% include 'widgets/forms/default.html' %}
+      {% else %}
+        {% include 'widgets/forms/chart.html' %}
+      {% endif %}
     </div>
     <div class="w-1/2 h-full overflow-y-auto">
       {% if widget.is_valid %}

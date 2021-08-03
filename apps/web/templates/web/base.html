@@ -46,10 +46,10 @@
   {% endblock messages %}
 
   {% block sidebar %}
-  <div id="sidebar" class="sidebar" data-controller="sidebar">
+  <div id="sidebar" class="sidebar" data-controller="web-sidebar">
     <input type="checkbox" id="sidebar-toggle" role="button"
            hidden
-           data-sidebar-target="toggle"
+           data-web-sidebar-target="toggle"
            {% if sidebar_collapsed %}checked{% endif %}>
 
     <nav class="sidebar__body">
@@ -78,12 +78,12 @@
       </li>
 
       <li>
-        <button data-controller='intercom-helper' data-action='intercom-helper#trigger' class="sidebar__link w-full">
+        <button data-controller='web-intercom-helper' data-action='web-intercom-helper#trigger' class="sidebar__link w-full">
           <i class="fas fa-fw fa-question mr-6"></i>Help
         </button>
       </li>
 
-      <li data-controller='intercom-helper'>
+      <li data-controller='web-intercom-helper'>
         <hr>
       </li>
 

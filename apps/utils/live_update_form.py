@@ -11,6 +11,9 @@ class LiveUpdateForm(forms.ModelForm):
 
         Because LiveForms don't hold data for fields that haven't been displayed,
         we need to manually add these values."""
+        # When submitting we don't need to do anything
+        if not self.is_live:
+            return
         # self.data hold data from request.POST and can be a MultiValueDict or a QueryDict
         data = MultiValueDict({**self.data})
         for field in self.get_live_fields():

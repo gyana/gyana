@@ -1,16 +1,16 @@
-<fieldset name={{widget.name}} data-controller="checkbox">
+<fieldset name={{widget.name}} data-controller="node-input">
  {% for option in widget.options %}
     <label 
-      data-checkbox-target="label"
+      data-node-input-target="label"
       class="checkbox {% if option.id == widget.selected %}checkbox__checked{% endif %}" 
       id="{{option.id}}"
-      data-action="click->checkbox#select"
+      data-action="click->node-input#select"
     >
       <i class="{{ option.icon }}"></i>{{option.label }}
     </label>
  {% endfor %}
   <input 
-      data-checkbox-target="input"
+      data-node-input-target="input"
       id="id_{{widget.name}}" 
       name="{{ widget.name }}" 
       value="{{ widget.selected }}" 

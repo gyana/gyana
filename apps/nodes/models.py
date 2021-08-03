@@ -2,6 +2,7 @@ from functools import cached_property
 
 from apps.nodes.config import NODE_CONFIG
 from apps.tables.models import Table
+from apps.utils.aggregations import AggregationFunctions
 from apps.utils.cache import get_cache_key
 from apps.utils.models import BaseModel
 from apps.workflows.models import Workflow
@@ -12,17 +13,6 @@ from django.db import models
 from django.db.models import Max
 from django.utils import timezone
 from model_clone import CloneMixin
-
-
-class AggregationFunctions(models.TextChoices):
-    # These functions need to correspond to ibis Column methods
-    # https://ibis-project.org/docs/api.html
-    SUM = "sum", "Sum"
-    COUNT = "count", "Count"
-    MEAN = "mean", "Average"
-    MAX = "max", "Maximum"
-    MIN = "min", "Minimum"
-    STD = "std", "Standard deviation"
 
 
 class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
@@ -248,7 +238,8 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     @property
     def has_enough_parents(self):
-        from apps.nodes.bigquery import NODE_FROM_CONFIG, get_arity_from_node_func
+        from apps.nodes.bigquery import (NODE_FROM_CONFIG,
+                                         get_arity_from_node_func)
 
         func = NODE_FROM_CONFIG[self.kind]
         min_arity, _ = get_arity_from_node_func(func)

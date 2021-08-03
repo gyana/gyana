@@ -1,10 +1,10 @@
 <div id="uploader-{{ instance_session_key }}"
      class="integration__file-upload {% if stage != "upload" %}inactive{% endif %}"
-     data-controller='file-upload'
-     data-file-upload-file-id-value="{{ instance_session_key }}"
-     data-file-upload-file-input-id-value="{{ file_input_id }}"
-     data-file-upload-signed-url-value="{{ signed_url }}"
-     data-file-upload-inhibit-upload-value="{% if stage != "upload" %}true{% else %}false{% endif %}"
+     data-controller='integration-upload'
+     data-integration-upload-file-id-value="{{ instance_session_key }}"
+     data-integration-upload-file-input-id-value="{{ file_input_id }}"
+     data-integration-upload-signed-url-value="{{ signed_url }}"
+     data-integration-upload-inhibit-upload-value="{% if stage != "upload" %}true{% else %}false{% endif %}"
      >
   {% if stage == "upload" %}
   <div class="integration__file-progress mr-4">

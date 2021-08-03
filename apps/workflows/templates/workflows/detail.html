@@ -12,9 +12,8 @@
       <input class='input__inline' id="name" type="text" name="name" value="{{ object.name }}"></input>
     </form>
   </turbo-frame>
-  <div data-controller='event-refresh' data-event-refresh-event-value='workflow-run' class='mr-auto'>
-    <turbo-frame id="workflow-last-run" src="{% url 'workflows:last_run' object.id %}"
-                 data-event-refresh-target="turboFrame">
+  <div data-controller='workflow-last-run' class='mr-auto'>
+    <turbo-frame id="workflow-last-run" src="{% url 'workflows:last_run' object.id %}">
     </turbo-frame>
   </div>
   <span class="button button--circle button--tertiary cursor-pointer">

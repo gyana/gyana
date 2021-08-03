@@ -2,34 +2,25 @@
 
 <turbo-frame id="workflow-modal">
   {% if node.kind == "input" or node.has_enough_parents %}
-  <div class="workflow-modal__section">
+  <div class="workflow-modal__section" data-controller="node-update" data-node-update-id-value="{{ node.id }}">
     <div class="workflow-modal__header">
       {% include 'nodes/name.html' %}
     </div>
 
-    <form class="form--no-layout overflow-hidden flex-1"
+    <form id="node-update-form"
+          class="form--no-layout overflow-hidden flex-1"
           action="{% url 'nodes:update' node.id %}"
           method="post"
           {% if do_live_updates %}
-          data-controller="live-update trigger"
-          {% else %}
-          data-controller="trigger"
+          data-controller="live-update"
           {% endif %}
-          data-trigger-event-value="node-updated-{{ node.id }}"
-          data-action="submit->trigger#dispatch change->tf-modal#change"
-          data-tf-modal-target='form'
-          id="config-form"
-          data-live-update-form-value="config-form">
+          data-action="change->tf-modal#change">
+      
       <div class="workflow-detail__sidebar">
-        {{ form.media }}
-        {% if filters_formset %}
-        {{ filters_formset.media }}
-        {% endif %}
-        {% if formula_columns_formset %}
-        {{ formula_columns_formset.media }}
-        {% endif %}
-        <span data-live-update-target="loading" class="h-6 hidden"><i
-             class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
+        <span data-live-update-target="loading" class="h-6 hidden">
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+        </span>
+        
         {% csrf_token %}
 
         {% include "django/forms/default_form.html" %}
@@ -38,17 +29,13 @@
       <div class='workflow-modal__footer'>
         <div class="flex flex-1 gap-7 pad">
           <input type='submit' class="button button--success"
-                 data-controller="trigger"
-                 data-action="click->tf-modal#forceClose click->trigger#dispatch"
-                 data-trigger-event-value="update-workflow"
+                 data-action="click->tf-modal#forceClose"
                  name='submit'
                  value='Save & Close' />
           <input type='submit'
                  class="button button--outline button--success"
                  name='submit'
-                 data-controller="trigger"
-                 data-action="click->tf-modal#save click->trigger#dispatch"
-                 data-trigger-event-value="update-workflow"
+                 data-action="click->tf-modal#save"
                  value='Save & Preview' />
         </div>
       </div>

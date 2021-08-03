@@ -1,3 +1,4 @@
+import { GyanaEvents } from 'apps/utils/javascript/events'
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { Handle, NodeProps, Position, Node, useStoreState } from 'react-flow-renderer'
 import { useDebouncedCallback } from 'use-debounce'
@@ -60,7 +61,7 @@ const NodeName = ({ name, id }: { name: string; id: string }) => {
   }, [text])
 
   useEffect(() => {
-    const eventName = `node-name-update-${id}`
+    const eventName = `${GyanaEvents.UPDATE_NODE_NAME}-${id}`
 
     const updateText = (event) => {
       const { value } = event.detail
@@ -95,7 +96,7 @@ const Description = ({ id, data }) => {
   }
 
   useEffect(() => {
-    const eventName = `node-updated-${id}`
+    const eventName = `${GyanaEvents.UPDATE_NODE}-${id}`
     window.addEventListener(eventName, onNodeConfigUpdate, false)
     return () => window.removeEventListener(eventName, onNodeConfigUpdate)
   }, [])

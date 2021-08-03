@@ -1,9 +1,9 @@
 <form 
-  data-controller="live-update" 
-  method="post"
-  action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
+  id="widget-update-form"
   class="form"
-  data-tf-modal-target='form'
+  action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
+  method="post"
+  data-controller="live-update" 
   data-action="change->tf-modal#change submit->tf-modal#save"
 >  
   <div class="absolute top-0 right-0">
@@ -19,8 +19,9 @@
     </button>
   </div>
   <div class="h-6">
-    <span data-live-update-target="loading" class="hidden"><i
-          class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i></span>
+    <span data-live-update-target="loading" class="hidden">
+      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+    </span>
   </div>
   {% csrf_token %}
   <h3 class="flex flex-row items-center">
@@ -29,24 +30,26 @@
   </h3>
   <div class="flex flex-row w-full">
     <div class="w-1/2">
-      <label for="{{ bound_fields.table.id_for_label }}">
-        {{ bound_fields.table.label }}
-        <p class=" input__help-text">{{ bound_fields.table.help_text }}</p>
+      <label for="{{ form.table.id_for_label }}">
+        {{ form.table.label }}
+        <p class=" input__help-text">{{ form.table.help_text }}</p>
       </label>
-      {{bound_fields.table}}
+      {{form.table}}
     </div>
     <div class="w-1/2">
-      <label for="{{ bound_fields.table.id_for_label }}">
-        {{ bound_fields.kind.label }}
+      <label for="{{ form.table.id_for_label }}">
+        {{ form.kind.label }}
         <p class=" input__help-text">{{ bound_fields.kind.help_text }}</p>
       </label>
-      {{bound_fields.kind}}
+      {{form.kind}}
     </div>
   </div>
-  
-  {% for key, bound_field in bound_fields.items %}
+
+  {% block widget_form %}
+
   {% with array='name kind table'%}
-  {% if key not in array.split %}
+  {% for bound_field in form.visible_fields %}
+  {% if bound_field.name not in array.split %}
     <div class="input-group">
       {% if bound_field.widget_type == "checkbox" %}
       <label class="flex flex-row">
@@ -80,14 +83,18 @@
       {% endif %}
     </div>
   {% endif %}
-  {% endwith %}
   {% endfor %}
+  {% endwith %}
+  
+  {% endblock %}
 
   {% for label, formset in formsets.items %}
+  {% if label != "Aggregations" %}
     <fieldset>
       <label>{{ label }}</label>
       {% include "components/formset.html" with formset=formset %}
     </fieldset>
+  {% endif %}
   {% endfor %}
 
   {% for error in form.non_field_errors %}

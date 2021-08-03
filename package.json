@@ -7,7 +7,7 @@
     "build:dev": "webpack --mode=development --progress",
     "build:watch": "webpack --mode=development --watch --progress",
     "build": "NODE_ENV=production webpack --mode=production --progress",
-    "prettier": "prettier --write ./**/*.{ts,tsx}",
+    "prettier": "prettier --write ./**/*.{js,ts,tsx}",
     "cypress:open": "cypress open"
   },
   "author": "Gyana",
