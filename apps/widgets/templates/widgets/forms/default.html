@@ -26,7 +26,14 @@
   {% csrf_token %}
   <h3 class="flex flex-row items-center">
     Configure 
-    <input class='input__inline ml-3' id="name" type="text" name="name" placeholder="Untitled widget">{% if object.name%}{{ object.name }}{%endif%}</input>
+    <input 
+      class='input__inline ml-3' 
+      id="name" 
+      type="text" 
+      name="name" 
+      placeholder="Untitled widget" 
+      value="{% if object.name%}{{ object.name }}{%endif%}"
+    ></input>
   </h3>
   <div class="flex flex-row w-full">
     <div class="w-1/2">

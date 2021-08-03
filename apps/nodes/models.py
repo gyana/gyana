@@ -19,7 +19,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     class Kind(models.TextChoices):
         INPUT = "input", "Get data"
         OUTPUT = "output", "Save data"
-        SELECT = "select", "Select"
+        SELECT = "select", "Select columns"
         JOIN = "join", "Join"
         AGGREGATION = "aggregation", "Aggregation"
         UNION = "union", "Union"
@@ -238,8 +238,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     @property
     def has_enough_parents(self):
-        from apps.nodes.bigquery import (NODE_FROM_CONFIG,
-                                         get_arity_from_node_func)
+        from apps.nodes.bigquery import NODE_FROM_CONFIG, get_arity_from_node_func
 
         func = NODE_FROM_CONFIG[self.kind]
         min_arity, _ = get_arity_from_node_func(func)

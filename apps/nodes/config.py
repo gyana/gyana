@@ -14,7 +14,7 @@ NODE_CONFIG = {
         "section": "Input/Output",
     },
     "select": {
-        "displayName": "Select",
+        "displayName": "Select columns",
         "icon": "fa-lasso",
         "description": "Select columns from the table",
         "section": "Table manipulations",

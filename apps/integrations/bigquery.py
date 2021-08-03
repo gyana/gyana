@@ -29,8 +29,11 @@ def create_external_config(
         if cell_range:
             external_config.options.range = cell_range
     elif kind == Integration.Kind.CSV:
+        # See here for more infomation https://googleapis.dev/python/bigquery/1.24.0/generated/google.cloud.bigquery.external_config.CSVOptions.html
         external_config = bigquery.ExternalConfig("CSV")
         external_config.source_uris = [f"gs://{settings.GS_BUCKET_NAME}/{file}"]
+        external_config.options.allow_quoted_newlines = True
+        external_config.options.allow_jagged_rows = True
 
     external_config.autodetect = True
 
