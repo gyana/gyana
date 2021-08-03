@@ -6,10 +6,12 @@
 </label>
 {{form.label}}
 <fieldset>
-  {% with formset=formsets.Aggregations %}
-    <label>Values</label>
-    {% include "components/formset.html" with formset=formset %}
-  {% endwith %}
+  {% if formsets.Aggregations %}
+    {% with formset=formsets.Aggregations %}
+      <label>Values</label>
+      {% include "components/formset.html" with formset=formset %}
+    {% endwith %}
+  {% endif %}
 </fieldset>
 {% if form.z %}
   <div class="flex flex-row w-full">

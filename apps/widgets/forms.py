@@ -47,10 +47,11 @@ class GenericWidgetForm(LiveUpdateForm):
         return ["table", "kind", "name"]
 
     def get_live_formsets(self):
+        if self.get_live_field("table") is None:
+            return []
+
         formsets = [FilterFormset]
-        if self.instance.kind not in [
-            Widget.Kind.TABLE,
-        ]:
+        if self.instance.kind not in [Widget.Kind.TABLE]:
             formsets += [FunctionColumnFormset]
         return formsets
 
