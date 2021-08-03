@@ -12,7 +12,7 @@ module.exports = {
     tailwind: './assets/styles/vendors/tailwind.pcss',
     stimulus: './apps/utils/javascript/stimulus.ts',
     workflow: './apps/workflows/javascript/app.tsx',
-    templates: './apps/utils/javascript/templates.ts',
+    components: './apps/utils/javascript/components.ts',
   },
   output: {
     path: path.resolve(__dirname, './static'),

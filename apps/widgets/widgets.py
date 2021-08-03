@@ -6,7 +6,7 @@ ICONS = {"integration": "far fa-link", "workflow_node": "far fa-stream"}
 
 class SourceSelect(ChoiceWidget):
     class Media:
-        js = ("js/templates-bundle.js",)
+        js = ("js/components-bundle.js",)
 
     template_name = "django/forms/widgets/select_source.html"
 
@@ -24,7 +24,7 @@ class SourceSelect(ChoiceWidget):
 
 class VisualSelect(ChoiceWidget):
     class Media:
-        js = ("js/templates-bundle.js",)
+        js = ("js/components-bundle.js",)
 
     template_name = "django/forms/widgets/select_visual.html"
 

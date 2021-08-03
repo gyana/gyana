@@ -5,7 +5,7 @@ from django.forms.widgets import Input, Widget
 
 class SelectAutocomplete(Widget):
     class Media:
-        js = ("js/templates-bundle.js",)
+        js = ("js/components-bundle.js",)
 
     template_name = "django/forms/widgets/select_autocomplete.html"
 

@@ -23,7 +23,7 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
     # Are added dynamically, and a script wouldn't be added if a widget
     # isn't included in the fields
     class Media:
-        js = ("js/templates-bundle.js",)
+        js = ("js/components-bundle.js",)
 
     class Meta:
         fields = (
