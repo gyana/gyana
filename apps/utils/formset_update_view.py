@@ -46,14 +46,12 @@ class FormsetUpdateView(TurboUpdateView):
         formset_instance = (
             # POST request for form creation
             formset(self.request.POST, instance=self.object, form_kwargs=forms_kwargs)
+            # form is only bound if formset is in previous render, otherwise load from database
             if self.request.POST
+            and f"{formset.get_default_prefix()}-TOTAL_FORMS" in self.request.POST
             # initial render
             else formset(instance=self.object, form_kwargs=forms_kwargs)
         )
-
-        # fix when formset.management_form was not defined in previous render
-        # we can just ignore these errors
-        formset_instance.management_form._errors = ErrorDict()
 
         return formset_instance
 
