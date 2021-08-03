@@ -4,10 +4,8 @@ import analytics
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
 from apps.utils.formset_update_view import FormsetUpdateView
-from apps.utils.segment_analytics import WIDGET_CONFIGURED_EVENT, WIDGET_CREATED_EVENT
-from apps.widgets.serializers import WidgetSerializer
+from apps.utils.segment_analytics import WIDGET_CONFIGURED_EVENT
 from apps.widgets.visuals import chart_to_output, table_to_output
-from django.db import transaction
 from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.views.decorators.http import condition
@@ -15,12 +13,9 @@ from django.views.generic import DetailView, ListView
 from django_tables2.config import RequestConfig
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
-from rest_framework import mixins, viewsets
 from turbo_response import TurboStream
-from turbo_response.response import TurboStreamResponse
-from turbo_response.views import TurboCreateView, TurboStreamDeleteView, TurboUpdateView
 
-from .forms import FORMS, WidgetDuplicateForm
+from .forms import FORMS
 from .models import WIDGET_CHOICES_ARRAY, Widget
 
 
