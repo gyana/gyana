@@ -3,8 +3,8 @@
 
 {% block widget %}
 <div class="flex items-center gap-4 mb-4">
-  {% if object.description %}
-  <h1>{{ object.description }}</h1>
+  {% if object.name %}
+  <h1>{{ object.name }}</h1>
   {% endif %}
   <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}"
      class="button button--sm button--success">Back</a>
