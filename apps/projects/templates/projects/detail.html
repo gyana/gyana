@@ -17,12 +17,12 @@
 <div class="flex flex-col flex-1 gap-7 pad">
   <div class="flex flex-col gap-7 flex-1">
     <div class="flex flex-wrap gap-7">
-      <div class="flex-1 overflow-hidden">
+      <div class="flex-1">
         <div class="flex mb-3">
           <h3>Recent Integrations</h3>
         </div>
 
-        <div class="card card--none flex-1 overflow-auto">
+        <div class="card card--none flex-1">
           {% render_table integrations %}
 
           {% if integrations.rows|length == 0 %}
@@ -37,12 +37,12 @@
         </div>
       </div>
 
-      <div class="flex-1 overflow-hidden">
+      <div class="flex-1">
         <div class="flex mb-3">
           <h3>Recent Workflows</h3>
         </div>
 
-        <div class="card card--none flex-1 overflow-auto">
+        <div class="card card--none flex-1">
           {% render_table workflows %}
 
           {% if workflows.rows|length == 0 %}
@@ -71,7 +71,7 @@
         <h3>Recent Dashboards</h3>
       </div>
 
-      <div class="card card--none flex-1 overflow-auto">
+      <div class="card card--none flex-1">
         {% render_table dashboards %}
 
         {% if dashboards.rows|length == 0 %}
