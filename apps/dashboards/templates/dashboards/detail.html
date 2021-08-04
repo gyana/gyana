@@ -21,7 +21,9 @@
     </div>
   </form>
 
-  {% include 'dashboards/share.html' %}
+  <turbo-frame id="dashboard-share">
+    {% include 'dashboards/share.html' %}
+  </turbo-frame>
   <span class="button button--circle button--tertiary cursor-pointer">
     {% include 'dashboards/duplicate.html'%}
   </span>

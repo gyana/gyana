@@ -1,15 +1,16 @@
 import uuid
 
+from apps.utils.frames import TurboFrameUpdateView
 from django.urls.base import reverse
-from turbo_response.views import TurboUpdateView
 
 from .models import Dashboard
 
 
-class DashboardShare(TurboUpdateView):
+class DashboardShare(TurboFrameUpdateView):
     template_name = "dashboards/share.html"
     model = Dashboard
     fields = []
+    turbo_frame_dom_id = "dashboard-share"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
