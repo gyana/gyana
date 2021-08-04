@@ -66,6 +66,8 @@ describe('integrations', () => {
     cy.url().should('contain', '/projects/1/integrations/new')
     cy.contains('Google Sheets').click()
 
+    // pretend to share with this email account
+    cy.contains('gyana-local@gyana-1511894275181.iam.gserviceaccount.com')
     cy.get('input[name=url]').type(
       'https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit'
     )
