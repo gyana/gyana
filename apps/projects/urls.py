@@ -1,40 +1,28 @@
 from apps.teams.access import login_and_team_required
-from apps.teams.roles import user_can_access_team
-from apps.utils.access import login_and_permission_to_access
-from django.shortcuts import get_object_or_404
 from django.urls import path
 
 from . import views
-from .models import Project
-
-
-def project_of_team(user, pk, *args, **kwargs):
-    project = get_object_or_404(Project, pk=pk)
-    return user_can_access_team(user, project.team)
-
-
-login_and_project_required = login_and_permission_to_access(project_of_team)
-
+from .access import login_and_project_required
 
 app_name = "projects"
 urlpatterns = [
     path(
-        "<hashid:pk>",
+        "<hashid:project_id>",
         login_and_project_required(views.ProjectDetail.as_view()),
         name="detail",
     ),
     path(
-        "<hashid:pk>/update",
+        "<hashid:project_id>/update",
         login_and_project_required(views.ProjectUpdate.as_view()),
         name="update",
     ),
     path(
-        "<hashid:pk>/delete",
+        "<hashid:project_id>/delete",
         login_and_project_required(views.ProjectDelete.as_view()),
         name="delete",
     ),
     path(
-        "<hashid:pk>/settings/",
+        "<hashid:project_id>/settings/",
         login_and_project_required(views.ProjectSettings.as_view()),
         name="settings",
     ),

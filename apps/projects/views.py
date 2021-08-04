@@ -36,6 +36,7 @@ class ProjectCreate(TeamMixin, TurboCreateView):
 class ProjectDetail(DetailView):
     template_name = "projects/detail.html"
     model = Project
+    pk_url_kwarg = "project_id"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -56,6 +57,7 @@ class ProjectUpdate(TurboUpdateView):
     template_name = "projects/update.html"
     model = Project
     form_class = ProjectForm
+    pk_url_kwarg = "project_id"
 
     def get_success_url(self) -> str:
         return reverse("projects:detail", args=(self.object.id,))
@@ -64,6 +66,7 @@ class ProjectUpdate(TurboUpdateView):
 class ProjectDelete(DeleteView):
     template_name = "projects/delete.html"
     model = Project
+    pk_url_kwarg = "project_id"
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.team.id,))
@@ -72,3 +75,4 @@ class ProjectDelete(DeleteView):
 class ProjectSettings(DetailView):
     template_name = "projects/settings.html"
     model = Project
+    pk_url_kwarg = "project_id"

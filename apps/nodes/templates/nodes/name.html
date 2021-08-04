@@ -1,19 +1,17 @@
-<turbo-frame id='node-editable-title'>
-  <div class="flex flex-row items-center">
-    <i class='fad {{object.icon}} fa-3x text-blue mr-2'></i>
-    <form 
-      id="node-name-update-form"
-      method="POST" 
-      action="{% url 'nodes:name' object.id %}"
-    >
-    {% csrf_token %}
-      <input 
-        class='input__inline' 
-        id="name" 
-        type="text" 
-        name="name"
-        value="{% if object.name %}{{ object.name }}{% else %}{{ object.display_name|capfirst }}{% endif %}"
-      ></input>
-    </form>
-  </div>
-</turbo-frame>
+<div class="flex flex-row items-center">
+  <i class='fad {{object.icon}} fa-3x text-blue mr-2'></i>
+  <form 
+    id="node-name-update-form"
+    method="POST" 
+    action="{% url 'nodes:name' object.id %}"
+  >
+  {% csrf_token %}
+    <input 
+      class='input__inline' 
+      id="name" 
+      type="text" 
+      name="name"
+      value="{% if object.name %}{{ object.name }}{% else %}{{ object.display_name|capfirst }}{% endif %}"
+    ></input>
+  </form>
+</div>
