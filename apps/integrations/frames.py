@@ -2,21 +2,21 @@ from apps.projects.mixins import ProjectMixin
 from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
 from apps.tables.tables import TableTable
+from apps.utils.frames import TurboFrameListView, TurboFrameUpdateView
 from apps.utils.table_data import get_table
 from django.db.models.query import QuerySet
 from django.urls import reverse
-from django.views.generic.base import TemplateView
-from django_tables2 import SingleTableView
 from django_tables2.config import RequestConfig
 from django_tables2.views import SingleTableMixin
-from turbo_response.views import TurboUpdateView
+from turbo_response.views import TurboFrameTemplateView
 
 from .models import Integration
 
 
-class IntegrationGrid(SingleTableMixin, TemplateView):
+class IntegrationGrid(SingleTableMixin, TurboFrameTemplateView):
     template_name = "integrations/grid.html"
     paginate_by = 15
+    turbo_frame_dom_id = "integrations-grid"
 
     def get_table_kwargs(self):
         return {"attrs": {"class": "table-data"}}
@@ -47,10 +47,11 @@ class IntegrationGrid(SingleTableMixin, TemplateView):
         ).configure(table)
 
 
-class IntegrationSync(TurboUpdateView):
+class IntegrationSync(TurboFrameUpdateView):
     template_name = "integrations/sync.html"
     model = Integration
     fields = []
+    turbo_frame_dom_id = "integrations:sync"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -69,11 +70,12 @@ class IntegrationSync(TurboUpdateView):
         return reverse("integrations:sync", args=(self.object.id,))
 
 
-class IntegrationTablesList(ProjectMixin, SingleTableView):
+class IntegrationTablesList(ProjectMixin, SingleTableMixin, TurboFrameListView):
     template_name = "tables/list.html"
     model = Integration
     table_class = TableTable
     paginate_by = 20
+    turbo_frame_dom_id = "tables-list"
 
     def get_queryset(self) -> QuerySet:
         return Table.objects.filter(

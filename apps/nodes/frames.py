@@ -1,25 +1,25 @@
-from apps.utils.formset_update_view import FormsetUpdateView
+from apps.utils.frames import TurboFrameFormsetUpdateView, TurboFrameUpdateView
 from apps.utils.segment_analytics import NODE_UPDATED_EVENT, track_node
 from apps.utils.table_data import get_table
 from apps.utils.templates import template_exists
 from django import forms
 from django.http.response import HttpResponse
 from django.urls import reverse
-from django.views.generic.base import TemplateView
 from django_tables2.config import RequestConfig
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
-from turbo_response.views import TurboUpdateView
+from turbo_response.views import TurboFrameTemplateView
 
 from .bigquery import get_query_from_node
 from .forms import KIND_TO_FORM
 from .models import Node
 
 
-class NodeName(TurboUpdateView):
+class NodeName(TurboFrameUpdateView):
     model = Node
     fields = ("name",)
     template_name = "nodes/name.html"
+    turbo_frame_dom_id = "node-editable-title"
 
     def get_success_url(self) -> str:
         return reverse(
@@ -28,9 +28,10 @@ class NodeName(TurboUpdateView):
         )
 
 
-class NodeUpdate(FormsetUpdateView):
+class NodeUpdate(TurboFrameFormsetUpdateView):
     template_name = "nodes/update.html"
     model = Node
+    turbo_frame_dom_id = "workflow-modal"
 
     def get_formset_kwargs(self, formset):
 
@@ -94,9 +95,10 @@ class NodeUpdate(FormsetUpdateView):
         return base_url
 
 
-class NodeGrid(SingleTableMixin, TemplateView):
+class NodeGrid(SingleTableMixin, TurboFrameTemplateView):
     template_name = "nodes/grid.html"
     paginate_by = 15
+    turbo_frame_dom_id = "workflows-grid"
 
     def get_context_data(self, **kwargs):
         self.node = Node.objects.get(id=kwargs["pk"])

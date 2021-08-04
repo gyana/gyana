@@ -20,7 +20,7 @@ urlpatterns = [
     ),
     # frames
     path(
-        "<hashid:pk>",
+        "<hashid:pk>/share",
         login_and_dashboard_required(frames.DashboardShare.as_view()),
         name="share",
     ),

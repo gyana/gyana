@@ -1,16 +1,14 @@
 {% load render_table from django_tables2 %}
 
-<turbo-frame id="workflows-grid">
-  {% if node.error %}
-  <div class='workflow-node__visual'>
-    <i class="far fa-comment-exclamation fa-10x text-red"></i>
-    {% if error_template %}
-    {% include error_template %}
-    {% else %}
-    <p class="mt-12">There seems to be an error with this node, try reconfiguring your workflow</p>
-    {% endif %}
-  </div>
+{% if node.error %}
+<div class='workflow-node__visual'>
+  <i class="far fa-comment-exclamation fa-10x text-red"></i>
+  {% if error_template %}
+  {% include error_template %}
   {% else %}
-  {% render_table table %}
+  <p class="mt-12">There seems to be an error with this node, try reconfiguring your workflow</p>
   {% endif %}
-</turbo-frame>
+</div>
+{% else %}
+{% render_table table %}
+{% endif %}

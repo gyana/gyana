@@ -3,13 +3,13 @@ import logging
 import analytics
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
-from apps.utils.formset_update_view import FormsetUpdateView
+from apps.utils.frames import (TurboFrameDetailView,
+                               TurboFrameFormsetUpdateView, TurboFrameListView)
 from apps.utils.segment_analytics import WIDGET_CONFIGURED_EVENT
 from apps.widgets.visuals import chart_to_output, table_to_output
 from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.views.decorators.http import condition
-from django.views.generic import DetailView, ListView
 from django_tables2.config import RequestConfig
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
@@ -29,10 +29,11 @@ def add_output_context(context, widget):
             context["chart_id"] = chart_id
 
 
-class WidgetList(DashboardMixin, ListView):
+class WidgetList(DashboardMixin, TurboFrameListView):
     template_name = "widgets/list.html"
     model = Widget
     paginate_by = 20
+    turbo_frame_dom_id = "widgets"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -44,9 +45,10 @@ class WidgetList(DashboardMixin, ListView):
         return Widget.objects.filter(dashboard=self.dashboard)
 
 
-class WidgetUpdate(DashboardMixin, FormsetUpdateView):
+class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
     template_name = "widgets/update.html"
     model = Widget
+    turbo_frame_dom_id = "widget-modal"
 
     def get_form_class(self):
         return FORMS[self.request.POST.get("kind") or self.object.kind]
@@ -126,10 +128,13 @@ class WidgetUpdate(DashboardMixin, FormsetUpdateView):
         return r
 
 
-class WidgetOutput(DashboardMixin, SingleTableMixin, DetailView):
+class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
     template_name = "widgets/output.html"
     model = Widget
     paginate_by = 15
+
+    def get_turbo_frame_dom_id(self):
+        return f"widgets-output-{self.object.id}"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -1,30 +1,28 @@
 {% load static %}
 
-<turbo-frame id="widget-modal">
-  {{ form.media.js }}
-  <div class="flex flex-wrap mb-4 h-full">
-    <div class="w-1/2">
-      {% if widget.kind == "table" %}
-        {% include 'widgets/forms/default.html' %}
-      {% else %}
-        {% include 'widgets/forms/chart.html' %}
-      {% endif %}
-    </div>
-    <div class="w-1/2 h-full overflow-y-auto">
-      {% if widget.is_valid %}
-      <turbo-frame id="widgets-output-{{ widget.id }}"
-                   src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}">
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-          <p class='placeholder-scr__title'>Loading widget...</p>
-        </div>
-      </turbo-frame>
-      {% else %}
-      <div class='flex flex-col items-center justify-center' style="min-height:16rem;">
-        <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
-        <p>This widget needs to be configured</p>
-      </div>
-      {% endif %}
-    </div>
+{{ form.media.js }}
+<div class="flex flex-wrap mb-4 h-full">
+  <div class="w-1/2">
+    {% if widget.kind == "table" %}
+      {% include 'widgets/forms/default.html' %}
+    {% else %}
+      {% include 'widgets/forms/chart.html' %}
+    {% endif %}
   </div>
-</turbo-frame>
+  <div class="w-1/2 h-full overflow-y-auto">
+    {% if widget.is_valid %}
+    <turbo-frame id="widgets-output-{{ widget.id }}"
+                  src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}">
+      <div class='placeholder-scr placeholder-scr--fillscreen'>
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+        <p class='placeholder-scr__title'>Loading widget...</p>
+      </div>
+    </turbo-frame>
+    {% else %}
+    <div class='flex flex-col items-center justify-center' style="min-height:16rem;">
+      <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
+      <p>This widget needs to be configured</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
