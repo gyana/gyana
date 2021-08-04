@@ -26,7 +26,7 @@
   <script src="{% url 'api_schemajs' %}"></script>
 </head>
 
-<body class="flex flex-row h-full">
+<body class="flex flex-col pad">
   <div class='widgets flex items-center justify-center'>
     <div id="dashboard-widget-container"
          class="widgets__canvas"
@@ -58,6 +58,11 @@
       {% endfor %}
     </div>
   </div>
+
+  <footer class="flex justify-center">
+    <p>Made in <a href="/" class="link">Gyana</a></p>
+  </footer>
+
   <script src="{% static 'js/components-bundle.js' %}"></script>
   <script src="{% static "fusioncharts/fusioncharts.js" %}"></script>
   <script src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>

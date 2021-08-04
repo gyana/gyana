@@ -21,14 +21,13 @@
       {% if request.GET.mode == 'edit' %}
       <div class='widget-card__commands'>
         {% if object.kind != "text" %}
+        <button data-action="click->tf-modal#open">
+          <i class="fas fa-fw fa-edit"
+             data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"></i>
+        </button>
         <a href="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
           <i class="fas fa-fw fa-eye"></i>
         </a>
-        <button data-action="click->tf-modal#open">
-          <i
-             class="fas fa-fw fa-edit"
-             data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"></i>
-        </button>
 
         {% endif %}
         <form method='post' action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
@@ -53,5 +52,6 @@
 {% if is_new %}
 <script>
   document.getElementById("widget-{{object.id}}").children[0].scrollIntoView()
+
 </script>
 {% endif %}
