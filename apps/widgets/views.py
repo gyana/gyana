@@ -1,6 +1,6 @@
 import analytics
 from apps.dashboards.mixins import DashboardMixin
-from apps.utils.segment_analytics import WIDGET_CREATED_EVENT
+from apps.utils.segment_analytics import WIDGET_CREATED_EVENT, WIDGET_DUPLICATED_EVENT
 from django.db import transaction
 from django.urls import reverse
 from turbo_response import TurboStream
@@ -75,12 +75,45 @@ class WidgetDetail(DashboardMixin, TurboUpdateView):
     form_class = WidgetDuplicateForm
 
     def form_valid(self, form):
+        lowest_widget = self.dashboard.widget_set.order_by("-y").first()
         clone = self.object.make_clone(
-            attrs={"name": "Copy of " + (self.object.name or "")}
+            attrs={
+                "name": "Copy of " + (self.object.name or ""),
+                "y": lowest_widget.y + lowest_widget.height,
+            }
         )
+
         clone.save()
         self.clone = clone
-        return super().form_valid(form)
+        with transaction.atomic():
+            super().form_valid(form)
+            self.dashboard.save()
+
+        analytics.track(
+            self.request.user.id,
+            WIDGET_DUPLICATED_EVENT,
+            {
+                "id": form.instance.id,
+                "dashboard_id": self.dashboard.id,
+            },
+        )
+        self.request.GET.mode = "edit"
+        return TurboStreamResponse(
+            [
+                TurboStream("dashboard-widget-placeholder").remove.render(),
+                TurboStream("dashboard-widget-container")
+                .append.template(
+                    "widgets/widget_component.html",
+                    {
+                        "object": clone,
+                        "project": self.dashboard.project,
+                        "dashboard": self.dashboard,
+                        "is_new": True,
+                    },
+                )
+                .render(request=self.request),
+            ]
+        )
 
     def get_success_url(self) -> str:
         return reverse(

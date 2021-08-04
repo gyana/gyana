@@ -25,6 +25,7 @@ WORFKLOW_RUN_EVENT: Final = "Workflow run"
 DASHBOARD_CREATED_EVENT: Final = "Dashboard created"
 DASHBOARD_DUPLICATED_EVENT: Final = "Dashboard duplicated"
 WIDGET_CREATED_EVENT: Final = "Widget created"
+WIDGET_DUPLICATED_EVENT: Final = "Widget duplicated"
 WIDGET_CONFIGURED_EVENT: Final = "Widget configured"
 
 
