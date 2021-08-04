@@ -1,67 +1,63 @@
-{% extends "widgets/base.html" %}
+
 {% load static %}
 
-{% block widget %}
-<turbo-frame id="widgets" target="_top">
-  <div class="widgets" data-controller="tf-modal">
-    <div 
-      id="dashboard-widget-container" 
-      class="widgets--canvas {% if request.GET.mode != 'view' %}widgets--grid{%endif%}"
-      data-controller="widget-list"
-      style="width:{{dashboard.width}}px;height:{{dashboard.height}}px;"
-    >
-      {% for object in object_list %}
-      {% include 'widgets/widget_component.html' %}
-      {% empty %}
-        {% if request.GET.mode != 'view' %}
-          <div id='dashboard-widget-placeholder' class="w-full p-2">
-            <div class="widget-card">
-              <div class='placeholder-scr placeholder-scr--fillscreen'>
-                <i class="placeholder-scr__icon far fa-map-marker-question fa-2x"></i>
-                <p class='placeholder-scr__title mb-2'>This dashboard needs some widgets!</p>
+<div class="widgets" data-controller="tf-modal">
+  <div 
+    id="dashboard-widget-container" 
+    class="widgets--canvas {% if request.GET.mode != 'view' %}widgets--grid{%endif%}"
+    data-controller="widget-list"
+    style="width:{{dashboard.width}}px;height:{{dashboard.height}}px;"
+  >
+    {% for object in object_list %}
+    {% include 'widgets/widget_component.html' %}
+    {% empty %}
+      {% if request.GET.mode != 'view' %}
+        <div id='dashboard-widget-placeholder' class="w-full p-2">
+          <div class="widget-card">
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+              <i class="placeholder-scr__icon far fa-map-marker-question fa-2x"></i>
+              <p class='placeholder-scr__title mb-2'>This dashboard needs some widgets!</p>
 
-                {% include 'dashboards/_add_widget.html' with choices=choices %}
+              {% include 'dashboards/_add_widget.html' with choices=choices %}
 
-              </div>
             </div>
           </div>
-        {% endif %}
-      {% endfor %}
-    </div>
-    {% comment %}
-      The modal needs to below the container because otherwise the 
-      updated output turbo-stream would update the chart inside the modal.
-    {% endcomment %}
-    <div data-tf-modal-target="modal" class="tf-modal hidden">
-      <div class="card card--sm flex-col flex-1 overflow-auto">
-        <turbo-frame 
-          id="widget-modal" 
-          data-tf-modal-target="turboFrame"
-        >
-          <div class='placeholder-scr placeholder-scr--fillscreen'>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x"></i>
-          </div>
-        </turbo-frame>
-      </div>
-    </div>
-    {% include 'components/modal_closing_warning.html' %}
+        </div>
+      {% endif %}
+    {% endfor %}
   </div>
-  {% if is_paginated %}
-  <div class="pagination">
-    <span class="page-links">
-      {% if page_obj.has_previous %}
-      <a
-         href="{% url 'project_dashboards:detail' project.id dashboard.id %}?page={{ page_obj.previous_page_number }}">previous</a>
-      {% endif %}
-      <span class="page-current">
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-      </span>
-      {% if page_obj.has_next %}
-      <a
-         href="{% url 'project_dashboards:detail' project.id dashboard.id  %}?page={{ page_obj.next_page_number }}">next</a>
-      {% endif %}
+  {% comment %}
+    The modal needs to below the container because otherwise the 
+    updated output turbo-stream would update the chart inside the modal.
+  {% endcomment %}
+  <div data-tf-modal-target="modal" class="tf-modal hidden">
+    <div class="card card--sm flex-col flex-1 overflow-auto">
+      <turbo-frame 
+        id="widget-modal" 
+        data-tf-modal-target="turboFrame"
+      >
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x"></i>
+        </div>
+      </turbo-frame>
+    </div>
+  </div>
+  {% include 'components/modal_closing_warning.html' %}
+</div>
+{% if is_paginated %}
+<div class="pagination">
+  <span class="page-links">
+    {% if page_obj.has_previous %}
+    <a
+        href="{% url 'project_dashboards:detail' project.id dashboard.id %}?page={{ page_obj.previous_page_number }}">previous</a>
+    {% endif %}
+    <span class="page-current">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
     </span>
-  </div>
-  {% endif %}
-</turbo-frame>
-{% endblock %}
+    {% if page_obj.has_next %}
+    <a
+        href="{% url 'project_dashboards:detail' project.id dashboard.id  %}?page={{ page_obj.next_page_number }}">next</a>
+    {% endif %}
+  </span>
+</div>
+{% endif %}
