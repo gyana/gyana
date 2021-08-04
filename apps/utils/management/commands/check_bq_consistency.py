@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
         integration_table_pks = [
             int(t.table_id.lstrip("table_"))
-            for t in client.list_tables(DATASET_ID)
+            for t in client.list_tables(f"{settings.GCP_PROJECT}.{DATASET_ID}")
             if "external" not in t.table_id
         ]
 
@@ -32,8 +32,16 @@ class Command(BaseCommand):
             .all()
         )
 
-        print("CSVs", orphaned_csv)
-        print("Google Sheets", orphaned_google_sheet)
+        print(
+            "CSVs",
+            len(orphaned_csv),
+            Integration.objects.filter(kind=Integration.Kind.CSV).count(),
+        )
+        print(
+            "Google Sheets",
+            len(orphaned_google_sheet),
+            Integration.objects.filter(kind=Integration.Kind.GOOGLE_SHEETS).count(),
+        )
 
         # fivetran
 
@@ -50,4 +58,8 @@ class Command(BaseCommand):
             .all()
         )
 
-        print("Fivetran", orphaned_fivetran)
+        print(
+            "Fivetran",
+            len(orphaned_fivetran),
+            Integration.objects.filter(kind=Integration.Kind.FIVETRAN).count(),
+        )
