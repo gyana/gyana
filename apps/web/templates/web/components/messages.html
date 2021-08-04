@@ -1,10 +1,12 @@
 {% if messages %}
 <ul class="toast-container">
   {% for message in messages %}
-  <li class="toast {{ messages.tags|default:'' }} {{ message.extra_tags|default:'' }}">
+  <li data-controller="web-notification"
+      class="toast {{ messages.tags|default:'' }} {{ message.extra_tags|default:'' }}">
     <p>{{ message }}</p>
 
-    <i class="fal fa-times fa-fw fa-lg toast__close"></i>
+    <i class="fal fa-times fa-fw fa-lg toast__close" data-action="click->web-notification#close"
+       data-web-notification-target="close"></i>
   </li>
   {% endfor %}
 </ul>
