@@ -1,3 +1,4 @@
+from apps.utils.formset_update_view import FormsetUpdateView
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from turbo_response.mixins import (
@@ -28,4 +29,8 @@ class TurboFrameDeleteView(TurboFrameTemplateResponseMixin, DeleteView):
 
 
 class TurboFrameListView(TurboFrameTemplateResponseMixin, ListView):
+    pass
+
+
+class TurboFrameFormsetUpdateView(TurboFrameTemplateResponseMixin, FormsetUpdateView):
     pass
