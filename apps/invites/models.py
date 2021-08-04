@@ -62,7 +62,6 @@ class Invite(AbstractBaseInvitation):
         return reverse("team_invites:update", args=(self.team.id, self.id))
 
     class Meta:
-        unique_together = ("team", "email")
         ordering = ("-created",)
 
     def __str__(self):

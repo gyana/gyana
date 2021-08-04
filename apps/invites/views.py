@@ -11,7 +11,7 @@ from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from apps.teams.mixins import TeamMixin
 
-from .forms import InviteForm
+from .forms import InviteForm, InviteUpdateForm
 from .models import Invite
 from .tables import InviteTable
 
@@ -35,6 +35,9 @@ class InviteCreate(TeamMixin, TurboCreateView):
     model = Invite
     form_class = InviteForm
 
+    def get_form_kwargs(self):
+        return {**super().get_form_kwargs(), "team": self.team}
+
     def form_valid(self, form):
         form.instance.inviter = self.request.user
         form.instance.team = self.team
@@ -57,7 +60,7 @@ class InviteDetail(TeamMixin, DetailView):
 class InviteUpdate(TeamMixin, TurboUpdateView):
     template_name = "invites/update.html"
     model = Invite
-    form_class = InviteForm
+    form_class = InviteUpdateForm
 
     def get_success_url(self) -> str:
         return reverse("team_invites:list", args=(self.team.id,))
