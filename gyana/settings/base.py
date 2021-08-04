@@ -320,6 +320,7 @@ FIVETRAN_KEY = os.environ.get("FIVETRAN_KEY", "<your fivetran key>")
 FIVETRAN_URL = "https://api.fivetran.com/v1"
 FIVETRAN_GROUP = "general_candor"
 FIVETRAN_HEADERS = {"Authorization": f"Basic {FIVETRAN_KEY}"}
+FIVETRAN_USE_INTERNAL = False
 
 EXTERNAL_URL = "http://localhost:8000"
 # for local development

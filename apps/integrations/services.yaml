@@ -114,7 +114,7 @@ google_cloud_postgresql:
 google_sheets:
   name: Google Sheets
   color: '#53A169'
-  internal: f
+  internal: t
   requires_schema_prefix: f
   category: other
   static_config:
