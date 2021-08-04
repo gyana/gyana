@@ -10,14 +10,13 @@ export default class extends Controller {
     this.element.style.position = 'relative'
     this.element.style.display = 'inline-block'
 
-    const bodyTarget = this.bodyTarget
     this.listener = function (e) {
-      if (!bodyTarget.contains(e.target)) {
-        bodyTarget.style.display = 'none'
+      if (!this.element.contains(e.target)) {
+        this.bodyTarget.style.display = 'none'
       }
     }
 
-    window.addEventListener('click', this.listener)
+    window.addEventListener('click', this.listener.bind(this))
 
     if (this.dontHideBodyValue !== 'True') {
       this.bodyTarget.style.display = 'none'
@@ -32,7 +31,6 @@ export default class extends Controller {
   }
 
   trigger(event) {
-    event.stopPropagation()
     this.bodyTarget.style.display = 'block' == this.bodyTarget.style.display ? 'none' : 'block'
   }
 }
