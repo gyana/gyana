@@ -59,11 +59,21 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
             self.object.data_updated is None
             and self.object.kind not in ["union", "intersect"]
         )
+
+        # Node-specific documentation
         help_template = f"nodes/help/{self.object.kind}.html"
         context["help_template"] = (
             help_template
             if template_exists(help_template)
             else "nodes/help/default.html"
+        )
+
+        # Node-specific form templates
+        form_template = f"nodes/forms/{self.object.kind}.html"
+        context["form_template"] = (
+            form_template
+            if template_exists(form_template)
+            else "nodes/forms/default.html"
         )
 
         # Add node type to list if it requires live updates

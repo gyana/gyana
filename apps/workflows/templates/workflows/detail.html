@@ -13,26 +13,37 @@
     </form>
   </turbo-frame>
   <div data-controller='workflow-last-run'
-    data-workflow-last-run-src-value="{% url 'workflows:last_run' object.id %}"
-    class='mr-auto'>  
+       data-workflow-last-run-src-value="{% url 'workflows:last_run' object.id %}"
+       class='mr-auto'>
     <turbo-frame id="workflow-last-run">
       {% include 'workflows/last_run.html' %}
     </turbo-frame>
   </div>
-  <span class="button button--circle button--tertiary cursor-pointer">
+
+  <span class="button button--circle button--tertiary cursor-pointer" title="Duplicate workflow">
     {% include 'workflows/duplicate.html'%}
   </span>
+
   <div data-controller='popover'>
     <span
           data-popover-target="trigger"
           data-action="click->popover#trigger"
-          class="button button--circle button--tertiary cursor-pointer">
+          class="button button--circle button--tertiary cursor-pointer"
+          title="Delete workflow">
       <i class="far fa-fw fa-trash"></i>
     </span>
     <div data-popover-target="body" hidden class="popover-body shadow-sm">
       {% include 'workflows/_delete.html' %}
     </div>
   </div>
+
+  <button class="button button--circle button--tertiary" title="Format workflow">
+    <i class="fas fa-fw fa-align-left"></i>
+  </button>
+
+  <button class="button button--circle button--success" title="Run workflow">
+    <i class="fas fa-fw fa-play"></i>
+  </button>
 </div>
 
 <div data-controller="tf-modal" class="flex flex-1 overflow-hidden">
