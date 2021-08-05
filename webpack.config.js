@@ -10,9 +10,9 @@ module.exports = {
   entry: {
     style: './assets/styles/style.scss',
     tailwind: './assets/styles/vendors/tailwind.pcss',
-    stimulus: './apps/utils/javascript/stimulus.ts',
+    stimulus: './apps/base/javascript/stimulus.ts',
     workflow: './apps/workflows/javascript/app.tsx',
-    components: './apps/utils/javascript/components.ts',
+    components: './apps/base/javascript/components.ts',
   },
   output: {
     path: path.resolve(__dirname, './static'),

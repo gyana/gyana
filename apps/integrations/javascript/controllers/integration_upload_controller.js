@@ -1,6 +1,6 @@
 import { Controller } from 'stimulus'
 import GoogleUploader from '../upload'
-import { getApiClient } from 'apps/utils/javascript/api'
+import { getApiClient } from 'apps/base/javascript/api'
 
 /**
  * Handles resumable uploads directly to GCS using signed urls
