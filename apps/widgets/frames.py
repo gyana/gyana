@@ -3,8 +3,11 @@ import logging
 import analytics
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
-from apps.utils.frames import (TurboFrameDetailView,
-                               TurboFrameFormsetUpdateView, TurboFrameListView)
+from apps.utils.frames import (
+    TurboFrameDetailView,
+    TurboFrameFormsetUpdateView,
+    TurboFrameListView,
+)
 from apps.utils.segment_analytics import WIDGET_CONFIGURED_EVENT
 from apps.widgets.visuals import chart_to_output, table_to_output
 from django.db.models.query import QuerySet
@@ -19,10 +22,15 @@ from .forms import FORMS
 from .models import WIDGET_CHOICES_ARRAY, Widget
 
 
-def add_output_context(context, widget):
+def add_output_context(context, widget, request):
     if widget.is_valid:
-        if widget.kind in [Widget.Kind.TABLE, Widget.Kind.TEXT]:
+        if widget.kind == Widget.Kind.TEXT:
             pass
+        if widget.kind == Widget.Kind.TABLE:
+            table = table_to_output(widget)
+            context["table"] = RequestConfig(
+                request,
+            ).configure(table)
         else:
             chart, chart_id = chart_to_output(widget)
             context.update(chart)
@@ -104,7 +112,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             "project": self.project,
             "dashboard": self.dashboard,
         }
-        add_output_context(context, self.object)
+        add_output_context(context, self.object, self.request)
         return (
             TurboStream(f"widgets-output-{self.object.id}")
             .replace.template("widgets/output.html", context)
@@ -119,7 +127,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
                 "project": self.project,
                 "dashboard": self.dashboard,
             }
-            add_output_context(context, self.object)
+            add_output_context(context, self.object, self.request)
             return (
                 TurboStream(f"widgets-output-{self.object.id}")
                 .replace.template("widgets/output.html", context)
@@ -140,7 +148,7 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
         context = super().get_context_data(**kwargs)
         context["project"] = self.get_object().dashboard.project
         try:
-            add_output_context(context, self.object)
+            add_output_context(context, self.object, self.request)
 
         except Exception as e:
             context["is_error"] = True
@@ -149,7 +157,7 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
         return context
 
     def get_table(self, **kwargs):
-        if self.object.kind == Widget.Kind.TABLE:
+        if self.object.is_valid and self.object.kind == Widget.Kind.TABLE:
             table = table_to_output(self.object)
             return RequestConfig(
                 self.request, paginate=self.get_table_pagination(table)

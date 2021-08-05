@@ -1,9 +1,11 @@
 <div data-controller='popover'
       data-popover-dont-hide-body-value="{{dont_hide_body}}">
   <button
-          data-popover-target="trigger"
-          class="button button--circle button--tertiary"
-          data-action="popover#trigger">
+    id="dashboard-share-{{object.id}}"
+    data-popover-target="trigger"
+    class="button button--circle button--tertiary"
+    data-action="popover#trigger"
+  >
     {% if  object.shared_status == 'private' %}<i class='far fa-fw fa-lock'></i>
     {% elif object.shared_status == 'public' %}<i class='far fa-fw fa-eye'></i>
     {% endif %}
@@ -21,7 +23,22 @@
       <span class="text-xl">Everyone with the link can see it. Click <strong>Unshare</strong> to make this dashboard
         private again.</span>
       <button class="button button--sm" type='submit'>Unshare</button>
-      <span>{{ request.META.HTTP_HOST }}/dashboards/{{object.shared_id}}</span>
+      <div data-controller="to-clipboard"
+        class='clipboard-copy'
+      >
+        <a 
+          href="//{{ request.META.HTTP_HOST }}/dashboards/{{object.shared_id}}" 
+          data-to-clipboard-target='target'
+          data-turbo="false"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          {{ request.META.HTTP_HOST }}/dashboards/{{object.shared_id}}
+        </a>
+        <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
+          <i class='fa fa-clipboard fa-2x'></i>
+        </button>
+      </div>
       {% endif %}
 
     </form>

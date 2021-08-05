@@ -7,7 +7,7 @@ describe('Test workflow stage', () => {
     cy.contains('You have no workflows')
   })
 
-  it('Create, rename, and delete workflow', () => {
+  it('Create, rename, duplicate and delete workflow', () => {
     cy.story('Create and rename workflow')
     cy.get('button[type=submit]').first().click()
     cy.get('input[id=name]').clear().type('Magical workflow{enter}')

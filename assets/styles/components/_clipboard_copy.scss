@@ -1,0 +1,15 @@
+.clipboard-copy {
+  display: flex;
+  flex-direction: row;
+  border: 1px solid var(--c-gray);
+  border-radius: 4px;
+  padding: 0.4rem;
+  background-color: var(--c-gray-20);
+  a {
+    font-size: 0.8rem;
+    color: var(--c-black-50);
+  }
+  button {
+    margin-left: 0.4rem;
+  }
+}

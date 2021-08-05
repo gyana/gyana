@@ -24,7 +24,7 @@
         <a href="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
           <i class="fas fa-fw fa-eye"></i>
         </a>
-        <button data-action="click->tf-modal#open">
+        <button id="widget-update-{{object.id}}" data-action="click->tf-modal#open">
           <i
              class="fas fa-fw fa-edit"
              data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"></i>
@@ -33,12 +33,12 @@
         {% endif %}
         <form method='post' action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
           {% csrf_token %}
-          <button type='submit'>
+          <button id="widget-duplicate-{{object.id}}" type='submit'>
             <i class="fas fa-fw fa-copy"></i>
           </button>
         </form>
         <div data-controller="popover" class='mt-auto'>
-          <button data-popover-target="trigger" data-action="click->popover#trigger">
+          <button id="widget-delete-{{object.id}}" data-popover-target="trigger" data-action="click->popover#trigger">
             <i class="fas fa-fw fa-trash cursor-pointer"></i>
           </button>
           <div data-popover-target="body" hidden class="popover-body shadow-sm">
