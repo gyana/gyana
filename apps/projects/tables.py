@@ -27,5 +27,5 @@ class ProjectWorkflowTable(WorkflowTable):
 
 class ProjectDashboardTable(DashboardTable):
     class Meta(DashboardTable.Meta):
-        sequence = ("name", "status", "updated")
-        exclude = ("created",)
+        sequence = ("name", "status", "updated",)
+        exclude = ("created", "duplicate")
