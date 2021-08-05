@@ -3,7 +3,7 @@ from apps.integrations.bigquery import get_sheets_id_from_url
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms.widgets import FileInput, HiddenInput
-from apps.utils.clients import sheets_client
+from apps.base.clients import sheets_client
 from pathvalidate import ValidationError as PathValidationError
 from pathvalidate import validate_filename
 

@@ -2,7 +2,7 @@ import uuid
 
 import analytics
 from apps.projects.mixins import ProjectMixin
-from apps.utils.segment_analytics import (
+from apps.base.segment_analytics import (
     INTEGRATION_CREATED_EVENT,
     NEW_INTEGRATION_START_EVENT,
 )

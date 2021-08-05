@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from apps.utils.table import NaturalDatetimeColumn
+from apps.base.table import NaturalDatetimeColumn
 
 from .models import {{ cookiecutter.model_name }}
 

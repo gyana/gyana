@@ -1,7 +1,7 @@
 import analytics
 from apps.dashboards.tables import DashboardTable
 from apps.projects.mixins import ProjectMixin
-from apps.utils.segment_analytics import (
+from apps.base.segment_analytics import (
     DASHBOARD_CREATED_EVENT,
     DASHBOARD_DUPLICATED_EVENT,
 )

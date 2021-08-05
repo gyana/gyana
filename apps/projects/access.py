@@ -1,5 +1,5 @@
 from apps.teams.roles import user_can_access_team
-from apps.utils.access import login_and_permission_to_access
+from apps.base.access import login_and_permission_to_access
 from django.shortcuts import get_object_or_404
 
 from .models import Project

@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from apps.utils.converters import HashIdConverter
+from apps.base.converters import HashIdConverter
 from django.conf import settings
 from django.conf.urls import url
 from django.conf.urls.static import static
@@ -87,5 +87,5 @@ urlpatterns = [
 
 if settings.CYPRESS_URLS:
     urlpatterns += [
-        path("cypress/", include("apps.utils.cypress_urls")),
+        path("cypress/", include("apps.base.cypress_urls")),
     ]

@@ -5,8 +5,8 @@ import time
 import analytics
 import coreapi
 from apps.tables.models import Table
-from apps.utils.clients import get_bucket
-from apps.utils.segment_analytics import INTEGRATION_CREATED_EVENT
+from apps.base.clients import get_bucket
+from apps.base.segment_analytics import INTEGRATION_CREATED_EVENT
 from celery.result import AsyncResult
 from django.conf import settings
 from django.http import HttpRequest

@@ -1,6 +1,6 @@
 from apps.filters.models import PREDICATE_MAP, Filter
-from apps.utils.live_update_form import LiveUpdateForm
-from apps.utils.schema_form_mixin import SchemaFormMixin
+from apps.base.live_update_form import LiveUpdateForm
+from apps.base.schema_form_mixin import SchemaFormMixin
 from django import forms
 from django.forms.widgets import TextInput, TimeInput
 

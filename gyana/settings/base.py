@@ -76,7 +76,7 @@ PROJECT_APPS = [
     "apps.filters",
     "apps.tables",
     "apps.invites.apps.InvitesConfig",
-    "apps.utils",
+    "apps.base",
     "apps.nodes",
     "apps.columns",
 ]

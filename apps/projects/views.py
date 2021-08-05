@@ -1,6 +1,6 @@
 import analytics
 from apps.teams.mixins import TeamMixin
-from apps.utils.segment_analytics import PROJECT_CREATED_EVENT
+from apps.base.segment_analytics import PROJECT_CREATED_EVENT
 from django.urls.base import reverse
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView

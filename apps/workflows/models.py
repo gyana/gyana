@@ -1,5 +1,5 @@
 from apps.projects.models import Project
-from apps.utils.models import BaseModel
+from apps.base.models import BaseModel
 from django.db import models
 from django.urls import reverse
 from model_clone import CloneMixin

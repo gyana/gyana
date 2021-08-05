@@ -1,4 +1,4 @@
-from apps.utils.table import ICONS, NaturalDatetimeColumn
+from apps.base.table import ICONS, NaturalDatetimeColumn
 from django.template import Context
 from django.template.loader import get_template
 from django_tables2 import Column, Table, TemplateColumn

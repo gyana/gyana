@@ -1,7 +1,7 @@
-from apps.utils.frames import TurboFrameFormsetUpdateView, TurboFrameUpdateView
-from apps.utils.segment_analytics import NODE_UPDATED_EVENT, track_node
-from apps.utils.table_data import get_table
-from apps.utils.templates import template_exists
+from apps.base.frames import TurboFrameFormsetUpdateView, TurboFrameUpdateView
+from apps.base.segment_analytics import NODE_UPDATED_EVENT, track_node
+from apps.base.table_data import get_table
+from apps.base.templates import template_exists
 from django import forms
 from django.http.response import HttpResponse
 from django.urls import reverse

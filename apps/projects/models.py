@@ -1,7 +1,7 @@
 from functools import cached_property
 
 from apps.teams.models import Team
-from apps.utils.models import BaseModel
+from apps.base.models import BaseModel
 from django.db import models
 from django.urls import reverse
 

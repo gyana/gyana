@@ -1,4 +1,4 @@
-import { getApiClient } from 'apps/utils/javascript/api'
+import { getApiClient } from 'apps/base/javascript/api'
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import ReactHtmlParser from 'react-html-parser'

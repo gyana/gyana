@@ -1,7 +1,7 @@
 from apps.projects.models import Project
 from apps.teams.models import Membership
 from apps.users.models import CustomUser
-from apps.utils.table import NaturalDatetimeColumn
+from apps.base.table import NaturalDatetimeColumn
 from django_tables2 import Column, LinkColumn, Table
 from django_tables2.utils import A
 

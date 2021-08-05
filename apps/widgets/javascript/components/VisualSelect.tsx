@@ -5,8 +5,8 @@ import {
   SelectButton,
   SelectOption,
   SelectTransition,
-} from 'apps/utils/javascript/components/SelectComponents'
-import useLiveUpdate from 'apps/utils/javascript/components/useLiveUpdate'
+} from 'apps/base/javascript/components/SelectComponents'
+import useLiveUpdate from 'apps/base/javascript/components/useLiveUpdate'
 
 const VisualSelect_: React.FC<{
   selected: string

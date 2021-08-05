@@ -6,7 +6,7 @@ from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
-from apps.utils.clients import DATAFLOW_ID, bigquery_client, ibis_client
+from apps.base.clients import DATAFLOW_ID, bigquery_client, ibis_client
 from django.utils import timezone
 from ibis.expr.datatypes import String
 
