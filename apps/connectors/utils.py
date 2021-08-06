@@ -3,7 +3,7 @@ from functools import lru_cache
 import yaml
 from django.conf import settings
 
-SERVICES = "apps/integrations/services.yaml"
+SERVICES = "apps/connectors/services.yaml"
 
 
 @lru_cache
