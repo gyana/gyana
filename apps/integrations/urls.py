@@ -13,11 +13,6 @@ urlpatterns = [
         login_and_integration_required(frames.IntegrationGrid.as_view()),
         name="grid",
     ),
-    path(
-        "<hashid:pk>/sync",
-        login_and_integration_required(frames.IntegrationSync.as_view()),
-        name="sync",
-    ),
     # rest
     # TODO: access control?
     path(
@@ -87,11 +82,6 @@ project_urlpatterns = (
             "<hashid:pk>/settings",
             login_and_project_required(views.IntegrationSettings.as_view()),
             name="settings",
-        ),
-        path(
-            "<hashid:pk>/sheet-verify",
-            login_and_project_required(views.IntegrationDetail.as_view()),
-            name="sheet-verify",
         ),
         # frames
         path(

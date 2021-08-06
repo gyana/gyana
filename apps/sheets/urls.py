@@ -1,12 +1,11 @@
 from django.urls import path
 
-from . import views
+from . import frames
 
 app_name = "sheets"
-urlpatterns = [
-    path("", views.SheetList.as_view(), name="list"),
-    path("new", views.SheetCreate.as_view(), name="create"),
-    path("<hashid:pk>", views.SheetDetail.as_view(), name="detail"),
-    path("<hashid:pk>/update", views.SheetUpdate.as_view(), name="update"),
-    path("<hashid:pk>/delete", views.SheetDelete.as_view(), name="delete"),
-]
+integrations_urlpatterns = (
+    [
+        path("<hashid:pk>/sync", frames.IntegrationSync.as_view(), name="sync"),
+    ],
+    "project_integrations_sheets",
+)

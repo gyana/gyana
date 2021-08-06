@@ -29,6 +29,7 @@ from apps.integrations import urls as integration_urls
 from apps.invites import urls as invite_urls
 from apps.nodes import urls as node_urls
 from apps.projects import urls as project_urls
+from apps.sheets import urls as sheet_urls
 from apps.tables import urls as tables_urls
 from apps.teams import urls as team_urls
 from apps.uploads import urls as upload_urls
@@ -41,6 +42,7 @@ schemajs_view = get_schemajs_view(title="API")
 integration_urlpatterns = [
     path("", include(integration_urls.project_urlpatterns)),
     path("uploads/", include(upload_urls.integration_urlpatterns)),
+    path("sheets/", include(sheet_urls.integration_urlpatterns)),
 ]
 
 # urls that are scoped within a project
@@ -81,7 +83,6 @@ urlpatterns = [
     path("invitations/", include("invitations.urls")),
     path("nodes/", include("apps.nodes.urls")),
     path("uploads/", include("apps.uploads.urls")),
-    path("sheets/", include("apps.sheets.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),
