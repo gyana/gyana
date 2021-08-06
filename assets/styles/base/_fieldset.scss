@@ -1,0 +1,11 @@
+fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+
+  ul li {
+    padding: 1.6rem;
+    background-color: var(--c-gray-50);
+    border-radius: 10px;
+  }
+}
