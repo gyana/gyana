@@ -44,7 +44,10 @@ describe('Test dashboard stage', () => {
     cy.get('#widget-2').within((el) => {
       cy.wrap(el).contains('text', 'David').should('be.visible')
     })
-    cy.get('#widget-delete-1').click()
+    // TODO: trigger the hover and remove the force click
+    // cy.get('#widgets-output-1').trigger('mouseover')
+    cy.get('#widget-delete-1').click({ force: true })
+    cy.contains('Yes').click({ force: true })
     cy.get('#widget-1').should('not.exist')
   })
   it('Duplicates dashboard with new widgets', () => {
@@ -59,9 +62,11 @@ describe('Test dashboard stage', () => {
     cy.get('#dashboard-duplicate-1').click()
     cy.contains('Copy of Untitled').click()
     cy.contains('Blackpool')
-    cy.get('#widgets-output-2').trigger('mouseover')
-    cy.get(['#widget-update-2']).click()
-    cy.get('select[name=kind]').select('Column')
+    // TODO: trigger the hover and remove the force click
+    // cy.get('#widgets-output-2').trigger('mouseover')
+    cy.get('#widget-update-2').click({ force: true })
+    cy.get('select-visual').find('button').click()
+    cy.get('select-visual').contains('Column').click()
     cy.get('select[name=label]').select('Location')
     cy.get('[data-formset-prefix-value=aggregations]').within((el) => {
       cy.wrap(el).get('button').click()
@@ -70,7 +75,7 @@ describe('Test dashboard stage', () => {
     cy.get('select[name=aggregations-0-function]').select('MEAN')
     cy.contains('Save & Close').should('not.be.disabled').click()
     cy.visit('/projects/1/dashboards/')
-    cy.contains('Untitled').click()
+    cy.contains(/^Untitled$/).click()
     cy.contains('Alex')
   })
   it('Shares a dashboard with a widget', () => {

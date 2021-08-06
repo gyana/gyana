@@ -114,7 +114,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
         }
         add_output_context(context, self.object, self.request)
         return (
-            TurboStream(f"widgets-output-{self.object.id}")
+            TurboStream(f"widgets-output-{self.object.id}-stream")
             .replace.template("widgets/output.html", context)
             .response(request=self.request)
         )
@@ -129,7 +129,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             }
             add_output_context(context, self.object, self.request)
             return (
-                TurboStream(f"widgets-output-{self.object.id}")
+                TurboStream(f"widgets-output-{self.object.id}-stream")
                 .replace.template("widgets/output.html", context)
                 .response(request=self.request)
             )
