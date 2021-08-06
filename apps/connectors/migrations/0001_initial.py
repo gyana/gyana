@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
         migrations.RunSQL(
             """
         INSERT INTO connectors_connector
-            (integration, service, fivetran_id, schema, fivetran_authorized, fivetran_poll_historical_sync_task_id, historical_sync_complete, created, updated)
+            (integration_id, service, fivetran_id, schema, fivetran_authorized, fivetran_poll_historical_sync_task_id, historical_sync_complete, created, updated)
         SELECT (id, service, fivetran_id, schema, fivetran_authorized, fivetran_poll_historical_sync_task_id, historical_sync_complete, created, updated)
         FROM integrations_integration
         ;
