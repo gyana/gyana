@@ -42,6 +42,7 @@ class Migration(migrations.Migration):
             (integration_id, url, cell_range, external_table_sync_task_id, has_initial_sync, last_synced, created, updated)
         SELECT id, url, cell_range, external_table_sync_task_id, has_initial_sync, last_synced, created, updated
         FROM integrations_integration
+        where kind = 'google_sheets'
         ;
         """
         ),

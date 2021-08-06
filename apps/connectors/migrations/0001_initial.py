@@ -62,6 +62,7 @@ class Migration(migrations.Migration):
             (integration_id, service, fivetran_id, schema, fivetran_authorized, fivetran_poll_historical_sync_task_id, historical_sync_complete, created, updated)
         SELECT id, service, fivetran_id, schema, fivetran_authorized, fivetran_poll_historical_sync_task_id, historical_sync_complete, created, updated
         FROM integrations_integration
+        where kind = 'fivetran'
         ;
         """
         ),
