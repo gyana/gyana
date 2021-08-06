@@ -82,6 +82,7 @@ PROJECT_APPS = [
     "apps.nodes",
     "apps.columns",
     "apps.uploads",
+    "apps.sheets",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
