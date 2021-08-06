@@ -1,4 +1,4 @@
-from apps.utils.models import BaseModel
+from apps.base.models import BaseModel
 from django.db import models
 from django.urls import reverse
 

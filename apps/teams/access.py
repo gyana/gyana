@@ -1,6 +1,6 @@
 from apps.teams.models import Team
 from apps.teams.roles import user_can_access_team, user_can_administer_team
-from apps.utils.access import login_and_permission_to_access
+from apps.base.access import login_and_permission_to_access
 from django.shortcuts import get_object_or_404
 
 

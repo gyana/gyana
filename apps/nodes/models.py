@@ -2,9 +2,9 @@ from functools import cached_property
 
 from apps.nodes.config import NODE_CONFIG
 from apps.tables.models import Table
-from apps.utils.aggregations import AggregationFunctions
-from apps.utils.cache import get_cache_key
-from apps.utils.models import BaseModel
+from apps.base.aggregations import AggregationFunctions
+from apps.base.cache import get_cache_key
+from apps.base.models import BaseModel
 from apps.workflows.models import Workflow
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings

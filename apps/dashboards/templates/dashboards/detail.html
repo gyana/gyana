@@ -77,7 +77,7 @@
   {% endif %}
 </div>
 
-<div class="flex-1 p-4 pb-0 overflow-auto">
+<div class="dashboard">
   <turbo-frame id="widgets"
                src="{% url 'dashboard_widgets:list' project.id object.id %}?mode={{ request.GET.mode|default:'edit' }}"
                target="_top">

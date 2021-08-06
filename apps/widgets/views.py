@@ -1,6 +1,6 @@
 import analytics
 from apps.dashboards.mixins import DashboardMixin
-from apps.utils.segment_analytics import WIDGET_CREATED_EVENT, WIDGET_DUPLICATED_EVENT
+from apps.base.segment_analytics import WIDGET_CREATED_EVENT, WIDGET_DUPLICATED_EVENT
 from django.db import transaction
 from django.urls import reverse
 from turbo_response import TurboStream

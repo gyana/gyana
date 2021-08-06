@@ -1,14 +1,14 @@
 import logging
 
 import analytics
-from apps.dashboards.mixins import DashboardMixin
-from apps.tables.models import Table
-from apps.utils.frames import (
+from apps.base.frames import (
     TurboFrameDetailView,
     TurboFrameFormsetUpdateView,
     TurboFrameListView,
 )
-from apps.utils.segment_analytics import WIDGET_CONFIGURED_EVENT
+from apps.base.segment_analytics import WIDGET_CONFIGURED_EVENT
+from apps.dashboards.mixins import DashboardMixin
+from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, table_to_output
 from django.db.models.query import QuerySet
 from django.urls import reverse

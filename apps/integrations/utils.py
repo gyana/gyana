@@ -1,6 +1,7 @@
 from functools import lru_cache
 
 import yaml
+from django.conf import settings
 
 SERVICES = "apps/integrations/services.yaml"
 
@@ -10,7 +11,7 @@ def get_services():
     return {
         key: val
         for key, val in yaml.load(open(SERVICES, "r")).items()
-        if val["internal"] != "t"
+        if val["internal"] != "t" or settings.FIVETRAN_USE_INTERNAL
     }
 
 

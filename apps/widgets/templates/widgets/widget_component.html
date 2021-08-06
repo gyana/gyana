@@ -4,8 +4,8 @@
        data-width="{{object.width}}" data-height="{{object.height}}">
     <div class="widget-card h-full">
       <div class='widget-card__visual'>
-        {% if object.description %}
-        <h3 class="mb-2">{{ object.description }}</h3>
+        {% if object.name %}
+        <h3 class="mb-2">{{ object.name }}</h3>
         {% endif %}
         <turbo-frame id="widgets-output-{{ object.id }}"
                      src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
@@ -21,14 +21,13 @@
       {% if request.GET.mode == 'edit' %}
       <div class='widget-card__commands'>
         {% if object.kind != "text" %}
+        <button id="widget-update-{{object.id}}" data-action="click->tf-modal#open">
+          <i class="fas fa-fw fa-edit"
+             data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"></i>
+        </button>
         <a href="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
           <i class="fas fa-fw fa-eye"></i>
         </a>
-        <button id="widget-update-{{object.id}}" data-action="click->tf-modal#open">
-          <i
-             class="fas fa-fw fa-edit"
-             data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"></i>
-        </button>
 
         {% endif %}
         <form method='post' action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
@@ -53,5 +52,6 @@
 {% if is_new %}
 <script>
   document.getElementById("widget-{{object.id}}").children[0].scrollIntoView()
+
 </script>
 {% endif %}

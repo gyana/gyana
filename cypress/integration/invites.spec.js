@@ -83,7 +83,7 @@ describe('teams', () => {
         .should('eq', 410)
     })
   })
-  it.only('cannot invite existing user or existing invited user', () => {
+  it('cannot invite existing user or existing invited user', () => {
     cy.visit('/')
 
     inviteByEmail('member@gyana.com')

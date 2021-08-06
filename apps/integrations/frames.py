@@ -2,8 +2,8 @@ from apps.projects.mixins import ProjectMixin
 from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
 from apps.tables.tables import TableTable
-from apps.utils.frames import TurboFrameListView, TurboFrameUpdateView
-from apps.utils.table_data import get_table
+from apps.base.frames import TurboFrameListView, TurboFrameUpdateView
+from apps.base.table_data import get_table
 from django.db.models.query import QuerySet
 from django.urls import reverse
 from django_tables2.config import RequestConfig

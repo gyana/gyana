@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Listbox } from '@headlessui/react'
 import ReactDOM from 'react-dom'
-import useLiveUpdate from 'apps/utils/javascript/components/useLiveUpdate'
+import useLiveUpdate from 'apps/base/javascript/components/useLiveUpdate'
 import {
   SelectButton,
   SelectOption,
   SelectTransition,
-} from 'apps/utils/javascript/components/SelectComponents'
+} from 'apps/base/javascript/components/SelectComponents'
 
 const SourceSelect_: React.FC<{ options; selected: number; name: string }> = ({
   options,

@@ -2,7 +2,7 @@ import uuid
 
 import analytics
 from apps.projects.mixins import ProjectMixin
-from apps.utils.segment_analytics import (
+from apps.base.segment_analytics import (
     INTEGRATION_CREATED_EVENT,
     NEW_INTEGRATION_START_EVENT,
 )
@@ -145,6 +145,7 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
         context_data["integration_kind"] = Integration.Kind
         context_data["services"] = get_services()
         context_data["service_categories"] = get_service_categories()
+        context_data["service_account"] = settings.GCP_BQ_SVC_ACCOUNT
 
         return context_data
 

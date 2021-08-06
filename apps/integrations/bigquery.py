@@ -3,7 +3,7 @@ from datetime import datetime
 
 from apps.integrations.models import Integration
 from apps.tables.models import Table
-from apps.utils.clients import DATASET_ID, bigquery_client, ibis_client
+from apps.base.clients import DATASET_ID, bigquery_client, ibis_client
 from django.conf import settings
 from django.db import transaction
 from google.cloud import bigquery

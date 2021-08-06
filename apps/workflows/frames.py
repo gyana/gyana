@@ -1,4 +1,4 @@
-from apps.utils.frames import TurboFrameDetailView
+from apps.base.frames import TurboFrameDetailView
 
 from .models import Workflow
 

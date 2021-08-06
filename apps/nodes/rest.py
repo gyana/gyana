@@ -1,7 +1,7 @@
 import json
 
 import coreapi
-from apps.utils.segment_analytics import (
+from apps.base.segment_analytics import (
     NODE_CONNECTED_EVENT,
     NODE_CREATED_EVENT,
     track_node,

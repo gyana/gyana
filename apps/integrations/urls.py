@@ -1,5 +1,5 @@
 from apps.projects.access import login_and_project_required
-from apps.utils.access import login_and_teamid_in_session
+from apps.base.access import login_and_teamid_in_session
 from django.urls import path
 
 from . import frames, rest, views

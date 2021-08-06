@@ -1,6 +1,6 @@
 import uuid
 
-from apps.utils.frames import TurboFrameUpdateView
+from apps.base.frames import TurboFrameUpdateView
 from django.urls.base import reverse
 
 from .models import Dashboard

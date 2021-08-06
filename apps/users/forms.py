@@ -2,7 +2,7 @@ from allauth.account.forms import LoginForm
 from django import forms
 from django.contrib.auth.forms import UserChangeForm
 
-from apps.utils.segment_analytics import identify_user
+from apps.base.segment_analytics import identify_user
 
 from .models import CustomUser
 

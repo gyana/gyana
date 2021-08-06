@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from apps.utils.table import ICONS, DuplicateColumn, NaturalDatetimeColumn
+from apps.base.table import ICONS, DuplicateColumn, NaturalDatetimeColumn
 from django.template import Context
 from django.template.loader import get_template
 

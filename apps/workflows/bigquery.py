@@ -2,7 +2,7 @@ from apps.nodes.models import Node
 from apps.tables.models import Table
 from apps.workflows.models import Workflow
 from django.utils import timezone
-from apps.utils.clients import DATAFLOW_ID, bigquery_client
+from apps.base.clients import DATAFLOW_ID, bigquery_client
 from apps.nodes.bigquery import get_query_from_node
 
 

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 from google.cloud.exceptions import NotFound
-from apps.utils.clients import DATAFLOW_ID, DATASET_ID, bigquery_client
+from apps.base.clients import DATAFLOW_ID, DATASET_ID, bigquery_client
 
 
 class Command(BaseCommand):

@@ -5,7 +5,7 @@ from functools import reduce
 import analytics
 from apps.integrations.bigquery import get_tables_in_dataset, sync_table
 from apps.tables.models import Table
-from apps.utils.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
+from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 from django.conf import settings
@@ -13,7 +13,7 @@ from django.core.mail import EmailMessage, send_mail
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from google.api_core.exceptions import GoogleAPICallError
-from apps.utils.clients import DATASET_ID
+from apps.base.clients import DATASET_ID
 
 from .fivetran import FivetranClient
 from .models import Integration
