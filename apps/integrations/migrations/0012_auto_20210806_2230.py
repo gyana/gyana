@@ -74,4 +74,13 @@ class Migration(migrations.Migration):
                 max_length=32,
             ),
         ),
+        migrations.RunSQL(
+            """UPDATE integrations_integration
+                SET kind = CASE
+                        WHEN kind = 'csv' THEN 'upload'
+                        WHEN kind = 'google_sheets' THEN 'sheet'
+                        WHEN kind = 'fivetran' THEN 'connetor'
+                    END
+                """
+        ),
     ]

@@ -11,7 +11,7 @@ from django.urls import reverse
 
 class Integration(BaseModel):
     class Kind(models.TextChoices):
-        GOOGLE_SHEETS = "sheets", "Google Sheets"
+        GOOGLE_SHEETS = "sheet", "Google Sheets"
         CSV = "upload", "Upload"
         FIVETRAN = "connector", "Connector"
 
