@@ -1,4 +1,4 @@
-from apps.utils.models import BaseModel
+from apps.base.models import BaseModel
 from apps.widgets.models import Widget
 from dirtyfields import DirtyFieldsMixin
 from django.contrib.postgres.fields import ArrayField

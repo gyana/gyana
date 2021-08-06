@@ -1,6 +1,6 @@
 import { Edge, isNode, Node } from 'react-flow-renderer'
 import React, { useEffect, useState } from 'react'
-import { GyanaEvents } from 'apps/utils/javascript/events'
+import { GyanaEvents } from 'apps/base/javascript/events'
 
 const RunButton: React.FC<{
   hasOutput: boolean

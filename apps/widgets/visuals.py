@@ -2,8 +2,8 @@ from typing import Any, Dict
 
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
-from apps.utils.clients import get_dataframe
-from apps.utils.table_data import get_table
+from apps.base.clients import get_dataframe
+from apps.base.table_data import get_table
 
 from .bigquery import get_query_from_widget
 from .chart import to_chart

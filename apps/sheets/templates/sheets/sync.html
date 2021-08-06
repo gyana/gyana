@@ -7,7 +7,7 @@
 <p>You can re-sync your data if anything has changed</p>
 {% endif %}
 {% if not object.is_syncing %}
-<form class="my-2" method="post" action="{% url 'integrations:sync' object.id %}">
+<form class="my-2" method="post" action="{% url 'sheets:sync' object.id %}">
   {% csrf_token %}
   <button class="button button--sm button--filled" type="submit">Sync</button>
 </form>

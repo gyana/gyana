@@ -1,6 +1,6 @@
 from functools import cached_property
 
-from apps.utils.models import BaseModel
+from apps.base.models import BaseModel
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _

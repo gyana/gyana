@@ -1,5 +1,5 @@
 import { Controller } from 'stimulus'
-import { getApiClient } from 'apps/utils/javascript/api'
+import { getApiClient } from 'apps/base/javascript/api'
 
 const debounceTime = 1000
 

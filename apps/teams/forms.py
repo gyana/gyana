@@ -1,6 +1,6 @@
 import analytics
 from allauth.account.forms import SignupForm
-from apps.utils.segment_analytics import SIGNED_UP_EVENT, identify_user
+from apps.base.segment_analytics import SIGNED_UP_EVENT, identify_user
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 

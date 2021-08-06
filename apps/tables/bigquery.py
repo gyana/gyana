@@ -1,4 +1,4 @@
-from apps.utils.clients import ibis_client
+from apps.base.clients import ibis_client
 from ibis.expr.types import TableExpr
 
 from .models import Table

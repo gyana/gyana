@@ -17,7 +17,7 @@
         {% endif %}
       </div>
       {% else %}
-      <turbo-frame id="integrations:sync" src="{% url 'integrations:sync' object.id %}"></turbo-frame>
+      <turbo-frame id="integrations:sync" src="{% url 'sheets:sync' object.id %}"></turbo-frame>
       {% endif %}
     </div>
     {% endif %}

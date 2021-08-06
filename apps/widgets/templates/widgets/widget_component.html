@@ -4,8 +4,8 @@
        data-width="{{object.width}}" data-height="{{object.height}}">
     <div class="widget-card h-full">
       <div class='widget-card__visual'>
-        {% if object.description %}
-        <h3 class="mb-2">{{ object.description }}</h3>
+        {% if object.name %}
+        <h3 class="mb-2">{{ object.name }}</h3>
         {% endif %}
         <turbo-frame id="widgets-output-{{ object.id }}"
                      src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"

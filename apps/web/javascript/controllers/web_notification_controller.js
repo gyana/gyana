@@ -1,10 +1,10 @@
 import { Controller } from 'stimulus'
-import { getApiClient } from 'apps/utils/javascript/api'
+import { getApiClient } from 'apps/base/javascript/api'
 
 export default class extends Controller {
-  static targets = ['close'];
+  static targets = ['close']
 
   close() {
-    this.element.remove();
+    this.element.remove()
   }
 }

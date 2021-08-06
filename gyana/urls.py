@@ -14,9 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from apps.utils.converters import HashIdConverter
+from apps.base.converters import HashIdConverter
 from django.conf import settings
-from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, register_converter
@@ -32,18 +31,22 @@ from apps.nodes import urls as node_urls
 from apps.projects import urls as project_urls
 from apps.tables import urls as tables_urls
 from apps.teams import urls as team_urls
+from apps.uploads import urls as upload_urls
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
 schemajs_view = get_schemajs_view(title="API")
 
+
+integration_urlpatterns = [
+    path("", include(integration_urls.project_urlpatterns)),
+    path("uploads/", include(upload_urls.integration_urlpatterns)),
+]
+
 # urls that are scoped within a project
 project_urlpatterns = [
     path("", include("apps.projects.urls")),
-    path(
-        "<hashid:project_id>/integrations/",
-        include(integration_urls.project_urlpatterns),
-    ),
+    path("<hashid:project_id>/integrations/", include(integration_urlpatterns)),
     path("<hashid:project_id>/workflows/", include(workflow_urls.project_urlpatterns)),
     path(
         "<hashid:project_id>/dashboards/", include(dashboard_urls.project_urlpatterns)
@@ -77,8 +80,11 @@ urlpatterns = [
     path("widgets/", include("apps.widgets.urls")),
     path("invitations/", include("invitations.urls")),
     path("nodes/", include("apps.nodes.urls")),
+    path("uploads/", include("apps.uploads.urls")),
+    path("sheets/", include("apps.sheets.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
+    path("hijack/", include("hijack.urls", namespace="hijack")),
     # API docs
     # these are needed for schema.js
     path("docs/", include_docs_urls(title="API Docs")),
@@ -87,5 +93,5 @@ urlpatterns = [
 
 if settings.CYPRESS_URLS:
     urlpatterns += [
-        path("cypress/", include("apps.utils.cypress_urls")),
+        path("cypress/", include("apps.base.cypress_urls")),
     ]

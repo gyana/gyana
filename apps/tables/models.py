@@ -1,13 +1,13 @@
 from functools import cached_property
 
 from apps.projects.models import Project
-from apps.utils.cache import get_cache_key
-from apps.utils.models import BaseModel
+from apps.base.cache import get_cache_key
+from apps.base.models import BaseModel
 from django.conf import settings
 from django.core.cache import cache
 from django.db import models
 from google.api_core.exceptions import NotFound
-from apps.utils.clients import bigquery_client, ibis_client
+from apps.base.clients import bigquery_client, ibis_client
 
 
 class Table(BaseModel):

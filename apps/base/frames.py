@@ -1,4 +1,4 @@
-from apps.utils.formset_update_view import FormsetUpdateView
+from apps.base.formset_update_view import FormsetUpdateView
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from turbo_response.mixins import (

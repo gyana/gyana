@@ -61,6 +61,8 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "django_tables2",
     "invitations",
+    "hijack",
+    "hijack.contrib.admin",
 ]
 
 # Put your project-specific apps here
@@ -76,9 +78,11 @@ PROJECT_APPS = [
     "apps.filters",
     "apps.tables",
     "apps.invites.apps.InvitesConfig",
-    "apps.utils",
+    "apps.base",
     "apps.nodes",
     "apps.columns",
+    "apps.uploads",
+    "apps.sheets",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
@@ -92,6 +96,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "hijack.middleware.HijackUserMiddleware",
 ]
 
 LOGGING = {
@@ -320,6 +325,7 @@ FIVETRAN_KEY = os.environ.get("FIVETRAN_KEY", "<your fivetran key>")
 FIVETRAN_URL = "https://api.fivetran.com/v1"
 FIVETRAN_GROUP = "general_candor"
 FIVETRAN_HEADERS = {"Authorization": f"Basic {FIVETRAN_KEY}"}
+FIVETRAN_USE_INTERNAL = False
 
 EXTERNAL_URL = "http://localhost:8000"
 # for local development

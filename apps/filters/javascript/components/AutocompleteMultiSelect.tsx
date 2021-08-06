@@ -1,7 +1,7 @@
 import { Listbox, Transition } from '@headlessui/react'
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
-import { SelectButton, SelectOption } from 'apps/utils/javascript/components/SelectComponents'
+import { SelectButton, SelectOption } from 'apps/base/javascript/components/SelectComponents'
 
 const AutocompleteMultiSelect_: React.FC<{
   parentType: string

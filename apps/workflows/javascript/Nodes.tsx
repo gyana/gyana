@@ -1,13 +1,13 @@
-import { GyanaEvents } from 'apps/utils/javascript/events'
+import { GyanaEvents } from 'apps/base/javascript/events'
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { Handle, NodeProps, Position, Node, useStoreState } from 'react-flow-renderer'
 import { useDebouncedCallback } from 'use-debounce'
 
 export const NodeContext = createContext({
-  removeById: (id: string) => { },
+  removeById: (id: string) => {},
   client: null,
   getIncomingNodes: (id: string): [Node, Node[]] | null => null,
-  addNode: (node) => { },
+  addNode: (node) => {},
   workflowId: '',
 })
 

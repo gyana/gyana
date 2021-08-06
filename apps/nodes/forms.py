@@ -4,7 +4,7 @@ from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column
 from apps.nodes.formsets import KIND_TO_FORMSETS
 from apps.tables.models import Table
-from apps.utils.live_update_form import LiveUpdateForm
+from apps.base.live_update_form import LiveUpdateForm
 from django import forms
 
 from .models import Node

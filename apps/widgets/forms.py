@@ -3,8 +3,8 @@ from apps.columns.models import FunctionColumn
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
 from apps.tables.models import Table
-from apps.utils.aggregations import AGGREGATION_TYPE_MAP
-from apps.utils.live_update_form import LiveUpdateForm
+from apps.base.aggregations import AGGREGATION_TYPE_MAP
+from apps.base.live_update_form import LiveUpdateForm
 from django import forms
 from django.forms.models import BaseInlineFormSet
 

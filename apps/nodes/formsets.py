@@ -8,7 +8,7 @@ from apps.columns.models import (AddColumn, Column, EditColumn, FormulaColumn,
 # fmt: on
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
-from apps.utils.live_update_form import LiveUpdateForm
+from apps.base.live_update_form import LiveUpdateForm
 from django import forms
 from django.forms.models import BaseInlineFormSet
 

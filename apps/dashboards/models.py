@@ -1,5 +1,5 @@
 from apps.projects.models import Project
-from apps.utils.models import BaseModel
+from apps.base.models import BaseModel
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse

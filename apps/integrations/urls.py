@@ -1,5 +1,5 @@
+from apps.base.access import login_and_teamid_in_session
 from apps.projects.access import login_and_project_required
-from apps.utils.access import login_and_teamid_in_session
 from django.urls import path
 
 from . import frames, rest, views
@@ -13,11 +13,6 @@ urlpatterns = [
         login_and_integration_required(frames.IntegrationGrid.as_view()),
         name="grid",
     ),
-    path(
-        "<hashid:pk>/sync",
-        login_and_integration_required(frames.IntegrationSync.as_view()),
-        name="sync",
-    ),
     # rest
     # TODO: access control?
     path(
@@ -29,13 +24,6 @@ urlpatterns = [
         "<str:session_key>/finalise-fivetran-integration",
         login_and_teamid_in_session(rest.finalise_fivetran_integration),
         name="finalise-fivetran-integration",
-    ),
-    path("file/<str:session_key>/generate-signed-url", rest.generate_signed_url),
-    path("file/<str:session_key>/start-sync", rest.start_sync),
-    path(
-        "file/<str:session_key>/upload-complete",
-        rest.upload_complete,
-        name="upload_complete",
     ),
 ]
 
@@ -54,11 +42,6 @@ project_urlpatterns = (
             "create",
             login_and_project_required(views.IntegrationCreate.as_view()),
             name="create",
-        ),
-        path(
-            "upload",
-            login_and_project_required(views.IntegrationUpload.as_view()),
-            name="upload",
         ),
         path(
             "<hashid:pk>",
@@ -99,11 +82,6 @@ project_urlpatterns = (
             "<hashid:pk>/settings",
             login_and_project_required(views.IntegrationSettings.as_view()),
             name="settings",
-        ),
-        path(
-            "<hashid:pk>/sheet-verify",
-            login_and_project_required(views.IntegrationDetail.as_view()),
-            name="sheet-verify",
         ),
         # frames
         path(
