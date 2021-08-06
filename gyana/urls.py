@@ -16,7 +16,6 @@ Including another URLconf
 
 from apps.base.converters import HashIdConverter
 from django.conf import settings
-from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, register_converter
@@ -79,6 +78,7 @@ urlpatterns = [
     path("nodes/", include("apps.nodes.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
+    path("hijack/", include("hijack.urls", namespace="hijack")),
     # API docs
     # these are needed for schema.js
     path("docs/", include_docs_urls(title="API Docs")),

@@ -483,6 +483,17 @@ psycopg2 = "*"
 whitenoise = "*"
 
 [[package]]
+name = "django-hijack"
+version = "3.0.0"
+description = "django-hijack allows superusers to hijack (=login as) and work on behalf of another user."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+django = ">=2.2"
+
+[[package]]
 name = "django-invitations"
 version = "1.9.3"
 description = "Generic invitations app with support for django-allauth"
@@ -1595,7 +1606,7 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.*"
-content-hash = "068a4f32364adaa1606c854e3e9f65dd5793e08a1e289dde1ebd74ba83f629b5"
+content-hash = "d192476b766c6444bc21af4954a6bea2898fce9bfaccafd79a2b3d30ad84d8d4"
 
 [metadata.files]
 amqp = [
@@ -1798,6 +1809,10 @@ django-filter = [
 django-heroku = [
     {file = "django-heroku-0.3.1.tar.gz", hash = "sha256:6af4bc3ae4a9b55eaad6dbe5164918982d2762661aebc9f83d9fa49f6009514e"},
     {file = "django_heroku-0.3.1-py2.py3-none-any.whl", hash = "sha256:2bc690aab89eedbe01311752320a9a12e7548e3b0ed102681acc5736a41a4762"},
+]
+django-hijack = [
+    {file = "django-hijack-3.0.0.tar.gz", hash = "sha256:15250ee0bf2d27e777fec108406d18195dc0b6861c7daafa46d9d30779a66654"},
+    {file = "django_hijack-3.0.0-py3-none-any.whl", hash = "sha256:b82501c1fb957c407b4b2d0797edb501a145c36543328b06f4c78a9fe343870f"},
 ]
 django-invitations = [
     {file = "django-invitations-1.9.3.tar.gz", hash = "sha256:6077807aa641c7abae9ca418e757c8e3940fb0ce60499dba24c100ad57c61442"},

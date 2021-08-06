@@ -61,6 +61,8 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "django_tables2",
     "invitations",
+    "hijack",
+    "hijack.contrib.admin",
 ]
 
 # Put your project-specific apps here
@@ -92,6 +94,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'hijack.middleware.HijackUserMiddleware',
 ]
 
 LOGGING = {
