@@ -16,7 +16,6 @@ Including another URLconf
 
 from apps.base.converters import HashIdConverter
 from django.conf import settings
-from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, register_converter
@@ -25,6 +24,7 @@ from rest_framework.documentation import get_schemajs_view, include_docs_urls
 
 register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "hashid")
 
+from apps.connectors import urls as connector_urls
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
 from apps.invites import urls as invite_urls
@@ -32,18 +32,23 @@ from apps.nodes import urls as node_urls
 from apps.projects import urls as project_urls
 from apps.tables import urls as tables_urls
 from apps.teams import urls as team_urls
+from apps.uploads import urls as upload_urls
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
 schemajs_view = get_schemajs_view(title="API")
 
+
+integration_urlpatterns = [
+    path("", include(integration_urls.project_urlpatterns)),
+    path("uploads/", include(upload_urls.integration_urlpatterns)),
+    path("connectors/", include(connector_urls.integration_urlpatterns)),
+]
+
 # urls that are scoped within a project
 project_urlpatterns = [
     path("", include("apps.projects.urls")),
-    path(
-        "<hashid:project_id>/integrations/",
-        include(integration_urls.project_urlpatterns),
-    ),
+    path("<hashid:project_id>/integrations/", include(integration_urlpatterns)),
     path("<hashid:project_id>/workflows/", include(workflow_urls.project_urlpatterns)),
     path(
         "<hashid:project_id>/dashboards/", include(dashboard_urls.project_urlpatterns)
@@ -77,8 +82,12 @@ urlpatterns = [
     path("widgets/", include("apps.widgets.urls")),
     path("invitations/", include("invitations.urls")),
     path("nodes/", include("apps.nodes.urls")),
+    path("uploads/", include("apps.uploads.urls")),
+    path("sheets/", include("apps.sheets.urls")),
+    path("connectors/", include("apps.connectors.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
+    path("hijack/", include("hijack.urls", namespace="hijack")),
     # API docs
     # these are needed for schema.js
     path("docs/", include_docs_urls(title="API Docs")),

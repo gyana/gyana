@@ -1,4 +1,4 @@
-from apps.integrations.fivetran import FivetranClient
+from apps.connectors.fivetran import FivetranClient
 from apps.projects.mixins import ProjectMixin
 from django.urls.base import reverse
 from django.views.generic.edit import DeleteView

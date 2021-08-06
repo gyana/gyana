@@ -2,15 +2,12 @@ import datetime
 import os
 import time
 
-import analytics
 import coreapi
-from apps.tables.models import Table
 from apps.base.clients import get_bucket
-from apps.base.segment_analytics import INTEGRATION_CREATED_EVENT
+from apps.integrations.tasks import send_integration_email
+from apps.tables.models import Table
 from celery.result import AsyncResult
 from django.conf import settings
-from django.http import HttpRequest
-from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.text import slugify
@@ -20,13 +17,8 @@ from rest_framework.response import Response
 from rest_framework.schemas import AutoSchema
 from turbo_response.stream import TurboStream
 
-from .forms import CSVCreateForm, FivetranForm
-from .tasks import (
-    file_sync,
-    poll_fivetran_historical_sync,
-    send_integration_email,
-    start_fivetran_integration_task,
-)
+from .forms import CSVCreateForm
+from .tasks import file_sync
 
 
 @api_view(["POST"])
@@ -75,14 +67,14 @@ def start_sync(request: Request, session_key: str):
     return (
         TurboStream("integration-validate-flow")
         .replace.template(
-            "integrations/file_setup/_create_flow.html",
+            "uploads/file_setup/_create_flow.html",
             {
                 "instance_session_key": session_key,
                 "file_input_id": "id_file",
                 "stage": "validate",
                 "file_sync_task_id": file_sync_task_id,
                 "turbo_stream_url": reverse(
-                    "integrations:upload_complete",
+                    "uploads:upload_complete",
                     args=(session_key,),
                 ),
             },
@@ -118,7 +110,7 @@ def upload_complete(request: Request, session_key: str):
         return (
             TurboStream("integration-validate-flow")
             .replace.template(
-                "integrations/file_setup/_create_flow.html",
+                "uploads/file_setup/_create_flow.html",
                 {
                     "instance_session_key": session_key,
                     "file_input_id": "id_file",
@@ -132,56 +124,3 @@ def upload_complete(request: Request, session_key: str):
             )
             .response(request)
         )
-
-
-@api_view(["GET"])
-def start_fivetran_integration(request: HttpRequest, session_key: str):
-    integration_data = request.session[session_key]
-
-    task_id = start_fivetran_integration_task.delay(integration_data["fivetran_id"])
-
-    return (
-        TurboStream("integration-setup-container")
-        .replace.template(
-            "integrations/fivetran_setup/_flow.html",
-            {
-                "connector_start_task_id": task_id,
-                "redirect_url": reverse(
-                    "integrations:finalise-fivetran-integration",
-                    args=(session_key,),
-                ),
-            },
-        )
-        .response(request)
-    )
-
-
-@api_view(["GET"])
-def finalise_fivetran_integration(request: HttpRequest, session_key: str):
-    integration_data = request.session[session_key]
-    # Create integration
-    integration = FivetranForm(data=integration_data).save()
-    integration.schema = integration_data["schema"]
-    integration.fivetran_id = integration_data["fivetran_id"]
-    integration.created_by = request.user
-    # Start polling
-    task_id = poll_fivetran_historical_sync.delay(integration.id)
-    integration.fivetran_poll_historical_sync_task_id = str(task_id)
-    integration.save()
-
-    analytics.track(
-        request.user.id,
-        INTEGRATION_CREATED_EVENT,
-        {
-            "id": integration.id,
-            "type": integration.kind,
-            "name": integration.name,
-        },
-    )
-
-    return HttpResponseRedirect(
-        reverse(
-            "project_integrations:detail",
-            args=(integration.project.id, integration.id),
-        )
-    )

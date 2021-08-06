@@ -2,19 +2,19 @@
   {% if start_of_flow %}
   <h4>Table selection</h4>
 
-  {% include "integrations/_schema.html" with confirmation_text="Continue" show_empty_submit=True %}
+  {% include "connectors/_schema.html" with confirmation_text="Continue" show_empty_submit=True %}
   {% else %}
   <div class="flex flex-col flex-1">
     <div class="flex flex-1 justify-center items-center pad">
       <ul id="integration-validate-flow" class="integration__create-flow">
         <li>
-          {% include "integrations/fivetran_setup/_table_select.html" %}
+          {% include "connectors/fivetran_setup/_table_select.html" %}
         </li>
         <li>
           <hr />
         </li>
         <li>
-          {% include "integrations/fivetran_setup/_connector_start.html" %}
+          {% include "connectors/fivetran_setup/_connector_start.html" %}
         </li>
       </ul>
     </div>

@@ -61,6 +61,8 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "django_tables2",
     "invitations",
+    "hijack",
+    "hijack.contrib.admin",
 ]
 
 # Put your project-specific apps here
@@ -79,6 +81,9 @@ PROJECT_APPS = [
     "apps.base",
     "apps.nodes",
     "apps.columns",
+    "apps.uploads",
+    "apps.sheets",
+    "apps.connectors",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
@@ -92,6 +97,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "hijack.middleware.HijackUserMiddleware",
 ]
 
 LOGGING = {

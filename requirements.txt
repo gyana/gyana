@@ -139,6 +139,9 @@ django-filter==2.4.0; python_version >= "3.5" \
 django-heroku==0.3.1 \
     --hash=sha256:6af4bc3ae4a9b55eaad6dbe5164918982d2762661aebc9f83d9fa49f6009514e \
     --hash=sha256:2bc690aab89eedbe01311752320a9a12e7548e3b0ed102681acc5736a41a4762
+django-hijack==3.0.0 \
+    --hash=sha256:15250ee0bf2d27e777fec108406d18195dc0b6861c7daafa46d9d30779a66654 \
+    --hash=sha256:b82501c1fb957c407b4b2d0797edb501a145c36543328b06f4c78a9fe343870f
 django-invitations==1.9.3 \
     --hash=sha256:6077807aa641c7abae9ca418e757c8e3940fb0ce60499dba24c100ad57c61442
 django-storages==1.11.1; python_version >= "3.5" \

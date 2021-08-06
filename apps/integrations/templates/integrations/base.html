@@ -38,7 +38,7 @@
   {% endif %}
   {% if integration.kind == integration.Kind.FIVETRAN %}
   <a class="tabbar__link {% if request.resolver_match.url_name == 'schema' %} tabbar__link--active {% endif %}"
-    href="{% url 'project_integrations:schema' project.id object.id %}">
+    href="{% url 'project_integrations_connectors:schema' project.id object.id %}">
     Schema
   </a>
   {% endif %}

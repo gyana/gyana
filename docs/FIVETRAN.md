@@ -8,7 +8,7 @@ The following two steps allow for easy adding of a connector
 
 ### **Create connector config in `services.yaml`**
 
-New connectors can be added in [services.yaml](../apps/integrations/services.yaml). All the Fivetran connectors can be found in the [Fivetran API](https://fivetran.com/docs/rest-api/connectors/config). The `service` key in the fivetran docs is the key in `services.yaml`.
+New connectors can be added in [services.yaml](../apps/connectors/services.yaml). All the Fivetran connectors can be found in the [Fivetran API](https://fivetran.com/docs/rest-api/connectors/config). The `service` key in the fivetran docs is the key in `services.yaml`.
 
 The `services.yaml` spec is as follows:
 
@@ -30,7 +30,7 @@ We look up the **`svg`** icons located in `static/images/integrations/fivetran/*
 
 ## **FivetranClient**
 
-The FivetranClient class (found in [fivetran.py](../apps/integrations/fivetran.py)) is becoming the interface between Gyana and Fivetran. Here is where most of the Fivetran communication happens.
+The FivetranClient class (found in [fivetran.py](../apps/connectors/fivetran.py)) is becoming the interface between Gyana and Fivetran. Here is where most of the Fivetran communication happens.
 
 ### **Integration creation flow**
 
