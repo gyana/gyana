@@ -10,7 +10,14 @@ from django.forms.widgets import HiddenInput
 class GoogleSheetsForm(forms.ModelForm):
     class Meta:
         model = Integration
-        fields = ["url", "name", "cell_range", "kind", "project", "enable_sync_emails"]
+        fields = [
+            # "url",
+            "name",
+            # "cell_range",
+            "kind",
+            "project",
+            "enable_sync_emails",
+        ]
         widgets = {"kind": HiddenInput(), "project": HiddenInput()}
         help_texts = {}
 

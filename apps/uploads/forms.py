@@ -18,7 +18,13 @@ class CSVForm(forms.ModelForm):
 class CSVCreateForm(forms.ModelForm):
     class Meta:
         model = Integration
-        fields = ["name", "kind", "project", "file", "enable_sync_emails"]
+        fields = [
+            "name",
+            "kind",
+            "project",
+            # "file",
+            "enable_sync_emails",
+        ]
         widgets = {
             "kind": HiddenInput(),
             "project": HiddenInput(),
