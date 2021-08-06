@@ -4,9 +4,10 @@ import uuid
 
 import backoff
 import requests
-from apps.integrations.utils import get_services
 from django.conf import settings
 from django.shortcuts import redirect
+
+from .utils import get_services
 
 
 class FivetranClient:

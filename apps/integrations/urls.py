@@ -2,7 +2,7 @@ from apps.base.access import login_and_teamid_in_session
 from apps.projects.access import login_and_project_required
 from django.urls import path
 
-from . import frames, rest, views
+from . import frames, views
 from .access import login_and_integration_required
 
 app_name = "integrations"
@@ -12,18 +12,6 @@ urlpatterns = [
         "<hashid:pk>/grid",
         login_and_integration_required(frames.IntegrationGrid.as_view()),
         name="grid",
-    ),
-    # rest
-    # TODO: access control?
-    path(
-        "<str:session_key>/start-fivetran-integration",
-        login_and_teamid_in_session(rest.start_fivetran_integration),
-        name="start-fivetran-integration",
-    ),
-    path(
-        "<str:session_key>/finalise-fivetran-integration",
-        login_and_teamid_in_session(rest.finalise_fivetran_integration),
-        name="finalise-fivetran-integration",
     ),
 ]
 
@@ -49,11 +37,6 @@ project_urlpatterns = (
             name="detail",
         ),
         path(
-            "<str:session_key>/setup",
-            login_and_project_required(views.ConnectorSetup.as_view()),
-            name="setup",
-        ),
-        path(
             "<hashid:pk>/update",
             login_and_project_required(views.IntegrationUpdate.as_view()),
             name="update",
@@ -72,11 +55,6 @@ project_urlpatterns = (
             "<hashid:pk>/data",
             login_and_project_required(views.IntegrationData.as_view()),
             name="data",
-        ),
-        path(
-            "<hashid:pk>/schema",
-            login_and_project_required(views.IntegrationSchema.as_view()),
-            name="schema",
         ),
         path(
             "<hashid:pk>/settings",
