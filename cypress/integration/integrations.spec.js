@@ -84,7 +84,7 @@ describe('integrations', () => {
     cy.contains('Data')
     cy.contains('10')
   })
-  it.only('connect to Fivetran', () => {
+  it('connect to Fivetran', () => {
     cy.contains('New Integration').click()
 
     cy.url().should('contain', '/projects/1/integrations/new')

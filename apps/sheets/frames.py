@@ -23,4 +23,4 @@ class IntegrationSync(TurboFrameUpdateView):
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse("projects_integrations_sheets:sync", args=(self.object.id,))
+        return reverse("sheets:sync", args=(self.object.id,))

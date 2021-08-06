@@ -1,9 +1,9 @@
 import celery
+from apps.base.models import BaseModel
 from apps.dashboards.models import Dashboard
 from apps.integrations.utils import get_services
 from apps.projects.models import Project
 from apps.users.models import CustomUser
-from apps.base.models import BaseModel
 from apps.workflows.models import Workflow
 from django.db import models
 from django.urls import reverse
@@ -62,7 +62,7 @@ class Integration(BaseModel):
         return self.table_set.all().aggregate(models.Sum("num_rows"))["num_rows__sum"]
 
     def start_sheets_sync(self):
-        from apps.integrations.tasks import run_sheets_sync
+        from apps.sheets.tasks import run_sheets_sync
 
         result = run_sheets_sync.delay(self.id)
         self.external_table_sync_task_id = result.task_id
