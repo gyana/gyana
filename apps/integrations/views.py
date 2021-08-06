@@ -1,11 +1,9 @@
 import uuid
 
 import analytics
+from apps.base.segment_analytics import (INTEGRATION_CREATED_EVENT,
+                                         NEW_INTEGRATION_START_EVENT)
 from apps.projects.mixins import ProjectMixin
-from apps.base.segment_analytics import (
-    INTEGRATION_CREATED_EVENT,
-    NEW_INTEGRATION_START_EVENT,
-)
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.query import QuerySet
@@ -19,13 +17,8 @@ from turbo_response.stream import TurboStream
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .fivetran import FivetranClient
-from .forms import (
-    FORM_CLASS_MAP,
-    CSVCreateForm,
-    FivetranForm,
-    GoogleSheetsForm,
-    IntegrationForm,
-)
+from .forms import (FORM_CLASS_MAP, FivetranForm, GoogleSheetsForm,
+                    IntegrationForm)
 from .models import Integration
 from .tables import IntegrationTable, StructureTable
 from .tasks import update_integration_fivetran_schema
@@ -66,62 +59,6 @@ class IntegrationList(ProjectMixin, SingleTableView):
             queryset = queryset.filter(kind=kind)
 
         return queryset.prefetch_related("table_set").all()
-
-
-class IntegrationUpload(ProjectMixin, TurboCreateView):
-    template_name = "integrations/upload.html"
-    model = Integration
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data["integration_kind"] = Integration.Kind.CSV
-
-        return context_data
-
-    def get_initial(self):
-        initial = super().get_initial()
-        initial["kind"] = Integration.Kind.CSV
-        initial["project"] = self.project
-
-        return initial
-
-    def get_form_class(self):
-        analytics.track(
-            self.request.user.id,
-            NEW_INTEGRATION_START_EVENT,
-            {"type": Integration.Kind.CSV},
-        )
-
-        return CSVCreateForm
-
-    def form_valid(self, form):
-        instance_session_key = uuid.uuid4().hex
-
-        if not form.is_valid():
-            return HttpResponseBadRequest()
-
-        self.request.session[instance_session_key] = {
-            **form.cleaned_data,
-            "project": form.cleaned_data["project"].id,
-        }
-
-        return (
-            TurboStream("create-container")
-            .append.template(
-                "integrations/file_setup/_create_flow.html",
-                {
-                    "instance_session_key": instance_session_key,
-                    "file_input_id": "id_file",
-                    "stage": "upload",
-                },
-            )
-            .response(self.request)
-        )
-
-    def get_success_url(self) -> str:
-        return reverse(
-            "project_integrations:detail", args=(self.project.id, self.object.id)
-        )
 
 
 class IntegrationNew(ProjectMixin, TemplateView):

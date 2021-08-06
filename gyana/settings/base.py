@@ -81,6 +81,7 @@ PROJECT_APPS = [
     "apps.base",
     "apps.nodes",
     "apps.columns",
+    "apps.uploads",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
@@ -94,7 +95,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'hijack.middleware.HijackUserMiddleware',
+    "hijack.middleware.HijackUserMiddleware",
 ]
 
 LOGGING = {

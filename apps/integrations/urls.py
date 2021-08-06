@@ -1,5 +1,5 @@
-from apps.projects.access import login_and_project_required
 from apps.base.access import login_and_teamid_in_session
+from apps.projects.access import login_and_project_required
 from django.urls import path
 
 from . import frames, rest, views
@@ -30,13 +30,6 @@ urlpatterns = [
         login_and_teamid_in_session(rest.finalise_fivetran_integration),
         name="finalise-fivetran-integration",
     ),
-    path("file/<str:session_key>/generate-signed-url", rest.generate_signed_url),
-    path("file/<str:session_key>/start-sync", rest.start_sync),
-    path(
-        "file/<str:session_key>/upload-complete",
-        rest.upload_complete,
-        name="upload_complete",
-    ),
 ]
 
 project_urlpatterns = (
@@ -54,11 +47,6 @@ project_urlpatterns = (
             "create",
             login_and_project_required(views.IntegrationCreate.as_view()),
             name="create",
-        ),
-        path(
-            "upload",
-            login_and_project_required(views.IntegrationUpload.as_view()),
-            name="upload",
         ),
         path(
             "<hashid:pk>",

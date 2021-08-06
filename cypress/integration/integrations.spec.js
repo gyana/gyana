@@ -49,7 +49,7 @@ describe('integrations', () => {
   it('upload valid CSV', () => {
     cy.contains('Upload CSV').click()
 
-    cy.url().should('contain', '/projects/1/integrations/upload')
+    cy.url().should('contain', '/projects/1/uploads/upload')
     cy.get('input[type=file]').attachFile('store_info.csv')
     cy.get('button[type=submit]').click()
 
