@@ -32,7 +32,7 @@ describe('Test dashboard stage', () => {
     cy.contains('Edinburgh')
     cy.get('button[name=close]').click()
     cy.get('input[value="Save & Preview"]').should('not.be.visible')
-    cy.get('[id=widget-1]').contains('London')
+    cy.get('#widget-1').contains('London')
     createWidget('Bar')
     cy.get('select[name=label]').select('Owner')
     cy.get('[data-formset-prefix-value=aggregations]').within((el) => {
@@ -41,11 +41,11 @@ describe('Test dashboard stage', () => {
     cy.get('select[name=aggregations-0-column]').select('Employees')
     cy.get('select[name=aggregations-0-function]').select('SUM')
     cy.contains('Save & Close').click()
-    cy.get('[id=widget-2').within((el) => {
+    cy.get('#widget-2').within((el) => {
       cy.wrap(el).contains('text', 'David').should('be.visible')
     })
-    cy.get('[id=widget-delete-1]').click()
-    cy.get('[id=widget-1]').should('not.exist')
+    cy.get('#widget-delete-1').click()
+    cy.get('#widget-1').should('not.exist')
   })
   it('Duplicates dashboard with new widgets', () => {
     // Duplicates a dashboard with a table widget
@@ -56,11 +56,11 @@ describe('Test dashboard stage', () => {
     createWidget('Table')
     cy.contains('Save & Close').should('not.be.disabled').click()
     cy.visit('/projects/1/dashboards/')
-    cy.get('[id=dashboard-duplicate-1]').click()
+    cy.get('#dashboard-duplicate-1').click()
     cy.contains('Copy of Untitled').click()
     cy.contains('Blackpool')
-    cy.get('[id=widgets-output-2]').trigger('mouseover')
-    cy.get(['[id=widget-update-2]']).click()
+    cy.get('#widgets-output-2').trigger('mouseover')
+    cy.get(['#widget-update-2']).click()
     cy.get('select[name=kind]').select('Column')
     cy.get('select[name=label]').select('Location')
     cy.get('[data-formset-prefix-value=aggregations]').within((el) => {
@@ -73,33 +73,36 @@ describe('Test dashboard stage', () => {
     cy.contains('Untitled').click()
     cy.contains('Alex')
   })
-  it.only('Shares a dashboard with a widget', () => {
+  it('Shares a dashboard with a widget', () => {
     cy.contains('create one').click()
     createWidget('Table')
     cy.contains('Save & Close').should('not.be.disabled').click()
     cy.logout()
     cy.visit('/projects/1/dashboards/1')
-    cy.location('pathname').should('equal', '/accounts/login')
+    cy.location('pathname').should('equal', '/accounts/login/')
     cy.login()
     cy.visit('/projects/1/dashboards/1')
-    cy.get('[id=dashboard-share-1]').click()
-    cy.contains('Share').click()
-    cy.get('[id=share-link-to-clipboard]').click()
-    cy.window().its('navigator.clipboard')
-    .invoke('readText')
-    .should('equal', /localhost:8000\/dashboards\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/)
-    .then(text=>{
-      cy.logout()
-      cy.visit(text)
-      cy.contains('David')
-      cy.login()
-      cy.visit(/projects/1/dashboards/1)
-      cy.get('[id=dashboard-share-1]').click()
-      cy.contains('Unshare').click()
-      cy.logout()
-      cy.visit(text)
-      cy.contains('404 - Not found')
-    })
-    
+    cy.get('#dashboard-share-1').click()
+    cy.get('button').contains('Share').click()
+    cy.contains(
+      /localhost:8000\/dashboards\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/
+    )
+      .invoke('text')
+      .then((text) => {
+        const sharedUrl = `http://${text.trim()}`
+        cy.logout()
+
+        cy.visit(sharedUrl)
+        cy.contains('David')
+        cy.login()
+        cy.visit('/projects/1/dashboards/1')
+        cy.get('#dashboard-share-1').click()
+        cy.get('button').contains('Unshare').click()
+        cy.contains('Share')
+        cy.logout()
+        // cy.visit fails on 404 by default
+        cy.visit(sharedUrl, { failOnStatusCode: false })
+        cy.contains('404 - Not Found')
+      })
   })
 })
