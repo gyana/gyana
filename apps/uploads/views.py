@@ -2,6 +2,7 @@ import uuid
 
 import analytics
 from apps.base.segment_analytics import NEW_INTEGRATION_START_EVENT
+from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from django.http.response import HttpResponseBadRequest
 from django.urls import reverse
@@ -9,7 +10,6 @@ from turbo_response.stream import TurboStream
 from turbo_response.views import TurboCreateView
 
 from .forms import CSVCreateForm
-from .models import Integration
 
 
 class IntegrationUpload(ProjectMixin, TurboCreateView):

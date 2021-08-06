@@ -4,6 +4,7 @@ import time
 
 import coreapi
 from apps.base.clients import get_bucket
+from apps.integrations.tasks import send_integration_email
 from apps.tables.models import Table
 from celery.result import AsyncResult
 from django.conf import settings
@@ -17,7 +18,7 @@ from rest_framework.schemas import AutoSchema
 from turbo_response.stream import TurboStream
 
 from .forms import CSVCreateForm
-from .tasks import file_sync, send_integration_email
+from .tasks import file_sync
 
 
 @api_view(["POST"])
@@ -73,7 +74,7 @@ def start_sync(request: Request, session_key: str):
                 "stage": "validate",
                 "file_sync_task_id": file_sync_task_id,
                 "turbo_stream_url": reverse(
-                    "integrations:upload_complete",
+                    "uploads:upload_complete",
                     args=(session_key,),
                 ),
             },

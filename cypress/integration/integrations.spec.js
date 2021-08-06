@@ -49,7 +49,7 @@ describe('integrations', () => {
   it('upload valid CSV', () => {
     cy.contains('Upload CSV').click()
 
-    cy.url().should('contain', '/projects/1/uploads/upload')
+    cy.url().should('contain', '/projects/1/integrations/upload')
     cy.get('input[type=file]').attachFile('store_info.csv')
     cy.get('button[type=submit]').click()
 
@@ -84,7 +84,7 @@ describe('integrations', () => {
     cy.contains('Data')
     cy.contains('10')
   })
-  it('connect to Fivetran', () => {
+  it.only('connect to Fivetran', () => {
     cy.contains('New Integration').click()
 
     cy.url().should('contain', '/projects/1/integrations/new')

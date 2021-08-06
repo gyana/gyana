@@ -3,12 +3,11 @@ from functools import reduce
 
 from apps.base.clients import DATASET_ID
 from apps.integrations.bigquery import sync_table
+from apps.integrations.models import Integration
 from apps.tables.models import Table
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 from google.api_core.exceptions import GoogleAPICallError
-
-from .models import Integration
 
 
 @shared_task(bind=True)

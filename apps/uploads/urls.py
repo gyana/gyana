@@ -3,7 +3,7 @@ from django.urls import path
 
 from . import rest, views
 
-app_name = "integrations"
+app_name = "uploads"
 urlpatterns = [
     path("file/<str:session_key>/generate-signed-url", rest.generate_signed_url),
     path("file/<str:session_key>/start-sync", rest.start_sync),
@@ -14,13 +14,13 @@ urlpatterns = [
     ),
 ]
 
-project_urlpatterns = (
+integration_urlpatterns = (
     [
         path(
-            "upload",
+            "",
             login_and_project_required(views.IntegrationUpload.as_view()),
             name="upload",
         ),
     ],
-    "project_uploads",
+    "project_integrations_uploads",
 )

@@ -31,18 +31,22 @@ from apps.nodes import urls as node_urls
 from apps.projects import urls as project_urls
 from apps.tables import urls as tables_urls
 from apps.teams import urls as team_urls
+from apps.uploads import urls as upload_urls
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
 schemajs_view = get_schemajs_view(title="API")
 
+
+integration_urlpatterns = [
+    path("", include(integration_urls.project_urlpatterns)),
+    path("uploads/", include(upload_urls.integration_urlpatterns)),
+]
+
 # urls that are scoped within a project
 project_urlpatterns = [
     path("", include("apps.projects.urls")),
-    path(
-        "<hashid:project_id>/integrations/",
-        include(integration_urls.project_urlpatterns),
-    ),
+    path("<hashid:project_id>/integrations/", include(integration_urlpatterns)),
     path("<hashid:project_id>/workflows/", include(workflow_urls.project_urlpatterns)),
     path(
         "<hashid:project_id>/dashboards/", include(dashboard_urls.project_urlpatterns)
@@ -76,6 +80,7 @@ urlpatterns = [
     path("widgets/", include("apps.widgets.urls")),
     path("invitations/", include("invitations.urls")),
     path("nodes/", include("apps.nodes.urls")),
+    path("uploads/", include("apps.uploads.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),
