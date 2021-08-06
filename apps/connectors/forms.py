@@ -1,9 +1,14 @@
+from apps.integrations.models import Integration
 from django import forms
+from django.forms.widgets import HiddenInput
 
-from .models import Connector
 
-
-class ConnectorForm(forms.ModelForm):
+class FivetranForm(forms.ModelForm):
     class Meta:
-        model = Connector
-        fields = ['name']
+        model = Integration
+        fields = ["name", "service", "kind", "project", "enable_sync_emails"]
+        widgets = {
+            "kind": HiddenInput(),
+            "service": HiddenInput(),
+            "project": HiddenInput(),
+        }

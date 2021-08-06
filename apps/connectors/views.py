@@ -1,41 +1,73 @@
-from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView
-from django.views.generic.edit import DeleteView
-from django_tables2 import SingleTableView
-from turbo_response.views import TurboCreateView, TurboUpdateView
+from apps.projects.mixins import ProjectMixin
+from django.urls import reverse
+from django.views.generic import DetailView
+from django.views.generic.base import TemplateResponseMixin, View
+from turbo_response.stream import TurboStream
 
-from .forms import ConnectorForm
-from .models import Connector
-from .tables import ConnectorTable
-
-
-class ConnectorList(SingleTableView):
-    template_name = "connectors/list.html"
-    model = Connector
-    table_class = ConnectorTable
-    paginate_by = 20
+from .fivetran import FivetranClient
+from .models import Integration
+from .tasks import update_integration_fivetran_schema
 
 
-class ConnectorCreate(TurboCreateView):
-    template_name = "connectors/create.html"
-    model = Connector
-    form_class = ConnectorForm
-    success_url = reverse_lazy('connectors:list')
+class IntegrationSchema(ProjectMixin, DetailView):
+    template_name = "connectors/schema.html"
+    model = Integration
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        context_data["integration"] = self.get_object()
+        context_data["schemas"] = FivetranClient().get_schema(self.object.fivetran_id)
+
+        return context_data
+
+    def post(self, request, *args, **kwargs):
+        integration = self.get_object()
+        client = FivetranClient()
+        client.update_schema(
+            integration.fivetran_id,
+            [key for key in request.POST.keys() if key != "csrfmiddlewaretoken"],
+        )
+
+        return TurboStream(f"{integration.id}-schema-update-message").replace.response(
+            f"""<p id="{ integration.id }-schema-update-message" class="ml-4 text-green">Successfully updated the schema</p>""",
+            is_safe=True,
+        )
 
 
-class ConnectorDetail(DetailView):
-    template_name = "connectors/detail.html"
-    model = Connector
+class ConnectorSetup(ProjectMixin, TemplateResponseMixin, View):
+    template_name = "connectors/setup.html"
 
+    def get_context_data(self, project_id, session_key, **kwargs):
+        integration_data = self.request.session[session_key]
+        return {
+            "service": integration_data["service"],
+            "schemas": FivetranClient().get_schema(integration_data["fivetran_id"]),
+            "project": self.project,
+        }
 
-class ConnectorUpdate(TurboUpdateView):
-    template_name = "connectors/update.html"
-    model = Connector
-    form_class = ConnectorForm
-    success_url = reverse_lazy('connectors:list')
+    def get(self, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
 
+    def post(self, request, session_key, **kwargs):
+        integration_data = self.request.session[session_key]
+        task_id = update_integration_fivetran_schema.delay(
+            integration_data["fivetran_id"],
+            [key for key in request.POST.keys() if key != "csrfmiddlewaretoken"],
+        )
 
-class ConnectorDelete(DeleteView):
-    template_name = "connectors/delete.html"
-    model = Connector
-    success_url = reverse_lazy('connectors:list')
+        return (
+            TurboStream("integration-setup-container")
+            .replace.template(
+                "connectors/fivetran_setup/_flow.html",
+                {
+                    "table_select_task_id": task_id,
+                    "turbo_url": reverse(
+                        "connectors:start-fivetran-integration",
+                        args=(session_key,),
+                    ),
+                },
+            )
+            .response(request)
+        )

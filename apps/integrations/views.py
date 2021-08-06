@@ -1,8 +1,12 @@
 import uuid
 
 import analytics
-from apps.base.segment_analytics import (INTEGRATION_CREATED_EVENT,
-                                         NEW_INTEGRATION_START_EVENT)
+from apps.base.segment_analytics import (
+    INTEGRATION_CREATED_EVENT,
+    NEW_INTEGRATION_START_EVENT,
+)
+from apps.connectors.fivetran import FivetranClient
+from apps.connectors.utils import get_service_categories, get_services
 from apps.projects.mixins import ProjectMixin
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
@@ -10,19 +14,14 @@ from django.db.models.query import QuerySet
 from django.http.response import HttpResponseBadRequest
 from django.urls import reverse
 from django.views.generic import DetailView
-from django.views.generic.base import TemplateResponseMixin, TemplateView, View
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
-from turbo_response.stream import TurboStream
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .fivetran import FivetranClient
-from .forms import (FORM_CLASS_MAP, FivetranForm, GoogleSheetsForm,
-                    IntegrationForm)
+from .forms import FORM_CLASS_MAP, FivetranForm, GoogleSheetsForm, IntegrationForm
 from .models import Integration
 from .tables import IntegrationTable, StructureTable
-from .tasks import update_integration_fivetran_schema
-from .utils import get_service_categories, get_services
 
 # CRUDL
 
@@ -138,7 +137,7 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
                 }
 
                 internal_redirect = reverse(
-                    "project_integrations:setup",
+                    "project_integrations_connectors:setup",
                     args=(form.instance.project.id, instance_session_key),
                 )
 
@@ -237,70 +236,6 @@ class IntegrationData(ProjectMixin, DetailView):
         context_data["tables"] = self.object.table_set.all()
 
         return context_data
-
-
-class IntegrationSchema(ProjectMixin, DetailView):
-    template_name = "integrations/schema.html"
-    model = Integration
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-
-        context_data["integration"] = self.get_object()
-        context_data["schemas"] = FivetranClient().get_schema(self.object.fivetran_id)
-
-        return context_data
-
-    def post(self, request, *args, **kwargs):
-        integration = self.get_object()
-        client = FivetranClient()
-        client.update_schema(
-            integration.fivetran_id,
-            [key for key in request.POST.keys() if key != "csrfmiddlewaretoken"],
-        )
-
-        return TurboStream(f"{integration.id}-schema-update-message").replace.response(
-            f"""<p id="{ integration.id }-schema-update-message" class="ml-4 text-green">Successfully updated the schema</p>""",
-            is_safe=True,
-        )
-
-
-class ConnectorSetup(ProjectMixin, TemplateResponseMixin, View):
-    template_name = "integrations/setup.html"
-
-    def get_context_data(self, project_id, session_key, **kwargs):
-        integration_data = self.request.session[session_key]
-        return {
-            "service": integration_data["service"],
-            "schemas": FivetranClient().get_schema(integration_data["fivetran_id"]),
-            "project": self.project,
-        }
-
-    def get(self, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-        return self.render_to_response(context)
-
-    def post(self, request, session_key, **kwargs):
-        integration_data = self.request.session[session_key]
-        task_id = update_integration_fivetran_schema.delay(
-            integration_data["fivetran_id"],
-            [key for key in request.POST.keys() if key != "csrfmiddlewaretoken"],
-        )
-
-        return (
-            TurboStream("integration-setup-container")
-            .replace.template(
-                "integrations/fivetran_setup/_flow.html",
-                {
-                    "table_select_task_id": task_id,
-                    "turbo_url": reverse(
-                        "integrations:start-fivetran-integration",
-                        args=(session_key,),
-                    ),
-                },
-            )
-            .response(request)
-        )
 
 
 class IntegrationSettings(ProjectMixin, TurboUpdateView):

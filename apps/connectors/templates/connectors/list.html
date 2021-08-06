@@ -1,8 +1,0 @@
-{% extends "web/app/settings_base.html" %}
-{% load render_table from django_tables2 %}
-{% block app %}
-<h1>Listing</h1>
-<a href="{% url 'connectors:create' %}"
-  >Create</a
->
-{% render_table table %} {% endblock %} 

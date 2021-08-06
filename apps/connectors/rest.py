@@ -19,11 +19,11 @@ def start_fivetran_integration(request: HttpRequest, session_key: str):
     return (
         TurboStream("integration-setup-container")
         .replace.template(
-            "integrations/fivetran_setup/_flow.html",
+            "connectors/fivetran_setup/_flow.html",
             {
                 "connector_start_task_id": task_id,
                 "redirect_url": reverse(
-                    "integrations:finalise-fivetran-integration",
+                    "connectors:finalise-fivetran-integration",
                     args=(session_key,),
                 ),
             },
