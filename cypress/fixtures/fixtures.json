@@ -1,32 +1,5 @@
 [
   {
-    "model": "account.emailaddress",
-    "pk": 1,
-    "fields": { "user": 1, "email": "test@gyana.com", "verified": false, "primary": true }
-  },
-  {
-    "model": "account.emailaddress",
-    "pk": 2,
-    "fields": { "user": 3, "email": "alone@gyana.com", "verified": false, "primary": true }
-  },
-  {
-    "model": "account.emailaddress",
-    "pk": 3,
-    "fields": { "user": 4, "email": "member@gyana.com", "verified": false, "primary": true }
-  },
-  {
-    "model": "socialaccount.socialapp",
-    "pk": 1,
-    "fields": {
-      "provider": "google",
-      "name": "Google",
-      "client_id": "766404612569-gn5hok52al6q1ob04rfmha8k4bns09me.apps.googleusercontent.com",
-      "secret": "l9xbaHAi5xf4WuRji3PiTq-z",
-      "key": "",
-      "sites": [1]
-    }
-  },
-  {
     "model": "users.customuser",
     "pk": 1,
     "fields": {
@@ -152,20 +125,8 @@
       "updated": "2021-07-27T13:17:27.987Z",
       "name": "store_info",
       "project": 1,
-      "kind": "csv",
+      "kind": "upload",
       "enable_sync_emails": false,
-      "url": null,
-      "file": "cypress/integrations/store_info-1627391842010578.csv",
-      "cell_range": null,
-      "external_table_sync_task_id": null,
-      "has_initial_sync": false,
-      "last_synced": "2021-07-27T13:17:27.987Z",
-      "service": null,
-      "fivetran_id": null,
-      "schema": null,
-      "fivetran_authorized": false,
-      "fivetran_poll_historical_sync_task_id": null,
-      "historical_sync_complete": false,
       "created_by": 1
     }
   },
@@ -199,6 +160,45 @@
       "role": "member",
       "created": "2021-07-29T09:32:54.971Z",
       "updated": "2021-07-29T09:33:49.004Z"
+    }
+  },
+  {
+    "model": "uploads.upload",
+    "pk": 1,
+    "fields": {
+      "created": "2021-07-27T13:17:27.984Z",
+      "updated": "2021-07-27T13:17:27.987Z",
+      "file": "cypress/integrations/store_info-1627391842010578.csv",
+      "external_table_sync_task_id": null,
+      "has_initial_sync": false,
+      "last_synced": "2021-07-27T13:17:27.987Z"
+    }
+  },
+  {
+    "model": "account.emailaddress",
+    "pk": 1,
+    "fields": { "user": 1, "email": "test@gyana.com", "verified": false, "primary": true }
+  },
+  {
+    "model": "account.emailaddress",
+    "pk": 2,
+    "fields": { "user": 3, "email": "alone@gyana.com", "verified": false, "primary": true }
+  },
+  {
+    "model": "account.emailaddress",
+    "pk": 3,
+    "fields": { "user": 4, "email": "member@gyana.com", "verified": false, "primary": true }
+  },
+  {
+    "model": "socialaccount.socialapp",
+    "pk": 1,
+    "fields": {
+      "provider": "google",
+      "name": "Google",
+      "client_id": "766404612569-gn5hok52al6q1ob04rfmha8k4bns09me.apps.googleusercontent.com",
+      "secret": "l9xbaHAi5xf4WuRji3PiTq-z",
+      "key": "",
+      "sites": [1]
     }
   }
 ]
