@@ -1,12 +1,19 @@
 from apps.base.models import BaseModel
+from apps.integrations.models import Integration
 from django.db import models
-from django.urls import reverse
 
-# class Upload(BaseModel):
-#     name = models.CharField(max_length=255)
 
-#     def __str__(self):
-#         return self.name
+class Upload(BaseModel):
 
-#     def get_absolute_url(self):
-#         return reverse("uploads:detail", args=(self.pk, ))
+    integration = models.OneToOneField(
+        Integration,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+
+    file = models.TextField()
+
+    # todo: remove for uploads
+    external_table_sync_task_id = models.UUIDField(null=True)
+    has_initial_sync = models.BooleanField(default=False)
+    last_synced = models.DateTimeField(null=True)

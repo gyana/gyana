@@ -1,12 +1,20 @@
 from apps.base.models import BaseModel
+from apps.integrations.models import Integration
 from django.db import models
-from django.urls import reverse
 
-# class Sheet(BaseModel):
-#     name = models.CharField(max_length=255)
 
-#     def __str__(self):
-#         return self.name
+class Sheet(BaseModel):
 
-#     def get_absolute_url(self):
-#         return reverse("sheets:detail", args=(self.pk, ))
+    integration = models.OneToOneField(
+        Integration,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+
+    url = models.URLField()
+
+    cell_range = models.CharField(max_length=64, null=True, blank=True)
+
+    external_table_sync_task_id = models.UUIDField(null=True)
+    has_initial_sync = models.BooleanField(default=False)
+    last_synced = models.DateTimeField(null=True)

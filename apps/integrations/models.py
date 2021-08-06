@@ -11,9 +11,9 @@ from django.urls import reverse
 
 class Integration(BaseModel):
     class Kind(models.TextChoices):
-        GOOGLE_SHEETS = "google_sheets", "Google Sheets"
-        CSV = "csv", "CSV"
-        FIVETRAN = "fivetran", "Fivetran"
+        GOOGLE_SHEETS = "sheets", "Google Sheets"
+        CSV = "upload", "Upload"
+        FIVETRAN = "connector", "Connector"
 
     name = models.CharField(max_length=255)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -21,36 +21,6 @@ class Integration(BaseModel):
 
     # Sync toggle
     enable_sync_emails = models.BooleanField(default=True)
-
-    # either a URL or file upload
-    url = models.URLField(null=True)
-    file = models.TextField(null=True)
-
-    # Sheets config
-    cell_range = models.CharField(max_length=64, null=True, blank=True)
-
-    # bigquery external tables
-    external_table_sync_task_id = models.UUIDField(null=True)
-    has_initial_sync = models.BooleanField(default=False)
-    last_synced = models.DateTimeField(null=True)
-
-    # fivetran
-    service = models.TextField(
-        max_length=255,
-        null=True,
-        help_text="Name of the Fivetran service, uses keys from services.yaml as value",
-    )
-    fivetran_id = models.TextField(
-        null=True,
-        help_text="ID of the connector in Fivetran, crucial to link this Integration to the Fivetran connector",
-    )
-    schema = models.TextField(
-        null=True,
-        help_text="The schema name under which Fivetran saves the data in BigQuery. It also is the name of the schema maintained by Fivetran in their systems.",
-    )
-    fivetran_authorized = models.BooleanField(default=False)
-    fivetran_poll_historical_sync_task_id = models.UUIDField(null=True)
-    historical_sync_complete = models.BooleanField(default=False)
 
     created_by = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
 
