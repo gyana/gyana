@@ -13,15 +13,16 @@ class GoogleSheetsForm(forms.ModelForm):
     class Meta:
         model = Integration
         fields = [
-            # "url",
             "name",
-            # "cell_range",
             "kind",
             "project",
             "enable_sync_emails",
         ]
         widgets = {"kind": HiddenInput(), "project": HiddenInput()}
         help_texts = {}
+
+    url = forms.URLField()
+    cell_range = forms.CharField(required=False, max_length=64, empty_value=None)
 
     def clean_url(self):
         url = self.cleaned_data["url"]
