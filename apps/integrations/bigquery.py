@@ -21,14 +21,14 @@ def create_external_config(
 
     For a CSV integration `file` is required
     """
-    if kind == Integration.Kind.GOOGLE_SHEETS:
+    if kind == Integration.Kind.SHEET:
         # https://cloud.google.com/bigquery/external-data-drive#python
         external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
         external_config.source_uris = [url]
         # Only include cell range when it exists
         if cell_range:
             external_config.options.range = cell_range
-    elif kind == Integration.Kind.CSV:
+    elif kind == Integration.Kind.UPLOAD:
         # See here for more infomation https://googleapis.dev/python/bigquery/1.24.0/generated/google.cloud.bigquery.external_config.CSVOptions.html
         external_config = bigquery.ExternalConfig("CSV")
         external_config.source_uris = [f"gs://{settings.GS_BUCKET_NAME}/{file}"]
@@ -149,6 +149,6 @@ def get_sheets_id_from_url(url):
 def get_query_from_integration(integration):
 
     conn = ibis_client()
-    if integration.kind == Integration.Kind.FIVETRAN:
+    if integration.kind == Integration.Kind.CONNECTOR:
         return conn.table(integration.table_id, database=integration.connector.schema)
     return conn.table(integration.table_id)

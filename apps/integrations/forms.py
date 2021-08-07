@@ -13,7 +13,7 @@ class IntegrationForm(forms.ModelForm):
 
 
 FORM_CLASS_MAP = {
-    Integration.Kind.FIVETRAN: FivetranForm,
-    Integration.Kind.CSV: CSVForm,
-    Integration.Kind.GOOGLE_SHEETS: GoogleSheetsForm,
+    Integration.Kind.CONNECTOR: FivetranForm,
+    Integration.Kind.UPLOAD: CSVForm,
+    Integration.Kind.SHEET: GoogleSheetsForm,
 }

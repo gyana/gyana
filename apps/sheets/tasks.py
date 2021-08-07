@@ -41,7 +41,7 @@ def run_sheets_sync(self, integration_id):
         table=table,
         url=integration.sheet.url,
         cell_range=integration.sheet.cell_range,
-        kind=Integration.Kind.GOOGLE_SHEETS,
+        kind=Integration.Kind.SHEET,
     )
     query_job = next(sync_generator)
 

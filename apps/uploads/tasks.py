@@ -30,7 +30,7 @@ def file_sync(self, file: str, project_id: int):
     sync_start_time = time.time()
 
     # 2. Sync the file into BigQuery
-    sync_generator = sync_table(table=table, file=file, kind=Integration.Kind.CSV)
+    sync_generator = sync_table(table=table, file=file, kind=Integration.Kind.UPLOAD)
     query_job = next(sync_generator)
 
     # 3. Record progress on the sync

@@ -99,9 +99,9 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
                 self.request.user.id, NEW_INTEGRATION_START_EVENT, {"type": kind}
             )
 
-            if kind == Integration.Kind.GOOGLE_SHEETS:
+            if kind == Integration.Kind.SHEET:
                 return GoogleSheetsForm
-            elif kind == Integration.Kind.FIVETRAN:
+            elif kind == Integration.Kind.CONNECTOR:
                 return FivetranForm
 
         return GoogleSheetsForm
@@ -122,7 +122,7 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
                 },
             )
 
-            if form.instance.kind == Integration.Kind.FIVETRAN:
+            if form.instance.kind == Integration.Kind.CONNECTOR:
                 client = FivetranClient()
                 fivetran_config = client.create(
                     form.cleaned_data["service"], form.instance.project.team.id
@@ -146,7 +146,7 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
                     f"{settings.EXTERNAL_URL}{internal_redirect}",
                 )
 
-            if form.instance.kind == Integration.Kind.GOOGLE_SHEETS:
+            if form.instance.kind == Integration.Kind.SHEET:
                 response = super().form_valid(form)
                 form.instance.start_sheets_sync()
                 return response

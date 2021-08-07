@@ -18,7 +18,7 @@ class IntegrationSync(TurboFrameUpdateView):
         return context_data
 
     def form_valid(self, form):
-        if self.object.kind == Integration.Kind.GOOGLE_SHEETS:
+        if self.object.kind == Integration.Kind.SHEET:
             self.object.sheet.start_sheets_sync()
         return super().form_valid(form)
 

@@ -11,9 +11,9 @@ from django.urls import reverse
 
 class Integration(BaseModel):
     class Kind(models.TextChoices):
-        GOOGLE_SHEETS = "sheet", "Google Sheets"
-        CSV = "upload", "Upload"
-        FIVETRAN = "connector", "Connector"
+        SHEET = "sheet", "Google Sheets"
+        UPLOAD = "upload", "Upload"
+        CONNECTOR = "connector", "Connector"
 
     name = models.CharField(max_length=255)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -75,7 +75,7 @@ class Integration(BaseModel):
     def display_kind(self):
         return (
             self.get_kind_display()
-            if self.kind != self.Kind.FIVETRAN
+            if self.kind != self.Kind.CONNECTOR
             else get_services()[self.connector.service]["name"]
         )
 
@@ -86,6 +86,6 @@ class Integration(BaseModel):
         return reverse("project_integrations:detail", args=(self.project.id, self.id))
 
     def icon(self):
-        if self.kind == Integration.Kind.FIVETRAN:
+        if self.kind == Integration.Kind.CONNECTOR:
             return f"images/integrations/fivetran/{self.connector.service}.svg"
         return f"images/integrations/{self.kind}.svg"
