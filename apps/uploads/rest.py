@@ -97,7 +97,7 @@ def upload_complete(request: Request, session_key: str):
         integration = CSVCreateForm(data=form_data).save()
         integration.upload.file = form_data["file"]
         integration.created_by = request.user
-        integration.last_synced = datetime.datetime.now()
+        integration.upload.last_synced = datetime.datetime.now()
         integration.save()
         integration.upload.save()
 

@@ -68,7 +68,7 @@ def run_sheets_sync(self, integration_id):
 
     sync_end_time = time.time()
 
-    integration.last_synced = datetime.now()
+    integration.sheet.last_synced = datetime.now()
     integration.save()
 
     url = reverse(

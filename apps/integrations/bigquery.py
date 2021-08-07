@@ -1,9 +1,9 @@
 import re
 from datetime import datetime
 
+from apps.base.clients import DATASET_ID, bigquery_client, ibis_client
 from apps.integrations.models import Integration
 from apps.tables.models import Table
-from apps.base.clients import DATASET_ID, bigquery_client, ibis_client
 from django.conf import settings
 from django.db import transaction
 from google.cloud import bigquery
@@ -137,7 +137,8 @@ def get_tables_in_dataset(integration):
             )
             table.save()
 
-        integration.last_synced = datetime.now()
+        # not required for Fivetran, query syncing information directly
+        # integration.kind_obj.last_synced = datetime.now()
         integration.save()
 
 
