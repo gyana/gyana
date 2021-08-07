@@ -35,9 +35,9 @@ class Integration(BaseModel):
         from apps.sheets.tasks import run_sheets_sync
 
         result = run_sheets_sync.delay(self.id)
-        self.external_table_sync_task_id = result.task_id
+        self.sheet.external_table_sync_task_id = result.task_id
 
-        self.save()
+        self.sheet.save()
 
     @property
     def is_syncing(self):

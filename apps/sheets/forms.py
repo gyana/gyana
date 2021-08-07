@@ -1,3 +1,5 @@
+import datetime
+
 import googleapiclient
 from apps.base.clients import sheets_client
 from apps.integrations.bigquery import get_sheets_id_from_url
@@ -69,6 +71,8 @@ class GoogleSheetsForm(forms.ModelForm):
             integration=instance,
             url=self.cleaned_data["url"],
             cell_range=self.cleaned_data["cell_range"],
+            # django setting `created = NULL`?
+            created=datetime.datetime.now()
         )
         sheet.save()
 

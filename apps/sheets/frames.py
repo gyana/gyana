@@ -13,13 +13,13 @@ class IntegrationSync(TurboFrameUpdateView):
         context_data = super().get_context_data(**kwargs)
         context_data[
             "external_table_sync_task_id"
-        ] = self.object.external_table_sync_task_id
+        ] = self.object.sheet.external_table_sync_task_id
 
         return context_data
 
     def form_valid(self, form):
         if self.object.kind == Integration.Kind.GOOGLE_SHEETS:
-            self.object.start_sheets_sync()
+            self.object.sheet.start_sheets_sync()
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
