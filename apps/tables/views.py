@@ -45,7 +45,10 @@ class TableDelete(ProjectMixin, DeleteView):
         # cannot be unselected in the Fivetran schema. This is fine and
         # we can ignore the error.
         res = client.update_table_config(
-            integration.fivetran_id, integration.schema, table.bq_table, False
+            integration.connector.fivetran_id,
+            integration.connector.schema,
+            table.bq_table,
+            False,
         )
 
         if res["code"] == "Success":

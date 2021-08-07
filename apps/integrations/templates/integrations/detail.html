@@ -10,9 +10,9 @@
     <div class="card">
       {% if object.kind == 'fivetran' %}
       <div class="flex flex-col flex-shrink-0">
-        {% if object.historical_sync_complete %}
+        {% if object.connector.historical_sync_complete %}
         <div>Ready</div>
-        {% elif object.fivetran_authorized %}
+        {% elif object.connector.fivetran_authorized %}
         <div>Syncing</div>
         {% endif %}
       </div>

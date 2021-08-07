@@ -76,7 +76,7 @@ class Integration(BaseModel):
         return (
             self.get_kind_display()
             if self.kind != self.Kind.FIVETRAN
-            else get_services()[self.service]["name"]
+            else get_services()[self.connector.service]["name"]
         )
 
     def get_table_name(self):
@@ -87,5 +87,5 @@ class Integration(BaseModel):
 
     def icon(self):
         if self.kind == Integration.Kind.FIVETRAN:
-            return f"images/integrations/fivetran/{self.service}.svg"
+            return f"images/integrations/fivetran/{self.connector.service}.svg"
         return f"images/integrations/{self.kind}.svg"

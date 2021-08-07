@@ -119,7 +119,7 @@ def sync_table(
 def get_tables_in_dataset(integration):
 
     client = bigquery_client()
-    bq_tables = list(client.list_tables(integration.schema))
+    bq_tables = list(client.list_tables(integration.connector.schema))
 
     with transaction.atomic():
 
@@ -131,7 +131,7 @@ def get_tables_in_dataset(integration):
             table = Table(
                 source=Table.Source.INTEGRATION,
                 _bq_table=bq_table.table_id,
-                bq_dataset=integration.schema,
+                bq_dataset=integration.connector.schema,
                 project=integration.project,
                 integration=integration,
             )
@@ -150,5 +150,5 @@ def get_query_from_integration(integration):
 
     conn = ibis_client()
     if integration.kind == Integration.Kind.FIVETRAN:
-        return conn.table(integration.table_id, database=integration.schema)
+        return conn.table(integration.table_id, database=integration.connector.schema)
     return conn.table(integration.table_id)

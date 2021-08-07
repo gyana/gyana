@@ -37,12 +37,12 @@ def finalise_fivetran_integration(request: HttpRequest, session_key: str):
     integration_data = request.session[session_key]
     # Create integration
     integration = FivetranForm(data=integration_data).save()
-    integration.schema = integration_data["schema"]
-    integration.fivetran_id = integration_data["fivetran_id"]
+    integration.connector.schema = integration_data["schema"]
+    integration.connector.fivetran_id = integration_data["fivetran_id"]
     integration.created_by = request.user
     # Start polling
     task_id = poll_fivetran_historical_sync.delay(integration.id)
-    integration.fivetran_poll_historical_sync_task_id = str(task_id)
+    integration.connector.fivetran_poll_historical_sync_task_id = str(task_id)
     integration.save()
 
     analytics.track(

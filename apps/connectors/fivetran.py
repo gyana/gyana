@@ -85,9 +85,9 @@ class FivetranClient:
 
         backoff.on_predicate(backoff.expo, lambda x: x, max_time=3600)(
             self._is_historical_synced
-        )(integration.fivetran_id)
+        )(integration.connector.fivetran_id)
 
-        integration.historical_sync_complete = True
+        integration.connector.historical_sync_complete = True
         integration.save()
 
     def get_schema(self, fivetran_id):
@@ -193,7 +193,7 @@ class MockFivetranClient:
 
     def block_until_synced(self, integration):
         time.sleep(settings.MOCK_FIVETRAN_HISTORICAL_SYNC_SECONDS)
-        integration.historical_sync_complete = True
+        integration.connector.historical_sync_complete = True
         integration.save()
 
     def get_schema(self, fivetran_id):

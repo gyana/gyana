@@ -17,7 +17,9 @@ class IntegrationSchema(ProjectMixin, DetailView):
         context_data = super().get_context_data(**kwargs)
 
         context_data["integration"] = self.get_object()
-        context_data["schemas"] = FivetranClient().get_schema(self.object.fivetran_id)
+        context_data["schemas"] = FivetranClient().get_schema(
+            self.object.connector.fivetran_id
+        )
 
         return context_data
 
@@ -25,7 +27,7 @@ class IntegrationSchema(ProjectMixin, DetailView):
         integration = self.get_object()
         client = FivetranClient()
         client.update_schema(
-            integration.fivetran_id,
+            integration.connector.fivetran_id,
             [key for key in request.POST.keys() if key != "csrfmiddlewaretoken"],
         )
 
