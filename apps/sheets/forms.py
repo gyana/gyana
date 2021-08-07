@@ -6,6 +6,8 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms.widgets import HiddenInput
 
+from .models import Sheet
+
 
 class GoogleSheetsForm(forms.ModelForm):
     class Meta:
@@ -58,3 +60,15 @@ class GoogleSheetsForm(forms.ModelForm):
             raise ValidationError(e._get_reason().strip())
 
         return cell_range
+
+    def save(self, commit=True):
+        instance = super().save(commit)
+
+        sheet = Sheet(
+            integration=instance,
+            url=self.cleaned_data["url"],
+            cell_range=self.cleaned_data["cell_range"],
+        )
+        sheet.save()
+
+        return instance
