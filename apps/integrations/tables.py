@@ -26,7 +26,7 @@ class IntegrationTable(Table):
             "name",
             "kind",
             "num_rows",
-            # "last_synced",
+            "last_synced",
             "created",
             "updated",
         )
