@@ -54,7 +54,7 @@ class CSVCreateForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit)
 
-        upload = Upload(integration=instance, file=self.cleaned_data["file"])
+        upload = Upload(integration=instance)
         upload.save()
 
         return instance

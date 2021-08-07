@@ -95,10 +95,11 @@ def upload_complete(request: Request, session_key: str):
         table = get_object_or_404(Table, pk=table_id)
 
         integration = CSVCreateForm(data=form_data).save()
-        integration.file = form_data["file"]
+        integration.upload.file = form_data["file"]
         integration.created_by = request.user
         integration.last_synced = datetime.datetime.now()
         integration.save()
+        integration.upload.save()
 
         table.integration = integration
         table.save()
