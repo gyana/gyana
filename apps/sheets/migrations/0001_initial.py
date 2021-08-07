@@ -14,14 +14,21 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Sheet",
             fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("created", models.DateTimeField(auto_now_add=True)),
                 ("updated", models.DateTimeField(auto_now=True)),
                 (
                     "integration",
                     models.OneToOneField(
                         on_delete=django.db.models.deletion.CASCADE,
-                        primary_key=True,
-                        serialize=False,
                         to="integrations.integration",
                     ),
                 ),
