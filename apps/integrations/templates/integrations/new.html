@@ -13,7 +13,7 @@
           <h3>First-party</h3>
           <div class="flex flex-1 flex-wrap gap-7">
             <a class="card card--inline card--square"
-               href="{% url 'project_integrations:create' project.id %}?kind={{ integration_kind.GOOGLE_SHEETS }}">
+               href="{% url 'project_integrations:create' project.id %}?kind={{ integration_kind.SHEET }}">
               <div class="flex flex-col flex-1 items-center">
                 <i class="fab fa-fw fa-google fa-3x mb-4 flex-1"></i>
                 <span class="flex-1">
@@ -31,7 +31,7 @@
               {% for service_id, service in services.items %}
                 {% if service.category == category %}
                 <a class="card card--inline card--square"
-                  href="{% url 'project_integrations:create' project.id %}?kind={{ integration_kind.FIVETRAN }}&service={{ service_id }}">
+                  href="{% url 'project_integrations:create' project.id %}?kind={{ integration_kind.CONNECTOR }}&service={{ service_id }}">
                   <div class="flex-1">
                     <img style="height:4.2rem;" src="{% static 'images/integrations/fivetran/'|add:service_id|add:'.svg' %}"
                         alt="{{ service.name }}" />

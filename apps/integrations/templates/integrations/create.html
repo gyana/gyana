@@ -10,7 +10,7 @@
     <div class='flex flex-col flex-1'>
       <div class="pad" id='create-container'>
         <form id="create-form" method="post" action="{{ request.get_full_path }}" class="form max-w-xl"
-              {% if request.GET.kind == integration_kind.FIVETRAN %} data-turbo="false" {% endif %}>
+              {% if request.GET.kind == integration_kind.CONNECTOR %} data-turbo="false" {% endif %}>
           {% csrf_token %}
 
           {% include "django/forms/default_form.html" %}
@@ -22,12 +22,12 @@
     </div>
   </div>
 
-  {% if request.GET.kind == integration_kind.GOOGLE_SHEETS %}
+  {% if request.GET.kind == integration_kind.SHEET %}
   <div class='flex flex-shrink-0 h-full'>
     {% include 'sheets/guides/sheets_guide.html' %}
   </div>
   {% endif %}
-  {% if request.GET.kind == integration_kind.FIVETRAN %}
+  {% if request.GET.kind == integration_kind.CONNECTOR %}
   <div class='flex flex-shrink-0 h-full'>
     {% include 'connectors/guides/fivetran_guide.html' with service=services|dict_key:request.GET.service %}
   </div>
