@@ -40,6 +40,10 @@ class Integration(BaseModel):
         self.sheet.save()
 
     @property
+    def last_synced(self):
+        return getattr(self, self.kind).last_synced
+
+    @property
     def is_syncing(self):
         if self.sheet.external_table_sync_task_id is None:
             return False
