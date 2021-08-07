@@ -137,9 +137,7 @@ def get_tables_in_dataset(integration):
             )
             table.save()
 
-        # not required for Fivetran, query syncing information directly
-        # todo: remove once fivetran implemented better
-        # integration.last_synced = datetime.now()
+        integration.connector.last_synced = datetime.now()
         integration.save()
 
 

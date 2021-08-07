@@ -27,3 +27,4 @@ class Connector(BaseModel):
     fivetran_authorized = models.BooleanField(default=False)
     fivetran_poll_historical_sync_task_id = models.UUIDField(null=True)
     historical_sync_complete = models.BooleanField(default=False)
+    last_synced = models.DateTimeField(null=True)
