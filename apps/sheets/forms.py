@@ -64,15 +64,12 @@ class GoogleSheetsForm(forms.ModelForm):
         return cell_range
 
     def save(self, commit=True):
-        instance = super().save(commit)
 
-        sheet = Sheet(
-            integration=instance,
+        # saved automatically by parent
+        Sheet(
+            integration=self.instance,
             url=self.cleaned_data["url"],
             cell_range=self.cleaned_data["cell_range"],
-            # django setting `created = NULL`?
-            created=datetime.datetime.now(),
         )
-        sheet.save()
 
-        return instance
+        return super().save(commit)

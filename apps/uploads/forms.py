@@ -47,9 +47,7 @@ class CSVCreateForm(forms.ModelForm):
         return name.split(".").pop(0)
 
     def save(self, commit=True):
-        instance = super().save(commit)
+        # saved automatically by parent
+        Upload(integration=self.instance)
 
-        upload = Upload(integration=instance)
-        upload.save()
-
-        return instance
+        return super().save(commit)

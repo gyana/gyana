@@ -21,11 +21,7 @@ class FivetranForm(forms.ModelForm):
     service = forms.CharField(required=False, max_length=255, widget=HiddenInput())
 
     def save(self, commit=True):
-        instance = super().save(commit)
+        # saved automatically by parent
+        Connector(integration=self.instance, service=self.cleaned_data["service"])
 
-        connector = Connector(
-            integration=instance, service=self.cleaned_data["service"]
-        )
-        connector.save()
-
-        return instance
+        return super().save(commit)
