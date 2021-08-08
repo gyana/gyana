@@ -9,14 +9,14 @@ const createWidget = (kind) => {
   cy.contains('store_info').click()
 }
 
-describe('Test dashboard stage', () => {
+describe('dashboards', () => {
   beforeEach(() => {
     cy.login()
     cy.visit('/projects/1/dashboards/')
     cy.contains('You have no dashboards yet')
   })
 
-  it('Create, rename, and delete dashboard', () => {
+  it('create, rename, and delete dashboard', () => {
     cy.contains('create one').click()
     cy.contains('This dashboard needs some widgets!')
     cy.get('input[value=Untitled]').clear().type("Marauder's Map{enter}")
@@ -28,7 +28,7 @@ describe('Test dashboard stage', () => {
     cy.contains('You have no dashboards yet')
   })
 
-  it('Create dashboard with two widgets', () => {
+  it('create dashboard with two widgets', () => {
     cy.contains('create one').click()
     createWidget('Table')
     cy.contains('Save & Preview').should('not.be.disabled').click()
@@ -56,7 +56,7 @@ describe('Test dashboard stage', () => {
     cy.get('#widget-1').should('not.exist')
   })
 
-  it('Duplicates dashboard with new widgets', () => {
+  it('duplicates dashboard with new widgets', () => {
     // Duplicates a dashboard with a table widget
     // Then changes the widget kind and checks whether the original
     // widget hasn't changed
@@ -88,7 +88,7 @@ describe('Test dashboard stage', () => {
     cy.contains('Alex', { timeout: 10000 })
   })
 
-  it('Shares a dashboard with a widget', () => {
+  it('shares a dashboard with a widget', () => {
     cy.contains('create one').click()
     createWidget('Table')
     cy.contains('Save & Close').should('not.be.disabled').click()

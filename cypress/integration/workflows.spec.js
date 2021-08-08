@@ -1,13 +1,13 @@
 /// <reference types="cypress" />
 
-describe('Test workflow stage', () => {
+describe('workflows', () => {
   beforeEach(() => {
     cy.login()
     cy.visit('/projects/1/workflows/')
     cy.contains('You have no workflows')
   })
 
-  it('Create, rename, duplicate and delete workflow', () => {
+  it('create, rename, duplicate and delete workflow', () => {
     cy.story('Create and rename workflow')
     cy.get('button[type=submit]').first().click()
     cy.get('input[id=name]').clear().type('Magical workflow{enter}')
@@ -22,7 +22,7 @@ describe('Test workflow stage', () => {
     cy.contains('Copy of Magical workflow').should('not.exist')
   })
 
-  it('Runnable workflow', () => {
+  it('runnable workflow', () => {
     cy.get('button[type=submit]').first().click()
     cy.contains('Press the run button after adding some nodes to run this workflow')
 
