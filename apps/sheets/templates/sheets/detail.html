@@ -9,7 +9,7 @@
 
     <div class='flex flex-col flex-1'>
       <div class="pad" id='create-container'>
-        {{ object.url }}
+        <turbo-frame id="integrations:sync" src="{% url 'sheets:sync' object.id %}"></turbo-frame>
       </div>
     </div>
   </div>

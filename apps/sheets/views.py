@@ -22,11 +22,13 @@ class SheetCreate(ProjectMixin, TurboCreateView):
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
 
-        result = run_sheets_sync.delay(self.id)
-        self.sheet.external_table_sync_task_id = result.task_id
-        self.sheet.save()
+        r = super().form_valid(form)
 
-        return super().form_valid(form)
+        result = run_sheets_sync.delay(self.object.id)
+        self.object.external_table_sync_task_id = result.task_id
+        self.object.save()
+
+        return r
 
     def get_success_url(self) -> str:
         return reverse(
