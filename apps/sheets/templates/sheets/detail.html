@@ -9,13 +9,13 @@
 
     <div class='flex flex-col flex-1'>
       <div class="pad" id='create-container'>
-        <turbo-frame id="integrations:sync" src="{% url 'sheets:sync' object.id %}"></turbo-frame>
+        <turbo-frame id="sheets:progress" src="{% url 'sheets:progress' object.id %}"></turbo-frame>
       </div>
     </div>
   </div>
 
   <div class='flex flex-shrink-0 h-full'>
-    {% include 'sheets/guides/sheets_guide.html' %}
+    {% include 'sheets/_guide.html' %}
   </div>
 </div>
 

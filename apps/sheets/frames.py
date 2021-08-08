@@ -4,11 +4,11 @@ from django.urls import reverse
 from .models import Sheet
 
 
-class IntegrationSync(TurboFrameUpdateView):
-    template_name = "sheets/sync.html"
+class SheetProgress(TurboFrameUpdateView):
+    template_name = "sheets/progress.html"
     model = Sheet
     fields = []
-    turbo_frame_dom_id = "integrations:sync"
+    turbo_frame_dom_id = "sheets:progress"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
