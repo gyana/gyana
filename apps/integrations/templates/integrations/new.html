@@ -9,21 +9,6 @@
 
     <div class='flex flex-col flex-1'>
       <div class="flex flex-wrap gap-16 pad">
-        <div class="flex flex-col gap-7">
-          <h3>First-party</h3>
-          <div class="flex flex-1 flex-wrap gap-7">
-            <a class="card card--inline card--square"
-               href="{% url 'project_integrations:create' project.id %}?kind={{ integration_kind.SHEET }}">
-              <div class="flex flex-col flex-1 items-center">
-                <i class="fab fa-fw fa-google fa-3x mb-4 flex-1"></i>
-                <span class="flex-1">
-                  Google Sheets
-                </span>
-              </div>
-            </a>
-          </div>
-        </div>
-
         {% for category in service_categories %}
           <div class="flex flex-col gap-7">
             <h3>{{ category|capfirst }}</h3>
