@@ -1,7 +1,9 @@
 import re
 
-from apps.base.clients import sheets_client
+from apps.base.clients import drive_v2_client, sheets_client
 from google.cloud import bigquery
+
+from .models import Sheet
 
 
 def create_external_sheets_config(url: str, cell_range=None) -> bigquery.ExternalConfig:
@@ -23,22 +25,20 @@ def create_external_sheets_config(url: str, cell_range=None) -> bigquery.Externa
     return external_config
 
 
-def get_sheets_id_from_url(url):
+def get_sheets_id_from_url(url: str):
     p = re.compile(r"[-\w]{25,}")
     return res.group(0) if (res := p.search(url)) else ""
 
 
-def get_metadata_from_sheet(self):
+def get_metadata_from_sheet(sheet: Sheet):
 
-    sheet_id = get_sheets_id_from_url(self.url)
+    sheet_id = get_sheets_id_from_url(sheet.url)
     client = sheets_client()
     return client.spreadsheets().get(spreadsheetId=sheet_id).execute()
 
 
-def start_sheets_sync(self):
-    from apps.sheets.tasks import run_sheets_sync
+def get_metadata_from_drive_file(sheet: Sheet):
 
-    result = run_sheets_sync.delay(self.id)
-    self.sheet.external_table_sync_task_id = result.task_id
-
-    self.sheet.save()
+    sheet_id = get_sheets_id_from_url(sheet.url)
+    client = drive_v2_client()
+    return client.files().get(fileId=sheet_id).execute()

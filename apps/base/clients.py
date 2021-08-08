@@ -32,6 +32,14 @@ def sheets_client():
 
 
 @lru_cache
+def drive_v2_client():
+    credentials, _ = get_credentials()
+
+    # latest v3 client does not return all metadata for file
+    return discovery.build("sheets", "v2", credentials=credentials)
+
+
+@lru_cache
 def bigquery_client():
     # https://cloud.google.com/bigquery/external-data-drive#python
     credentials, project = get_credentials()

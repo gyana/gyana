@@ -57,21 +57,3 @@ class SheetForm(forms.ModelForm):
             raise ValidationError(e._get_reason().strip())
 
         return cell_range
-
-    # def save(self, commit=True):
-
-    #     instance = super().save(commit=False)
-    #     instance.name = self._sheet["properties"]["title"]
-
-    #     # saved automatically, not sure why?
-    #     sheet = Sheet(
-    #         integration=instance,
-    #         url=self.cleaned_data["url"],
-    #         cell_range=self.cleaned_data["cell_range"],
-    #     )
-
-    #     if commit:
-    #         instance.save()
-    #         self.save_m2m()
-
-    #     return instance
