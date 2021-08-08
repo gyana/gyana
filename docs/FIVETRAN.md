@@ -49,7 +49,7 @@ The access to connector data and Table creation is discussed in **Fivetran - Big
 
 We use BQ as our destination for all Fivetran's synced data. Fivetran owns and maintains the synced data in our BQ instances. We get the data from those tables through the `fivetran_id` (this is the internal ID Fivetran creates for its connectors) and `schema` (is the schema name in BQ, generated in `FivetranClient.create`) fields on the Integration model.
 
-We create `Table`s that point to the BQ tables created by Fivetran. The function that does this is `apps/integrations/bigquery.py:get_tables_in_dataset`. This function is executed the moment the historical sync is done (`apps/integrations/tasks.py:poll_fivetran_historical_sync`).
+We create `Table`s that point to the BQ tables created by Fivetran. The function that does this is `apps/connectors/bigquery.py:get_tables_in_dataset`. This function is executed the moment the historical sync is done (`apps/integrations/tasks.py:poll_fivetran_historical_sync`).
 
 ## **Fivetran webapp**
 

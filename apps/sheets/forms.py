@@ -1,12 +1,10 @@
-import datetime
-
 import googleapiclient
 from apps.base.clients import sheets_client
-from apps.integrations.bigquery import get_sheets_id_from_url
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms.widgets import HiddenInput
 
+from .bigquery import get_sheets_id_from_url
 from .models import Sheet
 
 

@@ -2,9 +2,9 @@ import time
 from functools import reduce
 
 from apps.base.clients import DATASET_ID
-from apps.integrations.bigquery import sync_table
-from apps.integrations.models import Integration
+from apps.integrations.bigquery import import_table_from_external_config
 from apps.tables.models import Table
+from apps.uploads.bigquery import create_external_upload_config
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 from google.api_core.exceptions import GoogleAPICallError
@@ -30,7 +30,10 @@ def file_sync(self, file: str, project_id: int):
     sync_start_time = time.time()
 
     # 2. Sync the file into BigQuery
-    sync_generator = sync_table(table=table, file=file, kind=Integration.Kind.UPLOAD)
+    external_config = create_external_upload_config(file)
+    sync_generator = import_table_from_external_config(
+        table=table, external_config=external_config
+    )
     query_job = next(sync_generator)
 
     # 3. Record progress on the sync

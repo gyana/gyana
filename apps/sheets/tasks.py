@@ -5,8 +5,9 @@ from functools import reduce
 import analytics
 from apps.base.clients import DATASET_ID
 from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
-from apps.integrations.bigquery import sync_table
+from apps.integrations.bigquery import import_table_from_external_config
 from apps.integrations.models import Integration
+from apps.sheets.bigquery import create_external_sheets_config
 from apps.tables.models import Table
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
@@ -37,12 +38,8 @@ def run_sheets_sync(self, integration_id):
 
     progress_recorder = ProgressRecorder(self)
 
-    sync_generator = sync_table(
-        table=table,
-        url=integration.sheet.url,
-        cell_range=integration.sheet.cell_range,
-        kind=Integration.Kind.SHEET,
-    )
+    external_config = create_external_sheets_config()
+    sync_generator = import_table_from_external_config(table=table, external_config=external_config)
     query_job = next(sync_generator)
 
     def calc_progress(jobs):

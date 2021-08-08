@@ -10,7 +10,7 @@ urlpatterns = [
 integration_urlpatterns = (
     [
         path("new", views.SheetCreate.as_view(), name="create"),
-        path("<hashid:pk>", views.SheetCreate.as_view(), name="detail"),
+        path("<hashid:pk>", views.SheetDetail.as_view(), name="detail"),
     ],
     "project_integrations_sheets",
 )

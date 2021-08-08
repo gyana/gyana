@@ -1,10 +1,10 @@
-from apps.integrations.bigquery import get_tables_in_dataset
 from apps.integrations.models import Integration
 from celery import shared_task
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
+from .bigquery import get_tables_in_dataset
 from .fivetran import FivetranClient
 
 

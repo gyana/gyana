@@ -1,4 +1,6 @@
 from apps.projects.mixins import ProjectMixin
+from django import forms
+from django.http import HttpResponse
 from django.urls.base import reverse
 from django.views.generic import DetailView
 from turbo_response.views import TurboCreateView
@@ -17,15 +19,20 @@ class SheetCreate(ProjectMixin, TurboCreateView):
         initial["project"] = self.project
         return initial
 
-    def form_invalid(self, form):
-        print("HOLA")
-        print(form.data, form.initial)
-        return super().form_invalid(form)
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        form.instance.start_sheets_sync()
+        return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse("sheets:detail", args=(self.object.id,))
+        return reverse(
+            "project_integrations_sheets:detail",
+            args=(
+                self.project.id,
+                self.object.id,
+            ),
+        )
 
 
-class SheetDetail(DetailView):
+class SheetDetail(ProjectMixin, DetailView):
     template_name = "sheets/detail.html"
     model = Sheet

@@ -28,14 +28,6 @@ class Integration(BaseModel):
     def num_rows(self):
         return self.table_set.all().aggregate(models.Sum("num_rows"))["num_rows__sum"]
 
-    def start_sheets_sync(self):
-        from apps.sheets.tasks import run_sheets_sync
-
-        result = run_sheets_sync.delay(self.id)
-        self.sheet.external_table_sync_task_id = result.task_id
-
-        self.sheet.save()
-
     @property
     def last_synced(self):
         return getattr(self, self.kind).last_synced
