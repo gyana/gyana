@@ -14,7 +14,6 @@ describe('integrations', () => {
     cy.contains('Google Analytics').click()
 
     cy.url().should('contain', '/projects/1/integrations/create')
-    cy.get('input[name=name]').type('Google Analytics')
     cy.get('button[type=submit]').click()
 
     // the uuid is non-deterministic

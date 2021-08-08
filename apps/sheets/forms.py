@@ -64,13 +64,18 @@ class GoogleSheetsForm(forms.ModelForm):
 
     def save(self, commit=True):
 
-        self.instance.name = self._sheet["properties"]["title"]
+        instance = super().save(commit=False)
+        instance.name = self._sheet["properties"]["title"]
 
-        # saved automatically by parent
-        Sheet(
-            integration=self.instance,
+        sheet = Sheet(
+            integration=instance,
             url=self.cleaned_data["url"],
             cell_range=self.cleaned_data["cell_range"],
         )
 
-        return super().save(commit)
+        if commit:
+            instance.save()
+            sheet.save()
+            self.save_m2m()
+
+        return instance
