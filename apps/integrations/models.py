@@ -33,16 +33,6 @@ class Integration(BaseModel):
         return getattr(self, self.kind).last_synced
 
     @property
-    def is_syncing(self):
-        if self.sheet.external_table_sync_task_id is None:
-            return False
-
-        # TODO: Possibly fails for out of date task ids
-        # https://stackoverflow.com/a/38267978/15425660
-        result = celery.result.AsyncResult(str(self.sheet.external_table_sync_task_id))
-        return result.status == "PENDING"
-
-    @property
     def used_in_workflows(self):
         return (
             Workflow.objects.filter(nodes__input_table__in=self.table_set.all())
