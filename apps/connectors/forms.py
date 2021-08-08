@@ -12,7 +12,6 @@ class FivetranForm(forms.ModelForm):
             "name",
             "kind",
             "project",
-            "enable_sync_emails",
         ]
         widgets = {
             "kind": HiddenInput(),

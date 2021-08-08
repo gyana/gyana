@@ -19,9 +19,6 @@ class Integration(BaseModel):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     kind = models.CharField(max_length=32, choices=Kind.choices)
 
-    # Sync toggle
-    enable_sync_emails = models.BooleanField(default=True)
-
     created_by = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):

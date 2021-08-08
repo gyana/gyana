@@ -126,7 +126,6 @@
       "name": "store_info",
       "project": 1,
       "kind": "upload",
-      "enable_sync_emails": false,
       "created_by": 1
     }
   },

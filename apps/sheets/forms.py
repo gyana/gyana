@@ -18,7 +18,6 @@ class GoogleSheetsForm(forms.ModelForm):
             "name",
             "kind",
             "project",
-            "enable_sync_emails",
         ]
         widgets = {"kind": HiddenInput(), "project": HiddenInput()}
         help_texts = {}
@@ -72,7 +71,7 @@ class GoogleSheetsForm(forms.ModelForm):
             url=self.cleaned_data["url"],
             cell_range=self.cleaned_data["cell_range"],
             # django setting `created = NULL`?
-            created=datetime.datetime.now()
+            created=datetime.datetime.now(),
         )
         sheet.save()
 
