@@ -17,7 +17,7 @@
         {% endif %}
       </div>
       {% else %}
-      <turbo-frame id="sheets:progress" src="{% url 'sheets:progress' object.id %}"></turbo-frame>
+      <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}"></turbo-frame>
       {% endif %}
     </div>
     {% endif %}

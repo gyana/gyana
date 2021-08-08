@@ -36,7 +36,7 @@ def drive_v2_client():
     credentials, _ = get_credentials()
 
     # latest v3 client does not return all metadata for file
-    return discovery.build("sheets", "v2", credentials=credentials)
+    return discovery.build("drive", "v2", credentials=credentials)
 
 
 @lru_cache

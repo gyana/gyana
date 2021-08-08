@@ -1,10 +1,11 @@
-from apps.base.frames import TurboFrameUpdateView
+from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
+from apps.sheets.bigquery import get_last_modified_from_drive_file
 from django.urls import reverse
 
 from .models import Sheet
 
 
-class SheetProgress(TurboFrameUpdateView):
+class SheetProgress(TurboFrameDetailView):
     template_name = "sheets/progress.html"
     model = Sheet
     fields = []
@@ -18,10 +19,21 @@ class SheetProgress(TurboFrameUpdateView):
 
         return context_data
 
-    def form_valid(self, form):
-        # todo: fix this - move to separate page?
-        # self.object.sheet.start_sheets_sync()
-        return super().form_valid(form)
+
+class SheetStatus(TurboFrameUpdateView):
+    template_name = "sheets/status.html"
+    model = Sheet
+    fields = []
+    turbo_frame_dom_id = "sheets:status"
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["out_of_date"] = (
+            get_last_modified_from_drive_file(self.object)
+            > self.object.drive_file_last_modified
+        )
+
+        return context_data
 
     def get_success_url(self) -> str:
-        return reverse("sheets:sync", args=(self.object.id,))
+        return reverse("sheets:status", args=(self.object.id,))

@@ -5,6 +5,7 @@ from . import frames, views
 app_name = "sheets"
 urlpatterns = [
     path("<hashid:pk>/progress", frames.SheetProgress.as_view(), name="progress"),
+    path("<hashid:pk>/status", frames.SheetStatus.as_view(), name="status"),
 ]
 
 integration_urlpatterns = (

@@ -8,8 +8,11 @@ from apps.base.clients import DATASET_ID
 from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.integrations.bigquery import import_table_from_external_config
 from apps.integrations.models import Integration
-from apps.sheets.bigquery import (create_external_sheets_config,
-                                  get_metadata_from_sheet)
+from apps.sheets.bigquery import (
+    create_external_sheets_config,
+    get_last_modified_from_drive_file,
+    get_metadata_from_sheet,
+)
 from apps.tables.models import Table
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
@@ -103,6 +106,8 @@ def run_sheets_sync(self, sheet_id):
             table.save()
         else:
             table = sheet.integration.table_set.first()
+
+        sheet.drive_file_last_modified = get_last_modified_from_drive_file(sheet)
 
         # we track the time it takes to sync for our analytics
         sync_start_time = time.time()
