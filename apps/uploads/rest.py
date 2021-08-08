@@ -2,8 +2,10 @@ import datetime
 import os
 import time
 
+import analytics
 import coreapi
 from apps.base.clients import get_bucket
+from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.integrations.tasks import send_integration_email
 from apps.tables.models import Table
 from celery.result import AsyncResult
@@ -106,6 +108,17 @@ def upload_complete(request: Request, session_key: str):
 
         finalise_upload_task_id = send_integration_email.delay(
             integration.id, time_elapsed
+        )
+
+        analytics.track(
+            integration.created_by.id,
+            INTEGRATION_SYNC_SUCCESS_EVENT,
+            {
+                "id": integration.id,
+                "kind": integration.kind,
+                "row_count": integration.num_rows,
+                "time_to_sync": time_elapsed,
+            },
         )
 
         return (

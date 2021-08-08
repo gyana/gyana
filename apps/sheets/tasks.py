@@ -7,6 +7,7 @@ import analytics
 from apps.base.clients import DATASET_ID
 from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.integrations.bigquery import import_table_from_external_config
+from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
 from apps.sheets.bigquery import (
     create_external_sheets_config,
@@ -16,11 +17,8 @@ from apps.sheets.bigquery import (
 from apps.tables.models import Table
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
-from django.conf import settings
-from django.core.mail import EmailMessage
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
 
 from .models import Sheet
 
@@ -34,55 +32,6 @@ def _calc_progress(jobs):
         ),
         jobs,
         (0, 0),
-    )
-
-
-def _send_update(integration: Integration, time_to_sync: int):
-
-    created_by = integration.sheet.created_by
-
-    if created_by:
-
-        url = reverse(
-            "project_integrations:detail",
-            args=(
-                integration.project.id,
-                integration.id,
-            ),
-        )
-
-        message = EmailMessage(
-            subject=None,
-            from_email="Gyana Notifications <notifications@gyana.com>",
-            to=[created_by.email],
-        )
-        # This id points to the sync success template in SendGrid
-        message.template_id = "d-5f87a7f6603b44e09b21cfdcf6514ffa"
-        message.merge_data = {
-            created_by.email: {
-                "userName": created_by.first_name or created_by.email.split("@")[0],
-                "integrationName": integration.name,
-                "integrationHref": settings.EXTERNAL_URL + url,
-                "projectName": integration.project.name,
-            }
-        }
-        message.esp_extra = {
-            "asm": {
-                # The "App Notifications" Unsubscribe group
-                "group_id": 17220,
-            },
-        }
-        message.send()
-
-    analytics.track(
-        created_by.id,
-        INTEGRATION_SYNC_SUCCESS_EVENT,
-        {
-            "id": integration.id,
-            "kind": integration.kind,
-            "row_count": integration.num_rows,
-            "time_to_sync": time_to_sync,
-        },
     )
 
 
@@ -152,6 +101,20 @@ def run_sheets_sync(self, sheet_id):
 
     # the initial sync completed successfully and a new integration is created
 
-    _send_update(integration, int(sync_end_time - sync_start_time))
+    if created_by := integration.sheet.created_by:
+
+        email = integration_ready_email(integration, created_by)
+        email.send()
+
+        analytics.track(
+            created_by.id,
+            INTEGRATION_SYNC_SUCCESS_EVENT,
+            {
+                "id": integration.id,
+                "kind": integration.kind,
+                "row_count": integration.num_rows,
+                "time_to_sync": int(sync_end_time - sync_start_time),
+            },
+        )
 
     return integration.id
