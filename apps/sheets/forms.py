@@ -21,7 +21,7 @@ class GoogleSheetsForm(forms.ModelForm):
         widgets = {"kind": HiddenInput(), "project": HiddenInput()}
         help_texts = {}
 
-    url = forms.URLField(max_length=200)
+    url = forms.URLField(max_length=200, label="Google Sheets URL")
     cell_range = forms.CharField(required=False, max_length=64, empty_value=None)
 
     def clean_url(self):
