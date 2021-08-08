@@ -1,5 +1,3 @@
-import datetime
-
 import analytics
 from apps.base.segment_analytics import INTEGRATION_CREATED_EVENT
 from apps.integrations.models import Integration
@@ -7,6 +5,7 @@ from apps.projects.mixins import ProjectMixin
 from django.conf import settings
 from django.http.response import HttpResponseRedirect
 from django.urls.base import reverse
+from django.utils import timezone
 from django.views.generic import DetailView
 from turbo_response.views import TurboCreateView
 
@@ -50,7 +49,7 @@ class SheetCreate(ProjectMixin, TurboCreateView):
 
         result = run_sheets_sync.delay(self.object.id)
         self.object.external_table_sync_task_id = result.task_id
-        self.object.external_table_sync_started = datetime.now()
+        self.object.external_table_sync_started = timezone.now()
         self.object.save()
 
         return r

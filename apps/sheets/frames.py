@@ -1,9 +1,8 @@
-from datetime import datetime
-
 from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
 from apps.sheets.bigquery import get_last_modified_from_drive_file
 from apps.sheets.tasks import run_sheets_sync
 from django.urls import reverse
+from django.utils import timezone
 
 from .models import Sheet
 
@@ -41,7 +40,7 @@ class SheetStatus(TurboFrameUpdateView):
     def form_valid(self, form):
         result = run_sheets_sync.delay(self.object.id)
         self.object.external_table_sync_task_id = result.task_id
-        self.object.external_table_sync_started = datetime.now()
+        self.object.external_table_sync_started = timezone.now()
         self.object.save()
         return super().form_valid(form)
 

@@ -34,6 +34,11 @@ describe('sheets', () => {
     cy.contains('Structure')
     cy.contains('Data')
     cy.contains('10')
+
+    // check email sent
+    cy.outbox()
+      .then((outbox) => outbox.count)
+      .should('eq', 1)
   })
   it('validation failures', () => {
     cy.contains('Add Sheet').click()
@@ -69,12 +74,13 @@ describe('sheets', () => {
 
     // verify that nothing was created
     cy.visit('/projects/1/integrations')
-    cy.get('table tbody tr').should('have.length', 1)
+    cy.get('table tbody tr').should('have.length', 2)
+    cy.outbox()
+      .then((outbox) => outbox.count)
+      .should('eq', 0)
     // todo: verify table is not created?
-
-    // todo: verify there is a failed item on integrations page
   })
-  it.only('re-sync after source update', () => {
+  it('re-sync after source update', () => {
     cy.contains('Store info sheet').click()
 
     // sheet is already out of date by design
