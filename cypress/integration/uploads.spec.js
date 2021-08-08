@@ -18,6 +18,6 @@ describe('uploads', () => {
     cy.contains('Data')
     cy.contains('15')
 
-    cy.url().should('contain', '/projects/1/integrations/2')
+    cy.url().should('contain', '/projects/1/integrations/3')
   })
 })
