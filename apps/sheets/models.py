@@ -2,6 +2,7 @@ import celery
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
 from apps.projects.models import Project
+from apps.users.models import CustomUser
 from django.db import models
 
 
@@ -15,8 +16,8 @@ class Sheet(BaseModel):
     cell_range = models.CharField(max_length=64, null=True, blank=True)
 
     external_table_sync_task_id = models.UUIDField(null=True)
-    has_initial_sync = models.BooleanField(default=False)
     last_synced = models.DateTimeField(null=True)
+    created_by = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
 
     @property
     def is_syncing(self):
