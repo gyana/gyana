@@ -106,9 +106,7 @@ def upload_complete(request: Request, session_key: str):
         table.integration = integration
         table.save()
 
-        finalise_upload_task_id = send_integration_email.delay(
-            integration.id, time_elapsed
-        )
+        finalise_upload_task_id = send_integration_email.delay(integration.id)
 
         analytics.track(
             integration.created_by.id,
