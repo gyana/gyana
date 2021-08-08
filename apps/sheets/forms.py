@@ -67,6 +67,7 @@ class GoogleSheetsForm(forms.ModelForm):
         instance = super().save(commit=False)
         instance.name = self._sheet["properties"]["title"]
 
+        # saved automatically, not sure why?
         sheet = Sheet(
             integration=instance,
             url=self.cleaned_data["url"],
@@ -75,7 +76,6 @@ class GoogleSheetsForm(forms.ModelForm):
 
         if commit:
             instance.save()
-            sheet.save()
             self.save_m2m()
 
         return instance
