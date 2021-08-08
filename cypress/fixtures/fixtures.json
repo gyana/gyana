@@ -167,6 +167,7 @@
     "fields": {
       "created": "2021-07-27T13:17:27.984Z",
       "updated": "2021-07-27T13:17:27.987Z",
+      "integration": 1,
       "file": "cypress/integrations/store_info-1627391842010578.csv",
       "external_table_sync_task_id": null,
       "has_initial_sync": false,
