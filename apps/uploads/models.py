@@ -5,11 +5,7 @@ from django.db import models
 
 class Upload(BaseModel):
 
-    integration = models.OneToOneField(
-        Integration,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
+    integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 
     file = models.TextField()
 

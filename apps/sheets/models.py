@@ -5,11 +5,7 @@ from django.db import models
 
 class Sheet(BaseModel):
 
-    integration = models.OneToOneField(
-        Integration,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
+    integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 
     url = models.URLField()
 

@@ -5,11 +5,7 @@ from django.db import models
 
 class Connector(BaseModel):
 
-    integration = models.OneToOneField(
-        Integration,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
+    integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
     # todo: which of these do not need to be null
     service = models.TextField(
         max_length=255,
