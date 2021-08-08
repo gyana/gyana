@@ -11,14 +11,14 @@ describe('sheets', () => {
 
     cy.visit('/projects/1/integrations')
   })
-  it('connect to Google Sheet', () => {
+  it('connect to valid Google Sheet', () => {
     cy.contains('Add Sheet').click()
 
     cy.url().should('contain', '/projects/1/integrations/sheets/new')
     // pretend to share with this email account
     cy.contains('gyana-local@gyana-1511894275181.iam.gserviceaccount.com')
     cy.get('input[name=url]').type(SHARED_SHEET)
-    cy.get('input[name=cell_range]').type('store_info!A1:D11')
+    cy.get('input[name=cell_range]').type('store_info!A20:D22')
     cy.get('button[type=submit]').click()
 
     cy.url().should('contain', '/projects/1/integrations/sheets/1')
@@ -53,5 +53,16 @@ describe('sheets', () => {
     cy.get('input[name=cell_range]').type('does_not_exist!A1:D11')
     cy.get('button[type=submit]').click()
     cy.contains('Unable to parse range: does_not_exist!A1:D11')
+  })
+  it.only('displays errors on failed sync', () => {
+    cy.contains('Add Sheet').click()
+
+    cy.url().should('contain', '/projects/1/integrations/sheets/new')
+    // pretend to share with this email account
+    cy.contains('gyana-local@gyana-1511894275181.iam.gserviceaccount.com')
+    cy.get('input[name=url]').type(SHARED_SHEET)
+    // empty cells trigger column does not exist error
+    cy.get('input[name=cell_range]').type('store_info!A20:D21')
+    cy.get('button[type=submit]').click()
   })
 })
