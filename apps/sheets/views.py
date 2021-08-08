@@ -11,7 +11,7 @@ from turbo_response.views import TurboCreateView
 
 from .forms import SheetForm
 from .models import Sheet
-from .tasks import run_sheets_sync
+from .tasks import run_initial_sheets_sync
 
 
 class SheetCreate(ProjectMixin, TurboCreateView):
@@ -47,7 +47,7 @@ class SheetCreate(ProjectMixin, TurboCreateView):
             },
         )
 
-        result = run_sheets_sync.delay(self.object.id)
+        result = run_initial_sheets_sync.delay(self.object.id)
         self.object.external_table_sync_task_id = result.task_id
         self.object.external_table_sync_started = timezone.now()
         self.object.save()
