@@ -68,7 +68,7 @@ describe('Test dashboard stage', () => {
     cy.visit('/projects/1/dashboards/')
     cy.get('#dashboard-duplicate-1').click()
     cy.contains('Copy of Untitled').click()
-    cy.contains('Blackpool')
+    cy.contains('Blackpool', { timeout: 10000 })
 
     // TODO: trigger the hover and remove the force click
     // cy.get('#widgets-output-2').trigger('mouseover')
@@ -85,7 +85,7 @@ describe('Test dashboard stage', () => {
 
     cy.visit('/projects/1/dashboards/')
     cy.contains(/^Untitled$/).click()
-    cy.contains('Alex')
+    cy.contains('Alex', { timeout: 10000 })
   })
 
   it('Shares a dashboard with a widget', () => {
