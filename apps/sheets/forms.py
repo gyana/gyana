@@ -3,7 +3,6 @@ import datetime
 import googleapiclient
 from apps.base.clients import sheets_client
 from apps.integrations.bigquery import get_sheets_id_from_url
-from apps.integrations.models import Integration
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms.widgets import HiddenInput
@@ -11,18 +10,17 @@ from django.forms.widgets import HiddenInput
 from .models import Sheet
 
 
-class GoogleSheetsForm(forms.ModelForm):
+class SheetForm(forms.ModelForm):
     class Meta:
-        model = Integration
+        model = Sheet
         fields = [
-            "kind",
+            "url",
+            "cell_range",
             "project",
         ]
-        widgets = {"kind": HiddenInput(), "project": HiddenInput()}
+        widgets = {"project": HiddenInput()}
         help_texts = {}
-
-    url = forms.URLField(max_length=200, label="Google Sheets URL")
-    cell_range = forms.CharField(required=False, max_length=64, empty_value=None)
+        labels = {"url": "Google Sheets URL"}
 
     def clean_url(self):
         url = self.cleaned_data["url"]
@@ -62,20 +60,20 @@ class GoogleSheetsForm(forms.ModelForm):
 
         return cell_range
 
-    def save(self, commit=True):
+    # def save(self, commit=True):
 
-        instance = super().save(commit=False)
-        instance.name = self._sheet["properties"]["title"]
+    #     instance = super().save(commit=False)
+    #     instance.name = self._sheet["properties"]["title"]
 
-        # saved automatically, not sure why?
-        sheet = Sheet(
-            integration=instance,
-            url=self.cleaned_data["url"],
-            cell_range=self.cleaned_data["cell_range"],
-        )
+    #     # saved automatically, not sure why?
+    #     sheet = Sheet(
+    #         integration=instance,
+    #         url=self.cleaned_data["url"],
+    #         cell_range=self.cleaned_data["cell_range"],
+    #     )
 
-        if commit:
-            instance.save()
-            self.save_m2m()
+    #     if commit:
+    #         instance.save()
+    #         self.save_m2m()
 
-        return instance
+    #     return instance

@@ -48,6 +48,10 @@ format:
     black .
     isort .
 
+# Count total lines of code that need to be maintained
+cloc:
+    cloc (git ls-files) --exclude-dir=migrations --exclude-ext=svg
+
 startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
 

@@ -1,11 +1,13 @@
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
+from apps.projects.models import Project
 from django.db import models
 
 
 class Sheet(BaseModel):
 
-    integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    integration = models.OneToOneField(Integration, on_delete=models.CASCADE, null=True)
 
     url = models.URLField()
 
