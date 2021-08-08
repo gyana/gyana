@@ -1,3 +1,4 @@
+import textwrap
 import time
 from datetime import datetime
 from functools import reduce
@@ -7,7 +8,7 @@ from apps.base.clients import DATASET_ID
 from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.integrations.bigquery import import_table_from_external_config
 from apps.integrations.models import Integration
-from apps.sheets.bigquery import create_external_sheets_config
+from apps.sheets.bigquery import create_external_sheets_config, get_metadata_from_sheet
 from apps.tables.models import Table
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
@@ -74,8 +75,14 @@ def run_sheets_sync(self, sheet_id):
 
         sync_end_time = time.time()
 
+        title = get_metadata_from_sheet(sheet)["properties"]["title"]
+        # maximum Google Drive name length is 32767
+        name = textwrap.shorten(title, width=255, placeholder="...")
+
         integration = Integration(
-            name="TODO", project=sheet.project, kind=Integration.Kind.SHEET
+            name=name,
+            project=sheet.project,
+            kind=Integration.Kind.SHEET,
         )
         integration.save()
 

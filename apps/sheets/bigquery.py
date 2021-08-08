@@ -1,5 +1,6 @@
 import re
 
+from apps.base.clients import sheets_client
 from google.cloud import bigquery
 
 
@@ -25,6 +26,13 @@ def create_external_sheets_config(url: str, cell_range=None) -> bigquery.Externa
 def get_sheets_id_from_url(url):
     p = re.compile(r"[-\w]{25,}")
     return res.group(0) if (res := p.search(url)) else ""
+
+
+def get_metadata_from_sheet(self):
+
+    sheet_id = get_sheets_id_from_url(self.url)
+    client = sheets_client()
+    return client.spreadsheets().get(spreadsheetId=sheet_id).execute()
 
 
 def start_sheets_sync(self):
