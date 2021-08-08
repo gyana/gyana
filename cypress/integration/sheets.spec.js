@@ -18,7 +18,7 @@ describe('sheets', () => {
     // pretend to share with this email account
     cy.contains('gyana-local@gyana-1511894275181.iam.gserviceaccount.com')
     cy.get('input[name=url]').type(SHARED_SHEET)
-    cy.get('input[name=cell_range]').type('store_info!A20:D22')
+    cy.get('input[name=cell_range]').type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
 
     cy.url().should('contain', '/projects/1/integrations/sheets/1')
@@ -66,7 +66,7 @@ describe('sheets', () => {
     cy.get('button[type=submit]').click()
 
     cy.contains('Waiting for sync to start')
-    cy.contains('Uh-Oh, something went wrong!')
+    cy.contains('Uh-Oh, something went wrong! No columns found in the schema.')
 
     // verify that nothing was created
     cy.visit('/projects/1/integrations')

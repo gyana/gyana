@@ -6,19 +6,18 @@ from functools import reduce
 import analytics
 from apps.base.clients import DATASET_ID
 from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
-from apps.integrations.bigquery import import_table_from_external_config
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
-from apps.sheets.bigquery import (create_external_sheets_config,
-                                  get_last_modified_from_drive_file,
-                                  get_metadata_from_sheet)
+from apps.sheets.bigquery import (
+    get_last_modified_from_drive_file,
+    get_metadata_from_sheet,
+    import_table_from_sheet,
+)
 from apps.tables.models import Table
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
-from django.conf import settings
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from google.api_core.exceptions import BadRequest
 
 from .models import Sheet
 
@@ -33,9 +32,6 @@ def _calc_progress(jobs):
         jobs,
         (0, 0),
     )
-
-
-BAD_REQUEST_INTEGRATIONS_PREFIX = f"400 POST https://bigquery.googleapis.com/bigquery/v2/projects/{settings.GCP_PROJECT}/datasets/{DATASET_ID}/tables?prettyPrint=false:"
 
 
 @shared_task(bind=True)
@@ -61,35 +57,21 @@ def run_sheets_sync(self, sheet_id):
 
         sheet.drive_file_last_modified = get_last_modified_from_drive_file(sheet)
 
-        # we track the time it takes to sync for our analytics
-        sync_start_time = time.time()
-
         progress_recorder = ProgressRecorder(self)
 
-        external_config = create_external_sheets_config(sheet.url, sheet.cell_range)
-        sync_generator = import_table_from_external_config(
-            table=table, external_config=external_config
-        )
+        query_job = import_table_from_sheet(table=table, sheet=sheet)
 
-        try:
-            query_job = next(sync_generator)
+        while query_job.running():
+            current, total = _calc_progress(query_job.query_plan)
+            progress_recorder.set_progress(current, total)
+            time.sleep(0.5)
 
-            while query_job.running():
-                current, total = _calc_progress(query_job.query_plan)
-                progress_recorder.set_progress(current, total)
-                time.sleep(0.5)
-
-            progress_recorder.set_progress(*_calc_progress(query_job.query_plan))
-
-            # The next yield happens when the sync has finalised, only then we finish this task
-
-            next(sync_generator)
+        progress_recorder.set_progress(*_calc_progress(query_job.query_plan))
 
         # capture external table creation errors
-        except BadRequest as e:
-            raise Exception(str(e).replace(BAD_REQUEST_INTEGRATIONS_PREFIX, ""))
 
-        sync_end_time = time.time()
+        if query_job.exception():
+            raise Exception(query_job.errors[0]["message"])
 
         title = get_metadata_from_sheet(sheet)["properties"]["title"]
         # maximum Google Drive name length is 32767
@@ -103,6 +85,8 @@ def run_sheets_sync(self, sheet_id):
         integration.save()
 
         table.integration = integration
+        table.num_rows = table.bq_obj.num_rows
+        table.data_updated = datetime.now()
         table.save()
 
         sheet.integration = integration
@@ -123,7 +107,9 @@ def run_sheets_sync(self, sheet_id):
                 "id": integration.id,
                 "kind": integration.kind,
                 "row_count": integration.num_rows,
-                "time_to_sync": int(sync_end_time - sync_start_time),
+                "time_to_sync": int(
+                    (query_job.ended - query_job.started).total_seconds()
+                ),
             },
         )
 
