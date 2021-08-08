@@ -44,16 +44,31 @@ def run_sheets_sync(self, sheet_id):
 
     with transaction.atomic():
 
+        # initial sync or re-sync
         if not sheet.integration:
+            title = get_metadata_from_sheet(sheet)["properties"]["title"]
+            # maximum Google Drive name length is 32767
+            name = textwrap.shorten(title, width=255, placeholder="...")
+
+            integration = Integration(
+                name=name,
+                project=sheet.project,
+                kind=Integration.Kind.SHEET,
+            )
+            integration.save()
+
             table = Table(
+                integration=integration,
                 source=Table.Source.INTEGRATION,
                 bq_dataset=DATASET_ID,
                 project=sheet.project,
                 num_rows=0,
             )
+            sheet.integration = integration
             table.save()
         else:
-            table = sheet.integration.table_set.first()
+            integration = sheet.integration
+            table = integration.table_set.first()
 
         sheet.drive_file_last_modified = get_last_modified_from_drive_file(sheet)
 
@@ -73,23 +88,10 @@ def run_sheets_sync(self, sheet_id):
         if query_job.exception():
             raise Exception(query_job.errors[0]["message"])
 
-        title = get_metadata_from_sheet(sheet)["properties"]["title"]
-        # maximum Google Drive name length is 32767
-        name = textwrap.shorten(title, width=255, placeholder="...")
-
-        integration = Integration(
-            name=name,
-            project=sheet.project,
-            kind=Integration.Kind.SHEET,
-        )
-        integration.save()
-
-        table.integration = integration
         table.num_rows = table.bq_obj.num_rows
         table.data_updated = datetime.now()
         table.save()
 
-        sheet.integration = integration
         sheet.last_synced = datetime.now()
         sheet.save()
 

@@ -21,7 +21,7 @@ describe('sheets', () => {
     cy.get('input[name=cell_range]').type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', '/projects/1/integrations/sheets/1')
+    cy.url().should('contain', '/projects/1/integrations/sheets/2')
     cy.contains("Syncing, you'll get an email when it is ready")
     cy.contains('Sync started')
     cy.contains('tasks processed')
@@ -76,5 +76,28 @@ describe('sheets', () => {
   })
   it.only('re-sync after source update', () => {
     cy.contains('Store info sheet').click()
+
+    // sheet is already out of date by design
+    cy.contains('This Google Sheet was updated since the last sync.')
+    cy.contains('Sync').click()
+
+    cy.url().should('contain', '/projects/1/integrations/sheets/1')
+
+    // the integration page has updated to link here
+    cy.visit('/projects/1/integrations/2')
+    // cy.wait(500)
+    cy.contains('See the sync progress.').click()
+
+    // sync is complete  and it redirects me back again
+    cy.url().should('contain', '/projects/1/integrations/sheets/1')
+    cy.contains('Sync started')
+    cy.contains('Reload to see results').click()
+
+    cy.url().should('contain', '/projects/1/integrations/2')
+    cy.contains("You've already synced the latest data.")
+
+    // redirect back when trying to view completed upload
+    cy.visit('/projects/1/integrations/sheets/1')
+    cy.url().should('contain', '/projects/1/integrations/2')
   })
 })

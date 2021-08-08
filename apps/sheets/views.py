@@ -1,3 +1,5 @@
+import datetime
+
 import analytics
 from apps.base.segment_analytics import INTEGRATION_CREATED_EVENT
 from apps.integrations.models import Integration
@@ -48,6 +50,7 @@ class SheetCreate(ProjectMixin, TurboCreateView):
 
         result = run_sheets_sync.delay(self.object.id)
         self.object.external_table_sync_task_id = result.task_id
+        self.object.external_table_sync_started = datetime.now()
         self.object.save()
 
         return r
