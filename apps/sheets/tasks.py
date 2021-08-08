@@ -21,7 +21,7 @@ from django.urls import reverse
 from .models import Sheet
 
 
-def calc_progress(jobs):
+def _calc_progress(jobs):
     return reduce(
         lambda tpl, curr: (
             # We only keep track of completed states for now, not failed states
@@ -33,12 +33,63 @@ def calc_progress(jobs):
     )
 
 
+def _send_update(integration: Integration, time_to_sync: int):
+
+    creator = integration.sheet.creator
+
+    if creator:
+
+        url = reverse(
+            "project_integrations:detail",
+            args=(
+                integration.project.id,
+                integration.id,
+            ),
+        )
+
+        message = EmailMessage(
+            subject=None,
+            from_email="Gyana Notifications <notifications@gyana.com>",
+            to=[creator.email],
+        )
+        # This id points to the sync success template in SendGrid
+        message.template_id = "d-5f87a7f6603b44e09b21cfdcf6514ffa"
+        message.merge_data = {
+            creator.email: {
+                "userName": creator.first_name or creator.email.split("@")[0],
+                "integrationName": integration.name,
+                "integrationHref": settings.EXTERNAL_URL + url,
+                "projectName": integration.project.name,
+            }
+        }
+        message.esp_extra = {
+            "asm": {
+                # The "App Notifications" Unsubscribe group
+                "group_id": 17220,
+            },
+        }
+        message.send()
+
+    analytics.track(
+        creator.id,
+        INTEGRATION_SYNC_SUCCESS_EVENT,
+        {
+            "id": integration.id,
+            "kind": integration.kind,
+            "row_count": integration.num_rows,
+            "time_to_sync": time_to_sync,
+        },
+    )
+
+
 @shared_task(bind=True)
 def run_sheets_sync(self, sheet_id):
     sheet = get_object_or_404(Sheet, pk=sheet_id)
 
+    # we need to save the table instance to get the PK from database, this ensures
     # database will rollback automatically if there is an error with the bigquery
     # table creation, avoids orphaned table entities
+
     with transaction.atomic():
 
         if not sheet.integration:
@@ -64,11 +115,11 @@ def run_sheets_sync(self, sheet_id):
         query_job = next(sync_generator)
 
         while query_job.running():
-            current, total = calc_progress(query_job.query_plan)
+            current, total = _calc_progress(query_job.query_plan)
             progress_recorder.set_progress(current, total)
             time.sleep(0.5)
 
-        progress_recorder.set_progress(*calc_progress(query_job.query_plan))
+        progress_recorder.set_progress(*_calc_progress(query_job.query_plan))
 
         # The next yield happens when the sync has finalised, only then we finish this task
         next(sync_generator)
@@ -95,48 +146,6 @@ def run_sheets_sync(self, sheet_id):
 
     # the initial sync completed successfully and a new integration is created
 
-    url = reverse(
-        "project_integrations:detail",
-        args=(
-            integration.project.id,
-            integration.id,
-        ),
-    )
-
-    # creator = integration.created_by
-
-    # message = EmailMessage(
-    #     subject=None,
-    #     from_email="Gyana Notifications <notifications@gyana.com>",
-    #     to=[creator.email],
-    # )
-    # # This id points to the sync success template in SendGrid
-    # message.template_id = "d-5f87a7f6603b44e09b21cfdcf6514ffa"
-    # message.merge_data = {
-    #     creator.email: {
-    #         "userName": creator.first_name or creator.email.split("@")[0],
-    #         "integrationName": integration.name,
-    #         "integrationHref": settings.EXTERNAL_URL + url,
-    #         "projectName": integration.project.name,
-    #     }
-    # }
-    # message.esp_extra = {
-    #     "asm": {
-    #         # The "App Notifications" Unsubscribe group
-    #         "group_id": 17220,
-    #     },
-    # }
-    # message.send()
-
-    # analytics.track(
-    #     creator.id,
-    #     INTEGRATION_SYNC_SUCCESS_EVENT,
-    #     {
-    #         "id": integration.id,
-    #         "kind": integration.kind,
-    #         "row_count": integration.num_rows,
-    #         "time_to_sync": int(sync_end_time - sync_start_time),
-    #     },
-    # )
+    _send_update(integration, int(sync_end_time - sync_start_time))
 
     return integration.id
