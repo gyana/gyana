@@ -7,6 +7,7 @@ from turbo_response.views import TurboCreateView
 
 from .forms import SheetForm
 from .models import Sheet
+from .tasks import run_sheets_sync
 
 
 class SheetCreate(ProjectMixin, TurboCreateView):
@@ -20,7 +21,11 @@ class SheetCreate(ProjectMixin, TurboCreateView):
         return initial
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
-        form.instance.start_sheets_sync()
+
+        result = run_sheets_sync.delay(self.id)
+        self.sheet.external_table_sync_task_id = result.task_id
+        self.sheet.save()
+
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
