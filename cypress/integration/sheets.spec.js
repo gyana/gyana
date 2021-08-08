@@ -54,7 +54,7 @@ describe('sheets', () => {
     cy.get('button[type=submit]').click()
     cy.contains('Unable to parse range: does_not_exist!A1:D11')
   })
-  it('displays errors on failed sync', () => {
+  it('displays errors on failed sync and does not create entities or send email', () => {
     cy.contains('Add Sheet').click()
 
     cy.url().should('contain', '/projects/1/integrations/sheets/new')
@@ -67,5 +67,9 @@ describe('sheets', () => {
 
     cy.contains('Waiting for sync to start')
     cy.contains('Uh-Oh, something went wrong!')
+
+    // verify that nothing was created
+    cy.visit('/projects/1/integrations')
+    cy.get('table tbody tr').should('have.length', 1)
   })
 })

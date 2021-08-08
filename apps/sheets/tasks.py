@@ -9,16 +9,16 @@ from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.integrations.bigquery import import_table_from_external_config
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
-from apps.sheets.bigquery import (
-    create_external_sheets_config,
-    get_last_modified_from_drive_file,
-    get_metadata_from_sheet,
-)
+from apps.sheets.bigquery import (create_external_sheets_config,
+                                  get_last_modified_from_drive_file,
+                                  get_metadata_from_sheet)
 from apps.tables.models import Table
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
+from django.conf import settings
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from google.api_core.exceptions import BadRequest
 
 from .models import Sheet
 
@@ -33,6 +33,9 @@ def _calc_progress(jobs):
         jobs,
         (0, 0),
     )
+
+
+BAD_REQUEST_INTEGRATIONS_PREFIX = f"400 POST https://bigquery.googleapis.com/bigquery/v2/projects/{settings.GCP_PROJECT}/datasets/{DATASET_ID}/tables?prettyPrint=false:"
 
 
 @shared_task(bind=True)
@@ -67,17 +70,24 @@ def run_sheets_sync(self, sheet_id):
         sync_generator = import_table_from_external_config(
             table=table, external_config=external_config
         )
-        query_job = next(sync_generator)
 
-        while query_job.running():
-            current, total = _calc_progress(query_job.query_plan)
-            progress_recorder.set_progress(current, total)
-            time.sleep(0.5)
+        try:
+            query_job = next(sync_generator)
 
-        progress_recorder.set_progress(*_calc_progress(query_job.query_plan))
+            while query_job.running():
+                current, total = _calc_progress(query_job.query_plan)
+                progress_recorder.set_progress(current, total)
+                time.sleep(0.5)
 
-        # The next yield happens when the sync has finalised, only then we finish this task
-        next(sync_generator)
+            progress_recorder.set_progress(*_calc_progress(query_job.query_plan))
+
+            # The next yield happens when the sync has finalised, only then we finish this task
+
+            next(sync_generator)
+
+        # capture external table creation errors
+        except BadRequest as e:
+            raise Exception(str(e).replace(BAD_REQUEST_INTEGRATIONS_PREFIX, ""))
 
         sync_end_time = time.time()
 
