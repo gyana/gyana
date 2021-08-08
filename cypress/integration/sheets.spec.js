@@ -54,7 +54,7 @@ describe('sheets', () => {
     cy.get('button[type=submit]').click()
     cy.contains('Unable to parse range: does_not_exist!A1:D11')
   })
-  it.only('displays errors on failed sync', () => {
+  it('displays errors on failed sync', () => {
     cy.contains('Add Sheet').click()
 
     cy.url().should('contain', '/projects/1/integrations/sheets/new')
@@ -64,5 +64,8 @@ describe('sheets', () => {
     // empty cells trigger column does not exist error
     cy.get('input[name=cell_range]').type('store_info!A20:D21')
     cy.get('button[type=submit]').click()
+
+    cy.contains('Waiting for sync to start')
+    cy.contains('Uh-Oh, something went wrong!')
   })
 })
