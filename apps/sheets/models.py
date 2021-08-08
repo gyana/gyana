@@ -22,10 +22,10 @@ class Sheet(BaseModel):
 
     @property
     def is_syncing(self):
-        if self.sheet.external_table_sync_task_id is None:
+        if self.external_table_sync_task_id is None:
             return False
 
         # TODO: Possibly fails for out of date task ids
         # https://stackoverflow.com/a/38267978/15425660
-        result = celery.result.AsyncResult(str(self.sheet.external_table_sync_task_id))
+        result = celery.result.AsyncResult(str(self.external_table_sync_task_id))
         return result.status == "PENDING"

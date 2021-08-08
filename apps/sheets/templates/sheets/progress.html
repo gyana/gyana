@@ -1,17 +1,6 @@
 {% load humanize %}
 {% load static %}
 
-{% if not object.table_set.exists %}
-<p>You need to sync your data</p>
-{% else %}
-<p>You can re-sync your data if anything has changed</p>
-{% endif %}
-{% if not object.is_syncing %}
-<form class="my-2" method="post" action="{% url 'sheets:sync' object.id %}">
-  {% csrf_token %}
-  <button class="button button--sm button--filled" type="submit">Sync</button>
-</form>
-{% else %}
 <div data-controller="progress-bar"
       data-progress-bar-task-url-value="{% url 'celery_progress:task_status' external_table_sync_task_id %}"
       data-progress-bar-script-url-value="{% static 'celery_progress/celery_progress.js' %}">
@@ -28,5 +17,3 @@
     </button>
   </div>
 </div>
-{% endif %}
-<p>Latest sync: {{ object.sheet.last_synced|naturaltime }}</p>

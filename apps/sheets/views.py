@@ -2,8 +2,8 @@ import analytics
 from apps.base.segment_analytics import INTEGRATION_CREATED_EVENT
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
-from django import forms
 from django.http import HttpResponse
+from django.http.response import HttpResponseRedirect
 from django.urls.base import reverse
 from django.views.generic import DetailView
 from turbo_response.views import TurboCreateView
@@ -23,7 +23,7 @@ class SheetCreate(ProjectMixin, TurboCreateView):
         initial["project"] = self.project
         return initial
 
-    def form_valid(self, form: forms.Form) -> HttpResponse:
+    def form_valid(self, form):
 
         form.instance.created_by = self.request.user
 
@@ -60,3 +60,14 @@ class SheetCreate(ProjectMixin, TurboCreateView):
 class SheetDetail(ProjectMixin, DetailView):
     template_name = "sheets/detail.html"
     model = Sheet
+
+    def get(self, request, *args, **kwargs):
+        sheet = self.get_object()
+        if not sheet.is_syncing:
+            return HttpResponseRedirect(
+                reverse(
+                    "project_integrations:detail",
+                    args=(self.project.id, sheet.integration.id),
+                )
+            )
+        return super().get(request, *args, **kwargs)
