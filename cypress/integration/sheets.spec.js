@@ -1,5 +1,10 @@
 /// <reference types="cypress" />
 
+const SHARED_SHEET =
+  'https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit'
+const RESTRICTED_SHEET =
+  'https://docs.google.com/spreadsheets/d/16h15cF3r_7bFjSAeKcy6nnNDpi-CS-NEgUKNCRGXs1E/edit'
+
 describe('integrations', () => {
   beforeEach(() => {
     cy.login()
@@ -12,9 +17,7 @@ describe('integrations', () => {
     cy.url().should('contain', '/projects/1/integrations/sheets/new')
     // pretend to share with this email account
     cy.contains('gyana-local@gyana-1511894275181.iam.gserviceaccount.com')
-    cy.get('input[name=url]').type(
-      'https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit'
-    )
+    cy.get('input[name=url]').type(SHARED_SHEET)
     cy.get('input[name=cell_range]').type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
 
@@ -31,5 +34,15 @@ describe('integrations', () => {
     cy.contains('Structure')
     cy.contains('Data')
     cy.contains('10')
+  })
+  it.only('does not create for invalid URL, valid URL without access or invalid cell range', () => {
+    cy.contains('Add Sheet').click()
+
+    cy.get('input[name=url]').type('https://www.google.com')
+    cy.get('button[type=submit]').click()
+    cy.contains('The URL to the sheet seems to be invalid.')
+
+    // sheet is not shared with account
+    cy.get('input[name=url]').clear().type(RESTRICTED_SHEET)
   })
 })
