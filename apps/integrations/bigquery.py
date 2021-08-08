@@ -24,7 +24,9 @@ def create_external_table(table: Table, external_config: bigquery.ExternalConfig
     external_table = bigquery.Table(bq_dataset.table(table.bq_external_table_id))
 
     external_table.external_data_configuration = external_config
-    external_table = client.create_table(external_table, exists_ok=True)
+    # external table does not overwrite by default
+    client.delete_table(external_table, not_found_ok=True)
+    external_table = client.create_table(external_table)
 
 
 def copy_table_from_external_table(

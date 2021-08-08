@@ -44,5 +44,14 @@ describe('sheets', () => {
 
     // sheet is not shared with account
     cy.get('input[name=url]').clear().type(RESTRICTED_SHEET)
+    cy.get('button[type=submit]').click()
+    cy.contains(
+      "We couldn't access the sheet using the URL provided! Did you give access to the right email?"
+    )
+
+    cy.get('input[name=url]').clear().type(SHARED_SHEET)
+    cy.get('input[name=cell_range]').type('does_not_exist!A1:D11')
+    cy.get('button[type=submit]').click()
+    cy.contains('Unable to parse range: does_not_exist!A1:D11')
   })
 })
