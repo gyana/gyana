@@ -3,7 +3,6 @@
      data-controller='integration-upload'
      data-integration-upload-file-id-value="{{ instance_session_key }}"
      data-integration-upload-file-input-id-value="{{ file_input_id }}"
-     data-integration-upload-signed-url-value="{{ signed_url }}"
      data-integration-upload-inhibit-upload-value="{% if stage != "upload" %}true{% else %}false{% endif %}"
      >
   {% if stage == "upload" %}
