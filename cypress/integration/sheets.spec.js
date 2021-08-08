@@ -5,7 +5,7 @@ const SHARED_SHEET =
 const RESTRICTED_SHEET =
   'https://docs.google.com/spreadsheets/d/16h15cF3r_7bFjSAeKcy6nnNDpi-CS-NEgUKNCRGXs1E/edit'
 
-describe('integrations', () => {
+describe('sheets', () => {
   beforeEach(() => {
     cy.login()
 
@@ -35,7 +35,7 @@ describe('integrations', () => {
     cy.contains('Data')
     cy.contains('10')
   })
-  it.only('does not create for invalid URL, valid URL without access or invalid cell range', () => {
+  it('does not create for invalid URL, valid URL without access or invalid cell range', () => {
     cy.contains('Add Sheet').click()
 
     cy.get('input[name=url]').type('https://www.google.com')

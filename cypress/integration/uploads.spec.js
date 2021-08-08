@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('integrations', () => {
+describe('uploads', () => {
   beforeEach(() => {
     cy.login()
 
