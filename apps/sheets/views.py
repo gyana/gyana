@@ -2,7 +2,7 @@ import analytics
 from apps.base.segment_analytics import INTEGRATION_CREATED_EVENT
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
-from django.http import HttpResponse
+from django.conf import settings
 from django.http.response import HttpResponseRedirect
 from django.urls.base import reverse
 from django.views.generic import DetailView
@@ -22,6 +22,11 @@ class SheetCreate(ProjectMixin, TurboCreateView):
         initial = super().get_initial()
         initial["project"] = self.project
         return initial
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["service_account"] = settings.GCP_BQ_SVC_ACCOUNT
+        return context_data
 
     def form_valid(self, form):
 
@@ -60,6 +65,11 @@ class SheetCreate(ProjectMixin, TurboCreateView):
 class SheetDetail(ProjectMixin, DetailView):
     template_name = "sheets/detail.html"
     model = Sheet
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["service_account"] = settings.GCP_BQ_SVC_ACCOUNT
+        return context_data
 
     def get(self, request, *args, **kwargs):
         sheet = self.get_object()
