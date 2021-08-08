@@ -22,7 +22,7 @@ describe('integrations', () => {
 
     cy.url().should('contain', '/projects/1/integrations/2')
     // Google Sheet name inferred
-    cy.contains('Store info sheet')
+    cy.get('input[name=name]').should('have.value', 'Store info sheet')
     cy.contains("Syncing, you'll get an email when it is ready")
     cy.contains('tasks processed')
     cy.contains('Reload to see results').click()

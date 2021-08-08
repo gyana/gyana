@@ -15,7 +15,6 @@ class GoogleSheetsForm(forms.ModelForm):
     class Meta:
         model = Integration
         fields = [
-            "name",
             "kind",
             "project",
         ]
@@ -34,7 +33,7 @@ class GoogleSheetsForm(forms.ModelForm):
 
         client = sheets_client()
         try:
-            client.spreadsheets().get(spreadsheetId=sheet_id).execute()
+            self._sheet = client.spreadsheets().get(spreadsheetId=sheet_id).execute()
         except googleapiclient.errors.HttpError as e:
             raise ValidationError(
                 "We couldn't access the sheet using the URL provided! Did you give access to the right email?"
@@ -64,6 +63,8 @@ class GoogleSheetsForm(forms.ModelForm):
         return cell_range
 
     def save(self, commit=True):
+
+        self.instance.name = self._sheet["properties"]["title"]
 
         # saved automatically by parent
         Sheet(
