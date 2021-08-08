@@ -1,5 +1,6 @@
 from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
 from apps.sheets.bigquery import get_last_modified_from_drive_file
+from apps.sheets.tasks import run_sheets_sync
 from django.urls import reverse
 
 from .models import Sheet
@@ -35,5 +36,17 @@ class SheetStatus(TurboFrameUpdateView):
 
         return context_data
 
+    def form_valid(self, form):
+        result = run_sheets_sync.delay(self.object.id)
+        self.object.external_table_sync_task_id = result.task_id
+        self.object.save()
+        return super().form_valid(form)
+
     def get_success_url(self) -> str:
-        return reverse("sheets:status", args=(self.object.id,))
+        return reverse(
+            "project_integrations_sheets:detail",
+            args=(
+                self.object.project.id,
+                self.object.id,
+            ),
+        )
