@@ -44,6 +44,6 @@ describe('integrations', () => {
     cy.contains('Yes').click()
 
     cy.url().should('contain', '/projects/1/integrations')
-    cy.get('table tbody tr').should('have.length', 0)
+    cy.get('table tbody tr').should('have.length', 1)
   })
 })
