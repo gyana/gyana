@@ -8,7 +8,8 @@ from apps.base.clients import DATASET_ID
 from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.integrations.bigquery import import_table_from_external_config
 from apps.integrations.models import Integration
-from apps.sheets.bigquery import create_external_sheets_config, get_metadata_from_sheet
+from apps.sheets.bigquery import (create_external_sheets_config,
+                                  get_metadata_from_sheet)
 from apps.tables.models import Table
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
@@ -35,9 +36,9 @@ def _calc_progress(jobs):
 
 def _send_update(integration: Integration, time_to_sync: int):
 
-    creator = integration.sheet.creator
+    created_by = integration.sheet.created_by
 
-    if creator:
+    if created_by:
 
         url = reverse(
             "project_integrations:detail",
@@ -50,13 +51,13 @@ def _send_update(integration: Integration, time_to_sync: int):
         message = EmailMessage(
             subject=None,
             from_email="Gyana Notifications <notifications@gyana.com>",
-            to=[creator.email],
+            to=[created_by.email],
         )
         # This id points to the sync success template in SendGrid
         message.template_id = "d-5f87a7f6603b44e09b21cfdcf6514ffa"
         message.merge_data = {
-            creator.email: {
-                "userName": creator.first_name or creator.email.split("@")[0],
+            created_by.email: {
+                "userName": created_by.first_name or created_by.email.split("@")[0],
                 "integrationName": integration.name,
                 "integrationHref": settings.EXTERNAL_URL + url,
                 "projectName": integration.project.name,
@@ -71,7 +72,7 @@ def _send_update(integration: Integration, time_to_sync: int):
         message.send()
 
     analytics.track(
-        creator.id,
+        created_by.id,
         INTEGRATION_SYNC_SUCCESS_EVENT,
         {
             "id": integration.id,

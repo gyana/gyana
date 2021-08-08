@@ -17,7 +17,7 @@
         {% endif %}
       </div>
       {% else %}
-      <turbo-frame id="integrations:sync" src="{% url 'sheets:sync' object.id %}"></turbo-frame>
+      <turbo-frame id="sheets:progress" src="{% url 'sheets:progress' object.id %}"></turbo-frame>
       {% endif %}
     </div>
     {% endif %}
@@ -35,7 +35,13 @@
     {% endif %}
 
     <div class="card card--center flex-1 flex-col">
-      <h2>{{ integration.created_by.username }}</h2>
+      <h2>
+        {% if integration.kind == 'sheet' %}
+          {{ integration.sheet.created_by.username }}
+        {% else %}
+          {{ integration.created_by.username }}
+        {% endif %}
+      </h2>
       <p>Created this</p>
     </div>
   </div>
