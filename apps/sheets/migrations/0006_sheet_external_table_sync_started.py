@@ -19,6 +19,7 @@ class Migration(migrations.Migration):
             """
         UPDATE sheets_sheet
         SET external_table_sync_started = created
-        """
+        """,
+            reverse_sql=migrations.RunSQL.noop,
         ),
     ]

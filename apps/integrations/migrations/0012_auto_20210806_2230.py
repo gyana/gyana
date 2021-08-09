@@ -81,6 +81,13 @@ class Migration(migrations.Migration):
                         WHEN kind = 'google_sheets' THEN 'sheet'
                         WHEN kind = 'fivetran' THEN 'connetor'
                     END
-                """
+                """,
+            reverse_sql="""UPDATE integrations_integration
+                SET kind = CASE
+                        WHEN kind = 'upload' THEN 'csv'
+                        WHEN kind = 'sheet' THEN 'google_sheets'
+                        WHEN kind = 'connetor' THEN 'fivetran'
+                    END
+                """,
         ),
     ]
