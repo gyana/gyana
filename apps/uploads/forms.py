@@ -31,6 +31,7 @@ class UploadCreateForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
+        # file_gcs_path has an extra hidden input
         instance.file_name = splitext(self.data["file_name"])[0]
 
         if commit:
