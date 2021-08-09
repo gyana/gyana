@@ -1,4 +1,3 @@
-import textwrap
 import time
 from datetime import datetime
 from functools import reduce
@@ -14,11 +13,8 @@ from celery_progress.backend import ProgressRecorder
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 
-from .bigquery import (
-    get_last_modified_from_drive_file,
-    get_metadata_from_sheet,
-    import_table_from_sheet,
-)
+from .bigquery import (get_last_modified_from_drive_file,
+                       import_table_from_sheet)
 from .models import Sheet
 
 
@@ -74,14 +70,8 @@ def run_initial_sheets_sync(self, sheet_id):
 
     with transaction.atomic():
 
-        # initial sync or re-sync
-
-        title = get_metadata_from_sheet(sheet)["properties"]["title"]
-        # maximum Google Drive name length is 32767
-        name = textwrap.shorten(title, width=255, placeholder="...")
-
         integration = Integration(
-            name=name,
+            name=sheet.sheet_name,
             project=sheet.project,
             kind=Integration.Kind.SHEET,
         )

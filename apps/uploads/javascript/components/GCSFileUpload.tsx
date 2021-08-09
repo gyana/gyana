@@ -10,7 +10,13 @@ interface IProps {
 
 type Stage = 'initial' | 'progress' | 'done' | 'error'
 
-const start_upload = async (input: HTMLInputElement, setProgress, setStage, inputRef) => {
+const start_upload = async (
+  input: HTMLInputElement,
+  setProgress,
+  setStage,
+  inputRef,
+  inputNameRef
+) => {
   setStage('progress')
 
   const file = input.files[0]
@@ -25,6 +31,7 @@ const start_upload = async (input: HTMLInputElement, setProgress, setStage, inpu
   )
 
   inputRef.current.value = path
+  inputNameRef.current.value = file.name
 
   const uploader = new GoogleUploader({
     target,
@@ -39,7 +46,8 @@ const start_upload = async (input: HTMLInputElement, setProgress, setStage, inpu
 
 const GCSFileUpload_: React.FC<IProps> = ({ name, accept }) => {
   const fileRef = useRef<HTMLInputElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputFileRef = useRef<HTMLInputElement>(null)
+  const inputNameRef = useRef<HTMLInputElement>(null)
   const [progress, setProgress] = useState(0)
   // const uploader = useRef<GoogleUploader | null>(null)
   const [stage, setStage] = useState<Stage>('initial')
@@ -47,14 +55,15 @@ const GCSFileUpload_: React.FC<IProps> = ({ name, accept }) => {
   useEffect(() => {
     if (fileRef.current) {
       fileRef.current.addEventListener('change', (event) => {
-        start_upload(event.target, setProgress, setStage, inputRef)
+        start_upload(event.target, setProgress, setStage, inputFileRef, inputNameRef)
       })
     }
   }, [])
 
   return (
     <>
-      <input ref={inputRef} type='hidden' id={`id_${name}`} name={name} />
+      <input ref={inputNameRef} type='hidden' id={`id_name`} name='name' />
+      <input ref={inputFileRef} type='hidden' id={`id_${name}`} name={name} />
       <ul className='integration__create-flow'>
         <li>
           <div className='integration__file-upload'>

@@ -1,6 +1,3 @@
-import time
-from functools import reduce
-
 import analytics
 from apps.base.clients import DATASET_ID
 from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
@@ -9,7 +6,6 @@ from apps.integrations.models import Integration
 from apps.tables.models import Table
 from apps.uploads.bigquery import import_table_from_upload
 from celery import shared_task
-from celery_progress.backend import ProgressRecorder
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -17,32 +13,9 @@ from django.utils import timezone
 from .models import Upload
 
 
-def _calc_progress(jobs):
-    return reduce(
-        lambda tpl, curr: (
-            # We only keep track of completed states for now, not failed states
-            tpl[0] + (1 if curr.status == "COMPLETE" else 0),
-            tpl[1] + 1,
-        ),
-        jobs,
-        (0, 0),
-    )
-
-
-def _do_sync_with_progress(task, upload, table):
-
-    progress_recorder = ProgressRecorder(task)
+def _do_sync(upload, table):
 
     load_job = import_table_from_upload(table=table, upload=upload)
-
-    while load_job.running():
-        current, total = _calc_progress(load_job.query_plan)
-        progress_recorder.set_progress(current, total)
-        time.sleep(0.5)
-
-    progress_recorder.set_progress(*_calc_progress(load_job.query_plan))
-
-    # capture external table creation errors
 
     if load_job.exception():
         raise Exception(load_job.errors[0]["message"])
@@ -69,9 +42,9 @@ def run_initial_upload_sync(self, upload_id: int):
     with transaction.atomic():
 
         integration = Integration(
-            name="TODO",
+            name=upload.file_name,
             project=upload.project,
-            kind=Integration.Kind.SHEET,
+            kind=Integration.Kind.UPLOAD,
         )
         integration.save()
 
@@ -85,11 +58,12 @@ def run_initial_upload_sync(self, upload_id: int):
         upload.integration = integration
         table.save()
 
-        load_job = _do_sync_with_progress(self, upload, table)
+        # no progress as load job does not provide query plan
+        load_job = _do_sync(upload, table)
 
     # the initial sync completed successfully and a new integration is created
 
-    if created_by := integration.sheet.created_by:
+    if created_by := integration.upload.created_by:
 
         email = integration_ready_email(integration, created_by)
         email.send()

@@ -1,7 +1,10 @@
+import textwrap
+
 import googleapiclient
 from apps.base.clients import sheets_client
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.forms.widgets import HiddenInput
 
 from .bigquery import get_sheets_id_from_url
@@ -57,6 +60,20 @@ class SheetCreateForm(forms.ModelForm):
             raise ValidationError(e._get_reason().strip())
 
         return cell_range
+
+    def save(self, commit):
+        instance = super().save(commit=False)
+
+        title = self._sheet["properties"]["title"]
+        # maximum Google Drive name length is 32767
+        instance.sheet_name = textwrap.shorten(title, width=255, placeholder="...")
+
+        if commit:
+            with transaction.atomic():
+                instance.save()
+                self.save_m2m()
+
+        return instance
 
 
 class SheetUpdateForm(forms.ModelForm):

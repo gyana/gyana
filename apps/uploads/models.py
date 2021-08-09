@@ -10,7 +10,8 @@ class Upload(BaseModel):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE, null=True)
 
-    file = models.TextField()
+    file_gcs_path = models.TextField()
+    file_name = models.CharField(max_length=255, null=True)
 
     # todo: remove for uploads
     external_table_sync_task_id = models.UUIDField(null=True)

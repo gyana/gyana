@@ -6,6 +6,7 @@ from apps.projects.models import Project
 from apps.users.models import CustomUser
 from django.db import models
 from django.utils import timezone
+from ibis.expr.types import null
 
 
 class Sheet(BaseModel):
@@ -15,6 +16,7 @@ class Sheet(BaseModel):
 
     url = models.URLField()
     cell_range = models.CharField(max_length=64, null=True, blank=True)
+    sheet_name = models.CharField(max_length=255, null=True)
     # updated prior to each sync
     drive_file_last_modified = models.DateTimeField(null=True)
 

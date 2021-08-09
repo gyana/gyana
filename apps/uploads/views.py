@@ -49,7 +49,7 @@ class UploadCreate(ProjectMixin, TurboCreateView):
             },
         )
 
-        result = run_initial_upload_sync.delay(self.object.file, self.object.project.id)
+        result = run_initial_upload_sync.delay(self.object.id)
         self.object.external_table_sync_task_id = result.task_id
         self.object.save()
 
