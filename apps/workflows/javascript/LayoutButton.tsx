@@ -1,6 +1,6 @@
 import dagre from 'dagre'
 import React, { useCallback } from 'react'
-import { isNode, useStoreState } from 'react-flow-renderer'
+import { isNode, useStoreState, ControlButton } from 'react-flow-renderer'
 
 const dagreGraph = new dagre.graphlib.Graph()
 dagreGraph.setDefaultEdgeLabel(() => ({}))
@@ -32,11 +32,9 @@ const LayoutButton: React.FC<{
   }, [elements, nodes])
 
   return (
-    <div className='dndflow__order-button'>
-      <button className='button button--tertiary' onClick={onLayout}>
-        Format
-      </button>
-    </div>
+    <ControlButton onClick={onLayout}>
+      <i className="fas fa-fw fa-align-left" ></i>
+    </ControlButton>
   )
 }
 
