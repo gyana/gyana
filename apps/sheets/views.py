@@ -48,8 +48,8 @@ class SheetCreate(ProjectMixin, TurboCreateView):
         )
 
         result = run_initial_sheets_sync.delay(self.object.id)
-        self.object.external_table_sync_task_id = result.task_id
-        self.object.external_table_sync_started = timezone.now()
+        self.object.sync_task_id = result.task_id
+        self.object.sync_started = timezone.now()
         self.object.save()
 
         return r

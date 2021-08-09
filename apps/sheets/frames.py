@@ -17,9 +17,7 @@ class SheetProgress(TurboFrameDetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data[
-            "external_table_sync_task_id"
-        ] = self.object.external_table_sync_task_id
+        context_data["sync_task_id"] = self.object.sync_task_id
 
         return context_data
 
@@ -41,8 +39,8 @@ class SheetStatus(TurboFrameUpdateView):
 
     def form_valid(self, form):
         result = run_update_sheets_sync.delay(self.object.id)
-        self.object.external_table_sync_task_id = result.task_id
-        self.object.external_table_sync_started = timezone.now()
+        self.object.sync_task_id = result.task_id
+        self.object.sync_started = timezone.now()
         self.object.save()
         return super().form_valid(form)
 
@@ -64,8 +62,8 @@ class SheetUpdate(TurboFrameUpdateView):
 
     def form_valid(self, form):
         result = run_update_sheets_sync.delay(self.object.id)
-        self.object.external_table_sync_task_id = result.task_id
-        self.object.external_table_sync_started = timezone.now()
+        self.object.sync_task_id = result.task_id
+        self.object.sync_started = timezone.now()
         self.object.save()
         return super().form_valid(form)
 

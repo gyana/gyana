@@ -5,7 +5,7 @@
     <div
         class='integration__file-validate'
         data-controller="celery-progress"
-        data-celery-progress-task-url-value="{% url 'celery_progress:task_status' external_table_sync_task_id %}"
+        data-celery-progress-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
         data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
         data-celery-progress-redirect-url-value="{% url 'project_integrations_uploads:detail' object.project.id object.id %}"
         >

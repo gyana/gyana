@@ -2,7 +2,7 @@
 {% load static %}
 
 <div data-controller="progress-bar"
-      data-progress-bar-task-url-value="{% url 'celery_progress:task_status' external_table_sync_task_id %}"
+      data-progress-bar-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
       data-progress-bar-script-url-value="{% static 'celery_progress/celery_progress.js' %}">
   <div class="progress-inprogress">
     <p><i class="fad fa-spinner-third fa-spin"></i> Syncing, you'll get an email when it is ready</p>
