@@ -5,12 +5,11 @@ import GoogleUploader from '../upload'
 
 interface IProps {
   name: string
-  accept: string
 }
 
 type Stage = 'initial' | 'progress' | 'done' | 'error'
 
-const GCSFileUpload_: React.FC<IProps> = ({ name, accept }) => {
+const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
   const fileRef = useRef<HTMLInputElement>(null)
   const inputFileRef = useRef<HTMLInputElement>(null)
   const inputNameRef = useRef<HTMLInputElement>(null)
@@ -61,12 +60,12 @@ const GCSFileUpload_: React.FC<IProps> = ({ name, accept }) => {
     <>
       {/* pass the file_name to django as well */}
       <input ref={inputNameRef} type='hidden' id={`id_name`} name='file_name' />
-      <input ref={inputFileRef} type='hidden' id={`id_${name}`} name={name} accept='.csv' />
+      <input ref={inputFileRef} type='hidden' id={`id_${name}`} name={name} />
       <ul className='integration__create-flow'>
         <li>
           <div className='integration__file-upload'>
             {stage === 'initial' ? (
-              <input ref={fileRef} type='file' accept={accept} />
+              <input ref={fileRef} type='file' accept='.csv' />
             ) : stage === 'progress' ? (
               <>
                 <div className='integration__file-progress mr-4'>
@@ -108,9 +107,8 @@ class GCSFileUpload extends HTMLElement {
     console.assert(!!this.parentElement, 'gcs-file-upload requires a container element')
 
     const name = this.attributes['name'].value
-    const accept = this.attributes['accept'].value
 
-    ReactDOM.render(<GCSFileUpload_ name={name} accept={accept} />, this)
+    ReactDOM.render(<GCSFileUpload_ name={name} />, this)
   }
 }
 

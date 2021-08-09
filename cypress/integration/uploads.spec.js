@@ -50,6 +50,10 @@ describe('uploads', () => {
     cy.contains(2249)
   })
   it('validation failures', () => {
+    // invalid format - better way to test this?
+    cy.visit('/projects/1/integrations/uploads/new')
+    cy.get('input[type=file]').invoke('attr', 'accept').should('eq', '.csv')
+
     // file is too large
     cy.visit('/projects/1/integrations/uploads/new', {
       onBeforeLoad(window) {
@@ -58,19 +62,18 @@ describe('uploads', () => {
       },
     })
 
-    cy.get('input[type=file]').attachFile('fifa.csv')
+    cy.get('input[type=file]').attachFile('store_info.csv')
     cy.contains('Errors occurred when uploading your file')
     cy.contains('This file is too large')
 
-    // Upload errors e.g. bad connectivity or Google is down
-
+    // upload errors e.g. bad connectivity or Google is down
     cy.visit('/projects/1/integrations/uploads/new')
     cy.intercept(
       { method: 'PUT', url: 'https://storage.googleapis.com/gyana-local/**/*' },
       { statusCode: 500 }
     )
 
-    cy.get('input[type=file]').attachFile('fifa.csv')
+    cy.get('input[type=file]').attachFile('store_info.csv')
     cy.contains('Errors occurred when uploading your file')
     cy.contains('Server error, try again later')
   })
