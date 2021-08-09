@@ -2,13 +2,17 @@
 
 {% block tab %}
 <div class="mb-auto pad">
-  <form method="post" action="{% url 'project_integrations:update' project.id object.id %}" class="form">
-    {% csrf_token %}
+  {% if integration.kind == 'sheet' %}
+    <turbo-frame id="sheets:update" src="{% url 'sheets:update' integration.sheet.id %}"></turbo-frame>
+  {% else %}
+    <form method="post" action="{% url 'project_integrations:update' project.id object.id %}" class="form">
+      {% csrf_token %}
 
-    {% include "django/forms/default_form.html" %}
+      {% include "django/forms/default_form.html" %}
 
-    <button type="submit" class="button button--filled button--success">Save changes</button>
-  </form>
+      <button type="submit" class="button button--filled button--success">Save changes</button>
+    </form>
+  {% endif %}
 </div>
 
 <div>

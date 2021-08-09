@@ -8,12 +8,17 @@
 
 {% block body %}
 <div class="landing">
-  <div class="landing__container">
+  <div class="landing__content">
+    <header class="landing__header">
+      <img src="{% static 'images/logo.png' %}" alt="">
+      <div>
+        <h1>Gyana</h1>
+        <p>Welcome back! Log in to start where you left off or create a new account.</p>
+      </div>
+    </header>
+
     {% block content %}
     {% endblock content %}
-
-    <div>
-      <img src="{% static 'images/landing.svg' %}" />
-    </div>
   </div>
-  {% endblock %}
+</div>
+{% endblock %}

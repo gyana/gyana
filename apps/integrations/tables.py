@@ -33,6 +33,7 @@ class IntegrationTable(Table):
         attrs = {"class": "table"}
 
     name = Column(linkify=True)
+    num_rows = Column(verbose_name="Rows")
     kind = Column(accessor="display_kind")
     last_synced = NaturalDatetimeColumn()
     status = StatusColumn(template_name="columns/status.html")

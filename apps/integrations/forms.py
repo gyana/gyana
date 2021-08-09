@@ -1,5 +1,5 @@
 from apps.connectors.forms import FivetranForm
-from apps.sheets.forms import SheetForm
+from apps.sheets.forms import SheetCreateForm
 from apps.uploads.forms import CSVForm
 from django import forms
 
@@ -15,5 +15,5 @@ class IntegrationForm(forms.ModelForm):
 FORM_CLASS_MAP = {
     Integration.Kind.CONNECTOR: FivetranForm,
     Integration.Kind.UPLOAD: CSVForm,
-    Integration.Kind.SHEET: SheetForm,
+    Integration.Kind.SHEET: SheetCreateForm,
 }

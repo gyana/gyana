@@ -19,9 +19,16 @@
       {% include 'workflows/last_run.html' %}
     </turbo-frame>
   </div>
-  <span class="button button--circle button--tertiary cursor-pointer">
-    {% include 'workflows/duplicate.html'%}
+
+  <span class="button button--circle button--tertiary" title="Duplicate">
+    <form method='post' action="{% url "workflows:duplicate" object.id %}">
+      {% csrf_token %}
+      <button type='submit'>
+        <i class="far fa-fw fa-copy"></i>
+      </button>
+    </form>
   </span>
+
   <div data-controller='popover'>
     <span
           data-popover-target="trigger"
