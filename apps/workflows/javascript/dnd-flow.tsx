@@ -4,7 +4,6 @@ import ReactFlow, {
   addEdge,
   removeElements,
   Controls,
-  ControlButton,
   updateEdge,
   isNode,
   Edge,
@@ -282,7 +281,7 @@ const DnDFlow = ({ client, workflowId }) => {
         </NodeContext.Provider>
       </div>
       <Sidebar />
-    </div >
+    </div>
   )
 }
 
