@@ -19,7 +19,7 @@ from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .forms import FORM_CLASS_MAP, FivetranForm, IntegrationForm, SheetCreateForm
+from .forms import FivetranForm, IntegrationForm, SheetCreateForm
 from .models import Integration
 from .tables import IntegrationTable, StructureTable
 
@@ -190,7 +190,7 @@ class IntegrationUpdate(ProjectMixin, TurboUpdateView):
         return context_data
 
     def get_form_class(self):
-        return FORM_CLASS_MAP[self.object.kind]
+        return IntegrationForm
 
     def get_success_url(self) -> str:
         return reverse(
@@ -250,7 +250,7 @@ class IntegrationSettings(ProjectMixin, TurboUpdateView):
         return context_data
 
     def get_form_class(self):
-        return FORM_CLASS_MAP[self.object.kind]
+        return IntegrationForm
 
     def get_success_url(self) -> str:
         return reverse(
