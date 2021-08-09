@@ -52,6 +52,7 @@ class Migration(migrations.Migration):
         FROM integrations_integration
         where kind = 'csv'
         ;
-        """
+        """,
+            reverse_sql=migrations.RunSQL.noop,
         ),
     ]

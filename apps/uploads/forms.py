@@ -22,23 +22,9 @@ class CSVForm(forms.ModelForm):
 class CSVCreateForm(forms.ModelForm):
     class Meta:
         model = Upload
-        fields = ["name", "project"]
-        widgets = {
-            "project": HiddenInput(),
-            "name": HiddenInput(),
-        }
+        fields = ["project"]
+        widgets = {"project": HiddenInput()}
 
     file = forms.CharField(
         widget=GCSFileUpload(attrs={"accept": ".csv"}),
     )
-
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.name = self.cleaned_data["file"].split(".").pop(0)
-
-        if commit:
-            with transaction.atomic():
-                instance.save()
-                self.save_m2m()
-
-        return instance
