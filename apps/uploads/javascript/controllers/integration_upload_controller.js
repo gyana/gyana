@@ -46,7 +46,7 @@ export default class extends Controller {
           window.schema,
           ['uploads', 'file', 'generate-signed-url', 'create'],
           {
-            session_key: this.fileIdValue,
+            // session_key: this.fileIdValue,
             filename: file.name,
           }
         )
@@ -82,15 +82,15 @@ export default class extends Controller {
       }
       // This unload call spawns a warning when the user tries to unload the page (visiting another url, refreshing the page, etc..)
       window.addEventListener('beforeunload', this.onUnloadCall)
-      window.gyanaFileState[this.fileIdValue].on('progress', this.progressCall)
-      window.gyanaFileState[this.fileIdValue].on('success', this.successCall)
+      window.gyanaFileState[this.fileIdValue].addEventListener('progress', this.progressCall)
+      window.gyanaFileState[this.fileIdValue].addEventListener('success', this.successCall)
     }
   }
 
   disconnect() {
     if (!this.inhibitUploadValue) {
-      window.gyanaFileState[this.fileIdValue].off(this.progressCall)
-      window.gyanaFileState[this.fileIdValue].off(this.successCall)
+      window.gyanaFileState[this.fileIdValue].removeEventListener('progress', this.progressCall)
+      window.gyanaFileState[this.fileIdValue].removeEventListener('success', this.successCall)
       window.removeEventListener('beforeunload', this.onUnloadCall)
     }
   }

@@ -3,7 +3,7 @@
      data-controller='integration-upload'
      data-integration-upload-file-id-value="{{ instance_session_key }}"
      data-integration-upload-file-input-id-value="{{ file_input_id }}"
-     data-integration-upload-inhibit-upload-value="{% if stage != "upload" %}true{% else %}false{% endif %}"
+     {% comment %} data-integration-upload-inhibit-upload-value="{% if stage != "upload" %}true{% else %}false{% endif %}" {% endcomment %}
      >
   {% if stage == "upload" %}
   <div class="integration__file-progress mr-4">

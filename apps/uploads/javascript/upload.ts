@@ -31,7 +31,7 @@ class GoogleUploader {
 
   sessionURI: string
 
-  events: [keyof EventMap, EventMap[keyof EventMap]][]
+  listeners: [keyof EventMap, EventMap[keyof EventMap]][]
 
   constructor(options: GoogleUploaderOptions) {
     const {
@@ -49,19 +49,17 @@ class GoogleUploader {
     this.shouldChunk = file.size > chunkSize
     this.retryCount = 0
 
-    this.events = []
+    this.listeners = { progress: [], success: [], error: [] }
 
     if (file.size > maxSize) throw 'This file is too large'
   }
 
-  on<K extends keyof EventMap>(event: K, cb: EventMap[K]) {
-    this.events.push([event, cb])
+  addEventListener(event, callback) {
+    this.listeners[event].push(callback)
   }
-  off(cb: EventMap[keyof EventMap]) {
-    const idx = this.events.map(([ev, cb_]) => cb_).indexOf(cb)
-    if (idx > -1) {
-      this.events.splice(idx, 1)
-    }
+  removeEventListener(event, callback: EventMap[keyof EventMap]) {
+    const idx = this.listeners[event].indexOf(callback)
+    if (idx > -1) this.listeners.splice(idx, 1)
   }
 
   /**
@@ -100,46 +98,47 @@ class GoogleUploader {
 
       // Calculate percent uploaded
       const percentComplete = Math.round((loaded / this.file.size) * 1000) / 10
-      this.events.forEach(([ev, cb]) => ev === 'progress' && cb(percentComplete))
+      this.listeners['progress'].forEach((callback) => callback(percentComplete))
     })
 
-    const self = this
     // Load handler when the XHR request returns
     request.addEventListener('load', async () => {
-      // 308 Resume Incomplete is returned when chunks are missing
-      if (request.status === 308) {
-        // Range header can have the following shapes:
-        // bytes=0-1999
-        // bytes=-2000
-        // bytes=2000-
-        const newStart = parseInt(
-          (request.getResponseHeader('Range') as string).split('-').pop() as string
-        )
-        // If the start is not NaN we know that there's more to be sent
-        if (!Number.isNaN(newStart)) self.sendChunk(newStart)
-      }
+      switch (request.status) {
+        // 308 Resume Incomplete is returned when chunks are missing
+        case 308:
+          // Range header can have the following shapes:
+          // bytes=0-1999
+          // bytes=-2000
+          // bytes=2000-
+          const newStart = parseInt(
+            (request.getResponseHeader('Range') as string).split('-').pop() as string
+          )
+          // If the start is not NaN we know that there's more to be sent
+          if (!Number.isNaN(newStart)) this.sendChunk(newStart)
 
-      if ([500, 503].includes(request.status)) {
-        if (self.retryCount < self.maxBackoff) {
-          // Our current request has fail so let's retry with an exp backoff
-          setTimeout(() => {
-            self.retryCount += 1
-            self.sendChunk(start)
-          }, Math.pow(2, self.retryCount) + Math.ceil(Math.random() * 1000))
-        } else {
-          // If after the backoff it still fails we throw an error
-          this.events.forEach(([ev, cb]) => ev === 'error' && cb())
-        }
-      }
-
-      if ([200, 201].includes(request.status)) {
         // The upload has completed and succeeded
-        this.events.forEach(([ev, cb]) => ev === 'success' && cb())
-      }
+        case 201:
+        case 200:
+          this.listeners['success'].forEach((callback) => callback())
 
-      // We got an unexpected result, log this in Sentry
-      if (!EXPECTED_RESPONSE_CODES.includes(request.status)) {
-        this.events.forEach(([ev, cb]) => ev === 'error' && cb())
+        case 500:
+        case 502:
+        case 503:
+        case 504:
+          if (this.retryCount < this.maxBackoff) {
+            // Our current request has fail so let's retry with an exp backoff
+            setTimeout(() => {
+              this.retryCount += 1
+              this.sendChunk(start)
+            }, Math.pow(2, this.retryCount) + Math.ceil(Math.random() * 1000))
+          } else {
+            // If after the backoff it still fails we throw an error
+            this.listeners['error'].forEach((callback) => callback())
+          }
+
+        // We got an unexpected result, log this in Sentry
+        default:
+          this.listeners['error'].forEach((callback) => callback())
       }
     })
 

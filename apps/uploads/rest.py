@@ -35,7 +35,7 @@ from .tasks import file_sync
         ]
     )
 )
-def generate_signed_url(request: Request, session_key: str):
+def generate_signed_url(request: Request):
     filename = request.data["filename"]
     filename, file_extension = os.path.splitext(filename)
     path = f"{settings.CLOUD_NAMESPACE}/integrations/{filename}-{slugify(time.time())}{file_extension}"
@@ -50,7 +50,7 @@ def generate_signed_url(request: Request, session_key: str):
         method="RESUMABLE",
     )
 
-    request.session[session_key] = {**request.session[session_key], "file": path}
+    # request.session[session_key] = {**request.session[session_key], "file": path}
 
     return Response({"url": url})
 

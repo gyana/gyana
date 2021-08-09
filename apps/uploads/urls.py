@@ -5,7 +5,7 @@ from . import rest, views
 
 app_name = "uploads"
 urlpatterns = [
-    path("file/<str:session_key>/generate-signed-url", rest.generate_signed_url),
+    path("file/generate-signed-url", rest.generate_signed_url),
     path("file/<str:session_key>/start-sync", rest.start_sync),
     path(
         "file/<str:session_key>/upload-complete",
