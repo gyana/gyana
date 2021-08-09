@@ -20,7 +20,8 @@ from rest_framework.schemas import AutoSchema
 from turbo_response.stream import TurboStream
 
 from .forms import CSVCreateForm
-from .tasks import file_sync
+
+# from .tasks import file_sync
 
 
 @api_view(["POST"])

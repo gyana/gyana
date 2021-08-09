@@ -11,7 +11,7 @@ from django.views.generic.detail import DetailView
 from turbo_response.views import TurboCreateView
 
 from .forms import CSVCreateForm
-from .tasks import file_sync
+from .tasks import run_initial_upload_sync
 
 
 class UploadCreate(ProjectMixin, TurboCreateView):
@@ -49,7 +49,7 @@ class UploadCreate(ProjectMixin, TurboCreateView):
             },
         )
 
-        result = file_sync.delay(self.object.file, self.object.project.id)
+        result = run_initial_upload_sync.delay(self.object.file, self.object.project.id)
         self.object.external_table_sync_task_id = result.task_id
         self.object.save()
 
