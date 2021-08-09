@@ -104,7 +104,7 @@ class Filter(CloneMixin, DirtyFieldsMixin, BaseModel):
     string_value = models.TextField(null=True, blank=True)
     string_values = ArrayField(models.TextField(), null=True)
 
-    bool_value = models.BooleanField(null=True, blank=True)
+    bool_value = models.BooleanField(default=True)
 
     def __str__(self):
         return self.column

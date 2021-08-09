@@ -98,6 +98,9 @@ class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
             "string_value",
             "label",
         )
+        widgets = {
+            "string_value": forms.Textarea(attrs={"rows": 1}),
+        }
 
     def get_live_fields(self):
         fields = ["column"]
@@ -106,13 +109,13 @@ class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
             fields += ["integer_function"]
 
             if self.get_live_field("integer_function") is not None:
-                fields += ["label"]
+                fields += ["integer_value", "label"]
 
         elif self.column_type == "String":
             fields += ["string_function"]
 
             if self.get_live_field("string_function") is not None:
-                fields += ["label"]
+                fields += ["label", "string_value"]
 
         return fields
 
