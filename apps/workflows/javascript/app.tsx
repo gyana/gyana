@@ -11,18 +11,21 @@ let auth = new coreapi.auth.SessionAuthentication({
 
 let client = new coreapi.Client({ auth: auth })
 
+const PAUSE = 200
+const MAX_TIME = 5000
 const Canvas: React.FC<{ client: coreapi.Client; workflowId: number }> = ({
   client,
   workflowId,
 }) => {
-  const [_, setHasSchema] = useState(false)
+  const [finishedPinging, setFinishedPinging] = useState(false)
 
   useEffect(() => {
     const checkSchemaExists = async () => {
-      while (!window.schema) {
-        await new Promise((resolve) => setTimeout(resolve, 200))
+      for (let time = 0; time < MAX_TIME; time += PAUSE) {
+        if (window.schema) break
+        await new Promise((resolve) => setTimeout(resolve, PAUSE))
       }
-      setHasSchema(true)
+      setFinishedPinging(true)
     }
     checkSchemaExists()
   }, [])
@@ -31,9 +34,13 @@ const Canvas: React.FC<{ client: coreapi.Client; workflowId: number }> = ({
 
   return (
     <div className='dndflow'>
-      <div className='placeholder-scr placeholder-scr--fillscreen'>
-        <i className='placeholder-scr__icon fad fa-spinner-third fa-spin'></i>
-      </div>
+      {finishedPinging ? (
+        <span>Something went wrong</span>
+      ) : (
+        <div className='placeholder-scr placeholder-scr--fillscreen'>
+          <i className='placeholder-scr__icon fad fa-spinner-third fa-spin'></i>
+        </div>
+      )}
     </div>
   )
 }
