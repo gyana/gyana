@@ -23,7 +23,7 @@ export default class extends Controller {
         if (this.redirectUrlValue) {
           setTimeout(() => {
             Turbo.visit(this.redirectUrlValue)
-          }, 1500)
+          }, 750)
         } else if (this.turboStreamUrlValue) {
           const html = await (await fetch(this.turboStreamUrlValue)).text()
           Turbo.renderStreamMessage(html)

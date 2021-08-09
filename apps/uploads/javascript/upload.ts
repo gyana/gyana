@@ -1,5 +1,3 @@
-const EXPECTED_RESPONSE_CODES = [308, 500, 503, 200, 201]
-
 interface GoogleUploaderOptions {
   file: File
   target: string
@@ -31,7 +29,7 @@ class GoogleUploader {
 
   sessionURI: string
 
-  listeners: [keyof EventMap, EventMap[keyof EventMap]][]
+  listeners: { [key: keyof EventMap]: EventMap[keyof EventMap][] }
 
   constructor(options: GoogleUploaderOptions) {
     const {
@@ -46,12 +44,14 @@ class GoogleUploader {
     this.chunkSize = chunkSize
     this.maxBackoff = maxBackoff
 
-    this.shouldChunk = file.size > chunkSize
     this.retryCount = 0
 
     this.listeners = { progress: [], success: [], error: [] }
 
     if (file.size > maxSize) throw 'This file is too large'
+
+    this.handleLoad.bind(this)
+    this.handleProgress.bind(this)
   }
 
   addEventListener(event, callback) {
@@ -59,7 +59,7 @@ class GoogleUploader {
   }
   removeEventListener(event, callback: EventMap[keyof EventMap]) {
     const idx = this.listeners[event].indexOf(callback)
-    if (idx > -1) this.listeners.splice(idx, 1)
+    if (idx > -1) this.listeners[event].splice(idx, 1)
   }
 
   /**
@@ -89,66 +89,69 @@ class GoogleUploader {
   sendChunk(start: number) {
     const request = new XMLHttpRequest()
 
-    const end = start + this.chunkSize > this.file.size ? this.file.size : start + this.chunkSize
-    const fileChunk = this.shouldChunk ? this.file.slice(start, end) : this.file
-
-    request.upload.addEventListener('progress', (e) => {
-      // Get the loaded amount and total filesize (bytes)
-      const loaded = start + e.loaded
-
-      // Calculate percent uploaded
-      const percentComplete = Math.round((loaded / this.file.size) * 1000) / 10
-      this.listeners['progress'].forEach((callback) => callback(percentComplete))
-    })
-
-    // Load handler when the XHR request returns
-    request.addEventListener('load', async () => {
-      switch (request.status) {
-        // 308 Resume Incomplete is returned when chunks are missing
-        case 308:
-          // Range header can have the following shapes:
-          // bytes=0-1999
-          // bytes=-2000
-          // bytes=2000-
-          const newStart = parseInt(
-            (request.getResponseHeader('Range') as string).split('-').pop() as string
-          )
-          // If the start is not NaN we know that there's more to be sent
-          if (!Number.isNaN(newStart)) this.sendChunk(newStart)
-
-        // The upload has completed and succeeded
-        case 201:
-        case 200:
-          this.listeners['success'].forEach((callback) => callback())
-
-        case 500:
-        case 502:
-        case 503:
-        case 504:
-          if (this.retryCount < this.maxBackoff) {
-            // Our current request has fail so let's retry with an exp backoff
-            setTimeout(() => {
-              this.retryCount += 1
-              this.sendChunk(start)
-            }, Math.pow(2, this.retryCount) + Math.ceil(Math.random() * 1000))
-          } else {
-            // If after the backoff it still fails we throw an error
-            this.listeners['error'].forEach((callback) => callback())
-          }
-
-        // We got an unexpected result, log this in Sentry
-        default:
-          this.listeners['error'].forEach((callback) => callback())
-      }
-    })
+    request.upload.addEventListener('progress', (event) => this.handleProgress(event, start))
+    // recursive via handleLoad
+    request.addEventListener('load', () => this.handleLoad(request, start))
 
     request.open('put', this.sessionURI)
     request.responseType = 'blob'
-    if (this.shouldChunk) {
-      request.setRequestHeader('Content-Range', `bytes ${start}-${end - 1}/${this.file.size}`)
-    }
     request.setRequestHeader('x-goog-resumable', 'start')
-    request.send(fileChunk)
+
+    // small files are uploaded directly without chunks
+    if (this.file.size > this.chunkSize) {
+      const end = Math.min(start + this.chunkSize, this.file.size)
+      request.setRequestHeader('Content-Range', `bytes ${start}-${end - 1}/${this.file.size}`)
+      request.send(this.file.slice(start, end))
+    } else {
+      request.send(this.file)
+    }
+  }
+
+  // get the total loaded and calculate percent uploaded
+  handleProgress(event: ProgressEvent, start: number) {
+    const loaded = start + event.loaded
+    const percentComplete = Math.round((loaded / this.file.size) * 1000) / 10
+    this.listeners['progress'].forEach((callback) => callback(percentComplete))
+  }
+
+  // handle errors, continue with upload or success
+  handleLoad(request: XMLHttpRequest, start: number) {
+    switch (request.status) {
+      // chunks are missing
+      case 308:
+        // Range header can have the following shapes:
+        // bytes=0-1999
+        // bytes=-2000
+        // bytes=2000-
+        const newStart = parseInt(
+          (request.getResponseHeader('Range') as string).split('-').pop() as string
+        )
+        // if the start is not NaN we know that there's more to be sent
+        if (!Number.isNaN(newStart)) this.sendChunk(newStart)
+
+      // success
+      case 201:
+      case 200:
+        this.listeners['success'].forEach((callback) => callback())
+
+      // retry failing results with exponential backoff or fail
+      case 500:
+      case 502:
+      case 503:
+      case 504:
+        if (this.retryCount < this.maxBackoff) {
+          setTimeout(() => {
+            this.retryCount += 1
+            this.sendChunk(start)
+          }, Math.pow(2, this.retryCount) + Math.ceil(Math.random() * 1000))
+        } else {
+          this.listeners['error'].forEach((callback) => callback())
+        }
+
+      // unknown error
+      default:
+        this.listeners['error'].forEach((callback) => callback())
+    }
   }
 }
 
