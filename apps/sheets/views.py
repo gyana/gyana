@@ -7,9 +7,10 @@ from django.http.response import HttpResponseRedirect
 from django.urls.base import reverse
 from django.utils import timezone
 from django.views.generic import DetailView
+from django.views.generic.edit import UpdateView
 from turbo_response.views import TurboCreateView
 
-from .forms import SheetForm
+from .forms import SheetCreateForm, SheetUpdateForm
 from .models import Sheet
 from .tasks import run_initial_sheets_sync
 
@@ -17,7 +18,7 @@ from .tasks import run_initial_sheets_sync
 class SheetCreate(ProjectMixin, TurboCreateView):
     template_name = "sheets/create.html"
     model = Sheet
-    form_class = SheetForm
+    form_class = SheetCreateForm
 
     def get_initial(self):
         initial = super().get_initial()
