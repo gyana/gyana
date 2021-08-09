@@ -30,9 +30,10 @@
 
   <div data-controller='popover'>
     <span
-          data-popover-target="trigger"
-          data-action="click->popover#trigger"
-          class="button button--circle button--tertiary">
+      data-popover-target="trigger"
+      data-action="click->popover#trigger"
+      class="button button--circle button--tertiary"
+    > 
       <i class="far fa-fw fa-trash"></i>
     </span>
     <div data-popover-target="body" hidden class="popover-body shadow-sm">
@@ -78,9 +79,10 @@
 </div>
 
 <div class="dashboard">
-  <turbo-frame id="widgets"
-               src="{% url 'dashboard_widgets:list' project.id object.id %}?mode={{ request.GET.mode|default:'edit' }}"
-               target="_top">
+  <turbo-frame 
+    id="widgets"
+    src="{% url 'dashboard_widgets:list' project.id object.id %}?mode={{ request.GET.mode|default:'edit' }}{% if request.GET.modal_item %}&modal_item={{ request.GET.modal_item }}{% endif %}"
+    target="_top">
   </turbo-frame>
 </div>
 {% endblock %}

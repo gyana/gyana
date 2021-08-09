@@ -23,7 +23,7 @@ const DeleteButton = ({ id }) => {
 const OpenButton = ({ id }) => {
   return (
     <button data-action='click->tf-modal#open'>
-      <i data-src={`/nodes/${id}`} className='fas fa-edit fa-lg'></i>
+      <i data-src={`/nodes/${id}`} data-item={id} className='fas fa-edit fa-lg'></i>
     </button>
   )
 }
@@ -150,6 +150,7 @@ const InputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
         className={`fas fa-fw ${data.icon}  ${showContent && 'absolute opacity-10'}`}
         data-src={`/nodes/${id}`}
         data-action='dblclick->tf-modal#open'
+        data-item={id}
       ></i>
       {showContent && (
         <div className='p-2'>
@@ -180,6 +181,7 @@ const OutputNode = ({ id, data, isConnectable, selected }: NodeProps) => {
       <i
         data-action='dblclick->tf-modal#open'
         data-src={`/nodes/${id}`}
+        data-item={id}
         className={`fas fa-fw ${data.icon} ${showContent && 'absolute opacity-10'}`}
       ></i>
       {showContent && (
@@ -219,6 +221,7 @@ const DefaultNode = ({
       <i
         data-action='dblclick->tf-modal#open'
         data-src={`/nodes/${id}`}
+        data-item={id}
         className={`fas fa-fw ${data.icon} ${showContent && 'absolute opacity-10'}`}
       ></i>
       {showContent && <Description id={id} data={data} />}
