@@ -34,6 +34,7 @@ const DnDFlow = ({ client, workflowId }) => {
   const [isOutOfDate, setIsOutOfDate] = useState(false)
   const [hasBeenRun, setHasBeenRun] = useState(false)
   // State whether the initial element load has been done
+  const [initialLoadDone, setInitialLoadDone] = useState(false)
   const [viewHasChanged, setViewHasChanged] = useState(false)
 
   const updateParents = (id: string, parents: string[]) =>
@@ -183,6 +184,7 @@ const DnDFlow = ({ client, workflowId }) => {
           }, [])
         setElements([...newElements, ...edges])
         setViewHasChanged(true)
+        setInitialLoadDone(true)
       })
 
   useEffect(() => {
@@ -277,6 +279,12 @@ const DnDFlow = ({ client, workflowId }) => {
               isOutOfDate={isOutOfDate}
               setIsOutOfDate={setIsOutOfDate}
             />
+            {(viewHasChanged || !initialLoadDone) && (
+              <div className='placeholder-scr placeholder-scr--fillscreen'>
+                <i className='placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x'></i>
+                Loading nodes
+              </div>
+            )}
           </ReactFlow>
         </NodeContext.Provider>
       </div>
