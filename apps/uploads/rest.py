@@ -52,7 +52,7 @@ def generate_signed_url(request: Request):
 
     # request.session[session_key] = {**request.session[session_key], "file": path}
 
-    return Response({"url": url})
+    return Response({"url": url, "path": path})
 
 
 @api_view(["POST"])

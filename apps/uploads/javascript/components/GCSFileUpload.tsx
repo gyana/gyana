@@ -14,9 +14,8 @@ const start_upload = async (input: HTMLInputElement, setProgress, setStage, inpu
   setStage('progress')
 
   const file = input.files[0]
-  inputRef.current.value = file.name
 
-  const { url: target } = await getApiClient().action(
+  const { url: target, path } = await getApiClient().action(
     window.schema,
     ['uploads', 'file', 'generate-signed-url', 'create'],
     {
@@ -24,6 +23,8 @@ const start_upload = async (input: HTMLInputElement, setProgress, setStage, inpu
       filename: file.name,
     }
   )
+
+  inputRef.current.value = path
 
   const uploader = new GoogleUploader({
     target,
@@ -46,7 +47,7 @@ const GCSFileUpload_: React.FC<IProps> = ({ name, accept }) => {
   useEffect(() => {
     if (fileRef.current) {
       fileRef.current.addEventListener('change', (event) => {
-        start_upload(event.target, setProgress, setStage)
+        start_upload(event.target, setProgress, setStage, inputRef)
       })
     }
   }, [])

@@ -1,7 +1,7 @@
-from django.forms.widgets import FileInput
+from django.forms.widgets import TextInput
 
 
-class GCSFileUpload(FileInput):
+class GCSFileUpload(TextInput):
     class Media:
         js = ("js/components-bundle.js",)
 
