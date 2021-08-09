@@ -17,9 +17,14 @@ urlpatterns = [
 integration_urlpatterns = (
     [
         path(
-            "",
-            login_and_project_required(views.IntegrationUpload.as_view()),
-            name="upload",
+            "new",
+            login_and_project_required(views.UploadCreate.as_view()),
+            name="create",
+        ),
+        path(
+            "<hashid:pk>",
+            login_and_project_required(views.UploadDetail.as_view()),
+            name="detail",
         ),
     ],
     "project_integrations_uploads",

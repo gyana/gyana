@@ -1,5 +1,7 @@
 from apps.integrations.models import Integration
+from apps.uploads.widgets import GCSFileUpload
 from django import forms
+from django.db import transaction
 from django.forms.widgets import HiddenInput
 from pathvalidate import ValidationError as PathValidationError
 from pathvalidate import validate_filename
@@ -19,35 +21,24 @@ class CSVForm(forms.ModelForm):
 
 class CSVCreateForm(forms.ModelForm):
     class Meta:
-        model = Integration
-        fields = ["name", "kind", "project"]
+        model = Upload
+        fields = ["name", "project"]
         widgets = {
-            "kind": HiddenInput(),
             "project": HiddenInput(),
             "name": HiddenInput(),
         }
 
     file = forms.CharField(
-        widget=forms.FileInput(
-            attrs={
-                "accept": ".csv",
-                "onchange": "(function(input){document.getElementById('id_name').value=input.files[0].name})(this)",
-            }
-        ),
-        required=False,
+        widget=GCSFileUpload(attrs={"accept": ".csv"}),
     )
 
-    def clean_name(self):
-        name = self.cleaned_data["name"]
-        try:
-            validate_filename(name)
-        except PathValidationError:
-            self.add_error("file", "Invalid file name")
-
-        return name.split(".").pop(0)
-
     def save(self, commit=True):
-        # saved automatically by parent
-        Upload(integration=self.instance)
+        instance = super().save(commit=False)
+        instance.name = self.cleaned_data["file"].split(".").pop(0)
 
-        return super().save(commit)
+        if commit:
+            with transaction.atomic():
+                instance.save()
+                self.save_m2m()
+
+        return instance
