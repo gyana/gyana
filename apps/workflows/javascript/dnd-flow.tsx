@@ -4,6 +4,7 @@ import ReactFlow, {
   addEdge,
   removeElements,
   Controls,
+  ControlButton,
   updateEdge,
   isNode,
   Edge,
@@ -256,15 +257,16 @@ const DnDFlow = ({ client, workflowId }) => {
             maxZoom={2}
             minZoom={0.05}
           >
-            <Controls />
+            <Controls>
+              <LayoutButton
+                elements={elements}
+                setElements={setElements}
+                client={client}
+                setViewHasChanged={setViewHasChanged}
+                workflowId={workflowId}
+              />
+            </Controls>
             <Background gap={GRID_GAP} />
-            <LayoutButton
-              elements={elements}
-              setElements={setElements}
-              client={client}
-              setViewHasChanged={setViewHasChanged}
-              workflowId={workflowId}
-            />
             <RunButton
               hasOutput={hasOutput}
               hasBeenRun={hasBeenRun}
@@ -280,7 +282,7 @@ const DnDFlow = ({ client, workflowId }) => {
         </NodeContext.Provider>
       </div>
       <Sidebar />
-    </div>
+    </div >
   )
 }
 
