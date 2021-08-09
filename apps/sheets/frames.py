@@ -71,6 +71,9 @@ class SheetUpdate(TurboFrameUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "sheets:update",
-            args=(self.object.id,),
+            "project_integrations:detail",
+            args=(
+                self.object.integration.project.id,
+                self.object.integration.id,
+            ),
         )

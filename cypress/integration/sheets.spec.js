@@ -106,4 +106,19 @@ describe('sheets', () => {
     cy.visit('/projects/1/integrations/sheets/1')
     cy.url().should('contain', '/projects/1/integrations/2')
   })
+  it('update the cell range and re-sync', () => {
+    cy.contains('Store info sheet').click()
+
+    cy.get('#tabbar').within(() => cy.contains('Settings').click())
+
+    cy.get('input[name=cell_range]').clear().type('store_info!A1:D6')
+    cy.get('button[type=submit]').click()
+
+    cy.contains('See the sync progress.').click()
+    cy.contains('Sync started')
+    cy.contains('Reload to see results').click()
+
+    // new cell range includes 5 rows of data
+    cy.contains('5')
+  })
 })
