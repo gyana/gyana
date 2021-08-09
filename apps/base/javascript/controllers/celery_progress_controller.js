@@ -29,10 +29,11 @@ export default class extends Controller {
           Turbo.renderStreamMessage(html)
         }
       },
-      onError: () => {
+      onError: (progressBarElement, progressBarMessageElement, excMessage, data) => {
         const failureNode = this.element.querySelector('#failure-template').content.cloneNode(true)
         this.element.innerHTML = ''
         this.element.appendChild(failureNode)
+        this.element.querySelector('#failure-message').textContent = excMessage || ''
       },
     })
   }

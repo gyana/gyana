@@ -49,7 +49,7 @@ describe('uploads', () => {
     // 2250 lines of CSV including header
     cy.contains(2249)
   })
-  it('validation failures', () => {
+  it('upload failures', () => {
     // invalid format - better way to test this?
     cy.visit('/projects/1/integrations/uploads/new')
     cy.get('input[type=file]').invoke('attr', 'accept').should('eq', '.csv')
@@ -77,7 +77,13 @@ describe('uploads', () => {
     cy.contains('Errors occurred when uploading your file')
     cy.contains('Server error, try again later')
   })
-  it.only('runtime failures', () => {
+  it('runtime failures', () => {
     cy.visit('/projects/1/integrations/uploads/new')
+
+    // bigquery does not allow quoted newlines unless explicitly set
+    cy.get('input[type=file]').attachFile('store_info_quoted_newlines.csv')
+    cy.contains(
+      'Error while reading data, error message: Error detected while parsing row starting at position: 52. Error: Missing close double quote (") character.'
+    )
   })
 })
