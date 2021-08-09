@@ -6,7 +6,6 @@ from apps.projects.models import Project
 from apps.users.models import CustomUser
 from django.db import models
 from django.utils import timezone
-from ibis.expr.types import null
 
 
 class Sheet(BaseModel):

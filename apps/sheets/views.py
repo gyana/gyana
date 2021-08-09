@@ -7,10 +7,9 @@ from django.http.response import HttpResponseRedirect
 from django.urls.base import reverse
 from django.utils import timezone
 from django.views.generic import DetailView
-from django.views.generic.edit import UpdateView
 from turbo_response.views import TurboCreateView
 
-from .forms import SheetCreateForm, SheetUpdateForm
+from .forms import SheetCreateForm
 from .models import Sheet
 from .tasks import run_initial_sheets_sync
 

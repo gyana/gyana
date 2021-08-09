@@ -6,7 +6,9 @@ from apps.base.segment_analytics import (
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from apps.uploads.models import Upload
+from django.http.response import HttpResponseRedirect
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic.detail import DetailView
 from turbo_response.views import TurboCreateView
 
@@ -51,6 +53,7 @@ class UploadCreate(ProjectMixin, TurboCreateView):
 
         result = run_initial_upload_sync.delay(self.object.id)
         self.object.external_table_sync_task_id = result.task_id
+        self.object.external_table_sync_started = timezone.now()
         self.object.save()
 
         return r
@@ -65,3 +68,14 @@ class UploadCreate(ProjectMixin, TurboCreateView):
 class UploadDetail(ProjectMixin, DetailView):
     template_name = "uploads/detail.html"
     model = Upload
+
+    def get(self, request, *args, **kwargs):
+        upload = self.get_object()
+        if not upload.is_syncing:
+            return HttpResponseRedirect(
+                reverse(
+                    "project_integrations:detail",
+                    args=(self.project.id, upload.integration.id),
+                )
+            )
+        return super().get(request, *args, **kwargs)
