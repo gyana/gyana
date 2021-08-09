@@ -36,7 +36,7 @@ class GoogleUploader {
       file,
       target,
       listeners,
-      chunkSize = 10 * 1024 * 1024,
+      chunkSize = window.__cypressChunkSize__ || 10 * 1024 * 1024,
       maxBackoff = 4,
       maxSize = Math.pow(1024, 3),
     } = options
