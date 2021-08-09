@@ -67,7 +67,11 @@ describe('uploads', () => {
     cy.contains('This file is too large')
 
     // upload errors e.g. bad connectivity or Google is down
-    cy.visit('/projects/1/integrations/uploads/new')
+    cy.visit('/projects/1/integrations/uploads/new', {
+      onBeforeLoad(window) {
+        window.__cypressMaxBackoff__ = 1
+      },
+    })
     cy.intercept(
       { method: 'PUT', url: 'https://storage.googleapis.com/gyana-local/**/*' },
       { statusCode: 500 }
@@ -83,7 +87,8 @@ describe('uploads', () => {
     // bigquery does not allow quoted newlines unless explicitly set
     cy.get('input[type=file]').attachFile('store_info_quoted_newlines.csv')
     cy.contains(
-      'Error while reading data, error message: Error detected while parsing row starting at position: 52. Error: Missing close double quote (") character.'
+      'Error while reading data, error message: Error detected while parsing row starting at position: 52. Error: Missing close double quote (") character.',
+      { timeout: 10000 }
     )
   })
 })
