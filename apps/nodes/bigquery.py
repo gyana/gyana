@@ -2,11 +2,11 @@ import inspect
 import logging
 
 import ibis
+from apps.base.clients import DATAFLOW_ID, bigquery_client, ibis_client
 from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
-from apps.base.clients import DATAFLOW_ID, bigquery_client, ibis_client
 from django.utils import timezone
 from ibis.expr.datatypes import String
 
@@ -285,6 +285,10 @@ def get_window_query(node, query):
     return query
 
 
+def get_sentiment_query(node, query):
+    return query
+
+
 NODE_FROM_CONFIG = {
     "input": get_input_query,
     "output": get_output_query,
@@ -303,6 +307,7 @@ NODE_FROM_CONFIG = {
     "pivot": get_pivot_query,
     "unpivot": get_unpivot_query,
     "intersect": get_intersect_query,
+    "sentiment": get_sentiment_query,
     "window": get_window_query,
 }
 
