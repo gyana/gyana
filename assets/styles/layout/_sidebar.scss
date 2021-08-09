@@ -17,6 +17,15 @@
     flex: 1 1 0%;
   }
 
+  &__item {
+    border-left: 0.6rem solid var(--c-transparent);
+    display: block;
+    font-size: 1.4rem;
+    line-height: 1.6rem;
+    padding: 1.6rem 1.6rem 1.6rem 1rem;
+    text-align: left;
+  }
+
   &__link {
     border-left: 0.6rem solid var(--c-transparent);
     display: block;

@@ -18,13 +18,13 @@ class IntegrationUpload(ProjectMixin, TurboCreateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["integration_kind"] = Integration.Kind.CSV
+        context_data["integration_kind"] = Integration.Kind.UPLOAD
 
         return context_data
 
     def get_initial(self):
         initial = super().get_initial()
-        initial["kind"] = Integration.Kind.CSV
+        initial["kind"] = Integration.Kind.UPLOAD
         initial["project"] = self.project
 
         return initial
@@ -33,7 +33,7 @@ class IntegrationUpload(ProjectMixin, TurboCreateView):
         analytics.track(
             self.request.user.id,
             NEW_INTEGRATION_START_EVENT,
-            {"type": Integration.Kind.CSV},
+            {"type": Integration.Kind.UPLOAD},
         )
 
         return CSVCreateForm

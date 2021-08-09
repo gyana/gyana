@@ -1,18 +1,24 @@
 import googleapiclient
 from apps.base.clients import sheets_client
-from apps.integrations.bigquery import get_sheets_id_from_url
-from apps.integrations.models import Integration
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms.widgets import HiddenInput
 
+from .bigquery import get_sheets_id_from_url
+from .models import Sheet
 
-class GoogleSheetsForm(forms.ModelForm):
+
+class SheetForm(forms.ModelForm):
     class Meta:
-        model = Integration
-        fields = ["url", "name", "cell_range", "kind", "project", "enable_sync_emails"]
-        widgets = {"kind": HiddenInput(), "project": HiddenInput()}
+        model = Sheet
+        fields = [
+            "url",
+            "cell_range",
+            "project",
+        ]
+        widgets = {"project": HiddenInput()}
         help_texts = {}
+        labels = {"url": "Google Sheets URL"}
 
     def clean_url(self):
         url = self.cleaned_data["url"]
@@ -23,7 +29,7 @@ class GoogleSheetsForm(forms.ModelForm):
 
         client = sheets_client()
         try:
-            client.spreadsheets().get(spreadsheetId=sheet_id).execute()
+            self._sheet = client.spreadsheets().get(spreadsheetId=sheet_id).execute()
         except googleapiclient.errors.HttpError as e:
             raise ValidationError(
                 "We couldn't access the sheet using the URL provided! Did you give access to the right email?"

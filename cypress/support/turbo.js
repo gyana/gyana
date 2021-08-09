@@ -11,14 +11,15 @@
 // This solution uses events emitted by Turbo to wait until the operation is completed
 // Adapted from https://github.com/cypress-io/cypress/issues/1938#issuecomment-502201139
 
+const isSubmit = (el) => el.closest('input[type=submit],button[type=submit]')
+
 const isTurbo = (el) => {
   // check if turbo could be active for this click event
   // using el.closest to check all parent elements
   const isLink = el.closest('a')?.getAttribute('href')
-  const isSubmit = el.closest('input[type=submit],button[type=submit]')
   const dataTurboFalse = el.closest('[data-turbo=false]')
 
-  return (isLink || isSubmit) && !dataTurboFalse
+  return (isLink || isSubmit(el)) && !dataTurboFalse
 }
 
 // check if it is enclosed in an active turbo-frame
@@ -37,11 +38,16 @@ const click = (originalFn, subject, ...args) => {
         message: 'click and wait for page to load',
         consoleProps: () => ({ subject: subject }),
       })
-      // Turbo Drive: turbo:load event is emitted when completed
+      // Turbo Drive: turbo:load event is emitted when completed, except for failed form submissions
+      //    where turbo:render is available instead
       // Turbo Frame: there is no explicit event, the closest is turbo:before-fetch-response
       //    TODO: Possibly better solution is to wait for `FrameElement.loaded` promise to resolve
       // Turbo Stream: NYI
-      const event = isWithinTurboFrame(el) ? 'turbo:before-fetch-response' : 'turbo:load'
+      const event = isWithinTurboFrame(el)
+        ? 'turbo:before-fetch-response'
+        : isSubmit(el)
+        ? 'turbo:render'
+        : 'turbo:load'
 
       return new Cypress.Promise((resolve) => {
         const onTurboLoad = () => {

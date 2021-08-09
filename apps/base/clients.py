@@ -14,6 +14,9 @@ SLUG = slugify(settings.CLOUD_NAMESPACE)
 DATASET_ID = f"{SLUG}_integrations"
 DATAFLOW_ID = f"{SLUG}_dataflows"
 
+# BigQuery jobs are limited to 6 hours runtime
+BIGQUERY_JOB_LIMIT = 6 * 60 * 60
+
 
 def get_credentials():
     return google.auth.default(
@@ -29,6 +32,14 @@ def sheets_client():
     credentials, _ = get_credentials()
 
     return discovery.build("sheets", "v4", credentials=credentials)
+
+
+@lru_cache
+def drive_v2_client():
+    credentials, _ = get_credentials()
+
+    # latest v3 client does not return all metadata for file
+    return discovery.build("drive", "v2", credentials=credentials)
 
 
 @lru_cache

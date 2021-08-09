@@ -1,37 +1,10 @@
 [
   {
-    "model": "account.emailaddress",
-    "pk": 1,
-    "fields": { "user": 1, "email": "test@gyana.com", "verified": false, "primary": true }
-  },
-  {
-    "model": "account.emailaddress",
-    "pk": 2,
-    "fields": { "user": 3, "email": "alone@gyana.com", "verified": false, "primary": true }
-  },
-  {
-    "model": "account.emailaddress",
-    "pk": 3,
-    "fields": { "user": 4, "email": "member@gyana.com", "verified": false, "primary": true }
-  },
-  {
-    "model": "socialaccount.socialapp",
-    "pk": 1,
-    "fields": {
-      "provider": "google",
-      "name": "Google",
-      "client_id": "766404612569-gn5hok52al6q1ob04rfmha8k4bns09me.apps.googleusercontent.com",
-      "secret": "l9xbaHAi5xf4WuRji3PiTq-z",
-      "key": "",
-      "sites": [1]
-    }
-  },
-  {
     "model": "users.customuser",
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-07-29T09:32:34.862Z",
+      "last_login": "2021-08-08T20:28:20.372Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -152,21 +125,20 @@
       "updated": "2021-07-27T13:17:27.987Z",
       "name": "store_info",
       "project": 1,
-      "kind": "csv",
-      "enable_sync_emails": false,
-      "url": null,
-      "file": "cypress/integrations/store_info-1627391842010578.csv",
-      "cell_range": null,
-      "external_table_sync_task_id": null,
-      "has_initial_sync": false,
-      "last_synced": "2021-07-27T13:17:27.987Z",
-      "service": null,
-      "fivetran_id": null,
-      "schema": null,
-      "fivetran_authorized": false,
-      "fivetran_poll_historical_sync_task_id": null,
-      "historical_sync_complete": false,
+      "kind": "upload",
       "created_by": 1
+    }
+  },
+  {
+    "model": "integrations.integration",
+    "pk": 2,
+    "fields": {
+      "created": "2021-08-08T20:28:27.809Z",
+      "updated": "2021-08-08T20:28:27.809Z",
+      "name": "Store info sheet",
+      "project": 1,
+      "kind": "sheet",
+      "created_by": null
     }
   },
   {
@@ -187,6 +159,23 @@
     }
   },
   {
+    "model": "tables.table",
+    "pk": 2,
+    "fields": {
+      "created": "2021-08-08T20:28:24.385Z",
+      "updated": "2021-08-08T20:28:28.002Z",
+      "_bq_table": null,
+      "bq_dataset": "cypress_integrations",
+      "project": 1,
+      "source": "integration",
+      "integration": 2,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 10,
+      "data_updated": "2021-08-08T20:28:27.912Z"
+    }
+  },
+  {
     "model": "invites.invite",
     "pk": 1,
     "fields": {
@@ -199,6 +188,63 @@
       "role": "member",
       "created": "2021-07-29T09:32:54.971Z",
       "updated": "2021-07-29T09:33:49.004Z"
+    }
+  },
+  {
+    "model": "uploads.upload",
+    "pk": 1,
+    "fields": {
+      "created": "2021-07-27T13:17:27.984Z",
+      "updated": "2021-07-27T13:17:27.987Z",
+      "integration": 1,
+      "file": "cypress/integrations/store_info-1627391842010578.csv",
+      "external_table_sync_task_id": null,
+      "has_initial_sync": false,
+      "last_synced": "2021-07-27T13:17:27.987Z"
+    }
+  },
+  {
+    "model": "sheets.sheet",
+    "pk": 1,
+    "fields": {
+      "created": "2021-08-08T20:28:24.090Z",
+      "updated": "2021-08-08T20:28:28.005Z",
+      "project": 1,
+      "integration": 2,
+      "url": "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit",
+      "cell_range": "store_info!A1:D11",
+      "drive_file_last_modified": "2021-08-08T16:46:04.194Z",
+      "external_table_sync_task_id": "aa5c3086-1f87-434f-9d5b-48bd69786b33",
+      "external_table_sync_started": "2021-08-08T20:28:24.090Z",
+      "last_synced": "2021-08-08T20:28:28.004Z",
+      "created_by": 1
+    }
+  },
+  {
+    "model": "account.emailaddress",
+    "pk": 1,
+    "fields": { "user": 1, "email": "test@gyana.com", "verified": false, "primary": true }
+  },
+  {
+    "model": "account.emailaddress",
+    "pk": 2,
+    "fields": { "user": 3, "email": "alone@gyana.com", "verified": false, "primary": true }
+  },
+  {
+    "model": "account.emailaddress",
+    "pk": 3,
+    "fields": { "user": 4, "email": "member@gyana.com", "verified": false, "primary": true }
+  },
+  {
+    "model": "socialaccount.socialapp",
+    "pk": 1,
+    "fields": {
+      "provider": "google",
+      "name": "Google",
+      "client_id": "766404612569-gn5hok52al6q1ob04rfmha8k4bns09me.apps.googleusercontent.com",
+      "secret": "l9xbaHAi5xf4WuRji3PiTq-z",
+      "key": "",
+      "sites": [1]
     }
   }
 ]

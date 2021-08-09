@@ -20,7 +20,8 @@ DATABASES = {
 
 CYPRESS_URLS = True
 
-EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
+# like locmem but using JSON to store on disk
+EMAIL_BACKEND = "apps.base.cypress_mail.EmailBackend"
 
 CLOUD_NAMESPACE = "cypress"
 

@@ -14,8 +14,8 @@
     </turbo-frame>
   </h3>
 
-  {% if integration.kind == "google_sheets" %}
-  <a href="{{ integration.url }}" class="button button--circle button--tertiary" title="External source link">
+  {% if integration.kind == "sheet" %}
+  <a href="{{ integration.sheet.url }}" class="button button--circle button--tertiary" title="External source link">
     <i class="fas fa-link fa-sm mr-1"></i>
   </a>
   {% endif %}
@@ -36,9 +36,9 @@
     Data
   </a>
   {% endif %}
-  {% if integration.kind == integration.Kind.FIVETRAN %}
+  {% if integration.kind == integration.Kind.CONNECTOR %}
   <a class="tabbar__link {% if request.resolver_match.url_name == 'schema' %} tabbar__link--active {% endif %}"
-    href="{% url 'project_integrations:schema' project.id object.id %}">
+    href="{% url 'project_integrations_connectors:schema' project.id object.id %}">
     Schema
   </a>
   {% endif %}

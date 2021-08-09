@@ -4,9 +4,10 @@ import uuid
 
 import backoff
 import requests
-from apps.integrations.utils import get_services
 from django.conf import settings
 from django.shortcuts import redirect
+
+from .utils import get_services
 
 
 class FivetranClient:
@@ -84,9 +85,9 @@ class FivetranClient:
 
         backoff.on_predicate(backoff.expo, lambda x: x, max_time=3600)(
             self._is_historical_synced
-        )(integration.fivetran_id)
+        )(integration.connector.fivetran_id)
 
-        integration.historical_sync_complete = True
+        integration.connector.historical_sync_complete = True
         integration.save()
 
     def get_schema(self, fivetran_id):
@@ -120,7 +121,7 @@ class FivetranClient:
         Updating the schema relies on `updated_checkboxes` to be in an array with entries
         in the format of `{schema}` or `{schema}.{table}`.
 
-        Refer to `integrations/_schema.html` for an example of the structure.
+        Refer to `connectors/_schema.html` for an example of the structure.
         """
         schema = self.get_schema(fivetran_id)
 
@@ -192,11 +193,11 @@ class MockFivetranClient:
 
     def block_until_synced(self, integration):
         time.sleep(settings.MOCK_FIVETRAN_HISTORICAL_SYNC_SECONDS)
-        integration.historical_sync_complete = True
+        integration.connector.historical_sync_complete = True
         integration.save()
 
     def get_schema(self, fivetran_id):
-        with open('cypress/fixtures/google_analytics_schema.json', 'r') as f:
+        with open("cypress/fixtures/google_analytics_schema.json", "r") as f:
             return json.load(f)
 
     def update_schema(self, fivetran_id, updated_checkboxes):
@@ -204,6 +205,7 @@ class MockFivetranClient:
 
     def update_table_config(self, fivetran_id, schema, table_name: str, enabled: bool):
         pass
+
 
 if settings.MOCK_FIVETRAN:
     FivetranClient = MockFivetranClient

@@ -92,7 +92,7 @@ class Table(BaseModel):
     @property
     def owner_name(self):
         if self.source == self.Source.INTEGRATION:
-            if self.integration.kind == self.integration.Kind.FIVETRAN:
+            if self.integration.kind == self.integration.Kind.CONNECTOR:
                 return f"{self.integration.name} - {self.bq_table}"
             return self.integration.name
         return f"{self.workflow_node.workflow.name} - {self.workflow_node.output_name or 'Untitled'}"

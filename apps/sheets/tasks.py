@@ -1,3 +1,4 @@
+import textwrap
 import time
 from datetime import datetime
 from functools import reduce
@@ -5,115 +6,130 @@ from functools import reduce
 import analytics
 from apps.base.clients import DATASET_ID
 from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
-from apps.integrations.bigquery import sync_table
+from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
 from apps.tables.models import Table
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
-from django.conf import settings
-from django.core.mail import EmailMessage
+from django.db import transaction
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
+
+from .bigquery import (
+    get_last_modified_from_drive_file,
+    get_metadata_from_sheet,
+    import_table_from_sheet,
+)
+from .models import Sheet
 
 
-@shared_task(bind=True)
-def run_sheets_sync(self, integration_id):
-    integration = get_object_or_404(Integration, pk=integration_id)
-
-    if not integration.table_set.exists():
-        table = Table(
-            source=Table.Source.INTEGRATION,
-            bq_dataset=DATASET_ID,
-            project=integration.project,
-            integration=integration,
-            num_rows=0,
-        )
-        table.save()
-    else:
-        table = integration.table_set.first()
-
-    # We track the time it takes to sync for our analytics
-    sync_start_time = time.time()
-
-    progress_recorder = ProgressRecorder(self)
-
-    sync_generator = sync_table(
-        table=table,
-        url=integration.url,
-        cell_range=integration.cell_range,
-        kind=Integration.Kind.GOOGLE_SHEETS,
+def _calc_progress(jobs):
+    return reduce(
+        lambda tpl, curr: (
+            # We only keep track of completed states for now, not failed states
+            tpl[0] + (1 if curr.status == "COMPLETE" else 0),
+            tpl[1] + 1,
+        ),
+        jobs,
+        (0, 0),
     )
-    query_job = next(sync_generator)
 
-    def calc_progress(jobs):
-        return reduce(
-            lambda tpl, curr: (
-                # We only keep track of completed states for now, not failed states
-                tpl[0] + (1 if curr.status == "COMPLETE" else 0),
-                tpl[1] + 1,
-            ),
-            jobs,
-            (0, 0),
-        )
+
+def _do_sync_with_progress(task, sheet, table):
+
+    sheet.drive_file_last_modified = get_last_modified_from_drive_file(sheet)
+
+    progress_recorder = ProgressRecorder(task)
+
+    query_job = import_table_from_sheet(table=table, sheet=sheet)
 
     while query_job.running():
-        current, total = calc_progress(query_job.query_plan)
+        current, total = _calc_progress(query_job.query_plan)
         progress_recorder.set_progress(current, total)
         time.sleep(0.5)
 
-    progress_recorder.set_progress(*calc_progress(query_job.query_plan))
+    progress_recorder.set_progress(*_calc_progress(query_job.query_plan))
 
-    # The next yield happens when the sync has finalised, only then we finish this task
-    next(sync_generator)
+    # capture external table creation errors
 
-    sync_end_time = time.time()
+    if query_job.exception():
+        raise Exception(query_job.errors[0]["message"])
 
-    integration.last_synced = datetime.now()
-    integration.save()
+    table.num_rows = table.bq_obj.num_rows
+    table.data_updated = datetime.now()
+    table.save()
 
-    url = reverse(
-        "project_integrations:detail",
-        args=(
-            integration.project.id,
-            integration_id,
-        ),
-    )
+    sheet.last_synced = datetime.now()
+    sheet.save()
 
-    creator = integration.created_by
+    return query_job
 
-    if integration.enable_sync_emails:
-        message = EmailMessage(
-            subject=None,
-            from_email="Gyana Notifications <notifications@gyana.com>",
-            to=[creator.email],
+
+@shared_task(bind=True)
+def run_initial_sheets_sync(self, sheet_id):
+    sheet = get_object_or_404(Sheet, pk=sheet_id)
+
+    # we need to save the table instance to get the PK from database, this ensures
+    # database will rollback automatically if there is an error with the bigquery
+    # table creation, avoids orphaned table entities
+
+    with transaction.atomic():
+
+        # initial sync or re-sync
+
+        title = get_metadata_from_sheet(sheet)["properties"]["title"]
+        # maximum Google Drive name length is 32767
+        name = textwrap.shorten(title, width=255, placeholder="...")
+
+        integration = Integration(
+            name=name,
+            project=sheet.project,
+            kind=Integration.Kind.SHEET,
         )
-        # This id points to the sync success template in SendGrid
-        message.template_id = "d-5f87a7f6603b44e09b21cfdcf6514ffa"
-        message.merge_data = {
-            creator.email: {
-                "userName": creator.first_name or creator.email.split("@")[0],
-                "integrationName": integration.name,
-                "integrationHref": settings.EXTERNAL_URL + url,
-                "projectName": integration.project.name,
-            }
-        }
-        message.esp_extra = {
-            "asm": {
-                # The "App Notifications" Unsubscribe group
-                "group_id": 17220,
+        integration.save()
+
+        table = Table(
+            integration=integration,
+            source=Table.Source.INTEGRATION,
+            bq_dataset=DATASET_ID,
+            project=sheet.project,
+            num_rows=0,
+        )
+        sheet.integration = integration
+        table.save()
+
+        query_job = _do_sync_with_progress(self, sheet, table)
+
+    # the initial sync completed successfully and a new integration is created
+
+    if created_by := integration.sheet.created_by:
+
+        email = integration_ready_email(integration, created_by)
+        email.send()
+
+        analytics.track(
+            created_by.id,
+            INTEGRATION_SYNC_SUCCESS_EVENT,
+            {
+                "id": integration.id,
+                "kind": integration.kind,
+                "row_count": integration.num_rows,
+                "time_to_sync": int(
+                    (query_job.ended - query_job.started).total_seconds()
+                ),
             },
-        }
-        message.send()
+        )
 
-    analytics.track(
-        creator.id,
-        INTEGRATION_SYNC_SUCCESS_EVENT,
-        {
-            "id": integration.id,
-            "kind": integration.kind,
-            "row_count": integration.num_rows,
-            "time_to_sync": int(sync_end_time - sync_start_time),
-        },
-    )
+    return integration.id
 
-    return integration_id
+
+@shared_task(bind=True)
+def run_update_sheets_sync(self, sheet_id):
+    sheet = get_object_or_404(Sheet, pk=sheet_id)
+
+    integration = sheet.integration
+    table = integration.table_set.first()
+
+    with transaction.atomic():
+        _do_sync_with_progress(self, sheet, table)
+
+    return integration.id

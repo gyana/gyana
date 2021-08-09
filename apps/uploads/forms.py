@@ -4,11 +4,13 @@ from django.forms.widgets import HiddenInput
 from pathvalidate import ValidationError as PathValidationError
 from pathvalidate import validate_filename
 
+from .models import Upload
+
 
 class CSVForm(forms.ModelForm):
     class Meta:
         model = Integration
-        fields = ["name", "kind", "project", "enable_sync_emails"]
+        fields = ["name", "kind", "project"]
         widgets = {
             "kind": HiddenInput(),
             "project": HiddenInput(),
@@ -18,7 +20,7 @@ class CSVForm(forms.ModelForm):
 class CSVCreateForm(forms.ModelForm):
     class Meta:
         model = Integration
-        fields = ["name", "kind", "project", "file", "enable_sync_emails"]
+        fields = ["name", "kind", "project"]
         widgets = {
             "kind": HiddenInput(),
             "project": HiddenInput(),
@@ -43,3 +45,9 @@ class CSVCreateForm(forms.ModelForm):
             self.add_error("file", "Invalid file name")
 
         return name.split(".").pop(0)
+
+    def save(self, commit=True):
+        # saved automatically by parent
+        Upload(integration=self.instance)
+
+        return super().save(commit)

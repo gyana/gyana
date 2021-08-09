@@ -94,6 +94,8 @@ class Widget(CloneMixin, BaseModel):
     @property
     def is_valid(self) -> bool:
         """Returns bool stating whether this Widget is ready to be displayed"""
+        if not self.table:
+            return False
         if self.kind in [self.Kind.TABLE, self.Kind.TEXT]:
             return True
         elif self.kind is not None:

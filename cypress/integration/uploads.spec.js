@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('integrations', () => {
+describe('uploads', () => {
   beforeEach(() => {
     cy.login()
 
@@ -18,6 +18,6 @@ describe('integrations', () => {
     cy.contains('Data')
     cy.contains('15')
 
-    cy.url().should('contain', '/projects/1/integrations/2')
+    cy.url().should('contain', '/projects/1/integrations/3')
   })
 })
