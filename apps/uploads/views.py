@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.views.generic.detail import DetailView
 from turbo_response.views import TurboCreateView
 
-from .forms import CSVCreateForm
+from .forms import UploadCreateForm
 from .tasks import run_initial_upload_sync
 
 
@@ -32,7 +32,7 @@ class UploadCreate(ProjectMixin, TurboCreateView):
             {"type": Integration.Kind.UPLOAD},
         )
 
-        return CSVCreateForm
+        return UploadCreateForm
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user

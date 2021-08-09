@@ -19,7 +19,7 @@ class CSVForm(forms.ModelForm):
         }
 
 
-class CSVCreateForm(forms.ModelForm):
+class UploadCreateForm(forms.ModelForm):
     class Meta:
         model = Upload
         fields = ["project", "file_gcs_path"]
