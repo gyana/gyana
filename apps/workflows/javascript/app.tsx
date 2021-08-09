@@ -34,13 +34,29 @@ const Canvas: React.FC<{ client: coreapi.Client; workflowId: number }> = ({
 
   return (
     <div className='dndflow'>
-      {finishedPinging ? (
-        <span>Something went wrong</span>
-      ) : (
-        <div className='placeholder-scr placeholder-scr--fillscreen'>
+      <div className='placeholder-scr placeholder-scr--fillscreen'>
+        {finishedPinging ? (
+          <div className='flex flex-col items-center'>
+            <i className='fa fa-exclamation-triangle text-red fa-4x mb-3'></i>
+            <p>Something went wrong!</p>
+            <p>
+              Contact{' '}
+              <a className='link' href='mailto: support@gyana.com'>
+                support@gyana.com
+              </a>{' '}
+              for support.
+            </p>
+            <p>
+              Or try reloading{' '}
+              <button onClick={() => window.location.reload()}>
+                <i className='far fa-sync text-blue'></i>
+              </button>
+            </p>
+          </div>
+        ) : (
           <i className='placeholder-scr__icon fad fa-spinner-third fa-spin'></i>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
