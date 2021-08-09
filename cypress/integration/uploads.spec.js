@@ -12,8 +12,6 @@ describe('uploads', () => {
 
     cy.url().should('contain', '/projects/1/integrations/uploads/new')
     cy.get('input[type=file]').attachFile('store_info.csv')
-    cy.contains('File uploaded')
-    cy.get('button[type=submit]').click()
 
     cy.url().should('contain', '/projects/1/integrations/uploads/2')
     cy.contains('Validating and importing your file...')
@@ -45,21 +43,38 @@ describe('uploads', () => {
     })
 
     cy.get('input[type=file]').attachFile('fifa.csv')
-    cy.contains('File uploaded')
-    cy.get('button[type=submit]').click()
 
+    // wait for entire process to happen successfully
     cy.contains('Structure', { timeout: 20000 })
     // 2250 lines of CSV including header
     cy.contains(2249)
   })
-  it.only('validation failures', () => {
-    cy.contains('New Integration').click()
-    cy.contains('Upload CSV').click()
+  it('validation failures', () => {
+    // file is too large
+    cy.visit('/projects/1/integrations/uploads/new', {
+      onBeforeLoad(window) {
+        // store_info is 345 bytes
+        window.__cypressMaxSize__ = 128
+      },
+    })
 
-    // need to upload file
-    cy.get('button[type=submit]').click()
-    cy.contains('This field is requied')
+    cy.get('input[type=file]').attachFile('fifa.csv')
+    cy.contains('Errors occurred when uploading your file')
+    cy.contains('This file is too large')
 
-    //
+    // Upload errors e.g. bad connectivity or Google is down
+
+    cy.visit('/projects/1/integrations/uploads/new')
+    cy.intercept(
+      { method: 'PUT', url: 'https://storage.googleapis.com/gyana-local/**/*' },
+      { statusCode: 500 }
+    )
+
+    cy.get('input[type=file]').attachFile('fifa.csv')
+    cy.contains('Errors occurred when uploading your file')
+    cy.contains('Server error, try again later')
+  })
+  it.only('runtime failures', () => {
+    cy.visit('/projects/1/integrations/uploads/new')
   })
 })

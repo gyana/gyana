@@ -24,6 +24,7 @@ class GoogleUploader {
   target: string
   chunkSize: number
   maxBackoff: number
+  maxSize: number
 
   shouldChunk: boolean
   retryCount: number
@@ -38,20 +39,16 @@ class GoogleUploader {
       listeners,
       chunkSize = window.__cypressChunkSize__ || 10 * 1024 * 1024,
       maxBackoff = 4,
-      maxSize = Math.pow(1024, 3),
+      maxSize = window.__cypressMaxSize__ || Math.pow(1024, 3),
     } = options
     this.file = file
     this.target = target
     this.listeners = listeners
     this.chunkSize = chunkSize
     this.maxBackoff = maxBackoff
+    this.maxSize = maxSize
 
     this.retryCount = 0
-
-    if (file.size > maxSize) {
-      this.listeners.onError('This file is too large')
-      throw 'This file is too large'
-    }
 
     this._handleLoad.bind(this)
     this._handleProgress.bind(this)
@@ -60,6 +57,11 @@ class GoogleUploader {
 
   // start upload with initial POST followed by chunks
   async start() {
+    if (this.file.size > this.maxSize) {
+      this.listeners.onError('This file is too large')
+      return
+    }
+
     const sessionResponse = await fetch(this.target, {
       method: 'POST',
       headers: { 'x-goog-resumable': 'start', 'Content-Type': this.file.type },

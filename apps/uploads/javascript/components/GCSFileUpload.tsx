@@ -33,15 +33,18 @@ const GCSFileUpload_: React.FC<IProps> = ({ name, accept }) => {
           }
         )
 
-        inputFileRef.current.value = path
-        inputNameRef.current.value = file.name
-
         const uploader = new GoogleUploader({
           target,
           file,
           listeners: {
             onProgress: setProgress,
-            onSuccess: () => setStage('done'),
+            onSuccess: () => {
+              setStage('done')
+              inputFileRef.current.value = path
+              inputNameRef.current.value = file.name
+
+              inputFileRef.current.closest('form').submit()
+            },
             onError: (error) => {
               setError(error)
               setStage('error')
@@ -58,7 +61,7 @@ const GCSFileUpload_: React.FC<IProps> = ({ name, accept }) => {
     <>
       {/* pass the file_name to django as well */}
       <input ref={inputNameRef} type='hidden' id={`id_name`} name='file_name' />
-      <input ref={inputFileRef} type='hidden' id={`id_${name}`} name={name} />
+      <input ref={inputFileRef} type='hidden' id={`id_${name}`} name={name} accept='.csv' />
       <ul className='integration__create-flow'>
         <li>
           <div className='integration__file-upload'>

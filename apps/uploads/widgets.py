@@ -11,5 +11,4 @@ class GCSFileUpload(TextInput):
         context = super().get_context(name, value, attrs)
 
         context["widget"]["name"] = name
-        # context["widget"]["accept"] = attrs["accept"]
         return context

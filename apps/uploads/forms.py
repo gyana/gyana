@@ -25,7 +25,7 @@ class UploadCreateForm(forms.ModelForm):
         fields = ["project", "file_gcs_path"]
         widgets = {
             "project": HiddenInput(),
-            "file_gcs_path": GCSFileUpload(attrs={"accept": ".csv"}),
+            "file_gcs_path": GCSFileUpload(),
         }
         labels = {"file_gcs_path": "Upload a file"}
 
