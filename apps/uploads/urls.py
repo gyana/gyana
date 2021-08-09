@@ -1,17 +1,18 @@
 from apps.projects.access import login_and_project_required
 from django.urls import path
 
-from . import rest, views
+from . import frames, rest, views
 
 app_name = "uploads"
 urlpatterns = [
+    path("<hashid:pk>/progress", frames.UploadProgress.as_view(), name="progress"),
     path("file/generate-signed-url", rest.generate_signed_url),
-    path("file/<str:session_key>/start-sync", rest.start_sync),
-    path(
-        "file/<str:session_key>/upload-complete",
-        rest.upload_complete,
-        name="upload_complete",
-    ),
+    # path("file/<str:session_key>/start-sync", rest.start_sync),
+    # path(
+    #     "file/<str:session_key>/upload-complete",
+    #     rest.upload_complete,
+    #     name="upload_complete",
+    # ),
 ]
 
 integration_urlpatterns = (

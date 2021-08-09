@@ -50,89 +50,87 @@ def generate_signed_url(request: Request):
         method="RESUMABLE",
     )
 
-    # request.session[session_key] = {**request.session[session_key], "file": path}
-
     return Response({"url": url, "path": path})
 
 
-@api_view(["POST"])
-def start_sync(request: Request, session_key: str):
-    form_data = request.session[session_key]
+# @api_view(["POST"])
+# def start_sync(request: Request, session_key: str):
+#     form_data = request.session[session_key]
 
-    file_sync_task_id = file_sync.delay(form_data["file"], form_data["project"])
+#     file_sync_task_id = file_sync.delay(form_data["file"], form_data["project"])
 
-    request.session[session_key] = {
-        **request.session[session_key],
-        "file_sync_task_id": str(file_sync_task_id),
-    }
+#     request.session[session_key] = {
+#         **request.session[session_key],
+#         "file_sync_task_id": str(file_sync_task_id),
+#     }
 
-    return (
-        TurboStream("integration-validate-flow")
-        .replace.template(
-            "uploads/file_setup/_create_flow.html",
-            {
-                "instance_session_key": session_key,
-                "file_input_id": "id_file",
-                "stage": "validate",
-                "file_sync_task_id": file_sync_task_id,
-                "turbo_stream_url": reverse(
-                    "uploads:upload_complete",
-                    args=(session_key,),
-                ),
-            },
-        )
-        .response(request)
-    )
+#     return (
+#         TurboStream("integration-validate-flow")
+#         .replace.template(
+#             "uploads/file_setup/_create_flow.html",
+#             {
+#                 "instance_session_key": session_key,
+#                 "file_input_id": "id_file",
+#                 "stage": "validate",
+#                 "file_sync_task_id": file_sync_task_id,
+#                 "turbo_stream_url": reverse(
+#                     "uploads:upload_complete",
+#                     args=(session_key,),
+#                 ),
+#             },
+#         )
+#         .response(request)
+#     )
 
 
-@api_view(["GET"])
-def upload_complete(request: Request, session_key: str):
-    form_data = request.session[session_key]
-    file_sync_task_result = AsyncResult(
-        request.session[session_key]["file_sync_task_id"]
-    )
+# @api_view(["GET"])
+# def upload_complete(request: Request, session_key: str):
+#     form_data = request.session[session_key]
+#     file_sync_task_result = AsyncResult(
+#         request.session[session_key]["file_sync_task_id"]
+#     )
 
-    if file_sync_task_result.state == "SUCCESS":
-        table_id, time_elapsed = file_sync_task_result.get()
-        table = get_object_or_404(Table, pk=table_id)
+#     if file_sync_task_result.state == "SUCCESS":
+#         table_id, time_elapsed = file_sync_task_result.get()
+#         table = get_object_or_404(Table, pk=table_id)
 
-        integration = CSVCreateForm(data=form_data).save()
-        integration.upload.file = form_data["file"]
-        integration.created_by = request.user
-        integration.upload.last_synced = datetime.datetime.now()
-        integration.save()
-        integration.upload.save()
+#         integration = CSVCreateForm(data=form_data).save()
+#         integration.upload.file = form_data["file"]
+#         integration.created_by = request.user
+#         integration.upload.last_synced = datetime.datetime.now()
+#         integration.save()
+#         integration.upload.save()
 
-        table.integration = integration
-        table.save()
+#         table.integration = integration
+#         table.save()
 
-        finalise_upload_task_id = send_integration_email.delay(integration.id)
+#         finalise_upload_task_id = send_integration_email.delay(integration.id)
 
-        analytics.track(
-            integration.created_by.id,
-            INTEGRATION_SYNC_SUCCESS_EVENT,
-            {
-                "id": integration.id,
-                "kind": integration.kind,
-                "row_count": integration.num_rows,
-                "time_to_sync": time_elapsed,
-            },
-        )
+#         analytics.track(
+#             integration.created_by.id,
+#             INTEGRATION_SYNC_SUCCESS_EVENT,
+#             {
+#                 "id": integration.id,
+#                 "kind": integration.kind,
+#                 "row_count": integration.num_rows,
+#                 "time_to_sync": time_elapsed,
+#             },
+#         )
 
-        return (
-            TurboStream("integration-validate-flow")
-            .replace.template(
-                "uploads/file_setup/_create_flow.html",
-                {
-                    "instance_session_key": session_key,
-                    "file_input_id": "id_file",
-                    "stage": "finalise",
-                    "finalise_upload_task_id": finalise_upload_task_id,
-                    "redirect_url": reverse(
-                        "project_integrations:detail",
-                        args=(integration.project.id, integration.id),
-                    ),
-                },
-            )
-            .response(request)
-        )
+#         return (
+#             TurboStream("integration-validate-flow")
+#             .replace.template(
+#                 "uploads/file_setup/_create_flow.html",
+#                 {
+#                     "instance_session_key": session_key,
+#                     "file_input_id": "id_file",
+#                     "stage": "finalise",
+#                     "finalise_upload_task_id": finalise_upload_task_id,
+#                     "redirect_url": reverse(
+#                         "project_integrations:detail",
+#                         args=(integration.project.id, integration.id),
+#                     ),
+#                 },
+#             )
+#             .response(request)
+#         )
