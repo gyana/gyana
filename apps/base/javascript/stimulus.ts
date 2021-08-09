@@ -11,7 +11,6 @@ const CONTEXTS = [
   require.context('../../columns/javascript/controllers', true, /\.js$/),
   require.context('../../dashboards/javascript/controllers', true, /\.js$/),
   require.context('../../nodes/javascript/controllers', true, /\.js$/),
-  require.context('../../uploads/javascript/controllers', true, /\.js$/),
   require.context('../../web/javascript/controllers', true, /\.js$/),
   require.context('../../widgets/javascript/controllers', true, /\.js$/),
   require.context('../../workflows/javascript/controllers', true, /\.js$/),

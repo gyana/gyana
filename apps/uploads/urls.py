@@ -7,12 +7,6 @@ app_name = "uploads"
 urlpatterns = [
     path("<hashid:pk>/progress", frames.UploadProgress.as_view(), name="progress"),
     path("file/generate-signed-url", rest.generate_signed_url),
-    # path("file/<str:session_key>/start-sync", rest.start_sync),
-    # path(
-    #     "file/<str:session_key>/upload-complete",
-    #     rest.upload_complete,
-    #     name="upload_complete",
-    # ),
 ]
 
 integration_urlpatterns = (
