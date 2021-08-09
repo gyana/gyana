@@ -12,6 +12,7 @@ describe('sheets', () => {
     cy.visit('/projects/1/integrations')
   })
   it('connect to valid Google Sheet', () => {
+    cy.contains('New Integration').click()
     cy.contains('Add Sheet').click()
 
     cy.url().should('contain', '/projects/1/integrations/sheets/new')
@@ -41,6 +42,7 @@ describe('sheets', () => {
       .should('eq', 1)
   })
   it('validation failures', () => {
+    cy.contains('New Integration').click()
     cy.contains('Add Sheet').click()
 
     // not a valid url
@@ -62,6 +64,7 @@ describe('sheets', () => {
     cy.contains('Unable to parse range: does_not_exist!A1:D11')
   })
   it('runtime failures', () => {
+    cy.contains('New Integration').click()
     cy.contains('Add Sheet').click()
 
     cy.get('input[name=url]').type(SHARED_SHEET)

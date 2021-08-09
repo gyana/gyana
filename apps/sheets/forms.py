@@ -61,7 +61,7 @@ class SheetCreateForm(forms.ModelForm):
 
         return cell_range
 
-    def save(self, commit):
+    def save(self, commit=True):
         instance = super().save(commit=False)
 
         title = self._sheet["properties"]["title"]

@@ -1,22 +1,12 @@
+import textwrap
 from os.path import splitext
 
-from apps.integrations.models import Integration
 from apps.uploads.widgets import GCSFileUpload
 from django import forms
 from django.db import transaction
 from django.forms.widgets import HiddenInput
 
 from .models import Upload
-
-
-class CSVForm(forms.ModelForm):
-    class Meta:
-        model = Integration
-        fields = ["name", "kind", "project"]
-        widgets = {
-            "kind": HiddenInput(),
-            "project": HiddenInput(),
-        }
 
 
 class UploadCreateForm(forms.ModelForm):
@@ -32,7 +22,9 @@ class UploadCreateForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         # file_gcs_path has an extra hidden input
-        instance.file_name = splitext(self.data["file_name"])[0]
+        instance.file_name = textwrap.shorten(
+            splitext(self.data["file_name"])[0], width=255, placeholder="..."
+        )
 
         if commit:
             with transaction.atomic():
