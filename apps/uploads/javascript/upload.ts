@@ -115,11 +115,13 @@ class GoogleUploader {
         )
         // if the start is not NaN we know that there's more to be sent
         if (!Number.isNaN(newStart)) this._sendChunk(newStart)
+        return
 
       // success
       case 201:
       case 200:
         this.listeners.onSuccess()
+        return
 
       // retry failing results with exponential backoff or fail
       case 500:
@@ -134,6 +136,7 @@ class GoogleUploader {
         } else {
           this.listeners.onError('Server error, try again later')
         }
+        return
 
       // unknown error
       default:

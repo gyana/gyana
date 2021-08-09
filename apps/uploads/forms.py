@@ -31,7 +31,7 @@ class UploadCreateForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance.file_name = splitext(self.data["name"])[0]
+        instance.file_name = splitext(self.data["file_name"])[0]
 
         if commit:
             with transaction.atomic():
