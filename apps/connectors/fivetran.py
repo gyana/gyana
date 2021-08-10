@@ -22,10 +22,11 @@ class FivetranClient:
 
         schema = f"team_{team_id}_{service}_{uuid.uuid4().hex}"
 
-        if service_conf["requires_schema_prefix"] == "t":
-            config["schema_prefix"] = schema + "_"
-        else:
-            config["schema"] = schema + "_"
+        config[
+            "schema_prefix"
+            if service_conf["requires_schema_prefix"] == "t"
+            else "schema"
+        ] = schema
 
         res = requests.post(
             f"{settings.FIVETRAN_URL}/connectors",

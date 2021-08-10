@@ -18,14 +18,12 @@ def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
         source_format=bigquery.SourceFormat.CSV,
         autodetect=True,
         skip_leading_rows=1,
+        replace=True,
         # TODO: this prevents autodetect to work
         # allow_quoted_newlines = True,
         # external_config.options.allow_jagged_rows = True
     )
     uri = f"gs://{settings.GS_BUCKET_NAME}/{upload.file_gcs_path}"
-
-    # load jobs does not overwrite by default
-    client.delete_table(table_reference, not_found_ok=True)
 
     load_job = client.load_table_from_uri(uri, table_reference, job_config=job_config)
 
