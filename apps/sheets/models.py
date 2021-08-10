@@ -6,7 +6,7 @@ from django.db import models
 
 class Sheet(BaseModel):
 
-    integration = models.OneToOneField(Integration, on_delete=models.CASCADE, null=True)
+    integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 
     url = models.URLField()
     cell_range = models.CharField(max_length=64, null=True, blank=True)
