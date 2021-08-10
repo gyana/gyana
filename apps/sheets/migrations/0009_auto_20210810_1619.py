@@ -16,6 +16,10 @@ class Migration(migrations.Migration):
         ),
         migrations.RemoveField(
             model_name="sheet",
+            name="last_synced",
+        ),
+        migrations.RemoveField(
+            model_name="sheet",
             name="project",
         ),
         migrations.RemoveField(
