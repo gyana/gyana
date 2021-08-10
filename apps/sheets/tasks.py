@@ -122,7 +122,17 @@ def run_update_sheets_sync(self, sheet_id):
     integration = sheet.integration
     table = integration.table_set.first()
 
-    with transaction.atomic():
-        _do_sync_with_progress(self, sheet, table)
+    try:
+
+        with transaction.atomic():
+            _do_sync_with_progress(self, sheet, table)
+
+    except Exception as e:
+        integration.state = Integration.State.ERROR
+        integration.save()
+        raise e
+
+    integration.state = Integration.State.DONE
+    integration.save()
 
     return integration.id

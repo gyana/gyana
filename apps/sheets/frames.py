@@ -1,4 +1,5 @@
 from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
+from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from apps.sheets.forms import SheetUpdateForm
 from django.urls import reverse
@@ -65,11 +66,15 @@ class SheetUpdate(TurboFrameUpdateView):
         self.object.sync_task_id = result.task_id
         self.object.sync_started = timezone.now()
         self.object.save()
+
+        self.object.integration.state = Integration.State.LOAD
+        self.object.integration.save()
+
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:detail",
+            "project_integrations:setup",
             args=(
                 self.object.integration.project.id,
                 self.object.integration.id,

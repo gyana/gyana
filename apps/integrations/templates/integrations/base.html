@@ -44,10 +44,13 @@
     </a>
     {% endif %}
   {% endif %}
-  <a class="tabbar__link {% if request.resolver_match.url_name == 'setup' %} tabbar__link--active {% endif %}"
-    href="{% url 'project_integrations:setup' project.id object.id %}">
-    Setup
-  </a>
+  {% comment %} Uploads cannot be setup again after approval {% endcomment %}
+  {% if not integration.ready or integration.kind != integration.Kind.UPLOAD %}
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'setup' %} tabbar__link--active {% endif %}"
+      href="{% url 'project_integrations:setup' project.id object.id %}">
+      Setup
+    </a>
+  {% endif %}
   {% if integration.ready %}
     <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
       href="{% url 'project_integrations:settings' project.id object.id %}">

@@ -2,7 +2,14 @@
 
 {% block tab %}
 <div class="mb-auto pad">
-    {% if integration.state == 'done' %}
+    {% if integration.state in 'load,error' %}
+        {% if integration.kind == 'upload' %}
+            <turbo-frame id="uploads:progress" src="{% url 'uploads:progress' integration.upload.id %}"></turbo-frame>
+        {% elif integration.kind == 'sheet' %}
+            <turbo-frame id="sheets:progress" src="{% url 'sheets:progress' integration.sheet.id %}"></turbo-frame>
+        {% endif %}
+    {% elif integration.state == 'done' %}
+        {% if not integration.ready %}
         <turbo-frame id="integrations-grid" src="{% url 'integrations:grid' integration.id %}">
             <div class='placeholder-scr placeholder-scr--fillscreen'>
                 <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
@@ -18,11 +25,12 @@
                 Approve
             </button>
         </form>
-    {% else %}
-        {% if integration.kind == 'upload' %}
-            <turbo-frame id="uploads:progress" src="{% url 'uploads:progress' integration.upload.id %}"></turbo-frame>
-        {% elif integration.kind == 'sheet' %}
-            <turbo-frame id="sheets:progress" src="{% url 'sheets:progress' integration.sheet.id %}"></turbo-frame>
+        {% else %}
+            {% comment %} {% if integration.kind == 'upload' %}
+                <turbo-frame id="uploads:progress" src="{% url 'uploads:progress' integration.upload.id %}"></turbo-frame> {% endcomment %}
+            {% if integration.kind == 'sheet' %}
+                <turbo-frame id="sheets:update" src="{% url 'sheets:update' integration.sheet.id %}"></turbo-frame>
+            {% endif %}
         {% endif %}
     {% endif %}
 </div>

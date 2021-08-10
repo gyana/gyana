@@ -30,6 +30,9 @@ describe('uploads', () => {
     // file name inferred
     cy.get('input[name=name]').should('have.value', 'store_info')
 
+    // cannot edit upload setup
+    cy.contains('Setup').should('not.exist')
+
     // check email sent
     cy.outbox()
 

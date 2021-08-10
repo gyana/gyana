@@ -4,10 +4,8 @@ from apps.base.turbo import TurboCreateView
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from django.conf import settings
-from django.http.response import HttpResponseRedirect
 from django.urls.base import reverse
 from django.utils import timezone
-from django.views.generic import DetailView
 
 from .forms import SheetCreateForm
 from .models import Sheet

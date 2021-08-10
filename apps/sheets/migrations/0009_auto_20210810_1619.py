@@ -6,24 +6,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sheets', '0008_auto_20210809_2355'),
+        ("sheets", "0008_auto_20210809_2355"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='sheet',
-            name='created_by',
+            model_name="sheet",
+            name="created_by",
         ),
         migrations.RemoveField(
-            model_name='sheet',
-            name='last_synced',
+            model_name="sheet",
+            name="project",
         ),
         migrations.RemoveField(
-            model_name='sheet',
-            name='project',
-        ),
-        migrations.RemoveField(
-            model_name='sheet',
-            name='sheet_name',
+            model_name="sheet",
+            name="sheet_name",
         ),
     ]
