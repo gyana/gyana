@@ -5,16 +5,11 @@ from apps.workflows.tables import WorkflowTable
 
 class ProjectIntegrationTable(IntegrationListTable):
     class Meta(IntegrationListTable.Meta):
-        exclude = (
-            "num_rows",
-            "last_synced",
-            "created",
-        )
+        exclude = ("num_rows",)
         sequence = (
             "name",
-            "status",
             "kind",
-            "updated",
+            "created_ready",
         )
 
 
