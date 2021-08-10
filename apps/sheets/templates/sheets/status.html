@@ -8,9 +8,9 @@
 {% endif %}
 
 <a class="link" href="{% url 'project_integrations:setup' object.integration.project.id object.integration.id %}" data-turbo-frame="_top">
-    {% if not object.is_syncing %}
-        <p>Import the latest data.</p>
-    {% else %}
+    {% if object.integration.state == 'load' %}
         <p>View import in progress.</p>
+    {% else %}
+        <p>Import the latest data.</p>
     {% endif %}
 </a>

@@ -23,7 +23,7 @@ class SheetProgress(TurboFrameDetailView):
         return context_data
 
 
-class SheetStatus(TurboFrameUpdateView):
+class SheetStatus(TurboFrameDetailView):
     template_name = "sheets/status.html"
     model = Sheet
     fields = []
@@ -37,22 +37,6 @@ class SheetStatus(TurboFrameUpdateView):
         )
 
         return context_data
-
-    def form_valid(self, form):
-        result = run_update_sheets_sync.delay(self.object.id)
-        self.object.sync_task_id = result.task_id
-        self.object.sync_started = timezone.now()
-        self.object.save()
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        return reverse(
-            "project_integrations_sheets:detail",
-            args=(
-                self.object.integration.project.id,
-                self.object.id,
-            ),
-        )
 
 
 class SheetUpdate(TurboFrameUpdateView):
