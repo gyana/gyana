@@ -154,17 +154,19 @@
   }
 
   .react-flow__controls {
+    display: flex;
+    flex-direction: row;
     bottom: 1.6rem;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     left: 1.6rem;
 
     &-button {
-      width: 18px;
-      height: 18px;
+      width: 24px;
+      height: 24px;
 
       svg {
-        max-height: 14px;
-        max-width: 14px;
+        max-height: 16px;
+        max-width: 16px;
       }
     }
   }
@@ -178,17 +180,6 @@
     position: absolute;
     right: 1.6rem;
     top: 1.6rem;
-    z-index: var(--z-ui);
-
-    button {
-      background-color: var(--c-white);
-    }
-  }
-
-  &__order-button {
-    bottom: 1.6rem;
-    position: absolute;
-    right: 1.6rem;
     z-index: var(--z-ui);
 
     button {

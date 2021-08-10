@@ -291,7 +291,7 @@ const DnDFlow = ({ client, workflowId }) => {
             {(viewHasChanged || initialLoad === LoadingStates.loading) && (
               <div className='placeholder-scr placeholder-scr--fillscreen'>
                 <i className='placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x'></i>
-                Loading nodes
+                Loading...
               </div>
             )}
             {initialLoad === LoadingStates.failed && (
