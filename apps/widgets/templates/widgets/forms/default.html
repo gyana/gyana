@@ -18,11 +18,13 @@
       <i class="fal fa-times fa-2x"></i>
     </button>
   </div>
-  <div class="h-6">
-    <span data-live-update-target="loading" class="hidden">
+
+  <div class="absolute h-full w-full">
+    <span data-live-update-target="loading">
       <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
     </span>
   </div>
+
   {% csrf_token %}
   <h3 class="flex flex-row items-center">
     Configure 
