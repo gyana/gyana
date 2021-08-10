@@ -2,38 +2,16 @@
 {% load render_table from django_tables2 %}
 
 {% block tab %}
-<div class='flex flex-row w-full mb-4'>
-  <form>
-    <div class="flex flex-row items-center">
-      <input type="search" id="site-search" name="q" placeholder="Find integration"
-        aria-label="Search through site content" value="{{ request.GET.q }}" />
-
-      <button type="submit" class="button button--primary button--circle ml-2"><i class="fas fa-search"></i></button>
-    </div>
-  </form>
-
-  <form class='ml-auto'>
-    <input type="search" id="site-search" name="kind" list="kind-selection" value="{{ request.GET.kind }}" placeholder="Filter by kind" />
-
-      <datalist id="kind-selection">
-        {% for kind in integration_kinds %}
-          <option value="{{kind.0}}">{{kind.1}}</option>
-        {% endfor %}
-      </datalist>
-  </form>
-</div>
 
 <div class="card card--none mb-8">
   {% render_table table %}
 
-  {% if integration_count == 0 %}
+  {% if pending_integration_count == 0 %}
   <div class="table__empty">
     <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
-    <h3>You have no integrations</h3>
+    <h3>You have no integrations pending</h3>
     <p>
-      <a href="{% url 'project_integrations_uploads:create' project.id %}" class="link">Upload a CSV</a>, or
-      <a href="{% url 'project_integrations:new' project.id %}" class="link">create an integration</a> to see it
-      here.
+      New integrations live here until they are completed and approved by you.
     </p>
   </div>
   {% endif %}
