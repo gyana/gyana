@@ -332,7 +332,7 @@ EXTERNAL_URL = "http://localhost:8000"
 # for local development
 MOCK_FIVETRAN = os.environ.get("MOCK_FIVETRAN", "False") == "True"
 MOCK_FIVETRAN_ID = "crumb_watery"
-MOCK_FIVETRAN_SCHEMA = "google_sheets_d11948f3_be03_48c1_9985_ead1909d67e9"
+MOCK_FIVETRAN_SCHEMA = "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2"
 MOCK_FIVETRAN_HISTORICAL_SYNC_SECONDS = 5
 
 BIGQUERY_COLUMN_NAME_LENGTH = 300

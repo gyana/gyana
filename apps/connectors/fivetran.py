@@ -15,11 +15,17 @@ class FivetranClient:
 
         service_conf = get_services()[service]
 
+        config = service_conf["static_config"] or {}
+
+        # https://fivetran.com/docs/rest-api/connectors/config
+        # database connectors require schema_prefix, rather than schema
+
         schema = f"team_{team_id}_{service}_{uuid.uuid4().hex}"
 
-        config = {"schema": schema, **(service_conf["static_config"] or {})}
         if service_conf["requires_schema_prefix"] == "t":
             config["schema_prefix"] = schema + "_"
+        else:
+            config["schema"] = schema + "_"
 
         res = requests.post(
             f"{settings.FIVETRAN_URL}/connectors",
