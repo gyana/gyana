@@ -22,11 +22,13 @@ describe('sheets', () => {
     cy.get('input[name=cell_range]').type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', '/projects/1/integrations/sheets/2')
-    cy.contains("Syncing, you'll get an email when it is ready")
-    cy.contains('Sync started')
-    cy.contains('tasks processed')
-    cy.contains('Reload to see results').click()
+    cy.url().should('contain', '/projects/1/integrations/3/setup')
+    cy.contains('Validating and importing your sheet...')
+    cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
+
+    // review the table and approve
+    cy.contains('London')
+    cy.contains('Approve').click()
 
     cy.url().should('contain', '/projects/1/integrations/3')
     // Google Sheet name inferred
@@ -72,8 +74,9 @@ describe('sheets', () => {
     cy.get('input[name=cell_range]').type('store_info!A20:D21')
     cy.get('button[type=submit]').click()
 
-    cy.contains('Waiting for sync to start')
-    cy.contains('Uh-Oh, something went wrong! No columns found in the schema.')
+    cy.contains('Validating and importing your sheet...')
+    cy.contains('Errors occurred when validating your sheet')
+    cy.contains('No columns found in the schema.')
 
     // verify that nothing was created
     cy.visit('/projects/1/integrations')
