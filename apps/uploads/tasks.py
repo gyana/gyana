@@ -34,6 +34,7 @@ def _do_sync(upload, table):
 def run_initial_upload_sync(self, upload_id: int):
 
     upload = get_object_or_404(Upload, pk=upload_id)
+    integration = upload.integration
 
     # we need to save the table instance to get the PK from database, this ensures
     # database will rollback automatically if there is an error with the bigquery
@@ -41,18 +42,11 @@ def run_initial_upload_sync(self, upload_id: int):
 
     with transaction.atomic():
 
-        integration = Integration(
-            name=upload.file_name,
-            project=upload.project,
-            kind=Integration.Kind.UPLOAD,
-        )
-        integration.save()
-
         table = Table(
             integration=integration,
             source=Table.Source.INTEGRATION,
             bq_dataset=DATASET_ID,
-            project=upload.project,
+            project=integration.project,
             num_rows=0,
         )
         upload.integration = integration
@@ -63,7 +57,7 @@ def run_initial_upload_sync(self, upload_id: int):
 
     # the initial sync completed successfully and a new integration is created
 
-    if created_by := integration.upload.created_by:
+    if created_by := integration.created_by:
 
         email = integration_ready_email(integration, created_by)
         email.send()
