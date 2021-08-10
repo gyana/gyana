@@ -37,6 +37,11 @@ project_urlpatterns = (
             name="create",
         ),
         path(
+            "<hashid:pk>/setup",
+            login_and_project_required(views.IntegrationSetup.as_view()),
+            name="setup",
+        ),
+        path(
             "<hashid:pk>",
             login_and_project_required(views.IntegrationDetail.as_view()),
             name="detail",

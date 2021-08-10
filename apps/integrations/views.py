@@ -20,6 +20,7 @@ from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 
 from .forms import FivetranForm, IntegrationForm, SheetCreateForm
+from .mixins import ReadyMixin
 from .models import Integration
 from .tables import IntegrationListTable, IntegrationPendingTable, StructureTable
 
@@ -92,6 +93,11 @@ class IntegrationNew(ProjectMixin, TemplateView):
         context_data["service_categories"] = get_service_categories()
 
         return context_data
+
+
+class IntegrationSetup(ProjectMixin, DetailView):
+    template_name = "integrations/setup.html"
+    model = Integration
 
 
 class IntegrationCreate(ProjectMixin, TurboCreateView):
@@ -181,7 +187,7 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
         )
 
 
-class IntegrationDetail(ProjectMixin, TurboUpdateView):
+class IntegrationDetail(ReadyMixin, TurboUpdateView):
     template_name = "integrations/detail.html"
     model = Integration
     form_class = IntegrationForm
@@ -200,7 +206,7 @@ class IntegrationDetail(ProjectMixin, TurboUpdateView):
         )
 
 
-class IntegrationUpdate(ProjectMixin, TurboUpdateView):
+class IntegrationUpdate(ReadyMixin, TurboUpdateView):
     template_name = "integrations/update.html"
     model = Integration
 
@@ -220,7 +226,7 @@ class IntegrationUpdate(ProjectMixin, TurboUpdateView):
         )
 
 
-class IntegrationDelete(ProjectMixin, DeleteView):
+class IntegrationDelete(ReadyMixin, DeleteView):
     template_name = "integrations/delete.html"
     model = Integration
 
@@ -228,7 +234,7 @@ class IntegrationDelete(ProjectMixin, DeleteView):
         return reverse("project_integrations:list", args=(self.project.id,))
 
 
-class IntegrationStructure(ProjectMixin, DetailView):
+class IntegrationStructure(ReadyMixin, DetailView):
     template_name = "integrations/structure.html"
     model = Integration
     table_class = StructureTable
@@ -249,7 +255,7 @@ class IntegrationStructure(ProjectMixin, DetailView):
         return context_data
 
 
-class IntegrationData(ProjectMixin, DetailView):
+class IntegrationData(ReadyMixin, DetailView):
     template_name = "integrations/data.html"
     model = Integration
 
@@ -260,7 +266,7 @@ class IntegrationData(ProjectMixin, DetailView):
         return context_data
 
 
-class IntegrationSettings(ProjectMixin, TurboUpdateView):
+class IntegrationSettings(ReadyMixin, TurboUpdateView):
     template_name = "integrations/settings.html"
     model = Integration
 
