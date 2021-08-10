@@ -1,5 +1,6 @@
 import analytics
 from apps.base.segment_analytics import INTEGRATION_CREATED_EVENT
+from apps.base.turbo import TurboCreateView
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from django.conf import settings
@@ -7,7 +8,6 @@ from django.http.response import HttpResponseRedirect
 from django.urls.base import reverse
 from django.utils import timezone
 from django.views.generic import DetailView
-from apps.base.turbo import TurboCreateView
 
 from .forms import SheetCreateForm
 from .models import Sheet
@@ -55,30 +55,9 @@ class SheetCreate(ProjectMixin, TurboCreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations_sheets:detail",
+            "project_integrations:setup",
             args=(
                 self.project.id,
-                self.object.id,
+                self.object.integration.id,
             ),
         )
-
-
-class SheetDetail(ProjectMixin, DetailView):
-    template_name = "sheets/detail.html"
-    model = Sheet
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data["service_account"] = settings.GCP_BQ_SVC_ACCOUNT
-        return context_data
-
-    def get(self, request, *args, **kwargs):
-        sheet = self.get_object()
-        if not sheet.is_syncing:
-            return HttpResponseRedirect(
-                reverse(
-                    "project_integrations:detail",
-                    args=(self.project.id, sheet.integration.id),
-                )
-            )
-        return super().get(request, *args, **kwargs)

@@ -13,8 +13,7 @@ from celery_progress.backend import ProgressRecorder
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 
-from .bigquery import (get_last_modified_from_drive_file,
-                       import_table_from_sheet)
+from .bigquery import get_last_modified_from_drive_file, import_table_from_sheet
 from .models import Sheet
 
 
@@ -69,19 +68,29 @@ def run_initial_sheets_sync(self, sheet_id):
     # database will rollback automatically if there is an error with the bigquery
     # table creation, avoids orphaned table entities
 
-    with transaction.atomic():
+    try:
 
-        table = Table(
-            integration=integration,
-            source=Table.Source.INTEGRATION,
-            bq_dataset=DATASET_ID,
-            project=integration.project,
-            num_rows=0,
-        )
-        sheet.integration = integration
-        table.save()
+        with transaction.atomic():
 
-        query_job = _do_sync_with_progress(self, sheet, table)
+            table = Table(
+                integration=integration,
+                source=Table.Source.INTEGRATION,
+                bq_dataset=DATASET_ID,
+                project=integration.project,
+                num_rows=0,
+            )
+            sheet.integration = integration
+            table.save()
+
+            query_job = _do_sync_with_progress(self, sheet, table)
+
+    except Exception as e:
+        integration.state = Integration.State.ERROR
+        integration.save()
+        raise e
+
+    integration.state = Integration.State.DONE
+    integration.save()
 
     # the initial sync completed successfully and a new integration is created
 

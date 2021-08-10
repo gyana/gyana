@@ -21,7 +21,7 @@ describe('uploads', () => {
     cy.contains('London')
     cy.contains('Approve').click()
 
-    // // bigquery file upload needs longer wait
+    // bigquery file upload needs longer wait
     cy.contains('Structure', { timeout: 10000 })
     cy.contains('Data')
     cy.contains('15')
