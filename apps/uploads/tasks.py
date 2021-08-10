@@ -40,20 +40,30 @@ def run_initial_upload_sync(self, upload_id: int):
     # database will rollback automatically if there is an error with the bigquery
     # table creation, avoids orphaned table entities
 
-    with transaction.atomic():
+    try:
 
-        table = Table(
-            integration=integration,
-            source=Table.Source.INTEGRATION,
-            bq_dataset=DATASET_ID,
-            project=integration.project,
-            num_rows=0,
-        )
-        upload.integration = integration
-        table.save()
+        with transaction.atomic():
 
-        # no progress as load job does not provide query plan
-        load_job = _do_sync(upload, table)
+            table = Table(
+                integration=integration,
+                source=Table.Source.INTEGRATION,
+                bq_dataset=DATASET_ID,
+                project=integration.project,
+                num_rows=0,
+            )
+            upload.integration = integration
+            table.save()
+
+            # no progress as load job does not provide query plan
+            load_job = _do_sync(upload, table)
+
+    except Exception as e:
+        integration.state = Integration.State.ERROR
+        integration.save()
+        raise e
+
+    # integration.state = Integration.State.DONE
+    # integration.save()
 
     # the initial sync completed successfully and a new integration is created
 

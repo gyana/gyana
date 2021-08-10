@@ -21,7 +21,7 @@ from django_tables2 import SingleTableView
 
 from .forms import FivetranForm, IntegrationForm, SheetCreateForm
 from .models import Integration
-from .tables import IntegrationTable, StructureTable
+from .tables import IntegrationListTable, IntegrationPendingTable, StructureTable
 
 # CRUDL
 
@@ -29,7 +29,7 @@ from .tables import IntegrationTable, StructureTable
 class IntegrationList(ProjectMixin, SingleTableView):
     template_name = "integrations/list.html"
     model = Integration
-    table_class = IntegrationTable
+    table_class = IntegrationListTable
     paginate_by = 20
 
     def get_context_data(self, **kwargs):
@@ -65,7 +65,7 @@ class IntegrationList(ProjectMixin, SingleTableView):
 class IntegrationPending(ProjectMixin, SingleTableView):
     template_name = "integrations/pending.html"
     model = Integration
-    table_class = IntegrationTable
+    table_class = IntegrationPendingTable
     paginate_by = 20
 
     def get_context_data(self, **kwargs):
