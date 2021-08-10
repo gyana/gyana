@@ -62,8 +62,8 @@ def run_initial_upload_sync(self, upload_id: int):
         integration.save()
         raise e
 
-    # integration.state = Integration.State.DONE
-    # integration.save()
+    integration.state = Integration.State.DONE
+    integration.save()
 
     # the initial sync completed successfully and a new integration is created
 

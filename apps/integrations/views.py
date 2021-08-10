@@ -14,6 +14,7 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponseBadRequest
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
@@ -95,9 +96,23 @@ class IntegrationNew(ProjectMixin, TemplateView):
         return context_data
 
 
-class IntegrationSetup(ProjectMixin, DetailView):
+class IntegrationSetup(ProjectMixin, TurboUpdateView):
     template_name = "integrations/setup.html"
     model = Integration
+    fields = []
+
+    def form_valid(self, form):
+        if not self.object.ready:
+            self.object.created_ready = timezone.now()
+        self.object.ready = True
+        self.object.save()
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_integrations:detail",
+            args=(self.project.id, self.object.id),
+        )
 
 
 class IntegrationCreate(ProjectMixin, TurboCreateView):

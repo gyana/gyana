@@ -2,7 +2,25 @@
 
 {% block tab %}
 <div class="mb-auto pad">
-    Hello
+    {% if integration.state == 'done' %}
+        <turbo-frame id="integrations-grid" src="{% url 'integrations:grid' integration.id %}">
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+                <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+                <p class='placeholder-scr__title'>Loading integration data...</p>
+            </div>
+        </turbo-frame>
+        <form method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
+            {% csrf_token %}
+
+            {% include "django/forms/default_form.html" %}
+
+            <button type="submit" class="button button--success">
+                Approve
+            </button>
+        </form>
+    {% else %}
+        <turbo-frame id="uploads:progress" src="{% url 'uploads:progress' integration.upload.id %}"></turbo-frame>
+    {% endif %}
 </div>
 
 {% endblock %}

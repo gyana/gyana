@@ -1,8 +1,6 @@
 import analytics
-from apps.base.segment_analytics import (
-    INTEGRATION_CREATED_EVENT,
-    NEW_INTEGRATION_START_EVENT,
-)
+from apps.base.segment_analytics import (INTEGRATION_CREATED_EVENT,
+                                         NEW_INTEGRATION_START_EVENT)
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
@@ -61,8 +59,8 @@ class UploadCreate(ProjectMixin, TurboCreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations_uploads:detail",
-            args=(self.project.id, self.object.id),
+            "project_integrations:setup",
+            args=(self.project.id, self.object.integration.id),
         )
 
 
