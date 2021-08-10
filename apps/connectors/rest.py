@@ -6,7 +6,7 @@ from django.urls import reverse
 from rest_framework.decorators import api_view
 from turbo_response.stream import TurboStream
 
-from .forms import FivetranForm
+from .forms import ConnectorCreateForm
 from .tasks import poll_fivetran_historical_sync, start_fivetran_integration_task
 
 
@@ -36,7 +36,7 @@ def start_fivetran_integration(request: HttpRequest, session_key: str):
 def finalise_fivetran_integration(request: HttpRequest, session_key: str):
     integration_data = request.session[session_key]
     # Create integration
-    integration = FivetranForm(data=integration_data).save()
+    integration = ConnectorCreateForm(data=integration_data).save()
     integration.connector.schema = integration_data["schema"]
     integration.connector.fivetran_id = integration_data["fivetran_id"]
     integration.created_by = request.user

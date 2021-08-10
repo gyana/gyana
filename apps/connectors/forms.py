@@ -7,7 +7,7 @@ from django.forms.widgets import HiddenInput
 from .models import Connector
 
 
-class FivetranForm(forms.ModelForm):
+class ConnectorCreateForm(forms.ModelForm):
     class Meta:
         model = Integration
         fields = [

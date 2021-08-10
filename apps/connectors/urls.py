@@ -30,7 +30,7 @@ integration_urlpatterns = (
         ),
         path(
             "<hashid:pk>/schema",
-            login_and_project_required(views.IntegrationSchema.as_view()),
+            login_and_project_required(views.ConnectorSchema.as_view()),
             name="schema",
         ),
     ],

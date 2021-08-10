@@ -1,4 +1,4 @@
-from apps.connectors.forms import FivetranForm
+from apps.connectors.forms import ConnectorCreateForm
 from apps.sheets.forms import SheetCreateForm
 from django import forms
 

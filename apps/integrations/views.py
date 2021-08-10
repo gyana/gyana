@@ -19,7 +19,7 @@ from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from turbo_response.views import TurboCreateView, TurboUpdateView
 
-from .forms import FivetranForm, IntegrationForm, SheetCreateForm
+from .forms import ConnectorCreateForm, IntegrationForm, SheetCreateForm
 from .models import Integration
 from .tables import IntegrationTable, StructureTable
 
@@ -102,7 +102,7 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
             if kind == Integration.Kind.SHEET:
                 return SheetCreateForm
             elif kind == Integration.Kind.CONNECTOR:
-                return FivetranForm
+                return ConnectorCreateForm
 
         return SheetCreateForm
 

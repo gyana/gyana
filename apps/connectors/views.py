@@ -9,7 +9,7 @@ from .fivetran import FivetranClient
 from .tasks import update_integration_fivetran_schema
 
 
-class IntegrationSchema(ProjectMixin, DetailView):
+class ConnectorSchema(ProjectMixin, DetailView):
     template_name = "connectors/schema.html"
     model = Integration
 
