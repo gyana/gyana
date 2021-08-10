@@ -7,7 +7,7 @@ from django.utils.crypto import get_random_string
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
-from turbo_response.views import TurboCreateView, TurboUpdateView
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 
 from apps.teams.mixins import TeamMixin
 

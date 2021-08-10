@@ -4,7 +4,7 @@ from apps.base.segment_analytics import PROJECT_CREATED_EVENT
 from django.urls.base import reverse
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
-from turbo_response.views import TurboCreateView, TurboUpdateView
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 
 from .forms import ProjectForm
 from .models import Project

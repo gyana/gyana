@@ -63,6 +63,7 @@ def _do_sync_with_progress(task, sheet, table):
 @shared_task(bind=True)
 def run_initial_sheets_sync(self, sheet_id):
     sheet = get_object_or_404(Sheet, pk=sheet_id)
+    integration = sheet.integration
 
     # we need to save the table instance to get the PK from database, this ensures
     # database will rollback automatically if there is an error with the bigquery
@@ -70,18 +71,11 @@ def run_initial_sheets_sync(self, sheet_id):
 
     with transaction.atomic():
 
-        integration = Integration(
-            name=sheet.sheet_name,
-            project=sheet.project,
-            kind=Integration.Kind.SHEET,
-        )
-        integration.save()
-
         table = Table(
             integration=integration,
             source=Table.Source.INTEGRATION,
             bq_dataset=DATASET_ID,
-            project=sheet.project,
+            project=integration.project,
             num_rows=0,
         )
         sheet.integration = integration
@@ -91,7 +85,7 @@ def run_initial_sheets_sync(self, sheet_id):
 
     # the initial sync completed successfully and a new integration is created
 
-    if created_by := integration.sheet.created_by:
+    if created_by := integration.created_by:
 
         email = integration_ready_email(integration, created_by)
         email.send()

@@ -10,7 +10,7 @@ from django.http.response import HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic.detail import DetailView
-from turbo_response.views import TurboCreateView
+from apps.base.turbo import TurboCreateView
 
 from .forms import UploadCreateForm
 from .tasks import run_initial_upload_sync

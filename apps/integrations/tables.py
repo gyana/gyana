@@ -26,7 +26,7 @@ class IntegrationTable(Table):
             "name",
             "kind",
             "num_rows",
-            "last_synced",
+            # "last_synced",
             "created",
             "updated",
         )
@@ -35,9 +35,9 @@ class IntegrationTable(Table):
     name = Column(linkify=True)
     num_rows = Column(verbose_name="Rows")
     kind = Column(accessor="display_kind")
-    last_synced = NaturalDatetimeColumn()
-    status = StatusColumn(template_name="columns/status.html")
-    created = StatusColumn(template_name="columns/status.html")
+    # last_synced = NaturalDatetimeColumn()
+    # status = StatusColumn(template_name="columns/status.html")
+    # created = StatusColumn(template_name="columns/status.html")
     updated = NaturalDatetimeColumn()
 
 

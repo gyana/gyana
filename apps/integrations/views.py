@@ -17,7 +17,7 @@ from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
-from turbo_response.views import TurboCreateView, TurboUpdateView
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 
 from .forms import FivetranForm, IntegrationForm, SheetCreateForm
 from .models import Integration
@@ -44,7 +44,7 @@ class IntegrationList(ProjectMixin, SingleTableView):
         return context_data
 
     def get_queryset(self) -> QuerySet:
-        queryset = Integration.objects.filter(project=self.project)
+        queryset = Integration.objects.filter(project=self.project, ready=True)
         # Add search query if it exists
         if query := self.request.GET.get("q"):
             queryset = (

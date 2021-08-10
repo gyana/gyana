@@ -12,9 +12,12 @@ from .models import Upload
 class UploadCreateForm(forms.ModelForm):
     class Meta:
         model = Upload
-        fields = ["project", "file_gcs_path"]
+        fields = [
+            # "project",
+            "file_gcs_path"
+        ]
         widgets = {
-            "project": HiddenInput(),
+            # "project": HiddenInput(),
             "file_gcs_path": GCSFileUpload(),
         }
         labels = {"file_gcs_path": "Upload a file"}

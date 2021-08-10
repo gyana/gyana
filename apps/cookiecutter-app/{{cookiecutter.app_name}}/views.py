@@ -2,7 +2,7 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
-from turbo_response.views import TurboCreateView, TurboUpdateView
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 
 from .forms import {{ cookiecutter.model_name }}Form
 from .models import {{ cookiecutter.model_name }}
