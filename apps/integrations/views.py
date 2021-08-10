@@ -1,10 +1,9 @@
 import uuid
 
 import analytics
-from apps.base.segment_analytics import (
-    INTEGRATION_CREATED_EVENT,
-    NEW_INTEGRATION_START_EVENT,
-)
+from apps.base.segment_analytics import (INTEGRATION_CREATED_EVENT,
+                                         NEW_INTEGRATION_START_EVENT)
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.connectors.fivetran import FivetranClient
 from apps.connectors.utils import get_service_categories, get_services
 from apps.projects.mixins import ProjectMixin
@@ -17,7 +16,6 @@ from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
-from apps.base.turbo import TurboCreateView, TurboUpdateView
 
 from .forms import FivetranForm, IntegrationForm, SheetCreateForm
 from .models import Integration
@@ -59,6 +57,39 @@ class IntegrationList(ProjectMixin, SingleTableView):
 
         return queryset.prefetch_related("table_set").all()
 
+
+class IntegrationPending(ProjectMixin, SingleTableView):
+    template_name = "integrations/pending.html"
+    model = Integration
+    table_class = IntegrationTable
+    paginate_by = 20
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        context_data["integration_count"] = Integration.objects.filter(
+            project=self.project
+        ).count()
+
+        context_data["integration_kinds"] = Integration.Kind.choices
+
+        return context_data
+
+    def get_queryset(self) -> QuerySet:
+        queryset = Integration.objects.filter(project=self.project, ready=False)
+        # Add search query if it exists
+        if query := self.request.GET.get("q"):
+            queryset = (
+                queryset.annotate(
+                    similarity=TrigramSimilarity("name", query),
+                )
+                .filter(similarity__gt=0.05)
+                .order_by("-similarity")
+            )
+        if (kind := self.request.GET.get("kind")) and kind in Integration.Kind.values:
+            queryset = queryset.filter(kind=kind)
+
+        return queryset.prefetch_related("table_set").all()
 
 class IntegrationNew(ProjectMixin, TemplateView):
     template_name = "integrations/new.html"
