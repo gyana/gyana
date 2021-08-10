@@ -21,6 +21,11 @@ integration_urlpatterns = (
             login_and_project_required(views.UploadDetail.as_view()),
             name="detail",
         ),
+        path(
+            "<hashid:pk>/review",
+            login_and_project_required(views.UploadReview.as_view()),
+            name="review",
+        ),
     ],
     "project_integrations_uploads",
 )

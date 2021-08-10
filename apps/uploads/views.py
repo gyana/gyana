@@ -3,7 +3,7 @@ from apps.base.segment_analytics import (
     INTEGRATION_CREATED_EVENT,
     NEW_INTEGRATION_START_EVENT,
 )
-from apps.base.turbo import TurboCreateView
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from apps.uploads.models import Upload
@@ -75,8 +75,27 @@ class UploadDetail(ProjectMixin, DetailView):
         if not upload.is_syncing:
             return HttpResponseRedirect(
                 reverse(
-                    "project_integrations:detail",
-                    args=(self.project.id, upload.integration.id),
+                    "project_integrations_uploads:review",
+                    args=(self.project.id, upload.id),
                 )
             )
         return super().get(request, *args, **kwargs)
+
+
+class UploadReview(ProjectMixin, TurboUpdateView):
+    template_name = "uploads/review.html"
+    model = Upload
+    fields = []
+
+    def form_valid(self, form):
+        integration = self.object.integration
+        integration.ready = True
+        integration.created_ready = timezone.now()
+        integration.save()
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_integrations:detail",
+            args=(self.project.id, self.object.integration.id),
+        )

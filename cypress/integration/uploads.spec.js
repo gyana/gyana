@@ -17,6 +17,8 @@ describe('uploads', () => {
     cy.contains('Validating and importing your file...')
     cy.contains('File successfully validated and imported.', { timeout: 10000 })
 
+    cy.contains('Approve').click()
+
     // // bigquery file upload needs longer wait
     cy.contains('Structure', { timeout: 10000 })
     cy.contains('Data')
