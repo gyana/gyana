@@ -212,6 +212,176 @@
     }
   },
   {
+    "model": "tables.table",
+    "pk": 3,
+    "fields": {
+      "created": "2021-08-10T12:01:15.528Z",
+      "updated": "2021-08-10T12:01:15.528Z",
+      "_bq_table": "adwords_campaigns",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 5,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 184,
+      "data_updated": "2021-08-10T12:01:15.528Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 4,
+    "fields": {
+      "created": "2021-08-10T12:01:15.595Z",
+      "updated": "2021-08-10T12:01:15.595Z",
+      "_bq_table": "adwords_hourly_stats",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 5,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 3901,
+      "data_updated": "2021-08-10T12:01:15.595Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 5,
+    "fields": {
+      "created": "2021-08-10T12:01:15.692Z",
+      "updated": "2021-08-10T12:01:15.692Z",
+      "_bq_table": "adwords_keyword",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 5,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 382,
+      "data_updated": "2021-08-10T12:01:15.692Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 6,
+    "fields": {
+      "created": "2021-08-10T12:01:15.817Z",
+      "updated": "2021-08-10T12:01:15.817Z",
+      "_bq_table": "audience_overview",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 5,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 184,
+      "data_updated": "2021-08-10T12:01:15.817Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 7,
+    "fields": {
+      "created": "2021-08-10T12:01:15.880Z",
+      "updated": "2021-08-10T12:01:15.880Z",
+      "_bq_table": "browser_and_operating_system_overview",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 5,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 2192,
+      "data_updated": "2021-08-10T12:01:15.880Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 8,
+    "fields": {
+      "created": "2021-08-10T12:01:15.968Z",
+      "updated": "2021-08-10T12:01:15.968Z",
+      "_bq_table": "campaign_performance",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 5,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 322,
+      "data_updated": "2021-08-10T12:01:15.968Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 9,
+    "fields": {
+      "created": "2021-08-10T12:01:16.050Z",
+      "updated": "2021-08-10T12:01:16.050Z",
+      "_bq_table": "channel_traffic",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 5,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 823,
+      "data_updated": "2021-08-10T12:01:16.050Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 10,
+    "fields": {
+      "created": "2021-08-10T12:01:16.157Z",
+      "updated": "2021-08-10T12:01:16.157Z",
+      "_bq_table": "events_overview",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 5,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 240,
+      "data_updated": "2021-08-10T12:01:16.157Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 11,
+    "fields": {
+      "created": "2021-08-10T12:01:16.222Z",
+      "updated": "2021-08-10T12:01:16.222Z",
+      "_bq_table": "social_media_acquisitions",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 5,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 542,
+      "data_updated": "2021-08-10T12:01:16.222Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 12,
+    "fields": {
+      "created": "2021-08-10T12:01:16.316Z",
+      "updated": "2021-08-10T12:01:16.316Z",
+      "_bq_table": "traffic",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 5,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 2905,
+      "data_updated": "2021-08-10T12:01:16.316Z"
+    }
+  },
+  {
     "model": "invites.invite",
     "pk": 1,
     "fields": {
@@ -301,11 +471,11 @@
       "integration": 5,
       "service": "google_analytics",
       "fivetran_id": null,
-      "schema": null,
-      "fivetran_authorized": false,
+      "schema": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "fivetran_authorized": true,
       "fivetran_poll_historical_sync_task_id": null,
-      "historical_sync_complete": false,
-      "last_synced": null
+      "historical_sync_complete": true,
+      "last_synced": "2021-08-10T10:40:23.586Z"
     }
   },
   {
