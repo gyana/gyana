@@ -15,19 +15,22 @@ stateDiagram-v2
 
     state Sheet {
         state if_load <<choice>>
-        [*] --> Setup
+        [*] --> Load
         Setup --> Load
         Load --> if_load
         if_load --> RuntimeError: runtime error
         if_load --> Preview: success
         RuntimeError --> Setup
         RuntimeError --> Support
-        Preview --> Setup
+        Preview --> Setup: inferred schema
         Preview --> Approve
         Approve --> [*]
     }
 
-    Sheet --> Delete
+    Sheet --> Leave
+    Leave --> Sheet: navigate back
+
+    Sheet --> Delete: manual or 14 days
     Sheet --> Integration
     Integration --> [*]
     Integration --> Sheet: resync

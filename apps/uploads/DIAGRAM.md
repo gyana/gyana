@@ -14,19 +14,22 @@ stateDiagram-v2
 
     state Upload {
         state if_load <<choice>>
-        [*] --> Setup
+        [*] --> Load
         Setup --> Load
         Load --> if_load
         if_load --> RuntimeError: runtime error
         if_load --> Preview: success
         RuntimeError --> Setup
         RuntimeError --> Support
-        Preview --> Setup
+        Preview --> Setup: inferred schema
         Preview --> Approve
         Approve --> [*]
     }
 
-    Upload --> Delete
+    Upload --> Leave
+    Leave --> Upload: navigate back
+
+    Upload --> Delete: manual or 14 days
     Upload --> Integration
     Integration --> [*]
 ```

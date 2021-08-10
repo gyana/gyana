@@ -6,15 +6,14 @@ stateDiagram-v2
 
     state if_state <<choice>>
     [*] --> New
-    New --> Service
-    Service --> if_state
+    New --> if_state
     if_state --> Error: fivetran authorization failed
     if_state --> Connector: success
     Error --> New: retry
 
     state Connector {
         state if_load <<choice>>
-        [*] --> Setup
+        [*] --> Load
         Setup --> Load
         Load --> if_load
         if_load --> RuntimeError: runtime error
@@ -25,7 +24,10 @@ stateDiagram-v2
         Approve --> [*]
     }
 
-    Connector --> Delete
+    Connector --> Leave
+    Leave --> Connector: navigate back
+
+    Connector --> Delete: manual or 14 days
     Connector --> Integration
     Integration --> [*]
     Integration --> Connector: resync
