@@ -1,0 +1,7 @@
+<form method="post" action="{{ request.get_full_path }}" class="form" data-turbo-frame="_top">
+    {% csrf_token %}
+
+    {% include "django/forms/default_form.html" %}
+
+    <button type="submit" class="button button--filled button--success">Save changes</button>
+</form>

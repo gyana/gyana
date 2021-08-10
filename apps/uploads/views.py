@@ -1,32 +1,28 @@
-import uuid
-
 import analytics
-from apps.base.segment_analytics import NEW_INTEGRATION_START_EVENT
+from apps.base.segment_analytics import (
+    INTEGRATION_CREATED_EVENT,
+    NEW_INTEGRATION_START_EVENT,
+)
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
-from django.http.response import HttpResponseBadRequest
+from apps.uploads.models import Upload
+from django.http.response import HttpResponseRedirect
 from django.urls import reverse
-from turbo_response.stream import TurboStream
+from django.utils import timezone
+from django.views.generic.detail import DetailView
 from turbo_response.views import TurboCreateView
 
-from .forms import CSVCreateForm
+from .forms import UploadCreateForm
+from .tasks import run_initial_upload_sync
 
 
-class IntegrationUpload(ProjectMixin, TurboCreateView):
+class UploadCreate(ProjectMixin, TurboCreateView):
     template_name = "uploads/upload.html"
-    model = Integration
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data["integration_kind"] = Integration.Kind.UPLOAD
-
-        return context_data
+    model = Upload
 
     def get_initial(self):
         initial = super().get_initial()
-        initial["kind"] = Integration.Kind.UPLOAD
         initial["project"] = self.project
-
         return initial
 
     def get_form_class(self):
@@ -36,33 +32,50 @@ class IntegrationUpload(ProjectMixin, TurboCreateView):
             {"type": Integration.Kind.UPLOAD},
         )
 
-        return CSVCreateForm
+        return UploadCreateForm
 
     def form_valid(self, form):
-        instance_session_key = uuid.uuid4().hex
+        form.instance.created_by = self.request.user
 
-        if not form.is_valid():
-            return HttpResponseBadRequest()
+        r = super().form_valid(form)
 
-        self.request.session[instance_session_key] = {
-            **form.cleaned_data,
-            "project": form.cleaned_data["project"].id,
-        }
-
-        return (
-            TurboStream("create-container")
-            .append.template(
-                "uploads/file_setup/_create_flow.html",
-                {
-                    "instance_session_key": instance_session_key,
-                    "file_input_id": "id_file",
-                    "stage": "upload",
-                },
-            )
-            .response(self.request)
+        analytics.track(
+            self.request.user.id,
+            INTEGRATION_CREATED_EVENT,
+            {
+                # not the same as integration.id
+                "id": form.instance.id,
+                "type": Integration.Kind.UPLOAD,
+                # not available for a sheet
+                # "name": form.instance.name,
+            },
         )
+
+        result = run_initial_upload_sync.delay(self.object.id)
+        self.object.sync_task_id = result.task_id
+        self.object.sync_started = timezone.now()
+        self.object.save()
+
+        return r
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:detail", args=(self.project.id, self.object.id)
+            "project_integrations_uploads:detail",
+            args=(self.project.id, self.object.id),
         )
+
+
+class UploadDetail(ProjectMixin, DetailView):
+    template_name = "uploads/detail.html"
+    model = Upload
+
+    def get(self, request, *args, **kwargs):
+        upload = self.get_object()
+        if not upload.is_syncing:
+            return HttpResponseRedirect(
+                reverse(
+                    "project_integrations:detail",
+                    args=(self.project.id, upload.integration.id),
+                )
+            )
+        return super().get(request, *args, **kwargs)

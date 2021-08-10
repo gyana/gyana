@@ -12,6 +12,7 @@ describe('sheets', () => {
     cy.visit('/projects/1/integrations')
   })
   it('connect to valid Google Sheet', () => {
+    cy.contains('New Integration').click()
     cy.contains('Add Sheet').click()
 
     cy.url().should('contain', '/projects/1/integrations/sheets/new')
@@ -41,6 +42,7 @@ describe('sheets', () => {
       .should('eq', 1)
   })
   it('validation failures', () => {
+    cy.contains('New Integration').click()
     cy.contains('Add Sheet').click()
 
     // not a valid url
@@ -62,6 +64,7 @@ describe('sheets', () => {
     cy.contains('Unable to parse range: does_not_exist!A1:D11')
   })
   it('runtime failures', () => {
+    cy.contains('New Integration').click()
     cy.contains('Add Sheet').click()
 
     cy.get('input[name=url]').type(SHARED_SHEET)
@@ -105,5 +108,20 @@ describe('sheets', () => {
     // redirect back when trying to view completed upload
     cy.visit('/projects/1/integrations/sheets/1')
     cy.url().should('contain', '/projects/1/integrations/2')
+  })
+  it('update the cell range and re-sync', () => {
+    cy.contains('Store info sheet').click()
+
+    cy.get('#tabbar').within(() => cy.contains('Settings').click())
+
+    cy.get('input[name=cell_range]').clear().type('store_info!A1:D6')
+    cy.get('button[type=submit]').click()
+
+    cy.contains('See the sync progress.').click()
+    cy.contains('Sync started')
+    cy.contains('Reload to see results').click()
+
+    // new cell range includes 5 rows of data
+    cy.contains('5')
   })
 })

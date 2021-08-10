@@ -13,7 +13,7 @@
   </div>
 
   {% comment %} <div class="flex gap-7 ml-4">
-    <a class="button button--sm" href="{% url 'project_integrations_uploads:upload' project.id %}">
+    <a class="button button--sm" href="{% url 'project_integrations_uploads:create' project.id %}">
       <i class="fas fa-fw fa-upload"></i> Upload CSV
     </a>
     <a class="button button--sm" href="{% url 'project_integrations_sheets:create' project.id %}">
@@ -33,8 +33,8 @@
 
     <ul data-popover-target="body" class="list list--bordered" hidden style="z-index:1;margin-top:6px;">
       <li class="list__item list__item--interactive">
-        <a class="" href="{% url 'project_integrations_uploads:upload' project.id %}">
-          <i class="fas fa-fw fa-upload mr-4"></i> CSV Upload
+        <a class="" href="{% url 'project_integrations_uploads:create' project.id %}">
+          <i class="fas fa-fw fa-upload mr-4"></i> Upload CSV
         </a>
       </li>
 
@@ -84,7 +84,7 @@
       <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
       <h3>You have no integrations</h3>
       <p>
-        <a href="{% url 'project_integrations_uploads:upload' project.id %}" class="link">Upload a CSV</a>, or
+        <a href="{% url 'project_integrations_uploads:create' project.id %}" class="link">Upload a CSV</a>, or
         <a href="{% url 'project_integrations:new' project.id %}" class="link">create an integration</a> to see it
         here.
       </p>

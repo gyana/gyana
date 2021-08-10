@@ -4,7 +4,6 @@ import ReactFlow, {
   addEdge,
   removeElements,
   Controls,
-  ControlButton,
   updateEdge,
   isNode,
   Edge,
@@ -27,6 +26,12 @@ import './styles/_dnd-flow.scss'
 const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
 const GRID_GAP = 20
 
+enum LoadingStates {
+  loading,
+  loaded,
+  failed,
+}
+
 const DnDFlow = ({ client, workflowId }) => {
   const reactFlowWrapper = useRef(null)
   const [reactFlowInstance, setReactFlowInstance] = useState(null)
@@ -35,6 +40,7 @@ const DnDFlow = ({ client, workflowId }) => {
   const [isOutOfDate, setIsOutOfDate] = useState(false)
   const [hasBeenRun, setHasBeenRun] = useState(false)
   // State whether the initial element load has been done
+  const [initialLoad, setInitialLoad] = useState(LoadingStates.loading)
   const [viewHasChanged, setViewHasChanged] = useState(false)
 
   const updateParents = (id: string, parents: string[]) =>
@@ -184,6 +190,10 @@ const DnDFlow = ({ client, workflowId }) => {
           }, [])
         setElements([...newElements, ...edges])
         setViewHasChanged(true)
+        setInitialLoad(LoadingStates.loaded)
+      })
+      .catch(() => {
+        setInitialLoad(LoadingStates.failed)
       })
 
   useEffect(() => {
@@ -278,11 +288,38 @@ const DnDFlow = ({ client, workflowId }) => {
               isOutOfDate={isOutOfDate}
               setIsOutOfDate={setIsOutOfDate}
             />
+            {(viewHasChanged || initialLoad === LoadingStates.loading) && (
+              <div className='placeholder-scr placeholder-scr--fillscreen'>
+                <i className='placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x'></i>
+                Loading nodes
+              </div>
+            )}
+            {initialLoad === LoadingStates.failed && (
+              <div className='placeholder-scr placeholder-scr--fillscreen'>
+                <i className='fa fa-exclamation-triangle text-red fa-4x mb-3'></i>
+                <p>Failed loading your nodes!</p>
+                <p>
+                  Contact{' '}
+                  <a className='link' href='mailto: support@gyana.com'>
+                    support@gyana.com
+                  </a>{' '}
+                  for support.
+                </p>
+              </div>
+            )}
+            {initialLoad === LoadingStates.loaded && elements.length === 0 && (
+              <div className='placeholder-scr placeholder-scr--fillscreen'>
+                <i className={`fa ${NODES['input'].icon} text-green fa-2x`}></i>
+                <span>
+                  Start building your workflow by dragging in a <strong>Get data</strong> node
+                </span>
+              </div>
+            )}
           </ReactFlow>
         </NodeContext.Provider>
       </div>
       <Sidebar />
-    </div >
+    </div>
   )
 }
 

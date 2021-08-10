@@ -1,12 +1,15 @@
 import { Controller } from 'stimulus'
 
 // Open a modal with the content populated by a turbo-frame
-
 export default class extends Controller {
   static targets = ['modal', 'turboFrame', 'closingWarning']
 
   connect() {
     this.changed = false
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('modal_item')) {
+      this.modalTarget.classList.remove('hidden')
+    }
   }
 
   open(event) {
@@ -18,7 +21,9 @@ export default class extends Controller {
       `
       this.turboFrameTarget.setAttribute('src', event.target.getAttribute('data-src'))
     }
-
+    const params = new URLSearchParams(location.search)
+    params.set('modal_item', event.target.getAttribute('data-item'))
+    history.replaceState({}, '', `${location.pathname}?${params.toString()}`)
     this.modalTarget.classList.remove('hidden')
   }
 
@@ -37,6 +42,14 @@ export default class extends Controller {
   forceClose() {
     this.changed = false
     this.modalTarget.classList.add('hidden')
+
+    const params = new URLSearchParams(location.search)
+    params.delete('modal_item')
+    history.replaceState(
+      {},
+      '',
+      `${location.pathname}${params.toString() ? '?' + params.toString() : ''}`
+    )
   }
 
   closeWarning() {

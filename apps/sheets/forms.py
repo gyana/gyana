@@ -1,14 +1,17 @@
+import textwrap
+
 import googleapiclient
 from apps.base.clients import sheets_client
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.forms.widgets import HiddenInput
 
 from .bigquery import get_sheets_id_from_url
 from .models import Sheet
 
 
-class SheetForm(forms.ModelForm):
+class SheetCreateForm(forms.ModelForm):
     class Meta:
         model = Sheet
         fields = [
@@ -43,6 +46,49 @@ class SheetForm(forms.ModelForm):
         # If validation on the url field fails url, cleaned_data won't
         # have the url populated.
         if not (url := self.cleaned_data.get("url")):
+            return cell_range
+
+        sheet_id = get_sheets_id_from_url(url)
+
+        client = sheets_client()
+        try:
+            client.spreadsheets().get(
+                spreadsheetId=sheet_id, ranges=cell_range
+            ).execute()
+        except googleapiclient.errors.HttpError as e:
+            # This will display the parse error
+            raise ValidationError(e._get_reason().strip())
+
+        return cell_range
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        title = self._sheet["properties"]["title"]
+        # maximum Google Drive name length is 32767
+        instance.sheet_name = textwrap.shorten(title, width=255, placeholder="...")
+
+        if commit:
+            with transaction.atomic():
+                instance.save()
+                self.save_m2m()
+
+        return instance
+
+
+class SheetUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Sheet
+        fields = [
+            "cell_range",
+        ]
+
+    def clean_cell_range(self):
+        cell_range = self.cleaned_data["cell_range"]
+
+        # If validation on the url field fails url, cleaned_data won't
+        # have the url populated.
+        if not (url := self.instance.url):
             return cell_range
 
         sheet_id = get_sheets_id_from_url(url)

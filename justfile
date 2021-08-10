@@ -50,7 +50,7 @@ format:
 
 # Count total lines of code that need to be maintained
 cloc:
-    cloc (git ls-files) --exclude-dir=migrations --exclude-ext=svg
+    cloc $(git ls-files) --exclude-dir=migrations --exclude-ext=svg,csv
 
 startapp:
     pushd apps && cookiecutter cookiecutter-app && popd

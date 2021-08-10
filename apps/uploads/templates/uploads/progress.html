@@ -1,0 +1,36 @@
+{% load static %}
+
+<ul class="integration__create-flow">
+  <li>
+    <div
+        class='integration__file-validate'
+        data-controller="celery-progress"
+        data-celery-progress-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
+        data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
+        data-celery-progress-redirect-url-value="{% url 'project_integrations_uploads:detail' object.project.id object.id %}"
+        >
+
+      <i class="fad fa-spinner-third fa-spin text-blue text-4xl"></i>
+      <div class='flex flex-col ml-4'>
+        <h1>Validating and importing your file...</h1>
+        <p>This might take a while, make sure to stay on the page.</p>
+      </div>
+
+      <template id="success-template">
+        <i class="fas fa-check text-green text-xl mr-4"></i>
+        <h4>File successfully validated and imported.</h4>
+      </template>
+
+      <template id="failure-template">
+        <i class="fas fa-times text-red text-xl mr-4"></i>
+        <div class="flex flex-col">
+          <h4>Errors occurred when validating your file</h4>
+          <p id="failure-message"/>
+          <p>If you are trying to upload a complex csv file, it might be easier to upload to Google Sheets.</p>
+        </div>
+      </template>
+
+    </div>
+  </li>
+</ul>
+

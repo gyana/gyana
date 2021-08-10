@@ -1,6 +1,6 @@
-from apps.filters.models import PREDICATE_MAP, Filter
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
+from apps.filters.models import PREDICATE_MAP, Filter
 from django import forms
 from django.forms.widgets import TextInput
 
@@ -13,6 +13,7 @@ IBIS_TO_TYPE = {
     "Time": Filter.Type.TIME,
     "Date": Filter.Type.DATE,
     "Float64": Filter.Type.FLOAT,
+    "Boolean": Filter.Type.BOOL,
 }
 
 
@@ -41,6 +42,7 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             "integer_values",
             "float_value",
             "float_values",
+            "bool_value",
         )
         widgets = {"string_value": TextInput(), "datetime_value": DatetimeInput()}
 
@@ -49,15 +51,15 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
         fields = ["column"]
         if self.column_type:
             filter_type = IBIS_TO_TYPE[self.column_type]
-            predicate = PREDICATE_MAP[filter_type]
+            predicate = PREDICATE_MAP.get(filter_type)
             value = f"{filter_type.lower()}_value"
-            fields += [predicate]
 
-            if (
-                predicate
-                and (pred := self.get_live_field(predicate)) is not None
-                and pred
-                not in [
+            # Predicate can be None for booleans
+            if predicate:
+                fields += [predicate]
+                if (
+                    pred := self.get_live_field(predicate)
+                ) is not None and pred not in [
                     "isnull",
                     "notnull",
                     "isupper",
@@ -65,12 +67,15 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
                     "today",
                     "tomorrow",
                     "yesterday",
-                ]
-            ):
-                if pred in ["isin", "notin"]:
-                    fields += [value + "s"]
-                else:
-                    fields += [value]
+                ]:
+
+                    if pred in ["isin", "notin"]:
+                        fields += [value + "s"]
+                    else:
+                        fields += [value]
+
+            if filter_type == Filter.Type.BOOL:
+                fields += [value]
 
         return fields
 

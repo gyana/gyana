@@ -23,16 +23,17 @@ export default class extends Controller {
         if (this.redirectUrlValue) {
           setTimeout(() => {
             Turbo.visit(this.redirectUrlValue)
-          }, 1500)
+          }, 750)
         } else if (this.turboStreamUrlValue) {
           const html = await (await fetch(this.turboStreamUrlValue)).text()
           Turbo.renderStreamMessage(html)
         }
       },
-      onError: () => {
+      onError: (progressBarElement, progressBarMessageElement, excMessage, data) => {
         const failureNode = this.element.querySelector('#failure-template').content.cloneNode(true)
         this.element.innerHTML = ''
         this.element.appendChild(failureNode)
+        this.element.querySelector('#failure-message').textContent = excMessage || ''
       },
     })
   }

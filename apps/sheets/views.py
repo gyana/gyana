@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.views.generic import DetailView
 from turbo_response.views import TurboCreateView
 
-from .forms import SheetForm
+from .forms import SheetCreateForm
 from .models import Sheet
 from .tasks import run_initial_sheets_sync
 
@@ -17,7 +17,7 @@ from .tasks import run_initial_sheets_sync
 class SheetCreate(ProjectMixin, TurboCreateView):
     template_name = "sheets/create.html"
     model = Sheet
-    form_class = SheetForm
+    form_class = SheetCreateForm
 
     def get_initial(self):
         initial = super().get_initial()
@@ -48,8 +48,8 @@ class SheetCreate(ProjectMixin, TurboCreateView):
         )
 
         result = run_initial_sheets_sync.delay(self.object.id)
-        self.object.external_table_sync_task_id = result.task_id
-        self.object.external_table_sync_started = timezone.now()
+        self.object.sync_task_id = result.task_id
+        self.object.sync_started = timezone.now()
         self.object.save()
 
         return r

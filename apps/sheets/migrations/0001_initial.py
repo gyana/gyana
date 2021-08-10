@@ -53,6 +53,7 @@ class Migration(migrations.Migration):
         FROM integrations_integration
         where kind = 'google_sheets'
         ;
-        """
+        """,
+            reverse_sql=migrations.RunSQL.noop,
         ),
     ]

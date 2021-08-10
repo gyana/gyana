@@ -74,6 +74,7 @@ class Migration(migrations.Migration):
         FROM integrations_integration
         where kind = 'fivetran'
         ;
-        """
+        """,
+            reverse_sql=migrations.RunSQL.noop,
         ),
     ]

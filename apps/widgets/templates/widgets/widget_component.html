@@ -26,6 +26,7 @@
         <button  data-action="click->tf-modal#open">
           <i class="fas fa-fw fa-edit"
             id="widget-update-{{object.id}}"
+            data-item="{{object.id}}"
             data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"></i>
         </button>
         <a href="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">

@@ -27,7 +27,8 @@ class Migration(migrations.Migration):
             SET project_id = integrations_integration.project_id
             FROM integrations_integration
             WHERE sheets_sheet.integration_id = integrations_integration.id
-            """
+            """,
+            reverse_sql=migrations.RunSQL.noop,
         ),
         migrations.AlterField(
             model_name="sheet",
