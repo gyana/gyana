@@ -1,4 +1,3 @@
-import celery
 from apps.base.models import BaseModel
 from apps.connectors.utils import get_services
 from apps.dashboards.models import Dashboard
@@ -15,10 +14,21 @@ class Integration(BaseModel):
         UPLOAD = "upload", "Upload"
         CONNECTOR = "connector", "Connector"
 
-    name = models.CharField(max_length=255)
+    class State(models.TextChoices):
+        LOAD = "load", "Load"
+        ERROR = "error", "Error"
+        DONE = "done", "Done"
+
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     kind = models.CharField(max_length=32, choices=Kind.choices)
 
+    # user editable name, auto-populated in the initial sync
+    name = models.CharField(max_length=255)
+
+    state = models.CharField(max_length=16, choices=State.choices, default=State.LOAD)
+    # only "ready" are available for analytics and count towards user rows
+    ready = models.BooleanField(default=False)
+    created_ready = models.DateTimeField(null=True)
     created_by = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
