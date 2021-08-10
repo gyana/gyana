@@ -64,6 +64,9 @@ class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
             "float_value",
             "string_value",
         )
+        widgets = {
+            "string_value": forms.Textarea(attrs={"rows": 1}),
+        }
 
     def get_live_fields(self):
         fields = ["column"]
@@ -104,18 +107,14 @@ class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
 
     def get_live_fields(self):
         fields = ["column"]
+        if self.column_type and (function_field := IBIS_TO_FUNCTION[self.column_type]):
+            fields += [function_field]
+            operation = AllOperations.get(self.get_live_field(function_field))
+            if operation and operation.arguments == 1:
+                fields += [operation.value_field]
 
-        if self.column_type == "Int64":
-            fields += ["integer_function"]
-
-            if self.get_live_field("integer_function") is not None:
-                fields += ["integer_value", "label"]
-
-        elif self.column_type == "String":
-            fields += ["string_function"]
-
-            if self.get_live_field("string_function") is not None:
-                fields += ["label", "string_value"]
+            if self.get_live_field(function_field) is not None:
+                fields += ["label"]
 
         return fields
 

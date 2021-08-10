@@ -13,7 +13,7 @@ const testHelp = (text) => {
 
 const addFormToFormset = (formset) => {
   cy.get(`[data-formset-prefix-value=${formset}]`).within((el) => {
-    cy.wrap(el).get('button').click()
+    cy.wrap(el).get(`#${formset}-add`).click()
   })
 }
 const getFirstColumn = (rows$) => _.map(rows$, (el$) => el$.querySelectorAll('td')[0])
@@ -141,6 +141,7 @@ describe('workflows', () => {
         })
     })
   })
+
   it('Limit', () => {
     openModalAndCheckTitle(6, 'Limit')
     testHelp('Limits the rows to the selected')
@@ -157,5 +158,98 @@ describe('workflows', () => {
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid').should('not.contain', 'Floris')
     cy.get('#workflows-grid tbody tr').should('have.length', 5)
+  })
+
+  it('Filter', () => {
+    openModalAndCheckTitle(7, 'Filter')
+    cy.get('#workflows-grid tbody tr').should('have.length', 15)
+    testHelp('Filter a table by different conditions')
+
+    addFormToFormset('filters')
+    cy.get('select[name=filters-0-numeric_predicate]').should('not.exist')
+    cy.get('input[name=filters-0-integer_value]').should('not.exist')
+    cy.get('select[name=filters-0-column]').should('have.value', '').select('store_id')
+    cy.get('select[name=filters-0-numeric_predicate]')
+      .should('have.value', '')
+      .select('greater than')
+    cy.get('input[name=filters-0-integer_value]').should('have.value', '').type('5{enter}')
+    cy.contains('Save & Preview').click()
+    cy.get('#workflows-grid tbody tr').should('have.length', 10)
+
+    cy.get('select[name=filters-0-column]').select('Location')
+    cy.get('select[name=filters-0-string_predicate]')
+      .should('not.contain', 'greater than')
+      .select('is equal to')
+    cy.get('input[name=filters-0-string_value]').should('have.value', '').type('Edinburgh{enter}')
+    cy.contains('Save & Preview').click()
+    cy.get('#workflows-grid tbody tr').should('have.length', 3)
+    cy.get('#workflows-grid').should('not.contain', 'Blackpool')
+
+    addFormToFormset('filters')
+    cy.get('select[name=filters-1-column]').select('Employees')
+    cy.get('select[name=filters-1-numeric_predicate]').select('less than or equal')
+    cy.get('input[name=filters-1-integer_value]').should('have.value', '').type('7{enter}')
+    cy.contains('Save & Preview').click()
+    cy.get('#workflows-grid tbody tr').should('have.length', 2)
+    // TODO: Test filter deletion
+  })
+
+  it('Distinct', () => {
+    openModalAndCheckTitle(8, 'Distinct')
+    cy.get('td:contains(Blackpool)').should('have.length', 4)
+    testHelp('Select columns that should')
+
+    cy.contains('Location').click()
+    cy.contains('Save & Preview').click()
+    cy.get('td:contains(Blackpool)').should('have.length', 1)
+  })
+
+  it.skip('Pivot')
+
+  it('Edit', () => {
+    openModalAndCheckTitle(11, 'Edit')
+    testHelp('Select columns you would like to edit ')
+
+    addFormToFormset('edit_columns')
+    cy.get('select[name=edit_columns-0-column]').should('have.value', '').select('Employees')
+    cy.get('select[name=edit_columns-0-integer_function]')
+      .should('have.value', '')
+      .select('square root')
+    cy.contains('Save & Preview').click()
+    cy.get('#workflows-grid').contains('3.0')
+
+    addFormToFormset('edit_columns')
+    cy.get('select[name=edit_columns-1-column]').select('Owner')
+    cy.get('select[name=edit_columns-1-string_function]').select('like')
+    cy.get('textarea[name=edit_columns-1-string_value]').type('Matt').blur()
+    cy.contains('Save & Preview').click()
+    cy.get('#workflows-grid tbody td:contains(True)').should('have.length', 6)
+  })
+
+  it('Add', () => {
+    openModalAndCheckTitle(12, 'Add')
+    testHelp('Add new columna by selecting')
+
+    addFormToFormset('add_columns')
+    cy.get('select[name=add_columns-0-column]').should('have.value', '').select('store_id')
+    cy.get('select[name=add_columns-0-integer_function').should('have.value', '').select('divide')
+    cy.get('input[name=add_columns-0-float_value]').should('have.value', '').type('10{enter}')
+    cy.get('input[name=add_columns-0-label]')
+      .should('have.value', '')
+      .should('not.be.disabled')
+      .type('magic_number')
+      .blur()
+    cy.contains('Save & Preview').click()
+    cy.get('#workflows-grid').contains('magic_number')
+    cy.get('#workflows-grid').contains('0.1')
+
+    addFormToFormset('add_columns')
+    cy.get('select[name=add_columns-1-column]').select('Owner')
+    cy.get('select[name=add_columns-1-string_function').select('to uppercase')
+    cy.get('select[name=add_columns-1-string_value]').should('not.exist')
+    cy.get('input[name=add_columns-1-label]').type('upper_owner{enter}')
+    cy.contains('Save & Preview').click()
+    cy.get('#workflows-grid:contains(upper_owner)').scrollIntoView()
+    cy.get('#workflows-grid').contains('ALEX')
   })
 })

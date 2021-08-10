@@ -1,10 +1,10 @@
 from functools import cached_property
 
+from apps.base.live_update_form import LiveUpdateForm
 from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column
 from apps.nodes.formsets import KIND_TO_FORMSETS
 from apps.tables.models import Table
-from apps.base.live_update_form import LiveUpdateForm
 from django import forms
 
 from .models import Node
@@ -75,6 +75,30 @@ class SelectNodeForm(NodeForm):
         self.instance.columns.all().delete()
         self.instance.columns.set(
             [Column(column=column) for column in self.cleaned_data["select_columns"]],
+            bulk=False,
+        )
+        return super().save(*args, **kwargs)
+
+
+class DistinctNodeForm(NodeForm):
+    class Meta:
+        model = Node
+        fields = []
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["distinct_columns"] = forms.MultipleChoiceField(
+            choices=[(col, col) for col in self.columns],
+            widget=MultiSelect,
+            label="Select the columns that should be unique:",
+            initial=list(self.instance.columns.all().values_list("column", flat=True)),
+        )
+
+    def save(self, *args, **kwargs):
+        self.instance.columns.all().delete()
+        self.instance.columns.set(
+            [Column(column=column) for column in self.cleaned_data["distinct_columns"]],
             bulk=False,
         )
         return super().save(*args, **kwargs)
@@ -180,7 +204,7 @@ KIND_TO_FORM = {
     "add": DefaultNodeForm,
     "rename": DefaultNodeForm,
     "formula": DefaultNodeForm,
-    "distinct": SelectNodeForm,
+    "distinct": DistinctNodeForm,
     "pivot": PivotNodeForm,
     "unpivot": UnpivotNodeForm,
     "intersect": DefaultNodeForm,

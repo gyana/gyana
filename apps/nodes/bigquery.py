@@ -2,11 +2,11 @@ import inspect
 import logging
 
 import ibis
+from apps.base.clients import DATAFLOW_ID, bigquery_client, ibis_client
 from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
-from apps.base.clients import DATAFLOW_ID, bigquery_client, ibis_client
 from django.utils import timezone
 from ibis.expr.datatypes import String
 
@@ -231,7 +231,11 @@ def get_distinct_query(node, query):
         for column in query.schema()
         if column not in distinct_columns
     ]
-    return query.group_by(distinct_columns).aggregate(columns)
+    return (
+        query.group_by(distinct_columns).aggregate(columns)
+        if distinct_columns
+        else query
+    )
 
 
 @use_intermediate_table
