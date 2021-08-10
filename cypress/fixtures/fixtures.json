@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-08-10T00:07:55.070Z",
+      "last_login": "2021-08-10T12:00:01.651Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -158,7 +158,7 @@
     "pk": 4,
     "fields": {
       "created": "2021-08-10T10:40:23.584Z",
-      "updated": "2021-08-10T10:40:23.589Z",
+      "updated": "2021-08-10T13:34:45.844Z",
       "name": "Facebook Ads",
       "project": 1,
       "kind": "connector",
@@ -170,8 +170,20 @@
     "pk": 5,
     "fields": {
       "created": "2021-08-10T10:40:23.584Z",
-      "updated": "2021-08-10T10:40:23.589Z",
+      "updated": "2021-08-10T12:01:16.317Z",
       "name": "Google Analytics",
+      "project": 1,
+      "kind": "connector",
+      "created_by": 1
+    }
+  },
+  {
+    "model": "integrations.integration",
+    "pk": 6,
+    "fields": {
+      "created": "2021-08-10T12:54:44.272Z",
+      "updated": "2021-08-10T12:54:44.276Z",
+      "name": "Shopify",
       "project": 1,
       "kind": "connector",
       "created_by": 1
@@ -382,6 +394,40 @@
     }
   },
   {
+    "model": "tables.table",
+    "pk": 13,
+    "fields": {
+      "created": "2021-08-10T13:34:45.752Z",
+      "updated": "2021-08-10T13:34:45.752Z",
+      "_bq_table": "account_history",
+      "bq_dataset": "team_1_facebook_ads_563a564c28cc469dba73faf6dea0799e",
+      "project": 1,
+      "source": "integration",
+      "integration": 4,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 1,
+      "data_updated": "2021-08-10T13:34:45.752Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 14,
+    "fields": {
+      "created": "2021-08-10T13:34:45.843Z",
+      "updated": "2021-08-10T13:34:45.843Z",
+      "_bq_table": "reach_frequency",
+      "bq_dataset": "team_1_facebook_ads_563a564c28cc469dba73faf6dea0799e",
+      "project": 1,
+      "source": "integration",
+      "integration": 4,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 246,
+      "data_updated": "2021-08-10T13:34:45.843Z"
+    }
+  },
+  {
     "model": "invites.invite",
     "pk": 1,
     "fields": {
@@ -438,12 +484,12 @@
       "updated": "2021-08-10T10:03:16.771Z",
       "integration": 3,
       "service": "heroku_postgres",
-      "fivetran_id": null,
-      "schema": null,
-      "fivetran_authorized": false,
+      "fivetran_id": "sedimentation_flagpole",
+      "schema": "team_1_heroku_postgres_489f5a5d64a9468ebe7beac32d0488f4_",
+      "fivetran_authorized": true,
       "fivetran_poll_historical_sync_task_id": null,
-      "historical_sync_complete": false,
-      "last_synced": null
+      "historical_sync_complete": true,
+      "last_synced": "2021-08-10T10:03:16.771Z"
     }
   },
   {
@@ -454,12 +500,12 @@
       "updated": "2021-08-10T10:40:23.586Z",
       "integration": 4,
       "service": "facebook_ads",
-      "fivetran_id": null,
-      "schema": null,
-      "fivetran_authorized": false,
+      "fivetran_id": "legate_wandered",
+      "schema": "team_1_facebook_ads_563a564c28cc469dba73faf6dea0799e",
+      "fivetran_authorized": true,
       "fivetran_poll_historical_sync_task_id": null,
-      "historical_sync_complete": false,
-      "last_synced": null
+      "historical_sync_complete": true,
+      "last_synced": "2021-08-10T10:40:23.586Z"
     }
   },
   {
@@ -470,12 +516,28 @@
       "updated": "2021-08-10T10:40:23.586Z",
       "integration": 5,
       "service": "google_analytics",
-      "fivetran_id": null,
+      "fivetran_id": "humid_rifle",
       "schema": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
       "fivetran_authorized": true,
       "fivetran_poll_historical_sync_task_id": null,
       "historical_sync_complete": true,
       "last_synced": "2021-08-10T10:40:23.586Z"
+    }
+  },
+  {
+    "model": "connectors.connector",
+    "pk": 8,
+    "fields": {
+      "created": "2021-08-10T12:54:44.273Z",
+      "updated": "2021-08-10T12:54:44.273Z",
+      "integration": 6,
+      "service": "shopify",
+      "fivetran_id": "overtime_froze",
+      "schema": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "fivetran_authorized": true,
+      "fivetran_poll_historical_sync_task_id": null,
+      "historical_sync_complete": true,
+      "last_synced": "2021-08-10T12:54:44.273Z"
     }
   },
   {
