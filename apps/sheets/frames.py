@@ -48,7 +48,7 @@ class SheetStatus(TurboFrameUpdateView):
         return reverse(
             "project_integrations_sheets:detail",
             args=(
-                self.object.project.id,
+                self.object.integration.project.id,
                 self.object.id,
             ),
         )
