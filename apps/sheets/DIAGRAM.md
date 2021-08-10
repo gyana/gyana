@@ -11,6 +11,7 @@ stateDiagram-v2
     if_state --> Error: cannot access
     if_state --> Error: invalid cell range
     if_state --> Sheet: success
+    Error --> New: retry
 
     state Sheet {
         state if_load <<choice>>
@@ -19,11 +20,14 @@ stateDiagram-v2
         Load --> if_load
         if_load --> RuntimeError: runtime error
         if_load --> Preview: success
+        RuntimeError --> Setup
+        RuntimeError --> Support
         Preview --> Setup
         Preview --> Approve
         Approve --> [*]
     }
 
+    Sheet --> Delete
     Sheet --> Integration
     Integration --> [*]
     Integration --> Sheet: resync
