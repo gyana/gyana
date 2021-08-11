@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             """
-            DELETE FROM connectors_connectors
+            DELETE FROM connectors_connector
             WHERE service IS NULL
                 OR fivetran_id IS NULL
                 OR schema IS NULL

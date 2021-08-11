@@ -1,4 +1,5 @@
 import analytics
+from apps.base.clients import fivetran_client
 from apps.base.segment_analytics import INTEGRATION_CREATED_EVENT
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
@@ -36,13 +37,6 @@ class ConnectorCreate(ProjectMixin, CreateView):
 
     def form_valid(self, form):
 
-        client = FivetranClient()
-        fivetran_config = client.create(
-            self.request.GET["service"], self.project.team.id
-        )
-        form.instance.fivetran_id = fivetran_config["fivetran_id"]
-        form.instance.schema = fivetran_config["schema"]
-
         # create the connector and integration
         self.object = form.save()
 
@@ -64,7 +58,7 @@ class ConnectorCreate(ProjectMixin, CreateView):
             ),
         )
 
-        return client.authorize(
+        return fivetran_client().authorize(
             self.object.fivetran_id,
             f"{settings.EXTERNAL_URL}{internal_redirect}",
         )

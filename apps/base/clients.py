@@ -2,6 +2,7 @@ from functools import lru_cache
 
 import google.auth
 import ibis_bigquery
+from apps.connectors.fivetran import FivetranClient
 from django.conf import settings
 from django.utils.text import slugify
 from google.cloud import bigquery, storage
@@ -69,3 +70,8 @@ def get_bucket():
 def get_dataframe(query):
     client = bigquery_client()
     return client.query(query).result().to_dataframe(create_bqstorage_client=False)
+
+
+@lru_cache
+def fivetran_client():
+    return FivetranClient()

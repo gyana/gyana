@@ -35,7 +35,7 @@ class FivetranClient:
             json={
                 "service": service,
                 "group_id": settings.FIVETRAN_GROUP,
-                # TODO: when should this happen
+                # no access credentials yet
                 "run_setup_tests": False,
                 "paused": True,
                 "config": config,
@@ -43,11 +43,23 @@ class FivetranClient:
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 
-        if res["code"] != "Success":
-            # TODO: return the message to the user
-            pass
+        assert schema == res["data"]["schema"]
 
-        return {"fivetran_id": res["data"]["id"], "schema": schema}
+        # response schema https://fivetran.com/docs/rest-api/connectors#response_1
+        #  {
+        #   "code": "Success",
+        #   "message": "Connector has been created",
+        #   "data": {
+        #       "id": "{{ fivetran_id }}",
+        #       "schema": "{{ schema }}",
+        #       ...
+        #    }
+        #  }
+        return {
+            "success": res["code"] == "Success",
+            "message": res["message"],
+            "data": {"fivetran_id": res["data"]["id"], "schema": res["data"]["schema"]},
+        }
 
     def start(self, fivetran_id):
         res = requests.patch(
@@ -191,8 +203,12 @@ class FivetranClient:
 class MockFivetranClient:
     def create(self, service, team_id):
         return {
-            "fivetran_id": settings.MOCK_FIVETRAN_ID,
-            "schema": settings.MOCK_FIVETRAN_SCHEMA,
+            "success": True,
+            "message": "Connector has been created",
+            "data": {
+                "fivetran_id": settings.MOCK_FIVETRAN_ID,
+                "schema": settings.MOCK_FIVETRAN_SCHEMA,
+            },
         }
 
     def start(self, fivetran_id):
