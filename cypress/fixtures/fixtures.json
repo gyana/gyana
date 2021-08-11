@@ -197,7 +197,7 @@
     "pk": 6,
     "fields": {
       "created": "2021-08-10T12:54:44.272Z",
-      "updated": "2021-08-10T12:54:44.276Z",
+      "updated": "2021-08-11T13:29:03.723Z",
       "project": 1,
       "kind": "connector",
       "name": "Shopify",
@@ -443,6 +443,312 @@
       "intermediate_node": null,
       "num_rows": 246,
       "data_updated": "2021-08-10T13:34:45.843Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 15,
+    "fields": {
+      "created": "2021-08-11T13:29:02.229Z",
+      "updated": "2021-08-11T13:29:02.229Z",
+      "_bq_table": "collection",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 1,
+      "data_updated": "2021-08-11T13:29:02.229Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 16,
+    "fields": {
+      "created": "2021-08-11T13:29:02.315Z",
+      "updated": "2021-08-11T13:29:02.316Z",
+      "_bq_table": "collection_product",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 1,
+      "data_updated": "2021-08-11T13:29:02.316Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 17,
+    "fields": {
+      "created": "2021-08-11T13:29:02.411Z",
+      "updated": "2021-08-11T13:29:02.411Z",
+      "_bq_table": "country",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 29,
+      "data_updated": "2021-08-11T13:29:02.411Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 18,
+    "fields": {
+      "created": "2021-08-11T13:29:02.502Z",
+      "updated": "2021-08-11T13:29:02.502Z",
+      "_bq_table": "customer",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 1,
+      "data_updated": "2021-08-11T13:29:02.502Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 19,
+    "fields": {
+      "created": "2021-08-11T13:29:02.603Z",
+      "updated": "2021-08-11T13:29:02.603Z",
+      "_bq_table": "customer_saved_search",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 4,
+      "data_updated": "2021-08-11T13:29:02.603Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 20,
+    "fields": {
+      "created": "2021-08-11T13:29:02.685Z",
+      "updated": "2021-08-11T13:29:02.685Z",
+      "_bq_table": "discount_code",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 1,
+      "data_updated": "2021-08-11T13:29:02.685Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 21,
+    "fields": {
+      "created": "2021-08-11T13:29:02.748Z",
+      "updated": "2021-08-11T13:29:02.748Z",
+      "_bq_table": "draft_order",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 1,
+      "data_updated": "2021-08-11T13:29:02.748Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 22,
+    "fields": {
+      "created": "2021-08-11T13:29:02.837Z",
+      "updated": "2021-08-11T13:29:02.837Z",
+      "_bq_table": "draft_order_line",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 1,
+      "data_updated": "2021-08-11T13:29:02.837Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 23,
+    "fields": {
+      "created": "2021-08-11T13:29:02.928Z",
+      "updated": "2021-08-11T13:29:02.928Z",
+      "_bq_table": "inventory_item",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 4,
+      "data_updated": "2021-08-11T13:29:02.929Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 24,
+    "fields": {
+      "created": "2021-08-11T13:29:03.036Z",
+      "updated": "2021-08-11T13:29:03.036Z",
+      "_bq_table": "inventory_level",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 4,
+      "data_updated": "2021-08-11T13:29:03.036Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 25,
+    "fields": {
+      "created": "2021-08-11T13:29:03.098Z",
+      "updated": "2021-08-11T13:29:03.098Z",
+      "_bq_table": "location",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 1,
+      "data_updated": "2021-08-11T13:29:03.098Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 26,
+    "fields": {
+      "created": "2021-08-11T13:29:03.186Z",
+      "updated": "2021-08-11T13:29:03.186Z",
+      "_bq_table": "price_rule",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 1,
+      "data_updated": "2021-08-11T13:29:03.186Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 27,
+    "fields": {
+      "created": "2021-08-11T13:29:03.261Z",
+      "updated": "2021-08-11T13:29:03.261Z",
+      "_bq_table": "product",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 1,
+      "data_updated": "2021-08-11T13:29:03.261Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 28,
+    "fields": {
+      "created": "2021-08-11T13:29:03.360Z",
+      "updated": "2021-08-11T13:29:03.360Z",
+      "_bq_table": "product_option",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 1,
+      "data_updated": "2021-08-11T13:29:03.360Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 29,
+    "fields": {
+      "created": "2021-08-11T13:29:03.439Z",
+      "updated": "2021-08-11T13:29:03.439Z",
+      "_bq_table": "product_variant",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 4,
+      "data_updated": "2021-08-11T13:29:03.439Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 30,
+    "fields": {
+      "created": "2021-08-11T13:29:03.534Z",
+      "updated": "2021-08-11T13:29:03.534Z",
+      "_bq_table": "province",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 255,
+      "data_updated": "2021-08-11T13:29:03.534Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 31,
+    "fields": {
+      "created": "2021-08-11T13:29:03.618Z",
+      "updated": "2021-08-11T13:29:03.618Z",
+      "_bq_table": "shop",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 1,
+      "data_updated": "2021-08-11T13:29:03.618Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 32,
+    "fields": {
+      "created": "2021-08-11T13:29:03.722Z",
+      "updated": "2021-08-11T13:29:03.722Z",
+      "_bq_table": "user",
+      "bq_dataset": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "project": 1,
+      "source": "integration",
+      "integration": 6,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 1,
+      "data_updated": "2021-08-11T13:29:03.722Z"
     }
   },
   {
