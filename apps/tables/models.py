@@ -51,6 +51,7 @@ class Table(BaseModel):
     num_rows = models.IntegerField()
     data_updated = models.DateTimeField(auto_now_add=True)
 
+    objects = models.Manager()
     available = AvailableManager()
 
     def __str__(self):
