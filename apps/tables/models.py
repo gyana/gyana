@@ -12,7 +12,7 @@ from google.api_core.exceptions import NotFound
 
 class AvailableManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(integration__ready=True)
+        return super().get_queryset().exclude(integration__ready=False)
 
 
 class Table(BaseModel):
