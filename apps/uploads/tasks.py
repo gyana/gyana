@@ -51,7 +51,6 @@ def run_initial_upload_sync(self, upload_id: int):
                 project=integration.project,
                 num_rows=0,
             )
-            upload.integration = integration
             table.save()
 
             # no progress as load job does not provide query plan

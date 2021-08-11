@@ -4,7 +4,6 @@ import uuid
 
 import backoff
 import requests
-from apps.integrations.models import Integration
 from django.conf import settings
 from django.shortcuts import redirect
 from django.urls.base import reverse
@@ -64,6 +63,8 @@ class FivetranClient:
 
     def authorize(self, fivetran_id, redirect_uri):
 
+        # https://fivetran.com/docs/rest-api/connectors/connect-card#connectcard
+
         card = requests.post(
             f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/connect-card-token",
             headers=settings.FIVETRAN_HEADERS,
@@ -76,11 +77,11 @@ class FivetranClient:
 
     def start(self, connector: Connector):
 
+        # https://fivetran.com/docs/rest-api/connectors#modifyaconnector
+
         res = requests.patch(
             f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}",
-            json={
-                "paused": False,
-            },
+            json={"paused": False},
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 

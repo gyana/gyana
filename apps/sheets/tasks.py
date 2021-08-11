@@ -80,7 +80,6 @@ def run_initial_sheets_sync(self, sheet_id):
                 project=integration.project,
                 num_rows=0,
             )
-            sheet.integration = integration
             table.save()
 
             query_job = _do_sync_with_progress(self, sheet, table)
