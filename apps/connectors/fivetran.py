@@ -7,6 +7,7 @@ import requests
 from django.conf import settings
 from django.shortcuts import redirect
 
+from .models import Connector
 from .utils import get_services
 
 
@@ -204,7 +205,10 @@ class MockFivetranClient:
         integration.save()
 
     def get_schema(self, fivetran_id):
-        with open("cypress/fixtures/google_analytics_schema.json", "r") as f:
+        connector = Connector.objects.filter(fivetran_id=fivetran_id).first()
+        service = connector.service if connector is not None else "google_analytics"
+
+        with open(f"cypress/fixtures/fivetran/{service}_schema.json", "r") as f:
             return json.load(f)
 
     def update_schema(self, fivetran_id, updated_checkboxes):
