@@ -22,6 +22,11 @@ project_urlpatterns = (
             "", login_and_project_required(views.IntegrationList.as_view()), name="list"
         ),
         path(
+            "pending",
+            login_and_project_required(views.IntegrationPending.as_view()),
+            name="pending",
+        ),
+        path(
             "new",
             login_and_project_required(views.IntegrationNew.as_view()),
             name="new",
@@ -30,6 +35,11 @@ project_urlpatterns = (
             "create",
             login_and_project_required(views.IntegrationCreate.as_view()),
             name="create",
+        ),
+        path(
+            "<hashid:pk>/setup",
+            login_and_project_required(views.IntegrationSetup.as_view()),
+            name="setup",
         ),
         path(
             "<hashid:pk>",

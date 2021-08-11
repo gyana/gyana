@@ -1,15 +1,13 @@
 from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
-from apps.projects.mixins import ProjectMixin
 from apps.sheets.forms import SheetUpdateForm
 from django.urls import reverse
-from django.utils import timezone
 
 from .bigquery import get_last_modified_from_drive_file
 from .models import Sheet
-from .tasks import run_update_sheets_sync
+from .tasks import run_sheets_sync
 
 
-class SheetProgress(TurboFrameDetailView):
+class SheetProgress(TurboFrameUpdateView):
     template_name = "sheets/progress.html"
     model = Sheet
     fields = []
@@ -21,8 +19,18 @@ class SheetProgress(TurboFrameDetailView):
 
         return context_data
 
+    def form_valid(self, form):
+        run_sheets_sync(self.object)
+        return super().form_valid(form)
 
-class SheetStatus(TurboFrameUpdateView):
+    def get_success_url(self) -> str:
+        return reverse(
+            "sheets:progress",
+            args=(self.object.id,),
+        )
+
+
+class SheetStatus(TurboFrameDetailView):
     template_name = "sheets/status.html"
     model = Sheet
     fields = []
@@ -37,22 +45,6 @@ class SheetStatus(TurboFrameUpdateView):
 
         return context_data
 
-    def form_valid(self, form):
-        result = run_update_sheets_sync.delay(self.object.id)
-        self.object.sync_task_id = result.task_id
-        self.object.sync_started = timezone.now()
-        self.object.save()
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        return reverse(
-            "project_integrations_sheets:detail",
-            args=(
-                self.object.project.id,
-                self.object.id,
-            ),
-        )
-
 
 class SheetUpdate(TurboFrameUpdateView):
     template_name = "sheets/update.html"
@@ -61,15 +53,12 @@ class SheetUpdate(TurboFrameUpdateView):
     turbo_frame_dom_id = "sheets:update"
 
     def form_valid(self, form):
-        result = run_update_sheets_sync.delay(self.object.id)
-        self.object.sync_task_id = result.task_id
-        self.object.sync_started = timezone.now()
-        self.object.save()
+        run_sheets_sync(self.object)
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:detail",
+            "project_integrations:setup",
             args=(
                 self.object.integration.project.id,
                 self.object.integration.id,

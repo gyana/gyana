@@ -35,12 +35,18 @@
   }
 
 
-  &::after {
-    background-color: var(--c-blue-50);
+  &__image {
+    align-items: center;
+    background-color: var(--c-blue-10);
     content: '';
-    display: block;
+    display: flex;
     flex: 2 2 0;
     height: 100%;
+    justify-content: center;
     position: relative;
+    
+    img {
+      height: 100%;
+    }
   }
 }

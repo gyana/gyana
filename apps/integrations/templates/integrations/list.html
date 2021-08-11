@@ -1,95 +1,41 @@
-{% extends "web/app/project_base.html" %}
+{% extends "integrations/base_list.html" %}
 {% load render_table from django_tables2 %}
 
-{% block app %}
-<div class="page-header">
-  <div class="mr-auto">
-    <h1>Integrations</h1>
+{% block tab %}
+<div class='flex flex-row w-full mb-4'>
+  <form>
+    <div class="flex flex-row items-center">
+      <input type="search" id="site-search" name="q" placeholder="Find integration"
+        aria-label="Search through site content" value="{{ request.GET.q }}" />
 
-    <p>
-      Integrations serve as the first source of all data in your project. They can be processed in
-      workflows, or used directly in dashboards.
-    </p>
-  </div>
+      <button type="submit" class="button button--primary button--circle ml-2"><i class="fas fa-search"></i></button>
+    </div>
+  </form>
 
-  {% comment %} <div class="flex gap-7 ml-4">
-    <a class="button button--sm" href="{% url 'project_integrations_uploads:create' project.id %}">
-      <i class="fas fa-fw fa-upload"></i> Upload CSV
-    </a>
-    <a class="button button--sm" href="{% url 'project_integrations_sheets:create' project.id %}">
-      <i class="fas fa-fw fa-file-spreadsheet"></i> Add Sheet
-    </a>
-    <a class="button button--sm" href="{% url 'project_integrations:new' project.id %}">
-      <i class="fas fa-fw fa-plus"></i> New Connector
-    </a>
-  </div> {% endcomment %}
+  <form class='ml-auto'>
+    <input type="search" id="site-search" name="kind" list="kind-selection" value="{{ request.GET.kind }}" placeholder="Filter by kind" />
 
-  <div class="flex ml-4">
-  <div data-controller='popover'>
-    <button data-popover-target="trigger" class="button button--outline button--sm" data-action="popover#trigger">
-      New Integration <i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
-
-    </button>
-
-    <ul data-popover-target="body" class="list list--bordered" hidden style="z-index:1;margin-top:6px;">
-      <li class="list__item list__item--interactive">
-        <a class="" href="{% url 'project_integrations_uploads:create' project.id %}">
-          <i class="fas fa-fw fa-upload mr-4"></i> Upload CSV
-        </a>
-      </li>
-
-      <li class="list__item list__item--interactive">
-        <a class="" href="{% url 'project_integrations_sheets:create' project.id %}">
-          <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
-        </a>
-      </li>
-
-      <li class="list__item list__item--interactive">
-        <a class="" href="{% url 'project_integrations:new' project.id %}">
-          <i class="fas fa-fw fa-plus mr-4"></i> New Connector
-        </a>
-      </li>
-    </ul>
-  </div>
-  </div>
+      <datalist id="kind-selection">
+        {% for kind in integration_kinds %}
+          <option value="{{kind.0}}">{{kind.1}}</option>
+        {% endfor %}
+      </datalist>
+  </form>
 </div>
 
-<div class="pad overflow-auto">
-  <div class='flex flex-row w-full mb-4'>
-    <form>
-      <div class="flex flex-row items-center">
-        <input type="search" id="site-search" name="q" placeholder="Find integration"
-          aria-label="Search through site content" value="{{ request.GET.q }}" />
+<div class="card card--none mb-8">
+  {% render_table table %}
 
-        <button type="submit" class="button button--primary button--circle ml-2"><i class="fas fa-search"></i></button>
-      </div>
-    </form>
-
-    <form class='ml-auto'>
-      <input type="search" id="site-search" name="kind" list="kind-selection" value="{{ request.GET.kind }}" placeholder="Filter by kind" />
-
-        <datalist id="kind-selection">
-          {% for kind in integration_kinds %}
-            <option value="{{kind.0}}">{{kind.1}}</option>
-          {% endfor %}
-        </datalist>
-    </form>
+  {% if integration_count == 0 %}
+  <div class="table__empty">
+    <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
+    <h3>You have no integrations</h3>
+    <p>
+      <a href="{% url 'project_integrations_uploads:create' project.id %}" class="link">Upload a CSV</a>, or
+      <a href="{% url 'project_integrations:new' project.id %}" class="link">create an integration</a> to see it
+      here.
+    </p>
   </div>
-
-  <div class="card card--none mb-8">
-    {% render_table table %}
-
-    {% if integration_count == 0 %}
-    <div class="table__empty">
-      <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
-      <h3>You have no integrations</h3>
-      <p>
-        <a href="{% url 'project_integrations_uploads:create' project.id %}" class="link">Upload a CSV</a>, or
-        <a href="{% url 'project_integrations:new' project.id %}" class="link">create an integration</a> to see it
-        here.
-      </p>
-    </div>
-    {% endif %}
-  </div>
+  {% endif %}
 </div>
 {% endblock %}

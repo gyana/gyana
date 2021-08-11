@@ -11,7 +11,7 @@ from django.urls.base import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
-from turbo_response.views import TurboCreateView, TurboUpdateView
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 
 from .forms import DashboardForm, DashboardFormCreate
 from .models import Dashboard

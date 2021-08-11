@@ -1,7 +1,7 @@
 from functools import cached_property
 
-from apps.teams.models import Team
 from apps.base.models import BaseModel
+from apps.teams.models import Team
 from django.db import models
 from django.urls import reverse
 
@@ -34,7 +34,7 @@ class Project(BaseModel):
     def num_rows(self):
         from apps.tables.models import Table
 
-        return Table.objects.filter(integration__project=self).aggregate(
+        return Table.available.filter(integration__project=self).aggregate(
             models.Sum("num_rows")
         )["num_rows__sum"]
 

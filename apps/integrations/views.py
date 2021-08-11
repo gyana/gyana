@@ -5,6 +5,7 @@ from apps.base.segment_analytics import (
     INTEGRATION_CREATED_EVENT,
     NEW_INTEGRATION_START_EVENT,
 )
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.connectors.fivetran import FivetranClient
 from apps.connectors.utils import get_service_categories, get_services
 from apps.projects.mixins import ProjectMixin
@@ -13,15 +14,16 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponseBadRequest
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
-from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .forms import FivetranForm, IntegrationForm, SheetCreateForm
+from .mixins import ReadyMixin
 from .models import Integration
-from .tables import IntegrationTable, StructureTable
+from .tables import IntegrationListTable, IntegrationPendingTable, StructureTable
 
 # CRUDL
 
@@ -29,14 +31,16 @@ from .tables import IntegrationTable, StructureTable
 class IntegrationList(ProjectMixin, SingleTableView):
     template_name = "integrations/list.html"
     model = Integration
-    table_class = IntegrationTable
+    table_class = IntegrationListTable
     paginate_by = 20
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+        project_integrations = Integration.objects.filter(project=self.project)
 
-        context_data["integration_count"] = Integration.objects.filter(
-            project=self.project
+        context_data["integration_count"] = project_integrations.count()
+        context_data["pending_integration_count"] = project_integrations.filter(
+            ready=False
         ).count()
 
         context_data["integration_kinds"] = Integration.Kind.choices
@@ -44,7 +48,7 @@ class IntegrationList(ProjectMixin, SingleTableView):
         return context_data
 
     def get_queryset(self) -> QuerySet:
-        queryset = Integration.objects.filter(project=self.project)
+        queryset = Integration.objects.filter(project=self.project, ready=True)
         # Add search query if it exists
         if query := self.request.GET.get("q"):
             queryset = (
@@ -60,6 +64,26 @@ class IntegrationList(ProjectMixin, SingleTableView):
         return queryset.prefetch_related("table_set").all()
 
 
+class IntegrationPending(ProjectMixin, SingleTableView):
+    template_name = "integrations/pending.html"
+    model = Integration
+    table_class = IntegrationPendingTable
+    paginate_by = 20
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        context_data["pending_integration_count"] = Integration.objects.filter(
+            project=self.project, ready=False
+        ).count()
+
+        return context_data
+
+    def get_queryset(self) -> QuerySet:
+        queryset = Integration.objects.filter(project=self.project, ready=False)
+        return queryset.prefetch_related("table_set").all()
+
+
 class IntegrationNew(ProjectMixin, TemplateView):
     template_name = "integrations/new.html"
 
@@ -70,6 +94,25 @@ class IntegrationNew(ProjectMixin, TemplateView):
         context_data["service_categories"] = get_service_categories()
 
         return context_data
+
+
+class IntegrationSetup(ProjectMixin, TurboUpdateView):
+    template_name = "integrations/setup.html"
+    model = Integration
+    fields = []
+
+    def form_valid(self, form):
+        if not self.object.ready:
+            self.object.created_ready = timezone.now()
+        self.object.ready = True
+        self.object.save()
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_integrations:detail",
+            args=(self.project.id, self.object.id),
+        )
 
 
 class IntegrationCreate(ProjectMixin, TurboCreateView):
@@ -159,7 +202,7 @@ class IntegrationCreate(ProjectMixin, TurboCreateView):
         )
 
 
-class IntegrationDetail(ProjectMixin, TurboUpdateView):
+class IntegrationDetail(ReadyMixin, TurboUpdateView):
     template_name = "integrations/detail.html"
     model = Integration
     form_class = IntegrationForm
@@ -206,7 +249,7 @@ class IntegrationDelete(ProjectMixin, DeleteView):
         return reverse("project_integrations:list", args=(self.project.id,))
 
 
-class IntegrationStructure(ProjectMixin, DetailView):
+class IntegrationStructure(ReadyMixin, DetailView):
     template_name = "integrations/structure.html"
     model = Integration
     table_class = StructureTable
@@ -227,7 +270,7 @@ class IntegrationStructure(ProjectMixin, DetailView):
         return context_data
 
 
-class IntegrationData(ProjectMixin, DetailView):
+class IntegrationData(ReadyMixin, DetailView):
     template_name = "integrations/data.html"
     model = Integration
 

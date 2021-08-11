@@ -1,0 +1,19 @@
+{% extends "integrations/base_list.html" %}
+{% load render_table from django_tables2 %}
+
+{% block tab %}
+
+<div class="card card--none mb-8">
+  {% render_table table %}
+
+  {% if pending_integration_count == 0 %}
+  <div class="table__empty">
+    <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
+    <h3>You have no integrations pending</h3>
+    <p>
+      New integrations live here until they are completed and approved by you.
+    </p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

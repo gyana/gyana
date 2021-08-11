@@ -9,36 +9,47 @@ from .models import Integration
 class StatusColumn(TemplateColumn):
     def render(self, record, table, **kwargs):
         context = getattr(table, "context", Context())
-        if record.last_synced is None:
-            context["icon"] = ICONS["warning"]
-            context["text"] = "Integration has not been synced yet."
+        if record.state == Integration.State.LOAD:
+            context["icon"] = ICONS["loading"]
+            context["text"] = "Integration is loading"
+        elif record.state == Integration.State.ERROR:
+            context["icon"] = ICONS["error"]
+            context["text"] = "Integration failed to load"
         else:
             context["icon"] = ICONS["success"]
-            context["text"] = "Synced and ready to be used."
+            context["text"] = "Integration is ready for your review"
 
         return get_template(self.template_name).render(context.flatten())
 
 
-class IntegrationTable(Table):
+class IntegrationListTable(Table):
+    class Meta:
+        model = Integration
+        fields = ("name", "kind", "created_ready")
+        attrs = {"class": "table"}
+
+    name = Column(linkify=True)
+    num_rows = Column(verbose_name="Rows")
+    kind = Column(accessor="display_kind")
+    created_ready = NaturalDatetimeColumn(verbose_name="Added")
+
+
+class IntegrationPendingTable(Table):
     class Meta:
         model = Integration
         fields = (
             "name",
             "kind",
             "num_rows",
-            "last_synced",
             "created",
-            "updated",
         )
         attrs = {"class": "table"}
 
     name = Column(linkify=True)
     num_rows = Column(verbose_name="Rows")
     kind = Column(accessor="display_kind")
-    last_synced = NaturalDatetimeColumn()
-    status = StatusColumn(template_name="columns/status.html")
-    created = StatusColumn(template_name="columns/status.html")
-    updated = NaturalDatetimeColumn()
+    created = NaturalDatetimeColumn(verbose_name="Started")
+    state = StatusColumn(template_name="columns/status.html")
 
 
 class StructureTable(Table):

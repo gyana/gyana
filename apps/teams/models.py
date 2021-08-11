@@ -23,7 +23,7 @@ class Team(BaseModel):
     def num_rows(self):
         from apps.tables.models import Table
 
-        return Table.objects.filter(integration__project__team=self).aggregate(
+        return Table.available.filter(integration__project__team=self).aggregate(
             models.Sum("num_rows")
         )["num_rows__sum"]
 

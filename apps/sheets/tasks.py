@@ -12,9 +12,9 @@ from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
-from .bigquery import (get_last_modified_from_drive_file,
-                       import_table_from_sheet)
+from .bigquery import get_last_modified_from_drive_file, import_table_from_sheet
 from .models import Sheet
 
 
@@ -63,35 +63,39 @@ def _do_sync_with_progress(task, sheet, table):
 @shared_task(bind=True)
 def run_initial_sheets_sync(self, sheet_id):
     sheet = get_object_or_404(Sheet, pk=sheet_id)
+    integration = sheet.integration
 
     # we need to save the table instance to get the PK from database, this ensures
     # database will rollback automatically if there is an error with the bigquery
     # table creation, avoids orphaned table entities
 
-    with transaction.atomic():
+    try:
 
-        integration = Integration(
-            name=sheet.sheet_name,
-            project=sheet.project,
-            kind=Integration.Kind.SHEET,
-        )
+        with transaction.atomic():
+
+            table = Table(
+                integration=integration,
+                source=Table.Source.INTEGRATION,
+                bq_dataset=DATASET_ID,
+                project=integration.project,
+                num_rows=0,
+            )
+            sheet.integration = integration
+            table.save()
+
+            query_job = _do_sync_with_progress(self, sheet, table)
+
+    except Exception as e:
+        integration.state = Integration.State.ERROR
         integration.save()
+        raise e
 
-        table = Table(
-            integration=integration,
-            source=Table.Source.INTEGRATION,
-            bq_dataset=DATASET_ID,
-            project=sheet.project,
-            num_rows=0,
-        )
-        sheet.integration = integration
-        table.save()
-
-        query_job = _do_sync_with_progress(self, sheet, table)
+    integration.state = Integration.State.DONE
+    integration.save()
 
     # the initial sync completed successfully and a new integration is created
 
-    if created_by := integration.sheet.created_by:
+    if created_by := integration.created_by:
 
         email = integration_ready_email(integration, created_by)
         email.send()
@@ -119,7 +123,34 @@ def run_update_sheets_sync(self, sheet_id):
     integration = sheet.integration
     table = integration.table_set.first()
 
-    with transaction.atomic():
-        _do_sync_with_progress(self, sheet, table)
+    try:
+
+        with transaction.atomic():
+            _do_sync_with_progress(self, sheet, table)
+
+    except Exception as e:
+        integration.state = Integration.State.ERROR
+        integration.save()
+        raise e
+
+    integration.state = Integration.State.DONE
+    integration.save()
 
     return integration.id
+
+
+def run_sheets_sync(sheet: Sheet):
+
+    task = (
+        run_initial_sheets_sync
+        if sheet.integration.table_set.count() == 0
+        else run_update_sheets_sync
+    )
+
+    result = task.delay(sheet.id)
+    sheet.sync_task_id = result.task_id
+    sheet.sync_started = timezone.now()
+    sheet.save()
+
+    sheet.integration.state = Integration.State.LOAD
+    sheet.integration.save()
