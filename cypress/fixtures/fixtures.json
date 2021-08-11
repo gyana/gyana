@@ -193,8 +193,8 @@
       "name": "Store info sheet",
       "state": "done",
       "ready": true,
-      "created_ready": "2021-07-27T13:17:27.984Z",
-      "created_by": 1
+      "created_ready": "2021-08-08T20:28:27.809Z",
+      "created_by": null
     }
   },
   {
@@ -203,9 +203,12 @@
     "fields": {
       "created": "2021-08-10T07:30:01.375Z",
       "updated": "2021-08-10T07:30:01.375Z",
-      "name": "store_info",
       "project": 2,
       "kind": "upload",
+      "name": "store_info",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-10T07:30:01.375Z",
       "created_by": null
     }
   },
@@ -215,9 +218,12 @@
     "fields": {
       "created": "2021-08-10T07:32:04.937Z",
       "updated": "2021-08-10T07:32:04.937Z",
-      "name": "revenue",
       "project": 2,
       "kind": "upload",
+      "name": "revenue",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-10T07:32:04.937Z",
       "created_by": null
     }
   },
@@ -227,9 +233,12 @@
     "fields": {
       "created": "2021-08-11T14:07:41.075Z",
       "updated": "2021-08-11T14:07:41.075Z",
-      "name": "pivot",
       "project": 2,
       "kind": "upload",
+      "name": "pivot",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-11T14:07:41.075Z",
       "created_by": null
     }
   },
@@ -1162,9 +1171,7 @@
       "integration": 1,
       "file_gcs_path": "cypress/integrations/store_info-1627391842010578.csv",
       "sync_task_id": null,
-      "sync_started": null,
-      "last_synced": "2021-07-27T13:17:27.987Z",
-      "created_by": 1
+      "sync_started": null
     }
   },
   {
@@ -1173,14 +1180,10 @@
     "fields": {
       "created": "2021-08-10T07:30:01.223Z",
       "updated": "2021-08-10T07:30:05.253Z",
-      "project": 2,
       "integration": 3,
       "file_gcs_path": "cypress/integrations/store_info-1628580600032663.csv",
-      "file_name": "store_info",
       "sync_task_id": "1a2e3e76-3a94-4284-8d7d-48f604690ffc",
-      "sync_started": "2021-08-10T07:30:01.347Z",
-      "last_synced": "2021-08-10T07:30:05.252Z",
-      "created_by": 5
+      "sync_started": "2021-08-10T07:30:01.347Z"
     }
   },
   {
@@ -1189,14 +1192,10 @@
     "fields": {
       "created": "2021-08-10T07:32:04.910Z",
       "updated": "2021-08-10T07:32:09.105Z",
-      "project": 2,
       "integration": 4,
       "file_gcs_path": "cypress/integrations/revenue-1628580724160651.csv",
-      "file_name": "revenue",
       "sync_task_id": "d0e6091d-7343-4cfb-9d38-92a59cad92b3",
-      "sync_started": "2021-08-10T07:32:04.919Z",
-      "last_synced": "2021-08-10T07:32:09.104Z",
-      "created_by": 5
+      "sync_started": "2021-08-10T07:32:04.919Z"
     }
   },
   {
@@ -1205,14 +1204,10 @@
     "fields": {
       "created": "2021-08-11T14:07:41.028Z",
       "updated": "2021-08-11T14:07:44.921Z",
-      "project": 2,
       "integration": 5,
       "file_gcs_path": "cypress/integrations/pivot-1628690860210745.csv",
-      "file_name": "pivot",
       "sync_task_id": "232cd31d-a6e6-4e67-95ff-5afd45560277",
-      "sync_started": "2021-08-11T14:07:41.043Z",
-      "last_synced": "2021-08-11T14:07:44.920Z",
-      "created_by": 5
+      "sync_started": "2021-08-11T14:07:41.043Z"
     }
   },
   {
