@@ -457,9 +457,7 @@
       "integration": 1,
       "file_gcs_path": "cypress/integrations/store_info-1627391842010578.csv",
       "sync_task_id": null,
-      "sync_started": null,
-      "last_synced": "2021-07-27T13:17:27.987Z",
-      "created_by": 1
+      "sync_started": null
     }
   },
   {
