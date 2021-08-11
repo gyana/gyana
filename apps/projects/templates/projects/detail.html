@@ -30,7 +30,7 @@
             <h3>Step 1</h3>
             <p>
               <a href="{% url 'project_integrations_uploads:create' project.id %}" class="link">Upload a CSV</a>, or
-              <a href="{% url 'project_integrations:new' project.id %}" class="link">create an integration</a>
+              <a href="{% url 'project_integrations_connectors:create' project.id %}" class="link">create an integration</a>
             </p>
           </div>
           {% endif %}
