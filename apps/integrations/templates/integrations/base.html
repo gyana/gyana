@@ -51,12 +51,10 @@
       Setup
     </a>
   {% endif %}
-  {% if integration.ready %}
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:settings' project.id object.id %}">
-      Settings
-    </a>
-  {% endif %}
+  <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
+    href="{% url 'project_integrations:settings' project.id object.id %}">
+    Settings
+  </a>
 </nav>
 
 <div id='main' class="flex flex-col flex-1 overflow-auto">

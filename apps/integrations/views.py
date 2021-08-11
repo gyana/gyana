@@ -221,7 +221,7 @@ class IntegrationDetail(ReadyMixin, TurboUpdateView):
         )
 
 
-class IntegrationUpdate(ReadyMixin, TurboUpdateView):
+class IntegrationUpdate(ProjectMixin, TurboUpdateView):
     template_name = "integrations/update.html"
     model = Integration
 
@@ -241,7 +241,7 @@ class IntegrationUpdate(ReadyMixin, TurboUpdateView):
         )
 
 
-class IntegrationDelete(ReadyMixin, DeleteView):
+class IntegrationDelete(ProjectMixin, DeleteView):
     template_name = "integrations/delete.html"
     model = Integration
 
@@ -281,7 +281,7 @@ class IntegrationData(ReadyMixin, DetailView):
         return context_data
 
 
-class IntegrationSettings(ReadyMixin, TurboUpdateView):
+class IntegrationSettings(ProjectMixin, TurboUpdateView):
     template_name = "integrations/settings.html"
     model = Integration
 
