@@ -107,7 +107,7 @@ describe('sheets', () => {
     cy.url().should('contain', '/projects/1/integrations/2')
     cy.contains("You've already synced the latest data.")
   })
-  it.only('update the cell range and re-sync', () => {
+  it('update the cell range and re-sync', () => {
     cy.contains('Store info sheet').click()
 
     cy.get('#tabbar').within(() => cy.contains('Setup').click())
