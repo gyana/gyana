@@ -191,8 +191,6 @@ class MockFivetranClient:
 
     def block_until_synced(self, integration):
         time.sleep(settings.MOCK_FIVETRAN_HISTORICAL_SYNC_SECONDS)
-        integration.connector.historical_sync_complete = True
-        integration.save()
 
     def get_schema(self, fivetran_id):
         if fivetran_id in self._schema_cache:

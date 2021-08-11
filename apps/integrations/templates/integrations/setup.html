@@ -12,7 +12,7 @@
         {% endif %}
     {% elif integration.state in 'load,error' %}
         {% if integration.kind == 'connector' %}
-            <turbo-frame id="connectors:schema" src="{% url 'connectors:schema' integration.connector.id %}"></turbo-frame>
+            <turbo-frame id="connectors:progress" src="{% url 'connectors:progress' integration.connector.id %}"></turbo-frame>
         {% elif integration.kind == 'sheet' %}
             <turbo-frame id="sheets:progress" src="{% url 'sheets:progress' integration.sheet.id %}"></turbo-frame>
         {% elif integration.kind == 'upload' %}

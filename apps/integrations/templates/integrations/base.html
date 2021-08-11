@@ -27,7 +27,6 @@
       href="{% url 'project_integrations:detail' project.id object.id %}">
       Overview
     </a>
-    {% if object.table_set.exists %}
     <a class="tabbar__link {% if request.resolver_match.url_name == 'structure' %} tabbar__link--active {% endif %}"
       href="{% url 'project_integrations:structure' project.id object.id %}">
       Structure
@@ -36,13 +35,6 @@
       href="{% url 'project_integrations:data' project.id object.id %}">
       Data
     </a>
-    {% endif %}
-    {% if integration.kind == integration.Kind.CONNECTOR %}
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'schema' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations_connectors:schema' project.id object.id %}">
-      Schema
-    </a>
-    {% endif %}
   {% endif %}
   {% comment %} Uploads cannot be setup again after approval {% endcomment %}
   {% if not integration.ready or integration.kind != integration.Kind.UPLOAD %}
