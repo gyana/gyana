@@ -41,6 +41,7 @@ class ConnectorCreate(ProjectMixin, CreateView):
             self.request.GET["service"], self.project.team.id
         )
         form.instance.fivetran_id = fivetran_config["fivetran_id"]
+        form.instance.schema = fivetran_config["schema"]
 
         # create the connector and integration
         self.object = form.save()

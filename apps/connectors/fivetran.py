@@ -35,6 +35,7 @@ class FivetranClient:
             json={
                 "service": service,
                 "group_id": settings.FIVETRAN_GROUP,
+                # TODO: when should this happen
                 "run_setup_tests": False,
                 "paused": True,
                 "config": config,
@@ -43,7 +44,7 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            # TODO
+            # TODO: return the message to the user
             pass
 
         return {"fivetran_id": res["data"]["id"], "schema": schema}
