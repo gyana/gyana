@@ -1,5 +1,6 @@
 from apps.base.turbo import TurboUpdateView
 from apps.connectors.utils import get_service_categories, get_services
+from apps.integrations.filters import IntegrationFilter
 from apps.projects.mixins import ProjectMixin
 from django.conf import settings
 from django.contrib.postgres.search import TrigramSimilarity
@@ -9,21 +10,25 @@ from django.utils import timezone
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
+from django_filters.views import FilterView
 from django_tables2 import SingleTableView
+from django_tables2.views import SingleTableMixin
 
 from .forms import IntegrationForm
 from .mixins import ReadyMixin
 from .models import Integration
-from .tables import IntegrationListTable, IntegrationPendingTable, StructureTable
+from .tables import (IntegrationListTable, IntegrationPendingTable,
+                     StructureTable)
 
 # CRUDL
 
 
-class IntegrationList(ProjectMixin, SingleTableView):
+class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
     template_name = "integrations/list.html"
     model = Integration
     table_class = IntegrationListTable
     paginate_by = 20
+    filterset_class = IntegrationFilter
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -39,20 +44,11 @@ class IntegrationList(ProjectMixin, SingleTableView):
         return context_data
 
     def get_queryset(self) -> QuerySet:
-        queryset = Integration.objects.filter(project=self.project, ready=True)
-        # Add search query if it exists
-        if query := self.request.GET.get("q"):
-            queryset = (
-                queryset.annotate(
-                    similarity=TrigramSimilarity("name", query),
-                )
-                .filter(similarity__gt=0.05)
-                .order_by("-similarity")
-            )
-        if (kind := self.request.GET.get("kind")) and kind in Integration.Kind.values:
-            queryset = queryset.filter(kind=kind)
-
-        return queryset.prefetch_related("table_set").all()
+        return (
+            Integration.objects.filter(project=self.project, ready=True)
+            .prefetch_related("table_set")
+            .all()
+        )
 
 
 class IntegrationPending(ProjectMixin, SingleTableView):

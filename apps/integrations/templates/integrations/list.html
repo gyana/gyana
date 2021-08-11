@@ -2,26 +2,15 @@
 {% load render_table from django_tables2 %}
 
 {% block tab %}
-<div class='flex flex-row w-full mb-4'>
-  <form>
-    <div class="flex flex-row items-center">
-      <input type="search" id="site-search" name="q" placeholder="Find integration"
-        aria-label="Search through site content" value="{{ request.GET.q }}" />
 
-      <button type="submit" class="button button--primary button--circle ml-2"><i class="fas fa-search"></i></button>
-    </div>
-  </form>
-
-  <form class='ml-auto'>
-    <input type="search" id="site-search" name="kind" list="kind-selection" value="{{ request.GET.kind }}" placeholder="Filter by kind" />
-
-      <datalist id="kind-selection">
-        {% for kind in integration_kinds %}
-          <option value="{{kind.0}}">{{kind.1}}</option>
-        {% endfor %}
-      </datalist>
-  </form>
-</div>
+{% comment %} Click a hidden submit button for Turbo to capture event {% endcomment %}
+<form method="get" onchange="this.querySelector('button').click()">
+  <button type="submit" class="hidden"></button>
+  <div class='flex flex-row space-x-4 w-1/2 mb-4'>
+    {{ filter.form.name }}
+    {{ filter.form.kind }}
+  </div>
+</form>
 
 <div class="card card--none mb-8">
   {% render_table table %}

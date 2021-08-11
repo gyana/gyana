@@ -10,7 +10,7 @@ from django.urls import reverse
 
 class Integration(BaseModel):
     class Kind(models.TextChoices):
-        SHEET = "sheet", "Google Sheets"
+        SHEET = "sheet", "Sheet"
         UPLOAD = "upload", "Upload"
         CONNECTOR = "connector", "Connector"
 
