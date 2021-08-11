@@ -263,9 +263,9 @@ def get_pivot_query(node, parent):
 def get_unpivot_query(node, parent):
     selection_columns = [col.column for col in node.secondary_columns.all()]
     selection = (
-        f"{' ,'.join(selection_columns)}, {node.unpivot_column}, {node.unpivot_value}"
-        if selection_columns
-        else "*"
+        f"{' ,'.join(selection_columns)+', ' if selection_columns else ''}"
+        f"{node.unpivot_column},"
+        f"{node.unpivot_value}"
     )
     return (
         f"SELECT {selection} FROM ({parent.compile()})"

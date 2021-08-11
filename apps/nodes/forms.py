@@ -146,7 +146,7 @@ class LimitNodeForm(NodeForm):
 
 
 # TODO: Use Nodeform instead
-class PivotNodeForm(LiveUpdateForm):
+class PivotNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["pivot_index", "pivot_column", "pivot_value", "pivot_aggregation"]
@@ -181,7 +181,7 @@ class PivotNodeForm(LiveUpdateForm):
         return fields
 
 
-class UnpivotNodeForm(LiveUpdateForm):
+class UnpivotNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["unpivot_value", "unpivot_column"]

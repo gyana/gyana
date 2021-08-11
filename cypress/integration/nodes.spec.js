@@ -16,6 +16,11 @@ const addFormToFormset = (formset) => {
     cy.wrap(el).get(`#${formset}-add`).click()
   })
 }
+const waitForLiveFormUpdate = () => {
+  cy.get('[data-live-update-target=loading]').should('be.visible')
+  cy.get('[data-live-update-target=loading]').should('not.be.visible')
+}
+
 const getFirstColumn = (rows$) => _.map(rows$, (el$) => el$.querySelectorAll('td')[0])
 const toStrings = (cells$) => _.map(cells$, 'textContent')
 const toNumbers = (texts) => _.map(texts, Number)
@@ -204,7 +209,21 @@ describe('workflows', () => {
     cy.get('td:contains(Blackpool)').should('have.length', 1)
   })
 
-  it.skip('Pivot')
+  it('Pivot', () => {
+    openModalAndCheckTitle(9, 'Pivot')
+    testHelp("Turn the pivot column's rows into")
+
+    cy.get('select[name=pivot_index]').select('Owner')
+    cy.get('select[name=pivot_column]').select('Location')
+    cy.get('select[name=pivot_value]').select('Employees')
+    cy.contains('Save & Preview').click()
+
+    // TODO: the pivotting takes longer so we have to wait
+    cy.wait(10000)
+    cy.get('th:contains(Blackpool)').should('exist')
+    cy.get('#workflows-grid td:contains(Matt)').should('have.length', 1)
+    cy.get('#workflows-grid td:contains(nan)').should('have.length', 8)
+  })
 
   it('Edit', () => {
     openModalAndCheckTitle(11, 'Edit')
@@ -334,7 +353,7 @@ describe('workflows', () => {
     cy.get('[data-id=16] textarea').should('have.value', text)
   })
 
-  it.only('Join', () => {
+  it('Join', () => {
     openModalAndCheckTitle(18, 'Join')
     testHelp('Merge two tables side by side meaning ')
 
@@ -342,5 +361,67 @@ describe('workflows', () => {
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid').contains('store_id_1').should('be.visible')
     cy.get('#workflows-grid').contains('revenue').should('be.visible')
+  })
+
+  it('Union', () => {
+    openModalAndCheckTitle(21, 'Union')
+    testHelp('Concatenates two or more tables by adding')
+
+    cy.contains('Result').click()
+    cy.get('#node-update-form').contains('mode').should('be.visible')
+    cy.get('#node-update-form').contains('distinct').should('be.visible')
+    // TODO: check for visibility once visual bug is fixed
+    cy.get('#workflows-grid').contains('next')
+
+    cy.get('select[name=union_mode]').select('exclude')
+    cy.contains('Save & Preview').click()
+    cy.get('#workflows-grid:contains(Blackpool)').should('not.exist')
+
+    cy.get('select[name=union_mode]').select('keep')
+    cy.get('input[name=union_distinct]').check()
+    cy.contains('Save & Preview').click()
+    cy.get('#workflows-grid td:contains(Edinburgh)').should('have.length', 3)
+    cy.get('#workflows-grid:contains(next)').should('not.exist')
+  })
+
+  it('Intersect', () => {
+    openModalAndCheckTitle(22, 'Intersection')
+    cy.get('#workflows-grid td:contains(London)').should('not.exist')
+    testHelp('Calculate the overlapping rows')
+  })
+
+  it('Unpivot', () => {
+    openModalAndCheckTitle(24, 'Unpivot')
+    testHelp('Turn columns into row values and spread the values')
+
+    cy.get('input[name=unpivot_value]').type('sales').blur()
+    waitForLiveFormUpdate()
+    cy.get('input[name=unpivot_column]').should('not.be.disabled').type('quarter').blur()
+    waitForLiveFormUpdate()
+    addFormToFormset('columns')
+    cy.get('select[name=columns-0-column').select('Q1')
+    waitForLiveFormUpdate()
+    addFormToFormset('columns')
+    cy.get('select[name=columns-1-column').select('Q2')
+    waitForLiveFormUpdate()
+    addFormToFormset('columns')
+    cy.get('select[name=columns-2-column').select('Q3')
+    waitForLiveFormUpdate()
+    addFormToFormset('columns')
+    cy.get('select[name=columns-3-column').select('Q4')
+    cy.contains('Save & Preview').click()
+
+    cy.wait(10000)
+    cy.get('#workflows-grid th:contains(quarter)').should('be.visible')
+    cy.get('#workflows-grid th:contains(sales)').should('be.visible')
+    cy.get('#workflows-grid td:contains(Q1)').should('have.length', 2)
+    cy.get('#workflows-grid th:contains(product)').should('not.exist')
+
+    addFormToFormset('secondary_columns')
+    cy.get('select[name=secondary_columns-0-column]').select('product')
+    cy.contains('Save & Preview').click()
+    cy.wait(10000)
+    cy.get('#workflows-grid th:contains(product)').should('be.visible')
+    cy.get('#workflows-grid td:contains(Kale)').should('have.length', 4)
   })
 })
