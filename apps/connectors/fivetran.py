@@ -10,7 +10,7 @@ from django.shortcuts import redirect
 from django.urls.base import reverse
 
 from .models import Connector
-from .utils import get_services
+from .config import get_services
 
 
 class FivetranClient:

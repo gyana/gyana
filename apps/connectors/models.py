@@ -14,7 +14,10 @@ class Connector(BaseModel):
     # schema or schema_prefix for storage in bigquery
     schema = models.TextField()
 
+    # do not display unfinished connectors that are not authorized as pending
+    # we delete along with corresponding Fivetran model
     fivetran_authorized = models.BooleanField(default=False)
-    fivetran_poll_historical_sync_task_id = models.UUIDField(null=True)
-    historical_sync_complete = models.BooleanField(default=False)
-    last_synced = models.DateTimeField(null=True)
+
+    # track the celery task
+    sync_task_id = models.UUIDField(null=True)
+    sync_started = models.DateTimeField(null=True)

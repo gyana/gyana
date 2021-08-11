@@ -1,11 +1,13 @@
+from apps.base.clients import fivetran_client
+from apps.connectors.models import Connector
 from apps.integrations.models import Integration
 from celery import shared_task
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils import timezone
 
 from .bigquery import get_tables_in_dataset
-from .fivetran import FivetranClient
 
 
 @shared_task(bind=True)
@@ -13,7 +15,7 @@ def poll_fivetran_historical_sync(self, integration_id):
 
     integration = get_object_or_404(Integration, pk=integration_id)
 
-    FivetranClient().block_until_synced(integration)
+    fivetran_client().block_until_synced(integration)
     get_tables_in_dataset(integration)
 
     url = reverse(
@@ -34,15 +36,16 @@ def poll_fivetran_historical_sync(self, integration_id):
     return integration_id
 
 
-@shared_task(bind=True)
-def update_integration_fivetran_schema(self, fivetran_id, updated_checkboxes):
-    FivetranClient().update_schema(fivetran_id, updated_checkboxes)
+def run_connector_sync(connector: Connector):
 
-    return
+    fivetran_client().start(connector)
 
+    task = poll_fivetran_historical_sync.delay(connector.integration.id)
 
-@shared_task(bind=True)
-def start_fivetran_integration_task(self, fivetran_id):
-    FivetranClient().start(fivetran_id)
+    result = task.delay(connector.id)
+    connector.sync_task_id = result.task_id
+    connector.sync_started = timezone.now()
+    connector.save()
 
-    return
+    connector.integration.state = Integration.State.LOAD
+    connector.integration.save()

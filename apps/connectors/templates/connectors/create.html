@@ -49,9 +49,11 @@
     {% endif %}
     </div>
   </div>
-  {% comment %} <div class='flex flex-shrink-0 h-full'>
-    {% include 'connectors/guides/fivetran_guide.html' with service=services|dict_key:request.GET.service %}
-  </div> {% endcomment %}
+  {% if request.GET.service %}
+    <div class='flex flex-shrink-0 h-full'>
+      {% include 'connectors/guides/fivetran_guide.html' with service=services|dict_key:request.GET.service %}
+    </div>
+  {% endif %}
 </div>
 
 {% endblock %}

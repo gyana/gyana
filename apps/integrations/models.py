@@ -1,5 +1,5 @@
 from apps.base.models import BaseModel
-from apps.connectors.utils import get_services
+from apps.connectors.config import get_services
 from apps.dashboards.models import Dashboard
 from apps.projects.models import Project
 from apps.users.models import CustomUser

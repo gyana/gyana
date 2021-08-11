@@ -10,7 +10,7 @@ from django.views.generic.edit import CreateView
 
 from .forms import ConnectorCreateForm
 from .models import Connector
-from .utils import get_service_categories, get_services
+from .config import get_service_categories, get_services
 
 
 class ConnectorCreate(ProjectMixin, CreateView):

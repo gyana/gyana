@@ -1,5 +1,5 @@
 from apps.base.clients import fivetran_client
-from apps.connectors.utils import get_services
+from apps.connectors.config import get_services
 from apps.integrations.models import Integration
 from apps.nodes.widgets import MultiSelect
 from django import forms
