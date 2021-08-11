@@ -26,7 +26,7 @@ class ConnectorCreateForm(forms.ModelForm):
 
         integration = Integration(
             project=self._project,
-            kind=Integration.Kind.SHEET,
+            kind=Integration.Kind.CONNECTOR,
             name=name,
             created_by=self._created_by,
         )

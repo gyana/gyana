@@ -56,8 +56,11 @@ class ConnectorCreate(ProjectMixin, CreateView):
         )
 
         internal_redirect = reverse(
-            "project_integrations_connectors:setup",
-            args=(self.project.id, "TODO"),
+            "project_integrations:setup",
+            args=(
+                self.project.id,
+                self.object.integration.id,
+            ),
         )
 
         return client.authorize(
