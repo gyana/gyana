@@ -207,12 +207,9 @@ def get_add_query(node, query):
 
 
 def get_rename_query(node, query):
-    columns = query.schema().names
-
-    for rename in node.rename_columns.all():
-        idx = columns.index(rename.column)
-        columns[idx] = query[rename.column].name(rename.new_name)
-    return query[columns]
+    return query.relabel(
+        {rename.column: rename.new_name for rename in node.rename_columns.all()}
+    )
 
 
 def get_formula_query(node, query):

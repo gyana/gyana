@@ -28,6 +28,7 @@ export default class extends Controller {
       mode: 'gyanaformula',
       hintOptions: {
         hint: autocomplete(columns),
+        completeSingle: false,
       },
       autoCloseBrackets: true,
       matchBrackets: true,

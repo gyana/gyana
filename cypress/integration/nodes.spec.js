@@ -8,7 +8,7 @@ const openModalAndCheckTitle = (id, title) => {
 
 const testHelp = (text) => {
   cy.get('[class=tabbar]').contains('Help').click()
-  cy.contains(text)
+  cy.contains(text).should('be.visible')
 }
 
 const addFormToFormset = (formset) => {
@@ -29,15 +29,15 @@ describe('workflows', () => {
     openModalAndCheckTitle(19, 'Get data')
 
     cy.contains('revenue')
-    cy.contains('store_info').click()
+    cy.contains('store_info').should('be.visible').click()
     cy.contains('Save & Preview').click()
-    cy.contains('Loading preview...')
-    cy.contains('Edinburgh')
+    cy.contains('Loading preview...').should('be.visible')
+    cy.contains('Edinburgh').should('be.visible')
 
     cy.contains('revenue').click()
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid').should('not.contain', 'Edinburgh')
-    cy.contains('100000')
+    cy.contains('100000').should('be.visible')
   })
 
   it('Output', () => {
@@ -48,8 +48,8 @@ describe('workflows', () => {
       .should('have.value', '')
       .type('Naturalis Principia Mathematica')
     cy.contains('Save & Preview').click()
-    cy.contains('Loading preview...')
-    cy.contains('Edinburgh')
+    cy.contains('Loading preview...').should('be.visible')
+    cy.contains('Edinburgh').should('be.visible')
     cy.get('input[name=output_name]').should('have.value', 'Naturalis Principia Mathematica')
   })
 
@@ -59,17 +59,17 @@ describe('workflows', () => {
     testHelp('Use the select node')
     cy.contains('Owner').click()
     cy.contains('Save & Preview').click()
-    cy.contains('Loading preview...')
-    cy.contains('David')
+    cy.contains('Loading preview...').should('be.visible')
+    cy.contains('David').should('be.visible')
     cy.get('#workflows-grid').should('not.contain', 'Edinburgh')
 
     cy.contains('Employees').click()
     cy.contains('Save & Preview').click()
-    cy.contains('15')
+    cy.contains('15').should('be.visible')
     cy.get('select[name=select_mode]').should('have.value', 'keep').select('exclude')
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid').should('not.contain', 'David')
-    cy.contains('Edinburgh')
+    cy.contains('Edinburgh').should('be.visible')
   })
 
   it('Aggregation', () => {
@@ -82,8 +82,8 @@ describe('workflows', () => {
     addFormToFormset('columns')
     cy.get('select[name=columns-0-column]').should('have.value', '').select('Location')
     cy.contains('Save & Preview').click()
-    cy.contains('count')
-    cy.contains('5')
+    cy.contains('count').should('be.visible')
+    cy.contains('5').should('be.visible')
 
     addFormToFormset('aggregations')
     cy.get('select[name=aggregations-0-column]').should('have.value', '').select('Employees')
@@ -94,7 +94,7 @@ describe('workflows', () => {
     cy.get('select[name=aggregations-0-function]').select('MEAN')
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid').should('not.contain', '45')
-    cy.get('#workflows-grid').contains('9.0')
+    cy.get('#workflows-grid').contains('9.0').should('be.visible')
 
     cy.get('select[name=aggregations-0-column]').select('Owner')
     cy.get('select[name=aggregations-0-function]')
@@ -102,7 +102,7 @@ describe('workflows', () => {
       .should('have.value', 'count')
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid').should('not.contain', 'count')
-    cy.get('#workflows-grid').contains('5')
+    cy.get('#workflows-grid').contains('5').should('be.visible')
 
     // TODO: Test formset deletion
   })
@@ -128,7 +128,7 @@ describe('workflows', () => {
 
     cy.get('input[name=sort_columns-0-ascending').click()
     cy.contains('Save & Preview').click()
-    cy.contains('Loading preview...')
+    cy.contains('Loading preview...').should('be.visible')
 
     cy.get('#workflows-grid tbody').within(() => {
       cy.get('tr')
@@ -145,14 +145,14 @@ describe('workflows', () => {
   it('Limit', () => {
     openModalAndCheckTitle(6, 'Limit')
     testHelp('Limits the rows to the selected')
-    cy.contains('Offset')
+    cy.contains('Offset').should('be.visible')
 
     cy.contains('Result').click()
     cy.get('#workflows-grid tbody tr').should('have.length', 15)
     cy.get('input[name=limit_limit]').clear().type(5)
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid tbody tr').should('have.length', 5)
-    cy.get('#workflows-grid').contains('Floris')
+    cy.get('#workflows-grid').contains('Floris').should('be.visible')
 
     cy.get('input[name=limit_offset]').type(3)
     cy.contains('Save & Preview').click()
@@ -240,8 +240,8 @@ describe('workflows', () => {
       .type('magic_number')
       .blur()
     cy.contains('Save & Preview').click()
-    cy.get('#workflows-grid').contains('magic_number')
-    cy.get('#workflows-grid').contains('0.1')
+    cy.get('#workflows-grid').contains('magic_number').should('be.visible')
+    cy.get('#workflows-grid').contains('0.1').should('be.visible')
 
     addFormToFormset('add_columns')
     cy.get('select[name=add_columns-1-column]').select('Owner')
@@ -250,6 +250,97 @@ describe('workflows', () => {
     cy.get('input[name=add_columns-1-label]').type('upper_owner{enter}')
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid:contains(upper_owner)').scrollIntoView()
-    cy.get('#workflows-grid').contains('ALEX')
+    cy.get('#workflows-grid').contains('ALEX').should('be.visible')
+  })
+
+  it('Rename', () => {
+    openModalAndCheckTitle(13, 'Rename')
+    cy.get('#workflows-grid').contains('store_id').should('be.visible')
+    testHelp('Select the columns you want to rename')
+
+    addFormToFormset('rename_columns')
+    cy.get('select[name=rename_columns-0-column]').select('store_id')
+    cy.get('input[name=rename_columns-0-new_name]').clear().type('unique_id').blur()
+    cy.contains('Save & Preview').click()
+    cy.get('#workflows-grid').contains('unique_id').should('be.visible')
+
+    addFormToFormset('rename_columns')
+    cy.get('select[name=rename_columns-1-column]').select('Location')
+    cy.get('input[name=rename_columns-1-new_name]').clear().type('city').blur()
+    cy.contains('Save & Preview').click()
+    cy.contains('Loading preview...')
+    cy.get('#workflows-grid').contains('city').should('be.visible')
+  })
+
+  // TODO: Test formula docs separately
+
+  it('Formula', () => {
+    // Tests autocomplete for columns and functions
+    // and whether arithmetic and functions return right results
+    // for + and join
+    openModalAndCheckTitle(14, 'Formula')
+    testHelp('Formula Docs')
+
+    addFormToFormset('formula_columns')
+    // We can't type into the codemirror divs but we can use the hidden textarea
+    cy.get('#node-update-form .CodeMirror textarea').type('store', { force: true })
+    // Check for autocomplete
+    cy.get('.CodeMirror-hints').contains('store_id').should('be.visible')
+    cy.get('#node-update-form .CodeMirror textarea').type('{enter} + 200', { force: true })
+    cy.get('input[name=formula_columns-0-label]').type('glorious_id').blur()
+    cy.contains('Save & Preview').click()
+    cy.get('#workflows-grid').contains('201').should('be.visible')
+
+    addFormToFormset('formula_columns')
+    cy.get('#node-update-form .CodeMirror textarea').eq(1).type('j', { force: true })
+    cy.get('.CodeMirror-hints').contains('join').should('be.visible')
+    cy.get('#node-update-form .CodeMirror textarea')
+      .eq(1)
+      .type('{enter}("",Loc{enter},Ow{enter})', { force: true })
+    cy.get('input[name=formula_columns-1-label]').type('loco').blur()
+    cy.contains('Save & Preview').click()
+    cy.get('#workflows-grid:contains(loco)').scrollIntoView().should('be.visible')
+    cy.get('#workflows-grid').contains('BlackpoolKanar').should('be.visible')
+  })
+
+  it('Window', () => {
+    openModalAndCheckTitle(15, 'Window')
+    // TODO: test docs
+    cy.contains('Window columns').should('be.visible')
+
+    // TODO: test whether saving with optional input work
+    addFormToFormset('window_columns')
+    cy.get('select[name=window_columns-0-column]').select('Employees')
+    cy.get('select[name=window_columns-0-group_by]').select('Location')
+    cy.get('select[name=window_columns-0-order_by]').select('store_id')
+    cy.get('input[name=window_columns-0-label').type('sum_emp').blur()
+    cy.contains('Save & Preview').click()
+    cy.get('#workflows-grid').contains('45').should('be.visible')
+  })
+
+  it('Text', () => {
+    // Test whether text is persisted
+    cy.visit('/projects/2/workflows/1')
+
+    const text = 'Here is some example text'
+    cy.get('[data-id=16] textarea')
+      .invoke('attr', 'placeholder')
+      .should('equal', 'Leave a note to annotate the workflow...')
+    cy.get('[data-id=16] textarea').type(text).blur()
+
+    // Need to wait for the sync to have been committed before reloading
+    cy.wait(200)
+    cy.visit('/projects/2/workflows/1')
+    cy.get('[data-id=16] textarea').should('have.value', text)
+  })
+
+  it.only('Join', () => {
+    openModalAndCheckTitle(18, 'Join')
+    testHelp('Merge two tables side by side meaning ')
+
+    // TODO: maybe show none selected instead
+    cy.contains('Save & Preview').click()
+    cy.get('#workflows-grid').contains('store_id_1').should('be.visible')
+    cy.get('#workflows-grid').contains('revenue').should('be.visible')
   })
 })
