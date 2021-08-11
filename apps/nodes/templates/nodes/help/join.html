@@ -1,6 +1,6 @@
 {%extends "nodes/help/default.html" %}  
 {% block help_main %}
-  <span class="text-xl">
+  <p>
   Merge two tables side by side meaning the columns of the second table will be added to the first. 
   Select the a column from each table that make up your join criteria. 
   Columns are selected in the order of connected parent nodes.
@@ -10,5 +10,5 @@
     <li><strong>Outer:</strong> All columns from both tables are kept. When the join condition isn't full-filled the columns are filled with <em>nulls</em>.</li>
     <li><strong>Left:</strong> All columns from the first (left) table are kept, columns from the right table are filled with <em>nulls</em> if join-condition is not full-filled</li>
     <li><strong>Right:</strong> All columns from the second (right) table are kept, columns from the left table are filled with <em>nulls</em> if join-condition is not full-filled</li>
-  </span>
+  </p>
 {% endblock %}

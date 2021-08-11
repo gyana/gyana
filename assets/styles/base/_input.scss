@@ -92,6 +92,11 @@ label {
   }
 }
 
+.errorlist {
+  color: var(--c-red);
+  font-size: 1.4rem;
+}
+
 input.input,
 .input {
   @extend %input;

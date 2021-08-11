@@ -3,27 +3,26 @@ from apps.base.segment_analytics import (
     INTEGRATION_CREATED_EVENT,
     NEW_INTEGRATION_START_EVENT,
 )
+from apps.base.turbo import TurboCreateView
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from apps.uploads.models import Upload
-from django.http.response import HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic.detail import DetailView
-from turbo_response.views import TurboCreateView
 
 from .forms import UploadCreateForm
 from .tasks import run_initial_upload_sync
 
 
 class UploadCreate(ProjectMixin, TurboCreateView):
-    template_name = "uploads/upload.html"
+    template_name = "uploads/create.html"
     model = Upload
 
-    def get_initial(self):
-        initial = super().get_initial()
-        initial["project"] = self.project
-        return initial
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["project"] = self.project
+        kwargs["created_by"] = self.request.user
+        return kwargs
 
     def get_form_class(self):
         analytics.track(
@@ -60,22 +59,6 @@ class UploadCreate(ProjectMixin, TurboCreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations_uploads:detail",
-            args=(self.project.id, self.object.id),
+            "project_integrations:setup",
+            args=(self.project.id, self.object.integration.id),
         )
-
-
-class UploadDetail(ProjectMixin, DetailView):
-    template_name = "uploads/detail.html"
-    model = Upload
-
-    def get(self, request, *args, **kwargs):
-        upload = self.get_object()
-        if not upload.is_syncing:
-            return HttpResponseRedirect(
-                reverse(
-                    "project_integrations:detail",
-                    args=(self.project.id, upload.integration.id),
-                )
-            )
-        return super().get(request, *args, **kwargs)

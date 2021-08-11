@@ -1,19 +1,19 @@
 <div class="workflow-node__help">
   <h1>Formula Docs</h2>
-    <span class="text-xl">
+    <p>
       The formula node supports arbitrary arithmetic operations between numeric
       columns and column transformations through function library (see below).
-    </span>
+    </p>
 
     <h3>Examples</h3>
 
     <h4>Payable tax</h4>
 
-    <span class="text-xl">
+    <p>
       To calculate the payable tax on our profits, we can substract the
       <strong>Cost</strong> from <strong>Revenue</strong> and multiple the resulting
       <strong>Profit</strong> with the <strong>Tax</strong> value.
-    </span>
+    </p>
     <div data-controller='codemirror'>
       <script id="columns" type="application/json">
       ["Revenue", "Cost", "Tax"]
@@ -26,7 +26,7 @@
     </div>
 
     <h4>Create full names</h4>
-    <span class="text-xl">
+    <p>
       To generate full names, we can combine the <strong>first_name</strong>
       and <strong>last_name</strong> columns. We also clean the names from unnecessary
       whitespace.
@@ -40,7 +40,8 @@
           readonly
         >join(strip(first_name), " ", strip(last_name))</textarea>
       </div>
-    </span>
+    </p>
+    
     <h2>Functions</h2>
     <div class="functions">
       {%for function in "apps/columns/functions.json"|read_json %}

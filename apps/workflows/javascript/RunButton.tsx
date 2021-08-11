@@ -73,15 +73,15 @@ const RunButton: React.FC<{
               alert('Workflow failed running')
             })
         }}
-        className='button button--outline button--success tooltip tooltip--bottom'
+        className='button button--sm button--outline button--success tooltip tooltip--bottom'
       >
+        <i className="fas fa-fw fa-play"></i> Run
         {loading && (
           <div className='absolute m-auto'>
             <i className='fad fa-spinner-third fa-spin' />
           </div>
         )}
         <div className={loading ? 'invisible' : undefined}>
-          Run
           {!hasOutput && hasBeenRun && (
             <span className='tooltip__content'>Workflow needs output node to run</span>
           )}

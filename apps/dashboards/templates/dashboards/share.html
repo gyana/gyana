@@ -11,16 +11,16 @@
     {% endif %}
   </button>
   <div data-popover-target="body" class="popover-body shadow-sm card card--sm">
-    <span class="text-xl">This dashboard is currently {{object.shared_status }}.</span>
+    <p>This dashboard is currently {{object.shared_status }}.</p>
 
     <form method="post" action="{% url 'dashboards:share' object.id %}">
       {% csrf_token %}
 
       {% if  object.shared_status == 'private' %}
-      <span class="text-xl">Click <strong>Share</strong> to create shareable link that is accessible publicly.</span>
+      <p>Click <strong>Share</strong> to create shareable link that is accessible publicly.</p>
       <button class="button button--sm" type='submit'>Share</button>
       {% else %}
-      <span class="text-xl">Everyone with the link can see it. Click <strong>Unshare</strong> to make this dashboard
+      <p>Everyone with the link can see it. Click <strong>Unshare</strong> to make this dashboard
         private again.</span>
       <button class="button button--sm" type='submit'>Unshare</button>
       <div data-controller="to-clipboard"

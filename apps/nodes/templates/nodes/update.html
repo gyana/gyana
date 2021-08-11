@@ -16,28 +16,28 @@
         data-controller="live-update"
         {% endif %}
         data-action="change->tf-modal#change">
-    
+
     <div class="workflow-detail__sidebar">
-      <span data-live-update-target="loading" class="h-6 hidden">
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+      <span data-live-update-target="loading" class="workflow-detail__sidebar__loading hidden">
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
       </span>
-      
+
       {% csrf_token %}
 
-      {% include "django/forms/default_form.html" %}
+      {% include form_template %}
     </div>
 
     <div class='workflow-modal__footer'>
       <div class="flex flex-1 gap-7 pad">
         <input type='submit' class="button button--success"
-                data-action="click->tf-modal#forceClose"
-                name='submit'
-                value='Save & Close' />
+               data-action="click->tf-modal#forceClose"
+               name='submit'
+               value='Save & Close' />
         <input type='submit'
-                class="button button--outline button--success"
-                name='submit'
-                data-action="click->tf-modal#save"
-                value='Save & Preview' />
+               class="button button--outline button--success"
+               name='submit'
+               data-action="click->tf-modal#save"
+               value='Save & Preview' />
       </div>
     </div>
   </form>
@@ -47,17 +47,17 @@
   <div class="workflow-modal__table">
     <nav class="tabbar">
       <a class="tabbar__link {% if show_docs %} tabbar__link--active {% endif %}"
-          href="{% url 'nodes:update' object.id %}?show_docs=true">
+         href="{% url 'nodes:update' object.id %}?show_docs=true">
         Help
       </a>
       {% for parent in parents %}
       <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
-          href="{% url 'nodes:update' object.id %}?preview_node_id={{ parent.id }}">
+         href="{% url 'nodes:update' object.id %}?preview_node_id={{ parent.id }}">
         Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
       </a>
       {% endfor %}
       <a class="tabbar__link  {% if preview_node_id == object.id and not show_docs %} tabbar__link--active {% endif %}"
-          href="{% url 'nodes:update' object.id %}?preview_node_id={{ object.id }}">
+         href="{% url 'nodes:update' object.id %}?preview_node_id={{ object.id }}">
         Result
       </a>
     </nav>

@@ -22,11 +22,13 @@ describe('sheets', () => {
     cy.get('input[name=cell_range]').type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', '/projects/1/integrations/sheets/2')
-    cy.contains("Syncing, you'll get an email when it is ready")
-    cy.contains('Sync started')
-    cy.contains('tasks processed')
-    cy.contains('Reload to see results').click()
+    cy.url().should('contain', '/projects/1/integrations/3/setup')
+    cy.contains('Validating and importing your sheet...')
+    cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
+
+    // review the table and approve
+    cy.contains('London')
+    cy.contains('Approve').click()
 
     cy.url().should('contain', '/projects/1/integrations/3')
     // Google Sheet name inferred
@@ -72,8 +74,9 @@ describe('sheets', () => {
     cy.get('input[name=cell_range]').type('store_info!A20:D21')
     cy.get('button[type=submit]').click()
 
-    cy.contains('Waiting for sync to start')
-    cy.contains('Uh-Oh, something went wrong! No columns found in the schema.')
+    cy.contains('Validating and importing your sheet...')
+    cy.contains('Errors occurred when validating your sheet')
+    cy.contains('No columns found in the schema.')
 
     // verify that nothing was created
     cy.visit('/projects/1/integrations')
@@ -88,38 +91,31 @@ describe('sheets', () => {
 
     // sheet is already out of date by design
     cy.contains('This Google Sheet was updated since the last sync.')
-    cy.contains('Sync').click()
+    cy.contains('Import the latest data').click()
 
-    cy.url().should('contain', '/projects/1/integrations/sheets/1')
+    cy.url().should('contain', '/projects/1/integrations/2/setup')
+    cy.contains('Save & Run').click()
 
     // the integration page has updated to link here
     cy.visit('/projects/1/integrations/2')
-    // cy.wait(500)
-    cy.contains('See the sync progress.').click()
+    cy.contains('View import in progress.').click()
 
     // sync is complete  and it redirects me back again
-    cy.url().should('contain', '/projects/1/integrations/sheets/1')
-    cy.contains('Sync started')
-    cy.contains('Reload to see results').click()
+    cy.url().should('contain', '/projects/1/integrations/2/setup')
+    cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
 
     cy.url().should('contain', '/projects/1/integrations/2')
     cy.contains("You've already synced the latest data.")
-
-    // redirect back when trying to view completed upload
-    cy.visit('/projects/1/integrations/sheets/1')
-    cy.url().should('contain', '/projects/1/integrations/2')
   })
   it('update the cell range and re-sync', () => {
     cy.contains('Store info sheet').click()
 
-    cy.get('#tabbar').within(() => cy.contains('Settings').click())
+    cy.get('#tabbar').within(() => cy.contains('Setup').click())
 
     cy.get('input[name=cell_range]').clear().type('store_info!A1:D6')
     cy.get('button[type=submit]').click()
 
-    cy.contains('See the sync progress.').click()
-    cy.contains('Sync started')
-    cy.contains('Reload to see results').click()
+    cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
 
     // new cell range includes 5 rows of data
     cy.contains('5')

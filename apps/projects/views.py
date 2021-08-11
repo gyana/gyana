@@ -1,10 +1,10 @@
 import analytics
-from apps.teams.mixins import TeamMixin
 from apps.base.segment_analytics import PROJECT_CREATED_EVENT
+from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.teams.mixins import TeamMixin
 from django.urls.base import reverse
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
-from turbo_response.views import TurboCreateView, TurboUpdateView
 
 from .forms import ProjectForm
 from .models import Project
@@ -43,7 +43,7 @@ class ProjectDetail(DetailView):
         object = self.get_object()
 
         context_data["integrations"] = ProjectIntegrationTable(
-            object.integration_set.all()[:3]
+            object.integration_set.filter(ready=True).all()[:3]
         )
         context_data["workflows"] = ProjectWorkflowTable(object.workflow_set.all()[:3])
         context_data["dashboards"] = ProjectDashboardTable(

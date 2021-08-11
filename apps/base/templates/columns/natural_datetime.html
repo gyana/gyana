@@ -1,0 +1,6 @@
+{% load humanize %}
+
+<div class='tooltip tooltip--bottom'>
+    {{ datetime|naturaltime }}
+    <span class='tooltip__content'>{{ datetime }}</span>
+</div>

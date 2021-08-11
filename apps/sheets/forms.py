@@ -2,10 +2,10 @@ import textwrap
 
 import googleapiclient
 from apps.base.clients import sheets_client
+from apps.integrations.models import Integration
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.forms.widgets import HiddenInput
 
 from .bigquery import get_sheets_id_from_url
 from .models import Sheet
@@ -17,11 +17,15 @@ class SheetCreateForm(forms.ModelForm):
         fields = [
             "url",
             "cell_range",
-            "project",
         ]
-        widgets = {"project": HiddenInput()}
         help_texts = {}
         labels = {"url": "Google Sheets URL"}
+
+    def __init__(self, *args, **kwargs):
+        self._project = kwargs.pop("project")
+        self._created_by = kwargs.pop("created_by")
+
+        super().__init__(*args, **kwargs)
 
     def clean_url(self):
         url = self.cleaned_data["url"]
@@ -66,10 +70,18 @@ class SheetCreateForm(forms.ModelForm):
 
         title = self._sheet["properties"]["title"]
         # maximum Google Drive name length is 32767
-        instance.sheet_name = textwrap.shorten(title, width=255, placeholder="...")
+        name = textwrap.shorten(title, width=255, placeholder="...")
+        integration = Integration(
+            project=self._project,
+            kind=Integration.Kind.SHEET,
+            name=name,
+            created_by=self._created_by,
+        )
+        instance.integration = integration
 
         if commit:
             with transaction.atomic():
+                integration.save()
                 instance.save()
                 self.save_m2m()
 
