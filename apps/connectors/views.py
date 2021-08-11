@@ -31,7 +31,7 @@ class ConnectorCreate(ProjectMixin, CreateView):
         kwargs = super().get_form_kwargs()
         kwargs["project"] = self.project
         kwargs["created_by"] = self.request.user
-        kwargs["service"] = self.request.GET["service"]
+        kwargs["service"] = self.request.GET.get("service")
         return kwargs
 
     def form_valid(self, form):
