@@ -77,7 +77,7 @@ class ConnectorUpdateForm(forms.ModelForm):
         for schema, schema_config in schemas.items():
             tables = schema_config["tables"]
 
-            self.fields["{schema}_schema"] = forms.BooleanField(
+            self.fields[f"{schema}_schema"] = forms.BooleanField(
                 initial=schema_config["enabled"],
                 label=schema.replace("_", " ").title(),
                 widget=CheckboxInput() if is_database else HiddenInput(),
