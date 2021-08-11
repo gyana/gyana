@@ -152,7 +152,7 @@
     "pk": 3,
     "fields": {
       "created": "2021-08-10T10:03:16.769Z",
-      "updated": "2021-08-10T10:03:16.789Z",
+      "updated": "2021-08-11T13:35:19.052Z",
       "project": 1,
       "kind": "connector",
       "name": "Heroku Postgres",
@@ -752,6 +752,40 @@
     }
   },
   {
+    "model": "tables.table",
+    "pk": 33,
+    "fields": {
+      "created": "2021-08-11T13:35:18.730Z",
+      "updated": "2021-08-11T13:35:18.730Z",
+      "_bq_table": "cypress_customuser_test",
+      "bq_dataset": "team_1_heroku_postgres_0e684903d1044f7280bb061fd3c179a4",
+      "project": 1,
+      "source": "integration",
+      "integration": 3,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 0,
+      "data_updated": "2021-08-11T13:35:18.730Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 34,
+    "fields": {
+      "created": "2021-08-11T13:35:19.051Z",
+      "updated": "2021-08-11T13:35:19.051Z",
+      "_bq_table": "users_customuser",
+      "bq_dataset": "team_1_heroku_postgres_0e684903d1044f7280bb061fd3c179a4",
+      "project": 1,
+      "source": "integration",
+      "integration": 3,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 0,
+      "data_updated": "2021-08-11T13:35:19.051Z"
+    }
+  },
+  {
     "model": "invites.invite",
     "pk": 1,
     "fields": {
@@ -800,8 +834,8 @@
       "updated": "2021-08-10T10:03:16.771Z",
       "integration": 3,
       "service": "heroku_postgres",
-      "fivetran_id": "sedimentation_flagpole",
-      "schema": "team_1_heroku_postgres_489f5a5d64a9468ebe7beac32d0488f4_",
+      "fivetran_id": "plexus_impatient",
+      "schema": "team_1_heroku_postgres_0e684903d1044f7280bb061fd3c179a4",
       "fivetran_authorized": true,
       "fivetran_poll_historical_sync_task_id": null,
       "historical_sync_complete": true,
