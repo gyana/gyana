@@ -9,8 +9,8 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.urls.base import reverse
 
-from .models import Connector
 from .config import get_services
+from .models import Connector
 
 
 class FivetranClient:
@@ -105,14 +105,11 @@ class FivetranClient:
 
         return status["is_historical_sync"]
 
-    def block_until_synced(self, integration):
+    def block_until_synced(self, connector):
 
         backoff.on_predicate(backoff.expo, lambda x: x, max_time=3600)(
             self._is_historical_synced
-        )(integration.connector.fivetran_id)
-
-        integration.connector.historical_sync_complete = True
-        integration.save()
+        )(connector.fivetran_id)
 
     def get_schema(self, fivetran_id):
 

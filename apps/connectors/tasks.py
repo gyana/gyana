@@ -11,18 +11,23 @@ from .bigquery import get_tables_in_dataset
 
 
 @shared_task(bind=True)
-def poll_fivetran_historical_sync(self, integration_id):
+def poll_fivetran_historical_sync(self, connector_id):
 
-    integration = get_object_or_404(Integration, pk=integration_id)
+    connector = get_object_or_404(Connector, pk=connector_id)
 
-    fivetran_client().block_until_synced(integration)
-    get_tables_in_dataset(integration)
+    fivetran_client().block_until_synced(connector)
+    get_tables_in_dataset(connector)
+
+    integration = connector.integration
+
+    integration.state = Integration.State.DONE
+    integration.save()
 
     url = reverse(
         "project_integrations:detail",
         args=(
             integration.project.id,
-            integration_id,
+            integration.id,
         ),
     )
 
@@ -33,7 +38,7 @@ def poll_fivetran_historical_sync(self, integration_id):
         ["to@example.com"],
     )
 
-    return integration_id
+    return integration.id
 
 
 def run_connector_sync(connector: Connector):

@@ -2,15 +2,14 @@ from datetime import datetime
 from itertools import chain
 
 from apps.base.clients import bigquery_client
-from apps.connectors.fivetran import FivetranClient
 from apps.connectors.config import get_services
+from apps.connectors.fivetran import FivetranClient
+from apps.connectors.models import Connector
 from apps.tables.models import Table
 from django.db import transaction
 
 
-def get_tables_in_dataset(integration):
-
-    connector = integration.connector
+def get_tables_in_dataset(connector: Connector):
 
     client = bigquery_client()
 
@@ -37,10 +36,7 @@ def get_tables_in_dataset(integration):
                 source=Table.Source.INTEGRATION,
                 _bq_table=bq_table.table_id,
                 bq_dataset=connector.schema,
-                project=integration.project,
-                integration=integration,
+                project=connector.integration.project,
+                integration=connector.integration,
             )
             table.save()
-
-        connector.last_synced = datetime.now()
-        integration.save()
