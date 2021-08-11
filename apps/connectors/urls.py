@@ -31,6 +31,11 @@ integration_urlpatterns = (
     [
         # views
         path(
+            "new",
+            login_and_project_required(views.ConnectorCreate.as_view()),
+            name="create",
+        ),
+        path(
             "<str:session_key>/setup",
             login_and_project_required(views.ConnectorSetup.as_view()),
             name="setup",

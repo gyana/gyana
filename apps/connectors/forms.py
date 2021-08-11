@@ -2,37 +2,40 @@ from apps.connectors.utils import get_services
 from apps.integrations.models import Integration
 from django import forms
 from django.db import transaction
-from django.forms.widgets import HiddenInput
 
 from .models import Connector
 
 
 class ConnectorCreateForm(forms.ModelForm):
     class Meta:
-        model = Integration
-        fields = [
-            "kind",
-            "project",
-        ]
-        widgets = {
-            "kind": HiddenInput(),
-            "project": HiddenInput(),
-        }
+        model = Connector
+        fields = []
 
-    service = forms.CharField(required=False, max_length=255, widget=HiddenInput())
+    def __init__(self, *args, **kwargs):
+        self._project = kwargs.pop("project")
+        self._service = kwargs.pop("service")
+        self._created_by = kwargs.pop("created_by")
+
+        super().__init__(*args, **kwargs)
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance.name = get_services()[self.cleaned_data["service"]]["name"]
+        instance.service = self._service
 
-        connector = Connector(
-            integration=instance, service=self.cleaned_data["service"]
+        name = get_services()[self._service]["name"]
+
+        integration = Integration(
+            project=self._project,
+            kind=Integration.Kind.SHEET,
+            name=name,
+            created_by=self._created_by,
         )
+        instance.integration = integration
 
         if commit:
             with transaction.atomic():
+                integration.save()
                 instance.save()
-                connector.save()
                 self.save_m2m()
 
         return instance
