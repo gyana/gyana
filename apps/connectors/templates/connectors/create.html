@@ -51,7 +51,7 @@
   </div>
   {% if request.GET.service %}
     <div class='flex flex-shrink-0 h-full'>
-      {% include 'connectors/guides/fivetran_guide.html' with service=services|dict_key:request.GET.service %}
+      {% include 'connectors/_guide.html' with service=services|dict_key:request.GET.service %}
     </div>
   {% endif %}
 </div>
