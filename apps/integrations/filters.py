@@ -17,5 +17,4 @@ class IntegrationFilter(django_filters.FilterSet):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.filters["kind"].field
-        self.filters["kind"]._field.empty_label = "All sources"
+        self.filters["kind"].field.empty_label = "All sources"

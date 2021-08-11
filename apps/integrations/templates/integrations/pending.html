@@ -3,6 +3,15 @@
 
 {% block tab %}
 
+{% comment %} Click a hidden submit button for Turbo to capture event {% endcomment %}
+<form method="get" onchange="this.querySelector('button').click()">
+  <button type="submit" class="hidden"></button>
+  <div class='flex flex-row space-x-4 w-1/2 mb-4'>
+    {{ filter.form.name }}
+    {{ filter.form.kind }}
+  </div>
+</form>
+
 <div class="card card--none mb-8">
   {% render_table table %}
 

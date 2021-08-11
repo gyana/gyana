@@ -17,8 +17,7 @@ from django_tables2.views import SingleTableMixin
 from .forms import IntegrationForm
 from .mixins import ReadyMixin
 from .models import Integration
-from .tables import (IntegrationListTable, IntegrationPendingTable,
-                     StructureTable)
+from .tables import IntegrationListTable, IntegrationPendingTable, StructureTable
 
 # CRUDL
 
@@ -51,11 +50,12 @@ class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
         )
 
 
-class IntegrationPending(ProjectMixin, SingleTableView):
+class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
     template_name = "integrations/pending.html"
     model = Integration
     table_class = IntegrationPendingTable
     paginate_by = 20
+    filterset_class = IntegrationFilter
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -67,8 +67,11 @@ class IntegrationPending(ProjectMixin, SingleTableView):
         return context_data
 
     def get_queryset(self) -> QuerySet:
-        queryset = Integration.objects.filter(project=self.project, ready=False)
-        return queryset.prefetch_related("table_set").all()
+        return (
+            Integration.objects.filter(project=self.project, ready=False)
+            .prefetch_related("table_set")
+            .all()
+        )
 
 
 class IntegrationSetup(ProjectMixin, TurboUpdateView):
