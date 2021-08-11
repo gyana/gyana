@@ -6,12 +6,13 @@
     <div {% if field.name == 'DELETE' %} style="display: none;" {% endif %}>
         {# Include the hidden fields in the form #}
         {% if forloop.first %}
+            {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+            {% endfor %}
+        {% endif %}
+
         {% if field.help_text %}
         <p class="input__help-text">{{ field.help_text }}</p>
-        {% endif %}
-        {% for hidden in form.hidden_fields %}
-        {{ hidden }}
-        {% endfor %}
         {% endif %}
 
         {% if not form.is_live %}
