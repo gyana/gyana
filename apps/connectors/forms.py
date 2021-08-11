@@ -1,12 +1,11 @@
 from apps.base.clients import fivetran_client
-from apps.base.live_update_form import LiveUpdateForm
-from apps.connectors.fivetran import FivetranClient
 from apps.connectors.utils import get_services
 from apps.integrations.models import Integration
 from apps.nodes.widgets import MultiSelect
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from django.forms.widgets import CheckboxInput, HiddenInput
 
 from .models import Connector
 
@@ -60,29 +59,46 @@ class ConnectorCreateForm(forms.ModelForm):
         return instance
 
 
-class ConnectorUpdateForm(LiveUpdateForm):
+class ConnectorUpdateForm(forms.ModelForm):
     class Meta:
         model = Connector
         fields = []
 
-    schema = forms.BooleanField()
-    tables = forms.MultipleChoiceField(widget=MultiSelect)
-
     def __init__(self, *args, **kwargs):
-
-        table_choices = kwargs.pop("table_choices", None)
 
         super().__init__(*args, **kwargs)
 
-        # check not removed by live update form
-        if "tables" in self.fields:
-            self.fields["tables"] = forms.MultipleChoiceField(
-                choices=table_choices,
+        schemas = fivetran_client().get_schema(self.instance.fivetran_id)
+
+        is_database = (
+            get_services()[self.instance.service]["requires_schema_prefix"] == "t"
+        )
+
+        for schema, schema_config in schemas.items():
+            tables = schema_config["tables"]
+
+            self.fields["{schema}_schema"] = forms.BooleanField(
+                initial=schema_config["enabled"],
+                label=schema.replace("_", " ").title(),
+                widget=CheckboxInput() if is_database else HiddenInput(),
+            )
+            self.fields[f"{schema}_tables"] = forms.MultipleChoiceField(
+                choices=[(t, t.replace("_", " ").title()) for t in tables],
                 widget=MultiSelect,
+                initial=[t for t in tables if tables[t]["enabled"]],
+                label="Tables",
             )
 
-    def get_live_fields(self):
-        fields = ["schema"]
-        if self.get_live_field("schema"):
-            fields += ["tables"]
-        return fields
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # reformat data into schema dict via mutation
+        schemas = fivetran_client().get_schema(self.instance.fivetran_id)
+
+        for schema, schema_config in schemas.items():
+            schema_config["enabled"] = f"{schema}_schema" in cleaned_data
+            for table, table_config in schema_config["tables"].items():
+                table_config["enabled"] = table in cleaned_data[f"{schema}_tables"]
+
+        # update fivetran and throw validation failure on errors
+        fivetran_client().update_schema(self.instance.fivetran_id, schemas)

@@ -1,13 +1,8 @@
 <form id="connector-update-form"
     method="post"
     action="{{ request.get_full_path }}"
-    data-controller="live-update"
     class="form"
     data-turbo-frame="_top">
-    
-    <span data-live-update-target="loading" class="workflow-detail__sidebar__loading hidden">
-    <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
-    </span>
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}

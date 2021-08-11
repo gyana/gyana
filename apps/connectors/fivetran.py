@@ -113,7 +113,9 @@ class FivetranClient:
         integration.save()
 
     def get_schema(self, fivetran_id):
-        """Gets all the tables of a connector"""
+
+        # https://fivetran.com/docs/rest-api/connectors#retrieveaconnectorschemaconfig
+
         res = requests.get(
             f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/schemas",
             headers=settings.FIVETRAN_HEADERS,
@@ -133,46 +135,13 @@ class FivetranClient:
 
         return res["data"].get("schemas", {})
 
-    def update_schema(self, fivetran_id, updated_checkboxes):
-        """
-        Transforms an array of schema and schema-table combinations to the correct Fivetran
-        format. When checkboxes are unticked they're excluded and therefore assumed to be
-        disabled. We create an initial structure with all schema and schema-table combinations
-        set to false and the overlap with `updated_checkboxes` becomes enabled.
+    def update_schema(self, fivetran_id, schemas):
 
-        Updating the schema relies on `updated_checkboxes` to be in an array with entries
-        in the format of `{schema}` or `{schema}.{table}`.
-
-        Refer to `connectors/_schema.html` for an example of the structure.
-        """
-        schema = self.get_schema(fivetran_id)
-
-        # Construct a dictionary with all allowed schema changes and set them to false
-        # By default when checkboxes are checked they are sent in a post request, if they
-        # are unchecked they will be omitted from the POST data.
-        update = {
-            key: {
-                "enabled": False,
-                "tables": {
-                    table: {"enabled": False}
-                    for table, table_content in value["tables"].items()
-                    if table_content["enabled_patch_settings"]["allowed"]
-                },
-            }
-            for key, value in schema.items()
-        }
-
-        # Loop over our post data and update the changed schemas and tables values
-        for key in updated_checkboxes:
-            if len(ids := key.split(".")) > 1:
-                schema, table = ids
-                update[schema]["tables"][table] = {"enabled": True}
-            else:
-                update[key]["enabled"] = True
+        # https://fivetran.com/docs/rest-api/connectors#modifyaconnectorschemaconfig
 
         res = requests.patch(
             f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/schemas",
-            json={"schemas": update},
+            json={"schemas": schemas},
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 
@@ -201,6 +170,9 @@ class FivetranClient:
 
 
 class MockFivetranClient:
+    def __init__(self) -> None:
+        self._schema_cache = {}
+
     def create(self, service, team_id):
         return {
             "success": True,
@@ -223,14 +195,17 @@ class MockFivetranClient:
         integration.save()
 
     def get_schema(self, fivetran_id):
+        if fivetran_id in self._schema_cache:
+            return self._schema_cache[fivetran_id]
+
         connector = Connector.objects.filter(fivetran_id=fivetran_id).first()
         service = connector.service if connector is not None else "google_analytics"
 
         with open(f"cypress/fixtures/fivetran/{service}_schema.json", "r") as f:
             return json.load(f)
 
-    def update_schema(self, fivetran_id, updated_checkboxes):
-        pass
+    def update_schema(self, fivetran_id, schemas):
+        self._schema_cache[fivetran_id] = schemas
 
     def update_table_config(self, fivetran_id, schema, table_name: str, enabled: bool):
         pass

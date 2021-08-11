@@ -17,37 +17,9 @@ class ConnectorUpdate(TurboFrameUpdateView):
     form_class = ConnectorUpdateForm
     turbo_frame_dom_id = "connectors:update"
 
-    # def get_context_data(self, *args, **kwargs):
-    #     context_data = super().get_context_data(*args, **kwargs)
-    #     context_data["schemas"] = fivetran_client().get_schema(self.object.fivetran_id)
-    #     return context_data
-
-    # def form_valid(self, form):
-    #     fivetran_client().start(self.object)
-    #     return super().form_valid(form)
-
-    def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
-        schema = fivetran_client().get_schema(self.object.fivetran_id)
-
-        name, config = list(schema.items())[0]
-        form_kwargs["table_choices"] = [
-            (t, t.replace("_", " ").title()) for t in config["tables"]
-        ]
-        return form_kwargs
-
-    def get_initial(self):
-        initial = super().get_initial()
-
-        schema = fivetran_client().get_schema(self.object.fivetran_id)
-
-        name, config = list(schema.items())[0]
-        initial["schema"] = config["enabled"]
-        initial["tables"] = [
-            t for t in config["tables"] if config["tables"][t]["enabled"]
-        ]
-
-        return initial
+    def form_valid(self, form):
+        fivetran_client().start(self.object)
+        return super().form_valid(form)
 
     def get_success_url(self) -> str:
         return reverse(
