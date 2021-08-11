@@ -61,6 +61,18 @@ class FivetranClient:
             "data": {"fivetran_id": res["data"]["id"], "schema": res["data"]["schema"]},
         }
 
+    def authorize(self, fivetran_id, redirect_uri):
+
+        card = requests.post(
+            f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/connect-card-token",
+            headers=settings.FIVETRAN_HEADERS,
+        )
+        connect_card_token = card.json()["token"]
+
+        return redirect(
+            f"https://fivetran.com/connect-card/setup?redirect_uri={redirect_uri}&auth={connect_card_token}"
+        )
+
     def start(self, fivetran_id):
         res = requests.patch(
             f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}",
@@ -75,18 +87,6 @@ class FivetranClient:
             pass
 
         return res
-
-    def authorize(self, fivetran_id, redirect_uri):
-
-        card = requests.post(
-            f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/connect-card-token",
-            headers=settings.FIVETRAN_HEADERS,
-        )
-        connect_card_token = card.json()["token"]
-
-        return redirect(
-            f"https://fivetran.com/connect-card/setup?redirect_uri={redirect_uri}&auth={connect_card_token}"
-        )
 
     def _is_historical_synced(self, fivetran_id):
 
