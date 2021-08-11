@@ -20,5 +20,11 @@
     {% block content %}
     {% endblock content %}
   </div>
+
+  <div class="landing__image">
+  {% block image %}
+  <img src="{% static 'images/landing.svg' %}" />
+  {% endblock %}
+  </div>
 </div>
 {% endblock %}
