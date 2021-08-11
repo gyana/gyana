@@ -1,10 +1,8 @@
 import uuid
 
 import analytics
-from apps.base.segment_analytics import (
-    INTEGRATION_CREATED_EVENT,
-    NEW_INTEGRATION_START_EVENT,
-)
+from apps.base.segment_analytics import (INTEGRATION_CREATED_EVENT,
+                                         NEW_INTEGRATION_START_EVENT)
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.connectors.fivetran import FivetranClient
 from apps.connectors.utils import get_service_categories, get_services
@@ -21,8 +19,10 @@ from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 
 from .forms import ConnectorCreateForm, IntegrationForm, SheetCreateForm
+from .mixins import ReadyMixin
 from .models import Integration
-from .tables import IntegrationListTable, IntegrationPendingTable, StructureTable
+from .tables import (IntegrationListTable, IntegrationPendingTable,
+                     StructureTable)
 
 # CRUDL
 
