@@ -6,9 +6,13 @@
         {% if integration.kind == 'sheet' %}
             <turbo-frame id="sheets:update" src="{% url 'sheets:update' integration.sheet.id %}"></turbo-frame>
         {% endif %}
-    {% elif integration.state in 'load,error' %}
+    {% elif integration.state == 'update' %}
         {% if integration.kind == 'connector' %}
             <turbo-frame id="connectors:update" src="{% url 'connectors:update' integration.connector.id %}"></turbo-frame>
+        {% endif %}
+    {% elif integration.state in 'load,error' %}
+        {% if integration.kind == 'connector' %}
+            <turbo-frame id="connectors:schema" src="{% url 'connectors:schema' integration.connector.id %}"></turbo-frame>
         {% elif integration.kind == 'sheet' %}
             <turbo-frame id="sheets:progress" src="{% url 'sheets:progress' integration.sheet.id %}"></turbo-frame>
         {% elif integration.kind == 'upload' %}

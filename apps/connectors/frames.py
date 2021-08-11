@@ -19,6 +19,8 @@ class ConnectorUpdate(TurboFrameUpdateView):
 
     def form_valid(self, form):
         fivetran_client().start(self.object)
+        self.object.integration.state = Integration.State.LOAD
+        self.object.integration.save()
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
@@ -28,32 +30,4 @@ class ConnectorUpdate(TurboFrameUpdateView):
                 self.object.integration.project.id,
                 self.object.integration.id,
             ),
-        )
-
-
-class ConnectorSchema(ProjectMixin, DetailView):
-    template_name = "connectors/schema.html"
-    model = Integration
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-
-        context_data["integration"] = self.get_object()
-        context_data["schemas"] = FivetranClient().get_schema(
-            self.object.connector.fivetran_id
-        )
-
-        return context_data
-
-    def post(self, request, *args, **kwargs):
-        integration = self.get_object()
-        client = FivetranClient()
-        client.update_schema(
-            integration.connector.fivetran_id,
-            [key for key in request.POST.keys() if key != "csrfmiddlewaretoken"],
-        )
-
-        return TurboStream(f"{integration.id}-schema-update-message").replace.response(
-            f"""<p id="{ integration.id }-schema-update-message" class="ml-4 text-green">Successfully updated the schema</p>""",
-            is_safe=True,
         )
