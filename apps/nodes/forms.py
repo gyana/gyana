@@ -43,7 +43,7 @@ class InputNodeForm(NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         instance = kwargs.get("instance")
-        self.fields["input_table"].queryset = Table.available(
+        self.fields["input_table"].queryset = Table.available.filter(
             project=instance.workflow.project
         ).exclude(source="intermediate_node")
 
