@@ -1,5 +1,6 @@
 from apps.base.access import login_and_teamid_in_session
 from apps.projects.access import login_and_project_required
+from django.conf import settings
 from django.urls import path
 
 from . import rest, views
@@ -19,6 +20,12 @@ urlpatterns = [
         name="finalise-fivetran-integration",
     ),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path("mock", views.ConnectorMock.as_view(), name="mock"),
+    ]
+
 
 integration_urlpatterns = (
     [

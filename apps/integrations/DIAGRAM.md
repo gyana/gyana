@@ -14,6 +14,7 @@ stateDiagram-v2
     state Integration {
         state if_load <<choice>>
         [*] --> Load
+        [*] --> Setup: databases
         Setup --> Load
         Load --> if_load
         if_load --> RuntimeError: runtime error

@@ -6,6 +6,7 @@ import backoff
 import requests
 from django.conf import settings
 from django.shortcuts import redirect
+from django.urls.base import reverse
 
 from .models import Connector
 from .utils import get_services
@@ -197,7 +198,7 @@ class MockFivetranClient:
         pass
 
     def authorize(self, fivetran_id, redirect_uri):
-        return redirect(redirect_uri)
+        return redirect(f"{reverse('connectors:mock')}?redirect_uri={redirect_uri}")
 
     def block_until_synced(self, integration):
         time.sleep(settings.MOCK_FIVETRAN_HISTORICAL_SYNC_SECONDS)

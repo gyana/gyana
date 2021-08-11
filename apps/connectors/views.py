@@ -2,7 +2,7 @@ from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from django.urls import reverse
 from django.views.generic import DetailView
-from django.views.generic.base import TemplateResponseMixin, View
+from django.views.generic.base import TemplateResponseMixin, TemplateView, View
 from turbo_response.stream import TurboStream
 
 from .fivetran import FivetranClient
@@ -73,3 +73,7 @@ class ConnectorSetup(ProjectMixin, TemplateResponseMixin, View):
             )
             .response(request)
         )
+
+
+class ConnectorMock(TemplateView):
+    template_name = "connectors/mock.html"
