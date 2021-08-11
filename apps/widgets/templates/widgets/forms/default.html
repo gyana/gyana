@@ -19,11 +19,9 @@
     </button>
   </div>
 
-  <div class="absolute h-full w-full">
-    <span data-live-update-target="loading">
-      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-    </span>
-  </div>
+  <span class="absolute h-full w-full hidden" data-live-update-target="loading">
+    <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+  </span>
 
   {% csrf_token %}
   <h3 class="flex flex-row items-center">

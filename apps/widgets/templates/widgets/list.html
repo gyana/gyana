@@ -32,8 +32,8 @@
       <turbo-frame 
         id="widget-modal"
         data-tf-modal-target="turboFrame"
-        {% if request.GET.modal_item %}
-          src="{% url "dashboard_widgets:update" project.id dashboard.id request.GET.modal_item %}"
+        {% if modal_item %}
+          src="{% url "dashboard_widgets:update" project.id dashboard.id modal_item%}"
         {% endif %}
       >
         <div class='placeholder-scr placeholder-scr--fillscreen'>
