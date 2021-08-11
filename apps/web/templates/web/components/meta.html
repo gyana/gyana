@@ -5,9 +5,9 @@
 {% with project_meta|get_description:page_description as description %}
 {% with project_meta|get_image_url:page_image as image %}
     {% if object %}
-    <title>{{ project_meta.NAME }} | {{ object.name }}</title>
+    <title>{{ object.name }} | {{ project_meta.NAME }}</title>
     {% elif project %}
-    <title>{{ project_meta.NAME }} | {{ project.name }}</title>
+    <title>{{ project.name }} | {{ project_meta.NAME }}</title>
     {% else %}
     <title>{{ title }}</title>
     {% endif %}
