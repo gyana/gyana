@@ -9,15 +9,18 @@ from .models import Integration
 class StatusColumn(TemplateColumn):
     def render(self, record, table, **kwargs):
         context = getattr(table, "context", Context())
+        if record.state == Integration.State.UPDATE:
+            context["icon"] = ICONS["warning"]
+            context["text"] = "Incomplete setup"
         if record.state == Integration.State.LOAD:
             context["icon"] = ICONS["loading"]
-            context["text"] = "Integration is loading"
+            context["text"] = "Importing"
         elif record.state == Integration.State.ERROR:
             context["icon"] = ICONS["error"]
-            context["text"] = "Integration failed to load"
-        else:
+            context["text"] = "Error"
+        elif record.state == Integration.State.DONE:
             context["icon"] = ICONS["success"]
-            context["text"] = "Integration is ready for your review"
+            context["text"] = "Ready to review"
 
         return get_template(self.template_name).render(context.flatten())
 

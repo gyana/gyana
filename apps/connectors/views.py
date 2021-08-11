@@ -4,13 +4,15 @@ from apps.base.segment_analytics import INTEGRATION_CREATED_EVENT
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from django.conf import settings
+from django.shortcuts import redirect
 from django.urls import reverse
+from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 
+from .config import get_service_categories, get_services
 from .forms import ConnectorCreateForm
 from .models import Connector
-from .config import get_service_categories, get_services
 
 
 class ConnectorCreate(ProjectMixin, CreateView):
@@ -47,16 +49,34 @@ class ConnectorCreate(ProjectMixin, CreateView):
         )
 
         internal_redirect = reverse(
-            "project_integrations:setup",
+            "project_integrations_connectors:authorize",
             args=(
                 self.project.id,
-                self.object.integration.id,
+                self.object.id,
             ),
         )
 
         return fivetran_client().authorize(
             self.object.fivetran_id,
             f"{settings.EXTERNAL_URL}{internal_redirect}",
+        )
+
+
+class ConnectorAuthorize(ProjectMixin, DetailView):
+    model = Connector
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.fivetran_authorized = True
+        self.object.save()
+        return redirect(
+            reverse(
+                "project_integrations:setup",
+                args=(
+                    self.project.id,
+                    self.object.integration.id,
+                ),
+            )
         )
 
 

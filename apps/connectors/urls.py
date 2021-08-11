@@ -9,7 +9,7 @@ urlpatterns = [
     path("<hashid:pk>/update", frames.ConnectorUpdate.as_view(), name="update"),
     path(
         "<hashid:pk>/progress",
-        login_and_project_required(frames.ConnectorProgress.as_view()),
+        frames.ConnectorProgress.as_view(),
         name="progress",
     ),
 ]
@@ -26,6 +26,11 @@ integration_urlpatterns = (
             "new",
             login_and_project_required(views.ConnectorCreate.as_view()),
             name="create",
+        ),
+        path(
+            "<hashid:pk>/authorize",
+            login_and_project_required(views.ConnectorAuthorize.as_view()),
+            name="authorize",
         ),
     ],
     "project_integrations_connectors",
