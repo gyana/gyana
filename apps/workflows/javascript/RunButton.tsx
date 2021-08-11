@@ -75,7 +75,7 @@ const RunButton: React.FC<{
         }}
         className='button button--sm button--outline button--success tooltip tooltip--bottom'
       >
-        <i className="fas fa-fw fa-play"></i> Run
+        <i className='fas fa-fw fa-play'></i> Run
         {loading && (
           <div className='absolute m-auto'>
             <i className='fad fa-spinner-third fa-spin' />

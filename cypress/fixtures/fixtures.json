@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-08-10T12:00:01.651Z",
+      "last_login": "2021-08-11T13:26:44.802Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -153,9 +153,12 @@
     "fields": {
       "created": "2021-08-10T10:03:16.769Z",
       "updated": "2021-08-10T10:03:16.789Z",
-      "name": "Heroku Postgres",
       "project": 1,
       "kind": "connector",
+      "name": "Heroku Postgres",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-10T10:03:16.769Z",
       "created_by": 1
     }
   },
@@ -165,9 +168,12 @@
     "fields": {
       "created": "2021-08-10T10:40:23.584Z",
       "updated": "2021-08-10T13:34:45.844Z",
-      "name": "Facebook Ads",
       "project": 1,
       "kind": "connector",
+      "name": "Facebook Ads",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-10T10:40:23.584Z",
       "created_by": 1
     }
   },
@@ -177,9 +183,12 @@
     "fields": {
       "created": "2021-08-10T10:40:23.584Z",
       "updated": "2021-08-10T12:01:16.317Z",
-      "name": "Google Analytics",
       "project": 1,
       "kind": "connector",
+      "name": "Google Analytics",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-10T10:40:23.584Z",
       "created_by": 1
     }
   },
@@ -189,9 +198,12 @@
     "fields": {
       "created": "2021-08-10T12:54:44.272Z",
       "updated": "2021-08-10T12:54:44.276Z",
-      "name": "Shopify",
       "project": 1,
       "kind": "connector",
+      "name": "Shopify",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-10T12:54:44.272Z",
       "created_by": 1
     }
   },
