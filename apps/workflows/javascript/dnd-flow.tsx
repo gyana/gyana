@@ -309,10 +309,10 @@ const DnDFlow = ({ client, workflowId }) => {
             )}
             {initialLoad === LoadingStates.loaded && elements.length === 0 && (
               <div className='placeholder-scr placeholder-scr--fillscreen'>
-                <i className={`fa ${NODES['input'].icon} text-green fa-2x`}></i>
-                <span>
+                <i className={`fas fa-fw ${NODES['input'].icon} text-green fa-3x mb-4`}></i>
+                <p>
                   Start building your workflow by dragging in a <strong>Get data</strong> node
-                </span>
+                </p>
               </div>
             )}
           </ReactFlow>
