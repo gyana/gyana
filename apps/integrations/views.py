@@ -35,9 +35,11 @@ class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
         project_integrations = Integration.objects.filter(project=self.project)
 
         context_data["integration_count"] = project_integrations.count()
-        context_data["pending_integration_count"] = project_integrations.filter(
-            ready=False
-        ).count()
+        context_data["pending_integration_count"] = (
+            project_integrations.filter(ready=False)
+            .exclude(connector__fivetran_authorized=False)
+            .count()
+        )
 
         context_data["integration_kinds"] = Integration.Kind.choices
 
@@ -60,14 +62,17 @@ class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["pending_integration_count"] = Integration.objects.filter(
-            project=self.project, ready=False
-        ).count()
+        context_data["pending_integration_count"] = (
+            Integration.objects.filter(project=self.project, ready=False)
+            .exclude(connector__fivetran_authorized=False)
+            .count()
+        )
         return context_data
 
     def get_queryset(self) -> QuerySet:
         return (
             Integration.objects.filter(project=self.project, ready=False)
+            .exclude(connector__fivetran_authorized=False)
             .prefetch_related("table_set")
             .all()
         )
