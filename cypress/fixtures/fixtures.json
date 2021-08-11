@@ -123,9 +123,12 @@
     "fields": {
       "created": "2021-07-27T13:17:27.984Z",
       "updated": "2021-07-27T13:17:27.987Z",
-      "name": "store_info",
       "project": 1,
       "kind": "upload",
+      "name": "store_info",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-07-27T13:17:27.984Z",
       "created_by": 1
     }
   },
@@ -135,10 +138,13 @@
     "fields": {
       "created": "2021-08-08T20:28:27.809Z",
       "updated": "2021-08-08T20:28:27.809Z",
-      "name": "Store info sheet",
       "project": 1,
       "kind": "sheet",
-      "created_by": null
+      "name": "Store info sheet",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-07-27T13:17:27.984Z",
+      "created_by": 1
     }
   },
   {
@@ -196,13 +202,10 @@
     "fields": {
       "created": "2021-07-27T13:17:27.984Z",
       "updated": "2021-07-27T13:17:27.987Z",
-      "project": 1,
       "integration": 1,
       "file_gcs_path": "cypress/integrations/store_info-1627391842010578.csv",
-      "file_name": "store_info.csv",
       "sync_task_id": null,
-      "last_synced": "2021-07-27T13:17:27.987Z",
-      "created_by": 1
+      "sync_started": null
     }
   },
   {
@@ -211,16 +214,12 @@
     "fields": {
       "created": "2021-08-08T20:28:24.090Z",
       "updated": "2021-08-08T20:28:28.005Z",
-      "project": 1,
       "integration": 2,
       "url": "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit",
       "cell_range": "store_info!A1:D11",
-      "sheet_name": "Store info sheet",
       "drive_file_last_modified": "2021-08-08T16:46:04.194Z",
       "sync_task_id": "aa5c3086-1f87-434f-9d5b-48bd69786b33",
-      "sync_started": "2021-08-08T20:28:24.090Z",
-      "last_synced": "2021-08-08T20:28:28.004Z",
-      "created_by": 1
+      "sync_started": "2021-08-08T20:28:24.090Z"
     }
   },
   {

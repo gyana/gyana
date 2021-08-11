@@ -1,13 +1,16 @@
 import analytics
 from apps.base.segment_analytics import INTEGRATION_CREATED_EVENT
+from apps.integrations.models import Integration
 from django.http import HttpRequest
 from django.http.response import HttpResponseRedirect
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework.decorators import api_view
 from turbo_response.stream import TurboStream
 
 from .forms import FivetranForm
-from .tasks import poll_fivetran_historical_sync, start_fivetran_integration_task
+from .tasks import (poll_fivetran_historical_sync,
+                    start_fivetran_integration_task)
 
 
 @api_view(["GET"])
@@ -40,6 +43,9 @@ def finalise_fivetran_integration(request: HttpRequest, session_key: str):
     integration.connector.schema = integration_data["schema"]
     integration.connector.fivetran_id = integration_data["fivetran_id"]
     integration.created_by = request.user
+    integration.ready = True
+    integration.created_ready = timezone.now()
+    integration.state = Integration.State.DONE
     # Start polling
     task_id = poll_fivetran_historical_sync.delay(integration.id)
     integration.connector.fivetran_poll_historical_sync_task_id = str(task_id)

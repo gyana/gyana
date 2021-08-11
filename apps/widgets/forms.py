@@ -1,10 +1,10 @@
+from apps.base.aggregations import AGGREGATION_TYPE_MAP
+from apps.base.live_update_form import LiveUpdateForm
 from apps.columns.forms import FunctionColumnForm
 from apps.columns.models import FunctionColumn
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
 from apps.tables.models import Table
-from apps.base.aggregations import AGGREGATION_TYPE_MAP
-from apps.base.live_update_form import LiveUpdateForm
 from django import forms
 from django.forms.models import BaseInlineFormSet
 
@@ -39,7 +39,7 @@ class GenericWidgetForm(LiveUpdateForm):
         super().__init__(*args, **kwargs)
 
         if project:
-            self.fields["table"].queryset = Table.objects.filter(
+            self.fields["table"].queryset = Table.available.filter(
                 project=project
             ).exclude(source="intermediate_node")
 

@@ -1,0 +1,36 @@
+{% extends "integrations/base.html" %}
+
+{% block tab %}
+<div class="mb-auto pad">
+    {% if request.GET.edit or integration.state == 'done' and integration.ready %}
+        {% comment %} {% if integration.kind == 'upload' %}
+            <turbo-frame id="uploads:progress" src="{% url 'uploads:progress' integration.upload.id %}"></turbo-frame> {% endcomment %}
+        {% if integration.kind == 'sheet' %}
+            <turbo-frame id="sheets:update" src="{% url 'sheets:update' integration.sheet.id %}"></turbo-frame>
+        {% endif %}
+    {% elif integration.state in 'load,error' %}
+        {% if integration.kind == 'upload' %}
+            <turbo-frame id="uploads:progress" src="{% url 'uploads:progress' integration.upload.id %}"></turbo-frame>
+        {% elif integration.kind == 'sheet' %}
+            <turbo-frame id="sheets:progress" src="{% url 'sheets:progress' integration.sheet.id %}"></turbo-frame>
+        {% endif %}
+    {% elif integration.state == 'done' and not integration.ready %}
+        <turbo-frame id="integrations-grid" src="{% url 'integrations:grid' integration.id %}">
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+                <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+                <p class='placeholder-scr__title'>Loading integration data...</p>
+            </div>
+        </turbo-frame>
+        <form method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
+            {% csrf_token %}
+
+            {% include "django/forms/default_form.html" %}
+
+            <button type="submit" class="button button--success">
+                Approve
+            </button>
+        </form>
+    {% endif %}
+</div>
+
+{% endblock %}

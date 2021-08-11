@@ -13,11 +13,15 @@ describe('uploads', () => {
     cy.url().should('contain', '/projects/1/integrations/uploads/new')
     cy.get('input[type=file]').attachFile('store_info.csv')
 
-    cy.url().should('contain', '/projects/1/integrations/uploads/2')
+    cy.url().should('contain', '/projects/1/integrations/3/setup')
     cy.contains('Validating and importing your file...')
-    cy.contains('File successfully validated and imported.')
+    cy.contains('File successfully validated and imported.', { timeout: 10000 })
 
-    // // bigquery file upload needs longer wait
+    // review the table and approve
+    cy.contains('London')
+    cy.contains('Approve').click()
+
+    // bigquery file upload needs longer wait
     cy.contains('Structure', { timeout: 10000 })
     cy.contains('Data')
     cy.contains('15')
@@ -25,6 +29,9 @@ describe('uploads', () => {
     cy.url().should('contain', '/projects/1/integrations/3')
     // file name inferred
     cy.get('input[name=name]').should('have.value', 'store_info')
+
+    // cannot edit upload setup
+    cy.contains('Setup').should('not.exist')
 
     // check email sent
     cy.outbox()
@@ -45,7 +52,8 @@ describe('uploads', () => {
     cy.get('input[type=file]').attachFile('fifa.csv')
 
     // wait for entire process to happen successfully
-    cy.contains('Structure', { timeout: 20000 })
+    cy.contains('Approve', { timeout: 20000 }).click()
+    cy.contains('Structure')
     // 2250 lines of CSV including header
     cy.contains(2249)
   })

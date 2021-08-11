@@ -1,10 +1,10 @@
 from functools import cached_property
 
+from apps.base.live_update_form import LiveUpdateForm
 from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column
 from apps.nodes.formsets import KIND_TO_FORMSETS
 from apps.tables.models import Table
-from apps.base.live_update_form import LiveUpdateForm
 from django import forms
 
 from .models import Node
@@ -43,7 +43,7 @@ class InputNodeForm(NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         instance = kwargs.get("instance")
-        self.fields["input_table"].queryset = Table.objects.filter(
+        self.fields["input_table"].queryset = Table.available.filter(
             project=instance.workflow.project
         ).exclude(source="intermediate_node")
 

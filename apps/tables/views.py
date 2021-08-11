@@ -7,22 +7,14 @@ from django_tables2.views import SingleTableView
 from .models import Table
 from .tables import TableTable
 
+# class TableList(ProjectMixin, SingleTableView):
+#     template_name = "integrations/fivetran_tables/list.html"
+#     model = Table
+#     table_class = TableTable
+#     paginate_by = 20
 
-class TableList(ProjectMixin, SingleTableView):
-    template_name = "integrations/fivetran_tables/list.html"
-    model = Table
-    table_class = TableTable
-    paginate_by = 20
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-
-        return context_data
-
-    def get_queryset(self):
-        queryset = Table.objects.filter(project=self.project)
-
-        return queryset
+#     def get_queryset(self):
+#         return Table.available.filter(project=self.project)
 
 
 class TableDelete(ProjectMixin, DeleteView):

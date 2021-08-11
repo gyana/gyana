@@ -7,7 +7,7 @@
         data-controller="celery-progress"
         data-celery-progress-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
         data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
-        data-celery-progress-redirect-url-value="{% url 'project_integrations_uploads:detail' object.project.id object.id %}"
+        data-celery-progress-redirect-url-value="{% url 'project_integrations:setup' object.integration.project.id object.integration.id %}"
         >
 
       <i class="fad fa-spinner-third fa-spin text-blue text-4xl"></i>

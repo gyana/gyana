@@ -6,11 +6,11 @@
 {% else %}
     <p>You've already synced the latest data.</p>
 {% endif %}
-{% if not object.is_syncing %}
-    <form class="my-2" method="post" action="{% url 'sheets:status' object.id %}" data-turbo-frame="_top">
-    {% csrf_token %}
-    <button class="button button--sm button--filled" type="submit">Sync</button>
-    </form>
-{% else %}
-    <a href="{% url 'project_integrations_sheets:detail' object.project.id object.id %}" data-turbo-frame="_top">See the sync progress.</a>
-{% endif %}
+
+<a class="link" href="{% url 'project_integrations:setup' object.integration.project.id object.integration.id %}" data-turbo-frame="_top">
+    {% if object.integration.state == 'load' %}
+        <p>View import in progress.</p>
+    {% else %}
+        <p>Import the latest data.</p>
+    {% endif %}
+</a>

@@ -1,19 +1,50 @@
-{% load humanize %}
 {% load static %}
 
-<div data-controller="progress-bar"
-      data-progress-bar-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
-      data-progress-bar-script-url-value="{% static 'celery_progress/celery_progress.js' %}">
-  <div class="progress-inprogress">
-    <p><i class="fad fa-spinner-third fa-spin"></i> Syncing, you'll get an email when it is ready</p>
-  </div>
-  <div class='progress-wrapper'>
-    <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
-  </div>
-  <p id="progress-bar-message">Waiting for sync to start...</p>
-  <div class="progress-success">
-    <button class="button button--sm button--filled" onclick="window.location.reload();">
-      <i class="far fa-sync"></i> Reload to see results
-    </button>
-  </div>
-</div>
+<ul class="integration__create-flow">
+  <li>
+    <div
+        class='integration__file-validate'
+        data-controller="celery-progress"
+        data-celery-progress-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
+        data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
+        {% if not object.integration.ready %}
+        data-celery-progress-redirect-url-value="{% url 'project_integrations:setup' object.integration.project.id object.integration.id %}"
+        {% else %}
+        data-celery-progress-redirect-url-value="{% url 'project_integrations:detail' object.integration.project.id object.integration.id %}"
+        {% endif %}
+        >
+
+      <i class="fad fa-spinner-third fa-spin text-blue text-4xl"></i>
+      <div class='flex flex-col ml-4'>
+        <h1>Validating and importing your sheet...</h1>
+        <p>This might take a while, make sure to stay on the page.</p>
+      </div>
+
+      <template id="success-template">
+        <i class="fas fa-check text-green text-xl mr-4"></i>
+        <h4>Sheet successfully validated and imported.</h4>
+      </template>
+
+      <template id="failure-template">
+        <i class="fas fa-times text-red text-xl mr-4"></i>
+        <div class="flex flex-col">
+          <h4>Errors occurred when validating your sheet</h4>
+          <p id="failure-message"/>
+          <div class="flex space-x-2 my-2">
+            <form method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
+                {% csrf_token %}
+
+                {% include "django/forms/default_form.html" %}
+
+                <button type="submit" class="button button--outline">
+                  Retry
+                </button>
+            </form>
+            <a class="button" href="{% url 'project_integrations:setup' object.integration.project.id object.integration.id %}?edit=true" data-turbo-frame="_top">Edit Config</a>
+          </div>
+        </div>
+      </template>
+
+    </div>
+  </li>
+</ul>

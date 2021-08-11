@@ -1,21 +1,15 @@
 from apps.dashboards.tables import DashboardTable
-from apps.integrations.tables import IntegrationTable
+from apps.integrations.tables import IntegrationListTable
 from apps.workflows.tables import WorkflowTable
-from django_tables2 import Column, Table
 
 
-class ProjectIntegrationTable(IntegrationTable):
-    class Meta(IntegrationTable.Meta):
-        exclude = (
-            "num_rows",
-            "last_synced",
-            "created",
-        )
+class ProjectIntegrationTable(IntegrationListTable):
+    class Meta(IntegrationListTable.Meta):
+        exclude = ("num_rows",)
         sequence = (
             "name",
-            "status",
             "kind",
-            "updated",
+            "created_ready",
         )
 
 
