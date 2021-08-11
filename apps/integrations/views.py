@@ -1,23 +1,24 @@
 from apps.base.turbo import TurboUpdateView
-from apps.connectors.utils import get_service_categories, get_services
 from apps.integrations.filters import IntegrationFilter
 from apps.projects.mixins import ProjectMixin
 from django.conf import settings
-from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView
-from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
 from django_filters.views import FilterView
-from django_tables2 import SingleTableView
 from django_tables2.views import SingleTableMixin
 
 from .forms import IntegrationForm
 from .mixins import ReadyMixin
 from .models import Integration
-from .tables import IntegrationListTable, IntegrationPendingTable, StructureTable
+from .tables import (
+    IntegrationListTable,
+    IntegrationPendingTable,
+    StructureTable,
+    UsedInTable,
+)
 
 # CRUDL
 
@@ -59,11 +60,9 @@ class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-
         context_data["pending_integration_count"] = Integration.objects.filter(
             project=self.project, ready=False
         ).count()
-
         return context_data
 
     def get_queryset(self) -> QuerySet:
@@ -99,11 +98,8 @@ class IntegrationDetail(ReadyMixin, TurboUpdateView):
     form_class = IntegrationForm
 
     def get_context_data(self, **kwargs):
-        from .tables import UsedInTable
-
         context = super().get_context_data(**kwargs)
         context["table"] = UsedInTable(self.object.used_in)
-
         return context
 
     def get_success_url(self) -> str:
@@ -175,16 +171,7 @@ class IntegrationData(ReadyMixin, DetailView):
 class IntegrationSettings(ProjectMixin, TurboUpdateView):
     template_name = "integrations/settings.html"
     model = Integration
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data["integration_kind"] = Integration.Kind
-        context_data["service_account"] = settings.GCP_BQ_SVC_ACCOUNT
-
-        return context_data
-
-    def get_form_class(self):
-        return IntegrationForm
+    form_class = IntegrationForm
 
     def get_success_url(self) -> str:
         return reverse(

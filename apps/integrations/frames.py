@@ -4,7 +4,6 @@ from apps.projects.mixins import ProjectMixin
 from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
 from apps.tables.tables import TableTable
-from django.db.models.query import QuerySet
 from django_tables2.config import RequestConfig
 from django_tables2.views import SingleTableMixin
 from turbo_response.views import TurboFrameTemplateView
@@ -53,7 +52,7 @@ class IntegrationTablesList(ProjectMixin, SingleTableMixin, TurboFrameListView):
     paginate_by = 20
     turbo_frame_dom_id = "tables-list"
 
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self):
         return Table.objects.filter(
             project=self.project, integration_id=self.kwargs["pk"]
         )
