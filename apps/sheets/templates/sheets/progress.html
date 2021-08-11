@@ -30,6 +30,18 @@
         <div class="flex flex-col">
           <h4>Errors occurred when validating your sheet</h4>
           <p id="failure-message"/>
+          <div class="flex space-x-2 my-2">
+            <form method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
+                {% csrf_token %}
+
+                {% include "django/forms/default_form.html" %}
+
+                <button type="submit" class="button button--outline">
+                  Retry
+                </button>
+            </form>
+            <a class="button" href="{% url 'project_integrations:setup' object.integration.project.id object.integration.id %}?edit=true" data-turbo-frame="_top">Edit Config</a>
+          </div>
         </div>
       </template>
 

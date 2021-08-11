@@ -12,6 +12,7 @@ from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from .bigquery import get_last_modified_from_drive_file, import_table_from_sheet
 from .models import Sheet
@@ -136,3 +137,20 @@ def run_update_sheets_sync(self, sheet_id):
     integration.save()
 
     return integration.id
+
+
+def run_sheets_sync(sheet: Sheet):
+
+    task = (
+        run_initial_sheets_sync
+        if sheet.integration.table_set.count() == 0
+        else run_update_sheets_sync
+    )
+
+    result = task.delay(sheet.id)
+    sheet.sync_task_id = result.task_id
+    sheet.sync_started = timezone.now()
+    sheet.save()
+
+    sheet.integration.state = Integration.State.LOAD
+    sheet.integration.save()

@@ -1,16 +1,13 @@
 from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
-from apps.integrations.models import Integration
-from apps.projects.mixins import ProjectMixin
 from apps.sheets.forms import SheetUpdateForm
 from django.urls import reverse
-from django.utils import timezone
 
 from .bigquery import get_last_modified_from_drive_file
 from .models import Sheet
-from .tasks import run_update_sheets_sync
+from .tasks import run_sheets_sync
 
 
-class SheetProgress(TurboFrameDetailView):
+class SheetProgress(TurboFrameUpdateView):
     template_name = "sheets/progress.html"
     model = Sheet
     fields = []
@@ -21,6 +18,16 @@ class SheetProgress(TurboFrameDetailView):
         context_data["sync_task_id"] = self.object.sync_task_id
 
         return context_data
+
+    def form_valid(self, form):
+        run_sheets_sync(self.object)
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "sheets:progress",
+            args=(self.object.id,),
+        )
 
 
 class SheetStatus(TurboFrameDetailView):
@@ -46,14 +53,7 @@ class SheetUpdate(TurboFrameUpdateView):
     turbo_frame_dom_id = "sheets:update"
 
     def form_valid(self, form):
-        result = run_update_sheets_sync.delay(self.object.id)
-        self.object.sync_task_id = result.task_id
-        self.object.sync_started = timezone.now()
-        self.object.save()
-
-        self.object.integration.state = Integration.State.LOAD
-        self.object.integration.save()
-
+        run_sheets_sync(self.object)
         return super().form_valid(form)
 
     def get_success_url(self) -> str:

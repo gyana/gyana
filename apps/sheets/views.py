@@ -5,11 +5,10 @@ from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from django.conf import settings
 from django.urls.base import reverse
-from django.utils import timezone
 
 from .forms import SheetCreateForm
 from .models import Sheet
-from .tasks import run_initial_sheets_sync
+from .tasks import run_sheets_sync
 
 
 class SheetCreate(ProjectMixin, TurboCreateView):
@@ -44,10 +43,7 @@ class SheetCreate(ProjectMixin, TurboCreateView):
             },
         )
 
-        result = run_initial_sheets_sync.delay(self.object.id)
-        self.object.sync_task_id = result.task_id
-        self.object.sync_started = timezone.now()
-        self.object.save()
+        run_sheets_sync(self.object)
 
         return r
 
