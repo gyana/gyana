@@ -18,7 +18,7 @@ IBIS_TO_TYPE = {
 
 
 class FilterForm(SchemaFormMixin, LiveUpdateForm):
-    column = forms.ChoiceField(choices=[])
+    column = forms.ChoiceField(choices=[], help_text="Column")
 
     # We have to add the media here because otherwise the form fields
     # Are added dynamically, and a script wouldn't be added if a widget
@@ -112,7 +112,6 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             self.fields["column"].choices = [
                 ("", "No column selected"),
             ] + [(col, col) for col in self.schema]
-            self.fields["column"].help_text = "Column"
 
     def save(self, commit=True):
         instance = super().save(commit=False)

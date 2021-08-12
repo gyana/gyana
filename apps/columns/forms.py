@@ -64,6 +64,14 @@ class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
             "float_value",
             "string_value",
         )
+        help_texts = {
+            "column": "Column",
+            "string_function": "Operation",
+            "integer_function": "Operation",
+            "date_function": "Operation",
+            "time_function": "Operation",
+            "datetime_function": "Operation",
+        }
         widgets = {
             "string_value": forms.Textarea(attrs={"rows": 1}),
         }
@@ -101,6 +109,18 @@ class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
             "string_value",
             "label",
         )
+        help_texts = {
+            "column": "Column",
+            "string_function": "Operation",
+            "integer_function": "Operation",
+            "date_function": "Operation",
+            "time_function": "Operation",
+            "datetime_function": "Operation",
+            "integer_value": "Value",
+            "float_value": "Value",
+            "string_value": "Value",
+            "label": "New Column Name",
+        }
         widgets = {
             "string_value": forms.Textarea(attrs={"rows": 1}),
         }
@@ -132,6 +152,13 @@ class FormulaColumnForm(SchemaFormMixin, LiveUpdateForm):
 class WindowColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
         fields = ("column", "function", "group_by", "order_by", "ascending", "label")
+        help_texts = {
+            "column": "Column",
+            "function": "Function",
+            "group_by": "Group By",
+            "order_by": "Order By",
+            "label": "New Column Name",
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
