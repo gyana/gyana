@@ -25,7 +25,7 @@ const getFirstColumn = (rows$) => _.map(rows$, (el$) => el$.querySelectorAll('td
 const toStrings = (cells$) => _.map(cells$, 'textContent')
 const toNumbers = (texts) => _.map(texts, Number)
 
-describe('workflows', () => {
+describe('nodes', () => {
   beforeEach(() => {
     cy.login('nodes@gyana.com')
   })
@@ -333,7 +333,7 @@ describe('workflows', () => {
     cy.get('select[name=window_columns-0-order_by]').select('store_id')
     cy.get('input[name=window_columns-0-label').type('sum_emp').blur()
     cy.contains('Save & Preview').click()
-    cy.get('#workflows-grid').contains('45').should('be.visible')
+    cy.get('#workflows-grid th:contains(sum_emp)').should('be.visible')
   })
 
   it('Text', () => {

@@ -24,7 +24,7 @@ describe('users', () => {
 
     cy.get('input[type=text]').type('New')
     cy.get('button[type=submit]').click()
-    cy.url().should('contain', '/teams/2')
+    cy.url().should('contain', '/teams/3')
   })
 
   it('resets password', () => {
