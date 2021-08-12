@@ -25,7 +25,11 @@ def complete_connector_sync(connector: Connector, send_mail: bool = True):
         for bq_table in bq_tables:
             # filter to the tables user has explicitly chosen, in case bigquery
             # tables failed to delete
-            if f"{bq_table.dataset_id}.{bq_table.table_id}" in schema_bq_ids:
+            if (
+                f"{bq_table.dataset_id}.{bq_table.table_id}" in schema_bq_ids
+                # google sheets
+                or len(schema_bq_ids) == 0
+            ):
 
                 # only replace tables that already exist
                 # there is a unique constraint on table_id/dataset_id to avoid duplication

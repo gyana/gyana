@@ -115,11 +115,12 @@ class FivetranClient:
         #   "message": "Connector has been created",
         #   "data": {
         #       "id": "{{ fivetran_id }}",
+        #       # returns odd results for Google Sheets
         #       "schema": "{{ schema }}",
         #       ...
         #    }
         #  }
-        return {"fivetran_id": res["data"]["id"], "schema": res["data"]["schema"]}
+        return {"fivetran_id": res["data"]["id"], "schema": schema}
 
     def authorize(self, connector: Connector, redirect_uri: str) -> HttpResponse:
 

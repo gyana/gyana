@@ -2,7 +2,6 @@ from itertools import chain
 
 from apps.base.clients import bigquery_client, fivetran_client
 from apps.connectors.config import get_services
-from apps.connectors.fivetran import FivetranClient
 from apps.connectors.models import Connector
 
 
