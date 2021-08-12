@@ -1,8 +1,11 @@
 from apps.base.clients import fivetran_client
 from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
 from apps.integrations.models import Integration
-from apps.integrations.tables import (INTEGRATION_STATE_TO_ICON,
-                                      INTEGRATION_STATE_TO_MESSAGE)
+from apps.integrations.tables import (
+    INTEGRATION_STATE_TO_ICON,
+    INTEGRATION_STATE_TO_MESSAGE,
+)
+from django.shortcuts import redirect
 from django.urls import reverse
 
 from .forms import ConnectorUpdateForm
@@ -35,18 +38,6 @@ class ConnectorProgress(TurboFrameUpdateView):
     model = Connector
     fields = []
     turbo_frame_dom_id = "connectors:progress"
-
-    # def get(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     if self.object.integration.state == Integration.State.LOAD:
-    #         is_historical_synced = fivetran_client().is_historical_synced(
-    #             self.object.fivetran_id
-    #         )
-    #         if is_historical_synced:
-    #             self.object.integration.state = Integration.State.DONE
-    #             self.object.integration.save()
-
-    #     return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

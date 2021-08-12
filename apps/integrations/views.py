@@ -1,8 +1,10 @@
+from apps.base.clients import fivetran_client
 from apps.base.turbo import TurboUpdateView
 from apps.integrations.filters import IntegrationFilter
 from apps.projects.mixins import ProjectMixin
 from django.conf import settings
 from django.db.models.query import QuerySet
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView
@@ -82,6 +84,30 @@ class IntegrationSetup(ProjectMixin, TurboUpdateView):
     template_name = "integrations/setup.html"
     model = Integration
     fields = []
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if (
+            self.object.kind == Integration.Kind.CONNECTOR
+            and self.object.state == Integration.State.LOAD
+        ):
+            is_historical_synced = fivetran_client().is_historical_synced(
+                self.object.connector.fivetran_id
+            )
+            if is_historical_synced:
+                self.object.state = Integration.State.DONE
+                self.object.save()
+                return redirect(
+                    reverse(
+                        "project_integrations:setup",
+                        args=(
+                            self.project.id,
+                            self.object.id,
+                        ),
+                    )
+                )
+
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
