@@ -2,11 +2,11 @@ import inspect
 import logging
 
 import ibis
+from apps.base.clients import DATAFLOW_ID, bigquery_client, ibis_client
 from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
-from apps.base.clients import DATAFLOW_ID, bigquery_client, ibis_client
 from django.utils import timezone
 from ibis.expr.datatypes import String
 
@@ -207,12 +207,9 @@ def get_add_query(node, query):
 
 
 def get_rename_query(node, query):
-    columns = query.schema().names
-
-    for rename in node.rename_columns.all():
-        idx = columns.index(rename.column)
-        columns[idx] = query[rename.column].name(rename.new_name)
-    return query[columns]
+    return query.relabel(
+        {rename.column: rename.new_name for rename in node.rename_columns.all()}
+    )
 
 
 def get_formula_query(node, query):
@@ -231,7 +228,11 @@ def get_distinct_query(node, query):
         for column in query.schema()
         if column not in distinct_columns
     ]
-    return query.group_by(distinct_columns).aggregate(columns)
+    return (
+        query.group_by(distinct_columns).aggregate(columns)
+        if distinct_columns
+        else query
+    )
 
 
 @use_intermediate_table
@@ -262,9 +263,9 @@ def get_pivot_query(node, parent):
 def get_unpivot_query(node, parent):
     selection_columns = [col.column for col in node.secondary_columns.all()]
     selection = (
-        f"{' ,'.join(selection_columns)}, {node.unpivot_column}, {node.unpivot_value}"
-        if selection_columns
-        else "*"
+        f"{' ,'.join(selection_columns)+', ' if selection_columns else ''}"
+        f"{node.unpivot_column},"
+        f"{node.unpivot_value}"
     )
     return (
         f"SELECT {selection} FROM ({parent.compile()})"

@@ -1,10 +1,10 @@
 from functools import cached_property
 
-from apps.nodes.config import NODE_CONFIG
-from apps.tables.models import Table
 from apps.base.aggregations import AggregationFunctions
 from apps.base.cache import get_cache_key
 from apps.base.models import BaseModel
+from apps.nodes.config import NODE_CONFIG
+from apps.tables.models import Table
 from apps.workflows.models import Workflow
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
@@ -126,7 +126,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     union_mode = models.CharField(
         max_length=8,
         choices=(("keep", "keep"), ("exclude", "exclude")),
-        default="except",
+        default="keep",
         help_text="Either keep or exclude the common rows",
     )
     union_distinct = models.BooleanField(
@@ -145,7 +145,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         default=100, help_text="Limits rows to selected number"
     )
     limit_offset = models.IntegerField(
-        null=True, help_text="From where to start the limit"
+        null=True, blank=True, help_text="From where to start the limit"
     )
 
     # Text

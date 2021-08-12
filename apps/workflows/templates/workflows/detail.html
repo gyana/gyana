@@ -20,22 +20,18 @@
     </turbo-frame>
   </div>
 
-  <span class="button button--circle button--tertiary" title="Duplicate">
-    <form method='post' action="{% url "workflows:duplicate" object.id %}">
-      {% csrf_token %}
-      <button type='submit'>
-        <i class="far fa-fw fa-copy"></i>
-      </button>
-    </form>
+  <span class="button button--circle button--tertiary">
+    {% include 'components/_duplicate.html' with object_name='workflow' %}
   </span>
 
   <div data-controller='popover'>
     <span
           data-popover-target="trigger"
           data-action="click->popover#trigger"
-          class="button button--circle button--tertiary cursor-pointer"
-          title="Delete workflow">
+          class="button button--circle button--tertiary tooltip tooltip--bottom"
+          >
       <i class="far fa-fw fa-trash"></i>
+      <span class="tooltip__content">Delete workflow</span>
     </span>
     <div data-popover-target="body" hidden class="popover-body shadow-sm">
       {% include 'workflows/_delete.html' %}

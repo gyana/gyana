@@ -10,8 +10,7 @@
         <turbo-frame 
           id="widgets-output-{{ object.id }}"
           src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
-          style="display: flex; flex: 1 1 0%; min-height: 0;"
-          target="_top"
+          style="display: flex; flex: 1 1 0%; min-height: 0;overflow: auto;"
         >
           <div class='placeholder-scr placeholder-scr--fillscreen'>
             <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
@@ -24,26 +23,43 @@
       <div class='widget-card__commands'>
         {% if object.kind != "text" %}
         <button  data-action="click->tf-modal#open">
-          <i class="fas fa-fw fa-edit"
+          <i
+            class="fas fa-fw fa-lg fa-edit"
             id="widget-update-{{object.id}}"
+            title="Edit"
             data-item="{{object.id}}"
-            data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"></i>
+            data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
+          ></i>
         </button>
-        <a href="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
+
+        {% comment %} Uncomment this once we figure out the modal for opening up a chart. {% endcomment %}
+        {% comment %} <a href="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
           <i class="fas fa-fw fa-eye"></i>
-        </a>
+        </a> {% endcomment %}
 
         {% endif %}
-        <form method='post' action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}">
+
+        <form
+          method='post'
+          action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}"
+          title="Duplicate"
+        >
           {% csrf_token %}
           <button id="widget-duplicate-{{object.id}}" type='submit'>
-            <i class="fas fa-fw fa-copy"></i>
+            <i class="fas fa-fw fa-lg fa-copy"></i>
           </button>
         </form>
+
         <div data-controller="popover" class='mt-auto'>
-          <button id="widget-delete-{{object.id}}" data-popover-target="trigger" data-action="click->popover#trigger">
-            <i class="fas fa-fw fa-trash cursor-pointer"></i>
+          <button
+            id="widget-delete-{{object.id}}"
+            title="Delete"
+            data-popover-target="trigger" 
+            data-action="click->popover#trigger"
+          >
+            <i class="fas fa-fw fa-lg fa-trash cursor-pointer"></i>
           </button>
+
           <div data-popover-target="body" hidden class="popover-body shadow-sm">
             {% include 'widgets/_delete.html' %}
           </div>

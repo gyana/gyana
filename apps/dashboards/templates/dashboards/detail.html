@@ -7,11 +7,16 @@
     {% csrf_token %}
 
     <input class='input__inline mr-auto' id="name" type="text" name="name" value="{{ object.name }}"></input>
-    <div data-controller="popover">
-      <button type="button" data-popover-target="trigger" class="button button--circle button--tertiary"
-              data-action="popover#trigger">
+    <div data-controller="popover" class='tooltip tooltip--bottom'>
+      <button 
+        type="button" 
+        data-popover-target="trigger" 
+        class="button button--circle button--tertiary"
+        data-action="popover#trigger"
+      >
         <i class="far fa-edit fa-fw"></i>
       </button>
+      <span class="tooltip__content">Configure canvas size</span>
       <div data-popover-target="body" class="popover-body shadow-sm card card--sm">
         <p>Configure the dashboard's canvas dimension</p>
         <input id="width" type="number" name="width" value="{{ object.width}}"></input>
@@ -24,11 +29,11 @@
   <turbo-frame id="dashboard-share">
     {% include 'dashboards/share.html' %}
   </turbo-frame>
-  <span class="button button--circle button--tertiary cursor-pointer">
-    {% include 'dashboards/duplicate.html'%}
-  </span>
+  <div class="button button--circle button--tertiary">
+    {% include 'components/_duplicate.html' with object_name="dashboard" %}
+  </div>
 
-  <div data-controller='popover'>
+  <div data-controller='popover' class='tooltip tooltip--bottom'>
     <span
       data-popover-target="trigger"
       data-action="click->popover#trigger"
@@ -36,6 +41,7 @@
     > 
       <i class="far fa-fw fa-trash"></i>
     </span>
+    <span class="tooltip__content">Delete dashboard</span>
     <div data-popover-target="body" hidden class="popover-body shadow-sm">
       {% include 'dashboards/_delete.html' %}
     </div>

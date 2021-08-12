@@ -15,7 +15,7 @@ NODE_CONFIG = {
     },
     "select": {
         "displayName": "Select columns",
-        "icon": "fa-lasso",
+        "icon": "fa-mouse-pointer",
         "description": "Select columns from the table",
         "section": "Table manipulations",
     },
@@ -33,7 +33,7 @@ NODE_CONFIG = {
     },
     "union": {
         "displayName": "Union",
-        "icon": "fa-union",
+        "icon": "fa-plus-square",
         "description": "Combine two or more tables on top of each other",
         "section": "Table manipulations",
     },

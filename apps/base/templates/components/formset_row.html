@@ -1,16 +1,18 @@
 <div class="formset-wrapper {% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}" {% if form.DELETE.value %}
     style="display: none;" {% endif %}
     data-formset-index="{{ forloop.counter0 }}">
+    {# Include the hidden fields in the form #}
+    {% if forloop.first %}
+        {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+        {% endfor %}
+    {% endif %}
 
     {% for field in form.visible_fields %}
-    <div {% if field.name == 'DELETE' %} style="display: none;" {% endif %}>
-        {# Include the hidden fields in the form #}
-        {% if forloop.first %}
-            {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-            {% endfor %}
-        {% endif %}
-
+    <label
+        {% if field.name == 'DELETE' %}style="display: none;" {% endif %}
+        {% if field.name == 'ascending' %}class="input__toggle"{% endif %}
+    >
         {% if field.help_text %}
         <p class="input__help-text">{{ field.help_text }}</p>
         {% endif %}
@@ -18,8 +20,9 @@
         {% if not form.is_live %}
         {{ field.errors.as_ul }}
         {% endif %}
+
         {{ field }}
-    </div>
+    </label>
     {% endfor %}
 
     <button class="button button--sm button--circle button--tertiary ml-4" type="button"

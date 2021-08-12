@@ -1,6 +1,0 @@
-<form method='post' action="{% url "dashboards:duplicate" object.id %}">
-  {% csrf_token %}
-  <button type='submit' id="dashboard-duplicate-{{object.id}}">
-    <i class="far fa-fw fa-copy"></i>
-  </button>
-</form>

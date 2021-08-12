@@ -54,7 +54,10 @@ const Canvas: React.FC<{ client: coreapi.Client; workflowId: number }> = ({
             </p>
           </div>
         ) : (
-          <i className='placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x'></i>
+          <>
+            <i className='placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x'></i>
+            <span>Loading</span>
+          </>
         )}
       </div>
     </div>

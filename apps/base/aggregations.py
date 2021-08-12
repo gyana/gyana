@@ -14,8 +14,18 @@ class AggregationFunctions(models.TextChoices):
 
 NUMERIC_AGGREGATIONS = list(AggregationFunctions)
 
+DATETIME_AGGREGATIONS = [
+    AggregationFunctions.COUNT,
+    AggregationFunctions.MAX,
+    AggregationFunctions.MIN,
+]
+
 AGGREGATION_TYPE_MAP = {
     "String": [AggregationFunctions.COUNT],
     "Int64": NUMERIC_AGGREGATIONS,
     "Float64": NUMERIC_AGGREGATIONS,
+    "Date": DATETIME_AGGREGATIONS,
+    "Timestamp": DATETIME_AGGREGATIONS,
+    "Time": DATETIME_AGGREGATIONS,
+    "Boolean": NUMERIC_AGGREGATIONS,
 }

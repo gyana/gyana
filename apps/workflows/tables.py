@@ -1,6 +1,6 @@
 import django_tables2 as tables
-from apps.nodes.models import Node
 from apps.base.table import ICONS, DuplicateColumn, NaturalDatetimeColumn
+from apps.nodes.models import Node
 from django.template import Context
 from django.template.loader import get_template
 
@@ -10,6 +10,7 @@ from .models import Workflow
 class StatusColumn(tables.TemplateColumn):
     def render(self, record, table, **kwargs):
         context = getattr(table, "context", Context())
+        context["object_name"] = "workflow"
         if record.failed:
             context["icon"] = ICONS["error"]
             context["text"] = "One of the nodes in this workflow failed."
@@ -37,4 +38,6 @@ class WorkflowTable(tables.Table):
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
     status = StatusColumn(template_name="columns/status.html")
-    duplicate = DuplicateColumn(template_name="workflows/duplicate.html", verbose_name="Actions")
+    duplicate = DuplicateColumn(
+        template_name="components/_duplicate.html", verbose_name="Actions"
+    )

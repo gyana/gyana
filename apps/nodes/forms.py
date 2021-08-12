@@ -80,6 +80,30 @@ class SelectNodeForm(NodeForm):
         return super().save(*args, **kwargs)
 
 
+class DistinctNodeForm(NodeForm):
+    class Meta:
+        model = Node
+        fields = []
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["distinct_columns"] = forms.MultipleChoiceField(
+            choices=[(col, col) for col in self.columns],
+            widget=MultiSelect,
+            label="Select the columns that should be unique:",
+            initial=list(self.instance.columns.all().values_list("column", flat=True)),
+        )
+
+    def save(self, *args, **kwargs):
+        self.instance.columns.all().delete()
+        self.instance.columns.set(
+            [Column(column=column) for column in self.cleaned_data["distinct_columns"]],
+            bulk=False,
+        )
+        return super().save(*args, **kwargs)
+
+
 class JoinNodeForm(NodeForm):
     join_left = forms.ChoiceField(
         choices=(),
@@ -122,7 +146,7 @@ class LimitNodeForm(NodeForm):
 
 
 # TODO: Use Nodeform instead
-class PivotNodeForm(LiveUpdateForm):
+class PivotNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["pivot_index", "pivot_column", "pivot_value", "pivot_aggregation"]
@@ -157,7 +181,7 @@ class PivotNodeForm(LiveUpdateForm):
         return fields
 
 
-class UnpivotNodeForm(LiveUpdateForm):
+class UnpivotNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["unpivot_value", "unpivot_column"]
@@ -180,7 +204,7 @@ KIND_TO_FORM = {
     "add": DefaultNodeForm,
     "rename": DefaultNodeForm,
     "formula": DefaultNodeForm,
-    "distinct": SelectNodeForm,
+    "distinct": DistinctNodeForm,
     "pivot": PivotNodeForm,
     "unpivot": UnpivotNodeForm,
     "intersect": DefaultNodeForm,

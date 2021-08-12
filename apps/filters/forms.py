@@ -18,7 +18,7 @@ IBIS_TO_TYPE = {
 
 
 class FilterForm(SchemaFormMixin, LiveUpdateForm):
-    column = forms.ChoiceField(choices=[])
+    column = forms.ChoiceField(choices=[], help_text="Column")
 
     # We have to add the media here because otherwise the form fields
     # Are added dynamically, and a script wouldn't be added if a widget
@@ -44,6 +44,23 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             "float_values",
             "bool_value",
         )
+        help_texts = {
+            "string_predicate": "Condition",
+            "string_predicate": "Condition",
+            "numeric_predicate": "Condition",
+            "time_predicate": "Condition",
+            "datetime_predicate": "Condition",
+            "time_value": "Value",
+            "date_value": "Value",
+            "datetime_value": "Value",
+            "string_value": "Value",
+            "integer_value": "Value",
+            "string_values": "Value",
+            "integer_values": "Value",
+            "float_value": "Value",
+            "float_values": "Value",
+            "bool_value": "Value",
+        }
         widgets = {"string_value": TextInput(), "datetime_value": DatetimeInput()}
 
     def get_live_fields(self):

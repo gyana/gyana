@@ -15,7 +15,13 @@
   </h3>
 
   {% if integration.kind == "sheet" %}
-  <a href="{{ integration.sheet.url }}" class="button button--circle button--tertiary" title="External source link">
+  <a
+    href="{{ integration.sheet.url }}"
+    class="button button--circle button--tertiary"
+    target="_blank"
+    rel="noopener noreferer"
+    title="External source link"
+  >
     <i class="fas fa-link fa-sm mr-1"></i>
   </a>
   {% endif %}

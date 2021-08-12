@@ -16,7 +16,7 @@
     {% endfor %}
   </div>
 
-  <button type="button" class="button button--sm button--rounded  " data-action="click->formset#add">
+  <button id="{{ formset.get_default_prefix }}-add" type="button" class="button button--sm button--rounded  " data-action="click->formset#add">
     <i class="far fa-fw fa-plus"></i> Add new
   </button>
 </div>

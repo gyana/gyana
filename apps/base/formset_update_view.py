@@ -1,5 +1,6 @@
 from functools import cached_property
 
+from apps.base.live_update_form import LiveUpdateForm
 from django import forms
 from django.db import transaction
 from django.http.response import HttpResponse
@@ -35,14 +36,13 @@ class FormsetUpdateView(TurboUpdateView):
         return {}
 
     def get_formset_instance(self, formset):
+        forms_kwargs = self.get_formset_kwargs(formset)
 
-        forms_kwargs = {
-            # provide a reference to parent instance in live update forms
-            "parent_instance": self.get_form_kwargs()["instance"],
-            **self.get_formset_kwargs(formset),
-        }
+        # provide a reference to parent instance in live update forms
+        if issubclass(formset.form, LiveUpdateForm):
+            forms_kwargs["parent_instance"] = self.get_form_kwargs()["instance"]
 
-        formset_instance = (
+        return (
             # POST request for form creation
             formset(self.request.POST, instance=self.object, form_kwargs=forms_kwargs)
             # form is only bound if formset is in previous render, otherwise load from database
@@ -51,8 +51,6 @@ class FormsetUpdateView(TurboUpdateView):
             # initial render
             else formset(instance=self.object, form_kwargs=forms_kwargs)
         )
-
-        return formset_instance
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

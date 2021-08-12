@@ -33,11 +33,10 @@ class TreeToIbis(Transformer):
         args = list(args)
         caller = args.pop(0)
         function_name = token.value.lower()
-        function_id = next(filter(lambda f: f["name"] == function_name, FUNCTIONS))[
-            "id"
-        ]
-        func = getattr(caller, function_id)
-
+        function = next(filter(lambda f: f["name"] == function_name, FUNCTIONS))
+        func = getattr(caller, function["id"])
+        if "..." in function["arguments"]:
+            return func(args)
         return func(*args)
 
     # -----------------------------------------------------------------------
