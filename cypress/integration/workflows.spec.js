@@ -109,7 +109,7 @@ describe('workflows', () => {
 })
 
 describe('Workflow-format', () => {
-  it.only('Formats a workflow', () => {
+  it('Formats a workflow', () => {
     cy.login('nodes@gyana.com')
     cy.visit('/projects/2/workflows/1')
 
