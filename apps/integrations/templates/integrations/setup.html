@@ -1,23 +1,36 @@
 {% extends "integrations/base.html" %}
 
 {% block tab %}
+
+<nav id='tabbar tabbar--sm' class="tabbar">
+    <a class="tabbar__link {% if not state in 'update,done' %} tabbar__link--disabled {% endif %} {% if state == 'update' %} tabbar__link--active {% endif %}"
+        href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update">
+        Configure
+    </a>
+    <a class="tabbar__link">
+        <i class="fa fa-arrow-right"></i>
+    </a>
+    <a class="tabbar__link {% if not state in 'load,error' %} tabbar__link--disabled {% endif %} {% if state in "load,error" %} tabbar__link--active {% endif %}"
+        href="{% url 'project_integrations:setup' object.project.id object.id %}?state=load">
+        Import
+    </a>
+    <a class="tabbar__link">
+        <i class="fa fa-arrow-right"></i>
+    </a>
+    <a class="tabbar__link {% if not state in 'update,done' %} tabbar__link--disabled {% endif %} {% if state == "done" %} tabbar__link--active {% endif %}"
+        href="{% url 'project_integrations:setup' object.project.id object.id %}?state=done">
+        {% if not integration.ready %} Review {% else %} Ready {% endif %}
+    </a>
+</nav>
+
 <div class="mb-auto pad">
-    {% if request.GET.edit or integration.state == 'done' and integration.ready %}
+    {% if state == 'update' %}
         {% if integration.kind == 'sheet' %}
             <turbo-frame id="sheets:update" src="{% url 'sheets:update' integration.sheet.id %}"></turbo-frame>
         {% elif integration.kind == 'connector' %}
             <turbo-frame id="connectors:update" src="{% url 'connectors:update' integration.connector.id %}"></turbo-frame>
         {% endif %}
-        {% if request.GET.edit %}
-            <a class="button" href="{% url 'project_integrations:setup' object.project.id object.id %}">
-                Back to review
-            </a>
-        {% endif %}
-    {% elif integration.state == 'update' %}
-        {% if integration.kind == 'connector' %}
-            <turbo-frame id="connectors:update" src="{% url 'connectors:update' integration.connector.id %}"></turbo-frame>
-        {% endif %}
-    {% elif integration.state in 'load,error' %}
+    {% elif state in 'load,error' %}
         {% if integration.kind == 'connector' %}
             <turbo-frame id="connectors:progress" src="{% url 'connectors:progress' integration.connector.id %}"></turbo-frame>
         {% elif integration.kind == 'sheet' %}
@@ -25,24 +38,28 @@
         {% elif integration.kind == 'upload' %}
             <turbo-frame id="uploads:progress" src="{% url 'uploads:progress' integration.upload.id %}"></turbo-frame>
         {% endif %}
-    {% elif integration.state == 'done' and not integration.ready %}
-        <div class="flex flex-row flex-1 overflow-hidden">
-            {% include "integrations/_data.html" %}
-        </div>
-        <div class="flex flex-row">
-            <form method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
-                {% csrf_token %}
+    {% elif state == 'done' %}
+        {% if not integration.ready %}
+            <div class="flex flex-row flex-1 overflow-hidden">
+                {% include "integrations/_data.html" %}
+            </div>
+            <div class="flex flex-row">
+                <form method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
+                    {% csrf_token %}
 
-                {% include "django/forms/default_form.html" %}
+                    {% include "django/forms/default_form.html" %}
 
-                <button type="submit" class="button button--success">
-                    Approve
-                </button>
-            </form>
-            <a class="button" href="{% url 'project_integrations:setup' object.project.id object.id %}?edit=true">
-                Edit Config
-            </a>
-        </div>
+                    <button type="submit" class="button button--success">
+                        Approve
+                    </button>
+                </form>
+                <a class="button" href="{% url 'project_integrations:setup' object.project.id object.id %}?edit=true">
+                    Edit Config
+                </a>
+            </div>
+        {% else %}
+            Done
+        {% endif %}
     {% endif %}
 </div>
 

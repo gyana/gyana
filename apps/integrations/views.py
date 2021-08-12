@@ -1,10 +1,8 @@
-from apps.base.clients import fivetran_client
 from apps.base.turbo import TurboUpdateView
 from apps.integrations.filters import IntegrationFilter
 from apps.projects.mixins import ProjectMixin
 from django.conf import settings
 from django.db.models.query import QuerySet
-from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView
@@ -88,6 +86,7 @@ class IntegrationSetup(ProjectMixin, TurboUpdateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
+        context_data["state"] = self.request.GET.get("state") or self.object.state
         return context_data
 
     def form_valid(self, form):
@@ -99,7 +98,7 @@ class IntegrationSetup(ProjectMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:detail",
+            "project_integrations:setup",
             args=(self.project.id, self.object.id),
         )
 
