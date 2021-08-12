@@ -1,5 +1,6 @@
 from apps.base.clients import fivetran_client
 from apps.connectors.config import get_services
+from apps.connectors.fivetran import FivetranClientError
 from apps.integrations.models import Integration
 from apps.nodes.widgets import MultiSelect
 from django import forms
@@ -25,10 +26,10 @@ class ConnectorCreateForm(forms.ModelForm):
     def clean(self):
 
         # try to create fivetran entity
-        res = fivetran_client().create(self._service, self._project.team.id)
-
-        if not res["success"]:
-            raise ValidationError(res["message"])
+        try:
+            res = fivetran_client().create(self._service, self._project.team.id)
+        except FivetranClientError as e:
+            raise ValidationError(str(e))
 
         self._fivetran_id = res["data"]["fivetran_id"]
         self._schema = res["data"]["schema"]
@@ -100,8 +101,10 @@ class ConnectorUpdateForm(forms.ModelForm):
             for table, table_config in schema_config["tables"].items():
                 table_config["enabled"] = table in cleaned_data[f"{schema}_tables"]
 
-        # update fivetran and throw validation failure on errors
-        if not fivetran_client().update_schema(self.instance, schemas):
+        # try to update the fivetran schema
+        try:
+            fivetran_client().update_schema(self.instance, schemas)
+        except FivetranClientError:
             raise ValidationError(
                 "Failed to update, please try again or reach out to support."
             )

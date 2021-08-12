@@ -14,8 +14,12 @@ from .models import Connector
 
 # wrapper for the Fivetran connectors REST API, documented here
 # https://fivetran.com/docs/rest-api/connectors
-# on error, either raise an Exception (500 error) or explicitly
-# return a success code to caller
+# on error, raise a FivetranClientError and it will be managed in
+# the caller (e.g. form) or trigger 500 (user can refresh/retry)
+
+
+class FivetranClientError(Exception):
+    pass
 
 
 class FivetranClient:
@@ -53,6 +57,9 @@ class FivetranClient:
 
         assert schema == res["data"]["schema"]
 
+        if schema != res["data"]["schema"] or res["code"] != "Success":
+            raise FivetranClientError(res["message"])
+
         # response schema https://fivetran.com/docs/rest-api/connectors#response_1
         #  {
         #   "code": "Success",
@@ -63,11 +70,7 @@ class FivetranClient:
         #       ...
         #    }
         #  }
-        return {
-            "success": res["code"] == "Success",
-            "message": res["message"],
-            "data": {"fivetran_id": res["data"]["id"], "schema": res["data"]["schema"]},
-        }
+        return {"fivetran_id": res["data"]["id"], "schema": res["data"]["schema"]}
 
     def authorize(self, connector: Connector, redirect_uri):
 
@@ -94,7 +97,7 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            raise Exception()
+            raise FivetranClientError()
 
         return res
 
@@ -108,7 +111,7 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            raise Exception()
+            raise FivetranClientError()
 
         return res
 
@@ -120,7 +123,7 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            raise Exception()
+            raise FivetranClientError()
 
         status = res["data"]["status"]
 
@@ -142,7 +145,7 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            raise Exception()
+            raise FivetranClientError()
 
         return res["data"].get("schemas", {})
 
@@ -160,7 +163,7 @@ class FivetranClient:
             return self.reload_schema(connector)
 
         if res["code"] != "Success":
-            raise Exception()
+            raise FivetranClientError()
 
         return res["data"].get("schemas", {})
 
@@ -174,7 +177,8 @@ class FivetranClient:
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 
-        return res["code"] == "Success"
+        if res["code"] != "Success":
+            raise FivetranClientError()
 
 
 class MockFivetranClient:
