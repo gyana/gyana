@@ -50,6 +50,14 @@ class FivetranSchema:
         res.pop("key")
         return res
 
+    @property
+    def enabled_bq_ids(self):
+        return {
+            f"{self.name_in_destination}.{table.name_in_destination}"
+            for table in self.tables
+            if table.enabled and self.enabled
+        }
+
 
 def _schemas_to_obj(schemas_dict):
     return [FivetranSchema(key=k, **s) for k, s in schemas_dict.items()]

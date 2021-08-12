@@ -17,17 +17,15 @@ def complete_connector_sync(connector: Connector, send_mail: bool = True):
     bq_tables = get_bq_tables_from_connector(connector)
     integration = connector.integration
 
-    schemas = fivetran_client().get_schemas(connector)
-    new_bq_ids = {
-        f"{schema['name_in_destination']}.{table['name_in_destination']}"
-        for schema in schemas.values()
-        for table in schema["tables"].values()
-        if table["enabled"] and schema["enabled"]
-    }
+    schema_bq_ids = set(
+        *(s.enabled_bq_ids for s in fivetran_client().get_schemas(connector))
+    )
 
     with transaction.atomic():
         for bq_table in bq_tables:
-            if f"{bq_table.dataset_id}.{bq_table.table_id}" in new_bq_ids:
+            # filter to the tables user has explicitly chosen, in case bigquery
+            # tables failed to delete
+            if f"{bq_table.dataset_id}.{bq_table.table_id}" in schema_bq_ids:
 
                 # only replace tables that already exist
                 # there is a unique constraint on table_id/dataset_id to avoid duplication
@@ -86,31 +84,26 @@ def run_initial_connector_sync(connector: Connector):
 
 def run_update_connector_sync(connector: Connector):
 
-    schemas = fivetran_client().get_schemas(connector)
-
     tables = connector.integration.table_set.all()
 
-    # compare the current tables with the new proposal from fivetran
-
-    bq_ids = {t.bq_id for t in tables}
-    new_bq_ids = {
-        f"{schema['name_in_destination']}.{table['name_in_destination']}"
-        for schema in schemas.values()
-        for table in schema["tables"].values()
-        if table["enabled"] and schema["enabled"]
-    }
-
-    tables_to_delete = [t for t in tables if t.bq_id not in new_bq_ids]
-    needs_update_sync = any(s for s in new_bq_ids if s not in bq_ids)
-
     # if we've deleted tables, we'll need to delete them from BigQuery
+
+    schema_bq_ids = set(
+        *(s.enabled_bq_ids for s in fivetran_client().get_schemas(connector))
+    )
+
     with transaction.atomic():
-        for table in tables_to_delete:
-            table.delete()
+        for table in tables:
+            if table.bq_id not in schema_bq_ids:
+                table.delete()
 
     # if we've added new tables, we need to trigger resync
     # otherwise, we don't want to make the user wait
-    if needs_update_sync:
+
+    bq_ids = {t.bq_id for t in tables}
+
+    if any(s for s in schema_bq_ids if s not in bq_ids):
+
         fivetran_client().start_update_sync(connector)
         return poll_fivetran_sync.delay(connector.id)
 
