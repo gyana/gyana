@@ -54,35 +54,6 @@ def complete_connector_sync(connector: Connector, send_mail: bool = True):
     return True
 
 
-def resync_connector(connector: Connector) -> bool:
-
-    schemas = fivetran_client().get_schema(connector)
-
-    tables = connector.integration.table_set.all()
-
-    current_bq_ids = {t.bq_id for t in tables}
-    new_bq_ids = {
-        f"{schema['name_in_destination']}.{table['name_in_destination']}"
-        for schema in schemas.values()
-        for table in schema["tables"].values()
-    }
-
-    delete_tables = [t for t in tables if t.bq_id not in new_bq_ids]
-    create_tables = any(s for s in new_bq_ids if s not in current_bq_ids)
-
-    # if we've deleted tables, we'll need to delete them from BigQuery
-    with transaction.atomic():
-        for table in delete_tables:
-            table.delete()
-
-    # if we've added new tables, we need to trigger resync
-    # otherwise, we don't want to make the user wait
-    if create_tables:
-        fivetran_client().resync()
-
-    return create_tables
-
-
 @shared_task(bind=True)
 def poll_fivetran_sync(self, connector_id):
 
@@ -104,10 +75,35 @@ def run_initial_connector_sync(connector: Connector):
 
 def run_update_connector_sync(connector: Connector):
 
-    is_resyncing = fivetran_client().resync(connector)
+    schemas = fivetran_client().get_schema(connector)
 
-    if is_resyncing:
+    tables = connector.integration.table_set.all()
+
+    # compare the current tables with the new proposal from fivetran
+
+    bq_ids = {t.bq_id for t in tables}
+    new_bq_ids = {
+        f"{schema['name_in_destination']}.{table['name_in_destination']}"
+        for schema in schemas.values()
+        for table in schema["tables"].values()
+        if table["enabled"] and schema["enabled"]
+    }
+
+    tables_to_delete = [t for t in tables if t.bq_id not in new_bq_ids]
+    needs_resync = any(s for s in new_bq_ids if s not in bq_ids)
+
+    # if we've deleted tables, we'll need to delete them from BigQuery
+    with transaction.atomic():
+        for table in tables_to_delete:
+            table.delete()
+
+    # if we've added new tables, we need to trigger resync
+    # otherwise, we don't want to make the user wait
+    if needs_resync:
+        fivetran_client().resync()
         return poll_fivetran_sync.delay(connector.id)
+
+    return None
 
 
 def run_connector_sync(connector: Connector):
@@ -118,7 +114,7 @@ def run_connector_sync(connector: Connector):
         else run_update_connector_sync
     )(connector)
 
-    if result:
+    if result is not None:
         connector.sync_task_id = result.task_id
         connector.sync_started = timezone.now()
         connector.save()
