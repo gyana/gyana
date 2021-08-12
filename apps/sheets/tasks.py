@@ -15,7 +15,7 @@ from .bigquery import get_last_modified_from_drive_file, import_table_from_sheet
 from .models import Sheet
 
 
-def _do_sync_with_progress(task, sheet, table):
+def _do_sync(task, sheet, table):
 
     sheet.drive_file_last_modified = get_last_modified_from_drive_file(sheet)
 
@@ -37,7 +37,7 @@ def _do_sync_with_progress(task, sheet, table):
 
 
 @shared_task(bind=True)
-def run_initial_sheets_sync(self, sheet_id):
+def run_sheets_sync_task(self, sheet_id):
     sheet = get_object_or_404(Sheet, pk=sheet_id)
     integration = sheet.integration
 
@@ -49,16 +49,15 @@ def run_initial_sheets_sync(self, sheet_id):
 
         with transaction.atomic():
 
-            table = Table(
+            table, created = Table.objects.get_or_create(
                 integration=integration,
                 source=Table.Source.INTEGRATION,
                 bq_dataset=DATASET_ID,
                 project=integration.project,
                 num_rows=0,
             )
-            table.save()
 
-            query_job = _do_sync_with_progress(self, sheet, table)
+            query_job = _do_sync(self, sheet, table)
 
     except Exception as e:
         integration.state = Integration.State.ERROR
@@ -70,7 +69,7 @@ def run_initial_sheets_sync(self, sheet_id):
 
     # the initial sync completed successfully and a new integration is created
 
-    if created_by := integration.created_by:
+    if (created_by := integration.created_by) and created:
 
         email = integration_ready_email(integration, created_by)
         email.send()
@@ -91,38 +90,9 @@ def run_initial_sheets_sync(self, sheet_id):
     return integration.id
 
 
-@shared_task(bind=True)
-def run_update_sheets_sync(self, sheet_id):
-    sheet = get_object_or_404(Sheet, pk=sheet_id)
-
-    integration = sheet.integration
-    table = integration.table_set.first()
-
-    try:
-
-        with transaction.atomic():
-            _do_sync_with_progress(self, sheet, table)
-
-            integration.state = Integration.State.DONE
-            integration.save()
-
-    except Exception as e:
-        integration.state = Integration.State.ERROR
-        integration.save()
-        raise e
-
-    return integration.id
-
-
 def run_sheets_sync(sheet: Sheet):
 
-    task = (
-        run_initial_sheets_sync
-        if sheet.integration.table_set.count() == 0
-        else run_update_sheets_sync
-    )
-
-    result = task.delay(sheet.id)
+    result = run_sheets_sync_task.delay(sheet.id)
     sheet.sync_task_id = result.task_id
     sheet.sync_started = timezone.now()
     sheet.save()
