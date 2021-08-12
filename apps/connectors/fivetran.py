@@ -106,9 +106,7 @@ class FivetranClient:
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 
-        assert schema == res["data"]["schema"]
-
-        if schema != res["data"]["schema"] or res["code"] != "Success":
+        if res["code"] != "Success":
             raise FivetranClientError(res["message"])
 
         # response schema https://fivetran.com/docs/rest-api/connectors#response_1
@@ -198,7 +196,7 @@ class FivetranClient:
         if res["code"] != "Success":
             raise FivetranClientError()
 
-        return _schemas_to_obj(res["data"]["schemas"])
+        return _schemas_to_obj(res["data"].get("schemas", {}))
 
     def get_schemas(self, connector: Connector):
 
@@ -216,7 +214,8 @@ class FivetranClient:
         if res["code"] != "Success":
             raise FivetranClientError()
 
-        return _schemas_to_obj(res["data"]["schemas"])
+        # schema not included for Google Sheets connector
+        return _schemas_to_obj(res["data"].get("schemas", {}))
 
     def update_schemas(self, connector: Connector, schemas: List[FivetranSchema]):
 
@@ -251,14 +250,7 @@ class MockFivetranClient:
             Connector.objects.filter(service=service).first()
             or Connector.objects.filter(service=self.DEFAULT_SERVICE).first()
         )
-        return {
-            "success": True,
-            "message": "Connector has been created",
-            "data": {
-                "fivetran_id": connector.fivetran_id,
-                "schema": connector.schema,
-            },
-        }
+        return {"fivetran_id": connector.fivetran_id, "schema": connector.schema}
 
     def start_initial_sync(self, connector):
         self._started[connector.id] = timezone.now()
@@ -293,5 +285,5 @@ class MockFivetranClient:
         self._schema_cache[connector.id] = _schemas_to_dict(schemas)
 
 
-if settings.MOCK_FIVETRAN:
-    FivetranClient = MockFivetranClient
+# if settings.MOCK_FIVETRAN:
+#     FivetranClient = MockFivetranClient

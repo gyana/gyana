@@ -31,8 +31,8 @@ class ConnectorCreateForm(forms.ModelForm):
         except FivetranClientError as e:
             raise ValidationError(str(e))
 
-        self._fivetran_id = res["data"]["fivetran_id"]
-        self._schema = res["data"]["schema"]
+        self._fivetran_id = res["fivetran_id"]
+        self._schema = res["schema"]
 
     def save(self, commit=True):
         instance = super().save(commit=False)
