@@ -79,7 +79,7 @@ def poll_fivetran_sync(self, connector_id):
 
 def run_initial_connector_sync(connector: Connector):
 
-    fivetran_client().start(connector)
+    fivetran_client().start_initial_sync(connector)
 
     return poll_fivetran_sync.delay(connector.id)
 
@@ -101,7 +101,7 @@ def run_update_connector_sync(connector: Connector):
     }
 
     tables_to_delete = [t for t in tables if t.bq_id not in new_bq_ids]
-    needs_resync = any(s for s in new_bq_ids if s not in bq_ids)
+    needs_update_sync = any(s for s in new_bq_ids if s not in bq_ids)
 
     # if we've deleted tables, we'll need to delete them from BigQuery
     with transaction.atomic():
@@ -110,8 +110,8 @@ def run_update_connector_sync(connector: Connector):
 
     # if we've added new tables, we need to trigger resync
     # otherwise, we don't want to make the user wait
-    if needs_resync:
-        fivetran_client().resync(connector)
+    if needs_update_sync:
+        fivetran_client().start_update_sync(connector)
         return poll_fivetran_sync.delay(connector.id)
 
     return None

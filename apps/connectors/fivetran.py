@@ -12,9 +12,16 @@ from django.utils import timezone
 from .config import get_services
 from .models import Connector
 
+# wrapper for the Fivetran connectors REST API, documented here
+# https://fivetran.com/docs/rest-api/connectors
+# on error, either raise an Exception (500 error) or explicitly
+# return a success code to caller
+
 
 class FivetranClient:
     def create(self, service, team_id):
+
+        # https://fivetran.com/docs/rest-api/connectors#createaconnector
 
         service_conf = get_services()[service]
 
@@ -76,7 +83,7 @@ class FivetranClient:
             f"https://fivetran.com/connect-card/setup?redirect_uri={redirect_uri}&auth={connect_card_token}"
         )
 
-    def start(self, connector: Connector):
+    def start_initial_sync(self, connector: Connector):
 
         # https://fivetran.com/docs/rest-api/connectors#modifyaconnector
 
@@ -87,12 +94,11 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            # TODO
-            pass
+            raise Exception()
 
         return res
 
-    def resync(self, connector: Connector):
+    def start_update_sync(self, connector: Connector):
 
         # https://fivetran.com/docs/rest-api/connectors#syncconnectordata
 
@@ -102,8 +108,7 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            # TODO
-            pass
+            raise Exception()
 
         return res
 
@@ -115,8 +120,7 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            # TODO
-            pass
+            raise Exception()
 
         status = res["data"]["status"]
 
@@ -128,6 +132,20 @@ class FivetranClient:
             connector
         )
 
+    def reload_schema(self, connector):
+
+        # https://fivetran.com/docs/rest-api/connectors#reloadaconnectorschemaconfig
+
+        res = requests.post(
+            f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}/schemas/reload",
+            headers=settings.FIVETRAN_HEADERS,
+        ).json()
+
+        if res["code"] != "Success":
+            raise Exception()
+
+        return res["data"].get("schemas", {})
+
     def get_schema(self, connector):
 
         # https://fivetran.com/docs/rest-api/connectors#retrieveaconnectorschemaconfig
@@ -137,17 +155,12 @@ class FivetranClient:
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 
-        if res.get("code") == "NotFound_SchemaConfig":
-            # First try a reload in case this connector is new
-            # https://fivetran.com/docs/rest-api/connectors#reloadaconnectorschemaconfig
-            res = requests.post(
-                f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}/schemas/reload",
-                headers=settings.FIVETRAN_HEADERS,
-            ).json()
+        # try a reload in case this connector is new
+        if res["code"] == "NotFound_SchemaConfig":
+            return self.reload_schema(connector)
 
         if res["code"] != "Success":
-            # TODO
-            pass
+            raise Exception()
 
         return res["data"].get("schemas", {})
 
@@ -161,11 +174,7 @@ class FivetranClient:
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 
-        if res["code"] != "Success":
-            # TODO
-            pass
-
-        return res
+        return res["code"] == "Success"
 
 
 class MockFivetranClient:
@@ -195,10 +204,10 @@ class MockFivetranClient:
             },
         }
 
-    def start(self, connector):
+    def start_initial_sync(self, connector):
         self._started[connector.id] = timezone.now()
 
-    def resync(self, connector):
+    def start_update_sync(self, connector):
         self._started[connector.id] = timezone.now()
 
     def authorize(self, connector, redirect_uri):
@@ -212,8 +221,8 @@ class MockFivetranClient:
     def block_until_synced(self, connector):
         time.sleep(self.BLOCK_SYNC_SECONDS)
 
-    def block_until_resynced(self, connector):
-        time.sleep(self.BLOCK_SYNC_SECONDS)
+    def reload_schema(self, connector):
+        pass
 
     def get_schema(self, connector):
         if connector.id in self._schema_cache:
@@ -226,9 +235,6 @@ class MockFivetranClient:
 
     def update_schema(self, connector, schemas):
         self._schema_cache[connector.id] = schemas
-
-    def update_table_config(self, fivetran_id, schema, table_name: str, enabled: bool):
-        pass
 
 
 if settings.MOCK_FIVETRAN:

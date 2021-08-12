@@ -101,4 +101,7 @@ class ConnectorUpdateForm(forms.ModelForm):
                 table_config["enabled"] = table in cleaned_data[f"{schema}_tables"]
 
         # update fivetran and throw validation failure on errors
-        fivetran_client().update_schema(self.instance, schemas)
+        if not fivetran_client().update_schema(self.instance, schemas):
+            raise ValidationError(
+                "Failed to update, please try again or reach out to support."
+            )
