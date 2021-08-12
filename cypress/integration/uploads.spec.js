@@ -13,7 +13,7 @@ describe('uploads', () => {
     cy.url().should('contain', '/projects/1/integrations/uploads/new')
     cy.get('input[type=file]').attachFile('store_info.csv')
 
-    cy.url().should('contain', '/projects/1/integrations/3/setup')
+    cy.url().should('contain', '/projects/1/integrations/7/setup')
     cy.contains('Validating and importing your file...')
     cy.contains('File successfully validated and imported.', { timeout: 10000 })
 
@@ -26,7 +26,7 @@ describe('uploads', () => {
     cy.contains('Data')
     cy.contains('15')
 
-    cy.url().should('contain', '/projects/1/integrations/3')
+    cy.url().should('contain', '/projects/1/integrations/7')
     // file name inferred
     cy.get('input[name=name]').should('have.value', 'store_info')
 

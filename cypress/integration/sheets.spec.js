@@ -22,7 +22,7 @@ describe('sheets', () => {
     cy.get('input[name=cell_range]').type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', '/projects/1/integrations/3/setup')
+    cy.url().should('contain', '/projects/1/integrations/7/setup')
     cy.contains('Validating and importing your sheet...')
     cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
 
@@ -30,7 +30,7 @@ describe('sheets', () => {
     cy.contains('London')
     cy.contains('Approve').click()
 
-    cy.url().should('contain', '/projects/1/integrations/3')
+    cy.url().should('contain', '/projects/1/integrations/7')
     // Google Sheet name inferred
     cy.get('input[name=name]').should('have.value', 'Store info sheet')
 
@@ -80,7 +80,7 @@ describe('sheets', () => {
 
     // verify that nothing was created
     cy.visit('/projects/1/integrations')
-    cy.get('table tbody tr').should('have.length', 2)
+    cy.get('table tbody tr').should('have.length', 6)
     cy.outbox()
       .then((outbox) => outbox.count)
       .should('eq', 0)

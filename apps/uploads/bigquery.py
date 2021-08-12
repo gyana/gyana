@@ -18,7 +18,7 @@ def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
         source_format=bigquery.SourceFormat.CSV,
         autodetect=True,
         skip_leading_rows=1,
-        replace=True,
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
         # TODO: this prevents autodetect to work
         # allow_quoted_newlines = True,
         # external_config.options.allow_jagged_rows = True

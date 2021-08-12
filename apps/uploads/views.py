@@ -55,6 +55,9 @@ class UploadCreate(ProjectMixin, TurboCreateView):
         self.object.sync_started = timezone.now()
         self.object.save()
 
+        self.object.integration.state = Integration.State.LOAD
+        self.object.integration.save()
+
         return r
 
     def get_success_url(self) -> str:
