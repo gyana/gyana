@@ -1,4 +1,7 @@
 /// <reference types="cypress" />
+import { getModelStartId } from '../support/utils'
+
+const startId = getModelStartId('nodes.node')
 
 describe('workflows', () => {
   beforeEach(() => {
@@ -10,7 +13,9 @@ describe('workflows', () => {
   it('create, rename, duplicate and delete workflow', () => {
     cy.story('Create and rename workflow')
     cy.get('button[type=submit]').first().click()
+    cy.contains('Loading...')
     cy.get('input[id=name]').clear().type('Magical workflow{enter}')
+    cy.contains('Start building your workflow by dragging in a Get data node')
     cy.visit('/projects/1/workflows/')
     cy.get('table').contains('Magical workflow')
 
@@ -29,34 +34,40 @@ describe('workflows', () => {
     cy.story('Drop and configure an input node')
     cy.drag('[id=dnd-node-input]')
     cy.drop('.react-flow')
-    cy.get('[data-id=25]').dblclick()
+
+    const inputId = `[data-id=${startId}]`
+    cy.get(inputId).dblclick()
     cy.contains('store_info').click()
     cy.contains('Save & Preview').click()
     cy.contains('Blackpool')
     cy.get('button[class=tf-modal__close]').click()
-    cy.reactFlowDrag('[data-id=25]', { x: 150, y: 300 })
+    cy.reactFlowDrag(inputId, { x: 150, y: 300 })
 
     cy.story('Drop, connect and configure select node')
     cy.drag('[id=dnd-node-select]')
     cy.drop('[class=react-flow]')
-    cy.get('[data-id=26]').should('exist')
-    cy.connectNodes('[data-id=25]', '[data-id=26]')
+
+    const selectId = `[data-id=${startId + 1}]`
+    cy.get(selectId).should('exist')
+    cy.connectNodes(inputId, selectId)
     cy.get('.react-flow__edge').should('have.length', 1)
-    cy.get('[data-id=26]').dblclick()
+    cy.get(selectId).dblclick()
     cy.get('.workflow-detail__sidebar').within(() => {
       cy.contains('Location').click()
       cy.contains('Employees').click()
       cy.contains('Owner').click()
     })
     cy.contains('Save & Close').click()
-    cy.reactFlowDrag('[data-id=26]', { x: 300, y: 100 })
+    cy.reactFlowDrag(selectId, { x: 300, y: 100 })
     cy.story('Drop, connect and name output node')
     cy.drag('[id=dnd-node-output]')
     cy.drop('[class=react-flow]')
-    cy.get('[data-id=27]').should('exist')
-    cy.connectNodes('[data-id=26]', '[data-id=27]')
+
+    const outputId = `[data-id=${startId + 2}]`
+    cy.get(outputId).should('exist')
+    cy.connectNodes(selectId, outputId)
     cy.get('.react-flow__edge').should('have.length', 2)
-    cy.get('[data-id=27]').dblclick()
+    cy.get(outputId).dblclick()
     cy.get('[name=output_name').type('Goblet of fire')
     cy.contains('Save & Close').click()
 

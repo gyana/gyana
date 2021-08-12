@@ -1,5 +1,9 @@
 /// <reference types="cypress" />
 
+import { getModelStartId } from '../support/utils'
+
+const newProjectUrl = `/projects/${getModelStartId('projects.project')}`
+
 describe('projects', () => {
   beforeEach(() => {
     cy.login()
@@ -18,7 +22,7 @@ describe('projects', () => {
 
     // read
 
-    cy.url().should('contain', '/projects/3')
+    cy.url().should('contain', newProjectUrl)
     cy.contains('Metrics')
     cy.contains('All the company metrics')
 
@@ -33,12 +37,12 @@ describe('projects', () => {
 
     cy.contains('Settings').click()
 
-    cy.url().should('contain', '/projects/3/update')
+    cy.url().should('contain', newProjectUrl + '/update')
     cy.get('input[name=name]').clear().type('KPIs')
     cy.get('textarea[name=description]').clear().type('All the company kpis')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', '/projects/3')
+    cy.url().should('contain', newProjectUrl)
     cy.contains('KPIs')
     cy.contains('All the company kpis')
 

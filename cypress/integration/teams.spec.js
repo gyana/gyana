@@ -1,5 +1,9 @@
 /// <reference types="cypress" />
 
+import { getModelStartId } from '../support/utils'
+
+const newTeamId = getModelStartId('teams.team')
+
 describe('teams', () => {
   beforeEach(() => {
     cy.login()
@@ -17,7 +21,8 @@ describe('teams', () => {
     cy.get('button[type=submit]').click()
 
     // view
-    cy.url().should('contain', '/teams/3')
+    const newTeamUrl = `/teams/${newTeamId}`
+    cy.url().should('contain', newTeamUrl)
     cy.get('#heading').within(() => cy.contains('Neera'))
 
     // switch
@@ -28,18 +33,18 @@ describe('teams', () => {
     cy.get('#sidebar').within(() => {
       cy.contains('Neera').click()
     })
-    cy.url().should('contain', '/teams/3')
+    cy.url().should('contain', newTeamUrl)
 
     // update
     cy.contains('Settings').click()
-    cy.url().should('contain', '/teams/3/update')
+    cy.url().should('contain', newTeamUrl + '/update')
     cy.get('input[type=text]').clear().type('Agni')
     cy.get('button[type=submit]').click()
     cy.get('#heading').within(() => cy.contains('Agni'))
 
     // delete
     cy.contains('Delete').click()
-    cy.url().should('contain', '/teams/3/delete')
+    cy.url().should('contain', newTeamUrl + '/delete')
     cy.get('button[type=submit]').click()
     cy.get('#sidebar').contains('Agni').should('not.exist')
   })
