@@ -111,7 +111,7 @@ class ConnectorUpdateForm(forms.ModelForm):
             schema.enabled = f"{schema.name_in_destination}_schema" in cleaned_data
             for table in schema.tables:
                 # field does not exist if all unchecked
-                table.enabled = table in cleaned_data.get(
+                table.enabled = table.name_in_destination in cleaned_data.get(
                     f"{schema.name_in_destination}_tables", []
                 )
 
