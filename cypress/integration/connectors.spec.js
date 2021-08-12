@@ -72,7 +72,7 @@ describe('connectors', () => {
 
     cy.url().should('contain', '/projects/1/integrations/7')
   })
-  it.only('update tables in non-database', () => {
+  it('update tables in non-database', () => {
     createConnector('google_analytics')
     cy.contains('Save & Run').click()
     cy.wait(1000)
@@ -84,8 +84,8 @@ describe('connectors', () => {
     cy.wait(200)
 
     cy.contains('Save & Run').click()
-    // cy.wait(1000)
-    // cy.reload()
+    cy.wait(1000)
+    cy.reload()
 
     cy.contains('Adwords Campaigns').should('not.exist')
   })

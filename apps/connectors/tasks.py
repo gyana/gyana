@@ -17,18 +17,29 @@ def complete_connector_sync(connector: Connector, send_mail: bool = True):
     bq_tables = get_bq_tables_from_connector(connector)
     integration = connector.integration
 
+    schemas = fivetran_client().get_schema(connector)
+    new_bq_ids = {
+        f"{schema['name_in_destination']}.{table['name_in_destination']}"
+        for schema in schemas.values()
+        for table in schema["tables"].values()
+        if table["enabled"] and schema["enabled"]
+    }
+
     with transaction.atomic():
         for bq_table in bq_tables:
-            # only replace tables that already exist
-            # there is a unique constraint on table_id/dataset_id to avoid duplication
-            # todo: turn into a batch update for performance
-            Table.objects.get_or_create(
-                source=Table.Source.INTEGRATION,
-                _bq_table=bq_table.table_id,
-                bq_dataset=bq_table.dataset_id,
-                project=connector.integration.project,
-                integration=connector.integration,
-            )
+            if f"{bq_table.dataset_id}.{bq_table.table_id}" in new_bq_ids:
+
+                # only replace tables that already exist
+                # there is a unique constraint on table_id/dataset_id to avoid duplication
+                # todo: turn into a batch update for performance
+
+                Table.objects.get_or_create(
+                    source=Table.Source.INTEGRATION,
+                    _bq_table=bq_table.table_id,
+                    bq_dataset=bq_table.dataset_id,
+                    project=connector.integration.project,
+                    integration=connector.integration,
+                )
 
         integration.state = Integration.State.DONE
         integration.save()
@@ -100,7 +111,7 @@ def run_update_connector_sync(connector: Connector):
     # if we've added new tables, we need to trigger resync
     # otherwise, we don't want to make the user wait
     if needs_resync:
-        fivetran_client().resync()
+        fivetran_client().resync(connector)
         return poll_fivetran_sync.delay(connector.id)
 
     return None

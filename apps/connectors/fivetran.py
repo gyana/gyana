@@ -198,6 +198,9 @@ class MockFivetranClient:
     def start(self, connector):
         self._started[connector.id] = timezone.now()
 
+    def resync(self, connector):
+        self._started[connector.id] = timezone.now()
+
     def authorize(self, connector, redirect_uri):
         return redirect(f"{reverse('connectors:mock')}?redirect_uri={redirect_uri}")
 
