@@ -56,13 +56,13 @@ def run_initial_upload_sync(self, upload_id: int):
             # no progress as load job does not provide query plan
             load_job = _do_sync(upload, table)
 
+            integration.state = Integration.State.DONE
+            integration.save()
+
     except Exception as e:
         integration.state = Integration.State.ERROR
         integration.save()
         raise e
-
-    integration.state = Integration.State.DONE
-    integration.save()
 
     # the initial sync completed successfully and a new integration is created
 

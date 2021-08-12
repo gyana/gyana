@@ -1,24 +1,27 @@
+import analytics
 from apps.base.clients import fivetran_client
+from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.connectors.models import Connector
+from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
 from apps.tables.models import Table
 from celery import shared_task
-from django.core.mail import send_mail
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
 from django.utils import timezone
 
 from .bigquery import get_bq_tables_from_connector
 
 
-@shared_task(bind=True)
-def poll_fivetran_historical_sync(self, connector_id):
+def check_and_complete_connector_sync(connector: Connector):
 
-    connector = get_object_or_404(Connector, pk=connector_id)
+    is_historical_synced = fivetran_client().is_historical_synced(connector.fivetran_id)
 
-    fivetran_client().block_until_synced(connector)
+    if not is_historical_synced:
+        return False
+
     bq_tables = get_bq_tables_from_connector(connector)
+    integration = connector.integration
 
     with transaction.atomic():
 
@@ -32,27 +35,37 @@ def poll_fivetran_historical_sync(self, connector_id):
             )
             table.save()
 
-    integration = connector.integration
+        integration.state = Integration.State.DONE
+        integration.save()
 
-    integration.state = Integration.State.DONE
-    integration.save()
+    if created_by := integration.created_by:
 
-    url = reverse(
-        "project_integrations:detail",
-        args=(
-            integration.project.id,
-            integration.id,
-        ),
-    )
+        email = integration_ready_email(integration, created_by)
+        email.send()
 
-    send_mail(
-        "Ready",
-        f"Your integration has completed the initial sync - click here {url}",
-        "Anymail Sender <from@example.com>",
-        ["to@example.com"],
-    )
+        analytics.track(
+            created_by.id,
+            INTEGRATION_SYNC_SUCCESS_EVENT,
+            {
+                "id": integration.id,
+                "kind": integration.kind,
+                "row_count": integration.num_rows,
+                # "time_to_sync": int(
+                #     (load_job.ended - load_job.started).total_seconds()
+                # ),
+            },
+        )
 
-    return integration.id
+    return True
+
+
+@shared_task(bind=True)
+def poll_fivetran_historical_sync(self, connector_id):
+
+    connector = get_object_or_404(Connector, pk=connector_id)
+
+    fivetran_client().block_until_synced(connector)
+    check_and_complete_connector_sync(connector)
 
 
 def run_connector_sync(connector: Connector):

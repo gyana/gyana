@@ -10,7 +10,7 @@ from django.urls import reverse
 
 from .forms import ConnectorUpdateForm
 from .models import Connector
-from .tasks import run_connector_sync
+from .tasks import check_and_complete_connector_sync, run_connector_sync
 
 
 class ConnectorUpdate(TurboFrameUpdateView):
@@ -42,6 +42,10 @@ class ConnectorProgress(TurboFrameUpdateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["sync_task_id"] = self.object.sync_task_id
+
+        if self.object.integration.state == Integration.State.LOAD:
+            context_data["done"] = check_and_complete_connector_sync(self.object)
+
         return context_data
 
     def form_valid(self, form):
@@ -63,16 +67,11 @@ class ConnectorStatus(TurboFrameDetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        integration = self.object.integration
-        if integration.state == Integration.State.LOAD:
-            is_historical_synced = fivetran_client().is_historical_synced(
-                self.object.fivetran_id
-            )
-            if is_historical_synced:
-                integration.state = Integration.State.DONE
-                integration.save()
+        check_and_complete_connector_sync(self.object)
 
-        context_data["icon"] = INTEGRATION_STATE_TO_ICON[integration.state]
-        context_data["text"] = INTEGRATION_STATE_TO_MESSAGE[integration.state]
+        context_data["icon"] = INTEGRATION_STATE_TO_ICON[self.object.integration.state]
+        context_data["text"] = INTEGRATION_STATE_TO_MESSAGE[
+            self.object.integration.state
+        ]
 
         return context_data

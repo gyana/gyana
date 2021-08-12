@@ -85,30 +85,6 @@ class IntegrationSetup(ProjectMixin, TurboUpdateView):
     model = Integration
     fields = []
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if (
-            self.object.kind == Integration.Kind.CONNECTOR
-            and self.object.state == Integration.State.LOAD
-        ):
-            is_historical_synced = fivetran_client().is_historical_synced(
-                self.object.connector.fivetran_id
-            )
-            if is_historical_synced:
-                self.object.state = Integration.State.DONE
-                self.object.save()
-                return redirect(
-                    reverse(
-                        "project_integrations:setup",
-                        args=(
-                            self.project.id,
-                            self.object.id,
-                        ),
-                    )
-                )
-
-        return super().get(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["tables"] = self.object.table_set.order_by("_bq_table").all()

@@ -2,7 +2,7 @@ import { Controller } from 'stimulus'
 
 export default class extends Controller {
   static values = {
-    dontStart: Boolean,
+    done: Boolean,
     taskUrl: String,
     scriptUrl: String,
 
@@ -13,29 +13,37 @@ export default class extends Controller {
   }
 
   init() {
-    CeleryProgressBar.initProgressBar(this.taskUrlValue, {
-      onSuccess: async () => {
-        const successNode = this.element.querySelector('#success-template').content.cloneNode(true)
-        this.element.innerHTML = ''
-        this.element.appendChild(successNode)
+    if (this.doneValue == 'true') {
+      this.onSuccess()
+    }
 
-        window.removeEventListener('beforeunload', this.onUnloadCall)
-        if (this.redirectUrlValue) {
-          setTimeout(() => {
-            Turbo.visit(this.redirectUrlValue)
-          }, 750)
-        } else if (this.turboStreamUrlValue) {
-          const html = await (await fetch(this.turboStreamUrlValue)).text()
-          Turbo.renderStreamMessage(html)
-        }
-      },
-      onError: (progressBarElement, progressBarMessageElement, excMessage, data) => {
-        const failureNode = this.element.querySelector('#failure-template').content.cloneNode(true)
-        this.element.innerHTML = ''
-        this.element.appendChild(failureNode)
-        this.element.querySelector('#failure-message').textContent = excMessage || ''
-      },
+    CeleryProgressBar.initProgressBar(this.taskUrlValue, {
+      onSuccess: this.onSuccess.bind(this),
+      onError: this.onError.bind(this),
     })
+  }
+
+  async onSuccess() {
+    const successNode = this.element.querySelector('#success-template').content.cloneNode(true)
+    this.element.innerHTML = ''
+    this.element.appendChild(successNode)
+
+    window.removeEventListener('beforeunload', this.onUnloadCall)
+    if (this.redirectUrlValue) {
+      setTimeout(() => {
+        Turbo.visit(this.redirectUrlValue)
+      }, 750)
+    } else if (this.turboStreamUrlValue) {
+      const html = await (await fetch(this.turboStreamUrlValue)).text()
+      Turbo.renderStreamMessage(html)
+    }
+  }
+
+  onError(progressBarElement, progressBarMessageElement, excMessage, data) {
+    const failureNode = this.element.querySelector('#failure-template').content.cloneNode(true)
+    this.element.innerHTML = ''
+    this.element.appendChild(failureNode)
+    this.element.querySelector('#failure-message').textContent = excMessage || ''
   }
 
   connect() {
