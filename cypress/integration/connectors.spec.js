@@ -10,17 +10,32 @@ describe('connectors', () => {
     cy.contains('New Integration').click()
     cy.contains('New Connector').click()
 
-    cy.url().should('contain', '/projects/1/integrations/new')
+    cy.url().should('contain', '/projects/1/integrations/connectors/new')
     // all Fivetran connectors are mocked via MockFivetranClient
     cy.contains('Google Analytics').click()
 
-    cy.url().should('contain', '/projects/1/integrations/create')
+    cy.url().should('contain', '/projects/1/integrations/connectors/new?service=google_analytics')
     cy.get('button[type=submit]').click()
 
-    // the uuid is non-deterministic
-    cy.url().should('contain', '/projects/1/integrations/').and('contain', '/setup')
-    cy.get('button[type=submit]').click()
+    // mock fivetran redirect
+    cy.url().should('contain', '/connectors/mock')
+    cy.contains('continue').click()
 
-    // TODO: test data is available
+    cy.url().should('contain', '/projects/1/integrations/7/setup')
+    cy.contains('Save & Run').click()
+
+    cy.contains('Importing data from your connector...')
+    cy.contains('Connector successfully imported.', { timeout: 10000 })
+
+    cy.contains('Approve').click()
+
+    // connector created successfully
+    cy.contains('Structure')
+    cy.contains('Data')
+
+    // check email sent
+    cy.outbox()
+      .then((outbox) => outbox.count)
+      .should('eq', 1)
   })
 })
