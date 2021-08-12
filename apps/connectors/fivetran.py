@@ -286,5 +286,5 @@ class MockFivetranClient:
         self._schema_cache[connector.id] = _schemas_to_dict(schemas)
 
 
-# if settings.MOCK_FIVETRAN:
-#     FivetranClient = MockFivetranClient
+if settings.MOCK_FIVETRAN:
+    FivetranClient = MockFivetranClient
