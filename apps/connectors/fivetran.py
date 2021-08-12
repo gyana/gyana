@@ -189,6 +189,10 @@ class MockFivetranClient:
     def authorize(self, fivetran_id, redirect_uri):
         return redirect(f"{reverse('connectors:mock')}?redirect_uri={redirect_uri}")
 
+    def is_historical_synced(self, fivetran_id):
+        # for e2e tests, immediately sync on page refresh
+        return True
+
     def block_until_synced(self, integration):
         time.sleep(settings.MOCK_FIVETRAN_HISTORICAL_SYNC_SECONDS)
 

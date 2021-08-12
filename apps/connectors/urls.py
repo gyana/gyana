@@ -12,6 +12,11 @@ urlpatterns = [
         frames.ConnectorProgress.as_view(),
         name="progress",
     ),
+    path(
+        "<hashid:pk>/status",
+        frames.ConnectorStatus.as_view(),
+        name="status",
+    ),
 ]
 
 if settings.DEBUG:
