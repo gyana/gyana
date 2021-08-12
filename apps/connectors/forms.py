@@ -75,31 +75,40 @@ class ConnectorUpdateForm(forms.ModelForm):
             get_services()[self.instance.service]["requires_schema_prefix"] == "t"
         )
 
-        for schema, schema_config in schemas.items():
-            tables = schema_config["tables"]
+        for schema in schemas:
 
-            self.fields[f"{schema}_schema"] = forms.BooleanField(
-                initial=schema_config["enabled"],
-                label=schema.replace("_", " ").title(),
+            self.fields[f"{schema.name_in_destination}_schema"] = forms.BooleanField(
+                initial=schema.enabled,
+                label=schema.name_in_destination.replace("_", " ").title(),
                 widget=CheckboxInput() if is_database else HiddenInput(),
             )
-            self.fields[f"{schema}_tables"] = forms.MultipleChoiceField(
-                choices=[(t, t.replace("_", " ").title()) for t in tables],
+            self.fields[
+                f"{schema.name_in_destination}_tables"
+            ] = forms.MultipleChoiceField(
+                choices=[
+                    (
+                        t.name_in_destination,
+                        t.name_in_destination.replace("_", " ").title(),
+                    )
+                    for t in schema.tables
+                ],
                 widget=MultiSelect,
-                initial=[t for t in tables if tables[t]["enabled"]],
+                initial=[t.name_in_destination for t in schema.tables if t.enabled],
                 label="Tables",
             )
 
     def clean(self):
         cleaned_data = super().clean()
 
-        # reformat data into schema dict via mutation
+        # mutate the schema information based on user input
         schemas = fivetran_client().get_schemas(self.instance)
 
-        for schema, schema_config in schemas.items():
-            schema_config["enabled"] = f"{schema}_schema" in cleaned_data
-            for table, table_config in schema_config["tables"].items():
-                table_config["enabled"] = table in cleaned_data[f"{schema}_tables"]
+        for schema in schemas:
+            schema.enabled = f"{schema.name_in_destination}_schema" in cleaned_data
+            for table in schema.tables:
+                table.enabled = (
+                    table in cleaned_data[f"{schema.name_in_destination}_tables"]
+                )
 
         # try to update the fivetran schema
         try:
