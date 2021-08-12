@@ -86,6 +86,10 @@ class Table(BaseModel):
     def cache_key(self):
         return get_cache_key(id=self.id, data_updated=str(self.data_updated))
 
+    @property
+    def humanize(self):
+        return self.bq_table.replace("_", " ").title()
+
     @cached_property
     def schema(self):
 

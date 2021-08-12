@@ -83,6 +83,11 @@ class IntegrationSetup(ProjectMixin, TurboUpdateView):
     model = Integration
     fields = []
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
+        return context_data
+
     def form_valid(self, form):
         if not self.object.ready:
             self.object.created_ready = timezone.now()
@@ -168,7 +173,7 @@ class IntegrationData(ReadyMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["tables"] = self.object.table_set.all()
+        context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
 
         return context_data
 

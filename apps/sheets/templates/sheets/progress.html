@@ -40,7 +40,9 @@
                   Retry
                 </button>
             </form>
-            <a class="button" href="{% url 'project_integrations:setup' object.integration.project.id object.integration.id %}?edit=true" data-turbo-frame="_top">Edit Config</a>
+            <a class="button" href="{% url 'project_integrations:setup' object.integration.project.id object.integration.id %}?edit=true" data-turbo-frame="_top">
+              Edit Config
+            </a>
           </div>
         </div>
       </template>
