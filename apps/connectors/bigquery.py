@@ -15,7 +15,7 @@ def get_bq_tables_from_connector(connector: Connector):
     if service_conf["requires_schema_prefix"] == "t":
         schemas = (
             f"{connector.schema}_{schema}"
-            for schema in fivetran_client().get_schema(connector)
+            for schema in fivetran_client().get_schemas(connector)
         )
         tables = (
             client.list_tables(f"{connector.schema}_{schema}") for schema in schemas

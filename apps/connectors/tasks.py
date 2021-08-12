@@ -17,7 +17,7 @@ def complete_connector_sync(connector: Connector, send_mail: bool = True):
     bq_tables = get_bq_tables_from_connector(connector)
     integration = connector.integration
 
-    schemas = fivetran_client().get_schema(connector)
+    schemas = fivetran_client().get_schemas(connector)
     new_bq_ids = {
         f"{schema['name_in_destination']}.{table['name_in_destination']}"
         for schema in schemas.values()
@@ -86,7 +86,7 @@ def run_initial_connector_sync(connector: Connector):
 
 def run_update_connector_sync(connector: Connector):
 
-    schemas = fivetran_client().get_schema(connector)
+    schemas = fivetran_client().get_schemas(connector)
 
     tables = connector.integration.table_set.all()
 

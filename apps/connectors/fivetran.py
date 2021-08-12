@@ -1,10 +1,13 @@
 import json
 import time
 import uuid
+from dataclasses import asdict, dataclass
+from typing import Dict, List, Optional
 
 import backoff
 import requests
 from django.conf import settings
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.utils import timezone
@@ -18,12 +21,50 @@ from .models import Connector
 # the caller (e.g. form) or trigger 500 (user can refresh/retry)
 
 
+@dataclass
+class FivetranTable:
+    key: str
+    name_in_destination: str
+    enabled: bool
+    enabled_patch_settings: Dict
+    columns: Optional[List[Dict]]
+
+    def asdict(self):
+        res = asdict(self)
+        res.pop("key")
+        return res
+
+
+@dataclass
+class FivetranSchema:
+    key: str
+    name_in_destination: str
+    enabled: bool
+    tables: List[FivetranTable]
+
+    def __post_init__(self):
+        self.tables = [FivetranTable(key=k, **t) for k, t in self.tables.items()]
+
+    def asdict(self):
+        res = {**asdict(self), "tables": {t.key: t.asdict() for t in self.tables}}
+        res.pop("key")
+        return res
+
+
+def _schemas_to_obj(schemas_dict):
+    return [FivetranSchema(key=k, **s) for k, s in schemas_dict.items()]
+
+
+def _schemas_to_dict(schemas):
+    return {s.key: s.asdict() for s in schemas}
+
+
 class FivetranClientError(Exception):
     pass
 
 
 class FivetranClient:
-    def create(self, service, team_id):
+    def create(self, service, team_id) -> Dict:
 
         # https://fivetran.com/docs/rest-api/connectors#createaconnector
 
@@ -72,7 +113,7 @@ class FivetranClient:
         #  }
         return {"fivetran_id": res["data"]["id"], "schema": res["data"]["schema"]}
 
-    def authorize(self, connector: Connector, redirect_uri):
+    def authorize(self, connector: Connector, redirect_uri: str) -> HttpResponse:
 
         # https://fivetran.com/docs/rest-api/connectors/connect-card#connectcard
 
@@ -86,7 +127,7 @@ class FivetranClient:
             f"https://fivetran.com/connect-card/setup?redirect_uri={redirect_uri}&auth={connect_card_token}"
         )
 
-    def start_initial_sync(self, connector: Connector):
+    def start_initial_sync(self, connector: Connector) -> Dict:
 
         # https://fivetran.com/docs/rest-api/connectors#modifyaconnector
 
@@ -101,7 +142,7 @@ class FivetranClient:
 
         return res
 
-    def start_update_sync(self, connector: Connector):
+    def start_update_sync(self, connector: Connector) -> Dict:
 
         # https://fivetran.com/docs/rest-api/connectors#syncconnectordata
 
@@ -115,7 +156,7 @@ class FivetranClient:
 
         return res
 
-    def has_completed_sync(self, connector):
+    def has_completed_sync(self, connector: Connector) -> bool:
 
         res = requests.get(
             f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}",
@@ -129,13 +170,13 @@ class FivetranClient:
 
         return not (status["is_historical_sync"] or status["sync_state"] == "syncing")
 
-    def block_until_synced(self, connector):
+    def block_until_synced(self, connector: Connector):
 
         backoff.on_predicate(backoff.expo, max_time=3600)(self.has_completed_sync)(
             connector
         )
 
-    def reload_schema(self, connector):
+    def reload_schemas(self, connector: Connector) -> List[FivetranSchema]:
 
         # https://fivetran.com/docs/rest-api/connectors#reloadaconnectorschemaconfig
 
@@ -147,9 +188,9 @@ class FivetranClient:
         if res["code"] != "Success":
             raise FivetranClientError()
 
-        return res["data"].get("schemas", {})
+        return _schemas_to_obj(res["data"]["schemas"])
 
-    def get_schema(self, connector):
+    def get_schemas(self, connector: Connector):
 
         # https://fivetran.com/docs/rest-api/connectors#retrieveaconnectorschemaconfig
 
@@ -160,20 +201,20 @@ class FivetranClient:
 
         # try a reload in case this connector is new
         if res["code"] == "NotFound_SchemaConfig":
-            return self.reload_schema(connector)
+            return self.reload_schemas(connector)
 
         if res["code"] != "Success":
             raise FivetranClientError()
 
-        return res["data"].get("schemas", {})
+        return _schemas_to_obj(res["data"]["schemas"])
 
-    def update_schema(self, connector, schemas):
+    def update_schemas(self, connector: Connector, schemas: List[FivetranSchema]):
 
         # https://fivetran.com/docs/rest-api/connectors#modifyaconnectorschemaconfig
 
         res = requests.patch(
             f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}/schemas",
-            json={"schemas": schemas},
+            json={"schemas": _schemas_to_dict(schemas)},
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 
@@ -225,10 +266,10 @@ class MockFivetranClient:
     def block_until_synced(self, connector):
         time.sleep(self.BLOCK_SYNC_SECONDS)
 
-    def reload_schema(self, connector):
+    def reload_schemas(self, connector):
         pass
 
-    def get_schema(self, connector):
+    def get_schemas(self, connector):
         if connector.id in self._schema_cache:
             return self._schema_cache[connector.id]
 
@@ -237,7 +278,7 @@ class MockFivetranClient:
         with open(f"cypress/fixtures/fivetran/{service}_schema.json", "r") as f:
             return json.load(f)
 
-    def update_schema(self, connector, schemas):
+    def update_schemas(self, connector, schemas):
         self._schema_cache[connector.id] = schemas
 
 
