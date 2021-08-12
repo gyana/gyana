@@ -107,7 +107,7 @@ class FivetranClient:
 
         return res
 
-    def is_historical_synced(self, connector):
+    def has_completed_sync(self, connector):
 
         res = requests.get(
             f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}",
@@ -120,13 +120,13 @@ class FivetranClient:
 
         status = res["data"]["status"]
 
-        return status["is_historical_sync"]
+        return not (status["is_historical_sync"] or status["sync_state"] == "syncing")
 
     def block_until_synced(self, connector):
 
-        backoff.on_predicate(backoff.expo, lambda x: x, max_time=3600)(
-            self.is_historical_synced
-        )(connector)
+        backoff.on_predicate(backoff.expo, max_time=3600)(self.has_completed_sync)(
+            connector
+        )
 
     def get_schema(self, connector):
 
@@ -167,23 +167,6 @@ class FivetranClient:
 
         return res
 
-    def update_table_config(self, fivetran_id, schema, table_name: str, enabled: bool):
-        res = requests.patch(
-            f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/schemas/{schema}/tables/{table_name}",
-            json={
-                "enabled": enabled,
-            },
-            headers=settings.FIVETRAN_HEADERS,
-        ).json()
-
-        # Future note: If we write this to raise an error table deletion will stop working
-        # for tables that fivetran won't allow to stop being synced. (This is on the TableDelete view)
-        if res["code"] != "Success":
-            # TODO
-            pass
-
-        return res
-
 
 class MockFivetranClient:
 
@@ -196,7 +179,6 @@ class MockFivetranClient:
     def __init__(self) -> None:
         self._schema_cache = {}
         self._started = {}
-        self._is_historical_synced = {}
 
     def create(self, service, team_id):
         # duplicate the content of an existing connector
@@ -219,12 +201,15 @@ class MockFivetranClient:
     def authorize(self, connector, redirect_uri):
         return redirect(f"{reverse('connectors:mock')}?redirect_uri={redirect_uri}")
 
-    def is_historical_synced(self, connector):
+    def has_completed_sync(self, connector):
         return (
             timezone.now() - self._started[connector.id]
         ).total_seconds() > self.REFRESH_SYNC_SECONDS
 
     def block_until_synced(self, connector):
+        time.sleep(self.BLOCK_SYNC_SECONDS)
+
+    def block_until_resynced(self, connector):
         time.sleep(self.BLOCK_SYNC_SECONDS)
 
     def get_schema(self, connector):

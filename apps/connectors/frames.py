@@ -43,7 +43,7 @@ class ConnectorProgress(TurboFrameUpdateView):
         context_data["sync_task_id"] = self.object.sync_task_id
 
         if self.object.integration.state == Integration.State.LOAD:
-            if fivetran_client().is_historical_synced(self.object):
+            if fivetran_client().has_completed_sync(self.object):
                 context_data["done"] = complete_connector_sync(self.object)
 
         return context_data
@@ -67,7 +67,7 @@ class ConnectorStatus(TurboFrameDetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        if fivetran_client().is_historical_synced(self.object):
+        if fivetran_client().has_completed_sync(self.object):
             complete_connector_sync(self.object)
 
         context_data["icon"] = INTEGRATION_STATE_TO_ICON[self.object.integration.state]

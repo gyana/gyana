@@ -84,7 +84,7 @@ def resync_connector(connector: Connector) -> bool:
 
 
 @shared_task(bind=True)
-def poll_fivetran_historical_sync(self, connector_id):
+def poll_fivetran_sync(self, connector_id):
 
     connector = get_object_or_404(Connector, pk=connector_id)
 
@@ -95,29 +95,11 @@ def poll_fivetran_historical_sync(self, connector_id):
     complete_connector_sync(connector)
 
 
-@shared_task(bind=True)
-def poll_fivetran_resync(self, connector_id):
-
-    connector = get_object_or_404(Connector, pk=connector_id)
-
-    fivetran_client().block_until_resynced(connector)
-
-    # we've waited for a while, we don't to duplicate this logic
-    connector.refresh_from_db()
-    complete_connector_sync(connector, send_mail=False)
-
-
 def run_initial_connector_sync(connector: Connector):
 
     fivetran_client().start(connector)
 
-    result = poll_fivetran_historical_sync.delay(connector.id)
-    connector.sync_task_id = result.task_id
-    connector.sync_started = timezone.now()
-    connector.save()
-
-    connector.integration.state = Integration.State.LOAD
-    connector.integration.save()
+    return poll_fivetran_sync.delay(connector.id)
 
 
 def run_update_connector_sync(connector: Connector):
@@ -125,21 +107,21 @@ def run_update_connector_sync(connector: Connector):
     is_resyncing = fivetran_client().resync(connector)
 
     if is_resyncing:
-        result = poll_fivetran_historical_sync.delay(connector.id)
+        return poll_fivetran_sync.delay(connector.id)
+
+
+def run_connector_sync(connector: Connector):
+
+    result = (
+        run_initial_connector_sync
+        if connector.integration.table_set.count() == 0
+        else run_update_connector_sync
+    )(connector)
+
+    if result:
         connector.sync_task_id = result.task_id
         connector.sync_started = timezone.now()
         connector.save()
 
         connector.integration.state = Integration.State.LOAD
         connector.integration.save()
-
-
-def run_connector_sync(connector: Connector):
-
-    func = (
-        run_initial_connector_sync
-        if connector.integration.table_set.count() == 0
-        else run_update_connector_sync
-    )
-
-    return func(connector)
