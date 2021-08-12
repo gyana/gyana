@@ -16,6 +16,7 @@ const addFormToFormset = (formset) => {
     cy.wrap(el).get(`#${formset}-add`).click()
   })
 }
+
 const waitForLiveFormUpdate = () => {
   cy.get('[data-live-update-target=loading]').should('be.visible')
   cy.get('[data-live-update-target=loading]').should('not.be.visible')

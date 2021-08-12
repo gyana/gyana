@@ -1,7 +1,19 @@
 /// <reference types="cypress" />
 import { getModelStartId } from '../support/utils'
+const { _ } = Cypress
 
 const startId = getModelStartId('nodes.node')
+const getNodePositions = (nodes$) =>
+  _.map(nodes$, (el$) => {
+    const transform = el$.style.transform
+      .replace('translate(', '')
+      .replace(')', '')
+      .replace('px', '')
+      .replace('px', '')
+    const [x, y] = transform.split(', ').map((n) => Number(n))
+    const id = Number(el$.getAttribute('data-id'))
+    return { x, y, id }
+  })
 
 describe('workflows', () => {
   beforeEach(() => {
@@ -35,21 +47,20 @@ describe('workflows', () => {
     cy.drag('[id=dnd-node-input]')
     cy.drop('.react-flow')
 
-    const inputId = `[data-id=${startId}]`
-    cy.get(inputId).dblclick()
+    cy.get(startId).dblclick()
     cy.contains('store_info').click()
     cy.contains('Save & Preview').click()
     cy.contains('Blackpool')
     cy.get('button[class=tf-modal__close]').click()
-    cy.reactFlowDrag(inputId, { x: 150, y: 300 })
+    cy.reactFlowDrag(startId, { x: 150, y: 300 })
 
     cy.story('Drop, connect and configure select node')
     cy.drag('[id=dnd-node-select]')
     cy.drop('[class=react-flow]')
 
-    const selectId = `[data-id=${startId + 1}]`
+    const selectId = startId + 1
     cy.get(selectId).should('exist')
-    cy.connectNodes(inputId, selectId)
+    cy.connectNodes(startId, selectId)
     cy.get('.react-flow__edge').should('have.length', 1)
     cy.get(selectId).dblclick()
     cy.get('.workflow-detail__sidebar').within(() => {
@@ -63,7 +74,7 @@ describe('workflows', () => {
     cy.drag('[id=dnd-node-output]')
     cy.drop('[class=react-flow]')
 
-    const outputId = `[data-id=${startId + 2}]`
+    const outputId = startId + 2
     cy.get(outputId).should('exist')
     cy.connectNodes(selectId, outputId)
     cy.get('.react-flow__edge').should('have.length', 2)
@@ -87,12 +98,50 @@ describe('workflows', () => {
     cy.contains('Something went wrong!', { timeout: 8000 })
   })
 
-  it.only('Shows nodes loading error', () => {
+  it('Shows nodes loading error', () => {
     cy.intercept('GET', `/nodes/api/nodes/?workflow=${getModelStartId('workflows.workflow')}`, {
       statusCode: 500,
     })
     cy.get('button[type=submit]').first().click()
     cy.contains('Loading...')
     cy.contains('Failed loading your nodes!')
+  })
+})
+
+describe('Workflow-format', () => {
+  it.only('Formats a workflow', () => {
+    cy.login('nodes@gyana.com')
+    cy.visit('/projects/2/workflows/1')
+
+    const movedNodes = [6, 8, 11, 13]
+    cy.reactFlowDrag(6, { x: 100, y: 400 })
+    cy.reactFlowDrag(8, { x: 200, y: 300 })
+    cy.reactFlowDrag(11, { x: 300, y: 200 })
+    cy.reactFlowDrag(13, { x: 500, y: 100 })
+
+    cy.get('.react-flow__node')
+      .then(getNodePositions)
+      .then((nodes) => {
+        const filtered = nodes.filter((n) => movedNodes.includes(n.id))
+        const xSorted = _.sortBy(filtered, (n) => n.x).map((n) => n.id)
+        expect(xSorted).to.deep.equal(movedNodes)
+
+        const ySorted = _.reverse(_.sortBy(filtered, (n) => n.y)).map((n) => n.id)
+        expect(ySorted).to.deep.equal(movedNodes)
+      })
+    cy.get('.react-flow__controls-button').eq(4).click()
+    cy.get('.react-flow__node')
+      .then(getNodePositions)
+      .then((nodes) => {
+        const filtered = nodes.filter((n) => movedNodes.includes(n.id))
+
+        const xValue = Math.round(filtered[0].x)
+        filtered.forEach((n) => {
+          expect(Math.round(n.x)).to.equal(xValue)
+        })
+
+        const ySorted = _.sortBy(filtered, (n) => n.y).map((n) => n.id)
+        expect(ySorted).to.deep.equal(movedNodes)
+      })
   })
 })
