@@ -67,7 +67,7 @@ class ConnectorStatus(TurboFrameDetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        if fivetran_client().is_historical_synced(self.obect):
+        if fivetran_client().is_historical_synced(self.object):
             complete_connector_sync(self.object)
 
         context_data["icon"] = INTEGRATION_STATE_TO_ICON[self.object.integration.state]

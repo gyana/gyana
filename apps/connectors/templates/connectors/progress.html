@@ -12,7 +12,7 @@
         {% else %}
         data-celery-progress-redirect-url-value="{% url 'project_integrations:detail' object.integration.project.id object.integration.id %}"
         {% endif %}
-        data-celery-progress-done-value="{{ done }}"
+        {% if done %} data-celery-progress-done-value {% endif %}
         >
 
       <i class="fad fa-spinner-third fa-spin text-blue text-4xl"></i>

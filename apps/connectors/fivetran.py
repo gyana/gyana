@@ -175,7 +175,7 @@ class MockFivetranClient:
     # default if not available in fixtures
     DEFAULT_SERVICE = "google_analytics"
     # wait 1s if refreshing page, otherwise 5 seconds for task to complete
-    REFRESH_SYNC_SECONDS = 5
+    REFRESH_SYNC_SECONDS = 1
     BLOCK_SYNC_SECONDS = 5
 
     def __init__(self) -> None:
