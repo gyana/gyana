@@ -7,6 +7,7 @@ import requests
 from django.conf import settings
 from django.shortcuts import redirect
 from django.urls.base import reverse
+from django.utils import timezone
 
 from .config import get_services
 from .models import Connector
@@ -61,12 +62,12 @@ class FivetranClient:
             "data": {"fivetran_id": res["data"]["id"], "schema": res["data"]["schema"]},
         }
 
-    def authorize(self, fivetran_id, redirect_uri):
+    def authorize(self, connector: Connector, redirect_uri):
 
         # https://fivetran.com/docs/rest-api/connectors/connect-card#connectcard
 
         card = requests.post(
-            f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/connect-card-token",
+            f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}/connect-card-token",
             headers=settings.FIVETRAN_HEADERS,
         )
         connect_card_token = card.json()["token"]
@@ -91,10 +92,10 @@ class FivetranClient:
 
         return res
 
-    def is_historical_synced(self, fivetran_id):
+    def is_historical_synced(self, connector):
 
         res = requests.get(
-            f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}",
+            f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}",
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 
@@ -110,14 +111,14 @@ class FivetranClient:
 
         backoff.on_predicate(backoff.expo, lambda x: x, max_time=3600)(
             self.is_historical_synced
-        )(connector.fivetran_id)
+        )(connector)
 
-    def get_schema(self, fivetran_id):
+    def get_schema(self, connector):
 
         # https://fivetran.com/docs/rest-api/connectors#retrieveaconnectorschemaconfig
 
         res = requests.get(
-            f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/schemas",
+            f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}/schemas",
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 
@@ -125,7 +126,7 @@ class FivetranClient:
             # First try a reload in case this connector is new
             # https://fivetran.com/docs/rest-api/connectors#reloadaconnectorschemaconfig
             res = requests.post(
-                f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/schemas/reload",
+                f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}/schemas/reload",
                 headers=settings.FIVETRAN_HEADERS,
             ).json()
 
@@ -135,12 +136,12 @@ class FivetranClient:
 
         return res["data"].get("schemas", {})
 
-    def update_schema(self, fivetran_id, schemas):
+    def update_schema(self, connector, schemas):
 
         # https://fivetran.com/docs/rest-api/connectors#modifyaconnectorschemaconfig
 
         res = requests.patch(
-            f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}/schemas",
+            f"{settings.FIVETRAN_URL}/connectors/{connector.id}/schemas",
             json={"schemas": schemas},
             headers=settings.FIVETRAN_HEADERS,
         ).json()
@@ -170,44 +171,61 @@ class FivetranClient:
 
 
 class MockFivetranClient:
+
+    # default if not available in fixtures
+    DEFAULT_SERVICE = "google_analytics"
+    SHORT_SYNC_SECONDS = 1
+    LONG_SYNC_SECONDS = 5
+
     def __init__(self) -> None:
         self._schema_cache = {}
+        self._started = {}
+        self._is_historical_synced = {}
 
     def create(self, service, team_id):
+        # duplicate the content of an existing connector
+        connector = (
+            Connector.objects.filter(service=service).first()
+            or Connector.objects.filter(service=self.DEFAULT_SERVICE).first()
+        )
         return {
             "success": True,
             "message": "Connector has been created",
             "data": {
-                "fivetran_id": settings.MOCK_FIVETRAN_ID,
-                "schema": settings.MOCK_FIVETRAN_SCHEMA,
+                "fivetran_id": connector.fivetran_id,
+                "schema": connector.schema,
             },
         }
 
-    def start(self, fivetran_id):
-        pass
+    def start(self, connector):
+        self._started[connector.id] = timezone.now()
 
-    def authorize(self, fivetran_id, redirect_uri):
+    def authorize(self, connector, redirect_uri):
         return redirect(f"{reverse('connectors:mock')}?redirect_uri={redirect_uri}")
 
-    def is_historical_synced(self, fivetran_id):
-        # for e2e tests, immediately sync on page refresh
-        return True
+    def is_historical_synced(self, connector):
+        if connector.service == "google_analytics":
+            return self._is_historical_synced[connector.id]
+        # for other connectors complete immediately
+        return (
+            timezone.now() - self._started[connector.id]
+        ).total_seconds() > self.SHORT_SYNC_SECONDS
 
-    def block_until_synced(self, integration):
-        time.sleep(settings.MOCK_FIVETRAN_HISTORICAL_SYNC_SECONDS)
+    def block_until_synced(self, connector):
+        time.sleep(self.LONG_SYNC_SECONDS)
+        self._is_historical_synced[connector.id] = True
 
-    def get_schema(self, fivetran_id):
-        if fivetran_id in self._schema_cache:
-            return self._schema_cache[fivetran_id]
+    def get_schema(self, connector):
+        if connector.id in self._schema_cache:
+            return self._schema_cache[connector.id]
 
-        connector = Connector.objects.filter(fivetran_id=fivetran_id).first()
         service = connector.service if connector is not None else "google_analytics"
 
         with open(f"cypress/fixtures/fivetran/{service}_schema.json", "r") as f:
             return json.load(f)
 
-    def update_schema(self, fivetran_id, schemas):
-        self._schema_cache[fivetran_id] = schemas
+    def update_schema(self, connector, schemas):
+        self._schema_cache[connector.id] = schemas
 
     def update_table_config(self, fivetran_id, schema, table_name: str, enabled: bool):
         pass

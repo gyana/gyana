@@ -15,7 +15,7 @@ from .bigquery import get_bq_tables_from_connector
 
 def check_and_complete_connector_sync(connector: Connector):
 
-    is_historical_synced = fivetran_client().is_historical_synced(connector.fivetran_id)
+    is_historical_synced = fivetran_client().is_historical_synced(connector)
 
     if not is_historical_synced:
         return False

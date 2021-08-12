@@ -68,7 +68,7 @@ class ConnectorUpdateForm(forms.ModelForm):
 
         super().__init__(*args, **kwargs)
 
-        schemas = fivetran_client().get_schema(self.instance.fivetran_id)
+        schemas = fivetran_client().get_schema(self.instance)
 
         is_database = (
             get_services()[self.instance.service]["requires_schema_prefix"] == "t"
@@ -93,7 +93,7 @@ class ConnectorUpdateForm(forms.ModelForm):
         cleaned_data = super().clean()
 
         # reformat data into schema dict via mutation
-        schemas = fivetran_client().get_schema(self.instance.fivetran_id)
+        schemas = fivetran_client().get_schema(self.instance)
 
         for schema, schema_config in schemas.items():
             schema_config["enabled"] = f"{schema}_schema" in cleaned_data
@@ -101,4 +101,4 @@ class ConnectorUpdateForm(forms.ModelForm):
                 table_config["enabled"] = table in cleaned_data[f"{schema}_tables"]
 
         # update fivetran and throw validation failure on errors
-        fivetran_client().update_schema(self.instance.fivetran_id, schemas)
+        fivetran_client().update_schema(self.instance, schemas)

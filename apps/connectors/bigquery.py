@@ -1,6 +1,6 @@
 from itertools import chain
 
-from apps.base.clients import bigquery_client
+from apps.base.clients import bigquery_client, fivetran_client
 from apps.connectors.config import get_services
 from apps.connectors.fivetran import FivetranClient
 from apps.connectors.models import Connector
@@ -15,7 +15,7 @@ def get_bq_tables_from_connector(connector: Connector):
     if service_conf["requires_schema_prefix"] == "t":
         schemas = (
             f"{connector.schema}_{schema}"
-            for schema in FivetranClient().get_schema(connector.fivetran_id)
+            for schema in fivetran_client().get_schema(connector)
         )
         tables = (
             client.list_tables(f"{connector.schema}_{schema}") for schema in schemas
