@@ -239,6 +239,7 @@ class MockFivetranClient:
     BLOCK_SYNC_SECONDS = 5
 
     def __init__(self) -> None:
+        # stored as dict to test that logic
         self._schema_cache = {}
         self._started = {}
 
@@ -279,15 +280,15 @@ class MockFivetranClient:
 
     def get_schemas(self, connector):
         if connector.id in self._schema_cache:
-            return self._schema_cache[connector.id]
+            return _schemas_to_obj(self._schema_cache[connector.id])
 
         service = connector.service if connector is not None else "google_analytics"
 
         with open(f"cypress/fixtures/fivetran/{service}_schema.json", "r") as f:
-            return json.load(f)
+            return _schemas_to_obj(json.load(f))
 
     def update_schemas(self, connector, schemas):
-        self._schema_cache[connector.id] = schemas
+        self._schema_cache[connector.id] = _schemas_to_dict(schemas)
 
 
 if settings.MOCK_FIVETRAN:
