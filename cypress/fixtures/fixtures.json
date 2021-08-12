@@ -837,9 +837,7 @@
       "fivetran_id": "plexus_impatient",
       "schema": "team_1_heroku_postgres_0e684903d1044f7280bb061fd3c179a4",
       "fivetran_authorized": true,
-      "fivetran_poll_historical_sync_task_id": null,
-      "historical_sync_complete": true,
-      "last_synced": "2021-08-10T10:03:16.771Z"
+      "sync_task_id": null
     }
   },
   {
@@ -853,9 +851,7 @@
       "fivetran_id": "legate_wandered",
       "schema": "team_1_facebook_ads_563a564c28cc469dba73faf6dea0799e",
       "fivetran_authorized": true,
-      "fivetran_poll_historical_sync_task_id": null,
-      "historical_sync_complete": true,
-      "last_synced": "2021-08-10T10:40:23.586Z"
+      "sync_task_id": null
     }
   },
   {
@@ -869,9 +865,7 @@
       "fivetran_id": "humid_rifle",
       "schema": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
       "fivetran_authorized": true,
-      "fivetran_poll_historical_sync_task_id": null,
-      "historical_sync_complete": true,
-      "last_synced": "2021-08-10T10:40:23.586Z"
+      "sync_task_id": null
     }
   },
   {
@@ -885,9 +879,7 @@
       "fivetran_id": "overtime_froze",
       "schema": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
       "fivetran_authorized": true,
-      "fivetran_poll_historical_sync_task_id": null,
-      "historical_sync_complete": true,
-      "last_synced": "2021-08-10T12:54:44.273Z"
+      "sync_task_id": null
     }
   },
   {
