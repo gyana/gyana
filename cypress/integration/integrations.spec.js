@@ -47,7 +47,7 @@ describe('integrations', () => {
     cy.contains('Yes').click()
 
     cy.url().should('contain', '/projects/1/integrations')
-    cy.get('table tbody tr').should('have.length', 1)
+    cy.get('table tbody tr').should('have.length', 5)
   })
   it('create, retry, edit and approve', () => {
     // using google sheets example
@@ -64,7 +64,7 @@ describe('integrations', () => {
 
     // check the pending page and navigate back
     cy.visit('/projects/1/integrations')
-    cy.get('table tbody tr').should('have.length', 2)
+    cy.get('table tbody tr').should('have.length', 6)
 
     cy.contains('Pending (1)').click()
     cy.url().should('contain', '/projects/1/integrations/pending')
@@ -92,7 +92,7 @@ describe('integrations', () => {
 
     // check the pending page again
     cy.visit('/projects/1/integrations')
-    cy.get('table tbody tr').should('have.length', 3)
+    cy.get('table tbody tr').should('have.length', 7)
 
     cy.contains('Pending').click()
     cy.get('table tbody tr').should('have.length', 0)
