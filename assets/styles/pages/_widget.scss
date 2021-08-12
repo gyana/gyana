@@ -7,11 +7,18 @@
   &__canvas {
     background-color: var(--c-white);
     border: 1px solid var(--c-gray);
-    display: block;
+    display: inline-block;
     margin: 0 auto 1.6rem auto;
     overflow-x: hidden;
     overflow-y: auto;
     position: relative;
+  }
+
+  &::after {
+    content: '';
+    display: inline-block;
+    width: 1.6rem;
+    height: 100%;
   }
 
   &__grid {
