@@ -33,7 +33,7 @@ const LayoutButton: React.FC<{
 
   return (
     <ControlButton onClick={onLayout}>
-      <i className='fas fa-fw fa-align-left'></i>
+      <i title="Format workflow" className='fas fa-fw fa-sort-size-down'></i>
     </ControlButton>
   )
 }
