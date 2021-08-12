@@ -1,6 +1,4 @@
-import time
 from datetime import datetime
-from functools import reduce
 
 import analytics
 from apps.base.clients import DATASET_ID
@@ -9,7 +7,6 @@ from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
 from apps.tables.models import Table
 from celery import shared_task
-from celery_progress.backend import ProgressRecorder
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -18,32 +15,11 @@ from .bigquery import get_last_modified_from_drive_file, import_table_from_sheet
 from .models import Sheet
 
 
-def _calc_progress(jobs):
-    return reduce(
-        lambda tpl, curr: (
-            # We only keep track of completed states for now, not failed states
-            tpl[0] + (1 if curr.status == "COMPLETE" else 0),
-            tpl[1] + 1,
-        ),
-        jobs,
-        (0, 0),
-    )
-
-
 def _do_sync_with_progress(task, sheet, table):
 
     sheet.drive_file_last_modified = get_last_modified_from_drive_file(sheet)
 
-    progress_recorder = ProgressRecorder(task)
-
     query_job = import_table_from_sheet(table=table, sheet=sheet)
-
-    while query_job.running():
-        current, total = _calc_progress(query_job.query_plan)
-        progress_recorder.set_progress(current, total)
-        time.sleep(0.5)
-
-    progress_recorder.set_progress(*_calc_progress(query_job.query_plan))
 
     # capture external table creation errors
 
