@@ -106,8 +106,9 @@ class ConnectorUpdateForm(forms.ModelForm):
         for schema in schemas:
             schema.enabled = f"{schema.name_in_destination}_schema" in cleaned_data
             for table in schema.tables:
-                table.enabled = (
-                    table in cleaned_data[f"{schema.name_in_destination}_tables"]
+                # field does not exist if all unchecked
+                table.enabled = table in cleaned_data.get(
+                    f"{schema.name_in_destination}_tables", []
                 )
 
         # try to update the fivetran schema

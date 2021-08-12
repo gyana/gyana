@@ -27,11 +27,13 @@ class FivetranTable:
     name_in_destination: str
     enabled: bool
     enabled_patch_settings: Dict
-    columns: Optional[List[Dict]]
+    columns: Optional[List[Dict]] = None
 
     def asdict(self):
         res = asdict(self)
         res.pop("key")
+        if self.columns is None:
+            res.pop("columns")
         return res
 
 
