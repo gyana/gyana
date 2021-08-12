@@ -47,7 +47,7 @@ describe('workflows', () => {
     cy.drag('[id=dnd-node-input]')
     cy.drop('.react-flow')
 
-    cy.get(startId).dblclick()
+    cy.get(`[data-id=${startId}]`).dblclick()
     cy.contains('store_info').click()
     cy.contains('Save & Preview').click()
     cy.contains('Blackpool')
@@ -59,10 +59,10 @@ describe('workflows', () => {
     cy.drop('[class=react-flow]')
 
     const selectId = startId + 1
-    cy.get(selectId).should('exist')
+    cy.get(`[data-id=${selectId}]`).should('exist')
     cy.connectNodes(startId, selectId)
     cy.get('.react-flow__edge').should('have.length', 1)
-    cy.get(selectId).dblclick()
+    cy.get(`[data-id=${selectId}]`).dblclick()
     cy.get('.workflow-detail__sidebar').within(() => {
       cy.contains('Location').click()
       cy.contains('Employees').click()
@@ -75,10 +75,10 @@ describe('workflows', () => {
     cy.drop('[class=react-flow]')
 
     const outputId = startId + 2
-    cy.get(outputId).should('exist')
+    cy.get(`[data-id=${outputId}]`).should('exist')
     cy.connectNodes(selectId, outputId)
     cy.get('.react-flow__edge').should('have.length', 2)
-    cy.get(outputId).dblclick()
+    cy.get(`[data-id=${outputId}]`).dblclick()
     cy.get('[name=output_name').type('Goblet of fire')
     cy.contains('Save & Close').click()
 
