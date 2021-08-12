@@ -44,6 +44,23 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             "float_values",
             "bool_value",
         )
+        help_texts = {
+            "string_predicate": "Condition",
+            "string_predicate": "Condition",
+            "numeric_predicate": "Condition",
+            "time_predicate": "Condition",
+            "datetime_predicate": "Condition",
+            "time_value": "Value",
+            "date_value": "Value",
+            "datetime_value": "Value",
+            "string_value": "Value",
+            "integer_value": "Value",
+            "string_values": "Value",
+            "integer_values": "Value",
+            "float_value": "Value",
+            "float_values": "Value",
+            "bool_value": "Value",
+        }
         widgets = {"string_value": TextInput(), "datetime_value": DatetimeInput()}
 
     def get_live_fields(self):
@@ -95,6 +112,7 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             self.fields["column"].choices = [
                 ("", "No column selected"),
             ] + [(col, col) for col in self.schema]
+            self.fields["column"].help_text = "Column"
 
     def save(self, commit=True):
         instance = super().save(commit=False)
