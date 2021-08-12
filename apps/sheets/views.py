@@ -43,8 +43,6 @@ class SheetCreate(ProjectMixin, TurboCreateView):
             },
         )
 
-        run_sheets_sync(self.object)
-
         return r
 
     def get_success_url(self) -> str:
