@@ -13,13 +13,7 @@ from django.utils import timezone
 from .bigquery import get_bq_tables_from_connector
 
 
-def check_and_complete_connector_sync(connector: Connector):
-
-    is_historical_synced = fivetran_client().is_historical_synced(connector)
-
-    if not is_historical_synced:
-        return False
-
+def complete_connector_sync(connector: Connector):
     bq_tables = get_bq_tables_from_connector(connector)
     integration = connector.integration
 
@@ -68,7 +62,7 @@ def poll_fivetran_historical_sync(self, connector_id):
 
     # we've waited for a while, we don't to duplicate this logic
     connector.refresh_from_db()
-    check_and_complete_connector_sync(connector)
+    complete_connector_sync(connector)
 
 
 def run_connector_sync(connector: Connector):

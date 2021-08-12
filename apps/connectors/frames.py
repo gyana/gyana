@@ -5,12 +5,11 @@ from apps.integrations.tables import (
     INTEGRATION_STATE_TO_ICON,
     INTEGRATION_STATE_TO_MESSAGE,
 )
-from django.shortcuts import redirect
 from django.urls import reverse
 
 from .forms import ConnectorUpdateForm
 from .models import Connector
-from .tasks import check_and_complete_connector_sync, run_connector_sync
+from .tasks import complete_connector_sync, run_connector_sync
 
 
 class ConnectorUpdate(TurboFrameUpdateView):
@@ -44,7 +43,8 @@ class ConnectorProgress(TurboFrameUpdateView):
         context_data["sync_task_id"] = self.object.sync_task_id
 
         if self.object.integration.state == Integration.State.LOAD:
-            context_data["done"] = check_and_complete_connector_sync(self.object)
+            if fivetran_client().is_historical_synced(self.object):
+                context_data["done"] = complete_connector_sync(self.object)
 
         return context_data
 
@@ -67,7 +67,8 @@ class ConnectorStatus(TurboFrameDetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        check_and_complete_connector_sync(self.object)
+        if fivetran_client().is_historical_synced(self.obect):
+            complete_connector_sync(self.object)
 
         context_data["icon"] = INTEGRATION_STATE_TO_ICON[self.object.integration.state]
         context_data["text"] = INTEGRATION_STATE_TO_MESSAGE[

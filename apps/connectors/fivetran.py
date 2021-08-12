@@ -174,8 +174,9 @@ class MockFivetranClient:
 
     # default if not available in fixtures
     DEFAULT_SERVICE = "google_analytics"
-    SHORT_SYNC_SECONDS = 1
-    LONG_SYNC_SECONDS = 5
+    # wait 1s if refreshing page, otherwise 5 seconds for task to complete
+    REFRESH_SYNC_SECONDS = 5
+    BLOCK_SYNC_SECONDS = 5
 
     def __init__(self) -> None:
         self._schema_cache = {}
@@ -204,16 +205,12 @@ class MockFivetranClient:
         return redirect(f"{reverse('connectors:mock')}?redirect_uri={redirect_uri}")
 
     def is_historical_synced(self, connector):
-        if connector.service == "google_analytics":
-            return self._is_historical_synced[connector.id]
-        # for other connectors complete immediately
         return (
             timezone.now() - self._started[connector.id]
-        ).total_seconds() > self.SHORT_SYNC_SECONDS
+        ).total_seconds() > self.REFRESH_SYNC_SECONDS
 
     def block_until_synced(self, connector):
-        time.sleep(self.LONG_SYNC_SECONDS)
-        self._is_historical_synced[connector.id] = True
+        time.sleep(self.BLOCK_SYNC_SECONDS)
 
     def get_schema(self, connector):
         if connector.id in self._schema_cache:
