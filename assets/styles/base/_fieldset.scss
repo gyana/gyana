@@ -1,11 +1,7 @@
 fieldset {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1.6rem;
-
-  & > label {
-    margin-bottom: 1.6rem;
-  }
+  gap: 1.6rem;
 
   ul {
     display: flex;
