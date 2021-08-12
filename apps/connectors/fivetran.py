@@ -91,7 +91,7 @@ class FivetranClient:
 
         return res
 
-    def _is_historical_synced(self, fivetran_id):
+    def is_historical_synced(self, fivetran_id):
 
         res = requests.get(
             f"{settings.FIVETRAN_URL}/connectors/{fivetran_id}",
@@ -109,7 +109,7 @@ class FivetranClient:
     def block_until_synced(self, connector):
 
         backoff.on_predicate(backoff.expo, lambda x: x, max_time=3600)(
-            self._is_historical_synced
+            self.is_historical_synced
         )(connector.fivetran_id)
 
     def get_schema(self, fivetran_id):
