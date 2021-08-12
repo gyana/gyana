@@ -57,19 +57,21 @@
         {% endif %}
     {% elif state == 'done' %}
         {% if not integration.ready %}
-            <div class="flex flex-row flex-1 overflow-hidden">
-                {% include "integrations/_data.html" %}
-            </div>
-            <div class="flex flex-row">
+            <div class='card'>
+                <h4>Review your imported data</h4>
+                <p>This will add a total of {{ row_count }} rows to your team. You can edit your
+                    <a class="link" href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update">configuration</a>
+                    now or at any time in the future.
+                </p>
                 <form method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
                     {% csrf_token %}
-
-                    {% include "django/forms/default_form.html" %}
-
-                    <button type="submit" class="button button--success">
-                        Approve
+                    <button type="submit" class="button button--success mt-4">
+                        Confirm
                     </button>
                 </form>
+            </div>
+            <div class="card mt-4">
+                {% include "integrations/_data.html" %}
             </div>
         {% else %}
             Done
