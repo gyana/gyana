@@ -9,6 +9,7 @@ from .models import Dashboard
 class StatusColumn(tables.TemplateColumn):
     def render(self, record, table, **kwargs):
         context = getattr(table, "context", Context())
+        context["object_name"] = "dashboard"
         if any(not widget.is_valid for widget in record.widget_set.iterator()):
             context["icon"] = ICONS["warning"]
             context["text"] = "This dashboard contains at least one incomplete widget."
@@ -28,4 +29,4 @@ class DashboardTable(tables.Table):
     status = StatusColumn(template_name="columns/status.html")
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
-    duplicate = DuplicateColumn(template_name="dashboards/duplicate.html")
+    duplicate = DuplicateColumn(template_name="components/_duplicate.html")

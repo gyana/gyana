@@ -1,17 +1,17 @@
 import analytics
-from apps.nodes.config import get_node_config_with_arity
-from apps.projects.mixins import ProjectMixin
 from apps.base.segment_analytics import (
     WORKFLOW_CREATED_EVENT,
     WORKFLOW_DUPLICATED_EVENT,
 )
+from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.nodes.config import get_node_config_with_arity
+from apps.projects.mixins import ProjectMixin
 from django import forms
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
 from django.urls import reverse
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
-from apps.base.turbo import TurboCreateView, TurboUpdateView
 
 from .forms import WorkflowForm, WorkflowFormCreate
 from .models import Workflow
@@ -90,9 +90,10 @@ class WorkflowDelete(ProjectMixin, DeleteView):
 
 
 class WorkflowDuplicate(TurboUpdateView):
-    template_name = "workflows/duplicate.html"
+    template_name = "components/_duplicate.html"
     model = Workflow
     fields = []
+    extra_context = {"object_name": "workflow"}
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
         r = super().form_valid(form)

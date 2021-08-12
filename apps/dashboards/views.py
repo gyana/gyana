@@ -1,17 +1,17 @@
 import analytics
-from apps.dashboards.tables import DashboardTable
-from apps.projects.mixins import ProjectMixin
 from apps.base.segment_analytics import (
     DASHBOARD_CREATED_EVENT,
     DASHBOARD_DUPLICATED_EVENT,
 )
+from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.dashboards.tables import DashboardTable
+from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import WIDGET_CHOICES_ARRAY
 from django.db.models.query import QuerySet
 from django.urls.base import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
-from apps.base.turbo import TurboCreateView, TurboUpdateView
 
 from .forms import DashboardForm, DashboardFormCreate
 from .models import Dashboard
@@ -90,9 +90,10 @@ class DashboardDelete(ProjectMixin, DeleteView):
 
 
 class DashboardDuplicate(TurboUpdateView):
-    template_name = "dashboards/duplicate.html"
+    template_name = "components/_duplicate.html"
     model = Dashboard
     fields = []
+    extra_context = {"object_name": "dashboard"}
 
     def form_valid(self, form):
         r = super().form_valid(form)
