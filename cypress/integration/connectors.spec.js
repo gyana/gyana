@@ -1,5 +1,12 @@
 /// <reference types="cypress" />
 
+const createConnector = (service) => {
+  cy.visit('/projects/1/integrations/connectors/new?service=google_analytics')
+  cy.get('button[type=submit]').click()
+  cy.url().should('contain', '/connectors/mock')
+  cy.contains('continue').click()
+}
+
 describe('connectors', () => {
   beforeEach(() => {
     cy.login()
@@ -39,12 +46,7 @@ describe('connectors', () => {
       .should('eq', 1)
   })
   it('checks status on pending page', () => {
-    // start the connector
-    cy.visit('/projects/1/integrations/connectors/new?service=google_analytics')
-    cy.get('button[type=submit]').click()
-    cy.url().should('contain', '/connectors/mock')
-    cy.contains('continue').click()
-    cy.url().should('contain', '/projects/1/integrations/7/setup')
+    createConnector('google_analytics')
     cy.contains('Save & Run').click()
 
     // wait 1s for mock connector to complete
@@ -69,5 +71,22 @@ describe('connectors', () => {
     cy.contains('Approve').click()
 
     cy.url().should('contain', '/projects/1/integrations/7')
+  })
+  it.only('update tables in non-database', () => {
+    createConnector('google_analytics')
+    cy.contains('Save & Run').click()
+    cy.wait(1000)
+    cy.reload()
+
+    cy.contains('Edit Config').click()
+    cy.contains('Adwords Campaigns').click()
+    // wait for javascript to update hidden element
+    cy.wait(200)
+
+    cy.contains('Save & Run').click()
+    // cy.wait(1000)
+    // cy.reload()
+
+    cy.contains('Adwords Campaigns').should('not.exist')
   })
 })
