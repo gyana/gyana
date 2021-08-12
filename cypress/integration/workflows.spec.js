@@ -77,4 +77,22 @@ describe('workflows', () => {
     cy.get('.sidebar__link--active').click()
     cy.contains('Uptodate')
   })
+
+  it('Shows schemajs failed loading screen', () => {
+    cy.window().then((win) => {
+      delete win.schema
+    })
+    cy.get('button[type=submit]').first().click()
+    cy.contains('Loading')
+    cy.contains('Something went wrong!', { timeout: 8000 })
+  })
+
+  it.only('Shows nodes loading error', () => {
+    cy.intercept('GET', `/nodes/api/nodes/?workflow=${getModelStartId('workflows.workflow')}`, {
+      statusCode: 500,
+    })
+    cy.get('button[type=submit]').first().click()
+    cy.contains('Loading...')
+    cy.contains('Failed loading your nodes!')
+  })
 })
