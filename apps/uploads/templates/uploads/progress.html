@@ -12,7 +12,7 @@
 {% block error_message %}
   <h4>Errors occurred when validating your upload.</h4>
   <p>If the problem persists, try uploading to Sheets and use our
-    <a class="link" href="{% url 'project_integrations_sheets:create' self.object.integration.project.id %}">Sheets integration.</a>
+    <a class="link" href="{% url 'project_integrations_uploads:create' object.integration.project.id %}">Sheets integration.</a>
   </p>
 {% endblock %}
 

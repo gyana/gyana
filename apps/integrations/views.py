@@ -13,12 +13,8 @@ from django_tables2.views import SingleTableMixin
 from .forms import IntegrationForm
 from .mixins import ReadyMixin
 from .models import Integration
-from .tables import (
-    IntegrationListTable,
-    IntegrationPendingTable,
-    StructureTable,
-    UsedInTable,
-)
+from .tables import (IntegrationListTable, IntegrationPendingTable,
+                     StructureTable, UsedInTable)
 
 # CRUDL
 
@@ -85,7 +81,8 @@ class IntegrationSetup(ProjectMixin, TurboUpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
+        if self.object.state == 'done':
+            context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
         context_data["state"] = self.request.GET.get("state") or self.object.state
         return context_data
 

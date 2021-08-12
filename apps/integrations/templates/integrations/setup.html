@@ -1,4 +1,5 @@
 {% extends "integrations/base.html" %}
+{% load humanize %}
 
 {% block tab %}
 
@@ -59,7 +60,7 @@
         {% if not integration.ready %}
             <div class='card'>
                 <h4>Review your imported data</h4>
-                <p>This will add a total of {{ row_count }} rows to your team. You can edit your
+                <p>This will add a total of <strong>{{ object.num_rows|intcomma }}</strong> rows to your team. You can edit your
                     <a class="link" href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update">configuration</a>
                     now or at any time in the future.
                 </p>
@@ -70,9 +71,6 @@
                     </button>
                 </form>
             </div>
-            <div class="card mt-4">
-                {% include "integrations/_data.html" %}
-            </div>
         {% else %}
             <div class='card'>
                 <h4>Ready for analytics</h4>
@@ -80,7 +78,9 @@
                     <a class="link" href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update">configuration</a>
                     now or at any time in the future.
                 </p>
+            </div>
         {% endif %}
+        {% include "integrations/_data.html" %}
     {% endif %}
 </div>
 
