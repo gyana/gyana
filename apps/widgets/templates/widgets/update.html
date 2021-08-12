@@ -9,7 +9,8 @@
       {% include 'widgets/forms/chart.html' %}
     {% endif %}
   </div>
-  <div class="w-1/2 h-full overflow-y-auto">
+
+  <div class="w-1/2 h-full overflow-y-auto mt-8">
     {% if widget.is_valid %}
     <turbo-frame id="widgets-output-{{ widget.id }}"
                   src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}">
