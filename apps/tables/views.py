@@ -17,46 +17,46 @@ from .tables import TableTable
 #         return Table.available.filter(project=self.project)
 
 
-class TableDelete(ProjectMixin, DeleteView):
-    template_name = "integrations/fivetran_tables/list.html"
-    model = Table
+# class TableDelete(ProjectMixin, DeleteView):
+#     template_name = "integrations/fivetran_tables/list.html"
+#     model = Table
 
-    def delete(self, request, *args, **kwargs):
-        """
-        Handles deletion of data in third party places. BigQuery and Fivetran atm.
+#     def delete(self, request, *args, **kwargs):
+#         """
+#         Handles deletion of data in third party places. BigQuery and Fivetran atm.
 
-        If the table can't be unselected from the Fivetran schema it's important to
-        keep the data around for the connector to function. So when it errors we also
-        keep the BigQuery table, otherwise we throw it all away :).
-        """
-        table = self.get_object()
-        integration = table.integration
-        # Stop syncing the table on the Fivetran connector
-        client = FivetranClient()
-        # This call will return an error when the table being deleted
-        # cannot be unselected in the Fivetran schema. This is fine and
-        # we can ignore the error.
-        res = client.update_table_config(
-            integration.connector.fivetran_id,
-            integration.connector.schema,
-            table.bq_table,
-            False,
-        )
+#         If the table can't be unselected from the Fivetran schema it's important to
+#         keep the data around for the connector to function. So when it errors we also
+#         keep the BigQuery table, otherwise we throw it all away :).
+#         """
+#         table = self.get_object()
+#         integration = table.integration
+#         # Stop syncing the table on the Fivetran connector
+#         client = FivetranClient()
+#         # This call will return an error when the table being deleted
+#         # cannot be unselected in the Fivetran schema. This is fine and
+#         # we can ignore the error.
+#         res = client.update_table_config(
+#             integration.connector.fivetran_id,
+#             integration.connector.schema,
+#             table.bq_table,
+#             False,
+#         )
 
-        if res["code"] == "Success":
-            # TODO: Delete the table in Big Query
-            pass
+#         if res["code"] == "Success":
+#             # TODO: Delete the table in Big Query
+#             pass
 
-        return super().delete(request, *args, **kwargs)
+#         return super().delete(request, *args, **kwargs)
 
-    def get_success_url(self) -> str:
-        if self.request.GET.get("on-integration"):
-            return reverse(
-                "project_integrations:tables",
-                args=(self.project.id, self.get_object().integration.id),
-            )
+#     def get_success_url(self) -> str:
+#         if self.request.GET.get("on-integration"):
+#             return reverse(
+#                 "project_integrations:tables",
+#                 args=(self.project.id, self.get_object().integration.id),
+#             )
 
-        return reverse(
-            "project_tables:list",
-            args=(self.project.id,),
-        )
+#         return reverse(
+#             "project_tables:list",
+#             args=(self.project.id,),
+#         )

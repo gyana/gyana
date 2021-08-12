@@ -92,6 +92,21 @@ class FivetranClient:
 
         return res
 
+    def resync(self, connector: Connector):
+
+        # https://fivetran.com/docs/rest-api/connectors#syncconnectordata
+
+        res = requests.post(
+            f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}/force",
+            headers=settings.FIVETRAN_HEADERS,
+        ).json()
+
+        if res["code"] != "Success":
+            # TODO
+            pass
+
+        return res
+
     def is_historical_synced(self, connector):
 
         res = requests.get(
@@ -141,7 +156,7 @@ class FivetranClient:
         # https://fivetran.com/docs/rest-api/connectors#modifyaconnectorschemaconfig
 
         res = requests.patch(
-            f"{settings.FIVETRAN_URL}/connectors/{connector.id}/schemas",
+            f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}/schemas",
             json={"schemas": schemas},
             headers=settings.FIVETRAN_HEADERS,
         ).json()
