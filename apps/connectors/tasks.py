@@ -107,7 +107,7 @@ def poll_fivetran_resync(self, connector_id):
     complete_connector_sync(connector, send_mail=False)
 
 
-def run_connector_sync(connector: Connector):
+def run_initial_connector_sync(connector: Connector):
 
     fivetran_client().start(connector)
 
@@ -120,7 +120,7 @@ def run_connector_sync(connector: Connector):
     connector.integration.save()
 
 
-def run_connector_resync(connector: Connector):
+def run_update_connector_sync(connector: Connector):
 
     is_resyncing = fivetran_client().resync(connector)
 
@@ -132,3 +132,14 @@ def run_connector_resync(connector: Connector):
 
         connector.integration.state = Integration.State.LOAD
         connector.integration.save()
+
+
+def run_connector_sync(connector: Connector):
+
+    func = (
+        run_initial_connector_sync
+        if connector.integration.table_set.count() == 0
+        else run_update_connector_sync
+    )
+
+    return func(connector)
