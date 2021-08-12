@@ -65,6 +65,9 @@ def poll_fivetran_historical_sync(self, connector_id):
     connector = get_object_or_404(Connector, pk=connector_id)
 
     fivetran_client().block_until_synced(connector)
+
+    # we've waited for a while, we don't to duplicate this logic
+    connector.refresh_from_db()
     check_and_complete_connector_sync(connector)
 
 

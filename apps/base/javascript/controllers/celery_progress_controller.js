@@ -13,8 +13,9 @@ export default class extends Controller {
   }
 
   init() {
-    if (this.doneValue == 'true') {
+    if (this.doneValue) {
       this.onSuccess()
+      return
     }
 
     CeleryProgressBar.initProgressBar(this.taskUrlValue, {
