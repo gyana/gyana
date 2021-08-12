@@ -26,11 +26,26 @@
 <div class="mb-auto pad">
     {% if state == 'update' %}
         {% if integration.kind == 'connector' %}
-            <turbo-frame id="connectors:update" src="{% url 'connectors:update' integration.connector.id %}"></turbo-frame>
+            <turbo-frame id="connectors:update" src="{% url 'connectors:update' integration.connector.id %}">
+                <div class='placeholder-scr placeholder-scr--fillscreen'>
+                <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+                <p class='placeholder-scr__title'>Loading configuration options...</p>
+                </div>
+            </turbo-frame>
         {% elif integration.kind == 'sheet' %}
-            <turbo-frame id="sheets:update" src="{% url 'sheets:update' integration.sheet.id %}"></turbo-frame>
+            <turbo-frame id="sheets:update" src="{% url 'sheets:update' integration.sheet.id %}">
+                <div class='placeholder-scr placeholder-scr--fillscreen'>
+                <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+                <p class='placeholder-scr__title'>Loading configuration options...</p>
+                </div>
+            </turbo-frame>
        {% elif integration.kind == 'upload' %}
-            <turbo-frame id="uploads:update" src="{% url 'uploads:update' integration.upload.id %}"></turbo-frame>
+            <turbo-frame id="uploads:update" src="{% url 'uploads:update' integration.upload.id %}">
+                <div class='placeholder-scr placeholder-scr--fillscreen'>
+                <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+                <p class='placeholder-scr__title'>Loading configuration options...</p>
+                </div>
+            </turbo-frame>
         {% endif %}
     {% elif state in 'load,error' %}
         {% if integration.kind == 'connector' %}
