@@ -74,7 +74,12 @@
                 {% include "integrations/_data.html" %}
             </div>
         {% else %}
-            Done
+            <div class='card'>
+                <h4>Ready for analytics</h4>
+                <p>You can edit your
+                    <a class="link" href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update">configuration</a>
+                    now or at any time in the future.
+                </p>
         {% endif %}
     {% endif %}
 </div>
