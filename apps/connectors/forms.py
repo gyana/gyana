@@ -81,6 +81,7 @@ class ConnectorUpdateForm(forms.ModelForm):
                 initial=schema.enabled,
                 label=schema.name_in_destination.replace("_", " ").title(),
                 widget=CheckboxInput() if is_database else HiddenInput(),
+                help_text="Include or exclude this schema",
             )
             self.fields[
                 f"{schema.name_in_destination}_tables"
@@ -95,6 +96,9 @@ class ConnectorUpdateForm(forms.ModelForm):
                 widget=MultiSelect,
                 initial=[t.name_in_destination for t in schema.tables if t.enabled],
                 label="Tables",
+                help_text="Include or exclude tables to import" + " for this schema"
+                if is_database
+                else "",
             )
 
     def clean(self):

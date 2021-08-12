@@ -4,21 +4,21 @@
 
 <nav id='tabbar tabbar--sm' class="tabbar">
     <a class="tabbar__link {% if not state in 'update,error,done' %} tabbar__link--disabled {% endif %} {% if state == 'update' %} tabbar__link--active {% endif %}"
-        href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update">
+        {% if state in 'update,error,done' %} href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update" {% endif %}>
         Configure
     </a>
     <a class="tabbar__link">
         <i class="fa fa-arrow-right"></i>
     </a>
     <a class="tabbar__link {% if not state in 'load,error' %} tabbar__link--disabled {% endif %} {% if state in "load,error" %} tabbar__link--active {% endif %}"
-        href="{% url 'project_integrations:setup' object.project.id object.id %}?state=load">
+        {% if state in 'load,error' %} href="{% url 'project_integrations:setup' object.project.id object.id %}?state=load" {% endif %}>
         Import
     </a>
     <a class="tabbar__link">
         <i class="fa fa-arrow-right"></i>
     </a>
     <a class="tabbar__link {% if not state in 'update,done' %} tabbar__link--disabled {% endif %} {% if state == "done" %} tabbar__link--active {% endif %}"
-        href="{% url 'project_integrations:setup' object.project.id object.id %}?state=done">
+        {% if state in 'update,done' %} href="{% url 'project_integrations:setup' object.project.id object.id %}?state=done" {% endif %}>
         {% if not integration.ready %} Review {% else %} Ready {% endif %}
     </a>
 </nav>
