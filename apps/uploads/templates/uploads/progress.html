@@ -1,36 +1,18 @@
-{% load static %}
+{% extends 'integrations/base_setup_progress.html' %}
 
-<ul class="integration__create-flow">
-  <li>
-    <div
-        class='integration__file-validate'
-        data-controller="celery-progress"
-        data-celery-progress-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
-        data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
-        data-celery-progress-redirect-url-value="{% url 'project_integrations:setup' object.integration.project.id object.integration.id %}"
-        >
+{% block loading_message %}
+    <h1>Validating and importing your upload...</h1>
+    <p>This can anywhere from a few seconds to a minute.</p>
+{% endblock  %}
 
-      <i class="fad fa-spinner-third fa-spin text-blue text-4xl"></i>
-      <div class='flex flex-col ml-4'>
-        <h1>Validating and importing your file...</h1>
-        <p>This might take a while, make sure to stay on the page.</p>
-      </div>
+{% block success_message %}
+  <h4>Upload successfully validated and imported.</h4>
+{% endblock  %}
 
-      <template id="success-template">
-        <i class="fas fa-check text-green text-xl mr-4"></i>
-        <h4>File successfully validated and imported.</h4>
-      </template>
-
-      <template id="failure-template">
-        <i class="fas fa-times text-red text-xl mr-4"></i>
-        <div class="flex flex-col">
-          <h4>Errors occurred when validating your file</h4>
-          <p id="failure-message"/>
-          <p>If you are trying to upload a complex csv file, it might be easier to upload to Google Sheets.</p>
-        </div>
-      </template>
-
-    </div>
-  </li>
-</ul>
+{% block error_message %}
+  <h4>Errors occurred when validating your upload.</h4>
+  <p>If the problem persists, try uploading to Sheets and use our
+    <a class="link" href="{% url 'project_integrations_sheets:create' self.object.integration.project.id %}">Sheets integration.</a>
+  </p>
+{% endblock %}
 
