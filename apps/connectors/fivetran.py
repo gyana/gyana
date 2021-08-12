@@ -1,4 +1,5 @@
 import json
+import os
 import time
 import uuid
 from dataclasses import asdict, dataclass
@@ -232,6 +233,20 @@ class FivetranClient:
             raise FivetranClientError()
 
 
+MOCK_SCHEMA_DIR = os.path.abspath(".mock/.schema")
+
+# enables celery to read updated mock config
+class MockSchemaStore:
+    def __setitem__(self, key, value):
+        json.dump(value, open(f"{MOCK_SCHEMA_DIR}/{key}.json", "w"))
+
+    def __getitem__(self, key):
+        return json.load(open(f"{MOCK_SCHEMA_DIR}/{key}.json", "r"))
+
+    def __contains__(self, key) -> bool:
+        return f"{key}.json" in os.listdir(MOCK_SCHEMA_DIR)
+
+
 class MockFivetranClient:
 
     # default if not available in fixtures
@@ -242,7 +257,7 @@ class MockFivetranClient:
 
     def __init__(self) -> None:
         # stored as dict to test that logic
-        self._schema_cache = {}
+        self._schema_cache = MockSchemaStore()
         self._started = {}
 
     def create(self, service, team_id):

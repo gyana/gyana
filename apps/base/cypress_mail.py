@@ -10,7 +10,7 @@ from glob import glob
 from django.core import mail
 from django.core.mail.backends.base import BaseEmailBackend
 
-MESSAGES_DIR = os.path.abspath(".messages")
+MESSAGES_DIR = os.path.abspath(".mock/.messages")
 
 
 def _msg_to_dict(msg):
