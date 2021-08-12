@@ -50,7 +50,6 @@ def run_upload_sync_task(self, upload_id: int):
                 source=Table.Source.INTEGRATION,
                 bq_dataset=DATASET_ID,
                 project=integration.project,
-                num_rows=0,
             )
 
             # no progress as load job does not provide query plan

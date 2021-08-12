@@ -45,7 +45,7 @@ class Table(BaseModel):
         related_name="intermediate_node",
     )
 
-    num_rows = models.IntegerField()
+    num_rows = models.IntegerField(default=0)
     data_updated = models.DateTimeField(auto_now_add=True)
 
     objects = models.Manager()

@@ -11,7 +11,8 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from .bigquery import get_last_modified_from_drive_file, import_table_from_sheet
+from .bigquery import (get_last_modified_from_drive_file,
+                       import_table_from_sheet)
 from .models import Sheet
 
 
@@ -53,8 +54,7 @@ def run_sheets_sync_task(self, sheet_id):
                 integration=integration,
                 source=Table.Source.INTEGRATION,
                 bq_dataset=DATASET_ID,
-                project=integration.project,
-                num_rows=0,
+                project=integration.project
             )
 
             query_job = _do_sync(self, sheet, table)
