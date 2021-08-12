@@ -19,6 +19,8 @@ def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
         autodetect=True,
         skip_leading_rows=1,
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+        field_delimiter=upload.field_delimiter_char,
+        # encoding="UTF-8",
         # TODO: this prevents autodetect to work
         # allow_quoted_newlines = True,
         # external_config.options.allow_jagged_rows = True

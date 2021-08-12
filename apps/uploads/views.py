@@ -8,10 +8,9 @@ from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from apps.uploads.models import Upload
 from django.urls import reverse
-from django.utils import timezone
 
 from .forms import UploadCreateForm
-from .tasks import run_initial_upload_sync
+from .tasks import run_upload_sync
 
 
 class UploadCreate(ProjectMixin, TurboCreateView):
@@ -49,14 +48,6 @@ class UploadCreate(ProjectMixin, TurboCreateView):
                 # "name": form.instance.name,
             },
         )
-
-        result = run_initial_upload_sync.delay(self.object.id)
-        self.object.sync_task_id = result.task_id
-        self.object.sync_started = timezone.now()
-        self.object.save()
-
-        self.object.integration.state = Integration.State.LOAD
-        self.object.integration.save()
 
         return r
 

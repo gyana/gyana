@@ -3,7 +3,7 @@
 {% block tab %}
 
 <nav id='tabbar tabbar--sm' class="tabbar">
-    <a class="tabbar__link {% if not state in 'update,done' %} tabbar__link--disabled {% endif %} {% if state == 'update' %} tabbar__link--active {% endif %}"
+    <a class="tabbar__link {% if not state in 'update,error,done' %} tabbar__link--disabled {% endif %} {% if state == 'update' %} tabbar__link--active {% endif %}"
         href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update">
         Configure
     </a>
@@ -25,10 +25,12 @@
 
 <div class="mb-auto pad">
     {% if state == 'update' %}
-        {% if integration.kind == 'sheet' %}
-            <turbo-frame id="sheets:update" src="{% url 'sheets:update' integration.sheet.id %}"></turbo-frame>
-        {% elif integration.kind == 'connector' %}
+        {% if integration.kind == 'connector' %}
             <turbo-frame id="connectors:update" src="{% url 'connectors:update' integration.connector.id %}"></turbo-frame>
+        {% elif integration.kind == 'sheet' %}
+            <turbo-frame id="sheets:update" src="{% url 'sheets:update' integration.sheet.id %}"></turbo-frame>
+       {% elif integration.kind == 'upload' %}
+            <turbo-frame id="uploads:update" src="{% url 'uploads:update' integration.upload.id %}"></turbo-frame>
         {% endif %}
     {% elif state in 'load,error' %}
         {% if integration.kind == 'connector' %}

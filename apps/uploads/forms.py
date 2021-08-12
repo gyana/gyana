@@ -46,3 +46,12 @@ class UploadCreateForm(forms.ModelForm):
                 self.save_m2m()
 
         return instance
+
+
+class UploadUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Upload
+        fields = ["field_delimiter"]
+        help_texts = {
+            "field_delimiter": "A field delimiter is a character that separates cells in a CSV table."
+        }

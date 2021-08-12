@@ -5,6 +5,7 @@ from . import frames, rest, views
 
 app_name = "uploads"
 urlpatterns = [
+    path("<hashid:pk>/update", frames.UploadUpdate.as_view(), name="update"),
     path("<hashid:pk>/progress", frames.UploadProgress.as_view(), name="progress"),
     path("file/generate-signed-url", rest.generate_signed_url),
 ]
