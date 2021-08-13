@@ -78,9 +78,8 @@
         {% else %}
             <div class='card'>
                 <h4>Ready for analytics</h4>
-                <p>You can edit your
-                    <a class="link" href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update">configuration</a>
-                    now or at any time in the future.
+                <p>You can still edit your
+                    <a class="link" href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update">configuration</a> before you confirm.
                 </p>
             </div>
         {% endif %}

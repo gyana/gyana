@@ -99,7 +99,7 @@ class IntegrationSetup(ProjectMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:setup",
+            "project_integrations:detail",
             args=(self.project.id, self.object.id),
         )
 

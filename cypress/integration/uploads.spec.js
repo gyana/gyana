@@ -14,16 +14,18 @@ describe('uploads', () => {
     cy.get('input[type=file]').attachFile('store_info.csv')
 
     cy.url().should('contain', '/projects/1/integrations/7/setup')
-    cy.contains('Validating and importing your file...')
-    cy.contains('File successfully validated and imported.', { timeout: 10000 })
+    cy.get('button[type=submit]').click()
+    cy.contains('Validating and importing your upload...')
+    cy.contains('Upload successfully validated and imported.', { timeout: 10000 })
 
     // review the table and approve
-    cy.contains('London')
-    cy.contains('Approve').click()
+    cy.contains('Employees')
+    cy.contains('Confirm').click()
 
     // bigquery file upload needs longer wait
-    cy.contains('Structure', { timeout: 10000 })
-    cy.contains('Data')
+    cy.contains('Data', { timeout: 10000 })
+    cy.contains('Overview')
+    // validate row count
     cy.contains('15')
 
     cy.url().should('contain', '/projects/1/integrations/7')
@@ -35,7 +37,6 @@ describe('uploads', () => {
 
     // check email sent
     cy.outbox()
-
       .then((outbox) => outbox.count)
       .should('eq', 1)
   })
@@ -52,8 +53,9 @@ describe('uploads', () => {
     cy.get('input[type=file]').attachFile('fifa.csv')
 
     // wait for entire process to happen successfully
-    cy.contains('Approve', { timeout: 20000 }).click()
-    cy.contains('Structure')
+    cy.get('button[type=submit]').click()
+    cy.contains('Confirm', { timeout: 20000 }).click()
+    cy.contains('Data')
     // 2250 lines of CSV including header
     cy.contains(2249)
   })
@@ -94,6 +96,7 @@ describe('uploads', () => {
 
     // bigquery does not allow quoted newlines unless explicitly set
     cy.get('input[type=file]').attachFile('store_info_quoted_newlines.csv')
+    cy.get('button[type=submit]').click()
     cy.contains(
       'Error while reading data, error message: Error detected while parsing row starting at position: 52. Error: Missing close double quote (") character.',
       { timeout: 10000 }
