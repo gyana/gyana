@@ -8,11 +8,7 @@ SERVICES = "apps/connectors/services.yaml"
 
 @lru_cache
 def get_services():
-    return {
-        key: val
-        for key, val in yaml.load(open(SERVICES, "r")).items()
-        if val["internal"] != "t" or settings.FIVETRAN_USE_INTERNAL
-    }
+    return {key: val for key, val in yaml.load(open(SERVICES, "r")).items()}
 
 
 @lru_cache

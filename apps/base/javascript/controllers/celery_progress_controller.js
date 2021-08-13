@@ -25,18 +25,21 @@ export default class extends Controller {
   }
 
   async onSuccess() {
-    const successNode = this.element.querySelector('#success-template').content.cloneNode(true)
-    this.element.innerHTML = ''
-    this.element.appendChild(successNode)
+    const successTemplate = this.element.querySelector('#success-template')
+    if (successTemplate !== null) {
+      const successNode = successTemplate.content.cloneNode(true)
+      this.element.innerHTML = ''
+      this.element.appendChild(successNode)
 
-    window.removeEventListener('beforeunload', this.onUnloadCall)
-    if (this.redirectUrlValue) {
-      setTimeout(() => {
-        Turbo.visit(this.redirectUrlValue)
-      }, 750)
-    } else if (this.turboStreamUrlValue) {
-      const html = await (await fetch(this.turboStreamUrlValue)).text()
-      Turbo.renderStreamMessage(html)
+      window.removeEventListener('beforeunload', this.onUnloadCall)
+      if (this.redirectUrlValue) {
+        setTimeout(() => {
+          Turbo.visit(this.redirectUrlValue)
+        }, 750)
+      } else if (this.turboStreamUrlValue) {
+        const html = await (await fetch(this.turboStreamUrlValue)).text()
+        Turbo.renderStreamMessage(html)
+      }
     }
   }
 

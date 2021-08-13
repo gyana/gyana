@@ -9,17 +9,20 @@ describe('integrations', () => {
 
     cy.visit('/projects/1/integrations')
   })
-  it('view structure and data', () => {
+  it('view structure and preview', () => {
     cy.contains('store_info').click()
 
     cy.url().should('contain', '/projects/1/integrations/1')
 
-    cy.contains('Structure').click()
-    cy.url().should('contain', '/projects/1/integrations/1/structure')
-    cy.get('table tbody tr').should('have.length', 4)
-    cy.get('table tbody :first-child').should('contain', 'store_id').and('contain', 'int64')
-
     cy.contains('Data').click()
+
+    // structure
+    cy.url().should('contain', '/projects/1/integrations/1/data')
+    cy.get('table tbody tr').should('have.length', 4)
+    cy.get('table tbody :first-child').should('contain', 'store_id').and('contain', 'Number')
+
+    // preview
+    cy.contains('Preview').click()
     cy.url().should('contain', '/projects/1/integrations/1/data')
     cy.get('table tbody tr').should('have.length', 15)
     cy.get('table thead th').should('have.length', 4)
@@ -58,6 +61,9 @@ describe('integrations', () => {
     // start with runtime error
     cy.url().should('contain', '/projects/1/integrations/sheets/new')
     cy.get('input[name=url]').type(SHARED_SHEET)
+    cy.get('button[type=submit]').click()
+
+    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('store_info!A20:D21')
     cy.get('button[type=submit]').click()
     cy.contains('No columns found in the schema.', { timeout: 10000 })
@@ -78,17 +84,18 @@ describe('integrations', () => {
     cy.contains('No columns found in the schema.', { timeout: 10000 })
 
     // edit the configuration
-    cy.contains('Edit Config').click()
+    cy.contains('Configure').click()
+    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').clear().type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
 
-    cy.contains('Approve', { timeout: 10000 })
+    cy.contains('Confirm', { timeout: 10000 })
 
     // make absolute sure that only after approval does row count update
     cy.reload()
-    cy.contains('Rows 25/∞')
-    cy.contains('Approve').click()
-    cy.contains('Rows 35/∞')
+    cy.contains('Rows 57/∞')
+    cy.contains('Confirm').click()
+    cy.contains('Rows 67/∞')
 
     // check the pending page again
     cy.visit('/projects/1/integrations')

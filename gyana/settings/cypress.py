@@ -24,5 +24,3 @@ CYPRESS_URLS = True
 EMAIL_BACKEND = "apps.base.cypress_mail.EmailBackend"
 
 CLOUD_NAMESPACE = "cypress"
-
-FIVETRAN_USE_INTERNAL = True
