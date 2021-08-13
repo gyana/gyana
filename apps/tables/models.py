@@ -21,6 +21,9 @@ class Table(BaseModel):
         WORKFLOW_NODE = "workflow_node", "Workflow node"
         PIVOT_NODE = "intermediate_node", "Intermediate node"
 
+    # This field has a specific getter function. This allows for a default table name.
+    # It can be overridden to hold a non-default table name. This happens when the Table
+    # is bound to a Fivetran created table in bigquery
     _bq_table = models.CharField(
         db_column="bq_table",
         null=True,
