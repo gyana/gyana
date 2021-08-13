@@ -93,9 +93,9 @@ describe('integrations', () => {
 
     // make absolute sure that only after approval does row count update
     cy.reload()
-    cy.contains('Rows 57/∞')
+    cy.contains('Rows 25/∞')
     cy.contains('Confirm').click()
-    cy.contains('Rows 67/∞')
+    cy.contains('Rows 35/∞')
 
     // check the pending page again
     cy.visit('/projects/1/integrations')

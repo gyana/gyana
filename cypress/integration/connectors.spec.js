@@ -1,11 +1,15 @@
 /// <reference types="cypress" />
 
+import { getModelStartId } from '../support/utils'
+
 const createConnector = (service) => {
   cy.visit('/projects/1/integrations/connectors/new?service=google_analytics')
   cy.get('button[type=submit]').click()
   cy.url().should('contain', '/connectors/mock')
   cy.contains('continue').click()
 }
+
+const newConnectorId = getModelStartId('integrations.integration')
 
 describe('connectors', () => {
   beforeEach(() => {
@@ -28,7 +32,7 @@ describe('connectors', () => {
     cy.url().should('contain', '/connectors/mock')
     cy.contains('continue').click()
 
-    cy.url().should('contain', '/projects/1/integrations/7/setup')
+    cy.url().should('contain', `/projects/1/integrations/${newConnectorId}/setup`)
     cy.get('button[type=submit]').click()
 
     cy.contains('Importing data from your connector...')
@@ -66,10 +70,10 @@ describe('connectors', () => {
     // takes me to the review page
     cy.contains('Google Analytics').first().click()
 
-    cy.url().should('contain', '/projects/1/integrations/7/setup')
+    cy.url().should('contain', `/projects/1/integrations/${newConnectorId}/setup`)
     cy.contains('Confirm').click()
 
-    cy.url().should('contain', '/projects/1/integrations/7')
+    cy.url().should('contain', `/projects/1/integrations/${newConnectorId}`)
   })
   it('update tables in non-database', () => {
     createConnector('google_analytics')

@@ -35,7 +35,7 @@ describe('nodes', () => {
     openModalAndCheckTitle(19, 'Get data')
 
     cy.contains('revenue')
-    cy.contains('store_info').should('be.visible').click()
+    cy.get('#node-update-form').contains('store_info').should('be.visible').click()
     cy.contains('Save & Preview').click()
     cy.contains('Loading preview...').should('be.visible')
     cy.contains('Edinburgh').should('be.visible')
@@ -44,12 +44,15 @@ describe('nodes', () => {
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid').should('not.contain', 'Edinburgh')
     cy.contains('100000').should('be.visible')
+
+    testHelp('Select data from an integration to be used in your workflow.')
   })
 
   it('Output', () => {
     openModalAndCheckTitle(2, 'Save data')
-
     cy.contains('Edinburgh')
+    testHelp("The connected nodes' data will be available to be")
+
     cy.get('input[name=output_name]')
       .should('have.value', '')
       .type('Naturalis Principia Mathematica')
@@ -61,8 +64,8 @@ describe('nodes', () => {
 
   it('Select', () => {
     openModalAndCheckTitle(3, 'Select columns')
-
     testHelp('Use the select node')
+
     cy.contains('Owner').click()
     cy.contains('Save & Preview').click()
     cy.contains('Loading preview...').should('be.visible')
@@ -324,7 +327,7 @@ describe('nodes', () => {
 
   it('Window', () => {
     openModalAndCheckTitle(15, 'Window')
-    // TODO: test docs
+    testHelp('Window functions aggregate over the selected')
     cy.contains('Window columns').should('be.visible')
 
     // TODO: test whether saving with optional input work

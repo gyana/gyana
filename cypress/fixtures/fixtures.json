@@ -182,7 +182,6 @@
       "created_by": 1
     }
   },
-
   {
     "model": "integrations.integration",
     "pk": 2,
