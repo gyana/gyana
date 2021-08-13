@@ -119,6 +119,7 @@ UnpivotColumnFormSet = forms.inlineformset_factory(
     can_delete=True,
     extra=0,
     formset=InlineColumnFormset,
+    min_num=1,
 )
 
 WindowColumnFormSet = forms.inlineformset_factory(

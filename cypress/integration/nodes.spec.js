@@ -395,7 +395,6 @@ describe('nodes', () => {
     waitForLiveFormUpdate()
     cy.get('input[name=unpivot_column]').should('not.be.disabled').type('quarter').blur()
     waitForLiveFormUpdate()
-    addFormToFormset('columns')
     cy.get('select[name=columns-0-column').select('Q1')
     waitForLiveFormUpdate()
     addFormToFormset('columns')
