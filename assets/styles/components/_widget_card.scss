@@ -1,10 +1,10 @@
 .widget-card {
   display: flex;
+  position: relative;
 
   &__visual {
     background: var(--c-white);
     border-color: var(--c-gray);
-    border-radius: 10px;
     border: 1px solid var(--c-gray);
     display: flex;
     flex-flow: column;
@@ -16,8 +16,6 @@
 
   &__commands {
     background-color: var(--c-gray-20);
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px;
     color: var(--c-black-50);
     border: 1px solid var(--c-gray);
     flex-flow: column;
@@ -42,5 +40,58 @@
 
   &:hover &__commands {
     display: flex;
+  }
+
+  &__indicator {
+    position: absolute;
+    width: 0.4rem;
+    height: 0.4rem;
+    background: var(--c-black-20);
+    pointer-events: none;
+    z-index: var(--z-ui);
+
+    &:nth-of-type(1) {
+      left: -0.2rem;
+      top: -0.2rem;
+    }
+
+    &:nth-of-type(2) {
+      left: 50%;
+      top: -0.2rem;
+      transform: translateX(-50%);
+    }
+
+    &:nth-of-type(3) {
+      right: -0.2rem;
+      top: -0.2rem;
+    }
+
+    &:nth-of-type(4) {
+      left: -0.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    &:nth-of-type(5) {
+      right: -0.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    &:nth-of-type(6) {
+      left: -0.2rem;
+      bottom: -0.2rem;
+    }
+
+    &:nth-of-type(7) {
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -0.2rem;
+    }
+
+    &:nth-of-type(8) {
+      right: -0.2rem;
+      bottom: -0.2rem;
+    }
   }
 }

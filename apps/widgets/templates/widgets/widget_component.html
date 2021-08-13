@@ -19,6 +19,10 @@
         </turbo-frame>
       </div>
 
+      {% for i in '01234567'|make_list %}
+        <span class="widget-card__indicator"></span>
+      {% endfor %}
+
       {% if request.GET.mode == 'edit' %}
       <div class='widget-card__commands'>
         {% if object.kind != "text" %}
