@@ -53,6 +53,7 @@ SortColumnFormSet = forms.inlineformset_factory(
     fields=("column", "ascending"),
     can_delete=True,
     extra=0,
+    min_num=1,
     formset=InlineColumnFormset,
 )
 
@@ -63,6 +64,7 @@ EditColumnFormSet = forms.inlineformset_factory(
     form=OperationColumnForm,
     can_delete=True,
     extra=0,
+    min_num=1,
     formset=InlineColumnFormset,
 )
 
@@ -72,6 +74,7 @@ AddColumnFormSet = forms.inlineformset_factory(
     form=AddColumnForm,
     can_delete=True,
     extra=0,
+    min_num=1,
     formset=InlineColumnFormset,
 )
 
@@ -82,6 +85,7 @@ FormulaColumnFormSet = forms.inlineformset_factory(
     fields=("formula", "label"),
     can_delete=True,
     extra=0,
+    min_num=1,
 )
 
 RenameColumnFormSet = forms.inlineformset_factory(
@@ -92,10 +96,11 @@ RenameColumnFormSet = forms.inlineformset_factory(
     can_delete=True,
     extra=0,
     formset=InlineColumnFormset,
+    min_num=1,
 )
 
 FilterFormSet = forms.inlineformset_factory(
-    Node, Filter, form=FilterForm, can_delete=True, extra=0
+    Node, Filter, form=FilterForm, can_delete=True, extra=0, min_num=1
 )
 
 SelectColumnFormSet = forms.inlineformset_factory(
@@ -117,7 +122,12 @@ UnpivotColumnFormSet = forms.inlineformset_factory(
 )
 
 WindowColumnFormSet = forms.inlineformset_factory(
-    Node, WindowColumn, can_delete=True, extra=0, form=WindowColumnForm
+    Node,
+    WindowColumn,
+    can_delete=True,
+    extra=0,
+    form=WindowColumnForm,
+    min_num=1,
 )
 
 KIND_TO_FORMSETS = {
