@@ -422,4 +422,13 @@ describe('nodes', () => {
     cy.get('#workflows-grid th:contains(product)', { timeout: 10000 }).should('be.visible')
     cy.get('#workflows-grid td:contains(Kale)').should('have.length', 4)
   })
+
+  it('Tests unconnected modal screen', () => {
+    cy.visit(`/projects/2/workflows/1`)
+    cy.get('[data-id=25] [title="Aggregation node needs to be connected to a node"]')
+    cy.get('[data-id=25]').dblclick()
+    cy.contains(
+      'This node needs to be connected to more than one node before you can configure it.'
+    )
+  })
 })

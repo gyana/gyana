@@ -80,7 +80,7 @@
     "pk": 5,
     "fields": {
       "password": "pbkdf2_sha256$260000$7r5pRvBE37hUF5rvTs5aNy$OROS62ddwXVocWvB+z73NhUHU4dD6sdBsrT8f7NUcQE=",
-      "last_login": "2021-08-11T14:06:58.083Z",
+      "last_login": "2021-08-13T09:02:13.827Z",
       "is_superuser": false,
       "username": "nodes",
       "first_name": "",
@@ -182,6 +182,7 @@
       "created_by": 1
     }
   },
+
   {
     "model": "integrations.integration",
     "pk": 2,
@@ -243,15 +244,75 @@
     }
   },
   {
+    "model": "integrations.integration",
+    "pk": 6,
+    "fields": {
+      "created": "2021-08-10T10:03:16.769Z",
+      "updated": "2021-08-11T13:35:19.052Z",
+      "project": 1,
+      "kind": "connector",
+      "name": "Heroku Postgres",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-10T10:03:16.769Z",
+      "created_by": 1
+    }
+  },
+  {
+    "model": "integrations.integration",
+    "pk": 7,
+    "fields": {
+      "created": "2021-08-10T10:40:23.584Z",
+      "updated": "2021-08-10T13:34:45.844Z",
+      "project": 1,
+      "kind": "connector",
+      "name": "Facebook Ads",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-10T10:40:23.584Z",
+      "created_by": 1
+    }
+  },
+  {
+    "model": "integrations.integration",
+    "pk": 8,
+    "fields": {
+      "created": "2021-08-10T10:40:23.584Z",
+      "updated": "2021-08-10T12:01:16.317Z",
+      "project": 1,
+      "kind": "connector",
+      "name": "Google Analytics",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-10T10:40:23.584Z",
+      "created_by": 1
+    }
+  },
+  {
+    "model": "integrations.integration",
+    "pk": 9,
+    "fields": {
+      "created": "2021-08-10T12:54:44.272Z",
+      "updated": "2021-08-11T13:29:03.723Z",
+      "project": 1,
+      "kind": "connector",
+      "name": "Shopify",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-10T12:54:44.272Z",
+      "created_by": 1
+    }
+  },
+  {
     "model": "workflows.workflow",
     "pk": 1,
     "fields": {
       "created": "2021-08-10T07:31:33.634Z",
-      "updated": "2021-08-11T14:08:13.416Z",
+      "updated": "2021-08-13T09:02:28.456Z",
       "name": "Untitled",
       "project": 2,
       "last_run": null,
-      "data_updated": "2021-08-11T14:08:13.416Z"
+      "data_updated": "2021-08-13T09:02:28.456Z"
     }
   },
   {
@@ -278,66 +339,6 @@
       "string_value": null,
       "string_values": null,
       "bool_value": true
-    }
-  },
-  {
-    "model": "integrations.integration",
-    "pk": 3,
-    "fields": {
-      "created": "2021-08-10T10:03:16.769Z",
-      "updated": "2021-08-11T13:35:19.052Z",
-      "project": 1,
-      "kind": "connector",
-      "name": "Heroku Postgres",
-      "state": "done",
-      "ready": true,
-      "created_ready": "2021-08-10T10:03:16.769Z",
-      "created_by": 1
-    }
-  },
-  {
-    "model": "integrations.integration",
-    "pk": 4,
-    "fields": {
-      "created": "2021-08-10T10:40:23.584Z",
-      "updated": "2021-08-10T13:34:45.844Z",
-      "project": 1,
-      "kind": "connector",
-      "name": "Facebook Ads",
-      "state": "done",
-      "ready": true,
-      "created_ready": "2021-08-10T10:40:23.584Z",
-      "created_by": 1
-    }
-  },
-  {
-    "model": "integrations.integration",
-    "pk": 5,
-    "fields": {
-      "created": "2021-08-10T10:40:23.584Z",
-      "updated": "2021-08-10T12:01:16.317Z",
-      "project": 1,
-      "kind": "connector",
-      "name": "Google Analytics",
-      "state": "done",
-      "ready": true,
-      "created_ready": "2021-08-10T10:40:23.584Z",
-      "created_by": 1
-    }
-  },
-  {
-    "model": "integrations.integration",
-    "pk": 6,
-    "fields": {
-      "created": "2021-08-10T12:54:44.272Z",
-      "updated": "2021-08-11T13:29:03.723Z",
-      "project": 1,
-      "kind": "connector",
-      "name": "Shopify",
-      "state": "done",
-      "ready": true,
-      "created_ready": "2021-08-10T12:54:44.272Z",
-      "created_by": 1
     }
   },
   {
@@ -449,7 +450,7 @@
       "workflow": 1,
       "name": null,
       "kind": "input",
-      "x": 130.00073313569712,
+      "x": 130.00086675371477,
       "y": 1680.0,
       "data_updated": "2021-08-10T07:35:39.873Z",
       "error": null,
@@ -483,7 +484,7 @@
       "workflow": 1,
       "name": null,
       "kind": "output",
-      "x": 430.0004842390909,
+      "x": 430.0000090066662,
       "y": 0.0,
       "data_updated": "2021-08-10T07:32:53.404Z",
       "error": null,
@@ -517,7 +518,7 @@
       "workflow": 1,
       "name": null,
       "kind": "select",
-      "x": 430.0002228400457,
+      "x": 430.00098002782164,
       "y": 210.0,
       "data_updated": "2021-08-10T07:33:00.907Z",
       "error": null,
@@ -551,7 +552,7 @@
       "workflow": 1,
       "name": null,
       "kind": "aggregation",
-      "x": 430.0006702401183,
+      "x": 430.0006132304102,
       "y": 420.0,
       "data_updated": "2021-08-10T07:33:11.851Z",
       "error": null,
@@ -585,7 +586,7 @@
       "workflow": 1,
       "name": null,
       "kind": "sort",
-      "x": 430.0003462251718,
+      "x": 430.00037321984627,
       "y": 630.0,
       "data_updated": "2021-08-10T07:33:28.495Z",
       "error": null,
@@ -619,7 +620,7 @@
       "workflow": 1,
       "name": null,
       "kind": "limit",
-      "x": 430.00042772848474,
+      "x": 430.0002700237544,
       "y": 840.0,
       "data_updated": "2021-08-10T07:33:32.039Z",
       "error": null,
@@ -653,7 +654,7 @@
       "workflow": 1,
       "name": null,
       "kind": "filter",
-      "x": 430.0000422407839,
+      "x": 430.0008997000434,
       "y": 1050.0,
       "data_updated": "2021-08-10T07:33:38.804Z",
       "error": null,
@@ -687,7 +688,7 @@
       "workflow": 1,
       "name": null,
       "kind": "distinct",
-      "x": 430.0009429625825,
+      "x": 430.00080573033114,
       "y": 1260.0,
       "data_updated": "2021-08-10T07:33:48.302Z",
       "error": null,
@@ -721,7 +722,7 @@
       "workflow": 1,
       "name": null,
       "kind": "pivot",
-      "x": 430.0006072614242,
+      "x": 430.000825928377,
       "y": 1470.0,
       "data_updated": "2021-08-10T07:33:58.371Z",
       "error": null,
@@ -755,7 +756,7 @@
       "workflow": 1,
       "name": null,
       "kind": "edit",
-      "x": 430.0001117914069,
+      "x": 430.0009840475426,
       "y": 1680.0,
       "data_updated": "2021-08-10T07:34:34.622Z",
       "error": null,
@@ -789,7 +790,7 @@
       "workflow": 1,
       "name": null,
       "kind": "add",
-      "x": 430.000553043609,
+      "x": 430.00029974124226,
       "y": 1890.0,
       "data_updated": "2021-08-10T07:34:44.737Z",
       "error": null,
@@ -823,7 +824,7 @@
       "workflow": 1,
       "name": null,
       "kind": "rename",
-      "x": 430.0008566394529,
+      "x": 430.0006319734317,
       "y": 2100.0,
       "data_updated": "2021-08-10T07:34:53.033Z",
       "error": null,
@@ -857,7 +858,7 @@
       "workflow": 1,
       "name": null,
       "kind": "formula",
-      "x": 430.00036024588417,
+      "x": 430.0001452432588,
       "y": 2310.0,
       "data_updated": "2021-08-10T07:34:59.051Z",
       "error": null,
@@ -891,7 +892,7 @@
       "workflow": 1,
       "name": null,
       "kind": "window",
-      "x": 430.0000867270803,
+      "x": 430.00090010981074,
       "y": 2520.0,
       "data_updated": "2021-08-10T07:35:05.055Z",
       "error": null,
@@ -925,7 +926,7 @@
       "workflow": 1,
       "name": null,
       "kind": "text",
-      "x": 0.0007947484922770967,
+      "x": 4.620979454024177e-7,
       "y": 2902.5,
       "data_updated": null,
       "error": null,
@@ -959,7 +960,7 @@
       "workflow": 1,
       "name": null,
       "kind": "input",
-      "x": 130.00065443235766,
+      "x": 130.00074067910248,
       "y": 3152.5,
       "data_updated": "2021-08-10T07:35:44.789Z",
       "error": null,
@@ -993,7 +994,7 @@
       "workflow": 1,
       "name": null,
       "kind": "join",
-      "x": 430.00088886155595,
+      "x": 430.0008995868051,
       "y": 3017.5,
       "data_updated": "2021-08-10T07:36:58.310Z",
       "error": null,
@@ -1027,7 +1028,7 @@
       "workflow": 1,
       "name": null,
       "kind": "input",
-      "x": 130.00069067551274,
+      "x": 130.00099545315524,
       "y": 3362.5,
       "data_updated": null,
       "error": null,
@@ -1061,7 +1062,7 @@
       "workflow": 1,
       "name": null,
       "kind": "filter",
-      "x": 430.0007079627207,
+      "x": 430.0000362557784,
       "y": 2730.0,
       "data_updated": "2021-08-11T09:10:46.114Z",
       "error": null,
@@ -1095,7 +1096,7 @@
       "workflow": 1,
       "name": null,
       "kind": "union",
-      "x": 600.0001417201806,
+      "x": 600.0001406193772,
       "y": 2730.0,
       "data_updated": "2021-08-11T09:14:41.225Z",
       "error": null,
@@ -1129,7 +1130,7 @@
       "workflow": 1,
       "name": null,
       "kind": "intersect",
-      "x": 600.0001851159906,
+      "x": 600.0006735567656,
       "y": 2940.0,
       "data_updated": "2021-08-11T12:41:29.066Z",
       "error": null,
@@ -1163,7 +1164,7 @@
       "workflow": 1,
       "name": null,
       "kind": "input",
-      "x": 130.00056670121162,
+      "x": 130.00035406556512,
       "y": 3572.5,
       "data_updated": "2021-08-11T14:08:10.382Z",
       "error": null,
@@ -1197,7 +1198,7 @@
       "workflow": 1,
       "name": null,
       "kind": "unpivot",
-      "x": 430.0000358843969,
+      "x": 430.00035505502274,
       "y": 3572.5,
       "data_updated": "2021-08-11T14:08:13.415Z",
       "error": null,
@@ -1223,6 +1224,40 @@
     }
   },
   {
+    "model": "nodes.node",
+    "pk": 25,
+    "fields": {
+      "created": "2021-08-13T09:02:28.471Z",
+      "updated": "2021-08-13T09:02:28.471Z",
+      "workflow": 1,
+      "name": null,
+      "kind": "aggregation",
+      "x": 130.00016153931196,
+      "y": 3782.5,
+      "data_updated": null,
+      "error": null,
+      "intermediate_table": null,
+      "input_table": null,
+      "output_name": null,
+      "select_mode": "keep",
+      "join_how": "inner",
+      "join_left": null,
+      "join_right": null,
+      "union_mode": "keep",
+      "union_distinct": false,
+      "limit_limit": 100,
+      "limit_offset": null,
+      "text_text": null,
+      "pivot_index": null,
+      "pivot_column": null,
+      "pivot_value": null,
+      "pivot_aggregation": null,
+      "unpivot_value": null,
+      "unpivot_column": null,
+      "parents": []
+    }
+  },
+  {
     "model": "uploads.upload",
     "pk": 1,
     "fields": {
@@ -1243,6 +1278,7 @@
       "updated": "2021-08-10T07:30:05.253Z",
       "integration": 3,
       "file_gcs_path": "cypress/integrations/store_info-1628580600032663.csv",
+      "field_delimiter": "comma",
       "sync_task_id": "1a2e3e76-3a94-4284-8d7d-48f604690ffc",
       "sync_started": "2021-08-10T07:30:01.347Z"
     }
@@ -1255,6 +1291,7 @@
       "updated": "2021-08-10T07:32:09.105Z",
       "integration": 4,
       "file_gcs_path": "cypress/integrations/revenue-1628580724160651.csv",
+      "field_delimiter": "comma",
       "sync_task_id": "d0e6091d-7343-4cfb-9d38-92a59cad92b3",
       "sync_started": "2021-08-10T07:32:04.919Z"
     }
@@ -1267,6 +1304,7 @@
       "updated": "2021-08-11T14:07:44.921Z",
       "integration": 5,
       "file_gcs_path": "cypress/integrations/pivot-1628690860210745.csv",
+      "field_delimiter": "comma",
       "sync_task_id": "232cd31d-a6e6-4e67-95ff-5afd45560277",
       "sync_started": "2021-08-11T14:07:41.043Z"
     }
