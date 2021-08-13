@@ -29,15 +29,14 @@ describe('connectors', () => {
     cy.contains('continue').click()
 
     cy.url().should('contain', '/projects/1/integrations/7/setup')
-    cy.contains('Save & Run').click()
+    cy.get('button[type=submit]').click()
 
     cy.contains('Importing data from your connector...')
     cy.contains('Connector successfully imported.', { timeout: 10000 })
 
-    cy.contains('Approve').click()
+    cy.contains('Confirm').click()
 
     // connector created successfully
-    cy.contains('Structure')
     cy.contains('Data')
 
     // check email sent
@@ -47,7 +46,7 @@ describe('connectors', () => {
   })
   it('checks status on pending page', () => {
     createConnector('google_analytics')
-    cy.contains('Save & Run').click()
+    cy.get('button[type=submit]').click()
 
     // wait 1s for mock connector to complete
     cy.wait(1000)
@@ -68,22 +67,21 @@ describe('connectors', () => {
     cy.contains('Google Analytics').first().click()
 
     cy.url().should('contain', '/projects/1/integrations/7/setup')
-    cy.contains('Approve').click()
+    cy.contains('Confirm').click()
 
     cy.url().should('contain', '/projects/1/integrations/7')
   })
   it('update tables in non-database', () => {
     createConnector('google_analytics')
-    cy.contains('Save & Run').click()
-    cy.wait(1000)
-    cy.reload()
 
-    cy.contains('Edit Config').click()
+    // remove a table
+    cy.contains('Advanced').click()
     cy.contains('Adwords Campaigns').click()
     // wait for javascript to update hidden element
     cy.wait(200)
+    cy.get('button[type=submit]').click()
 
-    cy.contains('Save & Run').click()
+    // reloading speeds up mock sync
     cy.wait(1000)
     cy.reload()
 
