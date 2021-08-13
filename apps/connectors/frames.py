@@ -16,19 +16,19 @@ class ConnectorUpdate(TurboFrameUpdateView):
     template_name = "connectors/update.html"
     model = Connector
     form_class = ConnectorUpdateForm
-    turbo_frame_dom_id = "connectors:update"
+    turbo_frame_dom_id = "connectors:setup"
 
     def form_valid(self, form):
         run_connector_sync(self.object)
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse(
-            "project_integrations:setup",
-            args=(
-                self.object.integration.project.id,
-                self.object.integration.id,
-            ),
+        return (
+            reverse(
+                "connectors:progress",
+                args=(self.object.id,),
+            )
+            + "?refresh=true"
         )
 
 
@@ -36,7 +36,7 @@ class ConnectorProgress(TurboFrameUpdateView):
     template_name = "connectors/progress.html"
     model = Connector
     fields = []
-    turbo_frame_dom_id = "connectors:progress"
+    turbo_frame_dom_id = "connectors:setup"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

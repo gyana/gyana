@@ -99,6 +99,7 @@ class ConnectorUpdateForm(forms.ModelForm):
                 help_text="Include or exclude tables to import" + " for this schema"
                 if is_database
                 else "",
+                required=False,  # you can uncheck all options
             )
 
     def clean(self):

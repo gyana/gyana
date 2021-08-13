@@ -7,11 +7,27 @@ from .models import Sheet
 from .tasks import run_sheets_sync
 
 
+class SheetUpdate(TurboFrameUpdateView):
+    template_name = "sheets/update.html"
+    model = Sheet
+    form_class = SheetUpdateForm
+    turbo_frame_dom_id = "sheets:setup"
+
+    def form_valid(self, form):
+        run_sheets_sync(self.object)
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "sheets:progress",
+            args=(self.object.id,),
+        ) + "?refresh=true"
+
 class SheetProgress(TurboFrameUpdateView):
     template_name = "sheets/progress.html"
     model = Sheet
     fields = []
-    turbo_frame_dom_id = "sheets:progress"
+    turbo_frame_dom_id = "sheets:setup"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -46,21 +62,4 @@ class SheetStatus(TurboFrameDetailView):
         return context_data
 
 
-class SheetUpdate(TurboFrameUpdateView):
-    template_name = "sheets/update.html"
-    model = Sheet
-    form_class = SheetUpdateForm
-    turbo_frame_dom_id = "sheets:update"
 
-    def form_valid(self, form):
-        run_sheets_sync(self.object)
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        return reverse(
-            "project_integrations:setup",
-            args=(
-                self.object.integration.project.id,
-                self.object.integration.id,
-            ),
-        )

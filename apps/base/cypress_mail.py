@@ -31,7 +31,6 @@ class Outbox:
 
     def clear(self):
         for f in glob(f"{MESSAGES_DIR}/*"):
-            print(f)
             os.remove(f)
 
 

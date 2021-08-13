@@ -3,6 +3,7 @@ import os
 import time
 import uuid
 from dataclasses import asdict, dataclass
+from glob import glob
 from typing import Dict, List, Optional
 
 import backoff
@@ -246,6 +247,10 @@ class MockSchemaStore:
     def __contains__(self, key) -> bool:
         return f"{key}.json" in os.listdir(MOCK_SCHEMA_DIR)
 
+    def clear(self):
+        for f in glob(f"{MOCK_SCHEMA_DIR}/*"):
+            os.remove(f)
+
 
 class MockFivetranClient:
 
@@ -279,7 +284,7 @@ class MockFivetranClient:
 
     def has_completed_sync(self, connector):
         return (
-            timezone.now() - self._started[connector.id]
+            timezone.now() - self._started.get(connector.id, timezone.now())
         ).total_seconds() > self.REFRESH_SYNC_SECONDS
 
     def block_until_synced(self, connector):

@@ -3,7 +3,7 @@
 <ul class="integration__create-flow">
   <li>
     <div
-        class='integration__file-validate'
+        class='integration__file-validate card'
         data-controller="celery-progress"
         data-celery-progress-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
         data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
@@ -39,7 +39,7 @@
                   Retry
                 </button>
             </form>
-            <a class="button" href="{% url 'project_integrations:setup' object.integration.project.id object.integration.id %}?state=update" data-turbo-frame="_top">Edit Config</a>
+            <a class="button ml-2" href="{% url 'project_integrations:setup' object.integration.project.id object.integration.id %}?state=update" data-turbo-frame="_top">Configure</a>
           </div>
         </div>
       </template>
@@ -47,3 +47,9 @@
     </div>
   </li>
 </ul>
+
+<script>
+    if ('{{ request.GET.refresh }}' == 'true') {
+        Turbo.visit('{% url 'project_integrations:setup' object.integration.project.id object.integration.id %}')
+    }
+</script>

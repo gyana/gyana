@@ -28,7 +28,6 @@ BIGQUERY_TYPE_TO_HUMAN = {
 
 # https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types
 def get_humanize_from_bigquery_type(type: str):
-    print(type)
     # remove paramterised and template type information
     raw_type = type.split("<")[0].split("(")[0]
 

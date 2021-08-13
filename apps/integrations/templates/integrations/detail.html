@@ -6,19 +6,9 @@
 {% block tab %}
 <div class="pad">
   <div class="flex gap-7 mb-7">
-    {% if not object.kind == 'upload' %}
+    {% if object.kind == 'sheet' %}
     <div class="card">
-      {% if object.kind == 'connector' %}
-      <div class="flex flex-col flex-shrink-0">
-        {% if object.connector.historical_sync_complete %}
-        <div>Ready</div>
-        {% elif object.connector.fivetran_authorized %}
-        <div>Syncing</div>
-        {% endif %}
-      </div>
-      {% else %}
       <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}"></turbo-frame>
-      {% endif %}
     </div>
     {% endif %}
 

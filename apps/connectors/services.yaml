@@ -121,7 +121,7 @@ heap:
 heroku_postgres:
   name: Heroku Postgres
   color: '#33668f'
-  internal: f
+  internal: t
   requires_schema_prefix: t
   category: databases
   static_config:

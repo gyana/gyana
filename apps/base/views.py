@@ -1,3 +1,4 @@
+from apps.base.clients import fivetran_client
 from apps.base.cypress_mail import Outbox
 from django.core import mail
 from django.core.management import call_command
@@ -19,6 +20,8 @@ def resetdb(request: Request):
 
     mail.outbox = Outbox()
     mail.outbox.clear()
+
+    fivetran_client()._schema_cache.clear()
 
     return JsonResponse({})
 

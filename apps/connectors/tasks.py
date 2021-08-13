@@ -1,6 +1,9 @@
+from itertools import chain
+
 import analytics
 from apps.base.clients import fivetran_client
 from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
+from apps.connectors.config import get_services
 from apps.connectors.models import Connector
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
@@ -13,13 +16,24 @@ from django.utils import timezone
 from .bigquery import get_bq_tables_from_connector
 
 
+def _get_schema_bq_ids_from_connector(connector: Connector):
+
+    schema_bq_ids = set(
+        chain(*(s.enabled_bq_ids for s in fivetran_client().get_schemas(connector)))
+    )
+
+    # fivetran schema config does not include schema prefix for databases
+    if get_services()[connector.service]["requires_schema_prefix"] == "t":
+        schema_bq_ids = {f"{connector.schema}_{id_}" for id_ in schema_bq_ids}
+
+    return schema_bq_ids
+
+
 def complete_connector_sync(connector: Connector, send_mail: bool = True):
     bq_tables = get_bq_tables_from_connector(connector)
     integration = connector.integration
 
-    schema_bq_ids = set(
-        *(s.enabled_bq_ids for s in fivetran_client().get_schemas(connector))
-    )
+    schema_bq_ids = _get_schema_bq_ids_from_connector(connector)
 
     with transaction.atomic():
         for bq_table in bq_tables:
@@ -92,9 +106,7 @@ def run_update_connector_sync(connector: Connector):
 
     # if we've deleted tables, we'll need to delete them from BigQuery
 
-    schema_bq_ids = set(
-        *(s.enabled_bq_ids for s in fivetran_client().get_schemas(connector))
-    )
+    schema_bq_ids = _get_schema_bq_ids_from_connector(connector)
 
     with transaction.atomic():
         for table in tables:
