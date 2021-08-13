@@ -31,7 +31,6 @@ from apps.invites import urls as invite_urls
 from apps.nodes import urls as node_urls
 from apps.projects import urls as project_urls
 from apps.sheets import urls as sheet_urls
-from apps.tables import urls as tables_urls
 from apps.teams import urls as team_urls
 from apps.uploads import urls as upload_urls
 from apps.widgets import urls as widget_urls

@@ -54,9 +54,6 @@ class Table(BaseModel):
     objects = models.Manager()
     available = AvailableManager()
 
-    class Meta:
-        unique_together = ["_bq_table", "bq_dataset"]
-
     def __str__(self):
         return getattr(self, self.source).get_table_name()
 

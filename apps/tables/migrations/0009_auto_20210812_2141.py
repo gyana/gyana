@@ -6,16 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tables', '0008_auto_20210716_1606'),
+        ("tables", "0008_auto_20210716_1606"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='table',
+            name="table",
             options={},
-        ),
-        migrations.AlterUniqueTogether(
-            name='table',
-            unique_together={('_bq_table', 'bq_dataset')},
-        ),
+        )
     ]
