@@ -47,9 +47,3 @@
     </div>
   </li>
 </ul>
-
-<script>
-    if ('{{ request.GET.refresh }}' == 'true') {
-        Turbo.visit('{% url 'project_integrations:setup' object.integration.project.id object.integration.id %}')
-    }
-</script>
