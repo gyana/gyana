@@ -64,9 +64,9 @@
         {% if not integration.ready %}
             <div class='card'>
                 <h4>Review your imported data</h4>
-                <p>This will add a total of <strong>{{ object.num_rows|intcomma }}</strong> rows to your team. You can edit your
-                    <a class="link" href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update">configuration</a>
-                    now or at any time in the future.
+                <p>This will add a total of <strong>{{ object.num_rows|intcomma }}</strong> rows to your team. You can still edit your
+                    <a class="link" href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update">configuration</a> before you confirm
+                    {% if integration.kind != 'upload' %}, or come back later at any time{% endif %}.
                 </p>
                 <form method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
                     {% csrf_token %}
@@ -78,8 +78,8 @@
         {% else %}
             <div class='card'>
                 <h4>Ready for analytics</h4>
-                <p>You can still edit your
-                    <a class="link" href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update">configuration</a> before you confirm.
+                <p>You can edit your
+                    <a class="link" href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update">configuration</a> now or at any time.
                 </p>
             </div>
         {% endif %}
