@@ -91,6 +91,10 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
     def get_form_class(self):
         return KIND_TO_FORM[self.object.kind]
 
+    def get_form(self):
+        if self.object.kind == Node.Kind.INPUT or self.object.parents.first():
+            return super().get_form()
+
     def form_valid(self, form: forms.Form) -> HttpResponse:
         r = super().form_valid(form)
         track_node(self.request.user, form.instance, NODE_UPDATED_EVENT)

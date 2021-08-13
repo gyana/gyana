@@ -1,10 +1,10 @@
 from functools import cached_property
 
 from apps.base.live_update_form import LiveUpdateForm
+from apps.base.turbo import TurboUpdateView
 from django import forms
 from django.db import transaction
 from django.http.response import HttpResponse
-from apps.base.turbo import TurboUpdateView
 
 # temporary overrides for formset labels
 FORMSET_LABELS = {
@@ -30,7 +30,9 @@ def _get_formset_label(formset):
 class FormsetUpdateView(TurboUpdateView):
     @cached_property
     def formsets(self):
-        return self.get_form().get_live_formsets()
+        if form := self.get_form():
+            return form.get_live_formsets()
+        return []
 
     def get_formset_kwargs(self, formset):
         return {}
