@@ -1,9 +1,9 @@
 {% extends "integrations/base.html" %}
 {% load humanize %}
 
-{% block tab %}
+{% block extra_tab %}
 
-<nav id='tabbar tabbar--sm' class="tabbar">
+<nav id='tabbar-setup' class="tabbar">
     <a class="tabbar__link {% if not state in 'update,error,done' %} tabbar__link--disabled {% endif %} {% if state == 'update' %} tabbar__link--active {% endif %}"
         {% if state in 'update,error,done' %} href="{% url 'project_integrations:setup' object.project.id object.id %}?state=update" {% endif %}>
         Configure
@@ -24,7 +24,11 @@
     </a>
 </nav>
 
-<div class="mb-auto pad">
+{% endblock  %}
+
+{% block tab %}
+
+<div class="pad">
     {% if state == 'update' %}
         {% if integration.kind == 'connector' %}
             <turbo-frame id="connectors:update" src="{% url 'connectors:update' integration.connector.id %}">
@@ -80,12 +84,15 @@
                 </p>
             </div>
         {% endif %}
-    <div class="card mt-8">
+
+    {% endif %}
+</div>
+{% if state == 'done' and not integration.ready %}
+    <div class="mt-4 border-t border-gray">
         <div class="flex flex-row flex-1 overflow-hidden">
             {% include "integrations/_data.html" %}
         </div>
     </div>
-    {% endif %}
-</div>
+{% endif %}
 
 {% endblock %}

@@ -14,11 +14,37 @@
 </div>
 {% endif %}
 
-<div class="pad flex-1 overflow-hidden">
-    <turbo-frame id="integrations-grid" src="{% url 'integrations:grid' object.id %}?table_id={{ request.GET.table_id }}">
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-        <p class='placeholder-scr__title'>Loading integration data...</p>
-        </div>
-    </turbo-frame>
+<div class="flex flex-col w-full">
+    <nav id='tabbar-setup' class="tabbar">
+        <a class="tabbar__link {% if request.GET.view != 'preview' %} tabbar__link--active {% endif %}"
+            href="{{ request.path }}?table_id={{ request.GET.table_id }}">
+            Structure
+        </a>
+        <a class="tabbar__link {% if request.GET.view == 'preview' %} tabbar__link--active {% endif %}"
+            href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=preview">
+            Preview
+        </a>
+    </nav>
+
+    <div class="pad flex-1 overflow-hidden">
+    {% if request.GET.view == 'preview' %}
+        
+        <turbo-frame id="integrations:grid" src="{% url 'integrations:grid' object.id %}?table_id={{ request.GET.table_id }}">
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+            <p class='placeholder-scr__title'>Loading integration data...</p>
+            </div>
+        </turbo-frame>
+
+    {% else %}
+
+        <turbo-frame id="integrations:schema" src="{% url 'integrations:schema' object.id %}?table_id={{ request.GET.table_id }}">
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+            <p class='placeholder-scr__title'>Loading integration data...</p>
+            </div>
+        </turbo-frame>
+
+    {% endif %}
+    </div>
 </div>

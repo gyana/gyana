@@ -13,6 +13,11 @@ urlpatterns = [
         login_and_integration_required(frames.IntegrationGrid.as_view()),
         name="grid",
     ),
+    path(
+        "<hashid:pk>/schema",
+        login_and_integration_required(frames.IntegrationSchema.as_view()),
+        name="schema",
+    ),
 ]
 
 project_urlpatterns = (
@@ -45,11 +50,6 @@ project_urlpatterns = (
             "<hashid:pk>/delete",
             login_and_project_required(views.IntegrationDelete.as_view()),
             name="delete",
-        ),
-        path(
-            "<hashid:pk>/structure",
-            login_and_project_required(views.IntegrationStructure.as_view()),
-            name="structure",
         ),
         path(
             "<hashid:pk>/data",

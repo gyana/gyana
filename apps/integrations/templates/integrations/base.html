@@ -33,10 +33,6 @@
       href="{% url 'project_integrations:detail' project.id object.id %}">
       Overview
     </a>
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'structure' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:structure' project.id object.id %}">
-      Structure
-    </a>
     <a class="tabbar__link {% if request.resolver_match.url_name == 'data' %} tabbar__link--active {% endif %}"
       href="{% url 'project_integrations:data' project.id object.id %}">
       Data
@@ -54,6 +50,8 @@
     Settings
   </a>
 </nav>
+
+{% block extra_tab %}{% endblock %}
 
 <div id='main' class="flex flex-col flex-1 overflow-auto">
   {% block tab %}{% endblock %}

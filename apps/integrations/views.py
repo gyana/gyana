@@ -13,8 +13,12 @@ from django_tables2.views import SingleTableMixin
 from .forms import IntegrationForm
 from .mixins import ReadyMixin
 from .models import Integration
-from .tables import (IntegrationListTable, IntegrationPendingTable,
-                     StructureTable, UsedInTable)
+from .tables import (
+    IntegrationListTable,
+    IntegrationPendingTable,
+    StructureTable,
+    UsedInTable,
+)
 
 # CRUDL
 
@@ -81,7 +85,7 @@ class IntegrationSetup(ProjectMixin, TurboUpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        if self.object.state == 'done':
+        if self.object.state == "done":
             context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
         context_data["state"] = self.request.GET.get("state") or self.object.state
         return context_data
@@ -144,27 +148,6 @@ class IntegrationDelete(ProjectMixin, DeleteView):
         return reverse("project_integrations:list", args=(self.project.id,))
 
 
-class IntegrationStructure(ReadyMixin, DetailView):
-    template_name = "integrations/structure.html"
-    model = Integration
-    table_class = StructureTable
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data["tables"] = []
-
-        for table in self.object.table_set.all():
-            table_data = [
-                {"type": str(field_type), "name": field_name}
-                for field_name, field_type in table.schema.items()
-            ]
-            context_data["tables"].append(
-                {"title": table.bq_table, "table_struct": StructureTable(table_data)}
-            )
-
-        return context_data
-
-
 class IntegrationData(ReadyMixin, DetailView):
     template_name = "integrations/data.html"
     model = Integration
@@ -172,7 +155,6 @@ class IntegrationData(ReadyMixin, DetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
-
         return context_data
 
 
