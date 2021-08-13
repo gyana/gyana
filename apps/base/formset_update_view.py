@@ -8,7 +8,7 @@ from django.http.response import HttpResponse
 
 # temporary overrides for formset labels
 FORMSET_LABELS = {
-    "columns": "Columns",
+    "columns": "Group columns",
     "aggregations": "Aggregations",
     "sort_columns": "Sort columns",
     "edit_columns": "Edit columns",

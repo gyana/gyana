@@ -86,7 +86,7 @@ describe('nodes', () => {
 
     testHelp('Aggregations are useful to generate')
     cy.get('#node-update-form').contains('Aggregations')
-    cy.get('#node-update-form').contains('Columns')
+    cy.get('#node-update-form').contains('Group columns')
 
     addFormToFormset('columns')
     cy.get('select[name=columns-0-column]').should('have.value', '').select('Location')

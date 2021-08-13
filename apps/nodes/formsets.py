@@ -22,7 +22,8 @@ class InlineColumnFormset(BaseInlineFormSet):
             choices=[
                 ("", "No column selected"),
                 *[(col, col) for col in self.instance.parents.first().schema],
-            ]
+            ],
+            help_text=self.form.base_fields["column"].help_text,
         )
 
 
