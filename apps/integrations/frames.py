@@ -1,3 +1,4 @@
+from apps.base.bigquery import get_humanize_from_bigquery_type
 from apps.base.frames import TurboFrameDetailView, TurboFrameListView
 from apps.base.table_data import get_table
 from apps.integrations.tables import StructureTable
@@ -72,7 +73,7 @@ class IntegrationSchema(SingleTableMixin, TurboFrameDetailView):
     def get_table_data(self, **kwargs):
 
         return [
-            {"type": str(t.field_type), "name": str(t.name)}
+            {"type": get_humanize_from_bigquery_type(t.field_type), "name": str(t.name)}
             for t in get_bq_table_schema_from_table(self.table_instance)
         ]
 
