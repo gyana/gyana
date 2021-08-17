@@ -8,7 +8,6 @@ export default class extends Controller {
 
   connect() {
     this.element.style.position = 'relative'
-    this.element.style.display = 'inline-block'
 
     this.listener = function (e) {
       if (!this.element.contains(e.target)) {

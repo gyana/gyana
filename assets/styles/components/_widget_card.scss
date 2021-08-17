@@ -15,17 +15,16 @@
   }
 
   &__commands {
-    background-color: var(--c-gray-20);
-    color: var(--c-black-50);
-    border: 1px solid var(--c-gray);
-    flex-flow: column;
-    font-size: 1.4rem;
-    gap: 1.6rem;
-    height: 100%;
-    padding: 1.6rem 1rem;
-    position: absolute;
-    right: 0;
     display: none;
+    background-color: var(--c-white);
+    border: 1px solid var(--c-gray);
+    bottom: 1.6rem;
+    color: var(--c-black);
+    align-items: center;
+    flex-flow: row;
+    font-size: 1.6rem;
+    right: 1.6rem;
+    position: absolute;
     z-index: var(--z-ui);
 
     button:hover,
@@ -35,6 +34,15 @@
 
     i {
       display: block;
+    }
+
+    > * {
+      padding: 0.9rem 0.7rem;
+      box-sizing: content-box;
+
+      &:hover {
+        background: var(--c-gray-50);
+      }
     }
   }
 

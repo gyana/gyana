@@ -19,6 +19,7 @@
         </turbo-frame>
       </div>
 
+      {% comment %} This little hack is for looping through a range. {% endcomment %}
       {% for i in '01234567'|make_list %}
         <span class="widget-card__indicator"></span>
       {% endfor %}
@@ -28,7 +29,7 @@
         {% if object.kind != "text" %}
         <button  data-action="click->tf-modal#open">
           <i
-            class="fas fa-fw fa-lg fa-edit"
+            class="fas fa-fw fa-edit"
             id="widget-update-{{object.id}}"
             title="Edit"
             data-item="{{object.id}}"
@@ -50,18 +51,18 @@
         >
           {% csrf_token %}
           <button id="widget-duplicate-{{object.id}}" type='submit'>
-            <i class="fas fa-fw fa-lg fa-copy"></i>
+            <i class="fas fa-fw fa-copy"></i>
           </button>
         </form>
 
-        <div data-controller="popover" class='mt-auto'>
+        <div class="flex" data-controller="popover">
           <button
             id="widget-delete-{{object.id}}"
             title="Delete"
             data-popover-target="trigger" 
             data-action="click->popover#trigger"
           >
-            <i class="fas fa-fw fa-lg fa-trash cursor-pointer"></i>
+            <i class="fas fa-fw fa-trash cursor-pointer"></i>
           </button>
 
           <div data-popover-target="body" hidden class="popover-body shadow-sm">
