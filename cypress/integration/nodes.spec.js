@@ -86,7 +86,7 @@ describe('nodes', () => {
 
     testHelp('Aggregations are useful to generate')
     cy.get('#node-update-form').contains('Aggregations')
-    cy.get('#node-update-form').contains('Columns')
+    cy.get('#node-update-form').contains('Group columns')
 
     addFormToFormset('columns')
     cy.get('select[name=columns-0-column]').should('have.value', '').select('Location')
@@ -120,7 +120,7 @@ describe('nodes', () => {
     openModalAndCheckTitle(5, 'Sort')
     cy.contains('Sort columns')
     testHelp('Sort the table based')
-    addFormToFormset('sort_columns')
+
     cy.get('select[name=sort_columns-0-column]').should('have.value', '').select('store_id')
     cy.contains('Save & Preview').click()
 
@@ -174,7 +174,6 @@ describe('nodes', () => {
     cy.get('#workflows-grid tbody tr').should('have.length', 15)
     testHelp('Filter a table by different conditions')
 
-    addFormToFormset('filters')
     cy.get('select[name=filters-0-numeric_predicate]').should('not.exist')
     cy.get('input[name=filters-0-integer_value]').should('not.exist')
     cy.get('select[name=filters-0-column]').should('have.value', '').select('store_id')
@@ -232,7 +231,6 @@ describe('nodes', () => {
     openModalAndCheckTitle(11, 'Edit')
     testHelp('Select columns you would like to edit ')
 
-    addFormToFormset('edit_columns')
     cy.get('select[name=edit_columns-0-column]').should('have.value', '').select('Employees')
     cy.get('select[name=edit_columns-0-integer_function]')
       .should('have.value', '')
@@ -252,7 +250,6 @@ describe('nodes', () => {
     openModalAndCheckTitle(12, 'Add')
     testHelp('Add new columna by selecting')
 
-    addFormToFormset('add_columns')
     cy.get('select[name=add_columns-0-column]').should('have.value', '').select('store_id')
     cy.get('select[name=add_columns-0-integer_function').should('have.value', '').select('divide')
     cy.get('input[name=add_columns-0-float_value]').should('have.value', '').type('10{enter}')
@@ -280,7 +277,6 @@ describe('nodes', () => {
     cy.get('#workflows-grid').contains('store_id').should('be.visible')
     testHelp('Select the columns you want to rename')
 
-    addFormToFormset('rename_columns')
     cy.get('select[name=rename_columns-0-column]').select('store_id')
     cy.get('input[name=rename_columns-0-new_name]').clear().type('unique_id').blur()
     cy.contains('Save & Preview').click()
@@ -303,7 +299,6 @@ describe('nodes', () => {
     openModalAndCheckTitle(14, 'Formula')
     testHelp('Formula Docs')
 
-    addFormToFormset('formula_columns')
     // We can't type into the codemirror divs but we can use the hidden textarea
     cy.get('#node-update-form .CodeMirror textarea').type('store', { force: true })
     // Check for autocomplete
@@ -331,7 +326,6 @@ describe('nodes', () => {
     cy.contains('Window columns').should('be.visible')
 
     // TODO: test whether saving with optional input work
-    addFormToFormset('window_columns')
     cy.get('select[name=window_columns-0-column]').select('Employees')
     cy.get('select[name=window_columns-0-group_by]').select('Location')
     cy.get('select[name=window_columns-0-order_by]').select('store_id')
@@ -401,7 +395,6 @@ describe('nodes', () => {
     waitForLiveFormUpdate()
     cy.get('input[name=unpivot_column]').should('not.be.disabled').type('quarter').blur()
     waitForLiveFormUpdate()
-    addFormToFormset('columns')
     cy.get('select[name=columns-0-column').select('Q1')
     waitForLiveFormUpdate()
     addFormToFormset('columns')

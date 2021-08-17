@@ -1,6 +1,6 @@
-from apps.nodes.models import Node
 from apps.base.aggregations import AggregationFunctions
 from apps.base.models import BaseModel
+from apps.nodes.models import Node
 from apps.widgets.models import Widget
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
@@ -162,10 +162,13 @@ class RenameColumn(SaveParentModel):
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="rename_columns"
     )
-    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, help_text="Old column name"
+    )
     new_name = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         validators=[bigquery_column_regex],
+        help_text="New column name",
     )
 
 
@@ -173,10 +176,11 @@ class FormulaColumn(SaveParentModel):
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="formula_columns"
     )
-    formula = models.TextField(null=True, blank=True)
+    formula = models.TextField(null=True, blank=True, help_text="Type formula")
     label = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         validators=[bigquery_column_regex],
+        help_text="New column name",
     )
 
 

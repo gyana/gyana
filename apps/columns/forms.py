@@ -31,6 +31,10 @@ class InlineColumnFormset(BaseInlineFormSet):
 class FunctionColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
         fields = ("column", "function")
+        help_texts = {
+            "column": "Select the column to aggregate over",
+            "function": "Select the aggregation function",
+        }
 
     def get_live_fields(self):
         fields = ["column"]
@@ -71,6 +75,9 @@ class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
             "date_function": "Operation",
             "time_function": "Operation",
             "datetime_function": "Operation",
+            "integer_value": "Value",
+            "float_value": "Value",
+            "string_value": "Value",
         }
         widgets = {
             "string_value": forms.Textarea(attrs={"rows": 1}),

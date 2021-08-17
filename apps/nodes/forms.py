@@ -105,13 +105,6 @@ class DistinctNodeForm(NodeForm):
 
 
 class JoinNodeForm(NodeForm):
-    join_left = forms.ChoiceField(
-        choices=(),
-    )
-    join_right = forms.ChoiceField(
-        choices=(),
-    )
-
     class Meta:
         model = Node
         fields = ["join_how", "join_left", "join_right"]
@@ -120,12 +113,15 @@ class JoinNodeForm(NodeForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # https://stackoverflow.com/a/30766247/15425660
-        node = self.instance
-        self.left_columns = [(col, col) for col in node.parents.first().schema]
-        self.right_columns = [(col, col) for col in node.parents.last().schema]
-        self.fields["join_left"].choices = self.left_columns
-        self.fields["join_right"].choices = self.right_columns
+
+        self.fields["join_left"] = forms.ChoiceField(
+            choices=[(col, col) for col in self.instance.parents.first().schema],
+            help_text=self.fields["join_left"].help_text,
+        )
+        self.fields["join_right"] = forms.ChoiceField(
+            choices=[(col, col) for col in self.instance.parents.last().schema],
+            help_text=self.fields["join_right"].help_text,
+        )
 
 
 class UnionNodeForm(NodeForm):
@@ -150,7 +146,11 @@ class PivotNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["pivot_index", "pivot_column", "pivot_value", "pivot_aggregation"]
-        # TODO: Add labels
+        labels = {
+            "pivot_index": "Index column",
+            "pivot_value": "Value column",
+            "pivot_aggregation": "Aggregation function",
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -160,10 +160,16 @@ class PivotNodeForm(NodeForm):
             *[(col, col) for col in schema],
         ]
         self.fields["pivot_index"] = forms.ChoiceField(
-            choices=column_choices, required=False
+            choices=column_choices,
+            required=False,
+            help_text=self.fields["pivot_index"].help_text,
         )
-        self.fields["pivot_column"] = forms.ChoiceField(choices=column_choices)
-        self.fields["pivot_value"] = forms.ChoiceField(choices=column_choices)
+        self.fields["pivot_column"] = forms.ChoiceField(
+            choices=column_choices, help_text=self.fields["pivot_column"].help_text
+        )
+        self.fields["pivot_value"] = forms.ChoiceField(
+            choices=column_choices, help_text=self.fields["pivot_value"].help_text
+        )
 
         pivot_value = self.get_live_field("pivot_value")
         if pivot_value in schema:
