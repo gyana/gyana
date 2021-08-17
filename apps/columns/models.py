@@ -136,11 +136,11 @@ class SortColumn(SaveParentModel):
         Node, on_delete=models.CASCADE, related_name="sort_columns"
     )
     ascending = models.BooleanField(
-        default=True, help_text="Select to sort ascendingly"
+        default=True, help_text="Ascending Sort"
     )
     column = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
-        help_text="Select column to sort on",
+        help_text="Column",
     )
 
 
