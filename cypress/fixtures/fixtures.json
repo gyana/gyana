@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-08-11T13:26:44.802Z",
+      "last_login": "2021-08-17T09:53:36.108Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -251,8 +251,8 @@
       "project": 1,
       "kind": "connector",
       "name": "Heroku Postgres",
-      "state": "done",
-      "ready": true,
+      "state": "update",
+      "ready": false,
       "created_ready": "2021-08-10T10:03:16.769Z",
       "created_by": 1
     }
@@ -266,8 +266,8 @@
       "project": 1,
       "kind": "connector",
       "name": "Facebook Ads",
-      "state": "done",
-      "ready": true,
+      "state": "update",
+      "ready": false,
       "created_ready": "2021-08-10T10:40:23.584Z",
       "created_by": 1
     }
@@ -281,8 +281,8 @@
       "project": 1,
       "kind": "connector",
       "name": "Google Analytics",
-      "state": "done",
-      "ready": true,
+      "state": "update",
+      "ready": false,
       "created_ready": "2021-08-10T10:40:23.584Z",
       "created_by": 1
     }
@@ -296,8 +296,8 @@
       "project": 1,
       "kind": "connector",
       "name": "Shopify",
-      "state": "done",
-      "ready": true,
+      "state": "update",
+      "ready": false,
       "created_ready": "2021-08-10T12:54:44.272Z",
       "created_by": 1
     }
@@ -1328,7 +1328,7 @@
     "fields": {
       "created": "2021-08-10T10:03:16.771Z",
       "updated": "2021-08-10T10:03:16.771Z",
-      "integration": 3,
+      "integration": 6,
       "service": "heroku_postgres",
       "fivetran_id": "plexus_impatient",
       "schema": "team_1_heroku_postgres_0e684903d1044f7280bb061fd3c179a4",
@@ -1343,7 +1343,7 @@
     "fields": {
       "created": "2021-08-10T10:40:23.586Z",
       "updated": "2021-08-10T10:40:23.586Z",
-      "integration": 4,
+      "integration": 7,
       "service": "facebook_ads",
       "fivetran_id": "legate_wandered",
       "schema": "team_1_facebook_ads_563a564c28cc469dba73faf6dea0799e",
@@ -1358,7 +1358,7 @@
     "fields": {
       "created": "2021-08-10T10:40:23.586Z",
       "updated": "2021-08-10T10:40:23.586Z",
-      "integration": 5,
+      "integration": 8,
       "service": "google_analytics",
       "fivetran_id": "humid_rifle",
       "schema": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
@@ -1373,7 +1373,7 @@
     "fields": {
       "created": "2021-08-10T12:54:44.273Z",
       "updated": "2021-08-10T12:54:44.273Z",
-      "integration": 6,
+      "integration": 9,
       "service": "shopify",
       "fivetran_id": "overtime_froze",
       "schema": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
