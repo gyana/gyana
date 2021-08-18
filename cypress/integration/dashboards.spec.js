@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { getModelStartId } from '../support/utils'
+
 const createWidget = (kind) => {
   cy.contains('Add widget').click()
   cy.contains(kind).click()
@@ -126,20 +128,22 @@ describe('dashboards', () => {
       })
   })
 
-  it('Created workflow shows in dashboard', () => {
+  it('created workflow shows in dashboard', () => {
+    const id = getModelStartId('nodes.node')
+
     cy.visit('/projects/1/workflows/')
     cy.contains('create one').click()
     cy.drag('#dnd-node-input')
     cy.drop('.react-flow')
-    cy.get('[data-id=25]').dblclick()
+    cy.get(`[data-id=${id}]`).dblclick()
     cy.contains('store_info').click()
     cy.contains('Save & Close').click()
-    cy.reactFlowDrag('[data-id=25]', { x: 150, y: 300 })
+    cy.reactFlowDrag(id, { x: 150, y: 300 })
 
     cy.drag('#dnd-node-output')
     cy.drop('[class=react-flow]')
-    cy.get('[data-id=26]').should('exist')
-    cy.connectNodes('[data-id=25]', '[data-id=26]')
+    cy.get(`[data-id=${id + 1}]`).should('exist')
+    cy.connectNodes(id, id + 1)
     cy.contains('Run').click()
     cy.contains('Last run')
 
