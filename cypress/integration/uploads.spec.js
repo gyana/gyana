@@ -1,5 +1,8 @@
 /// <reference types="cypress" />
 
+import { getModelStartId } from '../support/utils'
+const id = getModelStartId('integrations.integration')
+
 describe('uploads', () => {
   beforeEach(() => {
     cy.login()
@@ -13,7 +16,7 @@ describe('uploads', () => {
     cy.url().should('contain', '/projects/1/integrations/uploads/new')
     cy.get('input[type=file]').attachFile('store_info.csv')
 
-    cy.url().should('contain', '/projects/1/integrations/7/setup')
+    cy.url().should('contain', `/projects/1/integrations/${id}/setup`)
     cy.get('button[type=submit]').click()
     cy.contains('Validating and importing your upload...')
     cy.contains('Upload successfully validated and imported.', { timeout: 10000 })
@@ -28,7 +31,7 @@ describe('uploads', () => {
     // validate row count
     cy.contains('15')
 
-    cy.url().should('contain', '/projects/1/integrations/7')
+    cy.url().should('contain', `/projects/1/integrations/${id}`)
     // file name inferred
     cy.get('input[name=name]').should('have.value', 'store_info')
 
