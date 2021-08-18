@@ -1,0 +1,19 @@
+{
+  "environments": {
+    "test": {
+      "scripts": {
+        "test-setup": "./manage.py migrate --settings gyana.settings.cypress && ./manage.py loaddata --settings gyana.settings.cypress cypress/fixtures/fixtures.json",
+        "test": "yarn cypress:run"
+      },
+      "buildpacks": [
+        { "url": "heroku/google-chrome" },
+        { "url": "heroku/nodejs" },
+        { "url": "heroku/python" },
+        {
+          "url": "https://github.com/buyersight/heroku-google-application-credentials-buildpack.git"
+        }
+      ],
+      "addons": ["heroku-redis:in-dyno", "heroku-postgresql:in-dyno"]
+    }
+  }
+}
