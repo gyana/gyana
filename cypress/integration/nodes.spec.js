@@ -31,7 +31,7 @@ describe('nodes', () => {
     cy.login('nodes@gyana.com')
   })
 
-  it('Input', () => {
+  it('input', () => {
     openModalAndCheckTitle(19, 'Get data')
 
     cy.contains('revenue')
@@ -48,7 +48,7 @@ describe('nodes', () => {
     testHelp('Select data from an integration to be used in your workflow.')
   })
 
-  it('Output', () => {
+  it('output', () => {
     openModalAndCheckTitle(2, 'Save data')
     cy.contains('Edinburgh')
     testHelp("The connected nodes' data will be available to be")
@@ -62,7 +62,7 @@ describe('nodes', () => {
     cy.get('input[name=output_name]').should('have.value', 'Naturalis Principia Mathematica')
   })
 
-  it('Select', () => {
+  it('select', () => {
     openModalAndCheckTitle(3, 'Select columns')
     testHelp('Use the select node')
 
@@ -81,7 +81,7 @@ describe('nodes', () => {
     cy.contains('Edinburgh').should('be.visible')
   })
 
-  it('Aggregation', () => {
+  it('aggregation', () => {
     openModalAndCheckTitle(4, 'Aggregation')
 
     testHelp('Aggregations are useful to generate')
@@ -116,7 +116,7 @@ describe('nodes', () => {
     // TODO: Test formset deletion
   })
 
-  it('Sort', () => {
+  it('sort', () => {
     openModalAndCheckTitle(5, 'Sort')
     cy.contains('Sort columns')
     testHelp('Sort the table based')
@@ -151,7 +151,7 @@ describe('nodes', () => {
     })
   })
 
-  it('Limit', () => {
+  it('limit', () => {
     openModalAndCheckTitle(6, 'Limit')
     testHelp('Limits the rows to the selected')
     cy.contains('Offset').should('be.visible')
@@ -169,7 +169,7 @@ describe('nodes', () => {
     cy.get('#workflows-grid tbody tr').should('have.length', 5)
   })
 
-  it('Filter', () => {
+  it('filter', () => {
     openModalAndCheckTitle(7, 'Filter')
     cy.get('#workflows-grid tbody tr').should('have.length', 15)
     testHelp('Filter a table by different conditions')
@@ -202,7 +202,7 @@ describe('nodes', () => {
     // TODO: Test filter deletion
   })
 
-  it('Distinct', () => {
+  it('distinct', () => {
     openModalAndCheckTitle(8, 'Distinct')
     cy.get('td:contains(Blackpool)').should('have.length', 4)
     testHelp('Select columns that should')
@@ -212,7 +212,7 @@ describe('nodes', () => {
     cy.get('td:contains(Blackpool)').should('have.length', 1)
   })
 
-  it('Pivot', () => {
+  it('pivot', () => {
     openModalAndCheckTitle(9, 'Pivot')
     testHelp("Turn the pivot column's rows into")
 
@@ -228,7 +228,7 @@ describe('nodes', () => {
     cy.get('#workflows-grid td:contains(—)').should('have.length', 8)
   })
 
-  it('Edit', () => {
+  it('edit', () => {
     openModalAndCheckTitle(11, 'Edit')
     testHelp('Select columns you would like to edit ')
 
@@ -247,7 +247,7 @@ describe('nodes', () => {
     cy.get('#workflows-grid tbody td:contains(True)').should('have.length', 6)
   })
 
-  it('Add', () => {
+  it('add', () => {
     openModalAndCheckTitle(12, 'Add')
     testHelp('Add new columna by selecting')
 
@@ -273,7 +273,7 @@ describe('nodes', () => {
     cy.get('#workflows-grid').contains('ALEX').should('be.visible')
   })
 
-  it('Rename', () => {
+  it('rename', () => {
     openModalAndCheckTitle(13, 'Rename')
     cy.get('#workflows-grid').contains('store_id').should('be.visible')
     testHelp('Select the columns you want to rename')
@@ -293,7 +293,7 @@ describe('nodes', () => {
 
   // TODO: Test formula docs separately
 
-  it('Formula', () => {
+  it('formula', () => {
     // Tests autocomplete for columns and functions
     // and whether arithmetic and functions return right results
     // for + and join
@@ -321,7 +321,7 @@ describe('nodes', () => {
     cy.get('#workflows-grid').contains('BlackpoolKanar').should('be.visible')
   })
 
-  it('Window', () => {
+  it('window', () => {
     openModalAndCheckTitle(15, 'Window')
     testHelp('Window functions aggregate over the selected')
     cy.contains('Window columns').should('be.visible')
@@ -335,7 +335,7 @@ describe('nodes', () => {
     cy.get('#workflows-grid th:contains(sum_emp)').should('be.visible')
   })
 
-  it('Text', () => {
+  it('text', () => {
     // Test whether text is persisted
     cy.visit('/projects/2/workflows/1')
 
@@ -351,7 +351,7 @@ describe('nodes', () => {
     cy.get('[data-id=16] textarea').should('have.value', text)
   })
 
-  it('Join', () => {
+  it('join', () => {
     openModalAndCheckTitle(18, 'Join')
     testHelp('Merge two tables side by side meaning ')
 
@@ -361,7 +361,7 @@ describe('nodes', () => {
     cy.get('#workflows-grid').contains('revenue').should('be.visible')
   })
 
-  it('Union', () => {
+  it('union', () => {
     openModalAndCheckTitle(21, 'Union')
     testHelp('Concatenates two or more tables by adding')
 
@@ -382,13 +382,13 @@ describe('nodes', () => {
     cy.get('#workflows-grid:contains(next)').should('not.exist')
   })
 
-  it('Intersect', () => {
+  it('intersect', () => {
     openModalAndCheckTitle(22, 'Intersection')
     cy.get('#workflows-grid td:contains(London)').should('not.exist')
     testHelp('Calculate the overlapping rows')
   })
 
-  it('Unpivot', () => {
+  it('unpivot', () => {
     openModalAndCheckTitle(24, 'Unpivot')
     testHelp('Turn columns into row values and spread the values')
 
@@ -420,7 +420,7 @@ describe('nodes', () => {
     cy.get('#workflows-grid td:contains(Kale)').should('have.length', 4)
   })
 
-  it('Tests unconnected modal screen', () => {
+  it('unconnected modal screen', () => {
     cy.visit(`/projects/2/workflows/1`)
     cy.get('[data-id=25] [title="Aggregation node needs to be connected to a node"]')
     cy.get('[data-id=25]').dblclick()
