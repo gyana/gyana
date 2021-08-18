@@ -1,9 +1,13 @@
 /// <reference types="cypress" />
 
+import { getModelStartId, readyIntegrations } from '../support/utils'
+
 const SHARED_SHEET =
   'https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit'
 const RESTRICTED_SHEET =
   'https://docs.google.com/spreadsheets/d/16h15cF3r_7bFjSAeKcy6nnNDpi-CS-NEgUKNCRGXs1E/edit'
+
+const id = getModelStartId('integrations.integration')
 
 describe('sheets', () => {
   beforeEach(() => {
@@ -22,7 +26,7 @@ describe('sheets', () => {
     cy.get('button[type=submit]').click()
 
     // set advanced configuration
-    cy.url().should('contain', '/projects/1/integrations/7/setup')
+    cy.url().should('contain', `/projects/1/integrations/${id}/setup`)
     cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
@@ -34,7 +38,7 @@ describe('sheets', () => {
     cy.contains('Employees')
     cy.contains('Confirm').click()
 
-    cy.url().should('contain', '/projects/1/integrations/7')
+    cy.url().should('contain', `/projects/1/integrations/${id}`)
     // Google Sheet name inferred
     cy.get('input[name=name]').should('have.value', 'Store info sheet')
 
@@ -90,7 +94,7 @@ describe('sheets', () => {
 
     // verify that nothing was created
     cy.visit('/projects/1/integrations')
-    cy.get('table tbody tr').should('have.length', 6)
+    cy.get('table tbody tr').should('have.length', readyIntegrations)
     cy.outbox()
       .then((outbox) => outbox.count)
       .should('eq', 0)
