@@ -224,7 +224,8 @@ describe('nodes', () => {
     // TODO: the pivotting takes longer so we have to wait
     cy.get('th:contains(Blackpool)', { timeout: 10000 }).should('exist')
     cy.get('#workflows-grid td:contains(Matt)').should('have.length', 1)
-    cy.get('#workflows-grid td:contains(nan)').should('have.length', 8)
+    // the "—" is unicode em-dash, not a standard hyphen from keyboard
+    cy.get('#workflows-grid td:contains(—)').should('have.length', 8)
   })
 
   it('Edit', () => {
