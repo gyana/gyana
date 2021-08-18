@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { readyIntegrations, pendingIntegrations } from '../support/utils'
+
 const SHARED_SHEET =
   'https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit'
 
@@ -50,7 +52,7 @@ describe('integrations', () => {
     cy.contains('Yes').click()
 
     cy.url().should('contain', '/projects/1/integrations')
-    cy.get('table tbody tr').should('have.length', 5)
+    cy.get('table tbody tr').should('have.length', readyIntegrations - 1)
   })
   it('create, retry, edit and approve', () => {
     // using google sheets example
@@ -70,11 +72,11 @@ describe('integrations', () => {
 
     // check the pending page and navigate back
     cy.visit('/projects/1/integrations')
-    cy.get('table tbody tr').should('have.length', 6)
+    cy.get('table tbody tr').should('have.length', readyIntegrations)
 
-    cy.contains('Pending (1)').click()
+    cy.contains(`Pending (${1 + pendingIntegrations})`).click()
     cy.url().should('contain', '/projects/1/integrations/pending')
-    cy.get('table tbody tr').should('have.length', 1)
+    cy.get('table tbody tr').should('have.length', 1 + pendingIntegrations)
     cy.contains('Store info sheet').click()
 
     // try to retry it
@@ -99,10 +101,10 @@ describe('integrations', () => {
 
     // check the pending page again
     cy.visit('/projects/1/integrations')
-    cy.get('table tbody tr').should('have.length', 7)
+    cy.get('table tbody tr').should('have.length', readyIntegrations + 1)
 
     cy.contains('Pending').click()
-    cy.get('table tbody tr').should('have.length', 0)
+    cy.get('table tbody tr').should('have.length', pendingIntegrations)
 
     // todo: verify row count updates now
   })

@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { getModelStartId, getPendingIntegrations } from '../support/utils'
+import { getModelStartId, pendingIntegrations } from '../support/utils'
 
 const createConnector = (service) => {
   cy.visit('/projects/1/integrations/connectors/new?service=google_analytics')
@@ -57,7 +57,7 @@ describe('connectors', () => {
 
     // check the pending page
     cy.visit('/projects/1/integrations/pending')
-    cy.get('table tbody tr').should('have.length', 1 + getPendingIntegrations().length)
+    cy.get('table tbody tr').should('have.length', 1 + pendingIntegrations)
 
     // initially it is loading
     cy.get('.fa-circle-notch').should('have.length', 1)
