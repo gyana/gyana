@@ -6,114 +6,113 @@
   data-controller="live-update" 
   data-action="change->tf-modal#change submit->tf-modal#save"
 >  
-  <div class="flex flex-col flex-1 gap-7 pad">
-  <div class="absolute top-0 right-0">
-    <button
-      class="tf-modal__close"
-      type="submit"
-      formnovalidate
-      name="close"
-      value="close"
-      data-action="click->tf-modal#close keydown@window->tf-modal#onInput"
-    >
-      <i class="fal fa-times fa-2x"></i>
-    </button>
-  </div>
+  <div class="flex flex-col flex-1 w-full gap-7 pad">
+    <div class="absolute top-0 right-0">
+      <button
+        class="tf-modal__close"
+        type="submit"
+        formnovalidate
+        name="close"
+        value="close"
+        data-action="click->tf-modal#close keydown@window->tf-modal#onInput"
+      >
+        <i class="fal fa-times fa-2x"></i>
+      </button>
+    </div>
 
-  <span class="absolute h-full w-full hidden" data-live-update-target="loading">
-    <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-  </span>
+    <span class="absolute h-full w-full hidden" data-live-update-target="loading">
+      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+    </span>
 
-  {% csrf_token %}
-  <h3 class="flex flex-row items-center">
-    Configure 
-    <input 
-      class='input__inline ml-3' 
-      id="name" 
-      type="text" 
-      name="name" 
+    {% csrf_token %}
+    <input
+      class='input__inline' 
+      id="name"
+      type="text"
+      name="name"
       placeholder="Untitled widget" 
-      value="{% if object.name%}{{ object.name }}{%endif%}"
+      value="{% if object.name %}{{ object.name }}{% endif %}"
     ></input>
-  </h3>
-  <div class="flex flex-row w-full">
-    <div class="w-1/2">
-      <label for="{{ form.table.id_for_label }}">
-        {{ form.table.label }}
-        <p class=" input__help-text">{{ form.table.help_text }}</p>
-      </label>
-      {{form.table}}
-    </div>
-    <div class="w-1/2">
-      <label for="{{ form.table.id_for_label }}">
-        {{ form.kind.label }}
-        <p class=" input__help-text">{{ bound_fields.kind.help_text }}</p>
-      </label>
-      {{form.kind}}
-    </div>
-  </div>
 
-  {% block widget_form %}
+    <div class="flex flex-row gap-7">
+      <div class="w-1/2">
+        <label for="{{ form.table.id_for_label }}">
+          {{ form.table.label }}
+          <p class=" input__help-text">{{ form.table.help_text }}</p>
+        </label>
+        {{form.table}}
+      </div>
 
-  {% with array='name kind table'%}
-  {% for bound_field in form.visible_fields %}
-  {% if bound_field.name not in array.split %}
-    <div class="input-group">
-      {% if bound_field.widget_type == "checkbox" %}
-      <label class="flex flex-row">
-        {{ bound_field }}
-        <span>
+      <div class="w-1/2">
+        <label for="{{ form.table.id_for_label }}">
+          {{ form.kind.label }}
+          <p class=" input__help-text">{{ bound_fields.kind.help_text }}</p>
+        </label>
+        {{form.kind}}
+      </div>
+    </div>
+
+    {% block widget_form %}
+
+    {% with array='name kind table'%}
+    {% for bound_field in form.visible_fields %}
+    {% if bound_field.name not in array.split %}
+      <div class="input-group">
+        {% if bound_field.widget_type == "checkbox" %}
+        <label class="flex flex-row">
+          {{ bound_field }}
+          <span>
+            {{ bound_field.label }}
+            <p class=" input__help-text">{{ bound_field.help_text }}</p>
+            {% if not bound_field.field.required %}<small><i>- optional</i></small>{% endif %}
+          </span>
+        </label>
+        {% elif bound_field.subwidgets|length == 1 %}
+        <label>
+          <span>
+            {{ bound_field.label }}
+            <p class=" input__help-text">{{ bound_field.help_text }}</p>
+            {% if not bound_field.field.required %}<small><i>- optional</i></small>{% endif %}
+          </span>
+
+          {{ bound_field }}
+        </label>
+        {% else %}
+        <label for="{{ bound_field.id_for_label }}">
           {{ bound_field.label }}
           <p class=" input__help-text">{{ bound_field.help_text }}</p>
-          {% if not bound_field.field.required %}<small><i>- optional</i></small>{% endif %}
-        </span>
-      </label>
-      {% elif bound_field.subwidgets|length == 1 %}
-      <label>
-        <span>
-          {{ bound_field.label }}
-          <p class=" input__help-text">{{ bound_field.help_text }}</p>
-          {% if not bound_field.field.required %}<small><i>- optional</i></small>{% endif %}
-        </span>
-
+        </label>
         {{ bound_field }}
-      </label>
-      {% else %}
-      <label for="{{ bound_field.id_for_label }}">
-        {{ bound_field.label }}
-        <p class=" input__help-text">{{ bound_field.help_text }}</p>
-      </label>
-      {{ bound_field }}
-      {% endif %}
+        {% endif %}
 
-      {% if not form.is_live %}
-      {{ bound_field.errors }}
-      {% endif %}
-    </div>
-  {% endif %}
-  {% endfor %}
-  {% endwith %}
-  
-  {% endblock %}
+        {% if not form.is_live %}
+        {{ bound_field.errors }}
+        {% endif %}
+      </div>
+    {% endif %}
+    {% endfor %}
+    {% endwith %}
+    
+    {% endblock %}
 
-  {% for label, formset in formsets.items %}
-  {% if label != "Aggregations" %}
-    <fieldset>
-      <label>{{ label }}</label>
-      {% include "components/formset.html" with formset=formset %}
-    </fieldset>
-  {% endif %}
-  {% endfor %}
+    {% for label, formset in formsets.items %}
+    {% if label != "Aggregations" %}
+      <fieldset>
+        <label>{{ label }}</label>
+        {% include "components/formset.html" with formset=formset %}
+      </fieldset>
+    {% endif %}
+    {% endfor %}
 
-  {% for error in form.non_field_errors %}
-  <p class="text-red">
-    {{ error|escape }}
-  </p>
-  {% endfor %}
+    {% for error in form.non_field_errors %}
+    <p class="text-red">
+      {{ error|escape }}
+    </p>
+    {% endfor %}
 
-  {% for hidden_field in form.hidden_fields %}
-    {{ hidden_field }}
-  {% endfor %}
+    {% for hidden_field in form.hidden_fields %}
+      {{ hidden_field }}
+    {% endfor %}
   </div>
 
   <div class="widget-update__footer">

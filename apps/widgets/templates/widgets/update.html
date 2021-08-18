@@ -10,20 +10,28 @@
     {% endif %}
   </div>
 
-  <div class="flex-1 overflow-y-auto">
-    {% if widget.is_valid %}
-    <turbo-frame id="widgets-output-{{ widget.id }}"
-                  src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}">
-      <div class='placeholder-scr placeholder-scr--fillscreen'>
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-        <p class='placeholder-scr__title'>Loading widget...</p>
+  <div class="flex flex-col flex-1 overflow-hidden">
+    <nav class="tabbar">
+      <a class="tabbar__link tabbar__link--active">
+        Preview
+      </a>
+    </nav>
+
+    <div class="flex-1 overflow-y-auto">
+      {% if widget.is_valid %}
+      <turbo-frame id="widgets-output-{{ widget.id }}"
+                    src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}">
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          <p class='placeholder-scr__title'>Loading widget...</p>
+        </div>
+      </turbo-frame>
+      {% else %}
+      <div class='flex flex-col items-center justify-center' style="min-height:16rem;">
+        <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
+        <p>This widget needs to be configured</p>
       </div>
-    </turbo-frame>
-    {% else %}
-    <div class='flex flex-col items-center justify-center' style="min-height:16rem;">
-      <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
-      <p>This widget needs to be configured</p>
+      {% endif %}
     </div>
-    {% endif %}
   </div>
 </div>
