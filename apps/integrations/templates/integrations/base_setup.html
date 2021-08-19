@@ -21,7 +21,7 @@
     </a>
     <a class="tabbar__link {% if not request.resolver_match.url_name in 'update,done' %} tabbar__link--disabled {% endif %} {% if request.resolver_match.url_name == "done" %} tabbar__link--active {% endif %}"
         {% if integration.state in 'update,done' %} href="{% url 'project_integrations:done' project.id integration.id %}" {% endif %}>
-        {% if not integration.ready %} Review {% else %} Ready {% endif %}
+        Review
     </a>
 </nav>
 

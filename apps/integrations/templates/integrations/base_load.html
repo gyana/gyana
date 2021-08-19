@@ -42,7 +42,7 @@
                     Retry
                   </button>
               </form>
-              <a class="button ml-2" href="{% url object.integration.kind|add:'s:update' object.integration.project.id object.integration.id %}">Configure</a>
+              <a class="button ml-2" href="{% url 'project_integrations_'|add:object.integration.kind|add:'s:update' object.integration.project.id object.integration.id %}">Configure</a>
             </div>
           </div>
         </template>

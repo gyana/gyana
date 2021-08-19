@@ -6,10 +6,10 @@
   <h3 class="mr-auto flex justify-center items-center">
     <img class="h-12 w-12 mr-4" src="{% static integration.icon %}" title="{{ integration.name }}" />
     <turbo-frame id="integration-name">
-      <form method="post" action="{% url 'project_integrations:detail' project.id object.id %}" class="form">
+      <form method="post" action="{% url 'project_integrations:detail' project.id integration.id %}" class="form">
         {% csrf_token %}
 
-        <input class='input__inline' id="name" type="text" name="name" value="{{ object.name }}"></input>
+        <input class='input__inline' id="name" type="text" name="name" value="{{ integration.name }}"></input>
       </form>
     </turbo-frame>
   </h3>

@@ -1,4 +1,4 @@
-{% extends "integrations/base_setup.html" %}
+{% extends "integrations/base.html" %}
 {% load humanize %}
 
 {% block tab %}
@@ -7,7 +7,7 @@
     <div class='card'>
         <h4>Ready for analytics</h4>
         <p>You can edit your
-            <a class="link" href="{% url 'project_integrations:setup' object.project.id object.id %}">configuration</a> now or at any time, or force import new data.
+            <a class="link" href="{% url 'project_integrations_'|add:integration.kind|add:'s:update' project.id object.source_obj.id %}">configuration</a> now or at any time, or force import new data.
         </p>
     </div>
 </div>
