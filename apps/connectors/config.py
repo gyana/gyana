@@ -1,7 +1,6 @@
 from functools import lru_cache
 
 import yaml
-from django.conf import settings
 
 SERVICES = "apps/connectors/services.yaml"
 

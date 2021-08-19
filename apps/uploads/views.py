@@ -41,11 +41,9 @@ class UploadCreate(ProjectMixin, TurboCreateView):
             self.request.user.id,
             INTEGRATION_CREATED_EVENT,
             {
-                # not the same as integration.id
-                "id": form.instance.id,
+                "id": self.object.integration.id,
                 "type": Integration.Kind.UPLOAD,
-                # not available for a sheet
-                # "name": form.instance.name,
+                "name": self.object.integration.name,
             },
         )
 

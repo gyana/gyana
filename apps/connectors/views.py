@@ -1,6 +1,7 @@
 import analytics
 from apps.base.clients import fivetran_client
-from apps.base.segment_analytics import INTEGRATION_CREATED_EVENT
+from apps.base.segment_analytics import (INTEGRATION_CREATED_EVENT,
+                                         NEW_INTEGRATION_START_EVENT)
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from django.conf import settings
@@ -25,6 +26,13 @@ class ConnectorCreate(ProjectMixin, CreateView):
         context_data["services"] = get_services()
         context_data["service_categories"] = get_service_categories()
         return context_data
+
+    def get_form_class(self):
+        analytics.track(
+            self.request.user.id,
+            NEW_INTEGRATION_START_EVENT,
+            {"type": Integration.Kind.CONNECTOR},
+        )
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
