@@ -2,7 +2,7 @@
 
 describe('Api access control', () => {
   it('Node ViewSet', () => {
-    cy.login('nodes@gyana.com')
+    cy.login()
     cy.request('/nodes/api/nodes').then((response) => {
       expect(response.status).to.equal(200)
       const data = response.body.results
@@ -16,7 +16,7 @@ describe('Api access control', () => {
       expect(response.status).to.equal(403)
     })
 
-    cy.login()
+    cy.login('alone@gyana.com')
     cy.request('/nodes/api/nodes').then((response) => {
       expect(response.status).to.equal(200)
       const data = response.body.results
@@ -27,7 +27,7 @@ describe('Api access control', () => {
   })
 
   it('Filter autocompletes', () => {
-    cy.login('nodes@gyana.com')
+    cy.login()
     cy.request('get', '/filters/autocomplete?q=&parentType=node&parentId=20&column=Employees').then(
       (response) => {
         expect(response.status).to.equal(200)
@@ -39,7 +39,7 @@ describe('Api access control', () => {
     )
 
     cy.logout()
-    cy.login('test@gyana.com')
+    cy.login('alone@gyana.com')
     cy.request({
       url: '/filters/autocomplete?q=&parentType=node&parentId=20&column=Employees',
       failOnStatusCode: false,
