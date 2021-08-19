@@ -1,15 +1,12 @@
 from apps.base.clients import fivetran_client
-from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
-from apps.integrations.models import Integration
+from apps.base.frames import TurboFrameDetailView
 from apps.integrations.tables import (
     INTEGRATION_STATE_TO_ICON,
     INTEGRATION_STATE_TO_MESSAGE,
 )
-from django.urls import reverse
 
-from .forms import ConnectorUpdateForm
 from .models import Connector
-from .tasks import complete_connector_sync, run_connector_sync
+from .tasks import complete_connector_sync
 
 
 class ConnectorStatus(TurboFrameDetailView):

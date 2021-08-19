@@ -1,6 +1,5 @@
 import analytics
 from apps.base.clients import fivetran_client
-from apps.base.frames import TurboFrameUpdateView
 from apps.base.segment_analytics import INTEGRATION_CREATED_EVENT
 from apps.base.turbo import TurboUpdateView
 from apps.integrations.models import Integration
