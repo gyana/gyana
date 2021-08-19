@@ -22,6 +22,7 @@ def resetdb(request: Request):
     mail.outbox.clear()
 
     fivetran_client()._schema_cache.clear()
+    fivetran_client()._started = {}
 
     return JsonResponse({})
 

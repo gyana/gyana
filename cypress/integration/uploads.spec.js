@@ -16,7 +16,7 @@ describe('uploads', () => {
     cy.url().should('contain', '/projects/1/integrations/uploads/new')
     cy.get('input[type=file]').attachFile('store_info.csv')
 
-    cy.url().should('contain', `/projects/1/integrations/${id}/setup`)
+    cy.url().should('contain', `/projects/1/integrations/${id}/configure`)
     cy.get('button[type=submit]').click()
     cy.contains('Validating and importing your upload...')
     cy.contains('Upload successfully validated and imported.', { timeout: 10000 })

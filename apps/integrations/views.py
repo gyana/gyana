@@ -153,8 +153,14 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
     model = Integration
 
     def get(self, request, *args, **kwargs):
-        if self.get_object().state == Integration.State.LOAD:
-            return HttpResponseRedirect(self.get_success_url())
+        self.object = self.get_object()
+        if self.object.state == Integration.State.LOAD:
+            return HttpResponseRedirect(
+                reverse(
+                    "project_integrations:load",
+                    args=(self.project.id, self.object.id),
+                )
+            )
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -162,7 +168,7 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
         # connector task may have expired, need to check the source
         if self.object.kind == Integration.Kind.CONNECTOR:
             if fivetran_client().has_completed_sync(self.object.source_obj):
-                context_data["done"] = complete_connector_sync(self.object)
+                context_data["done"] = complete_connector_sync(self.object.source_obj)
 
         return context_data
 
@@ -193,7 +199,8 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
     fields = []
 
     def get(self, request, *args, **kwargs):
-        if self.get_object().state not in [
+        self.object = self.get_object()
+        if self.object.state not in [
             Integration.State.LOAD,
             Integration.State.ERROR,
         ]:

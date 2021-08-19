@@ -32,11 +32,11 @@ describe('connectors', () => {
     cy.url().should('contain', '/connectors/mock')
     cy.contains('continue').click()
 
-    cy.url().should('contain', `/projects/1/integrations/${newConnectorId}/setup`)
+    cy.url().should('contain', `/projects/1/integrations/${newConnectorId}/configure`)
     cy.get('button[type=submit]').click()
 
-    cy.contains('Importing data from your connector...')
-    cy.contains('Connector successfully imported.', { timeout: 10000 })
+    cy.contains('Validating and importing your connector...')
+    cy.contains('Connector successfully validated and imported.', { timeout: 10000 })
 
     cy.contains('Confirm').click()
 
@@ -70,7 +70,7 @@ describe('connectors', () => {
     // takes me to the review page
     cy.contains('Google Analytics').first().click()
 
-    cy.url().should('contain', `/projects/1/integrations/${newConnectorId}/setup`)
+    cy.url().should('contain', `/projects/1/integrations/${newConnectorId}/done`)
     cy.contains('Confirm').click()
 
     cy.url().should('contain', `/projects/1/integrations/${newConnectorId}`)
