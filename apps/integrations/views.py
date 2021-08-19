@@ -1,16 +1,10 @@
 from apps.base.turbo import TurboUpdateView
-from apps.connectors.forms import ConnectorUpdateForm
-from apps.connectors.models import Connector
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import KIND_TO_SYNC_TASK
 from apps.projects.mixins import ProjectMixin
-from apps.sheets.forms import SheetUpdateForm
-from apps.sheets.models import Sheet
-from apps.uploads.forms import UploadUpdateForm
-from apps.uploads.models import Upload
 from django.conf import settings
 from django.db.models.query import QuerySet
-from django.shortcuts import get_object_or_404, redirect
+from django.http.response import HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView
@@ -171,8 +165,10 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
         return kwargs
 
     def form_valid(self, form):
-        KIND_TO_SYNC_TASK[self.object.kind](self.object)
-        return super().form_valid(form)
+        KIND_TO_SYNC_TASK[self.object.kind](self.object.source_obj)
+        # don't assigned the result to self.object
+        form.save()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self) -> str:
         return reverse(
@@ -192,8 +188,10 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
         return context_data
 
     def form_valid(self, form):
-        KIND_TO_SYNC_TASK[self.object.kind](self.object)
-        return super().form_valid(form)
+        KIND_TO_SYNC_TASK[self.object.kind](self.object.source_obj)
+        # don't assigned the result to self.object
+        form.save()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self) -> str:
         return reverse(

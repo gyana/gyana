@@ -10,7 +10,7 @@ from django.urls.base import reverse
 
 from .forms import SheetCreateForm
 from .models import Sheet
-from .tasks import run_sheets_sync
+from .tasks import run_sheet_sync
 
 
 class SheetCreate(ProjectMixin, TurboCreateView):
@@ -49,8 +49,8 @@ class SheetCreate(ProjectMixin, TurboCreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations_sheets:update",
-            args=(self.project.id, self.object.id),
+            "project_integrations:configure",
+            args=(self.project.id, self.object.integration.id),
         )
 
 
@@ -65,7 +65,7 @@ class SheetUpdate(ProjectMixin, TurboUpdateView):
         return context_data
 
     def form_valid(self, form):
-        run_sheets_sync(self.object)
+        run_sheet_sync(self.object)
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
@@ -87,7 +87,7 @@ class SheetLoad(ProjectMixin, TurboUpdateView):
         return context_data
 
     def form_valid(self, form):
-        run_sheets_sync(self.object)
+        run_sheet_sync(self.object)
         return super().form_valid(form)
 
     def get_success_url(self) -> str:

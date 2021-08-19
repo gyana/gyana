@@ -73,11 +73,8 @@ class ConnectorAuthorize(ProjectMixin, DetailView):
         self.object.save()
         return redirect(
             reverse(
-                "project_integrations_connectors:update",
-                args=(
-                    self.project.id,
-                    self.object.id,
-                ),
+                "project_integrations:configure",
+                args=(self.project.id, self.object.integration.id),
             )
         )
 

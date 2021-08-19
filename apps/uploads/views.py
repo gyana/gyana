@@ -56,8 +56,8 @@ class UploadCreate(ProjectMixin, TurboCreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations_uploads:update",
-            args=(self.project.id, self.object.id),
+            "project_integrations:configure",
+            args=(self.project.id, self.object.integration.id),
         )
 
 
