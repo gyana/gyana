@@ -1,5 +1,4 @@
 import analytics
-from apps.base.frames import TurboFrameUpdateView
 from apps.base.segment_analytics import INTEGRATION_CREATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.integrations.models import Integration

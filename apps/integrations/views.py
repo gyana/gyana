@@ -14,14 +14,9 @@ from django_tables2.views import SingleTableMixin
 from .forms import IntegrationForm
 from .mixins import ReadyMixin
 from .models import Integration
-from .tables import (
-    IntegrationListTable,
-    IntegrationPendingTable,
-    StructureTable,
-    UsedInTable,
-)
+from .tables import IntegrationListTable, IntegrationPendingTable, UsedInTable
 
-# CRUDL
+# Overview
 
 
 class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
@@ -79,34 +74,7 @@ class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
         )
 
 
-class IntegrationSetup(ProjectMixin, DetailView):
-    template_name = "integrations/setup.html"
-    model = Integration
-    fields = []
-
-
-class IntegrationDone(ProjectMixin, TurboUpdateView):
-    template_name = "integrations/done.html"
-    model = Integration
-    fields = []
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
-        return context_data
-
-    def form_valid(self, form):
-        if not self.object.ready:
-            self.object.created_ready = timezone.now()
-        self.object.ready = True
-        self.object.save()
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        return reverse(
-            "project_integrations:detail",
-            args=(self.project.id, self.object.id),
-        )
+# Tabs
 
 
 class IntegrationDetail(ReadyMixin, TurboUpdateView):
@@ -122,6 +90,27 @@ class IntegrationDetail(ReadyMixin, TurboUpdateView):
     def get_success_url(self) -> str:
         return reverse(
             "project_integrations:detail", args=(self.project.id, self.object.id)
+        )
+
+
+class IntegrationData(ReadyMixin, DetailView):
+    template_name = "integrations/data.html"
+    model = Integration
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
+        return context_data
+
+
+class IntegrationSettings(ProjectMixin, TurboUpdateView):
+    template_name = "integrations/settings.html"
+    model = Integration
+    form_class = IntegrationForm
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_integrations:settings", args=(self.project.id, self.object.id)
         )
 
 
@@ -153,22 +142,34 @@ class IntegrationDelete(ProjectMixin, DeleteView):
         return reverse("project_integrations:list", args=(self.project.id,))
 
 
-class IntegrationData(ReadyMixin, DetailView):
-    template_name = "integrations/data.html"
+# Setup
+
+
+class IntegrationSetup(ProjectMixin, DetailView):
+    template_name = "integrations/setup.html"
     model = Integration
+    fields = []
+
+
+class IntegrationDone(ProjectMixin, TurboUpdateView):
+    template_name = "integrations/done.html"
+    model = Integration
+    fields = []
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
         return context_data
 
-
-class IntegrationSettings(ProjectMixin, TurboUpdateView):
-    template_name = "integrations/settings.html"
-    model = Integration
-    form_class = IntegrationForm
+    def form_valid(self, form):
+        if not self.object.ready:
+            self.object.created_ready = timezone.now()
+        self.object.ready = True
+        self.object.save()
+        return super().form_valid(form)
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:settings", args=(self.project.id, self.object.id)
+            "project_integrations:detail",
+            args=(self.project.id, self.object.id),
         )
