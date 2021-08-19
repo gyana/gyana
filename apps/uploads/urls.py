@@ -22,7 +22,7 @@ integration_urlpatterns = (
         ),
         path(
             "<hashid:pk>/load",
-            login_and_project_required(views.UploadProgress.as_view()),
+            login_and_project_required(views.UploadLoad.as_view()),
             name="progress",
         ),
     ],

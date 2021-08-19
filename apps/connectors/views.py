@@ -103,7 +103,7 @@ class ConnectorUpdate(ProjectMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations_connectors:progress",
+            "project_integrations_connectors:load",
             args=(
                 self.project.id,
                 self.object.id,
@@ -111,7 +111,7 @@ class ConnectorUpdate(ProjectMixin, TurboUpdateView):
         )
 
 
-class ConnectorProgress(ProjectMixin, TurboUpdateView):
+class ConnectorLoad(ProjectMixin, TurboUpdateView):
     template_name = "connectors/load.html"
     model = Connector
     fields = []
@@ -133,7 +133,7 @@ class ConnectorProgress(ProjectMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations_connectors:progress",
+            "project_integrations_connectors:load",
             args=(
                 self.project.id,
                 self.object.id,

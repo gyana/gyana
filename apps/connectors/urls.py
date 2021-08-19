@@ -38,7 +38,7 @@ integration_urlpatterns = (
         ),
         path(
             "<hashid:pk>/load",
-            login_and_project_required(views.ConnectorProgress.as_view()),
+            login_and_project_required(views.ConnectorLoad.as_view()),
             name="progress",
         ),
     ],

@@ -71,12 +71,12 @@ class SheetUpdate(ProjectMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations_sheets:progress",
+            "project_integrations_sheets:load",
             args=(self.project.id, self.object.id),
         )
 
 
-class SheetProgress(ProjectMixin, TurboUpdateView):
+class SheetLoad(ProjectMixin, TurboUpdateView):
     template_name = "sheets/load.html"
     model = Sheet
     fields = []
@@ -93,6 +93,6 @@ class SheetProgress(ProjectMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations_sheets:progress",
+            "project_integrations_sheets:load",
             args=(self.project.id, self.object.id),
         )

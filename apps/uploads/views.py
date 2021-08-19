@@ -77,12 +77,12 @@ class UploadUpdate(ProjectMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations_uploads:progress",
+            "project_integrations_uploads:load",
             args=(self.project.id, self.object.id),
         )
 
 
-class UploadProgress(ProjectMixin, TurboUpdateView):
+class UploadLoad(ProjectMixin, TurboUpdateView):
     template_name = "uploads/load.html"
     model = Upload
     fields = []
@@ -99,6 +99,6 @@ class UploadProgress(ProjectMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations_uploads:progress",
+            "project_integrations_uploads:load",
             args=(self.project.id, self.object.id),
         )
