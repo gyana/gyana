@@ -32,11 +32,6 @@ project_urlpatterns = (
             name="pending",
         ),
         path(
-            "<hashid:pk>/setup",
-            login_and_project_required(views.IntegrationSetup.as_view()),
-            name="setup",
-        ),
-        path(
             "<hashid:pk>/configure",
             login_and_project_required(views.IntegrationConfigure.as_view()),
             name="configure",

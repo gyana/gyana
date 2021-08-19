@@ -148,20 +148,19 @@ class IntegrationDelete(ProjectMixin, DeleteView):
 # Setup
 
 
-class IntegrationSetup(ProjectMixin, DetailView):
-    template_name = "integrations/setup.html"
-    model = Integration
-    fields = []
-
-
 class IntegrationConfigure(ProjectMixin, TurboUpdateView):
     template_name = "integrations/configure.html"
     model = Integration
 
+    def get(self, request, *args, **kwargs):
+        if self.get_object().state == Integration.State.LOAD:
+            return HttpResponseRedirect(self.get_success_url())
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         # connector task may have expired, need to check the source
-        if self.integration.kind == Integration.Kind.CONNECTOR:
+        if self.object.kind == Integration.Kind.CONNECTOR:
             if fivetran_client().has_completed_sync(self.object.source_obj):
                 context_data["done"] = complete_connector_sync(self.object)
 
@@ -192,6 +191,19 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
     template_name = "integrations/load.html"
     model = Integration
     fields = []
+
+    def get(self, request, *args, **kwargs):
+        if self.get_object().state not in [
+            Integration.State.LOAD,
+            Integration.State.ERROR,
+        ]:
+            return HttpResponseRedirect(
+                reverse(
+                    "project_integrations:done",
+                    args=(self.project.id, self.object.id),
+                )
+            )
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
