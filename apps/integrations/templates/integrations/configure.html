@@ -5,8 +5,12 @@
 <div class="pad">
     <form method="post" action="{{ request.get_full_path }}" class="form">
         <div class='card'>
-            <h4>Import with default settings or configure advanced options.</h4>
-            <p>You can come back here after viewing the initial import.</p>
+            {% if not object.ready %}
+                <h4>Import with default settings or configure advanced options.</h4>
+                <p>You can come back here after viewing the initial import.</p>
+            {% else %}
+                <h4>Re-import data or configure advanced options.</h4>          
+            {% endif %}
             <button type="submit" class="button button--filled button--success mt-4">Import</button>
         </div>
         

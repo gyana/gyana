@@ -16,6 +16,7 @@ from .models import Upload
 class UploadCreate(ProjectMixin, TurboCreateView):
     template_name = "uploads/create.html"
     model = Upload
+    form_class = UploadCreateForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -29,8 +30,7 @@ class UploadCreate(ProjectMixin, TurboCreateView):
             NEW_INTEGRATION_START_EVENT,
             {"type": Integration.Kind.UPLOAD},
         )
-
-        return UploadCreateForm
+        return super().get_form_class()
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user

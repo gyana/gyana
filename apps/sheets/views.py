@@ -31,6 +31,7 @@ class SheetCreate(ProjectMixin, TurboCreateView):
             NEW_INTEGRATION_START_EVENT,
             {"type": Integration.Kind.SHEET},
         )
+        return super().get_form_class()
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
