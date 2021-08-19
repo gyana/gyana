@@ -1,9 +1,16 @@
 from apps.base.turbo import TurboUpdateView
+from apps.connectors.forms import ConnectorUpdateForm
+from apps.connectors.models import Connector
 from apps.integrations.filters import IntegrationFilter
+from apps.integrations.tasks import KIND_TO_SYNC_TASK
 from apps.projects.mixins import ProjectMixin
+from apps.sheets.forms import SheetUpdateForm
+from apps.sheets.models import Sheet
+from apps.uploads.forms import UploadUpdateForm
+from apps.uploads.models import Upload
 from django.conf import settings
 from django.db.models.query import QuerySet
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView
@@ -11,7 +18,7 @@ from django.views.generic.edit import DeleteView
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
-from .forms import IntegrationForm
+from .forms import KIND_TO_FORM_CLASS, IntegrationForm
 from .mixins import ReadyMixin
 from .models import Integration
 from .tables import IntegrationListTable, IntegrationPendingTable, UsedInTable
@@ -149,6 +156,50 @@ class IntegrationSetup(ProjectMixin, DetailView):
     template_name = "integrations/setup.html"
     model = Integration
     fields = []
+
+
+class IntegrationConfigure(ProjectMixin, TurboUpdateView):
+    template_name = "integrations/configure.html"
+    model = Integration
+
+    def get_form_class(self):
+        return KIND_TO_FORM_CLASS[self.object.kind]
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({"instance": self.object.source_obj})
+        return kwargs
+
+    def form_valid(self, form):
+        KIND_TO_SYNC_TASK[self.object.kind](self.object)
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_integrations:load",
+            args=(self.project.id, self.object.id),
+        )
+
+
+class IntegrationLoad(ProjectMixin, TurboUpdateView):
+    template_name = "integrations/load.html"
+    model = Integration
+    fields = []
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["sync_task_id"] = self.object.source_obj.sync_task_id
+        return context_data
+
+    def form_valid(self, form):
+        KIND_TO_SYNC_TASK[self.object.kind](self.object)
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_integrations:load",
+            args=(self.project.id, self.object.id),
+        )
 
 
 class IntegrationDone(ProjectMixin, TurboUpdateView):
