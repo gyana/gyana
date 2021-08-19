@@ -1,5 +1,6 @@
 import inspect
 import logging
+import re
 
 import ibis
 from apps.base.clients import DATAFLOW_ID, bigquery_client, ibis_client
@@ -34,9 +35,15 @@ def _rename_duplicates(left, right, left_col, right_col):
     return left, right, left_col, right_col
 
 
-def _get_aggregate_expr(query, colname, computation):
+def _get_aggregate_expr(query, colname, computation, column_names):
+    """Creates an aggregation"""
     column = getattr(query, colname)
-    return getattr(column, computation)().name(colname)
+    # If a column is aggregated over more than once
+    # Generate a new column as combination of computation and column_name
+    new_colname = colname
+    if column_names.count(colname) > 1:
+        new_colname = f"{computation}_{colname}"
+    return getattr(column, computation)().name(new_colname)
 
 
 def _format_literal(value, type_):
@@ -143,8 +150,10 @@ def get_join_query(node, left, right):
 
 def get_aggregation_query(node, query):
     groups = [col.column for col in node.columns.all()]
+    aggregation_models = node.aggregations.all()
+    column_names = [agg.column for agg in aggregation_models]
     aggregations = [
-        _get_aggregate_expr(query, agg.column, agg.function)
+        _get_aggregate_expr(query, agg.column, agg.function, column_names)
         for agg in node.aggregations.all()
     ]
     if groups:
@@ -334,6 +343,14 @@ def _validate_arity(func, len_args):
     assert len_args >= min_arity if variable_args else len_args == min_arity
 
 
+pattern = re.compile(r"(?<!^)(?=[A-Z])")
+
+
+def error_name_to_snake(error):
+    """Converts a exception class name to snake case"""
+    return pattern.sub("_", error.__class__.__name__).lower()
+
+
 def get_query_from_node(node):
 
     nodes = _get_all_parents(node)
@@ -354,7 +371,7 @@ def get_query_from_node(node):
                 node.error = None
                 node.save()
         except Exception as err:
-            node.error = str(err)
+            node.error = error_name_to_snake(err)
             node.save()
             logging.error(err, exc_info=err)
 

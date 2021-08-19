@@ -44,3 +44,6 @@ HONEYBADGER = {
     "API_KEY": os.environ.get("HONEYBADGER_API_KEY"),
     "FORCE_REPORT_DATA": True,
 }
+
+# Disable admin-style browsable api endpoint
+REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = ("rest_framework.renderers.JSONRenderer",)

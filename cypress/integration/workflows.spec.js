@@ -110,7 +110,7 @@ describe('workflows', () => {
 
 describe('Workflow-format', () => {
   it('Formats a workflow', () => {
-    cy.login('nodes@gyana.com')
+    cy.login()
     cy.visit('/projects/2/workflows/1')
 
     const movedNodes = [6, 8, 11, 13]

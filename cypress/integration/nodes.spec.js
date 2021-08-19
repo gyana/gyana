@@ -28,7 +28,7 @@ const toNumbers = (texts) => _.map(texts, Number)
 
 describe('nodes', () => {
   beforeEach(() => {
-    cy.login('nodes@gyana.com')
+    cy.login()
   })
 
   it('input', () => {
@@ -91,8 +91,8 @@ describe('nodes', () => {
     addFormToFormset('columns')
     cy.get('select[name=columns-0-column]').should('have.value', '').select('Location')
     cy.contains('Save & Preview').click()
-    cy.contains('count').should('be.visible')
-    cy.contains('5').should('be.visible')
+    cy.get('#workflows-grid').contains('count').should('be.visible')
+    cy.get('#workflows-grid').contains('5').should('be.visible')
 
     addFormToFormset('aggregations')
     cy.get('select[name=aggregations-0-column]').should('have.value', '').select('Employees')
