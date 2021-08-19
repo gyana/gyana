@@ -1,4 +1,6 @@
+from apps.base.clients import fivetran_client
 from apps.base.turbo import TurboUpdateView
+from apps.connectors.tasks import complete_connector_sync
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import KIND_TO_SYNC_TASK
 from apps.projects.mixins import ProjectMixin
@@ -155,6 +157,15 @@ class IntegrationSetup(ProjectMixin, DetailView):
 class IntegrationConfigure(ProjectMixin, TurboUpdateView):
     template_name = "integrations/configure.html"
     model = Integration
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        # connector task may have expired, need to check the source
+        if self.integration.kind == Integration.Kind.CONNECTOR:
+            if fivetran_client().has_completed_sync(self.object.source_obj):
+                context_data["done"] = complete_connector_sync(self.object)
+
+        return context_data
 
     def get_form_class(self):
         return KIND_TO_FORM_CLASS[self.object.kind]

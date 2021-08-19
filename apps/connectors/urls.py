@@ -31,16 +31,6 @@ integration_urlpatterns = (
             login_and_project_required(views.ConnectorAuthorize.as_view()),
             name="authorize",
         ),
-        path(
-            "<hashid:pk>/update",
-            login_and_project_required(views.ConnectorUpdate.as_view()),
-            name="update",
-        ),
-        path(
-            "<hashid:pk>/load",
-            login_and_project_required(views.ConnectorLoad.as_view()),
-            name="load",
-        ),
     ],
     "project_integrations_connectors",
 )

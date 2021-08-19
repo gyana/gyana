@@ -14,17 +14,7 @@ integration_urlpatterns = (
             "new",
             login_and_project_required(views.UploadCreate.as_view()),
             name="create",
-        ),
-        path(
-            "<hashid:pk>/update",
-            login_and_project_required(views.UploadUpdate.as_view()),
-            name="update",
-        ),
-        path(
-            "<hashid:pk>/load",
-            login_and_project_required(views.UploadLoad.as_view()),
-            name="load",
-        ),
+        )
     ],
     "project_integrations_uploads",
 )
