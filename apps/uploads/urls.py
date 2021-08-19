@@ -27,6 +27,7 @@ urlpatterns = [
         login_and_upload_required(frames.UploadProgress.as_view()),
         name="progress",
     ),
+    # Doesnt require access control
     path("file/generate-signed-url", rest.generate_signed_url),
 ]
 
