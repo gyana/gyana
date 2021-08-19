@@ -78,16 +78,20 @@ class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
         )
 
 
-class IntegrationSetup(ProjectMixin, TurboUpdateView):
+class IntegrationSetup(ProjectMixin, DetailView):
     template_name = "integrations/setup.html"
+    model = Integration
+    fields = []
+
+
+class IntegrationDone(ProjectMixin, TurboUpdateView):
+    template_name = "integrations/done.html"
     model = Integration
     fields = []
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        if self.object.state == "done":
-            context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
-        context_data["state"] = self.request.GET.get("state") or self.object.state
+        context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
         return context_data
 
     def form_valid(self, form):

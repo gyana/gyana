@@ -3,13 +3,16 @@ from apps.base.segment_analytics import (
     INTEGRATION_CREATED_EVENT,
     NEW_INTEGRATION_START_EVENT,
 )
-from apps.base.turbo import TurboCreateView
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
+from apps.uploads.forms import UploadUpdateForm
 from apps.uploads.models import Upload
+from apps.uploads.tasks import run_upload_sync
 from django.urls import reverse
 
 from .forms import UploadCreateForm
+from .models import Upload
 from .tasks import run_upload_sync
 
 
@@ -53,6 +56,49 @@ class UploadCreate(ProjectMixin, TurboCreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:setup",
-            args=(self.project.id, self.object.integration.id),
+            "project_integrations_uploads:update",
+            args=(self.project.id, self.object.id),
+        )
+
+
+class UploadUpdate(ProjectMixin, TurboUpdateView):
+    template_name = "uploads/update.html"
+    model = Upload
+    form_class = UploadUpdateForm
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["integration"] = self.object.integration
+        return context_data
+
+    def form_valid(self, form):
+        run_upload_sync(self.object)
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_integrations_uploads:progress",
+            args=(self.project.id, self.object.id),
+        )
+
+
+class UploadProgress(ProjectMixin, TurboUpdateView):
+    template_name = "uploads/load.html"
+    model = Upload
+    fields = []
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["sync_task_id"] = self.object.sync_task_id
+        context_data["integration"] = self.object.integration
+        return context_data
+
+    def form_valid(self, form):
+        run_upload_sync(self.object)
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_integrations_uploads:progress",
+            args=(self.project.id, self.object.id),
         )

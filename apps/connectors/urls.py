@@ -6,12 +6,6 @@ from . import frames, views
 
 app_name = "connectors"
 urlpatterns = [
-    path("<hashid:pk>/update", frames.ConnectorUpdate.as_view(), name="update"),
-    path(
-        "<hashid:pk>/progress",
-        frames.ConnectorProgress.as_view(),
-        name="progress",
-    ),
     path(
         "<hashid:pk>/status",
         frames.ConnectorStatus.as_view(),
@@ -36,6 +30,16 @@ integration_urlpatterns = (
             "<hashid:pk>/authorize",
             login_and_project_required(views.ConnectorAuthorize.as_view()),
             name="authorize",
+        ),
+        path(
+            "<hashid:pk>/update",
+            login_and_project_required(views.ConnectorUpdate.as_view()),
+            name="update",
+        ),
+        path(
+            "<hashid:pk>/load",
+            login_and_project_required(views.ConnectorProgress.as_view()),
+            name="progress",
         ),
     ],
     "project_integrations_connectors",

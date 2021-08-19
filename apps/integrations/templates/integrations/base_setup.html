@@ -1,0 +1,28 @@
+{% extends "integrations/base.html" %}
+{% load humanize %}
+
+{% block extra_tab %}
+
+<nav id='tabbar-setup' class="tabbar">
+
+    <a class="tabbar__link {% if not request.resolver_match.url_name in 'update,done' %} tabbar__link--disabled {% endif %} {% if request.resolver_match.url_name == 'update' %} tabbar__link--active {% endif %}"
+        {% if request.resolver_match.url_name in 'update,done' %} href="{% url 'project_integrations_'|add:integration.kind|add:'s:update' project.id integration.source_obj.id %}" {% endif %}>
+        Configure
+    </a>
+    <a class="tabbar__link">
+        <i class="fa fa-arrow-right"></i>
+    </a>
+    <a class="tabbar__link {% if request.resolver_match.url_name != 'load' %} tabbar__link--disabled {% endif %} {% if request.resolver_match.url_name == "load" %} tabbar__link--active {% endif %}"
+        {% if request.resolver_match.url_name == 'load' %} href="{% url 'project_integrations_'|add:integration.kind|add:'s:update' project.id integration.source_obj.id %}" {% endif %}>
+        Import
+    </a>
+    <a class="tabbar__link">
+        <i class="fa fa-arrow-right"></i>
+    </a>
+    <a class="tabbar__link {% if not request.resolver_match.url_name in 'update,done' %} tabbar__link--disabled {% endif %} {% if request.resolver_match.url_name == "done" %} tabbar__link--active {% endif %}"
+        {% if integration.state in 'update,done' %} href="{% url 'project_integrations:done' project.id integration.id %}" {% endif %}>
+        {% if not integration.ready %} Review {% else %} Ready {% endif %}
+    </a>
+</nav>
+
+{% endblock  %}

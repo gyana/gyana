@@ -30,23 +30,23 @@
 <nav id='tabbar' class="tabbar">
   {% if integration.ready %}
     <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:detail' project.id object.id %}">
+      href="{% url 'project_integrations:detail' project.id integration.id %}">
       Overview
     </a>
     <a class="tabbar__link {% if request.resolver_match.url_name == 'data' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:data' project.id object.id %}">
+      href="{% url 'project_integrations:data' project.id integration.id %}">
       Data
     </a>
   {% endif %}
   {% comment %} Uploads cannot be setup again after approval {% endcomment %}
   {% if not integration.ready or integration.kind != integration.Kind.UPLOAD %}
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'setup' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:setup' project.id object.id %}">
+    <a class="tabbar__link {% if request.resolver_match.url_name in 'update,load,done,setup' %} tabbar__link--active {% endif %}"
+      href="{% url 'project_integrations:setup' project.id integration.id %}">
       Setup
     </a>
   {% endif %}
   <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
-    href="{% url 'project_integrations:settings' project.id object.id %}">
+    href="{% url 'project_integrations:settings' project.id integration.id %}">
     Settings
   </a>
 </nav>
