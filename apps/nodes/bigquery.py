@@ -35,9 +35,15 @@ def _rename_duplicates(left, right, left_col, right_col):
     return left, right, left_col, right_col
 
 
-def _get_aggregate_expr(query, colname, computation):
+def _get_aggregate_expr(query, colname, computation, column_names):
+    """Creates an aggregation"""
     column = getattr(query, colname)
-    return getattr(column, computation)().name(colname)
+    # If a column is aggregated over more than once
+    # Generate a new column as combination of computation and column_name
+    new_colname = colname
+    if column_names.count(colname) > 1:
+        new_colname = f"{computation}_{colname}"
+    return getattr(column, computation)().name(new_colname)
 
 
 def _format_literal(value, type_):
@@ -144,8 +150,10 @@ def get_join_query(node, left, right):
 
 def get_aggregation_query(node, query):
     groups = [col.column for col in node.columns.all()]
+    aggregation_models = node.aggregations.all()
+    column_names = [agg.column for agg in aggregation_models]
     aggregations = [
-        _get_aggregate_expr(query, agg.column, agg.function)
+        _get_aggregate_expr(query, agg.column, agg.function, column_names)
         for agg in node.aggregations.all()
     ]
     if groups:
