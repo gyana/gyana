@@ -81,7 +81,7 @@ describe('nodes', () => {
     cy.contains('Edinburgh').should('be.visible')
   })
 
-  it.only('aggregation', () => {
+  it('aggregation', () => {
     openModalAndCheckTitle(4, 'Aggregation')
 
     testHelp('Aggregations are useful to generate')

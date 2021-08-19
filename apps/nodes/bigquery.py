@@ -1,5 +1,6 @@
 import inspect
 import logging
+import re
 
 import ibis
 from apps.base.clients import DATAFLOW_ID, bigquery_client, ibis_client
@@ -334,6 +335,14 @@ def _validate_arity(func, len_args):
     assert len_args >= min_arity if variable_args else len_args == min_arity
 
 
+pattern = re.compile(r"(?<!^)(?=[A-Z])")
+
+
+def error_name_to_snake(error):
+    """Converts a exception class name to snake case"""
+    return pattern.sub("_", error.__class__.__name__).lower()
+
+
 def get_query_from_node(node):
 
     nodes = _get_all_parents(node)
@@ -354,7 +363,7 @@ def get_query_from_node(node):
                 node.error = None
                 node.save()
         except Exception as err:
-            node.error = str(err)
+            node.error = error_name_to_snake(err)
             node.save()
             logging.error(err, exc_info=err)
 
