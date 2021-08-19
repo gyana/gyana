@@ -54,7 +54,7 @@ describe('integrations', () => {
     cy.url().should('contain', '/projects/1/integrations')
     cy.get('table tbody tr').should('have.length', readyIntegrations - 1)
   })
-  it.only('create, retry, edit and approve', () => {
+  it('create, retry, edit and approve', () => {
     // using google sheets example
 
     cy.contains('New Integration').click()
@@ -86,7 +86,7 @@ describe('integrations', () => {
     cy.contains('No columns found in the schema.', { timeout: 10000 })
 
     // edit the configuration
-    cy.contains('Configure').click()
+    cy.get('#main').within(() => cy.contains('Configure').click())
     cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').clear().type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
