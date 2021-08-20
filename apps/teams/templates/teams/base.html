@@ -13,9 +13,9 @@
           <span class="inline">
             You're exceeding your row count limit.
           </span>
-          {% comment %} <span class="block sm:ml-2 sm:inline-block">
-            <a href="#" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
-          </span> {% endcomment %}
+          <span class="block sm:ml-2 sm:inline-block">
+            <a href="{% url 'teams:account' object.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
+          </span>
         </p>
       </div>
     </div>
@@ -30,9 +30,9 @@
           <span class="inline">
             You've exceeded your row count limit by over 20%, your team is temporarily disabled.
           </span>
-          {% comment %} <span class="block sm:ml-2 sm:inline-block">
-            <a href="#" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
-          </span> {% endcomment %}
+          <span class="block sm:ml-2 sm:inline-block">
+            <a href="{% url 'teams:account' object.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
+          </span>
         </p>
       </div>
     </div>
