@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from . import roles
 
 DEFAULT_ROW_LIMIT = 1_000_000
+WARNING_BUFFER = 0.2
 
 
 class Team(BaseModel):
@@ -22,7 +23,6 @@ class Team(BaseModel):
     # calculating every view is too expensive
     row_count = models.BigIntegerField(default=0)
     row_count_calculated = models.DateTimeField(null=True)
-    enabled = models.BooleanField(default=True)
 
     @cached_property
     def num_rows(self):
@@ -34,6 +34,14 @@ class Team(BaseModel):
             )["num_rows__sum"]
             or 0
         )
+
+    @property
+    def warning(self):
+        return self.row_limit < self.row_count <= self.row_limit * (1 + WARNING_BUFFER)
+
+    @property
+    def enabled(self):
+        return self.row_count <= self.row_limit * (1 + WARNING_BUFFER)
 
     def __str__(self):
         return self.name

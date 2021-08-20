@@ -84,8 +84,7 @@
       "name": "Vayu",
       "row_limit": 1000000,
       "row_count": 0,
-      "row_count_calculated": null,
-      "enabled": true
+      "row_count_calculated": null
     }
   },
   {
@@ -97,8 +96,7 @@
       "name": "Rows 15",
       "row_limit": 15,
       "row_count": 15,
-      "row_count_calculated": null,
-      "enabled": true
+      "row_count_calculated": null
     }
   },
   {
@@ -108,10 +106,9 @@
       "created": "2021-08-20T13:49:01.945Z",
       "updated": "2021-08-20T13:49:17.382Z",
       "name": "Warning",
-      "row_limit": 12,
-      "row_count": 15,
-      "row_count_calculated": null,
-      "enabled": true
+      "row_limit": 13,
+      "row_count": 0,
+      "row_count_calculated": null
     }
   },
   {
@@ -121,10 +118,9 @@
       "created": "2021-08-20T13:49:11.978Z",
       "updated": "2021-08-20T13:49:11.985Z",
       "name": "Disabled",
-      "row_limit": 20,
+      "row_limit": 10,
       "row_count": 15,
-      "row_count_calculated": null,
-      "enabled": true
+      "row_count_calculated": null
     }
   },
   {

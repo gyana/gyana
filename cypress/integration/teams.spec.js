@@ -93,4 +93,28 @@ describe('teams', () => {
       .then((response) => response.status)
       .should('eq', 404)
   })
+  it('account limit warning', () => {
+    cy.visit('/')
+
+    cy.contains('Warning').click()
+
+    // initially the row_count was not updated
+    cy.contains("You've exceeded your row count limit.").should('not.exist')
+    // periodic job to calculate this information
+    cy.periodic()
+    cy.reload()
+
+    cy.contains("You're exceeding your row count limit.")
+
+    // now we go and delete that data source
+    cy.get('#main').within(() => cy.contains('Warning').click())
+    cy.contains('store_info').click()
+    cy.contains('Settings').click()
+    cy.contains('Delete').click()
+    cy.contains('Yes').click()
+
+    cy.visit('/')
+    cy.contains('Warning').click()
+    cy.contains("You're exceeding your row count limit.").should('not.exist')
+  })
 })

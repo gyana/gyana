@@ -1,10 +1,9 @@
 from apps.tables.models import Table
 from celery.app import shared_task
 from django.db import models, transaction
+from django.utils import timezone
 
 from .models import Team
-
-WARNING_BUFFER = 0.2
 
 
 def _calculate_row_count_for_team(team: Team):
@@ -12,11 +11,7 @@ def _calculate_row_count_for_team(team: Team):
     # todo: update row counts for all tables in team by fetching from bigquery
 
     team.row_count = team.num_rows
-
-    if team.enabled and team.row_count > team.row_limit * (1 + WARNING_BUFFER):
-        team.enabled = False
-    elif not team.enabled and team.row_count <= team.row_limit:
-        team.enabled = True
+    team.row_count_calculated = timezone.now()
 
     team.save()
 

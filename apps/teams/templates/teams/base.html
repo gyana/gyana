@@ -4,16 +4,51 @@
 {% load team_tags %}
 
 {% block app %}
+
+{% if team.warning %}
+  <div class="relative bg-orange">
+    <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
+      <div class="pr-16 sm:text-center sm:px-16">
+        <p class="font-medium text-white">
+          <span class="inline">
+            You're exceeding your row count limit.
+          </span>
+          {% comment %} <span class="block sm:ml-2 sm:inline-block">
+            <a href="#" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
+          </span> {% endcomment %}
+        </p>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% if not team.enabled %}
+  <div class="relative bg-red">
+    <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
+      <div class="pr-16 sm:text-center sm:px-16">
+        <p class="font-medium text-white">
+          <span class="inline">
+            You've exceeded your row count limit by over 20%, your team is temporarily disabled.
+          </span>
+          {% comment %} <span class="block sm:ml-2 sm:inline-block">
+            <a href="#" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
+          </span> {% endcomment %}
+        </p>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
 {% if team.id %}
 <div id="heading" class="workflow-detail__header">
   <h3 class="mr-auto flex justify-center items-center">
     {{ team.name }}
   </h3>
 
-  <p class="tooltip tooltip--bottom">
+  {% comment %} <p class="tooltip tooltip--bottom">
     {{ team.num_rows }} <span class="text-black-20">/ {{ team.row_limit|intcomma }}</span>
     <span class="tooltip__content">Row Usage</span>
-  </p>
+  </p> {% endcomment %}
 </div>
 
 <nav class="tabbar">
@@ -34,7 +69,7 @@
 </nav>
 {% endif %}
 
-<div class="flex flex-col flex-1 overflow-auto pad">
+<div id="main" class="flex flex-col flex-1 overflow-auto pad">
   {% block tab %}{% endblock %}
 </div>
 {% endblock %}
