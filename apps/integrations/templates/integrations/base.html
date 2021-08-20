@@ -40,8 +40,8 @@
   {% endif %}
   {% comment %} Uploads cannot be setup again after approval {% endcomment %}
   {% if not object.ready or object.kind != object.Kind.UPLOAD %}
-    <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %} {% if not team.enabled %} tabbar__link--disabled {% endif %}"
-      {% if team.enabled %} href="{% url 'project_integrations:configure' project.id object.id %}" {% endif %}>
+    <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %}"
+      href="{% url 'project_integrations:configure' project.id object.id %}">
       Setup
     </a>
   {% endif %}
