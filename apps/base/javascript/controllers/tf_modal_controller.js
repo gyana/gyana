@@ -27,8 +27,14 @@ export default class extends Controller {
     this.modalTarget.classList.remove('hidden')
   }
 
-  async submit() {
+  async submit(e) {
+    e.preventDefault()
     const data = new FormData(this.formTarget)
+
+    // Live forms need to know that this is a submit request
+    // so it know it isnt live anymore
+    if (e.target.name) data.set(e.target.name, e.target.value)
+
     const result = await fetch(this.formTarget.action, {
       method: 'POST',
       body: data,
@@ -41,6 +47,7 @@ export default class extends Controller {
       const parser = new DOMParser()
       const doc = parser.parseFromString(text, 'text/html')
       const newForm = doc.querySelector(`#${this.formTarget.id}`)
+
       this.formTarget.outerHTML = newForm.outerHTML
     }
   }
