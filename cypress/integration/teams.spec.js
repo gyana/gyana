@@ -115,6 +115,10 @@ describe('teams', () => {
 
     cy.visit('/')
     cy.contains('Warning').click()
+    cy.contains('Account').click()
+    // it still exists because we need to force update
+    cy.contains("You're exceeding your row count limit.")
+    cy.contains('Recalculate').click()
     cy.contains("You're exceeding your row count limit.").should('not.exist')
   })
 })
