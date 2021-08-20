@@ -1,0 +1,21 @@
+{% extends "teams/base.html" %}
+{% load humanize %}
+
+{% block tab %}
+
+<h2>
+    Account usage: {{ team.row_count }} / {{ team.row_limit|intcomma }} rows
+</h2>
+<p> Last calculated: {{ team.row_count_calculated|naturaltime|default_if_none:"Never" }}</p>
+  
+<div class="max-w-lg mb-auto">
+  <form method="post" class="form">
+    {% csrf_token %}
+
+    {% include "django/forms/default_form.html" %}
+
+    <button type="submit" class="button button--sm button--success">Recalculate</button>
+  </form>
+</div>
+
+{% endblock %}
