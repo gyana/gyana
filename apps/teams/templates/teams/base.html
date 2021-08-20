@@ -8,6 +8,11 @@
   <h3 class="mr-auto flex justify-center items-center">
     {{ team.name }}
   </h3>
+
+  <p class="tooltip tooltip--bottom text-black-20">
+    {{ team.num_rows|default:'0' }}/∞
+    <span class="tooltip__content">Row Usage</span>
+  </p>
 </div>
 
 <nav class="tabbar">

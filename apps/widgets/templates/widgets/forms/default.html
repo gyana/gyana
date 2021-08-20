@@ -1,12 +1,12 @@
 <form 
   id="widget-update-form"
-  class="form flex-1"
+  class="form flex-1 overflow-hidden"
   action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
   method="post"
   data-controller="live-update" 
   data-action="change->tf-modal#change submit->tf-modal#save"
 >  
-  <div class="flex flex-col flex-1 w-full gap-7 pad">
+  <div class="flex flex-col flex-1 w-full gap-7 pad overflow-y-auto">
     <div class="absolute top-0 right-0">
       <button
         class="tf-modal__close"
