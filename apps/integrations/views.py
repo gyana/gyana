@@ -238,6 +238,14 @@ class IntegrationDone(ProjectMixin, TurboUpdateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
+        exceeds_row_limit = (
+            self.object.num_rows + self.project.num_rows > self.project.team.row_limit
+        )
+        context_data["exceeds_row_limit"] = exceeds_row_limit
+        if exceeds_row_limit:
+            context_data["projected_num_rows"] = (
+                self.object.num_rows + self.project.num_rows
+            )
         return context_data
 
     def form_valid(self, form):
