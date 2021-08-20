@@ -1,8 +1,7 @@
-from functools import cached_property
-
 from apps.base.models import BaseModel
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from . import roles
@@ -24,16 +23,17 @@ class Team(BaseModel):
     row_count = models.BigIntegerField(default=0)
     row_count_calculated = models.DateTimeField(null=True)
 
-    @cached_property
-    def num_rows(self):
+    def update_row_count(self):
         from apps.tables.models import Table
 
-        return (
+        self.row_count = (
             Table.available.filter(integration__project__team=self).aggregate(
                 models.Sum("num_rows")
             )["num_rows__sum"]
             or 0
         )
+        self.row_count_calculated = timezone.now()
+        self.save()
 
     @property
     def warning(self):

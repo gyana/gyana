@@ -10,10 +10,7 @@ def _calculate_row_count_for_team(team: Team):
 
     # todo: update row counts for all tables in team by fetching from bigquery
 
-    team.row_count = team.num_rows
-    team.row_count_calculated = timezone.now()
-
-    team.save()
+    team.update_row_count()
 
     # todo: disable connectors
 

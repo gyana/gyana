@@ -74,8 +74,7 @@ class TeamAccount(UpdateView):
     fields = []
 
     def form_valid(self, form) -> HttpResponse:
-        self.object.row_count = self.object.num_rows
-        self.object.save()
+        self.object.update_row_count()
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
