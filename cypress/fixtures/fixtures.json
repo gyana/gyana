@@ -91,8 +91,8 @@
     "fields": {
       "created": "2021-07-26T14:53:37.577Z",
       "updated": "2021-07-26T14:53:37.587Z",
-      "name": "Rows 25",
-      "row_limit": "25"
+      "name": "Rows 15",
+      "row_limit": 15
     }
   },
   {
