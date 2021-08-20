@@ -7,6 +7,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from . import roles
 
+DEFAULT_ROW_LIMIT = 1_000_000
+
 
 class Team(BaseModel):
     """
@@ -18,6 +20,8 @@ class Team(BaseModel):
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL, related_name="teams", through="Membership"
     )
+
+    row_limit = models.BigIntegerField(default=DEFAULT_ROW_LIMIT)
 
     @cached_property
     def num_rows(self):
