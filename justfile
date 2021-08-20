@@ -64,7 +64,7 @@ cypress-server:
     ./manage.py runserver --settings gyana.settings.cypress
 
 cypress-celery:
-    watchexec -w apps -e py -r "DJANGO_SETTINGS_MODULE=gyana.settings.cypress celery -A gyana worker -l info"
+    watchexec -w apps -e py -r "DJANGO_SETTINGS_MODULE=gyana.settings.cypress celery -A gyana worker --beat -l info"
 
 cypress-fixtures:
     ./manage.py dumpdata -e admin -e auth -e contenttypes -e sessions -e sites --settings gyana.settings.cypress > cypress/fixtures/fixtures.json
