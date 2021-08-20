@@ -101,12 +101,60 @@ describe('integrations', () => {
     cy.get('table tbody tr').should('have.length', pendingIntegrations)
   })
   it('row limits', () => {
+    // project in team 2, with row limit of 25
+    cy.visit('/projects/3/integrations')
+
+    // add a valid sheet with 15 rows, validate row count updates on confirmation
+    cy.contains('New Integration').click()
+    cy.contains('Add Sheet').click()
+    cy.get('input[name=url]').type(SHARED_SHEET)
+    cy.get('button[type=submit]').click()
+    cy.get('button[type=submit]').click()
+    cy.contains('Confirm', { timeout: 10000 })
+
     // make absolute sure that only after approval does row count update
     cy.reload()
-    cy.contains('Rows 25/∞')
+    cy.contains('Rows 0/15')
+    // confirm button is enabled
     cy.contains('Confirm').click()
-    cy.contains('Rows 35/∞')
+    cy.contains('Rows 15/15')
 
-    // todo: verify row count updates now
+    // add another valid sheet, validate row count updates on confirmation
+    cy.visit('/projects/3/integrations')
+    cy.contains('New Integration').click()
+    cy.contains('Add Sheet').click()
+    cy.get('input[name=url]').type(SHARED_SHEET)
+    cy.get('button[type=submit]').click()
+    cy.get('button[type=submit]').click()
+
+    cy.contains('Insufficient rows', { timeout: 10000 })
+    cy.contains(
+      'Adding this data will bring your total rows to 30, which exceeds your row limit of 15.'
+    )
+    cy.get('button[type=submit]').should('not.exist')
+  })
+  it('pending cleanup', () => {
+    cy.get('table tbody tr').should('have.length', 2)
+
+    // new sheet, should not get cleaned up
+    cy.contains('New Integration').click()
+    cy.contains('Add Sheet').click()
+    cy.get('input[name=url]').type(SHARED_SHEET)
+    cy.get('button[type=submit]').click()
+
+    cy.visit('/projects/1/integrations/pending')
+
+    cy.get('table tbody tr').should('have.length', 5)
+
+    // trigger pending job
+    cy.periodic()
+
+    // only the pending one we just added remains
+    cy.reload()
+    cy.get('table tbody tr').should('have.length', 1)
+
+    // all ready integrations are fine
+    cy.visit('projects/1/integrations')
+    cy.get('table tbody tr').should('have.length', 2)
   })
 })

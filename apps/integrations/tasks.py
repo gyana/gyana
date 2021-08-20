@@ -22,5 +22,5 @@ def delete_outdated_pending_integrations():
     # will automatically delete associated fivetran and bigquery entities
     Integration.objects.filter(
         ready=False,
-        created_lt=timezone.now() - timedelta(days=PENDING_DELETE_AFTER_DAYS),
+        created__lt=timezone.now() - timedelta(days=PENDING_DELETE_AFTER_DAYS),
     ).all().delete()
