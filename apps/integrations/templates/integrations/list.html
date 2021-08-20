@@ -19,11 +19,13 @@
   <div class="table__empty">
     <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
     <h3>You have no integrations</h3>
-    <p>
-      <a href="{% url 'project_integrations_uploads:create' project.id %}" class="link">Upload a CSV</a>, or
-      <a href="{% url 'project_integrations_connectors:create' project.id %}" class="link">create an integration</a> to see it
-      here.
-    </p>
+    {% if project.team.enabled %}
+      <p>
+        <a href="{% url 'project_integrations_uploads:create' project.id %}" class="link">Upload a CSV</a>, or
+        <a href="{% url 'project_integrations_connectors:create' project.id %}" class="link">create an integration</a> to see it
+        here.
+      </p>
+    {% endif %}
   </div>
   {% endif %}
 </div>

@@ -113,12 +113,13 @@ describe('integrations', () => {
     cy.contains('Confirm', { timeout: 10000 })
 
     // make absolute sure that only after approval does row count update
-    cy.visit('/teams/2')
+    cy.visit('/teams/2/account')
     cy.contains('0 / 15')
     cy.go('back')
     // confirm button is enabled
     cy.contains('Confirm').click()
-    cy.visit('/teams/2')
+    cy.visit('/teams/2/account')
+    cy.contains('Recalculate').click()
     cy.contains('15 / 15')
     cy.go('back')
 

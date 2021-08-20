@@ -1,6 +1,7 @@
 from apps.base.clients import fivetran_client
 from apps.base.cypress_mail import Outbox
 from apps.integrations.tasks import delete_outdated_pending_integrations
+from apps.teams.tasks import update_team_row_limits
 from django.core import mail
 from django.core.management import call_command
 from django.http.response import JsonResponse
@@ -44,5 +45,6 @@ def periodic(request: Request):
     # force all periodic tasks to run synchronously
 
     delete_outdated_pending_integrations()
+    update_team_row_limits()
 
     return JsonResponse({"message": "ok"})

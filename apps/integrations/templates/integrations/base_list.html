@@ -12,32 +12,36 @@
   </div>
 
   <div class="flex ml-4">
-  <div data-controller='popover'>
-    <button data-popover-target="trigger" class="button button--outline button--sm" data-action="popover#trigger">
-      New Integration <i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
+    {% if project.team.enabled %}
+    <div data-controller='popover'>
+        <button data-popover-target="trigger" class="button button--outline button--sm" data-action="popover#trigger">
+          New Integration <i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
+        </button>
+        <ul data-popover-target="body" class="list list--bordered" hidden style="z-index:1;margin-top:6px;">
+          <li class="list__item list__item--interactive">
+            <a class="" href="{% url 'project_integrations_uploads:create' project.id %}">
+              <i class="fas fa-fw fa-upload mr-4"></i> Upload CSV
+            </a>
+          </li>
 
-    </button>
+          <li class="list__item list__item--interactive">
+            <a class="" href="{% url 'project_integrations_sheets:create' project.id %}">
+              <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
+            </a>
+          </li>
 
-    <ul data-popover-target="body" class="list list--bordered" hidden style="z-index:1;margin-top:6px;">
-      <li class="list__item list__item--interactive">
-        <a class="" href="{% url 'project_integrations_uploads:create' project.id %}">
-          <i class="fas fa-fw fa-upload mr-4"></i> Upload CSV
-        </a>
-      </li>
-
-      <li class="list__item list__item--interactive">
-        <a class="" href="{% url 'project_integrations_sheets:create' project.id %}">
-          <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
-        </a>
-      </li>
-
-      <li class="list__item list__item--interactive">
-        <a class="" href="{% url 'project_integrations_connectors:create' project.id %}">
-          <i class="fas fa-fw fa-plus mr-4"></i> New Connector
-        </a>
-      </li>
-    </ul>
-  </div>
+          <li class="list__item list__item--interactive">
+            <a class="" href="{% url 'project_integrations_connectors:create' project.id %}">
+              <i class="fas fa-fw fa-plus mr-4"></i> New Connector
+            </a>
+          </li>
+        </ul>
+      </div>
+    {% else %}
+      <button disabled class="button button--outline button--sm disabled">
+        New Integration <i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
+      </button>
+    {% endif %}
   </div>
 </div>
 

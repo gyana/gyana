@@ -1,3 +1,4 @@
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -5,8 +6,8 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView
+from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableView
-from apps.base.turbo import TurboCreateView, TurboUpdateView
 
 from .forms import MembershipUpdateForm, TeamChangeForm
 from .models import Membership, Team
@@ -64,6 +65,20 @@ class TeamDetail(DetailView):
         context["project_count"] = Project.objects.filter(team=self.object).count()
 
         return context
+
+
+class TeamAccount(UpdateView):
+    template_name = "teams/account.html"
+    model = Team
+    pk_url_kwarg = "team_id"
+    fields = []
+
+    def form_valid(self, form) -> HttpResponse:
+        self.object.update_row_count()
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse("teams:account", args=(self.object.id,))
 
 
 class MembershipList(TeamMixin, SingleTableView):
