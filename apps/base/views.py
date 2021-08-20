@@ -1,5 +1,6 @@
 from apps.base.clients import fivetran_client
 from apps.base.cypress_mail import Outbox
+from apps.integrations.tasks import delete_outdated_pending_integrations
 from django.core import mail
 from django.core.management import call_command
 from django.http.response import JsonResponse
@@ -34,3 +35,14 @@ def outbox(request: Request):
     messages = mail.outbox.messages if hasattr(mail, "outbox") else []
 
     return JsonResponse({"messages": messages, "count": len(messages)})
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def periodic(request: Request):
+
+    # force all periodic tasks to run synchronously
+
+    delete_outdated_pending_integrations()
+
+    return JsonResponse({"message": "ok"})
