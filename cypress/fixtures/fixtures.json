@@ -81,7 +81,18 @@
     "fields": {
       "created": "2021-07-26T14:53:37.577Z",
       "updated": "2021-07-26T14:53:37.587Z",
-      "name": "Vayu"
+      "name": "Vayu",
+      "row_limit": "1000000"
+    }
+  },
+  {
+    "model": "teams.team",
+    "pk": 2,
+    "fields": {
+      "created": "2021-07-26T14:53:37.577Z",
+      "updated": "2021-07-26T14:53:37.587Z",
+      "name": "Rows 25",
+      "row_limit": "25"
     }
   },
   {
@@ -107,6 +118,17 @@
     }
   },
   {
+    "model": "teams.membership",
+    "pk": 3,
+    "fields": {
+      "created": "2021-07-29T09:34:08.392Z",
+      "updated": "2021-07-29T09:34:08.392Z",
+      "team": 2,
+      "user": 1,
+      "role": "admin"
+    }
+  },
+  {
     "model": "projects.project",
     "pk": 1,
     "fields": {
@@ -125,6 +147,17 @@
       "updated": "2021-08-10T07:28:33.669Z",
       "name": "Nodes",
       "team": 1,
+      "description": ""
+    }
+  },
+  {
+    "model": "projects.project",
+    "pk": 3,
+    "fields": {
+      "created": "2021-08-10T07:28:33.668Z",
+      "updated": "2021-08-10T07:28:33.669Z",
+      "name": "Rows 25",
+      "team": 2,
       "description": ""
     }
   },
