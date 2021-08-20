@@ -27,9 +27,12 @@ class Team(BaseModel):
     def num_rows(self):
         from apps.tables.models import Table
 
-        return Table.available.filter(integration__project__team=self).aggregate(
-            models.Sum("num_rows")
-        )["num_rows__sum"]
+        return (
+            Table.available.filter(integration__project__team=self).aggregate(
+                models.Sum("num_rows")
+            )["num_rows__sum"]
+            or 0
+        )
 
     def __str__(self):
         return self.name

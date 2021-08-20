@@ -1,5 +1,6 @@
 {% extends "web/app/app_base.html" %}
 {% load static %}
+{% load humanize %}
 {% load team_tags %}
 
 {% block app %}
@@ -9,8 +10,8 @@
     {{ team.name }}
   </h3>
 
-  <p class="tooltip tooltip--bottom text-black-20">
-    {{ team.num_rows|default:'0' }}/{{ team.row_limit }}
+  <p class="tooltip tooltip--bottom">
+    {{ team.num_rows }} <span class="text-black-20">/ {{ team.row_limit|intcomma }}</span>
     <span class="tooltip__content">Row Usage</span>
   </p>
 </div>

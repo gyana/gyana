@@ -113,11 +113,14 @@ describe('integrations', () => {
     cy.contains('Confirm', { timeout: 10000 })
 
     // make absolute sure that only after approval does row count update
-    cy.reload()
-    cy.contains('Rows 0/15')
+    cy.visit('/teams/2')
+    cy.contains('0 / 15')
+    cy.go('back')
     // confirm button is enabled
     cy.contains('Confirm').click()
-    cy.contains('Rows 15/15')
+    cy.visit('/teams/2')
+    cy.contains('15 / 15')
+    cy.go('back')
 
     // add another valid sheet, validate row count updates on confirmation
     cy.visit('/projects/3/integrations')
