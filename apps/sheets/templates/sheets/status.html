@@ -7,7 +7,7 @@
     <p>You've already synced the latest data.</p>
 {% endif %}
 
-<a class="link" href="{% url 'project_integrations:setup' object.integration.project.id object.integration.id %}" data-turbo-frame="_top">
+<a class="link" href="{% url 'project_integrations:configure' object.integration.project.id object.integration.id %}" data-turbo-frame="_top">
     {% if object.integration.state == 'load' %}
         <p>View import in progress.</p>
     {% else %}

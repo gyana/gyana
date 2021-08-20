@@ -76,40 +76,12 @@
     }
   },
   {
-    "model": "users.customuser",
-    "pk": 5,
-    "fields": {
-      "password": "pbkdf2_sha256$260000$7r5pRvBE37hUF5rvTs5aNy$OROS62ddwXVocWvB+z73NhUHU4dD6sdBsrT8f7NUcQE=",
-      "last_login": "2021-08-13T09:02:13.827Z",
-      "is_superuser": false,
-      "username": "nodes",
-      "first_name": "",
-      "last_name": "",
-      "email": "nodes@gyana.com",
-      "is_staff": false,
-      "is_active": true,
-      "date_joined": "2021-08-10T07:28:20.062Z",
-      "avatar": "",
-      "groups": [],
-      "user_permissions": []
-    }
-  },
-  {
     "model": "teams.team",
     "pk": 1,
     "fields": {
       "created": "2021-07-26T14:53:37.577Z",
       "updated": "2021-07-26T14:53:37.587Z",
       "name": "Vayu"
-    }
-  },
-  {
-    "model": "teams.team",
-    "pk": 2,
-    "fields": {
-      "created": "2021-08-10T07:28:27.306Z",
-      "updated": "2021-08-10T07:28:27.316Z",
-      "name": "Nodes"
     }
   },
   {
@@ -135,17 +107,6 @@
     }
   },
   {
-    "model": "teams.membership",
-    "pk": 3,
-    "fields": {
-      "created": "2021-08-10T07:28:27.312Z",
-      "updated": "2021-08-10T07:28:27.312Z",
-      "team": 2,
-      "user": 5,
-      "role": "admin"
-    }
-  },
-  {
     "model": "projects.project",
     "pk": 1,
     "fields": {
@@ -163,7 +124,7 @@
       "created": "2021-08-10T07:28:33.668Z",
       "updated": "2021-08-10T07:28:33.669Z",
       "name": "Nodes",
-      "team": 2,
+      "team": 1,
       "description": ""
     }
   },
@@ -1396,11 +1357,6 @@
     "model": "account.emailaddress",
     "pk": 3,
     "fields": { "user": 4, "email": "member@gyana.com", "verified": false, "primary": true }
-  },
-  {
-    "model": "account.emailaddress",
-    "pk": 4,
-    "fields": { "user": 5, "email": "nodes@gyana.com", "verified": false, "primary": true }
   },
   {
     "model": "socialaccount.socialapp",

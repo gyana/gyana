@@ -38,7 +38,7 @@ def _do_sync(task, sheet, table):
 
 
 @shared_task(bind=True)
-def run_sheets_sync_task(self, sheet_id):
+def run_sheet_sync_task(self, sheet_id):
     sheet = get_object_or_404(Sheet, pk=sheet_id)
     integration = sheet.integration
 
@@ -90,9 +90,9 @@ def run_sheets_sync_task(self, sheet_id):
     return integration.id
 
 
-def run_sheets_sync(sheet: Sheet):
+def run_sheet_sync(sheet: Sheet):
 
-    result = run_sheets_sync_task.delay(sheet.id)
+    result = run_sheet_sync_task.delay(sheet.id)
     sheet.sync_task_id = result.task_id
     sheet.sync_started = timezone.now()
     sheet.save()

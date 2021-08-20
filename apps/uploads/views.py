@@ -10,12 +10,13 @@ from apps.uploads.models import Upload
 from django.urls import reverse
 
 from .forms import UploadCreateForm
-from .tasks import run_upload_sync
+from .models import Upload
 
 
 class UploadCreate(ProjectMixin, TurboCreateView):
     template_name = "uploads/create.html"
     model = Upload
+    form_class = UploadCreateForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -29,8 +30,7 @@ class UploadCreate(ProjectMixin, TurboCreateView):
             NEW_INTEGRATION_START_EVENT,
             {"type": Integration.Kind.UPLOAD},
         )
-
-        return UploadCreateForm
+        return super().get_form_class()
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
@@ -41,11 +41,9 @@ class UploadCreate(ProjectMixin, TurboCreateView):
             self.request.user.id,
             INTEGRATION_CREATED_EVENT,
             {
-                # not the same as integration.id
-                "id": form.instance.id,
+                "id": self.object.integration.id,
                 "type": Integration.Kind.UPLOAD,
-                # not available for a sheet
-                # "name": form.instance.name,
+                "name": self.object.integration.name,
             },
         )
 
@@ -53,6 +51,6 @@ class UploadCreate(ProjectMixin, TurboCreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:setup",
+            "project_integrations:configure",
             args=(self.project.id, self.object.integration.id),
         )

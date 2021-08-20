@@ -4,7 +4,7 @@
 {% block app %}
 <div class="workflow-detail__header">
   <h3 class="mr-auto flex justify-center items-center">
-    <img class="h-12 w-12 mr-4" src="{% static integration.icon %}" title="{{ integration.name }}" />
+    <img class="h-12 w-12 mr-4" src="{% static object.icon %}" title="{{ object.name }}" />
     <turbo-frame id="integration-name">
       <form method="post" action="{% url 'project_integrations:detail' project.id object.id %}" class="form">
         {% csrf_token %}
@@ -14,9 +14,9 @@
     </turbo-frame>
   </h3>
 
-  {% if integration.kind == "sheet" %}
+  {% if object.kind == "sheet" %}
   <a
-    href="{{ integration.sheet.url }}"
+    href="{{ object.sheet.url }}"
     class="button button--circle button--tertiary"
     target="_blank"
     rel="noopener noreferer"
@@ -28,7 +28,7 @@
 </div>
 
 <nav id='tabbar' class="tabbar">
-  {% if integration.ready %}
+  {% if object.ready %}
     <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
       href="{% url 'project_integrations:detail' project.id object.id %}">
       Overview
@@ -39,9 +39,9 @@
     </a>
   {% endif %}
   {% comment %} Uploads cannot be setup again after approval {% endcomment %}
-  {% if not integration.ready or integration.kind != integration.Kind.UPLOAD %}
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'setup' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:setup' project.id object.id %}">
+  {% if not object.ready or object.kind != object.Kind.UPLOAD %}
+    <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %}"
+      href="{% url 'project_integrations:configure' project.id object.id %}">
       Setup
     </a>
   {% endif %}

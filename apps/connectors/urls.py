@@ -1,20 +1,16 @@
-from apps.projects.access import login_and_project_required
 from django.conf import settings
 from django.urls import path
 
+from apps.projects.access import login_and_project_required
+
 from . import frames, views
+from .access import login_and_connector_required
 
 app_name = "connectors"
 urlpatterns = [
-    path("<hashid:pk>/update", frames.ConnectorUpdate.as_view(), name="update"),
-    path(
-        "<hashid:pk>/progress",
-        frames.ConnectorProgress.as_view(),
-        name="progress",
-    ),
     path(
         "<hashid:pk>/status",
-        frames.ConnectorStatus.as_view(),
+        login_and_connector_required(frames.ConnectorStatus.as_view()),
         name="status",
     ),
 ]

@@ -1,0 +1,32 @@
+{% extends "integrations/base_setup.html" %}
+{% load humanize %}
+
+{% block tab %}
+
+<div class="pad">
+    <div class='card'>
+    {% if not integration.ready %}
+        <h4>Review your imported data</h4>
+        <p>This will add a total of <strong>{{ object.num_rows|intcomma }}</strong> rows to your team. You can still edit your
+            <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">configuration</a> before you confirm{% if object.kind != 'upload' %}, or come back later at any time{% endif %}.
+        </p>
+        <form method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
+            {% csrf_token %}
+            <button type="submit" class="button button--success mt-4">
+                Confirm
+            </button>
+        </form>
+    {% else %}
+        <h4>Updated</h4>
+        <p>Your data is updated. You can still edit your
+            <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">configuration</a> if you want to make more changes.
+        </p>
+    {% endif %}
+</div>
+
+<div class="mt-4 border-t border-gray">
+    <div class="flex flex-row flex-1 overflow-hidden">
+        {% include "integrations/_data.html" %}
+    </div>
+</div>
+{% endblock %}

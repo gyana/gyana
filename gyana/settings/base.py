@@ -76,14 +76,14 @@ PROJECT_APPS = [
     "apps.dashboards",
     "apps.widgets",
     "apps.filters",
-    "apps.tables",
+    "apps.tables.apps.TablesConfig",
     "apps.invites.apps.InvitesConfig",
     "apps.base",
     "apps.nodes",
     "apps.columns",
     "apps.uploads",
     "apps.sheets",
-    "apps.connectors",
+    "apps.connectors.apps.ConnectorsConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
@@ -329,7 +329,7 @@ FIVETRAN_HEADERS = {"Authorization": f"Basic {FIVETRAN_KEY}"}
 
 EXTERNAL_URL = "http://localhost:8000"
 # for local development
-MOCK_FIVETRAN = os.environ.get("MOCK_FIVETRAN", "False") == "True"
+MOCK_FIVETRAN = os.environ.get("MOCK_FIVETRAN", "False") == "False"
 
 BIGQUERY_COLUMN_NAME_LENGTH = 300
 BIGQUERY_TABLE_NAME_LENGTH = 1024

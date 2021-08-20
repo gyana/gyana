@@ -26,7 +26,7 @@ describe('sheets', () => {
     cy.get('button[type=submit]').click()
 
     // set advanced configuration
-    cy.url().should('contain', `/projects/1/integrations/${id}/setup`)
+    cy.url().should('contain', `/projects/1/integrations/${id}/configure`)
     cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
@@ -107,7 +107,7 @@ describe('sheets', () => {
     cy.contains('This Google Sheet was updated since the last sync.')
     cy.contains('Import the latest data').click()
 
-    cy.url().should('contain', '/projects/1/integrations/2/setup')
+    cy.url().should('contain', '/projects/1/integrations/2/configure')
     cy.contains('Configure').click()
     cy.get('button[type=submit]').click()
 
@@ -116,7 +116,7 @@ describe('sheets', () => {
     cy.contains('View import in progress.').click()
 
     // sync is complete  and it redirects me back again
-    cy.url().should('contain', '/projects/1/integrations/2/setup')
+    cy.url().should('contain', '/projects/1/integrations/2/configure')
     cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
 
     cy.visit('/projects/1/integrations/2')

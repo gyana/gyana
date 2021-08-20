@@ -1,0 +1,34 @@
+{% extends 'integrations/base_setup.html' %}
+
+{% block tab %}
+
+<div class="pad">
+    <form method="post" action="{{ request.get_full_path }}" class="form">
+        <div class='card'>
+            {% if not object.ready %}
+                <h4>Import with default settings or configure advanced options.</h4>
+                <p>You can come back here after viewing the initial import.</p>
+            {% else %}
+                <h4>Re-import data or configure advanced options.</h4>          
+            {% endif %}
+            <button type="submit" class="button button--filled button--success mt-4">Import</button>
+        </div>
+        
+        <div class='pad card' data-controller='collapsable'>
+            <h3 class='cursor-pointer' data-action='click->collapsable#toggle'>
+            Advanced options
+            </h3>
+
+            <div
+            class='collapsable flex flex-col max-h-0 overflow-hidden'
+            data-collapsable-target='body'
+            >
+            {% csrf_token %}
+
+            {% include "django/forms/default_form.html" %}
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

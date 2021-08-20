@@ -57,18 +57,6 @@
       </div>
       {% endif %}
     </div>
-  </div>
-
-  {% comment %} {% if integration.table_set.count > 1 %}
-    <div class="flex flex-col">
-      <div class="mb-7">
-        <h2>Tables</h2>
-        <p>All the tables in this integration</p>
-      </div>
-
-      <turbo-frame id="tables-list" src="{% url 'project_integrations:tables' project.id object.id %}"></turbo-frame>
-    </div>
-  {% endif %} {% endcomment %}
 </div>
 
 {% endblock %}

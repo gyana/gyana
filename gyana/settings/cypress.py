@@ -24,3 +24,6 @@ CYPRESS_URLS = True
 EMAIL_BACKEND = "apps.base.cypress_mail.EmailBackend"
 
 CLOUD_NAMESPACE = "cypress"
+
+# Disable admin-style browsable api endpoint
+REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = ("rest_framework.renderers.JSONRenderer",)
