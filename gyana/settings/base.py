@@ -329,7 +329,7 @@ FIVETRAN_HEADERS = {"Authorization": f"Basic {FIVETRAN_KEY}"}
 
 EXTERNAL_URL = "http://localhost:8000"
 # for local development
-MOCK_FIVETRAN = os.environ.get("MOCK_FIVETRAN", "False") == "False"
+MOCK_FIVETRAN = os.environ.get("MOCK_FIVETRAN", "False") == "True"
 
 BIGQUERY_COLUMN_NAME_LENGTH = 300
 BIGQUERY_TABLE_NAME_LENGTH = 1024
