@@ -6,7 +6,6 @@ from apps.integrations.models import Integration
 from apps.tables.models import Table
 from apps.uploads.bigquery import import_table_from_upload
 from celery import shared_task
-from django.core.mail import send_mail
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
