@@ -11,10 +11,6 @@ DEFAULT_ROW_LIMIT = 1_000_000
 
 
 class Team(BaseModel):
-    """
-    A Team, with members.
-    """
-
     name = models.CharField(max_length=100)
 
     members = models.ManyToManyField(
@@ -22,6 +18,11 @@ class Team(BaseModel):
     )
 
     row_limit = models.BigIntegerField(default=DEFAULT_ROW_LIMIT)
+    # row count is recalculated on a daily basis, or re-counted in certain situations
+    # calculating every view is too expensive
+    row_count = models.BigIntegerField(default=0)
+    row_count_calculated = models.DateTimeField(null=True)
+    enabled = models.BooleanField(default=True)
 
     @cached_property
     def num_rows(self):
