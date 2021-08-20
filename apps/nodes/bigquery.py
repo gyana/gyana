@@ -284,9 +284,9 @@ def get_unpivot_query(node, parent):
 
 def get_window_query(node, query):
     for window in node.window_columns.all():
-        aggregation = _get_aggregate_expr(query, window.column, window.function).name(
-            window.label
-        )
+        aggregation = _get_aggregate_expr(
+            query, window.column, window.function, []
+        ).name(window.label)
 
         if window.group_by or window.order_by:
             w = ibis.window(group_by=window.group_by, order_by=window.order_by)
