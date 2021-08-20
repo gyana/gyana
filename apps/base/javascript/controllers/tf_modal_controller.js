@@ -2,7 +2,7 @@ import { Controller } from 'stimulus'
 
 // Open a modal with the content populated by a turbo-frame
 export default class extends Controller {
-  static targets = ['modal', 'turboFrame', 'closingWarning']
+  static targets = ['modal', 'turboFrame', 'closingWarning', 'form']
 
   connect() {
     this.changed = false
@@ -25,6 +25,24 @@ export default class extends Controller {
     params.set('modal_item', event.target.getAttribute('data-item'))
     history.replaceState({}, '', `${location.pathname}?${params.toString()}`)
     this.modalTarget.classList.remove('hidden')
+  }
+
+  async submit() {
+    const data = new FormData(this.formTarget)
+    const result = await fetch(this.formTarget.action, {
+      method: 'POST',
+      body: data,
+    })
+
+    if ([200, 201].includes(result.status)) {
+      this.forceClose()
+    } else {
+      const text = await result.text()
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(text, 'text/html')
+      const newForm = doc.querySelector(`#${this.formTarget.id}`)
+      this.formTarget.outerHTML = newForm.outerHTML
+    }
   }
 
   change() {

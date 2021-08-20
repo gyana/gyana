@@ -3,9 +3,9 @@
     data-formset-index="{{ forloop.counter0 }}">
     {# Include the hidden fields in the form #}
     
-    {% for hidden in form.hidden_fields %}
-    {{ hidden }}
-    {% endfor %}
+      {% for hidden in form.hidden_fields %}
+      {{ hidden }}
+      {% endfor %}
     
 
     {% for field in form.visible_fields %}
