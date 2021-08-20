@@ -91,13 +91,7 @@ describe('integrations', () => {
     cy.get('input[name=cell_range]').clear().type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
 
-    cy.contains('Confirm', { timeout: 10000 })
-
-    // make absolute sure that only after approval does row count update
-    cy.reload()
-    cy.contains('Rows 25/∞')
-    cy.contains('Confirm').click()
-    cy.contains('Rows 35/∞')
+    cy.contains('Confirm', { timeout: 10000 }).click()
 
     // check the pending page again
     cy.visit('/projects/1/integrations')
@@ -105,6 +99,13 @@ describe('integrations', () => {
 
     cy.contains('Pending').click()
     cy.get('table tbody tr').should('have.length', pendingIntegrations)
+  })
+  it('row limits', () => {
+    // make absolute sure that only after approval does row count update
+    cy.reload()
+    cy.contains('Rows 25/∞')
+    cy.contains('Confirm').click()
+    cy.contains('Rows 35/∞')
 
     // todo: verify row count updates now
   })
