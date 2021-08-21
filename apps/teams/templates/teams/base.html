@@ -14,7 +14,7 @@
             You're exceeding your row count limit.
           </span>
           <span class="block sm:ml-2 sm:inline-block">
-            <a href="{% url 'teams:account' object.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
+            <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
           </span>
         </p>
       </div>
@@ -31,7 +31,7 @@
             You've exceeded your row count limit by over 20%, your team is temporarily disabled.
           </span>
           <span class="block sm:ml-2 sm:inline-block">
-            <a href="{% url 'teams:account' object.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
+            <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
           </span>
         </p>
       </div>
