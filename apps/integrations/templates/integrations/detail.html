@@ -8,7 +8,12 @@
   <div class="flex gap-7 mb-7">
     {% if object.kind == 'sheet' %}
     <div class="card">
-      <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}"></turbo-frame>
+      <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          <p class='placeholder-scr__title'>Loading...</p>
+        </div>
+      </turbo-frame>
     </div>
     {% endif %}
 
