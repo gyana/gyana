@@ -1,5 +1,4 @@
 import analytics
-from apps.base.clients import DATASET_ID
 from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
@@ -47,7 +46,8 @@ def run_upload_sync_task(self, upload_id: int):
             table, created = Table.objects.get_or_create(
                 integration=integration,
                 source=Table.Source.INTEGRATION,
-                bq_dataset=DATASET_ID,
+                _bq_table=upload.table_id,
+                bq_dataset=integration.project.team.tables_dataset_id,
                 project=integration.project,
             )
 

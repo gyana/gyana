@@ -29,6 +29,10 @@ class Upload(BaseModel):
     def field_delimiter_char(self):
         return FIELD_DELIMITER_CHOICE_TO_CHAR[self.field_delimiter]
 
+    @property
+    def table_id(self):
+        return f"upload_{self.id:09}"
+
 
 FIELD_DELIMITER_CHOICE_TO_CHAR = {
     Upload.FieldDelimiter.COMMA: ",",

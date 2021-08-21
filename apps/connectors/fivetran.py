@@ -88,7 +88,7 @@ class FivetranClient:
         # https://fivetran.com/docs/rest-api/connectors/config
         # database connectors require schema_prefix, rather than schema
 
-        schema = f"team_{team_id}_{service}_{uuid.uuid4().hex}"
+        schema = f"team_{team_id:06}_{service}_{uuid.uuid4().hex}"
 
         config[
             "schema_prefix"

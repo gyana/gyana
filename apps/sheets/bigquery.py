@@ -1,11 +1,6 @@
 import re
 
-from apps.base.clients import (
-    DATASET_ID,
-    bigquery_client,
-    drive_v2_client,
-    sheets_client,
-)
+from apps.base.clients import bigquery_client, drive_v2_client, sheets_client
 from apps.tables.models import Table
 from django.utils.dateparse import parse_datetime
 from google.cloud import bigquery
@@ -51,7 +46,7 @@ def import_table_from_sheet(table: Table, sheet: Sheet) -> QueryJob:
     )
 
     query_job = client.query(
-        f"CREATE OR REPLACE TABLE {DATASET_ID}.{table.bq_table} AS SELECT * FROM {table.bq_external_table_id}",
+        f"CREATE OR REPLACE TABLE {table.bq_id} AS SELECT * FROM {table.bq_external_table_id}",
         job_config=job_config,
     )
 

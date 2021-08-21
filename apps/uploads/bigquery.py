@@ -1,4 +1,4 @@
-from apps.base.clients import DATASET_ID, bigquery_client
+from apps.base.clients import bigquery_client
 from apps.tables.models import Table
 from django.conf import settings
 from google.cloud import bigquery
@@ -11,7 +11,7 @@ def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
 
     client = bigquery_client()
 
-    bq_dataset = client.get_dataset(DATASET_ID)
+    bq_dataset = client.get_dataset(table.bq_dataset)
     table_reference = bigquery.Table(bq_dataset.table(table.bq_table))
 
     job_config = bigquery.LoadJobConfig(

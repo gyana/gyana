@@ -43,6 +43,10 @@ class Team(BaseModel):
     def enabled(self):
         return self.row_count <= self.row_limit * (1 + WARNING_BUFFER)
 
+    @property
+    def tables_dataset_id(self):
+        return f"team_{self.id:06}_tables"
+
     def __str__(self):
         return self.name
 
