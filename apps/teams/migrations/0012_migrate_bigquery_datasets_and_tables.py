@@ -34,7 +34,7 @@ def _migrate_team(team, Table, DATASET_ID, DATAFLOW_ID):
 
     # create the dataset in bigquery
     # ignore errors if already exists
-    client.create_dataset(exists_ok=True)
+    client.create_dataset(dataset_id, exists_ok=True)
 
     # create copies of all relevant tables
 
@@ -80,6 +80,8 @@ def _migrate_team(team, Table, DATASET_ID, DATAFLOW_ID):
 
 def forwards_func(apps, schema_editor):
 
+    print("Starting bigquery migration...")
+
     # "heroku" is for production, in the new system we've removed the slug
     OLD_SLUG = slugify(settings.CLOUD_NAMESPACE or "heroku")
 
@@ -90,10 +92,13 @@ def forwards_func(apps, schema_editor):
     # we will make a copy, so everything is backwards compatible
 
     Team = apps.get_model("teams", "Team")
-    Table = apps.get_model("tables", "Tables")
+    Table = apps.get_model("tables", "Table")
 
     for team in Team.objects.all():
+        print(f"...migrating team {team.id}...")
         _migrate_team(team, Table, DATASET_ID, DATAFLOW_ID)
+
+    print("...done.")
 
 
 class Migration(migrations.Migration):
