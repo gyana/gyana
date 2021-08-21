@@ -26,11 +26,7 @@
 
     <div class="card card--center flex-1 flex-col">
       <h2>
-        {% if integration.kind == 'sheet' %}
-          {{ integration.sheet.created_by.username }}
-        {% else %}
-          {{ integration.created_by.username }}
-        {% endif %}
+        {{ integration.created_by.username }}
       </h2>
       <p>Created this</p>
     </div>
