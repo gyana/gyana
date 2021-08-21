@@ -248,9 +248,9 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         return f"Workflow:{self.workflow.name}:{self.output_name}"
 
     @property
-    def output_table_id(self):
+    def bq_output_table_id(self):
         return f"output_node_{self.id:09}"
 
     @property
-    def intermediate_table_id(self):
+    def bq_intermediate_table_id(self):
         return f"intermediate_node_{self.id:09}"

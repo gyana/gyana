@@ -20,7 +20,7 @@ def run_workflow(workflow: Workflow):
 
                 table, _ = Table.objects.get_or_create(
                     source=Table.Source.WORKFLOW_NODE,
-                    _bq_table=node.output_table_id,
+                    _bq_table=node.bq_output_table_id,
                     bq_dataset=workflow.project.team.tables_dataset_id,
                     project=workflow.project,
                     workflow_node=node,

@@ -11,9 +11,9 @@ from googleapiclient import discovery
 from .ibis.compiler import *
 from .ibis.patch import *
 
-SLUG = slugify(settings.CLOUD_NAMESPACE)
-DATASET_ID = f"{SLUG}_integrations"
-DATAFLOW_ID = f"{SLUG}_dataflows"
+SLUG = (
+    slugify(settings.CLOUD_NAMESPACE) if settings.CLOUD_NAMESPACE is not None else None
+)
 
 # BigQuery jobs are limited to 6 hours runtime
 BIGQUERY_JOB_LIMIT = 6 * 60 * 60
@@ -57,7 +57,7 @@ def bigquery_client():
 @lru_cache
 def ibis_client():
     return ibis_bigquery.connect(
-        project_id=settings.GCP_PROJECT, auth_external_data=True, dataset_id=DATASET_ID
+        project_id=settings.GCP_PROJECT, auth_external_data=True
     )
 
 
