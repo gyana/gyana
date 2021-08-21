@@ -13,7 +13,7 @@
 {% endfor %}
 
 <li>
-  <a id="sidebar-newteam" class="sidebar__link" title="New Team" href="{% url 'teams:create' %}">
+  <a id="sidebar-newteam" class="sidebar__link {% if request.resolver_match.url_name == 'create' %}sidebar__link--active{% endif %}" title="New Team" href="{% url 'teams:create' %}">
     <i class="fas fa-fw fa-plus mr-6"></i>New Team
   </a>
 </li>
