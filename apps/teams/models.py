@@ -1,4 +1,4 @@
-from apps.base.clients import SLUG
+
 from apps.base.models import BaseModel
 from django.conf import settings
 from django.db import models
@@ -46,6 +46,7 @@ class Team(BaseModel):
 
     @property
     def tables_dataset_id(self):
+        from apps.base.clients import SLUG
         dataset_id = "team_{self.id:06}_tables"
         return f"{SLUG}_{dataset_id}" if SLUG is not None else dataset_id
 
