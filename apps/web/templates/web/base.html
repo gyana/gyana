@@ -67,7 +67,7 @@
       {% block sidebar_footer %}{% endblock %}
 
       <li>
-        <a id="sidebar-profile" class="sidebar__link {% if app_name == "users" %}sidebar__link--active{% endif %}"
+        <a id="sidebar-profile" class="sidebar__link {% if request.resolver_match.app_name == "users" %}sidebar__link--active{% endif %}"
            href="{% url 'users:user_profile' %}">
           <img src="{{ user.avatar_url }}" alt="">{{ user.email }}
         </a>
