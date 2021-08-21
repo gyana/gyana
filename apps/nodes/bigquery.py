@@ -8,6 +8,7 @@ from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
+from django.db import transaction
 from django.utils import timezone
 from ibis.expr.datatypes import String
 
@@ -61,30 +62,19 @@ def _format_literal(value, type_):
 def _create_or_replace_intermediate_table(table, node, query):
     """Creates a new intermediate table or replaces an existing one"""
     client = bigquery_client()
-    if table:
-        client.query(
-            f"CREATE OR REPLACE TABLE {DATAFLOW_ID}.{table.bq_table} as ({query})"
-        ).result()
-        node.intermediate_table.data_updated = timezone.now()
-        node.intermediate_table.save()
-    else:
-        table_id = f"table_pivot_{node.pk}"
-        client.query(
-            f"CREATE OR REPLACE TABLE {DATAFLOW_ID}.{table_id} as ({query})"
-        ).result()
 
-        table = Table(
+    with transaction.atomic():
+        table = Table.get_or_create(
             source=Table.Source.PIVOT_NODE,
-            _bq_table=table_id,
-            bq_dataset=DATAFLOW_ID,
+            _bq_table=node.intermediate_table_id,
+            bq_dataset=node.workflow.project.team.tables_dataset_id,
             project=node.workflow.project,
             intermediate_node=node,
         )
-        node.intermediate_table = table
-        table.save()
 
-    node.data_updated = timezone.now()
-    node.save()
+        client.query(f"CREATE OR REPLACE TABLE {table.bq_id} as ({query})").result()
+        table.data_updated = timezone.now()
+        table.save()
 
     return table
 
