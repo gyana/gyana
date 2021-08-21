@@ -1,13 +1,14 @@
 from functools import cached_property
 
-from apps.base.cache import get_cache_key
-from apps.base.clients import bigquery_client
-from apps.base.models import BaseModel
-from apps.projects.models import Project
 from django.conf import settings
 from django.core.cache import cache
 from django.db import models
 from google.api_core.exceptions import NotFound
+
+from apps.base.cache import get_cache_key
+from apps.base.clients import bigquery_client
+from apps.base.models import BaseModel
+from apps.projects.models import Project
 
 
 class AvailableManager(models.Manager):
@@ -34,7 +35,6 @@ class Table(BaseModel):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     source = models.CharField(max_length=18, choices=Source.choices)
-    # TODO: delete table in bigquery on deletion
     integration = models.ForeignKey(
         "integrations.Integration", on_delete=models.CASCADE, null=True
     )
