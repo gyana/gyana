@@ -3,7 +3,7 @@ import logging
 import re
 
 import ibis
-from apps.base.clients import DATAFLOW_ID, bigquery_client, ibis_client
+from apps.base.clients import bigquery_client, ibis_client
 from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
