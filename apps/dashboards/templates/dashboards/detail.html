@@ -47,30 +47,38 @@
     </div>
   </div>
 
+  {% if request.GET.mode != 'view' %}
+  {% include 'dashboards/_add_widget.html' with choices=choices %}
+  {% endif %}
+
   <div data-controller='popover'>
-    <button data-popover-target="trigger" class="button button--outline button--sm" data-action="popover#trigger">
+    <button
+      data-popover-target="trigger"
+      class="button button--outline button--sm"
+      data-action="popover#trigger"
+      title="Change dashboard mode"
+    >
       {% if request.GET.mode == 'view' %}
-      <i class="fas fa-eye"></i> View
+      <i class="fas fa-eye"></i> 
       {% else %}
-      <i class="fas fa-pen"></i> Edit
+      <i class="fas fa-pen"></i> 
       {% endif %}
       <i class="fas fa-angle-up fa-rotate-180"></i>
     </button>
 
     <ul data-popover-target="body" class="list list--bordered" hidden style="z-index:1;margin-top:6px;width:20rem;">
-      {% expr [("view", "eye"), ("edit", "pen")] as modes %}
+      {% expr [("view", "eye", "Preview dashboard"), ("edit", "pen", "Modify dashboard")] as modes %}
       {% for mode in modes %}
       <li class="list__item list__item--interactive">
         <a href="?mode={{ mode.0 }}">
           <div class="flex flex-row items-center p-4">
             <div class="w-8 mr-6">
-              {% if request.GET.mode|default:'edit' == mode.0 %}
-              <i class="fas fa-check text-blue"></i>
-              {% endif %}
+              <i class="fas fa-{{ mode.1 }} {% if request.GET.mode|default:'edit' == mode.0 %}text-blue{% endif %}"></i>
             </div>
+
             <div class="flex flex-col">
-              <h4 class='text-blue'><i class="fas fa-{{ mode.1 }}"></i> {{ mode.0|title }}</h4>
-              <p class='text-black-50'>Switch dashboard to {{ mode.0 }} mode</p>
+              <h4>{{ mode.0|title }}</h4>
+              <p>{{ mode.2 }}</p>
             </div>
           </div>
         </a>
@@ -78,10 +86,6 @@
       {% endfor %}
     </ul>
   </div>
-
-  {% if request.GET.mode != 'view' %}
-  {% include 'dashboards/_add_widget.html' with choices=choices %}
-  {% endif %}
 </div>
 
 <div class="dashboard">
