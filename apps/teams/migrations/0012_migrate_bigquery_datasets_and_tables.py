@@ -6,6 +6,7 @@ from apps.base.clients import get_credentials
 from django.conf import settings
 from django.db import migrations
 from django.utils.text import slugify
+from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
 
 
@@ -29,7 +30,7 @@ def _migrate_team(team, Table, DATASET_ID, DATAFLOW_ID):
         if settings.CLOUD_NAMESPACE is not None
         else None
     )
-    dataset_id = "team_{self.id:06}_tables"
+    dataset_id = f"team_{team.id:06}_tables"
     dataset_id = f"{NEW_SLUG}_{dataset_id}" if NEW_SLUG is not None else dataset_id
 
     # create the dataset in bigquery
@@ -50,9 +51,12 @@ def _migrate_team(team, Table, DATASET_ID, DATAFLOW_ID):
         )
 
         # migrate the table
-        client.copy_table(
-            f"{DATASET_ID}.table_{table.id}", f"{dataset_id}.{new_table_id}"
-        )
+        try:
+            client.copy_table(
+                f"{DATASET_ID}.table_{table.id}", f"{dataset_id}.{new_table_id}"
+            )
+        except NotFound:
+            pass
 
         table._bq_table = new_table_id
         table.bq_dataset = dataset_id
@@ -65,9 +69,12 @@ def _migrate_team(team, Table, DATASET_ID, DATAFLOW_ID):
         new_table_id = table.workflow_node.bq_output_table_id
 
         # migrate the table
-        client.copy_table(
-            f"{DATAFLOW_ID}.{table._bq_table}", f"{dataset_id}.{new_table_id}"
-        )
+        try:
+            client.copy_table(
+                f"{DATAFLOW_ID}.{table._bq_table}", f"{dataset_id}.{new_table_id}"
+            )
+        except NotFound:
+            pass
 
         table._bq_table = new_table_id
         table.bq_dataset = dataset_id
