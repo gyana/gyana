@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from django.urls import path
+from django.urls import include, path
+from django.views.defaults import page_not_found
 
 from . import views
 
@@ -11,4 +12,15 @@ urlpatterns = [
         login_required(views.upload_profile_image),
         name="upload_profile_image",
     ),
+]
+
+accounts_urlpatterns = [
+    # https://github.com/pennersr/django-allauth/issues/1109
+    path(
+        "email/",
+        page_not_found,
+        {"exception": Exception("Not Found")},
+        name="account_email",
+    ),
+    path("", include("turbo_allauth.urls")),
 ]

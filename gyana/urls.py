@@ -33,6 +33,7 @@ from apps.projects import urls as project_urls
 from apps.sheets import urls as sheet_urls
 from apps.teams import urls as team_urls
 from apps.uploads import urls as upload_urls
+from apps.users import urls as users_urls
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
@@ -71,7 +72,7 @@ teams_urlpatterns = [
 urlpatterns = [
     path("admin_tools/", include("admin_tools.urls")),
     path("admin/", admin.site.urls),
-    path("accounts/", include("turbo_allauth.urls")),
+    path("accounts/", include(users_urls.accounts_urlpatterns)),
     path("users/", include("apps.users.urls")),
     path("filters/", include("apps.filters.urls")),
     path("teams/", include(teams_urlpatterns)),
