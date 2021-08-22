@@ -14,7 +14,7 @@ const inviteByEmail = (email) => {
   cy.get('button[type=submit]').click()
 }
 
-describe('teams', () => {
+describe('invites', () => {
   beforeEach(() => {
     cy.login()
   })
