@@ -365,3 +365,5 @@ HASHIDS_SALT = os.environ.get("HASHIDS_SALT", "")
 FUSIONCHARTS_LICENCE = os.environ.get("FUSIONCHARTS_LICENCE")
 
 CYPRESS_URLS = False
+
+ADMIN_TOOLS_MENU = "apps.base.menu.CustomMenu"
