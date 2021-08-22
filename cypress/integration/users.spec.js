@@ -1,5 +1,10 @@
 /// <reference types="cypress" />
 
+import { getModelStartId } from '../support/utils'
+
+const newTeamId = getModelStartId('teams.team')
+const latestTeamId = newTeamId - 1
+
 describe('users', () => {
   it('signs in to app', () => {
     cy.visit('/')
@@ -8,7 +13,7 @@ describe('users', () => {
     cy.get('input[type=password]').type('seewhatmatters')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', '/teams/1')
+    cy.url().should('contain', `/teams/${latestTeamId}`)
   })
 
   it('signs up to app', () => {
@@ -24,7 +29,7 @@ describe('users', () => {
 
     cy.get('input[type=text]').type('New')
     cy.get('button[type=submit]').click()
-    cy.url().should('contain', '/teams/3')
+    cy.url().should('contain', `/teams/${newTeamId}`)
   })
 
   it('resets password', () => {
@@ -59,7 +64,7 @@ describe('users', () => {
     cy.get('input[type=password]').type('senseknowdecide')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', '/teams/1')
+    cy.url().should('contain', `/teams/${latestTeamId}`)
   })
 
   it('signs out', () => {
