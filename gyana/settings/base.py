@@ -367,3 +367,4 @@ FUSIONCHARTS_LICENCE = os.environ.get("FUSIONCHARTS_LICENCE")
 CYPRESS_URLS = False
 
 ADMIN_TOOLS_MENU = "apps.base.menu.CustomMenu"
+ADMIN_TOOLS_INDEX_DASHBOARD = "apps.base.dashboard.CustomIndexDashboard"

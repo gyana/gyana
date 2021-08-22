@@ -17,7 +17,7 @@ class CustomMenu(Menu):
     """
 
     def __init__(self, **kwargs):
-        Menu.__init__(self, **kwargs)
+        super().__init__(**kwargs)
         self.children += [
             items.MenuItem(_("Dashboard"), reverse("admin:index")),
             items.Bookmarks(),
@@ -33,4 +33,4 @@ class CustomMenu(Menu):
         """
         Use this method if you need to access the request context.
         """
-        return super(CustomMenu, self).init_with_context(context)
+        return super().init_with_context(context)
