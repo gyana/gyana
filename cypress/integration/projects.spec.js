@@ -7,10 +7,9 @@ const newProjectUrl = `/projects/${getModelStartId('projects.project')}`
 describe('projects', () => {
   beforeEach(() => {
     cy.login()
+    cy.visit('/teams/1')
   })
   it('create, read, update, delete and list', () => {
-    cy.visit('/')
-
     // create
 
     cy.contains('New Project').click()

@@ -54,7 +54,7 @@
 
     <nav class="sidebar__body">
       <div class="sidebar__title">
-        <a class="h3 text-blue uppercase" href="{% url 'web:home' %}" title="View your teams"><img
+        <a class="h3 text-blue uppercase" {% if project %} href="{% url 'teams:detail' project.team.id %}" {% else %} href="{% url 'web:home' %}" {% endif %} title="View your teams"><img
                src="{% static 'images/logo.png' %}" alt="">Gyana</a>
       </div>
 
