@@ -1,7 +1,7 @@
-from apps.dashboards.models import Dashboard
-from apps.tables.models import Table
 from apps.base.aggregations import AggregationFunctions
 from apps.base.models import BaseModel
+from apps.dashboards.models import Dashboard
+from apps.tables.models import Table
 from django.conf import settings
 from django.db import models
 from model_clone import CloneMixin
@@ -99,7 +99,7 @@ class Widget(CloneMixin, BaseModel):
         if self.kind in [self.Kind.TABLE, self.Kind.TEXT]:
             return True
         elif self.kind is not None:
-            return self.kind and self.label and self.aggregations.first()
+            return self.kind and self.label and self.aggregations.exists()
 
         return False
 
