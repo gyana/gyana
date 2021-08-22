@@ -102,7 +102,7 @@ class IntegrationData(ReadyMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
+        context_data["tables"] = self.object.table_set.order_by("bq_table").all()
         return context_data
 
 
@@ -237,7 +237,7 @@ class IntegrationDone(ProjectMixin, TurboUpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["tables"] = self.object.table_set.order_by("_bq_table").all()
+        context_data["tables"] = self.object.table_set.order_by("bq_table").all()
 
         team = self.project.team
         team.update_row_count()
