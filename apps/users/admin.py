@@ -2,6 +2,8 @@ from allauth.account.models import EmailAddress
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
+from apps.teams.admin import TeamMembershipInline
+
 from .models import CustomUser
 
 
@@ -22,4 +24,4 @@ class CustomUserAdmin(UserAdmin):
         ),
     )
 
-    inlines = [EmailAddressInline]
+    inlines = [TeamMembershipInline, EmailAddressInline]
