@@ -69,7 +69,7 @@ THIRD_PARTY_APPS = [
 PROJECT_APPS = [
     "apps.users.apps.UserConfig",
     "apps.web",
-    "apps.teams",
+    "apps.teams.apps.TeamsConfig",
     "apps.projects",
     "apps.integrations",
     "apps.workflows",

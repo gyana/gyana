@@ -135,6 +135,7 @@ describe('sheets', () => {
     cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
 
     // new cell range includes 5 rows of data
+    cy.get('#tabbar').within(() => cy.contains('Overview').click())
     cy.contains('5')
   })
 })

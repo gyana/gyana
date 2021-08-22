@@ -8,7 +8,10 @@ from .models import Table
 
 
 @receiver(post_delete, sender=Table)
-def delete_img_pre_delete_post(sender, instance, *args, **kwargs):
+def delete_bigquery_table(sender, instance, *args, **kwargs):
+    # don't delete tables for our cypress fixtures
+    if instance.bq_dataset.startswith("cypress_"):
+        return
     try:
         bigquery_client().delete_table(instance.bq_obj)
     except (NotFound):
