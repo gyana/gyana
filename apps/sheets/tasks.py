@@ -51,7 +51,7 @@ def run_sheet_sync_task(self, sheet_id):
             table, created = Table.objects.get_or_create(
                 integration=integration,
                 source=Table.Source.INTEGRATION,
-                _bq_table=sheet.table_id,
+                bq_table=sheet.table_id,
                 bq_dataset=integration.project.team.tables_dataset_id,
                 project=integration.project,
             )

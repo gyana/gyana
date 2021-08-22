@@ -51,7 +51,7 @@ def complete_connector_sync(connector: Connector, send_mail: bool = True):
 
                 Table.objects.get_or_create(
                     source=Table.Source.INTEGRATION,
-                    _bq_table=bq_table.table_id,
+                    bq_table=bq_table.table_id,
                     bq_dataset=bq_table.dataset_id,
                     project=connector.integration.project,
                     integration=connector.integration,
