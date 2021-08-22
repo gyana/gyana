@@ -1,6 +1,8 @@
+from django.conf import settings
+from django.db import models
+
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
-from django.db import models
 
 
 class Connector(BaseModel):
@@ -21,3 +23,7 @@ class Connector(BaseModel):
     # track the celery task
     sync_task_id = models.UUIDField(null=True)
     sync_started = models.DateTimeField(null=True)
+
+    @property
+    def fivetran_dashboard_url(self):
+        return f"https://fivetran.com/dashboard/connectors/{self.service}/{self.schema}?requiredGroup={settings.FIVETRAN_GROUP}"
