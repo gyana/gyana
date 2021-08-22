@@ -64,7 +64,18 @@
         <hr>
       </li>
 
-      {% block sidebar_footer %}{% endblock %}
+      {% if user.is_superuser %}
+        <li>
+          <a class="sidebar__link"
+            href="{% url 'admin:index' %}" data-turbo="false">
+            <i class="fas fa-fw fa-user-cog mr-6"></i>Admin
+          </a>
+        </li>
+
+        <li>
+          <hr>
+        </li>
+      {% endif %}
 
       <li>
         <a id="sidebar-profile" class="sidebar__link {% if request.resolver_match.app_name == "users" %}sidebar__link--active{% endif %}"
