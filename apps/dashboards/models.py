@@ -1,6 +1,5 @@
-from apps.projects.models import Project
 from apps.base.models import BaseModel
-from django.contrib.postgres.fields import ArrayField
+from apps.projects.models import Project
 from django.db import models
 from django.urls import reverse
 from model_clone import CloneMixin

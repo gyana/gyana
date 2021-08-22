@@ -1,16 +1,8 @@
 {% load admin_utils %}
 
 <li>
-    <a class="sidebar__link"
-    {% if object %}
-        {% with object|db_table as table  %}
-            href="{% url 'admin:'|add:table|add:'_change' object.id %}"
-        {% endwith %}
-    {% else %}
-        href="{% url 'admin:index' %}"
-    {% endif %}
-    data-turbo="false">
-    <i class="fas fa-fw fa-user-cog mr-6 {% if object %}text-blue{% endif %}"></i>Admin{% if object %}:
+    <a class="sidebar__link" href="{{ object|admin_url }}" data-turbo="false">
+    <i class="fas fa-fw fa-user-cog mr-6 {% if object|admin_url_found %}text-blue{% endif %}"></i>Admin{% if object|admin_url_found %}:
         <strong class='text-blue'>
         {{ object|verbose_name }}
         </strong>
