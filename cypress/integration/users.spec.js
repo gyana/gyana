@@ -30,6 +30,23 @@ describe('users', () => {
     cy.get('input[type=text]').type('New')
     cy.get('button[type=submit]').click()
     cy.url().should('contain', `/teams/${newTeamId}`)
+
+    // verification email
+    cy.outbox()
+      .then((outbox) => outbox.count)
+      .should('eq', 1)
+
+    cy.outbox().then((outbox) => {
+      const msg = outbox['messages'][0]
+      const url = msg['payload']
+        .split('\n')
+        .filter((x) => x.includes('http'))[0]
+        .replace('To confirm this is correct, go to ', '')
+
+      cy.visit(url)
+
+      cy.contains('You have confirmed new@gyana.com')
+    })
   })
 
   it('resets password', () => {
