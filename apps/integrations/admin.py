@@ -8,10 +8,13 @@ from .models import Integration
 
 class ConnectorInline(admin.StackedInline):
     model = Connector
-
+    fields = ["service", "fivetran_id", "schema", "fivetran_authorized"]
+    readonly_fields = ["service", "fivetran_id", "schema"]
 
 class SheetInline(admin.StackedInline):
     model = Sheet
+    fields = ["url", "cell_range", "drive_file_last_modified"]
+    readonly_fields = ["url", "drive_file_last_modified"]
 
 
 class UploadInline(admin.StackedInline):
@@ -39,7 +42,7 @@ class IntegrationAdmin(admin.ModelAdmin):
     list_filter = ["kind", "state"]
     search_fields = ["id", "name", "project"]
     fields = ["project", "kind", "name", "state", "ready"]
-    readonly_fields = ["project", "kind"]
+    readonly_fields = ["project", "kind", "state"]
 
     def get_inlines(self, request, obj):
         return [KIND_TO_INLINE[obj.kind]]
