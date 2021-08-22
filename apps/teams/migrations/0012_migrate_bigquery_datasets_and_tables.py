@@ -89,8 +89,14 @@ def forwards_func(apps, schema_editor):
 
     print("Starting bigquery migration...")
 
-    # "heroku" is for production, in the new system we've removed the slug
-    OLD_SLUG = slugify(settings.CLOUD_NAMESPACE or "heroku")
+    # mapping from new to old cloud namespace
+    # for prod, None denotes that the namespace is not used at all
+    cloud_namespace_map = {"heroku": "mvp", "heroku_release": "release", None: "heroku"}
+
+    cloud_namespace = cloud_namespace_map.get(
+        settings.CLOUD_NAMESPACE, settings.CLOUD_NAMESPACE
+    )
+    OLD_SLUG = slugify(cloud_namespace)
 
     DATASET_ID = f"{OLD_SLUG}_integrations"
     DATAFLOW_ID = f"{OLD_SLUG}_dataflows"
