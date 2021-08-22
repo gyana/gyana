@@ -9,7 +9,12 @@ describe('teams', () => {
     cy.login()
   })
   it('create, read, update and delete', () => {
+    // redirect to the most recently created team
     cy.visit('/')
+    cy.url().should('contain', `/teams/${newTeamId - 1}`)
+
+    // now start test
+    cy.visit('/teams/1')
 
     cy.get('#heading').within(() => cy.contains('Vayu'))
 
@@ -49,7 +54,7 @@ describe('teams', () => {
     cy.get('#sidebar').contains('Agni').should('not.exist')
   })
   it('change member role and check restricted permissions', () => {
-    cy.visit('/')
+    cy.visit('/teams/1')
 
     cy.contains('Members').click()
 
