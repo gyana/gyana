@@ -69,6 +69,7 @@ teams_urlpatterns = [
 
 
 urlpatterns = [
+    path("admin_tools/", include("admin_tools.urls")),
     path("admin/", admin.site.urls),
     path("accounts/", include("turbo_allauth.urls")),
     path("users/", include("apps.users.urls")),

@@ -33,6 +33,13 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+ADMIN_TOOLS_APPS = [
+    "admin_tools",
+    "admin_tools.theming",
+    "admin_tools.menu",
+    "admin_tools.dashboard",
+]
+
 DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -86,7 +93,7 @@ PROJECT_APPS = [
     "apps.connectors.apps.ConnectorsConfig",
 ]
 
-INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
+INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     "honeybadger.contrib.DjangoHoneybadgerMiddleware",
@@ -125,7 +132,6 @@ ROOT_URLCONF = "gyana.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -137,6 +143,11 @@ TEMPLATES = [
                 # this line can be removed if not using google analytics
                 "apps.web.context_processors.google_analytics_id",
                 "gyana.context_processors.django_settings",
+            ],
+            # equivalent of APP_DIRS=True, plus admin_tools template loader
+            "loaders": [
+                "django.template.loaders.app_directories.Loader",
+                "admin_tools.template_loaders.Loader",
             ],
         },
     },
