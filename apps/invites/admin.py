@@ -2,7 +2,6 @@ from django.contrib import admin
 
 from .models import Invite
 
-admin.site.unregister(Invite)
 
 class InviteInline(admin.TabularInline):
     model = Invite
@@ -10,7 +9,4 @@ class InviteInline(admin.TabularInline):
     readonly_fields = ["email"]
 
     def has_add_permission(self, request, obj):
-        return False
-
-    def has_delete_permission(self, request, obj):
         return False

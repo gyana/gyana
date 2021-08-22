@@ -6,4 +6,10 @@ class InvitesConfig(AppConfig):
     label = "invites"
 
     def ready(self):
+        from django.contrib import admin
+
         from . import signals
+        from .models import Invite
+
+        # remove app registered automatically by django-invitations
+        admin.site.unregister(Invite)
