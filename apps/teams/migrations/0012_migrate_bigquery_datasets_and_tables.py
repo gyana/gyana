@@ -45,9 +45,9 @@ def _migrate_team(team, Table, DATASET_ID, DATAFLOW_ID):
     ).all():
         # update the dataset and id information
         new_table_id = (
-            f"upload_{table.integration.upload.id}"
+            f"upload_{table.integration.upload.id:09}"
             if table.integration.kind == "upload"
-            else f"sheet_{table.integration.sheet.id}"
+            else f"sheet_{table.integration.sheet.id:09}"
         )
 
         # migrate the table
@@ -66,7 +66,7 @@ def _migrate_team(team, Table, DATASET_ID, DATAFLOW_ID):
         workflow_node__workflow__project__team=team
     ).all():
         # update the dataset and id information
-        new_table_id = table.workflow_node.bq_output_table_id
+        new_table_id = f"output_node_{table.workflow_node.id:09}"
 
         # migrate the table
         try:
