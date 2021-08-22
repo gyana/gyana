@@ -117,7 +117,7 @@ def forwards_func(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("teams", "0011_remove_team_enabled"),
+        ("tables", "0011_alter_table_options"),
     ]
 
     operations = [
