@@ -101,3 +101,7 @@ class Table(BaseModel):
                 return f"{self.integration.name} - {self.bq_table}"
             return self.integration.name
         return f"{self.workflow_node.workflow.name} - {self.workflow_node.output_name or 'Untitled'}"
+
+    @property
+    def bq_dashboard_url(self):
+        return f"https://console.cloud.google.com/bigquery?project={settings.GCP_PROJECT}&p={settings.GCP_PROJECT}&d={self.bq_dataset}&t={self.bq_table}&page=table"
