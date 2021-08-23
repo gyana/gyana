@@ -4,6 +4,7 @@ import { Controller } from 'stimulus'
 
 export default class extends Controller {
   onSubmit(event) {
+    // https://turbo.hotwired.dev/reference/events
     const submitter = event.submitter || event.detail.formSubmission.submitter
 
     // event fires twice for top level forms with data-turbo="true" (default)
