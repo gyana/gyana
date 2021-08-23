@@ -23,72 +23,74 @@ const RunButton: React.FC<{
   isOutOfDate,
   setIsOutOfDate,
 }) => {
-  const [loading, setLoading] = useState(false)
-  useEffect(() => {
-    const update = () => setIsOutOfDate(true)
+    const [loading, setLoading] = useState(false)
+    useEffect(() => {
+      const update = () => setIsOutOfDate(true)
 
-    window.addEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
-    return () => window.removeEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
-  })
-  return (
-    <div className='dndflow__run-button'>
-      <button
-        disabled={!hasOutput || loading || !isOutOfDate}
-        onClick={() => {
-          setLoading(true)
+      window.addEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
+      return () => window.removeEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
+    })
+    return (
+      <div className='dndflow__run-button'>
+        <button
+          disabled={!hasOutput || loading || !isOutOfDate}
+          onClick={() => {
+            setLoading(true)
 
-          client
-            .action(window.schema, ['workflows', 'run_workflow', 'create'], {
-              id: workflowId,
-            })
-            .then((res) => {
-              if (res) {
-                setElements(
-                  elements.map((el) => {
-                    if (isNode(el)) {
-                      const error = res[parseInt(el.id)]
-                      // Add error to node if necessary
-                      if (error) {
-                        el.data['error'] = error
+            client
+              .action(window.schema, ['workflows', 'run_workflow', 'create'], {
+                id: workflowId,
+              })
+              .then((res) => {
+                if (res) {
+                  setElements(
+                    elements.map((el) => {
+                      if (isNode(el)) {
+                        const error = res[parseInt(el.id)]
+                        // Add error to node if necessary
+                        if (error) {
+                          el.data['error'] = error
+                        }
+                        // Remove error if necessary
+                        else if (el.data.error) {
+                          delete el.data['error']
+                        }
                       }
-                      // Remove error if necessary
-                      else if (el.data.error) {
-                        delete el.data['error']
-                      }
-                    }
-                    return el
-                  })
-                )
-                if (Object.keys(res).length === 0) {
-                  setIsOutOfDate(false)
-                  setHasBeenRun(false)
-                  window.dispatchEvent(new Event(GyanaEvents.RUN_WORKFLOW))
+                      return el
+                    })
+                  )
+                  if (Object.keys(res).length === 0) {
+                    setIsOutOfDate(false)
+                    setHasBeenRun(false)
+                    window.dispatchEvent(new Event(GyanaEvents.RUN_WORKFLOW))
+                  }
+                  setLoading(false)
                 }
+                alert('Workflow finished running!')
+              })
+              .catch(() => {
                 setLoading(false)
-              }
-              alert('Workflow finished running!')
-            })
-            .catch(() => {
-              setLoading(false)
-              alert('Workflow failed running')
-            })
-        }}
-        className='button button--sm button--outline button--success tooltip tooltip--bottom'
-      >
-        <i className='fas fa-fw fa-play'></i> Run
-        {loading && (
-          <div className='absolute m-auto'>
-            <i className='fad fa-spinner-third fa-spin' />
-          </div>
-        )}
-        <div className={loading ? 'invisible' : undefined}>
-          {!hasOutput && hasBeenRun && (
-            <span className='tooltip__content'>Workflow needs output node to run</span>
+                alert('Workflow failed running')
+              })
+          }}
+          className='button button--sm button--outline button--success'
+          data-controller='tooltip'
+        >
+          <i className='fas fa-fw fa-play'></i> Run
+          {loading && (
+            <div className='absolute m-auto'>
+              <i className='fad fa-spinner-third fa-spin' />
+            </div>
           )}
-        </div>
-      </button>
-    </div>
-  )
-}
+
+          <div className={loading ? 'invisible' : undefined}>
+            {!hasOutput && hasBeenRun && (
+              <span data-tooltip-target='body'>Workflow needs output node to run</span>
+            )}
+          </div>
+        </button>
+      </div>
+    )
+  }
 
 export default RunButton

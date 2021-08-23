@@ -1,7 +1,13 @@
-<form class='tooltip tooltip--bottom' method='post' action="{% url object_name|add:"s:duplicate" object.id %}">
+<form 
+  method='post'
+  action="{% url object_name|add:"s:duplicate" object.id %}"
+  data-controller="tooltip"
+>
   {% csrf_token %}
+
   <button  type='submit' id="{{object_name}}-duplicate-{{object.id}}">
     <i class="far fa-fw fa-copy"></i>
   </button>
-  <span class='tooltip__content'>Duplicate {{object_name}}</span>
+
+  <span data-tooltip-target="body">Duplicate {{object_name}}</span>
 </form>

@@ -1,6 +1,7 @@
-<div data-controller='popover'
-      data-popover-dont-hide-body-value="{{dont_hide_body}}"
-      class="tooltip tooltip--bottom">
+<div
+  data-controller='tooltip popover'
+  data-popover-dont-hide-body-value="{{dont_hide_body}}"
+>
   <button
     id="dashboard-share-{{object.id}}"
     data-popover-target="trigger"
@@ -44,5 +45,5 @@
 
     </form>
   </div>
-  <span class="tooltip__content">Share dashboard</span>
+  <span data-tooltip-target="body">Share dashboard</span>
 </div>

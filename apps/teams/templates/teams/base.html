@@ -46,6 +46,11 @@
     <h3 class="mr-auto flex justify-center items-center">
       {{ team.name }}
     </h3>
+
+    <p class="text-black-50" data-controller="tooltip">
+      {{ team.row_count }} / {{ team.row_limit|intcomma }}
+      <span data-tooltip-target="body">Account row usage</span>
+    </p>
   </div>
 
   <nav class="tabbar">
