@@ -8,6 +8,12 @@
   },
   "python.formatting.provider": "black",
   "python.languageServer": "Pylance",
+  "[django-html]": {
+    "editor.rulers": [
+      120
+    ],
+    "editor.tabSize": 2,
+  },
   "[html]": {
     "editor.defaultFormatter": "vscode.html-language-features",
     "editor.rulers": [
