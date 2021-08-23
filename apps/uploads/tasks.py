@@ -13,18 +13,6 @@ from django.utils import timezone
 from .models import Upload
 
 
-def _do_sync(upload, table):
-
-    import_table_from_upload(table=table, upload=upload)
-
-    table.num_rows = table.bq_obj.num_rows
-    table.data_updated = timezone.now()
-    table.save()
-
-    upload.last_synced = timezone.now()
-    upload.save()
-
-
 @shared_task(bind=True)
 def run_upload_sync_task(self, upload_id: int):
 
@@ -47,8 +35,15 @@ def run_upload_sync_task(self, upload_id: int):
                 project=integration.project,
             )
 
-            with catchtime() as time_to_sync:
-                _do_sync(upload, table)
+            with catchtime() as get_time_to_sync:
+                import_table_from_upload(table=table, upload=upload)
+
+            table.num_rows = table.bq_obj.num_rows
+            table.data_updated = timezone.now()
+            table.save()
+
+            upload.last_synced = timezone.now()
+            upload.save()
 
             integration.state = Integration.State.DONE
             integration.save()
@@ -72,7 +67,7 @@ def run_upload_sync_task(self, upload_id: int):
                 "id": integration.id,
                 "kind": integration.kind,
                 "row_count": integration.num_rows,
-                "time_to_sync": int(time_to_sync()),
+                "time_to_sync": int(get_time_to_sync()),
             },
         )
 
