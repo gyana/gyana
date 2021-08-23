@@ -10,8 +10,9 @@ from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
 from django.db import transaction
 from django.utils import timezone
-from google.cloud.language import Document, LanguageServiceClient
 from ibis.expr.datatypes import String
+
+from ._sentiment_utils import get_gcp_sentiment
 
 JOINS = {
     "inner": "inner_join",
@@ -286,34 +287,10 @@ def get_window_query(node, query):
     return query
 
 
-# ISO-639-1 Code for English
-# all GCP supported languages https://cloud.google.com/natural-language/docs/languages
-# we only support EN (had case where sentiment failed by inferring unsupported language)
-ENGLISH_ISO_639 = "en"
-
-
-def _remove_unicode(string: str) -> str:
-    """Removes non-ASCII characters from string"""
-    # https://stackoverflow.com/a/20078869
-    return "".join(char for char in string if ord(char) < 128)
-
-
-@use_intermediate_table
 def get_sentiment_query(node, parent):
-    client = bigquery_client()
-    values = (
-        client.query(parent[node.sentiment_column].compile())
-        .to_dataframe()[node.sentiment_column]
-        .to_list()
-    )
-    document = Document(
-        content=values[0],
-        type_=Document.Type.PLAIN_TEXT,
-        language=ENGLISH_ISO_639,
-    )
-    language_client = LanguageServiceClient()
-    sentiment = language_client.analyze_sentiment(document)
-    return parent
+    task = get_gcp_sentiment.delay(node.id, parent)
+    table = task.wait(timeout=None, interval=0.2)
+    return ibis_client().table(table.bq_table, database=table.bq_dataset)
 
 
 NODE_FROM_CONFIG = {
