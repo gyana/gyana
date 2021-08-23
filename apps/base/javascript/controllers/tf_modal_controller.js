@@ -40,15 +40,15 @@ export default class extends Controller {
       body: data,
     })
 
+    const text = await result.text()
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(text, 'text/html')
+    const newForm = doc.querySelector(`#${this.formTarget.id}`)
+
+    this.formTarget.outerHTML = newForm.outerHTML
+
     if ([200, 201].includes(result.status)) {
       this.forceClose()
-    } else {
-      const text = await result.text()
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(text, 'text/html')
-      const newForm = doc.querySelector(`#${this.formTarget.id}`)
-
-      this.formTarget.outerHTML = newForm.outerHTML
     }
   }
 

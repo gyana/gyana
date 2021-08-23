@@ -29,16 +29,20 @@
 
     <div class='workflow-modal__footer'>
       <div class="flex flex-1 gap-7 pad">
-        <input type='submit'
+        <button type='submit'
                class="button button--success"
                data-action="click->tf-modal#submit"
                name='submit'
-               value='Save & Close' />
-        <input type='submit'
+               value='Save & Close'>
+               Save & Close
+        </button>
+        <button type='submit'
                class="button button--outline button--success"
                name='submit'
                data-action="click->tf-modal#save"
-               value='Save & Preview' />
+               value='Save & Preview'>
+               Save & Preview
+        </button>
       </div>
     </div>
   </form>
