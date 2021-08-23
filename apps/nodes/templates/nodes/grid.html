@@ -4,9 +4,9 @@
 <div class='workflow-node__visual'>
   <i class="far fa-comment-exclamation fa-10x text-red"></i>
   {% if error_template %}
-  {% include error_template %}
+    {% include error_template %}
   {% else %}
-  <p class="mt-12">There seems to be an error with this node, try reconfiguring your workflow</p>
+    {% include 'nodes/errors/default.html' %}
   {% endif %}
 </div>
 {% else %}

@@ -13,21 +13,25 @@
     </form>
   </turbo-frame>
   <div data-controller='workflow-last-run'
-    data-workflow-last-run-src-value="{% url 'workflows:last_run' object.id %}"
-    class='mr-auto'>  
+       data-workflow-last-run-src-value="{% url 'workflows:last_run' object.id %}"
+       class='mr-auto'>
     <turbo-frame id="workflow-last-run">
       {% include 'workflows/last_run.html' %}
     </turbo-frame>
   </div>
-  <span class="button button--circle button--tertiary cursor-pointer">
-    {% include 'workflows/duplicate.html'%}
+
+  <span class="button button--circle button--tertiary">
+    {% include 'components/_duplicate.html' with object_name='workflow' %}
   </span>
+
   <div data-controller='popover'>
     <span
           data-popover-target="trigger"
           data-action="click->popover#trigger"
-          class="button button--circle button--tertiary cursor-pointer">
+          class="button button--circle button--tertiary tooltip tooltip--bottom"
+          >
       <i class="far fa-fw fa-trash"></i>
+      <span class="tooltip__content">Delete workflow</span>
     </span>
     <div data-popover-target="body" hidden class="popover-body shadow-sm">
       {% include 'workflows/_delete.html' %}
@@ -36,7 +40,7 @@
 </div>
 
 <div data-controller="tf-modal" class="flex flex-1 overflow-hidden">
-  <div data-tf-modal-target="modal" class="tf-modal hidden">
+  <div data-tf-modal-target="modal" class="tf-modal hidden" >
     <div class="card card--none flex-col flex-1">
       <div class="absolute top-0 right-0">
         <button class="tf-modal__close" data-action="click->tf-modal#close keydown@window->tf-modal#onInput">
@@ -44,7 +48,13 @@
         </button>
       </div>
 
-      <turbo-frame id="workflow-modal" data-tf-modal-target="turboFrame">
+      <turbo-frame 
+        id="workflow-modal" 
+        data-tf-modal-target="turboFrame"
+        {% if request.GET.modal_item %}
+          src="{% url "nodes:update" request.GET.modal_item %}"
+        {% endif %}
+      >
         <div class='placeholder-scr placeholder-scr--fillscreen'>
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x"></i>
         </div>

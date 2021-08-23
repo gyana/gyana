@@ -4,7 +4,14 @@
 {% with project_meta|get_title:page_title as title %}
 {% with project_meta|get_description:page_description as description %}
 {% with project_meta|get_image_url:page_image as image %}
+    {% if object %}
+    <title>{{ object.name }} | {{ project_meta.NAME }}</title>
+    {% elif project %}
+    <title>{{ project.name }} | {{ project_meta.NAME }}</title>
+    {% else %}
     <title>{{ title }}</title>
+    {% endif %}
+
     <meta name="description" content="{{ description }}">
     <meta name="keywords" content="{{ project_meta.KEYWORDS }}">
     <!-- Twitter Card data -->

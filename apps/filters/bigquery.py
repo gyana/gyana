@@ -115,6 +115,10 @@ def one_year_ago(query, column, value):
     return query[date.between(one_year, today)]
 
 
+def filter_boolean(query, column, value):
+    return query[query[column] == value]
+
+
 FILTER_MAP = {
     Filter.StringPredicate.EQUAL: eq,
     Filter.StringPredicate.NEQUAL: neq,
@@ -138,15 +142,18 @@ FILTER_MAP = {
     Filter.DatetimePredicate.ONEWEEKAGO: one_week_ago,
     Filter.DatetimePredicate.ONEMONTHAGO: one_month_ago,
     Filter.DatetimePredicate.ONEYEARAGO: one_year_ago,
+    Filter.Type.BOOL: filter_boolean,
 }
 
 
 def get_query_from_filter(query, filter: Filter):
-
     column = filter.column
-
-    predicate = getattr(filter, PREDICATE_MAP[filter.type])
-    func = FILTER_MAP[predicate]
+    predicate = (
+        getattr(filter, PREDICATE_MAP[filter.type])
+        if filter.type != Filter.Type.BOOL
+        else None
+    )
+    func = FILTER_MAP[predicate or filter.type]
     value_str = "values" if predicate in ["isin", "notin"] else "value"
     value = getattr(filter, f"{filter.type.lower()}_{value_str}")
 

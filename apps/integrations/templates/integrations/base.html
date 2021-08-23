@@ -4,7 +4,7 @@
 {% block app %}
 <div class="workflow-detail__header">
   <h3 class="mr-auto flex justify-center items-center">
-    <img class="h-12 w-12 mr-4" src="{% static integration.icon %}" title="{{ integration.name }}" />
+    <img class="h-12 w-12 mr-4" src="{% static object.icon %}" title="{{ object.name }}" />
     <turbo-frame id="integration-name">
       <form method="post" action="{% url 'project_integrations:detail' project.id object.id %}" class="form">
         {% csrf_token %}
@@ -14,39 +14,44 @@
     </turbo-frame>
   </h3>
 
-  {% if integration.kind == "sheet" %}
-  <a href="{{ integration.sheet.url }}" class="button button--circle button--tertiary" title="External source link">
+  {% if object.kind == "sheet" %}
+  <a
+    href="{{ object.sheet.url }}"
+    class="button button--circle button--tertiary"
+    target="_blank"
+    rel="noopener noreferer"
+    title="External source link"
+  >
     <i class="fas fa-link fa-sm mr-1"></i>
   </a>
   {% endif %}
 </div>
 
 <nav id='tabbar' class="tabbar">
-  <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
-     href="{% url 'project_integrations:detail' project.id object.id %}">
-    Overview
-  </a>
-  {% if object.table_set.exists %}
-  <a class="tabbar__link {% if request.resolver_match.url_name == 'structure' %} tabbar__link--active {% endif %}"
-     href="{% url 'project_integrations:structure' project.id object.id %}">
-    Structure
-  </a>
-  <a class="tabbar__link {% if request.resolver_match.url_name == 'data' %} tabbar__link--active {% endif %}"
-     href="{% url 'project_integrations:data' project.id object.id %}">
-    Data
-  </a>
+  {% if object.ready %}
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
+      href="{% url 'project_integrations:detail' project.id object.id %}">
+      Overview
+    </a>
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'data' %} tabbar__link--active {% endif %}"
+      href="{% url 'project_integrations:data' project.id object.id %}">
+      Data
+    </a>
   {% endif %}
-  {% if integration.kind == integration.Kind.CONNECTOR %}
-  <a class="tabbar__link {% if request.resolver_match.url_name == 'schema' %} tabbar__link--active {% endif %}"
-    href="{% url 'project_integrations_connectors:schema' project.id object.id %}">
-    Schema
-  </a>
+  {% comment %} Uploads cannot be setup again after approval {% endcomment %}
+  {% if not object.ready or object.kind != object.Kind.UPLOAD %}
+    <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %}"
+      href="{% url 'project_integrations:configure' project.id object.id %}">
+      Setup
+    </a>
   {% endif %}
   <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
-     href="{% url 'project_integrations:settings' project.id object.id %}">
+    href="{% url 'project_integrations:settings' project.id object.id %}">
     Settings
   </a>
 </nav>
+
+{% block extra_tab %}{% endblock %}
 
 <div id='main' class="flex flex-col flex-1 overflow-auto">
   {% block tab %}{% endblock %}

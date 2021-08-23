@@ -1,4 +1,8 @@
-const EXPECTED_RESPONSE_CODES = [308, 500, 503, 200, 201]
+interface Listeners {
+  onProgress: (progress: number) => void
+  onSuccess: () => void
+  onError: (error: string) => void
+}
 
 interface GoogleUploaderOptions {
   file: File
@@ -6,12 +10,7 @@ interface GoogleUploaderOptions {
   chunkSize?: number
   maxBackoff?: number
   maxSize?: number
-}
-
-interface EventMap {
-  progress: (progress: number) => void
-  success: () => void
-  error: () => void
+  listeners: Listeners
 }
 
 /**
@@ -25,52 +24,44 @@ class GoogleUploader {
   target: string
   chunkSize: number
   maxBackoff: number
+  maxSize: number
 
   shouldChunk: boolean
   retryCount: number
 
   sessionURI: string
-
-  events: [keyof EventMap, EventMap[keyof EventMap]][]
+  listeners: Listeners
 
   constructor(options: GoogleUploaderOptions) {
     const {
       file,
       target,
-      chunkSize = 10 * 1024 * 1024,
-      maxBackoff = 4,
-      maxSize = Math.pow(1024, 3),
+      listeners,
+      chunkSize = window.__cypressChunkSize__ || 10 * 1024 * 1024,
+      maxBackoff = window.__cypressMaxBackoff__ || 4,
+      maxSize = window.__cypressMaxSize__ || Math.pow(1024, 3),
     } = options
     this.file = file
     this.target = target
+    this.listeners = listeners
     this.chunkSize = chunkSize
     this.maxBackoff = maxBackoff
+    this.maxSize = maxSize
 
-    this.shouldChunk = file.size > chunkSize
     this.retryCount = 0
 
-    this.events = []
-
-    if (file.size > maxSize) throw 'This file is too large'
+    this._handleLoad.bind(this)
+    this._handleProgress.bind(this)
+    this._sendChunk.bind(this)
   }
 
-  on<K extends keyof EventMap>(event: K, cb: EventMap[K]) {
-    this.events.push([event, cb])
-  }
-  off(cb: EventMap[keyof EventMap]) {
-    const idx = this.events.map(([ev, cb_]) => cb_).indexOf(cb)
-    if (idx > -1) {
-      this.events.splice(idx, 1)
-    }
-  }
-
-  /**
-   * Starts the upload process to GCS.
-   *
-   * First it initiates the upload by a POST call and then starts sending
-   * chunks of the file.
-   */
+  // start upload with initial POST followed by chunks
   async start() {
+    if (this.file.size > this.maxSize) {
+      this.listeners.onError('This file is too large')
+      return
+    }
+
     const sessionResponse = await fetch(this.target, {
       method: 'POST',
       headers: { 'x-goog-resumable': 'start', 'Content-Type': this.file.type },
@@ -80,34 +71,43 @@ class GoogleUploader {
 
     if (!this.sessionURI) throw "Couldn't retrieve the session URI"
 
-    this.sendChunk(0)
+    this._sendChunk(0)
   }
 
-  /**
-   * Recursively send all chunks or whole file to gcs
-   *
-   * @param start start byte
-   */
-  sendChunk(start: number) {
+  // recursively send all chunks or whole file to gcs
+  _sendChunk(start: number) {
     const request = new XMLHttpRequest()
 
-    const end = start + this.chunkSize > this.file.size ? this.file.size : start + this.chunkSize
-    const fileChunk = this.shouldChunk ? this.file.slice(start, end) : this.file
+    request.upload.addEventListener('progress', (event) => this._handleProgress(event, start))
+    // recursive via _handleLoad
+    request.addEventListener('load', () => this._handleLoad(request, start))
 
-    request.upload.addEventListener('progress', (e) => {
-      // Get the loaded amount and total filesize (bytes)
-      const loaded = start + e.loaded
+    request.open('put', this.sessionURI)
+    request.responseType = 'blob'
+    request.setRequestHeader('x-goog-resumable', 'start')
 
-      // Calculate percent uploaded
-      const percentComplete = Math.round((loaded / this.file.size) * 1000) / 10
-      this.events.forEach(([ev, cb]) => ev === 'progress' && cb(percentComplete))
-    })
+    // small files are uploaded directly without chunks
+    if (this.file.size > this.chunkSize) {
+      const end = Math.min(start + this.chunkSize, this.file.size)
+      request.setRequestHeader('Content-Range', `bytes ${start}-${end - 1}/${this.file.size}`)
+      request.send(this.file.slice(start, end))
+    } else {
+      request.send(this.file)
+    }
+  }
 
-    const self = this
-    // Load handler when the XHR request returns
-    request.addEventListener('load', async () => {
-      // 308 Resume Incomplete is returned when chunks are missing
-      if (request.status === 308) {
+  // get the total loaded and calculate percent uploaded
+  _handleProgress(event: ProgressEvent, start: number) {
+    const loaded = start + event.loaded
+    const percentComplete = Math.round((loaded / this.file.size) * 1000) / 10
+    this.listeners.onProgress(percentComplete)
+  }
+
+  // handle errors, continue with upload or success
+  _handleLoad(request: XMLHttpRequest, start: number) {
+    switch (request.status) {
+      // chunks are missing
+      case 308:
         // Range header can have the following shapes:
         // bytes=0-1999
         // bytes=-2000
@@ -115,41 +115,35 @@ class GoogleUploader {
         const newStart = parseInt(
           (request.getResponseHeader('Range') as string).split('-').pop() as string
         )
-        // If the start is not NaN we know that there's more to be sent
-        if (!Number.isNaN(newStart)) self.sendChunk(newStart)
-      }
+        // if the start is not NaN we know that there's more to be sent
+        if (!Number.isNaN(newStart)) this._sendChunk(newStart)
+        return
 
-      if ([500, 503].includes(request.status)) {
-        if (self.retryCount < self.maxBackoff) {
-          // Our current request has fail so let's retry with an exp backoff
+      // success
+      case 201:
+      case 200:
+        this.listeners.onSuccess()
+        return
+
+      // retry failing results with exponential backoff or fail
+      case 500:
+      case 502:
+      case 503:
+      case 504:
+        if (this.retryCount < this.maxBackoff) {
           setTimeout(() => {
-            self.retryCount += 1
-            self.sendChunk(start)
-          }, Math.pow(2, self.retryCount) + Math.ceil(Math.random() * 1000))
+            this.retryCount += 1
+            this._sendChunk(start)
+          }, Math.pow(2, this.retryCount) + Math.ceil(Math.random() * 1000))
         } else {
-          // If after the backoff it still fails we throw an error
-          this.events.forEach(([ev, cb]) => ev === 'error' && cb())
+          this.listeners.onError('Server error, try again later')
         }
-      }
+        return
 
-      if ([200, 201].includes(request.status)) {
-        // The upload has completed and succeeded
-        this.events.forEach(([ev, cb]) => ev === 'success' && cb())
-      }
-
-      // We got an unexpected result, log this in Sentry
-      if (!EXPECTED_RESPONSE_CODES.includes(request.status)) {
-        this.events.forEach(([ev, cb]) => ev === 'error' && cb())
-      }
-    })
-
-    request.open('put', this.sessionURI)
-    request.responseType = 'blob'
-    if (this.shouldChunk) {
-      request.setRequestHeader('Content-Range', `bytes ${start}-${end - 1}/${this.file.size}`)
+      // unknown error
+      default:
+        this.listeners.onError('Unknown error')
     }
-    request.setRequestHeader('x-goog-resumable', 'start')
-    request.send(fileChunk)
   }
 }
 

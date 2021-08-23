@@ -1,43 +1,71 @@
 from apps.base.table import ICONS, NaturalDatetimeColumn
 from django.template import Context
 from django.template.loader import get_template
-from django_tables2 import Column, Table, TemplateColumn
+from django_tables2 import Column, Table
 
 from .models import Integration
 
+INTEGRATION_STATE_TO_ICON = {
+    Integration.State.UPDATE: ICONS["warning"],
+    Integration.State.LOAD: ICONS["loading"],
+    Integration.State.ERROR: ICONS["error"],
+    Integration.State.DONE: ICONS["success"],
+}
 
-class StatusColumn(TemplateColumn):
+INTEGRATION_STATE_TO_MESSAGE = {
+    Integration.State.UPDATE: "Incomplete setup",
+    Integration.State.LOAD: "Importing",
+    Integration.State.ERROR: "Error",
+    Integration.State.DONE: "Ready to review",
+}
+
+
+class PendingStatusColumn(Column):
     def render(self, record, table, **kwargs):
         context = getattr(table, "context", Context())
-        if record.last_synced is None:
-            context["icon"] = ICONS["warning"]
-            context["text"] = "Integration has not been synced yet."
-        else:
-            context["icon"] = ICONS["success"]
-            context["text"] = "Synced and ready to be used."
 
-        return get_template(self.template_name).render(context.flatten())
+        context["icon"] = INTEGRATION_STATE_TO_ICON[record.state]
+        context["text"] = INTEGRATION_STATE_TO_MESSAGE[record.state]
+
+        # wrap status in turbo frame to fetch possible update
+        if (
+            record.kind == Integration.Kind.CONNECTOR
+            and record.state == Integration.State.LOAD
+        ):
+            context["connector"] = record.connector
+            return get_template("connectors/status.html").render(context.flatten())
+
+        return get_template("columns/status.html").render(context.flatten())
 
 
-class IntegrationTable(Table):
+class IntegrationListTable(Table):
+    class Meta:
+        model = Integration
+        fields = ("name", "kind", "created_ready")
+        attrs = {"class": "table"}
+
+    name = Column(linkify=True)
+    num_rows = Column(verbose_name="Rows")
+    kind = Column(accessor="display_kind")
+    created_ready = NaturalDatetimeColumn(verbose_name="Added")
+
+
+class IntegrationPendingTable(Table):
     class Meta:
         model = Integration
         fields = (
             "name",
             "kind",
             "num_rows",
-            "last_synced",
             "created",
-            "updated",
         )
         attrs = {"class": "table"}
 
     name = Column(linkify=True)
+    num_rows = Column(verbose_name="Rows")
     kind = Column(accessor="display_kind")
-    last_synced = NaturalDatetimeColumn()
-    status = StatusColumn(template_name="columns/status.html")
-    created = StatusColumn(template_name="columns/status.html")
-    updated = NaturalDatetimeColumn()
+    created = NaturalDatetimeColumn(verbose_name="Started")
+    state = PendingStatusColumn()
 
 
 class StructureTable(Table):

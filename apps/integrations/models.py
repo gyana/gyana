@@ -1,6 +1,5 @@
-import celery
 from apps.base.models import BaseModel
-from apps.connectors.utils import get_services
+from apps.connectors.config import get_services
 from apps.dashboards.models import Dashboard
 from apps.projects.models import Project
 from apps.users.models import CustomUser
@@ -11,18 +10,34 @@ from django.urls import reverse
 
 class Integration(BaseModel):
     class Kind(models.TextChoices):
-        SHEET = "sheet", "Google Sheets"
+        SHEET = "sheet", "Sheet"
         UPLOAD = "upload", "Upload"
         CONNECTOR = "connector", "Connector"
 
-    name = models.CharField(max_length=255)
+    class State(models.TextChoices):
+        UPDATE = "update", "Update"
+        LOAD = "load", "Load"
+        ERROR = "error", "Error"
+        DONE = "done", "Done"
+
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     kind = models.CharField(max_length=32, choices=Kind.choices)
 
+    # user editable name, auto-populated in the initial sync
+    name = models.CharField(max_length=255)
+
+    state = models.CharField(max_length=16, choices=State.choices, default=State.UPDATE)
+    # only "ready" are available for analytics and count towards user rows
+    ready = models.BooleanField(default=False)
+    created_ready = models.DateTimeField(null=True)
     created_by = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.name
+
+    @property
+    def source_obj(self):
+        return getattr(self, self.kind)
 
     @property
     def num_rows(self):

@@ -1,0 +1,138 @@
+{
+  "team_1_facebook_ads_563a564c28cc469dba73faf6dea0799e": {
+    "name_in_destination": "team_1_facebook_ads_563a564c28cc469dba73faf6dea0799e",
+    "enabled": true,
+    "tables": {
+      "account_history": {
+        "name_in_destination": "account_history",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "ad_campaign_issues_info": {
+        "name_in_destination": "ad_campaign_issues_info",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "ad_conversion": {
+        "name_in_destination": "ad_conversion",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "ad_group_issues_info": {
+        "name_in_destination": "ad_group_issues_info",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "ad_history": {
+        "name_in_destination": "ad_history",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "ad_label": {
+        "name_in_destination": "ad_label",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "ad_recommendation": {
+        "name_in_destination": "ad_recommendation",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "ad_rotation_interval": {
+        "name_in_destination": "ad_rotation_interval",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "ad_set_attribution": {
+        "name_in_destination": "ad_set_attribution",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "ad_set_custom_audience": {
+        "name_in_destination": "ad_set_custom_audience",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "ad_set_history": {
+        "name_in_destination": "ad_set_history",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "ad_set_label": {
+        "name_in_destination": "ad_set_label",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "ad_tracking": {
+        "name_in_destination": "ad_tracking",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "campaign_history": {
+        "name_in_destination": "campaign_history",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "campaign_label": {
+        "name_in_destination": "campaign_label",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "creative_history": {
+        "name_in_destination": "creative_history",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "creative_label": {
+        "name_in_destination": "creative_label",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "creative_sequence": {
+        "name_in_destination": "creative_sequence",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "custom_audience_history": {
+        "name_in_destination": "custom_audience_history",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "failed_delivery_checks": {
+        "name_in_destination": "failed_delivery_checks",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "frequency_control": {
+        "name_in_destination": "frequency_control",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "label_history": {
+        "name_in_destination": "label_history",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "lookalike_origin": {
+        "name_in_destination": "lookalike_origin",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "lookalike_target_country": {
+        "name_in_destination": "lookalike_target_country",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "pacing_type": {
+        "name_in_destination": "pacing_type",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "reach_frequency": {
+        "name_in_destination": "reach_frequency",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      }
+    }
+  }
+}

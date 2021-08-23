@@ -15,6 +15,7 @@ def project_meta(request):
     project_data["TITLE"] = "{} | {}".format(
         project_data["NAME"], project_data["DESCRIPTION"]
     )
+
     return {
         "project_meta": project_data,
         "page_url": absolute_url(request.path),

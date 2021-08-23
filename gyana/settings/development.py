@@ -10,5 +10,3 @@ AUTH_PASSWORD_VALIDATORS = []
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
 USE_HASHIDS = False
-
-FIVETRAN_USE_INTERNAL = True

@@ -50,7 +50,7 @@ format:
 
 # Count total lines of code that need to be maintained
 cloc:
-    cloc (git ls-files) --exclude-dir=migrations --exclude-ext=svg
+    cloc $(git ls-files) --exclude-dir=migrations --exclude-ext=svg,csv,json
 
 startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
@@ -67,5 +67,5 @@ cypress-celery:
     watchexec -w apps -e py -r "DJANGO_SETTINGS_MODULE=gyana.settings.cypress celery -A gyana worker -l info"
 
 cypress-fixtures:
-    ./manage.py dumpdata -e admin -e auth -e contenttypes -e sessions -e sites --settings gyana.settings.cypress > cypress/fixtures/fixtures.json
+    ./manage.py dumpdata -e admin -e auth -e contenttypes -e sessions --settings gyana.settings.cypress > cypress/fixtures/fixtures.json
     yarn prettier --write cypress/fixtures/fixtures.json

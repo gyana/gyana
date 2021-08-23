@@ -1,4 +1,5 @@
 # fmt: off
+from apps.base.live_update_form import LiveUpdateForm
 from apps.columns.forms import (AddColumnForm, FormulaColumnForm,
                                 FunctionColumnForm, OperationColumnForm,
                                 WindowColumnForm)
@@ -8,7 +9,6 @@ from apps.columns.models import (AddColumn, Column, EditColumn, FormulaColumn,
 # fmt: on
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
-from apps.base.live_update_form import LiveUpdateForm
 from django import forms
 from django.forms.models import BaseInlineFormSet
 
@@ -22,7 +22,8 @@ class InlineColumnFormset(BaseInlineFormSet):
             choices=[
                 ("", "No column selected"),
                 *[(col, col) for col in self.instance.parents.first().schema],
-            ]
+            ],
+            help_text=self.form.base_fields["column"].help_text,
         )
 
 
@@ -53,6 +54,7 @@ SortColumnFormSet = forms.inlineformset_factory(
     fields=("column", "ascending"),
     can_delete=True,
     extra=0,
+    min_num=1,
     formset=InlineColumnFormset,
 )
 
@@ -63,6 +65,7 @@ EditColumnFormSet = forms.inlineformset_factory(
     form=OperationColumnForm,
     can_delete=True,
     extra=0,
+    min_num=1,
     formset=InlineColumnFormset,
 )
 
@@ -72,6 +75,7 @@ AddColumnFormSet = forms.inlineformset_factory(
     form=AddColumnForm,
     can_delete=True,
     extra=0,
+    min_num=1,
     formset=InlineColumnFormset,
 )
 
@@ -82,6 +86,7 @@ FormulaColumnFormSet = forms.inlineformset_factory(
     fields=("formula", "label"),
     can_delete=True,
     extra=0,
+    min_num=1,
 )
 
 RenameColumnFormSet = forms.inlineformset_factory(
@@ -92,10 +97,11 @@ RenameColumnFormSet = forms.inlineformset_factory(
     can_delete=True,
     extra=0,
     formset=InlineColumnFormset,
+    min_num=1,
 )
 
 FilterFormSet = forms.inlineformset_factory(
-    Node, Filter, form=FilterForm, can_delete=True, extra=0
+    Node, Filter, form=FilterForm, can_delete=True, extra=0, min_num=1
 )
 
 SelectColumnFormSet = forms.inlineformset_factory(
@@ -114,10 +120,16 @@ UnpivotColumnFormSet = forms.inlineformset_factory(
     can_delete=True,
     extra=0,
     formset=InlineColumnFormset,
+    min_num=1,
 )
 
 WindowColumnFormSet = forms.inlineformset_factory(
-    Node, WindowColumn, can_delete=True, extra=True, form=WindowColumnForm
+    Node,
+    WindowColumn,
+    can_delete=True,
+    extra=0,
+    form=WindowColumnForm,
+    min_num=1,
 )
 
 KIND_TO_FORMSETS = {

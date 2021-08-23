@@ -20,7 +20,7 @@ urlpatterns = [
     ),
     path(
         "<int:pk>/out_of_date",
-        login_and_workflow_required(rest.worflow_out_of_date),
+        login_and_workflow_required(rest.workflow_out_of_date),
         name="worflow_out_of_date",
     ),
     # frames

@@ -1,11 +1,12 @@
 import analytics
-from apps.dashboards.mixins import DashboardMixin
 from apps.base.segment_analytics import WIDGET_CREATED_EVENT, WIDGET_DUPLICATED_EVENT
+from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.dashboards.mixins import DashboardMixin
 from django.db import transaction
 from django.urls import reverse
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
-from turbo_response.views import TurboCreateView, TurboStreamDeleteView, TurboUpdateView
+from turbo_response.views import TurboStreamDeleteView
 
 from .forms import WidgetDuplicateForm
 from .models import Widget

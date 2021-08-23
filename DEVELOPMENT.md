@@ -107,8 +107,7 @@ The app is seeded with the fixtures defined in `cypress/fixtures/fixtures.json`.
 - Reset the database `just cypress-setup`
 - Go to the app in the browser and modify it
 - Dump the fixtures `just cypress-fixtures`
-- Manually the fixtures file to format with prettier (better diff)
-- Commit
+- Commit your changes
 
 ## Deployment
 

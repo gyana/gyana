@@ -1,6 +1,6 @@
-from apps.connectors.forms import FivetranForm
-from apps.sheets.forms import SheetForm
-from apps.uploads.forms import CSVForm
+from apps.connectors.forms import ConnectorUpdateForm
+from apps.sheets.forms import SheetUpdateForm
+from apps.uploads.forms import UploadUpdateForm
 from django import forms
 
 from .models import Integration
@@ -12,8 +12,8 @@ class IntegrationForm(forms.ModelForm):
         fields = ["name"]
 
 
-FORM_CLASS_MAP = {
-    Integration.Kind.CONNECTOR: FivetranForm,
-    Integration.Kind.UPLOAD: CSVForm,
-    Integration.Kind.SHEET: SheetForm,
+KIND_TO_FORM_CLASS = {
+    Integration.Kind.CONNECTOR: ConnectorUpdateForm,
+    Integration.Kind.SHEET: SheetUpdateForm,
+    Integration.Kind.UPLOAD: UploadUpdateForm,
 }

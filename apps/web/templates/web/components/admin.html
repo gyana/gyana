@@ -1,0 +1,15 @@
+{% load admin_utils %}
+
+<li>
+    <a class="sidebar__link" href="{{ object|admin_url }}" data-turbo="false">
+    <i class="fas fa-fw fa-user-cog mr-6 {% if object|admin_url_found %}text-blue{% endif %}"></i>Admin{% if object|admin_url_found %}:
+        <strong class='text-blue'>
+        {{ object|verbose_name }}
+        </strong>
+    {% endif %}
+    </a>
+</li>
+
+<li>
+    <hr>
+</li>

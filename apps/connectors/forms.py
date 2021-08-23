@@ -1,38 +1,125 @@
-from apps.connectors.utils import get_services
+from apps.base.clients import fivetran_client
+from apps.connectors.config import get_services
+from apps.connectors.fivetran import FivetranClientError
 from apps.integrations.models import Integration
+from apps.nodes.widgets import MultiSelect
 from django import forms
+from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.forms.widgets import HiddenInput
+from django.forms.widgets import CheckboxInput, HiddenInput
 
 from .models import Connector
 
 
-class FivetranForm(forms.ModelForm):
+class ConnectorCreateForm(forms.ModelForm):
     class Meta:
-        model = Integration
-        fields = [
-            "kind",
-            "project",
-        ]
-        widgets = {
-            "kind": HiddenInput(),
-            "project": HiddenInput(),
-        }
+        model = Connector
+        fields = []
 
-    service = forms.CharField(required=False, max_length=255, widget=HiddenInput())
+    def __init__(self, *args, **kwargs):
+        self._project = kwargs.pop("project")
+        self._service = kwargs.pop("service")
+        self._created_by = kwargs.pop("created_by")
+
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+
+        # try to create fivetran entity
+        try:
+            res = fivetran_client().create(self._service, self._project.team.id)
+        except FivetranClientError as e:
+            raise ValidationError(str(e))
+
+        self._fivetran_id = res["fivetran_id"]
+        self._schema = res["schema"]
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance.name = get_services()[self.cleaned_data["service"]]["name"]
 
-        connector = Connector(
-            integration=instance, service=self.cleaned_data["service"]
+        instance.service = self._service
+        instance.fivetran_id = self._fivetran_id
+        instance.schema = self._schema
+
+        name = get_services()[self._service]["name"]
+
+        integration = Integration(
+            project=self._project,
+            kind=Integration.Kind.CONNECTOR,
+            name=name,
+            created_by=self._created_by,
         )
+        instance.integration = integration
 
         if commit:
             with transaction.atomic():
+                integration.save()
                 instance.save()
-                connector.save()
                 self.save_m2m()
 
         return instance
+
+
+class ConnectorUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Connector
+        fields = []
+
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+
+        schemas = fivetran_client().get_schemas(self.instance)
+
+        is_database = (
+            get_services()[self.instance.service]["requires_schema_prefix"] == "t"
+        )
+
+        for schema in schemas:
+
+            self.fields[f"{schema.name_in_destination}_schema"] = forms.BooleanField(
+                initial=schema.enabled,
+                label=schema.name_in_destination.replace("_", " ").title(),
+                widget=CheckboxInput() if is_database else HiddenInput(),
+                help_text="Include or exclude this schema",
+            )
+            self.fields[
+                f"{schema.name_in_destination}_tables"
+            ] = forms.MultipleChoiceField(
+                choices=[
+                    (
+                        t.name_in_destination,
+                        t.name_in_destination.replace("_", " ").title(),
+                    )
+                    for t in schema.tables
+                ],
+                widget=MultiSelect,
+                initial=[t.name_in_destination for t in schema.tables if t.enabled],
+                label="Tables",
+                help_text="Include or exclude tables to import" + " for this schema"
+                if is_database
+                else "",
+                required=False,  # you can uncheck all options
+            )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # mutate the schema information based on user input
+        schemas = fivetran_client().get_schemas(self.instance)
+
+        for schema in schemas:
+            schema.enabled = f"{schema.name_in_destination}_schema" in cleaned_data
+            for table in schema.tables:
+                # field does not exist if all unchecked
+                table.enabled = table.name_in_destination in cleaned_data.get(
+                    f"{schema.name_in_destination}_tables", []
+                )
+
+        # try to update the fivetran schema
+        try:
+            fivetran_client().update_schemas(self.instance, schemas)
+        except FivetranClientError:
+            raise ValidationError(
+                "Failed to update, please try again or reach out to support."
+            )

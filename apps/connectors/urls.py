@@ -1,37 +1,37 @@
-from apps.base.access import login_and_teamid_in_session
-from apps.projects.access import login_and_project_required
+from django.conf import settings
 from django.urls import path
 
-from . import rest, views
+from apps.projects.access import login_and_project_required
+
+from . import frames, views
+from .access import login_and_connector_required
 
 app_name = "connectors"
 urlpatterns = [
-    # rest
-    # TODO: access control?
     path(
-        "<str:session_key>/start-fivetran-integration",
-        login_and_teamid_in_session(rest.start_fivetran_integration),
-        name="start-fivetran-integration",
-    ),
-    path(
-        "<str:session_key>/finalise-fivetran-integration",
-        login_and_teamid_in_session(rest.finalise_fivetran_integration),
-        name="finalise-fivetran-integration",
+        "<hashid:pk>/status",
+        login_and_connector_required(frames.ConnectorStatus.as_view()),
+        name="status",
     ),
 ]
 
+if settings.DEBUG:
+    urlpatterns += [
+        path("mock", views.ConnectorMock.as_view(), name="mock"),
+    ]
+
+
 integration_urlpatterns = (
     [
-        # views
         path(
-            "<str:session_key>/setup",
-            login_and_project_required(views.ConnectorSetup.as_view()),
-            name="setup",
+            "new",
+            login_and_project_required(views.ConnectorCreate.as_view()),
+            name="create",
         ),
         path(
-            "<hashid:pk>/schema",
-            login_and_project_required(views.IntegrationSchema.as_view()),
-            name="schema",
+            "<hashid:pk>/authorize",
+            login_and_project_required(views.ConnectorAuthorize.as_view()),
+            name="authorize",
         ),
     ],
     "project_integrations_connectors",

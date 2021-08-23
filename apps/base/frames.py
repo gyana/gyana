@@ -1,10 +1,10 @@
 from apps.base.formset_update_view import FormsetUpdateView
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from turbo_response.mixins import (
     TurboFrameTemplateResponseMixin as BaseTurboFrameTemplateResponseMixin,
 )
-from turbo_response.views import TurboCreateView, TurboUpdateView
 
 
 class TurboFrameTemplateResponseMixin(BaseTurboFrameTemplateResponseMixin):

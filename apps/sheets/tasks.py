@@ -1,53 +1,24 @@
-import textwrap
-import time
 from datetime import datetime
-from functools import reduce
 
 import analytics
-from apps.base.clients import DATASET_ID
 from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
 from apps.tables.models import Table
 from celery import shared_task
-from celery_progress.backend import ProgressRecorder
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
-from .bigquery import (
-    get_last_modified_from_drive_file,
-    get_metadata_from_sheet,
-    import_table_from_sheet,
-)
+from .bigquery import get_last_modified_from_drive_file, import_table_from_sheet
 from .models import Sheet
 
 
-def _calc_progress(jobs):
-    return reduce(
-        lambda tpl, curr: (
-            # We only keep track of completed states for now, not failed states
-            tpl[0] + (1 if curr.status == "COMPLETE" else 0),
-            tpl[1] + 1,
-        ),
-        jobs,
-        (0, 0),
-    )
-
-
-def _do_sync_with_progress(task, sheet, table):
+def _do_sync(task, sheet, table):
 
     sheet.drive_file_last_modified = get_last_modified_from_drive_file(sheet)
 
-    progress_recorder = ProgressRecorder(task)
-
     query_job = import_table_from_sheet(table=table, sheet=sheet)
-
-    while query_job.running():
-        current, total = _calc_progress(query_job.query_plan)
-        progress_recorder.set_progress(current, total)
-        time.sleep(0.5)
-
-    progress_recorder.set_progress(*_calc_progress(query_job.query_plan))
 
     # capture external table creation errors
 
@@ -65,43 +36,39 @@ def _do_sync_with_progress(task, sheet, table):
 
 
 @shared_task(bind=True)
-def run_initial_sheets_sync(self, sheet_id):
+def run_sheet_sync_task(self, sheet_id):
     sheet = get_object_or_404(Sheet, pk=sheet_id)
+    integration = sheet.integration
 
     # we need to save the table instance to get the PK from database, this ensures
     # database will rollback automatically if there is an error with the bigquery
     # table creation, avoids orphaned table entities
 
-    with transaction.atomic():
+    try:
 
-        # initial sync or re-sync
+        with transaction.atomic():
 
-        title = get_metadata_from_sheet(sheet)["properties"]["title"]
-        # maximum Google Drive name length is 32767
-        name = textwrap.shorten(title, width=255, placeholder="...")
+            table, created = Table.objects.get_or_create(
+                integration=integration,
+                source=Table.Source.INTEGRATION,
+                bq_table=sheet.table_id,
+                bq_dataset=integration.project.team.tables_dataset_id,
+                project=integration.project,
+            )
 
-        integration = Integration(
-            name=name,
-            project=sheet.project,
-            kind=Integration.Kind.SHEET,
-        )
+            query_job = _do_sync(self, sheet, table)
+
+    except Exception as e:
+        integration.state = Integration.State.ERROR
         integration.save()
+        raise e
 
-        table = Table(
-            integration=integration,
-            source=Table.Source.INTEGRATION,
-            bq_dataset=DATASET_ID,
-            project=sheet.project,
-            num_rows=0,
-        )
-        sheet.integration = integration
-        table.save()
-
-        query_job = _do_sync_with_progress(self, sheet, table)
+    integration.state = Integration.State.DONE
+    integration.save()
 
     # the initial sync completed successfully and a new integration is created
 
-    if created_by := integration.sheet.created_by:
+    if (created_by := integration.created_by) and created:
 
         email = integration_ready_email(integration, created_by)
         email.send()
@@ -122,14 +89,12 @@ def run_initial_sheets_sync(self, sheet_id):
     return integration.id
 
 
-@shared_task(bind=True)
-def run_update_sheets_sync(self, sheet_id):
-    sheet = get_object_or_404(Sheet, pk=sheet_id)
+def run_sheet_sync(sheet: Sheet):
 
-    integration = sheet.integration
-    table = integration.table_set.first()
+    result = run_sheet_sync_task.delay(sheet.id)
+    sheet.sync_task_id = result.task_id
+    sheet.sync_started = timezone.now()
+    sheet.save()
 
-    with transaction.atomic():
-        _do_sync_with_progress(self, sheet, table)
-
-    return integration.id
+    sheet.integration.state = Integration.State.LOAD
+    sheet.integration.save()

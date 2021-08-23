@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { getModelStartId } from '../support/utils'
+
 const createWidget = (kind) => {
   cy.contains('Add widget').click()
   cy.contains(kind).click()
@@ -81,7 +83,7 @@ describe('dashboards', () => {
     })
     cy.get('select[name=aggregations-0-column]').select('store_id')
     cy.get('select[name=aggregations-0-function]').select('MEAN')
-    cy.contains('Save & Close').should('not.be.disabled').click()
+    cy.contains('Save & Close').click()
 
     cy.visit('/projects/1/dashboards/')
     cy.contains(/^Untitled$/).click()
@@ -124,5 +126,35 @@ describe('dashboards', () => {
         cy.visit(sharedUrl, { failOnStatusCode: false })
         cy.contains('404 - Not Found')
       })
+  })
+
+  it('created workflow shows in dashboard', () => {
+    const id = getModelStartId('nodes.node')
+
+    cy.visit('/projects/1/workflows/')
+    cy.contains('create one').click()
+    cy.drag('#dnd-node-input')
+    cy.drop('.react-flow')
+    cy.get(`[data-id=${id}]`).dblclick()
+    cy.contains('store_info').click()
+    cy.contains('Save & Close').click()
+    cy.reactFlowDrag(id, { x: 150, y: 300 })
+
+    cy.drag('#dnd-node-output')
+    cy.drop('[class=react-flow]')
+    cy.get(`[data-id=${id + 1}]`).should('exist')
+    cy.connectNodes(id, id + 1)
+    cy.contains('Run').click()
+    cy.contains('Last run')
+
+    cy.visit('/projects/1/dashboards')
+    cy.contains('create one').click()
+    createWidget('Table')
+    cy.get('select-source').find('button').click()
+    cy.get('select-source').contains('Untitled - Untitled').click()
+
+    cy.contains('Save & Preview').click()
+    cy.contains('Loading widget...')
+    cy.get('#widgets-output-1 table').contains('Edinburgh').should('be.visible')
   })
 })

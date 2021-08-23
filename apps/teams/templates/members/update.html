@@ -13,7 +13,11 @@
 
 <div>
   <h2 class="text-red">Danger zone:</h2>
-  <p class="mb-7">If you'd like to <strong>remove</strong> this team member, press the button below.</p>
+  {% if object.user == request.user %}
+    <p class="mb-7">If you'd like to <strong>leave</strong> this team, press the button below.</p>
+  {% else %}
+    <p class="mb-7">If you'd like to <strong>remove</strong> this team member, press the button below.</p>
+  {% endif %}
 
   <a class="button button--sm button--danger" href="{% url 'team_members:delete' team.id object.id %}">
     Delete

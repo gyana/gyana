@@ -72,7 +72,7 @@ class Filter(CloneMixin, DirtyFieldsMixin, BaseModel):
         "nodes.Node", on_delete=models.CASCADE, related_name="filters", null=True
     )
 
-    column = models.CharField(max_length=300)
+    column = models.CharField(max_length=300, help_text="Column")
     type = models.CharField(max_length=8, choices=Type.choices)
 
     numeric_predicate = models.CharField(
@@ -104,7 +104,7 @@ class Filter(CloneMixin, DirtyFieldsMixin, BaseModel):
     string_value = models.TextField(null=True, blank=True)
     string_values = ArrayField(models.TextField(), null=True)
 
-    bool_value = models.BooleanField(null=True, blank=True)
+    bool_value = models.BooleanField(default=True)
 
     def __str__(self):
         return self.column

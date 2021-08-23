@@ -4,7 +4,7 @@
 
 {% block app %}
 
-<hgroup class="page-header">
+<header class="page-header">
   <div class="mr-auto">
     <h1>{{ project.name }}</h1>
 
@@ -12,7 +12,7 @@
     <p>{{ project.description }}</p>
     {% endif %}
   </div>
-</hgroup>
+</header>
 
 <div class="flex flex-col flex-1 gap-7 pad">
   <div class="flex flex-col gap-7 flex-1">
@@ -29,8 +29,8 @@
           <div class="table__empty">
             <h3>Step 1</h3>
             <p>
-              <a href="{% url 'project_integrations_uploads:upload' project.id %}" class="link">Upload a CSV</a>, or
-              <a href="{% url 'project_integrations:new' project.id %}" class="link">create an integration</a>
+              <a href="{% url 'project_integrations_uploads:create' project.id %}" class="link">Upload a CSV</a>, or
+              <a href="{% url 'project_integrations_connectors:create' project.id %}" class="link">create an integration</a>
             </p>
           </div>
           {% endif %}

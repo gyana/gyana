@@ -1,5 +1,8 @@
 .list {
-  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  padding: 0.4rem;
   width: 100%;
 
   &--bordered {
@@ -9,12 +12,11 @@
   }
 
   &__item {
-    min-height: 32px;
-    border-radius: 4px;
-    padding: 0 8px;
-
-    display: flex;
     align-items: center;
+    border-radius: 5px;
+    display: flex;
+    padding: 0 0.4rem;
+    min-height: 32px;
 
     &--interactive {
       &:hover {

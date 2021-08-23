@@ -21,6 +21,9 @@
   "[scss]": {
     "editor.tabSize": 2,
   },
+  "emmet.includeLanguages": {
+    "django-html": "html"
+  },
   "editor.linkedEditing": true,
   "files.associations": {
     "**/*.html": "html",

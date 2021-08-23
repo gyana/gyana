@@ -17,7 +17,13 @@ class TeamSignupForm(SignupForm):
         return user
 
 
-class TeamChangeForm(forms.ModelForm):
+class TeamCreateForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = ("name",)
+
+
+class TeamUpdateForm(forms.ModelForm):
     class Meta:
         model = Team
         fields = ("name",)

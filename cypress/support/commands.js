@@ -51,6 +51,10 @@ const outbox = () => cy.request('/cypress/outbox').then((response) => response.b
 
 Cypress.Commands.add('outbox', outbox)
 
+const periodic = () => cy.request('/cypress/periodic').then((response) => response.body)
+
+Cypress.Commands.add('periodic', periodic)
+
 const dataTransfer = new DataTransfer()
 
 Cypress.Commands.add('drag', (selector) => {
@@ -62,18 +66,20 @@ Cypress.Commands.add('drop', (selector) => {
 })
 
 // https://github.com/wbkd/react-flow/blob/main/cypress/support/commands.js
-Cypress.Commands.add('reactFlowDrag', (selector, { x, y }) => {
+Cypress.Commands.add('reactFlowDrag', (objId, { x, y }) => {
   return cy
-    .get(selector)
+    .get(`[data-id=${objId}]`)
     .trigger('mousedown', { which: 1 })
     .trigger('mousemove', { clientX: x, clientY: y })
     .trigger('mouseup', { force: true })
 })
 
 Cypress.Commands.add('connectNodes', (source, target) => {
-  cy.get(source).find('.react-flow__handle.source').trigger('mousedown', { which: 1 })
+  cy.get(`[data-id=${source}]`)
+    .find('.react-flow__handle.source')
+    .trigger('mousedown', { which: 1 })
 
-  cy.get(target)
+  cy.get(`[data-id=${target}]`)
     .find('.react-flow__handle.target')
     .trigger('mousemove', { dataTransfer })
     .trigger('mouseup', { force: true, dataTransfer })

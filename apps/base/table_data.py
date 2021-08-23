@@ -1,7 +1,8 @@
+import pandas as pd
+from apps.base.clients import bigquery_client, get_dataframe
 from django_tables2 import Column, Table
 from django_tables2.data import TableData
 from django_tables2.templatetags.django_tables2 import QuerystringNode
-from apps.base.clients import bigquery_client, get_dataframe, ibis_client
 
 # Monkey patch the querystring templatetag for the pagination links
 # Without this links only lead to the whole document url and add query parameter
@@ -18,6 +19,14 @@ def new_render(self, context):
 
 
 QuerystringNode.render = new_render
+
+
+def _replace_nulls_with_none(df: pd.DataFrame):
+    # pandas to_dict returns non python native types e.g. Timestamp, NaT and nan
+    # short term fix to remove bugs with sentinel null values
+    # https://github.com/pandas-dev/pandas/issues/16248
+    # longer term fix would add custom renderer to columns in DynamicTable
+    return df.astype(object).where(df.notnull(), None)
 
 
 class BigQueryTableData(TableData):
@@ -39,6 +48,7 @@ class BigQueryTableData(TableData):
         df = get_dataframe(
             self.data.limit(page.stop - page.start, offset=page.start).compile()
         )
+        df = _replace_nulls_with_none(df)
         return df.to_dict(orient="records")
 
     # TODO: This request slows down the loading of data a lot.

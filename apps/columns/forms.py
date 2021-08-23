@@ -31,6 +31,10 @@ class InlineColumnFormset(BaseInlineFormSet):
 class FunctionColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
         fields = ("column", "function")
+        help_texts = {
+            "column": "Select the column to aggregate over",
+            "function": "Select the aggregation function",
+        }
 
     def get_live_fields(self):
         fields = ["column"]
@@ -64,6 +68,20 @@ class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
             "float_value",
             "string_value",
         )
+        help_texts = {
+            "column": "Column",
+            "string_function": "Operation",
+            "integer_function": "Operation",
+            "date_function": "Operation",
+            "time_function": "Operation",
+            "datetime_function": "Operation",
+            "integer_value": "Value",
+            "float_value": "Value",
+            "string_value": "Value",
+        }
+        widgets = {
+            "string_value": forms.Textarea(attrs={"rows": 1}),
+        }
 
     def get_live_fields(self):
         fields = ["column"]
@@ -98,20 +116,31 @@ class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
             "string_value",
             "label",
         )
+        help_texts = {
+            "column": "Column",
+            "string_function": "Operation",
+            "integer_function": "Operation",
+            "date_function": "Operation",
+            "time_function": "Operation",
+            "datetime_function": "Operation",
+            "integer_value": "Value",
+            "float_value": "Value",
+            "string_value": "Value",
+            "label": "New Column Name",
+        }
+        widgets = {
+            "string_value": forms.Textarea(attrs={"rows": 1}),
+        }
 
     def get_live_fields(self):
         fields = ["column"]
+        if self.column_type and (function_field := IBIS_TO_FUNCTION[self.column_type]):
+            fields += [function_field]
+            operation = AllOperations.get(self.get_live_field(function_field))
+            if operation and operation.arguments == 1:
+                fields += [operation.value_field]
 
-        if self.column_type == "Int64":
-            fields += ["integer_function"]
-
-            if self.get_live_field("integer_function") is not None:
-                fields += ["label"]
-
-        elif self.column_type == "String":
-            fields += ["string_function"]
-
-            if self.get_live_field("string_function") is not None:
+            if self.get_live_field(function_field) is not None:
                 fields += ["label"]
 
         return fields
@@ -130,6 +159,13 @@ class FormulaColumnForm(SchemaFormMixin, LiveUpdateForm):
 class WindowColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
         fields = ("column", "function", "group_by", "order_by", "ascending", "label")
+        help_texts = {
+            "column": "Column",
+            "function": "Function",
+            "group_by": "Group By",
+            "order_by": "Order By",
+            "label": "New Column Name",
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

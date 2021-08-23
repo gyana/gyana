@@ -4,30 +4,7 @@
 
 <div class="flex flex-row flex-1 overflow-hidden">
 
-  {% if tables|length > 1 %}
-  <div class="bg-white overflow-auto w-60 border-gray border-0 border-r flex-shrink-0">
-    <h3 class="px-4 py-2">Tables</h3>
-    <hr />
-    <ul class="px-4 py-2">
-      {% for table in tables %}
-      <li class="my-2">
-        <p class="truncate hover:underline {% if table.id|slugify == request.GET.table_id or not request.GET.table_id and forloop.counter0 == 0 %}text-blue underline{% endif %}">
-          <a title="{{ table.bq_table }}" href="?table_id={{ table.id }}">{{ table.bq_table }}</a>
-        </p>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-  {% endif %}
-
-  <div class="pad flex-1 overflow-hidden">
-    <turbo-frame id="integrations-grid" src="{% url 'integrations:grid' object.id %}?table_id={{ request.GET.table_id }}">
-      <div class='placeholder-scr placeholder-scr--fillscreen'>
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-        <p class='placeholder-scr__title'>Loading integration data...</p>
-      </div>
-    </turbo-frame>
-  </div>
+  {% include "integrations/_data.html" %}
 
 </div>
 {% endblock %}

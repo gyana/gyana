@@ -1,13 +1,14 @@
-from functools import cached_property
+from functools import cache
 
+from apps.base.live_update_form import LiveUpdateForm
+from apps.base.turbo import TurboUpdateView
 from django import forms
 from django.db import transaction
 from django.http.response import HttpResponse
-from turbo_response.views import TurboUpdateView
 
 # temporary overrides for formset labels
 FORMSET_LABELS = {
-    "columns": "Columns",
+    "columns": "Group columns",
     "aggregations": "Aggregations",
     "sort_columns": "Sort columns",
     "edit_columns": "Edit columns",
@@ -27,22 +28,22 @@ def _get_formset_label(formset):
 
 
 class FormsetUpdateView(TurboUpdateView):
-    @cached_property
-    def formsets(self):
-        return self.get_form().get_live_formsets()
+    def get_formset_class(self):
+        if form := self.get_form():
+            return form.get_live_formsets()
+        return []
 
     def get_formset_kwargs(self, formset):
         return {}
 
-    def get_formset_instance(self, formset):
+    def get_formset(self, formset):
+        forms_kwargs = self.get_formset_kwargs(formset)
 
-        forms_kwargs = {
-            # provide a reference to parent instance in live update forms
-            "parent_instance": self.get_form_kwargs()["instance"],
-            **self.get_formset_kwargs(formset),
-        }
+        # provide a reference to parent instance in live update forms
+        if issubclass(formset.form, LiveUpdateForm):
+            forms_kwargs["parent_instance"] = self.get_form_kwargs()["instance"]
 
-        formset_instance = (
+        return (
             # POST request for form creation
             formset(self.request.POST, instance=self.object, form_kwargs=forms_kwargs)
             # form is only bound if formset is in previous render, otherwise load from database
@@ -52,27 +53,36 @@ class FormsetUpdateView(TurboUpdateView):
             else formset(instance=self.object, form_kwargs=forms_kwargs)
         )
 
-        return formset_instance
+    @cache
+    def get_formsets(self):
+        return {
+            _get_formset_label(formset): self.get_formset(formset)
+            for formset in self.get_formset_class()
+        }
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        context["formsets"] = {
-            _get_formset_label(formset): self.get_formset_instance(formset)
-            for formset in self.formsets
-        }
-
+        context["formsets"] = self.get_formsets()
         return context
 
-    def form_valid(self, form: forms.Form) -> HttpResponse:
-        context = self.get_context_data()
+    def post(self, request, *args: str, **kwargs) -> HttpResponse:
+        # override BaseUpdateView/ProcessFormView to check validation on formsets
+        self.object = self.get_object()
 
-        if self.formsets:
-            with transaction.atomic():
-                self.object = form.save()
-                for _, formset in context["formsets"].items():
-                    if formset.is_valid():
-                        formset.instance = self.object
-                        formset.save()
+        form = self.get_form()
+        if form.is_valid() and all(
+            formset.is_valid() for formset in self.get_formsets().values()
+        ):
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        with transaction.atomic():
+            self.object = form.save()
+            for formset in self.get_formsets().values():
+                if formset.is_valid():
+                    formset.instance = self.object
+                    formset.save()
 
         return super().form_valid(form)

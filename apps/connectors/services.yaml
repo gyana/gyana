@@ -35,14 +35,6 @@ dynamodb:
   requires_schema_prefix: f
   category: databases
   static_config:
-facebook:
-  name: Facebook Ad Insights
-  color: '#4867AA'
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
-    table: facebook_table
 facebook_ads:
   name: Facebook Ads
   color: '#4867AA'
@@ -57,8 +49,8 @@ facebook_pages:
   requires_schema_prefix: f
   category: CRM & marketing
   static_config:
-google_ads_account:
-  name: Google Ads Account
+google_ads:
+  name: Google Ads
   color: '#e37400'
   internal: f
   requires_schema_prefix: f
@@ -125,6 +117,13 @@ heap:
   internal: f
   requires_schema_prefix: f
   category: analytics
+  static_config:
+heroku_postgres:
+  name: Heroku Postgres
+  color: '#33668f'
+  internal: t
+  requires_schema_prefix: t
+  category: databases
   static_config:
 hubspot:
   name: Hubspot

@@ -92,6 +92,11 @@ label {
   }
 }
 
+.errorlist {
+  color: var(--c-red);
+  font-size: 1.4rem;
+}
+
 input.input,
 .input {
   @extend %input;
@@ -186,4 +191,11 @@ label.checkbox__checked {
 
 button:focus {
   outline: none;
+}
+
+.input__toggle {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 0.8rem;
 }

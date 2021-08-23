@@ -17,24 +17,24 @@ from model_clone import CloneMixin
 
 class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     class Kind(models.TextChoices):
-        INPUT = "input", "Get data"
-        OUTPUT = "output", "Save data"
-        SELECT = "select", "Select columns"
-        JOIN = "join", "Join"
-        AGGREGATION = "aggregation", "Aggregation"
-        UNION = "union", "Union"
-        SORT = "sort", "Sort"
-        LIMIT = "limit", "Limit"
-        FILTER = "filter", "Filter"
-        EDIT = "edit", "Edit"
         ADD = "add", "Add"
-        RENAME = "rename", "Rename"
-        TEXT = "text", "Text"
-        FORMULA = "formula", "Formula"
+        AGGREGATION = "aggregation", "Aggregation"
         DISTINCT = "distinct", "Distinct"
-        PIVOT = "pivot", "Pivot"
-        UNPIVOT = "unpivot", "Unpivot"
+        EDIT = "edit", "Edit"
+        FILTER = "filter", "Filter"
+        INPUT = "input", "Get data"
+        FORMULA = "formula", "Formula"
         INTERSECT = "intersect", "Intersection"
+        JOIN = "join", "Join"
+        LIMIT = "limit", "Limit"
+        PIVOT = "pivot", "Pivot"
+        OUTPUT = "output", "Save data"
+        RENAME = "rename", "Rename"
+        SELECT = "select", "Select columns"
+        SORT = "sort", "Sort"
+        UNION = "union", "Union"
+        UNPIVOT = "unpivot", "Unpivot"
+        TEXT = "text", "Text"
         WINDOW = "window", "Window"
         SENTIMENT = "sentiment", "Sentiment"
 
@@ -127,7 +127,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     union_mode = models.CharField(
         max_length=8,
         choices=(("keep", "keep"), ("exclude", "exclude")),
-        default="except",
+        default="keep",
         help_text="Either keep or exclude the common rows",
     )
     union_distinct = models.BooleanField(
@@ -146,7 +146,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         default=100, help_text="Limits rows to selected number"
     )
     limit_offset = models.IntegerField(
-        null=True, help_text="From where to start the limit"
+        null=True, blank=True, help_text="From where to start the limit"
     )
 
     # Text
@@ -254,3 +254,11 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     def get_table_name(self):
         return f"Workflow:{self.workflow.name}:{self.output_name}"
+
+    @property
+    def bq_output_table_id(self):
+        return f"output_node_{self.id:09}"
+
+    @property
+    def bq_intermediate_table_id(self):
+        return f"intermediate_node_{self.id:09}"

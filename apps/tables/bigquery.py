@@ -1,4 +1,4 @@
-from apps.base.clients import ibis_client
+from apps.base.clients import bigquery_client, ibis_client
 from ibis.expr.types import TableExpr
 
 from .models import Table
@@ -34,3 +34,9 @@ def get_query_from_table(table: Table) -> TableExpr:
         return tbl.drop(set(tbl.schema().names) & FIVETRAN_COLUMNS)
 
     return tbl
+
+
+def get_bq_table_schema_from_table(table: Table):
+    client = bigquery_client()
+    schema = client.get_table(table.bq_id).schema
+    return [t for t in schema if t.name not in FIVETRAN_COLUMNS]

@@ -1,0 +1,28 @@
+{% extends "integrations/base_list.html" %}
+{% load render_table from django_tables2 %}
+
+{% block tab %}
+
+{% comment %} Click a hidden submit button for Turbo to capture event {% endcomment %}
+<form method="get" onchange="this.querySelector('button').click()">
+  <button type="submit" class="hidden"></button>
+  <div class='flex flex-row space-x-4 w-1/2 mb-4'>
+    {{ filter.form.name }}
+    {{ filter.form.kind }}
+  </div>
+</form>
+
+<div class="card card--none mb-8">
+  {% render_table table %}
+
+  {% if pending_integration_count == 0 %}
+  <div class="table__empty">
+    <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
+    <h3>You have no integrations pending</h3>
+    <p>
+      New integrations live here until they are completed and approved by you. They're deleted automatically after 7 days.
+    </p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

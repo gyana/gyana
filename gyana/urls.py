@@ -31,9 +31,9 @@ from apps.invites import urls as invite_urls
 from apps.nodes import urls as node_urls
 from apps.projects import urls as project_urls
 from apps.sheets import urls as sheet_urls
-from apps.tables import urls as tables_urls
 from apps.teams import urls as team_urls
 from apps.uploads import urls as upload_urls
+from apps.users import urls as users_urls
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
@@ -55,7 +55,6 @@ project_urlpatterns = [
     path(
         "<hashid:project_id>/dashboards/", include(dashboard_urls.project_urlpatterns)
     ),
-    path("<hashid:project_id>/tables/", include(tables_urls.project_urlpatterns)),
     path(
         "<hashid:project_id>/dashboards/<hashid:dashboard_id>/widgets/",
         include(widget_urls.dashboard_urlpatterns),
@@ -71,8 +70,9 @@ teams_urlpatterns = [
 
 
 urlpatterns = [
+    path("admin_tools/", include("admin_tools.urls")),
     path("admin/", admin.site.urls),
-    path("accounts/", include("turbo_allauth.urls")),
+    path("accounts/", include(users_urls.accounts_urlpatterns)),
     path("users/", include("apps.users.urls")),
     path("filters/", include("apps.filters.urls")),
     path("teams/", include(teams_urlpatterns)),

@@ -2,6 +2,7 @@ from functools import lru_cache
 
 import google.auth
 import ibis_bigquery
+from apps.connectors.fivetran import FivetranClient
 from django.conf import settings
 from django.utils.text import slugify
 from google.cloud import bigquery, storage
@@ -10,9 +11,9 @@ from googleapiclient import discovery
 from .ibis.compiler import *
 from .ibis.patch import *
 
-SLUG = slugify(settings.CLOUD_NAMESPACE)
-DATASET_ID = f"{SLUG}_integrations"
-DATAFLOW_ID = f"{SLUG}_dataflows"
+SLUG = (
+    slugify(settings.CLOUD_NAMESPACE) if settings.CLOUD_NAMESPACE is not None else None
+)
 
 # BigQuery jobs are limited to 6 hours runtime
 BIGQUERY_JOB_LIMIT = 6 * 60 * 60
@@ -56,7 +57,7 @@ def bigquery_client():
 @lru_cache
 def ibis_client():
     return ibis_bigquery.connect(
-        project_id=settings.GCP_PROJECT, auth_external_data=True, dataset_id=DATASET_ID
+        project_id=settings.GCP_PROJECT, auth_external_data=True
     )
 
 
@@ -69,3 +70,8 @@ def get_bucket():
 def get_dataframe(query):
     client = bigquery_client()
     return client.query(query).result().to_dataframe(create_bqstorage_client=False)
+
+
+@lru_cache
+def fivetran_client():
+    return FivetranClient()

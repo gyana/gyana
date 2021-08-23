@@ -1,9 +1,13 @@
 /// <reference types="cypress" />
 
+import { getModelStartId, readyIntegrations } from '../support/utils'
+
 const SHARED_SHEET =
   'https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit'
 const RESTRICTED_SHEET =
   'https://docs.google.com/spreadsheets/d/16h15cF3r_7bFjSAeKcy6nnNDpi-CS-NEgUKNCRGXs1E/edit'
+
+const id = getModelStartId('integrations.integration')
 
 describe('sheets', () => {
   beforeEach(() => {
@@ -12,26 +16,32 @@ describe('sheets', () => {
     cy.visit('/projects/1/integrations')
   })
   it('connect to valid Google Sheet', () => {
+    cy.contains('New Integration').click()
     cy.contains('Add Sheet').click()
 
     cy.url().should('contain', '/projects/1/integrations/sheets/new')
     // pretend to share with this email account
     cy.contains('gyana-local@gyana-1511894275181.iam.gserviceaccount.com')
     cy.get('input[name=url]').type(SHARED_SHEET)
+    cy.get('button[type=submit]').click()
+
+    // set advanced configuration
+    cy.url().should('contain', `/projects/1/integrations/${id}/configure`)
+    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', '/projects/1/integrations/sheets/2')
-    cy.contains("Syncing, you'll get an email when it is ready")
-    cy.contains('Sync started')
-    cy.contains('tasks processed')
-    cy.contains('Reload to see results').click()
+    cy.contains('Validating and importing your sheet...')
+    cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
 
-    cy.url().should('contain', '/projects/1/integrations/3')
+    // review the table and approve
+    cy.contains('Employees')
+    cy.contains('Confirm').click()
+
+    cy.url().should('contain', `/projects/1/integrations/${id}`)
     // Google Sheet name inferred
     cy.get('input[name=name]').should('have.value', 'Store info sheet')
 
-    cy.contains('Structure')
     cy.contains('Data')
     cy.contains('10')
 
@@ -41,6 +51,7 @@ describe('sheets', () => {
       .should('eq', 1)
   })
   it('validation failures', () => {
+    cy.contains('New Integration').click()
     cy.contains('Add Sheet').click()
 
     // not a valid url
@@ -57,24 +68,33 @@ describe('sheets', () => {
 
     // invalid cell range
     cy.get('input[name=url]').clear().type(SHARED_SHEET)
+    cy.get('button[type=submit]').click()
+
+    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('does_not_exist!A1:D11')
     cy.get('button[type=submit]').click()
+
     cy.contains('Unable to parse range: does_not_exist!A1:D11')
   })
   it('runtime failures', () => {
+    cy.contains('New Integration').click()
     cy.contains('Add Sheet').click()
 
     cy.get('input[name=url]').type(SHARED_SHEET)
+    cy.get('button[type=submit]').click()
+
     // empty cells trigger column does not exist error
+    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('store_info!A20:D21')
     cy.get('button[type=submit]').click()
 
-    cy.contains('Waiting for sync to start')
-    cy.contains('Uh-Oh, something went wrong! No columns found in the schema.')
+    cy.contains('Validating and importing your sheet...')
+    cy.contains('Errors occurred when validating your sheet')
+    cy.contains('No columns found in the schema.')
 
     // verify that nothing was created
     cy.visit('/projects/1/integrations')
-    cy.get('table tbody tr').should('have.length', 2)
+    cy.get('table tbody tr').should('have.length', readyIntegrations)
     cy.outbox()
       .then((outbox) => outbox.count)
       .should('eq', 0)
@@ -85,25 +105,37 @@ describe('sheets', () => {
 
     // sheet is already out of date by design
     cy.contains('This Google Sheet was updated since the last sync.')
-    cy.contains('Sync').click()
+    cy.contains('Import the latest data').click()
 
-    cy.url().should('contain', '/projects/1/integrations/sheets/1')
+    cy.url().should('contain', '/projects/1/integrations/2/configure')
+    cy.contains('Configure').click()
+    cy.get('button[type=submit]').click()
 
     // the integration page has updated to link here
     cy.visit('/projects/1/integrations/2')
-    // cy.wait(500)
-    cy.contains('See the sync progress.').click()
+    cy.contains('View import in progress.').click()
 
     // sync is complete  and it redirects me back again
-    cy.url().should('contain', '/projects/1/integrations/sheets/1')
-    cy.contains('Sync started')
-    cy.contains('Reload to see results').click()
+    cy.url().should('contain', '/projects/1/integrations/2/configure')
+    cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
 
-    cy.url().should('contain', '/projects/1/integrations/2')
+    cy.visit('/projects/1/integrations/2')
     cy.contains("You've already synced the latest data.")
+  })
+  it('update the cell range and re-sync', () => {
+    cy.contains('Store info sheet').click()
 
-    // redirect back when trying to view completed upload
-    cy.visit('/projects/1/integrations/sheets/1')
-    cy.url().should('contain', '/projects/1/integrations/2')
+    cy.get('#tabbar').within(() => cy.contains('Setup').click())
+    cy.contains('Configure').click()
+
+    cy.contains('Advanced').click()
+    cy.get('input[name=cell_range]').clear().type('store_info!A1:D6')
+    cy.get('button[type=submit]').click()
+
+    cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
+
+    // new cell range includes 5 rows of data
+    cy.get('#tabbar').within(() => cy.contains('Overview').click())
+    cy.contains('5')
   })
 })

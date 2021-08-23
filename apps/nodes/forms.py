@@ -43,7 +43,7 @@ class InputNodeForm(NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         instance = kwargs.get("instance")
-        self.fields["input_table"].queryset = Table.objects.filter(
+        self.fields["input_table"].queryset = Table.available.filter(
             project=instance.workflow.project
         ).exclude(source="intermediate_node")
 
@@ -80,14 +80,31 @@ class SelectNodeForm(NodeForm):
         return super().save(*args, **kwargs)
 
 
-class JoinNodeForm(NodeForm):
-    join_left = forms.ChoiceField(
-        choices=(),
-    )
-    join_right = forms.ChoiceField(
-        choices=(),
-    )
+class DistinctNodeForm(NodeForm):
+    class Meta:
+        model = Node
+        fields = []
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["distinct_columns"] = forms.MultipleChoiceField(
+            choices=[(col, col) for col in self.columns],
+            widget=MultiSelect,
+            label="Select the columns that should be unique:",
+            initial=list(self.instance.columns.all().values_list("column", flat=True)),
+        )
+
+    def save(self, *args, **kwargs):
+        self.instance.columns.all().delete()
+        self.instance.columns.set(
+            [Column(column=column) for column in self.cleaned_data["distinct_columns"]],
+            bulk=False,
+        )
+        return super().save(*args, **kwargs)
+
+
+class JoinNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["join_how", "join_left", "join_right"]
@@ -96,12 +113,15 @@ class JoinNodeForm(NodeForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # https://stackoverflow.com/a/30766247/15425660
-        node = self.instance
-        self.left_columns = [(col, col) for col in node.parents.first().schema]
-        self.right_columns = [(col, col) for col in node.parents.last().schema]
-        self.fields["join_left"].choices = self.left_columns
-        self.fields["join_right"].choices = self.right_columns
+
+        self.fields["join_left"] = forms.ChoiceField(
+            choices=[(col, col) for col in self.instance.parents.first().schema],
+            help_text=self.fields["join_left"].help_text,
+        )
+        self.fields["join_right"] = forms.ChoiceField(
+            choices=[(col, col) for col in self.instance.parents.last().schema],
+            help_text=self.fields["join_right"].help_text,
+        )
 
 
 class UnionNodeForm(NodeForm):
@@ -122,11 +142,15 @@ class LimitNodeForm(NodeForm):
 
 
 # TODO: Use Nodeform instead
-class PivotNodeForm(LiveUpdateForm):
+class PivotNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["pivot_index", "pivot_column", "pivot_value", "pivot_aggregation"]
-        # TODO: Add labels
+        labels = {
+            "pivot_index": "Index column",
+            "pivot_value": "Value column",
+            "pivot_aggregation": "Aggregation function",
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -136,10 +160,16 @@ class PivotNodeForm(LiveUpdateForm):
             *[(col, col) for col in schema],
         ]
         self.fields["pivot_index"] = forms.ChoiceField(
-            choices=column_choices, required=False
+            choices=column_choices,
+            required=False,
+            help_text=self.fields["pivot_index"].help_text,
         )
-        self.fields["pivot_column"] = forms.ChoiceField(choices=column_choices)
-        self.fields["pivot_value"] = forms.ChoiceField(choices=column_choices)
+        self.fields["pivot_column"] = forms.ChoiceField(
+            choices=column_choices, help_text=self.fields["pivot_column"].help_text
+        )
+        self.fields["pivot_value"] = forms.ChoiceField(
+            choices=column_choices, help_text=self.fields["pivot_value"].help_text
+        )
 
         pivot_value = self.get_live_field("pivot_value")
         if pivot_value in schema:
@@ -157,7 +187,7 @@ class PivotNodeForm(LiveUpdateForm):
         return fields
 
 
-class UnpivotNodeForm(LiveUpdateForm):
+class UnpivotNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["unpivot_value", "unpivot_column"]
@@ -198,7 +228,7 @@ KIND_TO_FORM = {
     "add": DefaultNodeForm,
     "rename": DefaultNodeForm,
     "formula": DefaultNodeForm,
-    "distinct": SelectNodeForm,
+    "distinct": DistinctNodeForm,
     "pivot": PivotNodeForm,
     "unpivot": UnpivotNodeForm,
     "intersect": DefaultNodeForm,

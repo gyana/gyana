@@ -119,6 +119,9 @@ defusedxml==0.7.1; python_version >= "2.7" and python_full_version < "3.0.0" or 
 dj-database-url==0.5.0 \
     --hash=sha256:4aeaeb1f573c74835b0686a2b46b85990571159ffc21aa57ecd4d1e1cb334163 \
     --hash=sha256:851785365761ebe4994a921b433062309eb882fedd318e1b0fcecc607ed02da9
+django-admin-tools==0.9.1 \
+    --hash=sha256:f54cfed4e8eceb62c57962e41c0a8d202e40c18f4fe1ebeeef3507d8f027e8d7 \
+    --hash=sha256:cb32332f93e6ab4549d4d625587fe405f98e82e31b349ea000b809eaa1aa56cd
 django-allauth==0.44.0 \
     --hash=sha256:e51af457466022f52154d74c8523ac69375120fad2acce6e239635d85e610b25
 django-anymail==8.4; python_version >= "3.5" \

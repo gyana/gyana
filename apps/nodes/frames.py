@@ -59,11 +59,21 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
             self.object.data_updated is None
             and self.object.kind not in ["union", "intersect"]
         )
+
+        # Node-specific documentation
         help_template = f"nodes/help/{self.object.kind}.html"
         context["help_template"] = (
             help_template
             if template_exists(help_template)
             else "nodes/help/default.html"
+        )
+
+        # Node-specific form templates
+        form_template = f"nodes/forms/{self.object.kind}.html"
+        context["form_template"] = (
+            form_template
+            if template_exists(form_template)
+            else "nodes/forms/default.html"
         )
 
         # Add node type to list if it requires live updates
@@ -80,6 +90,10 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
 
     def get_form_class(self):
         return KIND_TO_FORM[self.object.kind]
+
+    def get_form(self):
+        if self.object.kind == Node.Kind.INPUT or self.object.parents.first():
+            return super().get_form()
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
         r = super().form_valid(form)
@@ -104,7 +118,7 @@ class NodeGrid(SingleTableMixin, TurboFrameTemplateView):
         self.node = Node.objects.get(id=kwargs["pk"])
         context = super().get_context_data(**kwargs)
         context["node"] = self.node
-        error_template = f"nodes/errors/{self.node.kind}.html"
+        error_template = f"nodes/errors/{self.node.error}.html"
         if template_exists(error_template):
             context["error_template"] = error_template
         return context

@@ -1,4 +1,3 @@
-from apps.base.access import login_and_teamid_in_session
 from apps.projects.access import login_and_project_required
 from django.urls import path
 
@@ -13,6 +12,11 @@ urlpatterns = [
         login_and_integration_required(frames.IntegrationGrid.as_view()),
         name="grid",
     ),
+    path(
+        "<hashid:pk>/schema",
+        login_and_integration_required(frames.IntegrationSchema.as_view()),
+        name="schema",
+    ),
 ]
 
 project_urlpatterns = (
@@ -22,14 +26,24 @@ project_urlpatterns = (
             "", login_and_project_required(views.IntegrationList.as_view()), name="list"
         ),
         path(
-            "new",
-            login_and_project_required(views.IntegrationNew.as_view()),
-            name="new",
+            "pending",
+            login_and_project_required(views.IntegrationPending.as_view()),
+            name="pending",
         ),
         path(
-            "create",
-            login_and_project_required(views.IntegrationCreate.as_view()),
-            name="create",
+            "<hashid:pk>/configure",
+            login_and_project_required(views.IntegrationConfigure.as_view()),
+            name="configure",
+        ),
+        path(
+            "<hashid:pk>/load",
+            login_and_project_required(views.IntegrationLoad.as_view()),
+            name="load",
+        ),
+        path(
+            "<hashid:pk>/done",
+            login_and_project_required(views.IntegrationDone.as_view()),
+            name="done",
         ),
         path(
             "<hashid:pk>",
@@ -45,11 +59,6 @@ project_urlpatterns = (
             "<hashid:pk>/delete",
             login_and_project_required(views.IntegrationDelete.as_view()),
             name="delete",
-        ),
-        path(
-            "<hashid:pk>/structure",
-            login_and_project_required(views.IntegrationStructure.as_view()),
-            name="structure",
         ),
         path(
             "<hashid:pk>/data",

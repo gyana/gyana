@@ -1,34 +1,76 @@
 {% extends "web/app/app_base.html" %}
 {% load static %}
+{% load humanize %}
 {% load team_tags %}
 
 {% block app %}
-{% if team.id %}
-<div id="heading" class="workflow-detail__header">
-  <h3 class="mr-auto flex justify-center items-center">
-    {{ team.name }}
-  </h3>
-</div>
 
-<nav class="tabbar">
-  <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
-     href="{% url 'teams:detail' team.id %}">
-    Projects
-  </a>
-  {% if request.user|is_admin_of:team %}
-  <a class="tabbar__link {% if request.resolver_match.app_name == 'team_members' %} tabbar__link--active {% endif %}"
-     href="{% url 'team_members:list' team.id %}">Members</a>
-  <a class="tabbar__link {% if request.resolver_match.app_name == 'team_invites' %} tabbar__link--active {% endif %}"
-     href="{% url 'team_invites:list' team.id %}">Invites</a>
-  <a class="tabbar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'update' %} tabbar__link--active {% endif %}"
-     href="{% url 'teams:update' team.id %}">
-    Settings
-  </a>
+{% if team.id %}
+
+  {% if team.warning %}
+    <div class="relative bg-orange">
+      <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
+        <div class="pr-16 sm:text-center sm:px-16">
+          <p class="font-medium text-white">
+            <span class="inline">
+              You're exceeding your row count limit.
+            </span>
+            <span class="block sm:ml-2 sm:inline-block">
+              <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
   {% endif %}
-</nav>
+
+  {% if not team.enabled %}
+    <div class="relative bg-red">
+      <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
+        <div class="pr-16 sm:text-center sm:px-16">
+          <p class="font-medium text-white">
+            <span class="inline">
+              You've exceeded your row count limit by over 20%, your team is temporarily disabled.
+            </span>
+            <span class="block sm:ml-2 sm:inline-block">
+              <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+
+  <div id="heading" class="workflow-detail__header">
+    <h3 class="mr-auto flex justify-center items-center">
+      {{ team.name }}
+    </h3>
+  </div>
+
+  <nav class="tabbar">
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
+      href="{% url 'teams:detail' team.id %}">
+      Projects
+    </a>
+    {% if request.user|is_admin_of:team %}
+    <a class="tabbar__link {% if request.resolver_match.app_name == 'team_members' %} tabbar__link--active {% endif %}"
+      href="{% url 'team_members:list' team.id %}">Members</a>
+    <a class="tabbar__link {% if request.resolver_match.app_name == 'team_invites' %} tabbar__link--active {% endif %}"
+      href="{% url 'team_invites:list' team.id %}">Invites</a>
+    <a class="tabbar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'account' %} tabbar__link--active {% endif %}"
+      href="{% url 'teams:account' team.id %}">
+      Account
+    </a>
+    <a class="tabbar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'update' %} tabbar__link--active {% endif %}"
+      href="{% url 'teams:update' team.id %}">
+      Settings
+    </a>
+    {% endif %}
+  </nav>
 {% endif %}
 
-<div class="flex flex-col flex-1 overflow-auto pad">
+<div id="main" class="flex flex-col flex-1 overflow-auto pad">
   {% block tab %}{% endblock %}
 </div>
 {% endblock %}

@@ -1,71 +1,96 @@
-import time
-from functools import reduce
-
-from apps.base.clients import DATASET_ID
-from apps.integrations.bigquery import import_table_from_external_config
+import analytics
+from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
+from apps.integrations.emails import integration_ready_email
+from apps.integrations.models import Integration
 from apps.tables.models import Table
-from apps.uploads.bigquery import create_external_upload_config
+from apps.uploads.bigquery import import_table_from_upload
 from celery import shared_task
-from celery_progress.backend import ProgressRecorder
-from google.api_core.exceptions import GoogleAPICallError
+from django.db import transaction
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+
+from .models import Upload
+
+
+def _do_sync(upload, table):
+
+    load_job = import_table_from_upload(table=table, upload=upload)
+
+    if load_job.exception():
+        raise Exception(load_job.errors[0]["message"])
+
+    table.num_rows = table.bq_obj.num_rows
+    table.data_updated = timezone.now()
+    table.save()
+
+    upload.last_synced = timezone.now()
+    upload.save()
+
+    return load_job
 
 
 @shared_task(bind=True)
-def file_sync(self, file: str, project_id: int):
-    """
-    Task syncs a file into bigquery. On success it
+def run_upload_sync_task(self, upload_id: int):
 
-    :returns: Tuple(table.id, elapsed_time)
-    """
-    # 1. Create table to track progress in
-    table = Table(
-        source=Table.Source.INTEGRATION,
-        bq_dataset=DATASET_ID,
-        project_id=project_id,
-        num_rows=0,
-    )
-    table.save()
+    upload = get_object_or_404(Upload, pk=upload_id)
+    integration = upload.integration
 
-    # We keep track of timing
-    sync_start_time = time.time()
+    # we need to save the table instance to get the PK from database, this ensures
+    # database will rollback automatically if there is an error with the bigquery
+    # table creation, avoids orphaned table entities
 
-    # 2. Sync the file into BigQuery
-    external_config = create_external_upload_config(file)
-    sync_generator = import_table_from_external_config(
-        table=table, external_config=external_config
-    )
-    query_job = next(sync_generator)
-
-    # 3. Record progress on the sync
-    progress_recorder = ProgressRecorder(self)
-
-    def calc_progress(jobs):
-        return reduce(
-            lambda tpl, curr: (
-                # We only keep track of completed states for now, not failed states
-                tpl[0] + (1 if curr.status == "COMPLETE" else 0),
-                tpl[1] + 1,
-            ),
-            jobs,
-            (0, 0),
-        )
-
-    while query_job.running():
-        current, total = calc_progress(query_job.query_plan)
-        progress_recorder.set_progress(current, total)
-        time.sleep(0.5)
-
-    progress_recorder.set_progress(*calc_progress(query_job.query_plan))
-
-    # 4. Let the rest of the generator run, if the sync is successful this yields.
-    # Otherwise it raises
     try:
-        next(sync_generator)
-    except (GoogleAPICallError, TimeoutError) as e:
-        # If our bigquery sync failed we also delete the table to avoid dangling entities
-        table.delete()
+
+        with transaction.atomic():
+
+            table, created = Table.objects.get_or_create(
+                integration=integration,
+                source=Table.Source.INTEGRATION,
+                bq_table=upload.table_id,
+                bq_dataset=integration.project.team.tables_dataset_id,
+                project=integration.project,
+            )
+
+            # no progress as load job does not provide query plan
+            load_job = _do_sync(upload, table)
+
+            integration.state = Integration.State.DONE
+            integration.save()
+
+    except Exception as e:
+        integration.state = Integration.State.ERROR
+        integration.save()
         raise e
 
-    sync_end_time = time.time()
+    # the initial sync completed successfully and a new integration is created
 
-    return (table.id, int(sync_end_time - sync_start_time))
+    if (created_by := integration.created_by) and created:
+
+        email = integration_ready_email(integration, created_by)
+        email.send()
+
+        analytics.track(
+            created_by.id,
+            INTEGRATION_SYNC_SUCCESS_EVENT,
+            {
+                "id": integration.id,
+                "kind": integration.kind,
+                "row_count": integration.num_rows,
+                "time_to_sync": int(
+                    (load_job.ended - load_job.started).total_seconds()
+                ),
+            },
+        )
+
+    return integration.id
+
+
+def run_upload_sync(upload: Upload):
+
+    result = run_upload_sync_task.delay(upload.id)
+    upload.sync_task_id = result.task_id
+    upload.sync_started = timezone.now()
+    upload.save()
+
+    upload.integration.state = Integration.State.LOAD
+    upload.integration.save()

@@ -1,53 +1,57 @@
+import textwrap
+from os.path import splitext
+
 from apps.integrations.models import Integration
+from apps.uploads.widgets import GCSFileUpload
 from django import forms
-from django.forms.widgets import HiddenInput
-from pathvalidate import ValidationError as PathValidationError
-from pathvalidate import validate_filename
+from django.db import transaction
 
 from .models import Upload
 
 
-class CSVForm(forms.ModelForm):
+class UploadCreateForm(forms.ModelForm):
     class Meta:
-        model = Integration
-        fields = ["name", "kind", "project"]
+        model = Upload
+        fields = ["file_gcs_path"]
         widgets = {
-            "kind": HiddenInput(),
-            "project": HiddenInput(),
+            "file_gcs_path": GCSFileUpload(),
         }
+        labels = {"file_gcs_path": "Upload a file"}
 
+    def __init__(self, *args, **kwargs):
+        self._project = kwargs.pop("project")
+        self._created_by = kwargs.pop("created_by")
 
-class CSVCreateForm(forms.ModelForm):
-    class Meta:
-        model = Integration
-        fields = ["name", "kind", "project"]
-        widgets = {
-            "kind": HiddenInput(),
-            "project": HiddenInput(),
-            "name": HiddenInput(),
-        }
-
-    file = forms.CharField(
-        widget=forms.FileInput(
-            attrs={
-                "accept": ".csv",
-                "onchange": "(function(input){document.getElementById('id_name').value=input.files[0].name})(this)",
-            }
-        ),
-        required=False,
-    )
-
-    def clean_name(self):
-        name = self.cleaned_data["name"]
-        try:
-            validate_filename(name)
-        except PathValidationError:
-            self.add_error("file", "Invalid file name")
-
-        return name.split(".").pop(0)
+        super().__init__(*args, **kwargs)
 
     def save(self, commit=True):
-        # saved automatically by parent
-        Upload(integration=self.instance)
+        instance = super().save(commit=False)
 
-        return super().save(commit)
+        # file_gcs_path has an extra hidden input
+        name = textwrap.shorten(
+            splitext(self.data["file_name"])[0], width=255, placeholder="..."
+        )
+        integration = Integration(
+            project=self._project,
+            kind=Integration.Kind.UPLOAD,
+            name=name,
+            created_by=self._created_by,
+        )
+        instance.integration = integration
+
+        if commit:
+            with transaction.atomic():
+                integration.save()
+                instance.save()
+                self.save_m2m()
+
+        return instance
+
+
+class UploadUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Upload
+        fields = ["field_delimiter"]
+        help_texts = {
+            "field_delimiter": "A field delimiter is a character that separates cells in a CSV table."
+        }
