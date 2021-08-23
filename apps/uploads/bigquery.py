@@ -68,9 +68,17 @@ def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
         # bigquery does not guarantee the order of rows
 
         header_query = client.query(
-            f"select * from {temp_table_id} except distinct select * from {table.bq_id} limit 1",
+            f"select * from (select * from {temp_table_id} except distinct select * from {table.bq_id}) limit 1",
             job_config=job_config,
         )
+
+        header_rows = list(header_query.result())
+        if len(header_rows) == 0:
+            raise Exception(
+                "Error: We weren't able to automatically detect the schema of your upload."
+            )
+
+        header_values = header_rows[0].values()
 
         # use the header row to provide an explicit schema
 
@@ -80,7 +88,7 @@ def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
             skip_leading_rows=1,
             schema=[
                 bigquery.SchemaField(sanitize_bq_column_name(field), "STRING")
-                for field in next(header_query.result()).values()
+                for field in header_values
             ],
         )
 

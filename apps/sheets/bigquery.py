@@ -1,13 +1,12 @@
 import re
+from enum import auto
 
-from apps.base.bigquery import (bq_table_schema_is_string_only,
-                                sanitize_bq_column_name)
+from apps.base.bigquery import bq_table_schema_is_string_only, sanitize_bq_column_name
 from apps.base.clients import bigquery_client, drive_v2_client, sheets_client
 from apps.tables.models import Table
 from django.utils.dateparse import parse_datetime
 from google.cloud import bigquery
 from google.cloud.bigquery.job.query import QueryJob
-from googleapiclient.discovery_cache import autodetect
 
 from .models import Sheet
 
@@ -28,7 +27,10 @@ def _create_external_table(
     if sheet.cell_range:
         external_config.options.range = sheet.cell_range
     for k, v in job_kwargs.items():
-        setattr(external_config, k, v)
+        if k == "skip_leading_rows":
+            setattr(external_config.options, k, v)
+        else:
+            setattr(external_config, k, v)
 
     return bigquery.QueryJobConfig(
         table_definitions={
@@ -45,7 +47,7 @@ def _load_table(sheet: Sheet, table: Table, **job_kwargs):
 
     query_job = client.query(
         f"CREATE OR REPLACE TABLE {table.bq_id} AS SELECT * FROM {external_table_id}",
-        job_config=_create_external_table(sheet, external_table_id, autodetect=True),
+        job_config=_create_external_table(sheet, external_table_id, **job_kwargs),
     )
 
     # capture external table creation errors
@@ -82,9 +84,17 @@ def import_table_from_sheet(table: Table, sheet: Sheet) -> QueryJob:
         # bigquery does not guarantee the order of rows
 
         header_query = client.query(
-            f"select * from {table.bq_id} except distinct select * from {temp_table_id} limit 1",
+            f"select * from (select * from {table.bq_id} except distinct select * from {temp_table_id}) limit 1",
             job_config=job_config,
         )
+
+        header_rows = list(header_query.result())
+        if len(header_rows) == 0:
+            raise Exception(
+                "Error: We weren't able to automatically detect the schema of your sheet."
+            )
+
+        header_values = header_rows[0].values()
 
         # use the header row to provide an explicit schema
 
@@ -94,7 +104,7 @@ def import_table_from_sheet(table: Table, sheet: Sheet) -> QueryJob:
             skip_leading_rows=1,
             schema=[
                 bigquery.SchemaField(sanitize_bq_column_name(field), "STRING")
-                for field in next(header_query.result()).values()
+                for field in header_values
             ],
         )
 
