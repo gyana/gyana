@@ -28,6 +28,9 @@ export default class extends Controller {
   }
 
   async submit(e) {
+    for (const el of this.formTarget.querySelectorAll('button[type=submit]')) el.disabled = true
+    e.target.innerHTML = '<i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>'
+
     e.preventDefault()
     const data = new FormData(this.formTarget)
 
