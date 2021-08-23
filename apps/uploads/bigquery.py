@@ -14,6 +14,17 @@ def _is_all_string(bq_table):
     )
 
 
+def _create_external_table(upload, uri, table_id, **job_kwargs):
+    # https://cloud.google.com/bigquery/external-data-drive#python
+    external_config = bigquery.ExternalConfig("CSV")
+    external_config.source_uris = [uri]
+    external_config.field_delimiter = upload.field_delimiter_char
+    for k, v in job_kwargs.items():
+        setattr(external_config, k, v)
+
+    return bigquery.QueryJobConfig(table_definitions={table_id: external_config})
+
+
 def _load_table(upload, uri, table_reference, **job_kwargs):
 
     client = bigquery_client()
@@ -53,12 +64,21 @@ def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
 
     if _is_all_string(table.bq_obj):
 
-        # reload the table again without skipping the header row, so we can get the header names
+        # create temporary table without skipping the header row, so we can get the header names
 
-        _load_table(upload, uri, table_reference, autodetect=True, skip_leading_rows=0)
+        temp_table_id = f"{table.bq_table}_temp"
+
+        job_config = _create_external_table(
+            upload, uri, temp_table_id, autodetect=True, skip_leading_rows=0
+        )
+
+        # bigquery does not guarantee the order of rows
 
         headers = next(
-            client.query(f"select * from {table.bq_id} limit 1").result()
+            client.query(
+                f"select * from {temp_table_id} except distinct select * from {table.bq_id} limit 1",
+                job_config=job_config,
+            ).result()
         ).values()
 
         # use the header row to provide an explicit schema
