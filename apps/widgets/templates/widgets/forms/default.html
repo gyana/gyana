@@ -64,7 +64,7 @@
           <span>
             {{ bound_field.label }}
             <p class=" input__help-text">{{ bound_field.help_text }}</p>
-            {% if not bound_field.field.required %}<small><i>- optional</i></small>{% endif %}
+            {% if not bound_field.field.required %}<span class="text-black-50">- optional</span>{% endif %}
           </span>
         </label>
         {% elif bound_field.subwidgets|length == 1 %}
@@ -72,7 +72,7 @@
           <span>
             {{ bound_field.label }}
             <p class=" input__help-text">{{ bound_field.help_text }}</p>
-            {% if not bound_field.field.required %}<small><i>- optional</i></small>{% endif %}
+            {% if not bound_field.field.required %}<span class="text-black-50">- optional</span>{% endif %}
           </span>
 
           {{ bound_field }}
