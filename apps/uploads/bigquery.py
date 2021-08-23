@@ -1,3 +1,4 @@
+from apps.base.bigquery import sanitize_bigquery_column_name
 from apps.base.clients import bigquery_client
 from apps.tables.models import Table
 from django.conf import settings
@@ -88,7 +89,10 @@ def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
             uri,
             table_reference,
             skip_leading_rows=1,
-            schema=[bigquery.SchemaField(field, "STRING") for field in headers],
+            schema=[
+                bigquery.SchemaField(sanitize_bigquery_column_name(field), "STRING")
+                for field in headers
+            ],
         )
 
     return

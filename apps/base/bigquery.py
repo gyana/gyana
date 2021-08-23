@@ -1,3 +1,5 @@
+import re
+
 BIGQUERY_TYPE_TO_HUMAN = {
     "ARRAY": None,
     "BOOL": "True/False",
@@ -33,3 +35,11 @@ def get_humanize_from_bigquery_type(type: str):
 
     # for template types, share raw info for end user
     return BIGQUERY_TYPE_TO_HUMAN.get(raw_type) or type
+
+
+def sanitize_bigquery_column_name(name: str):
+    # https://stackoverflow.com/a/3305731/15425660
+    # https://cloud.google.com/bigquery/docs/schemas#column_names
+    # replace anything illegal with an underscore, and prefix with underscore if necessary
+    # based on experiments this is consistent with the bigquery algorithm
+    return re.sub("\W|^(?=\d)", "_", name)[:300]
