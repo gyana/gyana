@@ -161,15 +161,14 @@ def reconcile_gcp_scores(
 
 
 @shared_task
-def get_gcp_sentiment(node_id, parent):
+def get_gcp_sentiment(node_id, column_query):
+    from apps.base.clients import bigquery_client
+
     node = get_object_or_404(Node, pk=node_id)
 
     client = bigquery_client()
-    values = (
-        client.query(parent[node.sentiment_column].compile())
-        .to_dataframe()[node.sentiment_column]
-        .to_list()
-    )
+    values = client.query(column_query).to_dataframe()[node.sentiment_column].to_list()
+
     # clip each row of text so that GPC doesn't charge us more than 1 credit
     # (there are still plenty of characters to infer sentiment for that row)
     clipped_values = [v[:CHARS_PER_CREDIT] for v in values]
@@ -208,9 +207,9 @@ def get_gcp_sentiment(node_id, parent):
             project=node.workflow.project,
             intermediate_node=node,
         )
-
         job = client.load_table_from_dataframe(
             df, table.bq_id, job_config=job_config
         )  # Make an API request.
         job.result()  # Wait for the job to complete
-    return table
+
+    return table.bq_table, table.bq_dataset

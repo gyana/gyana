@@ -288,9 +288,9 @@ def get_window_query(node, query):
 
 
 def get_sentiment_query(node, parent):
-    task = get_gcp_sentiment.delay(node.id, parent)
-    table = task.wait(timeout=None, interval=0.2)
-    return ibis_client().table(table.bq_table, database=table.bq_dataset)
+    task = get_gcp_sentiment.delay(node.id, parent[node.sentiment_column].compile())
+    bq_table, bq_dataset = task.wait(timeout=None, interval=0.2)
+    return ibis_client().table(bq_table, database=bq_dataset)
 
 
 NODE_FROM_CONFIG = {
