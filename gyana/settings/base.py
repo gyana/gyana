@@ -91,6 +91,7 @@ PROJECT_APPS = [
     "apps.uploads",
     "apps.sheets",
     "apps.connectors.apps.ConnectorsConfig",
+    "apps.appsumo",
 ]
 
 INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS

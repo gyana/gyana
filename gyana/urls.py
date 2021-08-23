@@ -87,6 +87,7 @@ urlpatterns = [
     path("uploads/", include("apps.uploads.urls")),
     path("sheets/", include("apps.sheets.urls")),
     path("connectors/", include("apps.connectors.urls")),
+    path("appsumo/", include("apps.appsumo.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),
