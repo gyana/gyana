@@ -115,16 +115,14 @@ describe('teams', () => {
     // now we go and delete that data source
     cy.get('#main').within(() => cy.contains('Warning').click())
     cy.contains('store_info').click()
-    cy.contains('Settings').click()
+    cy.get('#tabbar').within(() => cy.contains('Settings').click())
     cy.contains('Delete').click()
     cy.contains('Yes').click()
 
     cy.visit('/')
     cy.contains('Warning').click()
     cy.contains('Account').click()
-    // it still exists because we need to force update
-    cy.contains("You're exceeding your row count limit.")
-    cy.contains('Recalculate').click()
+    // row count automatically updated when integration deleted
     cy.contains("You're exceeding your row count limit.").should('not.exist')
   })
   it('account limit disabled', () => {

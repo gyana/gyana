@@ -119,7 +119,6 @@ describe('integrations', () => {
     // confirm button is enabled
     cy.contains('Confirm').click()
     cy.visit('/teams/2/account')
-    cy.contains('Recalculate').click()
     cy.contains('15 / 15')
     cy.go('back')
 

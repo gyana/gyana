@@ -141,6 +141,11 @@ class IntegrationDelete(ProjectMixin, DeleteView):
     template_name = "integrations/delete.html"
     model = Integration
 
+    def delete(self, request, *args, **kwargs):
+        r = super().delete(request, *args, **kwargs)
+        self.project.team.update_row_count()
+        return r
+
     def get_success_url(self) -> str:
         return reverse("project_integrations:list", args=(self.project.id,))
 
@@ -253,7 +258,9 @@ class IntegrationDone(ProjectMixin, TurboUpdateView):
             self.object.created_ready = timezone.now()
         self.object.ready = True
         self.object.save()
-        return super().form_valid(form)
+        r = super().form_valid(form)
+        self.project.team.update_row_count()
+        return r
 
     def get_success_url(self) -> str:
         return reverse(

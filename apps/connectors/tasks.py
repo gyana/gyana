@@ -1,6 +1,11 @@
 from itertools import chain
 
 import analytics
+from celery import shared_task
+from django.db import transaction
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+
 from apps.base.clients import fivetran_client
 from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.connectors.config import get_services
@@ -8,10 +13,6 @@ from apps.connectors.models import Connector
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
 from apps.tables.models import Table
-from celery import shared_task
-from django.db import transaction
-from django.shortcuts import get_object_or_404
-from django.utils import timezone
 
 from .bigquery import get_bq_tables_from_connector
 
@@ -112,6 +113,9 @@ def run_update_connector_sync(connector: Connector):
         for table in tables:
             if table.bq_id not in schema_bq_ids:
                 table.delete()
+
+    # re-calculate total rows after tables are deleted
+    connector.integration.project.team.update_row_count()
 
     # if we've added new tables, we need to trigger resync
     # otherwise, we don't want to make the user wait
