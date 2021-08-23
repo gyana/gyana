@@ -64,9 +64,9 @@ def _create_or_replace_intermediate_table(table, node, query):
     client = bigquery_client()
 
     with transaction.atomic():
-        table = Table.get_or_create(
+        table, _ = Table.objects.get_or_create(
             source=Table.Source.PIVOT_NODE,
-            bq_table=node.intermediate_bq_table_id,
+            bq_table=node.bq_intermediate_table_id,
             bq_dataset=node.workflow.project.team.tables_dataset_id,
             project=node.workflow.project,
             intermediate_node=node,
