@@ -88,6 +88,14 @@ def create_int_unary_param(func_name, sql_name=None):
         # Test numeric operations
         create_int_unary_param("abs"),
         create_int_unary_param("sqrt"),
+        create_int_unary_param("ln"),
+        pytest.param(
+            "log(medal, 3)",
+            BASE_QUERY.format("log(`medal`, 3)"),
+            id="log",
+        ),
+        create_int_unary_param("log2"),
+        create_int_unary_param("log10"),
     ],
 )
 def test_formula(formula, expected_sql):
