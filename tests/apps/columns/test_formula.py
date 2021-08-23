@@ -18,10 +18,18 @@ TABLE = ibis.table(
 BASE_QUERY = "SELECT {} AS `tmp`\nFROM olympians"
 
 
-def create_unary_param(func_name, sql_name=None):
+def create_str_unary_param(func_name, sql_name=None):
     return pytest.param(
         f"{func_name}(athlete)",
         BASE_QUERY.format(f"{sql_name or func_name}(`athlete`)"),
+        id=func_name,
+    )
+
+
+def create_int_unary_param(func_name, sql_name=None):
+    return pytest.param(
+        f"{func_name}(medals)",
+        BASE_QUERY.format(f"{sql_name or func_name}(`medals`)"),
         id=func_name,
     )
 
@@ -45,13 +53,13 @@ def create_unary_param(func_name, sql_name=None):
             id="fill NA",
         ),
         # Test string operations
-        create_unary_param("lower"),
-        create_unary_param("upper"),
-        create_unary_param("length"),
-        create_unary_param("reverse"),
-        create_unary_param("strip"),
-        create_unary_param("lstrip"),
-        create_unary_param("rstrip"),
+        create_str_unary_param("lower"),
+        create_str_unary_param("upper"),
+        create_str_unary_param("length"),
+        create_str_unary_param("reverse"),
+        create_str_unary_param("strip"),
+        create_str_unary_param("lstrip"),
+        create_str_unary_param("rstrip"),
         pytest.param(
             'like(athlete, "Tom Daley")',
             BASE_QUERY.format("`athlete` LIKE Tom Daley"),
@@ -78,6 +86,8 @@ def create_unary_param(func_name, sql_name=None):
             id="repeat",
         ),
         # Test numeric operations
+        create_int_unary_param("abs"),
+        create_int_unary_param("sqrt"),
     ],
 )
 def test_formula(formula, expected_sql):
