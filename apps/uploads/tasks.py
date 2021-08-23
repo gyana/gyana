@@ -1,5 +1,6 @@
 import analytics
 from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
+from apps.base.time import catchtime
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
 from apps.tables.models import Table
@@ -14,10 +15,7 @@ from .models import Upload
 
 def _do_sync(upload, table):
 
-    load_job = import_table_from_upload(table=table, upload=upload)
-
-    if load_job.exception():
-        raise Exception(load_job.errors[0]["message"])
+    import_table_from_upload(table=table, upload=upload)
 
     table.num_rows = table.bq_obj.num_rows
     table.data_updated = timezone.now()
@@ -25,8 +23,6 @@ def _do_sync(upload, table):
 
     upload.last_synced = timezone.now()
     upload.save()
-
-    return load_job
 
 
 @shared_task(bind=True)
@@ -51,8 +47,8 @@ def run_upload_sync_task(self, upload_id: int):
                 project=integration.project,
             )
 
-            # no progress as load job does not provide query plan
-            load_job = _do_sync(upload, table)
+            with catchtime() as time_to_sync:
+                _do_sync(upload, table)
 
             integration.state = Integration.State.DONE
             integration.save()
@@ -76,9 +72,7 @@ def run_upload_sync_task(self, upload_id: int):
                 "id": integration.id,
                 "kind": integration.kind,
                 "row_count": integration.num_rows,
-                "time_to_sync": int(
-                    (load_job.ended - load_job.started).total_seconds()
-                ),
+                "time_to_sync": int(time_to_sync()),
             },
         )
 

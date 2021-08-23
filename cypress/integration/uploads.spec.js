@@ -105,4 +105,18 @@ describe('uploads', () => {
       { timeout: 10000 }
     )
   })
+  it('all string', () => {
+    cy.contains('New Integration').click()
+    cy.contains('Upload CSV').click()
+
+    cy.get('input[type=file]').attachFile('store_info_all_string.csv')
+    cy.get('button[type=submit]').click()
+    // needs longer to do 3x imports
+    cy.contains('Upload successfully validated and imported.', { timeout: 15000 })
+
+    // import has inferred correct column headings
+    cy.contains('Name')
+    cy.contains('string_field_0').should('not.exist')
+    cy.contains('Location')
+  })
 })
