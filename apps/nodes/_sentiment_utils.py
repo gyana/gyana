@@ -76,14 +76,14 @@ def _get_batches_idxs_and_credits(
     return batches_idxs, batches_credits
 
 
-def generate_batches(
+def _generate_batches(
     values: List[str], batches_idxs: List[List[int]]
 ) -> Iterator[List[str]]:
     """Splits a larger list of string text data into batches (<1000 chars by default)"""
     yield from (values[idxs[0] : idxs[-1] + 1] for idxs in batches_idxs)
 
 
-def gcp_analyze_sentiment(text: str, client: LanguageServiceClient):
+def _gcp_analyze_sentiment(text: str, client: LanguageServiceClient):
     """Calls GCP sentiment analysis"""
     document = Document(
         content=text,
@@ -93,19 +93,19 @@ def gcp_analyze_sentiment(text: str, client: LanguageServiceClient):
     return client.analyze_sentiment(document=document)
 
 
-def process_batch(values: List[str], client: LanguageServiceClient) -> List[float]:
+def _process_batch(values: List[str], client: LanguageServiceClient) -> List[float]:
     """Generates batches of <1MB string text data"""
     text = DELIMITER.join(values)
     # this call is cached in core to avoid hitting GCP and using our quota unnecessarily
-    annotations = gcp_analyze_sentiment(text, client)
+    annotations = _gcp_analyze_sentiment(text, client)
     # score/magnitude are like mean/variance respectively
     # magnitude is useful when analysing an entire document
     # here we analyse individual sentences so only care about their scores
     # https://cloud.google.com/natural-language/docs/basics#interpreting_sentiment_analysis_values
-    return reconcile_gcp_scores(values, annotations)
+    return _reconcile_gcp_scores(values, annotations)
 
 
-def reconcile_gcp_scores(
+def _reconcile_gcp_scores(
     values: List[str], annotations: AnalyzeSentimentResponse
 ) -> List[float]:
     """Scores our sentences based on GCP's analysis of the larger text we sent over"""
@@ -163,12 +163,11 @@ def reconcile_gcp_scores(
 
 @shared_task
 def get_gcp_sentiment(node_id, column_query):
-    from apps.base.clients import bigquery_client
-
     node = get_object_or_404(Node, pk=node_id)
 
     client = bigquery_client()
     values = client.query(column_query).to_dataframe()[node.sentiment_column].to_list()
+    values = [_remove_unicode(value) for value in values]
 
     # clip each row of text so that GPC doesn't charge us more than 1 credit
     # (there are still plenty of characters to infer sentiment for that row)
@@ -178,8 +177,8 @@ def get_gcp_sentiment(node_id, column_query):
         batches_scores = executor.map(
             # create one client for all requests so it authenticates only once
             # (GCP auth isn't thread-safe as I saw errors with large no. of requests)
-            partial(process_batch, client=LanguageServiceClient()),
-            generate_batches(clipped_values, batches_idxs),
+            partial(_process_batch, client=LanguageServiceClient()),
+            _generate_batches(clipped_values, batches_idxs),
         )
     scores = [score for batch_scores in batches_scores for score in batch_scores]
     df = pd.DataFrame({"text": values, "sentiment": scores})
