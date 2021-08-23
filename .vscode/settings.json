@@ -10,16 +10,14 @@
   "python.languageServer": "Pylance",
   "[html]": {
     "editor.defaultFormatter": "vscode.html-language-features",
-    "editor.rulers": [
-      120
-    ],
-    "editor.tabSize": 2,
+    "editor.rulers": [120],
+    "editor.tabSize": 2
   },
   "html.format.templating": true,
   "html.format.endWithNewline": true,
   "html.format.wrapAttributes": "preserve-aligned",
   "[scss]": {
-    "editor.tabSize": 2,
+    "editor.tabSize": 2
   },
   "emmet.includeLanguages": {
     "django-html": "html"
@@ -31,5 +29,9 @@
     "**/templates/**/*.ts": "typescript",
     "**/templates/**/*.tsx": "typescript",
     "**/templates/**/*": "django-txt"
-  }
+  },
+  "python.testing.pytestArgs": ["tests"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.nosetestsEnabled": false,
+  "python.testing.pytestEnabled": true
 }
