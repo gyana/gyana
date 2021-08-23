@@ -10,6 +10,7 @@ from apps.tables.models import Table
 from celery.app import shared_task
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from google.cloud import bigquery
 from google.cloud.language import (
     AnalyzeSentimentResponse,
@@ -211,5 +212,10 @@ def get_gcp_sentiment(node_id, column_query):
             df, table.bq_id, job_config=job_config
         )  # Make an API request.
         job.result()  # Wait for the job to complete
+
+        node.intermediate_table = table
+        table.data_updated = timezone.now()
+        node.save()
+        table.save()
 
     return table.bq_table, table.bq_dataset
