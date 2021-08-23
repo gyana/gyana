@@ -1,7 +1,8 @@
 from allauth.account.views import SignupView
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from django.urls import reverse_lazy
-from django.views.generic import DetailView
+from django.urls.base import reverse
+from django.views.generic import DetailView, RedirectView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 
@@ -40,6 +41,13 @@ class AppsumoCodeDelete(DeleteView):
     template_name = "appsumo/delete.html"
     model = AppsumoCode
     success_url = reverse_lazy("appsumo:list")
+
+
+class AppsumoRedirect(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return reverse("appsumo:redeem")
+        return reverse("appsumo:signup")
 
 
 class AppsumoSignup(SignupView):
