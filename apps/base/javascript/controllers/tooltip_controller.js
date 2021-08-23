@@ -3,6 +3,8 @@ import { Controller } from 'stimulus'
 /**
  * Simple Tippy.js stimulus wrapper.
  * 
+ * @link https://atomiks.github.io/tippyjs/
+ * 
  * @example
  * <p data-controller="tooltip">
  *  Hover over me for a tooltip!
