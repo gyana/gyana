@@ -12,7 +12,5 @@ def delete_bigquery_table(sender, instance, *args, **kwargs):
     # don't delete tables for our cypress fixtures
     if instance.bq_dataset.startswith("cypress_"):
         return
-    try:
-        bigquery_client().delete_table(instance.bq_obj)
-    except (NotFound):
-        pass
+
+    bigquery_client().delete_table(instance.bq_obj, not_found_ok=True)

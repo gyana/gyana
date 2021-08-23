@@ -5,7 +5,7 @@
     {% csrf_token %}
 
     <div class="flex flex-row w-full gap-7 mt-7">
-      <input type="submit" value="Yes" class="button button--sm button--danger button--outline flex-1" />
+      <button type="submit" class="button button--sm button--danger button--outline flex-1" />Yes</button>
       <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}"
          class="button button--sm flex-1">
         No

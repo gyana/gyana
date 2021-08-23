@@ -12,6 +12,8 @@ from django.db import transaction
 from django.utils import timezone
 from ibis.expr.datatypes import String
 
+from ._sentiment_utils import get_gcp_sentiment
+
 JOINS = {
     "inner": "inner_join",
     "outer": "outer_join",
@@ -73,9 +75,11 @@ def _create_or_replace_intermediate_table(table, node, query):
         )
 
         client.query(f"CREATE OR REPLACE TABLE {table.bq_id} as ({query})").result()
-        table.data_updated = timezone.now()
-        table.save()
 
+        node.intermediate_table = table
+        table.data_updated = timezone.now()
+        node.save()
+        table.save()
     return table
 
 
@@ -285,6 +289,19 @@ def get_window_query(node, query):
     return query
 
 
+def get_sentiment_query(node, parent):
+    table = node.intermediate_table
+    conn = ibis_client()
+
+    # if the table doesn't need updating we can simply return the previous computed pivot table
+    if table and table.data_updated > max(tuple(_get_parent_updated(node))):
+        return conn.table(table.bq_table, database=table.bq_dataset)
+
+    task = get_gcp_sentiment.delay(node.id, parent[node.sentiment_column].compile())
+    bq_table, bq_dataset = task.wait(timeout=None, interval=0.2)
+    return conn.table(bq_table, database=bq_dataset)
+
+
 NODE_FROM_CONFIG = {
     "input": get_input_query,
     "output": get_output_query,
@@ -303,6 +320,7 @@ NODE_FROM_CONFIG = {
     "pivot": get_pivot_query,
     "unpivot": get_unpivot_query,
     "intersect": get_intersect_query,
+    "sentiment": get_sentiment_query,
     "window": get_window_query,
 }
 

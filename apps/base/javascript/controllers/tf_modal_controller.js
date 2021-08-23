@@ -28,6 +28,9 @@ export default class extends Controller {
   }
 
   async submit(e) {
+    for (const el of this.formTarget.querySelectorAll('button[type=submit]')) el.disabled = true
+    e.target.innerHTML = '<i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>'
+
     e.preventDefault()
     const data = new FormData(this.formTarget)
 
@@ -40,15 +43,15 @@ export default class extends Controller {
       body: data,
     })
 
+    const text = await result.text()
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(text, 'text/html')
+    const newForm = doc.querySelector(`#${this.formTarget.id}`)
+
+    this.formTarget.outerHTML = newForm.outerHTML
+
     if ([200, 201].includes(result.status)) {
       this.forceClose()
-    } else {
-      const text = await result.text()
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(text, 'text/html')
-      const newForm = doc.querySelector(`#${this.formTarget.id}`)
-
-      this.formTarget.outerHTML = newForm.outerHTML
     }
   }
 

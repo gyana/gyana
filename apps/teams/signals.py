@@ -12,7 +12,5 @@ def delete_bigquery_dataset(sender, instance, *args, **kwargs):
     # don't delete datasets for our cypress fixtures
     if instance.tables_dataset_id.startswith("cypress_"):
         return
-    try:
-        bigquery_client().delete_dataset(instance.tables_dataset_id)
-    except (NotFound):
-        pass
+
+    bigquery_client().delete_dataset(instance.tables_dataset_id, not_found_ok=True)
