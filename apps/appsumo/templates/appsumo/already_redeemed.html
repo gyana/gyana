@@ -1,5 +1,5 @@
 {% extends "web/landing.html" %}
-{% load static %}
+{% load static team_tags %}
 {% load socialaccount %}
 
 {% block content %}
@@ -11,13 +11,15 @@
         {{ object.team.name }}
         </a>.
     </p>
-    <p class="text-center">
-        Go to your 
-        <a class="link" href="{% url 'teams:account' object.team.id %}">
-        account
-        </a>
-        for more info.
-    </p>
+    {% if request.user|is_admin_of:object.team %}
+      <p class="text-center">
+          Go to your 
+          <a class="link" href="{% url 'teams:account' object.team.id %}">
+          account
+          </a>
+          for more info.
+      </p>
+    {% endif %}
   {% else %}
     <p class="text-center">
         Error, the code <strong>{{ object.code }}</strong> was already redeemed by another user.

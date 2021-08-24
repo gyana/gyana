@@ -1567,6 +1567,17 @@
     }
   },
   {
+    "model": "appsumo.appsumocode",
+    "pk": 3,
+    "fields": {
+      "created": "2021-08-23T23:00:00Z",
+      "updated": "2021-08-23T23:00:00Z",
+      "code": "QWERTYUI",
+      "team": 2,
+      "redeemed": "2021-08-23T23:00:00Z"
+    }
+  },
+  {
     "model": "account.emailaddress",
     "pk": 1,
     "fields": { "user": 1, "email": "test@gyana.com", "verified": false, "primary": true }
