@@ -32,7 +32,7 @@ const click = (originalFn, subject, ...args) => {
   if (
     (typeof lastArg !== 'object' || !lastArg['noWaiting']) &&
     isTurbo(el) &&
-    lastArg.turbo !== false
+    lastArg.turbo !== false // explicitly disable e.g. django admin panel
   ) {
     cy.document({ log: false }).then(($document) => {
       Cypress.log({
