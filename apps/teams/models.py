@@ -65,10 +65,29 @@ class Team(BaseModel):
     def row_limit(self):
         if self.override_row_limit is not None:
             return self.override_row_limit
-        appsumo_stack = self.appsumocode_set.filter(refunded_before=None).count()
-        if appsumo_stack == 0:
+
+        active_codes = self.appsumocode_set.filter(refunded_before=None).all()
+        stacked = len(active_codes)
+
+        if stacked == 0:
             return DEFAULT_ROW_LIMIT
-        return APPSUMO_PLANS.get(min(appsumo_stack, APPSUMO_MAX_STACK))["rows"]
+
+        # to determine your plan, take the most recently purchased code
+        most_recent = max(
+            (
+                code.purchased_before
+                for code in active_codes
+                if code.purchased_before is not None
+            ),
+            default=timezone.now(),
+        )
+        print(most_recent)
+        best_plan = next(
+            plan for expired, plan in APPSUMO_PLANS.items() if expired >= most_recent
+        )
+        print(APPSUMO_PLANS)
+
+        return best_plan.get(min(stacked, APPSUMO_MAX_STACK))["rows"]
 
 
 class Membership(BaseModel):

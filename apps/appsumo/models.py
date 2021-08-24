@@ -11,7 +11,7 @@ class AppsumoCode(BaseModel):
     code = models.CharField(max_length=8, unique=True)
     team = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL)
 
-    bought_before = models.DateTimeField(null=True)
+    purchased_before = models.DateTimeField(null=True)
     redeemed = models.DateTimeField(null=True)
     refunded_before = models.DateTimeField(null=True)
 
@@ -67,10 +67,10 @@ class PurchasedCodes(BaseModel):
             for code in codes:
                 appsumo_code = AppsumoCode.objects.get(code=code)
                 if (
-                    appsumo_code.bought_before is None
-                    or appsumo_code.bought_before > self.downloaded
+                    appsumo_code.purchased_before is None
+                    or appsumo_code.purchased_before > self.downloaded
                 ):
-                    appsumo_code.bought_before = self.downloaded
+                    appsumo_code.purchased_before = self.downloaded
                     appsumo_code.save()
 
             self.success = True
