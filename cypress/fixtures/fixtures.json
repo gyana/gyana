@@ -87,7 +87,7 @@
       "created": "2021-07-26T14:53:37.577Z",
       "updated": "2021-07-26T14:53:37.587Z",
       "name": "Vayu",
-      "override_row_limit": 1000000,
+      "override_row_limit": null,
       "row_count": 0,
       "row_count_calculated": null
     }

@@ -60,4 +60,35 @@ describe('appsumo', () => {
 
     cy.url().should('contain', '/teams/1')
   })
+  it('stack and refund', () => {
+    cy.login()
+
+    cy.visit('/teams/1/appsumo')
+    cy.contains('Stack Code').click()
+    cy.get('input[name=code]').type(NOT_REDEEMED)
+    cy.get('button[type=submit]').click()
+
+    cy.get('table tbody tr').should('have.length', 2)
+
+    cy.contains('Account').click()
+    // 2 codes = 2M rows
+    cy.contains('2,000,000')
+
+    // refund a code
+    cy.logout()
+    cy.login('admin@gyana.com')
+
+    cy.visit('/admin/appsumo/refundedcodes/add')
+    cy.get('input[type=file]').attachFile('appsumo_refunded.csv')
+    cy.get('input[name=downloaded_0]').type('2021-08-24')
+    cy.get('input[name=downloaded_1]').type('00:00:00')
+    cy.get('input[value=Save]').click({ turbo: false })
+
+    cy.logout()
+    cy.login()
+
+    cy.visit('/teams/1/account')
+    // 1 active codes = 1M rows
+    cy.contains('1,000,000')
+  })
 })
