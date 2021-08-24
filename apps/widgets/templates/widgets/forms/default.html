@@ -6,6 +6,12 @@
   data-controller="live-update" 
   data-action="change->tf-modal#change submit->tf-modal#save"
 >  
+  {% csrf_token %}
+
+  {% for hidden_field in form.hidden_fields %}
+    {{ hidden_field }}
+  {% endfor %}
+
   <div class="flex flex-col flex-1 w-full gap-7 pad overflow-y-auto">
     <div class="absolute top-0 right-0">
       <button
@@ -20,11 +26,10 @@
       </button>
     </div>
 
-    <span class="absolute h-full w-full hidden" data-live-update-target="loading">
+    <span class="absolute flex-1 hidden" data-live-update-target="loading">
       <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
     </span>
 
-    {% csrf_token %}
     <input
       class='input__inline' 
       id="name"
@@ -35,22 +40,26 @@
     ></input>
 
     <div class="flex flex-row gap-7">
-      <div class="w-1/2">
+      <div class="flex-1">
         <label for="{{ form.table.id_for_label }}">
           {{ form.table.label }}
           <p class=" input__help-text">{{ form.table.help_text }}</p>
         </label>
-        {{form.table}}
+
+        {{ form.table }}
       </div>
 
-      <div class="w-1/2">
+      <div class="flex-1">
         <label for="{{ form.table.id_for_label }}">
           {{ form.kind.label }}
           <p class=" input__help-text">{{ bound_fields.kind.help_text }}</p>
         </label>
-        {{form.kind}}
+
+        {{ form.kind }}
       </div>
     </div>
+
+    <hr>
 
     {% block widget_form %}
 
@@ -108,10 +117,6 @@
     <p class="text-red">
       {{ error|escape }}
     </p>
-    {% endfor %}
-
-    {% for hidden_field in form.hidden_fields %}
-      {{ hidden_field }}
     {% endfor %}
   </div>
 
