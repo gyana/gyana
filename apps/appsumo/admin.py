@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from .models import AppsumoCode, RedeemedCodes, RefundedCodes
+from .models import AppsumoCode, PurchasedCodes, RefundedCodes
 
-admin.site.register(RedeemedCodes)
+admin.site.register(PurchasedCodes)
 admin.site.register(RefundedCodes)
 
 
