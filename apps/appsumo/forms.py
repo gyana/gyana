@@ -8,7 +8,7 @@ from django.utils import timezone
 from .models import AppsumoCode
 
 
-class AppsumoRedeemExtraForm(forms.Form):
+class AppsumoStackForm(forms.Form):
     code = forms.CharField(min_length=8, max_length=8)
 
     def clean_code(self):

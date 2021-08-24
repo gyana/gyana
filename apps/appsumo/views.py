@@ -8,7 +8,7 @@ from django.views.generic import DetailView
 from django_tables2 import SingleTableView
 from turbo_response.views import TurboFormView
 
-from .forms import AppsumoRedeemExtraForm, AppsumoRedeemForm, AppsumoSignupForm
+from .forms import AppsumoStackForm, AppsumoRedeemForm, AppsumoSignupForm
 from .models import AppsumoCode
 from .tables import AppsumoCodeTable
 
@@ -23,10 +23,10 @@ class AppsumoCodeList(TeamMixin, SingleTableView):
         return self.team.appsumocode_set.all()
 
 
-class AppsumoRedeemExtra(TeamMixin, TurboFormView):
-    template_name = "appsumo/redeem_extra.html"
+class AppsumoStack(TeamMixin, TurboFormView):
+    template_name = "appsumo/stack.html"
     model = AppsumoCode
-    form_class = AppsumoRedeemExtraForm
+    form_class = AppsumoStackForm
 
     def form_valid(self, form):
 

@@ -4,9 +4,12 @@
 {% block tab %}
 <div class="card card--none">
   {% render_table table %}
-</div>
 
-<div class="max-w-lg mb-auto mt-4">
-  <a class="button" href="{% url 'team_appsumo:redeem_extra' team.id %}">Redeem</a>
+  <div class="pt-2 pad">
+    <small>
+      <a href="{% url 'team_appsumo:stack' team.id %}" class="link">
+        <i class="fa fa-fw fa-plus mr-2"></i>Stack Code</a>
+    </small>
+  </div>
 </div>
 {% endblock %} 
