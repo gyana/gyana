@@ -1,0 +1,11 @@
+{% extends "web/landing.html" %}
+{% load static %}
+{% load socialaccount %}
+
+{% block content %}
+<section>
+  <p class="text-center">
+    Error, the code <strong>{{ object.code }}</strong> was already redeemed {% if request.user in object.team.members.all %}by you{% else %}by another user{% endif %}.
+  </p>
+</section>
+{% endblock %}

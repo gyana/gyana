@@ -1,13 +1,13 @@
 from apps.base.models import BaseModel
+from apps.teams.models import Team
 from django.db import models
-from django.urls import reverse
 
 
 class AppsumoCode(BaseModel):
-    name = models.CharField(max_length=255)
+
+    code = models.CharField(max_length=8, unique=True)
+    team = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL)
+    redeemed = models.DateTimeField(null=True)
 
     def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse("appsumo:detail", args=(self.pk, ))
+        return self.code
