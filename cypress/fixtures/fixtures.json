@@ -9,7 +9,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-08-20T15:04:06.731Z",
+      "last_login": "2021-08-24T12:55:21.625Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -1542,6 +1542,28 @@
       "fivetran_authorized": true,
       "sync_task_id": null,
       "sync_started": null
+    }
+  },
+  {
+    "model": "appsumo.appsumocode",
+    "pk": 1,
+    "fields": {
+      "created": "2021-08-23T23:00:00Z",
+      "updated": "2021-08-23T23:00:00Z",
+      "code": "12345678",
+      "team": null,
+      "redeemed": null
+    }
+  },
+  {
+    "model": "appsumo.appsumocode",
+    "pk": 2,
+    "fields": {
+      "created": "2021-08-23T23:00:00Z",
+      "updated": "2021-08-23T23:00:00Z",
+      "code": "ABCDEFGH",
+      "team": 1,
+      "redeemed": "2021-08-23T23:00:00Z"
     }
   },
   {
