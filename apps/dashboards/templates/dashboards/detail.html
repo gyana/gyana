@@ -70,7 +70,7 @@
       <i class="fas fa-angle-up fa-rotate-180"></i>
     </button>
 
-    <ul data-popover-target="body" class="list list--bordered" hidden style="z-index:1;margin-top:6px;width:20rem;">
+    <ul data-popover-target="body" class="list list--bordered" hidden style="margin-top:6px;width:20rem;">
       {% expr [("view", "eye", "Preview dashboard"), ("edit", "pen", "Modify dashboard")] as modes %}
       {% for mode in modes %}
       <li class="list__item list__item--interactive">

@@ -7,6 +7,6 @@
   z-index: var(--z-modal);
 }
 
-[data-popover-target="body"] {
+[data-popover-target*="body"] {
   z-index: var(--z-ui);
 }
