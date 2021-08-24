@@ -24,6 +24,7 @@ class Team(BaseModel):
     # calculating every view is too expensive
     row_count = models.BigIntegerField(default=0)
     row_count_calculated = models.DateTimeField(null=True)
+    max_credit = models.IntegerField(default=0)
 
     def update_row_count(self):
         from apps.tables.models import Table
@@ -58,7 +59,23 @@ class Team(BaseModel):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("teams:detail", args=(self.id, ))
+        return reverse("teams:detail", args=(self.id,))
+
+    @property
+    def current_credits_balance(self):
+        last_statement = self.credit_statement_set.latest("created")
+        return (
+            last_statement.balance
+            + self.credit_transaction_set.filter(
+                created_lt=last_statement.created,
+                transaction_type=CreditTransaction.TransactionType.INCREASE,
+            ).sum()["sum"]
+            - self.credit_transaction_set.filter(
+                created_lt=last_statement.created,
+                transaction_type=CreditTransaction.TransactionType.DECREASE,
+            ).sum()["sum"]
+        )
+
 
 class Membership(BaseModel):
     """
@@ -68,3 +85,32 @@ class Membership(BaseModel):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     role = models.CharField(max_length=100, choices=roles.ROLE_CHOICES)
+
+
+# Credit system design motivated by https://stackoverflow.com/a/29713230
+
+
+class CreditTransaction(models.Model):
+    class Meta:
+        ordering = ("-created",)
+
+    class TransactionType(models.TextChoices):
+        DECREASE = "decrease", "Decrease"
+        INCREASE = "increase", "Increase"
+
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    transaction_type = models.CharField(max_length=10, choices=TransactionType.choices)
+    amount = models.IntegerField()
+
+
+class CreditStatement(models.Model):
+    class Meta:
+        ordering = ("-created",)
+
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    balance = models.IntegerField()
+    credits_used = models.IntegerField()
+    credits_received = models.IntegerField()
