@@ -26,6 +26,23 @@ class AppsumoCode(BaseModel):
 # upload redeemed and refunded codes via the admin interface
 
 
+class UploadedCodes(BaseModel):
+    data = models.FileField(
+        upload_to=f"{SLUG}/uploaded_codes" if SLUG else "uploaded_codes"
+    )
+    downloaded = models.DateTimeField()
+    success = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        codes = pd.read_csv(self.data.url, names=["code"]).code.tolist()
+
+        with transaction.atomic():
+            AppsumoCode.objects.bulk_create([AppsumoCode(code=code) for code in codes])
+            self.success = True
+            super().save(*args, **kwargs)
+
+
 class PurchasedCodes(BaseModel):
     data = models.FileField(
         upload_to=f"{SLUG}/purchased_codes" if SLUG else "purchased_codes"
