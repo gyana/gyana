@@ -11,17 +11,18 @@ TABLE = ibis.table(
         ("updated", "timestamp"),
         ("medals", "int32"),
         ("stars", "double"),
+        ("is_nice", "boolean"),
     ],
     name="olympians",
 )
 
-BASE_QUERY = "SELECT {} AS `tmp`\nFROM olympians"
+QUERY = "SELECT {} AS `tmp`\nFROM olympians"
 
 
 def create_str_unary_param(func_name, sql_name=None):
     return pytest.param(
         f"{func_name}(athlete)",
-        BASE_QUERY.format(f"{sql_name or func_name}(`athlete`)"),
+        QUERY.format(f"{sql_name or func_name}(`athlete`)"),
         id=func_name,
     )
 
@@ -29,7 +30,7 @@ def create_str_unary_param(func_name, sql_name=None):
 def create_int_unary_param(func_name, sql_name=None):
     return pytest.param(
         f"{func_name}(medals)",
-        BASE_QUERY.format(f"{sql_name or func_name}(`medals`)"),
+        QUERY.format(f"{sql_name or func_name}(`medals`)"),
         id=func_name,
     )
 
@@ -37,7 +38,7 @@ def create_int_unary_param(func_name, sql_name=None):
 def create_datetime_unary_param(func_name, sql_name=None):
     return pytest.param(
         f"{func_name}(updated)",
-        BASE_QUERY.format(f"{sql_name or func_name}(`updated`)"),
+        QUERY.format(f"{sql_name or func_name}(`updated`)"),
         id=func_name,
     )
 
@@ -45,7 +46,7 @@ def create_datetime_unary_param(func_name, sql_name=None):
 def create_extract_unary_param(func_name, sql_name=None):
     return pytest.param(
         f"{func_name}(updated)",
-        BASE_QUERY.format(f"EXTRACT({sql_name or func_name} from `updated`)"),
+        QUERY.format(f"EXTRACT({sql_name or func_name} from `updated`)"),
         id=func_name,
     )
 
@@ -55,25 +56,82 @@ def create_extract_unary_param(func_name, sql_name=None):
     [
         pytest.param(
             "isnull(athlete)",
-            BASE_QUERY.format("`athlete` IS NULL"),
+            QUERY.format("`athlete` IS NULL"),
             id="is null",
         ),
         pytest.param(
             "notnull(stars)",
-            BASE_QUERY.format("`stars` IS NOT NULL"),
+            QUERY.format("`stars` IS NOT NULL"),
             id="not null",
         ),
         pytest.param(
             'fillna(athlete, "Usain Bolt")',
-            BASE_QUERY.format("IFNULL(`athlete`, 'Usain Bolt')"),
+            QUERY.format("IFNULL(`athlete`, 'Usain Bolt')"),
             id="fill NA",
         ),
+        pytest.param(
+            'cast(medals, "float")',
+            QUERY.format("CAST(`medals` AS FLOAT)"),
+            id="cast int to float",
+        ),
+        pytest.param(
+            'cast(athlete, "datetime")',
+            QUERY.format("CAST(`athlete` AS TIMESTAMP)"),
+            id="cast string to datetime",
+        ),
+        pytest.param(
+            'cast(birthday, "string")',
+            QUERY.format("CAST(`birthday` AS STRING)"),
+            id="cast date to string",
+        ),
+        pytest.param(
+            "coalesce(id, medals, stars)",
+            QUERY.format("coalesce(`id`, `medals`, `stars`)"),
+            id="coalesce",
+        ),
+        pytest.param(
+            "ifelse(is_nice, medals*10, medals-5)",
+            QUERY.format(
+                "CASE WHEN `is_nice` THEN `medals` * 10 ELSE `medals` - 5 END"
+            ),
+            id="if else",
+        ),
         # Test string operations
+        pytest.param(
+            'between(athletes, "Rafael Nadal" , "Roger Federer")',
+            QUERY.format("`athletes` BETWEEN 'Rafael Nadal' AND 'Roger Federer''"),
+            id="between string column",
+        ),
+        pytest.param(
+            'find(athlete, "Kipchoge")',
+            QUERY.format("STRPOS(`athlete`, 'Kipchoge') - 1"),
+            id="find no optional arguments",
+        ),
+        pytest.param(
+            'find(athlete, "Kipchoge", 3)',
+            QUERY.format("STRPOS(`athlete`, 'Kipchoge', 3) - 1"),
+            id="find one optional argument",
+        ),
+        pytest.param(
+            'find(athlete, "Kipchoge", 3, 10)',
+            QUERY.format("STRPOS(`athlete`, 'Kipchoge', 3,10) - 1"),
+            id="find both optional arguments",
+        ),
         create_str_unary_param("lower"),
+        pytest.param(
+            "lpad(athlete,3)",
+            QUERY.format("lpad(`athlete`, 3, ' ')"),
+            id="lpad no optional argument",
+        ),
+        pytest.param(
+            'lpad(athlete,3, "\n")',
+            QUERY.format("lpad(`athlete`, 3, '\n  ')"),
+            id="lpad with fillchar",
+        ),
         create_str_unary_param("hash"),
         pytest.param(
             'join(", ", athlete, "that genius")',
-            BASE_QUERY.format("ARRAY_TO_STRING([`athlete`, 'that genius'], ', ')"),
+            QUERY.format("ARRAY_TO_STRING([`athlete`, 'that genius'], ', ')"),
             id="join",
         ),
         create_str_unary_param("upper"),
@@ -83,86 +141,152 @@ def create_extract_unary_param(func_name, sql_name=None):
         create_str_unary_param("lstrip", "ltrim"),
         create_str_unary_param("rstrip", "rtrim"),
         pytest.param(
+            "rpad(athlete,3)",
+            QUERY.format("rpad(`athlete`, 3, ' ')"),
+            id="rpad no optional argument",
+        ),
+        pytest.param(
+            'rpad(athlete,3, "\n")',
+            # for some reason ibis adds a random newlineafter the select
+            "SELECT\n  rpad(`athlete`, 3, '\n  ') AS `tmp`\nFROM olympians",
+            id="rpad with fillchar",
+        ),
+        pytest.param(
             'like(athlete, "Tom Daley")',
-            BASE_QUERY.format("`athlete` LIKE 'Tom Daley'"),
+            QUERY.format("`athlete` LIKE 'Tom Daley'"),
             id="like",
         ),
         pytest.param(
             'contains(athlete, "Usain Bolt")',
-            BASE_QUERY.format("IFNULL(`athlete`, 'Usain Bolt')"),
+            QUERY.format("IFNULL(`athlete`, 'Usain Bolt')"),
             id="contains",
         ),
         pytest.param(
             "left(athlete, 2)",
-            BASE_QUERY.format("IFNULL(`athlete`, 'Usain Bolt')"),
+            QUERY.format("IFNULL(`athlete`, 'Usain Bolt')"),
             id="left",
         ),
         pytest.param(
             "right(athlete, 4)",
-            BASE_QUERY.format("IFNULL(`athlete`, 'Usain Bolt')"),
+            QUERY.format("IFNULL(`athlete`, 'Usain Bolt')"),
             id="right",
         ),
         pytest.param(
             "repeat(athlete, 2)",
-            BASE_QUERY.format("REPEAT(`athlete`, 2)"),
+            QUERY.format("REPEAT(`athlete`, 2)"),
             id="repeat",
+        ),
+        pytest.param(
+            're_extract(athlete, "ough", 2)',
+            QUERY.format("REGEXP_EXTRACT_ALL(`athlete`, r'ough')[SAFE_OFFSET(2)]"),
+            id="re_extract",
+        ),
+        pytest.param(
+            're_replace(athlete, "ough", "uff")',
+            QUERY.format("REGEXP_REPLACE(`athlete`, r'ough', 'uff')"),
+            id="re_replace",
+        ),
+        pytest.param(
+            're_search(athlete, "Will.*")',
+            QUERY.format("REGEXP_CONTAINS(`athlete`, r'Will.*')"),
+            id="re_search",
+        ),
+        pytest.param(
+            'replace(athlete, "ough", "uff")',
+            QUERY.format("REPLACE(`athlete`, 'ough', 'uff')"),
+            id="replace",
+        ),
+        pytest.param(
+            'substitute(athlete, "Tim")',
+            QUERY.format("CASE `athlete` WHEN 'Tim' THEN NULL ELSE `athlete` END"),
+            id="substitute no optional arguments",
+        ),
+        pytest.param(
+            'substitute(athlete, "Tim", "Tom")',
+            QUERY.format("CASE `athlete` WHEN 'Tim' THEN 'Tom' ELSE `athlete` END"),
+            id="substitute with replace argument",
+        ),
+        pytest.param(
+            'substitute(athlete, "Tim", "Tom", "Till")',
+            QUERY.format("CASE `athlete` WHEN 'Tim' THEN 'Tom' ELSE 'Till' END"),
+            id="substitute with both arguments",
         ),
         # Test numeric operations
         create_int_unary_param("abs"),
         pytest.param(
             "add(medals, stars)",
-            BASE_QUERY.format("`medals` + `stars`"),
+            QUERY.format("`medals` + `stars`"),
             id="add integer and float columns",
         ),
         pytest.param(
             "medals + 5",
-            BASE_QUERY.format("`medals` + 5"),
+            QUERY.format("`medals` + 5"),
             id="add integer scalar to integer column",
+        ),
+        pytest.param(
+            "between(medals,2,10)",
+            QUERY.format("`medals` BETWEEN 2 AND 10"),
+            id="between integer column",
         ),
         create_int_unary_param("ceil"),
         pytest.param(
             "divide(medals, stars)",
-            BASE_QUERY.format("IEEE_DIVIDE(`medals`, `stars`)"),
+            QUERY.format("IEEE_DIVIDE(`medals`, `stars`)"),
             id="div integer and float columns",
         ),
         pytest.param(
             "medals / 42",
-            BASE_QUERY.format("IEEE_DIVIDE(`medals`, 42)"),
+            QUERY.format("IEEE_DIVIDE(`medals`, 42)"),
             id="div integer column and integer scalar",
         ),
         create_int_unary_param("exp"),
         pytest.param(
             "floor(stars)",
-            BASE_QUERY.format("CAST(FLOOR(`stars`) AS INT64)"),
+            QUERY.format("CAST(FLOOR(`stars`) AS INT64)"),
             id="floor",
         ),
         create_int_unary_param("sqrt"),
         create_int_unary_param("ln"),
         pytest.param(
             "log(medals, 3)",
-            BASE_QUERY.format("log(`medals`, 3)"),
+            QUERY.format("log(`medals`, 3)"),
             id="log",
         ),
         pytest.param(
             "log2(medals)",
-            BASE_QUERY.format("log(`medals`, 2)"),
+            QUERY.format("log(`medals`, 2)"),
             id="log2",
         ),
         create_int_unary_param("log10"),
         pytest.param(
             "mul(stars, medals)",
-            BASE_QUERY.format("`stars` * `medals`"),
+            QUERY.format("`stars` * `medals`"),
             id="multiply int and float column",
         ),
         pytest.param(
+            "round(stars, 2)",
+            QUERY.format("ROUND(`stars`, 2)"),
+            id="round",
+        ),
+        pytest.param(
             "stars * 42",
-            BASE_QUERY.format("`stars` * 42"),
+            QUERY.format("`stars` * 42"),
             id="multiply float column and int scalar",
         ),
         pytest.param(
             "pow(stars, medals)",
-            BASE_QUERY.format("pow(`stars`, `medals`)"),
+            QUERY.format("pow(`stars`, `medals`)"),
             id="float column to the power of int column",
+        ),
+        pytest.param(
+            "sub(stars, medals)",
+            QUERY.format("`stars` - `medals`"),
+            id="subtract int column from float column",
+        ),
+        pytest.param(
+            "stars - 42.0",
+            QUERY.format("`stars` - `medals`"),
+            id="subtract float scalar from float column",
         ),
         # Test datetime operations
         create_extract_unary_param("year"),
@@ -176,6 +300,16 @@ def create_extract_unary_param(func_name, sql_name=None):
         create_datetime_unary_param("epoch_seconds", "UNIX_SECONDS"),
         create_datetime_unary_param("day_of_week"),
         create_extract_unary_param("day"),
+        pytest.param(
+            "between(birthday, 1990-01-01, 2000-07-01)",
+            QUERY.format("`birthday` BETWEEN '1990-01-01' AND '2000-07-01'"),
+            id="between date column",
+        ),
+        pytest.param(
+            'strftime(updated,"%d-%m")',
+            QUERY.format("FORMAT_TIMESTAMP('%d-%m', `updated`, 'UTC')"),
+            id="strftime",
+        ),
     ],
 )
 def test_formula(formula, expected_sql):

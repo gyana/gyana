@@ -17,7 +17,7 @@
     "id": "between",
     "name": "between",
     "categories": "generic",
-    "arguments": ["lower", "upper"],
+    "arguments": ["value", "lower", "upper"],
     "description": "Check if value falls between the lower/upper bounds passed"
   },
   {
@@ -38,7 +38,7 @@
     "id": "coalesce",
     "name": "coalesce",
     "categories": "generic",
-    "arguments": ["value", "..."],
+    "arguments": ["value", "second_value", "etc."],
     "description": "Compute the first non-null value(s) from the passed arguments in left-to-right order."
   },
   {
