@@ -8,8 +8,6 @@ class AppsumoCodeTable(tables.Table):
     class Meta:
         model = AppsumoCode
         attrs = {"class": "table"}
-        fields = ("name", "created", "updated")
+        fields = ("code", "redeemed")
 
-    name = tables.Column(linkify=True)
-    created = NaturalDatetimeColumn()
-    updated = NaturalDatetimeColumn()
+    redeemed = NaturalDatetimeColumn()

@@ -1,5 +1,6 @@
 from allauth.account.views import SignupView
 from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.teams.mixins import TeamMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.urls.base import reverse
@@ -12,11 +13,14 @@ from .models import AppsumoCode
 from .tables import AppsumoCodeTable
 
 
-class AppsumoCodeList(SingleTableView):
+class AppsumoCodeList(TeamMixin, SingleTableView):
     template_name = "appsumo/list.html"
     model = AppsumoCode
     table_class = AppsumoCodeTable
     paginate_by = 20
+
+    def get_queryset(self):
+        return self.team.appsumocode_set.all()
 
 
 class AppsumoCodeCreate(TurboCreateView):

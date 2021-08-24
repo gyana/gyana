@@ -19,13 +19,14 @@ class AppsumoRedeemForm(forms.ModelForm):
         fields = ["team"]
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)
+        self._user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
-        self.fields["team"].queryset = user.teams.all()
+        self.fields["team"].queryset = self._user.teams.all()
 
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.redeemed = timezone.now()
+        instance.redeemed_by = self._user
 
         if commit:
             with transaction.atomic():
@@ -68,6 +69,7 @@ class AppsumoSignupForm(SignupForm):
             appsumo_code = AppsumoCode.objects.get(code=self._code)
             appsumo_code.team = team
             appsumo_code.redeemed = timezone.now()
+            appsumo_code.redeemed_by = user
             appsumo_code.save()
 
         return user
