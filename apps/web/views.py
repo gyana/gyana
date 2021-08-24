@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -18,8 +18,8 @@ def home(request):
 
 @api_view(["POST"])
 def toggle_sidebar(request):
-    request.session['sidebar_collapsed'] = not request.session.get('sidebar_collapsed', True)
+    request.session["sidebar_collapsed"] = not request.session.get(
+        "sidebar_collapsed", True
+    )
 
     return HttpResponse(200)
-
-
