@@ -4,6 +4,55 @@
   overflow: hidden;
 }
 
+.project-detail {
+  align-items: flex-start;
+  display: flex;
+  gap: 3.2rem;
+  justify-content: center;
+  padding: 6.4rem 1.6rem;
+
+  > a {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  &__card {
+    align-items: center;
+    display: flex;
+    margin-bottom: 1.6rem;
+    position: relative;
+
+    i:first-child {
+      background: var(--c-blue);
+      color: var(--c-white);
+      padding: 1.6rem;
+      border-radius: 10px;
+      position: relative;
+      width: 12rem;
+      height: 12rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  
+  h2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 12rem;
+  }
+}
+
 .project-list {
   padding: 1.6rem;
   width: 100%;
