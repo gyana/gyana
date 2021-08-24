@@ -87,7 +87,7 @@
       "created": "2021-07-26T14:53:37.577Z",
       "updated": "2021-07-26T14:53:37.587Z",
       "name": "Vayu",
-      "row_limit": 1000000,
+      "override_row_limit": 1000000,
       "row_count": 0,
       "row_count_calculated": null
     }
@@ -99,7 +99,7 @@
       "created": "2021-07-26T14:53:37.577Z",
       "updated": "2021-07-26T14:53:37.587Z",
       "name": "Rows 15",
-      "row_limit": 15,
+      "override_row_limit": 15,
       "row_count": 15,
       "row_count_calculated": null
     }
@@ -111,7 +111,7 @@
       "created": "2021-08-20T13:49:01.945Z",
       "updated": "2021-08-20T13:49:17.382Z",
       "name": "Warning",
-      "row_limit": 13,
+      "override_row_limit": 13,
       "row_count": 0,
       "row_count_calculated": null
     }
@@ -123,7 +123,7 @@
       "created": "2021-08-20T13:49:11.978Z",
       "updated": "2021-08-20T15:03:42.830Z",
       "name": "Disabled",
-      "row_limit": 10,
+      "override_row_limit": 10,
       "row_count": 15,
       "row_count_calculated": "2021-08-20T15:03:42.830Z"
     }

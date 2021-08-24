@@ -20,6 +20,7 @@ class Team(BaseModel):
         settings.AUTH_USER_MODEL, related_name="teams", through="Membership"
     )
 
+    override_row_limit = models.BigIntegerField(null=True)
     # row count is recalculated on a daily basis, or re-counted in certain situations
     # calculating every view is too expensive
     row_count = models.BigIntegerField(default=0)
@@ -62,10 +63,12 @@ class Team(BaseModel):
 
     @property
     def row_limit(self):
+        if self.override_row_limit is not None:
+            return self.override_row_limit
         appsumo_stack = self.appsumocode_set.filter(refunded_before=None).count()
         if appsumo_stack == 0:
             return DEFAULT_ROW_LIMIT
-        return APPSUMO_PLANS.get(min(appsumo_stack, APPSUMO_MAX_STACK))['rows']
+        return APPSUMO_PLANS.get(min(appsumo_stack, APPSUMO_MAX_STACK))["rows"]
 
 
 class Membership(BaseModel):
