@@ -2,11 +2,16 @@ fieldset {
   display: flex;
   flex-direction: column;
   gap: 1.6rem;
+  margin-bottom: 1.6rem;
 
   ul {
     display: flex;
     flex-direction: column;
     gap: 1.6rem;
+  }
+
+  label.checkbox + label.checkbox {
+    margin-top: -0.8rem;
   }
 
   .formset-wrapper {
