@@ -35,7 +35,7 @@ describe('appsumo', () => {
   it('signup with code', () => {
     cy.visit(`/appsumo/${NOT_REDEEMED}`)
 
-    cy.url().should('contain', '/appsumo/signup')
+    cy.url().should('contain', `/appsumo/signup/${NOT_REDEEMED}`)
     cy.contains(`Signup with AppSumo code ${NOT_REDEEMED}.`)
 
     cy.get('input[name=first_name]').type('Appsumo')
@@ -47,5 +47,17 @@ describe('appsumo', () => {
     cy.get('button[type=submit]').click()
 
     cy.url().should('contain', `/teams/${newTeamId}`)
+  })
+  it('redeem code on existing account', () => {
+    cy.login()
+    cy.visit(`/appsumo/${NOT_REDEEMED}`)
+
+    cy.url().should('contain', `/appsumo/redeem/${NOT_REDEEMED}`)
+    cy.contains(`Reedem AppSumo code ${NOT_REDEEMED}.`)
+
+    cy.get('select[name=team]').select('Vayu')
+    cy.get('button[type=submit]').click()
+
+    cy.url().should('contain', '/teams/1')
   })
 })

@@ -1,0 +1,32 @@
+{% extends "web/landing.html" %}
+{% load static %}
+{% load socialaccount %}
+
+{% block content %}
+<section>
+  <p class="text-center">
+    Reedem AppSumo code <strong>{{ view.kwargs.code }}</strong>.
+  </p>
+
+  {% if request.user.teams.count > 0 %}
+    <form method="post" class="mb-8">
+      {% csrf_token %}
+
+      {% include "django/forms/default_form.html" %}
+
+      <button type="submit" class="button button--filled w-full">
+        Continue
+      </button>
+
+    </form>
+  {% else %}
+    <p class="text-center">
+      You're not a member of any teams. Create a
+      <a class="link" href="{% url 'teams:create' %}">
+        new team
+      </a>
+      and return here to redeem your code.
+    </p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -5,6 +5,7 @@ from . import views
 app_name = "appsumo"
 urlpatterns = [
     path("signup/<slug:code>", views.AppsumoSignup.as_view(), name="signup"),
+    path("redeem/<slug:code>", views.AppsumoRedeem.as_view(), name="redeem"),
     path("<slug:code>", views.AppsumoRedirect.as_view(), name="redirect"),
     path("", views.AppsumoCodeList.as_view(), name="list"),
     path("new", views.AppsumoCodeCreate.as_view(), name="create"),

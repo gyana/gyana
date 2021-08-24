@@ -3,12 +3,11 @@ from apps.base.turbo import TurboCreateView, TurboUpdateView
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.urls.base import reverse
-from django.views.generic import DetailView, RedirectView
-from django.views.generic.base import TemplateView
+from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 
-from .forms import AppsumoCodeForm, AppsumoSignupForm
+from .forms import AppsumoCodeForm, AppsumoRedeemForm, AppsumoSignupForm
 from .models import AppsumoCode
 from .tables import AppsumoCodeTable
 
@@ -58,8 +57,8 @@ class AppsumoRedirect(DetailView):
 
         if self.object.redeemed is None:
             if self.request.user.is_authenticated:
-                return redirect(reverse("appsumo:redeem"))
-            return redirect(reverse("appsumo:signup", args=(self.object.code, )))
+                return redirect(reverse("appsumo:redeem", args=(self.object.code,)))
+            return redirect(reverse("appsumo:signup", args=(self.object.code,)))
 
         return super().get(request, *args, **kwargs)
 
@@ -75,3 +74,19 @@ class AppsumoSignup(SignupView):
         kwargs = super().get_form_kwargs()
         kwargs["code"] = self.kwargs.get("code")
         return kwargs
+
+
+class AppsumoRedeem(TurboUpdateView):
+    model = AppsumoCode
+    form_class = AppsumoRedeemForm
+    slug_url_kwarg = "code"
+    slug_field = "code"
+    template_name = "appsumo/redeem.html"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
+    def get_success_url(self) -> str:
+        return reverse("teams:detail", args=(self.object.team.id,))

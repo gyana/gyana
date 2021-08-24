@@ -13,6 +13,28 @@ class AppsumoCodeForm(forms.ModelForm):
         fields = ["code"]
 
 
+class AppsumoRedeemForm(forms.ModelForm):
+    class Meta:
+        model = AppsumoCode
+        fields = ["team"]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        super().__init__(*args, **kwargs)
+        self.fields["team"].queryset = user.teams.all()
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.redeemed = timezone.now()
+
+        if commit:
+            with transaction.atomic():
+                instance.save()
+                self.save_m2m()
+
+        return instance
+
+
 class AppsumoSignupForm(SignupForm):
     first_name = forms.CharField(max_length=30, label="Your Name")
     last_name = forms.CharField(max_length=30, label="Your Last Name")
