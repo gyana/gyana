@@ -1,4 +1,5 @@
 import pandas as pd
+from apps.base.clients import SLUG
 from apps.base.models import BaseModel
 from apps.teams.models import Team
 from django.conf import settings
@@ -26,7 +27,9 @@ class AppsumoCode(BaseModel):
 
 
 class PurchasedCodes(BaseModel):
-    data = models.FileField()
+    data = models.FileField(
+        upload_to=f"{SLUG}/purchased_codes" if SLUG else "purchased_codes"
+    )
     downloaded = models.DateTimeField()
     success = models.BooleanField(default=False)
 
@@ -43,7 +46,7 @@ class PurchasedCodes(BaseModel):
             for code in codes:
                 appsumo_code = AppsumoCode.objects.get(code=code)
                 if (
-                    appsumo_code.bought_before is not None
+                    appsumo_code.bought_before is None
                     or appsumo_code.bought_before > self.downloaded
                 ):
                     appsumo_code.bought_before = self.downloaded
@@ -54,7 +57,9 @@ class PurchasedCodes(BaseModel):
 
 
 class RefundedCodes(BaseModel):
-    data = models.FileField()
+    data = models.FileField(
+        upload_to=f"{SLUG}/refunded_codes" if SLUG else "refunded_codes"
+    )
     downloaded = models.DateTimeField()
     success = models.BooleanField(default=False)
 
@@ -71,7 +76,7 @@ class RefundedCodes(BaseModel):
             for code in codes:
                 appsumo_code = AppsumoCode.objects.get(code=code)
                 if (
-                    appsumo_code.refunded_before is not None
+                    appsumo_code.refunded_before is None
                     or appsumo_code.refunded_before > self.downloaded
                 ):
                     appsumo_code.refunded_before = self.downloaded

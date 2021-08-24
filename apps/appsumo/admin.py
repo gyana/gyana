@@ -2,8 +2,19 @@ from django.contrib import admin
 
 from .models import AppsumoCode, PurchasedCodes, RefundedCodes
 
-admin.site.register(PurchasedCodes)
-admin.site.register(RefundedCodes)
+
+@admin.register(RefundedCodes)
+class AppsumoCodeAdmin(admin.ModelAdmin):
+    list_display = ["data", "downloaded", "success"]
+    fields = ["data", "downloaded", "success"]
+    readonly_fields = ["success"]
+
+
+@admin.register(PurchasedCodes)
+class AppsumoCodeAdmin(admin.ModelAdmin):
+    list_display = ["data", "downloaded", "success"]
+    fields = ["data", "downloaded", "success"]
+    readonly_fields = ["success"]
 
 
 @admin.register(AppsumoCode)
