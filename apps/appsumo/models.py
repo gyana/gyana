@@ -19,6 +19,10 @@ class AppsumoCode(BaseModel):
         settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL
     )
 
+    @property
+    def refunded(self):
+        return self.refunded_before is not None
+
     def __str__(self):
         return self.code
 

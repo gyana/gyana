@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from apps.appsumo.config import APPSUMO_MAX_STACK, APPSUMO_PLANS
 from apps.base.models import BaseModel
 
 from . import roles
@@ -19,7 +20,6 @@ class Team(BaseModel):
         settings.AUTH_USER_MODEL, related_name="teams", through="Membership"
     )
 
-    row_limit = models.BigIntegerField(default=DEFAULT_ROW_LIMIT)
     # row count is recalculated on a daily basis, or re-counted in certain situations
     # calculating every view is too expensive
     row_count = models.BigIntegerField(default=0)
@@ -58,7 +58,15 @@ class Team(BaseModel):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("teams:detail", args=(self.id, ))
+        return reverse("teams:detail", args=(self.id,))
+
+    @property
+    def row_limit(self):
+        appsumo_stack = self.appsumocode_set.filter(refunded_before=None).count()
+        if appsumo_stack == 0:
+            return DEFAULT_ROW_LIMIT
+        return APPSUMO_PLANS.get(min(appsumo_stack, APPSUMO_MAX_STACK))['rows']
+
 
 class Membership(BaseModel):
     """
