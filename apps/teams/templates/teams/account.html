@@ -6,7 +6,7 @@
 <h2>Account usage: {{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }} rows</h2>
 <p class="mb-7">Last calculated: {{ team.row_count_calculated|naturaltime|default_if_none:"Never" }}</p>
   
-<div class="max-w-lg mb-auto">
+<div class="max-w-lg">
   <form method="post" class="form">
     {% csrf_token %}
 
@@ -15,5 +15,7 @@
     <button type="submit" class="button button--success">Recalculate</button>
   </form>
 </div>
+
+<h2>Credit usage: {{team.current_credit_balance|intcomma}}/{{team.max_credit|intcomma}}</h2>
 
 {% endblock %}

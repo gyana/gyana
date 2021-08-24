@@ -62,18 +62,32 @@ class Team(BaseModel):
         return reverse("teams:detail", args=(self.id,))
 
     @property
-    def current_credits_balance(self):
-        last_statement = self.credit_statement_set.latest("created")
+    def current_credit_balance(self):
+        last_statement = (
+            self.creditstatement_set.latest("created")
+            if self.creditstatement_set.first()
+            else None
+        )
+        start_balance = last_statement.balance if last_statement else 0
+        transactions = (
+            self.credittransaction_set.filter(created__lt=last_statement.created)
+            if last_statement
+            else self.credittransaction_set
+        )
         return (
-            last_statement.balance
-            + self.credit_transaction_set.filter(
-                created_lt=last_statement.created,
-                transaction_type=CreditTransaction.TransactionType.INCREASE,
-            ).sum()["sum"]
-            - self.credit_transaction_set.filter(
-                created_lt=last_statement.created,
-                transaction_type=CreditTransaction.TransactionType.DECREASE,
-            ).sum()["sum"]
+            start_balance
+            + (
+                transactions.filter(
+                    transaction_type=CreditTransaction.TransactionType.INCREASE,
+                ).aggregate(models.Sum("amount"))["amount__sum"]
+                or 0
+            )
+            - (
+                transactions.filter(
+                    transaction_type=CreditTransaction.TransactionType.DECREASE,
+                ).aggregate(models.Sum("amount"))["amount__sum"]
+                or 0
+            )
         )
 
 
