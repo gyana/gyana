@@ -64,10 +64,6 @@ class Table(BaseModel):
         super().save(*args, **kwargs)
 
     @property
-    def bq_external_table_id(self):
-        return f"table_{self.id}_external"
-
-    @property
     def bq_id(self):
         return f"{self.bq_dataset}.{self.bq_table}"
 

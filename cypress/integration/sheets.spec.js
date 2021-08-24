@@ -138,4 +138,20 @@ describe('sheets', () => {
     cy.get('#tabbar').within(() => cy.contains('Overview').click())
     cy.contains('5')
   })
+  it('all string', () => {
+    cy.contains('New Integration').click()
+    cy.contains('Add Sheet').click()
+
+    cy.get('input[name=url]').type(SHARED_SHEET)
+    cy.get('button[type=submit]').click()
+    cy.contains('Advanced').click()
+    cy.get('input[name=cell_range').type("'store_info_all_string'")
+    cy.get('button[type=submit]').click()
+    // needs longer to do 3x imports
+    cy.contains('Sheet successfully validated and imported.', { timeout: 15000 })
+
+    // import has inferred correct column headings
+    cy.contains('Location_name')
+    cy.contains('string_field_0').should('not.exist')
+  })
 })

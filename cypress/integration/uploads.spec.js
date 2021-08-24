@@ -115,8 +115,7 @@ describe('uploads', () => {
     cy.contains('Upload successfully validated and imported.', { timeout: 15000 })
 
     // import has inferred correct column headings
-    cy.contains('Name')
+    cy.contains('Location_name')
     cy.contains('string_field_0').should('not.exist')
-    cy.contains('Location')
   })
 })

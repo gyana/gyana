@@ -1,3 +1,4 @@
+from apps.base.bigquery import bq_table_schema_is_string_only, sanitize_bq_column_name
 from apps.base.clients import bigquery_client
 from apps.tables.models import Table
 from django.conf import settings
@@ -7,14 +8,18 @@ from google.cloud.bigquery.job.load import LoadJob
 from .models import Upload
 
 
-def _is_all_string(bq_table):
-    return all(
-        col.name == f"string_field_{idx}" and col.field_type == "STRING"
-        for idx, col in enumerate(bq_table.schema)
-    )
+def _create_external_table(upload: Upload, table_id: str, **job_kwargs):
+    # https://cloud.google.com/bigquery/external-data-drive#python
+    external_config = bigquery.ExternalConfig("CSV")
+    external_config.source_uris = [upload.gcs_uri]
+    external_config.field_delimiter = upload.field_delimiter_char
+    for k, v in job_kwargs.items():
+        setattr(external_config, k, v)
+
+    return bigquery.QueryJobConfig(table_definitions={table_id: external_config})
 
 
-def _load_table(upload, uri, table_reference, **job_kwargs):
+def _load_table(upload: Upload, table: Table, **job_kwargs):
 
     client = bigquery_client()
 
@@ -27,9 +32,13 @@ def _load_table(upload, uri, table_reference, **job_kwargs):
         # allow_quoted_newlines = True,
         # external_config.options.allow_jagged_rows = True
     )
-    uri = f"gs://{settings.GS_BUCKET_NAME}/{upload.file_gcs_path}"
 
-    load_job = client.load_table_from_uri(uri, table_reference, job_config=job_config)
+    bq_dataset = client.get_dataset(table.bq_dataset)
+    table_reference = bigquery.Table(bq_dataset.table(table.bq_table))
+
+    load_job = client.load_table_from_uri(
+        upload.gcs_uri, table_reference, job_config=job_config
+    )
 
     if load_job.exception():
         raise Exception(load_job.errors[0]["message"])
@@ -39,36 +48,48 @@ def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
 
     client = bigquery_client()
 
-    bq_dataset = client.get_dataset(table.bq_dataset)
-    table_reference = bigquery.Table(bq_dataset.table(table.bq_table))
-
-    uri = f"gs://{settings.GS_BUCKET_NAME}/{upload.file_gcs_path}"
-
-    _load_table(upload, uri, table_reference, autodetect=True, skip_leading_rows=1)
+    _load_table(upload, table, autodetect=True, skip_leading_rows=1)
 
     # bigquery does not autodetect the column names if all columns are strings
     # https://cloud.google.com/bigquery/docs/schema-detect#csv_header
     # the recommended approach for cost is to reload into bigquery rather than updating names
     # https://cloud.google.com/bigquery/docs/manually-changing-schemas#option_2_exporting_your_data_and_loading_it_into_a_new_table
 
-    if _is_all_string(table.bq_obj):
+    if bq_table_schema_is_string_only(table.bq_obj):
 
-        # reload the table again without skipping the header row, so we can get the header names
+        # create temporary table without skipping the header row, so we can get the header names
 
-        _load_table(upload, uri, table_reference, autodetect=True, skip_leading_rows=0)
+        temp_table_id = f"{table.bq_table}_temp"
 
-        headers = next(
-            client.query(f"select * from {table.bq_id} limit 1").result()
-        ).values()
+        job_config = _create_external_table(
+            upload, temp_table_id, autodetect=True, skip_leading_rows=0
+        )
+
+        # bigquery does not guarantee the order of rows
+
+        header_query = client.query(
+            f"select * from (select * from {temp_table_id} except distinct select * from {table.bq_id}) limit 1",
+            job_config=job_config,
+        )
+
+        header_rows = list(header_query.result())
+        if len(header_rows) == 0:
+            raise Exception(
+                "Error: We weren't able to automatically detect the schema of your upload."
+            )
+
+        header_values = header_rows[0].values()
 
         # use the header row to provide an explicit schema
 
         _load_table(
             upload,
-            uri,
-            table_reference,
+            table,
             skip_leading_rows=1,
-            schema=[bigquery.SchemaField(field, "STRING") for field in headers],
+            schema=[
+                bigquery.SchemaField(sanitize_bq_column_name(field), "STRING")
+                for field in header_values
+            ],
         )
 
     return
