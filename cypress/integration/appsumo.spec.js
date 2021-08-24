@@ -5,6 +5,10 @@ const NOT_REDEEMED = '12345678'
 const REDEEMED_BY_USER = 'ABCDEFGH'
 const REDEEMED_BY_ANOTHER_USER = 'QWERTYUI'
 
+import { getModelStartId } from '../support/utils'
+
+const newTeamId = getModelStartId('teams.team')
+
 describe('appsumo', () => {
   it('invalid codes', () => {
     // code does not exist
@@ -27,5 +31,21 @@ describe('appsumo', () => {
     cy.contains(`You've already redeem the code ${REDEEMED_BY_USER}`)
     cy.contains('your account for').click()
     cy.url().should('contain', 'teams/1/account')
+  })
+  it('signup with code', () => {
+    cy.visit(`/appsumo/${NOT_REDEEMED}`)
+
+    cy.url().should('contain', '/appsumo/signup')
+    cy.contains(`Signup with AppSumo code ${NOT_REDEEMED}.`)
+
+    cy.get('input[name=first_name]').type('Appsumo')
+    cy.get('input[name=last_name]').type('User')
+    cy.get('input[name=email]').type('appsumo@gyana.com')
+    cy.get('input[name=password1]').type('seewhatmatters')
+    cy.get('input[name=team]').type('Teamsumo')
+
+    cy.get('button[type=submit]').click()
+
+    cy.url().should('contain', `/teams/${newTeamId}`)
   })
 })

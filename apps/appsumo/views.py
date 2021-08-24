@@ -59,7 +59,7 @@ class AppsumoRedirect(DetailView):
         if self.object.redeemed is None:
             if self.request.user.is_authenticated:
                 return redirect(reverse("appsumo:redeem"))
-            return redirect(reverse("appsumo:signup"))
+            return redirect(reverse("appsumo:signup", args=(self.object.code, )))
 
         return super().get(request, *args, **kwargs)
 
@@ -70,3 +70,8 @@ class AppsumoSignup(SignupView):
     # need to override otherwise global settings are used
     def get_form_class(self):
         return AppsumoSignupForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["code"] = self.kwargs.get("code")
+        return kwargs
