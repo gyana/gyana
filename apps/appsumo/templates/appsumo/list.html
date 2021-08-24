@@ -3,9 +3,10 @@
 
 {% block tab %}
 <div class="card card--none">
-  {% comment %} <a href="{% url 'appsumo:create' %}"
-    >Create</a
-  > {% endcomment %}
   {% render_table table %}
+</div>
+
+<div class="max-w-lg mb-auto mt-4">
+  <a class="button" href="{% url 'team_appsumo:redeem_extra' team.id %}">Redeem</a>
 </div>
 {% endblock %} 

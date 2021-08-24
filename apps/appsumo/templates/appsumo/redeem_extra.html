@@ -1,0 +1,11 @@
+{% extends "teams/base.html" %}
+
+{% block tab %}
+<form method="post" action="{% url 'team_appsumo:redeem_extra' team.id %}" class="form">
+  {% csrf_token %}
+
+  {% include "django/forms/default_form.html" %}
+
+  <button type="submit" class="button button--filled button--success">Redeem</button>
+</form>
+{% endblock %}

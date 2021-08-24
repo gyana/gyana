@@ -1,14 +1,14 @@
 from allauth.account.views import SignupView
-from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.base.turbo import TurboUpdateView
 from apps.teams.mixins import TeamMixin
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
 from django.urls.base import reverse
+from django.utils import timezone
 from django.views.generic import DetailView
-from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
+from turbo_response.views import TurboFormView
 
-from .forms import AppsumoCodeForm, AppsumoRedeemForm, AppsumoSignupForm
+from .forms import AppsumoRedeemExtraForm, AppsumoRedeemForm, AppsumoSignupForm
 from .models import AppsumoCode
 from .tables import AppsumoCodeTable
 
@@ -23,29 +23,23 @@ class AppsumoCodeList(TeamMixin, SingleTableView):
         return self.team.appsumocode_set.all()
 
 
-class AppsumoCodeCreate(TurboCreateView):
-    template_name = "appsumo/create.html"
+class AppsumoRedeemExtra(TeamMixin, TurboFormView):
+    template_name = "appsumo/redeem_extra.html"
     model = AppsumoCode
-    form_class = AppsumoCodeForm
-    success_url = reverse_lazy("appsumo:list")
+    form_class = AppsumoRedeemExtraForm
 
+    def form_valid(self, form):
 
-class AppsumoCodeDetail(DetailView):
-    template_name = "appsumo/detail.html"
-    model = AppsumoCode
+        instance = form.cleaned_data["code"]
+        instance.team = self.team
+        instance.redeemed = timezone.now()
+        instance.redeemed_by = self.request.user
+        instance.save()
 
+        return super().form_valid(form)
 
-class AppsumoCodeUpdate(TurboUpdateView):
-    template_name = "appsumo/update.html"
-    model = AppsumoCode
-    form_class = AppsumoCodeForm
-    success_url = reverse_lazy("appsumo:list")
-
-
-class AppsumoCodeDelete(DeleteView):
-    template_name = "appsumo/delete.html"
-    model = AppsumoCode
-    success_url = reverse_lazy("appsumo:list")
+    def get_success_url(self) -> str:
+        return reverse("team_appsumo:list", args=(self.team.id,))
 
 
 class AppsumoRedirect(DetailView):

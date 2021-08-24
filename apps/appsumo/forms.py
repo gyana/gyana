@@ -1,16 +1,28 @@
 from allauth.account.forms import SignupForm
 from apps.teams.models import Team
 from django import forms
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.utils import timezone
 
 from .models import AppsumoCode
 
 
-class AppsumoCodeForm(forms.ModelForm):
-    class Meta:
-        model = AppsumoCode
-        fields = ["code"]
+class AppsumoRedeemExtraForm(forms.Form):
+    code = forms.CharField(min_length=8, max_length=8)
+
+    def clean_code(self):
+        appsumo_code = AppsumoCode.objects.filter(
+            code=self.cleaned_data["code"]
+        ).first()
+
+        if appsumo_code is None:
+            raise ValidationError("AppSumo code does not exist")
+
+        if appsumo_code.redeemed:
+            raise ValidationError("AppSumo code is already redeemed")
+
+        return appsumo_code
 
 
 class AppsumoRedeemForm(forms.ModelForm):
