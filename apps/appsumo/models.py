@@ -3,7 +3,14 @@ from apps.base.clients import SLUG
 from apps.base.models import BaseModel
 from apps.teams.models import Team
 from django.conf import settings
+from django.core.validators import RegexValidator
 from django.db import models, transaction
+
+# review ids are incrementing integers, currently at 6 digits
+appsumo_review_regex = RegexValidator(
+    r"^https:\/\/appsumo\.com\/products\/marketplace-gyana\/\#r[0-9]{6,9}$",
+    "Paste the exact link as displayed on AppSumo",
+)
 
 
 class AppsumoCode(BaseModel):
@@ -22,6 +29,21 @@ class AppsumoCode(BaseModel):
     @property
     def refunded(self):
         return self.refunded_before is not None
+
+    def __str__(self):
+        return self.code
+
+
+class AppsumoReview(BaseModel):
+
+    review_link = models.URLField(
+        unique=True,
+        validators=[appsumo_review_regex],
+        error_messages={
+            "unique": "A user has linked to this review for their team. If you think this is a mistake, reach out to support and we'll sort it out for you."
+        },
+    )
+    team = models.OneToOneField(Team, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.code

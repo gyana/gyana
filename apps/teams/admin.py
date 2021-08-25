@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.appsumo.admin import AppsumoCodeInline
+from apps.appsumo.admin import AppsumoCodeInline, AppsumoReviewInline
 from apps.invites.admin import InviteInline
 
 from .models import Membership, Team
@@ -21,4 +21,9 @@ class TeamAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "row_limit"]
     fields = ["id", "name", "row_limit", "row_count", "row_count_calculated"]
     readonly_fields = ["id", "row_count", "row_count_calculated"]
-    inlines = [UserMembershipInline, AppsumoCodeInline, InviteInline]
+    inlines = [
+        UserMembershipInline,
+        AppsumoCodeInline,
+        AppsumoReviewInline,
+        InviteInline,
+    ]

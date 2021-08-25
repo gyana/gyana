@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.utils import timezone
 
-from .models import AppsumoCode
+from .models import AppsumoCode, AppsumoReview
 
 
 class AppsumoStackForm(forms.Form):
@@ -85,3 +85,23 @@ class AppsumoSignupForm(SignupForm):
             appsumo_code.save()
 
         return user
+
+
+class AppsumoReviewForm(forms.ModelForm):
+    class Meta:
+        model = AppsumoReview
+        fields = ["review_link"]
+        help_texts = {"review_link": "Paste a link to your review from Appsumo"}
+
+    def __init__(self, *args, **kwargs):
+        self._team = kwargs.pop("team", None)
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.team = self._team
+
+        if commit:
+            with transaction.atomic():
+                instance.save()
+                self.save_m2m()

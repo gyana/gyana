@@ -1,5 +1,5 @@
 from allauth.account.views import SignupView
-from apps.base.turbo import TurboUpdateView
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 from django.shortcuts import redirect
 from django.urls.base import reverse
@@ -8,8 +8,13 @@ from django.views.generic import DetailView
 from django_tables2 import SingleTableView
 from turbo_response.views import TurboFormView
 
-from .forms import AppsumoStackForm, AppsumoRedeemForm, AppsumoSignupForm
-from .models import AppsumoCode
+from .forms import (
+    AppsumoRedeemForm,
+    AppsumoReviewForm,
+    AppsumoSignupForm,
+    AppsumoStackForm,
+)
+from .models import AppsumoCode, AppsumoReview
 from .tables import AppsumoCodeTable
 
 
@@ -88,3 +93,17 @@ class AppsumoRedeem(TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.team.id,))
+
+
+class AppsumoReview(TeamMixin, TurboCreateView):
+    model = AppsumoReview
+    form_class = AppsumoReviewForm
+    template_name = "appsumo/review.html"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["team"] = self.team
+        return kwargs
+
+    def get_success_url(self) -> str:
+        return reverse("team_appsumo:list", args=(self.team.id,))

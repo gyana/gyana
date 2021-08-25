@@ -1,6 +1,12 @@
 from django.contrib import admin
 
-from .models import AppsumoCode, PurchasedCodes, RefundedCodes, UploadedCodes
+from .models import (
+    AppsumoCode,
+    AppsumoReview,
+    PurchasedCodes,
+    RefundedCodes,
+    UploadedCodes,
+)
 
 
 class BaseFileCodesAdmin(admin.ModelAdmin):
@@ -34,6 +40,17 @@ class AppsumoCodeAdmin(admin.ModelAdmin):
 class AppsumoCodeInline(admin.TabularInline):
     model = AppsumoCode
     readonly_fields = fields = ["code", "redeemed", "redeemed_by"]
+
+    def has_add_permission(self, request, obj):
+        return False
+
+    def has_delete_permission(self, request, obj):
+        return False
+
+
+class AppsumoReviewInline(admin.StackedInline):
+    model = AppsumoReview
+    fields = ["review_link"]
 
     def has_add_permission(self, request, obj):
         return False

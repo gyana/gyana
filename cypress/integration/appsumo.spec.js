@@ -91,4 +91,37 @@ describe('appsumo', () => {
     // 1 active codes = 1M rows
     cy.contains('1,000,000')
   })
+  it('link to review', () => {
+    cy.login()
+
+    // enter the review
+
+    cy.visit('/teams/1/appsumo')
+    cy.contains('Link to your review').click()
+
+    cy.url().should('contain', '/teams/1/appsumo/review')
+    cy.get('input[name=review_link]').type(
+      'https://appsumo.com/products/marketplace-gyana/#r000000'
+    )
+    cy.get('button[type=submit]').click()
+
+    cy.contains('Thank you for writing an honest review!')
+
+    // they get an extra code
+
+    cy.visit('/teams/1/account')
+    cy.contains('2,000,000')
+
+    // cannot use review twice
+
+    cy.visit('/teams/2/appsumo/review')
+    cy.get('input[name=review_link]').type(
+      'https://appsumo.com/products/marketplace-gyana/#r000000'
+    )
+    cy.get('button[type=submit]').click()
+
+    cy.contains(
+      "If you think this is a mistake, reach out to support and we'll sort it out for you."
+    )
+  })
 })

@@ -81,13 +81,16 @@ class Team(BaseModel):
             ),
             default=timezone.now(),
         )
-        print(most_recent)
         best_plan = next(
             plan for expired, plan in APPSUMO_PLANS.items() if expired >= most_recent
         )
-        print(APPSUMO_PLANS)
+        rows = best_plan.get(min(stacked, APPSUMO_MAX_STACK))["rows"]
 
-        return best_plan.get(min(stacked, APPSUMO_MAX_STACK))["rows"]
+        # extra 1M for writing a review
+        if hasattr(self, "appsumoreview"):
+            rows += 1_000_000
+
+        return rows
 
 
 class Membership(BaseModel):

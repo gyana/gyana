@@ -16,6 +16,7 @@ team_urlpatterns = (
             "", login_and_admin_required(views.AppsumoCodeList.as_view()), name="list"
         ),
         path("stack", views.AppsumoStack.as_view(), name="stack"),
+        path("review", views.AppsumoReview.as_view(), name="review"),
     ],
     "team_appsumo",
 )
