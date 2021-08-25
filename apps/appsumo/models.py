@@ -46,7 +46,7 @@ class AppsumoReview(BaseModel):
     team = models.OneToOneField(Team, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.code
+        return self.review_link
 
 
 # upload redeemed and refunded codes via the admin interface
