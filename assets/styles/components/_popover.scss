@@ -9,4 +9,5 @@
 
 [data-popover-target*="body"] {
   z-index: var(--z-ui);
+  display: none;
 }

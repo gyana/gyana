@@ -25,6 +25,7 @@ export default class extends Controller {
   connect() {
     tippy(this.element, {
       content: this.bodyTarget.innerText,
+      placement: this.element.dataset.placement
     });
   }
 }
