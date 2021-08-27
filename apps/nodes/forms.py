@@ -207,9 +207,12 @@ class SentimenttNodeForm(NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["sentiment_column"].choices = [
-            (name, name)
-            for name, type_ in self.columns.items()
-            if type_.name == "String"
+            ("", "No column selected"),
+            *[
+                (name, name)
+                for name, type_ in self.columns.items()
+                if type_.name == "String"
+            ],
         ]
 
     def save(self, commit=True):
