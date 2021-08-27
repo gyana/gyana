@@ -1,10 +1,32 @@
 from allauth.account.forms import LoginForm
 from django import forms
 from django.contrib.auth.forms import UserChangeForm
+from django.db import transaction
 
 from apps.base.segment_analytics import identify_user
 
 from .models import CustomUser
+
+
+class UserOnboardingForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = [
+            "first_name",
+            "last_name",
+        ]
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__()
+    #     self.fields["first_name"].required = True
+    #     self.fields["last_name"].required = True
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.onboarded = True
+        instance.save()
+
+        return instance
 
 
 class UserLoginForm(LoginForm):

@@ -12,6 +12,8 @@ class CustomUser(AbstractUser):
 
     avatar = models.FileField(upload_to="profile-pictures/", null=True, blank=True)
 
+    onboarded = models.BooleanField(default=False)
+
     def __str__(self):
         return self.email
 

@@ -1,19 +1,28 @@
 from allauth.account.utils import send_email_confirmation
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.urls import reverse, reverse_lazy
 from django.views.decorators.http import require_POST
 
 from apps.base.turbo import TurboUpdateView
 
-from .forms import CustomUserChangeForm, UploadAvatarForm
-from .helpers import require_email_confirmation, user_has_confirmed_email_address
+from .forms import CustomUserChangeForm, UploadAvatarForm, UserOnboardingForm
+from .helpers import (require_email_confirmation,
+                      user_has_confirmed_email_address)
 from .models import CustomUser
 
 
 class UserOnboarding(TurboUpdateView):
-    model = CustomUser
     template_name = "users/onboarding.html"
+    model = CustomUser
+    form_class = UserOnboardingForm
+    # success_url = reverse_lazy("web:home")
 
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_success_url(self):
+        return reverse("web:home")
 
 def profile(request):
     if request.method == "POST":

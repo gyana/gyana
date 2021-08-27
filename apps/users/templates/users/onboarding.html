@@ -17,9 +17,17 @@
       </div>
     </header>
 
-    <p class="text-center">
-      TODO
-    </p>
+  <form class="mb-8" method="post">
+    {% csrf_token %}
+
+    {% include "django/forms/default_form.html" %}
+
+    <div class="flex flex-col w-full gap-2">
+      <button type="submit" class="button button--primary button--filled w-full">
+        Next
+      </button>
+    </div>
+  </form>
   </div>
 
   <div class="landing__image">

@@ -7,9 +7,12 @@ from rest_framework.decorators import api_view
 
 def home(request):
     if request.user.is_authenticated:
+        if not request.user.onboarded:
+            return redirect("users:onboarding")
+
         if request.user.teams.count():
             team = request.user.teams.first()
-            return HttpResponseRedirect(reverse("teams:detail", args=(team.id,)))
+            return redirect("teams:detail", team.id)
 
         return HttpResponseRedirect(reverse("teams:create"))
 
