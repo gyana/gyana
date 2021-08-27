@@ -67,6 +67,12 @@
       href="{% url 'teams:account' team.id %}">
       Account
     </a>
+    {% if team.appsumocode_set.count > 0 %}
+      <a class="tabbar__link {% if request.resolver_match.app_name == 'team_appsumo' %} tabbar__link--active {% endif %}"
+        href="{% url 'team_appsumo:list' team.id %}">
+        AppSumo
+      </a>
+    {% endif %}
     <a class="tabbar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'update' %} tabbar__link--active {% endif %}"
       href="{% url 'teams:update' team.id %}">
       Settings

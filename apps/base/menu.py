@@ -22,8 +22,10 @@ class CustomMenu(Menu):
             items.MenuItem(_("Dashboard"), reverse("admin:index")),
             items.Bookmarks(),
             items.ModelList(
-                _("Applications"), exclude=("django.contrib.*", "allauth.*")
+                _("Applications"),
+                exclude=("django.contrib.*", "allauth.*", "apps.appsumo.*"),
             ),
+            items.ModelList(_("Appsumo"), models=("apps.appsumo.*",)),
             items.ModelList(
                 _("Administration"), models=("django.contrib.*", "allauth.*")
             ),

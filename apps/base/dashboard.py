@@ -43,7 +43,15 @@ class CustomIndexDashboard(Dashboard):
         self.children.append(
             modules.ModelList(
                 _("Applications"),
-                exclude=("django.contrib.*", "allauth.*"),
+                exclude=("django.contrib.*", "allauth.*", "apps.appsumo.*"),
+            )
+        )
+
+        # appsumo
+        self.children.append(
+            modules.ModelList(
+                _("Appsumo"),
+                models=("apps.appsumo.*",),
             )
         )
 

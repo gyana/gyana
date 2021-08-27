@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from apps.appsumo.config import APPSUMO_MAX_STACK, APPSUMO_PLANS
 from apps.base.models import BaseModel
 
 from . import roles
@@ -19,7 +20,7 @@ class Team(BaseModel):
         settings.AUTH_USER_MODEL, related_name="teams", through="Membership"
     )
 
-    row_limit = models.BigIntegerField(default=DEFAULT_ROW_LIMIT)
+    override_row_limit = models.BigIntegerField(null=True)
     # row count is recalculated on a daily basis, or re-counted in certain situations
     # calculating every view is too expensive
     row_count = models.BigIntegerField(default=0)
@@ -58,7 +59,39 @@ class Team(BaseModel):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("teams:detail", args=(self.id, ))
+        return reverse("teams:detail", args=(self.id,))
+
+    @property
+    def row_limit(self):
+        if self.override_row_limit is not None:
+            return self.override_row_limit
+
+        active_codes = self.appsumocode_set.filter(refunded_before=None).all()
+        stacked = len(active_codes)
+
+        if stacked == 0:
+            return DEFAULT_ROW_LIMIT
+
+        # to determine your plan, take the most recently purchased code
+        most_recent = max(
+            (
+                code.purchased_before
+                for code in active_codes
+                if code.purchased_before is not None
+            ),
+            default=timezone.now(),
+        )
+        best_plan = next(
+            plan for expired, plan in APPSUMO_PLANS.items() if expired >= most_recent
+        )
+        rows = best_plan.get(min(stacked, APPSUMO_MAX_STACK))["rows"]
+
+        # extra 1M for writing a review
+        if hasattr(self, "appsumoreview"):
+            rows += 1_000_000
+
+        return rows
+
 
 class Membership(BaseModel):
     """

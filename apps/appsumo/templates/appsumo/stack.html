@@ -1,0 +1,11 @@
+{% extends "teams/base.html" %}
+
+{% block tab %}
+<form method="post" action="{% url 'team_appsumo:stack' team.id %}" class="form">
+  {% csrf_token %}
+
+  {% include "django/forms/default_form.html" %}
+
+  <button type="submit" class="button button--filled button--success">Stack Code</button>
+</form>
+{% endblock %}

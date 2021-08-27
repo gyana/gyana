@@ -9,7 +9,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-08-20T15:04:06.731Z",
+      "last_login": "2021-08-24T12:55:21.625Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -19,6 +19,10 @@
       "is_active": true,
       "date_joined": "2021-07-26T14:53:33.713Z",
       "avatar": "",
+      "onboarded": true,
+      "company_industry": null,
+      "company_role": null,
+      "company_size": null,
       "groups": [],
       "user_permissions": []
     }
@@ -38,6 +42,10 @@
       "is_active": true,
       "date_joined": "2021-07-27T12:09:25.731Z",
       "avatar": "",
+      "onboarded": true,
+      "company_industry": null,
+      "company_role": null,
+      "company_size": null,
       "groups": [],
       "user_permissions": []
     }
@@ -57,6 +65,10 @@
       "is_active": true,
       "date_joined": "2021-07-27T14:46:12.143Z",
       "avatar": "",
+      "onboarded": true,
+      "company_industry": null,
+      "company_role": null,
+      "company_size": null,
       "groups": [],
       "user_permissions": []
     }
@@ -76,6 +88,10 @@
       "is_active": true,
       "date_joined": "2021-07-29T09:34:08.258Z",
       "avatar": "",
+      "onboarded": true,
+      "company_industry": null,
+      "company_role": null,
+      "company_size": null,
       "groups": [],
       "user_permissions": []
     }
@@ -87,7 +103,7 @@
       "created": "2021-07-26T14:53:37.577Z",
       "updated": "2021-07-26T14:53:37.587Z",
       "name": "Vayu",
-      "row_limit": 1000000,
+      "override_row_limit": null,
       "row_count": 0,
       "row_count_calculated": null
     }
@@ -99,7 +115,7 @@
       "created": "2021-07-26T14:53:37.577Z",
       "updated": "2021-07-26T14:53:37.587Z",
       "name": "Rows 15",
-      "row_limit": 15,
+      "override_row_limit": 15,
       "row_count": 15,
       "row_count_calculated": null
     }
@@ -111,7 +127,7 @@
       "created": "2021-08-20T13:49:01.945Z",
       "updated": "2021-08-20T13:49:17.382Z",
       "name": "Warning",
-      "row_limit": 13,
+      "override_row_limit": 13,
       "row_count": 0,
       "row_count_calculated": null
     }
@@ -123,7 +139,7 @@
       "created": "2021-08-20T13:49:11.978Z",
       "updated": "2021-08-20T15:03:42.830Z",
       "name": "Disabled",
-      "row_limit": 10,
+      "override_row_limit": 10,
       "row_count": 15,
       "row_count_calculated": "2021-08-20T15:03:42.830Z"
     }
@@ -1542,6 +1558,39 @@
       "fivetran_authorized": true,
       "sync_task_id": null,
       "sync_started": null
+    }
+  },
+  {
+    "model": "appsumo.appsumocode",
+    "pk": 1,
+    "fields": {
+      "created": "2021-08-23T23:00:00Z",
+      "updated": "2021-08-23T23:00:00Z",
+      "code": "12345678",
+      "team": null,
+      "redeemed": null
+    }
+  },
+  {
+    "model": "appsumo.appsumocode",
+    "pk": 2,
+    "fields": {
+      "created": "2021-08-23T23:00:00Z",
+      "updated": "2021-08-23T23:00:00Z",
+      "code": "ABCDEFGH",
+      "team": 1,
+      "redeemed": "2021-08-23T23:00:00Z"
+    }
+  },
+  {
+    "model": "appsumo.appsumocode",
+    "pk": 3,
+    "fields": {
+      "created": "2021-08-23T23:00:00Z",
+      "updated": "2021-08-23T23:00:00Z",
+      "code": "QWERTYUI",
+      "team": 2,
+      "redeemed": "2021-08-23T23:00:00Z"
     }
   },
   {
