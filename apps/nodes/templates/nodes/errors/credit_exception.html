@@ -5,12 +5,15 @@
     credits. 
     <form method='POST', action="{% url 'nodes:credit-confirmation' node.id %}">
       {% csrf_token %}
-      
-      <label for='always_use_credits'>Always use credits for this node</label>
-      <input id='always_use_credits' name='always_use_credits' type='checkbox'
-        {% if node.always_use_credits %}checked{% endif%}></input>
-      <p>or only spend credits this time.</p>
+
       <button type='submit' class="button">Confirm</button>
+      <p class='flex flex-row items-center'>
+        <label for='always_use_credits'>Always use credits for this node</label>
+        <input class='ml-2' id='always_use_credits' 
+          name='always_use_credits' type='checkbox'
+          {% if node.always_use_credits %}checked{% endif%}
+        ></input>
+      </p>
     </form>
   </p>
 </div>

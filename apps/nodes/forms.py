@@ -202,7 +202,7 @@ class SentimenttNodeForm(NodeForm):
 
     class Meta:
         model = Node
-        fields = ("sentiment_column",)
+        fields = ("sentiment_column", "always_use_credits")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
