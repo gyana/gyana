@@ -1,7 +1,7 @@
 from allauth.account.utils import send_email_confirmation
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
 
 from apps.base.turbo import TurboUpdateView
@@ -16,13 +16,11 @@ class UserOnboarding(TurboUpdateView):
     template_name = "users/onboarding.html"
     model = CustomUser
     form_class = UserOnboardingForm
-    # success_url = reverse_lazy("web:home")
+    success_url = reverse_lazy("web:home")
 
     def get_object(self, queryset=None):
         return self.request.user
 
-    def get_success_url(self):
-        return reverse("web:home")
 
 def profile(request):
     if request.method == "POST":
