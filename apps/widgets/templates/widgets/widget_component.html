@@ -32,7 +32,7 @@
             class="fas fa-fw fa-edit"
             id="widget-update-{{object.id}}"
             title="Edit"
-            data-item="{{object.id}}"
+            data-item="{{ object.id }}"
             data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
           ></i>
         </button>
