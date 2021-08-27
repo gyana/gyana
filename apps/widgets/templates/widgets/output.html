@@ -30,6 +30,7 @@
           data-action="click->tf-modal#open" 
           class='link'
           data-src="{% url "dashboard_widgets:update" project.id dashboard.id widget.id %}"
+          data-item="{{ widget.id }}"
         >configured</button>!
       </p>
     {% else %}

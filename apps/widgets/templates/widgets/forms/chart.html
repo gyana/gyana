@@ -38,18 +38,22 @@
     </div>
   </div>
 {% endif %}
-<div class="flex flex-row w-full items-center">
-  <div class='w-full'>
-    <label for="{{ form.sort_by.id_for_label }}">
-      {{ form.sort_by.label}}
-    </label>
-    {{form.sort_by}}
+
+{% if form.sort_by %}
+<fieldset>
+  <label>{{ form.sort_by.label}}</label>
+
+  <div class="formset-wrapper">
+    {{ form.sort_by }}
+
+    <div>
+      <label class="input__toggle" for="{{ form.sort_ascending.id_for_label }}">
+        <p class="input__help-text">{{ form.sort_ascending.label}}</p>
+
+        {{form.sort_ascending}}
+      </label>
+    </div>
   </div>
-  <div>
-    <label for="{{ form.sort_ascending.id_for_label }}">
-      {{ form.sort_ascending.label}}
-    </label>
-    {{form.sort_ascending}}
-  </div>
-</div>
+</fieldset>
+{% endif %}
 {% endblock %}
