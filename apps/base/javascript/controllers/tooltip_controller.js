@@ -2,9 +2,9 @@ import { Controller } from 'stimulus'
 
 /**
  * Simple Tippy.js stimulus wrapper.
- * 
+ *
  * @link https://atomiks.github.io/tippyjs/
- * 
+ *
  * @example
  * <p data-controller="tooltip">
  *  Hover over me for a tooltip!
@@ -25,7 +25,7 @@ export default class extends Controller {
   connect() {
     tippy(this.element, {
       content: this.bodyTarget.innerText,
-      placement: this.element.dataset.placement
-    });
+      placement: this.element.dataset.placement,
+    })
   }
 }

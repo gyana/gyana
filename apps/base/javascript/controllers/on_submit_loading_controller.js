@@ -8,7 +8,7 @@ export default class extends Controller {
     const submitter = event.submitter || event.detail.formSubmission.submitter
 
     // event fires twice for top level forms with data-turbo="true" (default)
-    if (!submitter.disabled) {
+    if (submitter && !submitter.disabled) {
       submitter.innerHTML = '<i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>'
       for (const el of event.target.querySelectorAll('button[type=submit]')) el.disabled = true
     }
