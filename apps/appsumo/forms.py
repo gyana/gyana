@@ -60,8 +60,6 @@ class AppsumoSignupForm(SignupForm):
     @property
     def field_order(self):
         return [
-            "first_name",
-            "last_name",
             "email",
             "password1",
             "team",
@@ -70,9 +68,6 @@ class AppsumoSignupForm(SignupForm):
     def save(self, request):
         with transaction.atomic():
             user = super().save(request)
-            user.first_name = self.cleaned_data["first_name"]
-            user.last_name = self.cleaned_data["last_name"]
-            user.save()
 
             team = Team(name=self.cleaned_data["team"])
             team.save()

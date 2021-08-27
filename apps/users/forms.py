@@ -16,10 +16,10 @@ class UserOnboardingForm(forms.ModelForm):
             "last_name",
         ]
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__()
-    #     self.fields["first_name"].required = True
-    #     self.fields["last_name"].required = True
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["first_name"].required = True
+        self.fields["last_name"].required = True
 
     def save(self, commit=True):
         instance = super().save(commit=False)
