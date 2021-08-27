@@ -1,0 +1,31 @@
+{% extends "web/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block sidebar %}
+{# Getting rid of the top navigation bar here. #}
+{% endblock %}
+
+{% block body %}
+<div class="landing">
+  <div class="landing__content">
+    <header class="landing__header">
+      <img src="{% static 'images/logo.png' %}" alt="">
+      <div>
+        <h1>Gyana</h1>
+        <p>We have a few questions before we get started:</p>
+      </div>
+    </header>
+
+    <p class="text-center">
+      TODO
+    </p>
+  </div>
+
+  <div class="landing__image">
+  {% block image %}
+  <img src="{% static 'images/landing.png' %}" />
+  {% endblock %}
+  </div>
+</div>
+{% endblock %}

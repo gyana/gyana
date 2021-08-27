@@ -3,9 +3,16 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
+from apps.base.turbo import TurboUpdateView
+
 from .forms import CustomUserChangeForm, UploadAvatarForm
 from .helpers import require_email_confirmation, user_has_confirmed_email_address
 from .models import CustomUser
+
+
+class UserOnboarding(TurboUpdateView):
+    model = CustomUser
+    template_name = "users/onboarding.html"
 
 
 def profile(request):
