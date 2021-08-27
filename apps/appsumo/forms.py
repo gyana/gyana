@@ -49,8 +49,6 @@ class AppsumoRedeemForm(forms.ModelForm):
 
 
 class AppsumoSignupForm(SignupForm):
-    first_name = forms.CharField(max_length=30, label="Your Name")
-    last_name = forms.CharField(max_length=30, label="Your Last Name")
     team = forms.CharField(max_length=100)
 
     def __init__(self, *args, **kwargs):

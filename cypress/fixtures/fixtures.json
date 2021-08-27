@@ -88,6 +88,10 @@
       "is_active": true,
       "date_joined": "2021-07-29T09:34:08.258Z",
       "avatar": "",
+      "onboarded": true,
+      "company_industry": null,
+      "company_role": null,
+      "company_size": null,
       "groups": [],
       "user_permissions": []
     }
