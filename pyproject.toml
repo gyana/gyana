@@ -51,6 +51,7 @@ mypy = "^0.812"
 autoflake = "^1.4"
 ipython = "^7.21.0"
 cookiecutter = "^1.7.3"
+vcrpy = "^4.1.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
