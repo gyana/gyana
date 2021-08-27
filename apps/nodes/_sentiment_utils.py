@@ -18,6 +18,8 @@ from google.cloud.language import (
     LanguageServiceClient,
 )
 
+from ._utils import _get_parent_updated
+
 # ISO-639-1 Code for English
 # all GCP supported languages https://cloud.google.com/natural-language/docs/languages
 # we only support EN (had case where sentiment failed by inferring unsupported language)
@@ -40,16 +42,20 @@ DELIMITER = "\n\n"
 SCORES_ROUND_DP = 1
 
 
+class CreditException(Exception):
+    pass
+
+
 def _remove_unicode(string: str) -> str:
     """Removes non-ASCII characters from string"""
     # https://stackoverflow.com/a/20078869
     return "".join(char for char in string if ord(char) < 128)
 
 
-def _get_batches_idxs_and_credits(
+def _get_batches_idxs(
     values: List[str], batch_chars: int = CHARS_LIMIT
 ) -> Tuple[List[List[int]], List[int]]:
-    """Helper function to split text data into batches and calculate credits"""
+    """Helper function to split text data into batches"""
     string_lens = np.array([len(x) for x in values])
     # take into account delimiter which will be added between sentences
     string_lens += len(DELIMITER)
@@ -68,12 +74,7 @@ def _get_batches_idxs_and_credits(
             batches_idxs[-1].append(i)
             batch_fill += string_len
 
-    batches_credits = [
-        int(np.ceil(np.sum(string_lens[idxs]) / CHARS_PER_CREDIT))
-        for idxs in batches_idxs
-    ]
-
-    return batches_idxs, batches_credits
+    return batches_idxs
 
 
 def _generate_batches(
@@ -161,18 +162,30 @@ def _reconcile_gcp_scores(
     return scores
 
 
-@shared_task
-def get_gcp_sentiment(node_id, column_query):
-    node = get_object_or_404(Node, pk=node_id)
+def _compute_values(client, node, column_query):
 
-    client = bigquery_client()
     values = client.query(column_query).to_dataframe()[node.sentiment_column].to_list()
     values = [_remove_unicode(value) for value in values]
 
     # clip each row of text so that GPC doesn't charge us more than 1 credit
     # (there are still plenty of characters to infer sentiment for that row)
     clipped_values = [v[:CHARS_PER_CREDIT] for v in values]
-    batches_idxs, batches_credits = _get_batches_idxs_and_credits(clipped_values)
+    return values, clipped_values
+
+
+@shared_task
+def get_gcp_sentiment(node_id, column_query):
+    node = get_object_or_404(Node, pk=node_id)
+    client = bigquery_client()
+
+    values, clipped_values = _compute_values(client, node, column_query)
+    batches_idxs = _get_batches_idxs(clipped_values)
+
+    if not node.always_use_credits and node.credit_use_confirmed < max(
+        tuple(_get_parent_updated(node))
+    ):
+        raise CreditException("Confirm credit usage")
+
     with ThreadPoolExecutor(max_workers=len(batches_idxs)) as executor:
         batches_scores = executor.map(
             # create one client for all requests so it authenticates only once

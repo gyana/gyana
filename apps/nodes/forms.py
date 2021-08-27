@@ -3,6 +3,7 @@ from functools import cached_property
 from apps.base.live_update_form import LiveUpdateForm
 from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column
+from apps.nodes.bigquery import get_query_from_node
 from apps.nodes.formsets import KIND_TO_FORMSETS
 from apps.tables.models import Table
 from django import forms
@@ -210,6 +211,12 @@ class SentimenttNodeForm(NodeForm):
             for name, type_ in self.columns.items()
             if type_.name == "String"
         ]
+
+    def save(self, commit=True):
+        node = super().save(commit=commit)
+        parent = get_query_from_node(node.parents.first())
+        node.uses_credits = parent[node.sentiment.column].count().execute()
+        return node
 
 
 KIND_TO_FORM = {

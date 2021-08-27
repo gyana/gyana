@@ -13,6 +13,7 @@ from django.utils import timezone
 from ibis.expr.datatypes import String
 
 from ._sentiment_utils import get_gcp_sentiment
+from ._utils import _get_parent_updated
 
 JOINS = {
     "inner": "inner_join",
@@ -81,19 +82,6 @@ def _create_or_replace_intermediate_table(table, node, query):
         node.save()
         table.save()
     return table
-
-
-def _get_parent_updated(node):
-    """Walks through the node and its parents and returns the `data_updated` value."""
-    yield node.data_updated
-
-    # For an input node check whether the input_table has changed
-    # e.g. whether a file has been synced again or a workflow ran
-    if node.kind == "input":
-        yield node.input_table.data_updated
-
-    for parent in node.parents.all():
-        yield from _get_parent_updated(parent)
 
 
 def use_intermediate_table(func):
