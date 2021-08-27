@@ -1,7 +1,6 @@
 from allauth.account.forms import LoginForm
 from django import forms
 from django.contrib.auth.forms import UserChangeForm
-from django.db import transaction
 
 from apps.base.segment_analytics import identify_user
 
@@ -14,7 +13,15 @@ class UserOnboardingForm(forms.ModelForm):
         fields = [
             "first_name",
             "last_name",
+            "company_industry",
+            "company_role",
+            "company_size",
         ]
+        labels = {
+            "company_industry": "What's your industry'?",
+            "company_role": "What's your role?",
+            "company_size": "Company size",
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
