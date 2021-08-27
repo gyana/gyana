@@ -89,6 +89,7 @@ describe('connectors', () => {
     cy.wait(1000)
     cy.reload()
 
+    cy.contains('Review your imported data', { timeout: 10000 })
     cy.contains('Adwords Campaigns').should('not.exist')
   })
 })
