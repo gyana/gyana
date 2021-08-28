@@ -24,12 +24,6 @@ urlpatterns = [
         login_and_dashboard_required(frames.DashboardShare.as_view()),
         name="share",
     ),
-    # rest
-    path(
-        "<hashid:pk>/sort",
-        login_and_dashboard_required(rest.DashboardSort.as_view()),
-        name="sort",
-    ),
 ]
 
 project_urlpatterns = (
