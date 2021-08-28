@@ -48,3 +48,20 @@ def periodic(request: Request):
     update_team_row_limits()
 
     return JsonResponse({"message": "ok"})
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def start_vcr(request: Request):
+
+    return JsonResponse({"message": "ok"})
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def stop_vcr(request: Request):
+    from apps.base.management.commands.cypress_server import CYPRESS_CASETTE
+
+    CYPRESS_CASETTE._stop()
+
+    return JsonResponse({"message": "ok"})
