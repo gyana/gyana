@@ -9,7 +9,7 @@
     "build": "NODE_ENV=production webpack --mode=production --progress",
     "prettier": "prettier --write ./**/*.{js,ts,tsx}",
     "cypress:open": "cypress open",
-    "cypress:run": "rm -rf cypress/videos cypress/screenshots && cypress run"
+    "cypress:run": "cypress run"
   },
   "author": "Gyana",
   "homepage": "https://app.gyana.com/",
