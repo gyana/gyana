@@ -119,13 +119,13 @@ LOGGING = {
             "formatter": "simple",
         }
     },
-    "loggers": {
-        "segment": {
-            "handlers": ["console"],
-            "level": "DEBUG",
-            "propagate": True,
-        }
-    },
+    # "loggers": {
+    #     "segment": {
+    #         "handlers": ["console"],
+    #         "level": "DEBUG",
+    #         "propagate": True,
+    #     }
+    # },
 }
 
 ROOT_URLCONF = "gyana.urls"
