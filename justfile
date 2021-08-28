@@ -1,4 +1,4 @@
-# Repository-wide commands.
+# Repository-wide commands. HI
 # Read https://github.com/casey/just#quick-start before editing.
 
 service_account := "gyana-1511894275181-50f107d4db00.json"
