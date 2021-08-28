@@ -62,6 +62,6 @@ def start_vcr(request: Request):
 def stop_vcr(request: Request):
     from apps.base.management.commands.cypress_server import CYPRESS_CASETTE
 
-    CYPRESS_CASETTE._stop()
+    CYPRESS_CASETTE._save()
 
     return JsonResponse({"message": "ok"})
