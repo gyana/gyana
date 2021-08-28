@@ -44,4 +44,9 @@ urlpatterns = [
         login_and_admin_required(views.TeamDelete.as_view()),
         name="delete",
     ),
+    path(
+        "<hashid:team_id>/account",
+        login_and_admin_required(views.TeamAccount.as_view()),
+        name="account",
+    ),
 ]

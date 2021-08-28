@@ -30,6 +30,7 @@ const RunButton: React.FC<{
     window.addEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
     return () => window.removeEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
   })
+
   return (
     <div className='dndflow__run-button'>
       <button
@@ -73,7 +74,8 @@ const RunButton: React.FC<{
               alert('Workflow failed running')
             })
         }}
-        className='button button--sm button--outline button--success tooltip tooltip--bottom'
+        className='button button--sm button--outline button--success'
+        data-controller='tooltip'
       >
         <i className='fas fa-fw fa-play'></i> Run
         {loading && (
@@ -81,9 +83,11 @@ const RunButton: React.FC<{
             <i className='fad fa-spinner-third fa-spin' />
           </div>
         )}
-        <div className={loading ? 'invisible' : undefined}>
-          {!hasOutput && hasBeenRun && (
-            <span className='tooltip__content'>Workflow needs output node to run</span>
+        <div data-tooltip-target='body'>
+          {!hasOutput && hasBeenRun ? (
+            <span>Workflow needs output node to run</span>
+          ) : (
+            <span>Run a workflow to use results in dashboards and other workflows.</span>
           )}
         </div>
       </button>

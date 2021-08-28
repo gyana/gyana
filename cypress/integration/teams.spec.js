@@ -9,7 +9,12 @@ describe('teams', () => {
     cy.login()
   })
   it('create, read, update and delete', () => {
+    // redirect to the most recently created team
     cy.visit('/')
+    cy.url().should('contain', `/teams/${newTeamId - 1}`)
+
+    // now start test
+    cy.visit('/teams/1')
 
     cy.get('#heading').within(() => cy.contains('Vayu'))
 
@@ -49,7 +54,7 @@ describe('teams', () => {
     cy.get('#sidebar').contains('Agni').should('not.exist')
   })
   it('change member role and check restricted permissions', () => {
-    cy.visit('/')
+    cy.visit('/teams/1')
 
     cy.contains('Members').click()
 
@@ -92,5 +97,52 @@ describe('teams', () => {
     cy.request({ url: '/teams/1', failOnStatusCode: false })
       .then((response) => response.status)
       .should('eq', 404)
+  })
+  it('account limit warning', () => {
+    cy.visit('/')
+
+    // special team with warning amount
+    cy.contains('Warning').click()
+
+    // initially the row_count was not updated
+    cy.contains("You've exceeded your row count limit.").should('not.exist')
+    // periodic job to calculate this information
+    cy.periodic()
+    cy.reload()
+
+    cy.contains("You're exceeding your row count limit.")
+
+    // now we go and delete that data source
+    cy.get('#main').within(() => cy.contains('Warning').click())
+    cy.contains('store_info').click()
+    cy.get('#tabbar').within(() => cy.contains('Settings').click())
+    cy.contains('Delete').click()
+    cy.contains('Yes').click()
+
+    cy.visit('/')
+    cy.contains('Warning').click()
+    cy.contains('Account').click()
+    // row count automatically updated when integration deleted
+    cy.contains("You're exceeding your row count limit.").should('not.exist')
+  })
+  it('account limit disabled', () => {
+    cy.visit('/')
+
+    // special account with disabled amount
+    cy.contains('Disabled').click()
+    cy.contains(
+      "You've exceeded your row count limit by over 20%, your team is temporarily disabled."
+    )
+
+    cy.contains('Learn more').click()
+    cy.contains('15 / 10')
+
+    // check disabled
+    cy.contains('Projects').click()
+    cy.get('#main').within(() => cy.contains('Disabled').click())
+
+    // cannot create a new integration
+    cy.contains('Integrations').click()
+    cy.contains('New Integration').should('be.disabled')
   })
 })

@@ -20,3 +20,7 @@ class Sheet(BaseModel):
     @property
     def is_syncing(self):
         return is_bigquery_task_running(self.sync_task_id, self.sync_started)
+
+    @property
+    def table_id(self):
+        return f"sheet_{self.id:09}"

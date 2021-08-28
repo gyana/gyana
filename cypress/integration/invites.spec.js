@@ -14,13 +14,12 @@ const inviteByEmail = (email) => {
   cy.get('button[type=submit]').click()
 }
 
-describe('teams', () => {
+describe('invites', () => {
   beforeEach(() => {
     cy.login()
+    cy.visit('//teams/1')
   })
   it('invite new user to team', () => {
-    cy.visit('/')
-
     inviteByEmail('invite@gyana.com')
 
     cy.logout()
@@ -41,8 +40,6 @@ describe('teams', () => {
     cy.contains('Vayu')
   })
   it('invite existing user to team', () => {
-    cy.visit('/')
-
     inviteByEmail('alone@gyana.com')
 
     cy.logout()
@@ -61,8 +58,6 @@ describe('teams', () => {
     cy.url().should('contain', '/teams/1')
   })
   it('resend and delete invite', () => {
-    cy.visit('/')
-
     inviteByEmail('invite@gyana.com')
 
     cy.get('.fa-redo-alt').click()
@@ -84,8 +79,6 @@ describe('teams', () => {
     })
   })
   it('cannot invite existing user or existing invited user', () => {
-    cy.visit('/')
-
     inviteByEmail('member@gyana.com')
 
     cy.contains('A user with this email is already part of your team.')

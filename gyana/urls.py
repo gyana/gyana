@@ -24,6 +24,7 @@ from rest_framework.documentation import get_schemajs_view, include_docs_urls
 
 register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "hashid")
 
+from apps.appsumo import urls as appsumo_urls
 from apps.connectors import urls as connector_urls
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
@@ -33,6 +34,7 @@ from apps.projects import urls as project_urls
 from apps.sheets import urls as sheet_urls
 from apps.teams import urls as team_urls
 from apps.uploads import urls as upload_urls
+from apps.users import urls as users_urls
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
@@ -64,13 +66,15 @@ teams_urlpatterns = [
     path("", include("apps.teams.urls")),
     path("<hashid:team_id>/invites/", include(invite_urls.team_urlpatterns)),
     path("<hashid:team_id>/projects/", include(project_urls.team_urlpatterns)),
-    path("<hashid:team_id>/members", include(team_urls.membership_urlpatterns)),
+    path("<hashid:team_id>/members/", include(team_urls.membership_urlpatterns)),
+    path("<hashid:team_id>/appsumo/", include(appsumo_urls.team_urlpatterns)),
 ]
 
 
 urlpatterns = [
+    path("admin_tools/", include("admin_tools.urls")),
     path("admin/", admin.site.urls),
-    path("accounts/", include("turbo_allauth.urls")),
+    path("accounts/", include(users_urls.accounts_urlpatterns)),
     path("users/", include("apps.users.urls")),
     path("filters/", include("apps.filters.urls")),
     path("teams/", include(teams_urlpatterns)),
@@ -85,6 +89,7 @@ urlpatterns = [
     path("uploads/", include("apps.uploads.urls")),
     path("sheets/", include("apps.sheets.urls")),
     path("connectors/", include("apps.connectors.urls")),
+    path("appsumo/", include("apps.appsumo.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),

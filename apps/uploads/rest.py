@@ -3,7 +3,7 @@ import os
 import time
 
 import coreapi
-from apps.base.clients import get_bucket
+from apps.base.clients import SLUG, get_bucket
 from django.conf import settings
 from django.utils.text import slugify
 from rest_framework.decorators import api_view, schema
@@ -27,7 +27,9 @@ from rest_framework.schemas import AutoSchema
 def generate_signed_url(request: Request):
     filename = request.data["filename"]
     filename, file_extension = os.path.splitext(filename)
-    path = f"{settings.CLOUD_NAMESPACE}/integrations/{filename}-{slugify(time.time())}{file_extension}"
+    path = f"integrations/{filename}-{slugify(time.time())}{file_extension}"
+    if SLUG:
+        path = f"{SLUG}/{path}"
 
     blob = get_bucket().blob(path)
     # This signed URL allows the client to create a Session URI to use as upload pointer.

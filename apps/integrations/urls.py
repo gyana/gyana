@@ -1,4 +1,3 @@
-from apps.base.access import login_and_teamid_in_session
 from apps.projects.access import login_and_project_required
 from django.urls import path
 
@@ -32,9 +31,19 @@ project_urlpatterns = (
             name="pending",
         ),
         path(
-            "<hashid:pk>/setup",
-            login_and_project_required(views.IntegrationSetup.as_view()),
-            name="setup",
+            "<hashid:pk>/configure",
+            login_and_project_required(views.IntegrationConfigure.as_view()),
+            name="configure",
+        ),
+        path(
+            "<hashid:pk>/load",
+            login_and_project_required(views.IntegrationLoad.as_view()),
+            name="load",
+        ),
+        path(
+            "<hashid:pk>/done",
+            login_and_project_required(views.IntegrationDone.as_view()),
+            name="done",
         ),
         path(
             "<hashid:pk>",

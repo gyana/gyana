@@ -34,9 +34,12 @@ class Project(BaseModel):
     def num_rows(self):
         from apps.tables.models import Table
 
-        return Table.available.filter(integration__project=self).aggregate(
-            models.Sum("num_rows")
-        )["num_rows__sum"]
+        return (
+            Table.available.filter(integration__project=self).aggregate(
+                models.Sum("num_rows")
+            )["num_rows__sum"]
+            or 0
+        )
 
     def get_absolute_url(self):
         return reverse("projects:detail", args=(self.id,))

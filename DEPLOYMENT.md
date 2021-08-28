@@ -39,15 +39,6 @@ Important attributes within this project:
   - Has `BigQuery Admin` role in IAM
   - Has `Storage Admin` role in IAM
 
-#### **BigQuery**
-
-In the BQ explorer add the following two datasets under the `gyana-app-314217` project, make sure they are created within the `EU` location:
-
-- `heroku_integrations`
-- `heroku_dataflows`
-
-These two values are derived from `DATASET_ID` and `DATAFLOW_ID` in `lib/clients.py`. This is similar to the `just mk_bq` command that needs to be run on local development setup.
-
 #### **Cloud Storage**
 
 Create a bucket in Cloud Storage named `gyana-app`

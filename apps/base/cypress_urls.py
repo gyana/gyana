@@ -10,4 +10,5 @@ urlpatterns = [
         name="resetdb",
     ),
     path("outbox", views.outbox, name="outbox"),
+    path("periodic", views.periodic, name="periodic"),
 ]

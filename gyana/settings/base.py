@@ -33,6 +33,13 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+ADMIN_TOOLS_APPS = [
+    "admin_tools",
+    "admin_tools.theming",
+    "admin_tools.menu",
+    "admin_tools.dashboard",
+]
+
 DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -69,24 +76,25 @@ THIRD_PARTY_APPS = [
 PROJECT_APPS = [
     "apps.users.apps.UserConfig",
     "apps.web",
-    "apps.teams",
+    "apps.teams.apps.TeamsConfig",
     "apps.projects",
     "apps.integrations",
     "apps.workflows",
     "apps.dashboards",
     "apps.widgets",
     "apps.filters",
-    "apps.tables",
+    "apps.tables.apps.TablesConfig",
     "apps.invites.apps.InvitesConfig",
     "apps.base",
     "apps.nodes",
     "apps.columns",
     "apps.uploads",
     "apps.sheets",
-    "apps.connectors",
+    "apps.connectors.apps.ConnectorsConfig",
+    "apps.appsumo",
 ]
 
-INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
+INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     "honeybadger.contrib.DjangoHoneybadgerMiddleware",
@@ -111,13 +119,14 @@ LOGGING = {
             "formatter": "simple",
         }
     },
-    "loggers": {
-        "segment": {
-            "handlers": ["console"],
-            "level": "DEBUG",
-            "propagate": True,
-        }
-    },
+    # uncomment to debug segment
+    # "loggers": {
+    #     "segment": {
+    #         "handlers": ["console"],
+    #         "level": "DEBUG",
+    #         "propagate": True,
+    #     }
+    # },
 }
 
 ROOT_URLCONF = "gyana.urls"
@@ -125,7 +134,6 @@ ROOT_URLCONF = "gyana.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -137,6 +145,11 @@ TEMPLATES = [
                 # this line can be removed if not using google analytics
                 "apps.web.context_processors.google_analytics_id",
                 "gyana.context_processors.django_settings",
+            ],
+            # equivalent of APP_DIRS=True, plus admin_tools template loader
+            "loaders": [
+                "django.template.loaders.app_directories.Loader",
+                "admin_tools.template_loaders.Loader",
             ],
         },
     },
@@ -207,7 +220,7 @@ ACCOUNT_FORMS = {
 
 # User signup configuration: change to "mandatory" to require users to confirm email before signing in.
 # or "optional" to send confirmation emails but not require them
-ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 
 
 AUTHENTICATION_BACKENDS = (
@@ -336,7 +349,7 @@ BIGQUERY_TABLE_NAME_LENGTH = 1024
 BIGQUERY_LOCATION = "EU"
 
 # Namespace based on git email to avoid collisions in PKs on local dev
-CLOUD_NAMESPACE = os.environ.get("CLOUD_NAMESPACE", "local")
+CLOUD_NAMESPACE = os.environ.get("CLOUD_NAMESPACE")
 
 # Feature flag for Alpha features
 FF_ALPHA = True
@@ -354,3 +367,6 @@ HASHIDS_SALT = os.environ.get("HASHIDS_SALT", "")
 FUSIONCHARTS_LICENCE = os.environ.get("FUSIONCHARTS_LICENCE")
 
 CYPRESS_URLS = False
+
+ADMIN_TOOLS_MENU = "apps.base.menu.CustomMenu"
+ADMIN_TOOLS_INDEX_DASHBOARD = "apps.base.dashboard.CustomIndexDashboard"

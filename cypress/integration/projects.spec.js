@@ -7,10 +7,9 @@ const newProjectUrl = `/projects/${getModelStartId('projects.project')}`
 describe('projects', () => {
   beforeEach(() => {
     cy.login()
+    cy.visit('/teams/1')
   })
   it('create, read, update, delete and list', () => {
-    cy.visit('/')
-
     // create
 
     cy.contains('New Project').click()
@@ -30,7 +29,7 @@ describe('projects', () => {
 
     cy.get('#sidebar a').first().click()
     cy.url().should('contain', '/teams/1')
-    cy.get('table tbody tr').should('have.length', 2)
+    cy.get('table tbody tr').should('have.length', 3)
     cy.contains('Metrics').click()
 
     // update
@@ -53,7 +52,7 @@ describe('projects', () => {
     cy.contains('Yes').click()
 
     cy.url().should('contain', '/teams/1')
-    cy.get('table tbody tr').should('have.length', 1)
+    cy.get('table tbody tr').should('have.length', 2)
     cy.contains('Metrics').should('not.exist')
   })
 })

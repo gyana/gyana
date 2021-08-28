@@ -1,21 +1,20 @@
 {% extends "teams/base.html" %}
 
 {% block tab %}
-<div class="max-w-lg mb-auto">
+<div class="max-w-lg">
   <form method="post" class="form">
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}
 
-    <button type="submit" class="button button--sm button--success">Save</button>
+    <button type="submit" class="button button--success">Save</button>
   </form>
 </div>
 
-<div>
-  <h2 class="text-red">Danger zone:</h2>
-  <p class="mb-7">If you'd like to <strong>delete</strong> this team, press the button below.</p>
-
-  <a class="button button--sm button--danger" href="{% url 'teams:delete' team.id %}">
+<div class="mt-auto">
+  <h2 class="text-red">Danger zone</h2>
+  <p class="mb-4">If you'd like to <strong>delete</strong> this team, press the button below.</p>
+  <a class="button button--danger" href="{% url 'teams:delete' team.id %}">
     Delete
   </a>
 </div>

@@ -12,6 +12,7 @@
         class="form--no-layout overflow-hidden flex-1"
         action="{% url 'nodes:update' node.id %}"
         method="post"
+        data-tf-modal-target='form'
         {% if do_live_updates %}
         data-controller="live-update"
         {% endif %}
@@ -21,7 +22,6 @@
       <span data-live-update-target="loading" class="workflow-detail__sidebar__loading hidden">
         <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
       </span>
-
       {% csrf_token %}
 
       {% include form_template %}
@@ -29,15 +29,22 @@
 
     <div class='workflow-modal__footer'>
       <div class="flex flex-1 gap-7 pad">
-        <input type='submit' class="button button--success"
-               data-action="click->tf-modal#forceClose"
+        <button type='submit'
+               class="button button--success"
+               data-action="click->tf-modal#submit"
                name='submit'
-               value='Save & Close' />
-        <input type='submit'
+               value='Save & Close'
+               {% comment %} Form submission is handled by controller {% endcomment %}
+               data-turbo="false">
+               Save & Close
+        </button>
+        <button type='submit'
                class="button button--outline button--success"
                name='submit'
                data-action="click->tf-modal#save"
-               value='Save & Preview' />
+               value='Save & Preview'>
+               Save & Preview
+        </button>
       </div>
     </div>
   </form>

@@ -1,14 +1,18 @@
 import inspect
 import logging
+import re
 
 import ibis
-from apps.base.clients import DATAFLOW_ID, bigquery_client, ibis_client
+from apps.base.clients import bigquery_client, ibis_client
 from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
+from django.db import transaction
 from django.utils import timezone
 from ibis.expr.datatypes import String
+
+from ._sentiment_utils import get_gcp_sentiment
 
 JOINS = {
     "inner": "inner_join",
@@ -34,9 +38,15 @@ def _rename_duplicates(left, right, left_col, right_col):
     return left, right, left_col, right_col
 
 
-def _get_aggregate_expr(query, colname, computation):
+def _get_aggregate_expr(query, colname, computation, column_names):
+    """Creates an aggregation"""
     column = getattr(query, colname)
-    return getattr(column, computation)().name(colname)
+    # If a column is aggregated over more than once
+    # Generate a new column as combination of computation and column_name
+    new_colname = colname
+    if column_names.count(colname) > 1:
+        new_colname = f"{computation}_{colname}"
+    return getattr(column, computation)().name(new_colname)
 
 
 def _format_literal(value, type_):
@@ -54,31 +64,22 @@ def _format_literal(value, type_):
 def _create_or_replace_intermediate_table(table, node, query):
     """Creates a new intermediate table or replaces an existing one"""
     client = bigquery_client()
-    if table:
-        client.query(
-            f"CREATE OR REPLACE TABLE {DATAFLOW_ID}.{table.bq_table} as ({query})"
-        ).result()
-        node.intermediate_table.data_updated = timezone.now()
-        node.intermediate_table.save()
-    else:
-        table_id = f"table_pivot_{node.pk}"
-        client.query(
-            f"CREATE OR REPLACE TABLE {DATAFLOW_ID}.{table_id} as ({query})"
-        ).result()
 
-        table = Table(
+    with transaction.atomic():
+        table, _ = Table.objects.get_or_create(
             source=Table.Source.PIVOT_NODE,
-            _bq_table=table_id,
-            bq_dataset=DATAFLOW_ID,
+            bq_table=node.bq_intermediate_table_id,
+            bq_dataset=node.workflow.project.team.tables_dataset_id,
             project=node.workflow.project,
             intermediate_node=node,
         )
+
+        client.query(f"CREATE OR REPLACE TABLE {table.bq_id} as ({query})").result()
+
         node.intermediate_table = table
+        table.data_updated = timezone.now()
+        node.save()
         table.save()
-
-    node.data_updated = timezone.now()
-    node.save()
-
     return table
 
 
@@ -143,8 +144,10 @@ def get_join_query(node, left, right):
 
 def get_aggregation_query(node, query):
     groups = [col.column for col in node.columns.all()]
+    aggregation_models = node.aggregations.all()
+    column_names = [agg.column for agg in aggregation_models]
     aggregations = [
-        _get_aggregate_expr(query, agg.column, agg.function)
+        _get_aggregate_expr(query, agg.column, agg.function, column_names)
         for agg in node.aggregations.all()
     ]
     if groups:
@@ -275,15 +278,28 @@ def get_unpivot_query(node, parent):
 
 def get_window_query(node, query):
     for window in node.window_columns.all():
-        aggregation = _get_aggregate_expr(query, window.column, window.function).name(
-            window.label
-        )
+        aggregation = _get_aggregate_expr(
+            query, window.column, window.function, []
+        ).name(window.label)
 
         if window.group_by or window.order_by:
             w = ibis.window(group_by=window.group_by, order_by=window.order_by)
             aggregation = aggregation.over(w)
         query = query.mutate([aggregation])
     return query
+
+
+def get_sentiment_query(node, parent):
+    table = node.intermediate_table
+    conn = ibis_client()
+
+    # if the table doesn't need updating we can simply return the previous computed pivot table
+    if table and table.data_updated > max(tuple(_get_parent_updated(node))):
+        return conn.table(table.bq_table, database=table.bq_dataset)
+
+    task = get_gcp_sentiment.delay(node.id, parent[node.sentiment_column].compile())
+    bq_table, bq_dataset = task.wait(timeout=None, interval=0.2)
+    return conn.table(bq_table, database=bq_dataset)
 
 
 NODE_FROM_CONFIG = {
@@ -304,6 +320,7 @@ NODE_FROM_CONFIG = {
     "pivot": get_pivot_query,
     "unpivot": get_unpivot_query,
     "intersect": get_intersect_query,
+    "sentiment": get_sentiment_query,
     "window": get_window_query,
 }
 
@@ -334,6 +351,14 @@ def _validate_arity(func, len_args):
     assert len_args >= min_arity if variable_args else len_args == min_arity
 
 
+pattern = re.compile(r"(?<!^)(?=[A-Z])")
+
+
+def error_name_to_snake(error):
+    """Converts a exception class name to snake case"""
+    return pattern.sub("_", error.__class__.__name__).lower()
+
+
 def get_query_from_node(node):
 
     nodes = _get_all_parents(node)
@@ -354,7 +379,7 @@ def get_query_from_node(node):
                 node.error = None
                 node.save()
         except Exception as err:
-            node.error = str(err)
+            node.error = error_name_to_snake(err)
             node.save()
             logging.error(err, exc_info=err)
 

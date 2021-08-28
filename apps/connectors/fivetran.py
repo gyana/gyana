@@ -3,6 +3,7 @@ import os
 import time
 import uuid
 from dataclasses import asdict, dataclass
+from functools import cache
 from glob import glob
 from typing import Dict, List, Optional
 
@@ -77,6 +78,7 @@ class FivetranClientError(Exception):
 
 class FivetranClient:
     def create(self, service, team_id) -> Dict:
+        from apps.base.clients import SLUG
 
         # https://fivetran.com/docs/rest-api/connectors#createaconnector
 
@@ -87,7 +89,9 @@ class FivetranClient:
         # https://fivetran.com/docs/rest-api/connectors/config
         # database connectors require schema_prefix, rather than schema
 
-        schema = f"team_{team_id}_{service}_{uuid.uuid4().hex}"
+        schema = f"team_{team_id:06}_{service}_{uuid.uuid4().hex}"
+        if SLUG:
+            schema = f"{SLUG}_{schema}"
 
         config[
             "schema_prefix"
@@ -233,8 +237,32 @@ class FivetranClient:
         if res["code"] != "Success":
             raise FivetranClientError()
 
+    def delete(self, connector: Connector):
+
+        # we don't want to accidentally delete these fixtures used in local development
+        if connector.fivetran_id in get_fixture_fivetran_ids():
+            return
+
+        res = requests.delete(
+            f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}",
+            headers=settings.FIVETRAN_HEADERS,
+        ).json()
+
+        if res["code"] != "Success":
+            raise FivetranClientError()
+
 
 MOCK_SCHEMA_DIR = os.path.abspath(".mock/.schema")
+
+
+@cache
+def get_fixture_fivetran_ids():
+    return [
+        f["fields"]["fivetran_id"]
+        for f in json.load(open("cypress/fixtures/fixtures.json", "r"))
+        if f["model"] == "connectors.connector"
+    ]
+
 
 # enables celery to read updated mock config
 class MockSchemaStore:
@@ -304,6 +332,9 @@ class MockFivetranClient:
 
     def update_schemas(self, connector, schemas):
         self._schema_cache[connector.id] = _schemas_to_dict(schemas)
+
+    def delete(self, connector):
+        pass
 
 
 if settings.MOCK_FIVETRAN:

@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
   <script src="https://kit.fontawesome.com/b03f4cc8cd.js" crossorigin="anonymous"></script>
   <script type="module">
     import * as hotwiredTurbo from "https://cdn.skypack.dev/@hotwired/turbo";
@@ -36,7 +38,7 @@
   {% block page_head %}{% endblock %}
 </head>
 
-<body class="flex flex-row h-full">
+<body class="flex flex-row h-full" data-controller='on-submit-loading'>
   {% block body_wrapper %}
 
   {% block top_nav %}{% endblock %}
@@ -54,7 +56,7 @@
 
     <nav class="sidebar__body">
       <div class="sidebar__title">
-        <a class="h3 text-blue uppercase" href="{% url 'web:home' %}" title="View your teams"><img
+        <a class="h3 text-blue uppercase" {% if project %} href="{% url 'teams:detail' project.team.id %}" {% else %} href="{% url 'web:home' %}" {% endif %} title="View your teams"><img
                src="{% static 'images/logo.png' %}" alt="">Gyana</a>
       </div>
 
@@ -64,10 +66,12 @@
         <hr>
       </li>
 
-      {% block sidebar_footer %}{% endblock %}
+      {% if user.is_superuser %}
+        {% include 'web/components/admin.html' %}
+      {% endif %}
 
       <li>
-        <a id="sidebar-profile" class="sidebar__link {% if app_name == "users" %}sidebar__link--active{% endif %}"
+        <a id="sidebar-profile" class="sidebar__link {% if request.resolver_match.app_name == "users" %}sidebar__link--active{% endif %}"
            href="{% url 'users:user_profile' %}">
           <img src="{{ user.avatar_url }}" alt="">{{ user.email }}
         </a>
@@ -89,7 +93,7 @@
       </li>
 
       <li>
-        <label class="sidebar__link" for="sidebar-toggle" data-action="click->sidebar#toggle">
+        <label class="sidebar__link" for="sidebar-toggle" data-action="click->web-sidebar#toggle">
           <i class="fas fa-fw mr-6"></i>Collapse
         </label>
       </li>

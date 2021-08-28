@@ -2,11 +2,11 @@
     style="display: none;" {% endif %}
     data-formset-index="{{ forloop.counter0 }}">
     {# Include the hidden fields in the form #}
-    {% if forloop.first %}
-        {% for hidden in form.hidden_fields %}
-        {{ hidden }}
-        {% endfor %}
-    {% endif %}
+    
+      {% for hidden in form.hidden_fields %}
+      {{ hidden }}
+      {% endfor %}
+    
 
     {% for field in form.visible_fields %}
     <label

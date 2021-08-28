@@ -26,13 +26,15 @@
 
   <div data-controller='popover'>
     <span
-          data-popover-target="trigger"
-          data-action="click->popover#trigger"
-          class="button button--circle button--tertiary tooltip tooltip--bottom"
-          >
+      data-controller="tooltip"
+      data-popover-target="trigger"
+      data-action="click->popover#trigger"
+      class="button button--circle button--tertiary"
+    >
       <i class="far fa-fw fa-trash"></i>
-      <span class="tooltip__content">Delete workflow</span>
+      <span data-tooltip-target="body">Delete workflow</span>
     </span>
+
     <div data-popover-target="body" hidden class="popover-body shadow-sm">
       {% include 'workflows/_delete.html' %}
     </div>

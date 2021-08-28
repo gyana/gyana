@@ -15,15 +15,11 @@
 
   <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-  <script type="module">
-    import * as hotwiredTurbo from "https://cdn.skypack.dev/@hotwired/turbo";
-  </script>
 </head>
 
 <body class="flex flex-col pad">
   <div class="flex justify-center">
-    <p>Mock Fivetran authorization page, <a href="{{ request.GET.redirect_uri }}" class="link">continue</a>.</p>
+    <p>Mock Fivetran authorization page, <a href="{{ request.GET.redirect_uri }}" class="link" data-turbo="false">continue</a>.</p>
   </div>
 
 </body>

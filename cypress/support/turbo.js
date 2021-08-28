@@ -29,7 +29,11 @@ const isWithinTurboFrame = (el) => el.closest('turbo-frame:not(turbo-frame[data-
 const click = (originalFn, subject, ...args) => {
   const lastArg = args.length ? args[args.length - 1] : {}
   const el = subject[0]
-  if ((typeof lastArg !== 'object' || !lastArg['noWaiting']) && isTurbo(el)) {
+  if (
+    (typeof lastArg !== 'object' || !lastArg['noWaiting']) &&
+    isTurbo(el) &&
+    lastArg.turbo !== false // explicitly disable e.g. django admin panel
+  ) {
     cy.document({ log: false }).then(($document) => {
       Cypress.log({
         $el: subject,

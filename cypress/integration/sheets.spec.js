@@ -26,7 +26,7 @@ describe('sheets', () => {
     cy.get('button[type=submit]').click()
 
     // set advanced configuration
-    cy.url().should('contain', `/projects/1/integrations/${id}/setup`)
+    cy.url().should('contain', `/projects/1/integrations/${id}/configure`)
     cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
@@ -107,7 +107,7 @@ describe('sheets', () => {
     cy.contains('This Google Sheet was updated since the last sync.')
     cy.contains('Import the latest data').click()
 
-    cy.url().should('contain', '/projects/1/integrations/2/setup')
+    cy.url().should('contain', '/projects/1/integrations/2/configure')
     cy.contains('Configure').click()
     cy.get('button[type=submit]').click()
 
@@ -116,7 +116,7 @@ describe('sheets', () => {
     cy.contains('View import in progress.').click()
 
     // sync is complete  and it redirects me back again
-    cy.url().should('contain', '/projects/1/integrations/2/setup')
+    cy.url().should('contain', '/projects/1/integrations/2/configure')
     cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
 
     cy.visit('/projects/1/integrations/2')
@@ -135,6 +135,23 @@ describe('sheets', () => {
     cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
 
     // new cell range includes 5 rows of data
+    cy.get('#tabbar').within(() => cy.contains('Overview').click())
     cy.contains('5')
+  })
+  it('all string', () => {
+    cy.contains('New Integration').click()
+    cy.contains('Add Sheet').click()
+
+    cy.get('input[name=url]').type(SHARED_SHEET)
+    cy.get('button[type=submit]').click()
+    cy.contains('Advanced').click()
+    cy.get('input[name=cell_range').type("'store_info_all_string'")
+    cy.get('button[type=submit]').click()
+    // needs longer to do 3x imports
+    cy.contains('Sheet successfully validated and imported.', { timeout: 15000 })
+
+    // import has inferred correct column headings
+    cy.contains('Location_name')
+    cy.contains('string_field_0').should('not.exist')
   })
 })

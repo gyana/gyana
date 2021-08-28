@@ -1,3 +1,5 @@
+{% load static %}
+
 <div class='workflow-node__help'>
   <h1>{{object.display_name}}</h1>
 
@@ -12,5 +14,13 @@
 
   <i class="fad fa-construction fa-6x text-orange-50"></i>
   {% endblock %}
-  <p>Still have questions reach out to <a class="link" href = "mailto: support@gyana.com">support@gyana.com</a></p>
+
+  <div class="flex flex-col flex-1 justify-center items-center">
+    <img class="max-w-lg" src="{% static 'images/crane.png' %}" alt="">
+
+    <p>
+      This section is a <strong>work in progress</strong>, it might not be as helpful as we'd want it to be.<br>
+      Still have questions? Reach out to us at <a class="link" href = "mailto: support@gyana.com">support@gyana.com</a>
+    </p>
+  </div>
 </div>

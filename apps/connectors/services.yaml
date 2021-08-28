@@ -7,6 +7,34 @@ adwords:
   static_config:
     sync_mode: AllAccounts
     timeframe_months: ALL_TIME
+  reports:
+    - table: account_stats
+      config_type: Prebuilt
+      prebuilt_report: ACCOUNT_STATS
+    - table: account_hourly_stats
+      config_type: Prebuilt
+      prebuilt_report: ACCOUNT_HOURLY_STATS
+    - table: ad_stats
+      config_type: Prebuilt
+      prebuilt_report: AD_STATS
+    - table: ad_group_stats
+      config_type: Prebuilt
+      prebuilt_report: AD_GROUP_STATS
+    - table: ad_group_hourly_stats
+      config_type: Prebuilt
+      prebuilt_report: AD_GROUP_HOURLY_STATS
+    - table: audience_stats
+      config_type: Prebuilt
+      prebuilt_report: AUDIENCE_STATS
+    - table: campaign_stats
+      config_type: Prebuilt
+      prebuilt_report: CAMPAIGN_STATS
+    - table: campaign_hourly_stats
+      config_type: Prebuilt
+      prebuilt_report: CAMPAIGN_HOURLY_STATS
+    - table: keyword_stats
+      config_type: Prebuilt
+      prebuilt_report: KEYWORD_STATS
 amplitude:
   name: Amplitude
   color: '#10069F'
@@ -42,6 +70,67 @@ facebook_ads:
   requires_schema_prefix: f
   category: CRM & marketing
   static_config:
+    custom_tables:
+      - table_name: action_canvas_component
+        config_type: Prebuilt
+        prebuilt_report_name: ACTION_CANVAS_COMPONENT
+      - table_name: action_carousel_card
+        config_type: Prebuilt
+        prebuilt_report_name: ACTION_CAROUSEL_CARD
+      - table_name: action_conversion_device
+        config_type: Prebuilt
+        prebuilt_report_name: ACTION_CONVERSION_DEVICE
+      - table_name: action_product_id
+        config_type: Prebuilt
+        prebuilt_report_name: ACTION_PRODUCT_ID
+      - table_name: action_reactions
+        config_type: Prebuilt
+        prebuilt_report_name: ACTION_REACTIONS
+      - table_name: action_video_sound
+        config_type: Prebuilt
+        prebuilt_report_name: ACTION_VIDEO_SOUND
+      - table_name: action_video_view_type
+        config_type: Prebuilt
+        prebuilt_report_name: ACTION_VIDEO_VIEW_TYPE
+      - table_name: basic_ad
+        config_type: Prebuilt
+        prebuilt_report_name: BASIC_AD
+      - table_name: basic_ad_set
+        config_type: Prebuilt
+        prebuilt_report_name: BASIC_AD_SET
+      - table_name: basic_all_levels
+        config_type: Prebuilt
+        prebuilt_report_name: BASIC_ALL_LEVELS
+      - table_name: basic_campaign
+        config_type: Prebuilt
+        prebuilt_report_name: BASIC_CAMPAIGN
+      - table_name: delivery_platform
+        config_type: Prebuilt
+        prebuilt_report_name: DELIVERY_PLATFORM
+      - table_name: delivery_platform_and_device
+        config_type: Prebuilt
+        prebuilt_report_name: DELIVERY_PLATFORM_AND_DEVICE
+      - table_name: delivery_purchase_roas
+        config_type: Prebuilt
+        prebuilt_report_name: DELIVERY_PURCHASE_ROAS
+      - table_name: demographics_age
+        config_type: Prebuilt
+        prebuilt_report_name: DEMOGRAPHICS_AGE
+      - table_name: demographics_age_and_gender
+        config_type: Prebuilt
+        prebuilt_report_name: DEMOGRAPHICS_AGE_AND_GENDER
+      - table_name: demographics_country
+        config_type: Prebuilt
+        prebuilt_report_name: DEMOGRAPHICS_COUNTRY
+      - table_name: demographics_dma_region
+        config_type: Prebuilt
+        prebuilt_report_name: DEMOGRAPHICS_DMA_REGION
+      - table_name: demographics_gender
+        config_type: Prebuilt
+        prebuilt_report_name: DEMOGRAPHICS_GENDER
+      - table_name: demographics_region
+        config_type: Prebuilt
+        prebuilt_report_name: DEMOGRAPHICS_REGION
 facebook_pages:
   name: Facebook Pages
   color: '#4867AA'
@@ -204,6 +293,13 @@ pipedrive:
   static_config:
 postgres:
   name: Postgres
+  color: '#33668f'
+  internal: f
+  requires_schema_prefix: t
+  category: databases
+  static_config:
+postgres_rds:
+  name: Postgres RDS
   color: '#33668f'
   internal: f
   requires_schema_prefix: t

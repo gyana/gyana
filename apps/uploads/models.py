@@ -1,6 +1,7 @@
 from apps.base.celery import is_bigquery_task_running
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
+from django.conf import settings
 from django.db import models
 
 
@@ -28,6 +29,14 @@ class Upload(BaseModel):
     @property
     def field_delimiter_char(self):
         return FIELD_DELIMITER_CHOICE_TO_CHAR[self.field_delimiter]
+
+    @property
+    def table_id(self):
+        return f"upload_{self.id:09}"
+
+    @property
+    def gcs_uri(self):
+        return f"gs://{settings.GS_BUCKET_NAME}/{self.file_gcs_path}"
 
 
 FIELD_DELIMITER_CHOICE_TO_CHAR = {

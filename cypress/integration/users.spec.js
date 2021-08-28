@@ -1,5 +1,10 @@
 /// <reference types="cypress" />
 
+import { getModelStartId } from '../support/utils'
+
+const newTeamId = getModelStartId('teams.team')
+const latestTeamId = newTeamId - 1
+
 describe('users', () => {
   it('signs in to app', () => {
     cy.visit('/')
@@ -8,10 +13,10 @@ describe('users', () => {
     cy.get('input[type=password]').type('seewhatmatters')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', '/teams/1')
+    cy.url().should('contain', `/teams/${latestTeamId}`)
   })
 
-  it('signs up to app', () => {
+  it('signs up to app with onboarding', () => {
     cy.visit('/')
 
     cy.contains('create one here').click()
@@ -20,11 +25,39 @@ describe('users', () => {
     cy.get('input[type=email]').type('new@gyana.com')
     cy.get('input[type=password]').type('seewhatmatters')
     cy.get('button[type=submit]').click()
+    cy.url().should('contain', '/users/onboarding')
+
+    // remove message blocking the form
+    cy.get('.fa-times').first().click()
+    // onboarding
+    cy.get('input[name=first_name]').type('New')
+    cy.get('input[name=last_name]').type('User')
+    cy.get('select[name=company_industry]').select('Agency')
+    cy.get('select[name=company_role]').select('Marketing')
+    cy.get('select[name=company_size]').select('2-10')
+    cy.get('button[type=submit]').click()
     cy.url().should('contain', '/teams/new')
 
     cy.get('input[type=text]').type('New')
     cy.get('button[type=submit]').click()
-    cy.url().should('contain', '/teams/3')
+    cy.url().should('contain', `/teams/${newTeamId}`)
+
+    // verification email
+    cy.outbox()
+      .then((outbox) => outbox.count)
+      .should('eq', 1)
+
+    cy.outbox().then((outbox) => {
+      const msg = outbox['messages'][0]
+      const url = msg['payload']
+        .split('\n')
+        .filter((x) => x.includes('http'))[0]
+        .replace('To confirm this is correct, go to ', '')
+
+      cy.visit(url)
+
+      cy.contains('You have confirmed new@gyana.com')
+    })
   })
 
   it('resets password', () => {
@@ -59,7 +92,7 @@ describe('users', () => {
     cy.get('input[type=password]').type('senseknowdecide')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', '/teams/1')
+    cy.url().should('contain', `/teams/${latestTeamId}`)
   })
 
   it('signs out', () => {

@@ -107,15 +107,16 @@
   }
 }
 
-#sidebar-toggle:checked ~ .sidebar__body label[for='sidebar-toggle'] i::before {
-  content: '\f053';
-}
-
 #sidebar-toggle ~ .sidebar__body {
   overflow: hidden;
   transition: width 0.25s ease;
   white-space: nowrap;
   width: 4.8rem;
+}
+
+// Swaps the icon of the sidebar toggle to the opposite chevron.
+#sidebar-toggle:checked ~ .sidebar__body label[for='sidebar-toggle'] i::before {
+  content: '\f053';
 }
 
 #sidebar-toggle:checked ~ .sidebar__body {

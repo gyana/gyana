@@ -16,7 +16,7 @@ describe('uploads', () => {
     cy.url().should('contain', '/projects/1/integrations/uploads/new')
     cy.get('input[type=file]').attachFile('store_info.csv')
 
-    cy.url().should('contain', `/projects/1/integrations/${id}/setup`)
+    cy.url().should('contain', `/projects/1/integrations/${id}/configure`)
     cy.get('button[type=submit]').click()
     cy.contains('Validating and importing your upload...')
     cy.contains('Upload successfully validated and imported.', { timeout: 10000 })
@@ -104,5 +104,18 @@ describe('uploads', () => {
       'Error while reading data, error message: Error detected while parsing row starting at position: 52. Error: Missing close double quote (") character.',
       { timeout: 10000 }
     )
+  })
+  it('all string', () => {
+    cy.contains('New Integration').click()
+    cy.contains('Upload CSV').click()
+
+    cy.get('input[type=file]').attachFile('store_info_all_string.csv')
+    cy.get('button[type=submit]').click()
+    // needs longer to do 3x imports
+    cy.contains('Upload successfully validated and imported.', { timeout: 15000 })
+
+    // import has inferred correct column headings
+    cy.contains('Location_name')
+    cy.contains('string_field_0').should('not.exist')
   })
 })

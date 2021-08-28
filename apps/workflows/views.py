@@ -5,6 +5,7 @@ from apps.base.segment_analytics import (
 )
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.nodes.config import get_node_config_with_arity
+from apps.nodes.models import Node
 from apps.projects.mixins import ProjectMixin
 from django import forms
 from django.db.models.query import QuerySet
@@ -72,7 +73,11 @@ class WorkflowDetail(ProjectMixin, TurboUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["nodes"] = get_node_config_with_arity()
+        # copy dict because it's cached
+        nodes = get_node_config_with_arity().copy()
+        if not self.request.user.is_superuser:
+            nodes.pop(Node.Kind.SENTIMENT)
+        context["nodes"] = nodes
         return context
 
     def get_success_url(self) -> str:

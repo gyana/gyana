@@ -36,6 +36,10 @@ class Integration(BaseModel):
         return self.name
 
     @property
+    def source_obj(self):
+        return getattr(self, self.kind)
+
+    @property
     def num_rows(self):
         return self.table_set.all().aggregate(models.Sum("num_rows"))["num_rows__sum"]
 

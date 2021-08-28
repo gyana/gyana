@@ -1,20 +1,33 @@
 from django.contrib import admin
 
+from apps.appsumo.admin import AppsumoCodeInline, AppsumoReviewInline
+from apps.invites.admin import InviteInline
+
 from .models import Membership, Team
 
 
-@admin.register(Membership)
-class MembershipAdmin(admin.ModelAdmin):
-    list_display = ["user", "team", "role"]
-    list_filter = ["team"]
-
-
-class MembershipInlineAdmin(admin.TabularInline):
+class UserMembershipInline(admin.TabularInline):
     model = Membership
     list_display = ["user", "role"]
 
 
+class TeamMembershipInline(admin.TabularInline):
+    model = Membership
+    list_display = ["team", "role"]
+
+
 @admin.register(Team)
 class TeamAdmin(admin.ModelAdmin):
-    list_display = ["name"]
-    inlines = (MembershipInlineAdmin,)
+    list_display = ["id", "name", "row_limit"]
+    readonly_fields = ["id", "row_limit", "row_count", "row_count_calculated"]
+    fields = readonly_fields + ["name", "override_row_limit"]
+    
+    inlines = [
+        UserMembershipInline,
+        AppsumoCodeInline,
+        AppsumoReviewInline,
+        InviteInline,
+    ]
+
+    def row_limit(self, instance):
+        return instance.row_limit

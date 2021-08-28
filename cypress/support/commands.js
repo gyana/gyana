@@ -51,6 +51,10 @@ const outbox = () => cy.request('/cypress/outbox').then((response) => response.b
 
 Cypress.Commands.add('outbox', outbox)
 
+const periodic = () => cy.request('/cypress/periodic').then((response) => response.body)
+
+Cypress.Commands.add('periodic', periodic)
+
 const dataTransfer = new DataTransfer()
 
 Cypress.Commands.add('drag', (selector) => {
