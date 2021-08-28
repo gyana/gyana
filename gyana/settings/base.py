@@ -348,7 +348,7 @@ BIGQUERY_TABLE_NAME_LENGTH = 1024
 BIGQUERY_LOCATION = "EU"
 
 # Namespace based on git email to avoid collisions in PKs on local dev
-CLOUD_NAMESPACE = os.environ.get("CLOUD_NAMESPACE", "local")
+CLOUD_NAMESPACE = os.environ.get("CLOUD_NAMESPACE")
 
 # Feature flag for Alpha features
 FF_ALPHA = True

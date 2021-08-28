@@ -6,6 +6,11 @@ from . import views
 
 app_name = "users"
 urlpatterns = [
+    path(
+        "onboarding/",
+        login_required(views.UserOnboarding.as_view()),
+        name="onboarding",
+    ),
     path("profile/", login_required(views.profile), name="user_profile"),
     path(
         "profile/upload-image/",

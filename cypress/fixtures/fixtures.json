@@ -19,6 +19,10 @@
       "is_active": true,
       "date_joined": "2021-07-26T14:53:33.713Z",
       "avatar": "",
+      "onboarded": true,
+      "company_industry": null,
+      "company_role": null,
+      "company_size": null,
       "groups": [],
       "user_permissions": []
     }
@@ -38,6 +42,10 @@
       "is_active": true,
       "date_joined": "2021-07-27T12:09:25.731Z",
       "avatar": "",
+      "onboarded": true,
+      "company_industry": null,
+      "company_role": null,
+      "company_size": null,
       "groups": [],
       "user_permissions": []
     }
@@ -57,6 +65,10 @@
       "is_active": true,
       "date_joined": "2021-07-27T14:46:12.143Z",
       "avatar": "",
+      "onboarded": true,
+      "company_industry": null,
+      "company_role": null,
+      "company_size": null,
       "groups": [],
       "user_permissions": []
     }
@@ -76,6 +88,10 @@
       "is_active": true,
       "date_joined": "2021-07-29T09:34:08.258Z",
       "avatar": "",
+      "onboarded": true,
+      "company_industry": null,
+      "company_role": null,
+      "company_size": null,
       "groups": [],
       "user_permissions": []
     }

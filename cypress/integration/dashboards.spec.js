@@ -35,8 +35,8 @@ describe('dashboards', () => {
     createWidget('Table')
     cy.contains('Save & Preview').should('not.be.disabled').click()
     cy.contains('Edinburgh')
-    cy.get('button[name=close]').click()
-    cy.get('input[value="Save & Preview"]').should('not.be.visible')
+    cy.get('button[name=close]').click({ force: true })
+    cy.get('input[value="Save & Preview"]').should('not.exist')
     cy.get('#widget-1').contains('London')
 
     createWidget('Bar')

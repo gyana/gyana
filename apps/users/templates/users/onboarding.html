@@ -1,0 +1,39 @@
+{% extends "web/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block sidebar %}
+{# Getting rid of the top navigation bar here. #}
+{% endblock %}
+
+{% block body %}
+<div class="landing">
+  <div class="landing__content">
+    <header class="landing__header">
+      <img src="{% static 'images/logo.png' %}" alt="">
+      <div>
+        <h1>Gyana</h1>
+        <p>We have a few questions before we get started:</p>
+      </div>
+    </header>
+
+  <form class="mb-8" method="post">
+    {% csrf_token %}
+
+    {% include "django/forms/default_form.html" %}
+
+    <div class="flex flex-col w-full gap-2">
+      <button type="submit" class="button button--primary button--filled w-full">
+        Next
+      </button>
+    </div>
+  </form>
+  </div>
+
+  <div class="landing__image">
+  {% block image %}
+  <img src="{% static 'images/landing.png' %}" />
+  {% endblock %}
+  </div>
+</div>
+{% endblock %}

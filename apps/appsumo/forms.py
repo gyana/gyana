@@ -49,8 +49,6 @@ class AppsumoRedeemForm(forms.ModelForm):
 
 
 class AppsumoSignupForm(SignupForm):
-    first_name = forms.CharField(max_length=30, label="Your Name")
-    last_name = forms.CharField(max_length=30, label="Your Last Name")
     team = forms.CharField(max_length=100)
 
     def __init__(self, *args, **kwargs):
@@ -60,8 +58,6 @@ class AppsumoSignupForm(SignupForm):
     @property
     def field_order(self):
         return [
-            "first_name",
-            "last_name",
             "email",
             "password1",
             "team",
@@ -70,9 +66,6 @@ class AppsumoSignupForm(SignupForm):
     def save(self, request):
         with transaction.atomic():
             user = super().save(request)
-            user.first_name = self.cleaned_data["first_name"]
-            user.last_name = self.cleaned_data["last_name"]
-            user.save()
 
             team = Team(name=self.cleaned_data["team"])
             team.save()

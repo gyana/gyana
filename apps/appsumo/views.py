@@ -6,6 +6,7 @@ from django.urls.base import reverse
 from django.utils import timezone
 from django.views.generic import DetailView
 from django_tables2 import SingleTableView
+from turbo_response.mixins import TurboFormMixin
 from turbo_response.views import TurboFormView
 
 from .forms import (
@@ -66,7 +67,7 @@ class AppsumoRedirect(DetailView):
         return super().get(request, *args, **kwargs)
 
 
-class AppsumoSignup(SignupView):
+class AppsumoSignup(TurboFormMixin, SignupView):
 
     template_name = "appsumo/signup.html"
     # need to override otherwise global settings are used

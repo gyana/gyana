@@ -38,12 +38,19 @@ describe('appsumo', () => {
     cy.url().should('contain', `/appsumo/signup/${NOT_REDEEMED}`)
     cy.contains(`Signup with AppSumo code ${NOT_REDEEMED}.`)
 
-    cy.get('input[name=first_name]').type('Appsumo')
-    cy.get('input[name=last_name]').type('User')
     cy.get('input[name=email]').type('appsumo@gyana.com')
     cy.get('input[name=password1]').type('seewhatmatters')
     cy.get('input[name=team]').type('Teamsumo')
+    cy.get('button[type=submit]').click()
 
+    // remove message blocking the form
+    cy.get('.fa-times').first().click()
+    // onboarding
+    cy.get('input[name=first_name]').type('Appsumo')
+    cy.get('input[name=last_name]').type('User')
+    cy.get('select[name=company_industry]').select('Agency')
+    cy.get('select[name=company_role]').select('Marketing')
+    cy.get('select[name=company_size]').select('2-10')
     cy.get('button[type=submit]').click()
 
     cy.url().should('contain', `/teams/${newTeamId}`)
@@ -70,7 +77,7 @@ describe('appsumo', () => {
 
     cy.get('table tbody tr').should('have.length', 2)
 
-    cy.contains('Account').click()
+    cy.visit('/teams/1/account')
     // 2 codes = 2M rows
     cy.contains('2,000,000')
 

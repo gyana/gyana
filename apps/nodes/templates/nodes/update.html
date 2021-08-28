@@ -33,7 +33,9 @@
                class="button button--success"
                data-action="click->tf-modal#submit"
                name='submit'
-               value='Save & Close'>
+               value='Save & Close'
+               {% comment %} Form submission is handled by controller {% endcomment %}
+               data-turbo="false">
                Save & Close
         </button>
         <button type='submit'
