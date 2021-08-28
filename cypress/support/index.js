@@ -18,10 +18,18 @@ import './commands'
 import './turbo'
 import './vcr'
 
-beforeEach(() => {
+beforeEach(function () {
   // reset and seed the database prior to every test
   cy.request({
     method: 'GET',
     url: '/cypress/resetdb',
   })
+  // start recording external requests for fast playback
+  cy.startVCR(this.currentTest.parent.title, this.currentTest.title)
+})
+
+afterEach(function () {
+  if (this.currentTest.state == 'passed') {
+    cy.stopVCR()
+  }
 })
