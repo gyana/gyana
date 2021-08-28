@@ -6,7 +6,7 @@
         "test": "bash test.sh"
       },
       "buildpacks": [
-        { "url": "heroku/google-chrome" },
+        { "url": "https://github.com/heroku/heroku-buildpack-xvfb-google-chrome" },
         { "url": "heroku/nodejs" },
         { "url": "heroku/python" },
         {
