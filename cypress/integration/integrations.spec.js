@@ -6,8 +6,8 @@ const SHARED_SHEET =
   'https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit'
 
 describe('integrations', () => {
-  beforeEach(() => {
-    cy.startVCR()
+  beforeEach(function () {
+    cy.startVCR(this.currentTest.parent.title, this.currentTest.title)
 
     cy.login()
 

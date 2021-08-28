@@ -53,11 +53,11 @@ def periodic(request: Request):
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
-def start_vcr(request: Request, name: str):
+def start_vcr(request: Request, suite: str, test: str):
 
     # load a new casette into the existing stubbed context
     # See kevin1024/vcrpy/vcr/cassette.py
-    CYPRESS_CASETTE._path = f"{CASETTE_PATH}/{name}.yaml"
+    CYPRESS_CASETTE._path = f"{CASETTE_PATH}/{suite}/{test}.yaml"
     CYPRESS_CASETTE.data = []
     CYPRESS_CASETTE.rewind()
     CYPRESS_CASETTE._load()
