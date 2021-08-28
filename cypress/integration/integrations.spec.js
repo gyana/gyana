@@ -11,6 +11,7 @@ describe('integrations', () => {
 
     cy.visit('/projects/1/integrations')
   })
+  it('view structure and preview', () => {
     cy.contains('store_info').click()
 
     cy.url().should('contain', '/projects/1/integrations/1')
