@@ -1,3 +1,5 @@
+import django_heroku
+
 from .base import *
 
 USE_HASHIDS = False
@@ -12,6 +14,8 @@ DATABASES = {
         "PORT": "5432",
     }
 }
+
+django_heroku.settings(locals())
 
 
 # URLs to reset and seed the database for testing. Although Cypress supports
