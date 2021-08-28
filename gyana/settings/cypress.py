@@ -19,6 +19,10 @@ if "DATABASE_URL" in os.environ:
     # parse DATABASE_URL in heroku-ci
     DATABASES["default"] = dj_database_url.config(conn_max_age=600)
 
+if "REDIS_URL" in os.environ:
+    CELERY_BROKER_URL = os.environ.get("REDIS_URL")
+    CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL")
+
 
 # URLs to reset and seed the database for testing. Although Cypress supports
 # running CLI commands, the overhead of starting up the python interpreter for

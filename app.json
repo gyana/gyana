@@ -2,7 +2,8 @@
   "environments": {
     "test": {
       "scripts": {
-        "test": "echo 'hello world'"
+        "test-setup": "./manage.py migrate --settings gyana.settings.cypress && ./manage.py loaddata --settings gyana.settings.cypress cypress/fixtures/fixtures.json",
+        "test": "bash test.sh"
       },
       "buildpacks": [
         { "url": "heroku/google-chrome" },
