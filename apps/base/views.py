@@ -1,6 +1,8 @@
+import collections
+
 from apps.base.clients import fivetran_client
 from apps.base.cypress_mail import Outbox
-from apps.base.management.commands.cypress_server import CASETTE_PATH, CYPRESS_CASETTE
+# from apps.base.vcr_patch import CASETTE_PATH, CYPRESS_CASETTE
 from apps.integrations.tasks import delete_outdated_pending_integrations
 from apps.teams.tasks import update_team_row_limits
 from django.core import mail
@@ -9,6 +11,8 @@ from django.http.response import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
+
+# from apps.base.management.commands.cypress_server import CASETTE_PATH, CYPRESS_CASETTE
 
 
 @api_view(["GET"])
@@ -54,12 +58,19 @@ def periodic(request: Request):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def start_vcr(request: Request, suite: str, test: str):
+    from apps.base.vcr_patch import CASETTE_PATH, CYPRESS_CASETTE
 
     # load a new casette into the existing stubbed context
     # See kevin1024/vcrpy/vcr/cassette.py
+    # we are resetting the casette instance back to the state on creation
+    # essentially doing Casette.load(...) while preserving all configuration
     CYPRESS_CASETTE._path = f"{CASETTE_PATH}/{suite}/{test}.yaml"
     CYPRESS_CASETTE.data = []
-    CYPRESS_CASETTE.rewind()
+    CYPRESS_CASETTE.play_counts = collections.Counter()
+    CYPRESS_CASETTE.dirty = False
+    CYPRESS_CASETTE.rewound = False
+    
+    # optional loads in the casette if it does not exist
     CYPRESS_CASETTE._load()
 
     return JsonResponse({"message": "ok"})
@@ -68,7 +79,7 @@ def start_vcr(request: Request, suite: str, test: str):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def stop_vcr(request: Request):
-    from apps.base.management.commands.cypress_server import CYPRESS_CASETTE
+    from apps.base.vcr_patch import CASETTE_PATH, CYPRESS_CASETTE
 
     CYPRESS_CASETTE._save()
 
