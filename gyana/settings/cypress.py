@@ -1,4 +1,4 @@
-import django_heroku
+import dj_database_url
 
 from .base import *
 
@@ -15,7 +15,9 @@ DATABASES = {
     }
 }
 
-django_heroku.settings(locals())
+if "DATABASE_URL" in os.environ:
+    # parse DATABASE_URL in heroku-ci
+    DATABASES["default"] = dj_database_url.config(conn_max_age=600)
 
 
 # URLs to reset and seed the database for testing. Although Cypress supports
