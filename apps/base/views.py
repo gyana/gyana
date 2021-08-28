@@ -1,5 +1,6 @@
 from apps.base.clients import fivetran_client
 from apps.base.cypress_mail import Outbox
+from apps.base.management.commands.cypress_server import CYPRESS_CASETTE
 from apps.integrations.tasks import delete_outdated_pending_integrations
 from apps.teams.tasks import update_team_row_limits
 from django.core import mail
@@ -52,7 +53,14 @@ def periodic(request: Request):
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
-def start_vcr(request: Request):
+def start_vcr(request: Request, name: str):
+
+    # load a new casette into the existing stubbed context
+    # See kevin1024/vcrpy/vcr/cassette.py
+    CYPRESS_CASETTE._path = name
+    CYPRESS_CASETTE.data = []
+    CYPRESS_CASETTE.rewind()
+    CYPRESS_CASETTE._load()
 
     return JsonResponse({"message": "ok"})
 
