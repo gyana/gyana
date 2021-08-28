@@ -5,4 +5,4 @@
 # run celery in background
 DJANGO_SETTINGS_MODULE=gyana.settings.cypress celery -A gyana worker -l info &
 # run tests
-npx cypress run --spec cypress/integrations/teams.spec.js
+npx cypress run --browser chrome --spec cypress/integrations/teams.spec.js
