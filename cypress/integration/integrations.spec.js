@@ -7,11 +7,18 @@ const SHARED_SHEET =
 
 describe('integrations', () => {
   beforeEach(() => {
+    cy.startVCR()
+
     cy.login()
 
     cy.visit('/projects/1/integrations')
   })
   it('view structure and preview', () => {
+  afterEach(function () {
+    if (this.currentTest.state == 'passed') {
+      cy.stopVCR()
+    }
+  })
     cy.contains('store_info').click()
 
     cy.url().should('contain', '/projects/1/integrations/1')
