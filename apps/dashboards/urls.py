@@ -1,7 +1,7 @@
 from apps.projects.access import login_and_project_required
 from django.urls import path
 
-from . import frames, rest, views
+from . import frames, views
 from .access import dashboard_is_public, login_and_dashboard_required
 
 app_name = "dashboards"
