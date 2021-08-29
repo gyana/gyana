@@ -70,20 +70,27 @@ Run your app in development mode and open the cypress UI:
 yarn cypress:open
 ```
 
-The app is seeded with the fixtures defined in `cypress/fixtures/fixtures.json`. To modify the fixtures:
+The database is seeded with fixtures, and reset before each test. To modify the
+fixtures, manually make the changes in the UI and dump them.
 
-- Reset the database `just cypress-setup`
-- Go to the app in the browser and modify it
-- Dump the fixtures `just cypress-fixtures`
-- Commit your changes
+```bash
+# remember to re-seed the database to initial state
+just cypress-setup
+# ...make changes...
+just cypress-fixtures
+```
 
 ## QA
 
-- Run test suite locally in headless mode `yarn cypress:run`
-- View the screenshots for failed tests in `cypress/screenshots` and videos in `cypress/videos`
-- View failed tests `yarn cypress:failed`
-- Manually fix failed tests in UI `yarn cypress:open`
-- Re-run test suite
+Run the entire e2e test suite locally, and view the list of failed tests. You can
+review screenshots and videos in the cypress folder to spot easy fixes:
+
+```
+yarn cypress:run
+yarn cypress:failed
+```
+
+Manually fix failed tests in the UI and re-run the tests suite to confirm.
 
 ## Deployment
 
