@@ -3,6 +3,7 @@ from functools import lru_cache
 import yaml
 
 SERVICES = "apps/connectors/services.yaml"
+METADATA = "apps/connectors/metadata.yaml"
 
 
 @lru_cache
