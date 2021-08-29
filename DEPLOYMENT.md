@@ -72,17 +72,52 @@ heroku rollback <version> --app gyana-beta
 
 ## Setup
 
-Below describes the steps to create this deployment from scratch
+The app runs on Heroku, GCP and GoDaddy.
 
-### Google Cloud Platform
+### Heroku
 
----
+We setup the app in the Heroku UI, key points to note:
 
-Created a separate project within the `gyana.co.uk` company called `Gyana App`
+- Region: EU
+- Add-ons: Heroku Postgres and Heroku Redis
+- Dynos for web, beat and worker (should happen automatically)
+- Buildpacks:
+  - Node: `heroku/nodejs`
+  - Python: `heroku/python`
+  - GCP authentication: `https://github.com/buyersight/heroku-google-application-credentials-buildpack.git`
 
-Important attributes within this project:
+Heroku config variables, with production examples:
 
-- [Google sheets API enabled](https://console.cloud.google.com/marketplace/product/google/sheets.googleapis.com)
+```bash
+DJANGO_SETTINGS_MODULE = gyana.settings.heroku
+EXTERNAL_URL = https://app.gyana.com
+FIVETRAN_GROUP = intended_monsieur
+FIVETRAN_KEY = {{ key }}
+FUSIONCHARTS_LICENCE = {{ key }}
+GCP_BQ_SVC_ACCOUNT = gyana-app@gyana-app-314217.iam.gserviceaccount.com
+GCP_PROJECT = gyana-app-314217
+GOOGLE_ANALYTICS_ID = {{ key }}
+GOOGLE_APPLICATION_CREDENTIALS = google-credentials.json
+GOOGLE_CREDENTIALS = {{ credential_json_from_svc_account }}
+GS_BUCKET_NAME = gyana-app
+HASHIDS_SALT = {{ django.utils.crypto.get_random_string(32) }}
+HONEYBADGER_API_KEY = {{ honeybadger_api_key }}
+SECRET_KEY = {{ secret_key }} # generate online
+SEGMENT_ANALYTICS_JS_WRITE_KEY = {{ segment_js_secret }}
+SEGMENT_ANALYTICS_WRITE_KEY = {{ segment_py_secret }}
+SENDGRID_API_KEY = {{ sendgrid_api_secret }}
+```
+
+The database and redis config variable are generated automatically by the add-ons.
+
+### GCP
+
+The MVP/release and production environments run in separate environments, within
+the `gyana.co.uk` organisation. Key points to note:
+
+- Enable APIs:
+  - [Google sheets](https://console.cloud.google.com/marketplace/product/google/sheets.googleapis.com)
+  - [Google Drive](https://console.cloud.google.com/marketplace/product/google/drive.googleapis.com)
 - All developer emails added in IAM with the following roles:
   - `Cloud KMS Admin`
   - `Cloud KMS CryptoKey Encrypter/Decrypter`
@@ -92,14 +127,14 @@ Important attributes within this project:
   - Has `BigQuery Admin` role in IAM
   - Has `Storage Admin` role in IAM
 
-#### **Cloud Storage**
+You'll need to create a bucket in Cloud Storage (`gyana-app` in production). As
+users can upload CSV files directly to the bucket, we need to set the CORS rules:
 
-Create a bucket in Cloud Storage named `gyana-app`
+```bash
+gsutil cors set {CORS_JSON_LOCATION} gs://gyana-app
+```
 
-Set the right CORS rules on the buckets for uploads (UPLOADS WILL NOT WORK WITHOUT THIS):
-
-- To set the cors json `gsutil cors set {CORS_JSON_LOCATION} gs://vayu-datasets-{ENV}`
-- The `gyana-app` bucket requires the following CORS rules
+With the following JSON (edit as necessary):
 
 ```json
 [
@@ -112,59 +147,11 @@ Set the right CORS rules on the buckets for uploads (UPLOADS WILL NOT WORK WITHO
 ]
 ```
 
-### Heroku
+### Custom domain
 
----
-
-A [gyana-beta](https://dashboard.heroku.com/apps/gyana-beta) has been created using the following commands.
-
-```zsh
-# Using --remote here to add a remote to the local git config
-heroku create --region=eu --remote beta --addons=heroku-postgresql,heroku-redis
-```
-
-#### **Buildpacks**
-
-In the [Settings](https://dashboard.heroku.com/apps/gyana-beta/settings) page add the following Buildpacks in the order listed:
-
-- `heroku/nodejs`
-- `heroku/python`
-- `https://github.com/buyersight/heroku-google-application-credentials-buildpack.git`
-
-#### **Custom domain**
-
-On the Heroku settings page a custom domain `beta.gyana.com` is added. To get the wildcard `*.gyana.com` SSL working the .key en .pem file from LastPass are uploaded into the Heroku system. This SSL combo will then be used for that domain. Heroku also generates a `DNS Target` that will be used for the GoDaddy step below.
-
-#### **Env variables that matter**
-
-These config variables are set in the [Settings](https://dashboard.heroku.com/apps/gyana-beta/settings) tab in the Heroku web app
-
-- `DJANGO_SETTINGS_MODULE` = `gyana.settings.heroku`
-- `GOOGLE_APPLICATION_CREDENTIALS` = `google-credentials.json`
-- `GOOGLE_CREDENTIALS` = `<credential_json_from_svc_account>`
-- `SECRET_KEY` = `<secret_key_val>`
-- `GCP_PROJECT` = `gyana-app-314217`
-- `GCP_BQ_SVC_ACCOUNT` = `gyana-app@gyana-app-314217.iam.gserviceaccount.com`
-- `EXTERNAL_URL` = `https://app.gyana.com`
-- `CLOUD_NAMESPACE` = `heroku`
-- `GS_BUCKET_NAME` = `gyana-app`
-- `FIVETRAN_KEY` = `<api_key_for_fivetran>`
-- `FIVETRAN_GROUP` = `intended_monsieur`
-- `SENDGRID_API_KEY` = `<sendgrid_api_secret>`
-- `SEGMENT_ANALYTICS_JS_WRITE_KEY` = `<segment_js_secret>`
-- `SEGMENT_ANALYTICS_WRITE_KEY` = `<segment_py_secret>`
-- `HASHIDS_SALT` = `<django.utils.crypto.get_random_string(32)>`
-
-#### **Deploy**
-
-Setup the `gyana/gyana` git repository in the [Deploy settings](https://dashboard.heroku.com/apps/gyana-beta/deploy/github). At the bottom of the page manual deploys can be executed when needed.
-
-### GoDaddy
-
----
-
-To setup the DNS created in the Heroku settings we need to add a CNAME record with:
-
-- `Host`: `beta`
-- `Points to`: `<DNS_TARGET from Heroku settings>`
-- `TLS`: `600s`
+- Add the custom domain `app.gyana.com` to the Heroku settings page
+- Add the wildcard `*.gyana.com` SSL cert from LastPass (.key and .pem files)
+- Setup GoDaddy:
+  - `Host`: `beta`
+  - `Points to`: `<DNS_TARGET from Heroku settings>`
+  - `TLS`: `600s`
