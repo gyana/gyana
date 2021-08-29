@@ -8,7 +8,8 @@ class UserConfig(AppConfig):
     label = "users"
 
     def ready(self):
-        analytics.debug = bool(settings.DEBUG and settings.SEGMENT_ANALYTICS_WRITE_KEY)
+        # disable sending events unless key is defined
+        analytics.send = bool(settings.SEGMENT_ANALYTICS_WRITE_KEY)
         analytics.write_key = settings.SEGMENT_ANALYTICS_WRITE_KEY or ""
 
         from allauth.account.admin import EmailAddress
