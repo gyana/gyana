@@ -2,26 +2,32 @@
 
 ## Prerequisites
 
-Packages and software required to develop the tool.
+Packages and software required to develop the tool. Install via homebrew, unless indicated otherwise.
 
 Required:
 
-- Direnv
-- Poetry
-- Postgres
-- Redis
-- Yarn
+- just
+- direnv
+- poetry
+- yarn
+- watchexec
+- postgres 13 (https://postgresapp.com/)
+- redis 6 (https://jpadilla.github.io/redisapp/)
 
 Optional / Recommended
 
-- Virtualenvwrapper
-- Watchexec
-- Heroku-cli
-- Direnv
+- virtualenvwrapper
+- heroku
 
 ## Setup
 
-After installing virtualenvwrapper, create an environment:
+Authorize direnv to configure your local environment:
+
+```bash
+direnv allow .
+```
+
+Build a python virtual environment:
 
 ```bash
 mkvirtualenv --no-site-packages gyana -p python3
@@ -54,37 +60,18 @@ Make sure to authenticate using gcloud and generate the relevant env variables:
 ```bash
 gcloud auth login
 gcloud config set project gyana-1511894275181
-just env
-```
-
-Next create a bigquery dataset. We use the git config email as slug to effectively namespace dev environments from eachother in the cloud.
-
-```bash
-just mk_bq
-```
-
-You now need to run webpack to bundle all the client side code and styles:
-
-```bash
-yarn build
-```
-
-You can also run `yarn build:watch` to watch for file changes.
-
-At this point you should be able to run the app, make sure that postgresql is running (and redis-server if running celery).
-
-```bash
-just dev
-just dev-celery # Optional
+just env # decrypt secrets stored in repository
 ```
 
 ## Develop
 
 Commands:
 
-- `just dev`
-- `just dev-celery`
-- `yarn build:watch`
+```bash
+just dev
+just dev-celery # optionally for celery tasks
+yarn build:watch
+```
 
 Create a new CRUDL Django app with `just startapp`.
 
