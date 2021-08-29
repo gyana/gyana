@@ -14,10 +14,12 @@ Required:
 - postgres 13 (https://postgresapp.com/)
 - redis 6 (https://jpadilla.github.io/redisapp/)
 
-Optional / Recommended
+Optional / Recommended:
 
 - virtualenvwrapper
 - heroku
+
+We have a recommended list of extensions for developing in VSCode.
 
 ## Setup
 
