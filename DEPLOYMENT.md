@@ -70,9 +70,19 @@ since the migrations will not exist when you rollback the code:
 heroku rollback <version> --app gyana-beta
 ```
 
+## Services
+
+With links for the production app:
+
+- Exception, uptime and cron monitoring: [Honeybadger](https://app.honeybadger.io/projects/88968/faults)
+- Analytics: [Google Analytics](https://analytics.google.com/analytics/web/#/p284522086/reports/reportinghub)
+- Events: [Segment](https://app.segment.com/gyana-beta/overview)
+- Support: [Intercom](https://app.intercom.com)
+- Emails: [SendGrid](https://app.sendgrid.com/)
+
 ## Setup
 
-The app runs on Heroku, GCP and GoDaddy.
+The app runs on Heroku, GCP, with GoDaddy for DNS.
 
 ### Heroku
 
