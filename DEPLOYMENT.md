@@ -5,7 +5,7 @@ We're running a traditional Django app on [Heroku](https://dashboard.heroku.com/
 ## Release
 
 - Choose and merge a commit from main onto the release branch
-- Run the automated [QA process](DEVELOPMENT.md#QA) (Cypress test suite)
+- Run and fix the automated [QA process](DEVELOPMENT.md#QA) (Cypress test suite)
 - Push any fixes onto the release branch
 - Run the manual QA process (written test plan) on gyana-release
 - Document and push any further fixes onto the release branch
@@ -17,15 +17,57 @@ We're running a traditional Django app on [Heroku](https://dashboard.heroku.com/
 
 ## Rollbacks
 
-As described in [Heroku: Releases and Rollbacks](https://blog.heroku.com/releases-and-rollbacks) it's easy to rollback a broken release using the following commands
+Heroku has automated [rollbacks](https://blog.heroku.com/releases-and-rollbacks),
+but you'll need to manually migrate the Django database to its historical state.
 
-```zsh
-# Rolls back to the previous successful release
-heroku rollback --app gyana-beta
-# Rolls back to the specified <version> e.g. v42
-heroku rollback <version> --app gyana-beta
-# To see all versions run
+Remember to switch Heroku to maintenance mode and run this SQL script to generate
+app/migration pairs for the downgrade:
+
+```sql
+with changed_apps as (
+	select distinct app
+	from django_migrations
+	where applied > '202X-XX-XX XX:XX:XX'
+),
+rollback_migrations as (
+	select *
+	from django_migrations
+	where applied < '202X-XX-XX XX:XX:XX'
+)
+select app
+	, name
+from (
+	select a.app
+		, coalesce(m.name, 'zero') as name
+		, rank() over (partition by a.app order by applied desc) as rank
+	from rollback_migrations m
+	right join changed_apps a
+		on m.app = a.app
+) X
+where rank = 1
+order by app
+;
+```
+
+You can rollback the apps one by one (in future it would be good to
+[automate](https://stackoverflow.com/questions/60411090/run-reverse-django-migration-on-heroku-after-release-failure) this):
+
+```bash
+heroku run --app gyana-beta python manage.py migrate <app> <name>
+```
+
+You can get the timestamp from the release metadata you plan to rollback to. Remember
+to add a buffer of ~10 mins since the migrations run after a release:
+
+```bash
 heroku releases --app gyana-beta
+```
+
+Finally, rollback the app to the chosen version. It has to happen in this order,
+since the migrations will not exist when you rollback the code:
+
+```bash
+heroku rollback <version> --app gyana-beta
 ```
 
 ## Setup

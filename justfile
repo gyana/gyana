@@ -24,6 +24,9 @@ fixtures:
     ./manage.py dumpdata -e admin -e auth -e contenttypes -e sessions > cypress/fixtures/fixtures.json
     yarn prettier --write cypress/fixtures/fixtures.json
 
+shell:
+    ./manage.py shell -i ipython
+
 # Encrypt or decrypt file via GCP KMS
 gcloud_kms OP FILE:
     gcloud kms {{OP}} --location global --keyring gyana-kms --key gyana-kms --ciphertext-file {{FILE}}.enc --plaintext-file {{FILE}}
