@@ -53,8 +53,9 @@ just env # decrypt secrets stored in repository
 
 ## Develop
 
-Run Django development server, celery backend for tasks and webpack to bundle
-all the client side code and styles:
+At this point you should be able to run the app. Run Django development server,
+celery backend for tasks and webpack to bundle all the client side code and styles.
+Make sure that Postgres and Redis servers are running:
 
 ```bash
 just dev
@@ -62,7 +63,7 @@ just celery
 yarn build:watch
 ```
 
-Create a new CRUDL Django app with `just startapp`.
+Bootstrap a new CRUDL Django app with `just startapp`.
 
 ## Test
 
