@@ -16,7 +16,6 @@ Required:
 
 Optional / Recommended:
 
-- virtualenvwrapper
 - heroku
 
 We have a recommended list of extensions for developing in VSCode.
@@ -29,25 +28,11 @@ Authorize direnv to configure your local environment:
 direnv allow .
 ```
 
-Build a python virtual environment:
-
-```bash
-mkvirtualenv --no-site-packages gyana -p python3
-```
-
 Install all required python and node dependencies:
 
 ```bash
 poetry install
 yarn install
-```
-
-On MacOS you may run into a bug with `psycopg2` due to an outdated package `django-heroku`, after
-the install fails the first time run and run `poetry install` again. For more details on this see:
-<https://stackoverflow.com/questions/26288042/error-installing-psycopg2-library-not-found-for-lssl>
-
-```bash
-env LDFLAGS="-I/usr/local/opt/openssl/include -L/usr/local/opt/openssl/lib" pip install psycopg2
 ```
 
 Create a local database and run migrations on it:
@@ -70,9 +55,9 @@ just env # decrypt secrets stored in repository
 Commands:
 
 ```bash
-just dev
-just dev-celery # optionally for celery tasks
-yarn build:watch
+just dev # django development server
+just dev-celery # [optional] for celery tasks
+yarn build:watch # webpack JS assets
 ```
 
 Create a new CRUDL Django app with `just startapp`.
