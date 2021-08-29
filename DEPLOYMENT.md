@@ -1,10 +1,21 @@
-# https://beta.gyana.com
+# Deployment
 
-## How to deploy
+We're running a traditional Django app on [Heroku](https://dashboard.heroku.com/pipelines/33c2c23a-3f74-49ca-b19a-e3203445c2d2) with dev/staging/prod deployments.
 
-The [Deploy](https://dashboard.heroku.com/apps/gyana-beta/deploy/github) page on the Heroku gyana-beta app has a `Manual deploy` where we can select a branch and deploy it. For now only use the `main` branch for deploys!
+## Release
 
-## How to rollback
+- Choose and merge a commit from main onto the release branch
+- Run the automated [QA process](DEVELOPMENT.md#QA) (Cypress test suite)
+- Push any fixes onto the release branch
+- Run the manual QA process (written test plan) on gyana-release
+- Document and push any further fixes onto the release branch
+- If downtime is expected, communiate to users and switch Heroku to maintenance mode
+- Manual deploy release branch to gyana-beta
+- Manual smoke test on gyana-beta
+- If there is an issue, see [rollback](#Rollbacks)
+- Open a PR from release to main, merge squashed commit
+
+## Rollbacks
 
 As described in [Heroku: Releases and Rollbacks](https://blog.heroku.com/releases-and-rollbacks) it's easy to rollback a broken release using the following commands
 
@@ -96,7 +107,7 @@ These config variables are set in the [Settings](https://dashboard.heroku.com/ap
 - `CLOUD_NAMESPACE` = `heroku`
 - `GS_BUCKET_NAME` = `gyana-app`
 - `FIVETRAN_KEY` = `<api_key_for_fivetran>`
-- _Only for beta deployment_ `FIVETRAN_GROUP` = `intended_monsieur`
+- `FIVETRAN_GROUP` = `intended_monsieur`
 - `SENDGRID_API_KEY` = `<sendgrid_api_secret>`
 - `SEGMENT_ANALYTICS_JS_WRITE_KEY` = `<segment_js_secret>`
 - `SEGMENT_ANALYTICS_WRITE_KEY` = `<segment_py_secret>`
