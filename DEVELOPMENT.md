@@ -39,7 +39,8 @@ Create a local database and run migrations on it:
 
 ```bash
 createdb gyana
-just setup
+just migrate
+just seed
 ```
 
 Make sure to authenticate using gcloud and generate the relevant env variables:
@@ -52,12 +53,13 @@ just env # decrypt secrets stored in repository
 
 ## Develop
 
-Commands:
+Run Django development server, celery backend for tasks and webpack to bundle
+all the client side code and styles:
 
 ```bash
-just dev # django development server
-just dev-celery # [optional] for celery tasks
-yarn build:watch # webpack JS assets
+just dev
+just celery
+yarn build:watch
 ```
 
 Create a new CRUDL Django app with `just startapp`.

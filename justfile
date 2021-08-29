@@ -10,6 +10,20 @@ default:
 dev:
     python ./manage.py runserver
 
+celery:
+    watchexec -w apps -e py -r "celery -A gyana worker -l info"
+
+migrate:
+    ./manage.py migrate
+
+seed:
+    ./manage.py flush --noinput
+    ./manage.py loaddata cypress/fixtures/fixtures.json
+
+fixtures:
+    ./manage.py dumpdata -e admin -e auth -e contenttypes -e sessions > cypress/fixtures/fixtures.json
+    yarn prettier --write cypress/fixtures/fixtures.json
+
 # Encrypt or decrypt file via GCP KMS
 gcloud_kms OP FILE:
     gcloud kms {{OP}} --location global --keyring gyana-kms --key gyana-kms --ciphertext-file {{FILE}}.enc --plaintext-file {{FILE}}
@@ -24,21 +38,12 @@ enc_env:
     just gcloud_kms encrypt .env
     just gcloud_kms encrypt {{service_account}}
 
-celery:
-    celery -A gyana worker -l info
-
-dev-celery:
-    watchexec -w apps -e py -r "celery -A gyana worker -l info"
-
 export:
     poetry export -f requirements.txt --output requirements.txt
 
 update:
     yarn install
     poetry install
-
-migrate: update
-    python manage.py migrate
 
 format:
     # autoflake --in-place --recursive --remove-all-unused-imports --ignore-init-module-imports .
@@ -51,12 +56,3 @@ cloc:
 
 startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
-
-setup:
-    ./manage.py migrate
-    ./manage.py flush --noinput
-    ./manage.py loaddata cypress/fixtures/fixtures.json
-
-fixtures:
-    ./manage.py dumpdata -e admin -e auth -e contenttypes -e sessions > cypress/fixtures/fixtures.json
-    yarn prettier --write cypress/fixtures/fixtures.json
