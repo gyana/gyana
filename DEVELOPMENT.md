@@ -39,7 +39,7 @@ Create a local database and run migrations on it:
 
 ```bash
 createdb gyana
-python manage.py migrate
+just setup
 ```
 
 Make sure to authenticate using gcloud and generate the relevant env variables:
@@ -64,17 +64,11 @@ Create a new CRUDL Django app with `just startapp`.
 
 ## Testing with Cypress
 
-Setup your test app:
+Run your app in development mode and open the cypress UI:
 
-- `createdb cypress_gyana`
-- `just cypress-setup`
-
-Run cypress + app with hot-reloading:
-
-- `just cypress-server`
-- `just cypress-celery`
-- `yarn build:watch`
-- `yarn cypress:open`
+```
+yarn cypress:open
+```
 
 The app is seeded with the fixtures defined in `cypress/fixtures/fixtures.json`. To modify the fixtures:
 
