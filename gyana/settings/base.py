@@ -142,7 +142,6 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "apps.web.context_processors.user_meta",
                 "apps.web.context_processors.project_meta",
-                # this line can be removed if not using google analytics
                 "apps.web.context_processors.google_analytics_id",
                 "gyana.context_processors.django_settings",
             ],
@@ -310,12 +309,7 @@ PROJECT_METADATA = {
     "CONTACT_EMAIL": "developers@gyana.com",
 }
 
-
-ADMINS = [("Gyana Developers", "developers@gyana.com")]
-
-GOOGLE_ANALYTICS_ID = (
-    ""  # replace with your google analytics ID to connect to Google Analytics
-)
+GOOGLE_ANALYTICS_ID = os.environ.get("GOOGLE_ANALYTICS_ID")
 
 
 # Default primary key field type
@@ -323,21 +317,19 @@ GOOGLE_ANALYTICS_ID = (
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
-GCP_PROJECT = os.environ.get("GCP_PROJECT", "gyana-1511894275181")
-GCP_BQ_SVC_ACCOUNT = os.environ.get(
-    "GCP_BQ_SVC_ACCOUNT", "gyana-local@gyana-1511894275181.iam.gserviceaccount.com"
-)
+GCP_PROJECT = os.environ.get("GCP_PROJECT")
+GCP_BQ_SVC_ACCOUNT = os.environ.get("GCP_BQ_SVC_ACCOUNT")
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 
 CRISPY_TEMPLATE_PACK = "tailwind"
 
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
-GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME", "gyana-local")
+GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME")
 
-FIVETRAN_KEY = os.environ.get("FIVETRAN_KEY", "<your fivetran key>")
+FIVETRAN_KEY = os.environ.get("FIVETRAN_KEY")
 FIVETRAN_URL = "https://api.fivetran.com/v1"
-FIVETRAN_GROUP = "general_candor"
+FIVETRAN_GROUP = os.environ.get("FIVETRAN_GROUP")
 FIVETRAN_HEADERS = {"Authorization": f"Basic {FIVETRAN_KEY}"}
 
 EXTERNAL_URL = "http://localhost:8000"
