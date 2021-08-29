@@ -62,7 +62,7 @@ yarn build:watch # webpack JS assets
 
 Create a new CRUDL Django app with `just startapp`.
 
-## Testing with Cypress
+## Test
 
 Run your app in development mode and open the cypress UI:
 
@@ -76,6 +76,14 @@ The app is seeded with the fixtures defined in `cypress/fixtures/fixtures.json`.
 - Go to the app in the browser and modify it
 - Dump the fixtures `just cypress-fixtures`
 - Commit your changes
+
+## QA
+
+- Run test suite locally in headless mode `yarn cypress:run`
+- View the screenshots for failed tests in `cypress/screenshots` and videos in `cypress/videos`
+- View failed tests `yarn cypress:failed`
+- Manually fix failed tests in UI `yarn cypress:open`
+- Re-run test suite
 
 ## Deployment
 
