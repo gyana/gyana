@@ -7,9 +7,6 @@ service_account := "gyana-1511894275181-50f107d4db00.json"
 default:
   @just dev
 
-mk_bq:
-    python ./manage.py make_bq_dataset
-
 dev:
     python ./manage.py runserver
 
@@ -50,7 +47,7 @@ format:
 
 # Count total lines of code that need to be maintained
 cloc:
-    cloc $(git ls-files) --exclude-dir=migrations --exclude-ext=svg,csv,json
+    cloc $(git ls-files) --exclude-dir=migrations --exclude-ext=svg,csv,json,yaml,md,toml
 
 startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
