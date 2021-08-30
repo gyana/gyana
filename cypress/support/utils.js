@@ -2,7 +2,8 @@ import fixtures from '../fixtures/fixtures.json'
 
 export const getModelStartId = (modelname) =>
   Math.max(
-    ...fixtures.filter((fixture) => fixture.model == modelname).map((fixture) => fixture.pk)
+    ...fixtures.filter((fixture) => fixture.model == modelname).map((fixture) => fixture.pk),
+    0
   ) + 1
 
 // pending and ready integrations for the main test project
