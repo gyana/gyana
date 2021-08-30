@@ -5,13 +5,13 @@ from django.urls import reverse
 
 
 class Template(BaseModel):
-    source_project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     templated_projects = models.ManyToManyField(
         Project, related_name="templates", through="TemplateInstance"
     )
 
     def __str__(self):
-        return self.name
+        return self.project.name
 
     def get_absolute_url(self):
         return reverse("templates:detail", args=(self.pk,))
