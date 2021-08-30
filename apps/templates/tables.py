@@ -11,5 +11,5 @@ class TemplateTable(tables.Table):
 
     # need access to team id
     name = tables.TemplateColumn(
-        '<a href="{% url "team_templates:detail" team.id record.id %}">{{ record.name }}</a>'
+        '<a href="{% url "team_templates:create" team.id record.id %}">{{ record.name }}</a>'
     )
