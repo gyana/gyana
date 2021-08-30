@@ -1,5 +1,3 @@
-from typing import ValuesView
-
 from apps.projects.models import Project
 from django import forms
 from django.db import transaction

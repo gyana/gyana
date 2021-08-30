@@ -7,17 +7,33 @@
 </div>
 
 {% with app_name=request.resolver_match.app_name %}
-<li>
-  <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
-     href="{% url 'projects:detail' project.id %}"
-     data-controller="tooltip"
-     data-placement="right">
-    <i class="far fa-fw fa-book-open mr-6"></i>Overview
-    <span data-tooltip-target="body">Overview</span>
-  </a>
-</li>
+
+{% if project.has_pending_templates %}
+
+  <li>
+    <a class="sidebar__link {% if app_name == "templates" %}sidebar__link--active{% endif %}"
+      href="{% url 'project_templateinstances:list' project.id %}"
+      data-controller="tooltip"
+      data-placement="right">
+      <i class="far fa-fw fa-construction mr-6"></i>Setup
+      <span data-tooltip-target="body">Setup</span>
+    </a>
+  </li>
+
+{% endif %}
 
 {% if project.is_ready %}
+
+
+  <li>
+    <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
+      href="{% url 'projects:detail' project.id %}"
+      data-controller="tooltip"
+      data-placement="right">
+      <i class="far fa-fw fa-book-open mr-6"></i>Overview
+      <span data-tooltip-target="body">Overview</span>
+    </a>
+  </li>
 
   <li>
     <a class="sidebar__link {% if app_name == "project_integrations" %}sidebar__link--active{% endif %}"

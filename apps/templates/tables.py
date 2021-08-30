@@ -2,7 +2,7 @@ import django_tables2 as tables
 from apps.integrations.models import Integration
 from apps.integrations.tables import PendingStatusColumn
 
-from .models import Template
+from .models import Template, TemplateInstance
 
 
 class TemplateTable(tables.Table):
@@ -15,6 +15,13 @@ class TemplateTable(tables.Table):
     name = tables.TemplateColumn(
         '<a href="{% url "team_templates:create" team.id record.id %}">{{ record.name }}</a>'
     )
+
+
+class TemplateInstanceTable(tables.Table):
+    class Meta:
+        model = TemplateInstance
+        attrs = {"class": "table"}
+        fields = ["project", "template", "completed"]
 
 
 class TemplateInstanceSetupTable(tables.Table):

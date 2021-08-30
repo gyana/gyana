@@ -41,6 +41,10 @@ class Project(BaseModel):
             or self.templateinstance_set.filter(completed=True).count() >= 1
         )
 
+    @property
+    def has_pending_templates(self):
+        return self.templateinstance_set.filter(completed=False).count() != 0
+
     @cached_property
     def num_rows(self):
         from apps.tables.models import Table
