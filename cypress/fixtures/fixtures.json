@@ -32,7 +32,7 @@
     "pk": 2,
     "fields": {
       "password": "pbkdf2_sha256$260000$N2BmQRuSSYGvpQnPKCw9fj$UhUCkfx7qdzWPNYP/XUbi3L4hvP5/7f+N4nmrqTPceM=",
-      "last_login": "2021-08-30T19:20:06.909Z",
+      "last_login": "2021-08-30T21:44:26.594Z",
       "is_superuser": true,
       "username": "admin",
       "first_name": "",
@@ -464,7 +464,7 @@
       "name": "Google Analytics",
       "state": "done",
       "ready": true,
-      "created_ready": "2021-08-30T19:29:42.000Z",
+      "created_ready": "2021-08-30T19:29:42Z",
       "created_by": 2
     }
   },
@@ -1970,6 +1970,15 @@
       "redeemed": "2021-08-23T23:00:00Z",
       "refunded_before": null,
       "redeemed_by": null
+    }
+  },
+  {
+    "model": "templates.template",
+    "pk": 1,
+    "fields": {
+      "created": "2021-08-30T21:44:56.106Z",
+      "updated": "2021-08-30T21:44:56.106Z",
+      "project": 6
     }
   },
   {
