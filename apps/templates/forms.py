@@ -5,7 +5,7 @@ from django.db import transaction
 from .models import TemplateInstance
 
 
-class TemplateInstanceForm(forms.ModelForm):
+class TemplateInstanceCreateForm(forms.ModelForm):
     class Meta:
         model = TemplateInstance
         fields = []
@@ -30,6 +30,26 @@ class TemplateInstanceForm(forms.ModelForm):
         if commit:
             with transaction.atomic():
                 project.save()
+                instance.save()
+                self.save_m2m()
+
+        return instance
+
+
+class TemplateInstanceUpdateForm(forms.ModelForm):
+    class Meta:
+        model = TemplateInstance
+        fields = []
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        # duplicate the project
+
+        instance.completed = True
+
+        if commit:
+            with transaction.atomic():
                 instance.save()
                 self.save_m2m()
 

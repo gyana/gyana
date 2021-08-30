@@ -5,3 +5,16 @@
     {% render_table table %}
   {% endfor %}
 </div>
+
+<div class="flex mt-4">
+  <form method="post">
+    {% csrf_token %}
+
+    {% include "django/forms/default_form.html" %}
+
+    <button type="submit" class="button button--filled w-full">
+      Create
+    </button>
+
+  </form>
+</div>

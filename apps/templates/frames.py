@@ -1,11 +1,11 @@
-from apps.base.frames import TurboFrameDetailView
+from apps.base.frames import TurboFrameUpdateView
 from apps.integrations.models import Integration
+from apps.templates.forms import TemplateInstanceUpdateForm
 from django.urls.base import reverse
-from django_tables2.views import MultiTableMixin, SingleTableMixin
+from django_tables2.views import MultiTableMixin
 
 from .models import TemplateInstance
-from .tables import (TemplateInstanceIntegrationTable,
-                     TemplateInstanceSetupTable)
+from .tables import TemplateInstanceIntegrationTable, TemplateInstanceSetupTable
 
 
 def _template_integration_exists_in_project(template_integration, project):
@@ -24,15 +24,19 @@ def _get_create_url_in_project(template_integration, project):
         return reverse("project_integrations_uploads:create", args=(project.id,))
 
 
-class TemplateInstanceSetup(MultiTableMixin, TurboFrameDetailView):
+class TemplateInstanceSetup(MultiTableMixin, TurboFrameUpdateView):
     template_name = "templates/setup.html"
     model = TemplateInstance
+    form_class = TemplateInstanceUpdateForm
     tables = [TemplateInstanceSetupTable, TemplateInstanceIntegrationTable]
     turbo_frame_dom_id = "template:setup"
     table_pagination = False
 
     def get_tables(self):
-        return [table(data, show_header=False) for table, data in zip(self.tables, self.get_table_data())]
+        return [
+            table(data, show_header=False)
+            for table, data in zip(self.tables, self.get_table_data())
+        ]
 
     def get_table_data(self):
 

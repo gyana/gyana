@@ -3,10 +3,9 @@ from functools import cached_property
 from apps.base.turbo import TurboCreateView
 from apps.teams.mixins import TeamMixin
 from django.urls.base import reverse
-from django.views.generic import DetailView
 from django_tables2 import SingleTableView
 
-from .forms import TemplateInstanceForm
+from .forms import TemplateInstanceCreateForm
 from .models import Template, TemplateInstance
 from .tables import TemplateTable
 
@@ -21,7 +20,7 @@ class TemplateList(TeamMixin, SingleTableView):
 class TemplateInstanceCreate(TeamMixin, TurboCreateView):
     template_name = "templates/create.html"
     model = TemplateInstance
-    form_class = TemplateInstanceForm
+    form_class = TemplateInstanceCreateForm
 
     @cached_property
     def template(self):
