@@ -18,7 +18,7 @@ team_urlpatterns = (
         path("", login_and_team_required(views.TemplateList.as_view()), name="list"),
         path(
             "<hashid:template_id>",
-            views.TemplateInstanceCreate.as_view(),
+            login_and_team_required(views.TemplateInstanceCreate.as_view()),
             name="create",
         ),
     ],
