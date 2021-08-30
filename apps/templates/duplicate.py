@@ -26,7 +26,7 @@ def get_instance_table_from_template_table(template_table, project):
     # for now, we just choose the first matching integration
     # in future, possibly let user decide the mapping
     project_integration = _get_template_integration_in_project(
-        template_integration
+        template_integration, project
     ).first()
 
     # this would fail if the user decided not to sync certain tables from the schema across

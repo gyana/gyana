@@ -87,8 +87,8 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                     ).all()
                 )
                 for widget in widgets:
-                    widget.input_table = get_instance_table_from_template_table(
-                        widget.input_table, instance.project
+                    widget.table = get_instance_table_from_template_table(
+                        widget.table, instance.project
                     )
 
                 # todo: run all the workflows
@@ -99,9 +99,9 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
 
                 instance.save()
                 Dashboard.objects.bulk_update(dashboards, ["project"])
-                Node.objects.bulk_update(dashboards, ["input_table"])
+                Node.objects.bulk_update(input_nodes, ["input_table"])
                 Workflow.objects.bulk_update(workflows, ["project"])
-                Widget.objects.bulk_update(workflows, ["table"])
+                Widget.objects.bulk_update(widgets, ["table"])
                 cloned_project.delete()
                 self.save_m2m()
 
