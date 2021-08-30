@@ -294,9 +294,9 @@ class MockFivetranClient:
         self._started = {}
 
     def create(self, service, team_id):
-        # duplicate the content of an existing connector
+        # duplicate the content of the first created existing connector
         connector = (
-            Connector.objects.filter(service=service).first()
+            Connector.objects.filter(service=service).order_by("id").first()
             or Connector.objects.filter(service=self.DEFAULT_SERVICE).first()
         )
         return {"fivetran_id": connector.fivetran_id, "schema": connector.schema}
