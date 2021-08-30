@@ -1,6 +1,7 @@
 import django_tables2 as tables
 from apps.integrations.models import Integration
 from apps.integrations.tables import PendingStatusColumn
+from django_tables2.utils import A
 
 from .models import Template, TemplateInstance
 
@@ -21,7 +22,12 @@ class TemplateInstanceTable(tables.Table):
     class Meta:
         model = TemplateInstance
         attrs = {"class": "table"}
-        fields = ["project", "template", "completed"]
+        fields = ["completed"]
+        sequence = ('template', 'completed')
+
+    template = tables.LinkColumn(
+        "project_templateinstances:detail", args=(A("project__id"), A("id"))
+    )
 
 
 class TemplateInstanceSetupTable(tables.Table):

@@ -11,7 +11,7 @@
 {% if project.has_pending_templates %}
 
   <li>
-    <a class="sidebar__link {% if app_name == "templates" %}sidebar__link--active{% endif %}"
+    <a class="sidebar__link {% if app_name == 'project_templateinstances' %}sidebar__link--active{% endif %}"
       href="{% url 'project_templateinstances:list' project.id %}"
       data-controller="tooltip"
       data-placement="right">
@@ -26,7 +26,7 @@
 
 
   <li>
-    <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
+    <a class="sidebar__link {% if app_name == 'projects' and request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
       href="{% url 'projects:detail' project.id %}"
       data-controller="tooltip"
       data-placement="right">

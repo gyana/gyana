@@ -3,40 +3,50 @@
 {% load render_table from django_tables2 %}
 
 {% block app %}
-<div class='flex flex-col items-center'>
-  <div class="max-w-2xl">
-    <h3 class="mb-4">Setup from template:</h3>
-    {% for templateinstance in object.templateinstance_set.all %}
-      {% if not templateinstance.completed %}
-        <div class="card card--none">
-          {% for table in tables %}
-            {% render_table table %}
-          {% endfor %}
-        </div>
-        
-        <div class="flex mt-4">
-          {% if object.is_ready %}
-            <form method="post" action="{{ request.get_full_path }}">
-              {% csrf_token %}
-        
-              {% include "django/forms/default_form.html" %}
-        
-              <button type="submit" class="button button--filled">
-                Finish setup
-              </button>
-            </form>
-          {% else %}
-            <div data-controller="tooltip">
-              <button disabled class="button button--filled button-disabled">
-                Finish setup
-              </button>
-              <span data-tooltip-target="body">You need to complete all integrations.</span>
-            </div>
-          {% endif %}
-        </div>
-      {% endif %}
-    {% endfor %}
-  </div>
+
+<div class="workflow-detail__header">
+  <h3 class="mr-auto flex justify-center items-center">
+    {{ object.template.name }}
+  </h3>
+  <p>{{ object.template.description }}</p>
+  <a class="link" href="{% url 'team_templates:create' project.team.id object.template.id %}"><p>View template</p></a>
+  
+</div>
+
+<div class='m-auto flex flex-col space-y-4'>
+  <h4>Add your data</h4>
+  <p>You need to import data from your integrations, to replace our sample data.</p>
+
+  {% for templateinstance in project.templateinstance_set.all %}
+    {% if not templateinstance.completed %}
+      <div class="card card--none">
+        {% for table in tables %}
+          {% render_table table %}
+        {% endfor %}
+      </div>
+      
+      <div class="flex mt-4">
+        {% if object.is_ready %}
+          <form method="post" action="{{ request.get_full_path }}">
+            {% csrf_token %}
+      
+            {% include "django/forms/default_form.html" %}
+      
+            <button type="submit" class="button button--filled">
+              Finish setup
+            </button>
+          </form>
+        {% else %}
+          <div data-controller="tooltip">
+            <button disabled class="button button--filled button-disabled">
+              Finish setup
+            </button>
+            <span data-tooltip-target="body">You need to complete all integrations.</span>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  {% endfor %}
 </div>
 
 {% endblock %}
