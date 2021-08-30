@@ -4,13 +4,16 @@ from apps.base.models import BaseModel
 from apps.teams.models import Team
 from django.db import models
 from django.urls import reverse
+from model_clone.mixins.clone import CloneMixin
 
 
-class Project(BaseModel):
+class Project(CloneMixin, BaseModel):
     name = models.CharField(max_length=255)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
     description = models.TextField(blank=True)
+
+    _clone_m2o_or_o2m_fields = ["workflow_set", "dashboard_set"]
 
     def __str__(self):
         return self.name

@@ -1,4 +1,6 @@
+from apps.dashboards.models import Dashboard
 from apps.projects.models import Project
+from apps.workflows.models import Workflow
 from django import forms
 from django.db import transaction
 
@@ -48,13 +50,25 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
 
-        # duplicate the project
+        # duplicate the project, assign workflows and to new project and throwaway
+        cloned_project = instance.template.project.make_clone()
+
+        workflows = list(cloned_project.workflow_set.all())
+        for workflow in workflows:
+            workflow.project = instance.project
+
+        dashboards = list(cloned_project.dashboard_set.all())
+        for dashboard in dashboards:
+            dashboard.project = instance.project
 
         instance.completed = True
 
         if commit:
             with transaction.atomic():
                 instance.save()
+                Dashboard.objects.bulk_update(dashboards, ["project"])
+                Workflow.objects.bulk_update(workflows, ["project"])
+                cloned_project.delete()
                 self.save_m2m()
 
         return instance
