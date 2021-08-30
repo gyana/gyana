@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="194px" height="140px" viewBox="0 0 194 140" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>google-mcf</title>
+    <defs>
+        <linearGradient x1="0.335443038%" y1="50.0031646%" x2="100.094937%" y2="50.0031646%" id="linearGradient-1">
+            <stop stop-color="#E96F0B" offset="0%"></stop>
+            <stop stop-color="#F37901" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="google-mcf" transform="translate(0.363562, 0.000000)">
+            <g id="Group-3" transform="translate(0.000000, 0.000000)">
+                <g id="google_analytics-official" transform="translate(40.636438, 52.000000)" fill-rule="nonzero">
+                    <g id="Group" transform="translate(0.404545, 0.000000)">
+                        <path d="M40.0008766,87.7820952 L7.44023304,87.7820952 C3.44154524,87.7820952 0.204378932,84.5519365 0.204378932,80.5619048 L0.204378932,64.9803175 C0.204378932,60.9902857 3.44154524,57.760127 7.44023304,57.760127 L28.0055131,57.760127 L28.0055131,34.9604444 C28.0055131,30.9704127 31.2426794,27.740254 35.2413672,27.740254 L58.0912118,27.740254 L58.0912118,87.5914286 L40.0008766,87.5914286 L40.0008766,87.7820952 Z" id="Path" fill="#FFC517"></path>
+                        <path d="M80.9410564,87.7820952 L58.0912118,87.7820952 L58.0912118,7.22019048 C58.0912118,3.23015873 61.3283781,4.96252069e-15 65.3270659,4.96252069e-15 L80.9410564,4.96252069e-15 C84.9397442,4.96252069e-15 88.1769105,3.23015873 88.1769105,7.22019048 L88.1769105,80.5619048 C87.9865302,84.5519365 84.7493639,87.7820952 80.9410564,87.7820952 L80.9410564,87.7820952 Z" id="Path" fill="#F57E02"></path>
+                        <path d="M87.9863552,57.7611767 L87.9863552,80.5616415 C87.9863552,84.5492186 84.7467724,87.7817886 80.7505445,87.7817886 L57.9006159,87.7817886 L57.9006159,27.7405648 L87.9863552,57.7611767 Z" id="Path" fill="url(#linearGradient-1)"></path>
+                    </g>
+                </g>
+                <g id="Group-2" transform="translate(0.636438, 0.000000)">
+                    <ellipse id="Oval" fill="#CC54C3" cx="29.1896104" cy="56.5985915" rx="14" ry="14.0492958"></ellipse>
+                    <ellipse id="Oval-Copy" fill="#63A151" cx="14.7896104" cy="99.9507042" rx="14" ry="14.0492958"></ellipse>
+                    <ellipse id="Oval-Copy-2" fill="#CC7F54" cx="65.9896104" cy="14.0492958" rx="14" ry="14.0492958"></ellipse>
+                </g>
+                <g id="Group-2" transform="translate(151.636438, 57.000000) scale(-1, 1) translate(-151.636438, -57.000000) translate(110.636438, 0.000000)">
+                    <ellipse id="Oval" fill="#A06CD3" cx="30.5385791" cy="56.5985915" rx="14.4705882" ry="14.0492958"></ellipse>
+                    <ellipse id="Oval-Copy" fill="#CCB354" cx="15.2640693" cy="99.9507042" rx="14.4705882" ry="14.0492958"></ellipse>
+                    <ellipse id="Oval-Copy-2" fill="#547ECC" cx="67.5189712" cy="14.0492958" rx="14.4705882" ry="14.0492958"></ellipse>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

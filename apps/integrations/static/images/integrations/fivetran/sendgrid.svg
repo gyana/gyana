@@ -1,0 +1,40 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ec1c24;
+      }
+
+      .cls-1, .cls-2, .cls-4 {
+        fill-rule: evenodd;
+      }
+
+      .cls-2 {
+        fill: #98e0f3;
+      }
+
+      .cls-3 {
+        fill: #1a81e1;
+      }
+
+      .cls-4 {
+        fill: #00b2e2;
+      }
+
+      .cls-5 {
+        fill: #009dd8;
+      }
+    </style>
+  </defs>
+  <title>2</title>
+  <g>
+    <polyline class="cls-1" points="400 0 133.3 0 133.3 133.3 0 133.3 0 400 266.7 400 266.7 266.7 400 266.7 400 0"/>
+    <polyline class="cls-1" points="0 266.7 0 133.3 133.3 133.3 0 133.3 0 266.7"/>
+    <polyline class="cls-2" points="266.7 400 133.3 400 133.3 266.7 0 266.7 0 133.3 133.3 133.3 133.3 266.7 266.7 266.7 266.7 400"/>
+    <rect class="cls-3" y="266.7" width="133.3" height="133.33"/>
+    <path class="cls-1" d="M266.7,0h0M400,266.7V133.3h0V266.7"/>
+    <polyline class="cls-4" points="400 266.7 266.7 266.7 266.7 133.3 133.3 133.3 133.3 0 266.7 0 266.7 133.3 400 133.3 400 266.7"/>
+    <rect class="cls-5" x="133.3" y="133.3" width="133.3" height="133.33"/>
+    <rect class="cls-3" x="266.7" width="133.3" height="133.33"/>
+  </g>
+</svg>
