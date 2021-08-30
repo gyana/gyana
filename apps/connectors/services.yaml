@@ -131,12 +131,6 @@ facebook_pages:
   requires_schema_prefix: f
   category: CRM & marketing
   static_config:
-google_ads:
-  name: Google Ads
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
 google_analytics:
   name: Google Analytics
   internal: f

@@ -1,0 +1,42 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #8c3123;
+      }
+
+      .cls-2 {
+        fill: #e05243;
+      }
+
+      .cls-3 {
+        fill: #5e1f18;
+      }
+
+      .cls-4 {
+        fill: #f2b0a9;
+      }
+    </style>
+  </defs>
+  <title>d</title>
+  <g id="Symbols">
+    <g id="img_avatar-logo-amazon_s3" data-name="img/avatar-logo-amazon_s3">
+      <g id="Storage_AmazonS3_AmazonS3" data-name="Storage/AmazonS3/AmazonS3">
+        <g id="Group">
+          <polygon id="Shape" class="cls-1" points="61.2 69.4 34.5 82.7 34.5 316.7 61.2 330 126.5 199.7 61.2 69.4"/>
+          <polygon id="Shape-2" data-name="Shape" class="cls-2" points="200 296.4 61.2 330 61.2 69.4 200 103 265.6 200.1 200 296.4"/>
+          <polygon id="Shape-3" data-name="Shape" class="cls-1" points="200 296.4 338.8 330 362.8 203 338.8 69.4 200 103 200 296.4"/>
+          <polygon id="Shape-4" data-name="Shape" class="cls-2" points="338.8 69.4 365.5 82.7 365.5 316.7 338.8 330 338.8 69.4"/>
+          <polygon id="Shape-5" data-name="Shape" class="cls-1" points="139.5 242.8 200 250.6 248 200.1 200 149.7 139.5 157.3 139.5 242.8"/>
+          <polygon id="Shape-6" data-name="Shape" class="cls-3" points="260.5 115.9 200 126.9 139.5 115.9 200 0 260.5 115.9"/>
+          <polygon id="Shape-7" data-name="Shape" class="cls-4" points="260.5 284.1 200 273 139.5 284.1 200 400 260.5 284.1"/>
+          <polygon id="Shape-8" data-name="Shape" class="cls-2" points="260.5 115.9 200 100.9 200 0 260.5 30.2 260.5 115.9"/>
+          <polygon id="Shape-9" data-name="Shape" class="cls-1" points="139.5 115.9 200 100.9 200 0 139.5 30.2 139.5 115.9"/>
+          <polygon id="Shape-10" data-name="Shape" class="cls-2" points="200 400 260.5 369.8 260.5 284.1 200 299.1 200 400"/>
+          <polygon id="Shape-11" data-name="Shape" class="cls-1" points="200 400 139.5 369.8 139.5 284.1 200 299.1 200 400"/>
+          <polygon id="Shape-12" data-name="Shape" class="cls-2" points="260.5 242.8 200 250.6 200 149.7 260.5 157.3 260.5 242.8"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

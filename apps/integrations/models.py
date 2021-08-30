@@ -85,5 +85,5 @@ class Integration(BaseModel):
 
     def icon(self):
         if self.kind == Integration.Kind.CONNECTOR:
-            return f"images/integrations/fivetran/{self.connector.service}.svg"
+            return f"images/integrations/fivetran/{get_services()[self.connector.service]['icon_path']}"
         return f"images/integrations/{self.kind}.svg"

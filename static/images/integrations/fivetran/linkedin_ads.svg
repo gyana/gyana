@@ -1,18 +1,29 @@
-<svg
-  aria-hidden="true"
-  class="global-nav__logo"
-  xmlns="http://www.w3.org/2000/svg"
-  width="34"
-  height="34"
-  data-supported-dps="34x34"
-  focusable="false"
->
-  <g transform="scale(.7083)" fill="none" fill-rule="evenodd">
-    <rect class="bug-text-color" fill="#FFF" x="1" y="1" width="46" height="46" rx="4"></rect>
-    <path
-      d="M0 4.01A4.01 4.01 0 014.01 0h39.98A4.01 4.01 0 0148 4.01v39.98A4.01 4.01 0 0143.99 48H4.01A4.01 4.01 0 010 43.99V4.01zM19 18.3h6.5v3.266C26.437 19.688 28.838 18 32.445 18 39.359 18 41 21.738 41 28.597V41.3h-7V30.159c0-3.906-.937-6.109-3.32-6.109-3.305 0-4.68 2.375-4.68 6.109V41.3h-7v-23zM7 41h7V18H7v23zm8-30.5a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"
-      class="background"
-      fill="#0077B5"
-    ></path>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <style>
+      .cls-1 {
+        isolation: isolate;
+      }
+
+      .cls-2 {
+        fill: #0277b5;
+      }
+
+      .cls-2, .cls-3 {
+        fill-rule: evenodd;
+      }
+
+      .cls-3 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <title>2</title>
+  <g>
+    <g class="cls-1">
+      <path class="cls-2" d="M367.5,3.4H32.4c-16,0-29,12.7-29,28.3V368.4c0,15.7,13,28.4,29,28.4H367.5c16,0,29.1-12.7,29.1-28.4V31.8c0-15.6-13.1-28.3-29.1-28.3"/>
+    </g>
+    <path class="cls-3" d="M61.7,338.6H120V150.9H61.7Zm29.2-281A33.8,33.8,0,1,1,57,91.4,33.8,33.8,0,0,1,90.8,57.6Z"/>
+    <path class="cls-3" d="M156.6,150.9h56v25.6h.8c7.8-14.8,26.8-30.3,55.2-30.3,59.1,0,70,38.9,70,89.4v103H280.2V247.3c0-21.8-.4-49.8-30.3-49.8s-35,23.7-35,48.2v92.9H156.6V150.9"/>
   </g>
 </svg>

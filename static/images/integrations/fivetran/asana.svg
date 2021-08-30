@@ -1,1 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="2500" height="2311" viewBox="781.361 0 944.893 873.377"><radialGradient id="a" cx="943.992" cy="1221.416" r=".663" gradientTransform="matrix(944.8934 0 0 -873.3772 -890717.875 1067234.75)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffb900"/><stop offset=".6" stop-color="#f95d8f"/><stop offset=".999" stop-color="#f95353"/></radialGradient><path fill="url(#a)" d="M1520.766 462.371c-113.508 0-205.508 92-205.508 205.488 0 113.499 92 205.518 205.508 205.518 113.489 0 205.488-92.019 205.488-205.518 0-113.488-91.999-205.488-205.488-205.488zm-533.907.01c-113.489.01-205.498 91.99-205.498 205.488 0 113.489 92.009 205.498 205.498 205.498 113.498 0 205.508-92.009 205.508-205.498 0-113.499-92.01-205.488-205.518-205.488h.01zm472.447-256.883c0 113.489-91.999 205.518-205.488 205.518-113.508 0-205.508-92.029-205.508-205.518S1140.31 0 1253.817 0c113.489 0 205.479 92.009 205.479 205.498h.01z"/></svg>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 400 400">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#radial-gradient);
+      }
+
+      .cls-2 {
+        fill: url(#radial-gradient-2);
+      }
+
+      .cls-3 {
+        fill: url(#radial-gradient-3);
+      }
+
+      .cls-4 {
+        fill: none;
+      }
+    </style>
+    <radialGradient id="radial-gradient" cx="199.04" cy="231.14" r="216.8" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fcb615"/>
+      <stop offset="0.6" stop-color="#ef5e8e"/>
+      <stop offset="1" stop-color="#f05756"/>
+    </radialGradient>
+    <radialGradient id="radial-gradient-2" cx="198.74" cy="239.36" r="238.35" xlink:href="#radial-gradient"/>
+    <radialGradient id="radial-gradient-3" cx="198.44" cy="238.69" r="222.76" xlink:href="#radial-gradient"/>
+  </defs>
+  <title>1</title>
+  <path class="cls-1" d="M174,297.9a87,87,0,1,1-87-87A87,87,0,0,1,174,297.9Z"/>
+  <path class="cls-2" d="M200,189.1a87,87,0,1,1,87-87A87,87,0,0,1,200,189.1Z"/>
+  <path class="cls-3" d="M400,297.9a87,87,0,1,1-87-87A87,87,0,0,1,400,297.9Z"/>
+  <path class="cls-4" d="M313,210.9a87,87,0,1,0,87,87A87,87,0,0,0,313,210.9Zm-226,0a87,87,0,1,0,87,87A87,87,0,0,0,87,210.9ZM200,15.1a87,87,0,1,0,87,87A87,87,0,0,0,200,15.1Z"/>
+</svg>
