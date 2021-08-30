@@ -73,8 +73,8 @@ class TemplateInstanceList(ProjectMixin, SingleTableView):
         return self.project.templateinstance_set.all()
 
 
-class TemplateInstanceDetail(ProjectMixin, MultiTableMixin, TurboUpdateView):
-    template_name = "templateinstances/detail.html"
+class TemplateInstanceUpdate(ProjectMixin, MultiTableMixin, TurboUpdateView):
+    template_name = "templateinstances/update.html"
     model = TemplateInstance
     form_class = TemplateInstanceUpdateForm
     tables = [TemplateInstanceSetupTable, TemplateInstanceIntegrationTable]
@@ -101,3 +101,6 @@ class TemplateInstanceDetail(ProjectMixin, MultiTableMixin, TurboUpdateView):
         project_integrations = self.object.project.integration_set.all()
 
         return [template_integrations, project_integrations]
+
+    def get_success_url(self):
+        return reverse("projects:detail", args=(self.project.id,))
