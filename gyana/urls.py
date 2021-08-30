@@ -33,6 +33,7 @@ from apps.nodes import urls as node_urls
 from apps.projects import urls as project_urls
 from apps.sheets import urls as sheet_urls
 from apps.teams import urls as team_urls
+from apps.templates import urls as template_urls
 from apps.uploads import urls as upload_urls
 from apps.users import urls as users_urls
 from apps.widgets import urls as widget_urls
@@ -68,6 +69,7 @@ teams_urlpatterns = [
     path("<hashid:team_id>/projects/", include(project_urls.team_urlpatterns)),
     path("<hashid:team_id>/members/", include(team_urls.membership_urlpatterns)),
     path("<hashid:team_id>/appsumo/", include(appsumo_urls.team_urlpatterns)),
+    path("<hashid:team_id>/templates/", include(template_urls.team_urlpatterns)),
 ]
 
 

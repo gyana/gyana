@@ -1,8 +1,7 @@
-{% extends "web/app/settings_base.html" %}
+{% extends "teams/base.html" %}
 {% load render_table from django_tables2 %}
-{% block app %}
-<h1>Listing</h1>
-<a href="{% url 'templates:create' %}"
-  >Create</a
->
-{% render_table table %} {% endblock %} 
+{% block tab %}
+  <div class="card card--none">
+    {% render_table table %}
+  </div>
+{% endblock %} 
