@@ -9,7 +9,7 @@ INTEGRATION_STATE_TO_ICON = {
     Integration.State.UPDATE: ICONS["warning"],
     Integration.State.LOAD: ICONS["loading"],
     Integration.State.ERROR: ICONS["error"],
-    Integration.State.DONE: ICONS["success"],
+    Integration.State.DONE: ICONS["warning"],
 }
 
 INTEGRATION_STATE_TO_MESSAGE = {
@@ -24,8 +24,12 @@ class PendingStatusColumn(Column):
     def render(self, record, table, **kwargs):
         context = getattr(table, "context", Context())
 
-        context["icon"] = INTEGRATION_STATE_TO_ICON[record.state]
-        context["text"] = INTEGRATION_STATE_TO_MESSAGE[record.state]
+        if record.ready:
+            context["icon"] = ICONS["success"]
+            context["text"] = "Success"
+        else:         
+            context["icon"] = INTEGRATION_STATE_TO_ICON[record.state]
+            context["text"] = INTEGRATION_STATE_TO_MESSAGE[record.state]
 
         # wrap status in turbo frame to fetch possible update
         if (
