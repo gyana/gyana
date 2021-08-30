@@ -149,11 +149,11 @@
     "pk": 5,
     "fields": {
       "created": "2021-08-30T18:56:05.348Z",
-      "updated": "2021-08-30T19:20:44.484Z",
+      "updated": "2021-08-30T19:29:42.040Z",
       "name": "Admin Templates",
       "override_row_limit": null,
-      "row_count": 0,
-      "row_count_calculated": "2021-08-30T19:20:44.484Z"
+      "row_count": 12928,
+      "row_count_calculated": "2021-08-30T19:29:42.040Z"
     }
   },
   {
@@ -458,13 +458,13 @@
     "pk": 13,
     "fields": {
       "created": "2021-08-30T19:05:46.410Z",
-      "updated": "2021-08-30T19:21:43.815Z",
+      "updated": "2021-08-30T19:29:42.002Z",
       "project": 6,
       "kind": "connector",
       "name": "Google Analytics",
-      "state": "update",
-      "ready": false,
-      "created_ready": null,
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-30T19:29:42.000Z",
       "created_by": 2
     }
   },
@@ -478,6 +478,70 @@
       "project": 2,
       "last_run": null,
       "data_updated": "2021-08-13T09:02:28.456Z"
+    }
+  },
+  {
+    "model": "dashboards.dashboard",
+    "pk": 1,
+    "fields": {
+      "created": "2021-08-30T19:29:47.252Z",
+      "updated": "2021-08-30T19:31:28.929Z",
+      "name": "Untitled",
+      "project": 6,
+      "shared_status": "private",
+      "shared_id": null,
+      "width": 1200,
+      "height": 840
+    }
+  },
+  {
+    "model": "widgets.widget",
+    "pk": 1,
+    "fields": {
+      "created": "2021-08-30T19:29:50.988Z",
+      "updated": "2021-08-30T19:31:11.874Z",
+      "dashboard": 1,
+      "table": 12,
+      "text_content": null,
+      "kind": "msline",
+      "aggregator": "",
+      "label": "date",
+      "value": null,
+      "name": "Bounce rate and session duration",
+      "sort_by": "label",
+      "sort_ascending": true,
+      "width": 1200,
+      "height": 435,
+      "x": 0,
+      "y": 0,
+      "z": null,
+      "z_aggregator": null,
+      "stack_100_percent": false
+    }
+  },
+  {
+    "model": "widgets.widget",
+    "pk": 2,
+    "fields": {
+      "created": "2021-08-30T19:31:28.926Z",
+      "updated": "2021-08-30T19:33:18.656Z",
+      "dashboard": 1,
+      "table": 13,
+      "text_content": null,
+      "kind": "mscolumn2d",
+      "aggregator": "",
+      "label": "operating_system",
+      "value": null,
+      "name": "New users and session by device",
+      "sort_by": "value",
+      "sort_ascending": false,
+      "width": 1200,
+      "height": 405,
+      "x": 0,
+      "y": 435,
+      "z": null,
+      "z_aggregator": null,
+      "stack_100_percent": false
     }
   },
   {
@@ -623,6 +687,176 @@
       "intermediate_node": null,
       "num_rows": 15,
       "data_updated": "2021-08-20T15:03:30.520Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 9,
+    "fields": {
+      "created": "2021-08-30T19:29:18.765Z",
+      "updated": "2021-08-30T19:29:18.765Z",
+      "bq_table": "adwords_campaigns",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 204,
+      "data_updated": "2021-08-30T19:29:18.765Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 10,
+    "fields": {
+      "created": "2021-08-30T19:29:18.883Z",
+      "updated": "2021-08-30T19:29:18.883Z",
+      "bq_table": "adwords_hourly_stats",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 4333,
+      "data_updated": "2021-08-30T19:29:18.883Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 11,
+    "fields": {
+      "created": "2021-08-30T19:29:18.996Z",
+      "updated": "2021-08-30T19:29:18.996Z",
+      "bq_table": "adwords_keyword",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 423,
+      "data_updated": "2021-08-30T19:29:18.996Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 12,
+    "fields": {
+      "created": "2021-08-30T19:29:19.102Z",
+      "updated": "2021-08-30T19:29:19.102Z",
+      "bq_table": "audience_overview",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 204,
+      "data_updated": "2021-08-30T19:29:19.102Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 13,
+    "fields": {
+      "created": "2021-08-30T19:29:19.199Z",
+      "updated": "2021-08-30T19:29:19.199Z",
+      "bq_table": "browser_and_operating_system_overview",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 2415,
+      "data_updated": "2021-08-30T19:29:19.199Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 14,
+    "fields": {
+      "created": "2021-08-30T19:29:19.317Z",
+      "updated": "2021-08-30T19:29:19.317Z",
+      "bq_table": "campaign_performance",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 351,
+      "data_updated": "2021-08-30T19:29:19.317Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 15,
+    "fields": {
+      "created": "2021-08-30T19:29:19.414Z",
+      "updated": "2021-08-30T19:29:19.414Z",
+      "bq_table": "channel_traffic",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 907,
+      "data_updated": "2021-08-30T19:29:19.414Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 16,
+    "fields": {
+      "created": "2021-08-30T19:29:19.512Z",
+      "updated": "2021-08-30T19:29:19.512Z",
+      "bq_table": "events_overview",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 257,
+      "data_updated": "2021-08-30T19:29:19.513Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 17,
+    "fields": {
+      "created": "2021-08-30T19:29:19.579Z",
+      "updated": "2021-08-30T19:29:19.579Z",
+      "bq_table": "social_media_acquisitions",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 589,
+      "data_updated": "2021-08-30T19:29:19.579Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 18,
+    "fields": {
+      "created": "2021-08-30T19:29:19.676Z",
+      "updated": "2021-08-30T19:29:19.676Z",
+      "bq_table": "traffic",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 3245,
+      "data_updated": "2021-08-30T19:29:19.676Z"
     }
   },
   {
@@ -1478,6 +1712,54 @@
       "unpivot_column": null,
       "sentiment_column": null,
       "parents": []
+    }
+  },
+  {
+    "model": "columns.functioncolumn",
+    "pk": 1,
+    "fields": {
+      "created": "2021-08-30T19:30:10.265Z",
+      "updated": "2021-08-30T19:30:10.265Z",
+      "column": "bounce_rate",
+      "function": "mean",
+      "node": null,
+      "widget": 1
+    }
+  },
+  {
+    "model": "columns.functioncolumn",
+    "pk": 2,
+    "fields": {
+      "created": "2021-08-30T19:30:48.636Z",
+      "updated": "2021-08-30T19:30:48.636Z",
+      "column": "avg_session_duration",
+      "function": "mean",
+      "node": null,
+      "widget": 1
+    }
+  },
+  {
+    "model": "columns.functioncolumn",
+    "pk": 3,
+    "fields": {
+      "created": "2021-08-30T19:32:20.212Z",
+      "updated": "2021-08-30T19:32:35.993Z",
+      "column": "new_users",
+      "function": "sum",
+      "node": null,
+      "widget": 2
+    }
+  },
+  {
+    "model": "columns.functioncolumn",
+    "pk": 4,
+    "fields": {
+      "created": "2021-08-30T19:32:35.996Z",
+      "updated": "2021-08-30T19:32:35.996Z",
+      "column": "sessions",
+      "function": "sum",
+      "node": null,
+      "widget": 2
     }
   },
   {
