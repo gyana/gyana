@@ -32,7 +32,7 @@
     "pk": 2,
     "fields": {
       "password": "pbkdf2_sha256$260000$N2BmQRuSSYGvpQnPKCw9fj$UhUCkfx7qdzWPNYP/XUbi3L4hvP5/7f+N4nmrqTPceM=",
-      "last_login": "2021-08-30T19:05:35.082Z",
+      "last_login": "2021-08-30T19:20:06.909Z",
       "is_superuser": true,
       "username": "admin",
       "first_name": "",
@@ -149,11 +149,11 @@
     "pk": 5,
     "fields": {
       "created": "2021-08-30T18:56:05.348Z",
-      "updated": "2021-08-30T19:17:36.782Z",
+      "updated": "2021-08-30T19:20:44.484Z",
       "name": "Admin Templates",
       "override_row_limit": null,
       "row_count": 0,
-      "row_count_calculated": "2021-08-30T19:17:36.782Z"
+      "row_count_calculated": "2021-08-30T19:20:44.484Z"
     }
   },
   {
@@ -458,11 +458,11 @@
     "pk": 13,
     "fields": {
       "created": "2021-08-30T19:05:46.410Z",
-      "updated": "2021-08-30T19:17:35.602Z",
+      "updated": "2021-08-30T19:21:43.815Z",
       "project": 6,
       "kind": "connector",
       "name": "Google Analytics",
-      "state": "done",
+      "state": "update",
       "ready": false,
       "created_ready": null,
       "created_by": 2
@@ -1638,14 +1638,14 @@
     "pk": 9,
     "fields": {
       "created": "2021-08-30T19:05:46.412Z",
-      "updated": "2021-08-30T19:17:30.124Z",
+      "updated": "2021-08-30T19:20:38.338Z",
       "integration": 13,
       "service": "google_analytics",
       "fivetran_id": "preshow_regardless",
       "schema": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "fivetran_authorized": true,
-      "sync_task_id": "04ccd5f8-801e-444d-94f1-9b3b5f73619a",
-      "sync_started": "2021-08-30T19:17:30.121Z"
+      "sync_task_id": null,
+      "sync_started": null
     }
   },
   {
