@@ -1,8 +1,13 @@
 from apps.projects.access import login_and_project_required
+from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from . import frames, views
-from .access import dashboard_is_public, login_and_dashboard_required
+from .access import (
+    dashboard_is_in_template,
+    dashboard_is_public,
+    login_and_dashboard_required,
+)
 
 app_name = "dashboards"
 
@@ -23,6 +28,11 @@ urlpatterns = [
         "<hashid:pk>/share",
         login_and_dashboard_required(frames.DashboardShare.as_view()),
         name="share",
+    ),
+    path(
+        "<hashid:pk>/preview",
+        dashboard_is_in_template(frames.DashboardPreview.as_view()),
+        name="preview",
     ),
 ]
 

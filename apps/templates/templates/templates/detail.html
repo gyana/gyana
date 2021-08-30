@@ -1,4 +1,5 @@
 {% extends "web/app/app_base.html" %}
+{% load static %}
 {% block app %}
 <div class="page-header">
   <div class="mr-auto">
@@ -6,26 +7,48 @@
     <h1>{{ object.name }}</h1>
     <p>{{ object.description }}</p>
   </div>
-</div>
-<nav id='tabbar' class="tabbar">
-  <a class="tabbar__link tabbar__link--active">
-    Preview
-  </a>
-</nav>
-<div class="flex flex-row flex-1 overflow-hidden">
-  <div class="bg-white overflow-auto w-100 border-gray border-0 border-r flex-shrink-0">
-    <h3 class="px-4 py-2">Dashboards</h3>
-    <hr />
-    <ul class="px-4 py-2">
-        {% for dashboard in object.project.dashboard_set.all %}
-        <li class="my-2">
-        <p class="truncate hover:underline {% if True %}text-blue underline{% endif %}">
-            <a href="?dashboard_id={{ dashboard.id }}">{{ dashboard.name }}</a>
-        </p>
-        </li>
-        {% endfor %}
-    </ul>
+  <div class="flex ml-4">
+    <button class="button button--outline button--sm">
+      Create
+    </button>
   </div>
+</div>
+<div class="flex border-b border-gray p-4 pt-0">
+  {% for integration in object.project.integration_set.all %}
+    <div data-controller="tooltip">
+      <img class="h-12 w-12 mr-4" src="{% static integration.icon %}" title="{{ object.name }}" />
+      <span data-tooltip-target="body">{{ integration.display_kind }}</span>
+    </div>
+  {% endfor %}
+</div>
+<div class="flex flex-row flex-1 overflow-hidden w-full">
+  {% with request.GET.dashboard_id|default:object.project.dashboard_set.first.id as dashboard_id %}
+    {% if object.project.dashboard_set.count > 1 %}
+      <div class="bg-white overflow-auto w-100 flex-shrink-0">
+        <h3 class="px-4 py-2">Dashboards</h3>
+        <hr />
+        <ul class="px-4 py-2">
+            {% for dashboard in object.project.dashboard_set.all %}
+            <li class="my-2">
+            <p class="truncate hover:underline {% if dashboard.id|stringformat:'i' == dashboard_id %}text-blue underline{% endif %}">
+                <a href="?dashboard_id={{ dashboard.id }}">{{ dashboard.name }}</a>
+            </p>
+            </li>
+            {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+    <div class="pad overflow-scroll w-full">
+      <div class="card card--inline">
+        <turbo-frame id="dashboard:preview" src="{% url 'dashboards:preview' dashboard_id %}">
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+            <p class='placeholder-scr__title'>Loading preview...</p>
+          </div>
+        </turbo-frame>
+      </div>
+    </div>
+  {% endwith %}
 </div>
 
 {% endblock %} 

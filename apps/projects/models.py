@@ -30,6 +30,10 @@ class Project(BaseModel):
 
         return Dashboard.objects.filter(project=self).count()
 
+    @property
+    def is_template(self):
+        return hasattr(self, "template")
+
     @cached_property
     def num_rows(self):
         from apps.tables.models import Table
