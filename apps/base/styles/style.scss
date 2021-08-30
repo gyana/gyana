@@ -8,14 +8,12 @@
 // SCSS specific code/styles. Functions/mixins/variables belong here.
 @use "utilities";
 
-// Components responsible for site-wide layout.
-@use "layout";
-
 // Reusable components, accompanied by usage documentation.
 @use "components";
 
-// Page-specific code, not used anywhere else but a specific view or a set of them..
-@use "pages";
+// App-specific code, not used anywhere else but a specific view or a set of them.
+// At some point, would be nice to bundle split per app
+@use "apps";
 
 // Third-party libraries.
 @use "vendors/libcodemirror";

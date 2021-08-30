@@ -128,7 +128,7 @@ We believe it is possible for a small team to build world-class software,
 that customers love, fast, by being smart, efficient and practical about how
 we do things.
 
-Mariusz has documented our approach to [styles](assets/styles/STYLES.md).
+Mariusz has documented our approach to [styles](apps/base/styles/STYLES.md).
 
 David has written a [blog](https://davidkell.substack.com/p/davids-opinionated-guide-for-building)
 post about building MVPs fast with Django.
