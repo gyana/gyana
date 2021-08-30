@@ -34,6 +34,13 @@ class Project(BaseModel):
     def is_template(self):
         return hasattr(self, "template")
 
+    @property
+    def is_ready(self):
+        return (
+            self.templateinstance_set.count() == 0
+            or self.templateinstance_set.filter(completed=True).count() > 1
+        )
+
     @cached_property
     def num_rows(self):
         from apps.tables.models import Table
