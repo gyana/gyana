@@ -326,8 +326,9 @@ class MockFivetranClient:
             return _schemas_to_obj(self._schema_cache[connector.id])
 
         service = connector.service if connector is not None else "google_analytics"
+        fivetran_id = connector.fivetran_id if connector is not None else "humid_rifle"
 
-        with open(f"cypress/fixtures/fivetran/{service}_schema.json", "r") as f:
+        with open(f"cypress/fixtures/fivetran/{service}_{fivetran_id}.json", "r") as f:
             return _schemas_to_obj(json.load(f))
 
     def update_schemas(self, connector, schemas):
