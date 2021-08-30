@@ -21,6 +21,20 @@ def template_integration_is_ready_in_project(template_integration, project):
     )
 
 
+def get_instance_table_from_template_table(template_table, project):
+    template_integration = template_table.integration
+    # for now, we just choose the first matching integration
+    # in future, possibly let user decide the mapping
+    project_integration = _get_template_integration_in_project(
+        template_integration
+    ).first()
+
+    # this would fail if the user decided not to sync certain tables from the schema across
+    return project_integration.table_set.filter(
+        bq_table=template_table.bq_table
+    ).first()
+
+
 def get_create_url_in_project(template_integration, project):
     if template_integration.kind == Integration.Kind.CONNECTOR:
         return f'{reverse("project_integrations_connectors:create", args=(project.id,))}?service={template_integration.connector.service}'
