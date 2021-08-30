@@ -149,11 +149,11 @@
     "pk": 5,
     "fields": {
       "created": "2021-08-30T18:56:05.348Z",
-      "updated": "2021-08-30T18:56:05.779Z",
+      "updated": "2021-08-30T19:17:36.782Z",
       "name": "Admin Templates",
       "override_row_limit": null,
       "row_count": 0,
-      "row_count_calculated": null
+      "row_count_calculated": "2021-08-30T19:17:36.782Z"
     }
   },
   {
@@ -458,11 +458,11 @@
     "pk": 13,
     "fields": {
       "created": "2021-08-30T19:05:46.410Z",
-      "updated": "2021-08-30T19:05:46.410Z",
+      "updated": "2021-08-30T19:17:35.602Z",
       "project": 6,
       "kind": "connector",
       "name": "Google Analytics",
-      "state": "update",
+      "state": "done",
       "ready": false,
       "created_ready": null,
       "created_by": 2
@@ -1638,14 +1638,14 @@
     "pk": 9,
     "fields": {
       "created": "2021-08-30T19:05:46.412Z",
-      "updated": "2021-08-30T19:05:54.605Z",
+      "updated": "2021-08-30T19:17:30.124Z",
       "integration": 13,
       "service": "google_analytics",
-      "fivetran_id": "humid_rifle",
+      "fivetran_id": "preshow_regardless",
       "schema": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "fivetran_authorized": true,
-      "sync_task_id": null,
-      "sync_started": null
+      "sync_task_id": "04ccd5f8-801e-444d-94f1-9b3b5f73619a",
+      "sync_started": "2021-08-30T19:17:30.121Z"
     }
   },
   {
