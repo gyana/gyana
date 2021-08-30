@@ -7,14 +7,22 @@
 </div>
 
 <div class="flex mt-4">
-  <form method="post">
-    {% csrf_token %}
+  {% if object.is_ready %}
+    <form method="post" action="{{ request.get_full_path }}">
+      {% csrf_token %}
 
-    {% include "django/forms/default_form.html" %}
+      {% include "django/forms/default_form.html" %}
 
-    <button type="submit" class="button button--filled w-full">
-      Create
-    </button>
-
-  </form>
+      <button type="submit" class="button button--filled">
+        Finish setup
+      </button>
+    </form>
+  {% else %}
+    <div data-controller="tooltip">
+      <button disabled class="button button--filled button-disabled">
+        Finish setup
+      </button>
+      <span data-tooltip-target="body">You need to complete all integrations.</span>
+    </div>
+  {% endif %}
 </div>

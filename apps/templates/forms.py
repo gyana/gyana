@@ -1,3 +1,5 @@
+from typing import ValuesView
+
 from apps.projects.models import Project
 from django import forms
 from django.db import transaction
@@ -40,6 +42,10 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
     class Meta:
         model = TemplateInstance
         fields = []
+
+    def clean(self):
+        if not self.instance.is_ready:
+            raise forms.ValidationError("Not all data sources are ready yet.")
 
     def save(self, commit=True):
         instance = super().save(commit=False)
