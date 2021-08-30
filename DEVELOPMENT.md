@@ -104,11 +104,27 @@ Run `just export` and push to main. View errors on
 
 ## Javascript
 
+Instead of building a single page web app, we progressively add interactivity
+to pages with different techniques. Choosing which one to use in each situation
+is an art but you get better at it over time:
+
+- Turbo Drive - enabled automatically for all clicks and submissions, you might
+  need to disable e.g. for external links
+- Turbo Frames - lazy loading content and embedding certain UIs (e.g. modals)
+- Turbo Streams - update other parts of a page on form submission
+- Stimulus - lightweight interactivity
+- React - if you need client side state or a library from the React ecosystem -
+  wrap in a web component, interact with APIs
+- Django widgets - using React or Stimulus
+- React wrapped - a React powered web component that has plain HTML (generated
+  by Django) as children - see `<gy-widget>`
+- Celery Progress - show progress of long running task using the `celery_progress
+
 ## Philosophy
 
 > Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away.
 
-We believe it is possible for a small team to build world-class software
+We believe it is possible for a small team to build world-class software,
 that customers love, fast, by being smart, efficient and practical about how
 we do things.
 
