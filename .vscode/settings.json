@@ -3,10 +3,7 @@
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
   "editor.linkedEditing": true,
-  "editor.rulers": [
-    80,
-    120,
-  ],
+  "editor.rulers": [80, 120],
   "[python]": {
     "editor.codeActionsOnSave": {
       "source.organizeImports": true
@@ -23,9 +20,9 @@
   },
   "files.associations": {
     "**/*.html": "html",
-    "**/templates/**/*.html": "django-html",
-    "**/templates/**/*.ts": "typescript",
-    "**/templates/**/*.tsx": "typescript",
-    "**/templates/**/*": "django-txt"
+    "apps/*/templates/**/*.html": "django-html",
+    "apps/*/templates/**/*.ts": "typescript",
+    "apps/*/templates/**/*.tsx": "typescript",
+    "apps/*/templates/**/*": "django-txt"
   }
 }
