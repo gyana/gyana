@@ -5,10 +5,18 @@ from django.urls import reverse
 
 
 class Template(BaseModel):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.OneToOneField(Project, on_delete=models.CASCADE)
     templated_projects = models.ManyToManyField(
         Project, related_name="templates", through="TemplateInstance"
     )
+
+    @property
+    def name(self):
+        return self.project.name
+
+    @property
+    def description(self):
+        return self.project.description
 
     def __str__(self):
         return self.project.name

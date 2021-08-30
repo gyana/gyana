@@ -19,10 +19,10 @@
     "django-html": "html"
   },
   "files.associations": {
-    "**/templates/**/*.html": "django-html",
-    "**/templates/**/*.ts": "typescript",
-    "**/templates/**/*.tsx": "typescript",
-    "**/templates/**/*": "django-txt",
-    "**/*.html": "html"
+    "**/*.html": "html",
+    "apps/*/templates/**/*.html": "django-html",
+    "apps/*/templates/**/*.ts": "typescript",
+    "apps/*/templates/**/*.tsx": "typescript",
+    "apps/*/templates/**/*": "django-txt"
   }
 }
