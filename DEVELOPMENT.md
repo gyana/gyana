@@ -101,3 +101,37 @@ For more in-depth information see [DEPLOYMENT.md](DEPLOYMENT.md)
 
 Run `just export` and push to main. View errors on
 [Heroku](https://dashboard.heroku.com/apps/gyana-mvp).
+
+## Javascript
+
+## Philosophy
+
+> Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away.
+
+We believe it is possible for a small team to build world-class software
+that customers love, fast, by being smart, efficient and practical about how
+we do things.
+
+Mariusz has documented our approach to [styles](assets/styles/STYLES.md).
+
+David has written a [blog](https://davidkell.substack.com/p/davids-opinionated-guide-for-building)
+post about building MVPs fast with Django.
+
+Our application architecture is driven by two ideas:
+
+- Decouple features into separate Django apps with no more than 1-2k lines of code,
+  typically built around a single core model
+- Make the layout of each app as predictable as possible, including file names
+  and code structure
+
+## Inspiration
+
+- Interactive pages with less javascript - [Hotwire](https://hotwire.dev/)
+- Our boilerplate generator - [SaaS Pegasus](https://www.saaspegasus.com/)
+- Using JS in Django - [Modern JavaScript for Django Developers](https://www.saaspegasus.com/guides/modern-javascript-for-django-developers/)
+- Pragmatic Django for fast development - [Django for Startup Founders](https://alexkrupp.typepad.com/sensemaking/2021/06/django-for-startup-founders-a-better-software-architecture-for-saas-startups-and-consumer-apps.html)
+- Django docs - [Django documentation](https://docs.djangoproject.com/en/3.2/)
+- Django packages reference - [Django Packages](https://djangopackages.org/)
+- Detailed docs for class based views - [Classy CBV](https://ccbv.co.uk/)
+- Prototyping layouts - [Tailwind CSS](https://tailwindcss.com/)
+- How we do CSS classes - [BEM — Block Element Modifier](http://getbem.com/)
