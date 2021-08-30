@@ -120,6 +120,9 @@ SENDGRID_API_KEY = {{ sendgrid_api_secret }}
 
 The database and redis config variable are generated automatically by the add-ons.
 
+Remember to add [Honeybadger support](https://docs.honeybadger.io/guides/heroku/)
+for Heroku errors and deployments.
+
 ### GCP
 
 The MVP/release and production environments run in separate environments, within
