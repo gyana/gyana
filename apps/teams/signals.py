@@ -12,4 +12,6 @@ def delete_bigquery_dataset(sender, instance, *args, **kwargs):
     if settings.MOCK_REMOTE_OBJECT_DELETION:
         return
 
-    bigquery_client().delete_dataset(instance.tables_dataset_id, not_found_ok=True)
+    bigquery_client().delete_dataset(
+        instance.tables_dataset_id, delete_contents=True, not_found_ok=True
+    )

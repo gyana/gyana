@@ -25,4 +25,4 @@ CLOUD_NAMESPACE = "cypress"
 # Disable admin-style browsable api endpoint
 REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = ("rest_framework.renderers.JSONRenderer",)
 
-MOCK_REMOTE_OBJECT_DELETION = False
+MOCK_REMOTE_OBJECT_DELETION = True

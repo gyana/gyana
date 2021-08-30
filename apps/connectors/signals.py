@@ -20,6 +20,8 @@ def delete_fivetran_connector(sender, instance, *args, **kwargs):
         datasets = {f"{instance.schema}_{id_}" for id_ in datasets}
 
     for dataset in datasets:
-        bigquery_client().delete_dataset(dataset, not_found_ok=True)
+        bigquery_client().delete_dataset(
+            dataset, delete_contents=True, not_found_ok=True
+        )
 
     fivetran_client().delete(instance)
