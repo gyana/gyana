@@ -17,26 +17,13 @@ class TemplateList(TeamMixin, SingleTableView):
     paginate_by = 20
 
 
-class TemplateCreate(TurboCreateView):
+class TemplateCreate(TeamMixin, TurboCreateView):
     template_name = "templates/create.html"
     model = Template
     form_class = TemplateForm
     success_url = reverse_lazy("templates:list")
 
 
-class TemplateDetail(DetailView):
+class TemplateDetail(TeamMixin, DetailView):
     template_name = "templates/detail.html"
     model = Template
-
-
-class TemplateUpdate(TurboUpdateView):
-    template_name = "templates/update.html"
-    model = Template
-    form_class = TemplateForm
-    success_url = reverse_lazy("templates:list")
-
-
-class TemplateDelete(DeleteView):
-    template_name = "templates/delete.html"
-    model = Template
-    success_url = reverse_lazy("templates:list")

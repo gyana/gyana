@@ -1,9 +1,31 @@
-{% extends "web/app/settings_base.html" %}
-<!---->
+{% extends "web/app/app_base.html" %}
 {% block app %}
-<h1>Detail</h1>
-<p>{{ object.name }}</p>
-<a href="{% url 'templates:list' %}"
-  >List</a
->
+<div class="page-header">
+  <div class="mr-auto">
+    <a class="link" href="{% url 'team_templates:list' team.id %}"><p>Back</p></a>
+    <h1>{{ object.name }}</h1>
+    <p>{{ object.description }}</p>
+  </div>
+</div>
+<nav id='tabbar' class="tabbar">
+  <a class="tabbar__link tabbar__link--active">
+    Preview
+  </a>
+</nav>
+<div class="flex flex-row flex-1 overflow-hidden">
+  <div class="bg-white overflow-auto w-100 border-gray border-0 border-r flex-shrink-0">
+    <h3 class="px-4 py-2">Dashboards</h3>
+    <hr />
+    <ul class="px-4 py-2">
+        {% for dashboard in object.project.dashboard_set.all %}
+        <li class="my-2">
+        <p class="truncate hover:underline {% if True %}text-blue underline{% endif %}">
+            <a href="?dashboard_id={{ dashboard.id }}">{{ dashboard.name }}</a>
+        </p>
+        </li>
+        {% endfor %}
+    </ul>
+  </div>
+</div>
+
 {% endblock %} 

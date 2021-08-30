@@ -21,9 +21,6 @@ class Template(BaseModel):
     def __str__(self):
         return self.project.name
 
-    def get_absolute_url(self):
-        return reverse("templates:detail", args=(self.pk,))
-
 
 class TemplateInstance(BaseModel):
 

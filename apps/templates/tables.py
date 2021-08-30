@@ -9,4 +9,7 @@ class TemplateTable(tables.Table):
         attrs = {"class": "table"}
         fields = ("name", "description")
 
-    name = tables.Column()
+    # need access to team id
+    name = tables.TemplateColumn(
+        '<a href="{% url "team_templates:detail" team.id record.id %}">{{ record.name }}</a>'
+    )
