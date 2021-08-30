@@ -32,7 +32,7 @@
     "pk": 2,
     "fields": {
       "password": "pbkdf2_sha256$260000$N2BmQRuSSYGvpQnPKCw9fj$UhUCkfx7qdzWPNYP/XUbi3L4hvP5/7f+N4nmrqTPceM=",
-      "last_login": "2021-07-27T12:09:55.602Z",
+      "last_login": "2021-08-30T19:05:35.082Z",
       "is_superuser": true,
       "username": "admin",
       "first_name": "",
@@ -451,6 +451,21 @@
       "ready": true,
       "created_ready": "2021-08-20T15:03:45.477Z",
       "created_by": 1
+    }
+  },
+  {
+    "model": "integrations.integration",
+    "pk": 13,
+    "fields": {
+      "created": "2021-08-30T19:05:46.410Z",
+      "updated": "2021-08-30T19:05:46.410Z",
+      "project": 6,
+      "kind": "connector",
+      "name": "Google Analytics",
+      "state": "update",
+      "ready": false,
+      "created_ready": null,
+      "created_by": 2
     }
   },
   {
@@ -1613,6 +1628,21 @@
       "service": "shopify",
       "fivetran_id": "overtime_froze",
       "schema": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "fivetran_authorized": true,
+      "sync_task_id": null,
+      "sync_started": null
+    }
+  },
+  {
+    "model": "connectors.connector",
+    "pk": 9,
+    "fields": {
+      "created": "2021-08-30T19:05:46.412Z",
+      "updated": "2021-08-30T19:05:54.605Z",
+      "integration": 13,
+      "service": "google_analytics",
+      "fivetran_id": "humid_rifle",
+      "schema": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "fivetran_authorized": true,
       "sync_task_id": null,
       "sync_started": null
