@@ -23,7 +23,7 @@
 <div class="flex border-b border-gray p-6 pt-2">
   {% for integration in template.project.integration_set.all %}
     <div data-controller="tooltip">
-      <img class="h-12 w-12 mr-4" src="{% static integration.icon %}" title="{{ template.name }}" />
+      <img class="h-12 w-12 mr-4" src="{% static integration.icon %}" title="{{ integration.name }}" />
       <span data-tooltip-target="body">{{ integration.display_kind }}</span>
     </div>
   {% endfor %}

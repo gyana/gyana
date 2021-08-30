@@ -1,11 +1,17 @@
 from apps.teams.access import login_and_team_required
 from django.urls import path
 
-from . import views
+from . import frames, views
 
 app_name = "templates"
-urlpatterns = []
 
+urlpatterns = [
+    path(
+        "<hashid:pk>",
+        frames.TemplateInstanceSetup.as_view(),
+        name="setup",
+    ),
+]
 
 team_urlpatterns = (
     [

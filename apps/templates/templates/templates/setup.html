@@ -1,0 +1,7 @@
+{% load static %}
+{% load render_table from django_tables2 %}
+<div class="card card--none">
+  {% for table in tables %}
+    {% render_table table %}
+  {% endfor %}
+</div>

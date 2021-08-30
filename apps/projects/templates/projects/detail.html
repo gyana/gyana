@@ -52,6 +52,21 @@
   </a>
 </div>
 
+<div class='flex flex-col items-center'>
+  <div class="max-w-2xl">
+  {% for templateinstance in object.templateinstance_set.all %}
+
+    <turbo-frame id="template:setup" src="{% url 'templates:setup' templateinstance.id %}">
+      <div class='placeholder-scr placeholder-scr--fillscreen'>
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+        <p class='placeholder-scr__title'>Loading setup...</p>
+      </div>
+    </turbo-frame>
+
+  {% endfor %}
+  </div>
+</div>
+
 {% comment %} TODO: Mix dashboards, workflows into this table. {% endcomment %}
 {% if integrations.rows|length > 0 %}
 <div class="flex flex-col flex-1 gap-7 pad">
