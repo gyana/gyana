@@ -28,11 +28,11 @@
     </div>
   {% endfor %}
 </div>
-{% with request.GET.dashboard_id|default:template.project.dashboard_set.first.id as dashboard_id %}
+{% with request.GET.dashboard_id|default:template.project.dashboard_set.first.id|add:"0" as dashboard_id %}
   {% if template.project.dashboard_set.count > 1 %}
   <nav id='tabbar' class="tabbar">
     {% for dashboard in template.project.dashboard_set.all %}
-    <a class="tabbar__link {% if dashboard.id|stringformat:'i' == dashboard_id %} tabbar__link--active {% endif %}"
+    <a class="tabbar__link {% if dashboard.id == dashboard_id %} tabbar__link--active {% endif %}"
       href="?dashboard_id={{ dashboard.id }}">
       {{ dashboard.name }}
     </a>
