@@ -70,6 +70,21 @@ class TemplateInstanceUpdate(ProjectMixin, SingleTableMixin, TurboUpdateView):
     form_class = TemplateInstanceUpdateForm
     table_class = TemplateIntegrationTable
 
+    def get_context_data(self, **kwargs):
+
+        for template_integration in self.object.templateintegration_set.filter(
+            target_integration__isnull=True
+        ).all():
+            target_integration = self.project.integration_set.filter(
+                connector__service=template_integration.source_integration.connector.service
+            ).first()
+
+            if target_integration is not None:
+                template_integration.target_integration = target_integration
+                template_integration.save()
+
+        return super().get_context_data(**kwargs)
+
     def get_table_kwargs(self):
         return {"show_header": False, "project": self.project}
 
