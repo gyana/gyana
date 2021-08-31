@@ -1,7 +1,9 @@
+from apps.base.clients import bigquery_client
 from apps.dashboards.models import Dashboard
 from apps.integrations.models import Integration
 from apps.nodes.models import Node
 from apps.projects.models import Project
+from apps.tables.models import Table
 from apps.templates.duplicate import get_target_table_from_source_table
 from apps.widgets.models import Widget
 from apps.workflows.bigquery import run_workflow
@@ -85,6 +87,24 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                 Workflow.objects.bulk_update(workflows, ["project"])
                 cloned_project.delete()
 
+                # fix the sheets and upload tables, delete connectors
+                Integration.objects.filter(kind=Integration.Kind.CONNECTOR).delete()
+
+                tables = Table.objects.filter(
+                    integration__kind__in=[
+                        Integration.Kind.SHEET,
+                        Integration.Kind.UPLOAD,
+                    ]
+                ).all()
+
+                for table in tables:
+                    curr_bq_id = table.bq_id
+                    table.bq_dataset = instance.project.team.tables_dataset_id
+                    table.bq_table = table.integration.source_obj.table_id
+                    bigquery_client().copy_table(curr_bq_id, table.bq_id)
+
+                Table.objects.bulk_update(tables, ["bq_table", "bq_dataset"])
+
                 # for each reference to an table, identify the new table
                 input_nodes = Node.objects.filter(
                     workflow__project=instance.project,
@@ -109,14 +129,11 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                 Node.objects.bulk_update(input_nodes, ["input_table"])
                 Widget.objects.bulk_update(widgets, ["table"])
 
-                # todo: directly duplicate Google Sheets and CSVs, for now
-
                 instance.completed = True
 
                 instance.save()
                 self.save_m2m()
 
-            # run all the workflows
             # TODO: run within celery progress with streaming update
             for workflow in workflows:
                 run_workflow(workflow)
