@@ -32,7 +32,7 @@
     "pk": 2,
     "fields": {
       "password": "pbkdf2_sha256$260000$N2BmQRuSSYGvpQnPKCw9fj$UhUCkfx7qdzWPNYP/XUbi3L4hvP5/7f+N4nmrqTPceM=",
-      "last_login": "2021-08-30T21:44:26.594Z",
+      "last_login": "2021-08-31T00:57:44.039Z",
       "is_superuser": true,
       "username": "admin",
       "first_name": "",
@@ -149,11 +149,11 @@
     "pk": 5,
     "fields": {
       "created": "2021-08-30T18:56:05.348Z",
-      "updated": "2021-08-30T19:29:42.040Z",
+      "updated": "2021-08-31T00:58:25.986Z",
       "name": "Admin Templates",
       "override_row_limit": null,
-      "row_count": 12928,
-      "row_count_calculated": "2021-08-30T19:29:42.040Z"
+      "row_count": 12943,
+      "row_count_calculated": "2021-08-31T00:58:25.986Z"
     }
   },
   {
@@ -469,6 +469,21 @@
     }
   },
   {
+    "model": "integrations.integration",
+    "pk": 14,
+    "fields": {
+      "created": "2021-08-31T00:58:18.464Z",
+      "updated": "2021-08-31T00:58:25.977Z",
+      "project": 6,
+      "kind": "upload",
+      "name": "store_info",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-31T00:58:25.975Z",
+      "created_by": 2
+    }
+  },
+  {
     "model": "workflows.workflow",
     "pk": 1,
     "fields": {
@@ -485,7 +500,7 @@
     "pk": 1,
     "fields": {
       "created": "2021-08-30T19:29:47.252Z",
-      "updated": "2021-08-30T19:31:28.929Z",
+      "updated": "2021-08-31T00:59:24.659Z",
       "name": "Basic metrics",
       "project": 6,
       "shared_status": "private",
@@ -521,18 +536,18 @@
   },
   {
     "model": "widgets.widget",
-    "pk": 2,
+    "pk": 3,
     "fields": {
-      "created": "2021-08-30T19:31:28.926Z",
-      "updated": "2021-08-30T19:33:18.656Z",
+      "created": "2021-08-31T00:59:24.656Z",
+      "updated": "2021-08-31T01:00:36.450Z",
       "dashboard": 1,
-      "table": 13,
+      "table": 19,
       "text_content": null,
       "kind": "mscolumn2d",
       "aggregator": "",
-      "label": "operating_system",
+      "label": "Owner",
       "value": null,
-      "name": "New users and session by device",
+      "name": "Employees by owner",
       "sort_by": "value",
       "sort_ascending": false,
       "width": 1200,
@@ -857,6 +872,23 @@
       "intermediate_node": null,
       "num_rows": 3245,
       "data_updated": "2021-08-30T19:29:19.676Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 19,
+    "fields": {
+      "created": "2021-08-31T00:58:20.605Z",
+      "updated": "2021-08-31T00:58:23.826Z",
+      "bq_table": "upload_000000006",
+      "bq_dataset": "cypress_team_000005_tables",
+      "project": 6,
+      "source": "integration",
+      "integration": 14,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 15,
+      "data_updated": "2021-08-31T00:58:23.746Z"
     }
   },
   {
@@ -1740,26 +1772,14 @@
   },
   {
     "model": "columns.functioncolumn",
-    "pk": 3,
+    "pk": 5,
     "fields": {
-      "created": "2021-08-30T19:32:20.212Z",
-      "updated": "2021-08-30T19:32:35.993Z",
-      "column": "new_users",
+      "created": "2021-08-31T00:59:45.612Z",
+      "updated": "2021-08-31T01:00:23.789Z",
+      "column": "Employees",
       "function": "sum",
       "node": null,
-      "widget": 2
-    }
-  },
-  {
-    "model": "columns.functioncolumn",
-    "pk": 4,
-    "fields": {
-      "created": "2021-08-30T19:32:35.996Z",
-      "updated": "2021-08-30T19:32:35.996Z",
-      "column": "sessions",
-      "function": "sum",
-      "node": null,
-      "widget": 2
+      "widget": 3
     }
   },
   {
@@ -1825,6 +1845,19 @@
       "field_delimiter": "comma",
       "sync_task_id": "f46923d0-18d0-4eb7-92e4-d8755804a816",
       "sync_started": "2021-08-20T13:49:48.761Z"
+    }
+  },
+  {
+    "model": "uploads.upload",
+    "pk": 6,
+    "fields": {
+      "created": "2021-08-31T00:58:18.465Z",
+      "updated": "2021-08-31T00:58:23.827Z",
+      "integration": 14,
+      "file_gcs_path": "cypress/integrations/store_info-16303714979454799.csv",
+      "field_delimiter": "comma",
+      "sync_task_id": "b157cb85-ba71-4a56-983e-7cf7a6b09e73",
+      "sync_started": "2021-08-31T00:58:20.370Z"
     }
   },
   {
