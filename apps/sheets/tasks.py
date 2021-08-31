@@ -2,6 +2,7 @@ from datetime import datetime
 
 import analytics
 from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
+from apps.base.time import catchtime
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
 from apps.tables.models import Table
@@ -12,27 +13,6 @@ from django.utils import timezone
 
 from .bigquery import get_last_modified_from_drive_file, import_table_from_sheet
 from .models import Sheet
-
-
-def _do_sync(task, sheet, table):
-
-    sheet.drive_file_last_modified = get_last_modified_from_drive_file(sheet)
-
-    query_job = import_table_from_sheet(table=table, sheet=sheet)
-
-    # capture external table creation errors
-
-    if query_job.exception():
-        raise Exception(query_job.errors[0]["message"])
-
-    table.num_rows = table.bq_obj.num_rows
-    table.data_updated = datetime.now()
-    table.save()
-
-    sheet.last_synced = datetime.now()
-    sheet.save()
-
-    return query_job
 
 
 @shared_task(bind=True)
@@ -56,15 +36,25 @@ def run_sheet_sync_task(self, sheet_id):
                 project=integration.project,
             )
 
-            query_job = _do_sync(self, sheet, table)
+            sheet.drive_file_last_modified = get_last_modified_from_drive_file(sheet)
+
+            with catchtime() as get_time_to_sync:
+                import_table_from_sheet(table=table, sheet=sheet)
+
+            table.num_rows = table.bq_obj.num_rows
+            table.data_updated = datetime.now()
+            table.save()
+
+            sheet.last_synced = datetime.now()
+            sheet.save()
+
+            integration.state = Integration.State.DONE
+            integration.save()
 
     except Exception as e:
         integration.state = Integration.State.ERROR
         integration.save()
         raise e
-
-    integration.state = Integration.State.DONE
-    integration.save()
 
     # the initial sync completed successfully and a new integration is created
 
@@ -80,9 +70,7 @@ def run_sheet_sync_task(self, sheet_id):
                 "id": integration.id,
                 "kind": integration.kind,
                 "row_count": integration.num_rows,
-                "time_to_sync": int(
-                    (query_job.ended - query_job.started).total_seconds()
-                ),
+                "time_to_sync": int(get_time_to_sync()),
             },
         )
 

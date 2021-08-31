@@ -1,0 +1,43 @@
+fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  margin-bottom: 1.6rem;
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  label.checkbox + label.checkbox {
+    margin-top: -0.8rem;
+  }
+
+  .formset-wrapper {
+    padding: 1.6rem;
+    background-color: var(--c-gray-10);
+    border: 1px solid var(--c-gray);
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    .button--circle {
+      position: absolute;
+      top: -0.8rem;
+      right: -0.8rem;
+    }
+  }
+
+  [data-formset-target="target"] {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    
+    & > :last-child {
+      margin-bottom: 1.6rem;
+    }
+  }
+}

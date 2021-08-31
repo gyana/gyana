@@ -1,0 +1,45 @@
+{% extends "web/app/project_base.html" %}
+{% load static %}
+{% load render_table from django_tables2 %}
+
+{% block app %}
+
+<div class="workflow-detail__header">
+  <h3 class="mr-auto flex justify-center items-center">
+    {{ object.template.name }}
+  </h3>
+  <p>{{ object.template.description }}</p>
+  <a class="link" href="{% url 'team_templates:create' project.team.id object.template.id %}"><p>View template</p></a>
+  
+</div>
+
+<div id="main" class='m-auto flex flex-col space-y-4'>
+  <h4>Add your data</h4>
+  <p>You need to import data from your integrations, to replace our sample data.</p>
+    <div class="card card--none">
+        {% render_table table %}
+    </div>
+    
+    <div class="flex mt-4">
+      {% if object.is_ready %}
+        <form method="post" action="{{ request.get_full_path }}">
+          {% csrf_token %}
+    
+          {% include "django/forms/default_form.html" %}
+    
+          <button type="submit" class="button button--filled">
+            Finish setup
+          </button>
+        </form>
+      {% else %}
+        <div data-controller="tooltip">
+          <button disabled class="button button--filled button-disabled">
+            Finish setup
+          </button>
+          <span data-tooltip-target="body">You need to complete all integrations.</span>
+        </div>
+      {% endif %}
+    </div>
+</div>
+
+{% endblock %}

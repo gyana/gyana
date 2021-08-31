@@ -263,6 +263,11 @@ class IntegrationDone(ProjectMixin, TurboUpdateView):
         return r
 
     def get_success_url(self) -> str:
+        if not self.project.is_ready:
+            return reverse(
+                "project_templateinstances:list",
+                args=(self.project.id, ),
+            )
         return reverse(
             "project_integrations:detail",
             args=(self.project.id, self.object.id),

@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
   <script src="https://kit.fontawesome.com/b03f4cc8cd.js" crossorigin="anonymous"></script>
   <script type="module">
     import * as hotwiredTurbo from "https://cdn.skypack.dev/@hotwired/turbo";
@@ -36,7 +38,7 @@
   {% block page_head %}{% endblock %}
 </head>
 
-<body class="flex flex-row h-full">
+<body class="flex flex-row h-full" data-controller='on-submit-loading'>
   {% block body_wrapper %}
 
   {% block top_nav %}{% endblock %}
@@ -50,7 +52,7 @@
     <input type="checkbox" id="sidebar-toggle" role="button"
            hidden
            data-web-sidebar-target="toggle"
-           {% if not sidebar_collapsed %}checked{% endif %}>
+           {% if sidebar_collapsed %}checked{% endif %}>
 
     <nav class="sidebar__body">
       <div class="sidebar__title">

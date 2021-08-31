@@ -1,0 +1,36 @@
+{% extends "web/landing.html" %}
+{% load static team_tags %}
+{% load socialaccount %}
+
+{% block content %}
+<section>
+  {% if request.user in object.team.members.all %}
+    <p class="text-center">
+        You've already redeem the code <strong>{{ object.code }}</strong> with your team
+        <a class='link' href="{% url 'teams:detail' object.team.id %}">
+        {{ object.team.name }}
+        </a>.
+    </p>
+    {% if request.user|is_admin_of:object.team %}
+      <p class="text-center">
+          Go to your 
+          <a class="link" href="{% url 'teams:account' object.team.id %}">
+          account
+          </a>
+          for more info.
+      </p>
+    {% endif %}
+  {% else %}
+    <p class="text-center">
+        Error, the code <strong>{{ object.code }}</strong> was already redeemed by another user.
+    </p>
+    <p class="text-center">
+        Contact
+        <a class='link' href='mailto: support@gyana.com'>
+        support@gyana.com
+        </a>
+        for support.
+    </p>
+  {% endif %}
+</section>
+{% endblock %}

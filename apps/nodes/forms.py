@@ -194,6 +194,24 @@ class UnpivotNodeForm(NodeForm):
         required = ["unpivot_value", "unpivot_column"]
 
 
+class SentimenttNodeForm(NodeForm):
+    sentiment_column = forms.ChoiceField(
+        choices=(),
+    )
+
+    class Meta:
+        model = Node
+        fields = ("sentiment_column",)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["sentiment_column"].choices = [
+            (name, name)
+            for name, type_ in self.columns.items()
+            if type_.name == "String"
+        ]
+
+
 KIND_TO_FORM = {
     "input": InputNodeForm,
     "output": OutputNodeForm,
@@ -214,5 +232,6 @@ KIND_TO_FORM = {
     "pivot": PivotNodeForm,
     "unpivot": UnpivotNodeForm,
     "intersect": DefaultNodeForm,
+    "sentiment": SentimenttNodeForm,
     "window": DefaultNodeForm,
 }

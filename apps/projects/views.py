@@ -2,6 +2,7 @@ import analytics
 from apps.base.segment_analytics import PROJECT_CREATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
+from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
@@ -37,6 +38,12 @@ class ProjectDetail(DetailView):
     template_name = "projects/detail.html"
     model = Project
     pk_url_kwarg = "project_id"
+
+    def get(self, request, *args, **kwargs):
+        object = self.get_object()
+        if not object.is_ready:
+            return redirect("project_templateinstances:list", object.id)
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

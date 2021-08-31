@@ -36,6 +36,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         UNPIVOT = "unpivot", "Unpivot"
         TEXT = "text", "Text"
         WINDOW = "window", "Window"
+        SENTIMENT = "sentiment", "Sentiment"
 
     # You have to add new many-to-one relations here
     _clone_m2o_or_o2m_fields = [
@@ -190,6 +191,12 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         blank=True,
         help_text="Name of the new category column",
     )
+    sentiment_column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="Select the text column to get the sentiment of.",
+    )
 
     def save(self, *args, **kwargs):
         dirty_fields = set(self.get_dirty_fields(check_relationship=True).keys()) - {
@@ -238,7 +245,8 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     @property
     def has_enough_parents(self):
-        from apps.nodes.bigquery import NODE_FROM_CONFIG, get_arity_from_node_func
+        from apps.nodes.bigquery import (NODE_FROM_CONFIG,
+                                         get_arity_from_node_func)
 
         func = NODE_FROM_CONFIG[self.kind]
         min_arity, _ = get_arity_from_node_func(func)

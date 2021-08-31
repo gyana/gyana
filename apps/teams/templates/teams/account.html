@@ -3,10 +3,8 @@
 
 {% block tab %}
 
-<h2>
-    Account usage: {{ team.row_count }} / {{ team.row_limit|intcomma }} rows
-</h2>
-<p> Last calculated: {{ team.row_count_calculated|naturaltime|default_if_none:"Never" }}</p>
+<h2>Account usage: {{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }} rows</h2>
+<p class="mb-7">Last calculated: {{ team.row_count_calculated|naturaltime|default_if_none:"Never" }}</p>
   
 <div class="max-w-lg mb-auto">
   <form method="post" class="form">
@@ -14,7 +12,7 @@
 
     {% include "django/forms/default_form.html" %}
 
-    <button type="submit" class="button button--sm button--success">Recalculate</button>
+    <button type="submit" class="button button--success">Recalculate</button>
   </form>
 </div>
 

@@ -3,7 +3,7 @@ from django.urls import path
 from rest_framework import routers
 
 from . import frames, rest, views
-from .access import login_and_project_required_or_public
+from .access import login_and_project_required_or_public_or_in_template
 
 app_name = "widgets"
 urlpatterns = []
@@ -45,7 +45,9 @@ dashboard_urlpatterns = (
         # https://web.dev/http-cache/#flowchart
         path(
             "<hashid:pk>/output",
-            login_and_project_required_or_public(frames.WidgetOutput.as_view()),
+            login_and_project_required_or_public_or_in_template(
+                frames.WidgetOutput.as_view()
+            ),
             name="output",
         ),
     ],

@@ -4,13 +4,16 @@ from apps.base.models import BaseModel
 from apps.teams.models import Team
 from django.db import models
 from django.urls import reverse
+from model_clone.mixins.clone import CloneMixin
 
 
-class Project(BaseModel):
+class Project(CloneMixin, BaseModel):
     name = models.CharField(max_length=255)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
     description = models.TextField(blank=True)
+
+    _clone_m2o_or_o2m_fields = ["integration_set", "workflow_set", "dashboard_set"]
 
     def __str__(self):
         return self.name
@@ -29,6 +32,21 @@ class Project(BaseModel):
         from apps.dashboards.models import Dashboard
 
         return Dashboard.objects.filter(project=self).count()
+
+    @property
+    def is_template(self):
+        return hasattr(self, "template")
+
+    @property
+    def is_ready(self):
+        return (
+            self.templateinstance_set.count() == 0
+            or self.templateinstance_set.filter(completed=True).count() >= 1
+        )
+
+    @property
+    def has_pending_templates(self):
+        return self.templateinstance_set.filter(completed=False).count() != 0
 
     @cached_property
     def num_rows(self):

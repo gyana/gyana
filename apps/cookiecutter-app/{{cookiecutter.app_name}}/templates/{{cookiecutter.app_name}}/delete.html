@@ -8,7 +8,7 @@
     <form method="post"
           action="{% url '{% endraw %}{{cookiecutter.app_name}}{% raw %}:delete' object.id %}">
         {% csrf_token %}
-        <input type="submit" value="Yes" class="btn btn-danger" />
+        <button type="submit" class="btn btn-danger" > Yes </button>
         <a href="{% url '{% endraw %}{{ cookiecutter.app_name }}{% raw %}:list' %}"
            class="btn btn-default">No</a>
     </form>

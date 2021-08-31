@@ -1,0 +1,53 @@
+{% extends "web/app/app_base.html" %}
+{% load static %}
+{% block app %}
+<div class="page-header">
+  <div class="mr-auto">
+    <a class="link" href="{% url 'team_templates:list' team.id %}"><p>Back</p></a>
+    <h1>{{ template.name }}</h1>
+    <p>{{ template.description }}</p>
+  </div>
+  <div class="flex ml-4">
+    <form method="post">
+      {% csrf_token %}
+
+      {% include "django/forms/default_form.html" %}
+
+      <button type="submit" class="button button--filled w-full">
+        Create
+      </button>
+
+    </form>
+  </div>
+</div>
+<div class="flex border-b border-gray p-6 pt-2">
+  {% for integration in template.project.integration_set.all %}
+    <div data-controller="tooltip">
+      <img class="h-12 w-12 mr-4" src="{% static integration.icon %}" title="{{ integration.name }}" />
+      <span data-tooltip-target="body">{{ integration.display_kind }}</span>
+    </div>
+  {% endfor %}
+</div>
+{% with request.GET.dashboard_id|default:template.project.dashboard_set.first.id|add:"0" as dashboard_id %}
+  {% if template.project.dashboard_set.count > 1 %}
+  <nav id='tabbar' class="tabbar">
+    {% for dashboard in template.project.dashboard_set.all %}
+    <a class="tabbar__link {% if dashboard.id == dashboard_id %} tabbar__link--active {% endif %}"
+      href="?dashboard_id={{ dashboard.id }}">
+      {{ dashboard.name }}
+    </a>
+    {% endfor %}
+  </nav>
+  {% endif %}
+  <div class="pad flex flex-col items-center overflow-scroll w-full">
+    <div class="card card--inline">
+      <turbo-frame id="dashboard:preview" src="{% url 'dashboards:preview' dashboard_id %}">
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          <p class='placeholder-scr__title'>Loading preview...</p>
+        </div>
+      </turbo-frame>
+    </div>
+  </div>
+{% endwith %}
+{% endblock %} 

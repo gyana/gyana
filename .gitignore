@@ -26,8 +26,7 @@ var/
 *.ipynb
 
 # Webpack output
-static/css/
-static/js/
+/static/
 
 .idea
 *~

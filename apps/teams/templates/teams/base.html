@@ -46,12 +46,21 @@
     <h3 class="mr-auto flex justify-center items-center">
       {{ team.name }}
     </h3>
+
+    <p class="text-black-50" data-controller="tooltip">
+      {{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}
+      <span data-tooltip-target="body">Account row usage</span>
+    </p>
   </div>
 
   <nav class="tabbar">
     <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
       href="{% url 'teams:detail' team.id %}">
       Projects
+    </a>
+    <a class="tabbar__link {% if request.resolver_match.app_name == 'team_templates' %} tabbar__link--active {% endif %}"
+      href="{% url 'team_templates:list' team.id %}">
+      Templates
     </a>
     {% if request.user|is_admin_of:team %}
     <a class="tabbar__link {% if request.resolver_match.app_name == 'team_members' %} tabbar__link--active {% endif %}"
@@ -62,6 +71,12 @@
       href="{% url 'teams:account' team.id %}">
       Account
     </a>
+    {% if team.appsumocode_set.count > 0 %}
+      <a class="tabbar__link {% if request.resolver_match.app_name == 'team_appsumo' %} tabbar__link--active {% endif %}"
+        href="{% url 'team_appsumo:list' team.id %}">
+        AppSumo
+      </a>
+    {% endif %}
     <a class="tabbar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'update' %} tabbar__link--active {% endif %}"
       href="{% url 'teams:update' team.id %}">
       Settings

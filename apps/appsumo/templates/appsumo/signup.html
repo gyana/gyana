@@ -1,0 +1,29 @@
+{% extends "web/landing.html" %}
+{% load static %}
+{% load socialaccount %}
+
+{% block content %}
+<section>
+  <p class="text-center">
+    Signup with AppSumo code <strong>{{ view.kwargs.code }}</strong>.
+  </p>
+
+  <form method="post" class="mb-8">
+    {% csrf_token %}
+
+    {% include "django/forms/default_form.html" %}
+
+    <button type="submit" class="button button--filled w-full">
+      Create Account
+    </button>
+
+  </form>
+
+  <p class="text-center">
+    Already have account?
+    <a href="{% url 'account_login' %}" class="font-medium text-blue hover:text-blue-500">
+      Go to sign in.
+    </a>
+  </p>
+</section>
+{% endblock %}

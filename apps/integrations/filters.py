@@ -8,7 +8,7 @@ from .models import Integration
 class IntegrationFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(
         lookup_expr="icontains",
-        widget=forms.TextInput(attrs={"placeholder": "Search by name"}),
+        widget=forms.TextInput(attrs={"placeholder": "Search by name..."}),
     )
 
     class Meta:

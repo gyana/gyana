@@ -1,0 +1,28 @@
+{% extends "teams/base.html" %}
+{% load render_table from django_tables2 %}
+
+{% block tab %}
+<div class="card card--none">
+  {% render_table table %}
+
+  <div class="pt-2 pad">
+    <small>
+      <a href="{% url 'team_appsumo:stack' team.id %}" class="link">
+        <i class="fa fa-fw fa-plus mr-2"></i>Stack Code</a>
+    </small>
+  </div>
+</div>
+
+{% if not team.appsumoreview %}
+  <div class="pt-2 pad">
+    <small>
+      <a href="{% url 'team_appsumo:review' team.id %}" class="link">
+        <i class="fa fa-fw fa-plus mr-2"></i>Link to your review</a>
+    </small>
+  </div>
+{% else %}
+  <div class="pt-2 pad">
+    <p>Thank you for writing an honest review! We've added <strong>1,000,000</strong> rows to say thank you.</p>
+  </div>
+{% endif %}
+{% endblock %} 

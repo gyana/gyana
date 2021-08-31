@@ -1,35 +1,136 @@
-# https://beta.gyana.com
+# Deployment
 
-## How to deploy
+We're running a traditional Django app on [Heroku](https://dashboard.heroku.com/pipelines/33c2c23a-3f74-49ca-b19a-e3203445c2d2) with dev/staging/prod deployments.
 
-The [Deploy](https://dashboard.heroku.com/apps/gyana-beta/deploy/github) page on the Heroku gyana-beta app has a `Manual deploy` where we can select a branch and deploy it. For now only use the `main` branch for deploys!
+## Release
 
-## How to rollback
+- Choose and merge a commit from main onto the release branch
+- Run and fix the automated [QA process](DEVELOPMENT.md#QA) (Cypress test suite)
+- Push any fixes onto the release branch
+- Run the manual QA process (written test plan) on gyana-release
+- Document and push any further fixes onto the release branch
+- If downtime is expected, communiate to users and switch Heroku to maintenance mode
+- Manual deploy release branch to gyana-beta
+- Manual smoke test on gyana-beta
+- If there is an issue, see [rollback](#Rollbacks)
+- Open a PR from release to main, merge squashed commit
 
-As described in [Heroku: Releases and Rollbacks](https://blog.heroku.com/releases-and-rollbacks) it's easy to rollback a broken release using the following commands
+## Rollbacks
 
-```zsh
-# Rolls back to the previous successful release
-heroku rollback --app gyana-beta
-# Rolls back to the specified <version> e.g. v42
-heroku rollback <version> --app gyana-beta
-# To see all versions run
+Heroku has automated [rollbacks](https://blog.heroku.com/releases-and-rollbacks),
+but you'll need to manually migrate the Django database to its historical state.
+
+Remember to switch Heroku to maintenance mode and run this SQL script to generate
+app/migration pairs for the downgrade:
+
+```sql
+with changed_apps as (
+	select distinct app
+	from django_migrations
+	where applied > '202X-XX-XX XX:XX:XX'
+),
+rollback_migrations as (
+	select *
+	from django_migrations
+	where applied < '202X-XX-XX XX:XX:XX'
+)
+select app
+	, name
+from (
+	select a.app
+		, coalesce(m.name, 'zero') as name
+		, rank() over (partition by a.app order by applied desc) as rank
+	from rollback_migrations m
+	right join changed_apps a
+		on m.app = a.app
+) X
+where rank = 1
+order by app
+;
+```
+
+You can rollback the apps one by one (in future it would be good to
+[automate](https://stackoverflow.com/questions/60411090/run-reverse-django-migration-on-heroku-after-release-failure) this):
+
+```bash
+heroku run --app gyana-beta python manage.py migrate <app> <name>
+```
+
+You can get the timestamp from the release metadata you plan to rollback to. Remember
+to add a buffer of ~10 mins since the migrations run after a release:
+
+```bash
 heroku releases --app gyana-beta
 ```
 
+Finally, rollback the app to the chosen version. It has to happen in this order,
+since the migrations will not exist when you rollback the code:
+
+```bash
+heroku rollback <version> --app gyana-beta
+```
+
+## Services
+
+With links for the production app:
+
+- Exception, uptime and cron monitoring: [Honeybadger](https://app.honeybadger.io/projects/88968/faults)
+- Analytics: [Google Analytics](https://analytics.google.com/analytics/web/#/p284522086/reports/reportinghub)
+- Events: [Segment](https://app.segment.com/gyana-beta/overview)
+- Support: [Intercom](https://app.intercom.com)
+- Emails: [SendGrid](https://app.sendgrid.com/)
+
 ## Setup
 
-Below describes the steps to create this deployment from scratch
+The app runs on Heroku, GCP, with GoDaddy for DNS.
 
-### Google Cloud Platform
+### Heroku
 
----
+We setup the app in the Heroku UI, key points to note:
 
-Created a separate project within the `gyana.co.uk` company called `Gyana App`
+- Region: EU
+- Add-ons: Heroku Postgres and Heroku Redis
+- Dynos for web, beat and worker (should happen automatically)
+- Buildpacks:
+  - Node: `heroku/nodejs`
+  - Python: `heroku/python`
+  - GCP authentication: `https://github.com/buyersight/heroku-google-application-credentials-buildpack.git`
 
-Important attributes within this project:
+Heroku config variables, with production examples:
 
-- [Google sheets API enabled](https://console.cloud.google.com/marketplace/product/google/sheets.googleapis.com)
+```bash
+DJANGO_SETTINGS_MODULE = gyana.settings.heroku
+EXTERNAL_URL = https://app.gyana.com
+FIVETRAN_GROUP = intended_monsieur
+FIVETRAN_KEY = {{ key }}
+FUSIONCHARTS_LICENCE = {{ key }}
+GCP_BQ_SVC_ACCOUNT = gyana-app@gyana-app-314217.iam.gserviceaccount.com
+GCP_PROJECT = gyana-app-314217
+GOOGLE_ANALYTICS_ID = {{ key }}
+GOOGLE_APPLICATION_CREDENTIALS = google-credentials.json
+GOOGLE_CREDENTIALS = {{ credential_json_from_svc_account }}
+GS_BUCKET_NAME = gyana-app
+HASHIDS_SALT = {{ django.utils.crypto.get_random_string(32) }}
+HONEYBADGER_API_KEY = {{ honeybadger_api_key }}
+SECRET_KEY = {{ secret_key }} # generate online
+SEGMENT_ANALYTICS_JS_WRITE_KEY = {{ segment_js_secret }}
+SEGMENT_ANALYTICS_WRITE_KEY = {{ segment_py_secret }}
+SENDGRID_API_KEY = {{ sendgrid_api_secret }}
+```
+
+The database and redis config variable are generated automatically by the add-ons.
+
+Remember to add [Honeybadger support](https://docs.honeybadger.io/guides/heroku/)
+for Heroku errors and deployments.
+
+### GCP
+
+The MVP/release and production environments run in separate environments, within
+the `gyana.co.uk` organisation. Key points to note:
+
+- Enable APIs:
+  - [Google sheets](https://console.cloud.google.com/marketplace/product/google/sheets.googleapis.com)
+  - [Google Drive](https://console.cloud.google.com/marketplace/product/google/drive.googleapis.com)
 - All developer emails added in IAM with the following roles:
   - `Cloud KMS Admin`
   - `Cloud KMS CryptoKey Encrypter/Decrypter`
@@ -39,14 +140,14 @@ Important attributes within this project:
   - Has `BigQuery Admin` role in IAM
   - Has `Storage Admin` role in IAM
 
-#### **Cloud Storage**
+You'll need to create a bucket in Cloud Storage (`gyana-app` in production). As
+users can upload CSV files directly to the bucket, we need to set the CORS rules:
 
-Create a bucket in Cloud Storage named `gyana-app`
+```bash
+gsutil cors set {CORS_JSON_LOCATION} gs://gyana-app
+```
 
-Set the right CORS rules on the buckets for uploads (UPLOADS WILL NOT WORK WITHOUT THIS):
-
-- To set the cors json `gsutil cors set {CORS_JSON_LOCATION} gs://vayu-datasets-{ENV}`
-- The `gyana-app` bucket requires the following CORS rules
+With the following JSON (edit as necessary):
 
 ```json
 [
@@ -59,59 +160,11 @@ Set the right CORS rules on the buckets for uploads (UPLOADS WILL NOT WORK WITHO
 ]
 ```
 
-### Heroku
+### Custom domain
 
----
-
-A [gyana-beta](https://dashboard.heroku.com/apps/gyana-beta) has been created using the following commands.
-
-```zsh
-# Using --remote here to add a remote to the local git config
-heroku create --region=eu --remote beta --addons=heroku-postgresql,heroku-redis
-```
-
-#### **Buildpacks**
-
-In the [Settings](https://dashboard.heroku.com/apps/gyana-beta/settings) page add the following Buildpacks in the order listed:
-
-- `heroku/nodejs`
-- `heroku/python`
-- `https://github.com/buyersight/heroku-google-application-credentials-buildpack.git`
-
-#### **Custom domain**
-
-On the Heroku settings page a custom domain `beta.gyana.com` is added. To get the wildcard `*.gyana.com` SSL working the .key en .pem file from LastPass are uploaded into the Heroku system. This SSL combo will then be used for that domain. Heroku also generates a `DNS Target` that will be used for the GoDaddy step below.
-
-#### **Env variables that matter**
-
-These config variables are set in the [Settings](https://dashboard.heroku.com/apps/gyana-beta/settings) tab in the Heroku web app
-
-- `DJANGO_SETTINGS_MODULE` = `gyana.settings.heroku`
-- `GOOGLE_APPLICATION_CREDENTIALS` = `google-credentials.json`
-- `GOOGLE_CREDENTIALS` = `<credential_json_from_svc_account>`
-- `SECRET_KEY` = `<secret_key_val>`
-- `GCP_PROJECT` = `gyana-app-314217`
-- `GCP_BQ_SVC_ACCOUNT` = `gyana-app@gyana-app-314217.iam.gserviceaccount.com`
-- `EXTERNAL_URL` = `https://app.gyana.com`
-- `CLOUD_NAMESPACE` = `heroku`
-- `GS_BUCKET_NAME` = `gyana-app`
-- `FIVETRAN_KEY` = `<api_key_for_fivetran>`
-- _Only for beta deployment_ `FIVETRAN_GROUP` = `intended_monsieur`
-- `SENDGRID_API_KEY` = `<sendgrid_api_secret>`
-- `SEGMENT_ANALYTICS_JS_WRITE_KEY` = `<segment_js_secret>`
-- `SEGMENT_ANALYTICS_WRITE_KEY` = `<segment_py_secret>`
-- `HASHIDS_SALT` = `<django.utils.crypto.get_random_string(32)>`
-
-#### **Deploy**
-
-Setup the `gyana/gyana` git repository in the [Deploy settings](https://dashboard.heroku.com/apps/gyana-beta/deploy/github). At the bottom of the page manual deploys can be executed when needed.
-
-### GoDaddy
-
----
-
-To setup the DNS created in the Heroku settings we need to add a CNAME record with:
-
-- `Host`: `beta`
-- `Points to`: `<DNS_TARGET from Heroku settings>`
-- `TLS`: `600s`
+- Add the custom domain `app.gyana.com` to the Heroku settings page
+- Add the wildcard `*.gyana.com` SSL cert from LastPass (.key and .pem files)
+- Setup GoDaddy:
+  - `Host`: `beta`
+  - `Points to`: `<DNS_TARGET from Heroku settings>`
+  - `TLS`: `600s`

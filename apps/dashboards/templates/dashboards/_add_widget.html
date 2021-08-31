@@ -3,9 +3,9 @@
     Add widget <i class="fas fa-angle-up fa-rotate-180"></i>
   </button>
 
-  <ul data-popover-target="body" class="list list--bordered" hidden style="z-index:1;margin-top:6px;">
+  <ul data-popover-target="body" class="list list--bordered" hidden style="width:auto;margin-top:6px;">
     {% for id, txt, icon in choices %}
-    <li data-id="{{ id }}">
+    <li class="whitespace-nowrap" data-id="{{ id }}">
       <form method="post" action="{% url 'dashboard_widgets:create' project.id dashboard.id %}?mode=edit" class="form">
         {% csrf_token %}
 

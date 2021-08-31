@@ -6,9 +6,10 @@ from apps.users.models import CustomUser
 from apps.workflows.models import Workflow
 from django.db import models
 from django.urls import reverse
+from model_clone.mixins.clone import CloneMixin
 
 
-class Integration(BaseModel):
+class Integration(CloneMixin, BaseModel):
     class Kind(models.TextChoices):
         SHEET = "sheet", "Sheet"
         UPLOAD = "upload", "Upload"
@@ -31,6 +32,9 @@ class Integration(BaseModel):
     ready = models.BooleanField(default=False)
     created_ready = models.DateTimeField(null=True)
     created_by = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
+
+    _clone_m2o_or_o2m_fields = ["connector_set", "table_set"]
+    _clone_o2o_fields = ["sheet", "upload"]
 
     def __str__(self):
         return self.name
@@ -85,5 +89,5 @@ class Integration(BaseModel):
 
     def icon(self):
         if self.kind == Integration.Kind.CONNECTOR:
-            return f"images/integrations/fivetran/{self.connector.service}.svg"
+            return f"images/integrations/fivetran/{get_services()[self.connector.service]['icon_path']}"
         return f"images/integrations/{self.kind}.svg"

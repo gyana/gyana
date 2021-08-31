@@ -30,12 +30,12 @@
                 <h3>{{ category|capfirst }}</h3>
                 <div class="flex flex-1 flex-wrap content-start gap-7">
                 {% for service_id, service in services.items %}
-                    {% if service.category == category %}
+                    {% if service.type == category %}
                       {% if service.internal != 't' or request.user.is_superuser %}
                         <a class="card card--inline card--square"
                           href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service_id }}">
                           <div class="flex-1">
-                              <img style="height:4.2rem;" src="{% static 'images/integrations/fivetran/'|add:service_id|add:'.svg' %}"
+                              <img style="height:4.2rem;" src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
                                   alt="{{ service.name }}" />
                           </div>
                           <span class="flex-1">{{ service.name }}</span>

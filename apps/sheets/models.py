@@ -2,9 +2,10 @@ from apps.base.celery import is_bigquery_task_running
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
 from django.db import models
+from model_clone.mixins.clone import CloneMixin
 
 
-class Sheet(BaseModel):
+class Sheet(CloneMixin, BaseModel):
 
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 

@@ -13,7 +13,7 @@
 {% endfor %}
 
 <li>
-  <a id="sidebar-newteam" class="sidebar__link {% if request.resolver_match.url_name == 'create' %}sidebar__link--active{% endif %}" title="New Team" href="{% url 'teams:create' %}">
+  <a id="sidebar-newteam" class="sidebar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'create' %}sidebar__link--active{% endif %}" title="New Team" href="{% url 'teams:create' %}">
     <i class="fas fa-fw fa-plus mr-6"></i>New Team
   </a>
 </li>
@@ -24,16 +24,7 @@
 {% block notifications %}{% endblock %}
 
 <section class="flex flex-col flex-1 {% block app-class %}{% endblock %}">
-  {% if object.project %}
-  <p class="text-sm mb-2">
-    <a href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}">Back to
-      {{ object.project.name }}</a>
-  </p>
-  <p>
-    <a href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}">{{
-          request.resolver_match.app_name|title }}</a>
-  </p>
-  {% endif %}
+
 
   {% block app %}{% endblock %}
 </section>

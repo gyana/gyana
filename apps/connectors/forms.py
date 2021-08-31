@@ -1,12 +1,14 @@
+from django import forms
+from django.core.exceptions import ValidationError
+from django.db import transaction
+from django.forms.widgets import CheckboxInput, HiddenInput
+
 from apps.base.clients import fivetran_client
 from apps.connectors.config import get_services
 from apps.connectors.fivetran import FivetranClientError
 from apps.integrations.models import Integration
 from apps.nodes.widgets import MultiSelect
-from django import forms
-from django.core.exceptions import ValidationError
-from django.db import transaction
-from django.forms.widgets import CheckboxInput, HiddenInput
+from apps.templates.models import TemplateIntegration
 
 from .models import Connector
 

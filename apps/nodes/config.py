@@ -109,6 +109,12 @@ NODE_CONFIG = {
         "description": "Find the common rows between tables",
         "section": "Table manipulations",
     },
+    "sentiment": {
+        "displayName": "Sentiment Analysis",
+        "icon": "fa-laugh-beam",
+        "description": "Estimate the sentiment of a text between -1 (negative) to +1 (positive).",
+        "section": "Column manipulations",
+    },
     "window": {
         "displayName": "Window",
         "icon": "fa-window-frame",
