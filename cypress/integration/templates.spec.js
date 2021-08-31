@@ -27,7 +27,7 @@ describe('templates', () => {
     cy.url().should('contain', `/projects/${projectId}/templates/${templateInstanceId}`)
 
     // setup the new Google Analytics connector, and it redirects back
-    cy.get('#main').within(() => cy.contains('Setup').click())
+    cy.get('#main').within(() => cy.contains('New').click())
     cy.get('button[type=submit]').click()
     cy.contains('continue').click()
     cy.get('button[type=submit]').click()

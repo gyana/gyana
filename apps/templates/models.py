@@ -5,6 +5,11 @@ from django.db import models
 
 
 class Template(BaseModel):
+
+    """
+    Templates are pointers to existing projects.
+    """
+
     project = models.OneToOneField(Project, on_delete=models.CASCADE)
     templated_projects = models.ManyToManyField(
         Project, related_name="templates", through="TemplateInstance"
@@ -24,6 +29,10 @@ class Template(BaseModel):
 
 class TemplateInstance(BaseModel):
 
+    """
+    Instances of templates that are linked to projects where the template is instantiated.
+    """
+
     # [SET_NULL] show that a project used a template that no longer exists
     template = models.ForeignKey(Template, null=True, on_delete=models.SET_NULL)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -39,6 +48,10 @@ class TemplateInstance(BaseModel):
 
 class TemplateIntegration(BaseModel):
 
+    """
+    Integration slots that need to be instantiated, before a template is setup in a project.
+    """
+
     template_instance = models.ForeignKey(TemplateInstance, on_delete=models.CASCADE)
     # [SET_NULL] template integrations are based on snapshot of a template project, even if
     # upstream integration is deleted we need to keep track of it here
@@ -46,11 +59,11 @@ class TemplateIntegration(BaseModel):
         Integration,
         null=True,
         on_delete=models.SET_NULL,
-        related_name="template_integration_source",
+        related_name="template_integration_source_set",
     )
     target_integration = models.ForeignKey(
         Integration,
         null=True,
         on_delete=models.SET_NULL,
-        related_name="template_integration_target",
+        related_name="template_integration_target_set",
     )

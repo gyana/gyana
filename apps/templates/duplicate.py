@@ -4,9 +4,12 @@ from apps.tables.models import Table
 
 def get_target_table_from_source_table(source_table: Table, project: Project):
 
-    template_integration = source_table.integration.template_integration_source_set(
-        templateinstance__project=project
-    ).first()
+    # find the corresponding integration in the new project
+    template_integration = (
+        source_table.integration.template_integration_source_set.filter(
+            templateinstance__project=project
+        ).first()
+    )
 
     if template_integration is None:
         return None
