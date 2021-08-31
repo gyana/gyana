@@ -46,7 +46,7 @@ class InputNodeForm(NodeForm):
         instance = kwargs.get("instance")
         self.fields["input_table"].queryset = Table.available.filter(
             project=instance.workflow.project
-        ).exclude(source="intermediate_node")
+        ).exclude(source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE])
 
 
 class OutputNodeForm(NodeForm):

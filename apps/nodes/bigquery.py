@@ -68,7 +68,7 @@ def _create_or_replace_intermediate_table(table, node, query):
 
     with transaction.atomic():
         table, _ = Table.objects.get_or_create(
-            source=Table.Source.PIVOT_NODE,
+            source=Table.Source.INTERMEDIATE_NODE,
             bq_table=node.bq_intermediate_table_id,
             bq_dataset=node.workflow.project.team.tables_dataset_id,
             project=node.workflow.project,

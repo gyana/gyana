@@ -69,6 +69,9 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     intermediate_table = models.ForeignKey(
         Table, on_delete=models.CASCADE, null=True, related_name="intermediate_table"
     )
+    cache_table = models.ForeignKey(
+        Table, on_delete=models.CASCADE, null=True, related_name="cache_table"
+    )
     # ======== Node specific columns ========= #
 
     # Input
