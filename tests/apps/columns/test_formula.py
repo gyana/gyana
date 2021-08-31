@@ -71,16 +71,16 @@ def create_extract_unary_param(func_name, sql_name=None):
         ),
         pytest.param(
             'cast(medals, "float")',
-            QUERY.format("CAST(`medals` AS FLOAT)"),
+            QUERY.format("CAST(`medals` AS FLOAT64)"),
             id="cast int to float",
         ),
         pytest.param(
-            'cast(athlete, "datetime")',
+            'cast(athlete, "timestamp")',
             QUERY.format("CAST(`athlete` AS TIMESTAMP)"),
             id="cast string to datetime",
         ),
         pytest.param(
-            'cast(birthday, "string")',
+            'cast(birthday, "str")',
             QUERY.format("CAST(`birthday` AS STRING)"),
             id="cast date to string",
         ),
@@ -98,24 +98,14 @@ def create_extract_unary_param(func_name, sql_name=None):
         ),
         # Test string operations
         pytest.param(
-            'between(athletes, "Rafael Nadal" , "Roger Federer")',
-            QUERY.format("`athletes` BETWEEN 'Rafael Nadal' AND 'Roger Federer''"),
+            'between(athlete, "Rafael Nadal" , "Roger Federer")',
+            QUERY.format("`athlete` BETWEEN 'Rafael Nadal' AND 'Roger Federer'"),
             id="between string column",
         ),
         pytest.param(
             'find(athlete, "Kipchoge")',
             QUERY.format("STRPOS(`athlete`, 'Kipchoge') - 1"),
             id="find no optional arguments",
-        ),
-        pytest.param(
-            'find(athlete, "Kipchoge", 3)',
-            QUERY.format("STRPOS(`athlete`, 'Kipchoge', 3) - 1"),
-            id="find one optional argument",
-        ),
-        pytest.param(
-            'find(athlete, "Kipchoge", 3, 10)',
-            QUERY.format("STRPOS(`athlete`, 'Kipchoge', 3,10) - 1"),
-            id="find both optional arguments",
         ),
         create_str_unary_param("lower"),
         pytest.param(
@@ -125,10 +115,15 @@ def create_extract_unary_param(func_name, sql_name=None):
         ),
         pytest.param(
             'lpad(athlete,3, "\n")',
-            QUERY.format("lpad(`athlete`, 3, '\n  ')"),
+            # for some reason ibis adds a random newlineafter the select
+            "SELECT\n  lpad(`athlete`, 3, '\n  ') AS `tmp`\nFROM olympians",
             id="lpad with fillchar",
         ),
-        create_str_unary_param("hash"),
+        pytest.param(
+            "hash(athlete)",
+            QUERY.format("farm_fingerprint(`athlete`)"),
+            id="hash",
+        ),
         pytest.param(
             'join(", ", athlete, "that genius")',
             QUERY.format("ARRAY_TO_STRING([`athlete`, 'that genius'], ', ')"),
@@ -158,18 +153,8 @@ def create_extract_unary_param(func_name, sql_name=None):
         ),
         pytest.param(
             'contains(athlete, "Usain Bolt")',
-            QUERY.format("IFNULL(`athlete`, 'Usain Bolt')"),
+            QUERY.format("STRPOS(`athlete`, 'Usain Bolt') - 1 >= 0"),
             id="contains",
-        ),
-        pytest.param(
-            "left(athlete, 2)",
-            QUERY.format("IFNULL(`athlete`, 'Usain Bolt')"),
-            id="left",
-        ),
-        pytest.param(
-            "right(athlete, 4)",
-            QUERY.format("IFNULL(`athlete`, 'Usain Bolt')"),
-            id="right",
         ),
         pytest.param(
             "repeat(athlete, 2)",
@@ -265,7 +250,7 @@ def create_extract_unary_param(func_name, sql_name=None):
         ),
         pytest.param(
             "round(stars, 2)",
-            QUERY.format("ROUND(`stars`, 2)"),
+            QUERY.format("round(`stars`, 2)"),
             id="round",
         ),
         pytest.param(
@@ -285,7 +270,7 @@ def create_extract_unary_param(func_name, sql_name=None):
         ),
         pytest.param(
             "stars - 42.0",
-            QUERY.format("`stars` - `medals`"),
+            QUERY.format("`stars` - 42.0"),
             id="subtract float scalar from float column",
         ),
         # Test datetime operations
@@ -298,7 +283,6 @@ def create_extract_unary_param(func_name, sql_name=None):
         create_extract_unary_param("millisecond"),
         create_extract_unary_param("hour"),
         create_datetime_unary_param("epoch_seconds", "UNIX_SECONDS"),
-        create_datetime_unary_param("day_of_week"),
         create_extract_unary_param("day"),
         pytest.param(
             "between(birthday, 1990-01-01, 2000-07-01)",
@@ -309,6 +293,39 @@ def create_extract_unary_param(func_name, sql_name=None):
             'strftime(updated,"%d-%m")',
             QUERY.format("FORMAT_TIMESTAMP('%d-%m', `updated`, 'UTC')"),
             id="strftime",
+        ),
+        pytest.param(
+            'truncate(updated, "ms")',
+            QUERY.format("TIMESTAMP_TRUNC(`updated`, MILLISECOND)"),
+            id="truncate milliseconds from datetime",
+        ),
+        pytest.param(
+            'truncate(birthday, "d")',
+            QUERY.format("DATE_TRUNC(`birthday`, DAY)"),
+            id="truncate day from date",
+        ),
+        # Test nested functions
+        pytest.param(
+            "(medals + stars)/(stars - 42) * medals",
+            QUERY.format("(IEEE_DIVIDE(`medals` + `stars`, `stars` - 42)) * `medals`"),
+            id="arithmetic formula mixing different operation",
+        ),
+        pytest.param(
+            'upper(replace(athlete, "ff", "f"))',
+            QUERY.format("upper(REPLACE(`athlete`, 'ff', 'f'))"),
+            id="nest two string methods",
+        ),
+        pytest.param(
+            "round(exp(month(birthday)*medals))",
+            QUERY.format("round(exp(EXTRACT(month from `birthday`) * `medals`))"),
+            id="nest numeric and datetime operations",
+        ),
+        pytest.param(
+            'ifelse(between(birthday, 2000-01-01, 2000-01-31), "millenium kid", "normal kid")',
+            QUERY.format(
+                "CASE WHEN `birthday` BETWEEN '2000-01-01' AND '2000-01-31' THEN 'millenium kid' ELSE 'normal kid' END"
+            ),
+            id="nest ifelse with datetime function",
         ),
     ],
 )

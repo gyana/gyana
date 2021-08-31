@@ -42,6 +42,13 @@
     "description": "Compute the first non-null value(s) from the passed arguments in left-to-right order."
   },
   {
+    "id": "contains",
+    "name": "contains",
+    "categories": "text",
+    "arguments": ["text", "value"],
+    "descrition": "Determine if indicated value is exactly contained in the text."
+  },
+  {
     "id": "date",
     "name": "date",
     "categories": "date and time",
@@ -87,8 +94,8 @@
     "id": "find",
     "name": "find",
     "categories": "text",
-    "arguments": ["text", "searchtext", "*start", "*end"],
-    "description": "Returns position (0 indexed) of first occurence of subtext, optionally after a particular position (0 indexed)"
+    "arguments": ["text", "searchtext"],
+    "description": "Returns position (0 indexed) of first occurence of subtext"
   },
   {
     "id": "floor",
@@ -364,25 +371,11 @@
     "description": "Replace one or more values"
   },
   {
-    "id": "substr",
-    "name": "substr",
-    "categories": "text",
-    "arguments": ["text", "start", "*length"],
-    "description": "Pull substrings out of each string value by position and maximum length."
-  },
-  {
     "id": "time",
     "name": "time",
     "categories": "date and time",
     "arguments": ["datetime"],
     "description": "Get the month from a timestamp"
-  },
-  {
-    "id": "translate",
-    "name": "translate",
-    "categories": "text",
-    "arguments": ["from", "to"],
-    "description": "Returns text with set of \\u2018from\\u2019 characters replaced by set of \\u2018to\\u2019 characters."
   },
   {
     "id": "truncate",
