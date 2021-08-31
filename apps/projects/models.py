@@ -13,12 +13,7 @@ class Project(CloneMixin, BaseModel):
 
     description = models.TextField(blank=True)
 
-    _clone_m2o_or_o2m_fields = [
-        "integration_set",
-        "workflow_set",
-        "dashboard_set",
-        "table_set",
-    ]
+    _clone_m2o_or_o2m_fields = ["integration_set", "workflow_set", "dashboard_set"]
 
     def __str__(self):
         return self.name
