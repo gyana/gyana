@@ -2,8 +2,9 @@ from apps.dashboards.models import Dashboard
 from apps.integrations.models import Integration
 from apps.nodes.models import Node
 from apps.projects.models import Project
-from apps.templates.duplicate import get_instance_table_from_template_table
+from apps.templates.duplicate import get_target_table_from_source_table
 from apps.widgets.models import Widget
+from apps.workflows.bigquery import run_workflow
 from apps.workflows.models import Workflow
 from django import forms
 from django.db import transaction
@@ -91,7 +92,7 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                 ).all()
 
                 for input_node in input_nodes:
-                    input_node.input_table = get_instance_table_from_template_table(
+                    input_node.input_table = get_target_table_from_source_table(
                         input_node.input_table, instance.project
                     )
 
@@ -101,14 +102,12 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                 ).all()
 
                 for widget in widgets:
-                    widget.table = get_instance_table_from_template_table(
+                    widget.table = get_target_table_from_source_table(
                         widget.table, instance.project
                     )
 
                 Node.objects.bulk_update(input_nodes, ["input_table"])
                 Widget.objects.bulk_update(widgets, ["table"])
-
-                # todo: run all the workflows
 
                 # todo: directly duplicate Google Sheets and CSVs, for now
 
@@ -116,5 +115,10 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
 
                 instance.save()
                 self.save_m2m()
+
+            # run all the workflows
+            # TODO: run within celery progress with streaming update
+            for workflow in workflows:
+                run_workflow(workflow)
 
         return instance

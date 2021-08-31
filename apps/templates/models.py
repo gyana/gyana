@@ -1,7 +1,6 @@
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
 from apps.projects.models import Project
-from apps.templates.duplicate import template_integration_is_ready_in_project
 from django.db import models
 
 
@@ -32,9 +31,9 @@ class TemplateInstance(BaseModel):
 
     @property
     def is_ready(self):
-        return all(
-            template_integration_is_ready_in_project(t, self.project)
-            for t in self.template.project.integration_set.all()
+        return (
+            self.templateintegration_set.exclude(target_integration__ready=True).count()
+            == 0
         )
 
 
