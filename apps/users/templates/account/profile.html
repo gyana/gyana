@@ -2,9 +2,44 @@
 {% load static %}
 
 {% block app %}
-<section class="p-8">
-  {% include 'account/components/profile_form.html' %}
+<div class="workflow-detail__header">
+  <h3>Your Account</h3>
+</div>
+
+<div class="tabbar">
+  <a class="tabbar__link tabbar__link--active">Your Details</a>
+  <a class="tabbar__link tabbar__link--disabled">Company Details</a>
+</div>
+
+<section class="pad">
+  <div class="flex gap-4 mb-8">
+    <label>
+      <span>Picture</span>
+      
+      <div class="flex items-center gap-7">
+        <img class="h-32 w-32" src="{{ user.avatar_url }}">
+        <input id="profile-upload" type="file" accept="image/*" />
+      </div>
+    </label>
+  </div>
+
+  <div class="column">
+    <form method="post">
+      {% csrf_token %}
+
+      {% include "django/forms/default_form.html" %}
+
+      <div class="flex w-full">
+        <button type="submit" class="button button--success button--filled mr-auto">Save</button>
+
+        <a href="{% url 'account_logout' %}" class="button button--danger">
+          Sign out
+        </a>
+      </div>
+    </form>
+  </div>
 </section>
+
 {% endblock %}
 
 {% block page_js %}

@@ -50,7 +50,7 @@ class UserLoginForm(LoginForm):
 
 
 class CustomUserChangeForm(UserChangeForm):
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(required=True, label="Email Address")
     password = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
