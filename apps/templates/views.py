@@ -73,28 +73,8 @@ class TemplateInstanceUpdate(ProjectMixin, SingleTableMixin, TurboUpdateView):
     def get_table_kwargs(self):
         return {"show_header": False, "project": self.project}
 
-    # def get_tables(self):
-    #     return [
-    #         table(data, show_header=False)
-    #         for table, data in zip(self.tables, self.get_table_data())
-    #     ]
-
     def get_table_data(self):
         return self.object.templateintegration_set.all()
-
-        # template_integrations = [
-        #     {
-        #         "icon": t.icon,
-        #         "name": t.name,
-        #         "setup": get_create_url_in_project(t, self.object.project),
-        #     }
-        #     for t in self.object.template.project.integration_set.all()
-        #     if not template_integration_exists_in_project(t, self.object.project)
-        # ]
-
-        # project_integrations = self.object.project.integration_set.all()
-
-        # return [template_integrations, project_integrations]
 
     def get_success_url(self):
         return reverse("projects:detail", args=(self.project.id,))
