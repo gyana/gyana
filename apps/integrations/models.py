@@ -33,7 +33,8 @@ class Integration(CloneMixin, BaseModel):
     created_ready = models.DateTimeField(null=True)
     created_by = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
 
-    _clone_m2o_or_o2m_fields = ["connector_set", "sheet_set", "upload_set"]
+    _clone_m2o_or_o2m_fields = ["connector_set", "table_set"]
+    _clone_o2o_fields = ["sheet", "upload"]
 
     def __str__(self):
         return self.name

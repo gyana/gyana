@@ -85,30 +85,32 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
 
                 Dashboard.objects.bulk_update(dashboards, ["project"])
                 Workflow.objects.bulk_update(workflows, ["project"])
-                cloned_project.delete()
 
-                # fix the sheets and upload tables, delete connectors
-                Integration.objects.filter(kind=Integration.Kind.CONNECTOR).delete()
+                # sheets + uploads tables
 
-                tables = Table.objects.filter(
+                tables = cloned_project.table_set.filter(
                     integration__kind__in=[
                         Integration.Kind.SHEET,
                         Integration.Kind.UPLOAD,
-                    ]
+                    ],
                 ).all()
 
                 for table in tables:
-                    curr_bq_id = table.bq_id
+                    # duplicated values have " copy X" appended to work with unique constraint
+                    curr_bq_id = f"{table.bq_dataset.split(' ')[0]}.{table.bq_table.split(' ')[0]}"
                     table.bq_dataset = instance.project.team.tables_dataset_id
                     table.bq_table = table.integration.source_obj.table_id
+                    table.project = instance.project
                     bigquery_client().copy_table(curr_bq_id, table.bq_id)
 
-                Table.objects.bulk_update(tables, ["bq_table", "bq_dataset"])
+                Table.objects.bulk_update(tables, ["bq_table", "bq_dataset", "project"])
 
+                # connectors tables
                 # for each reference to an table, identify the new table
                 input_nodes = Node.objects.filter(
                     workflow__project=instance.project,
                     input_table__integration__isnull=False,
+                    table__integration__kind=Integration.Kind.CONNECTOR,
                 ).all()
 
                 for input_node in input_nodes:
@@ -119,6 +121,7 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                 widgets = Widget.objects.filter(
                     dashboard__project=instance.project,
                     table__integration__isnull=False,
+                    table__integration__kind=Integration.Kind.CONNECTOR,
                 ).all()
 
                 for widget in widgets:
@@ -128,6 +131,9 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
 
                 Node.objects.bulk_update(input_nodes, ["input_table"])
                 Widget.objects.bulk_update(widgets, ["table"])
+
+                # cascading delete for connectors
+                cloned_project.delete()
 
                 instance.completed = True
 

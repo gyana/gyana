@@ -21,6 +21,8 @@ describe('templates', () => {
     cy.contains('Google Analytics')
     cy.contains('Bounce rate and session duration')
     cy.contains('avg_session_duration')
+    cy.contains('Employees by owner')
+    cy.contains('Alex')
 
     // create the project with the template
     cy.get('button[type=submit]').click()
@@ -58,5 +60,7 @@ describe('templates', () => {
     cy.contains('Google Analytics')
     cy.contains('Bounce rate and session duration')
     cy.contains('avg_session_duration')
+    cy.contains('Employees by owner')
+    cy.contains('Alex')
   })
 })
