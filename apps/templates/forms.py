@@ -1,4 +1,5 @@
 from apps.dashboards.models import Dashboard
+from apps.integrations.models import Integration
 from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.templates.duplicate import get_instance_table_from_template_table
@@ -7,7 +8,7 @@ from apps.workflows.models import Workflow
 from django import forms
 from django.db import transaction
 
-from .models import TemplateInstance
+from .models import TemplateInstance, TemplateIntegration
 
 
 class TemplateInstanceCreateForm(forms.ModelForm):
@@ -32,10 +33,21 @@ class TemplateInstanceCreateForm(forms.ModelForm):
         instance.template = self._template
         instance.project = project
 
+        # we only need templates for connectors, uploads and sheets are duplicated
+        template_integrations = [
+            TemplateIntegration(
+                template_instance=instance, source_integration=integration
+            )
+            for integration in self._template.project.integration_set.filter(
+                kind=Integration.Kind.CONNECTOR
+            ).all()
+        ]
+
         if commit:
             with transaction.atomic():
                 project.save()
                 instance.save()
+                TemplateIntegration.objects.bulk_create(template_integrations)
                 self.save_m2m()
 
         return instance

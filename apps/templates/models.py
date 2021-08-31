@@ -43,4 +43,15 @@ class TemplateIntegration(BaseModel):
     template_instance = models.ForeignKey(TemplateInstance, on_delete=models.CASCADE)
     # [SET_NULL] template integrations are based on snapshot of a template project, even if
     # upstream integration is deleted we need to keep track of it here
-    integration = models.ForeignKey(Integration, null=True, on_delete=models.SET_NULL)
+    source_integration = models.ForeignKey(
+        Integration,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="template_integration_source",
+    )
+    target_integration = models.ForeignKey(
+        Integration,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="template_integration_target",
+    )

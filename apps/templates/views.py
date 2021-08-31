@@ -3,24 +3,15 @@ from functools import cached_property
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.projects.mixins import ProjectMixin
 from apps.teams.mixins import TeamMixin
-from apps.templates.duplicate import (
-    get_create_url_in_project,
-    template_integration_exists_in_project,
-)
 from apps.templates.forms import TemplateInstanceUpdateForm
 from django.shortcuts import redirect
 from django.urls.base import reverse
 from django_tables2 import SingleTableView
-from django_tables2.views import MultiTableMixin
+from django_tables2.views import SingleTableMixin
 
 from .forms import TemplateInstanceCreateForm
 from .models import Template, TemplateInstance
-from .tables import (
-    TemplateInstanceIntegrationTable,
-    TemplateInstanceSetupTable,
-    TemplateInstanceTable,
-    TemplateTable,
-)
+from .tables import TemplateInstanceTable, TemplateIntegrationTable, TemplateTable
 
 
 class TemplateList(TeamMixin, SingleTableView):
@@ -73,34 +64,37 @@ class TemplateInstanceList(ProjectMixin, SingleTableView):
         return self.project.templateinstance_set.all()
 
 
-class TemplateInstanceUpdate(ProjectMixin, MultiTableMixin, TurboUpdateView):
+class TemplateInstanceUpdate(ProjectMixin, SingleTableMixin, TurboUpdateView):
     template_name = "templateinstances/update.html"
     model = TemplateInstance
     form_class = TemplateInstanceUpdateForm
-    tables = [TemplateInstanceSetupTable, TemplateInstanceIntegrationTable]
-    table_pagination = False
+    table_class = TemplateIntegrationTable
 
-    def get_tables(self):
-        return [
-            table(data, show_header=False)
-            for table, data in zip(self.tables, self.get_table_data())
-        ]
+    def get_table_kwargs(self):
+        return {"show_header": False, "project": self.project}
+
+    # def get_tables(self):
+    #     return [
+    #         table(data, show_header=False)
+    #         for table, data in zip(self.tables, self.get_table_data())
+    #     ]
 
     def get_table_data(self):
+        return self.object.templateintegration_set.all()
 
-        template_integrations = [
-            {
-                "icon": t.icon,
-                "name": t.name,
-                "setup": get_create_url_in_project(t, self.object.project),
-            }
-            for t in self.object.template.project.integration_set.all()
-            if not template_integration_exists_in_project(t, self.object.project)
-        ]
+        # template_integrations = [
+        #     {
+        #         "icon": t.icon,
+        #         "name": t.name,
+        #         "setup": get_create_url_in_project(t, self.object.project),
+        #     }
+        #     for t in self.object.template.project.integration_set.all()
+        #     if not template_integration_exists_in_project(t, self.object.project)
+        # ]
 
-        project_integrations = self.object.project.integration_set.all()
+        # project_integrations = self.object.project.integration_set.all()
 
-        return [template_integrations, project_integrations]
+        # return [template_integrations, project_integrations]
 
     def get_success_url(self):
         return reverse("projects:detail", args=(self.project.id,))
