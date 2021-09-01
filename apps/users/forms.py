@@ -40,12 +40,20 @@ class UserLoginForm(LoginForm):
     error_messages = {
         "account_inactive": "This account is currently inactive.",
         "email_password_mismatch": "The e-mail address and/or password you specified are not correct.",
-        "username_password_mismatch": "The username sdas dsad asd asd as and/or password you specified are not correct.",
-        "username_email_password_mismatch": "The login ad asdsad asd asd asd as and/or password you specified are not correct.",
+        "username_password_mismatch": "The username and/or password you specified are not correct.",
+        "username_email_password_mismatch": "The login and/or password you specified are not correct.",
     }
+
+    # We already have labels, identical placeholders are pointless.
+    def __init__(self, *args, **kwargs):
+        super(UserLoginForm, self).__init__(*args, **kwargs)
+
+        del self.fields['login'].widget.attrs['placeholder']
+        del self.fields['password'].widget.attrs['placeholder']
 
     def login(self, *args, **kwargs):
         identify_user(self.user)
+
         return super(UserLoginForm, self).login(*args, **kwargs)
 
 

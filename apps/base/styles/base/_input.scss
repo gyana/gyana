@@ -124,9 +124,10 @@ input.input,
 
   &__help-text {
     color: var(--c-black-20);
-    display: inline-block;
+    display: block;
     font-size: 1.2rem;
     line-height: 1.4rem;
+    margin: 0.2rem 0;
   }
 }
 
