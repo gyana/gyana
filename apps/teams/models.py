@@ -105,3 +105,7 @@ class Membership(BaseModel):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     role = models.CharField(max_length=100, choices=roles.ROLE_CHOICES)
+
+    @property
+    def can_delete(self):
+        return self.team.admins.exclude(id=self.user.id).count() > 0
