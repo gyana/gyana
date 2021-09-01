@@ -23,24 +23,24 @@ INTEGRATION_STATE_TO_MESSAGE = {
 class PendingStatusColumn(Column):
     def render(self, record, table, **kwargs):
         context = getattr(table, "context", Context())
-        object = self.accessor.resolve(record)
+        instance = self.accessor.resolve(record) if self.accessor else record
 
-        if object is None:
+        if instance is None:
             return
 
-        if object.ready:
+        if instance.ready:
             context["icon"] = ICONS["success"]
             context["text"] = "Success"
         else:
-            context["icon"] = INTEGRATION_STATE_TO_ICON[object.state]
-            context["text"] = INTEGRATION_STATE_TO_MESSAGE[object.state]
+            context["icon"] = INTEGRATION_STATE_TO_ICON[instance.state]
+            context["text"] = INTEGRATION_STATE_TO_MESSAGE[instance.state]
 
         # wrap status in turbo frame to fetch possible update
         if (
-            object.kind == Integration.Kind.CONNECTOR
-            and object.state == Integration.State.LOAD
+            instance.kind == Integration.Kind.CONNECTOR
+            and instance.state == Integration.State.LOAD
         ):
-            context["connector"] = object.connector
+            context["connector"] = instance.connector
             return get_template("connectors/status.html").render(context.flatten())
 
         return get_template("columns/status.html").render(context.flatten())
