@@ -61,11 +61,11 @@ describe('connectors', () => {
 
     // initially it is loading
     cy.get('.fa-circle-notch').should('have.length', 1)
-    cy.get('.fa-check-circle').should('not.exist')
+    cy.get('.fa-exclamation-triangle').should('have.length', 4)
 
     // now it is completed
     cy.get('.fa-circle-notch').should('not.exist')
-    cy.get('.fa-check-circle').should('have.length', 1)
+    cy.get('.fa-exclamation-triangle').should('have.length', 5)
 
     // takes me to the review page
     cy.contains('Google Analytics').first().click()
