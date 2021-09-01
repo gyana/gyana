@@ -108,7 +108,7 @@ class MembershipUpdate(TeamMixin, TurboUpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["can_delete"] = (
-            self.team.admins.exclude(id=self.object.user.id).count() > 1
+            self.team.admins.exclude(id=self.object.user.id).count() > 0
         )
         return context
 
@@ -121,7 +121,7 @@ class MembershipDelete(TeamMixin, DeleteView):
     model = Membership
 
     def delete(self, request, *args, **kwargs) -> HttpResponse:
-        if self.team.admins.exclude(id=self.get_object().user.id).count() > 1:
+        if self.team.admins.exclude(id=self.get_object().user.id).count() > 0:
             return super().delete(request, *args, **kwargs)
         raise Http404("Cannot delete last admin of team")
 
