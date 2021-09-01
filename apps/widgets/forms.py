@@ -64,7 +64,10 @@ class TwoDimensionForm(GenericWidgetForm):
         schema = Table.objects.get(pk=table).schema if table else None
 
         if schema and "label" in self.fields:
-            columns = [(column, column) for column in schema]
+            columns = [
+                ("", "No column selected"),
+                *[(column, column) for column in schema],
+            ]
             self.fields["label"].choices = columns
 
     def get_live_fields(self):

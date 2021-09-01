@@ -14,10 +14,11 @@ class SchemaFormMixin:
 
         super().__init__(*args, **kwargs)
 
-        self.fields["column"] = forms.ChoiceField(
-            choices=[
-                ("", "No column selected"),
-                *[(col, col) for col in self.schema],
-            ],
-            help_text=self.base_fields["column"].help_text,
-        )
+        if self.fields.get("column"):
+            self.fields["column"] = forms.ChoiceField(
+                choices=[
+                    ("", "No column selected"),
+                    *[(col, col) for col in self.schema],
+                ],
+                help_text=self.base_fields["column"].help_text,
+            )

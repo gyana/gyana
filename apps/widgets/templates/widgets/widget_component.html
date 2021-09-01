@@ -27,14 +27,13 @@
       {% if request.GET.mode == 'edit' %}
       <div class='widget-card__commands'>
         {% if object.kind != "text" %}
-        <button  data-action="click->tf-modal#open">
-          <i
-            class="fas fa-fw fa-edit"
-            id="widget-update-{{object.id}}"
-            title="Edit"
-            data-item="{{ object.id }}"
-            data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
-          ></i>
+        <button  
+          data-action="click->tf-modal#open"
+          id="widget-update-{{object.id}}"  
+          data-item="{{ object.id }}"
+          data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
+        >
+          <i class="fas fa-fw fa-edit" title="Edit"></i>
         </button>
 
         {% comment %} Uncomment this once we figure out the modal for opening up a chart. {% endcomment %}

@@ -13,16 +13,18 @@ export default class extends Controller {
   }
 
   open(event) {
-    if (event.target.getAttribute('data-src') !== this.turboFrameTarget.getAttribute('src')) {
+    if (
+      event.currentTarget.getAttribute('data-src') !== this.turboFrameTarget.getAttribute('src')
+    ) {
       this.turboFrameTarget.innerHTML = `
         <div class='placeholder-scr placeholder-scr--fillscreen'>
           <i class='placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x'></i>
         </div>
       `
-      this.turboFrameTarget.setAttribute('src', event.target.getAttribute('data-src'))
+      this.turboFrameTarget.setAttribute('src', event.currentTarget.getAttribute('data-src'))
     }
     const params = new URLSearchParams(location.search)
-    params.set('modal_item', event.target.getAttribute('data-item'))
+    params.set('modal_item', event.currentTarget.getAttribute('data-item'))
     history.replaceState({}, '', `${location.pathname}?${params.toString()}`)
     this.modalTarget.classList.remove('hidden')
   }
