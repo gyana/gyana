@@ -7,7 +7,7 @@
   <a class="sidebar__link {% if user_team.id == team.id %}sidebar__link--active{% endif %}"
      href="{% url 'teams:detail' user_team.id %}"
      title="{{ user_team.name }}">
-    <span class="user_team">{{ user_team.name|slice:1 }}</span>{{ user_team.name }}
+    <span>{{ user_team.name|slice:1 }}</span>{{ user_team.name }}
   </a>
 </li>
 {% endfor %}

@@ -27,30 +27,28 @@
   }
 
   &__link {
-    align-items: center;
     border-left: 0.6rem solid var(--c-transparent);
     color: var(--c-black);
-    display: flex;
     font-size: 1.4rem;
-    height: 4.6rem;
-    justify-content: flex-start;
+    display: block;
+    height: 4.8rem;
     line-height: 1.6rem;
     padding: 1.6rem 1.6rem 1.6rem 1rem;
     text-align: left;
 
-    .user_team {
+    > span {
       align-items: center;
-      background-color: var(--c-blue-50);
+      background-color: var(--c-blue);
       border-radius: 5px;
       color: var(--c-white);
-      display: flex;
+      display: inline-flex;
       font-weight: 900;
-      height: 0;
       justify-content: center;
+      line-height: 1.75rem;
       margin-right: 1.5rem;
-      padding: 0.875rem;
-      text-decoration: none;
-      width: 0;
+      width: 1.75rem;
+      height: 1.75rem;
+      padding: 0.2rem 0 0;
     }
 
     &--active {
