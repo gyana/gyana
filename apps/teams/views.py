@@ -1,15 +1,17 @@
-from apps.base.turbo import TurboCreateView, TurboUpdateView
-from apps.teams.bigquery import create_team_dataset
-from apps.teams.mixins import TeamMixin
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.http import HttpResponse
+from django.http.response import Http404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableView
+
+from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.teams.bigquery import create_team_dataset
+from apps.teams.mixins import TeamMixin
 
 from .forms import MembershipUpdateForm, TeamCreateForm, TeamUpdateForm
 from .models import Membership, Team
@@ -110,6 +112,11 @@ class MembershipUpdate(TeamMixin, TurboUpdateView):
 class MembershipDelete(TeamMixin, DeleteView):
     template_name = "members/delete.html"
     model = Membership
+
+    def delete(self, request, *args, **kwargs) -> HttpResponse:
+        if self.team.members.count() > 1:
+            return super().delete(request, *args, **kwargs)
+        raise Http404("Cannot delete last member of team")
 
     def get_success_url(self) -> str:
         return reverse("team_members:list", args=(self.team.id,))
