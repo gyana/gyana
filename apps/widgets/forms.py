@@ -1,5 +1,5 @@
 from apps.base.aggregations import AGGREGATION_TYPE_MAP
-from apps.base.formsets import InlineColumnFormset, RequiredInlineFormset
+from apps.base.formsets import RequiredInlineFormset
 from apps.base.live_update_form import LiveUpdateForm
 from apps.columns.forms import FunctionColumnForm
 from apps.columns.models import FunctionColumn
@@ -173,7 +173,7 @@ FunctionColumnFormset = forms.inlineformset_factory(
     form=FunctionColumnForm,
     can_delete=True,
     extra=0,
-    formset=InlineColumnFormset,
+    formset=RequiredInlineFormset,
 )
 
 

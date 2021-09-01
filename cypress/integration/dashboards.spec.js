@@ -11,6 +11,8 @@ const createWidget = (kind) => {
   cy.contains('store_info').click()
 }
 
+const widgetStartId = getModelStartId('widgets.widget')
+const dashboardStartId = getModelStartId('dashboards.dashboard')
 describe('dashboards', () => {
   beforeEach(() => {
     cy.login()
@@ -22,7 +24,7 @@ describe('dashboards', () => {
     cy.contains('create one').click()
     cy.contains('This dashboard needs some widgets!')
     cy.get('input[value=Untitled]').clear().type("Marauder's Map{enter}")
-
+    cy.get(`input[value="Marauder's Map"]`)
     cy.visit('/projects/1/dashboards/')
     cy.contains("Marauder's Map").click()
     cy.get('span[data-popover-target=trigger]').click()
@@ -37,7 +39,7 @@ describe('dashboards', () => {
     cy.contains('Edinburgh')
     cy.get('button[name=close]').click({ force: true })
     cy.get('input[value="Save & Preview"]').should('not.exist')
-    cy.get('#widget-1').contains('London')
+    cy.get(`#widget-${widgetStartId}`).contains('London')
 
     createWidget('Bar')
     cy.get('select[name=label]').select('Owner')
@@ -47,15 +49,15 @@ describe('dashboards', () => {
     cy.get('select[name=aggregations-0-column]').select('Employees')
     cy.get('select[name=aggregations-0-function]').select('SUM')
     cy.contains('Save & Close').click()
-    cy.get('#widget-2').within((el) => {
+    cy.get(`#widget-${widgetStartId + 1}`).within((el) => {
       cy.wrap(el).contains('text', 'David').should('be.visible')
     })
 
     // TODO: trigger the hover and remove the force click
     // cy.get('#widgets-output-1').trigger('mouseover')
-    cy.get('#widget-delete-1').click({ force: true })
+    cy.get(`#widget-delete-${widgetStartId}`).click({ force: true })
     cy.contains('Yes').click({ force: true })
-    cy.get('#widget-1').should('not.exist')
+    cy.get(`#widget-${widgetStartId}`).should('not.exist')
   })
 
   it('duplicates dashboard with new widgets', () => {
@@ -68,13 +70,13 @@ describe('dashboards', () => {
     cy.contains('Save & Close').should('not.be.disabled').click()
 
     cy.visit('/projects/1/dashboards/')
-    cy.get('#dashboard-duplicate-1').click()
+    cy.get(`#dashboard-duplicate-${dashboardStartId}`).click()
     cy.contains('Copy of Untitled').click()
     cy.contains('Blackpool', { timeout: 10000 })
 
     // TODO: trigger the hover and remove the force click
     // cy.get('#widgets-output-2').trigger('mouseover')
-    cy.get('#widget-update-2').click({ force: true })
+    cy.get(`#widget-update-${widgetStartId + 1}`).click({ force: true })
     cy.get('select-visual').find('button').click()
     cy.get('select-visual').contains('Column').click()
     cy.get('select[name=label]').select('Location')
@@ -96,12 +98,12 @@ describe('dashboards', () => {
     cy.contains('Save & Close').should('not.be.disabled').click()
     cy.logout()
 
-    cy.visit('/projects/1/dashboards/1')
+    cy.visit(`/projects/1/dashboards/${dashboardStartId}`)
     cy.location('pathname').should('equal', '/accounts/login/')
 
     cy.login()
-    cy.visit('/projects/1/dashboards/1')
-    cy.get('#dashboard-share-1').click()
+    cy.visit(`/projects/1/dashboards/${dashboardStartId}`)
+    cy.get(`#dashboard-share-${dashboardStartId}`).click()
     cy.get('button').contains('Share').click()
 
     cy.contains(
@@ -116,10 +118,10 @@ describe('dashboards', () => {
         cy.contains('David')
 
         cy.login()
-        cy.visit('/projects/1/dashboards/1')
-        cy.get('#dashboard-share-1').click()
+        cy.visit(`/projects/1/dashboards/${dashboardStartId}`)
+        cy.get(`#dashboard-share-${dashboardStartId}`).click()
         cy.get('button').contains('Unshare').click()
-        cy.contains('Share')
+        cy.get('.fa-lock')
         cy.logout()
 
         // cy.visit fails on 404 by default
@@ -155,6 +157,6 @@ describe('dashboards', () => {
 
     cy.contains('Save & Preview').click()
     cy.contains('Loading widget...')
-    cy.get('#widgets-output-1 table').contains('Edinburgh').should('be.visible')
+    cy.get(`#widgets-output-${widgetStartId} table`).contains('Edinburgh').should('be.visible')
   })
 })
