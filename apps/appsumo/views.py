@@ -68,8 +68,8 @@ class AppsumoRedirect(DetailView):
 
 
 class AppsumoSignup(TurboFormMixin, SignupView):
-
     template_name = "appsumo/signup.html"
+
     # need to override otherwise global settings are used
     def get_form_class(self):
         return AppsumoSignupForm

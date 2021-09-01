@@ -11,7 +11,7 @@ describe('teams', () => {
   it('create, read, update and delete', () => {
     // redirect to the most recently created team
     cy.visit('/')
-    cy.url().should('contain', `/teams/${newTeamId - 1}`)
+    cy.url().should('contain', `/teams/4`)
 
     // now start test
     cy.visit('/teams/1')
@@ -121,7 +121,7 @@ describe('teams', () => {
 
     cy.visit('/')
     cy.contains('Warning').click()
-    cy.contains('Account').click()
+    cy.get('nav').contains('Account').click()
     // row count automatically updated when integration deleted
     cy.contains("You're exceeding your row count limit.").should('not.exist')
   })

@@ -3,7 +3,6 @@
 import { getModelStartId } from '../support/utils'
 
 const newTeamId = getModelStartId('teams.team')
-const latestTeamId = newTeamId - 1
 
 describe('users', () => {
   it('signs in to app', () => {
@@ -13,7 +12,7 @@ describe('users', () => {
     cy.get('input[type=password]').type('seewhatmatters')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', `/teams/${latestTeamId}`)
+    cy.url().should('contain', '/teams/4')
   })
 
   it('signs up to app with onboarding', () => {
@@ -92,7 +91,7 @@ describe('users', () => {
     cy.get('input[type=password]').type('senseknowdecide')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', `/teams/${latestTeamId}`)
+    cy.url().should('contain', `/teams/4`)
   })
 
   it('signs out', () => {

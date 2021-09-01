@@ -13,9 +13,10 @@
 
 <div class="mt-auto">
   <h2 class="text-red">Danger zone</h2>
-  <p class="mb-4">If you'd like to <strong>delete</strong> this team, press the button below.</p>
+  <p class="mb-4">To <strong>delete</strong> this team, press the button below.</p>
+
   <a class="button button--danger" href="{% url 'teams:delete' team.id %}">
-    Delete
+    Delete Team
   </a>
 </div>
 {% endblock %}

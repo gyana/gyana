@@ -5,16 +5,13 @@
   <div class="mr-auto">
     <h1>Integrations</h1>
 
-    <p>
-      Integrations serve as the first source of all data in your project. They can be processed in
-      workflows, or used directly in dashboards.
-    </p>
+    <p>An integration is a source of data, like a CSV file, Google Sheet, ads account, database, or web app.</p>
   </div>
 
   <div class="flex ml-4">
     {% if project.team.enabled %}
     <div data-controller='popover'>
-        <button data-popover-target="trigger" class="button button--outline button--sm" data-action="popover#trigger">
+        <button data-popover-target="trigger" class="button button--sm" data-action="popover#trigger">
           New Integration <i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
         </button>
         <ul data-popover-target="body" class="list list--bordered" hidden style="margin-top:6px;">
@@ -38,7 +35,7 @@
         </ul>
       </div>
     {% else %}
-      <button disabled class="button button--outline button--sm disabled">
+      <button disabled class="button button--sm disabled">
         New Integration <i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
       </button>
     {% endif %}

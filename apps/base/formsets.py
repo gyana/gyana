@@ -16,7 +16,7 @@ class InlineColumnFormset(RequiredInlineFormset):
         self.form.base_fields["column"] = forms.ChoiceField(
             choices=[
                 ("", "No column selected"),
-                *[(col, col) for col in kwargs["form_kwargs"]["schema"]],
+                *[(col, col) for col in self.instance.parents.first().schema],
             ],
             help_text=self.form.base_fields["column"].help_text,
         )

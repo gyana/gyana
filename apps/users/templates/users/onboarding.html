@@ -13,11 +13,14 @@
       <img src="{% static 'images/logo.png' %}" alt="">
       <div>
         <h1>Gyana</h1>
-        <p>We have a few questions before we get started:</p>
+        <p>
+          We'd like to learn a little more about you so we can help you get
+          the most out of Gyana.
+        </p>
       </div>
     </header>
 
-  <form class="mb-8" method="post">
+  <form class="mb-auto" method="post">
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}
