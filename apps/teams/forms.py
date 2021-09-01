@@ -31,6 +31,12 @@ class TeamCreateForm(forms.ModelForm):
     class Meta:
         model = Team
         fields = ("name",)
+        labels = {
+            "name": "Name your team"
+        }
+        help_texts = {
+            "name": "We reccomend you use the name of your organisation, you can change it later"
+        }
 
 
 class TeamUpdateForm(forms.ModelForm):

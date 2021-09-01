@@ -11,22 +11,15 @@ class UserOnboardingForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = [
-            "first_name",
-            "last_name",
             "company_industry",
             "company_role",
             "company_size",
         ]
         labels = {
-            "company_industry": "What's your industry'?",
+            "company_industry": "What's your industry?",
             "company_role": "What's your role?",
             "company_size": "Company size",
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["first_name"].required = True
-        self.fields["last_name"].required = True
 
     def save(self, commit=True):
         instance = super().save(commit=False)

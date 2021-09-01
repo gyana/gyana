@@ -1,9 +1,12 @@
 {% extends "web/app/app_base.html" %}
 
 {% block app %}
-<div class="pad">
+<div class="flex flex-1 flex-col justify-center items-center">
   <div class="max-w-xl">
-    <h1 class="mb-7">Create a new project</h1>
+    <div class="flex flex-col text-center mb-7">
+      <h1>Create a new project</h1>
+      <p>A project gathers your data analytics to solve and share the results of a common set of problems.</p>
+    </div>
 
     <form method="post" action="{% url 'team_projects:create' team.id %}" class="form">
       {% csrf_token %}

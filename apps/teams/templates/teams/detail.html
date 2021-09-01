@@ -10,7 +10,7 @@
   <div class="table__empty">
     <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
     <h3>This team has no projects</h3>
-    <p>Why not <a href="{% url 'team_projects:create' team.id %}" class="link">create a new one</a>?</p>
+    <p>You can <a href="{% url 'team_projects:create' team.id %}" class="link">create one</a> or start with a <a href="{% url 'team_projects:create' team.id %}" class="link">template</a>.</p>
   </div>
   {% else %}
   <div class="pt-2 pad">
