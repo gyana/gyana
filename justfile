@@ -7,11 +7,25 @@ service_account := "gyana-1511894275181-50f107d4db00.json"
 default:
   @just dev
 
-mk_bq:
-    python ./manage.py make_bq_dataset
-
 dev:
     python ./manage.py runserver
+
+celery:
+    watchexec -w apps -e py -r "celery -A gyana worker -l info"
+
+migrate:
+    ./manage.py migrate
+
+seed:
+    ./manage.py flush --noinput
+    ./manage.py loaddata cypress/fixtures/fixtures.json
+
+fixtures:
+    ./manage.py dumpdata -e admin -e auth -e contenttypes -e sessions > cypress/fixtures/fixtures.json
+    yarn prettier --write cypress/fixtures/fixtures.json
+
+shell:
+    ./manage.py shell -i ipython
 
 # Encrypt or decrypt file via GCP KMS
 gcloud_kms OP FILE:
@@ -27,21 +41,12 @@ enc_env:
     just gcloud_kms encrypt .env
     just gcloud_kms encrypt {{service_account}}
 
-celery:
-    celery -A gyana worker -l info
-
-dev-celery:
-    watchexec -w apps -e py -r "celery -A gyana worker -l info"
-
 export:
     poetry export -f requirements.txt --output requirements.txt
 
 update:
     yarn install
     poetry install
-
-migrate: update
-    python manage.py migrate
 
 format:
     # autoflake --in-place --recursive --remove-all-unused-imports --ignore-init-module-imports .
@@ -50,22 +55,10 @@ format:
 
 # Count total lines of code that need to be maintained
 cloc:
-    cloc $(git ls-files) --exclude-dir=migrations --exclude-ext=svg,csv,json
+    cloc $(git ls-files) --exclude-dir=migrations --exclude-ext=svg,csv,json,yaml,md,toml
 
 startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
 
-cypress-setup:
-    ./manage.py migrate --settings gyana.settings.cypress
-    ./manage.py flush --settings gyana.settings.cypress --noinput
-    ./manage.py loaddata --settings gyana.settings.cypress cypress/fixtures/fixtures.json
-
-cypress-server:
-    ./manage.py runserver --settings gyana.settings.cypress
-
-cypress-celery:
-    watchexec -w apps -e py -r "DJANGO_SETTINGS_MODULE=gyana.settings.cypress celery -A gyana worker -l info"
-
-cypress-fixtures:
-    ./manage.py dumpdata -e admin -e auth -e contenttypes -e sessions --settings gyana.settings.cypress > cypress/fixtures/fixtures.json
-    yarn prettier --write cypress/fixtures/fixtures.json
+test:
+    pytest tests/

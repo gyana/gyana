@@ -58,6 +58,10 @@
       href="{% url 'teams:detail' team.id %}">
       Projects
     </a>
+    <a class="tabbar__link {% if request.resolver_match.app_name == 'team_templates' %} tabbar__link--active {% endif %}"
+      href="{% url 'team_templates:list' team.id %}">
+      Templates
+    </a>
     {% if request.user|is_admin_of:team %}
     <a class="tabbar__link {% if request.resolver_match.app_name == 'team_members' %} tabbar__link--active {% endif %}"
       href="{% url 'team_members:list' team.id %}">Members</a>

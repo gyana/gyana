@@ -1,4 +1,5 @@
 from apps.base.aggregations import AGGREGATION_TYPE_MAP
+from apps.base.formsets import InlineColumnFormset, RequiredInlineFormset
 from apps.base.live_update_form import LiveUpdateForm
 from apps.columns.forms import FunctionColumnForm
 from apps.columns.models import FunctionColumn
@@ -6,7 +7,6 @@ from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
 from apps.tables.models import Table
 from django import forms
-from django.forms.models import BaseInlineFormSet
 
 from .models import Widget
 from .widgets import SourceSelect, VisualSelect
@@ -64,7 +64,10 @@ class TwoDimensionForm(GenericWidgetForm):
         schema = Table.objects.get(pk=table).schema if table else None
 
         if schema and "label" in self.fields:
-            columns = [(column, column) for column in schema]
+            columns = [
+                ("", "No column selected"),
+                *[(column, column) for column in schema],
+            ]
             self.fields["label"].choices = columns
 
     def get_live_fields(self):
@@ -153,25 +156,6 @@ FORMS = {
     Widget.Kind.HEATMAP: ThreeDimensionForm,
     Widget.Kind.BUBBLE: ThreeDimensionForm,
 }
-
-
-class RequiredInlineFormset(BaseInlineFormSet):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for form in self.forms:
-            form.empty_permitted = False
-            form.use_required_attribute = True
-
-
-class InlineColumnFormset(RequiredInlineFormset):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.form.base_fields["column"] = forms.ChoiceField(
-            choices=[
-                ("", "No column selected"),
-                *[(col, col) for col in self.instance.table.schema],
-            ]
-        )
 
 
 FilterFormset = forms.inlineformset_factory(

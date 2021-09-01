@@ -1,0 +1,38 @@
+{% load static %}
+
+<div class='widgets flex items-center justify-center'>
+  <div id="dashboard-widget-container"
+        class="widgets__canvas"
+        data-controller="widget-list"
+        style="width:{{object.width}}px;height:{{object.height}}px;">
+    {% for widget in object.widget_set.all %}
+    <gy-widget id="widget-{{ widget.id }}">
+      <div class="h-full w-full"
+            data-id="{{ widget.id }}" data-x="{{widget.x}}" data-y="{{widget.y}}"
+            data-width="{{widget.width}}" data-height="{{widget.height}}">
+        <div class="widget-card h-full">
+          <div class='widget-card__visual'>
+            {% if widget.name %}
+            <h3 class="mb-2">{{ widget.name }}</h3>
+            {% endif %}
+            <turbo-frame id="widgets-output-{{ widget.id }}"
+                          src="{% url 'dashboard_widgets:output' project.id dashboard.id widget.id %}"
+                          target="_top"
+                          style="display: flex; flex: 1 1 0%; min-height: 0;">
+              <div class='placeholder-scr placeholder-scr--fillscreen'>
+                <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+                <p class='placeholder-scr__title'>Loading visualisation...</p>
+              </div>
+            </turbo-frame>
+          </div>
+        </div>
+      </div>
+    </gy-widget>
+    {% endfor %}
+  </div>
+</div>
+
+<script src="{% static 'js/components-bundle.js' %}"></script>
+<script src="{% static "fusioncharts/fusioncharts.js" %}"></script>
+<script src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
+<script src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>

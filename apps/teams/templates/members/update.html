@@ -10,7 +10,7 @@
     <button type="submit" class="button button--sm button--success">Save</button>
   </form>
 </div>
-
+{% if can_delete%}
 <div>
   <h2 class="text-red">Danger zone:</h2>
   {% if object.user == request.user %}
@@ -23,4 +23,7 @@
     Delete
   </a>
 </div>
+{% else %}
+  <span>You can’t remove yourself as there’s no admin left on the team.</span>
+{% endif %}
 {% endblock %}

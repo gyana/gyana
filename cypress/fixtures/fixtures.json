@@ -32,7 +32,7 @@
     "pk": 2,
     "fields": {
       "password": "pbkdf2_sha256$260000$N2BmQRuSSYGvpQnPKCw9fj$UhUCkfx7qdzWPNYP/XUbi3L4hvP5/7f+N4nmrqTPceM=",
-      "last_login": "2021-07-27T12:09:55.602Z",
+      "last_login": "2021-08-31T00:57:44.039Z",
       "is_superuser": true,
       "username": "admin",
       "first_name": "",
@@ -145,6 +145,18 @@
     }
   },
   {
+    "model": "teams.team",
+    "pk": 5,
+    "fields": {
+      "created": "2021-08-30T18:56:05.348Z",
+      "updated": "2021-08-31T00:58:25.986Z",
+      "name": "Admin Templates",
+      "override_row_limit": null,
+      "row_count": 12943,
+      "row_count_calculated": "2021-08-31T00:58:25.986Z"
+    }
+  },
+  {
     "model": "teams.membership",
     "pk": 1,
     "fields": {
@@ -196,6 +208,17 @@
       "updated": "2021-08-20T13:49:11.983Z",
       "team": 4,
       "user": 1,
+      "role": "admin"
+    }
+  },
+  {
+    "model": "teams.membership",
+    "pk": 6,
+    "fields": {
+      "created": "2021-08-30T18:56:05.352Z",
+      "updated": "2021-08-30T18:56:05.352Z",
+      "team": 5,
+      "user": 2,
       "role": "admin"
     }
   },
@@ -252,6 +275,17 @@
       "name": "Disabled",
       "team": 4,
       "description": ""
+    }
+  },
+  {
+    "model": "projects.project",
+    "pk": 6,
+    "fields": {
+      "created": "2021-08-30T18:56:35.835Z",
+      "updated": "2021-08-30T18:56:35.835Z",
+      "name": "Google Analytics",
+      "team": 5,
+      "description": "Two widgets for Google Analytics in a Cypress test."
     }
   },
   {
@@ -420,6 +454,36 @@
     }
   },
   {
+    "model": "integrations.integration",
+    "pk": 13,
+    "fields": {
+      "created": "2021-08-30T19:05:46.410Z",
+      "updated": "2021-08-30T19:29:42.002Z",
+      "project": 6,
+      "kind": "connector",
+      "name": "Google Analytics",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-30T19:29:42Z",
+      "created_by": 2
+    }
+  },
+  {
+    "model": "integrations.integration",
+    "pk": 14,
+    "fields": {
+      "created": "2021-08-31T00:58:18.464Z",
+      "updated": "2021-08-31T00:58:25.977Z",
+      "project": 6,
+      "kind": "upload",
+      "name": "store_info",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-08-31T00:58:25.975Z",
+      "created_by": 2
+    }
+  },
+  {
     "model": "workflows.workflow",
     "pk": 1,
     "fields": {
@@ -429,6 +493,70 @@
       "project": 2,
       "last_run": null,
       "data_updated": "2021-08-13T09:02:28.456Z"
+    }
+  },
+  {
+    "model": "dashboards.dashboard",
+    "pk": 1,
+    "fields": {
+      "created": "2021-08-30T19:29:47.252Z",
+      "updated": "2021-08-31T00:59:24.659Z",
+      "name": "Basic metrics",
+      "project": 6,
+      "shared_status": "private",
+      "shared_id": null,
+      "width": 1200,
+      "height": 840
+    }
+  },
+  {
+    "model": "widgets.widget",
+    "pk": 1,
+    "fields": {
+      "created": "2021-08-30T19:29:50.988Z",
+      "updated": "2021-08-30T19:31:11.874Z",
+      "dashboard": 1,
+      "table": 12,
+      "text_content": null,
+      "kind": "msline",
+      "aggregator": "",
+      "label": "date",
+      "value": null,
+      "name": "Bounce rate and session duration",
+      "sort_by": "label",
+      "sort_ascending": true,
+      "width": 1200,
+      "height": 435,
+      "x": 0,
+      "y": 0,
+      "z": null,
+      "z_aggregator": null,
+      "stack_100_percent": false
+    }
+  },
+  {
+    "model": "widgets.widget",
+    "pk": 3,
+    "fields": {
+      "created": "2021-08-31T00:59:24.656Z",
+      "updated": "2021-08-31T01:00:36.450Z",
+      "dashboard": 1,
+      "table": 19,
+      "text_content": null,
+      "kind": "mscolumn2d",
+      "aggregator": "",
+      "label": "Owner",
+      "value": null,
+      "name": "Employees by owner",
+      "sort_by": "value",
+      "sort_ascending": false,
+      "width": 1200,
+      "height": 405,
+      "x": 0,
+      "y": 435,
+      "z": null,
+      "z_aggregator": null,
+      "stack_100_percent": false
     }
   },
   {
@@ -577,6 +705,193 @@
     }
   },
   {
+    "model": "tables.table",
+    "pk": 9,
+    "fields": {
+      "created": "2021-08-30T19:29:18.765Z",
+      "updated": "2021-08-30T19:29:18.765Z",
+      "bq_table": "adwords_campaigns",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 204,
+      "data_updated": "2021-08-30T19:29:18.765Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 10,
+    "fields": {
+      "created": "2021-08-30T19:29:18.883Z",
+      "updated": "2021-08-30T19:29:18.883Z",
+      "bq_table": "adwords_hourly_stats",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 4333,
+      "data_updated": "2021-08-30T19:29:18.883Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 11,
+    "fields": {
+      "created": "2021-08-30T19:29:18.996Z",
+      "updated": "2021-08-30T19:29:18.996Z",
+      "bq_table": "adwords_keyword",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 423,
+      "data_updated": "2021-08-30T19:29:18.996Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 12,
+    "fields": {
+      "created": "2021-08-30T19:29:19.102Z",
+      "updated": "2021-08-30T19:29:19.102Z",
+      "bq_table": "audience_overview",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 204,
+      "data_updated": "2021-08-30T19:29:19.102Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 13,
+    "fields": {
+      "created": "2021-08-30T19:29:19.199Z",
+      "updated": "2021-08-30T19:29:19.199Z",
+      "bq_table": "browser_and_operating_system_overview",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 2415,
+      "data_updated": "2021-08-30T19:29:19.199Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 14,
+    "fields": {
+      "created": "2021-08-30T19:29:19.317Z",
+      "updated": "2021-08-30T19:29:19.317Z",
+      "bq_table": "campaign_performance",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 351,
+      "data_updated": "2021-08-30T19:29:19.317Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 15,
+    "fields": {
+      "created": "2021-08-30T19:29:19.414Z",
+      "updated": "2021-08-30T19:29:19.414Z",
+      "bq_table": "channel_traffic",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 907,
+      "data_updated": "2021-08-30T19:29:19.414Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 16,
+    "fields": {
+      "created": "2021-08-30T19:29:19.512Z",
+      "updated": "2021-08-30T19:29:19.512Z",
+      "bq_table": "events_overview",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 257,
+      "data_updated": "2021-08-30T19:29:19.513Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 17,
+    "fields": {
+      "created": "2021-08-30T19:29:19.579Z",
+      "updated": "2021-08-30T19:29:19.579Z",
+      "bq_table": "social_media_acquisitions",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 589,
+      "data_updated": "2021-08-30T19:29:19.579Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 18,
+    "fields": {
+      "created": "2021-08-30T19:29:19.676Z",
+      "updated": "2021-08-30T19:29:19.676Z",
+      "bq_table": "traffic",
+      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "project": 6,
+      "source": "integration",
+      "integration": 13,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 3245,
+      "data_updated": "2021-08-30T19:29:19.676Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 19,
+    "fields": {
+      "created": "2021-08-31T00:58:20.605Z",
+      "updated": "2021-08-31T00:58:23.826Z",
+      "bq_table": "upload_000000006",
+      "bq_dataset": "cypress_team_000005_tables",
+      "project": 6,
+      "source": "integration",
+      "integration": 14,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "num_rows": 15,
+      "data_updated": "2021-08-31T00:58:23.746Z"
+    }
+  },
+  {
     "model": "invites.invite",
     "pk": 1,
     "fields": {
@@ -622,6 +937,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": []
     }
   },
@@ -656,6 +972,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [1]
     }
   },
@@ -690,6 +1007,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [1]
     }
   },
@@ -724,6 +1042,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [1]
     }
   },
@@ -758,6 +1077,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [1]
     }
   },
@@ -792,6 +1112,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [1]
     }
   },
@@ -826,6 +1147,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [1]
     }
   },
@@ -860,6 +1182,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [1]
     }
   },
@@ -894,6 +1217,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [1]
     }
   },
@@ -928,6 +1252,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [1]
     }
   },
@@ -962,6 +1287,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [1]
     }
   },
@@ -996,6 +1322,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [1]
     }
   },
@@ -1030,6 +1357,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [1]
     }
   },
@@ -1064,6 +1392,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [1]
     }
   },
@@ -1098,6 +1427,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": []
     }
   },
@@ -1132,6 +1462,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": []
     }
   },
@@ -1166,6 +1497,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [17, 1]
     }
   },
@@ -1200,6 +1532,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": []
     }
   },
@@ -1234,6 +1567,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [1]
     }
   },
@@ -1268,6 +1602,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [20, 1]
     }
   },
@@ -1302,6 +1637,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [20, 1]
     }
   },
@@ -1336,6 +1672,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": []
     }
   },
@@ -1370,6 +1707,7 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": [23]
     }
   },
@@ -1404,7 +1742,44 @@
       "pivot_aggregation": null,
       "unpivot_value": null,
       "unpivot_column": null,
+      "sentiment_column": null,
       "parents": []
+    }
+  },
+  {
+    "model": "columns.functioncolumn",
+    "pk": 1,
+    "fields": {
+      "created": "2021-08-30T19:30:10.265Z",
+      "updated": "2021-08-30T19:30:10.265Z",
+      "column": "bounce_rate",
+      "function": "mean",
+      "node": null,
+      "widget": 1
+    }
+  },
+  {
+    "model": "columns.functioncolumn",
+    "pk": 2,
+    "fields": {
+      "created": "2021-08-30T19:30:48.636Z",
+      "updated": "2021-08-30T19:30:48.636Z",
+      "column": "avg_session_duration",
+      "function": "mean",
+      "node": null,
+      "widget": 1
+    }
+  },
+  {
+    "model": "columns.functioncolumn",
+    "pk": 5,
+    "fields": {
+      "created": "2021-08-31T00:59:45.612Z",
+      "updated": "2021-08-31T01:00:23.789Z",
+      "column": "Employees",
+      "function": "sum",
+      "node": null,
+      "widget": 3
     }
   },
   {
@@ -1470,6 +1845,19 @@
       "field_delimiter": "comma",
       "sync_task_id": "f46923d0-18d0-4eb7-92e4-d8755804a816",
       "sync_started": "2021-08-20T13:49:48.761Z"
+    }
+  },
+  {
+    "model": "uploads.upload",
+    "pk": 6,
+    "fields": {
+      "created": "2021-08-31T00:58:18.465Z",
+      "updated": "2021-08-31T00:58:23.827Z",
+      "integration": 14,
+      "file_gcs_path": "cypress/integrations/store_info-16303714979454799.csv",
+      "field_delimiter": "comma",
+      "sync_task_id": "b157cb85-ba71-4a56-983e-7cf7a6b09e73",
+      "sync_started": "2021-08-31T00:58:20.370Z"
     }
   },
   {
@@ -1561,6 +1949,21 @@
     }
   },
   {
+    "model": "connectors.connector",
+    "pk": 9,
+    "fields": {
+      "created": "2021-08-30T19:05:46.412Z",
+      "updated": "2021-08-30T19:20:38.338Z",
+      "integration": 13,
+      "service": "google_analytics",
+      "fivetran_id": "preshow_regardless",
+      "schema": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "fivetran_authorized": true,
+      "sync_task_id": null,
+      "sync_started": null
+    }
+  },
+  {
     "model": "appsumo.appsumocode",
     "pk": 1,
     "fields": {
@@ -1568,7 +1971,10 @@
       "updated": "2021-08-23T23:00:00Z",
       "code": "12345678",
       "team": null,
-      "redeemed": null
+      "purchased_before": null,
+      "redeemed": null,
+      "refunded_before": null,
+      "redeemed_by": null
     }
   },
   {
@@ -1579,7 +1985,10 @@
       "updated": "2021-08-23T23:00:00Z",
       "code": "ABCDEFGH",
       "team": 1,
-      "redeemed": "2021-08-23T23:00:00Z"
+      "purchased_before": null,
+      "redeemed": "2021-08-23T23:00:00Z",
+      "refunded_before": null,
+      "redeemed_by": null
     }
   },
   {
@@ -1590,7 +1999,19 @@
       "updated": "2021-08-23T23:00:00Z",
       "code": "QWERTYUI",
       "team": 2,
-      "redeemed": "2021-08-23T23:00:00Z"
+      "purchased_before": null,
+      "redeemed": "2021-08-23T23:00:00Z",
+      "refunded_before": null,
+      "redeemed_by": null
+    }
+  },
+  {
+    "model": "templates.template",
+    "pk": 1,
+    "fields": {
+      "created": "2021-08-30T21:44:56.106Z",
+      "updated": "2021-08-30T21:44:56.106Z",
+      "project": 6
     }
   },
   {

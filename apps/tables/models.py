@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.db import models
 from google.api_core.exceptions import NotFound
+from model_clone.mixins.clone import CloneMixin
 
 from apps.base.cache import get_cache_key
 from apps.base.clients import bigquery_client
@@ -16,7 +17,7 @@ class AvailableManager(models.Manager):
         return super().get_queryset().exclude(integration__ready=False)
 
 
-class Table(BaseModel):
+class Table(CloneMixin, BaseModel):
     class Meta:
         unique_together = ["bq_table", "bq_dataset"]
         ordering = ("-created",)
@@ -54,14 +55,15 @@ class Table(BaseModel):
     def __str__(self):
         return getattr(self, self.source).get_table_name()
 
-    def save(self, *args, **kwargs):
-        # Tables can exist before their respective bq_table entity exists. Defaults to num_rows 0
-        try:
-            self.num_rows = self.bq_obj.num_rows
-        except (NameError, NotFound):
-            self.num_rows = 0
+    # TODO: Remove this pattern and identify any bugs
+    # def save(self, *args, **kwargs):
+    #     # Tables can exist before their respective bq_table entity exists. Defaults to num_rows 0
+    #     try:
+    #         self.num_rows = self.bq_obj.num_rows
+    #     except (NameError, NotFound):
+    #         self.num_rows = 0
 
-        super().save(*args, **kwargs)
+    #     super().save(*args, **kwargs)
 
     @property
     def bq_id(self):

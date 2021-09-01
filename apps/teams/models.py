@@ -92,6 +92,10 @@ class Team(BaseModel):
 
         return rows
 
+    @property
+    def admins(self):
+        return self.members.filter(membership__role=roles.ROLE_ADMIN)
+
 
 class Membership(BaseModel):
     """

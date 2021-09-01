@@ -8,8 +8,8 @@ module.exports = {
     plugins: [new TsconfigPathsPlugin()],
   },
   entry: {
-    style: './assets/styles/style.scss',
-    tailwind: './assets/styles/vendors/tailwind.pcss',
+    style: './apps/base/styles/style.scss',
+    tailwind: './apps/base/styles/vendors/tailwind.pcss',
     stimulus: './apps/base/javascript/stimulus.ts',
     workflow: './apps/workflows/javascript/app.tsx',
     components: './apps/base/javascript/components.ts',

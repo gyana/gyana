@@ -34,7 +34,6 @@
     }
   }
 
-
   &__image {
     align-items: center;
     background-color: var(--c-white);
@@ -46,7 +45,14 @@
     position: relative;
     
     img {
-      height: 100%;
+      height: auto;
+      width: 72rem;
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+    &__image {
+      display: none;
     }
   }
 }

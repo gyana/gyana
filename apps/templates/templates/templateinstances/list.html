@@ -1,0 +1,22 @@
+{% extends "web/app/project_base.html" %}
+{% load static %}
+{% load render_table from django_tables2 %}
+
+{% block app %}
+<div class="page-header">
+  <div class="mr-auto">
+    <h1>Templates</h1>
+    <p>
+      Use templates to bootstrap workflows and dashboards for new data sources or project ideas.
+    </p>
+  </div>
+</div>
+
+
+<div class="pad overflow-auto">
+  <div class="card card--none">
+    {% render_table table %}
+  </div>
+</div>
+
+{% endblock %}

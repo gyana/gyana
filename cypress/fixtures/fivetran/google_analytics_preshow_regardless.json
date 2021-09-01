@@ -1,0 +1,58 @@
+{
+  "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78": {
+    "name_in_destination": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+    "enabled": true,
+    "tables": {
+      "adwords_campaigns": {
+        "name_in_destination": "adwords_campaigns",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "adwords_hourly_stats": {
+        "name_in_destination": "adwords_hourly_stats",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "adwords_keyword": {
+        "name_in_destination": "adwords_keyword",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "audience_overview": {
+        "name_in_destination": "audience_overview",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "browser_and_operating_system_overview": {
+        "name_in_destination": "browser_and_operating_system_overview",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "campaign_performance": {
+        "name_in_destination": "campaign_performance",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "channel_traffic": {
+        "name_in_destination": "channel_traffic",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "events_overview": {
+        "name_in_destination": "events_overview",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "social_media_acquisitions": {
+        "name_in_destination": "social_media_acquisitions",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      },
+      "traffic": {
+        "name_in_destination": "traffic",
+        "enabled": true,
+        "enabled_patch_settings": { "allowed": true }
+      }
+    }
+  }
+}

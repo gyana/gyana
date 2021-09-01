@@ -294,9 +294,9 @@ class MockFivetranClient:
         self._started = {}
 
     def create(self, service, team_id):
-        # duplicate the content of an existing connector
+        # duplicate the content of the first created existing connector
         connector = (
-            Connector.objects.filter(service=service).first()
+            Connector.objects.filter(service=service).order_by("id").first()
             or Connector.objects.filter(service=self.DEFAULT_SERVICE).first()
         )
         return {"fivetran_id": connector.fivetran_id, "schema": connector.schema}
@@ -326,8 +326,9 @@ class MockFivetranClient:
             return _schemas_to_obj(self._schema_cache[connector.id])
 
         service = connector.service if connector is not None else "google_analytics"
+        fivetran_id = connector.fivetran_id if connector is not None else "humid_rifle"
 
-        with open(f"cypress/fixtures/fivetran/{service}_schema.json", "r") as f:
+        with open(f"cypress/fixtures/fivetran/{service}_{fivetran_id}.json", "r") as f:
             return _schemas_to_obj(json.load(f))
 
     def update_schemas(self, connector, schemas):

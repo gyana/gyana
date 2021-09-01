@@ -1,4 +1,5 @@
 # fmt: off
+from apps.base.formsets import InlineColumnFormset
 from apps.base.live_update_form import LiveUpdateForm
 from apps.columns.forms import (AddColumnForm, FormulaColumnForm,
                                 FunctionColumnForm, OperationColumnForm,
@@ -10,22 +11,8 @@ from apps.columns.models import (AddColumn, Column, EditColumn, FormulaColumn,
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
 from django import forms
-from django.forms.models import BaseInlineFormSet
 
 from .models import Node
-
-
-class InlineColumnFormset(BaseInlineFormSet):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.form.base_fields["column"] = forms.ChoiceField(
-            choices=[
-                ("", "No column selected"),
-                *[(col, col) for col in self.instance.parents.first().schema],
-            ],
-            help_text=self.form.base_fields["column"].help_text,
-        )
-
 
 FunctionColumnFormSet = forms.inlineformset_factory(
     Node,

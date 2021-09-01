@@ -7,68 +7,73 @@
 <header class="page-header">
   <div class="mr-auto">
     <h1>{{ project.name }}</h1>
-
     {% if project.description %}
     <p>{{ project.description }}</p>
     {% endif %}
   </div>
 </header>
 
-<div class="project-detail">
-  <a href="{% url 'project_integrations:list' project.id %}">
-    <div class="project-detail__card">
-      <i class="far fa-fw fa-database fa-5x"></i>
-    </div>
+{% if project.is_ready %}
 
-    <h2>
-      <span class="button button--circle button--tertiary">{{ integrations.rows|length }}</span>
-      Integration{{ integrations.rows|length|pluralize}}
-    </h2>
-  </a>
+  <div class="project-detail">
+    <a href="{% url 'project_integrations:list' project.id %}">
+      <div class="project-detail__card">
+        <i class="far fa-fw fa-database fa-5x"></i>
+      </div>
 
-  <i class="far fa-fw fa-arrow-right fa-4x text-black-50"></i>
+      <h2>
+        <span class="button button--circle button--tertiary">{{ integrations.rows|length }}</span>
+        Integration{{ integrations.rows|length|pluralize}}
+      </h2>
+    </a>
 
-  <a href="{% url 'project_workflows:list' project.id %}">
-    <div class="project-detail__card">
-      <i class="far fa-fw fa-sitemap fa-5x"></i>
-    </div>
+    <i class="far fa-fw fa-arrow-right fa-4x text-black-50"></i>
 
-    <h2>
-      <span class="button button--circle button--tertiary">{{ workflows.rows|length }}</span>
-      Workflow{{ workflows.rows|length|pluralize}}
-    </h2>
-  </a>
+    <a href="{% url 'project_workflows:list' project.id %}">
+      <div class="project-detail__card">
+        <i class="far fa-fw fa-sitemap fa-5x"></i>
+      </div>
 
-  <i class="far fa-fw fa-arrow-right fa-4x text-black-50"></i>
+      <h2>
+        <span class="button button--circle button--tertiary">{{ workflows.rows|length }}</span>
+        Workflow{{ workflows.rows|length|pluralize}}
+      </h2>
+    </a>
 
-  <a href="{% url 'project_dashboards:list' project.id %}">
-    <div class="project-detail__card">
-      <i class="far fa-fw fa-chart-pie fa-5x"></i>
-    </div>
-    
-    <h2>
-      <span class="button button--circle button--tertiary">{{ dashboards.rows|length }}</span>
-      Dashboard{{ dashboards.rows|length|pluralize}}
-    </h2>
-  </a>
-</div>
+    <i class="far fa-fw fa-arrow-right fa-4x text-black-50"></i>
 
-{% comment %} TODO: Mix dashboards, workflows into this table. {% endcomment %}
-{% if integrations.rows|length > 0 %}
-<div class="flex flex-col flex-1 gap-7 pad">
-  <div class="flex flex-col gap-7 flex-1">
-    <div class="flex flex-wrap gap-7 mt-auto">
-      <div class="flex-1">
-        <div class="flex mb-3">
-          <h3>Recent Items</h3>
-        </div>
+    <a href="{% url 'project_dashboards:list' project.id %}">
+      <div class="project-detail__card">
+        <i class="far fa-fw fa-chart-pie fa-5x"></i>
+      </div>
+      
+      <h2>
+        <span class="button button--circle button--tertiary">{{ dashboards.rows|length }}</span>
+        Dashboard{{ dashboards.rows|length|pluralize}}
+      </h2>
+    </a>
+  </div>
 
-        <div class="card card--none flex-1">
-          {% render_table integrations %}
+{% endif %}
+
+{% if project.is_ready %}
+  {% comment %} TODO: Mix dashboards, workflows into this table. {% endcomment %}
+  {% if integrations.rows|length > 0 %}
+  <div class="flex flex-col flex-1 gap-7 pad">
+    <div class="flex flex-col gap-7 flex-1">
+      <div class="flex flex-wrap gap-7 mt-auto">
+        <div class="flex-1">
+          <div class="flex mb-3">
+            <h3>Recent Items</h3>
+          </div>
+
+          <div class="card card--none flex-1">
+            {% render_table integrations %}
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+  {% endif %}
 {% endif %}
 {% endblock %}

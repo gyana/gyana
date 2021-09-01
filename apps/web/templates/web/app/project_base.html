@@ -7,49 +7,69 @@
 </div>
 
 {% with app_name=request.resolver_match.app_name %}
-<li>
-  <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
-     href="{% url 'projects:detail' project.id %}"
-     data-controller="tooltip"
-     data-placement="right">
-    <i class="far fa-fw fa-book-open mr-6"></i>Overview
-    <span data-tooltip-target="body">Overview</span>
-  </a>
-</li>
 
-<li>
-  <a class="sidebar__link {% if app_name == "project_integrations" %}sidebar__link--active{% endif %}"
-     href="{% url 'project_integrations:list' project.id %}"
-     data-controller="tooltip"
-     data-placement="right">
-    <i class="far fa-fw fa-database mr-6"></i>Integrations
-    <span data-tooltip-target="body">Integrations</span>
-  </a>
-</li>
+{% if project.has_pending_templates %}
 
-<li class="sidebar__bar"></li>
+  <li>
+    <a class="sidebar__link {% if app_name == 'project_templateinstances' %}sidebar__link--active{% endif %}"
+      href="{% url 'project_templateinstances:list' project.id %}"
+      data-controller="tooltip"
+      data-placement="right">
+      <i class="far fa-fw fa-construction mr-6"></i>Setup
+      <span data-tooltip-target="body">Setup</span>
+    </a>
+  </li>
 
-<li>
-  <a class="sidebar__link {% if app_name == "project_workflows" %}sidebar__link--active{% endif %}"
-     href="{% url 'project_workflows:list' project.id %}"
-     data-controller="tooltip"
-     data-placement="right">
-    <i class="far fa-fw fa-sitemap mr-6"></i>Workflows
-    <span data-tooltip-target="body">Workflows</span>
-  </a>
-</li>
+{% endif %}
 
-<li class="sidebar__bar"></li>
+{% if project.is_ready %}
 
-<li>
-  <a class="sidebar__link {% if app_name == "project_dashboards" or app_name == "dashboard_widgets" %}sidebar__link--active{% endif %}"
-     href="{% url 'project_dashboards:list' project.id %}"
-     data-controller="tooltip"
-     data-placement="right">
-    <i class="far fa-fw fa-chart-pie mr-6"></i>Dashboards
-    <span data-tooltip-target="body">Dashboards</span>
-  </a>
-</li>
+
+  <li>
+    <a class="sidebar__link {% if app_name == 'projects' and request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
+      href="{% url 'projects:detail' project.id %}"
+      data-controller="tooltip"
+      data-placement="right">
+      <i class="far fa-fw fa-book-open mr-6"></i>Overview
+      <span data-tooltip-target="body">Overview</span>
+    </a>
+  </li>
+
+  <li>
+    <a class="sidebar__link {% if app_name == "project_integrations" %}sidebar__link--active{% endif %}"
+      href="{% url 'project_integrations:list' project.id %}"
+      data-controller="tooltip"
+      data-placement="right">
+      <i class="far fa-fw fa-database mr-6"></i>Integrations
+      <span data-tooltip-target="body">Integrations</span>
+    </a>
+  </li>
+
+    <li class="sidebar__bar"></li>
+
+    <li>
+      <a class="sidebar__link {% if app_name == "project_workflows" %}sidebar__link--active{% endif %}"
+        href="{% url 'project_workflows:list' project.id %}"
+        data-controller="tooltip"
+        data-placement="right">
+        <i class="far fa-fw fa-sitemap mr-6"></i>Workflows
+        <span data-tooltip-target="body">Workflows</span>
+      </a>
+    </li>
+
+    <li class="sidebar__bar"></li>
+
+    <li>
+      <a class="sidebar__link {% if app_name == "project_dashboards" or app_name == "dashboard_widgets" %}sidebar__link--active{% endif %}"
+        href="{% url 'project_dashboards:list' project.id %}"
+        data-controller="tooltip"
+        data-placement="right">
+        <i class="far fa-fw fa-chart-pie mr-6"></i>Dashboards
+        <span data-tooltip-target="body">Dashboards</span>
+      </a>
+    </li>
+
+{% endif %}
 
 <li>
   <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"

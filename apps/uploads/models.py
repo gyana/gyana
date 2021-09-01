@@ -3,9 +3,10 @@ from apps.base.models import BaseModel
 from apps.integrations.models import Integration
 from django.conf import settings
 from django.db import models
+from model_clone.mixins.clone import CloneMixin
 
 
-class Upload(BaseModel):
+class Upload(CloneMixin, BaseModel):
     class FieldDelimiter(models.TextChoices):
         COMMA = "comma", "Comma"
         TAB = "tab", "Tab"

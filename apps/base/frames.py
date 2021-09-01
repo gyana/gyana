@@ -1,5 +1,6 @@
 from apps.base.formset_update_view import FormsetUpdateView
 from apps.base.turbo import TurboCreateView, TurboUpdateView
+from django.conf import settings
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import DeleteView
 from turbo_response.mixins import (
@@ -9,6 +10,8 @@ from turbo_response.mixins import (
 
 class TurboFrame500Mixin:
     def dispatch(self, request, *args, **kwargs):
+        if settings.DEBUG:
+            return super().dispatch(request, *args, **kwargs)
         try:
             return super().dispatch(request, *args, **kwargs)
         except:

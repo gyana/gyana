@@ -22,8 +22,8 @@ const DeleteButton = ({ id }) => {
 
 const OpenButton = ({ id }) => {
   return (
-    <button data-action='click->tf-modal#open'>
-      <i data-src={`/nodes/${id}`} data-item={id} className='fas fa-edit fa-lg'></i>
+    <button data-action='click->tf-modal#open' data-src={`/nodes/${id}`} data-item={id}>
+      <i className='fas fa-edit fa-lg'></i>
     </button>
   )
 }

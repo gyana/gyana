@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.urls.base import reverse
 
 
-def login_and_project_required_or_public(view_func):
+def login_and_project_required_or_public_or_in_template(view_func):
     @wraps(view_func)
     def decorator(request, *args, **kwargs):
         widget = Widget.objects.get(pk=kwargs["pk"])
@@ -19,6 +19,8 @@ def login_and_project_required_or_public(view_func):
             return HttpResponseRedirect(
                 "{}?next={}".format(reverse("account_login"), request.path)
             )
+        if widget.dashboard.project.is_template:
+            return view_func(request, *args, **kwargs)
         team = widget.dashboard.project.team
         if user_can_access_team(user, team):
             return view_func(request, *args, **kwargs)

@@ -1,12 +1,43 @@
 import json
 
 import ibis
+from ibis.expr import datatypes as dt
 from lark import Transformer, v_args
 
 with open("apps/columns/functions.json", "r") as file:
+    # TODO: Add back
+    # * substr
+    # * translate
+    # * right
+    # * left
+    # * day_of_week
     data = file.read()
 
 FUNCTIONS = json.loads(data)
+
+TYPES = {
+    "float": dt.float64,
+    "int": dt.int64,
+    "str": dt.string,
+    "time": dt.time,
+    "timestamp": dt.timestamp,
+}
+
+
+def _truncate(func, args):
+    return func(args[0]._arg.value)
+
+
+def _hash(func, args):
+    return func("farm_fingerprint")
+
+
+def _cast(func, args):
+    type_ = TYPES[args[0]._arg.value]
+    return func(type_)
+
+
+ODD_FUNCTIONS = {"truncate": _truncate, "hash": _hash, "cast": _cast}
 
 
 @v_args(inline=True)
@@ -37,6 +68,8 @@ class TreeToIbis(Transformer):
         func = getattr(caller, function["id"])
         if "..." in function["arguments"]:
             return func(args)
+        if odd_func := ODD_FUNCTIONS.get(function["id"]):
+            return odd_func(func, args)
         return func(*args)
 
     # -----------------------------------------------------------------------
