@@ -10,7 +10,7 @@
     <button type="submit" class="button button--sm button--success">Save</button>
   </form>
 </div>
-{% if can_delete%}
+{% if object.can_delete%}
 <div>
   <h2 class="text-red">Danger zone:</h2>
   {% if object.user == request.user %}
