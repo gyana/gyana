@@ -63,10 +63,10 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
 
     def get_formset_kwargs(self, formset):
         table = self.request.POST.get("table") or getattr(self.object, "table")
-        if table:
+        if table is not None:
             return {
-                "schema": Table.objects.get(
-                    pk=table.pk if isinstance(table, Table) else table
+                "schema": (
+                    table if isinstance(table, Table) else Table.objects.get(pk=table)
                 ).schema
             }
 

@@ -2,7 +2,6 @@ from apps.base.aggregations import AGGREGATION_TYPE_MAP
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
 from django import forms
-from django.forms.models import BaseInlineFormSet
 
 from .bigquery import AllOperations
 from .widgets import CodeMirror
@@ -15,17 +14,6 @@ IBIS_TO_FUNCTION = {
     "Date": "date_function",
     "Time": "time_function",
 }
-
-
-class InlineColumnFormset(BaseInlineFormSet):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.form.base_fields["column"] = forms.ChoiceField(
-            choices=[
-                ("", "No column selected"),
-                *[(col, col) for col in self.instance.parents.first().schema],
-            ]
-        )
 
 
 class FunctionColumnForm(SchemaFormMixin, LiveUpdateForm):

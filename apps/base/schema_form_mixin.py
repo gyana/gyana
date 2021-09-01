@@ -1,3 +1,6 @@
+from django import forms
+
+
 class SchemaFormMixin:
     @property
     def column_type(self):
@@ -10,3 +13,11 @@ class SchemaFormMixin:
         self.schema = kwargs.pop("schema", None)
 
         super().__init__(*args, **kwargs)
+
+        self.fields["column"] = forms.ChoiceField(
+            choices=[
+                ("", "No column selected"),
+                *[(col, col) for col in self.schema],
+            ],
+            help_text=self.base_fields["column"].help_text,
+        )
