@@ -81,3 +81,4 @@ jobs:
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
         # # Unique run id necessary to re-run the checks for parallel
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BIGQUERY_TIMEOUT: 20000

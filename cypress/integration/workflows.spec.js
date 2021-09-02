@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import { getModelStartId } from '../support/utils'
+import { BIGQUERY_TIMEOUT, getModelStartId } from '../support/utils'
 const { _ } = Cypress
 
 const startId = getModelStartId('nodes.node')
@@ -95,7 +95,7 @@ describe('workflows', () => {
     })
     cy.get('button[type=submit]').first().click()
     cy.contains('Loading')
-    cy.contains('Something went wrong!', { timeout: 8000 })
+    cy.contains('Something went wrong!', { timeout: BIGQUERY_TIMEOUT })
   })
 
   it('Shows nodes loading error', () => {

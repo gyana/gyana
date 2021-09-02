@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { getModelStartId } from '../support/utils'
+import { getModelStartId, BIGQUERY_TIMEOUT } from '../support/utils'
 
 const createWidget = (kind) => {
   cy.contains('Add widget').click()
@@ -72,7 +72,7 @@ describe('dashboards', () => {
     cy.visit('/projects/1/dashboards/')
     cy.get(`#dashboard-duplicate-${dashboardStartId}`).click()
     cy.contains('Copy of Untitled').click()
-    cy.contains('Blackpool', { timeout: 10000 })
+    cy.contains('Blackpool', { timeout: BIGQUERY_TIMEOUT })
 
     // TODO: trigger the hover and remove the force click
     // cy.get('#widgets-output-2').trigger('mouseover')
@@ -89,7 +89,7 @@ describe('dashboards', () => {
 
     cy.visit('/projects/1/dashboards/')
     cy.contains(/^Untitled$/).click()
-    cy.contains('Alex', { timeout: 10000 })
+    cy.contains('Alex', { timeout: BIGQUERY_TIMEOUT })
   })
 
   it('shares a dashboard with a widget', () => {

@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { getModelStartId, pendingIntegrations } from '../support/utils'
+import { getModelStartId, pendingIntegrations, BIGQUERY_TIMEOUT } from '../support/utils'
 
 const createConnector = (service) => {
   cy.visit('/projects/1/integrations/connectors/new?service=google_analytics')
@@ -36,7 +36,7 @@ describe('connectors', () => {
     cy.get('button[type=submit]').click()
 
     cy.contains('Validating and importing your connector...')
-    cy.contains('Connector successfully validated and imported.', { timeout: 10000 })
+    cy.contains('Connector successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
 
     cy.contains('Confirm').click()
 
@@ -89,7 +89,7 @@ describe('connectors', () => {
     cy.wait(1000)
     cy.reload()
 
-    cy.contains('Review your imported data', { timeout: 10000 })
+    cy.contains('Review your imported data', { timeout: BIGQUERY_TIMEOUT })
     cy.contains('Adwords Campaigns').should('not.exist')
   })
 })
