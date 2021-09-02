@@ -23,3 +23,8 @@ jobs:
         poetry-version: 1.1.5
     - name: Install Dependencies
       run: poetry install
+    - name: Set up Node 14
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+    - run: yarn
