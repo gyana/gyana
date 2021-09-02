@@ -92,15 +92,16 @@ class PurchasedCodes(BaseModel):
         super().save(*args, **kwargs)
         codes = pd.read_csv(self.data.url, names=["code"]).code.tolist()
 
-        # prefetch all the relevant codes
-        len(AppsumoCode.objects.filter(code__in=codes).all())
+        appsumo_codes = AppsumoCode.objects.filter(code__in=codes).all()
+
+        # if the code does not exist, we have a big problem
+        assert len(appsumo_codes) == len(codes)
 
         with transaction.atomic():
-
-            # if the code does not exist, we have a big problem
-            for code in codes:
-                appsumo_code = AppsumoCode.objects.get(code=code)
+            for appsumo_code in appsumo_codes:
                 appsumo_code.deal = self.deal
+
+            AppsumoCode.objects.bulk_update(appsumo_codes, ["deal"])
 
             self.success = True
             super().save(*args, **kwargs)
@@ -118,19 +119,21 @@ class RefundedCodes(BaseModel):
         codes = pd.read_csv(self.data.url, names=["code"]).code.tolist()
 
         # prefetch all the relevant codes
-        len(AppsumoCode.objects.filter(code__in=codes).all())
+        appsumo_codes = AppsumoCode.objects.filter(code__in=codes).all()
+
+        # if the code does not exist, we have a big problem
+        assert len(appsumo_codes) == len(codes)
 
         with transaction.atomic():
 
-            # if the code does not exist, we have a big problem
-            for code in codes:
-                appsumo_code = AppsumoCode.objects.get(code=code)
+            for appsumo_code in appsumo_codes:
                 if (
                     appsumo_code.refunded_before is None
                     or appsumo_code.refunded_before > self.downloaded
                 ):
                     appsumo_code.refunded_before = self.downloaded
-                    appsumo_code.save()
+
+            AppsumoCode.objects.bulk_update(appsumo_codes, ["refunded_before"])
 
             self.success = True
             super().save(*args, **kwargs)
