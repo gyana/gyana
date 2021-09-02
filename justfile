@@ -42,7 +42,7 @@ enc_env:
     just gcloud_kms encrypt {{service_account}}
 
 export:
-    poetry export -f requirements.txt --output requirements.txt
+    poetry export -f requirements.txt --output requirements.txt --without-hashes
 
 update:
     yarn install
