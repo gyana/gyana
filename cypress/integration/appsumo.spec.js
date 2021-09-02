@@ -76,6 +76,9 @@ describe('appsumo', () => {
     cy.get('button[type=submit]').click()
 
     cy.get('table tbody tr').should('have.length', 2)
+    // check deal information
+    cy.contains('Final deal $59 (01/07/21 - 26/08/21)')
+    cy.contains('Launch deal $49 (24/03/21 - 25/06/21)')
 
     cy.visit('/teams/1/account')
     // 2 codes = 2M rows

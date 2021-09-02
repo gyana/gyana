@@ -22,9 +22,9 @@ appsumo_review_regex = RegexValidator(
 
 class AppsumoCode(BaseModel):
     class Deal(models.TextChoices):
-        USD_49 = "usd_49", "Launch deal $49 (Apr-June)"
-        USD_179 = "usd_179", "Temporary raise to $179 (1 week in June)"
-        USD_59 = "usd_59", "Final Marketplace $59 (July-Aug)"
+        USD_49 = "usd_49", "Launch deal $49 (24/03/21 - 25/06/21)"
+        USD_179 = "usd_179", "Temporary deal $179 (25/06/21 - 01/07/21)"
+        USD_59 = "usd_59", "Final deal $59 (01/07/21 - 26/08/21)"
         # add the AppSumo Select deal here
 
     code = models.CharField(max_length=8, unique=True)
