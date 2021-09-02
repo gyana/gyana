@@ -64,4 +64,4 @@ startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
 
 test:
-    pytest tests/
+    python -m pytest tests/
