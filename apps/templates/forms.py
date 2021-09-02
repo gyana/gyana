@@ -88,20 +88,29 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
 
                 # sheets + uploads tables
 
-                tables = cloned_project.table_set.filter(
+                # unfortunately we cannot use cloned_project.table_set as django-clone
+                # does not update those FKs, they still point at source project
+                tables = Table.objects.filter(
+                    integration__project=cloned_project,
                     integration__kind__in=[
                         Integration.Kind.SHEET,
                         Integration.Kind.UPLOAD,
                     ],
                 ).all()
 
+                table_source_to_target = {}
+
                 for table in tables:
                     # duplicated values have " copy X" appended to work with unique constraint
-                    curr_bq_id = f"{table.bq_dataset.split(' ')[0]}.{table.bq_table.split(' ')[0]}"
+                    curr_table = Table.objects.filter(
+                        bq_dataset=table.bq_dataset.split(" ")[0],
+                        bq_table=table.bq_table.split(" ")[0],
+                    ).first()
                     table.bq_dataset = instance.project.team.tables_dataset_id
                     table.bq_table = table.integration.source_obj.table_id
                     table.project = instance.project
-                    bigquery_client().copy_table(curr_bq_id, table.bq_id)
+                    table_source_to_target[curr_table] = table
+                    bigquery_client().copy_table(curr_table.bq_id, table.bq_id)
 
                 Table.objects.bulk_update(tables, ["bq_table", "bq_dataset", "project"])
 
@@ -110,23 +119,35 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                 input_nodes = Node.objects.filter(
                     workflow__project=instance.project,
                     input_table__integration__isnull=False,
-                    table__integration__kind=Integration.Kind.CONNECTOR,
                 ).all()
 
                 for input_node in input_nodes:
-                    input_node.input_table = get_target_table_from_source_table(
-                        input_node.input_table, instance.project
+                    input_node.input_table = (
+                        get_target_table_from_source_table(
+                            input_node.input_table, instance.project
+                        )
+                        if input_node.input_table.integration.kind
+                        == Integration.Kind.CONNECTOR
+                        else table_source_to_target[input_node.input_table]
                     )
 
                 widgets = Widget.objects.filter(
                     dashboard__project=instance.project,
                     table__integration__isnull=False,
-                    table__integration__kind=Integration.Kind.CONNECTOR,
                 ).all()
 
                 for widget in widgets:
-                    widget.table = get_target_table_from_source_table(
-                        widget.table, instance.project
+                    print(
+                        table_source_to_target,
+                        widget.table,
+                        widget.table.integration.kind,
+                    )
+                    widget.table = (
+                        get_target_table_from_source_table(
+                            widget.table, instance.project
+                        )
+                        if widget.table.integration.kind == Integration.Kind.CONNECTOR
+                        else table_source_to_target[widget.table]
                     )
 
                 Node.objects.bulk_update(input_nodes, ["input_table"])

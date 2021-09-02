@@ -23,7 +23,7 @@
     "**/templates/**/*.html": "django-html",
     "**/templates/**/*.ts": "typescript",
     "**/templates/**/*.tsx": "typescript",
-    "**/templates/**/*": "django-txt"
+    "**/templates/**/*.txt": "django-txt"
   },
   "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,
