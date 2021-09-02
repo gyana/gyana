@@ -68,4 +68,7 @@ jobs:
         start: |
           just dev
           just celery-ci
+        record: true
         wait-on: 'http://localhost:8000'
+      env:
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
