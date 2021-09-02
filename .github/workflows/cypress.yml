@@ -2,7 +2,7 @@ name: Cypress CI
 
 on:
   pull_request:
-    branches: [ feature/github-actions ]
+    branches: [ main ]
 
 jobs:
   build:
