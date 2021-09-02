@@ -100,8 +100,16 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
 
                 # sheets + uploads tables
 
-                # unfortunately we cannot use project.table_set as django-clone
-                # does not update those FKs, they still point at source project
+                # unfortunately, django-clone does not automatically update FK
+                # references between duplicated entities. For example, the
+                # duplication for a table and widget is:
+                #   project -> integration_set -> table_set
+                #   project -> dashboard_set -> widget_set
+                # but the table_id in the widget does not point to the duplicated
+                # table, but the original. We need to manually update these.
+                # Plus we also need to point the connector tables to the new
+                # connectors the user created as part of template creation.
+
                 tables = Table.objects.filter(
                     integration__project=instance.project,
                     integration__kind__in=[
