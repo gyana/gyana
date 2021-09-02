@@ -1,4 +1,4 @@
-name: Django CI
+name: Cypress CI
 
 on:
   push:
@@ -11,11 +11,11 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    # strategy:
-    #   # https://github.com/cypress-io/github-action/issues/48
-    #   fail-fast: false
-    #   matrix:
-    #     containers: [1, 2]
+    strategy:
+      # https://github.com/cypress-io/github-action/issues/48
+      fail-fast: false
+      matrix:
+        containers: [1, 2]
 
     services:
       postgres:
@@ -75,9 +75,9 @@ jobs:
           just dev
           just celery-ci
         record: true
-        # parallel: true
+        parallel: true
         wait-on: 'http://localhost:8000'
       env:
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
         # # Unique run id necessary to re-run the checks for parallel
-        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

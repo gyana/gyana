@@ -36,6 +36,11 @@ describe('invites', () => {
     cy.get('input[type=password]').type('seewhatmatters')
     cy.get('button[type=submit]').click()
 
+    cy.get('select[name=company_industry]').select('Agency')
+    cy.get('select[name=company_role]').select('Marketing')
+    cy.get('select[name=company_size]').select('2-10')
+    cy.get('button[type=submit]').click()
+
     cy.url().should('contain', '/teams/1')
     cy.contains('Vayu')
   })
