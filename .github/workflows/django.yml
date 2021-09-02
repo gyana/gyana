@@ -45,6 +45,8 @@ jobs:
       run: poetry install
     - name: Install Node Dependencies
       run: yarn
+    - name: Build assets
+      run: yarn build
     - name: Run migrations
       run: just migrate
     - name: Cypress run
