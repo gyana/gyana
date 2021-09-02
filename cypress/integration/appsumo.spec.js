@@ -134,4 +134,25 @@ describe('appsumo', () => {
       "If you think this is a mistake, reach out to support and we'll sort it out for you."
     )
   })
+  it('admin extra rows', () => {
+    cy.login()
+    cy.visit('/teams/1/account')
+    cy.contains('1,000,000')
+
+    // apply the extra rows
+    cy.logout()
+    cy.login('admin@gyana.com')
+    cy.visit('/admin/teams/team/1/change')
+    cy.get('input[name=appsumoextra_set-0-rows]').type('2000000')
+    cy.get('textarea[name=appsumoextra_set-0-reason]').type('For being awesome')
+    cy.contains('Save').click({ turbo: false })
+    cy.logout()
+
+    cy.login()
+    cy.visit('/teams/1/account')
+    cy.contains('3,000,000')
+
+    cy.contains('AppSumo').click()
+    cy.contains('For being awesome')
+  })
 })

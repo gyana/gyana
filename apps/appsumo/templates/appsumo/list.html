@@ -2,6 +2,7 @@
 {% load render_table from django_tables2 %}
 
 {% block tab %}
+<h3 class="m-2">Codes</h3>
 <div class="card card--none">
   {% render_table table %}
 
@@ -12,6 +13,16 @@
     </small>
   </div>
 </div>
+
+{% if team.appsumoextra_set.count > 0 %}
+  <h3 class="m-2">Extra rows</h3>
+  <turbo-frame id="appsumo:extra" src="{% url 'team_appsumo:extra' team.id %}">
+    <div class='placeholder-scr placeholder-scr--fillscreen'>
+      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+      <p class='placeholder-scr__title'>Loading extra rows...</p>
+    </div>
+  </turbo-frame>
+{% endif %}
 
 {% if not team.appsumoreview %}
   <div class="pt-2 pad">

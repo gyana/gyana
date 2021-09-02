@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import (
     AppsumoCode,
+    AppsumoExtra,
     AppsumoReview,
     PurchasedCodes,
     RefundedCodes,
@@ -57,3 +58,8 @@ class AppsumoReviewInline(admin.StackedInline):
 
     def has_delete_permission(self, request, obj):
         return False
+
+
+class AppsumoExtraInline(admin.StackedInline):
+    model = AppsumoExtra
+    fields = ["rows", "reason"]

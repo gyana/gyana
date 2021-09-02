@@ -19,7 +19,7 @@ class Team(BaseModel):
         settings.AUTH_USER_MODEL, related_name="teams", through="Membership"
     )
 
-    override_row_limit = models.BigIntegerField(null=True)
+    override_row_limit = models.BigIntegerField(null=True, blank=True)
     # row count is recalculated on a daily basis, or re-counted in certain situations
     # calculating every view is too expensive
     row_count = models.BigIntegerField(default=0)
@@ -77,6 +77,8 @@ class Team(BaseModel):
         # extra 1M for writing a review
         if hasattr(self, "appsumoreview"):
             rows += 1_000_000
+
+        rows += self.appsumoextra_set.aggregate(models.Sum("rows"))["rows__sum"] or 0
 
         return rows
 

@@ -62,6 +62,13 @@ class AppsumoReview(BaseModel):
         return self.review_link
 
 
+class AppsumoExtra(BaseModel):
+
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    rows = models.BigIntegerField()
+    reason = models.TextField()
+
+
 # upload redeemed and refunded codes via the admin interface
 
 
