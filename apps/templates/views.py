@@ -15,11 +15,12 @@ from .models import Template, TemplateInstance
 from .tables import TemplateInstanceTable, TemplateIntegrationTable, TemplateTable
 
 
-class TemplateList(TeamMixin, SingleTableView):
+class TemplateList(TeamMixin, SingleTableView, TurboFrameListView):
     template_name = "templates/list.html"
     model = Template
     table_class = TemplateTable
     paginate_by = 20
+    turbo_frame_dom_id = "templates:list"
 
 
 class TemplateInstanceCreate(TeamMixin, TurboCreateView):
@@ -46,12 +47,11 @@ class TemplateInstanceCreate(TeamMixin, TurboCreateView):
         return reverse("projects:detail", args=(self.object.project.id,))
 
 
-class TemplateInstanceList(ProjectMixin, SingleTableView, TurboFrameListView):
+class TemplateInstanceList(ProjectMixin, SingleTableView):
     template_name = "templateinstances/list.html"
     model = TemplateInstance
     table_class = TemplateInstanceTable
     paginate_by = 20
-    turbo_frame_dom_id = "project_templateinstances:list"
 
     def get(self, request, *args, **kwargs):
         if self.project.templateinstance_set.count() <= 1:
@@ -62,8 +62,6 @@ class TemplateInstanceList(ProjectMixin, SingleTableView, TurboFrameListView):
             )
         return super().get(request, *args, **kwargs)
 
-    def get_queryset(self):
-        return self.project.templateinstance_set.all()
 
 
 class TemplateInstanceUpdate(ProjectMixin, SingleTableMixin, TurboUpdateView):

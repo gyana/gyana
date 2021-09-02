@@ -3,7 +3,10 @@
 {% load render_table from django_tables2 %}
 
 {% block tab %}
-<div class="card card--none">
+<div class="card card--none mb-7">
   {% render_table table %}
 </div>
+
+<turbo-frame id="team_invites:list" src="{% url 'team_invites:list' team.id %}" target="_top">
+</turbo-frame>
 {% endblock %}

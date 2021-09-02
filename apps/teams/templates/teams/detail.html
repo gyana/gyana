@@ -3,13 +3,21 @@
 {% load render_table from django_tables2 %}
 
 {% block tab %}
-<turbo-frame
-  id="project_templateinstances:list"
-  src="{% url 'team_templates:list' team.id %}"
->
-  <h2>HEllo this is something</h2>
+<h2>Templates</h2>
+<p class="mb-3">Use one of our pre-made projects to get started quickly.</p>
+<div class="card card--none mb-7">
+  <turbo-frame
+    id="templates:list"
+    src="{% url 'team_templates:list' team.id %}"
+  >
+    <div class='placeholder-scr placeholder-scr--fillscreen'>
+      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+      <p class='placeholder-scr__title'>Loading templates...</p>
+    </div>
+  </div>
 </turbo-frame>
 
+<h2>Projects</h2>
 <div class="card card--none">
   {% render_table team_projects %}
 

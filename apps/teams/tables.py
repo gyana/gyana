@@ -12,6 +12,7 @@ class TeamMembershipTable(Table):
         attrs = {"class": "table"}
         fields = (
             A("user__email"),
+            "role",
             A("user__last_login"),
             A("user__date_joined"),
         )
