@@ -6,7 +6,8 @@
   <h2>{{ template.name }}</h2>
 
   <div class="flex gap-7 ml-auto">
-    <a class="button button--sm button--tertiary" href="{% url 'team_templates:list' team.id %}">Go back</a>
+    <a class="button button--sm button--tertiary" href="{% url 'teams:detail' team.id %}">Go back</a>
+
     <form method="post">
       {% csrf_token %}
 
