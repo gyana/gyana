@@ -1,8 +1,6 @@
-{% extends "web/app/project_base.html" %}
 {% load static %}
 {% load render_table from django_tables2 %}
 
-{% block app %}
 <div class="page-header">
   <div class="mr-auto">
     <h1>Templates</h1>
@@ -18,5 +16,3 @@
     {% render_table table %}
   </div>
 </div>
-
-{% endblock %}

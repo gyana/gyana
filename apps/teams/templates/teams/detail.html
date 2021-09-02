@@ -3,6 +3,13 @@
 {% load render_table from django_tables2 %}
 
 {% block tab %}
+<turbo-frame
+  id="project_templateinstances:list"
+  src="{% url 'team_templates:list' team.id %}"
+>
+  <h2>HEllo this is something</h2>
+</turbo-frame>
+
 <div class="card card--none">
   {% render_table team_projects %}
 
@@ -11,6 +18,7 @@
     <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
     <h3>This team has no projects</h3>
     <p>You can <a href="{% url 'team_projects:create' team.id %}" class="link">create one</a> or start with a <a href="{% url 'team_projects:create' team.id %}" class="link">template</a>.</p>
+
     <div data-controller="iframe" class="mt-8">
       <div data-iframe-target="placeholder" style="width: 854px; height: 480px;" class='placeholder-scr placeholder-scr--fillscreen rounded-xl bg-gray-20 border-gray border-4'>
         <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
