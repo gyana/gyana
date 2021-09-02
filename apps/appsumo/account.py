@@ -1,32 +1,24 @@
-from django.utils import timezone
+from apps.appsumo.models import AppsumoCode
 
-from .config import APPSUMO_MAX_STACK, APPSUMO_PLANS
+from .config import APPSUMO_PLANS
 
 # business logic for AppSumo pricing plans
 
 
-def get_row_count(appsumo_queryset, review=False):
+def get_deal(appsumo_queryset):
 
-    active_codes = appsumo_queryset.filter(refunded_before=None).all()
-    stacked = len(active_codes)
+    active_codes = appsumo_queryset.filter(refunded_before=None)
+    stacked = active_codes.count()
 
-    # to determine your plan, take the most recently purchased code
-    most_recent = max(
-        (
-            code.purchased_before
-            for code in active_codes
-            if code.purchased_before is not None
-        ),
-        default=timezone.now(),
-    )
-    best_plan = next(
-        plan for expired, plan in APPSUMO_PLANS.items() if expired >= most_recent
-    )
-    max_stack = list(best_plan.keys())[-1]
-    rows = best_plan.get(min(stacked, max_stack))["rows"]
+    # handle special cases for previous plans
 
-    # extra 1M for writing a review
-    if review:
-        rows += 1_000_000
+    usd_49 = active_codes.filter(deal=AppsumoCode.Deal.USD_49).count()
+    if usd_49 >= 4:
+        return APPSUMO_PLANS[AppsumoCode.Deal.USD_49][4]
 
-    return rows
+    usd_179 = active_codes.filter(deal=AppsumoCode.Deal.USD_179).count()
+    if usd_179 >= 1:
+        return APPSUMO_PLANS[AppsumoCode.Deal.USD_179][max(stacked, 2)]
+
+    # otherwise they go onto most recent plan
+    return APPSUMO_PLANS[AppsumoCode.Deal.USD_59][max(stacked, 5)]

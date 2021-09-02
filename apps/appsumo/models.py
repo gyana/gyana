@@ -12,13 +12,26 @@ appsumo_review_regex = RegexValidator(
     "Paste the exact link as displayed on AppSumo",
 )
 
+# after we upload the codes to AppSumo, they provide two downloads:
+# - redeemed codes = all sold codes that are not refunded
+# - refunded codes = all sold codes that are refunded
+# there is no historical data, only point in time snapshots based on when
+# we have downloaded the CSV file. Fortunately, we downloaded a snapshot of
+# redeemed codes just after the two deals ended (unfortunately not refunded).
+
 
 class AppsumoCode(BaseModel):
+    class Deal(models.TextChoices):
+        USD_49 = "usd_49", "Launch deal $49 (Apr-June)"
+        USD_179 = "usd_179", "Temporary raise to $179 (1 week in June)"
+        USD_59 = "usd_59", "Final Marketplace $59 (July-Aug)"
+        # add the AppSumo Select deal here
 
     code = models.CharField(max_length=8, unique=True)
     team = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL)
 
-    purchased_before = models.DateTimeField(null=True)
+    # possibly null for a refunded code
+    deal = models.CharField(max_length=8, null=True, choices=Deal.choices)
     redeemed = models.DateTimeField(null=True)
     refunded_before = models.DateTimeField(null=True)
 
@@ -56,7 +69,6 @@ class UploadedCodes(BaseModel):
     data = models.FileField(
         upload_to=f"{SLUG}/uploaded_codes" if SLUG else "uploaded_codes"
     )
-    downloaded = models.DateTimeField()
     success = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
@@ -73,7 +85,7 @@ class PurchasedCodes(BaseModel):
     data = models.FileField(
         upload_to=f"{SLUG}/purchased_codes" if SLUG else "purchased_codes"
     )
-    downloaded = models.DateTimeField()
+    deal = models.CharField(max_length=8, choices=AppsumoCode.Deal.choices)
     success = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
@@ -88,12 +100,7 @@ class PurchasedCodes(BaseModel):
             # if the code does not exist, we have a big problem
             for code in codes:
                 appsumo_code = AppsumoCode.objects.get(code=code)
-                if (
-                    appsumo_code.purchased_before is None
-                    or appsumo_code.purchased_before > self.downloaded
-                ):
-                    appsumo_code.purchased_before = self.downloaded
-                    appsumo_code.save()
+                appsumo_code.deal = self.deal
 
             self.success = True
             super().save(*args, **kwargs)

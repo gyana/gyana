@@ -5,17 +5,15 @@ import pandas as pd
 import pytest
 from apps.appsumo.account import get_row_count
 from apps.appsumo.models import AppsumoCode, PurchasedCodes, UploadedCodes
-from apps.teams.models import Team
-from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils import timezone
 
 APPSUMO_DATA_DIR = Path("apps/appsumo/data")
 
 UPLOADED = "uploaded.csv"
-PURCHASED_49 = "purchased-deal-end-2021-06-25.csv"
-PURCHASED_179 = "purchased-deal-end-2021-07-01.csv"
-PURCHASED_59 = "purchased-deal-end-2021-08-27.csv"
+PURCHASED_49 = "purchased-deal-49-usd.csv"
+PURCHASED_179 = "purchased-deal-179-usd.csv"
+PURCHASED_59 = "purchased-deal-59-usd.csv"
 
 M = 1_000_000
 
@@ -64,3 +62,20 @@ def test_deal_49_usd(setup_purchased_codes):
     codes = AppsumoCode.objects.filter(code__in=purchased_49[:10])
 
     assert get_row_count(codes) == 10 * M
+
+
+@pytest.mark.django_db
+def test_deal_179_usd(setup_purchased_codes):
+
+    purchased_49 = pd.read_csv(
+        APPSUMO_DATA_DIR / PURCHASED_49, names=["code"]
+    ).code.tolist()
+
+    purchased_179 = set(
+        pd.read_csv(APPSUMO_DATA_DIR / PURCHASED_179, names=["code"]).code.tolist()
+    ) - set(purchased_49)
+
+    # a user has a single code
+    codes = AppsumoCode.objects.filter(code=purchased_179[0])
+
+    assert get_row_count(codes) == 5 * M

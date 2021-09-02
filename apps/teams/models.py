@@ -4,8 +4,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from apps.appsumo.account import get_row_count
-from apps.appsumo.config import APPSUMO_MAX_STACK, APPSUMO_PLANS
 from apps.base.models import BaseModel
 
 from . import roles
@@ -64,6 +62,8 @@ class Team(BaseModel):
 
     @property
     def row_limit(self):
+        from apps.appsumo.account import get_row_count
+
         if self.override_row_limit is not None:
             return self.override_row_limit
 
@@ -71,9 +71,12 @@ class Team(BaseModel):
             DEFAULT_ROW_LIMIT,
             get_row_count(
                 self.appsumocode_set,  # extra 1M for writing a review
-                review=hasattr(self, "appsumoreview"),
-            ),
+            )["rows"],
         )
+
+        # extra 1M for writing a review
+        if hasattr(self, "appsumoreview"):
+            rows += 1_000_000
 
         return rows
 
