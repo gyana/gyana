@@ -91,17 +91,22 @@ def test_deal_179_usd(setup_purchased_codes):
 
     assert get_deal(codes)["rows"] == 5 * M
 
-    codes = AppsumoCode.objects.filter(code__in=purchased_179[:2])
+    purchased_59 = pd.read_csv(
+        APPSUMO_DATA_DIR / PURCHASED_59, names=["code"]
+    ).code.tolist()
+
+    # a user purchased a second code at $59
+    codes = AppsumoCode.objects.filter(code__in=purchased_179[:1] + purchased_59[:1])
 
     assert get_deal(codes)["rows"] == 10 * M
 
-    codes = AppsumoCode.objects.filter(code__in=purchased_179[:10])
+    codes = AppsumoCode.objects.filter(code__in=purchased_179[:1] + purchased_59[:9])
 
     assert get_deal(codes)["rows"] == 10 * M
 
 
 @pytest.mark.django_db
-def test_deal_179_usd(setup_purchased_codes):
+def test_deal_59_usd(setup_purchased_codes):
 
     purchased_59 = pd.read_csv(
         APPSUMO_DATA_DIR / PURCHASED_59, names=["code"]
