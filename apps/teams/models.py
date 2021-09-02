@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from apps.appsumo.account import get_row_count
 from apps.appsumo.config import APPSUMO_MAX_STACK, APPSUMO_PLANS
 from apps.base.models import BaseModel
 
@@ -66,29 +67,13 @@ class Team(BaseModel):
         if self.override_row_limit is not None:
             return self.override_row_limit
 
-        active_codes = self.appsumocode_set.filter(refunded_before=None).all()
-        stacked = len(active_codes)
-
-        if stacked == 0:
-            return DEFAULT_ROW_LIMIT
-
-        # to determine your plan, take the most recently purchased code
-        most_recent = max(
-            (
-                code.purchased_before
-                for code in active_codes
-                if code.purchased_before is not None
+        rows = max(
+            DEFAULT_ROW_LIMIT,
+            get_row_count(
+                self.appsumocode_set,  # extra 1M for writing a review
+                review=hasattr(self, "appsumoreview"),
             ),
-            default=timezone.now(),
         )
-        best_plan = next(
-            plan for expired, plan in APPSUMO_PLANS.items() if expired >= most_recent
-        )
-        rows = best_plan.get(min(stacked, APPSUMO_MAX_STACK))["rows"]
-
-        # extra 1M for writing a review
-        if hasattr(self, "appsumoreview"):
-            rows += 1_000_000
 
         return rows
 
