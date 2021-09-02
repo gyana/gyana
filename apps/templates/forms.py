@@ -86,16 +86,17 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                 for integration in integrations:
                     integration.project = instance.project
 
-                workflows = list(cloned_project.workflow_set.all())
-                for workflow in workflows:
-                    workflow.project = instance.project
+                # TODO: Templates with workflows in
+                # workflows = list(cloned_project.workflow_set.all())
+                # for workflow in workflows:
+                #     workflow.project = instance.project
 
                 dashboards = list(cloned_project.dashboard_set.all())
                 for dashboard in dashboards:
                     dashboard.project = instance.project
 
                 Integration.objects.bulk_update(integrations, ["project"])
-                Workflow.objects.bulk_update(workflows, ["project"])
+                # Workflow.objects.bulk_update(workflows, ["project"])
                 Dashboard.objects.bulk_update(dashboards, ["project"])
 
                 # sheets + uploads tables
@@ -136,20 +137,20 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
 
                 # connectors tables
                 # for each reference to an table, identify the new table
-                input_nodes = Node.objects.filter(
-                    workflow__project=instance.project,
-                    input_table__integration__isnull=False,
-                ).all()
+                # input_nodes = Node.objects.filter(
+                #     workflow__project=instance.project,
+                #     input_table__integration__isnull=False,
+                # ).all()
 
-                for input_node in input_nodes:
-                    input_node.input_table = (
-                        get_target_table_from_source_table(
-                            input_node.input_table, instance.project
-                        )
-                        if input_node.input_table.integration.kind
-                        == Integration.Kind.CONNECTOR
-                        else table_source_to_target[input_node.input_table]
-                    )
+                # for input_node in input_nodes:
+                #     input_node.input_table = (
+                #         get_target_table_from_source_table(
+                #             input_node.input_table, instance.project
+                #         )
+                #         if input_node.input_table.integration.kind
+                #         == Integration.Kind.CONNECTOR
+                #         else table_source_to_target[input_node.input_table]
+                #     )
 
                 widgets = Widget.objects.filter(
                     dashboard__project=instance.project,
@@ -165,10 +166,8 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                         else table_source_to_target[widget.table]
                     )
 
-                Node.objects.bulk_update(input_nodes, ["input_table"])
+                # Node.objects.bulk_update(input_nodes, ["input_table"])
                 Widget.objects.bulk_update(widgets, ["table"])
-
-                # TODO: Set all other table ids for workflows to null
 
                 # cascading delete for connectors
                 cloned_project.delete()
@@ -178,8 +177,9 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                 instance.save()
                 self.save_m2m()
 
-            # TODO: run within celery progress with streaming update
-            for workflow in workflows:
-                run_workflow(workflow)
+            # for each workflow, we need to re-run the workflow and re-map
+            # the output table for the downstream widgets and nodes to use
+            # for workflow in workflows:
+            #     run_workflow(workflow)
 
         return instance
