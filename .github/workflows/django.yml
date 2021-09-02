@@ -67,5 +67,5 @@ jobs:
       with:
         start: |
           just dev
-          just celery
+          just celery-ci
         wait-on: 'http://localhost:8000'

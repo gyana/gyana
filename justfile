@@ -27,6 +27,9 @@ fixtures:
 shell:
     ./manage.py shell -i ipython
 
+celery-ci:
+    celery -A gyana worker -l info
+
 # Encrypt or decrypt file via GCP KMS
 gcloud_kms OP FILE:
     gcloud kms {{OP}} --location global --keyring gyana-kms --key gyana-kms --ciphertext-file {{FILE}}.enc --plaintext-file {{FILE}}
