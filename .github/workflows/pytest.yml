@@ -14,7 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: extractions/setup-just@v1
-    - uses: HatsuneMiku3939/direnv-action@v1
     - uses: actions/setup-python@v2
       with:
         python-version: 3.9
@@ -22,7 +21,5 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: List
-      run: ls
     - name: Pytest run
-      run: just test
+      run: python -c "import os; print(os.path.dirname(os.path.realpath(__file__)))"
