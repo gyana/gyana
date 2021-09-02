@@ -62,14 +62,14 @@ class Team(BaseModel):
 
     @property
     def row_limit(self):
-        from apps.appsumo.account import get_row_count
+        from apps.appsumo.account import get_deal
 
         if self.override_row_limit is not None:
             return self.override_row_limit
 
         rows = max(
             DEFAULT_ROW_LIMIT,
-            get_row_count(
+            get_deal(
                 self.appsumocode_set,  # extra 1M for writing a review
             )["rows"],
         )
