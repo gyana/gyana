@@ -1,5 +1,6 @@
 from allauth.account.views import SignupView
 from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.base.frames import TurboFrameListView
 from apps.teams.mixins import TeamMixin
 from django.shortcuts import redirect
 from django.urls.base import reverse
@@ -19,11 +20,12 @@ from .models import AppsumoCode, AppsumoReview
 from .tables import AppsumoCodeTable
 
 
-class AppsumoCodeList(TeamMixin, SingleTableView):
+class AppsumoCodeList(TeamMixin, SingleTableView, TurboFrameListView):
     template_name = "appsumo/list.html"
     model = AppsumoCode
     table_class = AppsumoCodeTable
     paginate_by = 20
+    turbo_frame_dom_id = "team_appsumo:list"
 
     def get_queryset(self):
         return self.team.appsumocode_set.all()

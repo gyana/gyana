@@ -16,4 +16,9 @@
   </form>
 </div>
 
+{% if team.appsumocode_set.count > 0 %}
+<h2 class="mb-3">AppSumo</h2>
+<turbo-frame id="team_appsumo:list" src="{% url 'team_appsumo:list' team.id %}" target="_top"></turbo-frame>
+{% endif %}
+
 {% endblock %}
