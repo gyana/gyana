@@ -12,4 +12,4 @@ def delete_bigquery_table(sender, instance, *args, **kwargs):
     if settings.MOCK_REMOTE_OBJECT_DELETION:
         return
 
-    bigquery_client().delete_table(instance.bq_obj, not_found_ok=True)
+    bigquery_client().delete_table(instance.bq_id, not_found_ok=True)
