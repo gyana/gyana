@@ -12,6 +12,14 @@
     color: var(--c-black);
     outline: none;
   }
+
+  &[disabled],
+  &--disabled,
+  &.disabled {
+    background-color: var(--c-gray-50);
+    color: var(--c-black-50);
+    cursor: not-allowed;
+  }
 }
 
 input[type='submit'] {

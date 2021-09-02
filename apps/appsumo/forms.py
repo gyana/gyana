@@ -33,7 +33,9 @@ class AppsumoRedeemForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self._user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
+
         self.fields["team"].queryset = self._user.teams.all()
+        self.fields["team"].widget.help_text = "You can always change this later"
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -49,11 +51,17 @@ class AppsumoRedeemForm(forms.ModelForm):
 
 
 class AppsumoSignupForm(SignupForm):
-    team = forms.CharField(max_length=100)
+    team = forms.CharField(max_length=100, label="Team name", help_text="You can always change this name later.")
 
     def __init__(self, *args, **kwargs):
         self._code = kwargs.pop("code", None)
         super().__init__(*args, **kwargs)
+
+        del self.fields['email'].widget.attrs['placeholder']
+        del self.fields['password1'].widget.attrs['placeholder']
+
+        self.fields['email'].help_text = "e.g. maryjackson@nasa.gov"
+        self.fields['password1'].help_text = "Must have at least 6 characters"
 
     @property
     def field_order(self):
