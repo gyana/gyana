@@ -22,10 +22,14 @@
     </div>
   </div>
   {% else %}
-  <div class="pt-2 pad">
+  <div class="pad flex flex-col space-y-8">
     <small>
       <a href="{% url 'team_projects:create' team.id %}" class="link">
         <i class="fa fa-fw fa-plus mr-2"></i>New Project</a>
+    </small>
+    <small>
+      <a href="https://www.loom.com/share/eea3a4c9c6424a77b30ada915f92c12f" class="link">
+        <i class="fa fa-fw fa-video mr-2"></i>View tutorial video</a>
     </small>
   </div>
   {% endif  %}
