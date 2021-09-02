@@ -271,7 +271,7 @@ describe('nodes', () => {
     cy.get('input[name=add_columns-1-label]').type('upper_owner{enter}')
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid:contains(upper_owner)').scrollIntoView()
-    cy.get('#workflows-grid').contains('ALEX').should('be.visible')
+    cy.get('#workflows-grid').contains('ALEX').scrollIntoView().should('be.visible')
   })
 
   it('rename', () => {
