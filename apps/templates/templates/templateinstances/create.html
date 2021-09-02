@@ -5,13 +5,16 @@
 <div class="workflow-detail__header">
   <h2>{{ template.name }}</h2>
 
-  <form class="ml-auto" method="post">
-    {% csrf_token %}
+  <div class="flex gap-7 ml-auto">
+    <a class="button button--sm button--tertiary" href="{% url 'team_templates:list' team.id %}">Go back</a>
+    <form method="post">
+      {% csrf_token %}
 
-    {% include "django/forms/default_form.html" %}
+      {% include "django/forms/default_form.html" %}
 
-    <button type="submit" class="button button--sm">Use this template</button>
-  </form>
+      <button type="submit" class="button button--sm">Use this template</button>
+    </form>
+  </div>
 </div>
 
 <div class="flex items-center gap-4 border-b border-gray pad">
