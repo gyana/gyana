@@ -1,5 +1,5 @@
 from apps.templates.models import Template
-from django.contrib import admin
+from django.contrib import admin, messages
 
 from .models import Project
 
@@ -14,20 +14,25 @@ class ProjectAdmin(admin.ModelAdmin):
     @admin.action(description="Promote to template")
     def promote_to_template(self, request, queryset):
         for project in queryset:
-            if project.template is not None:
+            if project.is_template:
                 self.message_user(
-                    request, f"Project {object.name} is already a template"
+                    request,
+                    f"Project {project.name} is already a template",
+                    level=messages.ERROR,
                 )
                 continue
             if project.workflow_set.count() > 0:
                 self.message_user(
                     request,
-                    f"Project {object.name} contains workflows which are not supported (for now)",
+                    f"Project {project.name} contains workflows which are not supported (for now)",
+                    level=messages.ERROR,
                 )
                 continue
             if project.dashboard_set.count() == 0:
                 self.message_user(
-                    request, f"Project {object.name} needs at least one dashboard"
+                    request,
+                    f"Project {project.name} needs at least one dashboard",
+                    level=messages.ERROR,
                 )
                 continue
             template = Template(project=project)
