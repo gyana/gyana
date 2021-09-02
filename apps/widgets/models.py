@@ -88,6 +88,11 @@ class Widget(CloneMixin, BaseModel):
 
     stack_100_percent = models.BooleanField(default=False)
 
+    _clone_m2o_or_o2m_fields = [
+        "aggregations",
+        "filters",
+    ]
+
     def __str__(self):
         return f"<Widget {self.kind} on {self.table}>"
 

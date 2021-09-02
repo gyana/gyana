@@ -1,9 +1,9 @@
-from apps.base.clients import bigquery_client
 from apps.dashboards.models import Dashboard
 from apps.integrations.models import Integration
 from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.tables.models import Table
+from apps.templates.bigquery import copy_write_truncate_bq_table
 from apps.templates.duplicate import get_target_table_from_source_table
 from apps.widgets.models import Widget
 from apps.workflows.bigquery import run_workflow
@@ -75,6 +75,17 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                 # duplicate the project, new FKs where appropriate and delete
                 cloned_project = instance.template.project.make_clone()
 
+                integrations = list(
+                    cloned_project.integration_set.filter(
+                        kind__in=[
+                            Integration.Kind.SHEET,
+                            Integration.Kind.UPLOAD,
+                        ]
+                    ).all()
+                )
+                for integration in integrations:
+                    integration.project = instance.project
+
                 workflows = list(cloned_project.workflow_set.all())
                 for workflow in workflows:
                     workflow.project = instance.project
@@ -83,15 +94,16 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                 for dashboard in dashboards:
                     dashboard.project = instance.project
 
-                Dashboard.objects.bulk_update(dashboards, ["project"])
+                Integration.objects.bulk_update(integrations, ["project"])
                 Workflow.objects.bulk_update(workflows, ["project"])
+                Dashboard.objects.bulk_update(dashboards, ["project"])
 
                 # sheets + uploads tables
 
-                # unfortunately we cannot use cloned_project.table_set as django-clone
+                # unfortunately we cannot use project.table_set as django-clone
                 # does not update those FKs, they still point at source project
                 tables = Table.objects.filter(
-                    integration__project=cloned_project,
+                    integration__project=instance.project,
                     integration__kind__in=[
                         Integration.Kind.SHEET,
                         Integration.Kind.UPLOAD,
@@ -110,7 +122,7 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                     table.bq_table = table.integration.source_obj.table_id
                     table.project = instance.project
                     table_source_to_target[curr_table] = table
-                    bigquery_client().copy_table(curr_table.bq_id, table.bq_id)
+                    copy_write_truncate_bq_table(curr_table.bq_id, table.bq_id)
 
                 Table.objects.bulk_update(tables, ["bq_table", "bq_dataset", "project"])
 
@@ -137,11 +149,6 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                 ).all()
 
                 for widget in widgets:
-                    print(
-                        table_source_to_target,
-                        widget.table,
-                        widget.table.integration.kind,
-                    )
                     widget.table = (
                         get_target_table_from_source_table(
                             widget.table, instance.project
@@ -152,6 +159,8 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
 
                 Node.objects.bulk_update(input_nodes, ["input_table"])
                 Widget.objects.bulk_update(widgets, ["table"])
+
+                # TODO: Set all other table ids for workflows to null
 
                 # cascading delete for connectors
                 cloned_project.delete()
