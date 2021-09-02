@@ -26,3 +26,20 @@ CLOUD_NAMESPACE = "cypress"
 REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = ("rest_framework.renderers.JSONRenderer",)
 
 MOCK_REMOTE_OBJECT_DELETION = True
+
+# for services in Github Actions
+if os.environ.get("GITHUB_RUN_ID") is not None:
+
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": "postgres",
+            "USER": "postgres",
+            "PASSWORD": "postgres",
+            "HOST": "postgres",
+            "PORT": "5432",
+        }
+    }
+
+    CELERY_BROKER_URL = "redis://redis:6379/0"
+    CELERY_RESULT_BACKEND = "redis://redis:6379/0"
