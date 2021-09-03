@@ -1,13 +1,20 @@
 import django_tables2 as tables
 from apps.base.table import NaturalDatetimeColumn
 
-from .models import AppsumoCode
+from .models import AppsumoCode, AppsumoExtra
 
 
 class AppsumoCodeTable(tables.Table):
     class Meta:
         model = AppsumoCode
         attrs = {"class": "table"}
-        fields = ("code", "redeemed", "redeemed_by", "refunded")
+        fields = ("code", "deal", "redeemed", "redeemed_by", "refunded")
 
     redeemed = NaturalDatetimeColumn()
+
+
+class AppsumoExtraTable(tables.Table):
+    class Meta:
+        model = AppsumoExtra
+        attrs = {"class": "table"}
+        fields = ("rows", "reason")

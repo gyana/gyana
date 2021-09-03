@@ -2,7 +2,7 @@ from apps.teams.access import login_and_admin_required
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
-from . import views
+from . import frames, views
 
 app_name = "appsumo"
 urlpatterns = [
@@ -29,6 +29,11 @@ team_urlpatterns = (
             "review",
             login_and_admin_required(views.AppsumoReview.as_view()),
             name="review",
+        ),
+        path(
+            "extra",
+            login_and_admin_required(frames.AppsumoExtra.as_view()),
+            name="extra",
         ),
     ],
     "team_appsumo",

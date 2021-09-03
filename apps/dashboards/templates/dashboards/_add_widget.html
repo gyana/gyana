@@ -11,7 +11,7 @@
 
         <input type='hidden' name='kind' id="id_kind_{{ forloop.counter }}" value="{{ id }}" />
 
-        <button type="submit" class="list__item list__item--interactive w-full">
+        <button type="submit" class="list__item list__item--interactive w-full" data-loading-false data-action="popover#trigger">
           <p><i class="fas {{ icon }} text-blue mr-2"></i> {{txt}}</p>
         </button>
       </form>

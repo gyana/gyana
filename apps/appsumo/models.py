@@ -12,13 +12,26 @@ appsumo_review_regex = RegexValidator(
     "Paste the exact link as displayed on AppSumo",
 )
 
+# after we upload the codes to AppSumo, they provide two downloads:
+# - redeemed codes = all sold codes that are not refunded
+# - refunded codes = all sold codes that are refunded
+# there is no historical data, only point in time snapshots based on when
+# we have downloaded the CSV file. Fortunately, we downloaded a snapshot of
+# redeemed codes just after the two deals ended (unfortunately not refunded).
+
 
 class AppsumoCode(BaseModel):
+    class Deal(models.TextChoices):
+        USD_49 = "usd_49", "Launch deal $49 (24/03/21 - 25/06/21)"
+        USD_179 = "usd_179", "Temporary deal $179 (25/06/21 - 01/07/21)"
+        USD_59 = "usd_59", "Final deal $59 (01/07/21 - 26/08/21)"
+        # add the AppSumo Select deal here
 
     code = models.CharField(max_length=8, unique=True)
     team = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL)
 
-    purchased_before = models.DateTimeField(null=True)
+    # possibly null for a refunded code
+    deal = models.CharField(max_length=8, null=True, choices=Deal.choices)
     redeemed = models.DateTimeField(null=True)
     refunded_before = models.DateTimeField(null=True)
 
@@ -49,6 +62,13 @@ class AppsumoReview(BaseModel):
         return self.review_link
 
 
+class AppsumoExtra(BaseModel):
+
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    rows = models.BigIntegerField()
+    reason = models.TextField()
+
+
 # upload redeemed and refunded codes via the admin interface
 
 
@@ -56,7 +76,6 @@ class UploadedCodes(BaseModel):
     data = models.FileField(
         upload_to=f"{SLUG}/uploaded_codes" if SLUG else "uploaded_codes"
     )
-    downloaded = models.DateTimeField()
     success = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
@@ -73,27 +92,23 @@ class PurchasedCodes(BaseModel):
     data = models.FileField(
         upload_to=f"{SLUG}/purchased_codes" if SLUG else "purchased_codes"
     )
-    downloaded = models.DateTimeField()
+    deal = models.CharField(max_length=8, choices=AppsumoCode.Deal.choices)
     success = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         codes = pd.read_csv(self.data.url, names=["code"]).code.tolist()
 
-        # prefetch all the relevant codes
-        len(AppsumoCode.objects.filter(code__in=codes).all())
+        appsumo_codes = AppsumoCode.objects.filter(code__in=codes).all()
+
+        # if the code does not exist, we have a big problem
+        assert len(appsumo_codes) == len(codes)
 
         with transaction.atomic():
+            for appsumo_code in appsumo_codes:
+                appsumo_code.deal = self.deal
 
-            # if the code does not exist, we have a big problem
-            for code in codes:
-                appsumo_code = AppsumoCode.objects.get(code=code)
-                if (
-                    appsumo_code.purchased_before is None
-                    or appsumo_code.purchased_before > self.downloaded
-                ):
-                    appsumo_code.purchased_before = self.downloaded
-                    appsumo_code.save()
+            AppsumoCode.objects.bulk_update(appsumo_codes, ["deal"])
 
             self.success = True
             super().save(*args, **kwargs)
@@ -111,19 +126,21 @@ class RefundedCodes(BaseModel):
         codes = pd.read_csv(self.data.url, names=["code"]).code.tolist()
 
         # prefetch all the relevant codes
-        len(AppsumoCode.objects.filter(code__in=codes).all())
+        appsumo_codes = AppsumoCode.objects.filter(code__in=codes).all()
+
+        # if the code does not exist, we have a big problem
+        assert len(appsumo_codes) == len(codes)
 
         with transaction.atomic():
 
-            # if the code does not exist, we have a big problem
-            for code in codes:
-                appsumo_code = AppsumoCode.objects.get(code=code)
+            for appsumo_code in appsumo_codes:
                 if (
                     appsumo_code.refunded_before is None
                     or appsumo_code.refunded_before > self.downloaded
                 ):
                     appsumo_code.refunded_before = self.downloaded
-                    appsumo_code.save()
+
+            AppsumoCode.objects.bulk_update(appsumo_codes, ["refunded_before"])
 
             self.success = True
             super().save(*args, **kwargs)

@@ -23,7 +23,11 @@ class IntegrationAdmin(admin.ModelAdmin):
         "state",
     )
     list_filter = ["kind", "state"]
-    search_fields = ["id", "name", "project"]
+    search_fields = [
+        "id",
+        "name",
+        "project__name",
+    ]
     fields = ["id", "project", "kind", "name", "state", "ready"]
     readonly_fields = ["id", "kind", "state"]
 

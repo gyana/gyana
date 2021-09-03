@@ -50,13 +50,15 @@ def complete_connector_sync(connector: Connector, send_mail: bool = True):
                 # there is a unique constraint on table_id/dataset_id to avoid duplication
                 # todo: turn into a batch update for performance
 
-                Table.objects.get_or_create(
+                table, _ = Table.objects.get_or_create(
                     source=Table.Source.INTEGRATION,
                     bq_table=bq_table.table_id,
                     bq_dataset=bq_table.dataset_id,
                     project=connector.integration.project,
                     integration=connector.integration,
                 )
+                table.num_rows = table.bq_obj.num_rows
+                table.save()
 
         integration.state = Integration.State.DONE
         integration.save()
@@ -78,8 +80,6 @@ def complete_connector_sync(connector: Connector, send_mail: bool = True):
                 # ),
             },
         )
-
-    return True
 
 
 @shared_task(bind=True)

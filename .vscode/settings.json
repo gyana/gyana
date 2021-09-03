@@ -25,6 +25,7 @@
     "**/*.html": "django-html",
     "**/templates/**/*.ts": "typescript",
     "**/templates/**/*.tsx": "typescript",
+    "**/templates/**/*.txt": "django-txt"
   },
   "python.testing.pytestArgs": [
     "tests"

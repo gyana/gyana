@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { getModelStartId } from '../support/utils'
+import { getModelStartId, BIGQUERY_TIMEOUT } from '../support/utils'
 
 const projectId = getModelStartId('projects.project')
 const templateInstanceId = getModelStartId('templates.templateinstance')
@@ -33,7 +33,7 @@ describe('templates', () => {
     cy.get('button[type=submit]').click()
     cy.contains('continue').click()
     cy.get('button[type=submit]').click()
-    cy.contains('Confirm', { timeout: 10000 }).click()
+    cy.contains('Confirm', { timeout: BIGQUERY_TIMEOUT }).click()
     cy.url().should('contain', `/projects/${projectId}/templates/${templateInstanceId}`)
 
     // finish setup and run all duplication logic

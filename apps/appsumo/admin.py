@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import (
     AppsumoCode,
+    AppsumoExtra,
     AppsumoReview,
     PurchasedCodes,
     RefundedCodes,
@@ -9,25 +10,25 @@ from .models import (
 )
 
 
-class BaseFileCodesAdmin(admin.ModelAdmin):
+@admin.register(RefundedCodes)
+class RefundedCodesAdmin(admin.ModelAdmin):
     list_display = ["data", "downloaded", "success"]
     fields = ["data", "downloaded", "success"]
     readonly_fields = ["success"]
 
 
-@admin.register(RefundedCodes)
-class AppsumoCodeAdmin(BaseFileCodesAdmin):
-    pass
-
-
 @admin.register(PurchasedCodes)
-class AppsumoCodeAdmin(BaseFileCodesAdmin):
-    pass
+class PurchasedCodesAdmin(admin.ModelAdmin):
+    list_display = ["data", "deal", "success"]
+    fields = ["data", "deal", "success"]
+    readonly_fields = ["success"]
 
 
 @admin.register(UploadedCodes)
-class AppsumoCodeAdmin(BaseFileCodesAdmin):
-    pass
+class UploadedCodesAdmin(admin.ModelAdmin):
+    list_display = ["data", "success"]
+    fields = ["data", "success"]
+    readonly_fields = ["success"]
 
 
 @admin.register(AppsumoCode)
@@ -57,3 +58,8 @@ class AppsumoReviewInline(admin.StackedInline):
 
     def has_delete_permission(self, request, obj):
         return False
+
+
+class AppsumoExtraInline(admin.StackedInline):
+    model = AppsumoExtra
+    fields = ["rows", "reason"]
