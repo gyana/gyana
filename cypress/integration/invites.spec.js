@@ -4,8 +4,8 @@ const parseUrlFromMsg = (msg) =>
   msg['payload'].split('\n').slice(-1)[0].replace("If you'd like to join, please go to ", '')
 
 const inviteByEmail = (email) => {
-  cy.contains('Invites').click()
-  cy.url().should('contain', '/teams/1/invites')
+  cy.contains('Members').click()
+  cy.url().should('contain', '/teams/1/members')
 
   cy.contains('New Invite').click()
   cy.url().should('contain', '/teams/1/invites/new')

@@ -68,7 +68,7 @@ describe('teams', () => {
 
     cy.visit('/')
 
-    cy.wrap(['Members', 'Invites', 'Settings']).each((page) =>
+    cy.wrap(['Members', 'Billing', 'Settings']).each((page) =>
       cy.contains(page).should('not.exist')
     )
 
@@ -121,11 +121,11 @@ describe('teams', () => {
 
     cy.visit('/')
     cy.contains('Warning').click()
-    cy.get('nav').contains('Account').click()
+    cy.get('nav').contains('Billing').click()
     // row count automatically updated when integration deleted
     cy.contains("You're exceeding your row count limit.").should('not.exist')
   })
-  it('account limit disabled', () => {
+  it.only('account limit disabled', () => {
     cy.visit('/')
 
     // special account with disabled amount
