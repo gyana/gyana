@@ -11,34 +11,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: '***'
-          POSTGRES_DB: 'gyana'
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
     steps:
     - uses: actions/checkout@v2
     - uses: extractions/setup-just@v1
     - uses: actions/setup-python@v2
       with:
         python-version: 3.9
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@master
-      with:
-        project_id: gyana-1511894275181
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
-        export_default_credentials: true
-    - name: Use gcloud CLI
-      run: gcloud info
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
