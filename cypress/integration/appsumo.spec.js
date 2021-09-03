@@ -32,11 +32,13 @@ describe('appsumo', () => {
     cy.contains('your account for').click()
     cy.url().should('contain', 'teams/1/account')
   })
+
   it('signup with code', () => {
     cy.visit(`/appsumo/${NOT_REDEEMED}`)
 
     cy.url().should('contain', `/appsumo/signup/${NOT_REDEEMED}`)
-    cy.contains(`Signup with AppSumo code ${NOT_REDEEMED}.`)
+    cy.contains('AppSumo code')
+    cy.get(`input[value=${NOT_REDEEMED}]`).should('be.disabled')
 
     cy.get('input[name=email]').type('appsumo@gyana.com')
     cy.get('input[name=password1]').type('seewhatmatters')
@@ -71,7 +73,7 @@ describe('appsumo', () => {
     cy.login()
 
     cy.visit('/teams/1/appsumo')
-    cy.contains('Stack Code').click()
+    cy.contains('Stack Code').click({ turbo: false })
     cy.get('input[name=code]').type(NOT_REDEEMED)
     cy.get('button[type=submit]').click()
 
@@ -107,7 +109,7 @@ describe('appsumo', () => {
     // enter the review
 
     cy.visit('/teams/1/appsumo')
-    cy.contains('Link to your review').click()
+    cy.contains('Link to your review').click({ turbo: false })
 
     cy.url().should('contain', '/teams/1/appsumo/review')
     cy.get('input[name=review_link]').type(
