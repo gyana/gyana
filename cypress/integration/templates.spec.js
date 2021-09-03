@@ -11,8 +11,7 @@ describe('templates', () => {
     cy.visit('/teams/1')
   })
   it('new project from template', () => {
-    cy.contains('Templates').click()
-    cy.url().should('contain', '/teams/1/templates')
+    cy.contains('Create Project')
 
     // choose the template
     cy.contains('Google Analytics').click()
@@ -25,11 +24,11 @@ describe('templates', () => {
     cy.contains('Alex')
 
     // create the project with the template
-    cy.get('button[type=submit]').click()
+    cy.get('button[type=submit]').click({ turbo: false })
     cy.url().should('contain', `/projects/${projectId}/templates/${templateInstanceId}`)
 
     // setup the new Google Analytics connector, and it redirects back
-    cy.get('#main').within(() => cy.contains('New').click())
+    cy.get('#main').within(() => cy.contains('Connect').click())
     cy.get('button[type=submit]').click()
     cy.contains('continue').click()
     cy.get('button[type=submit]').click()
