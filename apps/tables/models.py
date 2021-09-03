@@ -55,16 +55,6 @@ class Table(CloneMixin, BaseModel):
     def __str__(self):
         return getattr(self, self.source).get_table_name()
 
-    # TODO: Remove this pattern and identify any bugs
-    # def save(self, *args, **kwargs):
-    #     # Tables can exist before their respective bq_table entity exists. Defaults to num_rows 0
-    #     try:
-    #         self.num_rows = self.bq_obj.num_rows
-    #     except (NameError, NotFound):
-    #         self.num_rows = 0
-
-    #     super().save(*args, **kwargs)
-
     @property
     def bq_id(self):
         return f"{self.bq_dataset}.{self.bq_table}"

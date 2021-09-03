@@ -30,10 +30,10 @@ def _get_duplicate_names(left, right):
 
 def _rename_duplicates(left, right, left_col, right_col):
     duplicates = _get_duplicate_names(left, right)
-    left = left.relabel({d: f"{d}_1" for d in duplicates})
-    right = right.relabel({d: f"{d}_2" for d in duplicates})
-    left_col = f"{left_col}_1" if left_col in duplicates else left_col
-    right_col = f"{right_col}_2" if right_col in duplicates else right_col
+    left = left.relabel({d: f"{d}_left" for d in duplicates})
+    right = right.relabel({d: f"{d}_right" for d in duplicates})
+    left_col = f"{left_col}_left" if left_col in duplicates else left_col
+    right_col = f"{right_col}_right" if right_col in duplicates else right_col
 
     return left, right, left_col, right_col
 
@@ -133,13 +133,14 @@ def get_select_query(node, parent):
 
 def get_join_query(node, left, right):
 
-    # Adding 1/2 to left/right if the column exists in both tables
+    # Adding left/right to left/right if the column exists in both tables
     left, right, left_col, right_col = _rename_duplicates(
         left, right, node.join_left, node.join_right
     )
     to_join = getattr(left, JOINS[node.join_how])
 
-    return to_join(right, left[left_col] == right[right_col]).materialize()
+    joined = to_join(right, left[left_col] == right[right_col]).materialize()
+    return joined.drop([right_col]).relabel({left_col: node.join_left})
 
 
 def get_aggregation_query(node, query):

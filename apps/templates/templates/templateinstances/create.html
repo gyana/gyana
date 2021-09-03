@@ -1,33 +1,33 @@
 {% extends "web/app/app_base.html" %}
 {% load static %}
+
 {% block app %}
-<div class="page-header">
-  <div class="mr-auto">
-    <a class="link" href="{% url 'team_templates:list' team.id %}"><p>Back</p></a>
-    <h1>{{ template.name }}</h1>
-    <p>{{ template.description }}</p>
-  </div>
-  <div class="flex ml-4">
+<div class="workflow-detail__header">
+  <h2>{{ template.name }}</h2>
+
+  <div class="flex gap-7 ml-auto">
+    <a class="button button--sm button--tertiary" href="{% url 'teams:detail' team.id %}">Go back</a>
+
     <form method="post">
       {% csrf_token %}
 
       {% include "django/forms/default_form.html" %}
 
-      <button type="submit" class="button button--filled w-full">
-        Create
-      </button>
-
+      <button type="submit" class="button button--sm">Use this template</button>
     </form>
   </div>
 </div>
-<div class="flex border-b border-gray p-6 pt-2">
+
+<div class="flex items-center gap-4 border-b border-gray pad">
+<p class="mr-auto">{{ template.description }}</p>
   {% for integration in template.project.integration_set.all %}
     <div data-controller="tooltip">
-      <img class="h-12 w-12 mr-4" src="{% static integration.icon %}" title="{{ integration.name }}" />
+      <img class="h-12 w-12" src="{% static integration.icon %}" title="{{ integration.name }}" />
       <span data-tooltip-target="body">{{ integration.display_kind }}</span>
     </div>
   {% endfor %}
 </div>
+
 {% with request.GET.dashboard_id|default:template.project.dashboard_set.first.id|add:"0" as dashboard_id %}
   {% if template.project.dashboard_set.count > 1 %}
   <nav id='tabbar' class="tabbar">
@@ -39,7 +39,7 @@
     {% endfor %}
   </nav>
   {% endif %}
-  <div class="pad flex flex-col items-center overflow-scroll w-full">
+  <div class="flex flex-1 pad flex-col items-center overflow-auto">
     <div class="card card--inline">
       <turbo-frame id="dashboard:preview" src="{% url 'dashboards:preview' dashboard_id %}">
         <div class='placeholder-scr placeholder-scr--fillscreen'>
@@ -50,4 +50,5 @@
     </div>
   </div>
 {% endwith %}
+
 {% endblock %} 

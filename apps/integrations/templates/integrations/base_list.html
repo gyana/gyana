@@ -5,7 +5,7 @@
   <div class="mr-auto">
     <h1>Integrations</h1>
 
-    <p>An integration is a source of data, like a CSV file, Google Sheet, ads account, database, or web app.</p>
+    <p>A source of data, like a CSV file, Google Sheet, ads account, database, or web app.</p>
   </div>
 
   <div class="flex ml-4">
@@ -45,7 +45,7 @@
 <nav id='tabbar' class="tabbar">
   <a class="tabbar__link {% if request.resolver_match.url_name == 'list' %} tabbar__link--active {% endif %}"
      href="{% url 'project_integrations:list' project.id %}">
-    Overview
+    Ready
   </a>
   
   <a class="tabbar__link {% if request.resolver_match.url_name == 'pending' %} tabbar__link--active {% endif %}"

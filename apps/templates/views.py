@@ -1,6 +1,7 @@
 from functools import cached_property
 
 from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.base.frames import TurboFrameListView
 from apps.projects.mixins import ProjectMixin
 from apps.teams.mixins import TeamMixin
 from apps.templates.forms import TemplateInstanceUpdateForm
@@ -14,11 +15,12 @@ from .models import Template, TemplateInstance
 from .tables import TemplateInstanceTable, TemplateIntegrationTable, TemplateTable
 
 
-class TemplateList(TeamMixin, SingleTableView):
+class TemplateList(TeamMixin, SingleTableView, TurboFrameListView):
     template_name = "templates/list.html"
     model = Template
     table_class = TemplateTable
     paginate_by = 20
+    turbo_frame_dom_id = "templates:list"
 
 
 class TemplateInstanceCreate(TeamMixin, TurboCreateView):
@@ -60,8 +62,6 @@ class TemplateInstanceList(ProjectMixin, SingleTableView):
             )
         return super().get(request, *args, **kwargs)
 
-    def get_queryset(self):
-        return self.project.templateinstance_set.all()
 
 
 class TemplateInstanceUpdate(ProjectMixin, SingleTableMixin, TurboUpdateView):

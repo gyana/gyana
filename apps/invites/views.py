@@ -8,6 +8,7 @@ from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.base.frames import TurboFrameListView
 
 from apps.teams.mixins import TeamMixin
 
@@ -16,11 +17,12 @@ from .models import Invite
 from .tables import InviteTable
 
 
-class InviteList(TeamMixin, SingleTableView):
+class InviteList(TeamMixin, SingleTableView, TurboFrameListView):
     template_name = "invites/list.html"
     model = Invite
     table_class = InviteTable
     paginate_by = 20
+    turbo_frame_dom_id = "team_invites:list"
 
     def get_queryset(self) -> QuerySet:
         return Invite.objects.filter(team=self.team, accepted=False)
@@ -49,7 +51,7 @@ class InviteCreate(TeamMixin, TurboCreateView):
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse("team_invites:list", args=(self.team.id,))
+        return reverse("team_members:list", args=(self.team.id,))
 
 
 class InviteDetail(TeamMixin, DetailView):

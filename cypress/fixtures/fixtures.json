@@ -1971,7 +1971,7 @@
       "updated": "2021-08-23T23:00:00Z",
       "code": "12345678",
       "team": null,
-      "purchased_before": null,
+      "deal": "usd_49",
       "redeemed": null,
       "refunded_before": null,
       "redeemed_by": null
@@ -1985,7 +1985,7 @@
       "updated": "2021-08-23T23:00:00Z",
       "code": "ABCDEFGH",
       "team": 1,
-      "purchased_before": null,
+      "deal": "usd_59",
       "redeemed": "2021-08-23T23:00:00Z",
       "refunded_before": null,
       "redeemed_by": null
@@ -1999,7 +1999,7 @@
       "updated": "2021-08-23T23:00:00Z",
       "code": "QWERTYUI",
       "team": 2,
-      "purchased_before": null,
+      "deal": "usd_179",
       "redeemed": "2021-08-23T23:00:00Z",
       "refunded_before": null,
       "redeemed_by": null

@@ -115,11 +115,17 @@ class JoinNodeForm(NodeForm):
         super().__init__(*args, **kwargs)
 
         self.fields["join_left"] = forms.ChoiceField(
-            choices=[(col, col) for col in self.instance.parents.first().schema],
+            choices=[
+                ("", "No column selected"),
+                *[(col, col) for col in self.instance.parents.first().schema],
+            ],
             help_text=self.fields["join_left"].help_text,
         )
         self.fields["join_right"] = forms.ChoiceField(
-            choices=[(col, col) for col in self.instance.parents.last().schema],
+            choices=[
+                ("", "No column selected"),
+                *[(col, col) for col in self.instance.parents.last().schema],
+            ],
             help_text=self.fields["join_right"].help_text,
         )
 

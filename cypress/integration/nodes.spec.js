@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
 const { _ } = Cypress
+import { BIGQUERY_TIMEOUT } from '../support/utils'
 
 const openModalAndCheckTitle = (id, title) => {
   cy.visit(`/projects/2/workflows/1?modal_item=${id}`)
@@ -222,7 +223,7 @@ describe('nodes', () => {
     cy.contains('Save & Preview').click()
 
     // TODO: the pivotting takes longer so we have to wait
-    cy.get('th:contains(Blackpool)', { timeout: 10000 }).should('exist')
+    cy.get('th:contains(Blackpool)', { timeout: BIGQUERY_TIMEOUT }).should('exist')
     cy.get('#workflows-grid td:contains(Matt)').should('have.length', 1)
     // the "—" is unicode em-dash, not a standard hyphen from keyboard
     cy.get('#workflows-grid td:contains(—)').should('have.length', 8)
@@ -270,7 +271,7 @@ describe('nodes', () => {
     cy.get('input[name=add_columns-1-label]').type('upper_owner{enter}')
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid:contains(upper_owner)').scrollIntoView()
-    cy.get('#workflows-grid').contains('ALEX').should('be.visible')
+    cy.get('#workflows-grid').contains('ALEX').scrollIntoView().should('be.visible')
   })
 
   it('rename', () => {
@@ -408,7 +409,9 @@ describe('nodes', () => {
     cy.get('select[name=columns-3-column').select('Q4')
     cy.contains('Save & Preview').click()
 
-    cy.get('#workflows-grid th:contains(quarter)', { timeout: 10000 }).should('be.visible')
+    cy.get('#workflows-grid th:contains(quarter)', { timeout: BIGQUERY_TIMEOUT }).should(
+      'be.visible'
+    )
     cy.get('#workflows-grid th:contains(sales)').should('be.visible')
     cy.get('#workflows-grid td:contains(Q1)').should('have.length', 2)
     cy.get('#workflows-grid th:contains(product)').should('not.exist')
@@ -416,7 +419,9 @@ describe('nodes', () => {
     addFormToFormset('secondary_columns')
     cy.get('select[name=secondary_columns-0-column]').select('product')
     cy.contains('Save & Preview').click()
-    cy.get('#workflows-grid th:contains(product)', { timeout: 10000 }).should('be.visible')
+    cy.get('#workflows-grid th:contains(product)', { timeout: BIGQUERY_TIMEOUT }).should(
+      'be.visible'
+    )
     cy.get('#workflows-grid td:contains(Kale)').should('have.length', 4)
   })
 

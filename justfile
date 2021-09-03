@@ -27,6 +27,9 @@ fixtures:
 shell:
     ./manage.py shell -i ipython
 
+celery-ci:
+    celery -A gyana worker -l info
+
 # Encrypt or decrypt file via GCP KMS
 gcloud_kms OP FILE:
     gcloud kms {{OP}} --location global --keyring gyana-kms --key gyana-kms --ciphertext-file {{FILE}}.enc --plaintext-file {{FILE}}
@@ -42,7 +45,7 @@ enc_env:
     just gcloud_kms encrypt {{service_account}}
 
 export:
-    poetry export -f requirements.txt --output requirements.txt
+    poetry export -f requirements.txt --output requirements.txt --without-hashes
 
 update:
     yarn install
@@ -61,4 +64,4 @@ startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
 
 test:
-    pytest tests/
+    python -m pytest apps/*/tests/ --no-migrations --disable-pytest-warnings

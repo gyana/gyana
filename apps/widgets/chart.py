@@ -164,6 +164,9 @@ def to_stack(widget, df):
     pivoted = df.pivot(
         index=widget.label, columns=widget.z, values=widget.aggregations.first().column
     )
+
+    if widget.sort_by == "value":
+        pivoted = pivoted.reindex(df[widget.label].unique())
     return {
         "categories": [
             {"category": [{"label": str(label)} for label in pivoted.index]}

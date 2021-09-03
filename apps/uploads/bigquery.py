@@ -27,10 +27,9 @@ def _load_table(upload: Upload, table: Table, **job_kwargs):
         source_format=bigquery.SourceFormat.CSV,
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
         field_delimiter=upload.field_delimiter_char,
-        **job_kwargs
-        # TODO: this prevents autodetect to work
-        # allow_quoted_newlines = True,
-        # external_config.options.allow_jagged_rows = True
+        allow_quoted_newlines=True,
+        allow_jagged_rows=True,
+        **job_kwargs,
     )
 
     bq_dataset = client.get_dataset(table.bq_dataset)

@@ -4,6 +4,9 @@ version = "0.1.0"
 description = "No-Code Data Analytics"
 authors = ["Gyana Developers <developers@gyana.com>"]
 
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "gyana.settings.development"
+
 [tool.poetry.dependencies]
 python = "3.9.*"
 attrs = "^20.3.0"
@@ -44,6 +47,7 @@ django-hijack = "^3.0.0"
 google-cloud-language = "^2.2.2"
 django-admin-tools = "^0.9.1"
 pytest = "^6.2.4"
+pytest-django = "^4.4.0"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

@@ -3,6 +3,22 @@
 {% load render_table from django_tables2 %}
 
 {% block tab %}
+<h2>Create Project</h2>
+<p class="mb-3">Use one of our pre-made projects to get started quickly.</p>
+<div class="card card--none mb-7">
+  <turbo-frame
+    id="templates:list"
+    src="{% url 'team_templates:list' team.id %}"
+    target="_top"
+  >
+    <div class='placeholder-scr placeholder-scr--fillscreen'>
+      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+      <p class='placeholder-scr__title'>Loading templates...</p>
+    </div>
+  </div>
+</turbo-frame>
+
+<h2 class="mb-3">Your Projects</h2>
 <div class="card card--none">
   {% render_table team_projects %}
 
@@ -11,12 +27,26 @@
     <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
     <h3>This team has no projects</h3>
     <p>You can <a href="{% url 'team_projects:create' team.id %}" class="link">create one</a> or start with a <a href="{% url 'team_projects:create' team.id %}" class="link">template</a>.</p>
+
+    <div data-controller="iframe" class="mt-8">
+      <div data-iframe-target="placeholder" style="width: 854px; height: 480px;" class='placeholder-scr placeholder-scr--fillscreen rounded-xl bg-gray-20 border-gray border-4'>
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+        <p class='placeholder-scr__title'>Loading tutorial...</p>
+      </div>
+      <iframe class="rounded-xl" style="display: none;" width="854" height="480" src="https://www.loom.com/embed/eea3a4c9c6424a77b30ada915f92c12f"
+        frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>
+      </iframe>
+    </div>
   </div>
   {% else %}
-  <div class="pt-2 pad">
+  <div class="pad flex flex-col space-y-8">
     <small>
       <a href="{% url 'team_projects:create' team.id %}" class="link">
         <i class="fa fa-fw fa-plus mr-2"></i>New Project</a>
+    </small>
+    <small>
+      <a href="https://www.loom.com/share/eea3a4c9c6424a77b30ada915f92c12f" class="link">
+        <i class="fa fa-fw fa-video mr-2"></i>View tutorial video</a>
     </small>
   </div>
   {% endif  %}

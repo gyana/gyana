@@ -37,6 +37,7 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
 
         if formset.get_default_prefix() in [
             "add_columns",
+            "rename_columns",
             "edit_columns",
             "aggregations",
             "filters",

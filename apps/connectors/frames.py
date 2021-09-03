@@ -18,7 +18,7 @@ class ConnectorStatus(TurboFrameDetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         if fivetran_client().has_completed_sync(self.object):
-            complete_connector_sync(self.object)
+            complete_connector_sync(self.object, send_mail=False)
 
         context_data["icon"] = INTEGRATION_STATE_TO_ICON[self.object.integration.state]
         context_data["text"] = INTEGRATION_STATE_TO_MESSAGE[

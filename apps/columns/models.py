@@ -1,13 +1,10 @@
 from apps.base.aggregations import AggregationFunctions
-from apps.base.models import BaseModel
+from apps.base.models import SaveParentModel
 from apps.nodes.models import Node
 from apps.widgets.models import Widget
-from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models
-from django.utils import timezone
-from model_clone import CloneMixin
 
 from .bigquery import (
     CommonOperations,
@@ -21,21 +18,6 @@ from .bigquery import (
 bigquery_column_regex = RegexValidator(
     r"^[a-zA-Z_][0-9a-zA-Z_]*$", "Only numbers, letters and underscores allowed."
 )
-
-
-class SaveParentModel(DirtyFieldsMixin, CloneMixin, BaseModel):
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs) -> None:
-        if self.is_dirty():
-            self.parent.data_updated = timezone.now()
-            self.parent.save()
-        return super().save(*args, **kwargs)
-
-    @property
-    def parent(self):
-        return getattr(self, "node") or self.widget
 
 
 class AbstractOperationColumn(SaveParentModel):
@@ -135,9 +117,7 @@ class SortColumn(SaveParentModel):
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="sort_columns"
     )
-    ascending = models.BooleanField(
-        default=True, help_text="Ascending Sort"
-    )
+    ascending = models.BooleanField(default=True, help_text="Ascending Sort")
     column = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         help_text="Column",

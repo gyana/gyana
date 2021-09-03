@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { getModelStartId } from '../support/utils'
+import { getModelStartId, BIGQUERY_TIMEOUT } from '../support/utils'
 const id = getModelStartId('integrations.integration')
 
 describe('uploads', () => {
@@ -19,14 +19,14 @@ describe('uploads', () => {
     cy.url().should('contain', `/projects/1/integrations/${id}/configure`)
     cy.get('button[type=submit]').click()
     cy.contains('Validating and importing your upload...')
-    cy.contains('Upload successfully validated and imported.', { timeout: 10000 })
+    cy.contains('Upload successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
 
     // review the table and approve
     cy.contains('Employees')
     cy.contains('Confirm').click()
 
     // bigquery file upload needs longer wait
-    cy.contains('Data', { timeout: 10000 })
+    cy.contains('Data', { timeout: BIGQUERY_TIMEOUT })
     cy.contains('Overview')
     // validate row count
     cy.contains('15')
@@ -57,7 +57,7 @@ describe('uploads', () => {
 
     // wait for entire process to happen successfully
     cy.get('button[type=submit]').click()
-    cy.contains('Confirm', { timeout: 20000 }).click()
+    cy.contains('Confirm', { timeout: BIGQUERY_TIMEOUT }).click()
     cy.contains('Data')
     // 2250 lines of CSV including header
     cy.contains(2249)
@@ -102,7 +102,7 @@ describe('uploads', () => {
     cy.get('button[type=submit]').click()
     cy.contains(
       'Error while reading data, error message: Error detected while parsing row starting at position: 52. Error: Missing close double quote (") character.',
-      { timeout: 10000 }
+      { timeout: BIGQUERY_TIMEOUT }
     )
   })
   it('all string', () => {
@@ -112,7 +112,7 @@ describe('uploads', () => {
     cy.get('input[type=file]').attachFile('store_info_all_string.csv')
     cy.get('button[type=submit]').click()
     // needs longer to do 3x imports
-    cy.contains('Upload successfully validated and imported.', { timeout: 15000 })
+    cy.contains('Upload successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
 
     // import has inferred correct column headings
     cy.contains('Location_name')

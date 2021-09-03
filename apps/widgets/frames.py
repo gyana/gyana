@@ -26,7 +26,7 @@ def add_output_context(context, widget, request):
     if widget.is_valid:
         if widget.kind == Widget.Kind.TEXT:
             pass
-        if widget.kind == Widget.Kind.TABLE:
+        elif widget.kind == Widget.Kind.TABLE:
             table = table_to_output(widget)
             context["table"] = RequestConfig(
                 request,

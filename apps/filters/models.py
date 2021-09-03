@@ -1,13 +1,10 @@
-from apps.base.models import BaseModel
+from apps.base.models import SaveParentModel
 from apps.widgets.models import Widget
-from dirtyfields import DirtyFieldsMixin
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.utils import timezone
-from model_clone import CloneMixin
 
 
-class Filter(CloneMixin, DirtyFieldsMixin, BaseModel):
+class Filter(SaveParentModel):
     class Type(models.TextChoices):
         INTEGER = "INTEGER", "Integer"
         FLOAT = "FLOAT", "Float"
@@ -49,10 +46,10 @@ class Filter(CloneMixin, DirtyFieldsMixin, BaseModel):
     class TimePredicate(models.TextChoices):
         ON = "equal", "is"
         NOTON = "nequal", "is not"
-        BEFORE = "greaterthan", "is before"
-        BEFOREON = "greaterthanequal", "is on or before"
-        AFTER = "lessthan", "is after"
-        AFTERON = "lessthanequal", "is on or after"
+        BEFORE = "lessthan", "is before"
+        BEFOREON = "lessthanequal", "is on or before"
+        AFTER = "greaterthan", "is after"
+        AFTERON = "greaterthanequal", "is on or after"
         ISNULL = "isnull", "is empty"
         NOTNULL = "notnull", "is not empty"
 
@@ -112,17 +109,6 @@ class Filter(CloneMixin, DirtyFieldsMixin, BaseModel):
     @property
     def parent_type(self):
         return "widget" if self.widget else "node"
-
-    @property
-    def parent(self):
-        return self.widget or self.node
-
-    def save(self, *args, **kwargs) -> None:
-        if self.node and self.is_dirty():
-            self.node.data_updated = timezone.now()
-            self.node.save()
-
-        return super().save(*args, **kwargs)
 
 
 PREDICATE_MAP = {

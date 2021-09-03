@@ -4,9 +4,10 @@
 
 {% block content %}
 <section>
-  <p class="text-center">
-    Signup with AppSumo code <strong>{{ view.kwargs.code }}</strong>.
-  </p>
+  <label for="" class="mb-6">
+    <p>AppSumo code</p>
+    <input type="text" disabled value={{ view.kwargs.code }}>
+  </label>
 
   <form method="post" class="mb-8">
     {% csrf_token %}

@@ -16,7 +16,10 @@ class UploadCreateForm(forms.ModelForm):
         widgets = {
             "file_gcs_path": GCSFileUpload(),
         }
-        labels = {"file_gcs_path": "Upload a file"}
+        labels = {"file_gcs_path": "Choose a file"}
+        help_texts = {
+            "file_gcs_path": "Maximum file size is 1GB"
+        }
 
     def __init__(self, *args, **kwargs):
         self._project = kwargs.pop("project")

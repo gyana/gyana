@@ -6,14 +6,13 @@ We're running a traditional Django app on [Heroku](https://dashboard.heroku.com/
 
 - Choose and merge a commit from main onto the release branch
 - Run and fix the automated [QA process](DEVELOPMENT.md#QA) (Cypress test suite)
-- Push any fixes onto the release branch
+- Push any fixes onto main and cherrypick to the release branch
 - Run the manual QA process (written test plan) on gyana-release
 - Document and push any further fixes onto the release branch
 - If downtime is expected, communiate to users and switch Heroku to maintenance mode
 - Manual deploy release branch to gyana-beta
 - Manual smoke test on gyana-beta
 - If there is an issue, see [rollback](#Rollbacks)
-- Open a PR from release to main, merge squashed commit
 
 ## Rollbacks
 

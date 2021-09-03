@@ -13,12 +13,25 @@
       <img src="{% static 'images/logo.png' %}" alt="">
       <div>
         <h1>Gyana</h1>
+        {% block header %}
         <p>Welcome, log in to start where you left off or create a new account.</p>
+        {% endblock %}
       </div>
     </header>
 
     {% block content %}
     {% endblock content %}
+
+    <footer class="landing__footer">
+      {% block footer %}
+      <p>
+        By using the app, you agree to our
+        <a href="https://www.gyana.com/legal/terms-of-use" class="link">terms of service</a>
+        and
+        <a href="https://www.gyana.com/legal/privacy-policy" class="link">privacy policy</a>.
+      </p>
+      {% endblock %}
+    </footer>
   </div>
 
   <div class="landing__image">

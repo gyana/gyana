@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { readyIntegrations, pendingIntegrations } from '../support/utils'
+import { readyIntegrations, pendingIntegrations, BIGQUERY_TIMEOUT } from '../support/utils'
 
 const SHARED_SHEET =
   'https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit'
@@ -29,7 +29,7 @@ describe('integrations', () => {
     cy.get('table tbody tr').should('have.length', 15)
     cy.get('table thead th').should('have.length', 4)
   })
-  it('update and delete', () => {
+  it.only('update and delete', () => {
     cy.contains('store_info').click()
 
     // update
@@ -68,7 +68,7 @@ describe('integrations', () => {
     cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('store_info!A20:D21')
     cy.get('button[type=submit]').click()
-    cy.contains('No columns found in the schema.', { timeout: 10000 })
+    cy.contains('No columns found in the schema.', { timeout: BIGQUERY_TIMEOUT })
 
     // check the pending page and navigate back
     cy.visit('/projects/1/integrations')
@@ -83,7 +83,7 @@ describe('integrations', () => {
     cy.contains('Retry').click()
 
     // it fails again
-    cy.contains('No columns found in the schema.', { timeout: 10000 })
+    cy.contains('No columns found in the schema.', { timeout: BIGQUERY_TIMEOUT })
 
     // edit the configuration
     cy.get('#main').within(() => cy.contains('Configure').click())
@@ -91,7 +91,7 @@ describe('integrations', () => {
     cy.get('input[name=cell_range]').clear().type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
 
-    cy.contains('Confirm', { timeout: 10000 }).click()
+    cy.contains('Confirm', { timeout: BIGQUERY_TIMEOUT }).click()
 
     // check the pending page again
     cy.visit('/projects/1/integrations')
@@ -110,7 +110,7 @@ describe('integrations', () => {
     cy.get('input[name=url]').type(SHARED_SHEET)
     cy.get('button[type=submit]').click()
     cy.get('button[type=submit]').click()
-    cy.contains('Confirm', { timeout: 10000 })
+    cy.contains('Confirm', { timeout: BIGQUERY_TIMEOUT })
 
     // make absolute sure that only after approval does row count update
     cy.visit('/teams/2/account')
@@ -130,7 +130,7 @@ describe('integrations', () => {
     cy.get('button[type=submit]').click()
     cy.get('button[type=submit]').click()
 
-    cy.contains('Insufficient rows', { timeout: 10000 })
+    cy.contains('Insufficient rows', { timeout: BIGQUERY_TIMEOUT })
     cy.contains(
       'Adding this data will bring your total rows to 30, which exceeds your row limit of 15.'
     )

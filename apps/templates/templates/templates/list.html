@@ -1,7 +1,10 @@
-{% extends "teams/base.html" %}
 {% load render_table from django_tables2 %}
-{% block tab %}
-  <div class="card card--none">
-    {% render_table table %}
-  </div>
-{% endblock %} 
+
+{% render_table table %}
+
+  <div class="pad pad--sm flex flex-col">
+    <small>
+      <a href="{% url 'team_projects:create' team.id %}" class="link">
+        <i class="fa fa-fw fa-plus mr-2"></i>Blank Project</a>
+    </small>
+  <div>
