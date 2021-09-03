@@ -356,9 +356,10 @@ describe('nodes', () => {
     openModalAndCheckTitle(18, 'Join')
     testHelp('Merge two tables side by side meaning ')
 
-    // TODO: maybe show none selected instead
+    cy.get('select[name=join_left]').select('store_id')
+    cy.get('select[name=join_right]').select('store_id')
     cy.contains('Save & Preview').click()
-    cy.get('#workflows-grid').contains('store_id_1').should('be.visible')
+    cy.get('#workflows-grid').contains('store_id').should('be.visible')
     cy.get('#workflows-grid').contains('revenue').should('be.visible')
   })
 
