@@ -215,9 +215,8 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
         # connector task may have expired, need to check the source
         if self.object.kind == Integration.Kind.CONNECTOR:
             if fivetran_client().has_completed_sync(self.object.source_obj):
-                context_data["done"] = complete_connector_sync(
-                    self.object.source_obj, False
-                )
+                complete_connector_sync(self.object.source_obj, send_mail=False)
+                context_data["done"] = True
         return context_data
 
     def form_valid(self, form):
