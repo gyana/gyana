@@ -2,7 +2,7 @@ from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
 from apps.filters.models import PREDICATE_MAP, Filter
 from django import forms
-from django.forms.widgets import TextInput
+from django.forms.widgets import Input, TextInput
 
 from .widgets import DatetimeInput, SelectAutocomplete
 
@@ -61,7 +61,12 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             "float_values": "Value",
             "bool_value": "Value",
         }
-        widgets = {"string_value": TextInput(), "datetime_value": DatetimeInput()}
+        widgets = {
+            "string_value": TextInput(),
+            "datetime_value": DatetimeInput(),
+            "date_value": type("DateInput", (Input,), {"input_type": "date"}),
+            "time_value": type("TimeInput", (Input,), {"input_type": "time"}),
+        }
 
     def get_live_fields(self):
 
