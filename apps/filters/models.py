@@ -49,10 +49,10 @@ class Filter(CloneMixin, DirtyFieldsMixin, BaseModel):
     class TimePredicate(models.TextChoices):
         ON = "equal", "is"
         NOTON = "nequal", "is not"
-        BEFORE = "greaterthan", "is before"
-        BEFOREON = "greaterthanequal", "is on or before"
-        AFTER = "lessthan", "is after"
-        AFTERON = "lessthanequal", "is on or after"
+        BEFORE = "lessthan", "is before"
+        BEFOREON = "lessthanequal", "is on or before"
+        AFTER = "greaterthan", "is after"
+        AFTERON = "greaterthanequal", "is on or after"
         ISNULL = "isnull", "is empty"
         NOTNULL = "notnull", "is not empty"
 
