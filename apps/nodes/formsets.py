@@ -1,6 +1,7 @@
 # fmt: off
 from apps.base.formsets import InlineColumnFormset
 from apps.base.live_update_form import LiveUpdateForm
+from apps.base.schema_form_mixin import SchemaFormMixin
 from apps.columns.forms import (AddColumnForm, FormulaColumnForm,
                                 FunctionColumnForm, OperationColumnForm,
                                 WindowColumnForm)
@@ -79,7 +80,14 @@ FormulaColumnFormSet = forms.inlineformset_factory(
 RenameColumnFormSet = forms.inlineformset_factory(
     Node,
     RenameColumn,
-    form=LiveUpdateForm,
+    form=type(
+        "RenameColumnForm",
+        (
+            SchemaFormMixin,
+            LiveUpdateForm,
+        ),
+        {},
+    ),
     fields=("column", "new_name"),
     can_delete=True,
     extra=0,
