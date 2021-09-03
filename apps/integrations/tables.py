@@ -74,6 +74,7 @@ class IntegrationPendingTable(Table):
     kind = Column(accessor="display_kind")
     created = NaturalDatetimeColumn(verbose_name="Started")
     state = PendingStatusColumn()
+    pending_deletion = NaturalDatetimeColumn(verbose_name="Expires")
 
 
 class StructureTable(Table):

@@ -15,8 +15,11 @@
     align-items: center;
     border-radius: 5px;
     display: flex;
-    padding: 0 0.4rem;
     min-height: 32px;
+    
+    > :first-child {
+      padding: 0 0.4rem;
+    }
 
     &--interactive {
       &:hover {

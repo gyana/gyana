@@ -3,27 +3,25 @@
 
 {% block app %}
 
-<div class="flex flex-row flex-1 overflow-hidden">
-  <div class='flex flex-col flex-1 overflow-auto'>
-    <h2 class="pad">Connect to data in a Google Sheet</h2>
-
-    <div class='flex flex-col flex-1'>
-      <div class="pad" id='create-container'>
-        <form id="create-form" method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
-          {% csrf_token %}
-
-          {% include "django/forms/default_form.html" %}
-
-          <button type="submit" class="button button--success">
-            Create
-          </button>
-        </form>
-      </div>
+<div class="flex flex-1 justify-center items-center">
+  <div class="flex flex-col max-w-xl">
+    <div class="flex flex-col text-center mb-7">
+      <h1>Connect a Google Sheet</h1>
+      <p></p>
     </div>
-  </div>
 
-  <div class='flex flex-shrink-0 h-full'>
-    {% include 'sheets/_guide.html' %}
+    <p>
+      Share the google sheet you want to connect with the following email:
+      <pre>{{ service_account }}</pre>
+    </p>
+
+    <form method="post" class="mt-7">
+      {% csrf_token %}
+
+      {% include "django/forms/default_form.html" %}
+
+      <button type="submit" class="button button--filled button--success w-full">Create</button>
+    </form>
   </div>
 </div>
 

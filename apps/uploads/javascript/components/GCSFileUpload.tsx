@@ -75,8 +75,8 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
                   <h4>{progress}%</h4>
                 </div>
                 <div>
-                  <h1>Uploading your file...</h1>
-                  <p>Uploading the file might take a while, make sure to stay on the page.</p>
+                  {/* <p>Uploading the file might take a while, make sure to stay on the page.</p> */}
+                  <p>Stay on the page during upload.</p>
                 </div>
               </>
             ) : stage === 'done' ? (

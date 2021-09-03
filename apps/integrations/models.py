@@ -6,6 +6,7 @@ from apps.users.models import CustomUser
 from apps.workflows.models import Workflow
 from django.db import models
 from django.urls import reverse
+from datetime import timedelta
 from model_clone.mixins.clone import CloneMixin
 
 
@@ -50,6 +51,10 @@ class Integration(CloneMixin, BaseModel):
     @property
     def last_synced(self):
         return getattr(self, self.kind).last_synced
+
+    @property
+    def pending_deletion(self):
+        return self.created + timedelta(days=7)
 
     @property
     def used_in_workflows(self):
