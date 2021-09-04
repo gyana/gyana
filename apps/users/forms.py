@@ -1,8 +1,9 @@
+import analytics
 from allauth.account.forms import LoginForm
 from django import forms
 from django.contrib.auth.forms import UserChangeForm
 
-from apps.base.analytics import identify_user
+from apps.base.analytics import ONBOARDING_COMPLETED_EVENT, identify_user
 
 from .models import CustomUser
 
@@ -24,7 +25,12 @@ class UserOnboardingForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.onboarded = True
-        instance.save()
+
+        if commit:
+            instance.save()
+            self.save_m2m()
+
+        analytics.track(instance.id, ONBOARDING_COMPLETED_EVENT)
 
         return instance
 

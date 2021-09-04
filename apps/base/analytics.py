@@ -7,6 +7,7 @@ import analytics
 
 # General
 SIGNED_UP_EVENT: Final = "Signed up"
+ONBOARDING_COMPLETED_EVENT: Final = "Onboarding completed"
 APPSUMO_CODE_REDEEMED_EVENT: Final = "AppSumo code redeemed"
 TEAM_CREATED_EVENT: Final = "Team created"
 PROJECT_CREATED_EVENT: Final = "Project created"
