@@ -138,7 +138,7 @@ class AppsumoSignupForm(SignupForm):
 
         analytics.track(user.id, APPSUMO_CODE_REDEEMED_EVENT)
         analytics.track(user.id, TEAM_CREATED_EVENT)
-        identify_user_group(self._user, team)
+        identify_user_group(user, team)
 
         return user
 

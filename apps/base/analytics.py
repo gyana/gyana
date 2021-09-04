@@ -60,7 +60,7 @@ def identify_user(user: CustomUser):
 
 
 def identify_user_group(user: CustomUser, team):
-    analytics.identify(
+    analytics.group(
         user.id,
         team.id,
         {"name": team.name},
