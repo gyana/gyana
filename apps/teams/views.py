@@ -1,3 +1,4 @@
+import analytics
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
@@ -9,6 +10,7 @@ from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableView
 
+from apps.base.analytics import TEAM_CREATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 
@@ -29,6 +31,8 @@ class TeamCreate(LoginRequiredMixin, TurboCreateView):
             form.instance.members.add(
                 self.request.user, through_defaults={"role": "admin"}
             )
+
+        analytics.track(self.request.user.id, TEAM_CREATED_EVENT)
 
         return super().form_valid(form)
 

@@ -1,5 +1,10 @@
+import analytics
 from allauth.account.forms import SignupForm
-from apps.base.analytics import identify_user
+from apps.base.analytics import (
+    APPSUMO_CODE_REDEEMED_EVENT,
+    TEAM_CREATED_EVENT,
+    identify_user,
+)
 from apps.teams.models import Team
 from django import forms
 from django.core.exceptions import ValidationError
@@ -56,6 +61,9 @@ class AppsumoRedeemNewTeamForm(forms.ModelForm):
                 self.save_m2m()
                 team.members.add(self._user, through_defaults={"role": "admin"})
 
+        analytics.track(self._user.id, APPSUMO_CODE_REDEEMED_EVENT)
+        analytics.track(self._user.id, TEAM_CREATED_EVENT)
+
         return instance
 
 
@@ -80,6 +88,8 @@ class AppsumoRedeemForm(forms.ModelForm):
             with transaction.atomic():
                 instance.save()
                 self.save_m2m()
+
+        analytics.track(self._user.id, APPSUMO_CODE_REDEEMED_EVENT)
 
         return instance
 
@@ -123,6 +133,9 @@ class AppsumoSignupForm(SignupForm):
             appsumo_code.redeemed = timezone.now()
             appsumo_code.redeemed_by = user
             appsumo_code.save()
+
+        analytics.track(user.id, APPSUMO_CODE_REDEEMED_EVENT)
+        analytics.track(user.id, TEAM_CREATED_EVENT)
 
         return user
 

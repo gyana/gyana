@@ -1,11 +1,14 @@
 from typing import Final
 
-import analytics
 from apps.nodes.models import Node
 from apps.users.models import CustomUser
 
+import analytics
+
 # General
 SIGNED_UP_EVENT: Final = "Signed up"
+APPSUMO_CODE_REDEEMED_EVENT: Final = "AppSumo code redeemed"
+TEAM_CREATED_EVENT: Final = "Team created"
 PROJECT_CREATED_EVENT: Final = "Project created"
 
 # Integrations
