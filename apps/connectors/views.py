@@ -6,7 +6,9 @@ from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 
-from apps.base.analytics import INTEGRATION_CREATED_EVENT, NEW_INTEGRATION_START_EVENT
+from apps.base.analytics import (INTEGRATION_AUTHORIZED_EVENT,
+                                 INTEGRATION_CREATED_EVENT,
+                                 NEW_INTEGRATION_START_EVENT)
 from apps.base.clients import fivetran_client
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
@@ -78,6 +80,17 @@ class ConnectorAuthorize(ProjectMixin, DetailView):
         self.object = self.get_object()
         self.object.fivetran_authorized = True
         self.object.save()
+
+        analytics.track(
+            self.request.user.id,
+            INTEGRATION_AUTHORIZED_EVENT,
+            {
+                "id": self.object.integration.id,
+                "type": Integration.Kind.CONNECTOR,
+                "name": self.object.integration.name,
+            },
+        )
+
         return redirect(
             reverse(
                 "project_integrations:configure",

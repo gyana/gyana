@@ -26,6 +26,8 @@ TEMPLATE_COMPLETED_EVENT: Final = "Template completed"
 # integrations
 NEW_INTEGRATION_START_EVENT: Final = "New integration started"
 INTEGRATION_CREATED_EVENT: Final = "Integration created"
+INTEGRATION_AUTHORIZED_EVENT: Final = "Integration authorized"
+INTEGRATION_SYNC_STARTED_EVENT: Final = "Integration sync started"
 INTEGRATION_SYNC_SUCCESS_EVENT: Final = "Integration sync succeeded"
 
 # workflows
