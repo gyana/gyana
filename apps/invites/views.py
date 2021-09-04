@@ -1,5 +1,6 @@
 from datetime import timezone
 
+import analytics
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponseRedirect
 from django.urls import reverse
@@ -7,9 +8,10 @@ from django.utils.crypto import get_random_string
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
-from apps.base.turbo import TurboCreateView, TurboUpdateView
-from apps.base.frames import TurboFrameListView
 
+from apps.base.analytics import INVITE_SENT_EVENT
+from apps.base.frames import TurboFrameListView
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 
 from .forms import InviteForm, InviteUpdateForm
@@ -47,6 +49,7 @@ class InviteCreate(TeamMixin, TurboCreateView):
         form.save()
 
         form.instance.send_invitation(self.request)
+        analytics.track(self.request.user.id, INVITE_SENT_EVENT)
 
         return super().form_valid(form)
 
