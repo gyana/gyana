@@ -186,9 +186,9 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
             self.request.user.id,
             INTEGRATION_SYNC_STARTED_EVENT,
             {
-                "id": self.integration.id,
-                "type": self.integration.kind,
-                "name": self.integration.name,
+                "id": self.object.id,
+                "type": self.object.kind,
+                "name": self.object.name,
             },
         )
         return HttpResponseRedirect(self.get_success_url())

@@ -15,7 +15,7 @@ describe('users', () => {
     cy.url().should('contain', '/teams/4')
   })
 
-  it.only('signs up to app with onboarding', () => {
+  it('signs up to app with onboarding', () => {
     cy.visit('/accounts/signup')
     cy.contains('Sign Up Closed')
 
