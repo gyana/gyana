@@ -13,7 +13,7 @@ from .models import CustomUser
 
 
 def appsumo_oauth2_login(request, *args, **kwargs):
-    request.session["socialaccount_appsumo"] = True
+    request.session["socialaccount_appsumo"] = "appsumo" in request.GET
     return oauth2_login(request, *args, **kwargs)
 
 
