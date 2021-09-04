@@ -25,6 +25,14 @@ class Team(BaseModel):
     row_count = models.BigIntegerField(default=0)
     row_count_calculated = models.DateTimeField(null=True)
 
+    def save(self, *args, **kwargs):
+        from .bigquery import create_team_dataset
+
+        create = not self.pk
+        super().save(*args, **kwargs)
+        if create:
+            create_team_dataset(self)
+
     def update_row_count(self):
         from apps.tables.models import Table
 

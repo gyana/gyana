@@ -6,9 +6,9 @@ from . import frames, views
 
 app_name = "appsumo"
 urlpatterns = [
-    path("signup/<slug:code>", views.AppsumoSignup.as_view(), name="signup"),
+    path("<slug:code>/signup", views.AppsumoSignup.as_view(), name="signup"),
     path(
-        "redeem/<slug:code>",
+        "<slug:code>/redeem",
         login_required(views.AppsumoRedeem.as_view()),
         name="redeem",
     ),

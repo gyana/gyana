@@ -10,7 +10,6 @@ from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableView
 
 from apps.base.turbo import TurboCreateView, TurboUpdateView
-from apps.teams.bigquery import create_team_dataset
 from apps.teams.mixins import TeamMixin
 
 from .forms import MembershipUpdateForm, TeamCreateForm, TeamUpdateForm
@@ -26,11 +25,10 @@ class TeamCreate(LoginRequiredMixin, TurboCreateView):
     def form_valid(self, form: forms.Form) -> HttpResponse:
 
         with transaction.atomic():
-            team = form.save()
+            form.save()
             form.instance.members.add(
                 self.request.user, through_defaults={"role": "admin"}
             )
-            create_team_dataset(team)
 
         return super().form_valid(form)
 
