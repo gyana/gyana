@@ -27,11 +27,12 @@
     </a>
   </p>
 
-  <p class="text-center">
+  {% comment %} Signup is disabled, uncomment when freemium is live {% endcomment %}
+  {% comment %} <p class="text-center">
     No account yet? No problem,
     <a class="link" href="{% url 'account_signup' %}">
       create one here!
     </a>
-  </p>
+  </p> {% endcomment %}
 </section>
 {% endblock %}

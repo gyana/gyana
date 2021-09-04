@@ -15,48 +15,51 @@ describe('users', () => {
     cy.url().should('contain', '/teams/4')
   })
 
-  it('signs up to app with onboarding', () => {
-    cy.visit('/')
+  it.only('signs up to app with onboarding', () => {
+    cy.visit('/accounts/signup')
+    cy.contains('Sign Up Closed')
 
-    cy.contains('create one here').click()
-    cy.url().should('contain', '/accounts/signup')
+    // signup is disabled, uncomment when freemium is live
 
-    cy.get('input[type=email]').type('new@gyana.com')
-    cy.get('input[type=password]').type('seewhatmatters')
-    cy.get('button[type=submit]').click()
-    cy.url().should('contain', '/users/onboarding')
+    // cy.contains('create one here').click()
+    // cy.url().should('contain', '/accounts/signup')
 
-    // remove message blocking the form
-    cy.get('.fa-times').first().click()
-    // onboarding
-    // cy.get('input[name=first_name]').type('New')
-    // cy.get('input[name=last_name]').type('User')
-    cy.get('select[name=company_industry]').select('Agency')
-    cy.get('select[name=company_role]').select('Marketing')
-    cy.get('select[name=company_size]').select('2-10')
-    cy.get('button[type=submit]').click()
-    cy.url().should('contain', '/teams/new')
+    // cy.get('input[type=email]').type('new@gyana.com')
+    // cy.get('input[type=password]').type('seewhatmatters')
+    // cy.get('button[type=submit]').click()
+    // cy.url().should('contain', '/users/onboarding')
 
-    cy.get('input[type=text]').type('New')
-    cy.get('button[type=submit]').click()
-    cy.url().should('contain', `/teams/${newTeamId}`)
+    // // remove message blocking the form
+    // cy.get('.fa-times').first().click()
+    // // onboarding
+    // // cy.get('input[name=first_name]').type('New')
+    // // cy.get('input[name=last_name]').type('User')
+    // cy.get('select[name=company_industry]').select('Agency')
+    // cy.get('select[name=company_role]').select('Marketing')
+    // cy.get('select[name=company_size]').select('2-10')
+    // cy.get('button[type=submit]').click()
+    // cy.url().should('contain', '/teams/new')
 
-    // verification email
-    cy.outbox()
-      .then((outbox) => outbox.count)
-      .should('eq', 1)
+    // cy.get('input[type=text]').type('New')
+    // cy.get('button[type=submit]').click()
+    // cy.url().should('contain', `/teams/${newTeamId}`)
 
-    cy.outbox().then((outbox) => {
-      const msg = outbox['messages'][0]
-      const url = msg['payload']
-        .split('\n')
-        .filter((x) => x.includes('http'))[0]
-        .replace('To confirm this is correct, go to ', '')
+    // // verification email
+    // cy.outbox()
+    //   .then((outbox) => outbox.count)
+    //   .should('eq', 1)
 
-      cy.visit(url)
+    // cy.outbox().then((outbox) => {
+    //   const msg = outbox['messages'][0]
+    //   const url = msg['payload']
+    //     .split('\n')
+    //     .filter((x) => x.includes('http'))[0]
+    //     .replace('To confirm this is correct, go to ', '')
 
-      cy.contains('You have confirmed new@gyana.com')
-    })
+    //   cy.visit(url)
+
+    //   cy.contains('You have confirmed new@gyana.com')
+    // })
   })
 
   it('resets password', () => {
