@@ -1,10 +1,10 @@
 {% extends "web/app/project_base.html" %}
+{% load help_utils %}
 
 {% block app %}
 <div class="page-header">
   <div class="mr-auto">
-    <h1>Integrations</h1>
-
+    <h1>Integrations {% link_article 'overview' 'integrations' %}</h1>
     <p>A source of data, like a CSV file, Google Sheet, ads account, database, or web app.</p>
   </div>
 

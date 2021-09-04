@@ -18,4 +18,4 @@ def get_articles():
 @register.inclusion_tag("components/link_article.html")
 def link_article(collection: str, name: str):
     # will error if does not exist (deliberate)
-    return {"article_url": INTERCOM_ROOT / get_articles()["collection"]["name"]}
+    return {"article_url": INTERCOM_ROOT / get_articles()[collection][name]}
