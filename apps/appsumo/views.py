@@ -89,12 +89,12 @@ class AppsumoRedeem(TurboUpdateView):
     slug_field = "code"
     template_name = "appsumo/redeem.html"
 
+    @property
+    def team_exists(self):
+        return self.request.user.teams.count()
+
     def get_form_class(self):
-        return (
-            AppsumoRedeemForm
-            if hasattr(self.object.code, "team")
-            else AppsumoRedeemNewTeamForm
-        )
+        return AppsumoRedeemForm if self.team_exists > 0 else AppsumoRedeemNewTeamForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

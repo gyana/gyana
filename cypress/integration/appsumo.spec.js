@@ -32,7 +32,6 @@ describe('appsumo', () => {
     cy.contains('your account for').click()
     cy.url().should('contain', 'teams/1/account')
   })
-
   it('signup with code', () => {
     cy.visit(`/appsumo/${NOT_REDEEMED}`)
 
@@ -57,7 +56,7 @@ describe('appsumo', () => {
 
     cy.url().should('contain', `/teams/${newTeamId}`)
   })
-  it('redeem code on existing account', () => {
+  it('redeem code on existing account and teams', () => {
     cy.login()
     cy.visit(`/appsumo/${NOT_REDEEMED}`)
 
@@ -67,7 +66,19 @@ describe('appsumo', () => {
     cy.get('select[name=team]').select('Vayu')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', '/teams/1')
+    cy.url().should('contain', '/teams')
+  })
+  it('redeem code on existing account and no teams', () => {
+    cy.login('alone@gyana.com')
+    cy.visit(`/appsumo/${NOT_REDEEMED}`)
+
+    cy.url().should('contain', `/appsumo/redeem/${NOT_REDEEMED}`)
+    cy.contains(`Reedem AppSumo code ${NOT_REDEEMED}.`)
+
+    cy.get('input[name=team_name]').type('New team')
+    cy.get('button[type=submit]').click()
+
+    cy.url().should('contain', '/teams')
   })
   it('stack and refund', () => {
     cy.login()
@@ -89,7 +100,6 @@ describe('appsumo', () => {
     // refund a code
     cy.logout()
     cy.login('admin@gyana.com')
-
     cy.visit('/admin/appsumo/refundedcodes/add')
     cy.get('input[type=file]').attachFile('appsumo_refunded.csv')
     cy.get('input[name=downloaded_0]').type('2021-08-24')
