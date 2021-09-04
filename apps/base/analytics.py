@@ -42,10 +42,7 @@ DASHBOARD_DUPLICATED_EVENT: Final = "Dashboard duplicated"
 WIDGET_CREATED_EVENT: Final = "Widget created"
 WIDGET_DUPLICATED_EVENT: Final = "Widget duplicated"
 WIDGET_CONFIGURED_EVENT: Final = "Widget configured"
-
-# TODO:
-#
-# Share dashboard
+DASHBOARD_SHARED_PUBLIC_EVENT: Final = "Dashboard shared public"
 
 
 def identify_user(user: CustomUser):

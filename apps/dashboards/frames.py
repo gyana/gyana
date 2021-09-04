@@ -1,5 +1,7 @@
 import uuid
 
+import analytics
+from apps.base.analytics import DASHBOARD_SHARED_PUBLIC_EVENT
 from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
 from django.urls.base import reverse
 
@@ -26,6 +28,13 @@ class DashboardShare(TurboFrameUpdateView):
         else:
             self.object.shared_status = Dashboard.SharedStatus.PRIVATE
         self.object.save()
+
+        if self.object.shared_status == Dashboard.SharedStatus.PUBLIC:
+            analytics.track(
+                self.request.user.id,
+                DASHBOARD_SHARED_PUBLIC_EVENT,
+                {"id": self.object.id},
+            )
         return r
 
     def get_success_url(self) -> str:
