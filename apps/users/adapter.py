@@ -5,6 +5,27 @@ from allauth.account.utils import user_email, user_field
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 
 
+class UsersAccountAdapter(DefaultAccountAdapter):
+    def is_open_for_signup(self, request):
+        """
+        Checks whether or not the site is open for signups.
+
+        Next to simply returning True/False you can also intervene the
+        regular flow by raising an ImmediateHttpResponse
+
+        (Comment reproduced from the overridden method.)
+        """
+        # for the invitations app, see
+        # https://github.com/bee-keeper/django-invitations/blob/master/invitations/models.py#L76
+        if hasattr(request, "session") and request.session.get(
+            "account_verified_email"
+        ):
+            return True
+
+        # only signup via AppSumo after code is validated
+        return "code" in request.resolver_match.kwargs
+
+
 # Taken from https://stackoverflow.com/a/30591838
 # Longer discussion on the topic:
 # - https://github.com/pennersr/django-allauth/issues/215
