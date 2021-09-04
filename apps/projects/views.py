@@ -30,7 +30,6 @@ class ProjectCreate(TeamMixin, TurboCreateView):
         analytics.track(
             self.request.user.id, PROJECT_CREATED_EVENT, {"id": form.instance.id}
         )
-
         return redirect
 
 
