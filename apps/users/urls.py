@@ -27,5 +27,10 @@ accounts_urlpatterns = [
         {"exception": Exception("Not Found")},
         name="account_email",
     ),
+    path(
+        "google/login/",
+        views.appsumo_oauth2_login,
+        name="google_login",
+    ),
     path("", include("turbo_allauth.urls")),
 ]
