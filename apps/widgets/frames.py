@@ -6,7 +6,7 @@ from apps.base.frames import (
     TurboFrameFormsetUpdateView,
     TurboFrameListView,
 )
-from apps.base.segment_analytics import WIDGET_CONFIGURED_EVENT
+from apps.base.analytics import WIDGET_CONFIGURED_EVENT
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, table_to_output

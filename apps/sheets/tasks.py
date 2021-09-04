@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import analytics
-from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
+from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.base.time import catchtime
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration

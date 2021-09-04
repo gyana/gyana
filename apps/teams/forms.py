@@ -3,7 +3,7 @@ from allauth.account.forms import SignupForm
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from apps.base.segment_analytics import SIGNED_UP_EVENT, identify_user
+from apps.base.analytics import SIGNED_UP_EVENT, identify_user
 
 from .models import Membership, Team
 

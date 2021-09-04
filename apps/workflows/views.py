@@ -1,5 +1,5 @@
 import analytics
-from apps.base.segment_analytics import (
+from apps.base.analytics import (
     WORKFLOW_CREATED_EVENT,
     WORKFLOW_DUPLICATED_EVENT,
 )

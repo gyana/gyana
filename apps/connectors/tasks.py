@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from apps.base.clients import fivetran_client
-from apps.base.segment_analytics import INTEGRATION_SYNC_SUCCESS_EVENT
+from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.connectors.config import get_services
 from apps.connectors.models import Connector
 from apps.integrations.emails import integration_ready_email

@@ -1,5 +1,5 @@
 from apps.base.frames import TurboFrameFormsetUpdateView, TurboFrameUpdateView
-from apps.base.segment_analytics import NODE_UPDATED_EVENT, track_node
+from apps.base.analytics import NODE_UPDATED_EVENT, track_node
 from apps.base.table_data import get_table
 from apps.base.templates import template_exists
 from django import forms

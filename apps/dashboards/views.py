@@ -1,5 +1,5 @@
 import analytics
-from apps.base.segment_analytics import (
+from apps.base.analytics import (
     DASHBOARD_CREATED_EVENT,
     DASHBOARD_DUPLICATED_EVENT,
 )

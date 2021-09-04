@@ -1,6 +1,6 @@
 import analytics
 from apps.base.clients import fivetran_client
-from apps.base.segment_analytics import (
+from apps.base.analytics import (
     INTEGRATION_CREATED_EVENT,
     NEW_INTEGRATION_START_EVENT,
 )

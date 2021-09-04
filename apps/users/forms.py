@@ -2,7 +2,7 @@ from allauth.account.forms import LoginForm
 from django import forms
 from django.contrib.auth.forms import UserChangeForm
 
-from apps.base.segment_analytics import identify_user
+from apps.base.analytics import identify_user
 
 from .models import CustomUser
 
@@ -41,8 +41,8 @@ class UserLoginForm(LoginForm):
     def __init__(self, *args, **kwargs):
         super(UserLoginForm, self).__init__(*args, **kwargs)
 
-        del self.fields['login'].widget.attrs['placeholder']
-        del self.fields['password'].widget.attrs['placeholder']
+        del self.fields["login"].widget.attrs["placeholder"]
+        del self.fields["password"].widget.attrs["placeholder"]
 
     def login(self, *args, **kwargs):
         identify_user(self.user)
