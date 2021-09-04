@@ -57,6 +57,14 @@ def identify_user(user: CustomUser):
     )
 
 
+def identify_user_group(user: CustomUser, team):
+    analytics.identify(
+        user.id,
+        team.id,
+        {"name": team.name},
+    )
+
+
 def track_node(user: CustomUser, node: Node, track_id: str, **kwargs):
     """Sends tracking event with default fields. Allows for kwargs to be added as additional properties"""
     analytics.track(

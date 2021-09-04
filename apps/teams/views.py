@@ -10,7 +10,7 @@ from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableView
 
-from apps.base.analytics import TEAM_CREATED_EVENT
+from apps.base.analytics import TEAM_CREATED_EVENT, identify_user_group
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 
@@ -33,6 +33,7 @@ class TeamCreate(LoginRequiredMixin, TurboCreateView):
             )
 
         analytics.track(self.request.user.id, TEAM_CREATED_EVENT)
+        identify_user_group(self._user, self.object)
 
         return super().form_valid(form)
 

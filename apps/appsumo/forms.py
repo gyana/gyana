@@ -4,6 +4,7 @@ from apps.base.analytics import (
     APPSUMO_CODE_REDEEMED_EVENT,
     TEAM_CREATED_EVENT,
     identify_user,
+    identify_user_group,
 )
 from apps.teams.models import Team
 from django import forms
@@ -63,6 +64,7 @@ class AppsumoRedeemNewTeamForm(forms.ModelForm):
 
         analytics.track(self._user.id, APPSUMO_CODE_REDEEMED_EVENT)
         analytics.track(self._user.id, TEAM_CREATED_EVENT)
+        identify_user_group(self._user, team)
 
         return instance
 
@@ -136,6 +138,7 @@ class AppsumoSignupForm(SignupForm):
 
         analytics.track(user.id, APPSUMO_CODE_REDEEMED_EVENT)
         analytics.track(user.id, TEAM_CREATED_EVENT)
+        identify_user_group(self._user, team)
 
         return user
 
