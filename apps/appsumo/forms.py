@@ -1,4 +1,5 @@
 from allauth.account.forms import SignupForm
+from apps.base.segment_analytics import identify_user
 from apps.teams.models import Team
 from django import forms
 from django.core.exceptions import ValidationError
@@ -111,6 +112,7 @@ class AppsumoSignupForm(SignupForm):
     def save(self, request):
         with transaction.atomic():
             user = super().save(request)
+            identify_user(user)
 
             team = Team(name=self.cleaned_data["team"])
             team.save()
