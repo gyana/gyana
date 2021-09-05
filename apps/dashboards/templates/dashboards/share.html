@@ -1,3 +1,5 @@
+{% load help_utils %}
+
 <div
   data-controller='tooltip popover'
   data-popover-dont-hide-body-value="{{dont_hide_body}}"
@@ -12,7 +14,8 @@
     {% elif object.shared_status == 'public' %}<i class='far fa-fw fa-eye'></i>
     {% endif %}
   </button>
-  <div data-popover-target="body" class="popover-body shadow-sm card card--sm">
+  <div data-popover-target="body" class="popover-body shadow-sm card card--sm"> 
+    {% link_article 'dashboards' 'share' %}
     <p>This dashboard is currently {{object.shared_status }}.</p>
 
     <form method="post" action="{% url 'dashboards:share' object.id %}">
@@ -44,6 +47,7 @@
       {% endif %}
 
     </form>
+    
   </div>
   <span data-tooltip-target="body">Share dashboard</span>
 </div>

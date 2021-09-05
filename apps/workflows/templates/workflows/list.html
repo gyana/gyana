@@ -1,11 +1,11 @@
 {% extends "web/app/project_base.html" %}
 {% load render_table from django_tables2 %}
+{% load help_utils %}
 
 {% block app %}
-
 <div class="page-header">
   <div class="mr-auto">
-    <h1>Workflows</h1>
+    <h1>Workflows {% link_article 'overview' 'workflows' %}</h1>
 
     <p>
       A visual editor to clean, transform, and analyse your data.

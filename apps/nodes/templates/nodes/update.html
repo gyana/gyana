@@ -1,3 +1,5 @@
+{% load help_utils %}
+
 {% with parents=node.parents.all %}
 
 {% if node.kind == "input" or node.has_enough_parents %}
@@ -6,6 +8,11 @@
     <turbo-frame id="node-editable-title">
       {% include 'nodes/name.html' %}
     </turbo-frame>
+    <div class="ml-auto">
+      {% if node.kind != "input" and node.kind != "output" %}
+        {% link_article 'workflows' node.kind %}
+      {% endif %}
+    </div>
   </div>
 
   <form id="node-update-form"

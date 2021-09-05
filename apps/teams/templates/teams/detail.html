@@ -1,9 +1,10 @@
 {% extends "teams/base.html" %}
 {% load humanize %}
 {% load render_table from django_tables2 %}
+{% load help_utils %}
 
 {% block tab %}
-<h2>Create Project</h2>
+<h2>Create Project {% link_article 'overview' 'templates' %}</h2>
 <p class="mb-3">Use one of our pre-made projects to get started quickly.</p>
 <div class="card card--none mb-7">
   <turbo-frame
@@ -18,7 +19,7 @@
   </div>
 </turbo-frame>
 
-<h2 class="mb-3">Your Projects</h2>
+<h2 class="mb-3">Your Projects {% link_article 'overview' 'collaborate' %}</h2>
 <div class="card card--none">
   {% render_table team_projects %}
 

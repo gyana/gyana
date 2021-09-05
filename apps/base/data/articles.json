@@ -9,11 +9,11 @@
     "transition": "5548529-transition-guide"
   },
   "integrations": {
-    "overview": "articles/5548599-integrations-overview",
-    "csv": "articles/5548533-csv",
-    "sheets": "articles/5548532-google-sheets",
-    "connectors": "articles/5548540-connectors",
-    "broken": "5548601-my-integration-isn-t-working"
+    "overview": "5548599-integrations-overview",
+    "upload": "5548533-csv",
+    "sheet": "5548532-google-sheets",
+    "connector": "5548540-connectors",
+    "error": "5548601-my-integration-isn-t-working"
   },
   "workflows": {
     "overview": "5548602-workflow-overview",

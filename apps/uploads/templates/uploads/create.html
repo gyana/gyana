@@ -1,5 +1,6 @@
 {% extends "web/app/project_settings_base.html" %}
 {% load static %}
+{% load help_utils %}
 
 {% block app %}
 
@@ -7,7 +8,7 @@
   <div class='flex flex-col flex-1 max-w-xl'>
 
     <div class="flex flex-col text-center mb-7">
-      <h1>Upload a CSV file</h1>
+      <h1>Upload a CSV file {% link_article 'integrations' 'upload' %}</h1>
     </div>
         
     <div class="flex flex-1 justify-center items-center" id='create-container'>
