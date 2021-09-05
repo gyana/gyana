@@ -4,44 +4,7 @@
 {% load team_tags %}
 
 {% block app %}
-
 {% if team.id %}
-
-  {% if team.warning %}
-    <div class="relative bg-orange">
-      <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
-        <div class="pr-16 sm:text-center sm:px-16">
-          <p class="font-medium text-white">
-            <span class="inline">
-              You're exceeding your row count limit.
-            </span>
-            <span class="block sm:ml-2 sm:inline-block">
-              <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
-            </span>
-          </p>
-        </div>
-      </div>
-    </div>
-  {% endif %}
-
-  {% if not team.enabled %}
-    <div class="relative bg-red">
-      <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
-        <div class="pr-16 sm:text-center sm:px-16">
-          <p class="font-medium text-white">
-            <span class="inline">
-              You've exceeded your row count limit by over 20%, your team is temporarily disabled.
-            </span>
-            <span class="block sm:ml-2 sm:inline-block">
-              <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
-            </span>
-          </p>
-        </div>
-      </div>
-    </div>
-  {% endif %}
-
-
   <div id="heading" class="workflow-detail__header">
     <h3 class="mr-auto flex justify-center items-center">
       {{ team.name }}

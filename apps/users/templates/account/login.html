@@ -5,11 +5,13 @@
 {% block content %}
 <section>
   <a class="button button--primary button--outline button--google w-full" href="{% provider_login_url 'google' %}">
-    <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
+    <img class="mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
     Sign in with Google
   </a>
+
   <p class="text-center text-black-50 my-4">or</p>
-  <form class="mb-8" method="post">
+
+  <form class="mb-4" method="post">
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}
@@ -23,7 +25,7 @@
 
   <p class="text-center">
     <a class="link" href="{% url 'account_reset_password' %}">
-      Forgot password?
+      Forgot your password?
     </a>
   </p>
 

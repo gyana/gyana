@@ -1,0 +1,32 @@
+$banner-colors: (
+  "primary": var(--c-blue),
+  "warning": var(--c-orange),
+  "danger": var(--c-red),
+  "success": var(--c-green),
+) !default;
+
+.banner {
+  --background-color: var(--c-white);
+  --color: var(--c-black-50);
+
+  align-items: center;
+  background-color: var(--background-color);
+  color: var(--color);
+  display: flex;
+  font-weight: 500;
+  height: 3.6rem;
+  justify-content: center;
+  text-align: center;
+  
+  // color variant generation
+  @each $color, $value in $banner-colors {
+    &--#{$color} {
+      --background-color: #{$value};
+      --color: var(--c-white);
+    }
+  }
+
+  a {
+    font-weight: 900;
+  }
+}
