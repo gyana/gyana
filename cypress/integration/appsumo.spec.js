@@ -80,7 +80,7 @@ describe('appsumo', () => {
 
     cy.url().should('contain', '/teams')
   })
-  it('stack and refund', () => {
+  it('stack and refund including credits', () => {
     cy.login()
 
     cy.visit('/teams/1/appsumo')
@@ -96,6 +96,8 @@ describe('appsumo', () => {
     cy.visit('/teams/1/account')
     // 2 codes = 2M rows
     cy.contains('2,000,000')
+    // 2 codes = 20k credits
+    cy.contains('20,000')
 
     // refund a code
     cy.logout()
@@ -112,6 +114,8 @@ describe('appsumo', () => {
     cy.visit('/teams/1/account')
     // 1 active codes = 1M rows
     cy.contains('1,000,000')
+    // 1 code = 10k credits
+    cy.contains('10,000')
   })
   it('link to review', () => {
     cy.login()

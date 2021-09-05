@@ -91,6 +91,12 @@ class Team(BaseModel):
         return rows
 
     @property
+    def credits(self):
+        from apps.appsumo.account import get_deal
+
+        return get_deal(self.appsumocode_set)["credits"]
+
+    @property
     def admins(self):
         return self.members.filter(membership__role=roles.ROLE_ADMIN)
 
