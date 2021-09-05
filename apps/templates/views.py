@@ -28,6 +28,13 @@ class TemplateList(TeamMixin, SingleTableView, TurboFrameListView):
     paginate_by = 20
     turbo_frame_dom_id = "templates:list"
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        context_data["templates"] = Template.objects.all()
+
+        return context_data
+
 
 class TemplateInstanceCreate(TeamMixin, TurboCreateView):
     template_name = "templateinstances/create.html"

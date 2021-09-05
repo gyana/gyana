@@ -4,22 +4,21 @@
 {% load help_utils %}
 
 {% block tab %}
-<h2>Create Project {% link_article 'overview' 'templates' %}</h2>
-<p class="mb-3">Use one of our pre-made projects to get started quickly.</p>
-<div class="card card--none mb-7">
-  <turbo-frame
-    id="templates:list"
-    src="{% url 'team_templates:list' team.id %}"
-    target="_top"
-  >
-    <div class='placeholder-scr placeholder-scr--fillscreen'>
-      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-      <p class='placeholder-scr__title'>Loading templates...</p>
-    </div>
+<h2 class="flex gap-3 items-center">Create a new project {% link_article 'overview' 'templates' %}</h2>
+<p class="mb-3">Use a blank project or choose a template to get you started.</p>
+
+<turbo-frame
+  id="templates:list"
+  src="{% url 'team_templates:list' team.id %}"
+  target="_top"
+>
+  <div class='placeholder-scr placeholder-scr--fillscreen'>
+    <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+    <p class='placeholder-scr__title'>Loading templates...</p>
   </div>
 </turbo-frame>
 
-<h2 class="mb-3">Your Projects {% link_article 'overview' 'collaborate' %}</h2>
+<h2 class="mt-7 mb-3 flex gap-3 items-center">Your Projects {% link_article 'overview' 'collaborate' %}</h2>
 <div class="card card--none">
   {% render_table team_projects %}
 
@@ -44,10 +43,6 @@
   {% else %}
   <div class="pad flex flex-col space-y-8">
     <small>
-      <a href="{% url 'team_projects:create' team.id %}" class="link">
-        <i class="fa fa-fw fa-plus mr-2"></i>New Project</a>
-    </small>
-    <small>
       <a href="https://www.loom.com/share/eea3a4c9c6424a77b30ada915f92c12f" class="link">
         <i class="fa fa-fw fa-video mr-2"></i>View tutorial video</a>
     </small>
@@ -57,6 +52,5 @@
     </small>
   </div>
   {% endif  %}
-
 </div>
 {% endblock %}
