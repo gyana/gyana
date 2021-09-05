@@ -27,7 +27,9 @@
   <div class="table__empty">
     <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
     <h3>This team has no projects</h3>
-    <p>You can <a href="{% url 'team_projects:create' team.id %}" class="link">create one</a> or start with a <a href="{% url 'team_projects:create' team.id %}" class="link">template</a>.</p>
+    <p>You can <a href="{% url 'team_projects:create' team.id %}" class="link">create one</a>,
+    start with a <a href="{% url 'team_projects:create' team.id %}" class="link">template</a>
+    or read our <a href="https://intercom.help/gyana/en/articles/5547945-what-is-gyana" target="_blank" class="link">getting started</a> guide.</p>
 
     <div data-controller="iframe" class="mt-8">
       <div data-iframe-target="placeholder" style="width: 854px; height: 480px;" class='placeholder-scr placeholder-scr--fillscreen rounded-xl bg-gray-20 border-gray border-4'>
@@ -48,6 +50,10 @@
     <small>
       <a href="https://www.loom.com/share/eea3a4c9c6424a77b30ada915f92c12f" class="link">
         <i class="fa fa-fw fa-video mr-2"></i>View tutorial video</a>
+    </small>
+    <small>
+      <a href="https://intercom.help/gyana/en/articles/5547945-what-is-gyana" target="_blank" class="link">
+        <i class="fa fa-fw fa-question mr-2"></i>Getting started</a>
     </small>
   </div>
   {% endif  %}
