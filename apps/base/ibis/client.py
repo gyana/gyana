@@ -1,7 +1,6 @@
-from ibis_bigquery.client import BigQueryClient
+from ibis_bigquery.client import BigQueryClient, rename_partitioned_column
 
 import ibis.expr.schema as sch
-from ibis.client import SQLClient
 
 
 def table(self, name, database=None):
@@ -13,19 +12,24 @@ def table(self, name, database=None):
     # conn.get_schema(...)
     schema = sch.infer(bq_table)
 
-    # conn.table(...)
+    # SQLClient: conn.table(...)
     qualified_name = self._fully_qualified_name(name, database)
     schema = self._get_table_schema(qualified_name)
     node = self.table_class(qualified_name, schema, self)
-    tbl = self.table_expr_class(node)
+    t = self.table_expr_class(node)
+
+    # BigQueryClient: conn.table(...)
+    rename_partitioned_column(t, bq_table, self.partition_column)
 
     # attach the bq_table for usage downstream
-    tbl.bq_table = bq_table
+    t.bq_table = bq_table
 
-    return tbl
+    return t
 
 
-# BigQueryClient is a subclass of SQLClient, and the only addition is to
-# rename the partition column which requires an extra API call
-# but it is unnecessary for us
-BigQueryClient.table = SQLClient.table
+# By default, the Ibis client makes 2 requests to BigQuery
+# - for the schema in conn.get_schema(...)
+# - for the table partition information in conn.table(...)
+# plus we lose access to the BigQuery table entity. This refactors
+# the logic into a single function, with one API call.
+BigQueryClient.table = table
