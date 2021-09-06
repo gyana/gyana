@@ -51,7 +51,13 @@ class GenericWidgetForm(LiveUpdateForm):
             return []
 
         formsets = [FilterFormset]
-        if self.instance.kind not in [Widget.Kind.TABLE]:
+        if self.instance.kind in [
+            Widget.Kind.PIE,
+            Widget.Kind.STACKED_BAR,
+            Widget.Kind.STACKED_COLUMN,
+        ]:
+            formsets += [SingleValueFormset]
+        elif self.instance.kind not in [Widget.Kind.TABLE]:
             formsets += [FunctionColumnFormset]
         return formsets
 
@@ -173,6 +179,16 @@ FunctionColumnFormset = forms.inlineformset_factory(
     form=FunctionColumnForm,
     can_delete=True,
     extra=0,
+    formset=RequiredInlineFormset,
+)
+
+SingleValueFormset = forms.inlineformset_factory(
+    Widget,
+    FunctionColumn,
+    form=FunctionColumnForm,
+    can_delete=True,
+    extra=0,
+    max_num=1,
     formset=RequiredInlineFormset,
 )
 
