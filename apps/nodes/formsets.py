@@ -1,5 +1,5 @@
 # fmt: off
-from apps.base.formsets import InlineColumnFormset
+from apps.base.formsets import InlineColumnFormset, RequiredInlineFormset
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
 from apps.columns.forms import (AddColumnForm, FormulaColumnForm,
@@ -14,6 +14,15 @@ from apps.filters.models import Filter
 from django import forms
 
 from .models import Node
+
+SchemaLiveForm = type(
+    "SchemaLiveForm",
+    (
+        SchemaFormMixin,
+        LiveUpdateForm,
+    ),
+    {},
+)
 
 FunctionColumnFormSet = forms.inlineformset_factory(
     Node,
@@ -38,12 +47,12 @@ ColumnFormSet = forms.inlineformset_factory(
 SortColumnFormSet = forms.inlineformset_factory(
     Node,
     SortColumn,
-    form=LiveUpdateForm,
+    form=SchemaLiveForm,
     fields=("column", "ascending"),
     can_delete=True,
     extra=0,
     min_num=1,
-    formset=InlineColumnFormset,
+    formset=RequiredInlineFormset,
 )
 
 
@@ -80,18 +89,11 @@ FormulaColumnFormSet = forms.inlineformset_factory(
 RenameColumnFormSet = forms.inlineformset_factory(
     Node,
     RenameColumn,
-    form=type(
-        "RenameColumnForm",
-        (
-            SchemaFormMixin,
-            LiveUpdateForm,
-        ),
-        {},
-    ),
+    form=SchemaLiveForm,
     fields=("column", "new_name"),
     can_delete=True,
     extra=0,
-    formset=InlineColumnFormset,
+    formset=RequiredInlineFormset,
     min_num=1,
 )
 
