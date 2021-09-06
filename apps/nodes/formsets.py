@@ -3,10 +3,10 @@ from apps.base.formsets import InlineColumnFormset
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
 from apps.columns.forms import (AddColumnForm, FormulaColumnForm,
-                                FunctionColumnForm, OperationColumnForm,
+                                AggreggationColumnForm, OperationColumnForm,
                                 WindowColumnForm)
 from apps.columns.models import (AddColumn, Column, EditColumn, FormulaColumn,
-                                 FunctionColumn, RenameColumn, SecondaryColumn,
+                                 AggreggationColumn, RenameColumn, SecondaryColumn,
                                  SortColumn, WindowColumn)
 # fmt: on
 from apps.filters.forms import FilterForm
@@ -15,10 +15,10 @@ from django import forms
 
 from .models import Node
 
-FunctionColumnFormSet = forms.inlineformset_factory(
+AggreggationColumnFormSet = forms.inlineformset_factory(
     Node,
-    FunctionColumn,
-    form=FunctionColumnForm,
+    AggreggationColumn,
+    form=AggreggationColumnForm,
     extra=0,
     can_delete=True,
     formset=InlineColumnFormset,
@@ -128,7 +128,7 @@ WindowColumnFormSet = forms.inlineformset_factory(
 )
 
 KIND_TO_FORMSETS = {
-    "aggregation": [FunctionColumnFormSet, ColumnFormSet],
+    "aggregation": [AggreggationColumnFormSet, ColumnFormSet],
     "sort": [SortColumnFormSet],
     "edit": [EditColumnFormSet],
     "add": [AddColumnFormSet],

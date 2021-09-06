@@ -1,6 +1,7 @@
 from apps.base.aggregations import AGGREGATION_TYPE_MAP
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
+from apps.columns.models import EditColumn
 from django import forms
 
 from .bigquery import AllOperations
@@ -8,6 +9,7 @@ from .widgets import CodeMirror
 
 IBIS_TO_FUNCTION = {
     "String": "string_function",
+    "Int32": "integer_function",
     "Int64": "integer_function",
     "Float64": "integer_function",
     "Timestamp": "datetime_function",
@@ -16,7 +18,7 @@ IBIS_TO_FUNCTION = {
 }
 
 
-class FunctionColumnForm(SchemaFormMixin, LiveUpdateForm):
+class AggreggationColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
         fields = ("column", "function")
         help_texts = {
@@ -45,6 +47,7 @@ class FunctionColumnForm(SchemaFormMixin, LiveUpdateForm):
 
 class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
+        model = EditColumn
         fields = (
             "column",
             "string_function",

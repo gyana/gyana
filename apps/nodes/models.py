@@ -95,7 +95,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     # Aggregation
     # columns exists on Column as FK
-    # aggregations exists on FunctionColumn as FK
+    # aggregations exists on AggreggationColumn as FK
 
     # Join
     join_how = models.CharField(
@@ -245,8 +245,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     @property
     def has_enough_parents(self):
-        from apps.nodes.bigquery import (NODE_FROM_CONFIG,
-                                         get_arity_from_node_func)
+        from apps.nodes.bigquery import NODE_FROM_CONFIG, get_arity_from_node_func
 
         func = NODE_FROM_CONFIG[self.kind]
         min_arity, _ = get_arity_from_node_func(func)
