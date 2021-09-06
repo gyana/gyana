@@ -1,5 +1,9 @@
-from apps.base.frames import TurboFrameFormsetUpdateView, TurboFrameUpdateView
 from apps.base.analytics import NODE_UPDATED_EVENT, track_node
+from apps.base.frames import (
+    TurboFrameDetailView,
+    TurboFrameFormsetUpdateView,
+    TurboFrameUpdateView,
+)
 from apps.base.table_data import get_table
 from apps.base.templates import template_exists
 from django import forms
@@ -110,25 +114,23 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
         return base_url
 
 
-class NodeGrid(SingleTableMixin, TurboFrameTemplateView):
+class NodeGrid(SingleTableMixin, TurboFrameDetailView):
     template_name = "nodes/grid.html"
+    model = Node
     paginate_by = 15
     turbo_frame_dom_id = "workflows-grid"
 
     def get_context_data(self, **kwargs):
-        self.node = Node.objects.get(id=kwargs["pk"])
         context = super().get_context_data(**kwargs)
-        context["node"] = self.node
-        error_template = f"nodes/errors/{self.node.error}.html"
+        error_template = f"nodes/errors/{self.object.error}.html"
         if template_exists(error_template):
             context["error_template"] = error_template
         return context
 
     def get_table(self, **kwargs):
         try:
-            table = get_table(
-                self.node.schema, get_query_from_node(self.node), **kwargs
-            )
+            query = get_query_from_node(self.object)
+            table = get_table(query.schema(), query, **kwargs)
 
             return RequestConfig(
                 self.request, paginate=self.get_table_pagination(table)
