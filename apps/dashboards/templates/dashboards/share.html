@@ -14,20 +14,19 @@
     {% elif object.shared_status == 'public' %}<i class='far fa-fw fa-eye'></i>
     {% endif %}
   </button>
-  <div data-popover-target="body" class="popover-body shadow-sm card card--sm"> 
-    {% link_article 'dashboards' 'share' %}
-    <p>This dashboard is currently {{object.shared_status }}.</p>
+  <div data-popover-target="body" class="popover-body max-w-lg card card--sm"> 
+    <h3 class="flex items-center gap-3 capitalize">{{ object.shared_status }} {% link_article 'dashboards' 'share' %}</h3>
+    <p class="mb-3">This dashboard is currently {{object.shared_status }}.</p>
 
     <form method="post" action="{% url 'dashboards:share' object.id %}">
       {% csrf_token %}
 
-      {% if  object.shared_status == 'private' %}
+      {% if object.shared_status == 'private' %}
       <p>Click <strong>Share</strong> to create shareable link that is accessible publicly.</p>
-      <button class="button button--sm" type='submit'>Share</button>
+      <button class="button button--sm button--success w-full" type='submit'>Share dashboard</button>
       {% else %}
       <p>Everyone with the link can see it. Click <strong>Unshare</strong> to make this dashboard
         private again.</span>
-      <button class="button button--sm" type='submit'>Unshare</button>
       <div data-controller="to-clipboard"
         class='clipboard-copy'
       >
@@ -40,14 +39,16 @@
         >
           {{ request.META.HTTP_HOST }}/dashboards/{{object.shared_id}}
         </a>
+
         <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
           <i class='fa fa-clipboard fa-2x'></i>
         </button>
       </div>
-      {% endif %}
 
+      <button class="button button--sm button--warning w-full" type='submit'>Un-share</button>
+      {% endif %}
     </form>
-    
   </div>
+
   <span data-tooltip-target="body">Share dashboard</span>
 </div>
