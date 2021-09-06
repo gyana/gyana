@@ -8,6 +8,7 @@ from django.utils.text import slugify
 from google.cloud import bigquery, storage
 from googleapiclient import discovery
 
+from .ibis.client import *
 from .ibis.compiler import *
 from .ibis.patch import *
 
