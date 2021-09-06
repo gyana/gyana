@@ -101,6 +101,7 @@ urlpatterns = [
     # these are needed for schema.js
     path("docs/", include_docs_urls(title="API Docs")),
     path("schemajs/", schemajs_view, name="api_schemajs"),
+    path("silk/", include("silk.urls", namespace="silk")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.CYPRESS_URLS:

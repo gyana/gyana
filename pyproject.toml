@@ -48,6 +48,8 @@ google-cloud-language = "^2.2.2"
 django-admin-tools = "^0.9.1"
 pytest = "^6.2.4"
 pytest-django = "^4.4.0"
+# https://github.com/jazzband/django-silk/issues/465
+django-silk = {git = "https://github.com/jazzband/django-silk", rev = "21a4058c2a758fac687f837cb523175c64c567c3"}
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

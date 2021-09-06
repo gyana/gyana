@@ -70,6 +70,7 @@ THIRD_PARTY_APPS = [
     "invitations",
     "hijack",
     "hijack.contrib.admin",
+    "silk",
 ]
 
 # Put your project-specific apps here
@@ -98,6 +99,7 @@ PROJECT_APPS = [
 INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
+    "silk.middleware.SilkyMiddleware",
     "honeybadger.contrib.DjangoHoneybadgerMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
