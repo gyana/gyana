@@ -1,16 +1,13 @@
 from functools import cached_property
 
 from apps.base.aggregations import AggregationFunctions
-from apps.base.cache import get_cache_key
 from apps.base.models import BaseModel
 from apps.nodes.config import NODE_CONFIG
 from apps.tables.models import Table
 from apps.workflows.models import Workflow
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
-from django.core.cache import cache
 from django.db import models
-from django.db.models import Max
 from django.utils import timezone
 from model_clone import CloneMixin
 
@@ -218,22 +215,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
         from .bigquery import get_query_from_node
 
-        # in theory, we only need to fetch all parent nodes recursively
-        # in practice, this is faster and less error prone
-        nodes_last_updated = self.workflow.nodes.all().aggregate(Max("data_updated"))
-        input_nodes = self.workflow.nodes.filter(input_table__isnull=False).all()
-
-        cache_key = get_cache_key(
-            node_id=self.id,
-            nodes_last_updated=str(nodes_last_updated["data_updated__max"]),
-            input_tables=[node.input_table.cache_key for node in input_nodes],
-        )
-
-        if (res := cache.get(cache_key)) is None:
-            res = get_query_from_node(self).schema()
-            cache.set(cache_key, res, 30)
-
-        return res
+        return get_query_from_node(self).schema()
 
     @property
     def display_name(self):
@@ -245,8 +227,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     @property
     def has_enough_parents(self):
-        from apps.nodes.bigquery import (NODE_FROM_CONFIG,
-                                         get_arity_from_node_func)
+        from apps.nodes.bigquery import NODE_FROM_CONFIG, get_arity_from_node_func
 
         func = NODE_FROM_CONFIG[self.kind]
         min_arity, _ = get_arity_from_node_func(func)
