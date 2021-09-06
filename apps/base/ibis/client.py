@@ -20,15 +20,11 @@ def table(self, name, database=None):
     # BigQueryClient: conn.table(...)
     rename_partitioned_column(t, bq_table, self.partition_column)
 
-    # attach the bq_table for usage downstream
-    t.bq_table = bq_table
-
     return t
 
 
 # By default, the Ibis client makes 2 requests to BigQuery
 # - for the schema in conn.get_schema(...)
 # - for the table partition information in conn.table(...)
-# plus we lose access to the BigQuery table entity. This refactors
-# the logic into a single function, with one API call.
+# This refactors the logic into a single function, with one API call.
 BigQueryClient.table = table

@@ -1,5 +1,6 @@
-import pandas as pd
-from apps.base.clients import bigquery_client, get_dataframe
+from functools import cached_property
+
+from apps.base.clients import get_query_results
 from django_tables2 import Column, Table
 from django_tables2.data import TableData
 from django_tables2.templatetags.django_tables2 import QuerystringNode
@@ -21,14 +22,6 @@ def new_render(self, context):
 QuerystringNode.render = new_render
 
 
-def _replace_nulls_with_none(df: pd.DataFrame):
-    # pandas to_dict returns non python native types e.g. Timestamp, NaT and nan
-    # short term fix to remove bugs with sentinel null values
-    # https://github.com/pandas-dev/pandas/issues/16248
-    # longer term fix would add custom renderer to columns in DynamicTable
-    return df.astype(object).where(df.notnull(), None)
-
-
 class BigQueryTableData(TableData):
     """Django table data class that queries data from BigQuery
 
@@ -45,15 +38,15 @@ class BigQueryTableData(TableData):
 
     def __getitem__(self, page: slice):
         """Fetches the data for the current page"""
-        df = get_dataframe(
-            self.data.limit(page.stop - page.start, offset=page.start).compile()
-        )
-        df = _replace_nulls_with_none(df)
-        return df.to_dict(orient="records")
+        # todo: cache the row count after initial query
+        # query_results = get_query_results(
+        #     self.data.limit(page.stop - page.start, offset=page.start).compile()
+        # )
+        return [{k: v for k, v in row.items()} for row in self._query_results.rows]
 
     def __len__(self):
         """Fetches the total size from BigQuery"""
-        return self.data.bq_table.num_rows
+        return self._query_results.total_rows
 
     # Not sure when or whether this is used at the moment
     def __iter__(self):
@@ -78,6 +71,10 @@ class BigQueryTableData(TableData):
         together properly.
         """
         self.table = table
+
+    @cached_property
+    def _query_results(self):
+        return get_query_results(self.data.compile())
 
 
 def get_table(schema, query, **kwargs):

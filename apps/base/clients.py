@@ -5,7 +5,8 @@ import ibis_bigquery
 from apps.connectors.fivetran import FivetranClient
 from django.conf import settings
 from django.utils.text import slugify
-from google.cloud import bigquery, storage
+from google.cloud import bigquery, bigquery_storage, storage
+from google.cloud.bigquery.query import _QueryResults
 from googleapiclient import discovery
 
 from .ibis.client import *
@@ -71,6 +72,17 @@ def get_bucket():
 def get_dataframe(query):
     client = bigquery_client()
     return client.query(query).result().to_dataframe(create_bqstorage_client=False)
+
+
+def get_query_results(query):
+    client = bigquery_client()
+    resource = client._call_api(
+        None,
+        path=f"/projects/{settings.GCP_PROJECT}/queries",
+        method="POST",
+        data={"query": query, "maxResults": 10, "useLegacySql": False},
+    )
+    return _QueryResults.from_api_repr(resource)
 
 
 @lru_cache
