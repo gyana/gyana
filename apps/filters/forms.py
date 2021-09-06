@@ -7,6 +7,7 @@ from django.forms.widgets import Input, TextInput
 from .widgets import DatetimeInput, SelectAutocomplete
 
 IBIS_TO_TYPE = {
+    "Int32": Filter.Type.INTEGER,
     "Int64": Filter.Type.INTEGER,
     "String": Filter.Type.STRING,
     "Timestamp": Filter.Type.DATETIME,
@@ -27,6 +28,7 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
         js = ("js/components-bundle.js",)
 
     class Meta:
+        model = Filter
         fields = (
             "column",
             "string_predicate",

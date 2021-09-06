@@ -5,6 +5,7 @@ import ibis_bigquery
 import pytest
 from apps.base.tests.mock_data import TABLE
 from apps.filters.bigquery import get_query_from_filter
+from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
 from dateutil.relativedelta import relativedelta
 
@@ -504,3 +505,84 @@ def create_datetime_filter(operation):
 def test_compiles_filter(filter_, expected_sql):
     sql = ibis_bigquery.compile(get_query_from_filter(TABLE, filter_))
     assert sql == expected_sql
+
+
+@pytest.mark.parametrize(
+    "filter_, fields",
+    [
+        pytest.param(Filter(), ["column"], id="empty filter"),
+        pytest.param(
+            Filter(column="id"), ["column", "numeric_predicate"], id="Integer column"
+        ),
+        pytest.param(
+            Filter(column="id", numeric_predicate="isin"),
+            ["column", "numeric_predicate", "integer_values"],
+            id="Integer column with isin predicate",
+        ),
+        pytest.param(
+            Filter(column="id", numeric_predicate="equal"),
+            ["column", "numeric_predicate", "integer_value"],
+            id="Integer column with predicate",
+        ),
+        pytest.param(
+            Filter(column="stars"), ["column", "numeric_predicate"], id="Float column"
+        ),
+        pytest.param(
+            Filter(column="stars", numeric_predicate="equal"),
+            ["column", "numeric_predicate", "float_value"],
+            id="Float column with predicate",
+        ),
+        pytest.param(
+            Filter(column="stars", numeric_predicate="isin"),
+            ["column", "numeric_predicate", "float_values"],
+            id="Float column with isin predicate",
+        ),
+        pytest.param(
+            Filter(column="athlete"), ["column", "string_predicate"], id="String column"
+        ),
+        pytest.param(
+            Filter(column="athlete", string_predicate="equal"),
+            ["column", "string_predicate", "string_value"],
+            id="String column with predicate",
+        ),
+        pytest.param(
+            Filter(column="athlete", string_predicate="isin"),
+            ["column", "string_predicate", "string_values"],
+            id="String column with isin predicate",
+        ),
+        pytest.param(
+            Filter(column="is_nice"), ["column", "bool_value"], id="Bool column"
+        ),
+        pytest.param(
+            Filter(column="birthday"),
+            ["column", "datetime_predicate"],
+            id="Date column",
+        ),
+        pytest.param(
+            Filter(column="birthday", datetime_predicate="equal"),
+            ["column", "datetime_predicate", "date_value"],
+            id="Date column with predicate",
+        ),
+        pytest.param(
+            Filter(column="lunch"), ["column", "time_predicate"], id="Time column"
+        ),
+        pytest.param(
+            Filter(column="lunch", time_predicate="equal"),
+            ["column", "time_predicate", "time_value"],
+            id="Time column with predicate",
+        ),
+        pytest.param(
+            Filter(column="updated"),
+            ["column", "datetime_predicate"],
+            id="Datetime column",
+        ),
+        pytest.param(
+            Filter(column="updated", datetime_predicate="equal"),
+            ["column", "datetime_predicate", "datetime_value"],
+            id="Datetime column with predicate",
+        ),
+    ],
+)
+def test_filter_type_functions(filter_, fields):
+    form = FilterForm(schema=TABLE.schema(), instance=filter_)
+    assert form.get_live_fields() == fields
