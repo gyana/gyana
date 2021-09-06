@@ -51,11 +51,9 @@ class BigQueryTableData(TableData):
         df = _replace_nulls_with_none(df)
         return df.to_dict(orient="records")
 
-    # TODO: This request slows down the loading of data a lot.
     def __len__(self):
         """Fetches the total size from BigQuery"""
-        client = bigquery_client()
-        return client.query(self.data.compile()).result().total_rows
+        return self.data.bq_table.num_rows
 
     # Not sure when or whether this is used at the moment
     def __iter__(self):
