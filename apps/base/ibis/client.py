@@ -18,7 +18,7 @@ def table(self, name, database=None):
     t = self.table_expr_class(node)
 
     # BigQueryClient: conn.table(...)
-    rename_partitioned_column(t, bq_table, self.partition_column)
+    t = rename_partitioned_column(t, bq_table, self.partition_column)
 
     return t
 

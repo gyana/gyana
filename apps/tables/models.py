@@ -3,7 +3,6 @@ from functools import cached_property
 from django.conf import settings
 from django.core.cache import cache
 from django.db import models
-from google.api_core.exceptions import NotFound
 from model_clone.mixins.clone import CloneMixin
 
 from apps.base.cache import get_cache_key
@@ -64,23 +63,14 @@ class Table(CloneMixin, BaseModel):
         return bigquery_client().get_table(self.bq_id)
 
     @property
-    def cache_key(self):
-        return get_cache_key(id=self.id, data_updated=str(self.data_updated))
-
-    @property
     def humanize(self):
         return self.bq_table.replace("_", " ").title()
 
     @cached_property
     def schema(self):
-
         from apps.tables.bigquery import get_query_from_table
 
-        if (res := cache.get(self.cache_key)) is None:
-            res = get_query_from_table(self).schema()
-            cache.set(self.cache_key, res, 30)
-
-        return res
+        return get_query_from_table(self).schema()
 
     @property
     def owner_name(self):
