@@ -14,7 +14,6 @@ def table(self, name, database=None):
 
     # SQLClient: conn.table(...)
     qualified_name = self._fully_qualified_name(name, database)
-    schema = self._get_table_schema(qualified_name)
     node = self.table_class(qualified_name, schema, self)
     t = self.table_expr_class(node)
 
