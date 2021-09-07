@@ -1899,6 +1899,7 @@
       "fivetran_id": "plexus_impatient",
       "schema": "team_1_heroku_postgres_0e684903d1044f7280bb061fd3c179a4",
       "fivetran_authorized": true,
+      "fivetran_succeeded_at": "1970-01-01T00:00:00.000Z",
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1914,6 +1915,7 @@
       "fivetran_id": "legate_wandered",
       "schema": "team_1_facebook_ads_563a564c28cc469dba73faf6dea0799e",
       "fivetran_authorized": true,
+      "fivetran_succeeded_at": "1970-01-01T00:00:00.000Z",
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1929,6 +1931,7 @@
       "fivetran_id": "humid_rifle",
       "schema": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
       "fivetran_authorized": true,
+      "fivetran_succeeded_at": "1970-01-01T00:00:00.000Z",
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1944,6 +1947,7 @@
       "fivetran_id": "overtime_froze",
       "schema": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
       "fivetran_authorized": true,
+      "fivetran_succeeded_at": "1970-01-01T00:00:00.000Z",
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1959,6 +1963,7 @@
       "fivetran_id": "preshow_regardless",
       "schema": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "fivetran_authorized": true,
+      "fivetran_succeeded_at": "1970-01-01T00:00:00.000Z",
       "sync_task_id": null,
       "sync_started": null
     }

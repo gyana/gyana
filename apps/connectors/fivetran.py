@@ -314,6 +314,9 @@ class MockFivetranClient:
         )
         return {"fivetran_id": connector.fivetran_id, "schema": connector.schema}
 
+    def get(self, connector):
+        return {"succeeded_at": "2021-01-01T00:00:00.000000Z"}
+
     def start_initial_sync(self, connector):
         self._started[connector.id] = timezone.now()
 

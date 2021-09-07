@@ -159,7 +159,10 @@ def update_fivetran_succeeded_at(connector: Connector):
         # timezone (UTC) information is parsed automatically
         succeeded_at = datetime.strptime(data["succeeded_at"], "%Y-%m-%dT%H:%M:%S.%f%z")
 
-        if succeeded_at > connector.fivetran_succeeded_at:
+        if (
+            connector.fivetran_succeeded_at is None
+            or succeeded_at > connector.fivetran_succeeded_at
+        ):
             connector.fivetran_succeeded_at = succeeded_at
             connector.save()
 
@@ -183,10 +186,11 @@ def update_connectors_from_fivetran():
 
     # checks fivetran connectors every FIVETRAN_SYNC_FREQUENCY seconds for
     # possible updated data, until sync has completed
-    connectors_to_check = Connector.objects.filter(
-        kind=Integration.Kind.CONNECTOR,
-        fivetran_succeeded_at__lt=succeeded_at_before,
-    ).all()
+    connectors_to_check = (
+        Connector.objects.filter(kind=Integration.Kind.CONNECTOR)
+        # need to include where fivetran_succeeded_at is null
+        .exclude(fivetran_succeeded_at__gt=succeeded_at_before).all()
+    )
 
     for connector in connectors_to_check:
         update_fivetran_succeeded_at(connector)

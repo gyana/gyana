@@ -43,6 +43,10 @@ describe('connectors', () => {
     // connector created successfully
     cy.contains('Data')
 
+    // fivetran succeeded at information
+    // cy.get('#connectors-status').trigger('mouseover')
+    cy.contains('Jan. 1, 2021, midnight')
+
     // check email sent
     cy.outbox()
       .then((outbox) => outbox.count)

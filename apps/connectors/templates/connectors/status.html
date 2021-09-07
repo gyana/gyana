@@ -1,7 +1,7 @@
 {% load humanize %}
 {% load static %}
 
-<h2 data-controller="tooltip">
+<h2 id="connectors-status" data-controller="tooltip">
   {{ object.fivetran_succeeded_at|naturaltime }}
   <span data-tooltip-target="body">{{ object.fivetran_succeeded_at }}</span>
 </h2>
