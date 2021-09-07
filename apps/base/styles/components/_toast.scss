@@ -6,7 +6,6 @@
   gap: 1rem;
   left: 0;
   margin: 1.6rem;
-  width: 32rem;
   position: absolute;
   z-index: var(--z-modal);
 
@@ -22,7 +21,8 @@
     flex: 1 1 0%;
     font-size: 1.4rem;
     padding: 1.6rem;
-    animation: slide-out-left 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) 5s both;
+    width: 32rem;
+    animation: slide-out-left 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) 5s both;
 
     &::before {
       background-color: var(--c-blue);

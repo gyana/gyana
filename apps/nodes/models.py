@@ -92,7 +92,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     # Aggregation
     # columns exists on Column as FK
-    # aggregations exists on FunctionColumn as FK
+    # aggregations exists on AggregationColumn as FK
 
     # Join
     join_how = models.CharField(

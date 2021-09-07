@@ -1,13 +1,13 @@
 # fmt: off
-from apps.base.formsets import InlineColumnFormset
+from apps.base.formsets import InlineColumnFormset, RequiredInlineFormset
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
-from apps.columns.forms import (AddColumnForm, FormulaColumnForm,
-                                FunctionColumnForm, OperationColumnForm,
+from apps.columns.forms import (AddColumnForm, AggregationColumnForm,
+                                FormulaColumnForm, OperationColumnForm,
                                 WindowColumnForm)
-from apps.columns.models import (AddColumn, Column, EditColumn, FormulaColumn,
-                                 FunctionColumn, RenameColumn, SecondaryColumn,
-                                 SortColumn, WindowColumn)
+from apps.columns.models import (AddColumn, AggregationColumn, Column,
+                                 EditColumn, FormulaColumn, RenameColumn,
+                                 SecondaryColumn, SortColumn, WindowColumn)
 # fmt: on
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
@@ -15,10 +15,19 @@ from django import forms
 
 from .models import Node
 
-FunctionColumnFormSet = forms.inlineformset_factory(
+SchemaLiveForm = type(
+    "SchemaLiveForm",
+    (
+        SchemaFormMixin,
+        LiveUpdateForm,
+    ),
+    {},
+)
+
+AggregationColumnFormSet = forms.inlineformset_factory(
     Node,
-    FunctionColumn,
-    form=FunctionColumnForm,
+    AggregationColumn,
+    form=AggregationColumnForm,
     extra=0,
     can_delete=True,
     formset=InlineColumnFormset,
@@ -38,12 +47,12 @@ ColumnFormSet = forms.inlineformset_factory(
 SortColumnFormSet = forms.inlineformset_factory(
     Node,
     SortColumn,
-    form=LiveUpdateForm,
+    form=SchemaLiveForm,
     fields=("column", "ascending"),
     can_delete=True,
     extra=0,
     min_num=1,
-    formset=InlineColumnFormset,
+    formset=RequiredInlineFormset,
 )
 
 
@@ -80,18 +89,11 @@ FormulaColumnFormSet = forms.inlineformset_factory(
 RenameColumnFormSet = forms.inlineformset_factory(
     Node,
     RenameColumn,
-    form=type(
-        "RenameColumnForm",
-        (
-            SchemaFormMixin,
-            LiveUpdateForm,
-        ),
-        {},
-    ),
+    form=SchemaLiveForm,
     fields=("column", "new_name"),
     can_delete=True,
     extra=0,
-    formset=InlineColumnFormset,
+    formset=RequiredInlineFormset,
     min_num=1,
 )
 
@@ -128,7 +130,7 @@ WindowColumnFormSet = forms.inlineformset_factory(
 )
 
 KIND_TO_FORMSETS = {
-    "aggregation": [FunctionColumnFormSet, ColumnFormSet],
+    "aggregation": [AggregationColumnFormSet, ColumnFormSet],
     "sort": [SortColumnFormSet],
     "edit": [EditColumnFormSet],
     "add": [AddColumnFormSet],

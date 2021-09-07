@@ -9,9 +9,8 @@ preview mode.
        data-width="{{object.width}}" data-height="{{object.height}}">
     <div class="widget-card h-full">
       <div class='widget-card__visual'>
-        {% if object.name %}
-        <h3 class="text-center py-4">{{ object.name }}</h3>
-        {% endif %}
+        
+        {% include 'widgets/_widget_title.html' %}
 
         <turbo-frame 
           id="widgets-output-{{ object.id }}"
@@ -25,12 +24,13 @@ preview mode.
         </turbo-frame>
       </div>
 
+      {% if request.GET.mode == 'edit' %}
+
       {% comment %} This little hack is for looping through a range. {% endcomment %}
       {% for i in '01234567'|make_list %}
         <span class="widget-card__indicator"></span>
       {% endfor %}
 
-      {% if request.GET.mode == 'edit' %}
       <div class='widget-card__commands'>
         {% if object.kind != "text" %}
         <button  

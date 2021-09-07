@@ -5,16 +5,31 @@
 
 
 <div class="max-w-lg mb-auto">
-  <h2>Account usage: {{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }} rows</h2>
-  <p class="mb-7">Last calculated: {{ team.row_count_calculated|naturaltime|default_if_none:"Never" }}</p>
+  <h2 class="mb-3">Account usage</h3>
+
   <form method="post" class="form mb-7">
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}
 
-    <button type="submit" class="button button--success">Recalculate</button>
+    <label>
+      <p>Rows</p>
+      <p class="input__help-text">Last calculated: {{ team.row_count_calculated|naturaltime|default_if_none:"never" }}</p>
+
+      <div class="button-input">
+        <input type="text" value="{{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}" disabled>
+        <button type="submit" class="button button--success button--input" data-controller="tooltip">
+          <i class="fas fa-fw fa-sync-alt"></i>
+          <span data-tooltip-target="body">Calculate row usage</span>
+        </button>
+      </div>
+    </label>
   </form>
-  <h2>Credits: {{ team.credits|intcomma }}</h2>
+
+  <label for="">
+    <p>Credits</p>
+    <input type="text" value="{{ team.credits|intcomma }}" disabled>
+  </label>
 </div>
 
 

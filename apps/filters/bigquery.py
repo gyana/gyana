@@ -3,6 +3,7 @@ import functools
 from typing import List
 
 from apps.filters.models import PREDICATE_MAP, Filter
+from dateutil.relativedelta import relativedelta
 from ibis.expr.types import TimestampValue
 
 
@@ -104,14 +105,14 @@ def one_week_ago(query, column, value):
 def one_month_ago(query, column, value):
     date = get_date(query[column])
     today = dt.date.today()
-    one_month = today - dt.timedelta(months=1)
+    one_month = today - relativedelta(months=1)
     return query[date.between(one_month, today)]
 
 
 def one_year_ago(query, column, value):
     date = get_date(query[column])
     today = dt.date.today()
-    one_year = today - dt.timedelta(years=1)
+    one_year = today - relativedelta(years=1)
     return query[date.between(one_year, today)]
 
 

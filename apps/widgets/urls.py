@@ -4,10 +4,19 @@ from django.views.decorators.cache import cache_control
 from rest_framework import routers
 
 from . import cache, frames, rest, views
-from .access import login_and_project_required_or_public_or_in_template
+from .access import (
+    login_and_project_required_or_public_or_in_template,
+    login_and_widget_required,
+)
 
 app_name = "widgets"
-urlpatterns = []
+urlpatterns = [
+    path(
+        "<int:pk>/name",
+        login_and_widget_required(frames.WidgetName.as_view()),
+        name="name",
+    )
+]
 
 # drf config
 router = routers.DefaultRouter()

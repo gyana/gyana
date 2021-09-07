@@ -16,10 +16,10 @@ class Operation:
 CommonOperations = {
     "isnull": Operation("is empty"),
     "notnull": Operation("is not empty"),
-    "fillna": Operation("fill empty values", 1, "string_value"),
 }
 
 StringOperations = {
+    "fillna": Operation("fill empty values", 1, "string_value"),
     "lower": Operation("to lowercase"),
     "upper": Operation("to uppercase"),
     "length": Operation("length"),
@@ -29,9 +29,10 @@ StringOperations = {
     "rstrip": Operation("rstrip"),
     "like": Operation("like", 1, "string_value"),
     "contains": Operation("contains", 1, "string_value"),
-    "left": Operation("left", 1, "integer_value"),
-    "right": Operation("right", 1, "integer_value"),
-    "repeat": Operation("repeat", 1, "integer_value"),
+    # TODO: write IBIS implementation and test
+    # "left": Operation("left", 1, "integer_value"),
+    # "right": Operation("right", 1, "integer_value"),
+    # "repeat": Operation("repeat", 1, "integer_value"),
 }
 
 NumericOperations = {

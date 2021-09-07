@@ -83,8 +83,8 @@ describe('appsumo', () => {
   it('stack and refund including credits', () => {
     cy.login()
 
-    cy.visit('/teams/1/appsumo')
-    cy.contains('Stack Code').click({ turbo: false })
+    cy.visit('/teams/1/account')
+    cy.contains('Stack Code').click()
     cy.get('input[name=code]').type(NOT_REDEEMED)
     cy.get('button[type=submit]').click()
 
@@ -122,8 +122,8 @@ describe('appsumo', () => {
 
     // enter the review
 
-    cy.visit('/teams/1/appsumo')
-    cy.contains('Link to your review').click({ turbo: false })
+    cy.visit('/teams/1/account')
+    cy.contains('Link to your review').click()
 
     cy.url().should('contain', '/teams/1/appsumo/review')
     cy.get('input[name=review_link]').type(

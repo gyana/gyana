@@ -4,8 +4,21 @@
   padding: 1.6rem;
 }
 
-#widget-update-form {
+.widget-update-sidebar {
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
   border-right: 1px solid var(--c-gray);
+
+  &__form {
+    flex: 1 1 0%;
+    overflow: hidden;
+  }
+
+  #widget-editable-name {
+    padding: 1.6rem;
+    border-bottom: 1px solid var(--c-gray);
+  }
 
   .widget-update__footer {
     display: flex;

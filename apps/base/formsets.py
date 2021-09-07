@@ -5,6 +5,7 @@ from django.forms.models import BaseInlineFormSet
 class RequiredInlineFormset(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.can_add = (len(self.forms) + len(self.extra_forms)) < self.max_num
         for form in self.forms:
             form.empty_permitted = False
             form.use_required_attribute = True

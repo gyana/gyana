@@ -44,6 +44,7 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
             "aggregations",
             "filters",
             "formula_columns",
+            "sort_columns",
             "window_columns",
         ]:
             return {"schema": self.object.parents.first().schema}

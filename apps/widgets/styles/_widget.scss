@@ -10,8 +10,7 @@
     border: 1px solid var(--c-gray);
     display: inline-block;
     margin: 0 auto 1.6rem auto;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: visible;
     position: relative;
 
     @include shadows.shadow;

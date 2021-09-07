@@ -1,149 +1,140 @@
-{% load help_utils %}
+<div class='widget-update-sidebar'>
+  <turbo-frame id="widget-editable-name" class="workflow-detail__header">
+    {% include 'widgets/name.html' %}
+  </turbo-frame>
 
-<form 
-  id="widget-update-form"
-  class="form flex-1 overflow-hidden"
-  action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
-  method="post"
-  data-controller="live-update" 
-  data-action="change->tf-modal#change submit->tf-modal#save"
->  
-  {% csrf_token %}
+  <form 
+    id="widget-update-form"
+    class="widget-update-sidebar__form"
+    action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
+    method="post"
+    data-controller="live-update" 
+    data-action="change->tf-modal#change submit->tf-modal#save"
+  >  
+    {% csrf_token %}
 
-  {% for hidden_field in form.hidden_fields %}
-    {{ hidden_field }}
-  {% endfor %}
+    {% for hidden_field in form.hidden_fields %}
+      {{ hidden_field }}
+    {% endfor %}
 
-  <div class="flex flex-col flex-1 w-full gap-7 pad overflow-y-auto">
-    <div class="absolute top-0 right-0">
+    <div class="flex flex-col gap-5 w-full pad overflow-y-auto">
+      <div class="absolute top-0 right-0">
+        <button
+          class="tf-modal__close"
+          type="submit"
+          formnovalidate
+          name="close"
+          value="close"
+          data-action="click->tf-modal#close keydown@window->tf-modal#onInput"
+          data-loading-false
+        >
+          <i class="fal fa-times fa-2x"></i>
+        </button>
+      </div>
+
+      <span class="absolute flex-1 hidden" data-live-update-target="loading">
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+      </span>
+
+      <div class="flex flex-row gap-7">
+        <div class="flex-1">
+          <label for="{{ form.table.id_for_label }}">
+            {{ form.table.label }}
+            <p class=" input__help-text">{{ form.table.help_text }}</p>
+          </label>
+
+          {{ form.table }}
+        </div>
+
+        <div class="flex-1">
+          <label for="{{ form.table.id_for_label }}">
+            {{ form.kind.label }}
+            <p class=" input__help-text">{{ bound_fields.kind.help_text }}</p>
+          </label>
+
+          {{ form.kind }}
+        </div>
+      </div>
+
+      <hr>
+
+      {% block widget_form %}
+
+      {% with array='name kind table'%}
+      {% for bound_field in form.visible_fields %}
+      {% if bound_field.name not in array.split %}
+        <div class="input-group">
+          {% if bound_field.widget_type == "checkbox" %}
+          <label class="flex flex-row">
+            {{ bound_field }}
+            <span>
+              {{ bound_field.label }}
+              <p class=" input__help-text">{{ bound_field.help_text }}</p>
+              {% if not bound_field.field.required %}<span class="text-black-50">- optional</span>{% endif %}
+            </span>
+          </label>
+          {% elif bound_field.subwidgets|length == 1 %}
+          <label>
+            <span>
+              {{ bound_field.label }}
+              <p class=" input__help-text">{{ bound_field.help_text }}</p>
+              {% if not bound_field.field.required %}<span class="text-black-50">- optional</span>{% endif %}
+            </span>
+
+            {{ bound_field }}
+          </label>
+          {% else %}
+          <label for="{{ bound_field.id_for_label }}">
+            {{ bound_field.label }}
+            <p class=" input__help-text">{{ bound_field.help_text }}</p>
+          </label>
+          {{ bound_field }}
+          {% endif %}
+
+          {% if not form.is_live %}
+          {{ bound_field.errors }}
+          {% endif %}
+        </div>
+      {% endif %}
+      {% endfor %}
+      {% endwith %}
+      
+      {% endblock %}
+
+      {% for label, formset in formsets.items %}
+      {% if label != "Aggregations" %}
+        <fieldset>
+          <label>{{ label }}</label>
+          {% include "components/formset.html" with formset=formset %}
+        </fieldset>
+      {% endif %}
+      {% endfor %}
+
+      {% for error in form.non_field_errors %}
+      <p class="text-red">
+        {{ error|escape }}
+      </p>
+      {% endfor %}
+    </div>
+
+    <div class="widget-update__footer">
       <button
-        class="tf-modal__close"
         type="submit"
-        formnovalidate
-        name="close"
-        value="close"
-        data-action="click->tf-modal#close keydown@window->tf-modal#onInput"
-        data-loading-false
+        name="submit"
+        value="Save & Close"
+        class="button button--success flex-1"
+        data-action="click->tf-modal#forceClose"
       >
-        <i class="fal fa-times fa-2x"></i>
+        Save & Close
+      </button>
+      <button
+        type="submit"
+        name="submit"
+        value="Save & Preview"
+        class="button button--outline button--success flex-1"
+      >
+        Save & Preview
       </button>
     </div>
-
-    <span class="absolute flex-1 hidden" data-live-update-target="loading">
-      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-    </span>
-
-    <div class="flex">
-    <input
-      class='input__inline' 
-      id="name"
-      type="text"
-      name="name"
-      placeholder="Untitled widget" 
-      value="{% if object.name %}{{ object.name }}{% endif %}"
-    ></input>
-    <div class="ml-auto">
-        {% link_article 'dashboards' widget.kind %}
-    </div>
-  </div>
-    <div class="flex flex-row gap-7">
-      <div class="flex-1">
-        <label for="{{ form.table.id_for_label }}">
-          {{ form.table.label }}
-          <p class=" input__help-text">{{ form.table.help_text }}</p>
-        </label>
-
-        {{ form.table }}
-      </div>
-
-      <div class="flex-1">
-        <label for="{{ form.table.id_for_label }}">
-          {{ form.kind.label }}
-          <p class=" input__help-text">{{ bound_fields.kind.help_text }}</p>
-        </label>
-
-        {{ form.kind }}
-      </div>
-    </div>
-
-    <hr>
-
-    {% block widget_form %}
-
-    {% with array='name kind table'%}
-    {% for bound_field in form.visible_fields %}
-    {% if bound_field.name not in array.split %}
-      <div class="input-group">
-        {% if bound_field.widget_type == "checkbox" %}
-        <label class="flex flex-row">
-          {{ bound_field }}
-          <span>
-            {{ bound_field.label }}
-            <p class=" input__help-text">{{ bound_field.help_text }}</p>
-            {% if not bound_field.field.required %}<span class="text-black-50">- optional</span>{% endif %}
-          </span>
-        </label>
-        {% elif bound_field.subwidgets|length == 1 %}
-        <label>
-          <span>
-            {{ bound_field.label }}
-            <p class=" input__help-text">{{ bound_field.help_text }}</p>
-            {% if not bound_field.field.required %}<span class="text-black-50">- optional</span>{% endif %}
-          </span>
-
-          {{ bound_field }}
-        </label>
-        {% else %}
-        <label for="{{ bound_field.id_for_label }}">
-          {{ bound_field.label }}
-          <p class=" input__help-text">{{ bound_field.help_text }}</p>
-        </label>
-        {{ bound_field }}
-        {% endif %}
-
-        {% if not form.is_live %}
-        {{ bound_field.errors }}
-        {% endif %}
-      </div>
-    {% endif %}
-    {% endfor %}
-    {% endwith %}
-    
-    {% endblock %}
-
-    {% for label, formset in formsets.items %}
-    {% if label != "Aggregations" %}
-      <fieldset>
-        <label>{{ label }}</label>
-        {% include "components/formset.html" with formset=formset %}
-      </fieldset>
-    {% endif %}
-    {% endfor %}
-
-    {% for error in form.non_field_errors %}
-    <p class="text-red">
-      {{ error|escape }}
-    </p>
-    {% endfor %}
-  </div>
-
-  <div class="widget-update__footer">
-    <button
-      type="submit"
-      name="submit"
-      value="Save & Close"
-      class="button button--success flex-1"
-      data-action="click->tf-modal#forceClose"
-    >
-      Save & Close
-    </button>
-    <button
-      type="submit"
-      name="submit"
-      value="Save & Preview"
-      class="button button--outline button--success flex-1"
-    >
-      Save & Preview
-    </button>
-  </div>
-</form>
+  </form>
+</div>

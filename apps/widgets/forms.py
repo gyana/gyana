@@ -1,8 +1,8 @@
 from apps.base.aggregations import AGGREGATION_TYPE_MAP
 from apps.base.formsets import RequiredInlineFormset
 from apps.base.live_update_form import LiveUpdateForm
-from apps.columns.forms import FunctionColumnForm
-from apps.columns.models import FunctionColumn
+from apps.columns.forms import AggregationColumnForm
+from apps.columns.models import AggregationColumn
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
 from apps.tables.models import Table
@@ -20,7 +20,6 @@ class GenericWidgetForm(LiveUpdateForm):
     class Meta:
         model = Widget
         fields = [
-            "name",
             "table",
             "kind",
             "label",
@@ -44,15 +43,21 @@ class GenericWidgetForm(LiveUpdateForm):
             ).exclude(source="intermediate_node")
 
     def get_live_fields(self):
-        return ["table", "kind", "name"]
+        return ["table", "kind"]
 
     def get_live_formsets(self):
         if self.get_live_field("table") is None:
             return []
 
         formsets = [FilterFormset]
-        if self.instance.kind not in [Widget.Kind.TABLE]:
-            formsets += [FunctionColumnFormset]
+        if self.instance.kind in [
+            Widget.Kind.PIE,
+            Widget.Kind.STACKED_BAR,
+            Widget.Kind.STACKED_COLUMN,
+        ]:
+            formsets += [SingleValueFormset]
+        elif self.instance.kind not in [Widget.Kind.TABLE]:
+            formsets += [AggregationColumnFormset]
         return formsets
 
 
@@ -167,12 +172,22 @@ FilterFormset = forms.inlineformset_factory(
     formset=RequiredInlineFormset,
 )
 
-FunctionColumnFormset = forms.inlineformset_factory(
+AggregationColumnFormset = forms.inlineformset_factory(
     Widget,
-    FunctionColumn,
-    form=FunctionColumnForm,
+    AggregationColumn,
+    form=AggregationColumnForm,
     can_delete=True,
     extra=0,
+    formset=RequiredInlineFormset,
+)
+
+SingleValueFormset = forms.inlineformset_factory(
+    Widget,
+    AggregationColumn,
+    form=AggregationColumnForm,
+    can_delete=True,
+    extra=0,
+    max_num=1,
     formset=RequiredInlineFormset,
 )
 

@@ -9,6 +9,7 @@ from apps.base.analytics import (
     identify_user,
     identify_user_group,
 )
+from apps.teams import roles
 
 from .models import Membership, Team
 
@@ -69,3 +70,15 @@ class MembershipUpdateForm(forms.ModelForm):
     class Meta:
         model = Membership
         fields = ("role",)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        # Prevent last admin turning to member
+        if self.instance.role == roles.ROLE_ADMIN and not self.instance.can_delete:
+            self.fields["role"].widget.attrs["disabled"] = True
+            self.fields[
+                "role"
+            ].help_text = (
+                "You cannot make yourself a member because there is no admin left"
+            )

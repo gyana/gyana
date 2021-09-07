@@ -3,7 +3,7 @@ import { Controller } from 'stimulus'
 export default class extends Controller {
   static targets = ['body']
 
-  initialize() {
+  connect() {
     if (this.element.classList.contains('active')) {
       this.bodyTarget.style.maxHeight = this.bodyTarget.scrollHeight + 'px'
     }

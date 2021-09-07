@@ -28,6 +28,14 @@ export default class extends Controller {
     // Increment the total forms index, for consistency with live update form
 
     TOTAL_FORMS.value = parseInt(total) + 1
+
+    // Hide if number of forms exceed MAX_NUM
+    if (
+      parseInt(TOTAL_FORMS.value) >=
+      parseInt(this.element.querySelector(`#id_${this.prefixValue}-MAX_NUM_FORMS`).value)
+    ) {
+      e.currentTarget.setAttribute('disabled', true)
+    }
   }
 
   remove(e) {
@@ -46,6 +54,14 @@ export default class extends Controller {
       const input = wrapper.querySelector("input[name*='-DELETE']")
       input.value = 'on'
       input.setAttribute('checked', '')
+      const TOTAL_FORMS = this.element.querySelector(`#id_${this.prefixValue}-TOTAL_FORMS`)
+      TOTAL_FORMS.value = parseInt(TOTAL_FORMS.value) - 1
+
+      const AddButton = document.getElementById(`${this.prefixValue}-add`)
+      //  Re-enable button if necessary
+      if (AddButton.getAttribute('disabled') == '') {
+        AddButton.removeAttribute('disabled')
+      }
     }
   }
 }
