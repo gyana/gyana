@@ -73,7 +73,9 @@ heroku rollback <version> --app gyana-beta
 
 With links for the production app:
 
+- Deployments, logs, metrics: [Heroku](https://dashboard.heroku.com/apps/gyana-beta)
 - Exception, uptime and cron monitoring: [Honeybadger](https://app.honeybadger.io/projects/88968/faults)
+- Traces: [Honeycomb](https://ui.honeycomb.io/gyanav2)
 - Analytics: [Google Analytics](https://analytics.google.com/analytics/web/#/p284522086/reports/reportinghub)
 - Events: [Segment](https://app.segment.com/gyana-beta/overview)
 - Support: [Intercom](https://app.intercom.com)
@@ -99,6 +101,7 @@ Heroku config variables, with production examples:
 
 ```bash
 DJANGO_SETTINGS_MODULE = gyana.settings.heroku
+ENVIRONMENT = production
 EXTERNAL_URL = https://app.gyana.com
 FIVETRAN_GROUP = intended_monsieur
 FIVETRAN_KEY = {{ key }}
@@ -111,6 +114,7 @@ GOOGLE_CREDENTIALS = {{ credential_json_from_svc_account }}
 GS_BUCKET_NAME = gyana-app
 HASHIDS_SALT = {{ django.utils.crypto.get_random_string(32) }}
 HONEYBADGER_API_KEY = {{ honeybadger_api_key }}
+HONEYCOMB_API_KEY = {{ honeycomb_api_key }}
 SECRET_KEY = {{ secret_key }} # generate online
 SEGMENT_ANALYTICS_JS_WRITE_KEY = {{ segment_js_secret }}
 SEGMENT_ANALYTICS_WRITE_KEY = {{ segment_py_secret }}
