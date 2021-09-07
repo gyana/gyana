@@ -1,9 +1,8 @@
-<div style="height:100%;width:100%;">
-  <textarea 
-    data-controller='widget-visuals-text'
-    data-widget-visuals-text-id-value='{{object.id}}'
-    style='height:100%;resize:none;border:none;' 
-    placeholder='Start typing your notes here' 
-    wrap='soft'
-  >{% if object.text_content %}{{object.text_content}}{% endif %}</textarea>
-</div>
+<textarea 
+  data-controller='widget-visuals-text'
+  data-widget-visuals-text-id-value='{{object.id}}'
+  class="flex-1"
+  style='resize:none;border:none;' 
+  placeholder='Type your notes here...' 
+  wrap='soft'
+>{% if object.text_content %}{{ object.text_content }}{% endif %}</textarea>
