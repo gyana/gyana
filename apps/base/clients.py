@@ -74,7 +74,7 @@ def get_dataframe(query):
     return client.query(query).result().to_dataframe(create_bqstorage_client=False)
 
 
-def get_query_results(query):
+def get_query_results(query, maxResults=100):
     client = bigquery_client()
     resource = client._call_api(
         None,
@@ -82,7 +82,7 @@ def get_query_results(query):
         method="POST",
         data={
             "query": query,
-            "maxResults": 10,
+            "maxResults": maxResults,
             "useLegacySql": False,
             "formatOptions": {"useInt64Timestamp": True},
         },

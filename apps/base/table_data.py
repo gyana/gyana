@@ -1,6 +1,7 @@
-from functools import cached_property
+import functools
 
 from apps.base.clients import get_query_results
+from django.core.cache import cache
 from django_tables2 import Column, Table
 from django_tables2.data import TableData
 from django_tables2.templatetags.django_tables2 import QuerystringNode
@@ -28,7 +29,7 @@ class BigQueryTableData(TableData):
     See https://github.com/jieter/django-tables2/blob/master/django_tables2/data.py
     """
 
-    rows_per_page = 100
+    rows_per_page = 50
 
     def __init__(
         self,
@@ -38,15 +39,23 @@ class BigQueryTableData(TableData):
 
     def __getitem__(self, page: slice):
         """Fetches the data for the current page"""
-        # todo: cache the row count after initial query
-        # query_results = get_query_results(
-        #     self.data.limit(page.stop - page.start, offset=page.start).compile()
-        # )
-        return [{k: v for k, v in row.items()} for row in self._query_results.rows]
+        return [
+            {k: v for k, v in row.items()}
+            for row in self._get_query_results(
+                page.start if page.start > 0 else None,
+                page.stop if page.start > 0 else None,
+            ).rows[: page.stop - page.start]
+        ]
 
     def __len__(self):
         """Fetches the total size from BigQuery"""
-        return self._query_results.total_rows
+        key = f"table_total_rows_{hash(self.data)}"
+        total_rows = cache.get(key)
+        if total_rows is None:
+            total_rows = self._get_query_results().total_rows
+            cache.set(key, total_rows)
+
+        return total_rows
 
     # Not sure when or whether this is used at the moment
     def __iter__(self):
@@ -72,9 +81,12 @@ class BigQueryTableData(TableData):
         """
         self.table = table
 
-    @cached_property
-    def _query_results(self):
-        return get_query_results(self.data.compile())
+    @functools.cache
+    def _get_query_results(self, start=None, stop=None):
+        data = self.data
+        if start:
+            data = data.limit(stop - start, offset=start)
+        return get_query_results(data.compile(), maxResults=self.rows_per_page)
 
 
 def get_table(schema, query, **kwargs):
