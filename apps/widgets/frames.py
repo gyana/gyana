@@ -2,8 +2,11 @@ import logging
 
 import analytics
 from apps.base.analytics import WIDGET_CONFIGURED_EVENT
-from apps.base.frames import (TurboFrameDetailView,
-                              TurboFrameFormsetUpdateView, TurboFrameListView)
+from apps.base.frames import (
+    TurboFrameDetailView,
+    TurboFrameFormsetUpdateView,
+    TurboFrameListView,
+)
 from apps.base.table_data import RequestConfig
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
@@ -25,7 +28,7 @@ def add_output_context(context, widget, request):
             pass
         elif widget.kind == Widget.Kind.TABLE:
             # avoid duplicating work for widget output
-            if 'table' not in context:
+            if "table" not in context:
                 table = table_to_output(widget)
                 context["table"] = RequestConfig(
                     request,
@@ -172,7 +175,7 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
 # Twice which leads to an id conflict
 
 
-def last_modified_widget_output(request, pk):
+def last_modified_widget_output(request, project_id, dashboard_id, pk):
     widget = Widget.objects.get(pk=pk)
     return (
         max(widget.updated, widget.table.data_updated)
@@ -181,8 +184,8 @@ def last_modified_widget_output(request, pk):
     )
 
 
-def etag_widget_output(request, pk):
-    last_modified = last_modified_widget_output(request, pk)
+def etag_widget_output(request, project_id, dashboard_id, pk):
+    last_modified = last_modified_widget_output(request, project_id, dashboard_id, pk)
     return str(int(last_modified.timestamp() * 1_000_000))
 
 

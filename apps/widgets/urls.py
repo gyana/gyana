@@ -1,5 +1,6 @@
 from apps.projects.access import login_and_project_required
 from django.urls import path
+from django.views.decorators.cache import cache_control
 from rest_framework import routers
 
 from . import frames, rest, views
@@ -45,8 +46,12 @@ dashboard_urlpatterns = (
         # https://web.dev/http-cache/#flowchart
         path(
             "<hashid:pk>/output",
-            login_and_project_required_or_public_or_in_template(
-                frames.WidgetOutput.as_view()
+            cache_control(no_cache=True)(
+                frames.widget_output_condition(
+                    login_and_project_required_or_public_or_in_template(
+                        frames.WidgetOutput.as_view()
+                    )
+                )
             ),
             name="output",
         ),
