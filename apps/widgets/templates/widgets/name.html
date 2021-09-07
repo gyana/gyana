@@ -1,0 +1,22 @@
+{% load help_utils %}
+
+<div class="flex flex-row items-center">
+  <form 
+    id="widget-name-update-form"
+    method="POST" 
+    action="{% url 'widgets:name' object.id %}"
+  >
+  {% csrf_token %}
+    <input 
+      class='input__inline' 
+      id="name" 
+      type="text" 
+      name="name"
+      placeholder="Untitled widget" 
+      value="{{ object.name }}"
+    ></input> 
+  </form>
+  <div class="ml-auto">
+    {% link_article 'dashboards' widget.kind %}
+  </div>
+</div>

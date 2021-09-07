@@ -1,12 +1,13 @@
 import logging
 
 import analytics
+from apps.base.analytics import WIDGET_CONFIGURED_EVENT
 from apps.base.frames import (
     TurboFrameDetailView,
     TurboFrameFormsetUpdateView,
     TurboFrameListView,
+    TurboFrameUpdateView,
 )
-from apps.base.analytics import WIDGET_CONFIGURED_EVENT
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, table_to_output
@@ -52,6 +53,19 @@ class WidgetList(DashboardMixin, TurboFrameListView):
 
     def get_queryset(self) -> QuerySet:
         return Widget.objects.filter(dashboard=self.dashboard)
+
+
+class WidgetName(TurboFrameUpdateView):
+    model = Widget
+    fields = ("name",)
+    template_name = "widgets/name.html"
+    turbo_frame_dom_id = "widget-editable-name"
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "widgets:name",
+            args=(self.object.id,),
+        )
 
 
 class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):

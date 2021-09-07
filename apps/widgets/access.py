@@ -1,10 +1,11 @@
 from functools import wraps
 
+from apps.base.access import login_and_permission_to_access
 from apps.dashboards.models import Dashboard
 from apps.teams.roles import user_can_access_team
 from apps.widgets.models import Widget
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.urls.base import reverse
 
 
@@ -28,3 +29,11 @@ def login_and_project_required_or_public_or_in_template(view_func):
         return render(request, "404.html", status=404)
 
     return decorator
+
+
+def widget_of_team(user, pk, *args, **kwargs):
+    widget = get_object_or_404(Widget, pk=pk)
+    return user_can_access_team(user, widget.dashboard.project.team)
+
+
+login_and_widget_required = login_and_permission_to_access(widget_of_team)
