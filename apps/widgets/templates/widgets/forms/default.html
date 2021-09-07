@@ -1,24 +1,23 @@
-<div class='widget-update-sidebar flex-1 w-full gap-7 pad'>
-  <turbo-frame id="widget-editable-name">
+<div class='widget-update-sidebar'>
+  <turbo-frame id="widget-editable-name" class="workflow-detail__header">
     {% include 'widgets/name.html' %}
   </turbo-frame>
 
   <form 
     id="widget-update-form"
-    class="form flex-1 overflow-hidden"
+    class="widget-update-sidebar__form"
     action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
     method="post"
     data-controller="live-update" 
     data-action="change->tf-modal#change submit->tf-modal#save"
   >  
-    
-      {% csrf_token %}
+    {% csrf_token %}
 
-      {% for hidden_field in form.hidden_fields %}
-        {{ hidden_field }}
-      {% endfor %}
+    {% for hidden_field in form.hidden_fields %}
+      {{ hidden_field }}
+    {% endfor %}
 
-    <div class="w-full overflow-y-auto">
+    <div class="flex flex-col gap-5 w-full pad overflow-y-auto">
       <div class="absolute top-0 right-0">
         <button
           class="tf-modal__close"
