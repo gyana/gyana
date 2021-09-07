@@ -2,10 +2,11 @@ from functools import lru_cache
 
 import google.auth
 import ibis_bigquery
+import pandas as pd
 from apps.connectors.fivetran import FivetranClient
 from django.conf import settings
 from django.utils.text import slugify
-from google.cloud import bigquery, bigquery_storage, storage
+from google.cloud import bigquery, storage
 from google.cloud.bigquery.query import _QueryResults
 from googleapiclient import discovery
 
@@ -78,6 +79,10 @@ class QueryResults(_QueryResults):
     @property
     def rows_dict(self):
         return [{k: v for k, v in row.items()} for row in self.rows]
+
+    @property
+    def rows_df(self):
+        return pd.DataFrame(self.rows_dict)
 
 
 def get_query_results(query, maxResults=100) -> QueryResults:
