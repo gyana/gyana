@@ -22,13 +22,7 @@ FIVETRAN_COLUMNS = set(
 
 
 def _get_cache_key_for_table(table):
-    data_updated = table.data_updated
-    # Cache logic for nodes in workflows, ibis schema is invalidated if any parent
-    #  nodes were updated. This is a simple version, we do need to write proper one
-    # as this invalidates within the current form.
-    if table.workflow_node is not None and table.workflow_node.kind != Node.Kind.OUTPUT:
-        data_updated = table.workflow_node.workflow.data_updated
-    return get_cache_key(id=table.id, data_updated=str(data_updated))
+    return get_cache_key(id=table.id, data_updated=str(table.data_updated))
 
 
 def get_query_from_table(table: Table) -> TableExpr:
