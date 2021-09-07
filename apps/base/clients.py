@@ -80,7 +80,12 @@ def get_query_results(query):
         None,
         path=f"/projects/{settings.GCP_PROJECT}/queries",
         method="POST",
-        data={"query": query, "maxResults": 10, "useLegacySql": False},
+        data={
+            "query": query,
+            "maxResults": 10,
+            "useLegacySql": False,
+            "formatOptions": {"useInt64Timestamp": True},
+        },
     )
     return _QueryResults.from_api_repr(resource)
 

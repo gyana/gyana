@@ -43,21 +43,20 @@ def get_query_from_table(table: Table) -> TableExpr:
     tbl = cache.get(key)
 
     if tbl is None:
-
         tbl = conn.table(table.bq_table, database=table.bq_dataset)
-
-        if (
-            table.integration is not None
-            and table.integration.kind == table.integration.Kind.CONNECTOR
-        ):
-            # Drop the intersection of fivetran cols and schema cols
-            tbl = tbl.drop(set(tbl.schema().names) & FIVETRAN_COLUMNS)
 
         # the client is not pickable
         tbl.op().source = None
         cache.set(key, tbl, 30)
 
     tbl.op().source = conn
+
+    if (
+        table.integration is not None
+        and table.integration.kind == table.integration.Kind.CONNECTOR
+    ):
+        # Drop the intersection of fivetran cols and schema cols
+        tbl = tbl.drop(set(tbl.schema().names) & FIVETRAN_COLUMNS)
 
     return tbl
 
