@@ -2,10 +2,10 @@
 from apps.base.formsets import InlineColumnFormset, RequiredInlineFormset
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
-from apps.columns.forms import (AddColumnForm, AggreggationColumnForm,
+from apps.columns.forms import (AddColumnForm, AggregationColumnForm,
                                 FormulaColumnForm, OperationColumnForm,
                                 WindowColumnForm)
-from apps.columns.models import (AddColumn, AggreggationColumn, Column,
+from apps.columns.models import (AddColumn, AggregationColumn, Column,
                                  EditColumn, FormulaColumn, RenameColumn,
                                  SecondaryColumn, SortColumn, WindowColumn)
 # fmt: on
@@ -24,10 +24,10 @@ SchemaLiveForm = type(
     {},
 )
 
-AggreggationColumnFormSet = forms.inlineformset_factory(
+AggregationColumnFormSet = forms.inlineformset_factory(
     Node,
-    AggreggationColumn,
-    form=AggreggationColumnForm,
+    AggregationColumn,
+    form=AggregationColumnForm,
     extra=0,
     can_delete=True,
     formset=InlineColumnFormset,
@@ -130,7 +130,7 @@ WindowColumnFormSet = forms.inlineformset_factory(
 )
 
 KIND_TO_FORMSETS = {
-    "aggregation": [AggreggationColumnFormSet, ColumnFormSet],
+    "aggregation": [AggregationColumnFormSet, ColumnFormSet],
     "sort": [SortColumnFormSet],
     "edit": [EditColumnFormSet],
     "add": [AddColumnFormSet],

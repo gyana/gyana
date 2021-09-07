@@ -1747,7 +1747,7 @@
     }
   },
   {
-    "model": "columns.functioncolumn",
+    "model": "columns.aggregationcolumn",
     "pk": 1,
     "fields": {
       "created": "2021-08-30T19:30:10.265Z",
@@ -1759,7 +1759,7 @@
     }
   },
   {
-    "model": "columns.functioncolumn",
+    "model": "columns.aggregationcolumn",
     "pk": 2,
     "fields": {
       "created": "2021-08-30T19:30:48.636Z",
@@ -1771,7 +1771,7 @@
     }
   },
   {
-    "model": "columns.functioncolumn",
+    "model": "columns.aggregationcolumn",
     "pk": 5,
     "fields": {
       "created": "2021-08-31T00:59:45.612Z",

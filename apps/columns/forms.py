@@ -18,7 +18,7 @@ IBIS_TO_FUNCTION = {
 }
 
 
-class AggreggationColumnForm(SchemaFormMixin, LiveUpdateForm):
+class AggregationColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
         fields = ("column", "function")
         help_texts = {
