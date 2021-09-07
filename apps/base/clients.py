@@ -3,12 +3,13 @@ from functools import lru_cache
 import google.auth
 import ibis_bigquery
 import pandas as pd
-from apps.connectors.fivetran import FivetranClient
 from django.conf import settings
 from django.utils.text import slugify
 from google.cloud import bigquery, storage
 from google.cloud.bigquery.query import _QueryResults
 from googleapiclient import discovery
+
+from apps.connectors.fivetran import FivetranClient
 
 from .ibis.client import *
 from .ibis.compiler import *

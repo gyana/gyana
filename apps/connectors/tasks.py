@@ -149,9 +149,6 @@ def run_connector_sync(connector: Connector):
         connector.integration.save()
 
 
-FIVETRAN_SYNC_FREQUENCY = 6 * 60 * 60
-
-
 def update_fivetran_succeeded_at(connector: Connector):
     client = fivetran_client()
     try:
@@ -177,14 +174,17 @@ def update_fivetran_succeeded_at(connector: Connector):
         pass
 
 
+FIVETRAN_SYNC_FREQUENCY_HOURS = 6
+
+
 @shared_task
 def update_connectors_from_fivetran():
 
     succeeded_at_before = timezone.now() - timezone.timedelta(
-        hours=FIVETRAN_SYNC_FREQUENCY
+        hours=FIVETRAN_SYNC_FREQUENCY_HOURS
     )
 
-    # checks fivetran connectors every FIVETRAN_SYNC_FREQUENCY seconds for
+    # checks fivetran connectors every FIVETRAN_SYNC_FREQUENCY_HOURS seconds for
     # possible updated data, until sync has completed
     connectors_to_check = (
         Connector.objects

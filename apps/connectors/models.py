@@ -20,7 +20,6 @@ class Connector(BaseModel):
     # we delete along with corresponding Fivetran model
     fivetran_authorized = models.BooleanField(default=False)
     # keep track of sync succeeded time from fivetran
-    # real value is populated after connector succeeds
     fivetran_succeeded_at = models.DateTimeField(null=True)
 
     # track the celery task

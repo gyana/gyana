@@ -136,6 +136,7 @@ class FivetranClient:
             f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}",
             headers=settings.FIVETRAN_HEADERS,
         ).json()
+
         if res["code"] != "Success":
             raise FivetranClientError(res["message"])
 
