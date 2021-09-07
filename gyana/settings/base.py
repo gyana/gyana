@@ -375,5 +375,6 @@ HONEYCOMB_API_KEY = os.environ.get("HONEYCOMB_API_KEY")
 HONEYBADGER = {
     "API_KEY": os.environ.get("HONEYBADGER_API_KEY"),
     "ENVIRONMENT": ENVIRONMENT,
-    "FORCE_REPORT_DATA": True
+    # enables us to use "development" and send data
+    "FORCE_REPORT_DATA": True,
 }

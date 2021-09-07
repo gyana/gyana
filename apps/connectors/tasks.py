@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.base.clients import fivetran_client
+from apps.base.tasks import honeybadger_check_in
 from apps.connectors.config import get_services
 from apps.connectors.fivetran import FivetranClientError
 from apps.connectors.models import Connector
@@ -167,8 +168,9 @@ def update_fivetran_succeeded_at(connector: Connector):
             tables = connector.integration.table_set.all()
             for table in tables:
                 table.data_updated = succeeded_at
+                table.num_rows = table.bq_obj.num_rows
 
-            Table.objects.bulk_update(tables, ["data_updated"])
+            Table.objects.bulk_update(tables, ["data_updated", "num_rows"])
 
     except FivetranClientError:
         pass
@@ -194,3 +196,5 @@ def update_connectors_from_fivetran():
 
     for connector in connectors_to_check:
         update_fivetran_succeeded_at(connector)
+
+    honeybadger_check_in("ZbIlqq")

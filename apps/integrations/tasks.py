@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from apps.base.tasks import honeybadger_check_in
 from apps.connectors.tasks import run_connector_sync
 from apps.sheets.tasks import run_sheet_sync
 from apps.uploads.tasks import run_upload_sync
@@ -24,3 +25,5 @@ def delete_outdated_pending_integrations():
         ready=False,
         created__lt=timezone.now() - timedelta(days=PENDING_DELETE_AFTER_DAYS),
     ).all().delete()
+
+    honeybadger_check_in("LoI4LK")

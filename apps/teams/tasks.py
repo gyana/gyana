@@ -1,5 +1,7 @@
 from celery.app import shared_task
 
+from apps.base.tasks import honeybadger_check_in
+
 from .models import Team
 
 
@@ -17,3 +19,5 @@ def update_team_row_limits():
 
     for team in Team.objects.all():
         _calculate_row_count_for_team(team)
+
+    honeybadger_check_in("wqIPo7")
