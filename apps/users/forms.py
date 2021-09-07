@@ -60,7 +60,8 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ["email", "first_name", "last_name"]
+        fields = ["avatar", "email", "first_name", "last_name"]
+        widgets = {"avatar": forms.FileInput()}
 
 
 class UploadAvatarForm(forms.Form):

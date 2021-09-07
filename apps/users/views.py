@@ -2,7 +2,6 @@ import analytics
 from allauth.account.utils import send_email_confirmation
 from allauth.socialaccount.providers.google.views import oauth2_login
 from django.http import HttpResponse
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
 
@@ -10,7 +9,8 @@ from apps.base.analytics import ONBOARDING_COMPLETED_EVENT
 from apps.base.turbo import TurboUpdateView
 
 from .forms import CustomUserChangeForm, UploadAvatarForm, UserOnboardingForm
-from .helpers import require_email_confirmation, user_has_confirmed_email_address
+from .helpers import (require_email_confirmation,
+                      user_has_confirmed_email_address)
 from .models import CustomUser
 
 
@@ -34,31 +34,31 @@ class UserOnboarding(TurboUpdateView):
         return redirect
 
 
-def profile(request):
-    if request.method == "POST":
-        form = CustomUserChangeForm(request.POST, instance=request.user)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user_before_update = CustomUser.objects.get(pk=user.pk)
-            need_to_confirm_email = (
-                user_before_update.email != user.email
-                and require_email_confirmation()
-                and not user_has_confirmed_email_address(user, user.email)
-            )
-            if need_to_confirm_email:
-                # don't change it but instead send a confirmation email
-                # email will be changed by signal when confirmed
-                new_email = user.email
-                send_email_confirmation(request, user, signup=False, email=new_email)
-                user.email = user_before_update.email
-                # recreate the form to avoid populating the previous email in the returned page
-                form = CustomUserChangeForm(instance=user)
-            user.save()
-    else:
-        form = CustomUserChangeForm(instance=request.user)
-    return render(
-        request, "account/profile.html", {"form": form, "active_tab": "profile"}
-    )
+class UserProfile(TurboUpdateView):
+    template_name = "account/profile.html"
+    model = CustomUser
+    form_class = CustomUserChangeForm
+    success_url = reverse_lazy("users:user_profile")
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def form_valid(self, form) -> HttpResponse:
+        user = form.save(commit=False)
+        user_before_update = CustomUser.objects.get(pk=user.pk)
+        need_to_confirm_email = (
+            user_before_update.email != user.email
+            and require_email_confirmation()
+            and not user_has_confirmed_email_address(user, user.email)
+        )
+        if need_to_confirm_email:
+            # don't change it but instead send a confirmation email
+            # email will be changed by signal when confirmed
+            new_email = user.email
+            send_email_confirmation(self.request, user, signup=False, email=new_email)
+            user.email = user_before_update.email
+
+        return super().form_valid(form)
 
 
 @require_POST

@@ -11,7 +11,7 @@ urlpatterns = [
         login_required(views.UserOnboarding.as_view()),
         name="onboarding",
     ),
-    path("profile/", login_required(views.profile), name="user_profile"),
+    path("profile/", login_required(views.UserProfile.as_view()), name="user_profile"),
     path(
         "profile/upload-image/",
         login_required(views.upload_profile_image),
