@@ -12,7 +12,7 @@
     </div>
   {% endif %}
 
-  {% if not team.enabled %}
+  {% if team and not team.enabled %}
     <div class="banner banner--danger">
       <p>
         You've exceeded your row count limit by over 20%, your team is
