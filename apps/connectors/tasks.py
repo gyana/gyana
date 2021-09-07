@@ -187,7 +187,7 @@ def update_connectors_from_fivetran():
     # checks fivetran connectors every FIVETRAN_SYNC_FREQUENCY seconds for
     # possible updated data, until sync has completed
     connectors_to_check = (
-        Connector.objects.filter(kind=Integration.Kind.CONNECTOR)
+        Connector.objects
         # need to include where fivetran_succeeded_at is null
         .exclude(fivetran_succeeded_at__gt=succeeded_at_before).all()
     )

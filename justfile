@@ -11,7 +11,10 @@ dev:
     python ./manage.py runserver
 
 celery:
-    watchexec -w apps -e py -r "celery -A gyana worker -l info"
+    watchexec -w apps -e py -r "celery -A gyana worker -l INFO"
+
+beat:
+    watchexec -w apps -e py -r "celery -A gyana beat -l INFO"
 
 migrate:
     ./manage.py migrate
