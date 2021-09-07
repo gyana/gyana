@@ -1,3 +1,4 @@
+from datetime import datetime
 from itertools import chain
 
 import analytics
@@ -6,9 +7,10 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from apps.base.clients import fivetran_client
 from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
+from apps.base.clients import fivetran_client
 from apps.connectors.config import get_services
+from apps.connectors.fivetran import FivetranClientError
 from apps.connectors.models import Connector
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
@@ -145,3 +147,46 @@ def run_connector_sync(connector: Connector):
 
         connector.integration.state = Integration.State.LOAD
         connector.integration.save()
+
+
+FIVETRAN_SYNC_FREQUENCY = 6 * 60 * 60
+
+
+def update_fivetran_succeeded_at(connector: Connector):
+    client = fivetran_client()
+    try:
+        data = client.get(connector)
+        # timezone (UTC) information is parsed automatically
+        succeeded_at = datetime.strptime(data["succeeded_at"], "%Y-%m-%dT%H:%M:%S.%f%z")
+
+        if succeeded_at > connector.fivetran_succeeded_at:
+            connector.fivetran_succeeded_at = succeeded_at
+            connector.save()
+
+            # update all tables too
+            tables = connector.integration.table_set.all()
+            for table in tables:
+                table.data_updated = succeeded_at
+
+            Table.objects.bulk_update(tables, ["data_updated"])
+
+    except FivetranClientError:
+        pass
+
+
+@shared_task
+def update_connectors_from_fivetran():
+
+    succeeded_at_before = timezone.now() - timezone.timedelta(
+        hours=FIVETRAN_SYNC_FREQUENCY
+    )
+
+    # checks fivetran connectors every FIVETRAN_SYNC_FREQUENCY seconds for
+    # possible updated data, until sync has completed
+    connectors_to_check = Connector.objects.filter(
+        kind=Integration.Kind.CONNECTOR,
+        fivetran_succeeded_at__lt=succeeded_at_before,
+    ).all()
+
+    for connector in connectors_to_check:
+        update_fivetran_succeeded_at(connector)

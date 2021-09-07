@@ -6,14 +6,14 @@ from apps.integrations.tables import (
 )
 
 from .models import Connector
-from .tasks import complete_connector_sync
+from .tasks import complete_connector_sync, update_fivetran_succeeded_at
 
 
-class ConnectorStatus(TurboFrameDetailView):
+class ConnectorIcon(TurboFrameDetailView):
     template_name = "columns/status.html"
     model = Connector
     fields = []
-    turbo_frame_dom_id = "connectors:status"
+    turbo_frame_dom_id = "connectors:icon"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -25,4 +25,16 @@ class ConnectorStatus(TurboFrameDetailView):
             self.object.integration.state
         ]
 
+        return context_data
+
+
+class ConnectorStatus(TurboFrameDetailView):
+    template_name = "connectors/status.html"
+    model = Connector
+    fields = []
+    turbo_frame_dom_id = "connectors:status"
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        update_fivetran_succeeded_at(self.object)
         return context_data

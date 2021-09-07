@@ -15,6 +15,15 @@
         </div>
       </turbo-frame>
     </div>
+    {% elif object.kind == 'connector' %}
+    <div class="card card--center flex-1 flex-col">
+      <turbo-frame id="connectors:status" src="{% url 'connectors:status' object.connector.id %}">
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          <p class='placeholder-scr__title'>Loading...</p>
+        </div>
+      </turbo-frame>
+    </div>
     {% endif %}
 
     <div class="card card--center flex-1 flex-col">

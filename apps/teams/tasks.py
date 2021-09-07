@@ -1,7 +1,4 @@
-from apps.tables.models import Table
 from celery.app import shared_task
-from django.db import models, transaction
-from django.utils import timezone
 
 from .models import Team
 

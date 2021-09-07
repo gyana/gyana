@@ -128,6 +128,19 @@ class FivetranClient:
         #  }
         return {"fivetran_id": res["data"]["id"], "schema": schema}
 
+    def get(self, connector: Connector):
+
+        # https://fivetran.com/docs/rest-api/connectors/connect-card#connectcard
+
+        res = requests.get(
+            f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}",
+            headers=settings.FIVETRAN_HEADERS,
+        ).json()
+        if res["code"] != "Success":
+            raise FivetranClientError(res["message"])
+
+        return res["data"]
+
     def authorize(self, connector: Connector, redirect_uri: str) -> HttpResponse:
 
         # https://fivetran.com/docs/rest-api/connectors/connect-card#connectcard

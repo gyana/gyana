@@ -1,3 +1,8 @@
-<turbo-frame id="connectors:status" src="{% url 'connectors:status' connector.id %}">
-    {% include 'columns/status.html' %}
-</turbo-frame>
+{% load humanize %}
+{% load static %}
+
+<h2 data-controller="tooltip">
+  {{ object.fivetran_succeeded_at|naturaltime }}
+  <span data-tooltip-target="body">{{ object.fivetran_succeeded_at }}</span>
+</h2>
+<p>Most recent data imported</p>

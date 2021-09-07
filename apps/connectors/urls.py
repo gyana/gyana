@@ -9,6 +9,11 @@ from .access import login_and_connector_required
 app_name = "connectors"
 urlpatterns = [
     path(
+        "<hashid:pk>/icon",
+        login_and_connector_required(frames.ConnectorIcon.as_view()),
+        name="icon",
+    ),
+    path(
         "<hashid:pk>/status",
         login_and_connector_required(frames.ConnectorStatus.as_view()),
         name="status",

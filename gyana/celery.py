@@ -30,3 +30,8 @@ def setup_periodic_tasks(sender, **kwargs):
         crontab(minute=0, hour=0),
         signature("apps.teams.update_team_row_limits"),
     )
+    sender.add_periodic_task(
+        # run every hour
+        crontab(minute=0),
+        signature("apps.connectors.update_data_updated"),
+    )
