@@ -2,11 +2,8 @@ import logging
 
 import analytics
 from apps.base.analytics import WIDGET_CONFIGURED_EVENT
-from apps.base.frames import (
-    TurboFrameDetailView,
-    TurboFrameFormsetUpdateView,
-    TurboFrameListView,
-)
+from apps.base.frames import (TurboFrameDetailView,
+                              TurboFrameFormsetUpdateView, TurboFrameListView)
 from apps.base.table_data import RequestConfig
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
@@ -27,10 +24,12 @@ def add_output_context(context, widget, request):
         if widget.kind == Widget.Kind.TEXT:
             pass
         elif widget.kind == Widget.Kind.TABLE:
-            table = table_to_output(widget)
-            context["table"] = RequestConfig(
-                request,
-            ).configure(table)
+            # avoid duplicating work for widget output
+            if 'table' not in context:
+                table = table_to_output(widget)
+                context["table"] = RequestConfig(
+                    request,
+                ).configure(table)
         else:
             chart, chart_id = chart_to_output(widget)
             context.update(chart)
