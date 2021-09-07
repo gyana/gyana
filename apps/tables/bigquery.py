@@ -40,7 +40,7 @@ def get_query_from_table(table: Table) -> TableExpr:
 
         # the client is not pickable
         tbl.op().source = None
-        cache.set(key, tbl, 30)
+        cache.set(key, tbl, 24 * 3600)
 
     tbl.op().source = conn
 

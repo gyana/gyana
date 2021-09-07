@@ -1,11 +1,12 @@
 import functools
 
-from apps.base.clients import get_query_results
 from django.core.cache import cache
 from django_tables2 import Column, Table
 from django_tables2.config import RequestConfig as BaseRequestConfig
 from django_tables2.data import TableData
 from django_tables2.templatetags.django_tables2 import QuerystringNode
+
+from apps.base.clients import get_query_results
 
 # Monkey patch the querystring templatetag for the pagination links
 # Without this links only lead to the whole document url and add query parameter
@@ -68,7 +69,7 @@ class BigQueryTableData(TableData):
 
         if not self._page_selected or total_rows is None:
             total_rows = self._get_query_results().total_rows
-            cache.set(self._len_key, total_rows, 30)
+            cache.set(self._len_key, total_rows, 24 * 3600)
 
         return total_rows
 
