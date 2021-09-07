@@ -83,6 +83,14 @@ just cypress-setup
 just cypress-fixtures
 ```
 
+## Profile
+
+Open the [Silk](https://github.com/jazzband/django-silk) [UI](http://localhost:8000/silk) for per request statistics,
+SQL profiling and cProfile graphs.
+
+Setup Honeycomb [locally](apps/base/apps.py) to generate traces for
+individual HTTP requests.
+
 ## QA
 
 Run the entire e2e test suite locally, and view the list of failed tests. You can
