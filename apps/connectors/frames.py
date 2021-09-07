@@ -47,8 +47,8 @@ class ConnectorStatus(TurboFrameDetailView):
         #     "tasks": [{"code": ..., "message": ...}],
         #     "warnings": [{"code": ..., "message": ...}]
         # }
-        context_data["status"] = data["status"]
-        if data["status"]["setup_state"] != "connected":
+        broken = data["status"]["setup_state"] != "connected"
+        if broken:
             internal_redirect = reverse(
                 "project_integrations_connectors:authorize",
                 args=(
@@ -61,4 +61,5 @@ class ConnectorStatus(TurboFrameDetailView):
                 self.object,
                 f"{settings.EXTERNAL_URL}{internal_redirect}",
             )
+        context_data["broken"] = broken
         return context_data
