@@ -11,7 +11,7 @@ from django.db import transaction
 from .models import TemplateInstance, TemplateIntegration
 
 
-class TemplateInstanceCreateForm(forms.ModelForm):
+class TemplateInstanceCreateNewForm(forms.ModelForm):
     class Meta:
         model = TemplateInstance
         fields = []

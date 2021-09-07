@@ -14,7 +14,7 @@ from django_tables2 import SingleTableView
 from django_tables2.views import SingleTableMixin
 
 from .forms import (TemplateInstanceCreateExistingForm,
-                    TemplateInstanceCreateForm)
+                    TemplateInstanceCreateNewForm)
 from .models import Template, TemplateInstance
 from .tables import (TemplateInstanceTable, TemplateIntegrationTable,
                      TemplateTable)
@@ -41,7 +41,7 @@ class TemplateInstanceCreate(TeamMixin, TurboCreateView):
 
     def get_form_class(self):
         if self.request.POST.get("submit") == "create":
-            return TemplateInstanceCreateForm
+            return TemplateInstanceCreateNewForm
         return TemplateInstanceCreateExistingForm
 
     @cached_property
