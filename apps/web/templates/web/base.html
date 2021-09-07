@@ -35,6 +35,10 @@
   {% include 'web/components/google_analytics.html' %}
   {% endif %}
 
+  {% if HONEYBADGER_API_KEY %}
+  {% include 'web/components/honeybadger.html' %}
+  {% endif %}
+
   {% block page_head %}{% endblock %}
 </head>
 

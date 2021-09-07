@@ -370,3 +370,7 @@ MOCK_REMOTE_OBJECT_DELETION = False
 
 ENVIRONMENT = os.environ.get("ENVIRONMENT")
 HONEYCOMB_API_KEY = os.environ.get("HONEYCOMB_API_KEY")
+
+# required for injecting into Javascript
+HONEYBADGER_API_KEY = os.environ.get("HONEYBADGER_API_KEY")
+HONEYBADGER_ENVIRONMENT = os.environ.get("HONEYBADGER_ENVIRONMENT")
