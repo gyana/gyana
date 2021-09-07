@@ -32,3 +32,4 @@ SILKY_PYTHON_PROFILER_BINARY = True  # for flamegraphs
 SILKY_ANALYZE_QUERIES = True
 
 MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
+INSTALLED_APPS = INSTALLED_APPS + ["silk"]

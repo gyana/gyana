@@ -70,7 +70,6 @@ THIRD_PARTY_APPS = [
     "invitations",
     "hijack",
     "hijack.contrib.admin",
-    "silk",
 ]
 
 # Put your project-specific apps here
