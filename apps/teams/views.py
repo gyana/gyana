@@ -1,6 +1,4 @@
-from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import transaction
 from django.http import HttpResponse
 from django.http.response import Http404
 from django.urls import reverse
@@ -10,7 +8,6 @@ from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableView
 
 from apps.base.turbo import TurboCreateView, TurboUpdateView
-from apps.teams.bigquery import create_team_dataset
 from apps.teams.mixins import TeamMixin
 
 from .forms import MembershipUpdateForm, TeamCreateForm, TeamUpdateForm
@@ -23,16 +20,10 @@ class TeamCreate(LoginRequiredMixin, TurboCreateView):
     form_class = TeamCreateForm
     template_name = "teams/create.html"
 
-    def form_valid(self, form: forms.Form) -> HttpResponse:
-
-        with transaction.atomic():
-            team = form.save()
-            form.instance.members.add(
-                self.request.user, through_defaults={"role": "admin"}
-            )
-            create_team_dataset(team)
-
-        return super().form_valid(form)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.id,))

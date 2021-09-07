@@ -1,7 +1,13 @@
 from functools import cached_property
 
-from apps.base.turbo import TurboCreateView, TurboUpdateView
+import analytics
+from apps.base.analytics import (
+    TEMPLATE_COMPLETED_EVENT,
+    TEMPLATE_CREATED_EVENT,
+    TEMPLATE_VIEWED_EVENT,
+)
 from apps.base.frames import TurboFrameListView
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.projects.mixins import ProjectMixin
 from apps.teams.mixins import TeamMixin
 from apps.templates.forms import TemplateInstanceUpdateForm
@@ -22,6 +28,13 @@ class TemplateList(TeamMixin, SingleTableView, TurboFrameListView):
     paginate_by = 20
     turbo_frame_dom_id = "templates:list"
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        context_data["templates"] = Template.objects.all()
+
+        return context_data
+
 
 class TemplateInstanceCreate(TeamMixin, TurboCreateView):
     template_name = "templateinstances/create.html"
@@ -37,11 +50,24 @@ class TemplateInstanceCreate(TeamMixin, TurboCreateView):
         context["template"] = self.template
         return context
 
+    def get(self, request, *args, **kwargs):
+        analytics.track(
+            self.request.user.id, TEMPLATE_VIEWED_EVENT, {"id": self.template.id}
+        )
+        return super().get(request, *args, **kwargs)
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["team"] = self.team
         kwargs["template"] = self.template
         return kwargs
+
+    def form_valid(self, form):
+        redirect = super().form_valid(form)
+        analytics.track(
+            self.request.user.id, TEMPLATE_CREATED_EVENT, {"id": self.template.id}
+        )
+        return redirect
 
     def get_success_url(self) -> str:
         return reverse("projects:detail", args=(self.object.project.id,))
@@ -61,7 +87,6 @@ class TemplateInstanceList(ProjectMixin, SingleTableView):
                 self.project.templateinstance_set.first().id,
             )
         return super().get(request, *args, **kwargs)
-
 
 
 class TemplateInstanceUpdate(ProjectMixin, SingleTableMixin, TurboUpdateView):
@@ -90,6 +115,15 @@ class TemplateInstanceUpdate(ProjectMixin, SingleTableMixin, TurboUpdateView):
 
     def get_table_data(self):
         return self.object.templateintegration_set.all()
+
+    def form_valid(self, form):
+        redirect = super().form_valid(form)
+        analytics.track(
+            self.request.user.id,
+            TEMPLATE_COMPLETED_EVENT,
+            {"id": self.object.template.id},
+        )
+        return redirect
 
     def get_success_url(self):
         return reverse("projects:detail", args=(self.project.id,))

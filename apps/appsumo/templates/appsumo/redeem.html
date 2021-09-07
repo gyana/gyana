@@ -4,12 +4,22 @@
 
 {% block content %}
 <section>
-  <p class="text-center">
-    Reedem AppSumo code <strong>{{ view.kwargs.code }}</strong>.
-  </p>
+  <div class="flex flex-col">
+    <p class="text-center mb-8">
+      Reedem AppSumo code <strong>{{ view.kwargs.code }}</strong>.
+    </p>
+    {% if view.team_exists %} 
+      <div class="flex flex-col mb-7">
+        <h2>Choose an existing team</h2>
+      </div>
+    {% else %}
+      <div class="flex flex-col text-center mb-7">
+        <h2>Create a new team</h2>
+        <p>A team is a single workspace where you manage multiple projects and clients.</p>
+      </div>
+    {% endif %}
 
-  {% if request.user.teams.count > 0 %}
-    <form method="post" class="mb-8">
+    <form method="post" class="my-8">
       {% csrf_token %}
 
       {% include "django/forms/default_form.html" %}
@@ -19,14 +29,6 @@
       </button>
 
     </form>
-  {% else %}
-    <p class="text-center">
-      You're not a member of any teams. Create a
-      <a class="link" href="{% url 'teams:create' %}">
-        new team
-      </a>
-      and return here to redeem your code.
-    </p>
-  {% endif %}
+  </div>
 </section>
 {% endblock %}

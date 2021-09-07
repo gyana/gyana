@@ -101,7 +101,7 @@ class SecondaryColumn(SaveParentModel):
     )
 
 
-class FunctionColumn(SaveParentModel):
+class AggreggationColumn(SaveParentModel):
 
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     function = models.CharField(max_length=20, choices=AggregationFunctions.choices)

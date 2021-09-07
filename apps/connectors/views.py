@@ -1,17 +1,17 @@
 import analytics
-from apps.base.clients import fivetran_client
-from apps.base.segment_analytics import (
-    INTEGRATION_CREATED_EVENT,
-    NEW_INTEGRATION_START_EVENT,
-)
-from apps.integrations.models import Integration
-from apps.projects.mixins import ProjectMixin
 from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
+
+from apps.base.analytics import (INTEGRATION_AUTHORIZED_EVENT,
+                                 INTEGRATION_CREATED_EVENT,
+                                 NEW_INTEGRATION_START_EVENT)
+from apps.base.clients import fivetran_client
+from apps.integrations.models import Integration
+from apps.projects.mixins import ProjectMixin
 
 from .config import get_service_categories, get_services
 from .forms import ConnectorCreateForm
@@ -29,13 +29,13 @@ class ConnectorCreate(ProjectMixin, CreateView):
         context_data["service_categories"] = get_service_categories()
         return context_data
 
-    def get_form_class(self):
+    def get(self, request, *args, **kwargs):
         analytics.track(
             self.request.user.id,
             NEW_INTEGRATION_START_EVENT,
             {"type": Integration.Kind.CONNECTOR},
         )
-        return super().get_form_class()
+        return super().get(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -80,6 +80,17 @@ class ConnectorAuthorize(ProjectMixin, DetailView):
         self.object = self.get_object()
         self.object.fivetran_authorized = True
         self.object.save()
+
+        analytics.track(
+            self.request.user.id,
+            INTEGRATION_AUTHORIZED_EVENT,
+            {
+                "id": self.object.integration.id,
+                "type": Integration.Kind.CONNECTOR,
+                "name": self.object.integration.name,
+            },
+        )
+
         return redirect(
             reverse(
                 "project_integrations:configure",

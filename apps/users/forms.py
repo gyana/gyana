@@ -1,8 +1,9 @@
+import analytics
 from allauth.account.forms import LoginForm
 from django import forms
 from django.contrib.auth.forms import UserChangeForm
 
-from apps.base.segment_analytics import identify_user
+from apps.base.analytics import identify_user
 
 from .models import CustomUser
 
@@ -24,7 +25,10 @@ class UserOnboardingForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.onboarded = True
-        instance.save()
+
+        if commit:
+            instance.save()
+            self.save_m2m()
 
         return instance
 
@@ -41,8 +45,8 @@ class UserLoginForm(LoginForm):
     def __init__(self, *args, **kwargs):
         super(UserLoginForm, self).__init__(*args, **kwargs)
 
-        del self.fields['login'].widget.attrs['placeholder']
-        del self.fields['password'].widget.attrs['placeholder']
+        del self.fields["login"].widget.attrs["placeholder"]
+        del self.fields["password"].widget.attrs["placeholder"]
 
     def login(self, *args, **kwargs):
         identify_user(self.user)

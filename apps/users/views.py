@@ -1,15 +1,22 @@
+import analytics
 from allauth.account.utils import send_email_confirmation
+from allauth.socialaccount.providers.google.views import oauth2_login
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
 
+from apps.base.analytics import ONBOARDING_COMPLETED_EVENT
 from apps.base.turbo import TurboUpdateView
 
 from .forms import CustomUserChangeForm, UploadAvatarForm, UserOnboardingForm
-from .helpers import (require_email_confirmation,
-                      user_has_confirmed_email_address)
+from .helpers import require_email_confirmation, user_has_confirmed_email_address
 from .models import CustomUser
+
+
+def appsumo_oauth2_login(request, *args, **kwargs):
+    request.session["socialaccount_appsumo"] = "appsumo" in request.GET
+    return oauth2_login(request, *args, **kwargs)
 
 
 class UserOnboarding(TurboUpdateView):
@@ -20,6 +27,11 @@ class UserOnboarding(TurboUpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    def form_valid(self, form):
+        redirect = super().form_valid(form)
+        analytics.track(self.request.user.id, ONBOARDING_COMPLETED_EVENT)
+        return redirect
 
 
 def profile(request):

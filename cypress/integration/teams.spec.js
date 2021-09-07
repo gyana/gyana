@@ -125,7 +125,7 @@ describe('teams', () => {
     // row count automatically updated when integration deleted
     cy.contains("You're exceeding your row count limit.").should('not.exist')
   })
-  it.only('account limit disabled', () => {
+  it('account limit disabled', () => {
     cy.visit('/')
 
     // special account with disabled amount

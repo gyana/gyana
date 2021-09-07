@@ -1,3 +1,5 @@
+import analytics
+from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
 from apps.base.clients import fivetran_client
 from apps.base.turbo import TurboUpdateView
 from apps.connectors.tasks import complete_connector_sync
@@ -180,6 +182,15 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
         KIND_TO_SYNC_TASK[self.object.kind](self.object.source_obj)
         # don't assigned the result to self.object
         form.save()
+        analytics.track(
+            self.request.user.id,
+            INTEGRATION_SYNC_STARTED_EVENT,
+            {
+                "id": self.object.id,
+                "type": self.object.kind,
+                "name": self.object.name,
+            },
+        )
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self) -> str:

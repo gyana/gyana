@@ -1,0 +1,36 @@
+.team-projects {
+  display: flex;
+  flex: 1 1 0%;
+  gap: 1.6rem;
+
+  .project-card {
+    align-items: center;
+    background-color: var(--c-white);
+    border-radius: 10px;
+    border: 1px dashed var(--c-gray);
+    box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.04);
+    color: var(--c-black-50);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    height: 14rem;
+    justify-content: center;
+    padding: 1.6rem;
+    text-align: center;
+    width: 22rem;
+
+    &--default {
+      border: 1px solid var(--c-gray);
+      color: var(--c-black);
+
+      p {
+        color: var(--c-black-50);
+      }
+    }
+
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+}

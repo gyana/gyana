@@ -1,5 +1,6 @@
 {% extends 'integrations/base_setup.html' %}
 {% load static %}
+{% load help_utils %}
 
 {% block tab %}
 <div class="pad">
@@ -32,7 +33,7 @@
         <template id="failure-template">
           <i class="fas fa-times text-red text-xl mr-4"></i>
           <div class="flex flex-col">
-            <h4>Errors occurred when validating your {{ object.kind }}.</h4>
+            <h4>Errors occurred when validating your {{ object.kind }}. {% link_article 'integrations' 'error' %}</h4>
             {% if object.kind == 'upload' %}
               <p>If the problem persists, you can upload the CSV to Google Sheets and use our
                 <a class="link" href="{% url 'project_integrations_sheets:create' project.id %}">sheets integration.</a>

@@ -19,11 +19,15 @@
 
       <span data-tooltip-target="body">Configure canvas size</span>
 
-      <div data-popover-target="body" class="popover-body shadow-sm card card--sm">
-        <p>Configure the dashboard's canvas dimension</p>
-        <input id="width" type="number" name="width" value="{{ object.width}}"></input>
-        <input id="height" type="number" name="height" value="{{ object.height}}"></input>
-        <button class="button button--sm" type='submit'>Update</button>
+      <div data-popover-target="body" class="popover-body max-w-lg card card--sm">
+        <p class="mb-3">Configure the dashboard's canvas dimension</p>
+
+        <div class="flex gap-7">
+          <input id="width" class="flex-1 min-w-0" type="number" name="width" value="{{ object.width}}"></input>
+          <input id="height" class="flex-1 min-w-0" type="number" name="height" value="{{ object.height}}"></input>
+        </div>
+
+        <button class="button button--sm button--success mt-7 w-full" type='submit'>Update</button>
       </div>
     </div>
   </form>
@@ -46,7 +50,7 @@
 
     <span data-tooltip-target="body">Delete dashboard</span>
 
-    <div data-popover-target="body" hidden class="popover-body shadow-sm">
+    <div data-popover-target="body" hidden class="popover-body">
       {% include 'dashboards/_delete.html' %}
     </div>
   </div>
@@ -58,7 +62,7 @@
   <div data-controller='popover'>
     <button
       data-popover-target="trigger"
-      class="button button--outline button--sm"
+      class="button button--sm"
       data-action="popover#trigger"
       title="Change dashboard mode"
     >

@@ -1,5 +1,5 @@
 import analytics
-from apps.base.segment_analytics import WORFKLOW_RUN_EVENT
+from apps.base.analytics import WORFKLOW_RUN_EVENT
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response

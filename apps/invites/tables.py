@@ -9,7 +9,7 @@ class InviteTable(tables.Table):
     class Meta:
         model = Invite
         attrs = {"class": "table"}
-        fields = ("email", "sent", "role")
+        fields = ("email", "role", "sent")
 
     email = tables.Column(linkify=True)
     sent = NaturalDatetimeColumn()

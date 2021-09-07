@@ -1,12 +1,12 @@
 {% extends "web/app/project_settings_base.html" %}
 {% load static %}
+{% load help_utils %}
 
 {% block app %}
-
 <div class="flex flex-1 justify-center items-center">
   <div class="flex flex-col max-w-xl">
     <div class="flex flex-col text-center mb-7">
-      <h1>Connect a Google Sheet</h1>
+      <h1>Connect a Google Sheet {% link_article 'integrations' 'sheet' %}</h1>
       <p></p>
     </div>
 

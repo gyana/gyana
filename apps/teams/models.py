@@ -25,6 +25,14 @@ class Team(BaseModel):
     row_count = models.BigIntegerField(default=0)
     row_count_calculated = models.DateTimeField(null=True)
 
+    def save(self, *args, **kwargs):
+        from .bigquery import create_team_dataset
+
+        create = not self.pk
+        super().save(*args, **kwargs)
+        if create:
+            create_team_dataset(self)
+
     def update_row_count(self):
         from apps.tables.models import Table
 
@@ -81,6 +89,12 @@ class Team(BaseModel):
         rows += self.appsumoextra_set.aggregate(models.Sum("rows"))["rows__sum"] or 0
 
         return rows
+
+    @property
+    def credits(self):
+        from apps.appsumo.account import get_deal
+
+        return get_deal(self.appsumocode_set)["credits"]
 
     @property
     def admins(self):

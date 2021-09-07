@@ -1,20 +1,7 @@
-import ibis
 import ibis_bigquery
 import pytest
+from apps.base.tests.mock_data import TABLE
 from apps.columns.bigquery import compile_formula
-
-TABLE = ibis.table(
-    [
-        ("id", "int32"),
-        ("athlete", "string"),
-        ("birthday", "date"),
-        ("updated", "timestamp"),
-        ("medals", "int32"),
-        ("stars", "double"),
-        ("is_nice", "boolean"),
-    ],
-    name="olympians",
-)
 
 QUERY = "SELECT {} AS `tmp`\nFROM olympians"
 

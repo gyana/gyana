@@ -1,6 +1,6 @@
 from allauth.account.views import SignupView
-from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.base.frames import TurboFrameListView
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 from django.shortcuts import redirect
 from django.urls.base import reverse
@@ -12,6 +12,7 @@ from turbo_response.views import TurboFormView
 
 from .forms import (
     AppsumoRedeemForm,
+    AppsumoRedeemNewTeamForm,
     AppsumoReviewForm,
     AppsumoSignupForm,
     AppsumoStackForm,
@@ -84,10 +85,16 @@ class AppsumoSignup(TurboFormMixin, SignupView):
 
 class AppsumoRedeem(TurboUpdateView):
     model = AppsumoCode
-    form_class = AppsumoRedeemForm
     slug_url_kwarg = "code"
     slug_field = "code"
     template_name = "appsumo/redeem.html"
+
+    @property
+    def team_exists(self):
+        return self.request.user.teams.count()
+
+    def get_form_class(self):
+        return AppsumoRedeemForm if self.team_exists > 0 else AppsumoRedeemNewTeamForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -95,7 +102,7 @@ class AppsumoRedeem(TurboUpdateView):
         return kwargs
 
     def get_success_url(self) -> str:
-        return reverse("teams:detail", args=(self.object.team.id,))
+        return reverse("web:home")
 
 
 class AppsumoReview(TeamMixin, TurboCreateView):

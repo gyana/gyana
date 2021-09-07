@@ -1,6 +1,27 @@
 {% extends "web/base.html" %}
 {% load static %}
 
+
+{% block banner %}
+  {% if team.warning %}
+    <div class="banner banner--danger">
+      <p>
+        You're exceeding your row count limit.
+        <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
+      </p>
+    </div>
+  {% endif %}
+
+  {% if not team.enabled %}
+    <div class="banner banner--danger">
+      <p>
+        You've exceeded your row count limit by over 20%, your team is
+        temporarily disabled. <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
+      </p>
+    </div>
+  {% endif %}
+{% endblock %}
+
 {% block sidebar_content %}
 {% for user_team in request.user.teams.all %}
 <li>
@@ -23,9 +44,7 @@
 
 {% block notifications %}{% endblock %}
 
-<section class="flex flex-col flex-1 {% block app-class %}{% endblock %}">
-
-
+<section class="flex flex-col flex-1 overflow-hidden {% block app-class %}{% endblock %}">
   {% block app %}{% endblock %}
 </section>
 

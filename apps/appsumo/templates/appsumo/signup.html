@@ -9,6 +9,12 @@
     <input type="text" disabled value={{ view.kwargs.code }}>
   </label>
 
+  <a class="button button--primary button--outline button--google w-full" href="{% provider_login_url 'google' %}?next={% url 'appsumo:redeem' request.resolver_match.kwargs.code %}&appsumo=true">
+    <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
+    Sign up with Google
+  </a>
+  <p class="text-center text-black-50 my-4">or</p>
+
   <form method="post" class="mb-8">
     {% csrf_token %}
 

@@ -1,5 +1,5 @@
 import analytics
-from apps.base.segment_analytics import PROJECT_CREATED_EVENT
+from apps.base.analytics import PROJECT_CREATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 from django.shortcuts import redirect
@@ -30,7 +30,6 @@ class ProjectCreate(TeamMixin, TurboCreateView):
         analytics.track(
             self.request.user.id, PROJECT_CREATED_EVENT, {"id": form.instance.id}
         )
-
         return redirect
 
 

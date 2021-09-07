@@ -3,18 +3,21 @@
 
 {% block tab %}
 
-<h2>Account usage: {{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }} rows</h2>
-<p class="mb-7">Last calculated: {{ team.row_count_calculated|naturaltime|default_if_none:"Never" }}</p>
-  
+
 <div class="max-w-lg mb-auto">
-  <form method="post" class="form">
+  <h2>Account usage: {{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }} rows</h2>
+  <p class="mb-7">Last calculated: {{ team.row_count_calculated|naturaltime|default_if_none:"Never" }}</p>
+  <form method="post" class="form mb-7">
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}
 
     <button type="submit" class="button button--success">Recalculate</button>
   </form>
+  <h2>Credits: {{ team.credits|intcomma }}</h2>
 </div>
+
+
 
 {% if team.appsumocode_set.count > 0 %}
 <h2 class="mb-3">AppSumo</h2>

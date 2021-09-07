@@ -29,7 +29,7 @@ describe('integrations', () => {
     cy.get('table tbody tr').should('have.length', 15)
     cy.get('table thead th').should('have.length', 4)
   })
-  it.only('update and delete', () => {
+  it('update and delete', () => {
     cy.contains('store_info').click()
 
     // update

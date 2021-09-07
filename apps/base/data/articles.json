@@ -1,0 +1,57 @@
+{
+  "overview": {
+    "intro": "5547945-what-is-gyana",
+    "collaborate": "5548479-getting-started-how-do-we-collaborate",
+    "integrations": "5548491-getting-started-how-do-we-add-data",
+    "workflows": "5548520-getting-started-how-do-we-work-with-data",
+    "dashboards": "5548522-getting-started-how-do-we-display-data",
+    "templates": "5548530-getting-started-how-do-we-use-templates",
+    "transition": "5548529-transition-guide"
+  },
+  "integrations": {
+    "overview": "5548599-integrations-overview",
+    "upload": "5548533-csv",
+    "sheet": "5548532-google-sheets",
+    "connector": "5548540-connectors",
+    "error": "5548601-my-integration-isn-t-working"
+  },
+  "workflows": {
+    "overview": "5548602-workflow-overview",
+    "select": "5548542-select-columns-node",
+    "join": "5548543-join-node",
+    "aggregration": "5548544-aggregration-node",
+    "union": "5548546-union-node",
+    "sort": "5548545-sort-node",
+    "limit": "5548547-limit-node",
+    "filter": "5548548-filter-node",
+    "distinct": "5548549-distinct-node",
+    "pivot": "5548550-pivot-node",
+    "unpivot": "5548553-unpivot-node",
+    "intersection": "5548554-intersection-node",
+    "edit": "5548555-edit-node",
+    "add": "5548556-add-node",
+    "rename": "5548558-rename-node",
+    "formula": "5548561-formula-node",
+    "window": "5548562-window-node",
+    "text": "5548563-text-node"
+  },
+  "dashboards": {
+    "overview": "5548603-dashboards-overview",
+    "share": "5548605-sharing-dashboards",
+    "table": "5548574-table-widget",
+    "mscolumn2d": "5548577-column-widget",
+    "stackedcolumn2d": "5548579-stacked-column-widget",
+    "msbar2d": "5548580-bar-widget",
+    "stackedbar2d": "5548598-stacked-bar-widget",
+    "msline": "5548581-line-widget",
+    "pie2d": "5548582-pie-widget",
+    "area2d": "5548583-area-widget",
+    "doughnut2d": "5548586-donut-widget",
+    "scatter": "5548589-scatter-widget",
+    "funnel": "5548590-funnel-widget",
+    "pyramid": "5548591-pyramid-widget",
+    "radar": "5548594-radar-widget",
+    "bubble": "5548595-bubble-widget",
+    "heatmap": "5548596-heatmap-widget"
+  }
+}

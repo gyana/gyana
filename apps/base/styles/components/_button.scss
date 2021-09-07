@@ -16,7 +16,7 @@ $button-colors: (
 // ```
 .button {
   --button-color: var(--c-blue);
-  --button-background: var(--c-transparent);
+  --button-background: var(--c-white);
 
   align-items: baseline;
   border-radius: 6px;
