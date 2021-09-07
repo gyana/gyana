@@ -1,3 +1,6 @@
+from django.conf import settings
+from django.urls import reverse
+
 from apps.base.clients import fivetran_client
 from apps.base.frames import TurboFrameDetailView
 from apps.integrations.tables import (
@@ -36,5 +39,26 @@ class ConnectorStatus(TurboFrameDetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        update_fivetran_succeeded_at(self.object)
+        client = fivetran_client()
+        data = client.get(self.object)
+        update_fivetran_succeeded_at(self.object, data["succeeded_at"])
+        # {
+        #     "setup_state": "broken" | "incomplete" | "connected",
+        #     "tasks": [{"code": ..., "message": ...}],
+        #     "warnings": [{"code": ..., "message": ...}]
+        # }
+        context_data["status"] = data["status"]
+        if data["status"]["setup_state"] != "connected":
+            internal_redirect = reverse(
+                "project_integrations_connectors:authorize",
+                args=(
+                    self.object.integration.project.id,
+                    self.object.id,
+                ),
+            )
+
+            context_data["fivetran_url"] = fivetran_client().authorize(
+                self.object,
+                f"{settings.EXTERNAL_URL}{internal_redirect}",
+            )
         return context_data

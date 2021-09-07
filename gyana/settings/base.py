@@ -333,7 +333,10 @@ GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME")
 FIVETRAN_KEY = os.environ.get("FIVETRAN_KEY")
 FIVETRAN_URL = "https://api.fivetran.com/v1"
 FIVETRAN_GROUP = os.environ.get("FIVETRAN_GROUP")
-FIVETRAN_HEADERS = {"Authorization": f"Basic {FIVETRAN_KEY}"}
+FIVETRAN_HEADERS = {
+    "Authorization": f"Basic {FIVETRAN_KEY}",
+    "Accept": "application/json;version=2",
+}
 
 EXTERNAL_URL = "http://localhost:8000"
 # for local development

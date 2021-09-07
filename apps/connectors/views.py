@@ -6,9 +6,11 @@ from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 
-from apps.base.analytics import (INTEGRATION_AUTHORIZED_EVENT,
-                                 INTEGRATION_CREATED_EVENT,
-                                 NEW_INTEGRATION_START_EVENT)
+from apps.base.analytics import (
+    INTEGRATION_AUTHORIZED_EVENT,
+    INTEGRATION_CREATED_EVENT,
+    NEW_INTEGRATION_START_EVENT,
+)
 from apps.base.clients import fivetran_client
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
@@ -67,9 +69,11 @@ class ConnectorCreate(ProjectMixin, CreateView):
             ),
         )
 
-        return fivetran_client().authorize(
-            self.object,
-            f"{settings.EXTERNAL_URL}{internal_redirect}",
+        return redirect(
+            fivetran_client().authorize(
+                self.object,
+                f"{settings.EXTERNAL_URL}{internal_redirect}",
+            )
         )
 
 

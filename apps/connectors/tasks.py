@@ -1,5 +1,6 @@
 from datetime import datetime
 from itertools import chain
+from typing import Optional
 
 import analytics
 from celery import shared_task
@@ -150,34 +151,25 @@ def run_connector_sync(connector: Connector):
         connector.integration.save()
 
 
-def update_fivetran_succeeded_at(connector: Connector):
-    client = fivetran_client()
-    try:
-        data = client.get(connector)
+def update_fivetran_succeeded_at(connector: Connector, succeeded_at: Optional[str]):
+    if succeeded_at is not None:
+        # timezone (UTC) information is parsed automatically
+        succeeded_at = datetime.strptime(succeeded_at, "%Y-%m-%dT%H:%M:%S.%f%z")
 
-        if data["succeeded_at"] is not None:
-            # timezone (UTC) information is parsed automatically
-            succeeded_at = datetime.strptime(
-                data["succeeded_at"], "%Y-%m-%dT%H:%M:%S.%f%z"
-            )
+        if (
+            connector.fivetran_succeeded_at is None
+            or succeeded_at > connector.fivetran_succeeded_at
+        ):
+            connector.fivetran_succeeded_at = succeeded_at
+            connector.save()
 
-            if (
-                connector.fivetran_succeeded_at is None
-                or succeeded_at > connector.fivetran_succeeded_at
-            ):
-                connector.fivetran_succeeded_at = succeeded_at
-                connector.save()
+            # update all tables too
+            tables = connector.integration.table_set.all()
+            for table in tables:
+                table.data_updated = succeeded_at
+                table.num_rows = table.bq_obj.num_rows
 
-                # update all tables too
-                tables = connector.integration.table_set.all()
-                for table in tables:
-                    table.data_updated = succeeded_at
-                    table.num_rows = table.bq_obj.num_rows
-
-                Table.objects.bulk_update(tables, ["data_updated", "num_rows"])
-
-    except FivetranClientError:
-        pass
+            Table.objects.bulk_update(tables, ["data_updated", "num_rows"])
 
 
 FIVETRAN_SYNC_FREQUENCY_HOURS = 6
@@ -185,6 +177,7 @@ FIVETRAN_SYNC_FREQUENCY_HOURS = 6
 
 @shared_task
 def update_connectors_from_fivetran():
+    client = fivetran_client()
 
     succeeded_at_before = timezone.now() - timezone.timedelta(
         hours=FIVETRAN_SYNC_FREQUENCY_HOURS
@@ -199,6 +192,10 @@ def update_connectors_from_fivetran():
     )
 
     for connector in connectors_to_check:
-        update_fivetran_succeeded_at(connector)
+        try:
+            data = client.get(connector)
+            update_fivetran_succeeded_at(connector, data["succeeded_at"])
+        except FivetranClientError:
+            pass
 
     honeybadger_check_in("ZbIlqq")

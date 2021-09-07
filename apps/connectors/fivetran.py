@@ -152,9 +152,7 @@ class FivetranClient:
         )
         connect_card_token = card.json()["token"]
 
-        return redirect(
-            f"https://fivetran.com/connect-card/setup?redirect_uri={redirect_uri}&auth={connect_card_token}"
-        )
+        return f"https://fivetran.com/connect-card/setup?redirect_uri={redirect_uri}&auth={connect_card_token}"
 
     def start_initial_sync(self, connector: Connector) -> Dict:
 
