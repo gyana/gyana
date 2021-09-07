@@ -14,10 +14,8 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
   root,
 }) => {
   const mode: 'view' | 'edit' | 'public' =
-    new URLSearchParams(window.location.search).get('mode') ||
-    window.location.href.includes('projects')
-      ? 'edit'
-      : 'public'
+    (new URLSearchParams(window.location.search).get('mode') as 'view' | 'edit') ||
+    (window.location.href.includes('projects') ? 'edit' : 'public')
   const id = children.props['data-id']
   // Utilised to decide the clamping on interaction as well as clamps for placement
   const stepSize = GRID_SIZE
