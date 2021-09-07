@@ -1,7 +1,8 @@
 from apps.projects.access import login_and_project_required
 from django.urls import path
+from silk.profiling.profiler import silk_profile
 
-from . import frames, views
+from . import cache, frames, views
 from .access import login_and_integration_required
 
 app_name = "integrations"
@@ -9,7 +10,9 @@ urlpatterns = [
     # frames
     path(
         "<hashid:pk>/grid",
-        login_and_integration_required(frames.IntegrationGrid.as_view()),
+        cache.integration_grid(
+            login_and_integration_required(frames.IntegrationGrid.as_view())
+        ),
         name="grid",
     ),
     path(
