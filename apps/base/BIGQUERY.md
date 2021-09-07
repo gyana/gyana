@@ -6,7 +6,7 @@ Actionable points for developers:
 - Use `apps.tables.bigquery.get_query_from_table` for fetching Ibis schema
 - Avoid multiple BigQuery requests
 
-Details on performance optimisations BigQuery queries:
+Details on performance optimisations for BigQuery queries:
 
 - Enable [BI Engine](https://cloud.google.com/bi-engine/docs/introduction) to
   speed up interactive queries
