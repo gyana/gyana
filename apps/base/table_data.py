@@ -28,6 +28,11 @@ class BigQueryTableData(TableData):
     """Django table data class that queries data from BigQuery
 
     See https://github.com/jieter/django-tables2/blob/master/django_tables2/data.py
+
+    If pagination is not supplied, the client queries the entire result and
+    fetches the first N rows, and the total rows information. The total rows
+    information is cached, for future requests with explicit pages, where the
+    data is fetched via LIMIT ... OFFSET ... expression.
     """
 
     rows_per_page = 50
@@ -37,6 +42,8 @@ class BigQueryTableData(TableData):
         data,
     ):
         self.data = data
+        # calculate before the order_by is applied, as len is not effected
+        self._len_key = str(hash(self.data))
 
     @property
     def _page_selected(self):
@@ -53,17 +60,15 @@ class BigQueryTableData(TableData):
         """Fetches the data for the current page"""
         if not self._page_selected:
             return self._get_query_results().rows_dict[: page.stop - page.start]
-
         return self._get_query_results(page.start, page.stop).rows_dict
 
     def __len__(self):
         """Fetches the total size from BigQuery"""
-        key = str(hash(self.data))
-        total_rows = cache.get(key)
+        total_rows = cache.get(self._len_key)
 
         if not self._page_selected or total_rows is None:
             total_rows = self._get_query_results().total_rows
-            cache.set(key, total_rows, 30)
+            cache.set(self._len_key, total_rows, 30)
 
         return total_rows
 

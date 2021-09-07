@@ -1,19 +1,19 @@
 import logging
 
 import analytics
+from apps.base.analytics import WIDGET_CONFIGURED_EVENT
 from apps.base.frames import (
     TurboFrameDetailView,
     TurboFrameFormsetUpdateView,
     TurboFrameListView,
 )
-from apps.base.analytics import WIDGET_CONFIGURED_EVENT
+from apps.base.table_data import RequestConfig
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, table_to_output
 from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.views.decorators.http import condition
-from django_tables2.config import RequestConfig
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
 from turbo_response import TurboStream

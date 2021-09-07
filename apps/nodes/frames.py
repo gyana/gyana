@@ -4,15 +4,13 @@ from apps.base.frames import (
     TurboFrameFormsetUpdateView,
     TurboFrameUpdateView,
 )
-from apps.base.table_data import get_table
+from apps.base.table_data import RequestConfig, get_table
 from apps.base.templates import template_exists
 from django import forms
 from django.http.response import HttpResponse
 from django.urls import reverse
-from django_tables2.config import RequestConfig
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
-from turbo_response.views import TurboFrameTemplateView
 
 from .bigquery import get_query_from_node
 from .forms import KIND_TO_FORM
