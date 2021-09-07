@@ -3,7 +3,7 @@ from django.urls import path
 from django.views.decorators.cache import cache_control
 from rest_framework import routers
 
-from . import frames, rest, views
+from . import cache, frames, rest, views
 from .access import login_and_project_required_or_public_or_in_template
 
 app_name = "widgets"
@@ -41,16 +41,11 @@ dashboard_urlpatterns = (
             login_and_project_required(frames.WidgetUpdate.as_view()),
             name="update",
         ),
-        # No cache header tells browser to always re-validate the resource
-        # https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#controlling_caching
-        # https://web.dev/http-cache/#flowchart
         path(
             "<hashid:pk>/output",
-            cache_control(no_cache=True)(
-                frames.widget_output_condition(
-                    login_and_project_required_or_public_or_in_template(
-                        frames.WidgetOutput.as_view()
-                    )
+            cache.widget_output(
+                login_and_project_required_or_public_or_in_template(
+                    frames.WidgetOutput.as_view()
                 )
             ),
             name="output",

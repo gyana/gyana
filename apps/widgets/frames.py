@@ -13,7 +13,6 @@ from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, table_to_output
 from django.db.models.query import QuerySet
 from django.urls import reverse
-from django.views.decorators.http import condition
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
 from turbo_response import TurboStream
@@ -166,31 +165,3 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
                 self.request, paginate=self.get_table_pagination(table)
             ).configure(table)
         return type("DynamicTable", (DjangoTable,), {})(data=[])
-
-
-# ====== Not used right now =======
-# TODO: decide whether we want to cache the output of the chart or
-# Remove this. You will also need to add back the caching logic in urls.py.
-# We removed this for now because with the modal we are rendering the same FusionChart
-# Twice which leads to an id conflict
-
-
-def last_modified_widget_output(request, project_id, dashboard_id, pk):
-    widget = Widget.objects.get(pk=pk)
-    return (
-        max(widget.updated, widget.table.data_updated)
-        if widget.table
-        else widget.updated
-    )
-
-
-def etag_widget_output(request, project_id, dashboard_id, pk):
-    last_modified = last_modified_widget_output(request, project_id, dashboard_id, pk)
-    return str(int(last_modified.timestamp() * 1_000_000))
-
-
-widget_output_condition = condition(
-    etag_func=etag_widget_output, last_modified_func=last_modified_widget_output
-)
-
-# ==================================================
