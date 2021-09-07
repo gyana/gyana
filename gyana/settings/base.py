@@ -98,13 +98,14 @@ PROJECT_APPS = [
 INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
-    "beeline.middleware.django.HoneyMiddleware",
     "honeybadger.contrib.DjangoHoneybadgerMiddleware",
+    "beeline.middleware.django.HoneyMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "apps.base.middleware.HoneybadgerUserContextMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "hijack.middleware.HijackUserMiddleware",
@@ -374,4 +375,5 @@ HONEYCOMB_API_KEY = os.environ.get("HONEYCOMB_API_KEY")
 HONEYBADGER = {
     "API_KEY": os.environ.get("HONEYBADGER_API_KEY"),
     "ENVIRONMENT": ENVIRONMENT,
+    "FORCE_REPORT_DATA": True
 }

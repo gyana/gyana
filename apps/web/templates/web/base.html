@@ -16,6 +16,11 @@
   <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
+  {% comment %} Before all javascript is loaded {% endcomment %}
+  {% if HONEYBADGER_API_KEY %}
+  {% include 'web/components/honeybadger.html' %}
+  {% endif %}
+
   <script src="https://unpkg.com/@popperjs/core@2"></script>
   <script src="https://unpkg.com/tippy.js@6"></script>
   <script src="https://kit.fontawesome.com/b03f4cc8cd.js" crossorigin="anonymous"></script>
@@ -33,10 +38,6 @@
 
   {% if GOOGLE_ANALYTICS_ID %}
   {% include 'web/components/google_analytics.html' %}
-  {% endif %}
-
-  {% if HONEYBADGER_API_KEY %}
-  {% include 'web/components/honeybadger.html' %}
   {% endif %}
 
   {% block page_head %}{% endblock %}
