@@ -47,6 +47,11 @@ describe('connectors', () => {
     // cy.get('#connectors-status').trigger('mouseover')
     cy.contains('Jan. 1, 2021, midnight')
 
+    // connector is broken by design, follow mock redirect
+    cy.contains('Your connector is broken')
+    cy.contains('fixing it').click()
+    cy.url().should('contain', '/connectors/mock')
+
     // check email sent
     cy.outbox()
       .then((outbox) => outbox.count)
