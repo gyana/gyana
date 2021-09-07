@@ -74,7 +74,13 @@ def get_dataframe(query):
     return client.query(query).result().to_dataframe(create_bqstorage_client=False)
 
 
-def get_query_results(query, maxResults=100):
+class QueryResults(_QueryResults):
+    @property
+    def rows_dict(self):
+        return [{k: v for k, v in row.items()} for row in self.rows]
+
+
+def get_query_results(query, maxResults=100) -> QueryResults:
     client = bigquery_client()
     resource = client._call_api(
         None,
@@ -87,7 +93,7 @@ def get_query_results(query, maxResults=100):
             "formatOptions": {"useInt64Timestamp": True},
         },
     )
-    return _QueryResults.from_api_repr(resource)
+    return QueryResults.from_api_repr(resource)
 
 
 @lru_cache

@@ -3,6 +3,7 @@ import functools
 from apps.base.clients import get_query_results
 from django.core.cache import cache
 from django_tables2 import Column, Table
+from django_tables2.config import RequestConfig as BaseRequestConfig
 from django_tables2.data import TableData
 from django_tables2.templatetags.django_tables2 import QuerystringNode
 
@@ -37,35 +38,34 @@ class BigQueryTableData(TableData):
     ):
         self.data = data
 
+    @property
+    def _page_selected(self):
+        return "page" in self.table.request.GET
+
+    @functools.cache
+    def _get_query_results(self, start=0, stop=None):
+        data = self.data
+        if start > 0:
+            data = data.limit(stop - start, offset=start)
+        return get_query_results(data.compile(), maxResults=self.rows_per_page)
+
     def __getitem__(self, page: slice):
         """Fetches the data for the current page"""
-        return [
-            {k: v for k, v in row.items()}
-            for row in self._get_query_results(
-                page.start if page.start > 0 else None,
-                page.stop if page.start > 0 else None,
-            ).rows[: page.stop - page.start]
-        ]
+        if not self._page_selected:
+            return self._get_query_results().rows_dict[: page.stop - page.start]
+
+        return self._get_query_results(page.start, page.stop).rows_dict
 
     def __len__(self):
         """Fetches the total size from BigQuery"""
-        key = f"table_total_rows_{hash(self.data)}"
+        key = str(hash(self.data))
         total_rows = cache.get(key)
-        if total_rows is None:
+
+        if not self._page_selected or total_rows is None:
             total_rows = self._get_query_results().total_rows
-            cache.set(key, total_rows)
+            cache.set(key, total_rows, 30)
 
         return total_rows
-
-    # Not sure when or whether this is used at the moment
-    def __iter__(self):
-        for offset in range(
-            0,
-            len(self),
-            self.rows_per_page,
-        ):
-            yield self[offset]
-        return
 
     def order_by(self, aliases):
         self.data = self.data.sort_by(
@@ -81,12 +81,12 @@ class BigQueryTableData(TableData):
         """
         self.table = table
 
-    @functools.cache
-    def _get_query_results(self, start=None, stop=None):
-        data = self.data
-        if start:
-            data = data.limit(stop - start, offset=start)
-        return get_query_results(data.compile(), maxResults=self.rows_per_page)
+
+class RequestConfig(BaseRequestConfig):
+    def configure(self, table):
+        # table has request attribute before table_data.__len__ is called
+        table.request = self.request
+        return super().configure(table)
 
 
 def get_table(schema, query, **kwargs):
