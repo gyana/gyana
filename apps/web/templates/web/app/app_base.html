@@ -1,10 +1,9 @@
 {% extends "web/base.html" %}
 {% load static %}
 
-
 {% block banner %}
   {% if team.warning %}
-    <div class="banner banner--danger">
+    <div class="banner banner--warning">
       <p>
         You're exceeding your row count limit.
         <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>

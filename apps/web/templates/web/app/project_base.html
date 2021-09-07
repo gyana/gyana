@@ -1,6 +1,26 @@
 {% extends "web/base.html" %}
 {% load static %}
 
+{% block banner %}
+  {% if project.team.warning %}
+    <div class="banner banner--warning">
+      <p>
+        You're exceeding your row count limit.
+        <a href="{% url 'teams:account' projec.team.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
+      </p>
+    </div>
+  {% endif %}
+
+  {% if not project.team.enabled %}
+    <div class="banner banner--danger">
+      <p>
+        You've exceeded your row count limit by over 20%, your team is
+        temporarily disabled. <a href="{% url 'teams:account' project.team.id %}" class="text-white font-bold underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
+      </p>
+    </div>
+  {% endif %}
+{% endblock %}
+
 {% block sidebar_content %}
 <div class="sidebar__title">
   <a class="h3" title="{{ project.name }}" href="{% url 'projects:detail' project.id %}">{{ project.name }}</a>
