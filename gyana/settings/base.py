@@ -85,7 +85,7 @@ PROJECT_APPS = [
     "apps.filters",
     "apps.tables.apps.TablesConfig",
     "apps.invites.apps.InvitesConfig",
-    "apps.base",
+    "apps.base.apps.BaseConfig",
     "apps.nodes",
     "apps.columns",
     "apps.uploads",
@@ -98,7 +98,7 @@ PROJECT_APPS = [
 INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
-    "silk.middleware.SilkyMiddleware",
+    "beeline.middleware.django.HoneyMiddleware",
     "honeybadger.contrib.DjangoHoneybadgerMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -367,3 +367,6 @@ ADMIN_TOOLS_MENU = "apps.base.menu.CustomMenu"
 ADMIN_TOOLS_INDEX_DASHBOARD = "apps.base.dashboard.CustomIndexDashboard"
 
 MOCK_REMOTE_OBJECT_DELETION = False
+
+ENVIRONMENT = os.environ.get("ENVIRONMENT")
+HONEYCOMB_API_KEY = os.environ.get("HONEYCOMB_API_KEY")
