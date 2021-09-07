@@ -18,6 +18,7 @@ from django_tables2.config import RequestConfig
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
 from turbo_response import TurboStream
+from turbo_response.response import TurboStreamResponse
 
 from .forms import FORMS
 from .models import WIDGET_CHOICES_ARRAY, Widget
@@ -128,10 +129,17 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             "dashboard": self.dashboard,
         }
         add_output_context(context, self.object, self.request)
-        return (
-            TurboStream(f"widgets-output-{self.object.id}-stream")
-            .replace.template("widgets/output.html", context)
-            .response(request=self.request)
+        return TurboStreamResponse(
+            [
+                TurboStream(f"widgets-output-{self.object.id}-stream")
+                .replace.template("widgets/output.html", context)
+                .render(request=self.request),
+                TurboStream(f"widget-name-{self.object.id}-stream")
+                .replace.template(
+                    "widgets/_widget_title.html", {"object": self.get_object}
+                )
+                .render(),
+            ]
         )
 
     def form_invalid(self, form):
@@ -143,10 +151,17 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
                 "dashboard": self.dashboard,
             }
             add_output_context(context, self.object, self.request)
-            return (
-                TurboStream(f"widgets-output-{self.object.id}-stream")
-                .replace.template("widgets/output.html", context)
-                .response(request=self.request)
+            return TurboStreamResponse(
+                [
+                    TurboStream(f"widgets-output-{self.object.id}-stream")
+                    .replace.template("widgets/output.html", context)
+                    .render(request=self.request),
+                    TurboStream(f"widget-name-{self.object.id}-stream")
+                    .replace.template(
+                        "widgets/_widget_title.html", {"object": self.get_object}
+                    )
+                    .render(),
+                ]
             )
         return r
 

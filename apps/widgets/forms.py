@@ -20,7 +20,6 @@ class GenericWidgetForm(LiveUpdateForm):
     class Meta:
         model = Widget
         fields = [
-            "name",
             "table",
             "kind",
             "label",
@@ -44,7 +43,7 @@ class GenericWidgetForm(LiveUpdateForm):
             ).exclude(source="intermediate_node")
 
     def get_live_fields(self):
-        return ["table", "kind", "name"]
+        return ["table", "kind"]
 
     def get_live_formsets(self):
         if self.get_live_field("table") is None:

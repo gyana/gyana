@@ -9,9 +9,8 @@ preview mode.
        data-width="{{object.width}}" data-height="{{object.height}}">
     <div class="widget-card h-full">
       <div class='widget-card__visual'>
-        {% if object.name %}
-        <h3 class="text-center py-4">{{ object.name }}</h3>
-        {% endif %}
+        
+        {% include 'widgets/_widget_title.html' %}
 
         <turbo-frame 
           id="widgets-output-{{ object.id }}"
