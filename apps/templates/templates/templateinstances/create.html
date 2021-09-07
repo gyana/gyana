@@ -9,10 +9,11 @@
     <a class="button button--sm button--tertiary" href="{% url 'teams:detail' team.id %}">Go back</a>
 
     <div
-      data-controller='tooltip popover'
+      data-controller='popover'
       data-popover-dont-hide-body-value="{{dont_hide_body}}"
     >
       <button
+        id="templates-add"
         data-popover-target="trigger"
         class="button button--sm button--outline"
         data-action="popover#trigger"

@@ -5,26 +5,37 @@ import { getModelStartId, BIGQUERY_TIMEOUT } from '../support/utils'
 const projectId = getModelStartId('projects.project')
 const templateInstanceId = getModelStartId('templates.templateinstance')
 
+const checkDashboard = () => {
+  // chart 1, google analytics
+  // title
+  cy.contains('Bounce rate and session duration')
+  // axis
+  cy.contains('avg_session_duration')
+  // chart 2, upload
+  // title
+  cy.contains('Employees by owner')
+  // axis
+  cy.contains('Alex')
+}
+
 describe('templates', () => {
   beforeEach(() => {
     cy.login()
-    cy.visit('/teams/1')
   })
-  it('new project from template', () => {
-    cy.contains('Create Project')
+  it('new project', () => {
+    cy.visit('/teams/1')
+
+    cy.contains('Create a new project')
 
     // choose the template
     cy.contains('Google Analytics').click()
 
     // template preview loads
     cy.contains('Google Analytics')
-    cy.contains('Bounce rate and session duration')
-    cy.contains('avg_session_duration')
-    cy.contains('Employees by owner')
-    cy.contains('Alex')
+    checkDashboard()
 
     // create the project with the template
-    cy.get('button[type=submit]').click({ turbo: false })
+    cy.get('button[value=create]').click({ turbo: false })
     cy.url().should('contain', `/projects/${projectId}/templates/${templateInstanceId}`)
 
     // setup the new Google Analytics connector, and it redirects back
@@ -56,10 +67,36 @@ describe('templates', () => {
     cy.contains('Basic metrics').click()
 
     // dashboard still loads
-    cy.contains('Google Analytics')
-    cy.contains('Bounce rate and session duration')
-    cy.contains('avg_session_duration')
-    cy.contains('Employees by owner')
-    cy.contains('Alex')
+    checkDashboard()
+  })
+  it('existing project', () => {
+    cy.visit('/projects/1/integrations')
+
+    // setup a project with Google Analytics
+    // from connectors.spec.js
+
+    cy.contains('New Integration').click()
+    cy.contains('New Connector').click()
+    cy.contains('Google Analytics').click()
+    cy.get('button[type=submit]').click()
+    cy.contains('continue').click()
+    cy.get('button[type=submit]').click()
+    cy.contains('Confirm', { timeout: BIGQUERY_TIMEOUT }).click()
+
+    // add template to project
+    cy.visit('/teams/1')
+    cy.contains('Google Analytics').click()
+    cy.get('#templates-add').click()
+    cy.get('select').select('Cypress test project')
+    cy.get('button[value=add]').click()
+
+    // uses existing connector
+    cy.get('.fa-check-circle')
+    cy.get('button[type=submit]').click()
+
+    // dashboard loads
+    cy.contains('Dashboard').click()
+    cy.contains('Basic metrics').click()
+    checkDashboard()
   })
 })
