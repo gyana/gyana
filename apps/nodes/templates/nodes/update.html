@@ -60,10 +60,6 @@
 <div class="workflow-modal__section">
   <div class="workflow-modal__table">
     <nav class="tabbar">
-      <a class="tabbar__link {% if show_docs %} tabbar__link--active {% endif %}"
-         href="{% url 'nodes:update' object.id %}?show_docs=true">
-        Help
-      </a>
       {% for parent in parents %}
       <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
          href="{% url 'nodes:update' object.id %}?preview_node_id={{ parent.id }}">
@@ -73,6 +69,10 @@
       <a class="tabbar__link  {% if preview_node_id == object.id and not show_docs %} tabbar__link--active {% endif %}"
          href="{% url 'nodes:update' object.id %}?preview_node_id={{ object.id }}">
         Result
+      </a>
+      <a class="tabbar__link {% if show_docs %} tabbar__link--active {% endif %}"
+         href="{% url 'nodes:update' object.id %}?show_docs=true">
+        Help
       </a>
     </nav>
     {% if show_docs%}

@@ -5,6 +5,7 @@
   color: var(--c-black);
   font-size: 1.4rem;
   padding: 1.2rem 0.8rem;
+  max-height: 3.9rem;
   width: 100%;
 
   &:focus {
@@ -97,6 +98,20 @@ label {
 
   ul li {
     padding: 0.4rem 0;
+  }
+
+  .button-input {
+    display: flex;
+
+    input {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .button {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
   }
 }
 
