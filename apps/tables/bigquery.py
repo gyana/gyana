@@ -3,7 +3,6 @@ from ibis.expr.types import TableExpr
 
 from apps.base.cache import get_cache_key
 from apps.base.clients import bigquery_client, ibis_client
-from apps.nodes.models import Node
 
 from .models import Table
 
