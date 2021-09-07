@@ -1,13 +1,10 @@
 from apps.dashboards.models import Dashboard
 from apps.integrations.models import Integration
-from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.tables.models import Table
 from apps.templates.bigquery import copy_write_truncate_bq_table
 from apps.templates.duplicate import get_target_table_from_source_table
 from apps.widgets.models import Widget
-from apps.workflows.bigquery import run_workflow
-from apps.workflows.models import Workflow
 from django import forms
 from django.db import transaction
 
@@ -49,6 +46,42 @@ class TemplateInstanceCreateForm(forms.ModelForm):
         if commit:
             with transaction.atomic():
                 project.save()
+                instance.save()
+                TemplateIntegration.objects.bulk_create(template_integrations)
+                self.save_m2m()
+
+        return instance
+
+
+class TemplateInstanceCreateExistingForm(forms.ModelForm):
+    class Meta:
+        model = TemplateInstance
+        fields = ["project"]
+        labels = {"project": "Choose a project"}
+
+    def __init__(self, *args, **kwargs):
+        self._team = kwargs.pop("team")
+        self._template = kwargs.pop("template")
+        super().__init__(*args, **kwargs)
+        self.fields["project"].queryset = self._team.project_set.all()
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        instance.template = self._template
+
+        # we only need templates for connectors, uploads and sheets are duplicated
+        template_integrations = [
+            TemplateIntegration(
+                template_instance=instance, source_integration=integration
+            )
+            for integration in self._template.project.integration_set.filter(
+                kind=Integration.Kind.CONNECTOR
+            ).all()
+        ]
+
+        if commit:
+            with transaction.atomic():
                 instance.save()
                 TemplateIntegration.objects.bulk_create(template_integrations)
                 self.save_m2m()
