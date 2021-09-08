@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block banner %}
-  {% if team.warning %}
+  {% if team and team.warning %}
     <div class="banner banner--warning">
       <p>
         You're exceeding your row count limit.

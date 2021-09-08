@@ -7,6 +7,29 @@
     {% csrf_token %}
 
     <input class='input__inline mr-auto' id="name" type="text" name="name" value="{{ object.name }}"></input>
+
+    <div class="button button--circle button--tertiary">
+      {% include 'components/_duplicate.html' with object_name="dashboard" %}
+    </div>
+
+    <div data-controller='tooltip popover'>
+      <span
+        data-popover-target="trigger"
+        data-action="click->popover#trigger"
+        class="button button--circle button--tertiary"
+      > 
+        <i class="far fa-fw fa-trash"></i>
+      </span>
+
+      <span data-tooltip-target="body">Delete</span>
+
+      <div data-popover-target="body" hidden class="popover-body">
+        {% include 'dashboards/_delete.html' %}
+      </div>
+    </div>
+
+    <vr></vr>
+    
     <div data-controller="tooltip popover">
       <button 
         type="button" 
@@ -14,17 +37,22 @@
         class="button button--circle button--tertiary"
         data-action="popover#trigger"
       >
-        <i class="far fa-edit fa-fw"></i>
+        <i class="far fa-expand-arrows-alt fa-fw"></i>
       </button>
 
-      <span data-tooltip-target="body">Configure canvas size</span>
+      <span data-tooltip-target="body">Canvas size</span>
 
       <div data-popover-target="body" class="popover-body max-w-lg card card--sm">
-        <p class="mb-3">Configure the dashboard's canvas dimension</p>
-
         <div class="flex gap-7">
-          <input id="width" class="flex-1 min-w-0" type="number" name="width" value="{{ object.width}}"></input>
-          <input id="height" class="flex-1 min-w-0" type="number" name="height" value="{{ object.height}}"></input>
+          <label>
+            <p>Width</p>
+            <input id="width" class="flex-1 min-w-0" type="number" name="width" value="{{ object.width}}"></input>
+          </label>
+
+          <label>
+            <p>Height</p>
+            <input id="height" class="flex-1 min-w-0" type="number" name="height" value="{{ object.height}}"></input>
+          </label>
         </div>
 
         <button class="button button--sm button--success mt-7 w-full" type='submit'>Update</button>
@@ -35,43 +63,24 @@
   <turbo-frame id="dashboard-share">
     {% include 'dashboards/share.html' %}
   </turbo-frame>
-  <div class="button button--circle button--tertiary">
-    {% include 'components/_duplicate.html' with object_name="dashboard" %}
-  </div>
-
-  <div data-controller='tooltip popover'>
-    <span
-      data-popover-target="trigger"
-      data-action="click->popover#trigger"
-      class="button button--circle button--tertiary"
-    > 
-      <i class="far fa-fw fa-trash"></i>
-    </span>
-
-    <span data-tooltip-target="body">Delete dashboard</span>
-
-    <div data-popover-target="body" hidden class="popover-body">
-      {% include 'dashboards/_delete.html' %}
-    </div>
-  </div>
 
   {% if request.GET.mode != 'view' %}
   {% include 'dashboards/_add_widget.html' with choices=choices %}
   {% endif %}
 
   <div data-controller='popover'>
-    <button
-      data-popover-target="trigger"
-      class="button button--sm"
-      data-action="popover#trigger"
-      title="Change dashboard mode"
-    >
-      {% if request.GET.mode == 'view' %}
-      <i class="fas fa-eye"></i> 
+    <button class="button button--sm" data-controller="tooltip">
+      {% if request.GET.mode == 'edit' %}
+      <a href="?mode=view">
+        <i class="fas fa-eye mr-3"></i> Preview
+      </a>
       {% else %}
-      <i class="fas fa-pen"></i> 
+      <a href="?mode=edit">
+        <i class="fas fa-pen mr-3"></i> Edit
+      </a>
       {% endif %}
-      <i class="fas fa-angle-up fa-rotate-180"></i>
+
+      <span data-tooltip-target="body">Click to change view mode</span>
     </button>
 
     <ul data-popover-target="body" class="list list--bordered" hidden style="margin-top:6px;width:20rem;">

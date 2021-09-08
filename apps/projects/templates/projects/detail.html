@@ -3,7 +3,6 @@
 {% load humanize %}
 
 {% block app %}
-
 <header class="page-header">
   <div class="mr-auto">
     <h1>{{ project.name }}</h1>
@@ -13,67 +12,67 @@
   </div>
 </header>
 
-{% if project.is_ready %}
-
-  <div class="project-detail">
-    <a href="{% url 'project_integrations:list' project.id %}">
-      <div class="project-detail__card">
-        <i class="far fa-fw fa-database fa-5x"></i>
-      </div>
-
-      <h2>
-        <span class="button button--circle button--tertiary">{{ integrations.rows|length }}</span>
-        Integration{{ integrations.rows|length|pluralize}}
-      </h2>
-    </a>
-
-    <i class="far fa-fw fa-arrow-right fa-4x text-black-50"></i>
-
-    <a href="{% url 'project_workflows:list' project.id %}">
-      <div class="project-detail__card">
-        <i class="far fa-fw fa-sitemap fa-5x"></i>
-      </div>
-
-      <h2>
-        <span class="button button--circle button--tertiary">{{ workflows.rows|length }}</span>
-        Workflow{{ workflows.rows|length|pluralize}}
-      </h2>
-    </a>
-
-    <i class="far fa-fw fa-arrow-right fa-4x text-black-50"></i>
-
-    <a href="{% url 'project_dashboards:list' project.id %}">
-      <div class="project-detail__card">
-        <i class="far fa-fw fa-chart-pie fa-5x"></i>
-      </div>
+<section class="flex flex-col gap-7 pad">
+  <div>
+    <div class="flex items-baseline gap-3 mb-3">
+      <h3>Integrations</h3>
       
-      <h2>
-        <span class="button button--circle button--tertiary">{{ dashboards.rows|length }}</span>
-        Dashboard{{ dashboards.rows|length|pluralize}}
-      </h2>
-    </a>
-  </div>
+      <p class="text-black-50">
+        - {{ integrations.rows|length }} Integration{{ integrations.rows|pluralize }}
+        - {{ project.team.row_count|intcomma }} row{{ project.team.row_count|pluralize }} used
+      </p>
+    </div>
 
-{% endif %}
+    <div class="card card--none">
+      {% render_table integrations %}
 
-{% if project.is_ready %}
-  {% comment %} TODO: Mix dashboards, workflows into this table. {% endcomment %}
-  {% if integrations.rows|length > 0 %}
-  <div class="flex flex-col flex-1 gap-7 pad">
-    <div class="flex flex-col gap-7 flex-1">
-      <div class="flex flex-wrap gap-7 mt-auto">
-        <div class="flex-1">
-          <div class="flex mb-3">
-            <h3>Recent Items</h3>
-          </div>
-
-          <div class="card card--none flex-1">
-            {% render_table integrations %}
-          </div>
-        </div>
+      {% if integrations.rows|length == 0 %}
+      <div class="table__empty">
+        <p>This project has no integrations</p>
       </div>
+      {% elif integrations.rows|length > 3 %}
+      <div class="table__more">
+        <small><a href="" class="link"> See more...</a></small>
+      </div>
+      {% endif %}
     </div>
   </div>
-  {% endif %}
-{% endif %}
+
+  <div>
+    <h3 class="mb-3">Workflows</h3>
+
+    <div class="card card--none">
+      {% render_table workflows %}
+
+      {% if workflows.rows|length == 0 %}
+      <div class="table__empty">
+        <p>This project has no workflows</p>
+      </div>
+      {% elif workflows.rows|length > 3 %}
+      <div class="table__more">
+        <small><a href="" class="link"> See more...</a></small>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div>
+    <h3 class="mb-3">Dashboards</h3>
+
+    <div class="card card--none">
+      {% render_table dashboards %}
+
+      {% if dashboards.rows|length == 0 %}
+      <div class="table__empty">
+        <p>This project has no dashboards</p>
+      </div>
+      {% elif dashboards.rows|length > 3 %}
+      <div class="table__more">
+        <small><a href="" class="link"> See more...</a></small>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
 {% endblock %}

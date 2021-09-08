@@ -11,12 +11,13 @@ def home(request):
             return redirect("users:onboarding")
 
         if request.user.teams.count():
-            team = request.user.teams.first()
-            return redirect("teams:detail", team.id)
+            team = request.session.get("team_id") or request.user.teams.first().id
+
+            return redirect("teams:detail", team)
 
         return HttpResponseRedirect(reverse("teams:create"))
 
-    return redirect("/accounts/login")
+    return redirect("account_login")
 
 
 @api_view(["POST"])

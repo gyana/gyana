@@ -58,11 +58,14 @@ class TeamDetail(DetailView):
 
         from .tables import TeamProjectsTable
 
+        self.request.session["team_id"] = self.object.id
+
         context = super().get_context_data(**kwargs)
         context["team_projects"] = TeamProjectsTable(
             Project.objects.filter(team=self.object)
         )
         context["project_count"] = Project.objects.filter(team=self.object).count()
+
 
         return context
 

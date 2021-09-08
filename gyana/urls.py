@@ -77,7 +77,6 @@ teams_urlpatterns = [
 urlpatterns = [
     path("admin_tools/", include("admin_tools.urls")),
     path("admin/", admin.site.urls),
-    path("accounts/", include(users_urls.accounts_urlpatterns)),
     path("users/", include("apps.users.urls")),
     path("filters/", include("apps.filters.urls")),
     path("teams/", include(teams_urlpatterns)),
@@ -101,6 +100,7 @@ urlpatterns = [
     # these are needed for schema.js
     path("docs/", include_docs_urls(title="API Docs")),
     path("schemajs/", schemajs_view, name="api_schemajs"),
+    path("", include(users_urls.accounts_urlpatterns)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.CYPRESS_URLS:

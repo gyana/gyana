@@ -40,8 +40,10 @@ class ProjectDetail(DetailView):
 
     def get(self, request, *args, **kwargs):
         object = self.get_object()
+
         if not object.is_ready:
             return redirect("project_templateinstances:list", object.id)
+            
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -51,7 +53,11 @@ class ProjectDetail(DetailView):
         context_data["integrations"] = ProjectIntegrationTable(
             object.integration_set.filter(ready=True).all()[:3]
         )
-        context_data["workflows"] = ProjectWorkflowTable(object.workflow_set.all()[:3])
+
+        context_data["workflows"] = ProjectWorkflowTable(
+            object.workflow_set.all()[:3]
+        )
+
         context_data["dashboards"] = ProjectDashboardTable(
             object.dashboard_set.all()[:3]
         )

@@ -5,7 +5,6 @@
   color: var(--c-black);
   font-size: 1.4rem;
   padding: 1.2rem 0.8rem;
-  max-height: 3.9rem;
   width: 100%;
 
   &:focus {
@@ -111,6 +110,9 @@ label {
     .button {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
+      height: 4.3rem;
+      max-height: 4.3rem;
+      align-items: center;
     }
   }
 }
@@ -151,6 +153,13 @@ input.input,
     font-size: 1.2rem;
     line-height: 1.4rem;
     margin: 0.2rem 0;
+  }
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 0.8rem;
   }
 }
 
@@ -211,15 +220,4 @@ label.checkbox__checked {
       content: '\f14a';
     }
   }
-}
-
-button:focus {
-  outline: none;
-}
-
-.input__toggle {
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  gap: 0.8rem;
 }

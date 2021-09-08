@@ -77,3 +77,13 @@ hgroup {
 hr {
   color: var(--c-gray);
 }
+
+vr {
+  border-right: 1px solid var(--c-gray);
+  height: 100%;
+  width: 0;
+}
+
+button:focus {
+  outline: none;
+}

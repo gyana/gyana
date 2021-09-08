@@ -7,22 +7,24 @@
   <button
     id="dashboard-share-{{object.id}}"
     data-popover-target="trigger"
-    class="button button--circle button--tertiary"
+    class="button button--circle {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}"
     data-action="popover#trigger"
   >
-    {% if  object.shared_status == 'private' %}<i class='far fa-fw fa-lock'></i>
-    {% elif object.shared_status == 'public' %}<i class='far fa-fw fa-eye'></i>
+    {% if  object.shared_status == 'private' %}<i class='far fa-fw fa-link'></i>
+    {% elif object.shared_status == 'public' %}<i class='far fa-fw fa-unlink'></i>
     {% endif %}
   </button>
   <div data-popover-target="body" class="popover-body max-w-lg card card--sm"> 
-    <h3 class="flex items-center gap-3 capitalize">{{ object.shared_status }} {% link_article 'dashboards' 'share' %}</h3>
-    <p class="mb-3">This dashboard is currently {{object.shared_status }}.</p>
+    <p class="mb-3">
+      This dashboard is currently <strong>{{ object.shared_status }}</strong>
+      {% link_article 'dashboards' 'share' %}
+    </p>
 
     <form method="post" action="{% url 'dashboards:share' object.id %}">
       {% csrf_token %}
 
       {% if object.shared_status == 'private' %}
-      <p>Click <strong>Share</strong> to create shareable link that is accessible publicly.</p>
+      <p>Click the button below to create shareable link that is accessible publicly.</p>
       <button class="button button--sm button--success w-full" type='submit'>Share dashboard</button>
       {% else %}
       <p>Everyone with the link can see it. Click <strong>Unshare</strong> to make this dashboard
@@ -50,5 +52,11 @@
     </form>
   </div>
 
-  <span data-tooltip-target="body">Share dashboard</span>
+  <span data-tooltip-target="body">
+    {% if  object.shared_status == 'private' %}
+    Share dashboard
+    {% elif object.shared_status == 'public' %}
+    Unshare dashboard
+    {% endif %}
+  </span>
 </div>
