@@ -40,7 +40,7 @@ const login = (email = TEST_EMAIL, password = TEST_PASSWORD) => {
 Cypress.Commands.add('login', login)
 
 const logout = () => {
-  cy.request('/accounts/logout').then((resp) => {
+  cy.request('/logout').then((resp) => {
     expect(resp.status).to.eq(200)
   })
 }

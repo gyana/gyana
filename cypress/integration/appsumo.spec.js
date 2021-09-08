@@ -20,8 +20,10 @@ describe('appsumo', () => {
     cy.login('member@gyana.com')
 
     cy.visit(`/appsumo/${REDEEMED_BY_ANOTHER_USER}`)
-    cy.contains(`Error, the code ${REDEEMED_BY_ANOTHER_USER} was already redeemed by another user.`)
-    cy.contains('Contact support@gyana.com for support.')
+    cy.contains(
+      `This code (${REDEEMED_BY_ANOTHER_USER}) has already been redeemed by another user.`
+    )
+    cy.contains('contact support@gyana.com for support.')
 
     // code already redeemed by you
     cy.logout()
