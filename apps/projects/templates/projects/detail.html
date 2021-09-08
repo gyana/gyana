@@ -22,6 +22,7 @@
         - {{ project.team.row_count|intcomma }} row{{ project.team.row_count|pluralize }} used
       </p>
     </div>
+            - {{ project.num_rows|intcomma }} row{{ project.num_rows|pluralize }} used
 
     <div class="card card--none">
       {% render_table integrations %}
