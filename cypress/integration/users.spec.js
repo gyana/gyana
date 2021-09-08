@@ -107,10 +107,10 @@ describe('users', () => {
 
     cy.contains('Sign out').click()
 
-    cy.url().should('contain', '/accounts/login')
+    cy.url().should('contain', '/login')
 
     cy.visit('/users/profile')
 
-    cy.url().should('contain', '/accounts/login')
+    cy.url().should('contain', '/login')
   })
 })

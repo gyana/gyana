@@ -16,7 +16,7 @@ def home(request):
 
         return HttpResponseRedirect(reverse("teams:create"))
 
-    return redirect("/accounts/login")
+    return redirect("account_login")
 
 
 @api_view(["POST"])

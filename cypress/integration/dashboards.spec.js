@@ -99,7 +99,7 @@ describe('dashboards', () => {
     cy.logout()
 
     cy.visit(`/projects/1/dashboards/${dashboardStartId}`)
-    cy.location('pathname').should('equal', '/accounts/login/')
+    cy.location('pathname').should('equal', '/login/')
 
     cy.login()
     cy.visit(`/projects/1/dashboards/${dashboardStartId}`)
