@@ -80,7 +80,7 @@ class UploadedCodes(BaseModel):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        codes = pd.read_csv(self.data.url, names=["code"]).code.tolist()
+        codes = pd.read_csv(self.data.file.open(), names=["code"]).code.tolist()
 
         with transaction.atomic():
             AppsumoCode.objects.bulk_create([AppsumoCode(code=code) for code in codes])
@@ -97,7 +97,7 @@ class PurchasedCodes(BaseModel):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        codes = pd.read_csv(self.data.url, names=["code"]).code.tolist()
+        codes = pd.read_csv(self.data.file.open(), names=["code"]).code.tolist()
 
         appsumo_codes = AppsumoCode.objects.filter(code__in=codes).all()
 
@@ -123,7 +123,7 @@ class RefundedCodes(BaseModel):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        codes = pd.read_csv(self.data.url, names=["code"]).code.tolist()
+        codes = pd.read_csv(self.data.file.open(), names=["code"]).code.tolist()
 
         # prefetch all the relevant codes
         appsumo_codes = AppsumoCode.objects.filter(code__in=codes).all()

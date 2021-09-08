@@ -4,6 +4,7 @@ import pandas as pd
 import pytest
 from apps.appsumo.account import get_deal
 from apps.appsumo.models import AppsumoCode, PurchasedCodes, UploadedCodes
+from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 APPSUMO_DATA_DIR = Path("apps/appsumo/data")
@@ -30,6 +31,11 @@ def generate_diff_csv(start, end, diff):
 
 
 @pytest.fixture
+def in_memory_storage():
+    settings.DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+
+
+@pytest.fixture
 def setup_purchased_codes():
     UploadedCodes(
         data=SimpleUploadedFile(
@@ -52,7 +58,10 @@ def setup_purchased_codes():
 
 
 @pytest.mark.django_db
-def test_deal_49_usd(setup_purchased_codes):
+def test_deal_49_usd(
+    in_memory_storage,
+    setup_purchased_codes,
+):
 
     purchased_49 = pd.read_csv(
         APPSUMO_DATA_DIR / PURCHASED_49, names=["code"]
@@ -80,7 +89,7 @@ def test_deal_49_usd(setup_purchased_codes):
 
 
 @pytest.mark.django_db
-def test_deal_179_usd(setup_purchased_codes):
+def test_deal_179_usd(in_memory_storage, setup_purchased_codes):
 
     purchased_179 = pd.read_csv(
         APPSUMO_DATA_DIR / PURCHASED_179, names=["code"]
@@ -106,7 +115,7 @@ def test_deal_179_usd(setup_purchased_codes):
 
 
 @pytest.mark.django_db
-def test_deal_59_usd(setup_purchased_codes):
+def test_deal_59_usd(in_memory_storage, setup_purchased_codes):
 
     purchased_59 = pd.read_csv(
         APPSUMO_DATA_DIR / PURCHASED_59, names=["code"]
