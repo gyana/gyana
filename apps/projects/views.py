@@ -5,7 +5,7 @@ from apps.integrations.models import Integration
 from apps.nodes.models import Node
 from apps.teams.mixins import TeamMixin
 from apps.widgets.models import Widget
-from django.db.models import F
+from django.db.models import F, Q
 from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.utils import timezone
@@ -85,6 +85,7 @@ class ProjectDetail(DetailView):
         incomplete = workflows.filter(last_run=None).count()
         outdated = workflows.filter(last_run__lte=F("data_updated")).count()
         failed = nodes.exclude(error=None).values_list("workflow").distinct().count()
+
         context_data["workflows"] = {
             "total": workflows.count(),
             "results": results,
@@ -96,10 +97,18 @@ class ProjectDetail(DetailView):
         }
 
         # dashboards
-        context_data["dashboard_count"] = object.dashboard_set.count()
-        context_data["dashboard_widget_count"] = Widget.objects.filter(
-            dashboard__project=object
-        ).count()
+        widgets = Widget.objects.filter(dashboard__project=object)
+        # equivalent to is_valid, but efficient query
+        incomplete = widgets.exclude(
+            Q(kind=Widget.Kind.TEXT)
+            | (Q(kind=Widget.Kind.TABLE) & ~Q(table=None))
+            | (~Q(table=None) & ~Q(label=None) & ~Q(aggregations__column=None))
+        )
+        context_data["dashboards"] = {
+            "total": object.dashboard_set.count(),
+            "widgets": widgets.count(),
+            "incomplete": incomplete.values_list("dashboard").distinct().count(),
+        }
 
         return context_data
 
