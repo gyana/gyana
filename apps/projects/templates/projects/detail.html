@@ -25,10 +25,10 @@
       <div class="flex flex-col space-y-3">
         <div class="flex items-baseline gap-3">
           <h3>Integrations</h3>
-          {% if integration_count > 0 %}
+          {% if integrations.ready > 0 %}
             <p class="text-black-50">
               - <a class="link" href="{% url 'project_integrations:list' object.id %}">
-                  {{ integration_count|intcomma }} integration{{ integration_count|pluralize }}
+                  {{ integrations.ready|intcomma }} integration{{ integrations.ready|pluralize }}
                 </a>
               - {{ project.num_rows|intcomma }} row{{ project.num_rows|pluralize }}
             </p>
@@ -36,29 +36,29 @@
         </div>
 
         <div class="card card--sm">
-          {% if integration_count > 0 %}
+          {% if integrations.ready > 0 %}
             <div class='flex flex-row items-center gap-3 flex-wrap'>
-              {% for integration in connectors %}
+              {% for integration in integrations.connectors %}
                 <span>
                   <a href="{% url 'project_integrations:detail' object.id integration.id %}">
                     <img class="h-8 w-8" src="{% static integration.icon %}"/>
                   </a>
                 </span>
               {% endfor %}
-              {% if sheet_count > 0 %}
+              {% if integrations.sheet_count > 0 %}
                 <span>
                   <p class="text-black-50">
                     + <a class="link" href="{% url 'project_integrations:list' object.id %}?kind=sheet">
-                      {{ sheet_count|intcomma }} sheet{{ sheet_count|pluralize }}
+                      {{ integrations.sheet_count|intcomma }} sheet{{ integrations.sheet_count|pluralize }}
                     </a>
                   </p>
                 </span>
               {% endif %}
-              {% if upload_count > 0 %}
+              {% if integrations.upload_count > 0 %}
                 <span>
                   <p class="text-black-50">
                     + <a class="link" href="{% url 'project_integrations:list' object.id %}?kind=upload">
-                      {{ upload_count|intcomma }} upload{{ upload_count|pluralize }}
+                      {{ integrations.upload_count|intcomma }} upload{{ integrations.upload_count|pluralize }}
                     </a>
                   </p>
                 </span>
@@ -73,15 +73,24 @@
               </p>
             </div>
           {% endif %}
-
         </div>
 
-        {% if review_ready_integration_count %}
+        {% if integrations.attention > 0 %}
           <div class="card card--sm">
               <p class="text-black-50">
                 <i class="fa fa-info-circle"></i>
-                You have 1 pending integration ready to
-                  <a class="link" href="{% url 'project_integrations:pending' object.id %}">review</a>.
+                You have {{ integrations.attention|intcomma }} pending integration{{ integrations.attention|pluralize }} that need
+                  your <a class="link" href="{% url 'project_integrations:pending' object.id %}">attention</a>.
+              </p>
+          </div>
+        {% endif %} 
+
+        {% if integrations.loading > 0 %}
+          <div class="card card--sm">
+              <p class="text-black-50">
+                <i class="fa fa-info-circle"></i>
+                You have {{ integrations.loading|intcomma }} pending integration{{ integrations.loading|pluralize }} doing
+                  the initial import.
               </p>
           </div>
         {% endif %}
@@ -90,22 +99,53 @@
       <div class="flex flex-col space-y-3">
         <div class="flex items-baseline gap-3">
           <h3>Workflows</h3>
-          {% if workflow_count > 0 %}
+          {% if workflows.total > 0 %}
             <p class="text-black-50">
               - <a class="link" href="{% url 'project_workflows:list' object.id %}">
-                  {{ workflow_count }} workflow{{ workflow_count|pluralize }}
+                  {{ workflows.total }} workflow{{ workflows.total|pluralize }}
                 </a>
-              - {{ workflow_node_count|intcomma }} node{{ workflow_node_count|pluralize }}
-              - {{ workflow_results_count|intcomma }} result{{ workflow_results_count|pluralize }} saved
+              - {{ workflows.nodes|intcomma }} node{{ workflows.nodes|pluralize }}
+              - {{ workflows.results|intcomma }} result{{ workflows.results|pluralize }} saved
             </p>
           {% endif %}
         </div>
 
         <div class="card card--sm">
+          {% if integrations.ready == 0 and workflows.total == 0 %}
+            <p class="text-black-50">Workflows need at least one source of data.</p>
+          {% elif workflows.total == 0 %}
+            <div class="table__empty">
+              <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
+              <h3>You have no workflows.</h3>
+              <p class="text-black-50">Why not 
+                <a class="link" href="{% url 'project_workflows:list' object.id %}">create one</a>?
+              </p>
+            </div>
+          {% elif not workflows.operational %}
+            {% if workflows.incomplete > 0 %}
+              <p class="text-black-50">
+                <i class="fa fa-info-circle"></i>
+                You have {{ workflows.incomplete|intcomma }} incomplete workflow{{ workflows.incomplete|pluralize }}.
+              </p>
+            {% endif %}
+            {% if workflows.outdated > 0 %}
+              <p class="text-black-50">
+                <i class="fa fa-info-circle"></i>
+                You have {{ workflows.outdated|intcomma }} outdated workflow{{ workflows.outdated|pluralize }}.
+              </p>
+            {% endif %}
+            {% if workflows.failed > 0 %}
+              <p class="text-black-50">
+                <i class="fa fa-info-circle"></i>
+                You have {{ workflows.failed|intcomma }} failed workflow{{ workflows.failed|pluralize }}.
+              </p>
+            {% endif %}
+          {% else %}
             <p class="text-black-50">
               <i class="fa fa-check-circle text-green"></i>
                 All your workflows are operational.
             </p>
+          {% endif %}
         </div>
       </div>
 

@@ -5,6 +5,7 @@ from apps.integrations.models import Integration
 from apps.nodes.models import Node
 from apps.teams.mixins import TeamMixin
 from apps.widgets.models import Widget
+from django.db.models import F
 from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.views.generic import DetailView
@@ -52,29 +53,41 @@ class ProjectDetail(DetailView):
         context_data = super().get_context_data(**kwargs)
         object = self.get_object()
 
-        q = object.integration_set.filter(ready=True)
-
         # integrations
-        context_data["integration_count"] = q.count()
-        context_data["review_ready_integration_count"] = object.integration_set.filter(
-            ready=False, state=Integration.State.DONE
-        ).count()
+        ready = object.integration_set.filter(ready=True)
+        pending = object.integration_set.filter(ready=False)
 
-        context_data["connectors"] = q.filter(kind=Integration.Kind.CONNECTOR).all()
-        # context_data["connectors"] = list(context_data["connectors"]) * 10
-        context_data["sheet_count"] = q.filter(kind=Integration.Kind.SHEET).count()
-        context_data["upload_count"] = q.filter(kind=Integration.Kind.UPLOAD).count()
+        context_data["integrations"] = {
+            "ready": ready.count(),
+            "attention": pending.exclude(state=Integration.State.LOAD).count(),
+            "loading": pending.filter(state=Integration.State.LOAD).count(),
+            "connectors": ready.filter(kind=Integration.Kind.CONNECTOR).all(),
+            "sheet_count": ready.filter(kind=Integration.Kind.SHEET).count(),
+            "upload_count": ready.filter(kind=Integration.Kind.UPLOAD).count(),
+        }
 
-        context_data["workflow_count"] = object.workflow_set.count()
-        context_data["workflow_results_count"] = (
+        # workflows
+        workflows = object.workflow_set
+        results = (
             Node.objects.filter(workflow__project=object, kind=Node.Kind.OUTPUT)
             .exclude(table=None)
             .count()
         )
-        context_data["workflow_node_count"] = Node.objects.filter(
-            workflow__project=object
-        ).count()
+        nodes = Node.objects.filter(workflow__project=object)
+        incomplete = workflows.filter(last_run=None).count()
+        outdated = workflows.filter(last_run__lte=F("data_updated")).count()
+        failed = nodes.exclude(error=None).values_list("workflow").distinct().count()
+        context_data["workflows"] = {
+            "total": workflows.count(),
+            "results": results,
+            "nodes": nodes.count(),
+            "incomplete": incomplete,
+            "outdated": outdated,
+            "failed": failed,
+            "operational": incomplete + outdated + failed == 0,
+        }
 
+        # dashboards
         context_data["dashboard_count"] = object.dashboard_set.count()
         context_data["dashboard_widget_count"] = Widget.objects.filter(
             dashboard__project=object
