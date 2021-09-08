@@ -24,54 +24,66 @@
       <div class="flex flex-col space-y-3">
         <div class="flex items-baseline gap-3">
           <h3>Integrations</h3>
-          
-          <p class="text-black-50">
-            - <a class="link" href="{% url 'project_integrations:list' object.id %}">
-                {{ integration_count|intcomma }} integration{{ integration_count|pluralize }}
-              </a>
-            - {{ project.num_rows|intcomma }} row{{ project.num_rows|pluralize }}
-          </p>
-        </div>
-
-        <div class="card card--sm">
-          <div class='flex flex-row items-center gap-3 flex-wrap'>
-            {% for integration in connectors %}
-              <span>
-                <a href="{% url 'project_integrations:detail' object.id integration.id %}">
-                  <img class="h-8 w-8" src="{% static integration.icon %}"/>
-                </a>
-              </span>
-            {% endfor %}
-            {% if sheet_count > 0 %}
-              <span>
-                <p class="text-black-50">
-                  + <a class="link" href="{% url 'project_integrations:list' object.id %}?kind=sheet">
-                    {{ sheet_count|intcomma }} sheet{{ sheet_count|pluralize }}
-                  </a>
-                </p>
-              </span>
-            {% endif %}
-            {% if upload_count > 0 %}
-              <span>
-                <p class="text-black-50">
-                  + <a class="link" href="{% url 'project_integrations:list' object.id %}?kind=upload">
-                    {{ upload_count|intcomma }} upload{{ upload_count|pluralize }}
-                  </a>
-                </p>
-              </span>
-            {% endif %}
-          </div>
-        </div>
-
-        <div class="card card--sm">
-          {% if review_ready_integration_count %}
+          {% if integration_count > 0 %}
             <p class="text-black-50">
-              <i class="fa fa-info-circle"></i>
-              You have 1 pending integration ready to
-                <a class="link" href="{% url 'project_integrations:pending' object.id %}">review</a>.
+              - <a class="link" href="{% url 'project_integrations:list' object.id %}">
+                  {{ integration_count|intcomma }} integration{{ integration_count|pluralize }}
+                </a>
+              - {{ project.num_rows|intcomma }} row{{ project.num_rows|pluralize }}
             </p>
           {% endif %}
         </div>
+
+        <div class="card card--sm">
+          {% if integration_count > 0 %}
+            <div class='flex flex-row items-center gap-3 flex-wrap'>
+              {% for integration in connectors %}
+                <span>
+                  <a href="{% url 'project_integrations:detail' object.id integration.id %}">
+                    <img class="h-8 w-8" src="{% static integration.icon %}"/>
+                  </a>
+                </span>
+              {% endfor %}
+              {% if sheet_count > 0 %}
+                <span>
+                  <p class="text-black-50">
+                    + <a class="link" href="{% url 'project_integrations:list' object.id %}?kind=sheet">
+                      {{ sheet_count|intcomma }} sheet{{ sheet_count|pluralize }}
+                    </a>
+                  </p>
+                </span>
+              {% endif %}
+              {% if upload_count > 0 %}
+                <span>
+                  <p class="text-black-50">
+                    + <a class="link" href="{% url 'project_integrations:list' object.id %}?kind=upload">
+                      {{ upload_count|intcomma }} upload{{ upload_count|pluralize }}
+                    </a>
+                  </p>
+                </span>
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="table__empty">
+              <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
+              <h3>You have no integrations.</h3>
+              <p class="text-black-50">Start your project by 
+                <a class="link" href="{% url 'project_integrations:list' object.id %}">creating one</a>.
+              </p>
+            </div>
+          {% endif %}
+
+        </div>
+
+        {% if review_ready_integration_count %}
+          <div class="card card--sm">
+              <p class="text-black-50">
+                <i class="fa fa-info-circle"></i>
+                You have 1 pending integration ready to
+                  <a class="link" href="{% url 'project_integrations:pending' object.id %}">review</a>.
+              </p>
+          </div>
+        {% endif %}
       </div>
 
       <div>
