@@ -154,6 +154,13 @@ input.input,
     line-height: 1.4rem;
     margin: 0.2rem 0;
   }
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 0.8rem;
+  }
 }
 
 label.checkbox {
@@ -213,15 +220,4 @@ label.checkbox__checked {
       content: '\f14a';
     }
   }
-}
-
-button:focus {
-  outline: none;
-}
-
-.input__toggle {
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  gap: 0.8rem;
 }

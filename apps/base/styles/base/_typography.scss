@@ -83,3 +83,7 @@ vr {
   height: 100%;
   width: 0;
 }
+
+button:focus {
+  outline: none;
+}
