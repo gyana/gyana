@@ -79,7 +79,7 @@
           <div class="card card--sm">
               <p class="text-black-50">
                 <i class="fa fa-info-circle"></i>
-                You have {{ integrations.attention|intcomma }} pending integration{{ integrations.attention|pluralize }} that need
+                You have {{ integrations.attention|intcomma }} pending integration{{ integrations.attention|pluralize }} that need{{ integrations.attention|pluralize:"s," }}
                   your <a class="link" href="{% url 'project_integrations:pending' object.id %}">attention</a>.
               </p>
           </div>
@@ -95,21 +95,23 @@
           </div>
         {% endif %}
 
-        <div class="card card--sm">
-          {% if not integrations.operational %}
-            {% if integrations.broken > 0 %}
+        {% if integrations.ready > 0 %}
+          <div class="card card--sm">
+            {% if not integrations.operational %}
+              {% if integrations.broken > 0 %}
+                <p class="text-black-50">
+                  <i class="fa fa-exclamation-circle text-red"></i>
+                  You have {{ integrations.broken|intcomma }} broken integration{{ integrations.broken|pluralize }}.
+                </p>
+              {% endif %}
+            {% else %}
               <p class="text-black-50">
-                <i class="fa fa-exclamation-circle text-red"></i>
-                You have {{ integrations.broken|intcomma }} integration{{ integrations.broken|pluralize }} that are broken.
+                <i class="fa fa-check-circle text-green"></i>
+                  All your ready integrations are operational.
               </p>
             {% endif %}
-          {% else %}
-            <p class="text-black-50">
-              <i class="fa fa-check-circle text-green"></i>
-                All your integrations are operational.
-            </p>
-          {% endif %}
-        </div>
+          </div>
+        {% endif %}
 
       </div>
 
@@ -198,6 +200,7 @@
               </p>
             {% endif %}
           {% else %}
+          
             <p class="text-black-50">
               <i class="fa fa-check-circle text-green"></i>
                 All your dashboards are operational.

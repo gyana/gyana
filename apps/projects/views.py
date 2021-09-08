@@ -104,10 +104,12 @@ class ProjectDetail(DetailView):
             | (Q(kind=Widget.Kind.TABLE) & ~Q(table=None))
             | (~Q(table=None) & ~Q(label=None) & ~Q(aggregations__column=None))
         )
+        dashboards_incomplete = incomplete.values_list("dashboard").distinct().count()
         context_data["dashboards"] = {
             "total": object.dashboard_set.count(),
             "widgets": widgets.count(),
-            "incomplete": incomplete.values_list("dashboard").distinct().count(),
+            "incomplete": dashboards_incomplete,
+            "operational": dashboards_incomplete == 0,
         }
 
         return context_data
