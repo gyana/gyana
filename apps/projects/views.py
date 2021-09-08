@@ -53,14 +53,19 @@ class ProjectDetail(DetailView):
         object = self.get_object()
 
         q = object.integration_set.filter(ready=True)
+        context_data["integrations"] = q.order_by("kind", "-created").all()
 
-        context_data["connector_count"] = q.filter(kind=Integration.Kind.CONNECTOR).count()
+        context_data["integration_count"] = q.count()
+        context_data["review_ready_integration_count"] = object.integration_set.filter(
+            ready=False, state=Integration.State.DONE
+        ).count()
+        context_data["connector_count"] = q.filter(
+            kind=Integration.Kind.CONNECTOR
+        ).count()
         context_data["sheet_count"] = q.filter(kind=Integration.Kind.SHEET).count()
         context_data["upload_count"] = q.filter(kind=Integration.Kind.UPLOAD).count()
-        context_data["connectors"] = q.filter(kind=Integration.Kind.CONNECTOR).all()
-        
-        context_data["integrations"] = ProjectIntegrationTable(
-            object.integration_set.filter(ready=True).all()[:3]
+        context_data["connectors"] = (
+            list(q.filter(kind=Integration.Kind.CONNECTOR).all()) * 10
         )
 
         context_data["workflows"] = ProjectWorkflowTable(object.workflow_set.all()[:3])
