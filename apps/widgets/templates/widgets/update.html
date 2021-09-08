@@ -19,9 +19,7 @@
         Preview
       </a>
     </nav>
-
     {% if widget.is_valid %}
-    <div class="flex-1 overflow-y-auto">
       <turbo-frame id="widgets-output-{{ widget.id }}"
                     src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}">
         <div class='placeholder-scr placeholder-scr--fillscreen'>
@@ -29,7 +27,6 @@
           <p class='placeholder-scr__title'>Loading widget...</p>
         </div>
       </turbo-frame>
-    </div>
     {% else %}
     <div class="flex-1 text-center whitespace-normal pad">
       <div class='flex flex-col items-center justify-center' style="min-height:16rem;">

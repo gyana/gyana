@@ -13,9 +13,9 @@
   {% elif error == 'max_rows_exceeded' %}
     <div class='flex flex-col items-center justify-center flex-1 p-10'>
       <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
-      <span>Your chart contains too many data points to be displayed. Please reduce them by grouping by a different column
+      <p class='whitespace-normal'>Your chart contains too many data points to be displayed. Please reduce them by grouping by a different column
         or filtering the result.
-      </span>
+      </p>
     </div>
   {% else %}
     <div class='flex flex-col items-center justify-center flex-1'>
