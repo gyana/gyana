@@ -4,6 +4,7 @@ from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.integrations.models import Integration
 from apps.nodes.models import Node
 from apps.teams.mixins import TeamMixin
+from apps.widgets.models import Widget
 from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.views.generic import DetailView
@@ -11,7 +12,6 @@ from django.views.generic.edit import DeleteView
 
 from .forms import ProjectForm
 from .models import Project
-from .tables import ProjectDashboardTable, ProjectWorkflowTable
 
 
 class ProjectCreate(TeamMixin, TurboCreateView):
@@ -60,9 +60,8 @@ class ProjectDetail(DetailView):
             ready=False, state=Integration.State.DONE
         ).count()
 
-        context_data["connectors"] = (
-            list(q.filter(kind=Integration.Kind.CONNECTOR).all()) * 10
-        )
+        context_data["connectors"] = q.filter(kind=Integration.Kind.CONNECTOR).all()
+        # context_data["connectors"] = list(context_data["connectors"]) * 10
         context_data["sheet_count"] = q.filter(kind=Integration.Kind.SHEET).count()
         context_data["upload_count"] = q.filter(kind=Integration.Kind.UPLOAD).count()
 
@@ -72,11 +71,14 @@ class ProjectDetail(DetailView):
             .exclude(table=None)
             .count()
         )
-        context_data["workflows"] = ProjectWorkflowTable(object.workflow_set.all()[:3])
+        context_data["workflow_node_count"] = Node.objects.filter(
+            workflow__project=object
+        ).count()
 
-        context_data["dashboards"] = ProjectDashboardTable(
-            object.dashboard_set.all()[:3]
-        )
+        context_data["dashboard_count"] = object.dashboard_set.count()
+        context_data["dashboard_widget_count"] = Widget.objects.filter(
+            dashboard__project=object
+        ).count()
 
         return context_data
 
