@@ -95,9 +95,9 @@ describe('appsumo', () => {
 
     cy.visit('/teams/1/account')
     // 2 codes = 2M rows
-    cy.contains('2,000,000')
+    cy.get('input[value="0 / 2,000,000"]').should('be.visible')
     // 2 codes = 20k credits
-    cy.contains('20,000')
+    cy.get('input[value="20,000"]').should('be.visible')
 
     // refund a code
     cy.logout()
@@ -113,9 +113,9 @@ describe('appsumo', () => {
 
     cy.visit('/teams/1/account')
     // 1 active codes = 1M rows
-    cy.contains('1,000,000')
+    cy.get('input[value="0 / 1,000,000"]').should('be.visible')
     // 1 code = 10k credits
-    cy.contains('10,000')
+    cy.get('input[value="10,000"]').should('be.visible')
   })
   it('link to review', () => {
     cy.login()

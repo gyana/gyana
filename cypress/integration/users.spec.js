@@ -65,7 +65,7 @@ describe('users', () => {
   it('resets password', () => {
     cy.visit('/')
 
-    cy.contains('Forgot password?').click()
+    cy.contains('Forgot your password?').click()
     cy.url().should('contain', '/accounts/password/reset')
 
     cy.get('input[type=email]').type('test@gyana.com')
