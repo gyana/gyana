@@ -1,4 +1,4 @@
-{% extends "web/landing.html" %}
+{% extends "web/appsumo_landing.html" %}
 {% load static team_tags %}
 {% load socialaccount %}
 
@@ -21,16 +21,18 @@
       </p>
     {% endif %}
   {% else %}
-    <p class="text-center">
-        Error, the code <strong>{{ object.code }}</strong> was already redeemed by another user.
+  <div class="text-center">
+    <h3 class="mb-3">Code already redeemed</h3>
+    <p>
+      This code (<strong>{{ object.code }}</strong>) has already been redeemed
+      by another user. <br>
+      If you believe this is an error, please contact
+      <a class='link' href='mailto: support@gyana.com'>support@gyana.com</a> 
+      for support.
     </p>
-    <p class="text-center">
-        Contact
-        <a class='link' href='mailto: support@gyana.com'>
-        support@gyana.com
-        </a>
-        for support.
-    </p>
+  </div>
   {% endif %}
 </section>
 {% endblock %}
+
+{% block footer %}{% endblock %}
