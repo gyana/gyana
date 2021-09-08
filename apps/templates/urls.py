@@ -18,7 +18,7 @@ project_urlpatterns = (
             "<hashid:pk>",
             # TODO: access limited to project
             views.TemplateInstanceUpdate.as_view(),
-            name="detail",
+            name="update",
         ),
     ],
     "project_templateinstances",

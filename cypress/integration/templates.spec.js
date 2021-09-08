@@ -90,6 +90,11 @@ describe('templates', () => {
     cy.get('select').select('Cypress test project')
     cy.get('button[value=add]').click()
 
+    // we can navigate to other parts of the project and come back
+    cy.get('#sidebar').within(() => cy.contains('Integrations').click())
+    cy.contains('Setup').click()
+    cy.contains('Google Analytics').click()
+
     // uses existing connector
     cy.get('.fa-check-circle')
     cy.get('button[type=submit]').click()
