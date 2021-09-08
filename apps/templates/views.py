@@ -83,7 +83,7 @@ class TemplateInstanceList(ProjectMixin, SingleTableView):
     paginate_by = 20
 
     def get(self, request, *args, **kwargs):
-        if self.project.templateinstance_set.count() <= 1:
+        if not self.project.ready:
             return redirect(
                 "project_templateinstances:detail",
                 self.project.id,

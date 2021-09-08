@@ -28,6 +28,7 @@ class TemplateInstanceCreateNewForm(forms.ModelForm):
             name=self._template.project.name,
             description=self._template.project.description,
             team=self._team,
+            ready=False,
         )
 
         instance.template = self._template
