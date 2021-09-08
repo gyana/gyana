@@ -8,6 +8,7 @@ from apps.widgets.models import Widget
 from django.db.models import F
 from django.shortcuts import redirect
 from django.urls.base import reverse
+from django.utils import timezone
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 
@@ -56,11 +57,18 @@ class ProjectDetail(DetailView):
         # integrations
         ready = object.integration_set.filter(ready=True)
         pending = object.integration_set.filter(ready=False)
+        broken = ready.filter(
+            kind=Integration.Kind.CONNECTOR,
+            connector__fivetran_succeeded_at__lt=timezone.now()
+            - timezone.timedelta(hours=24),
+        ).count()
 
         context_data["integrations"] = {
             "ready": ready.count(),
             "attention": pending.exclude(state=Integration.State.LOAD).count(),
             "loading": pending.filter(state=Integration.State.LOAD).count(),
+            "broken": broken,
+            "operational": broken == 0,
             "connectors": ready.filter(kind=Integration.Kind.CONNECTOR).all(),
             "sheet_count": ready.filter(kind=Integration.Kind.SHEET).count(),
             "upload_count": ready.filter(kind=Integration.Kind.UPLOAD).count(),

@@ -94,6 +94,23 @@
               </p>
           </div>
         {% endif %}
+
+        <div class="card card--sm">
+          {% if not integrations.operational %}
+            {% if integrations.broken > 0 %}
+              <p class="text-black-50">
+                <i class="fa fa-exclamation-circle text-red"></i>
+                You have {{ integrations.broken|intcomma }} integration{{ integrations.broken|pluralize }} that are broken.
+              </p>
+            {% endif %}
+          {% else %}
+            <p class="text-black-50">
+              <i class="fa fa-check-circle text-green"></i>
+                All your integrations are operational.
+            </p>
+          {% endif %}
+        </div>
+
       </div>
 
       <div class="flex flex-col space-y-3">
