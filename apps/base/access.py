@@ -45,6 +45,7 @@ def login_and_teamid_in_session(view_func):
             return HttpResponseRedirect(
                 "{}?next={}".format(reverse("account_login"), request.path)
             )
+
         team_id = request.session[session_key].get("team_id")
         if team_id is None:
             return render(request, "404.html", status=404)
