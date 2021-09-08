@@ -1,4 +1,5 @@
 {% load render_table from django_tables2 %}
+{% load static %}
 
 <div class="team-projects">
   <a class="project-card" href="{% url 'team_projects:create' team.id %}">
@@ -11,7 +12,14 @@
     href="{% url "team_templates:create" team.id template.id %}"
   >
     <h3>{{ template.name }}</h3>
+    
     <p>{{ template.description }}</p>
+
+    <div class="flex gap-7">
+      {% for integration in template.project.integration_set.all %}
+      <img class="h-12 w-12" src="{% static integration.icon %}" title="{{ integration.name }}" />
+      {% endfor %}
+    </div>
   </a>
   {% endfor %}
 </div>

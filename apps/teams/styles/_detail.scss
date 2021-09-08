@@ -29,8 +29,24 @@
       }
     }
 
+    img {
+      display: inline-block;
+    }
+    
+    p {
+      display: none;
+    }
+
     &:hover {
-      opacity: 0.5;
+      border-color: var(--c-blue);
+
+      p {
+        display: block;
+      }
+
+      img {
+        display: none;
+      }
     }
   }
 }
