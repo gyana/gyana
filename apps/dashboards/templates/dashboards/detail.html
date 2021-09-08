@@ -7,6 +7,29 @@
     {% csrf_token %}
 
     <input class='input__inline mr-auto' id="name" type="text" name="name" value="{{ object.name }}"></input>
+
+    <div class="button button--circle button--tertiary">
+      {% include 'components/_duplicate.html' with object_name="dashboard" %}
+    </div>
+
+    <div data-controller='tooltip popover'>
+      <span
+        data-popover-target="trigger"
+        data-action="click->popover#trigger"
+        class="button button--circle button--tertiary"
+      > 
+        <i class="far fa-fw fa-trash"></i>
+      </span>
+
+      <span data-tooltip-target="body">Delete</span>
+
+      <div data-popover-target="body" hidden class="popover-body">
+        {% include 'dashboards/_delete.html' %}
+      </div>
+    </div>
+
+    <vr></vr>
+    
     <div data-controller="tooltip popover">
       <button 
         type="button" 
@@ -14,13 +37,13 @@
         class="button button--circle button--tertiary"
         data-action="popover#trigger"
       >
-        <i class="far fa-edit fa-fw"></i>
+        <i class="far fa-expand-arrows-alt fa-fw"></i>
       </button>
 
-      <span data-tooltip-target="body">Configure canvas size</span>
+      <span data-tooltip-target="body">Canvas size</span>
 
       <div data-popover-target="body" class="popover-body max-w-lg card card--sm">
-        <p class="mb-3">Configure the dashboard's canvas dimension</p>
+        <p class="mb-3">Configure the dashboard's dimensions</p>
 
         <div class="flex gap-7">
           <input id="width" class="flex-1 min-w-0" type="number" name="width" value="{{ object.width}}"></input>
@@ -35,25 +58,7 @@
   <turbo-frame id="dashboard-share">
     {% include 'dashboards/share.html' %}
   </turbo-frame>
-  <div class="button button--circle button--tertiary">
-    {% include 'components/_duplicate.html' with object_name="dashboard" %}
-  </div>
 
-  <div data-controller='tooltip popover'>
-    <span
-      data-popover-target="trigger"
-      data-action="click->popover#trigger"
-      class="button button--circle button--tertiary"
-    > 
-      <i class="far fa-fw fa-trash"></i>
-    </span>
-
-    <span data-tooltip-target="body">Delete dashboard</span>
-
-    <div data-popover-target="body" hidden class="popover-body">
-      {% include 'dashboards/_delete.html' %}
-    </div>
-  </div>
 
   {% if request.GET.mode != 'view' %}
   {% include 'dashboards/_add_widget.html' with choices=choices %}

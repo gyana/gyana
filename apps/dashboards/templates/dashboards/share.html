@@ -7,11 +7,11 @@
   <button
     id="dashboard-share-{{object.id}}"
     data-popover-target="trigger"
-    class="button button--circle button--tertiary"
+    class="button button--circle {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}"
     data-action="popover#trigger"
   >
-    {% if  object.shared_status == 'private' %}<i class='far fa-fw fa-lock'></i>
-    {% elif object.shared_status == 'public' %}<i class='far fa-fw fa-eye'></i>
+    {% if  object.shared_status == 'private' %}<i class='far fa-fw fa-link'></i>
+    {% elif object.shared_status == 'public' %}<i class='far fa-fw fa-unlink'></i>
     {% endif %}
   </button>
   <div data-popover-target="body" class="popover-body max-w-lg card card--sm"> 
@@ -50,5 +50,5 @@
     </form>
   </div>
 
-  <span data-tooltip-target="body">Share dashboard</span>
+  <span data-tooltip-target="body">Sharing</span>
 </div>

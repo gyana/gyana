@@ -5,11 +5,11 @@
 {% block app %}
 <div class="page-header">
   <div class="mr-auto">
-    <h1>Workflows {% link_article 'overview' 'workflows' %}</h1>
+    <h1 class="flex items-center gap-3">
+      Workflows {% link_article 'overview' 'workflows' %}
+    </h1>
 
-    <p>
-      A visual editor to clean, transform, and analyse your data.
-    </p>
+    <p>A visual editor to clean, transform, and analyse your data.</p>
   </div>
 
   {% include 'workflows/create.html' %}
