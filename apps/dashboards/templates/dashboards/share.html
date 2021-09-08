@@ -50,5 +50,11 @@
     </form>
   </div>
 
-  <span data-tooltip-target="body">Sharing</span>
+  <span data-tooltip-target="body">
+    {% if  object.shared_status == 'private' %}
+    Share dashboard
+    {% elif object.shared_status == 'public' %}
+    Unshare dashboard
+    {% endif %}
+  </span>
 </div>
