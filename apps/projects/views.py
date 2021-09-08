@@ -80,9 +80,3 @@ class ProjectDelete(DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.team.id,))
-
-
-class ProjectSettings(DetailView):
-    template_name = "projects/settings.html"
-    model = Project
-    pk_url_kwarg = "project_id"
