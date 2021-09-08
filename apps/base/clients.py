@@ -86,7 +86,7 @@ class QueryResults(_QueryResults):
         return pd.DataFrame(self.rows_dict)
 
 
-def get_query_results(query, maxResults=100) -> QueryResults:
+def get_query_results(query, max_results=100) -> QueryResults:
     client = bigquery_client()
     resource = client._call_api(
         None,
@@ -94,7 +94,7 @@ def get_query_results(query, maxResults=100) -> QueryResults:
         method="POST",
         data={
             "query": query,
-            "maxResults": maxResults,
+            "maxResults": max_results,
             "useLegacySql": False,
             "formatOptions": {"useInt64Timestamp": True},
         },

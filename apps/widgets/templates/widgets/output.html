@@ -2,7 +2,7 @@
   id="widgets-output-{{widget.id}}-stream"
   style="display: flex; flex: 1 1 0%; min-height: 0;overflow: auto;"
 >
-  {% if widget.is_valid and not is_error%}
+  {% if widget.is_valid and not error%}
       {% if widget.kind == "table" %}
         {% include 'widgets/visuals/grid.html' %}
       {% elif widget.kind == "text" %}
@@ -10,21 +10,28 @@
       {% elif widget.kind %}
         {% include 'widgets/visuals/chart.html' %}
       {% endif %}
-  {% else %}
-  <div class='flex flex-col items-center justify-center flex-1'>
-    {% if request.GET.mode == 'edit' %}
+  {% elif error == 'max_rows_exceeded' %}
+    <div class='flex flex-col items-center justify-center flex-1 p-10'>
       <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
-      <p>This widget needs to be
-        <button 
-          data-action="click->tf-modal#open" 
-          class='link'
-          data-src="{% url "dashboard_widgets:update" project.id dashboard.id widget.id %}"
-          data-item="{{ widget.id }}"
-        >configured</button>!
-      </p>
-    {% else %}
-      <p>No widget to display!</p>
-    {% endif %}
-  </div>
+      <span>Your chart contains too many data points to be displayed. Please reduce them by grouping by a different column
+        or filtering the result.
+      </span>
+    </div>
+  {% else %}
+    <div class='flex flex-col items-center justify-center flex-1'>
+      {% if request.GET.mode == 'edit' %}
+        <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
+          <p>This widget needs to be
+            <button 
+              data-action="click->tf-modal#open" 
+              class='link'
+              data-src="{% url "dashboard_widgets:update" project.id dashboard.id widget.id %}"
+              data-item="{{ widget.id }}"
+            >configured</button>!
+          </p>
+      {% else %}
+        <p>No widget to display!</p>
+      {% endif %}
+    </div>
   {% endif %}
 </div>

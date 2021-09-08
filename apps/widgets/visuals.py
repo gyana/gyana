@@ -9,9 +9,20 @@ from .bigquery import get_query_from_widget
 from .chart import to_chart
 from .models import Widget
 
+CHART_MAX_ROWS = 1000
+
+
+class MaxRowsExceeded(Exception):
+    pass
+
 
 def chart_to_output(widget: Widget) -> Dict[str, Any]:
-    df = get_query_results(get_query_from_widget(widget).compile()).rows_df
+    result = get_query_results(
+        get_query_from_widget(widget).compile(), max_results=CHART_MAX_ROWS
+    )
+    if result.total_rows > CHART_MAX_ROWS:
+        raise MaxRowsExceeded
+    df = result.rows_df
     chart, chart_id = to_chart(df, widget)
     return {"chart": chart.render()}, chart_id
 

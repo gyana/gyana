@@ -11,7 +11,7 @@ from apps.base.frames import (
 from apps.base.table_data import RequestConfig
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
-from apps.widgets.visuals import chart_to_output, table_to_output
+from apps.widgets.visuals import MaxRowsExceeded, chart_to_output, table_to_output
 from django.db.models.query import QuerySet
 from django.urls import reverse
 from django_tables2.tables import Table as DjangoTable
@@ -181,8 +181,10 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
         try:
             add_output_context(context, self.object, self.request)
 
+        except MaxRowsExceeded as e:
+            context["error"] = "max_rows_exceeded"
         except Exception as e:
-            context["is_error"] = True
+            context["error"] = "configuration_fail"
             logging.warning(e, exc_info=e)
 
         return context
