@@ -2,6 +2,7 @@ import analytics
 from apps.base.analytics import PROJECT_CREATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.integrations.models import Integration
+from apps.nodes.models import Node
 from apps.teams.mixins import TeamMixin
 from django.shortcuts import redirect
 from django.urls.base import reverse
@@ -10,8 +11,7 @@ from django.views.generic.edit import DeleteView
 
 from .forms import ProjectForm
 from .models import Project
-from .tables import (ProjectDashboardTable, ProjectIntegrationTable,
-                     ProjectWorkflowTable)
+from .tables import ProjectDashboardTable, ProjectWorkflowTable
 
 
 class ProjectCreate(TeamMixin, TurboCreateView):
@@ -53,21 +53,25 @@ class ProjectDetail(DetailView):
         object = self.get_object()
 
         q = object.integration_set.filter(ready=True)
-        context_data["integrations"] = q.order_by("kind", "-created").all()
 
+        # integrations
         context_data["integration_count"] = q.count()
         context_data["review_ready_integration_count"] = object.integration_set.filter(
             ready=False, state=Integration.State.DONE
         ).count()
-        context_data["connector_count"] = q.filter(
-            kind=Integration.Kind.CONNECTOR
-        ).count()
-        context_data["sheet_count"] = q.filter(kind=Integration.Kind.SHEET).count()
-        context_data["upload_count"] = q.filter(kind=Integration.Kind.UPLOAD).count()
+
         context_data["connectors"] = (
             list(q.filter(kind=Integration.Kind.CONNECTOR).all()) * 10
         )
+        context_data["sheet_count"] = q.filter(kind=Integration.Kind.SHEET).count()
+        context_data["upload_count"] = q.filter(kind=Integration.Kind.UPLOAD).count()
 
+        context_data["workflow_count"] = object.workflow_set.count()
+        context_data["workflow_results_count"] = (
+            Node.objects.filter(workflow__project=object, kind=Node.Kind.OUTPUT)
+            .exclude(table=None)
+            .count()
+        )
         context_data["workflows"] = ProjectWorkflowTable(object.workflow_set.all()[:3])
 
         context_data["dashboards"] = ProjectDashboardTable(

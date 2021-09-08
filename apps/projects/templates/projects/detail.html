@@ -90,11 +90,14 @@
       <div>
         <div class="flex items-baseline gap-3 mb-3">
           <h3>Workflows</h3>
-          
-          <p class="text-black-50">
-            - {{ workflows.rows|length }} workflow{{ workflows.rows|pluralize }}
-            - {{ project.table_set.count|intcomma }} saved data
-          </p>
+          {% if integration_count > 0 %}
+            <p class="text-black-50">
+              - <a class="link" href="{% url 'project_workflows:list' object.id %}">
+                  {{ workflow_count }} workflow{{ workflow_count|pluralize }}
+                </a>
+              - {{ workflow_results_count|intcomma }} result{{ workflow_results_count|pluralize }} saved
+            </p>
+          {% endif %}
         </div>
 
         <div class="card card--none">
