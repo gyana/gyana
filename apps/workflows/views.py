@@ -1,8 +1,5 @@
 import analytics
-from apps.base.analytics import (
-    WORKFLOW_CREATED_EVENT,
-    WORKFLOW_DUPLICATED_EVENT,
-)
+from apps.base.analytics import WORKFLOW_CREATED_EVENT, WORKFLOW_DUPLICATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.nodes.config import get_node_config_with_arity
 from apps.nodes.models import Node
@@ -119,9 +116,8 @@ class WorkflowDuplicate(TurboUpdateView):
         nodes = self.object.nodes.all()
         # First create the mapping between original and cloned nodes
         for node in nodes:
-            node_clone = node.make_clone()
+            node_clone = node.make_clone({"workflow": clone})
             node_map[node] = node_clone
-            clone.nodes.add(node_clone)
 
         # Then copy the relationships
         for node in nodes:
@@ -129,7 +125,6 @@ class WorkflowDuplicate(TurboUpdateView):
             for parent in node.parents.iterator():
                 node_clone.parents.add(node_map[parent])
 
-        clone.save()
         return r
 
     def get_success_url(self) -> str:
