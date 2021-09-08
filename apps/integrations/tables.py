@@ -41,7 +41,7 @@ class PendingStatusColumn(Column):
             and instance.state == Integration.State.LOAD
         ):
             context["connector"] = instance.connector
-            return get_template("connectors/status.html").render(context.flatten())
+            return get_template("connectors/icon.html").render(context.flatten())
 
         return get_template("columns/status.html").render(context.flatten())
 
