@@ -28,20 +28,6 @@
 
 {% with app_name=request.resolver_match.app_name %}
 
-{% if project.has_pending_templates %}
-
-  <li>
-    <a class="sidebar__link {% if app_name == 'project_templateinstances' %}sidebar__link--active{% endif %}"
-      href="{% url 'project_templateinstances:list' project.id %}"
-      data-controller="tooltip"
-      data-placement="right">
-      <i class="far fa-fw fa-construction mr-6"></i>Setup
-      <span data-tooltip-target="body">Setup</span>
-    </a>
-  </li>
-
-{% endif %}
-
 {% if project.ready %}
 
 
@@ -88,6 +74,20 @@
         <span data-tooltip-target="body">Dashboards</span>
       </a>
     </li>
+
+{% endif %}
+
+{% if project.has_pending_templates %}
+
+  <li>
+    <a class="sidebar__link {% if app_name == 'project_templateinstances' %}sidebar__link--active{% endif %}"
+      href="{% url 'project_templateinstances:list' project.id %}"
+      data-controller="tooltip"
+      data-placement="right">
+      <i class="far fa-fw fa-construction mr-6"></i>Setup
+      <span data-tooltip-target="body">Setup</span>
+    </a>
+  </li>
 
 {% endif %}
 

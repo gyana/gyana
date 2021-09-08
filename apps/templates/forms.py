@@ -208,6 +208,8 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
 
                 instance.completed = True
 
+                instance.project.ready = True
+                instance.project.save()
                 instance.save()
                 self.save_m2m()
 
