@@ -73,7 +73,10 @@ class TemplateInstanceCreate(TeamMixin, TurboCreateView):
         return redirect
 
     def get_success_url(self) -> str:
-        return reverse("projects:detail", args=(self.object.project.id,))
+        return reverse(
+            "project_templateinstances:update",
+            args=(self.object.project.id, self.object.id),
+        )
 
 
 class TemplateInstanceList(ProjectMixin, SingleTableView):
@@ -82,10 +85,13 @@ class TemplateInstanceList(ProjectMixin, SingleTableView):
     table_class = TemplateInstanceTable
     paginate_by = 20
 
+    def get_queryset(self):
+        return self.project.templateinstance_set.all()
+
     def get(self, request, *args, **kwargs):
-        if self.project.templateinstance_set.count() <= 1:
+        if not self.project.ready:
             return redirect(
-                "project_templateinstances:detail",
+                "project_templateinstances:update",
                 self.project.id,
                 self.project.templateinstance_set.first().id,
             )

@@ -28,6 +28,7 @@ class TemplateInstanceCreateNewForm(forms.ModelForm):
             name=self._template.project.name,
             description=self._template.project.description,
             team=self._team,
+            ready=False,
         )
 
         instance.template = self._template
@@ -207,6 +208,8 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
 
                 instance.completed = True
 
+                instance.project.ready = True
+                instance.project.save()
                 instance.save()
                 self.save_m2m()
 

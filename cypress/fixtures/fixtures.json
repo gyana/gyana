@@ -230,6 +230,7 @@
       "updated": "2021-07-27T13:14:54.852Z",
       "name": "Cypress test project",
       "team": 1,
+      "ready": true,
       "description": ""
     }
   },
@@ -241,6 +242,7 @@
       "updated": "2021-08-10T07:28:33.669Z",
       "name": "Nodes",
       "team": 1,
+      "ready": true,
       "description": ""
     }
   },
@@ -252,6 +254,7 @@
       "updated": "2021-08-10T07:28:33.669Z",
       "name": "Rows 25",
       "team": 2,
+      "ready": true,
       "description": ""
     }
   },
@@ -263,6 +266,7 @@
       "updated": "2021-08-20T13:49:25.665Z",
       "name": "Warning",
       "team": 3,
+      "ready": true,
       "description": ""
     }
   },
@@ -274,6 +278,7 @@
       "updated": "2021-08-20T13:50:01.619Z",
       "name": "Disabled",
       "team": 4,
+      "ready": true,
       "description": ""
     }
   },
@@ -285,6 +290,7 @@
       "updated": "2021-08-30T18:56:35.835Z",
       "name": "Google Analytics",
       "team": 5,
+      "ready": true,
       "description": "Two widgets for Google Analytics in a Cypress test."
     }
   },
@@ -1899,7 +1905,7 @@
       "fivetran_id": "plexus_impatient",
       "schema": "team_1_heroku_postgres_0e684903d1044f7280bb061fd3c179a4",
       "fivetran_authorized": true,
-      "fivetran_succeeded_at": "1970-01-01T00:00:00.000Z",
+      "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1915,7 +1921,7 @@
       "fivetran_id": "legate_wandered",
       "schema": "team_1_facebook_ads_563a564c28cc469dba73faf6dea0799e",
       "fivetran_authorized": true,
-      "fivetran_succeeded_at": "1970-01-01T00:00:00.000Z",
+      "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1931,7 +1937,7 @@
       "fivetran_id": "humid_rifle",
       "schema": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
       "fivetran_authorized": true,
-      "fivetran_succeeded_at": "1970-01-01T00:00:00.000Z",
+      "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1947,7 +1953,7 @@
       "fivetran_id": "overtime_froze",
       "schema": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
       "fivetran_authorized": true,
-      "fivetran_succeeded_at": "1970-01-01T00:00:00.000Z",
+      "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1963,7 +1969,7 @@
       "fivetran_id": "preshow_regardless",
       "schema": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "fivetran_authorized": true,
-      "fivetran_succeeded_at": "1970-01-01T00:00:00.000Z",
+      "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
       "sync_task_id": null,
       "sync_started": null
     }

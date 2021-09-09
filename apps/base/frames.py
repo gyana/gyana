@@ -1,11 +1,13 @@
-from apps.base.formset_update_view import FormsetUpdateView
-from apps.base.turbo import TurboCreateView, TurboUpdateView
 from django.conf import settings
 from django.views.generic import DetailView, ListView
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
 from turbo_response.mixins import (
     TurboFrameTemplateResponseMixin as BaseTurboFrameTemplateResponseMixin,
 )
+
+from apps.base.formset_update_view import FormsetUpdateView
+from apps.base.turbo import TurboCreateView, TurboUpdateView
 
 
 class TurboFrame500Mixin:
@@ -46,6 +48,10 @@ class TurboFrameDeleteView(TurboFrameTemplateResponseMixin, DeleteView):
 
 
 class TurboFrameListView(TurboFrameTemplateResponseMixin, ListView):
+    pass
+
+
+class TurboFrameTemplateView(TurboFrameTemplateResponseMixin, TemplateView):
     pass
 
 

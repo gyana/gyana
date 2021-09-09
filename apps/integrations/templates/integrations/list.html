@@ -21,8 +21,9 @@
     <h3>You have no integrations</h3>
     {% if project.team.enabled %}
       <p>
-        <a href="{% url 'project_integrations_uploads:create' project.id %}" class="link">Upload a CSV</a>, or
-        <a href="{% url 'project_integrations_connectors:create' project.id %}" class="link">create an integration</a> to see it
+        Upload a <a href="{% url 'project_integrations_uploads:create' project.id %}" class="link">CSV</a>,
+        connect a <a href="{% url 'project_integrations_sheets:create' project.id %}" class="link">sheet</a>, or
+        add an <a href="{% url 'project_integrations_connectors:create' project.id %}" class="link">connector</a> to see it
         here.
       </p>
     {% endif %}

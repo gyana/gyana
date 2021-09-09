@@ -10,6 +10,8 @@ from model_clone.mixins.clone import CloneMixin
 class Project(CloneMixin, BaseModel):
     name = models.CharField(max_length=255)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    # False if created from a template
+    ready = models.BooleanField(default=True)
 
     description = models.TextField(blank=True)
 
@@ -36,13 +38,6 @@ class Project(CloneMixin, BaseModel):
     @property
     def is_template(self):
         return hasattr(self, "template")
-
-    @property
-    def is_ready(self):
-        return (
-            self.templateinstance_set.count() == 0
-            or self.templateinstance_set.filter(completed=True).count() >= 1
-        )
 
     @property
     def has_pending_templates(self):

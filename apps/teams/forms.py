@@ -39,7 +39,7 @@ class TeamCreateForm(forms.ModelForm):
         fields = ("name",)
         labels = {"name": "Name your team"}
         help_texts = {
-            "name": "We recommend you use the name of your organisation, you can change it later"
+            "name": "We recommend you use the name of your organisation"
         }
 
     def __init__(self, *args, **kwargs):

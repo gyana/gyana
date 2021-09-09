@@ -1,3 +1,4 @@
+from apps.projects.access import login_and_project_required
 from apps.teams.access import login_and_team_required
 from django.urls import path
 
@@ -10,15 +11,13 @@ project_urlpatterns = (
     [
         path(
             "",
-            # TODO: access limited to project
-            views.TemplateInstanceList.as_view(),
+            login_and_project_required(views.TemplateInstanceList.as_view()),
             name="list",
         ),
         path(
             "<hashid:pk>",
-            # TODO: access limited to project
-            views.TemplateInstanceUpdate.as_view(),
-            name="detail",
+            login_and_project_required(views.TemplateInstanceUpdate.as_view()),
+            name="update",
         ),
     ],
     "project_templateinstances",

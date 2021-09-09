@@ -6,6 +6,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="turbo-cache-control" content="no-cache">
 
   {% include 'web/components/meta.html' %}
   {% include 'web/components/favicon.html' %}
@@ -52,7 +53,7 @@
   {% include 'web/components/messages.html' %}
   {% endblock messages %}
 
-  <main class="flex flex-row h-full">
+  <main class="flex flex-row flex-1 overflow-hidden">
     {% block sidebar %}
     <div id="sidebar" class="sidebar" data-controller="web-sidebar">
       <input type="checkbox" id="sidebar-toggle" role="button"

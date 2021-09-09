@@ -1,6 +1,6 @@
 %heading {
   font-weight: 500;
-  line-height: 1.5;
+  line-height: 1.25;
   margin-top: 0;
 }
 
@@ -10,6 +10,10 @@
   // ratio. Meaning 1.6rem (our standard padding) is 16px, if a device calls for a larger
   // font-size our rem values will increase.
   font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6em; // Setting font size back to 16px for most cases.
 }
 
 h1, 

@@ -9,7 +9,6 @@ from django.views.generic.edit import DeleteView
 
 from .forms import ProjectForm
 from .models import Project
-from .tables import ProjectDashboardTable, ProjectIntegrationTable, ProjectWorkflowTable
 
 
 class ProjectCreate(TeamMixin, TurboCreateView):
@@ -41,28 +40,10 @@ class ProjectDetail(DetailView):
     def get(self, request, *args, **kwargs):
         object = self.get_object()
 
-        if not object.is_ready:
+        if not object.ready:
             return redirect("project_templateinstances:list", object.id)
-            
+
         return super().get(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        object = self.get_object()
-
-        context_data["integrations"] = ProjectIntegrationTable(
-            object.integration_set.filter(ready=True).all()[:3]
-        )
-
-        context_data["workflows"] = ProjectWorkflowTable(
-            object.workflow_set.all()[:3]
-        )
-
-        context_data["dashboards"] = ProjectDashboardTable(
-            object.dashboard_set.all()[:3]
-        )
-
-        return context_data
 
 
 class ProjectUpdate(TurboUpdateView):
@@ -82,9 +63,3 @@ class ProjectDelete(DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.team.id,))
-
-
-class ProjectSettings(DetailView):
-    template_name = "projects/settings.html"
-    model = Project
-    pk_url_kwarg = "project_id"

@@ -25,7 +25,7 @@ class TemplateInstanceTable(tables.Table):
         sequence = ("template", "completed")
 
     template = tables.LinkColumn(
-        "project_templateinstances:detail", args=(A("project__id"), A("id"))
+        "project_templateinstances:update", args=(A("project__id"), A("id"))
     )
 
 

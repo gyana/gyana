@@ -8,7 +8,8 @@
   <div class="flex gap-7 ml-auto">
     <a class="button button--sm button--tertiary" href="{% url 'teams:detail' team.id %}">Go back</a>
 
-    <div
+    {% comment %} TODO: Enable adding to existing projects {% endcomment %}
+    {% comment %} <div
       data-controller='popover'
       data-popover-dont-hide-body-value="{{dont_hide_body}}"
     >
@@ -29,7 +30,7 @@
           <button type="submit" name="submit" value="add" class="button button--sm button--outline">Continue</button>
         </form>
       </div>
-    </div>
+    </div> {% endcomment %}
 
     <form method="post">
       {% csrf_token %}

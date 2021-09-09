@@ -21,11 +21,6 @@ urlpatterns = [
         login_and_project_required(views.ProjectDelete.as_view()),
         name="delete",
     ),
-    path(
-        "<hashid:project_id>/settings/",
-        login_and_project_required(views.ProjectSettings.as_view()),
-        name="settings",
-    ),
 ]
 
 team_urlpatterns = (
