@@ -24,21 +24,11 @@
 
   {% if project_count == 0 %}
   <div class="table__empty">
-    <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
+    <i class="fas fa-fw fa-4x fa-sparkles text-orange mb-7"></i>
     <h3>This team has no projects</h3>
     <p>You can <a href="{% url 'team_projects:create' team.id %}" class="link">create one</a>,
     start with a <a href="{% url 'team_projects:create' team.id %}" class="link">template</a>
     or read our <a href="https://intercom.help/gyana/en/articles/5547945-what-is-gyana" target="_blank" class="link">getting started</a> guide.</p>
-
-    <div data-controller="iframe" class="mt-8">
-      <div data-iframe-target="placeholder" style="width: 854px; height: 480px;" class='placeholder-scr placeholder-scr--fillscreen rounded-xl bg-gray-20 border-gray border-4'>
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-        <p class='placeholder-scr__title'>Loading tutorial...</p>
-      </div>
-      <iframe class="rounded-xl" style="display: none;" width="854" height="480" src="https://www.loom.com/embed/eea3a4c9c6424a77b30ada915f92c12f"
-        frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>
-      </iframe>
-    </div>
   </div>
   {% else %}
   <div class="pad flex flex-col space-y-8">

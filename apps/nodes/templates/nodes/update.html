@@ -70,9 +70,14 @@
          href="{% url 'nodes:update' object.id %}?preview_node_id={{ object.id }}">
         Result
       </a>
-      <a class="tabbar__link {% if show_docs %} tabbar__link--active {% endif %}"
-         href="{% url 'nodes:update' object.id %}?show_docs=true">
-        Help
+      <a
+        class="tabbar__link"
+        href="{% article_url 'workflows' node.kind %}"
+        target="_blank"
+        data-controller="tooltip"
+      >
+        <i class="fas fa-fw fa-external-link"></i> Help
+        <span data-tooltip-target="body">Open knowledge base article</span>
       </a>
     </nav>
     {% if show_docs%}

@@ -60,8 +60,15 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ["avatar", "email", "first_name", "last_name"]
+        fields = ["avatar", "email", "first_name"]
         widgets = {"avatar": forms.FileInput()}
+        labels = {
+            "first_name": "Name"
+        }
+        help_texts = {
+            "email": "Changing this will not change the email you use to login",
+            "first_name": "We use this name to help personalize content and support"
+        }
 
 
 class UploadAvatarForm(forms.Form):

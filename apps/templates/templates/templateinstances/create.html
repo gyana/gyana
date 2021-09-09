@@ -3,45 +3,49 @@
 
 {% block app %}
 <div class="workflow-detail__header">
-  <h2>{{ template.name }}</h2>
-
-  <div class="flex gap-7 ml-auto">
-    <a class="button button--sm button--tertiary" href="{% url 'teams:detail' team.id %}">Go back</a>
-
-    <div
-      data-controller='popover'
-      data-popover-dont-hide-body-value="{{dont_hide_body}}"
-    >
-      <button
-        id="templates-add"
-        data-popover-target="trigger"
-        class="button button--sm button--outline"
-        data-action="popover#trigger"
-      >
-        Add to project
-      </button>
-      <div data-popover-target="body" class="popover-body max-w-lg card card--sm"> 
-        <form method="post">
-          {% csrf_token %}
-
-          {% include "django/forms/default_form.html" %}
-
-          <button type="submit" name="submit" value="add" class="button button--sm button--outline">Continue</button>
-        </form>
-      </div>
-    </div>
-
-    <form method="post">
-      {% csrf_token %}
-
-      <button type="submit" name="submit" value="create" class="button button--sm">Create new project</button>
-    </form>
-
+  <div class="mr-auto">
+    <h3>{{ template.name }}</h3>
+    <p><small>{{ template.description }}</small></p>
   </div>
+
+  <a
+    class="button button--sm button--tertiary"
+    href="{% url 'teams:detail' team.id %}">
+    Go back
+  </a>
+
+  <vr></vr>
+  <div
+    data-controller='popover'
+    data-popover-dont-hide-body-value="{{dont_hide_body}}"
+  >
+    <button
+      id="templates-add"
+      data-popover-target="trigger"
+      class="button button--sm button--outline"
+      data-action="popover#trigger"
+    >
+      Add to project
+    </button>
+
+    <div data-popover-target="body" class="popover-body max-w-lg card card--sm"> 
+      <form method="post">
+        {% csrf_token %}
+
+        {% include "django/forms/default_form.html" %}
+
+        <button type="submit" name="submit" value="add" class="button button--success w-full">Continue</button>
+      </form>
+    </div>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" name="submit" value="create" class="button button--sm">Create new project</button>
+  </form>
 </div>
 
 <div class="flex items-center gap-4 border-b border-gray pad">
-<p class="mr-auto">{{ template.description }}</p>
   {% for integration in template.project.integration_set.all %}
     <div data-controller="tooltip">
       <img class="h-12 w-12" src="{% static integration.icon %}" title="{{ integration.name }}" />

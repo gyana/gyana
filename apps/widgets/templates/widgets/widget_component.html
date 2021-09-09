@@ -34,12 +34,14 @@ preview mode.
       <div class='widget-card__commands'>
         {% if object.kind != "text" %}
         <button  
+          data-controller="tooltip"
           data-action="click->tf-modal#open"
           id="widget-update-{{object.id}}"  
           data-item="{{ object.id }}"
           data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
         >
-          <i class="fas fa-fw fa-edit" title="Edit"></i>
+          <i class="fas fa-fw fa-edit"></i>
+          <span data-tooltip-target="body">Configure</span>
         </button>
 
         {% comment %} Uncomment this once we figure out the modal for opening up a chart. {% endcomment %}
@@ -50,6 +52,7 @@ preview mode.
         {% endif %}
 
         <form
+          data-controller="tooltip"
           method='post'
           action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}"
           title="Duplicate"
@@ -58,9 +61,10 @@ preview mode.
           <button id="widget-duplicate-{{object.id}}" type='submit'>
             <i class="fas fa-fw fa-copy"></i>
           </button>
+          <span data-tooltip-target="body">Duplicate</span>
         </form>
 
-        <div class="flex" data-controller="popover">
+        <div class="flex" data-controller="tooltip popover">
           <button
             id="widget-delete-{{object.id}}"
             title="Delete"
@@ -73,6 +77,8 @@ preview mode.
           <div data-popover-target="body" hidden class="popover-body">
             {% include 'widgets/_delete.html' %}
           </div>
+
+          <span data-tooltip-target="body">Delete</span>
         </div>
       </div>
       {% endif %}

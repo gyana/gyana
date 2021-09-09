@@ -25,6 +25,11 @@ $card-colors: (
   &--inline {
     display: inline-flex;
   }
+
+  &--outline {
+    border: 1px dashed var(--card-color);
+    background-color: var(--c-transparent);
+  }
   
   &--square {
     align-items: center;

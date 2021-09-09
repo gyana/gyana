@@ -18,3 +18,9 @@ def get_articles():
 def link_article(collection: str, name: str):
     # will error if does not exist (deliberate)
     return {"article_url": f"{INTERCOM_ROOT}/{get_articles()[collection][name]}"}
+
+
+@register.simple_tag
+def article_url(collection: str, name: str):
+    return f"{INTERCOM_ROOT}/{get_articles()[collection][name]}"
+

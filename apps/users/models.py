@@ -58,6 +58,7 @@ class CustomUser(AbstractUser):
     def get_display_name(self):
         if self.get_full_name().strip():
             return self.get_full_name()
+
         return self.email
 
     @property

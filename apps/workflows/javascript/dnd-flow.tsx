@@ -290,7 +290,7 @@ const DnDFlow = ({ client, workflowId }) => {
             />
             {(viewHasChanged || initialLoad === LoadingStates.loading) && (
               <div className='placeholder-scr placeholder-scr--fillscreen'>
-                <i className='placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x'></i>
+                <i className='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
                 Loading...
               </div>
             )}
@@ -310,21 +310,21 @@ const DnDFlow = ({ client, workflowId }) => {
             {initialLoad === LoadingStates.loaded && elements.length === 0 && (
               <div className='placeholder-scr placeholder-scr--fillscreen gap-10'>
                 <div className="flex items-center max-w-lg gap-7">
-                  <i className={`fas fa-fw ${NODES['input'].icon} text-green fa-3x`}></i>
+                  <i className={`fas fa-fw ${NODES['input'].icon} text-green fa-2x`}></i>
                   <p>
                     Start building your workflow by dragging in a <strong>Get data</strong> node
                   </p>
                 </div>
 
                 <div className="flex items-center max-w-lg gap-7">
-                  <i className={`fas fa-fw ${NODES['filter'].icon} text-blue fa-3x`}></i>
+                  <i className={`fas fa-fw ${NODES['filter'].icon} text-blue fa-2x`}></i>
                   <p>
                     Clean and filter your data by dragging in different types of nodes
                   </p>
                 </div>
 
                 <div className="flex items-center max-w-lg gap-7">
-                  <i className={`fas fa-fw ${NODES['output'].icon} text-pink fa-3x`}></i>
+                  <i className={`fas fa-fw ${NODES['output'].icon} text-pink fa-2x`}></i>
                   <p>
                     Once you are happy with your data, drag in a <strong>Save Data</strong> node
                   </p>
