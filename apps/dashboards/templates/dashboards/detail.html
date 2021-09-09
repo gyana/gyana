@@ -30,7 +30,8 @@
   </div>
 
   <vr></vr>
-  
+
+  {% if request.GET.mode != 'view' %}
   <div data-controller="tooltip popover">
     <button 
       type="button" 
@@ -69,6 +70,7 @@
       </form>
     </div>
   </div>
+  {% endif %}
 
   <turbo-frame id="dashboard-share">
     {% include 'dashboards/share.html' %}
