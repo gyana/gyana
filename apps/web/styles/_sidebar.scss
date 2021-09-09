@@ -38,9 +38,9 @@
 
     .team_logo {
       align-items: center;
-      background-color: var(--c-blue);
+      background-color: var(--c-transparent);
       border-radius: 5px;
-      color: var(--c-white);
+      color: var(--c-black);
       display: inline-flex;
       font-weight: 900;
       height: 2.4rem;
@@ -59,8 +59,9 @@
       color: var(--c-blue);
       font-weight: 500;
 
-      .user_team {
-        background-color: var(--c-blue);
+      .team_logo {
+        background-color: var(--c-blue-10);
+        color: var(--c-blue);
       }
 
       .fa-fw {
