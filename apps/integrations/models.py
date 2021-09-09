@@ -1,3 +1,6 @@
+from datetime import timedelta
+from itertools import chain
+
 from apps.base.models import BaseModel
 from apps.connectors.config import get_services
 from apps.dashboards.models import Dashboard
@@ -6,7 +9,6 @@ from apps.users.models import CustomUser
 from apps.workflows.models import Workflow
 from django.db import models
 from django.urls import reverse
-from datetime import timedelta
 from model_clone.mixins.clone import CloneMixin
 
 
@@ -76,7 +78,7 @@ class Integration(CloneMixin, BaseModel):
 
     @property
     def used_in(self):
-        return self.used_in_workflows.union(self.used_in_dashboards)
+        return list(chain(self.used_in_workflows, self.used_in_dashboards))
 
     @property
     def display_kind(self):
