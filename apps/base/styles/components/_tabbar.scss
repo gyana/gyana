@@ -50,4 +50,20 @@
     line-height: 1.4rem;
     padding: 1rem;
   }
+
+  &--top &__link {
+    border-left: 1px solid var(--c-gray);
+    border-right: 1px solid var(--c-gray);
+    border-top: 2px solid var(--c-transparent);
+    border-bottom: none;
+
+    &--active {
+      background-color: var(--c-gray-20);
+      border-top: 2px solid var(--c-blue);
+    }
+  }
+
+  &__link + &__link {
+    border-left: none;
+  }
 }
