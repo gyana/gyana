@@ -27,11 +27,12 @@
       <p>Click the button below to create shareable link that is accessible publicly.</p>
       <button class="button button--sm button--success w-full" type='submit'>Share dashboard</button>
       {% else %}
-      <p>Everyone with the link can see it. Click <strong>Unshare</strong> to make this dashboard
-        private again.</span>
-      <div data-controller="to-clipboard"
-        class='clipboard-copy'
-      >
+      <p>
+        Everyone with the link can see it. Click <strong>Unshare</strong> to
+        make this dashboard private again.
+      </p>
+
+      <div data-controller="to-clipboard" class='clipboard-copy'>
         <a 
           href="//{{ request.META.HTTP_HOST }}/dashboards/{{object.shared_id}}" 
           data-to-clipboard-target='target'
@@ -43,7 +44,7 @@
         </a>
 
         <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
-          <i class='fa fa-clipboard fa-2x'></i>
+          <i class='fa fa-clipboard'></i>
         </button>
       </div>
 
