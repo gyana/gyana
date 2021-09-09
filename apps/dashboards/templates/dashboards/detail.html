@@ -7,42 +7,52 @@
     {% csrf_token %}
 
     <input class='input__inline mr-auto' id="name" type="text" name="name" value="{{ object.name }}"></input>
+  </form>
 
-    <div class="button button--circle button--tertiary">
-      {% include 'components/_duplicate.html' with object_name="dashboard" %}
+  <div class="button button--circle button--tertiary">
+    {% include 'components/_duplicate.html' with object_name="dashboard" %}
+  </div>
+
+  <div data-controller='tooltip popover'>
+    <span
+      data-popover-target="trigger"
+      data-action="click->popover#trigger"
+      class="button button--circle button--tertiary"
+    > 
+      <i class="far fa-fw fa-trash"></i>
+    </span>
+
+    <span data-tooltip-target="body">Delete</span>
+
+    <div data-popover-target="body" hidden class="popover-body">
+      {% include 'dashboards/_delete.html' %}
     </div>
+  </div>
 
-    <div data-controller='tooltip popover'>
-      <span
-        data-popover-target="trigger"
-        data-action="click->popover#trigger"
-        class="button button--circle button--tertiary"
-      > 
-        <i class="far fa-fw fa-trash"></i>
-      </span>
+  <vr></vr>
+  
+  <div data-controller="tooltip popover">
+    <button 
+      type="button" 
+      data-popover-target="trigger" 
+      class="button button--circle button--tertiary"
+      data-action="popover#trigger"
+    >
+      <i class="far fa-expand-arrows-alt fa-fw"></i>
+    </button>
 
-      <span data-tooltip-target="body">Delete</span>
-
-      <div data-popover-target="body" hidden class="popover-body">
-        {% include 'dashboards/_delete.html' %}
-      </div>
-    </div>
-
-    <vr></vr>
-    
-    <div data-controller="tooltip popover">
-      <button 
-        type="button" 
-        data-popover-target="trigger" 
-        class="button button--circle button--tertiary"
-        data-action="popover#trigger"
+    <span data-tooltip-target="body">Canvas size</span>
+  
+    <div data-popover-target="body" class="popover-body max-w-lg card card--sm">
+      <form
+        method="post"
+        action="{% url 'project_dashboards:detail' project.id object.id %}"
+        class="form--no-layout"
       >
-        <i class="far fa-expand-arrows-alt fa-fw"></i>
-      </button>
+        {% csrf_token %}
 
-      <span data-tooltip-target="body">Canvas size</span>
+        <input class='input__inline mr-auto' id="name" type="text" name="name" hidden value="{{ object.name }}"></input>
 
-      <div data-popover-target="body" class="popover-body max-w-lg card card--sm">
         <div class="flex gap-7">
           <label>
             <p>Width</p>
@@ -56,9 +66,9 @@
         </div>
 
         <button class="button button--sm button--success mt-7 w-full" type='submit'>Update</button>
-      </div>
+      </form>
     </div>
-  </form>
+  </div>
 
   <turbo-frame id="dashboard-share">
     {% include 'dashboards/share.html' %}
