@@ -22,8 +22,10 @@ export default class extends Controller {
       if (flag_disabled && formset_row && get_formset_row(element) !== formset_row)
         flag_disabled = false
 
-      if (element.type === 'submit' || (flag_disabled && element.type !== 'hidden'))
-        element.disabled = true
+      // TODO: This makes it necessary to double click Save & Preview
+      // When clicking shifts focus from an input field
+      // if (element.type === 'submit' || (flag_disabled && element.type !== 'hidden'))
+      //   element.disabled = true
 
       if (element === event.target) flag_disabled = true
     }
@@ -63,6 +65,12 @@ export default class extends Controller {
         if (toEl.tagName === 'INPUT') {
           toEl.value = fromEl.value
         }
+
+        if (toEl.tagName === 'TEMPLATE') {
+          fromEl.innerHTML = toEl.innerHTML
+          return false
+        }
+
         // Do not overwrite web component
         // TODO: Replace the entire node to re-trigger connectedCallback
         if (toEl.tagName.includes('-')) {
@@ -70,7 +78,6 @@ export default class extends Controller {
         }
       },
     })
-
     this.loadingTarget.classList.add('hidden')
   }
 

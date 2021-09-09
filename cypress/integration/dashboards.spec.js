@@ -121,7 +121,7 @@ describe('dashboards', () => {
         cy.visit(`/projects/1/dashboards/${dashboardStartId}`)
         cy.get(`#dashboard-share-${dashboardStartId}`).click()
         cy.get('button').contains('Unshare').click()
-        cy.get('.fa-lock')
+        cy.get('.fa-link')
         cy.logout()
 
         // cy.visit fails on 404 by default
