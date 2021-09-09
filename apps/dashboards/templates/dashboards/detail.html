@@ -80,7 +80,7 @@
 
   <div data-controller='popover'>
     <button class="button button--sm" data-controller="tooltip">
-      {% if request.GET.mode == 'edit' %}
+      {% if not request.GET.mode or request.GET.mode == 'edit' %}
       <a href="?mode=view">
         <i class="fas fa-eye mr-3"></i> Preview
       </a>
