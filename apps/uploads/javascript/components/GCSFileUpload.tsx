@@ -22,6 +22,11 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
       fileRef.current.addEventListener('change', async (event) => {
         setStage('progress')
 
+        // Ask user if they are sure they want to navigate away
+        window.onbeforeunload = function () {
+          return true;
+        };
+
         const file = event.target.files[0]
 
         const { url: target, path } = await getApiClient().action(
@@ -39,6 +44,9 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
             onProgress: setProgress,
             onSuccess: () => {
               setStage('done')
+
+              window.onbeforeunload = null
+
               inputFileRef.current.value = path
               inputNameRef.current.value = file.name
 
@@ -65,7 +73,12 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
         <li>
           <div className='integration__file-upload'>
             {stage === 'initial' ? (
-              <input ref={fileRef} type='file' accept='.csv' />
+              <>
+                <label className="button button--success button--outline" htmlFor="gcsfileupload">
+                  Choose a file to upload
+                </label>
+                <input id="gcsfileupload" ref={fileRef} type='file' accept='.csv' hidden />
+              </>
             ) : stage === 'progress' ? (
               <>
                 <div className='integration__file-progress mr-4'>
@@ -75,8 +88,7 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
                   <h4>{progress}%</h4>
                 </div>
                 <div>
-                  {/* <p>Uploading the file might take a while, make sure to stay on the page.</p> */}
-                  <p>Stay on the page during upload.</p>
+                  <p>This might take a few minutes, stay on the page.</p>
                 </div>
               </>
             ) : stage === 'done' ? (
