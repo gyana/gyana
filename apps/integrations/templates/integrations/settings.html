@@ -1,24 +1,25 @@
 {% extends "integrations/base.html" %}
 
 {% block tab %}
-<div class="mb-auto pad">
-  <form method="post" action="{% url 'project_integrations:update' project.id object.id %}" class="form">
-    {% csrf_token %}
+<div class="flex flex-col flex-1 overflow-auto pad">
+  <div class="max-w-lg mb-auto">
+    <form method="post" action="{% url 'project_integrations:update' project.id object.id %}" class="form">
+      {% csrf_token %}
 
-    {% include "django/forms/default_form.html" %}
+      {% include "django/forms/default_form.html" %}
 
-    <button type="submit" class="button button--filled button--success">Save changes</button>
-  </form>
+      <button type="submit" class="button button--filled button--success">Save changes</button>
+    </form>
+  </div>
+
+  <div>
+    <h2><span class="text-red">Danger zone:</span></h2>
+    <p>If you'd like to <strong>delete</strong> this integration, press the button below.</p>
+
+    <a class="button button--sm button--filled button--danger"
+      href="{% url 'project_integrations:delete' project.id object.pk %}">
+      Delete
+    </a>
+  </div>
 </div>
-
-<div>
-  <h2><span class="text-red">Danger zone:</span></h2>
-  <p>If you'd like to <strong>delete</strong> this integration, press the button below.</p>
-
-  <a class="button button--sm button--filled button--danger"
-     href="{% url 'project_integrations:delete' project.id object.pk %}">
-    Delete
-  </a>
-</div>
-
 {% endblock %}
