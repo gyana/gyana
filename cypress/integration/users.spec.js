@@ -16,7 +16,7 @@ describe('users', () => {
   })
 
   it('signs up to app with onboarding', () => {
-    cy.visit('/accounts/signup')
+    cy.visit('/signup')
     cy.contains('Sign Up Closed')
 
     // signup is disabled, uncomment when freemium is live
