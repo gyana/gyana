@@ -24,8 +24,8 @@ export default class extends Controller {
 
       // TODO: This makes it necessary to double click Save & Preview
       // When clicking shifts focus from an input field
-      // if (element.type === 'submit' || (flag_disabled && element.type !== 'hidden'))
-      //   element.disabled = true
+      if (element.type === 'submit' || (flag_disabled && element.type !== 'hidden'))
+        element.disabled = true
 
       if (element === event.target) flag_disabled = true
     }
