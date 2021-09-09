@@ -69,39 +69,40 @@ describe('templates', () => {
     // dashboard still loads
     checkDashboard()
   })
-  it('existing project', () => {
-    cy.visit('/projects/1/integrations')
+  // TODO: Add to existing projects
+  // it('existing project', () => {
+  //   cy.visit('/projects/1/integrations')
 
-    // setup a project with Google Analytics
-    // from connectors.spec.js
+  //   // setup a project with Google Analytics
+  //   // from connectors.spec.js
 
-    cy.contains('New Integration').click()
-    cy.contains('New Connector').click()
-    cy.contains('Google Analytics').click()
-    cy.get('button[type=submit]').click()
-    cy.contains('continue').click()
-    cy.get('button[type=submit]').click()
-    cy.contains('Confirm', { timeout: BIGQUERY_TIMEOUT }).click()
+  //   cy.contains('New Integration').click()
+  //   cy.contains('New Connector').click()
+  //   cy.contains('Google Analytics').click()
+  //   cy.get('button[type=submit]').click()
+  //   cy.contains('continue').click()
+  //   cy.get('button[type=submit]').click()
+  //   cy.contains('Confirm', { timeout: BIGQUERY_TIMEOUT }).click()
 
-    // add template to project
-    cy.visit('/teams/1')
-    cy.contains('Google Analytics').click()
-    cy.get('#templates-add').click()
-    cy.get('select').select('Cypress test project')
-    cy.get('button[value=add]').click()
+  //   // add template to project
+  //   cy.visit('/teams/1')
+  //   cy.contains('Google Analytics').click()
+  //   cy.get('#templates-add').click()
+  //   cy.get('select').select('Cypress test project')
+  //   cy.get('button[value=add]').click()
 
-    // we can navigate to other parts of the project and come back
-    cy.get('#sidebar').within(() => cy.contains('Integrations').click())
-    cy.contains('Setup').click()
-    cy.contains('Google Analytics').click()
+  //   // we can navigate to other parts of the project and come back
+  //   cy.get('#sidebar').within(() => cy.contains('Integrations').click())
+  //   cy.contains('Setup').click()
+  //   cy.contains('Google Analytics').click()
 
-    // uses existing connector
-    cy.get('.fa-check-circle')
-    cy.get('button[type=submit]').click()
+  //   // uses existing connector
+  //   cy.get('.fa-check-circle')
+  //   cy.get('button[type=submit]').click()
 
-    // dashboard loads
-    cy.contains('Dashboard').click()
-    cy.contains('Basic metrics').click()
-    checkDashboard()
-  })
+  //   // dashboard loads
+  //   cy.contains('Dashboard').click()
+  //   cy.contains('Basic metrics').click()
+  //   checkDashboard()
+  // })
 })
