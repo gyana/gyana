@@ -5,7 +5,7 @@ const get_formset_row = (element) => element.closest('[data-formset-index]')
 
 export default class extends Controller {
   static targets = ['loading']
-
+  clicked_button = false
   disable = (event) => {
     const form = this.element
 
@@ -32,6 +32,7 @@ export default class extends Controller {
   }
 
   listener = async (event) => {
+    if (this.clicked_button) return
     const form = this.element
 
     // manually POST the form and get HTML response
@@ -78,10 +79,15 @@ export default class extends Controller {
         }
       },
     })
+
+    this.clicked_button = false
     this.loadingTarget.classList.add('hidden')
   }
 
   connect() {
     this.element.addEventListener('change', this.listener)
+    this.element.addEventListener('mousedown', (event) => {
+      this.clicked_button = event.target.nodeName == 'BUTTON'
+    })
   }
 }
