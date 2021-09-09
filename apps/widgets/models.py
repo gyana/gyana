@@ -23,7 +23,7 @@ class Widget(CloneMixin, BaseModel):
         STACKED_BAR = "stackedbar2d", "Stacked Bar"
         LINE = "msline", "Line"
         PIE = "pie2d", "Pie"
-        AREA = "area2d", "Area"
+        AREA = "msarea", "Area"
         DONUT = "doughnut2d", "Donut"
         SCATTER = "scatter", "Scatter"
         FUNNEL = "funnel", "Funnel"
