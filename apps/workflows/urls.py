@@ -50,6 +50,11 @@ project_urlpatterns = (
             login_and_project_required(views.WorkflowDelete.as_view()),
             name="delete",
         ),
+        path(
+            "overview",
+            login_and_project_required(frames.WorkflowOverview.as_view()),
+            name="overview",
+        ),
     ],
     "project_workflows",
 )

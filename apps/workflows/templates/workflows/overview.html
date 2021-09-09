@@ -1,0 +1,55 @@
+{% load humanize %}
+{% load static %}
+
+<div class="flex flex-col space-y-3">
+  <div class="flex items-baseline gap-3">
+    <h3>Workflows</h3>
+    {% if workflows.total > 0 %}
+      <p class="text-black-50">
+        - <a class="link" href="{% url 'project_workflows:list' project.id %}">
+            {{ workflows.total }} workflow{{ workflows.total|pluralize }}
+          </a>
+        - {{ workflows.nodes|intcomma }} node{{ workflows.nodes|pluralize }}
+        - {{ workflows.results|intcomma }} result{{ workflows.results|pluralize }} saved
+      </p>
+    {% endif %}
+  </div>
+
+  <div class="card card--sm">
+    {% if integrations.ready == 0 and workflows.total == 0 %}
+      <p class="text-black-50">Workflows need at least one source of data.</p>
+    {% elif workflows.total == 0 %}
+      <div class="table__empty">
+        <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
+        <h3>You have no workflows.</h3>
+        <p class="text-black-50">Why not 
+          <a class="link" href="{% url 'project_workflows:list' project.id %}">create one</a>?
+        </p>
+      </div>
+    {% elif not workflows.operational %}
+      {% if workflows.incomplete > 0 %}
+        <p class="text-black-50">
+          <i class="fa fa-exclamation-triangle text-orange"></i>
+          You have {{ workflows.incomplete|intcomma }} incomplete workflow{{ workflows.incomplete|pluralize }}.
+        </p>
+      {% endif %}
+      {% if workflows.outdated > 0 %}
+        <p class="text-black-50">
+          <i class="fa fa-exclamation-triangle text-orange"></i>
+          You have {{ workflows.outdated|intcomma }} outdated workflow{{ workflows.outdated|pluralize }}.
+        </p>
+      {% endif %}
+      {% if workflows.failed > 0 %}
+        <p class="text-black-50">
+          <i class="fa fa-exclamation-circle text-red"></i>
+          You have {{ workflows.failed|intcomma }} failed workflow{{ workflows.failed|pluralize }}.
+        </p>
+      {% endif %}
+    {% else %}
+      <p class="text-black-50">
+        <i class="fa fa-check-circle text-green"></i>
+        Your workflows have no errors
+      </p>
+    {% endif %}
+  </div>
+</div>

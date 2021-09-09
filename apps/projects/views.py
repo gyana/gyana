@@ -54,48 +54,6 @@ class ProjectDetail(DetailView):
         context_data = super().get_context_data(**kwargs)
         object = self.get_object()
 
-        # integrations
-        ready = object.integration_set.filter(ready=True)
-        pending = object.integration_set.filter(ready=False)
-        broken = ready.filter(
-            kind=Integration.Kind.CONNECTOR,
-            connector__fivetran_succeeded_at__lt=timezone.now()
-            - timezone.timedelta(hours=24),
-        ).count()
-
-        context_data["integrations"] = {
-            "ready": ready.count(),
-            "attention": pending.exclude(state=Integration.State.LOAD).count(),
-            "loading": pending.filter(state=Integration.State.LOAD).count(),
-            "broken": broken,
-            "operational": broken == 0,
-            "connectors": ready.filter(kind=Integration.Kind.CONNECTOR).all(),
-            "sheet_count": ready.filter(kind=Integration.Kind.SHEET).count(),
-            "upload_count": ready.filter(kind=Integration.Kind.UPLOAD).count(),
-        }
-
-        # workflows
-        workflows = object.workflow_set
-        results = (
-            Node.objects.filter(workflow__project=object, kind=Node.Kind.OUTPUT)
-            .exclude(table=None)
-            .count()
-        )
-        nodes = Node.objects.filter(workflow__project=object)
-        incomplete = workflows.filter(last_run=None).count()
-        outdated = workflows.filter(last_run__lte=F("data_updated")).count()
-        failed = nodes.exclude(error=None).values_list("workflow").distinct().count()
-
-        context_data["workflows"] = {
-            "total": workflows.count(),
-            "results": results,
-            "nodes": nodes.count(),
-            "incomplete": incomplete,
-            "outdated": outdated,
-            "failed": failed,
-            "operational": incomplete + outdated + failed == 0,
-        }
-
         # dashboards
         widgets = Widget.objects.filter(dashboard__project=object)
         # equivalent to is_valid, but efficient query

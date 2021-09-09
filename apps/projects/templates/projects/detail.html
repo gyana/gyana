@@ -22,151 +22,35 @@
     </header>
 
     <section class="flex flex-col gap-7 pad">
-      <div class="flex flex-col space-y-3">
-        <div class="flex items-baseline gap-3">
-          <h3>Integrations</h3>
-          {% if integrations.ready > 0 %}
-            <p class="text-black-50">
-              - <a class="link" href="{% url 'project_integrations:list' object.id %}">
-                  {{ integrations.ready|intcomma }} integration{{ integrations.ready|pluralize }}
-                </a>
-              - {{ project.num_rows|intcomma }} row{{ project.num_rows|pluralize }}
-            </p>
-          {% endif %}
-        </div>
-
-        <div class="card card--sm">
-          {% if integrations.ready > 0 %}
-            <div class='flex flex-row items-center gap-3 flex-wrap'>
-              {% for integration in integrations.connectors %}
-                <span>
-                  <a href="{% url 'project_integrations:detail' object.id integration.id %}">
-                    <img class="h-8 w-8" src="{% static integration.icon %}"/>
-                  </a>
-                </span>
-              {% endfor %}
-              {% if integrations.sheet_count > 0 %}
-                <span>
-                  <p class="text-black-50">
-                    <a class="link" href="{% url 'project_integrations:list' object.id %}?kind=sheet">
-                      {{ integrations.sheet_count|intcomma }} sheet{{ integrations.sheet_count|pluralize }}
-                    </a>
-                  </p>
-                </span>
-              {% endif %}
-              {% if integrations.upload_count > 0 %}
-                <span>
-                  <p class="text-black-50">
-                    <a class="link" href="{% url 'project_integrations:list' object.id %}?kind=upload">
-                      {{ integrations.upload_count|intcomma }} upload{{ integrations.upload_count|pluralize }}
-                    </a>
-                  </p>
-                </span>
-              {% endif %}
-            </div>
-          {% else %}
-            <div class="table__empty">
-              <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
-              <h3>You have no integrations.</h3>
-              <p class="text-black-50">Start your project by 
-                <a class="link" href="{% url 'project_integrations:list' object.id %}">creating one</a>.
-              </p>
-            </div>
-          {% endif %}
-        </div>
-
-        {% if integrations.attention > 0 %}
-          <div class="card card--sm">
-              <p class="text-black-50">
-                <i class="fa fa-info-circle"></i>
-                You have {{ integrations.attention|intcomma }} pending integration{{ integrations.attention|pluralize }} that need{{ integrations.attention|pluralize:"s," }}
-                  your <a class="link" href="{% url 'project_integrations:pending' object.id %}">attention</a>.
-              </p>
+      <turbo-frame id="integrations:overview" src="{% url 'project_integrations:overview' project.id %}">
+        <div class="flex flex-col space-y-3">
+          <div class="flex items-baseline gap-3">
+            <h3>Integrations</h3>
           </div>
-        {% endif %} 
 
-        {% if integrations.loading > 0 %}
           <div class="card card--sm">
-              <p class="text-black-50">
-                <i class="fa fa-info-circle"></i>
-                You have {{ integrations.loading|intcomma }} pending integration{{ integrations.loading|pluralize }} doing
-                  the initial import.
-              </p>
-          </div>
-        {% endif %}
-
-        {% if integrations.ready > 0 %}
-          <div class="card card--sm">
-            {% if not integrations.operational %}
-              {% if integrations.broken > 0 %}
-                <p class="text-black-50">
-                  <i class="fa fa-exclamation-circle text-red"></i>
-                  You have {{ integrations.broken|intcomma }} broken integration{{ integrations.broken|pluralize }}.
-                </p>
-              {% endif %}
-            {% else %}
-              <p class="text-black-50">
-                <i class="fa fa-check-circle text-green"></i>
-                You have no integrations that need attention
-              </p>
-            {% endif %}
-          </div>
-        {% endif %}
-
-      </div>
-
-      <div class="flex flex-col space-y-3">
-        <div class="flex items-baseline gap-3">
-          <h3>Workflows</h3>
-          {% if workflows.total > 0 %}
-            <p class="text-black-50">
-              - <a class="link" href="{% url 'project_workflows:list' object.id %}">
-                  {{ workflows.total }} workflow{{ workflows.total|pluralize }}
-                </a>
-              - {{ workflows.nodes|intcomma }} node{{ workflows.nodes|pluralize }}
-              - {{ workflows.results|intcomma }} result{{ workflows.results|pluralize }} saved
-            </p>
-          {% endif %}
-        </div>
-
-        <div class="card card--sm">
-          {% if integrations.ready == 0 and workflows.total == 0 %}
-            <p class="text-black-50">Workflows need at least one source of data.</p>
-          {% elif workflows.total == 0 %}
-            <div class="table__empty">
-              <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
-              <h3>You have no workflows.</h3>
-              <p class="text-black-50">Why not 
-                <a class="link" href="{% url 'project_workflows:list' object.id %}">create one</a>?
-              </p>
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+              <p class='placeholder-scr__title'>Loading integrations...</p>
             </div>
-          {% elif not workflows.operational %}
-            {% if workflows.incomplete > 0 %}
-              <p class="text-black-50">
-                <i class="fa fa-exclamation-triangle text-orange"></i>
-                You have {{ workflows.incomplete|intcomma }} incomplete workflow{{ workflows.incomplete|pluralize }}.
-              </p>
-            {% endif %}
-            {% if workflows.outdated > 0 %}
-              <p class="text-black-50">
-                <i class="fa fa-exclamation-triangle text-orange"></i>
-                You have {{ workflows.outdated|intcomma }} outdated workflow{{ workflows.outdated|pluralize }}.
-              </p>
-            {% endif %}
-            {% if workflows.failed > 0 %}
-              <p class="text-black-50">
-                <i class="fa fa-exclamation-circle text-red"></i>
-                You have {{ workflows.failed|intcomma }} failed workflow{{ workflows.failed|pluralize }}.
-              </p>
-            {% endif %}
-          {% else %}
-            <p class="text-black-50">
-              <i class="fa fa-check-circle text-green"></i>
-              Your workflows have no errors
-            </p>
-          {% endif %}
+          </div>
         </div>
-      </div>
+      </turbo-frame>
+
+      <turbo-frame id="workflows:overview" src="{% url 'project_workflows:overview' project.id %}">
+        <div class="flex flex-col space-y-3">
+          <div class="flex items-baseline gap-3">
+            <h3>Workflows</h3>
+          </div>
+
+          <div class="card card--sm">
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+              <p class='placeholder-scr__title'>Loading workflows...</p>
+            </div>
+          </div>
+        </div>
+      </turbo-frame>
 
       <div class="flex flex-col space-y-3">
         <div class="flex items-baseline gap-3">
