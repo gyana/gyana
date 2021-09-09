@@ -2,10 +2,42 @@ import uuid
 
 import analytics
 from apps.base.analytics import DASHBOARD_SHARED_PUBLIC_EVENT
-from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
+from apps.base.frames import (
+    TurboFrameDetailView,
+    TurboFrameTemplateView,
+    TurboFrameUpdateView,
+)
+from apps.projects.mixins import ProjectMixin
+from apps.widgets.models import Widget
+from django.db.models import Q
 from django.urls.base import reverse
 
 from .models import Dashboard
+
+
+class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
+    template_name = "dashboards/overview.html"
+    turbo_frame_dom_id = "dashboards:overview"
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        widgets = Widget.objects.filter(dashboard__project=object)
+        # equivalent to is_valid, but efficient query
+        incomplete = widgets.exclude(
+            Q(kind=Widget.Kind.TEXT)
+            | (Q(kind=Widget.Kind.TABLE) & ~Q(table=None))
+            | (~Q(table=None) & ~Q(label=None) & ~Q(aggregations__column=None))
+        )
+        dashboards_incomplete = incomplete.values_list("dashboard").distinct().count()
+        context_data["dashboards"] = {
+            "total": object.dashboard_set.count(),
+            "widgets": widgets.count(),
+            "incomplete": dashboards_incomplete,
+            "operational": dashboards_incomplete == 0,
+        }
+
+        return context_data
 
 
 class DashboardShare(TurboFrameUpdateView):

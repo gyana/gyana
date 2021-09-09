@@ -1,0 +1,43 @@
+{% load humanize %}
+{% load static %}
+
+<div class="flex flex-col space-y-3">
+  <div class="flex items-baseline gap-3">
+    <h3>Dashboards</h3>
+    {% if dashboards.total > 0 %}
+      <p class="text-black-50">
+        - <a class="link" href="{% url 'project_dashboards:list' project.id %}">
+            {{ dashboards.total }} dashboard{{ dashboards.total|pluralize }}
+          </a>
+        - {{ dashboards.widgets|intcomma }} widget{{ dashboards.widgets|pluralize }}
+      </p>
+    {% endif %}
+  </div>
+
+  <div class="card card--sm">
+    {% if integrations.ready == 0 and dashboards.total == 0 %}
+      <p class="text-black-50">Dashboards need at least one source of data.</p>
+    {% elif dashboards.total == 0 %}
+      <div class="table__empty">
+        <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
+        <h3>You have no dashboards.</h3>
+        <p class="text-black-50">Why not 
+          <a class="link" href="{% url 'project_dashboards:list' project.id %}">create one</a>?
+        </p>
+      </div>
+    {% elif not dashboards.operational %}
+      {% if dashboards.incomplete > 0 %}
+        <p class="text-black-50">
+          <i class="fa fa-exclamation-triangle text-orange"></i>
+          You have {{ dashboards.incomplete|intcomma }} incomplete dashboard{{ dashboards.incomplete|pluralize }}.
+        </p>
+      {% endif %}
+    {% else %}
+    
+      <p class="text-black-50">
+        <i class="fa fa-check-circle text-green"></i>
+        All your dashboards are ready
+      </p>
+    {% endif %}
+  </div>
+</div>

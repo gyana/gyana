@@ -56,6 +56,11 @@ project_urlpatterns = (
             login_and_project_required(views.DashboardDelete.as_view()),
             name="delete",
         ),
+        path(
+            "overview",
+            login_and_project_required(frames.DashboardOverview.as_view()),
+            name="overview",
+        ),
     ],
     "project_dashboards",
 )
