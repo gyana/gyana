@@ -39,9 +39,7 @@
              data-width="{{widget.width}}" data-height="{{widget.height}}">
           <div class="widget-card h-full">
             <div class='widget-card__visual widget-card__visual--view'>
-              {% if widget.name %}
-              <h3 class="text-center py-4">{{ widget.name }}</h3>
-              {% endif %}
+              {% include 'widgets/_widget_title.html' with object=widget%}
               <turbo-frame id="widgets-output-{{ widget.id }}"
                            src="{% url 'dashboard_widgets:output' project.id dashboard.id widget.id %}"
                            target="_top"

@@ -16,7 +16,7 @@ describe('users', () => {
   })
 
   it('signs up to app with onboarding', () => {
-    cy.visit('/accounts/signup')
+    cy.visit('/signup')
     cy.contains('Sign Up Closed')
 
     // signup is disabled, uncomment when freemium is live
@@ -66,11 +66,11 @@ describe('users', () => {
     cy.visit('/')
 
     cy.contains('Forgot your password?').click()
-    cy.url().should('contain', '/accounts/password/reset')
+    cy.url().should('contain', 'password/reset')
 
-    cy.get('input[type=email]').type('test@gyana.com')
+    cy.get('input[type=email]').should('not.be.disabled').type('test@gyana.com')
     cy.get('button[type=submit]').click()
-    cy.url().should('contain', '/accounts/password/reset/done')
+    cy.url().should('contain', 'password/reset/done')
 
     cy.outbox()
       .then((outbox) => outbox.count)
@@ -81,12 +81,12 @@ describe('users', () => {
       const url = msg['payload'].split('\n').filter((x) => x.startsWith('http'))[0]
       cy.visit(url)
     })
-    cy.url().should('contain', 'accounts/password/reset/key/1-set-password')
+    cy.url().should('contain', 'password/reset/key/1-set-password')
 
     cy.get('input[type=password]').first().type('senseknowdecide')
     cy.get('input[type=password]').last().type('senseknowdecide')
     cy.get('input[type=submit]').click()
-    cy.url().should('contain', 'accounts/password/reset/key/done')
+    cy.url().should('contain', 'password/reset/key/done')
 
     cy.visit('/')
 

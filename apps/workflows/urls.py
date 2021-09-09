@@ -36,6 +36,11 @@ project_urlpatterns = (
     [
         path("", login_and_project_required(views.WorkflowList.as_view()), name="list"),
         path(
+            "overview",
+            login_and_project_required(frames.WorkflowOverview.as_view()),
+            name="overview",
+        ),
+        path(
             "new",
             login_and_project_required(views.WorkflowCreate.as_view()),
             name="create",

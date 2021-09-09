@@ -5,7 +5,7 @@ const get_formset_row = (element) => element.closest('[data-formset-index]')
 
 export default class extends Controller {
   static targets = ['loading']
-
+  clicked_button = false
   disable = (event) => {
     const form = this.element
 
@@ -22,6 +22,8 @@ export default class extends Controller {
       if (flag_disabled && formset_row && get_formset_row(element) !== formset_row)
         flag_disabled = false
 
+      // TODO: This makes it necessary to double click Save & Preview
+      // When clicking shifts focus from an input field
       if (element.type === 'submit' || (flag_disabled && element.type !== 'hidden'))
         element.disabled = true
 
@@ -30,6 +32,7 @@ export default class extends Controller {
   }
 
   listener = async (event) => {
+    if (this.clicked_button) return
     const form = this.element
 
     // manually POST the form and get HTML response
@@ -63,6 +66,12 @@ export default class extends Controller {
         if (toEl.tagName === 'INPUT') {
           toEl.value = fromEl.value
         }
+
+        if (toEl.tagName === 'TEMPLATE') {
+          fromEl.innerHTML = toEl.innerHTML
+          return false
+        }
+
         // Do not overwrite web component
         // TODO: Replace the entire node to re-trigger connectedCallback
         if (toEl.tagName.includes('-')) {
@@ -71,10 +80,14 @@ export default class extends Controller {
       },
     })
 
+    this.clicked_button = false
     this.loadingTarget.classList.add('hidden')
   }
 
   connect() {
     this.element.addEventListener('change', this.listener)
+    this.element.addEventListener('mousedown', (event) => {
+      this.clicked_button = event.target.nodeName == 'BUTTON'
+    })
   }
 }

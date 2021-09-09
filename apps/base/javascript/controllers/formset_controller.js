@@ -54,8 +54,6 @@ export default class extends Controller {
       const input = wrapper.querySelector("input[name*='-DELETE']")
       input.value = 'on'
       input.setAttribute('checked', '')
-      const TOTAL_FORMS = this.element.querySelector(`#id_${this.prefixValue}-TOTAL_FORMS`)
-      TOTAL_FORMS.value = parseInt(TOTAL_FORMS.value) - 1
 
       const AddButton = document.getElementById(`${this.prefixValue}-add`)
       //  Re-enable button if necessary

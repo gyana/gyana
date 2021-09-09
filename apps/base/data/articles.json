@@ -45,7 +45,7 @@
     "stackedbar2d": "5548598-stacked-bar-widget",
     "msline": "5548581-line-widget",
     "pie2d": "5548582-pie-widget",
-    "area2d": "5548583-area-widget",
+    "msarea": "5548583-area-widget",
     "doughnut2d": "5548586-donut-widget",
     "scatter": "5548589-scatter-widget",
     "funnel": "5548590-funnel-widget",

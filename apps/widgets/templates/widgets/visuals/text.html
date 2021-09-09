@@ -5,4 +5,5 @@
   style='resize:none;border:none;' 
   placeholder='Type your notes here...' 
   wrap='soft'
+  {% if request.GET.mode != 'edit'%}readonly{% endif %}
 >{% if object.text_content %}{{ object.text_content }}{% endif %}</textarea>

@@ -1,3 +1,4 @@
+from apps.teams.models import Team
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -11,9 +12,14 @@ def home(request):
             return redirect("users:onboarding")
 
         if request.user.teams.count():
-            team = request.session.get("team_id") or request.user.teams.first().id
+            session_team_id = request.session.get("team_id")
+            team_id = (
+                session_team_id
+                if session_team_id and Team.objects.filter(pk=session_team_id).exists()
+                else request.user.teams.first().id
+            )
 
-            return redirect("teams:detail", team)
+            return redirect("teams:detail", team_id)
 
         return HttpResponseRedirect(reverse("teams:create"))
 

@@ -42,6 +42,11 @@ project_urlpatterns = (
             "", login_and_project_required(views.DashboardList.as_view()), name="list"
         ),
         path(
+            "overview",
+            login_and_project_required(frames.DashboardOverview.as_view()),
+            name="overview",
+        ),
+        path(
             "new",
             login_and_project_required(views.DashboardCreate.as_view()),
             name="create",

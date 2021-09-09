@@ -14,7 +14,7 @@
     type="text" 
     name="name"
     placeholder="Untitled widget" 
-    value="{{ object.name }}"
+    value="{% if object.name %}{{ object.name }}{% endif %}"
   ></input> 
 
   <div class="ml-auto">

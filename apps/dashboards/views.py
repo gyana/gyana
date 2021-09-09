@@ -1,8 +1,5 @@
 import analytics
-from apps.base.analytics import (
-    DASHBOARD_CREATED_EVENT,
-    DASHBOARD_DUPLICATED_EVENT,
-)
+from apps.base.analytics import DASHBOARD_CREATED_EVENT, DASHBOARD_DUPLICATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.dashboards.tables import DashboardTable
 from apps.projects.mixins import ProjectMixin
