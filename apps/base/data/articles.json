@@ -16,6 +16,25 @@
     "error": "5548601-my-integration-isn-t-working"
   },
   "workflows": {
+    "select": "5562508-nodes-reference#h_19a96e4a68",
+    "join": "5562508-nodes-reference#h_e969a5d338",
+    "aggregation": "5562508-nodes-reference#h_edb914101a",
+    "union": "5562508-nodes-reference#h_b2b5652640",
+    "sort": "5562508-nodes-reference#h_d539fb40aa",
+    "limit": "5562508-nodes-reference#h_332abbf20d",
+    "filter": "5562508-nodes-reference#h_c659754c0a",
+    "distinct": "5562508-nodes-reference#h_2a1b8ba496",
+    "pivot": "5562508-nodes-reference#h_cba18df5b4",
+    "unpivot": "5562508-nodes-reference#h_4b22770d03",
+    "intersect": "5562508-nodes-reference#h_866c8f774b",
+    "edit": "5562508-nodes-reference#h_c10a5bbe84",
+    "add": "5562508-nodes-reference#h_04cd1d8e0a",
+    "rename": "5562508-nodes-reference#h_9d1b790bdd",
+    "formula": "5562508-nodes-reference#h_cf825fb6ff",
+    "window": "5562508-nodes-reference#h_23a6692c66",
+    "text": "5562508-nodes-reference#h_76230bebf7"
+  },
+  "workflows_tbd": {
     "overview": "5548602-workflow-overview",
     "select": "5548542-select-columns-node",
     "join": "5548543-join-node",
