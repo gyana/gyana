@@ -1,9 +1,8 @@
 @use "utilities/shadows";
 
 .widgets {
-  height: 100%;
-  width: 100%;
-  white-space: nowrap;
+  display: flex;
+  margin: 0 auto;
 
   &__canvas {
     background-color: var(--c-white);

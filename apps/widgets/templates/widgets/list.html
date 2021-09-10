@@ -4,7 +4,7 @@
   <div id="dashboard-widget-container"
        class="widgets__canvas {% if request.GET.mode != 'view' %}widgets__grid{%endif%}"
        data-controller="widget-list"
-       style="width:{{ dashboard.width }}px;height:{{ dashboard.height }}px;">
+       style="min-width:{{ dashboard.width }}px;min-height:{{ dashboard.height }}px;">
     {% for object in object_list %}
     {% include 'widgets/widget_component.html' %}
     {% empty %}
