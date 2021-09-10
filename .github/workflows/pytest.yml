@@ -39,6 +39,5 @@ jobs:
     - uses: Gr1N/setup-poetry@v7
     - name: Install dependencies with poetry
       run: poetry install
-    - run: poetry env use python3.9
     - name: Pytest run
       run: poetry run just test
