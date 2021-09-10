@@ -78,7 +78,7 @@ class Table(CloneMixin, BaseModel):
             if self.integration.kind == self.integration.Kind.CONNECTOR:
                 return f"{self.integration.name} - {self.bq_table}"
             return self.integration.name
-        return f"{self.workflow_node.workflow.name} - {self.workflow_node.output_name or 'Untitled'}"
+        return f"{self.workflow_node.workflow.name} - {self.workflow_node.name or 'Untitled'}"
 
     @property
     def bq_dashboard_url(self):

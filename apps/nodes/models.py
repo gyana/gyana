@@ -73,13 +73,6 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         Table, on_delete=models.CASCADE, null=True, help_text="Select a data source"
     )
 
-    # Output
-    output_name = models.CharField(
-        max_length=100,
-        null=True,
-        help_text="Name your output, this name will be refered to in other workflows or dashboards.",
-    )
-
     # Select also uses columns
     select_mode = models.CharField(
         max_length=8,
@@ -234,7 +227,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         return self.parents.count() >= min_arity
 
     def get_table_name(self):
-        return f"Workflow:{self.workflow.name}:{self.output_name}"
+        return f"Workflow:{self.workflow.name}:{self.name}"
 
     @property
     def bq_output_table_id(self):

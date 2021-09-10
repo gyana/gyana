@@ -79,7 +79,7 @@ describe('workflows', () => {
     cy.connectNodes(selectId, outputId)
     cy.get('.react-flow__edge').should('have.length', 2)
     cy.get(`[data-id=${outputId}]`).dblclick()
-    cy.get('[name=output_name').type('Goblet of fire')
+    cy.get('[name=name').type('Goblet of fire')
     cy.contains('Save & Close').click()
 
     cy.story('Run workflow')

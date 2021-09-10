@@ -24,8 +24,8 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
 
         // Ask user if they are sure they want to navigate away
         window.onbeforeunload = function () {
-          return true;
-        };
+          return true
+        }
 
         const file = event.target.files[0]
 
@@ -74,10 +74,10 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
           <div className='integration__file-upload'>
             {stage === 'initial' ? (
               <>
-                <label className="button button--success button--outline" htmlFor="gcsfileupload">
+                <label className='button button--success button--outline' htmlFor='gcsfileupload'>
                   Choose a file to upload
                 </label>
-                <input id="gcsfileupload" ref={fileRef} type='file' accept='.csv' hidden />
+                <input id='gcsfileupload' ref={fileRef} type='file' accept='.csv' hidden />
               </>
             ) : stage === 'progress' ? (
               <>

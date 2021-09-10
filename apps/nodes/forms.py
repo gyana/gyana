@@ -51,9 +51,12 @@ class InputNodeForm(NodeForm):
 class OutputNodeForm(NodeForm):
     class Meta:
         model = Node
-        fields = ["output_name"]
-        labels = {"output_name": "Output name"}
-        required = ["output_name"]
+        fields = ["name"]
+        labels = {"name": "Output name"}
+        required = ["name"]
+        help_texts = {
+            "name": "Name your output, this name will be refered to in other workflows or dashboards.",
+        }
 
 
 class SelectNodeForm(NodeForm):
