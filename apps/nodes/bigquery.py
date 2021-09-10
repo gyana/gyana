@@ -385,7 +385,7 @@ def get_query_from_node(node):
             logging.error(err, exc_info=err)
 
         # input node zero state
-        if results[node] is None:
+        if results.get(node) is None:
             raise NodeResultNone(node=node)
 
     return results[node]
