@@ -1,29 +1,35 @@
 {% extends "teams/base.html" %}
 
 {% block tab %}
-<div class="max-w-lg mb-auto">
+<div class="pad max-w-lg mb-auto">
   <form method="post" class="form">
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}
 
-    <button type="submit" class="button button--sm button--success">Save</button>
+    <button type="submit" class="button button--success">Save</button>
   </form>
 </div>
-{% if object.can_delete%}
-<div>
-  <h2 class="text-red">Danger zone:</h2>
+
+<div class="pad border-t border-gray">
+  <h2 class="mb-3">Delete user</h2>
+
   {% if object.user == request.user %}
-    <p class="mb-7">If you'd like to <strong>leave</strong> this team, press the button below.</p>
+    <p>If you'd like to <strong>leave</strong> this team, press the button below.</p>
   {% else %}
-    <p class="mb-7">If you'd like to <strong>remove</strong> this team member, press the button below.</p>
+    <p>If you'd like to <strong>remove</strong> this team member, press the button below.</p>
   {% endif %}
 
-  <a class="button button--sm button--danger" href="{% url 'team_members:delete' team.id object.id %}">
+  {% if not object.can_delete %}
+  <p class="alert">You cannot remove yourself from this team as there is no admin left.</p>
+  {% endif %}
+
+  <a
+    class="button button--danger mt-6"
+    href="{% url 'team_members:delete' team.id object.id %}"
+    {% if not object.can_delete %}disabled{% endif %}
+  >
     Delete
   </a>
 </div>
-{% else %}
-  <span>You can’t remove yourself as there’s no admin left on the team.</span>
-{% endif %}
 {% endblock %}

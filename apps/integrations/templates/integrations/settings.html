@@ -1,8 +1,8 @@
 {% extends "integrations/base.html" %}
 
 {% block tab %}
-<div class="flex flex-col flex-1 overflow-auto pad">
-  <div class="max-w-lg mb-auto">
+<div class="flex flex-col flex-1 overflow-auto">
+  <div class="max-w-lg mb-auto pad">
     <form method="post" action="{% url 'project_integrations:update' project.id object.id %}" class="form">
       {% csrf_token %}
 
@@ -12,11 +12,11 @@
     </form>
   </div>
 
-  <div>
-    <h2><span class="text-red">Danger zone:</span></h2>
-    <p>If you'd like to <strong>delete</strong> this integration, press the button below.</p>
+  <div class="pad border-t border-gray">
+    <h2 class="mb-3">Delete integration </h2>
+    <p class="mb-3">If you'd like to <strong>delete</strong> this integration, press the button below.</p>
 
-    <a class="button button--sm button--filled button--danger"
+    <a class="button button--danger"
       href="{% url 'project_integrations:delete' project.id object.pk %}">
       Delete
     </a>

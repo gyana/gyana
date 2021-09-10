@@ -1,7 +1,7 @@
 {% extends "teams/base.html" %}
 
 {% block tab %}
-<form method="post" action="{% url 'team_appsumo:stack' team.id %}" class="form">
+<form method="post" action="{% url 'team_appsumo:stack' team.id %}" class="form pad">
   {% csrf_token %}
 
   {% include "django/forms/default_form.html" %}

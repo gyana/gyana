@@ -1,8 +1,8 @@
 {% extends "web/app/project_base.html" %}
 
 {% block app %}
-<div class="flex flex-col flex-1 overflow-auto pad">
-  <div class="max-w-lg mb-auto">
+<div class="flex flex-col flex-1 overflow-auto">
+  <div class="max-w-lg mb-auto pad">
     <h1 class="project-settings__title">Settings</h1>
 
     <form method="post" action="{% url 'projects:update' object.id %}" class="form">
@@ -14,12 +14,12 @@
     </form>
   </div>
 
-  <div>
-    <h2 class="text-red">Danger zone:</h2>
-    <p class="mb-7">To <strong>delete</strong> this project, press the button below.</p>
+  <div class="pad border-t border-gray">
+    <h2 class="mb-3">Delete project</h2>
+    <p class="mb-3">If you'd like to <strong>delete</strong> this project, press the button below.</p>
 
-    <a class="button button--sm button--filled button--danger"
-       href="{% url 'projects:delete' object.id %}">
+    <a class="button button--danger"
+      href="{% url 'projects:delete' object.id %}">
       Delete
     </a>
   </div>

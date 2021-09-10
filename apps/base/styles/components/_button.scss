@@ -34,21 +34,24 @@ $button-colors: (
   background-color: var(--button-color);
   border: 1px solid transparent;
   color: var(--c-white);
-  
-  &:disabled,
-  &.disabled {
-    --button-color: var(--c-black-10);
-    --button-background: var(--c-transparent);
-  }
-
-  &:hover {
-    opacity: 0.5;
-  }
 
   &[type="submit"],
   &[href],
   &[data-action] {
     cursor: pointer;
+  }
+  
+  &[disabled],
+  &:disabled,
+  &.disabled {
+    --button-color: var(--c-black-10);
+    --button-background: var(--c-transparent);
+
+    cursor: not-allowed;
+  }
+
+  &:hover {
+    opacity: 0.5;
   }
 
   &:focus,

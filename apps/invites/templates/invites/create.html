@@ -1,7 +1,7 @@
 {% extends "teams/base.html" %}
 
 {% block tab %}
-<form method="post" action="{% url 'team_invites:create' team.id %}" class="form" data-turbo="false">
+<form method="post" action="{% url 'team_invites:create' team.id %}" class="form pad" data-turbo="false">
   {% csrf_token %}
 
   {% include "django/forms/default_form.html" %}

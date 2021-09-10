@@ -2,9 +2,7 @@
 {% load humanize %}
 
 {% block tab %}
-
-
-<div class="max-w-lg mb-auto">
+<div class="pad max-w-lg mb-auto">
   <h2 class="mb-3">Account usage</h3>
 
   <form method="post" class="form mb-7">
@@ -32,11 +30,10 @@
   </label>
 </div>
 
-
-
 {% if team.appsumocode_set.count > 0 %}
-<h2 class="mb-3">AppSumo</h2>
-<turbo-frame id="team_appsumo:list" src="{% url 'team_appsumo:list' team.id %}" target="_top"></turbo-frame>
+<div class="pad">
+  <h2 class="mb-3">AppSumo</h2>
+  <turbo-frame id="team_appsumo:list" src="{% url 'team_appsumo:list' team.id %}" target="_top"></turbo-frame>
+</div>
 {% endif %}
-
 {% endblock %}
