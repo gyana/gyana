@@ -155,7 +155,7 @@ def get_aggregation_query(node, query):
         query = query.group_by(groups)
     if aggregations:
         return query.aggregate(aggregations)
-    return query.size()
+    return query.count()
 
 
 def get_union_query(node, query, *queries):
