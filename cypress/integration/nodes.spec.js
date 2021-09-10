@@ -46,11 +46,16 @@ describe('nodes', () => {
     openModalAndCheckTitle(2, 'Save data')
     cy.contains('Edinburgh')
 
-    cy.get('input[name=name]').should('have.value', '').type('Naturalis Principia Mathematica')
+    cy.get('#node-update-form input[name=name]')
+      .should('have.value', '')
+      .type('Naturalis Principia Mathematica')
     cy.contains('Save & Preview').click()
     cy.contains('Loading preview...').should('be.visible')
     cy.contains('Edinburgh').should('be.visible')
-    cy.get('input[name=name]').should('have.value', 'Naturalis Principia Mathematica')
+    cy.get('#node-update-form input[name=name]').should(
+      'have.value',
+      'Naturalis Principia Mathematica'
+    )
   })
 
   it('select', () => {
