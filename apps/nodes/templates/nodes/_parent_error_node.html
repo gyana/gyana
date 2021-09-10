@@ -1,0 +1,15 @@
+<div class='m-auto'>
+  There is an error in the parent node 
+  <strong> 
+    {% if object.name %}
+      {{object.name}}
+    {% else %}
+      {{object.display_name}}
+    {% endif %}
+  </strong>.
+  <button
+    class='link'
+    data-src="/nodes/{{object.id}}"
+    data-action='click->tf-modal#open'
+    data-item="{{object.id}}">Reconfigure</button> it and try opening this node again.
+</div>

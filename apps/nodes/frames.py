@@ -12,7 +12,7 @@ from django.urls import reverse
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 
-from .bigquery import get_query_from_node
+from .bigquery import NodeResultNone, get_query_from_node
 from .forms import KIND_TO_FORM
 from .models import Node
 
@@ -90,13 +90,24 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
             "unpivot",
             "window",
         ]
+        context["parent_error_node"] = self.parent_error_node
         return context
 
     def get_form_class(self):
         return KIND_TO_FORM[self.object.kind]
 
     def get_form(self):
-        if self.object.kind == Node.Kind.INPUT or self.object.parents.first():
+        is_input = self.object.kind == Node.Kind.INPUT
+        has_parent = self.object.parents.first() is not None
+
+        try:
+            if not is_input and has_parent:
+                get_query_from_node(self.object.parents.first())
+            self.parent_error_node = None
+        except NodeResultNone as e:
+            self.parent_error_node = e.node
+
+        if not self.parent_error_node and (is_input or has_parent):
             return super().get_form()
 
     def form_valid(self, form: forms.Form) -> HttpResponse:

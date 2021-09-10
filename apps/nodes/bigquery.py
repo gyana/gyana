@@ -385,6 +385,14 @@ def get_query_from_node(node):
             logging.error(err, exc_info=err)
 
         # input node zero state
-        assert results[node] is not None
+        if results[node] is None:
+            raise NodeResultNone(node=node)
 
     return results[node]
+
+
+class NodeResultNone(Exception):
+    def __init__(self, node, *args: object) -> None:
+        super().__init__(*args)
+
+        self.node = node

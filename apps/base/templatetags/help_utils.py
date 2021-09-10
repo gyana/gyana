@@ -22,5 +22,8 @@ def link_article(collection: str, name: str):
 
 @register.simple_tag
 def article_url(collection: str, name: str):
-    return f"{INTERCOM_ROOT}/{get_articles()[collection][name]}"
-
+    if (collection_obj := get_articles().get(collection)) and (
+        article := collection_obj.get(name)
+    ):
+        return f"{INTERCOM_ROOT}/{article}"
+    return INTERCOM_ROOT

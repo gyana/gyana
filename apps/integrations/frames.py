@@ -1,11 +1,13 @@
 from apps.base.bigquery import get_humanize_from_bigquery_type
-from apps.base.frames import (TurboFrameDetailView, TurboFrameListView,
-                              TurboFrameTemplateView)
+from apps.base.frames import (
+    TurboFrameDetailView,
+    TurboFrameListView,
+    TurboFrameTemplateView,
+)
 from apps.base.table_data import RequestConfig, get_table
 from apps.integrations.tables import StructureTable
 from apps.projects.mixins import ProjectMixin
-from apps.tables.bigquery import (get_bq_table_schema_from_table,
-                                  get_query_from_table)
+from apps.tables.bigquery import get_bq_table_schema_from_table, get_query_from_table
 from apps.tables.models import Table
 from apps.tables.tables import TableTable
 from django.utils import timezone
@@ -23,7 +25,9 @@ class IntegrationOverview(ProjectMixin, TurboFrameTemplateView):
 
         total = self.project.integration_set
         ready = total.filter(ready=True)
-        pending = total.filter(ready=False)
+        pending = total.filter(ready=False).exclude(
+            connector__fivetran_authorized=False
+        )
         broken = ready.filter(
             kind=Integration.Kind.CONNECTOR,
             connector__fivetran_succeeded_at__lt=timezone.now()

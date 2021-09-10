@@ -2,101 +2,113 @@
 
 {% with parents=node.parents.all %}
 
-{% if node.kind == "input" or node.has_enough_parents %}
-<div class="workflow-modal__section" data-controller="node-update" data-node-update-id-value="{{ node.id }}">
-  <div class="workflow-modal__header">
-    <turbo-frame id="node-editable-title">
-      {% include 'nodes/name.html' %}
-    </turbo-frame>
-    <div class="ml-auto">
-      {% if node.kind != "input" and node.kind != "output" %}
-        {% link_article 'workflows' node.kind %}
+{% if parent_error_node is None %}
+
+  {% if node.kind == "input" or node.has_enough_parents %}
+  <div class="workflow-modal__section" data-controller="node-update" data-node-update-id-value="{{ node.id }}">
+    <div class="workflow-modal__header">
+      <turbo-frame id="node-editable-title">
+        {% include 'nodes/name.html' %}
+      </turbo-frame>
+      <div class="ml-auto">
+        {% if node.kind != "input" and node.kind != "output" %}
+          {% link_article 'workflows' node.kind %}
+        {% endif %}
+      </div>
+    </div>
+
+    <form id="node-update-form"
+          class="form--no-layout overflow-hidden flex-1"
+          action="{% url 'nodes:update' node.id %}"
+          method="post"
+          data-tf-modal-target='form'
+          {% if do_live_updates %}
+          data-controller="live-update"
+          {% endif %}
+          data-action="change->tf-modal#change">
+
+      <div class="workflow-detail__sidebar">
+        <span data-live-update-target="loading" class="workflow-detail__sidebar__loading hidden">
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+        </span>
+        {% csrf_token %}
+
+        {% include form_template %}
+      </div>
+
+      <div class='workflow-modal__footer'>
+        <div class="flex flex-1 gap-7 pad">
+          <button type='submit'
+                class="button button--success"
+                data-action="click->tf-modal#submit"
+                name='submit'
+                value='Save & Close'
+                {% comment %} Form submission is handled by controller {% endcomment %}
+                data-turbo="false">
+                Save & Close
+          </button>
+          <button type='submit'
+                class="button button--outline button--success"
+                name='submit'
+                data-action="click->tf-modal#save"
+                value='Save & Preview'>
+                Save & Preview
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="workflow-modal__section">
+    <div class="workflow-modal__table">
+      <nav class="tabbar">
+        {% for parent in parents %}
+        <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
+          href="{% url 'nodes:update' object.id %}?preview_node_id={{ parent.id }}">
+          Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
+        </a>
+        {% endfor %}
+        <a class="tabbar__link  {% if preview_node_id == object.id and not show_docs %} tabbar__link--active {% endif %}"
+          href="{% url 'nodes:update' object.id %}?preview_node_id={{ object.id }}">
+          Result
+        </a>
+        <a
+          class="tabbar__link"
+          href="{% article_url 'workflows' node.kind %}"
+          target="_blank"
+          data-controller="tooltip"
+        >
+          <i class="fas fa-fw fa-external-link"></i> Help
+          <span data-tooltip-target="body">Open knowledge base article</span>
+        </a>
+      </nav>
+      {% if show_docs%}
+      {% include help_template %}
+      {% else%}
+      <turbo-frame id="workflows-grid" src="{% url 'nodes:grid' preview_node_id %}">
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          <p class='placeholder-scr__title'>Loading preview...</p>
+        </div>
+      </turbo-frame>
       {% endif %}
     </div>
-  </div>
 
-  <form id="node-update-form"
-        class="form--no-layout overflow-hidden flex-1"
-        action="{% url 'nodes:update' node.id %}"
-        method="post"
-        data-tf-modal-target='form'
-        {% if do_live_updates %}
-        data-controller="live-update"
-        {% endif %}
-        data-action="change->tf-modal#change">
+  
 
-    <div class="workflow-detail__sidebar">
-      <span data-live-update-target="loading" class="workflow-detail__sidebar__loading hidden">
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
-      </span>
-      {% csrf_token %}
-
-      {% include form_template %}
-    </div>
-
-    <div class='workflow-modal__footer'>
-      <div class="flex flex-1 gap-7 pad">
-        <button type='submit'
-               class="button button--success"
-               data-action="click->tf-modal#submit"
-               name='submit'
-               value='Save & Close'
-               {% comment %} Form submission is handled by controller {% endcomment %}
-               data-turbo="false">
-               Save & Close
-        </button>
-        <button type='submit'
-               class="button button--outline button--success"
-               name='submit'
-               data-action="click->tf-modal#save"
-               value='Save & Preview'>
-               Save & Preview
-        </button>
-      </div>
-    </div>
-  </form>
-</div>
-
-<div class="workflow-modal__section">
-  <div class="workflow-modal__table">
-    <nav class="tabbar">
-      {% for parent in parents %}
-      <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
-         href="{% url 'nodes:update' object.id %}?preview_node_id={{ parent.id }}">
-        Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
-      </a>
-      {% endfor %}
-      <a class="tabbar__link  {% if preview_node_id == object.id and not show_docs %} tabbar__link--active {% endif %}"
-         href="{% url 'nodes:update' object.id %}?preview_node_id={{ object.id }}">
-        Result
-      </a>
-      <a
-        class="tabbar__link"
-        href="{% article_url 'workflows' node.kind %}"
-        target="_blank"
-        data-controller="tooltip"
-      >
-        <i class="fas fa-fw fa-external-link"></i> Help
-        <span data-tooltip-target="body">Open knowledge base article</span>
-      </a>
-    </nav>
-    {% if show_docs%}
-    {% include help_template %}
-    {% else%}
-    <turbo-frame id="workflows-grid" src="{% url 'nodes:grid' preview_node_id %}">
-      <div class='placeholder-scr placeholder-scr--fillscreen'>
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-        <p class='placeholder-scr__title'>Loading preview...</p>
-      </div>
-    </turbo-frame>
-    {% endif %}
-  </div>
   {% else %}
-  <div class='workflow-detail__warning'>
-    <span class='mb-12'><i class="far fa-comment-dots fa-10x"></i></span>
-    <p>This node needs to be connected to <strong>more than one node</strong> before you can configure it.</p>
+    <div class='workflow-detail__warning'>
+      <span class='mb-12'><i class="far fa-comment-dots fa-10x"></i></span>
+      <p>This node needs to be connected to <strong>more than one node</strong> before you can configure it.</p>
+    </div>
   </div>
-</div>
+
+  {% endif %}
+
+{%else %}
+
+  {% include 'nodes/_parent_error_node.html' with object=parent_error_node %}
+
 {% endif %}
 
 {% endwith %}
