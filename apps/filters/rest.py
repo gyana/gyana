@@ -27,7 +27,7 @@ def autocomplete_options(request):
     # from the DB yet
     parentType = request.GET["parentType"]
     parent = (
-        get_object_or_404(Widget, pk=request.GET["parentId"]).table
+        get_object_or_404(Widget, pk=request.GET["parentId"])
         if parentType == "widget"
         else get_object_or_404(Node, pk=request.GET["parentId"])
     )
@@ -40,7 +40,7 @@ def autocomplete_options(request):
         )
     ):
         query = (
-            get_query_from_table(parent)
+            get_query_from_table(parent.table)
             if parentType == "widget"
             else get_query_from_node(parent)
         )
