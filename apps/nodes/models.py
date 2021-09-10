@@ -15,13 +15,13 @@ from model_clone import CloneMixin
 class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     class Kind(models.TextChoices):
         ADD = "add", "Add"
-        AGGREGATION = "aggregation", "Aggregation"
+        AGGREGATION = "aggregation", "Group and Aggregate"
         DISTINCT = "distinct", "Distinct"
         EDIT = "edit", "Edit"
         FILTER = "filter", "Filter"
         INPUT = "input", "Get data"
         FORMULA = "formula", "Formula"
-        INTERSECT = "intersect", "Intersection"
+        INTERSECT = "intersect", "Intersect "
         JOIN = "join", "Join"
         LIMIT = "limit", "Limit"
         PIVOT = "pivot", "Pivot"
@@ -32,7 +32,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         UNION = "union", "Union"
         UNPIVOT = "unpivot", "Unpivot"
         TEXT = "text", "Text"
-        WINDOW = "window", "Window"
+        WINDOW = "window", "Window and Calculate"
         SENTIMENT = "sentiment", "Sentiment"
 
     # You have to add new many-to-one relations here

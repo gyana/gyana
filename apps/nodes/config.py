@@ -26,7 +26,7 @@ NODE_CONFIG = {
         "section": "Table manipulations",
     },
     "aggregation": {
-        "displayName": "Aggregation",
+        "displayName": "Group and Aggregate",
         "icon": "fa-object-group",
         "description": "Aggregate values by grouping columns",
         "section": "Table manipulations",
@@ -104,7 +104,7 @@ NODE_CONFIG = {
         "section": "Table manipulations",
     },
     "intersect": {
-        "displayName": "Intersection",
+        "displayName": "Intersect",
         "icon": "fa-intersection",
         "description": "Find the common rows between tables",
         "section": "Table manipulations",
@@ -116,7 +116,7 @@ NODE_CONFIG = {
         "section": "Column manipulations",
     },
     "window": {
-        "displayName": "Window",
+        "displayName": "Window and Calculate",
         "icon": "fa-window-frame",
         "description": "Calculate analytics over groups without aggregating",
         "section": "Column manipulations",
