@@ -33,7 +33,8 @@
     "rename": "5548558-rename-node",
     "formula": "5548561-formula-node",
     "window": "5548562-window-node",
-    "text": "5548563-text-node"
+    "text": "5548563-text-node",
+    "except": "5563342-except-node"
   },
   "dashboards": {
     "overview": "5548603-dashboards-overview",

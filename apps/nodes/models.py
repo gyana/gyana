@@ -13,6 +13,9 @@ from model_clone import CloneMixin
 
 
 class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
+    class Meta:
+        ordering = ()
+
     class Kind(models.TextChoices):
         ADD = "add", "Add"
         AGGREGATION = "aggregation", "Group and Aggregate"
@@ -30,6 +33,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         SELECT = "select", "Select columns"
         SORT = "sort", "Sort"
         UNION = "union", "Union"
+        EXCEPT = "except", "Except"
         UNPIVOT = "unpivot", "Unpivot"
         TEXT = "text", "Text"
         WINDOW = "window", "Window and Calculate"
@@ -112,14 +116,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         help_text="The column from the second parent you want to join on.",
     )
 
-    # Union
-
-    union_mode = models.CharField(
-        max_length=8,
-        choices=(("keep", "keep"), ("exclude", "exclude")),
-        default="keep",
-        help_text="Either keep or exclude the common rows",
-    )
+    # Union/Except
     union_distinct = models.BooleanField(
         default=False, help_text="Ignore common rows if selected"
     )

@@ -137,10 +137,9 @@ class UnionNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = [
-            "union_mode",
             "union_distinct",
         ]
-        labels = {"union_distinct": "distinct", "union_mode": "mode"}
+        labels = {"union_distinct": "distinct"}
 
 
 class LimitNodeForm(NodeForm):
@@ -225,6 +224,7 @@ KIND_TO_FORM = {
     "input": InputNodeForm,
     "output": OutputNodeForm,
     "select": SelectNodeForm,
+    "except": DefaultNodeForm,
     "join": JoinNodeForm,
     "aggregation": DefaultNodeForm,
     "union": UnionNodeForm,

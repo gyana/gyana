@@ -349,21 +349,19 @@ describe('nodes', () => {
   it('union', () => {
     openModalAndCheckTitle(21, 'Union')
 
-    cy.contains('Result').click()
-    cy.get('#node-update-form').contains('mode').should('be.visible')
     cy.get('#node-update-form').contains('distinct').should('be.visible')
     // TODO: check for visibility once visual bug is fixed
     cy.get('#workflows-grid').contains('next')
-
-    cy.get('select[name=union_mode]').select('exclude')
-    cy.contains('Save & Preview').click()
-    cy.get('#workflows-grid:contains(Blackpool)').should('not.exist')
-
-    cy.get('select[name=union_mode]').select('keep')
     cy.get('input[name=union_distinct]').check()
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid td:contains(Edinburgh)').should('have.length', 3)
     cy.get('#workflows-grid:contains(next)').should('not.exist')
+  })
+
+  it('except', () => {
+    openModalAndCheckTitle(26, 'Except')
+    cy.get('#workflows-grid').contains('6').should('not.exist')
+    cy.get('#workflows-grid td:contains(Matt)').should('have.length', 3)
   })
 
   it('intersect', () => {

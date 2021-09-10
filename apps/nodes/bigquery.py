@@ -161,10 +161,15 @@ def get_aggregation_query(node, query):
 def get_union_query(node, query, *queries):
     colnames = query.schema()
     for parent in queries:
-        if node.union_mode == "keep":
-            query = query.union(parent, distinct=node.union_distinct)
-        else:
-            query = query.difference(parent)
+        query = query.union(parent, distinct=node.union_distinct)
+    # Need to `select *` so we can operate on the query
+    return query.projection(colnames)
+
+
+def get_except_query(node, query, *queries):
+    colnames = query.schema()
+    for parent in queries:
+        query = query.difference(parent)
     # Need to `select *` so we can operate on the query
     return query.projection(colnames)
 
@@ -310,6 +315,7 @@ NODE_FROM_CONFIG = {
     "aggregation": get_aggregation_query,
     "select": get_select_query,
     "union": get_union_query,
+    "except": get_except_query,
     "sort": get_sort_query,
     "limit": get_limit_query,
     "filter": get_filter_query,

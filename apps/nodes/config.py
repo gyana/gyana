@@ -37,6 +37,12 @@ NODE_CONFIG = {
         "description": "Combine two or more tables on top of each other",
         "section": "Table manipulations",
     },
+    "except": {
+        "displayName": "Except",
+        "icon": "fa-minus-square",
+        "description": "Exclude overlap between two tables",
+        "section": "Table manipulations",
+    },
     "sort": {
         "displayName": "Sort",
         "icon": "fa-sort-numeric-up",

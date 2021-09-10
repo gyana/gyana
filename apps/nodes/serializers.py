@@ -57,6 +57,10 @@ def get_union_desc(obj):
     return f"Distinct" if obj.union_distinct else ""
 
 
+def get_except_desc(obj):
+    return f"Except"
+
+
 def get_sort_desc(obj):
     return f"Sort by {', '.join([s.column + ' '  + ('Ascending' if s.ascending else 'Descending') for s in obj.sort_columns.all()])}"
 
@@ -149,6 +153,7 @@ DESCRIPTIONS = {
     "filter": get_filter_desc,
     "edit": get_edit_desc,
     "add": get_add_desc,
+    "except": get_except_desc,
     "rename": get_rename_desc,
     "text": get_text_desc,
     "formula": get_formula_desc,
