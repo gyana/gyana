@@ -8,7 +8,7 @@ from apps.base.models import BaseModel
 
 from . import roles
 
-DEFAULT_ROW_LIMIT = 1_000_000
+DEFAULT_ROW_LIMIT = 10_000
 WARNING_BUFFER = 0.2
 
 

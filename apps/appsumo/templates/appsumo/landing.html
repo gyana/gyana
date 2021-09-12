@@ -1,0 +1,18 @@
+{% extends "web/appsumo_landing.html" %}
+
+{% block content %}
+<section>
+  <form method="post" class="my-8">
+    {% csrf_token %}
+
+    {% include "django/forms/default_form.html" %}
+
+    <button type="submit" class="button button--filled w-full">
+      Continue
+    </button>
+
+  </form>
+</section>
+{% endblock %}
+
+{% block footer %}{% endblock %}

@@ -34,6 +34,21 @@ describe('appsumo', () => {
     cy.contains('your account for').click()
     cy.url().should('contain', 'teams/1/account')
   })
+  it('landing', () => {
+    cy.visit('/appsumo')
+
+    // code does not exist
+    cy.get('input[name=code]').type(NOT_EXIST)
+    cy.get('button[type=submit]').click()
+
+    cy.contains('Not a valid AppSumo code')
+
+    // code exists
+    cy.get('input[name=code]').clear().type(NOT_REDEEMED)
+    cy.get('button[type=submit]').click()
+
+    cy.url().should('contain', `/appsumo/signup/${NOT_REDEEMED}`)
+  })
   it('signup with code', () => {
     cy.visit(`/appsumo/${NOT_REDEEMED}`)
 

@@ -11,6 +11,7 @@ from turbo_response.mixins import TurboFormMixin
 from turbo_response.views import TurboFormView
 
 from .forms import (
+    AppsumoLandingform,
     AppsumoRedeemForm,
     AppsumoRedeemNewTeamForm,
     AppsumoReviewForm,
@@ -49,6 +50,14 @@ class AppsumoStack(TeamMixin, TurboFormView):
 
     def get_success_url(self) -> str:
         return reverse("team_appsumo:list", args=(self.team.id,))
+
+
+class AppsumoLanding(TurboFormView):
+    template_name = "appsumo/landing.html"
+    form_class = AppsumoLandingform
+
+    def form_valid(self, form):
+        return redirect("appsumo:redirect", form.cleaned_data["code"])
 
 
 class AppsumoRedirect(DetailView):
