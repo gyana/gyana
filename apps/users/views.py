@@ -44,10 +44,12 @@ class UserOnboarding(PageTitleMixin, TurboUpdateView):
         return redirect
 
     def get_success_url(self) -> str:
-        if self.request.user.first_name == "" or self.request.user.last_name == "":
+        user = self.request.user
+
+        if user.first_name == "" or user.last_name == "":
             return reverse("users:onboarding")
 
-        if not self.request.user.company_industry or not self.request.user.company_role or not self.request.user.company_size:
+        if not user.company_industry or not user.company_role or not user.company_size:
             return reverse("users:onboarding")
 
         analytics.track(self.request.user.id, ONBOARDING_COMPLETED_EVENT)
