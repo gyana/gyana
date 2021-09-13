@@ -36,11 +36,12 @@ class UserOnboarding(PageTitleMixin, TurboUpdateView):
         return redirect
 
 
-class UserProfile(TurboUpdateView):
+class UserProfile(PageTitleMixin, TurboUpdateView):
     template_name = "account/profile.html"
     model = CustomUser
     form_class = CustomUserChangeForm
     success_url = reverse_lazy("users:user_profile")
+    page_title = "Your Account"
 
     def get_object(self, queryset=None):
         return self.request.user

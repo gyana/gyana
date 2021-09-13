@@ -60,14 +60,16 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ["avatar", "email", "first_name"]
+        fields = ["avatar", "email", "first_name", "marketing_allowed"]
         widgets = {"avatar": forms.FileInput()}
         labels = {
-            "first_name": "Name"
+            "first_name": "Name",
+            "marketing_allowed": "Opt-in to email communications",
         }
         help_texts = {
             "email": "Changing this will not change the email you use to login",
-            "first_name": "We use this name to help personalize content and support"
+            "first_name": "We use this name to help personalize content and support",
+            "marketing_allowed": "Allow us to email you with content relevant to the app",
         }
 
 
