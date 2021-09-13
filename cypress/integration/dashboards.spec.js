@@ -42,7 +42,7 @@ describe('dashboards', () => {
     cy.get(`#widget-${widgetStartId}`).contains('London')
 
     createWidget('Bar')
-    cy.get('select[name=label]').select('Owner')
+    cy.get('select[name=dimension]').select('Owner')
     cy.get('[data-formset-prefix-value=aggregations]').within((el) => {
       cy.wrap(el).get('button').click()
     })
@@ -79,7 +79,7 @@ describe('dashboards', () => {
     cy.get(`#widget-update-${widgetStartId + 1}`).click({ force: true })
     cy.get('select-visual').find('button').click()
     cy.get('select-visual').contains('Column').click()
-    cy.get('select[name=label]').select('Location')
+    cy.get('select[name=dimension]').select('Location')
     cy.get('[data-formset-prefix-value=aggregations]').within((el) => {
       cy.wrap(el).get('button').click()
     })

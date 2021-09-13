@@ -40,7 +40,7 @@ NODE_CONFIG = {
     "except": {
         "displayName": "Except",
         "icon": "fa-minus-square",
-        "description": "Exclude overlap between two tables",
+        "description": "Remove rows that exist in a second table",
         "section": "Table manipulations",
     },
     "sort": {
