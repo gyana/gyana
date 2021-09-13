@@ -19,7 +19,7 @@ This section will be extended in the future, for now I reccomend reading these:
 ## Component styling
 
 Simple, visual components should have their own SCSS stylesheet (see `_button.scss`), following
-bootstrap conventions in creating a base style with generated colour variants on top.
+bootstrap conventions in creating a base style with generated color variants on top.
 
 ## Page styling
 

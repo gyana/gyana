@@ -2,13 +2,19 @@ import analytics
 from allauth.account.utils import send_email_confirmation
 from allauth.socialaccount.providers.google.views import oauth2_login
 from django.http import HttpResponse
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.decorators.http import require_POST
 
+from apps.base.mixins import PageTitleMixin
 from apps.base.analytics import ONBOARDING_COMPLETED_EVENT
 from apps.base.turbo import TurboUpdateView
 
-from .forms import CustomUserChangeForm, UploadAvatarForm, UserOnboardingForm
+from .forms import (
+    CustomUserChangeForm,
+    UploadAvatarForm,
+    UserOnboardingForm,
+    UserNameForm
+)
 from .helpers import (require_email_confirmation,
                       user_has_confirmed_email_address)
 from .models import CustomUser
@@ -19,26 +25,43 @@ def appsumo_oauth2_login(request, *args, **kwargs):
     return oauth2_login(request, *args, **kwargs)
 
 
-class UserOnboarding(TurboUpdateView):
+class UserOnboarding(PageTitleMixin, TurboUpdateView):
     template_name = "users/onboarding.html"
     model = CustomUser
-    form_class = UserOnboardingForm
-    success_url = reverse_lazy("web:home")
+    page_title = "Onboarding"
+
+    def get_form_class(self):
+        if self.request.user.first_name == "":
+            return UserNameForm
+
+        return UserOnboardingForm
 
     def get_object(self, queryset=None):
         return self.request.user
 
     def form_valid(self, form):
         redirect = super().form_valid(form)
-        analytics.track(self.request.user.id, ONBOARDING_COMPLETED_EVENT)
         return redirect
 
+    def get_success_url(self) -> str:
+        user = self.request.user
 
-class UserProfile(TurboUpdateView):
+        if user.first_name == "" or user.last_name == "":
+            return reverse("users:onboarding")
+
+        if not user.company_industry or not user.company_role or not user.company_size:
+            return reverse("users:onboarding")
+
+        analytics.track(self.request.user.id, ONBOARDING_COMPLETED_EVENT)
+        return reverse("web:home")
+
+
+class UserProfile(PageTitleMixin, TurboUpdateView):
     template_name = "account/profile.html"
     model = CustomUser
     form_class = CustomUserChangeForm
     success_url = reverse_lazy("users:user_profile")
+    page_title = "Your Account"
 
     def get_object(self, queryset=None):
         return self.request.user

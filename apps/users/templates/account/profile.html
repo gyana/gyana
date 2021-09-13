@@ -3,10 +3,14 @@
 
 {% block app %}
 <div class="workflow-detail__header">
-  <h3>Your Account</h3>
+  <h3 class="mr-auto">Your Account</h3>
+
+  <a href="{% url 'account_logout' %}" class="button button--sm button--danger">
+   <i class="fas fa-fw fa-sign-out"></i> Sign out
+  </a>
 </div>
 
-<section class="pad">
+<section class="max-w-xl pad">
   <div class="flex mb-8">
     <label>
       <p>Picture</p>
@@ -24,11 +28,7 @@
       {% include "django/forms/default_form.html" %}
 
       <div class="flex w-full">
-        <button type="submit" class="button button--success button--filled mr-auto">Save</button>
-
-        <a href="{% url 'account_logout' %}" class="button button--danger">
-          Sign out
-        </a>
+        <button type="submit" class="button button--success w-full">Save</button>
       </div>
     </form>
   </div>

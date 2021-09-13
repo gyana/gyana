@@ -8,9 +8,9 @@ from django.utils.translation import ugettext_lazy as _
 class CustomUser(AbstractUser):
     """
     Add additional fields to the user model here.
-    """
 
-    avatar = models.FileField(upload_to="profile-pictures/", null=True, blank=True)
+    https://docs.djangoproject.com/en/3.2/topics/auth/customizing/#extending-django-s-default-user
+    """
 
     class CompanyIndustry(models.TextChoices):
         AGENCY = "agency", "Agency"
@@ -41,6 +41,7 @@ class CustomUser(AbstractUser):
         TWO_HUNDRED_AND_ONE_TO_ONE_THOUSAND = "201-1000", "201-1000"
         MORE_THAN_ONE_THOUSAND = "more than 1000", "More than 1000"
 
+    avatar = models.FileField(upload_to="profile-pictures/", null=True, blank=True)
     onboarded = models.BooleanField(default=False)
     company_industry = models.CharField(
         max_length=16, null=True, choices=CompanyIndustry.choices
@@ -51,6 +52,7 @@ class CustomUser(AbstractUser):
     company_size = models.CharField(
         max_length=16, null=True, choices=CompanySize.choices
     )
+    marketing_allowed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.email

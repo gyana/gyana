@@ -71,7 +71,7 @@ $button-colors: (
     align-items: center;
   }
 
-  // Colour variant generation
+  // Color variant generation
   @each $color, $value in $button-colors {
     &--#{$color} {
       --button-color: #{$value};

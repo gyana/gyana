@@ -12,7 +12,7 @@ module.exports = {
   ],
   darkMode: false,
   theme: {
-    /** All colours are CSS variables set in `_colours.scss`. */
+    /** All color are CSS variables set in `_colors.scss`. */
     colors: {
       black: {
         DEFAULT: 'var(--c-black)',

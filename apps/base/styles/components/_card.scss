@@ -51,7 +51,7 @@ $card-colors: (
     opacity: 0.5;
   }
 
-  // Colour variant generation
+  // Color variant generation
   @each $color, $value in $card-colors {
     &--#{$color} {
       --card-color: #{$value};
