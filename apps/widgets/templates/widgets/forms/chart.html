@@ -1,14 +1,14 @@
 {% extends 'widgets/forms/default.html' %}
 
 {% block widget_form %}
-<label for="{{ form.label.id_for_label }}">
-  {{ form.label.label }}
+<label for="{{ form.dimension.id_for_label }}">
+  {{ form.dimension.label }}
 </label>
-{{form.label}}
+{{form.dimension}}
 <fieldset>
   {% if formsets.Aggregations %}
     {% with formset=formsets.Aggregations %}
-      <label>Values</label>
+      <label>Metrics</label>
       {% include "components/formset.html" with formset=formset %}
     {% endwith %}
   {% endif %}

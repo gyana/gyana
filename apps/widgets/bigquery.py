@@ -6,14 +6,14 @@ from apps.widgets.models import Widget
 
 def _sort(query, widget):
     """Sort widget data by label or value"""
-    if widget.sort_by == "label":
-        column = query[widget.label]
+    if widget.sort_by == "dimension":
+        column = query[widget.dimension]
     else:
         column = query[widget.aggregations.first().column]
         if widget.kind in [Widget.Kind.STACKED_BAR, Widget.Kind.STACKED_COLUMN]:
             column = (
                 column.sum()
-                .over(ibis.window(group_by=widget.label))
+                .over(ibis.window(group_by=widget.dimension))
                 .name("__widget_sort_column_stacked__")
             )
     sort_column = [(column, widget.sort_ascending)]
@@ -31,7 +31,7 @@ def get_query_from_widget(widget: Widget):
         )
         for aggregation in widget.aggregations.all()
     ]
-    groups = [widget.label]
+    groups = [widget.dimension]
     if widget.kind in [Widget.Kind.BUBBLE, Widget.Kind.HEATMAP]:
         values += [getattr(query[widget.z], widget.z_aggregator)().name(widget.z)]
     elif widget.kind in [Widget.Kind.STACKED_BAR, Widget.Kind.STACKED_COLUMN]:

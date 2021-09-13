@@ -27,7 +27,7 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
         "chart": {
             "stack100Percent": "1" if widget.stack_100_percent else "0",
             "theme": "fusion",
-            "xAxisName": widget.label,
+            "xAxisName": widget.dimension,
             "yAxisName": widget.aggregations.first().column,
         },
         **data,
@@ -54,7 +54,8 @@ def to_multi_value_data(widget, df):
         "categories": [
             {
                 "category": [
-                    {"label": str(label)} for label in df[widget.label].to_list()
+                    {"label": str(dimension)}
+                    for dimension in df[widget.dimension].to_list()
                 ]
             }
         ],
@@ -70,11 +71,9 @@ def to_multi_value_data(widget, df):
 
 def to_scatter(widget, df):
     values = [value.column for value in widget.aggregations.all()]
-    df = df.rename(columns={widget.label: "x"})
+    df = df.rename(columns={widget.dimension: "x"})
     return {
-        "categories": [
-            {"category": [{"label": str(label)} for label in df.x.to_list()]}
-        ],
+        "categories": [{"category": [{"label": str(x)} for x in df.x.to_list()]}],
         "dataset": [
             {
                 **({"seriesname": value} if len(values) > 1 else dict()),
@@ -90,7 +89,11 @@ def to_scatter(widget, df):
 def to_radar(widget, df):
     return {
         "categories": [
-            {"category": [{"label": label} for label in df[widget.label].to_list()]}
+            {
+                "category": [
+                    {"label": dimension} for dimension in df[widget.dimension].to_list()
+                ]
+            }
         ],
         "dataset": [
             {
@@ -106,7 +109,10 @@ def to_radar(widget, df):
 def to_single_value(widget, df):
     return {
         "data": df.rename(
-            columns={widget.label: "label", widget.aggregations.first().column: "value"}
+            columns={
+                widget.dimension: "label",
+                widget.aggregations.first().column: "value",
+            }
         ).to_dict(orient="records")
     }
 
@@ -117,7 +123,7 @@ def to_bubble(widget, df):
             {
                 "data": df.rename(
                     columns={
-                        widget.label: "x",
+                        widget.dimension: "x",
                         widget.aggregations.first().column: "y",
                         widget.z: "z",
                     }
@@ -133,7 +139,7 @@ COLOR_CODES = ["0155E8", "2BA8E8", "21C451", "FFD315", "E8990C", "C24314", "FF00
 def to_heatmap(widget, df):
     df = df.rename(
         columns={
-            widget.label: "rowid",
+            widget.dimension: "rowid",
             widget.aggregations.first().column: "columnid",
             widget.z: "value",
         }
@@ -162,14 +168,16 @@ def to_heatmap(widget, df):
 
 def to_stack(widget, df):
     pivoted = df.pivot(
-        index=widget.label, columns=widget.z, values=widget.aggregations.first().column
+        index=widget.dimension,
+        columns=widget.z,
+        values=widget.aggregations.first().column,
     )
 
     if widget.sort_by == "value":
-        pivoted = pivoted.reindex(df[widget.label].unique())
+        pivoted = pivoted.reindex(df[widget.dimension].unique())
     return {
         "categories": [
-            {"category": [{"label": str(label)} for label in pivoted.index]}
+            {"category": [{"label": str(dimension)} for dimension in pivoted.index]}
         ],
         "dataset": [
             {

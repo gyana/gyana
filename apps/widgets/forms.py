@@ -13,7 +13,7 @@ from .widgets import SourceSelect, VisualSelect
 
 
 class GenericWidgetForm(LiveUpdateForm):
-    label = forms.ChoiceField(choices=())
+    dimension = forms.ChoiceField(choices=())
     value = forms.ChoiceField(choices=())
     z = forms.ChoiceField(choices=())
 
@@ -22,7 +22,7 @@ class GenericWidgetForm(LiveUpdateForm):
         fields = [
             "table",
             "kind",
-            "label",
+            "dimension",
             "z",
             "z_aggregator",
             "sort_by",
@@ -68,19 +68,19 @@ class TwoDimensionForm(GenericWidgetForm):
         table = self.get_live_field("table")
         schema = Table.objects.get(pk=table).schema if table else None
 
-        if schema and "label" in self.fields:
+        if schema and "dimension" in self.fields:
             columns = [
                 ("", "No column selected"),
                 *[(column, column) for column in schema],
             ]
-            self.fields["label"].choices = columns
+            self.fields["dimension"].choices = columns
 
     def get_live_fields(self):
         fields = super().get_live_fields()
         table = self.get_live_field("table")
 
         if table:
-            fields += ["sort_by", "sort_ascending", "label"]
+            fields += ["sort_by", "sort_ascending", "dimension"]
         return fields
 
 
@@ -93,7 +93,7 @@ class ThreeDimensionForm(GenericWidgetForm):
 
         if schema:
             columns = [(column, column) for column in schema]
-            self.fields["label"].choices = columns
+            self.fields["dimension"].choices = columns
             self.fields["z"].choices = columns
 
             kind = self.get_live_field("kind")
@@ -110,7 +110,7 @@ class ThreeDimensionForm(GenericWidgetForm):
         table = self.get_live_field("table")
 
         if table:
-            fields += ["sort_by", "sort_ascending", "label", "z", "z_aggregator"]
+            fields += ["sort_by", "sort_ascending", "dimension", "z", "z_aggregator"]
         return fields
 
 
@@ -123,7 +123,7 @@ class StackedChartForm(GenericWidgetForm):
 
         if schema:
             columns = [(column, column) for column in schema]
-            self.fields["label"].choices = columns
+            self.fields["dimension"].choices = columns
             self.fields["z"].choices = [("", "No column selected"), *columns]
             # Can't overwrite label in Meta because we would have to overwrite the whole thing
             self.fields["z"].label = "Colour"
@@ -137,7 +137,7 @@ class StackedChartForm(GenericWidgetForm):
             fields += [
                 "sort_by",
                 "sort_ascending",
-                "label",
+                "dimension",
                 "z",
                 "stack_100_percent",
             ]
