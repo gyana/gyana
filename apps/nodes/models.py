@@ -75,7 +75,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     # Input
     input_table = models.ForeignKey(
-        Table, on_delete=models.CASCADE, null=True, help_text="Select a data source"
+        Table, on_delete=models.SET_NULL, null=True, help_text="Select a data source"
     )
 
     # Select also uses columns
