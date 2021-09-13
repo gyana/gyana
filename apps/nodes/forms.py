@@ -220,11 +220,17 @@ class SentimenttNodeForm(NodeForm):
         ]
 
 
+class ExceptNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.description = "Remove rows that exist in a second table."
+
+
 KIND_TO_FORM = {
     "input": InputNodeForm,
     "output": OutputNodeForm,
     "select": SelectNodeForm,
-    "except": DefaultNodeForm,
+    "except": ExceptNodeForm,
     "join": JoinNodeForm,
     "aggregation": DefaultNodeForm,
     "union": UnionNodeForm,

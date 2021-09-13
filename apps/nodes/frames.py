@@ -72,14 +72,6 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
             else "nodes/help/default.html"
         )
 
-        # Node-specific form templates
-        form_template = f"nodes/forms/{self.object.kind}.html"
-        context["form_template"] = (
-            form_template
-            if template_exists(form_template)
-            else "nodes/forms/default.html"
-        )
-
         # Add node type to list if it requires live updates
         context["do_live_updates"] = self.object.kind in [
             "pivot",

@@ -1,4 +1,6 @@
 <!-- https://docs.djangoproject.com/en/2.2/_modules/django/forms/boundfield/#BoundField -->
+<span class="form__description">{{form.description}}</span>
+
 {% for bound_field in form.visible_fields %}
 <div class="input-group">
   {% if bound_field.widget_type == "checkbox" %}
