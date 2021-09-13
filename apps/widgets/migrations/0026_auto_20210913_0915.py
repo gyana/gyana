@@ -31,13 +31,17 @@ class Migration(migrations.Migration):
         migrations.RunSQL(
             """
         UPDATE widgets_widget
-        SET sort_by='dimension'
-        WHERE sort_by='label'
+        SET sort_by=CASE 
+                        WHEN sort_by='label' THEN 'dimension' 
+                        ELSE 'metric'
+                    END
         """,
             reverse_sql="""
         UPDATE widgets_widget
-        SET sort_by='label'
-        WHERE sort_by='dimension'
+        SET sort_by=CASE 
+                        WHEN sort_by='dimension' THEN 'label' 
+                        ELSE 'value'
+                    END
         """,
         ),
     ]

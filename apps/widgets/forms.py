@@ -126,7 +126,7 @@ class StackedChartForm(GenericWidgetForm):
             self.fields["dimension"].choices = columns
             self.fields["z"].choices = [("", "No column selected"), *columns]
             # Can't overwrite label in Meta because we would have to overwrite the whole thing
-            self.fields["z"].label = "Color"
+            self.fields["z"].label = "Stack dimension"
             self.fields["z"].required = False
 
     def get_live_fields(self):
