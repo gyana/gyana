@@ -64,8 +64,10 @@ describe('appsumo', () => {
     // remove message blocking the form
     cy.get('.fa-times').first().click()
     // onboarding
-    // cy.get('input[name=first_name]').type('Appsumo')
-    // cy.get('input[name=last_name]').type('User')
+    cy.get('input[name=first_name]').type('Appsumo')
+    cy.get('input[name=last_name]').type('User')
+    cy.contains('Next').click()
+
     cy.get('select[name=company_industry]').select('Agency')
     cy.get('select[name=company_role]').select('Marketing')
     cy.get('select[name=company_size]').select('2-10')
