@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
 
+from apps.base.mixins import PageTitleMixin
 from apps.base.analytics import ONBOARDING_COMPLETED_EVENT
 from apps.base.turbo import TurboUpdateView
 
@@ -19,11 +20,12 @@ def appsumo_oauth2_login(request, *args, **kwargs):
     return oauth2_login(request, *args, **kwargs)
 
 
-class UserOnboarding(TurboUpdateView):
+class UserOnboarding(PageTitleMixin, TurboUpdateView):
     template_name = "users/onboarding.html"
     model = CustomUser
     form_class = UserOnboardingForm
     success_url = reverse_lazy("web:home")
+    page_title = "Onboarding"
 
     def get_object(self, queryset=None):
         return self.request.user
