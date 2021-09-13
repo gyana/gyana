@@ -27,31 +27,31 @@
     <span data-tooltip-target="body">Go to Google Sheet</span>
   </a>
   {% endif %}
-
-  <nav id='tabbar' class="tabbar tabbar--top">
-    {% if object.ready %}
-      <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
-        href="{% url 'project_integrations:detail' project.id object.id %}">
-        Overview
-      </a>
-      <a class="tabbar__link {% if request.resolver_match.url_name == 'data' %} tabbar__link--active {% endif %}"
-        href="{% url 'project_integrations:data' project.id object.id %}">
-        Data
-      </a>
-    {% endif %}
-    {% comment %} Uploads cannot be setup again after approval {% endcomment %}
-    {% if not object.ready or object.kind != object.Kind.UPLOAD %}
-      <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %}"
-        href="{% url 'project_integrations:configure' project.id object.id %}">
-        Setup
-      </a>
-    {% endif %}
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:settings' project.id object.id %}">
-      Settings
-    </a>
-  </nav>
 </div>
+
+<nav id='tabbar' class="tabbar tabbar--top">
+  {% if object.ready %}
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
+      href="{% url 'project_integrations:detail' project.id object.id %}">
+      Overview
+    </a>
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'data' %} tabbar__link--active {% endif %}"
+      href="{% url 'project_integrations:data' project.id object.id %}">
+      Data
+    </a>
+  {% endif %}
+  {% comment %} Uploads cannot be setup again after approval {% endcomment %}
+  {% if not object.ready or object.kind != object.Kind.UPLOAD %}
+    <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %}"
+      href="{% url 'project_integrations:configure' project.id object.id %}">
+      Setup
+    </a>
+  {% endif %}
+  <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
+    href="{% url 'project_integrations:settings' project.id object.id %}">
+    Settings
+  </a>
+</nav>
 
 {% block extra_tab %}{% endblock %}
 

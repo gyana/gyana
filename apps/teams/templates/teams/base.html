@@ -4,6 +4,7 @@
 {% load team_tags %}
 
 {% block app %}
+
 {% if team.id %}
 <div id="heading" class="workflow-detail__header">
   <h3 class="mr-auto flex justify-center items-center">
@@ -14,28 +15,28 @@
     {{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}
     <span data-tooltip-target="body">Account row usage</span>
   </p>
-
-  <nav class="tabbar tabbar--top">
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
-      href="{% url 'teams:detail' team.id %}">
-      Projects
-    </a>
-    {% if request.user|is_admin_of:team %}
-    <a class="tabbar__link {% if request.resolver_match.app_name == 'team_members' %} tabbar__link--active {% endif %}"
-      href="{% url 'team_members:list' team.id %}">
-      Members
-    </a>
-    <a class="tabbar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'account' %} tabbar__link--active {% endif %}"
-      href="{% url 'teams:account' team.id %}">
-      Billing
-    </a>
-    <a class="tabbar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'update' %} tabbar__link--active {% endif %}"
-      href="{% url 'teams:update' team.id %}">
-      Settings
-    </a>
-    {% endif %}
-  </nav>
 </div>
+
+<nav class="tabbar tabbar--top">
+  <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
+    href="{% url 'teams:detail' team.id %}">
+    Projects
+  </a>
+  {% if request.user|is_admin_of:team %}
+  <a class="tabbar__link {% if request.resolver_match.app_name == 'team_members' %} tabbar__link--active {% endif %}"
+    href="{% url 'team_members:list' team.id %}">
+    Members
+  </a>
+  <a class="tabbar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'account' %} tabbar__link--active {% endif %}"
+    href="{% url 'teams:account' team.id %}">
+    Billing
+  </a>
+  <a class="tabbar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'update' %} tabbar__link--active {% endif %}"
+    href="{% url 'teams:update' team.id %}">
+    Settings
+  </a>
+  {% endif %}
+</nav>
 {% endif %}
 
 <div id="main" class="flex flex-col flex-1 overflow-auto">
