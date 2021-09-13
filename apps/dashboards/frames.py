@@ -27,7 +27,7 @@ class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
         incomplete = widgets.exclude(
             Q(kind=Widget.Kind.TEXT)
             | (Q(kind=Widget.Kind.TABLE) & ~Q(table=None))
-            | (~Q(table=None) & ~Q(label=None) & ~Q(aggregations__column=None))
+            | (~Q(table=None) & ~Q(dimension=None) & ~Q(aggregations__column=None))
         )
         dashboards_incomplete = incomplete.values_list("dashboard").distinct().count()
         context_data["dashboards"] = {
