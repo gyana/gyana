@@ -130,7 +130,7 @@ WindowColumnFormSet = forms.inlineformset_factory(
 )
 
 KIND_TO_FORMSETS = {
-    "aggregation": [AggregationColumnFormSet, ColumnFormSet],
+    "aggregation": [ColumnFormSet, AggregationColumnFormSet],
     "sort": [SortColumnFormSet],
     "edit": [EditColumnFormSet],
     "add": [AddColumnFormSet],
