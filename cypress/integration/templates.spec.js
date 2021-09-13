@@ -56,7 +56,7 @@ describe('templates', () => {
     cy.visit('/')
     cy.contains('Google Analytics').click()
     cy.contains('Settings').click()
-    cy.contains('Delete').click()
+    cy.get('a').contains('Delete').click()
     cy.contains('Yes').click()
     cy.get('table tbody tr').should('have.length', 0)
 

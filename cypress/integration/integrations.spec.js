@@ -48,7 +48,7 @@ describe('integrations', () => {
 
     cy.get('#tabbar').within(() => cy.contains('Settings').click())
 
-    cy.contains('Delete').click()
+    cy.get('a').contains('Delete').click()
     cy.contains('Yes').click()
 
     cy.url().should('contain', '/projects/1/integrations')

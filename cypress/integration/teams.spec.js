@@ -48,10 +48,12 @@ describe('teams', () => {
     cy.get('#heading').within(() => cy.contains('Agni'))
 
     // delete
-    cy.contains('Delete').click()
-    cy.url().should('contain', newTeamUrl + '/delete')
-    cy.get('button[type=submit]').click()
-    cy.get('#sidebar').contains('Agni').should('not.exist')
+    cy.contains('Team deletion is disabled')
+    cy.get('button').contains('Delete').should('be.disabled')
+    // cy.contains('Delete').click()
+    // cy.url().should('contain', newTeamUrl + '/delete')
+    // cy.get('button[type=submit]').click()
+    // cy.get('#sidebar').contains('Agni').should('not.exist')
   })
   it('change member role and check restricted permissions', () => {
     cy.visit('/teams/1')
@@ -83,7 +85,7 @@ describe('teams', () => {
 
     cy.contains('member@gyana.com').click()
 
-    cy.contains('Delete').click()
+    cy.get('a').contains('Delete').click()
     cy.contains('Yes').click()
 
     cy.contains('member@gyana.com').should('not.exist')
@@ -114,9 +116,10 @@ describe('teams', () => {
 
     // now we go and delete that data source
     cy.get('#main').within(() => cy.contains('Warning').click())
+    cy.contains('1 upload').click()
     cy.contains('store_info').click()
     cy.get('#tabbar').within(() => cy.contains('Settings').click())
-    cy.contains('Delete').click()
+    cy.get('a').contains('Delete').click()
     cy.contains('Yes').click()
 
     cy.visit('/')

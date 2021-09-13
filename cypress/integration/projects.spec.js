@@ -48,7 +48,7 @@ describe('projects', () => {
     // delete
 
     cy.contains('Settings').click()
-    cy.contains('Delete').click()
+    cy.get('a').contains('Delete').click()
     cy.contains('Yes').click()
 
     cy.url().should('contain', '/teams/1')
