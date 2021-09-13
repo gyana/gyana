@@ -59,18 +59,11 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
         context = super().get_context_data(**kwargs)
         context["workflow"] = self.object.workflow
         context["preview_node_id"] = self.preview_node_id
-        context["show_docs"] = self.request.GET.get("show_docs", False) == "true" or (
-            self.object.data_updated is None
-            and self.object.kind not in ["union", "intersect"]
-        )
+        context["show_docs"] = self.request.GET.get("show_docs", False) == "true"
 
         # Node-specific documentation
-        help_template = f"nodes/help/{self.object.kind}.html"
-        context["help_template"] = (
-            help_template
-            if template_exists(help_template)
-            else "nodes/help/default.html"
-        )
+        if self.object.kind == Node.Kind.FORMULA:
+            context["help_template"] = "nodes/help/formula.html"
 
         # Add node type to list if it requires live updates
         context["do_live_updates"] = self.object.kind in [

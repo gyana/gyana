@@ -62,6 +62,13 @@
   <div class="workflow-modal__section">
     <div class="workflow-modal__table">
       <nav class="tabbar">
+        {% if help_template%}
+        <a class="tabbar__link {% if show_docs%}tabbar__link--active{% endif %}"
+          href="{% url 'nodes:update' object.id %}?show_docs=true"
+        >
+          Doc
+        </a>
+        {% endif %}
         {% for parent in parents %}
         <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
           href="{% url 'nodes:update' object.id %}?preview_node_id={{ parent.id }}">
@@ -83,14 +90,14 @@
         </a>
       </nav>
       {% if show_docs%}
-      {% include help_template %}
+        {% include help_template %}
       {% else%}
-      <turbo-frame id="workflows-grid" src="{% url 'nodes:grid' preview_node_id %}">
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-          <p class='placeholder-scr__title'>Loading preview...</p>
-        </div>
-      </turbo-frame>
+        <turbo-frame id="workflows-grid" src="{% url 'nodes:grid' preview_node_id %}">
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+            <p class='placeholder-scr__title'>Loading preview...</p>
+          </div>
+        </turbo-frame>
       {% endif %}
     </div>
 
