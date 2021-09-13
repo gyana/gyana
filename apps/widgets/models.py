@@ -57,7 +57,7 @@ class Widget(CloneMixin, BaseModel):
     name = models.CharField(max_length=255, null=True, blank=True)
     sort_by = models.CharField(
         max_length=12,
-        choices=(("dimension", "Dimension"), ("value", "Value")),
+        choices=(("dimension", "Dimension"), ("metric", "Metric")),
         default="dimension",
     )
     sort_ascending = models.BooleanField(default=True)
@@ -131,6 +131,11 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.HEATMAP.value: ("fa-map",),
 }
 
+# Exclude charts from being picked
+EXCLUDED = ["radar", "funnel", "pyramid"] if not settings.FF_ALPHA else []
+
 WIDGET_CHOICES_ARRAY = [
-    (choices + WIDGET_KIND_TO_WEB[choices[0]]) for choices in Widget.Kind.choices
+    (choices + WIDGET_KIND_TO_WEB[choices[0]])
+    for choices in Widget.Kind.choices
+    if choices[0] not in EXCLUDED
 ]
