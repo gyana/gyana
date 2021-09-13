@@ -1,8 +1,9 @@
 from allauth.account.views import SignupView
-from apps.base.mixins import PageTitleMixin
 from apps.base.frames import TurboFrameListView
+from apps.base.mixins import PageTitleMixin
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
+from apps.users.helpers import require_email_confirmation
 from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.utils import timezone
@@ -92,6 +93,12 @@ class AppsumoSignup(PageTitleMixin, TurboFormMixin, SignupView):
         kwargs = super().get_form_kwargs()
         kwargs["code"] = self.kwargs.get("code")
         return kwargs
+
+    def get_success_url(self):
+        if require_email_confirmation():
+            return reverse("account_email_verification_sent")
+
+        return reverse("users:onboarding")
 
 
 class AppsumoRedeem(TurboUpdateView):

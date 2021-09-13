@@ -223,6 +223,7 @@ ACCOUNT_FORMS = {
 # User signup configuration: change to "mandatory" to require users to confirm email before signing in.
 # or "optional" to send confirmation emails but not require them
 ACCOUNT_EMAIL_VERIFICATION = "optional"
+LOGIN_URL = "account_login"
 
 
 AUTHENTICATION_BACKENDS = (
