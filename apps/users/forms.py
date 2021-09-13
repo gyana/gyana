@@ -7,6 +7,27 @@ from apps.base.analytics import identify_user
 
 from .models import CustomUser
 
+class UserNameForm(forms.ModelForm):
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            "first_name",
+            "last_name",
+        ]
+    
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.onboarded = True
+
+        if commit:
+            instance.save()
+            self.save_m2m()
+
+        return instance
+
 
 class UserOnboardingForm(forms.ModelForm):
     class Meta:
@@ -60,10 +81,11 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ["avatar", "email", "first_name", "marketing_allowed"]
+        fields = ["avatar", "email", "first_name", "last_name", "marketing_allowed"]
         widgets = {"avatar": forms.FileInput()}
         labels = {
-            "first_name": "Name",
+            "first_name": "First Name",
+            "last_name": "Last Name",
             "marketing_allowed": "Opt-in to email communications",
         }
         help_texts = {
