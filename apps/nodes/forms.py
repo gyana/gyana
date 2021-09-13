@@ -200,6 +200,14 @@ class UnpivotNodeForm(NodeForm):
         model = Node
         fields = ["unpivot_value", "unpivot_column"]
         required = ["unpivot_value", "unpivot_column"]
+        labels = {
+            "unpivot_value": "Value column name",
+            "unpivot_column": "Category column name",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.description = "Transform multiple columns into a single column."
 
 
 class SentimenttNodeForm(NodeForm):
