@@ -1,4 +1,5 @@
 from allauth.account.views import SignupView
+from apps.base.mixins import PageTitleMixin
 from apps.base.frames import TurboFrameListView
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
@@ -60,12 +61,12 @@ class AppsumoLanding(TurboFormView):
         return redirect("appsumo:redirect", form.cleaned_data["code"])
 
 
-class AppsumoRedirect(DetailView):
-
+class AppsumoRedirect(PageTitleMixin, DetailView):
     model = AppsumoCode
     template_name = "appsumo/already_redeemed.html"
     slug_url_kwarg = "code"
     slug_field = "code"
+    page_title = "AppSumo"
 
     def get(self, request, *args, **kwargs):
 
@@ -79,8 +80,9 @@ class AppsumoRedirect(DetailView):
         return super().get(request, *args, **kwargs)
 
 
-class AppsumoSignup(TurboFormMixin, SignupView):
+class AppsumoSignup(PageTitleMixin, TurboFormMixin, SignupView):
     template_name = "appsumo/signup.html"
+    page_title = "AppSumo"
 
     # need to override otherwise global settings are used
     def get_form_class(self):
