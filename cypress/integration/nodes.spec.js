@@ -14,7 +14,7 @@ const addFormToFormset = (formset) => {
 }
 
 const waitForLiveFormUpdate = () => {
-  cy.get('[data-live-update-target=loading]').should('be.visible')
+  cy.get('[data-live-update-target=loading]').scrollIntoView().should('be.visible')
   cy.get('[data-live-update-target=loading]').should('not.be.visible')
 }
 
@@ -293,6 +293,7 @@ describe('nodes', () => {
     cy.get('#node-update-form .CodeMirror textarea').type('{enter} + 200', { force: true })
     cy.get('input[name=formula_columns-0-label]').type('glorious_id').blur()
     cy.contains('Save & Preview').click()
+    cy.contains('Loading preview...').should('be.visible')
     cy.get('#workflows-grid td').contains('201').should('be.visible')
 
     addFormToFormset('formula_columns')
@@ -342,6 +343,7 @@ describe('nodes', () => {
     cy.get('select[name=join_left]').select('store_id')
     cy.get('select[name=join_right]').select('store_id')
     cy.contains('Save & Preview').click()
+    cy.contains('Loading preview...').should('be.visible')
     cy.get('#workflows-grid').contains('store_id').should('be.visible')
     cy.get('#workflows-grid').contains('revenue').should('be.visible')
   })
