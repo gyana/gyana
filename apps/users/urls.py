@@ -1,5 +1,7 @@
+from allauth.account.views import LoginView
 from django.contrib.auth.decorators import login_required
 from django.urls import include, path
+from django.views.generic.base import RedirectView
 from django.views.defaults import page_not_found
 
 from . import views
@@ -32,5 +34,7 @@ accounts_urlpatterns = [
         views.appsumo_oauth2_login,
         name="google_login",
     ),
+    # Redirecting old signin link to account_login
+    path("signin", RedirectView.as_view(pattern_name="account_login")),
     path("", include("turbo_allauth.urls")),
 ]
