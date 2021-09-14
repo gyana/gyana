@@ -1,5 +1,7 @@
 <!-- https://docs.djangoproject.com/en/2.2/_modules/django/forms/boundfield/#BoundField -->
-<div class="form__description">{{form.form_description}}</div>
+{% if form.form_description %}
+<div class="form__description">{{ form.form_description }}</div>
+{% endif %}
 
 {% for bound_field in form.visible_fields %}
 <div class="input-group">
