@@ -10,12 +10,18 @@ from .models import CustomUser
 class UserNameForm(forms.ModelForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
+    marketing_allowed = forms.BooleanField(
+        label="Opt-in to marketing",
+        help_text="There is a lot you can do with Gyana, opt-in so we can send you occasional tips. (You can always opt-out)",
+        required=False
+    )
 
     class Meta:
         model = CustomUser
         fields = [
             "first_name",
             "last_name",
+            "marketing_allowed"
         ]
     
     def save(self, commit=True):
