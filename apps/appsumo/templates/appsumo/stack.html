@@ -1,11 +1,18 @@
 {% extends "teams/base.html" %}
 
 {% block tab %}
-<form method="post" action="{% url 'team_appsumo:stack' team.id %}" class="form pad">
-  {% csrf_token %}
+<div class="max-w-xl pad">
+  <form method="post" action="{% url 'team_appsumo:stack' team.id %}" class="w-full">
+    {% csrf_token %}
 
-  {% include "django/forms/default_form.html" %}
+    {% include "django/forms/default_form.html" %}
 
-  <button type="submit" class="button button--filled button--success">Stack Code</button>
-</form>
+    <div class="flex gap-3 w-full">
+      <a href="{% url 'teams:account' team.id %}" class="button button--tertiary flex-1">
+        Go Back
+      </a>
+      <button type="submit" class="button button--success flex-1">Stack Code</button>
+    </div>
+  </form>
+</div>
 {% endblock %}

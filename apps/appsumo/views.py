@@ -51,7 +51,7 @@ class AppsumoStack(TeamMixin, TurboFormView):
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse("team_appsumo:list", args=(self.team.id,))
+        return reverse("teams:account", args=(self.team.id,))
 
 
 class AppsumoLanding(TurboFormView):
@@ -134,4 +134,4 @@ class AppsumoReview(TeamMixin, TurboCreateView):
         return kwargs
 
     def get_success_url(self) -> str:
-        return reverse("team_appsumo:list", args=(self.team.id,))
+        return reverse("teams:account", args=(self.team.id,))

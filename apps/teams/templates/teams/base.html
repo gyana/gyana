@@ -27,7 +27,7 @@
     href="{% url 'team_members:list' team.id %}">
     Members
   </a>
-  <a class="tabbar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'account' %} tabbar__link--active {% endif %}"
+  <a class="tabbar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'account' or request.resolver_match.app_name == 'team_appsumo' %} tabbar__link--active {% endif %}"
     href="{% url 'teams:account' team.id %}">
     Billing
   </a>

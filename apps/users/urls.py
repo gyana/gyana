@@ -35,6 +35,6 @@ accounts_urlpatterns = [
         name="google_login",
     ),
     # Redirecting old signin link to account_login
-    path("signin", RedirectView.as_view(pattern_name="account_login")),
+    path("signin/", RedirectView.as_view(pattern_name="account_login")),
     path("", include("turbo_allauth.urls")),
 ]
