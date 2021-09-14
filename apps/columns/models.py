@@ -169,13 +169,26 @@ class WindowColumn(SaveParentModel):
         Node, on_delete=models.CASCADE, related_name="window_columns"
     )
 
-    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
-    function = models.CharField(max_length=20, choices=AggregationFunctions.choices)
+    column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        help_text="Choose an aggregation column",
+    )
+    function = models.CharField(
+        max_length=20,
+        choices=AggregationFunctions.choices,
+        help_text="Select an aggregation function",
+    )
     group_by = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="Group over this column",
     )
     order_by = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="Order by this column",
     )
     ascending = models.BooleanField(
         default=True, help_text="Select to sort ascendingly"
@@ -183,4 +196,5 @@ class WindowColumn(SaveParentModel):
     label = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         validators=[bigquery_column_regex],
+        help_text="Select a new column name",
     )

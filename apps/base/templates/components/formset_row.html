@@ -14,7 +14,10 @@
         {% if field.name == 'ascending' %}class="input__toggle"{% endif %}
     >
         {% if field.help_text %}
-        <p class="input__help-text">{{ field.help_text }}</p>
+        <p class="input__help-text">
+          {{ field.help_text }}
+          {% if not field.field.required and field.name != 'ascending'%} - optional{% endif %}
+        </p>
         {% endif %}
 
         {% if not form.is_live %}

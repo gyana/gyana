@@ -150,31 +150,33 @@ class FormulaColumnForm(SchemaFormMixin, LiveUpdateForm):
 class WindowColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
         fields = ("column", "function", "group_by", "order_by", "ascending", "label")
-        help_texts = {
-            "column": "Column",
-            "function": "Function",
-            "group_by": "Group By",
-            "order_by": "Order By",
-            "label": "New Column Name",
-        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        column_field = forms.ChoiceField(
-            choices=[
-                ("", "No column selected"),
-                *[(col, col) for col in self.schema],
-            ]
+        choices = [
+            ("", "No column selected"),
+            *[(col, col) for col in self.schema],
+        ]
+        self.fields["column"] = forms.ChoiceField(
+            choices=choices, help_text=self.base_fields["column"].help_text
         )
-        self.fields["column"] = column_field
+
         if self.column_type is not None:
             self.fields["function"].choices = [
                 (choice.value, choice.name)
                 for choice in AGGREGATION_TYPE_MAP[self.column_type]
             ]
-            self.fields["group_by"] = column_field
-            self.fields["order_by"] = column_field
+            self.fields["group_by"] = forms.ChoiceField(
+                choices=choices,
+                help_text=self.base_fields["group_by"].help_text,
+                required=False,
+            )
+            self.fields["order_by"] = forms.ChoiceField(
+                choices=choices,
+                help_text=self.base_fields["order_by"].help_text,
+                required=False,
+            )
 
     def get_live_fields(self):
         fields = ["column"]
