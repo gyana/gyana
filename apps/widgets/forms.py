@@ -8,7 +8,7 @@ from apps.filters.models import Filter
 from apps.tables.models import Table
 from django import forms
 
-from .models import Widget
+from .models import EXCLUDED, Widget
 from .widgets import SourceSelect, VisualSelect
 
 
@@ -36,7 +36,11 @@ class GenericWidgetForm(LiveUpdateForm):
         project = kwargs.pop("project", None)
 
         super().__init__(*args, **kwargs)
-
+        self.fields["kind"].choices = [
+            choices
+            for choices in self.fields["kind"].choices
+            if choices[0] not in EXCLUDED
+        ]
         if project:
             self.fields["table"].queryset = Table.available.filter(
                 project=project

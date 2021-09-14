@@ -1,4 +1,4 @@
-from apps.widgets.models import WIDGET_KIND_TO_WEB, Widget
+from apps.widgets.models import EXCLUDED, WIDGET_KIND_TO_WEB, Widget
 from django.forms.widgets import ChoiceWidget
 
 ICONS = {"integration": "far fa-link", "workflow_node": "far fa-stream"}
@@ -22,6 +22,7 @@ class SourceSelect(ChoiceWidget):
         context["widget"]["name"] = name
         return context
 
+
 class VisualSelect(ChoiceWidget):
     class Media:
         js = ("js/components-bundle.js",)
@@ -39,5 +40,6 @@ class VisualSelect(ChoiceWidget):
                 "icon": WIDGET_KIND_TO_WEB[choice.value],
             }
             for choice in Widget.Kind
+            if choice.value not in EXCLUDED
         ]
         return context
