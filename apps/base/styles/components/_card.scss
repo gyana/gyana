@@ -79,6 +79,11 @@ $card-colors: (
     padding: 0;
   }
 
+  &--modal {
+    border: none;
+    overflow: hidden;
+  }
+
   &__header {
     height: 52px; // TODO
     background-color: var(--c-white);
