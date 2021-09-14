@@ -48,7 +48,6 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
         )
         help_texts = {
             "string_predicate": "Condition",
-            "string_predicate": "Condition",
             "numeric_predicate": "Condition",
             "time_predicate": "Condition",
             "datetime_predicate": "Condition",
@@ -63,6 +62,7 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             "float_values": "Value",
             "bool_value": "Value",
         }
+
         widgets = {
             "string_value": TextInput(),
             "datetime_value": DatetimeInput(),

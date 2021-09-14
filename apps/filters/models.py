@@ -73,32 +73,31 @@ class Filter(SaveParentModel):
     type = models.CharField(max_length=8, choices=Type.choices)
 
     numeric_predicate = models.CharField(
-        max_length=16, choices=NumericPredicate.choices, null=True, blank=True
+        max_length=16, choices=NumericPredicate.choices, null=True
     )
 
-    float_value = models.FloatField(null=True, blank=True)
+    float_value = models.FloatField(null=True)
     float_values = ArrayField(models.FloatField(), null=True)
-    integer_value = models.BigIntegerField(null=True, blank=True)
+    integer_value = models.BigIntegerField(null=True)
     integer_values = ArrayField(models.BigIntegerField(), null=True)
 
     time_predicate = models.CharField(
-        max_length=16, choices=TimePredicate.choices, null=True, blank=True
+        max_length=16, choices=TimePredicate.choices, null=True
     )
     datetime_predicate = models.CharField(
         max_length=16,
         choices=TimePredicate.choices + DatetimePredicate.choices,
         null=True,
-        blank=True,
     )
 
-    time_value = models.TimeField(null=True, blank=True)
-    date_value = models.DateField(null=True, blank=True)
-    datetime_value = models.DateTimeField(null=True, blank=True)
+    time_value = models.TimeField(null=True)
+    date_value = models.DateField(null=True)
+    datetime_value = models.DateTimeField(null=True)
 
     string_predicate = models.CharField(
-        max_length=16, choices=StringPredicate.choices, null=True, blank=True
+        max_length=16, choices=StringPredicate.choices, null=True
     )
-    string_value = models.TextField(null=True, blank=True)
+    string_value = models.TextField(null=True)
     string_values = ArrayField(models.TextField(), null=True)
 
     bool_value = models.BooleanField(default=True)

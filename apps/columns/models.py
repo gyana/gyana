@@ -72,9 +72,9 @@ class AbstractOperationColumn(SaveParentModel):
         null=True,
     )
 
-    integer_value = models.BigIntegerField(null=True, blank=True)
-    float_value = models.FloatField(null=True, blank=True)
-    string_value = models.TextField(null=True, blank=True)
+    integer_value = models.BigIntegerField(null=True)
+    float_value = models.FloatField(null=True)
+    string_value = models.TextField(null=True)
 
     @property
     def function(self):
@@ -156,7 +156,7 @@ class FormulaColumn(SaveParentModel):
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="formula_columns"
     )
-    formula = models.TextField(null=True, blank=True, help_text="Type formula")
+    formula = models.TextField(null=True, help_text="Type formula")
     label = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         validators=[bigquery_column_regex],
