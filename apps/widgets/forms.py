@@ -126,9 +126,12 @@ class StackedChartForm(GenericWidgetForm):
         schema = Table.objects.get(pk=table).schema if table else None
 
         if schema:
-            columns = [(column, column) for column in schema]
-            self.fields["dimension"].choices = columns
-            self.fields["z"].choices = [("", "No column selected"), *columns]
+            choices = [
+                ("", "No column selected"),
+                *[(column, column) for column in schema],
+            ]
+            self.fields["dimension"].choices = choices
+            self.fields["z"].choices = choices
             # Can't overwrite label in Meta because we would have to overwrite the whole thing
             self.fields["z"].label = "Stack dimension"
             self.fields["z"].required = False
@@ -143,8 +146,11 @@ class StackedChartForm(GenericWidgetForm):
                 "sort_ascending",
                 "dimension",
                 "z",
-                "stack_100_percent",
             ]
+            if self.fields["kind"] == Widget.Kind.STACKED_LINE:
+                fields += [
+                    "stack_100_percent",
+                ]
         return fields
 
 
@@ -155,6 +161,7 @@ FORMS = {
     Widget.Kind.COLUMN: TwoDimensionForm,
     Widget.Kind.STACKED_BAR: StackedChartForm,
     Widget.Kind.LINE: TwoDimensionForm,
+    Widget.Kind.STACKED_LINE: StackedChartForm,
     Widget.Kind.PIE: TwoDimensionForm,
     Widget.Kind.AREA: TwoDimensionForm,
     Widget.Kind.DONUT: TwoDimensionForm,

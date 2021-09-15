@@ -22,6 +22,7 @@ class Widget(CloneMixin, BaseModel):
         BAR = "msbar2d", "Bar"
         STACKED_BAR = "stackedbar2d", "Stacked Bar"
         LINE = "msline", "Line"
+        STACKED_LINE = "msline-stacked", "Stacked Line"
         PIE = "pie2d", "Pie"
         AREA = "msarea", "Area"
         DONUT = "doughnut2d", "Donut"
@@ -107,7 +108,7 @@ class Widget(CloneMixin, BaseModel):
         if self.kind == self.Kind.TABLE:
             return True
         elif self.kind is not None:
-            return self.kind and self.dimension and self.aggregations.exists()
+            return self.kind and self.dimension
 
         return False
 
@@ -120,6 +121,7 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.BAR.value: ("fa-chart-bar",),
     Widget.Kind.STACKED_BAR.value: ("fa-chart-bar",),
     Widget.Kind.LINE.value: ("fa-chart-line",),
+    Widget.Kind.STACKED_LINE.value: ("fa-chart-line",),
     Widget.Kind.PIE.value: ("fa-chart-pie",),
     Widget.Kind.AREA.value: ("fa-chart-area",),
     Widget.Kind.DONUT.value: ("fa-dot-circle",),

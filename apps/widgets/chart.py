@@ -17,6 +17,8 @@ def short_hash():
 DEFAULT_WIDTH = "100%"
 DEFAULT_HEIGHT = "100%"
 
+TO_FUSION_CHART = {Widget.Kind.STACKED_LINE: "msline"}
+
 
 def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     """Render a chart from a table."""
@@ -36,7 +38,7 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     chart_id = f"{widget.pk}-{short_hash()}"
     return (
         FusionCharts(
-            widget.kind,
+            TO_FUSION_CHART.get(widget.kind) or widget.kind,
             f"chart-{chart_id}",
             DEFAULT_WIDTH,
             DEFAULT_HEIGHT,
@@ -204,4 +206,5 @@ CHART_DATA = {
     Widget.Kind.STACKED_BAR: to_stack,
     Widget.Kind.AREA: to_multi_value_data,
     Widget.Kind.LINE: to_multi_value_data,
+    Widget.Kind.STACKED_LINE: to_stack,
 }
