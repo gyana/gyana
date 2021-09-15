@@ -3,6 +3,11 @@ import React, { Fragment, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { SelectButton, SelectOption } from 'apps/base/javascript/components/SelectComponents'
 
+const findParentForm = (el) => {
+  if (el.tagName == 'FORM') return el
+  return findParentForm(el.parentNode)
+}
+
 const AutocompleteMultiSelect_: React.FC<{
   parentType: string
   parentId: string
@@ -36,9 +41,13 @@ const AutocompleteMultiSelect_: React.FC<{
 
   useEffect(() => {
     setLoading(true)
-    fetch(
-      `/filters/autocomplete?q=${search}&column=${column}&parentType=${parentType}&parentId=${parentId}`
-    )
+    let url = `/filters/autocomplete?q=${search}&column=${column}&parentType=${parentType}&parentId=${parentId}`
+    const formData = new FormData(findParentForm(inputRef.current))
+    const tableId = formData.get('table')
+    if (tableId) {
+      url = `${url}&tableId=${tableId}`
+    }
+    fetch(url)
       .then((res) => res.json())
       .then((r) => {
         setOptions(r)

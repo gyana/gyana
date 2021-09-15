@@ -3,6 +3,7 @@ from apps.base.clients import get_dataframe
 from apps.nodes.bigquery import get_query_from_node
 from apps.nodes.models import Node
 from apps.tables.bigquery import get_query_from_table
+from apps.tables.models import Table
 from apps.teams.roles import user_can_access_team
 from apps.widgets.models import Widget
 from django.http import Http404
@@ -39,8 +40,10 @@ def autocomplete_options(request):
             and user_can_access_team(request.user, parent.workflow.project.team)
         )
     ):
+        # For widgets we are sending the table information
+        # To make sure we always have the correct one
         query = (
-            get_query_from_table(parent.table)
+            get_query_from_table(get_object_or_404(Table, pk=request.GET["tableId"]))
             if parentType == "widget"
             else get_query_from_node(parent)
         )
