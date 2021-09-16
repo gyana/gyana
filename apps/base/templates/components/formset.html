@@ -12,7 +12,7 @@
   {{ formset.management_form }}
   <div data-formset-target="target">
     {% for form in formset.forms %}
-    {% include 'components/formset_row.html' with form=form %}
+      {% include 'components/formset_row.html' with form=form %}
     {% endfor %}
   </div>
 

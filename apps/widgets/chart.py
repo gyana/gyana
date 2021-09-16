@@ -24,13 +24,22 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     """Render a chart from a table."""
 
     data = CHART_DATA[widget.kind](widget, df)
-
+    if widget.kind != Widget.Kind.SCATTER:
+        axisNames = {
+            "xAxisName": widget.dimension,
+            "yAxisName": widget.aggregations.first().column,
+        }
+    else:
+        metrics = widget.aggregations.all()
+        axisNames = {
+            "xAxisName": metrics[0].column,
+            "yAxisName": metrics[1].column,
+        }
     dataSource = {
         "chart": {
             "stack100Percent": "1" if widget.stack_100_percent else "0",
             "theme": "fusion",
-            "xAxisName": widget.dimension,
-            "yAxisName": widget.aggregations.first().column,
+            **axisNames,
         },
         **data,
     }

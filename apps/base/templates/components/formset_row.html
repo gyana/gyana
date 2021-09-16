@@ -2,12 +2,17 @@
     style="display: none;" {% endif %}
     data-formset-index="{{ forloop.counter0 }}">
     {# Include the hidden fields in the form #}
-    
-      {% for hidden in form.hidden_fields %}
-      {{ hidden }}
-      {% endfor %}
-    
+    {% if formset.names %}
+      {% with forloop.counter0 as index  %}
+        <span class="text-black-50">{{ formset.names|list_item:index }}</span>
+      {% endwith %}
+    {% endif %}
 
+    {% for hidden in form.hidden_fields %}
+      {{ hidden }}
+    {% endfor %}
+    
+    
     {% for field in form.visible_fields %}
     <label
         {% if field.name == 'DELETE' %}style="display: none;" {% endif %}
