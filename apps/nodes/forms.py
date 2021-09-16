@@ -11,6 +11,10 @@ from .models import Node
 from .widgets import InputNode, MultiSelect
 
 
+def _create_choices(schema):
+    return [("", "No column selected"), *[(col, col) for col in schema]]
+
+
 class NodeForm(LiveUpdateForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -118,17 +122,11 @@ class JoinNodeForm(NodeForm):
         super().__init__(*args, **kwargs)
 
         self.fields["join_left"] = forms.ChoiceField(
-            choices=[
-                ("", "No column selected"),
-                *[(col, col) for col in self.instance.parents.first().schema],
-            ],
+            choices=_create_choices(self.instance.parents.first().schema),
             help_text=self.fields["join_left"].help_text,
         )
         self.fields["join_right"] = forms.ChoiceField(
-            choices=[
-                ("", "No column selected"),
-                *[(col, col) for col in self.instance.parents.last().schema],
-            ],
+            choices=_create_choices(self.instance.parents.last().schema),
             help_text=self.fields["join_right"].help_text,
         )
 
@@ -163,10 +161,8 @@ class PivotNodeForm(NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         schema = self.instance.parents.first().schema
-        column_choices = [
-            ("", "No column selected"),
-            *[(col, col) for col in schema],
-        ]
+        column_choices = _create_choices(schema)
+
         self.fields["pivot_index"] = forms.ChoiceField(
             choices=column_choices,
             required=False,
@@ -221,11 +217,9 @@ class SentimenttNodeForm(NodeForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["sentiment_column"].choices = [
-            (name, name)
-            for name, type_ in self.columns.items()
-            if type_.name == "String"
-        ]
+        self.fields["sentiment_column"].choices = _create_choices(
+            [name for name, type_ in self.columns.items() if type_.name == "String"]
+        )
 
 
 class ExceptNodeForm(DefaultNodeForm):
