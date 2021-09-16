@@ -23,7 +23,11 @@ class Project(CloneMixin, BaseModel):
     def integration_count(self):
         from apps.integrations.models import Integration
 
-        return Integration.objects.filter(project=self).count()
+        return (
+            Integration.objects.filter(project=self)
+            .exclude(connector__fivetran_authorized=False)
+            .count()
+        )
 
     def workflow_count(self):
         from apps.workflows.models import Workflow
