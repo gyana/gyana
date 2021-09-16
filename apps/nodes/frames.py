@@ -35,7 +35,7 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
     model = Node
     turbo_frame_dom_id = "workflow-modal"
 
-    def get_formset_kwargs(self, formset):
+    def get_formset_form_kwargs(self, formset):
 
         if formset.get_default_prefix() in [
             "add_columns",

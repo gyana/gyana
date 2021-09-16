@@ -4,6 +4,7 @@ from django.forms.models import BaseInlineFormSet
 
 class RequiredInlineFormset(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
+        self.names = kwargs.pop("names", None)
         super().__init__(*args, **kwargs)
         self.can_add = (len(self.forms) + len(self.extra_forms)) < self.max_num
         for form in self.forms:

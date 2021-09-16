@@ -79,6 +79,11 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
         return FORMS[self.request.POST.get("kind") or self.object.kind]
 
     def get_formset_kwargs(self, formset):
+        if self.object.kind == Widget.Kind.SCATTER:
+            return {"names": ["X", "Y"]}
+        return {}
+
+    def get_formset_form_kwargs(self, formset):
         table = self.request.POST.get("table") or getattr(self.object, "table")
         formset_kwargs = {}
         if table is not None:

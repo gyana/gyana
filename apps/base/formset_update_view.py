@@ -1,10 +1,11 @@
 from functools import cache
 
-from apps.base.live_update_form import LiveUpdateForm
-from apps.base.turbo import TurboUpdateView
 from django import forms
 from django.db import transaction
 from django.http.response import HttpResponse
+
+from apps.base.live_update_form import LiveUpdateForm
+from apps.base.turbo import TurboUpdateView
 
 # temporary overrides for formset labels
 FORMSET_LABELS = {
@@ -33,11 +34,14 @@ class FormsetUpdateView(TurboUpdateView):
             return form.get_live_formsets()
         return []
 
+    def get_formset_form_kwargs(self, formset):
+        return {}
+
     def get_formset_kwargs(self, formset):
         return {}
 
     def get_formset(self, formset):
-        forms_kwargs = self.get_formset_kwargs(formset)
+        forms_kwargs = self.get_formset_form_kwargs(formset)
 
         # provide a reference to parent instance in live update forms
         if issubclass(formset.form, LiveUpdateForm):
@@ -50,7 +54,11 @@ class FormsetUpdateView(TurboUpdateView):
             if self.request.POST
             and f"{formset.get_default_prefix()}-TOTAL_FORMS" in self.request.POST
             # initial render
-            else formset(instance=self.object, form_kwargs=forms_kwargs)
+            else formset(
+                instance=self.object,
+                **self.get_formset_kwargs(formset),
+                form_kwargs=forms_kwargs,
+            )
         )
 
     @cache
