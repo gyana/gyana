@@ -59,7 +59,9 @@ class GenericWidgetForm(LiveUpdateForm):
             Widget.Kind.STACKED_BAR,
             Widget.Kind.STACKED_COLUMN,
         ]:
-            formsets += [SingleValueFormset]
+            formsets += [SingleMetricFormset]
+        elif self.instance.kind == Widget.Kind.SCATTER:
+            formsets += [XYMetricFormset]
         elif self.instance.kind not in [Widget.Kind.TABLE]:
             formsets += [AggregationColumnFormset]
         return formsets
@@ -192,13 +194,24 @@ AggregationColumnFormset = forms.inlineformset_factory(
     formset=RequiredInlineFormset,
 )
 
-SingleValueFormset = forms.inlineformset_factory(
+SingleMetricFormset = forms.inlineformset_factory(
     Widget,
     AggregationColumn,
     form=AggregationColumnForm,
     can_delete=True,
     extra=0,
     max_num=1,
+    formset=RequiredInlineFormset,
+)
+
+XYMetricFormset = forms.inlineformset_factory(
+    Widget,
+    AggregationColumn,
+    form=AggregationColumnForm,
+    can_delete=False,
+    extra=0,
+    min_num=2,
+    max_num=2,
     formset=RequiredInlineFormset,
 )
 

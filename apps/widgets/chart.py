@@ -72,18 +72,14 @@ def to_multi_value_data(widget, df):
 
 
 def to_scatter(widget, df):
-    values = [value.column for value in widget.aggregations.all()]
-    df = df.rename(columns={widget.dimension: "x"})
+    x, y = [value.column for value in widget.aggregations.all()]
+    df = df.rename(columns={x: "x", y: "y", widget.dimension: "id"})
     return {
         "categories": [{"category": [{"label": str(x)} for x in df.x.to_list()]}],
         "dataset": [
             {
-                **({"seriesname": value} if len(values) > 1 else dict()),
-                "data": df.rename(columns={value: "y"})[["x", "y"]].to_dict(
-                    orient="records"
-                ),
+                "data": df[["x", "y", "id"]].to_dict(orient="records"),
             }
-            for value in values
         ],
     }
 

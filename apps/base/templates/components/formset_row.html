@@ -28,8 +28,10 @@
     </label>
     {% endfor %}
 
-    <button class="button button--sm button--circle button--tertiary ml-4" type="button"
-            data-action="click->formset#remove">
-        <i class="far fa-fw fa-times"></i>
-    </button>
+    {% if formset.can_delete %}
+      <button class="button button--sm button--circle button--tertiary ml-4" type="button"
+              data-action="click->formset#remove">
+          <i class="far fa-fw fa-times"></i>
+      </button>
+    {% endif %}
 </div>

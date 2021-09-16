@@ -25,15 +25,12 @@ def get_query_from_widget(widget: Widget):
     query = get_query_from_table(widget.table)
     query = get_query_from_filters(query, widget.filters.all())
 
-    if aggregations := widget.aggregations.all():
-        values = [
-            getattr(query[aggregation.column], aggregation.function)().name(
-                aggregation.column
-            )
-            for aggregation in aggregations
-        ]
-    else:
-        values = [query.count().name("_count")]
+    values = [
+        getattr(query[aggregation.column], aggregation.function)().name(
+            aggregation.column
+        )
+        for aggregation in widget.aggregations.all()
+    ]
     groups = [widget.dimension]
     if widget.kind in [Widget.Kind.BUBBLE, Widget.Kind.HEATMAP]:
         values += [getattr(query[widget.z], widget.z_aggregator)().name(widget.z)]
