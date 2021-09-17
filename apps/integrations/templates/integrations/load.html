@@ -3,11 +3,11 @@
 {% load help_utils %}
 
 {% block tab %}
-<div class="pad">
-  <ul class="integration__create-flow">
-    <li>
+<div class="pad flex flex-1 justify-center items-center">
+  <div class='flex flex-col flex-1 max-w-3xl'>
+    <div class="flex flex-1 justify-center items-center">
       <div
-          class='integration__file-validate card'
+          class='integration__file-validate'
           data-controller="celery-progress"
           data-celery-progress-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
           data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
@@ -19,7 +19,7 @@
         <div class='flex flex-col ml-4'>
           <h1>Validating and importing your {{ object.kind }}...</h1>
           {% if object.kind == 'connector' %}
-            <p>This can take anywhere from 10 minutes to 2 hours. We recommend you continue with your work.</p>
+            <p>This can take anywhere from 5 minutes to an hour. We recommend you continue with your work.</p>
           {% else %}
             <p>This can anywhere from a few seconds to a minute.</p>
           {% endif %}
@@ -56,9 +56,8 @@
             </div>
           </div>
         </template>
-
       </div>
-    </li>
-  </ul>
+    </div>
+  </div>
 </div>
 {% endblock %}
