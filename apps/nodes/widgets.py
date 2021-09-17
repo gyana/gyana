@@ -12,11 +12,10 @@ class InputNode(ChoiceWidget):
             {"icon": ICONS[option.source], "id": option.id, "label": option.owner_name}
             for option in self.choices.queryset
         ]
-    
+
         context["widget"]["selected"] = value
         context["widget"]["name"] = name
         return context
-
 
 
 class MultiSelect(ChoiceWidget):

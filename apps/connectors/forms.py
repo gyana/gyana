@@ -8,9 +8,9 @@ from apps.base.clients import fivetran_client
 from apps.connectors.config import get_services
 from apps.connectors.fivetran import FivetranClientError
 from apps.integrations.models import Integration
-from apps.nodes.widgets import MultiSelect
 
 from .models import Connector
+from .widgets import ConnectorSchemaMultiSelect
 
 
 class ConnectorCreateForm(forms.ModelForm):
@@ -95,14 +95,21 @@ class ConnectorUpdateForm(forms.ModelForm):
                     )
                     for t in schema.tables
                 ],
-                widget=MultiSelect,
+                widget=ConnectorSchemaMultiSelect,
                 initial=[t.name_in_destination for t in schema.tables if t.enabled],
                 label="Tables",
-                help_text="Include or exclude tables to import" + " for this schema"
-                if is_database
-                else "",
+                help_text="Select specific tables (you can change this later)",
                 required=False,  # you can uncheck all options
             )
+
+            # disabled fields that cannot be patched
+            self.fields[
+                f"{schema.name_in_destination}_tables"
+            ].widget._disabled_choices = [
+                t.name_in_destination
+                for t in schema.tables
+                if not t.enabled_patch_settings["allowed"]
+            ]
 
     def clean(self):
         cleaned_data = super().clean()

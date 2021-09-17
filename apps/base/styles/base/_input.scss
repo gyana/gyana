@@ -211,12 +211,22 @@ label.checkbox__checked {
   position: absolute;
 
   // Inspired by https://css-tricks.com/the-checkbox-hack/
-  &:checked ~ label.checkbox {
+  &:checked ~ label.checkbox__enabled {
     border: 1px solid var(--c-blue);
     color: var(--c-black);
 
     &::after {
       color: var(--c-blue);
+      content: '\f14a';
+    }
+  }
+
+  &:checked ~ label.checkbox__disabled {
+    border: 1px solid var(--c-gray);
+    color: var(--c-black);
+
+    &::after {
+      color: var(--c-gray);
       content: '\f14a';
     }
   }
