@@ -119,6 +119,9 @@ class ConnectorUpdateForm(forms.ModelForm):
 
         for schema in schemas:
             schema.enabled = f"{schema.name_in_destination}_schema" in cleaned_data
+            schema.tables = [
+                t for t in schema.tables if t.enabled_patch_settings["allowed"]
+            ]
             for table in schema.tables:
                 # field does not exist if all unchecked
                 table.enabled = table.name_in_destination in cleaned_data.get(
