@@ -24,7 +24,7 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     """Render a chart from a table."""
 
     data = CHART_DATA[widget.kind](widget, df)
-    if widget.kind != Widget.Kind.SCATTER:
+    if widget.kind not in [Widget.Kind.SCATTER, Widget.Kind.BUBBLE]:
         axisNames = {
             "xAxisName": widget.dimension,
             "yAxisName": widget.aggregations.first().column,
@@ -125,16 +125,13 @@ def to_single_value(widget, df):
 
 
 def to_bubble(widget, df):
+    x, y, z = [value.column for value in widget.aggregations.all()]
+    df = df.rename(columns={x: "x", y: "y", z: "z", widget.dimension: "id"})
     return {
+        "categories": [{"category": [{"label": str(x)} for x in df.x.to_list()]}],
         "dataset": [
             {
-                "data": df.rename(
-                    columns={
-                        widget.dimension: "x",
-                        widget.aggregations.first().column: "y",
-                        widget.z: "z",
-                    }
-                ).to_dict(orient="records")
+                "data": df[["x", "y", "z", "id"]].to_dict(orient="records"),
             }
         ],
     }

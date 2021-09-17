@@ -134,11 +134,7 @@ WIDGET_KIND_TO_WEB = {
 }
 
 # Exclude charts from being picked
-EXCLUDED = (
-    ["radar", "funnel", "pyramid", "bubble", "scatter", "heatmap"]
-    if not settings.FF_ALPHA
-    else []
-)
+EXCLUDED = ["radar", "funnel", "pyramid", "heatmap"] if not settings.FF_ALPHA else []
 
 WIDGET_CHOICES_ARRAY = [
     (choices + WIDGET_KIND_TO_WEB[choices[0]])

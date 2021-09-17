@@ -54,14 +54,8 @@ class GenericWidgetForm(LiveUpdateForm):
             return []
 
         formsets = [FilterFormset]
-        if self.instance.kind in [
-            Widget.Kind.PIE,
-            Widget.Kind.STACKED_BAR,
-            Widget.Kind.STACKED_COLUMN,
-        ]:
-            formsets += [SingleMetricFormset]
-        elif self.instance.kind == Widget.Kind.SCATTER:
-            formsets += [XYMetricFormset]
+        if chart_formsets := FORMSETS.get(self.instance.kind):
+            formsets += chart_formsets
         elif self.instance.kind not in [Widget.Kind.TABLE]:
             formsets += [AggregationColumnFormset]
         return formsets
@@ -172,7 +166,7 @@ FORMS = {
     Widget.Kind.PYRAMID: TwoDimensionForm,
     Widget.Kind.RADAR: TwoDimensionForm,
     Widget.Kind.HEATMAP: ThreeDimensionForm,
-    Widget.Kind.BUBBLE: ThreeDimensionForm,
+    Widget.Kind.BUBBLE: TwoDimensionForm,
 }
 
 
@@ -214,6 +208,26 @@ XYMetricFormset = forms.inlineformset_factory(
     max_num=2,
     formset=RequiredInlineFormset,
 )
+
+XYZMetricFormset = forms.inlineformset_factory(
+    Widget,
+    AggregationColumn,
+    form=AggregationColumnForm,
+    can_delete=False,
+    extra=0,
+    min_num=3,
+    max_num=3,
+    formset=RequiredInlineFormset,
+)
+
+
+FORMSETS = {
+    Widget.Kind.PIE: [SingleMetricFormset],
+    Widget.Kind.STACKED_BAR: [SingleMetricFormset],
+    Widget.Kind.STACKED_COLUMN: [SingleMetricFormset],
+    Widget.Kind.SCATTER: [XYMetricFormset],
+    Widget.Kind.BUBBLE: [XYZMetricFormset],
+}
 
 
 class WidgetDuplicateForm(forms.ModelForm):
