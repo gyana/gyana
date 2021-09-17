@@ -20,26 +20,34 @@ DEFAULT_HEIGHT = "100%"
 TO_FUSION_CHART = {Widget.Kind.STACKED_LINE: "msline"}
 
 
+def _create_axis_names(widget):
+    if widget.kind in [Widget.Kind.SCATTER, Widget.Kind.BUBBLE]:
+        metrics = widget.aggregations.all()
+        return {
+            "xAxisName": metrics[0].column,
+            "yAxisName": metrics[1].column,
+        }
+    if widget.kind == Widget.Kind.HEATMAP:
+        return {
+            "xAxisName": widget.dimension,
+            "yAxisName": widget.second_dimension,
+        }
+    return {
+        "xAxisName": widget.dimension,
+        "yAxisName": widget.aggregations.first().column,
+    }
+
+
 def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     """Render a chart from a table."""
 
     data = CHART_DATA[widget.kind](widget, df)
-    if widget.kind not in [Widget.Kind.SCATTER, Widget.Kind.BUBBLE]:
-        axisNames = {
-            "xAxisName": widget.dimension,
-            "yAxisName": widget.aggregations.first().column,
-        }
-    else:
-        metrics = widget.aggregations.all()
-        axisNames = {
-            "xAxisName": metrics[0].column,
-            "yAxisName": metrics[1].column,
-        }
+    axis_names = _create_axis_names(widget)
     dataSource = {
         "chart": {
             "stack100Percent": "1" if widget.stack_100_percent else "0",
             "theme": "fusion",
-            **axisNames,
+            **axis_names,
         },
         **data,
     }
@@ -144,8 +152,8 @@ def to_heatmap(widget, df):
     df = df.rename(
         columns={
             widget.dimension: "rowid",
-            widget.aggregations.first().column: "columnid",
-            widget.z: "value",
+            widget.second_dimension: "columnid",
+            widget.aggregations.first().column: "value",
         }
     ).sort_values(["rowid", "columnid"])
 
@@ -173,7 +181,7 @@ def to_heatmap(widget, df):
 def to_stack(widget, df):
     pivoted = df.pivot(
         index=widget.dimension,
-        columns=widget.z,
+        columns=widget.second_dimension,
         values=widget.aggregations.first().column,
     )
 

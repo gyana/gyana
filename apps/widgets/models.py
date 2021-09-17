@@ -52,9 +52,12 @@ class Widget(CloneMixin, BaseModel):
     aggregator = models.CharField(max_length=32, choices=Aggregator.choices)
     # maximum length of bigquery column name
     dimension = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
     )
-
+    second_dimension = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True
+    )
     name = models.CharField(max_length=255, null=True, blank=True)
     sort_by = models.CharField(
         max_length=12,
@@ -79,13 +82,6 @@ class Widget(CloneMixin, BaseModel):
     y = models.IntegerField(
         default=0,
         help_text="The y field is in absolute pixel value.",
-    )
-
-    z = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
-    )
-    z_aggregator = models.CharField(
-        max_length=20, choices=AggregationFunctions.choices, null=True, blank=True
     )
 
     stack_100_percent = models.BooleanField(default=False)

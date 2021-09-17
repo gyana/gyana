@@ -32,18 +32,17 @@ def get_query_from_widget(widget: Widget):
         for aggregation in widget.aggregations.all()
     ]
     groups = [widget.dimension]
-    if widget.kind in [Widget.Kind.HEATMAP]:
-        values += [getattr(query[widget.z], widget.z_aggregator)().name(widget.z)]
-    elif (
+    if (
         widget.kind
         in [
+            Widget.Kind.HEATMAP,
             Widget.Kind.STACKED_BAR,
             Widget.Kind.STACKED_COLUMN,
             Widget.Kind.STACKED_LINE,
         ]
-        and widget.z
+        and widget.second_dimension
     ):
-        groups += [widget.z]
+        groups += [widget.second_dimension]
 
     return _sort(
         query.group_by(groups).aggregate(values),

@@ -14,8 +14,7 @@ from .widgets import SourceSelect, VisualSelect
 
 class GenericWidgetForm(LiveUpdateForm):
     dimension = forms.ChoiceField(choices=())
-    value = forms.ChoiceField(choices=())
-    z = forms.ChoiceField(choices=())
+    second_dimension = forms.ChoiceField(choices=())
 
     class Meta:
         model = Widget
@@ -23,8 +22,7 @@ class GenericWidgetForm(LiveUpdateForm):
             "table",
             "kind",
             "dimension",
-            "z",
-            "z_aggregator",
+            "second_dimension",
             "sort_by",
             "sort_ascending",
             "stack_100_percent",
@@ -61,7 +59,7 @@ class GenericWidgetForm(LiveUpdateForm):
         return formsets
 
 
-class TwoDimensionForm(GenericWidgetForm):
+class OneDimensionForm(GenericWidgetForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -84,7 +82,7 @@ class TwoDimensionForm(GenericWidgetForm):
         return fields
 
 
-class ThreeDimensionForm(GenericWidgetForm):
+class TwoDimensionForm(GenericWidgetForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -94,23 +92,16 @@ class ThreeDimensionForm(GenericWidgetForm):
         if schema:
             columns = [(column, column) for column in schema]
             self.fields["dimension"].choices = columns
-            self.fields["z"].choices = columns
-
-            kind = self.get_live_field("kind")
-            if kind in [Widget.Kind.BUBBLE, Widget.Kind.HEATMAP] and (
-                z := self.get_live_field("z")
-            ):
-                self.fields["z_aggregator"].choices = [
-                    (choice.value, choice.name)
-                    for choice in AGGREGATION_TYPE_MAP[schema[z].name]
-                ]
+            self.fields["dimension"].label = "X"
+            self.fields["second_dimension"].choices = columns
+            self.fields["second_dimension"].label = "Y"
 
     def get_live_fields(self):
         fields = super().get_live_fields()
         table = self.get_live_field("table")
 
         if table:
-            fields += ["sort_by", "sort_ascending", "dimension", "z", "z_aggregator"]
+            fields += ["sort_by", "sort_ascending", "dimension", "second_dimension"]
         return fields
 
 
@@ -127,10 +118,10 @@ class StackedChartForm(GenericWidgetForm):
                 *[(column, column) for column in schema],
             ]
             self.fields["dimension"].choices = choices
-            self.fields["z"].choices = choices
+            self.fields["second_dimension"].choices = choices
             # Can't overwrite label in Meta because we would have to overwrite the whole thing
-            self.fields["z"].label = "Stack dimension"
-            self.fields["z"].required = False
+            self.fields["second_dimension"].label = "Stack dimension"
+            self.fields["second_dimension"].required = False
 
     def get_live_fields(self):
         fields = super().get_live_fields()
@@ -141,7 +132,7 @@ class StackedChartForm(GenericWidgetForm):
                 "sort_by",
                 "sort_ascending",
                 "dimension",
-                "z",
+                "second_dimension",
             ]
             if self.fields["kind"] == Widget.Kind.STACKED_LINE:
                 fields += [
@@ -152,21 +143,21 @@ class StackedChartForm(GenericWidgetForm):
 
 FORMS = {
     Widget.Kind.TABLE: GenericWidgetForm,
-    Widget.Kind.BAR: TwoDimensionForm,
+    Widget.Kind.BAR: OneDimensionForm,
     Widget.Kind.STACKED_COLUMN: StackedChartForm,
-    Widget.Kind.COLUMN: TwoDimensionForm,
+    Widget.Kind.COLUMN: OneDimensionForm,
     Widget.Kind.STACKED_BAR: StackedChartForm,
-    Widget.Kind.LINE: TwoDimensionForm,
+    Widget.Kind.LINE: OneDimensionForm,
     Widget.Kind.STACKED_LINE: StackedChartForm,
-    Widget.Kind.PIE: TwoDimensionForm,
-    Widget.Kind.AREA: TwoDimensionForm,
-    Widget.Kind.DONUT: TwoDimensionForm,
-    Widget.Kind.SCATTER: TwoDimensionForm,
-    Widget.Kind.FUNNEL: TwoDimensionForm,
-    Widget.Kind.PYRAMID: TwoDimensionForm,
-    Widget.Kind.RADAR: TwoDimensionForm,
-    Widget.Kind.HEATMAP: ThreeDimensionForm,
-    Widget.Kind.BUBBLE: TwoDimensionForm,
+    Widget.Kind.PIE: OneDimensionForm,
+    Widget.Kind.AREA: OneDimensionForm,
+    Widget.Kind.DONUT: OneDimensionForm,
+    Widget.Kind.SCATTER: OneDimensionForm,
+    Widget.Kind.FUNNEL: OneDimensionForm,
+    Widget.Kind.PYRAMID: OneDimensionForm,
+    Widget.Kind.RADAR: OneDimensionForm,
+    Widget.Kind.HEATMAP: TwoDimensionForm,
+    Widget.Kind.BUBBLE: OneDimensionForm,
 }
 
 
@@ -227,6 +218,7 @@ FORMSETS = {
     Widget.Kind.STACKED_COLUMN: [SingleMetricFormset],
     Widget.Kind.SCATTER: [XYMetricFormset],
     Widget.Kind.BUBBLE: [XYZMetricFormset],
+    Widget.Kind.HEATMAP: [SingleMetricFormset],
 }
 
 
