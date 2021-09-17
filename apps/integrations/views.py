@@ -98,7 +98,7 @@ class IntegrationDetail(ReadyMixin, TurboUpdateView):
         )
 
 
-class IntegrationData(ReadyMixin, DetailView):
+class IntegrationData(ProjectMixin, DetailView):
     template_name = "integrations/data.html"
     model = Integration
 

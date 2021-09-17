@@ -35,6 +35,8 @@
       href="{% url 'project_integrations:detail' project.id object.id %}">
       Overview
     </a>
+  {% endif %}
+  {% if object.ready or object.state == 'done' %}
     <a class="tabbar__link {% if request.resolver_match.url_name == 'data' %} tabbar__link--active {% endif %}"
       href="{% url 'project_integrations:data' project.id object.id %}">
       Data
@@ -43,7 +45,7 @@
   {% comment %} Uploads cannot be setup again after approval {% endcomment %}
   {% if not object.ready or object.kind != object.Kind.UPLOAD %}
     <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:configure' project.id object.id %}">
+      href="{% url 'project_integrations:done' project.id object.id %}">
       Setup
     </a>
   {% endif %}
