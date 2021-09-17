@@ -11,7 +11,7 @@ class ConnectorSchemaMultiSelect(ChoiceWidget):
         enabled_patch_settings = self._schema_dict[value].enabled_patch_settings
         if not enabled_patch_settings["allowed"]:
             option_dict["attrs"]["disabled"] = "disabled"
-            option_dict["reason"] = enabled_patch_settings["reason"]
+            option_dict["reason"] = enabled_patch_settings.get("reason")
         return option_dict
 
     def use_required_attribute(self, initial):

@@ -84,6 +84,7 @@ class ConnectorUpdateForm(forms.ModelForm):
                 label=schema.name_in_destination.replace("_", " ").title(),
                 widget=CheckboxInput() if is_database else HiddenInput(),
                 help_text="Include or exclude this schema",
+                required=False
             )
             self.fields[
                 f"{schema.name_in_destination}_tables"
