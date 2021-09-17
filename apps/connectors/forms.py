@@ -103,13 +103,9 @@ class ConnectorUpdateForm(forms.ModelForm):
             )
 
             # disabled fields that cannot be patched
-            self.fields[
-                f"{schema.name_in_destination}_tables"
-            ].widget._disabled_choices = [
-                t.name_in_destination
-                for t in schema.tables
-                if not t.enabled_patch_settings["allowed"]
-            ]
+            self.fields[f"{schema.name_in_destination}_tables"].widget._schema_dict = {
+                t.name_in_destination: t for t in schema.tables
+            }
 
     def clean(self):
         cleaned_data = super().clean()

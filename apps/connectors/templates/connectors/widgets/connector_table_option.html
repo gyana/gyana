@@ -20,7 +20,7 @@
     {{widget.label }}
   </label>
   {% if widget.attrs.disabled %}
-    <span data-tooltip-target="body">This table is required</span>
+    <span data-tooltip-target="body">Option is disabled: {{ widget.reason }}</span>
   {% endif %}
 </div>
 {% endwith %}

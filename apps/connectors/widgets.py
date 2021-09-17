@@ -6,14 +6,12 @@ class ConnectorSchemaMultiSelect(ChoiceWidget):
     option_template_name = "connectors/widgets/connector_table_option.html"
     allow_multiple_selected = True
 
-    def __init__(self, *args, **kwargs):
-        self._disabled_choices = []
-        super().__init__(*args, **kwargs)
-
     def create_option(self, name, value, *args, **kwargs):
         option_dict = super().create_option(name, value, *args, **kwargs)
-        if value in self._disabled_choices:
+        enabled_patch_settings = self._schema_dict[value].enabled_patch_settings
+        if not enabled_patch_settings["allowed"]:
             option_dict["attrs"]["disabled"] = "disabled"
+            option_dict["reason"] = enabled_patch_settings["reason"]
         return option_dict
 
     def use_required_attribute(self, initial):
