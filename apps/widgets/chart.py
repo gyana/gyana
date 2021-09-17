@@ -3,7 +3,7 @@ import string
 
 import numpy as np
 import pandas as pd
-from apps.widgets.models import NO_DIMENSION_WIDGETS, Widget
+from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget
 
 from .fusioncharts import FusionCharts
 
@@ -34,9 +34,10 @@ def _create_axis_names(widget):
         }
     if widget.kind in NO_DIMENSION_WIDGETS:
         {}
+
     return {
         "xAxisName": widget.dimension,
-        "yAxisName": widget.aggregations.first().column,
+        "yAxisName": _get_first_value_or_count(widget),
     }
 
 
@@ -69,8 +70,16 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     )
 
 
+def _get_first_value_or_count(widget):
+    aggregation = widget.aggregations.first()
+    return aggregation.column if aggregation else COUNT_COLUMN_NAME
+
+
 def to_multi_value_data(widget, df):
-    values = [value.column for value in widget.aggregations.all()]
+    values = [value.column for value in widget.aggregations.all()] or [
+        COUNT_COLUMN_NAME
+    ]
+
     return {
         "categories": [
             {
@@ -122,7 +131,7 @@ def to_single_value(widget, df):
         "data": df.rename(
             columns={
                 widget.dimension: "label",
-                widget.aggregations.first().column: "value",
+                _get_first_value_or_count(widget): "value",
             }
         ).to_dict(orient="records")
     }
@@ -165,7 +174,7 @@ def to_heatmap(widget, df):
         columns={
             widget.dimension: "rowid",
             widget.second_dimension: "columnid",
-            widget.aggregations.first().column: "value",
+            _get_first_value_or_count(widget): "value",
         }
     ).sort_values(["rowid", "columnid"])
 
@@ -191,10 +200,12 @@ def to_heatmap(widget, df):
 
 
 def to_stack(widget, df):
+    if not widget.second_dimension:
+        return to_multi_value_data(widget, df)
     pivoted = df.pivot(
         index=widget.dimension,
         columns=widget.second_dimension,
-        values=widget.aggregations.first().column,
+        values=_get_first_value_or_count(widget),
     )
 
     if widget.sort_by == "value":

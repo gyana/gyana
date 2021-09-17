@@ -140,3 +140,6 @@ WIDGET_KIND_TO_WEB = {
 WIDGET_CHOICES_ARRAY = [
     (choices + WIDGET_KIND_TO_WEB[choices[0]]) for choices in Widget.Kind.choices
 ]
+
+
+COUNT_COLUMN_NAME = "count"
