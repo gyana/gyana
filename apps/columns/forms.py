@@ -1,6 +1,7 @@
 from apps.base.aggregations import AGGREGATION_TYPE_MAP
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
+from apps.base.widgets import SelectWithDisable
 from apps.columns.models import EditColumn
 from django import forms
 
@@ -158,8 +159,10 @@ class WindowColumnForm(SchemaFormMixin, LiveUpdateForm):
             ("", "No column selected"),
             *[(col, col) for col in self.schema],
         ]
+
         self.fields["column"] = forms.ChoiceField(
-            choices=choices, help_text=self.base_fields["column"].help_text
+            choices=choices,
+            help_text=self.base_fields["column"].help_text,
         )
 
         if self.column_type is not None:
@@ -171,6 +174,13 @@ class WindowColumnForm(SchemaFormMixin, LiveUpdateForm):
                 choices=choices,
                 help_text=self.base_fields["group_by"].help_text,
                 required=False,
+                widget=SelectWithDisable(
+                    disabled={
+                        name: f"You cannot group by a {type_} column"
+                        for name, type_ in self.schema.items()
+                        if type_.name in ["Float64"]
+                    }
+                ),
             )
             self.fields["order_by"] = forms.ChoiceField(
                 choices=choices,
