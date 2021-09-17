@@ -32,6 +32,8 @@ def _create_axis_names(widget):
             "xAxisName": widget.dimension,
             "yAxisName": widget.second_dimension,
         }
+    if widget.kind == Widget.Kind.RADAR:
+        {}
     return {
         "xAxisName": widget.dimension,
         "yAxisName": widget.aggregations.first().column,
@@ -102,20 +104,14 @@ def to_scatter(widget, df):
 
 
 def to_radar(widget, df):
+    df = df.melt(value_vars=[col.column for col in widget.aggregations.all()])
     return {
         "categories": [
-            {
-                "category": [
-                    {"label": dimension} for dimension in df[widget.dimension].to_list()
-                ]
-            }
+            {"category": [{"label": label} for label in df.variable.to_list()]}
         ],
         "dataset": [
             {
-                "data": [
-                    {"value": value}
-                    for value in df[widget.aggregations.first().column].to_list()
-                ],
+                "data": [{"value": value} for value in df.value.to_list()],
             }
         ],
     }

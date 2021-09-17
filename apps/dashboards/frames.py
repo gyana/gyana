@@ -9,7 +9,7 @@ from apps.base.frames import (
 )
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import Widget
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.urls.base import reverse
 
 from .models import Dashboard
@@ -24,9 +24,10 @@ class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
 
         widgets = Widget.objects.filter(dashboard__project=self.project)
         # equivalent to is_valid, but efficient query
-        incomplete = widgets.exclude(
+        incomplete = widgets.annotate(agg_count=Count("aggregations")).exclude(
             Q(kind=Widget.Kind.TEXT)
             | (Q(kind=Widget.Kind.TABLE) & ~Q(table=None))
+            | (Q(kind=Widget.Kind.RADAR) & ~Q(agg_count__lte=3))
             | (~Q(table=None) & ~Q(dimension=None) & ~Q(aggregations__column=None))
         )
         dashboards_incomplete = incomplete.values_list("dashboard").distinct().count()

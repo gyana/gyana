@@ -97,13 +97,16 @@ class Widget(CloneMixin, BaseModel):
     @property
     def is_valid(self) -> bool:
         """Returns bool stating whether this Widget is ready to be displayed"""
+        # TODO: right now you also need to update the query in DashboardOverview dashboards/frames
         if self.kind == self.Kind.TEXT:
             return True
         if not self.table:
             return False
         if self.kind == self.Kind.TABLE:
             return True
-        elif self.kind is not None:
+        if self.kind == self.Kind.RADAR:
+            return self.aggregations.count() >= 3
+        if self.kind is not None:
             return self.kind and self.dimension
 
         return False
@@ -130,7 +133,14 @@ WIDGET_KIND_TO_WEB = {
 }
 
 # Exclude charts from being picked
-EXCLUDED = ["radar", "funnel", "pyramid", "heatmap"] if not settings.FF_ALPHA else []
+EXCLUDED = (
+    [
+        "funnel",
+        "pyramid",
+    ]
+    if not settings.FF_ALPHA
+    else []
+)
 
 WIDGET_CHOICES_ARRAY = [
     (choices + WIDGET_KIND_TO_WEB[choices[0]])

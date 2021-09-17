@@ -155,7 +155,7 @@ FORMS = {
     Widget.Kind.SCATTER: OneDimensionForm,
     Widget.Kind.FUNNEL: OneDimensionForm,
     Widget.Kind.PYRAMID: OneDimensionForm,
-    Widget.Kind.RADAR: OneDimensionForm,
+    Widget.Kind.RADAR: GenericWidgetForm,
     Widget.Kind.HEATMAP: TwoDimensionForm,
     Widget.Kind.BUBBLE: OneDimensionForm,
 }
@@ -175,6 +175,16 @@ AggregationColumnFormset = forms.inlineformset_factory(
     AggregationColumn,
     form=AggregationColumnForm,
     can_delete=True,
+    extra=0,
+    formset=RequiredInlineFormset,
+)
+
+MinThreeColumnFormset = forms.inlineformset_factory(
+    Widget,
+    AggregationColumn,
+    form=AggregationColumnForm,
+    can_delete=True,
+    min_num=3,
     extra=0,
     formset=RequiredInlineFormset,
 )
@@ -219,6 +229,7 @@ FORMSETS = {
     Widget.Kind.SCATTER: [XYMetricFormset],
     Widget.Kind.BUBBLE: [XYZMetricFormset],
     Widget.Kind.HEATMAP: [SingleMetricFormset],
+    Widget.Kind.RADAR: [MinThreeColumnFormset],
 }
 
 

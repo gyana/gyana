@@ -6,7 +6,7 @@ from apps.widgets.models import Widget
 
 def _sort(query, widget):
     """Sort widget data by label or value"""
-    if widget.sort_by == "dimension":
+    if widget.sort_by == "dimension" and widget.dimension:
         column = query[widget.dimension]
     else:
         column = query[widget.aggregations.first().column]
@@ -31,7 +31,7 @@ def get_query_from_widget(widget: Widget):
         )
         for aggregation in widget.aggregations.all()
     ]
-    groups = [widget.dimension]
+    groups = [widget.dimension] if widget.dimension else []
     if (
         widget.kind
         in [

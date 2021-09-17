@@ -1,10 +1,13 @@
 {% extends 'widgets/forms/default.html' %}
 
 {% block widget_form %}
-<label for="{{ form.dimension.id_for_label }}">
-  {{ form.dimension.label }}
-</label>
-{{form.dimension}}
+
+{% if form.dimension %}
+  <label for="{{ form.dimension.id_for_label }}">
+    {{ form.dimension.label }}
+  </label>
+  {{form.dimension}}
+{% endif %}
 
 {% if form.kind.value == 'heatmap' %}
   <label for="{{ form.dimension.id_for_label }}">
