@@ -1,7 +1,7 @@
 import ibis
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
-from apps.widgets.models import Widget
+from apps.widgets.models import NO_DIMENSION_WIDGETS, Widget
 
 
 def _sort(query, widget):
@@ -31,7 +31,7 @@ def get_query_from_widget(widget: Widget):
         )
         for aggregation in widget.aggregations.all()
     ]
-    groups = [widget.dimension] if widget.dimension else []
+    groups = [widget.dimension] if widget.kind not in NO_DIMENSION_WIDGETS else []
     if (
         widget.kind
         in [

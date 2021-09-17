@@ -106,11 +106,15 @@ class Widget(CloneMixin, BaseModel):
             return True
         if self.kind == self.Kind.RADAR:
             return self.aggregations.count() >= 3
+        if self.kind in [self.Kind.FUNNEL, self.Kind.PYRAMID]:
+            return self.aggregations.count() >= 2
         if self.kind is not None:
             return self.kind and self.dimension
 
         return False
 
+
+NO_DIMENSION_WIDGETS = [Widget.Kind.RADAR, Widget.Kind.FUNNEL, Widget.Kind.PYRAMID]
 
 WIDGET_KIND_TO_WEB = {
     Widget.Kind.TEXT.value: ("fa-text",),
@@ -132,18 +136,7 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.HEATMAP.value: ("fa-map",),
 }
 
-# Exclude charts from being picked
-EXCLUDED = (
-    [
-        "funnel",
-        "pyramid",
-    ]
-    if not settings.FF_ALPHA
-    else []
-)
 
 WIDGET_CHOICES_ARRAY = [
-    (choices + WIDGET_KIND_TO_WEB[choices[0]])
-    for choices in Widget.Kind.choices
-    if choices[0] not in EXCLUDED
+    (choices + WIDGET_KIND_TO_WEB[choices[0]]) for choices in Widget.Kind.choices
 ]

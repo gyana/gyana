@@ -8,7 +8,7 @@ from apps.filters.models import Filter
 from apps.tables.models import Table
 from django import forms
 
-from .models import EXCLUDED, Widget
+from .models import Widget
 from .widgets import SourceSelect, VisualSelect
 
 
@@ -34,11 +34,7 @@ class GenericWidgetForm(LiveUpdateForm):
         project = kwargs.pop("project", None)
 
         super().__init__(*args, **kwargs)
-        self.fields["kind"].choices = [
-            choices
-            for choices in self.fields["kind"].choices
-            if choices[0] not in EXCLUDED
-        ]
+
         if project:
             self.fields["table"].queryset = Table.available.filter(
                 project=project
@@ -153,8 +149,8 @@ FORMS = {
     Widget.Kind.AREA: OneDimensionForm,
     Widget.Kind.DONUT: OneDimensionForm,
     Widget.Kind.SCATTER: OneDimensionForm,
-    Widget.Kind.FUNNEL: OneDimensionForm,
-    Widget.Kind.PYRAMID: OneDimensionForm,
+    Widget.Kind.FUNNEL: GenericWidgetForm,
+    Widget.Kind.PYRAMID: GenericWidgetForm,
     Widget.Kind.RADAR: GenericWidgetForm,
     Widget.Kind.HEATMAP: TwoDimensionForm,
     Widget.Kind.BUBBLE: OneDimensionForm,
@@ -179,15 +175,18 @@ AggregationColumnFormset = forms.inlineformset_factory(
     formset=RequiredInlineFormset,
 )
 
-MinThreeColumnFormset = forms.inlineformset_factory(
-    Widget,
-    AggregationColumn,
-    form=AggregationColumnForm,
-    can_delete=True,
-    min_num=3,
-    extra=0,
-    formset=RequiredInlineFormset,
-)
+
+def create_min_formset(min_num):
+    return forms.inlineformset_factory(
+        Widget,
+        AggregationColumn,
+        form=AggregationColumnForm,
+        can_delete=True,
+        min_num=min_num,
+        extra=0,
+        formset=RequiredInlineFormset,
+    )
+
 
 SingleMetricFormset = forms.inlineformset_factory(
     Widget,
@@ -229,7 +228,9 @@ FORMSETS = {
     Widget.Kind.SCATTER: [XYMetricFormset],
     Widget.Kind.BUBBLE: [XYZMetricFormset],
     Widget.Kind.HEATMAP: [SingleMetricFormset],
-    Widget.Kind.RADAR: [MinThreeColumnFormset],
+    Widget.Kind.RADAR: [create_min_formset(3)],
+    Widget.Kind.PYRAMID: [create_min_formset(2)],
+    Widget.Kind.FUNNEL: [create_min_formset(2)],
 }
 
 

@@ -3,7 +3,7 @@ import string
 
 import numpy as np
 import pandas as pd
-from apps.widgets.models import Widget
+from apps.widgets.models import NO_DIMENSION_WIDGETS, Widget
 
 from .fusioncharts import FusionCharts
 
@@ -32,7 +32,7 @@ def _create_axis_names(widget):
             "xAxisName": widget.dimension,
             "yAxisName": widget.second_dimension,
         }
-    if widget.kind == Widget.Kind.RADAR:
+    if widget.kind in NO_DIMENSION_WIDGETS:
         {}
     return {
         "xAxisName": widget.dimension,
@@ -128,6 +128,22 @@ def to_single_value(widget, df):
     }
 
 
+def to_segment(widget, df):
+    df = df.melt(
+        value_vars=[
+            col.column
+            for col in widget.aggregations.order_by(
+                "created" if widget.kind == Widget.Kind.FUNNEL else "-created"
+            ).all()
+        ]
+    )
+    return {
+        "data": [
+            {"label": row.variable, "value": row.value} for _, row in df.iterrows()
+        ]
+    }
+
+
 def to_bubble(widget, df):
     x, y, z = [value.column for value in widget.aggregations.all()]
     df = df.rename(columns={x: "x", y: "y", z: "z", widget.dimension: "id"})
@@ -202,8 +218,8 @@ CHART_DATA = {
     Widget.Kind.HEATMAP: to_heatmap,
     Widget.Kind.SCATTER: to_scatter,
     Widget.Kind.RADAR: to_radar,
-    Widget.Kind.FUNNEL: to_single_value,
-    Widget.Kind.PYRAMID: to_single_value,
+    Widget.Kind.FUNNEL: to_segment,
+    Widget.Kind.PYRAMID: to_segment,
     Widget.Kind.PIE: to_single_value,
     Widget.Kind.DONUT: to_single_value,
     Widget.Kind.COLUMN: to_multi_value_data,
