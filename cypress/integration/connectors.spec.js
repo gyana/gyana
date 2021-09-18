@@ -41,7 +41,7 @@ describe('connectors', () => {
     cy.contains('Confirm').click()
 
     // connector created successfully
-    cy.contains('Data')
+    cy.get('#tabbar').within(() => cy.contains('Overview'))
 
     // fivetran succeeded at information
     // cy.get('#connectors-status').trigger('mouseover')
@@ -88,7 +88,6 @@ describe('connectors', () => {
     createConnector('google_analytics')
 
     // remove a table
-    cy.contains('Advanced').click()
     cy.contains('Adwords Campaigns').click()
     // wait for javascript to update hidden element
     cy.wait(200)
@@ -98,7 +97,8 @@ describe('connectors', () => {
     cy.wait(1000)
     cy.reload()
 
-    cy.contains('Review your imported data', { timeout: BIGQUERY_TIMEOUT })
+    cy.contains('Review import', { timeout: BIGQUERY_TIMEOUT })
+    cy.contains('preview').click(0)
     cy.contains('Adwords Campaigns').should('not.exist')
   })
 })
