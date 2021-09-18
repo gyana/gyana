@@ -27,7 +27,6 @@ describe('sheets', () => {
 
     // set advanced configuration
     cy.url().should('contain', `/projects/1/integrations/${id}/configure`)
-    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
 
@@ -35,7 +34,9 @@ describe('sheets', () => {
     cy.contains('Sheet successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
 
     // review the table and approve
+    cy.contains('preview').click()
     cy.contains('Employees')
+    cy.contains('Setup').click()
     cy.contains('Confirm').click()
 
     cy.url().should('contain', `/projects/1/integrations/${id}`)
@@ -70,7 +71,6 @@ describe('sheets', () => {
     cy.get('input[name=url]').clear().type(SHARED_SHEET)
     cy.get('button[type=submit]').click()
 
-    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('does_not_exist!A1:D11')
     cy.get('button[type=submit]').click()
 
@@ -84,7 +84,6 @@ describe('sheets', () => {
     cy.get('button[type=submit]').click()
 
     // empty cells trigger column does not exist error
-    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('store_info!A20:D21')
     cy.get('button[type=submit]').click()
 
@@ -128,7 +127,6 @@ describe('sheets', () => {
     cy.get('#tabbar').within(() => cy.contains('Setup').click())
     cy.contains('Configure').click()
 
-    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').clear().type('store_info!A1:D6')
     cy.get('button[type=submit]').click()
 
@@ -144,13 +142,13 @@ describe('sheets', () => {
 
     cy.get('input[name=url]').type(SHARED_SHEET)
     cy.get('button[type=submit]').click()
-    cy.contains('Advanced').click()
     cy.get('input[name=cell_range').type("'store_info_all_string'")
     cy.get('button[type=submit]').click()
     // needs longer to do 3x imports
     cy.contains('Sheet successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
 
     // import has inferred correct column headings
+    cy.contains('preview').click()
     cy.contains('Location_name')
     cy.contains('string_field_0').should('not.exist')
   })
