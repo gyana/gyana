@@ -33,14 +33,14 @@ class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        project_integrations = Integration.objects.filter(project=self.project)
+        project_integrations = self.project.integration_set.exclude(
+            connector__fivetran_authorized=False
+        )
 
         context_data["integration_count"] = project_integrations.count()
-        context_data["pending_integration_count"] = (
-            project_integrations.filter(ready=False)
-            .exclude(connector__fivetran_authorized=False)
-            .count()
-        )
+        context_data["pending_integration_count"] = project_integrations.filter(
+            ready=False
+        ).count()
 
         context_data["integration_kinds"] = Integration.Kind.choices
 
