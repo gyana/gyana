@@ -138,7 +138,7 @@ class RefundedCodes(BaseModel):
             for appsumo_code in appsumo_codes:
                 if (
                     appsumo_code.refunded_before is None
-                    or appsumo_code.refunded_before > self.downloaded
+                    or self.downloaded > appsumo_code.refunded_before
                 ):
                     appsumo_code.refunded_before = self.downloaded
 
