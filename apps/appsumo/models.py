@@ -8,8 +8,8 @@ from django.db import models, transaction
 
 # review ids are incrementing integers, currently at 6 digits
 appsumo_review_regex = RegexValidator(
-    r"^https:\/\/appsumo\.com\/products\/marketplace-gyana\/\#r[0-9]{6,9}$",
-    "Paste the exact link as displayed on AppSumo",
+    regex=r"^https:\/\/appsumo\.com\/products\/marketplace-gyana\/\#r[0-9]{6,9}$",
+    message="Paste the exact link as displayed on AppSumo",
 )
 
 # after we upload the codes to AppSumo, they provide two downloads:
@@ -49,7 +49,9 @@ class AppsumoCode(BaseModel):
 
 class AppsumoReview(BaseModel):
 
-    review_link = models.URLField(
+    # URLField has unnecessary extra validation
+    review_link = models.CharField(
+        max_length=200,
         unique=True,
         validators=[appsumo_review_regex],
         error_messages={

@@ -6,10 +6,11 @@ from apps.appsumo.forms import (
     AppsumoLandingform,
     AppsumoRedeemForm,
     AppsumoRedeemNewTeamForm,
+    AppsumoReviewForm,
     AppsumoSignupForm,
     AppsumoStackForm,
 )
-from apps.appsumo.models import AppsumoCode
+from apps.appsumo.models import AppsumoCode, AppsumoReview
 from apps.teams.models import Team
 from apps.users.models import CustomUser
 from django.utils import timezone
@@ -49,6 +50,7 @@ class TestAppsumoRedeemNewTeamForm:
         form = AppsumoRedeemNewTeamForm(
             data={"team_name": "test_team"}, instance=code, user=user
         )
+        assert form.is_valid()
         form.save()
 
         assert code.redeemed_by == user
@@ -80,6 +82,7 @@ class TestAppsumoRedeemForm:
         user, team, code = initial
 
         form = AppsumoRedeemForm(data={"team": team.id}, instance=code, user=user)
+        assert form.is_valid()
         form.save()
 
         assert team.appsumocode_set.count() == 1
@@ -114,3 +117,44 @@ class TestAppsumoSignupForm:
         assert user.teams.count() == 1
         team = user.teams.first()
         assert team.name == "test_team"
+
+
+class TestAppsumoReviewForm:
+    def test_invalid_link_regex(self):
+        form = AppsumoReviewForm(
+            data={"review_link": "https://appsumo.com/products/marketplace-gyana/"}
+        )
+        assert form.errors["review_link"] == [
+            "Paste the exact link as displayed on AppSumo"
+        ]
+
+    def test_link_already_exists(self):
+        AppsumoReview.objects.create(
+            review_link="https://appsumo.com/products/marketplace-gyana/#r678678",
+            team=Team.objects.create(name="test_team"),
+        )
+        form = AppsumoReviewForm(
+            data={
+                "review_link": "https://appsumo.com/products/marketplace-gyana/#r678678"
+            }
+        )
+        assert form.errors["review_link"] == [
+            "A user has linked to this review for their team. If you think this is a mistake, reach out to support and we'll sort it out for you."
+        ]
+
+    def test_create_link(self):
+        team = Team.objects.create(name="test_team")
+        form = AppsumoReviewForm(
+            data={
+                "review_link": "https://appsumo.com/products/marketplace-gyana/#r678678"
+            },
+            team=team,
+        )
+        assert form.is_valid()
+        form.save()
+
+        assert hasattr(team, "appsumoreview")
+        assert (
+            team.appsumoreview.review_link
+            == "https://appsumo.com/products/marketplace-gyana/#r678678"
+        )
