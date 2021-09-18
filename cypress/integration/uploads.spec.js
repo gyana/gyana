@@ -22,7 +22,9 @@ describe('uploads', () => {
     cy.contains('Upload successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
 
     // review the table and approve
+    cy.contains('preview').click()
     cy.contains('Employees')
+    cy.contains('Setup').click()
     cy.contains('Confirm').click()
 
     // bigquery file upload needs longer wait
@@ -115,6 +117,7 @@ describe('uploads', () => {
     cy.contains('Upload successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
 
     // import has inferred correct column headings
+    cy.contains('preview').click()
     cy.contains('Location_name')
     cy.contains('string_field_0').should('not.exist')
   })
