@@ -77,9 +77,7 @@ class Team(BaseModel):
 
         rows = max(
             DEFAULT_ROW_LIMIT,
-            get_deal(
-                self.appsumocode_set,  # extra 1M for writing a review
-            )["rows"],
+            get_deal(self.appsumocode_set.all())["rows"],
         )
 
         # extra 1M for writing a review
