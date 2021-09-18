@@ -7,6 +7,7 @@ class ConnectorSchemaMultiSelect(ChoiceWidget):
     allow_multiple_selected = True
 
     def create_option(self, name, value, *args, **kwargs):
+        # inspired by https://djangosnippets.org/snippets/10646/
         option_dict = super().create_option(name, value, *args, **kwargs)
         enabled_patch_settings = self._schema_dict[value].enabled_patch_settings
         if not enabled_patch_settings["allowed"]:

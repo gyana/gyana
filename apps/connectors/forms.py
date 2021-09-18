@@ -116,6 +116,7 @@ class ConnectorUpdateForm(forms.ModelForm):
 
         for schema in schemas:
             schema.enabled = f"{schema.name_in_destination}_schema" in cleaned_data
+            # only patch tables that are allowed
             schema.tables = [
                 t for t in schema.tables if t.enabled_patch_settings["allowed"]
             ]
