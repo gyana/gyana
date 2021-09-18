@@ -65,7 +65,6 @@ describe('integrations', () => {
     cy.get('input[name=url]').type(SHARED_SHEET)
     cy.get('button[type=submit]').click()
 
-    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('store_info!A20:D21')
     cy.get('button[type=submit]').click()
     cy.contains('No columns found in the schema.', { timeout: BIGQUERY_TIMEOUT })
@@ -87,7 +86,6 @@ describe('integrations', () => {
 
     // edit the configuration
     cy.get('#main').within(() => cy.contains('Configure').click())
-    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').clear().type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
 

@@ -6,7 +6,9 @@
 <div class="pad flex flex-1 justify-center items-center">
     <div class='flex flex-col flex-1 max-w-3xl'>
         <h1 class="flex items-center justify-center gap-3 mb-7">
-            {% if not integration.ready %}
+            {% if exceeds_row_limit %}
+                Insufficient rows
+            {% elif not integration.ready %}
                 Review import
             {% else %}
                 Success
