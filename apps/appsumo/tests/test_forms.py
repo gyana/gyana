@@ -29,17 +29,29 @@ class TestAppsumoLandingform:
 
 
 class TestAppsumoStackForm:
-    @pytest.fixture
-    def code(self):
-        return AppsumoCode.objects.create(code="12345678", redeemed=timezone.now())
-
-    def test_does_not_exist(self, code):
+    def test_does_not_exist(self):
         form = AppsumoStackForm(data={"code": "ABCDEFGH"})
         assert form.errors["code"] == ["AppSumo code does not exist"]
 
-    def test_is_redeemed(self, code):
+    def test_is_redeemed(self):
+        AppsumoCode.objects.create(code="12345678", redeemed=timezone.now())
         form = AppsumoStackForm(data={"code": "12345678"})
         assert form.errors["code"] == ["AppSumo code is already redeemed"]
+
+    def test_create(self):
+        code = AppsumoCode.objects.create(code="12345678")
+        form = AppsumoStackForm(data={"code": "12345678"})
+        assert form.is_valid()
+
+        user = CustomUser.objects.create_user("test")
+        team = Team.objects.create(name="test_team")
+        form.stack_code_for_team(team, user)
+
+        code.refresh_from_db()
+
+        assert list(team.appsumocode_set.all()) == [code]
+        assert code.redeemed_by == user
+        assert code.redeemed is not None
 
 
 class TestAppsumoRedeemNewTeamForm:

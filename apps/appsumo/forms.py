@@ -1,8 +1,11 @@
 import analytics
 from allauth.account.forms import SignupForm
-from apps.base.analytics import (APPSUMO_CODE_REDEEMED_EVENT,
-                                 TEAM_CREATED_EVENT, identify_user,
-                                 identify_user_group)
+from apps.base.analytics import (
+    APPSUMO_CODE_REDEEMED_EVENT,
+    TEAM_CREATED_EVENT,
+    identify_user,
+    identify_user_group,
+)
 from apps.teams.models import Team
 from django import forms
 from django.core.exceptions import ValidationError
@@ -13,10 +16,10 @@ from .models import AppsumoCode, AppsumoReview
 
 
 class AppsumoLandingform(forms.Form):
-    code = forms.CharField(min_length=8, max_length=8, label='AppSumo code')
+    code = forms.CharField(min_length=8, max_length=8, label="AppSumo code")
 
     def clean_code(self):
-        code = self.cleaned_data['code']
+        code = self.cleaned_data["code"]
 
         if not AppsumoCode.objects.filter(code=code).exists():
             raise ValidationError("Not a valid AppSumo code")
@@ -39,6 +42,13 @@ class AppsumoStackForm(forms.Form):
             raise ValidationError("AppSumo code is already redeemed")
 
         return appsumo_code
+
+    def stack_code_for_team(self, team, user):
+        code = self.cleaned_data["code"]
+        code.team = team
+        code.redeemed = timezone.now()
+        code.redeemed_by = user
+        code.save()
 
 
 class AppsumoRedeemNewTeamForm(forms.ModelForm):

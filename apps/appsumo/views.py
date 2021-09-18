@@ -41,13 +41,7 @@ class AppsumoStack(TeamMixin, TurboFormView):
     form_class = AppsumoStackForm
 
     def form_valid(self, form):
-
-        instance = form.cleaned_data["code"]
-        instance.team = self.team
-        instance.redeemed = timezone.now()
-        instance.redeemed_by = self.request.user
-        instance.save()
-
+        form.stack_code_for_team(self.team, self.request.user)
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
