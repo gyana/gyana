@@ -1,7 +1,4 @@
-from datetime import datetime
-
 from apps.appsumo.models import AppsumoCode
-from django.utils import timezone
 
 # plans update at midday Austin time
 
