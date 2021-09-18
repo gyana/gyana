@@ -9,6 +9,7 @@ from django.urls.base import reverse
 from django.views.generic import DetailView
 from django_tables2 import SingleTableView
 from turbo_response.mixins import TurboFormMixin
+from turbo_response.response import HttpResponseSeeOther
 from turbo_response.views import TurboFormView
 
 from .forms import (
@@ -52,7 +53,9 @@ class AppsumoLanding(TurboFormView):
     form_class = AppsumoLandingform
 
     def form_valid(self, form):
-        return redirect("appsumo:redirect", form.cleaned_data["code"])
+        return HttpResponseSeeOther(
+            reverse("appsumo:redirect", args=(form.cleaned_data["code"],))
+        )
 
 
 class AppsumoRedirect(PageTitleMixin, DetailView):

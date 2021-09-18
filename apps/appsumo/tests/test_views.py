@@ -7,6 +7,18 @@ from pytest_django.asserts import assertRedirects, assertTemplateUsed
 pytestmark = pytest.mark.django_db
 
 
+class TestAppsumoStack:
+    def test_get(self, client):
+        response = client.get("/appsumo/")
+        assert response.status_code == 200
+
+    def test_post(self, client):
+        AppsumoCode.objects.create(code="12345678")
+        response = client.post("/appsumo/", data={"code": "12345678"})
+        assert response.status_code == 303
+        assert response.url == "/appsumo/12345678"
+
+
 class TestAppsumoRedirect:
     def test_redeemed_already(self, client):
         AppsumoCode.objects.create(code="12345678", redeemed=timezone.now())
