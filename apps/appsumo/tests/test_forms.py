@@ -79,7 +79,7 @@ class TestAppsumoRedeemForm:
         user = CustomUser.objects.create_user("test")
         team = Team.objects.create(name="test_team")
         code = AppsumoCode.objects.create(code="12345678")
-        team.members.add(user)
+        team.members.add(user, through_defaults={"role": "admin"})
 
         return user, team, code
 

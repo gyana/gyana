@@ -1,5 +1,4 @@
 from allauth.account.views import SignupView
-from apps.base.frames import TurboFrameListView
 from apps.base.mixins import PageTitleMixin
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
@@ -7,7 +6,6 @@ from apps.users.helpers import require_email_confirmation
 from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.views.generic import DetailView
-from django_tables2 import SingleTableView
 from turbo_response.mixins import TurboFormMixin
 from turbo_response.response import HttpResponseSeeOther
 from turbo_response.views import TurboFormView
@@ -21,23 +19,10 @@ from .forms import (
     AppsumoStackForm,
 )
 from .models import AppsumoCode, AppsumoReview
-from .tables import AppsumoCodeTable
-
-
-class AppsumoCodeList(TeamMixin, SingleTableView, TurboFrameListView):
-    template_name = "appsumo/list.html"
-    model = AppsumoCode
-    table_class = AppsumoCodeTable
-    paginate_by = 20
-    turbo_frame_dom_id = "team_appsumo:list"
-
-    def get_queryset(self):
-        return self.team.appsumocode_set.all()
 
 
 class AppsumoStack(TeamMixin, TurboFormView):
     template_name = "appsumo/stack.html"
-    model = AppsumoCode
     form_class = AppsumoStackForm
 
     def form_valid(self, form):
@@ -105,10 +90,10 @@ class AppsumoRedeem(TurboUpdateView):
 
     @property
     def team_exists(self):
-        return self.request.user.teams.count()
+        return self.request.user.teams.count() > 0
 
     def get_form_class(self):
-        return AppsumoRedeemForm if self.team_exists > 0 else AppsumoRedeemNewTeamForm
+        return AppsumoRedeemForm if self.team_exists else AppsumoRedeemNewTeamForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
