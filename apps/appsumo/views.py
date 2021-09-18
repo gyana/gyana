@@ -6,7 +6,6 @@ from apps.teams.mixins import TeamMixin
 from apps.users.helpers import require_email_confirmation
 from django.shortcuts import redirect
 from django.urls.base import reverse
-from django.utils import timezone
 from django.views.generic import DetailView
 from django_tables2 import SingleTableView
 from turbo_response.mixins import TurboFormMixin
