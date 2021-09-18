@@ -84,7 +84,7 @@ class ConnectorUpdateForm(forms.ModelForm):
                 label=schema.name_in_destination.replace("_", " ").title(),
                 widget=CheckboxInput() if is_database else HiddenInput(),
                 help_text="Include or exclude this schema",
-                required=False
+                required=False,
             )
             self.fields[
                 f"{schema.name_in_destination}_tables"
@@ -124,6 +124,9 @@ class ConnectorUpdateForm(forms.ModelForm):
                 table.enabled = table.name_in_destination in cleaned_data.get(
                     f"{schema.name_in_destination}_tables", []
                 )
+                # no need to patch the columns information and it can break
+                # if access issues, e.g. per column access in Postgres
+                table.columns = {}
 
         # try to update the fivetran schema
         try:
