@@ -5,8 +5,6 @@ from django.utils import timezone
 
 M = 1_000_000
 
-pytestmark = pytest.mark.django_db
-
 
 @pytest.fixture
 def codes():
@@ -19,11 +17,9 @@ def codes():
         for idx in range(5)
     ]
     usd_59 = [
-        AppsumoCode(code="usd_59" + str(idx) * 2, deal=AppsumoCode.Deal.USD_179)
+        AppsumoCode(code="usd_59" + str(idx) * 2, deal=AppsumoCode.Deal.USD_59)
         for idx in range(10)
     ]
-
-    AppsumoCode.objects.bulk_create(usd_49 + usd_179 + usd_59)
 
     return usd_49, usd_179, usd_59
 

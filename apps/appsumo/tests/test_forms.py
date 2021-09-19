@@ -19,10 +19,6 @@ pytestmark = pytest.mark.django_db
 
 
 class TestAppsumoLandingform:
-    @pytest.fixture
-    def code(self):
-        return AppsumoCode.objects.create(code="12345678")
-
     def test_invalid_code(self, code):
         form = AppsumoLandingform(data={"code": "ABCDEFGH"})
         assert form.errors["code"] == ["Not a valid AppSumo code"]
