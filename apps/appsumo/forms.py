@@ -1,15 +1,25 @@
-import analytics
 from allauth.account.forms import SignupForm
-from apps.base.analytics import (
-    APPSUMO_CODE_REDEEMED_EVENT,
-    TEAM_CREATED_EVENT,
-    identify_user,
-)
+from apps.base.analytics import identify_user
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
 from .models import AppsumoCode, AppsumoReview
+
+
+class BaseModelForm(forms.ModelForm):
+    def on_commit(self, instance):
+        # override in child to add behaviour on commit save
+        pass
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit == True:
+            with transaction.atomic():
+                self.on_commit(instance)
+                self.save()
+                self.save_m2m()
+        return instance
 
 
 class AppsumoCodeForm(forms.Form):
@@ -27,7 +37,7 @@ class AppsumoCodeForm(forms.Form):
         return code
 
 
-class AppsumoRedeemNewTeamForm(forms.ModelForm):
+class AppsumoRedeemNewTeamForm(BaseModelForm):
     class Meta:
         model = AppsumoCode
         fields = []
@@ -42,16 +52,8 @@ class AppsumoRedeemNewTeamForm(forms.ModelForm):
         self._user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        if commit == True:
-            instance.redeem_new_team(self.cleaned_data["team_name"], self._user)
-
-            analytics.track(self._user.id, APPSUMO_CODE_REDEEMED_EVENT)
-            analytics.track(self._user.id, TEAM_CREATED_EVENT)
-            # identify_user_group(self._user, team)
-
-        return instance
+    def on_commit(self, instance):
+        instance.redeem_new_team(self.cleaned_data["team_name"], self._user)
 
 
 class AppsumoRedeemForm(forms.ModelForm):
@@ -63,18 +65,11 @@ class AppsumoRedeemForm(forms.ModelForm):
         self._user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
-        self.fields["team"].queryset = self._user.teams.all()
+        self.fields["team"].queryset = self._user.teams_admin_of
         self.fields["team"].widget.help_text = "You can always change this later"
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        AppsumoCode.redeem_existing_team(
-            instance, self.cleaned_data["team"], self._user
-        )
-
-        analytics.track(self._user.id, APPSUMO_CODE_REDEEMED_EVENT)
-
-        return instance
+    def on_commit(self, instance):
+        instance.redeem_by_user(self._user)
 
 
 class AppsumoSignupForm(SignupForm):
@@ -105,16 +100,9 @@ class AppsumoSignupForm(SignupForm):
     def save(self, request):
         with transaction.atomic():
             user = super().save(request)
-            identify_user(user)
+            self._code.redeem_new_team(self.cleaned_data["team"], user)
 
-            AppsumoCode.redeem_existing_team(
-                self._code, self.cleaned_data["team"], self._user
-            )
-
-        analytics.track(user.id, APPSUMO_CODE_REDEEMED_EVENT)
-        analytics.track(user.id, TEAM_CREATED_EVENT)
-        # identify_user_group(user, team)
-
+        # identify_user(user)
         return user
 
 
@@ -128,7 +116,10 @@ class AppsumoReviewForm(forms.ModelForm):
         self._team = kwargs.pop("team", None)
         super().__init__(*args, **kwargs)
 
+    @transaction.atomic
     def save(self, commit=True):
-        with transaction.atomic():
-            instance = super().save(commit=commit)
+        instance = super().save(commit=False)
+        if commit:
             instance.add_to_team(self._team)
+            self.save_m2m()
+        return instance

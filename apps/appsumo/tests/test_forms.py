@@ -12,6 +12,14 @@ from apps.appsumo.forms import (
 from apps.appsumo.models import AppsumoCode, AppsumoReview
 from apps.teams.models import Team
 from apps.users.models import CustomUser
+from django import forms
+from django.forms.models import ModelChoiceField
+
+
+@pytest.fixture(autouse=True)
+def transaction_atomic_patch():
+    with patch("django.db.transaction.atomic"):
+        yield
 
 
 class TestAppsumoCodeForm:
@@ -34,8 +42,8 @@ class TestAppsumoCodeForm:
 
 
 class TestAppsumoRedeemNewTeamForm:
-    def test_redeem_new_team(self, *_):
-        user = MagicMock()
+    def test_on_commit(self, *_):
+        user = CustomUser(username="test")
         code = AppsumoCode(code="12345678")
         code.save = MagicMock()
         code.redeem_new_team = MagicMock()
@@ -44,47 +52,43 @@ class TestAppsumoRedeemNewTeamForm:
             data={"team_name": "test_team"}, instance=code, user=user
         )
         assert form.is_valid()
-        form.save()
+        form.on_commit(code)
 
         assert code.redeem_new_team.call_count == 1
         assert code.redeem_new_team.call_args[0] == ("test_team", user)
 
 
 class TestAppsumoRedeemForm:
-    @pytest.fixture
-    def initial(self):
-        user = CustomUser.objects.create_user("test")
-        team = Team.objects.create(name="test_team")
-        code = AppsumoCode.objects.create(code="12345678")
-        team.members.add(user, through_defaults={"role": "admin"})
-
-        return user, team, code
-
-    def test_select_options(self, initial):
-        user, team, code = initial
+    def test_teams_queryset(self):
+        code = AppsumoCode(code="12345678")
+        user = MagicMock()
+        teams = MagicMock()
+        user.teams_admin_of = teams
 
         form = AppsumoRedeemForm(user=user, instance=code)
-        assert len(form.fields["team"].queryset) == 1
-        assert form.fields["team"].queryset[0] == team
+        # internally ModelChoiceField will call .all()
+        assert form.fields["team"].queryset == teams.all()
 
-    def test_redeem_team(self, initial):
-        user, team, code = initial
+    def test_on_commit(self, *_):
+        code = AppsumoCode(code="12345678")
+        user = MagicMock()
+        teams = MagicMock()
+        user.teams_admin_of = teams
 
-        form = AppsumoRedeemForm(data={"team": team.id}, instance=code, user=user)
-        assert form.is_valid()
-        form.save()
+        form = AppsumoRedeemForm(
+            data={"team": Team(name="test_team")}, instance=code, user=user
+        )
+        form.on_commit(code)
 
-        assert team.appsumocode_set.count() == 1
-        assert team.appsumocode_set.first() == code
-
-        assert code.redeemed_by == user
-        assert code.redeemed is not None
+        assert code.redeem_by_user.call_count == 1
+        assert code.redeem_by_user.call_args[0] == (user,)
 
 
 class TestAppsumoSignupForm:
-    def test_signup(self):
-        user = CustomUser.objects.create_user("test")
-        code = AppsumoCode.objects.create(code="12345678")
+    @patch("apps.base.analytics.identify_user")
+    def test_signup(self, *_):
+        user = MagicMock()
+        code = MagicMock()
 
         form = AppsumoSignupForm(
             data={
@@ -94,18 +98,13 @@ class TestAppsumoSignupForm:
             },
             code=code,
         )
+        form.cleaned_data = {"team": "test_team"}
         with patch.object(SignupForm, "save", return_value=user):
-            assert form.is_valid()
-            user = form.save(Mock())
+            with patch("apps.base.analytics.identify_user"):
+                user = form.save(MagicMock())
 
-        code.refresh_from_db()
-
-        assert code.redeemed_by == user
-        assert code.redeemed is not None
-
-        assert user.teams.count() == 1
-        team = user.teams.first()
-        assert team.name == "test_team"
+        assert code.redeem_new_team.call_count == 1
+        assert code.redeem_new_team.call_args[0] == ("test_team", user)
 
 
 class TestAppsumoReviewForm:

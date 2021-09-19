@@ -1,4 +1,10 @@
+import analytics
 import pandas as pd
+from apps.base.analytics import (
+    APPSUMO_CODE_REDEEMED_EVENT,
+    TEAM_CREATED_EVENT,
+    identify_user_group,
+)
 from apps.base.clients import SLUG
 from apps.base.models import BaseModel
 from apps.teams.models import Team
@@ -53,17 +59,25 @@ class AppsumoCode(BaseModel):
     def available(code: str):
         return AppsumoCode.objects.filter(code=code).first().redeemed is None
 
+    @transaction.atomic
     def redeem_new_team(self, team_name: str, user: CustomUser):
+
+        team = Team.objects.create(name=team_name)
+        team.members.add(user, through_defaults={"role": "admin"})
+        self.team = team
+        self.save()
+
+        self.redeem_by_user(user)
+
+        analytics.track(user.id, TEAM_CREATED_EVENT)
+        identify_user_group(user, team)
+
+    def redeem_by_user(self, user: CustomUser):
         self.redeemed = timezone.now()
         self.redeemed_by = user
 
-        team = Team(name=team_name)
-        self.team = team
-
-        with transaction.atomic():
-            team.save()
-            self.save()
-            team.members.add(user, through_defaults={"role": "admin"})
+        self.save()
+        analytics.track(user.id, APPSUMO_CODE_REDEEMED_EVENT)
 
     def __str__(self):
         return self.code

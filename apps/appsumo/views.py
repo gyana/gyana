@@ -66,13 +66,17 @@ class AppsumoSignup(PageTitleMixin, TurboFormMixin, SignupView):
     template_name = "appsumo/signup.html"
     page_title = "AppSumo"
 
+    @property
+    def code(self):
+        return AppsumoCode.objects.get(code=self.kwargs.get("code"))
+
     # need to override otherwise global settings are used
     def get_form_class(self):
         return AppsumoSignupForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["code"] = self.kwargs.get("code")
+        kwargs["code"] = self.code
         return kwargs
 
     def get_success_url(self):

@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from apps.teams import roles
+
 
 class CustomUser(AbstractUser):
     """
@@ -76,3 +78,7 @@ class CustomUser(AbstractUser):
     def gravatar_id(self):
         # https://en.gravatar.com/site/implement/hash/
         return hashlib.md5(self.email.lower().strip().encode("utf-8")).hexdigest()
+
+    @property
+    def teams_admin_of(self):
+        return self.teams.filter(membership__role=roles.ROLE_ADMIN).all()
