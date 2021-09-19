@@ -1,5 +1,5 @@
 from allauth.account.forms import SignupForm
-from apps.base.analytics import identify_user
+from apps.base import analytics
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -56,7 +56,7 @@ class AppsumoRedeemNewTeamForm(BaseModelForm):
         instance.redeem_new_team(self.cleaned_data["team_name"], self._user)
 
 
-class AppsumoRedeemForm(forms.ModelForm):
+class AppsumoRedeemForm(BaseModelForm):
     class Meta:
         model = AppsumoCode
         fields = ["team"]
@@ -102,11 +102,11 @@ class AppsumoSignupForm(SignupForm):
             user = super().save(request)
             self._code.redeem_new_team(self.cleaned_data["team"], user)
 
-        # identify_user(user)
+        analytics.identify_user(user)
         return user
 
 
-class AppsumoReviewForm(forms.ModelForm):
+class AppsumoReviewForm(BaseModelForm):
     class Meta:
         model = AppsumoReview
         fields = ["review_link"]
@@ -116,10 +116,5 @@ class AppsumoReviewForm(forms.ModelForm):
         self._team = kwargs.pop("team", None)
         super().__init__(*args, **kwargs)
 
-    @transaction.atomic
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        if commit:
-            instance.add_to_team(self._team)
-            self.save_m2m()
-        return instance
+    def on_commit(self, instance):
+        return instance.add_to_team(self._team)

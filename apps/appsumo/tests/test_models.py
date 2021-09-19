@@ -1,13 +1,11 @@
 from datetime import datetime
 
 import pytest
-from apps.appsumo.models import (
-    AppsumoCode,
-    PurchasedCodes,
-    RefundedCodes,
-    UploadedCodes,
-)
+from apps.appsumo.models import (AppsumoCode, AppsumoReview, PurchasedCodes,
+                                 RefundedCodes, UploadedCodes)
+from apps.teams.models import Team
 from apps.users.models import CustomUser
+from django.core import exceptions
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils import timezone
 
@@ -34,6 +32,15 @@ class TestAppsumoCode:
         code.save()
         assert not AppsumoCode.available("12345678")
 
+    def redeem_by_user(self):
+        user = CustomUser.objects.create_user("test")
+        code = AppsumoCode.objects.create(code="12345678")
+
+        code.redeem_by_user(user)
+
+        assert code.redeemed_by == user
+        assert code.redeemed is not None
+
     def test_redeem_new_team(self):
         user = CustomUser.objects.create_user("test")
         code = AppsumoCode.objects.create(code="12345678")
@@ -46,6 +53,18 @@ class TestAppsumoCode:
         assert user.teams.count() == 1
         team = user.teams.first()
         assert team.name == "test_team"
+
+
+class TestAppsumoReview:
+    def test_add_to_team(self):
+        team = Team.objects.create(name="test_team")
+        review = AppsumoReview(
+            review_link="https://appsumo.com/products/marketplace-gyana/#r678678"
+        )
+
+        assert not hasattr(review, "team")
+        review.add_to_team(team)
+        assert review.team == team
 
 
 class TestUploadedCodes:

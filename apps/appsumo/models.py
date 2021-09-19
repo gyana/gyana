@@ -99,6 +99,9 @@ class AppsumoReview(BaseModel):
     def __str__(self):
         return self.review_link
 
+    def add_to_team(self, team):
+        self.team = team
+
 
 class AppsumoExtra(BaseModel):
 
