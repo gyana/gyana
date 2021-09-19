@@ -4,51 +4,27 @@ from apps.base.analytics import (
     APPSUMO_CODE_REDEEMED_EVENT,
     TEAM_CREATED_EVENT,
     identify_user,
-    identify_user_group,
 )
-from apps.teams.models import Team
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.utils import timezone
 
 from .models import AppsumoCode, AppsumoReview
 
 
-class AppsumoLandingform(forms.Form):
+class AppsumoCodeForm(forms.Form):
     code = forms.CharField(min_length=8, max_length=8, label="AppSumo code")
 
     def clean_code(self):
         code = self.cleaned_data["code"]
 
-        if not AppsumoCode.objects.filter(code=code).exists():
-            raise ValidationError("Not a valid AppSumo code")
-
-        return code
-
-
-class AppsumoStackForm(forms.Form):
-    code = forms.CharField(min_length=8, max_length=8)
-
-    def clean_code(self):
-        appsumo_code = AppsumoCode.objects.filter(
-            code=self.cleaned_data["code"]
-        ).first()
-
-        if appsumo_code is None:
+        if not AppsumoCode.exists(code):
             raise ValidationError("AppSumo code does not exist")
 
-        if appsumo_code.redeemed:
+        if not AppsumoCode.available(code):
             raise ValidationError("AppSumo code is already redeemed")
 
-        return appsumo_code
-
-    def stack_code_for_team(self, team, user):
-        code = self.cleaned_data["code"]
-        code.team = team
-        code.redeemed = timezone.now()
-        code.redeemed_by = user
-        code.save()
+        return code
 
 
 class AppsumoRedeemNewTeamForm(forms.ModelForm):
@@ -68,22 +44,12 @@ class AppsumoRedeemNewTeamForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance.redeemed = timezone.now()
-        instance.redeemed_by = self._user
+        if commit == True:
+            instance.redeem_new_team(self.cleaned_data["team_name"], self._user)
 
-        team = Team(name=self.cleaned_data["team_name"])
-        instance.team = team
-
-        if commit:
-            with transaction.atomic():
-                team.save()
-                instance.save()
-                self.save_m2m()
-                team.members.add(self._user, through_defaults={"role": "admin"})
-
-        analytics.track(self._user.id, APPSUMO_CODE_REDEEMED_EVENT)
-        analytics.track(self._user.id, TEAM_CREATED_EVENT)
-        identify_user_group(self._user, team)
+            analytics.track(self._user.id, APPSUMO_CODE_REDEEMED_EVENT)
+            analytics.track(self._user.id, TEAM_CREATED_EVENT)
+            # identify_user_group(self._user, team)
 
         return instance
 
@@ -102,13 +68,9 @@ class AppsumoRedeemForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance.redeemed = timezone.now()
-        instance.redeemed_by = self._user
-
-        if commit:
-            with transaction.atomic():
-                instance.save()
-                self.save_m2m()
+        AppsumoCode.redeem_existing_team(
+            instance, self.cleaned_data["team"], self._user
+        )
 
         analytics.track(self._user.id, APPSUMO_CODE_REDEEMED_EVENT)
 
@@ -145,19 +107,13 @@ class AppsumoSignupForm(SignupForm):
             user = super().save(request)
             identify_user(user)
 
-            team = Team(name=self.cleaned_data["team"])
-            team.save()
-            team.members.add(user, through_defaults={"role": "admin"})
-
-            appsumo_code = AppsumoCode.objects.get(code=self._code)
-            appsumo_code.team = team
-            appsumo_code.redeemed = timezone.now()
-            appsumo_code.redeemed_by = user
-            appsumo_code.save()
+            AppsumoCode.redeem_existing_team(
+                self._code, self.cleaned_data["team"], self._user
+            )
 
         analytics.track(user.id, APPSUMO_CODE_REDEEMED_EVENT)
         analytics.track(user.id, TEAM_CREATED_EVENT)
-        identify_user_group(user, team)
+        # identify_user_group(user, team)
 
         return user
 
@@ -173,10 +129,6 @@ class AppsumoReviewForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
     def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.team = self._team
-
-        if commit:
-            with transaction.atomic():
-                instance.save()
-                self.save_m2m()
+        with transaction.atomic():
+            instance = super().save(commit=commit)
+            instance.add_to_team(self._team)

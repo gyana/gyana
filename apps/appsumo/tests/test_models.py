@@ -7,6 +7,7 @@ from apps.appsumo.models import (
     RefundedCodes,
     UploadedCodes,
 )
+from apps.users.models import CustomUser
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils import timezone
 
@@ -20,6 +21,31 @@ class TestAppsumoCode:
 
         code.refunded_before = timezone.now()
         assert code.refunded
+
+    def test_exists(self):
+        assert not AppsumoCode.exists("12345678")
+        AppsumoCode.objects.create(code="12345678")
+        assert AppsumoCode.exists("12345678")
+
+    def test_available(self):
+        code = AppsumoCode.objects.create(code="12345678")
+        assert AppsumoCode.available("12345678")
+        code.redeemed = timezone.now()
+        code.save()
+        assert not AppsumoCode.available("12345678")
+
+    def test_redeem_new_team(self):
+        user = CustomUser.objects.create_user("test")
+        code = AppsumoCode.objects.create(code="12345678")
+
+        code.redeem_new_team("test_team", user)
+
+        assert code.redeemed_by == user
+        assert code.redeemed is not None
+
+        assert user.teams.count() == 1
+        team = user.teams.first()
+        assert team.name == "test_team"
 
 
 class TestUploadedCodes:

@@ -1,59 +1,44 @@
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 from allauth.account.forms import SignupForm
 from apps.appsumo.forms import (
-    AppsumoLandingform,
+    AppsumoCodeForm,
     AppsumoRedeemForm,
     AppsumoRedeemNewTeamForm,
     AppsumoReviewForm,
     AppsumoSignupForm,
-    AppsumoStackForm,
 )
 from apps.appsumo.models import AppsumoCode, AppsumoReview
 from apps.teams.models import Team
 from apps.users.models import CustomUser
-from django.utils import timezone
-
-pytestmark = pytest.mark.django_db
 
 
-class TestAppsumoLandingform:
-    def test_invalid_code(self, code):
-        form = AppsumoLandingform(data={"code": "ABCDEFGH"})
-        assert form.errors["code"] == ["Not a valid AppSumo code"]
-
-
-class TestAppsumoStackForm:
-    def test_does_not_exist(self):
-        form = AppsumoStackForm(data={"code": "ABCDEFGH"})
+class TestAppsumoCodeForm:
+    @patch.object(AppsumoCode, "exists", return_value=False)
+    def test_does_not_exist(self, *_):
+        form = AppsumoCodeForm(data={"code": "ABCDEFGH"})
         assert form.errors["code"] == ["AppSumo code does not exist"]
 
-    def test_is_redeemed(self):
-        AppsumoCode.objects.create(code="12345678", redeemed=timezone.now())
-        form = AppsumoStackForm(data={"code": "12345678"})
+    @patch.object(AppsumoCode, "exists", return_value=True)
+    @patch.object(AppsumoCode, "available", return_value=False)
+    def test_is_redeemed(self, *_):
+        form = AppsumoCodeForm(data={"code": "12345678"})
         assert form.errors["code"] == ["AppSumo code is already redeemed"]
 
-    def test_create(self):
-        code = AppsumoCode.objects.create(code="12345678")
-        form = AppsumoStackForm(data={"code": "12345678"})
+    @patch.object(AppsumoCode, "exists", return_value=True)
+    @patch.object(AppsumoCode, "available", return_value=True)
+    def test_valid(self, *_):
+        form = AppsumoCodeForm(data={"code": "12345678"})
         assert form.is_valid()
-
-        user = CustomUser.objects.create_user("test")
-        team = Team.objects.create(name="test_team")
-        form.stack_code_for_team(team, user)
-
-        code.refresh_from_db()
-
-        assert list(team.appsumocode_set.all()) == [code]
-        assert code.redeemed_by == user
-        assert code.redeemed is not None
 
 
 class TestAppsumoRedeemNewTeamForm:
-    def test_redeem_new_team(self):
-        user = CustomUser.objects.create_user("test")
-        code = AppsumoCode.objects.create(code="12345678")
+    def test_redeem_new_team(self, *_):
+        user = MagicMock()
+        code = AppsumoCode(code="12345678")
+        code.save = MagicMock()
+        code.redeem_new_team = MagicMock()
 
         form = AppsumoRedeemNewTeamForm(
             data={"team_name": "test_team"}, instance=code, user=user
@@ -61,12 +46,8 @@ class TestAppsumoRedeemNewTeamForm:
         assert form.is_valid()
         form.save()
 
-        assert code.redeemed_by == user
-        assert code.redeemed is not None
-
-        assert user.teams.count() == 1
-        team = user.teams.first()
-        assert team.name == "test_team"
+        assert code.redeem_new_team.call_count == 1
+        assert code.redeem_new_team.call_args[0] == ("test_team", user)
 
 
 class TestAppsumoRedeemForm:

@@ -2,9 +2,11 @@ import pandas as pd
 from apps.base.clients import SLUG
 from apps.base.models import BaseModel
 from apps.teams.models import Team
+from apps.users.models import CustomUser
 from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models, transaction
+from django.utils import timezone
 
 # review ids are incrementing integers, currently at 6 digits
 appsumo_review_regex = RegexValidator(
@@ -42,6 +44,26 @@ class AppsumoCode(BaseModel):
     @property
     def refunded(self):
         return self.refunded_before is not None
+
+    @staticmethod
+    def exists(code: str):
+        return AppsumoCode.objects.filter(code=code).exists()
+
+    @staticmethod
+    def available(code: str):
+        return AppsumoCode.objects.filter(code=code).first().redeemed is None
+
+    def redeem_new_team(self, team_name: str, user: CustomUser):
+        self.redeemed = timezone.now()
+        self.redeemed_by = user
+
+        team = Team(name=team_name)
+        self.team = team
+
+        with transaction.atomic():
+            team.save()
+            self.save()
+            team.members.add(user, through_defaults={"role": "admin"})
 
     def __str__(self):
         return self.code

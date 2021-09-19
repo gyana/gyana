@@ -11,22 +11,22 @@ from turbo_response.response import HttpResponseSeeOther
 from turbo_response.views import TurboFormView
 
 from .forms import (
-    AppsumoLandingform,
+    AppsumoCodeForm,
     AppsumoRedeemForm,
     AppsumoRedeemNewTeamForm,
     AppsumoReviewForm,
     AppsumoSignupForm,
-    AppsumoStackForm,
 )
 from .models import AppsumoCode, AppsumoReview
 
 
 class AppsumoStack(TeamMixin, TurboFormView):
     template_name = "appsumo/stack.html"
-    form_class = AppsumoStackForm
+    form_class = AppsumoCodeForm
 
     def form_valid(self, form):
-        form.stack_code_for_team(self.team, self.request.user)
+        code = form.cleaned_data["code"]
+        AppsumoCode.redeem_team(code, self.team, self.request.user)
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
@@ -35,7 +35,7 @@ class AppsumoStack(TeamMixin, TurboFormView):
 
 class AppsumoLanding(TurboFormView):
     template_name = "appsumo/landing.html"
-    form_class = AppsumoLandingform
+    form_class = AppsumoCodeForm
 
     def form_valid(self, form):
         return HttpResponseSeeOther(
