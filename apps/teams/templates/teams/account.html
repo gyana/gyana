@@ -3,7 +3,21 @@
 
 {% block tab %}
 <div class="pad max-w-lg mb-auto">
-  <h2 class="mb-3">Account usage</h3>
+  <div class="mb-6">
+    <h2 class="mb-3">Plan</h2>
+    
+    <h4 class="bold mb-2 text-blue">{{ team.plan }}</h4>
+    <ul>
+      <li><p>{{ team.row_limit|intcomma }} rows of data</p></li>
+      <li><p>{{ team.credits|intcomma }} credits</p></li>
+      <li><p>Unlimited views</p></li>
+      <li><p>Unlimited users</p></li>
+      <li><p>Custom branding</p></li>
+      <li><p>Chat support</p></li>
+    </ul>
+  </div>
+
+  <h2 class="mb-3">Account usage</h2>
 
   <form method="post" class="form mb-7">
     {% csrf_token %}

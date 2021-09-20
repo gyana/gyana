@@ -1,6 +1,7 @@
 {% load render_table from django_tables2 %}
 
-<h3 class="m-2">Codes</h3>
+
+<p class="mb-4">You've redeemed <strong>{{ team.appsumocode_set.count }} code{{ team.appsumocode_set.count|pluralize }}</strong>.</p>
 <div class="card card--none">
   {% render_table table %}
 

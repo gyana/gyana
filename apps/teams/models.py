@@ -69,6 +69,10 @@ class Team(BaseModel):
         return reverse("teams:detail", args=(self.id,))
 
     @property
+    def plan(self):
+        return "Lifetime Deal for Gyana" if self.appsumocode_set.count() > 0 else "Free"
+
+    @property
     def row_limit(self):
         from apps.appsumo.account import get_deal
 
