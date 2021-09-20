@@ -1,13 +1,8 @@
-from apps.base.aggregations import AGGREGATION_TYPE_MAP
-from apps.base.formsets import RequiredInlineFormset
 from apps.base.live_update_form import LiveUpdateForm
-from apps.columns.forms import AggregationColumnForm
-from apps.columns.models import AggregationColumn
-from apps.filters.forms import FilterForm
-from apps.filters.models import Filter
 from apps.tables.models import Table
 from django import forms
 
+from .formsets import FORMSETS, AggregationColumnFormset, FilterFormset
 from .models import Widget
 from .widgets import SourceSelect, VisualSelect
 
@@ -155,83 +150,6 @@ FORMS = {
     Widget.Kind.RADAR: GenericWidgetForm,
     Widget.Kind.HEATMAP: TwoDimensionForm,
     Widget.Kind.BUBBLE: OneDimensionForm,
-}
-
-
-FilterFormset = forms.inlineformset_factory(
-    Widget,
-    Filter,
-    form=FilterForm,
-    can_delete=True,
-    extra=0,
-    formset=RequiredInlineFormset,
-)
-
-AggregationColumnFormset = forms.inlineformset_factory(
-    Widget,
-    AggregationColumn,
-    form=AggregationColumnForm,
-    can_delete=True,
-    extra=0,
-    formset=RequiredInlineFormset,
-)
-
-
-def create_min_formset(min_num):
-    return forms.inlineformset_factory(
-        Widget,
-        AggregationColumn,
-        form=AggregationColumnForm,
-        can_delete=True,
-        min_num=min_num,
-        extra=0,
-        formset=RequiredInlineFormset,
-    )
-
-
-SingleMetricFormset = forms.inlineformset_factory(
-    Widget,
-    AggregationColumn,
-    form=AggregationColumnForm,
-    can_delete=True,
-    extra=0,
-    max_num=1,
-    formset=RequiredInlineFormset,
-)
-
-XYMetricFormset = forms.inlineformset_factory(
-    Widget,
-    AggregationColumn,
-    form=AggregationColumnForm,
-    can_delete=False,
-    extra=0,
-    min_num=2,
-    max_num=2,
-    formset=RequiredInlineFormset,
-)
-
-XYZMetricFormset = forms.inlineformset_factory(
-    Widget,
-    AggregationColumn,
-    form=AggregationColumnForm,
-    can_delete=False,
-    extra=0,
-    min_num=3,
-    max_num=3,
-    formset=RequiredInlineFormset,
-)
-
-
-FORMSETS = {
-    Widget.Kind.PIE: [SingleMetricFormset],
-    Widget.Kind.STACKED_BAR: [SingleMetricFormset],
-    Widget.Kind.STACKED_COLUMN: [SingleMetricFormset],
-    Widget.Kind.SCATTER: [XYMetricFormset],
-    Widget.Kind.BUBBLE: [XYZMetricFormset],
-    Widget.Kind.HEATMAP: [SingleMetricFormset],
-    Widget.Kind.RADAR: [create_min_formset(3)],
-    Widget.Kind.PYRAMID: [create_min_formset(2)],
-    Widget.Kind.FUNNEL: [create_min_formset(2)],
 }
 
 

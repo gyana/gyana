@@ -1,3 +1,4 @@
+from apps.widgets.formsets import FORMSETS, AggregationColumnFormset
 from apps.widgets.models import WIDGET_KIND_TO_WEB, Widget
 from django.forms.widgets import ChoiceWidget
 
@@ -33,11 +34,15 @@ class VisualSelect(ChoiceWidget):
         context = super().get_context(name, value, attrs)
 
         context["widget"]["selected"] = value
+
+        MAX_NUMS = {key: formsets[0].max_num for key, formsets in FORMSETS.items()}
+
         context["options"] = [
             {
                 "id": choice.value,
                 "name": choice.label,
                 "icon": WIDGET_KIND_TO_WEB[choice.value],
+                "maxMetrics": MAX_NUMS.get(choice.value) or -1,
             }
             for choice in Widget.Kind
         ]
