@@ -49,7 +49,12 @@ class FormsetUpdateView(TurboUpdateView):
 
         return (
             # POST request for form creation
-            formset(self.request.POST, instance=self.object, form_kwargs=forms_kwargs)
+            formset(
+                self.request.POST,
+                instance=self.object,
+                **self.get_formset_kwargs(formset),
+                form_kwargs=forms_kwargs,
+            )
             # form is only bound if formset is in previous render, otherwise load from database
             if self.request.POST
             and f"{formset.get_default_prefix()}-TOTAL_FORMS" in self.request.POST

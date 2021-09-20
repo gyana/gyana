@@ -91,7 +91,7 @@ def to_multi_value_data(widget, df):
 
 
 def to_scatter(widget, df):
-    x, y = [value.column for value in widget.aggregations.all()]
+    x, y = [value.column for value in widget.aggregations.all()][:2]
     df = df.rename(columns={x: "x", y: "y", widget.dimension: "id"})
     return {
         "categories": [{"category": [{"label": str(x)} for x in df.x.to_list()]}],
@@ -145,7 +145,7 @@ def to_segment(widget, df):
 
 
 def to_bubble(widget, df):
-    x, y, z = [value.column for value in widget.aggregations.all()]
+    x, y, z = [value.column for value in widget.aggregations.all()][:3]
     df = df.rename(columns={x: "x", y: "y", z: "z", widget.dimension: "id"})
     return {
         "categories": [{"category": [{"label": str(x)} for x in df.x.to_list()]}],

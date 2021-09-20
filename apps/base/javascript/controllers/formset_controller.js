@@ -10,7 +10,7 @@ export default class extends Controller {
     prefix: String,
   }
 
-  initialize() {
+  connect() {
     this.wrapperSelector = this.wrapperSelectorValue || '.formset-wrapper'
   }
 

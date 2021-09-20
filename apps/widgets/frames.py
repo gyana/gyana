@@ -79,9 +79,10 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
         return FORMS[self.request.POST.get("kind") or self.object.kind]
 
     def get_formset_kwargs(self, formset):
-        if self.object.kind == Widget.Kind.SCATTER:
+        kind = self.request.POST.get("kind") or self.object.kind
+        if kind == Widget.Kind.SCATTER:
             return {"names": ["X", "Y"]}
-        if self.object.kind == Widget.Kind.BUBBLE:
+        if kind == Widget.Kind.BUBBLE:
             return {"names": ["X", "Y", "Z"]}
         return {}
 
