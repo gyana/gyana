@@ -13,8 +13,18 @@
       <img src="{% static 'images/logo.png' %}" alt="">
       <div>
         <h1>Gyana</h1>
+
         {% block header %}
-        <p>Welcome, log in to start where you left off or create a new account.</p>
+        <p>
+          Welcome, sign in to start where you left off. Account creation is 
+          currently closed but you can 
+          <a 
+            href="https://gyana-data.typeform.com/to/v2XTy0j3"
+            class="link"
+          >
+            request access
+          </a>.
+        </p>
         {% endblock %}
       </div>
     </header>
@@ -29,10 +39,9 @@
         <a href="https://www.gyana.com/legal/terms-of-use" class="link">terms of service</a>
         and
         <a href="https://www.gyana.com/legal/privacy-policy" class="link">privacy policy</a>.
+        <br />
+        Are you looking for the <a class="link" href="https://old.gyana.com/">old gyana</a>?
       </p>
-      <div class="right-0 pad">
-        <p>Looking for the <a class="link" href="https://old.gyana.com/">old gyana</a>?</p>
-      </div>
       {% endblock %}
     </footer>
   </div>
