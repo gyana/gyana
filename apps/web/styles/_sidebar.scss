@@ -76,14 +76,13 @@
       border-radius: 5px;
       border: 1px solid var(--c-orange);
       color: var(--c-orange);
-      display: flex;
       font-weight: 500;
       height: 3.6rem;
       margin: 0 0 1.6rem 1rem;
-      padding: 0 0 0 1rem;
+      padding: 1rem 0 1rem 1rem;
       position: relative;
       right: -5px;
-      width: 17rem;
+      width: calc(100% - 1rem);
     }
 
     &:hover {
