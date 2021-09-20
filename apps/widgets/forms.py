@@ -48,9 +48,10 @@ class GenericWidgetForm(LiveUpdateForm):
             return []
 
         formsets = [FilterFormset]
-        if chart_formsets := FORMSETS.get(self.instance.kind):
+        kind = self.get_live_field("kind")
+        if chart_formsets := FORMSETS.get(kind):
             formsets += chart_formsets
-        elif self.instance.kind not in [Widget.Kind.TABLE]:
+        elif kind not in [Widget.Kind.TABLE]:
             formsets += [AggregationColumnFormset]
         return formsets
 
