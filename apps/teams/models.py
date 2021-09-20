@@ -9,6 +9,7 @@ from apps.base.models import BaseModel
 from . import roles
 
 DEFAULT_ROW_LIMIT = 10_000
+DEFAULT_CREDIT_LIMIT = 100
 WARNING_BUFFER = 0.2
 
 
@@ -98,7 +99,7 @@ class Team(BaseModel):
     def credits(self):
         from apps.appsumo.account import get_deal
 
-        return get_deal(self.appsumocode_set)["credits"]
+        return max(DEFAULT_CREDIT_LIMIT, get_deal(self.appsumocode_set)["credits"])
 
     @property
     def admins(self):
