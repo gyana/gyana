@@ -61,11 +61,7 @@
     <p>Powered by <a href="/" class="link">Gyana</a></p>
   </footer>
 
-  <script src="{% static 'js/components-bundle.js' %}"></script>
-  <script src="{% static "fusioncharts/fusioncharts.js" %}"></script>
-  <script src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
-  <script src="{% static "fusioncharts/fusioncharts.widgets.js" %}"></script>
-  <script src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
+  {% include 'components/fusionchart_scripts.html' %}
 </body>
 
 </html>

@@ -1,5 +1,3 @@
-{% load static %}
-
 <div class='widgets flex items-center justify-center'>
   <div id="dashboard-widget-container"
         class="widgets__canvas"
@@ -30,8 +28,4 @@
   </div>
 </div>
 
-<script src="{% static 'js/components-bundle.js' %}"></script>
-<script src="{% static "fusioncharts/fusioncharts.js" %}"></script>
-<script src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
-<script src="{% static "fusioncharts/fusioncharts.widgets.js" %}"></script>
-<script src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
+{% include 'components/fusionchart_scripts.html' %}
