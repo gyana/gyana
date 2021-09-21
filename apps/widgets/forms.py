@@ -126,7 +126,7 @@ class StackedChartForm(GenericWidgetForm):
                 "dimension",
                 "second_dimension",
             ]
-            if self.fields["kind"] == Widget.Kind.STACKED_LINE:
+            if self.get_live_field("kind") != Widget.Kind.STACKED_LINE:
                 fields += [
                     "stack_100_percent",
                 ]
