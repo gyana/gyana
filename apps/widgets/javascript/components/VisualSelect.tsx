@@ -7,6 +7,7 @@ import {
   SelectTransition,
 } from 'apps/base/javascript/components/SelectComponents'
 import useLiveUpdate from 'apps/base/javascript/components/useLiveUpdate'
+import { GyanaEvents } from 'apps/base/javascript/events'
 
 const getFormParent = (el) => {
   if (el.tagName == 'FORM') {
@@ -22,13 +23,19 @@ const VisualSelect_: React.FC<{
   const [kind, setKind] = useState(options.filter((k) => k.id === selected)[0])
   const [totalMetrics, setTotalMetrics] = useState(0)
   const inputRef = useLiveUpdate(kind.id, selected)
+
+  const updateTotalMetrics = () => {
+    const formParent = getFormParent(inputRef.current)
+    const totalRows = parseInt(formParent.querySelector('[name="aggregations-TOTAL_FORMS"]').value)
+    const deletedRows = formParent.querySelectorAll('input[name$=DELETE][value=on]').length
+    setTotalMetrics(totalRows - deletedRows)
+  }
+
   useEffect(() => {
     if (inputRef.current) {
-      const formParent = getFormParent(inputRef.current)
-      const totalMetrics = parseInt(
-        formParent.querySelector('[name="aggregations-TOTAL_FORMS"]').value
-      )
-      setTotalMetrics(totalMetrics)
+      updateTotalMetrics()
+      window.addEventListener(GyanaEvents.UPDATE_FORM_COUNT, updateTotalMetrics)
+      return () => window.removeEventListener(GyanaEvents.UPDATE_FORM_COUNT, updateTotalMetrics)
     }
   }, [])
 
@@ -42,13 +49,22 @@ const VisualSelect_: React.FC<{
             return (
               <SelectOption key={k.id} value={k} disabled={disabled}>
                 {({ selected, active }) => (
-                  <div className='flex flex-row items-center'>
+                  <div
+                    className='flex flex-row items-center'
+                    data-controller={disabled && 'tooltip'}
+                  >
                     <i
                       className={`fad ${k.icon} ${disabled ? 'text-black-20' : 'text-blue'} mr-4`}
                     />
                     <span className={`${selected ? 'font-medium' : 'font-normal'} block truncate`}>
                       {k.name}
                     </span>
+                    {disabled && (
+                      <span data-tooltip-target='body'>
+                        The current chart has too many metrics to change to a {k.name} chart. Reduce
+                        to {k.maxMetrics} metric to change.
+                      </span>
+                    )}
                   </div>
                 )}
               </SelectOption>

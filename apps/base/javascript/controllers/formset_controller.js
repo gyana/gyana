@@ -1,4 +1,5 @@
 import { Controller } from 'stimulus'
+import { GyanaEvents } from 'apps/base/javascript/events'
 
 // Dynamically add and remove formset in Django
 // Inspired by https://github.com/stimulus-components/stimulus-rails-nested-form
@@ -36,6 +37,8 @@ export default class extends Controller {
     ) {
       e.currentTarget.setAttribute('disabled', true)
     }
+
+    window.dispatchEvent(new CustomEvent(GyanaEvents.UPDATE_FORM_COUNT))
   }
 
   remove(e) {
@@ -61,5 +64,7 @@ export default class extends Controller {
         AddButton.removeAttribute('disabled')
       }
     }
+
+    window.dispatchEvent(new CustomEvent(GyanaEvents.UPDATE_FORM_COUNT))
   }
 }
