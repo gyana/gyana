@@ -49,7 +49,11 @@ def get_query_from_widget(widget: Widget):
     ):
         groups += [widget.second_dimension]
 
+    query = query.group_by(groups).aggregate(values)
+    if widget.kind in NO_DIMENSION_WIDGETS:
+        return query
+
     return _sort(
-        query.group_by(groups).aggregate(values),
+        query,
         widget,
     )
