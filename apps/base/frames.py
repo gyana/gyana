@@ -2,6 +2,7 @@ from django.conf import settings
 from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
+from honeybadger import honeybadger
 from turbo_response.mixins import (
     TurboFrameTemplateResponseMixin as BaseTurboFrameTemplateResponseMixin,
 )
@@ -16,7 +17,8 @@ class TurboFrame500Mixin:
             return super().dispatch(request, *args, **kwargs)
         try:
             return super().dispatch(request, *args, **kwargs)
-        except:
+        except Exception as exc:
+            honeybadger.notify(exc)
             return (
                 self.get_turbo_frame()
                 .template("components/frame_error.html", {})
