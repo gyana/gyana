@@ -14,7 +14,7 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ("-created",)
+        ordering = ("-updated",)
 
 
 class SaveParentModel(DirtyFieldsMixin, CloneMixin, BaseModel):
