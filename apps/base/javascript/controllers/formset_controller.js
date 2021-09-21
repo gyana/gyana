@@ -49,21 +49,21 @@ export default class extends Controller {
     // If the field has `data-new-record` set, then it was added dynamically. Otherwise we
     // need to "check" the hidden delete input. Django will then delete it on the post request.
 
-    if (wrapper.dataset.newRecord === 'true') {
-      wrapper.remove()
-    } else {
-      wrapper.style.display = 'none'
+    wrapper.style.display = 'none'
 
-      const input = wrapper.querySelector("input[name*='-DELETE']")
-      input.value = 'on'
-      input.setAttribute('checked', '')
+    const input = wrapper.querySelector("input[name*='-DELETE']")
+    input.value = 'on'
+    input.setAttribute('checked', '')
 
-      const AddButton = document.getElementById(`${this.prefixValue}-add`)
-      //  Re-enable button if necessary
-      if (AddButton.getAttribute('disabled') == '') {
-        AddButton.removeAttribute('disabled')
-      }
+    const AddButton = document.getElementById(`${this.prefixValue}-add`)
+    //  Re-enable button if necessary
+    if (AddButton.getAttribute('disabled') == '') {
+      AddButton.removeAttribute('disabled')
     }
+
+    wrapper.querySelectorAll('[required]').forEach((el) => {
+      el.removeAttribute('required')
+    })
 
     window.dispatchEvent(new CustomEvent(GyanaEvents.UPDATE_FORM_COUNT))
   }
