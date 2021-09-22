@@ -33,7 +33,7 @@
     </label>
     {% endfor %}
 
-    {% if formset.can_delete %}
+    {% if not formset.hide_delete_button %}
       <button class="button button--sm button--circle button--tertiary ml-4" type="button"
               data-action="click->formset#remove">
           <i class="far fa-fw fa-times"></i>

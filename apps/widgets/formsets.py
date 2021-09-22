@@ -52,7 +52,8 @@ XYMetricFormset = forms.inlineformset_factory(
     Widget,
     AggregationColumn,
     form=AggregationColumnForm,
-    can_delete=False,
+    # If can_delete is set to true marked as deleted rows are shown again
+    can_delete=True,
     extra=0,
     min_num=2,
     max_num=2,
@@ -63,7 +64,8 @@ XYZMetricFormset = forms.inlineformset_factory(
     Widget,
     AggregationColumn,
     form=AggregationColumnForm,
-    can_delete=False,
+    # If can_delete is set to true marked as deleted rows are shown again
+    can_delete=True,
     extra=0,
     min_num=3,
     max_num=3,
