@@ -26,9 +26,12 @@ const VisualSelect_: React.FC<{
 
   const updateTotalMetrics = () => {
     const formParent = getFormParent(inputRef.current)
-    const totalRows = parseInt(formParent.querySelector('[name="aggregations-TOTAL_FORMS"]').value)
-    const deletedRows = formParent.querySelectorAll('input[name$=DELETE][value=on]').length
-    setTotalMetrics(totalRows - deletedRows)
+    const input = formParent.querySelector('[name="aggregations-TOTAL_FORMS"]')
+    if (input) {
+      const totalRows = parseInt(input.value)
+      const deletedRows = formParent.querySelectorAll('input[name$=DELETE][value=on]').length
+      setTotalMetrics(totalRows - deletedRows)
+    }
   }
 
   useEffect(() => {
