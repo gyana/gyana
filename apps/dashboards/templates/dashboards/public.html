@@ -1,7 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
 <html class="h-full">
-
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -25,15 +24,19 @@
   <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
   <script src="{% url 'api_schemajs' %}"></script>
 </head>
-
 <body class="flex flex-col pad">
-  <div class='widgets flex items-center justify-center'>
+  <div class="widgets flex items-center justify-center">
+    <div class="flex items-center self-start mb-7">
+      <img class="h-16 mr-3" src="{% static 'images/logo.png' %}" alt="">
+      <h1>{{ dashboard.name }}</h1>
+    </div>
+
     <div id="dashboard-widget-container"
          class="widgets__canvas"
          data-controller="widget-list"
          style="width:{{object.width}}px;height:{{object.height}}px;">
       {% for widget in object.widget_set.all %}
-      <gy-widget id="widget-{{ widget.id }}">
+      <gy-widget class="relative top-6" id="widget-{{ widget.id }}">
         <div class="h-full w-full"
              data-id="{{ widget.id }}" data-x="{{widget.x}}" data-y="{{widget.y}}"
              data-width="{{widget.width}}" data-height="{{widget.height}}">
@@ -63,5 +66,4 @@
 
   {% include 'components/fusionchart_scripts.html' %}
 </body>
-
 </html>
