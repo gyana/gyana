@@ -2,17 +2,24 @@ from functools import cached_property
 
 from apps.base.models import BaseModel
 from apps.teams.models import Team
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from model_clone.mixins.clone import CloneMixin
 
 
 class Project(CloneMixin, BaseModel):
+    class Access(models.TextChoices):
+        EVERYONE = ("everyone", "Everyone in your team can access")
+        INVITE_ONLY = ("invite", "Only invited team members can access")
+
     name = models.CharField(max_length=255)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     # False if created from a template
     ready = models.BooleanField(default=True)
-
+    access = models.TextField(
+        max_length=8, choices=Access.choices, default=Access.EVERYONE
+    )
     description = models.TextField(blank=True)
 
     _clone_m2o_or_o2m_fields = ["integration_set", "workflow_set", "dashboard_set"]
@@ -60,3 +67,12 @@ class Project(CloneMixin, BaseModel):
 
     def get_absolute_url(self):
         return reverse("projects:detail", args=(self.id,))
+
+
+class ProjectMembership(BaseModel):
+    """
+    A user's project membership
+    """
+
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

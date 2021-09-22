@@ -8,7 +8,7 @@ from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 
 from .forms import ProjectForm
-from .models import Project
+from .models import Project, ProjectMembership
 
 
 class ProjectCreate(TeamMixin, TurboCreateView):
@@ -29,6 +29,11 @@ class ProjectCreate(TeamMixin, TurboCreateView):
         analytics.track(
             self.request.user.id, PROJECT_CREATED_EVENT, {"id": form.instance.id}
         )
+
+        # Add creating user to project members
+        if self.object.access == Project.Access.INVITE_ONLY:
+            ProjectMembership(project=self.object, user=self.request.user).save()
+
         return redirect
 
 
