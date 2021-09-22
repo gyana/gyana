@@ -4,10 +4,15 @@
         data-controller="widget-list"
         style="width:{{object.width}}px;height:{{object.height}}px;">
     {% for widget in object.widget_set.all %}
-    <gy-widget id="widget-{{ widget.id }}">
-      <div class="h-full w-full"
-            data-id="{{ widget.id }}" data-x="{{widget.x}}" data-y="{{widget.y}}"
-            data-width="{{widget.width}}" data-height="{{widget.height}}">
+    <gy-widget class="relative top-6" id="widget-{{ widget.id }}">
+      <div
+        class="h-full w-full"
+        data-id="{{ widget.id }}"
+        data-x="{{widget.x}}"
+        data-y="{{widget.y}}"
+        data-width="{{widget.width}}"
+        data-height="{{widget.height}}"
+      >
         <div class="widget-card h-full">
           <div class='widget-card__visual widget-card__visual--view'>
             {% include 'widgets/_widget_title.html' with object=widget%}
