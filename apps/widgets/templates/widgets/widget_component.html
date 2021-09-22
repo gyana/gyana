@@ -4,9 +4,8 @@ apps/dashboards/templates/dashboards/preview.html to reflect the changes in
 preview mode.
 {% endcomment %}
 <gy-widget
-  class="relative top-6"
   id="widget-{{ object.id }}"
-  {% if is_new %}data-action="mousedown->widget-list#register:once" {% endif %}
+  {% if is_new %}data-action="mousedown->widget-list#register:once"{% endif %}
 >
   <div
     class="h-full w-full"

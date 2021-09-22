@@ -4,7 +4,7 @@
         data-controller="widget-list"
         style="width:{{object.width}}px;height:{{object.height}}px;">
     {% for widget in object.widget_set.all %}
-    <gy-widget class="relative top-6" id="widget-{{ widget.id }}">
+    <gy-widget id="widget-{{ widget.id }}">
       <div
         class="h-full w-full"
         data-id="{{ widget.id }}"
