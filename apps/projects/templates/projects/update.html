@@ -15,36 +15,58 @@
     </form>
   </div>
   <div class="pad mb-auto">
-    <h2 class="mb-3">Members</h2>
-    <div class="card card--none">
-      {% render_table table %}
+    {% if object.access == 'invite' %}
+      <h2 class="mb-3">Members</h2>
+      <div class="card card--none">
+        {% render_table table %}
 
-      <div class="pt-2 pad" data-controller='popover'>
-        <button class='link'  data-popover-target='trigger' data-action="popover#trigger">
-          <i class="fa fa-fw fa-plus mr-2"></i>Add member
-        </button>
-        <div data-popover-target='body' class='popover-body card card--sm max-w-lg'>
-          <form method='post' action="{% url 'projects:update_membership' object.id %}">
-            {% csrf_token %}
-            {% for user, is_member_already in team_members %}
-              <div>
-                <input 
-                  id="{{user.id}}" 
-                  name="{{user.id}}" 
-                  type="checkbox" 
-                  class="checkbox__hidden"
-                  {% if is_member_already %}value='on' checked{% endif %}
-                ></input>
-                <label class="checkbox checkbox__enabled" for="{{user.id}}">
-                  {{user.email}}
-                </label>
+        <div class="pt-2 pad" data-controller='popover'>
+          <button class='link'  data-popover-target='trigger' data-action="popover#trigger">
+            <i class="fa fa-fw fa-plus mr-2"></i>Add member
+          </button>
+          <div data-popover-target='body' class='popover-body card card--sm max-w-lg'>
+            Invite or uninvite members of your team to collaborate on this project.
+            <form method='post' action="{% url 'projects:update_membership' object.id %}">
+              {% csrf_token %}
+              {% for user, is_member_already, is_current_user in team_members %}
+                <div>
+                  <input 
+                    id="{{user.id}}" 
+                    name="{{user.id}}" 
+                    type="checkbox"
+                    {% if is_current_user %}disabled{% endif %}
+                    class="checkbox__hidden"
+                    {% if is_member_already %}value='on' checked{% endif %}
+                  ></input>
+                  <label class="checkbox checkbox__enabled" for="{{user.id}}">
+                  <div class='flex flex-col'>
+                    <span>
+                      {% if user.first_name or user.last_name %}
+                        {{user.first_name}} {{user.last_name}} - 
+                      {% endif %}
+                      {{user.username}}
+                    </span>
+                    <small>{{user.email}}</small>
+                  </div>
+                  </label>
+                </div>
+              {% endfor %}
+              <div class='flex flex-row gap-2'>
+                <button class='button button--outline button--success' type='submit'>
+                  Invite
+                </button>
+                <button type='button' 
+                  data-action='popover#trigger'
+                  class='button button--outline button--tertiary'
+                >
+                  Cancel
+                </button>
               </div>
-            {% endfor %}
-            <button type='submit'>Submit</button>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    {% endif %}
   </div>
 
   <div class="pad border-t border-gray">
