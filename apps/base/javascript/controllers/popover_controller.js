@@ -4,6 +4,7 @@ export default class extends Controller {
   static targets = ['trigger', 'body']
   static values = {
     dontHideBody: String,
+    position: String,
   }
 
   connect() {
@@ -21,7 +22,7 @@ export default class extends Controller {
       this.bodyTarget.style.display = 'none'
     }
 
-    this.bodyTarget.style.position = 'absolute'
+    this.bodyTarget.style.position = this.positionValue || 'absolute'
     this.bodyTarget.style.right = 0
   }
 

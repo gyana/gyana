@@ -20,13 +20,15 @@
       <div class="card card--none">
         {% render_table table %}
 
-        <div class="pt-2 pad" data-controller='popover'>
+        <div class="pt-2 pad pad--sm" data-controller='popover' data-popover-position-value='fixed'>
           <small>
             <button class='link'  data-popover-target='trigger' data-action="popover#trigger">
               <i class="fa fa-fw fa-plus mr-2"></i>Add member
             </button>
           </small>
-          <div data-popover-target='body' class='popover-body card card--sm max-w-lg'>
+          <div 
+            data-popover-target='body' 
+            class='popover-body popover-body__center card card--sm max-w-lg'>
             Select members of your team to collaborate with you on this project.
 
             <form
@@ -35,8 +37,9 @@
               action="{% url 'projects:update_membership' object.id %}"
             >
               {% csrf_token %}
-              {% for user, is_member_already, is_current_user in team_members %}
-                <div class="w-full">
+              <div class="max-h-48 overflow-y-auto w-full">
+                {% for user, is_member_already, is_current_user in team_members %}
+                  
                   <input 
                     id="{{user.id}}" 
                     name="{{user.id}}" 
@@ -46,10 +49,15 @@
                     {% if is_member_already %}value='on' checked{% endif %}
                   ></input>
 
-                  <label class="checkbox checkbox__enabled 
-                    {% if is_current_user %}border-green-50 cursor-default{% endif %}" 
+                  <label class="checkbox 
+                    {% if is_current_user %}
+                      checkbox__active
+                    {%else%}
+                      checkbox__enabled 
+                    {% endif %}" 
                     for="{{user.id}}"
                   >
+                  <img class="h-12 w-12" src="{{ user.avatar_url }}">
                   <div class='flex flex-col'>
                     <span>
                       {% if user.first_name or user.last_name %}
@@ -60,8 +68,9 @@
                     <small>{{user.email}}</small>
                   </div>
                   </label>
-                </div>
-              {% endfor %}
+                  
+                {% endfor %}
+              </div>
               <div class='flex w-full gap-3'>
                 <button
                   type='button' 

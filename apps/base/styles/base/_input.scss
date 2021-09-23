@@ -230,4 +230,15 @@ label.checkbox__checked {
       content: '\f14a';
     }
   }
+
+  &:checked ~ label.checkbox__active {
+    border: 1px solid var(--c-green);
+    color: var(--c-black);
+    cursor: default;
+
+    &::after {
+      color: var(--c-green);
+      content: '\f14a';
+    }
+  }
 }
