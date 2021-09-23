@@ -1,9 +1,11 @@
+from django.template import loader
+from django_tables2 import Column, LinkColumn, Table
+from django_tables2.utils import A
+
+from apps.base.table import NaturalDatetimeColumn
 from apps.projects.models import Project
 from apps.teams.models import Membership
 from apps.users.models import CustomUser
-from apps.base.table import NaturalDatetimeColumn
-from django_tables2 import Column, LinkColumn, Table
-from django_tables2.utils import A
 
 
 class TeamMembershipTable(Table):
@@ -37,6 +39,7 @@ class TeamProjectsTable(Table):
             "dashboard_count",
             "created",
             "updated",
+            "access",
         )
 
     name = Column(linkify=True)
@@ -45,3 +48,7 @@ class TeamProjectsTable(Table):
     integration_count = Column(verbose_name="Integrations")
     workflow_count = Column(verbose_name="Workflows")
     dashboard_count = Column(verbose_name="Dashboards")
+
+    def render_access(self, value, record):
+        template = loader.get_template("projects/_project_access.html")
+        return template.render({"value": value})
