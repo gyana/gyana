@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.http import HttpResponse
 from django.http.response import Http404
 from django.urls import reverse
@@ -61,11 +62,11 @@ class TeamDetail(DetailView):
         self.request.session["team_id"] = self.object.id
 
         context = super().get_context_data(**kwargs)
-        context["team_projects"] = TeamProjectsTable(
-            Project.objects.filter(team=self.object)
+        projects = Project.objects.filter(team=self.object).filter(
+            Q(access=Project.Access.EVERYONE) | Q(members__user=self.request.user)
         )
-        context["project_count"] = Project.objects.filter(team=self.object).count()
-
+        context["team_projects"] = TeamProjectsTable(projects)
+        context["project_count"] = projects.count()
 
         return context
 

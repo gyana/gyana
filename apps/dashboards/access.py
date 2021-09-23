@@ -1,7 +1,7 @@
 from functools import wraps
 
 from apps.base.access import login_and_permission_to_access
-from apps.teams.roles import user_can_access_team
+from apps.projects.access import user_can_access_project
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -11,7 +11,7 @@ from .models import Dashboard
 
 def dashboard_of_team(user, pk, *args, **kwargs):
     dashboard = get_object_or_404(Dashboard, pk=pk)
-    return user_can_access_team(user, dashboard.project.team)
+    return user_can_access_project(user, dashboard.project)
 
 
 login_and_dashboard_required = login_and_permission_to_access(dashboard_of_team)

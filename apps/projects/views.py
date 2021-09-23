@@ -66,12 +66,12 @@ class ProjectUpdate(SingleTableMixin, TurboUpdateView):
         return reverse("projects:detail", args=(self.object.id,))
 
     def get_table_data(self):
-        return self.object.projectmembership_set.all()
+        return self.object.members.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        project_members = [m.user for m in self.object.projectmembership_set.iterator()]
+        project_members = [m.user for m in self.object.members.iterator()]
         context["team_members"] = [
             (m.user, m.user in project_members, m.user == self.request.user)
             for m in self.object.team.membership_set.iterator()
@@ -84,8 +84,7 @@ class ProjectUpdate(SingleTableMixin, TurboUpdateView):
         # Add creating user to project members
         if (
             self.object.access == Project.Access.INVITE_ONLY
-            and self.request.user
-            not in [m.user for m in self.object.projectmembership_set.all()]
+            and self.request.user not in [m.user for m in self.object.members.all()]
         ):
             ProjectMembership(project=self.object, user=self.request.user).save()
 
@@ -110,9 +109,9 @@ def update_project_membership(request, project_id):
         if str(m.user.id) in request.POST
     ]
     # Delete members that aren't selected anymore
-    project.projectmembership_set.exclude(user__in=selected_users).delete()
+    project.members.exclude(user__in=selected_users).delete()
 
-    existing_members = [m.user for m in project.projectmembership_set.all()]
+    existing_members = [m.user for m in project.members.all()]
 
     ProjectMembership.objects.bulk_create(
         [
