@@ -31,7 +31,7 @@
       start with a <a href="{% url 'team_projects:create' team.id %}" class="link">template</a>
       or read our <a href="https://intercom.help/gyana/en/articles/5547945-what-is-gyana" target="_blank" class="link">getting started</a> guide.</p>
     </div>
-    {% comment %} {% else %}
+    {% else %}
     <div class="pad flex flex-col space-y-8">
       <small>
         <a href="https://www.loom.com/share/eea3a4c9c6424a77b30ada915f92c12f" class="link">
@@ -41,7 +41,7 @@
         <a href="https://intercom.help/gyana/en/articles/5547945-what-is-gyana" target="_blank" class="link">
           <i class="fa fa-fw fa-question mr-2"></i>Getting started</a>
       </small>
-    </div> {% endcomment %}
+    </div>
     {% endif  %}
   </div>
 </div>
