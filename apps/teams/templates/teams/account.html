@@ -4,9 +4,8 @@
 {% block tab %}
 <div class="pad max-w-lg mb-auto">
   <div class="mb-6">
-    <h2 class="mb-3">Plan</h2>
-    
-    <h4 class="bold mb-2 text-blue">{{ team.plan }}</h4>
+    <h2 class="mb-3">Plan - <span class="text-blue">{{ team.plan }}</span></h2>
+  
     <ul>
       <li><p>{{ team.row_limit|intcomma }} rows of data</p></li>
       <li><p>{{ team.credits|intcomma }} credits</p></li>

@@ -1,6 +1,5 @@
 {% load render_table from django_tables2 %}
 
-
 <p class="mb-4">You've redeemed <strong>{{ team.appsumocode_set.count }} code{{ team.appsumocode_set.count|pluralize }}</strong>.</p>
 <div class="card card--none">
   {% render_table table %}
@@ -24,7 +23,7 @@
 {% endif %}
 
 {% if not team.appsumoreview %}
-  <div class="pt-2 pad">
+  <div class="pt-2 pad pad--sm">
     <small>
       <a href="{% url 'team_appsumo:review' team.id %}" class="link">
         <i class="fa fa-fw fa-plus mr-2"></i>Link to your review</a>
