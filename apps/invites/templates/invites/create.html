@@ -1,11 +1,13 @@
 {% extends "teams/base.html" %}
 
 {% block tab %}
-<form method="post" action="{% url 'team_invites:create' team.id %}" class="form pad" data-turbo="false">
-  {% csrf_token %}
+<div class="max-w-xl">
+  <form method="post" action="{% url 'team_invites:create' team.id %}" class="form pad" data-turbo="false">
+    {% csrf_token %}
 
-  {% include "django/forms/default_form.html" %}
+    {% include "django/forms/default_form.html" %}
 
-  <button type="submit" class="button button--filled button--success">Invite</button>
-</form>
+    <button type="submit" class="button button--success w-full">Invite</button>
+  </form>
+</div>
 {% endblock %}
