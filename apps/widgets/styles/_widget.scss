@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   margin: 0 auto;
+  padding: 0 1.6rem 0 0;
 
   &__canvas {
     background-color: var(--c-white);
@@ -15,12 +16,6 @@
     position: relative;
 
     @include shadows.shadow;
-  }
-
-  &::after {
-    content: '';
-    display: inline-block;
-    width: 1.6rem;
   }
 
   &__grid {

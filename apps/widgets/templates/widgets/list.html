@@ -1,6 +1,19 @@
 {% load static %}
 
 <div class="widgets" data-controller="tf-modal">
+  {% if request.GET.mode == 'view' %}
+  <header class="flex w-full justify-between mb-7">
+    <div class="flex flex-col justify-center self-start">
+      <p>{{ project.team.name }}</p>
+      <h1>{{ dashboard.name }}</h1>
+    </div>
+
+    {% if project.team.plan == "Free" %}
+    <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
+    {% endif %}
+  </header>
+  {% endif %}
+  
   <div id="dashboard-widget-container"
        class="widgets__canvas {% if request.GET.mode != 'view' %}widgets__grid{%endif%}"
        data-controller="widget-list"
