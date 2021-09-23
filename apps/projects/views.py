@@ -1,11 +1,14 @@
 import analytics
 from apps.base.analytics import PROJECT_CREATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.projects.tables import ProjectMembershipTable
 from apps.teams.mixins import TeamMixin
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls.base import reverse
+from django.views.decorators.http import require_POST
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
+from django_tables2.views import SingleTableMixin
 
 from .forms import ProjectForm
 from .models import Project, ProjectMembership
@@ -51,14 +54,42 @@ class ProjectDetail(DetailView):
         return super().get(request, *args, **kwargs)
 
 
-class ProjectUpdate(TurboUpdateView):
+class ProjectUpdate(SingleTableMixin, TurboUpdateView):
     template_name = "projects/update.html"
     model = Project
     form_class = ProjectForm
+    table_class = ProjectMembershipTable
     pk_url_kwarg = "project_id"
+    paginate_by = 20
 
     def get_success_url(self) -> str:
         return reverse("projects:detail", args=(self.object.id,))
+
+    def get_table_data(self):
+        return self.object.projectmembership_set.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        project_members = [m.user for m in self.object.projectmembership_set.iterator()]
+        context["team_members"] = [
+            (m.user, m.user in project_members)
+            for m in self.object.team.membership_set.iterator()
+        ]
+        return context
+
+    def form_valid(self, form):
+        redirect = super().form_valid(form)
+
+        # Add creating user to project members
+        if (
+            self.object.access == Project.Access.INVITE_ONLY
+            and self.request.user
+            not in [m.user for m in self.object.projectmembership_set.all()]
+        ):
+            ProjectMembership(project=self.object, user=self.request.user).save()
+
+        return redirect
 
 
 class ProjectDelete(DeleteView):
@@ -68,3 +99,26 @@ class ProjectDelete(DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.team.id,))
+
+
+@require_POST
+def update_project_membership(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    selected_users = [
+        m.user
+        for m in project.team.membership_set.all()
+        if str(m.user.id) in request.POST
+    ]
+    # Delete members that aren't selected anymore
+    project.projectmembership_set.exclude(user__in=selected_users).delete()
+
+    existing_members = [m.user for m in project.projectmembership_set.all()]
+
+    ProjectMembership.objects.bulk_create(
+        [
+            ProjectMembership(project=project, user=user)
+            for user in selected_users
+            if user not in existing_members
+        ]
+    )
+    return redirect("projects:update", project.id)

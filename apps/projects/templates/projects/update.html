@@ -1,8 +1,9 @@
 {% extends "web/app/project_base.html" %}
+{% load render_table from django_tables2 %}
 
 {% block app %}
 <div class="flex flex-col flex-1 overflow-auto">
-  <div class="max-w-lg mb-auto pad">
+  <div class="max-w-lg pad">
     <h1 class="project-settings__title">Settings</h1>
 
     <form method="post" action="{% url 'projects:update' object.id %}" class="form">
@@ -12,6 +13,38 @@
 
       <button type="submit" class="button button--success button--filled">Save changes</button>
     </form>
+  </div>
+  <div class="pad mb-auto">
+    <h2 class="mb-3">Members</h2>
+    <div class="card card--none">
+      {% render_table table %}
+
+      <div class="pt-2 pad" data-controller='popover'>
+        <button class='link'  data-popover-target='trigger' data-action="popover#trigger">
+          <i class="fa fa-fw fa-plus mr-2"></i>Add member
+        </button>
+        <div data-popover-target='body' class='popover-body card card--sm max-w-lg'>
+          <form method='post' action="{% url 'projects:update_membership' object.id %}">
+            {% csrf_token %}
+            {% for user, is_member_already in team_members %}
+              <div>
+                <input 
+                  id="{{user.id}}" 
+                  name="{{user.id}}" 
+                  type="checkbox" 
+                  class="checkbox__hidden"
+                  {% if is_member_already %}value='on' checked{% endif %}
+                ></input>
+                <label class="checkbox checkbox__enabled" for="{{user.id}}">
+                  {{user.email}}
+                </label>
+              </div>
+            {% endfor %}
+            <button type='submit'>Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="pad border-t border-gray">
