@@ -17,7 +17,7 @@ class Project(CloneMixin, BaseModel):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     # False if created from a template
     ready = models.BooleanField(default=True)
-    access = models.TextField(
+    access = models.CharField(
         max_length=8, choices=Access.choices, default=Access.EVERYONE
     )
     description = models.TextField(blank=True)

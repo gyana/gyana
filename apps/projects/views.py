@@ -84,7 +84,7 @@ class ProjectUpdate(SingleTableMixin, TurboUpdateView):
         # Add creating user to project members
         if (
             self.object.access == Project.Access.INVITE_ONLY
-            and self.request.user not in [m.user for m in self.object.members.all()]
+            and not self.object.members.filter(user=self.request.user).exists()
         ):
             ProjectMembership(project=self.object, user=self.request.user).save()
 
