@@ -9,7 +9,15 @@
       class="form--no-layout w-full"
     >
       {% csrf_token %}
-      <input class='input__inline mr-auto' id="name" type="text" name="name" value="{{ object.name }}"></input>
+
+      <input
+        class='input__inline mr-auto'
+        id="name"
+        type="text"
+        name="name"
+        value="{{ object.name }}"
+        onBlur="this.form.requestSubmit();"
+      ></input>
     </form>
   </turbo-frame>
 
