@@ -38,7 +38,10 @@
                     class="checkbox__hidden"
                     {% if is_member_already %}value='on' checked{% endif %}
                   ></input>
-                  <label class="checkbox checkbox__enabled" for="{{user.id}}">
+                  <label class="checkbox checkbox__enabled 
+                    {% if is_current_user %}border-green-50 cursor-default{% endif %}" 
+                    for="{{user.id}}"
+                  >
                   <div class='flex flex-col'>
                     <span>
                       {% if user.first_name or user.last_name %}

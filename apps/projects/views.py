@@ -73,7 +73,7 @@ class ProjectUpdate(SingleTableMixin, TurboUpdateView):
 
         project_members = [m.user for m in self.object.projectmembership_set.iterator()]
         context["team_members"] = [
-            (m.user, m.user in project_members)
+            (m.user, m.user in project_members, m.user == self.request.user)
             for m in self.object.team.membership_set.iterator()
         ]
         return context
