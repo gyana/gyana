@@ -21,15 +21,22 @@
         {% render_table table %}
 
         <div class="pt-2 pad" data-controller='popover'>
-          <button class='link'  data-popover-target='trigger' data-action="popover#trigger">
-            <i class="fa fa-fw fa-plus mr-2"></i>Add member
-          </button>
+          <small>
+            <button class='link'  data-popover-target='trigger' data-action="popover#trigger">
+              <i class="fa fa-fw fa-plus mr-2"></i>Add member
+            </button>
+          </small>
           <div data-popover-target='body' class='popover-body card card--sm max-w-lg'>
-            Invite or uninvite members of your team to collaborate on this project.
-            <form method='post' action="{% url 'projects:update_membership' object.id %}">
+            Select members of your team to collaborate with you on this project.
+
+            <form
+              class="mb-7" 
+              method='post'
+              action="{% url 'projects:update_membership' object.id %}"
+            >
               {% csrf_token %}
               {% for user, is_member_already, is_current_user in team_members %}
-                <div>
+                <div class="w-full">
                   <input 
                     id="{{user.id}}" 
                     name="{{user.id}}" 
@@ -38,6 +45,7 @@
                     class="checkbox__hidden"
                     {% if is_member_already %}value='on' checked{% endif %}
                   ></input>
+
                   <label class="checkbox checkbox__enabled 
                     {% if is_current_user %}border-green-50 cursor-default{% endif %}" 
                     for="{{user.id}}"
@@ -54,15 +62,16 @@
                   </label>
                 </div>
               {% endfor %}
-              <div class='flex flex-row gap-2'>
-                <button class='button button--outline button--success' type='submit'>
-                  Invite
-                </button>
-                <button type='button' 
+              <div class='flex w-full gap-3'>
+                <button
+                  type='button' 
                   data-action='popover#trigger'
-                  class='button button--outline button--tertiary'
+                  class='button button--outline button--tertiary flex-1'
                 >
                   Cancel
+                </button>
+                <button class='button button--success flex-1' type='submit'>
+                  Invite
                 </button>
               </div>
             </form>
