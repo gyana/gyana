@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import frames, views
+from . import views
 
 app_name = "cnames"
 

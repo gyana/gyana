@@ -8,16 +8,20 @@
 
       {% include "django/forms/default_form.html" %}
 
+      {% if object.cname %}
+        <p>Your custom domain is currently mapped at <strong>{{ object.cname.domain }}</strong>
+          <a class="link" href="{% url 'team_cnames:delete' object.id object.cname.id%}">Delete</a>
+        </p>
+      {% else %}
+        <a class="link" href="{% url 'team_cnames:create' object.id %}">Add a CNAME</a>
+      {% endif %}
+
       <button type="submit" class="button button--success">Save</button>
     </form>
+
+
+
   </div>
-
-  {% if object.cname %}
-    <p>Your custom domain is currently mapped at <strong>{{ object.cname.domain }}</strong></p>
-  {% else %}
-    <a class="link" href="{% url 'team_cnames:create' object.id %}">Add a CNAME</a>
-  {% endif %}
-
   <div class="pad border-t border-gray">
     <div class="max-w-xl">
       <h2 class="mb-3">Delete team</h2>

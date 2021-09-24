@@ -45,7 +45,9 @@ class CNameUpdate(TurboUpdateView):
     success_url = reverse_lazy("cnames:list")
 
 
-class CNameDelete(DeleteView):
+class CNameDelete(TeamMixin, DeleteView):
     template_name = "cnames/delete.html"
     model = CName
-    success_url = reverse_lazy("cnames:list")
+
+    def get_success_url(self) -> str:
+        return reverse("teams:update", args=(self.team.id,))
