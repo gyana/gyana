@@ -6,4 +6,4 @@ from .models import CName
 class CNameForm(forms.ModelForm):
     class Meta:
         model = CName
-        fields = ['name']
+        fields = ["domain"]
