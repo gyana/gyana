@@ -99,7 +99,3 @@ class CustomUserChangeForm(UserChangeForm):
             "first_name": "We use this name to help personalize content and support",
             "marketing_allowed": "Allow us to email you with content relevant to the app",
         }
-
-
-class UploadAvatarForm(forms.Form):
-    avatar = forms.FileField()
