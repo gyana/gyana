@@ -15,7 +15,6 @@ from apps.base.turbo import TurboUpdateView
 
 from .forms import (
     CustomUserChangeForm,
-    UploadAvatarForm,
     UserNameForm,
     UserOnboardingForm,
 )
@@ -85,16 +84,6 @@ class UserProfile(PageTitleMixin, TurboUpdateView):
             user.email = user_before_update.email
 
         return super().form_valid(form)
-
-
-@require_POST
-def upload_profile_image(request):
-    user = request.user
-    form = UploadAvatarForm(request.POST, request.FILES)
-    if form.is_valid():
-        user.avatar = request.FILES["avatar"]
-        user.save()
-    return HttpResponse("Success!")
 
 
 class UserFeedback(View):
