@@ -63,7 +63,7 @@ class TeamDetail(DetailView):
 
         context = super().get_context_data(**kwargs)
         projects = Project.objects.filter(team=self.object).filter(
-            Q(access=Project.Access.EVERYONE) | Q(members__user=self.request.user)
+            Q(access=Project.Access.EVERYONE) | Q(members=self.request.user)
         )
         context["team_projects"] = TeamProjectsTable(projects)
         context["project_count"] = projects.count()

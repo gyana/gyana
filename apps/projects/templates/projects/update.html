@@ -1,93 +1,28 @@
 {% extends "web/app/project_base.html" %}
-{% load render_table from django_tables2 %}
 
 {% block app %}
 <div class="flex flex-col flex-1 overflow-auto">
-  <div class="max-w-lg pad">
+  <div class="max-w-lg mb-auto pad">
     <h1 class="project-settings__title">Settings</h1>
 
-    <form method="post" action="{% url 'projects:update' object.id %}" class="form">
+    <form 
+      id='project-{{ object.id }}-update'
+      data-controller="live-update" 
+      method="post" 
+      action="{% url 'projects:update' object.id %}" 
+      class="form"
+    >
       {% csrf_token %}
 
       {% include "django/forms/default_form.html" %}
 
-      <button type="submit" class="button button--success button--filled">Save changes</button>
+      <button type="submit" name='submit' value='submit' class="button button--success button--filled">Save changes</button>
+
+      <span data-live-update-target="loading" class="workflow-detail__sidebar__loading hidden">
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+      </span>
+
     </form>
-  </div>
-  <div class="pad mb-auto">
-    {% if object.access == 'invite' %}
-      <h2 class="mb-3">Members</h2>
-      <div class="card card--none">
-        {% render_table table %}
-
-        <div class="pt-2 pad pad--sm" data-controller='popover' data-popover-position-value='fixed'>
-          <small>
-            <button class='link'  data-popover-target='trigger' data-action="popover#trigger">
-              <i class="fa fa-fw fa-plus mr-2"></i>Add member
-            </button>
-          </small>
-          <div 
-            data-popover-target='body' 
-            class='popover-body popover-body__center card card--sm max-w-lg'>
-            Select members of your team to collaborate with you on this project.
-
-            <form
-              class="mb-7" 
-              method='post'
-              action="{% url 'projects:update_membership' object.id %}"
-            >
-              {% csrf_token %}
-              <div class="max-h-48 overflow-y-auto w-full">
-                {% for user, is_member_already, is_current_user in team_members %}
-                  
-                  <input 
-                    id="{{user.id}}" 
-                    name="{{user.id}}" 
-                    type="checkbox"
-                    {% if is_current_user %}disabled{% endif %}
-                    class="checkbox__hidden"
-                    {% if is_member_already %}value='on' checked{% endif %}
-                  ></input>
-
-                  <label class="checkbox 
-                    {% if is_current_user %}
-                      checkbox__active
-                    {%else%}
-                      checkbox__enabled 
-                    {% endif %}" 
-                    for="{{user.id}}"
-                  >
-                  <img class="h-12 w-12" src="{{ user.avatar_url }}">
-                  <div class='flex flex-col'>
-                    <span>
-                      {% if user.first_name or user.last_name %}
-                        {{user.first_name}} {{user.last_name}} - 
-                      {% endif %}
-                      {{user.username}}
-                    </span>
-                    <small>{{user.email}}</small>
-                  </div>
-                  </label>
-                  
-                {% endfor %}
-              </div>
-              <div class='flex w-full gap-3'>
-                <button
-                  type='button' 
-                  data-action='popover#trigger'
-                  class='button button--outline button--tertiary flex-1'
-                >
-                  Cancel
-                </button>
-                <button class='button button--success flex-1' type='submit'>
-                  Invite
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    {% endif %}
   </div>
 
   <div class="pad border-t border-gray">

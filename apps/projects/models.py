@@ -22,6 +22,9 @@ class Project(CloneMixin, BaseModel):
     )
     description = models.TextField(blank=True)
 
+    members = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="projects", through="ProjectMembership"
+    )
     _clone_m2o_or_o2m_fields = ["integration_set", "workflow_set", "dashboard_set"]
 
     def __str__(self):
@@ -75,6 +78,7 @@ class ProjectMembership(BaseModel):
     """
 
     project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, related_name="members"
+        Project,
+        on_delete=models.CASCADE,
     )
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

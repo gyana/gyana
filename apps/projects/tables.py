@@ -30,14 +30,3 @@ class ProjectDashboardTable(DashboardTable):
             "updated",
         )
         exclude = ("created", "duplicate")
-
-
-class ProjectMembershipTable(Table):
-    class Meta:
-        model = ProjectMembership
-        fields = (
-            A("user__first_name"),
-            A("user__last_name"),
-            A("user__email"),
-        )
-        attrs = {"class": "table"}

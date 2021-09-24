@@ -1,14 +1,12 @@
 import analytics
 from apps.base.analytics import PROJECT_CREATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
-from apps.projects.tables import ProjectMembershipTable
 from apps.teams.mixins import TeamMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls.base import reverse
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
-from django_tables2.views import SingleTableMixin
 
 from .forms import ProjectForm
 from .models import Project, ProjectMembership
@@ -18,6 +16,11 @@ class ProjectCreate(TeamMixin, TurboCreateView):
     template_name = "projects/create.html"
     model = Project
     form_class = ProjectForm
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs["current_user"] = self.request.user
+        return form_kwargs
 
     def get_initial(self):
         initial = super().get_initial()
@@ -32,10 +35,6 @@ class ProjectCreate(TeamMixin, TurboCreateView):
         analytics.track(
             self.request.user.id, PROJECT_CREATED_EVENT, {"id": form.instance.id}
         )
-
-        # Add creating user to project members
-        if self.object.access == Project.Access.INVITE_ONLY:
-            ProjectMembership(project=self.object, user=self.request.user).save()
 
         return redirect
 
@@ -54,41 +53,29 @@ class ProjectDetail(DetailView):
         return super().get(request, *args, **kwargs)
 
 
-class ProjectUpdate(SingleTableMixin, TurboUpdateView):
+class ProjectUpdate(TurboUpdateView):
     template_name = "projects/update.html"
     model = Project
     form_class = ProjectForm
-    table_class = ProjectMembershipTable
     pk_url_kwarg = "project_id"
-    paginate_by = 20
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs["current_user"] = self.request.user
+        return form_kwargs
 
     def get_success_url(self) -> str:
         return reverse("projects:detail", args=(self.object.id,))
 
-    def get_table_data(self):
-        return self.object.members.all()
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        project_members = [m.user for m in self.object.members.iterator()]
+        project_members = self.object.members.all()
         context["team_members"] = [
-            (m.user, m.user in project_members, m.user == self.request.user)
-            for m in self.object.team.membership_set.iterator()
+            (user, user in project_members, user == self.request.user)
+            for user in self.object.team.members.iterator()
         ]
         return context
-
-    def form_valid(self, form):
-        redirect = super().form_valid(form)
-
-        # Add creating user to project members
-        if (
-            self.object.access == Project.Access.INVITE_ONLY
-            and not self.object.members.filter(user=self.request.user).exists()
-        ):
-            ProjectMembership(project=self.object, user=self.request.user).save()
-
-        return redirect
 
 
 class ProjectDelete(DeleteView):
@@ -98,26 +85,3 @@ class ProjectDelete(DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.team.id,))
-
-
-@require_POST
-def update_project_membership(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-    selected_users = [
-        m.user
-        for m in project.team.membership_set.all()
-        if str(m.user.id) in request.POST
-    ]
-    # Delete members that aren't selected anymore
-    project.members.exclude(user__in=selected_users).delete()
-
-    existing_members = [m.user for m in project.members.all()]
-
-    ProjectMembership.objects.bulk_create(
-        [
-            ProjectMembership(project=project, user=user)
-            for user in selected_users
-            if user not in existing_members
-        ]
-    )
-    return redirect("projects:update", project.id)
