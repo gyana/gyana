@@ -20,12 +20,8 @@ class ProjectCreate(TeamMixin, TurboCreateView):
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
         form_kwargs["current_user"] = self.request.user
+        form_kwargs["team"] = self.team
         return form_kwargs
-
-    def get_initial(self):
-        initial = super().get_initial()
-        initial["team"] = self.team
-        return initial
 
     def get_success_url(self) -> str:
         return reverse("projects:detail", args=(self.object.id,))
@@ -62,20 +58,11 @@ class ProjectUpdate(TurboUpdateView):
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
         form_kwargs["current_user"] = self.request.user
+        form_kwargs["team"] = self.object.team
         return form_kwargs
 
     def get_success_url(self) -> str:
         return reverse("projects:detail", args=(self.object.id,))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        project_members = self.object.members.all()
-        context["team_members"] = [
-            (user, user in project_members, user == self.request.user)
-            for user in self.object.team.members.iterator()
-        ]
-        return context
 
 
 class ProjectDelete(DeleteView):

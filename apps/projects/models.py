@@ -23,7 +23,9 @@ class Project(CloneMixin, BaseModel):
     description = models.TextField(blank=True)
 
     members = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name="projects", through="ProjectMembership"
+        settings.AUTH_USER_MODEL,
+        related_name="invite_only_projects",
+        through="ProjectMembership",
     )
     _clone_m2o_or_o2m_fields = ["integration_set", "workflow_set", "dashboard_set"]
 
