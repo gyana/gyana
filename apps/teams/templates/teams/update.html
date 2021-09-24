@@ -3,7 +3,7 @@
 {% block tab %}
 <div class="flex flex-col flex-1 overflow-auto">
   <div class="max-w-xl mb-auto pad">
-    <form method="post" enctype="multipart/form-data">
+    <form class="mb-8" method="post" enctype="multipart/form-data">
       {% csrf_token %}
 
       {% include "django/forms/default_form.html" %}
@@ -18,10 +18,12 @@
         {% endif %}
       {% endif %}
 
+      
+
       <button type="submit" class="button button--success w-full">Save</button>
     </form>
 
-
+    <turbo-frame id="cnames:list" src="{% url 'team_cnames:list' object.id %}"></turbo-frame>
 
   </div>
   <div class="pad border-t border-gray">

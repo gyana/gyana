@@ -1,9 +1,10 @@
 import re
 
-from apps.base.models import BaseModel
-from apps.teams.models import Team
 from django.core.validators import RegexValidator
 from django.db import models
+
+from apps.base.models import BaseModel
+from apps.teams.models import Team
 
 domain_regex = RegexValidator(
     # https://github.com/kvesteri/validators/blob/master/validators/domain.py
@@ -19,7 +20,7 @@ domain_regex = RegexValidator(
 
 class CName(BaseModel):
     domain = models.CharField(max_length=253, validators=[domain_regex], unique=True)
-    team = models.OneToOneField(Team, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.domain
