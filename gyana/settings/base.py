@@ -93,6 +93,7 @@ PROJECT_APPS = [
     "apps.connectors.apps.ConnectorsConfig",
     "apps.appsumo",
     "apps.templates",
+    "apps.cnames",
 ]
 
 INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
