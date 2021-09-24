@@ -1,3 +1,4 @@
+from apps.base.clients import heroku_client
 from django import forms
 from django.db import transaction
 
@@ -21,5 +22,7 @@ class CNameForm(forms.ModelForm):
             with transaction.atomic():
                 instance.save()
                 self.save_m2m()
+
+        heroku_client().add_domain(instance.domain)
 
         return instance

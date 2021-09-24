@@ -95,7 +95,7 @@ PROJECT_APPS = [
     "apps.connectors.apps.ConnectorsConfig",
     "apps.appsumo",
     "apps.templates",
-    "apps.cnames",
+    "apps.cnames.apps.CNamesConfig",
 ]
 
 INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
@@ -388,3 +388,6 @@ HONEYBADGER = {
 }
 
 HELLONEXT_SSO_TOKEN = os.environ.get("HELLONEXT_SSO_TOKEN")
+
+HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY")
+HEROKU_APP = os.environ.get("HEROKU_APP")

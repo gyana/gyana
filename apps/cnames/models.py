@@ -18,7 +18,7 @@ domain_regex = RegexValidator(
 
 
 class CName(BaseModel):
-    domain = models.CharField(max_length=253, validators=[domain_regex])
+    domain = models.CharField(max_length=253, validators=[domain_regex], unique=True)
     team = models.OneToOneField(Team, on_delete=models.CASCADE)
 
     def __str__(self):

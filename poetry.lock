@@ -941,6 +941,18 @@ python-versions = ">=2.7"
 test = ["pytest (>=2.1.0)"]
 
 [[package]]
+name = "heroku3"
+version = "4.2.3"
+description = "Heroku API Wrapper."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+python-dateutil = ">=2.6.0"
+requests = ">=1.2.3"
+
+[[package]]
 name = "honeybadger"
 version = "0.6.0"
 description = "Send Python and Django errors to Honeybadger"
@@ -1871,7 +1883,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.*"
-content-hash = "8dde39f11d1720f9dafe4bc4349681d418fc7a17e3809e9864efbf27ba375cdb"
+content-hash = "03dccf29b09282383fc8079559251c58757073228954fdde0ce74ab46ef8a122"
 
 [metadata.files]
 amqp = [
@@ -2274,6 +2286,9 @@ gunicorn = [
 hashids = [
     {file = "hashids-1.3.1-py2.py3-none-any.whl", hash = "sha256:8bddd1acba501bfc9306e7e5a99a1667f4f2cacdc20cbd70bcc5ddfa5147c94c"},
     {file = "hashids-1.3.1.tar.gz", hash = "sha256:6c3dc775e65efc2ce2c157a65acb776d634cb814598f406469abef00ae3f635c"},
+]
+heroku3 = [
+    {file = "heroku3-4.2.3.tar.gz", hash = "sha256:4b20efa22f2901f96e9c89aceef7388637db83346541c6988d8c48bac8305900"},
 ]
 honeybadger = [
     {file = "honeybadger-0.6.0-py3-none-any.whl", hash = "sha256:825eea3ad787c17c9fe2dedeaa85fe784c22f6d77f6642f75db4c45e188786e1"},
