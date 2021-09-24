@@ -3,12 +3,16 @@
 {% block tab %}
 <div class="flex flex-col flex-1 overflow-auto">
   <div class="max-w-xl mb-auto pad">
-    <form method="post" class="form">
+    {% if team.icon %}
+      <img class="h-32 w-32" src="{{ team.icon.url }}">
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
 
       {% include "django/forms/default_form.html" %}
 
-      <button type="submit" class="button button--success">Save</button>
+      <button type="submit" class="button button--success w-full">Save</button>
     </form>
   </div>
 

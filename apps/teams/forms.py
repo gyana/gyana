@@ -63,7 +63,12 @@ class TeamCreateForm(forms.ModelForm):
 class TeamUpdateForm(forms.ModelForm):
     class Meta:
         model = Team
-        fields = ("name",)
+        fields = ("icon", "name", "color")
+        widgets = {"icon": forms.FileInput()}
+        help_texts = {
+            "icon": "For best results use a square image",
+        }
+
 
 
 class MembershipUpdateForm(forms.ModelForm):

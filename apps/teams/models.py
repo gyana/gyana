@@ -14,6 +14,7 @@ WARNING_BUFFER = 0.2
 
 
 class Team(BaseModel):
+    icon = models.FileField(upload_to="team-icons/", null=True, blank=True)
     name = models.CharField(max_length=100)
 
     members = models.ManyToManyField(

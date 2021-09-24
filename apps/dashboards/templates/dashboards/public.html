@@ -9,6 +9,8 @@
   {% include 'web/components/meta.html' %}
   {% if project.team.plan == "Free" %}
     {% include 'web/components/favicon.html' %}
+  {% else %}
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ project.team.icon.url }}">
   {% endif %}
 
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -29,9 +31,15 @@
 <body class="flex flex-col pad">
   <div class="widgets flex items-center justify-center">
     <header class="flex w-full justify-between mb-7">
-      <div class="flex flex-col justify-center self-start">
-        <p>{{ project.team.name }}</p>
-        <h1>{{ dashboard.name }}</h1>
+      <div class="flex justify-center items-center self-start">
+        {% if project.team.plan != "Free" %}
+        <img src="{{ project.team.icon.url }}" class="h-24 w-24 mr-5" alt="">
+        {% endif %}
+
+        <div class="flex flex-col">
+          <p>{{ project.team.name }}</p>
+          <h1>{{ dashboard.name }}</h1>
+        </div>
       </div>
 
       {% if project.team.plan == "Free" %}

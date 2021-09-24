@@ -17,24 +17,26 @@
     flex: 1 1 0%;
   }
 
+  &__link,
   &__item {
+    align-items: center;
     border-left: 0.6rem solid var(--c-transparent);
-    display: block;
+    display: flex;
+    flex-direction: row;
     font-size: 1.4rem;
+    height: 4.8rem;
     line-height: 1.6rem;
-    padding: 1.6rem 1.6rem 1.6rem 1rem;
+    padding: 0 0 0 0.6rem;
     text-align: left;
+
+    & .fa-fw {
+      min-width: 1.25em;
+      margin-left: 0.325rem;
+    }
   }
 
   &__link {
-    border-left: 0.6rem solid var(--c-transparent);
     color: var(--c-black);
-    font-size: 1.4rem;
-    display: block;
-    height: 4.8rem;
-    line-height: 1.6rem;
-    padding: 1.6rem 1.6rem 1.6rem 1rem;
-    text-align: left;
 
     .team_logo {
       align-items: center;
@@ -46,11 +48,9 @@
       height: 2.4rem;
       justify-content: center;
       line-height: 2.4rem;
-      margin-left: -0.325rem;
-      margin-right: 1.275rem;
-      margin-top: -0.65rem;
-      padding: 0.2rem 0 0;
       width: 2.4rem;
+      min-width: 2.4rem;
+      margin-right: 1.2rem;
     }
 
     &--active {
@@ -90,11 +90,12 @@
     }
 
     img {
-      border-radius: 100%;
-      display: inline;
-      margin-right: 1.5rem;
-      width: 1.75rem;
-      min-width: 1.75rem;
+      border-radius: 5px;
+      display: inline-flex;
+      line-height: 2.4rem;
+      margin-right: 1.2rem;
+      min-width: 2.4rem;
+      width: 2.4rem;
     }
   }
 
@@ -130,7 +131,7 @@
 
     img {
       display: inline;
-      margin-right: 1.6rem;
+      margin-right: 0.8rem;
       min-width: 2.8rem;
       width: 2.8rem;
     }
@@ -138,7 +139,6 @@
 
   label[for='sidebar-toggle'] {
     cursor: pointer;
-    display: block;
 
     i::before {
       content: '\f054';
