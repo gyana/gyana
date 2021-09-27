@@ -1,0 +1,10 @@
+// Padding
+@mixin pad {
+  --padding: 1.6rem;
+  padding: var(--padding);
+}
+
+// Box-shadows
+@mixin shadow {
+  box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.04);
+}

@@ -19,6 +19,7 @@
   }
 
   &__grid {
+    --grid-size: 15px;
     background-image: radial-gradient(circle at 1px 1px, var(--c-gray) 1px, transparent 0);
     background-size: var(--grid-size) var(--grid-size);
   }

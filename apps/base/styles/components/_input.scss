@@ -1,7 +1,7 @@
 %input {
   background-color: var(--c-white);
   border: 1px solid var(--c-gray);
-  border-radius: 6px;
+  border-radius: 5px;
   color: var(--c-black);
   font-size: 1.4rem;
   padding: 1.2rem 0.8rem;
@@ -164,7 +164,7 @@ input.input,
 }
 
 label.checkbox {
-  border-radius: 6px;
+  border-radius: 5px;
   border: 1px solid var(--c-gray);
   color: var(--c-black-50);
   cursor: pointer;
@@ -240,5 +240,19 @@ label.checkbox__checked {
       color: var(--c-green);
       content: '\f14a';
     }
+  }
+}
+.input-group {
+  display: flex;
+  flex-flow: column;
+  gap: 0.5rem;
+  width: 100%;
+
+  &--row {
+    flex-flow: row;
+  }
+
+  & + & {
+    margin-top: 0.6rem;
   }
 }

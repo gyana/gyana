@@ -3,7 +3,10 @@
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
   "editor.linkedEditing": true,
-  "editor.rulers": [80, 120],
+  "editor.rulers": [
+    80,
+    120
+  ],
   "[python]": {
     "editor.codeActionsOnSave": {
       "source.organizeImports": true
@@ -24,9 +27,15 @@
     "**/templates/**/*.tsx": "typescript",
     "**/templates/**/*.txt": "django-txt"
   },
-  "python.testing.pytestArgs": ["apps/*/tests", "--no-migrations", "--disable-pytest-warnings"],
+  "python.testing.pytestArgs": [
+    "apps/*/tests",
+    "--no-migrations",
+    "--disable-pytest-warnings"
+  ],
   "python.testing.unittestEnabled": false,
   "python.testing.nosetestsEnabled": false,
   "python.testing.pytestEnabled": true,
-  "files.exclude": { "apps/widgets/static/fusioncharts/**": true }
+  "files.exclude": {
+    "apps/widgets/static/fusioncharts/**": true
+  }
 }

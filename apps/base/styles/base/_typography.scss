@@ -1,93 +1,46 @@
 %heading {
   font-weight: 500;
-  line-height: 1.25;
-  margin-top: 0;
+  line-height: inherit;
+  margin: 0;
 }
 
-:root {
-  // On an average device this will set the base font size to 10px.
-  // This helps tremendously with responsive sizing as we can now use the simple 1rem:10px
-  // ratio. Meaning 1.6rem (our standard padding) is 16px, if a device calls for a larger
-  // font-size our rem values will increase.
-  font-size: 62.5%;
-}
-
-body {
-  font-size: 1.6em; // Setting font size back to 16px for most cases.
-}
-
-h1, 
-h2,
-h3,
-h4,
-.h1,
-.h2,
-.h3,
-.h4 {
+h1, h2, h3, h4,
+.h1, .h2, .h3, .h4 {
   @extend %heading;
 }
 
-h1,
-.h1 {
+h1, .h1 {
   font-size: 2.6rem;
 }
 
-h2,
-.h2 {
+h2, .h2 {
   font-size: 2.0rem;
 }
 
-h3,
-.h3 {
+h3, .h3 {
   font-size: 1.8rem;
 }
 
-h4,
-.h4 {
+h4, .h4 {
   font-size: 1.6rem;
 }
 
-p,
-.p {
+p, .p,
+a {
   font-size: 1.4rem;
-
-  + p {
-    margin-top: 1.6rem;
-  }
 }
 
 a {
-  font-size: 1.4rem;
+  text-decoration: none;
 }
 
 small,
 .small {
   font-size: 1.2rem;
-  line-height: 1.4rem;
+  line-height: 1.4;
 }
 
-b,
-strong,
-.bold,
-.strong {
+b, .bold,
+strong, .strong {
   font-weight: 500;
-}
-
-hgroup {
-  display: flex;
-  flex-flow: column;
-}
-
-hr {
-  color: var(--c-gray);
-}
-
-vr {
-  border-right: 1px solid var(--c-gray);
-  height: 100%;
-  width: 0;
-}
-
-button:focus {
-  outline: none;
 }

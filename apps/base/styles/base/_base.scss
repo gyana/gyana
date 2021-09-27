@@ -1,0 +1,113 @@
+:root {
+  // Why do we do this? https://css-tricks.com/box-sizing/
+  box-sizing: border-box;
+  background-color: var(--c-gray-10);
+  color: var(--c-black);
+
+  // On an average device this will set the base font size to 10px.
+  // This helps tremendously with responsive sizing as we can now use the simple 1rem:10px
+  // ratio. Meaning 1.6rem (our standard padding) is 16px, if a device calls for a larger
+  // font-size our rem values will increase.
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6em; // Setting font size back to 16px for most cases.
+  line-height: 1;
+}
+
+// Common HTML elements
+
+button {
+  &:focus {
+    outline: 0;
+  }
+}
+
+hr {
+  color: var(--c-gray);
+  margin: 0;
+}
+
+vr {
+  color: var(--c-gray);
+  border-right: 1px solid currentColor;
+  height: 100%;
+  width: 0;
+  margin: 0;
+}
+
+form, .form {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column;
+  gap: 1.2rem;
+
+  &.form--no-layout {
+    align-items: inherit;
+    display: inherit;
+    flex-flow: inherit;
+    gap: inherit;
+  }
+
+  .form__description {
+    color: var(--c-black-50);
+    font-size: 1.4rem;
+    font-style: italic;
+    margin-bottom: 1.2rem;
+  }
+}
+
+fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  margin-bottom: 1.6rem;
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  label.checkbox + label.checkbox {
+    margin-top: -0.8rem;
+  }
+
+  .formset-wrapper {
+    padding: 1.6rem;
+    background-color: var(--c-gray-10);
+    border: 1px solid var(--c-gray);
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    .button--circle {
+      position: absolute;
+      top: -0.8rem;
+      right: -0.8rem;
+    }
+  }
+
+  [data-formset-target="target"] {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    
+    & > :last-child {
+      margin-bottom: 1.6rem;
+    }
+  }
+}
+
+.pad {
+  --padding: 1.6rem;
+  padding: var(--padding);
+
+  &--sm {
+    --padding: 1rem;
+    padding: var(--padding);
+  }
+}
