@@ -1,8 +1,5 @@
 import analytics
-from apps.base.segment_analytics import (
-    INTEGRATION_CREATED_EVENT,
-    NEW_INTEGRATION_START_EVENT,
-)
+from apps.base.analytics import INTEGRATION_CREATED_EVENT, NEW_INTEGRATION_START_EVENT
 from apps.base.turbo import TurboCreateView
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
@@ -25,13 +22,13 @@ class SheetCreate(ProjectMixin, TurboCreateView):
         kwargs["created_by"] = self.request.user
         return kwargs
 
-    def get_form_class(self):
+    def get(self, request, *args, **kwargs):
         analytics.track(
             self.request.user.id,
             NEW_INTEGRATION_START_EVENT,
             {"type": Integration.Kind.SHEET},
         )
-        return super().get_form_class()
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

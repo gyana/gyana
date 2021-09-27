@@ -39,5 +39,7 @@ class WorkflowTable(tables.Table):
     updated = NaturalDatetimeColumn()
     status = StatusColumn(template_name="columns/status.html")
     duplicate = DuplicateColumn(
-        template_name="components/_duplicate.html", verbose_name="Actions"
+        template_name="components/_duplicate.html",
+        verbose_name="Actions",
+        orderable=False,
     )

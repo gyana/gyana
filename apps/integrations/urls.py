@@ -1,7 +1,7 @@
 from apps.projects.access import login_and_project_required
 from django.urls import path
 
-from . import frames, views
+from . import cache, frames, views
 from .access import login_and_integration_required
 
 app_name = "integrations"
@@ -9,7 +9,9 @@ urlpatterns = [
     # frames
     path(
         "<hashid:pk>/grid",
-        login_and_integration_required(frames.IntegrationGrid.as_view()),
+        cache.integration_grid(
+            login_and_integration_required(frames.IntegrationGrid.as_view())
+        ),
         name="grid",
     ),
     path(
@@ -29,6 +31,11 @@ project_urlpatterns = (
             "pending",
             login_and_project_required(views.IntegrationPending.as_view()),
             name="pending",
+        ),
+        path(
+            "overview",
+            login_and_project_required(frames.IntegrationOverview.as_view()),
+            name="overview",
         ),
         path(
             "<hashid:pk>/configure",

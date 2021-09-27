@@ -1,5 +1,4 @@
 .env
-.messages
 gyana-1511894275181-50f107d4db00.json
 celerybeat-schedule
 
@@ -26,8 +25,7 @@ var/
 *.ipynb
 
 # Webpack output
-static/css/
-static/js/
+/static/
 
 .idea
 *~

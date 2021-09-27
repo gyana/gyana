@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { getModelStartId, readyIntegrations } from '../support/utils'
+import { getModelStartId, readyIntegrations, BIGQUERY_TIMEOUT } from '../support/utils'
 
 const SHARED_SHEET =
   'https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit'
@@ -27,15 +27,16 @@ describe('sheets', () => {
 
     // set advanced configuration
     cy.url().should('contain', `/projects/1/integrations/${id}/configure`)
-    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('store_info!A1:D11')
     cy.get('button[type=submit]').click()
 
     cy.contains('Validating and importing your sheet...')
-    cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
+    cy.contains('Sheet successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
 
     // review the table and approve
+    cy.contains('preview').click()
     cy.contains('Employees')
+    cy.contains('Setup').click()
     cy.contains('Confirm').click()
 
     cy.url().should('contain', `/projects/1/integrations/${id}`)
@@ -70,7 +71,6 @@ describe('sheets', () => {
     cy.get('input[name=url]').clear().type(SHARED_SHEET)
     cy.get('button[type=submit]').click()
 
-    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('does_not_exist!A1:D11')
     cy.get('button[type=submit]').click()
 
@@ -84,7 +84,6 @@ describe('sheets', () => {
     cy.get('button[type=submit]').click()
 
     // empty cells trigger column does not exist error
-    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').type('store_info!A20:D21')
     cy.get('button[type=submit]').click()
 
@@ -117,7 +116,7 @@ describe('sheets', () => {
 
     // sync is complete  and it redirects me back again
     cy.url().should('contain', '/projects/1/integrations/2/configure')
-    cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
+    cy.contains('Sheet successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
 
     cy.visit('/projects/1/integrations/2')
     cy.contains("You've already synced the latest data.")
@@ -128,14 +127,29 @@ describe('sheets', () => {
     cy.get('#tabbar').within(() => cy.contains('Setup').click())
     cy.contains('Configure').click()
 
-    cy.contains('Advanced').click()
     cy.get('input[name=cell_range]').clear().type('store_info!A1:D6')
     cy.get('button[type=submit]').click()
 
-    cy.contains('Sheet successfully validated and imported.', { timeout: 10000 })
+    cy.contains('Sheet successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
 
     // new cell range includes 5 rows of data
     cy.get('#tabbar').within(() => cy.contains('Overview').click())
     cy.contains('5')
+  })
+  it('all string', () => {
+    cy.contains('New Integration').click()
+    cy.contains('Add Sheet').click()
+
+    cy.get('input[name=url]').type(SHARED_SHEET)
+    cy.get('button[type=submit]').click()
+    cy.get('input[name=cell_range').type("'store_info_all_string'")
+    cy.get('button[type=submit]').click()
+    // needs longer to do 3x imports
+    cy.contains('Sheet successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
+
+    // import has inferred correct column headings
+    cy.contains('preview').click()
+    cy.contains('Location_name')
+    cy.contains('string_field_0').should('not.exist')
   })
 })

@@ -1,17 +1,19 @@
-from apps.base.frames import TurboFrameFormsetUpdateView, TurboFrameUpdateView
-from apps.base.segment_analytics import NODE_UPDATED_EVENT, track_node
-from apps.base.table_data import get_table
+from apps.base.analytics import NODE_UPDATED_EVENT, track_node
+from apps.base.frames import (
+    TurboFrameDetailView,
+    TurboFrameFormsetUpdateView,
+    TurboFrameUpdateView,
+)
+from apps.base.table_data import RequestConfig, get_table
 from apps.base.templates import template_exists
 from django import forms
 from django.http.response import HttpResponse
 from django.urls import reverse
 from django.utils import timezone
-from django_tables2.config import RequestConfig
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
-from turbo_response.views import TurboFrameTemplateView
 
-from .bigquery import get_query_from_node
+from .bigquery import NodeResultNone, get_query_from_node
 from .forms import KIND_TO_FORM
 from .models import Node
 
@@ -34,14 +36,16 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
     model = Node
     turbo_frame_dom_id = "workflow-modal"
 
-    def get_formset_kwargs(self, formset):
+    def get_formset_form_kwargs(self, formset):
 
         if formset.get_default_prefix() in [
             "add_columns",
+            "rename_columns",
             "edit_columns",
             "aggregations",
             "filters",
             "formula_columns",
+            "sort_columns",
             "window_columns",
         ]:
             return {"schema": self.object.parents.first().schema}
@@ -56,26 +60,11 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
         context = super().get_context_data(**kwargs)
         context["workflow"] = self.object.workflow
         context["preview_node_id"] = self.preview_node_id
-        context["show_docs"] = self.request.GET.get("show_docs", False) == "true" or (
-            self.object.data_updated is None
-            and self.object.kind not in ["union", "intersect"]
-        )
+        context["show_docs"] = self.request.GET.get("show_docs", False) == "true"
 
         # Node-specific documentation
-        help_template = f"nodes/help/{self.object.kind}.html"
-        context["help_template"] = (
-            help_template
-            if template_exists(help_template)
-            else "nodes/help/default.html"
-        )
-
-        # Node-specific form templates
-        form_template = f"nodes/forms/{self.object.kind}.html"
-        context["form_template"] = (
-            form_template
-            if template_exists(form_template)
-            else "nodes/forms/default.html"
-        )
+        if self.object.kind == Node.Kind.FORMULA:
+            context["help_template"] = "nodes/help/formula.html"
 
         # Add node type to list if it requires live updates
         context["do_live_updates"] = self.object.kind in [
@@ -87,13 +76,24 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
             "unpivot",
             "window",
         ]
+        context["parent_error_node"] = self.parent_error_node
         return context
 
     def get_form_class(self):
         return KIND_TO_FORM[self.object.kind]
 
     def get_form(self):
-        if self.object.kind == Node.Kind.INPUT or self.object.parents.first():
+        is_input = self.object.kind == Node.Kind.INPUT
+        has_parent = self.object.parents.first() is not None
+
+        try:
+            if not is_input and has_parent:
+                get_query_from_node(self.object.parents.first())
+            self.parent_error_node = None
+        except NodeResultNone as e:
+            self.parent_error_node = e.node
+
+        if not self.parent_error_node and (is_input or has_parent):
             return super().get_form()
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
@@ -110,25 +110,26 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
         return base_url
 
 
-class NodeGrid(SingleTableMixin, TurboFrameTemplateView):
+class NodeGrid(SingleTableMixin, TurboFrameDetailView):
     template_name = "nodes/grid.html"
+    model = Node
     paginate_by = 15
     turbo_frame_dom_id = "workflows-grid"
 
     def get_context_data(self, **kwargs):
-        self.node = Node.objects.get(id=kwargs["pk"])
         context = super().get_context_data(**kwargs)
-        context["node"] = self.node
-        error_template = f"nodes/errors/{self.node.error}.html"
-        if template_exists(error_template):
-            context["error_template"] = error_template
+        if self.object.error:
+            error_template = f"nodes/errors/{self.object.error}.html"
+            if template_exists(error_template):
+                context["error_template"] = error_template
+            else:
+                context["error_template"] = "nodes/errors/default.html"
         return context
 
     def get_table(self, **kwargs):
         try:
-            table = get_table(
-                self.node.schema, get_query_from_node(self.node), **kwargs
-            )
+            query = get_query_from_node(self.object)
+            table = get_table(self.object.schema, query, **kwargs)
 
             return RequestConfig(
                 self.request, paginate=self.get_table_pagination(table)

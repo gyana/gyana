@@ -9,7 +9,7 @@ INTEGRATION_STATE_TO_ICON = {
     Integration.State.UPDATE: ICONS["warning"],
     Integration.State.LOAD: ICONS["loading"],
     Integration.State.ERROR: ICONS["error"],
-    Integration.State.DONE: ICONS["success"],
+    Integration.State.DONE: ICONS["warning"],
 }
 
 INTEGRATION_STATE_TO_MESSAGE = {
@@ -23,17 +23,25 @@ INTEGRATION_STATE_TO_MESSAGE = {
 class PendingStatusColumn(Column):
     def render(self, record, table, **kwargs):
         context = getattr(table, "context", Context())
+        instance = self.accessor.resolve(record) if self.accessor else record
 
-        context["icon"] = INTEGRATION_STATE_TO_ICON[record.state]
-        context["text"] = INTEGRATION_STATE_TO_MESSAGE[record.state]
+        if instance is None:
+            return
+
+        if instance.ready:
+            context["icon"] = ICONS["success"]
+            context["text"] = "Success"
+        else:
+            context["icon"] = INTEGRATION_STATE_TO_ICON[instance.state]
+            context["text"] = INTEGRATION_STATE_TO_MESSAGE[instance.state]
 
         # wrap status in turbo frame to fetch possible update
         if (
-            record.kind == Integration.Kind.CONNECTOR
-            and record.state == Integration.State.LOAD
+            instance.kind == Integration.Kind.CONNECTOR
+            and instance.state == Integration.State.LOAD
         ):
-            context["connector"] = record.connector
-            return get_template("connectors/status.html").render(context.flatten())
+            context["connector"] = instance.connector
+            return get_template("connectors/icon.html").render(context.flatten())
 
         return get_template("columns/status.html").render(context.flatten())
 
@@ -66,6 +74,7 @@ class IntegrationPendingTable(Table):
     kind = Column(accessor="display_kind")
     created = NaturalDatetimeColumn(verbose_name="Started")
     state = PendingStatusColumn()
+    pending_deletion = NaturalDatetimeColumn(verbose_name="Expires")
 
 
 class StructureTable(Table):

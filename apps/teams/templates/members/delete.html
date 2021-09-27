@@ -1,18 +1,20 @@
 {% extends "web/app/app_base.html" %}
 
 {% block app %}
-<div class="p-4">
-  <h1>Delete</h1>
-  <p>Are you sure you want to delete?</p>
+<div class="flex flex-1 flex-col justify-center items-center self-center max-w-xl">
+  <h1 class="mb-3">Delete: {{ object.user.email }}</h1>
+  <p class="alert mb-6">Are you sure you want to remove this user?</p>
 
-  <form method="post" action="{% url 'team_members:delete' team.id object.id %}">
+  <form class="w-full" method="post" action="{% url 'team_members:delete' team.id object.id %}">
     {% csrf_token %}
 
-    <div className='flex flex-row'>
-      <button type="submit" class="button button--danger">Yes</button>
-      <a href="{% url 'team_members:list' team.id %}" class="button button--tertiary">
-        No
+    <div class='flex gap-3 w-full'>
+      <a href="{% url 'team_members:list' team.id %}"
+         class="button button--tertiary flex-1">
+        Go back
       </a>
+
+      <button type="submit" class="button button--danger flex-1">Yes</button>
     </div>
   </form>
 </div>

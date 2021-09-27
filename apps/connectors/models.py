@@ -19,6 +19,8 @@ class Connector(BaseModel):
     # do not display unfinished connectors that are not authorized as pending
     # we delete along with corresponding Fivetran model
     fivetran_authorized = models.BooleanField(default=False)
+    # keep track of sync succeeded time from fivetran
+    fivetran_succeeded_at = models.DateTimeField(null=True)
 
     # track the celery task
     sync_task_id = models.UUIDField(null=True)

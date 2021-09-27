@@ -4,6 +4,7 @@ import re
 
 import ibis
 from apps.base.clients import bigquery_client, ibis_client
+from apps.base.errors import error_name_to_snake
 from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
@@ -31,10 +32,10 @@ def _get_duplicate_names(left, right):
 
 def _rename_duplicates(left, right, left_col, right_col):
     duplicates = _get_duplicate_names(left, right)
-    left = left.relabel({d: f"{d}_1" for d in duplicates})
-    right = right.relabel({d: f"{d}_2" for d in duplicates})
-    left_col = f"{left_col}_1" if left_col in duplicates else left_col
-    right_col = f"{right_col}_2" if right_col in duplicates else right_col
+    left = left.relabel({d: f"{d}_left" for d in duplicates})
+    right = right.relabel({d: f"{d}_right" for d in duplicates})
+    left_col = f"{left_col}_left" if left_col in duplicates else left_col
+    right_col = f"{right_col}_right" if right_col in duplicates else right_col
 
     return left, right, left_col, right_col
 
@@ -121,13 +122,14 @@ def get_select_query(node, parent):
 
 def get_join_query(node, left, right):
 
-    # Adding 1/2 to left/right if the column exists in both tables
+    # Adding left/right to left/right if the column exists in both tables
     left, right, left_col, right_col = _rename_duplicates(
         left, right, node.join_left, node.join_right
     )
     to_join = getattr(left, JOINS[node.join_how])
 
-    return to_join(right, left[left_col] == right[right_col]).materialize()
+    joined = to_join(right, left[left_col] == right[right_col]).materialize()
+    return joined.drop([right_col]).relabel({left_col: node.join_left})
 
 
 def get_aggregation_query(node, query):
@@ -142,16 +144,21 @@ def get_aggregation_query(node, query):
         query = query.group_by(groups)
     if aggregations:
         return query.aggregate(aggregations)
-    return query.size()
+    return query.count()
 
 
 def get_union_query(node, query, *queries):
     colnames = query.schema()
     for parent in queries:
-        if node.union_mode == "keep":
-            query = query.union(parent, distinct=node.union_distinct)
-        else:
-            query = query.difference(parent)
+        query = query.union(parent, distinct=node.union_distinct)
+    # Need to `select *` so we can operate on the query
+    return query.projection(colnames)
+
+
+def get_except_query(node, query, *queries):
+    colnames = query.schema()
+    for parent in queries:
+        query = query.difference(parent)
     # Need to `select *` so we can operate on the query
     return query.projection(colnames)
 
@@ -271,7 +278,11 @@ def get_window_query(node, query):
         ).name(window.label)
 
         if window.group_by or window.order_by:
-            w = ibis.window(group_by=window.group_by, order_by=window.order_by)
+            w = ibis.window()
+            if window.group_by:
+                w._group_by = window.group_by
+            if window.order_by:
+                w._order_by = window.order_by
             aggregation = aggregation.over(w)
         query = query.mutate([aggregation])
     return query
@@ -297,6 +308,7 @@ NODE_FROM_CONFIG = {
     "aggregation": get_aggregation_query,
     "select": get_select_query,
     "union": get_union_query,
+    "except": get_except_query,
     "sort": get_sort_query,
     "limit": get_limit_query,
     "filter": get_filter_query,
@@ -339,14 +351,6 @@ def _validate_arity(func, len_args):
     assert len_args >= min_arity if variable_args else len_args == min_arity
 
 
-pattern = re.compile(r"(?<!^)(?=[A-Z])")
-
-
-def error_name_to_snake(error):
-    """Converts a exception class name to snake case"""
-    return pattern.sub("_", error.__class__.__name__).lower()
-
-
 def get_query_from_node(node):
 
     nodes = _get_all_parents(node)
@@ -372,6 +376,14 @@ def get_query_from_node(node):
             logging.error(err, exc_info=err)
 
         # input node zero state
-        assert results[node] is not None
+        if results.get(node) is None:
+            raise NodeResultNone(node=node)
 
     return results[node]
+
+
+class NodeResultNone(Exception):
+    def __init__(self, node, *args: object) -> None:
+        super().__init__(*args)
+
+        self.node = node

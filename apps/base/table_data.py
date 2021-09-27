@@ -1,8 +1,12 @@
-import pandas as pd
-from apps.base.clients import bigquery_client, get_dataframe
+import functools
+
+from django.core.cache import cache
 from django_tables2 import Column, Table
+from django_tables2.config import RequestConfig as BaseRequestConfig
 from django_tables2.data import TableData
 from django_tables2.templatetags.django_tables2 import QuerystringNode
+
+from apps.base.clients import get_query_results
 
 # Monkey patch the querystring templatetag for the pagination links
 # Without this links only lead to the whole document url and add query parameter
@@ -21,51 +25,53 @@ def new_render(self, context):
 QuerystringNode.render = new_render
 
 
-def _replace_nulls_with_none(df: pd.DataFrame):
-    # pandas to_dict returns non python native types e.g. Timestamp, NaT and nan
-    # short term fix to remove bugs with sentinel null values
-    # https://github.com/pandas-dev/pandas/issues/16248
-    # longer term fix would add custom renderer to columns in DynamicTable
-    return df.astype(object).where(df.notnull(), None)
-
-
 class BigQueryTableData(TableData):
     """Django table data class that queries data from BigQuery
 
     See https://github.com/jieter/django-tables2/blob/master/django_tables2/data.py
+
+    If pagination is not supplied, the client queries the entire result and
+    fetches the first N rows, and the total rows information. The total rows
+    information is cached, for future requests with explicit pages, where the
+    data is fetched via LIMIT ... OFFSET ... expression.
     """
 
-    rows_per_page = 100
+    rows_per_page = 50
 
     def __init__(
         self,
         data,
     ):
         self.data = data
+        # calculate before the order_by is applied, as len is not effected
+        self._len_key = str(hash(self.data))
+
+    @property
+    def _page_selected(self):
+        return "page" in self.table.request.GET
+
+    @functools.cache
+    def _get_query_results(self, start=0, stop=None):
+        data = self.data
+        if start > 0:
+            data = data.limit(stop - start, offset=start)
+        return get_query_results(data.compile(), max_results=self.rows_per_page)
 
     def __getitem__(self, page: slice):
         """Fetches the data for the current page"""
-        df = get_dataframe(
-            self.data.limit(page.stop - page.start, offset=page.start).compile()
-        )
-        df = _replace_nulls_with_none(df)
-        return df.to_dict(orient="records")
+        if not self._page_selected:
+            return self._get_query_results().rows_dict[: page.stop - page.start]
+        return self._get_query_results(page.start, page.stop).rows_dict
 
-    # TODO: This request slows down the loading of data a lot.
     def __len__(self):
         """Fetches the total size from BigQuery"""
-        client = bigquery_client()
-        return client.query(self.data.compile()).result().total_rows
+        total_rows = cache.get(self._len_key)
 
-    # Not sure when or whether this is used at the moment
-    def __iter__(self):
-        for offset in range(
-            0,
-            len(self),
-            self.rows_per_page,
-        ):
-            yield self[offset]
-        return
+        if not self._page_selected or total_rows is None:
+            total_rows = self._get_query_results().total_rows
+            cache.set(self._len_key, total_rows, 24 * 3600)
+
+        return total_rows
 
     def order_by(self, aliases):
         self.data = self.data.sort_by(
@@ -80,6 +86,13 @@ class BigQueryTableData(TableData):
         together properly.
         """
         self.table = table
+
+
+class RequestConfig(BaseRequestConfig):
+    def configure(self, table):
+        # table has request attribute before table_data.__len__ is called
+        table.request = self.request
+        return super().configure(table)
 
 
 def get_table(schema, query, **kwargs):

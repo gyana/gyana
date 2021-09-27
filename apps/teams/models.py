@@ -8,23 +8,33 @@ from apps.base.models import BaseModel
 
 from . import roles
 
-DEFAULT_ROW_LIMIT = 1_000_000
+DEFAULT_ROW_LIMIT = 50_000
+DEFAULT_CREDIT_LIMIT = 100
 WARNING_BUFFER = 0.2
 
 
 class Team(BaseModel):
+    icon = models.FileField(upload_to="team-icons/", null=True, blank=True)
     name = models.CharField(max_length=100)
 
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL, related_name="teams", through="Membership"
     )
 
-    row_limit = models.BigIntegerField(default=DEFAULT_ROW_LIMIT)
+    override_row_limit = models.BigIntegerField(null=True, blank=True)
     # row count is recalculated on a daily basis, or re-counted in certain situations
     # calculating every view is too expensive
     row_count = models.BigIntegerField(default=0)
     row_count_calculated = models.DateTimeField(null=True)
     max_credit = models.IntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        from .bigquery import create_team_dataset
+
+        create = not self.pk
+        super().save(*args, **kwargs)
+        if create:
+            create_team_dataset(self)
 
     def update_row_count(self):
         from apps.tables.models import Table
@@ -90,6 +100,41 @@ class Team(BaseModel):
             )
         )
 
+    def plan(self):
+        return "Lifetime Deal for Gyana" if self.appsumocode_set.count() > 0 else "Free"
+
+    @property
+    def row_limit(self):
+        from apps.appsumo.account import get_deal
+
+        if self.override_row_limit is not None:
+            return self.override_row_limit
+
+        rows = max(
+            DEFAULT_ROW_LIMIT,
+            get_deal(
+                self.appsumocode_set,  # extra 1M for writing a review
+            )["rows"],
+        )
+
+        # extra 1M for writing a review
+        if hasattr(self, "appsumoreview"):
+            rows += 1_000_000
+
+        rows += self.appsumoextra_set.aggregate(models.Sum("rows"))["rows__sum"] or 0
+
+        return rows
+
+    @property
+    def credits(self):
+        from apps.appsumo.account import get_deal
+
+        return max(DEFAULT_CREDIT_LIMIT, get_deal(self.appsumocode_set)["credits"])
+
+    @property
+    def admins(self):
+        return self.members.filter(membership__role=roles.ROLE_ADMIN)
+
 
 class Membership(BaseModel):
     """
@@ -99,6 +144,10 @@ class Membership(BaseModel):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     role = models.CharField(max_length=100, choices=roles.ROLE_CHOICES)
+
+    @property
+    def can_delete(self):
+        return self.team.admins.exclude(id=self.user.id).count() > 0
 
 
 # Credit system design motivated by https://stackoverflow.com/a/29713230

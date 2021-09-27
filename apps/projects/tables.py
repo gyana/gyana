@@ -1,6 +1,9 @@
 from apps.dashboards.tables import DashboardTable
 from apps.integrations.tables import IntegrationListTable
+from apps.projects.models import ProjectMembership
 from apps.workflows.tables import WorkflowTable
+from django_tables2 import Table
+from django_tables2.utils import A
 
 
 class ProjectIntegrationTable(IntegrationListTable):
@@ -21,5 +24,9 @@ class ProjectWorkflowTable(WorkflowTable):
 
 class ProjectDashboardTable(DashboardTable):
     class Meta(DashboardTable.Meta):
-        sequence = ("name", "status", "updated",)
+        sequence = (
+            "name",
+            "status",
+            "updated",
+        )
         exclude = ("created", "duplicate")

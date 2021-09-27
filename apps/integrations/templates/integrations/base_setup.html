@@ -20,9 +20,13 @@
         <a class="tabbar__link">
             <i class="fa fa-arrow-right"></i>
         </a>
-        <a class="tabbar__link {% if url_name == 'done' or integration.ready and url_name == 'configure' %} {% else %} tabbar__link--disabled {% endif %} {% if url_name == "done" %} tabbar__link--active {% endif %}"
-            {% if url_name == 'done' or integration.ready and url_name == 'configure' %} href="{% url 'project_integrations:done' project.id object.id %}" {% endif %}>
-            Review
+        <a class="tabbar__link {% if integration.state == 'done' or integration.ready and url_name == 'configure' %} {% else %} tabbar__link--disabled {% endif %} {% if url_name == "done" %} tabbar__link--active {% endif %}"
+            {% if integration.state == 'done' or integration.ready and url_name == 'configure' %} href="{% url 'project_integrations:done' project.id object.id %}" {% endif %}>
+            {% if not integration.ready %}
+                Review
+            {% else %}
+                Success
+            {% endif %}
         </a>
     </nav>
 

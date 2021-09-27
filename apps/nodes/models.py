@@ -1,30 +1,31 @@
 from functools import cached_property
 
 from apps.base.aggregations import AggregationFunctions
-from apps.base.cache import get_cache_key
 from apps.base.models import BaseModel
 from apps.nodes.config import NODE_CONFIG
 from apps.tables.models import Table
 from apps.workflows.models import Workflow
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
-from django.core.cache import cache
 from django.db import models
-from django.db.models import Max
 from django.utils import timezone
+from ibis.expr.types import ScalarExpr
 from model_clone import CloneMixin
 
 
 class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
+    class Meta:
+        ordering = ()
+
     class Kind(models.TextChoices):
         ADD = "add", "Add"
-        AGGREGATION = "aggregation", "Aggregation"
+        AGGREGATION = "aggregation", "Group and Aggregate"
         DISTINCT = "distinct", "Distinct"
         EDIT = "edit", "Edit"
         FILTER = "filter", "Filter"
         INPUT = "input", "Get data"
         FORMULA = "formula", "Formula"
-        INTERSECT = "intersect", "Intersection"
+        INTERSECT = "intersect", "Intersect "
         JOIN = "join", "Join"
         LIMIT = "limit", "Limit"
         PIVOT = "pivot", "Pivot"
@@ -33,9 +34,10 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         SELECT = "select", "Select columns"
         SORT = "sort", "Sort"
         UNION = "union", "Union"
+        EXCEPT = "except", "Except"
         UNPIVOT = "unpivot", "Unpivot"
         TEXT = "text", "Text"
-        WINDOW = "window", "Window"
+        WINDOW = "window", "Window and Calculate"
         SENTIMENT = "sentiment", "Sentiment"
 
     # You have to add new many-to-one relations here
@@ -76,14 +78,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     # Input
     input_table = models.ForeignKey(
-        Table, on_delete=models.CASCADE, null=True, help_text="Select a data source"
-    )
-
-    # Output
-    output_name = models.CharField(
-        max_length=100,
-        null=True,
-        help_text="Name your output, this name will be refered to in other workflows or dashboards.",
+        Table, on_delete=models.SET_NULL, null=True, help_text="Select a data source"
     )
 
     # Select also uses columns
@@ -98,7 +93,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     # Aggregation
     # columns exists on Column as FK
-    # aggregations exists on FunctionColumn as FK
+    # aggregations exists on AggregationColumn as FK
 
     # Join
     join_how = models.CharField(
@@ -125,14 +120,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         help_text="The column from the second parent you want to join on.",
     )
 
-    # Union
-
-    union_mode = models.CharField(
-        max_length=8,
-        choices=(("keep", "keep"), ("exclude", "exclude")),
-        default="keep",
-        help_text="Either keep or exclude the common rows",
-    )
+    # Union/Except
     union_distinct = models.BooleanField(
         default=False, help_text="Ignore common rows if selected"
     )
@@ -229,22 +217,12 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
         from .bigquery import get_query_from_node
 
-        # in theory, we only need to fetch all parent nodes recursively
-        # in practice, this is faster and less error prone
-        nodes_last_updated = self.workflow.nodes.all().aggregate(Max("data_updated"))
-        input_nodes = self.workflow.nodes.filter(input_table__isnull=False).all()
-
-        cache_key = get_cache_key(
-            node_id=self.id,
-            nodes_last_updated=str(nodes_last_updated["data_updated__max"]),
-            input_tables=[node.input_table.cache_key for node in input_nodes],
-        )
-
-        if (res := cache.get(cache_key)) is None:
-            res = get_query_from_node(self).schema()
-            cache.set(cache_key, res, 30)
-
-        return res
+        query = get_query_from_node(self)
+        # Group by can return a scalar when counting over the whole
+        # input table, it doesn't have a schema method
+        if isinstance(query, ScalarExpr):
+            return {query._name: query.type()}
+        return query.schema()
 
     @property
     def display_name(self):
@@ -263,7 +241,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         return self.parents.count() >= min_arity
 
     def get_table_name(self):
-        return f"Workflow:{self.workflow.name}:{self.output_name}"
+        return f"Workflow:{self.workflow.name}:{self.name}"
 
     @property
     def bq_output_table_id(self):

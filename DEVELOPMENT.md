@@ -2,29 +2,30 @@
 
 ## Prerequisites
 
-Packages and software required to develop the tool.
+Packages and software required to develop the tool. Install via homebrew, unless indicated otherwise.
 
 Required:
 
-- Direnv
-- Poetry
-- Postgres
-- Redis
-- Yarn
+- just
+- direnv
+- poetry
+- yarn
+- watchexec
+- postgres 13 (https://postgresapp.com/)
+- redis 6 (https://jpadilla.github.io/redisapp/)
 
-Optional / Recommended
+Optional / Recommended:
 
-- Virtualenvwrapper
-- Watchexec
-- Heroku-cli
-- Direnv
+- heroku
+
+We have a recommended list of extensions for developing in VSCode.
 
 ## Setup
 
-After installing virtualenvwrapper, create an environment:
+Authorize direnv to configure your local environment:
 
 ```bash
-mkvirtualenv --no-site-packages gyana -p python3
+direnv allow .
 ```
 
 Install all required python and node dependencies:
@@ -34,19 +35,12 @@ poetry install
 yarn install
 ```
 
-On MacOS you may run into a bug with `psycopg2` due to an outdated package `django-heroku`, after
-the install fails the first time run and run `poetry install` again. For more details on this see:
-<https://stackoverflow.com/questions/26288042/error-installing-psycopg2-library-not-found-for-lssl>
-
-```bash
-env LDFLAGS="-I/usr/local/opt/openssl/include -L/usr/local/opt/openssl/lib" pip install psycopg2
-```
-
 Create a local database and run migrations on it:
 
 ```bash
 createdb gyana
-python manage.py migrate
+just migrate
+just seed
 ```
 
 Make sure to authenticate using gcloud and generate the relevant env variables:
@@ -54,60 +48,65 @@ Make sure to authenticate using gcloud and generate the relevant env variables:
 ```bash
 gcloud auth login
 gcloud config set project gyana-1511894275181
-just env
-```
-
-Next create a bigquery dataset. We use the git config email as slug to effectively namespace dev environments from eachother in the cloud.
-
-```bash
-just mk_bq
-```
-
-You now need to run webpack to bundle all the client side code and styles:
-
-```bash
-yarn build
-```
-
-You can also run `yarn build:watch` to watch for file changes.
-
-At this point you should be able to run the app, make sure that postgresql is running (and redis-server if running celery).
-
-```bash
-just dev
-just dev-celery # Optional
+just env # decrypt secrets stored in repository
 ```
 
 ## Develop
 
-Commands:
+At this point you should be able to run the app. Run Django development server,
+celery backend for tasks and webpack to bundle all the client side code and styles.
+Make sure that Postgres and Redis servers are running:
 
-- `just dev`
-- `just dev-celery`
-- `yarn build:watch`
+```bash
+just dev
+just celery
+yarn build:watch
+```
 
-Create a new CRUDL Django app with `just startapp`.
+Bootstrap a new CRUDL Django app with `just startapp`.
 
-## Testing with Cypress
+## Test
 
-Setup your test app:
+Run your app in development mode and open the cypress UI:
 
-- `createdb cypress_gyana`
-- `just cypress-setup`
+```
+yarn cypress:open
+```
 
-Run cypress + app with hot-reloading:
+The database is seeded with fixtures, and reset before each test. To modify the
+fixtures, manually make the changes in the UI and dump them.
 
-- `just cypress-server`
-- `just cypress-celery`
-- `yarn build:watch`
-- `yarn cypress:open`
+```bash
+# remember to re-seed the database to initial state
+just cypress-setup
+# ...make changes...
+just cypress-fixtures
+```
 
-The app is seeded with the fixtures defined in `cypress/fixtures/fixtures.json`. To modify the fixtures:
+Our testing objectives:
+- Keep Cypress runtime to 5 minutes
+- Wrap business logic in the ORM or dedicated functions
+- Focus on business logic/cold path for unit tests
 
-- Reset the database `just cypress-setup`
-- Go to the app in the browser and modify it
-- Dump the fixtures `just cypress-fixtures`
-- Commit your changes
+## Profile
+
+Open the [Silk](https://github.com/jazzband/django-silk) [UI](http://localhost:8000/silk)
+for per request statistics, SQL profiling and cProfile graphs.
+
+Setup Honeycomb [locally](apps/base/apps.py) to generate traces for
+individual HTTP requests.
+
+## QA
+
+Run the entire e2e test suite locally, and view the list of failed tests. You can
+review screenshots and videos in the cypress folder to spot easy fixes:
+
+```
+yarn cypress:run
+yarn cypress:failed
+```
+
+Manually fix failed tests in the UI and re-run the tests suite to confirm.
 
 ## Deployment
 
@@ -116,8 +115,52 @@ For more in-depth information see [DEPLOYMENT.md](DEPLOYMENT.md)
 Run `just export` and push to main. View errors on
 [Heroku](https://dashboard.heroku.com/apps/gyana-mvp).
 
-## Adding new data science nodes
+## Javascript
 
-To add new nodes, you need to add the new node kind to the model choices and the required fields as new columns. The current naming convention for these columns is `<kind>_property`. You can then add a form object to the `KIND_TO_FORM` map in _workflows/forms.py_. Inheriting from `ModelForm` is the easiest way to implement these forms.
+Instead of building a single page web app, we progressively add interactivity
+to pages with different techniques. Choosing which one to use in each situation
+is an art but you get better at it over time:
 
-To display the nodes data and add to the flows SQL query add a function `NODE_FROM_CONFIG` in _workflows/nodes.py_.
+- Turbo Drive - enabled automatically for all clicks and submissions, you might
+  need to disable e.g. for external links
+- Turbo Frames - lazy loading content and embedding certain UIs (e.g. modals)
+- Turbo Streams - update other parts of a page on form submission
+- Stimulus - lightweight interactivity
+- React - if you need client side state or a library from the React ecosystem -
+  wrap in a web component, interact with APIs
+- Django widgets - using React or Stimulus
+- React wrapped - a React powered web component that has plain HTML (generated
+  by Django) as children - see `<gy-widget>`
+- Celery Progress - show progress of long running task using the `celery_progress
+
+## Philosophy
+
+> Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away.
+
+We believe it is possible for a small team to build world-class software,
+that customers love, fast, by being smart, efficient and practical about how
+we do things.
+
+Mariusz has documented our approach to [styles](apps/base/styles/STYLES.md).
+
+David has written a [blog](https://davidkell.substack.com/p/davids-opinionated-guide-for-building)
+post about building MVPs fast with Django.
+
+Our application architecture is driven by two ideas:
+
+- Decouple features into separate Django apps with no more than 1-2k lines of code,
+  typically built around a single core model
+- Make the layout of each app as predictable as possible, including file names
+  and code structure
+
+## Inspiration
+
+- Interactive pages with less javascript - [Hotwire](https://hotwire.dev/)
+- Our boilerplate generator - [SaaS Pegasus](https://www.saaspegasus.com/)
+- Using JS in Django - [Modern JavaScript for Django Developers](https://www.saaspegasus.com/guides/modern-javascript-for-django-developers/)
+- Pragmatic Django for fast development - [Django for Startup Founders](https://alexkrupp.typepad.com/sensemaking/2021/06/django-for-startup-founders-a-better-software-architecture-for-saas-startups-and-consumer-apps.html)
+- Django docs - [Django documentation](https://docs.djangoproject.com/en/3.2/)
+- Django packages reference - [Django Packages](https://djangopackages.org/)
+- Detailed docs for class based views - [Classy CBV](https://ccbv.co.uk/)
+- Prototyping layouts - [Tailwind CSS](https://tailwindcss.com/)
+- How we do CSS classes - [BEM — Block Element Modifier](http://getbem.com/)

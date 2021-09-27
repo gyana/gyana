@@ -3,7 +3,8 @@ import string
 
 import numpy as np
 import pandas as pd
-from apps.widgets.models import Widget
+from apps.widgets.bigquery import get_unique_column_names
+from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget
 
 from .fusioncharts import FusionCharts
 
@@ -17,18 +18,40 @@ def short_hash():
 DEFAULT_WIDTH = "100%"
 DEFAULT_HEIGHT = "100%"
 
+TO_FUSION_CHART = {Widget.Kind.STACKED_LINE: "msline"}
+
+
+def _create_axis_names(widget):
+    if widget.kind in [Widget.Kind.SCATTER, Widget.Kind.BUBBLE]:
+        metrics = widget.aggregations.all()
+        return {
+            "xAxisName": metrics[0].column,
+            "yAxisName": metrics[1].column,
+        }
+    if widget.kind == Widget.Kind.HEATMAP:
+        return {
+            "xAxisName": widget.dimension,
+            "yAxisName": widget.second_dimension,
+        }
+    if widget.kind in NO_DIMENSION_WIDGETS:
+        {}
+
+    return {
+        "xAxisName": widget.dimension,
+        "yAxisName": _get_first_value_or_count(widget),
+    }
+
 
 def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     """Render a chart from a table."""
 
     data = CHART_DATA[widget.kind](widget, df)
-
+    axis_names = _create_axis_names(widget)
     dataSource = {
         "chart": {
             "stack100Percent": "1" if widget.stack_100_percent else "0",
             "theme": "fusion",
-            "xAxisName": widget.label,
-            "yAxisName": widget.aggregations.first().column,
+            **axis_names,
         },
         **data,
     }
@@ -36,7 +59,7 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     chart_id = f"{widget.pk}-{short_hash()}"
     return (
         FusionCharts(
-            widget.kind,
+            TO_FUSION_CHART.get(widget.kind) or widget.kind,
             f"chart-{chart_id}",
             DEFAULT_WIDTH,
             DEFAULT_HEIGHT,
@@ -48,13 +71,24 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     )
 
 
+def _get_first_value_or_count(widget):
+    aggregation = widget.aggregations.first()
+    return aggregation.column if aggregation else COUNT_COLUMN_NAME
+
+
 def to_multi_value_data(widget, df):
-    values = [value.column for value in widget.aggregations.all()]
+    aggregations = widget.aggregations.all()
+    unique_names = get_unique_column_names(aggregations, [widget.dimension])
+    values = [unique_names.get(value, value.column) for value in aggregations] or [
+        COUNT_COLUMN_NAME
+    ]
+
     return {
         "categories": [
             {
                 "category": [
-                    {"label": str(label)} for label in df[widget.label].to_list()
+                    {"label": str(dimension)}
+                    for dimension in df[widget.dimension].to_list()
                 ]
             }
         ],
@@ -69,35 +103,31 @@ def to_multi_value_data(widget, df):
 
 
 def to_scatter(widget, df):
-    values = [value.column for value in widget.aggregations.all()]
-    df = df.rename(columns={widget.label: "x"})
+    aggregations = widget.aggregations.all()
+    unique_names = get_unique_column_names(aggregations, [widget.dimension])
+    x, y = [unique_names.get(value, value.column) for value in aggregations][:2]
+    df = df.rename(columns={x: "x", y: "y", widget.dimension: "id"})
     return {
-        "categories": [
-            {"category": [{"label": str(label)} for label in df.x.to_list()]}
-        ],
+        "categories": [{"category": [{"label": str(x)} for x in df.x.to_list()]}],
         "dataset": [
             {
-                **({"seriesname": value} if len(values) > 1 else dict()),
-                "data": df.rename(columns={value: "y"})[["x", "y"]].to_dict(
-                    orient="records"
-                ),
+                "data": df[["x", "y", "id"]].to_dict(orient="records"),
             }
-            for value in values
         ],
     }
 
 
 def to_radar(widget, df):
+    aggregations = widget.aggregations.all()
+    unique_names = get_unique_column_names(aggregations, [widget.dimension])
+    df = df.melt(value_vars=[unique_names.get(col, col.column) for col in aggregations])
     return {
         "categories": [
-            {"category": [{"label": label} for label in df[widget.label].to_list()]}
+            {"category": [{"label": label} for label in df.variable.to_list()]}
         ],
         "dataset": [
             {
-                "data": [
-                    {"value": value}
-                    for value in df[widget.aggregations.first().column].to_list()
-                ],
+                "data": [{"value": value} for value in df.value.to_list()],
             }
         ],
     }
@@ -106,22 +136,37 @@ def to_radar(widget, df):
 def to_single_value(widget, df):
     return {
         "data": df.rename(
-            columns={widget.label: "label", widget.aggregations.first().column: "value"}
+            columns={
+                widget.dimension: "label",
+                _get_first_value_or_count(widget): "value",
+            }
         ).to_dict(orient="records")
     }
 
 
-def to_bubble(widget, df):
+def to_segment(widget, df):
+    aggregations = widget.aggregations.order_by(
+        "created" if widget.kind == Widget.Kind.FUNNEL else "-created"
+    ).all()
+    unique_names = get_unique_column_names(aggregations, [widget.dimension])
+    df = df.melt(value_vars=[unique_names.get(col, col.column) for col in aggregations])
     return {
+        "data": [
+            {"label": row.variable, "value": row.value} for _, row in df.iterrows()
+        ]
+    }
+
+
+def to_bubble(widget, df):
+    aggregations = widget.aggregations.all()
+    unique_names = get_unique_column_names(aggregations, [widget.dimension])
+    x, y, z = [unique_names.get(value, value.column) for value in aggregations][:3]
+    df = df.rename(columns={x: "x", y: "y", z: "z", widget.dimension: "id"})
+    return {
+        "categories": [{"category": [{"label": str(x)} for x in df.x.to_list()]}],
         "dataset": [
             {
-                "data": df.rename(
-                    columns={
-                        widget.label: "x",
-                        widget.aggregations.first().column: "y",
-                        widget.z: "z",
-                    }
-                ).to_dict(orient="records")
+                "data": df[["x", "y", "z", "id"]].to_dict(orient="records"),
             }
         ],
     }
@@ -133,9 +178,9 @@ COLOR_CODES = ["0155E8", "2BA8E8", "21C451", "FFD315", "E8990C", "C24314", "FF00
 def to_heatmap(widget, df):
     df = df.rename(
         columns={
-            widget.label: "rowid",
-            widget.aggregations.first().column: "columnid",
-            widget.z: "value",
+            widget.dimension: "rowid",
+            widget.second_dimension: "columnid",
+            _get_first_value_or_count(widget): "value",
         }
     ).sort_values(["rowid", "columnid"])
 
@@ -161,12 +206,19 @@ def to_heatmap(widget, df):
 
 
 def to_stack(widget, df):
+    if not widget.second_dimension:
+        return to_multi_value_data(widget, df)
     pivoted = df.pivot(
-        index=widget.label, columns=widget.z, values=widget.aggregations.first().column
+        index=widget.dimension,
+        columns=widget.second_dimension,
+        values=_get_first_value_or_count(widget),
     )
+
+    if widget.sort_by == "value":
+        pivoted = pivoted.reindex(df[widget.dimension].unique())
     return {
         "categories": [
-            {"category": [{"label": str(label)} for label in pivoted.index]}
+            {"category": [{"label": str(dimension)} for dimension in pivoted.index]}
         ],
         "dataset": [
             {
@@ -183,8 +235,8 @@ CHART_DATA = {
     Widget.Kind.HEATMAP: to_heatmap,
     Widget.Kind.SCATTER: to_scatter,
     Widget.Kind.RADAR: to_radar,
-    Widget.Kind.FUNNEL: to_single_value,
-    Widget.Kind.PYRAMID: to_single_value,
+    Widget.Kind.FUNNEL: to_segment,
+    Widget.Kind.PYRAMID: to_segment,
     Widget.Kind.PIE: to_single_value,
     Widget.Kind.DONUT: to_single_value,
     Widget.Kind.COLUMN: to_multi_value_data,
@@ -193,4 +245,5 @@ CHART_DATA = {
     Widget.Kind.STACKED_BAR: to_stack,
     Widget.Kind.AREA: to_multi_value_data,
     Widget.Kind.LINE: to_multi_value_data,
+    Widget.Kind.STACKED_LINE: to_stack,
 }

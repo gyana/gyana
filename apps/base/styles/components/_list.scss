@@ -1,0 +1,31 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  padding: 0.4rem;
+  width: 100%;
+
+  &--bordered {
+    border-radius: 10px;
+    border: 1px solid var(--c-gray);
+    background-color: var(--c-white);
+  }
+
+  &__item {
+    align-items: center;
+    border-radius: 5px;
+    display: flex;
+    min-height: 32px;
+    
+    > :first-child {
+      padding: 0 0.4rem;
+    }
+
+    &--interactive {
+      &:hover {
+        cursor: pointer;
+        background-color: var(--c-blue-20);
+      }
+    }
+  }
+}

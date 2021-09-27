@@ -12,6 +12,10 @@ from .models import Node
 from .widgets import InputNode, MultiSelect
 
 
+def _create_choices(schema):
+    return [("", "No column selected"), *[(col, col) for col in schema]]
+
+
 class NodeForm(LiveUpdateForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -52,9 +56,12 @@ class InputNodeForm(NodeForm):
 class OutputNodeForm(NodeForm):
     class Meta:
         model = Node
-        fields = ["output_name"]
-        labels = {"output_name": "Output name"}
-        required = ["output_name"]
+        fields = ["name"]
+        labels = {"name": "Output name"}
+        required = ["name"]
+        help_texts = {
+            "name": "Name your output, this name will be refered to in other workflows or dashboards.",
+        }
 
 
 class SelectNodeForm(NodeForm):
@@ -116,11 +123,11 @@ class JoinNodeForm(NodeForm):
         super().__init__(*args, **kwargs)
 
         self.fields["join_left"] = forms.ChoiceField(
-            choices=[(col, col) for col in self.instance.parents.first().schema],
+            choices=_create_choices(self.instance.parents.first().schema),
             help_text=self.fields["join_left"].help_text,
         )
         self.fields["join_right"] = forms.ChoiceField(
-            choices=[(col, col) for col in self.instance.parents.last().schema],
+            choices=_create_choices(self.instance.parents.last().schema),
             help_text=self.fields["join_right"].help_text,
         )
 
@@ -129,10 +136,9 @@ class UnionNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = [
-            "union_mode",
             "union_distinct",
         ]
-        labels = {"union_distinct": "distinct", "union_mode": "mode"}
+        labels = {"union_distinct": "distinct"}
 
 
 class LimitNodeForm(NodeForm):
@@ -156,10 +162,8 @@ class PivotNodeForm(NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         schema = self.instance.parents.first().schema
-        column_choices = [
-            ("", "No column selected"),
-            *[(col, col) for col in schema],
-        ]
+        column_choices = _create_choices(schema)
+
         self.fields["pivot_index"] = forms.ChoiceField(
             choices=column_choices,
             required=False,
@@ -193,6 +197,14 @@ class UnpivotNodeForm(NodeForm):
         model = Node
         fields = ["unpivot_value", "unpivot_column"]
         required = ["unpivot_value", "unpivot_column"]
+        labels = {
+            "unpivot_value": "Value column name",
+            "unpivot_column": "Category column name",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_description = "Transform multiple columns into a single column."
 
 
 class SentimenttNodeForm(NodeForm):
@@ -206,14 +218,15 @@ class SentimenttNodeForm(NodeForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["sentiment_column"].choices = [
-            ("", "No column selected"),
-            *[
-                (name, name)
-                for name, type_ in self.columns.items()
-                if type_.name == "String"
-            ],
-        ]
+        self.fields["sentiment_column"].choices = _create_choices(
+            [name for name, type_ in self.columns.items() if type_.name == "String"]
+        )
+
+
+class ExceptNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_description = "Remove rows that exist in a second table."
 
     def save(self, commit=True):
         node = super().save(commit=commit)
@@ -226,6 +239,7 @@ KIND_TO_FORM = {
     "input": InputNodeForm,
     "output": OutputNodeForm,
     "select": SelectNodeForm,
+    "except": ExceptNodeForm,
     "join": JoinNodeForm,
     "aggregation": DefaultNodeForm,
     "union": UnionNodeForm,

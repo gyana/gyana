@@ -1,3 +1,5 @@
+import analytics
+from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
 from apps.base.clients import fivetran_client
 from apps.base.turbo import TurboUpdateView
 from apps.connectors.tasks import complete_connector_sync
@@ -31,14 +33,14 @@ class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        project_integrations = Integration.objects.filter(project=self.project)
+        project_integrations = self.project.integration_set.exclude(
+            connector__fivetran_authorized=False
+        )
 
         context_data["integration_count"] = project_integrations.count()
-        context_data["pending_integration_count"] = (
-            project_integrations.filter(ready=False)
-            .exclude(connector__fivetran_authorized=False)
-            .count()
-        )
+        context_data["pending_integration_count"] = project_integrations.filter(
+            ready=False
+        ).count()
 
         context_data["integration_kinds"] = Integration.Kind.choices
 
@@ -96,7 +98,7 @@ class IntegrationDetail(ReadyMixin, TurboUpdateView):
         )
 
 
-class IntegrationData(ReadyMixin, DetailView):
+class IntegrationData(ProjectMixin, DetailView):
     template_name = "integrations/data.html"
     model = Integration
 
@@ -168,15 +170,6 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
             )
         return super().get(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        # connector task may have expired, need to check the source
-        if self.object.kind == Integration.Kind.CONNECTOR:
-            if fivetran_client().has_completed_sync(self.object.source_obj):
-                context_data["done"] = complete_connector_sync(self.object.source_obj)
-
-        return context_data
-
     def get_form_class(self):
         return KIND_TO_FORM_CLASS[self.object.kind]
 
@@ -189,6 +182,15 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
         KIND_TO_SYNC_TASK[self.object.kind](self.object.source_obj)
         # don't assigned the result to self.object
         form.save()
+        analytics.track(
+            self.request.user.id,
+            INTEGRATION_SYNC_STARTED_EVENT,
+            {
+                "id": self.object.id,
+                "type": self.object.kind,
+                "name": self.object.name,
+            },
+        )
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self) -> str:
@@ -220,6 +222,12 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["sync_task_id"] = self.object.source_obj.sync_task_id
+
+        # connector task may have expired, need to check the source
+        if self.object.kind == Integration.Kind.CONNECTOR:
+            if fivetran_client().has_completed_sync(self.object.source_obj):
+                complete_connector_sync(self.object.source_obj, send_mail=False)
+                context_data["done"] = True
         return context_data
 
     def form_valid(self, form):
@@ -263,6 +271,11 @@ class IntegrationDone(ProjectMixin, TurboUpdateView):
         return r
 
     def get_success_url(self) -> str:
+        if not self.project.ready:
+            return reverse(
+                "project_templateinstances:list",
+                args=(self.project.id,),
+            )
         return reverse(
             "project_integrations:detail",
             args=(self.project.id, self.object.id),

@@ -1,0 +1,57 @@
+// Used in messages.html to render toast messages for the user.
+.toast-container {
+  bottom: 0;
+  display: flex;
+  flex-flow: column;
+  gap: 1rem;
+  left: 0;
+  margin: 1.6rem;
+  position: absolute;
+  z-index: var(--z-modal);
+
+  .toast {
+    align-items: center;
+    background-color: var(--c-white);
+    border: 1px solid var(--c-gray);
+    border-left: 0;
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+    box-shadow: 4px 10px 30px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex: 1 1 0%;
+    font-size: 1.4rem;
+    padding: 1.6rem;
+    width: 32rem;
+    animation: slide-out-left 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) 5s both;
+
+    &::before {
+      background-color: var(--c-blue);
+      content: '';
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 0.3rem;
+    }
+
+    &__close {
+      margin-left: auto;
+      cursor: pointer;
+      color: var(--c-black-20);
+    }
+  }
+}
+
+@keyframes slide-out-left {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  100% {
+    -webkit-transform: translateX(-1000px);
+    transform: translateX(-1000px);
+    opacity: 0;
+  }
+}

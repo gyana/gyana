@@ -14,10 +14,8 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
   root,
 }) => {
   const mode: 'view' | 'edit' | 'public' =
-    new URLSearchParams(window.location.search).get('mode') ||
-    window.location.href.includes('projects')
-      ? 'edit'
-      : 'public'
+    (new URLSearchParams(window.location.search).get('mode') as 'view' | 'edit') ||
+    (window.location.href.includes('projects') ? 'edit' : 'public')
   const id = children.props['data-id']
   // Utilised to decide the clamping on interaction as well as clamps for placement
   const stepSize = GRID_SIZE
@@ -48,8 +46,8 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
       }}
       resizeGrid={[stepSize, stepSize]}
       dragGrid={[stepSize, stepSize]}
-      minHeight='200'
       minWidth='200'
+      minHeight='45'
       onResizeStop={(...args) => {
         const node = args[2]
         const parent = root
@@ -83,8 +81,8 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
           x < 0
             ? 0
             : parent && x + node.clientWidth > parent.offsetWidth
-            ? parent.offsetWidth - node.clientWidth
-            : Math.round(x / stepSize) * stepSize
+              ? parent.offsetWidth - node.clientWidth
+              : Math.round(x / stepSize) * stepSize
         )
         // Snaps the y value to the top of the parent element
         const newY = Math.floor(y > 0 ? Math.round(y / stepSize) * stepSize : 0)

@@ -68,3 +68,11 @@ def read_json(path):
     with open(path, "r") as file:
         data = file.read()
     return json.loads(data)
+
+
+@register.filter
+def list_item(lst, i):
+    try:
+        return lst[i]
+    except:
+        return None

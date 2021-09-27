@@ -2,33 +2,23 @@
 
 {% block tab %}
 
-<div class="pad">
-    <form method="post" action="{{ request.get_full_path }}" class="form">
-        <div class='card'>
-            {% if not object.ready %}
-                <h4>Import with default settings or configure advanced options.</h4>
-                <p>You can come back here after viewing the initial import.</p>
-            {% else %}
-                <h4>Re-import data or configure advanced options.</h4>          
-            {% endif %}
-            <button type="submit" class="button button--filled button--success mt-4">Import</button>
-        </div>
-        
-        <div class='pad card' data-controller='collapsable'>
-            <h3 class='cursor-pointer' data-action='click->collapsable#toggle'>
-            Advanced options
-            </h3>
+<div class="pad flex flex-1 justify-center items-center">
+    <div class='flex flex-col flex-1 max-w-3xl'>
+        <h1 class="flex items-center justify-center gap-3 mb-7">Configure import</h1>
+        <div class="flex flex-1 justify-center items-center">
+            <form method="post" action="{{ request.get_full_path }}" class="form">
+                <p class="alert mb-4">
+                    If you're not sure about these settings, we recommend you start with the defaults and tweak them later.
+                </p>
 
-            <div
-            class='collapsable flex flex-col max-h-0 overflow-hidden'
-            data-collapsable-target='body'
-            >
-            {% csrf_token %}
+                {% csrf_token %}
 
-            {% include "django/forms/default_form.html" %}
-            </div>
+                {% include "django/forms/default_form.html" %}
+
+                <button type="submit" class="button button--filled button--success mt-4">Import</button>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 {% endblock %}

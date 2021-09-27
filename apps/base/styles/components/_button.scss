@@ -1,0 +1,119 @@
+$button-colors: (
+  "primary": var(--c-blue),
+  "success": var(--c-green),
+  "pink": var(--c-pink),
+  "danger": var(--c-red),
+  "warning": var(--c-orange),
+  "tertiary": var(--c-black),
+) !default;
+
+// Generic button component.
+//
+// See `$button-colors` for available themes to be used as classes.
+//
+// ```
+// <button class="button button--sm"/>Small Button</button>
+// ```
+.button {
+  --button-color: var(--c-blue);
+  --button-background: var(--c-white);
+
+  align-items: baseline;
+  border-radius: 6px;
+  display: inline-flex;
+  font-size: 1.6rem;
+  white-space: nowrap;
+  font-weight: 500;
+  gap: 0.5em;
+  justify-content: center;
+  line-height: 1.9rem;
+  max-height: 3.9rem;
+  padding: 1rem 3rem;
+  text-align: center;
+
+  background-color: var(--button-color);
+  border: 1px solid transparent;
+  color: var(--c-white);
+
+  &[type="submit"],
+  &[href],
+  &[data-action] {
+    cursor: pointer;
+  }
+  
+  &[disabled],
+  &:disabled,
+  &.disabled {
+    --button-color: var(--c-black-10);
+    --button-background: var(--c-transparent);
+
+    cursor: not-allowed;
+  }
+
+  &:hover {
+    opacity: 0.5;
+  }
+
+  &:focus,
+  &:active {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--c-white), 0 0 0 4px var(--button-color);
+  }
+
+  &--outline {
+    background-color: var(--button-background);
+    border: 1px solid var(--button-color);
+    color: var(--button-color);
+  }
+
+  &--google {
+    background-color: white;
+    align-items: center;
+  }
+
+  // Color variant generation
+  @each $color, $value in $button-colors {
+    &--#{$color} {
+      --button-color: #{$value};
+    }
+  }
+
+  &--tertiary {
+    background-color: var(--c-white);
+    border: 1px solid var(--c-gray);
+    color: var(--button-color);
+  }
+
+  img {
+    width: 1.9rem;
+    border-radius: 10px;
+  }
+}
+
+// Sizes
+.button--sm {
+  font-size: 1.4rem;
+  line-height: 1.6rem;
+  max-height: 3.2rem;
+  padding: 0.8rem 1.2rem;
+}
+
+// Variants
+.button--rounded {
+  border-radius: 50px;
+}
+
+.button--circle {
+  align-items: center;
+  border-radius: 50px;
+  font-size: 1.4rem;
+  height: 3.2rem;
+  padding: 1em;
+  width: 3.2rem;
+
+  &.button--sm {
+    font-size: 1.2rem;
+    height: 2.4rem;
+    width: 2.4rem;
+  }
+}

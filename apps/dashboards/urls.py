@@ -1,8 +1,13 @@
 from apps.projects.access import login_and_project_required
+from django.contrib.auth.decorators import login_required
 from django.urls import path
 
-from . import frames, rest, views
-from .access import dashboard_is_public, login_and_dashboard_required
+from . import frames, views
+from .access import (
+    dashboard_is_in_template,
+    dashboard_is_public,
+    login_and_dashboard_required,
+)
 
 app_name = "dashboards"
 
@@ -24,11 +29,10 @@ urlpatterns = [
         login_and_dashboard_required(frames.DashboardShare.as_view()),
         name="share",
     ),
-    # rest
     path(
-        "<hashid:pk>/sort",
-        login_and_dashboard_required(rest.DashboardSort.as_view()),
-        name="sort",
+        "<hashid:pk>/preview",
+        dashboard_is_in_template(frames.DashboardPreview.as_view()),
+        name="preview",
     ),
 ]
 
@@ -36,6 +40,11 @@ project_urlpatterns = (
     [
         path(
             "", login_and_project_required(views.DashboardList.as_view()), name="list"
+        ),
+        path(
+            "overview",
+            login_and_project_required(frames.DashboardOverview.as_view()),
+            name="overview",
         ),
         path(
             "new",

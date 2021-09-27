@@ -1,0 +1,43 @@
+name: Pytest Unit Tests
+
+concurrency: 
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [ main, release ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: '***'
+          POSTGRES_DB: 'gyana'
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: extractions/setup-just@v1
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - uses: Gr1N/setup-poetry@v7
+    - name: Install dependencies with poetry
+      run: poetry install
+    - name: Pytest run
+      run: poetry run just test

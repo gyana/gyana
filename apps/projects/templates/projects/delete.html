@@ -1,16 +1,20 @@
 {% extends "web/app/project_settings_base.html" %}
-{% block app %}
-<div class="max-w-lg p-4">
-  <h1 class="mb-4">Deleting {{ object.name }}</h1>
 
-  <form method="post" action="{% url 'projects:delete' object.id %}">
+{% block app %}
+<div class="flex flex-1 flex-col justify-center items-center self-center max-w-xl">
+  <h1 class="mb-3">Delete: {{ object.name }}</h1>
+  <p class="alert mb-6">Are you sure you want to delete this? This action is <strong>irreversible</strong>.</p>
+
+  <form class="w-full" method="post" action="{% url 'projects:delete' object.id %}">
     {% csrf_token %}
 
-    <p>Are you sure you want to delete this project?</p>
+    <div class='flex gap-3 w-full'>
+      <a href="{% url 'projects:update' object.id %}"
+         class="button button--tertiary flex-1">
+        Go back
+      </a>
 
-    <div class="input-group">
-      <button type="submit" class="button button--filled button--danger" > Yes </button>
-      <a href="{% url 'teams:detail' object.team.id %}" class="button button--tertiary">No</a>
+      <button type="submit" class="button button--danger flex-1">Yes</button>
     </div>
   </form>
 </div>

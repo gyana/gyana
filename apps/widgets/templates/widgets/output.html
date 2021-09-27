@@ -2,17 +2,7 @@
   id="widgets-output-{{widget.id}}-stream"
   style="display: flex; flex: 1 1 0%; min-height: 0;overflow: auto;"
 >
-  {% if widget.is_valid %}
-    {% if is_error %}
-      <div class='flex flex-col items-center justify-center flex-1'>
-        <i class="far fa-exclamation-triangle mb-1 fa-2x"></i>
-        <p>The 
-          <a class='text-blue underline'
-              href="{% url 'dashboard_widgets:update' project.id dashboard.id widget.id %}" >configuration</a>
-              for this widget is faulty!
-        </p>
-      </div>
-    {% else %}
+  {% if widget.is_valid and not error_template%}
       {% if widget.kind == "table" %}
         {% include 'widgets/visuals/grid.html' %}
       {% elif widget.kind == "text" %}
@@ -20,21 +10,12 @@
       {% elif widget.kind %}
         {% include 'widgets/visuals/chart.html' %}
       {% endif %}
-    {% endif %}
+  {% elif not widget.is_valid %}
+    <div class='flex flex-col items-center justify-center flex-1  p-10'>
+     {% include 'widgets/errors/_configure_widget.html' %}
+    </div>
   {% else %}
-  <div class='flex flex-col items-center justify-center flex-1'>
-    {% if request.GET.mode == 'edit' %}
-      <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
-      <p>This widget needs to be
-        <button 
-          data-action="click->tf-modal#open" 
-          class='link'
-          data-src="{% url "dashboard_widgets:update" project.id dashboard.id widget.id %}"
-        >configured</button>!
-      </p>
-    {% else %}
-      <p>No widget to display!</p>
-    {% endif %}
-  </div>
+    {% include error_template %}
   {% endif %}
-</div>
+
+</div>  

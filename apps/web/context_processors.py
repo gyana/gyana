@@ -4,9 +4,10 @@ from django.conf import settings
 
 from .meta import absolute_url
 
+
 def user_meta(request):
     return {
-        "sidebar_collapsed": request.session.get("sidebar_collapsed", True)
+        "sidebar_collapsed": request.session.get("sidebar_collapsed", False)
     }
 
 def project_meta(request):

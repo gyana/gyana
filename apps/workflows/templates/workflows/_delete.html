@@ -1,13 +1,13 @@
 <div class="card card--sm">
-  <h2>Delete</h2>
-  <p class="mb-6">Are you sure you want to delete this workflow?</p>
+  <h2 class="mb-3">Delete</h2>
+  <p class="mb-3">Are you sure you want to delete this workflow?</p>
 
   <form method="post" action="{% url 'project_workflows:delete' project.id object.id %}">
     {% csrf_token %}
 
-    <div class="flex gap-6">
-      <button type="submit" class="button button--sm button--danger button--outline">Yes</button>
-      <a href="{% url 'project_workflows:list' project.id %}" class="button button--sm">No</a>
+    <div class="flex w-full gap-3">
+      <a data-action="click->popover#trigger" class="button button--tertiary flex-1">No</a>
+      <button type="submit" class="button button--danger flex-1">Yes</button>
     </div>
   </form>
 </div>

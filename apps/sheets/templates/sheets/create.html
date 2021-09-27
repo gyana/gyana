@@ -1,29 +1,36 @@
 {% extends "web/app/project_settings_base.html" %}
 {% load static %}
+{% load help_utils %}
 
 {% block app %}
-
-<div class="flex flex-row flex-1 overflow-hidden">
-  <div class='flex flex-col flex-1 overflow-auto'>
-    <h2 class="pad">Connect to data in a Google Sheet</h2>
-
-    <div class='flex flex-col flex-1'>
-      <div class="pad" id='create-container'>
-        <form id="create-form" method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
-          {% csrf_token %}
-
-          {% include "django/forms/default_form.html" %}
-
-          <button type="submit" class="button button--success">
-            Create
-          </button>
-        </form>
-      </div>
+<div class="flex flex-1 justify-center items-center">
+  <div class="flex flex-col max-w-3xl">
+    <div class="flex flex-col text-center mb-7">
+      <h1>Connect a Google Sheet {% link_article 'integrations' 'sheet' %}</h1>
+      <p></p>
     </div>
-  </div>
 
-  <div class='flex flex-shrink-0 h-full'>
-    {% include 'sheets/_guide.html' %}
+    <p class="mb-2">
+      Share your Google Sheet with <strong>Viewer</strong> access to this account:
+    </p>
+
+    <div data-controller="to-clipboard" class='clipboard-copy'>
+      <pre class="text-xl p-2" data-to-clipboard-target='target'>{{ service_account }}</pre>
+      <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
+        <i class='fa fa-clipboard'></i>
+      </button>
+    </div>
+
+    <p class="alert mt-6">You can revoke our access at any time.</p>
+    
+
+    <form method="post" class="mt-7">
+      {% csrf_token %}
+
+      {% include "django/forms/default_form.html" %}
+
+      <button type="submit" class="button button--filled button--success w-full">Create</button>
+    </form>
   </div>
 </div>
 

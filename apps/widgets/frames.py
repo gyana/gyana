@@ -1,22 +1,27 @@
 import logging
 
 import analytics
+from apps.base.analytics import WIDGET_CONFIGURED_EVENT
+from apps.base.errors import error_name_to_snake
 from apps.base.frames import (
     TurboFrameDetailView,
     TurboFrameFormsetUpdateView,
     TurboFrameListView,
+    TurboFrameUpdateView,
 )
-from apps.base.segment_analytics import WIDGET_CONFIGURED_EVENT
+from apps.base.table_data import RequestConfig
+from apps.base.templates import template_exists
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
-from apps.widgets.visuals import chart_to_output, table_to_output
+from apps.widgets.visuals import MaxRowsExceeded, chart_to_output, table_to_output
 from django.db.models.query import QuerySet
 from django.urls import reverse
-from django.views.decorators.http import condition
-from django_tables2.config import RequestConfig
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
+from honeybadger import honeybadger
+from ibis.common.exceptions import IntegrityError
 from turbo_response import TurboStream
+from turbo_response.response import TurboStreamResponse
 
 from .forms import FORMS
 from .models import WIDGET_CHOICES_ARRAY, Widget
@@ -26,11 +31,13 @@ def add_output_context(context, widget, request):
     if widget.is_valid:
         if widget.kind == Widget.Kind.TEXT:
             pass
-        if widget.kind == Widget.Kind.TABLE:
-            table = table_to_output(widget)
-            context["table"] = RequestConfig(
-                request,
-            ).configure(table)
+        elif widget.kind == Widget.Kind.TABLE:
+            # avoid duplicating work for widget output
+            if "table" not in context:
+                table = table_to_output(widget)
+                context["table"] = RequestConfig(
+                    request,
+                ).configure(table)
         else:
             chart, chart_id = chart_to_output(widget)
             context.update(chart)
@@ -46,11 +53,25 @@ class WidgetList(DashboardMixin, TurboFrameListView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["choices"] = WIDGET_CHOICES_ARRAY
-        context_data["modal_item"] = self.request.GET.get("modal_item")
+        modal_item = self.request.GET.get("modal_item")
+        context_data["modal_item"] = int(modal_item) if modal_item else modal_item
         return context_data
 
     def get_queryset(self) -> QuerySet:
         return Widget.objects.filter(dashboard=self.dashboard)
+
+
+class WidgetName(TurboFrameUpdateView):
+    model = Widget
+    fields = ("name",)
+    template_name = "widgets/name.html"
+    turbo_frame_dom_id = "widget-editable-name"
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "widgets:name",
+            args=(self.object.id,),
+        )
 
 
 class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
@@ -62,15 +83,21 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
         return FORMS[self.request.POST.get("kind") or self.object.kind]
 
     def get_formset_kwargs(self, formset):
-        table = self.request.POST.get("table") or getattr(self.object, "table")
-        if table:
-            return {
-                "schema": Table.objects.get(
-                    pk=table.pk if isinstance(table, Table) else table
-                ).schema
-            }
-
+        kind = self.request.POST.get("kind") or self.object.kind
+        if kind == Widget.Kind.SCATTER:
+            return {"names": ["X", "Y"]}
+        if kind == Widget.Kind.BUBBLE:
+            return {"names": ["X", "Y", "Z"]}
         return {}
+
+    def get_formset_form_kwargs(self, formset):
+        table = self.request.POST.get("table") or getattr(self.object, "table")
+        formset_kwargs = {}
+        if table is not None:
+            formset_kwargs["schema"] = (
+                table if isinstance(table, Table) else Table.objects.get(pk=table)
+            ).schema
+        return formset_kwargs
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -113,10 +140,17 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             "dashboard": self.dashboard,
         }
         add_output_context(context, self.object, self.request)
-        return (
-            TurboStream(f"widgets-output-{self.object.id}-stream")
-            .replace.template("widgets/output.html", context)
-            .response(request=self.request)
+        return TurboStreamResponse(
+            [
+                TurboStream(f"widgets-output-{self.object.id}-stream")
+                .replace.template("widgets/output.html", context)
+                .render(request=self.request),
+                TurboStream(f"widget-name-{self.object.id}-stream")
+                .replace.template(
+                    "widgets/_widget_title.html", {"object": self.get_object}
+                )
+                .render(),
+            ]
         )
 
     def form_invalid(self, form):
@@ -128,10 +162,17 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
                 "dashboard": self.dashboard,
             }
             add_output_context(context, self.object, self.request)
-            return (
-                TurboStream(f"widgets-output-{self.object.id}-stream")
-                .replace.template("widgets/output.html", context)
-                .response(request=self.request)
+            return TurboStreamResponse(
+                [
+                    TurboStream(f"widgets-output-{self.object.id}-stream")
+                    .replace.template("widgets/output.html", context)
+                    .render(request=self.request),
+                    TurboStream(f"widget-name-{self.object.id}-stream")
+                    .replace.template(
+                        "widgets/_widget_title.html", {"object": self.get_object}
+                    )
+                    .render(),
+                ]
             )
         return r
 
@@ -149,10 +190,14 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
         context["project"] = self.get_object().dashboard.project
         try:
             add_output_context(context, self.object, self.request)
-
         except Exception as e:
-            context["is_error"] = True
-            logging.warning(e, exc_info=e)
+            error_template = f"widgets/errors/{error_name_to_snake(e)}.html"
+            if template_exists(error_template):
+                context["error_template"] = error_template
+            else:
+                logging.warning(e, exc_info=e)
+                honeybadger.notify(e)
+                context["error_template"] = "widgets/erros/default.html"
 
         return context
 
@@ -163,31 +208,3 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
                 self.request, paginate=self.get_table_pagination(table)
             ).configure(table)
         return type("DynamicTable", (DjangoTable,), {})(data=[])
-
-
-# ====== Not used right now =======
-# TODO: decide whether we want to cache the output of the chart or
-# Remove this. You will also need to add back the caching logic in urls.py.
-# We removed this for now because with the modal we are rendering the same FusionChart
-# Twice which leads to an id conflict
-
-
-def last_modified_widget_output(request, pk):
-    widget = Widget.objects.get(pk=pk)
-    return (
-        max(widget.updated, widget.table.data_updated)
-        if widget.table
-        else widget.updated
-    )
-
-
-def etag_widget_output(request, pk):
-    last_modified = last_modified_widget_output(request, pk)
-    return str(int(last_modified.timestamp() * 1_000_000))
-
-
-widget_output_condition = condition(
-    etag_func=etag_widget_output, last_modified_func=last_modified_widget_output
-)
-
-# ==================================================

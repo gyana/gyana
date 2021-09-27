@@ -1,55 +1,62 @@
 {% extends 'widgets/forms/default.html' %}
 
 {% block widget_form %}
-<label for="{{ form.label.id_for_label }}">
-  {{ form.label.label }}
-</label>
-{{form.label}}
+
+{% if form.dimension %}
+  <label for="{{ form.dimension.id_for_label }}">
+    {{ form.dimension.label }}
+  </label>
+  {{form.dimension}}
+{% endif %}
+
+{% if form.kind.value == 'heatmap' %}
+  <label for="{{ form.dimension.id_for_label }}">
+    {{ form.second_dimension.label }}
+  </label>
+  {{form.second_dimension}}
+{% endif %}
+
 <fieldset>
   {% if formsets.Aggregations %}
     {% with formset=formsets.Aggregations %}
-      <label>Values</label>
+      <label>Metrics</label>
       {% include "components/formset.html" with formset=formset %}
     {% endwith %}
   {% endif %}
 </fieldset>
-{% if form.z %}
-  <div class="flex flex-row w-full">
-    {% if form.z_aggregator %}
-    <div class="w-1/3">
-      <label for="{{ form.aggregator.id_for_label }}">
-        {{ form.z_aggregator.label}}
+{% if form.kind.value ==  'stackedbar2d' or form.kind.value ==  'stackedcolumn2d' or form.kind.value ==  'msline-stacked'  %}
+  <fieldset>
+    <label for="{{ form.second_dimension.id_for_label }}">
+      {{ form.second_dimension.label}}
+    </label>
+    <div class="formset-wrapper">
+    {{ form.second_dimension }}
+    {% if form.stack_100_percent %}
+      <label class='input__toggle' for="{{ form.stack_100_percent.id_for_label }}">
+        <p class="input__help-text">{{ form.stack_100_percent.label}}</p>
+        {{ form.stack_100_percent }}
       </label>
-      {{ form.z_aggregator }}
-    </div>
-    {% else %}
-    <div>
-      <label for="{{ form.stack_100_percent.id_for_label }}">
-        {{ form.stack_100_percent.label}}
-      </label>
-      {{ form.stack_100_percent }}
-    </div>
     {% endif %}
-    <div class="{% if form.z_aggregator %}w-2/3 {% else %}w-full{% endif %}">
-      <label for="{{ form.z.id_for_label }}">
-        {{ form.z.label}}
+
+    </div>
+  </fieldset>
+{% endif %}
+
+{% if form.sort_by %}
+<fieldset>
+  <label>{{ form.sort_by.label}}</label>
+
+  <div class="formset-wrapper">
+    {{ form.sort_by }}
+
+    <div>
+      <label class="input__toggle" for="{{ form.sort_ascending.id_for_label }}">
+        <p class="input__help-text">{{ form.sort_ascending.label}}</p>
+
+        {{form.sort_ascending}}
       </label>
-      {{ form.z }}
     </div>
   </div>
+</fieldset>
 {% endif %}
-<div class="flex flex-row w-full items-center">
-  <div class='w-full'>
-    <label for="{{ form.sort_by.id_for_label }}">
-      {{ form.sort_by.label}}
-    </label>
-    {{form.sort_by}}
-  </div>
-  <div>
-    <label for="{{ form.sort_ascending.id_for_label }}">
-      {{ form.sort_ascending.label}}
-    </label>
-    {{form.sort_ascending}}
-  </div>
-</div>
 {% endblock %}

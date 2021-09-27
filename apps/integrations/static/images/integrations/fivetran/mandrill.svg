@@ -1,0 +1,58 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #e6e5e0;
+      }
+
+      .cls-2 {
+        fill: #d7d8d2;
+      }
+
+      .cls-3 {
+        fill: #b4b6b3;
+      }
+
+      .cls-4 {
+        fill: #1a1918;
+      }
+
+      .cls-5 {
+        fill: #ed9d4a;
+      }
+
+      .cls-6 {
+        fill: #ba7730;
+      }
+
+      .cls-7 {
+        fill: #4cb2d4;
+      }
+
+      .cls-8 {
+        fill: #1c82ad;
+      }
+
+      .cls-9 {
+        fill: #c02439;
+      }
+
+      .cls-10 {
+        fill: #8f212f;
+      }
+    </style>
+  </defs>
+  <title>2</title>
+  <g>
+    <rect class="cls-1" y="23.3" width="399.4" height="353.71"/>
+    <polyline class="cls-2" points="400 23 0.6 23 200.5 314.8 400 23"/>
+    <polyline class="cls-3" points="157.5 377 242 377 199.5 315.1 157.5 377"/>
+    <polyline class="cls-4" points="199.9 208.9 114.5 83.8 114.5 190.9 163 262.5 199.9 208.9"/>
+    <polyline class="cls-5" points="199.9 208.9 236.4 262.9 284.9 192.3 284.9 83.8 199.9 208.9"/>
+    <polyline class="cls-6" points="199.5 208.9 163 262.5 199.5 316 236 262.5 199.5 208.9"/>
+    <polyline class="cls-7" points="54 316.5 114.5 316.5 114.5 191.4 54 102.2 54 316.5"/>
+    <polyline class="cls-8" points="54 83.8 54 102.2 114.5 190.9 114.5 83.8 54 83.8"/>
+    <polyline class="cls-9" points="284.9 192.3 284.9 316.5 345.4 316.5 345.4 103.6 284.9 192.3"/>
+    <polyline class="cls-10" points="345.4 83.8 284.9 83.8 284.9 191.8 345.4 103.2 345.4 83.8"/>
+  </g>
+</svg>

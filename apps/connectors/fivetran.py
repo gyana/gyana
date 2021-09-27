@@ -11,7 +11,6 @@ import backoff
 import requests
 from django.conf import settings
 from django.http import HttpResponse
-from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.utils import timezone
 
@@ -73,7 +72,9 @@ def _schemas_to_dict(schemas):
 
 
 class FivetranClientError(Exception):
-    pass
+    def __init__(self, res) -> None:
+        message = f'[Fivetran API Exception] {res["code"]}: {res["message"]}'
+        super().__init__(message)
 
 
 class FivetranClient:
@@ -113,7 +114,7 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            raise FivetranClientError(res["message"])
+            raise FivetranClientError(res)
 
         # response schema https://fivetran.com/docs/rest-api/connectors#response_1
         #  {
@@ -128,6 +129,20 @@ class FivetranClient:
         #  }
         return {"fivetran_id": res["data"]["id"], "schema": schema}
 
+    def get(self, connector: Connector):
+
+        # https://fivetran.com/docs/rest-api/connectors/connect-card#connectcard
+
+        res = requests.get(
+            f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}",
+            headers=settings.FIVETRAN_HEADERS,
+        ).json()
+
+        if res["code"] != "Success":
+            raise FivetranClientError(res)
+
+        return res["data"]
+
     def authorize(self, connector: Connector, redirect_uri: str) -> HttpResponse:
 
         # https://fivetran.com/docs/rest-api/connectors/connect-card#connectcard
@@ -138,9 +153,7 @@ class FivetranClient:
         )
         connect_card_token = card.json()["token"]
 
-        return redirect(
-            f"https://fivetran.com/connect-card/setup?redirect_uri={redirect_uri}&auth={connect_card_token}"
-        )
+        return f"https://fivetran.com/connect-card/setup?redirect_uri={redirect_uri}&auth={connect_card_token}"
 
     def start_initial_sync(self, connector: Connector) -> Dict:
 
@@ -153,7 +166,7 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            raise FivetranClientError()
+            raise FivetranClientError(res)
 
         return res
 
@@ -167,7 +180,7 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            raise FivetranClientError()
+            raise FivetranClientError(res)
 
         return res
 
@@ -179,7 +192,7 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            raise FivetranClientError()
+            raise FivetranClientError(res)
 
         status = res["data"]["status"]
 
@@ -201,7 +214,7 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            raise FivetranClientError()
+            raise FivetranClientError(res)
 
         return _schemas_to_obj(res["data"].get("schemas", {}))
 
@@ -219,7 +232,7 @@ class FivetranClient:
             return self.reload_schemas(connector)
 
         if res["code"] != "Success":
-            raise FivetranClientError()
+            raise FivetranClientError(res)
 
         # schema not included for Google Sheets connector
         return _schemas_to_obj(res["data"].get("schemas", {}))
@@ -235,7 +248,7 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            raise FivetranClientError()
+            raise FivetranClientError(res)
 
     def delete(self, connector: Connector):
 
@@ -249,7 +262,7 @@ class FivetranClient:
         ).json()
 
         if res["code"] != "Success":
-            raise FivetranClientError()
+            raise FivetranClientError(res)
 
 
 MOCK_SCHEMA_DIR = os.path.abspath(".mock/.schema")
@@ -294,12 +307,18 @@ class MockFivetranClient:
         self._started = {}
 
     def create(self, service, team_id):
-        # duplicate the content of an existing connector
+        # duplicate the content of the first created existing connector
         connector = (
-            Connector.objects.filter(service=service).first()
+            Connector.objects.filter(service=service).order_by("id").first()
             or Connector.objects.filter(service=self.DEFAULT_SERVICE).first()
         )
         return {"fivetran_id": connector.fivetran_id, "schema": connector.schema}
+
+    def get(self, connector):
+        return {
+            "succeeded_at": "2021-01-01T00:00:00.000000Z",
+            "status": {"setup_state": "broken"},
+        }
 
     def start_initial_sync(self, connector):
         self._started[connector.id] = timezone.now()
@@ -308,7 +327,7 @@ class MockFivetranClient:
         self._started[connector.id] = timezone.now()
 
     def authorize(self, connector, redirect_uri):
-        return redirect(f"{reverse('connectors:mock')}?redirect_uri={redirect_uri}")
+        return f"{reverse('connectors:mock')}?redirect_uri={redirect_uri}"
 
     def has_completed_sync(self, connector):
         return (
@@ -326,8 +345,9 @@ class MockFivetranClient:
             return _schemas_to_obj(self._schema_cache[connector.id])
 
         service = connector.service if connector is not None else "google_analytics"
+        fivetran_id = connector.fivetran_id if connector is not None else "humid_rifle"
 
-        with open(f"cypress/fixtures/fivetran/{service}_schema.json", "r") as f:
+        with open(f"cypress/fixtures/fivetran/{service}_{fivetran_id}.json", "r") as f:
             return _schemas_to_obj(json.load(f))
 
     def update_schemas(self, connector, schemas):

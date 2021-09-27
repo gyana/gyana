@@ -4,8 +4,8 @@ const parseUrlFromMsg = (msg) =>
   msg['payload'].split('\n').slice(-1)[0].replace("If you'd like to join, please go to ", '')
 
 const inviteByEmail = (email) => {
-  cy.contains('Invites').click()
-  cy.url().should('contain', '/teams/1/invites')
+  cy.contains('Members').click()
+  cy.url().should('contain', '/teams/1/members')
 
   cy.contains('New Invite').click()
   cy.url().should('contain', '/teams/1/invites/new')
@@ -19,6 +19,7 @@ describe('invites', () => {
     cy.login()
     cy.visit('//teams/1')
   })
+
   it('invite new user to team', () => {
     inviteByEmail('invite@gyana.com')
 
@@ -36,9 +37,19 @@ describe('invites', () => {
     cy.get('input[type=password]').type('seewhatmatters')
     cy.get('button[type=submit]').click()
 
+    cy.get('input[name=first_name]').type('Appsumo')
+    cy.get('input[name=last_name]').type('User')
+    cy.contains('Next').click()
+
+    cy.get('select[name=company_industry]').select('Agency')
+    cy.get('select[name=company_role]').select('Marketing')
+    cy.get('select[name=company_size]').select('2-10')
+    cy.get('button[type=submit]').click()
+
     cy.url().should('contain', '/teams/1')
     cy.contains('Vayu')
   })
+
   it('invite existing user to team', () => {
     inviteByEmail('alone@gyana.com')
 
@@ -57,6 +68,7 @@ describe('invites', () => {
 
     cy.url().should('contain', '/teams/1')
   })
+
   it('resend and delete invite', () => {
     inviteByEmail('invite@gyana.com')
 
@@ -78,6 +90,7 @@ describe('invites', () => {
         .should('eq', 410)
     })
   })
+
   it('cannot invite existing user or existing invited user', () => {
     inviteByEmail('member@gyana.com')
 
@@ -86,7 +99,7 @@ describe('invites', () => {
     // Delete the member but invite model still exists
     cy.contains('Members').click()
     cy.contains('member@gyana.com').click()
-    cy.contains('Delete').click()
+    cy.get('a').contains('Delete').click()
     cy.contains('Yes').click()
 
     inviteByEmail('member@gyana.com')

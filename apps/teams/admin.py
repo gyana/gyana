@@ -1,5 +1,10 @@
 from django.contrib import admin
 
+from apps.appsumo.admin import (
+    AppsumoCodeInline,
+    AppsumoExtraInline,
+    AppsumoReviewInline,
+)
 from apps.invites.admin import InviteInline
 
 from .models import Membership, Team
@@ -18,6 +23,16 @@ class TeamMembershipInline(admin.TabularInline):
 @admin.register(Team)
 class TeamAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "row_limit"]
-    fields = ["id", "name", "row_limit", "row_count", "row_count_calculated"]
-    readonly_fields = ["id", "row_count", "row_count_calculated"]
-    inlines = [UserMembershipInline, InviteInline]
+    readonly_fields = ["id", "row_limit", "row_count", "row_count_calculated"]
+    fields = readonly_fields + ["name", "override_row_limit"]
+
+    inlines = [
+        UserMembershipInline,
+        AppsumoCodeInline,
+        AppsumoReviewInline,
+        AppsumoExtraInline,
+        InviteInline,
+    ]
+
+    def row_limit(self, instance):
+        return instance.row_limit

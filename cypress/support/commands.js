@@ -15,7 +15,7 @@ const TEST_PASSWORD = 'seewhatmatters'
 
 const login = (email = TEST_EMAIL, password = TEST_PASSWORD) => {
   // https://github.com/cypress-io/cypress-example-recipes/tree/master/examples/logging-in__csrf-tokens
-  cy.request('/accounts/login/')
+  cy.request('/login/')
     .its('body')
     .then((body) => {
       const $html = Cypress.$(body)
@@ -23,7 +23,7 @@ const login = (email = TEST_EMAIL, password = TEST_PASSWORD) => {
 
       cy.request({
         method: 'POST',
-        url: '/accounts/login/',
+        url: '/login/',
         failOnStatusCode: false,
         form: true,
         body: {
@@ -40,7 +40,7 @@ const login = (email = TEST_EMAIL, password = TEST_PASSWORD) => {
 Cypress.Commands.add('login', login)
 
 const logout = () => {
-  cy.request('/accounts/logout').then((resp) => {
+  cy.request('/logout').then((resp) => {
     expect(resp.status).to.eq(200)
   })
 }

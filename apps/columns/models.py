@@ -1,13 +1,10 @@
 from apps.base.aggregations import AggregationFunctions
-from apps.base.models import BaseModel
+from apps.base.models import SaveParentModel
 from apps.nodes.models import Node
 from apps.widgets.models import Widget
-from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models
-from django.utils import timezone
-from model_clone import CloneMixin
 
 from .bigquery import (
     CommonOperations,
@@ -21,21 +18,6 @@ from .bigquery import (
 bigquery_column_regex = RegexValidator(
     r"^[a-zA-Z_][0-9a-zA-Z_]*$", "Only numbers, letters and underscores allowed."
 )
-
-
-class SaveParentModel(DirtyFieldsMixin, CloneMixin, BaseModel):
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs) -> None:
-        if self.is_dirty():
-            self.parent.data_updated = timezone.now()
-            self.parent.save()
-        return super().save(*args, **kwargs)
-
-    @property
-    def parent(self):
-        return getattr(self, "node") or self.widget
 
 
 class AbstractOperationColumn(SaveParentModel):
@@ -90,9 +72,9 @@ class AbstractOperationColumn(SaveParentModel):
         null=True,
     )
 
-    integer_value = models.BigIntegerField(null=True, blank=True)
-    float_value = models.FloatField(null=True, blank=True)
-    string_value = models.TextField(null=True, blank=True)
+    integer_value = models.BigIntegerField(null=True)
+    float_value = models.FloatField(null=True)
+    string_value = models.TextField(null=True)
 
     @property
     def function(self):
@@ -119,7 +101,9 @@ class SecondaryColumn(SaveParentModel):
     )
 
 
-class FunctionColumn(SaveParentModel):
+class AggregationColumn(SaveParentModel):
+    class Meta:
+        ordering = ("created",)
 
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     function = models.CharField(max_length=20, choices=AggregationFunctions.choices)
@@ -135,9 +119,7 @@ class SortColumn(SaveParentModel):
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="sort_columns"
     )
-    ascending = models.BooleanField(
-        default=True, help_text="Ascending Sort"
-    )
+    ascending = models.BooleanField(default=True, help_text="Ascending Sort")
     column = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         help_text="Column",
@@ -176,7 +158,7 @@ class FormulaColumn(SaveParentModel):
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="formula_columns"
     )
-    formula = models.TextField(null=True, blank=True, help_text="Type formula")
+    formula = models.TextField(null=True, help_text="Type formula")
     label = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         validators=[bigquery_column_regex],
@@ -189,13 +171,26 @@ class WindowColumn(SaveParentModel):
         Node, on_delete=models.CASCADE, related_name="window_columns"
     )
 
-    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
-    function = models.CharField(max_length=20, choices=AggregationFunctions.choices)
+    column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        help_text="Choose an aggregation column",
+    )
+    function = models.CharField(
+        max_length=20,
+        choices=AggregationFunctions.choices,
+        help_text="Select an aggregation function",
+    )
     group_by = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="Group over this column",
     )
     order_by = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True, blank=True
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        blank=True,
+        help_text="Order by this column",
     )
     ascending = models.BooleanField(
         default=True, help_text="Select to sort ascendingly"
@@ -203,4 +198,5 @@ class WindowColumn(SaveParentModel):
     label = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         validators=[bigquery_column_regex],
+        help_text="Select a new column name",
     )

@@ -1,3 +1,6 @@
+from datetime import timedelta
+from itertools import chain
+
 from apps.base.models import BaseModel
 from apps.connectors.config import get_services
 from apps.dashboards.models import Dashboard
@@ -6,9 +9,10 @@ from apps.users.models import CustomUser
 from apps.workflows.models import Workflow
 from django.db import models
 from django.urls import reverse
+from model_clone.mixins.clone import CloneMixin
 
 
-class Integration(BaseModel):
+class Integration(CloneMixin, BaseModel):
     class Kind(models.TextChoices):
         SHEET = "sheet", "Sheet"
         UPLOAD = "upload", "Upload"
@@ -32,6 +36,9 @@ class Integration(BaseModel):
     created_ready = models.DateTimeField(null=True)
     created_by = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
 
+    _clone_m2o_or_o2m_fields = ["connector_set", "table_set"]
+    _clone_o2o_fields = ["sheet", "upload"]
+
     def __str__(self):
         return self.name
 
@@ -41,11 +48,17 @@ class Integration(BaseModel):
 
     @property
     def num_rows(self):
-        return self.table_set.all().aggregate(models.Sum("num_rows"))["num_rows__sum"]
+        return (
+            self.table_set.all().aggregate(models.Sum("num_rows"))["num_rows__sum"] or 0
+        )
 
     @property
     def last_synced(self):
         return getattr(self, self.kind).last_synced
+
+    @property
+    def pending_deletion(self):
+        return self.created + timedelta(days=7)
 
     @property
     def used_in_workflows(self):
@@ -67,7 +80,7 @@ class Integration(BaseModel):
 
     @property
     def used_in(self):
-        return self.used_in_workflows.union(self.used_in_dashboards)
+        return list(chain(self.used_in_workflows, self.used_in_dashboards))
 
     @property
     def display_kind(self):
@@ -85,5 +98,5 @@ class Integration(BaseModel):
 
     def icon(self):
         if self.kind == Integration.Kind.CONNECTOR:
-            return f"images/integrations/fivetran/{self.connector.service}.svg"
+            return f"images/integrations/fivetran/{get_services()[self.connector.service]['icon_path']}"
         return f"images/integrations/{self.kind}.svg"

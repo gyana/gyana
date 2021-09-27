@@ -1,14 +1,17 @@
 {% load static %}
 <!DOCTYPE html>
 <html class="h-full">
-
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   {% include 'web/components/meta.html' %}
-  {% include 'web/components/favicon.html' %}
+  {% if project.team.plan == "Free" %}
+    {% include 'web/components/favicon.html' %}
+  {% else %}
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ project.team.icon.url }}">
+  {% endif %}
 
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
@@ -25,9 +28,25 @@
   <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
   <script src="{% url 'api_schemajs' %}"></script>
 </head>
-
 <body class="flex flex-col pad">
-  <div class='widgets flex items-center justify-center'>
+  <div class="widgets flex items-center justify-center">
+    <header class="flex w-full justify-between mb-7">
+      <div class="flex justify-center items-center self-start">
+        {% if project.team.plan != "Free" %}
+        <img src="{{ project.team.icon.url }}" class="h-24 w-24 mr-5" alt="">
+        {% endif %}
+
+        <div class="flex flex-col">
+          <p>{{ project.team.name }}</p>
+          <h1>{{ dashboard.name }}</h1>
+        </div>
+      </div>
+
+      {% if project.team.plan == "Free" %}
+      <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
+      {% endif %}
+    </header>
+
     <div id="dashboard-widget-container"
          class="widgets__canvas"
          data-controller="widget-list"
@@ -38,10 +57,8 @@
              data-id="{{ widget.id }}" data-x="{{widget.x}}" data-y="{{widget.y}}"
              data-width="{{widget.width}}" data-height="{{widget.height}}">
           <div class="widget-card h-full">
-            <div class='widget-card__visual'>
-              {% if widget.name %}
-              <h3 class="mb-2">{{ widget.name }}</h3>
-              {% endif %}
+            <div class='widget-card__visual widget-card__visual--view'>
+              {% include 'widgets/_widget_title.html' with object=widget%}
               <turbo-frame id="widgets-output-{{ widget.id }}"
                            src="{% url 'dashboard_widgets:output' project.id dashboard.id widget.id %}"
                            target="_top"
@@ -59,14 +76,6 @@
     </div>
   </div>
 
-  <footer class="flex justify-center">
-    <p>Powered by <a href="/" class="link">Gyana</a></p>
-  </footer>
-
-  <script src="{% static 'js/components-bundle.js' %}"></script>
-  <script src="{% static "fusioncharts/fusioncharts.js" %}"></script>
-  <script src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
-  <script src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
+  {% include 'components/fusionchart_scripts.html' %}
 </body>
-
 </html>

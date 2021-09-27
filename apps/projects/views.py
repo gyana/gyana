@@ -1,14 +1,15 @@
 import analytics
-from apps.base.segment_analytics import PROJECT_CREATED_EVENT
+from apps.base.analytics import PROJECT_CREATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
+from django.shortcuts import get_object_or_404, redirect
 from django.urls.base import reverse
+from django.views.decorators.http import require_POST
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 
 from .forms import ProjectForm
-from .models import Project
-from .tables import ProjectDashboardTable, ProjectIntegrationTable, ProjectWorkflowTable
+from .models import Project, ProjectMembership
 
 
 class ProjectCreate(TeamMixin, TurboCreateView):
@@ -16,10 +17,11 @@ class ProjectCreate(TeamMixin, TurboCreateView):
     model = Project
     form_class = ProjectForm
 
-    def get_initial(self):
-        initial = super().get_initial()
-        initial["team"] = self.team
-        return initial
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs["current_user"] = self.request.user
+        form_kwargs["team"] = self.team
+        return form_kwargs
 
     def get_success_url(self) -> str:
         return reverse("projects:detail", args=(self.object.id,))
@@ -38,19 +40,13 @@ class ProjectDetail(DetailView):
     model = Project
     pk_url_kwarg = "project_id"
 
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
+    def get(self, request, *args, **kwargs):
         object = self.get_object()
 
-        context_data["integrations"] = ProjectIntegrationTable(
-            object.integration_set.filter(ready=True).all()[:3]
-        )
-        context_data["workflows"] = ProjectWorkflowTable(object.workflow_set.all()[:3])
-        context_data["dashboards"] = ProjectDashboardTable(
-            object.dashboard_set.all()[:3]
-        )
+        if not object.ready:
+            return redirect("project_templateinstances:list", object.id)
 
-        return context_data
+        return super().get(request, *args, **kwargs)
 
 
 class ProjectUpdate(TurboUpdateView):
@@ -58,6 +54,12 @@ class ProjectUpdate(TurboUpdateView):
     model = Project
     form_class = ProjectForm
     pk_url_kwarg = "project_id"
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs["current_user"] = self.request.user
+        form_kwargs["team"] = self.object.team
+        return form_kwargs
 
     def get_success_url(self) -> str:
         return reverse("projects:detail", args=(self.object.id,))
@@ -70,9 +72,3 @@ class ProjectDelete(DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.team.id,))
-
-
-class ProjectSettings(DetailView):
-    template_name = "projects/settings.html"
-    model = Project
-    pk_url_kwarg = "project_id"

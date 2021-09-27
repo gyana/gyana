@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import { getModelStartId } from '../support/utils'
+import { BIGQUERY_TIMEOUT, getModelStartId } from '../support/utils'
 const { _ } = Cypress
 
 const startId = getModelStartId('nodes.node')
@@ -79,7 +79,7 @@ describe('workflows', () => {
     cy.connectNodes(selectId, outputId)
     cy.get('.react-flow__edge').should('have.length', 2)
     cy.get(`[data-id=${outputId}]`).dblclick()
-    cy.get('[name=output_name').type('Goblet of fire')
+    cy.get('#node-update-form input[name=name]').type('Goblet of fire')
     cy.contains('Save & Close').click()
 
     cy.story('Run workflow')
@@ -95,7 +95,7 @@ describe('workflows', () => {
     })
     cy.get('button[type=submit]').first().click()
     cy.contains('Loading')
-    cy.contains('Something went wrong!', { timeout: 8000 })
+    cy.contains('Something went wrong!', { timeout: BIGQUERY_TIMEOUT })
   })
 
   it('Shows nodes loading error', () => {

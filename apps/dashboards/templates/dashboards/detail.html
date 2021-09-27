@@ -1,36 +1,26 @@
 {% extends "web/app/project_base.html" %}
-{% load static %}
+
 {% block app %}
 <div class="workflow-detail__header">
-  <form method="post" action="{% url 'project_dashboards:detail' project.id object.id %}"
-        class="form--no-layout w-full">
-    {% csrf_token %}
+  <turbo-frame id="dashboard-name" class="flex-1 mr-auto">
+    <form
+      method="post"
+      action="{% url 'project_dashboards:detail' project.id object.id %}"
+      class="form--no-layout w-full"
+    >
+      {% csrf_token %}
 
-    <input class='input__inline mr-auto' id="name" type="text" name="name" value="{{ object.name }}"></input>
-    <div data-controller="tooltip popover">
-      <button 
-        type="button" 
-        data-popover-target="trigger" 
-        class="button button--circle button--tertiary"
-        data-action="popover#trigger"
-      >
-        <i class="far fa-edit fa-fw"></i>
-      </button>
-
-      <span data-tooltip-target="body">Configure canvas size</span>
-
-      <div data-popover-target="body" class="popover-body shadow-sm card card--sm">
-        <p>Configure the dashboard's canvas dimension</p>
-        <input id="width" type="number" name="width" value="{{ object.width}}"></input>
-        <input id="height" type="number" name="height" value="{{ object.height}}"></input>
-        <button class="button button--sm" type='submit'>Update</button>
-      </div>
-    </div>
-  </form>
-
-  <turbo-frame id="dashboard-share">
-    {% include 'dashboards/share.html' %}
+      <input
+        class='input__inline mr-auto'
+        id="name"
+        type="text"
+        name="name"
+        value="{{ object.name }}"
+        onBlur="this.form.requestSubmit();"
+      ></input>
+    </form>
   </turbo-frame>
+
   <div class="button button--circle button--tertiary">
     {% include 'components/_duplicate.html' with object_name="dashboard" %}
   </div>
@@ -44,66 +34,87 @@
       <i class="far fa-fw fa-trash"></i>
     </span>
 
-    <span data-tooltip-target="body">Delete dashboard</span>
+    <span data-tooltip-target="body">Delete</span>
 
-    <div data-popover-target="body" hidden class="popover-body shadow-sm">
+    <div data-popover-target="body" hidden class="popover-body">
       {% include 'dashboards/_delete.html' %}
     </div>
   </div>
+
+  <vr></vr>
+
+  {% if request.GET.mode != 'view' %}
+  <div data-controller="tooltip popover">
+    <button
+      type="button"
+      data-popover-target="trigger"
+      class="button button--circle button--tertiary"
+      data-action="popover#trigger"
+    >
+      <i class="far fa-fw fa-expand-arrows-alt"></i>
+    </button>
+
+    <span data-tooltip-target="body">Canvas size</span>
+
+    <div data-popover-target="body" class="popover-body max-w-lg card card--sm">
+      <form
+        method="post"
+        action="{% url 'project_dashboards:detail' project.id object.id %}"
+        class="form--no-layout"
+      >
+        {% csrf_token %}
+        <div class="flex gap-7">
+          <label>
+            <p>Width</p>
+            <input id="width" class="flex-1 min-w-0" type="number" name="width" value="{{ object.width}}"></input>
+          </label>
+
+          <label>
+            <p>Height</p>
+            <input id="height" class="flex-1 min-w-0" type="number" name="height" value="{{ object.height}}"></input>
+          </label>
+        </div>
+
+        <button class="button button--sm button--success mt-7 w-full" type='submit'>Update</button>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  <turbo-frame id="dashboard-share">
+    {% include 'dashboards/share.html' %}
+  </turbo-frame>
 
   {% if request.GET.mode != 'view' %}
   {% include 'dashboards/_add_widget.html' with choices=choices %}
   {% endif %}
 
-  <div data-controller='popover'>
-    <button
-      data-popover-target="trigger"
-      class="button button--outline button--sm"
-      data-action="popover#trigger"
-      title="Change dashboard mode"
-    >
-      {% if request.GET.mode == 'view' %}
-      <i class="fas fa-eye"></i> 
-      {% else %}
-      <i class="fas fa-pen"></i> 
-      {% endif %}
-      <i class="fas fa-angle-up fa-rotate-180"></i>
-    </button>
+  <button class="button button--sm" data-controller="tooltip">
+    {% if not request.GET.mode or request.GET.mode == 'edit' %}
+    <a href="?mode=view">
+      <i class="fas fa-eye mr-3"></i> Preview
+    </a>
+    {% else %}
+    <a href="?mode=edit">
+      <i class="fas fa-pen mr-3"></i> Edit
+    </a>
+    {% endif %}
 
-    <ul data-popover-target="body" class="list list--bordered" hidden style="margin-top:6px;width:20rem;">
-      {% expr [("view", "eye", "Preview dashboard"), ("edit", "pen", "Modify dashboard")] as modes %}
-      {% for mode in modes %}
-      <li class="list__item list__item--interactive">
-        <a href="?mode={{ mode.0 }}">
-          <div class="flex flex-row items-center p-4">
-            <div class="w-8 mr-6">
-              <i class="fas fa-{{ mode.1 }} {% if request.GET.mode|default:'edit' == mode.0 %}text-blue{% endif %}"></i>
-            </div>
-
-            <div class="flex flex-col">
-              <h4>{{ mode.0|title }}</h4>
-              <p>{{ mode.2 }}</p>
-            </div>
-          </div>
-        </a>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
+    <span data-tooltip-target="body">Click to change view mode</span>
+  </button>
+  
 </div>
 
 <div class="dashboard">
   <turbo-frame 
     id="widgets"
     src="{% url 'dashboard_widgets:list' project.id object.id %}?mode={{ request.GET.mode|default:'edit' }}{% if request.GET.modal_item %}&modal_item={{ request.GET.modal_item }}{% endif %}"
+    class="flex"
     target="_top">
   </turbo-frame>
 </div>
 {% endblock %}
 
 {% block page_js %}
-<script src="{% static 'js/components-bundle.js' %}"></script>
-<script src="{% static "fusioncharts/fusioncharts.js" %}"></script>
-<script src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
-<script src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
+{% include 'components/fusionchart_scripts.html' %}
 {% endblock %}

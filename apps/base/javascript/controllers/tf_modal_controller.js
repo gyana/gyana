@@ -13,17 +13,21 @@ export default class extends Controller {
   }
 
   open(event) {
-    if (event.target.getAttribute('data-src') !== this.turboFrameTarget.getAttribute('src')) {
-      this.turboFrameTarget.innerHTML = `
+    this.turboFrameTarget.removeAttribute('src')
+    this.turboFrameTarget.innerHTML = `
         <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class='placeholder-scr__icon fad fa-spinner-third fa-spin fa-3x'></i>
+          <i class='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
         </div>
       `
-      this.turboFrameTarget.setAttribute('src', event.target.getAttribute('data-src'))
+
+    this.turboFrameTarget.setAttribute('src', event.currentTarget.getAttribute('data-src'))
+
+    if (event.currentTarget.getAttribute('data-item')) {
+      const params = new URLSearchParams(location.search)
+      params.set('modal_item', event.currentTarget.getAttribute('data-item'))
+      history.replaceState({}, '', `${location.pathname}?${params.toString()}`)
     }
-    const params = new URLSearchParams(location.search)
-    params.set('modal_item', event.target.getAttribute('data-item'))
-    history.replaceState({}, '', `${location.pathname}?${params.toString()}`)
+
     this.modalTarget.classList.remove('hidden')
   }
 
@@ -51,6 +55,15 @@ export default class extends Controller {
     this.formTarget.outerHTML = newForm.outerHTML
 
     if ([200, 201].includes(result.status)) {
+      // For nodes, we need to dispatch events
+      // that are usually triggered on the default submit event
+      const nodeUpdateElement = this.element.querySelector('[data-controller=node-update]')
+      if (nodeUpdateElement) {
+        this.application
+          .getControllerForElementAndIdentifier(nodeUpdateElement, 'node-update')
+          .sendNodeEvents()
+      }
+
       this.forceClose()
     }
   }

@@ -1,14 +1,10 @@
 /// <reference types="cypress" />
 const { _ } = Cypress
+import { BIGQUERY_TIMEOUT } from '../support/utils'
 
 const openModalAndCheckTitle = (id, title) => {
   cy.visit(`/projects/2/workflows/1?modal_item=${id}`)
   cy.get('#node-editable-title').find(`[value="${title}"]`)
-}
-
-const testHelp = (text) => {
-  cy.get('[class=tabbar]').contains('Help').click()
-  cy.contains(text).should('be.visible')
 }
 
 const addFormToFormset = (formset) => {
@@ -18,7 +14,7 @@ const addFormToFormset = (formset) => {
 }
 
 const waitForLiveFormUpdate = () => {
-  cy.get('[data-live-update-target=loading]').should('be.visible')
+  cy.get('[data-live-update-target=loading]').scrollIntoView().should('be.visible')
   cy.get('[data-live-update-target=loading]').should('not.be.visible')
 }
 
@@ -44,27 +40,26 @@ describe('nodes', () => {
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid').should('not.contain', 'Edinburgh')
     cy.contains('100000').should('be.visible')
-
-    testHelp('Select data from an integration to be used in your workflow.')
   })
 
   it('output', () => {
     openModalAndCheckTitle(2, 'Save data')
     cy.contains('Edinburgh')
-    testHelp("The connected nodes' data will be available to be")
 
-    cy.get('input[name=output_name]')
+    cy.get('#node-update-form input[name=name]')
       .should('have.value', '')
       .type('Naturalis Principia Mathematica')
     cy.contains('Save & Preview').click()
     cy.contains('Loading preview...').should('be.visible')
     cy.contains('Edinburgh').should('be.visible')
-    cy.get('input[name=output_name]').should('have.value', 'Naturalis Principia Mathematica')
+    cy.get('#node-update-form input[name=name]').should(
+      'have.value',
+      'Naturalis Principia Mathematica'
+    )
   })
 
   it('select', () => {
     openModalAndCheckTitle(3, 'Select columns')
-    testHelp('Use the select node')
 
     cy.contains('Owner').click()
     cy.contains('Save & Preview').click()
@@ -82,16 +77,15 @@ describe('nodes', () => {
   })
 
   it('aggregation', () => {
-    openModalAndCheckTitle(4, 'Aggregation')
+    openModalAndCheckTitle(4, 'Group and Aggregate')
 
-    testHelp('Aggregations are useful to generate')
     cy.get('#node-update-form').contains('Aggregations')
     cy.get('#node-update-form').contains('Group columns')
 
     addFormToFormset('columns')
     cy.get('select[name=columns-0-column]').should('have.value', '').select('Location')
     cy.contains('Save & Preview').click()
-    cy.get('#workflows-grid').contains('count').should('be.visible')
+    cy.get('#workflows-grid:contains(count)').should('be.visible')
     cy.get('#workflows-grid').contains('5').should('be.visible')
 
     addFormToFormset('aggregations')
@@ -119,7 +113,6 @@ describe('nodes', () => {
   it('sort', () => {
     openModalAndCheckTitle(5, 'Sort')
     cy.contains('Sort columns')
-    testHelp('Sort the table based')
 
     cy.get('select[name=sort_columns-0-column]').should('have.value', '').select('store_id')
     cy.contains('Save & Preview').click()
@@ -135,7 +128,8 @@ describe('nodes', () => {
         })
     })
 
-    cy.get('input[name=sort_columns-0-ascending').click()
+    cy.get('input[name=sort_columns-0-ascending').uncheck()
+
     cy.contains('Save & Preview').click()
     cy.contains('Loading preview...').should('be.visible')
 
@@ -153,7 +147,6 @@ describe('nodes', () => {
 
   it('limit', () => {
     openModalAndCheckTitle(6, 'Limit')
-    testHelp('Limits the rows to the selected')
     cy.contains('Offset').should('be.visible')
 
     cy.contains('Result').click()
@@ -172,7 +165,6 @@ describe('nodes', () => {
   it('filter', () => {
     openModalAndCheckTitle(7, 'Filter')
     cy.get('#workflows-grid tbody tr').should('have.length', 15)
-    testHelp('Filter a table by different conditions')
 
     cy.get('select[name=filters-0-numeric_predicate]').should('not.exist')
     cy.get('input[name=filters-0-integer_value]').should('not.exist')
@@ -205,7 +197,6 @@ describe('nodes', () => {
   it('distinct', () => {
     openModalAndCheckTitle(8, 'Distinct')
     cy.get('td:contains(Blackpool)').should('have.length', 4)
-    testHelp('Select columns that should')
 
     cy.contains('Location').click()
     cy.contains('Save & Preview').click()
@@ -214,7 +205,6 @@ describe('nodes', () => {
 
   it('pivot', () => {
     openModalAndCheckTitle(9, 'Pivot')
-    testHelp("Turn the pivot column's rows into")
 
     cy.get('select[name=pivot_index]').select('Owner')
     cy.get('select[name=pivot_column]').select('Location')
@@ -222,7 +212,7 @@ describe('nodes', () => {
     cy.contains('Save & Preview').click()
 
     // TODO: the pivotting takes longer so we have to wait
-    cy.get('th:contains(Blackpool)', { timeout: 10000 }).should('exist')
+    cy.get('th:contains(Blackpool)', { timeout: BIGQUERY_TIMEOUT }).should('exist')
     cy.get('#workflows-grid td:contains(Matt)').should('have.length', 1)
     // the "—" is unicode em-dash, not a standard hyphen from keyboard
     cy.get('#workflows-grid td:contains(—)').should('have.length', 8)
@@ -230,14 +220,13 @@ describe('nodes', () => {
 
   it('edit', () => {
     openModalAndCheckTitle(11, 'Edit')
-    testHelp('Select columns you would like to edit ')
 
     cy.get('select[name=edit_columns-0-column]').should('have.value', '').select('Employees')
     cy.get('select[name=edit_columns-0-integer_function]')
       .should('have.value', '')
       .select('square root')
     cy.contains('Save & Preview').click()
-    cy.get('#workflows-grid').contains('3.0')
+    cy.get('#workflows-grid:contains(3.0)')
 
     addFormToFormset('edit_columns')
     cy.get('select[name=edit_columns-1-column]').select('Owner')
@@ -249,7 +238,6 @@ describe('nodes', () => {
 
   it('add', () => {
     openModalAndCheckTitle(12, 'Add')
-    testHelp('Add new columna by selecting')
 
     cy.get('select[name=add_columns-0-column]').should('have.value', '').select('store_id')
     cy.get('select[name=add_columns-0-integer_function').should('have.value', '').select('divide')
@@ -260,8 +248,8 @@ describe('nodes', () => {
       .type('magic_number')
       .blur()
     cy.contains('Save & Preview').click()
-    cy.get('#workflows-grid').contains('magic_number').should('be.visible')
-    cy.get('#workflows-grid').contains('0.1').should('be.visible')
+    cy.get('#workflows-grid:contains(magic_number)').should('be.visible')
+    cy.get('#workflows-grid td').contains('0.1').should('be.visible')
 
     addFormToFormset('add_columns')
     cy.get('select[name=add_columns-1-column]').select('Owner')
@@ -270,18 +258,17 @@ describe('nodes', () => {
     cy.get('input[name=add_columns-1-label]').type('upper_owner{enter}')
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid:contains(upper_owner)').scrollIntoView()
-    cy.get('#workflows-grid').contains('ALEX').should('be.visible')
+    cy.get('#workflows-grid td').contains('ALEX').scrollIntoView().should('be.visible')
   })
 
   it('rename', () => {
     openModalAndCheckTitle(13, 'Rename')
     cy.get('#workflows-grid').contains('store_id').should('be.visible')
-    testHelp('Select the columns you want to rename')
 
     cy.get('select[name=rename_columns-0-column]').select('store_id')
     cy.get('input[name=rename_columns-0-new_name]').clear().type('unique_id').blur()
     cy.contains('Save & Preview').click()
-    cy.get('#workflows-grid').contains('unique_id').should('be.visible')
+    cy.get('#workflows-grid:contains(unique_id)').should('be.visible')
 
     addFormToFormset('rename_columns')
     cy.get('select[name=rename_columns-1-column]').select('Location')
@@ -298,7 +285,6 @@ describe('nodes', () => {
     // and whether arithmetic and functions return right results
     // for + and join
     openModalAndCheckTitle(14, 'Formula')
-    testHelp('Formula Docs')
 
     // We can't type into the codemirror divs but we can use the hidden textarea
     cy.get('#node-update-form .CodeMirror textarea').type('store', { force: true })
@@ -307,7 +293,8 @@ describe('nodes', () => {
     cy.get('#node-update-form .CodeMirror textarea').type('{enter} + 200', { force: true })
     cy.get('input[name=formula_columns-0-label]').type('glorious_id').blur()
     cy.contains('Save & Preview').click()
-    cy.get('#workflows-grid').contains('201').should('be.visible')
+    cy.contains('Loading preview...').should('be.visible')
+    cy.get('#workflows-grid td').contains('201').should('be.visible')
 
     addFormToFormset('formula_columns')
     cy.get('#node-update-form .CodeMirror textarea').eq(1).type('j', { force: true })
@@ -318,12 +305,11 @@ describe('nodes', () => {
     cy.get('input[name=formula_columns-1-label]').type('loco').blur()
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid:contains(loco)').scrollIntoView().should('be.visible')
-    cy.get('#workflows-grid').contains('BlackpoolKanar').should('be.visible')
+    cy.get('#workflows-grid td').contains('BlackpoolKanar').should('be.visible')
   })
 
   it('window', () => {
-    openModalAndCheckTitle(15, 'Window')
-    testHelp('Window functions aggregate over the selected')
+    openModalAndCheckTitle(15, 'Window and Calculate')
     cy.contains('Window columns').should('be.visible')
 
     // TODO: test whether saving with optional input work
@@ -353,44 +339,40 @@ describe('nodes', () => {
 
   it('join', () => {
     openModalAndCheckTitle(18, 'Join')
-    testHelp('Merge two tables side by side meaning ')
 
-    // TODO: maybe show none selected instead
+    cy.get('select[name=join_left]').select('store_id')
+    cy.get('select[name=join_right]').select('store_id')
     cy.contains('Save & Preview').click()
-    cy.get('#workflows-grid').contains('store_id_1').should('be.visible')
+    cy.contains('Loading preview...').should('be.visible')
+    cy.get('#workflows-grid').contains('store_id').should('be.visible')
     cy.get('#workflows-grid').contains('revenue').should('be.visible')
   })
 
   it('union', () => {
     openModalAndCheckTitle(21, 'Union')
-    testHelp('Concatenates two or more tables by adding')
 
-    cy.contains('Result').click()
-    cy.get('#node-update-form').contains('mode').should('be.visible')
     cy.get('#node-update-form').contains('distinct').should('be.visible')
     // TODO: check for visibility once visual bug is fixed
     cy.get('#workflows-grid').contains('next')
-
-    cy.get('select[name=union_mode]').select('exclude')
-    cy.contains('Save & Preview').click()
-    cy.get('#workflows-grid:contains(Blackpool)').should('not.exist')
-
-    cy.get('select[name=union_mode]').select('keep')
     cy.get('input[name=union_distinct]').check()
     cy.contains('Save & Preview').click()
     cy.get('#workflows-grid td:contains(Edinburgh)').should('have.length', 3)
     cy.get('#workflows-grid:contains(next)').should('not.exist')
   })
 
+  it('except', () => {
+    openModalAndCheckTitle(26, 'Except')
+    cy.get('#workflows-grid').contains('6').should('not.exist')
+    cy.get('#workflows-grid td:contains(Matt)').should('have.length', 3)
+  })
+
   it('intersect', () => {
-    openModalAndCheckTitle(22, 'Intersection')
+    openModalAndCheckTitle(22, 'Intersect')
     cy.get('#workflows-grid td:contains(London)').should('not.exist')
-    testHelp('Calculate the overlapping rows')
   })
 
   it('unpivot', () => {
     openModalAndCheckTitle(24, 'Unpivot')
-    testHelp('Turn columns into row values and spread the values')
 
     cy.get('input[name=unpivot_value]').type('sales').blur()
     waitForLiveFormUpdate()
@@ -408,7 +390,9 @@ describe('nodes', () => {
     cy.get('select[name=columns-3-column').select('Q4')
     cy.contains('Save & Preview').click()
 
-    cy.get('#workflows-grid th:contains(quarter)', { timeout: 10000 }).should('be.visible')
+    cy.get('#workflows-grid th:contains(quarter)', { timeout: BIGQUERY_TIMEOUT }).should(
+      'be.visible'
+    )
     cy.get('#workflows-grid th:contains(sales)').should('be.visible')
     cy.get('#workflows-grid td:contains(Q1)').should('have.length', 2)
     cy.get('#workflows-grid th:contains(product)').should('not.exist')
@@ -416,13 +400,15 @@ describe('nodes', () => {
     addFormToFormset('secondary_columns')
     cy.get('select[name=secondary_columns-0-column]').select('product')
     cy.contains('Save & Preview').click()
-    cy.get('#workflows-grid th:contains(product)', { timeout: 10000 }).should('be.visible')
+    cy.get('#workflows-grid th:contains(product)', { timeout: BIGQUERY_TIMEOUT }).should(
+      'be.visible'
+    )
     cy.get('#workflows-grid td:contains(Kale)').should('have.length', 4)
   })
 
   it('unconnected modal screen', () => {
     cy.visit(`/projects/2/workflows/1`)
-    cy.get('[data-id=25] [title="Aggregation node needs to be connected to a node"]')
+    cy.get('[data-id=25] [title="Group and Aggregate node needs to be connected to a node"]')
     cy.get('[data-id=25]').dblclick()
     cy.contains(
       'This node needs to be connected to more than one node before you can configure it.'

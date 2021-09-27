@@ -3,7 +3,6 @@
 import { getModelStartId } from '../support/utils'
 
 const newTeamId = getModelStartId('teams.team')
-const latestTeamId = newTeamId - 1
 
 describe('users', () => {
   it('signs in to app', () => {
@@ -13,51 +12,65 @@ describe('users', () => {
     cy.get('input[type=password]').type('seewhatmatters')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', `/teams/${latestTeamId}`)
+    cy.url().should('contain', '/teams/4')
   })
 
-  it('signs up to app', () => {
-    cy.visit('/')
+  it('signs up to app with onboarding', () => {
+    cy.visit('/signup')
+    cy.contains('Sign Up Closed')
 
-    cy.contains('create one here').click()
-    cy.url().should('contain', '/accounts/signup')
+    // signup is disabled, uncomment when freemium is live
 
-    cy.get('input[type=email]').type('new@gyana.com')
-    cy.get('input[type=password]').type('seewhatmatters')
-    cy.get('button[type=submit]').click()
-    cy.url().should('contain', '/teams/new')
+    // cy.contains('create one here').click()
+    // cy.url().should('contain', '/accounts/signup')
 
-    cy.get('input[type=text]').type('New')
-    cy.get('button[type=submit]').click()
-    cy.url().should('contain', `/teams/${newTeamId}`)
+    // cy.get('input[type=email]').type('new@gyana.com')
+    // cy.get('input[type=password]').type('seewhatmatters')
+    // cy.get('button[type=submit]').click()
+    // cy.url().should('contain', '/users/onboarding')
 
-    // verification email
-    cy.outbox()
-      .then((outbox) => outbox.count)
-      .should('eq', 1)
+    // // remove message blocking the form
+    // cy.get('.fa-times').first().click()
+    // // onboarding
+    // // cy.get('input[name=first_name]').type('New')
+    // // cy.get('input[name=last_name]').type('User')
+    // cy.get('select[name=company_industry]').select('Agency')
+    // cy.get('select[name=company_role]').select('Marketing')
+    // cy.get('select[name=company_size]').select('2-10')
+    // cy.get('button[type=submit]').click()
+    // cy.url().should('contain', '/teams/new')
 
-    cy.outbox().then((outbox) => {
-      const msg = outbox['messages'][0]
-      const url = msg['payload']
-        .split('\n')
-        .filter((x) => x.includes('http'))[0]
-        .replace('To confirm this is correct, go to ', '')
+    // cy.get('input[type=text]').type('New')
+    // cy.get('button[type=submit]').click()
+    // cy.url().should('contain', `/teams/${newTeamId}`)
 
-      cy.visit(url)
+    // // verification email
+    // cy.outbox()
+    //   .then((outbox) => outbox.count)
+    //   .should('eq', 1)
 
-      cy.contains('You have confirmed new@gyana.com')
-    })
+    // cy.outbox().then((outbox) => {
+    //   const msg = outbox['messages'][0]
+    //   const url = msg['payload']
+    //     .split('\n')
+    //     .filter((x) => x.includes('http'))[0]
+    //     .replace('To confirm this is correct, go to ', '')
+
+    //   cy.visit(url)
+
+    //   cy.contains('You have confirmed new@gyana.com')
+    // })
   })
 
   it('resets password', () => {
     cy.visit('/')
 
-    cy.contains('Forgot password?').click()
-    cy.url().should('contain', '/accounts/password/reset')
+    cy.contains('Forgot your password?').click()
+    cy.url().should('contain', 'password/reset')
 
-    cy.get('input[type=email]').type('test@gyana.com')
+    cy.get('input[type=email]').should('not.be.disabled').type('test@gyana.com')
     cy.get('button[type=submit]').click()
-    cy.url().should('contain', '/accounts/password/reset/done')
+    cy.url().should('contain', 'password/reset/done')
 
     cy.outbox()
       .then((outbox) => outbox.count)
@@ -68,12 +81,12 @@ describe('users', () => {
       const url = msg['payload'].split('\n').filter((x) => x.startsWith('http'))[0]
       cy.visit(url)
     })
-    cy.url().should('contain', 'accounts/password/reset/key/1-set-password')
+    cy.url().should('contain', 'password/reset/key/1-set-password')
 
     cy.get('input[type=password]').first().type('senseknowdecide')
     cy.get('input[type=password]').last().type('senseknowdecide')
     cy.get('input[type=submit]').click()
-    cy.url().should('contain', 'accounts/password/reset/key/done')
+    cy.url().should('contain', 'password/reset/key/done')
 
     cy.visit('/')
 
@@ -81,7 +94,7 @@ describe('users', () => {
     cy.get('input[type=password]').type('senseknowdecide')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', `/teams/${latestTeamId}`)
+    cy.url().should('contain', `/teams/4`)
   })
 
   it('signs out', () => {
@@ -94,10 +107,10 @@ describe('users', () => {
 
     cy.contains('Sign out').click()
 
-    cy.url().should('contain', '/accounts/login')
+    cy.url().should('contain', '/login')
 
     cy.visit('/users/profile')
 
-    cy.url().should('contain', '/accounts/login')
+    cy.url().should('contain', '/login')
   })
 })

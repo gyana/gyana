@@ -1,12 +1,25 @@
-<gy-widget id="widget-{{ object.id }}" {% if is_new %}data-action="mousedown->widget-list#register:once" {% endif %}>
-  <div class="h-full w-full"
-       data-id="{{ object.id }}" data-x="{{object.x}}" data-y="{{object.y}}"
-       data-width="{{object.width}}" data-height="{{object.height}}">
+{% comment %} 
+IMPORTANT: Any style/layout changs here should also be made to
+apps/dashboards/templates/dashboards/preview.html to reflect the changes in
+preview mode.
+{% endcomment %}
+<gy-widget
+  id="widget-{{ object.id }}"
+  {% if is_new %}data-action="mousedown->widget-list#register:once"{% endif %}
+>
+  <div
+    class="h-full w-full"
+    data-id="{{ object.id }}"
+    data-x="{{ object.x }}"
+    data-y="{{ object.y }}"
+    data-width="{{ object.width }}"
+    data-height="{{ object.height }}"
+  >
     <div class="widget-card h-full">
       <div class='widget-card__visual'>
-        {% if object.name %}
-        <h3 class="mb-2">{{ object.name }}</h3>
-        {% endif %}
+        
+        {% include 'widgets/_widget_title.html' %}
+
         <turbo-frame 
           id="widgets-output-{{ object.id }}"
           src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
@@ -19,22 +32,24 @@
         </turbo-frame>
       </div>
 
+      {% if request.GET.mode == 'edit' %}
+
       {% comment %} This little hack is for looping through a range. {% endcomment %}
       {% for i in '01234567'|make_list %}
         <span class="widget-card__indicator"></span>
       {% endfor %}
 
-      {% if request.GET.mode == 'edit' %}
       <div class='widget-card__commands'>
         {% if object.kind != "text" %}
-        <button  data-action="click->tf-modal#open">
-          <i
-            class="fas fa-fw fa-edit"
-            id="widget-update-{{object.id}}"
-            title="Edit"
-            data-item="{{object.id}}"
-            data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
-          ></i>
+        <button  
+          data-controller="tooltip"
+          data-action="click->tf-modal#open"
+          id="widget-update-{{object.id}}"  
+          data-item="{{ object.id }}"
+          data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
+        >
+          <i class="fas fa-fw fa-edit"></i>
+          <span data-tooltip-target="body">Configure</span>
         </button>
 
         {% comment %} Uncomment this once we figure out the modal for opening up a chart. {% endcomment %}
@@ -45,6 +60,7 @@
         {% endif %}
 
         <form
+          data-controller="tooltip"
           method='post'
           action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}"
           title="Duplicate"
@@ -53,9 +69,10 @@
           <button id="widget-duplicate-{{object.id}}" type='submit'>
             <i class="fas fa-fw fa-copy"></i>
           </button>
+          <span data-tooltip-target="body">Duplicate</span>
         </form>
 
-        <div class="flex" data-controller="popover">
+        <div class="flex" data-controller="tooltip popover">
           <button
             id="widget-delete-{{object.id}}"
             title="Delete"
@@ -65,9 +82,11 @@
             <i class="fas fa-fw fa-trash cursor-pointer"></i>
           </button>
 
-          <div data-popover-target="body" hidden class="popover-body shadow-sm">
+          <div data-popover-target="body" hidden class="popover-body">
             {% include 'widgets/_delete.html' %}
           </div>
+
+          <span data-tooltip-target="body">Delete</span>
         </div>
       </div>
       {% endif %}

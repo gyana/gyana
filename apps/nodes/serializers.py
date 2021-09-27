@@ -38,7 +38,7 @@ def get_input_desc(obj):
 
 
 def get_output_desc(obj):
-    return f"{obj.output_name or 'No name'} selected"
+    return f"{obj.name or 'No name'} selected"
 
 
 def get_select_desc(obj):
@@ -55,6 +55,10 @@ def get_aggregation_desc(obj):
 
 def get_union_desc(obj):
     return f"Distinct" if obj.union_distinct else ""
+
+
+def get_except_desc(obj):
+    return f"Except"
 
 
 def get_sort_desc(obj):
@@ -149,6 +153,7 @@ DESCRIPTIONS = {
     "filter": get_filter_desc,
     "edit": get_edit_desc,
     "add": get_add_desc,
+    "except": get_except_desc,
     "rename": get_rename_desc,
     "text": get_text_desc,
     "formula": get_formula_desc,

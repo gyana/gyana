@@ -9,7 +9,14 @@
       <form method="post" action="{% url 'project_integrations:detail' project.id object.id %}" class="form">
         {% csrf_token %}
 
-        <input class='input__inline' id="name" type="text" name="name" value="{{ object.name }}"></input>
+        <input
+          class='input__inline'
+          id="name"
+          type="text"
+          name="name"
+          value="{{ object.name }}"
+          onBlur="this.form.requestSubmit();"
+        ></input>
       </form>
     </turbo-frame>
   </h3>
@@ -20,19 +27,23 @@
     class="button button--circle button--tertiary"
     target="_blank"
     rel="noopener noreferer"
-    title="External source link"
+    data-controller="tooltip"
   >
-    <i class="fas fa-link fa-sm mr-1"></i>
+    <i class="fas fa-fw fa-external-link"></i>
+
+    <span data-tooltip-target="body">Go to Google Sheet</span>
   </a>
   {% endif %}
 </div>
 
-<nav id='tabbar' class="tabbar">
+<nav id='tabbar' class="tabbar tabbar--top">
   {% if object.ready %}
     <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
       href="{% url 'project_integrations:detail' project.id object.id %}">
       Overview
     </a>
+  {% endif %}
+  {% if object.ready or object.state == 'done' %}
     <a class="tabbar__link {% if request.resolver_match.url_name == 'data' %} tabbar__link--active {% endif %}"
       href="{% url 'project_integrations:data' project.id object.id %}">
       Data
@@ -41,7 +52,7 @@
   {% comment %} Uploads cannot be setup again after approval {% endcomment %}
   {% if not object.ready or object.kind != object.Kind.UPLOAD %}
     <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:configure' project.id object.id %}">
+      href="{% url 'project_integrations:done' project.id object.id %}">
       Setup
     </a>
   {% endif %}

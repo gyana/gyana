@@ -1,5 +1,5 @@
 <div data-controller='popover'>
-  <button data-popover-target="trigger" class="button button--outline button--sm" data-action="popover#trigger">
+  <button data-popover-target="trigger" class="button button--sm" data-action="popover#trigger">
     Add widget <i class="fas fa-angle-up fa-rotate-180"></i>
   </button>
 
@@ -11,7 +11,7 @@
 
         <input type='hidden' name='kind' id="id_kind_{{ forloop.counter }}" value="{{ id }}" />
 
-        <button type="submit" class="list__item list__item--interactive w-full">
+        <button type="submit" class="list__item list__item--interactive w-full" data-loading-false data-action="popover#trigger">
           <p><i class="fas {{ icon }} text-blue mr-2"></i> {{txt}}</p>
         </button>
       </form>

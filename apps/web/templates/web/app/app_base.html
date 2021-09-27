@@ -1,13 +1,33 @@
 {% extends "web/base.html" %}
 {% load static %}
 
+{% block banner %}
+  {% if team and team.warning %}
+    <div class="banner banner--warning">
+      <p>
+        You're exceeding your row count limit.
+        <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i></a>
+      </p>
+    </div>
+  {% endif %}
+
+  {% if team and not team.enabled %}
+    <div class="banner banner--danger">
+      <p>
+        You've exceeded your row count limit by over 20%, your team is
+        temporarily disabled. <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i></a>
+      </p>
+    </div>
+  {% endif %}
+{% endblock %}
+
 {% block sidebar_content %}
 {% for user_team in request.user.teams.all %}
 <li>
   <a class="sidebar__link {% if user_team.id == team.id %}sidebar__link--active{% endif %}"
      href="{% url 'teams:detail' user_team.id %}"
      title="{{ user_team.name }}">
-    <span class="inline-block fa-fw mr-6 uppercase bold">{{ user_team.name|slice:1 }}.</span>{{ user_team.name }}
+    {% if user_team.icon %}<img src="{{ user_team.icon.url }}" />{% else %}<span class="team_logo">{{ user_team.name|slice:1 }}</span>{% endif %}{{ user_team.name }}
   </a>
 </li>
 {% endfor %}
@@ -23,18 +43,7 @@
 
 {% block notifications %}{% endblock %}
 
-<section class="flex flex-col flex-1 {% block app-class %}{% endblock %}">
-  {% if object.project %}
-  <p class="text-sm mb-2">
-    <a href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}">Back to
-      {{ object.project.name }}</a>
-  </p>
-  <p>
-    <a href="{% url 'projects:tab' object.project.id request.resolver_match.app_name %}">{{
-          request.resolver_match.app_name|title }}</a>
-  </p>
-  {% endif %}
-
+<section class="flex flex-col flex-1 overflow-hidden {% block app-class %}{% endblock %}">
   {% block app %}{% endblock %}
 </section>
 

@@ -1,0 +1,14 @@
+
+{% extends "web/app/settings_base.html" %}
+
+{% block app %}
+<h1>Create</h1>
+<form method="post" action="{% url 'team_cnames:create' team.id %}" class="form">
+  {% csrf_token %}
+
+  {% include "django/forms/default_form.html" %}
+
+  <button type="submit" class="button button--filled button--success">Create</button>
+</form>
+{% endblock %}
+

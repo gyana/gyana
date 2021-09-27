@@ -1,0 +1,80 @@
+.landing {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  &__content {
+    border-right: 1px solid var(--c-gray);
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    gap: 3.2rem;
+    height: 100%;
+    overflow-y: auto;
+    padding: 3.2rem;
+
+    section {
+      margin-bottom: auto;
+    }
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: auto;
+
+    h1 {
+      text-transform: uppercase;
+      color: var(--c-blue);
+    }
+
+    img {
+      height: 6.4rem;
+      margin-right: 1.6rem;
+    }
+
+    &--appsumo {
+      justify-content: center;
+      gap: 0.8rem;
+
+      img:first-child {
+        height: 6.4rem;
+      }
+
+      img {
+        height: 3.2rem;
+        margin: 0;
+      }
+    }
+  }
+
+  &__footer {
+    text-align: center;
+  }
+
+  &__image {
+    align-items: center;
+    background-color: var(--c-white);
+    content: '';
+    display: flex;
+    flex: 2 2 0;
+    height: 100%;
+    justify-content: center;
+    position: relative;
+    
+    img {
+      max-height: 80%;
+      height: auto;
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+    &__image {
+      display: none;
+    }
+  }
+}

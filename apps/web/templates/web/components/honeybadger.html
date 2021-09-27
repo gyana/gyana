@@ -1,0 +1,14 @@
+<script src="https://js.honeybadger.io/v3.0/honeybadger.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+  Honeybadger.configure({
+    apiKey: "{{ HONEYBADGER_API_KEY }}",
+    environment: "{{ HONEYBADGER_ENVIRONMENT }}",
+    reportData: true
+  });
+
+  Honeybadger.setContext({
+    user_id: {{ request.user.id }},
+    user_email: "{{ request.user.email }}"
+  });
+</script>

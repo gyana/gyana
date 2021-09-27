@@ -8,10 +8,14 @@ export default class extends Controller {
     id: String,
   }
 
+  sendNodeEvents() {
+    window.dispatchEvent(new CustomEvent(GyanaEvents.UPDATE_WORKFLOW))
+    window.dispatchEvent(new CustomEvent(`${GyanaEvents.UPDATE_NODE}-${this.idValue}`))
+  }
+
   connect() {
     this.element.querySelector('#node-update-form').addEventListener('submit', () => {
-      window.dispatchEvent(new CustomEvent(GyanaEvents.UPDATE_WORKFLOW))
-      window.dispatchEvent(new CustomEvent(`${GyanaEvents.UPDATE_NODE}-${this.idValue}`))
+      this.sendNodeEvents()
     })
 
     this.element.querySelector('#node-name-update-form').addEventListener('submit', (event) => {

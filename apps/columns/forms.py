@@ -1,14 +1,16 @@
 from apps.base.aggregations import AGGREGATION_TYPE_MAP
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
+from apps.base.widgets import SelectWithDisable
+from apps.columns.models import EditColumn
 from django import forms
-from django.forms.models import BaseInlineFormSet
 
 from .bigquery import AllOperations
 from .widgets import CodeMirror
 
 IBIS_TO_FUNCTION = {
     "String": "string_function",
+    "Int32": "integer_function",
     "Int64": "integer_function",
     "Float64": "integer_function",
     "Timestamp": "datetime_function",
@@ -17,18 +19,7 @@ IBIS_TO_FUNCTION = {
 }
 
 
-class InlineColumnFormset(BaseInlineFormSet):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.form.base_fields["column"] = forms.ChoiceField(
-            choices=[
-                ("", "No column selected"),
-                *[(col, col) for col in self.instance.parents.first().schema],
-            ]
-        )
-
-
-class FunctionColumnForm(SchemaFormMixin, LiveUpdateForm):
+class AggregationColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
         fields = ("column", "function")
         help_texts = {
@@ -57,6 +48,7 @@ class FunctionColumnForm(SchemaFormMixin, LiveUpdateForm):
 
 class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
+        model = EditColumn
         fields = (
             "column",
             "string_function",
@@ -159,31 +151,42 @@ class FormulaColumnForm(SchemaFormMixin, LiveUpdateForm):
 class WindowColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
         fields = ("column", "function", "group_by", "order_by", "ascending", "label")
-        help_texts = {
-            "column": "Column",
-            "function": "Function",
-            "group_by": "Group By",
-            "order_by": "Order By",
-            "label": "New Column Name",
-        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        column_field = forms.ChoiceField(
-            choices=[
-                ("", "No column selected"),
-                *[(col, col) for col in self.schema],
-            ]
+        choices = [
+            ("", "No column selected"),
+            *[(col, col) for col in self.schema],
+        ]
+
+        self.fields["column"] = forms.ChoiceField(
+            choices=choices,
+            help_text=self.base_fields["column"].help_text,
         )
-        self.fields["column"] = column_field
+
         if self.column_type is not None:
             self.fields["function"].choices = [
                 (choice.value, choice.name)
                 for choice in AGGREGATION_TYPE_MAP[self.column_type]
             ]
-            self.fields["group_by"] = column_field
-            self.fields["order_by"] = column_field
+            self.fields["group_by"] = forms.ChoiceField(
+                choices=choices,
+                help_text=self.base_fields["group_by"].help_text,
+                required=False,
+                widget=SelectWithDisable(
+                    disabled={
+                        name: f"You cannot group by a {type_} column"
+                        for name, type_ in self.schema.items()
+                        if type_.name in ["Float64"]
+                    }
+                ),
+            )
+            self.fields["order_by"] = forms.ChoiceField(
+                choices=choices,
+                help_text=self.base_fields["order_by"].help_text,
+                required=False,
+            )
 
     def get_live_fields(self):
         fields = ["column"]

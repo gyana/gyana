@@ -28,7 +28,9 @@ SECRET_KEY = "BITuHkgTLhSfOHAewSSxNKRZfvYuzjPhdbIhaztE"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+# custom allowed hosts middleware for cnames
+CNAME_ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -85,23 +87,29 @@ PROJECT_APPS = [
     "apps.filters",
     "apps.tables.apps.TablesConfig",
     "apps.invites.apps.InvitesConfig",
-    "apps.base",
+    "apps.base.apps.BaseConfig",
     "apps.nodes",
     "apps.columns",
     "apps.uploads",
     "apps.sheets",
     "apps.connectors.apps.ConnectorsConfig",
+    "apps.appsumo",
+    "apps.templates",
+    "apps.cnames.apps.CNamesConfig",
 ]
 
 INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
+    "apps.cnames.middleware.HostMiddleware",
     "honeybadger.contrib.DjangoHoneybadgerMiddleware",
+    "beeline.middleware.django.HoneyMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "apps.base.middleware.HoneybadgerUserContextMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "hijack.middleware.HijackUserMiddleware",
@@ -118,13 +126,14 @@ LOGGING = {
             "formatter": "simple",
         }
     },
-    "loggers": {
-        "segment": {
-            "handlers": ["console"],
-            "level": "DEBUG",
-            "propagate": True,
-        }
-    },
+    # uncomment to debug segment
+    # "loggers": {
+    #     "segment": {
+    #         "handlers": ["console"],
+    #         "level": "DEBUG",
+    #         "propagate": True,
+    #     }
+    # },
 }
 
 ROOT_URLCONF = "gyana.urls"
@@ -140,7 +149,6 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "apps.web.context_processors.user_meta",
                 "apps.web.context_processors.project_meta",
-                # this line can be removed if not using google analytics
                 "apps.web.context_processors.google_analytics_id",
                 "gyana.context_processors.django_settings",
             ],
@@ -199,7 +207,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Allauth setup
 
-ACCOUNT_ADAPTER = "invitations.models.InvitationsAdapter"
+ACCOUNT_ADAPTER = "apps.users.adapter.UsersAccountAdapter"
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
@@ -219,6 +227,7 @@ ACCOUNT_FORMS = {
 # User signup configuration: change to "mandatory" to require users to confirm email before signing in.
 # or "optional" to send confirmation emails but not require them
 ACCOUNT_EMAIL_VERIFICATION = "optional"
+LOGIN_URL = "account_login"
 
 
 AUTHENTICATION_BACKENDS = (
@@ -308,12 +317,7 @@ PROJECT_METADATA = {
     "CONTACT_EMAIL": "developers@gyana.com",
 }
 
-
-ADMINS = [("Gyana Developers", "developers@gyana.com")]
-
-GOOGLE_ANALYTICS_ID = (
-    ""  # replace with your google analytics ID to connect to Google Analytics
-)
+GOOGLE_ANALYTICS_ID = os.environ.get("GOOGLE_ANALYTICS_ID")
 
 
 # Default primary key field type
@@ -321,22 +325,23 @@ GOOGLE_ANALYTICS_ID = (
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
-GCP_PROJECT = os.environ.get("GCP_PROJECT", "gyana-1511894275181")
-GCP_BQ_SVC_ACCOUNT = os.environ.get(
-    "GCP_BQ_SVC_ACCOUNT", "gyana-local@gyana-1511894275181.iam.gserviceaccount.com"
-)
+GCP_PROJECT = os.environ.get("GCP_PROJECT")
+GCP_BQ_SVC_ACCOUNT = os.environ.get("GCP_BQ_SVC_ACCOUNT")
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 
 CRISPY_TEMPLATE_PACK = "tailwind"
 
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
-GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME", "gyana-local")
+GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME")
 
-FIVETRAN_KEY = os.environ.get("FIVETRAN_KEY", "<your fivetran key>")
+FIVETRAN_KEY = os.environ.get("FIVETRAN_KEY")
 FIVETRAN_URL = "https://api.fivetran.com/v1"
-FIVETRAN_GROUP = "general_candor"
-FIVETRAN_HEADERS = {"Authorization": f"Basic {FIVETRAN_KEY}"}
+FIVETRAN_GROUP = os.environ.get("FIVETRAN_GROUP")
+FIVETRAN_HEADERS = {
+    "Authorization": f"Basic {FIVETRAN_KEY}",
+    "Accept": "application/json;version=2",
+}
 
 EXTERNAL_URL = "http://localhost:8000"
 # for local development
@@ -347,7 +352,7 @@ BIGQUERY_TABLE_NAME_LENGTH = 1024
 BIGQUERY_LOCATION = "EU"
 
 # Namespace based on git email to avoid collisions in PKs on local dev
-CLOUD_NAMESPACE = os.environ.get("CLOUD_NAMESPACE", "local")
+CLOUD_NAMESPACE = os.environ.get("CLOUD_NAMESPACE")
 
 # Feature flag for Alpha features
 FF_ALPHA = True
@@ -359,6 +364,7 @@ SEGMENT_ANALYTICS_JS_WRITE_KEY = os.environ.get("SEGMENT_ANALYTICS_JS_WRITE_KEY"
 
 INVITATIONS_INVITATION_MODEL = "invites.Invite"
 INVITATIONS_INVITATION_EXPIRY = 7
+INVITATIONS_ADAPTER = ACCOUNT_ADAPTER
 
 HASHIDS_SALT = os.environ.get("HASHIDS_SALT", "")
 
@@ -368,3 +374,20 @@ CYPRESS_URLS = False
 
 ADMIN_TOOLS_MENU = "apps.base.menu.CustomMenu"
 ADMIN_TOOLS_INDEX_DASHBOARD = "apps.base.dashboard.CustomIndexDashboard"
+
+MOCK_REMOTE_OBJECT_DELETION = False
+
+ENVIRONMENT = os.environ.get("ENVIRONMENT")
+HONEYCOMB_API_KEY = os.environ.get("HONEYCOMB_API_KEY")
+
+HONEYBADGER = {
+    "API_KEY": os.environ.get("HONEYBADGER_API_KEY"),
+    "ENVIRONMENT": ENVIRONMENT,
+    # enables us to use "development" and send data
+    "FORCE_REPORT_DATA": True,
+}
+
+HELLONEXT_SSO_TOKEN = os.environ.get("HELLONEXT_SSO_TOKEN")
+
+HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY")
+HEROKU_APP = os.environ.get("HEROKU_APP")

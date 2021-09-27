@@ -12,13 +12,19 @@
   {{ formset.management_form }}
   <div data-formset-target="target">
     {% for form in formset.forms %}
-    {% include 'components/formset_row.html' with form=form %}
+      {% include 'components/formset_row.html' with form=form %}
     {% endfor %}
   </div>
 
-  <button id="{{ formset.get_default_prefix }}-add" type="button" class="button button--sm button--rounded  " data-action="click->formset#add">
-    <i class="far fa-fw fa-plus"></i> Add new
-  </button>
+    <button 
+      id="{{ formset.get_default_prefix }}-add" 
+      type="button" class="button button--sm button--rounded  " 
+      data-action="click->formset#add"
+      {% if formset.can_add == False %}disabled{% endif %}
+      
+    >
+      <i class="far fa-fw fa-plus"></i> Add new
+    </button>
 </div>
 
 {{ formset.media }}

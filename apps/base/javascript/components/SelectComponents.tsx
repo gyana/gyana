@@ -21,11 +21,12 @@ export const SelectTransition = ({ children }) => (
   </Transition>
 )
 
-export const SelectOption = ({ children, value }) => (
+export const SelectOption = ({ children, value, disabled = false }) => (
   <Listbox.Option
     value={value}
+    disabled={disabled}
     className={({ active }) =>
-      `${active ? 'text-black bg-gray-20' : 'text-black-50'}
+      `${disabled ? 'text-black-20' : active ? 'text-black bg-gray-20' : 'text-black-50'}
                 cursor-pointer select-none relative py-2 pl-4 pr-4 flex flex-row items-center`
     }
   >

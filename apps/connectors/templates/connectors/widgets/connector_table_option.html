@@ -1,0 +1,26 @@
+{% with id=widget.attrs.id %}
+
+<div {% if widget.attrs.disabled %} data-controller="tooltip" {% endif %}>
+  <input 
+    name="{{ widget.name }}"
+    id="{{ id }}"
+    class="checkbox__hidden"
+    value="{{ widget.value }}" 
+    type="checkbox"
+    {% include "django/forms/widgets/attrs.html" %}
+  ></input>
+  <label
+    {% if widget.attrs.disabled %}
+    class="checkbox checkbox__disabled"
+    {% else %}
+    class="checkbox checkbox__enabled"
+    {% endif %}
+    for="{{ id }}"
+  > 
+    {{widget.label }}
+  </label>
+  {% if widget.attrs.disabled %}
+    <span data-tooltip-target="body">Option is disabled: {{ widget.reason|default_if_none:"Table is required" }}</span>
+  {% endif %}
+</div>
+{% endwith %}

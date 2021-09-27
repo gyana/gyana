@@ -1,4 +1,5 @@
 import { Controller } from 'stimulus'
+import { GyanaEvents } from 'apps/base/javascript/events'
 
 // Dynamically add and remove formset in Django
 // Inspired by https://github.com/stimulus-components/stimulus-rails-nested-form
@@ -10,7 +11,7 @@ export default class extends Controller {
     prefix: String,
   }
 
-  initialize() {
+  connect() {
     this.wrapperSelector = this.wrapperSelectorValue || '.formset-wrapper'
   }
 
@@ -28,6 +29,16 @@ export default class extends Controller {
     // Increment the total forms index, for consistency with live update form
 
     TOTAL_FORMS.value = parseInt(total) + 1
+
+    // Hide if number of forms exceed MAX_NUM
+    if (
+      parseInt(TOTAL_FORMS.value) >=
+      parseInt(this.element.querySelector(`#id_${this.prefixValue}-MAX_NUM_FORMS`).value)
+    ) {
+      e.currentTarget.setAttribute('disabled', true)
+    }
+
+    window.dispatchEvent(new CustomEvent(GyanaEvents.UPDATE_FORM_COUNT))
   }
 
   remove(e) {
@@ -38,14 +49,22 @@ export default class extends Controller {
     // If the field has `data-new-record` set, then it was added dynamically. Otherwise we
     // need to "check" the hidden delete input. Django will then delete it on the post request.
 
-    if (wrapper.dataset.newRecord === 'true') {
-      wrapper.remove()
-    } else {
-      wrapper.style.display = 'none'
+    wrapper.style.display = 'none'
 
-      const input = wrapper.querySelector("input[name*='-DELETE']")
-      input.value = 'on'
-      input.setAttribute('checked', '')
+    const input = wrapper.querySelector("input[name*='-DELETE']")
+    input.value = 'on'
+    input.setAttribute('checked', '')
+
+    const AddButton = document.getElementById(`${this.prefixValue}-add`)
+    //  Re-enable button if necessary
+    if (AddButton.getAttribute('disabled') == '') {
+      AddButton.removeAttribute('disabled')
     }
+
+    wrapper.querySelectorAll('[required]').forEach((el) => {
+      el.removeAttribute('required')
+    })
+
+    window.dispatchEvent(new CustomEvent(GyanaEvents.UPDATE_FORM_COUNT))
   }
 }

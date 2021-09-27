@@ -48,6 +48,10 @@ export default class extends Controller {
         CodeMirror.commands.autocomplete(instance)
       }
     })
+
+    this.CodeMirror.on('blur', function (cm) {
+      cm.save()
+    })
   }
 }
 

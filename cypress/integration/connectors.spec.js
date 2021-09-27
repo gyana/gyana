@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { getModelStartId, pendingIntegrations } from '../support/utils'
+import { getModelStartId, pendingIntegrations, BIGQUERY_TIMEOUT } from '../support/utils'
 
 const createConnector = (service) => {
   cy.visit('/projects/1/integrations/connectors/new?service=google_analytics')
@@ -36,12 +36,21 @@ describe('connectors', () => {
     cy.get('button[type=submit]').click()
 
     cy.contains('Validating and importing your connector...')
-    cy.contains('Connector successfully validated and imported.', { timeout: 10000 })
+    cy.contains('Connector successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
 
     cy.contains('Confirm').click()
 
     // connector created successfully
-    cy.contains('Data')
+    cy.get('#tabbar').within(() => cy.contains('Overview'))
+
+    // fivetran succeeded at information
+    // cy.get('#connectors-status').trigger('mouseover')
+    cy.contains('Jan. 1, 2021, midnight')
+
+    // connector is broken by design, follow mock redirect
+    cy.contains('Your connector is broken')
+    cy.contains('fixing it').click()
+    cy.url().should('contain', '/connectors/mock')
 
     // check email sent
     cy.outbox()
@@ -61,11 +70,11 @@ describe('connectors', () => {
 
     // initially it is loading
     cy.get('.fa-circle-notch').should('have.length', 1)
-    cy.get('.fa-check-circle').should('not.exist')
+    cy.get('.fa-exclamation-triangle').should('have.length', 4)
 
     // now it is completed
     cy.get('.fa-circle-notch').should('not.exist')
-    cy.get('.fa-check-circle').should('have.length', 1)
+    cy.get('.fa-exclamation-triangle').should('have.length', 5)
 
     // takes me to the review page
     cy.contains('Google Analytics').first().click()
@@ -79,7 +88,6 @@ describe('connectors', () => {
     createConnector('google_analytics')
 
     // remove a table
-    cy.contains('Advanced').click()
     cy.contains('Adwords Campaigns').click()
     // wait for javascript to update hidden element
     cy.wait(200)
@@ -89,6 +97,8 @@ describe('connectors', () => {
     cy.wait(1000)
     cy.reload()
 
+    cy.contains('Review import', { timeout: BIGQUERY_TIMEOUT })
+    cy.contains('preview').click(0)
     cy.contains('Adwords Campaigns').should('not.exist')
   })
 })

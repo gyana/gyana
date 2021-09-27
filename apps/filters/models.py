@@ -1,13 +1,10 @@
-from apps.base.models import BaseModel
+from apps.base.models import SaveParentModel
 from apps.widgets.models import Widget
-from dirtyfields import DirtyFieldsMixin
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.utils import timezone
-from model_clone import CloneMixin
 
 
-class Filter(CloneMixin, DirtyFieldsMixin, BaseModel):
+class Filter(SaveParentModel):
     class Type(models.TextChoices):
         INTEGER = "INTEGER", "Integer"
         FLOAT = "FLOAT", "Float"
@@ -49,10 +46,10 @@ class Filter(CloneMixin, DirtyFieldsMixin, BaseModel):
     class TimePredicate(models.TextChoices):
         ON = "equal", "is"
         NOTON = "nequal", "is not"
-        BEFORE = "greaterthan", "is before"
-        BEFOREON = "greaterthanequal", "is on or before"
-        AFTER = "lessthan", "is after"
-        AFTERON = "lessthanequal", "is on or after"
+        BEFORE = "lessthan", "is before"
+        BEFOREON = "lessthanequal", "is on or before"
+        AFTER = "greaterthan", "is after"
+        AFTERON = "greaterthanequal", "is on or after"
         ISNULL = "isnull", "is empty"
         NOTNULL = "notnull", "is not empty"
 
@@ -76,32 +73,31 @@ class Filter(CloneMixin, DirtyFieldsMixin, BaseModel):
     type = models.CharField(max_length=8, choices=Type.choices)
 
     numeric_predicate = models.CharField(
-        max_length=16, choices=NumericPredicate.choices, null=True, blank=True
+        max_length=16, choices=NumericPredicate.choices, null=True
     )
 
-    float_value = models.FloatField(null=True, blank=True)
+    float_value = models.FloatField(null=True)
     float_values = ArrayField(models.FloatField(), null=True)
-    integer_value = models.BigIntegerField(null=True, blank=True)
+    integer_value = models.BigIntegerField(null=True)
     integer_values = ArrayField(models.BigIntegerField(), null=True)
 
     time_predicate = models.CharField(
-        max_length=16, choices=TimePredicate.choices, null=True, blank=True
+        max_length=16, choices=TimePredicate.choices, null=True
     )
     datetime_predicate = models.CharField(
         max_length=16,
         choices=TimePredicate.choices + DatetimePredicate.choices,
         null=True,
-        blank=True,
     )
 
-    time_value = models.TimeField(null=True, blank=True)
-    date_value = models.DateField(null=True, blank=True)
-    datetime_value = models.DateTimeField(null=True, blank=True)
+    time_value = models.TimeField(null=True)
+    date_value = models.DateField(null=True)
+    datetime_value = models.DateTimeField(null=True)
 
     string_predicate = models.CharField(
-        max_length=16, choices=StringPredicate.choices, null=True, blank=True
+        max_length=16, choices=StringPredicate.choices, null=True
     )
-    string_value = models.TextField(null=True, blank=True)
+    string_value = models.TextField(null=True)
     string_values = ArrayField(models.TextField(), null=True)
 
     bool_value = models.BooleanField(default=True)
@@ -112,17 +108,6 @@ class Filter(CloneMixin, DirtyFieldsMixin, BaseModel):
     @property
     def parent_type(self):
         return "widget" if self.widget else "node"
-
-    @property
-    def parent(self):
-        return self.widget or self.node
-
-    def save(self, *args, **kwargs) -> None:
-        if self.node and self.is_dirty():
-            self.node.data_updated = timezone.now()
-            self.node.save()
-
-        return super().save(*args, **kwargs)
 
 
 PREDICATE_MAP = {

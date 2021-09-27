@@ -1,15 +1,15 @@
-from apps.base.turbo import TurboCreateView, TurboUpdateView
-from apps.teams.bigquery import create_team_dataset
-from apps.teams.mixins import TeamMixin
-from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import transaction
+from django.db.models import Q
 from django.http import HttpResponse
+from django.http.response import Http404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableView
+
+from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.teams.mixins import TeamMixin
 
 from .forms import MembershipUpdateForm, TeamCreateForm, TeamUpdateForm
 from .models import Membership, Team
@@ -21,16 +21,10 @@ class TeamCreate(LoginRequiredMixin, TurboCreateView):
     form_class = TeamCreateForm
     template_name = "teams/create.html"
 
-    def form_valid(self, form: forms.Form) -> HttpResponse:
-
-        with transaction.atomic():
-            team = form.save()
-            form.instance.members.add(
-                self.request.user, through_defaults={"role": "admin"}
-            )
-            create_team_dataset(team)
-
-        return super().form_valid(form)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.id,))
@@ -65,11 +59,14 @@ class TeamDetail(DetailView):
 
         from .tables import TeamProjectsTable
 
+        self.request.session["team_id"] = self.object.id
+
         context = super().get_context_data(**kwargs)
-        context["team_projects"] = TeamProjectsTable(
-            Project.objects.filter(team=self.object)
+        projects = Project.objects.filter(team=self.object).filter(
+            Q(access=Project.Access.EVERYONE) | Q(members=self.request.user)
         )
-        context["project_count"] = Project.objects.filter(team=self.object).count()
+        context["team_projects"] = TeamProjectsTable(projects)
+        context["project_count"] = projects.count()
 
         return context
 
@@ -110,6 +107,11 @@ class MembershipUpdate(TeamMixin, TurboUpdateView):
 class MembershipDelete(TeamMixin, DeleteView):
     template_name = "members/delete.html"
     model = Membership
+
+    def delete(self, request, *args, **kwargs) -> HttpResponse:
+        if self.get_object().can_delete:
+            return super().delete(request, *args, **kwargs)
+        raise Http404("Cannot delete last admin of team")
 
     def get_success_url(self) -> str:
         return reverse("team_members:list", args=(self.team.id,))

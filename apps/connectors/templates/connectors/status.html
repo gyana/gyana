@@ -1,3 +1,18 @@
-<turbo-frame id="connectors:status" src="{% url 'connectors:status' connector.id %}">
-    {% include 'columns/status.html' %}
-</turbo-frame>
+{% load humanize %}
+{% load static %}
+
+<h2 id="connectors-status" data-controller="tooltip">
+  {{ object.fivetran_succeeded_at|naturaltime }}
+  <span data-tooltip-target="body">{{ object.fivetran_succeeded_at }}</span>
+</h2>
+<p>Most recent data imported</p>
+{% if broken %}
+  <p class="text-red">
+    Your connector is broken. Try
+    <a class="link" href="{{ fivetran_url }}" data-turbo-frame="_top">
+      fixing it
+    </a>
+    or reach out to support.
+  </p>
+{% endif %}
+

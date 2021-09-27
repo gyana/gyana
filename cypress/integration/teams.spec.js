@@ -11,7 +11,7 @@ describe('teams', () => {
   it('create, read, update and delete', () => {
     // redirect to the most recently created team
     cy.visit('/')
-    cy.url().should('contain', `/teams/${newTeamId - 1}`)
+    cy.url().should('contain', `/teams/4`)
 
     // now start test
     cy.visit('/teams/1')
@@ -48,10 +48,12 @@ describe('teams', () => {
     cy.get('#heading').within(() => cy.contains('Agni'))
 
     // delete
-    cy.contains('Delete').click()
-    cy.url().should('contain', newTeamUrl + '/delete')
-    cy.get('button[type=submit]').click()
-    cy.get('#sidebar').contains('Agni').should('not.exist')
+    cy.contains('Team deletion is disabled')
+    cy.get('button').contains('Delete').should('be.disabled')
+    // cy.contains('Delete').click()
+    // cy.url().should('contain', newTeamUrl + '/delete')
+    // cy.get('button[type=submit]').click()
+    // cy.get('#sidebar').contains('Agni').should('not.exist')
   })
   it('change member role and check restricted permissions', () => {
     cy.visit('/teams/1')
@@ -68,7 +70,7 @@ describe('teams', () => {
 
     cy.visit('/')
 
-    cy.wrap(['Members', 'Invites', 'Settings']).each((page) =>
+    cy.wrap(['Members', 'Billing', 'Settings']).each((page) =>
       cy.contains(page).should('not.exist')
     )
 
@@ -83,7 +85,7 @@ describe('teams', () => {
 
     cy.contains('member@gyana.com').click()
 
-    cy.contains('Delete').click()
+    cy.get('a').contains('Delete').click()
     cy.contains('Yes').click()
 
     cy.contains('member@gyana.com').should('not.exist')
@@ -114,14 +116,15 @@ describe('teams', () => {
 
     // now we go and delete that data source
     cy.get('#main').within(() => cy.contains('Warning').click())
+    cy.contains('1 upload').click()
     cy.contains('store_info').click()
     cy.get('#tabbar').within(() => cy.contains('Settings').click())
-    cy.contains('Delete').click()
+    cy.get('a').contains('Delete').click()
     cy.contains('Yes').click()
 
     cy.visit('/')
     cy.contains('Warning').click()
-    cy.contains('Account').click()
+    cy.get('nav').contains('Billing').click()
     // row count automatically updated when integration deleted
     cy.contains("You're exceeding your row count limit.").should('not.exist')
   })
