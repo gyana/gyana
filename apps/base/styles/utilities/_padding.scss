@@ -1,16 +1,14 @@
+@mixin standard {
+  --padding: 1.6rem;
+  padding: var(--padding);
+}
+
 .pad {
   --padding: 1.6rem;
   padding: var(--padding);
 
   &--sm {
     --padding: 1rem;
-  }
-
-  &--x {
-    padding: 0 var(--padding);
-  }
-
-  &--y {
-    padding: var(--padding) 0;
+    padding: var(--padding);
   }
 }
