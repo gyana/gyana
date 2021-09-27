@@ -1,0 +1,10 @@
+<i class="fas fa-edit mb-3 fa-2x"></i>
+<p>
+  This widget needs to be
+  <button 
+    data-action="click->tf-modal#open" 
+    class='link'
+    data-src="{% url "dashboard_widgets:update" project.id dashboard.id widget.id %}"
+    data-item="{{ widget.id }}"
+  >configured</button>!
+</p>

@@ -2,6 +2,7 @@ import logging
 
 import analytics
 from apps.base.analytics import WIDGET_CONFIGURED_EVENT
+from apps.base.errors import error_name_to_snake
 from apps.base.frames import (
     TurboFrameDetailView,
     TurboFrameFormsetUpdateView,
@@ -9,6 +10,7 @@ from apps.base.frames import (
     TurboFrameUpdateView,
 )
 from apps.base.table_data import RequestConfig
+from apps.base.templates import template_exists
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
 from apps.widgets.visuals import MaxRowsExceeded, chart_to_output, table_to_output
@@ -16,6 +18,8 @@ from django.db.models.query import QuerySet
 from django.urls import reverse
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
+from honeybadger import honeybadger
+from ibis.common.exceptions import IntegrityError
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 
@@ -186,12 +190,14 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
         context["project"] = self.get_object().dashboard.project
         try:
             add_output_context(context, self.object, self.request)
-
-        except MaxRowsExceeded as e:
-            context["error"] = "max_rows_exceeded"
         except Exception as e:
-            context["error"] = "configuration_fail"
-            logging.warning(e, exc_info=e)
+            error_template = f"widgets/errors/{error_name_to_snake(e)}.html"
+            if template_exists(error_template):
+                context["error_template"] = error_template
+            else:
+                logging.warning(e, exc_info=e)
+                honeybadger.notify(e)
+                context["error_template"] = "widgets/erros/default.html"
 
         return context
 

@@ -3,6 +3,7 @@ import string
 
 import numpy as np
 import pandas as pd
+from apps.widgets.bigquery import get_unique_column_names
 from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget
 
 from .fusioncharts import FusionCharts
@@ -76,7 +77,9 @@ def _get_first_value_or_count(widget):
 
 
 def to_multi_value_data(widget, df):
-    values = [value.column for value in widget.aggregations.all()] or [
+    aggregations = widget.aggregations.all()
+    unique_names = get_unique_column_names(aggregations, [widget.dimension])
+    values = [unique_names.get(value, value.column) for value in aggregations] or [
         COUNT_COLUMN_NAME
     ]
 
@@ -100,7 +103,9 @@ def to_multi_value_data(widget, df):
 
 
 def to_scatter(widget, df):
-    x, y = [value.column for value in widget.aggregations.all()][:2]
+    aggregations = widget.aggregations.all()
+    unique_names = get_unique_column_names(aggregations, [widget.dimension])
+    x, y = [unique_names.get(value, value.column) for value in aggregations][:2]
     df = df.rename(columns={x: "x", y: "y", widget.dimension: "id"})
     return {
         "categories": [{"category": [{"label": str(x)} for x in df.x.to_list()]}],
@@ -113,7 +118,9 @@ def to_scatter(widget, df):
 
 
 def to_radar(widget, df):
-    df = df.melt(value_vars=[col.column for col in widget.aggregations.all()])
+    aggregations = widget.aggregations.all()
+    unique_names = get_unique_column_names(aggregations, [widget.dimension])
+    df = df.melt(value_vars=[unique_names.get(col, col.column) for col in aggregations])
     return {
         "categories": [
             {"category": [{"label": label} for label in df.variable.to_list()]}
@@ -138,14 +145,11 @@ def to_single_value(widget, df):
 
 
 def to_segment(widget, df):
-    df = df.melt(
-        value_vars=[
-            col.column
-            for col in widget.aggregations.order_by(
-                "created" if widget.kind == Widget.Kind.FUNNEL else "-created"
-            ).all()
-        ]
-    )
+    aggregations = widget.aggregations.order_by(
+        "created" if widget.kind == Widget.Kind.FUNNEL else "-created"
+    ).all()
+    unique_names = get_unique_column_names(aggregations, [widget.dimension])
+    df = df.melt(value_vars=[unique_names.get(col, col.column) for col in aggregations])
     return {
         "data": [
             {"label": row.variable, "value": row.value} for _, row in df.iterrows()
@@ -154,7 +158,9 @@ def to_segment(widget, df):
 
 
 def to_bubble(widget, df):
-    x, y, z = [value.column for value in widget.aggregations.all()][:3]
+    aggregations = widget.aggregations.all()
+    unique_names = get_unique_column_names(aggregations, [widget.dimension])
+    x, y, z = [unique_names.get(value, value.column) for value in aggregations][:3]
     df = df.rename(columns={x: "x", y: "y", z: "z", widget.dimension: "id"})
     return {
         "categories": [{"category": [{"label": str(x)} for x in df.x.to_list()]}],

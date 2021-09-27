@@ -1,5 +1,6 @@
 from apps.base.clients import bigquery_client
-from apps.nodes.bigquery import NodeResultNone, error_name_to_snake, get_query_from_node
+from apps.base.errors import error_name_to_snake
+from apps.nodes.bigquery import NodeResultNone, get_query_from_node
 from apps.nodes.models import Node
 from apps.tables.models import Table
 from apps.workflows.models import Workflow
