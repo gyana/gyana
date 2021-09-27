@@ -1,5 +1,5 @@
 from apps.base.clients import bigquery_client
-from apps.nodes.bigquery import get_query_from_node
+from apps.nodes.bigquery import NodeResultNone, error_name_to_snake, get_query_from_node
 from apps.nodes.models import Node
 from apps.tables.models import Table
 from apps.workflows.models import Workflow
@@ -12,8 +12,12 @@ def run_workflow(workflow: Workflow):
     client = bigquery_client()
 
     for node in output_nodes:
-        query = get_query_from_node(node)
-
+        try:
+            query = get_query_from_node(node)
+        except NodeResultNone as err:
+            node.error = error_name_to_snake(err)
+            node.save()
+            query = None
         if query is not None:
 
             with transaction.atomic():
