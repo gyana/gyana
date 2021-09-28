@@ -214,6 +214,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
             "always_use_credits",
             "uses_credits",
             "credit_use_confirmed",
+            "credit_confirmed_user",
         }
         if dirty_fields:
             self.workflow.data_updated = timezone.now()
