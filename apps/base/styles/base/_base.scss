@@ -9,11 +9,22 @@
   // ratio. Meaning 1.6rem (our standard padding) is 16px, if a device calls for a larger
   // font-size our rem values will increase.
   font-size: 62.5%;
+
+  height: 100%;
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   font-size: 1.6em; // Setting font size back to 16px for most cases.
+  height: 100%;
   line-height: 1;
+
+  > main {
+    display: flex;
+    flex: 1 1 0%;
+    overflow: hidden;
+  }
 }
 
 // Common HTML elements

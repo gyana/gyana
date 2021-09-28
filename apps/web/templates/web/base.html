@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html class="h-full">
+<html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -44,33 +44,42 @@
   {% block page_head %}{% endblock %}
 </head>
 
-<body class="flex flex-col h-full" data-controller='on-submit-loading'>
-  {% block body_wrapper %}
-
+<body data-controller='on-submit-loading'>
   {% block banner %}{% endblock %}
 
   {% block messages %}
   {% include 'web/components/messages.html' %}
-  {% endblock messages %}
+  {% endblock %}
 
-  <main class="flex flex-row flex-1 overflow-hidden">
+  <main>
     {% block sidebar %}
     <div id="sidebar" class="sidebar" data-controller="web-sidebar">
-      <input type="checkbox" id="sidebar-toggle" role="button"
-            hidden
-            data-web-sidebar-target="toggle"
-            {% if sidebar_collapsed %}checked{% endif %}>
+      <input
+        id="sidebar-toggle"
+        type="checkbox"
+        role="button"
+        data-web-sidebar-target="toggle"
+        {% if sidebar_collapsed %}checked{% endif %}
+        hidden
+      >
 
       <nav class="sidebar__body">
-        <div class="sidebar__title">
-          <a class="h3 text-blue uppercase" {% if project %} href="{% url 'teams:detail' project.team.id %}" {% else %} href="{% url 'web:home' %}" {% endif %} title="View your teams"><img
-                src="{% static 'images/logo.png' %}" alt="">Gyana</a>
+        <div class="sidebar__title sidebar__title--main">
+          <a
+            {% if project %}
+            href="{% url 'teams:detail' project.team.id %}"
+            title="View your teams"
+            {% else %}
+            href="{% url 'web:home' %}"
+            {% endif %}
+          >
+            <img src="{% static 'images/logo.png' %}">Gyana
+          </a>
         </div>
 
         {% block sidebar_content %}{% endblock %}
 
-        <li class="mt-auto">
-        </li>
+        <li class="mt-auto"></li>
 
         {% comment %}
         IMPORTANT: This link needs to be refreshed every month, if in doubt
@@ -89,12 +98,10 @@
           </a>
         </li>
 
-        <li>
-          <hr>
-        </li>
+        <li><hr></li>
 
         {% if user.is_superuser %}
-          {% include 'web/components/admin.html' %}
+        {% include 'web/components/admin.html' %}
         {% endif %}
 
         <li>
@@ -107,14 +114,12 @@
           </a>
         </li>
 
-        <li>
-          <hr>
-        </li>
+        <li><hr></li>
 
         <li data-controller='web-intercom-helper'>
           <button data-action='web-intercom-helper#trigger'
-                  class="sidebar__link w-full">
-            <i class="fas fa-fw fa-question mr-6"></i>Help
+                  class="sidebar__link">
+            <i class="fas fa-fw fa-question"></i>Help
           </button>
         </li>
 
@@ -123,22 +128,21 @@
         </li>
 
         <li>
-          <label class="sidebar__link" for="sidebar-toggle" data-action="click->web-sidebar#toggle">
-            <i class="fas fa-fw mr-6"></i>Collapse
+          <label
+            class="sidebar__link"
+            for="sidebar-toggle"
+            data-action="click->web-sidebar#toggle"
+          >
+            <i class="fas fa-fw"></i>Collapse
           </label>
         </li>
-
       </nav>
     </div>
     {% endblock %}
 
-    {% block body %}{% endblock body %}
-
-    {% endblock body_wrapper %}
+    {% block body %}{% endblock %}
   </main>
 
-  {% block page_js %}{% endblock page_js %}
-
-  {% include 'web/components/messages-js.html' %}
+  {% block page_js %}{% endblock %}
 </body>
 </html>
