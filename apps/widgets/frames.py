@@ -197,7 +197,7 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
             else:
                 logging.warning(e, exc_info=e)
                 honeybadger.notify(e)
-                context["error_template"] = "widgets/erros/default.html"
+                context["error_template"] = "widgets/errors/default.html"
 
         return context
 
