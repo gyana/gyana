@@ -1,11 +1,8 @@
-@use "utilities/padding";
-
 .account {
   display: flex;
   flex-direction: column;
   flex: 1 1 0%;
-
-  @include padding.standard;
+  padding: 1.6rem;
 
   &__plan {
     display: grid;
