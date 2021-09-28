@@ -26,7 +26,6 @@ class Team(BaseModel):
     # calculating every view is too expensive
     row_count = models.BigIntegerField(default=0)
     row_count_calculated = models.DateTimeField(null=True)
-    max_credit = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
         from .bigquery import create_team_dataset
@@ -78,7 +77,7 @@ class Team(BaseModel):
             if self.creditstatement_set.first()
             else None
         )
-        start_balance = last_statement.balance if last_statement else 0
+        start_balance = last_statement.balance if last_statement else self.credits
         transactions = (
             self.credittransaction_set.filter(created__lt=last_statement.created)
             if last_statement

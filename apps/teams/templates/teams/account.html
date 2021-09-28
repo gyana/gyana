@@ -39,7 +39,7 @@
 
   <label for="">
     <p>Credits</p>
-    <input type="text" value="{{ team.credits|intcomma }}" disabled>
+    <input type="text" value="{{ team.current_credit_balance|intcomma }}/{{ team.credits|intcomma }}" disabled>
   </label>
 </div>
 

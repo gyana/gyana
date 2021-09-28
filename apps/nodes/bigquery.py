@@ -298,6 +298,7 @@ def get_sentiment_query(node, parent):
 
     task = get_gcp_sentiment.delay(node.id, parent[node.sentiment_column].compile())
     bq_table, bq_dataset = task.wait(timeout=None, interval=0.2)
+
     return conn.table(bq_table, database=bq_dataset)
 
 
@@ -387,3 +388,10 @@ class NodeResultNone(Exception):
         super().__init__(*args)
 
         self.node = node
+
+
+def get_sentiment_schema(node):
+    return ibis.schema([("text", "string"), ("sentiment", "float64")])
+
+
+SCHEMA_FROM_NODE = {"sentiment": get_sentiment_schema}

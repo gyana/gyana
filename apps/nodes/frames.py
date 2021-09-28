@@ -13,6 +13,7 @@ from django.utils import timezone
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 
+from ._sentiment_utils import CreditException
 from .bigquery import NodeResultNone, get_query_from_node
 from .forms import KIND_TO_FORM
 from .models import Node
@@ -90,7 +91,7 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
             if not is_input and has_parent:
                 get_query_from_node(self.object.parents.first())
             self.parent_error_node = None
-        except NodeResultNone as e:
+        except (NodeResultNone) as e:
             self.parent_error_node = e.node
 
         if not self.parent_error_node and (is_input or has_parent):
@@ -100,6 +101,12 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
         r = super().form_valid(form)
         track_node(self.request.user, form.instance, NODE_UPDATED_EVENT)
         return r
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        if self.object.kind == Node.Kind.SENTIMENT:
+            form_kwargs["user"] = self.request.user
+        return form_kwargs
 
     def get_success_url(self) -> str:
         base_url = reverse("nodes:update", args=(self.object.id,))
@@ -155,6 +162,7 @@ class NodeCreditConfirmation(TurboFrameUpdateView):
         r = super().form_valid(form)
 
         self.object.credit_use_confirmed = timezone.now()
+        self.object.credit_confirmed_user = self.request.user
         self.object.save()
 
         return r

@@ -7,6 +7,7 @@ import pandas as pd
 from apps.base.clients import bigquery_client
 from apps.nodes.models import Node
 from apps.tables.models import Table
+from apps.teams.models import CreditTransaction
 from celery.app import shared_task
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -181,8 +182,9 @@ def get_gcp_sentiment(node_id, column_query):
     values, clipped_values = _compute_values(client, node, column_query)
     batches_idxs = _get_batches_idxs(clipped_values)
 
-    if not node.always_use_credits and node.credit_use_confirmed < max(
-        tuple(_get_parent_updated(node))
+    if not node.always_use_credits and (
+        node.credit_use_confirmed is None
+        or node.credit_use_confirmed < max(tuple(_get_parent_updated(node)))
     ):
         raise CreditException("Confirm credit usage")
 
@@ -227,6 +229,13 @@ def get_gcp_sentiment(node_id, column_query):
 
         node.intermediate_table = table
         table.data_updated = timezone.now()
+
+        node.workflow.project.team.credittransaction_set.create(
+            transaction_type=CreditTransaction.TransactionType.DECREASE,
+            amount=len(values),
+            user=node.credit_confirmed_user,
+        )
+
         node.save()
         table.save()
 

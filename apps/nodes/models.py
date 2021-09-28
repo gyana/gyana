@@ -1,3 +1,4 @@
+from datetime import datetime as dt
 from functools import cached_property
 
 from apps.base.aggregations import AggregationFunctions
@@ -193,6 +194,9 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     always_use_credits = models.BooleanField(default=False)
     uses_credits = models.IntegerField(default=0)
     credit_use_confirmed = models.DateTimeField(null=True, editable=False)
+    credit_confirmed_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
 
     def save(self, *args, **kwargs):
         dirty_fields = set(self.get_dirty_fields(check_relationship=True).keys()) - {
@@ -215,10 +219,14 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     @cached_property
     def schema(self):
 
-        from .bigquery import get_query_from_node
+        from .bigquery import SCHEMA_FROM_NODE, get_query_from_node
+
+        if func := SCHEMA_FROM_NODE.get(self.kind):
+            return func(self)
 
         query = get_query_from_node(self)
-        # Group by can return a scalar when counting over the whole
+        # Group by
+        # can return a scalar when counting over the whole
         # input table, it doesn't have a schema method
         if isinstance(query, ScalarExpr):
             return {query._name: query.type()}

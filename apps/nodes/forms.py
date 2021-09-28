@@ -7,6 +7,7 @@ from apps.nodes.bigquery import get_query_from_node
 from apps.nodes.formsets import KIND_TO_FORMSETS
 from apps.tables.models import Table
 from django import forms
+from django.forms.widgets import HiddenInput
 
 from .models import Node
 from .widgets import InputNode, MultiSelect
@@ -207,32 +208,40 @@ class UnpivotNodeForm(NodeForm):
         self.form_description = "Transform multiple columns into a single column."
 
 
-class SentimenttNodeForm(NodeForm):
+class SentimentNodeForm(NodeForm):
     sentiment_column = forms.ChoiceField(
         choices=(),
     )
 
     class Meta:
         model = Node
-        fields = ("sentiment_column", "always_use_credits")
+        fields = ("sentiment_column", "always_use_credits", "credit_confirmed_user")
+        widgets = {"credit_confirmed_user": HiddenInput()}
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
         super().__init__(*args, **kwargs)
         self.fields["sentiment_column"].choices = _create_choices(
             [name for name, type_ in self.columns.items() if type_.name == "String"]
         )
+
+    def get_initial_for_field(self, field, field_name):
+        if field_name == "credit_confirmed_user":
+            return self.user
+        return super().get_initial_for_field(field, field_name)
+
+    def save(self, commit=True):
+        parent = get_query_from_node(self.instance.parents.first())
+        self.instance.uses_credits = (
+            parent[self.instance.sentiment_column].count().execute()
+        )
+        return super().save(commit=commit)
 
 
 class ExceptNodeForm(DefaultNodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.form_description = "Remove rows that exist in a second table."
-
-    def save(self, commit=True):
-        node = super().save(commit=commit)
-        parent = get_query_from_node(node.parents.first())
-        node.uses_credits = parent[node.sentiment.column].count().execute()
-        return node
 
 
 KIND_TO_FORM = {
@@ -256,6 +265,6 @@ KIND_TO_FORM = {
     "pivot": PivotNodeForm,
     "unpivot": UnpivotNodeForm,
     "intersect": DefaultNodeForm,
-    "sentiment": SentimenttNodeForm,
+    "sentiment": SentimentNodeForm,
     "window": DefaultNodeForm,
 }
