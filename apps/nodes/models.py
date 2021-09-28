@@ -194,8 +194,15 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     always_use_credits = models.BooleanField(default=False)
     uses_credits = models.IntegerField(default=0)
     credit_use_confirmed = models.DateTimeField(null=True, editable=False)
+    # I'd like to keep the information which user confirmed the spending of credits
+    # Ideally we would fetch that information from the current session.
+    # Buy right now, this would require us to rewrite half the computation functions
+    # for nodes, since we would need to pass the user down the different functions.
+    # E.g. node.schema wouldn't be a prop anymore but a function that receives the user
+    # to pass down to get_query_from_node. The alternatives could be to add the user
+    # to a thread global context or what I opted for: persist the user through the DB.
     credit_confirmed_user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
     )
 
     def save(self, *args, **kwargs):

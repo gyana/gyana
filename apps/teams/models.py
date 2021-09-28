@@ -162,7 +162,9 @@ class CreditTransaction(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
+    )
     transaction_type = models.CharField(max_length=10, choices=TransactionType.choices)
     amount = models.IntegerField()
 

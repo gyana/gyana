@@ -61,6 +61,4 @@ def calculate_credit_balance():
         team.credittransaction_set.create(
             amount=team.credits - balance,
             transaction_type=CreditTransaction.TransactionType.INCREASE,
-            # TODO: figue out a solution for user
-            user_id=1,
         )

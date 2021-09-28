@@ -1,6 +1,5 @@
 import inspect
 import logging
-import re
 
 import ibis
 from apps.base.clients import bigquery_client, ibis_client
@@ -13,7 +12,12 @@ from django.db import transaction
 from django.utils import timezone
 from ibis.expr.datatypes import String
 
-from ._sentiment_utils import get_gcp_sentiment
+from ._sentiment_utils import (
+    SENTIMENT_COLUMN_NAME,
+    TEXT_COLUMN_NAME,
+    CreditException,
+    get_gcp_sentiment,
+)
 from ._utils import _get_parent_updated
 
 JOINS = {
@@ -296,6 +300,12 @@ def get_sentiment_query(node, parent):
     if table and table.data_updated > max(tuple(_get_parent_updated(node))):
         return conn.table(table.bq_table, database=table.bq_dataset)
 
+    if not node.always_use_credits and (
+        node.credit_use_confirmed is None
+        or node.credit_use_confirmed < max(tuple(_get_parent_updated(node)))
+    ):
+        raise CreditException(node)
+
     task = get_gcp_sentiment.delay(node.id, parent[node.sentiment_column].compile())
     bq_table, bq_dataset = task.wait(timeout=None, interval=0.2)
 
@@ -391,7 +401,9 @@ class NodeResultNone(Exception):
 
 
 def get_sentiment_schema(node):
-    return ibis.schema([("text", "string"), ("sentiment", "float64")])
+    return ibis.schema(
+        [(TEXT_COLUMN_NAME, "string"), (SENTIMENT_COLUMN_NAME, "float64")]
+    )
 
 
 SCHEMA_FROM_NODE = {"sentiment": get_sentiment_schema}
