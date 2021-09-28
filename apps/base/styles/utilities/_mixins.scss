@@ -1,10 +1,22 @@
 // Padding
-@mixin pad {
+@mixin padding {
   --padding: 1.6rem;
+  padding: var(--padding);
+}
+
+@mixin padding--small {
+  --padding: 1rem;
   padding: var(--padding);
 }
 
 // Box-shadows
 @mixin shadow {
   box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+// Target all fontawesome icons
+@mixin fa-icon {
+  .fas, .far, .fal, .fad, .fab {
+    @content
+  }
 }

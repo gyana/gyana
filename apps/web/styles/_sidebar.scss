@@ -1,20 +1,20 @@
+@use "utilities/mixins";
+
 // Navigational sidebar present throughout the site.
 //
 // Use is slightly complicated, see 
 // `web/templates/web/base.html` for detailed implementation.
 .sidebar {
   background-color: var(--c-white);
-  display: flex;
-  flex-flow: column-reverse;
   border-right: 1px solid var(--c-gray);
+  display: flex;
 
   &__body {
     display: flex;
     flex-flow: column;
+    flex: 1 1 0%;
     overflow: auto;
     width: 18rem;
-    list-style-type: none;
-    flex: 1 1 0%;
   }
 
   &__link,
@@ -23,15 +23,19 @@
     border-left: 0.6rem solid var(--c-transparent);
     display: flex;
     flex-direction: row;
+    flex-shrink: 0;
     font-size: 1.4rem;
     height: 4.8rem;
     line-height: 1.6rem;
     padding: 0 0 0 0.6rem;
     text-align: left;
 
-    & .fa-fw {
+    @include mixins.fa-icon {
+      margin: {
+        left: 0.325rem;
+        right: 1.5rem;
+      }
       min-width: 1.25em;
-      margin-left: 0.325rem;
     }
   }
 
@@ -64,7 +68,7 @@
         color: var(--c-blue);
       }
 
-      .fa-fw {
+      @include mixins.fa-icon {
         font-weight: 900;
       }
     }
@@ -122,22 +126,47 @@
     align-items: center;
     border-bottom: 1px solid var(--c-gray);
     display: flex;
+    flex-shrink: 0;
     height: 4.8rem;
-    min-height: 4.8rem;
     padding: 0 1rem;
-
+    
+    &--main {
+      color: var(--c-blue);
+      text-transform: uppercase;
+    }
+    
     :first-child {
       align-items: center;
       display: flex;
-      overflow: hidden;
-      white-space: pre;
+      font-size: 1.8rem;
+      font-weight: 500;
     }
 
     img {
-      display: inline;
-      margin-right: 0.8rem;
+      display: inline-flex;
+      margin-right: 0.9rem;
       min-width: 2.8rem;
       width: 2.8rem;
+    }
+  }
+
+  #sidebar-toggle {
+    visibility: hidden;
+
+    ~ .sidebar__body {
+      overflow: hidden;
+      transition: width 0.25s ease;
+      white-space: nowrap;
+      width: 4.8rem;
+    }
+
+    &:checked ~ .sidebar__body {
+      width: 18rem;
+
+      // Swaps the icon of the sidebar toggle to the opposite chevron.
+      label[for='sidebar-toggle'] i::before {
+        content: '\f053';
+      }
     }
   }
 
@@ -148,20 +177,4 @@
       content: '\f054';
     }
   }
-}
-
-#sidebar-toggle ~ .sidebar__body {
-  overflow: hidden;
-  transition: width 0.25s ease;
-  white-space: nowrap;
-  width: 4.8rem;
-}
-
-// Swaps the icon of the sidebar toggle to the opposite chevron.
-#sidebar-toggle:checked ~ .sidebar__body label[for='sidebar-toggle'] i::before {
-  content: '\f053';
-}
-
-#sidebar-toggle:checked ~ .sidebar__body {
-  width: 18rem;
 }

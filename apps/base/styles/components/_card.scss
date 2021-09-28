@@ -56,7 +56,7 @@ $card-colors: (
     &--#{$color} {
       --card-color: #{$value};
 
-      .fa-fw {
+      @include mixins.fa-icon {
         color: var(--card-color);
       }
     }
