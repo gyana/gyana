@@ -109,6 +109,7 @@
 
   &__bar {
     position: relative;
+    height: 0;
 
     &::after {
       background-color: var(--c-gray);
