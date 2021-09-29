@@ -107,7 +107,7 @@ def _add_timestamp_diff_with_unit(value_class, bq_func, data_type):
         t_left = translator.translate(left)
         t_right = translator.translate(right)
         t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
-        return f"{bq_func}({t_left}, {t_right},  {t_unit})"
+        return f"{bq_func}({t_left}, {t_right}, {t_unit})"
 
     return compiles(Difference)(_difference)
 
@@ -123,7 +123,7 @@ def _compiles_timestamp_diff_op(op, bq_func, unit):
         t_left = translator.translate(left)
         t_right = translator.translate(right)
 
-        return f"{bq_func}({t_left}, {t_right},  {unit})"
+        return f"{bq_func}({t_left}, {t_right}, {unit})"
 
     return compiles(op)(diff)
 

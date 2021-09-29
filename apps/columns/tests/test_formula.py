@@ -291,6 +291,36 @@ def create_extract_unary_param(func_name, sql_name=None):
             QUERY.format("DATE_TRUNC(`birthday`, DAY)"),
             id="truncate day from date",
         ),
+        pytest.param(
+            "updated - updated",
+            QUERY.format("TIMESTAMP_DIFF(`updated`, `updated`, SECOND)"),
+            id="datetime difference",
+        ),
+        pytest.param(
+            "birthday - birthday",
+            QUERY.format("DATE_DIFF(`birthday`, `birthday`, DAY)"),
+            id="date difference",
+        ),
+        pytest.param(
+            "lunch - lunch",
+            QUERY.format("TIME_DIFF(`lunch`, `lunch`, SECOND)"),
+            id="time difference",
+        ),
+        pytest.param(
+            'timestamp_diff(updated, updated, "Y")',
+            QUERY.format("TIMESTAMP_DIFF(`updated`, `updated`, YEAR)"),
+            id="datetime timestamp_diff",
+        ),
+        pytest.param(
+            'timestamp_diff(time(updated), lunch, "m")',
+            QUERY.format("TIME_DIFF(TIME(`updated`), `lunch`, MINUTE)"),
+            id="time timestamp_diff",
+        ),
+        pytest.param(
+            'timestamp_diff(date(updated), updated, "W")',
+            QUERY.format("DATE_DIFF(DATE(`updated`), `updated`, WEEK)"),
+            id="date timestamp_diff",
+        ),
         # Test nested functions
         pytest.param(
             "(medals + stars)/(stars - 42) * medals",
