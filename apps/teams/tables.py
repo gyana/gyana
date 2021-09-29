@@ -51,4 +51,4 @@ class TeamProjectsTable(Table):
 
     def render_access(self, value, record):
         template = loader.get_template("projects/_project_access.html")
-        return template.render({"value": value})
+        return template.render({"value": record.access})
