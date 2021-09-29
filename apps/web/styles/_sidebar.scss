@@ -8,6 +8,7 @@
   background-color: var(--c-white);
   border-right: 1px solid var(--c-gray);
   display: flex;
+  list-style-type: none;
 
   &__body {
     display: flex;
