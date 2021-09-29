@@ -118,8 +118,12 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.object.error:
-            error_template = f"nodes/errors/{self.object.error}.html"
+            error_template = f"nodes/errors/{self.object.kind}_{self.object.error}.html"
             if template_exists(error_template):
+                context["error_template"] = error_template
+            elif (
+                error_template := f"nodes/errors/{self.object.error}.html"
+            ) and template_exists(error_template):
                 context["error_template"] = error_template
             else:
                 context["error_template"] = "nodes/errors/default.html"
