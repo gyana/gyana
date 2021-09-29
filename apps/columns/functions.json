@@ -378,6 +378,13 @@
     "description": "Get the month from a timestamp"
   },
   {
+    "id": "timestamp_diff",
+    "name": "timestamp_diff",
+    "categories": "date and time",
+    "arguments": ["datetime", "datetime", "unit"],
+    "description": "Get the difference between two datetimes in a given unit"
+  },
+  {
     "id": "truncate",
     "name": "truncate",
     "categories": "date and time",
