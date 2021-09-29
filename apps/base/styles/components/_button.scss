@@ -12,7 +12,7 @@ $button-colors: (
 // See `$button-colors` for available themes to be used as classes.
 //
 // ```
-// <button class="button button--sm"/>Small Button</button>
+// <button class="button button--sm">Small Button</button>
 // ```
 .button {
   --button-color: var(--c-blue);
@@ -22,7 +22,6 @@ $button-colors: (
   border-radius: 5px;
   display: inline-flex;
   font-size: 1.6rem;
-  white-space: nowrap;
   font-weight: 500;
   gap: 0.5em;
   justify-content: center;
@@ -30,6 +29,7 @@ $button-colors: (
   max-height: 3.9rem;
   padding: 1rem 3rem;
   text-align: center;
+  white-space: nowrap;
 
   background-color: var(--button-color);
   border: 1px solid transparent;
