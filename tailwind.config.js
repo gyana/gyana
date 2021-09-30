@@ -70,7 +70,14 @@ module.exports = {
     extend: {},
   },
   corePlugins: {
-    preflight: true // To be removed in the future before deprecating Tailwind.
+    preflight: true, // To be removed in the future before deprecating Tailwind.
+
+    // Disabling ring as it pollutes dev tools with CSS variables.
+    ringWidth: false,
+    ringColor: false,
+    ringOpacity: false,
+    ringOffsetWidth: false,
+    ringOffsetColor: false,
   },
   plugins: [],
 }

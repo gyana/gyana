@@ -32,6 +32,7 @@ def get_deal(appsumo_codes: List[AppsumoCode]):
         return APPSUMO_PLANS[AppsumoCode.Deal.USD_179][min(stacked, 2)]
 
     # otherwise they go onto most recent plan
+    # the stacking information is identical for AppSumo Select
     return APPSUMO_PLANS[AppsumoCode.Deal.USD_59][min(stacked, 5)]
 
 

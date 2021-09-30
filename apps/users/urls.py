@@ -1,8 +1,8 @@
 from allauth.account.views import LoginView
 from django.contrib.auth.decorators import login_required
 from django.urls import include, path
-from django.views.generic.base import RedirectView
 from django.views.defaults import page_not_found
+from django.views.generic.base import RedirectView
 
 from . import views
 
@@ -14,11 +14,7 @@ urlpatterns = [
         name="onboarding",
     ),
     path("profile/", login_required(views.UserProfile.as_view()), name="user_profile"),
-    path(
-        "profile/upload-image/",
-        login_required(views.upload_profile_image),
-        name="upload_profile_image",
-    ),
+    path("feedback", login_required(views.UserFeedback.as_view()), name="feedback"),
 ]
 
 accounts_urlpatterns = [

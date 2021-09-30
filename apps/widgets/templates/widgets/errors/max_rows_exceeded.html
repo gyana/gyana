@@ -1,0 +1,8 @@
+{% extends 'widgets/errors/default.html' %}
+
+{% block  error_page%}
+  <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
+  <p class='whitespace-normal'>Your chart contains too many data points to be displayed. Please reduce them by grouping by a different column
+    or filtering the result.
+  </p>
+{% endblock  %}

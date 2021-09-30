@@ -1,6 +1,7 @@
 from functools import lru_cache
 
 import google.auth
+import heroku3
 import ibis_bigquery
 import pandas as pd
 from django.conf import settings
@@ -105,3 +106,9 @@ def get_query_results(query, max_results=100) -> QueryResults:
 @lru_cache
 def fivetran_client():
     return FivetranClient()
+
+
+@lru_cache
+def heroku_client():
+    heroku_conn = heroku3.from_key(settings.HEROKU_API_KEY)
+    return heroku_conn.app(settings.HEROKU_APP)

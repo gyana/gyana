@@ -22,9 +22,12 @@ export default class extends Controller {
 
     this.turboFrameTarget.setAttribute('src', event.currentTarget.getAttribute('data-src'))
 
-    const params = new URLSearchParams(location.search)
-    params.set('modal_item', event.currentTarget.getAttribute('data-item'))
-    history.replaceState({}, '', `${location.pathname}?${params.toString()}`)
+    if (event.currentTarget.getAttribute('data-item')) {
+      const params = new URLSearchParams(location.search)
+      params.set('modal_item', event.currentTarget.getAttribute('data-item'))
+      history.replaceState({}, '', `${location.pathname}?${params.toString()}`)
+    }
+
     this.modalTarget.classList.remove('hidden')
   }
 

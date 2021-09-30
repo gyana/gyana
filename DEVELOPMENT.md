@@ -83,6 +83,11 @@ just cypress-setup
 just cypress-fixtures
 ```
 
+Our testing objectives:
+- Keep Cypress runtime to 5 minutes
+- Wrap business logic in the ORM or dedicated functions
+- Focus on business logic/cold path for unit tests
+
 ## Profile
 
 Open the [Silk](https://github.com/jazzband/django-silk) [UI](http://localhost:8000/silk)

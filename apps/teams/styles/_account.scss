@@ -1,0 +1,15 @@
+.account {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0%;
+  padding: 1.6rem;
+
+  &__plan {
+    display: grid;
+    gap: 1.6rem;
+    max-width: 64rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    margin-bottom: 1.6rem;
+  }
+}

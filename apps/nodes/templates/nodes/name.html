@@ -12,6 +12,7 @@
       type="text" 
       name="name"
       value="{% if object.name %}{{ object.name }}{% else %}{{ object.display_name|capfirst }}{% endif %}"
+      onBlur="this.form.requestSubmit();"
     ></input>
   </form>
 </div>

@@ -28,7 +28,9 @@ SECRET_KEY = "BITuHkgTLhSfOHAewSSxNKRZfvYuzjPhdbIhaztE"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+# custom allowed hosts middleware for cnames
+CNAME_ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -70,6 +72,7 @@ THIRD_PARTY_APPS = [
     "invitations",
     "hijack",
     "hijack.contrib.admin",
+    "waffle",
 ]
 
 # Put your project-specific apps here
@@ -93,11 +96,13 @@ PROJECT_APPS = [
     "apps.connectors.apps.ConnectorsConfig",
     "apps.appsumo",
     "apps.templates",
+    "apps.cnames.apps.CNamesConfig",
 ]
 
 INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
+    "apps.cnames.middleware.HostMiddleware",
     "honeybadger.contrib.DjangoHoneybadgerMiddleware",
     "beeline.middleware.django.HoneyMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -109,6 +114,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "hijack.middleware.HijackUserMiddleware",
+    "waffle.middleware.WaffleMiddleware",
 ]
 
 LOGGING = {
@@ -382,3 +388,8 @@ HONEYBADGER = {
     # enables us to use "development" and send data
     "FORCE_REPORT_DATA": True,
 }
+
+HELLONEXT_SSO_TOKEN = os.environ.get("HELLONEXT_SSO_TOKEN")
+
+HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY")
+HEROKU_APP = os.environ.get("HEROKU_APP")

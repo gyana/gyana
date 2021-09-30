@@ -3,10 +3,18 @@ IMPORTANT: Any style/layout changs here should also be made to
 apps/dashboards/templates/dashboards/preview.html to reflect the changes in
 preview mode.
 {% endcomment %}
-<gy-widget id="widget-{{ object.id }}" {% if is_new %}data-action="mousedown->widget-list#register:once" {% endif %}>
-  <div class="h-full w-full"
-       data-id="{{ object.id }}" data-x="{{object.x}}" data-y="{{object.y}}"
-       data-width="{{object.width}}" data-height="{{object.height}}">
+<gy-widget
+  id="widget-{{ object.id }}"
+  {% if is_new %}data-action="mousedown->widget-list#register:once"{% endif %}
+>
+  <div
+    class="h-full w-full"
+    data-id="{{ object.id }}"
+    data-x="{{ object.x }}"
+    data-y="{{ object.y }}"
+    data-width="{{ object.width }}"
+    data-height="{{ object.height }}"
+  >
     <div class="widget-card h-full">
       <div class='widget-card__visual'>
         

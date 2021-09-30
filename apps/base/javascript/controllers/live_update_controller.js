@@ -33,6 +33,7 @@ export default class extends Controller {
 
   listener = async (event) => {
     if (this.clicked_button) return
+    if (event.target.hasAttribute('data-live-update-ignore')) return
     const form = this.element
 
     // manually POST the form and get HTML response

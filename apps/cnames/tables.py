@@ -1,12 +1,12 @@
 import django_tables2 as tables
 from apps.base.table import NaturalDatetimeColumn
 
-from .models import Node
+from .models import CName
 
 
-class NodeTable(tables.Table):
+class CNameTable(tables.Table):
     class Meta:
-        model = Node
+        model = CName
         attrs = {"class": "table"}
         fields = ("name", "created", "updated")
 

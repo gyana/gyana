@@ -1,0 +1,13 @@
+<div data-controller='tooltip'>
+  {% if value == 'invite' %}
+    Invite only
+    <span data-tooltip-target='body'>
+      Only invited team members can access this project.
+    </span>
+  {% else %}
+    Anyone in your team
+    <span data-tooltip-target='body'>
+      All team members can access this project.
+    </span>
+  {% endif %}
+</div>

@@ -22,7 +22,7 @@ CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL")
 # fix ssl mixed content issues
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-ALLOWED_HOSTS = [
+CNAME_ALLOWED_HOSTS = [
     ".gyana.com",
     "gyana-mvp.herokuapp.com",
     "gyana-release.herokuapp.com",

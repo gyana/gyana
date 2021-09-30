@@ -6,6 +6,7 @@ class AggregationFunctions(models.TextChoices):
     # https://ibis-project.org/docs/api.html
     SUM = "sum", "Sum"
     COUNT = "count", "Count"
+    COUNT_DISTINCT = "nunique", "Count distinct"
     MEAN = "mean", "Average"
     MAX = "max", "Maximum"
     MIN = "min", "Minimum"
@@ -16,12 +17,17 @@ NUMERIC_AGGREGATIONS = list(AggregationFunctions)
 
 DATETIME_AGGREGATIONS = [
     AggregationFunctions.COUNT,
+    AggregationFunctions.COUNT_DISTINCT,
     AggregationFunctions.MAX,
     AggregationFunctions.MIN,
 ]
 
 AGGREGATION_TYPE_MAP = {
-    "String": [AggregationFunctions.COUNT],
+    "String": [
+        AggregationFunctions.COUNT,
+        AggregationFunctions.COUNT_DISTINCT,
+    ],
+    "Int32": NUMERIC_AGGREGATIONS,
     "Int64": NUMERIC_AGGREGATIONS,
     "Float64": NUMERIC_AGGREGATIONS,
     "Date": DATETIME_AGGREGATIONS,

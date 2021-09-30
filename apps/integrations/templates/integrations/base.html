@@ -9,7 +9,14 @@
       <form method="post" action="{% url 'project_integrations:detail' project.id object.id %}" class="form">
         {% csrf_token %}
 
-        <input class='input__inline' id="name" type="text" name="name" value="{{ object.name }}"></input>
+        <input
+          class='input__inline'
+          id="name"
+          type="text"
+          name="name"
+          value="{{ object.name }}"
+          onBlur="this.form.requestSubmit();"
+        ></input>
       </form>
     </turbo-frame>
   </h3>

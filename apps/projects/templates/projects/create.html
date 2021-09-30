@@ -8,12 +8,23 @@
       <p>A project gathers your data analytics to solve and share the results of a common set of problems.</p>
     </div>
 
-    <form method="post" action="{% url 'team_projects:create' team.id %}" class="form">
+    <form 
+      id='project-{{ object.id }}-create'
+      data-controller="live-update" 
+      method="post" 
+      action="{% url 'team_projects:create' team.id %}" 
+      class="form"
+    >
       {% csrf_token %}
 
       {% include "django/forms/default_form.html" %}
 
-      <button type="submit" class="button button--filled button--success w-full">Create</button>
+      <button type="submit" name='submit' value='submit' class="button button--filled button--success w-full">Create</button>
+
+      <span data-live-update-target="loading" class="workflow-detail__sidebar__loading hidden">
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+      </span>
+
     </form>
   </div>
 </div>

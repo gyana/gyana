@@ -1,8 +1,10 @@
-@use "utilities/shadows";
+@use "utilities/mixins";
 
 .widgets {
   display: flex;
+  flex-direction: column;
   margin: 0 auto;
+  padding: 0 1.6rem 0 0;
 
   &__canvas {
     background-color: var(--c-white);
@@ -13,17 +15,12 @@
     overflow: visible;
     position: relative;
 
-    @include shadows.shadow;
-  }
-
-  &::after {
-    content: '';
-    display: inline-block;
-    width: 1.6rem;
+    @include mixins.shadow;
   }
 
   &__grid {
-    background-image: radial-gradient(circle at 1px 6px, var(--c-gray) 1px, transparent 0);
+    --grid-size: 15px;
+    background-image: radial-gradient(circle at 1px 1px, var(--c-gray) 1px, transparent 0);
     background-size: var(--grid-size) var(--grid-size);
   }
 }

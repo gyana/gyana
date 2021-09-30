@@ -48,7 +48,9 @@ class Integration(CloneMixin, BaseModel):
 
     @property
     def num_rows(self):
-        return self.table_set.all().aggregate(models.Sum("num_rows"))["num_rows__sum"]
+        return (
+            self.table_set.all().aggregate(models.Sum("num_rows"))["num_rows__sum"] or 0
+        )
 
     @property
     def last_synced(self):

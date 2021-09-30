@@ -260,6 +260,16 @@ def create_extract_unary_param(func_name, sql_name=None):
             QUERY.format("`stars` - 42.0"),
             id="subtract float scalar from float column",
         ),
+        pytest.param(
+            'to_datetime(medals, "s")',
+            QUERY.format("TIMESTAMP_SECONDS(`medals`)"),
+            id="integer column to datetime",
+        ),
+        pytest.param(
+            'to_datetime(131313131313, "ms")',
+            "SELECT TIMESTAMP_MILLIS(131313131313) AS `tmp`",
+            id="integer to datetime",
+        ),
         # Test datetime operations
         create_extract_unary_param("year"),
         create_datetime_unary_param("time", "TIME"),
@@ -290,6 +300,36 @@ def create_extract_unary_param(func_name, sql_name=None):
             'truncate(birthday, "d")',
             QUERY.format("DATE_TRUNC(`birthday`, DAY)"),
             id="truncate day from date",
+        ),
+        pytest.param(
+            "updated - updated",
+            QUERY.format("TIMESTAMP_DIFF(`updated`, `updated`, SECOND)"),
+            id="datetime difference",
+        ),
+        pytest.param(
+            "birthday - birthday",
+            QUERY.format("DATE_DIFF(`birthday`, `birthday`, DAY)"),
+            id="date difference",
+        ),
+        pytest.param(
+            "lunch - lunch",
+            QUERY.format("TIME_DIFF(`lunch`, `lunch`, SECOND)"),
+            id="time difference",
+        ),
+        pytest.param(
+            'datetime_diff(updated, updated, "Y")',
+            QUERY.format("TIMESTAMP_DIFF(`updated`, `updated`, YEAR)"),
+            id="datetime datetime_diff",
+        ),
+        pytest.param(
+            'datetime_diff(time(updated), lunch, "m")',
+            QUERY.format("TIME_DIFF(TIME(`updated`), `lunch`, MINUTE)"),
+            id="time datetime_diff",
+        ),
+        pytest.param(
+            'datetime_diff(date(updated), updated, "W")',
+            QUERY.format("DATE_DIFF(DATE(`updated`), `updated`, WEEK)"),
+            id="date datetime_diff",
         ),
         # Test nested functions
         pytest.param(

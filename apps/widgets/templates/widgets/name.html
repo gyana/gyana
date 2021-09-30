@@ -15,6 +15,7 @@
     name="name"
     placeholder="Untitled widget" 
     value="{% if object.name %}{{ object.name }}{% endif %}"
+    onBlur="this.form.requestSubmit();"
   ></input> 
 
   <div class="ml-auto">
