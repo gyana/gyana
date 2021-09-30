@@ -260,6 +260,16 @@ def create_extract_unary_param(func_name, sql_name=None):
             QUERY.format("`stars` - 42.0"),
             id="subtract float scalar from float column",
         ),
+        pytest.param(
+            'to_datetime(medals, "s")',
+            QUERY.format("TIMESTAMP_SECONDS(`medals`)"),
+            id="integer column to datetime",
+        ),
+        pytest.param(
+            'to_datetime(131313131313, "ms")',
+            "SELECT TIMESTAMP_MILLIS(131313131313) AS `tmp`",
+            id="integer to datetime",
+        ),
         # Test datetime operations
         create_extract_unary_param("year"),
         create_datetime_unary_param("time", "TIME"),
@@ -307,19 +317,19 @@ def create_extract_unary_param(func_name, sql_name=None):
             id="time difference",
         ),
         pytest.param(
-            'timestamp_diff(updated, updated, "Y")',
+            'datetime_diff(updated, updated, "Y")',
             QUERY.format("TIMESTAMP_DIFF(`updated`, `updated`, YEAR)"),
-            id="datetime timestamp_diff",
+            id="datetime datetime_diff",
         ),
         pytest.param(
-            'timestamp_diff(time(updated), lunch, "m")',
+            'datetime_diff(time(updated), lunch, "m")',
             QUERY.format("TIME_DIFF(TIME(`updated`), `lunch`, MINUTE)"),
-            id="time timestamp_diff",
+            id="time datetime_diff",
         ),
         pytest.param(
-            'timestamp_diff(date(updated), updated, "W")',
+            'datetime_diff(date(updated), updated, "W")',
             QUERY.format("DATE_DIFF(DATE(`updated`), `updated`, WEEK)"),
-            id="date timestamp_diff",
+            id="date datetime_diff",
         ),
         # Test nested functions
         pytest.param(
