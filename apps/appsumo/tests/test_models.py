@@ -1,8 +1,13 @@
 from datetime import datetime
 
 import pytest
-from apps.appsumo.models import (AppsumoCode, AppsumoReview, PurchasedCodes,
-                                 RefundedCodes, UploadedCodes)
+from apps.appsumo.models import (
+    AppsumoCode,
+    AppsumoReview,
+    PurchasedCodes,
+    RefundedCodes,
+    UploadedCodes,
+)
 from apps.teams.models import Team
 from apps.users.models import CustomUser
 from django.core import exceptions
@@ -20,17 +25,24 @@ class TestAppsumoCode:
         code.refunded_before = timezone.now()
         assert code.refunded
 
-    def test_exists(self):
-        assert not AppsumoCode.exists("12345678")
+    def test_code_exists(self):
+        assert not AppsumoCode.code_exists("12345678")
         AppsumoCode.objects.create(code="12345678")
-        assert AppsumoCode.exists("12345678")
+        assert AppsumoCode.code_exists("12345678")
 
-    def test_available(self):
+    def test_code_available(self):
         code = AppsumoCode.objects.create(code="12345678")
-        assert AppsumoCode.available("12345678")
+        assert AppsumoCode.code_available("12345678")
         code.redeemed = timezone.now()
         code.save()
-        assert not AppsumoCode.available("12345678")
+        assert not AppsumoCode.code_available("12345678")
+
+    def test_code_refunded(self):
+        code = AppsumoCode.objects.create(code="12345678")
+        assert not AppsumoCode.code_refunded("12345678")
+        code.refunded_before = timezone.now()
+        code.save()
+        assert AppsumoCode.code_refunded("12345678")
 
     def redeem_by_user(self):
         user = CustomUser.objects.create_user("test")

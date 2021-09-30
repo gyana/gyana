@@ -9,30 +9,35 @@ from pytest_django.asserts import assertRedirects, assertTemplateUsed
 pytestmark = pytest.mark.django_db
 
 
-class TestAppsumoStack:
-    @pytest.fixture
-    def setup(self, client):
-        team = Team.objects.create(name="team_team")
-        user = CustomUser.objects.create_user("test")
-        team.members.add(user, through_defaults={"role": "admin"})
-        client.force_login(user)
-
-    def test_get(self, client, setup):
-        response = client.get("/teams/1/appsumo/stack")
-        assert response.status_code == 200
-
-    def test_post(self, client, setup):
-        AppsumoCode.objects.create(code="12345678")
-        response = client.post("/teams/1/appsumo/stack", data={"code": "12345678"})
-
-        assert response.status_code == 303
-        assert response.url == "/teams/1/account"
-
-
 class TestAppsumoLanding:
     def test_get(self, client):
         response = client.get("/appsumo/")
         assert response.status_code == 200
+
+    def test_does_not_exist(self, client):
+        response = client.post("/appsumo/", data={"code": "12345678"})
+        assert response.status_code == 422
+        assert (
+            response.context["form"].errors["code"][0] == "AppSumo code does not exist"
+        )
+
+    def test_already_redeemed(self, client):
+        AppsumoCode.objects.create(code="12345678", redeemed=timezone.now())
+        response = client.post("/appsumo/", data={"code": "12345678"})
+        assert response.status_code == 422
+        assert (
+            response.context["form"].errors["code"][0]
+            == "AppSumo code is already redeemed"
+        )
+
+    def test_refunded(self, client):
+        AppsumoCode.objects.create(code="12345678", refunded_before=timezone.now())
+        response = client.post("/appsumo/", data={"code": "12345678"})
+        assert response.status_code == 422
+        assert (
+            response.context["form"].errors["code"][0]
+            == "AppSumo code has been refunded"
+        )
 
     def test_post(self, client):
         AppsumoCode.objects.create(code="12345678")
@@ -85,3 +90,23 @@ class TestAppsumoReview:
 
     def test_success_url(self, view):
         assert view.get_success_url() == "/teams/1/account"
+
+
+class TestAppsumoStack:
+    @pytest.fixture
+    def setup(self, client):
+        team = Team.objects.create(name="team_team")
+        user = CustomUser.objects.create_user("test")
+        team.members.add(user, through_defaults={"role": "admin"})
+        client.force_login(user)
+
+    def test_get(self, client, setup):
+        response = client.get("/teams/1/appsumo/stack")
+        assert response.status_code == 200
+
+    def test_post(self, client, setup):
+        AppsumoCode.objects.create(code="12345678")
+        response = client.post("/teams/1/appsumo/stack", data={"code": "12345678"})
+
+        assert response.status_code == 303
+        assert response.url == "/teams/1/account"

@@ -20,19 +20,6 @@ from .forms import (
 from .models import AppsumoCode, AppsumoReview
 
 
-class AppsumoStack(TeamMixin, TurboFormView):
-    template_name = "appsumo/stack.html"
-    form_class = AppsumoCodeForm
-
-    def form_valid(self, form):
-        code = form.cleaned_data["code"]
-        AppsumoCode.redeem_team(code, self.team, self.request.user)
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        return reverse("teams:account", args=(self.team.id,))
-
-
 class AppsumoLanding(TurboFormView):
     template_name = "appsumo/landing.html"
     form_class = AppsumoCodeForm
@@ -106,6 +93,19 @@ class AppsumoRedeem(TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse("web:home")
+
+
+class AppsumoStack(TeamMixin, TurboFormView):
+    template_name = "appsumo/stack.html"
+    form_class = AppsumoCodeForm
+
+    def form_valid(self, form):
+        code = form.cleaned_data["code"]
+        AppsumoCode.redeem_team(code, self.team, self.request.user)
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse("teams:account", args=(self.team.id,))
 
 
 class AppsumoReview(TeamMixin, TurboCreateView):

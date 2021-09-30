@@ -28,11 +28,14 @@ class AppsumoCodeForm(forms.Form):
     def clean_code(self):
         code = self.cleaned_data["code"]
 
-        if not AppsumoCode.exists(code):
+        if not AppsumoCode.code_exists(code):
             raise ValidationError("AppSumo code does not exist")
 
-        if not AppsumoCode.available(code):
+        if not AppsumoCode.code_available(code):
             raise ValidationError("AppSumo code is already redeemed")
+
+        if AppsumoCode.code_refunded(code):
+            raise ValidationError("AppSumo code has been refunded")
 
         return code
 

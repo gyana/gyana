@@ -52,12 +52,16 @@ class AppsumoCode(BaseModel):
         return self.refunded_before is not None
 
     @staticmethod
-    def exists(code: str):
+    def code_exists(code: str):
         return AppsumoCode.objects.filter(code=code).exists()
 
     @staticmethod
-    def available(code: str):
+    def code_available(code: str):
         return AppsumoCode.objects.filter(code=code).first().redeemed is None
+
+    @staticmethod
+    def code_refunded(code: str):
+        return AppsumoCode.objects.filter(code=code).first().refunded_before is not None
 
     @transaction.atomic
     def redeem_new_team(self, team_name: str, user: CustomUser):
