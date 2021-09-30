@@ -26,6 +26,18 @@ def dashboard_is_public(view_func):
         if dashboard and dashboard.shared_status == Dashboard.SharedStatus.PUBLIC:
             kwargs["dashboard"] = dashboard
             return view_func(request, *args, **kwargs)
+        if (
+            dashboard
+            and dashboard.shared_status == Dashboard.SharedStatus.PASSWORD_PROTECTED
+        ):
+            session_pwd = request.session.get(str(dashboard.shared_id))
+            if dashboard.check_password(session_pwd):
+                kwargs["dashboard"] = dashboard
+                return view_func(request, *args, **kwargs)
+
+            return render(
+                request, "dashboards/login.html", context={"object": dashboard}
+            )
         return render(request, "404.html", status=404)
 
     return decorator

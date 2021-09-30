@@ -23,6 +23,11 @@ urlpatterns = [
         dashboard_is_public(views.DashboardPublic.as_view()),
         name="public",
     ),
+    path(
+        "<int:pk>/login",
+        views.DashboardLogin.as_view(),
+        name="login",
+    ),
     # frames
     path(
         "<hashid:pk>/share",

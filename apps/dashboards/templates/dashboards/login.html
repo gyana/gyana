@@ -1,0 +1,6 @@
+<span>Provide password</span>
+<form method='post' action="{% url "dashboards:login" object.id%}">
+  {% csrf_token %}
+  <input type='password' name='password' autocomplete="one-time-code"></input>
+  
+</form>

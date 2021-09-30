@@ -7,6 +7,7 @@ from apps.base.frames import (
     TurboFrameTemplateView,
     TurboFrameUpdateView,
 )
+from apps.dashboards.forms import DashboardShareForm
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import Widget
 from django.db.models import Count, Q
@@ -43,8 +44,8 @@ class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
 
 class DashboardShare(TurboFrameUpdateView):
     template_name = "dashboards/share.html"
+    form_class = DashboardShareForm
     model = Dashboard
-    fields = []
     turbo_frame_dom_id = "dashboard-share"
 
     def get_context_data(self, **kwargs):
@@ -52,23 +53,6 @@ class DashboardShare(TurboFrameUpdateView):
 
         context["dont_hide_body"] = True
         return context
-
-    def form_valid(self, form):
-        r = super().form_valid(form)
-        if self.object.shared_status == Dashboard.SharedStatus.PRIVATE:
-            self.object.shared_status = Dashboard.SharedStatus.PUBLIC
-            self.object.shared_id = self.object.shared_id or uuid.uuid4()
-        else:
-            self.object.shared_status = Dashboard.SharedStatus.PRIVATE
-        self.object.save()
-
-        if self.object.shared_status == Dashboard.SharedStatus.PUBLIC:
-            analytics.track(
-                self.request.user.id,
-                DASHBOARD_SHARED_PUBLIC_EVENT,
-                {"id": self.object.id},
-            )
-        return r
 
     def get_success_url(self) -> str:
         return reverse(

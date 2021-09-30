@@ -5,9 +5,10 @@ from apps.dashboards.tables import DashboardTable
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import WIDGET_CHOICES_ARRAY
 from django.db.models.query import QuerySet
+from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import DeleteView
+from django.views.generic.edit import DeleteView, UpdateView
 from django_tables2 import SingleTableView
 
 from .forms import DashboardForm, DashboardFormCreate
@@ -129,3 +130,13 @@ class DashboardPublic(DetailView):
         context = super().get_context_data(**kwargs)
         context["project"] = self.object.project
         return context
+
+
+class DashboardLogin(UpdateView):
+    template_name = "dashboards/login.html"
+    fields = ["password"]
+    model = Dashboard
+
+    def form_valid(self, form):
+        self.request.session[str(self.object.shared_id)] = form.cleaned_data["password"]
+        return redirect(reverse("dashboards:public", args=(self.object.shared_id,)))
