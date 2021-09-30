@@ -27,6 +27,16 @@ body {
   }
 }
 
+// Common HTML states
+
+.disabled, [disabled], :disabled {
+  cursor: not-allowed;
+}
+
+[data-action*="click"] {
+  cursor: pointer;
+}
+
 // Common HTML elements
 
 button {
