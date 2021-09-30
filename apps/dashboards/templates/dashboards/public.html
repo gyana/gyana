@@ -1,4 +1,6 @@
 {% load static %}
+{% load waffle_tags %}
+
 <!DOCTYPE html>
 <html class="h-full">
 <head>
@@ -7,11 +9,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   {% include 'web/components/meta.html' %}
-  {% if project.team.plan == "Free" %}
-    {% include 'web/components/favicon.html' %}
+  {% flag 'beta' %}
+    {% if project.team.icon %}
+      <link rel="icon" type="image/png" sizes="16x16" href="{{ project.team.icon.url }}">
+    {% endif %}
   {% else %}
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ project.team.icon.url }}">
-  {% endif %}
+    {% include 'web/components/favicon.html' %}
+  {% endflag %}
 
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
@@ -32,9 +36,11 @@
   <div class="widgets flex items-center justify-center">
     <header class="flex w-full justify-between mb-7">
       <div class="flex justify-center items-center self-start">
-        {% if project.team.plan != "Free" %}
-        <img src="{{ project.team.icon.url }}" class="h-24 w-24 mr-5" alt="">
-        {% endif %}
+        {% flag 'beta' %}
+          {% if project.team.icon %}
+            <img src="{{ project.team.icon.url }}" class="h-24 w-24 mr-5" alt="">
+          {% endif %}
+        {% endflag %}
 
         <div class="flex flex-col">
           <p>{{ project.team.name }}</p>
@@ -42,9 +48,10 @@
         </div>
       </div>
 
-      {% if project.team.plan == "Free" %}
-      <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
-      {% endif %}
+      {% flag 'beta' %}
+      {% else %}
+        <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
+      {% endflag %}
     </header>
 
     <div id="dashboard-widget-container"
