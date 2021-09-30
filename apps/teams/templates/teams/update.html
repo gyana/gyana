@@ -1,4 +1,5 @@
 {% extends "teams/base.html" %}
+{% load waffle_tags %}
 
 {% block tab %}
 <div class="flex flex-col flex-1 overflow-auto">
@@ -8,15 +9,17 @@
 
       {% include "django/forms/default_form.html" %}
 
-      {% if request.user.is_superuser %}
-        {% if object.cname %}
-          <p>Your custom domain is currently mapped at <strong>{{ object.cname.domain }}</strong>
-            <a class="link" href="{% url 'team_cnames:delete' object.id object.cname.id%}">Delete</a>
-          </p>
-        {% else %}
-          <p>Add a <a class="link" href="{% url 'team_cnames:create' object.id %}">custom domain</a> using a CNAME.</p>
+      {% flag 'beta' %}
+        {% if request.user.is_superuser %}
+          {% if object.cname %}
+            <p>Your custom domain is currently mapped at <strong>{{ object.cname.domain }}</strong>
+              <a class="link" href="{% url 'team_cnames:delete' object.id object.cname.id%}">Delete</a>
+            </p>
+          {% else %}
+            <p>Add a <a class="link" href="{% url 'team_cnames:create' object.id %}">custom domain</a> using a CNAME.</p>
+          {% endif %}
         {% endif %}
-      {% endif %}
+      {% endflag %}
 
       <button type="submit" class="button button--success w-full">Save</button>
     </form>
