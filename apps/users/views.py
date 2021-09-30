@@ -13,11 +13,7 @@ from apps.base.analytics import ONBOARDING_COMPLETED_EVENT
 from apps.base.mixins import PageTitleMixin
 from apps.base.turbo import TurboUpdateView
 
-from .forms import (
-    CustomUserChangeForm,
-    UserNameForm,
-    UserOnboardingForm,
-)
+from .forms import CustomUserChangeForm, UserNameForm, UserOnboardingForm
 from .helpers import require_email_confirmation, user_has_confirmed_email_address
 from .models import CustomUser
 
@@ -40,10 +36,6 @@ class UserOnboarding(PageTitleMixin, TurboUpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
-
-    def form_valid(self, form):
-        redirect = super().form_valid(form)
-        return redirect
 
     def get_success_url(self) -> str:
         user = self.request.user
