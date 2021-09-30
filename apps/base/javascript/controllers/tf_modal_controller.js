@@ -7,9 +7,16 @@ export default class extends Controller {
   connect() {
     this.changed = false
     const params = new URLSearchParams(window.location.search)
+
     if (params.get('modal_item')) {
       this.modalTarget.classList.remove('hidden')
     }
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key == "Escape") {
+        this.close()
+      }
+    })
   }
 
   open(event) {
@@ -95,12 +102,6 @@ export default class extends Controller {
 
   closeWarning() {
     this.closingWarningTarget.classList.add('hidden')
-  }
-
-  onInput(event) {
-    if (event.key == 'Escape') {
-      this.close()
-    }
   }
 
   save() {
