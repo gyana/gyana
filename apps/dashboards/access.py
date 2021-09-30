@@ -18,7 +18,7 @@ login_and_dashboard_required = login_and_permission_to_access(dashboard_of_team)
 
 
 def dashboard_is_public(view_func):
-    """Returns a decorator that checks whether a dashboard is public."""
+    """Returns a decorator that checks whether a dashboard is public or password-protected."""
 
     @wraps(view_func)
     def decorator(request, *args, **kwargs):
@@ -38,6 +38,23 @@ def dashboard_is_public(view_func):
             return render(
                 request, "dashboards/login.html", context={"object": dashboard}
             )
+        return render(request, "404.html", status=404)
+
+    return decorator
+
+
+def dashboard_is_password_protected(view_func):
+    """Returns a decorator that checks whether a dashboard is password-protected."""
+
+    @wraps(view_func)
+    def decorator(request, *args, **kwargs):
+        dashboard = Dashboard.objects.get(pk=kwargs["pk"])
+        if (
+            dashboard
+            and dashboard.shared_status == Dashboard.SharedStatus.PASSWORD_PROTECTED
+        ):
+            kwargs["dashboard"] = dashboard
+            return view_func(request, *args, **kwargs)
         return render(request, "404.html", status=404)
 
     return decorator

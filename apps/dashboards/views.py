@@ -138,5 +138,12 @@ class DashboardLogin(UpdateView):
     model = Dashboard
 
     def form_valid(self, form):
-        self.request.session[str(self.object.shared_id)] = form.cleaned_data["password"]
-        return redirect(reverse("dashboards:public", args=(self.object.shared_id,)))
+        password = form.cleaned_data["password"]
+        if self.object.check_password(password):
+            # Mariusz suggested to use a combination of an auth bool and timestamp
+            # And save that to the session, I opted for the simpler solution for now
+            self.request.session[str(self.object.shared_id)] = password
+            return redirect(reverse("dashboards:public", args=(self.object.shared_id,)))
+
+        form.add_error("password", "Wrong password")
+        return self.form_invalid(form)

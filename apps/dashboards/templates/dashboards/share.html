@@ -9,8 +9,8 @@
     class="button button--circle {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}"
     data-action="popover#trigger"
   >
-    {% if  object.shared_status == 'private' %}<i class='far fa-fw fa-link'></i>
-    {% elif object.shared_status == 'public' %}<i class='far fa-fw fa-unlink'></i>
+    {% if  object.shared_status == 'public' %}<i class='far fa-fw fa-link'></i>
+    {% elif object.shared_status == 'private' %}<i class='far fa-fw fa-unlink'></i>
     {% elif object.shared_status == 'password_protected' %}<i class='far fa-fw fa-lock'></i>
     {% endif %}
   </button>

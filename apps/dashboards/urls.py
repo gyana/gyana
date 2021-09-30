@@ -5,6 +5,7 @@ from django.urls import path
 from . import frames, views
 from .access import (
     dashboard_is_in_template,
+    dashboard_is_password_protected,
     dashboard_is_public,
     login_and_dashboard_required,
 )
@@ -25,7 +26,7 @@ urlpatterns = [
     ),
     path(
         "<int:pk>/login",
-        views.DashboardLogin.as_view(),
+        dashboard_is_password_protected(views.DashboardLogin.as_view()),
         name="login",
     ),
     # frames
