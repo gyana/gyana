@@ -1,3 +1,5 @@
+import uuid
+
 from apps.base.live_update_form import LiveUpdateForm
 from django import forms
 from django.forms.widgets import HiddenInput, PasswordInput
@@ -51,6 +53,13 @@ class DashboardShareForm(LiveUpdateForm):
 
     def save(self, commit=True):
         dashboard = super().save(commit=False)
+
+        if (
+            dashboard.shared_status != Dashboard.SharedStatus.PRIVATE
+            and dashboard.shared_id is None
+        ):
+            dashboard.shared_id = uuid.uuid4()
+
         if (
             self.get_live_field("shared_status")
             == Dashboard.SharedStatus.PASSWORD_PROTECTED
