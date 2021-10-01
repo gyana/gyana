@@ -19,6 +19,7 @@ $card-colors: (
   display: block;
   position: relative;
   z-index: var(--z-default);
+  overflow: auto;
   
   @include mixins.shadow;
   
@@ -82,12 +83,6 @@ $card-colors: (
   &--modal {
     border: none;
     overflow: hidden;
-  }
-
-  &__header {
-    height: 52px; // TODO
-    background-color: var(--c-white);
-    border-bottom: 1px solid var(--c-gray);
   }
 
   &__help {
