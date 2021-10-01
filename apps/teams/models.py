@@ -8,8 +8,6 @@ from apps.base.models import BaseModel
 
 from . import roles
 
-DEFAULT_ROW_LIMIT = 50_000
-DEFAULT_CREDIT_LIMIT = 100
 WARNING_BUFFER = 0.2
 
 
@@ -100,31 +98,15 @@ class Team(BaseModel):
 
     @property
     def row_limit(self):
-        from apps.appsumo.account import get_deal
+        from .account import get_row_limit
 
-        if self.override_row_limit is not None:
-            return self.override_row_limit
-
-        rows = max(
-            DEFAULT_ROW_LIMIT,
-            get_deal(self.appsumocode_set.all())["rows"],
-        )
-
-        # extra 1M for writing a review
-        if hasattr(self, "appsumoreview"):
-            rows += 1_000_000
-
-        rows += self.appsumoextra_set.aggregate(models.Sum("rows"))["rows__sum"] or 0
-
-        return rows
+        return get_row_limit(self)
 
     @property
     def credits(self):
-        from apps.appsumo.account import get_deal
+        from .account import get_credits
 
-        return max(
-            DEFAULT_CREDIT_LIMIT, get_deal(self.appsumocode_set.all())["credits"]
-        )
+        return get_credits(self)
 
     @property
     def admins(self):
