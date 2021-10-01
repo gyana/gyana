@@ -1,6 +1,7 @@
 from django import forms
-from django.forms.models import BaseModelForm
 from django.utils.datastructures import MultiValueDict
+
+from apps.base.forms import BaseModelForm
 
 
 class LiveUpdateForm(BaseModelForm):

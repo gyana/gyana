@@ -1,6 +1,7 @@
 from unittest.mock import patch
 
 import pytest
+from waffle.models import Flag
 
 from apps.teams.models import Team
 from apps.users.models import CustomUser
@@ -42,3 +43,9 @@ def cname_middleware():
     # the test client does not have host header by default
     with patch("apps.cnames.middleware.HostMiddleware", BlankMiddleware):
         yield
+
+
+@pytest.fixture(autouse=True)
+def enable_beta():
+    Flag.objects.create(name="beta", everyone=True)
+    yield
