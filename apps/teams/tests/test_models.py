@@ -27,6 +27,7 @@ class TestTeam:
 
         assert not team.ltd_disabled
         code.refunded_before = timezone.now()
+        code.save()
         assert team.ltd_disabled
 
     def test_exceeds_stacking_limit(self):
@@ -40,6 +41,7 @@ class TestTeam:
         assert team.exceeds_stacking_limit
 
         code.refunded_before = timezone.now()
+        code.save()
         assert not team.exceeds_stacking_limit
 
     def test_has_extra_rows(self):
