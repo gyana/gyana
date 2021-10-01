@@ -26,3 +26,19 @@ def logged_in_user(client):
     team.members.add(user, through_defaults={"role": "admin"})
     client.force_login(user)
     return user
+
+
+class BlankMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        return response
+
+
+@pytest.fixture(autouse=True)
+def cname_middleware():
+    # the test client does not have host header by default
+    with patch("apps.cnames.middleware.HostMiddleware", BlankMiddleware):
+        yield
