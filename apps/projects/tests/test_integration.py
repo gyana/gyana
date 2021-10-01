@@ -52,7 +52,7 @@ def test_project_crudl(client, logged_in_user):
     assert team.project_set.first() is None
 
 
-def test_private_projects(client, logged_in_user):
+def test_private_projects(client, logged_in_user, enable_beta):
     team = logged_in_user.teams.first()
 
     other_user = CustomUser.objects.create_user("other user")

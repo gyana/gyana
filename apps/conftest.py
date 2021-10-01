@@ -1,7 +1,8 @@
 from unittest.mock import patch
 
 import pytest
-from waffle.models import Flag
+import waffle
+from waffle.templatetags import waffle_tags
 
 from apps.teams.models import Team
 from apps.users.models import CustomUser
@@ -45,7 +46,9 @@ def cname_middleware():
         yield
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def enable_beta():
-    Flag.objects.create(name="beta", everyone=True)
-    yield
+    # https://waffle.readthedocs.io/en/v0.9/testing-waffles.html
+    with patch.object(waffle, "flag_is_active", return_value=True):
+        with patch.object(waffle_tags, "flag_is_active", return_value=True):
+            yield
