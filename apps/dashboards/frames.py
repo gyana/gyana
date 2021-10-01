@@ -12,6 +12,7 @@ from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import Widget
 from django.db.models import Count, Q
 from django.urls.base import reverse
+from waffle import flag_is_active
 
 from .models import Dashboard
 
@@ -59,6 +60,11 @@ class DashboardShare(TurboFrameUpdateView):
             "dashboards:share",
             args=(self.object.id,),
         )
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs["is_beta"] = flag_is_active(self.request, "beta")
+        return form_kwargs
 
 
 class DashboardPreview(TurboFrameDetailView):
