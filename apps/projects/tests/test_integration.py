@@ -15,6 +15,7 @@ def test_project_crudl(client, logged_in_user):
         data={
             "name": "Metrics",
             "description": "All the company metrics",
+            "access": "everyone",
             "submit": True,
         },
     )
@@ -36,6 +37,7 @@ def test_project_crudl(client, logged_in_user):
         data={
             "name": "KPIs",
             "description": "All the company kpis",
+            "access": "everyone",
             "submit": True,
         },
     )
@@ -52,7 +54,7 @@ def test_project_crudl(client, logged_in_user):
     assert team.project_set.first() is None
 
 
-def test_private_projects(client, logged_in_user, enable_beta):
+def test_private_projects(client, logged_in_user):
     team = logged_in_user.teams.first()
 
     other_user = CustomUser.objects.create_user("other user")

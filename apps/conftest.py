@@ -46,7 +46,7 @@ def cname_middleware():
         yield
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def enable_beta():
     # https://waffle.readthedocs.io/en/v0.9/testing-waffles.html
     with patch.object(waffle, "flag_is_active", return_value=True):
