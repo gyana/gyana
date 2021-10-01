@@ -8,7 +8,7 @@ from .widgets import MemberSelect
 class ProjectForm(LiveUpdateForm):
     class Meta:
         model = Project
-        fields = ["name", "description", "team", "access", "members"]
+        fields = ["name", "description", "access", "members"]
         widgets = {"members": MemberSelect()}
 
     def __init__(self, current_user, *args, **kwargs):
