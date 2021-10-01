@@ -1,21 +1,10 @@
 import pytest
 from apps.appsumo.models import AppsumoCode
-from apps.appsumo.views import AppsumoReview
-from apps.teams.models import Team
 from apps.users.models import CustomUser
 from django.utils import timezone
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 pytestmark = pytest.mark.django_db
-
-
-@pytest.fixture
-def logged_in_user(client):
-    team = Team.objects.create(name="team_team")
-    user = CustomUser.objects.create_user("test")
-    team.members.add(user, through_defaults={"role": "admin"})
-    client.force_login(user)
-    return user
 
 
 class TestAppsumoLanding:
@@ -150,32 +139,39 @@ class TestAppsumoRedeem:
 
 class TestAppsumoStack:
     def test_get(self, client, logged_in_user):
-        response = client.get("/teams/1/appsumo/stack")
+        team = logged_in_user.teams.first()
+        response = client.get(f"/teams/{team.id}/appsumo/stack")
         assert response.status_code == 200
 
     def test_post(self, client, logged_in_user):
         team = logged_in_user.teams.first()
 
         code = AppsumoCode.objects.create(code="12345678")
-        response = client.post("/teams/1/appsumo/stack", data={"code": "12345678"})
+        response = client.post(
+            f"/teams/{team.id}/appsumo/stack", data={"code": "12345678"}
+        )
 
         assert response.status_code == 303
-        assert response.url == "/teams/1/account"
+        assert response.url == f"/teams/{team.id}/account"
 
         assert list(team.appsumocode_set.all()) == [code]
 
 
 class TestAppsumoReview:
     def test_get(self, client, logged_in_user):
-        response = client.get("/teams/1/appsumo/review")
+        team = logged_in_user.teams.first()
+
+        response = client.get(f"/teams/{team.id}/appsumo/review")
         assert response.status_code == 200
 
     def test_post(self, client, logged_in_user):
         link = "https://appsumo.com/products/marketplace-gyana/#r666666"
         team = logged_in_user.teams.first()
-        response = client.post("/teams/1/appsumo/review", data={"review_link": link})
+        response = client.post(
+            f"/teams/{team.id}/appsumo/review", data={"review_link": link}
+        )
 
         assert response.status_code == 303
-        assert response.url == "/teams/1/account"
+        assert response.url == f"/teams/{team.id}/account"
 
         assert team.appsumoreview.review_link == link
