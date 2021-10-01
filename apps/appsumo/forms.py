@@ -1,25 +1,11 @@
 from allauth.account.forms import SignupForm
 from apps.base import analytics
+from apps.base.forms import BaseModelForm
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
 from .models import AppsumoCode, AppsumoReview
-
-
-class BaseModelForm(forms.ModelForm):
-    def on_commit(self, instance):
-        # override in child to add behaviour on commit save
-        pass
-
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        if commit == True:
-            with transaction.atomic():
-                self.on_commit(instance)
-                instance.save()
-                self.save_m2m()
-        return instance
 
 
 class AppsumoCodeForm(forms.Form):
@@ -55,7 +41,7 @@ class AppsumoRedeemNewTeamForm(BaseModelForm):
         self._user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
-    def on_commit(self, instance):
+    def on_save(self, instance):
         instance.redeem_new_team(self.cleaned_data["team_name"], self._user)
 
 
@@ -71,7 +57,7 @@ class AppsumoRedeemForm(BaseModelForm):
         self.fields["team"].queryset = self._user.teams_admin_of
         self.fields["team"].widget.help_text = "You can always change this later"
 
-    def on_commit(self, instance):
+    def on_save(self, instance):
         instance.redeem_by_user(self._user)
 
 
@@ -119,5 +105,5 @@ class AppsumoReviewForm(BaseModelForm):
         self._team = kwargs.pop("team", None)
         super().__init__(*args, **kwargs)
 
-    def on_commit(self, instance):
+    def on_save(self, instance):
         return instance.add_to_team(self._team)
