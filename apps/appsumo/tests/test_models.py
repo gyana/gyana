@@ -10,7 +10,6 @@ from apps.appsumo.models import (
 )
 from apps.teams.models import Team
 from apps.users.models import CustomUser
-from django.core import exceptions
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils import timezone
 

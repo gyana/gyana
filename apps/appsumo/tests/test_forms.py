@@ -12,6 +12,8 @@ from apps.appsumo.forms import (
 from apps.appsumo.models import AppsumoCode, AppsumoReview
 from apps.teams.models import Team
 
+pytestmark = pytest.mark.django_db
+
 
 @pytest.fixture(autouse=True)
 def transaction_atomic_patch():
