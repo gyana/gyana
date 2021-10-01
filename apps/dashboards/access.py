@@ -18,6 +18,15 @@ def dashboard_of_team(user, pk, *args, **kwargs):
 login_and_dashboard_required = login_and_permission_to_access(dashboard_of_team)
 
 
+def can_access_password_protected_dashboard(request, dashboard):
+    auth = request.session.get(str(dashboard.shared_id))
+    return (
+        auth
+        and dashboard.password_set < isoparse(auth["logged_in"])
+        and auth["auth_success"]
+    )
+
+
 def dashboard_is_public(view_func):
     """Returns a decorator that checks whether a dashboard is public or password-protected."""
 
@@ -31,12 +40,8 @@ def dashboard_is_public(view_func):
             dashboard
             and dashboard.shared_status == Dashboard.SharedStatus.PASSWORD_PROTECTED
         ):
-            auth = request.session.get(str(dashboard.shared_id))
-            if (
-                auth
-                and dashboard.password_set < isoparse(auth["logged_in"])
-                and auth["auth_success"]
-            ):
+
+            if can_access_password_protected_dashboard(request, dashboard):
                 kwargs["dashboard"] = dashboard
                 return view_func(request, *args, **kwargs)
 
