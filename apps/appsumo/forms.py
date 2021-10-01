@@ -17,7 +17,7 @@ class BaseModelForm(forms.ModelForm):
         if commit == True:
             with transaction.atomic():
                 self.on_commit(instance)
-                self.save()
+                instance.save()
                 self.save_m2m()
         return instance
 

@@ -54,6 +54,9 @@ class TestAppsumoRedirect:
         assert response.status_code == 200
         assertTemplateUsed(response, "appsumo/already_redeemed.html")
 
+    def test_refunded(self, client):
+        assert False
+
     def test_redirect_signup(self, client):
         AppsumoCode.objects.create(code="12345678")
         response = client.get("/appsumo/12345678")
@@ -69,27 +72,79 @@ class TestAppsumoRedirect:
 
 
 class TestAppsumoSignup:
-    pass
+    def test_get(self, client):
+        AppsumoCode.objects.create(code="12345678")
+        response = client.get("/appsumo/signup/12345678")
+        assert response.status_code == 200
+
+    def test_signup_email_not_required(self, client):
+        AppsumoCode.objects.create(code="12345678")
+        response = client.post(
+            "/appsumo/signup/12345678",
+            data={
+                "email": "test@gyana.com",
+                "password1": "seewhatmatters",
+                "team": "Test team",
+            },
+        )
+        assert response.status_code == 303
+        assert response.url == "/users/onboarding/"
+
+        user = CustomUser.objects.first()
+        team = user.teams.first()
+        assert team.name == "Test team"
+        assert team.appsumocode_set.count() == 1
+        assert team.appsumocode_set.first().code == "12345678"
+
+    def test_signup_email_required(self, client, settings):
+        settings.ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+
+        AppsumoCode.objects.create(code="12345678")
+        response = client.post(
+            "/appsumo/signup/12345678",
+            data={
+                "email": "test@gyana.com",
+                "password1": "seewhatmatters",
+                "team": "Test team",
+            },
+        )
+        assert response.status_code == 303
+        assert response.url == "/confirm-email/"
 
 
 class TestAppsumoRedeem:
-    pass
+    def test_get(self, client):
+        AppsumoCode.objects.create(code="12345678")
+        user = CustomUser.objects.create_user("test")
+        client.force_login(user)
+        response = client.get("/appsumo/redeem/12345678")
+        assert response.status_code == 200
 
+    def test_existing_team(self, client):
+        AppsumoCode.objects.create(code="12345678")
+        team = Team.objects.create(name="team_team")
+        user = CustomUser.objects.create_user("test")
+        team.members.add(user, through_defaults={"role": "admin"})
+        client.force_login(user)
 
-class TestAppsumoReview:
-    @pytest.fixture
-    def view(self, rf):
-        team = Team.objects.create(name="test_team")
-        request = rf.get("/teams/1/appsumo/review")
-        view_instance = AppsumoReview()
-        view_instance.setup(request, team_id=team.id)
-        return view_instance
+        response = client.post("/appsumo/redeem/12345678", data={"team": team.id})
+        assert response.status_code == 303
+        assert team.appsumocode_set.count() == 1
+        assert team.appsumocode_set.first().code == "12345678"
 
-    def test_form_kwargs(self, view):
-        assert "team" in view.get_form_kwargs()
+    def test_new_team(self, client):
+        AppsumoCode.objects.create(code="12345678")
+        user = CustomUser.objects.create_user("test")
+        client.force_login(user)
 
-    def test_success_url(self, view):
-        assert view.get_success_url() == "/teams/1/account"
+        response = client.post(
+            "/appsumo/redeem/12345678", data={"team_name": "Test team"}
+        )
+        assert response.status_code == 303
+        team = user.teams.first()
+        assert team.name == "Test team"
+        assert team.appsumocode_set.count() == 1
+        assert team.appsumocode_set.first().code == "12345678"
 
 
 class TestAppsumoStack:
@@ -110,3 +165,8 @@ class TestAppsumoStack:
 
         assert response.status_code == 303
         assert response.url == "/teams/1/account"
+
+
+class TestAppsumoReview:
+    def test_tbh(self, client):
+        assert False
