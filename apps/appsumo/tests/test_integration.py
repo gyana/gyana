@@ -145,23 +145,28 @@ class TestAppsumoRedeem:
 
 
 class TestAppsumoStack:
-    @pytest.fixture
-    def setup(self, client):
+    def test_get(self, client):
         team = Team.objects.create(name="team_team")
         user = CustomUser.objects.create_user("test")
         team.members.add(user, through_defaults={"role": "admin"})
         client.force_login(user)
 
-    def test_get(self, client, setup):
         response = client.get("/teams/1/appsumo/stack")
         assert response.status_code == 200
 
-    def test_post(self, client, setup):
-        AppsumoCode.objects.create(code="12345678")
+    def test_post(self, client):
+        team = Team.objects.create(name="team_team")
+        user = CustomUser.objects.create_user("test")
+        team.members.add(user, through_defaults={"role": "admin"})
+        client.force_login(user)
+
+        code = AppsumoCode.objects.create(code="12345678")
         response = client.post("/teams/1/appsumo/stack", data={"code": "12345678"})
 
         assert response.status_code == 303
         assert response.url == "/teams/1/account"
+
+        assert list(team.appsumocode_set.all()) == [code]
 
 
 class TestAppsumoReview:

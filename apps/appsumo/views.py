@@ -3,7 +3,7 @@ from apps.base.mixins import PageTitleMixin
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 from apps.users.helpers import require_email_confirmation
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls.base import reverse
 from django.views.generic import DetailView
 from turbo_response.mixins import TurboFormMixin
@@ -100,8 +100,8 @@ class AppsumoStack(TeamMixin, TurboFormView):
     form_class = AppsumoCodeForm
 
     def form_valid(self, form):
-        code = form.cleaned_data["code"]
-        AppsumoCode.redeem_team(code, self.team, self.request.user)
+        code = get_object_or_404(AppsumoCode, code=form.cleaned_data["code"])
+        code.redeem_team(self.team, self.request.user)
         return super().form_valid(form)
 
     def get_success_url(self) -> str:

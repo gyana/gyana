@@ -52,6 +52,17 @@ class TestAppsumoCode:
         assert code.redeemed_by == user
         assert code.redeemed is not None
 
+    def test_redeem_team(self):
+        user = CustomUser.objects.create_user("test")
+        code = AppsumoCode.objects.create(code="12345678")
+        team = Team.objects.create(name="Test team")
+
+        code.redeem_team(team, user)
+
+        assert code.redeemed_by == user
+        assert code.redeemed is not None
+        assert code.team == team
+
     def test_redeem_new_team(self):
         user = CustomUser.objects.create_user("test")
         code = AppsumoCode.objects.create(code="12345678")
@@ -64,6 +75,7 @@ class TestAppsumoCode:
         assert user.teams.count() == 1
         team = user.teams.first()
         assert team.name == "test_team"
+        assert code.team.name == "test_team"
 
 
 class TestAppsumoReview:

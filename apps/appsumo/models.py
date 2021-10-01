@@ -76,6 +76,13 @@ class AppsumoCode(BaseModel):
         analytics.track(user.id, TEAM_CREATED_EVENT)
         identify_user_group(user, team)
 
+    @transaction.atomic
+    def redeem_team(self, team: Team, user: CustomUser):
+
+        self.team = team
+        self.save()
+        self.redeem_by_user(user)
+
     def redeem_by_user(self, user: CustomUser):
         self.redeemed = timezone.now()
         self.redeemed_by = user
