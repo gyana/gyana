@@ -2,6 +2,7 @@ from functools import wraps
 
 from apps.base.access import login_and_permission_to_access
 from apps.projects.access import user_can_access_project
+from dateutil.parser import isoparse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -30,8 +31,12 @@ def dashboard_is_public(view_func):
             dashboard
             and dashboard.shared_status == Dashboard.SharedStatus.PASSWORD_PROTECTED
         ):
-            session_pwd = request.session.get(str(dashboard.shared_id))
-            if dashboard.check_password(session_pwd):
+            auth = request.session.get(str(dashboard.shared_id))
+            if (
+                auth
+                and dashboard.password_set < isoparse(auth["logged_in"])
+                and auth["auth_success"]
+            ):
                 kwargs["dashboard"] = dashboard
                 return view_func(request, *args, **kwargs)
 

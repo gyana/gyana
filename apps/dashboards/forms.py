@@ -1,6 +1,7 @@
 from apps.base.live_update_form import LiveUpdateForm
 from django import forms
 from django.forms.widgets import HiddenInput, PasswordInput
+from django.utils import timezone
 
 from .models import Dashboard
 
@@ -39,12 +40,13 @@ class DashboardShareForm(LiveUpdateForm):
         return fields
 
     def save(self, commit=True):
-        user = super().save(commit=False)
+        dashboard = super().save(commit=False)
         if (
             self.get_live_field("shared_status")
             == Dashboard.SharedStatus.PASSWORD_PROTECTED
         ) and self.get_live_field("password"):
-            user.set_password(self.cleaned_data["password"])
+            dashboard.set_password(self.cleaned_data["password"])
+            dashboard.password_set = timezone.now()
         if commit:
-            user.save()
-        return user
+            dashboard.save()
+        return dashboard

@@ -5,10 +5,14 @@ from apps.dashboards.tables import DashboardTable
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import WIDGET_CHOICES_ARRAY
 from django.db.models.query import QuerySet
+from django.http import HttpResponse
 from django.shortcuts import redirect
+from django.template import loader
 from django.urls.base import reverse
+from django.utils import timezone
+from django.views.decorators.http import require_POST
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import DeleteView, UpdateView
+from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 
 from .forms import DashboardForm, DashboardFormCreate
@@ -132,18 +136,16 @@ class DashboardPublic(DetailView):
         return context
 
 
-class DashboardLogin(UpdateView):
-    template_name = "dashboards/login.html"
-    fields = ["password"]
-    model = Dashboard
+@require_POST
+def dashboard_login(request, pk, dashboard):
+    password = request.POST["password"]
+    if dashboard.check_password(password):
+        request.session[str(dashboard.shared_id)] = {
+            "auth_success": True,
+            "logged_in": timezone.now().isoformat(),
+        }
+        return redirect(reverse("dashboards:public", args=(dashboard.shared_id,)))
 
-    def form_valid(self, form):
-        password = form.cleaned_data["password"]
-        if self.object.check_password(password):
-            # Mariusz suggested to use a combination of an auth bool and timestamp
-            # And save that to the session, I opted for the simpler solution for now
-            self.request.session[str(self.object.shared_id)] = password
-            return redirect(reverse("dashboards:public", args=(self.object.shared_id,)))
-
-        form.add_error("password", "Wrong password")
-        return self.form_invalid(form)
+    template = loader.get_template("dashboards/login.html")
+    context = {"errors": {"password": "Wrong password"}, "object": dashboard}
+    return HttpResponse(template.render(context, request))

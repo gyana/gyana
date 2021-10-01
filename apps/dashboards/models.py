@@ -25,6 +25,7 @@ class Dashboard(CloneMixin, BaseModel):
     )
     shared_id = models.UUIDField(null=True, blank=True)
     password = models.CharField(gettext_lazy("password"), max_length=128, null=True)
+    password_set = models.DateTimeField(null=True, editable=False)
     width = models.IntegerField(default=1200)
     height = models.IntegerField(default=840)
     _clone_m2o_or_o2m_fields = ["widget_set"]
