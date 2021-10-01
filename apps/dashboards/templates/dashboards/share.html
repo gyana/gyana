@@ -1,18 +1,27 @@
 {% load help_utils %}
 
-<div
-  data-controller='tooltip popover'
->
+<div data-controller='popover'>
   <button
-    id="dashboard-share-{{object.id}}"
+    id="dashboard-share-{{ object.id }}"
+    class="button button--circle {% if object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}"
+    data-controller="tooltip"
     data-popover-target="trigger"
-    class="button button--circle {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}"
     data-action="popover#trigger"
   >
     {% if  object.shared_status == 'public' %}<i class='far fa-fw fa-link'></i>
     {% elif object.shared_status == 'private' %}<i class='far fa-fw fa-unlink'></i>
     {% elif object.shared_status == 'password_protected' %}<i class='far fa-fw fa-lock'></i>
     {% endif %}
+
+    <span data-tooltip-target="body">
+      {% if  object.shared_status == 'password_protected' %}
+      Password protected dashboard
+      {% elif object.shared_status == 'public' %}
+      Public dashboard
+      {% else %}
+      Private dashboard
+      {% endif %}
+    </span>
   </button>
   <div data-popover-target="body" class="popover-body max-w-lg card card--sm"> 
     <p class="mb-3">
@@ -36,7 +45,14 @@
       </span>
       {% include "django/forms/default_form.html" %}
 
-      <button class="button button--sm  w-full" value='submit' name='submit' type='submit'>Submit</button>
+      <button
+        class="button button--sm w-full"
+        value='submit'
+        name='submit'
+        type='submit'
+      >
+        Submit
+      </button>
     </form>
     {% if object.shared_status != 'private' %}
       <div data-controller="to-clipboard" class='clipboard-copy'>
@@ -56,14 +72,4 @@
       </div>
     {% endif %}
   </div>
-
-  <span data-tooltip-target="body">
-    {% if  object.shared_status == 'password_protected' %}
-    Password protected dashboard
-    {% elif object.shared_status == 'public' %}
-    Public dashboard
-    {% else %}
-    Private dashboard
-    {% endif %}
-  </span>
 </div>
