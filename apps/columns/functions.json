@@ -378,6 +378,20 @@
     "description": "Get the month from a timestamp"
   },
   {
+    "id": "to_timestamp",
+    "name": "to_datetime",
+    "categories": "date and time",
+    "arguments": ["integer", "unit"],
+    "description": "Create a datetime from an integer given a certain unit. Start time is January 1st, 1970 UTC."
+  },
+  {
+    "id": "timestamp_diff",
+    "name": "datetime_diff",
+    "categories": "date and time",
+    "arguments": ["datetime", "datetime", "unit"],
+    "description": "Get the difference between two datetimes in a given unit"
+  },
+  {
     "id": "truncate",
     "name": "truncate",
     "categories": "date and time",

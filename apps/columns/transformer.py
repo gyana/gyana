@@ -24,20 +24,16 @@ TYPES = {
 }
 
 
-def _truncate(func, args):
-    return func(args[0]._arg.value)
-
-
 def _hash(func, args):
     return func("farm_fingerprint")
 
 
 def _cast(func, args):
-    type_ = TYPES[args[0]._arg.value]
+    type_ = TYPES[args[0]]
     return func(type_)
 
 
-ODD_FUNCTIONS = {"truncate": _truncate, "hash": _hash, "cast": _cast}
+ODD_FUNCTIONS = {"hash": _hash, "cast": _cast}
 
 
 @v_args(inline=True)
@@ -48,14 +44,11 @@ class TreeToIbis(Transformer):
         super().__init__()
         self.query = query
 
-    def string(self, token):
-        return ibis.literal(token.value)
-
     def brackets(self, token):
         return token
 
     def string(self, token):
-        return ibis.literal(token.value.strip('"'))
+        return token.value.strip('"')
 
     def column(self, token):
         return self.query[token.value]
@@ -63,6 +56,8 @@ class TreeToIbis(Transformer):
     def function(self, token, *args):
         args = list(args)
         caller = args.pop(0)
+        if isinstance(caller, (int, str, float)):
+            caller = ibis.literal(caller)
         function_name = token.value.lower()
         function = next(filter(lambda f: f["name"] == function_name, FUNCTIONS))
         func = getattr(caller, function["id"])

@@ -7,6 +7,7 @@ from django.urls.base import reverse
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
+from waffle import flag_is_active
 
 from .forms import ProjectForm
 from .models import Project, ProjectMembership
@@ -21,6 +22,7 @@ class ProjectCreate(TeamMixin, TurboCreateView):
         form_kwargs = super().get_form_kwargs()
         form_kwargs["current_user"] = self.request.user
         form_kwargs["team"] = self.team
+        form_kwargs["is_beta"] = flag_is_active(self.request, "beta")
         return form_kwargs
 
     def get_success_url(self) -> str:
@@ -59,6 +61,7 @@ class ProjectUpdate(TurboUpdateView):
         form_kwargs = super().get_form_kwargs()
         form_kwargs["current_user"] = self.request.user
         form_kwargs["team"] = self.object.team
+        form_kwargs["is_beta"] = flag_is_active(self.request, "beta")
         return form_kwargs
 
     def get_success_url(self) -> str:

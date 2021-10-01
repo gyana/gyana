@@ -1,4 +1,5 @@
 from apps.base.table import ICONS, NaturalDatetimeColumn
+from django.db.models.aggregates import Sum
 from django.template import Context
 from django.template.loader import get_template
 from django_tables2 import Column, Table
@@ -46,6 +47,18 @@ class PendingStatusColumn(Column):
         return get_template("columns/status.html").render(context.flatten())
 
 
+class RowCountColumn(Column):
+    def __init__(self, **kwargs):
+        verbose_name = kwargs.pop("verbose_name", "Rows")
+        super().__init__(verbose_name=verbose_name, **kwargs)
+
+    def order(self, queryset, is_descending):
+        queryset = queryset.annotate(num_rows_agg=Sum("table__num_rows")).order_by(
+            ("-" if is_descending else "") + "num_rows_agg"
+        )
+        return (queryset, True)
+
+
 class IntegrationListTable(Table):
     class Meta:
         model = Integration
@@ -53,9 +66,15 @@ class IntegrationListTable(Table):
         attrs = {"class": "table"}
 
     name = Column(linkify=True)
-    num_rows = Column(verbose_name="Rows")
+    num_rows = RowCountColumn()
     kind = Column(accessor="display_kind")
     created_ready = NaturalDatetimeColumn(verbose_name="Added")
+
+    def order_num_rows(self, queryset, is_descending):
+        queryset = queryset.annotate(num_rows_agg=Sum("table__num_rows")).order_by(
+            ("-" if is_descending else "") + "num_rows_agg"
+        )
+        return (queryset, True)
 
 
 class IntegrationPendingTable(Table):
@@ -70,7 +89,7 @@ class IntegrationPendingTable(Table):
         attrs = {"class": "table"}
 
     name = Column(linkify=True)
-    num_rows = Column(verbose_name="Rows")
+    num_rows = RowCountColumn()
     kind = Column(accessor="display_kind")
     created = NaturalDatetimeColumn(verbose_name="Started")
     state = PendingStatusColumn()

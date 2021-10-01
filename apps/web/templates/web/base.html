@@ -79,7 +79,7 @@
 
         {% block sidebar_content %}{% endblock %}
 
-        <li class="mt-auto"></li>
+        <li class="mt-auto"><hr></li>
 
         {% comment %}
         IMPORTANT: This link needs to be refreshed every month, if in doubt
@@ -88,11 +88,11 @@
         <li>
           <a
             href="https://join.slack.com/t/gyanacommunity/shared_invite/zt-vly76dna-dxv12CkXdanlwqMam5zDPQ"
-            class="sidebar__link sidebar__link--badge"
+            class="sidebar__link"
             data-controller="tooltip"
             data-placement="right"
           >
-            <i class="fas fa-fw fa-comment-alt mr-3"></i> Join our Slack
+            <i class="fas fa-fw fa-comment-alt"></i> Join our Slack
 
             <span data-tooltip-target="body">Join our Slack</span>
           </a>
@@ -110,7 +110,7 @@
             class="sidebar__link {% if request.resolver_match.app_name == "users" %}sidebar__link--active{% endif %}"
             href="{% url 'users:user_profile' %}"
           >
-            <img src="{{ user.avatar_url }}" alt="">{{ user.email }}
+            <img src="{{ user.avatar_url }}" alt="">Your Account
           </a>
         </li>
 
@@ -123,9 +123,7 @@
           </button>
         </li>
 
-        <li data-controller='web-intercom-helper'>
-          <hr>
-        </li>
+        <li data-controller='web-intercom-helper'><hr></li>
 
         <li>
           <label

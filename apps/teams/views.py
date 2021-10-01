@@ -6,14 +6,14 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import UpdateView
-from django_tables2.views import SingleTableView
+from django_tables2.views import SingleTableMixin, SingleTableView
 
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 
 from .forms import MembershipUpdateForm, TeamCreateForm, TeamUpdateForm
 from .models import Membership, Team
-from .tables import TeamMembershipTable
+from .tables import TeamMembershipTable, TeamProjectsTable
 
 
 class TeamCreate(LoginRequiredMixin, TurboCreateView):
@@ -49,26 +49,28 @@ class TeamDelete(LoginRequiredMixin, DeleteView):
         return reverse("web:home")
 
 
-class TeamDetail(DetailView):
+class TeamDetail(SingleTableMixin, DetailView):
     template_name = "teams/detail.html"
     model = Team
     pk_url_kwarg = "team_id"
+    table_class = TeamProjectsTable
+    paginate_by = 15
 
     def get_context_data(self, **kwargs):
         from apps.projects.models import Project
 
-        from .tables import TeamProjectsTable
-
         self.request.session["team_id"] = self.object.id
-
-        context = super().get_context_data(**kwargs)
-        projects = Project.objects.filter(team=self.object).filter(
+        self.projects = Project.objects.filter(team=self.object).filter(
             Q(access=Project.Access.EVERYONE) | Q(members=self.request.user)
         )
-        context["team_projects"] = TeamProjectsTable(projects)
-        context["project_count"] = projects.count()
+
+        context = super().get_context_data(**kwargs)
+        context["project_count"] = self.projects.count()
 
         return context
+
+    def get_table_data(self):
+        return self.projects
 
 
 class TeamAccount(UpdateView):

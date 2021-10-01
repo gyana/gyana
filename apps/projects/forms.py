@@ -13,6 +13,7 @@ class ProjectForm(LiveUpdateForm):
 
     def __init__(self, current_user, *args, **kwargs):
         self._team = kwargs.pop("team", None)
+        self._is_beta = kwargs.pop("is_beta")
         super().__init__(*args, **kwargs)
 
         if members_field := self.fields.get("members"):
@@ -20,6 +21,8 @@ class ProjectForm(LiveUpdateForm):
             members_field.widget.current_user = current_user
 
     def get_live_fields(self):
+        if not self._is_beta:
+            return ["name", "description"]
         fields = ["name", "description", "access"]
         if self.get_live_field("access") == Project.Access.INVITE_ONLY:
             fields += ["members"]
