@@ -174,6 +174,7 @@
 
   label[for='sidebar-toggle'] {
     cursor: pointer;
+    gap: 0;
 
     i::before {
       content: '\f054';
