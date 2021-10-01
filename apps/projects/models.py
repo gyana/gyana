@@ -32,24 +32,19 @@ class Project(CloneMixin, BaseModel):
     def __str__(self):
         return self.name
 
+    @property
     def integration_count(self):
-        from apps.integrations.models import Integration
+        return self.integration_set.exclude(
+            connector__fivetran_authorized=False
+        ).count()
 
-        return (
-            Integration.objects.filter(project=self)
-            .exclude(connector__fivetran_authorized=False)
-            .count()
-        )
-
+    @property
     def workflow_count(self):
-        from apps.workflows.models import Workflow
+        return self.workflow_set.count()
 
-        return Workflow.objects.filter(project=self).count()
-
+    @property
     def dashboard_count(self):
-        from apps.dashboards.models import Dashboard
-
-        return Dashboard.objects.filter(project=self).count()
+        return self.dashboard_set.count()
 
     @property
     def is_template(self):

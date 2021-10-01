@@ -2,15 +2,14 @@ import analytics
 from apps.base.analytics import PROJECT_CREATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.urls.base import reverse
-from django.views.decorators.http import require_POST
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from waffle import flag_is_active
 
 from .forms import ProjectForm
-from .models import Project, ProjectMembership
+from .models import Project
 
 
 class ProjectCreate(TeamMixin, TurboCreateView):
