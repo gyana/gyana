@@ -1,5 +1,5 @@
 import pytest
-from apps.appsumo.models import AppsumoCode, AppsumoExtra
+from apps.appsumo.models import AppsumoCode, AppsumoExtra, AppsumoReview
 from apps.teams.models import Team
 from django.utils import timezone
 
@@ -59,3 +59,23 @@ class TestTeam:
 
         AppsumoCode.objects.create(team=team, code="11111111")
         assert team.plan == "Lifetime Deal for Gyana"
+
+    def test_row_limit(self):
+        team = Team.objects.create(name="Test team")
+        assert team.row_limit == 50_000
+
+        team.override_row_limit = 10
+        assert team.row_limit == 10
+
+        team.override_row_limit = None
+        AppsumoCode.objects.create(code="12345678", team=team)
+        assert team.row_limit == 1_000_000
+
+        AppsumoReview.objects.create(
+            team=team,
+            review_link="https://appsumo.com/products/marketplace-gyana/#r666666",
+        )
+        assert team.row_limit == 2_000_000
+
+        AppsumoExtra.objects.create(team=team, rows=100_000, reason="extra")
+        assert team.row_limit == 2_100_000
