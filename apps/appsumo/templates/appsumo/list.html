@@ -1,6 +1,19 @@
 {% load render_table from django_tables2 %}
 
-<p class="mb-4">You've redeemed <strong>{{ team.appsumocode_set.count }} code{{ team.appsumocode_set.count|pluralize }}</strong>.</p>
+<p class="mb-4">
+  You have <strong>{{ team.active_codes }} active code{{ team.active_codes|pluralize }}</strong>
+  ({{ team.redeemed_codes }} redeemed, {{ team.refunded_codes }} refunded).
+</p>
+{% if team.ltd_disabled %}
+  <p class="alert mb-4">
+    Your life-time deal is disabled, as you've refunded all your codes.
+  </p>
+{% elif team.exceeds_stacking_limit %}
+  <p class="alert mb-4">
+    We only automatically stack up to 5 codes. You'll need to reach out to support
+    to increase beyond this limit.
+  </p>
+{% endif %}
 <div class="card card--none">
   {% render_table table %}
 
@@ -12,7 +25,7 @@
   </div>
 </div>
 
-{% if team.appsumoextra_set.count > 0 %}
+{% if team.has_extra_rows %}
   <h3 class="m-2">Extra rows</h3>
   <turbo-frame id="appsumo:extra" src="{% url 'team_appsumo:extra' team.id %}">
     <div class='placeholder-scr placeholder-scr--fillscreen'>

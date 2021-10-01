@@ -27,13 +27,13 @@ class Team(BaseModel):
     row_count = models.BigIntegerField(default=0)
     row_count_calculated = models.DateTimeField(null=True)
 
-    # def save(self, *args, **kwargs):
-    #     from .bigquery import create_team_dataset
+    def save(self, *args, **kwargs):
+        from .bigquery import create_team_dataset
 
-    #     create = not self.pk
-    #     super().save(*args, **kwargs)
-    #     if create:
-    #         create_team_dataset(self)
+        create = not self.pk
+        super().save(*args, **kwargs)
+        if create:
+            create_team_dataset(self)
 
     def update_row_count(self):
         from apps.tables.models import Table
@@ -71,8 +71,32 @@ class Team(BaseModel):
         return reverse("teams:detail", args=(self.id,))
 
     @property
+    def redeemed_codes(self):
+        return self.appsumocode_set.count()
+
+    @property
+    def active_codes(self):
+        return self.appsumocode_set.filter(refunded_before__isnull=True).count()
+
+    @property
+    def refunded_codes(self):
+        return self.appsumocode_set.filter(refunded_before__isnull=False).count()
+
+    @property
+    def ltd_disabled(self):
+        return self.active_codes == 0
+
+    @property
+    def exceeds_stacking_limit(self):
+        return self.active_codes > 5
+
+    @property
+    def has_extra_rows(self):
+        return self.appsumoextra_set.count() > 0
+
+    @property
     def plan(self):
-        return "Lifetime Deal for Gyana" if self.appsumocode_set.count() > 0 else "Free"
+        return "Lifetime Deal for Gyana" if self.active_codes > 0 else "Free"
 
     @property
     def row_limit(self):
@@ -98,7 +122,9 @@ class Team(BaseModel):
     def credits(self):
         from apps.appsumo.account import get_deal
 
-        return max(DEFAULT_CREDIT_LIMIT, get_deal(self.appsumocode_set)["credits"])
+        return max(
+            DEFAULT_CREDIT_LIMIT, get_deal(self.appsumocode_set.all())["credits"]
+        )
 
     @property
     def admins(self):

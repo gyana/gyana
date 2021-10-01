@@ -54,9 +54,6 @@ class TestAppsumoRedirect:
         assert response.status_code == 200
         assertTemplateUsed(response, "appsumo/already_redeemed.html")
 
-    def test_refunded(self, client):
-        assert False
-
     def test_redirect_signup(self, client):
         AppsumoCode.objects.create(code="12345678")
         response = client.get("/appsumo/12345678")
