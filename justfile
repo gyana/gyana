@@ -24,7 +24,7 @@ seed:
     ./manage.py loaddata cypress/fixtures/fixtures.json
 
 fixtures:
-    ./manage.py dumpdata -e admin -e auth -e contenttypes -e sessions > cypress/fixtures/fixtures.json
+    ./manage.py dumpdata -e admin -e auth -e contenttypes -e sessions -e silk > cypress/fixtures/fixtures.json
     yarn prettier --write cypress/fixtures/fixtures.json
 
 shell:

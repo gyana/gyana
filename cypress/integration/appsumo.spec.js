@@ -41,7 +41,7 @@ describe('appsumo', () => {
     cy.get('input[name=code]').type(NOT_EXIST)
     cy.get('button[type=submit]').click()
 
-    cy.contains('Not a valid AppSumo code')
+    cy.contains('AppSumo code does not exist')
 
     // code exists
     cy.get('input[name=code]').clear().type(NOT_REDEEMED)
