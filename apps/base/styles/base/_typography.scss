@@ -25,13 +25,15 @@ h4, .h4 {
   font-size: 1.6rem;
 }
 
-p, .p,
-a {
+p, .p {
   font-size: 1.4rem;
+  line-height: 1.35;
 }
 
 a {
+  font-size: inherit;
   text-decoration: none;
+  line-height: inherit;
 }
 
 small,
