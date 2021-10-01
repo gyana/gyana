@@ -1,24 +1,27 @@
-{% extends "web/landing.html" %}
+{% extends "web/base.html" %}
+
+{% block sidebar %}
+{# Getting rid of the top navigation bar here. #}
+{% endblock %}
 
 {% block body %}
-  <div class="landing">
-    <div class="landing__content">
-      <h2>Password-protected dashboard</h2>
-      <span class='input__help_text'>Password</span>
-      <form
-        method='post' 
-        action="{% url "dashboards:login" object.id%}"
-      >
-        {% csrf_token %}
-        <p class="text-red">
-          {{ errors.password|escape }}
-        </p>
-        <div class='flex flex-row items-center gap-2' >
-        <input type='password' name='password' autocomplete="one-time-code"></input>
-        
-        <button data-turbo='false' class='button button--sm button-primary'  type='submit'>Submit</button>
-        </div>
-      </form>
-    </div>
-  </div>
+<div class="flex flex-col mx-auto justify-center items-center">
+  <h2 class="mb-7">Password-protected dashboard</h2>
+
+  <form
+    class="w-full form--no-layout"
+    method='post' 
+    action="{% url "dashboards:login" object.id %}"
+  >
+    {% csrf_token %}
+
+    <label class="mb-7">
+      <p>Password</p>
+      <input type='password' name='password' autocomplete="one-time-code"></input>
+      <p class="text-red">{{ errors.password|escape }}</p>
+    </label>
+
+    <button data-turbo='false' class='button button-primary w-full'  type='submit'>Submit</button>
+  </form>
+</div>
 {% endblock %}
