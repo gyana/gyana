@@ -9,6 +9,15 @@ from pytest_django.asserts import assertRedirects, assertTemplateUsed
 pytestmark = pytest.mark.django_db
 
 
+@pytest.fixture
+def logged_in_user(client):
+    team = Team.objects.create(name="team_team")
+    user = CustomUser.objects.create_user("test")
+    team.members.add(user, through_defaults={"role": "admin"})
+    client.force_login(user)
+    return user
+
+
 class TestAppsumoLanding:
     def test_get(self, client):
         response = client.get("/appsumo/")
@@ -110,19 +119,14 @@ class TestAppsumoSignup:
 
 
 class TestAppsumoRedeem:
-    def test_get(self, client):
+    def test_get(self, client, logged_in_user):
         AppsumoCode.objects.create(code="12345678")
-        user = CustomUser.objects.create_user("test")
-        client.force_login(user)
         response = client.get("/appsumo/redeem/12345678")
         assert response.status_code == 200
 
-    def test_existing_team(self, client):
+    def test_existing_team(self, client, logged_in_user):
         AppsumoCode.objects.create(code="12345678")
-        team = Team.objects.create(name="team_team")
-        user = CustomUser.objects.create_user("test")
-        team.members.add(user, through_defaults={"role": "admin"})
-        client.force_login(user)
+        team = logged_in_user.teams.first()
 
         response = client.post("/appsumo/redeem/12345678", data={"team": team.id})
         assert response.status_code == 303
@@ -145,20 +149,12 @@ class TestAppsumoRedeem:
 
 
 class TestAppsumoStack:
-    def test_get(self, client):
-        team = Team.objects.create(name="team_team")
-        user = CustomUser.objects.create_user("test")
-        team.members.add(user, through_defaults={"role": "admin"})
-        client.force_login(user)
-
+    def test_get(self, client, logged_in_user):
         response = client.get("/teams/1/appsumo/stack")
         assert response.status_code == 200
 
-    def test_post(self, client):
-        team = Team.objects.create(name="team_team")
-        user = CustomUser.objects.create_user("test")
-        team.members.add(user, through_defaults={"role": "admin"})
-        client.force_login(user)
+    def test_post(self, client, logged_in_user):
+        team = logged_in_user.teams.first()
 
         code = AppsumoCode.objects.create(code="12345678")
         response = client.post("/teams/1/appsumo/stack", data={"code": "12345678"})
@@ -170,5 +166,16 @@ class TestAppsumoStack:
 
 
 class TestAppsumoReview:
-    def test_tbh(self, client):
-        assert False
+    def test_get(self, client, logged_in_user):
+        response = client.get("/teams/1/appsumo/review")
+        assert response.status_code == 200
+
+    def test_post(self, client, logged_in_user):
+        link = "https://appsumo.com/products/marketplace-gyana/#r666666"
+        team = logged_in_user.teams.first()
+        response = client.post("/teams/1/appsumo/review", data={"review_link": link})
+
+        assert response.status_code == 303
+        assert response.url == "/teams/1/account"
+
+        assert team.appsumoreview.review_link == link
