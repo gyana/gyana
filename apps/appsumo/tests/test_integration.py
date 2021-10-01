@@ -1,5 +1,5 @@
 import pytest
-from apps.appsumo.models import AppsumoCode
+from apps.appsumo.models import AppsumoCode, AppsumoExtra
 from apps.users.models import CustomUser
 from django.utils import timezone
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
@@ -179,3 +179,21 @@ class TestAppsumoReview:
         assert response.url == f"/teams/{team.id}/account"
 
         assert team.appsumoreview.review_link == link
+
+
+class TestAppsumoCodeList:
+    def test_get(self, client, logged_in_user):
+        team = logged_in_user.teams.first()
+        AppsumoCode.objects.create(code="12345678", team=team)
+
+        response = client.get(f"/teams/{team.id}/appsumo/")
+        assert response.status_code == 200
+
+
+class TestAppsumoExtra:
+    def test_get(self, client, logged_in_user):
+        team = logged_in_user.teams.first()
+        AppsumoExtra.objects.create(rows=1, reason="extra", team=team)
+
+        response = client.get(f"/teams/{team.id}/appsumo/extra")
+        assert response.status_code == 200
