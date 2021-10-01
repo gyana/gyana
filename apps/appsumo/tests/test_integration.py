@@ -119,6 +119,8 @@ class TestAppsumoRedeem:
 
         response = client.post("/appsumo/redeem/12345678", data={"team": team.id})
         assert response.status_code == 303
+        assert response.url == "/"
+
         assert team.appsumocode_set.count() == 1
         assert team.appsumocode_set.first().code == "12345678"
 
@@ -131,6 +133,8 @@ class TestAppsumoRedeem:
             "/appsumo/redeem/12345678", data={"team_name": "Test team"}
         )
         assert response.status_code == 303
+        assert response.url == "/"
+
         team = user.teams.first()
         assert team.name == "Test team"
         assert team.appsumocode_set.count() == 1
