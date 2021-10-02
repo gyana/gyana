@@ -36,7 +36,7 @@ def test_appsumo_landing(client):
     assert r.url == "/appsumo/12345678"
 
 
-def test_signup_with_code(client):
+def test_signup_with_code_and_onboarding(client):
     AppsumoCode.objects.create(code="12345678")
 
     assertRedirects(client.get("/appsumo/12345678"), "/appsumo/signup/12345678")
@@ -57,6 +57,31 @@ def test_signup_with_code(client):
     assert team.name == "Test team"
     assert team.appsumocode_set.count() == 1
     assert team.appsumocode_set.first().code == "12345678"
+
+    # onboarding
+    # todo: move logic to signup test, once signup is enabled
+    assert client.get("/users/onboarding/").status_code == 200
+
+    r = client.post(
+        "/users/onboarding/",
+        data={
+            "first_name": "New",
+            "last_name": "User",
+        },
+    )
+    assert r.status_code == 303
+    assert r.url == "/users/onboarding/"
+
+    r = client.post(
+        "/users/onboarding/",
+        data={
+            "company_industry": "agency",
+            "company_role": "marketing",
+            "company_size": "2-10",
+        },
+    )
+    assert r.status_code == 303
+    assert r.url == "/"
 
 
 def test_redeem_code_on_existing_account_and_team(client, logged_in_user):
