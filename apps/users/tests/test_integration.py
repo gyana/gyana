@@ -67,5 +67,19 @@ def test_reset_password(client):
     assert r.url == "/"
 
 
-def test_sign_out(client):
-    pass
+def test_sign_out(client, logged_in_user):
+    team = logged_in_user.teams.first()
+
+    # logged in
+    r = client.get("/")
+    assert r.status_code == 302
+    assert r.url == f"/teams/{team.id}"
+
+    # logout
+    r = client.get("/logout/")
+    assert r.status_code == 302
+    assert r.url == "/"
+
+    r = client.get("/")
+    assert r.status_code == 302
+    assert r.url == "/login/"
