@@ -27,7 +27,10 @@ def test_login(client):
 
 
 def test_sign_up_with_onboarding(client):
-    pass
+
+    assert client.get("/signup/").status_code == 200
+
+    # todo: migrate onboarding logic here when signup is enabled
 
 
 def test_reset_password(client):
