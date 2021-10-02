@@ -73,9 +73,9 @@ def test_redeem_code_on_existing_account_and_team(client, logged_in_user):
     assert team.appsumocode_set.first().code == "12345678"
 
 
-def test_redeem_code_on_existing_account_and_no_team(client, logged_in_user):
-    # remove the team from fixture
-    logged_in_user.teams.first().delete()
+def test_redeem_code_on_existing_account_and_no_team(client):
+    user = CustomUser.objects.create_user("test", onboarded=True)
+    client.force_login(user)
 
     AppsumoCode.objects.create(code="12345678")
 
@@ -85,7 +85,7 @@ def test_redeem_code_on_existing_account_and_no_team(client, logged_in_user):
     assert r.status_code == 303
     assert r.url == "/"
 
-    team = logged_in_user.teams.first()
+    team = user.teams.first()
     assert team.name == "Test team"
     assert team.appsumocode_set.count() == 1
     assert team.appsumocode_set.first().code == "12345678"

@@ -24,7 +24,7 @@ def patch_bigquery(*_):
 @pytest.fixture
 def logged_in_user(client):
     team = Team.objects.create(name="team_team")
-    user = CustomUser.objects.create_user("test")
+    user = CustomUser.objects.create_user("test", onboarded=True)
     team.members.add(user, through_defaults={"role": "admin"})
     client.force_login(user)
     return user
