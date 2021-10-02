@@ -1,6 +1,9 @@
+import re
+
 import pytest
 from apps.appsumo.models import AppsumoCode, AppsumoExtra
 from apps.users.models import CustomUser
+from django.core import mail
 from django.utils import timezone
 from pytest_django.asserts import assertRedirects
 
@@ -36,7 +39,8 @@ def test_appsumo_landing(client):
     assert r.url == "/appsumo/12345678"
 
 
-def test_signup_with_code_and_onboarding(client):
+def test_code_signup_with_email_verification_and_onboarding(client, settings):
+    settings.ACCOUNT_EMAIL_VERIFICATION = "mandatory"
     AppsumoCode.objects.create(code="12345678")
 
     assertRedirects(client.get("/appsumo/12345678"), "/appsumo/signup/12345678")
@@ -50,13 +54,20 @@ def test_signup_with_code_and_onboarding(client):
         },
     )
     assert r.status_code == 303
-    assert r.url == "/users/onboarding/"
+    assert r.url == "/confirm-email/"
 
     user = CustomUser.objects.first()
     team = user.teams.first()
     assert team.name == "Test team"
     assert team.appsumocode_set.count() == 1
     assert team.appsumocode_set.first().code == "12345678"
+
+    # verify
+    assert len(mail.outbox) == 1
+    link = re.search("(?P<url>https?://[^\s]+)", mail.outbox[0].body).group("url")
+
+    assertRedirects(client.get(link), "/", target_status_code=302)
+    assertRedirects(client.get("/"), "/users/onboarding/")
 
     # onboarding
     # todo: move logic to signup test, once signup is enabled
