@@ -66,5 +66,5 @@ cloc:
 startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
 
-test:
-    python -m pytest --no-migrations --disable-pytest-warnings
+test TEST=".":
+    python -m pytest --no-migrations --disable-pytest-warnings {{TEST}}
