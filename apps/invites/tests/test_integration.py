@@ -45,7 +45,7 @@ def test_invite_new_user_to_team(client, logged_in_user):
 
 
 def test_invite_existing_user_to_team(client, logged_in_user):
-    invited_user = CustomUser.objects.create_user("invite")
+    invited_user = CustomUser.objects.create_user("invite", email="invite@gyana.com")
     team = logged_in_user.teams.first()
 
     # invite
