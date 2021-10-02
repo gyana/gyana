@@ -6,7 +6,7 @@ from pytest_django.asserts import assertContains
 pytestmark = pytest.mark.django_db
 
 
-def assertLink(response, text, url):
+def assertLink(response, url, text):
     soup = BeautifulSoup(response.content)
     matches = soup.select(f'a[href="{url}"]')
 
@@ -14,16 +14,21 @@ def assertLink(response, text, url):
     assert text in matches[0].text
 
 
+def get_selector(response, selector):
+    soup = BeautifulSoup(response.content)
+    return soup.select(selector)
+
+
 def test_project_crudl(client, logged_in_user):
     team = logged_in_user.teams.first()
 
+    # create
     assertLink(
         client.get_turbo_frame(f"/teams/{team.id}", f"/teams/{team.id}/templates/"),
-        "New Project",
         f"/teams/{team.id}/projects/new",
+        "New Project",
     )
 
-    # create
     assert client.get(f"/teams/{team.id}/projects/new").status_code == 200
 
     r = client.post(
@@ -45,12 +50,19 @@ def test_project_crudl(client, logged_in_user):
     assert r.status_code == 200
     assertContains(r, "Metrics")
     assertContains(r, "All the company metrics")
+    assertLink(r, f"/projects/{project.id}/update", "Settings")
 
     # list
-    assert client.get(f"/teams/{team.id}").status_code == 200
+    r = client.get(f"/teams/{team.id}")
+    assert r.status_code == 200
+    assert len(get_selector(r, "table tbody tr")) == 1
+    assertLink(r, f"/projects/{project.id}", "Metrics")
 
     # update
-    assert client.get(f"/projects/{project.id}/update").status_code == 200
+    r = client.get(f"/projects/{project.id}/update")
+    assert r.status_code == 200
+    assertLink(r, f"/projects/{project.id}/delete", "Delete")
+
     r = client.post(
         f"/projects/{project.id}/update",
         data={
@@ -62,6 +74,8 @@ def test_project_crudl(client, logged_in_user):
     )
     assert r.status_code == 303
     assert r.url == f"/projects/{project.id}"
+    project.refresh_from_db()
+    assert project.name == "KPIs"
 
     # delete
     assert client.get(f"/projects/{project.id}/delete").status_code == 200
