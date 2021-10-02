@@ -1,11 +1,27 @@
 import pytest
 from apps.users.models import CustomUser
+from bs4 import BeautifulSoup
+from pytest_django.asserts import assertContains
 
 pytestmark = pytest.mark.django_db
 
 
+def assertLink(response, text, url):
+    soup = BeautifulSoup(response.content)
+    matches = soup.select(f'a[href="{url}"]')
+
+    assert len(matches) == 1
+    assert text in matches[0].text
+
+
 def test_project_crudl(client, logged_in_user):
     team = logged_in_user.teams.first()
+
+    assertLink(
+        client.get_turbo_frame(f"/teams/{team.id}", f"/teams/{team.id}/templates/"),
+        "New Project",
+        f"/teams/{team.id}/projects/new",
+    )
 
     # create
     assert client.get(f"/teams/{team.id}/projects/new").status_code == 200
@@ -25,7 +41,10 @@ def test_project_crudl(client, logged_in_user):
     assert r.url == f"/projects/{project.id}"
 
     # read
-    assert client.get(f"/projects/{project.id}").status_code == 200
+    r = client.get(f"/projects/{project.id}")
+    assert r.status_code == 200
+    assertContains(r, "Metrics")
+    assertContains(r, "All the company metrics")
 
     # list
     assert client.get(f"/teams/{team.id}").status_code == 200
