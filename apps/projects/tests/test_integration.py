@@ -1,7 +1,7 @@
 import pytest
 from apps.users.models import CustomUser
 from bs4 import BeautifulSoup
-from pytest_django.asserts import assertContains
+from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
 
@@ -19,6 +19,10 @@ def get_selector(response, selector):
     return soup.select(selector)
 
 
+def assert_200_ok(response):
+    assert response.status_code == 200
+
+
 def test_project_crudl(client, logged_in_user):
     team = logged_in_user.teams.first()
 
@@ -28,8 +32,7 @@ def test_project_crudl(client, logged_in_user):
         f"/teams/{team.id}/projects/new",
         "New Project",
     )
-
-    assert client.get(f"/teams/{team.id}/projects/new").status_code == 200
+    assert_200_ok(client.get(f"/teams/{team.id}/projects/new"))
 
     r = client.post(
         f"/teams/{team.id}/projects/new",
@@ -40,27 +43,26 @@ def test_project_crudl(client, logged_in_user):
             "submit": True,
         },
     )
-    assert r.status_code == 303
     project = team.project_set.first()
     assert project is not None
-    assert r.url == f"/projects/{project.id}"
+    assertRedirects(r, f"/projects/{project.id}", status_code=303)
 
     # read
     r = client.get(f"/projects/{project.id}")
-    assert r.status_code == 200
+    assert_200_ok(r)
     assertContains(r, "Metrics")
     assertContains(r, "All the company metrics")
     assertLink(r, f"/projects/{project.id}/update", "Settings")
 
     # list
     r = client.get(f"/teams/{team.id}")
-    assert r.status_code == 200
+    assert_200_ok(r)
     assert len(get_selector(r, "table tbody tr")) == 1
     assertLink(r, f"/projects/{project.id}", "Metrics")
 
     # update
     r = client.get(f"/projects/{project.id}/update")
-    assert r.status_code == 200
+    assert_200_ok(r)
     assertLink(r, f"/projects/{project.id}/delete", "Delete")
 
     r = client.post(
@@ -72,8 +74,8 @@ def test_project_crudl(client, logged_in_user):
             "submit": True,
         },
     )
-    assert r.status_code == 303
-    assert r.url == f"/projects/{project.id}"
+    assertRedirects(r, f"/projects/{project.id}", status_code=303)
+
     project.refresh_from_db()
     assert project.name == "KPIs"
 
@@ -81,8 +83,7 @@ def test_project_crudl(client, logged_in_user):
     assert client.get(f"/projects/{project.id}/delete").status_code == 200
 
     r = client.delete(f"/projects/{project.id}/delete")
-    assert r.status_code == 302
-    assert r.url == f"/teams/{team.id}"
+    assertRedirects(r, f"/teams/{team.id}")
 
     assert team.project_set.first() is None
 
