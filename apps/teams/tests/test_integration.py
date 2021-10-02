@@ -1,4 +1,5 @@
 import pytest
+from apps.projects.models import Project
 from apps.teams.models import Team
 from apps.users.models import CustomUser
 from pytest_django.asserts import assertRedirects
@@ -104,8 +105,46 @@ def test_member_role_and_check_restricted_permissions(client, logged_in_user):
     assert client.get(f"/teams/{team.id}/invites/").status_code == 404
     assert client.get(f"/teams/{team.id}/update").status_code == 404
 
-def test_account_limit_warning(client, logged_in_user):
-    pass
 
-def test_account_limit_disabled(client, logged_in_user):
-    pass
+def test_account_limit_warning_and_disabled(client):
+    team = Team.objects.create(name="team_team", override_row_limit=10)
+    project = Project.objects.create(name="Project", team=team)
+    user = CustomUser.objects.create_user("test", onboarded=True)
+    team.members.add(user, through_defaults={"role": "admin"})
+    client.force_login(user)
+
+    assert (
+        client.get(f"/projects/{project.id}/integrations/connectors/new").status_code
+        == 200
+    )
+    assert (
+        client.get(f"/projects/{project.id}/integrations/sheets/new").status_code == 200
+    )
+    assert (
+        client.get(f"/projects/{project.id}/integrations/uploads/new").status_code
+        == 200
+    )
+
+    assert team.enabled
+    assert not team.warning
+
+    team.row_count = 12
+    team.save()
+    assert team.warning
+    assert team.enabled
+
+    team.row_count = 15
+    team.save()
+    assert not team.enabled
+
+    assert (
+        client.get(f"/projects/{project.id}/integrations/connectors/new").status_code
+        == 404
+    )
+    assert (
+        client.get(f"/projects/{project.id}/integrations/sheets/new").status_code == 404
+    )
+    assert (
+        client.get(f"/projects/{project.id}/integrations/uploads/new").status_code
+        == 404
+    )
