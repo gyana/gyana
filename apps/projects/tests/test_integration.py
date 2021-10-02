@@ -23,16 +23,23 @@ def assert_200_ok(response):
     assert response.status_code == 200
 
 
+def assertFormRenders(response, fields):
+    soup = BeautifulSoup(response.content)
+    matches = soup.select("form input,select,textarea")
+    IGNORE_LIST = ["csrfmiddlewaretoken", "hidden_live"]
+    assert [m["name"] for m in matches if m["name"] not in IGNORE_LIST] == fields
+
+
 def test_project_crudl(client, logged_in_user):
     team = logged_in_user.teams.first()
 
     # create
-    assertLink(
-        client.get_turbo_frame(f"/teams/{team.id}", f"/teams/{team.id}/templates/"),
-        f"/teams/{team.id}/projects/new",
-        "New Project",
-    )
-    assert_200_ok(client.get(f"/teams/{team.id}/projects/new"))
+    r = client.get_turbo_frame(f"/teams/{team.id}", f"/teams/{team.id}/templates/")
+    assertLink(r, f"/teams/{team.id}/projects/new", "New Project")
+
+    r = client.get(f"/teams/{team.id}/projects/new")
+    assert_200_ok(r)
+    assertFormRenders(r, ["name", "description", "access"])
 
     r = client.post(
         f"/teams/{team.id}/projects/new",
@@ -63,6 +70,7 @@ def test_project_crudl(client, logged_in_user):
     # update
     r = client.get(f"/projects/{project.id}/update")
     assert_200_ok(r)
+    assertFormRenders(r, ["name", "description", "access"])
     assertLink(r, f"/projects/{project.id}/delete", "Delete")
 
     r = client.post(
