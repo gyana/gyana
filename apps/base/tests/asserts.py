@@ -21,12 +21,12 @@ def assertOK(response):
     assert response.status_code == 200
 
 
-def assertFormRenders(response, fields=[]):
-    assertOK(response)
+def assertFormRenders(response, expected_fields=[]):
     soup = BeautifulSoup(response.content)
 
     matches = soup.select("form input,select,textarea")
     IGNORE_LIST = ["csrfmiddlewaretoken", "hidden_live"]
-    assert [m["name"] for m in matches if m["name"] not in IGNORE_LIST] == fields
+    fields = [m["name"] for m in matches if m["name"] not in IGNORE_LIST]
+    assert set(fields) == set(expected_fields)
 
     assert len(soup.select("form button[type=submit]")) >= 1

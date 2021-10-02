@@ -19,6 +19,7 @@ def test_project_crudl(client, logged_in_user):
     assertLink(r, f"/teams/{team.id}/projects/new", "New Project")
 
     r = client.get(f"/teams/{team.id}/projects/new")
+    assertOK(r)
     assertFormRenders(r, ["name", "description", "access"])
 
     r = client.post(
@@ -49,6 +50,7 @@ def test_project_crudl(client, logged_in_user):
 
     # update
     r = client.get(f"/projects/{project.id}/update")
+    assertOK(r)
     assertFormRenders(r, ["name", "description", "access"])
     assertLink(r, f"/projects/{project.id}/delete", "Delete")
 
@@ -67,7 +69,9 @@ def test_project_crudl(client, logged_in_user):
     assert project.name == "KPIs"
 
     # delete
-    assertFormRenders(client.get(f"/projects/{project.id}/delete"))
+    r = client.get(f"/projects/{project.id}/delete")
+    assertOK(r)
+    assertFormRenders(r)
 
     r = client.delete(f"/projects/{project.id}/delete")
     assertRedirects(r, f"/teams/{team.id}")
@@ -90,7 +94,7 @@ def test_private_projects(client, logged_in_user):
             "access": "invite",
         },
     )
-    assert "members" in r.context["form"].fields
+    assertFormRenders(r, ["name", "description", "access", "members"])
 
     # create private project
     r = client.post(
@@ -104,11 +108,14 @@ def test_private_projects(client, logged_in_user):
         },
     )
 
-    # validate access
     project = team.project_set.first()
     assert project is not None
-    assert client.get(f"/projects/{project.id}").status_code == 200
+
+    # validate access
+    assertSelectorLength(client.get(f"/teams/{team.id}"), "table tbody tr", 1)
+    assertOK(client.get(f"/projects/{project.id}"))
 
     # validate forbidden
     client.force_login(other_user)
+    assertSelectorLength(client.get(f"/teams/{team.id}"), "table tbody tr", 0)
     assert client.get(f"/projects/{project.id}").status_code == 404
