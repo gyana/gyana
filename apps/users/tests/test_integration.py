@@ -51,13 +51,12 @@ def test_reset_password(client):
     # change password
     r = client.get(link)
     assert r.status_code == 302
-    assert r.url == "/password/reset/key/2-set-password/"
+    assert re.match(r"^\/password\/reset\/key\/[a-zA-Z0-9]-set-password\/$", r.url)
 
-    assert client.get("/password/reset/key/2-set-password/").status_code == 200
+    assert client.get(r.url).status_code == 200
 
     r = client.post(
-        "/password/reset/key/2-set-password/",
-        data={"password1": "senseknowdecide", "password2": "senseknowdecide"},
+        r.url, data={"password1": "senseknowdecide", "password2": "senseknowdecide"}
     )
     assert r.status_code == 303
     assert r.url == "/password/reset/key/done/"
