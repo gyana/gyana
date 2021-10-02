@@ -7,7 +7,9 @@ from pytest_django.asserts import assertRedirects
 pytestmark = pytest.mark.django_db
 
 
-def test_team_crudl(client, logged_in_user):
+def test_team_crudl(client, logged_in_user, bigquery_client, settings):
+    settings.MOCK_REMOTE_OBJECT_DELETION = False
+    bigquery_client.reset_mock()
     team = logged_in_user.teams.first()
 
     # redirect
@@ -21,6 +23,11 @@ def test_team_crudl(client, logged_in_user):
     assert logged_in_user.teams.count() == 2
     new_team = logged_in_user.teams.first()
     assert r.url == f"/teams/{new_team.id}"
+
+    assert bigquery_client.create_dataset.call_count == 1
+    assert bigquery_client.create_dataset.call_args.args == (
+        new_team.tables_dataset_id,
+    )
 
     # read
     assert client.get(f"/teams/{new_team.id}").status_code == 200
@@ -47,6 +54,11 @@ def test_team_crudl(client, logged_in_user):
     r = client.delete(f"/teams/{new_team.id}/delete")
     r.status_code == 302
     r.url == "/"
+
+    assert bigquery_client.delete_dataset.call_count == 1
+    assert bigquery_client.delete_dataset.call_args.args == (
+        new_team.tables_dataset_id,
+    )
 
     assert logged_in_user.teams.count() == 1
 

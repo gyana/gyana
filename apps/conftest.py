@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 import waffle
@@ -16,9 +16,10 @@ def patches(*_):
 
 
 @pytest.fixture(autouse=True)
-def patch_bigquery(*_):
-    with patch("apps.base.clients.bigquery_client"):
-        yield
+def bigquery_client(*_):
+    client = MagicMock()
+    with patch("apps.base.clients.bigquery_client", return_value=client):
+        yield client
 
 
 @pytest.fixture
