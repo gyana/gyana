@@ -52,8 +52,8 @@ def test_team_crudl(client, logged_in_user, bigquery_client, settings):
     assert client.get(f"/teams/{new_team.id}/delete").status_code == 200
 
     r = client.delete(f"/teams/{new_team.id}/delete")
-    r.status_code == 302
-    r.url == "/"
+    assert r.status_code == 302
+    assert r.url == "/"
 
     assert bigquery_client.delete_dataset.call_count == 1
     assert bigquery_client.delete_dataset.call_args.args == (
@@ -85,8 +85,8 @@ def test_member_crudl(client, logged_in_user):
     r = client.post(
         f"/teams/{team.id}/members/{membership.id}/update", data={"role": "member"}
     )
-    r.status_code == "301"
-    r.url == f"/teams/{team.id}/members/{membership.id}/update"
+    assert r.status_code == 303
+    assert r.url == f"/teams/{team.id}/members/"
     membership.refresh_from_db()
     assert membership.role == "member"
 
@@ -94,8 +94,8 @@ def test_member_crudl(client, logged_in_user):
     client.get(f"/teams/{team.id}/members/{membership.id}/delete")
 
     r = client.delete(f"/teams/{team.id}/members/{membership.id}/delete")
-    r.status_code == 301
-    r.url == f"/teams/{team.id}/members"
+    assert r.status_code == 302
+    assert r.url == f"/teams/{team.id}/members/"
 
     assert team.members.count() == 1
 
