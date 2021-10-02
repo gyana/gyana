@@ -23,11 +23,15 @@ def assert_200_ok(response):
     assert response.status_code == 200
 
 
-def assertFormRenders(response, fields):
+def assertFormRenders(response, fields=[]):
+    assert_200_ok(response)
     soup = BeautifulSoup(response.content)
+
     matches = soup.select("form input,select,textarea")
     IGNORE_LIST = ["csrfmiddlewaretoken", "hidden_live"]
     assert [m["name"] for m in matches if m["name"] not in IGNORE_LIST] == fields
+
+    assert len(soup.select("form button[type=submit]")) >= 1
 
 
 def test_project_crudl(client, logged_in_user):
@@ -38,7 +42,6 @@ def test_project_crudl(client, logged_in_user):
     assertLink(r, f"/teams/{team.id}/projects/new", "New Project")
 
     r = client.get(f"/teams/{team.id}/projects/new")
-    assert_200_ok(r)
     assertFormRenders(r, ["name", "description", "access"])
 
     r = client.post(
@@ -69,7 +72,6 @@ def test_project_crudl(client, logged_in_user):
 
     # update
     r = client.get(f"/projects/{project.id}/update")
-    assert_200_ok(r)
     assertFormRenders(r, ["name", "description", "access"])
     assertLink(r, f"/projects/{project.id}/delete", "Delete")
 
@@ -88,7 +90,7 @@ def test_project_crudl(client, logged_in_user):
     assert project.name == "KPIs"
 
     # delete
-    assert client.get(f"/projects/{project.id}/delete").status_code == 200
+    assertFormRenders(client.get(f"/projects/{project.id}/delete"))
 
     r = client.delete(f"/projects/{project.id}/delete")
     assertRedirects(r, f"/teams/{team.id}")
