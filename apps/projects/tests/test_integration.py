@@ -1,37 +1,14 @@
 import pytest
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertLink,
+    assertOK,
+    assertSelectorLength,
+)
 from apps.users.models import CustomUser
-from bs4 import BeautifulSoup
 from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
-
-
-def assertLink(response, url, text):
-    soup = BeautifulSoup(response.content)
-    matches = soup.select(f'a[href="{url}"]')
-
-    assert len(matches) == 1
-    assert text in matches[0].text
-
-
-def get_selector(response, selector):
-    soup = BeautifulSoup(response.content)
-    return soup.select(selector)
-
-
-def assert_200_ok(response):
-    assert response.status_code == 200
-
-
-def assertFormRenders(response, fields=[]):
-    assert_200_ok(response)
-    soup = BeautifulSoup(response.content)
-
-    matches = soup.select("form input,select,textarea")
-    IGNORE_LIST = ["csrfmiddlewaretoken", "hidden_live"]
-    assert [m["name"] for m in matches if m["name"] not in IGNORE_LIST] == fields
-
-    assert len(soup.select("form button[type=submit]")) >= 1
 
 
 def test_project_crudl(client, logged_in_user):
@@ -59,15 +36,15 @@ def test_project_crudl(client, logged_in_user):
 
     # read
     r = client.get(f"/projects/{project.id}")
-    assert_200_ok(r)
+    assertOK(r)
     assertContains(r, "Metrics")
     assertContains(r, "All the company metrics")
     assertLink(r, f"/projects/{project.id}/update", "Settings")
 
     # list
     r = client.get(f"/teams/{team.id}")
-    assert_200_ok(r)
-    assert len(get_selector(r, "table tbody tr")) == 1
+    assertOK(r)
+    assertSelectorLength(r, "table tbody tr", 1)
     assertLink(r, f"/projects/{project.id}", "Metrics")
 
     # update
