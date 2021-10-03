@@ -7,7 +7,10 @@ def get_child_turbo_frame(client, page_response, frame_url):
     soup = BeautifulSoup(page_response.content)
 
     frames = soup.select(f'turbo-frame[src="{frame_url}"]')
-    assert len(frames) == 1
+    assert (
+        len(frames) == 1
+    ), f"""unable to find turbo frame in DOM with src {frame_url}
+possible matches are {[f['src'] for f in soup.select('turbo-frame[src]')]}"""
 
     frame = frames[0]
 

@@ -24,6 +24,34 @@ SLUG = (
 BIGQUERY_JOB_LIMIT = 6 * 60 * 60
 
 
+class QueryResults(_QueryResults):
+    @property
+    def rows_dict(self):
+        return [{k: v for k, v in row.items()} for row in self.rows]
+
+    @property
+    def rows_df(self):
+        return pd.DataFrame(self.rows_dict)
+
+
+def get_query_results(client, query, max_results=100) -> QueryResults:
+    resource = client._call_api(
+        None,
+        path=f"/projects/{settings.GCP_PROJECT}/queries",
+        method="POST",
+        data={
+            "query": query,
+            "maxResults": max_results,
+            "useLegacySql": False,
+            "formatOptions": {"useInt64Timestamp": True},
+        },
+    )
+    return QueryResults.from_api_repr(resource)
+
+
+bigquery.Client.get_query_results = get_query_results
+
+
 def get_credentials():
     return google.auth.default(
         scopes=[
@@ -75,32 +103,6 @@ def get_bucket():
 def get_dataframe(query):
     client = bigquery_client()
     return client.query(query).result().to_dataframe(create_bqstorage_client=False)
-
-
-class QueryResults(_QueryResults):
-    @property
-    def rows_dict(self):
-        return [{k: v for k, v in row.items()} for row in self.rows]
-
-    @property
-    def rows_df(self):
-        return pd.DataFrame(self.rows_dict)
-
-
-def get_query_results(query, max_results=100) -> QueryResults:
-    client = bigquery_client()
-    resource = client._call_api(
-        None,
-        path=f"/projects/{settings.GCP_PROJECT}/queries",
-        method="POST",
-        data={
-            "query": query,
-            "maxResults": max_results,
-            "useLegacySql": False,
-            "formatOptions": {"useInt64Timestamp": True},
-        },
-    )
-    return QueryResults.from_api_repr(resource)
 
 
 @lru_cache

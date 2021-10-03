@@ -38,7 +38,7 @@ def get_query_from_table(table: Table) -> TableExpr:
     if tbl is None:
         tbl = conn.table(table.bq_table, database=table.bq_dataset)
 
-        # the client is not pickable
+        # the client is not pickle-able
         tbl.op().source = None
         cache.set(key, tbl, 24 * 3600)
 
