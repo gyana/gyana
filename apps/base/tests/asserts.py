@@ -41,6 +41,8 @@ def assertFormRenders(response, expected_fields=[]):
     matches = soup.select("form input,select,textarea")
     IGNORE_LIST = ["csrfmiddlewaretoken", "hidden_live"]
     fields = [m["name"] for m in matches if m["name"] not in IGNORE_LIST]
-    assert set(fields) == set(expected_fields)
+    assert set(fields) == set(
+        expected_fields
+    ), f"{set(fields)} != {set(expected_fields)}"
 
     assert len(soup.select("form button[type=submit]")) >= 1

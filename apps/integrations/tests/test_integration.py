@@ -2,15 +2,12 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 from apps.base.clients import ibis_client
-from apps.base.tests.asserts import (
-    assertFormRenders,
-    assertLink,
-    assertOK,
-    assertSelectorLength,
-)
+from apps.base.tests.asserts import (assertFormRenders, assertLink, assertOK,
+                                     assertSelectorLength)
 from apps.integrations.models import Integration
 from apps.projects.models import Project
 from apps.tables.models import Table
+from celery.exceptions import CeleryError
 from google.cloud.bigquery.schema import SchemaField
 from google.cloud.bigquery.table import Table as BqTable
 from pytest_django.asserts import assertContains, assertRedirects
@@ -119,15 +116,100 @@ def test_structure_and_preview(client, logged_in_user, bigquery_client):
         f"/integrations/{integration.id}/grid?table_id=",
     )
     assertOK(r)
-    print(r.content)
     assertSelectorLength(r, "table tbody tr", 2)
 
     assertContains(r, "Neera")
     assertContains(r, "4")
 
 
-def test_create_retry_edit_and_approve(client):
-    pass
+def test_create_retry_edit_and_approve(
+    client, logged_in_user, sheets_client, drive_v2_client, bigquery_client
+):
+    team = logged_in_user.teams.first()
+    project = Project.objects.create(name="Project", team=team)
+
+    # using google sheets example
+    r = client.get(f"/projects/{project.id}/integrations/")
+    assertOK(r)
+    assertContains(r, "New Integration")
+    assertLink(r, f"/projects/{project.id}/integrations/sheets/new", "Add Sheet")
+
+    # start with runtime error
+    r = client.get(f"/projects/{project.id}/integrations/sheets/new")
+    assertOK(r)
+    assertFormRenders(r, ["url"])
+
+    # mock sheets and drive clients
+    sheets_client.spreadsheets().get().execute = Mock(
+        return_value={"properties": {"title": "Store Info"}}
+    )
+    drive_v2_client.files().get().execute = Mock(
+        return_value={"modifiedDate": "2020-10-01T00:00:00Z"}
+    )
+
+    r = client.post(
+        f"/projects/{project.id}/integrations/sheets/new",
+        data={
+            "url": "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit"
+        },
+    )
+    integration = project.integration_set.first()
+    assertRedirects(
+        r,
+        f"/projects/{project.id}/integrations/{integration.id}/configure",
+        status_code=303,
+    )
+
+    r = client.get(f"/projects/{project.id}/integrations/{integration.id}/configure")
+    assertOK(r)
+    # todo: fix this!
+    assertFormRenders(r, ["name", "cell_range"])
+
+    # configure and trigger runtime error
+    bigquery_client.query().exception = lambda: True
+    bigquery_client.query().errors = [{"message": "No columns found in the schema."}]
+
+    with pytest.raises(Exception):
+        r = client.post(
+            f"/projects/{project.id}/integrations/{integration.id}/configure",
+            data={"cell_range": "store_info!A20:D21"},
+        )
+
+    integration.refresh_from_db()
+    assert integration.state == Integration.State.ERROR
+
+    # edit the configuration to prevent failure
+    bigquery_client.query().exception = lambda: False
+    bigquery_client.reset_mock()
+
+    assert bigquery_client.query.call_count == 0
+
+    r = client.post(
+        f"/projects/{project.id}/integrations/{integration.id}/configure",
+        data={"cell_range": "store_info!A1:D11"},
+    )
+
+    assert bigquery_client.query.call_count == 1
+    assertRedirects(
+        r,
+        f"/projects/{project.id}/integrations/{integration.id}/load",
+        target_status_code=302,
+    )
+
+    # load redirects
+    r = client.get(f"/projects/{project.id}/integrations/{integration.id}/load")
+    assertRedirects(r, f"/projects/{project.id}/integrations/{integration.id}/done")
+    integration.refresh_from_db()
+    assert integration.state == Integration.State.DONE
+
+    # done
+    r = client.get(f"/projects/{project.id}/integrations/{integration.id}/done")
+    assertOK(r)
+    # todo: fix this!
+    assertFormRenders(r, ["name"])
+
+    r = client.post(f"/projects/{project.id}/integrations/{integration.id}/done")
+    assertRedirects(r, f"/projects/{project.id}/integrations/{integration.id}", status_code=303)
 
 
 def test_row_limits(client, logged_in_user):

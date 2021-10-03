@@ -6,7 +6,7 @@
   <h3 class="mr-auto flex justify-center items-center">
     <img class="h-12 w-12 mr-4" src="{% static object.icon %}" title="{{ object.name }}" />
     <turbo-frame id="integration-name">
-      <form method="post" action="{% url 'project_integrations:detail' project.id object.id %}" class="form">
+      <form id="integration-name" method="post" action="{% url 'project_integrations:detail' project.id object.id %}" class="form">
         {% csrf_token %}
 
         <input

@@ -21,6 +21,20 @@ def bigquery_client(*_):
         yield client
 
 
+@pytest.fixture(autouse=True, scope="session")
+def sheets_client(*_):
+    client = MagicMock()
+    with patch("apps.base.clients.sheets_client", return_value=client):
+        yield client
+
+
+@pytest.fixture(autouse=True, scope="session")
+def drive_v2_client(*_):
+    client = MagicMock()
+    with patch("apps.base.clients.drive_v2_client", return_value=client):
+        yield client
+
+
 @pytest.fixture
 def logged_in_user(client):
     team = Team.objects.create(name="team_team")

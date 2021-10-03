@@ -79,10 +79,10 @@ def run_sheet_sync_task(self, sheet_id):
 
 def run_sheet_sync(sheet: Sheet):
 
+    sheet.integration.state = Integration.State.LOAD
+    sheet.integration.save()
+
     result = run_sheet_sync_task.delay(sheet.id)
     sheet.sync_task_id = result.task_id
     sheet.sync_started = timezone.now()
     sheet.save()
-
-    sheet.integration.state = Integration.State.LOAD
-    sheet.integration.save()

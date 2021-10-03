@@ -76,10 +76,10 @@ def run_upload_sync_task(self, upload_id: int):
 
 def run_upload_sync(upload: Upload):
 
+    upload.integration.state = Integration.State.LOAD
+    upload.integration.save()
+
     result = run_upload_sync_task.delay(upload.id)
     upload.sync_task_id = result.task_id
     upload.sync_started = timezone.now()
     upload.save()
-
-    upload.integration.state = Integration.State.LOAD
-    upload.integration.save()
