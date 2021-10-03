@@ -2,12 +2,8 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 from apps.base.clients import ibis_client
-from apps.base.tests.asserts import (
-    assertFormRenders,
-    assertLink,
-    assertOK,
-    assertSelectorLength,
-)
+from apps.base.tests.asserts import (assertFormRenders, assertLink, assertOK,
+                                     assertSelectorLength)
 from apps.integrations.models import Integration
 from apps.projects.models import Project
 from apps.tables.models import Table
@@ -159,13 +155,14 @@ def test_create_retry_edit_and_approve(
         },
     )
     integration = project.integration_set.first()
+    INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
     assertRedirects(
         r,
-        f"/projects/{project.id}/integrations/{integration.id}/configure",
+        f"{INTEGRATION_URL}/configure",
         status_code=303,
     )
 
-    r = client.get(f"/projects/{project.id}/integrations/{integration.id}/configure")
+    r = client.get(f"{INTEGRATION_URL}/configure")
     assertOK(r)
     # todo: fix this!
     assertFormRenders(r, ["name", "cell_range"])
@@ -176,7 +173,7 @@ def test_create_retry_edit_and_approve(
 
     with pytest.raises(Exception):
         r = client.post(
-            f"/projects/{project.id}/integrations/{integration.id}/configure",
+            f"{INTEGRATION_URL}/configure",
             data={"cell_range": "store_info!A20:D21"},
         )
 
@@ -191,35 +188,33 @@ def test_create_retry_edit_and_approve(
     assert bigquery_client.query.call_count == 0
 
     r = client.post(
-        f"/projects/{project.id}/integrations/{integration.id}/configure",
+        f"{INTEGRATION_URL}/configure",
         data={"cell_range": "store_info!A1:D11"},
     )
 
     assert bigquery_client.query.call_count == 1
     assertRedirects(
         r,
-        f"/projects/{project.id}/integrations/{integration.id}/load",
+        f"{INTEGRATION_URL}/load",
         target_status_code=302,
     )
 
     # load redirects
-    r = client.get(f"/projects/{project.id}/integrations/{integration.id}/load")
-    assertRedirects(r, f"/projects/{project.id}/integrations/{integration.id}/done")
+    r = client.get(f"{INTEGRATION_URL}/load")
+    assertRedirects(r, f"{INTEGRATION_URL}/done")
     integration.refresh_from_db()
     assert integration.state == Integration.State.DONE
 
     # done
-    r = client.get(f"/projects/{project.id}/integrations/{integration.id}/done")
+    r = client.get(f"{INTEGRATION_URL}/done")
     assertOK(r)
     # todo: fix this!
     assertFormRenders(r, ["name"])
 
     assert team.row_count == 0
 
-    r = client.post(f"/projects/{project.id}/integrations/{integration.id}/done")
-    assertRedirects(
-        r, f"/projects/{project.id}/integrations/{integration.id}", status_code=303
-    )
+    r = client.post(f"{INTEGRATION_URL}/done")
+    assertRedirects(r, INTEGRATION_URL, status_code=303)
 
     team.refresh_from_db()
     assert team.row_count == 10
