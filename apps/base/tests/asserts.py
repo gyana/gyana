@@ -18,7 +18,8 @@ def assertLink(response, url, text=None, title=None):
 
 def assertSelectorLength(response, selector, length):
     soup = BeautifulSoup(response.content)
-    assert len(soup.select(selector)) == length
+    actual_length = len(soup.select(selector))
+    assert actual_length == length, f"{actual_length} != {length}"
 
 
 def assertSelectorText(response, selector, text):
