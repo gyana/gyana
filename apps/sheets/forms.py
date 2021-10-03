@@ -88,6 +88,6 @@ class SheetUpdateForm(forms.ModelForm):
             ).execute()
         except googleapiclient.errors.HttpError as e:
             # This will display the parse error
-            raise ValidationError(e._get_reason().strip())
+            raise ValidationError(e.reason.strip())
 
         return cell_range
