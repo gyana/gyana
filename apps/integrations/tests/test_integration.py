@@ -2,8 +2,12 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 from apps.base.clients import ibis_client
-from apps.base.tests.asserts import (assertFormRenders, assertLink, assertOK,
-                                     assertSelectorLength)
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertLink,
+    assertOK,
+    assertSelectorLength,
+)
 from apps.integrations.models import Integration
 from apps.projects.models import Project
 from apps.tables.models import Table
@@ -181,6 +185,7 @@ def test_create_retry_edit_and_approve(
     # edit the configuration to prevent failure
     bigquery_client.query().exception = lambda: False
     bigquery_client.reset_mock()
+    bigquery_client.get_table().num_rows = 10
 
     assert bigquery_client.query.call_count == 0
 
@@ -208,12 +213,15 @@ def test_create_retry_edit_and_approve(
     # todo: fix this!
     assertFormRenders(r, ["name"])
 
+    assert team.row_count == 0
+
     r = client.post(f"/projects/{project.id}/integrations/{integration.id}/done")
-    assertRedirects(r, f"/projects/{project.id}/integrations/{integration.id}", status_code=303)
+    assertRedirects(
+        r, f"/projects/{project.id}/integrations/{integration.id}", status_code=303
+    )
 
-
-def test_row_limits(client, logged_in_user):
-    pass
+    team.refresh_from_db()
+    assert team.row_count == 10
 
 
 def test_pending_cleanup(client, logged_in_user):
