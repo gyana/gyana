@@ -11,7 +11,6 @@ from apps.base.tests.asserts import (
 from apps.integrations.models import Integration
 from apps.projects.models import Project
 from apps.tables.models import Table
-from celery.exceptions import CeleryError
 from google.cloud.bigquery.schema import SchemaField
 from google.cloud.bigquery.table import Table as BqTable
 from pytest_django.asserts import assertContains, assertRedirects
@@ -127,8 +126,10 @@ def test_structure_and_preview(client, logged_in_user, bigquery_client):
 
 
 def test_create_retry_edit_and_approve(
-    client, logged_in_user, sheets_client, drive_v2_client, bigquery_client
+    client, logged_in_user, sheets_client, drive_v2_client, bigquery_client, settings
 ):
+    settings.CELERY_TASK_ALWAYS_EAGER = True
+    settings.CELERY_TASK_EAGER_PROPAGATES = True
     team = logged_in_user.teams.first()
     project = Project.objects.create(name="Project", team=team)
 
