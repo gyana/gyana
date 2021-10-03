@@ -2,8 +2,12 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 from apps.base.clients import ibis_client
-from apps.base.tests.asserts import (assertFormRenders, assertLink, assertOK,
-                                     assertSelectorLength)
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertLink,
+    assertOK,
+    assertSelectorLength,
+)
 from apps.integrations.models import Integration
 from apps.projects.models import Project
 from apps.tables.models import Table
@@ -135,19 +139,15 @@ def test_create_retry_edit_and_approve(
     assertContains(r, "New Integration")
     assertLink(r, f"/projects/{project.id}/integrations/sheets/new", "Add Sheet")
 
-    # start with runtime error
+    # new integration
     r = client.get(f"/projects/{project.id}/integrations/sheets/new")
     assertOK(r)
     assertFormRenders(r, ["url"])
 
-    # mock sheets and drive clients
+    # mock sheet client to get title from Google Sheets
     sheets_client.spreadsheets().get().execute = Mock(
         return_value={"properties": {"title": "Store Info"}}
     )
-    drive_v2_client.files().get().execute = Mock(
-        return_value={"modifiedDate": "2020-10-01T00:00:00Z"}
-    )
-
     r = client.post(
         f"/projects/{project.id}/integrations/sheets/new",
         data={
@@ -162,12 +162,13 @@ def test_create_retry_edit_and_approve(
         status_code=303,
     )
 
+    # configure
     r = client.get(f"{INTEGRATION_URL}/configure")
     assertOK(r)
     # todo: fix this!
     assertFormRenders(r, ["name", "cell_range"])
 
-    # configure and trigger runtime error
+    # start with runtime error
     bigquery_client.query().exception = lambda: True
     bigquery_client.query().errors = [{"message": "No columns found in the schema."}]
 
@@ -184,8 +185,10 @@ def test_create_retry_edit_and_approve(
     bigquery_client.query().exception = lambda: False
     bigquery_client.reset_mock()
     bigquery_client.get_table().num_rows = 10
-
-    assert bigquery_client.query.call_count == 0
+    # mock drive client to check last updated information
+    drive_v2_client.files().get().execute = Mock(
+        return_value={"modifiedDate": "2020-10-01T00:00:00Z"}
+    )
 
     r = client.post(
         f"{INTEGRATION_URL}/configure",
@@ -193,13 +196,9 @@ def test_create_retry_edit_and_approve(
     )
 
     assert bigquery_client.query.call_count == 1
-    assertRedirects(
-        r,
-        f"{INTEGRATION_URL}/load",
-        target_status_code=302,
-    )
+    assertRedirects(r, f"{INTEGRATION_URL}/load", target_status_code=302)
 
-    # load redirects
+    # load (redirects immediately as celery is eager)
     r = client.get(f"{INTEGRATION_URL}/load")
     assertRedirects(r, f"{INTEGRATION_URL}/done")
     integration.refresh_from_db()
