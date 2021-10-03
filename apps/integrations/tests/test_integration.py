@@ -96,9 +96,7 @@ def test_structure_and_preview(client, logged_in_user, bigquery_client):
         "project.dataset.table",
         schema=[SchemaField("name", "STRING"), SchemaField("age", "INTEGER")],
     )
-    m = MagicMock(return_value=bq_table)
-    m.__reduce__ = lambda self: (mock.MagicMock, ())
-    bigquery_client.get_table = m
+    bigquery_client.get_table = MagicMock(return_value=bq_table)
 
     # structure
     r = client.get_turbo_frame(
