@@ -4,10 +4,17 @@ from bs4 import BeautifulSoup
 pytestmark = pytest.mark.django_db
 
 
-def assertLink(response, url, text):
+def assertLink(response, url, text=None, title=None):
     soup = BeautifulSoup(response.content)
     matches = soup.select(f'a[href="{url}"]')
-    matches = [m for m in matches if text in m.text]
+    print(matches)
+    if text is not None:
+        matches = [m for m in matches if text in m.text]
+    elif title is not None:
+        matches = [m for m in matches if title in m["title"]]
+    else:
+        assert False
+    print(matches)
     assert len(matches) == 1
 
 

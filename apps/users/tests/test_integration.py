@@ -1,13 +1,7 @@
 import re
 
 import pytest
-from apps.base.tests.asserts import (
-    assertFormRenders,
-    assertLink,
-    assertNotFound,
-    assertOK,
-    assertSelectorText,
-)
+from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
 from apps.users.models import CustomUser
 from django.core import mail
 from pytest_django.asserts import assertContains, assertRedirects
