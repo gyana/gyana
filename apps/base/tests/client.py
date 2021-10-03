@@ -2,11 +2,9 @@ from bs4 import BeautifulSoup
 from django.test.client import Client
 
 
-def get_turbo_frame(client, page_url, frame_url):
-    response = client.get(page_url)
-    assert response.status_code == 200
+def get_child_turbo_frame(client, page_response, frame_url):
 
-    soup = BeautifulSoup(response.content)
+    soup = BeautifulSoup(page_response.content)
 
     frames = soup.select(f'turbo-frame[src="{frame_url}"]')
     assert len(frames) == 1
@@ -20,6 +18,20 @@ def get_turbo_frame(client, page_url, frame_url):
     assert tf_soup.select("turbo-frame")[0]["id"] == frame["id"]
 
     return tf_response
+
+
+def get_turbo_frame(client, page_url, *frame_urls):
+    # Validate and return response for turbo frame in a page, possibly recursively
+
+    response = client.get(page_url)
+    assert response.status_code == 200
+
+    assert len(frame_urls) > 0
+
+    for frame_url in frame_urls:
+        response = get_child_turbo_frame(client, response, frame_url)
+
+    return response
 
 
 Client.get_turbo_frame = get_turbo_frame

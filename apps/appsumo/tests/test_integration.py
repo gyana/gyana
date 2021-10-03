@@ -36,7 +36,6 @@ def test_appsumo_link_invalid_code(client, logged_in_user):
 
     r = client.get("/appsumo/12345678")
     assertOK(r)
-    print(r.content)
     assertContains(r, "You've already redeemed the code")
     assertLink(r, f"/teams/{team.id}/account", "account")
 
@@ -202,12 +201,13 @@ def test_stack(client, logged_in_user):
 def test_link_to_review(client, logged_in_user):
     link = "https://appsumo.com/products/marketplace-gyana/#r666666"
     team = logged_in_user.teams.first()
+    AppsumoCode.objects.create(code="00000000", team=team)
 
     r = client.get_turbo_frame(
         f"/teams/{team.id}/account", f"/teams/{team.id}/appsumo/"
     )
     assertOK(r)
-    assertLink(r, "/teams/1/appsumo/review", "Link to your review")
+    assertLink(r, f"/teams/{team.id}/appsumo/review", "Link to your review")
 
     r = client.get(f"/teams/{team.id}/appsumo/review")
     assertOK(r)
@@ -233,6 +233,7 @@ def test_link_to_review(client, logged_in_user):
 
 def test_admin_extra_rows(client, logged_in_user):
     team = logged_in_user.teams.first()
+    AppsumoCode.objects.create(code="00000000", team=team)
     AppsumoExtra.objects.create(rows=1, reason="For being awesome", team=team)
 
     r = client.get_turbo_frame(
@@ -241,4 +242,4 @@ def test_admin_extra_rows(client, logged_in_user):
         f"/teams/{team.id}/appsumo/extra",
     )
     assertOK(r)
-    assertContains("For being awesome")
+    assertContains(r, "For being awesome")
