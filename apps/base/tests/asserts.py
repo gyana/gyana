@@ -7,7 +7,6 @@ pytestmark = pytest.mark.django_db
 def assertLink(response, url, text):
     soup = BeautifulSoup(response.content)
     matches = soup.select(f'a[href="{url}"]')
-
     matches = [m for m in matches if text in m.text]
     assert len(matches) == 1
 

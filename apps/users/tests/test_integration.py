@@ -1,9 +1,16 @@
 import re
 
 import pytest
-from apps.teams.models import Team
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertLink,
+    assertNotFound,
+    assertOK,
+    assertSelectorText,
+)
 from apps.users.models import CustomUser
 from django.core import mail
+from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
 
@@ -13,22 +20,26 @@ def test_login(client):
         "test", email="test@gyana.com", password="seewhatmatters", onboarded=True
     )
 
-    r = client.get("/")
-    assert r.status_code == 302
-    assert r.url == "/login/"
+    assertRedirects(client.get("/"), "/login/")
 
-    assert client.get("/login/").status_code == 200
+    r = client.get("/login/")
+    assertOK(r)
+    assertFormRenders(r, ["login", "password"])
 
     r = client.post(
         "/login/", data={"login": "test@gyana.com", "password": "seewhatmatters"}
     )
-    assert r.status_code == 303
-    assert r.url == "/"
+    assertRedirects(r, "/", status_code=303, target_status_code=302)
+
+    r = client.get("/")
+    assertRedirects(r, "/teams/new")
 
 
 def test_sign_up_with_onboarding(client):
 
-    assert client.get("/signup/").status_code == 200
+    r = client.get("/signup/")
+    assertOK(r)
+    assertContains(r, "Sign Up Closed")
 
     # todo: migrate onboarding logic here when signup is enabled
 
@@ -39,11 +50,16 @@ def test_reset_password(client):
     )
 
     # request reset
-    assert client.get("/password/reset/").status_code == 200
+    r = client.get("/login/")
+    assertOK(r)
+    assertLink(r, "/password/reset/", "Forgot your password?")
+
+    r = client.get("/password/reset/")
+    assertOK(r)
+    assertFormRenders(r, ["email"])
 
     r = client.post("/password/reset/", data={"email": "test@gyana.com"})
-    assert r.status_code == 303
-    assert r.url == "/password/reset/done/"
+    assertRedirects(r, "/password/reset/done/", status_code=303)
 
     assert len(mail.outbox) == 1
     link = re.search("(?P<url>https?://[^\s]+)", mail.outbox[0].body).group("url")
@@ -51,22 +67,27 @@ def test_reset_password(client):
     # change password
     r = client.get(link)
     assert r.status_code == 302
-    assert re.match(r"^\/password\/reset\/key\/[a-zA-Z0-9]-set-password\/$", r.url)
+    set_password_url = r.url
+    assert re.match(
+        r"^\/password\/reset\/key\/[a-zA-Z0-9]-set-password\/$", set_password_url
+    )
 
-    assert client.get(r.url).status_code == 200
+    r = client.get(set_password_url)
+    assertOK(r)
+    assertFormRenders(r, ["password1", "password2"])
 
     r = client.post(
-        r.url, data={"password1": "senseknowdecide", "password2": "senseknowdecide"}
+        set_password_url,
+        data={"password1": "senseknowdecide", "password2": "senseknowdecide"},
     )
-    assert r.status_code == 303
-    assert r.url == "/password/reset/key/done/"
+    assertRedirects(r, "/password/reset/key/done/", status_code=303)
 
     # login
     r = client.post(
         "/login/", data={"login": "test@gyana.com", "password": "senseknowdecide"}
     )
-    assert r.status_code == 303
-    assert r.url == "/"
+    assertRedirects(r, "/", status_code=303, target_status_code=302)
+    assertRedirects(client.get("/"), "/teams/new")
 
 
 def test_sign_out(client, logged_in_user):
@@ -74,14 +95,19 @@ def test_sign_out(client, logged_in_user):
 
     # logged in
     r = client.get("/")
-    assert r.status_code == 302
-    assert r.url == f"/teams/{team.id}"
+    assertRedirects(r, f"/teams/{team.id}")
+
+    r = client.get(f"/teams/{team.id}")
+    assertOK(r)
+    assertLink(r, f"/users/profile/", "Your Account")
+
+    r = client.get(f"/users/profile/")
+    assertOK(r)
+    assertLink(r, "/logout/", "Sign out")
 
     # logout
     r = client.get("/logout/")
-    assert r.status_code == 302
-    assert r.url == "/"
+    assertRedirects(r, "/", target_status_code=302)
 
     r = client.get("/")
-    assert r.status_code == 302
-    assert r.url == "/login/"
+    assertRedirects(r, "/login/")
