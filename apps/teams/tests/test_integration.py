@@ -1,4 +1,10 @@
 import pytest
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertLink,
+    assertOK,
+    assertSelectorText,
+)
 from apps.projects.models import Project
 from apps.teams.models import Team
 from apps.users.models import CustomUser
@@ -14,15 +20,20 @@ def test_team_crudl(client, logged_in_user, bigquery_client, settings):
 
     # redirect
     assertRedirects(client.get("/"), f"/teams/{team.id}")
+    r = client.get(f"/teams/{team.id}")
+    assertOK(r)
+    assertLink(r, f"/teams/new", "New Team")
 
     # create
-    assert client.get("/teams/new").status_code == 200
+
+    r = client.get("/teams/new")
+    assertOK(r)
+    assertFormRenders(r, ["name"])
 
     r = client.post("/teams/new", data={"name": "Neera"})
-    assert r.status_code == 303
     assert logged_in_user.teams.count() == 2
     new_team = logged_in_user.teams.first()
-    assert r.url == f"/teams/{new_team.id}"
+    assertRedirects(r, f"/teams/{new_team.id}", status_code=303)
 
     assert bigquery_client.create_dataset.call_count == 1
     assert bigquery_client.create_dataset.call_args.args == (
@@ -30,7 +41,10 @@ def test_team_crudl(client, logged_in_user, bigquery_client, settings):
     )
 
     # read
-    assert client.get(f"/teams/{new_team.id}").status_code == 200
+    r = client.get(f"/teams/{new_team.id}")
+    assertOK(r)
+    assertSelectorText(r, "#heading", "Neera")
+    assertLink(r, f"/teams/{new_team.id}/update", "Settings")
 
     # current team in session
     assertRedirects(client.get("/"), f"/teams/{new_team.id}")
@@ -40,20 +54,22 @@ def test_team_crudl(client, logged_in_user, bigquery_client, settings):
     # list -> NA
 
     # update
-    assert client.get(f"/teams/{new_team.id}/update").status_code == 200
+    r = client.get(f"/teams/{new_team.id}/update")
+    assertOK(r)
+    assertFormRenders(r, ["icon", "name"])
 
     r = client.post(f"/teams/{new_team.id}/update", data={"name": "Agni"})
-    assert r.status_code == 303
-    assert r.url == f"/teams/{new_team.id}/update"
+    assertRedirects(r, f"/teams/{new_team.id}/update", status_code=303)
     new_team.refresh_from_db()
     assert new_team.name == "Agni"
 
     # delete
-    assert client.get(f"/teams/{new_team.id}/delete").status_code == 200
+    r = client.get(f"/teams/{new_team.id}/delete")
+    assertOK(r)
+    assertFormRenders(r)
 
     r = client.delete(f"/teams/{new_team.id}/delete")
-    assert r.status_code == 302
-    assert r.url == "/"
+    assertRedirects(r, "/", target_status_code=302)
 
     assert bigquery_client.delete_dataset.call_count == 1
     assert bigquery_client.delete_dataset.call_args.args == (

@@ -8,13 +8,18 @@ def assertLink(response, url, text):
     soup = BeautifulSoup(response.content)
     matches = soup.select(f'a[href="{url}"]')
 
+    matches = [m for m in matches if text in m.text]
     assert len(matches) == 1
-    assert text in matches[0].text
 
 
 def assertSelectorLength(response, selector, length):
     soup = BeautifulSoup(response.content)
     assert len(soup.select(selector)) == length
+
+
+def assertSelectorText(response, selector, text):
+    soup = BeautifulSoup(response.content)
+    assert text in soup.select(selector)[0].text
 
 
 def assertOK(response):
