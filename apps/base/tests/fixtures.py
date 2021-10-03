@@ -14,7 +14,7 @@ def patches(*_):
             yield
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(autouse=True, scope="session")
 def bigquery_client(*_):
     client = MagicMock()
     with patch("apps.base.clients.bigquery_client", return_value=client):
