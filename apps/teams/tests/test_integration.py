@@ -2,6 +2,7 @@ import pytest
 from apps.base.tests.asserts import (
     assertFormRenders,
     assertLink,
+    assertNotFound,
     assertOK,
     assertSelectorText,
 )
@@ -82,7 +83,9 @@ def test_team_crudl(client, logged_in_user, bigquery_client, settings):
 def test_member_crudl(client, logged_in_user):
 
     team = logged_in_user.teams.first()
-    user = CustomUser.objects.create_user("member", onboarded=True)
+    user = CustomUser.objects.create_user(
+        "member", email="member@gyana.com", onboarded=True
+    )
     team.members.add(user, through_defaults={"role": "admin"})
     membership = user.membership_set.first()
 
@@ -90,28 +93,35 @@ def test_member_crudl(client, logged_in_user):
     # read -> NA
 
     # list
-    assert client.get(f"/teams/{team.id}/members/").status_code == 200
+    r = client.get(f"/teams/{team.id}")
+    assertLink(r, f"/teams/{team.id}/members/", "Members")
+
+    r = client.get(f"/teams/{team.id}/members/")
+    assertOK(r)
+    assertLink(
+        r, f"/teams/{team.id}/members/{membership.id}/update", "member@gyana.com"
+    )
 
     # update
-    assert (
-        client.get(f"/teams/{team.id}/members/{membership.id}/update").status_code
-        == 200
-    )
+    r = client.get(f"/teams/{team.id}/members/{membership.id}/update")
+    assertOK(r)
+    assertFormRenders(r, ["role"])
+    assertLink(r, f"/teams/{team.id}/members/{membership.id}/delete", "Delete")
 
     r = client.post(
         f"/teams/{team.id}/members/{membership.id}/update", data={"role": "member"}
     )
-    assert r.status_code == 303
-    assert r.url == f"/teams/{team.id}/members/"
+    assertRedirects(r, f"/teams/{team.id}/members/", status_code=303)
     membership.refresh_from_db()
     assert membership.role == "member"
 
     # delete
-    client.get(f"/teams/{team.id}/members/{membership.id}/delete")
+    r = client.get(f"/teams/{team.id}/members/{membership.id}/delete")
+    assertOK(r)
+    assertFormRenders(r)
 
     r = client.delete(f"/teams/{team.id}/members/{membership.id}/delete")
-    assert r.status_code == 302
-    assert r.url == f"/teams/{team.id}/members/"
+    assertRedirects(r, f"/teams/{team.id}/members/")
 
     assert team.members.count() == 1
 
@@ -120,18 +130,18 @@ def test_member_role_and_check_restricted_permissions(client, logged_in_user):
 
     team = logged_in_user.teams.first()
 
-    assert client.get(f"/teams/{team.id}/members/").status_code == 200
-    assert client.get(f"/teams/{team.id}/invites/").status_code == 200
-    assert client.get(f"/teams/{team.id}/update").status_code == 200
+    assertOK(client.get(f"/teams/{team.id}/members/"))
+    assertOK(client.get(f"/teams/{team.id}/invites/"))
+    assertOK(client.get(f"/teams/{team.id}/update"))
 
     # add a member
     user = CustomUser.objects.create_user("member", onboarded=True)
     team.members.add(user, through_defaults={"role": "member"})
     client.force_login(user)
 
-    assert client.get(f"/teams/{team.id}/members/").status_code == 404
-    assert client.get(f"/teams/{team.id}/invites/").status_code == 404
-    assert client.get(f"/teams/{team.id}/update").status_code == 404
+    assertNotFound(client.get(f"/teams/{team.id}/members/"))
+    assertNotFound(client.get(f"/teams/{team.id}/invites/"))
+    assertNotFound(client.get(f"/teams/{team.id}/update"))
 
 
 def test_account_limit_warning_and_disabled(client):
@@ -141,17 +151,9 @@ def test_account_limit_warning_and_disabled(client):
     team.members.add(user, through_defaults={"role": "admin"})
     client.force_login(user)
 
-    assert (
-        client.get(f"/projects/{project.id}/integrations/connectors/new").status_code
-        == 200
-    )
-    assert (
-        client.get(f"/projects/{project.id}/integrations/sheets/new").status_code == 200
-    )
-    assert (
-        client.get(f"/projects/{project.id}/integrations/uploads/new").status_code
-        == 200
-    )
+    assertOK(client.get(f"/projects/{project.id}/integrations/connectors/new"))
+    assertOK(client.get(f"/projects/{project.id}/integrations/sheets/new"))
+    assertOK(client.get(f"/projects/{project.id}/integrations/uploads/new"))
 
     assert team.enabled
     assert not team.warning
@@ -165,14 +167,6 @@ def test_account_limit_warning_and_disabled(client):
     team.save()
     assert not team.enabled
 
-    assert (
-        client.get(f"/projects/{project.id}/integrations/connectors/new").status_code
-        == 404
-    )
-    assert (
-        client.get(f"/projects/{project.id}/integrations/sheets/new").status_code == 404
-    )
-    assert (
-        client.get(f"/projects/{project.id}/integrations/uploads/new").status_code
-        == 404
-    )
+    assertNotFound(client.get(f"/projects/{project.id}/integrations/connectors/new"))
+    assertNotFound(client.get(f"/projects/{project.id}/integrations/sheets/new"))
+    assertNotFound(client.get(f"/projects/{project.id}/integrations/uploads/new"))

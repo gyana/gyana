@@ -26,6 +26,10 @@ def assertOK(response):
     assert response.status_code == 200
 
 
+def assertNotFound(response):
+    assert response.status_code == 404
+
+
 def assertFormRenders(response, expected_fields=[]):
     soup = BeautifulSoup(response.content)
 
