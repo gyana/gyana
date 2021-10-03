@@ -2,41 +2,68 @@ import re
 
 import pytest
 from apps.appsumo.models import AppsumoCode, AppsumoExtra
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertLink,
+    assertNotFound,
+    assertOK,
+    assertSelectorLength,
+)
 from apps.users.models import CustomUser
 from django.core import mail
 from django.utils import timezone
-from pytest_django.asserts import assertRedirects
+from pytest_django.asserts import assertContains, assertFormError, assertRedirects
 
 pytestmark = pytest.mark.django_db
 
 
-def test_appsumo_link_invalid_code(client):
-    AppsumoCode.objects.create(code="12345678", redeemed=timezone.now())
+def test_appsumo_link_invalid_code(client, logged_in_user):
+    # code does not exist
+    r = client.get("/appsumo/00000000")
+    assertNotFound(r)
 
-    # already redeemed (no redirection)
-    assert client.get("/appsumo/12345678").status_code == 200
+    # code already redeemed by someone else
+    code = AppsumoCode.objects.create(code="12345678", redeemed=timezone.now())
+
+    r = client.get("/appsumo/12345678")
+    assertOK(r)
+    assertContains(r, "has already been redeemed by another user.")
+
+    # code already redeemed by you
+    team = logged_in_user.teams.first()
+    code.team = team
+    code.save()
+
+    r = client.get("/appsumo/12345678")
+    assertOK(r)
+    print(r.content)
+    assertContains(r, "You've already redeemed the code")
+    assertLink(r, f"/teams/{team.id}/account", "account")
 
 
 def test_appsumo_landing(client):
+    r = client.get("/appsumo/")
+    assertOK(r)
+    assertFormRenders(r, ["code"])
+
     # code does not exist
     r = client.post("/appsumo/", data={"code": "11111111"})
-    assert r.context["form"].errors["code"][0] == "AppSumo code does not exist"
+    assertFormError(r, "form", "code", "AppSumo code does not exist")
 
     # code is redeemed
     AppsumoCode.objects.create(code="22222222", redeemed=timezone.now())
     r = client.post("/appsumo/", data={"code": "22222222"})
-    assert r.context["form"].errors["code"][0] == "AppSumo code is already redeemed"
+    assertFormError(r, "form", "code", "AppSumo code is already redeemed")
 
     # code is refunded
     AppsumoCode.objects.create(code="33333333", refunded_before=timezone.now())
     r = client.post("/appsumo/", data={"code": "33333333"})
-    assert r.context["form"].errors["code"][0] == "AppSumo code has been refunded"
+    assertFormError(r, "form", "code", "AppSumo code has been refunded")
 
     # create
     AppsumoCode.objects.create(code="12345678")
     r = client.post("/appsumo/", data={"code": "12345678"})
-    assert r.status_code == 303
-    assert r.url == "/appsumo/12345678"
+    assertRedirects(r, "/appsumo/12345678", status_code=303, target_status_code=302)
 
 
 def test_code_signup_with_email_verification_and_onboarding(client, settings):
@@ -44,6 +71,10 @@ def test_code_signup_with_email_verification_and_onboarding(client, settings):
     AppsumoCode.objects.create(code="12345678")
 
     assertRedirects(client.get("/appsumo/12345678"), "/appsumo/signup/12345678")
+
+    r = client.get("/appsumo/signup/12345678")
+    assertOK(r)
+    assertFormRenders(r, ["email", "password1", "team"])
 
     r = client.post(
         "/appsumo/signup/12345678",
@@ -53,8 +84,7 @@ def test_code_signup_with_email_verification_and_onboarding(client, settings):
             "team": "Test team",
         },
     )
-    assert r.status_code == 303
-    assert r.url == "/confirm-email/"
+    assertRedirects(r, "/confirm-email/", status_code=303)
 
     user = CustomUser.objects.first()
     team = user.teams.first()
@@ -71,17 +101,19 @@ def test_code_signup_with_email_verification_and_onboarding(client, settings):
 
     # onboarding
     # todo: move logic to signup test, once signup is enabled
-    assert client.get("/users/onboarding/").status_code == 200
+    r = client.get("/users/onboarding/")
+    assertOK(r)
+    assertFormRenders(r, ["first_name", "last_name", "marketing_allowed"])
 
     r = client.post(
         "/users/onboarding/",
-        data={
-            "first_name": "New",
-            "last_name": "User",
-        },
+        data={"first_name": "New", "last_name": "User", "marketing_allowed": True},
     )
-    assert r.status_code == 303
-    assert r.url == "/users/onboarding/"
+    assertRedirects(r, "/users/onboarding/", status_code=303)
+
+    r = client.get("/users/onboarding/")
+    assertOK(r)
+    assertFormRenders(r, ["company_industry", "company_role", "company_size"])
 
     r = client.post(
         "/users/onboarding/",
@@ -91,19 +123,27 @@ def test_code_signup_with_email_verification_and_onboarding(client, settings):
             "company_size": "2-10",
         },
     )
-    assert r.status_code == 303
-    assert r.url == "/"
+    assertRedirects(r, "/", status_code=303, target_status_code=302)
+    assertRedirects(client.get("/"), f"/teams/{team.id}")
+
+    user.refresh_from_db()
+    assert user.marketing_allowed
+    assert user.company_industry == "agency"
 
 
 def test_redeem_code_on_existing_account_and_team(client, logged_in_user):
+    team = logged_in_user.teams.first()
     AppsumoCode.objects.create(code="12345678")
 
     assertRedirects(client.get("/appsumo/12345678"), "/appsumo/redeem/12345678")
 
-    team = logged_in_user.teams.first()
+    r = client.get("/appsumo/redeem/12345678")
+    assertOK(r)
+    assertFormRenders(r, ["team"])
+
     r = client.post("/appsumo/redeem/12345678", data={"team": team.id})
-    assert r.status_code == 303
-    assert r.url == "/"
+    assertRedirects(r, "/", status_code=303, target_status_code=302)
+    assertRedirects(client.get("/"), f"/teams/{team.id}")
 
     assert team.appsumocode_set.count() == 1
     assert team.appsumocode_set.first().code == "12345678"
@@ -112,55 +152,93 @@ def test_redeem_code_on_existing_account_and_team(client, logged_in_user):
 def test_redeem_code_on_existing_account_and_no_team(client):
     user = CustomUser.objects.create_user("test", onboarded=True)
     client.force_login(user)
-
     AppsumoCode.objects.create(code="12345678")
 
     assertRedirects(client.get("/appsumo/12345678"), "/appsumo/redeem/12345678")
 
+    r = client.get("/appsumo/redeem/12345678")
+    assertOK(r)
+    assertFormRenders(r, ["team_name"])
+
     r = client.post("/appsumo/redeem/12345678", data={"team_name": "Test team"})
-    assert r.status_code == 303
-    assert r.url == "/"
+    assertRedirects(r, "/", status_code=303, target_status_code=302)
 
     team = user.teams.first()
+    assertRedirects(client.get("/"), f"/teams/{team.id}")
+
     assert team.name == "Test team"
     assert team.appsumocode_set.count() == 1
     assert team.appsumocode_set.first().code == "12345678"
 
 
-def test_stack_and_refund(client, logged_in_user):
+def test_stack(client, logged_in_user):
     team = logged_in_user.teams.first()
-
+    original_code = AppsumoCode.objects.create(code="00000000", team=team)
     code = AppsumoCode.objects.create(code="12345678")
+
+    r = client.get_turbo_frame(
+        f"/teams/{team.id}/account", f"/teams/{team.id}/appsumo/"
+    )
+    assertOK(r)
+    assertSelectorLength(r, "table tbody tr", 1)
+    assertLink(r, f"/teams/{team.id}/appsumo/stack", "Stack Code")
+
+    r = client.get(f"/teams/{team.id}/appsumo/stack")
+    assertOK(r)
+    assertFormRenders(r, ["code"])
+
     r = client.post(f"/teams/{team.id}/appsumo/stack", data={"code": "12345678"})
+    assertRedirects(r, f"/teams/{team.id}/account", status_code=303)
 
-    assert r.status_code == 303
-    assert r.url == f"/teams/{team.id}/account"
+    assert list(team.appsumocode_set.all()) == [code, original_code]
 
-    assert list(team.appsumocode_set.all()) == [code]
-
-    assert client.get(f"/teams/{team.id}/appsumo/").status_code == 200
+    r = client.get_turbo_frame(
+        f"/teams/{team.id}/account", f"/teams/{team.id}/appsumo/"
+    )
+    assertOK(r)
+    assertSelectorLength(r, "table tbody tr", 2)
 
 
 def test_link_to_review(client, logged_in_user):
     link = "https://appsumo.com/products/marketplace-gyana/#r666666"
     team = logged_in_user.teams.first()
-    r = client.post(f"/teams/{team.id}/appsumo/review", data={"review_link": link})
 
-    assert r.status_code == 303
-    assert r.url == f"/teams/{team.id}/account"
+    r = client.get_turbo_frame(
+        f"/teams/{team.id}/account", f"/teams/{team.id}/appsumo/"
+    )
+    assertOK(r)
+    assertLink(r, "/teams/1/appsumo/review", "Link to your review")
+
+    r = client.get(f"/teams/{team.id}/appsumo/review")
+    assertOK(r)
+    assertFormRenders(r, ["review_link"])
+
+    r = client.post(f"/teams/{team.id}/appsumo/review", data={"review_link": link})
+    assertRedirects(r, f"/teams/{team.id}/account", status_code=303)
+
+    r = client.get_turbo_frame(
+        f"/teams/{team.id}/account", f"/teams/{team.id}/appsumo/"
+    )
+    assertOK(r)
+    assertContains(r, "Thank you for writing an honest review!")
 
     assert team.appsumoreview.review_link == link
 
+    # cannot review twice
     r = client.post(f"/teams/{team.id}/appsumo/review", data={"review_link": link})
     assert r.status_code == 422
-    assert (
-        r.context["form"].errors["review_link"][0]
-        == "A user has linked to this review for their team. If you think this is a mistake, reach out to support and we'll sort it out for you."
-    )
+    error = "A user has linked to this review for their team. If you think this is a mistake, reach out to support and we'll sort it out for you."
+    assertFormError(r, "form", "review_link", error)
 
 
 def test_admin_extra_rows(client, logged_in_user):
     team = logged_in_user.teams.first()
-    AppsumoExtra.objects.create(rows=1, reason="extra", team=team)
+    AppsumoExtra.objects.create(rows=1, reason="For being awesome", team=team)
 
-    assert client.get(f"/teams/{team.id}/appsumo/extra").status_code == 200
+    r = client.get_turbo_frame(
+        f"/teams/{team.id}/account",
+        f"/teams/{team.id}/appsumo/",
+        f"/teams/{team.id}/appsumo/extra",
+    )
+    assertOK(r)
+    assertContains("For being awesome")
