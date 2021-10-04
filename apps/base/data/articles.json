@@ -6,7 +6,8 @@
     "workflows": "5548520-getting-started-how-do-we-work-with-data",
     "dashboards": "5548522-getting-started-how-do-we-display-data",
     "templates": "5548530-getting-started-how-do-we-use-templates",
-    "transition": "5548529-transition-guide"
+    "transition": "5548529-transition-guide",
+    "credits": "5621005-what-are-credits"
   },
   "integrations": {
     "upload": "5548491-getting-started-how-do-we-add-data#h_04e537cb81",

@@ -1,5 +1,6 @@
 {% extends "teams/base.html" %}
 {% load humanize %}
+{% load help_utils %}
 
 {% block tab %}
 <section class="account">
@@ -30,7 +31,11 @@
 
     <label>
       <p>Credits</p>
-      <h3>{{ team.credits|intcomma }}</h3>
+
+      <div class="flex items-center">
+        <h3 class="mr-3">{{ team.credits|intcomma }}</h3>
+        {% link_article 'overview' 'credits' %}
+      </div>
     </label>
 
     <label>
