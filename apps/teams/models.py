@@ -2,7 +2,6 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
 
 from apps.base.models import BaseModel
 
@@ -107,6 +106,24 @@ class Team(BaseModel):
         from .account import get_credits
 
         return get_credits(self)
+
+    @property
+    def cnames(self):
+        from apps.appsumo.account import get_deal
+
+        return get_deal(self.appsumocode_set.all()).get("cnames")
+
+    @property
+    def sub_accounts(self):
+        from apps.appsumo.account import get_deal
+
+        return get_deal(self.appsumocode_set.all()).get("sub_accounts")
+
+    @property
+    def white_label(self):
+        from apps.appsumo.account import get_deal
+
+        return get_deal(self.appsumocode_set.all()).get("white_label")
 
     @property
     def admins(self):

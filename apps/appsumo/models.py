@@ -33,7 +33,7 @@ class AppsumoCode(BaseModel):
         USD_49 = "usd_49", "Launch deal $49 (24/03/21 - 25/06/21)"
         USD_179 = "usd_179", "Temporary deal $179 (25/06/21 - 01/07/21)"
         USD_59 = "usd_59", "Final deal $59 (01/07/21 - 26/08/21)"
-        # add the AppSumo Select deal here
+        SELECT = "select", "AppSumo Select (28/10/21 -)"
 
     code = models.CharField(max_length=8, unique=True)
     team = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL)

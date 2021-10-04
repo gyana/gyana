@@ -42,6 +42,28 @@
       <p>Users</p>
       <h3>Unlimited</h3>
     </label>
+
+    {% if team.cnames %}
+      <label>
+        <p>CNAMEs</p>
+        <h3>{{ team.cnames }}</h3>
+      </label>
+    {% endif %}
+
+    {% if team.sub_accounts %}
+      <label>
+        <p>Sub Accounts</p>
+        <h3>{% if  team.sub_accounts != -1 %}{{ team.sub_accounts }}{% else %}Unlimited{% endif %}</h3>
+      </label>
+    {% endif %}
+
+    {% if team.white_label %}
+      <label>
+        <p>Whitelabelling</p>
+        <h3>Enabled</h3>
+      </label>
+    {% endif %}
+  
   </div>
   
   <div class="mb-auto">
