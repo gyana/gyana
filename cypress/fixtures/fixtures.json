@@ -2049,5 +2049,25 @@
       "key": "",
       "sites": [1]
     }
+  },
+  {
+    "model": "waffle.flag",
+    "pk": 1,
+    "fields": {
+      "name": "beta",
+      "everyone": true,
+      "percent": null,
+      "testing": false,
+      "superusers": true,
+      "staff": false,
+      "authenticated": false,
+      "languages": "",
+      "rollout": false,
+      "note": "",
+      "created": "2021-10-04T15:59:32Z",
+      "modified": "2021-10-04T15:59:37.292Z",
+      "groups": [],
+      "users": []
+    }
   }
 ]

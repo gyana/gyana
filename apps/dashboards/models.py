@@ -1,5 +1,6 @@
 from apps.base.models import BaseModel
 from apps.projects.models import Project
+from django.conf import settings
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import (
     check_password,
@@ -74,3 +75,13 @@ class Dashboard(CloneMixin, BaseModel):
         Return False if set_unusable_password() has been called for this user.
         """
         return is_password_usable(self.password)
+
+    @property
+    def public_url(self):
+        team = self.project.team
+        domain = (
+            f"https://{team.cname.domain}"
+            if hasattr(team, "cname")
+            else settings.EXTERNAL_URL
+        )
+        return f"{domain}/dashboards/{self.shared_id}"
