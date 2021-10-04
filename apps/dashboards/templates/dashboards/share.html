@@ -3,7 +3,7 @@
 <div data-controller='popover'>
   <button
     id="dashboard-share-{{ object.id }}"
-    class="button button--circle {% if object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}"
+    class="button button--circle {% if object.shared_status != 'private' %}button--success{% else %}button--tertiary{% endif %}"
     data-controller="tooltip"
     data-popover-target="trigger"
     data-action="popover#trigger"
