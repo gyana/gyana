@@ -8,6 +8,7 @@ class CNameForm(BaseModelForm):
     class Meta:
         model = CName
         fields = ["domain"]
+        help_texts = {"domain": "e.g. dashboards.mycompany.com"}
 
     def __init__(self, *args, **kwargs):
         self._team = kwargs.pop("team")

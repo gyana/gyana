@@ -1,14 +1,36 @@
 
-{% extends "web/app/settings_base.html" %}
+{% extends "web/base.html" %}
+{% load help_utils %}
 
-{% block app %}
-<h1>Create</h1>
-<form method="post" action="{% url 'team_cnames:create' team.id %}" class="form">
-  {% csrf_token %}
+{% block body %}
+<div class="flex flex-1 justify-center items-center w-full h-full">
+  <div class="flex flex-col max-w-3xl">
+    <div class="flex flex-col text-center mb-7">
+      <h1>Connect a custom domain {% link_article 'integrations' 'sheet' %}</h1>
+      <p></p>
+    </div>
 
-  {% include "django/forms/default_form.html" %}
+    <p class="mb-2">
+      In your DNS provider, add a CNAME record pointing to:
+    </p>
 
-  <button type="submit" class="button button--filled button--success">Create</button>
-</form>
+    <div data-controller="to-clipboard" class='clipboard-copy'>
+      <pre class="text-xl p-2" data-to-clipboard-target='target'>cname.gyana.com</pre>
+      <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
+        <i class='fa fa-clipboard'></i>
+      </button>
+    </div>
+
+    <p class="alert mt-6">It can take up to ten minutes for the new DNS information to propagate.</p>
+    
+    <form method="post" class="mt-7">
+      {% csrf_token %}
+
+      {% include "django/forms/default_form.html" %}
+
+      <button type="submit" class="button button--filled button--success w-full">Connect</button>
+    </form>
+  </div>
+</div>
 {% endblock %}
 
