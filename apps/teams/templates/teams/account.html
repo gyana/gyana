@@ -6,70 +6,80 @@
   <h2 class="mb-7">Account usage</h2>
 
   <label class="mb-7">
-    <p>Subscription Plan</p>
     <h3 class="text-blue">{{ team.plan }}</h3>
   </label>
 
   <div class="account__plan">
-    <label>
-      <p>Row usage</p>
-      <div class="flex items-center">
-        <h3 class="mr-3">{{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}</h3>
-        <form method="post" class="form--no-layout">
-          {% csrf_token %}
+    <div class="card card--none">
+      <table class='table' style="width: auto;">
+        <tbody>
+          <tr>
+            <td><h3>Row usage</h3></td>
+            <td>
+              <span class="flex items-center">
+                <span class="mr-3">{{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}</span>
+                <form method="post" class="form--no-layout">
+                  {% csrf_token %}
 
-          {% include "django/forms/default_form.html" %}
+                  {% include "django/forms/default_form.html" %}
 
-          <button type="submit" class="button button--circle button--sm button--tertiary" data-controller="tooltip">
-            <i class="fas fa-fw fa-sync-alt"></i>
-            <span data-tooltip-target="body">Calculate row usage</span>
-          </button>
-        </form>
-      </div>
-    </label>
+                  <button type="submit" class="button button--circle button--sm button--tertiary" data-controller="tooltip">
+                    <i class="fas fa-fw fa-sync-alt"></i>
+                    <span data-tooltip-target="body">Calculate row usage</span>
+                  </button>
+                </form>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><h3>Credits</h3></td>
+            <td>{{ team.credits|intcomma }}</td>
+          </tr>
 
-    <label>
-      <p>Credits</p>
-      <h3>{{ team.credits|intcomma }}</h3>
-    </label>
+          <tr>
+            <td><h3>Users</h3></td>
+            <td>Unlimited</i></td>
+          </tr>
 
-    <label>
-      <p>Views</p>
-      <h3>Unlimited</h3>
-    </label>
+          <tr>
+            <td><h3>Views</h3></td>
+            <td>Unlimited</i></td>
+          </tr>
 
-    <label>
-      <p>Users</p>
-      <h3>Unlimited</h3>
-    </label>
+          <tr>
+            <td><h3>Chat support</h3></td>
+            <td><i class="fa fa-check text-green"></i></td>
+          </tr>
 
-    {% if team.cnames %}
-      <label>
-        <p>CNAMEs</p>
-        <h3>{{ team.cnames }}</h3>
-      </label>
-    {% endif %}
+          <tr>
+            <td><h3>Custom branding</h3></td>
+            <td><i class="fa fa-check text-green"></i></i></td>
+          </tr>
 
-    {% if team.sub_accounts %}
-      <label>
-        <p>Sub Accounts</p>
-        <h3>{% if  team.sub_accounts != -1 %}{{ team.sub_accounts }}{% else %}Unlimited{% endif %}</h3>
-      </label>
-    {% endif %}
+          {% if team.cnames %}
+            <tr>
+              <td><h3>CNAMEs</h3></td>
+              <td>{{ team.cnames }}</td>
+            </tr>
+          {% endif %}
 
-    {% if team.white_label %}
-      <label>
-        <p>Whitelabelling</p>
-        <h3>Enabled</h3>
-      </label>
-    {% endif %}
-  
-  </div>
-  
-  <div class="mb-auto">
-    <label>
-      <p><strong>Other benefits:</strong> Custom branding, Chat support...</p>
-    </label>
+          {% if team.sub_accounts %}
+            <tr>
+              <td><h3>Sub Accounts</h3></td>
+              <td>{% if  team.sub_accounts != -1 %}{{ team.sub_accounts }}{% else %}Unlimited</i>{% endif %}</td>
+            </tr>
+          {% endif %}
+
+          {% if team.white_label %}
+            <tr>
+              <td><h3>Whitelabelling</h3></td>
+              <td><i class="fa fa-check text-green"></i></td>
+            </tr>
+          {% endif %}
+
+        </tbody>
+      </table>
+    </div>
   </div>
 
   {% if team.appsumocode_set.count > 0 %}
