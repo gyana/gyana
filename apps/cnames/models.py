@@ -19,7 +19,14 @@ domain_regex = RegexValidator(
 
 
 class CName(BaseModel):
-    domain = models.CharField(max_length=253, validators=[domain_regex], unique=True)
+    domain = models.CharField(
+        max_length=253,
+        validators=[domain_regex],
+        unique=True,
+        error_messages={
+            "unique": "A CNAME with this domain already exists. If you think this is a mistake, reach out to support and we'll sort it out for you."
+        },
+    )
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
     def __str__(self):
