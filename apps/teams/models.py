@@ -129,6 +129,20 @@ class Team(BaseModel):
         return self.project_set.filter(access=Project.Access.INVITE_ONLY).count()
 
     @property
+    def can_create_project(self):
+        if self.plan["projects"] == -1:
+            return True
+        return self.total_projects < self.plan["projects"]
+
+    @property
+    def can_create_invite_only_project(self):
+        if self.appsumo_plan is None:
+            return False
+        if self.appsumo_plan["sub_accounts"] == -1:
+            return True
+        return self.total_invite_only_projects < self.appsumo_plan["sub_accounts"]
+
+    @property
     def admins(self):
         return self.members.filter(membership__role=roles.ROLE_ADMIN)
 

@@ -10,21 +10,21 @@ SELECT_TIERS = {
         "credits": 30_000,
         "cnames": 6,
         "sub_accounts": 10,
-        "white_label": True,
+        "white_labeling": True,
     },
     4: {
         "rows": 5_000_000,
         "credits": 40_000,
         "cnames": 10,
         "sub_accounts": 25,
-        "white_label": True,
+        "white_labeling": True,
     },
     5: {
         "rows": 10_000_000,
         "credits": 50_000,
         "cnames": 25,
         "sub_accounts": -1,
-        "white_label": True,
+        "white_labeling": True,
     },
 }
 
