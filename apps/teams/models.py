@@ -93,6 +93,12 @@ class Team(BaseModel):
         return self.appsumoextra_set.count() > 0
 
     @property
+    def has_select_code(self):
+        from apps.appsumo.models import AppsumoCode
+
+        return self.appsumocode_set.filter(deal=AppsumoCode.Deal.SELECT).exists()
+
+    @property
     def plan(self):
         from apps.appsumo.account import get_deal
 

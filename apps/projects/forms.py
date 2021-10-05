@@ -20,19 +20,6 @@ class ProjectForm(LiveUpdateForm):
             members_field.queryset = self._team.members.all()
             members_field.widget.current_user = current_user
 
-    def clean(self):
-        cleaned_data = super().clean()
-
-        if (
-            cleaned_data.get("access") == Project.Access.INVITE_ONLY
-            and not self._team.can_create_invite_only_project
-        ):
-            raise forms.ValidationError(
-                "You've reached the maximum number of invite-only projects (sub-accounts) on this plan"
-            )
-
-        return cleaned_data
-
     def get_live_fields(self):
         if not (self._is_beta and self._team.plan["name"] != "Free"):
             return ["name", "description"]
