@@ -1,4 +1,5 @@
 from apps.base.live_update_form import LiveUpdateForm
+from django import forms
 
 from .models import Project
 from .widgets import MemberSelect
@@ -22,10 +23,18 @@ class ProjectForm(LiveUpdateForm):
     def clean(self):
         cleaned_data = super().clean()
 
+        if (
+            cleaned_data.get("access") == Project.Access.INVITE_ONLY
+            and not self._team.can_create_invite_only_project
+        ):
+            raise forms.ValidationError(
+                "You've reached the maximum number of invite-only projects (sub-accounts) on this plan"
+            )
+
         return cleaned_data
 
     def get_live_fields(self):
-        if not (self._is_beta and self._team.sub_accounts):
+        if not (self._is_beta and self._team.plan["name"] != "Free"):
             return ["name", "description"]
         fields = ["name", "description", "access"]
         if self.get_live_field("access") == Project.Access.INVITE_ONLY:
@@ -34,3 +43,15 @@ class ProjectForm(LiveUpdateForm):
 
     def on_save(self, instance):
         instance.team = self._team
+
+
+class ProjectCreateForm(ProjectForm):
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if not self._team.can_create_project:
+            raise forms.ValidationError(
+                "You've reached the maximum number of projects on this plan"
+            )
+
+        return cleaned_data

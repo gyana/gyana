@@ -8,14 +8,14 @@ from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from waffle import flag_is_active
 
-from .forms import ProjectForm
+from .forms import ProjectCreateForm, ProjectForm
 from .models import Project
 
 
 class ProjectCreate(TeamMixin, TurboCreateView):
     template_name = "projects/create.html"
     model = Project
-    form_class = ProjectForm
+    form_class = ProjectCreateForm
 
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
