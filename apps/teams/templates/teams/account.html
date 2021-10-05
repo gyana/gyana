@@ -55,10 +55,12 @@
             <td><i class="fa fa-check text-green"></i></td>
           </tr>
 
-          <tr>
-            <td><h3>Custom branding</h3></td>
-            <td><i class="fa fa-check text-green"></i></i></td>
-          </tr>
+          {% if team.custom_branding %}
+            <tr>
+              <td><h3>Custom branding</h3></td>
+              <td><i class="fa fa-check text-green"></i></i></td>
+            </tr>
+          {% endif %}
 
           {% if team.cnames %}
             <tr>
@@ -74,7 +76,7 @@
             </tr>
           {% endif %}
 
-          {% if team.white_label %}
+          {% if team.white_labeling %}
             <tr>
               <td><h3>White labeling</h3></td>
               <td><i class="fa fa-check text-green"></i></td>

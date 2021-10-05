@@ -120,10 +120,14 @@ class Team(BaseModel):
         return get_deal(self.appsumocode_set.all()).get("sub_accounts")
 
     @property
-    def white_label(self):
+    def white_labeling(self):
         from apps.appsumo.account import get_deal
 
-        return get_deal(self.appsumocode_set.all()).get("white_label")
+        return get_deal(self.appsumocode_set.all()).get("white_labeling")
+
+    @property
+    def custom_branding(self):
+        return self.active_codes > 0
 
     @property
     def admins(self):
