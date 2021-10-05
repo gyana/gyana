@@ -13,7 +13,7 @@ class CNameTable(tables.Table):
 
     domain = tables.Column()
     created = NaturalDatetimeColumn()
-
+    status = tables.TemplateColumn(template_name="cnames/_status.html")
     actions = tables.TemplateColumn(
         template_name="cnames/actions.html", verbose_name="Actions"
     )

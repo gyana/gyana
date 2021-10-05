@@ -4,7 +4,10 @@ from . import frames, views
 
 app_name = "cnames"
 
-urlpatterns = []
+urlpatterns = [
+    path("<hashid:pk>/status", frames.CNameStatus.as_view(), name="status"),
+]
+
 
 team_urlpatterns = (
     [
