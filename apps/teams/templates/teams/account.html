@@ -12,7 +12,7 @@
         <tbody>
           <tr>  
             <td><h3>Plan</h3></td>
-            <td class="text-blue">{{ team.plan }}</td>
+            <td class="text-blue">{{ team.plan.name }}</td>
           </tr>
           <tr>
             <td><h3>Row usage</h3></td>
@@ -41,8 +41,13 @@
           </tr>
 
           <tr>
+            <td><h3>Projects</h3></td>
+            <td>{{ team.total_projects }} / {% if team.plan.projects != -1 %}{{ team.plan.projects }}{% else %}∞</i>{% endif %}</td>
+          </tr>
+
+          <tr>
             <td><h3>Users</h3></td>
-            <td>{{ team.members.count }} / ∞</td>
+            <td>{{ team.total_members }} / ∞</td>
           </tr>
 
           <tr>
@@ -55,28 +60,28 @@
             <td><i class="fa fa-check text-green"></i></td>
           </tr>
 
-          {% if team.custom_branding %}
+          {% if team.plan.custom_branding %}
             <tr>
               <td><h3>Custom branding</h3></td>
               <td><i class="fa fa-check text-green"></i></i></td>
             </tr>
           {% endif %}
 
-          {% if team.cnames %}
+          {% if team.appsumo_plan.cnames %}
             <tr>
               <td><h3>CNAMEs</h3></td>
-              <td>{{ team.cnames }}</td>
+              <td>{{ team.appsumo_plan.cnames }}</td>
             </tr>
           {% endif %}
 
-          {% if team.sub_accounts %}
+          {% if team.appsumo_plan.sub_accounts %}
             <tr>
               <td><h3>Sub Accounts</h3></td>
-              <td>{% if  team.sub_accounts != -1 %}{{ team.sub_accounts }}{% else %}Unlimited</i>{% endif %}</td>
+              <td>{{ team.total_invite_only_projects }} / {% if  team.appsumo_plan.sub_accounts != -1 %}{{ team.appsumo_plan.sub_accounts }}{% else %}∞</i>{% endif %}</td>
             </tr>
           {% endif %}
 
-          {% if team.white_labeling %}
+          {% if team.appsumo_plan.white_labeling %}
             <tr>
               <td><h3>White labeling</h3></td>
               <td><i class="fa fa-check text-green"></i></td>

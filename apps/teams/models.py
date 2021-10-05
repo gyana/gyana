@@ -6,6 +6,7 @@ from django.utils import timezone
 from apps.base.models import BaseModel
 
 from . import roles
+from .config import PLANS
 
 WARNING_BUFFER = 0.2
 
@@ -93,7 +94,13 @@ class Team(BaseModel):
 
     @property
     def plan(self):
-        return "Lifetime Deal for Gyana (AppSumo)" if self.active_codes > 0 else "Free"
+        return PLANS["appsumo"] if self.active_codes > 0 else PLANS["free"]
+
+    @property
+    def appsumo_plan(self):
+        from apps.appsumo.account import get_deal
+
+        return get_deal(self.appsumocode_set.all()).get("cnames")
 
     @property
     def row_limit(self):
@@ -108,26 +115,18 @@ class Team(BaseModel):
         return get_credits(self)
 
     @property
-    def cnames(self):
-        from apps.appsumo.account import get_deal
-
-        return get_deal(self.appsumocode_set.all()).get("cnames")
+    def total_members(self):
+        return self.members.count()
 
     @property
-    def sub_accounts(self):
-        from apps.appsumo.account import get_deal
-
-        return get_deal(self.appsumocode_set.all()).get("sub_accounts")
+    def total_projects(self):
+        return self.project_set.count()
 
     @property
-    def white_labeling(self):
-        from apps.appsumo.account import get_deal
+    def total_invite_only_projects(self):
+        from apps.projects.models import Project
 
-        return get_deal(self.appsumocode_set.all()).get("white_labeling")
-
-    @property
-    def custom_branding(self):
-        return self.active_codes > 0
+        return self.project_set.filter(access=Project.Access.INVITE_ONLY).count()
 
     @property
     def admins(self):

@@ -19,8 +19,13 @@ class ProjectForm(LiveUpdateForm):
             members_field.queryset = self._team.members.all()
             members_field.widget.current_user = current_user
 
+    def clean(self):
+        cleaned_data = super().clean()
+
+        return cleaned_data
+
     def get_live_fields(self):
-        if not self._is_beta:
+        if not (self._is_beta and self._team.sub_accounts):
             return ["name", "description"]
         fields = ["name", "description", "access"]
         if self.get_live_field("access") == Project.Access.INVITE_ONLY:
