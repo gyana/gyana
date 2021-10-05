@@ -13,7 +13,6 @@ class CNameCreate(TeamMixin, TurboCreateView):
     template_name = "cnames/create.html"
     model = CName
     form_class = CNameForm
-    success_url = reverse_lazy("cnames:list")
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

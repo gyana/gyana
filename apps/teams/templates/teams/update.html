@@ -3,31 +3,23 @@
 
 {% block tab %}
 <div class="flex flex-col flex-1 overflow-auto">
-  <div class="max-w-xl mb-auto pad">
-    <form class="mb-8" method="post" enctype="multipart/form-data">
-      {% csrf_token %}
+  <div class="pad mb-auto">
+    <div class="max-w-xl">
+      <h2 class="mb-7">Settings</h2>
+      <form class="mb-8" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-      {% include "django/forms/default_form.html" %}
+        {% include "django/forms/default_form.html" %}
 
-      {% flag 'beta' %}
-        {% if request.user.is_superuser %}
-          {% if object.cname %}
-            <p>Your custom domain is currently mapped at <strong>{{ object.cname.domain }}</strong>
-              <a class="link" href="{% url 'team_cnames:delete' object.id object.cname.id%}">Delete</a>
-            </p>
-          {% else %}
-            <p>Add a <a class="link" href="{% url 'team_cnames:create' object.id %}">custom domain</a> using a CNAME.</p>
-          {% endif %}
-        {% endif %}
-      {% endflag %}
-
-      
-
-      <button type="submit" class="button button--success w-full">Save</button>
-    </form>
-
-    <turbo-frame id="cnames:list" src="{% url 'team_cnames:list' object.id %}"></turbo-frame>
-
+        <button type="submit" class="button button--success w-full">Save</button>
+      </form>
+    </div>
+    {% flag 'beta' %}
+      <div class="max-w-2xl">
+        <h2 class="mb-7">CNAMEs</h2>
+        <turbo-frame id="cnames:list" src="{% url 'team_cnames:list' object.id %}"></turbo-frame>
+      </div>
+    {% endflag %}
   </div>
   <div class="pad border-t border-gray">
     <div class="max-w-xl">

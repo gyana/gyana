@@ -14,7 +14,7 @@
   {% else %}
   <div class="pad flex flex-col space-y-8">
     <small>
-        <a href="{% url 'team_cnames:create' team.id %}" class="link">
+        <a href="{% url 'team_cnames:create' team.id %}" class="link" data-turbo-frame="_top">
           <i class="fa fa-fw fa-plus mr-2"></i>Add a custom domain</a>
     </small>
   </div>

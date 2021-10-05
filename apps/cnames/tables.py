@@ -9,11 +9,10 @@ class CNameTable(tables.Table):
     class Meta:
         model = CName
         attrs = {"class": "table"}
-        fields = ("domain", "created", "updated")
+        fields = ("domain", "created")
 
     domain = tables.Column()
     created = NaturalDatetimeColumn()
-    updated = NaturalDatetimeColumn()
 
     actions = tables.TemplateColumn(
         template_name="cnames/actions.html", verbose_name="Actions"
