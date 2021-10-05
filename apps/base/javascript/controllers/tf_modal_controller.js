@@ -8,7 +8,7 @@ export default class extends Controller {
     this.changed = false
     const params = new URLSearchParams(window.location.search)
 
-    if (params.get('modal_item')) {
+    if (params.get('modal_item') && this.element.getAttribute('data-open-on-param') == '') {
       this.modalTarget.classList.remove('hidden')
     }
 
