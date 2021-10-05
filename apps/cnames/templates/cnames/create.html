@@ -5,9 +5,9 @@
 {% block body %}
 <div class="flex flex-1 justify-center items-center w-full h-full">
   <div class="flex flex-col max-w-3xl">
-    <div class="flex flex-col text-center mb-7">
-      <h1>Connect a custom domain {% link_article 'integrations' 'sheet' %}</h1>
-      <p></p>
+    <div class="flex text-center mb-7 items-center">
+      <h1 class="mr-2">Connect a custom domain</h1>
+      {% link_article 'overview' 'cnames' %}
     </div>
 
     <p class="mb-2">
@@ -21,7 +21,11 @@
       </button>
     </div>
 
-    <p class="alert mt-6">It can take up to ten minutes for the new DNS information to propagate.</p>
+    <p class="alert mt-6">
+      You might need to wait a few minutes for the SSL certificate and DNS propagation
+      to complete. Keep an eye on the settings page for status information, and reach out
+      to support if you have any issues.
+    </p>
     
     <form method="post" class="mt-7">
       {% csrf_token %}

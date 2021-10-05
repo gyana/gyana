@@ -7,7 +7,8 @@
     "dashboards": "5548522-getting-started-how-do-we-display-data",
     "templates": "5548530-getting-started-how-do-we-use-templates",
     "transition": "5548529-transition-guide",
-    "credits": "5621005-what-are-credits"
+    "credits": "5621005-what-are-credits",
+    "cnames": "5625615-how-to-setup-custom-domains"
   },
   "integrations": {
     "upload": "5548491-getting-started-how-do-we-add-data#h_04e537cb81",
