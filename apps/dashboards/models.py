@@ -78,10 +78,9 @@ class Dashboard(CloneMixin, BaseModel):
 
     @property
     def public_url(self):
-        team = self.project.team
         domain = (
-            f"https://{team.cname.domain}"
-            if hasattr(team, "cname")
+            f"https://{self.project.cname.domain}"
+            if hasattr(self.project, "cname")
             else settings.EXTERNAL_URL
         )
         return f"{domain}/dashboards/{self.shared_id}"

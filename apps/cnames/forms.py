@@ -13,6 +13,8 @@ class CNameForm(BaseModelForm):
         self._team = kwargs.pop("team")
         return super().__init__(*args, **kwargs)
 
-    def on_save(self, instance):
+    def pre_save(self, instance):
         instance.team = self._team
+
+    def post_save(self, instance):
         heroku_client().add_domain(instance.domain)

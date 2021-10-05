@@ -1,6 +1,7 @@
 from functools import cached_property
 
 from apps.base.models import BaseModel
+from apps.cnames.models import CName
 from apps.teams.models import Team
 from django.conf import settings
 from django.db import models
@@ -27,6 +28,8 @@ class Project(CloneMixin, BaseModel):
         related_name="invite_only_projects",
         through="ProjectMembership",
     )
+    cname = models.ForeignKey(CName, on_delete=models.SET_NULL, null=True)
+
     _clone_m2o_or_o2m_fields = ["integration_set", "workflow_set", "dashboard_set"]
 
     def __str__(self):

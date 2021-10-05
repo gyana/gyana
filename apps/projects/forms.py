@@ -8,8 +8,9 @@ from .widgets import MemberSelect
 class ProjectForm(LiveUpdateForm):
     class Meta:
         model = Project
-        fields = ["name", "description", "access", "members"]
+        fields = ["name", "description", "access", "members", "cname"]
         widgets = {"members": MemberSelect()}
+        labels = {"cname": "CNAME"}
 
     def __init__(self, current_user, *args, **kwargs):
         self._team = kwargs.pop("team", None)
@@ -20,15 +21,18 @@ class ProjectForm(LiveUpdateForm):
             members_field.queryset = self._team.members.all()
             members_field.widget.current_user = current_user
 
+        if cname_field := self.fields.get("cname"):
+            cname_field.queryset = self._team.cname_set.all()
+
     def get_live_fields(self):
-        if not (self._is_beta and self._team.plan.get("sub_accounts") is not None):
+        if not (self._is_beta and self._team.plan["name"] != "Free"):
             return ["name", "description"]
-        fields = ["name", "description", "access"]
+        fields = ["name", "description", "access", "cname"]
         if self.get_live_field("access") == Project.Access.INVITE_ONLY:
             fields += ["members"]
         return fields
 
-    def on_save(self, instance):
+    def pre_save(self, instance):
         instance.team = self._team
 
 

@@ -1,8 +1,9 @@
-from apps.dashboards.models import Dashboard
 from django.conf import settings
 from django.http import HttpResponseForbidden
 from django.http.request import split_domain_port, validate_host
 from django.urls import resolve
+
+from apps.dashboards.models import Dashboard
 
 from .models import CName
 
@@ -40,12 +41,12 @@ class HostMiddleware:
 
         if route_name in CNAME_ALLOWED:
 
-            dashboard_exists_in_team = Dashboard.objects.filter(
+            dashboard_has_cname = Dashboard.objects.filter(
                 shared_id=resolver_match.kwargs.get("shared_id"),
-                project__team__cname=cname,
+                project__cname=cname,
             ).exists()
 
-            if dashboard_exists_in_team:
+            if dashboard_has_cname:
                 return self.get_response(request)
 
         return HttpResponseForbidden()
