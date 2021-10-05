@@ -2,11 +2,8 @@ from apps.base.models import BaseModel
 from apps.projects.models import Project
 from django.conf import settings
 from django.contrib.auth import password_validation
-from django.contrib.auth.hashers import (
-    check_password,
-    is_password_usable,
-    make_password,
-)
+from django.contrib.auth.hashers import (check_password, is_password_usable,
+                                         make_password)
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy
@@ -80,7 +77,7 @@ class Dashboard(CloneMixin, BaseModel):
     def public_url(self):
         domain = (
             f"https://{self.project.cname.domain}"
-            if hasattr(self.project, "cname")
+            if self.project.cname is not None
             else settings.EXTERNAL_URL
         )
         return f"{domain}/dashboards/{self.shared_id}"
