@@ -93,7 +93,7 @@ class Team(BaseModel):
 
     @property
     def plan(self):
-        return "Lifetime Deal for Gyana" if self.active_codes > 0 else "Free"
+        return "Lifetime Deal for Gyana (AppSumo)" if self.active_codes > 0 else "Free"
 
     @property
     def row_limit(self):

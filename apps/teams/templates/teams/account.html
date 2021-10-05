@@ -4,16 +4,16 @@
 
 {% block tab %}
 <section class="account">
-  <h2 class="mb-7">Account usage</h2>
-
-  <label class="mb-7">
-    <h3 class="text-blue">{{ team.plan }}</h3>
-  </label>
+  <h2 class="mb-7">Billing</h2>
 
   <div class="account__plan">
     <div class="card card--none">
       <table class='table' style="width: auto;">
         <tbody>
+          <tr>  
+            <td><h3>Plan</h3></td>
+            <td class="text-blue">{{ team.plan }}</td>
+          </tr>
           <tr>
             <td><h3>Row usage</h3></td>
             <td>
