@@ -1,8 +1,10 @@
 from django import forms
 from django.utils.datastructures import MultiValueDict
 
+from apps.base.forms import BaseModelForm
 
-class LiveUpdateForm(forms.ModelForm):
+
+class LiveUpdateForm(BaseModelForm):
 
     hidden_live = forms.CharField(widget=forms.HiddenInput(), required=True)
 

@@ -1,65 +1,33 @@
 from allauth.account.views import SignupView
-from apps.base.frames import TurboFrameListView
 from apps.base.mixins import PageTitleMixin
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 from apps.users.helpers import require_email_confirmation
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls.base import reverse
-from django.utils import timezone
 from django.views.generic import DetailView
-from django_tables2 import SingleTableView
 from turbo_response.mixins import TurboFormMixin
+from turbo_response.response import HttpResponseSeeOther
 from turbo_response.views import TurboFormView
 
 from .forms import (
-    AppsumoLandingform,
+    AppsumoCodeForm,
     AppsumoRedeemForm,
     AppsumoRedeemNewTeamForm,
     AppsumoReviewForm,
     AppsumoSignupForm,
-    AppsumoStackForm,
 )
 from .models import AppsumoCode, AppsumoReview
-from .tables import AppsumoCodeTable
-
-
-class AppsumoCodeList(TeamMixin, SingleTableView, TurboFrameListView):
-    template_name = "appsumo/list.html"
-    model = AppsumoCode
-    table_class = AppsumoCodeTable
-    paginate_by = 20
-    turbo_frame_dom_id = "team_appsumo:list"
-
-    def get_queryset(self):
-        return self.team.appsumocode_set.all()
-
-
-class AppsumoStack(TeamMixin, TurboFormView):
-    template_name = "appsumo/stack.html"
-    model = AppsumoCode
-    form_class = AppsumoStackForm
-
-    def form_valid(self, form):
-
-        instance = form.cleaned_data["code"]
-        instance.team = self.team
-        instance.redeemed = timezone.now()
-        instance.redeemed_by = self.request.user
-        instance.save()
-
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        return reverse("teams:account", args=(self.team.id,))
 
 
 class AppsumoLanding(TurboFormView):
     template_name = "appsumo/landing.html"
-    form_class = AppsumoLandingform
+    form_class = AppsumoCodeForm
 
     def form_valid(self, form):
-        return redirect("appsumo:redirect", form.cleaned_data["code"])
+        return HttpResponseSeeOther(
+            reverse("appsumo:redirect", args=(form.cleaned_data["code"],))
+        )
 
 
 class AppsumoRedirect(PageTitleMixin, DetailView):
@@ -85,13 +53,17 @@ class AppsumoSignup(PageTitleMixin, TurboFormMixin, SignupView):
     template_name = "appsumo/signup.html"
     page_title = "AppSumo"
 
+    @property
+    def code(self):
+        return AppsumoCode.objects.get(code=self.kwargs.get("code"))
+
     # need to override otherwise global settings are used
     def get_form_class(self):
         return AppsumoSignupForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["code"] = self.kwargs.get("code")
+        kwargs["code"] = self.code
         return kwargs
 
     def get_success_url(self):
@@ -109,10 +81,10 @@ class AppsumoRedeem(TurboUpdateView):
 
     @property
     def team_exists(self):
-        return self.request.user.teams.count()
+        return self.request.user.teams.count() > 0
 
     def get_form_class(self):
-        return AppsumoRedeemForm if self.team_exists > 0 else AppsumoRedeemNewTeamForm
+        return AppsumoRedeemForm if self.team_exists else AppsumoRedeemNewTeamForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -121,6 +93,19 @@ class AppsumoRedeem(TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse("web:home")
+
+
+class AppsumoStack(TeamMixin, TurboFormView):
+    template_name = "appsumo/stack.html"
+    form_class = AppsumoCodeForm
+
+    def form_valid(self, form):
+        code = get_object_or_404(AppsumoCode, code=form.cleaned_data["code"])
+        code.redeem_team(self.team, self.request.user)
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse("teams:account", args=(self.team.id,))
 
 
 class AppsumoReview(TeamMixin, TurboCreateView):

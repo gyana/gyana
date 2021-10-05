@@ -1,3 +1,5 @@
+import logging
+
 from apps.base.analytics import NODE_UPDATED_EVENT, track_node
 from apps.base.frames import (
     TurboFrameDetailView,
@@ -12,7 +14,7 @@ from django.urls import reverse
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 
-from .bigquery import NodeResultNone, get_query_from_node
+from .bigquery import NodeResultNone, error_name_to_snake, get_query_from_node
 from .forms import KIND_TO_FORM
 from .models import Node
 
@@ -117,9 +119,16 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        error_template = f"nodes/errors/{self.object.error}.html"
-        if template_exists(error_template):
-            context["error_template"] = error_template
+        if self.object.error:
+            error_template = f"nodes/errors/{self.object.kind}_{self.object.error}.html"
+            if template_exists(error_template):
+                context["error_template"] = error_template
+            elif (
+                error_template := f"nodes/errors/{self.object.error}.html"
+            ) and template_exists(error_template):
+                context["error_template"] = error_template
+            else:
+                context["error_template"] = "nodes/errors/default.html"
         return context
 
     def get_table(self, **kwargs):
@@ -131,5 +140,8 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
                 self.request, paginate=self.get_table_pagination(table)
             ).configure(table)
         except Exception as err:
+            self.object.error = error_name_to_snake(err)
+            self.object.save()
+            logging.error(err, exc_info=err)
             # We have to return
             return type("DynamicTable", (Table,), {})(data=[])

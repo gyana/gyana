@@ -1,10 +1,12 @@
 .clipboard-copy {
+  align-items: center;
+  background-color: var(--c-gray-20);
+  border-radius: 4px;
+  border: 1px solid var(--c-gray);
   display: flex;
   flex-direction: row;
-  border: 1px solid var(--c-gray);
-  border-radius: 4px;
-  padding: 0.4rem;
-  background-color: var(--c-gray-20);
+  justify-content: space-between;
+  padding: 0.6rem;
 
   a {
     font-size: 1rem;

@@ -7,9 +7,16 @@ export default class extends Controller {
   connect() {
     this.changed = false
     const params = new URLSearchParams(window.location.search)
+
     if (params.get('modal_item')) {
       this.modalTarget.classList.remove('hidden')
     }
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key == "Escape") {
+        this.close()
+      }
+    })
   }
 
   open(event) {
@@ -22,9 +29,12 @@ export default class extends Controller {
 
     this.turboFrameTarget.setAttribute('src', event.currentTarget.getAttribute('data-src'))
 
-    const params = new URLSearchParams(location.search)
-    params.set('modal_item', event.currentTarget.getAttribute('data-item'))
-    history.replaceState({}, '', `${location.pathname}?${params.toString()}`)
+    if (event.currentTarget.getAttribute('data-item')) {
+      const params = new URLSearchParams(location.search)
+      params.set('modal_item', event.currentTarget.getAttribute('data-item'))
+      history.replaceState({}, '', `${location.pathname}?${params.toString()}`)
+    }
+
     this.modalTarget.classList.remove('hidden')
   }
 
@@ -92,12 +102,6 @@ export default class extends Controller {
 
   closeWarning() {
     this.closingWarningTarget.classList.add('hidden')
-  }
-
-  onInput(event) {
-    if (event.key == 'Escape') {
-      this.close()
-    }
   }
 
   save() {

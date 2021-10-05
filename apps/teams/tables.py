@@ -1,9 +1,12 @@
+from django.db import models
+from django.template import loader
+from django_tables2 import Column, LinkColumn, Table
+from django_tables2.utils import A
+
+from apps.base.table import NaturalDatetimeColumn
 from apps.projects.models import Project
 from apps.teams.models import Membership
 from apps.users.models import CustomUser
-from apps.base.table import NaturalDatetimeColumn
-from django_tables2 import Column, LinkColumn, Table
-from django_tables2.utils import A
 
 
 class TeamMembershipTable(Table):
@@ -32,16 +35,47 @@ class TeamProjectsTable(Table):
         attrs = {"class": "table"}
         fields = (
             "name",
+            "num_rows",
             "integration_count",
             "workflow_count",
             "dashboard_count",
             "created",
             "updated",
+            "access",
         )
 
     name = Column(linkify=True)
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
+    num_rows = Column(verbose_name="Rows")
     integration_count = Column(verbose_name="Integrations")
     workflow_count = Column(verbose_name="Workflows")
     dashboard_count = Column(verbose_name="Dashboards")
+
+    def render_access(self, value, record):
+        template = loader.get_template("projects/_project_access.html")
+        return template.render({"value": record.access})
+
+    def order_num_rows(self, queryset, is_descending):
+        queryset = queryset.annotate(
+            num_rows=models.Sum("integration__table__num_rows")
+        ).order_by(("-" if is_descending else "") + "num_rows")
+        return (queryset, True)
+
+    def order_integration_count(self, queryset, is_descending):
+        queryset = queryset.annotate(
+            integration_count_=models.Count("integration")
+        ).order_by(("-" if is_descending else "") + "integration_count_")
+        return (queryset, True)
+
+    def order_workflow_count(self, queryset, is_descending):
+        queryset = queryset.annotate(workflow_count_=models.Count("workflow")).order_by(
+            ("-" if is_descending else "") + "workflow_count_"
+        )
+        return (queryset, True)
+
+    def order_dashboard_count(self, queryset, is_descending):
+        queryset = queryset.annotate(
+            dashboard_count_=models.Count("dashboard")
+        ).order_by(("-" if is_descending else "") + "dashboard_count_")
+        return (queryset, True)

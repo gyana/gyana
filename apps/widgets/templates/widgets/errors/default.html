@@ -1,0 +1,9 @@
+<div class='flex flex-col items-center justify-center flex-1  p-10'>
+  {% block error_page %}
+    {% if request.GET.mode == 'edit' %}
+      {% include 'widgets/errors/_configure_widget.html' %}
+    {% else %}
+      <p>No widget to display!</p>
+    {% endif %}
+  {% endblock error_page %}
+    </div>

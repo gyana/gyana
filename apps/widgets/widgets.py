@@ -45,5 +45,6 @@ class VisualSelect(ChoiceWidget):
                 "maxMetrics": MAX_NUMS.get(choice.value) or -1,
             }
             for choice in Widget.Kind
+            if choice.value != Widget.Kind.TEXT
         ]
         return context

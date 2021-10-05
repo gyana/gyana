@@ -2,9 +2,9 @@ import ibis.expr.datatypes as dt
 from apps.base.clients import get_dataframe
 from apps.nodes.bigquery import get_query_from_node
 from apps.nodes.models import Node
+from apps.projects.access import user_can_access_project
 from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
-from apps.teams.roles import user_can_access_team
 from apps.widgets.models import Widget
 from django.http import Http404
 from rest_framework.decorators import api_view
@@ -34,10 +34,10 @@ def autocomplete_options(request):
     )
     if (
         parentType == "widget"
-        and user_can_access_team(request.user, parent.dashboard.project.team)
+        and user_can_access_project(request.user, parent.dashboard.project)
         or (
             parentType == "node"
-            and user_can_access_team(request.user, parent.workflow.project.team)
+            and user_can_access_project(request.user, parent.workflow.project)
         )
     ):
         # For widgets we are sending the table information

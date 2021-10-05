@@ -95,4 +95,4 @@ class InviteDelete(TeamMixin, DeleteView):
     model = Invite
 
     def get_success_url(self) -> str:
-        return reverse("team_invites:list", args=(self.team.id,))
+        return reverse("team_members:list", args=(self.team.id,))

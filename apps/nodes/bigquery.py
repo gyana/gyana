@@ -4,6 +4,7 @@ import re
 
 import ibis
 from apps.base.clients import bigquery_client, ibis_client
+from apps.base.errors import error_name_to_snake
 from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
@@ -360,14 +361,6 @@ def _validate_arity(func, len_args):
 
     min_arity, variable_args = get_arity_from_node_func(func)
     assert len_args >= min_arity if variable_args else len_args == min_arity
-
-
-pattern = re.compile(r"(?<!^)(?=[A-Z])")
-
-
-def error_name_to_snake(error):
-    """Converts a exception class name to snake case"""
-    return pattern.sub("_", error.__class__.__name__).lower()
 
 
 def get_query_from_node(node):

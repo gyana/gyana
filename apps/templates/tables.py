@@ -46,7 +46,8 @@ class TemplateIntegrationTable(tables.Table):
         {% else %}
              <a class="link" href="{% url 'project_integrations_connectors:create' table.project.id %}?service={{ record.source_integration.connector.service }}" data-turbo-frame="_top"> Connect </a>
         {% endif %}
-        """
+        """,
+        orderable=False,
     )
     state = PendingStatusColumn(accessor="target_integration")
 

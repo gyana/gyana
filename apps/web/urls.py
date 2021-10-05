@@ -2,12 +2,16 @@ from django.conf import settings
 from django.urls import path
 from django.views.generic import TemplateView
 
-from . import views
+from . import frames, views
 
 app_name = "web"
+
 urlpatterns = [
     path("", views.home, name="home"),
     path("toggle-sidebar", views.toggle_sidebar),
+
+    # Trubo frames
+    path("help", frames.HelpModal.as_view(), name="help"),
 ]
 
 # Users should not be able to access error pages directly.

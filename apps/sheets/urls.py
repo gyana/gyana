@@ -1,4 +1,4 @@
-from apps.projects.access import login_and_project_required
+from apps.projects.access import login_and_project_enabled_required
 from django.urls import path
 
 from . import frames, views
@@ -17,7 +17,7 @@ integration_urlpatterns = (
     [
         path(
             "new",
-            login_and_project_required(views.SheetCreate.as_view()),
+            login_and_project_enabled_required(views.SheetCreate.as_view()),
             name="create",
         )
     ],

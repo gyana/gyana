@@ -72,6 +72,7 @@ THIRD_PARTY_APPS = [
     "invitations",
     "hijack",
     "hijack.contrib.admin",
+    "waffle",
 ]
 
 # Put your project-specific apps here
@@ -113,6 +114,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "hijack.middleware.HijackUserMiddleware",
+    "waffle.middleware.WaffleMiddleware",
 ]
 
 LOGGING = {

@@ -1,4 +1,5 @@
 {% load static %}
+{% load waffle_tags %}
 
 <div class="widgets" data-controller="tf-modal">
   {% if request.GET.mode == 'view' %}
@@ -8,9 +9,10 @@
       <h1>{{ dashboard.name }}</h1>
     </div>
 
-    {% if project.team.plan == "Free" %}
-    <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
-    {% endif %}
+    {% flag 'beta' %}
+    {% else %}
+      <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
+    {% endflag %}
   </header>
   {% endif %}
   

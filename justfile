@@ -24,7 +24,7 @@ seed:
     ./manage.py loaddata cypress/fixtures/fixtures.json
 
 fixtures:
-    ./manage.py dumpdata -e admin -e auth -e contenttypes -e sessions > cypress/fixtures/fixtures.json
+    ./manage.py dumpdata -e admin -e auth -e contenttypes -e sessions -e silk > cypress/fixtures/fixtures.json
     yarn prettier --write cypress/fixtures/fixtures.json
 
 shell:
@@ -66,5 +66,5 @@ cloc:
 startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
 
-test:
-    python -m pytest apps/*/tests/ --no-migrations --disable-pytest-warnings
+test TEST=".":
+    python -m pytest --no-migrations --disable-pytest-warnings {{TEST}}

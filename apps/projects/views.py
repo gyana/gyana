@@ -6,20 +6,23 @@ from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
+from waffle import flag_is_active
 
-from .forms import ProjectForm
+from .forms import ProjectCreateForm, ProjectForm
 from .models import Project
 
 
 class ProjectCreate(TeamMixin, TurboCreateView):
     template_name = "projects/create.html"
     model = Project
-    form_class = ProjectForm
+    form_class = ProjectCreateForm
 
-    def get_initial(self):
-        initial = super().get_initial()
-        initial["team"] = self.team
-        return initial
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs["current_user"] = self.request.user
+        form_kwargs["team"] = self.team
+        form_kwargs["is_beta"] = flag_is_active(self.request, "beta")
+        return form_kwargs
 
     def get_success_url(self) -> str:
         return reverse("projects:detail", args=(self.object.id,))
@@ -29,6 +32,7 @@ class ProjectCreate(TeamMixin, TurboCreateView):
         analytics.track(
             self.request.user.id, PROJECT_CREATED_EVENT, {"id": form.instance.id}
         )
+
         return redirect
 
 
@@ -51,6 +55,13 @@ class ProjectUpdate(TurboUpdateView):
     model = Project
     form_class = ProjectForm
     pk_url_kwarg = "project_id"
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs["current_user"] = self.request.user
+        form_kwargs["team"] = self.object.team
+        form_kwargs["is_beta"] = flag_is_active(self.request, "beta")
+        return form_kwargs
 
     def get_success_url(self) -> str:
         return reverse("projects:detail", args=(self.object.id,))

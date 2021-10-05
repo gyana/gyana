@@ -1,4 +1,4 @@
-@use "utilities/shadows";
+@use "utilities/mixins";
 
 .widget-card {
   display: flex;
@@ -14,7 +14,7 @@
     width: 100%;
     z-index: calc(var(--z-default) + 1);
 
-    @include shadows.shadow;
+    @include mixins.shadow;
 
     &--view {
       border: 1px solid var(--c-gray-50);

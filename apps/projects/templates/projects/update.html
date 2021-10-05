@@ -5,12 +5,23 @@
   <div class="max-w-lg mb-auto pad">
     <h1 class="project-settings__title">Settings</h1>
 
-    <form method="post" action="{% url 'projects:update' object.id %}" class="form">
+    <form 
+      id='project-{{ object.id }}-update'
+      data-controller="live-update" 
+      method="post" 
+      action="{% url 'projects:update' object.id %}" 
+      class="form"
+    >
       {% csrf_token %}
 
       {% include "django/forms/default_form.html" %}
 
-      <button type="submit" class="button button--success button--filled">Save changes</button>
+      <button type="submit" name='submit' value='submit' class="button button--success button--filled">Save changes</button>
+
+      <span data-live-update-target="loading" class="workflow-detail__sidebar__loading hidden">
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+      </span>
+
     </form>
   </div>
 

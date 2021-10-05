@@ -1,8 +1,9 @@
+from apps.workflows.access import login_and_workflow_required
 from django.urls import path
 from rest_framework import routers
 
 from . import frames, rest
-from .access import login_and_node_required, login_and_workflow_required
+from .access import login_and_node_required
 
 app_name = "nodes"
 urlpatterns = [

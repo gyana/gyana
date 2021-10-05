@@ -28,7 +28,9 @@
   {% else %}
   <label for="{{ bound_field.id_for_label }}">
     {{ bound_field.label }}
-    <p class=" input__help-text">{{ bound_field.help_text }}</p>
+    {% if bound_field.help_text %}
+    <p class="input__help-text">{{ bound_field.help_text }}</p>
+    {% endif %}
   </label>
   {{ bound_field }}
   {% endif %}

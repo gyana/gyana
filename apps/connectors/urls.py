@@ -1,7 +1,10 @@
 from django.conf import settings
 from django.urls import path
 
-from apps.projects.access import login_and_project_required
+from apps.projects.access import (
+    login_and_project_enabled_required,
+    login_and_project_required,
+)
 
 from . import frames, views
 from .access import login_and_connector_required
@@ -30,7 +33,7 @@ integration_urlpatterns = (
     [
         path(
             "new",
-            login_and_project_required(views.ConnectorCreate.as_view()),
+            login_and_project_enabled_required(views.ConnectorCreate.as_view()),
             name="create",
         ),
         path(

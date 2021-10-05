@@ -1,4 +1,4 @@
-@use "utilities/shadows";
+@use "utilities/mixins";
 
 .widgets {
   display: flex;
@@ -15,10 +15,11 @@
     overflow: visible;
     position: relative;
 
-    @include shadows.shadow;
+    @include mixins.shadow;
   }
 
   &__grid {
+    --grid-size: 15px;
     background-image: radial-gradient(circle at 1px 1px, var(--c-gray) 1px, transparent 0);
     background-size: var(--grid-size) var(--grid-size);
   }

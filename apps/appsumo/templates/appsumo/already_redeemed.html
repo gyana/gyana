@@ -6,7 +6,7 @@
 <section>
   {% if request.user in object.team.members.all %}
     <p class="text-center">
-        You've already redeem the code <strong>{{ object.code }}</strong> with your team
+        You've already redeemed the code <strong>{{ object.code }}</strong> with your team
         <a class='link' href="{% url 'teams:detail' object.team.id %}">
         {{ object.team.name }}
         </a>.
@@ -24,8 +24,7 @@
   <div class="text-center">
     <h3 class="mb-3">Code already redeemed</h3>
     <p>
-      This code (<strong>{{ object.code }}</strong>) has already been redeemed
-      by another user. <br>
+      This code (<strong>{{ object.code }}</strong>) has already been redeemed by another user. <br>
       If you believe this is an error, please contact
       <a class='link' href='mailto: support@gyana.com'>support@gyana.com</a> 
       for support.

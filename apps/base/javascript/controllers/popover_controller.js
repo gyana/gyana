@@ -4,6 +4,7 @@ export default class extends Controller {
   static targets = ['trigger', 'body']
   static values = {
     dontHideBody: String,
+    position: String,
   }
 
   connect() {
@@ -17,11 +18,11 @@ export default class extends Controller {
 
     window.addEventListener('click', this.listener.bind(this))
 
-    if (this.dontHideBodyValue !== 'True') {
-      this.bodyTarget.style.display = 'none'
+    if (this.dontHideBodyValue === 'True') {
+      this.bodyTarget.style.display = 'block'
     }
 
-    this.bodyTarget.style.position = 'absolute'
+    this.bodyTarget.style.position = this.positionValue || 'absolute'
     this.bodyTarget.style.right = 0
   }
 
