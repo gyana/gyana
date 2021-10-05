@@ -67,21 +67,21 @@
             </tr>
           {% endif %}
 
-          {% if team.appsumo_plan.cnames %}
+          {% if team.plan.cnames %}
             <tr>
               <td><h3>CNAMEs</h3></td>
-              <td>{{ team.appsumo_plan.cnames }}</td>
+              <td>{{ team.plan.cnames }}</td>
             </tr>
           {% endif %}
 
-          {% if team.appsumo_plan.sub_accounts %}
+          {% if team.plan.sub_accounts %}
             <tr>
               <td><h3>Sub Accounts</h3></td>
-              <td>{{ team.total_invite_only_projects }} / {% if  team.appsumo_plan.sub_accounts != -1 %}{{ team.appsumo_plan.sub_accounts }}{% else %}∞</i>{% endif %}</td>
+              <td>{{ team.total_invite_only_projects }} / {% if  team.plan.sub_accounts != -1 %}{{ team.plan.sub_accounts }}{% else %}∞</i>{% endif %}</td>
             </tr>
           {% endif %}
 
-          {% if team.appsumo_plan.white_labeling %}
+          {% if team.plan.white_labeling %}
             <tr>
               <td><h3>White labeling</h3></td>
               <td><i class="fa fa-check text-green"></i></td>

@@ -94,13 +94,12 @@ class Team(BaseModel):
 
     @property
     def plan(self):
-        return PLANS["appsumo"] if self.active_codes > 0 else PLANS["free"]
-
-    @property
-    def appsumo_plan(self):
         from apps.appsumo.account import get_deal
 
-        return get_deal(self.appsumocode_set.all()).get("cnames")
+        if self.active_codes > 0:
+            return {**PLANS["appsumo"], **get_deal(self.appsumocode_set.all())}
+
+        return PLANS["free"]
 
     @property
     def row_limit(self):
@@ -136,11 +135,13 @@ class Team(BaseModel):
 
     @property
     def can_create_invite_only_project(self):
-        if self.appsumo_plan is None:
+        sub_accounts = self.plan.get("sub_accounts")
+
+        if sub_accounts is None:
             return False
-        if self.appsumo_plan["sub_accounts"] == -1:
+        if sub_accounts == -1:
             return True
-        return self.total_invite_only_projects < self.appsumo_plan["sub_accounts"]
+        return self.total_invite_only_projects < sub_accounts
 
     @property
     def admins(self):
