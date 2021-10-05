@@ -1,9 +1,16 @@
-<div data-controller='popover'>
-  <button data-popover-target="trigger" class="button button--sm" data-action="popover#trigger">
+<div data-controller="popover">
+  <button
+    class="button button--sm"
+    data-popover-target="trigger"
+    data-action="popover#trigger"
+  >
     Add widget <i class="fas fa-angle-up fa-rotate-180"></i>
   </button>
 
-  <ul data-popover-target="body" class="list list--bordered" hidden style="width:auto;margin-top:6px;">
+  <ul
+    data-popover-target="body"
+    class="popover-body popover-body--center list list--bordered"
+  >
     {% for id, txt, icon in choices %}
     <li class="whitespace-nowrap" data-id="{{ id }}">
       <form method="post" action="{% url 'dashboard_widgets:create' project.id dashboard.id %}?mode=edit" class="form">

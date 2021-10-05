@@ -1,13 +1,12 @@
-{% extends "web/base.html" %}
+{% extends "dashboards/public.html" %}
 
-{% block sidebar %}
-{# Getting rid of the top navigation bar here. #}
+{% block head %}
+<title>Password protected page</title>
 {% endblock %}
 
 {% block body %}
-<div class="flex flex-col mx-auto justify-center items-center">
-  <h2 class="mb-7">Password-protected dashboard</h2>
-
+<div class="flex flex-col m-auto justify-center items-center">
+  <h2 class="mb-7">Password protected page</h2>
   <form
     class="w-full form--no-layout"
     method='post' 
@@ -17,7 +16,13 @@
 
     <label class="mb-7">
       <p>Password</p>
-      <input type='password' name='password' autocomplete="one-time-code"></input>
+
+      <input
+        type='password'
+        name='password'
+        autocomplete="one-time-code"
+        required
+      ></input>
       <p class="text-red">{{ errors.password|escape }}</p>
     </label>
 

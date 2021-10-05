@@ -68,4 +68,5 @@ class DashboardShareForm(LiveUpdateForm):
             dashboard.password_set = timezone.now()
         if commit:
             dashboard.save()
+
         return dashboard

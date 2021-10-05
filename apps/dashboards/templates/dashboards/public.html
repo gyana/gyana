@@ -2,13 +2,17 @@
 {% load waffle_tags %}
 
 <!DOCTYPE html>
-<html class="h-full">
+<html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  {% include 'web/components/meta.html' %}
+  {% flag 'beta' %}
+  {% else %}
+    {% include 'web/components/meta.html' %}
+  {% endflag %}
+
   {% flag 'beta' %}
     {% if project.team.icon %}
       <link rel="icon" type="image/png" sizes="16x16" href="{{ project.team.icon.url }}">
@@ -31,8 +35,13 @@
   <script src="{% static 'js/stimulus-bundle.js' %}"></script>
   <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
   <script src="{% url 'api_schemajs' %}"></script>
+
+  {% block head %}
+    <title>{{ dashboard.name }}{% flag 'beta' %}{% else %} | Gyana {% endflag %}</title>
+  {% endblock %}
 </head>
-<body class="flex flex-col pad">
+<body class="pad">
+  {% block body %}
   <div class="widgets flex items-center justify-center">
     <header class="flex w-full justify-between mb-7">
       <div class="flex justify-center items-center self-start">
@@ -84,5 +93,6 @@
   </div>
 
   {% include 'components/fusionchart_scripts.html' %}
+  {% endblock %}
 </body>
 </html>
