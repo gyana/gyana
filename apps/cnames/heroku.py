@@ -32,7 +32,7 @@ def create_heroku_domain(cname: CName):
 
 def get_heroku_domain_status(cname: CName):
     domain = heroku_client().get_domain(cname.domain)
-    return domain.acm_status
+    return domain.acm_status or "waiting"
 
 
 def delete_heroku_domain(cname: CName):
