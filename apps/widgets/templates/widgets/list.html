@@ -16,27 +16,29 @@
   </header>
   {% endif %}
   
-  <div id="dashboard-widget-container"
-       class="widgets__canvas {% if request.GET.mode != 'view' %}widgets__grid{%endif%}"
-       data-controller="widget-list"
-       style="min-width:{{ dashboard.width }}px;min-height:{{ dashboard.height }}px;">
-    {% for object in object_list %}
-    {% include 'widgets/widget_component.html' %}
-    {% empty %}
-    {% if request.GET.mode != 'view' %}
-    <div id='dashboard-widget-placeholder' class="w-full p-2">
-      <div class="widget-card">
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class="placeholder-scr__icon far fa-map-marker-question fa-2x"></i>
-          <p class='placeholder-scr__title mb-2'>This dashboard needs some widgets!</p>
+  <div class="widgets__canvas">
+    <div id="dashboard-widget-container"
+        class="{% if request.GET.mode != 'view' %}widgets__grid{%endif%}"
+        data-controller="widget-list"
+        style="min-width:{{ dashboard.width }}px;min-height:{{ dashboard.height }}px;">
+      {% for object in object_list %}
+      {% include 'widgets/widget_component.html' %}
+      {% empty %}
+      {% if request.GET.mode != 'view' %}
+      <div id='dashboard-widget-placeholder' class="w-full p-2">
+        <div class="widget-card">
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon far fa-map-marker-question fa-2x"></i>
+            <p class='placeholder-scr__title mb-2'>This dashboard needs some widgets!</p>
 
-          {% include 'dashboards/_add_widget.html' with choices=choices %}
+            {% include 'dashboards/_add_widget.html' with choices=choices %}
 
+          </div>
         </div>
       </div>
+      {% endif %}
+      {% endfor %}
     </div>
-    {% endif %}
-    {% endfor %}
   </div>
   {% comment %}
   The modal needs to be below the container because otherwise the
