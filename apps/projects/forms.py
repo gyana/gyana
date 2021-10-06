@@ -22,6 +22,7 @@ class ProjectForm(LiveUpdateForm):
             members_field.widget.current_user = current_user
 
         if cname_field := self.fields.get("cname"):
+            cname_field.empty_label = "No CNAME (gyana.com)"
             cname_field.queryset = self._team.cname_set.all()
 
     def get_live_fields(self):
