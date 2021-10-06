@@ -9,24 +9,13 @@
   <h2 class="mb-7">Password protected page</h2>
   <form
     class="w-full form--no-layout"
-    method='post' 
-    action="{% url "dashboards:login" object.id %}"
+    method='post'
   >
     {% csrf_token %}
 
-    <label class="mb-7">
-      <p>Password</p>
+    {% include "django/forms/default_form.html" %}
 
-      <input
-        type='password'
-        name='password'
-        autocomplete="one-time-code"
-        required
-      ></input>
-      <p class="text-red">{{ errors.password|escape }}</p>
-    </label>
-
-    <button data-turbo='false' class='button button-primary w-full'  type='submit'>Submit</button>
+    <button data-turbo='false' class='button button-primary w-full mt-4' type='submit'>Submit</button>
   </form>
 </div>
 {% endblock %}

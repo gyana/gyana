@@ -3,8 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from . import frames, views
-from .access import (dashboard_is_in_template, dashboard_is_password_protected,
-                     dashboard_is_public, login_and_dashboard_required)
+from .access import (
+    dashboard_is_in_template,
+    dashboard_is_password_protected,
+    dashboard_is_public,
+    login_and_dashboard_required,
+)
 
 app_name = "dashboards"
 
@@ -22,7 +26,7 @@ urlpatterns = [
     ),
     path(
         "<str:shared_id>/login",
-        dashboard_is_password_protected(views.dashboard_login),
+        dashboard_is_password_protected(views.DashboardLogin.as_view()),
         name="login",
     ),
     # frames

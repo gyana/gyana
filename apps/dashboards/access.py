@@ -4,7 +4,7 @@ from apps.base.access import login_and_permission_to_access
 from apps.projects.access import user_can_access_project
 from dateutil.parser import isoparse
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
 from .models import Dashboard
@@ -48,9 +48,7 @@ def dashboard_is_public(view_func):
                 kwargs["dashboard"] = dashboard
                 return view_func(request, *args, **kwargs)
 
-            return render(
-                request, "dashboards/login.html", context={"object": dashboard}
-            )
+            return redirect(reverse("dashboards:login", args=(dashboard.shared_id,)))
 
         return render(request, "404.html", status=404)
 
