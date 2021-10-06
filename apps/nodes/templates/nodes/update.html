@@ -5,7 +5,11 @@
 {% if parent_error_node is None %}
 
   {% if node.kind == "input" or node.has_enough_parents %}
-  <div class="workflow-modal__section" data-controller="node-update" data-node-update-id-value="{{ node.id }}">
+  <div
+    class="workflow-modal__section workflow-modal__{{ node.kind }}"
+    data-controller="node-update"
+    data-node-update-id-value="{{ node.id }}"
+  >
     <div class="workflow-modal__header">
       <turbo-frame id="node-editable-title">
         {% include 'nodes/name.html' %}
@@ -104,8 +108,6 @@
         </turbo-frame>
       {% endif %}
     </div>
-
-  
 
   {% else %}
     <div class='workflow-detail__warning'>
