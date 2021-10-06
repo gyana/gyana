@@ -9,9 +9,9 @@ from .models import CName
 
 HEROKU_DOMAIN_STATE_TO_ICON = {
     "cert issued": "fa fa-check text-green",
-    "in progress": "fa fa-spinner-third",
-    "dns verified": "fa fa-spinner-third",
-    "waiting": "fa fa-spinner-third",
+    "in progress": "fa fa-spinner-third fa-spin",
+    "dns verified": "fa fa-spinner-third fa-spin",
+    "waiting": "fa fa-spinner-third fa-spin",
     "failing": "fa fa-exclamation-circle text-orange",
     "failed": "fa fa-times text-red",
 }

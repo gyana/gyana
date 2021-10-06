@@ -62,7 +62,7 @@ def dashboard_is_password_protected(view_func):
 
     @wraps(view_func)
     def decorator(request, *args, **kwargs):
-        dashboard = Dashboard.objects.get(pk=kwargs["pk"])
+        dashboard = Dashboard.objects.get(shared_id=kwargs["shared_id"])
         if (
             dashboard
             and dashboard.shared_status == Dashboard.SharedStatus.PASSWORD_PROTECTED
