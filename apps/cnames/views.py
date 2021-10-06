@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.urls import reverse_lazy
 from django.urls.base import reverse
 from django.views.generic.edit import DeleteView
@@ -18,6 +19,11 @@ class CNameCreate(TeamMixin, TurboCreateView):
         kwargs = super().get_form_kwargs()
         kwargs["team"] = self.team
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cname_domain'] = settings.CNAME_DOMAIN
+        return context
 
     def get_success_url(self) -> str:
         return reverse("teams:update", args=(self.team.id,))

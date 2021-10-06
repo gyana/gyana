@@ -393,3 +393,5 @@ HELLONEXT_SSO_TOKEN = os.environ.get("HELLONEXT_SSO_TOKEN")
 
 HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY")
 HEROKU_APP = os.environ.get("HEROKU_APP")
+
+CNAME_DOMAIN = os.environ.get("CNAME_DOMAIN")
