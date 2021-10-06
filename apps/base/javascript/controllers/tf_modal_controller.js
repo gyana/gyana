@@ -104,6 +104,17 @@ export default class extends Controller {
     this.closingWarningTarget.classList.add('hidden')
   }
 
+  // Trigger save and preview without clicking save and preview button
+  preview() {
+    this.changed = false
+
+    setTimeout(() => {
+      this.formTarget.requestSubmit(
+        this.formTarget.querySelector("button[value*='Save & Preview']")
+      )
+    }, 0);
+  }
+
   save() {
     this.changed = false
   }
