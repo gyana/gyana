@@ -2,6 +2,8 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from safedelete.models import SafeDeleteModel
+from safedelete.models import SOFT_DELETE_CASCADE
 
 from apps.base.models import BaseModel
 
@@ -11,7 +13,9 @@ from .config import PLANS
 WARNING_BUFFER = 0.2
 
 
-class Team(BaseModel):
+class Team(BaseModel, SafeDeleteModel):
+    _safedelete_policy = SOFT_DELETE_CASCADE
+
     icon = models.FileField(upload_to="team-icons/", null=True, blank=True)
     name = models.CharField(max_length=100)
 
