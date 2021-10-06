@@ -28,7 +28,7 @@ class Project(CloneMixin, BaseModel):
         related_name="invite_only_projects",
         through="ProjectMembership",
     )
-    cname = models.ForeignKey(CName, on_delete=models.SET_NULL, null=True)
+    cname = models.ForeignKey(CName, on_delete=models.SET_NULL, null=True, blank=True)
 
     _clone_m2o_or_o2m_fields = ["integration_set", "workflow_set", "dashboard_set"]
 
