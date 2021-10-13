@@ -78,6 +78,9 @@ module.exports = {
     ringOpacity: false,
     ringOffsetWidth: false,
     ringOffsetColor: false,
+
+    // Causing issues on chrome.
+    fontFamily: false,
   },
   plugins: [],
 }
