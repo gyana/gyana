@@ -1,25 +1,38 @@
 {% extends "teams/base.html" %}
 {% load humanize %}
+{% load waffle_tags %}
 {% load render_table from django_tables2 %}
 {% load help_utils %}
 
 {% block tab %}
 <div class="pad">
-  <h2 class="flex gap-3 items-center">Create a new project {% link_article 'overview' 'templates' %}</h2>
-  <p class="mb-3">Use a blank project or choose a template to get you started.</p>
+  {% flag 'templates' %}
+  <div class="mb-7">
+    <h2 class="flex gap-3 items-center">Create a new project {% link_article 'overview' 'templates' %}</h2>
+    <p class="mb-3">Use a blank project or choose a template to get you started.</p>
 
-  <turbo-frame
-    id="templates:list"
-    src="{% url 'team_templates:list' team.id %}"
-    target="_top"
-  >
-    <div class='placeholder-scr placeholder-scr--fillscreen'>
-      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-      <p class='placeholder-scr__title'>Loading templates...</p>
-    </div>
-  </turbo-frame>
+    <turbo-frame
+      id="templates:list"
+      src="{% url 'team_templates:list' team.id %}"
+      target="_top"
+    >
+      <div class='placeholder-scr placeholder-scr--fillscreen'>
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+        <p class='placeholder-scr__title'>Loading templates...</p>
+      </div>
+    </turbo-frame>
+  </div>
+  {% endflag %}
 
-  <h2 class="mt-7 mb-3 flex gap-3 items-center">Your Projects {% link_article 'overview' 'collaborate' %}</h2>
+  <div class="flex mb-3 justify-between">
+    <h2 class="flex gap-3 items-center">
+      Your Projects {% link_article 'overview' 'collaborate' %}
+    </h2>
+
+    <button class="button button--sm">
+      <i class="fas fa-fw fa-plus"></i> New project
+    </button>
+  </div>
   <div class="card card--none">
     {% render_table table %}
 
