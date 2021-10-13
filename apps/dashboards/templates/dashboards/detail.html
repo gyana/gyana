@@ -96,12 +96,12 @@
 
   {% if not request.GET.mode or request.GET.mode == 'edit' %}
   <a href="?mode=view" class="button button--sm" data-controller="tooltip">
-    <i class="fas fa-eye mr-3"></i> Preview
+    <i class="fas fa-fw fa-eye"></i> Preview
     <span data-tooltip-target="body">Click to change view mode</span>
   </a>
   {% else %}
   <a href="?mode=edit" class="button button--sm" data-controller="tooltip">
-    <i class="fas fa-pen mr-3"></i> Edit
+    <i class="fas fa-fw fa-pen"></i> Edit
     <span data-tooltip-target="body">Click to change view mode</span>
   </a>
   {% endif %}
