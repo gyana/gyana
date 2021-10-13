@@ -41,15 +41,21 @@
       <i class="fas fa-fw fa-4x fa-sparkles text-orange mb-7"></i>
       <h3>This team has no projects</h3>
       <p>
-        You can <a href="{% url 'team_projects:create' team.id %}" class="link">create one</a>
-        or read our <a href="https://intercom.help/gyana/en/articles/5547945-what-is-gyana" target="_blank" class="link">getting started</a> guide.
+        You can <a href="{% url 'team_projects:create' team.id %}" class="link">create one</a>,
+        watch the <a href="{% article_url 'overview' 'intro' %}" target="_blank" class="link">3 minute tutorial video</a>,
+        or read our <a href="{% article_url 'overview' 'intro' %}" target="_blank" class="link">getting started</a> guide.
       </p>
     </div>
     {% else %}
     <div class="pad flex flex-col space-y-8">
       <small>
-        <a href="https://intercom.help/gyana/en/articles/5547945-what-is-gyana" target="_blank" class="link">
-          <i class="fa fa-fw fa-question mr-2"></i>Getting started</a>
+        <a href="{% article_url 'overview' 'intro' %}" target="_blank" class="link">
+          <i class="fa fa-fw fa-question mr-2"></i>Getting started
+        </a>
+      </small>
+      <small>
+          <a href="{% article_url 'overview' 'intro' %}" target="_blank" class="link">
+          <i class="fa fa-fw fa-video mr-2"></i>View tutorial video</a>
       </small>
     </div>
     {% endif  %}
