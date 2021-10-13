@@ -29,9 +29,9 @@
       Your Projects {% link_article 'overview' 'collaborate' %}
     </h2>
 
-    <button class="button button--sm">
+    <a class="button button--sm" href="{% url 'team_projects:create' team.id %}">
       <i class="fas fa-fw fa-plus"></i> New project
-    </button>
+    </a>
   </div>
   <div class="card card--none">
     {% render_table table %}
@@ -41,9 +41,7 @@
       <i class="fas fa-fw fa-4x fa-sparkles text-orange mb-7"></i>
       <h3>This team has no projects</h3>
       <p>
-        You can <a href="{% url 'team_projects:create' team.id %}" class="link">create one</a>,
-        start with a template above,
-        watch the <a href="https://www.loom.com/share/eea3a4c9c6424a77b30ada915f92c12f" target="_blank" class="link">3 minute tutorial video</a>,
+        You can <a href="{% url 'team_projects:create' team.id %}" class="link">create one</a>
         or read our <a href="https://intercom.help/gyana/en/articles/5547945-what-is-gyana" target="_blank" class="link">getting started</a> guide.
       </p>
     </div>
