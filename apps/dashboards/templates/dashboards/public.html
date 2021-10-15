@@ -87,6 +87,16 @@
         {% endfor %}
       </div>
     </div>
+
+    {% if dashboard.shared_status == 'password_protected' %}
+    <footer class="pb-7">
+      <p>
+        <small>
+          <a class="link" href="{% url 'dashboards:logout' dashboard.shared_id %}">Forget me on this browser</a>
+        </small>
+      </p>
+    </footer>
+    {% endif %}
   </div>
 
   {% include 'components/fusionchart_scripts.html' %}
