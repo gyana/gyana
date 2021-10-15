@@ -101,6 +101,7 @@ select {
   }
 }
 
+.label,
 label {
   color: var(--c-black);
   display: flex;
@@ -110,7 +111,12 @@ label {
   line-height: 1.6rem;
   width: 100%;
 
-  &:focus-within {
+  & + & {
+    margin-top: 0.6rem;
+  }
+
+  &:focus-within,
+  &:focus-within label {
     color: var(--c-blue);
   }
 
@@ -265,15 +271,12 @@ label.checkbox__checked {
     }
   }
 }
+
 .input-group {
   display: flex;
   flex-flow: column;
   gap: 0.5rem;
   width: 100%;
-
-  &--row {
-    flex-flow: row;
-  }
 
   & + & {
     margin-top: 0.6rem;
