@@ -49,11 +49,11 @@ input[type='email'] {
   }
 
   [type='password'] ~ .fa-fw::after {
-    content: '\f06e';
+    content: '\f070';
   }
   
   [type='text'] ~ .fa-fw::after {
-    content: '\f070';
+    content: '\f06e';
   }
 }
 
