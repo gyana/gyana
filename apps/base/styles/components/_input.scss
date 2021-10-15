@@ -1,3 +1,5 @@
+@use "utilities/mixins";
+
 %input {
   background-color: var(--c-white);
   border: 1px solid var(--c-gray);
@@ -32,6 +34,27 @@ input[type='text'] {
 
 input[type='email'] {
   @extend %input;
+}
+
+[data-controller*='password-input'] {
+  position: relative;
+
+  @include mixins.fa-icon {
+    color: var(--c-black);
+    display: inline;
+    position: absolute;
+    right: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  [type='password'] ~ .fa-fw::after {
+    content: '\f06e';
+  }
+  
+  [type='text'] ~ .fa-fw::after {
+    content: '\f070';
+  }
 }
 
 input[type='password'] {

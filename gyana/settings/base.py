@@ -51,7 +51,6 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.humanize",
-    "django.forms",
     "django.contrib.postgres",
 ]
 
@@ -97,7 +96,7 @@ PROJECT_APPS = [
     "apps.cnames.apps.CNamesConfig",
 ]
 
-INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
+INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS + ['django.forms']
 
 MIDDLEWARE = [
     "apps.cnames.middleware.HostMiddleware",
