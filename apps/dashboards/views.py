@@ -10,8 +10,13 @@ from apps.widgets.models import WIDGET_CHOICES_ARRAY
 from django.db.models.query import QuerySet
 from django.urls.base import reverse
 from django.utils import timezone
+from django.http import HttpResponseRedirect
 from django.views.generic.detail import DetailView
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView, FormView
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.views.decorators.debug import sensitive_post_parameters
 from django_tables2 import SingleTableView
 from waffle import flag_is_active
 
@@ -154,6 +159,11 @@ class DashboardLogin(FormView):
     def dashboard(self):
         return self.kwargs["dashboard"]
 
+    @method_decorator(sensitive_post_parameters())
+    @method_decorator(never_cache)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["dashboard"] = self.dashboard
@@ -168,3 +178,17 @@ class DashboardLogin(FormView):
 
     def get_success_url(self) -> str:
         return reverse("dashboards:public", args=(self.dashboard.shared_id,))
+
+
+class DashboardLogout(TemplateView):
+    template_name = "dashboards/login.html"
+
+    @property
+    def dashboard(self):
+        return self.kwargs["dashboard"]
+
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwargs):
+        del self.request.session[str(self.dashboard.shared_id)]
+
+        return HttpResponseRedirect(reverse("dashboards:login", args=(self.dashboard.shared_id,)))
