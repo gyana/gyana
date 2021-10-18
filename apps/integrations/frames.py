@@ -10,7 +10,6 @@ from apps.projects.mixins import ProjectMixin
 from apps.tables.bigquery import get_bq_table_schema_from_table, get_query_from_table
 from apps.tables.models import Table
 from apps.tables.tables import TableTable
-from django.utils import timezone
 from django_tables2.views import SingleTableMixin
 
 from .models import Integration
@@ -23,27 +22,22 @@ class IntegrationOverview(ProjectMixin, TurboFrameTemplateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        total = self.project.integration_set.exclude(
-            connector__fivetran_authorized=False
-        )
-        ready = total.filter(ready=True)
-        pending = total.filter(ready=False)
-        broken = ready.filter(
-            kind=Integration.Kind.CONNECTOR,
-            connector__fivetran_succeeded_at__lt=timezone.now()
-            - timezone.timedelta(hours=24),
-        ).count()
+        queryset = self.project.integration_set
+
+        ready = queryset.ready().count()
+        pending = queryset.pending().count()
+        broken = queryset.broken().count()
 
         context_data["integrations"] = {
-            "total": total.count(),
-            "ready": ready.count(),
-            "attention": pending.exclude(state=Integration.State.LOAD).count(),
-            "loading": pending.filter(state=Integration.State.LOAD).count(),
+            "total": ready + pending,
+            "ready": ready,
+            "attention": queryset.needs_attention().count(),
+            "loading": queryset.loading().count(),
             "broken": broken,
-            "operational": broken == 0 and pending.count() == 0,
-            "connectors": ready.filter(kind=Integration.Kind.CONNECTOR).all(),
-            "sheet_count": ready.filter(kind=Integration.Kind.SHEET).count(),
-            "upload_count": ready.filter(kind=Integration.Kind.UPLOAD).count(),
+            "operational": broken == 0 and pending == 0,
+            "connectors": queryset.connectors().all(),
+            "sheet_count": queryset.sheets().count(),
+            "upload_count": queryset.uploads().count(),
         }
 
         return context_data

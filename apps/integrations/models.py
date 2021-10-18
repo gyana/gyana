@@ -9,7 +9,45 @@ from apps.users.models import CustomUser
 from apps.workflows.models import Workflow
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from model_clone.mixins.clone import CloneMixin
+
+PENDING_DELETE_AFTER_DAYS = 7
+
+
+class IntegrationsManager(models.Manager):
+    def pending(self):
+        return self.exclude(connector__fivetran_authorized=False).filter(ready=False)
+
+    def ready(self):
+        return self.exclude(connector__fivetran_authorized=False).filter(ready=True)
+
+    def broken(self):
+        return self.ready().filter(
+            kind=Integration.Kind.CONNECTOR,
+            connector__fivetran_succeeded_at__lt=timezone.now()
+            - timezone.timedelta(hours=24),
+        )
+
+    def needs_attention(self):
+        return self.pending().exclude(state=Integration.State.LOAD)
+
+    def loading(self):
+        return self.pending().filter(state=Integration.State.LOAD)
+
+    def connectors(self):
+        return self.ready().filter(kind=Integration.Kind.CONNECTOR)
+
+    def sheets(self):
+        return self.ready().filter(kind=Integration.Kind.SHEET)
+
+    def uploads(self):
+        return self.ready().filter(kind=Integration.Kind.UPLOAD)
+
+    def pending_should_be_deleted(self):
+        return self.pending().filter(
+            created__lt=timezone.now() - timedelta(days=PENDING_DELETE_AFTER_DAYS)
+        )
 
 
 class Integration(CloneMixin, BaseModel):
@@ -36,6 +74,8 @@ class Integration(CloneMixin, BaseModel):
     created_ready = models.DateTimeField(null=True)
     created_by = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
 
+    objects = IntegrationsManager()
+
     _clone_m2o_or_o2m_fields = ["connector_set", "table_set"]
     _clone_o2o_fields = ["sheet", "upload"]
 
@@ -58,7 +98,7 @@ class Integration(CloneMixin, BaseModel):
 
     @property
     def pending_deletion(self):
-        return self.created + timedelta(days=7)
+        return self.created + timedelta(days=PENDING_DELETE_AFTER_DAYS)
 
     @property
     def used_in_workflows(self):
