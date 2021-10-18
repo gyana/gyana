@@ -1,0 +1,92 @@
+{% extends "web/app/app_base.html" %}
+
+{% block app %}
+
+<div class="flex flex-col justify-center items-center h-full">
+  <div class="flex flex-col mb-7 text-center">
+    <h2>Choose a plan for your team</h2>
+    <p>
+      Monthly paid plans will be available in the near future, for now all new
+      teams are on the free plan.
+    </p>
+  </div>
+
+  <div class="plan">
+    <div class="card plan__card">
+      <div class="">
+        <h4 class="h4 text-blue mb-3">Free</h1>
+        <p class="mb-auto">Get started, free forever</p>
+        
+        <p class="mt-8 mb-3"><span class="h1">It's free</span></p>
+        <p class="mb-6"><strong>50k</strong> rows of data</p>
+
+        <a href="{% url 'teams:detail' team.id %}" class="button button--primary w-full">
+          Choose plan
+        </a>
+      </div>
+
+      <hr>
+
+      <div class="">
+        <p class="mb-7">What's included?</p>
+
+        <ul class="flex flex-col gap-7">
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> Up to 3 projects</p></li>
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> Unlimited members</p></li>
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> All our integrations</p></li>
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> Live chat support</p></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card plan__card">
+      <div>
+        <h4 class="h4 text-blue mb-3">Pro</h1>
+        <p class="mb-auto">For small teams and freelancers</p>
+        
+        <p class="mt-8 mb-3"><span class="h1">$30</span>/mo</p>
+        <p class="mb-6"><strong>1 Million</strong> rows of data</p>
+
+        <button class="button button--primary w-full" disabled>Available soon</button>
+      </div>
+
+      <hr>
+
+      <div>
+        <p class="mb-7">Everything in free, plus</p>
+
+        <ul class="flex flex-col gap-7">
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> Unlimited projects</p></li>
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> Team roles</p></li>
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> Unbranded dashboards</p></li>
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> Project permissions</p></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card plan__card">
+      <div>
+        <h4 class="h4 text-blue mb-3">Business</h1>
+        <p class="mb-auto">For growing teams and agencies</p>
+        
+        <p class="mt-8 mb-3"><span class="h1">$150</span>/mo</p>
+        <p class="mb-6"><strong>10 Million</strong> rows of data</p>
+
+        <button class="button button--primary w-full" disabled>Available soon</button>
+      </div>
+
+      <hr>
+
+      <div>
+        <p class="mb-7">Everything in pro, plus</p>
+
+        <ul class="flex flex-col gap-7">
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> White-label</p></li>
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> Custom domains</p></li>
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> External collaborators</p></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

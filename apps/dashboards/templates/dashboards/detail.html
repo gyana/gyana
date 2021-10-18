@@ -36,7 +36,7 @@
 
     <span data-tooltip-target="body">Delete</span>
 
-    <div data-popover-target="body" hidden class="popover-body">
+    <div data-popover-target="body" class="popover-body">
       {% include 'dashboards/_delete.html' %}
     </div>
   </div>
@@ -81,28 +81,30 @@
   </div>
   {% endif %}
 
-  <turbo-frame id="dashboard-share">
-    {% include 'dashboards/share.html' %}
+  <turbo-frame id="dashboard-share"  src="{% url 'dashboards:share' object.id %}">
+  <button class="button button--circle {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}">
+    {% if  object.shared_status == 'public' %}<i class='far fa-fw fa-link'></i>
+    {% elif object.shared_status == 'private' %}<i class='far fa-fw fa-unlink'></i>
+    {% elif object.shared_status == 'password_protected' %}<i class='far fa-fw fa-lock'></i>
+    {% endif %}
+  </button>
   </turbo-frame>
 
   {% if request.GET.mode != 'view' %}
   {% include 'dashboards/_add_widget.html' with choices=choices %}
   {% endif %}
 
-  <button class="button button--sm" data-controller="tooltip">
-    {% if not request.GET.mode or request.GET.mode == 'edit' %}
-    <a href="?mode=view">
-      <i class="fas fa-eye mr-3"></i> Preview
-    </a>
-    {% else %}
-    <a href="?mode=edit">
-      <i class="fas fa-pen mr-3"></i> Edit
-    </a>
-    {% endif %}
-
+  {% if not request.GET.mode or request.GET.mode == 'edit' %}
+  <a href="?mode=view" class="button button--sm" data-controller="tooltip">
+    <i class="fas fa-fw fa-eye"></i> Preview
     <span data-tooltip-target="body">Click to change view mode</span>
-  </button>
-  
+  </a>
+  {% else %}
+  <a href="?mode=edit" class="button button--sm" data-controller="tooltip">
+    <i class="fas fa-fw fa-pen"></i> Edit
+    <span data-tooltip-target="body">Click to change view mode</span>
+  </a>
+  {% endif %}
 </div>
 
 <div class="dashboard">

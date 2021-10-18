@@ -1,15 +1,23 @@
+import analytics
 import pandas as pd
+from apps.base.analytics import (
+    APPSUMO_CODE_REDEEMED_EVENT,
+    TEAM_CREATED_EVENT,
+    identify_user_group,
+)
 from apps.base.clients import SLUG
 from apps.base.models import BaseModel
 from apps.teams.models import Team
+from apps.users.models import CustomUser
 from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models, transaction
+from django.utils import timezone
 
 # review ids are incrementing integers, currently at 6 digits
 appsumo_review_regex = RegexValidator(
-    r"^https:\/\/appsumo\.com\/products\/marketplace-gyana\/\#r[0-9]{6,9}$",
-    "Paste the exact link as displayed on AppSumo",
+    regex=r"^https:\/\/appsumo\.com\/products\/marketplace-gyana\/\#r[0-9]{6,9}$",
+    message="Paste the exact link as displayed on AppSumo",
 )
 
 # after we upload the codes to AppSumo, they provide two downloads:
@@ -25,7 +33,7 @@ class AppsumoCode(BaseModel):
         USD_49 = "usd_49", "Launch deal $49 (24/03/21 - 25/06/21)"
         USD_179 = "usd_179", "Temporary deal $179 (25/06/21 - 01/07/21)"
         USD_59 = "usd_59", "Final deal $59 (01/07/21 - 26/08/21)"
-        # add the AppSumo Select deal here
+        SELECT = "select", "AppSumo Select (28/10/21 -)"
 
     code = models.CharField(max_length=8, unique=True)
     team = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL)
@@ -43,13 +51,54 @@ class AppsumoCode(BaseModel):
     def refunded(self):
         return self.refunded_before is not None
 
+    @staticmethod
+    def code_exists(code: str):
+        return AppsumoCode.objects.filter(code=code).exists()
+
+    @staticmethod
+    def code_available(code: str):
+        return AppsumoCode.objects.filter(code=code).first().redeemed is None
+
+    @staticmethod
+    def code_refunded(code: str):
+        return AppsumoCode.objects.filter(code=code).first().refunded_before is not None
+
+    @transaction.atomic
+    def redeem_new_team(self, team_name: str, user: CustomUser):
+
+        team = Team.objects.create(name=team_name)
+        team.members.add(user, through_defaults={"role": "admin"})
+        self.team = team
+        self.save()
+
+        self.redeem_by_user(user)
+
+        analytics.track(user.id, TEAM_CREATED_EVENT)
+        identify_user_group(user, team)
+
+    @transaction.atomic
+    def redeem_team(self, team: Team, user: CustomUser):
+
+        self.team = team
+        self.save()
+        self.redeem_by_user(user)
+
+    def redeem_by_user(self, user: CustomUser):
+        self.redeemed = timezone.now()
+        self.redeemed_by = user
+
+        self.save()
+        analytics.track(user.id, APPSUMO_CODE_REDEEMED_EVENT)
+
     def __str__(self):
         return self.code
 
 
 class AppsumoReview(BaseModel):
 
-    review_link = models.URLField(
+    # URLField has unnecessary extra validation
+    review_link = models.CharField(
+        max_length=200,
         unique=True,
         validators=[appsumo_review_regex],
         error_messages={
@@ -60,6 +109,9 @@ class AppsumoReview(BaseModel):
 
     def __str__(self):
         return self.review_link
+
+    def add_to_team(self, team):
+        self.team = team
 
 
 class AppsumoExtra(BaseModel):
@@ -136,7 +188,7 @@ class RefundedCodes(BaseModel):
             for appsumo_code in appsumo_codes:
                 if (
                     appsumo_code.refunded_before is None
-                    or appsumo_code.refunded_before > self.downloaded
+                    or self.downloaded > appsumo_code.refunded_before
                 ):
                     appsumo_code.refunded_before = self.downloaded
 

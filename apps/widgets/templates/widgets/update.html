@@ -19,6 +19,21 @@
         Preview
       </a>
     </nav>
+
+    <div class="absolute top-0 right-0">
+      <button
+        class="tf-modal__close tf-modal__close--inline"
+        type="submit"
+        formnovalidate
+        name="close"
+        value="close"
+        data-action="click->tf-modal#close"
+        data-loading-false
+      >
+        <i class="fal fa-times fa-lg"></i>
+      </button>
+    </div>
+
     {% if widget.is_valid %}
       <turbo-frame class="overflow-auto" id="widgets-output-{{ widget.id }}"
                     src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}">

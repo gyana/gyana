@@ -42,9 +42,11 @@ export default class extends Controller {
     // https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData
     // which for us iss indistinguishable from the field not being rendered
     // So we add the fields to the form data manually
-    form.querySelectorAll('input[type=checkbox]:not(:checked)').forEach((el) => {
-      data.append(el.name, false)
-    })
+    form
+      .querySelectorAll('input[type=checkbox]:not([data-live-update-ignore]):not(:checked)')
+      .forEach((el) => {
+        data.append(el.name, false)
+      })
 
     this.loadingTarget.classList.remove('hidden')
 

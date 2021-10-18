@@ -10,6 +10,7 @@ class AppsumoCodeTable(tables.Table):
         attrs = {"class": "table"}
         fields = ("code", "deal", "redeemed", "redeemed_by", "refunded")
 
+    refunded = tables.Column(orderable=False)
     redeemed = NaturalDatetimeColumn()
 
 

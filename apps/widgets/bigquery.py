@@ -8,14 +8,16 @@ def _sort(query, widget):
     """Sort widget data by label or value"""
     if widget.sort_by == "dimension" and widget.dimension:
         column = query[widget.dimension]
-    else:
-        column = query[widget.aggregations.first().column]
+    elif first_aggregation := widget.aggregations.first():
+        column = query[first_aggregation.column]
         if widget.kind in [Widget.Kind.STACKED_BAR, Widget.Kind.STACKED_COLUMN]:
             column = (
                 column.sum()
                 .over(ibis.window(group_by=widget.dimension))
                 .name("__widget_sort_column_stacked__")
             )
+    else:
+        return query
     sort_column = [(column, widget.sort_ascending)]
     return query.sort_by(sort_column)
 

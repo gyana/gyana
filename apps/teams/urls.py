@@ -28,11 +28,16 @@ membership_urlpatterns = (
 )
 
 urlpatterns = [
-    path("new/", login_required(views.TeamCreate.as_view()), name="create"),
+    path("new", login_required(views.TeamCreate.as_view()), name="create"),
     path(
         "<hashid:team_id>",
         login_and_team_required(views.TeamDetail.as_view()),
         name="detail",
+    ),
+    path(
+        "<hashid:team_id>/plan",
+        login_and_team_required(views.TeamPlan.as_view()),
+        name="plan",
     ),
     path(
         "<hashid:team_id>/update",

@@ -26,10 +26,8 @@ module.exports = {
         test: /\.(ts|tsx|js|jsx)$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
-        options: {
-          presets: ['@babel/env', '@babel/preset-react', '@babel/preset-typescript'],
-          plugins: ['@babel/plugin-proposal-class-properties', '@babel/plugin-transform-runtime'],
-        },
+        // Uses .babelrc for options
+        // options: {}
       },
       {
         test: /\.scss$/i,

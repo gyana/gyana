@@ -375,7 +375,21 @@
     "name": "time",
     "categories": "date and time",
     "arguments": ["datetime"],
-    "description": "Get the month from a timestamp"
+    "description": "Get the time from a timestamp"
+  },
+  {
+    "id": "to_timestamp",
+    "name": "datetime_seconds",
+    "categories": "date and time",
+    "arguments": ["integer", "unit"],
+    "description": "Create a datetime from an integer as the number of seconds from January 1st, 1970 UTC (unix time)"
+  },
+  {
+    "id": "timestamp_diff",
+    "name": "datetime_diff",
+    "categories": "date and time",
+    "arguments": ["datetime", "datetime", "unit"],
+    "description": "Get the difference between two datetimes in a given unit"
   },
   {
     "id": "truncate",

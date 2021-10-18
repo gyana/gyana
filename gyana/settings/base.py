@@ -51,7 +51,6 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.humanize",
-    "django.forms",
     "django.contrib.postgres",
 ]
 
@@ -65,13 +64,12 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount.providers.google",
     "rest_framework",
     "celery_progress",
-    "crispy_forms",
-    "crispy_tailwind",
     "django_filters",
     "django_tables2",
     "invitations",
     "hijack",
     "hijack.contrib.admin",
+    "waffle",
 ]
 
 # Put your project-specific apps here
@@ -98,7 +96,7 @@ PROJECT_APPS = [
     "apps.cnames.apps.CNamesConfig",
 ]
 
-INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
+INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS + ['django.forms']
 
 MIDDLEWARE = [
     "apps.cnames.middleware.HostMiddleware",
@@ -113,6 +111,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "hijack.middleware.HijackUserMiddleware",
+    "waffle.middleware.WaffleMiddleware",
 ]
 
 LOGGING = {
@@ -328,10 +327,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 GCP_PROJECT = os.environ.get("GCP_PROJECT")
 GCP_BQ_SVC_ACCOUNT = os.environ.get("GCP_BQ_SVC_ACCOUNT")
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
-
-CRISPY_TEMPLATE_PACK = "tailwind"
-
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME")
 
@@ -391,3 +386,5 @@ HELLONEXT_SSO_TOKEN = os.environ.get("HELLONEXT_SSO_TOKEN")
 
 HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY")
 HEROKU_APP = os.environ.get("HEROKU_APP")
+
+CNAME_DOMAIN = os.environ.get("CNAME_DOMAIN")

@@ -19,7 +19,7 @@ urlpatterns = [
 team_urlpatterns = (
     [
         path(
-            "", login_and_admin_required(views.AppsumoCodeList.as_view()), name="list"
+            "", login_and_admin_required(frames.AppsumoCodeList.as_view()), name="list"
         ),
         path(
             "stack",

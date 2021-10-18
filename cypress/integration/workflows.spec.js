@@ -51,7 +51,7 @@ describe('workflows', () => {
     cy.contains('store_info').click()
     cy.contains('Save & Preview').click()
     cy.contains('Blackpool')
-    cy.get('button[class=tf-modal__close]').click()
+    cy.get('.tf-modal__close').click()
     cy.reactFlowDrag(startId, { x: 150, y: 300 })
 
     cy.story('Drop, connect and configure select node')

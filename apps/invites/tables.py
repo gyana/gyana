@@ -15,9 +15,6 @@ class InviteTable(tables.Table):
     email = tables.Column(linkify=True)
     sent = NaturalDatetimeColumn()
 
-    resend = tables.TemplateColumn(
+    actions = tables.TemplateColumn(
         template_name="invites/resend.html", verbose_name="Actions", orderable=False
     )
-    # delete = tables.LinkColumn(
-    #     viewname="team_invites:delete", args=(A("team__id"), A("id")), text="Delete"
-    # )

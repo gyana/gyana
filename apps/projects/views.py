@@ -2,25 +2,26 @@ import analytics
 from apps.base.analytics import PROJECT_CREATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.urls.base import reverse
-from django.views.decorators.http import require_POST
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
+from waffle import flag_is_active
 
-from .forms import ProjectForm
-from .models import Project, ProjectMembership
+from .forms import ProjectCreateForm, ProjectForm
+from .models import Project
 
 
 class ProjectCreate(TeamMixin, TurboCreateView):
     template_name = "projects/create.html"
     model = Project
-    form_class = ProjectForm
+    form_class = ProjectCreateForm
 
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
         form_kwargs["current_user"] = self.request.user
         form_kwargs["team"] = self.team
+        form_kwargs["is_beta"] = flag_is_active(self.request, "beta")
         return form_kwargs
 
     def get_success_url(self) -> str:
@@ -59,6 +60,7 @@ class ProjectUpdate(TurboUpdateView):
         form_kwargs = super().get_form_kwargs()
         form_kwargs["current_user"] = self.request.user
         form_kwargs["team"] = self.object.team
+        form_kwargs["is_beta"] = flag_is_active(self.request, "beta")
         return form_kwargs
 
     def get_success_url(self) -> str:

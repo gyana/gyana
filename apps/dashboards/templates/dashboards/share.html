@@ -1,63 +1,96 @@
 {% load help_utils %}
 
-<div
-  data-controller='tooltip popover'
-  data-popover-dont-hide-body-value="{{dont_hide_body}}"
->
+<div data-controller='popover'>
   <button
-    id="dashboard-share-{{object.id}}"
+    id="dashboard-share-{{ object.id }}"
+    class="button button--circle {% if object.shared_status != 'private' %}button--success{% else %}button--tertiary{% endif %}"
+    data-controller="tooltip"
     data-popover-target="trigger"
-    class="button button--circle {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}"
     data-action="popover#trigger"
   >
-    {% if  object.shared_status == 'private' %}<i class='far fa-fw fa-link'></i>
-    {% elif object.shared_status == 'public' %}<i class='far fa-fw fa-unlink'></i>
+    {% if  object.shared_status == 'public' %}<i class='far fa-fw fa-link'></i>
+    {% elif object.shared_status == 'private' %}<i class='far fa-fw fa-unlink'></i>
+    {% elif object.shared_status == 'password_protected' %}<i class='far fa-fw fa-lock'></i>
     {% endif %}
+
+    <span data-tooltip-target="body">
+      {% if  object.shared_status == 'password_protected' %}
+      Password protected dashboard
+      {% elif object.shared_status == 'public' %}
+      Public dashboard
+      {% else %}
+      Private dashboard
+      {% endif %}
+    </span>
   </button>
+
   <div data-popover-target="body" class="popover-body max-w-lg card card--sm"> 
-    <p class="mb-3">
-      This dashboard is currently <strong>{{ object.shared_status }}</strong>
+    <div class="flex mb-3 justify-between items-center">
+      <h2>
+        {% if object.shared_status == "private" %}
+        Private
+        {% elif object.shared_status == "public" %}
+        Public
+        {% elif object.shared_status == "password_protected" %}
+        Password Protected
+        {% endif %}
+      </h2>
       {% link_article 'dashboards' 'share' %}
+    </div>
+    <p class="mb-7">
+      {% if object.shared_status == "private" %} 
+        This dashboard is currently <strong>private</strong>. 
+        Only members of your team can view and edit it.
+      {% elif object.shared_status == "public" %}
+        This dashboard is currently <strong>public</strong>. 
+        Everyone with the link below can view it.
+      {% elif object.shared_status == "password_protected" %}
+        This dashboard is currently <strong>password-protected</strong>. 
+        Everyone with the link below and your chosen password can view it.
+      {% endif %}
     </p>
 
-    <form method="post" action="{% url 'dashboards:share' object.id %}">
+    <form
+      class="mb-3"
+      id='dashboard-share-form'
+      method="post"
+      action="{% url 'dashboards:share' object.id %}"
+      data-controller='live-update'
+    >
       {% csrf_token %}
+      <span data-live-update-target="loading" class="workflow-detail__sidebar__loading hidden">
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+      </span>
+      {% include "django/forms/default_form.html" %}
 
-      {% if object.shared_status == 'private' %}
-      <p>Click the button below to create shareable link that is accessible publicly.</p>
-      <button class="button button--sm button--success w-full" type='submit'>Share dashboard</button>
-      {% else %}
-      <p>
-        Everyone with the link can see it. Click <strong>Unshare</strong> to
-        make this dashboard private again.
-      </p>
-
-      <div data-controller="to-clipboard" class='clipboard-copy'>
-        <a 
-          href="//{{ request.META.HTTP_HOST }}/dashboards/{{object.shared_id}}" 
-          data-to-clipboard-target='target'
-          data-turbo="false"
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          {{ request.META.HTTP_HOST }}/dashboards/{{object.shared_id}}
-        </a>
-
-        <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
-          <i class='fa fa-clipboard'></i>
-        </button>
-      </div>
-
-      <button class="button button--sm button--warning w-full" type='submit'>Unshare</button>
-      {% endif %}
+      <button
+        id="dashboard-share-update"
+        class="button button--success button--sm w-full"
+        value='submit'
+        name='submit'
+        type='submit'
+      >
+        Update
+      </button>
     </form>
-  </div>
 
-  <span data-tooltip-target="body">
-    {% if  object.shared_status == 'private' %}
-    Share dashboard
-    {% elif object.shared_status == 'public' %}
-    Unshare dashboard
+    {% if object.shared_status != 'private' %}
+    <div data-controller="to-clipboard" class='clipboard-copy'>
+      <a 
+        class="link"
+        href="{{ dashboard.public_url }}" 
+        data-to-clipboard-target='target'
+        data-turbo="false"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        {{ dashboard.public_url }}
+      </a>
+
+      <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
+        <i class='fa fa-clipboard'></i>
+      </button>
+    </div>
     {% endif %}
-  </span>
+  </div>
 </div>

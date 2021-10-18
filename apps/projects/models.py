@@ -1,6 +1,7 @@
 from functools import cached_property
 
 from apps.base.models import BaseModel
+from apps.cnames.models import CName
 from apps.teams.models import Team
 from django.conf import settings
 from django.db import models
@@ -27,29 +28,26 @@ class Project(CloneMixin, BaseModel):
         related_name="invite_only_projects",
         through="ProjectMembership",
     )
+    cname = models.ForeignKey(CName, on_delete=models.SET_NULL, null=True, blank=True)
+
     _clone_m2o_or_o2m_fields = ["integration_set", "workflow_set", "dashboard_set"]
 
     def __str__(self):
         return self.name
 
+    @property
     def integration_count(self):
-        from apps.integrations.models import Integration
+        return self.integration_set.exclude(
+            connector__fivetran_authorized=False
+        ).count()
 
-        return (
-            Integration.objects.filter(project=self)
-            .exclude(connector__fivetran_authorized=False)
-            .count()
-        )
-
+    @property
     def workflow_count(self):
-        from apps.workflows.models import Workflow
+        return self.workflow_set.count()
 
-        return Workflow.objects.filter(project=self).count()
-
+    @property
     def dashboard_count(self):
-        from apps.dashboards.models import Dashboard
-
-        return Dashboard.objects.filter(project=self).count()
+        return self.dashboard_set.count()
 
     @property
     def is_template(self):

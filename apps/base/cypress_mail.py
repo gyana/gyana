@@ -56,6 +56,11 @@ class EmailBackend(BaseEmailBackend):
             msg_dict = _msg_to_dict(msg)
             # guaranteed to be written and read in same order
             with open(f"{MESSAGES_DIR}/message-{_get_epoch_micro()}.json", "w") as fp:
+                msg_dict["payload"] = (
+                    msg_dict["payload"]
+                    if isinstance(msg_dict["payload"], str)
+                    else [p.as_string() for p in msg_dict["payload"]]
+                )
                 json.dump(msg_dict, fp)
             msg_count += 1
         return msg_count

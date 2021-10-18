@@ -1,10 +1,11 @@
 from functools import wraps
 
-from apps.teams.models import Team
-from apps.teams.roles import user_can_access_team
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+
+from apps.teams.models import Team
+from apps.teams.roles import user_can_access_team
 
 
 # Inspired by SaaSPegasus

@@ -7,9 +7,16 @@ export default class extends Controller {
   connect() {
     this.changed = false
     const params = new URLSearchParams(window.location.search)
-    if (params.get('modal_item')) {
+
+    if (params.get('modal_item') && this.element.getAttribute('data-open-on-param') == '') {
       this.modalTarget.classList.remove('hidden')
     }
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key == "Escape") {
+        this.close()
+      }
+    })
   }
 
   open(event) {
@@ -97,10 +104,15 @@ export default class extends Controller {
     this.closingWarningTarget.classList.add('hidden')
   }
 
-  onInput(event) {
-    if (event.key == 'Escape') {
-      this.close()
-    }
+  // Trigger save and preview without clicking save and preview button
+  preview() {
+    this.changed = false
+
+    setTimeout(() => {
+      this.formTarget.requestSubmit(
+        this.formTarget.querySelector("button[value*='Save & Preview']")
+      )
+    }, 0);
   }
 
   save() {

@@ -1,7 +1,9 @@
+@use "utilities/mixins";
+
 %input {
   background-color: var(--c-white);
   border: 1px solid var(--c-gray);
-  border-radius: 6px;
+  border-radius: 5px;
   color: var(--c-black);
   font-size: 1.4rem;
   padding: 1.2rem 0.8rem;
@@ -32,6 +34,27 @@ input[type='text'] {
 
 input[type='email'] {
   @extend %input;
+}
+
+[data-controller*='password-input'] {
+  position: relative;
+
+  @include mixins.fa-icon {
+    color: var(--c-black);
+    display: inline;
+    position: absolute;
+    right: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  [type='password'] ~ .fa-fw::after {
+    content: '\f070';
+  }
+  
+  [type='text'] ~ .fa-fw::after {
+    content: '\f06e';
+  }
 }
 
 input[type='password'] {
@@ -78,6 +101,7 @@ select {
   }
 }
 
+.label,
 label {
   color: var(--c-black);
   display: flex;
@@ -87,7 +111,12 @@ label {
   line-height: 1.6rem;
   width: 100%;
 
-  &:focus-within {
+  & + & {
+    margin-top: 0.6rem;
+  }
+
+  &:focus-within,
+  &:focus-within label {
     color: var(--c-blue);
   }
 
@@ -164,7 +193,7 @@ input.input,
 }
 
 label.checkbox {
-  border-radius: 6px;
+  border-radius: 5px;
   border: 1px solid var(--c-gray);
   color: var(--c-black-50);
   cursor: pointer;
@@ -240,5 +269,16 @@ label.checkbox__checked {
       color: var(--c-green);
       content: '\f14a';
     }
+  }
+}
+
+.input-group {
+  display: flex;
+  flex-flow: column;
+  gap: 0.5rem;
+  width: 100%;
+
+  & + & {
+    margin-top: 0.6rem;
   }
 }

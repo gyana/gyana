@@ -1,4 +1,3 @@
-from apps.projects.models import Project
 from django.db.models import BooleanField, Case, Value, When
 from django.forms.widgets import SelectMultiple
 

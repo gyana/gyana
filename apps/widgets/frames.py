@@ -47,7 +47,6 @@ def add_output_context(context, widget, request):
 class WidgetList(DashboardMixin, TurboFrameListView):
     template_name = "widgets/list.html"
     model = Widget
-    paginate_by = 20
     turbo_frame_dom_id = "widgets"
 
     def get_context_data(self, **kwargs):
@@ -197,7 +196,7 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
             else:
                 logging.warning(e, exc_info=e)
                 honeybadger.notify(e)
-                context["error_template"] = "widgets/erros/default.html"
+                context["error_template"] = "widgets/errors/default.html"
 
         return context
 
