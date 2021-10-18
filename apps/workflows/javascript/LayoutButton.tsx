@@ -23,7 +23,7 @@ const LayoutButton: React.FC<{
     setElements(layoutedElements)
 
     client.action(window.schema, ['workflows', 'update_positions', 'create'], {
-      workflow_id: workflowId,
+      id: workflowId,
       nodes: layoutedElements
         .filter(isNode)
         .map((el) => ({ id: el.id, x: el.position.x, y: el.position.y })),
