@@ -27,6 +27,7 @@ AGGREGATION_TYPE_MAP = {
         AggregationFunctions.COUNT,
         AggregationFunctions.COUNT_DISTINCT,
     ],
+    "Int8": NUMERIC_AGGREGATIONS,
     "Int32": NUMERIC_AGGREGATIONS,
     "Int64": NUMERIC_AGGREGATIONS,
     "Float64": NUMERIC_AGGREGATIONS,
