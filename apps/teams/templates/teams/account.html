@@ -35,7 +35,7 @@
           <tr>
             <td><h3>Credits</h3></td>
             <td class="flex items-center">
-              <span class="mr-3">{{ team.credits|intcomma }}</span>
+              <span class="mr-3">{{ team.current_credit_balance|intcomma }} / {{ team.credits|intcomma }}</span>
               {% link_article 'overview' 'credits' %}
             </td>
           </tr>
@@ -97,35 +97,8 @@
     </div>
   </div>
 
-  <h2 class="mb-3">Account usage</h2>
-
-  <form method="post" class="form mb-7">
-    {% csrf_token %}
-
-    {% include "django/forms/default_form.html" %}
-
-    <label>
-      <p>Rows</p>
-      <p class="input__help-text">Last calculated: {{ team.row_count_calculated|naturaltime|default_if_none:"never" }}</p>
-
-      <div class="button-input">
-        <input type="text" value="{{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}" disabled>
-        <button type="submit" class="button button--success button--input" data-controller="tooltip">
-          <i class="fas fa-fw fa-sync-alt"></i>
-          <span data-tooltip-target="body">Calculate row usage</span>
-        </button>
-      </div>
-    </label>
-  </form>
-
-  <label for="">
-    <p>Credits</p>
-    <input type="text" value="{{ team.current_credit_balance|intcomma }}/{{ team.credits|intcomma }}" disabled>
-  </label>
-</div>
-
 {% if team.appsumocode_set.count > 0 %}
-<div id="appsumo-list">
+<div id="appsumo-list" class='pad'>
   <h2 class="mb-3">AppSumo</h2>
   <turbo-frame id="team_appsumo:list" src="{% url 'team_appsumo:list' team.id %}" target="_top"></turbo-frame>
 </div>
