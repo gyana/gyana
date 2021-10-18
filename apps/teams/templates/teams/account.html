@@ -1,57 +1,104 @@
 {% extends "teams/base.html" %}
 {% load humanize %}
+{% load help_utils %}
 
 {% block tab %}
 <section class="account">
-  <h2 class="mb-7">Account usage</h2>
-
-  <label class="mb-7">
-    <p>Subscription Plan</p>
-    <h3 class="text-blue">{{ team.plan }}</h3>
-  </label>
+  <h2 class="mb-7">Billing</h2>
 
   <div class="account__plan">
-    <label>
-      <p>Row usage</p>
-      <div class="flex items-center">
-        <h3 class="mr-3">{{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}</h3>
-        <form method="post" class="form--no-layout">
-          {% csrf_token %}
+    <div class="card card--none">
+      <table class="table">
+        <tbody>
+          <tr>  
+            <td><h3>Plan</h3></td>
+            <td class="text-blue">{{ team.plan.name }}</td>
+          </tr>
+          <tr>
+            <td><h3>Row usage</h3></td>
+            <td>
+              <span class="flex items-center">
+                <span class="mr-3">{{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}</span>
+                <form method="post" class="form--no-layout">
+                  {% csrf_token %}
 
-          {% include "django/forms/default_form.html" %}
+                  {% include "django/forms/default_form.html" %}
 
-          <button type="submit" class="button button--circle button--sm button--tertiary" data-controller="tooltip">
-            <i class="fas fa-fw fa-sync-alt"></i>
-            <span data-tooltip-target="body">Calculate row usage</span>
-          </button>
-        </form>
-      </div>
-    </label>
+                  <button type="submit" class="button button--circle button--sm button--tertiary" data-controller="tooltip">
+                    <i class="fas fa-fw fa-sync-alt"></i>
+                    <span data-tooltip-target="body">Calculate row usage</span>
+                  </button>
+                </form>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><h3>Credits</h3></td>
+            <td class="flex items-center">
+              <span class="mr-3">{{ team.credits|intcomma }}</span>
+              {% link_article 'overview' 'credits' %}
+            </td>
+          </tr>
 
-    <label>
-      <p>Credits</p>
-      <h3>{{ team.credits|intcomma }}</h3>
-    </label>
+          <tr>
+            <td><h3>Projects</h3></td>
+            <td>{{ team.total_projects }} / {% if team.plan.projects != -1 %}{{ team.plan.projects }}{% else %}∞</i>{% endif %}</td>
+          </tr>
 
-    <label>
-      <p>Views</p>
-      <h3>Unlimited</h3>
-    </label>
+          <tr>
+            <td><h3>Users</h3></td>
+            <td>{{ team.total_members }} / ∞</td>
+          </tr>
 
-    <label>
-      <p>Users</p>
-      <h3>Unlimited</h3>
-    </label>
-  </div>
-  
-  <div class="mb-auto">
-    <label>
-      <p><strong>Other benefits:</strong> Custom branding, Chat support...</p>
-    </label>
+          <tr>
+            <td><h3>Views</h3></td>
+            <td>∞</td>
+          </tr>
+
+          <tr>
+            <td><h3>Chat support</h3></td>
+            <td><i class="fa fa-check text-green"></i></td>
+          </tr>
+
+          {% if team.has_select_code %}
+
+            {% if team.plan.custom_branding %}
+              <tr>
+                <td><h3>Custom branding</h3></td>
+                <td><i class="fa fa-check text-green"></i></i></td>
+              </tr>
+            {% endif %}
+
+            {% if team.plan.cnames %}
+              <tr>
+                <td><h3>CNAMEs</h3></td>
+                <td>{{ team.plan.cnames }}</td>
+              </tr>
+            {% endif %}
+
+            {% if team.plan.sub_accounts %}
+              <tr>
+                <td><h3>Sub Accounts</h3></td>
+                <td>{{ team.total_invite_only_projects }} / {% if  team.plan.sub_accounts != -1 %}{{ team.plan.sub_accounts }}{% else %}∞</i>{% endif %}</td>
+              </tr>
+            {% endif %}
+
+            {% if team.plan.white_labeling %}
+              <tr>
+                <td><h3>White labeling</h3></td>
+                <td><i class="fa fa-check text-green"></i></td>
+              </tr>
+            {% endif %}
+
+          {% endif %}
+
+        </tbody>
+      </table>
+    </div>
   </div>
 
   {% if team.appsumocode_set.count > 0 %}
-  <div>
+  <div id="appsumo-list">
     <h2 class="mb-3">AppSumo</h2>
     <turbo-frame id="team_appsumo:list" src="{% url 'team_appsumo:list' team.id %}" target="_top"></turbo-frame>
   </div>

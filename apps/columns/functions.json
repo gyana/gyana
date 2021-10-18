@@ -375,14 +375,14 @@
     "name": "time",
     "categories": "date and time",
     "arguments": ["datetime"],
-    "description": "Get the month from a timestamp"
+    "description": "Get the time from a timestamp"
   },
   {
     "id": "to_timestamp",
-    "name": "to_datetime",
+    "name": "datetime_seconds",
     "categories": "date and time",
     "arguments": ["integer", "unit"],
-    "description": "Create a datetime from an integer given a certain unit. Start time is January 1st, 1970 UTC."
+    "description": "Create a datetime from an integer as the number of seconds from January 1st, 1970 UTC (unix time)"
   },
   {
     "id": "timestamp_diff",

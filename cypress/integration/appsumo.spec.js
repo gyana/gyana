@@ -30,7 +30,7 @@ describe('appsumo', () => {
     cy.login('test@gyana.com')
 
     cy.visit(`/appsumo/${REDEEMED_BY_USER}`)
-    cy.contains(`You've already redeem the code ${REDEEMED_BY_USER}`)
+    cy.contains(`You've already redeemed the code ${REDEEMED_BY_USER}`)
     cy.contains('your account for').click()
     cy.url().should('contain', 'teams/1/account')
   })
@@ -107,16 +107,16 @@ describe('appsumo', () => {
     cy.get('input[name=code]').type(NOT_REDEEMED)
     cy.get('button[type=submit]').click()
 
-    cy.get('table tbody tr').should('have.length', 2)
+    cy.get('#appsumo-list table tbody tr').should('have.length', 2)
     // check deal information
     cy.contains('Final deal $59 (01/07/21 - 26/08/21)')
     cy.contains('Launch deal $49 (24/03/21 - 25/06/21)')
 
     cy.visit('/teams/1/account')
     // 2 codes = 2M rows
-    cy.get('input[value="0 / 2,000,000"]').should('be.visible')
+    cy.contains('0 / 2,000,000')
     // 2 codes = 20k credits
-    cy.get('input[value="20,000"]').should('be.visible')
+    cy.contains('20,000')
 
     // refund a code
     cy.logout()
@@ -132,9 +132,9 @@ describe('appsumo', () => {
 
     cy.visit('/teams/1/account')
     // 1 active codes = 1M rows
-    cy.get('input[value="0 / 1,000,000"]').should('be.visible')
+    cy.contains('0 / 1,000,000')
     // 1 code = 10k credits
-    cy.get('input[value="10,000"]').should('be.visible')
+    cy.contains('10,000')
   })
   it('link to review', () => {
     cy.login()

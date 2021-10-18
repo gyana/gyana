@@ -2,13 +2,14 @@ import uuid
 
 from apps.base.live_update_form import LiveUpdateForm
 from django import forms
+from django.core.exceptions import ValidationError
 from django.forms.widgets import HiddenInput, PasswordInput
 from django.utils import timezone
 
 from .models import Dashboard
 
 
-class DashboardFormCreate(forms.ModelForm):
+class DashboardCreateForm(forms.ModelForm):
     class Meta:
         model = Dashboard
         fields = ["project"]
@@ -68,4 +69,21 @@ class DashboardShareForm(LiveUpdateForm):
             dashboard.password_set = timezone.now()
         if commit:
             dashboard.save()
+
         return dashboard
+
+
+class DashboardLoginForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        self._dashboard = kwargs.pop("dashboard")
+        super().__init__(*args, **kwargs)
+
+    def clean_password(self):
+        password = self.cleaned_data["password"]
+
+        if not self._dashboard.check_password(password):
+            raise ValidationError("Wrong password")
+
+        return password

@@ -27,6 +27,21 @@ class TeamCreate(LoginRequiredMixin, TurboCreateView):
         return kwargs
 
     def get_success_url(self) -> str:
+        return reverse("teams:plan", args=(self.object.id,))
+
+
+class TeamPlan(LoginRequiredMixin, TurboUpdateView):
+    model = Team
+    form_class = TeamCreateForm
+    template_name = "teams/plan.html"
+    pk_url_kwarg = "team_id"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
+    def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.id,))
 
 

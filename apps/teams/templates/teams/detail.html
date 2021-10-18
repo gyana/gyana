@@ -1,25 +1,38 @@
 {% extends "teams/base.html" %}
 {% load humanize %}
+{% load waffle_tags %}
 {% load render_table from django_tables2 %}
 {% load help_utils %}
 
 {% block tab %}
 <div class="pad">
-  <h2 class="flex gap-3 items-center">Create a new project {% link_article 'overview' 'templates' %}</h2>
-  <p class="mb-3">Use a blank project or choose a template to get you started.</p>
+  {% flag 'templates' %}
+  <div class="mb-7">
+    <h2 class="flex gap-3 items-center">Create a new project {% link_article 'overview' 'templates' %}</h2>
+    <p class="mb-3">Use a blank project or choose a template to get you started.</p>
 
-  <turbo-frame
-    id="templates:list"
-    src="{% url 'team_templates:list' team.id %}"
-    target="_top"
-  >
-    <div class='placeholder-scr placeholder-scr--fillscreen'>
-      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-      <p class='placeholder-scr__title'>Loading templates...</p>
-    </div>
-  </turbo-frame>
+    <turbo-frame
+      id="templates:list"
+      src="{% url 'team_templates:list' team.id %}"
+      target="_top"
+    >
+      <div class='placeholder-scr placeholder-scr--fillscreen'>
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+        <p class='placeholder-scr__title'>Loading templates...</p>
+      </div>
+    </turbo-frame>
+  </div>
+  {% endflag %}
 
-  <h2 class="mt-7 mb-3 flex gap-3 items-center">Your Projects {% link_article 'overview' 'collaborate' %}</h2>
+  <div class="flex mb-3 justify-between">
+    <h2 class="flex gap-3 items-center">
+      Your Projects {% link_article 'overview' 'collaborate' %}
+    </h2>
+
+    <a class="button button--sm" href="{% url 'team_projects:create' team.id %}">
+      <i class="fas fa-fw fa-plus"></i> New Project
+    </a>
+  </div>
   <div class="card card--none">
     {% render_table table %}
 
@@ -27,19 +40,22 @@
     <div class="table__empty">
       <i class="fas fa-fw fa-4x fa-sparkles text-orange mb-7"></i>
       <h3>This team has no projects</h3>
-      <p>You can <a href="{% url 'team_projects:create' team.id %}" class="link">create one</a>,
-      start with a <a href="{% url 'team_projects:create' team.id %}" class="link">template</a>
-      or read our <a href="https://intercom.help/gyana/en/articles/5547945-what-is-gyana" target="_blank" class="link">getting started</a> guide.</p>
+      <p>
+        You can <a href="{% url 'team_projects:create' team.id %}" class="link">create one</a>,
+        watch the <a href="{% article_url 'overview' 'intro' %}" target="_blank" class="link">3 minute tutorial video</a>,
+        or read our <a href="{% article_url 'overview' 'intro' %}" target="_blank" class="link">getting started</a> guide.
+      </p>
     </div>
     {% else %}
     <div class="pad flex flex-col space-y-8">
       <small>
-        <a href="https://www.loom.com/share/eea3a4c9c6424a77b30ada915f92c12f" class="link">
-          <i class="fa fa-fw fa-video mr-2"></i>View tutorial video</a>
+        <a href="{% article_url 'overview' 'intro' %}" target="_blank" class="link">
+          <i class="fa fa-fw fa-question mr-2"></i>Getting started
+        </a>
       </small>
       <small>
-        <a href="https://intercom.help/gyana/en/articles/5547945-what-is-gyana" target="_blank" class="link">
-          <i class="fa fa-fw fa-question mr-2"></i>Getting started</a>
+          <a href="{% article_url 'overview' 'intro' %}" target="_blank" class="link">
+          <i class="fa fa-fw fa-video mr-2"></i>View tutorial video</a>
       </small>
     </div>
     {% endif  %}

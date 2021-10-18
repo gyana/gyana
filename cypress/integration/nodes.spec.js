@@ -88,6 +88,7 @@ describe('nodes', () => {
     cy.get('#workflows-grid:contains(count)').should('be.visible')
     cy.get('#workflows-grid').contains('5').should('be.visible')
 
+    cy.wait(200)
     addFormToFormset('aggregations')
     cy.get('select[name=aggregations-0-column]').should('have.value', '').select('Employees')
     cy.contains('Save & Preview').click()
@@ -128,10 +129,14 @@ describe('nodes', () => {
         })
     })
 
-    cy.get('input[name=sort_columns-0-ascending').uncheck()
+    cy.wait(1000)
+    cy.get('input[name=sort_columns-0-ascending]').uncheck()
+    cy.get('input[name=sort_columns-0-ascending]').uncheck()
 
     cy.contains('Save & Preview').click()
     cy.contains('Loading preview...').should('be.visible')
+
+    cy.wait(1000)
 
     cy.get('#workflows-grid tbody').within(() => {
       cy.get('tr')

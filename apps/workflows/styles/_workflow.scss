@@ -1,3 +1,5 @@
+@use "utilities/mixins";
+
 .workflow {
   &-detail {
     padding: 0;
@@ -18,7 +20,6 @@
       flex: 1 1 0%;
       overflow: auto;
       padding: 1.6rem;
-      position: relative;
 
       &__loading {
         position: absolute;
@@ -35,9 +36,7 @@
       flex: 1 1 0%;
       justify-content: center;
 
-      .far,
-      .fas,
-      .fad {
+      @include mixins.fa-icon {
         color: var(--c-orange);
       }
     }
@@ -56,6 +55,7 @@
   height: 100%;
 
   &__section {
+    position: relative;
     display: flex;
     flex-flow: column;
     width: 40%;
@@ -126,6 +126,19 @@
       padding: 1.6rem;
       width: 100%;
     }
+  }
+
+  [data-live-update-target="loading"] {
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.08);
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: var(--z-ui);
   }
 }
 

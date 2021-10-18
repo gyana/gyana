@@ -1,0 +1,16 @@
+{% extends "web/emails/base.html" %}
+
+{% block body %}
+<p>Hello,</p>
+
+<p>
+  We need to confirm this email,
+  in order to do so just go back to the app using
+  <a href="{{ activate_url }}">this link</a>. 
+</p>
+
+<p>
+  Thank you for using Gyana! <br>
+  <a href="https://gyana.com/">https://gyana.com/</a>
+</p>
+{% endblock %}

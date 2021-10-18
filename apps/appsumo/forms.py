@@ -41,7 +41,7 @@ class AppsumoRedeemNewTeamForm(BaseModelForm):
         self._user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
-    def on_save(self, instance):
+    def pre_save(self, instance):
         instance.redeem_new_team(self.cleaned_data["team_name"], self._user)
 
 
@@ -57,7 +57,7 @@ class AppsumoRedeemForm(BaseModelForm):
         self.fields["team"].queryset = self._user.teams_admin_of
         self.fields["team"].widget.help_text = "You can always change this later"
 
-    def on_save(self, instance):
+    def pre_save(self, instance):
         instance.redeem_by_user(self._user)
 
 
@@ -105,5 +105,5 @@ class AppsumoReviewForm(BaseModelForm):
         self._team = kwargs.pop("team", None)
         super().__init__(*args, **kwargs)
 
-    def on_save(self, instance):
+    def pre_save(self, instance):
         return instance.add_to_team(self._team)

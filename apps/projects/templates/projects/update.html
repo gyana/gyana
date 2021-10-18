@@ -16,12 +16,13 @@
 
       {% include "django/forms/default_form.html" %}
 
-      <button type="submit" name='submit' value='submit' class="button button--success button--filled">Save changes</button>
+      <button type="submit" name='submit' value='submit' class="button button--success w-full">
+        Save changes
+      </button>
 
       <span data-live-update-target="loading" class="workflow-detail__sidebar__loading hidden">
         <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
       </span>
-
     </form>
   </div>
 
@@ -29,7 +30,7 @@
     <h2 class="mb-3">Delete project</h2>
     <p class="mb-3">If you'd like to <strong>delete</strong> this project, press the button below.</p>
 
-    <a class="button button--danger"
+    <a class="button button--danger w-lg"
       href="{% url 'projects:delete' object.id %}">
       Delete
     </a>

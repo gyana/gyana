@@ -1,0 +1,9 @@
+{% extends "account/email/base_message.txt" %}
+
+{% block content %}
+{% autoescape off %}
+Thank you for signing up to Gyana!
+
+We need to confirm this email, in order to do so go back to the app using this link: {{ activate_url }} 
+{% endautoescape %}
+{% endblock %}

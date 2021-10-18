@@ -144,13 +144,15 @@
 }
 
 .table__empty {
+  align-items: center;
+  color: var(--c-black-50);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  margin: 1.6rem auto;
+  max-width: 56rem;
   padding: 1.6rem;
-  margin: 1.6rem 0;
-  color: var(--c-black-50);
+  text-align: center;
 }
 
 .table__more {

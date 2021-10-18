@@ -1,0 +1,9 @@
+{% autoescape off %}
+
+Hello,
+
+{% block content %}{% endblock %}
+
+Thank you for using Gyana!
+https://gyana.com/
+{% endautoescape %}

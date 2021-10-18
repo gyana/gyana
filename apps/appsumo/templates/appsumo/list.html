@@ -1,7 +1,7 @@
 {% load render_table from django_tables2 %}
 
 <p class="mb-4">
-  You have <strong>{{ team.active_codes }} active code{{ team.active_codes|pluralize }}</strong>
+  You have <strong class="text-blue">{{ team.active_codes }} active code{{ team.active_codes|pluralize }}</strong>
   ({{ team.redeemed_codes }} redeemed, {{ team.refunded_codes }} refunded).
 </p>
 {% if team.ltd_disabled %}

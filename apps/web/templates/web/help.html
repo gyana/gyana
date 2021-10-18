@@ -1,3 +1,5 @@
+{% load help_utils %}
+
 <section class="flex flex-col h-full pad whitespace-normal">
   <header class="mb-7">
     <h1>Help</h1>
@@ -29,7 +31,7 @@
     <li>
       <a
         class="h4 link"
-        href="https://intercom.help/gyana/en/articles/5547945-what-is-gyana"
+        href="{% link_article 'overview' 'intro' %}"
         target="_blank"
       >
         What is Gyana?
@@ -40,7 +42,7 @@
     <li>
       <a
         class="h4 link"
-        href="https://intercom.help/gyana/en/collections/3117612-gyana-2-0-explained"
+        href="https://intercom.help/gyana/en/collections/3117612-gyana-explained"
         target="_blank"
       >
         Getting Started
@@ -52,7 +54,7 @@
   <div class="flex justify-around gap-7 mt-auto mb-7">
     <a
       class="flex flex-row items-center gap-5"
-      href="https://www.loom.com/share/eea3a4c9c6424a77b30ada915f92c12f"
+      href="{% link_article 'overview' 'intro' %}"
     >
       <div class="p-4 rounded-md bg-blue text-white">
         <i class="fas fa-fw fa-video fa-1x"></i>

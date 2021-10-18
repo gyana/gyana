@@ -25,9 +25,14 @@ urlpatterns = [
         name="public",
     ),
     path(
-        "<int:pk>/login",
-        dashboard_is_password_protected(views.dashboard_login),
+        "<str:shared_id>/login",
+        dashboard_is_password_protected(views.DashboardLogin.as_view()),
         name="login",
+    ),
+    path(
+        "<str:shared_id>/logout",
+        dashboard_is_password_protected(views.DashboardLogout.as_view()),
+        name="logout",
     ),
     # frames
     path(

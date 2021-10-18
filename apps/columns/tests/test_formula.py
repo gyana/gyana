@@ -261,12 +261,12 @@ def create_extract_unary_param(func_name, sql_name=None):
             id="subtract float scalar from float column",
         ),
         pytest.param(
-            'to_datetime(medals, "s")',
+            'datetime_seconds(medals, "s")',
             QUERY.format("TIMESTAMP_SECONDS(`medals`)"),
             id="integer column to datetime",
         ),
         pytest.param(
-            'to_datetime(131313131313, "ms")',
+            'datetime_seconds(131313131313, "ms")',
             "SELECT TIMESTAMP_MILLIS(131313131313) AS `tmp`",
             id="integer to datetime",
         ),

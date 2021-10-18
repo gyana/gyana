@@ -20,6 +20,14 @@ CYPRESS_URLS = True
 # like locmem but using JSON to store on disk
 EMAIL_BACKEND = "apps.base.cypress_mail.EmailBackend"
 
+# If using mailhog to debug emails uncomment these lines
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "0.0.0.0"
+# EMAIL_PORT = 1025
+# EMAIL_HOST_USER = ""
+# EMAIL_HOST_PASSWORD = ""
+# EMAIL_USE_TLS = False
+
 CLOUD_NAMESPACE = "cypress"
 
 # Disable admin-style browsable api endpoint

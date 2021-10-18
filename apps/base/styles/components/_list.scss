@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 1.6rem;
   padding: 0.4rem;
-  width: 100%;
+  width: max-content;
 
   &--bordered {
     border-radius: 10px;
@@ -20,11 +20,12 @@
     > :first-child {
       padding: 0 0.4rem;
     }
-
+    
     &--interactive {
+      cursor: pointer;
+
       &:hover {
-        cursor: pointer;
-        background-color: var(--c-blue-20);
+        background-color: var(--c-gray);
       }
     }
   }

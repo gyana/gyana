@@ -290,11 +290,7 @@ def get_window_query(node, query):
         ).name(window.label)
 
         if window.group_by or window.order_by:
-            w = ibis.window()
-            if window.group_by:
-                w._group_by = window.group_by
-            if window.order_by:
-                w._order_by = window.order_by
+            w = ibis.window(group_by=window.group_by, order_by=window.order_by)
             aggregation = aggregation.over(w)
         query = query.mutate([aggregation])
     return query

@@ -20,7 +20,7 @@ def test_project_crudl(client, logged_in_user):
 
     r = client.get(f"/teams/{team.id}/projects/new")
     assertOK(r)
-    assertFormRenders(r, ["name", "description", "access"])
+    assertFormRenders(r, ["name", "description", "access", "cname"])
 
     r = client.post(
         f"/teams/{team.id}/projects/new",
@@ -51,7 +51,7 @@ def test_project_crudl(client, logged_in_user):
     # update
     r = client.get(f"/projects/{project.id}/update")
     assertOK(r)
-    assertFormRenders(r, ["name", "description", "access"])
+    assertFormRenders(r, ["name", "description", "access", "cname"])
     assertLink(r, f"/projects/{project.id}/delete", "Delete")
 
     r = client.post(
@@ -94,7 +94,7 @@ def test_private_projects(client, logged_in_user):
             "access": "invite",
         },
     )
-    assertFormRenders(r, ["name", "description", "access", "members"])
+    assertFormRenders(r, ["name", "description", "access", "members", "cname"])
 
     # create private project
     r = client.post(

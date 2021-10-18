@@ -3,7 +3,11 @@ from django.db import transaction
 
 
 class BaseModelForm(forms.ModelForm):
-    def on_save(self, instance):
+    def pre_save(self, instance):
+        # override in child to add behaviour on commit save
+        pass
+
+    def post_save(self, instance):
         # override in child to add behaviour on commit save
         pass
 
@@ -11,7 +15,8 @@ class BaseModelForm(forms.ModelForm):
         instance = super().save(commit=False)
         if commit == True:
             with transaction.atomic():
-                self.on_save(instance)
+                self.pre_save(instance)
                 instance.save()
                 self.save_m2m()
+                self.post_save(instance)
         return instance

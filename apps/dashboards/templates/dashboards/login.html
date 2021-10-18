@@ -1,27 +1,21 @@
-{% extends "web/base.html" %}
+{% extends "dashboards/public.html" %}
 
-{% block sidebar %}
-{# Getting rid of the top navigation bar here. #}
+{% block head %}
+<title>Password protected page</title>
 {% endblock %}
 
 {% block body %}
-<div class="flex flex-col mx-auto justify-center items-center">
-  <h2 class="mb-7">Password-protected dashboard</h2>
-
+<div class="flex flex-col m-auto justify-center items-center">
+  <h2 class="mb-7">Password protected page</h2>
   <form
     class="w-full form--no-layout"
-    method='post' 
-    action="{% url "dashboards:login" object.id %}"
+    method='post'
   >
     {% csrf_token %}
 
-    <label class="mb-7">
-      <p>Password</p>
-      <input type='password' name='password' autocomplete="one-time-code"></input>
-      <p class="text-red">{{ errors.password|escape }}</p>
-    </label>
+    {% include "django/forms/default_form.html" %}
 
-    <button data-turbo='false' class='button button-primary w-full'  type='submit'>Submit</button>
+    <button data-turbo='false' class='button button-primary w-full mt-4' type='submit'>Submit</button>
   </form>
 </div>
 {% endblock %}

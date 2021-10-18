@@ -4,7 +4,7 @@ from apps.base.access import login_and_permission_to_access
 from apps.projects.access import user_can_access_project
 from dateutil.parser import isoparse
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
 from .models import Dashboard
@@ -18,8 +18,9 @@ def dashboard_of_team(user, pk, *args, **kwargs):
 login_and_dashboard_required = login_and_permission_to_access(dashboard_of_team)
 
 
-def can_access_password_protected_dashboard(request, dashboard):
+def can_access_password_protected_dashboard(request, dashboard) -> bool:
     auth = request.session.get(str(dashboard.shared_id))
+
     return (
         auth
         and dashboard.password_set < isoparse(auth["logged_in"])
@@ -33,9 +34,11 @@ def dashboard_is_public(view_func):
     @wraps(view_func)
     def decorator(request, *args, **kwargs):
         dashboard = Dashboard.objects.get(shared_id=kwargs["shared_id"])
+
         if dashboard and dashboard.shared_status == Dashboard.SharedStatus.PUBLIC:
             kwargs["dashboard"] = dashboard
             return view_func(request, *args, **kwargs)
+
         if (
             dashboard
             and dashboard.shared_status == Dashboard.SharedStatus.PASSWORD_PROTECTED
@@ -45,9 +48,8 @@ def dashboard_is_public(view_func):
                 kwargs["dashboard"] = dashboard
                 return view_func(request, *args, **kwargs)
 
-            return render(
-                request, "dashboards/login.html", context={"object": dashboard}
-            )
+            return redirect(reverse("dashboards:login", args=(dashboard.shared_id,)))
+
         return render(request, "404.html", status=404)
 
     return decorator
@@ -58,7 +60,7 @@ def dashboard_is_password_protected(view_func):
 
     @wraps(view_func)
     def decorator(request, *args, **kwargs):
-        dashboard = Dashboard.objects.get(pk=kwargs["pk"])
+        dashboard = Dashboard.objects.get(shared_id=kwargs["shared_id"])
         if (
             dashboard
             and dashboard.shared_status == Dashboard.SharedStatus.PASSWORD_PROTECTED

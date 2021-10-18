@@ -2,20 +2,23 @@
 {% load waffle_tags %}
 
 <!DOCTYPE html>
-<html class="h-full">
+<html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  {% include 'web/components/meta.html' %}
-  {% flag 'beta' %}
+  {% if not is_beta %}
+    {% include 'web/components/meta.html' %}
+  {% endif %}
+
+  {% if is_beta %}
     {% if project.team.icon %}
       <link rel="icon" type="image/png" sizes="16x16" href="{{ project.team.icon.url }}">
     {% endif %}
   {% else %}
     {% include 'web/components/favicon.html' %}
-  {% endflag %}
+  {% endif %}
 
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
@@ -31,16 +34,19 @@
   <script src="{% static 'js/stimulus-bundle.js' %}"></script>
   <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
   <script src="{% url 'api_schemajs' %}"></script>
+
+  {% block head %}
+    <title>{{ dashboard.name }}{% if not is_beta %} | Gyana {% endif %}</title>
+  {% endblock %}
 </head>
-<body class="flex flex-col pad">
+<body class="pad">
+  {% block body %}
   <div class="widgets flex items-center justify-center">
     <header class="flex w-full justify-between mb-7">
       <div class="flex justify-center items-center self-start">
-        {% flag 'beta' %}
-          {% if project.team.icon %}
-            <img src="{{ project.team.icon.url }}" class="h-24 w-24 mr-5" alt="">
-          {% endif %}
-        {% endflag %}
+        {% if is_beta and project.team.icon %}
+          <img src="{{ project.team.icon.url }}" class="h-24 w-24 mr-5" alt="">
+        {% endif %}
 
         <div class="flex flex-col">
           <p>{{ project.team.name }}</p>
@@ -48,41 +54,52 @@
         </div>
       </div>
 
-      {% flag 'beta' %}
-      {% else %}
+      {% if not is_beta %}
         <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
-      {% endflag %}
+      {% endif %}
     </header>
 
-    <div id="dashboard-widget-container"
-         class="widgets__canvas"
-         data-controller="widget-list"
-         style="width:{{object.width}}px;height:{{object.height}}px;">
-      {% for widget in object.widget_set.all %}
-      <gy-widget id="widget-{{ widget.id }}">
-        <div class="h-full w-full"
-             data-id="{{ widget.id }}" data-x="{{widget.x}}" data-y="{{widget.y}}"
-             data-width="{{widget.width}}" data-height="{{widget.height}}">
-          <div class="widget-card h-full">
-            <div class='widget-card__visual widget-card__visual--view'>
-              {% include 'widgets/_widget_title.html' with object=widget%}
-              <turbo-frame id="widgets-output-{{ widget.id }}"
-                           src="{% url 'dashboard_widgets:output' project.id dashboard.id widget.id %}"
-                           target="_top"
-                           style="display: flex; flex: 1 1 0%; min-height: 0;">
-                <div class='placeholder-scr placeholder-scr--fillscreen'>
-                  <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-                  <p class='placeholder-scr__title'>Loading visualisation...</p>
-                </div>
-              </turbo-frame>
+    <div class="widgets__canvas">
+      <div id="dashboard-widget-container"
+          data-controller="widget-list"
+          style="width:{{object.width}}px;height:{{object.height}}px;">
+        {% for widget in object.widget_set.all %}
+        <gy-widget id="widget-{{ widget.id }}">
+          <div class="h-full w-full"
+              data-id="{{ widget.id }}" data-x="{{widget.x}}" data-y="{{widget.y}}"
+              data-width="{{widget.width}}" data-height="{{widget.height}}">
+            <div class="widget-card h-full">
+              <div class='widget-card__visual widget-card__visual--view'>
+                {% include 'widgets/_widget_title.html' with object=widget%}
+                <turbo-frame id="widgets-output-{{ widget.id }}"
+                            src="{% url 'dashboard_widgets:output' project.id dashboard.id widget.id %}"
+                            target="_top"
+                            style="display: flex; flex: 1 1 0%; min-height: 0;">
+                  <div class='placeholder-scr placeholder-scr--fillscreen'>
+                    <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+                    <p class='placeholder-scr__title'>Loading visualisation...</p>
+                  </div>
+                </turbo-frame>
+              </div>
             </div>
           </div>
-        </div>
-      </gy-widget>
-      {% endfor %}
+        </gy-widget>
+        {% endfor %}
+      </div>
     </div>
+
+    {% if dashboard.shared_status == 'password_protected' %}
+    <footer class="pb-7">
+      <p>
+        <small>
+          <a class="link" href="{% url 'dashboards:logout' dashboard.shared_id %}">Forget me on this browser</a>
+        </small>
+      </p>
+    </footer>
+    {% endif %}
   </div>
 
   {% include 'components/fusionchart_scripts.html' %}
+  {% endblock %}
 </body>
 </html>

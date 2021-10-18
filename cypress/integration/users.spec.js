@@ -85,7 +85,7 @@ describe('users', () => {
 
     cy.get('input[type=password]').first().type('senseknowdecide')
     cy.get('input[type=password]').last().type('senseknowdecide')
-    cy.get('input[type=submit]').click()
+    cy.get('button[type=submit]').click()
     cy.url().should('contain', 'password/reset/key/done')
 
     cy.visit('/')

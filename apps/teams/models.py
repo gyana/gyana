@@ -2,11 +2,11 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
 
 from apps.base.models import BaseModel
 
 from . import roles
+from .config import PLANS
 
 WARNING_BUFFER = 0.2
 
@@ -93,8 +93,19 @@ class Team(BaseModel):
         return self.appsumoextra_set.count() > 0
 
     @property
+    def has_select_code(self):
+        from apps.appsumo.models import AppsumoCode
+
+        return self.appsumocode_set.filter(deal=AppsumoCode.Deal.SELECT).exists()
+
+    @property
     def plan(self):
-        return "Lifetime Deal for Gyana" if self.active_codes > 0 else "Free"
+        from apps.appsumo.account import get_deal
+
+        if self.active_codes > 0:
+            return {**PLANS["appsumo"], **get_deal(self.appsumocode_set.all())}
+
+        return PLANS["free"]
 
     @property
     def row_limit(self):
@@ -107,6 +118,36 @@ class Team(BaseModel):
         from .account import get_credits
 
         return get_credits(self)
+
+    @property
+    def total_members(self):
+        return self.members.count()
+
+    @property
+    def total_projects(self):
+        return self.project_set.count()
+
+    @property
+    def total_invite_only_projects(self):
+        from apps.projects.models import Project
+
+        return self.project_set.filter(access=Project.Access.INVITE_ONLY).count()
+
+    @property
+    def can_create_project(self):
+        if self.plan["projects"] == -1:
+            return True
+        return self.total_projects < self.plan["projects"]
+
+    @property
+    def can_create_invite_only_project(self):
+        sub_accounts = self.plan.get("sub_accounts")
+
+        if sub_accounts is None:
+            return False
+        if sub_accounts == -1:
+            return True
+        return self.total_invite_only_projects < sub_accounts
 
     @property
     def admins(self):
