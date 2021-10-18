@@ -16,11 +16,15 @@ PENDING_DELETE_AFTER_DAYS = 7
 
 
 class IntegrationsManager(models.Manager):
+    def visible(self):
+        # hide un-authorized fivetran connectors, cleanup up periodically
+        return self.exclude(connector__fivetran_authorized=False)
+
     def pending(self):
-        return self.exclude(connector__fivetran_authorized=False).filter(ready=False)
+        return self.visible().filter(ready=False)
 
     def ready(self):
-        return self.exclude(connector__fivetran_authorized=False).filter(ready=True)
+        return self.visible().filter(ready=True)
 
     def broken(self):
         return self.ready().filter(

@@ -33,25 +33,16 @@ class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        project_integrations = self.project.integration_set.exclude(
-            connector__fivetran_authorized=False
-        )
+        queryset = self.project.integration_set
 
-        context_data["integration_count"] = project_integrations.count()
-        context_data["pending_integration_count"] = project_integrations.filter(
-            ready=False
-        ).count()
-
+        context_data["integration_count"] = queryset.ready().count()
+        context_data["pending_integration_count"] = queryset.pending().count()
         context_data["integration_kinds"] = Integration.Kind.choices
 
         return context_data
 
     def get_queryset(self) -> QuerySet:
-        return (
-            Integration.objects.filter(project=self.project, ready=True)
-            .prefetch_related("table_set")
-            .all()
-        )
+        return self.project.integration_set.ready().prefetch_related("table_set").all()
 
 
 class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
@@ -63,19 +54,13 @@ class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["pending_integration_count"] = (
-            Integration.objects.filter(project=self.project, ready=False)
-            .exclude(connector__fivetran_authorized=False)
-            .count()
-        )
+        queryset = self.project.integration_set
+        context_data["pending_integration_count"] = queryset.pending().count()
         return context_data
 
     def get_queryset(self) -> QuerySet:
         return (
-            Integration.objects.filter(project=self.project, ready=False)
-            .exclude(connector__fivetran_authorized=False)
-            .prefetch_related("table_set")
-            .all()
+            self.project.integration_set.pending().prefetch_related("table_set").all()
         )
 
 
@@ -122,16 +107,13 @@ class IntegrationSettings(ProjectMixin, TurboUpdateView):
 class IntegrationUpdate(ProjectMixin, TurboUpdateView):
     template_name = "integrations/update.html"
     model = Integration
+    form_class = IntegrationForm
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["integration_kind"] = Integration.Kind
         context_data["service_account"] = settings.GCP_BQ_SVC_ACCOUNT
-
         return context_data
-
-    def get_form_class(self):
-        return IntegrationForm
 
     def get_success_url(self) -> str:
         return reverse(
