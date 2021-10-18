@@ -9,6 +9,7 @@ from apps.projects.mixins import ProjectMixin
 from django.conf import settings
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView
@@ -144,11 +145,8 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object.state == Integration.State.LOAD:
-            return HttpResponseRedirect(
-                reverse(
-                    "project_integrations:load",
-                    args=(self.project.id, self.object.id),
-                )
+            return redirect(
+                "project_integrations:load", self.project.id, self.object.id
             )
         return super().get(request, *args, **kwargs)
 
@@ -173,7 +171,7 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
                 "name": self.object.name,
             },
         )
-        return HttpResponseRedirect(self.get_success_url())
+        return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:
         return reverse(
@@ -193,11 +191,8 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
             Integration.State.LOAD,
             Integration.State.ERROR,
         ]:
-            return HttpResponseRedirect(
-                reverse(
-                    "project_integrations:done",
-                    args=(self.project.id, self.object.id),
-                )
+            return redirect(
+                "project_integrations:done", self.project.id, self.object.id
             )
         return super().get(request, *args, **kwargs)
 
@@ -216,7 +211,7 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
         KIND_TO_SYNC_TASK[self.object.kind](self.object.source_obj)
         # don't assigned the result to self.object
         form.save()
-        return HttpResponseRedirect(self.get_success_url())
+        return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:
         return reverse(
