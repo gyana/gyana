@@ -8,15 +8,7 @@ from .models import Integration
 def last_modified_integration_grid(request, pk):
     integration = Integration.objects.get(pk=pk)
     table_id = request.GET.get("table_id")
-    try:
-        table_instance = (
-            integration.table_set.get(pk=table_id)
-            if table_id
-            else integration.table_set.first()
-        )
-    except (Table.DoesNotExist, ValueError):
-        table_instance = integration.table_set.first()
-
+    table_instance = integration.get_table_by_pk_safe(table_id)
     return table_instance.data_updated
 
 

@@ -77,12 +77,6 @@ project_urlpatterns = (
             login_and_project_required(views.IntegrationSettings.as_view()),
             name="settings",
         ),
-        # frames
-        path(
-            "<hashid:pk>/tables",
-            login_and_project_required(frames.IntegrationTablesList.as_view()),
-            name="tables",
-        ),
     ],
     "project_integrations",
 )

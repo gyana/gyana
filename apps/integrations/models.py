@@ -140,3 +140,13 @@ class Integration(CloneMixin, BaseModel):
         if self.kind == Integration.Kind.CONNECTOR:
             return f"images/integrations/fivetran/{get_services()[self.connector.service]['icon_path']}"
         return f"images/integrations/{self.kind}.svg"
+
+    def get_table_by_pk_safe(self, table_pk):
+        from apps.tables.models import Table
+
+        if table_pk is None:
+            return self.table_set.first()
+        try:
+            return self.table_set.get(pk=table_pk)
+        except (Table.DoesNotExist, ValueError):
+            return self.table_set.first()
