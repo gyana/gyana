@@ -85,7 +85,7 @@ urlpatterns = [
     path("projects/", include(project_urlpatterns)),
     path("integrations/", include("apps.integrations.urls")),
     path("workflows/", include("apps.workflows.urls")),
-    path("workflows/<int:workflow_id>/", include(node_urls.workflow_urlpatterns)),
+    path("workflows/<int:pk>/", include(node_urls.workflow_urlpatterns)),
     path("dashboards/", include("apps.dashboards.urls")),
     path("widgets/", include("apps.widgets.urls")),
     path("invitations/", include("invitations.urls")),

@@ -109,7 +109,7 @@ class Widget(CloneMixin, BaseModel):
         if self.kind in [self.Kind.FUNNEL, self.Kind.PYRAMID]:
             return self.aggregations.count() >= 2
         if self.kind is not None:
-            return self.kind and self.dimension
+            return bool(self.kind and self.dimension)
 
         return False
 

@@ -10,6 +10,7 @@ from .widgets import CodeMirror
 
 IBIS_TO_FUNCTION = {
     "String": "string_function",
+    "Int8": "integer_function",
     "Int32": "integer_function",
     "Int64": "integer_function",
     "Float64": "integer_function",
