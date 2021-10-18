@@ -175,8 +175,7 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:load",
-            args=(self.project.id, self.object.id),
+            "project_integrations:load", args=(self.project.id, self.object.id)
         )
 
 
@@ -215,8 +214,7 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:load",
-            args=(self.project.id, self.object.id),
+            "project_integrations:load", args=(self.project.id, self.object.id)
         )
 
 
@@ -231,18 +229,18 @@ class IntegrationDone(ProjectMixin, TurboUpdateView):
 
         team = self.project.team
         team.update_row_count()
-        exceeds_row_limit = self.object.num_rows + team.row_count > team.row_limit
-        context_data["exceeds_row_limit"] = exceeds_row_limit
-        if exceeds_row_limit:
-            context_data["projected_num_rows"] = self.object.num_rows + team.row_count
+
+        context_data["exceeds_row_limit"] = team.check_new_rows(self.object.num_rows)
+        context_data["projected_num_rows"] = team.add_new_rows(self.object.num_rows)
 
         return context_data
 
     def form_valid(self, form):
         if not self.object.ready:
             self.object.created_ready = timezone.now()
-        self.object.ready = True
-        self.object.save()
+            self.object.ready = True
+            self.object.save()
+
         r = super().form_valid(form)
         self.project.team.update_row_count()
         return r

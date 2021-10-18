@@ -153,6 +153,12 @@ class Team(BaseModel):
     def admins(self):
         return self.members.filter(membership__role=roles.ROLE_ADMIN)
 
+    def add_new_rows(self, num_rows):
+        return num_rows + self.row_count
+
+    def check_new_rows(self, num_rows):
+        return self.add_new_rows(num_rows) > self.row_limit
+
 
 class Membership(BaseModel):
     """
