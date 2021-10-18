@@ -8,7 +8,6 @@ from apps.integrations.tasks import KIND_TO_SYNC_TASK
 from apps.projects.mixins import ProjectMixin
 from django.conf import settings
 from django.db.models.query import QuerySet
-from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone

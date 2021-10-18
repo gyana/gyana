@@ -10,6 +10,7 @@ from apps.base.tests.asserts import (
 )
 from apps.integrations.models import Integration
 from apps.projects.models import Project
+from apps.sheets.models import Sheet
 from apps.tables.models import Table
 from google.cloud.bigquery.schema import SchemaField
 from google.cloud.bigquery.table import Table as BqTable
@@ -125,91 +126,65 @@ def test_structure_and_preview(client, logged_in_user, bigquery_client):
     assertContains(r, "4")
 
 
-def test_create_retry_edit_and_approve(
-    client, logged_in_user, sheets_client, drive_v2_client, bigquery_client, settings
-):
-    settings.CELERY_TASK_ALWAYS_EAGER = True
-    settings.CELERY_TASK_EAGER_PROPAGATES = True
+def test_create_retry_edit_and_approve(client, logged_in_user, settings):
     team = logged_in_user.teams.first()
     project = Project.objects.create(name="Project", team=team)
 
-    # using google sheets example
+    # check that there is an option to create a connector, sheet and upload
     r = client.get(f"/projects/{project.id}/integrations/")
     assertOK(r)
     assertContains(r, "New Integration")
+    assertLink(
+        r, f"/projects/{project.id}/integrations/connectors/new", "New Connector"
+    )
     assertLink(r, f"/projects/{project.id}/integrations/sheets/new", "Add Sheet")
+    assertLink(r, f"/projects/{project.id}/integrations/uploads/new", "Upload CSV")
 
-    # new integration
-    r = client.get(f"/projects/{project.id}/integrations/sheets/new")
-    assertOK(r)
-    assertFormRenders(r, ["url"])
+    # the create and configure steps are tested in individual apps
+    # the load stage requires celery progress (javascript)
+    # we assume that the task was run successfully and is done
 
-    # mock sheet client to get title from Google Sheets
-    sheets_client.spreadsheets().get().execute = Mock(
-        return_value={"properties": {"title": "Store Info"}}
+    integration = Integration.objects.create(
+        project=project,
+        kind=Integration.Kind.SHEET,
+        name="store_info",
+        state=Integration.State.DONE,
     )
-    r = client.post(
-        f"/projects/{project.id}/integrations/sheets/new",
-        data={
-            "url": "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit"
-        },
+    Sheet.objects.create(integration=integration, url="http://sheet.url")
+    Table.objects.create(
+        bq_table="table",
+        bq_dataset="dataset",
+        project=project,
+        source=Table.Source.INTEGRATION,
+        integration=integration,
+        num_rows=10,
     )
-    integration = project.integration_set.first()
     INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
-    assertRedirects(
-        r,
-        f"{INTEGRATION_URL}/configure",
-        status_code=303,
-    )
 
-    # configure
-    r = client.get(f"{INTEGRATION_URL}/configure")
+    # pending page
+    r = client.get(f"/projects/{project.id}/integrations/pending")
     assertOK(r)
-    # todo: fix this!
-    assertFormRenders(r, ["name", "cell_range"])
+    assertSelectorLength(r, "table tbody tr", 1)
+    assertLink(r, INTEGRATION_URL, "store_info")
 
-    # start with runtime error
-    bigquery_client.query().exception = lambda: True
-    bigquery_client.query().errors = [{"message": "No columns found in the schema."}]
+    # redirect from detail page
+    r = client.get(INTEGRATION_URL)
+    assertRedirects(r, f"{INTEGRATION_URL}/done")
 
-    with pytest.raises(Exception):
-        r = client.post(
-            f"{INTEGRATION_URL}/configure",
-            data={"cell_range": "store_info!A20:D21"},
-        )
-
-    integration.refresh_from_db()
-    assert integration.state == Integration.State.ERROR
-
-    # edit the configuration to prevent failure
-    bigquery_client.query().exception = lambda: False
-    bigquery_client.reset_mock()
-    bigquery_client.get_table().num_rows = 10
-    # mock drive client to check last updated information
-    drive_v2_client.files().get().execute = Mock(
-        return_value={"modifiedDate": "2020-10-01T00:00:00Z"}
-    )
-
-    r = client.post(
-        f"{INTEGRATION_URL}/configure",
-        data={"cell_range": "store_info!A1:D11"},
-    )
-
-    assert bigquery_client.query.call_count == 1
-    assertRedirects(r, f"{INTEGRATION_URL}/load", target_status_code=302)
-
-    # load (redirects immediately as celery is eager)
+    # load (redirects to done)
     r = client.get(f"{INTEGRATION_URL}/load")
     assertRedirects(r, f"{INTEGRATION_URL}/done")
-    integration.refresh_from_db()
-    assert integration.state == Integration.State.DONE
 
     # done
     r = client.get(f"{INTEGRATION_URL}/done")
     assertOK(r)
+    assertContains(r, "Review import")
+    assertLink(r, f"{INTEGRATION_URL}/data", "preview")
+    assertLink(r, f"{INTEGRATION_URL}/configure", "re-configure")
     # todo: fix this!
     assertFormRenders(r, ["name"])
 
+    # confirm and update row count
     assert team.row_count == 0
 
     r = client.post(f"{INTEGRATION_URL}/done")
@@ -218,6 +193,39 @@ def test_create_retry_edit_and_approve(
     team.refresh_from_db()
     assert team.row_count == 10
 
+    integration.refresh_from_db()
+    assert integration.ready
 
-def test_pending_cleanup(client, logged_in_user):
-    pass
+    # ready for done page
+    r = client.get(f"{INTEGRATION_URL}/done")
+    assertOK(r)
+    assertContains(r, "Success")
+    assertLink(r, f"{INTEGRATION_URL}/configure", "configuration")
+
+
+def test_exceeds_row_limit(client, logged_in_user, settings):
+    team = logged_in_user.teams.first()
+    project = Project.objects.create(name="Project", team=team)
+    integration = Integration.objects.create(
+        project=project,
+        kind=Integration.Kind.SHEET,
+        name="store_info",
+        state=Integration.State.DONE,
+    )
+    Table.objects.create(
+        bq_table="table",
+        bq_dataset="dataset",
+        project=project,
+        source=Table.Source.INTEGRATION,
+        integration=integration,
+        num_rows=10,
+    )
+    INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
+
+    team.override_row_limit = 5
+    team.save()
+
+    # done
+    r = client.get(f"{INTEGRATION_URL}/done")
+    assertOK(r)
+    assertContains(r, "Insufficient rows")
