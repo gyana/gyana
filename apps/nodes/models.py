@@ -1,3 +1,4 @@
+from datetime import datetime as dt
 from functools import cached_property
 
 from apps.base.aggregations import AggregationFunctions
@@ -70,6 +71,9 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     error = models.CharField(max_length=300, null=True)
     intermediate_table = models.ForeignKey(
         Table, on_delete=models.CASCADE, null=True, related_name="intermediate_table"
+    )
+    cache_table = models.ForeignKey(
+        Table, on_delete=models.CASCADE, null=True, related_name="cache_table"
     )
     # ======== Node specific columns ========= #
 
@@ -186,12 +190,26 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         help_text="Select the text column to get the sentiment of.",
     )
 
+    # Credits
+    always_use_credits = models.BooleanField(default=False)
+    uses_credits = models.IntegerField(default=0)
+    credit_use_confirmed = models.DateTimeField(null=True, editable=False)
+    # To know who spent credits without having a global user session item or
+    # pass down the user through multiple functions we persist it in the database
+    credit_confirmed_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
+    )
+
     def save(self, *args, **kwargs):
         dirty_fields = set(self.get_dirty_fields(check_relationship=True).keys()) - {
             "name",
             "x",
             "y",
             "error",
+            "always_use_credits",
+            "uses_credits",
+            "credit_use_confirmed",
+            "credit_confirmed_user",
         }
         if dirty_fields:
             self.workflow.data_updated = timezone.now()
@@ -207,7 +225,8 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         from .bigquery import get_query_from_node
 
         query = get_query_from_node(self)
-        # Group by can return a scalar when counting over the whole
+        # Group by
+        # can return a scalar when counting over the whole
         # input table, it doesn't have a schema method
         if isinstance(query, ScalarExpr):
             return {query._name: query.type()}

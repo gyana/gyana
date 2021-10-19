@@ -1,0 +1,19 @@
+
+<p class="mt-12">
+  Computing this node will spend <strong>{{node.uses_credits}}</strong> 
+  credits. 
+  <form class='items-center' method='POST', action="{% url 'nodes:credit-confirmation' node.id %}">
+    {% csrf_token %}
+
+    <p class='flex flex-row'>
+      <label class="input__help-text" for='always_use_credits'>Always use credits for this node</label>
+      <input class='ml-2' id='always_use_credits' 
+        name='always_use_credits' type='checkbox'
+        {% if node.always_use_credits %}checked{% endif%}
+      ></input>
+    </p>
+
+    <button type='submit' class="button">Confirm</button>
+    
+  </form>
+</p>

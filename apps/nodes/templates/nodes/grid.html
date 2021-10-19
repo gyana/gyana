@@ -2,13 +2,11 @@
 
 {% if node.error %}
 <div class='workflow-node__visual'>
-  <h2>Error</h2>
   {% if error_template %}
     {% include error_template %}
   {% else %}
     {% include 'nodes/errors/default.html' %}
   {% endif %}
-</div>
 {% else %}
-{% render_table table %}
+  {% render_table table %}
 {% endif %}

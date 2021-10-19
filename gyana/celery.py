@@ -35,3 +35,9 @@ def setup_periodic_tasks(sender, **kwargs):
         crontab(minute="*/10"),
         signature("apps.connectors.tasks.update_connectors_from_fivetran"),
     )
+
+    # calculate the credit balance every beginning of the month
+    sender.add_periodic_task(
+        crontab(day_of_month=1),
+        signature("apps.teams.tasks.calculate_monthly_credit_statement"),
+    )

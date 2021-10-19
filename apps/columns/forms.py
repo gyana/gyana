@@ -4,6 +4,7 @@ from apps.base.schema_form_mixin import SchemaFormMixin
 from apps.base.widgets import SelectWithDisable
 from apps.columns.models import EditColumn
 from django import forms
+from ibis.expr.datatypes import Floating
 
 from .bigquery import AllOperations
 from .widgets import CodeMirror
@@ -179,7 +180,7 @@ class WindowColumnForm(SchemaFormMixin, LiveUpdateForm):
                     disabled={
                         name: f"You cannot group by a {type_} column"
                         for name, type_ in self.schema.items()
-                        if type_.name in ["Float64"]
+                        if isinstance(type_, Floating)
                     }
                 ),
             )

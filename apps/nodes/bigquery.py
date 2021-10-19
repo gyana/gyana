@@ -1,6 +1,5 @@
 import inspect
 import logging
-import re
 
 import ibis
 from apps.base.clients import bigquery_client, ibis_client
@@ -13,7 +12,13 @@ from django.db import transaction
 from django.utils import timezone
 from ibis.expr.datatypes import String
 
-from ._sentiment_utils import get_gcp_sentiment
+from ._sentiment_utils import (
+    SENTIMENT_COLUMN_NAME,
+    TEXT_COLUMN_NAME,
+    CreditException,
+    get_gcp_sentiment,
+)
+from ._utils import _get_parent_updated
 
 JOINS = {
     "inner": "inner_join",
@@ -68,7 +73,7 @@ def _create_or_replace_intermediate_table(table, node, query):
 
     with transaction.atomic():
         table, _ = Table.objects.get_or_create(
-            source=Table.Source.PIVOT_NODE,
+            source=Table.Source.INTERMEDIATE_NODE,
             bq_table=node.bq_intermediate_table_id,
             bq_dataset=node.workflow.project.team.tables_dataset_id,
             project=node.workflow.project,
@@ -82,19 +87,6 @@ def _create_or_replace_intermediate_table(table, node, query):
         node.save()
         table.save()
     return table
-
-
-def _get_parent_updated(node):
-    """Walks through the node and its parents and returns the `data_updated` value."""
-    yield node.data_updated
-
-    # For an input node check whether the input_table has changed
-    # e.g. whether a file has been synced again or a workflow ran
-    if node.kind == "input":
-        yield node.input_table.data_updated
-
-    for parent in node.parents.all():
-        yield from _get_parent_updated(parent)
 
 
 def use_intermediate_table(func):
@@ -304,8 +296,15 @@ def get_sentiment_query(node, parent):
     if table and table.data_updated > max(tuple(_get_parent_updated(node))):
         return conn.table(table.bq_table, database=table.bq_dataset)
 
+    if not node.always_use_credits and (
+        node.credit_use_confirmed is None
+        or node.credit_use_confirmed < max(tuple(_get_parent_updated(node)))
+    ):
+        raise CreditException(node)
+
     task = get_gcp_sentiment.delay(node.id, parent[node.sentiment_column].compile())
     bq_table, bq_dataset = task.wait(timeout=None, interval=0.2)
+
     return conn.table(bq_table, database=bq_dataset)
 
 
@@ -356,7 +355,7 @@ def get_arity_from_node_func(func):
 def _validate_arity(func, len_args):
 
     min_arity, variable_args = get_arity_from_node_func(func)
-    assert len_args >= min_arity if variable_args else len_args == min_arity
+    return len_args >= min_arity if variable_args else len_args == min_arity
 
 
 def get_query_from_node(node):
@@ -371,7 +370,8 @@ def get_query_from_node(node):
         func = NODE_FROM_CONFIG[node.kind]
         args = [results[parent] for parent in node.parents.all()]
 
-        _validate_arity(func, len(args))
+        if not _validate_arity(func, len(args)):
+            raise NodeResultNone(node)
 
         try:
             results[node] = func(node, *args)

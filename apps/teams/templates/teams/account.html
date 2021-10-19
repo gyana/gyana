@@ -35,7 +35,7 @@
           <tr>
             <td><h3>Credits</h3></td>
             <td class="flex items-center">
-              <span class="mr-3">{{ team.credits|intcomma }}</span>
+              <span class="mr-3">{{ team.current_credit_balance|intcomma }} / {{ team.credits|intcomma }}</span>
               {% link_article 'overview' 'credits' %}
             </td>
           </tr>
@@ -97,11 +97,10 @@
     </div>
   </div>
 
-  {% if team.appsumocode_set.count > 0 %}
-  <div id="appsumo-list">
-    <h2 class="mb-3">AppSumo</h2>
-    <turbo-frame id="team_appsumo:list" src="{% url 'team_appsumo:list' team.id %}" target="_top"></turbo-frame>
-  </div>
-  {% endif %}
-</section>
+{% if team.appsumocode_set.count > 0 %}
+<div id="appsumo-list" class='pad'>
+  <h2 class="mb-3">AppSumo</h2>
+  <turbo-frame id="team_appsumo:list" src="{% url 'team_appsumo:list' team.id %}" target="_top"></turbo-frame>
+</div>
+{% endif %}
 {% endblock %}

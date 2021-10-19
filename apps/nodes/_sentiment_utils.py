@@ -7,6 +7,7 @@ import pandas as pd
 from apps.base.clients import bigquery_client
 from apps.nodes.models import Node
 from apps.tables.models import Table
+from apps.teams.models import CreditTransaction
 from celery.app import shared_task
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -17,6 +18,8 @@ from google.cloud.language import (
     Document,
     LanguageServiceClient,
 )
+
+from ._utils import _get_parent_updated
 
 # ISO-639-1 Code for English
 # all GCP supported languages https://cloud.google.com/natural-language/docs/languages
@@ -39,6 +42,15 @@ DELIMITER = "\n\n"
 # round scores since extra precision isn't informative on sentences and displays uglily
 SCORES_ROUND_DP = 1
 
+TEXT_COLUMN_NAME = "text"
+SENTIMENT_COLUMN_NAME = "sentiment"
+
+
+class CreditException(Exception):
+    def __init__(self, node, *args: object) -> None:
+        super().__init__(*args)
+        self.node = node
+
 
 def _remove_unicode(string: str) -> str:
     """Removes non-ASCII characters from string"""
@@ -46,10 +58,10 @@ def _remove_unicode(string: str) -> str:
     return "".join(char for char in string if ord(char) < 128)
 
 
-def _get_batches_idxs_and_credits(
+def _get_batches_idxs(
     values: List[str], batch_chars: int = CHARS_LIMIT
 ) -> Tuple[List[List[int]], List[int]]:
-    """Helper function to split text data into batches and calculate credits"""
+    """Helper function to split text data into batches"""
     string_lens = np.array([len(x) for x in values])
     # take into account delimiter which will be added between sentences
     string_lens += len(DELIMITER)
@@ -68,12 +80,7 @@ def _get_batches_idxs_and_credits(
             batches_idxs[-1].append(i)
             batch_fill += string_len
 
-    batches_credits = [
-        int(np.ceil(np.sum(string_lens[idxs]) / CHARS_PER_CREDIT))
-        for idxs in batches_idxs
-    ]
-
-    return batches_idxs, batches_credits
+    return batches_idxs
 
 
 def _generate_batches(
@@ -161,18 +168,25 @@ def _reconcile_gcp_scores(
     return scores
 
 
-@shared_task
-def get_gcp_sentiment(node_id, column_query):
-    node = get_object_or_404(Node, pk=node_id)
+def _compute_values(client, node, column_query):
 
-    client = bigquery_client()
     values = client.query(column_query).to_dataframe()[node.sentiment_column].to_list()
     values = [_remove_unicode(value) for value in values]
 
     # clip each row of text so that GPC doesn't charge us more than 1 credit
     # (there are still plenty of characters to infer sentiment for that row)
     clipped_values = [v[:CHARS_PER_CREDIT] for v in values]
-    batches_idxs, batches_credits = _get_batches_idxs_and_credits(clipped_values)
+    return values, clipped_values
+
+
+@shared_task
+def get_gcp_sentiment(node_id, column_query):
+    node = get_object_or_404(Node, pk=node_id)
+    client = bigquery_client()
+
+    values, clipped_values = _compute_values(client, node, column_query)
+    batches_idxs = _get_batches_idxs(clipped_values)
+
     with ThreadPoolExecutor(max_workers=len(batches_idxs)) as executor:
         batches_scores = executor.map(
             # create one client for all requests so it authenticates only once
@@ -181,7 +195,7 @@ def get_gcp_sentiment(node_id, column_query):
             _generate_batches(clipped_values, batches_idxs),
         )
     scores = [score for batch_scores in batches_scores for score in batch_scores]
-    df = pd.DataFrame({"text": values, "sentiment": scores})
+    df = pd.DataFrame({TEXT_COLUMN_NAME: values, SENTIMENT_COLUMN_NAME: scores})
 
     job_config = bigquery.LoadJobConfig(
         # Specify a (partial) schema. All columns are always written to the
@@ -190,9 +204,11 @@ def get_gcp_sentiment(node_id, column_query):
             # Specify the type of columns whose type cannot be auto-detected. For
             # example the "title" column uses pandas dtype "object", so its
             # data type is ambiguous.
-            bigquery.SchemaField("text", bigquery.enums.SqlTypeNames.STRING),
+            bigquery.SchemaField(TEXT_COLUMN_NAME, bigquery.enums.SqlTypeNames.STRING),
             # Indexes are written if included in the schema by name.
-            bigquery.SchemaField("sentiment", bigquery.enums.SqlTypeNames.FLOAT),
+            bigquery.SchemaField(
+                SENTIMENT_COLUMN_NAME, bigquery.enums.SqlTypeNames.FLOAT
+            ),
         ],
         # Optionally, set the write disposition. BigQuery appends loaded rows
         # to an existing table by default, but with WRITE_TRUNCATE write
@@ -201,7 +217,7 @@ def get_gcp_sentiment(node_id, column_query):
     )
     with transaction.atomic():
         table, _ = Table.objects.get_or_create(
-            source=Table.Source.PIVOT_NODE,
+            source=Table.Source.INTERMEDIATE_NODE,
             bq_table=node.bq_intermediate_table_id,
             bq_dataset=node.workflow.project.team.tables_dataset_id,
             project=node.workflow.project,
@@ -214,6 +230,13 @@ def get_gcp_sentiment(node_id, column_query):
 
         node.intermediate_table = table
         table.data_updated = timezone.now()
+
+        node.workflow.project.team.credittransaction_set.create(
+            transaction_type=CreditTransaction.TransactionType.DECREASE,
+            amount=len(values),
+            user=node.credit_confirmed_user,
+        )
+
         node.save()
         table.save()
 

@@ -24,7 +24,8 @@ class Table(CloneMixin, BaseModel):
     class Source(models.TextChoices):
         INTEGRATION = "integration", "Integration"
         WORKFLOW_NODE = "workflow_node", "Workflow node"
-        PIVOT_NODE = "intermediate_node", "Intermediate node"
+        INTERMEDIATE_NODE = "intermediate_node", "Intermediate node"
+        CACHE_NODE = "cache_node", "Cache node"
 
     bq_table = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
     bq_dataset = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
@@ -43,6 +44,12 @@ class Table(CloneMixin, BaseModel):
         on_delete=models.CASCADE,
         null=True,
         related_name="intermediate_node",
+    )
+    cache_node = models.OneToOneField(
+        "nodes.Node",
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="cache_node",
     )
 
     num_rows = models.IntegerField(default=0)

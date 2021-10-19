@@ -69,6 +69,11 @@ class Team(BaseModel):
         return reverse("teams:detail", args=(self.id,))
 
     @property
+    def current_credit_balance(self):
+        from .account import calculate_credit_balance
+
+        return calculate_credit_balance(self)
+
     def redeemed_codes(self):
         return self.appsumocode_set.count()
 
@@ -172,3 +177,34 @@ class Membership(BaseModel):
     @property
     def can_delete(self):
         return self.team.admins.exclude(id=self.user.id).count() > 0
+
+
+# Credit system design motivated by https://stackoverflow.com/a/29713230
+
+
+class CreditTransaction(models.Model):
+    class Meta:
+        ordering = ("-created",)
+
+    class TransactionType(models.TextChoices):
+        DECREASE = "decrease", "Decrease"
+        INCREASE = "increase", "Increase"
+
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
+    )
+    transaction_type = models.CharField(max_length=10, choices=TransactionType.choices)
+    amount = models.IntegerField()
+
+
+class CreditStatement(models.Model):
+    class Meta:
+        ordering = ("-created",)
+
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    balance = models.IntegerField()
+    credits_used = models.IntegerField()
+    credits_received = models.IntegerField()

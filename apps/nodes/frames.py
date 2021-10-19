@@ -11,10 +11,11 @@ from apps.base.templates import template_exists
 from django import forms
 from django.http.response import HttpResponse
 from django.urls import reverse
+from django.utils import timezone
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 
-from .bigquery import NodeResultNone, error_name_to_snake, get_query_from_node
+from .bigquery import NodeResultNone, get_query_from_node
 from .forms import KIND_TO_FORM
 from .models import Node
 
@@ -91,7 +92,7 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
             if not is_input and has_parent:
                 get_query_from_node(self.object.parents.first())
             self.parent_error_node = None
-        except NodeResultNone as e:
+        except (NodeResultNone) as e:
             self.parent_error_node = e.node
 
         if not self.parent_error_node and (is_input or has_parent):
@@ -101,6 +102,12 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
         r = super().form_valid(form)
         track_node(self.request.user, form.instance, NODE_UPDATED_EVENT)
         return r
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        if self.object.kind == Node.Kind.SENTIMENT:
+            form_kwargs["user"] = self.request.user
+        return form_kwargs
 
     def get_success_url(self) -> str:
         base_url = reverse("nodes:update", args=(self.object.id,))
@@ -140,8 +147,28 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
                 self.request, paginate=self.get_table_pagination(table)
             ).configure(table)
         except Exception as err:
-            self.object.error = error_name_to_snake(err)
-            self.object.save()
             logging.error(err, exc_info=err)
             # We have to return
             return type("DynamicTable", (Table,), {})(data=[])
+
+
+class NodeCreditConfirmation(TurboFrameUpdateView):
+    model = Node
+    fields = ("always_use_credits",)
+    template_name = "nodes/errors/credit_exception.html"
+    turbo_frame_dom_id = "workflows-grid"
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "nodes:grid",
+            args=(self.object.id,),
+        )
+
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        r = super().form_valid(form)
+
+        self.object.credit_use_confirmed = timezone.now()
+        self.object.credit_confirmed_user = self.request.user
+        self.object.save()
+
+        return r

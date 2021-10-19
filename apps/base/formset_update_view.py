@@ -47,7 +47,7 @@ class FormsetUpdateView(TurboUpdateView):
         if issubclass(formset.form, LiveUpdateForm):
             forms_kwargs["parent_instance"] = self.get_form_kwargs()["instance"]
 
-        return (
+        formset = (
             # POST request for form creation
             formset(
                 self.request.POST,
@@ -65,6 +65,15 @@ class FormsetUpdateView(TurboUpdateView):
                 form_kwargs=forms_kwargs,
             )
         )
+        # When the post contains the wrong total forms number new forms aren't
+        # created. This happens for example when changing the widget kind.
+        if len(formset.forms) < formset.min_num:
+            formset.forms.extend(
+                formset._construct_form(i, **forms_kwargs)
+                for i in range(len(formset.forms), formset.min_num)
+            )
+
+        return formset
 
     @cache
     def get_formsets(self):
