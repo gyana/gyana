@@ -7,6 +7,7 @@ from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
 from apps.integrations.models import Integration
 from apps.projects.models import Project
 from apps.sheets.models import Sheet
+from django.core import mail
 from pytest_django.asserts import assertContains, assertFormError, assertRedirects
 
 pytestmark = pytest.mark.django_db
@@ -44,6 +45,7 @@ def test_create(
     assert integration is not None
     assert integration.kind == Integration.Kind.SHEET
     assert integration.sheet is not None
+    assert integration.created_by == logged_in_user
     INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
 
     assertRedirects(r, f"{INTEGRATION_URL}/configure", status_code=303)
@@ -78,6 +80,9 @@ def test_create(
 
     r = client.get(f"{INTEGRATION_URL}/load")
     assertRedirects(r, f"{INTEGRATION_URL}/done")
+
+    # todo: email
+    # assert len(mail.outbox) == 1
 
 
 def test_validation_failures(client, logged_in_user, sheets_client):
@@ -207,3 +212,6 @@ def test_resync_after_source_update(
     r = client.get_turbo_frame(f"{INTEGRATION_URL}", f"/sheets/{sheet.id}/status")
     assertOK(r)
     assertContains(r, "You've already synced the latest data.")
+
+    # no email
+    assert len(mail.outbox) == 0

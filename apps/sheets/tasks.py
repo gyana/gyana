@@ -7,6 +7,7 @@ from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
 from apps.tables.models import Table
 from celery import shared_task
+from django.core import mail
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -58,13 +59,13 @@ def run_sheet_sync_task(self, sheet_id):
 
     # the initial sync completed successfully and a new integration is created
 
-    if (created_by := integration.created_by) and created:
+    if integration.created_by and created:
 
-        email = integration_ready_email(integration, created_by)
+        email = integration_ready_email(integration, integration.created_by)
         email.send()
 
         analytics.track(
-            created_by.id,
+            integration.created_by.id,
             INTEGRATION_SYNC_SUCCESS_EVENT,
             {
                 "id": integration.id,

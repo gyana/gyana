@@ -67,13 +67,13 @@ def complete_connector_sync(connector: Connector, send_mail: bool = True):
         integration.state = Integration.State.DONE
         integration.save()
 
-    if (created_by := integration.created_by) and send_mail:
+    if integration.created_by and send_mail:
 
-        email = integration_ready_email(integration, created_by)
+        email = integration_ready_email(integration, integration.created_by)
         email.send()
 
         analytics.track(
-            created_by.id,
+            integration.created_by.id,
             INTEGRATION_SYNC_SUCCESS_EVENT,
             {
                 "id": integration.id,

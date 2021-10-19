@@ -55,13 +55,13 @@ def run_upload_sync_task(self, upload_id: int):
 
     # the initial sync completed successfully and a new integration is created
 
-    if (created_by := integration.created_by) and created:
+    if integration.created_by and created:
 
-        email = integration_ready_email(integration, created_by)
+        email = integration_ready_email(integration, integration.created_by)
         email.send()
 
         analytics.track(
-            created_by.id,
+            integration.created_by.id,
             INTEGRATION_SYNC_SUCCESS_EVENT,
             {
                 "id": integration.id,
