@@ -355,7 +355,7 @@ def get_arity_from_node_func(func):
 def _validate_arity(func, len_args):
 
     min_arity, variable_args = get_arity_from_node_func(func)
-    assert len_args >= min_arity if variable_args else len_args == min_arity
+    return len_args >= min_arity if variable_args else len_args == min_arity
 
 
 def get_query_from_node(node):
@@ -370,7 +370,8 @@ def get_query_from_node(node):
         func = NODE_FROM_CONFIG[node.kind]
         args = [results[parent] for parent in node.parents.all()]
 
-        _validate_arity(func, len(args))
+        if not _validate_arity(func, len(args)):
+            raise NodeResultNone(node)
 
         try:
             results[node] = func(node, *args)
