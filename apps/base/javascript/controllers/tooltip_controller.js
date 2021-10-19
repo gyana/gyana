@@ -1,4 +1,5 @@
 import { Controller } from 'stimulus'
+import tippy from 'tippy.js';
 
 /**
  * Simple Tippy.js stimulus wrapper.
