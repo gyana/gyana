@@ -1,12 +1,13 @@
+from datetime import datetime
 from unittest.mock import Mock
 
 import googleapiclient
 import pytest
-from apps.base.tests.asserts import assertFormRenders, assertOK
+from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
 from apps.integrations.models import Integration
 from apps.projects.models import Project
 from apps.sheets.models import Sheet
-from pytest_django.asserts import assertFormError, assertRedirects
+from pytest_django.asserts import assertContains, assertFormError, assertRedirects
 
 pytestmark = pytest.mark.django_db
 
@@ -160,3 +161,50 @@ def test_runtime_error(client, logged_in_user, bigquery_client, settings):
 
     integration.refresh_from_db()
     assert integration.state == Integration.State.ERROR
+
+
+def test_resync_after_source_update(
+    client, logged_in_user, drive_v2_client, bigquery_client, settings
+):
+
+    settings.CELERY_TASK_ALWAYS_EAGER = True
+    settings.CELERY_TASK_EAGER_PROPAGATES = True
+
+    team = logged_in_user.teams.first()
+    project = Project.objects.create(name="Project", team=team)
+    integration = Integration.objects.create(
+        project=project, kind=Integration.Kind.SHEET, name="store_info", ready=True
+    )
+    sheet = Sheet.objects.create(
+        integration=integration,
+        url="http://sheet.url",
+        drive_file_last_modified=datetime(2020, 9, 1, 0, 0, 0),
+    )
+    INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
+
+    # mock drive client to check last updated information
+    drive_v2_client.files().get().execute = Mock(
+        return_value={"modifiedDate": "2020-10-01T00:00:00Z"}
+    )
+
+    # sheet is out of date
+    r = client.get_turbo_frame(f"{INTEGRATION_URL}", f"/sheets/{sheet.id}/status")
+    assertOK(r)
+    assertContains(r, "This Google Sheet was updated since the last sync.")
+    assertLink(r, f"{INTEGRATION_URL}/configure", "Import the latest data")
+
+    r = client.get(f"{INTEGRATION_URL}/configure")
+    assertOK(r)
+
+    bigquery_client.query().exception = lambda: False
+    bigquery_client.reset_mock()  # reset the call count
+    bigquery_client.get_table().num_rows = 10
+
+    # sync new data
+    r = client.post(f"{INTEGRATION_URL}/configure")
+
+    # sheet is up to date
+    r = client.get_turbo_frame(f"{INTEGRATION_URL}", f"/sheets/{sheet.id}/status")
+    print(r.content)
+    assertOK(r)
+    assertContains(r, "You've already synced the latest data.")
