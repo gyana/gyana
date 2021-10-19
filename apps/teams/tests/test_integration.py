@@ -34,12 +34,17 @@ def test_team_crudl(client, logged_in_user, bigquery_client, settings):
     r = client.post("/teams/new", data={"name": "Neera"})
     assert logged_in_user.teams.count() == 2
     new_team = logged_in_user.teams.first()
-    assertRedirects(r, f"/teams/{new_team.id}", status_code=303)
+    assertRedirects(r, f"/teams/{new_team.id}/plan", status_code=303)
 
     assert bigquery_client.create_dataset.call_count == 1
     assert bigquery_client.create_dataset.call_args.args == (
         new_team.tables_dataset_id,
     )
+
+    # choose plan
+    r = client.get(f"/teams/{new_team.id}/plan")
+    assertOK(r)
+    assertLink(r, f"/teams/{new_team.id}", "Choose plan")
 
     # read
     r = client.get(f"/teams/{new_team.id}")

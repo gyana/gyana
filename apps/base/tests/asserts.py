@@ -28,11 +28,11 @@ def assertSelectorText(response, selector, text):
 
 
 def assertOK(response):
-    assert response.status_code == 200
+    assert response.status_code == 200, f"{response.status_code} != 200"
 
 
 def assertNotFound(response):
-    assert response.status_code == 404
+    assert response.status_code == 404, f"{response.status_code} != 404"
 
 
 def assertFormRenders(response, expected_fields=[]):
