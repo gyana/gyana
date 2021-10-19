@@ -394,12 +394,3 @@ class NodeResultNone(Exception):
         super().__init__(*args)
 
         self.node = node
-
-
-def get_sentiment_schema(node):
-    return ibis.schema(
-        [(TEXT_COLUMN_NAME, "string"), (SENTIMENT_COLUMN_NAME, "float64")]
-    )
-
-
-SCHEMA_FROM_NODE = {"sentiment": get_sentiment_schema}
