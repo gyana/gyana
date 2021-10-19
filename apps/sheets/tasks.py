@@ -11,8 +11,9 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from .bigquery import get_last_modified_from_drive_file, import_table_from_sheet
+from .bigquery import import_table_from_sheet
 from .models import Sheet
+from .sheets import get_last_modified_from_drive_file
 
 
 @shared_task(bind=True)

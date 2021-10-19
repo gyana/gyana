@@ -4,8 +4,8 @@ from apps.base.forms import BaseModelForm
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .bigquery import get_sheets_id_from_url
 from .models import Sheet
+from .sheets import get_sheets_id_from_url
 
 
 class SheetCreateForm(BaseModelForm):
