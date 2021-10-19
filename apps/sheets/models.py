@@ -1,3 +1,5 @@
+import textwrap
+
 from apps.base.celery import is_bigquery_task_running
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
@@ -25,3 +27,14 @@ class Sheet(CloneMixin, BaseModel):
     @property
     def table_id(self):
         return f"sheet_{self.id:09}"
+
+    def create_integration(self, title, created_by, project):
+        # maximum Google Drive name length is 32767
+        name = textwrap.shorten(title, width=255, placeholder="...")
+        integration = Integration.objects.create(
+            project=project,
+            kind=Integration.Kind.SHEET,
+            name=name,
+            created_by=created_by,
+        )
+        self.integration = integration

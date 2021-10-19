@@ -46,6 +46,12 @@ def logged_in_user(client):
     return user
 
 
+@pytest.fixture(autouse=True)
+def celery_eager(settings):
+    settings.CELERY_TASK_ALWAYS_EAGER = True
+    settings.CELERY_TASK_EAGER_PROPAGATES = True
+
+
 class BlankMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
