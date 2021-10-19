@@ -205,6 +205,5 @@ def test_resync_after_source_update(
 
     # sheet is up to date
     r = client.get_turbo_frame(f"{INTEGRATION_URL}", f"/sheets/{sheet.id}/status")
-    print(r.content)
     assertOK(r)
     assertContains(r, "You've already synced the latest data.")

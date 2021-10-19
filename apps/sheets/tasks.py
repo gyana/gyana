@@ -83,6 +83,7 @@ def run_sheet_sync(sheet: Sheet):
     sheet.integration.save()
 
     result = run_sheet_sync_task.delay(sheet.id)
+    sheet.refresh_from_db()  # required for tests
     sheet.sync_task_id = result.task_id
     sheet.sync_started = timezone.now()
     sheet.save()
