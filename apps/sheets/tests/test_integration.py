@@ -136,5 +136,27 @@ def test_validation_failures(client, logged_in_user, sheets_client):
     )
 
 
-def test_runtime_error(self):
-    pass
+def test_runtime_error(client, logged_in_user, bigquery_client, settings):
+
+    settings.CELERY_TASK_ALWAYS_EAGER = True
+    settings.CELERY_TASK_EAGER_PROPAGATES = True
+
+    team = logged_in_user.teams.first()
+    project = Project.objects.create(name="Project", team=team)
+    integration = Integration.objects.create(
+        project=project, kind=Integration.Kind.SHEET, name="store_info"
+    )
+    Sheet.objects.create(integration=integration, url="http://sheet.url")
+    INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
+
+    bigquery_client.query().exception = lambda: True
+    bigquery_client.query().errors = [{"message": "No columns found in the schema."}]
+
+    with pytest.raises(Exception):
+        r = client.post(
+            f"{INTEGRATION_URL}/configure",
+            data={"cell_range": "store_info!A20:D21"},
+        )
+
+    integration.refresh_from_db()
+    assert integration.state == Integration.State.ERROR
