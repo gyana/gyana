@@ -50,6 +50,8 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.2.0",
+    "@hotwired/stimulus": "^3.0.1",
+    "@hotwired/stimulus-webpack-helpers": "^1.0.1",
     "@hotwired/turbo": "^7.0.1",
     "@popperjs/core": "^2.10.2",
     "@tailwindcss/forms": "^0.3.2",
@@ -62,7 +64,6 @@
     "react-flow-renderer": "^9.5.3",
     "react-rnd": "^10.3.3",
     "react-router-dom": "^5.2.0",
-    "stimulus": "^2.0.0",
     "tailwindcss": "^2.1.2",
     "tippy.js": "^6.3.2",
     "use-debounce": "^6.0.1"
