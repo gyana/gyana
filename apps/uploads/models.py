@@ -1,3 +1,6 @@
+import textwrap
+from os.path import splitext
+
 from apps.base.celery import is_bigquery_task_running
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
@@ -38,6 +41,17 @@ class Upload(CloneMixin, BaseModel):
     @property
     def gcs_uri(self):
         return f"gs://{settings.GS_BUCKET_NAME}/{self.file_gcs_path}"
+
+    def create_integration(self, file_name, created_by, project):
+        # file_gcs_path has an extra hidden input
+        name = textwrap.shorten(splitext(file_name)[0], width=255, placeholder="...")
+        integration = Integration.objects.create(
+            project=project,
+            kind=Integration.Kind.UPLOAD,
+            name=name,
+            created_by=created_by,
+        )
+        self.integration = integration
 
 
 FIELD_DELIMITER_CHOICE_TO_CHAR = {

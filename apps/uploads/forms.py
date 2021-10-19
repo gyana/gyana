@@ -1,25 +1,17 @@
-import textwrap
-from os.path import splitext
-
-from apps.integrations.models import Integration
+from apps.base.forms import BaseModelForm
 from apps.uploads.widgets import GCSFileUpload
 from django import forms
-from django.db import transaction
 
 from .models import Upload
 
 
-class UploadCreateForm(forms.ModelForm):
+class UploadCreateForm(BaseModelForm):
     class Meta:
         model = Upload
         fields = ["file_gcs_path"]
-        widgets = {
-            "file_gcs_path": GCSFileUpload(),
-        }
+        widgets = {"file_gcs_path": GCSFileUpload()}
         labels = {"file_gcs_path": "Choose a file"}
-        help_texts = {
-            "file_gcs_path": "Maximum file size is 1GB"
-        }
+        help_texts = {"file_gcs_path": "Maximum file size is 1GB"}
 
     def __init__(self, *args, **kwargs):
         self._project = kwargs.pop("project")
@@ -27,28 +19,10 @@ class UploadCreateForm(forms.ModelForm):
 
         super().__init__(*args, **kwargs)
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-
-        # file_gcs_path has an extra hidden input
-        name = textwrap.shorten(
-            splitext(self.data["file_name"])[0], width=255, placeholder="..."
+    def pre_save(self, instance):
+        instance.create_integration(
+            self.data["file_name"], self._created_by, self._project
         )
-        integration = Integration(
-            project=self._project,
-            kind=Integration.Kind.UPLOAD,
-            name=name,
-            created_by=self._created_by,
-        )
-        instance.integration = integration
-
-        if commit:
-            with transaction.atomic():
-                integration.save()
-                instance.save()
-                self.save_m2m()
-
-        return instance
 
 
 class UploadUpdateForm(forms.ModelForm):
