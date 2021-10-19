@@ -1,19 +1,18 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.db import transaction
 from django.forms.widgets import CheckboxInput, HiddenInput
 from honeybadger import honeybadger
 
 from apps.base.clients import fivetran_client
+from apps.base.forms import BaseModelForm
 from apps.connectors.config import get_services
 from apps.connectors.fivetran import FivetranClientError
-from apps.integrations.models import Integration
 
 from .models import Connector
 from .widgets import ConnectorSchemaMultiSelect
 
 
-class ConnectorCreateForm(forms.ModelForm):
+class ConnectorCreateForm(BaseModelForm):
     class Meta:
         model = Connector
         fields = []
@@ -36,30 +35,13 @@ class ConnectorCreateForm(forms.ModelForm):
         self._fivetran_id = res["fivetran_id"]
         self._schema = res["schema"]
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-
+    def pre_save(self, instance):
         instance.service = self._service
         instance.fivetran_id = self._fivetran_id
         instance.schema = self._schema
-
-        name = get_services()[self._service]["name"]
-
-        integration = Integration(
-            project=self._project,
-            kind=Integration.Kind.CONNECTOR,
-            name=name,
-            created_by=self._created_by,
+        instance.create_integration(
+            get_services()[self._service]["name"], self._created_by, self._project
         )
-        instance.integration = integration
-
-        if commit:
-            with transaction.atomic():
-                integration.save()
-                instance.save()
-                self.save_m2m()
-
-        return instance
 
 
 class ConnectorUpdateForm(forms.ModelForm):

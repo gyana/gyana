@@ -29,3 +29,12 @@ class Connector(BaseModel):
     @property
     def fivetran_dashboard_url(self):
         return f"https://fivetran.com/dashboard/connectors/{self.service}/{self.schema}?requiredGroup={settings.FIVETRAN_GROUP}"
+
+    def create_integration(self, name, created_by, project):
+        integration = Integration.objects.create(
+            project=project,
+            kind=Integration.Kind.CONNECTOR,
+            name=name,
+            created_by=created_by,
+        )
+        self.integration = integration
