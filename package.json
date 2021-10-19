@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.2.0",
+    "@popperjs/core": "^2.10.2",
     "@tailwindcss/forms": "^0.3.2",
     "codemirror": "^5.61.1",
     "dagre": "^0.8.5",
@@ -62,6 +63,7 @@
     "react-router-dom": "^5.2.0",
     "stimulus": "^2.0.0",
     "tailwindcss": "^2.1.2",
+    "tippy.js": "^6.3.2",
     "use-debounce": "^6.0.1"
   }
 }
