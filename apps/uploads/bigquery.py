@@ -40,7 +40,6 @@ def _load_table(upload: Upload, table: Table, **job_kwargs):
     )
 
     if load_job.exception():
-        print(load_job.errors[0]["message"])
         raise Exception(load_job.errors[0]["message"])
 
 
