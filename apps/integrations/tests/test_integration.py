@@ -1,27 +1,18 @@
-from unittest.mock import MagicMock, Mock
-
 import pytest
-from apps.base.clients import ibis_client
 from apps.base.tests.asserts import (
     assertFormRenders,
     assertLink,
     assertOK,
     assertSelectorLength,
 )
+from apps.base.tests.mocks import mock_bq_client_with_data, mock_bq_client_with_schema
 from apps.integrations.models import Integration
 from apps.projects.models import Project
 from apps.sheets.models import Sheet
 from apps.tables.models import Table
-from google.cloud.bigquery.schema import SchemaField
-from google.cloud.bigquery.table import Table as BqTable
 from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
-
-
-class PickableMock(Mock):
-    def __reduce__(self):
-        return (Mock, ())
 
 
 def test_integration_crudl(client, logged_in_user):
@@ -78,7 +69,7 @@ def test_structure_and_preview(client, logged_in_user, bigquery_client):
     integration = Integration.objects.create(
         project=project, kind=Integration.Kind.UPLOAD, name="store_info", ready=True
     )
-    table = Table.objects.create(
+    Table.objects.create(
         project=project,
         integration=integration,
         source=Table.Source.INTEGRATION,
@@ -91,13 +82,13 @@ def test_structure_and_preview(client, logged_in_user, bigquery_client):
     assertOK(r)
     assertLink(r, f"{INTEGRATION_URL}/data", "Data")
 
-    # mock
-    # structure, and schema for ibis client
-    bq_table = BqTable(
-        "project.dataset.table",
-        schema=[SchemaField("name", "STRING"), SchemaField("age", "INTEGER")],
+    # mock table with two columns, two rows
+    mock_bq_client_with_schema(
+        bigquery_client, [("name", "STRING"), ("age", "INTEGER")]
     )
-    bigquery_client.get_table = MagicMock(return_value=bq_table)
+    mock_bq_client_with_data(
+        bigquery_client, [{"name": "Neera", "age": 4}, {"name": "Vayu", "age": 2}]
+    )
 
     # structure
     r = client.get_turbo_frame(
@@ -109,12 +100,6 @@ def test_structure_and_preview(client, logged_in_user, bigquery_client):
     assertContains(r, "Text")
 
     # preview
-    ibis_client().client = bigquery_client
-    mock = PickableMock()
-    mock.rows_dict = [{"name": "Neera", "age": 4}, {"name": "Vayu", "age": 2}]
-    mock.total_rows = 2
-    bigquery_client.get_query_results = Mock(return_value=mock)
-
     r = client.get_turbo_frame(
         f"{INTEGRATION_URL}/data?view=preview",
         f"/integrations/{integration.id}/grid?table_id=",
@@ -126,7 +111,7 @@ def test_structure_and_preview(client, logged_in_user, bigquery_client):
     assertContains(r, "4")
 
 
-def test_create_retry_edit_and_approve(client, logged_in_user, settings):
+def test_create_retry_edit_and_approve(client, logged_in_user):
     team = logged_in_user.teams.first()
     project = Project.objects.create(name="Project", team=team)
 
@@ -203,7 +188,7 @@ def test_create_retry_edit_and_approve(client, logged_in_user, settings):
     assertLink(r, f"{INTEGRATION_URL}/configure", "configuration")
 
 
-def test_exceeds_row_limit(client, logged_in_user, settings):
+def test_exceeds_row_limit(client, logged_in_user):
     team = logged_in_user.teams.first()
     project = Project.objects.create(name="Project", team=team)
     integration = Integration.objects.create(
