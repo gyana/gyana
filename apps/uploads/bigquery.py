@@ -1,7 +1,5 @@
 from apps.base.bigquery import bq_table_schema_is_string_only, sanitize_bq_column_name
-from apps.base.clients import bigquery_client
 from apps.tables.models import Table
-from django.conf import settings
 from google.cloud import bigquery
 from google.cloud.bigquery.job.load import LoadJob
 
@@ -20,6 +18,8 @@ def _create_external_table(upload: Upload, table_id: str, **job_kwargs):
 
 
 def _load_table(upload: Upload, table: Table, **job_kwargs):
+
+    from apps.base.clients import bigquery_client
 
     client = bigquery_client()
 
@@ -40,10 +40,13 @@ def _load_table(upload: Upload, table: Table, **job_kwargs):
     )
 
     if load_job.exception():
+        print(load_job.errors[0]["message"])
         raise Exception(load_job.errors[0]["message"])
 
 
 def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
+
+    from apps.base.clients import bigquery_client
 
     client = bigquery_client()
 
