@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.2.0",
+    "@hotwired/turbo": "^7.0.1",
     "@popperjs/core": "^2.10.2",
     "@tailwindcss/forms": "^0.3.2",
     "codemirror": "^5.61.1",

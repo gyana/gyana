@@ -10,6 +10,7 @@ module.exports = {
   entry: {
     style: './apps/base/styles/style.scss',
     tailwind: './apps/base/styles/vendors/tailwind.pcss',
+    turbo: './apps/base/javascript/turbo.ts',
     stimulus: './apps/base/javascript/stimulus.ts',
     workflow: './apps/workflows/javascript/app.tsx',
     components: './apps/base/javascript/components.ts',
