@@ -70,42 +70,9 @@ class Team(BaseModel):
 
     @property
     def current_credit_balance(self):
-        """Calculates the current credit balance based on the latest statement"""
+        from .account import calculate_credit_balance
 
-        # Get the latest statement
-        last_statement = (
-            self.creditstatement_set.latest("created")
-            if self.creditstatement_set.first()
-            else None
-        )
-
-        start_balance = last_statement.balance if last_statement else self.credits
-
-        # Fetch all transaction since the last statement
-        # this includes a transaction filling up the balance to the plans maximum
-        transactions = (
-            self.credittransaction_set.filter(created__gt=last_statement.created)
-            if last_statement
-            else self.credittransaction_set
-        )
-
-        # Calculate the current balance adding the received credits to the balance of the last
-        # statement and subtracting the used credits
-        return (
-            start_balance
-            + (
-                transactions.filter(
-                    transaction_type=CreditTransaction.TransactionType.INCREASE,
-                ).aggregate(models.Sum("amount"))["amount__sum"]
-                or 0
-            )
-            - (
-                transactions.filter(
-                    transaction_type=CreditTransaction.TransactionType.DECREASE,
-                ).aggregate(models.Sum("amount"))["amount__sum"]
-                or 0
-            )
-        )
+        return calculate_credit_balance(self)
 
     def redeemed_codes(self):
         return self.appsumocode_set.count()
