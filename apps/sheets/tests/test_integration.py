@@ -1,5 +1,5 @@
 from datetime import datetime
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import googleapiclient
 import pytest
@@ -13,8 +13,9 @@ from pytest_django.asserts import assertContains, assertFormError, assertRedirec
 pytestmark = pytest.mark.django_db
 
 
+@patch("apps.sheets.bigquery.bq_table_schema_is_string_only", return_value=False)
 def test_create(
-    client, logged_in_user, bigquery_client, sheets_client, drive_v2_client
+    _, client, logged_in_user, bigquery_client, sheets_client, drive_v2_client
 ):
 
     team = logged_in_user.teams.first()
@@ -162,8 +163,9 @@ def test_runtime_error(client, logged_in_user, bigquery_client):
     assert integration.state == Integration.State.ERROR
 
 
+@patch("apps.sheets.bigquery.bq_table_schema_is_string_only", return_value=False)
 def test_resync_after_source_update(
-    client, logged_in_user, drive_v2_client, bigquery_client
+    _, client, logged_in_user, drive_v2_client, bigquery_client
 ):
 
     team = logged_in_user.teams.first()

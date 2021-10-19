@@ -6,7 +6,6 @@ from django.db import models
 from model_clone.mixins.clone import CloneMixin
 
 from apps.base.cache import get_cache_key
-from apps.base.clients import bigquery_client
 from apps.base.models import BaseModel
 from apps.projects.models import Project
 
@@ -67,6 +66,8 @@ class Table(CloneMixin, BaseModel):
 
     @property
     def bq_obj(self):
+        from apps.base.clients import bigquery_client
+
         return bigquery_client().get_table(self.bq_id)
 
     @property

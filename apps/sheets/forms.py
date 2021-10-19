@@ -1,5 +1,4 @@
 import googleapiclient
-from apps.base.clients import sheets_client
 from apps.base.forms import BaseModelForm
 from django import forms
 from django.core.exceptions import ValidationError
@@ -28,6 +27,8 @@ class SheetCreateForm(BaseModelForm):
         if sheet_id == "":
             raise ValidationError("The URL to the sheet seems to be invalid.")
 
+        from apps.base.clients import sheets_client
+
         client = sheets_client()
         try:
             self._sheet = client.spreadsheets().get(spreadsheetId=sheet_id).execute()
@@ -53,6 +54,8 @@ class SheetUpdateForm(forms.ModelForm):
         cell_range = self.cleaned_data["cell_range"]
 
         sheet_id = get_sheets_id_from_url(self.instance.url)
+
+        from apps.base.clients import sheets_client
 
         client = sheets_client()
         try:
