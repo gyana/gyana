@@ -92,9 +92,10 @@ def poll_fivetran_sync(self, connector_id):
     connector = get_object_or_404(Connector, pk=connector_id)
     fivetran_client().block_until_synced(connector)
 
-    # we've waited for a while, we don't to duplicate this logic
-    connector.refresh_from_db()
-    complete_connector_sync(connector)
+    if fivetran_client().has_completed_sync(connector):
+        # we've waited for a while, we don't to duplicate this logic
+        connector.refresh_from_db()
+        complete_connector_sync(connector)
 
 
 def run_connector_sync(connector: Connector):

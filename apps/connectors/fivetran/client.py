@@ -140,9 +140,9 @@ class FivetranClient:
 
     def block_until_synced(self, connector: Connector):
 
-        backoff.on_predicate(backoff.expo, max_time=3600)(self.has_completed_sync)(
-            connector
-        )
+        backoff.on_predicate(backoff.constant(interval=15), max_time=3600)(
+            self.has_completed_sync
+        )(connector)
 
     def reload_schemas(self, connector: Connector) -> List[FivetranSchema]:
 
