@@ -1,5 +1,8 @@
 {% extends "teams/base.html" %}
 
+{% comment %} Hide the sidebar when creating a new team {% endcomment %}
+{% block sidebar %}{% endblock %}
+
 {% block tab %}
 <div class="flex flex-1 justify-center items-center">
   <div class="flex flex-col max-w-xl">
@@ -17,7 +20,10 @@
         <strong>Note:</strong> You can change your team name at any time.
       </p>
 
-      <button type="submit" class="button button--filled button--success w-full">Create Team</button>
+      <div class="flex gap-8 w-full">
+        <a href="/" class="button button--filled button--tertiary flex-1">Cancel</a>
+        <button type="submit" class="button button--filled button--success flex-1">Create Team</button>
+      </div>
     </form>
   </div>
 </div>
