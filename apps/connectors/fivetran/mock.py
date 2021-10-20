@@ -10,7 +10,8 @@ from django.utils import timezone
 from ..models import Connector
 from .schema import schemas_to_dict, schemas_to_obj
 
-MOCK_SCHEMA_DIR = os.path.abspath("apps/connectors/fivetran/fixtures")
+SCHEMA_FIXTURES_DIR = "apps/connectors/fivetran/fixtures"
+MOCK_SCHEMA_DIR = os.path.abspath(".mock/.schema")
 
 
 @cache
@@ -92,7 +93,7 @@ class MockFivetranClient:
         service = connector.service if connector is not None else "google_analytics"
         fivetran_id = connector.fivetran_id if connector is not None else "humid_rifle"
 
-        with open(f"cypress/fixtures/fivetran/{service}_{fivetran_id}.json", "r") as f:
+        with open(f"{SCHEMA_FIXTURES_DIR}/{service}_{fivetran_id}.json", "r") as f:
             return schemas_to_obj(json.load(f))
 
     def update_schemas(self, connector, schemas):
