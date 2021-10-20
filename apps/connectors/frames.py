@@ -19,7 +19,7 @@ class ConnectorIcon(TurboFrameDetailView):
         context_data = super().get_context_data(**kwargs)
 
         if fivetran_client().has_completed_sync(self.object):
-            complete_connector_sync(self.object, send_mail=False)
+            complete_connector_sync(self.object)
 
         context_data["icon"] = self.object.integration.state_icon
         context_data["text"] = self.object.integration.state_text

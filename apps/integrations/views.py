@@ -195,7 +195,7 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
 
         if self.object.kind == Integration.Kind.CONNECTOR:
             if fivetran_client().has_completed_sync(self.object.source_obj):
-                complete_connector_sync(self.object.source_obj, send_mail=False)
+                complete_connector_sync(self.object.source_obj)
                 return redirect(
                     "project_integrations:done", self.project.id, self.object.id
                 )

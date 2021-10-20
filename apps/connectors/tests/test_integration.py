@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 import pytest
 from apps.base.tests.asserts import (
     assertFormRenders,
@@ -10,9 +12,8 @@ from apps.connectors.models import Connector
 from apps.integrations.models import Integration
 from apps.projects.models import Project
 from apps.tables.models import Table
-from google.cloud.bigquery.schema import SchemaField
-from google.cloud.bigquery.table import Table as BqTable
-from pytest_django.asserts import assertRedirects
+from django.core import mail
+from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
 
@@ -23,11 +24,11 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
     project = Project.objects.create(name="Project", team=team)
 
     # mock connector with a single table
-    fivetran_client.create = lambda *_: {"fivetran_id": "fid", "schema": "sid"}
-    fivetran_client.get_authorize_url = (
-        lambda c, r: f"http://fivetran.url?redirect_uri={r}"
+    fivetran_client.create.return_value = {"fivetran_id": "fid", "schema": "sid"}
+    fivetran_client.get_authorize_url = Mock(
+        side_effect=lambda c, r: f"http://fivetran.url?redirect_uri={r}"
     )
-    fivetran_client.has_completed_sync = lambda *_: True
+    fivetran_client.has_completed_sync.return_value = False
     table = {
         "name_in_destination": "table",
         "enabled": True,
@@ -39,16 +40,7 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
         enabled=True,
         tables={"table": table},
     )
-    fivetran_client.get_schemas = lambda *_: [schema]
-    bigquery_client.list_tables = lambda *_: [
-        BqTable(
-            "project.dataset.table",
-            schema=[
-                SchemaField(column, type_)
-                for column, type_ in [("name", "STRING"), ("age", "INTEGER")]
-            ],
-        )
-    ]
+    fivetran_client.get_schemas.return_value = [schema]
     bigquery_client.get_table().num_rows = 10
 
     # create a new connector, configure it and complete the sync
@@ -77,18 +69,33 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
     integration = project.integration_set.first()
     assert integration is not None
     assert integration.kind == Integration.Kind.CONNECTOR
-    assert integration.connector is not None
+    connector = integration.connector
+    assert connector is not None
     assert integration.created_by == logged_in_user
-    INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
 
-    redirect_uri = f"http://localhost:8000/projects/{project.id}/integrations/connectors/{integration.connector.id}/authorize"
+    redirect_uri = f"http://localhost:8000/projects/{project.id}/integrations/connectors/{connector.id}/authorize"
     assertRedirects(r, f"http://fivetran.url?redirect_uri={redirect_uri}")
+
+    assert fivetran_client.create.call_count == 1
+    assert fivetran_client.create.call_args.args == ("google_analytics", team.id)
+    assert connector.fivetran_id == "fid"
+    assert connector.schema == "sid"
+
+    assert fivetran_client.get_authorize_url.call_count == 1
+    assert fivetran_client.get_authorize_url.call_args.args == (
+        connector,
+        redirect_uri,
+    )
+
+    INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
 
     # authorize redirect
     r = client.get(
-        f"/projects/{project.id}/integrations/connectors/{integration.connector.id}/authorize"
+        f"/projects/{project.id}/integrations/connectors/{connector.id}/authorize"
     )
     assertRedirects(r, f"{INTEGRATION_URL}/configure")
+
+    fivetran_client.get_schemas.reset_mock()
 
     # configure
     r = client.get(f"{INTEGRATION_URL}/configure")
@@ -96,15 +103,37 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
     # todo: fix this!
     assertFormRenders(r, ["name", "dataset_schema", "dataset_tables"])
 
+    assert fivetran_client.get_schemas.call_count == 1
+    assert fivetran_client.get_schemas.call_args.args == (connector,)
+
     # complete the sync
     # it will happen immediately as celery is run in eager mode
     r = client.post(f"{INTEGRATION_URL}/configure")
-    assertRedirects(r, f"{INTEGRATION_URL}/load", target_status_code=302)
+    assertRedirects(r, f"{INTEGRATION_URL}/load")
+
+    assert fivetran_client.update_schemas.call_count == 1
+    assert fivetran_client.update_schemas.call_args.args == (connector, [schema])
+    assert fivetran_client.start_initial_sync.call_count == 1
+    assert fivetran_client.start_initial_sync.call_args.args == (connector,)
+
+    r = client.get(f"{INTEGRATION_URL}/load")
+    assertOK(r)
+    assertContains(r, "Google Analytics")
+    assertLink(
+        r, f"/projects/{project.id}/integrations/pending", "pending integrations"
+    )
+
+    fivetran_client.has_completed_sync.return_value = True
 
     r = client.get(f"{INTEGRATION_URL}/load")
     assertRedirects(r, f"{INTEGRATION_URL}/done")
 
+    fivetran_client.has_completed_sync.call_count == 3
+    fivetran_client.has_completed_sync.call_args.args == (connector,)
+
     assert integration.table_set.count() == 1
+    integration.refresh_from_db()
+    assert integration.state == Integration.State.DONE
 
     # todo: email
     # assert len(mail.outbox) == 1

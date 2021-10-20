@@ -12,9 +12,11 @@ from apps.tables.models import Table
 from .fivetran.schema import get_bq_ids_from_schemas
 
 
-def complete_connector_sync(connector: Connector, send_mail: bool = True):
+def complete_connector_sync(connector: Connector):
     bq_ids = get_bq_ids_from_schemas(connector)
     integration = connector.integration
+
+    initial_sync = integration.table_set.count() == 0
 
     with transaction.atomic():
         for bq_id in bq_ids:
@@ -40,7 +42,7 @@ def complete_connector_sync(connector: Connector, send_mail: bool = True):
         integration.state = Integration.State.DONE
         integration.save()
 
-    if integration.created_by and send_mail:
+    if integration.created_by and initial_sync:
 
         email = integration_ready_email(integration, integration.created_by)
         email.send()
