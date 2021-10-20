@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus'
+import { Controller } from '@hotwired/stimulus'
 import { GyanaEvents } from 'apps/base/javascript/events'
 
 // Reload the Turbo Frame on workflow run event.

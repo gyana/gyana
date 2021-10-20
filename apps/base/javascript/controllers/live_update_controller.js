@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus'
+import { Controller } from '@hotwired/stimulus'
 import morphdom from 'morphdom'
 
 const get_formset_row = (element) => element.closest('[data-formset-index]')

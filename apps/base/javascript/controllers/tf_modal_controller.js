@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus'
+import { Controller } from '@hotwired/stimulus'
 
 // Open a modal with the content populated by a turbo-frame
 export default class extends Controller {

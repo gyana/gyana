@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus'
+import { Controller } from '@hotwired/stimulus'
 import { GyanaEvents } from 'apps/base/javascript/events'
 
 // Dispatch events for the React App when the node name or config is updated
