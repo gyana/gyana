@@ -5,11 +5,7 @@
   padding: 1.6rem;
 
   &__plan {
-    display: grid;
-    gap: 1.6rem;
+    display: flex;
     max-width: 75rem;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-    margin-bottom: 1.6rem;
   }
 }
