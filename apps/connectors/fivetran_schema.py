@@ -25,6 +25,10 @@ class FivetranTable:
             res.pop("columns")
         return res
 
+    @property
+    def display_name(self):
+        self.name_in_destination.replace("_", " ").title()
+
 
 @dataclass
 class FivetranSchema:
@@ -48,6 +52,10 @@ class FivetranSchema:
             for table in self.tables
             if table.enabled and self.enabled
         }
+
+    @property
+    def display_name(self):
+        self.name_in_destination.replace("_", " ").title()
 
 
 def schemas_to_obj(schemas_dict):
@@ -89,3 +97,29 @@ def get_bq_ids_from_schemas(connector: Connector):
         return [f"{connector.schema}.sheets_table"]
 
     return schema_bq_ids
+
+
+def update_schema_from_cleaned_data(connector, cleaned_data):
+    # construct the payload from cleaned data
+
+    from apps.base.clients import fivetran_client
+
+    # mutate the schema information based on user input
+    schemas = fivetran_client().get_schemas(connector)
+
+    for schema in schemas:
+        schema.enabled = f"{schema.name_in_destination}_schema" in cleaned_data
+        # only patch tables that are allowed
+        schema.tables = [
+            t for t in schema.tables if t.enabled_patch_settings["allowed"]
+        ]
+        for table in schema.tables:
+            # field does not exist if all unchecked
+            table.enabled = table.name_in_destination in cleaned_data.get(
+                f"{schema.name_in_destination}_tables", []
+            )
+            # no need to patch the columns information and it can break
+            # if access issues, e.g. per column access in Postgres
+            table.columns = {}
+
+    fivetran_client().update_schemas(connector, schemas)
