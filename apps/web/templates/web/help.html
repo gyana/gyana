@@ -1,82 +1,82 @@
 {% load help_utils %}
 
-<section class="flex flex-col h-full pad whitespace-normal">
-  <header class="mb-7">
-    <h1>Help</h1>
+<section class="flex flex-col h-full whitespace-normal">
+  <div class="workflow-detail__header">
+    <h3 class="mr-auto">Help</h3>
 
-    <div class="absolute top-0 right-0">
-      <button
-        class="tf-modal__close"
-        type="submit"
-        formnovalidate
-        name="close"
-        value="close"
-        data-action="click->tf-modal#close"
-        data-loading-false
-      >
-        <i class="fal fa-times fa-lg"></i>
-      </button>
-    </div>
-  </header>
-
-  <p class="mb-7">
-    Using a new tool can be hard, that's why we want to offer you resoures to
-    help you learn how to use
-    <strong class="text-blue">Gyana</strong>, and offer support when 
-    anything goes wrong.
-  </p>
-
-  <h2 class="mb-7">Read our articles</h2>
-  <ul class="flex flex-col gap-7 mb-7">
-    <li>
-      <a
-        class="h4 link"
-        href="{% article_url 'overview' 'intro' %}"
-        target="_blank"
-      >
-        What is Gyana?
-      </a>
-      <p>A no-code data analytics tool with big ambitions 💪</p>
-    </li>
-
-    <li>
-      <a
-        class="h4 link"
-        href="https://intercom.help/gyana/en/collections/3117612-gyana-explained"
-        target="_blank"
-      >
-        Getting Started
-      </a>
-      <p>Collection of articles on how we use Gyana to get you started.</p>
-    </li>
-  </ul>
-
-  <div class="flex justify-around gap-7 mt-auto mb-7">
-    <a
-      class="flex flex-row items-center gap-5"
-      href="{% article_url 'overview' 'intro' %}"
+    <button
+      class="tf-modal__close"
+      type="submit"
+      formnovalidate
+      name="close"
+      value="close"
+      data-action="click->tf-modal#close"
+      data-loading-false
     >
-      <div class="p-4 rounded-md bg-blue text-white">
-        <i class="fas fa-fw fa-video fa-1x"></i>
-      </div>
-      <h4 class="text-center">Watch our intro video</h3>
-    </a>
-
-    <a
-      class="flex flex-row items-center gap-5"
-      href="https://feedback.gyana.com/"
-    >
-      <div class="p-4 rounded-md bg-blue text-white">
-        <i class="fas fa-fw fa-comment-alt-lines fa-1x"></i>
-      </div>
-      <h4 class="text-center">Give us feedback</h3>
-    </a>
+      <i class="fal fa-times fa-lg"></i>
+    </button>
   </div>
 
-  <footer class="text-center">
-    <p>
-      Need anything else?
-      <a class="link" href="mailto:support@gyana.com">Send us an email</a>
+  <div class="flex flex-col pad flex-1">
+    <p class="mb-7">
+      Using a new tool can be hard, that's why we want to offer you resoures to
+      help you learn how to use
+      <strong class="text-blue">Gyana</strong>, and offer support when 
+      anything goes wrong.
     </p>
-  </footer>
+
+    <h2 class="mb-7">Read our articles</h2>
+    <ul class="flex flex-col gap-7 mb-7">
+      <li>
+        <a
+          class="h4 link"
+          href="{% article_url 'overview' 'intro' %}"
+          target="_blank"
+        >
+          What is Gyana?
+        </a>
+        <p>A no-code data analytics tool with big ambitions 💪</p>
+      </li>
+
+      <li>
+        <a
+          class="h4 link"
+          href="https://intercom.help/gyana/en/collections/3117612-gyana-explained"
+          target="_blank"
+        >
+          Getting Started
+        </a>
+        <p>Collection of articles on how we use Gyana to get you started.</p>
+      </li>
+    </ul>
+
+    <div class="flex justify-around gap-7 mt-auto mb-7">
+      <a
+        class="flex flex-row items-center gap-5"
+        href="{% article_url 'overview' 'intro' %}"
+      >
+        <div class="p-4 rounded-md bg-blue text-white">
+          <i class="fas fa-fw fa-video fa-1x"></i>
+        </div>
+        <h4 class="text-center">Watch our intro video</h3>
+      </a>
+
+      <a
+        class="flex flex-row items-center gap-5"
+        href="https://feedback.gyana.com/"
+      >
+        <div class="p-4 rounded-md bg-blue text-white">
+          <i class="fas fa-fw fa-comment-alt-lines fa-1x"></i>
+        </div>
+        <h4 class="text-center">Give us feedback</h3>
+      </a>
+    </div>
+
+    <footer class="text-center">
+      <p>
+        Need anything else?
+        <a class="link" href="mailto:support@gyana.com">Send us an email</a>
+      </p>
+    </footer>
+  </div>
 </section>
