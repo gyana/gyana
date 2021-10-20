@@ -3,10 +3,6 @@ from django.urls import reverse
 
 from apps.base.clients import fivetran_client
 from apps.base.frames import TurboFrameDetailView
-from apps.integrations.tables import (
-    INTEGRATION_STATE_TO_ICON,
-    INTEGRATION_STATE_TO_MESSAGE,
-)
 
 from .models import Connector
 from .tasks import complete_connector_sync, update_fivetran_succeeded_at
@@ -20,13 +16,12 @@ class ConnectorIcon(TurboFrameDetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+        
         if fivetran_client().has_completed_sync(self.object):
             complete_connector_sync(self.object, send_mail=False)
 
-        context_data["icon"] = INTEGRATION_STATE_TO_ICON[self.object.integration.state]
-        context_data["text"] = INTEGRATION_STATE_TO_MESSAGE[
-            self.object.integration.state
-        ]
+        context_data["icon"] = self.object.integration.state_icon
+        context_data["text"] = self.object.integration.state_text
 
         return context_data
 
