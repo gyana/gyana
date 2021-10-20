@@ -27,7 +27,7 @@ class FivetranTable:
 
     @property
     def display_name(self):
-        self.name_in_destination.replace("_", " ").title()
+        return self.name_in_destination.replace("_", " ").title()
 
 
 @dataclass
@@ -55,7 +55,7 @@ class FivetranSchema:
 
     @property
     def display_name(self):
-        self.name_in_destination.replace("_", " ").title()
+        return self.name_in_destination.replace("_", " ").title()
 
 
 def schemas_to_obj(schemas_dict):
