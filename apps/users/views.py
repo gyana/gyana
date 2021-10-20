@@ -50,34 +50,6 @@ class UserOnboarding(PageTitleMixin, TurboUpdateView):
         return reverse("web:home")
 
 
-class UserProfile(PageTitleMixin, TurboUpdateView):
-    template_name = "account/profile.html"
-    model = CustomUser
-    form_class = CustomUserChangeForm
-    success_url = reverse_lazy("users:user_profile")
-    page_title = "Your Account"
-
-    def get_object(self, queryset=None):
-        return self.request.user
-
-    def form_valid(self, form) -> HttpResponse:
-        user = form.save(commit=False)
-        user_before_update = CustomUser.objects.get(pk=user.pk)
-        need_to_confirm_email = (
-            user_before_update.email != user.email
-            and require_email_confirmation()
-            and not user_has_confirmed_email_address(user, user.email)
-        )
-        if need_to_confirm_email:
-            # don't change it but instead send a confirmation email
-            # email will be changed by signal when confirmed
-            new_email = user.email
-            send_email_confirmation(self.request, user, signup=False, email=new_email)
-            user.email = user_before_update.email
-
-        return super().form_valid(form)
-
-
 class UserFeedback(View):
     def get(self, request, *args, **kwargs):
         # https://hellonext.co/help/sso-redirects
