@@ -3,7 +3,7 @@ from itertools import chain
 
 from apps.base.models import BaseModel
 from apps.base.table import ICONS
-from apps.connectors.config import get_services
+from apps.connectors.fivetran.config import get_services
 from apps.dashboards.models import Dashboard
 from apps.projects.models import Project
 from apps.users.models import CustomUser
