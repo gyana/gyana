@@ -37,7 +37,7 @@ describe('nodes', () => {
     cy.contains('Edinburgh').should('be.visible')
 
     cy.contains('revenue').click()
-    cy.contains('Save & Preview').click()
+    cy.contains('Save & Preview').should('not.be.disabled').click()
     cy.get('#workflows-grid').should('not.contain', 'Edinburgh')
     cy.contains('100000').should('be.visible')
   })
@@ -81,22 +81,23 @@ describe('nodes', () => {
 
     cy.get('#node-update-form').contains('Aggregations')
     cy.get('#node-update-form').contains('Group columns')
+    cy.get('#workflows-grid').contains('15').should('be.visible')
 
     addFormToFormset('columns')
     cy.get('select[name=columns-0-column]').should('have.value', '').select('Location')
-    cy.contains('Save & Preview').click()
+    cy.contains('Save & Preview').should('not.be.disabled').click()
     cy.get('#workflows-grid:contains(count)').should('be.visible')
     cy.get('#workflows-grid').contains('5').should('be.visible')
 
     cy.wait(200)
     addFormToFormset('aggregations')
     cy.get('select[name=aggregations-0-column]').should('have.value', '').select('Employees')
-    cy.contains('Save & Preview').click()
+    cy.contains('Save & Preview').should('not.be.disabled').click()
     cy.get('#workflows-grid').should('not.contain', 'count')
     cy.get('#workflows-grid').contains('45')
 
     cy.get('select[name=aggregations-0-function]').select('MEAN')
-    cy.contains('Save & Preview').click()
+    cy.contains('Save & Preview').should('not.be.disabled').click()
     cy.get('#workflows-grid').should('not.contain', '45')
     cy.get('#workflows-grid').contains('9.0').should('be.visible')
 
@@ -104,7 +105,7 @@ describe('nodes', () => {
     cy.get('select[name=aggregations-0-function]')
       .should('not.contain', 'MEAN')
       .should('have.value', 'count')
-    cy.contains('Save & Preview').click()
+    cy.contains('Save & Preview').should('not.be.disabled').click()
     cy.get('#workflows-grid').should('not.contain', 'count')
     cy.get('#workflows-grid').contains('5').should('be.visible')
 
