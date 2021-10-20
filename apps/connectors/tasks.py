@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
-from apps.base.clients import fivetran_client
+from apps.base.clients import bigquery_client, fivetran_client
 from apps.base.tasks import honeybadger_check_in
 from apps.connectors.fivetran import FivetranClientError
 from apps.connectors.models import Connector
@@ -17,29 +17,33 @@ from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
 from apps.tables.models import Table
 
-from .bigquery import get_bq_tables_from_schemas
 from .fivetran_schema import get_bq_ids_from_schemas
 
 
 def complete_connector_sync(connector: Connector, send_mail: bool = True):
-    bq_tables = get_bq_tables_from_schemas(connector)
+    bq_ids = get_bq_ids_from_schemas(connector)
     integration = connector.integration
 
     with transaction.atomic():
-        for bq_table in bq_tables:
-            # only replace tables that already exist
-            # there is a unique constraint on table_id/dataset_id to avoid duplication
-            # todo: turn into a batch update for performance
+        for bq_id in bq_ids:
 
-            table, _ = Table.objects.get_or_create(
+            try:
+                # fivetran does not always sync the table, so we check that
+                # it exists in our data warehouse
+                bq_obj = bigquery_client().get_table(bq_id)
+            except Table.DoesNotExist:
+                continue
+
+            dataset_id, table_id = bq_id.split(".")
+
+            Table.objects.get_or_create(
                 source=Table.Source.INTEGRATION,
-                bq_table=bq_table.table_id,
-                bq_dataset=bq_table.dataset_id,
+                bq_table=table_id,
+                bq_dataset=dataset_id,
                 project=connector.integration.project,
                 integration=connector.integration,
+                num_rows=bq_obj.num_rows,
             )
-            table.num_rows = table.bq_obj.num_rows
-            table.save()
 
         integration.state = Integration.State.DONE
         integration.save()

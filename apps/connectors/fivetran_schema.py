@@ -2,7 +2,6 @@ from dataclasses import asdict, dataclass
 from itertools import chain
 from typing import Dict, List, Optional
 
-from apps.base.clients import fivetran_client
 from apps.connectors.models import Connector
 
 # wrapper for the Fivetran connectors REST API, documented here
@@ -61,6 +60,8 @@ def schemas_to_dict(schemas):
 
 def get_bq_datasets_from_schemas(connector):
 
+    from apps.base.clients import fivetran_client
+
     datasets = {s.name_in_destination for s in fivetran_client().get_schemas(connector)}
 
     # fivetran schema config does not include schema prefix for databases
@@ -70,6 +71,8 @@ def get_bq_datasets_from_schemas(connector):
 
 def get_bq_ids_from_schemas(connector: Connector):
 
+    from apps.base.clients import fivetran_client
+
     schema_bq_ids = set(
         chain(*(s.enabled_bq_ids for s in fivetran_client().get_schemas(connector)))
     )
@@ -77,5 +80,8 @@ def get_bq_ids_from_schemas(connector: Connector):
     # fivetran schema config does not include schema prefix for databases
     if connector.is_database:
         schema_bq_ids = {f"{connector.schema}_{id_}" for id_ in schema_bq_ids}
+
+    if len(schema_bq_ids) == 0:
+        return [f"{connector.schema}.sheets_table"]
 
     return schema_bq_ids

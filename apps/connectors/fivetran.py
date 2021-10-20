@@ -7,7 +7,7 @@ from django.conf import settings
 from django.http import HttpResponse
 
 from .config import get_services
-from .fivetran_schema import schemas_to_dict, schemas_to_obj
+from .fivetran_schema import FivetranSchema, schemas_to_dict, schemas_to_obj
 from .models import Connector
 
 
