@@ -6,8 +6,8 @@ import requests
 from django.conf import settings
 from django.http import HttpResponse
 
-from ..config import get_services
 from ..models import Connector
+from .config import get_services
 from .schema import FivetranSchema, schemas_to_dict, schemas_to_obj
 
 

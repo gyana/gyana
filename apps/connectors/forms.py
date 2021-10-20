@@ -5,9 +5,9 @@ from honeybadger import honeybadger
 
 from apps.base.clients import fivetran_client
 from apps.base.forms import BaseModelForm
-from apps.connectors.config import get_services
-from apps.connectors.fivetran.client import FivetranClientError
 
+from .fivetran.client import FivetranClientError
+from .fivetran.config import get_services
 from .fivetran.schema import update_schema_from_cleaned_data
 from .models import Connector
 from .widgets import ConnectorSchemaMultiSelect

@@ -15,7 +15,7 @@ from apps.base.clients import fivetran_client
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 
-from .config import get_service_categories, get_services
+from .fivetran.config import get_service_categories, get_services
 from .forms import ConnectorCreateForm
 from .models import Connector
 
