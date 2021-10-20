@@ -10,7 +10,7 @@ from django.utils import timezone
 from ..models import Connector
 from .schema import schemas_to_dict, schemas_to_obj
 
-MOCK_SCHEMA_DIR = os.path.abspath(".mock/.schema")
+MOCK_SCHEMA_DIR = os.path.abspath("apps/connectors/fivetran/fixtures")
 
 
 @cache
