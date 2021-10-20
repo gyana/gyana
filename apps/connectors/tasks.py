@@ -68,31 +68,11 @@ def complete_connector_sync(connector: Connector, send_mail: bool = True):
         )
 
 
-@shared_task(bind=True)
-def poll_fivetran_sync(self, connector_id):
-
-    connector = get_object_or_404(Connector, pk=connector_id)
-
-    fivetran_client().block_until_synced(connector)
-
-    # we've waited for a while, we don't to duplicate this logic
-    connector.refresh_from_db()
-    complete_connector_sync(connector)
-
-
-def run_initial_connector_sync(connector: Connector):
-
-    fivetran_client().start_initial_sync(connector)
-
-    return poll_fivetran_sync.delay(connector.id)
-
-
-def run_update_connector_sync(connector: Connector):
+def check_requires_resync(connector: Connector):
 
     tables = connector.integration.table_set.all()
 
     # if we've deleted tables, we'll need to delete them from BigQuery
-
     schema_bq_ids = get_bq_ids_from_schemas(connector)
 
     with transaction.atomic():
@@ -108,23 +88,31 @@ def run_update_connector_sync(connector: Connector):
 
     bq_ids = {t.bq_id for t in tables}
 
-    if any(s for s in schema_bq_ids if s not in bq_ids):
+    return any(s for s in schema_bq_ids if s not in bq_ids)
 
-        fivetran_client().start_update_sync(connector)
-        return poll_fivetran_sync.delay(connector.id)
 
-    return None
+@shared_task(bind=True)
+def poll_fivetran_sync(self, connector_id):
+
+    connector = get_object_or_404(Connector, pk=connector_id)
+    fivetran_client().block_until_synced(connector)
+
+    # we've waited for a while, we don't to duplicate this logic
+    connector.refresh_from_db()
+    complete_connector_sync(connector)
 
 
 def run_connector_sync(connector: Connector):
 
-    result = (
-        run_initial_connector_sync
-        if connector.integration.table_set.count() == 0
-        else run_update_connector_sync
-    )(connector)
+    is_initial_sync = connector.integration.table_set.count() == 0
 
-    if result is not None:
+    if not is_initial_sync:
+        requires_resync = check_requires_resync(connector)
+
+    if is_initial_sync or requires_resync:
+        fivetran_client().start_initial_sync(connector)
+        result = poll_fivetran_sync.delay(connector.id)
+
         connector.sync_task_id = result.task_id
         connector.sync_started = timezone.now()
         connector.save()
