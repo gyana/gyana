@@ -23,12 +23,12 @@ def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
         # every 6 hours from midnight
         crontab(minute=0, hour="*/6"),
-        signature("apps.integrations.tasks.delete_outdated_pending_integrations"),
+        signature("apps.integrations.periodic.delete_outdated_pending_integrations"),
     )
     sender.add_periodic_task(
         # every 6 hours from midnight
         crontab(minute=0, hour="*/6"),
-        signature("apps.teams.tasks.update_team_row_limits"),
+        signature("apps.teams.periodic.update_team_row_limits"),
     )
     sender.add_periodic_task(
         # every ten minutes
@@ -39,5 +39,5 @@ def setup_periodic_tasks(sender, **kwargs):
     # calculate the credit balance every beginning of the month
     sender.add_periodic_task(
         crontab(day_of_month=1),
-        signature("apps.teams.tasks.calculate_monthly_credit_statement"),
+        signature("apps.teams.periodic.calculate_monthly_credit_statement"),
     )
