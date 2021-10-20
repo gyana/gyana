@@ -30,7 +30,7 @@
     font-size: 1.4rem;
     height: 4.8rem;
     line-height: 1.6rem;
-    padding: 0 0 0 0.6rem;
+    padding: 0 0.6rem;
     position: relative;
     text-align: left;
 
@@ -40,6 +40,11 @@
         right: 1.5rem;
       }
       min-width: 1.25em;
+    }
+
+    .h3 {
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     & + & {
