@@ -68,10 +68,9 @@ def delete_tables_not_in_schema(connector: Connector):
     tables = connector.integration.table_set.all()
     schema_bq_ids = get_bq_ids_from_schemas(connector)
 
-    with transaction.atomic():
-        for table in tables:
-            if table.bq_id not in schema_bq_ids:
-                table.delete()
+    for table in tables:
+        if table.bq_id not in schema_bq_ids:
+            table.delete()
 
     # re-calculate total rows after tables are deleted
     connector.integration.project.team.update_row_count()
@@ -103,7 +102,7 @@ def run_connector_sync(connector: Connector):
     is_initial_sync = requires_sync = connector.integration.table_set.count() == 0
 
     # after initial sync is done, a resync is required if the user added new tables
-    # for just deleting tables, we can skip this
+    # but not if they only deleted tables
 
     if not is_initial_sync:
         delete_tables_not_in_schema(connector)
