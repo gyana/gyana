@@ -71,7 +71,7 @@ class MockFivetranClient:
     def start_update_sync(self, connector):
         self._started[connector.id] = timezone.now()
 
-    def authorize(self, connector, redirect_uri):
+    def get_authorize_url(self, connector, redirect_uri):
         return f"{reverse('connectors:mock')}?redirect_uri={redirect_uri}"
 
     def has_completed_sync(self, connector):

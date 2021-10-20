@@ -4,10 +4,10 @@ from typing import Dict, List, Optional
 
 from ..models import Connector
 
-# wrapper for the Fivetran connectors REST API, documented here
-# https://fivetran.com/docs/rest-api/connectors
-# on error, raise a FivetranClientError and it will be managed in
-# the caller (e.g. form) or trigger 500 (user can refresh/retry)
+# wrapper for fivetran schema information
+# https://fivetran.com/docs/rest-api/connectors#retrieveaconnectorschemaconfig
+# the schema includes the datasets, tables and individual columns
+# we can modify the schema to only sync certain tables into the data warehouse
 
 
 @dataclass

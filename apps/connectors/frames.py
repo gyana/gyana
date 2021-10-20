@@ -52,7 +52,7 @@ class ConnectorStatus(TurboFrameDetailView):
                 ),
             )
 
-            context_data["fivetran_url"] = fivetran_client().authorize(
+            context_data["fivetran_url"] = fivetran_client().get_authorize_url(
                 self.object,
                 f"{settings.EXTERNAL_URL}{internal_redirect}",
             )

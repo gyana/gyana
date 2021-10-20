@@ -70,7 +70,7 @@ class ConnectorCreate(ProjectMixin, CreateView):
         )
 
         return redirect(
-            fivetran_client().authorize(
+            fivetran_client().get_authorize_url(
                 self.object,
                 f"{settings.EXTERNAL_URL}{internal_redirect}",
             )

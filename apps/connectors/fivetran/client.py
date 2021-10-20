@@ -4,11 +4,15 @@ from typing import Dict, List
 import backoff
 import requests
 from django.conf import settings
-from django.http import HttpResponse
 
 from ..models import Connector
 from .config import get_services
 from .schema import FivetranSchema, schemas_to_dict, schemas_to_obj
+
+# wrapper for the Fivetran connectors REST API, documented here
+# https://fivetran.com/docs/rest-api/connectors
+# on error, raise a FivetranClientError and it will be managed in
+# the caller (e.g. form) or trigger 500 (user can refresh/retry)
 
 
 class FivetranClientError(Exception):
@@ -83,7 +87,7 @@ class FivetranClient:
 
         return res["data"]
 
-    def authorize(self, connector: Connector, redirect_uri: str) -> HttpResponse:
+    def get_authorize_url(self, connector: Connector, redirect_uri: str) -> str:
 
         # https://fivetran.com/docs/rest-api/connectors/connect-card#connectcard
 
@@ -140,7 +144,9 @@ class FivetranClient:
 
     def block_until_synced(self, connector: Connector):
 
-        backoff.on_predicate(backoff.constant(interval=15), max_time=3600)(
+        # poll the fivetran api every 15 seconds for one hour in total
+
+        backoff.on_predicate(backoff.constant, max_time=3600, interval=15)(
             self.has_completed_sync
         )(connector)
 
