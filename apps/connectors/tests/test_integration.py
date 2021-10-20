@@ -1,8 +1,12 @@
-from unittest.mock import MagicMock, Mock
-
 import pytest
-from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertLink,
+    assertOK,
+    assertSelectorLength,
+)
 from apps.connectors.fivetran import FivetranSchema
+from apps.connectors.models import Connector
 from apps.integrations.models import Integration
 from apps.projects.models import Project
 from google.cloud.bigquery.schema import SchemaField
@@ -102,3 +106,31 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
 
     # todo: email
     # assert len(mail.outbox) == 1
+
+
+def test_status_on_pending_page(client, logged_in_user):
+
+    team = logged_in_user.teams.first()
+    project = Project.objects.create(name="Project", team=team)
+    integration = Integration.objects.create(
+        project=project,
+        kind=Integration.Kind.CONNECTOR,
+        name="Google Analytics",
+        state=Integration.State.LOAD,
+    )
+    connector = Connector.objects.create(
+        integration=integration,
+        service="google_analytics",
+        schema="schema",
+        fivetran_authorized=True,
+    )
+
+    r = client.get_turbo_frame(
+        f"/projects/{project.id}/integrations/pending",
+        f"/connectors/{connector.id}/icon",
+    )
+    assertOK(r)
+    assertSelectorLength(r, ".fa-exclamation-triangle", 1)
+
+    integration.refresh_from_db()
+    assert integration.state == Integration.State.DONE
