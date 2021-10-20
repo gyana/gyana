@@ -7,6 +7,7 @@ from celery import shared_task
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from google.api_core.exceptions import NotFound
 
 from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.base.clients import bigquery_client, fivetran_client
@@ -31,7 +32,7 @@ def complete_connector_sync(connector: Connector, send_mail: bool = True):
                 # fivetran does not always sync the table, so we check that
                 # it exists in our data warehouse
                 bq_obj = bigquery_client().get_table(bq_id)
-            except Table.DoesNotExist:
+            except NotFound:
                 continue
 
             dataset_id, table_id = bq_id.split(".")
