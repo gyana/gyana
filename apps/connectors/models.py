@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 
 from apps.base.models import BaseModel
+from apps.connectors.config import get_services
 from apps.integrations.models import Integration
 
 
@@ -38,3 +39,8 @@ class Connector(BaseModel):
             created_by=created_by,
         )
         self.integration = integration
+
+    @property
+    def is_database(self):
+        service_conf = get_services()[self.service]
+        return service_conf["requires_schema_prefix"] == "t"

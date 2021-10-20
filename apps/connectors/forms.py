@@ -55,16 +55,12 @@ class ConnectorUpdateForm(forms.ModelForm):
 
         schemas = fivetran_client().get_schemas(self.instance)
 
-        is_database = (
-            get_services()[self.instance.service]["requires_schema_prefix"] == "t"
-        )
-
         for schema in schemas:
 
             self.fields[f"{schema.name_in_destination}_schema"] = forms.BooleanField(
                 initial=schema.enabled,
                 label=schema.name_in_destination.replace("_", " ").title(),
-                widget=CheckboxInput() if is_database else HiddenInput(),
+                widget=CheckboxInput() if self.instance.is_database else HiddenInput(),
                 help_text="Include or exclude this schema",
                 required=False,
             )

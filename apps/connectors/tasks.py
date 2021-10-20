@@ -28,7 +28,7 @@ def _get_schema_bq_ids_from_connector(connector: Connector):
     )
 
     # fivetran schema config does not include schema prefix for databases
-    if get_services()[connector.service]["requires_schema_prefix"] == "t":
+    if connector.is_database:
         schema_bq_ids = {f"{connector.schema}_{id_}" for id_ in schema_bq_ids}
 
     return schema_bq_ids
