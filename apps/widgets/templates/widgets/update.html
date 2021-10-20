@@ -12,27 +12,28 @@
 
   <div class="flex flex-col flex-1 overflow-hidden">
     <nav class="tabbar">
-      <a class="tabbar__link">
+      {% comment %} <a class="tabbar__link">
         Help
-      </a>
+      </a> {% endcomment %}
+
       <a class="tabbar__link tabbar__link--active">
         Preview
       </a>
-    </nav>
 
-    <div class="absolute top-0 right-0">
-      <button
-        class="tf-modal__close tf-modal__close--inline"
-        type="submit"
-        formnovalidate
-        name="close"
-        value="close"
-        data-action="click->tf-modal#close"
-        data-loading-false
-      >
-        <i class="fal fa-times fa-lg"></i>
-      </button>
-    </div>
+      <div class="absolute top-0 right-0">
+        <button
+          class="tf-modal__close tf-modal__close--inline"
+          type="submit"
+          formnovalidate
+          name="close"
+          value="close"
+          data-action="click->tf-modal#close"
+          data-loading-false
+        >
+          <i class="fal fa-times fa-lg"></i>
+        </button>
+      </div>
+    </nav>
 
     {% if widget.is_valid %}
       <turbo-frame class="overflow-auto" id="widgets-output-{{ widget.id }}"
