@@ -48,6 +48,8 @@
   {% endblock %}
 
   <main>
+    {% block secondary_sidebar %}{% endblock %}
+
     {% block sidebar %}
     <div id="sidebar" class="sidebar" data-controller="web-sidebar">
       <input
@@ -60,19 +62,6 @@
       >
 
       <nav class="sidebar__body">
-        <div class="sidebar__title sidebar__title--main">
-          <a
-            {% if project %}
-            href="{% url 'teams:detail' project.team.id %}"
-            title="View your teams"
-            {% else %}
-            href="{% url 'web:home' %}"
-            {% endif %}
-          >
-            <img src="{% static 'images/logo.png' %}">Gyana
-          </a>
-        </div>
-
         {% block sidebar_content %}{% endblock %}
 
         <li class="mt-auto"><hr></li>
