@@ -1,16 +1,8 @@
 from itertools import chain
 
 from apps.base.clients import bigquery_client, fivetran_client
+from apps.connectors.fivetran_schema import get_bq_datasets_from_schemas
 from apps.connectors.models import Connector
-
-
-def get_datasets_from_connector(connector):
-
-    datasets = {s.name_in_destination for s in fivetran_client().get_schemas(connector)}
-
-    # fivetran schema config does not include schema prefix for databases
-    if connector.is_database:
-        datasets = {f"{connector.schema}_{id_}" for id_ in datasets}
 
 
 def get_bq_tables_from_connector(connector: Connector):
@@ -18,7 +10,7 @@ def get_bq_tables_from_connector(connector: Connector):
     client = bigquery_client()
 
     if connector.is_database:
-        datasets = get_datasets_from_connector(connector)
+        datasets = get_bq_datasets_from_schemas(connector)
         bq_tables = chain(client.list_tables(dataset) for dataset in datasets)
     else:
         bq_tables = client.list_tables(connector.schema)
@@ -27,7 +19,7 @@ def get_bq_tables_from_connector(connector: Connector):
 
 
 def delete_connector_datasets(connector):
-    datasets = get_datasets_from_connector(connector)
+    datasets = get_bq_datasets_from_schemas(connector)
 
     for dataset in datasets:
         bigquery_client().delete_dataset(
