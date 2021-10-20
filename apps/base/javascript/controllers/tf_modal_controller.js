@@ -12,8 +12,8 @@ export default class extends Controller {
       this.modalTarget.classList.remove('hidden')
     }
 
-    window.addEventListener("keydown", (event) => {
-      if (event.key == "Escape") {
+    window.addEventListener('keydown', (event) => {
+      if (event.key == 'Escape') {
         this.close()
       }
     })
@@ -86,10 +86,13 @@ export default class extends Controller {
     this.changed = true
   }
 
-  close() {
+  close(e) {
     if (this.changed) {
       this.closingWarningTarget.classList.remove('hidden')
     } else {
+      if (e.currentTarget.getAttribute('type') == 'submit') {
+        this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='close']"))
+      }
       this.forceClose()
     }
   }
@@ -119,7 +122,7 @@ export default class extends Controller {
       this.formTarget.requestSubmit(
         this.formTarget.querySelector("button[value*='Save & Preview']")
       )
-    }, 0);
+    }, 0)
   }
 
   save() {

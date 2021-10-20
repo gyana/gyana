@@ -10,7 +10,17 @@
     method="post"
     data-controller="live-update" 
     data-action="change->tf-modal#change submit->tf-modal#save"
+    data-tf-modal-target='form'
   >  
+  {% comment %} The pressed button is outside the form this is just to trigger the submit {% endcomment %}
+      <button
+        class="hidden"
+        type="submit"
+        formnovalidate
+        name="close"
+        value="close"
+      >
+      </button>
     {% csrf_token %}
 
     {% for hidden_field in form.hidden_fields %}
