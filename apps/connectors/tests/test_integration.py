@@ -5,7 +5,7 @@ from apps.base.tests.asserts import (
     assertOK,
     assertSelectorLength,
 )
-from apps.connectors.fivetran import FivetranSchema
+from apps.connectors.fivetran.schema import FivetranSchema
 from apps.connectors.models import Connector
 from apps.integrations.models import Integration
 from apps.projects.models import Project

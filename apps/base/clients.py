@@ -8,7 +8,7 @@ from django.utils.text import slugify
 from google.cloud import bigquery, storage
 from googleapiclient import discovery
 
-from apps.connectors.fivetran import FivetranClient
+from apps.connectors.fivetran.client import FivetranClient
 
 from .bigquery import *
 from .ibis.client import *

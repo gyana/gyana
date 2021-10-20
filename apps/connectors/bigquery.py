@@ -1,5 +1,5 @@
 from apps.base.clients import bigquery_client
-from apps.connectors.fivetran_schema import get_bq_datasets_from_schemas
+from apps.connectors.fivetran.schema import get_bq_datasets_from_schemas
 
 
 def delete_connector_datasets(connector):

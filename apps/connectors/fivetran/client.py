@@ -6,9 +6,9 @@ import requests
 from django.conf import settings
 from django.http import HttpResponse
 
-from .config import get_services
-from .fivetran_schema import FivetranSchema, schemas_to_dict, schemas_to_obj
-from .models import Connector
+from ..config import get_services
+from ..models import Connector
+from .schema import FivetranSchema, schemas_to_dict, schemas_to_obj
 
 
 class FivetranClientError(Exception):
@@ -192,7 +192,7 @@ class FivetranClient:
 
     def delete(self, connector: Connector):
 
-        from .fivetran_mock import get_fixture_fivetran_ids
+        from .mock import get_fixture_fivetran_ids
 
         # we don't want to accidentally delete these fixtures used in local development
         if connector.fivetran_id in get_fixture_fivetran_ids():
@@ -208,6 +208,6 @@ class FivetranClient:
 
 
 if settings.MOCK_FIVETRAN:
-    from .fivetran_mock import MockFivetranClient
+    from .mock import MockFivetranClient
 
     FivetranClient = MockFivetranClient

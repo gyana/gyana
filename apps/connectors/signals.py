@@ -3,7 +3,7 @@ from django.db.models.signals import post_delete
 from django.dispatch.dispatcher import receiver
 
 from apps.base.clients import fivetran_client
-from apps.connectors.fivetran import FivetranClientError
+from apps.connectors.fivetran.client import FivetranClientError
 
 from .bigquery import delete_connector_datasets
 from .models import Connector

@@ -2,7 +2,7 @@ from dataclasses import asdict, dataclass
 from itertools import chain
 from typing import Dict, List, Optional
 
-from apps.connectors.models import Connector
+from ..models import Connector
 
 # wrapper for the Fivetran connectors REST API, documented here
 # https://fivetran.com/docs/rest-api/connectors

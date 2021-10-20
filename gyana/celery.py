@@ -33,7 +33,7 @@ def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
         # every ten minutes
         crontab(minute="*/10"),
-        signature("apps.connectors.tasks.update_connectors_from_fivetran"),
+        signature("apps.connectors.periodic.update_connectors_from_fivetran"),
     )
 
     # calculate the credit balance every beginning of the month

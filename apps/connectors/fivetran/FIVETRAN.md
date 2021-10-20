@@ -24,7 +24,7 @@ We have an internal configuration in `services.yaml` with the following extra in
 
 ## Implementation
 
-The `apps.connectors.fivetran.FivetranClient` is a wrapper for the Fivetran API,
+The `apps.connectors.fivetran.client.FivetranClient` is a wrapper for the Fivetran API,
 with a mock implementation that is helpful for local development and testing (since
 the initial sync for a connectors can be long).
 

@@ -7,8 +7,8 @@ from glob import glob
 from django.urls.base import reverse
 from django.utils import timezone
 
-from .fivetran_schema import schemas_to_dict, schemas_to_obj
-from .models import Connector
+from ..models import Connector
+from .schema import schemas_to_dict, schemas_to_obj
 
 MOCK_SCHEMA_DIR = os.path.abspath(".mock/.schema")
 
