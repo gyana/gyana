@@ -68,6 +68,8 @@ def get_bq_datasets_from_schemas(connector):
     if connector.is_database:
         datasets = {f"{connector.schema}_{id_}" for id_ in datasets}
 
+    return datasets
+
 
 def get_bq_ids_from_schemas(connector: Connector):
 
