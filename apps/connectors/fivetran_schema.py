@@ -73,6 +73,8 @@ def get_bq_datasets_from_schemas(connector):
 
 def get_bq_ids_from_schemas(connector: Connector):
 
+    # get the list of bigquery ids (dataset.table) from the fivetran schema information
+
     from apps.base.clients import fivetran_client
 
     schema_bq_ids = set(
