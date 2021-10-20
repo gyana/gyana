@@ -24,7 +24,9 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
 
     # mock connector with a single table
     fivetran_client.create = lambda *_: {"fivetran_id": "fid", "schema": "sid"}
-    fivetran_client.authorize = lambda c, r: f"http://fivetran.url?redirect_uri={r}"
+    fivetran_client.get_authorize_url = (
+        lambda c, r: f"http://fivetran.url?redirect_uri={r}"
+    )
     fivetran_client.has_completed_sync = lambda *_: True
     table = {
         "name_in_destination": "table",
@@ -97,7 +99,7 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
     # complete the sync
     # it will happen immediately as celery is run in eager mode
     r = client.post(f"{INTEGRATION_URL}/configure")
-    assertRedirects(r, f"{INTEGRATION_URL}/load")
+    assertRedirects(r, f"{INTEGRATION_URL}/load", target_status_code=302)
 
     r = client.get(f"{INTEGRATION_URL}/load")
     assertRedirects(r, f"{INTEGRATION_URL}/done")
