@@ -83,7 +83,7 @@ def check_new_tables_added_to_schema(connector: Connector):
     bq_ids = {t.bq_id for t in connector.integration.table_set.all()}
     schema_bq_ids = set(get_bq_ids_from_schemas(connector))
 
-    return len(schema_bq_ids - bq_ids) == 0
+    return len(schema_bq_ids - bq_ids) > 0
 
 
 @shared_task(bind=True)
