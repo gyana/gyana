@@ -26,7 +26,6 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
     fivetran_client.create = lambda *_: {"fivetran_id": "fid", "schema": "sid"}
     fivetran_client.authorize = lambda c, r: f"http://fivetran.url?redirect_uri={r}"
     fivetran_client.has_completed_sync = lambda *_: True
-    fivetran_client.block_until_synced = lambda *_: None
     table = {
         "name_in_destination": "table",
         "enabled": True,

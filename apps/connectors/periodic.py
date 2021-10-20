@@ -1,17 +1,19 @@
 from datetime import datetime
-from typing import Optional
 
 from celery import shared_task
 from django.utils import timezone
 
 from apps.base.clients import fivetran_client
 from apps.base.tasks import honeybadger_check_in
+from apps.integrations.models import Integration
 from apps.tables.models import Table
 
 from .fivetran.client import FivetranClientError
 from .models import Connector
+from .tasks import complete_connector_sync
 
 FIVETRAN_SYNC_FREQUENCY_HOURS = 6
+FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
 
 
 def update_fivetran_succeeded_at(connector: Connector, succeeded_at: str):
@@ -58,3 +60,19 @@ def update_connectors_from_fivetran():
             pass
 
     honeybadger_check_in("ZbIlqq")
+
+
+@shared_task
+def check_syncing_connectors_from_fivetran():
+
+    sync_started_after = timezone.now() - timezone.timedelta(
+        hours=FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS
+    )
+
+    connectors_to_check = Connector.objects.filter(
+        integration__state=Integration.State.LOAD, sync_started_gt=sync_started_after
+    )
+
+    for connector in connectors_to_check:
+        if fivetran_client().has_completed_sync(connector):
+            complete_connector_sync(connector)

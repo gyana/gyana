@@ -1,8 +1,5 @@
 import analytics
-from celery import shared_task
 from django.db import transaction
-from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from google.api_core.exceptions import NotFound
 
 from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
@@ -86,18 +83,6 @@ def check_new_tables_added_to_schema(connector: Connector):
     return len(schema_bq_ids - bq_ids) > 0
 
 
-@shared_task(bind=True)
-def poll_fivetran_sync(self, connector_id):
-
-    connector = get_object_or_404(Connector, pk=connector_id)
-    fivetran_client().block_until_synced(connector)
-
-    if fivetran_client().has_completed_sync(connector):
-        # we've waited for a while, we don't to duplicate this logic
-        connector.refresh_from_db()
-        complete_connector_sync(connector)
-
-
 def run_connector_sync(connector: Connector):
 
     is_initial_sync = requires_sync = connector.integration.table_set.count() == 0
@@ -111,11 +96,6 @@ def run_connector_sync(connector: Connector):
 
     if requires_sync:
         fivetran_client().start_initial_sync(connector)
-        result = poll_fivetran_sync.delay(connector.id)
-
-        connector.sync_task_id = result.task_id
-        connector.sync_started = timezone.now()
-        connector.save()
 
         connector.integration.state = Integration.State.LOAD
         connector.integration.save()

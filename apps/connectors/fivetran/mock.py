@@ -80,9 +80,6 @@ class MockFivetranClient:
             timezone.now() - self._started.get(connector.id, timezone.now())
         ).total_seconds() > self.REFRESH_SYNC_SECONDS
 
-    def block_until_synced(self, connector):
-        time.sleep(self.BLOCK_SYNC_SECONDS)
-
     def reload_schemas(self, connector):
         pass
 

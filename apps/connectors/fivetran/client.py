@@ -142,14 +142,6 @@ class FivetranClient:
 
         return not (status["is_historical_sync"] or status["sync_state"] == "syncing")
 
-    def block_until_synced(self, connector: Connector):
-
-        # poll the fivetran api every 15 seconds for one hour in total
-
-        backoff.on_predicate(backoff.constant, max_time=3600, interval=15)(
-            self.has_completed_sync
-        )(connector)
-
     def reload_schemas(self, connector: Connector) -> List[FivetranSchema]:
 
         # https://fivetran.com/docs/rest-api/connectors#reloadaconnectorschemaconfig
