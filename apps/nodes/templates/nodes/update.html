@@ -96,6 +96,16 @@
           <i class="fas fa-fw fa-external-link"></i> Help
           <span data-tooltip-target="body">Open knowledge base article</span>
         </a>
+        
+        <div class="absolute top-0 right-0">
+          <button
+            class="tf-modal__close tf-modal__close--inline ml-auto"
+            data-action="click->tf-modal#close"
+            data-loading-false
+          >
+            <i class="fal fa-times fa-lg"></i>
+          </button>
+        </div>
       </nav>
       {% if show_docs%}
         {% include help_template %}
