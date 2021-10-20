@@ -1,29 +1,45 @@
 import pytest
-from apps.base.tests.asserts import assertFormRenders, assertOK
+from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
 from apps.integrations.models import Integration
 from apps.projects.models import Project
-from pytest_django.asserts import assertRedirects
+from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
 
 
-def test_create(_, client, logged_in_user, bigquery_client):
+def test_create(client, logged_in_user, bigquery_client, fivetran_client):
 
     team = logged_in_user.teams.first()
     project = Project.objects.create(name="Project", team=team)
 
     # create a new connector, configure it and complete the sync
 
-    # create
+    # view all connectors
     r = client.get(f"/projects/{project.id}/integrations/connectors/new")
     assertOK(r)
-    # assertFormRenders(r, ["url"])
+    assertLink(
+        r,
+        f"/projects/{project.id}/integrations/connectors/new?service=google_analytics",
+        "Google Analytics",
+    )
 
+    # create
+    r = client.get(
+        f"/projects/{project.id}/integrations/connectors/new?service=google_analytics",
+    )
+    assertOK(r)
+    assertFormRenders(r, [])
+
+    fivetran_client.create = lambda *_: {
+        "fivetran_id": "fivetran_id",
+        "schema": "schema",
+    }
+    fivetran_client.authorize = (
+        lambda connector, redirect_uri: f"http://fivetran.url?redirect_uri={redirect_uri}"
+    )
     r = client.post(
-        f"/projects/{project.id}/integrations/connectors/new",
-        data={
-            "url": "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit"
-        },
+        f"/projects/{project.id}/integrations/connectors/new?service=google_analytics",
+        data={},
     )
 
     integration = project.integration_set.first()
@@ -33,13 +49,14 @@ def test_create(_, client, logged_in_user, bigquery_client):
     assert integration.created_by == logged_in_user
     INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
 
-    assertRedirects(r, f"{INTEGRATION_URL}/configure", status_code=303)
+    redirect_uri = "http://localhost:8000/projects/{project.id}/integrations/connectors/{integration.connector.id}/authorize"
+    assertRedirects(r, f"http://fivetran.url?redirect_uri={redirect_uri}")
 
     # configure
     r = client.get(f"{INTEGRATION_URL}/configure")
     assertOK(r)
     # todo: fix this!
-    assertFormRenders(r, ["name", "cell_range"])
+    assertFormRenders(r, ["name"])
 
     # mock the configuration
     bigquery_client.query().exception = lambda: False

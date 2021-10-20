@@ -12,10 +12,8 @@ We have two destinations, `bigquery_beta` for production and `bigquery_mvp` for 
 
 ## Configuration
 
-You can automatically download the configuration from all connectors from the
+We have downloaded the configuration from all connectors from the
 [retrieve source metadata](https://fivetran.com/docs/rest-api/connectors#retrievesourcemetadata) endpoint.
-
-> TODO: Implement this!
 
 We have an internal configuration in `services.yaml` with the following extra information:
 
