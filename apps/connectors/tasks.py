@@ -17,39 +17,29 @@ from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
 from apps.tables.models import Table
 
-from .bigquery import get_bq_tables_from_connector
+from .bigquery import get_bq_tables_from_schemas
 from .fivetran_schema import get_bq_ids_from_schemas
 
 
 def complete_connector_sync(connector: Connector, send_mail: bool = True):
-    bq_tables = get_bq_tables_from_connector(connector)
-    schema_bq_ids = get_bq_ids_from_schemas(connector)
-
+    bq_tables = get_bq_tables_from_schemas(connector)
     integration = connector.integration
 
     with transaction.atomic():
         for bq_table in bq_tables:
-            # filter to the tables user has explicitly chosen, in case bigquery
-            # tables failed to delete
-            if (
-                f"{bq_table.dataset_id}.{bq_table.table_id}" in schema_bq_ids
-                # google sheets
-                or len(schema_bq_ids) == 0
-            ):
+            # only replace tables that already exist
+            # there is a unique constraint on table_id/dataset_id to avoid duplication
+            # todo: turn into a batch update for performance
 
-                # only replace tables that already exist
-                # there is a unique constraint on table_id/dataset_id to avoid duplication
-                # todo: turn into a batch update for performance
-
-                table, _ = Table.objects.get_or_create(
-                    source=Table.Source.INTEGRATION,
-                    bq_table=bq_table.table_id,
-                    bq_dataset=bq_table.dataset_id,
-                    project=connector.integration.project,
-                    integration=connector.integration,
-                )
-                table.num_rows = table.bq_obj.num_rows
-                table.save()
+            table, _ = Table.objects.get_or_create(
+                source=Table.Source.INTEGRATION,
+                bq_table=bq_table.table_id,
+                bq_dataset=bq_table.dataset_id,
+                project=connector.integration.project,
+                integration=connector.integration,
+            )
+            table.num_rows = table.bq_obj.num_rows
+            table.save()
 
         integration.state = Integration.State.DONE
         integration.save()

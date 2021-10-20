@@ -1,11 +1,12 @@
 from itertools import chain
 
-from apps.base.clients import bigquery_client, fivetran_client
-from apps.connectors.fivetran_schema import get_bq_datasets_from_schemas
+from apps.base.clients import bigquery_client
+from apps.connectors.fivetran_schema import (get_bq_datasets_from_schemas,
+                                             get_bq_ids_from_schemas)
 from apps.connectors.models import Connector
 
 
-def get_bq_tables_from_connector(connector: Connector):
+def get_bq_tables_from_schemas(connector: Connector):
 
     client = bigquery_client()
 
@@ -15,7 +16,22 @@ def get_bq_tables_from_connector(connector: Connector):
     else:
         bq_tables = client.list_tables(connector.schema)
 
-    return [t for t in bq_tables if t.table_id != "fivetran_audit"]
+    schema_bq_ids = get_bq_ids_from_schemas(connector)
+
+    # filter to the tables user has explicitly chosen, in case bigquery
+    # tables failed to delete
+    return [
+        t
+        for t in bq_tables
+        if (
+            t.table_id != "fivetran_audit"
+            and (
+                f"{t.dataset_id}.{t.table_id}" in schema_bq_ids
+                # google sheets
+                or len(schema_bq_ids) == 0
+            )
+        )
+    ]
 
 
 def delete_connector_datasets(connector):
