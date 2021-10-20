@@ -1,8 +1,11 @@
+from unittest.mock import Mock
+
 import pytest
 from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
+from apps.connectors.fivetran import FivetranSchema
 from apps.integrations.models import Integration
 from apps.projects.models import Project
-from pytest_django.asserts import assertContains, assertRedirects
+from pytest_django.asserts import assertRedirects
 
 pytestmark = pytest.mark.django_db
 
@@ -11,6 +14,24 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
 
     team = logged_in_user.teams.first()
     project = Project.objects.create(name="Project", team=team)
+
+    # mock
+    fivetran_client.create = lambda *_: {"fivetran_id": "fid", "schema": "sid"}
+    fivetran_client.authorize = lambda c, r: f"http://fivetran.url?redirect_uri={r}"
+    fivetran_client.has_completed_sync = lambda *_: True
+    fivetran_client.block_until_synced = lambda *_: None
+    table = {
+        "name_in_destination": "table",
+        "enabled": True,
+        "enabled_patch_settings": {"allowed": True},
+    }
+    schema = FivetranSchema(
+        key="schema",
+        name_in_destination="dataset",
+        enabled=True,
+        tables={"table": table},
+    )
+    fivetran_client.get_schemas = lambda *_: [schema]
 
     # create a new connector, configure it and complete the sync
 
@@ -30,13 +51,6 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
     assertOK(r)
     assertFormRenders(r, [])
 
-    fivetran_client.create = lambda *_: {
-        "fivetran_id": "fivetran_id",
-        "schema": "schema",
-    }
-    fivetran_client.authorize = (
-        lambda connector, redirect_uri: f"http://fivetran.url?redirect_uri={redirect_uri}"
-    )
     r = client.post(
         f"/projects/{project.id}/integrations/connectors/new?service=google_analytics",
         data={},
@@ -62,9 +76,7 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
     r = client.get(f"{INTEGRATION_URL}/configure")
     assertOK(r)
     # todo: fix this!
-    assertFormRenders(r, ["name"])
-
-    fivetran_client.block_until_synced = lambda *_: None
+    assertFormRenders(r, ["name", 'dataset_schema', 'dataset_tables'])
 
     # complete the sync
     # it will happen immediately as celery is run in eager mode

@@ -177,7 +177,6 @@ FIVETRAN_SYNC_FREQUENCY_HOURS = 6
 
 @shared_task
 def update_connectors_from_fivetran():
-    client = fivetran_client()
 
     succeeded_at_before = timezone.now() - timezone.timedelta(
         hours=FIVETRAN_SYNC_FREQUENCY_HOURS
@@ -193,7 +192,7 @@ def update_connectors_from_fivetran():
 
     for connector in connectors_to_check:
         try:
-            data = client.get(connector)
+            data = fivetran_client().get(connector)
             update_fivetran_succeeded_at(connector, data["succeeded_at"])
         except FivetranClientError:
             pass

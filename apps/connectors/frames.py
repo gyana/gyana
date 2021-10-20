@@ -39,8 +39,7 @@ class ConnectorStatus(TurboFrameDetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        client = fivetran_client()
-        data = client.get(self.object)
+        data = fivetran_client().get(self.object)
         update_fivetran_succeeded_at(self.object, data["succeeded_at"])
         # {
         #     "setup_state": "broken" | "incomplete" | "connected",
