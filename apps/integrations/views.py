@@ -158,9 +158,10 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
         return kwargs
 
     def form_valid(self, form):
-        KIND_TO_SYNC_TASK[self.object.kind](self.object.source_obj)
         # don't assigned the result to self.object
         form.save()
+
+        KIND_TO_SYNC_TASK[self.object.kind](self.object.source_obj)
         analytics.track(
             self.request.user.id,
             INTEGRATION_SYNC_STARTED_EVENT,

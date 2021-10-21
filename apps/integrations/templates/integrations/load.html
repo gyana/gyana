@@ -47,7 +47,7 @@
           </template>
 
           <template id="failure-template">
-            <i class="fas fa-times text-red text-xl mr-4"></i>
+            <i class="fas fa-fw fa-times text-red fa-2x text-xl mr-4"></i>
             <div class="flex flex-col">
               <h4>Errors occurred when validating your {{ object.kind }}. {% link_article 'integrations' 'error' %}</h4>
               {% if object.kind == 'upload' %}
