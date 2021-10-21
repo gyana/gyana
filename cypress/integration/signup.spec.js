@@ -4,6 +4,8 @@ import { getModelStartId } from '../support/utils'
 
 const NOT_REDEEMED = '12345678'
 
+const newProjectUrl = `/projects/${getModelStartId('projects.project')}`
+
 const newTeamId = getModelStartId('teams.team')
 
 describe('signup', () => {
@@ -43,12 +45,16 @@ describe('signup', () => {
     cy.url().should('contain', `/teams/${newTeamId}`)
 
     // new project
-    cy.contains('Create a new Project').click()
+    cy.contains('Create a new project').click()
 
-    cy.url().should('contain', '/teams/1/projects/new')
+    cy.url().should('contain', `/teams/${newTeamId}/projects/new`)
     cy.get('input[name=name]').type('Metrics').blur()
     cy.get('textarea[name=description]').should('not.be.disabled')
     cy.get('textarea[name=description]').type('All the company metrics')
     cy.get('button[type=submit]').click()
+
+    cy.url().should('contain', newProjectUrl)
+    cy.contains('Metrics')
+    cy.contains('All the company metrics')
   })
 })

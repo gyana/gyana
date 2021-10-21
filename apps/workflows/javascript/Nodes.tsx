@@ -4,17 +4,17 @@ import { Handle, NodeProps, Position, Node, useStoreState } from 'react-flow-ren
 import { useDebouncedCallback } from 'use-debounce'
 
 export const NodeContext = createContext({
-  removeById: (id: string) => { },
+  removeById: (id: string) => {},
   client: null,
   getIncomingNodes: (id: string): [Node, Node[]] | null => null,
-  addNode: (node) => { },
+  addNode: (node) => {},
   workflowId: '',
 })
 
 const DeleteButton = ({ id }) => {
   const { removeById } = useContext(NodeContext)
   return (
-    <button onClick={() => removeById(id)} title="Delete">
+    <button onClick={() => removeById(id)} title='Delete'>
       <i className='fas fa-fw fa-trash fa-lg'></i>
     </button>
   )
@@ -26,7 +26,7 @@ const OpenButton = ({ id }) => {
       data-action='click->tf-modal#open'
       data-src={`/nodes/${id}`}
       data-item={id}
-      title="Edit"
+      title='Edit'
     >
       <i className='fas fa-fw fa-edit fa-lg'></i>
     </button>
@@ -44,7 +44,7 @@ const DuplicateButton = ({ id }) => {
           })
           .then((res) => addNode(res))
       }
-      title="Copy"
+      title='Copy'
     >
       <i className='fas fa-fw fa-copy fa-lg' />
     </button>

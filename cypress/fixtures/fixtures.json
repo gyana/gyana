@@ -241,7 +241,8 @@
       "team": 1,
       "ready": true,
       "access": "everyone",
-      "description": ""
+      "description": "",
+      "cname": null
     }
   },
   {
@@ -254,7 +255,8 @@
       "team": 1,
       "ready": true,
       "access": "everyone",
-      "description": ""
+      "description": "",
+      "cname": null
     }
   },
   {
@@ -267,7 +269,8 @@
       "team": 2,
       "ready": true,
       "access": "everyone",
-      "description": ""
+      "description": "",
+      "cname": null
     }
   },
   {
@@ -280,7 +283,8 @@
       "team": 3,
       "ready": true,
       "access": "everyone",
-      "description": ""
+      "description": "",
+      "cname": null
     }
   },
   {
@@ -293,7 +297,8 @@
       "team": 4,
       "ready": true,
       "access": "everyone",
-      "description": ""
+      "description": "",
+      "cname": null
     }
   },
   {
@@ -306,7 +311,8 @@
       "team": 5,
       "ready": true,
       "access": "everyone",
-      "description": "Two widgets for Google Analytics in a Cypress test."
+      "description": "Two widgets for Google Analytics in a Cypress test.",
+      "cname": null
     }
   },
   {
@@ -617,6 +623,7 @@
       "integration": 1,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 15,
       "data_updated": "2021-07-27T13:17:27.679Z"
     }
@@ -634,6 +641,7 @@
       "integration": 2,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 10,
       "data_updated": "2021-08-08T20:28:27.912Z"
     }
@@ -651,6 +659,7 @@
       "integration": 3,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 15,
       "data_updated": "2021-08-10T07:30:05.119Z"
     }
@@ -668,6 +677,7 @@
       "integration": 4,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 15,
       "data_updated": "2021-08-10T07:32:08.896Z"
     }
@@ -685,6 +695,7 @@
       "integration": 5,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 2,
       "data_updated": "2021-08-11T14:07:44.801Z"
     }
@@ -702,6 +713,7 @@
       "integration": 10,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 15,
       "data_updated": "2021-08-20T13:49:51.358Z"
     }
@@ -719,6 +731,7 @@
       "integration": 12,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 15,
       "data_updated": "2021-08-20T15:03:30.520Z"
     }
@@ -736,6 +749,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 204,
       "data_updated": "2021-08-30T19:29:18.765Z"
     }
@@ -753,6 +767,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 4333,
       "data_updated": "2021-08-30T19:29:18.883Z"
     }
@@ -770,6 +785,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 423,
       "data_updated": "2021-08-30T19:29:18.996Z"
     }
@@ -787,6 +803,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 204,
       "data_updated": "2021-08-30T19:29:19.102Z"
     }
@@ -804,6 +821,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 2415,
       "data_updated": "2021-08-30T19:29:19.199Z"
     }
@@ -821,6 +839,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 351,
       "data_updated": "2021-08-30T19:29:19.317Z"
     }
@@ -838,6 +857,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 907,
       "data_updated": "2021-08-30T19:29:19.414Z"
     }
@@ -855,6 +875,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 257,
       "data_updated": "2021-08-30T19:29:19.513Z"
     }
@@ -872,6 +893,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 589,
       "data_updated": "2021-08-30T19:29:19.579Z"
     }
@@ -889,6 +911,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 3245,
       "data_updated": "2021-08-30T19:29:19.676Z"
     }
@@ -906,6 +929,7 @@
       "integration": 14,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 15,
       "data_updated": "2021-08-31T00:58:23.746Z"
     }
@@ -939,6 +963,7 @@
       "data_updated": "2021-08-10T07:35:39.873Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": 3,
       "select_mode": "keep",
       "join_how": "inner",
@@ -955,6 +980,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": []
     }
   },
@@ -972,6 +1001,7 @@
       "data_updated": "2021-08-10T07:32:53.404Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -988,6 +1018,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1005,6 +1039,7 @@
       "data_updated": "2021-08-10T07:33:00.907Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1021,6 +1056,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1038,6 +1077,7 @@
       "data_updated": "2021-08-10T07:33:11.851Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1054,6 +1094,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1071,6 +1115,7 @@
       "data_updated": "2021-08-10T07:33:28.495Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1087,6 +1132,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1104,6 +1153,7 @@
       "data_updated": "2021-08-10T07:33:32.039Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1120,6 +1170,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1137,6 +1191,7 @@
       "data_updated": "2021-08-10T07:33:38.804Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1153,6 +1208,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1170,6 +1229,7 @@
       "data_updated": "2021-08-10T07:33:48.302Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1186,6 +1246,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1203,6 +1267,7 @@
       "data_updated": "2021-08-10T07:33:58.371Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1219,6 +1284,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1236,6 +1305,7 @@
       "data_updated": "2021-08-10T07:34:34.622Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1252,6 +1322,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1269,6 +1343,7 @@
       "data_updated": "2021-08-10T07:34:44.737Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1285,6 +1360,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1302,6 +1381,7 @@
       "data_updated": "2021-08-10T07:34:53.033Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1318,6 +1398,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1335,6 +1419,7 @@
       "data_updated": "2021-08-10T07:34:59.051Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1351,6 +1436,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1368,6 +1457,7 @@
       "data_updated": "2021-08-10T07:35:05.055Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1384,6 +1474,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1401,6 +1495,7 @@
       "data_updated": null,
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1417,6 +1512,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": []
     }
   },
@@ -1434,6 +1533,7 @@
       "data_updated": "2021-08-10T07:35:44.789Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": 4,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1450,6 +1550,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": []
     }
   },
@@ -1467,6 +1571,7 @@
       "data_updated": "2021-08-10T07:36:58.310Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1483,6 +1588,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1, 17]
     }
   },
@@ -1500,6 +1609,7 @@
       "data_updated": null,
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1516,6 +1626,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": []
     }
   },
@@ -1533,6 +1647,7 @@
       "data_updated": "2021-08-11T09:10:46.114Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1549,6 +1664,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1566,6 +1685,7 @@
       "data_updated": "2021-08-11T09:14:41.225Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1582,6 +1702,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1, 20]
     }
   },
@@ -1599,6 +1723,7 @@
       "data_updated": "2021-08-11T12:41:29.066Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1615,6 +1740,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1, 20]
     }
   },
@@ -1632,6 +1761,7 @@
       "data_updated": "2021-08-11T14:08:10.382Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": 5,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1648,6 +1778,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": []
     }
   },
@@ -1665,6 +1799,7 @@
       "data_updated": "2021-08-11T14:08:13.415Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1681,6 +1816,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [23]
     }
   },
@@ -1698,6 +1837,7 @@
       "data_updated": null,
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1714,6 +1854,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": []
     }
   },
@@ -1731,6 +1875,7 @@
       "data_updated": "2021-09-10T15:59:15.605Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1747,6 +1892,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1, 20]
     }
   },
@@ -1904,6 +2053,7 @@
       "schema": "team_1_heroku_postgres_0e684903d1044f7280bb061fd3c179a4",
       "fivetran_authorized": true,
       "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
+      "fivetran_sync_started": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1920,6 +2070,7 @@
       "schema": "team_1_facebook_ads_563a564c28cc469dba73faf6dea0799e",
       "fivetran_authorized": true,
       "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
+      "fivetran_sync_started": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1936,6 +2087,7 @@
       "schema": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
       "fivetran_authorized": true,
       "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
+      "fivetran_sync_started": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1952,6 +2104,7 @@
       "schema": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
       "fivetran_authorized": true,
       "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
+      "fivetran_sync_started": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1968,6 +2121,7 @@
       "schema": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "fivetran_authorized": true,
       "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
+      "fivetran_sync_started": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -2026,17 +2180,17 @@
   {
     "model": "account.emailaddress",
     "pk": 1,
-    "fields": { "user": 1, "email": "test@gyana.com", "verified": false, "primary": true }
+    "fields": { "user": 1, "email": "test@gyana.com", "verified": true, "primary": true }
   },
   {
     "model": "account.emailaddress",
     "pk": 2,
-    "fields": { "user": 3, "email": "alone@gyana.com", "verified": false, "primary": true }
+    "fields": { "user": 3, "email": "alone@gyana.com", "verified": true, "primary": true }
   },
   {
     "model": "account.emailaddress",
     "pk": 3,
-    "fields": { "user": 4, "email": "member@gyana.com", "verified": false, "primary": true }
+    "fields": { "user": 4, "email": "member@gyana.com", "verified": true, "primary": true }
   },
   {
     "model": "socialaccount.socialapp",

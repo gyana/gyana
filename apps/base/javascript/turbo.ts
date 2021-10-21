@@ -1,1 +1,1 @@
-export * from "@hotwired/turbo";
+export * from '@hotwired/turbo'
