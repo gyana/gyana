@@ -79,7 +79,7 @@ def heroku_client(*_):
 
 @pytest.fixture
 def logged_in_user(client):
-    team = Team.objects.create(name="team_team")
+    team = Team.objects.create(name="Vayu")
     user = CustomUser.objects.create_user("test", onboarded=True)
     team.members.add(user, through_defaults={"role": "admin"})
     client.force_login(user)
