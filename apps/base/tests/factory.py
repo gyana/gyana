@@ -1,6 +1,7 @@
 from apps.connectors.models import Connector
 from apps.integrations.models import Integration
 from apps.projects.models import Project
+from apps.sheets.models import Sheet
 from apps.tables.models import Table
 from apps.teams.models import Team
 from pytest_factoryboy import register
@@ -48,12 +49,21 @@ class ConnectorFactory(factory.django.DjangoModelFactory):
 
 
 @register
+class SheetFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Sheet
+
+    url = "http://sheet.url"
+    integration = factory.SubFactory(
+        IntegrationFactory, kind=Integration.Kind.SHEET, name="Sheet"
+    )
+
+
+@register
 class IntegrationTableFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Table
 
-    project = factory.Iterator(Project.objects.all())
-    integration = factory.Iterator(Integration.objects.all())
     source = Table.Source.INTEGRATION
     bq_table = "table"
     bq_dataset = "dataset"

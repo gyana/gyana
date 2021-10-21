@@ -1,11 +1,8 @@
 import pytest
-from apps.base.tests.asserts import (
-    assertFormRenders,
-    assertLink,
-    assertOK,
-    assertSelectorLength,
-)
-from apps.base.tests.mocks import mock_bq_client_with_data, mock_bq_client_with_schema
+from apps.base.tests.asserts import (assertFormRenders, assertLink, assertOK,
+                                     assertSelectorLength)
+from apps.base.tests.mocks import (mock_bq_client_with_data,
+                                   mock_bq_client_with_schema)
 from apps.integrations.models import Integration
 from apps.projects.models import Project
 from apps.sheets.models import Sheet
@@ -63,32 +60,32 @@ def test_integration_crudl(client, logged_in_user):
     assert project.integration_set.count() == 0
 
 
-def test_structure_and_preview(client, logged_in_user, bigquery_client):
+def test_structure_and_preview(
+    client, logged_in_user, bigquery_client, sheet_factory, integration_table_factory
+):
     team = logged_in_user.teams.first()
-    project = Project.objects.create(name="Project", team=team)
-    integration = Integration.objects.create(
-        project=project, kind=Integration.Kind.UPLOAD, name="store_info", ready=True
+    sheet = sheet_factory(integration__project__team=team)
+    integration = sheet.integration
+    project = integration.project
+    table = integration_table_factory(project=project, integration=integration)
+
+    # mock table with two columns, 20 rows
+    mock_bq_client_with_schema(
+        bigquery_client, [("name", "STRING"), ("age", "INTEGER")]
     )
-    Table.objects.create(
-        project=project,
-        integration=integration,
-        source=Table.Source.INTEGRATION,
-        bq_table="table",
-        bq_dataset="dataset",
+    mock_bq_client_with_data(
+        bigquery_client,
+        [{"name": "Neera", "age": 4}] * 15 + [{"name": "Vayu", "age": 2}] * 5,
     )
+
+    # test: user can view the data tab, and view the schema and preview information
+    # mock the bigquery client and verify it is called with correct args
+
     INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
 
     r = client.get(INTEGRATION_URL)
     assertOK(r)
     assertLink(r, f"{INTEGRATION_URL}/data", "Data")
-
-    # mock table with two columns, two rows
-    mock_bq_client_with_schema(
-        bigquery_client, [("name", "STRING"), ("age", "INTEGER")]
-    )
-    mock_bq_client_with_data(
-        bigquery_client, [{"name": "Neera", "age": 4}, {"name": "Vayu", "age": 2}]
-    )
 
     # structure
     r = client.get_turbo_frame(
@@ -99,16 +96,37 @@ def test_structure_and_preview(client, logged_in_user, bigquery_client):
     assertContains(r, "name")
     assertContains(r, "Text")
 
+    assert bigquery_client.get_table.call_count == 1
+    assert bigquery_client.get_table.call_args.args == (table.bq_id,)
+
     # preview
     r = client.get_turbo_frame(
         f"{INTEGRATION_URL}/data?view=preview",
         f"/integrations/{integration.id}/grid?table_id=",
     )
     assertOK(r)
-    assertSelectorLength(r, "table tbody tr", 2)
-
+    assertSelectorLength(r, "table tbody tr", 15)
     assertContains(r, "Neera")
     assertContains(r, "4")
+
+    assert bigquery_client.get_query_results.call_count == 1
+    assert bigquery_client.get_query_results.call_args.args == (
+        "SELECT *\nFROM `gyana-1511894275181.dataset.table`",
+    )
+
+    # preview page 2
+    assertLink(r, f"/integrations/{integration.id}/grid?table_id=&page=2", "2")
+
+    r = client.get(f"/integrations/{integration.id}/grid?table_id=&page=2")
+    assertOK(r)
+    assertSelectorLength(r, "table tbody tr", 20)
+    assertContains(r, "Vayu")
+    assertContains(r, "2")
+
+    assert bigquery_client.get_query_results.call_count == 2
+    assert bigquery_client.get_query_results.call_args.args == (
+        "SELECT *\nFROM `gyana-1511894275181.dataset.table`\nLIMIT 5 OFFSET 15",
+    )
 
 
 def test_create_retry_edit_and_approve(client, logged_in_user):

@@ -212,7 +212,9 @@ def test_update_tables_in_non_database(
     fivetran_client.get_schemas.return_value = [schema]
 
     for table in schema.tables:
-        integration_table_factory(bq_table=table.name_in_destination)
+        integration_table_factory(
+            bq_table=table.name_in_destination, project=project, integration=integration
+        )
 
     # test: if the user removes tables in the configure form, those tables are
     # deleted
