@@ -17,7 +17,7 @@
 
   <div class="card card--sm">
     {% if integrations.ready == 0 and workflows.total == 0 %}
-      <p class="text-black-50">Workflows need at least one source of data.</p>
+      <p class="text-black-50">Workflows need at least one ready source of data.</p>
     {% elif workflows.total == 0 %}
       <div class="table__empty">
         <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
