@@ -10,9 +10,12 @@ class PickableMock(Mock):
         return (Mock, ())
 
 
+TABLE_NAME = "project.dataset.table"
+
+
 def mock_bq_client_with_schema(bigquery_client, schema_list):
     bq_table = BqTable(
-        "project.dataset.table",
+        TABLE_NAME,
         schema=[SchemaField(column, type_) for column, type_ in schema_list],
     )
     bigquery_client.get_table = MagicMock(return_value=bq_table)
