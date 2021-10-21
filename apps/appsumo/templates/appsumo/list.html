@@ -35,8 +35,16 @@
   </turbo-frame>
 {% endif %}
 
-{% if team.appsumoreview %}
-<div class="pt-2 pad">
+{% if not team.appsumoreview %}
+<div class="pad pad--sm">
+  <small>
+    <a href="{% url 'team_appsumo:review' team.id %}" class="link">
+      <i class="fa fa-fw fa-plus mr-2"></i>Link to your review
+    </a>
+  </small>
+</div>
+{% else %}
+<div class="pad pad--sm">
   <p>Thank you for writing an honest review! We've added <strong>1,000,000</strong> rows to say thank you.</p>
 </div>
 {% endif %}
