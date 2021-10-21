@@ -7,16 +7,15 @@
   <div class='flex flex-col flex-1 max-w-3xl'>
     <div class="flex flex-1 justify-center items-center">
       <div
-          class='integration__file-validate'
-          data-controller="celery-progress"
-          data-celery-progress-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
-          data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
-          data-celery-progress-redirect-url-value="{% url 'project_integrations:done' project.id object.id %}"
-          {% if done %} data-celery-progress-done-value {% endif %}
-          >
-
-        <i class="fad fa-spinner-third fa-spin text-blue text-4xl"></i>
-        <div class='flex flex-col ml-4'>
+        class='integration__file-validate'
+        data-controller="celery-progress"
+        data-celery-progress-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
+        data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
+        data-celery-progress-redirect-url-value="{% url 'project_integrations:done' project.id object.id %}"
+        {% if done %} data-celery-progress-done-value {% endif %}
+      >
+        <i class="fad fa-fw fa-spinner-third fa-spin fa-2x text-blue"></i>
+        <div class='flex flex-col'>
           <h1>Validating and importing your {{ object.kind }}...</h1>
           {% if object.kind == 'connector' %}
             <p>This can take anywhere from 5 minutes to an hour. We recommend you continue with your work.</p>
@@ -26,8 +25,10 @@
         </div>
 
         <template id="success-template">
-          <i class="fas fa-check text-green text-xl mr-4"></i>
-          <h4>{{ object.kind|title }} successfully validated and imported.</h4>
+          <i class="fas fa-fw fa-check fa-2x text-green"></i>
+          <div class='flex flex-col'>
+            <h1>{{ object.kind|title }} successfully validated and imported.</h4>
+          </div>
         </template>
 
         <template id="failure-template">
