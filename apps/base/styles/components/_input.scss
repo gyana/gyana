@@ -72,6 +72,8 @@ input[type='file'] {
     border: 1px solid var(--c-transparent);
     border-radius: 5px;
     height: 5.4rem;
+    min-height: 5.4rem;
+    min-width: 5.4rem;
     width: 5.4rem;
   }
 }
