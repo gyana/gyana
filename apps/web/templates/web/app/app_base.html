@@ -69,7 +69,7 @@
     class="sidebar__link {% if request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
     href="{% url 'teams:detail' team.id %}"
   >
-    <i class="fas fa-fw fa-folders"></i>Projects
+    <i class="far fa-fw fa-folders"></i>Projects
   </a>
 </li>
 
@@ -79,7 +79,7 @@
     class="sidebar__link {% if request.resolver_match.url_name == 'list' %}sidebar__link--active{% endif %}"
     href="{% url 'team_members:list' team.id %}"
   >
-    <i class="fas fa-fw fa-users"></i>Members
+    <i class="far fa-fw fa-users"></i>Members
   </a>
 </li>
 
@@ -88,7 +88,7 @@
     class="sidebar__link {% if request.resolver_match.url_name == 'account' %}sidebar__link--active{% endif %}"
     href="{% url 'teams:account' team.id %}"
   >
-    <i class="fas fa-fw fa-wallet"></i>Billing
+    <i class="far fa-fw fa-wallet"></i>Billing
   </a>
 </li>
 
@@ -97,7 +97,7 @@
     class="sidebar__link {% if request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
     href="{% url 'teams:update' team.id %}"
   >
-    <i class="fas fa-fw fa-cogs"></i>Settings
+    <i class="far fa-fw fa-cogs"></i>Settings
   </a>
 </li>
 {% endif %}
