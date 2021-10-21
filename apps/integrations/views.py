@@ -1,6 +1,5 @@
 import analytics
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
-from apps.base.clients import fivetran_client
 from apps.base.turbo import TurboUpdateView
 from apps.connectors.tasks import complete_connector_sync
 from apps.integrations.filters import IntegrationFilter
@@ -184,6 +183,8 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
     fields = []
 
     def get(self, request, *args, **kwargs):
+        from apps.base.clients import fivetran_client
+
         self.object = self.get_object()
         if self.object.state not in [
             Integration.State.LOAD,

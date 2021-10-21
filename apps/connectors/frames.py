@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.urls import reverse
 
-from apps.base.clients import fivetran_client
 from apps.base.frames import TurboFrameDetailView
 
 from .models import Connector
@@ -15,6 +14,8 @@ class ConnectorIcon(TurboFrameDetailView):
     turbo_frame_dom_id = "connectors:icon"
 
     def get_context_data(self, **kwargs):
+        from apps.base.clients import fivetran_client
+
         context_data = super().get_context_data(**kwargs)
 
         if fivetran_client().has_completed_sync(self.object):
@@ -33,6 +34,8 @@ class ConnectorStatus(TurboFrameDetailView):
     turbo_frame_dom_id = "connectors:status"
 
     def get_context_data(self, **kwargs):
+        from apps.base.clients import fivetran_client
+
         context_data = super().get_context_data(**kwargs)
         data = fivetran_client().get(self.object)
         succeeded_at = data.get("succeeded_at")

@@ -5,13 +5,9 @@ from apps.base.tests.asserts import (
     assertOK,
     assertSelectorLength,
 )
-from apps.base.tests.factory import (
-    ConnectorFactory,
-    IntegrationTableFactory,
-    ProjectFactory,
-)
 from apps.connectors.fivetran.schema import FivetranSchema
 from apps.integrations.models import Integration
+from apps.projects.models import Project
 from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
@@ -35,9 +31,12 @@ def get_mock_schema(num_tables):
     return schema
 
 
-def test_create(client, logged_in_user, bigquery_client, fivetran_client):
+def test_create(
+    client, logged_in_user, bigquery_client, fivetran_client, project_factory
+):
 
-    project = ProjectFactory()
+    project = project_factory(team=logged_in_user.teams.first())
+    # project = Project.objects.create(team=logged_in_user.teams.first(), name="this")
 
     fivetran_client.create.return_value = {"fivetran_id": "fid", "schema": "sid"}
     fivetran_client.get_authorize_url.side_effect = (
@@ -140,10 +139,16 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
 
 
 def test_status_on_pending_page(
-    client, logged_in_user, bigquery_client, fivetran_client
+    client,
+    logged_in_user,
+    bigquery_client,
+    fivetran_client,
+    connector_factory,
 ):
-    connector = ConnectorFactory(
-        integration__ready=False, integration__state=Integration.State.LOAD
+    connector = connector_factory(
+        integration__ready=False,
+        integration__state=Integration.State.LOAD,
+        integration__project__team=logged_in_user.teams.first(),
     )
     project = connector.integration.project
 
@@ -182,8 +187,16 @@ def test_status_on_pending_page(
     assert connector.integration.state == Integration.State.DONE
 
 
-def test_update_tables_in_non_database(client, logged_in_user, fivetran_client):
-    connector = ConnectorFactory()
+def test_update_tables_in_non_database(
+    client,
+    logged_in_user,
+    fivetran_client,
+    connector_factory,
+    integration_table_factory,
+):
+    connector = connector_factory(
+        integration__project__team=logged_in_user.teams.first()
+    )
     integration = connector.integration
     project = integration.project
 
@@ -191,7 +204,7 @@ def test_update_tables_in_non_database(client, logged_in_user, fivetran_client):
     fivetran_client.get_schemas.return_value = [schema]
 
     for table in schema.tables:
-        IntegrationTableFactory(bq_table=table.name_in_destination)
+        integration_table_factory(bq_table=table.name_in_destination)
 
     # test: if the user removes tables in the configure form, those tables are
     # deleted
@@ -209,7 +222,12 @@ def test_update_tables_in_non_database(client, logged_in_user, fivetran_client):
     )
     assertRedirects(r, f"{INTEGRATION_URL}/load", target_status_code=302)
     assert fivetran_client.update_schemas.call_count == 1
-    assert len(fivetran_client.update_schemas.call_args.args[1][0].tables) == 1
+    enabled_tables = [
+        t
+        for t in fivetran_client.update_schemas.call_args.args[1][0].tables
+        if t.enabled
+    ]
+    assert len(enabled_tables) == 1
     assert (
         fivetran_client.update_schemas.call_args.args[1][0].tables[0].key == "table_1"
     )
@@ -220,9 +238,11 @@ def test_update_tables_in_non_database(client, logged_in_user, fivetran_client):
     assert integration.table_set.count() == 1
 
 
-def test_status_broken(client, logged_in_user, fivetran_client):
+def test_status_broken(client, logged_in_user, fivetran_client, connector_factory):
 
-    connector = ConnectorFactory()
+    connector = connector_factory(
+        integration__project__team=logged_in_user.teams.first()
+    )
     integration = connector.integration
     project = integration.project
 

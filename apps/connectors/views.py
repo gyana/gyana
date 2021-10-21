@@ -11,7 +11,6 @@ from apps.base.analytics import (
     INTEGRATION_CREATED_EVENT,
     NEW_INTEGRATION_START_EVENT,
 )
-from apps.base.clients import fivetran_client
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 
@@ -47,6 +46,7 @@ class ConnectorCreate(ProjectMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
+        from apps.base.clients import fivetran_client
 
         # create the connector and integration
         self.object = form.save()

@@ -3,10 +3,12 @@ from apps.integrations.models import Integration
 from apps.projects.models import Project
 from apps.tables.models import Table
 from apps.teams.models import Team
+from pytest_factoryboy import register
 
 import factory
 
 
+@register
 class TeamFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Team
@@ -14,14 +16,15 @@ class TeamFactory(factory.django.DjangoModelFactory):
     name = "Team"
 
 
+@register
 class ProjectFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Project
 
     name = "Project"
-    team = factory.Iterator(Team.objects.all())
 
 
+@register
 class IntegrationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Integration
@@ -31,6 +34,7 @@ class IntegrationFactory(factory.django.DjangoModelFactory):
     state = Integration.State.DONE
 
 
+@register
 class ConnectorFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Connector
@@ -43,6 +47,7 @@ class ConnectorFactory(factory.django.DjangoModelFactory):
     )
 
 
+@register
 class IntegrationTableFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Table

@@ -1,6 +1,5 @@
 from celery import shared_task
 
-from apps.base.clients import fivetran_client
 from apps.base.tasks import honeybadger_check_in
 
 from .fivetran.client import FivetranClientError
@@ -10,6 +9,7 @@ from .tasks import complete_connector_sync
 
 @shared_task
 def update_connectors_from_fivetran():
+    from apps.base.clients import fivetran_client
 
     connectors_to_check = Connector.objects.needs_periodic_sync_check()
 
@@ -27,6 +27,7 @@ def update_connectors_from_fivetran():
 
 @shared_task
 def check_syncing_connectors_from_fivetran():
+    from apps.base.clients import fivetran_client
 
     connectors_to_check = Connector.objects.needs_initial_sync_check()
 
