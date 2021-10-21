@@ -67,4 +67,4 @@ startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
 
 test TEST=".":
-    python -m pytest --no-migrations --disable-pytest-warnings {{TEST}}
+    python -m pytest --no-migrations --disable-pytest-warnings -k {{TEST}}
