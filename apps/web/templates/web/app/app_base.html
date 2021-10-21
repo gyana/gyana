@@ -1,5 +1,6 @@
 {% extends "web/base.html" %}
 {% load static %}
+{% load team_tags %}
 
 {% block banner %}
   {% if team and team.warning %}
@@ -21,30 +22,91 @@
   {% endif %}
 {% endblock %}
 
+{% block secondary_sidebar %}
+<div class="sidebar">
+  <div class="sidebar__body">
+    <div class="sidebar__link">
+      <a title="View your teams" href="{% url 'web:home' %}">
+        <img src="{% static 'images/logo.png' %}">
+      </a>
+    </div>
+
+    <li><hr></li>
+
+    {% for user_team in request.user.teams.all %}
+    <li>
+      <a class="sidebar__link {% if user_team.id == team.id %}sidebar__link--active{% endif %}"
+        href="{% url 'teams:detail' user_team.id %}"
+        title="{{ user_team.name }}">
+        {% if user_team.icon %}<img src="{{ user_team.icon.url }}" />{% else %}<span class="team_logo">{{ user_team.name|slice:1|capfirst }}</span>{% endif %}{{ user_team.name }}
+      </a>
+    </li>
+    {% endfor %}
+
+    <li>
+      <a id="sidebar-newteam" class="sidebar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'create' %}sidebar__link--active{% endif %}" title="New Team" href="{% url 'teams:create' %}">
+        <i class="fas fa-fw fa-plus mr-6"></i>New Team
+      </a>
+    </li> 
+  </div>
+</div>
+{% endblock %}
+
 {% block sidebar_content %}
-{% for user_team in request.user.teams.all %}
 <li>
-  <a class="sidebar__link {% if user_team.id == team.id %}sidebar__link--active{% endif %}"
-     href="{% url 'teams:detail' user_team.id %}"
-     title="{{ user_team.name }}">
-    {% if user_team.icon %}<img src="{{ user_team.icon.url }}" />{% else %}<span class="team_logo">{{ user_team.name|slice:1 }}</span>{% endif %}{{ user_team.name }}
+  <a id="heading" class="sidebar__link" href="">
+    {% if team.icon %}<img src="{{ team.icon.url }}" />{% else %}<span class="team_logo">{{ team.name|slice:1 }}</span>{% endif %}
+    <strong class="h3">
+      {{ team.name }}
+    </strong>
   </a>
 </li>
-{% endfor %}
+
+<li><hr></li>
 
 <li>
-  <a id="sidebar-newteam" class="sidebar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'create' %}sidebar__link--active{% endif %}" title="New Team" href="{% url 'teams:create' %}">
-    <i class="fas fa-fw fa-plus mr-6"></i>New Team
+  <a
+    class="sidebar__link {% if request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
+    href="{% url 'teams:detail' team.id %}"
+  >
+    <i class="far fa-fw fa-folders"></i>Projects
   </a>
 </li>
+
+{% if request.user|is_admin_of:team %}
+<li>
+  <a
+    class="sidebar__link {% if request.resolver_match.url_name == 'list' %}sidebar__link--active{% endif %}"
+    href="{% url 'team_members:list' team.id %}"
+  >
+    <i class="far fa-fw fa-users"></i>Members
+  </a>
+</li>
+
+<li>
+  <a
+    class="sidebar__link {% if request.resolver_match.url_name == 'account' %}sidebar__link--active{% endif %}"
+    href="{% url 'teams:account' team.id %}"
+  >
+    <i class="far fa-fw fa-wallet"></i>Billing
+  </a>
+</li>
+
+<li>
+  <a
+    class="sidebar__link {% if request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
+    href="{% url 'teams:update' team.id %}"
+  >
+    <i class="far fa-fw fa-cogs"></i>Settings
+  </a>
+</li>
+{% endif %}
 {% endblock %}
 
 {% block body %}
-
 {% block notifications %}{% endblock %}
 
 <section class="flex flex-col flex-1 overflow-hidden {% block app-class %}{% endblock %}">
   {% block app %}{% endblock %}
 </section>
-
 {% endblock body %}

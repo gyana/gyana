@@ -42,8 +42,12 @@
   }
 
   &__file-validate {
-    display: flex;
     align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 1.6rem;
 
     &.inactive {
       opacity: 0.5;

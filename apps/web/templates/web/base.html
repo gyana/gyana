@@ -22,14 +22,10 @@
   {% include 'web/components/honeybadger.html' %}
   {% endif %} {% endcomment %}
 
-  <script src="https://unpkg.com/@popperjs/core@2"></script>
-  <script src="https://unpkg.com/tippy.js@6"></script>
-  <script src="https://kit.fontawesome.com/b03f4cc8cd.js" crossorigin="anonymous"></script>
   <script type="module">
-    import * as hotwiredTurbo from "https://cdn.skypack.dev/@hotwired/turbo";
+    import * as hotwiredTurbo from '{% static 'js/turbo-bundle.js' %}';
   </script>
   <script src="{% static 'js/stimulus-bundle.js' %}"></script>
-
   <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
   <script src="{% url 'api_schemajs' %}"></script>
 
@@ -44,7 +40,7 @@
   {% block page_head %}{% endblock %}
 </head>
 
-<body data-controller='on-submit-loading'>
+<body data-controller='on-submit-loading dropzone'>
   {% block banner %}{% endblock %}
 
   {% block messages %}
@@ -52,6 +48,8 @@
   {% endblock %}
 
   <main>
+    {% block secondary_sidebar %}{% endblock %}
+
     {% block sidebar %}
     <div id="sidebar" class="sidebar" data-controller="web-sidebar">
       <input
@@ -64,19 +62,6 @@
       >
 
       <nav class="sidebar__body">
-        <div class="sidebar__title sidebar__title--main">
-          <a
-            {% if project %}
-            href="{% url 'teams:detail' project.team.id %}"
-            title="View your teams"
-            {% else %}
-            href="{% url 'web:home' %}"
-            {% endif %}
-          >
-            <img src="{% static 'images/logo.png' %}">Gyana
-          </a>
-        </div>
-
         {% block sidebar_content %}{% endblock %}
 
         <li class="mt-auto"><hr></li>
@@ -121,14 +106,24 @@
 
         <li><hr></li>
 
-        <li>
+
+        <li data-controller="tf-modal">
           <a
-            id="sidebar-profile"
-            class="sidebar__link {% if request.resolver_match.app_name == "users" %}sidebar__link--active{% endif %}"
-            href="{% url 'users:user_profile' %}"
+            data-action="click->tf-modal#open"
+            data-src="{% url 'users:profile' %}"
+            class="sidebar__link"
           >
             <img src="{{ user.avatar_url }}" alt="">Your Account
           </a>
+
+          <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
+            <div class="card card--none card--modal flex-col flex-1 overflow-auto">
+              <turbo-frame 
+                id="users:profile"
+                data-tf-modal-target="turboFrame"
+              ></turbo-frame>
+            </div>
+          </div>
         </li>
 
         <li><hr></li>

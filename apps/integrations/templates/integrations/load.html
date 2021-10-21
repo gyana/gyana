@@ -7,7 +7,7 @@
   <div class='flex flex-col flex-1 max-w-3xl'>
     <div class="flex flex-1 justify-center items-center">
       {% if integration.kind == 'connector' %}
-        <i class="fad fa-spinner-third fa-spin text-blue text-4xl"></i>
+        <i class="fad fa-fw fa-spinner-third fa-spin fa-2x text-blue text-4xl"></i>
         <div class='flex flex-col ml-4 space-y-4'>
           <h1>Validating and importing your {{ object.display_kind }} connector...</h1>
             <p>
@@ -28,7 +28,7 @@
             {% if done %} data-celery-progress-done-value {% endif %}
             >
 
-          <i class="fad fa-spinner-third fa-spin text-blue text-4xl"></i>
+          <i class="fad fa-fw fa-spinner-third fa-spin fa-2x text-blue text-4xl"></i>
           <div class='flex flex-col ml-4 space-y-4'>
             <h1>Validating and importing your {{ object.kind }}...</h1>
             <p>
@@ -40,8 +40,10 @@
           </div>
 
           <template id="success-template">
-            <i class="fas fa-check text-green text-xl mr-4"></i>
-            <h4>{{ object.kind|title }} successfully validated and imported.</h4>
+            <i class="fas fa-fw fa-check fa-2x text-green"></i>
+            <div class='flex flex-col'>
+              <h1>{{ object.kind|title }} successfully validated and imported.</h4>
+            </div>
           </template>
 
           <template id="failure-template">

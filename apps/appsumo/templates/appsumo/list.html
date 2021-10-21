@@ -1,20 +1,20 @@
 {% load render_table from django_tables2 %}
 
-<p class="mb-4">
+<p>
   You have <strong class="text-blue">{{ team.active_codes }} active code{{ team.active_codes|pluralize }}</strong>
   ({{ team.redeemed_codes }} redeemed, {{ team.refunded_codes }} refunded).
 </p>
 {% if team.ltd_disabled %}
-  <p class="alert mb-4">
+  <p class="alert mt-4">
     Your life-time deal is disabled, as you've refunded all your codes.
   </p>
 {% elif team.exceeds_stacking_limit %}
-  <p class="alert mb-4">
+  <p class="alert mt-4">
     We only automatically stack up to 5 codes. You'll need to reach out to support
     to increase beyond this limit.
   </p>
 {% endif %}
-<div class="card card--none">
+<div class="card card--none mt-7">
   {% render_table table %}
 
   <div class="pad pad--sm">
@@ -36,14 +36,15 @@
 {% endif %}
 
 {% if not team.appsumoreview %}
-  <div class="pt-2 pad pad--sm">
-    <small>
-      <a href="{% url 'team_appsumo:review' team.id %}" class="link">
-        <i class="fa fa-fw fa-plus mr-2"></i>Link to your review</a>
-    </small>
-  </div>
+<div class="pad pad--sm">
+  <small>
+    <a href="{% url 'team_appsumo:review' team.id %}" class="link">
+      <i class="fa fa-fw fa-plus mr-2"></i>Link to your review
+    </a>
+  </small>
+</div>
 {% else %}
-  <div class="pt-2 pad">
-    <p>Thank you for writing an honest review! We've added <strong>1,000,000</strong> rows to say thank you.</p>
-  </div>
+<div class="pad pad--sm">
+  <p>Thank you for writing an honest review! We've added <strong>1,000,000</strong> rows to say thank you.</p>
+</div>
 {% endif %}

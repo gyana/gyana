@@ -37,7 +37,7 @@ describe('dashboards', () => {
     createWidget('Table')
     cy.contains('Save & Preview').should('not.be.disabled').click()
     cy.contains('Edinburgh')
-    cy.get('button[name=close]').click({ force: true })
+    cy.get('button[class*=tf-modal__close]').click({ force: true })
     cy.get('input[value="Save & Preview"]').should('not.exist')
     cy.get(`#widget-${widgetStartId}`).contains('London')
 
@@ -142,7 +142,7 @@ describe('dashboards', () => {
     cy.drop('.react-flow')
     cy.get(`[data-id=${id}]`).dblclick()
     cy.contains('store_info').click()
-    cy.contains('Save & Close').click()
+    cy.contains('Save & Close').should('not.be.disabled').click()
     cy.reactFlowDrag(id, { x: 150, y: 300 })
 
     cy.drag('#dnd-node-output')

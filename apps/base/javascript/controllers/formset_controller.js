@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus'
+import { Controller } from '@hotwired/stimulus'
 import { GyanaEvents } from 'apps/base/javascript/events'
 
 // Dynamically add and remove formset in Django

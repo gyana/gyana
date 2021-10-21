@@ -28,6 +28,7 @@ describe('teams', () => {
     // view
     const newTeamUrl = `/teams/${newTeamId}`
     cy.url().should('contain', newTeamUrl)
+    cy.contains('Choose plan').click()
     cy.get('#heading').within(() => cy.contains('Neera'))
 
     // switch

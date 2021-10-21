@@ -13,18 +13,24 @@
       data-controller="live-update" 
       method="post" 
       action="{% url 'team_projects:create' team.id %}" 
-      class="form"
+      class="relative"
     >
       {% csrf_token %}
 
       {% include "django/forms/default_form.html" %}
 
-      <button type="submit" name='submit' value='submit' class="button button--filled button--success w-full">Create</button>
+      <button
+        type="submit"
+        name='submit'
+        value='submit'
+        class="button button--filled button--success w-full"
+      >
+        Create project
+      </button>
 
       <span data-live-update-target="loading" class="workflow-detail__sidebar__loading hidden">
         <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
       </span>
-
     </form>
   </div>
 </div>

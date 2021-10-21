@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus'
+import { Controller } from '@hotwired/stimulus'
 import { getApiClient } from 'apps/base/javascript/api'
 
 const debounceTime = 1000

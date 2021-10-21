@@ -10,6 +10,7 @@ module.exports = {
   entry: {
     style: './apps/base/styles/style.scss',
     tailwind: './apps/base/styles/vendors/tailwind.pcss',
+    turbo: './apps/base/javascript/turbo.ts',
     stimulus: './apps/base/javascript/stimulus.ts',
     workflow: './apps/workflows/javascript/app.tsx',
     components: './apps/base/javascript/components.ts',
@@ -36,6 +37,17 @@ module.exports = {
       {
         test: /\.pcss$/i,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+      },
+      {
+        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?(#.*)?$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'fonts/',
+            publicPath: '../fonts'
+          },
+        },
       },
     ],
   },

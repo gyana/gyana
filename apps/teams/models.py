@@ -12,6 +12,9 @@ WARNING_BUFFER = 0.2
 
 
 class Team(BaseModel):
+    class Meta:
+        ordering = ("-created",)
+
     icon = models.FileField(upload_to="team-icons/", null=True, blank=True)
     name = models.CharField(max_length=100)
 

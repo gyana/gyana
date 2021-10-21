@@ -16,5 +16,7 @@
 @use "apps";
 
 // Third-party libraries.
-@use "vendors/libcodemirror";
 // @use "vendors/tailwind"; // Do NOT uncomment. This is to showcase Tailwind is present.
+@use "vendors/libcodemirror";
+@use "vendors/fontawesome.css";
+@import "tippy.js/dist/tippy.css"; // This import must be AFTER any @use/at-use

@@ -1,4 +1,5 @@
-import { Controller } from 'stimulus'
+import { Controller } from '@hotwired/stimulus'
+import tippy from 'tippy.js';
 
 /**
  * Simple Tippy.js stimulus wrapper.

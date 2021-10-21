@@ -24,6 +24,7 @@
   </div>
   {% endflag %}
 
+  {% if project_count > 0 %}
   <div class="flex mb-3 justify-between">
     <h2 class="flex gap-3 items-center">
       Your Projects {% link_article 'overview' 'collaborate' %}
@@ -36,29 +37,54 @@
   <div class="card card--none">
     {% render_table table %}
 
-    {% if project_count == 0 %}
-    <div class="table__empty">
-      <i class="fas fa-fw fa-4x fa-sparkles text-orange mb-7"></i>
-      <h3>This team has no projects</h3>
-      <p>
-        You can <a href="{% url 'team_projects:create' team.id %}" class="link">create one</a>,
-        watch the <a href="{% article_url 'overview' 'intro' %}" target="_blank" class="link">3 minute tutorial video</a>,
-        or read our <a href="{% article_url 'overview' 'intro' %}" target="_blank" class="link">getting started</a> guide.
-      </p>
-    </div>
-    {% else %}
-    <div class="pad flex flex-col space-y-8">
-      <small>
-        <a href="{% article_url 'overview' 'intro' %}" target="_blank" class="link">
-          <i class="fa fa-fw fa-question mr-2"></i>Getting started
-        </a>
-      </small>
-      <small>
-          <a href="{% article_url 'overview' 'intro' %}" target="_blank" class="link">
-          <i class="fa fa-fw fa-video mr-2"></i>View tutorial video</a>
-      </small>
-    </div>
-    {% endif  %}
+    <p class="pad pad--sm small">
+      <a class="link" href="">
+        <i class="fas fa-fw fa-plus"></i>Create a new project
+      </a>
+    </p>
   </div>
+  {% else %}
+  <div class="table__empty">
+    <i class="fas fa-fw fa-4x fa-sparkles text-orange mb-7"></i>
+    <h3 class="mb-3">Create your first project to get started</h3>
+    <p>
+      We recommend you watch the video below to get an idea of what Gyana can
+      do first, but if you want to jump right in you can watch it later in our
+      help center.
+    </p>
+  </div>
+
+  <div class="mx-auto" style="width: 48rem;">
+    <iframe
+      style="position: relative; width: 100%; height: 27rem;"
+      src="https://www.loom.com/embed/ce50a89eed144dcb8f09114894fda120?hideOwner=true"
+      frameborder="0"
+      webkitallowfullscreen
+      mozallowfullscreen
+      allowfullscreen>
+    </iframe>
+
+    <p class="alert mt-7">
+      <strong>Note:</strong> Look out for
+      <span class="button button--sm button--circle button--tertiary"/><i class="fas fa-fw fa-question"></i></span>
+      buttons, click them to go to relevant help articles
+    </p>
+
+    <div class="flex gap-8 mt-7">
+      <a
+        href="{% article_url 'overview' 'intro' %}"
+        class="button button--tertiary flex-1"
+      >
+        Read getting started
+      </a>
+      <a
+        href="{% url 'team_projects:create' team.id %}"
+        class="button button--primary flex-1"
+      >
+        Create a new project
+      </a>
+    </div>
+  </div>
+  {% endif  %}
 </div>
 {% endblock %}

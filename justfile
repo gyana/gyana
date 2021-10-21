@@ -61,10 +61,10 @@ format:
 
 # Count total lines of code that need to be maintained
 cloc:
-    cloc $(git ls-files) --exclude-dir=migrations,tests --exclude-ext=svg,csv,json,yaml,md,toml
+    cloc $(git ls-files) --exclude-dir=migrations,tests,vendors --exclude-ext=svg,csv,json,yaml,md,toml
 
 startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
 
 test TEST=".":
-    python -m pytest --no-migrations --disable-pytest-warnings {{TEST}}
+    python -m pytest --no-migrations --disable-pytest-warnings -k {{TEST}}

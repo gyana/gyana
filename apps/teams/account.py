@@ -45,7 +45,7 @@ def calculate_credit_statement_and_reset_balance():
         )
 
         transactions = (
-            team.credittransaction_set.filter(created__lt=last_statement.created)
+            team.credittransaction_set.filter(created__gt=last_statement.created)
             if last_statement
             else team.credittransaction_set
         )

@@ -49,7 +49,7 @@ describe('workflows', () => {
 
     cy.get(`[data-id=${startId}]`).dblclick()
     cy.contains('store_info').click()
-    cy.contains('Save & Preview').click()
+    cy.contains('Save & Preview').should('not.be.disabled').click()
     cy.contains('Blackpool')
     cy.get('.tf-modal__close').click()
     cy.reactFlowDrag(startId, { x: 150, y: 300 })
@@ -68,7 +68,7 @@ describe('workflows', () => {
       cy.contains('Employees').click()
       cy.contains('Owner').click()
     })
-    cy.contains('Save & Close').click()
+    cy.contains('Save & Close').should('not.be.disabled').click()
     cy.reactFlowDrag(selectId, { x: 300, y: 100 })
     cy.story('Drop, connect and name output node')
     cy.drag('[id=dnd-node-output]')

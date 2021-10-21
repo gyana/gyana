@@ -54,7 +54,7 @@ describe('integrations', () => {
     cy.url().should('contain', '/projects/1/integrations')
     cy.get('table tbody tr').should('have.length', readyIntegrations - 1)
   })
-  it('create, retry, edit and approve', () => {
+  it.skip('create, retry, edit and approve', () => {
     // using google sheets example
 
     cy.contains('New Integration').click()

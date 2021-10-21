@@ -88,7 +88,7 @@ class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = ["avatar", "email", "first_name", "last_name", "marketing_allowed"]
-        widgets = {"avatar": forms.FileInput()}
+        widgets = {"avatar": forms.ClearableFileInput(attrs={'accept':'image/*'})}
         labels = {
             "first_name": "First Name",
             "last_name": "Last Name",

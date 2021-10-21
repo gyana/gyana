@@ -1,0 +1,14 @@
+{{ widget.choice_label }}
+{{ widget.label }}
+
+<div class="flex gap-6">
+  <input
+    type="{{ widget.type }}"
+    name="{{ widget.name }}"
+    {% include "django/forms/widgets/attrs.html" %}
+  />
+
+  {% if widget.value %}
+  <img src="{{ widget.value.url }}" alt="Current image">
+  {% endif %}
+</div>

@@ -1,7 +1,1 @@
-{% load account %}
-{% user_display user as name %}
-{% if user.first_name %}
-Welcome back, {{ user.first_name }}
-{% else %}
-Welcome back, {{ name }}
-{% endif %}
+{% comment %} Purposefully blank for now {% endcomment %}

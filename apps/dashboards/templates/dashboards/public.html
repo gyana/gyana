@@ -8,6 +8,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  {% block head %}
+    <title>{{ dashboard.name }}{% if not is_beta %} | Gyana {% endif %}</title>
+  {% endblock %}
+
   {% if not is_beta %}
     {% include 'web/components/meta.html' %}
   {% endif %}
@@ -26,18 +30,12 @@
   <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-  <script src="https://kit.fontawesome.com/b03f4cc8cd.js" crossorigin="anonymous"></script>
   <script type="module">
-    import * as hotwiredTurbo from "https://cdn.skypack.dev/@hotwired/turbo";
+    import * as hotwiredTurbo from '{% static 'js/turbo-bundle.js' %}';
   </script>
-
   <script src="{% static 'js/stimulus-bundle.js' %}"></script>
   <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
   <script src="{% url 'api_schemajs' %}"></script>
-
-  {% block head %}
-    <title>{{ dashboard.name }}{% if not is_beta %} | Gyana {% endif %}</title>
-  {% endblock %}
 </head>
 <body class="pad">
   {% block body %}
