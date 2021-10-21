@@ -31,7 +31,7 @@ def get_mock_schema(num_tables):
     return schema
 
 
-def test_create(
+def test_connector_create(
     client, logged_in_user, bigquery_client, fivetran_client, project_factory
 ):
 

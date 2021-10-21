@@ -11,7 +11,7 @@ pytestmark = pytest.mark.django_db
 
 
 @patch("apps.uploads.bigquery.bq_table_schema_is_string_only", return_value=False)
-def test_create(_, client, logged_in_user, bigquery_client):
+def test_upload_create(_, client, logged_in_user, bigquery_client):
 
     team = logged_in_user.teams.first()
     project = Project.objects.create(name="Project", team=team)

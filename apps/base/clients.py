@@ -34,14 +34,14 @@ def get_credentials():
 
 
 @lru_cache
-def sheets_client():
+def sheets():
     credentials, _ = get_credentials()
 
     return discovery.build("sheets", "v4", credentials=credentials)
 
 
 @lru_cache
-def drive_v2_client():
+def drive_v2():
     credentials, _ = get_credentials()
 
     # latest v3 client does not return all metadata for file

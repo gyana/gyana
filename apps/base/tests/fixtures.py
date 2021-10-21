@@ -52,17 +52,17 @@ def bigquery_client(mocker):
 
 
 @pytest.fixture(autouse=True)
-def sheets_client(*_):
+def sheets_client(mocker):
     client = MagicMock()
-    with patch("apps.base.clients.sheets_client", return_value=client):
-        yield client
+    mocker.patch("apps.base.clients.sheets", return_value=client)
+    yield client
 
 
 @pytest.fixture(autouse=True)
-def drive_v2_client(*_):
+def drive_v2_client(mocker):
     client = MagicMock()
-    with patch("apps.base.clients.drive_v2_client", return_value=client):
-        yield client
+    mocker.patch("apps.base.clients.drive_v2", return_value=client)
+    yield client
 
 
 @pytest.fixture(autouse=True)

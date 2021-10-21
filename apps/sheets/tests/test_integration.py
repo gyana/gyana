@@ -14,70 +14,79 @@ pytestmark = pytest.mark.django_db
 
 
 @patch("apps.sheets.bigquery.bq_table_schema_is_string_only", return_value=False)
-def test_create(
-    _, client, logged_in_user, bigquery_client, sheets_client, drive_v2_client
+def test_sheet_create(
+    _,
+    client,
+    logged_in_user,
+    project_factory,
+    bigquery_client,
+    sheets_client,
+    drive_v2_client,
 ):
 
     team = logged_in_user.teams.first()
-    project = Project.objects.create(name="Project", team=team)
-
-    # create a new sheet, configure it and complete the sync
-
-    # create
-    r = client.get(f"/projects/{project.id}/integrations/sheets/new")
-    assertOK(r)
-    assertFormRenders(r, ["url"])
-
+    project = project_factory(team=team)
     # mock sheet client to get title from Google Sheets
     sheets_client.spreadsheets().get().execute = Mock(
         return_value={"properties": {"title": "Store Info"}}
     )
-    r = client.post(
-        f"/projects/{project.id}/integrations/sheets/new",
-        data={
-            "url": "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit"
-        },
+    # mock the configuration
+    bigquery_client.query().exception = lambda: False
+    bigquery_client.reset_mock()
+    bigquery_client.get_table().num_rows = 10
+    # mock drive client to check last updated information
+    drive_v2_client.files().get().execute = Mock(
+        return_value={"modifiedDate": "2020-10-01T00:00:00Z"}
     )
+
+    LIST = f"/projects/{project.id}/integrations"
+    SHEETS_URL = "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit"
+    CELL_RANGE = "store_info!A1:D11"
+
+    # test: create a new sheet, configure it and complete the sync
+
+    # create
+    r = client.get(f"{LIST}/sheets/new")
+    assertOK(r)
+    assertFormRenders(r, ["url"])
+
+    r = client.post(f"{LIST}/sheets/new", data={"url": SHEETS_URL})
 
     integration = project.integration_set.first()
     assert integration is not None
     assert integration.kind == Integration.Kind.SHEET
     assert integration.sheet is not None
     assert integration.created_by == logged_in_user
-    INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
+    DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
 
-    assertRedirects(r, f"{INTEGRATION_URL}/configure", status_code=303)
+    assertRedirects(r, f"{DETAIL}/configure", status_code=303)
 
     # configure
-    r = client.get(f"{INTEGRATION_URL}/configure")
+    r = client.get(f"{DETAIL}/configure")
     assertOK(r)
     # todo: fix this!
     assertFormRenders(r, ["name", "cell_range"])
-
-    # mock the configuration
-    bigquery_client.query().exception = lambda: False
-    bigquery_client.reset_mock()  # reset the call count
-    bigquery_client.get_table().num_rows = 10
-
-    # mock drive client to check last updated information
-    drive_v2_client.files().get().execute = Mock(
-        return_value={"modifiedDate": "2020-10-01T00:00:00Z"}
-    )
 
     assert bigquery_client.query.call_count == 0
 
     # complete the sync
     # it will happen immediately as celery is run in eager mode
-    r = client.post(
-        f"{INTEGRATION_URL}/configure",
-        data={"cell_range": "store_info!A1:D11"},
-    )
+    r = client.post(f"{DETAIL}/configure", data={"cell_range": CELL_RANGE})
 
     assert bigquery_client.query.call_count == 1
-    assertRedirects(r, f"{INTEGRATION_URL}/load", target_status_code=302)
 
-    r = client.get(f"{INTEGRATION_URL}/load")
-    assertRedirects(r, f"{INTEGRATION_URL}/done")
+    # validate the sql and external table configuration
+    SQL = "CREATE OR REPLACE TABLE cypress_team_000001_tables.sheet_000000001 AS SELECT * FROM sheet_000000001_external"
+    assert bigquery_client.query.call_args.args == (SQL,)
+    job_config = bigquery_client.query.call_args.kwargs["job_config"]
+    external_config = job_config.table_definitions["sheet_000000001_external"]
+    assert external_config.source_uris == [SHEETS_URL]
+    assert external_config.options.range == CELL_RANGE
+
+    assertRedirects(r, f"{DETAIL}/load", target_status_code=302)
+
+    r = client.get(f"{DETAIL}/load")
+    assertRedirects(r, f"{DETAIL}/done")
 
     # todo: email
     # assert len(mail.outbox) == 1
