@@ -21,7 +21,7 @@ def test_integration_crudl(client, logged_in_user, integration_factory):
     project = integration.project
 
     LIST = f"/projects/{project.id}/integrations/"
-    DETAIL = f"{LIST}/{integration.id}"
+    DETAIL = f"{LIST}{integration.id}"
 
     # create -> special flow
 
@@ -132,69 +132,61 @@ def test_structure_and_preview(
     )
 
 
-def test_create_retry_edit_and_approve(client, logged_in_user):
+def test_create_pending_load_and_approve(
+    client, logged_in_user, sheet_factory, integration_table_factory
+):
     team = logged_in_user.teams.first()
-    project = Project.objects.create(name="Project", team=team)
+    sheet = sheet_factory(integration__ready=False, integration__project__team=team)
+    integration = sheet.integration
+    project = integration.project
+    integration_table_factory(project=project, integration=integration)
+
+    LIST = f"/projects/{project.id}/integrations/"
+    DETAIL = f"{LIST}{integration.id}"
+
+    # test: check options to create new integrations, skip to the done step and
+    # verify the load redirect and approval workflow
 
     # check that there is an option to create a connector, sheet and upload
-    r = client.get(f"/projects/{project.id}/integrations/")
+    r = client.get(LIST)
     assertOK(r)
     assertContains(r, "New Integration")
-    assertLink(
-        r, f"/projects/{project.id}/integrations/connectors/new", "New Connector"
-    )
-    assertLink(r, f"/projects/{project.id}/integrations/sheets/new", "Add Sheet")
-    assertLink(r, f"/projects/{project.id}/integrations/uploads/new", "Upload CSV")
+    assertLink(r, f"{LIST}connectors/new", "New Connector")
+    assertLink(r, f"{LIST}sheets/new", "Add Sheet")
+    assertLink(r, f"{LIST}uploads/new", "Upload CSV")
 
     # the create and configure steps are tested in individual apps
     # the load stage requires celery progress (javascript)
     # we assume that the task was run successfully and is done
 
-    integration = Integration.objects.create(
-        project=project,
-        kind=Integration.Kind.SHEET,
-        name="store_info",
-        state=Integration.State.DONE,
-    )
-    Sheet.objects.create(integration=integration, url="http://sheet.url")
-    Table.objects.create(
-        bq_table="table",
-        bq_dataset="dataset",
-        project=project,
-        source=Table.Source.INTEGRATION,
-        integration=integration,
-        num_rows=10,
-    )
-    INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
-
     # pending page
-    r = client.get(f"/projects/{project.id}/integrations/pending")
+    r = client.get(f"{LIST}pending")
     assertOK(r)
     assertSelectorLength(r, "table tbody tr", 1)
-    assertLink(r, INTEGRATION_URL, "store_info")
+    assertLink(r, DETAIL, "Store info")
 
     # redirect from detail page
-    r = client.get(INTEGRATION_URL)
-    assertRedirects(r, f"{INTEGRATION_URL}/done")
+    r = client.get(DETAIL)
+    assertRedirects(r, f"{DETAIL}/done")
 
     # load (redirects to done)
-    r = client.get(f"{INTEGRATION_URL}/load")
-    assertRedirects(r, f"{INTEGRATION_URL}/done")
+    r = client.get(f"{DETAIL}/load")
+    assertRedirects(r, f"{DETAIL}/done")
 
     # done
-    r = client.get(f"{INTEGRATION_URL}/done")
+    r = client.get(f"{DETAIL}/done")
     assertOK(r)
     assertContains(r, "Review import")
-    assertLink(r, f"{INTEGRATION_URL}/data", "preview")
-    assertLink(r, f"{INTEGRATION_URL}/configure", "re-configure")
+    assertLink(r, f"{DETAIL}/data", "preview")
+    assertLink(r, f"{DETAIL}/configure", "re-configure")
     # todo: fix this!
     assertFormRenders(r, ["name"])
 
     # confirm and update row count
     assert team.row_count == 0
 
-    r = client.post(f"{INTEGRATION_URL}/done")
-    assertRedirects(r, INTEGRATION_URL, status_code=303)
+    r = client.post(f"{DETAIL}/done")
+    assertRedirects(r, DETAIL, status_code=303)
 
     team.refresh_from_db()
     assert team.row_count == 10
@@ -203,10 +195,10 @@ def test_create_retry_edit_and_approve(client, logged_in_user):
     assert integration.ready
 
     # ready for done page
-    r = client.get(f"{INTEGRATION_URL}/done")
+    r = client.get(f"{DETAIL}/done")
     assertOK(r)
     assertContains(r, "Success")
-    assertLink(r, f"{INTEGRATION_URL}/configure", "configuration")
+    assertLink(r, f"{DETAIL}/configure", "configuration")
 
 
 def test_exceeds_row_limit(client, logged_in_user):

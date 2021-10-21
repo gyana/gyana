@@ -55,7 +55,7 @@ class SheetFactory(factory.django.DjangoModelFactory):
 
     url = "http://sheet.url"
     integration = factory.SubFactory(
-        IntegrationFactory, kind=Integration.Kind.SHEET, name="Sheet"
+        IntegrationFactory, kind=Integration.Kind.SHEET, name="Store info"
     )
 
 
@@ -67,3 +67,4 @@ class IntegrationTableFactory(factory.django.DjangoModelFactory):
     source = Table.Source.INTEGRATION
     bq_table = "table"
     bq_dataset = "dataset"
+    num_rows = 10
