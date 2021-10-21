@@ -91,3 +91,8 @@ class Table(CloneMixin, BaseModel):
     @property
     def bq_dashboard_url(self):
         return f"https://console.cloud.google.com/bigquery?project={settings.GCP_PROJECT}&p={settings.GCP_PROJECT}&d={self.bq_dataset}&t={self.bq_table}&page=table"
+
+    def update_data_updated(self, data_updated):
+        self.data_updated = data_updated
+        self.num_rows = self.bq_obj.num_rows
+        self.save()

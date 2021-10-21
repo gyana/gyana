@@ -37,6 +37,14 @@ def drive_v2_client(*_):
         yield client
 
 
+@pytest.fixture(autouse=True)
+def fivetran_client(*_, settings):
+    settings.MOCK_FIVETRAN = False
+    client = MagicMock()
+    with patch("apps.base.clients.fivetran", return_value=client):
+        yield client
+
+
 @pytest.fixture
 def logged_in_user(client):
     team = Team.objects.create(name="team_team")

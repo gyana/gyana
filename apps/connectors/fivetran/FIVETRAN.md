@@ -12,10 +12,8 @@ We have two destinations, `bigquery_beta` for production and `bigquery_mvp` for 
 
 ## Configuration
 
-You can automatically download the configuration from all connectors from the
+We have downloaded the configuration from all connectors from the
 [retrieve source metadata](https://fivetran.com/docs/rest-api/connectors#retrievesourcemetadata) endpoint.
-
-> TODO: Implement this!
 
 We have an internal configuration in `services.yaml` with the following extra information:
 
@@ -26,7 +24,7 @@ We have an internal configuration in `services.yaml` with the following extra in
 
 ## Implementation
 
-The `apps.connectors.fivetran.FivetranClient` is a wrapper for the Fivetran API,
+The `apps.connectors.fivetran.client.FivetranClient` is a wrapper for the Fivetran API,
 with a mock implementation that is helpful for local development and testing (since
 the initial sync for a connectors can be long).
 

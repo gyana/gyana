@@ -35,8 +35,10 @@ describe('connectors', () => {
     cy.url().should('contain', `/projects/1/integrations/${newConnectorId}/configure`)
     cy.get('button[type=submit]').click()
 
-    cy.contains('Validating and importing your connector...')
-    cy.contains('Connector successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
+    cy.contains('Validating and importing your Google Analytics connector...')
+    // need to explicitly reload as we're not using celery progress
+    cy.wait(1000)
+    cy.reload()
 
     cy.contains('Confirm').click()
 

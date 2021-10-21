@@ -1,24 +1,10 @@
-from apps.base.table import ICONS, NaturalDatetimeColumn
+from apps.base.table import NaturalDatetimeColumn
 from django.db.models.aggregates import Sum
 from django.template import Context
 from django.template.loader import get_template
 from django_tables2 import Column, Table
 
 from .models import Integration
-
-INTEGRATION_STATE_TO_ICON = {
-    Integration.State.UPDATE: ICONS["warning"],
-    Integration.State.LOAD: ICONS["loading"],
-    Integration.State.ERROR: ICONS["error"],
-    Integration.State.DONE: ICONS["warning"],
-}
-
-INTEGRATION_STATE_TO_MESSAGE = {
-    Integration.State.UPDATE: "Incomplete setup",
-    Integration.State.LOAD: "Importing",
-    Integration.State.ERROR: "Error",
-    Integration.State.DONE: "Ready to review",
-}
 
 
 class PendingStatusColumn(Column):
@@ -29,12 +15,8 @@ class PendingStatusColumn(Column):
         if instance is None:
             return
 
-        if instance.ready:
-            context["icon"] = ICONS["success"]
-            context["text"] = "Success"
-        else:
-            context["icon"] = INTEGRATION_STATE_TO_ICON[instance.state]
-            context["text"] = INTEGRATION_STATE_TO_MESSAGE[instance.state]
+        context["icon"] = instance.state_icon
+        context["text"] = instance.state_text
 
         # wrap status in turbo frame to fetch possible update
         if (

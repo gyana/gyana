@@ -1,6 +1,6 @@
 import analytics
+from apps.base import clients
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
-from apps.base.clients import fivetran_client
 from apps.base.turbo import TurboUpdateView
 from apps.connectors.tasks import complete_connector_sync
 from apps.integrations.filters import IntegrationFilter
@@ -184,6 +184,7 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
     fields = []
 
     def get(self, request, *args, **kwargs):
+
         self.object = self.get_object()
         if self.object.state not in [
             Integration.State.LOAD,
@@ -192,17 +193,19 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
             return redirect(
                 "project_integrations:done", self.project.id, self.object.id
             )
+
+        if self.object.kind == Integration.Kind.CONNECTOR:
+            if clients.fivetran().has_completed_sync(self.object.source_obj):
+                complete_connector_sync(self.object.source_obj)
+                return redirect(
+                    "project_integrations:done", self.project.id, self.object.id
+                )
+
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["sync_task_id"] = self.object.source_obj.sync_task_id
-
-        # connector task may have expired, need to check the source
-        if self.object.kind == Integration.Kind.CONNECTOR:
-            if fivetran_client().has_completed_sync(self.object.source_obj):
-                complete_connector_sync(self.object.source_obj, send_mail=False)
-                context_data["done"] = True
         return context_data
 
     def form_valid(self, form):

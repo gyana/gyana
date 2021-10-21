@@ -6,58 +6,74 @@
 <div class="pad flex flex-1 justify-center items-center">
   <div class='flex flex-col flex-1 max-w-3xl'>
     <div class="flex flex-1 justify-center items-center">
-      <div
-        class='integration__file-validate'
-        data-controller="celery-progress"
-        data-celery-progress-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
-        data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
-        data-celery-progress-redirect-url-value="{% url 'project_integrations:done' project.id object.id %}"
-        {% if done %} data-celery-progress-done-value {% endif %}
-      >
-        <i class="fad fa-fw fa-spinner-third fa-spin fa-2x text-blue"></i>
-        <div class='flex flex-col'>
-          <h1>Validating and importing your {{ object.kind }}...</h1>
-          {% if object.kind == 'connector' %}
-            <p>This can take anywhere from 5 minutes to an hour. We recommend you continue with your work.</p>
-          {% else %}
-            <p>This can anywhere from a few seconds to a minute.</p>
-          {% endif %}
+      {% if integration.kind == 'connector' %}
+        <i class="fad fa-fw fa-spinner-third fa-spin fa-2x text-blue text-4xl"></i>
+        <div class='flex flex-col ml-4 space-y-4'>
+          <h1>Validating and importing your {{ object.display_kind }} connector...</h1>
+            <p>
+              This can take anywhere from 5 minutes to an hour. You'll get an email when it's ready.
+            </p>
+            <p class="alert">
+              We recommend you continue with your work. You can manually keep track of progress, either by refreshing this page,
+              or in <a class="link" href="{% url 'project_integrations:pending' project.id %}">pending integrations</a>.
+            </p>
         </div>
+      {% else %}
+        <div
+            class='integration__file-validate'
+            data-controller="celery-progress"
+            data-celery-progress-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
+            data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
+            data-celery-progress-redirect-url-value="{% url 'project_integrations:done' project.id object.id %}"
+            {% if done %} data-celery-progress-done-value {% endif %}
+            >
 
-        <template id="success-template">
-          <i class="fas fa-fw fa-check fa-2x text-green"></i>
-          <div class='flex flex-col'>
-            <h1>{{ object.kind|title }} successfully validated and imported.</h4>
+          <i class="fad fa-fw fa-spinner-third fa-spin fa-2x text-blue text-4xl"></i>
+          <div class='flex flex-col ml-4 space-y-4'>
+            <h1>Validating and importing your {{ object.kind }}...</h1>
+            <p>
+              This can anywhere from a few seconds to a minute.
+            </p>
+            <p class="alert">
+              You can safely navigate away and check progress in <a class="link" href="{% url 'project_integrations:pending' project.id %}">pending integrations</a>.
+            </p>
           </div>
-        </template>
 
-        <template id="failure-template">
-          <i class="fas fa-times text-red text-xl mr-4"></i>
-          <div class="flex flex-col">
-            <h4>Errors occurred when validating your {{ object.kind }}. {% link_article 'integrations' 'error' %}</h4>
-            {% if object.kind == 'upload' %}
-              <p>If the problem persists, you can upload the CSV to Google Sheets and use our
-                <a class="link" href="{% url 'project_integrations_sheets:create' project.id %}">sheets integration.</a>
-              </p>
-            {% elif object.kind == 'connector' %}
-              <p>Reach out to us if the error persists.</p>
-            {% endif %}
-            <p id="failure-message"/>
-            <div class="flex space-x-2 my-2">
-              <form method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
-                  {% csrf_token %}
-
-                  {% include "django/forms/default_form.html" %}
-
-                  <button type="submit" class="button button--outline">
-                    Retry
-                  </button>
-              </form>
-              <a class="button ml-2" href="{% url 'project_integrations:configure' project.id object.id %}">Configure</a>
+          <template id="success-template">
+            <i class="fas fa-fw fa-check fa-2x text-green"></i>
+            <div class='flex flex-col'>
+              <h1>{{ object.kind|title }} successfully validated and imported.</h4>
             </div>
-          </div>
-        </template>
-      </div>
+          </template>
+
+          <template id="failure-template">
+            <i class="fas fa-times text-red text-xl mr-4"></i>
+            <div class="flex flex-col">
+              <h4>Errors occurred when validating your {{ object.kind }}. {% link_article 'integrations' 'error' %}</h4>
+              {% if object.kind == 'upload' %}
+                <p>If the problem persists, you can upload the CSV to Google Sheets and use our
+                  <a class="link" href="{% url 'project_integrations_sheets:create' project.id %}">sheets integration.</a>
+                </p>
+              {% elif object.kind == 'connector' %}
+                <p>Reach out to us if the error persists.</p>
+              {% endif %}
+              <p id="failure-message"/>
+              <div class="flex space-x-2 my-2">
+                <form method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
+                    {% csrf_token %}
+
+                    {% include "django/forms/default_form.html" %}
+
+                    <button type="submit" class="button button--outline">
+                      Retry
+                    </button>
+                </form>
+                <a class="button ml-2" href="{% url 'project_integrations:configure' project.id object.id %}">Configure</a>
+              </div>
+            </div>
+          </template>
+        </div>
+      {% endif %}
     </div>
   </div>
 </div>

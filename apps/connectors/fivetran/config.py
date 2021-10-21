@@ -2,8 +2,8 @@ from functools import lru_cache
 
 import yaml
 
-SERVICES = "apps/connectors/services.yaml"
-METADATA = "apps/connectors/metadata.yaml"
+SERVICES = "apps/connectors/fivetran/services.yaml"
+METADATA = "apps/connectors/fivetran/metadata.yaml"
 
 
 @lru_cache
