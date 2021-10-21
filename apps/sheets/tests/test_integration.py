@@ -78,10 +78,11 @@ def test_sheet_create(
     assert bigquery.query.call_count == 1
 
     # validate the sql and external table configuration
-    SQL = "CREATE OR REPLACE TABLE cypress_team_000001_tables.sheet_000000001 AS SELECT * FROM sheet_000000001_external"
+    table = integration.table_set.first()
+    SQL = f"CREATE OR REPLACE TABLE {table.bq_id} AS SELECT * FROM {table.bq_table}_external"
     assert bigquery.query.call_args.args == (SQL,)
     job_config = bigquery.query.call_args.kwargs["job_config"]
-    external_config = job_config.table_definitions["sheet_000000001_external"]
+    external_config = job_config.table_definitions[f"{table.bq_table}_external"]
     assert external_config.source_uris == [SHEETS_URL]
     assert external_config.autodetect
     assert external_config.options.range == CELL_RANGE
