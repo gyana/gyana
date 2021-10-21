@@ -9,18 +9,17 @@ from waffle.templatetags import waffle_tags
 
 
 @pytest.fixture(autouse=True)
-def patches(*_):
-    with patch("analytics.track"):
-        with patch("apps.base.analytics.identify_user"):
-            yield
+def patches(mocker):
+    mocker.patch("analytics.track")
+    mocker.patch("apps.base.analytics.identify_user")
 
 
 @pytest.fixture(autouse=True)
-def bigquery_client(*_):
+def clients.bigquery_client(mocker):
     client = MagicMock()
-    with patch("apps.base.clients.bigquery_client", return_value=client):
-        ibis_client().client = client
-        yield client
+    mocker.patch("apps.base.clients.clients.bigquery_client", return_value=client)
+    ibis_client().client = client
+    yield client
 
 
 @pytest.fixture(autouse=True)
