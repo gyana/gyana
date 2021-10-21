@@ -40,6 +40,11 @@ def patches(mocker, settings):
     # the test client does not have host header by default
     mocker.patch("apps.cnames.middleware.HostMiddleware", BlankMiddleware)
 
+    # there is an explicit test for sheet/upload with only strings
+    mocker.patch(
+        "apps.sheets.bigquery.bq_table_schema_is_string_only", return_value=False
+    )
+
     yield
 
 
@@ -52,7 +57,7 @@ def bigquery_client(mocker):
 
 
 @pytest.fixture(autouse=True)
-def sheets_client(mocker):
+def sheets(mocker):
     client = MagicMock()
     mocker.patch("apps.base.clients.sheets", return_value=client)
     yield client
