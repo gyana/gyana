@@ -15,10 +15,13 @@ class SheetCreateForm(BaseModelForm):
         labels = {"url": "Google Sheets URL"}
 
     def __init__(self, *args, **kwargs):
+        url = kwargs.pop("url")
         self._project = kwargs.pop("project")
         self._created_by = kwargs.pop("created_by")
 
         super().__init__(*args, **kwargs)
+
+        self.fields["url"].initial = url
 
     def clean_url(self):
         url = self.cleaned_data["url"]
