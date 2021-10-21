@@ -17,7 +17,9 @@ def assertLink(response, url, text=None, title=None):
     else:
         assert False, 'You need to specify "text" or "title"'
 
-    assert len(matches) == 1, f"Possible matches are {original_matches}"
+    error_list = [m.get("href") for m in original_matches]
+
+    assert len(matches) == 1, f"Possible matches are {error_list}"
 
 
 def assertSelectorLength(response, selector, length):
