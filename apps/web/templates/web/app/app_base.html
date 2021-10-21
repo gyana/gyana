@@ -54,7 +54,7 @@
 
 {% block sidebar_content %}
 <li>
-  <a class="sidebar__link" href="">
+  <a id="heading" class="sidebar__link" href="">
     {% if team.icon %}<img src="{{ team.icon.url }}" />{% else %}<span class="team_logo">{{ team.name|slice:1 }}</span>{% endif %}
     <strong class="h3">
       {{ team.name }}
