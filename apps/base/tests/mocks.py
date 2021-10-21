@@ -21,5 +21,5 @@ def mock_bq_client_with_schema(bigquery_client, schema_list):
 def mock_bq_client_with_data(bigquery_client, records):
     mock = PickableMock()
     mock.rows_dict = records
-    mock.total_rows = 2
+    mock.total_rows = len(records)
     bigquery_client.get_query_results = Mock(return_value=mock)
