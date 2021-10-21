@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db.models.signals import post_delete
 from django.dispatch.dispatcher import receiver
 
-from apps.base.clients import fivetran_client
+from apps.base import clients
 from apps.connectors.fivetran.client import FivetranClientError
 
 from .bigquery import delete_connector_datasets
@@ -17,6 +17,6 @@ def delete_fivetran_connector(sender, instance, *args, **kwargs):
     delete_connector_datasets(instance)
 
     try:
-        fivetran_client().delete(instance)
+        clients.fivetran().delete(instance)
     except FivetranClientError as e:
         print(e)

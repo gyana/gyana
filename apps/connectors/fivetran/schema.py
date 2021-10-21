@@ -2,6 +2,8 @@ from dataclasses import asdict, dataclass
 from itertools import chain
 from typing import Dict, List, Optional
 
+from apps.base import clients
+
 from ..models import Connector
 
 # wrapper for fivetran schema information
@@ -68,9 +70,9 @@ def schemas_to_dict(schemas):
 
 def get_bq_datasets_from_schemas(connector):
 
-    from apps.base.clients import fivetran_client
-
-    datasets = {s.name_in_destination for s in fivetran_client().get_schemas(connector)}
+    datasets = {
+        s.name_in_destination for s in clients.fivetran().get_schemas(connector)
+    }
 
     # fivetran schema config does not include schema prefix for databases
     if connector.is_database:
@@ -83,10 +85,8 @@ def get_bq_ids_from_schemas(connector: Connector):
 
     # get the list of bigquery ids (dataset.table) from the fivetran schema information
 
-    from apps.base.clients import fivetran_client
-
     schema_bq_ids = set(
-        chain(*(s.enabled_bq_ids for s in fivetran_client().get_schemas(connector)))
+        chain(*(s.enabled_bq_ids for s in clients.fivetran().get_schemas(connector)))
     )
 
     # fivetran schema config does not include schema prefix for databases
@@ -103,10 +103,8 @@ def get_bq_ids_from_schemas(connector: Connector):
 def update_schema_from_cleaned_data(connector, cleaned_data):
     # construct the payload from cleaned data
 
-    from apps.base.clients import fivetran_client
-
     # mutate the schema information based on user input
-    schemas = fivetran_client().get_schemas(connector)
+    schemas = clients.fivetran().get_schemas(connector)
 
     for schema in schemas:
         schema.enabled = f"{schema.name_in_destination}_schema" in cleaned_data
@@ -123,4 +121,4 @@ def update_schema_from_cleaned_data(connector, cleaned_data):
             # if access issues, e.g. per column access in Postgres
             table.columns = {}
 
-    fivetran_client().update_schemas(connector, schemas)
+    clients.fivetran().update_schemas(connector, schemas)

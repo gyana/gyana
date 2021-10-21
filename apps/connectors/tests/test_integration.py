@@ -7,7 +7,6 @@ from apps.base.tests.asserts import (
 )
 from apps.connectors.fivetran.schema import FivetranSchema
 from apps.integrations.models import Integration
-from apps.projects.models import Project
 from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db

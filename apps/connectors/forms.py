@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.forms.widgets import CheckboxInput, HiddenInput
 from honeybadger import honeybadger
 
+from apps.base import clients
 from apps.base.forms import BaseModelForm
 
 from .fivetran.client import FivetranClientError
@@ -25,11 +26,10 @@ class ConnectorCreateForm(BaseModelForm):
         super().__init__(*args, **kwargs)
 
     def clean(self):
-        from apps.base.clients import fivetran_client
 
         # try to create fivetran entity
         try:
-            res = fivetran_client().create(self._service, self._project.team.id)
+            res = clients.fivetran().create(self._service, self._project.team.id)
         except FivetranClientError as e:
             raise ValidationError(str(e))
 
@@ -51,11 +51,10 @@ class ConnectorUpdateForm(forms.ModelForm):
         fields = []
 
     def __init__(self, *args, **kwargs):
-        from apps.base.clients import fivetran_client
 
         super().__init__(*args, **kwargs)
 
-        schemas = fivetran_client().get_schemas(self.instance)
+        schemas = clients.fivetran().get_schemas(self.instance)
 
         for schema in schemas:
 

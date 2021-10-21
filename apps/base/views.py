@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 
-from apps.base.clients import fivetran_client
+from apps.base import clients
 from apps.base.cypress_mail import Outbox
 from apps.integrations.periodic import delete_outdated_pending_integrations
 from apps.teams.periodic import update_team_row_limits
@@ -24,8 +24,8 @@ def resetdb(request: Request):
     mail.outbox = Outbox()
     mail.outbox.clear()
 
-    fivetran_client()._schema_cache.clear()
-    fivetran_client()._started = {}
+    clients.fivetran()._schema_cache.clear()
+    clients.fivetran()._started = {}
 
     return JsonResponse({})
 

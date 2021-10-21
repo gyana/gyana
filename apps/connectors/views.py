@@ -6,6 +6,7 @@ from django.views.generic import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 
+from apps.base import clients
 from apps.base.analytics import (
     INTEGRATION_AUTHORIZED_EVENT,
     INTEGRATION_CREATED_EVENT,
@@ -46,7 +47,6 @@ class ConnectorCreate(ProjectMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
-        from apps.base.clients import fivetran_client
 
         # create the connector and integration
         self.object = form.save()
@@ -70,7 +70,7 @@ class ConnectorCreate(ProjectMixin, CreateView):
         )
 
         return redirect(
-            fivetran_client().get_authorize_url(
+            clients.fivetran().get_authorize_url(
                 self.object,
                 f"{settings.EXTERNAL_URL}{internal_redirect}",
             )

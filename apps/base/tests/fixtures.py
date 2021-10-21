@@ -41,7 +41,7 @@ def drive_v2_client(*_):
 def fivetran_client(*_, settings):
     settings.MOCK_FIVETRAN = False
     client = MagicMock()
-    with patch("apps.base.clients.fivetran_client", return_value=client):
+    with patch("apps.base.clients.fivetran", return_value=client):
         yield client
 
 

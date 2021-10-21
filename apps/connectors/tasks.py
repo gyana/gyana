@@ -2,8 +2,9 @@ import analytics
 from django.db import transaction
 from google.api_core.exceptions import NotFound
 
+from apps.base import clients
 from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
-from apps.base.clients import bigquery_client, fivetran_client
+from apps.base.clients import bigquery_client
 from apps.connectors.models import Connector
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
@@ -97,7 +98,7 @@ def run_connector_sync(connector: Connector):
         requires_sync = check_new_tables_added_to_schema(connector)
 
     if requires_sync:
-        fivetran_client().start_initial_sync(connector)
+        clients.fivetran().start_initial_sync(connector)
 
         connector.integration.state = Integration.State.LOAD
         connector.integration.save()
