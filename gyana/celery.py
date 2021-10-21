@@ -15,7 +15,8 @@ app = Celery("gyana")
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
 # Load task modules from all registered Django app configs.
-app.autodiscover_tasks()
+app.autodiscover_tasks(related_name="periodic")
+app.autodiscover_tasks(related_name="tasks")
 
 
 @app.on_after_finalize.connect

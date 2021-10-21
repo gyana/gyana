@@ -1,5 +1,6 @@
 import analytics
 from django.db import transaction
+from django.utils import timezone
 from google.api_core.exceptions import NotFound
 
 from apps.base import clients
@@ -99,6 +100,9 @@ def run_connector_sync(connector: Connector):
 
     if requires_sync:
         clients.fivetran().start_initial_sync(connector)
+
+        connector.fivetran_sync_started = timezone.now()
+        connector.save()
 
         connector.integration.state = Integration.State.LOAD
         connector.integration.save()
