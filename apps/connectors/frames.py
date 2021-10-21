@@ -5,7 +5,6 @@ from apps.base.clients import fivetran_client
 from apps.base.frames import TurboFrameDetailView
 
 from .models import Connector
-from .periodic import update_fivetran_succeeded_at
 from .tasks import complete_connector_sync
 
 
@@ -36,7 +35,10 @@ class ConnectorStatus(TurboFrameDetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         data = fivetran_client().get(self.object)
-        update_fivetran_succeeded_at(self.object, data["succeeded_at"])
+        succeeded_at = data.get("succeeded_at")
+        if succeeded_at is not None:
+            self.object.update_fivetran_succeeded_at(data["succeeded_at"])
+
         # {
         #     "setup_state": "broken" | "incomplete" | "connected",
         #     "tasks": [{"code": ..., "message": ...}],

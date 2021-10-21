@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from celery import shared_task
 
 from apps.base.clients import fivetran_client
@@ -19,10 +17,7 @@ def update_connectors_from_fivetran():
         try:
             succeeded_at = fivetran_client().get(connector).get("succeeded_at")
             if succeeded_at is not None:
-                # timezone (UTC) information is parsed automatically
-                connector.update_fivetran_succeeded_at(
-                    connector, datetime.strptime(succeeded_at, "%Y-%m-%dT%H:%M:%S.%f%z")
-                )
+                connector.update_fivetran_succeeded_at(connector, succeeded_at)
 
         except FivetranClientError:
             pass

@@ -218,3 +218,26 @@ def test_update_tables_in_non_database(client, logged_in_user, fivetran_client):
 
     # remove those tables
     assert integration.table_set.count() == 1
+
+
+def test_status_broken(client, logged_in_user, fivetran_client):
+
+    connector = ConnectorFactory()
+    integration = connector.integration
+    project = integration.project
+
+    fivetran_client.get.return_value = {"status": {"setup_state": "broken"}}
+    fivetran_client.get_authorize_url.side_effect = (
+        lambda c, r: f"http://fivetran.url?redirect_uri={r}"
+    )
+
+    INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
+    CONNECTORS_URL = f"/projects/{project.id}/integrations/connectors"
+
+    r = client.get_turbo_frame(
+        f"{INTEGRATION_URL}", f"/connectors/{connector.id}/status"
+    )
+    assertOK(r)
+    assertContains(r, "Your connector is broken.")
+    redirect_uri = f"http://localhost:8000{CONNECTORS_URL}/{connector.id}/authorize"
+    assertLink(r, f"http://fivetran.url?redirect_uri={redirect_uri}", "fixing it")

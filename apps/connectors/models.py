@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -77,7 +79,11 @@ class Connector(BaseModel):
         service_conf = get_services()[self.service]
         return service_conf["requires_schema_prefix"] == "t"
 
-    def update_fivetran_succeeded_at(self, succeeded_at):
+    def update_fivetran_succeeded_at(self, succeeded_at: str):
+
+        # fivetran timestamp string from get response
+        # timezone (UTC) information is parsed automatically
+        succeeded_at = datetime.strptime(succeeded_at, "%Y-%m-%dT%H:%M:%S.%f%z")
 
         # ignore outdated information
         if (
