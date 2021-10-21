@@ -1,6 +1,5 @@
 from apps.base import clients
-from apps.base.bigquery import (bq_table_schema_is_string_only,
-                                sanitize_bq_column_name)
+from apps.base.bigquery import bq_table_schema_is_string_only, sanitize_bq_column_name
 from apps.tables.models import Table
 from google.cloud import bigquery
 from google.cloud.bigquery.job.load import LoadJob
@@ -32,11 +31,8 @@ def _load_table(upload: Upload, table: Table, **job_kwargs):
         **job_kwargs,
     )
 
-    bq_dataset = client.get_dataset(table.bq_dataset)
-    table_reference = bigquery.Table(bq_dataset.table(table.bq_table))
-
     load_job = client.load_table_from_uri(
-        upload.gcs_uri, table_reference, job_config=job_config
+        upload.gcs_uri, table.bq_id, job_config=job_config
     )
 
     if load_job.exception():
