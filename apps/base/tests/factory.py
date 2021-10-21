@@ -7,6 +7,13 @@ from apps.teams.models import Team
 import factory
 
 
+class TeamFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Team
+
+    name = "Team"
+
+
 class ProjectFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Project
