@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 pytestmark = pytest.mark.django_db
 
 
-def assertLink(response, url, text=None, title=None, target_top=False):
+def assertLink(response, url, text=None, title=None):
     soup = BeautifulSoup(response.content)
     matches = soup.select(f'a[href="{url}"]')
     if text is not None:
@@ -14,11 +14,6 @@ def assertLink(response, url, text=None, title=None, target_top=False):
     else:
         assert False
     assert len(matches) == 1
-
-    # for turbo frames
-    if target_top:
-        match = matches[0]
-        assert match.target == "_top"
 
 
 def assertSelectorLength(response, selector, length):
