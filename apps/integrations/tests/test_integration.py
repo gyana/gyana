@@ -60,7 +60,7 @@ def test_integration_crudl(client, logged_in_user, integration_factory):
 
 
 def test_structure_and_preview(
-    client, logged_in_user, bigquery_client, sheet_factory, integration_table_factory
+    client, logged_in_user, bigquery, sheet_factory, integration_table_factory
 ):
     team = logged_in_user.teams.first()
     sheet = sheet_factory(integration__project__team=team)
@@ -69,11 +69,9 @@ def test_structure_and_preview(
     table = integration_table_factory(project=project, integration=integration)
 
     # mock table with two columns, 20 rows
-    mock_bq_client_with_schema(
-        bigquery_client, [("name", "STRING"), ("age", "INTEGER")]
-    )
+    mock_bq_client_with_schema(bigquery, [("name", "STRING"), ("age", "INTEGER")])
     mock_bq_client_with_data(
-        bigquery_client,
+        bigquery,
         [{"name": "Neera", "age": 4}] * 15 + [{"name": "Vayu", "age": 2}] * 5,
     )
 
@@ -95,8 +93,8 @@ def test_structure_and_preview(
     assertContains(r, "name")
     assertContains(r, "Text")
 
-    assert bigquery_client.get_table.call_count == 1
-    assert bigquery_client.get_table.call_args.args == (table.bq_id,)
+    assert bigquery.get_table.call_count == 1
+    assert bigquery.get_table.call_args.args == (table.bq_id,)
 
     # preview
     r = client.get_turbo_frame(
@@ -108,8 +106,8 @@ def test_structure_and_preview(
     assertContains(r, "Neera")
     assertContains(r, "4")
 
-    assert bigquery_client.get_query_results.call_count == 1
-    assert bigquery_client.get_query_results.call_args.args == (
+    assert bigquery.get_query_results.call_count == 1
+    assert bigquery.get_query_results.call_args.args == (
         "SELECT *\nFROM `gyana-1511894275181.dataset.table`",
     )
 
@@ -122,8 +120,8 @@ def test_structure_and_preview(
     assertContains(r, "Vayu")
     assertContains(r, "2")
 
-    assert bigquery_client.get_query_results.call_count == 2
-    assert bigquery_client.get_query_results.call_args.args == (
+    assert bigquery.get_query_results.call_count == 2
+    assert bigquery.get_query_results.call_args.args == (
         "SELECT *\nFROM `gyana-1511894275181.dataset.table`\nLIMIT 5 OFFSET 15",
     )
 

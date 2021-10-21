@@ -83,6 +83,6 @@ def fivetran():
 
 
 @lru_cache
-def heroku_client():
+def heroku():
     heroku_conn = heroku3.from_key(settings.HEROKU_API_KEY)
     return heroku_conn.app(settings.HEROKU_APP)

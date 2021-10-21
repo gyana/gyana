@@ -31,21 +31,19 @@ def get_mock_schema(num_tables):
     return schema
 
 
-def test_connector_create(
-    client, logged_in_user, bigquery_client, fivetran_client, project_factory
-):
+def test_connector_create(client, logged_in_user, bigquery, fivetran, project_factory):
 
     project = project_factory(team=logged_in_user.teams.first())
     # project = Project.objects.create(team=logged_in_user.teams.first(), name="this")
 
-    fivetran_client.create.return_value = {"fivetran_id": "fid", "schema": "sid"}
-    fivetran_client.get_authorize_url.side_effect = (
+    fivetran.create.return_value = {"fivetran_id": "fid", "schema": "sid"}
+    fivetran.get_authorize_url.side_effect = (
         lambda c, r: f"http://fivetran.url?redirect_uri={r}"
     )
-    fivetran_client.has_completed_sync.return_value = False
+    fivetran.has_completed_sync.return_value = False
     schema = get_mock_schema(1)  # connector with a single table
-    fivetran_client.get_schemas.return_value = [schema]
-    bigquery_client.get_table().num_rows = 10
+    fivetran.get_schemas.return_value = [schema]
+    bigquery.get_table().num_rows = 10
 
     CONNECTORS_URL = f"/projects/{project.id}/integrations/connectors"
 
@@ -75,16 +73,16 @@ def test_connector_create(
     redirect_uri = f"http://localhost:8000{CONNECTORS_URL}/{connector.id}/authorize"
     assertRedirects(r, f"http://fivetran.url?redirect_uri={redirect_uri}")
 
-    assert fivetran_client.create.call_count == 1
-    assert fivetran_client.create.call_args.args == (
+    assert fivetran.create.call_count == 1
+    assert fivetran.create.call_args.args == (
         "google_analytics",
         project.team.id,
     )
     assert connector.fivetran_id == "fid"
     assert connector.schema == "sid"
 
-    assert fivetran_client.get_authorize_url.call_count == 1
-    assert fivetran_client.get_authorize_url.call_args.args == (
+    assert fivetran.get_authorize_url.call_count == 1
+    assert fivetran.get_authorize_url.call_args.args == (
         connector,
         redirect_uri,
     )
@@ -96,23 +94,23 @@ def test_connector_create(
     assertRedirects(r, f"{INTEGRATION_URL}/configure")
 
     # configure
-    fivetran_client.get_schemas.reset_mock()
+    fivetran.get_schemas.reset_mock()
     r = client.get(f"{INTEGRATION_URL}/configure")
     assertOK(r)
     # todo: fix this!
     assertFormRenders(r, ["name", "dataset_schema", "dataset_tables"])
 
-    assert fivetran_client.get_schemas.call_count == 1
-    assert fivetran_client.get_schemas.call_args.args == (connector,)
+    assert fivetran.get_schemas.call_count == 1
+    assert fivetran.get_schemas.call_args.args == (connector,)
 
     # fivetran initial sync request will happen on post
     r = client.post(f"{INTEGRATION_URL}/configure")
     assertRedirects(r, f"{INTEGRATION_URL}/load")
 
-    assert fivetran_client.update_schemas.call_count == 1
-    assert fivetran_client.update_schemas.call_args.args == (connector, [schema])
-    assert fivetran_client.start_initial_sync.call_count == 1
-    assert fivetran_client.start_initial_sync.call_args.args == (connector,)
+    assert fivetran.update_schemas.call_count == 1
+    assert fivetran.update_schemas.call_args.args == (connector, [schema])
+    assert fivetran.start_initial_sync.call_count == 1
+    assert fivetran.start_initial_sync.call_args.args == (connector,)
 
     r = client.get(f"{INTEGRATION_URL}/load")
     assertOK(r)
@@ -122,15 +120,15 @@ def test_connector_create(
     )
 
     # the user leaves the page and periodic job runs in background
-    fivetran_client.has_completed_sync.return_value = True
+    fivetran.has_completed_sync.return_value = True
     check_syncing_connectors_from_fivetran.delay()
 
     integration.refresh_from_db()
     assert integration.state == Integration.State.DONE
     assert integration.table_set.count() == 1
 
-    fivetran_client.has_completed_sync.call_count == 3
-    fivetran_client.has_completed_sync.call_args.args == (connector,)
+    fivetran.has_completed_sync.call_count == 3
+    fivetran.has_completed_sync.call_args.args == (connector,)
 
     # checking back explicitly will also complete
     integration.state = Integration.State.LOAD
@@ -149,8 +147,8 @@ def test_connector_create(
 def test_status_on_pending_page(
     client,
     logged_in_user,
-    bigquery_client,
-    fivetran_client,
+    bigquery,
+    fivetran,
     connector_factory,
 ):
     connector = connector_factory(
@@ -161,9 +159,9 @@ def test_status_on_pending_page(
     project = connector.integration.project
 
     schema = get_mock_schema(1)
-    fivetran_client.get_schemas.return_value = [schema]
-    fivetran_client.has_completed_sync.return_value = False
-    bigquery_client.get_table().num_rows = 10
+    fivetran.get_schemas.return_value = [schema]
+    fivetran.has_completed_sync.return_value = False
+    bigquery.get_table().num_rows = 10
 
     # test: the status indicator on the pending page will be loading, until the
     # connector has completed the sync
@@ -176,9 +174,9 @@ def test_status_on_pending_page(
     assertOK(r)
     assertSelectorLength(r, ".fa-circle-notch", 1)
 
-    assert fivetran_client.has_completed_sync.call_count == 1
-    assert fivetran_client.has_completed_sync.call_args.args == (connector,)
-    fivetran_client.has_completed_sync.return_value = True
+    assert fivetran.has_completed_sync.call_count == 1
+    assert fivetran.has_completed_sync.call_args.args == (connector,)
+    fivetran.has_completed_sync.return_value = True
 
     # done
     r = client.get_turbo_frame(
@@ -188,8 +186,8 @@ def test_status_on_pending_page(
     assertOK(r)
     assertSelectorLength(r, ".fa-exclamation-triangle", 1)
 
-    assert fivetran_client.has_completed_sync.call_count == 2
-    assert fivetran_client.has_completed_sync.call_args.args == (connector,)
+    assert fivetran.has_completed_sync.call_count == 2
+    assert fivetran.has_completed_sync.call_args.args == (connector,)
 
     connector.integration.refresh_from_db()
     assert connector.integration.state == Integration.State.DONE
@@ -198,7 +196,7 @@ def test_status_on_pending_page(
 def test_update_tables_in_non_database(
     client,
     logged_in_user,
-    fivetran_client,
+    fivetran,
     connector_factory,
     integration_table_factory,
 ):
@@ -209,7 +207,7 @@ def test_update_tables_in_non_database(
     project = integration.project
 
     schema = get_mock_schema(2)
-    fivetran_client.get_schemas.return_value = [schema]
+    fivetran.get_schemas.return_value = [schema]
 
     for table in schema.tables:
         integration_table_factory(
@@ -231,16 +229,12 @@ def test_update_tables_in_non_database(
         f"{INTEGRATION_URL}/configure", data={"dataset_tables": ["table_1"]}
     )
     assertRedirects(r, f"{INTEGRATION_URL}/load", target_status_code=302)
-    assert fivetran_client.update_schemas.call_count == 1
+    assert fivetran.update_schemas.call_count == 1
     enabled_tables = [
-        t
-        for t in fivetran_client.update_schemas.call_args.args[1][0].tables
-        if t.enabled
+        t for t in fivetran.update_schemas.call_args.args[1][0].tables if t.enabled
     ]
     assert len(enabled_tables) == 1
-    assert (
-        fivetran_client.update_schemas.call_args.args[1][0].tables[0].key == "table_1"
-    )
+    assert fivetran.update_schemas.call_args.args[1][0].tables[0].key == "table_1"
 
     # slightly hacky - this is working because the code mutates the mock schema object
 
@@ -248,7 +242,7 @@ def test_update_tables_in_non_database(
     assert integration.table_set.count() == 1
 
 
-def test_status_broken(client, logged_in_user, fivetran_client, connector_factory):
+def test_status_broken(client, logged_in_user, fivetran, connector_factory):
 
     connector = connector_factory(
         integration__project__team=logged_in_user.teams.first()
@@ -256,8 +250,8 @@ def test_status_broken(client, logged_in_user, fivetran_client, connector_factor
     integration = connector.integration
     project = integration.project
 
-    fivetran_client.get.return_value = {"status": {"setup_state": "broken"}}
-    fivetran_client.get_authorize_url.side_effect = (
+    fivetran.get.return_value = {"status": {"setup_state": "broken"}}
+    fivetran.get_authorize_url.side_effect = (
         lambda c, r: f"http://fivetran.url?redirect_uri={r}"
     )
 

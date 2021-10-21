@@ -49,7 +49,7 @@ def patches(mocker, settings):
 
 
 @pytest.fixture(autouse=True)
-def bigquery_client(mocker):
+def bigquery(mocker):
     client = MagicMock()
     mocker.patch("apps.base.clients.bigquery", return_value=client)
     ibis_client().client = client
@@ -64,25 +64,25 @@ def sheets(mocker):
 
 
 @pytest.fixture(autouse=True)
-def drive_v2_client(mocker):
+def drive_v2(mocker):
     client = MagicMock()
     mocker.patch("apps.base.clients.drive_v2", return_value=client)
     yield client
 
 
 @pytest.fixture(autouse=True)
-def fivetran_client(*_, settings):
+def fivetran(mocker, settings):
     settings.MOCK_FIVETRAN = False
     client = MagicMock()
-    with patch("apps.base.clients.fivetran", return_value=client):
-        yield client
+    mocker.patch("apps.base.clients.fivetran", return_value=client)
+    yield client
 
 
 @pytest.fixture(autouse=True)
-def heroku_client(*_):
+def heroku(mocker):
     client = MagicMock()
-    with patch("apps.base.clients.heroku_client", return_value=client):
-        yield client
+    mocker.patch("apps.base.clients.heroku", return_value=client)
+    yield client
 
 
 @pytest.fixture

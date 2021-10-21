@@ -11,7 +11,7 @@ pytestmark = pytest.mark.django_db
 
 
 @patch("apps.uploads.bigquery.bq_table_schema_is_string_only", return_value=False)
-def test_upload_create(_, client, logged_in_user, bigquery_client):
+def test_upload_create(_, client, logged_in_user, bigquery):
 
     team = logged_in_user.teams.first()
     project = Project.objects.create(name="Project", team=team)
@@ -44,11 +44,11 @@ def test_upload_create(_, client, logged_in_user, bigquery_client):
     assertFormRenders(r, ["name", "field_delimiter"])
 
     # mock the configuration
-    bigquery_client.load_table_from_uri().exception = lambda: False
-    bigquery_client.reset_mock()  # reset the call count
-    bigquery_client.get_table().num_rows = 10
+    bigquery.load_table_from_uri().exception = lambda: False
+    bigquery.reset_mock()  # reset the call count
+    bigquery.get_table().num_rows = 10
 
-    assert bigquery_client.query.call_count == 0
+    assert bigquery.query.call_count == 0
 
     # complete the sync
     # it will happen immediately as celery is run in eager mode
@@ -57,7 +57,7 @@ def test_upload_create(_, client, logged_in_user, bigquery_client):
         data={"field_delimiter": "comma"},
     )
 
-    assert bigquery_client.load_table_from_uri.call_count == 1
+    assert bigquery.load_table_from_uri.call_count == 1
     assertRedirects(r, f"{INTEGRATION_URL}/load", target_status_code=302)
 
     r = client.get(f"{INTEGRATION_URL}/load")

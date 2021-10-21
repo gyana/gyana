@@ -15,9 +15,9 @@ def test_sheet_create(
     client,
     logged_in_user,
     project_factory,
-    bigquery_client,
+    bigquery,
     sheets,
-    drive_v2_client,
+    drive_v2,
 ):
 
     team = logged_in_user.teams.first()
@@ -27,11 +27,11 @@ def test_sheet_create(
         return_value={"properties": {"title": "Store Info"}}
     )
     # mock the configuration
-    bigquery_client.query().exception = lambda: False
-    bigquery_client.reset_mock()
-    bigquery_client.get_table().num_rows = 10
+    bigquery.query().exception = lambda: False
+    bigquery.reset_mock()
+    bigquery.get_table().num_rows = 10
     # mock drive client to check last updated information
-    drive_v2_client.files().get().execute = Mock(
+    drive_v2.files().get().execute = Mock(
         return_value={"modifiedDate": "2020-10-01T00:00:00Z"}
     )
 
@@ -63,18 +63,18 @@ def test_sheet_create(
     # todo: fix this!
     assertFormRenders(r, ["name", "cell_range"])
 
-    assert bigquery_client.query.call_count == 0
+    assert bigquery.query.call_count == 0
 
     # complete the sync
     # it will happen immediately as celery is run in eager mode
     r = client.post(f"{DETAIL}/configure", data={"cell_range": CELL_RANGE})
 
-    assert bigquery_client.query.call_count == 1
+    assert bigquery.query.call_count == 1
 
     # validate the sql and external table configuration
     SQL = "CREATE OR REPLACE TABLE cypress_team_000001_tables.sheet_000000001 AS SELECT * FROM sheet_000000001_external"
-    assert bigquery_client.query.call_args.args == (SQL,)
-    job_config = bigquery_client.query.call_args.kwargs["job_config"]
+    assert bigquery.query.call_args.args == (SQL,)
+    job_config = bigquery.query.call_args.kwargs["job_config"]
     external_config = job_config.table_definitions["sheet_000000001_external"]
     assert external_config.source_uris == [SHEETS_URL]
     assert external_config.options.range == CELL_RANGE
@@ -130,7 +130,7 @@ def test_validation_failures(client, logged_in_user, sheet_factory, sheets):
     assertFormError(r, "form", "cell_range", error.reason)
 
 
-def test_runtime_error(client, logged_in_user, sheet_factory, bigquery_client):
+def test_runtime_error(client, logged_in_user, sheet_factory, bigquery):
 
     team = logged_in_user.teams.first()
     sheet = sheet_factory(integration__project__team=team)
@@ -140,8 +140,8 @@ def test_runtime_error(client, logged_in_user, sheet_factory, bigquery_client):
 
     # test: runtime errors lead to error state
 
-    bigquery_client.query().exception = lambda: True
-    bigquery_client.query().errors = [{"message": "No columns found in the schema."}]
+    bigquery.query().exception = lambda: True
+    bigquery.query().errors = [{"message": "No columns found in the schema."}]
 
     with pytest.raises(Exception):
         client.post(
@@ -155,7 +155,7 @@ def test_runtime_error(client, logged_in_user, sheet_factory, bigquery_client):
 
 
 def test_resync_after_source_update(
-    client, logged_in_user, sheet_factory, drive_v2_client, bigquery_client
+    client, logged_in_user, sheet_factory, drive_v2, bigquery
 ):
 
     team = logged_in_user.teams.first()
@@ -165,12 +165,12 @@ def test_resync_after_source_update(
     )
     integration = sheet.integration
     # mock drive client to check last updated information
-    drive_v2_client.files().get().execute = Mock(
+    drive_v2.files().get().execute = Mock(
         return_value={"modifiedDate": "2020-10-01T00:00:00Z"}
     )
-    bigquery_client.query().exception = lambda: False
-    bigquery_client.reset_mock()  # reset the call count
-    bigquery_client.get_table().num_rows = 10
+    bigquery.query().exception = lambda: False
+    bigquery.reset_mock()  # reset the call count
+    bigquery.get_table().num_rows = 10
 
     DETAIL = f"/projects/{integration.project.id}/integrations/{integration.id}"
 

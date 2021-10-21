@@ -14,11 +14,11 @@ from pytest_django.asserts import assertContains, assertRedirects
 pytestmark = pytest.mark.django_db
 
 
-def test_team_crudl(client, logged_in_user, bigquery_client):
+def test_team_crudl(client, logged_in_user, bigquery):
 
     team = logged_in_user.teams.first()
     # the fixture creates a new team
-    bigquery_client.reset_mock()
+    bigquery.reset_mock()
 
     # redirect
     assertRedirects(client.get("/"), f"/teams/{team.id}")
@@ -36,10 +36,8 @@ def test_team_crudl(client, logged_in_user, bigquery_client):
     new_team = logged_in_user.teams.first()
     assertRedirects(r, f"/teams/{new_team.id}/plan", status_code=303)
 
-    assert bigquery_client.create_dataset.call_count == 1
-    assert bigquery_client.create_dataset.call_args.args == (
-        new_team.tables_dataset_id,
-    )
+    assert bigquery.create_dataset.call_count == 1
+    assert bigquery.create_dataset.call_args.args == (new_team.tables_dataset_id,)
 
     # choose plan
     r = client.get(f"/teams/{new_team.id}/plan")
@@ -80,10 +78,8 @@ def test_team_crudl(client, logged_in_user, bigquery_client):
     r = client.delete(f"/teams/{new_team.id}/delete")
     assertRedirects(r, "/", target_status_code=302)
 
-    assert bigquery_client.delete_dataset.call_count == 1
-    assert bigquery_client.delete_dataset.call_args.args == (
-        new_team.tables_dataset_id,
-    )
+    assert bigquery.delete_dataset.call_count == 1
+    assert bigquery.delete_dataset.call_args.args == (new_team.tables_dataset_id,)
 
     assert logged_in_user.teams.count() == 1
 
