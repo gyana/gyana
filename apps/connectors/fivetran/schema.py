@@ -93,6 +93,7 @@ def get_bq_ids_from_schemas(connector: Connector):
     if connector.is_database:
         schema_bq_ids = {f"{connector.schema}_{id_}" for id_ in schema_bq_ids}
 
+    # special case for google sheets
     if len(schema_bq_ids) == 0:
         return [f"{connector.schema}.sheets_table"]
 

@@ -1,14 +1,17 @@
-from unittest.mock import Mock
-
 import pytest
-from apps.base.tests.asserts import (assertFormRenders, assertLink, assertOK,
-                                     assertSelectorLength)
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertLink,
+    assertOK,
+    assertSelectorLength,
+)
+from apps.base.tests.factory import (
+    ConnectorFactory,
+    IntegrationTableFactory,
+    ProjectFactory,
+)
 from apps.connectors.fivetran.schema import FivetranSchema
-from apps.connectors.models import Connector
 from apps.integrations.models import Integration
-from apps.projects.models import Project
-from apps.tables.models import Table
-from django.core import mail
 from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
@@ -21,7 +24,7 @@ def get_mock_schema(num_tables):
             "enabled": True,
             "enabled_patch_settings": {"allowed": True},
         }
-        for n in range(num_tables)
+        for n in range(1, num_tables + 1)
     }
     schema = FivetranSchema(
         key="schema",
@@ -34,22 +37,23 @@ def get_mock_schema(num_tables):
 
 def test_create(client, logged_in_user, bigquery_client, fivetran_client):
 
-    team = logged_in_user.teams.first()
-    project = Project.objects.create(name="Project", team=team)
+    project = ProjectFactory()
 
-    # mock connector with a single table
     fivetran_client.create.return_value = {"fivetran_id": "fid", "schema": "sid"}
     fivetran_client.get_authorize_url.side_effect = (
         lambda c, r: f"http://fivetran.url?redirect_uri={r}"
     )
     fivetran_client.has_completed_sync.return_value = False
-    schema = get_mock_schema(1)
+    schema = get_mock_schema(1)  # connector with a single table
     fivetran_client.get_schemas.return_value = [schema]
     bigquery_client.get_table().num_rows = 10
 
     CONNECTORS_URL = f"/projects/{project.id}/integrations/connectors"
 
-    # create a new connector, configure it and complete the sync
+    # test: create a new connector, authorize it, configure it, start the sync,
+    # view the load screen and finally complete the sync
+    # at each step, verify that the fivetran client is called with correct variables
+    # and mock the return
 
     # view all connectors
     r = client.get(f"{CONNECTORS_URL}/new")
@@ -62,7 +66,6 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
     assertFormRenders(r, [])
 
     r = client.post(f"{CONNECTORS_URL}/new?service=google_analytics", data={})
-
     integration = project.integration_set.first()
     assert integration is not None
     assert integration.kind == Integration.Kind.CONNECTOR
@@ -74,7 +77,10 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
     assertRedirects(r, f"http://fivetran.url?redirect_uri={redirect_uri}")
 
     assert fivetran_client.create.call_count == 1
-    assert fivetran_client.create.call_args.args == ("google_analytics", team.id)
+    assert fivetran_client.create.call_args.args == (
+        "google_analytics",
+        project.team.id,
+    )
     assert connector.fivetran_id == "fid"
     assert connector.schema == "sid"
 
@@ -90,9 +96,8 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
     r = client.get(f"{CONNECTORS_URL}/{connector.id}/authorize")
     assertRedirects(r, f"{INTEGRATION_URL}/configure")
 
-    fivetran_client.get_schemas.reset_mock()
-
     # configure
+    fivetran_client.get_schemas.reset_mock()
     r = client.get(f"{INTEGRATION_URL}/configure")
     assertOK(r)
     # todo: fix this!
@@ -137,27 +142,20 @@ def test_create(client, logged_in_user, bigquery_client, fivetran_client):
 def test_status_on_pending_page(
     client, logged_in_user, bigquery_client, fivetran_client
 ):
-
-    team = logged_in_user.teams.first()
-    project = Project.objects.create(name="Project", team=team)
-    integration = Integration.objects.create(
-        project=project,
-        kind=Integration.Kind.CONNECTOR,
-        name="Google Analytics",
-        state=Integration.State.LOAD,
+    connector = ConnectorFactory(
+        integration__ready=False, integration__state=Integration.State.LOAD
     )
-    connector = Connector.objects.create(
-        integration=integration,
-        service="google_analytics",
-        schema="schema",
-        fivetran_authorized=True,
-    )
+    project = connector.integration.project
 
     schema = get_mock_schema(1)
     fivetran_client.get_schemas.return_value = [schema]
     fivetran_client.has_completed_sync.return_value = False
     bigquery_client.get_table().num_rows = 10
 
+    # test: the status indicator on the pending page will be loading, until the
+    # connector has completed the sync
+
+    # loading
     r = client.get_turbo_frame(
         f"/projects/{project.id}/integrations/pending",
         f"/connectors/{connector.id}/icon",
@@ -167,9 +165,9 @@ def test_status_on_pending_page(
 
     assert fivetran_client.has_completed_sync.call_count == 1
     assert fivetran_client.has_completed_sync.call_args.args == (connector,)
-
     fivetran_client.has_completed_sync.return_value = True
 
+    # done
     r = client.get_turbo_frame(
         f"/projects/{project.id}/integrations/pending",
         f"/connectors/{connector.id}/icon",
@@ -180,38 +178,23 @@ def test_status_on_pending_page(
     assert fivetran_client.has_completed_sync.call_count == 2
     assert fivetran_client.has_completed_sync.call_args.args == (connector,)
 
-    integration.refresh_from_db()
-    assert integration.state == Integration.State.DONE
+    connector.integration.refresh_from_db()
+    assert connector.integration.state == Integration.State.DONE
 
 
 def test_update_tables_in_non_database(client, logged_in_user, fivetran_client):
-    team = logged_in_user.teams.first()
-    project = Project.objects.create(name="Project", team=team)
-    integration = Integration.objects.create(
-        project=project,
-        kind=Integration.Kind.CONNECTOR,
-        name="Google Analytics",
-        state=Integration.State.DONE,
-        ready=True,
-    )
-    Connector.objects.create(
-        integration=integration,
-        service="google_analytics",
-        schema="schema",
-        fivetran_authorized=True,
-    )
+    connector = ConnectorFactory()
+    integration = connector.integration
+    project = integration.project
 
     schema = get_mock_schema(2)
     fivetran_client.get_schemas.return_value = [schema]
 
     for table in schema.tables:
-        Table.objects.create(
-            project=project,
-            integration=integration,
-            source=Table.Source.INTEGRATION,
-            bq_table=table.name_in_destination,
-            bq_dataset="dataset",
-        )
+        IntegrationTableFactory(bq_table=table.name_in_destination)
+
+    # test: if the user removes tables in the configure form, those tables are
+    # deleted
 
     assert integration.table_set.count() == 2
 
@@ -221,18 +204,17 @@ def test_update_tables_in_non_database(client, logged_in_user, fivetran_client):
     assertOK(r)
     assertFormRenders(r, ["name", "dataset_tables", "dataset_schema"])
 
-    schema = get_mock_schema(1)
-    fivetran_client.get_schemas.return_value = [schema]
-
     r = client.post(
         f"{INTEGRATION_URL}/configure", data={"dataset_tables": ["table_1"]}
     )
-    print(r.content)
     assertRedirects(r, f"{INTEGRATION_URL}/load", target_status_code=302)
     assert fivetran_client.update_schemas.call_count == 1
+    assert len(fivetran_client.update_schemas.call_args.args[1][0].tables) == 1
     assert (
         fivetran_client.update_schemas.call_args.args[1][0].tables[0].key == "table_1"
     )
+
+    # slightly hacky - this is working because the code mutates the mock schema object
 
     # remove those tables
     assert integration.table_set.count() == 1
