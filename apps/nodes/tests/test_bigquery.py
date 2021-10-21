@@ -1,7 +1,11 @@
+import textwrap
+from datetime import datetime
+
 import pytest
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.columns.models import Column
+from apps.filters.models import Filter
 from apps.integrations.models import Integration
 from apps.nodes.bigquery import get_query_from_node
 from apps.nodes.models import Node
@@ -136,8 +140,8 @@ def test_aggregation_node(logged_in_user, bigquery_client):
 
 UNION_QUERY = (
     f"SELECT `id`, `athlete`, `birthday`"
-    f"\nFROM (\n  SELECT *\n  FROM `{TABLE_NAME}`\n  UNION ALL"
-    f"\n  SELECT *\n  FROM `{TABLE_NAME}`\n) t0"
+    f"\nFROM (\n{textwrap.indent(INPUT_QUERY, '  ')}\n  UNION ALL"
+    f"\n{textwrap.indent(INPUT_QUERY, '  ')}\n) t0"
 )
 
 
@@ -222,7 +226,7 @@ def test_limit_node(logged_in_user, bigquery_client):
 
     limit_query = (
         f"SELECT `id`, `athlete`, `birthday`"
-        f"\nFROM (\n  SELECT *\n  FROM `{TABLE_NAME}`"
+        f"\nFROM (\n{textwrap.indent(INPUT_QUERY, '  ')}"
         f"\n  LIMIT 100\n) t0"
     )
     assert get_query_from_node(limit_node).compile() == limit_query
@@ -236,4 +240,189 @@ def test_limit_node(logged_in_user, bigquery_client):
 
 
 def test_filter_node(logged_in_user, bigquery_client):
-    assert False
+    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+
+    filter_node = Node.objects.create(
+        kind=Node.Kind.FILTER,
+        workflow=workflow,
+        **DEFAULT_X_Y,
+    )
+    filter_node.parents.add(input_node)
+    filter_node.filters.create(
+        column="athlete",
+        string_predicate=Filter.StringPredicate.NOTNULL,
+        type=Filter.Type.STRING,
+    )
+
+    assert (
+        get_query_from_node(filter_node).compile()
+        == f"{INPUT_QUERY}\nWHERE `athlete` IS NOT NULL"
+    )
+
+    filter_node.filters.create(
+        column="birthday",
+        datetime_predicate=Filter.DatetimePredicate.TODAY,
+        type=Filter.Type.DATE,
+    )
+    assert get_query_from_node(filter_node).compile() == (
+        f"{INPUT_QUERY}\nWHERE (`athlete` IS NOT NULL) AND\n      "
+        f"(`birthday` = DATE '{datetime.now().strftime('%Y-%m-%d')}')"
+    )
+
+
+def test_edit_node(logged_in_user, bigquery_client):
+    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+
+    edit_node = Node.objects.create(
+        kind=Node.Kind.EDIT,
+        workflow=workflow,
+        **DEFAULT_X_Y,
+    )
+    edit_node.parents.add(input_node)
+
+    edit_node.edit_columns.create(column="id", integer_function="isnull")
+    assert get_query_from_node(edit_node).compile() == INPUT_QUERY.replace(
+        "*", "`id` IS NULL AS `id`, `athlete`, `birthday`"
+    )
+
+    edit_node.edit_columns.create(column="athlete", string_function="upper")
+    assert get_query_from_node(edit_node).compile() == INPUT_QUERY.replace(
+        "*", "`id` IS NULL AS `id`, upper(`athlete`) AS `athlete`, `birthday`"
+    )
+
+
+def test_add_node(logged_in_user, bigquery_client):
+    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+
+    add_node = Node.objects.create(
+        kind=Node.Kind.ADD,
+        workflow=workflow,
+        **DEFAULT_X_Y,
+    )
+    add_node.parents.add(input_node)
+
+    add_node.add_columns.create(column="id", integer_function="isnull", label="booly")
+    assert get_query_from_node(add_node).compile() == INPUT_QUERY.replace(
+        "*", "*, `id` IS NULL AS `booly`"
+    )
+
+    add_node.add_columns.create(
+        column="athlete", string_function="upper", label="grand_athlete"
+    )
+    assert get_query_from_node(add_node).compile() == INPUT_QUERY.replace(
+        "*", "*, `id` IS NULL AS `booly`, upper(`athlete`) AS `grand_athlete`"
+    )
+
+
+def test_rename_node(logged_in_user, bigquery_client):
+    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+
+    rename_node = Node.objects.create(
+        kind=Node.Kind.RENAME,
+        workflow=workflow,
+        **DEFAULT_X_Y,
+    )
+    rename_node.parents.add(input_node)
+
+    rename_node.rename_columns.create(column="birthday", new_name="bd")
+    assert get_query_from_node(rename_node).compile() == INPUT_QUERY.replace(
+        "*", "`id`, `athlete`, `birthday` AS `bd`"
+    )
+
+    rename_node.rename_columns.create(column="id", new_name="identity")
+    assert get_query_from_node(rename_node).compile() == INPUT_QUERY.replace(
+        "*", "`id` AS `identity`, `athlete`, `birthday` AS `bd`"
+    )
+
+
+def test_formula_node(logged_in_user, bigquery_client):
+    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+
+    formula_node = Node.objects.create(
+        kind=Node.Kind.FORMULA,
+        workflow=workflow,
+        **DEFAULT_X_Y,
+    )
+    formula_node.parents.add(input_node)
+
+    formula_node.formula_columns.create(formula="upper(athlete)", label="grand_athlete")
+    assert get_query_from_node(formula_node).compile() == INPUT_QUERY.replace(
+        "*", "*, upper(`athlete`) AS `grand_athlete`"
+    )
+
+    formula_node.formula_columns.create(formula="lower(athlete)", label="low_athlete")
+    assert get_query_from_node(formula_node).compile() == INPUT_QUERY.replace(
+        "*",
+        "*, upper(`athlete`) AS `grand_athlete`,\n       lower(`athlete`) AS `low_athlete`",
+    )
+
+
+def test_distinct_node(logged_in_user, bigquery_client):
+    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+    distinct_node = Node.objects.create(
+        kind=Node.Kind.DISTINCT,
+        workflow=workflow,
+        **DEFAULT_X_Y,
+    )
+    distinct_node.parents.add(input_node)
+
+    distinct_node.columns.create(column="athlete")
+
+    assert get_query_from_node(distinct_node).compile() == (
+        INPUT_QUERY.replace(
+            "*",
+            "`athlete`, ANY_VALUE(`id`) AS `id`,\n       ANY_VALUE(`birthday`) AS `birthday`",
+        )
+        + "\nGROUP BY 1"
+    )
+
+    distinct_node.columns.create(column="birthday")
+    assert get_query_from_node(distinct_node).compile() == (
+        INPUT_QUERY.replace(
+            "*",
+            "`athlete`, `birthday`, ANY_VALUE(`id`) AS `id`",
+        )
+        + "\nGROUP BY 1, 2"
+    )
+
+
+def test_window_node(logged_in_user, bigquery_client):
+    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+    window_node = Node.objects.create(
+        kind=Node.Kind.WINDOW,
+        workflow=workflow,
+        **DEFAULT_X_Y,
+    )
+    window_node.parents.add(input_node)
+
+    window = window_node.window_columns.create(
+        column="athlete", function="count", label="window"
+    )
+
+    assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
+        "*", "*, count(`athlete`) OVER () AS `window`"
+    )
+
+    window.group_by = "birthday"
+    window.save()
+    assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
+        "*", "*, count(`athlete`) OVER (PARTITION BY `birthday`) AS `window`"
+    )
+
+    window.order_by = "id"
+    window.ascending = False
+    window.save()
+    assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
+        "*",
+        "*,\n       count(`athlete`) OVER (PARTITION BY `birthday` ORDER BY `id`) AS `window`",
+    )
+
+    window_node.window_columns.create(
+        column="id", function="count", group_by="athlete", label="door"
+    )
+    assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
+        "*",
+        """*,
+       count(`athlete`) OVER (PARTITION BY `birthday` ORDER BY `id`) AS `window`,
+       count(`id`) OVER (PARTITION BY `athlete`) AS `door`""",
+    )
