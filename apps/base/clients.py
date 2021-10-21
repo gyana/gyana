@@ -77,7 +77,7 @@ def get_dataframe(query):
 
 
 @lru_cache
-def fivetran_client():
+def fivetran():
     return FivetranClient()
 
 

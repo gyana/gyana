@@ -96,7 +96,9 @@ PROJECT_APPS = [
     "apps.cnames.apps.CNamesConfig",
 ]
 
-INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS + ['django.forms']
+INSTALLED_APPS = (
+    ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS + ["django.forms"]
+)
 
 MIDDLEWARE = [
     "apps.cnames.middleware.HostMiddleware",
@@ -225,7 +227,7 @@ ACCOUNT_FORMS = {
 
 # User signup configuration: change to "mandatory" to require users to confirm email before signing in.
 # or "optional" to send confirmation emails but not require them
-ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 LOGIN_URL = "account_login"
 
 

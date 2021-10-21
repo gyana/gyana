@@ -2075,7 +2075,7 @@
     "pk": 2,
     "fields": {
       "name": "templates",
-      "everyone": true,
+      "everyone": false,
       "percent": null,
       "testing": false,
       "superusers": true,

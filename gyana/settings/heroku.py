@@ -33,8 +33,6 @@ EXTERNAL_URL = os.environ.get("EXTERNAL_URL")
 
 FF_ALPHA = False
 
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-
 EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
 DEFAULT_FROM_EMAIL = "no-reply@gyana.com"
 ANYMAIL = {"SENDGRID_API_KEY": os.environ.get("SENDGRID_API_KEY")}
