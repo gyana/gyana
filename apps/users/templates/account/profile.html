@@ -35,16 +35,6 @@
     >
       {% csrf_token %}
 
-      <div class="flex mb-8">
-        <label>
-          <p>Picture</p>
-          
-          <div class="flex items-center gap-7">
-            <img class="h-32 w-32" src="{{ user.avatar_url }}">
-          </div>
-        </label>
-      </div>
-
       {% include "django/forms/default_form.html" %}
 
       <div class="flex w-full">
