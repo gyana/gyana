@@ -54,6 +54,7 @@ class SheetFactory(factory.django.DjangoModelFactory):
         model = Sheet
 
     url = "http://sheet.url"
+    cell_range = "store_info!A1:D10"
     integration = factory.SubFactory(
         IntegrationFactory, kind=Integration.Kind.SHEET, name="Store info"
     )

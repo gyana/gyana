@@ -40,11 +40,6 @@ def patches(mocker, settings):
     # the test client does not have host header by default
     mocker.patch("apps.cnames.middleware.HostMiddleware", BlankMiddleware)
 
-    # there is an explicit test for sheet/upload with only strings
-    mocker.patch(
-        "apps.sheets.bigquery.bq_table_schema_is_string_only", return_value=False
-    )
-
     yield
 
 

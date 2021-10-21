@@ -6,10 +6,16 @@ import pytest
 from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
 from apps.integrations.models import Integration
 from django.core import mail
-from pytest_django.asserts import assertContains, assertFormError, assertRedirects
+from pytest_django.asserts import (assertContains, assertFormError,
+                                   assertRedirects)
 
 pytestmark = pytest.mark.django_db
 
+@pytest.fixture(autouse=True)
+def bq_table_schema_is_not_string_only(mocker):
+    mocker.patch(
+        "apps.sheets.bigquery.bq_table_schema_is_string_only", return_value=False
+    )
 
 def test_sheet_create(
     client,
@@ -77,6 +83,7 @@ def test_sheet_create(
     job_config = bigquery.query.call_args.kwargs["job_config"]
     external_config = job_config.table_definitions["sheet_000000001_external"]
     assert external_config.source_uris == [SHEETS_URL]
+    assert external_config.autodetect
     assert external_config.options.range == CELL_RANGE
 
     assertRedirects(r, f"{DETAIL}/load", target_status_code=302)
