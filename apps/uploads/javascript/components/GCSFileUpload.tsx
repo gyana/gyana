@@ -77,7 +77,7 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
                 <label className='button button--success button--outline' htmlFor='gcsfileupload'>
                   Choose a file to upload
                 </label>
-                <input id='gcsfileupload' ref={fileRef} type='file' accept='.csv' hidden />
+                <input data-dropzone-target="input" id='gcsfileupload' ref={fileRef} type='file' accept='.csv' hidden />
               </>
             ) : stage === 'progress' ? (
               <>
