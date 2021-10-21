@@ -22,7 +22,7 @@ def test_invite_new_user_to_team(client, logged_in_user):
         f"/teams/{team.id}/members/", f"/teams/{team.id}/invites/"
     )
     assertOK(r)
-    assertLink(r, f"/teams/{team.id}/invites/new", "New Invite")
+    assertLink(r, f"/teams/{team.id}/invites/new", "New Invite", target_top=True)
 
     r = client.get(f"/teams/{team.id}/invites/new")
     assertOK(r)
