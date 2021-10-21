@@ -37,20 +37,15 @@
   <div class="card card--none">
     {% render_table table %}
 
-    <div class="pad flex flex-col space-y-8">
-      <small>
-        <a href="{% article_url 'overview' 'intro' %}" target="_blank" class="link">
-          <i class="fa fa-fw fa-question mr-2"></i>Getting started
-        </a>
-      </small>
-      <small>
-          <a href="{% article_url 'overview' 'intro' %}" target="_blank" class="link">
-          <i class="fa fa-fw fa-video mr-2"></i>View tutorial video</a>
-      </small>
-    </div>
+    <p class="pad pad--sm small">
+      <a class="link" href="">
+        <i class="fas fa-fw fa-plus"></i>Create a new project
+      </a>
+    </p>
   </div>
   {% else %}
   <div class="table__empty">
+    <i class="fas fa-fw fa-4x fa-sparkles text-orange mb-7"></i>
     <h3 class="mb-3">Create your first project to get started</h3>
     <p>
       We recommend you watch the video below to get an idea of what Gyana can
