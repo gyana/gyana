@@ -5,7 +5,6 @@ from google.api_core.exceptions import NotFound
 
 from apps.base import clients
 from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
-from apps.base.clients import bigquery_client
 from apps.connectors.models import Connector
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
@@ -26,7 +25,7 @@ def complete_connector_sync(connector: Connector):
             try:
                 # fivetran does not always sync the table, so we check that
                 # it exists in our data warehouse
-                bq_obj = bigquery_client().get_table(bq_id)
+                bq_obj = clients.bigquery_client().get_table(bq_id)
             except NotFound:
                 continue
 

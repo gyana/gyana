@@ -6,6 +6,7 @@ from apps.base.tests.asserts import (
     assertSelectorLength,
 )
 from apps.connectors.fivetran.schema import FivetranSchema
+from apps.connectors.periodic import check_syncing_connectors_from_fivetran
 from apps.integrations.models import Integration
 from pytest_django.asserts import assertContains, assertRedirects
 
@@ -104,8 +105,7 @@ def test_create(
     assert fivetran_client.get_schemas.call_count == 1
     assert fivetran_client.get_schemas.call_args.args == (connector,)
 
-    # complete the sync
-    # it will happen immediately as celery is run in eager mode
+    # fivetran initial sync request will happen on post
     r = client.post(f"{INTEGRATION_URL}/configure")
     assertRedirects(r, f"{INTEGRATION_URL}/load")
 
@@ -121,15 +121,24 @@ def test_create(
         r, f"/projects/{project.id}/integrations/pending", "pending integrations"
     )
 
+    # the user leaves the page and periodic job runs in background
     fivetran_client.has_completed_sync.return_value = True
+    check_syncing_connectors_from_fivetran.delay()
 
-    r = client.get(f"{INTEGRATION_URL}/load")
-    assertRedirects(r, f"{INTEGRATION_URL}/done")
+    integration.refresh_from_db()
+    assert integration.state == Integration.State.DONE
+    assert integration.table_set.count() == 1
 
     fivetran_client.has_completed_sync.call_count == 3
     fivetran_client.has_completed_sync.call_args.args == (connector,)
 
-    assert integration.table_set.count() == 1
+    # checking back explicitly will also complete
+    integration.state = Integration.State.LOAD
+    integration.save()
+
+    r = client.get(f"{INTEGRATION_URL}/load")
+    assertRedirects(r, f"{INTEGRATION_URL}/done")
+
     integration.refresh_from_db()
     assert integration.state == Integration.State.DONE
 
