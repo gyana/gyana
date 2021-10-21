@@ -8,6 +8,8 @@ from django.utils.text import slugify
 from google.cloud import bigquery, storage
 from googleapiclient import discovery
 
+from apps.connectors.fivetran.client import FivetranClient
+
 from .bigquery import *
 from .ibis.client import *
 from .ibis.compiler import *
@@ -75,9 +77,7 @@ def get_dataframe(query):
 
 
 @lru_cache
-def fivetran():
-    from apps.connectors.fivetran.client import FivetranClient
-
+def fivetran_client():
     return FivetranClient()
 
 
