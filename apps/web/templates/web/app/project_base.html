@@ -22,20 +22,14 @@
 {% endblock %}
 
 {% block sidebar_content %}
-<li>
-  <a class="sidebar__link" href="{% url 'teams:detail' project.team.id %}">
-    {% if project.team.icon %}<img src="{{ project.team.icon.url }}" />{% else %}<span class="team_logo">{{ project.team.name|slice:1 }}</span>{% endif %}
-    <strong class="h3">
-      {{ project.team.name }}
-    </strong>
-  </a>
-</li>
+<a class="sidebar__link sidebar__link--border" href="{% url 'teams:detail' project.team.id %}">
+  {% if project.team.icon %}<img src="{{ project.team.icon.url }}" />{% else %}<span class="team_logo">{{ project.team.name|slice:1 }}</span>{% endif %}
+  <strong class="h3">
+    {{ project.team.name }}
+  </strong>
+</a>
 
-<li><hr></li>
-
-<li class="sidebar__title">
-  <a class="h3" title="{{ project.name }}" href="{% url 'projects:detail' project.id %}">{{ project.name }}</a>
-</li>
+<a class="sidebar__title" title="{{ project.name }}" href="{% url 'projects:detail' project.id %}">{{ project.name }}</a>
 
 {% with app_name=request.resolver_match.app_name %}
 
