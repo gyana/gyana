@@ -34,6 +34,9 @@ def patches(mocker, settings):
     # all the clients are mocked
     settings.MOCK_REMOTE_OBJECT_DELETION = False
 
+    # explicitly enable in the test
+    settings.ACCOUNT_EMAIL_VERIFICATION = "optional"
+
     # the test client does not have host header by default
     mocker.patch("apps.cnames.middleware.HostMiddleware", BlankMiddleware)
 

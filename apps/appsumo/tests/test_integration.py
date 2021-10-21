@@ -67,6 +67,7 @@ def test_appsumo_landing(client):
 
 def test_code_signup_with_email_verification_and_onboarding(client, settings):
     settings.ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+
     AppsumoCode.objects.create(code="12345678")
 
     assertRedirects(client.get("/appsumo/12345678"), "/appsumo/signup/12345678")
