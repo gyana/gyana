@@ -1,4 +1,4 @@
-from apps.base.clients import bigquery_client
+from apps.base import clients
 from apps.base.errors import error_name_to_snake
 from apps.nodes.bigquery import NodeResultNone, get_query_from_node
 from apps.nodes.models import Node
@@ -10,7 +10,7 @@ from django.utils import timezone
 
 def run_workflow(workflow: Workflow):
     output_nodes = workflow.nodes.filter(kind=Node.Kind.OUTPUT).all()
-    client = bigquery_client()
+    client = clients.bigquery()
 
     for node in output_nodes:
         try:

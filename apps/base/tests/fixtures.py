@@ -15,9 +15,9 @@ def patches(mocker):
 
 
 @pytest.fixture(autouse=True)
-def clients.bigquery_client(mocker):
+def bigquery_client(mocker):
     client = MagicMock()
-    mocker.patch("apps.base.clients.clients.bigquery_client", return_value=client)
+    mocker.patch("apps.base.clients.bigquery", return_value=client)
     ibis_client().client = client
     yield client
 

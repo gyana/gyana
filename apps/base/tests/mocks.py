@@ -1,6 +1,5 @@
 from unittest.mock import MagicMock, Mock
 
-from apps.base.clients import bigquery_client
 from google.cloud.bigquery.schema import SchemaField
 from google.cloud.bigquery.table import Table as BqTable
 

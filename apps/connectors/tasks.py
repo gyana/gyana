@@ -25,7 +25,7 @@ def complete_connector_sync(connector: Connector):
             try:
                 # fivetran does not always sync the table, so we check that
                 # it exists in our data warehouse
-                bq_obj = clients.bigquery_client().get_table(bq_id)
+                bq_obj = clients.bigquery().get_table(bq_id)
             except NotFound:
                 continue
 

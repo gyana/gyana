@@ -1,4 +1,6 @@
-from apps.base.bigquery import bq_table_schema_is_string_only, sanitize_bq_column_name
+from apps.base import clients
+from apps.base.bigquery import (bq_table_schema_is_string_only,
+                                sanitize_bq_column_name)
 from apps.tables.models import Table
 from google.cloud import bigquery
 from google.cloud.bigquery.job.load import LoadJob
@@ -19,9 +21,7 @@ def _create_external_table(upload: Upload, table_id: str, **job_kwargs):
 
 def _load_table(upload: Upload, table: Table, **job_kwargs):
 
-    from apps.base.clients import bigquery_client
-
-    client = bigquery_client()
+    client = clients.bigquery()
 
     job_config = bigquery.LoadJobConfig(
         source_format=bigquery.SourceFormat.CSV,
@@ -45,9 +45,7 @@ def _load_table(upload: Upload, table: Table, **job_kwargs):
 
 def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
 
-    from apps.base.clients import bigquery_client
-
-    client = bigquery_client()
+    client = clients.bigquery()
 
     _load_table(upload, table, autodetect=True, skip_leading_rows=1)
 

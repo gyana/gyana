@@ -6,7 +6,7 @@ from django_tables2.config import RequestConfig as BaseRequestConfig
 from django_tables2.data import TableData
 from django_tables2.templatetags.django_tables2 import QuerystringNode
 
-from apps.base.clients import bigquery_client
+from apps.base import clients
 
 # Monkey patch the querystring templatetag for the pagination links
 # Without this links only lead to the whole document url and add query parameter
@@ -55,7 +55,7 @@ class BigQueryTableData(TableData):
         data = self.data
         if start > 0:
             data = data.limit(stop - start, offset=start)
-        return bigquery_client().get_query_results(
+        return clients.bigquery().get_query_results(
             data.compile(), max_results=self.rows_per_page
         )
 

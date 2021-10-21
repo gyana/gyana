@@ -5,7 +5,8 @@ import heroku3
 import ibis_bigquery
 from django.conf import settings
 from django.utils.text import slugify
-from google.cloud import bigquery, storage
+from google.cloud import bigquery as bigquery_client
+from google.cloud import storage
 from googleapiclient import discovery
 
 from apps.connectors.fivetran.client import FivetranClient
@@ -48,12 +49,12 @@ def drive_v2_client():
 
 
 @lru_cache
-def bigquery_client():
+def bigquery():
     # https://cloud.google.com/bigquery/external-data-drive#python
     credentials, project = get_credentials()
 
     # return bigquery.Client(project=settings.GCP_PROJECT)
-    return bigquery.Client(
+    return bigquery_client.Client(
         credentials=credentials, project=project, location=settings.BIGQUERY_LOCATION
     )
 
@@ -72,7 +73,7 @@ def get_bucket():
 
 
 def get_dataframe(query):
-    client = bigquery_client()
+    client = bigquery()
     return client.query(query).result().to_dataframe(create_bqstorage_client=False)
 
 
