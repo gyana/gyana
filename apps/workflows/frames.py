@@ -13,6 +13,7 @@ class WorkflowOverview(ProjectMixin, TurboFrameTemplateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
+        integrations = self.project.integration_set
         workflows = self.project.workflow_set
         results = (
             Node.objects.filter(workflow__project=self.project, kind=Node.Kind.OUTPUT)
@@ -32,6 +33,10 @@ class WorkflowOverview(ProjectMixin, TurboFrameTemplateView):
             "outdated": outdated,
             "failed": failed,
             "operational": incomplete + outdated + failed == 0,
+        }
+
+        context_data["integrations"] = {
+            "ready": integrations.ready().count()
         }
 
         return context_data
