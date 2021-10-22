@@ -1,4 +1,5 @@
 import googleapiclient
+from apps.base import clients
 from apps.base.forms import BaseModelForm
 from django import forms
 from django.core.exceptions import ValidationError
@@ -15,10 +16,13 @@ class SheetCreateForm(BaseModelForm):
         labels = {"url": "Google Sheets URL"}
 
     def __init__(self, *args, **kwargs):
+        url = kwargs.pop("url")
         self._project = kwargs.pop("project")
         self._created_by = kwargs.pop("created_by")
 
         super().__init__(*args, **kwargs)
+
+        self.fields["url"].initial = url
 
     def clean_url(self):
         url = self.cleaned_data["url"]
@@ -27,9 +31,7 @@ class SheetCreateForm(BaseModelForm):
         if sheet_id == "":
             raise ValidationError("The URL to the sheet seems to be invalid.")
 
-        from apps.base.clients import sheets_client
-
-        client = sheets_client()
+        client = clients.sheets()
         try:
             self._sheet = client.spreadsheets().get(spreadsheetId=sheet_id).execute()
         except googleapiclient.errors.HttpError as e:
@@ -55,9 +57,7 @@ class SheetUpdateForm(forms.ModelForm):
 
         sheet_id = get_sheets_id_from_url(self.instance.url)
 
-        from apps.base.clients import sheets_client
-
-        client = sheets_client()
+        client = clients.sheets()
         try:
             client.spreadsheets().get(
                 spreadsheetId=sheet_id, ranges=cell_range

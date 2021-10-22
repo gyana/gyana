@@ -14,14 +14,14 @@ export default class extends Controller {
 
     window.addEventListener('keydown', (event) => {
       if (event.key == 'Escape') {
-        this.close()
+        this.forceClose()
       }
     })
 
     // Close the modal when clicking outside of the frame
     this.modalTarget.addEventListener('click', (e) => {
       if (!this.turboFrameTarget.contains(e.target)) {
-        this.close()
+        this.forceClose()
       }
     })
   }

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db.models.signals import post_delete
 from django.dispatch.dispatcher import receiver
 
-from apps.base.clients import bigquery_client
+from apps.base import clients
 
 from .models import Table
 
@@ -16,4 +16,4 @@ def delete_bigquery_table(sender, instance, *args, **kwargs):
     if " copy " in instance.bq_id:
         return
 
-    bigquery_client().delete_table(instance.bq_id, not_found_ok=True)
+    clients.bigquery().delete_table(instance.bq_id, not_found_ok=True)

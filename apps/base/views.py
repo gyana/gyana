@@ -1,13 +1,14 @@
-from apps.base.clients import fivetran_client
-from apps.base.cypress_mail import Outbox
-from apps.integrations.tasks import delete_outdated_pending_integrations
-from apps.teams.tasks import update_team_row_limits
 from django.core import mail
 from django.core.management import call_command
 from django.http.response import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
+
+from apps.base import clients
+from apps.base.cypress_mail import Outbox
+from apps.integrations.periodic import delete_outdated_pending_integrations
+from apps.teams.periodic import update_team_row_limits
 
 
 @api_view(["GET"])
@@ -23,8 +24,8 @@ def resetdb(request: Request):
     mail.outbox = Outbox()
     mail.outbox.clear()
 
-    fivetran_client()._schema_cache.clear()
-    fivetran_client()._started = {}
+    clients.fivetran()._schema_cache.clear()
+    clients.fivetran()._started = {}
 
     return JsonResponse({})
 

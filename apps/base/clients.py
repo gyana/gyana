@@ -5,10 +5,11 @@ import heroku3
 import ibis_bigquery
 from django.conf import settings
 from django.utils.text import slugify
-from google.cloud import bigquery, storage
+from google.cloud import bigquery as bigquery_client
+from google.cloud import storage
 from googleapiclient import discovery
 
-from apps.connectors.fivetran import FivetranClient
+from apps.connectors.fivetran.client import FivetranClient
 
 from .bigquery import *
 from .ibis.client import *
@@ -33,14 +34,14 @@ def get_credentials():
 
 
 @lru_cache
-def sheets_client():
+def sheets():
     credentials, _ = get_credentials()
 
     return discovery.build("sheets", "v4", credentials=credentials)
 
 
 @lru_cache
-def drive_v2_client():
+def drive_v2():
     credentials, _ = get_credentials()
 
     # latest v3 client does not return all metadata for file
@@ -48,12 +49,12 @@ def drive_v2_client():
 
 
 @lru_cache
-def bigquery_client():
+def bigquery():
     # https://cloud.google.com/bigquery/external-data-drive#python
     credentials, project = get_credentials()
 
     # return bigquery.Client(project=settings.GCP_PROJECT)
-    return bigquery.Client(
+    return bigquery_client.Client(
         credentials=credentials, project=project, location=settings.BIGQUERY_LOCATION
     )
 
@@ -72,16 +73,16 @@ def get_bucket():
 
 
 def get_dataframe(query):
-    client = bigquery_client()
+    client = bigquery()
     return client.query(query).result().to_dataframe(create_bqstorage_client=False)
 
 
 @lru_cache
-def fivetran_client():
+def fivetran():
     return FivetranClient()
 
 
 @lru_cache
-def heroku_client():
+def heroku():
     heroku_conn = heroku3.from_key(settings.HEROKU_API_KEY)
     return heroku_conn.app(settings.HEROKU_APP)

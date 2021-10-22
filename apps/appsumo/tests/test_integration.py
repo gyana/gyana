@@ -67,6 +67,7 @@ def test_appsumo_landing(client):
 
 def test_code_signup_with_email_verification_and_onboarding(client, settings):
     settings.ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+
     AppsumoCode.objects.create(code="12345678")
 
     assertRedirects(client.get("/appsumo/12345678"), "/appsumo/signup/12345678")
@@ -128,6 +129,7 @@ def test_code_signup_with_email_verification_and_onboarding(client, settings):
     user.refresh_from_db()
     assert user.marketing_allowed
     assert user.company_industry == "agency"
+    assert user.onboarded
 
 
 def test_redeem_code_on_existing_account_and_team(client, logged_in_user):
@@ -175,6 +177,7 @@ def test_stack(client, logged_in_user):
     original_code = AppsumoCode.objects.create(code="00000000", team=team)
     code = AppsumoCode.objects.create(code="12345678")
 
+    # view list of appsumo codes
     r = client.get_turbo_frame(
         f"/teams/{team.id}/account", f"/teams/{team.id}/appsumo/"
     )
@@ -182,6 +185,7 @@ def test_stack(client, logged_in_user):
     assertSelectorLength(r, "table tbody tr", 1)
     assertLink(r, f"/teams/{team.id}/appsumo/stack", "Stack Code")
 
+    # redeem a new code
     r = client.get(f"/teams/{team.id}/appsumo/stack")
     assertOK(r)
     assertFormRenders(r, ["code"])
@@ -191,6 +195,7 @@ def test_stack(client, logged_in_user):
 
     assert list(team.appsumocode_set.all()) == [code, original_code]
 
+    # view updated list of codes
     r = client.get_turbo_frame(
         f"/teams/{team.id}/account", f"/teams/{team.id}/appsumo/"
     )
@@ -203,12 +208,14 @@ def test_link_to_review(client, logged_in_user):
     team = logged_in_user.teams.first()
     AppsumoCode.objects.create(code="00000000", team=team)
 
+    # there is no link
     r = client.get_turbo_frame(
         f"/teams/{team.id}/account", f"/teams/{team.id}/appsumo/"
     )
     assertOK(r)
     assertLink(r, f"/teams/{team.id}/appsumo/review", "Link to your review")
 
+    # create
     r = client.get(f"/teams/{team.id}/appsumo/review")
     assertOK(r)
     assertFormRenders(r, ["review_link"])
@@ -216,6 +223,7 @@ def test_link_to_review(client, logged_in_user):
     r = client.post(f"/teams/{team.id}/appsumo/review", data={"review_link": link})
     assertRedirects(r, f"/teams/{team.id}/account", status_code=303)
 
+    # link created
     r = client.get_turbo_frame(
         f"/teams/{team.id}/account", f"/teams/{team.id}/appsumo/"
     )

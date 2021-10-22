@@ -3,7 +3,8 @@ import logging
 from functools import wraps
 
 import ibis
-from apps.base.clients import bigquery_client, ibis_client
+from apps.base import clients
+from apps.base.clients import ibis_client
 from apps.base.errors import error_name_to_snake
 from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
@@ -70,7 +71,7 @@ def _format_literal(value, type_):
 
 def _create_or_replace_intermediate_table(table, node, query):
     """Creates a new intermediate table or replaces an existing one"""
-    client = bigquery_client()
+    client = clients.bigquery()
 
     with transaction.atomic():
         table, _ = Table.objects.get_or_create(
@@ -241,7 +242,7 @@ def get_distinct_query(node, query):
 
 @use_intermediate_table
 def get_pivot_query(node, parent):
-    client = bigquery_client()
+    client = clients.bigquery()
     column_type = parent[node.pivot_column].type()
 
     # the new column names consist of the values inside the selected column

@@ -1,7 +1,7 @@
 name: Pytest Unit Tests
 
 concurrency: 
-  group: ${{ github.ref }}
+  group: pytest-${{ github.ref }}
   cancel-in-progress: true
 
 on:
@@ -39,5 +39,15 @@ jobs:
     - uses: Gr1N/setup-poetry@v7
     - name: Install dependencies with poetry
       run: poetry install
+      # required for collectstatic
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+    - name: Install Node Dependencies
+      run: yarn
+    - name: Build assets
+      run: yarn build
+    - name: Collect static
+      run: poetry run just collectstatic
     - name: Pytest run
       run: poetry run just test

@@ -4,20 +4,21 @@ from apps.base.tests.asserts import (
     assertLink,
     assertNotFound,
     assertOK,
+    assertSelectorLength,
     assertSelectorText,
 )
-from apps.projects.models import Project
 from apps.teams.models import Team
 from apps.users.models import CustomUser
-from pytest_django.asserts import assertRedirects
+from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
 
 
-def test_team_crudl(client, logged_in_user, bigquery_client, settings):
-    settings.MOCK_REMOTE_OBJECT_DELETION = False
-    bigquery_client.reset_mock()
+def test_team_crudl(client, logged_in_user, bigquery):
+
     team = logged_in_user.teams.first()
+    # the fixture creates a new team
+    bigquery.reset_mock()
 
     # redirect
     assertRedirects(client.get("/"), f"/teams/{team.id}")
@@ -26,7 +27,6 @@ def test_team_crudl(client, logged_in_user, bigquery_client, settings):
     assertLink(r, f"/teams/new", "New Team")
 
     # create
-
     r = client.get("/teams/new")
     assertOK(r)
     assertFormRenders(r, ["name"])
@@ -36,10 +36,8 @@ def test_team_crudl(client, logged_in_user, bigquery_client, settings):
     new_team = logged_in_user.teams.first()
     assertRedirects(r, f"/teams/{new_team.id}/plan", status_code=303)
 
-    assert bigquery_client.create_dataset.call_count == 1
-    assert bigquery_client.create_dataset.call_args.args == (
-        new_team.tables_dataset_id,
-    )
+    assert bigquery.create_dataset.call_count == 1
+    assert bigquery.create_dataset.call_args.args == (new_team.tables_dataset_id,)
 
     # choose plan
     r = client.get(f"/teams/{new_team.id}/plan")
@@ -56,6 +54,9 @@ def test_team_crudl(client, logged_in_user, bigquery_client, settings):
     assertRedirects(client.get("/"), f"/teams/{new_team.id}")
     client.get(f"/teams/{team.id}")
     assertRedirects(client.get("/"), f"/teams/{team.id}")
+
+    # switcher
+    assertLink(r, f"/teams/{team.id}", "Vayu")
 
     # list -> NA
 
@@ -77,10 +78,8 @@ def test_team_crudl(client, logged_in_user, bigquery_client, settings):
     r = client.delete(f"/teams/{new_team.id}/delete")
     assertRedirects(r, "/", target_status_code=302)
 
-    assert bigquery_client.delete_dataset.call_count == 1
-    assert bigquery_client.delete_dataset.call_args.args == (
-        new_team.tables_dataset_id,
-    )
+    assert bigquery.delete_dataset.call_count == 1
+    assert bigquery.delete_dataset.call_args.args == (new_team.tables_dataset_id,)
 
     assert logged_in_user.teams.count() == 1
 
@@ -97,35 +96,34 @@ def test_member_crudl(client, logged_in_user):
     # create -> invites
     # read -> NA
 
+    MEMBERSHIP_URL = f"/teams/{team.id}/members/{membership.id}"
+
     # list
     r = client.get(f"/teams/{team.id}")
     assertLink(r, f"/teams/{team.id}/members/", "Members")
 
     r = client.get(f"/teams/{team.id}/members/")
     assertOK(r)
-    assertLink(
-        r, f"/teams/{team.id}/members/{membership.id}/update", "member@gyana.com"
-    )
+    assertSelectorLength(r, "table tbody tr", 2)
+    assertLink(r, f"{MEMBERSHIP_URL}/update", "member@gyana.com")
 
     # update
-    r = client.get(f"/teams/{team.id}/members/{membership.id}/update")
+    r = client.get(f"{MEMBERSHIP_URL}/update")
     assertOK(r)
     assertFormRenders(r, ["role"])
-    assertLink(r, f"/teams/{team.id}/members/{membership.id}/delete", "Delete")
+    assertLink(r, f"{MEMBERSHIP_URL}/delete", "Delete")
 
-    r = client.post(
-        f"/teams/{team.id}/members/{membership.id}/update", data={"role": "member"}
-    )
+    r = client.post(f"{MEMBERSHIP_URL}/update", data={"role": "member"})
     assertRedirects(r, f"/teams/{team.id}/members/", status_code=303)
     membership.refresh_from_db()
     assert membership.role == "member"
 
     # delete
-    r = client.get(f"/teams/{team.id}/members/{membership.id}/delete")
+    r = client.get(f"{MEMBERSHIP_URL}/delete")
     assertOK(r)
     assertFormRenders(r)
 
-    r = client.delete(f"/teams/{team.id}/members/{membership.id}/delete")
+    r = client.delete(f"{MEMBERSHIP_URL}/delete")
     assertRedirects(r, f"/teams/{team.id}/members/")
 
     assert team.members.count() == 1
@@ -149,9 +147,9 @@ def test_member_role_and_check_restricted_permissions(client, logged_in_user):
     assertNotFound(client.get(f"/teams/{team.id}/update"))
 
 
-def test_account_limit_warning_and_disabled(client):
+def test_account_limit_warning_and_disabled(client, project_factory):
     team = Team.objects.create(name="team_team", override_row_limit=10)
-    project = Project.objects.create(name="Project", team=team)
+    project = project_factory(team=team)
     user = CustomUser.objects.create_user("test", onboarded=True)
     team.members.add(user, through_defaults={"role": "admin"})
     client.force_login(user)
@@ -168,9 +166,17 @@ def test_account_limit_warning_and_disabled(client):
     assert team.warning
     assert team.enabled
 
+    r = client.get(f"/teams/{team.id}")
+    assertOK(r)
+    assertContains(r, "You're exceeding your row count limit.")
+
     team.row_count = 15
     team.save()
     assert not team.enabled
+
+    r = client.get(f"/teams/{team.id}")
+    assertOK(r)
+    assertContains(r, "You've exceeded your row count limit by over 20%")
 
     assertNotFound(client.get(f"/projects/{project.id}/integrations/connectors/new"))
     assertNotFound(client.get(f"/projects/{project.id}/integrations/sheets/new"))

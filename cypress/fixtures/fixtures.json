@@ -9,7 +9,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-09-10T15:58:34.046Z",
+      "last_login": "2021-10-22T00:46:20.772Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -53,54 +53,6 @@
     }
   },
   {
-    "model": "users.customuser",
-    "pk": 3,
-    "fields": {
-      "password": "pbkdf2_sha256$260000$GxH7SNPn0rTyr5oBBwd2th$LoeRmOzRhgkQ2t9Y+SBV6YO6sYFb/b5+vsfZ/KkOuyY=",
-      "last_login": "2021-07-27T14:46:12.276Z",
-      "is_superuser": false,
-      "username": "alone",
-      "first_name": "",
-      "last_name": "",
-      "email": "alone@gyana.com",
-      "is_staff": false,
-      "is_active": true,
-      "date_joined": "2021-07-27T14:46:12.143Z",
-      "avatar": "",
-      "onboarded": true,
-      "company_industry": null,
-      "company_role": null,
-      "company_size": null,
-      "marketing_allowed": false,
-      "groups": [],
-      "user_permissions": []
-    }
-  },
-  {
-    "model": "users.customuser",
-    "pk": 4,
-    "fields": {
-      "password": "pbkdf2_sha256$260000$mzRk8DimFweyuPdaz1ZpOr$Wm/yfXGSKaJwG9zGEsLxLlWhsn8x0PRZCEWIrd7d8po=",
-      "last_login": "2021-07-29T09:34:08.397Z",
-      "is_superuser": false,
-      "username": "member",
-      "first_name": "",
-      "last_name": "",
-      "email": "member@gyana.com",
-      "is_staff": false,
-      "is_active": true,
-      "date_joined": "2021-07-29T09:34:08.258Z",
-      "avatar": "",
-      "onboarded": true,
-      "company_industry": null,
-      "company_role": null,
-      "company_size": null,
-      "marketing_allowed": false,
-      "groups": [],
-      "user_permissions": []
-    }
-  },
-  {
     "model": "teams.team",
     "pk": 1,
     "fields": {
@@ -111,45 +63,6 @@
       "override_row_limit": null,
       "row_count": 0,
       "row_count_calculated": null
-    }
-  },
-  {
-    "model": "teams.team",
-    "pk": 2,
-    "fields": {
-      "created": "2021-07-26T14:53:37.577Z",
-      "updated": "2021-07-26T14:53:37.587Z",
-      "icon": "",
-      "name": "Rows 15",
-      "override_row_limit": 15,
-      "row_count": 15,
-      "row_count_calculated": null
-    }
-  },
-  {
-    "model": "teams.team",
-    "pk": 3,
-    "fields": {
-      "created": "2021-08-20T13:49:01.945Z",
-      "updated": "2021-08-20T13:49:17.382Z",
-      "icon": "",
-      "name": "Warning",
-      "override_row_limit": 13,
-      "row_count": 0,
-      "row_count_calculated": null
-    }
-  },
-  {
-    "model": "teams.team",
-    "pk": 4,
-    "fields": {
-      "created": "2021-08-20T13:49:11.978Z",
-      "updated": "2021-08-20T15:03:42.830Z",
-      "icon": "",
-      "name": "Disabled",
-      "override_row_limit": 10,
-      "row_count": 15,
-      "row_count_calculated": "2021-08-20T15:03:42.830Z"
     }
   },
   {
@@ -178,50 +91,6 @@
   },
   {
     "model": "teams.membership",
-    "pk": 2,
-    "fields": {
-      "created": "2021-07-29T09:34:08.392Z",
-      "updated": "2021-07-29T09:34:08.392Z",
-      "team": 1,
-      "user": 4,
-      "role": "member"
-    }
-  },
-  {
-    "model": "teams.membership",
-    "pk": 3,
-    "fields": {
-      "created": "2021-07-29T09:34:08.392Z",
-      "updated": "2021-07-29T09:34:08.392Z",
-      "team": 2,
-      "user": 1,
-      "role": "admin"
-    }
-  },
-  {
-    "model": "teams.membership",
-    "pk": 4,
-    "fields": {
-      "created": "2021-08-20T13:49:01.950Z",
-      "updated": "2021-08-20T13:49:01.950Z",
-      "team": 3,
-      "user": 1,
-      "role": "admin"
-    }
-  },
-  {
-    "model": "teams.membership",
-    "pk": 5,
-    "fields": {
-      "created": "2021-08-20T13:49:11.983Z",
-      "updated": "2021-08-20T13:49:11.983Z",
-      "team": 4,
-      "user": 1,
-      "role": "admin"
-    }
-  },
-  {
-    "model": "teams.membership",
     "pk": 6,
     "fields": {
       "created": "2021-08-30T18:56:05.352Z",
@@ -241,7 +110,8 @@
       "team": 1,
       "ready": true,
       "access": "everyone",
-      "description": ""
+      "description": "",
+      "cname": null
     }
   },
   {
@@ -254,46 +124,8 @@
       "team": 1,
       "ready": true,
       "access": "everyone",
-      "description": ""
-    }
-  },
-  {
-    "model": "projects.project",
-    "pk": 3,
-    "fields": {
-      "created": "2021-08-10T07:28:33.668Z",
-      "updated": "2021-08-10T07:28:33.669Z",
-      "name": "Rows 25",
-      "team": 2,
-      "ready": true,
-      "access": "everyone",
-      "description": ""
-    }
-  },
-  {
-    "model": "projects.project",
-    "pk": 4,
-    "fields": {
-      "created": "2021-08-20T13:49:25.665Z",
-      "updated": "2021-08-20T13:49:25.665Z",
-      "name": "Warning",
-      "team": 3,
-      "ready": true,
-      "access": "everyone",
-      "description": ""
-    }
-  },
-  {
-    "model": "projects.project",
-    "pk": 5,
-    "fields": {
-      "created": "2021-08-20T13:50:01.619Z",
-      "updated": "2021-08-20T13:50:01.619Z",
-      "name": "Disabled",
-      "team": 4,
-      "ready": true,
-      "access": "everyone",
-      "description": ""
+      "description": "",
+      "cname": null
     }
   },
   {
@@ -306,7 +138,8 @@
       "team": 5,
       "ready": true,
       "access": "everyone",
-      "description": "Two widgets for Google Analytics in a Cypress test."
+      "description": "Two widgets for Google Analytics in a Cypress test.",
+      "cname": null
     }
   },
   {
@@ -441,36 +274,6 @@
       "state": "update",
       "ready": false,
       "created_ready": "2021-08-10T12:54:44.272Z",
-      "created_by": 1
-    }
-  },
-  {
-    "model": "integrations.integration",
-    "pk": 10,
-    "fields": {
-      "created": "2021-08-20T13:49:46.715Z",
-      "updated": "2021-08-20T13:49:53.977Z",
-      "project": 4,
-      "kind": "upload",
-      "name": "store_info",
-      "state": "done",
-      "ready": true,
-      "created_ready": "2021-08-20T13:49:53.975Z",
-      "created_by": 1
-    }
-  },
-  {
-    "model": "integrations.integration",
-    "pk": 12,
-    "fields": {
-      "created": "2021-08-20T15:03:23.420Z",
-      "updated": "2021-08-20T15:03:45.479Z",
-      "project": 5,
-      "kind": "sheet",
-      "name": "Store info sheet",
-      "state": "done",
-      "ready": true,
-      "created_ready": "2021-08-20T15:03:45.477Z",
       "created_by": 1
     }
   },
@@ -617,6 +420,7 @@
       "integration": 1,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 15,
       "data_updated": "2021-07-27T13:17:27.679Z"
     }
@@ -634,6 +438,7 @@
       "integration": 2,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 10,
       "data_updated": "2021-08-08T20:28:27.912Z"
     }
@@ -651,6 +456,7 @@
       "integration": 3,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 15,
       "data_updated": "2021-08-10T07:30:05.119Z"
     }
@@ -668,6 +474,7 @@
       "integration": 4,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 15,
       "data_updated": "2021-08-10T07:32:08.896Z"
     }
@@ -685,42 +492,9 @@
       "integration": 5,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 2,
       "data_updated": "2021-08-11T14:07:44.801Z"
-    }
-  },
-  {
-    "model": "tables.table",
-    "pk": 6,
-    "fields": {
-      "created": "2021-08-20T13:49:49.049Z",
-      "updated": "2021-08-22T00:33:59.049Z",
-      "bq_table": "upload_000000005",
-      "bq_dataset": "cypress_team_000003_tables",
-      "project": 4,
-      "source": "integration",
-      "integration": 10,
-      "workflow_node": null,
-      "intermediate_node": null,
-      "num_rows": 15,
-      "data_updated": "2021-08-20T13:49:51.358Z"
-    }
-  },
-  {
-    "model": "tables.table",
-    "pk": 8,
-    "fields": {
-      "created": "2021-08-20T15:03:25.867Z",
-      "updated": "2021-08-22T00:33:58.513Z",
-      "bq_table": "sheet_000000002",
-      "bq_dataset": "cypress_team_000004_tables",
-      "project": 5,
-      "source": "integration",
-      "integration": 12,
-      "workflow_node": null,
-      "intermediate_node": null,
-      "num_rows": 15,
-      "data_updated": "2021-08-20T15:03:30.520Z"
     }
   },
   {
@@ -736,6 +510,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 204,
       "data_updated": "2021-08-30T19:29:18.765Z"
     }
@@ -753,6 +528,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 4333,
       "data_updated": "2021-08-30T19:29:18.883Z"
     }
@@ -770,6 +546,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 423,
       "data_updated": "2021-08-30T19:29:18.996Z"
     }
@@ -787,6 +564,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 204,
       "data_updated": "2021-08-30T19:29:19.102Z"
     }
@@ -804,6 +582,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 2415,
       "data_updated": "2021-08-30T19:29:19.199Z"
     }
@@ -821,6 +600,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 351,
       "data_updated": "2021-08-30T19:29:19.317Z"
     }
@@ -838,6 +618,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 907,
       "data_updated": "2021-08-30T19:29:19.414Z"
     }
@@ -855,6 +636,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 257,
       "data_updated": "2021-08-30T19:29:19.513Z"
     }
@@ -872,6 +654,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 589,
       "data_updated": "2021-08-30T19:29:19.579Z"
     }
@@ -889,6 +672,7 @@
       "integration": 13,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 3245,
       "data_updated": "2021-08-30T19:29:19.676Z"
     }
@@ -906,6 +690,7 @@
       "integration": 14,
       "workflow_node": null,
       "intermediate_node": null,
+      "cache_node": null,
       "num_rows": 15,
       "data_updated": "2021-08-31T00:58:23.746Z"
     }
@@ -939,6 +724,7 @@
       "data_updated": "2021-08-10T07:35:39.873Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": 3,
       "select_mode": "keep",
       "join_how": "inner",
@@ -955,6 +741,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": []
     }
   },
@@ -972,6 +762,7 @@
       "data_updated": "2021-08-10T07:32:53.404Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -988,6 +779,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1005,6 +800,7 @@
       "data_updated": "2021-08-10T07:33:00.907Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1021,6 +817,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1038,6 +838,7 @@
       "data_updated": "2021-08-10T07:33:11.851Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1054,6 +855,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1071,6 +876,7 @@
       "data_updated": "2021-08-10T07:33:28.495Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1087,6 +893,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1104,6 +914,7 @@
       "data_updated": "2021-08-10T07:33:32.039Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1120,6 +931,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1137,6 +952,7 @@
       "data_updated": "2021-08-10T07:33:38.804Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1153,6 +969,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1170,6 +990,7 @@
       "data_updated": "2021-08-10T07:33:48.302Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1186,6 +1007,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1203,6 +1028,7 @@
       "data_updated": "2021-08-10T07:33:58.371Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1219,6 +1045,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1236,6 +1066,7 @@
       "data_updated": "2021-08-10T07:34:34.622Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1252,6 +1083,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1269,6 +1104,7 @@
       "data_updated": "2021-08-10T07:34:44.737Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1285,6 +1121,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1302,6 +1142,7 @@
       "data_updated": "2021-08-10T07:34:53.033Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1318,6 +1159,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1335,6 +1180,7 @@
       "data_updated": "2021-08-10T07:34:59.051Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1351,6 +1197,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1368,6 +1218,7 @@
       "data_updated": "2021-08-10T07:35:05.055Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1384,6 +1235,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1401,6 +1256,7 @@
       "data_updated": null,
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1417,6 +1273,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": []
     }
   },
@@ -1434,6 +1294,7 @@
       "data_updated": "2021-08-10T07:35:44.789Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": 4,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1450,6 +1311,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": []
     }
   },
@@ -1467,6 +1332,7 @@
       "data_updated": "2021-08-10T07:36:58.310Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1483,6 +1349,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1, 17]
     }
   },
@@ -1500,6 +1370,7 @@
       "data_updated": null,
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1516,6 +1387,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": []
     }
   },
@@ -1533,6 +1408,7 @@
       "data_updated": "2021-08-11T09:10:46.114Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1549,6 +1425,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1]
     }
   },
@@ -1566,6 +1446,7 @@
       "data_updated": "2021-08-11T09:14:41.225Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1582,6 +1463,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1, 20]
     }
   },
@@ -1599,6 +1484,7 @@
       "data_updated": "2021-08-11T12:41:29.066Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1615,6 +1501,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1, 20]
     }
   },
@@ -1632,6 +1522,7 @@
       "data_updated": "2021-08-11T14:08:10.382Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": 5,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1648,6 +1539,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": []
     }
   },
@@ -1665,6 +1560,7 @@
       "data_updated": "2021-08-11T14:08:13.415Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1681,6 +1577,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [23]
     }
   },
@@ -1698,6 +1598,7 @@
       "data_updated": null,
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1714,6 +1615,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": []
     }
   },
@@ -1731,6 +1636,7 @@
       "data_updated": "2021-09-10T15:59:15.605Z",
       "error": null,
       "intermediate_table": null,
+      "cache_table": null,
       "input_table": null,
       "select_mode": "keep",
       "join_how": "inner",
@@ -1747,6 +1653,10 @@
       "unpivot_value": null,
       "unpivot_column": null,
       "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
       "parents": [1, 20]
     }
   },
@@ -1840,19 +1750,6 @@
   },
   {
     "model": "uploads.upload",
-    "pk": 5,
-    "fields": {
-      "created": "2021-08-20T13:49:46.717Z",
-      "updated": "2021-08-20T13:49:51.511Z",
-      "integration": 10,
-      "file_gcs_path": "cypress/integrations/store_info-162946738611453.csv",
-      "field_delimiter": "comma",
-      "sync_task_id": "f46923d0-18d0-4eb7-92e4-d8755804a816",
-      "sync_started": "2021-08-20T13:49:48.761Z"
-    }
-  },
-  {
-    "model": "uploads.upload",
     "pk": 6,
     "fields": {
       "created": "2021-08-31T00:58:18.465Z",
@@ -1879,20 +1776,6 @@
     }
   },
   {
-    "model": "sheets.sheet",
-    "pk": 2,
-    "fields": {
-      "created": "2021-08-20T15:03:23.422Z",
-      "updated": "2021-08-20T15:03:30.656Z",
-      "integration": 12,
-      "url": "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit#gid=1294364732",
-      "cell_range": null,
-      "drive_file_last_modified": "2021-08-08T20:31:38.817Z",
-      "sync_task_id": "89b7453a-2d30-4fc1-b7d7-eeb24a789d52",
-      "sync_started": "2021-08-20T15:03:25.556Z"
-    }
-  },
-  {
     "model": "connectors.connector",
     "pk": 1,
     "fields": {
@@ -1904,6 +1787,7 @@
       "schema": "team_1_heroku_postgres_0e684903d1044f7280bb061fd3c179a4",
       "fivetran_authorized": true,
       "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
+      "fivetran_sync_started": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1920,6 +1804,7 @@
       "schema": "team_1_facebook_ads_563a564c28cc469dba73faf6dea0799e",
       "fivetran_authorized": true,
       "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
+      "fivetran_sync_started": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1936,6 +1821,7 @@
       "schema": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
       "fivetran_authorized": true,
       "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
+      "fivetran_sync_started": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1952,6 +1838,7 @@
       "schema": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
       "fivetran_authorized": true,
       "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
+      "fivetran_sync_started": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1968,6 +1855,7 @@
       "schema": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "fivetran_authorized": true,
       "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
+      "fivetran_sync_started": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -2007,7 +1895,7 @@
       "created": "2021-08-23T23:00:00Z",
       "updated": "2021-08-23T23:00:00Z",
       "code": "QWERTYUI",
-      "team": 2,
+      "team": null,
       "deal": "usd_179",
       "redeemed": "2021-08-23T23:00:00Z",
       "refunded_before": null,
@@ -2026,17 +1914,7 @@
   {
     "model": "account.emailaddress",
     "pk": 1,
-    "fields": { "user": 1, "email": "test@gyana.com", "verified": false, "primary": true }
-  },
-  {
-    "model": "account.emailaddress",
-    "pk": 2,
-    "fields": { "user": 3, "email": "alone@gyana.com", "verified": false, "primary": true }
-  },
-  {
-    "model": "account.emailaddress",
-    "pk": 3,
-    "fields": { "user": 4, "email": "member@gyana.com", "verified": false, "primary": true }
+    "fields": { "user": 1, "email": "test@gyana.com", "verified": true, "primary": true }
   },
   {
     "model": "socialaccount.socialapp",
@@ -2075,7 +1953,7 @@
     "pk": 2,
     "fields": {
       "name": "templates",
-      "everyone": true,
+      "everyone": false,
       "percent": null,
       "testing": false,
       "superusers": true,

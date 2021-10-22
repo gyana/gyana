@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from apps.base.clients import bigquery_client
+from apps.base import clients
 from apps.base.table_data import get_table
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
@@ -17,7 +17,7 @@ class MaxRowsExceeded(Exception):
 
 
 def chart_to_output(widget: Widget) -> Dict[str, Any]:
-    result = bigquery_client().get_query_results(
+    result = clients.bigquery().get_query_results(
         get_query_from_widget(widget).compile(), max_results=CHART_MAX_ROWS
     )
     if result.total_rows > CHART_MAX_ROWS:

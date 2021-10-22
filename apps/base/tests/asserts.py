@@ -6,14 +6,20 @@ pytestmark = pytest.mark.django_db
 
 def assertLink(response, url, text=None, title=None):
     soup = BeautifulSoup(response.content)
-    matches = soup.select(f'a[href="{url}"]')
+    original_matches = soup.select("a")
+
+    matches = [m for m in original_matches if m.get("href") == url]
+
     if text is not None:
         matches = [m for m in matches if text in m.text]
     elif title is not None:
         matches = [m for m in matches if title in m["title"]]
     else:
-        assert False
-    assert len(matches) == 1
+        assert False, 'You need to specify "text" or "title"'
+
+    error_list = [m.get("href") for m in original_matches]
+
+    assert len(matches) == 1, f"Possible matches are {error_list}"
 
 
 def assertSelectorLength(response, selector, length):

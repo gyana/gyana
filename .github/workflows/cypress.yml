@@ -1,7 +1,7 @@
 name: Cypress CI
 
 concurrency: 
-  group: ${{ github.ref }}
+  group: cypress-${{ github.ref }}
   cancel-in-progress: true
   
 on:

@@ -63,7 +63,7 @@ def test_reset_password(client):
     assert r.status_code == 302
     set_password_url = r.url
     assert re.match(
-        r"^\/password\/reset\/key\/[a-zA-Z0-9]-set-password\/$", set_password_url
+        r"^\/password\/reset\/key\/[a-zA-Z0-9]+-set-password\/$", set_password_url
     )
 
     r = client.get(set_password_url)

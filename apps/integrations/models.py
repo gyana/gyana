@@ -2,7 +2,8 @@ from datetime import timedelta
 from itertools import chain
 
 from apps.base.models import BaseModel
-from apps.connectors.config import get_services
+from apps.base.table import ICONS
+from apps.connectors.fivetran.config import get_services
 from apps.dashboards.models import Dashboard
 from apps.projects.models import Project
 from apps.users.models import CustomUser
@@ -83,8 +84,34 @@ class Integration(CloneMixin, BaseModel):
     _clone_m2o_or_o2m_fields = ["connector_set", "table_set"]
     _clone_o2o_fields = ["sheet", "upload"]
 
+    STATE_TO_ICON = {
+        State.UPDATE: ICONS["warning"],
+        State.LOAD: ICONS["loading"],
+        State.ERROR: ICONS["error"],
+        State.DONE: ICONS["warning"],
+    }
+
+    STATE_TO_MESSAGE = {
+        State.UPDATE: "Incomplete setup",
+        State.LOAD: "Importing",
+        State.ERROR: "Error",
+        State.DONE: "Ready to review",
+    }
+
     def __str__(self):
         return self.name
+
+    @property
+    def state_icon(self):
+        if self.ready:
+            return ICONS["success"]
+        return self.STATE_TO_ICON[self.state]
+
+    @property
+    def state_text(self):
+        if self.ready:
+            return "Success"
+        return self.STATE_TO_MESSAGE[self.state]
 
     @property
     def source_obj(self):

@@ -39,11 +39,6 @@ describe('uploads', () => {
 
     // cannot edit upload setup
     cy.contains('Setup').should('not.exist')
-
-    // check email sent
-    cy.outbox()
-      .then((outbox) => outbox.count)
-      .should('eq', 1)
   })
   it('streamed uploads with chunks', () => {
     cy.visit('/projects/1/integrations/uploads/new', {
@@ -95,30 +90,5 @@ describe('uploads', () => {
     cy.get('input[type=file]').attachFile('store_info.csv')
     cy.contains('Errors occurred when uploading your file')
     cy.contains('Server error, try again later')
-  })
-  it('runtime failures', () => {
-    cy.visit('/projects/1/integrations/uploads/new')
-
-    // bigquery does not allow quoted newlines unless explicitly set
-    cy.get('input[type=file]').attachFile('store_info_quoted_newlines.csv')
-    cy.get('button[type=submit]').click()
-    cy.contains(
-      'Error while reading data, error message: Error detected while parsing row starting at position: 52. Error: Missing close double quote (") character.',
-      { timeout: BIGQUERY_TIMEOUT }
-    )
-  })
-  it('all string', () => {
-    cy.contains('New Integration').click()
-    cy.contains('Upload CSV').click()
-
-    cy.get('input[type=file]').attachFile('store_info_all_string.csv')
-    cy.get('button[type=submit]').click()
-    // needs longer to do 3x imports
-    cy.contains('Upload successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
-
-    // import has inferred correct column headings
-    cy.contains('preview').click()
-    cy.contains('Location_name')
-    cy.contains('string_field_0').should('not.exist')
   })
 })

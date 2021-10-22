@@ -2,7 +2,7 @@ import os
 
 import requests
 import yaml
-from apps.connectors.config import METADATA
+from apps.connectors.fivetran.config import METADATA
 from django.conf import settings
 from django.core.management.base import BaseCommand
 

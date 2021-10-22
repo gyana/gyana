@@ -1,15 +1,11 @@
 from django.conf import settings
 from django.urls import reverse
 
-from apps.base.clients import fivetran_client
+from apps.base import clients
 from apps.base.frames import TurboFrameDetailView
-from apps.integrations.tables import (
-    INTEGRATION_STATE_TO_ICON,
-    INTEGRATION_STATE_TO_MESSAGE,
-)
 
 from .models import Connector
-from .tasks import complete_connector_sync, update_fivetran_succeeded_at
+from .tasks import complete_connector_sync
 
 
 class ConnectorIcon(TurboFrameDetailView):
@@ -20,13 +16,12 @@ class ConnectorIcon(TurboFrameDetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        if fivetran_client().has_completed_sync(self.object):
-            complete_connector_sync(self.object, send_mail=False)
 
-        context_data["icon"] = INTEGRATION_STATE_TO_ICON[self.object.integration.state]
-        context_data["text"] = INTEGRATION_STATE_TO_MESSAGE[
-            self.object.integration.state
-        ]
+        if clients.fivetran().has_completed_sync(self.object):
+            complete_connector_sync(self.object)
+
+        context_data["icon"] = self.object.integration.state_icon
+        context_data["text"] = self.object.integration.state_text
 
         return context_data
 
@@ -38,10 +33,13 @@ class ConnectorStatus(TurboFrameDetailView):
     turbo_frame_dom_id = "connectors:status"
 
     def get_context_data(self, **kwargs):
+
         context_data = super().get_context_data(**kwargs)
-        client = fivetran_client()
-        data = client.get(self.object)
-        update_fivetran_succeeded_at(self.object, data["succeeded_at"])
+        data = clients.fivetran().get(self.object)
+        succeeded_at = data.get("succeeded_at")
+        if succeeded_at is not None:
+            self.object.update_fivetran_succeeded_at(data["succeeded_at"])
+
         # {
         #     "setup_state": "broken" | "incomplete" | "connected",
         #     "tasks": [{"code": ..., "message": ...}],
@@ -57,7 +55,7 @@ class ConnectorStatus(TurboFrameDetailView):
                 ),
             )
 
-            context_data["fivetran_url"] = fivetran_client().authorize(
+            context_data["fivetran_url"] = clients.fivetran().get_authorize_url(
                 self.object,
                 f"{settings.EXTERNAL_URL}{internal_redirect}",
             )

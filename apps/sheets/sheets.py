@@ -1,6 +1,6 @@
 import re
 
-from apps.base.clients import drive_v2_client, sheets_client
+from apps.base import clients
 from django.utils.dateparse import parse_datetime
 
 from .models import Sheet
@@ -14,14 +14,14 @@ def get_sheets_id_from_url(url: str):
 def get_metadata_from_sheet(sheet: Sheet):
 
     sheet_id = get_sheets_id_from_url(sheet.url)
-    client = sheets_client()
+    client = clients.sheetss()
     return client.spreadsheets().get(spreadsheetId=sheet_id).execute()
 
 
 def get_metadata_from_drive_file(sheet: Sheet):
 
     sheet_id = get_sheets_id_from_url(sheet.url)
-    client = drive_v2_client()
+    client = clients.drive_v2()
     return client.files().get(fileId=sheet_id).execute()
 
 

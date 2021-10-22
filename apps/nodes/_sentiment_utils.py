@@ -4,7 +4,7 @@ from typing import Iterator, List, Tuple
 
 import numpy as np
 import pandas as pd
-from apps.base.clients import bigquery_client
+from apps.base import clients
 from apps.nodes.models import Node
 from apps.tables.models import Table
 from apps.teams.models import CreditTransaction
@@ -182,7 +182,7 @@ def _compute_values(client, node, column_query):
 @shared_task
 def get_gcp_sentiment(node_id, column_query):
     node = get_object_or_404(Node, pk=node_id)
-    client = bigquery_client()
+    client = clients.bigquery()
 
     values, clipped_values = _compute_values(client, node, column_query)
     batches_idxs = _get_batches_idxs(clipped_values)

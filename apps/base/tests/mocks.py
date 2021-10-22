@@ -1,6 +1,5 @@
 from unittest.mock import MagicMock, Mock
 
-from apps.base.clients import bigquery_client
 from google.cloud.bigquery.schema import SchemaField
 from google.cloud.bigquery.table import Table as BqTable
 
@@ -13,16 +12,16 @@ class PickableMock(Mock):
 TABLE_NAME = "project.dataset.table"
 
 
-def mock_bq_client_with_schema(bigquery_client, schema_list):
+def mock_bq_client_with_schema(bigquery, schema_list):
     bq_table = BqTable(
         TABLE_NAME,
         schema=[SchemaField(column, type_) for column, type_ in schema_list],
     )
-    bigquery_client.get_table = MagicMock(return_value=bq_table)
+    bigquery.get_table = MagicMock(return_value=bq_table)
 
 
-def mock_bq_client_with_data(bigquery_client, records):
+def mock_bq_client_with_data(bigquery, records):
     mock = PickableMock()
     mock.rows_dict = records
     mock.total_rows = len(records)
-    bigquery_client.get_query_results = Mock(return_value=mock)
+    bigquery.get_query_results = Mock(return_value=mock)
