@@ -51,7 +51,7 @@ def bigquery(mocker):
         "ibis_bigquery.pydata_google_auth.default", return_value=(None, "project")
     )
     mocker.patch("apps.base.clients.bigquery", return_value=client)
-    ibis_client().client = client
+    mocker.patch("ibis_bigquery.client.bq.Client", return_value=client)
     yield client
 
 
