@@ -247,8 +247,10 @@ def get_pivot_query(node, parent):
 
     # the new column names consist of the values inside the selected column
     names_query = {
-        _format_literal(row.values()[0], column_type)
-        for row in client.query(parent[node.pivot_column].compile()).result()
+        _format_literal(row[node.pivot_column], column_type)
+        for row in client.get_query_results(
+            parent[node.pivot_column].compile()
+        ).rows_dict
     }
     # `pivot_index` is optional and won't be displayed if not selected
     selection = ", ".join(
@@ -259,7 +261,7 @@ def get_pivot_query(node, parent):
         f"SELECT * FROM"
         f"  (SELECT {selection} FROM ({parent.compile()}))"
         f"  PIVOT({node.pivot_aggregation}({node.pivot_value})"
-        f"      FOR {node.pivot_column} IN ({' ,'.join(names_query)})"
+        f"      FOR {node.pivot_column} IN ({', '.join(names_query)})"
         f"  )"
     )
 
@@ -268,13 +270,13 @@ def get_pivot_query(node, parent):
 def get_unpivot_query(node, parent):
     selection_columns = [col.column for col in node.secondary_columns.all()]
     selection = (
-        f"{' ,'.join(selection_columns)+', ' if selection_columns else ''}"
-        f"{node.unpivot_column},"
+        f"{', '.join(selection_columns)+', ' if selection_columns else ''}"
+        f"{node.unpivot_column}, "
         f"{node.unpivot_value}"
     )
     return (
         f"SELECT {selection} FROM ({parent.compile()})"
-        f" UNPIVOT({node.unpivot_value} FOR {node.unpivot_column} IN ({' ,'.join([col.column for col in node.columns.all()])}))"
+        f" UNPIVOT({node.unpivot_value} FOR {node.unpivot_column} IN ({', '.join([col.column for col in node.columns.all()])}))"
     )
 
 

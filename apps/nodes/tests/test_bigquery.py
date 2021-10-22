@@ -1,13 +1,16 @@
 import textwrap
-from datetime import datetime
+from datetime import date, datetime
 
 import pytest
 from apps.base.tests.mock_data import TABLE
-from apps.base.tests.mocks import mock_bq_client_with_schema
+from apps.base.tests.mocks import (
+    TABLE_NAME,
+    mock_bq_client_with_data,
+    mock_bq_client_with_schema,
+)
 from apps.columns.models import Column
 from apps.filters.models import Filter
-from apps.integrations.models import Integration
-from apps.nodes.bigquery import get_pivot_query, get_query_from_node
+from apps.nodes.bigquery import get_pivot_query, get_query_from_node, get_unpivot_query
 from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.tables.models import Table
@@ -15,29 +18,44 @@ from apps.workflows.models import Workflow
 
 pytestmark = pytest.mark.django_db
 
-TABLE_NAME = "gyana-1511894275181.dataset.table"
 INPUT_QUERY = f"SELECT *\nFROM `{TABLE_NAME}`"
 DEFAULT_X_Y = {"x": 0, "y": 0}
 
 
-def setup_input_node(logged_in_user, bigquery_client):
+@pytest.fixture
+def setup(
+    logged_in_user,
+    bigquery,
+    integration_factory,
+    integration_table_factory,
+    workflow_factory,
+):
     team = logged_in_user.teams.first()
-    project = Project.objects.create(name="Project", team=team)
-    integration = Integration.objects.create(
-        project=project, kind=Integration.Kind.UPLOAD, name="store_info", ready=True
-    )
-    table = Table.objects.create(
-        project=project,
+    workflow = workflow_factory(project__team=team)
+    integration = integration_factory(project=workflow.project)
+    table = integration_table_factory(
+        project=workflow.project,
         integration=integration,
-        source=Table.Source.INTEGRATION,
-        bq_table="table",
-        bq_dataset="dataset",
     )
-    workflow = Workflow.objects.create(project=project)
 
     mock_bq_client_with_schema(
-        bigquery_client,
+        bigquery,
         [(column, type_.name) for column, type_ in TABLE.schema().items()][:3],
+    )
+    mock_bq_client_with_data(
+        bigquery,
+        [
+            {
+                "id": 1,
+                "athlete": "Usain Bolt",
+                "birthday": date(year=1986, month=8, day=21),
+            },
+            {
+                "id": 2,
+                "athlete": "Sakura Yosozumi",
+                "birthday": date(year=2002, month=3, day=15),
+            },
+        ],
     )
     return (
         Node.objects.create(
@@ -47,14 +65,14 @@ def setup_input_node(logged_in_user, bigquery_client):
     )
 
 
-def test_input_node(logged_in_user, bigquery_client):
-    input_node, _ = setup_input_node(logged_in_user, bigquery_client)
+def test_input_node(setup):
+    input_node, _ = setup
     query = get_query_from_node(input_node)
     assert query.compile() == INPUT_QUERY
 
 
-def test_ouput_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_ouput_node(setup):
+    input_node, workflow = setup
     output_node = Node.objects.create(
         kind=Node.Kind.OUTPUT, workflow=workflow, **DEFAULT_X_Y
     )
@@ -64,8 +82,8 @@ def test_ouput_node(logged_in_user, bigquery_client):
     assert query.compile() == INPUT_QUERY
 
 
-def test_select_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_select_node(setup):
+    input_node, workflow = setup
     select_node = Node.objects.create(
         kind=Node.Kind.SELECT, workflow=workflow, **DEFAULT_X_Y
     )
@@ -82,8 +100,8 @@ def test_select_node(logged_in_user, bigquery_client):
     assert query.compile() == INPUT_QUERY.replace("*", "`id`")
 
 
-def test_join_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_join_node(setup):
+    input_node, workflow = setup
     second_input_node = input_node.make_clone()
     join_node = Node.objects.create(
         kind=Node.Kind.JOIN,
@@ -98,7 +116,7 @@ def test_join_node(logged_in_user, bigquery_client):
     # Mocking the table conditionally requires a little bit more work
     # So we simply join the table with itself which leads to duplicate columns that
     # Are aliased
-    join_query = "SELECT `id_left` AS `id`, `athlete_left`, `birthday_left`, `athlete_right`,\n       `birthday_right`\nFROM (\n  SELECT *\n  FROM (\n    SELECT `id` AS `id_left`, `athlete` AS `athlete_left`,\n           `birthday` AS `birthday_left`\n    FROM `gyana-1511894275181.dataset.table`\n  ) t1\n    INNER JOIN (\n      SELECT `id` AS `id_right`, `athlete` AS `athlete_right`,\n             `birthday` AS `birthday_right`\n      FROM `gyana-1511894275181.dataset.table`\n    ) t2\n      ON t1.`id_left` = t2.`id_right`\n) t0"
+    join_query = "SELECT `id_left` AS `id`, `athlete_left`, `birthday_left`, `athlete_right`,\n       `birthday_right`\nFROM (\n  SELECT *\n  FROM (\n    SELECT `id` AS `id_left`, `athlete` AS `athlete_left`,\n           `birthday` AS `birthday_left`\n    FROM `project.dataset.table`\n  ) t1\n    INNER JOIN (\n      SELECT `id` AS `id_right`, `athlete` AS `athlete_right`,\n             `birthday` AS `birthday_right`\n      FROM `project.dataset.table`\n    ) t2\n      ON t1.`id_left` = t2.`id_right`\n) t0"
     assert query.compile() == join_query
 
     join_node.join_how = "outer"
@@ -106,8 +124,8 @@ def test_join_node(logged_in_user, bigquery_client):
     assert query.compile() == join_query.replace("INNER", "FULL OUTER")
 
 
-def test_aggregation_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_aggregation_node(setup):
+    input_node, workflow = setup
     aggregation_node = Node.objects.create(
         kind=Node.Kind.AGGREGATION,
         workflow=workflow,
@@ -145,8 +163,8 @@ UNION_QUERY = (
 )
 
 
-def test_union_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_union_node(setup):
+    input_node, workflow = setup
     second_input_node = input_node.make_clone()
 
     union_node = Node.objects.create(
@@ -164,8 +182,8 @@ def test_union_node(logged_in_user, bigquery_client):
     )
 
 
-def test_except_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_except_node(setup):
+    input_node, workflow = setup
     second_input_node = input_node.make_clone()
 
     except_node = Node.objects.create(
@@ -180,8 +198,8 @@ def test_except_node(logged_in_user, bigquery_client):
     )
 
 
-def test_intersect_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_intersect_node(setup):
+    input_node, workflow = setup
     second_input_node = input_node.make_clone()
 
     intersect_node = Node.objects.create(
@@ -196,8 +214,8 @@ def test_intersect_node(logged_in_user, bigquery_client):
     )
 
 
-def test_sort_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_sort_node(setup):
+    input_node, workflow = setup
 
     sort_node = Node.objects.create(
         kind=Node.Kind.SORT,
@@ -214,8 +232,8 @@ def test_sort_node(logged_in_user, bigquery_client):
     assert get_query_from_node(sort_node).compile() == sort_query + ", `birthday` DESC"
 
 
-def test_limit_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_limit_node(setup):
+    input_node, workflow = setup
 
     limit_node = Node.objects.create(
         kind=Node.Kind.LIMIT,
@@ -239,8 +257,8 @@ def test_limit_node(logged_in_user, bigquery_client):
     )
 
 
-def test_filter_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_filter_node(setup):
+    input_node, workflow = setup
 
     filter_node = Node.objects.create(
         kind=Node.Kind.FILTER,
@@ -270,8 +288,8 @@ def test_filter_node(logged_in_user, bigquery_client):
     )
 
 
-def test_edit_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_edit_node(setup):
+    input_node, workflow = setup
 
     edit_node = Node.objects.create(
         kind=Node.Kind.EDIT,
@@ -291,8 +309,8 @@ def test_edit_node(logged_in_user, bigquery_client):
     )
 
 
-def test_add_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_add_node(setup):
+    input_node, workflow = setup
 
     add_node = Node.objects.create(
         kind=Node.Kind.ADD,
@@ -314,8 +332,8 @@ def test_add_node(logged_in_user, bigquery_client):
     )
 
 
-def test_rename_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_rename_node(setup):
+    input_node, workflow = setup
 
     rename_node = Node.objects.create(
         kind=Node.Kind.RENAME,
@@ -335,8 +353,8 @@ def test_rename_node(logged_in_user, bigquery_client):
     )
 
 
-def test_formula_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_formula_node(setup):
+    input_node, workflow = setup
 
     formula_node = Node.objects.create(
         kind=Node.Kind.FORMULA,
@@ -357,8 +375,8 @@ def test_formula_node(logged_in_user, bigquery_client):
     )
 
 
-def test_distinct_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_distinct_node(setup):
+    input_node, workflow = setup
     distinct_node = Node.objects.create(
         kind=Node.Kind.DISTINCT,
         workflow=workflow,
@@ -386,8 +404,8 @@ def test_distinct_node(logged_in_user, bigquery_client):
     )
 
 
-def test_window_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_window_node(setup):
+    input_node, workflow = setup
     window_node = Node.objects.create(
         kind=Node.Kind.WINDOW,
         workflow=workflow,
@@ -428,8 +446,8 @@ def test_window_node(logged_in_user, bigquery_client):
     )
 
 
-def test_pivot_node(logged_in_user, bigquery_client):
-    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+def test_pivot_node(setup):
+    input_node, workflow = setup
     pivot_node = Node.objects.create(
         kind=Node.Kind.PIVOT,
         workflow=workflow,
@@ -439,8 +457,43 @@ def test_pivot_node(logged_in_user, bigquery_client):
 
     pivot_node.pivot_column = "athlete"
     pivot_node.pivot_index = "id"
+    pivot_node.pivot_aggregation = "sum"
     pivot_node.pivot_value = "birthday"
 
     # We only want to check that the right query is formed
     query = get_pivot_query.__wrapped__(pivot_node, get_query_from_node(input_node))
-    assert True
+    assert query == (
+        f"SELECT * FROM  (SELECT id, athlete, birthday FROM "
+        f"({INPUT_QUERY}))  PIVOT(sum(birthday)      "
+        f'FOR athlete IN ("Sakura Yosozumi" Sakura_Yosozumi, "Usain Bolt" Usain_Bolt)  )'
+    )
+
+
+def test_unpivot_node(setup):
+    input_node, workflow = setup
+    unpivot_node = Node.objects.create(
+        kind=Node.Kind.UNPIVOT,
+        workflow=workflow,
+        **DEFAULT_X_Y,
+    )
+    unpivot_node.parents.add(input_node)
+
+    unpivot_node.unpivot_column = "category"
+    unpivot_node.unpivot_value = "value"
+    unpivot_node.columns.create(column="athlete")
+
+    # We only want to check that the right query is formed
+    query = get_unpivot_query.__wrapped__(unpivot_node, get_query_from_node(input_node))
+    assert query == (
+        f"SELECT category, value FROM ({INPUT_QUERY})"
+        f" UNPIVOT(value FOR category IN (athlete))"
+    )
+
+    unpivot_node.columns.create(column="birthday")
+    unpivot_node.secondary_columns.create(column="id")
+    assert get_unpivot_query.__wrapped__(
+        unpivot_node, get_query_from_node(input_node)
+    ) == (
+        f"SELECT id, category, value FROM ({INPUT_QUERY})"
+        f" UNPIVOT(value FOR category IN (athlete, birthday))"
+    )

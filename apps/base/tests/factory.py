@@ -5,6 +5,7 @@ from apps.sheets.models import Sheet
 from apps.tables.models import Table
 from apps.teams.models import Team
 from apps.uploads.models import Upload
+from apps.workflows.models import Workflow
 from pytest_factoryboy import register
 
 import factory
@@ -81,3 +82,11 @@ class IntegrationTableFactory(factory.django.DjangoModelFactory):
     bq_table = "table"
     bq_dataset = "dataset"
     num_rows = 10
+
+
+@register
+class WorkflowFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Workflow
+
+    project = factory.SubFactory(ProjectFactory)
