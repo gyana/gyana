@@ -5,6 +5,7 @@ celerybeat-schedule
 # Coverage
 .coverage
 htmlcov
+coverage.xml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
