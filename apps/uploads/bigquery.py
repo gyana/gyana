@@ -11,9 +11,15 @@ def _create_external_table(upload: Upload, table_id: str, **job_kwargs):
     # https://cloud.google.com/bigquery/external-data-drive#python
     external_config = bigquery.ExternalConfig("CSV")
     external_config.source_uris = [upload.gcs_uri]
-    external_config.field_delimiter = upload.field_delimiter_char
+    external_config.options.field_delimiter = upload.field_delimiter_char
+    external_config.options.allow_quoted_newlines = True
+    external_config.options.allow_jagged_rows = True
+
     for k, v in job_kwargs.items():
-        setattr(external_config, k, v)
+        if k == "skip_leading_rows":
+            setattr(external_config.options, k, v)
+        else:
+            setattr(external_config, k, v)
 
     return bigquery.QueryJobConfig(table_definitions={table_id: external_config})
 
@@ -61,7 +67,6 @@ def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
         )
 
         # bigquery does not guarantee the order of rows
-
         header_query = client.query(
             f"select * from (select * from {temp_table_id} except distinct select * from {table.bq_id}) limit 1",
             job_config=job_config,

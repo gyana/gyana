@@ -4,6 +4,7 @@ from apps.projects.models import Project
 from apps.sheets.models import Sheet
 from apps.tables.models import Table
 from apps.teams.models import Team
+from apps.uploads.models import Upload
 from pytest_factoryboy import register
 
 import factory
@@ -57,6 +58,17 @@ class SheetFactory(factory.django.DjangoModelFactory):
     cell_range = "store_info!A1:D10"
     integration = factory.SubFactory(
         IntegrationFactory, kind=Integration.Kind.SHEET, name="Store info"
+    )
+
+
+@register
+class UploadFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Upload
+
+    file_gcs_path = "/path/to/gcs"
+    integration = factory.SubFactory(
+        IntegrationFactory, kind=Integration.Kind.UPLOAD, name="Store info"
     )
 
 

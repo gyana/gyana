@@ -53,8 +53,8 @@ def test_sheet_all_string(
 
     # final call with explicit schema
     final_call = bigquery.query.call_args_list[2]
-    HEADER_SQL = "CREATE OR REPLACE TABLE dataset.table AS SELECT * FROM table_external"
-    assert final_call.args == (HEADER_SQL,)
+    FINAL_SQL = "CREATE OR REPLACE TABLE dataset.table AS SELECT * FROM table_external"
+    assert final_call.args == (FINAL_SQL,)
     job_config = final_call.kwargs["job_config"]
     external_config = job_config.table_definitions["table_external"]
     assert external_config.source_uris == [sheet.url]

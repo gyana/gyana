@@ -71,7 +71,6 @@ def test_upload_create(client, logged_in_user, project_factory, bigquery):
 
     # validate the sql and external table configuration
     table = integration.table_set.first()
-    print(bigquery.load_table_from_uri.call_args.args)
     assert bigquery.load_table_from_uri.call_args.args == (
         f"gs://gyana-local/{GCS_URL}",
         table.bq_id,
@@ -83,7 +82,7 @@ def test_upload_create(client, logged_in_user, project_factory, bigquery):
     assert job_config.allow_quoted_newlines
     assert job_config.allow_jagged_rows
     assert job_config.autodetect
-    assert job_config.skip_leading_rows
+    assert job_config.skip_leading_rows == 1
 
     assertRedirects(r, f"{DETAIL}/load", target_status_code=302)
 
