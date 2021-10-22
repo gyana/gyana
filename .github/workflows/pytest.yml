@@ -40,4 +40,4 @@ jobs:
     - name: Install dependencies with poetry
       run: poetry install
     - name: Pytest run
-      run: poetry run just test
+      run: python -m pytest --no-migrations --disable-pytest-warnings apps/appsumo
