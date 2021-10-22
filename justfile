@@ -30,6 +30,9 @@ fixtures:
 shell:
     ./manage.py shell -i ipython
 
+collectstatic:
+    ./manage.py collectstatic --noinput
+
 celery-ci:
     celery -A gyana worker -l info
 

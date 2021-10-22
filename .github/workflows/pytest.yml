@@ -39,5 +39,7 @@ jobs:
     - uses: Gr1N/setup-poetry@v7
     - name: Install dependencies with poetry
       run: poetry install
+    - name: Collect static
+      run: poetry run just collectstatic
     - name: Pytest run
       run: poetry run just test test_appsumo_link_invalid_code
