@@ -68,6 +68,11 @@ project_urlpatterns = (
             name="detail",
         ),
         path(
+            "<hashid:pk>/settings",
+            login_and_project_required(views.DashboardSettings.as_view()),
+            name="settings",
+        ),
+        path(
             "<hashid:pk>/delete",
             login_and_project_required(views.DashboardDelete.as_view()),
             name="delete",
