@@ -2,6 +2,10 @@
 gyana-1511894275181-50f107d4db00.json
 celerybeat-schedule
 
+# Coverage
+.coverage
+htmlcov
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
