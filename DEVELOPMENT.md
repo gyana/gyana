@@ -65,7 +65,13 @@ yarn build:watch
 
 Bootstrap a new CRUDL Django app with `just startapp`.
 
-## Test
+## Tests
+
+Run the pytest test suite:
+
+```
+just test
+```
 
 Run your app in development mode and open the cypress UI:
 
@@ -131,7 +137,8 @@ is an art but you get better at it over time:
 - Django widgets - using React or Stimulus
 - React wrapped - a React powered web component that has plain HTML (generated
   by Django) as children - see `<gy-widget>`
-- Celery Progress - show progress of long running task using the `celery_progress
+- Celery Progress - show progress of long running task using the `celery_progress` 
+  library
 
 ## Philosophy
 
