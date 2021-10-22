@@ -7,7 +7,7 @@ from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.columns.models import Column
 from apps.filters.models import Filter
 from apps.integrations.models import Integration
-from apps.nodes.bigquery import get_query_from_node
+from apps.nodes.bigquery import get_pivot_query, get_query_from_node
 from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.tables.models import Table
@@ -426,3 +426,21 @@ def test_window_node(logged_in_user, bigquery_client):
        count(`athlete`) OVER (PARTITION BY `birthday` ORDER BY `id`) AS `window`,
        count(`id`) OVER (PARTITION BY `athlete`) AS `door`""",
     )
+
+
+def test_pivot_node(logged_in_user, bigquery_client):
+    input_node, workflow = setup_input_node(logged_in_user, bigquery_client)
+    pivot_node = Node.objects.create(
+        kind=Node.Kind.PIVOT,
+        workflow=workflow,
+        **DEFAULT_X_Y,
+    )
+    pivot_node.parents.add(input_node)
+
+    pivot_node.pivot_column = "athlete"
+    pivot_node.pivot_index = "id"
+    pivot_node.pivot_value = "birthday"
+
+    # We only want to check that the right query is formed
+    query = get_pivot_query.__wrapped__(pivot_node, get_query_from_node(input_node))
+    assert True

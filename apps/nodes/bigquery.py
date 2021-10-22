@@ -1,5 +1,6 @@
 import inspect
 import logging
+from functools import wraps
 
 import ibis
 from apps.base.clients import bigquery_client, ibis_client
@@ -90,6 +91,7 @@ def _create_or_replace_intermediate_table(table, node, query):
 
 
 def use_intermediate_table(func):
+    @wraps(func)
     def wrapper(node, parent):
 
         table = node.intermediate_table
