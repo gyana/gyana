@@ -50,4 +50,4 @@ jobs:
     - name: Collect static
       run: poetry run just collectstatic
     - name: Pytest run
-      run: poetry run just test test_appsumo_link_invalid_code
+      run: poetry run just test
