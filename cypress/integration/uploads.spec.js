@@ -39,11 +39,6 @@ describe('uploads', () => {
 
     // cannot edit upload setup
     cy.contains('Setup').should('not.exist')
-
-    // check email sent
-    cy.outbox()
-      .then((outbox) => outbox.count)
-      .should('eq', 1)
   })
   it('streamed uploads with chunks', () => {
     cy.visit('/projects/1/integrations/uploads/new', {

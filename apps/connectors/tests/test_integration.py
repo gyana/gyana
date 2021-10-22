@@ -45,7 +45,8 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     fivetran.get_schemas.return_value = [schema]
     bigquery.get_table().num_rows = 10
 
-    CONNECTORS_URL = f"/projects/{project.id}/integrations/connectors"
+    LIST = "/projects/{project.id}/integrations"
+    CONNECTORS = f"{LIST}/connectors"
 
     # test: create a new connector, authorize it, configure it, start the sync,
     # view the load screen and finally complete the sync
@@ -53,16 +54,16 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     # and mock the return
 
     # view all connectors
-    r = client.get(f"{CONNECTORS_URL}/new")
+    r = client.get(f"{CONNECTORS}/new")
     assertOK(r)
-    assertLink(r, f"{CONNECTORS_URL}/new?service=google_analytics", "Google Analytics")
+    assertLink(r, f"{CONNECTORS}/new?service=google_analytics", "Google Analytics")
 
     # create
-    r = client.get(f"{CONNECTORS_URL}/new?service=google_analytics")
+    r = client.get(f"{CONNECTORS}/new?service=google_analytics")
     assertOK(r)
     assertFormRenders(r, [])
 
-    r = client.post(f"{CONNECTORS_URL}/new?service=google_analytics", data={})
+    r = client.post(f"{CONNECTORS}/new?service=google_analytics", data={})
     integration = project.integration_set.first()
     assert integration is not None
     assert integration.kind == Integration.Kind.CONNECTOR
@@ -70,7 +71,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     assert connector is not None
     assert integration.created_by == logged_in_user
 
-    redirect_uri = f"http://localhost:8000{CONNECTORS_URL}/{connector.id}/authorize"
+    redirect_uri = f"http://localhost:8000{CONNECTORS}/{connector.id}/authorize"
     assertRedirects(r, f"http://fivetran.url?redirect_uri={redirect_uri}")
 
     assert fivetran.create.call_count == 1
@@ -87,15 +88,15 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
         redirect_uri,
     )
 
-    INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
+    DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
 
     # authorize redirect
-    r = client.get(f"{CONNECTORS_URL}/{connector.id}/authorize")
-    assertRedirects(r, f"{INTEGRATION_URL}/configure")
+    r = client.get(f"{LIST}/{connector.id}/authorize")
+    assertRedirects(r, f"{DETAIL}/configure")
 
     # configure
     fivetran.get_schemas.reset_mock()
-    r = client.get(f"{INTEGRATION_URL}/configure")
+    r = client.get(f"{DETAIL}/configure")
     assertOK(r)
     # todo: fix this!
     assertFormRenders(r, ["name", "dataset_schema", "dataset_tables"])
@@ -104,20 +105,18 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     assert fivetran.get_schemas.call_args.args == (connector,)
 
     # fivetran initial sync request will happen on post
-    r = client.post(f"{INTEGRATION_URL}/configure")
-    assertRedirects(r, f"{INTEGRATION_URL}/load")
+    r = client.post(f"{DETAIL}/configure")
+    assertRedirects(r, f"{DETAIL}/load")
 
     assert fivetran.update_schemas.call_count == 1
     assert fivetran.update_schemas.call_args.args == (connector, [schema])
     assert fivetran.start_initial_sync.call_count == 1
     assert fivetran.start_initial_sync.call_args.args == (connector,)
 
-    r = client.get(f"{INTEGRATION_URL}/load")
+    r = client.get(f"{DETAIL}/load")
     assertOK(r)
     assertContains(r, "Google Analytics")
-    assertLink(
-        r, f"/projects/{project.id}/integrations/pending", "pending integrations"
-    )
+    assertLink(r, f"{LIST}/pending", "pending integrations")
 
     # the user leaves the page and periodic job runs in background
     fivetran.has_completed_sync.return_value = True
@@ -134,8 +133,8 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     integration.state = Integration.State.LOAD
     integration.save()
 
-    r = client.get(f"{INTEGRATION_URL}/load")
-    assertRedirects(r, f"{INTEGRATION_URL}/done")
+    r = client.get(f"{DETAIL}/load")
+    assertRedirects(r, f"{DETAIL}/done")
 
     integration.refresh_from_db()
     assert integration.state == Integration.State.DONE
@@ -163,12 +162,14 @@ def test_status_on_pending_page(
     fivetran.has_completed_sync.return_value = False
     bigquery.get_table().num_rows = 10
 
+    LIST = "/projects/{project.id}/integrations"
+
     # test: the status indicator on the pending page will be loading, until the
     # connector has completed the sync
 
     # loading
     r = client.get_turbo_frame(
-        f"/projects/{project.id}/integrations/pending",
+        f"{LIST}/pending",
         f"/connectors/{connector.id}/icon",
     )
     assertOK(r)
@@ -180,7 +181,7 @@ def test_status_on_pending_page(
 
     # done
     r = client.get_turbo_frame(
-        f"/projects/{project.id}/integrations/pending",
+        f"{LIST}/pending",
         f"/connectors/{connector.id}/icon",
     )
     assertOK(r)
@@ -214,21 +215,20 @@ def test_update_tables_in_non_database(
             bq_table=table.name_in_destination, project=project, integration=integration
         )
 
+    DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
+
     # test: if the user removes tables in the configure form, those tables are
     # deleted
 
     assert integration.table_set.count() == 2
 
     # update the schema in fivetran
-    INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
-    r = client.get(f"{INTEGRATION_URL}/configure")
+    r = client.get(f"{DETAIL}/configure")
     assertOK(r)
     assertFormRenders(r, ["name", "dataset_tables", "dataset_schema"])
 
-    r = client.post(
-        f"{INTEGRATION_URL}/configure", data={"dataset_tables": ["table_1"]}
-    )
-    assertRedirects(r, f"{INTEGRATION_URL}/load", target_status_code=302)
+    r = client.post(f"{DETAIL}/configure", data={"dataset_tables": ["table_1"]})
+    assertRedirects(r, f"{DETAIL}/load", target_status_code=302)
     assert fivetran.update_schemas.call_count == 1
     enabled_tables = [
         t for t in fivetran.update_schemas.call_args.args[1][0].tables if t.enabled
@@ -255,13 +255,13 @@ def test_status_broken(client, logged_in_user, fivetran, connector_factory):
         lambda c, r: f"http://fivetran.url?redirect_uri={r}"
     )
 
-    INTEGRATION_URL = f"/projects/{project.id}/integrations/{integration.id}"
-    CONNECTORS_URL = f"/projects/{project.id}/integrations/connectors"
+    LIST = f"/projects/{project.id}/integrations"
+    DETAIL = f"{LIST}/{integration.id}"
 
-    r = client.get_turbo_frame(
-        f"{INTEGRATION_URL}", f"/connectors/{connector.id}/status"
-    )
+    # test: status is broken with link to re-authorize
+
+    r = client.get_turbo_frame(f"{DETAIL}", f"/connectors/{connector.id}/status")
     assertOK(r)
     assertContains(r, "Your connector is broken.")
-    redirect_uri = f"http://localhost:8000{CONNECTORS_URL}/{connector.id}/authorize"
+    redirect_uri = f"http://localhost:8000{LIST}/connectors/{connector.id}/authorize"
     assertLink(r, f"http://fivetran.url?redirect_uri={redirect_uri}", "fixing it")
