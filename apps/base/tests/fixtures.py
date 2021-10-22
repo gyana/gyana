@@ -2,6 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 import waffle
+from apps.base import clients
 from apps.teams.models import Team
 from apps.users.models import CustomUser
 from waffle.templatetags import waffle_tags
@@ -55,6 +56,8 @@ def bigquery(mocker, settings):
     )
     mocker.patch("apps.base.clients.bigquery", return_value=client)
     mocker.patch("ibis_bigquery.client.bq.Client", return_value=client)
+    ibis_client = clients.ibis_client()
+    ibis_client.client = client
     yield client
 
 
