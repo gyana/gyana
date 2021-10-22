@@ -1,0 +1,123 @@
+{% extends "web/app/project_base.html" %}
+
+{% block app %}
+<div class="dashboard__header">
+  <div class="tabbar tabbar--top">
+    <a
+      class="tabbar__link {% if request.resolver_match.url_name == 'detail' %}tabbar__link--active{% endif %}"
+      href="{% url 'project_dashboards:detail' project.id object.id %}"
+    >
+      Editor
+    </a>
+    <a
+      class="tabbar__link {% if request.resolver_match.url_name == 'settings' %}tabbar__link--active{% endif %}"
+      href="{% url 'project_dashboards:settings' project.id object.id  %}"
+    >
+      Settings
+    </a>
+  </div>
+
+  <turbo-frame id="dashboard-name" class="flex-1 mr-auto">
+    <form
+      method="post"
+      action="{% url 'project_dashboards:detail' project.id object.id %}"
+      class="form--no-layout w-full"
+    >
+      {% csrf_token %}
+
+      <input
+        class='input__inline mr-auto'
+        id="name"
+        type="text"
+        name="name"
+        value="{{ object.name }}"
+        onBlur="this.form.requestSubmit();"
+      ></input>
+    </form>
+  </turbo-frame>
+
+  <div class="button button--circle button--tertiary">
+    {% include 'components/_duplicate.html' with object_name="dashboard" %}
+  </div>
+
+  <vr></vr>
+
+  {% if request.GET.mode != 'view' %}
+  <div data-controller="tooltip popover">
+    <button
+      type="button"
+      data-popover-target="trigger"
+      class="button button--circle button--tertiary"
+      data-action="popover#trigger"
+    >
+      <i class="far fa-fw fa-expand-arrows-alt"></i>
+    </button>
+
+    <span data-tooltip-target="body">Canvas size</span>
+
+    <div data-popover-target="body" class="popover-body max-w-lg card card--sm">
+      <form
+        method="post"
+        action="{% url 'project_dashboards:detail' project.id object.id %}"
+        class="form--no-layout"
+      >
+        {% csrf_token %}
+        <div class="flex gap-7">
+          <label>
+            <p>Width</p>
+            <input id="width" class="flex-1 min-w-0" type="number" name="width" value="{{ object.width}}"></input>
+          </label>
+
+          <label>
+            <p>Height</p>
+            <input id="height" class="flex-1 min-w-0" type="number" name="height" value="{{ object.height}}"></input>
+          </label>
+        </div>
+
+        <button class="button button--sm button--success mt-7 w-full" type='submit'>Update</button>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  <turbo-frame id="dashboard-share"  src="{% url 'dashboards:share' object.id %}">
+  <button class="button button--circle {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}">
+    {% if  object.shared_status == 'public' %}<i class='far fa-fw fa-link'></i>
+    {% elif object.shared_status == 'private' %}<i class='far fa-fw fa-unlink'></i>
+    {% elif object.shared_status == 'password_protected' %}<i class='far fa-fw fa-lock'></i>
+    {% endif %}
+  </button>
+  </turbo-frame>
+
+  {% if request.GET.mode != 'view' %}
+  {% include 'dashboards/_add_widget.html' with choices=choices %}
+  {% endif %}
+
+  {% if not request.GET.mode or request.GET.mode == 'edit' %}
+  <a href="?mode=view" class="button button--sm" data-controller="tooltip">
+    <i class="fas fa-fw fa-eye"></i> Preview
+    <span data-tooltip-target="body">Click to change view mode</span>
+  </a>
+  {% else %}
+  <a href="?mode=edit" class="button button--sm" data-controller="tooltip">
+    <i class="fas fa-fw fa-pen"></i> Edit
+    <span data-tooltip-target="body">Click to change view mode</span>
+  </a>
+  {% endif %}
+</div>
+
+{% block tab %}
+<div class="dashboard">
+  <turbo-frame 
+    id="widgets"
+    src="{% url 'dashboard_widgets:list' project.id object.id %}?mode={{ request.GET.mode|default:'edit' }}{% if request.GET.modal_item %}&modal_item={{ request.GET.modal_item }}{% endif %}"
+    class="flex"
+    target="_top">
+  </turbo-frame>
+</div>
+{% endblock tab %}
+{% endblock %}
+
+{% block page_js %}
+{% include 'components/fusionchart_scripts.html' %}
+{% endblock %}
