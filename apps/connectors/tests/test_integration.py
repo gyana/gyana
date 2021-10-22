@@ -45,7 +45,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     fivetran.get_schemas.return_value = [schema]
     bigquery.get_table().num_rows = 10
 
-    LIST = "/projects/{project.id}/integrations"
+    LIST = f"/projects/{project.id}/integrations"
     CONNECTORS = f"{LIST}/connectors"
 
     # test: create a new connector, authorize it, configure it, start the sync,
@@ -88,10 +88,10 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
         redirect_uri,
     )
 
-    DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
+    DETAIL = f"{LIST}/{integration.id}"
 
     # authorize redirect
-    r = client.get(f"{LIST}/{connector.id}/authorize")
+    r = client.get(f"{CONNECTORS}/{connector.id}/authorize")
     assertRedirects(r, f"{DETAIL}/configure")
 
     # configure
@@ -162,7 +162,7 @@ def test_status_on_pending_page(
     fivetran.has_completed_sync.return_value = False
     bigquery.get_table().num_rows = 10
 
-    LIST = "/projects/{project.id}/integrations"
+    LIST = f"/projects/{project.id}/integrations"
 
     # test: the status indicator on the pending page will be loading, until the
     # connector has completed the sync

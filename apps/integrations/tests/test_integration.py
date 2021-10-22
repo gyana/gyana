@@ -1,19 +1,17 @@
 import pytest
-from apps.base.tests.asserts import (
-    assertFormRenders,
-    assertLink,
-    assertOK,
-    assertSelectorLength,
-)
-from apps.base.tests.mocks import mock_bq_client_with_data, mock_bq_client_with_schema
+from apps.base.tests.asserts import (assertFormRenders, assertLink, assertOK,
+                                     assertSelectorLength)
+from apps.base.tests.mocks import (mock_bq_client_with_data,
+                                   mock_bq_client_with_schema)
 from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
 
 
-def test_integration_crudl(client, logged_in_user, integration_factory):
+def test_integration_crudl(client, logged_in_user, sheet_factory):
     team = logged_in_user.teams.first()
-    integration = integration_factory(project__team=team)
+    sheet = sheet_factory(integration__project__team=team)
+    integration = sheet.integration
     project = integration.project
 
     LIST = f"/projects/{project.id}/integrations"
@@ -29,7 +27,7 @@ def test_integration_crudl(client, logged_in_user, integration_factory):
     r = client.get(f"{LIST}/")
     assertOK(r)
     assertSelectorLength(r, "table tbody tr", 1)
-    assertLink(r, DETAIL, "store_info")
+    assertLink(r, DETAIL, "Store info")
 
     # read
     r = client.get(DETAIL)
