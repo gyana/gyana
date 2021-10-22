@@ -160,7 +160,6 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
     def form_valid(self, form):
         # don't assigned the result to self.object
         form.save()
-
         KIND_TO_SYNC_TASK[self.object.kind](self.object.source_obj)
         analytics.track(
             self.request.user.id,
