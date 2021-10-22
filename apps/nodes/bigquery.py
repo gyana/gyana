@@ -4,7 +4,6 @@ from functools import wraps
 
 import ibis
 from apps.base import clients
-from apps.base.clients import ibis_client
 from apps.base.errors import error_name_to_snake
 from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
@@ -96,7 +95,7 @@ def use_intermediate_table(func):
     def wrapper(node, parent):
 
         table = node.intermediate_table
-        conn = ibis_client()
+        conn = clients.ibis_client()
 
         # if the table doesn't need updating we can simply return the previous computed pivot table
         if table and table.data_updated > max(tuple(_get_parent_updated(node))):
@@ -298,7 +297,7 @@ def get_window_query(node, query):
 
 def get_sentiment_query(node, parent):
     table = node.intermediate_table
-    conn = ibis_client()
+    conn = clients.ibis_client()
 
     # if the table doesn't need updating we can simply return the previous computed pivot table
     if table and table.data_updated > max(tuple(_get_parent_updated(node))):
