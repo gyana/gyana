@@ -533,6 +533,18 @@ lint = ["flake8", "yamllint", "isort", "black"]
 test = ["tox", "tox-gh-actions", "pluggy (>=0.7)", "mock", "unittest-xml-reporting", "codacy-coverage", "django-migration-fixer"]
 
 [[package]]
+name = "django-coverage-plugin"
+version = "2.0.1"
+description = "Django template coverage.py plugin"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+coverage = "*"
+six = ">=1.4.0"
+
+[[package]]
 name = "django-dirtyfields"
 version = "1.7.0"
 description = "Tracking dirty fields on a Django model instance."
@@ -1987,7 +1999,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.*"
-content-hash = "541b6253eb0e221dfac881eac2d0c0161d55132a5db7dfa137784ae38f0d661e"
+content-hash = "edcb9b5d21d9d1fbe95bcacc550c016fa23c919b56a70e48dee81ca79a747929"
 
 [metadata.files]
 amqp = [
@@ -2242,6 +2254,9 @@ django-anymail = [
 django-clone = [
     {file = "django-clone-2.9.4.tar.gz", hash = "sha256:b38d4e2dcce4f6ded7fc5a8b2eed8d0932b114825bffebd2de087f7e361bc262"},
     {file = "django_clone-2.9.4-py3-none-any.whl", hash = "sha256:70f2cf00ea5b878f8a836c665c760ba957b7e3e77833f011fa081118c18c85f6"},
+]
+django-coverage-plugin = [
+    {file = "django_coverage_plugin-2.0.1.tar.gz", hash = "sha256:cf8b0265d5556f20b8458114a4babc01258f841fe3b96630de4f0deaf8fa8619"},
 ]
 django-dirtyfields = [
     {file = "django-dirtyfields-1.7.0.tar.gz", hash = "sha256:76fd01c69e077fd39f49376d9684d04188b821dafd342bf82d935036ff2f5946"},

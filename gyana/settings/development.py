@@ -41,3 +41,6 @@ SILKY_ANALYZE_QUERIES = True
 
 INSTALLED_APPS = INSTALLED_APPS + ["silk"]
 MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
+
+# for code coverage
+TEMPLATES[0]["OPTIONS"]["debug"] = True
