@@ -19,6 +19,7 @@ class Team(BaseModel):
     icon = models.FileField(
         storage=GoogleCloudStorage(
             bucket_name=settings.GS_PUBLIC_BUCKET_NAME,
+            cache_control=settings.GS_PUBLIC_CACHE_CONTROL,
             querystring_auth=False
         ),
         upload_to="team-icons/",
