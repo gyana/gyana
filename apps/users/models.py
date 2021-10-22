@@ -1,8 +1,10 @@
 import hashlib
 
-from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
+from storages.backends.gcloud import GoogleCloudStorage
 
 from apps.teams import roles
 
@@ -43,7 +45,16 @@ class CustomUser(AbstractUser):
         TWO_HUNDRED_AND_ONE_TO_ONE_THOUSAND = "201-1000", "201-1000"
         MORE_THAN_ONE_THOUSAND = "more than 1000", "More than 1000"
 
-    avatar = models.FileField(upload_to="profile-pictures/", null=True, blank=True)
+    avatar = models.FileField(
+        storage=GoogleCloudStorage(
+            bucket_name=settings.GS_PUBLIC_BUCKET_NAME,
+            cache_control=settings.GS_PUBLIC_CACHE_CONTROL,
+            querystring_auth=False
+        ),
+        upload_to="profile-pictures/",
+        null=True,
+        blank=True
+    )
     onboarded = models.BooleanField(default=False)
     company_industry = models.CharField(
         max_length=16, null=True, choices=CompanyIndustry.choices

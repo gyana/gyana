@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from storages.backends.gcloud import GoogleCloudStorage
 
 from apps.base.models import BaseModel
 
@@ -15,7 +16,16 @@ class Team(BaseModel):
     class Meta:
         ordering = ("-created",)
 
-    icon = models.FileField(upload_to="team-icons/", null=True, blank=True)
+    icon = models.FileField(
+        storage=GoogleCloudStorage(
+            bucket_name=settings.GS_PUBLIC_BUCKET_NAME,
+            cache_control=settings.GS_PUBLIC_CACHE_CONTROL,
+            querystring_auth=False
+        ),
+        upload_to="team-icons/",
+        null=True,
+        blank=True
+    )
     name = models.CharField(max_length=100)
 
     members = models.ManyToManyField(

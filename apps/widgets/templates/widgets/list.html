@@ -17,10 +17,12 @@
   {% endif %}
   
   <div class="widgets__canvas">
-    <div id="dashboard-widget-container"
-        class="{% if request.GET.mode != 'view' %}widgets__grid{%endif%}"
-        data-controller="widget-list"
-        style="min-width:{{ dashboard.width }}px;min-height:{{ dashboard.height }}px;">
+    <div
+      id="dashboard-widget-container"
+      class="{% if request.GET.mode != 'view' %}widgets__grid{%endif%}"
+      data-controller="widget-list"
+      style="min-width:{{ dashboard.width }}px;min-height:{{ dashboard.height }}px;"
+    >
       {% for object in object_list %}
       {% include 'widgets/widget_component.html' %}
       {% empty %}

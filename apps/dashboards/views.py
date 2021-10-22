@@ -88,6 +88,17 @@ class DashboardDetail(ProjectMixin, TurboUpdateView):
         )
 
 
+class DashboardSettings(ProjectMixin, TurboUpdateView):
+    template_name = "dashboards/settings.html"
+    model = Dashboard
+    form_class = DashboardForm
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_dashboards:settings", args=(self.project.id, self.object.id)
+        )
+
+
 class DashboardDelete(ProjectMixin, DeleteView):
     template_name = "dashboards/delete.html"
     model = Dashboard

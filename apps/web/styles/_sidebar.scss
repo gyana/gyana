@@ -142,8 +142,9 @@
   }
 
   &__bar {
-    position: relative;
     height: 0;
+    position: relative;
+    z-index: var(--z-ui);
 
     &::after {
       background-color: var(--c-gray);
