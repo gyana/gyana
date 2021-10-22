@@ -1,9 +1,9 @@
 import inspect
 import logging
+from functools import wraps
 
 import ibis
 from apps.base import clients
-from apps.base.clients import ibis_client
 from apps.base.errors import error_name_to_snake
 from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
@@ -69,10 +69,11 @@ def _format_literal(value, type_):
 
 
 def use_intermediate_table(func):
+    @wraps(func)
     def wrapper(node, parent):
 
         table = node.intermediate_table
-        conn = ibis_client()
+        conn = clients.ibis_client()
 
         # if the table doesn't need updating we can simply return the previous computed pivot table
         if table and table.data_updated > max(tuple(get_parent_updated(node))):
@@ -222,10 +223,13 @@ def get_pivot_query(node, parent):
     column_type = parent[node.pivot_column].type()
 
     # the new column names consist of the values inside the selected column
+    # and we only need unique values but can't use a set because we like to keep the values
     names_query = {
-        _format_literal(row.values()[0], column_type)
-        for row in client.query(parent[node.pivot_column].compile()).result()
-    }
+        _format_literal(row[node.pivot_column], column_type): None
+        for row in client.get_query_results(
+            parent[node.pivot_column].compile()
+        ).rows_dict
+    }.keys()
     # `pivot_index` is optional and won't be displayed if not selected
     selection = ", ".join(
         filter(None, (node.pivot_index, node.pivot_column, node.pivot_value))
@@ -235,7 +239,7 @@ def get_pivot_query(node, parent):
         f"SELECT * FROM"
         f"  (SELECT {selection} FROM ({parent.compile()}))"
         f"  PIVOT({node.pivot_aggregation}({node.pivot_value})"
-        f"      FOR {node.pivot_column} IN ({' ,'.join(names_query)})"
+        f"      FOR {node.pivot_column} IN ({', '.join(names_query)})"
         f"  )"
     )
 
@@ -244,17 +248,18 @@ def get_pivot_query(node, parent):
 def get_unpivot_query(node, parent):
     selection_columns = [col.column for col in node.secondary_columns.all()]
     selection = (
-        f"{' ,'.join(selection_columns)+', ' if selection_columns else ''}"
-        f"{node.unpivot_column},"
+        f"{', '.join(selection_columns)+', ' if selection_columns else ''}"
+        f"{node.unpivot_column}, "
         f"{node.unpivot_value}"
     )
     return (
         f"SELECT {selection} FROM ({parent.compile()})"
-        f" UNPIVOT({node.unpivot_value} FOR {node.unpivot_column} IN ({' ,'.join([col.column for col in node.columns.all()])}))"
+        f" UNPIVOT({node.unpivot_value} FOR {node.unpivot_column} IN ({', '.join([col.column for col in node.columns.all()])}))"
     )
 
 
 def get_window_query(node, query):
+    aggregations = []
     for window in node.window_columns.all():
         aggregation = _get_aggregate_expr(
             query, window.column, window.function, []
@@ -263,13 +268,14 @@ def get_window_query(node, query):
         if window.group_by or window.order_by:
             w = ibis.window(group_by=window.group_by, order_by=window.order_by)
             aggregation = aggregation.over(w)
-        query = query.mutate([aggregation])
+        aggregations.append(aggregation)
+    query = query.mutate(aggregations)
     return query
 
 
 def get_sentiment_query(node, parent):
     table = node.intermediate_table
-    conn = ibis_client()
+    conn = clients.ibis_client()
 
     # if the table doesn't need updating we can simply return the previous computed table
     if table and table.data_updated > max(tuple(get_parent_updated(node))):
