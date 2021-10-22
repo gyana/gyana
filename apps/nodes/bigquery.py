@@ -246,12 +246,13 @@ def get_pivot_query(node, parent):
     column_type = parent[node.pivot_column].type()
 
     # the new column names consist of the values inside the selected column
+    # and we only need unique values but can't use a set because we like to keep the values
     names_query = {
-        _format_literal(row[node.pivot_column], column_type)
+        _format_literal(row[node.pivot_column], column_type): None
         for row in client.get_query_results(
             parent[node.pivot_column].compile()
         ).rows_dict
-    }
+    }.keys()
     # `pivot_index` is optional and won't be displayed if not selected
     selection = ", ".join(
         filter(None, (node.pivot_index, node.pivot_column, node.pivot_value))

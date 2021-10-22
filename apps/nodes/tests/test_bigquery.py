@@ -465,7 +465,7 @@ def test_pivot_node(setup):
     assert query == (
         f"SELECT * FROM  (SELECT id, athlete, birthday FROM "
         f"({INPUT_QUERY}))  PIVOT(sum(birthday)      "
-        f'FOR athlete IN ("Sakura Yosozumi" Sakura_Yosozumi, "Usain Bolt" Usain_Bolt)  )'
+        f'FOR athlete IN ("Usain Bolt" Usain_Bolt, "Sakura Yosozumi" Sakura_Yosozumi)  )'
     )
 
 
