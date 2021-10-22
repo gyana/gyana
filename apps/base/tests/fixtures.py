@@ -39,6 +39,8 @@ def patches(mocker, settings):
     # the test client does not have host header by default
     mocker.patch("apps.cnames.middleware.HostMiddleware", BlankMiddleware)
 
+    settings.GS_BUCKET_NAME = "gyana-test"
+
     yield
 
 
@@ -46,6 +48,7 @@ def patches(mocker, settings):
 def bigquery(mocker):
     client = MagicMock()
     # manually override the ibis client with a mock instead
+    # set the project name to "project" in auto-generated SQL
     mocker.patch(
         "ibis_bigquery.pydata_google_auth.default", return_value=(None, "project")
     )

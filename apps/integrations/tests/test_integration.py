@@ -1,8 +1,11 @@
 import pytest
-from apps.base.tests.asserts import (assertFormRenders, assertLink, assertOK,
-                                     assertSelectorLength)
-from apps.base.tests.mocks import (mock_bq_client_with_data,
-                                   mock_bq_client_with_schema)
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertLink,
+    assertOK,
+    assertSelectorLength,
+)
+from apps.base.tests.mocks import mock_bq_client_with_data, mock_bq_client_with_schema
 from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
@@ -106,7 +109,7 @@ def test_structure_and_preview(
 
     assert bigquery.get_query_results.call_count == 1
     assert bigquery.get_query_results.call_args.args == (
-        "SELECT *\nFROM `gyana-1511894275181.dataset.table`",
+        "SELECT *\nFROM `project.dataset.table`",
     )
 
     # preview page 2
@@ -120,7 +123,7 @@ def test_structure_and_preview(
 
     assert bigquery.get_query_results.call_count == 2
     assert bigquery.get_query_results.call_args.args == (
-        "SELECT *\nFROM `gyana-1511894275181.dataset.table`\nLIMIT 5 OFFSET 15",
+        "SELECT *\nFROM `project.dataset.table`\nLIMIT 5 OFFSET 15",
     )
 
 
