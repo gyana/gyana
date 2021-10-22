@@ -46,6 +46,10 @@ def patches(mocker, settings):
 @pytest.fixture(autouse=True)
 def bigquery(mocker):
     client = MagicMock()
+    # manually override the ibis client with a mock instead
+    mocker.patch(
+        "ibis_bigquery.pydata_google_auth.default", return_value=(None, "project")
+    )
     mocker.patch("apps.base.clients.bigquery", return_value=client)
     ibis_client().client = client
     yield client
