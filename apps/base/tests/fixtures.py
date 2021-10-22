@@ -1,8 +1,7 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 import waffle
-from apps.base.clients import ibis_client
 from apps.teams.models import Team
 from apps.users.models import CustomUser
 from waffle.templatetags import waffle_tags
