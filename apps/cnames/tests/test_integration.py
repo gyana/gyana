@@ -5,7 +5,8 @@ from apps.base.tests.asserts import (
     assertOK,
     assertSelectorLength,
 )
-from pytest_django.asserts import assertContains, assertRedirects
+from apps.cnames.models import CName
+from pytest_django.asserts import assertContains, assertFormError, assertRedirects
 
 pytestmark = pytest.mark.django_db
 
@@ -77,3 +78,17 @@ def test_cname_crudl(client, logged_in_user, heroku):
     assert heroku.get_domain.call_count == 1
     assert heroku.get_domain.call_args.args == ("test.domain.com",)
     assert heroku.get_domain().remove.call_count == 1
+
+
+def test_cname_validation(client, logged_in_user, c_name_factory):
+    team = logged_in_user.teams.first()
+    c_name_factory(team=team)
+
+    # domain regex
+    r = client.post(f"/teams/{team.id}/cnames/new", data={"domain": "not-a-domain"})
+    assertFormError(r, "form", "domain", "Must be a valid domain")
+
+    # unique
+    r = client.post(f"/teams/{team.id}/cnames/new", data={"domain": "test.domain.com"})
+    ERROR = "A CNAME with this domain already exists. If you think this is a mistake, reach out to support and we'll sort it out for you."
+    assertFormError(r, "form", "domain", ERROR)

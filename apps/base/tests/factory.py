@@ -1,3 +1,4 @@
+from apps.cnames.models import CName
 from apps.connectors.models import Connector
 from apps.integrations.models import Integration
 from apps.projects.models import Project
@@ -90,3 +91,11 @@ class WorkflowFactory(factory.django.DjangoModelFactory):
         model = Workflow
 
     project = factory.SubFactory(ProjectFactory)
+
+
+@register
+class CNameFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CName
+
+    domain = "test.domain.com"
