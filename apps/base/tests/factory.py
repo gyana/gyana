@@ -1,10 +1,13 @@
+from apps.cnames.models import CName
 from apps.connectors.models import Connector
+from apps.dashboards.models import Dashboard
 from apps.integrations.models import Integration
 from apps.projects.models import Project
 from apps.sheets.models import Sheet
 from apps.tables.models import Table
 from apps.teams.models import Team
 from apps.uploads.models import Upload
+from apps.widgets.models import Widget
 from apps.workflows.models import Workflow
 from pytest_factoryboy import register
 
@@ -90,3 +93,25 @@ class WorkflowFactory(factory.django.DjangoModelFactory):
         model = Workflow
 
     project = factory.SubFactory(ProjectFactory)
+
+
+@register
+class DashboardFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Dashboard
+
+    project = factory.SubFactory(ProjectFactory)
+
+
+@register
+class WidgetFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Widget
+
+
+@register
+class CNameFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CName
+
+    domain = "test.domain.com"
