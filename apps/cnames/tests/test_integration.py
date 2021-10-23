@@ -143,11 +143,11 @@ def test_cname_middleware_for_public_dashboard(
     assertOK(r)
 
     # individual widget output
-    # r = client.get(
-    #     f"project/{project.id}/dashboards/{dashboard.id}/widgets/{widget.id}/output",
-    #     HTTP_HOST="test.domain.com",
-    # )
-    # assertOK(r)
+    r = client.get(
+        f"/projects/{project.id}/dashboards/{dashboard.id}/widgets/{widget.id}/output",
+        HTTP_HOST="test.domain.com",
+    )
+    assertOK(r)
 
     # incorrect domain fails
     r = client.get(SHARED, HTTP_HOST="wrong.domain.com")
