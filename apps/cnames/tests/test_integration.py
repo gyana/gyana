@@ -9,6 +9,7 @@ from apps.base.tests.asserts import (
 )
 from apps.cnames.models import CName
 from apps.dashboards.models import Dashboard
+from django.utils import timezone
 from pytest_django.asserts import assertContains, assertFormError, assertRedirects
 
 pytestmark = pytest.mark.django_db
@@ -98,7 +99,7 @@ def test_cname_validation(client, logged_in_user, c_name_factory):
 
 
 def test_cname_middleware_for_public_dashboard(
-    client, logged_in_user, c_name_factory, dashboard_factory
+    client, logged_in_user, c_name_factory, dashboard_factory, widget_factory
 ):
     team = logged_in_user.teams.first()
     cname = c_name_factory(team=team)
@@ -107,7 +108,15 @@ def test_cname_middleware_for_public_dashboard(
         shared_status=Dashboard.SharedStatus.PUBLIC,
         shared_id=uuid4(),
     )
+    widget = widget_factory(dashboard=dashboard)
+    other_dashboard = dashboard_factory(
+        project__team=team,
+        shared_status=Dashboard.SharedStatus.PUBLIC,
+        shared_id=uuid4(),
+    )
     project = dashboard.project
+
+    SHARED = f"/dashboards/{dashboard.shared_id}"
 
     # update a project to use a cname
     r = client.get(f"/projects/{project.id}/update")
@@ -123,4 +132,63 @@ def test_cname_middleware_for_public_dashboard(
             "submit": True,
         },
     )
-    assertRedirects(r, f"/projects/{project.id}/update", status_code=303)
+    assertRedirects(r, f"/projects/{project.id}", status_code=303)
+
+    # public dashboard on our domain
+    r = client.get(SHARED)
+    assertOK(r)
+
+    # public dashboard on custom domain
+    r = client.get(SHARED, HTTP_HOST="test.domain.com")
+    assertOK(r)
+
+    # individual widget output
+    # r = client.get(
+    #     f"project/{project.id}/dashboards/{dashboard.id}/widgets/{widget.id}/output",
+    #     HTTP_HOST="test.domain.com",
+    # )
+    # assertOK(r)
+
+    # incorrect domain fails
+    r = client.get(SHARED, HTTP_HOST="wrong.domain.com")
+    assert r.status_code == 403
+
+    # incorrect project fails
+    r = client.get(
+        f"/dashboards/{other_dashboard.shared_id}", HTTP_HOST="test.domain.com"
+    )
+    assert r.status_code == 403
+
+
+def test_cname_middleware_for_password_protected_dashboard(
+    client, logged_in_user, c_name_factory, dashboard_factory, widget_factory
+):
+    team = logged_in_user.teams.first()
+    cname = c_name_factory(team=team)
+    dashboard = dashboard_factory(
+        project__team=team,
+        project__cname=cname,
+        shared_status=Dashboard.SharedStatus.PASSWORD_PROTECTED,
+        password_set=timezone.now(),
+        shared_id=uuid4(),
+    )
+    dashboard.set_password("seewhatmatters")
+    dashboard.save()
+
+    SHARED = f"/dashboards/{dashboard.shared_id}"
+
+    r = client.get(f"{SHARED}/login", HTTP_HOST="test.domain.com")
+    assertOK(r)
+
+    r = client.post(
+        f"{SHARED}/login",
+        data={"password": "seewhatmatters"},
+        HTTP_HOST="test.domain.com",
+    )
+    assertRedirects(r, SHARED)
+
+    r = client.get(SHARED, HTTP_HOST="test.domain.com")
+    assertOK(r)
+
+    r = client.get(f"{SHARED}/logout", HTTP_HOST="test.domain.com")
+    assertRedirects(r, f"{SHARED}/login")

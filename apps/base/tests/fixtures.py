@@ -37,10 +37,10 @@ def patches(mocker, settings):
     # explicitly enable in the test
     settings.ACCOUNT_EMAIL_VERIFICATION = "optional"
 
-    # the test client does not have host header by default
-    mocker.patch("apps.cnames.middleware.HostMiddleware", BlankMiddleware)
-
     settings.GS_BUCKET_NAME = "gyana-test"
+
+    # the test client host header
+    settings.CNAME_ALLOWED_HOSTS = ["testserver"]
 
     yield
 

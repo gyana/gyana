@@ -7,6 +7,7 @@ from apps.sheets.models import Sheet
 from apps.tables.models import Table
 from apps.teams.models import Team
 from apps.uploads.models import Upload
+from apps.widgets.models import Widget
 from apps.workflows.models import Workflow
 from pytest_factoryboy import register
 
@@ -100,6 +101,12 @@ class DashboardFactory(factory.django.DjangoModelFactory):
         model = Dashboard
 
     project = factory.SubFactory(ProjectFactory)
+
+
+@register
+class WidgetFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Widget
 
 
 @register
