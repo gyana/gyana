@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 import pytest
 from apps.base.tests.asserts import (
     assertFormRenders,
@@ -6,6 +8,7 @@ from apps.base.tests.asserts import (
     assertSelectorLength,
 )
 from apps.cnames.models import CName
+from apps.dashboards.models import Dashboard
 from pytest_django.asserts import assertContains, assertFormError, assertRedirects
 
 pytestmark = pytest.mark.django_db
@@ -92,3 +95,32 @@ def test_cname_validation(client, logged_in_user, c_name_factory):
     r = client.post(f"/teams/{team.id}/cnames/new", data={"domain": "test.domain.com"})
     ERROR = "A CNAME with this domain already exists. If you think this is a mistake, reach out to support and we'll sort it out for you."
     assertFormError(r, "form", "domain", ERROR)
+
+
+def test_cname_middleware_for_public_dashboard(
+    client, logged_in_user, c_name_factory, dashboard_factory
+):
+    team = logged_in_user.teams.first()
+    cname = c_name_factory(team=team)
+    dashboard = dashboard_factory(
+        project__team=team,
+        shared_status=Dashboard.SharedStatus.PUBLIC,
+        shared_id=uuid4(),
+    )
+    project = dashboard.project
+
+    # update a project to use a cname
+    r = client.get(f"/projects/{project.id}/update")
+    assertOK(r)
+    assertFormRenders(r, ["name", "description", "access", "cname"])
+
+    r = client.post(
+        f"/projects/{project.id}/update",
+        data={
+            "name": "Project",
+            "access": "everyone",
+            "cname": cname.id,
+            "submit": True,
+        },
+    )
+    assertRedirects(r, f"/projects/{project.id}/update", status_code=303)

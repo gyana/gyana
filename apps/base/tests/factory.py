@@ -1,5 +1,6 @@
 from apps.cnames.models import CName
 from apps.connectors.models import Connector
+from apps.dashboards.models import Dashboard
 from apps.integrations.models import Integration
 from apps.projects.models import Project
 from apps.sheets.models import Sheet
@@ -89,6 +90,14 @@ class IntegrationTableFactory(factory.django.DjangoModelFactory):
 class WorkflowFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Workflow
+
+    project = factory.SubFactory(ProjectFactory)
+
+
+@register
+class DashboardFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Dashboard
 
     project = factory.SubFactory(ProjectFactory)
 
