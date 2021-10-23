@@ -14,7 +14,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     services:
       postgres:
@@ -50,4 +50,8 @@ jobs:
     - name: Collect static
       run: poetry run just collectstatic
     - name: Pytest run
-      run: poetry run just test
+      run: poetry run just test-ci
+    - uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml

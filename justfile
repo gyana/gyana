@@ -71,3 +71,6 @@ startapp:
 
 test TEST=".":
     python -m pytest --no-migrations --disable-pytest-warnings -k {{TEST}}
+
+test-ci:
+    python -m pytest --cov --cov-report xml --no-migrations --disable-pytest-warnings

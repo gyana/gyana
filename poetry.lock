@@ -399,6 +399,20 @@ python-versions = "*"
 jinja2 = "*"
 
 [[package]]
+name = "coverage"
+version = "6.0.2"
+description = "Code coverage measurement for Python"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+tomli = {version = "*", optional = true, markers = "extra == \"toml\""}
+
+[package.extras]
+toml = ["tomli"]
+
+[[package]]
 name = "cryptography"
 version = "3.4.8"
 description = "cryptography is a package which provides cryptographic recipes and primitives to Python developers."
@@ -517,6 +531,18 @@ deploy = ["bump2version", "readme-renderer", "changes", "git-changelog", "twine"
 development = ["pip-tools", "check-manifest", "django", "future (>=0.17.1)", "conditional (>=1.3)", "six", "tox", "tox-gh-actions", "pluggy (>=0.7)", "mock", "unittest-xml-reporting", "codacy-coverage", "flake8", "yamllint", "isort", "black"]
 lint = ["flake8", "yamllint", "isort", "black"]
 test = ["tox", "tox-gh-actions", "pluggy (>=0.7)", "mock", "unittest-xml-reporting", "codacy-coverage", "django-migration-fixer"]
+
+[[package]]
+name = "django-coverage-plugin"
+version = "2.0.1"
+description = "Django template coverage.py plugin"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+coverage = "*"
+six = ">=1.4.0"
 
 [[package]]
 name = "django-dirtyfields"
@@ -1051,10 +1077,10 @@ regex = "*"
 toolz = "*"
 
 [package.extras]
-all = ["google-cloud-bigquery[bqstorage,pandas] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
-bigquery = ["google-cloud-bigquery[bqstorage,pandas] (>=1.12.0,<2.0.0dev)", "pydata-google-auth"]
+all = ["google-cloud-bigquery[pandas,bqstorage] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
+bigquery = ["google-cloud-bigquery[pandas,bqstorage] (>=1.12.0,<2.0.0dev)", "pydata-google-auth"]
 clickhouse = ["clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
-develop = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash", "google-cloud-bigquery[bqstorage,pandas] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "black", "click", "pydocstyle (==4.0.1)", "flake8", "isort", "mypy", "pre-commit", "pygit2", "pytest (>=4.5)"]
+develop = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash", "google-cloud-bigquery[pandas,bqstorage] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "black", "click", "pydocstyle (==4.0.1)", "flake8", "isort", "mypy", "pre-commit", "pygit2", "pytest (>=4.5)"]
 geospatial = ["geoalchemy2", "geopandas", "shapely"]
 hdf5 = ["tables (>=3.0.0)"]
 impala = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)"]
@@ -1636,6 +1662,21 @@ toml = "*"
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xmlschema"]
 
 [[package]]
+name = "pytest-cov"
+version = "3.0.0"
+description = "Pytest plugin for measuring coverage."
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+coverage = {version = ">=5.2.1", extras = ["toml"]}
+pytest = ">=4.6"
+
+[package.extras]
+testing = ["fields", "hunter", "process-tests", "six", "pytest-xdist", "virtualenv"]
+
+[[package]]
 name = "pytest-django"
 version = "4.4.0"
 description = "A Django plugin for pytest."
@@ -1845,6 +1886,14 @@ optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
+name = "tomli"
+version = "1.2.1"
+description = "A lil' TOML parser"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "toolz"
 version = "0.11.1"
 description = "List processing tools and functional utilities"
@@ -1950,7 +1999,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.*"
-content-hash = "299c2f5cf8cf4b951df69c19419a6bebd901b323faef0a4f16a665d42806ed30"
+content-hash = "edcb9b5d21d9d1fbe95bcacc550c016fa23c919b56a70e48dee81ca79a747929"
 
 [metadata.files]
 amqp = [
@@ -2121,6 +2170,41 @@ coreschema = [
     {file = "coreschema-0.0.4-py2-none-any.whl", hash = "sha256:5e6ef7bf38c1525d5e55a895934ab4273548629f16aed5c0a6caa74ebf45551f"},
     {file = "coreschema-0.0.4.tar.gz", hash = "sha256:9503506007d482ab0867ba14724b93c18a33b22b6d19fb419ef2d239dd4a1607"},
 ]
+coverage = [
+    {file = "coverage-6.0.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:1549e1d08ce38259de2bc3e9a0d5f3642ff4a8f500ffc1b2df73fd621a6cdfc0"},
+    {file = "coverage-6.0.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:bcae10fccb27ca2a5f456bf64d84110a5a74144be3136a5e598f9d9fb48c0caa"},
+    {file = "coverage-6.0.2-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:53a294dc53cfb39c74758edaa6305193fb4258a30b1f6af24b360a6c8bd0ffa7"},
+    {file = "coverage-6.0.2-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:8251b37be1f2cd9c0e5ccd9ae0380909c24d2a5ed2162a41fcdbafaf59a85ebd"},
+    {file = "coverage-6.0.2-cp310-cp310-win32.whl", hash = "sha256:db42baa892cba723326284490283a68d4de516bfb5aaba369b4e3b2787a778b7"},
+    {file = "coverage-6.0.2-cp310-cp310-win_amd64.whl", hash = "sha256:bbffde2a68398682623d9dd8c0ca3f46fda074709b26fcf08ae7a4c431a6ab2d"},
+    {file = "coverage-6.0.2-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:60e51a3dd55540bec686d7fff61b05048ca31e804c1f32cbb44533e6372d9cc3"},
+    {file = "coverage-6.0.2-cp36-cp36m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6a6a9409223a27d5ef3cca57dd7cd4dfcb64aadf2fad5c3b787830ac9223e01a"},
+    {file = "coverage-6.0.2-cp36-cp36m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:4b34ae4f51bbfa5f96b758b55a163d502be3dcb24f505d0227858c2b3f94f5b9"},
+    {file = "coverage-6.0.2-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:3bbda1b550e70fa6ac40533d3f23acd4f4e9cb4e6e77251ce77fdf41b3309fb2"},
+    {file = "coverage-6.0.2-cp36-cp36m-win32.whl", hash = "sha256:4e28d2a195c533b58fc94a12826f4431726d8eb029ac21d874345f943530c122"},
+    {file = "coverage-6.0.2-cp36-cp36m-win_amd64.whl", hash = "sha256:a82d79586a0a4f5fd1cf153e647464ced402938fbccb3ffc358c7babd4da1dd9"},
+    {file = "coverage-6.0.2-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:3be1206dc09fb6298de3fce70593e27436862331a85daee36270b6d0e1c251c4"},
+    {file = "coverage-6.0.2-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c9cd3828bbe1a40070c11fe16a51df733fd2f0cb0d745fb83b7b5c1f05967df7"},
+    {file = "coverage-6.0.2-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:d036dc1ed8e1388e995833c62325df3f996675779541f682677efc6af71e96cc"},
+    {file = "coverage-6.0.2-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:04560539c19ec26995ecfb3d9307ff154fbb9a172cb57e3b3cfc4ced673103d1"},
+    {file = "coverage-6.0.2-cp37-cp37m-win32.whl", hash = "sha256:e4fb7ced4d9dec77d6cf533acfbf8e1415fe799430366affb18d69ee8a3c6330"},
+    {file = "coverage-6.0.2-cp37-cp37m-win_amd64.whl", hash = "sha256:77b1da5767ed2f44611bc9bc019bc93c03fa495728ec389759b6e9e5039ac6b1"},
+    {file = "coverage-6.0.2-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:61b598cbdbaae22d9e34e3f675997194342f866bb1d781da5d0be54783dce1ff"},
+    {file = "coverage-6.0.2-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:36e9040a43d2017f2787b28d365a4bb33fcd792c7ff46a047a04094dc0e2a30d"},
+    {file = "coverage-6.0.2-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:9f1627e162e3864a596486774876415a7410021f4b67fd2d9efdf93ade681afc"},
+    {file = "coverage-6.0.2-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:e7a0b42db2a47ecb488cde14e0f6c7679a2c5a9f44814393b162ff6397fcdfbb"},
+    {file = "coverage-6.0.2-cp38-cp38-win32.whl", hash = "sha256:a1b73c7c4d2a42b9d37dd43199c5711d91424ff3c6c22681bc132db4a4afec6f"},
+    {file = "coverage-6.0.2-cp38-cp38-win_amd64.whl", hash = "sha256:1db67c497688fd4ba85b373b37cc52c50d437fd7267520ecd77bddbd89ea22c9"},
+    {file = "coverage-6.0.2-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:f2f184bf38e74f152eed7f87e345b51f3ab0b703842f447c22efe35e59942c24"},
+    {file = "coverage-6.0.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cd1cf1deb3d5544bd942356364a2fdc8959bad2b6cf6eb17f47d301ea34ae822"},
+    {file = "coverage-6.0.2-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:ad9b8c1206ae41d46ec7380b78ba735ebb77758a650643e841dd3894966c31d0"},
+    {file = "coverage-6.0.2-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:381d773d896cc7f8ba4ff3b92dee4ed740fb88dfe33b6e42efc5e8ab6dfa1cfe"},
+    {file = "coverage-6.0.2-cp39-cp39-win32.whl", hash = "sha256:424c44f65e8be58b54e2b0bd1515e434b940679624b1b72726147cfc6a9fc7ce"},
+    {file = "coverage-6.0.2-cp39-cp39-win_amd64.whl", hash = "sha256:abbff240f77347d17306d3201e14431519bf64495648ca5a49571f988f88dee9"},
+    {file = "coverage-6.0.2-pp36-none-any.whl", hash = "sha256:7092eab374346121805fb637572483270324407bf150c30a3b161fc0c4ca5164"},
+    {file = "coverage-6.0.2-pp37-none-any.whl", hash = "sha256:30922626ce6f7a5a30bdba984ad21021529d3d05a68b4f71ea3b16bda35b8895"},
+    {file = "coverage-6.0.2.tar.gz", hash = "sha256:6807947a09510dc31fa86f43595bf3a14017cd60bf633cc746d52141bfa6b149"},
+]
 cryptography = [
     {file = "cryptography-3.4.8-cp36-abi3-macosx_10_10_x86_64.whl", hash = "sha256:a00cf305f07b26c351d8d4e1af84ad7501eca8a342dedf24a7acb0e7b7406e14"},
     {file = "cryptography-3.4.8-cp36-abi3-macosx_11_0_arm64.whl", hash = "sha256:f44d141b8c4ea5eb4dbc9b3ad992d45580c1d22bf5e24363f2fbf50c2d7ae8a7"},
@@ -2170,6 +2254,9 @@ django-anymail = [
 django-clone = [
     {file = "django-clone-2.9.4.tar.gz", hash = "sha256:b38d4e2dcce4f6ded7fc5a8b2eed8d0932b114825bffebd2de087f7e361bc262"},
     {file = "django_clone-2.9.4-py3-none-any.whl", hash = "sha256:70f2cf00ea5b878f8a836c665c760ba957b7e3e77833f011fa081118c18c85f6"},
+]
+django-coverage-plugin = [
+    {file = "django_coverage_plugin-2.0.1.tar.gz", hash = "sha256:cf8b0265d5556f20b8458114a4babc01258f841fe3b96630de4f0deaf8fa8619"},
 ]
 django-dirtyfields = [
     {file = "django-dirtyfields-1.7.0.tar.gz", hash = "sha256:76fd01c69e077fd39f49376d9684d04188b821dafd342bf82d935036ff2f5946"},
@@ -2806,6 +2893,10 @@ pytest = [
     {file = "pytest-6.2.5-py3-none-any.whl", hash = "sha256:7310f8d27bc79ced999e760ca304d69f6ba6c6649c0b60fb0e04a4a77cacc134"},
     {file = "pytest-6.2.5.tar.gz", hash = "sha256:131b36680866a76e6781d13f101efb86cf674ebb9762eb70d3082b6f29889e89"},
 ]
+pytest-cov = [
+    {file = "pytest-cov-3.0.0.tar.gz", hash = "sha256:e7f0f5b1617d2210a2cabc266dfe2f4c75a8d32fb89eafb7ad9d06f6d076d470"},
+    {file = "pytest_cov-3.0.0-py3-none-any.whl", hash = "sha256:578d5d15ac4a25e5f961c938b85a05b09fdaae9deef3bb6de9a6e766622ca7a6"},
+]
 pytest-django = [
     {file = "pytest-django-4.4.0.tar.gz", hash = "sha256:b5171e3798bf7e3fc5ea7072fe87324db67a4dd9f1192b037fed4cc3c1b7f455"},
     {file = "pytest_django-4.4.0-py3-none-any.whl", hash = "sha256:65783e78382456528bd9d79a35843adde9e6a47347b20464eb2c885cb0f1f606"},
@@ -2940,6 +3031,10 @@ text-unidecode = [
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
     {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
+]
+tomli = [
+    {file = "tomli-1.2.1-py3-none-any.whl", hash = "sha256:8dd0e9524d6f386271a36b41dbf6c57d8e32fd96fd22b6584679dc569d20899f"},
+    {file = "tomli-1.2.1.tar.gz", hash = "sha256:a5b75cb6f3968abb47af1b40c1819dc519ea82bcc065776a866e8d74c5ca9442"},
 ]
 toolz = [
     {file = "toolz-0.11.1-py3-none-any.whl", hash = "sha256:1bc473acbf1a1db4e72a1ce587be347450e8f08324908b8a266b486f408f04d5"},
