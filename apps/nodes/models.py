@@ -200,6 +200,8 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
     )
 
+    has_been_saved = models.BooleanField(default=False)
+
     def save(self, *args, **kwargs):
         dirty_fields = set(self.get_dirty_fields(check_relationship=True).keys()) - {
             "name",
@@ -218,6 +220,16 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
             self.data_updated = timezone.now()
 
         return super().save(*args, **kwargs)
+
+    @property
+    def is_valid(self):
+        return self.has_been_saved or self.kind not in [
+            self.Kind.INPUT,
+            self.Kind.SENTIMENT,
+            self.Kind.JOIN,
+            self.Kind.PIVOT,
+            self.Kind.UNPIVOT,
+        ]
 
     @cached_property
     def schema(self):

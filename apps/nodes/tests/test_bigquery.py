@@ -12,9 +12,6 @@ from apps.columns.models import Column
 from apps.filters.models import Filter
 from apps.nodes.bigquery import get_pivot_query, get_query_from_node, get_unpivot_query
 from apps.nodes.models import Node
-from apps.projects.models import Project
-from apps.tables.models import Table
-from apps.workflows.models import Workflow
 
 pytestmark = pytest.mark.django_db
 
