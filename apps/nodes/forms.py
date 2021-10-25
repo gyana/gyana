@@ -230,13 +230,6 @@ class SentimentNodeForm(NodeForm):
             return self.user
         return super().get_initial_for_field(field, field_name)
 
-    def save(self, commit=True):
-        parent = get_query_from_node(self.instance.parents.first())
-        self.instance.uses_credits = (
-            parent[self.instance.sentiment_column].count().execute()
-        )
-        return super().save(commit=commit)
-
 
 class ExceptNodeForm(DefaultNodeForm):
     def __init__(self, *args, **kwargs):

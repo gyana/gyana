@@ -19,7 +19,7 @@ from ._sentiment_utils import (
     CreditException,
     get_gcp_sentiment,
 )
-from ._utils import _get_parent_updated
+from ._utils import create_or_replace_intermediate_table, get_parent_updated
 
 JOINS = {
     "inner": "inner_join",
@@ -68,28 +68,6 @@ def _format_literal(value, type_):
     return str(value)
 
 
-def _create_or_replace_intermediate_table(table, node, query):
-    """Creates a new intermediate table or replaces an existing one"""
-    client = clients.bigquery()
-
-    with transaction.atomic():
-        table, _ = Table.objects.get_or_create(
-            source=Table.Source.INTERMEDIATE_NODE,
-            bq_table=node.bq_intermediate_table_id,
-            bq_dataset=node.workflow.project.team.tables_dataset_id,
-            project=node.workflow.project,
-            intermediate_node=node,
-        )
-
-        client.query(f"CREATE OR REPLACE TABLE {table.bq_id} as ({query})").result()
-
-        node.intermediate_table = table
-        table.data_updated = timezone.now()
-        node.save()
-        table.save()
-    return table
-
-
 def use_intermediate_table(func):
     def wrapper(node, parent):
 
@@ -97,11 +75,11 @@ def use_intermediate_table(func):
         conn = ibis_client()
 
         # if the table doesn't need updating we can simply return the previous computed pivot table
-        if table and table.data_updated > max(tuple(_get_parent_updated(node))):
+        if table and table.data_updated > max(tuple(get_parent_updated(node))):
             return conn.table(table.bq_table, database=table.bq_dataset)
 
         query = func(node, parent)
-        table = _create_or_replace_intermediate_table(table, node, query)
+        table = create_or_replace_intermediate_table(node, query)
 
         return conn.table(table.bq_table, database=table.bq_dataset)
 
@@ -293,15 +271,9 @@ def get_sentiment_query(node, parent):
     table = node.intermediate_table
     conn = ibis_client()
 
-    # if the table doesn't need updating we can simply return the previous computed pivot table
-    if table and table.data_updated > max(tuple(_get_parent_updated(node))):
+    # if the table doesn't need updating we can simply return the previous computed table
+    if table and table.data_updated > max(tuple(get_parent_updated(node))):
         return conn.table(table.bq_table, database=table.bq_dataset)
-
-    if not node.always_use_credits and (
-        node.credit_use_confirmed is None
-        or node.credit_use_confirmed < max(tuple(_get_parent_updated(node)))
-    ):
-        raise CreditException(node)
 
     task = get_gcp_sentiment.delay(node.id, parent[node.sentiment_column].compile())
     bq_table, bq_dataset = task.wait(timeout=None, interval=0.2)
@@ -381,6 +353,8 @@ def get_query_from_node(node):
                 node.save()
         except Exception as err:
             node.error = error_name_to_snake(err)
+            if isinstance(err, CreditException):
+                node.uses_credits = err.uses_credits
             node.save()
             logging.error(err, exc_info=err)
 
