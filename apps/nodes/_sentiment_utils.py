@@ -183,16 +183,16 @@ def _compute_values(client, query):
     return values, clipped_values
 
 
-def _update_intermedate_table(ibis_client, node, parent):
+def _update_intermediate_table(ibis_client, node, current_values):
     cache_table = node.cache_table
     cache_query = ibis_client.table(
         cache_table.bq_table, database=cache_table.bq_dataset
     )
 
     # TODO: make sure we don't have column name clash
-    query = parent.inner_join(
+    query = current_values.left_join(
         cache_query,
-        parent[node.sentiment_column] == cache_query[TEXT_COLUMN_NAME],
+        current_values[TEXT_COLUMN_NAME] == cache_query[TEXT_COLUMN_NAME],
     ).materialize()[TEXT_COLUMN_NAME, SENTIMENT_COLUMN_NAME]
     return create_or_replace_intermediate_table(
         node,
@@ -232,7 +232,7 @@ def get_gcp_sentiment(node_id, column_query):
     values, clipped_values = _compute_values(client, not_cached.compile())
 
     if len(values) == 0:
-        table = _update_intermedate_table(conn, node, parent)
+        table = _update_intermedate_table(conn, node, current_values)
         return table.bq_table, table.bq_dataset
 
     if not node.always_use_credits and (
@@ -284,5 +284,5 @@ def get_gcp_sentiment(node_id, column_query):
 
         node.save()
         cache_table.save()
-        table = _update_intermedate_table(conn, node, parent)
+        table = _update_intermediate_table(conn, node, parent)
     return table.bq_table, table.bq_dataset
