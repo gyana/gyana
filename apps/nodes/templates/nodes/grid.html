@@ -1,6 +1,8 @@
 {% load render_table from django_tables2 %}
 
-{% if node.error %}
+{% if not node.is_valid %}
+  {% include 'nodes/_zero_state.html' %}
+{% elif node.error %}
 <div class='workflow-node__visual'>
   {% if error_template %}
     {% include error_template %}
