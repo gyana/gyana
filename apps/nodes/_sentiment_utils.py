@@ -174,7 +174,10 @@ def _reconcile_gcp_scores(
 
 def _compute_values(client, query):
 
-    values = client.query(query).to_dataframe()[TEXT_COLUMN_NAME].to_list()
+    values = [
+        row[TEXT_COLUMN_NAME]
+        for row in client.get_query_results(query, max_results=None).rows_dict
+    ]
     values = [_remove_unicode(value) for value in values]
 
     # clip each row of text so that GPC doesn't charge us more than 1 credit
@@ -187,12 +190,12 @@ def _update_intermediate_table(ibis_client, node, current_values):
     cache_table = node.cache_table
     cache_query = ibis_client.table(
         cache_table.bq_table, database=cache_table.bq_dataset
-    )
+    ).relabel({TEXT_COLUMN_NAME: f"{TEXT_COLUMN_NAME}_right"})
 
     # TODO: make sure we don't have column name clash
     query = current_values.left_join(
         cache_query,
-        current_values[TEXT_COLUMN_NAME] == cache_query[TEXT_COLUMN_NAME],
+        current_values[TEXT_COLUMN_NAME] == cache_query[f"{TEXT_COLUMN_NAME}_right"],
     ).materialize()[TEXT_COLUMN_NAME, SENTIMENT_COLUMN_NAME]
     return create_or_replace_intermediate_table(
         node,
@@ -201,38 +204,38 @@ def _update_intermediate_table(ibis_client, node, current_values):
 
 
 @shared_task
-def get_gcp_sentiment(node_id, column_query):
-
+def get_gcp_sentiment(node_id):
     from apps.nodes.bigquery import get_query_from_node
 
     node = get_object_or_404(Node, pk=node_id)
     parent = get_query_from_node(node.parents.first())
-    conn = clients.ibis_client()
-    current_values = parent.relabel(
-        {node.sentiment_column: TEXT_COLUMN_NAME}
-    ).projection([TEXT_COLUMN_NAME])
+    ibis_client = clients.ibis_client()
+    current_values = (
+        parent[[node.sentiment_column]]
+        .relabel({node.sentiment_column: TEXT_COLUMN_NAME})
+        .distinct()
+    )
     cache_table = node.cache_table
 
     not_cached = (
-        (
-            current_values.difference(
-                conn.table(
-                    cache_table.bq_table, database=cache_table.bq_dataset
-                ).projection([TEXT_COLUMN_NAME])
-            )
-            if cache_table
-            else current_values
+        current_values.difference(
+            ibis_client.table(cache_table.bq_table, database=cache_table.bq_dataset)[
+                [TEXT_COLUMN_NAME]
+            ]
         )
-        .projection([TEXT_COLUMN_NAME])
-        .distinct()
+        if cache_table
+        else current_values
     )
 
     client = clients.bigquery()
-
     values, clipped_values = _compute_values(client, not_cached.compile())
 
-    if len(values) == 0:
-        table = _update_intermedate_table(conn, node, current_values)
+    if cache_table and len(values) == 0:
+        table = (
+            _update_intermediate_table(ibis_client, node, current_values)
+            if node.intermediate_table is None
+            else node.intermediate_table
+        )
         return table.bq_table, table.bq_dataset
 
     if not node.always_use_credits and (
@@ -249,6 +252,7 @@ def get_gcp_sentiment(node_id, column_query):
             partial(_process_batch, client=LanguageServiceClient()),
             _generate_batches(clipped_values, batches_idxs),
         )
+
     scores = [score for batch_scores in batches_scores for score in batch_scores]
     df = pd.DataFrame({TEXT_COLUMN_NAME: values, SENTIMENT_COLUMN_NAME: scores})
 
@@ -284,5 +288,5 @@ def get_gcp_sentiment(node_id, column_query):
 
         node.save()
         cache_table.save()
-        table = _update_intermediate_table(conn, node, parent)
+        table = _update_intermediate_table(ibis_client, node, current_values)
     return table.bq_table, table.bq_dataset

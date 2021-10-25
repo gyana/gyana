@@ -20,8 +20,12 @@ def mock_bq_client_with_schema(bigquery, schema_list):
     bigquery.get_table = MagicMock(return_value=bq_table)
 
 
-def mock_bq_client_with_data(bigquery, records):
+def mock_bq_client_with_records(bigquery, records):
     mock = PickableMock()
     mock.rows_dict = records
     mock.total_rows = len(records)
     bigquery.get_query_results = Mock(return_value=mock)
+
+
+def mock_bq_client_with_side_effect(bigquery, side_effect):
+    bigquery.get_query_results = Mock(side_effect=side_effect)

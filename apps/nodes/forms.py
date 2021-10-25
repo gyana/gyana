@@ -32,6 +32,10 @@ class NodeForm(LiveUpdateForm):
     def get_live_formsets(self):
         return KIND_TO_FORMSETS.get(self.instance.kind, [])
 
+    def save(self, commit=True):
+        self.instance.has_been_saved = True
+        return super().save(commit=commit)
+
 
 class DefaultNodeForm(NodeForm):
     class Meta:

@@ -1,22 +1,75 @@
 import textwrap
 from datetime import date, datetime
+from functools import lru_cache
+from unittest import mock
+from unittest.mock import MagicMock
 
 import pytest
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import (
     TABLE_NAME,
-    mock_bq_client_with_data,
+    PickableMock,
     mock_bq_client_with_schema,
+    mock_bq_client_with_side_effect,
 )
 from apps.columns.models import Column
 from apps.filters.models import Filter
-from apps.nodes.bigquery import get_pivot_query, get_query_from_node, get_unpivot_query
+from apps.nodes._sentiment_utils import DELIMITER
+from apps.nodes.bigquery import (
+    NodeResultNone,
+    get_pivot_query,
+    get_query_from_node,
+    get_unpivot_query,
+)
 from apps.nodes.models import Node
+from django.utils import timezone
+from google.cloud.bigquery.schema import SchemaField
+from google.cloud.bigquery.table import Table as BqTable
+from google.cloud.language import LanguageServiceClient
 
 pytestmark = pytest.mark.django_db
 
 INPUT_QUERY = f"SELECT *\nFROM `{TABLE_NAME}`"
 DEFAULT_X_Y = {"x": 0, "y": 0}
+
+USAIN = "Usain Bolt"
+SAKURA = "Sakura Yosozumi"
+INPUT_DATA = [
+    {
+        "id": 1,
+        "athlete": USAIN,
+        "birthday": date(year=1986, month=8, day=21),
+    },
+    {
+        "id": 2,
+        "athlete": SAKURA,
+        "birthday": date(year=2002, month=3, day=15),
+    },
+]
+
+
+def mock_query_data(query, **kwargs):
+    mock = PickableMock()
+    if query == INPUT_QUERY.replace("*", "DISTINCT `athlete` AS `text`"):
+        mock.rows_dict = [{"text": row["athlete"]} for row in INPUT_DATA]
+        mock.total_rows = len(INPUT_DATA)
+    else:
+        mock.rows_dict = INPUT_DATA
+        mock.total_rows = len(INPUT_DATA)
+    return mock
+
+
+def mock_bq_client_schema(bigquery):
+    def side_effect(table, **kwargs):
+        return BqTable(
+            TABLE_NAME,
+            schema=[
+                SchemaField(column, type_.name)
+                for column, type_ in TABLE.schema().items()
+            ][:3],
+        )
+
+    bigquery.get_table = MagicMock(side_effect=side_effect)
 
 
 @pytest.fixture
@@ -35,28 +88,16 @@ def setup(
         integration=integration,
     )
 
-    mock_bq_client_with_schema(
-        bigquery,
-        [(column, type_.name) for column, type_ in TABLE.schema().items()][:3],
-    )
-    mock_bq_client_with_data(
-        bigquery,
-        [
-            {
-                "id": 1,
-                "athlete": "Usain Bolt",
-                "birthday": date(year=1986, month=8, day=21),
-            },
-            {
-                "id": 2,
-                "athlete": "Sakura Yosozumi",
-                "birthday": date(year=2002, month=3, day=15),
-            },
-        ],
-    )
+    mock_bq_client_schema(bigquery)
+    mock_bq_client_with_side_effect(bigquery, mock_query_data)
+
     return (
         Node.objects.create(
-            kind=Node.Kind.INPUT, input_table=table, workflow=workflow, **DEFAULT_X_Y
+            kind=Node.Kind.INPUT,
+            input_table=table,
+            workflow=workflow,
+            data_updated=timezone.now(),
+            **DEFAULT_X_Y,
         ),
         workflow,
     )
@@ -494,3 +535,61 @@ def test_unpivot_node(setup):
         f"SELECT id, category, value FROM ({INPUT_QUERY})"
         f" UNPIVOT(value FOR category IN (athlete, birthday))"
     )
+
+
+POSITIVE_SCORE = +0.9
+NEGATIVE_SCORE = -0.9
+
+SENTIMENT_LOOKUP = {SAKURA: POSITIVE_SCORE, USAIN: NEGATIVE_SCORE}
+
+
+# cache as creating mocks is expensive
+@lru_cache(len(SENTIMENT_LOOKUP))
+def score_to_sentence_mock(sentence_text: str):
+    """Mocks a sentence to place inside an AnalyzeSentimentResponse"""
+    sentence = mock.MagicMock()
+    sentence.text.content = sentence_text
+    sentence.sentiment.score = SENTIMENT_LOOKUP[sentence_text]
+    return sentence
+
+
+def mock_gcp_analyze_sentiment(document):
+    """Mocks the AnalyzeSentimentResponse sent back from GCP"""
+    mocked = mock.MagicMock()
+
+    # covers the scalar case too as scalars are sent over as a single-row column
+    mocked.sentences = [
+        score_to_sentence_mock(x) for x in document.content.split(DELIMITER)
+    ]
+
+    return mocked
+
+
+def test_sentiment_query(mocker, logged_in_user, setup):
+    input_node, workflow = setup
+    sentiment_node = Node.objects.create(
+        kind=Node.Kind.SENTIMENT,
+        workflow=workflow,
+        **DEFAULT_X_Y,
+        sentiment_column="athlete",
+        data_updated=timezone.now(),
+    )
+    sentiment_node.parents.add(input_node)
+
+    with pytest.raises(NodeResultNone) as err:
+        get_query_from_node(sentiment_node)
+
+    assert sentiment_node.error == "credit_exception"
+    assert sentiment_node.uses_credits == len(INPUT_DATA)
+
+    # Confirm credit usage
+    sentiment_node.credit_use_confirmed = timezone.now()
+    sentiment_node.credit_confirmed_user = logged_in_user
+    sentiment_node.save()
+
+    mocker.patch.object(
+        LanguageServiceClient,
+        "analyze_sentiment",
+        side_effect=mock_gcp_analyze_sentiment,
+    )
+    query = get_query_from_node(sentiment_node)

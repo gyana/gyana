@@ -281,7 +281,7 @@ def get_sentiment_query(node, parent):
     if table and table.data_updated > max(tuple(get_parent_updated(node))):
         return conn.table(table.bq_table, database=table.bq_dataset)
 
-    task = get_gcp_sentiment.delay(node.id, parent[node.sentiment_column].compile())
+    task = get_gcp_sentiment.delay(node.id)
     bq_table, bq_dataset = task.wait(timeout=None, interval=0.2)
 
     return conn.table(bq_table, database=bq_dataset)

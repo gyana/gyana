@@ -33,7 +33,7 @@ def create_or_replace_intermediate_table(node, query):
         client.query(f"CREATE OR REPLACE TABLE {table.bq_id} as ({query})").result()
 
         node.intermediate_table = table
-        table.data_updated = timezone.now()
         node.save()
+        table.data_updated = timezone.now()
         table.save()
     return table
