@@ -1,6 +1,11 @@
 import logging
 
-from apps.base.analytics import NODE_UPDATED_EVENT, track_node
+from apps.base.analytics import (
+    NODE_COMPLETED_EVENT,
+    NODE_PREVIEWED_EVENT,
+    NODE_UPDATED_EVENT,
+    track_node,
+)
 from apps.base.frames import (
     TurboFrameDetailView,
     TurboFrameFormsetUpdateView,
@@ -98,11 +103,6 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
         if not self.parent_error_node and (is_input or has_parent):
             return super().get_form()
 
-    def form_valid(self, form: forms.Form) -> HttpResponse:
-        r = super().form_valid(form)
-        track_node(self.request.user, form.instance, NODE_UPDATED_EVENT)
-        return r
-
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
         if self.object.kind == Node.Kind.SENTIMENT:
@@ -111,9 +111,13 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
 
     def get_success_url(self) -> str:
         base_url = reverse("nodes:update", args=(self.object.id,))
+        track_node(self.request.user, self.object, NODE_UPDATED_EVENT)
 
         if self.request.POST.get("submit") == "Save & Preview":
+            track_node(self.request.user, self.object, NODE_PREVIEWED_EVENT)
             return f"{base_url}?preview_node_id={self.preview_node_id}"
+
+        track_node(self.request.user, self.object, NODE_COMPLETED_EVENT)
 
         return base_url
 
