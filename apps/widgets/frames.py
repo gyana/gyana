@@ -1,7 +1,11 @@
 import logging
 
 import analytics
-from apps.base.analytics import WIDGET_CONFIGURED_EVENT
+from apps.base.analytics import (
+    WIDGET_COMPLETED_EVENT,
+    WIDGET_CONFIGURED_EVENT,
+    WIDGET_PREVIEWED_EVENT,
+)
 from apps.base.errors import error_name_to_snake
 from apps.base.frames import (
     TurboFrameDetailView,
@@ -131,7 +135,26 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             },
         )
         if self.request.POST.get("submit") == "Save & Preview":
+            analytics.track(
+                self.request.user.id,
+                WIDGET_PREVIEWED_EVENT,
+                {
+                    "id": form.instance.id,
+                    "dashboard_id": self.dashboard.id,
+                    "type": form.instance.kind,
+                },
+            )
             return r
+
+        analytics.track(
+            self.request.user.id,
+            WIDGET_COMPLETED_EVENT,
+            {
+                "id": form.instance.id,
+                "dashboard_id": self.dashboard.id,
+                "type": form.instance.kind,
+            },
+        )
 
         context = {
             "widget": self.object,
