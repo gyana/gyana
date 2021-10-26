@@ -221,3 +221,7 @@ class CreditStatement(models.Model):
     balance = models.IntegerField()
     credits_used = models.IntegerField()
     credits_received = models.IntegerField()
+
+
+class OutOfCreditsException(Exception):
+    pass

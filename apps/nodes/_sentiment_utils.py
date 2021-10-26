@@ -7,7 +7,7 @@ import pandas as pd
 from apps.base import clients
 from apps.nodes.models import Node
 from apps.tables.models import Table
-from apps.teams.models import CreditTransaction
+from apps.teams.models import CreditTransaction, OutOfCreditsException
 from celery.app import shared_task
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -230,15 +230,20 @@ def get_gcp_sentiment(node_id):
     client = clients.bigquery()
     values, clipped_values = _compute_values(client, not_cached.compile())
 
-    if cache_table and len(values) == 0:
+    uses_credits = len(values)
+    if cache_table and uses_credits == 0:
         table = _update_intermediate_table(ibis_client, node, current_values)
         return table.bq_table, table.bq_dataset
+
+    team = node.workflow.project.team
+    if team.current_credit_balance + uses_credits > team.credits:
+        raise OutOfCreditsException
 
     if not node.always_use_credits and (
         node.credit_use_confirmed is None
         or node.credit_use_confirmed < max(tuple(get_parent_updated(node)))
     ):
-        raise CreditException(node_id, len(values))
+        raise CreditException(node_id, uses_credits)
 
     batches_idxs = _get_batches_idxs(clipped_values)
     with ThreadPoolExecutor(max_workers=len(batches_idxs)) as executor:
@@ -278,7 +283,7 @@ def get_gcp_sentiment(node_id):
 
         node.workflow.project.team.credittransaction_set.create(
             transaction_type=CreditTransaction.TransactionType.INCREASE,
-            amount=len(values),
+            amount=uses_credits,
             user=node.credit_confirmed_user,
         )
 

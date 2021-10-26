@@ -24,6 +24,7 @@ from apps.nodes.bigquery import (
     get_unpivot_query,
 )
 from apps.nodes.models import Node
+from apps.teams.models import CreditTransaction
 from django.utils import timezone
 from google.cloud.bigquery.schema import SchemaField
 from google.cloud.bigquery.table import Table as BqTable
@@ -587,16 +588,21 @@ def mock_gcp_analyze_sentiment(text, _):
 SENTIMENT_QUERY = "SELECT \\*\nFROM `project.cypress_team_.*_tables\\..*`"
 
 
-def test_sentiment_query(mocker, logged_in_user, setup):
-    input_node, workflow = setup
-    sentiment_node = Node.objects.create(
+def _create_sentiment_node(input_node, workflow):
+    node = Node.objects.create(
         kind=Node.Kind.SENTIMENT,
         workflow=workflow,
         **DEFAULT_X_Y,
         sentiment_column="athlete",
         data_updated=timezone.now(),
     )
-    sentiment_node.parents.add(input_node)
+    node.parents.add(input_node)
+    return node
+
+
+def test_sentiment_query(mocker, logged_in_user, setup):
+    input_node, workflow = setup
+    sentiment_node = _create_sentiment_node(input_node, workflow)
     team = logged_in_user.teams.first()
 
     with pytest.raises(NodeResultNone) as err:
@@ -643,3 +649,20 @@ def test_sentiment_query(mocker, logged_in_user, setup):
     query = get_query_from_node(sentiment_node)
     assert re.match(re.compile(SENTIMENT_QUERY), query.compile())
     assert team.current_credit_balance == 2
+
+
+def test_sentiment_query_out_of_credits(logged_in_user, setup):
+    input_node, workflow = setup
+    sentiment_node = _create_sentiment_node(input_node, workflow)
+    team = logged_in_user.teams.first()
+
+    # Add credits so that operation would consume too many credits
+    team.credittransaction_set.create(
+        transaction_type=CreditTransaction.TransactionType.INCREASE,
+        amount=99,
+        user=logged_in_user,
+    )
+    with pytest.raises(NodeResultNone) as err:
+        get_query_from_node(sentiment_node)
+
+    assert sentiment_node.error == "out_of_credits_exception"
