@@ -203,7 +203,7 @@ def _update_intermediate_table(ibis_client, node, current_values):
     )
 
 
-@shared_task
+@shared_task(time_limit=60)
 def get_gcp_sentiment(node_id):
     from apps.nodes.bigquery import get_query_from_node
 

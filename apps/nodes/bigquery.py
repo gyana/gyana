@@ -274,7 +274,7 @@ def get_sentiment_query(node, parent):
         return conn.table(table.bq_table, database=table.bq_dataset)
 
     task = get_gcp_sentiment.delay(node.id)
-    bq_table, bq_dataset = task.wait(timeout=None, interval=0.2)
+    bq_table, bq_dataset = task.wait(timeout=None, interval=0.1)
 
     return conn.table(bq_table, database=bq_dataset)
 
