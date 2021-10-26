@@ -49,9 +49,11 @@
   <div class="card card--sm">
     {% if integrations.total == 0 %}
     <div class="table__empty">
-      <h3>You have no integrations.</h3>
-      <p class="text-black-50">Start your project by 
-        <a class="link" href="{% url 'project_integrations:list' project.id %}" data-turbo-frame="_top">creating one</a>.
+      <a href="{% url 'project_integrations:list' project.id %}" class="h3 link">
+        Create an integration to get started
+      </a>
+      <p class="text-black-50 mt-3">
+        Kickstart your project by uploading a CSV or linking a Google Sheet.
       </p>
     </div>
     {% elif not integrations.operational %}
