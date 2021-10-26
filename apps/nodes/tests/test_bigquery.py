@@ -5,7 +5,9 @@ from functools import lru_cache
 from unittest import mock
 from unittest.mock import MagicMock, Mock
 
+import pandas as pd
 import pytest
+from apps.base import clients
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import TABLE_NAME, PickableMock
 from apps.columns.models import Column
@@ -25,7 +27,6 @@ from apps.nodes.models import Node
 from django.utils import timezone
 from google.cloud.bigquery.schema import SchemaField
 from google.cloud.bigquery.table import Table as BqTable
-from google.cloud.language import LanguageServiceClient
 
 pytestmark = pytest.mark.django_db
 
@@ -622,8 +623,15 @@ def test_sentiment_query(mocker, logged_in_user, setup):
     query = get_query_from_node(sentiment_node)
     assert re.match(re.compile(SENTIMENT_QUERY), query.compile())
 
-    # Should have charged credits
+    # Should have charged credits and uploaded the right dataframe
+    uploaded_df = clients.bigquery().load_table_from_dataframe.call_args.args[0]
     assert team.current_credit_balance == 98
+    pd._testing.assert_frame_equal(
+        uploaded_df,
+        pd.DataFrame(
+            {"text": [USAIN, SAKURA], "sentiment": [NEGATIVE_SCORE, POSITIVE_SCORE]}
+        ),
+    )
 
     # Fake update to input node
     # It still shouldnt charge any credits
