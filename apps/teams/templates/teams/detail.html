@@ -38,7 +38,7 @@
     {% render_table table %}
 
     <p class="pad pad--sm small">
-      <a class="link" href="">
+      <a class="link" href="{% url 'team_projects:create' team.id %}">
         <i class="fas fa-fw fa-plus mr-2"></i>Create a new project
       </a>
     </p>
