@@ -1,3 +1,4 @@
+import re
 import textwrap
 from datetime import date, datetime
 from functools import lru_cache
@@ -47,7 +48,7 @@ INPUT_DATA = [
 ]
 
 DISTINCT_QUERY = INPUT_QUERY.replace("*", "DISTINCT `athlete` AS `text`")
-DIFFERENCE_QUERY = f"{DISTINCT_QUERY}\nEXCEPT DISTINCT\nSELECT `text`\nFROM `project.cypress_team_000001_tables.cache_node_000000002`"
+DIFFERENCE_QUERY = f"{DISTINCT_QUERY}\nEXCEPT DISTINCT\nSELECT `text`\nFROM `project.cypress_team_.*_tables.cache_node_.*`"
 
 
 def mock_bq_client_data(bigquery):
@@ -57,7 +58,7 @@ def mock_bq_client_data(bigquery):
         if query == DISTINCT_QUERY:
             mock.rows_dict = [{"text": row["athlete"]} for row in INPUT_DATA]
             mock.total_rows = len(INPUT_DATA)
-        elif query == DIFFERENCE_QUERY:
+        elif re.search(re.compile(DIFFERENCE_QUERY), query):
             mock.rows_dict = []
             mock.total_rows = 0
         else:
@@ -70,9 +71,9 @@ def mock_bq_client_data(bigquery):
 
 def mock_bq_client_schema(bigquery):
     def side_effect(table, **kwargs):
-        if table.split(".")[-1] in [
-            "cache_node_000000002",
-            "intermediate_node_000000002",
+        if table.split(".")[-1].split("_")[0] in [
+            "cache",
+            "intermediate",
         ]:
             schema = [
                 SchemaField(TEXT_COLUMN_NAME, "string"),
@@ -584,9 +585,7 @@ def mock_gcp_analyze_sentiment(document):
     return mocked
 
 
-SENTIMENT_QUERY = (
-    "SELECT *\nFROM `project.cypress_team_000001_tables.intermediate_node_000000002`"
-)
+SENTIMENT_QUERY = "SELECT \\*\nFROM `project.cypress_team_.*_tables\\..*`"
 
 
 def test_sentiment_query(mocker, logged_in_user, setup):
@@ -620,7 +619,7 @@ def test_sentiment_query(mocker, logged_in_user, setup):
         side_effect=mock_gcp_analyze_sentiment,
     )
     query = get_query_from_node(sentiment_node)
-    assert query.compile() == SENTIMENT_QUERY
+    assert re.match(re.compile(SENTIMENT_QUERY), query.compile())
 
     # Should have charged credits
     assert team.current_credit_balance == 98
@@ -633,5 +632,5 @@ def test_sentiment_query(mocker, logged_in_user, setup):
     sentiment_node.refresh_from_db()
 
     query = get_query_from_node(sentiment_node)
-    assert query.compile() == SENTIMENT_QUERY
+    assert re.match(re.compile(SENTIMENT_QUERY), query.compile())
     assert team.current_credit_balance == 98
