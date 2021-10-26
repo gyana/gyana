@@ -50,3 +50,14 @@
     }
   }
 }
+
+.loom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loom .placeholder-scr__icon {
+  position: absolute;
+  z-index: -1;
+}
