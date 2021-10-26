@@ -20,6 +20,12 @@ def link_article(collection: str, name: str):
     return {"article_url": f"{INTERCOM_ROOT}/{get_articles()[collection][name]}"}
 
 
+@register.inclusion_tag("components/link_video.html")
+def link_video(name: str):
+    # will error if does not exist (deliberate)
+    return {"article_url": f"{INTERCOM_ROOT}/{get_articles()['videos'][name]}"}
+
+
 @register.simple_tag
 def article_url(collection: str, name: str):
     if (collection_obj := get_articles().get(collection)) and (

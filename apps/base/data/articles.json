@@ -10,6 +10,15 @@
     "credits": "5621005-what-are-credits",
     "cnames": "5625615-how-to-setup-custom-domains"
   },
+  "videos": {
+    "intro": "5678046-video-guide-getting-started",
+    "integrations": "5678088-video-guide-integrations",
+    "upload": "5671469-video-guide-upload-csv",
+    "sheet": "5671566-video-guide-google-sheets",
+    "connector": "5671563-video-guide-connectors",
+    "workflows": "5671535-video-guide-workflows",
+    "dashboards": "5671541-video-guide-dashboards"
+  },
   "integrations": {
     "upload": "5548491-getting-started-how-do-we-add-data#h_04e537cb81",
     "sheet": "5548491-getting-started-how-do-we-add-data#h_e09ab9c28c",

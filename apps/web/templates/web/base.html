@@ -67,6 +67,17 @@
         <li class="mt-auto"><hr></li>
 
         <li>
+          <button
+            id="changelogWidgetID"
+            class="sidebar__link"
+          >
+            <i class="fas fa-fw fa-bullhorn"></i>What's New?
+          </button>
+        </li>
+
+        <li><hr></li>
+
+        <li>
           <a
             href="https://join.slack.com/t/gyanacommunity/shared_invite/zt-vly76dna-dxv12CkXdanlwqMam5zDPQ"
             class="sidebar__link"
@@ -143,6 +154,8 @@
 
     {% block body %}{% endblock %}
   </main>
+
+  {% include 'web/components/hellonext_changelog.html' %}
 
   {% block page_js %}{% endblock %}
 </body>
