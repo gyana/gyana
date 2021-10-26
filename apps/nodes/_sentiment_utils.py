@@ -231,11 +231,7 @@ def get_gcp_sentiment(node_id):
     values, clipped_values = _compute_values(client, not_cached.compile())
 
     if cache_table and len(values) == 0:
-        table = (
-            _update_intermediate_table(ibis_client, node, current_values)
-            if node.intermediate_table is None
-            else node.intermediate_table
-        )
+        table = _update_intermediate_table(ibis_client, node, current_values)
         return table.bq_table, table.bq_dataset
 
     if not node.always_use_credits and (

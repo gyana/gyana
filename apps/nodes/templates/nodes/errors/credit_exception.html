@@ -1,6 +1,12 @@
 
 <p class="mt-12">
-  Computing this node will spend <strong>{{node.uses_credits}}</strong> 
+  Computing this node will spend 
+    <span data-controller='tooltip' class='cursor-help'>
+      <strong>{{node.uses_credits}}</strong>
+      <span data-tooltip-target="body">
+        You will only spend credits on unique values that haven't been analysed before.
+      </span>
+    </span>
   credits. 
   <form class='items-center' method='POST', action="{% url 'nodes:credit-confirmation' node.id %}">
     {% csrf_token %}
