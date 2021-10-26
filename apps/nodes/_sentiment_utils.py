@@ -277,7 +277,7 @@ def get_gcp_sentiment(node_id):
         cache_table.data_updated = timezone.now()
 
         node.workflow.project.team.credittransaction_set.create(
-            transaction_type=CreditTransaction.TransactionType.DECREASE,
+            transaction_type=CreditTransaction.TransactionType.INCREASE,
             amount=len(values),
             user=node.credit_confirmed_user,
         )

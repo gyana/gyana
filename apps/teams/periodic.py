@@ -2,7 +2,7 @@ from celery.app import shared_task
 
 from apps.base.tasks import honeybadger_check_in
 
-from .account import calculate_credit_statement_and_reset_balance
+from .account import calculate_credit_statement
 from .models import Team
 
 
@@ -26,4 +26,4 @@ def update_team_row_limits():
 
 @shared_task
 def calculate_monthly_credit_statement():
-    calculate_credit_statement_and_reset_balance()
+    calculate_credit_statement()

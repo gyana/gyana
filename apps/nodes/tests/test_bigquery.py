@@ -605,7 +605,7 @@ def test_sentiment_query(mocker, logged_in_user, setup):
     # Should error and not charge any credits
     assert sentiment_node.error == "credit_exception"
     assert sentiment_node.uses_credits == len(INPUT_DATA)
-    assert team.current_credit_balance == 100
+    assert team.current_credit_balance == 0
 
     # Confirm credit usage
     sentiment_node.credit_use_confirmed = timezone.now()
@@ -625,7 +625,7 @@ def test_sentiment_query(mocker, logged_in_user, setup):
 
     # Should have charged credits and uploaded the right dataframe
     uploaded_df = clients.bigquery().load_table_from_dataframe.call_args.args[0]
-    assert team.current_credit_balance == 98
+    assert team.current_credit_balance == 2
     pd._testing.assert_frame_equal(
         uploaded_df,
         pd.DataFrame(
@@ -642,4 +642,4 @@ def test_sentiment_query(mocker, logged_in_user, setup):
 
     query = get_query_from_node(sentiment_node)
     assert re.match(re.compile(SENTIMENT_QUERY), query.compile())
-    assert team.current_credit_balance == 98
+    assert team.current_credit_balance == 2
