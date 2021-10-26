@@ -573,14 +573,12 @@ def score_to_sentence_mock(sentence_text: str):
     return sentence
 
 
-def mock_gcp_analyze_sentiment(document):
+def mock_gcp_analyze_sentiment(text, _):
     """Mocks the AnalyzeSentimentResponse sent back from GCP"""
     mocked = mock.MagicMock()
 
     # covers the scalar case too as scalars are sent over as a single-row column
-    mocked.sentences = [
-        score_to_sentence_mock(x) for x in document.content.split(DELIMITER)
-    ]
+    mocked.sentences = [score_to_sentence_mock(x) for x in text.split(DELIMITER)]
 
     return mocked
 
@@ -613,10 +611,13 @@ def test_sentiment_query(mocker, logged_in_user, setup):
     sentiment_node.credit_confirmed_user = logged_in_user
     sentiment_node.save()
 
-    mocker.patch.object(
-        LanguageServiceClient,
-        "analyze_sentiment",
+    mocker.patch(
+        target="apps.nodes._sentiment_utils._gcp_analyze_sentiment",
         side_effect=mock_gcp_analyze_sentiment,
+    )
+    mocker.patch(
+        "apps.nodes._sentiment_utils.LanguageServiceClient",
+        side_effect=mock.MagicMock,
     )
     query = get_query_from_node(sentiment_node)
     assert re.match(re.compile(SENTIMENT_QUERY), query.compile())
