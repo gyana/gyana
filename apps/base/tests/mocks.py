@@ -25,7 +25,3 @@ def mock_bq_client_with_records(bigquery, records):
     mock.rows_dict = records
     mock.total_rows = len(records)
     bigquery.get_query_results = Mock(return_value=mock)
-
-
-def mock_bq_client_with_side_effect(bigquery, side_effect):
-    bigquery.get_query_results = Mock(side_effect=side_effect)

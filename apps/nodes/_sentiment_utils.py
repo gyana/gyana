@@ -288,5 +288,6 @@ def get_gcp_sentiment(node_id):
 
         node.save()
         cache_table.save()
-        table = _update_intermediate_table(ibis_client, node, current_values)
+
+    table = _update_intermediate_table(ibis_client, node, current_values)
     return table.bq_table, table.bq_dataset

@@ -8,17 +8,9 @@ from apps.base.errors import error_name_to_snake
 from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
-from apps.tables.models import Table
-from django.db import transaction
-from django.utils import timezone
 from ibis.expr.datatypes import String
 
-from ._sentiment_utils import (
-    SENTIMENT_COLUMN_NAME,
-    TEXT_COLUMN_NAME,
-    CreditException,
-    get_gcp_sentiment,
-)
+from ._sentiment_utils import CreditException, get_gcp_sentiment
 from ._utils import create_or_replace_intermediate_table, get_parent_updated
 
 JOINS = {
@@ -356,7 +348,9 @@ def get_query_from_node(node):
             results[node] = func(node, *args)
             if node.error:
                 node.error = None
-                node.save()
+                # Only update error field to avoid overwriting changes performed
+                # In celery (e.g. adding the intermediate table for sentiment)
+                node.save(update_fields=["error"])
         except Exception as err:
             node.error = error_name_to_snake(err)
             if isinstance(err, CreditException):

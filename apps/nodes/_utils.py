@@ -34,6 +34,7 @@ def create_or_replace_intermediate_table(node, query):
 
         node.intermediate_table = table
         node.save()
+
         table.data_updated = timezone.now()
         table.save()
     return table

@@ -1,10 +1,12 @@
 from unittest.mock import MagicMock
 
+import ibis.expr.schema as sch
 import pytest
 import waffle
 from apps.base import clients
 from apps.teams.models import Team
 from apps.users.models import CustomUser
+from ibis_bigquery.client import BigQueryClient, rename_partitioned_column
 from waffle.templatetags import waffle_tags
 
 
@@ -45,6 +47,27 @@ def patches(mocker, settings):
     yield
 
 
+def bind(instance, name, func):
+    setattr(
+        instance,
+        name,
+        func.__get__(instance, instance.__class__),
+    )
+
+
+def mock_ibis_client_table(self, name, database):
+    t = super(self.__class__).__get__(self).table(name, database=database)
+    project, dataset, name = t.op().name.split(".")
+    bq_table = self.client.get_table(f"{project}.{dataset}.{name}")
+    return rename_partitioned_column(t, bq_table, self.partition_column)
+
+
+def mock_ibis_client_get_schema(self, name, database):
+    project, dataset = self._parse_project_and_dataset(database)
+    bq_table = self.client.get_table(f"{project}.{dataset}.{name}")
+    return sch.infer(bq_table)
+
+
 @pytest.fixture(autouse=True)
 def bigquery(mocker, settings):
     client = MagicMock()
@@ -58,6 +81,18 @@ def bigquery(mocker, settings):
     mocker.patch("ibis_bigquery.client.bq.Client", return_value=client)
     ibis_client = clients.ibis_client()
     ibis_client.client = client
+
+    bind(
+        ibis_client,
+        "table",
+        mock_ibis_client_table,
+    )
+    bind(
+        ibis_client,
+        "get_schema",
+        mock_ibis_client_get_schema,
+    )
+
     yield client
 
 

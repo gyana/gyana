@@ -2,19 +2,18 @@ import textwrap
 from datetime import date, datetime
 from functools import lru_cache
 from unittest import mock
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, Mock
 
 import pytest
 from apps.base.tests.mock_data import TABLE
-from apps.base.tests.mocks import (
-    TABLE_NAME,
-    PickableMock,
-    mock_bq_client_with_schema,
-    mock_bq_client_with_side_effect,
-)
+from apps.base.tests.mocks import TABLE_NAME, PickableMock
 from apps.columns.models import Column
 from apps.filters.models import Filter
-from apps.nodes._sentiment_utils import DELIMITER
+from apps.nodes._sentiment_utils import (
+    DELIMITER,
+    SENTIMENT_COLUMN_NAME,
+    TEXT_COLUMN_NAME,
+)
 from apps.nodes.bigquery import (
     NodeResultNone,
     get_pivot_query,
@@ -47,26 +46,46 @@ INPUT_DATA = [
     },
 ]
 
+DISTINCT_QUERY = INPUT_QUERY.replace("*", "DISTINCT `athlete` AS `text`")
+DIFFERENCE_QUERY = f"{DISTINCT_QUERY}\nEXCEPT DISTINCT\nSELECT `text`\nFROM `project.cypress_team_000001_tables.cache_node_000000002`"
 
-def mock_query_data(query, **kwargs):
-    mock = PickableMock()
-    if query == INPUT_QUERY.replace("*", "DISTINCT `athlete` AS `text`"):
-        mock.rows_dict = [{"text": row["athlete"]} for row in INPUT_DATA]
-        mock.total_rows = len(INPUT_DATA)
-    else:
-        mock.rows_dict = INPUT_DATA
-        mock.total_rows = len(INPUT_DATA)
-    return mock
+
+def mock_bq_client_data(bigquery):
+    def side_effect(query, **kwargs):
+        mock = PickableMock()
+
+        if query == DISTINCT_QUERY:
+            mock.rows_dict = [{"text": row["athlete"]} for row in INPUT_DATA]
+            mock.total_rows = len(INPUT_DATA)
+        elif query == DIFFERENCE_QUERY:
+            mock.rows_dict = []
+            mock.total_rows = 0
+        else:
+            mock.rows_dict = INPUT_DATA
+            mock.total_rows = len(INPUT_DATA)
+        return mock
+
+    bigquery.get_query_results = Mock(side_effect=side_effect)
 
 
 def mock_bq_client_schema(bigquery):
     def side_effect(table, **kwargs):
-        return BqTable(
-            TABLE_NAME,
-            schema=[
+        if table.split(".")[-1] in [
+            "cache_node_000000002",
+            "intermediate_node_000000002",
+        ]:
+            schema = [
+                SchemaField(TEXT_COLUMN_NAME, "string"),
+                SchemaField(SENTIMENT_COLUMN_NAME, "float"),
+            ]
+        else:
+            schema = [
                 SchemaField(column, type_.name)
                 for column, type_ in TABLE.schema().items()
-            ][:3],
+            ][:3]
+        return BqTable(
+            table,
+            schema=schema,
         )
 
     bigquery.get_table = MagicMock(side_effect=side_effect)
@@ -80,6 +99,9 @@ def setup(
     integration_table_factory,
     workflow_factory,
 ):
+    mock_bq_client_schema(bigquery)
+    mock_bq_client_data(bigquery)
+
     team = logged_in_user.teams.first()
     workflow = workflow_factory(project__team=team)
     integration = integration_factory(project=workflow.project)
@@ -87,9 +109,6 @@ def setup(
         project=workflow.project,
         integration=integration,
     )
-
-    mock_bq_client_schema(bigquery)
-    mock_bq_client_with_side_effect(bigquery, mock_query_data)
 
     return (
         Node.objects.create(
@@ -565,6 +584,11 @@ def mock_gcp_analyze_sentiment(document):
     return mocked
 
 
+SENTIMENT_QUERY = (
+    "SELECT *\nFROM `project.cypress_team_000001_tables.intermediate_node_000000002`"
+)
+
+
 def test_sentiment_query(mocker, logged_in_user, setup):
     input_node, workflow = setup
     sentiment_node = Node.objects.create(
@@ -575,12 +599,15 @@ def test_sentiment_query(mocker, logged_in_user, setup):
         data_updated=timezone.now(),
     )
     sentiment_node.parents.add(input_node)
+    team = logged_in_user.teams.first()
 
     with pytest.raises(NodeResultNone) as err:
         get_query_from_node(sentiment_node)
 
+    # Should error and not charge any credits
     assert sentiment_node.error == "credit_exception"
     assert sentiment_node.uses_credits == len(INPUT_DATA)
+    assert team.current_credit_balance == 100
 
     # Confirm credit usage
     sentiment_node.credit_use_confirmed = timezone.now()
@@ -593,3 +620,18 @@ def test_sentiment_query(mocker, logged_in_user, setup):
         side_effect=mock_gcp_analyze_sentiment,
     )
     query = get_query_from_node(sentiment_node)
+    assert query.compile() == SENTIMENT_QUERY
+
+    # Should have charged credits
+    assert team.current_credit_balance == 98
+
+    # Fake update to input node
+    # It still shouldnt charge any credits
+    input_node.data_updated = timezone.now()
+    input_node.save()
+    # Need to refresh object because it has new props updated in the celery task
+    sentiment_node.refresh_from_db()
+
+    query = get_query_from_node(sentiment_node)
+    assert query.compile() == SENTIMENT_QUERY
+    assert team.current_credit_balance == 98
