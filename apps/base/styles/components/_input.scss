@@ -100,6 +100,9 @@ input[type='search'] {
 
 textarea {
   @extend %input;
+
+  height: 4.3rem;
+  min-height: 4.3rem;
 }
 
 select {
