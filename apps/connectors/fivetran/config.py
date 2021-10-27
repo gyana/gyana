@@ -41,4 +41,6 @@ def get_services_query(category=None, search=None, show_internal=False):
     if not show_internal:
         services = [s for s in services if s["internal"] != "t"]
 
+    services = sorted(services, key=lambda s: s["name"])
+
     return services
