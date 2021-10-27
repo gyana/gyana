@@ -38,7 +38,7 @@ def get_services_query(category=None, search=None, show_internal=False):
         services = [s for s in services if s["type"] == category]
 
     if (search := search) is not None:
-        services = [s for s in services if s["name"].lower().startswith(search.lower())]
+        services = [s for s in services if search.lower() in s["name"].lower()]
 
     if not show_internal:
         services = [s for s in services if s.get("internal") != "t"]
