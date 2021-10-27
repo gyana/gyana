@@ -80,6 +80,12 @@
       border-top: 1px solid var(--c-gray);
     }
   }
+
+  &__search {
+    position: sticky;
+    top: 1.6rem;
+    z-index: var(--z-ui);
+  }
 }
 
 .guide {
