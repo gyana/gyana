@@ -1,22 +1,27 @@
 import copy
 
 import analytics
-from apps.base.analytics import (DASHBOARD_CREATED_EVENT,
-                                 DASHBOARD_DUPLICATED_EVENT)
+from apps.base.analytics import (
+    DASHBOARD_CREATED_EVENT,
+    DASHBOARD_CREATED_EVENT_FROM_INTEGRATION,
+    DASHBOARD_DUPLICATED_EVENT,
+)
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.dashboards.tables import DashboardTable
+from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
-from apps.widgets.models import WIDGET_CHOICES_ARRAY
+from apps.widgets.models import WIDGET_CHOICES_ARRAY, Widget
 from django.db.models.query import QuerySet
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.urls.base import reverse
 from django.utils import timezone
-from django.http import HttpResponseRedirect
-from django.views.generic.detail import DetailView
-from django.views.generic.base import TemplateView
-from django.views.generic.edit import DeleteView, FormView
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
+from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import DeleteView, FormView
 from django_tables2 import SingleTableView
 from waffle import flag_is_active
 
@@ -68,6 +73,39 @@ class DashboardCreate(ProjectMixin, TurboCreateView):
             {"id": form.instance.id, "name": form.instance.name},
         )
 
+        return r
+
+
+class DashboardCreateFromIntegration(ProjectMixin, TurboCreateView):
+    model = Dashboard
+    template_name = "dashboards/create_from_integration.html"
+    fields = ("project",)
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_dashboards:detail", args=(self.project.id, self.object.id)
+        )
+
+    def form_valid(self, form):
+        r = super().form_valid(form)
+        analytics.track(
+            self.request.user.id,
+            DASHBOARD_CREATED_EVENT_FROM_INTEGRATION,
+            {"id": form.instance.id, "name": form.instance.name},
+        )
+        integration = get_object_or_404(
+            Integration, pk=self.request.POST["integration"]
+        )
+        table = integration.table_set.first()
+        self.object.widget_set.create(
+            kind=Widget.Kind.TABLE,
+            name=f"Table from {integration.name}",
+            table=table,
+            x=0,
+            y=0,
+        )
+        self.object.name = f"{integration.name} dashboard"
+        self.object.name
         return r
 
 
@@ -155,7 +193,7 @@ class DashboardPublic(DetailView):
         context["is_beta"] = False
         for member in self.object.project.team.members.all():
             self.request.user = member
-            context["is_beta"] = context['is_beta'] or flag_is_active(
+            context["is_beta"] = context["is_beta"] or flag_is_active(
                 self.request, "beta"
             )
         self.request.user = user
@@ -202,4 +240,6 @@ class DashboardLogout(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         del self.request.session[str(self.dashboard.shared_id)]
 
-        return HttpResponseRedirect(reverse("dashboards:login", args=(self.dashboard.shared_id,)))
+        return HttpResponseRedirect(
+            reverse("dashboards:login", args=(self.dashboard.shared_id,))
+        )

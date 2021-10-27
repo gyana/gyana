@@ -5,7 +5,10 @@ from apps.base.tests.asserts import (
     assertOK,
     assertSelectorLength,
 )
-from apps.base.tests.mocks import mock_bq_client_with_data, mock_bq_client_with_schema
+from apps.base.tests.mocks import (
+    mock_bq_client_with_records,
+    mock_bq_client_with_schema,
+)
 from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
@@ -71,7 +74,7 @@ def test_structure_and_preview(
 
     # mock table with two columns, 20 rows
     mock_bq_client_with_schema(bigquery, [("name", "STRING"), ("age", "INTEGER")])
-    mock_bq_client_with_data(
+    mock_bq_client_with_records(
         bigquery,
         [{"name": "Neera", "age": 4}] * 15 + [{"name": "Vayu", "age": 2}] * 5,
     )
@@ -145,9 +148,9 @@ def test_create_pending_load_and_approve(
     # check that there is an option to create a connector, sheet and upload
     r = client.get(f"{LIST}/")
     assertOK(r)
-    assertContains(r, "New Integration")
-    assertLink(r, f"{LIST}/connectors/new", "New Connector")
-    assertLink(r, f"{LIST}/sheets/new", "Add Sheet")
+    assertContains(r, f"Import a source of data")
+    assertLink(r, f"{LIST}/connectors/new", "Add a connector")
+    assertLink(r, f"{LIST}/sheets/new", "Add a Google Sheet")
     assertLink(r, f"{LIST}/uploads/new", "Upload CSV")
 
     # the create and configure steps are tested in individual apps

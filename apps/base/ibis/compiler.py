@@ -1,7 +1,6 @@
 from ibis_bigquery import BigQueryExprTranslator
 from ibis_bigquery.compiler import _timestamp_units
 
-import ibis
 import ibis.expr.datatypes as dt
 import ibis.expr.rules as rlz
 from ibis.expr.operations import (

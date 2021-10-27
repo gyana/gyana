@@ -16,6 +16,8 @@ def project_of_enabled_team(user, project_id, *args, **kwargs):
 
 
 def user_can_access_project(user, project):
+    if project.team.deleted:
+        return False
     if project.access == Project.Access.EVERYONE:
         return user_can_access_team(user, project.team)
     return project.members.filter(id=user.id).exists()

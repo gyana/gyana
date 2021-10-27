@@ -41,6 +41,16 @@ $button-colors: (
   &[href],
   &[data-action] {
     cursor: pointer;
+
+    &:hover {
+      opacity: 0.5;
+    }
+
+    &:focus,
+    &:active {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--c-white), 0 0 0 4px var(--button-color);
+    }
   }
   
   &[disabled],
@@ -50,16 +60,6 @@ $button-colors: (
     --button-background: var(--c-transparent);
 
     cursor: not-allowed;
-  }
-
-  &:hover {
-    opacity: 0.5;
-  }
-
-  &:focus,
-  &:active {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--c-white), 0 0 0 4px var(--button-color);
   }
 
   &--outline {

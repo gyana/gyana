@@ -31,6 +31,7 @@ INTEGRATION_SYNC_SUCCESS_EVENT: Final = "Integration sync succeeded"
 
 # workflows
 WORKFLOW_CREATED_EVENT: Final = "Workflow created"
+WORKFLOW_CREATED_EVENT_FROM_INTEGRATION: Final = "Workflow created from integration"
 WORKFLOW_DUPLICATED_EVENT: Final = "Workflow duplicated"
 NODE_CREATED_EVENT: Final = "Node created"
 NODE_UPDATED_EVENT: Final = "Node updated"
@@ -41,6 +42,7 @@ WORFKLOW_RUN_EVENT: Final = "Workflow run"
 
 # dashboards
 DASHBOARD_CREATED_EVENT: Final = "Dashboard created"
+DASHBOARD_CREATED_EVENT_FROM_INTEGRATION: Final = "Dashboard created from integration"
 DASHBOARD_DUPLICATED_EVENT: Final = "Dashboard duplicated"
 WIDGET_CREATED_EVENT: Final = "Widget created"
 WIDGET_DUPLICATED_EVENT: Final = "Widget duplicated"

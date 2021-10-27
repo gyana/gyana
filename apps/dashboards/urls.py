@@ -63,6 +63,11 @@ project_urlpatterns = (
             name="create",
         ),
         path(
+            "create_from_integration",
+            login_and_project_required(views.DashboardCreateFromIntegration.as_view()),
+            name="create_from_integration",
+        ),
+        path(
             "<hashid:pk>",
             login_and_project_required(views.DashboardDetail.as_view()),
             name="detail",

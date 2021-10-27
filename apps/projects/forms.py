@@ -10,7 +10,7 @@ class ProjectForm(LiveUpdateForm):
         model = Project
         fields = ["name", "description", "access", "members", "cname"]
         widgets = {"members": MemberSelect()}
-        labels = {"cname": "CNAME"}
+        labels = {"cname": "Custom domain"}
 
     def __init__(self, current_user, *args, **kwargs):
         self._team = kwargs.pop("team", None)
@@ -22,15 +22,18 @@ class ProjectForm(LiveUpdateForm):
             members_field.widget.current_user = current_user
 
         if cname_field := self.fields.get("cname"):
-            cname_field.empty_label = "No CNAME (gyana.com)"
+            cname_field.empty_label = "Default domain (gyana.com)"
             cname_field.queryset = self._team.cname_set.all()
 
     def get_live_fields(self):
-        if not self._is_beta:
-            return ["name", "description"]
-        fields = ["name", "description", "access", "cname"]
+        fields = ["name", "description"]
+
+        if self._is_beta:
+            fields += ["access", "cname"]
+
         if self.get_live_field("access") == Project.Access.INVITE_ONLY:
             fields += ["members"]
+
         return fields
 
     def pre_save(self, instance):
@@ -38,6 +41,17 @@ class ProjectForm(LiveUpdateForm):
 
 
 class ProjectCreateForm(ProjectForm):
+    def get_live_fields(self):
+        fields = ["name", "description"]
+
+        if self._is_beta:
+            fields += ["access"]
+
+        if self.get_live_field("access") == Project.Access.INVITE_ONLY:
+            fields += ["members"]
+
+        return fields
+
     def clean(self):
         cleaned_data = super().clean()
 

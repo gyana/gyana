@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from safedelete.models import SafeDeleteModel
 from storages.backends.gcloud import GoogleCloudStorage
 
 from apps.base.models import BaseModel
@@ -12,7 +13,7 @@ from .config import PLANS
 WARNING_BUFFER = 0.2
 
 
-class Team(BaseModel):
+class Team(BaseModel, SafeDeleteModel):
     class Meta:
         ordering = ("-created",)
 
@@ -20,11 +21,11 @@ class Team(BaseModel):
         storage=GoogleCloudStorage(
             bucket_name=settings.GS_PUBLIC_BUCKET_NAME,
             cache_control=settings.GS_PUBLIC_CACHE_CONTROL,
-            querystring_auth=False
+            querystring_auth=False,
         ),
         upload_to="team-icons/",
         null=True,
-        blank=True
+        blank=True,
     )
     name = models.CharField(max_length=100)
 
@@ -80,6 +81,12 @@ class Team(BaseModel):
 
     def get_absolute_url(self):
         return reverse("teams:detail", args=(self.id,))
+
+    @property
+    def current_credits_left(self):
+        from .account import calculate_credit_balance
+
+        return calculate_credit_balance(self) - self.credits
 
     @property
     def current_credit_balance(self):
@@ -221,3 +228,8 @@ class CreditStatement(models.Model):
     balance = models.IntegerField()
     credits_used = models.IntegerField()
     credits_received = models.IntegerField()
+
+
+class OutOfCreditsException(Exception):
+    def __init__(self, uses_credits) -> None:
+        self.uses_credits = uses_credits

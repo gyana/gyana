@@ -68,7 +68,6 @@
 {% else %}
   
   {% with services|dict_key:request.GET.service as service %}
-
   <div class="flex flex-1 justify-center items-center">
     <div class="flex flex-col max-w-3xl">
       <h2 class="mb-4">
@@ -121,9 +120,7 @@
       </form>
     </div>
   </div>
-
   {% endwith %}
 
 {% endif %}
-
 {% endblock %}

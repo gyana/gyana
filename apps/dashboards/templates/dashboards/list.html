@@ -3,6 +3,48 @@
 {% load help_utils %}
 
 {% block app %}
+{% if dashboard_count == 0 %}
+<div class="table__empty">
+  <i class="fas fa-fw fa-4x fa-chart-pie text-black-50 mb-7"></i>
+  <h3 class="mb-3">Display data metrics and share them as reports</h3>
+  <p>
+    Watch the video below to get a good idea of how to use dashboards, if you
+    prefer to learn by doing just create one. You can always watch them later
+    in our help center!
+  </p>
+</div>
+
+<div class="mx-auto" style="width: 48rem;">
+  <div class="loom">
+    <i class="placeholder-scr__icon fad fa-spinner-third fa-2x fa-spin"></i>
+
+    <iframe
+      style="position: relative; width: 100%; height: 27rem;"
+      src="https://www.loom.com/embed/ce50a89eed144dcb8f09114894fda120?hideOwner=true"
+      frameborder="0"
+      webkitallowfullscreen
+      mozallowfullscreen
+      allowfullscreen
+    >
+    </iframe>
+  </div>
+
+  <form 
+    class="form--no-layout"
+    method="post"
+    action="{% url 'project_dashboards:create' project.id %}?mode=edit"
+  >
+    {% csrf_token %}
+    <input type="hidden" name="project" value="{{ project.id }}"></input>
+
+    <div class="flex gap-8 mt-7">
+      <button class="button button--primary flex-1" type="submit">
+        Create a new dashboard
+      </a>
+    </div>
+  </form>
+</div>
+{% else %}
 <div class="page-header">
   <div class="mr-auto">
     <h1 class="flex items-center gap-3">
@@ -43,4 +85,5 @@
     {% endif %}
   </div>
 </div>
+{% endif %}
 {% endblock %}

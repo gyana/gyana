@@ -38,6 +38,7 @@ django-tables2==2.4.0
 django-turbo-allauth==0.0.9; python_version >= "3.8"
 django-turbo-response==0.0.48; python_version >= "3.8"
 django-waffle==2.2.1
+django-safedelete==1.1.0
 django==3.2.7; python_version >= "3.6"
 djangorestframework==3.12.4; python_version >= "3.5"
 future==0.18.2; python_version >= "3.5" and python_full_version < "3.0.0" or python_full_version >= "3.3.0" and python_version >= "3.5"
