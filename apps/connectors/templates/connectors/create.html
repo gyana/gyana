@@ -42,6 +42,9 @@
         <input type="search" name="search" value="{{ request.GET.search }}" placeholder="Search all sources">
       </form>
       <div class="flex-1 flex flex-col space-y-4">
+        <div>
+          <p>{{ services_query_count }} sources</p>
+        </div>
         {% for service in services_query %}
           <a class="card card--sm"
             href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service.id }}">

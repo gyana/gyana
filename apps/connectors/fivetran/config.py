@@ -18,12 +18,14 @@ def get_services():
 
 
 @lru_cache
-def get_service_categories():
+def get_service_categories(show_internal=False):
     services = get_services()
     service_categories = []
 
     for service in services:
-        if services[service]["type"] not in service_categories:
+        if services[service]["type"] not in service_categories and (
+            show_internal or services[service].get("internal") != "t"
+        ):
             service_categories.append(services[service]["type"])
 
     return service_categories

@@ -45,6 +45,7 @@ azure_postgres:
 azure_sql_db:
   requires_schema_prefix: t
 bingads: {}
+braintree: {}
 branch: {}
 delighted: {}
 dynamodb: {}
@@ -161,14 +162,17 @@ google_sheets:
     table: sheets_table
 greenhouse: {}
 heap: {}
+height: {}
 helpscout: {}
 heroku_postgres:
   requires_schema_prefix: t
 hubspot: {}
 instagram_business: {}
 intercom: {}
+jira: {}
 linkedin_company_pages: {}
 klaviyo: {}
+kustomer: {}
 lever: {}
 linkedin_ads: {}
 magento_mysql:
@@ -192,6 +196,7 @@ mysql_azure:
   requires_schema_prefix: t
 mysql_rds:
   requires_schema_prefix: t
+outbrain: {}
 pardot: {}
 pinterest_ads: {}
 pipedrive: {}
@@ -200,6 +205,7 @@ postgres:
 postgres_rds:
   requires_schema_prefix: t
 quickbooks: {}
+recharge: {}
 recurly: {}
 sage_intacct: {}
 salesforce: {}
@@ -217,6 +223,7 @@ stripe: {}
 survey_monkey: {}
 taboola: {}
 tiktok_ads: {}
+twilio: {}
 twitter: {}
 typeform: {}
 webhooks:

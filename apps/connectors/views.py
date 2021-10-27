@@ -27,13 +27,17 @@ class ConnectorCreate(ProjectMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["services_query"] = get_services_query(
+        services_query = get_services_query(
             category=self.request.GET.get("category"),
             search=self.request.GET.get("search"),
             show_internal=self.request.user.is_superuser,
         )
+        context_data["services_query"] = services_query
+        context_data["services_query_count"] = len(services_query)
         context_data["services"] = get_services()
-        context_data["service_categories"] = get_service_categories()
+        context_data["service_categories"] = get_service_categories(
+            show_internal=self.request.user.is_superuser
+        )
         return context_data
 
     def get(self, request, *args, **kwargs):
