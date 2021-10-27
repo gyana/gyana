@@ -19,6 +19,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
+from ibis.expr.types import ScalarExpr
 
 from .bigquery import NodeResultNone, get_query_from_node
 from .forms import KIND_TO_FORM
@@ -145,7 +146,11 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
     def get_table(self, **kwargs):
         try:
             query = get_query_from_node(self.object)
-            table = get_table(query.schema(), query, **kwargs)
+            if isinstance(query, ScalarExpr):
+                schema = {query._name: query.type()}
+            else:
+                schema = query.schema()
+            table = get_table(schema, query, **kwargs)
 
             return RequestConfig(
                 self.request, paginate=self.get_table_pagination(table)

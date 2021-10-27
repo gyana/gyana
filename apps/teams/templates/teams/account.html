@@ -35,7 +35,7 @@
           <tr>
             <td><h3>Credits spent</h3></td>
             <td class="flex items-center">
-              <span class="mr-3">{{ team.current_credits_left|intcomma }} / {{ team.credits|intcomma }}</span>
+              <span class="mr-3">{{ team.current_credit_balance|intcomma }} / {{ team.credits|intcomma }}</span>
               {% link_article 'overview' 'credits' %}
             </td>
           </tr>
