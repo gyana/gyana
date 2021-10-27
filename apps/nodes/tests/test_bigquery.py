@@ -24,6 +24,7 @@ from apps.nodes.bigquery import (
     get_unpivot_query,
 )
 from apps.nodes.models import Node
+from apps.teams.models import CreditTransaction
 from django.utils import timezone
 from google.cloud.bigquery.schema import SchemaField
 from google.cloud.bigquery.table import Table as BqTable
@@ -48,8 +49,7 @@ INPUT_DATA = [
     },
 ]
 
-DISTINCT_QUERY = INPUT_QUERY.replace("*", "DISTINCT `athlete` AS `text`")
-DIFFERENCE_QUERY = f"{DISTINCT_QUERY}\nEXCEPT DISTINCT\nSELECT `text`\nFROM `project.cypress_team_.*_tables.cache_node_.*`"
+DISTINCT_QUERY = "SELECT t0.*\nFROM (\n  SELECT DISTINCT `athlete` AS `text`\n  FROM `project.dataset.table`\n) t0\nWHERE t0.`text` IS NOT NULL"
 
 
 def mock_bq_client_data(bigquery):
@@ -59,7 +59,7 @@ def mock_bq_client_data(bigquery):
         if query == DISTINCT_QUERY:
             mock.rows_dict = [{"text": row["athlete"]} for row in INPUT_DATA]
             mock.total_rows = len(INPUT_DATA)
-        elif re.search(re.compile(DIFFERENCE_QUERY), query):
+        elif "EXCEPT DISTINCT" in query:
             mock.rows_dict = []
             mock.total_rows = 0
         else:
@@ -67,6 +67,24 @@ def mock_bq_client_data(bigquery):
             mock.total_rows = len(INPUT_DATA)
         return mock
 
+    def result(query, **kwargs):
+        mock = PickableMock()
+
+        if query == DISTINCT_QUERY:
+            mock.result = Mock(
+                return_value=[{"text": row["athlete"]} for row in INPUT_DATA]
+            )
+            mock.total_rows = len(INPUT_DATA)
+        elif "EXCEPT DISTINCT" in query:
+            mock.result = Mock(return_value=[])
+            mock.total_rows = 0
+        else:
+            mock.result = Mock(return_value=INPUT_DATA)
+            mock.total_rows = len(INPUT_DATA)
+
+        return mock
+
+    bigquery.query = Mock(side_effect=result)
     bigquery.get_query_results = Mock(side_effect=side_effect)
 
 
@@ -587,16 +605,21 @@ def mock_gcp_analyze_sentiment(text, _):
 SENTIMENT_QUERY = "SELECT \\*\nFROM `project.cypress_team_.*_tables\\..*`"
 
 
-def test_sentiment_query(mocker, logged_in_user, setup):
-    input_node, workflow = setup
-    sentiment_node = Node.objects.create(
+def _create_sentiment_node(input_node, workflow):
+    node = Node.objects.create(
         kind=Node.Kind.SENTIMENT,
         workflow=workflow,
         **DEFAULT_X_Y,
         sentiment_column="athlete",
         data_updated=timezone.now(),
     )
-    sentiment_node.parents.add(input_node)
+    node.parents.add(input_node)
+    return node
+
+
+def test_sentiment_query(mocker, logged_in_user, setup):
+    input_node, workflow = setup
+    sentiment_node = _create_sentiment_node(input_node, workflow)
     team = logged_in_user.teams.first()
 
     with pytest.raises(NodeResultNone) as err:
@@ -605,7 +628,7 @@ def test_sentiment_query(mocker, logged_in_user, setup):
     # Should error and not charge any credits
     assert sentiment_node.error == "credit_exception"
     assert sentiment_node.uses_credits == len(INPUT_DATA)
-    assert team.current_credit_balance == 100
+    assert team.current_credit_balance == 0
 
     # Confirm credit usage
     sentiment_node.credit_use_confirmed = timezone.now()
@@ -625,7 +648,7 @@ def test_sentiment_query(mocker, logged_in_user, setup):
 
     # Should have charged credits and uploaded the right dataframe
     uploaded_df = clients.bigquery().load_table_from_dataframe.call_args.args[0]
-    assert team.current_credit_balance == 98
+    assert team.current_credit_balance == 2
     pd._testing.assert_frame_equal(
         uploaded_df,
         pd.DataFrame(
@@ -642,4 +665,21 @@ def test_sentiment_query(mocker, logged_in_user, setup):
 
     query = get_query_from_node(sentiment_node)
     assert re.match(re.compile(SENTIMENT_QUERY), query.compile())
-    assert team.current_credit_balance == 98
+    assert team.current_credit_balance == 2
+
+
+def test_sentiment_query_out_of_credits(logged_in_user, setup):
+    input_node, workflow = setup
+    sentiment_node = _create_sentiment_node(input_node, workflow)
+    team = logged_in_user.teams.first()
+
+    # Add credits so that operation would consume too many credits
+    team.credittransaction_set.create(
+        transaction_type=CreditTransaction.TransactionType.INCREASE,
+        amount=99,
+        user=logged_in_user,
+    )
+    with pytest.raises(NodeResultNone) as err:
+        get_query_from_node(sentiment_node)
+
+    assert sentiment_node.error == "out_of_credits_exception"

@@ -32,9 +32,8 @@ def get_credits(team: Team):
     return max(DEFAULT_CREDIT_LIMIT, get_deal(team.appsumocode_set.all())["credits"])
 
 
-def calculate_credit_statement_and_reset_balance():
-    """Creates the credit statements for all teams and resets the balance to
-    the plans limit."""
+def calculate_credit_statement():
+    """Creates the credit statements for all teams."""
     for team in Team.objects.all():
         balance = team.current_credit_balance
 
@@ -49,13 +48,13 @@ def calculate_credit_statement_and_reset_balance():
             if last_statement
             else team.credittransaction_set
         )
-        credits_received = (
+        credits_used = (
             transactions.filter(
                 transaction_type=CreditTransaction.TransactionType.INCREASE,
             ).aggregate(models.Sum("amount"))["amount__sum"]
             or 0
         )
-        credits_used = (
+        credits_received = (
             transactions.filter(
                 transaction_type=CreditTransaction.TransactionType.DECREASE,
             ).aggregate(models.Sum("amount"))["amount__sum"]
@@ -67,16 +66,10 @@ def calculate_credit_statement_and_reset_balance():
             credits_used=credits_used,
             credits_received=credits_received,
         )
-        # Reset credits by adding the missing amount from the plan limit
-        team.credittransaction_set.create(
-            amount=team.credits - balance,
-            transaction_type=CreditTransaction.TransactionType.INCREASE,
-        )
 
 
 def calculate_credit_balance(team):
     """Calculates the current credit balance based on the latest statement"""
-
     # Get the latest statement
     last_statement = (
         team.creditstatement_set.latest("created")
@@ -84,30 +77,22 @@ def calculate_credit_balance(team):
         else None
     )
 
-    start_balance = last_statement.balance if last_statement else team.credits
-
     # Fetch all transaction since the last statement
-    # this includes a transaction filling up the balance to the plans maximum
     transactions = (
         team.credittransaction_set.filter(created__gt=last_statement.created)
         if last_statement
         else team.credittransaction_set
     )
 
-    # Calculate the current balance adding the received credits to the balance of the last
-    # statement and subtracting the used credits
+    # Calculate the current balance adding the used credits subtracting the added credits
     return (
-        start_balance
-        + (
-            transactions.filter(
-                transaction_type=CreditTransaction.TransactionType.INCREASE,
-            ).aggregate(models.Sum("amount"))["amount__sum"]
-            or 0
-        )
-        - (
-            transactions.filter(
-                transaction_type=CreditTransaction.TransactionType.DECREASE,
-            ).aggregate(models.Sum("amount"))["amount__sum"]
-            or 0
-        )
+        transactions.filter(
+            transaction_type=CreditTransaction.TransactionType.INCREASE,
+        ).aggregate(models.Sum("amount"))["amount__sum"]
+        or 0
+    ) - (
+        transactions.filter(
+            transaction_type=CreditTransaction.TransactionType.DECREASE,
+        ).aggregate(models.Sum("amount"))["amount__sum"]
+        or 0
     )

@@ -20,11 +20,11 @@ class Team(BaseModel):
         storage=GoogleCloudStorage(
             bucket_name=settings.GS_PUBLIC_BUCKET_NAME,
             cache_control=settings.GS_PUBLIC_CACHE_CONTROL,
-            querystring_auth=False
+            querystring_auth=False,
         ),
         upload_to="team-icons/",
         null=True,
-        blank=True
+        blank=True,
     )
     name = models.CharField(max_length=100)
 
@@ -227,3 +227,8 @@ class CreditStatement(models.Model):
     balance = models.IntegerField()
     credits_used = models.IntegerField()
     credits_received = models.IntegerField()
+
+
+class OutOfCreditsException(Exception):
+    def __init__(self, uses_credits) -> None:
+        self.uses_credits = uses_credits
