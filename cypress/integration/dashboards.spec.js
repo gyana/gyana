@@ -17,23 +17,24 @@ describe('dashboards', () => {
   beforeEach(() => {
     cy.login()
     cy.visit('/projects/1/dashboards/')
-    cy.contains('You have no dashboards yet')
+    cy.contains('Display data metrics and share')
   })
 
   it('create, rename, and delete dashboard', () => {
-    cy.contains('create one').click()
+    cy.contains('Create a new dashboard').click()
     cy.contains('This dashboard needs some widgets!')
     cy.get('input[value=Untitled]').clear().type("Marauder's Map{enter}")
     cy.get(`input[value="Marauder's Map"]`)
     cy.visit('/projects/1/dashboards/')
     cy.contains("Marauder's Map").click()
-    cy.get('span[data-popover-target=trigger]').click()
+    cy.get('div[class="tabbar tabbar--top"]').contains('Settings').click()
+    cy.get('a').contains('Delete').click()
     cy.contains('Yes').click()
-    cy.contains('You have no dashboards yet')
+    cy.contains('Display data metrics and share')
   })
 
   it('create dashboard with two widgets', () => {
-    cy.contains('create one').click()
+    cy.contains('Create a new dashboard').click()
     createWidget('Table')
     cy.contains('Save & Preview').should('not.be.disabled').click()
     cy.contains('Edinburgh')
@@ -65,7 +66,7 @@ describe('dashboards', () => {
     // Then changes the widget kind and checks whether the original
     // widget hasn't changed
     // TODO: Maybe add test for widget relations like filters or values
-    cy.contains('create one').click()
+    cy.contains('Create a new dashboard').click()
     createWidget('Table')
     cy.contains('Save & Close').should('not.be.disabled').click()
 
@@ -93,7 +94,7 @@ describe('dashboards', () => {
   })
 
   it('shares a dashboard with a widget', () => {
-    cy.contains('create one').click()
+    cy.contains('Create a new dashboard').click()
     createWidget('Table')
     cy.contains('Save & Close').should('not.be.disabled').click()
     cy.logout()
@@ -137,7 +138,7 @@ describe('dashboards', () => {
     const id = getModelStartId('nodes.node')
 
     cy.visit('/projects/1/workflows/')
-    cy.contains('create one').click()
+    cy.contains('Create a new workflow').click()
     cy.drag('#dnd-node-input')
     cy.drop('.react-flow')
     cy.get(`[data-id=${id}]`).dblclick()
@@ -153,7 +154,7 @@ describe('dashboards', () => {
     cy.contains('Last run')
 
     cy.visit('/projects/1/dashboards')
-    cy.contains('create one').click()
+    cy.contains('Create a new dashboard').click()
     createWidget('Table')
     cy.get('select-source').find('button').click()
     cy.get('select-source').contains('Untitled - Untitled').click()

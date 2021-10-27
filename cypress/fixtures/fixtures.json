@@ -53,9 +53,34 @@
     }
   },
   {
+    "model": "users.customuser",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$GxH7SNPn0rTyr5oBBwd2th$LoeRmOzRhgkQ2t9Y+SBV6YO6sYFb/b5+vsfZ/KkOuyY=",
+      "last_login": "2021-07-27T14:46:12.276Z",
+      "is_superuser": false,
+      "username": "alone",
+      "first_name": "",
+      "last_name": "",
+      "email": "alone@gyana.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2021-07-27T14:46:12.143Z",
+      "avatar": "",
+      "onboarded": true,
+      "company_industry": null,
+      "company_role": null,
+      "company_size": null,
+      "marketing_allowed": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
     "model": "teams.team",
     "pk": 1,
     "fields": {
+      "deleted": null,
       "created": "2021-07-26T14:53:37.577Z",
       "updated": "2021-07-26T14:53:37.587Z",
       "icon": "",
@@ -67,8 +92,22 @@
   },
   {
     "model": "teams.team",
+    "pk": 2,
+    "fields": {
+      "created": "2021-07-26T14:53:37.577Z",
+      "updated": "2021-07-26T14:53:37.587Z",
+      "icon": "",
+      "name": "Alone",
+      "override_row_limit": null,
+      "row_count": 15,
+      "row_count_calculated": null
+    }
+  },
+  {
+    "model": "teams.team",
     "pk": 5,
     "fields": {
+      "deleted": null,
       "created": "2021-08-30T18:56:05.348Z",
       "updated": "2021-08-31T00:58:25.986Z",
       "icon": "",
@@ -91,12 +130,23 @@
   },
   {
     "model": "teams.membership",
-    "pk": 6,
+    "pk": 2,
     "fields": {
       "created": "2021-08-30T18:56:05.352Z",
       "updated": "2021-08-30T18:56:05.352Z",
       "team": 5,
       "user": 2,
+      "role": "admin"
+    }
+  },
+  {
+    "model": "teams.membership",
+    "pk": 3,
+    "fields": {
+      "created": "2021-08-20T13:49:01.950Z",
+      "updated": "2021-08-20T13:49:01.950Z",
+      "team": 2,
+      "user": 3,
       "role": "admin"
     }
   },
@@ -745,6 +795,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": []
     }
   },
@@ -783,6 +834,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1]
     }
   },
@@ -821,6 +873,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1]
     }
   },
@@ -859,6 +912,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1]
     }
   },
@@ -897,6 +951,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1]
     }
   },
@@ -935,6 +990,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1]
     }
   },
@@ -973,6 +1029,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1]
     }
   },
@@ -1011,6 +1068,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1]
     }
   },
@@ -1049,6 +1107,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1]
     }
   },
@@ -1087,6 +1146,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1]
     }
   },
@@ -1125,6 +1185,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1]
     }
   },
@@ -1163,6 +1224,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1]
     }
   },
@@ -1201,6 +1263,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1]
     }
   },
@@ -1239,6 +1302,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1]
     }
   },
@@ -1277,6 +1341,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": []
     }
   },
@@ -1315,6 +1380,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": []
     }
   },
@@ -1353,6 +1419,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1, 17]
     }
   },
@@ -1391,6 +1458,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": []
     }
   },
@@ -1429,6 +1497,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1]
     }
   },
@@ -1467,6 +1536,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1, 20]
     }
   },
@@ -1505,6 +1575,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1, 20]
     }
   },
@@ -1543,6 +1614,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": []
     }
   },
@@ -1581,6 +1653,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [23]
     }
   },
@@ -1619,6 +1692,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": []
     }
   },
@@ -1657,6 +1731,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
+      "has_been_saved": false,
       "parents": [1, 20]
     }
   },
@@ -1915,6 +1990,11 @@
     "model": "account.emailaddress",
     "pk": 1,
     "fields": { "user": 1, "email": "test@gyana.com", "verified": true, "primary": true }
+  },
+  {
+    "model": "account.emailaddress",
+    "pk": 2,
+    "fields": { "user": 3, "email": "alone@gyana.com", "verified": true, "primary": true }
   },
   {
     "model": "socialaccount.socialapp",

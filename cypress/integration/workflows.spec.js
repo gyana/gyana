@@ -19,12 +19,12 @@ describe('workflows', () => {
   beforeEach(() => {
     cy.login()
     cy.visit('/projects/1/workflows/')
-    cy.contains('You have no workflows')
+    cy.contains('Clean, transform, and analyse your data using a visual editor')
   })
 
   it('create, rename, duplicate and delete workflow', () => {
     cy.story('Create and rename workflow')
-    cy.get('button[type=submit]').first().click()
+    cy.contains('Create a new workflow').click()
     cy.contains('Loading...')
     cy.get('input[id=name]').clear().type('Magical workflow{enter}')
     cy.contains('Start building your workflow by dragging in a Get data node')

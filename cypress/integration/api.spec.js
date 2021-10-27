@@ -20,7 +20,7 @@ describe('Api access control', () => {
     cy.request('/nodes/api/nodes').then((response) => {
       expect(response.status).to.equal(200)
       const data = response.body.results
-      console.log(data)
+
       expect(data).to.have.length(0)
       expect(data.map((node) => node.id)).to.not.contain(1)
     })
