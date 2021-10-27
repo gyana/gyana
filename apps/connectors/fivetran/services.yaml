@@ -31,7 +31,12 @@ adwords:
       config_type: Prebuilt
       prebuilt_report: KEYWORD_STATS
 amplitude: {}
+apple_search_ads: {}
 asana: {}
+aurora:
+  requires_schema_prefix: t
+azure_sql_db:
+  requires_schema_prefix: t
 bingads: {}
 dynamodb: {}
 facebook_ads:
@@ -135,6 +140,8 @@ google_analytics:
         prebuilt_report: TRAFFIC
 google_cloud_postgresql:
   requires_schema_prefix: t
+google_cloud_mysql:
+  requires_schema_prefix: t
 google_sheets:
   internal: t
   static_config:
@@ -143,16 +150,29 @@ heap: {}
 heroku_postgres:
   requires_schema_prefix: t
 hubspot: {}
+instagram_business: {}
 intercom: {}
+linkedin_company_pages: {}
 klaviyo: {}
 linkedin_ads: {}
+magento_mysql:
+  requires_schema_prefix: t
+magento_mysql_rds:
+  requires_schema_prefix: t
 mailchimp: {}
+maria:
+  requires_schema_prefix: t
+maria_rds:
+  requires_schema_prefix: t
+maria_azure:
+  requires_schema_prefix: t
 mixpanel: {}
 mysql:
   requires_schema_prefix: t
 mysql_azure:
   requires_schema_prefix: t
-optimizely: {}
+mysql_rds:
+  requires_schema_prefix: t
 pinterest_ads: {}
 pipedrive: {}
 postgres:
@@ -164,9 +184,16 @@ segment: {}
 shopify: {}
 snapchat_ads: {}
 snowplow: {}
+sql_server:
+  requires_schema_prefix: t
+sql_server_rds:
+  requires_schema_prefix: t
 square: {}
 stripe: {}
+survey_monkey: {}
+tiktok_ads: {}
 twitter: {}
+typeform: {}
 xero: {}
 youtube_analytics:
   static_config:
