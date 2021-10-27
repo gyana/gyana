@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
+from safedelete.models import SafeDeleteModel
 from storages.backends.gcloud import GoogleCloudStorage
 
 from apps.base.models import BaseModel
@@ -16,8 +16,6 @@ WARNING_BUFFER = 0.2
 class Team(BaseModel, SafeDeleteModel):
     class Meta:
         ordering = ("-created",)
-
-    _safedelete_policy = SOFT_DELETE_CASCADE
 
     icon = models.FileField(
         storage=GoogleCloudStorage(

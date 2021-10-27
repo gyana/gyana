@@ -29,11 +29,11 @@
     <div class="max-w-xl">
       <h2 class="mb-3">Delete team</h2>
       <p class="mb-3">If you'd like to <strong>delete</strong> this team, press the button below.</p>
-      <p class="alert mt-0 mb-3"><strong>Note:</strong> Team deletion is disabled, please contact support directly if you want your team deleted.</p>
 
-      <button class="button button--danger" disabled>
+      <a class="button button--danger"
+        href="{% url 'teams:delete' object.id %}">
         Delete
-      </button>
+      </a>
     </div>
   </div>
 </div>

@@ -15,8 +15,15 @@ def login_and_project_required_or_public_or_in_template(view_func):
     def decorator(request, *args, **kwargs):
         widget = Widget.objects.get(pk=kwargs["pk"])
         dashboard = widget.dashboard
+
+        if not dashboard or not user_can_access_project(
+            request.user, dashboard.project
+        ):
+            return render(request, "404.html", status=404)
+
         if dashboard.shared_status == Dashboard.SharedStatus.PUBLIC:
             return view_func(request, *args, **kwargs)
+
         if (
             dashboard
             and dashboard.shared_status == Dashboard.SharedStatus.PASSWORD_PROTECTED

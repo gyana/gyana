@@ -35,14 +35,16 @@ def dashboard_is_public(view_func):
     def decorator(request, *args, **kwargs):
         dashboard = Dashboard.objects.get(shared_id=kwargs["shared_id"])
 
-        if dashboard and dashboard.shared_status == Dashboard.SharedStatus.PUBLIC:
+        if not dashboard or not user_can_access_project(
+            request.user, dashboard.project
+        ):
+            return render(request, "404.html", status=404)
+
+        if dashboard.shared_status == Dashboard.SharedStatus.PUBLIC:
             kwargs["dashboard"] = dashboard
             return view_func(request, *args, **kwargs)
 
-        if (
-            dashboard
-            and dashboard.shared_status == Dashboard.SharedStatus.PASSWORD_PROTECTED
-        ):
+        if dashboard.shared_status == Dashboard.SharedStatus.PASSWORD_PROTECTED:
 
             if can_access_password_protected_dashboard(request, dashboard):
                 kwargs["dashboard"] = dashboard
@@ -63,6 +65,7 @@ def dashboard_is_password_protected(view_func):
         dashboard = Dashboard.objects.get(shared_id=kwargs["shared_id"])
         if (
             dashboard
+            and user_can_access_project(request.user, dashboard.project)
             and dashboard.shared_status == Dashboard.SharedStatus.PASSWORD_PROTECTED
         ):
             kwargs["dashboard"] = dashboard
@@ -83,7 +86,10 @@ def dashboard_is_in_template(view_func):
                 "{}?next={}".format(reverse("account_login"), request.path)
             )
         dashboard = Dashboard.objects.get(pk=kwargs["pk"])
-        if dashboard.project.is_template:
+        if (
+            user_can_access_project(request.user, dashboard.project)
+            and dashboard.project.is_template
+        ):
             return view_func(request, *args, **kwargs)
         return render(request, "404.html", status=404)
 
