@@ -13,30 +13,35 @@
         {% link_article 'integrations' 'connector' %}
         {% link_video 'connector' %}
       </h2>
+
       <div class='flex flex-col flex-1'>  
-          <div class="flex flex-wrap gap-16 pad">
-              {% for category in service_categories %}
-              <div class="flex flex-col gap-7">
-                  <h3>{{ category|capfirst }}</h3>
-                  <div class="flex flex-1 flex-wrap content-start gap-7">
-                  {% for service_id, service in services.items %}
-                      {% if service.type == category %}
-                        {% if service.internal != 't' or request.user.is_superuser %}
-                          <a class="card card--inline card--square"
-                            href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service_id }}">
-                            <div class="flex-1">
-                                <img style="height:4.2rem;" src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
-                                    alt="{{ service.name }}" />
-                            </div>
-                            <span class="flex-1">{{ service.name }}</span>
-                          </a>
-                        {% endif %}
-                      {% endif %}
-                  {% endfor %}
+        <div class="flex flex-wrap gap-16 pad">
+          {% for category in service_categories %}
+          <div class="flex flex-col gap-7">
+            <h3>{{ category|capfirst }}</h3>
+            <div class="flex flex-1 flex-wrap content-start gap-7">
+            {% for service_id, service in services.items %}
+              {% if service.type == category %}
+                {% if service.internal != 't' or request.user.is_superuser %}
+                <a
+                  class="card card--inline card--square"
+                  href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service_id }}"
+                >
+                  <div class="flex-1">
+                    <img
+                      style="height:4.2rem;"
+                      src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
+                      alt="{{ service.name }}"
+                    />
                   </div>
-              </div>
-              {% endfor %}
+                  <span class="flex-1">{{ service.name }}</span>
+                </a>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            </div>
           </div>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -45,7 +50,6 @@
 {% else %}
   
   {% with services|dict_key:request.GET.service as service %}
-
   <div class="flex flex-1 justify-center items-center">
     <div class="flex flex-col max-w-3xl">
       <h2 class="mb-4">
@@ -98,9 +102,7 @@
       </form>
     </div>
   </div>
-
   {% endwith %}
 
 {% endif %}
-
 {% endblock %}
