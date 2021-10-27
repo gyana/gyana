@@ -1,22 +1,96 @@
+import re
 import textwrap
 from datetime import date, datetime
+from functools import lru_cache
+from unittest import mock
+from unittest.mock import MagicMock, Mock
 
+import pandas as pd
 import pytest
+from apps.base import clients
 from apps.base.tests.mock_data import TABLE
-from apps.base.tests.mocks import (
-    TABLE_NAME,
-    mock_bq_client_with_data,
-    mock_bq_client_with_schema,
-)
+from apps.base.tests.mocks import TABLE_NAME, PickableMock
 from apps.columns.models import Column
 from apps.filters.models import Filter
-from apps.nodes.bigquery import get_pivot_query, get_query_from_node, get_unpivot_query
+from apps.nodes._sentiment_utils import (
+    DELIMITER,
+    SENTIMENT_COLUMN_NAME,
+    TEXT_COLUMN_NAME,
+)
+from apps.nodes.bigquery import (
+    NodeResultNone,
+    get_pivot_query,
+    get_query_from_node,
+    get_unpivot_query,
+)
 from apps.nodes.models import Node
+from django.utils import timezone
+from google.cloud.bigquery.schema import SchemaField
+from google.cloud.bigquery.table import Table as BqTable
 
 pytestmark = pytest.mark.django_db
 
 INPUT_QUERY = f"SELECT *\nFROM `{TABLE_NAME}`"
 DEFAULT_X_Y = {"x": 0, "y": 0}
+
+USAIN = "Usain Bolt"
+SAKURA = "Sakura Yosozumi"
+INPUT_DATA = [
+    {
+        "id": 1,
+        "athlete": USAIN,
+        "birthday": date(year=1986, month=8, day=21),
+    },
+    {
+        "id": 2,
+        "athlete": SAKURA,
+        "birthday": date(year=2002, month=3, day=15),
+    },
+]
+
+DISTINCT_QUERY = INPUT_QUERY.replace("*", "DISTINCT `athlete` AS `text`")
+DIFFERENCE_QUERY = f"{DISTINCT_QUERY}\nEXCEPT DISTINCT\nSELECT `text`\nFROM `project.cypress_team_.*_tables.cache_node_.*`"
+
+
+def mock_bq_client_data(bigquery):
+    def side_effect(query, **kwargs):
+        mock = PickableMock()
+
+        if query == DISTINCT_QUERY:
+            mock.rows_dict = [{"text": row["athlete"]} for row in INPUT_DATA]
+            mock.total_rows = len(INPUT_DATA)
+        elif re.search(re.compile(DIFFERENCE_QUERY), query):
+            mock.rows_dict = []
+            mock.total_rows = 0
+        else:
+            mock.rows_dict = INPUT_DATA
+            mock.total_rows = len(INPUT_DATA)
+        return mock
+
+    bigquery.get_query_results = Mock(side_effect=side_effect)
+
+
+def mock_bq_client_schema(bigquery):
+    def side_effect(table, **kwargs):
+        if table.split(".")[-1].split("_")[0] in [
+            "cache",
+            "intermediate",
+        ]:
+            schema = [
+                SchemaField(TEXT_COLUMN_NAME, "string"),
+                SchemaField(SENTIMENT_COLUMN_NAME, "float"),
+            ]
+        else:
+            schema = [
+                SchemaField(column, type_.name)
+                for column, type_ in TABLE.schema().items()
+            ][:3]
+        return BqTable(
+            table,
+            schema=schema,
+        )
+
+    bigquery.get_table = MagicMock(side_effect=side_effect)
 
 
 @pytest.fixture
@@ -27,6 +101,9 @@ def setup(
     integration_table_factory,
     workflow_factory,
 ):
+    mock_bq_client_schema(bigquery)
+    mock_bq_client_data(bigquery)
+
     team = logged_in_user.teams.first()
     workflow = workflow_factory(project__team=team)
     integration = integration_factory(project=workflow.project)
@@ -35,28 +112,13 @@ def setup(
         integration=integration,
     )
 
-    mock_bq_client_with_schema(
-        bigquery,
-        [(column, type_.name) for column, type_ in TABLE.schema().items()][:3],
-    )
-    mock_bq_client_with_data(
-        bigquery,
-        [
-            {
-                "id": 1,
-                "athlete": "Usain Bolt",
-                "birthday": date(year=1986, month=8, day=21),
-            },
-            {
-                "id": 2,
-                "athlete": "Sakura Yosozumi",
-                "birthday": date(year=2002, month=3, day=15),
-            },
-        ],
-    )
     return (
         Node.objects.create(
-            kind=Node.Kind.INPUT, input_table=table, workflow=workflow, **DEFAULT_X_Y
+            kind=Node.Kind.INPUT,
+            input_table=table,
+            workflow=workflow,
+            data_updated=timezone.now(),
+            **DEFAULT_X_Y,
         ),
         workflow,
     )
@@ -494,3 +556,90 @@ def test_unpivot_node(setup):
         f"SELECT id, category, value FROM ({INPUT_QUERY})"
         f" UNPIVOT(value FOR category IN (athlete, birthday))"
     )
+
+
+POSITIVE_SCORE = +0.9
+NEGATIVE_SCORE = -0.9
+
+SENTIMENT_LOOKUP = {SAKURA: POSITIVE_SCORE, USAIN: NEGATIVE_SCORE}
+
+
+# cache as creating mocks is expensive
+@lru_cache(len(SENTIMENT_LOOKUP))
+def score_to_sentence_mock(sentence_text: str):
+    """Mocks a sentence to place inside an AnalyzeSentimentResponse"""
+    sentence = mock.MagicMock()
+    sentence.text.content = sentence_text
+    sentence.sentiment.score = SENTIMENT_LOOKUP[sentence_text]
+    return sentence
+
+
+def mock_gcp_analyze_sentiment(text, _):
+    """Mocks the AnalyzeSentimentResponse sent back from GCP"""
+    mocked = mock.MagicMock()
+
+    # covers the scalar case too as scalars are sent over as a single-row column
+    mocked.sentences = [score_to_sentence_mock(x) for x in text.split(DELIMITER)]
+
+    return mocked
+
+
+SENTIMENT_QUERY = "SELECT \\*\nFROM `project.cypress_team_.*_tables\\..*`"
+
+
+def test_sentiment_query(mocker, logged_in_user, setup):
+    input_node, workflow = setup
+    sentiment_node = Node.objects.create(
+        kind=Node.Kind.SENTIMENT,
+        workflow=workflow,
+        **DEFAULT_X_Y,
+        sentiment_column="athlete",
+        data_updated=timezone.now(),
+    )
+    sentiment_node.parents.add(input_node)
+    team = logged_in_user.teams.first()
+
+    with pytest.raises(NodeResultNone) as err:
+        get_query_from_node(sentiment_node)
+
+    # Should error and not charge any credits
+    assert sentiment_node.error == "credit_exception"
+    assert sentiment_node.uses_credits == len(INPUT_DATA)
+    assert team.current_credit_balance == 100
+
+    # Confirm credit usage
+    sentiment_node.credit_use_confirmed = timezone.now()
+    sentiment_node.credit_confirmed_user = logged_in_user
+    sentiment_node.save()
+
+    mocker.patch(
+        target="apps.nodes._sentiment_utils._gcp_analyze_sentiment",
+        side_effect=mock_gcp_analyze_sentiment,
+    )
+    mocker.patch(
+        "apps.nodes._sentiment_utils.LanguageServiceClient",
+        side_effect=mock.MagicMock,
+    )
+    query = get_query_from_node(sentiment_node)
+    assert re.match(re.compile(SENTIMENT_QUERY), query.compile())
+
+    # Should have charged credits and uploaded the right dataframe
+    uploaded_df = clients.bigquery().load_table_from_dataframe.call_args.args[0]
+    assert team.current_credit_balance == 98
+    pd._testing.assert_frame_equal(
+        uploaded_df,
+        pd.DataFrame(
+            {"text": [USAIN, SAKURA], "sentiment": [NEGATIVE_SCORE, POSITIVE_SCORE]}
+        ),
+    )
+
+    # Fake update to input node
+    # It still shouldnt charge any credits
+    input_node.data_updated = timezone.now()
+    input_node.save()
+    # Need to refresh object because it has new props updated in the celery task
+    sentiment_node.refresh_from_db()
+
+    query = get_query_from_node(sentiment_node)
+    assert re.match(re.compile(SENTIMENT_QUERY), query.compile())
+    assert team.current_credit_balance == 98

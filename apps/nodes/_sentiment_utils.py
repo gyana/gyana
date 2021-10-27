@@ -19,7 +19,7 @@ from google.cloud.language import (
     LanguageServiceClient,
 )
 
-from ._utils import _get_parent_updated
+from ._utils import create_or_replace_intermediate_table, get_parent_updated
 
 # ISO-639-1 Code for English
 # all GCP supported languages https://cloud.google.com/natural-language/docs/languages
@@ -47,9 +47,13 @@ SENTIMENT_COLUMN_NAME = "sentiment"
 
 
 class CreditException(Exception):
-    def __init__(self, node, *args: object) -> None:
-        super().__init__(*args)
-        self.node = node
+    def __init__(self, node_id, uses_credits) -> None:
+        self.node_id = node_id
+        self.uses_credits = uses_credits
+
+    @property
+    def node(self):
+        return Node.objects.get(pk=self.node_id)
 
 
 def _remove_unicode(string: str) -> str:
@@ -168,9 +172,12 @@ def _reconcile_gcp_scores(
     return scores
 
 
-def _compute_values(client, node, column_query):
+def _compute_values(client, query):
 
-    values = client.query(column_query).to_dataframe()[node.sentiment_column].to_list()
+    values = [
+        row[TEXT_COLUMN_NAME]
+        for row in client.get_query_results(query, max_results=None).rows_dict
+    ]
     values = [_remove_unicode(value) for value in values]
 
     # clip each row of text so that GPC doesn't charge us more than 1 credit
@@ -179,14 +186,65 @@ def _compute_values(client, node, column_query):
     return values, clipped_values
 
 
+def _update_intermediate_table(ibis_client, node, current_values):
+    cache_table = node.cache_table
+    cache_query = ibis_client.table(
+        cache_table.bq_table, database=cache_table.bq_dataset
+    ).relabel({TEXT_COLUMN_NAME: f"{TEXT_COLUMN_NAME}_right"})
+
+    # TODO: make sure we don't have column name clash
+    query = current_values.left_join(
+        cache_query,
+        current_values[TEXT_COLUMN_NAME] == cache_query[f"{TEXT_COLUMN_NAME}_right"],
+    ).materialize()[TEXT_COLUMN_NAME, SENTIMENT_COLUMN_NAME]
+    return create_or_replace_intermediate_table(
+        node,
+        query.compile(),
+    )
+
+
 @shared_task
-def get_gcp_sentiment(node_id, column_query):
+def get_gcp_sentiment(node_id):
+    from apps.nodes.bigquery import get_query_from_node
+
     node = get_object_or_404(Node, pk=node_id)
+    parent = get_query_from_node(node.parents.first())
+    ibis_client = clients.ibis_client()
+    current_values = (
+        parent[[node.sentiment_column]]
+        .relabel({node.sentiment_column: TEXT_COLUMN_NAME})
+        .distinct()
+    )
+    cache_table = node.cache_table
+
+    not_cached = (
+        current_values.difference(
+            ibis_client.table(cache_table.bq_table, database=cache_table.bq_dataset)[
+                [TEXT_COLUMN_NAME]
+            ]
+        )
+        if cache_table
+        else current_values
+    )
+
     client = clients.bigquery()
+    values, clipped_values = _compute_values(client, not_cached.compile())
 
-    values, clipped_values = _compute_values(client, node, column_query)
+    if cache_table and len(values) == 0:
+        table = (
+            _update_intermediate_table(ibis_client, node, current_values)
+            if node.intermediate_table is None
+            else node.intermediate_table
+        )
+        return table.bq_table, table.bq_dataset
+
+    if not node.always_use_credits and (
+        node.credit_use_confirmed is None
+        or node.credit_use_confirmed < max(tuple(get_parent_updated(node)))
+    ):
+        raise CreditException(node_id, len(values))
+
     batches_idxs = _get_batches_idxs(clipped_values)
-
     with ThreadPoolExecutor(max_workers=len(batches_idxs)) as executor:
         batches_scores = executor.map(
             # create one client for all requests so it authenticates only once
@@ -194,42 +252,33 @@ def get_gcp_sentiment(node_id, column_query):
             partial(_process_batch, client=LanguageServiceClient()),
             _generate_batches(clipped_values, batches_idxs),
         )
+
     scores = [score for batch_scores in batches_scores for score in batch_scores]
     df = pd.DataFrame({TEXT_COLUMN_NAME: values, SENTIMENT_COLUMN_NAME: scores})
 
     job_config = bigquery.LoadJobConfig(
-        # Specify a (partial) schema. All columns are always written to the
-        # table. The schema is used to assist in data type definitions.
         schema=[
-            # Specify the type of columns whose type cannot be auto-detected. For
-            # example the "title" column uses pandas dtype "object", so its
-            # data type is ambiguous.
             bigquery.SchemaField(TEXT_COLUMN_NAME, bigquery.enums.SqlTypeNames.STRING),
-            # Indexes are written if included in the schema by name.
             bigquery.SchemaField(
                 SENTIMENT_COLUMN_NAME, bigquery.enums.SqlTypeNames.FLOAT
             ),
         ],
-        # Optionally, set the write disposition. BigQuery appends loaded rows
-        # to an existing table by default, but with WRITE_TRUNCATE write
-        # disposition it replaces the table with the loaded data.
-        write_disposition="WRITE_TRUNCATE",
     )
     with transaction.atomic():
-        table, _ = Table.objects.get_or_create(
-            source=Table.Source.INTERMEDIATE_NODE,
-            bq_table=node.bq_intermediate_table_id,
+        cache_table, _ = Table.objects.get_or_create(
+            source=Table.Source.CACHE_NODE,
+            bq_table=node.bq_cache_table_id,
             bq_dataset=node.workflow.project.team.tables_dataset_id,
             project=node.workflow.project,
-            intermediate_node=node,
+            cache_node=node,
         )
         job = client.load_table_from_dataframe(
-            df, table.bq_id, job_config=job_config
+            df, cache_table.bq_id, job_config=job_config
         )  # Make an API request.
         job.result()  # Wait for the job to complete
 
-        node.intermediate_table = table
-        table.data_updated = timezone.now()
+        node.cache_table = cache_table
+        cache_table.data_updated = timezone.now()
 
         node.workflow.project.team.credittransaction_set.create(
             transaction_type=CreditTransaction.TransactionType.DECREASE,
@@ -238,6 +287,7 @@ def get_gcp_sentiment(node_id, column_query):
         )
 
         node.save()
-        table.save()
+        cache_table.save()
 
+    table = _update_intermediate_table(ibis_client, node, current_values)
     return table.bq_table, table.bq_dataset

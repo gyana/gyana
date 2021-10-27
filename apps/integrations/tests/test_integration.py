@@ -5,7 +5,10 @@ from apps.base.tests.asserts import (
     assertOK,
     assertSelectorLength,
 )
-from apps.base.tests.mocks import mock_bq_client_with_data, mock_bq_client_with_schema
+from apps.base.tests.mocks import (
+    mock_bq_client_with_records,
+    mock_bq_client_with_schema,
+)
 from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
@@ -71,7 +74,7 @@ def test_structure_and_preview(
 
     # mock table with two columns, 20 rows
     mock_bq_client_with_schema(bigquery, [("name", "STRING"), ("age", "INTEGER")])
-    mock_bq_client_with_data(
+    mock_bq_client_with_records(
         bigquery,
         [{"name": "Neera", "age": 4}] * 15 + [{"name": "Vayu", "age": 2}] * 5,
     )
