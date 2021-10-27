@@ -203,42 +203,6 @@ def test_stack(client, logged_in_user):
     assertSelectorLength(r, "table tbody tr", 2)
 
 
-def test_link_to_review(client, logged_in_user):
-    link = "https://appsumo.com/products/marketplace-gyana/#r666666"
-    team = logged_in_user.teams.first()
-    AppsumoCode.objects.create(code="00000000", team=team)
-
-    # there is no link
-    r = client.get_turbo_frame(
-        f"/teams/{team.id}/account", f"/teams/{team.id}/appsumo/"
-    )
-    assertOK(r)
-    assertLink(r, f"/teams/{team.id}/appsumo/review", "Link to your review")
-
-    # create
-    r = client.get(f"/teams/{team.id}/appsumo/review")
-    assertOK(r)
-    assertFormRenders(r, ["review_link"])
-
-    r = client.post(f"/teams/{team.id}/appsumo/review", data={"review_link": link})
-    assertRedirects(r, f"/teams/{team.id}/account", status_code=303)
-
-    # link created
-    r = client.get_turbo_frame(
-        f"/teams/{team.id}/account", f"/teams/{team.id}/appsumo/"
-    )
-    assertOK(r)
-    assertContains(r, "Thank you for writing an honest review!")
-
-    assert team.appsumoreview.review_link == link
-
-    # cannot review twice
-    r = client.post(f"/teams/{team.id}/appsumo/review", data={"review_link": link})
-    assert r.status_code == 422
-    error = "A user has linked to this review for their team. If you think this is a mistake, reach out to support and we'll sort it out for you."
-    assertFormError(r, "form", "review_link", error)
-
-
 def test_admin_extra_rows(client, logged_in_user):
     team = logged_in_user.teams.first()
     AppsumoCode.objects.create(code="00000000", team=team)
@@ -251,3 +215,41 @@ def test_admin_extra_rows(client, logged_in_user):
     )
     assertOK(r)
     assertContains(r, "For being awesome")
+
+
+# # Incentivised reviews are disabled due to new AppSumo policy
+
+# def test_link_to_review(client, logged_in_user):
+#     link = "https://appsumo.com/products/marketplace-gyana/#r666666"
+#     team = logged_in_user.teams.first()
+#     AppsumoCode.objects.create(code="00000000", team=team)
+
+#     # there is no link
+#     r = client.get_turbo_frame(
+#         f"/teams/{team.id}/account", f"/teams/{team.id}/appsumo/"
+#     )
+#     assertOK(r)
+#     assertLink(r, f"/teams/{team.id}/appsumo/review", "Link to your review")
+
+#     # create
+#     r = client.get(f"/teams/{team.id}/appsumo/review")
+#     assertOK(r)
+#     assertFormRenders(r, ["review_link"])
+
+#     r = client.post(f"/teams/{team.id}/appsumo/review", data={"review_link": link})
+#     assertRedirects(r, f"/teams/{team.id}/account", status_code=303)
+
+#     # link created
+#     r = client.get_turbo_frame(
+#         f"/teams/{team.id}/account", f"/teams/{team.id}/appsumo/"
+#     )
+#     assertOK(r)
+#     assertContains(r, "Thank you for writing an honest review!")
+
+#     assert team.appsumoreview.review_link == link
+
+#     # cannot review twice
+#     r = client.post(f"/teams/{team.id}/appsumo/review", data={"review_link": link})
+#     assert r.status_code == 422
+#     error = "A user has linked to this review for their team. If you think this is a mistake, reach out to support and we'll sort it out for you."
+#     assertFormError(r, "form", "review_link", error)

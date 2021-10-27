@@ -108,15 +108,17 @@ class AppsumoStack(TeamMixin, TurboFormView):
         return reverse("teams:account", args=(self.team.id,))
 
 
-class AppsumoReview(TeamMixin, TurboCreateView):
-    model = AppsumoReview
-    form_class = AppsumoReviewForm
-    template_name = "appsumo/review.html"
+# Incentivised reviews are disabled due to new AppSumo policy
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["team"] = self.team
-        return kwargs
+# class AppsumoReview(TeamMixin, TurboCreateView):
+#     model = AppsumoReview
+#     form_class = AppsumoReviewForm
+#     template_name = "appsumo/review.html"
 
-    def get_success_url(self) -> str:
-        return reverse("teams:account", args=(self.team.id,))
+#     def get_form_kwargs(self):
+#         kwargs = super().get_form_kwargs()
+#         kwargs["team"] = self.team
+#         return kwargs
+
+#     def get_success_url(self) -> str:
+#         return reverse("teams:account", args=(self.team.id,))

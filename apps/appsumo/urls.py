@@ -26,11 +26,13 @@ team_urlpatterns = (
             login_and_admin_required(views.AppsumoStack.as_view()),
             name="stack",
         ),
-        path(
-            "review",
-            login_and_admin_required(views.AppsumoReview.as_view()),
-            name="review",
-        ),
+        # # Incentivised reviews are disabled due to new AppSumo policy
+        #
+        # path(
+        #     "review",
+        #     login_and_admin_required(views.AppsumoReview.as_view()),
+        #     name="review",
+        # ),
         path(
             "extra",
             login_and_admin_required(frames.AppsumoExtra.as_view()),
