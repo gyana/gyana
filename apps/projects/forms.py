@@ -35,9 +35,6 @@ class ProjectForm(LiveUpdateForm):
                     Project.Access.INVITE_ONLY: "You cannot create more invite only projects on your current plan"
                 },
             )
-            access_field.help_text = (
-                "Invite only projects are not available on your current plan"
-            )
 
     def get_live_fields(self):
         fields = ["name", "description"]
