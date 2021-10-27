@@ -312,7 +312,7 @@ def get_gcp_sentiment(node_id):
         )
 
     scores = [score for batch_scores in batches_scores for score in batch_scores]
-    print(scores)
+
     _update_cache_table(node, values, scores, bq_client, uses_credits)
     table = _update_intermediate_table(ibis_client, node, current_values)
     return table.bq_table, table.bq_dataset
