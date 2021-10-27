@@ -1,3 +1,6 @@
+adroll:
+  static_config:
+    table: adroll_table
 adwords:
   static_config:
     sync_mode: AllAccounts
@@ -35,9 +38,15 @@ apple_search_ads: {}
 asana: {}
 aurora:
   requires_schema_prefix: t
+aurora_postgres:
+  requires_schema_prefix: t
+azure_postgres:
+  requires_schema_prefix: t
 azure_sql_db:
   requires_schema_prefix: t
 bingads: {}
+branch: {}
+delighted: {}
 dynamodb: {}
 facebook_ads:
   static_config:
@@ -103,6 +112,9 @@ facebook_ads:
         config_type: Prebuilt
         prebuilt_report_name: DEMOGRAPHICS_REGION
 facebook_pages: {}
+freshdesk: {}
+front: {}
+github: {}
 google_analytics:
   static_config:
     sync_mode: AllAccounts
@@ -142,11 +154,14 @@ google_cloud_postgresql:
   requires_schema_prefix: t
 google_cloud_mysql:
   requires_schema_prefix: t
+google_search_console: {}
 google_sheets:
   internal: t
   static_config:
     table: sheets_table
+greenhouse: {}
 heap: {}
+helpscout: {}
 heroku_postgres:
   requires_schema_prefix: t
 hubspot: {}
@@ -154,12 +169,14 @@ instagram_business: {}
 intercom: {}
 linkedin_company_pages: {}
 klaviyo: {}
+lever: {}
 linkedin_ads: {}
 magento_mysql:
   requires_schema_prefix: t
 magento_mysql_rds:
   requires_schema_prefix: t
 mailchimp: {}
+mandrill: {}
 maria:
   requires_schema_prefix: t
 maria_rds:
@@ -167,20 +184,27 @@ maria_rds:
 maria_azure:
   requires_schema_prefix: t
 mixpanel: {}
+mongo:
+  requires_schema_prefix: t
 mysql:
   requires_schema_prefix: t
 mysql_azure:
   requires_schema_prefix: t
 mysql_rds:
   requires_schema_prefix: t
+pardot: {}
 pinterest_ads: {}
 pipedrive: {}
 postgres:
   requires_schema_prefix: t
 postgres_rds:
   requires_schema_prefix: t
+quickbooks: {}
+recurly: {}
+sage_intacct: {}
 salesforce: {}
 segment: {}
+sendgrid: {}
 shopify: {}
 snapchat_ads: {}
 snowplow: {}
@@ -191,11 +215,18 @@ sql_server_rds:
 square: {}
 stripe: {}
 survey_monkey: {}
+taboola: {}
 tiktok_ads: {}
 twitter: {}
 typeform: {}
+webhooks:
+  static_config:
+    table: webhooks_table
+uservoice: {}
 xero: {}
 youtube_analytics:
   static_config:
     table: youtube_analytics_table
 zendesk: {}
+zendesk_chat: {}
+zendesk_sunshine: {}
