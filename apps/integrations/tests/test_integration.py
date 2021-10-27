@@ -148,9 +148,9 @@ def test_create_pending_load_and_approve(
     # check that there is an option to create a connector, sheet and upload
     r = client.get(f"{LIST}/")
     assertOK(r)
-    assertContains(r, "New Integration")
-    assertLink(r, f"{LIST}/connectors/new", "New Connector")
-    assertLink(r, f"{LIST}/sheets/new", "Add Sheet")
+    assertContains(r, f"Import a source of data")
+    assertLink(r, f"{LIST}/connectors/new", "Add a connector")
+    assertLink(r, f"{LIST}/sheets/new", "Add a Google Sheet")
     assertLink(r, f"{LIST}/uploads/new", "Upload CSV")
 
     # the create and configure steps are tested in individual apps

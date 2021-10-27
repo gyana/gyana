@@ -33,9 +33,8 @@
     <a
       href="{% url 'project_integrations_uploads:create' project.id %}"
       class="button button--primary flex-1"
-      type="submit"
     >
-      Upload a CSV
+      Upload CSV
     </a>
 
     <p class="text-black-50">or</p>
@@ -43,7 +42,6 @@
     <a
       href="{% url 'project_integrations_sheets:create' project.id %}"
       class="button button--primary flex-1"
-      type="submit"
     >
       Add a Google Sheet
     </a>
@@ -53,12 +51,10 @@
     <a
       href="{% url 'project_integrations_connectors:create' project.id %}"
       class="button button--tertiary flex-1"
-      type="submit"
     >
       Add a connector
     </a>
   </div>
-  </form>
 </div>
 {% else %}
 <div class="page-header">

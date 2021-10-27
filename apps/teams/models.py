@@ -83,6 +83,12 @@ class Team(BaseModel, SafeDeleteModel):
         return reverse("teams:detail", args=(self.id,))
 
     @property
+    def current_credits_left(self):
+        from .account import calculate_credit_balance
+
+        return calculate_credit_balance(self) - self.credits
+
+    @property
     def current_credit_balance(self):
         from .account import calculate_credit_balance
 
@@ -225,4 +231,5 @@ class CreditStatement(models.Model):
 
 
 class OutOfCreditsException(Exception):
-    pass
+    def __init__(self, uses_credits) -> None:
+        self.uses_credits = uses_credits

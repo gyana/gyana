@@ -15,7 +15,7 @@
             <td class="text-blue">{{ team.plan.name }}</td>
           </tr>
           <tr>
-            <td><h3>Row usage</h3></td>
+            <td><h3>Rows used</h3></td>
             <td>
               <span class="flex items-center">
                 <span class="mr-3">{{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}</span>
@@ -33,9 +33,9 @@
             </td>
           </tr>
           <tr>
-            <td><h3>Credits usage</h3></td>
+            <td><h3>Credits spent</h3></td>
             <td class="flex items-center">
-              <span class="mr-3">{{ team.current_credit_balance|intcomma }} / {{ team.credits|intcomma }}</span>
+              <span class="mr-3">{{ team.current_credits_left|intcomma }} / {{ team.credits|intcomma }}</span>
               {% link_article 'overview' 'credits' %}
             </td>
           </tr>
@@ -47,7 +47,7 @@
 
           <tr>
             <td><h3>Users</h3></td>
-            <td>{{ team.total_members }} / ∞</td>
+            <td>∞</td>
           </tr>
 
           <tr>
@@ -71,7 +71,7 @@
 
             {% if team.plan.cnames %}
               <tr>
-                <td><h3>CNAMEs</h3></td>
+                <td><h3>Custom domains</h3></td>
                 <td>{{ team.plan.cnames }}</td>
               </tr>
             {% endif %}
