@@ -215,6 +215,9 @@ def get_gcp_sentiment(node_id):
         .relabel({node.sentiment_column: TEXT_COLUMN_NAME})
         .distinct()
     )
+    # Ignore null values
+    current_values = current_values[current_values[TEXT_COLUMN_NAME].notnull()]
+
     cache_table = node.cache_table
 
     not_cached = (
