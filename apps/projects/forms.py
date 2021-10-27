@@ -10,7 +10,7 @@ class ProjectForm(LiveUpdateForm):
         model = Project
         fields = ["name", "description", "access", "members", "cname"]
         widgets = {"members": MemberSelect()}
-        labels = {"cname": "CNAME"}
+        labels = {"cname": "Custom domain"}
 
     def __init__(self, current_user, *args, **kwargs):
         self._team = kwargs.pop("team", None)
@@ -22,7 +22,7 @@ class ProjectForm(LiveUpdateForm):
             members_field.widget.current_user = current_user
 
         if cname_field := self.fields.get("cname"):
-            cname_field.empty_label = "No CNAME (gyana.com)"
+            cname_field.empty_label = "Default domain (gyana.com)"
             cname_field.queryset = self._team.cname_set.all()
 
     def get_live_fields(self):
