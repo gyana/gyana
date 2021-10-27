@@ -6,6 +6,8 @@ from apps.connectors.fivetran.config import METADATA
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
+STATIC = "apps/integrations/static/images/integrations/fivetran"
+
 
 class Command(BaseCommand):
     help = "Fetch the metadata for all Fivetran connectors."
@@ -34,7 +36,7 @@ class Command(BaseCommand):
 
             icon_path = f"{id_}{ext}"
 
-            with open(f"static/images/integrations/fivetran/{icon_path}", "wb") as f:
+            with open(f"{STATIC}/{icon_path}", "wb") as f:
                 f.write(res.content)
 
             metadata[id_]["icon_path"] = icon_path

@@ -316,14 +316,6 @@ dropbox:
   link_to_docs: https://fivetran.com/docs/files/dropbox
   name: Dropbox
   type: File
-dropbox_consumer:
-  description: Load files from a Dropbox account
-  icon_path: dropbox_consumer.svg
-  icon_url: https://fivetran.com/integrations/dropbox/resources/dropbox.svg
-  id: dropbox_consumer
-  link_to_docs: https://fivetran.com/docs/files/consumer-dropbox
-  name: Consumer Dropbox
-  type: File
 dynamics_365:
   description: Dynamics 365 provides seamless solution for CRM and ERP
   icon_path: dynamics_365.svg
@@ -534,6 +526,15 @@ google_cloud_sqlserver:
   link_to_docs: https://fivetran.com/docs/databases/sql-server/gcs-setup-guide
   name: Google Cloud SQL - SQL Server
   type: Database
+google_display_and_video_360:
+  description: Display & Video 360 is a tool that helps creative, data, and media
+    teams work together to execute end-to-end campaigns.
+  icon_path: google_display_and_video_360.svg
+  icon_url: https://fivetran.com/integrations/google_display_and_video_360/resources/google-display-and-video-360.svg
+  id: google_display_and_video_360
+  link_to_docs: https://fivetran.com/docs/applications/google-display-and-video-360
+  name: Google Display & Video 360
+  type: Marketing
 google_drive:
   description: Lets you get all the files in a magic folder converted to tables.
   icon_path: google_drive.svg
@@ -735,6 +736,14 @@ linkedin_ads:
   id: linkedin_ads
   link_to_docs: https://fivetran.com/docs/applications/linkedin-ads
   name: LinkedIn Ad Analytics
+  type: Marketing
+linkedin_company_pages:
+  description: Company Pages Statistics, Reactions and Social Metadata.
+  icon_path: linkedin_company_pages.svg
+  icon_url: https://fivetran.com/integrations/linkedin/resources/linkedin_company_pages.svg
+  id: linkedin_company_pages
+  link_to_docs: https://fivetran.com/docs/applications/linkedin-company-pages
+  name: LinkedIn Company Pages
   type: Marketing
 magento_mysql:
   description: Magento MySQL integrates with Magento by connecting directly to its
@@ -939,6 +948,14 @@ outbrain:
   link_to_docs: ''
   name: Outbrain
   type: Marketing
+outreach:
+  description: Outreach is a sales engagement platform and automation service
+  icon_path: outreach.svg
+  icon_url: https://fivetran.com/integrations/outreach/resources/outreach.svg
+  id: outreach
+  link_to_docs: ''
+  name: Outreach
+  type: Sales
 pardot:
   description: Pardot is a CRM tool
   icon_path: pardot.svg
@@ -1266,6 +1283,16 @@ twitter_ads:
   link_to_docs: https://fivetran.com/docs/applications/twitter-ads
   name: Twitter Ads
   type: Marketing
+typeform:
+  description: Typeform is a SaaS company that specializes in online form building
+    and online surveys
+  icon_path: typeform.svg
+  icon_url: https://fivetran.com/integrations/typeform/resources/typeform.svg
+  id: typeform
+  link_to_docs: https://fivetran.comdocs/applications/typeform
+  link_to_erd: https://fivetran.comdocs/applications/typeform#schemainformation
+  name: Typeform
+  type: Support
 uservoice:
   description: UserVoice is a customer feedback processing system
   icon_path: uservoice.svg
@@ -1346,6 +1373,16 @@ zendesk_sunshine:
   link_to_docs: https://fivetran.com/docs/applications/zendesk-sunshine
   link_to_erd: https://fivetran.com/docs/applications/zendesk-sunshine#schemainformation
   name: Zendesk Sunshine
+  type: Support
+zoho_crm:
+  description: Zoho CRM is an online Sales CRM software that manages your sales, marketing
+    and support in one CRM platform
+  icon_path: zoho_crm.svg
+  icon_url: https://fivetran.com/integrations/zoho_crm/resources/zoho.svg
+  id: zoho_crm
+  link_to_docs: https://fivetran.com/docs/applications/zoho-crm
+  link_to_erd: https://fivetran.com/docs/applications/zoho-crm#schemainformation
+  name: Zoho CRM
   type: Support
 zuora:
   description: Zuora allows businesses to quote, order, bill, recognize revenue, report,
