@@ -15,7 +15,7 @@ from apps.base.analytics import (
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 
-from .fivetran.config import get_service_categories, get_services
+from .fivetran.config import get_service_categories, get_services, get_services_query
 from .forms import ConnectorCreateForm
 from .models import Connector
 
@@ -27,17 +27,10 @@ class ConnectorCreate(ProjectMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-
-        services = list(get_services().values())
-        if (category := self.request.GET.get("category")) is not None:
-            services = [s for s in services if s["type"] == category]
-
-        if (search := self.request.GET.get("search")) is not None:
-            services = [
-                s for s in services if s["name"].lower().startswith(search.lower())
-            ]
-
-        context_data["services"] = services
+        context_data["services"] = get_services_query(
+            category=self.request.GET.get("category"),
+            search=self.request.GET.get("search"),
+        )
         context_data["service_categories"] = get_service_categories()
         return context_data
 

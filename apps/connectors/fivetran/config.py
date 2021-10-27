@@ -27,3 +27,15 @@ def get_service_categories():
             service_categories.append(services[service]["type"])
 
     return service_categories
+
+
+def get_services_query(category=None, search=None):
+    services = list(get_services().values())
+
+    if (category := category) is not None:
+        services = [s for s in services if s["type"] == category]
+
+    if (search := search) is not None:
+        services = [s for s in services if s["name"].lower().startswith(search.lower())]
+
+    return services
