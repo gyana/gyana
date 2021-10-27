@@ -29,7 +29,7 @@ class FivetranClient:
 
         service_conf = get_services()[service]
 
-        config = service_conf["static_config"] or {}
+        config = service_conf.get("static_config", {})
 
         # https://fivetran.com/docs/rest-api/connectors/config
         # database connectors require schema_prefix, rather than schema
@@ -40,7 +40,7 @@ class FivetranClient:
 
         config[
             "schema_prefix"
-            if service_conf["requires_schema_prefix"] == "t"
+            if service_conf.get("requires_schema_prefix") == "t"
             else "schema"
         ] = schema
 

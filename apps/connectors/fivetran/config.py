@@ -39,7 +39,7 @@ def get_services_query(category=None, search=None, show_internal=False):
         services = [s for s in services if s["name"].lower().startswith(search.lower())]
 
     if not show_internal:
-        services = [s for s in services if s["internal"] != "t"]
+        services = [s for s in services if s.get("internal") != "t"]
 
     services = sorted(services, key=lambda s: s["name"])
 
