@@ -1,12 +1,10 @@
 from functools import cached_property
 
 from django.conf import settings
-from django.core.cache import cache
 from django.db import models
 from model_clone.mixins.clone import CloneMixin
 
-from apps.base.cache import get_cache_key
-from apps.base.clients import bigquery_client
+from apps.base import clients
 from apps.base.models import BaseModel
 from apps.projects.models import Project
 
@@ -24,7 +22,8 @@ class Table(CloneMixin, BaseModel):
     class Source(models.TextChoices):
         INTEGRATION = "integration", "Integration"
         WORKFLOW_NODE = "workflow_node", "Workflow node"
-        PIVOT_NODE = "intermediate_node", "Intermediate node"
+        INTERMEDIATE_NODE = "intermediate_node", "Intermediate node"
+        CACHE_NODE = "cache_node", "Cache node"
 
     bq_table = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
     bq_dataset = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
@@ -44,6 +43,12 @@ class Table(CloneMixin, BaseModel):
         null=True,
         related_name="intermediate_node",
     )
+    cache_node = models.OneToOneField(
+        "nodes.Node",
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="cache_node",
+    )
 
     num_rows = models.IntegerField(default=0)
     data_updated = models.DateTimeField(auto_now_add=True)
@@ -60,7 +65,7 @@ class Table(CloneMixin, BaseModel):
 
     @property
     def bq_obj(self):
-        return bigquery_client().get_table(self.bq_id)
+        return clients.bigquery().get_table(self.bq_id)
 
     @property
     def humanize(self):
@@ -83,3 +88,8 @@ class Table(CloneMixin, BaseModel):
     @property
     def bq_dashboard_url(self):
         return f"https://console.cloud.google.com/bigquery?project={settings.GCP_PROJECT}&p={settings.GCP_PROJECT}&d={self.bq_dataset}&t={self.bq_table}&page=table"
+
+    def update_data_updated(self, data_updated):
+        self.data_updated = data_updated
+        self.num_rows = self.bq_obj.num_rows
+        self.save()

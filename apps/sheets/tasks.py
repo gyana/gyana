@@ -11,8 +11,9 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from .bigquery import get_last_modified_from_drive_file, import_table_from_sheet
+from .bigquery import import_table_from_sheet
 from .models import Sheet
+from .sheets import get_last_modified_from_drive_file
 
 
 @shared_task(bind=True)
@@ -58,13 +59,13 @@ def run_sheet_sync_task(self, sheet_id):
 
     # the initial sync completed successfully and a new integration is created
 
-    if (created_by := integration.created_by) and created:
+    if integration.created_by and created:
 
-        email = integration_ready_email(integration, created_by)
+        email = integration_ready_email(integration, integration.created_by)
         email.send()
 
         analytics.track(
-            created_by.id,
+            integration.created_by.id,
             INTEGRATION_SYNC_SUCCESS_EVENT,
             {
                 "id": integration.id,
@@ -79,10 +80,11 @@ def run_sheet_sync_task(self, sheet_id):
 
 def run_sheet_sync(sheet: Sheet):
 
+    sheet.integration.state = Integration.State.LOAD
+    sheet.integration.save()
+
     result = run_sheet_sync_task.delay(sheet.id)
+    sheet.refresh_from_db()  # required for tests
     sheet.sync_task_id = result.task_id
     sheet.sync_started = timezone.now()
     sheet.save()
-
-    sheet.integration.state = Integration.State.LOAD
-    sheet.integration.save()

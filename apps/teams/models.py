@@ -2,8 +2,8 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-from safedelete.models import SafeDeleteModel
-from safedelete.models import SOFT_DELETE_CASCADE
+from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
+from storages.backends.gcloud import GoogleCloudStorage
 
 from apps.base.models import BaseModel
 
@@ -14,9 +14,21 @@ WARNING_BUFFER = 0.2
 
 
 class Team(BaseModel, SafeDeleteModel):
+    class Meta:
+        ordering = ("-created",)
+
     _safedelete_policy = SOFT_DELETE_CASCADE
 
-    icon = models.FileField(upload_to="team-icons/", null=True, blank=True)
+    icon = models.FileField(
+        storage=GoogleCloudStorage(
+            bucket_name=settings.GS_PUBLIC_BUCKET_NAME,
+            cache_control=settings.GS_PUBLIC_CACHE_CONTROL,
+            querystring_auth=False,
+        ),
+        upload_to="team-icons/",
+        null=True,
+        blank=True,
+    )
     name = models.CharField(max_length=100)
 
     members = models.ManyToManyField(
@@ -73,6 +85,11 @@ class Team(BaseModel, SafeDeleteModel):
         return reverse("teams:detail", args=(self.id,))
 
     @property
+    def current_credit_balance(self):
+        from .account import calculate_credit_balance
+
+        return calculate_credit_balance(self)
+
     def redeemed_codes(self):
         return self.appsumocode_set.count()
 
@@ -157,6 +174,12 @@ class Team(BaseModel, SafeDeleteModel):
     def admins(self):
         return self.members.filter(membership__role=roles.ROLE_ADMIN)
 
+    def add_new_rows(self, num_rows):
+        return num_rows + self.row_count
+
+    def check_new_rows(self, num_rows):
+        return self.add_new_rows(num_rows) > self.row_limit
+
 
 class Membership(BaseModel):
     """
@@ -170,3 +193,38 @@ class Membership(BaseModel):
     @property
     def can_delete(self):
         return self.team.admins.exclude(id=self.user.id).count() > 0
+
+
+# Credit system design motivated by https://stackoverflow.com/a/29713230
+
+
+class CreditTransaction(models.Model):
+    class Meta:
+        ordering = ("-created",)
+
+    class TransactionType(models.TextChoices):
+        DECREASE = "decrease", "Decrease"
+        INCREASE = "increase", "Increase"
+
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
+    )
+    transaction_type = models.CharField(max_length=10, choices=TransactionType.choices)
+    amount = models.IntegerField()
+
+
+class CreditStatement(models.Model):
+    class Meta:
+        ordering = ("-created",)
+
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    balance = models.IntegerField()
+    credits_used = models.IntegerField()
+    credits_received = models.IntegerField()
+
+
+class OutOfCreditsException(Exception):
+    pass

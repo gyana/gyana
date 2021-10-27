@@ -22,7 +22,7 @@ describe('templates', () => {
   beforeEach(() => {
     cy.login()
   })
-  it('new project', () => {
+  it.skip('new project', () => {
     cy.visit('/teams/1')
 
     cy.contains('Create a new project')

@@ -26,11 +26,14 @@ class ProjectForm(LiveUpdateForm):
             cname_field.queryset = self._team.cname_set.all()
 
     def get_live_fields(self):
-        if not self._is_beta:
-            return ["name", "description"]
-        fields = ["name", "description", "access", "cname"]
+        fields = ["name", "description"]
+
+        if self._is_beta:
+            fields += ["access", "cname"]
+
         if self.get_live_field("access") == Project.Access.INVITE_ONLY:
             fields += ["members"]
+
         return fields
 
     def pre_save(self, instance):
@@ -38,6 +41,17 @@ class ProjectForm(LiveUpdateForm):
 
 
 class ProjectCreateForm(ProjectForm):
+    def get_live_fields(self):
+        fields = ["name", "description"]
+
+        if self._is_beta:
+            fields += ["access"]
+
+        if self.get_live_field("access") == Project.Access.INVITE_ONLY:
+            fields += ["members"]
+
+        return fields
+
     def clean(self):
         cleaned_data = super().clean()
 

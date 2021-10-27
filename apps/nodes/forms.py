@@ -3,9 +3,11 @@ from functools import cached_property
 from apps.base.live_update_form import LiveUpdateForm
 from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column
+from apps.nodes.bigquery import get_query_from_node
 from apps.nodes.formsets import KIND_TO_FORMSETS
 from apps.tables.models import Table
 from django import forms
+from django.forms.widgets import HiddenInput
 
 from .models import Node
 from .widgets import InputNode, MultiSelect
@@ -30,6 +32,10 @@ class NodeForm(LiveUpdateForm):
     def get_live_formsets(self):
         return KIND_TO_FORMSETS.get(self.instance.kind, [])
 
+    def save(self, commit=True):
+        self.instance.has_been_saved = True
+        return super().save(commit=commit)
+
 
 class DefaultNodeForm(NodeForm):
     class Meta:
@@ -49,7 +55,7 @@ class InputNodeForm(NodeForm):
         instance = kwargs.get("instance")
         self.fields["input_table"].queryset = Table.available.filter(
             project=instance.workflow.project
-        ).exclude(source="intermediate_node")
+        ).exclude(source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE])
 
 
 class OutputNodeForm(NodeForm):
@@ -206,20 +212,27 @@ class UnpivotNodeForm(NodeForm):
         self.form_description = "Transform multiple columns into a single column."
 
 
-class SentimenttNodeForm(NodeForm):
+class SentimentNodeForm(NodeForm):
     sentiment_column = forms.ChoiceField(
         choices=(),
     )
 
     class Meta:
         model = Node
-        fields = ("sentiment_column",)
+        fields = ("sentiment_column", "always_use_credits", "credit_confirmed_user")
+        widgets = {"credit_confirmed_user": HiddenInput()}
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
         super().__init__(*args, **kwargs)
         self.fields["sentiment_column"].choices = _create_choices(
             [name for name, type_ in self.columns.items() if type_.name == "String"]
         )
+
+    def get_initial_for_field(self, field, field_name):
+        if field_name == "credit_confirmed_user":
+            return self.user
+        return super().get_initial_for_field(field, field_name)
 
 
 class ExceptNodeForm(DefaultNodeForm):
@@ -249,6 +262,6 @@ KIND_TO_FORM = {
     "pivot": PivotNodeForm,
     "unpivot": UnpivotNodeForm,
     "intersect": DefaultNodeForm,
-    "sentiment": SentimenttNodeForm,
+    "sentiment": SentimentNodeForm,
     "window": DefaultNodeForm,
 }

@@ -15,8 +15,9 @@ def test_project_crudl(client, logged_in_user):
     team = logged_in_user.teams.first()
 
     # create
-    r = client.get_turbo_frame(f"/teams/{team.id}", f"/teams/{team.id}/templates/")
-    assertLink(r, f"/teams/{team.id}/projects/new", "New Project")
+    r = client.get(f"/teams/{team.id}")
+    # zero state link
+    assertLink(r, f"/teams/{team.id}/projects/new", "Create a new project")
 
     r = client.get(f"/teams/{team.id}/projects/new")
     assertOK(r)
@@ -47,6 +48,8 @@ def test_project_crudl(client, logged_in_user):
     assertOK(r)
     assertSelectorLength(r, "table tbody tr", 1)
     assertLink(r, f"/projects/{project.id}", "Metrics")
+    # normal link
+    assertLink(r, f"/teams/{team.id}/projects/new", "New Project")
 
     # update
     r = client.get(f"/projects/{project.id}/update")

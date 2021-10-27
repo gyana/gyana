@@ -27,6 +27,11 @@ class SaveParentModel(DirtyFieldsMixin, CloneMixin, BaseModel):
             self.parent.save()
         return super().save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        self.parent.data_updated = timezone.now()
+        self.parent.save()
+        return super().delete(*args, **kwargs)
+
     @property
     def parent(self):
         return getattr(self, "node") or self.widget

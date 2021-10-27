@@ -1,9 +1,8 @@
 from typing import Final
 
+import analytics
 from apps.nodes.models import Node
 from apps.users.models import CustomUser
-
-import analytics
 
 # users
 SIGNED_UP_EVENT: Final = "Signed up"
@@ -32,18 +31,24 @@ INTEGRATION_SYNC_SUCCESS_EVENT: Final = "Integration sync succeeded"
 
 # workflows
 WORKFLOW_CREATED_EVENT: Final = "Workflow created"
+WORKFLOW_CREATED_EVENT_FROM_INTEGRATION: Final = "Workflow created from integration"
 WORKFLOW_DUPLICATED_EVENT: Final = "Workflow duplicated"
 NODE_CREATED_EVENT: Final = "Node created"
 NODE_UPDATED_EVENT: Final = "Node updated"
 NODE_CONNECTED_EVENT: Final = "Node connected"
+NODE_PREVIEWED_EVENT: Final = "Node previewed"
+NODE_COMPLETED_EVENT: Final = "Node completed"
 WORFKLOW_RUN_EVENT: Final = "Workflow run"
 
 # dashboards
 DASHBOARD_CREATED_EVENT: Final = "Dashboard created"
+DASHBOARD_CREATED_EVENT_FROM_INTEGRATION: Final = "Dashboard created from integration"
 DASHBOARD_DUPLICATED_EVENT: Final = "Dashboard duplicated"
 WIDGET_CREATED_EVENT: Final = "Widget created"
 WIDGET_DUPLICATED_EVENT: Final = "Widget duplicated"
 WIDGET_CONFIGURED_EVENT: Final = "Widget configured"
+WIDGET_PREVIEWED_EVENT: Final = "Widget previewed"
+WIDGET_COMPLETED_EVENT: Final = "Widget completed"
 DASHBOARD_SHARED_PUBLIC_EVENT: Final = "Dashboard shared public"
 
 

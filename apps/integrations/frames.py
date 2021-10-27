@@ -1,14 +1,11 @@
+from functools import cached_property
+
 from apps.base.bigquery import get_humanize_from_bigquery_type
-from apps.base.frames import (TurboFrameDetailView, TurboFrameListView,
-                              TurboFrameTemplateView)
+from apps.base.frames import TurboFrameDetailView, TurboFrameTemplateView
 from apps.base.table_data import RequestConfig, get_table
 from apps.integrations.tables import StructureTable
 from apps.projects.mixins import ProjectMixin
-from apps.tables.bigquery import (get_bq_table_schema_from_table,
-                                  get_query_from_table)
-from apps.tables.models import Table
-from apps.tables.tables import TableTable
-from django.utils import timezone
+from apps.tables.bigquery import get_bq_table_schema_from_table, get_query_from_table
 from django_tables2.views import SingleTableMixin
 
 from .models import Integration
@@ -21,27 +18,22 @@ class IntegrationOverview(ProjectMixin, TurboFrameTemplateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        total = self.project.integration_set.exclude(
-            connector__fivetran_authorized=False
-        )
-        ready = total.filter(ready=True)
-        pending = total.filter(ready=False)
-        broken = ready.filter(
-            kind=Integration.Kind.CONNECTOR,
-            connector__fivetran_succeeded_at__lt=timezone.now()
-            - timezone.timedelta(hours=24),
-        ).count()
+        queryset = self.project.integration_set
+
+        ready = queryset.ready().count()
+        pending = queryset.pending().count()
+        broken = queryset.broken().count()
 
         context_data["integrations"] = {
-            "total": total.count(),
-            "ready": ready.count(),
-            "attention": pending.exclude(state=Integration.State.LOAD).count(),
-            "loading": pending.filter(state=Integration.State.LOAD).count(),
+            "total": ready + pending,
+            "ready": ready,
+            "attention": queryset.needs_attention().count(),
+            "loading": queryset.loading().count(),
             "broken": broken,
-            "operational": broken == 0 and pending.count() == 0,
-            "connectors": ready.filter(kind=Integration.Kind.CONNECTOR).all(),
-            "sheet_count": ready.filter(kind=Integration.Kind.SHEET).count(),
-            "upload_count": ready.filter(kind=Integration.Kind.UPLOAD).count(),
+            "operational": broken == 0 and pending == 0,
+            "connectors": queryset.connectors().all(),
+            "sheet_count": queryset.sheets().count(),
+            "upload_count": queryset.uploads().count(),
         }
 
         return context_data
@@ -53,20 +45,12 @@ class IntegrationGrid(SingleTableMixin, TurboFrameDetailView):
     paginate_by = 15
     turbo_frame_dom_id = "integrations:grid"
 
-    def get_table_kwargs(self):
-        return {"attrs": {"class": "table-data"}}
+    @cached_property
+    def table_instance(self):
+        table_id = self.request.GET.get("table_id")
+        return self.object.get_table_by_pk_safe(table_id)
 
     def get_context_data(self, **kwargs):
-        table_id = self.request.GET.get("table_id")
-        try:
-            self.table_instance = (
-                self.object.table_set.get(pk=table_id)
-                if table_id
-                else self.object.table_set.first()
-            )
-        except (Table.DoesNotExist, ValueError):
-            self.table_instance = self.object.table_set.first()
-
         context_data = super().get_context_data(**kwargs)
         context_data["table_instance"] = self.table_instance
         return context_data
@@ -87,20 +71,12 @@ class IntegrationSchema(SingleTableMixin, TurboFrameDetailView):
     turbo_frame_dom_id = "integrations:schema"
     table_class = StructureTable
 
-    def get_table_kwargs(self):
-        return {"attrs": {"class": "table-data"}}
+    @cached_property
+    def table_instance(self):
+        table_id = self.request.GET.get("table_id")
+        return self.object.get_table_by_pk_safe(table_id)
 
     def get_context_data(self, **kwargs):
-        table_id = self.request.GET.get("table_id")
-        try:
-            self.table_instance = (
-                self.object.table_set.get(pk=table_id)
-                if table_id
-                else self.object.table_set.first()
-            )
-        except (Table.DoesNotExist, ValueError):
-            self.table_instance = self.object.table_set.first()
-
         context_data = super().get_context_data(**kwargs)
         context_data["table_instance"] = self.table_instance
         return context_data
@@ -111,16 +87,3 @@ class IntegrationSchema(SingleTableMixin, TurboFrameDetailView):
             {"type": get_humanize_from_bigquery_type(t.field_type), "name": str(t.name)}
             for t in get_bq_table_schema_from_table(self.table_instance)
         ]
-
-
-class IntegrationTablesList(ProjectMixin, SingleTableMixin, TurboFrameListView):
-    template_name = "tables/list.html"
-    model = Integration
-    table_class = TableTable
-    paginate_by = 20
-    turbo_frame_dom_id = "tables-list"
-
-    def get_queryset(self):
-        return Table.objects.filter(
-            project=self.project, integration_id=self.kwargs["pk"]
-        )

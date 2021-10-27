@@ -64,7 +64,7 @@ class TeamUpdateForm(forms.ModelForm):
     class Meta:
         model = Team
         fields = ("icon", "name",)
-        widgets = {"icon": forms.FileInput()}
+        widgets = {"icon": forms.ClearableFileInput(attrs={'accept':'image/*'})}
         help_texts = {
             "icon": "For best results use a square image",
         }

@@ -13,6 +13,7 @@
       font-weight: normal;
       min-width: 12.5%;
       padding: 1.2rem 1.6rem;
+      height: 3.9rem;
       text-align: left;
       white-space: nowrap;
       
@@ -46,7 +47,8 @@
     td {
       font-size: 1.2rem;
       line-height: 1.4rem;
-      padding: 1.2rem 1.6rem;
+      padding: 0 1.6rem;
+      height: 3.9rem;
       white-space: nowrap;
       border-bottom: 1px solid var(--c-gray-50);
 
@@ -107,6 +109,7 @@
 
   thead th {
     padding: 1.2rem 0.8rem;
+    height: auto;
 
     & + th {
       border-left: 1px solid var(--c-gray);
@@ -115,6 +118,7 @@
 
   tbody td {
     padding: 0.8rem;
+    height: auto;
 
     & + td {
       border-left: 1px solid var(--c-gray);
@@ -140,6 +144,12 @@
       text-decoration: underline;
       color: var(--c-blue-50);
     }
+  }
+}
+
+.table-container ~ .pad {
+  padding: {
+    left: 1.6rem;
   }
 }
 

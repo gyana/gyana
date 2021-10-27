@@ -11,7 +11,7 @@ from google.cloud import bigquery
 
 
 @cache
-def bigquery_client():
+def bigquery():
     # https://cloud.google.com/bigquery/external-data-drive#python
     credentials, project = get_credentials()
 
@@ -23,7 +23,7 @@ def bigquery_client():
 
 def _migrate_team(team, Table, DATASET_ID, DATAFLOW_ID):
 
-    client = bigquery_client()
+    client = bigquery()
 
     NEW_SLUG = (
         slugify(settings.CLOUD_NAMESPACE)

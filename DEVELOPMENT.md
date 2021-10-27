@@ -65,9 +65,15 @@ yarn build:watch
 
 Bootstrap a new CRUDL Django app with `just startapp`.
 
-## Test
+## Tests
 
-Run your app in development mode and open the cypress UI:
+For pytest, run the individual tests:
+
+```
+just test -k {name}
+```
+
+For cypress, run your app in development mode and open the cypress UI:
 
 ```
 yarn cypress:open
@@ -83,11 +89,6 @@ just cypress-setup
 just cypress-fixtures
 ```
 
-Our testing objectives:
-- Keep Cypress runtime to 5 minutes
-- Wrap business logic in the ORM or dedicated functions
-- Focus on business logic/cold path for unit tests
-
 ## Profile
 
 Open the [Silk](https://github.com/jazzband/django-silk) [UI](http://localhost:8000/silk)
@@ -97,6 +98,12 @@ Setup Honeycomb [locally](apps/base/apps.py) to generate traces for
 individual HTTP requests.
 
 ## QA
+
+Run the pytest test suite:
+
+```
+just test
+```
 
 Run the entire e2e test suite locally, and view the list of failed tests. You can
 review screenshots and videos in the cypress folder to spot easy fixes:
@@ -131,7 +138,8 @@ is an art but you get better at it over time:
 - Django widgets - using React or Stimulus
 - React wrapped - a React powered web component that has plain HTML (generated
   by Django) as children - see `<gy-widget>`
-- Celery Progress - show progress of long running task using the `celery_progress
+- Celery Progress - show progress of long running task using the `celery_progress` 
+  library
 
 ## Philosophy
 

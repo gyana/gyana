@@ -1,6 +1,6 @@
 import analytics
+from apps.base import clients
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
-from apps.base.clients import fivetran_client
 from apps.base.turbo import TurboUpdateView
 from apps.connectors.tasks import complete_connector_sync
 from apps.integrations.filters import IntegrationFilter
@@ -8,7 +8,7 @@ from apps.integrations.tasks import KIND_TO_SYNC_TASK
 from apps.projects.mixins import ProjectMixin
 from django.conf import settings
 from django.db.models.query import QuerySet
-from django.http.response import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView
@@ -33,25 +33,16 @@ class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        project_integrations = self.project.integration_set.exclude(
-            connector__fivetran_authorized=False
-        )
+        queryset = self.project.integration_set
 
-        context_data["integration_count"] = project_integrations.count()
-        context_data["pending_integration_count"] = project_integrations.filter(
-            ready=False
-        ).count()
-
+        context_data["integration_count"] = queryset.ready().count()
+        context_data["pending_integration_count"] = queryset.pending().count()
         context_data["integration_kinds"] = Integration.Kind.choices
 
         return context_data
 
     def get_queryset(self) -> QuerySet:
-        return (
-            Integration.objects.filter(project=self.project, ready=True)
-            .prefetch_related("table_set")
-            .all()
-        )
+        return self.project.integration_set.ready().prefetch_related("table_set").all()
 
 
 class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
@@ -63,19 +54,13 @@ class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["pending_integration_count"] = (
-            Integration.objects.filter(project=self.project, ready=False)
-            .exclude(connector__fivetran_authorized=False)
-            .count()
-        )
+        queryset = self.project.integration_set
+        context_data["pending_integration_count"] = queryset.pending().count()
         return context_data
 
     def get_queryset(self) -> QuerySet:
         return (
-            Integration.objects.filter(project=self.project, ready=False)
-            .exclude(connector__fivetran_authorized=False)
-            .prefetch_related("table_set")
-            .all()
+            self.project.integration_set.pending().prefetch_related("table_set").all()
         )
 
 
@@ -122,16 +107,13 @@ class IntegrationSettings(ProjectMixin, TurboUpdateView):
 class IntegrationUpdate(ProjectMixin, TurboUpdateView):
     template_name = "integrations/update.html"
     model = Integration
+    form_class = IntegrationForm
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["integration_kind"] = Integration.Kind
         context_data["service_account"] = settings.GCP_BQ_SVC_ACCOUNT
-
         return context_data
-
-    def get_form_class(self):
-        return IntegrationForm
 
     def get_success_url(self) -> str:
         return reverse(
@@ -162,11 +144,8 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object.state == Integration.State.LOAD:
-            return HttpResponseRedirect(
-                reverse(
-                    "project_integrations:load",
-                    args=(self.project.id, self.object.id),
-                )
+            return redirect(
+                "project_integrations:load", self.project.id, self.object.id
             )
         return super().get(request, *args, **kwargs)
 
@@ -179,9 +158,9 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
         return kwargs
 
     def form_valid(self, form):
-        KIND_TO_SYNC_TASK[self.object.kind](self.object.source_obj)
         # don't assigned the result to self.object
         form.save()
+        KIND_TO_SYNC_TASK[self.object.kind](self.object.source_obj)
         analytics.track(
             self.request.user.id,
             INTEGRATION_SYNC_STARTED_EVENT,
@@ -191,12 +170,11 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
                 "name": self.object.name,
             },
         )
-        return HttpResponseRedirect(self.get_success_url())
+        return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:load",
-            args=(self.project.id, self.object.id),
+            "project_integrations:load", args=(self.project.id, self.object.id)
         )
 
 
@@ -206,40 +184,39 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
     fields = []
 
     def get(self, request, *args, **kwargs):
+
         self.object = self.get_object()
         if self.object.state not in [
             Integration.State.LOAD,
             Integration.State.ERROR,
         ]:
-            return HttpResponseRedirect(
-                reverse(
-                    "project_integrations:done",
-                    args=(self.project.id, self.object.id),
-                )
+            return redirect(
+                "project_integrations:done", self.project.id, self.object.id
             )
+
+        if self.object.kind == Integration.Kind.CONNECTOR:
+            if clients.fivetran().has_completed_sync(self.object.source_obj):
+                complete_connector_sync(self.object.source_obj)
+                return redirect(
+                    "project_integrations:done", self.project.id, self.object.id
+                )
+
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["sync_task_id"] = self.object.source_obj.sync_task_id
-
-        # connector task may have expired, need to check the source
-        if self.object.kind == Integration.Kind.CONNECTOR:
-            if fivetran_client().has_completed_sync(self.object.source_obj):
-                complete_connector_sync(self.object.source_obj, send_mail=False)
-                context_data["done"] = True
         return context_data
 
     def form_valid(self, form):
         KIND_TO_SYNC_TASK[self.object.kind](self.object.source_obj)
         # don't assigned the result to self.object
         form.save()
-        return HttpResponseRedirect(self.get_success_url())
+        return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:load",
-            args=(self.project.id, self.object.id),
+            "project_integrations:load", args=(self.project.id, self.object.id)
         )
 
 
@@ -254,18 +231,18 @@ class IntegrationDone(ProjectMixin, TurboUpdateView):
 
         team = self.project.team
         team.update_row_count()
-        exceeds_row_limit = self.object.num_rows + team.row_count > team.row_limit
-        context_data["exceeds_row_limit"] = exceeds_row_limit
-        if exceeds_row_limit:
-            context_data["projected_num_rows"] = self.object.num_rows + team.row_count
+
+        context_data["exceeds_row_limit"] = team.check_new_rows(self.object.num_rows)
+        context_data["projected_num_rows"] = team.add_new_rows(self.object.num_rows)
 
         return context_data
 
     def form_valid(self, form):
         if not self.object.ready:
             self.object.created_ready = timezone.now()
-        self.object.ready = True
-        self.object.save()
+            self.object.ready = True
+            self.object.save()
+
         r = super().form_valid(form)
         self.project.team.update_row_count()
         return r

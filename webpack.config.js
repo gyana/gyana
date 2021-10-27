@@ -9,7 +9,9 @@ module.exports = {
   },
   entry: {
     style: './apps/base/styles/style.scss',
+    fontawesome: './apps/base/styles/vendors/fontawesome.css',
     tailwind: './apps/base/styles/vendors/tailwind.pcss',
+    turbo: './apps/base/javascript/turbo.ts',
     stimulus: './apps/base/javascript/stimulus.ts',
     workflow: './apps/workflows/javascript/app.tsx',
     components: './apps/base/javascript/components.ts',
@@ -26,18 +28,27 @@ module.exports = {
         test: /\.(ts|tsx|js|jsx)$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
-        options: {
-          presets: ['@babel/env', '@babel/preset-react', '@babel/preset-typescript'],
-          plugins: ['@babel/plugin-proposal-class-properties', '@babel/plugin-transform-runtime'],
-        },
+        // Uses .babelrc for options
+        // options: {}
       },
       {
-        test: /\.scss$/i,
+        test: /\.(s)?css$/i,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
       },
       {
         test: /\.pcss$/i,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+      },
+      {
+        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?(#.*)?$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'fonts/',
+            publicPath: '../fonts'
+          },
+        },
       },
     ],
   },

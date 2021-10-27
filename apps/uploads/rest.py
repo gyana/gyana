@@ -4,7 +4,6 @@ import time
 
 import coreapi
 from apps.base.clients import SLUG, get_bucket
-from django.conf import settings
 from django.utils.text import slugify
 from rest_framework.decorators import api_view, schema
 from rest_framework.request import Request

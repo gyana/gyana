@@ -1,8 +1,9 @@
 from django.core.cache import cache
 from ibis.expr.types import TableExpr
 
+from apps.base import clients
 from apps.base.cache import get_cache_key
-from apps.base.clients import bigquery_client, ibis_client
+from apps.base.clients import ibis_client
 
 from .models import Table
 
@@ -38,7 +39,7 @@ def get_query_from_table(table: Table) -> TableExpr:
     if tbl is None:
         tbl = conn.table(table.bq_table, database=table.bq_dataset)
 
-        # the client is not pickable
+        # the client is not pickle-able
         tbl.op().source = None
         cache.set(key, tbl, 24 * 3600)
 
@@ -55,6 +56,5 @@ def get_query_from_table(table: Table) -> TableExpr:
 
 
 def get_bq_table_schema_from_table(table: Table):
-    client = bigquery_client()
-    schema = client.get_table(table.bq_id).schema
+    schema = clients.bigquery().get_table(table.bq_id).schema
     return [t for t in schema if t.name not in FIVETRAN_COLUMNS]

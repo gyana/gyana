@@ -33,7 +33,9 @@ class GenericWidgetForm(LiveUpdateForm):
         if project:
             self.fields["table"].queryset = Table.available.filter(
                 project=project
-            ).exclude(source="intermediate_node")
+            ).exclude(
+                source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
+            )
 
     def get_live_fields(self):
         return ["table", "kind"]

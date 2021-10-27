@@ -24,4 +24,4 @@ export const pendingIntegrations = fixtures.filter(
     fixture.fields.project == projectId
 ).length
 
-export const BIGQUERY_TIMEOUT = parseInt('BIGQUERY_TIMEOUT', 10000)
+export const BIGQUERY_TIMEOUT = 10000

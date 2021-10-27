@@ -1,23 +1,20 @@
 from apps.projects.mixins import ProjectMixin
-from django.http.response import HttpResponseRedirect
-from django.urls import reverse
+from django.shortcuts import redirect
+
+from .models import Integration
+
+STATE_TO_URL_REDIRECT = {
+    Integration.State.UPDATE: "project_integrations:configure",
+    Integration.State.LOAD: "project_integrations:load",
+    Integration.State.ERROR: "project_integrations:load",
+    Integration.State.DONE: "project_integrations:done",
+}
 
 
 class ReadyMixin(ProjectMixin):
     def get(self, request, *args, **kwargs):
         integration = self.get_object()
         if not integration.ready:
-            url_name = (
-                "configure"
-                if integration.state == "update"
-                else "load"
-                if integration.state in ["load", "error"]
-                else "done"
-            )
-            return HttpResponseRedirect(
-                reverse(
-                    f"project_integrations:{url_name}",
-                    args=(self.project.id, integration.id),
-                )
-            )
+            url_name = STATE_TO_URL_REDIRECT[integration.state]
+            return redirect(url_name, self.project.id, integration.id)
         return super().get(request, *args, **kwargs)

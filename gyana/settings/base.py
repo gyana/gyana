@@ -51,7 +51,6 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.humanize",
-    "django.forms",
     "django.contrib.postgres",
 ]
 
@@ -65,8 +64,6 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount.providers.google",
     "rest_framework",
     "celery_progress",
-    "crispy_forms",
-    "crispy_tailwind",
     "django_filters",
     "django_tables2",
     "invitations",
@@ -100,7 +97,9 @@ PROJECT_APPS = [
     "apps.cnames.apps.CNamesConfig",
 ]
 
-INSTALLED_APPS = ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
+INSTALLED_APPS = (
+    ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS + ["django.forms"]
+)
 
 MIDDLEWARE = [
     "apps.cnames.middleware.HostMiddleware",
@@ -229,7 +228,7 @@ ACCOUNT_FORMS = {
 
 # User signup configuration: change to "mandatory" to require users to confirm email before signing in.
 # or "optional" to send confirmation emails but not require them
-ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 LOGIN_URL = "account_login"
 
 
@@ -331,12 +330,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 GCP_PROJECT = os.environ.get("GCP_PROJECT")
 GCP_BQ_SVC_ACCOUNT = os.environ.get("GCP_BQ_SVC_ACCOUNT")
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
-
-CRISPY_TEMPLATE_PACK = "tailwind"
-
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME")
+GS_PUBLIC_BUCKET_NAME = os.environ.get("GS_PUBLIC_BUCKET_NAME")
+GS_PUBLIC_CACHE_CONTROL = "public, max-age=31536000"
 
 FIVETRAN_KEY = os.environ.get("FIVETRAN_KEY")
 FIVETRAN_URL = "https://api.fivetran.com/v1"

@@ -4,7 +4,7 @@ from django.urls import include, path
 from django.views.defaults import page_not_found
 from django.views.generic.base import RedirectView
 
-from . import views
+from . import views, frames
 
 app_name = "users"
 urlpatterns = [
@@ -13,8 +13,10 @@ urlpatterns = [
         login_required(views.UserOnboarding.as_view()),
         name="onboarding",
     ),
-    path("profile/", login_required(views.UserProfile.as_view()), name="user_profile"),
     path("feedback", login_required(views.UserFeedback.as_view()), name="feedback"),
+
+    # Trubo frames
+    path("profile", login_required(frames.UserProfileModal.as_view()), name="profile"),
 ]
 
 accounts_urlpatterns = [

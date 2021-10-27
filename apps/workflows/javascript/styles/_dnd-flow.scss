@@ -13,7 +13,7 @@
     flex-flow: column;
     justify-content: center;
 
-    padding: 1rem;
+    padding: 0;
     height: 12rem;
     width: 12rem;
 
@@ -70,6 +70,13 @@
     }
 
     & > i.fas {
+      height: 100%;
+      cursor: inherit;
+      width: 100%;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       font-size: 5.6rem;
     }
 
@@ -145,12 +152,15 @@
 
   .react-flow__buttons {
     display: none;
-    gap: 1.6rem;
     justify-content: center;
-    padding: 1.6rem;
+    padding: 0.8rem;
     position: absolute;
     top: 100%;
     width: 100%;
+
+    button {
+      padding: 0.8rem;
+    }
   }
 
   .react-flow__controls {

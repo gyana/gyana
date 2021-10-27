@@ -68,10 +68,9 @@
       z-index: var(--z-ui);
     }
   }
-
 }
 
 gy-widget {
+  display: block;
   position: relative;
-  top: calc(1.5rem);
 }

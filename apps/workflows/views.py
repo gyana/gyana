@@ -1,15 +1,23 @@
 import analytics
-from apps.base.analytics import WORKFLOW_CREATED_EVENT, WORKFLOW_DUPLICATED_EVENT
+from apps.base.analytics import (
+    WORKFLOW_CREATED_EVENT,
+    WORKFLOW_CREATED_EVENT_FROM_INTEGRATION,
+    WORKFLOW_DUPLICATED_EVENT,
+)
 from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.integrations.models import Integration
 from apps.nodes.config import get_node_config_with_arity
 from apps.nodes.models import Node
 from apps.projects.mixins import ProjectMixin
 from django import forms
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
+from waffle import flag_is_active
 
 from .forms import WorkflowForm, WorkflowFormCreate
 from .models import Workflow
@@ -63,6 +71,41 @@ class WorkflowCreate(ProjectMixin, TurboCreateView):
         return r
 
 
+class WorkflowCreateFromIntegration(ProjectMixin, TurboCreateView):
+    model = Workflow
+    template_name = "workflows/create_from_integration.html"
+    fields = ("project",)
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_workflows:detail", args=(self.project.id, self.object.id)
+        )
+
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        r = super().form_valid(form)
+        analytics.track(
+            self.request.user.id,
+            WORKFLOW_CREATED_EVENT_FROM_INTEGRATION,
+            {"id": form.instance.id, "name": form.instance.name},
+        )
+        integration = get_object_or_404(
+            Integration, pk=self.request.POST["integration"]
+        )
+        table = integration.table_set.first()
+        self.object.nodes.create(
+            kind=Node.Kind.INPUT,
+            name=f"Input from {integration.name}",
+            input_table=table,
+            x=0,
+            y=0,
+            has_been_saved=True,
+            data_updated=timezone.now(),
+        )
+        self.object.name = f"{integration.name} workflow"
+        self.object.name
+        return r
+
+
 class WorkflowDetail(ProjectMixin, TurboUpdateView):
     template_name = "workflows/detail.html"
     model = Workflow
@@ -72,7 +115,7 @@ class WorkflowDetail(ProjectMixin, TurboUpdateView):
         context = super().get_context_data(**kwargs)
         # copy dict because it's cached
         nodes = get_node_config_with_arity().copy()
-        if not self.request.user.is_superuser:
+        if not flag_is_active(self.request, "beta"):
             nodes.pop(Node.Kind.SENTIMENT)
         context["nodes"] = nodes
         return context

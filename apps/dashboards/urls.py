@@ -29,6 +29,11 @@ urlpatterns = [
         dashboard_is_password_protected(views.DashboardLogin.as_view()),
         name="login",
     ),
+    path(
+        "<str:shared_id>/logout",
+        dashboard_is_password_protected(views.DashboardLogout.as_view()),
+        name="logout",
+    ),
     # frames
     path(
         "<hashid:pk>/share",
@@ -58,9 +63,19 @@ project_urlpatterns = (
             name="create",
         ),
         path(
+            "create_from_integration",
+            login_and_project_required(views.DashboardCreateFromIntegration.as_view()),
+            name="create_from_integration",
+        ),
+        path(
             "<hashid:pk>",
             login_and_project_required(views.DashboardDetail.as_view()),
             name="detail",
+        ),
+        path(
+            "<hashid:pk>/settings",
+            login_and_project_required(views.DashboardSettings.as_view()),
+            name="settings",
         ),
         path(
             "<hashid:pk>/delete",

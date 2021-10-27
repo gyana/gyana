@@ -10,7 +10,17 @@
     method="post"
     data-controller="live-update" 
     data-action="change->tf-modal#change submit->tf-modal#save"
+    data-tf-modal-target='form'
   >  
+  {% comment %} The pressed button is outside the form this is just to trigger the submit {% endcomment %}
+      <button
+        class="hidden"
+        type="submit"
+        formnovalidate
+        name="close"
+        value="close"
+      >
+      </button>
     {% csrf_token %}
 
     {% for hidden_field in form.hidden_fields %}
@@ -18,22 +28,8 @@
     {% endfor %}
 
     <div class="flex flex-1 flex-col gap-5 w-full pad overflow-y-auto">
-      <div class="absolute top-0 right-0">
-        <button
-          class="tf-modal__close tf-modal__close--inline"
-          type="submit"
-          formnovalidate
-          name="close"
-          value="close"
-          data-action="click->tf-modal#close"
-          data-loading-false
-        >
-          <i class="fal fa-times fa-lg"></i>
-        </button>
-      </div>
-
-      <span class="absolute flex-1 hidden" data-live-update-target="loading">
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+      <span data-live-update-target="loading" class="hidden">
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
       </span>
 
       <div class="flex flex-row gap-7">

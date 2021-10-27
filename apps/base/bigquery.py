@@ -1,5 +1,14 @@
 import re
 
+import pandas as pd
+from django.conf import settings
+from google.cloud import bigquery
+from google.cloud.bigquery.query import _QueryResults
+
+from .ibis.client import *
+from .ibis.compiler import *
+from .ibis.patch import *
+
 BIGQUERY_TYPE_TO_HUMAN = {
     "ARRAY": None,
     "BOOL": "True/False",
@@ -52,3 +61,35 @@ def bq_table_schema_is_string_only(bq_table):
         col.name == f"string_field_{idx}" and col.field_type == "STRING"
         for idx, col in enumerate(bq_table.schema)
     )
+
+
+class QueryResults(_QueryResults):
+    @property
+    def rows_dict(self):
+        return [{k: v for k, v in row.items()} for row in self.rows]
+
+    @property
+    def rows_df(self):
+        return pd.DataFrame(self.rows_dict)
+
+
+def get_query_results(client, query, max_results=100) -> QueryResults:
+    # run a synchronous query and retrieve results in one API call
+    # this is not implemented in the python client, it is less sophisticated but
+    # actually faster for quick queries
+    # https://cloud.google.com/bigquery/docs/reference/rest/v2/jobs/query
+    resource = client._call_api(
+        None,
+        path=f"/projects/{settings.GCP_PROJECT}/queries",
+        method="POST",
+        data={
+            "query": query,
+            "maxResults": max_results,
+            "useLegacySql": False,
+            "formatOptions": {"useInt64Timestamp": True},
+        },
+    )
+    return QueryResults.from_api_repr(resource)
+
+
+bigquery.Client.get_query_results = get_query_results

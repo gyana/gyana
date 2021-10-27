@@ -1,11 +1,7 @@
 import json
 
 import coreapi
-from apps.base.analytics import (
-    NODE_CONNECTED_EVENT,
-    NODE_CREATED_EVENT,
-    track_node,
-)
+from apps.base.analytics import NODE_CONNECTED_EVENT, NODE_CREATED_EVENT, track_node
 from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, schema
@@ -84,7 +80,7 @@ def duplicate_node(request, pk):
         ]
     )
 )
-def update_positions(request, workflow_id):
+def update_positions(request, pk):
     ids = [d["id"] for d in request.data]
     nodes = Node.objects.filter(id__in=ids)
     for node in nodes:
