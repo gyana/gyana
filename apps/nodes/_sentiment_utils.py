@@ -294,7 +294,7 @@ def get_gcp_sentiment(node_id):
 
     team = node.workflow.project.team
     if team.current_credit_balance + uses_credits > team.credits:
-        raise OutOfCreditsException
+        raise OutOfCreditsException(uses_credits)
 
     if not node.always_use_credits and (
         node.credit_use_confirmed is None
