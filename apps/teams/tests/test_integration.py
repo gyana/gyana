@@ -78,8 +78,8 @@ def test_team_crudl(client, logged_in_user, bigquery):
     r = client.delete(f"/teams/{new_team.id}/delete")
     assertRedirects(r, "/", target_status_code=302)
 
-    assert bigquery.delete_dataset.call_count == 1
-    assert bigquery.delete_dataset.call_args.args == (new_team.tables_dataset_id,)
+    # Does a soft delete
+    assert bigquery.delete_dataset.call_count == 0
 
     assert logged_in_user.teams.count() == 1
 

@@ -35,9 +35,7 @@ def dashboard_is_public(view_func):
     def decorator(request, *args, **kwargs):
         dashboard = Dashboard.objects.get(shared_id=kwargs["shared_id"])
 
-        if not dashboard or not user_can_access_project(
-            request.user, dashboard.project
-        ):
+        if not dashboard or dashboard.project.team.deleted:
             return render(request, "404.html", status=404)
 
         if dashboard.shared_status == Dashboard.SharedStatus.PUBLIC:
@@ -65,7 +63,7 @@ def dashboard_is_password_protected(view_func):
         dashboard = Dashboard.objects.get(shared_id=kwargs["shared_id"])
         if (
             dashboard
-            and user_can_access_project(request.user, dashboard.project)
+            and not dashboard.project.team.deleted
             and dashboard.shared_status == Dashboard.SharedStatus.PASSWORD_PROTECTED
         ):
             kwargs["dashboard"] = dashboard

@@ -16,9 +16,7 @@ def login_and_project_required_or_public_or_in_template(view_func):
         widget = Widget.objects.get(pk=kwargs["pk"])
         dashboard = widget.dashboard
 
-        if not dashboard or not user_can_access_project(
-            request.user, dashboard.project
-        ):
+        if not dashboard or dashboard.project.team.deleted:
             return render(request, "404.html", status=404)
 
         if dashboard.shared_status == Dashboard.SharedStatus.PUBLIC:
