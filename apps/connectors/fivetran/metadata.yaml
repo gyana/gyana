@@ -576,7 +576,7 @@ greenhouse:
   link_to_docs: https://fivetran.com/docs/applications/greenhouse
   link_to_erd: https://fivetran.com/docs/applications/greenhouse#schemainformation
   name: Greenhouse
-  type: HumanResources
+  type: Human Resources
 heap:
   description: Heap is an automation tool for user analytics.
   icon_path: heap.svg
@@ -718,7 +718,7 @@ lever:
   link_to_docs: https://fivetran.com/docs/applications/lever
   link_to_erd: https://fivetran.com/docs/applications/lever#schemainformation
   name: Lever
-  type: HumanResources
+  type: Human Resources
 light_speed_retail:
   description: Lightspeed Retail is a point of sale solution for retail businesses
   icon_path: light_speed_retail.svg
@@ -1319,7 +1319,7 @@ workday:
   link_to_docs: https://fivetran.com/docs/applications/workday
   link_to_erd: https://fivetran.com/docs/applications/workday#schemainformation
   name: Workday
-  type: HumanResources
+  type: Human Resources
 xero:
   description: Online accounting
   icon_path: xero.svg
