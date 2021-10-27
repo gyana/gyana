@@ -49,8 +49,7 @@ INPUT_DATA = [
     },
 ]
 
-DISTINCT_QUERY = INPUT_QUERY.replace("*", "DISTINCT `athlete` AS `text`")
-DIFFERENCE_QUERY = f"{DISTINCT_QUERY}\nEXCEPT DISTINCT\nSELECT `text`\nFROM `project.cypress_team_.*_tables.cache_node_.*`"
+DISTINCT_QUERY = "SELECT t0.*\nFROM (\n  SELECT DISTINCT `athlete` AS `text`\n  FROM `project.dataset.table`\n) t0\nWHERE t0.`text` IS NOT NULL"
 
 
 def mock_bq_client_data(bigquery):
@@ -60,7 +59,7 @@ def mock_bq_client_data(bigquery):
         if query == DISTINCT_QUERY:
             mock.rows_dict = [{"text": row["athlete"]} for row in INPUT_DATA]
             mock.total_rows = len(INPUT_DATA)
-        elif re.search(re.compile(DIFFERENCE_QUERY), query):
+        elif "EXCEPT DISTINCT" in query:
             mock.rows_dict = []
             mock.total_rows = 0
         else:
@@ -68,6 +67,24 @@ def mock_bq_client_data(bigquery):
             mock.total_rows = len(INPUT_DATA)
         return mock
 
+    def result(query, **kwargs):
+        mock = PickableMock()
+
+        if query == DISTINCT_QUERY:
+            mock.result = Mock(
+                return_value=[{"text": row["athlete"]} for row in INPUT_DATA]
+            )
+            mock.total_rows = len(INPUT_DATA)
+        elif "EXCEPT DISTINCT" in query:
+            mock.result = Mock(return_value=[])
+            mock.total_rows = 0
+        else:
+            mock.result = Mock(return_value=INPUT_DATA)
+            mock.total_rows = len(INPUT_DATA)
+
+        return mock
+
+    bigquery.query = Mock(side_effect=result)
     bigquery.get_query_results = Mock(side_effect=side_effect)
 
 

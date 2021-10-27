@@ -173,11 +173,7 @@ def _reconcile_gcp_scores(
 
 
 def _compute_values(client, query):
-
-    values = [
-        row[TEXT_COLUMN_NAME]
-        for row in client.get_query_results(query, max_results=None).rows_dict
-    ]
+    values = [row[TEXT_COLUMN_NAME] for row in client.query(query).result()]
     values = [_remove_unicode(value) for value in values]
 
     # clip each row of text so that GPC doesn't charge us more than 1 credit
@@ -203,24 +199,23 @@ def _update_intermediate_table(ibis_client, node, current_values):
     )
 
 
-@shared_task(time_limit=60)
-def get_gcp_sentiment(node_id):
+def _get_current_values(node):
+    """Get all current distinct text values and ignore nulls"""
     from apps.nodes.bigquery import get_query_from_node
 
-    node = get_object_or_404(Node, pk=node_id)
     parent = get_query_from_node(node.parents.first())
-    ibis_client = clients.ibis_client()
     current_values = (
         parent[[node.sentiment_column]]
         .relabel({node.sentiment_column: TEXT_COLUMN_NAME})
         .distinct()
     )
-    # Ignore null values
-    current_values = current_values[current_values[TEXT_COLUMN_NAME].notnull()]
+    return current_values[current_values[TEXT_COLUMN_NAME].notnull()]
 
+
+def _get_not_cached(node, current_values, ibis_client):
+    """Obtain the values that haven't been analysed before"""
     cache_table = node.cache_table
-
-    not_cached = (
+    return (
         current_values.difference(
             ibis_client.table(cache_table.bq_table, database=cache_table.bq_dataset)[
                 [TEXT_COLUMN_NAME]
@@ -230,11 +225,70 @@ def get_gcp_sentiment(node_id):
         else current_values
     )
 
-    client = clients.bigquery()
-    values, clipped_values = _compute_values(client, not_cached.compile())
 
+def _update_cache_table(node, values, scores, bq_client, uses_credits):
+    """Upload the newly analysed rows to the cache_table of a node and charge the user"""
+    df = pd.DataFrame({TEXT_COLUMN_NAME: values, SENTIMENT_COLUMN_NAME: scores})
+
+    job_config = bigquery.LoadJobConfig(
+        schema=[
+            bigquery.SchemaField(TEXT_COLUMN_NAME, bigquery.enums.SqlTypeNames.STRING),
+            bigquery.SchemaField(
+                SENTIMENT_COLUMN_NAME, bigquery.enums.SqlTypeNames.FLOAT
+            ),
+        ],
+    )
+    with transaction.atomic():
+        # We want to prevent multiple requests triggering updates for the same result
+        # Double charging the users
+        # TODO: Test whether this really prevents this
+        cache_table, _ = Table.objects.select_for_update(nowait=True).get_or_create(
+            source=Table.Source.CACHE_NODE,
+            bq_table=node.bq_cache_table_id,
+            bq_dataset=node.workflow.project.team.tables_dataset_id,
+            project=node.workflow.project,
+            cache_node=node,
+        )
+        # Upload to bigquery
+        job = bq_client.load_table_from_dataframe(
+            df, cache_table.bq_id, job_config=job_config
+        )  # Make an API request.
+        job.result()  # Wait for the job to complete
+
+        node.cache_table = cache_table
+        cache_table.data_updated = timezone.now()
+
+        # Charge the user
+        node.workflow.project.team.credittransaction_set.create(
+            transaction_type=CreditTransaction.TransactionType.INCREASE,
+            amount=uses_credits,
+            user=node.credit_confirmed_user,
+        )
+
+        node.save()
+        cache_table.save()
+
+
+@shared_task(time_limit=60)
+def get_gcp_sentiment(node_id):
+    """Returns the sentiment from per unique text in a column.
+
+    Results are cached in a bigquery table on a per node basis. When rerunning
+    a sentiment analysis only new records are send to the GCP endpoint. Users
+    are only charged for these in the end the new and only results are merged
+    and the resulting table calculated."""
+    node = Node.objects.get(pk=node_id)
+    ibis_client = clients.ibis_client()
+    bq_client = clients.bigquery()
+
+    current_values = _get_current_values(node)
+    not_cached = _get_not_cached(node, current_values, ibis_client)
+    values, clipped_values = _compute_values(bq_client, not_cached.compile())
+
+    # If no values to analyse just refetch from cache_table
     uses_credits = len(values)
-    if cache_table and uses_credits == 0:
+    if node.cache_table and uses_credits == 0:
+
         table = _update_intermediate_table(ibis_client, node, current_values)
         return table.bq_table, table.bq_dataset
 
@@ -258,40 +312,7 @@ def get_gcp_sentiment(node_id):
         )
 
     scores = [score for batch_scores in batches_scores for score in batch_scores]
-    df = pd.DataFrame({TEXT_COLUMN_NAME: values, SENTIMENT_COLUMN_NAME: scores})
-
-    job_config = bigquery.LoadJobConfig(
-        schema=[
-            bigquery.SchemaField(TEXT_COLUMN_NAME, bigquery.enums.SqlTypeNames.STRING),
-            bigquery.SchemaField(
-                SENTIMENT_COLUMN_NAME, bigquery.enums.SqlTypeNames.FLOAT
-            ),
-        ],
-    )
-    with transaction.atomic():
-        cache_table, _ = Table.objects.get_or_create(
-            source=Table.Source.CACHE_NODE,
-            bq_table=node.bq_cache_table_id,
-            bq_dataset=node.workflow.project.team.tables_dataset_id,
-            project=node.workflow.project,
-            cache_node=node,
-        )
-        job = client.load_table_from_dataframe(
-            df, cache_table.bq_id, job_config=job_config
-        )  # Make an API request.
-        job.result()  # Wait for the job to complete
-
-        node.cache_table = cache_table
-        cache_table.data_updated = timezone.now()
-
-        node.workflow.project.team.credittransaction_set.create(
-            transaction_type=CreditTransaction.TransactionType.INCREASE,
-            amount=uses_credits,
-            user=node.credit_confirmed_user,
-        )
-
-        node.save()
-        cache_table.save()
-
+    print(scores)
+    _update_cache_table(node, values, scores, bq_client, uses_credits)
     table = _update_intermediate_table(ibis_client, node, current_values)
     return table.bq_table, table.bq_dataset
