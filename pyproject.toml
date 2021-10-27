@@ -4,6 +4,10 @@ version = "0.1.0"
 description = "No-Code Data Analytics"
 authors = ["Gyana Developers <developers@gyana.com>"]
 
+[tool.djlint]
+profile = "djanog"
+indent = 2
+
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "gyana.settings.development"
 
