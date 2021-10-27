@@ -130,7 +130,8 @@ class Team(BaseModel, SafeDeleteModel):
 
     @cached_property
     def can_create_cname(self):
-        return self.cname_set.count() < self.plan.get("cnames", 0)
+        cname_limit = self.plan.get("cnames", 0)
+        return cname_limit == -1 or self.cname_set.count() < cname_limit
 
     @property
     def row_limit(self):

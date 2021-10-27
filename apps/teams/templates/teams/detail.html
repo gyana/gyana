@@ -29,18 +29,33 @@
     <h2 class="flex gap-3 items-center">
       Your Projects {% link_article 'overview' 'collaborate' %}
     </h2>
-
-    <a class="button button--sm" href="{% url 'team_projects:create' team.id %}">
-      <i class="fas fa-fw fa-plus"></i> New Project
-    </a>
+    {% if  team.can_create_project%}
+      <a class="button button--sm" href="{% url 'team_projects:create' team.id %}">
+        <i class="fas fa-fw fa-plus"></i> New Project
+      </a>
+    {% else %}
+      <div data-controller='tooltip'>
+        <a disabled class="button button--sm" href="{% url 'team_projects:create' team.id %}">
+          <i class="fas fa-fw fa-plus"></i> New Project
+        </a>
+        <span data-tooltip-target="body">
+          You have reached the maximum number of projects on your current plan.
+        </span>
+      </div>      
+    {% endif %}
   </div>
   <div class="card card--none">
     {% render_table table %}
 
     <p class="pad pad--sm small">
-      <a class="link" href="{% url 'team_projects:create' team.id %}">
-        <i class="fas fa-fw fa-plus mr-2"></i>Create a new project
-      </a>
+      {% if  team.can_create_project%}
+        <a class="link" href="{% url 'team_projects:create' team.id %}">
+          <i class="fas fa-fw fa-plus mr-2"></i>Create a new project
+        </a>
+      {% else %}
+        You have reached the maximum number of projects on your current plan. 
+        Please <a class='link' href="{% url 'teams:account' team.id%}" data-turbo-frame="_top">upgrade</a> to create more projects. 
+      {% endif %}
     </p>
   </div>
   {% else %}

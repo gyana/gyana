@@ -1,4 +1,5 @@
 from apps.base.live_update_form import LiveUpdateForm
+from apps.base.widgets import SelectWithDisable
 from django import forms
 
 from .models import Project
@@ -25,6 +26,19 @@ class ProjectForm(LiveUpdateForm):
             cname_field.empty_label = "Default domain (gyana.com)"
             cname_field.queryset = self._team.cname_set.all()
 
+        if not self._team.can_create_invite_only_project and (
+            access_field := self.fields.get("access")
+        ):
+            access_field.widget = SelectWithDisable(
+                choices=access_field.choices,
+                disabled={
+                    Project.Access.INVITE_ONLY: "You cannot create more invite only projects on your current plan"
+                },
+            )
+            access_field.help_text = (
+                "Invite only projects are not available on your current plan"
+            )
+
     def get_live_fields(self):
         fields = ["name", "description"]
 
@@ -41,23 +55,20 @@ class ProjectForm(LiveUpdateForm):
 
 
 class ProjectCreateForm(ProjectForm):
-    def get_live_fields(self):
-        fields = ["name", "description"]
-
-        if self._is_beta:
-            fields += ["access"]
-
-        if self.get_live_field("access") == Project.Access.INVITE_ONLY:
-            fields += ["members"]
-
-        return fields
-
     def clean(self):
         cleaned_data = super().clean()
 
         if not self._team.can_create_project:
             raise forms.ValidationError(
                 "You've reached the maximum number of projects on this plan"
+            )
+
+        if (
+            cleaned_data["access"] == Project.Access.INVITE_ONLY
+            and not self._team.can_create_invite_only_project
+        ):
+            raise forms.ValidationError(
+                "You've reached the maximum number of invite only projects on your plan"
             )
 
         return cleaned_data
