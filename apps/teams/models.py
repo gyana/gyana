@@ -1,3 +1,5 @@
+from functools import cached_property
+
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -125,6 +127,10 @@ class Team(BaseModel, SafeDeleteModel):
             return {**PLANS["appsumo"], **get_deal(self.appsumocode_set.all())}
 
         return PLANS["free"]
+
+    @cached_property
+    def can_create_cname(self):
+        return self.cname_set.count() < self.plan.get("cnames", 0)
 
     @property
     def row_limit(self):

@@ -11,16 +11,24 @@
   <div class="table__empty">
     <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
     <h3>You have no custom domains</h3>
+    {% if team.can_create_cname  %}
       <p>
         Why not <a href="{% url 'team_cnames:create' team.id %}" class="link" data-turbo-frame="_top">create one</a>?
       </p>
+    {% else %}
+    <p>You cannot create more custom domains on your current plan.</p>
+    {% endif %}
   </div>
   {% else %}
   <div class="pad flex flex-col space-y-8">
-    <small>
-        <a href="{% url 'team_cnames:create' team.id %}" class="link" data-turbo-frame="_top">
-          <i class="fa fa-fw fa-plus mr-2"></i>Add a custom domain</a>
-    </small>
+    {% if team.can_create_cname %}
+      <small>
+          <a href="{% url 'team_cnames:create' team.id %}" class="link" data-turbo-frame="_top">
+            <i class="fa fa-fw fa-plus mr-2"></i>Add a custom domain</a>
+      </small>
+    {% else %}
+      <p>You cannot create more custom domains on your current plan.</p>
+    {% endif %}
   </div>
   {% endif %}
 </div>
