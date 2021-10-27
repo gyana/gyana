@@ -82,6 +82,12 @@ class Team(BaseModel):
         return reverse("teams:detail", args=(self.id,))
 
     @property
+    def current_credits_left(self):
+        from .account import calculate_credit_balance
+
+        return calculate_credit_balance(self) - self.credits
+
+    @property
     def current_credit_balance(self):
         from .account import calculate_credit_balance
 
