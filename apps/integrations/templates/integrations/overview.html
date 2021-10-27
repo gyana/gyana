@@ -3,7 +3,7 @@
 
 <div class="flex flex-col space-y-3">
   <div class="flex items-baseline gap-3">
-    <h3>Integrations</h3>
+    <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Integrations</h3>
     {% if integrations.ready > 0 %}
       <p class="text-black-50">
         - <a class="link" href="{% url 'project_integrations:list' project.id %}" data-turbo-frame="_top">
@@ -15,74 +15,80 @@
   </div>
 
   {% if integrations.ready > 0 %}
-    <div class="card card--sm">
-      <div class='flex flex-row items-center gap-3 flex-wrap'>
-        {% for integration in integrations.connectors %}
-          <span>
-            <a href="{% url 'project_integrations:detail' project.id integration.id %}" data-turbo-frame="_top">
-              <img class="h-8 w-8" src="{% static integration.icon %}"/>
+  <div class="card card--sm">
+    <div class='flex flex-row items-center gap-3 flex-wrap'>
+      {% for integration in integrations.connectors %}
+        <span>
+          <a href="{% url 'project_integrations:detail' project.id integration.id %}" data-turbo-frame="_top">
+            <img class="h-8 w-8" src="{% static integration.icon %}"/>
+          </a>
+        </span>
+      {% endfor %}
+      {% if integrations.sheet_count > 0 %}
+        <span>
+          <p class="text-black-50">
+            <a class="link" href="{% url 'project_integrations:list' project.id %}?kind=sheet" data-turbo-frame="_top">
+              {{ integrations.sheet_count|intcomma }} sheet{{ integrations.sheet_count|pluralize }}
             </a>
-          </span>
-        {% endfor %}
-        {% if integrations.sheet_count > 0 %}
-          <span>
-            <p class="text-black-50">
-              <a class="link" href="{% url 'project_integrations:list' project.id %}?kind=sheet" data-turbo-frame="_top">
-                {{ integrations.sheet_count|intcomma }} sheet{{ integrations.sheet_count|pluralize }}
-              </a>
-            </p>
-          </span>
-        {% endif %}
-        {% if integrations.upload_count > 0 %}
-          <span>
-            <p class="text-black-50">
-              <a class="link" href="{% url 'project_integrations:list' project.id %}?kind=upload" data-turbo-frame="_top">
-                {{ integrations.upload_count|intcomma }} upload{{ integrations.upload_count|pluralize }}
-              </a>
-            </p>
-          </span>
-        {% endif %}
-      </div>
+          </p>
+        </span>
+      {% endif %}
+      {% if integrations.upload_count > 0 %}
+        <span>
+          <p class="text-black-50">
+            <a class="link" href="{% url 'project_integrations:list' project.id %}?kind=upload" data-turbo-frame="_top">
+              {{ integrations.upload_count|intcomma }} upload{{ integrations.upload_count|pluralize }}
+            </a>
+          </p>
+        </span>
+      {% endif %}
     </div>
+  </div>
   {% endif %}
 
   <div class="card card--sm">
     {% if integrations.total == 0 %}
-      <div class="table__empty">
-        <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
-        <h3>You have no integrations.</h3>
-        <p class="text-black-50">Start your project by 
-          <a class="link" href="{% url 'project_integrations:list' project.id %}" data-turbo-frame="_top">creating one</a>.
-        </p>
-      </div>
+    <div class="table__empty">
+      <a
+        href="{% url 'project_integrations:list' project.id %}"
+        class="h3 link" 
+        data-turbo-frame="_top"
+      >
+        Create an integration to get started
+      </a>
+      <p class="text-black-50 mt-3">
+        Kickstart your project by uploading a CSV or linking a Google Sheet.
+      </p>
+    </div>
     {% elif not integrations.operational %}
       {% if integrations.attention > 0 %}
-        <p class="text-black-50">
-          <i class="fa fa-info-circle"></i>
-          You have {{ integrations.attention|intcomma }} pending integration{{ integrations.attention|pluralize }} that need{{ integrations.attention|pluralize:"s," }}
-            your <a class="link" href="{% url 'project_integrations:pending' project.id %}" data-turbo-frame="_top">attention</a>.
-        </p>
+      <p class="text-black-50">
+        <i class="fa fa-info-circle"></i>
+        You have {{ integrations.attention|intcomma }} pending integration{{ integrations.attention|pluralize }} that need{{ integrations.attention|pluralize:"s," }}
+          your <a class="link" href="{% url 'project_integrations:pending' project.id %}" data-turbo-frame="_top">attention</a>.
+      </p>
       {% endif %} 
 
       {% if integrations.loading > 0 %}
-        <p class="text-black-50">
-          <i class="fa fa-info-circle"></i>
-          You have {{ integrations.loading|intcomma }} pending integration{{ integrations.loading|pluralize }} doing
-            the initial import.
-        </p>
+      <p class="text-black-50">
+        <i class="fa fa-info-circle"></i>
+        You have {{ integrations.loading|intcomma }} pending integration{{ integrations.loading|pluralize }} doing
+          the initial import.
+      </p>
       {% endif %}
 
       {% if integrations.broken > 0 %}
-        <p class="text-black-50">
-          <i class="fa fa-exclamation-circle text-red"></i>
-          You have {{ integrations.broken|intcomma }} broken integration{{ integrations.broken|pluralize }}.
-        </p>
-      {% endif %}
-    {% else %}
       <p class="text-black-50">
-        <i class="fa fa-check-circle text-green"></i>
-        All your integrations are ready.
+        <i class="fa fa-exclamation-circle text-red"></i>
+        You have {{ integrations.broken|intcomma }} broken integration{{ integrations.broken|pluralize }}.
       </p>
+      {% endif %}
+
+    {% else %}
+    <p class="text-black-50">
+      <i class="fa fa-check-circle text-green"></i>
+      All your integrations are ready.
+    </p>
     {% endif %}
   </div>
 </div>

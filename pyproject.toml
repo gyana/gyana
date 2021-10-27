@@ -4,6 +4,10 @@ version = "0.1.0"
 description = "No-Code Data Analytics"
 authors = ["Gyana Developers <developers@gyana.com>"]
 
+[tool.djlint]
+profile = "djanog"
+indent = 2
+
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "gyana.settings.development"
 
@@ -56,6 +60,7 @@ django-silk = {git = "https://github.com/jazzband/django-silk", rev = "21a4058c2
 heroku3 = "^4.2.3"
 django-waffle = "^2.2.1"
 pytest-mock = "^3.6.1"
+django-safedelete = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

@@ -5,8 +5,7 @@
 
 {% block app %}
 <div class="flex flex-1 items-center justify-center">
-  {% comment %} 42rem = max-w-2xl {% endcomment %}
-  <div class="flex flex-col items-left max-w-4xl" style="min-width: 42rem;">
+  <div class="flex flex-col items-left max-w-2xl" style="min-width: 42rem;">
     <header class="page-header">
       <div class="mr-auto">
         <h1>{{ project.name }}</h1>
@@ -25,7 +24,7 @@
       <turbo-frame id="integrations:overview" src="{% url 'project_integrations:overview' project.id %}">
         <div class="flex flex-col space-y-3">
           <div class="flex items-baseline gap-3">
-            <h3>Integrations</h3>
+            <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Integrations</h3>
           </div>
 
           <div class="card card--sm">
@@ -40,7 +39,7 @@
       <turbo-frame id="workflows:overview" src="{% url 'project_workflows:overview' project.id %}">
         <div class="flex flex-col space-y-3">
           <div class="flex items-baseline gap-3">
-            <h3>Workflows</h3>
+            <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Workflows</h3>
           </div>
 
           <div class="card card--sm">
@@ -55,7 +54,7 @@
       <turbo-frame id="dashboards:overview" src="{% url 'project_dashboards:overview' project.id %}">
         <div class="flex flex-col space-y-3">
           <div class="flex items-baseline gap-3">
-            <h3>Dashboards</h3>
+            <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Dashboards</h3>
           </div>
 
           <div class="card card--sm">

@@ -3,49 +3,68 @@
 {% load help_utils %}
 
 {% block app %}
-
 {% if not request.GET.service %}
+<div class='flex flex-col pad'>
+  <div class="flex items-center gap-3">
+    <h2>Choose a connector</h2>
 
-  <div class="flex flex-row flex-1 overflow-hidden">
-    <div class='flex flex-col flex-1 overflow-auto'>
-      <h2 class="pad">
-        Choose a connector
-        {% link_article 'integrations' 'connector' %}
-        {% link_video 'connector' %}
-      </h2>
-      <div class='flex flex-col flex-1'>  
-          <div class="flex flex-wrap gap-16 pad">
-              {% for category in service_categories %}
-              <div class="flex flex-col gap-7">
-                  <h3>{{ category|capfirst }}</h3>
-                  <div class="flex flex-1 flex-wrap content-start gap-7">
-                  {% for service_id, service in services.items %}
-                      {% if service.type == category %}
-                        {% if service.internal != 't' or request.user.is_superuser %}
-                          <a class="card card--inline card--square"
-                            href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service_id }}">
-                            <div class="flex-1">
-                                <img style="height:4.2rem;" src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
-                                    alt="{{ service.name }}" />
-                            </div>
-                            <span class="flex-1">{{ service.name }}</span>
-                          </a>
-                        {% endif %}
-                      {% endif %}
-                  {% endfor %}
-                  </div>
-              </div>
-              {% endfor %}
-          </div>
+    {% link_article 'integrations' 'connector' %}
+    {% link_video 'connector' %}
+  </div>
+
+  <div class="flex mt-7 gap-7 w-full">
+    <div class="flex-none w-1/3 max-w-sm">
+      <div class="connectors__sidebar sidebar card card--none">
+        <nav class='sidebar__body'>
+          <li>
+            <a 
+              href="{% url 'project_integrations_connectors:create' project.id %}"
+              class="sidebar__link {% if not request.GET.category %} sidebar__link--active {% endif %}">
+              All
+            </a>
+          </li>
+          {% for category in service_categories %}
+            <li>
+              <a 
+                href="{% url 'project_integrations_connectors:create' project.id %}?category={{ category }}"
+                class="sidebar__link {% if category == request.GET.category %} sidebar__link--active {% endif %}">
+                {{ category }}
+              </a>
+            </li>
+          {% endfor %}
+        </nav>
+      </div>
+    </div>
+
+    <div class='flex flex-col w-full max-w-4xl'>
+      <form class="connectors__search mb-4" method="GET">
+        <input type="search" name="search" value="{{ request.GET.search }}" placeholder="Search all sources">
+      </form>
+
+      <div class="flex-1 flex flex-col space-y-4">
+        <div>
+          <p>{{ services_query_count }} sources</p>
         </div>
+        {% for service in services_query %}
+          <a class="card card--sm"
+            href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service.id }}">
+            <div class="flex items-center gap-7">
+              <img style="height:2.4rem;"
+                src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
+                  alt="{{ service.name }}"
+              />
+              <h4>{{ service.name }}</h4>
+            </div>
+          </a>
+        {% endfor %}
       </div>
     </div>
   </div>
+</div>
 
 {% else %}
   
   {% with services|dict_key:request.GET.service as service %}
-
   <div class="flex flex-1 justify-center items-center">
     <div class="flex flex-col max-w-3xl">
       <h2 class="mb-4">
@@ -98,9 +117,7 @@
       </form>
     </div>
   </div>
-
   {% endwith %}
 
 {% endif %}
-
 {% endblock %}

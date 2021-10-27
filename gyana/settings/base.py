@@ -70,6 +70,7 @@ THIRD_PARTY_APPS = [
     "hijack",
     "hijack.contrib.admin",
     "waffle",
+    "safedelete",
 ]
 
 # Put your project-specific apps here

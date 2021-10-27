@@ -270,3 +270,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     @property
     def bq_intermediate_table_id(self):
         return f"intermediate_node_{self.id:09}"
+
+    @property
+    def bq_cache_table_id(self):
+        return f"cache_node_{self.id:09}"

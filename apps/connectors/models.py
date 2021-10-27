@@ -79,7 +79,7 @@ class Connector(BaseModel):
     @property
     def is_database(self):
         service_conf = get_services()[self.service]
-        return service_conf["requires_schema_prefix"] == "t"
+        return service_conf.get("requires_schema_prefix") == "t"
 
     def update_fivetran_succeeded_at(self, succeeded_at: str):
 

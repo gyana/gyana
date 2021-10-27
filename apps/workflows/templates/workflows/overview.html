@@ -3,7 +3,7 @@
 
 <div class="flex flex-col space-y-3">
   <div class="flex items-baseline gap-3">
-    <h3>Workflows</h3>
+    <h3><i class="far fa-fw fa-sitemap text-black-50 mr-3"></i>Workflows</h3>
     {% if workflows.total > 0 %}
       <p class="text-black-50">
         - <a class="link" href="{% url 'project_workflows:list' project.id %}" data-turbo-frame="_top">
@@ -17,7 +17,10 @@
 
   <div class="card card--sm">
     {% if integrations.ready == 0 and workflows.total == 0 %}
-      <p class="text-black-50">Workflows need at least one ready source of data.</p>
+      <p class="text-black-50">
+        A visual editor to clean, transform, and analyse your data, needs at
+        least <strong>one integration</strong>.
+      </p>
     {% elif workflows.total == 0 %}
       <div class="table__empty">
         <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>

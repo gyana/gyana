@@ -1,9 +1,6 @@
 import pytest
 from apps.appsumo.models import AppsumoCode, AppsumoExtra, AppsumoReview
-from apps.teams.account import (
-    calculate_credit_statement_and_reset_balance,
-    get_row_limit,
-)
+from apps.teams.account import calculate_credit_statement, get_row_limit
 from apps.teams.models import CreditTransaction, Team
 
 pytestmark = pytest.mark.django_db
@@ -32,23 +29,23 @@ def test_row_limit():
 
 def test_current_credit_balance_new_team():
     team = Team.objects.create(name="Test team")
-    assert team.current_credit_balance == 100
+    assert team.current_credit_balance == 0
     assert team.creditstatement_set.first() is None
     assert team.credittransaction_set.first() is None
 
     team.credittransaction_set.create(
-        transaction_type=CreditTransaction.TransactionType.DECREASE, amount=5
+        transaction_type=CreditTransaction.TransactionType.INCREASE, amount=5
     )
     team.credittransaction_set.create(
-        transaction_type=CreditTransaction.TransactionType.DECREASE, amount=10
+        transaction_type=CreditTransaction.TransactionType.INCREASE, amount=10
     )
 
-    assert team.current_credit_balance == 85
+    assert team.current_credit_balance == 15
 
     team.credittransaction_set.create(
-        transaction_type=CreditTransaction.TransactionType.INCREASE, amount=15
+        transaction_type=CreditTransaction.TransactionType.DECREASE, amount=15
     )
-    assert team.current_credit_balance == 100
+    assert team.current_credit_balance == 0
 
 
 def test_current_credit_balance_existing_team():
@@ -71,13 +68,14 @@ def test_reset_credits():
     team = Team.objects.create(name="Test team")
     team.creditstatement_set.create(balance=100, credits_used=0, credits_received=50)
     team.credittransaction_set.create(
-        transaction_type=CreditTransaction.TransactionType.DECREASE, amount=42
+        transaction_type=CreditTransaction.TransactionType.INCREASE, amount=42
     )
 
-    assert team.current_credit_balance == 58
+    assert team.current_credit_balance == 42
 
-    calculate_credit_statement_and_reset_balance()
+    calculate_credit_statement()
 
-    assert team.current_credit_balance == 100
-    assert team.creditstatement_set.latest("created").credits_used == 42
-    assert team.credittransaction_set.latest("created").amount == 42
+    assert team.current_credit_balance == 0
+    latest_statement = team.creditstatement_set.latest("created")
+    assert latest_statement.credits_used == 42
+    assert latest_statement.balance == 42

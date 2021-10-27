@@ -65,6 +65,29 @@
   padding: 1.6rem;
 }
 
+.connectors {
+  &__sidebar {
+    position: sticky;
+    top: 1.6rem;
+    border-radius: 0;
+
+    .sidebar__link {
+      background-color: transparent;
+
+    }
+
+    li + li {
+      border-top: 1px solid var(--c-gray);
+    }
+  }
+
+  &__search {
+    position: sticky;
+    top: 1.6rem;
+    z-index: var(--z-ui);
+  }
+}
+
 .guide {
   background-color: var(--c-white);
   border-left: 1px solid var(--c-gray);

@@ -1,4 +1,5 @@
 from django.contrib import admin
+from safedelete.admin import SafeDeleteAdmin, highlight_deleted
 
 from apps.appsumo.admin import (
     AppsumoCodeInline,
@@ -21,8 +22,9 @@ class TeamMembershipInline(admin.TabularInline):
 
 
 @admin.register(Team)
-class TeamAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "row_limit"]
+class TeamAdmin(SafeDeleteAdmin):
+    # Use `highlight_deleted` in place of name
+    list_display = ("id", highlight_deleted, "row_limit") + SafeDeleteAdmin.list_display
     readonly_fields = ["id", "row_limit", "row_count", "row_count_calculated"]
     fields = readonly_fields + ["name", "override_row_limit"]
 

@@ -9,6 +9,7 @@ module.exports = {
   },
   entry: {
     style: './apps/base/styles/style.scss',
+    fontawesome: './apps/base/styles/vendors/fontawesome.css',
     tailwind: './apps/base/styles/vendors/tailwind.pcss',
     turbo: './apps/base/javascript/turbo.ts',
     stimulus: './apps/base/javascript/stimulus.ts',
@@ -31,7 +32,7 @@ module.exports = {
         // options: {}
       },
       {
-        test: /\.scss$/i,
+        test: /\.(s)?css$/i,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
       },
       {

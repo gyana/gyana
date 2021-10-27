@@ -1,8 +1,7 @@
+adroll:
+  static_config:
+    table: adroll_table
 adwords:
-  name: Google Ads
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
   static_config:
     sync_mode: AllAccounts
     timeframe_months: ALL_TIME
@@ -34,35 +33,23 @@ adwords:
     - table: keyword_stats
       config_type: Prebuilt
       prebuilt_report: KEYWORD_STATS
-amplitude:
-  name: Amplitude
-  internal: f
-  requires_schema_prefix: f
-  category: analytics
-  static_config:
-asana:
-  name: Asana
-  internal: f
-  requires_schema_prefix: f
-  category: other
-  static_config:
-bingads:
-  name: Microsoft Advertising
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
-dynamodb:
-  name: Amazon DynamoDB
-  internal: f
-  requires_schema_prefix: f
-  category: databases
-  static_config:
+amplitude: {}
+apple_search_ads: {}
+asana: {}
+aurora:
+  requires_schema_prefix: t
+aurora_postgres:
+  requires_schema_prefix: t
+azure_postgres:
+  requires_schema_prefix: t
+azure_sql_db:
+  requires_schema_prefix: t
+bingads: {}
+braintree: {}
+branch: {}
+delighted: {}
+dynamodb: {}
 facebook_ads:
-  name: Facebook Ads
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
   static_config:
     custom_tables:
       - table_name: action_canvas_component
@@ -125,17 +112,11 @@ facebook_ads:
       - table_name: demographics_region
         config_type: Prebuilt
         prebuilt_report_name: DEMOGRAPHICS_REGION
-facebook_pages:
-  name: Facebook Pages
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
+facebook_pages: {}
+freshdesk: {}
+front: {}
+github: {}
 google_analytics:
-  name: Google Analytics
-  internal: f
-  requires_schema_prefix: f
-  category: analytics
   static_config:
     sync_mode: AllAccounts
     timeframe_months: ALL_TIME
@@ -171,172 +152,88 @@ google_analytics:
         config_type: Prebuilt
         prebuilt_report: TRAFFIC
 google_cloud_postgresql:
-  name: Google Cloud Postgres
-  internal: f
   requires_schema_prefix: t
-  category: databases
-  static_config:
+google_cloud_mysql:
+  requires_schema_prefix: t
+google_search_console: {}
 google_sheets:
-  name: Google Sheets
   internal: t
-  requires_schema_prefix: f
-  category: other
   static_config:
     table: sheets_table
-heap:
-  name: Heap
-  internal: f
-  requires_schema_prefix: f
-  category: analytics
-  static_config:
+greenhouse: {}
+heap: {}
+height: {}
+helpscout: {}
 heroku_postgres:
-  name: Heroku Postgres
-  internal: t
   requires_schema_prefix: t
-  category: databases
-  static_config:
-hubspot:
-  name: Hubspot
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
-intercom:
-  name: Intercom
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
-klaviyo:
-  name: Klaviyo
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
-linkedin_ads:
-  name: LinkedIn Ads
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
-mailchimp:
-  name: Mailchimp
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
-mixpanel:
-  name: Mixpanel
-  internal: f
-  requires_schema_prefix: f
-  category: analytics
-  static_config:
+hubspot: {}
+instagram_business: {}
+intercom: {}
+jira: {}
+linkedin_company_pages: {}
+klaviyo: {}
+kustomer: {}
+lever: {}
+linkedin_ads: {}
+magento_mysql:
+  requires_schema_prefix: t
+magento_mysql_rds:
+  requires_schema_prefix: t
+mailchimp: {}
+mandrill: {}
+maria:
+  requires_schema_prefix: t
+maria_rds:
+  requires_schema_prefix: t
+maria_azure:
+  requires_schema_prefix: t
+mixpanel: {}
+mongo:
+  requires_schema_prefix: t
 mysql:
-  name: MySQL
-  internal: f
   requires_schema_prefix: t
-  category: databases
-  static_config:
 mysql_azure:
-  name: Azure MySQL
-  internal: f
   requires_schema_prefix: t
-  category: databases
-  static_config:
-optimizely:
-  name: Optimizely
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
-pinterest_ads:
-  name: Pinterest Ads
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
-pipedrive:
-  name: Pipedrive
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
+mysql_rds:
+  requires_schema_prefix: t
+outbrain: {}
+pardot: {}
+pinterest_ads: {}
+pipedrive: {}
 postgres:
-  name: Postgres
-  internal: f
   requires_schema_prefix: t
-  category: databases
-  static_config:
 postgres_rds:
-  name: Postgres RDS
-  internal: f
   requires_schema_prefix: t
-  category: databases
+quickbooks: {}
+recharge: {}
+recurly: {}
+sage_intacct: {}
+salesforce: {}
+segment: {}
+sendgrid: {}
+shopify: {}
+snapchat_ads: {}
+snowplow: {}
+sql_server:
+  requires_schema_prefix: t
+sql_server_rds:
+  requires_schema_prefix: t
+square: {}
+stripe: {}
+survey_monkey: {}
+taboola: {}
+tiktok_ads: {}
+twilio: {}
+twitter: {}
+typeform: {}
+webhooks:
   static_config:
-salesforce:
-  name: Salesforce
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
-segment:
-  name: Segment
-  internal: f
-  requires_schema_prefix: f
-  category: analytics
-  static_config:
-shopify:
-  name: Shopify
-  internal: f
-  requires_schema_prefix: f
-  category: other
-  static_config:
-snapchat_ads:
-  name: Snapchat Ads
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
-snowplow:
-  name: Snowplow
-  internal: f
-  requires_schema_prefix: f
-  category: analytics
-  static_config:
-square:
-  name: Square
-  internal: f
-  requires_schema_prefix: f
-  category: accounting & payments
-  static_config:
-stripe:
-  name: Stripe
-  internal: f
-  requires_schema_prefix: f
-  category: accounting & payments
-  static_config:
-twitter:
-  name: Twitter
-  internal: f
-  requires_schema_prefix: f
-  category: accounting & payments
-  static_config:
-xero:
-  name: Xero
-  internal: f
-  requires_schema_prefix: f
-  category: accounting & payments
-  static_config:
+    table: webhooks_table
+uservoice: {}
+xero: {}
 youtube_analytics:
-  name: Youtube Analytics
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
   static_config:
     table: youtube_analytics_table
-zendesk:
-  name: Zendesk
-  internal: f
-  requires_schema_prefix: f
-  category: CRM & marketing
-  static_config:
+zendesk: {}
+zendesk_chat: {}
+zendesk_sunshine: {}

@@ -16,24 +16,24 @@
       </form>
     </div>
     {% flag 'beta' %}
-      <div class="max-w-2xl">
-        <div class="flex items-center mb-7">
-          <h2 class="mr-2">CNAMEs</h2>
-          {% link_article 'overview' 'cnames' %}
-        </div>
-        <turbo-frame id="cnames:list" src="{% url 'team_cnames:list' object.id %}"></turbo-frame>
+    <div class="max-w-2xl">
+      <div class="flex items-center mb-7">
+        <h2 class="mr-2">Custom domains</h2>
+        {% link_article 'overview' 'cnames' %}
       </div>
+      <turbo-frame id="cnames:list" src="{% url 'team_cnames:list' object.id %}"></turbo-frame>
+    </div>
     {% endflag %}
   </div>
   <div class="pad border-t border-gray">
     <div class="max-w-xl">
       <h2 class="mb-3">Delete team</h2>
       <p class="mb-3">If you'd like to <strong>delete</strong> this team, press the button below.</p>
-      <p class="alert mt-0 mb-3"><strong>Note:</strong> Team deletion is disabled, please contact support directly if you want your team deleted.</p>
 
-      <button class="button button--danger" disabled>
+      <a class="button button--danger"
+        href="{% url 'teams:delete' object.id %}">
         Delete
-      </button>
+      </a>
     </div>
   </div>
 </div>

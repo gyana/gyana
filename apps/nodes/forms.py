@@ -32,6 +32,10 @@ class NodeForm(LiveUpdateForm):
     def get_live_formsets(self):
         return KIND_TO_FORMSETS.get(self.instance.kind, [])
 
+    def save(self, commit=True):
+        self.instance.has_been_saved = True
+        return super().save(commit=commit)
+
 
 class DefaultNodeForm(NodeForm):
     class Meta:
@@ -229,13 +233,6 @@ class SentimentNodeForm(NodeForm):
         if field_name == "credit_confirmed_user":
             return self.user
         return super().get_initial_for_field(field, field_name)
-
-    def save(self, commit=True):
-        parent = get_query_from_node(self.instance.parents.first())
-        self.instance.uses_credits = (
-            parent[self.instance.sentiment_column].count().execute()
-        )
-        return super().save(commit=commit)
 
 
 class ExceptNodeForm(DefaultNodeForm):

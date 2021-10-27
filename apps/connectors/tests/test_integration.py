@@ -8,7 +8,7 @@ from apps.base.tests.asserts import (
 from apps.connectors.fivetran.schema import FivetranSchema
 from apps.connectors.periodic import check_syncing_connectors_from_fivetran
 from apps.integrations.models import Integration
-from pytest_django.asserts import assertContains, assertRedirects
+from pytest_django.asserts import assertContains, assertNotContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
 
@@ -265,3 +265,31 @@ def test_status_broken(client, logged_in_user, fivetran, connector_factory):
     assertContains(r, "Your connector is broken.")
     redirect_uri = f"http://localhost:8000{LIST}/connectors/{connector.id}/authorize"
     assertLink(r, f"http://fivetran.url?redirect_uri={redirect_uri}", "fixing it")
+
+
+def test_connector_search_and_categories(client, logged_in_user, project_factory):
+
+    project = project_factory(team=logged_in_user.teams.first())
+
+    LIST = f"/projects/{project.id}/integrations"
+    CONNECTORS = f"{LIST}/connectors"
+
+    # test: search and filter by category
+
+    r = client.get(f"{CONNECTORS}/new")
+    assertOK(r)
+    assertLink(r, f"{CONNECTORS}/new?service=google_analytics", "Google Analytics")
+    assertLink(r, f"{CONNECTORS}/new?service=asana", "Asana")
+
+    # filter by category
+    assertLink(r, f"{CONNECTORS}/new?category=Marketing", "Marketing")
+    r = client.get(f"{CONNECTORS}/new?category=Marketing")
+    assertOK(r)
+    assertContains(r, "Google Analytics")
+    assertNotContains(r, "Asana")
+
+    # filter by search
+    r = client.get(f"{CONNECTORS}/new?search=asa")
+    assertOK(r)
+    assertNotContains(r, "Google Analytics")
+    assertContains(r, "Asana")
