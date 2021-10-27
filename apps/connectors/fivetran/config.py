@@ -29,7 +29,7 @@ def get_service_categories():
     return service_categories
 
 
-def get_services_query(category=None, search=None):
+def get_services_query(category=None, search=None, show_internal=False):
     services = list(get_services().values())
 
     if (category := category) is not None:
@@ -37,5 +37,8 @@ def get_services_query(category=None, search=None):
 
     if (search := search) is not None:
         services = [s for s in services if s["name"].lower().startswith(search.lower())]
+
+    if not show_internal:
+        services = [s for s in services if s["internal"] != "t"]
 
     return services

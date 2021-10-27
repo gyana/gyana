@@ -42,22 +42,20 @@
         <input type="search" name="search" value="{{ request.GET.search }}" placeholder="Search all sources">
       </form>
       <div class="flex-1 flex flex-col space-y-4">
-        {% for service in services %}
-          {% if service.internal != 't' or request.user.is_superuser %}
-            <a class="card card--sm"
-              href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service.id }}">
-              <div class="flex">
-                <img style="height:4.2rem;"
-                  src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
-                    alt="{{ service.name }}"
-                />
-                <div class="ml-6 flex flex-col space-y-2">
-                  <h4>{{ service.name }}</h4>
-                  <p class="text-black-50">{{ service.description }}</p>
-                </div>
+        {% for service in services_query %}
+          <a class="card card--sm"
+            href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service.id }}">
+            <div class="flex">
+              <img style="height:4.2rem;"
+                src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
+                  alt="{{ service.name }}"
+              />
+              <div class="ml-6 flex flex-col space-y-2">
+                <h4>{{ service.name }}</h4>
+                <p class="text-black-50">{{ service.description }}</p>
               </div>
-            </a>
-          {% endif %}
+            </div>
+          </a>
         {% endfor %}
       </div>
     </div>
