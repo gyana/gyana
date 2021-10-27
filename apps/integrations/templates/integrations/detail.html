@@ -60,17 +60,41 @@
     </div>
 
     <div class="card card--none flex-1">
-      {% render_table table %}
-
-      {% if integration.used_in|length == 0 %}
+    {% if integration.used_in|length == 0 %}
       <div class="text-center pad pad--sm">
-        <small>
-          This integration is not used anywhere yet, you can create a <a class="link"
-            href="{% url 'project_workflows:create' project.id %}">workflow</a>
+        <span>
+          This integration is not used anywhere yet, you can create a 
+          <form 
+            method="post" 
+            action="{% url 'project_workflows:create_from_integration' project.id %}"
+            class="form--no-layout"
+          >
+            {% csrf_token %}
+
+            <input type="hidden" name="project" value="{{ integration.project.id }}"></input>
+            <input type="hidden" name="integration" value="{{ integration.id }}"></input>
+            <button submit="type" class="link">
+              workflow
+            </button>
+          </form>
           or
-          <a class="link" href="{% url 'project_dashboards:create' project.id %}">dashboard</a> to start using it now!
-        </small>
+          <form 
+            method="post" 
+            action="{% url 'project_dashboards:create_from_integration' project.id %}" 
+            class="form--no-layout"
+          >
+            {% csrf_token %}
+
+            <input type="hidden" name="project" value="{{ integration.project.id }}"></input>
+            <input type="hidden" name="integration" value="{{ integration.id }}"></input>
+            <button submit="type" class="link">
+              dashboard
+            </button>
+          </form>.
+        </span>
       </div>
+      {% else %}
+        {% render_table table %}
       {% endif %}
     </div>
 </div>
