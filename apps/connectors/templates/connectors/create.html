@@ -3,18 +3,18 @@
 {% load help_utils %}
 
 {% block app %}
-
 {% if not request.GET.service %}
+<div class='flex flex-col pad'>
+  <div class="flex items-center gap-3">
+    <h2>Choose a connector</h2>
 
-<div class='flex flex-col items-center pad'>
-  <div class="flex max-w-7xl w-full">
-    <div class="flex-none pad">
-      <h2>
-        Choose a connector
-        {% link_article 'integrations' 'connector' %}
-        {% link_video 'connector' %}
-      </h2>
-      <div class="sidebar mt-8 card card--none">
+    {% link_article 'integrations' 'connector' %}
+    {% link_video 'connector' %}
+  </div>
+
+  <div class="flex mt-7 gap-7 w-full">
+    <div class="flex-none w-1/3 max-w-sm">
+      <div class="sidebar card card--none">
         <nav class='sidebar__body'>
           <li>
             <a 
@@ -37,7 +37,8 @@
         </nav>
       </div>
     </div>
-    <div class='flex flex-col w-full'>
+
+    <div class='flex flex-col w-full max-w-4xl'>
       <form class="mb-4" method="GET">
         <input type="search" name="search" value="{{ request.GET.search }}" placeholder="Search all sources">
       </form>
