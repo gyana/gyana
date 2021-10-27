@@ -5,7 +5,7 @@
 {% block app %}
 {% if dashboard_count == 0 %}
 <div class="table__empty">
-  <i class="fas fa-fw fa-4x fa-database text-black-50 mb-7"></i>
+  <i class="fas fa-fw fa-4x fa-chart-pie text-black-50 mb-7"></i>
   <h3 class="mb-3">Display data metrics and share them as reports</h3>
   <p>
     Watch the video below to get a good idea of how to use dashboards, if you
@@ -38,13 +38,13 @@
     <input type="hidden" name="project" value="{{ project.id }}"></input>
 
     <div class="flex gap-8 mt-7">
-      <button
+      <a
         href="{% url 'project_dashboards:create' project.id %}"
         class="button button--primary flex-1"
         type="submit"
       >
         Create a new dashboard
-      </button>
+      </a>
     </div>
   </form>
 </div>
