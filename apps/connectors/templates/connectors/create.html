@@ -14,7 +14,7 @@
         {% link_article 'integrations' 'connector' %}
         {% link_video 'connector' %}
       </h2>
-      <div class="sidebar mt-8">
+      <div class="sidebar mt-8 card card--none">
         <nav class='sidebar__body'>
           <li>
             <a 
@@ -42,10 +42,10 @@
         <input type="search" name="search" value="{{ request.GET.search }}" placeholder="Search all sources">
       </form>
       <div class="flex-1 flex flex-col space-y-4">
-        {% for service_id, service in services.items %}
+        {% for service in services %}
           {% if service.internal != 't' or request.user.is_superuser %}
             <a class="card card--sm"
-              href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service_id }}">
+              href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service.id }}">
               <div class="flex">
                 <img style="height:4.2rem;"
                   src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
