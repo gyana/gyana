@@ -7,7 +7,7 @@
 {% if not request.GET.service %}
 
 <div class='flex flex-col items-center pad'>
-  <div class="flex max-w-7xl">
+  <div class="flex max-w-7xl w-full">
     <div class="flex-none pad">
       <h2>
         Choose a connector
@@ -19,7 +19,7 @@
           <li>
             <a 
               href="{% url 'project_integrations_connectors:create' project.id %}"
-              class="sidebar__link">
+              class="sidebar__link {% if not request.GET.category %} sidebar__link--active {% endif %}">
               All
             </a>
           </li>
@@ -28,7 +28,7 @@
             <li>
               <a 
                 href="{% url 'project_integrations_connectors:create' project.id %}?category={{ category }}"
-                class="sidebar__link">
+                class="sidebar__link {% if category == request.GET.category %} sidebar__link--active {% endif %}">
                 {{ category }}
               </a>
             </li>
@@ -37,7 +37,7 @@
         </nav>
       </div>
     </div>
-    <div class="">
+    <div class='flex flex-col w-full'>
       <form class="mb-4" method="GET">
         <input type="search" name="search" value="{{ request.GET.search }}" placeholder="Search all sources">
       </form>
