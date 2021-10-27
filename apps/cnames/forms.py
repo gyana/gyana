@@ -1,5 +1,4 @@
-from django.core.exceptions import NON_FIELD_ERRORS
-from django.forms.forms import NON_FIELD_ERRORS
+from django.core.exceptions import ValidationError
 
 from apps.base.forms import BaseModelForm
 
@@ -23,14 +22,9 @@ class CNameForm(BaseModelForm):
     def post_save(self, instance):
         create_heroku_domain(instance)
 
-    def is_valid(self) -> bool:
-        # Add a non_field_error according to https://stackoverflow.com/a/8598842
-        # must call self.errors via is_valid first
-        is_valid = super().is_valid()
+    def clean(self):
         if not self._team.can_create_cname:
-            errors = self.error_class(
-                ["You cannot create more custom domains on your current plan."]
+            raise ValidationError(
+                "You cannot create more custom domains on your current plan."
             )
-            self._errors[NON_FIELD_ERRORS] = errors
-            return False
-        return is_valid
+        return super().clean()
