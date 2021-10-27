@@ -17,7 +17,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
-from waffle import flag_is_active
 
 from .forms import WorkflowForm, WorkflowFormCreate
 from .models import Workflow
@@ -115,8 +114,6 @@ class WorkflowDetail(ProjectMixin, TurboUpdateView):
         context = super().get_context_data(**kwargs)
         # copy dict because it's cached
         nodes = get_node_config_with_arity().copy()
-        if not flag_is_active(self.request, "beta"):
-            nodes.pop(Node.Kind.SENTIMENT)
         context["nodes"] = nodes
         return context
 
