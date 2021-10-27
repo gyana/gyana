@@ -14,7 +14,7 @@
 
   <div class="flex mt-7 gap-7 w-full">
     <div class="flex-none w-1/3 max-w-sm">
-      <div class="sidebar card card--none">
+      <div class="connectors__sidebar sidebar card card--none">
         <nav class='sidebar__body'>
           <li>
             <a 
@@ -23,7 +23,6 @@
               All
             </a>
           </li>
-          <li><hr></li>
           {% for category in service_categories %}
             <li>
               <a 
@@ -32,7 +31,6 @@
                 {{ category }}
               </a>
             </li>
-            <li><hr></li>
           {% endfor %}
         </nav>
       </div>
@@ -49,15 +47,12 @@
         {% for service in services_query %}
           <a class="card card--sm"
             href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service.id }}">
-            <div class="flex">
-              <img style="height:4.2rem;"
+            <div class="flex items-center gap-7">
+              <img style="height:2.4rem;"
                 src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
                   alt="{{ service.name }}"
               />
-              <div class="ml-6 flex flex-col space-y-2">
-                <h4>{{ service.name }}</h4>
-                <p class="text-black-50">{{ service.description }}</p>
-              </div>
+              <h4>{{ service.name }}</h4>
             </div>
           </a>
         {% endfor %}
