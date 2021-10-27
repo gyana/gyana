@@ -224,4 +224,5 @@ class CreditStatement(models.Model):
 
 
 class OutOfCreditsException(Exception):
-    pass
+    def __init__(self, uses_credits) -> None:
+        self.uses_credits = uses_credits

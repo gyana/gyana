@@ -8,6 +8,7 @@ from apps.base.errors import error_name_to_snake
 from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
+from apps.teams.models import OutOfCreditsException
 from ibis.expr.datatypes import String
 
 from ._sentiment_utils import CreditException, get_gcp_sentiment
@@ -353,7 +354,7 @@ def get_query_from_node(node):
                 node.save(update_fields=["error"])
         except Exception as err:
             node.error = error_name_to_snake(err)
-            if isinstance(err, CreditException):
+            if isinstance(err, (CreditException, OutOfCreditsException)):
                 node.uses_credits = err.uses_credits
             node.save()
             logging.error(err, exc_info=err)
