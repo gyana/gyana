@@ -6,8 +6,11 @@
 <section class="account">
   <h2 class="mb-7">Billing</h2>
 
-  <a href="{% url 'teams:plan' team.id %}" class="link">Upgrade</a>
-
+  {% if not team.subscription %}
+    <a href="{% url 'teams:plan' team.id %}" class="link">Upgrade</a>
+  {% else %}
+    You are currently subscribed to {{ team.subscription.plan.name }}.
+  {% endif %}
   <div class="account__plan">
     <div class="card card--none">
       <table class="table">
