@@ -2,7 +2,7 @@
 {% load help_utils %}
 
 {% block app %}
-{% if integration_count == 0 %}
+{% if show_zero_state %}
 <div class="table__empty">
   <i class="fas fa-fw fa-4x fa-database text-black-50 mb-7"></i>
   <h3 class="mb-3">Import a source of data, like a CSV file or Google Sheet</h3>
