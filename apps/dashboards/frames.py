@@ -82,5 +82,5 @@ class DashboardSettings(ProjectMixin, TurboFrameUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_dashboards:settings", args=(self.project.id, self.object.id)
+            "project_dashboards:detail", args=(self.project.id, self.object.id)
         )
