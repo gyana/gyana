@@ -6,7 +6,7 @@ import waffle
 from apps.base import clients
 from apps.teams.models import Team
 from apps.users.models import CustomUser
-from ibis_bigquery.client import BigQueryClient, rename_partitioned_column
+from ibis_bigquery.client import rename_partitioned_column
 from waffle.templatetags import waffle_tags
 
 

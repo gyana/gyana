@@ -7,12 +7,17 @@ from apps.base.tests.asserts import (
     assertOK,
     assertSelectorLength,
 )
-from apps.cnames.models import CName
 from apps.dashboards.models import Dashboard
+from apps.teams.models import Team
 from django.utils import timezone
-from pytest_django.asserts import assertContains, assertFormError, assertRedirects
+from pytest_django.asserts import assertFormError, assertRedirects
 
 pytestmark = pytest.mark.django_db
+
+
+@pytest.fixture(autouse=True)
+def team_can_create_cname(mocker):
+    mocker.patch.object(Team, "can_create_cname", True)
 
 
 def test_cname_crudl(client, logged_in_user, heroku):

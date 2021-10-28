@@ -1,5 +1,4 @@
 {% load static %}
-{% load waffle_tags %}
 
 <!DOCTYPE html>
 <html>
@@ -9,17 +8,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   {% block head %}
-    <title>{{ dashboard.name }}{% if not is_beta %} | Gyana {% endif %}</title>
+    <title>{{ dashboard.name }}{% if not project.team.plan.custom_branding %} | Gyana {% endif %}</title>
   {% endblock %}
 
-  {% if not is_beta %}
+  {% if not project.team.plan.custom_branding %}
     {% include 'web/components/meta.html' %}
   {% endif %}
 
-  {% if is_beta %}
-    {% if project.team.icon %}
-      <link rel="icon" type="image/png" sizes="16x16" href="{{ project.team.icon.url }}">
-    {% endif %}
+  {% if project.team.plan.white_labeling and project.team.icon %}
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ project.team.icon.url }}">
   {% else %}
     {% include 'web/components/favicon.html' %}
   {% endif %}
@@ -42,7 +39,7 @@
   <div class="widgets flex items-center justify-center">
     <header class="flex w-full justify-between mb-7">
       <div class="flex justify-center items-center self-start">
-        {% if is_beta and project.team.icon %}
+        {% if project.team.plan.white_labeling and project.team.icon %}
           <img src="{{ project.team.icon.url }}" class="h-24 w-24 mr-5" alt="">
         {% endif %}
 
@@ -52,7 +49,7 @@
         </div>
       </div>
 
-      {% if not is_beta %}
+      {% if not project.team.plan.custom_branding %}
         <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
       {% endif %}
     </header>

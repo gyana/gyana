@@ -42,9 +42,7 @@ class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
             "operational": dashboards_incomplete == 0,
         }
 
-        context_data["integrations"] = {
-            "ready": integrations.ready().count()
-        }
+        context_data["integrations"] = {"ready": integrations.ready().count()}
 
         return context_data
 
@@ -66,11 +64,6 @@ class DashboardShare(TurboFrameUpdateView):
             "dashboards:share",
             args=(self.object.id,),
         )
-
-    def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
-        form_kwargs["is_beta"] = flag_is_active(self.request, "beta")
-        return form_kwargs
 
 
 class DashboardPreview(TurboFrameDetailView):
