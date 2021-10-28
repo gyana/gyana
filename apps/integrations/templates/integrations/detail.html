@@ -54,8 +54,14 @@
         <p>All the places this integration is used in</p>
       </div>
       <div class='flex flex-row gap-2'>
-        {% include 'workflows/create_from_integration.html' %}
-        {% include 'dashboards/create_from_integration.html' %}
+        <a href="{% url 'project_workflows:list' project.id %}" class="button">
+          <i class="fas fa-fw fa-plus"></i>New workflow
+        </a>
+        <a href="{% url 'project_dashboards:list' project.id %}" class="button">
+          <i class="fas fa-fw fa-plus"></i>New dashboard
+        </a>
+        {% comment %} {% include 'workflows/create_from_integration.html' %}
+        {% include 'dashboards/create_from_integration.html' %} {% endcomment %}
       </div>
     </div>
 
@@ -64,7 +70,7 @@
       <div class="text-center pad pad--sm">
         <span>
           This integration is not used anywhere yet, you can create a 
-          <form 
+          {% comment %} <form 
             method="post" 
             action="{% url 'project_workflows:create_from_integration' project.id %}"
             class="form--no-layout"
@@ -90,7 +96,15 @@
             <button submit="type" class="link">
               dashboard
             </button>
-          </form>.
+          </form> {% endcomment %}
+          <a href="{% url 'project_workflows:list' project.id %}" class="link">
+            workflow
+          </a>
+          or
+          <a href="{% url 'project_dashboards:list' project.id %}" class="link">
+            dashboard
+          </a>
+          .
         </span>
       </div>
       {% else %}
