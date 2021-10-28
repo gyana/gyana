@@ -53,54 +53,23 @@
         <h2>Referenced</h2>
         <p>All the places this integration is used in</p>
       </div>
-      <div class='flex flex-row gap-2'>
-        <a href="{% url 'project_workflows:list' project.id %}" class="button">
-          <i class="fas fa-fw fa-plus"></i>New workflow
-        </a>
-        <a href="{% url 'project_dashboards:list' project.id %}" class="button">
-          <i class="fas fa-fw fa-plus"></i>New dashboard
-        </a>
-        {% comment %} {% include 'workflows/create_from_integration.html' %}
-        {% include 'dashboards/create_from_integration.html' %} {% endcomment %}
-      </div>
+        {% comment %} <div class='flex flex-row gap-2'>
+        {% include 'workflows/create_from_integration.html' %}
+        {% include 'dashboards/create_from_integration.html' %}
+      </div> {% endcomment %}
     </div>
 
     <div class="card card--none flex-1">
     {% if integration.used_in|length == 0 %}
-      <div class="text-center pad pad--sm">
+      <div class="text-center pad">
         <span>
-          This integration is not used anywhere yet, you can create a 
-          {% comment %} <form 
-            method="post" 
-            action="{% url 'project_workflows:create_from_integration' project.id %}"
-            class="form--no-layout"
-          >
-            {% csrf_token %}
-
-            <input type="hidden" name="project" value="{{ integration.project.id }}"></input>
-            <input type="hidden" name="integration" value="{{ integration.id }}"></input>
-            <button submit="type" class="link">
-              workflow
-            </button>
-          </form>
-          or
-          <form 
-            method="post" 
-            action="{% url 'project_dashboards:create_from_integration' project.id %}" 
-            class="form--no-layout"
-          >
-            {% csrf_token %}
-
-            <input type="hidden" name="project" value="{{ integration.project.id }}"></input>
-            <input type="hidden" name="integration" value="{{ integration.id }}"></input>
-            <button submit="type" class="link">
-              dashboard
-            </button>
-          </form> {% endcomment %}
+          This integration is not used anywhere yet. 
+          <br />Learn how to analyse its data in a
           <a href="{% url 'project_workflows:list' project.id %}" class="link">
             workflow
           </a>
-          or
+          or 
+          how to display metrices in a 
           <a href="{% url 'project_dashboards:list' project.id %}" class="link">
             dashboard
           </a>
