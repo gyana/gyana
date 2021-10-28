@@ -79,3 +79,8 @@ class DashboardSettings(ProjectMixin, TurboFrameUpdateView):
     model = Dashboard
     form_class = DashboardForm
     turbo_frame_dom_id = "dashboard:settings"
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_dashboards:settings", args=(self.project.id, self.object.id)
+        )
