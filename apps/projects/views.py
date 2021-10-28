@@ -21,7 +21,6 @@ class ProjectCreate(TeamMixin, TurboCreateView):
         form_kwargs = super().get_form_kwargs()
         form_kwargs["current_user"] = self.request.user
         form_kwargs["team"] = self.team
-        form_kwargs["is_beta"] = flag_is_active(self.request, "beta")
         return form_kwargs
 
     def get_success_url(self) -> str:
@@ -60,7 +59,6 @@ class ProjectUpdate(TurboUpdateView):
         form_kwargs = super().get_form_kwargs()
         form_kwargs["current_user"] = self.request.user
         form_kwargs["team"] = self.object.team
-        form_kwargs["is_beta"] = flag_is_active(self.request, "beta")
         return form_kwargs
 
     def get_success_url(self) -> str:

@@ -33,13 +33,11 @@ class DashboardShareForm(LiveUpdateForm):
         widgets = {"password": PasswordInput(attrs={"autocomplete": "one-time-code"})}
 
     def __init__(self, *args, **kwargs):
-        is_beta = kwargs.pop("is_beta")
-
         super().__init__(*args, **kwargs)
         self.fields["shared_status"].choices = [
             choice
             for choice in self.fields["shared_status"].choices
-            if (choice[0] != Dashboard.SharedStatus.PASSWORD_PROTECTED or is_beta)
+            if (choice[0] != Dashboard.SharedStatus.PASSWORD_PROTECTED)
         ]
 
     def get_live_fields(self):

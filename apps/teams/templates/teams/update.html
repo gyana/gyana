@@ -1,5 +1,4 @@
 {% extends "teams/base.html" %}
-{% load waffle_tags %}
 {% load help_utils %}
 
 {% block tab %}
@@ -15,7 +14,6 @@
         <button type="submit" class="button button--success w-full">Save</button>
       </form>
     </div>
-    {% flag 'beta' %}
     <div class="max-w-2xl">
       <div class="flex items-center mb-7">
         <h2 class="mr-2">Custom domains</h2>
@@ -23,7 +21,6 @@
       </div>
       <turbo-frame id="cnames:list" src="{% url 'team_cnames:list' object.id %}"></turbo-frame>
     </div>
-    {% endflag %}
   </div>
   <div class="pad border-t border-gray">
     <div class="max-w-xl">

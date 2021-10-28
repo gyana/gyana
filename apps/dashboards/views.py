@@ -187,16 +187,6 @@ class DashboardPublic(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["project"] = self.object.project
-        # beta status is determined by the owners of the dashboard, not the
-        # user viewing the dashboard
-        user = self.request.user
-        context["is_beta"] = False
-        for member in self.object.project.team.members.all():
-            self.request.user = member
-            context["is_beta"] = context["is_beta"] or flag_is_active(
-                self.request, "beta"
-            )
-        self.request.user = user
         return context
 
 
