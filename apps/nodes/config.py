@@ -117,8 +117,8 @@ NODE_CONFIG = {
     },
     "sentiment": {
         "displayName": "Sentiment Analysis",
-        "icon": "fa-laugh-beam",
-        "description": "Estimate the sentiment of a text between -1 (negative) to +1 (positive).",
+        "icon": "fa-smile-plus",
+        "description": "Estimate the sentiment of a text using AI",
         "section": "Column manipulations",
     },
     "window": {
