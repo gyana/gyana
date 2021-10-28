@@ -9,10 +9,9 @@
       <h1>{{ dashboard.name }}</h1>
     </div>
 
-    {% flag 'beta' %}
-    {% else %}
+    {% if not project.team.plan.custom_branding %}
       <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
-    {% endflag %}
+    {% endif %}
   </header>
   {% endif %}
   
