@@ -28,6 +28,7 @@ class ProjectForm(LiveUpdateForm):
         if not self._team.can_create_invite_only_project and (
             access_field := self.fields.get("access")
         ):
+            access_field.required = False
             access_field.widget = forms.Select(
                 choices=access_field.choices, attrs={"disabled": "disabled"}
             )
@@ -57,7 +58,8 @@ class ProjectCreateForm(ProjectForm):
             )
 
         if (
-            cleaned_data["access"] == Project.Access.INVITE_ONLY
+            cleaned_data.get("access", False)
+            and cleaned_data["access"] == Project.Access.INVITE_ONLY
             and not self._team.can_create_invite_only_project
         ):
             raise forms.ValidationError(
