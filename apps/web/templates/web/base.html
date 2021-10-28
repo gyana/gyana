@@ -58,7 +58,7 @@
         type="checkbox"
         role="button"
         data-web-sidebar-target="toggle"
-        {% if sidebar_collapsed %}checked{% endif %}
+        {% if not sidebar_collapsed %}checked{% endif %}
         hidden
       >
 

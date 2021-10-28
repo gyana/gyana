@@ -4,7 +4,6 @@
   height: 100%;
   justify-content: center;
   width: 100%;
-  height: 100%;
 
   &__content {
     border-right: 1px solid var(--c-gray);
@@ -53,6 +52,7 @@
 
   &__footer {
     text-align: center;
+    padding: 0 0 1.6rem;
   }
 
   &__image {
