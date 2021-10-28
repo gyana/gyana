@@ -29,11 +29,11 @@ class ProjectForm(LiveUpdateForm):
         if not self._team.can_create_invite_only_project and (
             access_field := self.fields.get("access")
         ):
-            access_field.widget = SelectWithDisable(
-                choices=access_field.choices,
-                disabled={
-                    Project.Access.INVITE_ONLY: "You cannot create more invite only projects on your current plan"
-                },
+            access_field.widget = forms.Select(
+                choices=access_field.choices, attrs={"disabled": "disabled"}
+            )
+            access_field.help_text = (
+                "Invite only projects are not available on your current plan"
             )
 
     def get_live_fields(self):
