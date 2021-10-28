@@ -5,6 +5,8 @@ pytestmark = pytest.mark.django_db
 
 
 def assertLink(response, url, text=None, title=None):
+    __tracebackhide__ = True
+
     soup = BeautifulSoup(response.content)
     original_matches = soup.select("a")
 
@@ -23,25 +25,35 @@ def assertLink(response, url, text=None, title=None):
 
 
 def assertSelectorLength(response, selector, length):
+    __tracebackhide__ = True
+
     soup = BeautifulSoup(response.content)
     actual_length = len(soup.select(selector))
     assert actual_length == length, f"{actual_length} != {length}"
 
 
 def assertSelectorText(response, selector, text):
+    __tracebackhide__ = True
+
     soup = BeautifulSoup(response.content)
     assert text in soup.select(selector)[0].text
 
 
 def assertOK(response):
+    __tracebackhide__ = True
+
     assert response.status_code == 200, f"{response.status_code} != 200"
 
 
 def assertNotFound(response):
+    __tracebackhide__ = True
+
     assert response.status_code == 404, f"{response.status_code} != 404"
 
 
 def assertFormRenders(response, expected_fields=[]):
+    __tracebackhide__ = True
+
     soup = BeautifulSoup(response.content)
 
     matches = soup.select("form input,select,textarea")
