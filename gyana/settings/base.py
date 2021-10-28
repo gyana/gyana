@@ -398,25 +398,12 @@ HEROKU_APP = os.environ.get("HEROKU_APP")
 CNAME_DOMAIN = os.environ.get("CNAME_DOMAIN")
 
 # can be found at https://vendors.paddle.com/authentication
-DJPADDLE_VENDOR_ID = "3687"
+DJPADDLE_VENDOR_ID = os.getenv("DJPADDLE_VENDOR_ID")
 
 # create one at https://vendors.paddle.com/authentication
-DJPADDLE_API_KEY = "660bd035a9d9ad12084e541faa7d7e098e54287851c8a93d04"
+DJPADDLE_API_KEY = os.getenv("DJPADDLE_API_KEY")
 
 # can be found at https://vendors.paddle.com/public-key
-DJPADDLE_PUBLIC_KEY = """-----BEGIN PUBLIC KEY-----
-MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA4/1luO/icqH1ZFww/M82
-e6JL6kZzMocCJ4yyu+JRGhMl6Wl2ZxR8nSJwJ1cZKUlCXGyn9cDk05XxCBbWqJEv
-GrDYceV/jXY87wVTD3IIuoJPIeBHgYJ+XpubSnecjNNNcNmfKSqd6/yiB03yOXWc
-VUhWvN9vR7KE33FcUq6MUum3l1x66N+iF3s8j/6h0AbHCOaMGC52CW0HKpbhu+zO
-uzXh4x3RB6p6l+xdf2/hwS6kNmjDvv6JwJvYk1EzrpNOaxXhVF/g1Y9sg1ITYYQy
-s6VMwQtkv70oiRKoWZQGtg6h4vdK1xU17kkmTy/NEd9JVWi3uDA9jJ3U1CaQJ1KM
-zMRpEQhqZC/rIWEa5Uu13xP+BSCgz16q39eQdDLK+pZ3emTZoojKqh7R7aWoJy0A
-pvnjxiBhQBJaI/PuPlNNqN0qJH+lS+39p7yhuqSAZ+uH9Q7yeVOajeMXwHtXZH00
-sOV/tfHSe/oYE2u4I7wgpIewglz4EvkZ+uoFe1RJdaJU84KH1e+5mDuR4/+or7Ra
-eH6hCisRdHDbwft2EokxiDSkG8gehqCw7AwfaFWdfHKxAc5s1zJDBXiT6wOgVNNO
-YwAC2IsOypUHh9GbZ0xHd3mUKjm1CvAt3OFqKXKV8pfoP2XnJQgMQrun5B2qYwa/
-aQS/qL5BeQgiVdZQ8QDQmPECAwEAAQ==
------END PUBLIC KEY-----"""
+DJPADDLE_PUBLIC_KEY = os.getenv("DJPADDLE_PUBLIC_KEY")
 
 DJPADDLE_SANDBOX = True
