@@ -1,11 +1,14 @@
 import pytest
+from apps.appsumo.models import AppsumoCode
 from apps.base.tests.asserts import (
     assertFormRenders,
     assertLink,
     assertOK,
+    assertSelectorHasAttribute,
     assertSelectorLength,
 )
 from apps.users.models import CustomUser
+from django.utils import timezone
 from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
@@ -98,8 +101,28 @@ def test_private_projects(client, logged_in_user):
         },
     )
     assertFormRenders(r, ["name", "description", "access", "members"])
+    assertSelectorHasAttribute(r, "#id_access", "disabled")
 
-    # create private project
+    # create private project that is rejected because user is on free tier
+    r = client.post(
+        f"/teams/{team.id}/projects/new",
+        data={
+            "name": "Metrics",
+            "description": "All the company metrics",
+            "access": "invite",
+            "members": [logged_in_user.id],
+            "submit": True,
+        },
+    )
+
+    assert r.status_code == 422
+    project = team.project_set.first()
+    assert project is None
+
+    # upgrade user
+    AppsumoCode.objects.create(code="12345678", team=team, redeemed=timezone.now())
+    AppsumoCode.objects.create(code="12345679", team=team, redeemed=timezone.now())
+
     r = client.post(
         f"/teams/{team.id}/projects/new",
         data={

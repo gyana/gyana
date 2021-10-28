@@ -1,11 +1,14 @@
+from unittest import mock
 from uuid import uuid4
 
 import pytest
+from apps.appsumo.models import AppsumoCode
 from apps.base.tests.asserts import (
     assertFormRenders,
     assertLink,
     assertOK,
     assertSelectorLength,
+    assertSelectorText,
 )
 from apps.dashboards.models import Dashboard
 from apps.teams.models import Team
@@ -15,9 +18,7 @@ from pytest_django.asserts import assertFormError, assertRedirects
 pytestmark = pytest.mark.django_db
 
 
-@pytest.fixture(autouse=True)
-def team_can_create_cname(mocker):
-    mocker.patch.object(Team, "can_create_cname", True)
+can_create_cname = mock.patch.object(Team, "can_create_cname", True)
 
 
 def test_cname_crudl(client, logged_in_user, heroku):
@@ -26,14 +27,27 @@ def test_cname_crudl(client, logged_in_user, heroku):
     heroku.get_domain().acm_status = "waiting"
     heroku.reset_mock()
 
-    # create
+    # User on free plan can't create custom domain
     r = client.get_turbo_frame(f"/teams/{team.id}/update", f"/teams/{team.id}/cnames/")
     assertOK(r)
-    assertLink(r, f"/teams/{team.id}/cnames/new", "create one")
+    assertSelectorText(
+        r, "p", "You cannot create more custom domains on your current plan."
+    )
 
     r = client.get(f"/teams/{team.id}/cnames/new")
     assertOK(r)
     assertFormRenders(r, ["domain"])
+
+    r = client.post(f"/teams/{team.id}/cnames/new", data={"domain": "test.domain.com"})
+    assert r.status_code == 422
+
+    # upgrade user
+    AppsumoCode.objects.create(code="12345678", team=team, redeemed=timezone.now())
+    AppsumoCode.objects.create(code="12345679", team=team, redeemed=timezone.now())
+
+    r = client.get_turbo_frame(f"/teams/{team.id}/update", f"/teams/{team.id}/cnames/")
+    assertOK(r)
+    assertLink(r, f"/teams/{team.id}/cnames/new", "create one")
 
     r = client.post(f"/teams/{team.id}/cnames/new", data={"domain": "test.domain.com"})
     assertRedirects(r, f"/teams/{team.id}/update", status_code=303)
@@ -89,6 +103,7 @@ def test_cname_crudl(client, logged_in_user, heroku):
     assert heroku.get_domain().remove.call_count == 1
 
 
+@can_create_cname
 def test_cname_validation(client, logged_in_user, c_name_factory):
     team = logged_in_user.teams.first()
     c_name_factory(team=team)
@@ -103,6 +118,7 @@ def test_cname_validation(client, logged_in_user, c_name_factory):
     assertFormError(r, "form", "domain", ERROR)
 
 
+@can_create_cname
 def test_cname_middleware_for_public_dashboard(
     client, logged_in_user, c_name_factory, dashboard_factory, widget_factory
 ):
@@ -165,6 +181,7 @@ def test_cname_middleware_for_public_dashboard(
     assert r.status_code == 403
 
 
+@can_create_cname
 def test_cname_middleware_for_password_protected_dashboard(
     client, logged_in_user, c_name_factory, dashboard_factory, widget_factory
 ):

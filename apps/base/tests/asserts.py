@@ -52,3 +52,9 @@ def assertFormRenders(response, expected_fields=[]):
     ), f"{set(fields)} != {set(expected_fields)}"
 
     assert len(soup.select("form button[type=submit]")) >= 1
+
+
+def assertSelectorHasAttribute(response, selector, attribute):
+    soup = BeautifulSoup(response.content)
+    element = soup.select(selector)[0]
+    assert element.has_attr(attribute)

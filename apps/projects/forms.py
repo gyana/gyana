@@ -48,6 +48,14 @@ class ProjectForm(LiveUpdateForm):
 
 
 class ProjectCreateForm(ProjectForm):
+    def get_live_fields(self):
+        fields = ["name", "description", "access"]
+
+        if self.get_live_field("access") == Project.Access.INVITE_ONLY:
+            fields += ["members"]
+
+        return fields
+
     def clean(self):
         cleaned_data = super().clean()
 
