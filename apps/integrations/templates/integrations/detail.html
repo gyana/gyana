@@ -4,8 +4,36 @@
 {% load humanize %}
 
 {% block tab %}
-<div class="pad">
-  <div class="flex gap-7 mb-7">
+<div class="flex flex-col flex-1 pad">
+  <div class="flex flex-col mb-7">
+    <div class="flex flex-row">
+      <div class="mr-auto">
+        <h2>Referenced</h2>
+        <p>All the places this integration is used in</p>
+      </div>
+        {% comment %} <div class='flex flex-row gap-2'>
+        {% include 'workflows/create_from_integration.html' %}
+        {% include 'dashboards/create_from_integration.html' %}
+      </div> {% endcomment %}
+    </div>
+
+    <div class="card card--none flex-1 mt-7">
+      {% if integration.used_in|length == 0 %}
+      <div class="table__empty">
+        <h3>Time to use your integration</h3>
+        <p class="text-black-50 mt-3">
+          Learn how to use your integration in
+          <a href="{% url 'project_workflows:list' project.id %}" class="link">workflows</a>
+          and <a href="{% url 'project_dashboards:list' project.id %}" class="link">dashboards</a> next.
+        </p>
+      </div>
+      {% else %}
+        {% render_table table %}
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="flex gap-7 mt-auto">
     {% if object.kind == 'sheet' %}
     <div class="card">
       <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
@@ -45,41 +73,6 @@
       <p>Created by</p>
     </div>
   </div>
-
-
-  <div class="flex flex-col mb-7">
-    <div class="flex flex-row p-7">
-      <div class="mr-auto">
-        <h2>Referenced</h2>
-        <p>All the places this integration is used in</p>
-      </div>
-        {% comment %} <div class='flex flex-row gap-2'>
-        {% include 'workflows/create_from_integration.html' %}
-        {% include 'dashboards/create_from_integration.html' %}
-      </div> {% endcomment %}
-    </div>
-
-    <div class="card card--none flex-1">
-    {% if integration.used_in|length == 0 %}
-      <div class="text-center pad">
-        <span>
-          This integration is not used anywhere yet. 
-          <br />Learn how to analyse its data in a
-          <a href="{% url 'project_workflows:list' project.id %}" class="link">
-            workflow
-          </a>
-          or 
-          how to display metrices in a 
-          <a href="{% url 'project_dashboards:list' project.id %}" class="link">
-            dashboard
-          </a>
-          .
-        </span>
-      </div>
-      {% else %}
-        {% render_table table %}
-      {% endif %}
-    </div>
 </div>
 
 {% endblock %}
