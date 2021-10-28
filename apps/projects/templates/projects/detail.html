@@ -20,7 +20,7 @@
       </div>
     </header>
 
-    <section class="flex flex-col gap-7 pad">
+    <section class="flex flex-col pad">
       <turbo-frame id="integrations:overview" src="{% url 'project_integrations:overview' project.id %}">
         <div class="flex flex-col space-y-3">
           <div class="flex items-baseline gap-3">
@@ -36,6 +36,8 @@
         </div>
       </turbo-frame>
 
+      <i class="fas fa-fw fa-chevron-down text-black-20 self-center my-4"></i>
+
       <turbo-frame id="workflows:overview" src="{% url 'project_workflows:overview' project.id %}">
         <div class="flex flex-col space-y-3">
           <div class="flex items-baseline gap-3">
@@ -50,6 +52,8 @@
           </div>
         </div>
       </turbo-frame>
+
+      <i class="fas fa-fw fa-chevron-down text-black-20 self-center my-4"></i>
 
       <turbo-frame id="dashboards:overview" src="{% url 'project_dashboards:overview' project.id %}">
         <div class="flex flex-col space-y-3">

@@ -17,18 +17,23 @@
 
   <div class="card card--sm">
     {% if integrations.ready == 0 and workflows.total == 0 %}
-      <p class="text-black-50">
-        A visual editor to clean, transform, and analyse your data, needs at
-        least <strong>one integration</strong>.
-      </p>
+    <p class="text-black-50">
+      A visual editor to clean, transform, and analyse your data, needs at
+      least <strong>one integration</strong>.
+    </p>
     {% elif workflows.total == 0 %}
-      <div class="table__empty">
-        <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
-        <h3>You have no workflows.</h3>
-        <p class="text-black-50">Why not 
-          <a class="link" href="{% url 'project_workflows:list' project.id %}" data-turbo-frame="_top">create one</a>?
-        </p>
-      </div>
+    <div class="table__empty">
+      <a
+        href="{% url 'project_workflows:list' project.id %}"
+        class="h3 link" 
+        data-turbo-frame="_top"
+      >
+        Start transforming your data now
+      </a>
+      <p class="text-black-50 mt-3">
+        Clean and analyze your data using a simple drag and drop interface.
+      </p>
+    </div>
     {% elif not workflows.operational %}
       {% if workflows.incomplete > 0 %}
         <p class="text-black-50">

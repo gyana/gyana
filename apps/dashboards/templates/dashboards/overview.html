@@ -16,18 +16,24 @@
 
   <div class="card card--sm">
     {% if integrations.ready == 0 and dashboards.total == 0 %}
-      <p class="text-black-50">
-        A visual display of data metrics that can be shared as a report,
-        requires at least <strong>one integration</strong>.
-      </p>
+    <p class="text-black-50">
+      A visual display of data metrics that can be shared as a report,
+      requires at least <strong>one integration</strong>.
+    </p>
     {% elif dashboards.total == 0 %}
-      <div class="table__empty">
-        <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
-        <h3>You have no dashboards.</h3>
-        <p class="text-black-50">Why not 
-          <a class="link" href="{% url 'project_dashboards:list' project.id %}" data-turbo-frame="_top">create one</a>?
-        </p>
-      </div>
+    <div class="table__empty">
+      <a
+        href="{% url 'project_dashboards:list' project.id %}"
+        class="h3 link" 
+        data-turbo-frame="_top"
+      >
+        Display your metrics
+      </a>
+      <p class="text-black-50 mt-3">
+        Use dashboards to share your metrics with your team, clients, or any
+        audience you want.
+      </p>
+    </div>
     {% elif not dashboards.operational %}
       {% if dashboards.incomplete > 0 %}
         <p class="text-black-50">
