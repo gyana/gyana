@@ -1,8 +1,23 @@
-{% extends "dashboards/base.html" %}
+<section class="flex flex-col h-full whitespace-normal">
+  <div class="workflow-detail__header">
+    <h3 class="mr-auto">Dashboard settings</h3>
 
-{% block tab %}
-<section class="flex flex-col flex-1">
-  <form method="post" class="pad max-w-4xl">
+    <button
+      class="tf-modal__close"
+      data-action="click->tf-modal#close"
+      data-loading-false
+    >
+      <i class="fal fa-times fa-lg"></i>
+    </button>
+  </div>
+
+  <form
+    method="post"
+    class="pad max-w-4xl"
+    data-action="change->tf-modal#change"
+    data-tf-modal-target='form'
+    action="{% url 'project_dashboards:detail' project.id object.id %}"
+  >
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}
@@ -24,7 +39,3 @@
     </a>
   </div>
 </section>
-{% endblock %}
-
-{% block page_js %}
-{% endblock %}

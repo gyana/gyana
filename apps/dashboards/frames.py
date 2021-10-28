@@ -1,19 +1,16 @@
-import uuid
-
-import analytics
-from apps.base.analytics import DASHBOARD_SHARED_PUBLIC_EVENT
 from apps.base.frames import (
     TurboFrameDetailView,
     TurboFrameTemplateView,
     TurboFrameUpdateView,
 )
+from apps.base.turbo import TurboUpdateView
 from apps.dashboards.forms import DashboardShareForm
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import Widget
 from django.db.models import Count, Q
 from django.urls.base import reverse
-from waffle import flag_is_active
 
+from .forms import DashboardForm
 from .models import Dashboard
 
 
@@ -75,3 +72,10 @@ class DashboardPreview(TurboFrameDetailView):
         context = super().get_context_data(**kwargs)
         context["project"] = self.object.project
         return context
+
+
+class DashboardSettings(ProjectMixin, TurboFrameUpdateView):
+    template_name = "dashboards/settings.html"
+    model = Dashboard
+    form_class = DashboardForm
+    turbo_frame_dom_id = "dashboard:settings"
