@@ -154,8 +154,6 @@ TEMPLATES = [
                 "apps.web.context_processors.project_meta",
                 "apps.web.context_processors.google_analytics_id",
                 "gyana.context_processors.django_settings",
-                "djpaddle.context_processors.vendor_id",
-                "djpaddle.context_processors.sandbox",
             ],
             # equivalent of APP_DIRS=True, plus admin_tools template loader
             "loaders": [

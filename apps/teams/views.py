@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponse
@@ -48,6 +49,8 @@ class TeamPlan(LoginRequiredMixin, TurboUpdateView):
         context["djpaddle_checkout_success_redirect"] = reverse(
             "teams:account", args=(self.object.id,)
         )
+        context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
+        context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
         return context
 
     def get_success_url(self) -> str:
