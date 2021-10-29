@@ -396,7 +396,8 @@ HEROKU_APP = os.environ.get("HEROKU_APP")
 CNAME_DOMAIN = os.environ.get("CNAME_DOMAIN")
 
 # can be found at https://vendors.paddle.com/authentication
-DJPADDLE_VENDOR_ID = os.getenv("DJPADDLE_VENDOR_ID")
+# needs a default value
+DJPADDLE_VENDOR_ID = os.getenv("DJPADDLE_VENDOR_ID", "0000")
 
 # create one at https://vendors.paddle.com/authentication
 DJPADDLE_API_KEY = os.getenv("DJPADDLE_API_KEY")
