@@ -5,7 +5,8 @@ description = "No-Code Data Analytics"
 authors = ["Gyana Developers <developers@gyana.com>"]
 
 [tool.djlint]
-profile = "djanog"
+profile = "django"
+ignore = "T003"
 indent = 2
 
 [tool.pytest.ini_options]
