@@ -118,3 +118,66 @@ def test_select_node(client, node_factory, setup):
     select_node.refresh_from_db()
     assert select_node.select_mode == "exclude"
     assert select_node.columns.count() == 2
+
+
+def test_join_node(client, node_factory, setup):
+    table, workflow = setup
+
+    join_node, r = create_and_connect_node(
+        client, Node.Kind.JOIN, node_factory, table, workflow
+    )
+    assertSelectorText(
+        r,
+        "p",
+        "This node needs to be connected to more than one node before you can configure it.",
+    )
+    second_input = node_factory(
+        kind=Node.Kind.INPUT, input_table=table, workflow=workflow
+    )
+    join_node.parents.add(second_input)
+
+    r = client.get(f"/nodes/{join_node.id}")
+    assertOK(r)
+    assertFormRenders(r, ["name", "join_how", "join_left", "join_right"])
+
+    r = update_node(
+        client,
+        join_node.id,
+        {"join_how": "outer", "join_left": "id", "join_right": "id"},
+    )
+    join_node.refresh_from_db()
+    assert join_node.join_how == "outer"
+    assert join_node.join_left == "id"
+    assert join_node.join_right == "id"
+
+
+def test_aggregation_node(client, node_factory, setup):
+    table, workflow = setup
+
+    aggregation_node, r = create_and_connect_node(
+        client, Node.Kind.AGGREGATION, node_factory, table, workflow
+    )
+    assertFormRenders(
+        r,
+        [
+            "columns-TOTAL_FORMS",
+            "aggregations-INITIAL_FORMS",
+            "aggregations-TOTAL_FORMS",
+            "name",
+            "aggregations-__prefix__-node",
+            "aggregations-__prefix__-id",
+            "aggregations-MIN_NUM_FORMS",
+            "aggregations-__prefix__-column",
+            "aggregations-__prefix__-DELETE",
+            "aggregations-MAX_NUM_FORMS",
+            "columns-MAX_NUM_FORMS",
+            "columns-MIN_NUM_FORMS",
+            "columns-__prefix__-node",
+            "columns-__prefix__-column",
+            "columns-__prefix__-hidden_live",
+            "columns-INITIAL_FORMS",
+            "aggregations-__prefix__-hidden_live",
+            "columns-__prefix__-DELETE",
+            "columns-__prefix__-id",
+        ],
+    )
