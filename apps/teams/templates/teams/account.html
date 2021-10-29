@@ -7,22 +7,22 @@
 <section class="account">
   <h2 class="mb-7">Billing</h2>
 
-  {% flag 'subscriptions' %}
-    {% if not team.subscription %}
-      <a href="{% url 'teams:plan' team.id %}" class="link">Upgrade</a>
-    {% else %}
-      You are currently subscribed to {{ team.subscription.plan.name }}.
-    {% endif %}
-  {% endflag %}
+  <div class="card card--sm max-w-xl mb-4 flex flex-col space-y-4">
+    <h2>Plan</h2>
+    <p class="text-blue">{{ team.plan.name }}</p>
+    {% flag 'subscriptions' %}
+      {% if not team.subscription %}
+        <a href="{% url 'teams:plan' team.id %}" class="button">Upgrade</a>
+      {% else %}
+        You are currently subscribed to {{ team.subscription.plan.name }}.
+      {% endif %}
+    {% endflag %}
+  </div>
   
   <div class="account__plan">
     <div class="card card--none">
       <table class="table">
         <tbody>
-          <tr>  
-            <td><h3>Plan</h3></td>
-            <td class="text-blue">{{ team.plan.name }}</td>
-          </tr>
           <tr>
             <td><h3>Rows used</h3></td>
             <td>

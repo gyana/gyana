@@ -3,12 +3,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponse
 from django.http.response import Http404
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableMixin, SingleTableView
-from djpaddle.models import Plan
+from djpaddle.models import Checkout, Plan
 
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
@@ -47,7 +48,7 @@ class TeamPlan(LoginRequiredMixin, TurboUpdateView):
         context = super().get_context_data(**kwargs)
         context["paddle_plan"] = Plan.objects.first()
         context["djpaddle_checkout_success_redirect"] = reverse(
-            "teams:account", args=(self.object.id,)
+            "teams_checkout:success", args=(self.object.id,)
         )
         context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
         context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
@@ -144,3 +145,11 @@ class MembershipDelete(TeamMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("team_members:list", args=(self.team.id,))
+
+
+class CheckoutSuccess(TeamMixin, DetailView):
+    template_name = "checkout/success.html"
+    model = Checkout
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Checkout, id=self.request.GET.get("checkout"))
