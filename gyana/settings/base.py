@@ -397,13 +397,14 @@ CNAME_DOMAIN = os.environ.get("CNAME_DOMAIN")
 
 # can be found at https://vendors.paddle.com/authentication
 # needs a default value
-DJPADDLE_VENDOR_ID = os.getenv("DJPADDLE_VENDOR_ID", "0000")
+DJPADDLE_VENDOR_ID = os.getenv("DJPADDLE_VENDOR_ID", "")
 
 # create one at https://vendors.paddle.com/authentication
 # needs a default value
-DJPADDLE_API_KEY = os.getenv("DJPADDLE_API_KEY", "0000")
+DJPADDLE_API_KEY = os.getenv("DJPADDLE_API_KEY", "")
 
 # can be found at https://vendors.paddle.com/public-key
-DJPADDLE_PUBLIC_KEY = os.getenv("DJPADDLE_PUBLIC_KEY")
+# needs a default value
+DJPADDLE_PUBLIC_KEY = os.getenv("DJPADDLE_PUBLIC_KEY", "")
 
 DJPADDLE_SANDBOX = True
