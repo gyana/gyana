@@ -404,7 +404,15 @@ DJPADDLE_VENDOR_ID = os.getenv("DJPADDLE_VENDOR_ID", "0000")
 DJPADDLE_API_KEY = os.getenv("DJPADDLE_API_KEY", "0000")
 
 # can be found at https://vendors.paddle.com/public-key
-# needs a default value
-DJPADDLE_PUBLIC_KEY = os.getenv("DJPADDLE_PUBLIC_KEY", "0000")
+# needs a valid RSA key, but this is meaningless
+DJPADDLE_PUBLIC_KEY = os.getenv(
+    "DJPADDLE_PUBLIC_KEY",
+    """-----BEGIN PUBLIC KEY-----
+MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGmojhfiUOJztHJyWdRehmQuBVQa
+ZP10acfRWBQsLFxK+HRzycYKQlzZxGKz+89qmZOvylS0HdS5m20ghEdfUeNW7HRU
+ZT/srO/tz4Jlr7+QtKIiO+GD8KTIqWJNB+gca0ZaocTUtfMEEb/ESTIHdFfns706
+KYXRy8564UME3qd3AgMBAAE=
+-----END PUBLIC KEY-----""",
+)
 
 DJPADDLE_SANDBOX = True
