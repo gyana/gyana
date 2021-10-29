@@ -48,7 +48,7 @@ class TeamPlan(LoginRequiredMixin, TurboUpdateView):
         context = super().get_context_data(**kwargs)
         context["paddle_plan"] = Plan.objects.first()
         context["djpaddle_checkout_success_redirect"] = reverse(
-            "teams_checkout:success", args=(self.object.id,)
+            "teams_checkouts:success", args=(self.object.id,)
         )
         context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
         context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
