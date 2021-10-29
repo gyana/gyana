@@ -26,7 +26,8 @@ class DashboardTable(tables.Table):
         attrs = {"class": "table"}
 
     name = tables.Column(linkify=True)
-    status = StatusColumn(template_name="columns/status.html")
+    # TODO: Fix orderable on status column.
+    status = StatusColumn(template_name="columns/status.html", orderable=False)
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
     duplicate = DuplicateColumn(

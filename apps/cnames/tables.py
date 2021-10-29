@@ -13,7 +13,10 @@ class CNameTable(tables.Table):
 
     domain = tables.Column()
     created = NaturalDatetimeColumn()
-    status = tables.TemplateColumn(template_name="cnames/_status.html")
+    # TODO: Fix orderable for status column.
+    status = tables.TemplateColumn(template_name="cnames/_status.html", orderable=False)
     actions = tables.TemplateColumn(
-        template_name="cnames/actions.html", verbose_name="Actions"
+        template_name="cnames/actions.html",
+        verbose_name="Actions",
+        orderable=False
     )
