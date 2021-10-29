@@ -1,5 +1,10 @@
 import pytest
-from apps.base.tests.asserts import assertFormRenders, assertOK, assertSelectorText
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertOK,
+    assertSelectorLength,
+    assertSelectorText,
+)
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.nodes.models import Node
@@ -71,7 +76,7 @@ def test_input_node(client, setup):
     assert input_node is not None
 
     r = client.get(f"/nodes/{input_node.id}")
-    assertSelectorText(r, "label[class=checkbox]", "olympia")
+    assertSelectorText(r, "label.checkbox", "olympia")
     assertFormRenders(r, ["input_table", "name"])
 
     r = update_node(client, input_node.id, {"input_table": table.id})
@@ -92,3 +97,24 @@ def test_output_node(client, node_factory, setup):
     r = update_node(client, output_node.id, {"name": "Outrageous"})
     output_node.refresh_from_db()
     assert output_node.name == "Outrageous"
+
+
+def test_select_node(client, node_factory, setup):
+    table, workflow = setup
+
+    select_node, r = create_and_connect_node(
+        client, Node.Kind.SELECT, node_factory, table, workflow
+    )
+    assertFormRenders(r, ["name", "select_mode", "select_columns"])
+    assertSelectorLength(r, "input[name=select_columns]", 8)
+    assertSelectorText(r, "label.checkbox[for=id_select_columns_0]", "id")
+    assertSelectorText(r, "label.checkbox[for=id_select_columns_4]", "lunch")
+
+    r = update_node(
+        client,
+        select_node.id,
+        {"select_mode": "exclude", "select_columns": ["birthday", "lunch"]},
+    )
+    select_node.refresh_from_db()
+    assert select_node.select_mode == "exclude"
+    assert select_node.columns.count() == 2
