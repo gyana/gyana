@@ -1,22 +1,25 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="turbo-cache-control" content="no-cache">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="turbo-cache-control" content="no-cache" />
 
   {% include 'web/components/meta.html' %}
   {% include 'web/components/favicon.html' %}
 
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
 
-  <link rel="stylesheet" href="{% static 'css/fontawesome.css' %}">
-  <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/fontawesome.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/tailwind.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 
   {% comment %} Before all javascript is loaded {% endcomment %}
   {% comment %} {% if HONEYBADGER_API_KEY %}
@@ -60,12 +63,12 @@
         data-web-sidebar-target="toggle"
         {% if not sidebar_collapsed %}checked{% endif %}
         hidden
-      >
+      />
 
       <nav class="sidebar__body">
         {% block sidebar_content %}{% endblock %}
 
-        <li class="mt-auto"><hr></li>
+        <li class="mt-auto"><hr /></li>
 
         <li>
           <a
@@ -76,7 +79,7 @@
           </a>
         </li>
 
-        <li><hr></li>
+        <li><hr /></li>
 
         <li>
           <a
@@ -91,7 +94,7 @@
           </a>
         </li>
 
-        <li><hr></li>
+        <li><hr /></li>
 
         {% if user.is_superuser %}
         {% include 'web/components/admin.html' %}
@@ -116,8 +119,7 @@
           </div>
         </li>
 
-        <li><hr></li>
-
+        <li><hr /></li>
 
         <li data-controller="tf-modal">
           <a
@@ -125,7 +127,7 @@
             data-src="{% url 'users:profile' %}"
             class="sidebar__link"
           >
-            <img src="{{ user.avatar_url }}" alt="">Your Account
+            <img src="{{ user.avatar_url }}" />Your Account
           </a>
 
           <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
@@ -138,7 +140,7 @@
           </div>
         </li>
 
-        <li><hr></li>
+        <li><hr /></li>
 
         <li>
           <label
