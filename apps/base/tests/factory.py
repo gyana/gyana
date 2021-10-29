@@ -2,6 +2,7 @@ from apps.cnames.models import CName
 from apps.connectors.models import Connector
 from apps.dashboards.models import Dashboard
 from apps.integrations.models import Integration
+from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.sheets.models import Sheet
 from apps.tables.models import Table
@@ -115,3 +116,12 @@ class CNameFactory(factory.django.DjangoModelFactory):
         model = CName
 
     domain = "test.domain.com"
+
+
+@register
+class NodeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Node
+
+    x = 0
+    y = 0
