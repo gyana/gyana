@@ -43,5 +43,7 @@ def trans_numeric(t, context):
     if (t.precision, t.scale) == (76, 38):
         return "BIGNUMERIC"
     raise TypeError(
-        "BigQuery only supports decimal types with precision of 38 and " "scale of 9"
+        """BigQuery only supports the NUMERIC decimal types 
+with a precision of 38 and scale of 9 and the BIGNUMERIC decimal type 
+with a precision of 76 and 38 """
     )
