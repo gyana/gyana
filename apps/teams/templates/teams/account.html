@@ -15,6 +15,12 @@
         <a href="{% url 'teams:plan' team.id %}" class="button">Upgrade</a>
       {% else %}
         You are currently subscribed to {{ team.subscription.plan.name }}.
+        <a href="{{ object.subscription.update_url }}" class="link" data-turbo="false">
+            Update Payment Method
+        </a>
+        <a href="{{ object.subscription.cancel_url }}" class="link" data-turbo="false">
+            Cancel Subscription
+        </a>
       {% endif %}
     {% endflag %}
   </div>
