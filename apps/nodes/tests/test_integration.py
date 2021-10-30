@@ -181,3 +181,162 @@ def test_aggregation_node(client, node_factory, setup):
             "columns-__prefix__-id",
         ],
     )
+    assert False
+
+
+def test_union_node(client, node_factory, setup):
+    table, workflow = setup
+
+    union_node, r = create_and_connect_node(
+        client, Node.Kind.UNION, node_factory, table, workflow
+    )
+    assertFormRenders(r, ["name", "union_distinct"])
+
+    r = update_node(client, union_node.id, {"union_distinct": True})
+    union_node.refresh_from_db()
+
+    assert union_node.union_distinct == True
+
+
+def test_except_node(client, node_factory, setup):
+    table, workflow = setup
+
+    _, r = create_and_connect_node(
+        client, Node.Kind.EXCEPT, node_factory, table, workflow
+    )
+    assertSelectorText(
+        r, ".form__description", "Remove rows that exist in a second table."
+    )
+
+
+def test_intersect_node(client, node_factory, setup):
+    table, workflow = setup
+
+    _, _ = create_and_connect_node(
+        client, Node.Kind.INTERSECT, node_factory, table, workflow
+    )
+
+
+def test_sort_node(client, node_factory, setup):
+    table, workflow = setup
+
+    sort_node, r = create_and_connect_node(
+        client, Node.Kind.SORT, node_factory, table, workflow
+    )
+
+    assert False
+
+
+def test_limit_node(client, node_factory, setup):
+    table, workflow = setup
+
+    limit_node, r = create_and_connect_node(
+        client, Node.Kind.LIMIT, node_factory, table, workflow
+    )
+    assertFormRenders(r, ["name", "limit_limit", "limit_limit"])
+
+    r = update_node(client, limit_node.id, {{"limit_limit": 200, "limit_offset": 150}})
+    limit_node.refresh_from_db()
+
+    assert limit_node.limit_limit == 200
+    assert limit_node.limit_offset == 150
+
+
+def test_filter_node(client, node_factory, setup):
+    table, workflow = setup
+
+    filter_node, r = create_and_connect_node(
+        client, Node.Kind.FILTER, node_factory, table, workflow
+    )
+
+    assert False
+
+
+def test_edit_node(client, node_factory, setup):
+    table, workflow = setup
+
+    edit_node, r = create_and_connect_node(
+        client, Node.Kind.EDIT, node_factory, table, workflow
+    )
+
+    assert False
+
+
+def test_add_node(client, node_factory, setup):
+    table, workflow = setup
+
+    add_node, r = create_and_connect_node(
+        client, Node.Kind.ADD, node_factory, table, workflow
+    )
+
+    assert False
+
+
+def test_rename_node(client, node_factory, setup):
+    table, workflow = setup
+
+    rename_node, r = create_and_connect_node(
+        client, Node.Kind.RENAME, node_factory, table, workflow
+    )
+
+    assert False
+
+
+def test_formula_node(client, node_factory, setup):
+    table, workflow = setup
+
+    formula_node, r = create_and_connect_node(
+        client, Node.Kind.FORMULA, node_factory, table, workflow
+    )
+
+    assert False
+
+
+def test_distinct_node(client, node_factory, setup):
+    table, workflow = setup
+
+    distinct_node, r = create_and_connect_node(
+        client, Node.Kind.DISTINCT, node_factory, table, workflow
+    )
+
+    assert False
+
+
+def test_window_node(client, node_factory, setup):
+    table, workflow = setup
+
+    window_node, r = create_and_connect_node(
+        client, Node.Kind.WINDOW, node_factory, table, workflow
+    )
+
+    assert False
+
+
+def test_pivot_node(client, node_factory, setup):
+    table, workflow = setup
+
+    pivot_node, r = create_and_connect_node(
+        client, Node.Kind.PIVOT, node_factory, table, workflow
+    )
+
+    assert False
+
+
+def test_unpivot_node(client, node_factory, setup):
+    table, workflow = setup
+
+    unpivot_node, r = create_and_connect_node(
+        client, Node.Kind.UNPIVOT, node_factory, table, workflow
+    )
+
+    assert False
+
+
+def test_sentiment_node(client, node_factory, setup):
+    table, workflow = setup
+
+    sentiment_node, r = create_and_connect_node(
+        client, Node.Kind.SENTIMENT, node_factory, table, workflow
+    )
+
+    assert False
