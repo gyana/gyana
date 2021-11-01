@@ -20,7 +20,7 @@ def chart_to_output(widget: Widget) -> Dict[str, Any]:
     result = clients.bigquery().get_query_results(
         get_query_from_widget(widget).compile(), max_results=CHART_MAX_ROWS
     )
-    if result.total_rows > CHART_MAX_ROWS:
+    if (result.total_rows or 0) > CHART_MAX_ROWS:
         raise MaxRowsExceeded
     df = result.rows_df
     chart, chart_id = to_chart(df, widget)
