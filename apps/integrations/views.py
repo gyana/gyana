@@ -187,6 +187,11 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
     def get(self, request, *args, **kwargs):
 
         self.object = self.get_object()
+
+        if self.object.kind == Integration.Kind.CONNECTOR:
+            if clients.fivetran().has_completed_sync(self.object.source_obj):
+                complete_connector_sync(self.object.source_obj)
+
         if self.object.state not in [
             Integration.State.LOAD,
             Integration.State.ERROR,
@@ -194,13 +199,6 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
             return redirect(
                 "project_integrations:done", self.project.id, self.object.id
             )
-
-        if self.object.kind == Integration.Kind.CONNECTOR:
-            if clients.fivetran().has_completed_sync(self.object.source_obj):
-                complete_connector_sync(self.object.source_obj)
-                return redirect(
-                    "project_integrations:done", self.project.id, self.object.id
-                )
 
         return super().get(request, *args, **kwargs)
 

@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 import pytest
 from apps.base.tests.asserts import (
     assertFormRenders,
@@ -8,6 +10,8 @@ from apps.base.tests.asserts import (
 from apps.connectors.fivetran.schema import FivetranSchema
 from apps.connectors.periodic import check_syncing_connectors_from_fivetran
 from apps.integrations.models import Integration
+from django.utils import timezone
+from google.api_core.exceptions import NotFound
 from pytest_django.asserts import assertContains, assertNotContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
@@ -34,7 +38,6 @@ def get_mock_schema(num_tables):
 def test_connector_create(client, logged_in_user, bigquery, fivetran, project_factory):
 
     project = project_factory(team=logged_in_user.teams.first())
-    # project = Project.objects.create(team=logged_in_user.teams.first(), name="this")
 
     fivetran.create.return_value = {"fivetran_id": "fid", "schema": "sid"}
     fivetran.get_authorize_url.side_effect = (
@@ -141,6 +144,47 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
 
     # todo: email
     # assert len(mail.outbox) == 1
+
+
+def test_connector_create_regression(
+    logged_in_user,
+    bigquery,
+    fivetran,
+    connector_factory,
+):
+
+    connector = connector_factory(
+        integration__ready=False,
+        integration__state=Integration.State.LOAD,
+        integration__project__team=logged_in_user.teams.first(),
+        fivetran_sync_started=timezone.now(),
+    )
+    integration = connector.integration
+
+    fivetran.has_completed_sync.return_value = True
+    schema = get_mock_schema(1)  # connector with a single table
+    fivetran.get_schemas.return_value = [schema]
+
+    # not shared with our service account
+    def raise_(exc):
+        raise exc
+
+    # fivetran reports completed but bigquery is not ready
+    bigquery.get_table = lambda bq_id: raise_(NotFound("not found"))
+    check_syncing_connectors_from_fivetran.delay()
+
+    integration.refresh_from_db()
+    assert integration.state == Integration.State.LOAD
+    assert integration.table_set.count() == 0
+
+    # bigquery is not up to date
+    bigquery.get_table = Mock()
+    bigquery.get_table().num_rows = 10
+    check_syncing_connectors_from_fivetran.delay()
+
+    integration.refresh_from_db()
+    assert integration.state == Integration.State.DONE
+    assert integration.table_set.count() == 1
 
 
 def test_status_on_pending_page(

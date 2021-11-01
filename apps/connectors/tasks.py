@@ -19,6 +19,8 @@ def complete_connector_sync(connector: Connector):
 
     initial_sync = integration.table_set.count() == 0
 
+    bigquery_table_created = False
+
     with transaction.atomic():
         for bq_id in bq_ids:
 
@@ -26,6 +28,7 @@ def complete_connector_sync(connector: Connector):
                 # fivetran does not always sync the table, so we check that
                 # it exists in our data warehouse
                 bq_obj = clients.bigquery().get_table(bq_id)
+                bigquery_table_created = True
             except NotFound:
                 continue
 
@@ -39,6 +42,11 @@ def complete_connector_sync(connector: Connector):
                 integration=connector.integration,
                 num_rows=bq_obj.num_rows,
             )
+
+        # it is possible that fivetran reports the connector sync completed,
+        # but there are no tables in bigquery
+        if not bigquery_table_created:
+            return
 
         integration.state = Integration.State.DONE
         integration.save()
