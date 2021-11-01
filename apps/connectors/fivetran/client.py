@@ -1,7 +1,6 @@
 import uuid
 from typing import Dict, List
 
-import backoff
 import requests
 from django.conf import settings
 
