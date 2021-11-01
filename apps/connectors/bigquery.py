@@ -43,4 +43,4 @@ def get_bq_tables_from_connector(connector):
         else [connector.schema]
     )
 
-    return list(chain(get_bq_tables_from_dataset_safe(d) for d in datasets))
+    return list(chain(*(get_bq_tables_from_dataset_safe(d) for d in datasets)))
