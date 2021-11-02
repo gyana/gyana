@@ -204,7 +204,7 @@ class FivetranClient:
             raise FivetranClientError(res)
 
 
-# if settings.MOCK_FIVETRAN:
-#     from .mock import MockFivetranClient
+if settings.MOCK_FIVETRAN:
+    from .mock import MockFivetranClient
 
-#     FivetranClient = MockFivetranClient
+    FivetranClient = MockFivetranClient
