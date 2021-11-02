@@ -91,3 +91,28 @@ def test_connector_schema_api_cloud(bigquery):
 
     assert bigquery.list_tables.call_count == 1
     assert bigquery.list_tables.call_args.args == ("dataset",)
+
+
+def test_connector_schema_database(bigquery):
+
+    # test: api_cloud maps the intersection of bigquery and enabled tables in fivetran
+
+    # table_2 and schema_2 is disabled in fivetran and should be ignored
+    schema_obj = get_mock_schema(
+        3, "postgres", disabled=[2], num_schemas=3, schemas_disabled=[2]
+    )
+    # table_4 in bigquery is not in fivetran schema and should be ignored
+    bigquery.list_tables.side_effect = lambda dataset_id: get_mock_list_tables(
+        4, dataset_id
+    )
+
+    assert schema_obj.get_bq_ids() == {
+        "dataset_schema_1.table_1",
+        "dataset_schema_1.table_3",
+        "dataset_schema_3.table_1",
+        "dataset_schema_3.table_3",
+    }
+
+    assert bigquery.list_tables.call_count == 2
+    assert bigquery.list_tables.call_args_list[0].args == ("dataset_schema_1",)
+    assert bigquery.list_tables.call_args_list[1].args == ("dataset_schema_3",)

@@ -3,8 +3,7 @@ from itertools import chain
 from typing import Dict, List, Optional
 
 from apps.base import clients
-from apps.connectors.bigquery import (check_bq_id_exists,
-                                      get_bq_ids_from_dataset_safe)
+from apps.connectors.bigquery import check_bq_id_exists, get_bq_ids_from_dataset_safe
 
 from .config import ServiceTypeEnum
 
@@ -157,7 +156,7 @@ class FivetranSchemaObj:
 
         # database
         # ditto api_cloud but for multiple schemas/datasets
-        return set(chain(*{schema.get_bq_ids() for schema in self.enabled_schemas}))
+        return set(chain(*(schema.get_bq_ids() for schema in self.enabled_schemas)))
 
 
 def update_schema_from_cleaned_data(connector, cleaned_data):
