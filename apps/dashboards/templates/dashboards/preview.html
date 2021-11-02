@@ -2,7 +2,7 @@
   <div id="dashboard-widget-container"
         class="widgets__canvas"
         data-controller="widget-list"
-        style="width:{{object.width}}px;height:{{object.height}}px;">
+        style="width:{{ object.width }}px;height:{{object.height}}px;">
     {% for widget in object.widget_set.all %}
     <gy-widget id="widget-{{ widget.id }}">
       <div

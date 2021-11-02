@@ -6,7 +6,8 @@ authors = ["Gyana Developers <developers@gyana.com>"]
 
 [tool.djlint]
 profile = "django"
-ignore = "T003"
+ignore = "T003,H021,H006,H013,H016"
+use_gitignore = true
 indent = 2
 
 [tool.pytest.ini_options]
