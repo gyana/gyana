@@ -85,13 +85,15 @@ class MockFivetranClient:
 
     def get_schemas(self, connector):
         if connector.id in self._schema_cache:
-            return FivetranSchemaObj(self._schema_cache[connector.id], connector)
+            return FivetranSchemaObj(
+                self._schema_cache[connector.id], connector.conf, connector.schema
+            )
 
         service = connector.service if connector is not None else "google_analytics"
         fivetran_id = connector.fivetran_id if connector is not None else "humid_rifle"
 
         with open(f"{SCHEMA_FIXTURES_DIR}/{service}_{fivetran_id}.json", "r") as f:
-            return FivetranSchemaObj(json.load(f), connector)
+            return FivetranSchemaObj(json.load(f), connector.conf, connector.schema)
 
     def update_schemas(self, connector, schemas):
         self._schema_cache[connector.id] = schemas.to_dict()

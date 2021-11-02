@@ -3,8 +3,7 @@ from itertools import chain
 from typing import Dict, List, Optional
 
 from apps.base import clients
-from apps.connectors.bigquery import (check_bq_id_exists,
-                                      get_bq_ids_from_dataset_safe)
+from apps.connectors.bigquery import check_bq_id_exists, get_bq_ids_from_dataset_safe
 
 from .config import ServiceTypeEnum
 
@@ -78,9 +77,9 @@ class FivetranSchema:
 
 
 class FivetranSchemaObj:
-    def __init__(self, schemas_dict, connector):
-        self.conf = connector.conf
-        self.schema_prefix = connector.schema
+    def __init__(self, schemas_dict, service_conf, schema_prefix):
+        self.conf = service_conf
+        self.schema_prefix = schema_prefix
         self.schemas = [
             FivetranSchema(
                 key=k,

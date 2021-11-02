@@ -153,7 +153,9 @@ class FivetranClient:
         if res["code"] != "Success":
             raise FivetranClientError(res)
 
-        return FivetranSchemaObj(res["data"].get("schemas", {}), connector)
+        return FivetranSchemaObj(
+            res["data"].get("schemas", {}), connector.conf, connector.schema
+        )
 
     def get_schemas(self, connector: Connector):
 
@@ -172,7 +174,9 @@ class FivetranClient:
             raise FivetranClientError(res)
 
         # schema not included for Google Sheets connector
-        return FivetranSchemaObj(res["data"].get("schemas", {}), connector)
+        return FivetranSchemaObj(
+            res["data"].get("schemas", {}), connector.conf, connector.schema
+        )
 
     def update_schemas(self, connector: Connector, schemas: FivetranSchemaObj):
 

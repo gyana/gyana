@@ -7,7 +7,8 @@ from apps.base.tests.asserts import (
     assertOK,
     assertSelectorLength,
 )
-from apps.connectors.fivetran.schema import FivetranSchema
+from apps.connectors.fivetran.config import get_services_obj
+from apps.connectors.fivetran.schema import FivetranSchemaObj
 from apps.connectors.periodic import check_syncing_connectors_from_fivetran
 from apps.integrations.models import Integration
 from django.utils import timezone
@@ -26,13 +27,17 @@ def get_mock_schema(num_tables):
         }
         for n in range(1, num_tables + 1)
     }
-    schema = FivetranSchema(
-        key="schema",
-        name_in_destination="dataset",
-        enabled=True,
-        tables=tables,
+    schema = {
+        "name_in_destination": "dataset",
+        "enabled": True,
+        "tables": tables,
+    }
+    schema_obj = FivetranSchemaObj(
+        {"schema": schema},
+        service_conf=get_services_obj()["google_analytics"],
+        schema_prefix="dataset",
     )
-    return schema
+    return schema_obj
 
 
 def test_connector_create(client, logged_in_user, bigquery, fivetran, project_factory):
@@ -44,8 +49,8 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
         lambda c, r: f"http://fivetran.url?redirect_uri={r}"
     )
     fivetran.has_completed_sync.return_value = False
-    schema = get_mock_schema(1)  # connector with a single table
-    fivetran.get_schemas.return_value = [schema]
+    schema_obj = get_mock_schema(1)  # connector with a single table
+    fivetran.get_schemas.return_value = schema_obj
     bigquery.get_table().num_rows = 10
 
     LIST = f"/projects/{project.id}/integrations"
@@ -162,8 +167,8 @@ def test_connector_create_regression(
     integration = connector.integration
 
     fivetran.has_completed_sync.return_value = True
-    schema = get_mock_schema(1)  # connector with a single table
-    fivetran.get_schemas.return_value = [schema]
+    schema_obj = get_mock_schema(1)  # connector with a single table
+    fivetran.get_schemas.return_value = schema_obj
 
     # not shared with our service account
     def raise_(exc):
@@ -201,8 +206,8 @@ def test_status_on_pending_page(
     )
     project = connector.integration.project
 
-    schema = get_mock_schema(1)
-    fivetran.get_schemas.return_value = [schema]
+    schema_obj = get_mock_schema(1)
+    fivetran.get_schemas.return_value = schema_obj
     fivetran.has_completed_sync.return_value = False
     bigquery.get_table().num_rows = 10
 
@@ -251,10 +256,10 @@ def test_update_tables_in_non_database(
     integration = connector.integration
     project = integration.project
 
-    schema = get_mock_schema(2)
-    fivetran.get_schemas.return_value = [schema]
+    schema_obj = get_mock_schema(2)
+    fivetran.get_schemas.return_value = schema_obj
 
-    for table in schema.tables:
+    for table in schema_obj.schemas[0].tables:
         integration_table_factory(
             bq_table=table.name_in_destination, project=project, integration=integration
         )
@@ -274,11 +279,10 @@ def test_update_tables_in_non_database(
     r = client.post(f"{DETAIL}/configure", data={"dataset_tables": ["table_1"]})
     assertRedirects(r, f"{DETAIL}/load", target_status_code=302)
     assert fivetran.update_schemas.call_count == 1
-    enabled_tables = [
-        t for t in fivetran.update_schemas.call_args.args[1][0].tables if t.enabled
-    ]
+    schema_tables = fivetran.update_schemas.call_args.args[1].schemas[0].tables
+    enabled_tables = [t for t in schema_tables if t.enabled]
     assert len(enabled_tables) == 1
-    assert fivetran.update_schemas.call_args.args[1][0].tables[0].key == "table_1"
+    assert schema_tables[0].key == "table_1"
 
     # slightly hacky - this is working because the code mutates the mock schema object
 
