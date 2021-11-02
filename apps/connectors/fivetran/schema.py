@@ -136,6 +136,7 @@ class FivetranSchemaObj:
             )
             for schema in enabled_schemas
         }
+        actual_bq_ids = set(chain(*actual_bq_ids))
 
         schema_bq_ids = {
             f"{self.schema_prefix}_{schema.name_in_destination}.{table.name_in_destination}"
