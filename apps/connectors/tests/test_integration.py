@@ -1,5 +1,3 @@
-from unittest.mock import Mock
-
 import pytest
 from apps.base.tests.asserts import (
     assertFormRenders,
@@ -7,42 +5,14 @@ from apps.base.tests.asserts import (
     assertOK,
     assertSelectorLength,
 )
-from apps.connectors.fivetran.config import get_services_obj
-from apps.connectors.fivetran.schema import FivetranSchemaObj
 from apps.connectors.periodic import check_syncing_connectors_from_fivetran
 from apps.integrations.models import Integration
 from django.utils import timezone
-from google.api_core.exceptions import NotFound
-from google.cloud.bigquery.table import Table as BqTable
 from pytest_django.asserts import assertContains, assertNotContains, assertRedirects
 
+from .mock import get_mock_list_tables, get_mock_schema
+
 pytestmark = pytest.mark.django_db
-
-
-def get_mock_list_tables(num_tables):
-    return [BqTable(f"project.dataset.table_{n}") for n in range(1, num_tables + 1)]
-
-
-def get_mock_schema(num_tables):
-    tables = {
-        f"table_{n}": {
-            "name_in_destination": f"table_{n}",
-            "enabled": True,
-            "enabled_patch_settings": {"allowed": True},
-        }
-        for n in range(1, num_tables + 1)
-    }
-    schema = {
-        "name_in_destination": "dataset",
-        "enabled": True,
-        "tables": tables,
-    }
-    schema_obj = FivetranSchemaObj(
-        {"schema": schema},
-        service_conf=get_services_obj()["google_analytics"],
-        schema_prefix="dataset",
-    )
-    return schema_obj
 
 
 def test_connector_create(client, logged_in_user, bigquery, fivetran, project_factory):
