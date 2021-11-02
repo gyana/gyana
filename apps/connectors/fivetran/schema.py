@@ -55,13 +55,15 @@ class FivetranSchema:
 
     @property
     def dataset_id(self):
+        # database connectors have multiple bigquery datasets
         if self.service_type == ServiceTypeEnum.DATABASE:
             return f"{self.schema_prefix}_{self.name_in_destination}"
         return self.schema_prefix
 
     @property
     def enabled_bq_ids(self):
-        # the bigquery ids that fivetran intends to create
+        # the bigquery ids that fivetran intends to create based on the schema
+        # the user can has the option to disable individual tables
         return {
             f"{self.dataset_id}.{table.name_in_destination}"
             for table in self.tables
@@ -70,10 +72,22 @@ class FivetranSchema:
 
     @property
     def actual_bq_ids(self):
-        # the actual bigquery ids in bigquery
+        # the actual bigquery ids we see in bigquery
         return get_bq_ids_from_dataset_safe(self.dataset_id)
 
     def get_bq_ids(self):
+        # determine the bigquery ids we want to map into our database for this
+        # schema. we take the intersection of what fivetran says it will create
+        # vs what bigquery reports was actually created, this:
+        #
+        # - filters out tables that are incorrectly included in bigquery - e.g.
+        #   failed deletions or fivetran system tables
+        # - filters out tables that fivetran expected, but weren't created in
+        #   bigquery - e.g. if the source app does not contain any of that entity
+        #
+        # nb: api_cloud and database only - webhooks_reports and event_tracking
+        # do not have any fivetran schema information
+
         return self.actual_bq_ids & self.enabled_bq_ids
 
     @property
@@ -100,17 +114,19 @@ class FivetranSchemaObj:
 
     @property
     def enabled_schemas(self):
-        return [s.get_bq_ids() for s in self.schemas if s.enabled]
+        # the user can has the option to disable individual schemas
+        return [s for s in self.schemas if s.enabled]
 
     def get_bq_datasets(self):
 
-        # used in deletion to determine bigquery datasets associated with a connector
-
-        if self.conf.service_type != ServiceTypeEnum.DATABASE:
-            return {self.schema_prefix}
+        # determine all the bigquery datasets associated with a connector,
+        # used for deletions
 
         # a database connector used multiple bigquery datasets
-        return {s.dataset_id for s in self.schemas if s.enabled}
+        if self.conf.service_type == ServiceTypeEnum.DATABASE:
+            return {s.dataset_id for s in self.enabled_schemas}
+
+        return {self.schema_prefix}
 
     def get_bq_ids(self):
 
