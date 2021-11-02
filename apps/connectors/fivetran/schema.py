@@ -76,9 +76,9 @@ class FivetranSchemaObj:
 
     def get_bq_datasets(self):
 
-        service = get_services()[self.connector.service]
-
         # used in deletion to determine bigquery datasets associated with a connector
+
+        service = get_services()[self.connector.service]
 
         if not service.get("service_type", "api_cloud") != "database":
             return {self.schema_prefix}
@@ -145,46 +145,6 @@ class FivetranSchemaObj:
             if table.is_enabled
         }
         return actual_bq_ids & schema_bq_ids
-
-
-# def schemas_to_obj(schemas_dict):
-#     return [FivetranSchema(key=k, **s) for k, s in schemas_dict.items()]
-
-
-# def schemas_to_dict(schemas):
-#     return {s.key: s.asdict() for s in schemas}
-
-
-def get_bq_datasets_from_schemas(connector):
-
-    datasets = {
-        s.name_in_destination for s in clients.fivetran().get_schemas(connector)
-    }
-
-    # fivetran schema config does not include schema prefix for databases
-    if connector.is_database:
-        datasets = {f"{connector.schema}_{id_}" for id_ in datasets}
-
-    return datasets
-
-
-def get_bq_ids_from_schemas(connector: Connector):
-
-    # get the list of bigquery ids (dataset.table) from the fivetran schema information
-
-    schema_bq_ids = set(
-        chain(*(s.enabled_bq_ids for s in clients.fivetran().get_schemas(connector)))
-    )
-
-    # fivetran schema config does not include schema prefix for databases
-    if connector.is_database:
-        schema_bq_ids = {f"{connector.schema}_{id_}" for id_ in schema_bq_ids}
-
-    # special case for google sheets
-    if len(schema_bq_ids) == 0:
-        return [f"{connector.schema}.sheets_table"]
-
-    return schema_bq_ids
 
 
 def update_schema_from_cleaned_data(connector, cleaned_data):
