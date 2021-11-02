@@ -15,7 +15,7 @@ def update_connectors_from_fivetran():
 
     for connector in connectors_to_check:
         try:
-            succeeded_at = clients.fivetran().get(connector).get("succeeded_at")
+            succeeded_at = clients.fivetran().get(connector).succeeded_at
             if succeeded_at is not None:
                 connector.update_fivetran_succeeded_at(succeeded_at)
                 # update any newly created tables

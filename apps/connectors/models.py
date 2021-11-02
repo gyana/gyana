@@ -82,10 +82,6 @@ class Connector(BaseModel):
 
     def update_fivetran_succeeded_at(self, succeeded_at: str):
 
-        # fivetran timestamp string from get response
-        # timezone (UTC) information is parsed automatically
-        succeeded_at = datetime.strptime(succeeded_at, "%Y-%m-%dT%H:%M:%S.%f%z")
-
         # ignore outdated information
         if (
             self.fivetran_succeeded_at is not None

@@ -1,5 +1,5 @@
 adroll:
-  service_type: webhooks_reports
+  service_type: reporting_api
   static_config:
     table: adroll_table
 adwords:
@@ -159,7 +159,7 @@ google_cloud_mysql:
 google_search_console: {}
 google_sheets:
   internal: true
-  service_type: webhooks_reports
+  service_type: reporting_api
   static_config:
     table: sheets_table
 greenhouse: {}
@@ -231,13 +231,13 @@ twilio: {}
 twitter: {}
 typeform: {}
 webhooks:
-  service_type: webhooks_reports
+  service_type: webhooks
   static_config:
     table: webhooks_table
 uservoice: {}
 xero: {}
 youtube_analytics:
-  service_type: webhooks_reports
+  service_type: reporting_api
   static_config:
     table: youtube_analytics_table
 zendesk: {}

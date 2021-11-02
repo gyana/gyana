@@ -35,17 +35,11 @@ class ConnectorStatus(TurboFrameDetailView):
     def get_context_data(self, **kwargs):
 
         context_data = super().get_context_data(**kwargs)
-        data = clients.fivetran().get(self.object)
-        succeeded_at = data.get("succeeded_at")
-        if succeeded_at is not None:
-            self.object.update_fivetran_succeeded_at(data["succeeded_at"])
+        fivetran_connector = clients.fivetran().get(self.object)
+        if fivetran_connector.succeeded_at is not None:
+            self.object.update_fivetran_succeeded_at(fivetran_connector.succeeded_at)
 
-        # {
-        #     "setup_state": "broken" | "incomplete" | "connected",
-        #     "tasks": [{"code": ..., "message": ...}],
-        #     "warnings": [{"code": ..., "message": ...}]
-        # }
-        broken = data["status"]["setup_state"] != "connected"
+        broken = fivetran_connector.status.setup_state != "connected"
         if broken:
             internal_redirect = reverse(
                 "project_integrations_connectors:authorize",
