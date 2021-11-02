@@ -1,8 +1,10 @@
 from dataclasses import asdict, dataclass
+from itertools import chain
 from typing import Dict, List, Optional
 
 from apps.base import clients
-from apps.connectors.bigquery import check_bq_id_exists, get_bq_ids_from_dataset_safe
+from apps.connectors.bigquery import (check_bq_id_exists,
+                                      get_bq_ids_from_dataset_safe)
 
 from .config import ServiceTypeEnum
 
@@ -66,6 +68,10 @@ class FivetranSchema:
             if table.enabled
         }
 
+    def get_bq_ids(self):
+        actual_bq_ids = get_bq_ids_from_dataset_safe(self.schema_prefix)
+        return actual_bq_ids & self.enabled_bq_ids
+
     @property
     def display_name(self):
         return self.name_in_destination.replace("_", " ").title()
@@ -88,6 +94,10 @@ class FivetranSchemaObj:
     def to_dict(self):
         return {s.key: s.asdict() for s in self.schemas}
 
+    @property
+    def enabled_schemas(self):
+        return [s.get_bq_ids() for s in self.schemas if s.enabled]
+
     def get_bq_datasets(self):
 
         # used in deletion to determine bigquery datasets associated with a connector
@@ -108,31 +118,25 @@ class FivetranSchemaObj:
         service_type = self.conf.service_type
 
         # event_tracking
+        # tables are generated dynamically, bigquery is the source of truth
         if service_type == ServiceTypeEnum.EVENT_TRACKING:
             return get_bq_ids_from_dataset_safe(self.schema_prefix)
 
         # webhooks_reports
+        # only one table, validate it exists
         if service_type == ServiceTypeEnum.WEBHOOKS_REPORTS:
             bq_id = f'{self.schema_prefix}.{self.conf.static_config["table"]}'
             return {bq_id} if check_bq_id_exists(bq_id) else {}
 
         # api_cloud
+        # cross reference fivetran schema and bigquery dataset
         if service_type == ServiceTypeEnum.API_CLOUD:
-            actual_bq_ids = get_bq_ids_from_dataset_safe(self.schema_prefix)
             # only databases have multiple schemas
-            schema_bq_ids = self.schemas[0].enabled_bq_ids
-            return actual_bq_ids & schema_bq_ids
+            return self.schemas[0].get_bq_ids()
 
-        # databases
-        actual_bq_ids = {
-            bq_id
-            for dataset_id in self.get_bq_datasets()
-            for bq_id in get_bq_ids_from_dataset_safe(dataset_id)
-        }
-        schema_bq_ids = {
-            bq_id for s in self.schemas for bq_id in s.enabled_bq_ids if s.enabled
-        }
-        return actual_bq_ids & schema_bq_ids
+        # database
+        # ditto api_cloud but for multiple schemas/datasets
+        return set(chain(*{schema.get_bq_ids() for schema in self.enabled_schemas}))
 
 
 def update_schema_from_cleaned_data(connector, cleaned_data):
