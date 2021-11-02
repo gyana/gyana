@@ -13,7 +13,8 @@ class ServiceTypeEnum(Enum):
 
     # api_cloud = fixed tables in one schema
     # database = fixed tables in multiple schemas
-    # webhooks_reports = single table in one schema (no schema provided)
+    # webhooks = single dynamic table in one schema (no schema provided)
+    # reporting_api = single fixed table in one schema (no schema provided)
     # event_tracking = dynamic tables in one schema (no schema provided)
     #
     # the fivetran getting started diagram has a good summary of the options
@@ -22,7 +23,8 @@ class ServiceTypeEnum(Enum):
 
     API_CLOUD = "api_cloud"
     DATABASE = "database"
-    WEBHOOKS_REPORTS = "webhooks_reports"
+    WEBHOOKS = "webhooks"
+    REPORTING_API = "reporting_api"
     EVENT_TRACKING = "event_tracking"
 
 

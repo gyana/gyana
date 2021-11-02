@@ -142,9 +142,9 @@ class FivetranSchemaObj:
         if service_type == ServiceTypeEnum.EVENT_TRACKING:
             return get_bq_ids_from_dataset_safe(self.schema_prefix)
 
-        # webhooks_reports
+        # webhooks or reporting_api
         # only one table, validate it exists
-        if service_type == ServiceTypeEnum.WEBHOOKS_REPORTS:
+        if service_type in [ServiceTypeEnum.WEBHOOKS, ServiceTypeEnum.REPORTING_API]:
             bq_id = f'{self.schema_prefix}.{self.conf.static_config["table"]}'
             return {bq_id} if check_bq_id_exists(bq_id) else set()
 
