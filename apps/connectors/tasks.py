@@ -13,43 +13,44 @@ from apps.tables.models import Table
 from .fivetran.schema import get_bq_ids_from_schemas
 
 
+def get_table_from_bq_id(bq_id, connector):
+    dataset_id, table_id = bq_id.split(".")
+    return Table(
+        source=Table.Source.INTEGRATION,
+        bq_table=table_id,
+        bq_dataset=dataset_id,
+        project=connector.integration.project,
+        integration=connector.integration,
+    )
+
+
 def complete_connector_sync(connector: Connector):
     integration = connector.integration
     initial_sync = integration.table_set.count() == 0
 
-    # start with all the tables we see in bigquery
-    bq_tables = get_bq_tables_from_connector(connector)
+    schema_obj = clients.fivetran().get_schemas(connector)
+
+    # a list of all bigquery ids that (1) are available in bigquery and
+    # (2) are enabled in the fivetran schema object (optional)
+    bq_ids = schema_obj.get_bq_ids()
 
     # it is possible that fivetran reports the connector sync completed,
     # but there are no tables in bigquery - this could either happen if they
     # give us the wrong information, or for certain connectors where tables
-    # are added dynamically (e.g. segment)
-    if len(bq_tables) == 0:
+    # are added dynamically, and there are none initially (e.g. Segment)
+    if len(bq_ids) == 0:
         return
 
-    # calculate the *new* tables that should be added to database
-    bq_ids = {t.bq_id for t in integration.table_set.all()}
-    new_bq_tables = [
-        t for t in bq_tables if f"{t.dataset_id}.{t.table_id}" not in bq_ids
-    ]
-
-    # add them and complete sync
-    new_tables = [
-        Table(
-            source=Table.Source.INTEGRATION,
-            bq_table=t.table_id,
-            bq_dataset=t.dataset_id,
-            project=connector.integration.project,
-            integration=connector.integration,
-        )
-        for t in new_bq_tables
-    ]
+    # calculate the *new* tables that should be added to database and
+    # map them onto tables in our database
+    new_bq_ids = bq_ids - {t.bq_id for t in integration.table_set.all()}
+    tables = [get_table_from_bq_id(bq_id, connector) for bq_id in new_bq_ids]
 
     with transaction.atomic():
         # this will fail with unique constraint error if there is a concurrent job
-        Table.objects.bulk_create(new_tables)
+        Table.objects.bulk_create(tables)
 
-        for table in new_tables:
+        for table in tables:
             table.update_num_rows()
 
         integration.state = Integration.State.DONE
