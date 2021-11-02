@@ -4,13 +4,11 @@ from django.utils import timezone
 
 from apps.base import clients
 from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
-from apps.connectors.bigquery import get_bq_tables_from_connector
+from apps.connectors.fivetran.config import get_services
 from apps.connectors.models import Connector
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
 from apps.tables.models import Table
-
-from .fivetran.schema import get_bq_ids_from_schemas
 
 
 def get_table_from_bq_id(bq_id, connector):
@@ -78,11 +76,11 @@ def complete_connector_sync(connector: Connector):
 def delete_tables_not_in_schema(connector: Connector):
     # if we've deleted tables, we'll need to delete them from BigQuery
 
-    tables = connector.integration.table_set.all()
-    schema_bq_ids = get_bq_ids_from_schemas(connector)
+    schema_obj = clients.fivetran().get_schemas(connector)
+    bq_ids = schema_obj.get_bq_ids()
 
-    for table in tables:
-        if table.bq_id not in schema_bq_ids:
+    for table in connector.integration.table_set.all():
+        if table.bq_id not in bq_ids:
             table.delete()
 
     # re-calculate total rows after tables are deleted
@@ -93,20 +91,27 @@ def check_new_tables_added_to_schema(connector: Connector):
     # if we've added new tables, we need to trigger resync
     # otherwise, we don't want to make the user wait
 
-    bq_ids = {t.bq_id for t in connector.integration.table_set.all()}
-    schema_bq_ids = set(get_bq_ids_from_schemas(connector))
+    schema_obj = clients.fivetran().get_schemas(connector)
+    bq_ids = schema_obj.get_bq_ids()
 
-    return len(schema_bq_ids - bq_ids) > 0
+    current_bq_ids = {t.bq_id for t in connector.integration.table_set.all()}
+
+    return len(bq_ids - current_bq_ids) > 0
 
 
 def run_connector_sync(connector: Connector):
+
+    service_type = get_services()[connector].get("service_type", "api_cloud")
 
     is_initial_sync = requires_sync = connector.integration.table_set.count() == 0
 
     # after initial sync is done, a resync is required if the user added new tables
     # but not if they only deleted tables
 
-    if not is_initial_sync:
+    if not is_initial_sync and service_type in [
+        "api_cloud",
+        "databases",
+    ]:
         delete_tables_not_in_schema(connector)
         requires_sync = check_new_tables_added_to_schema(connector)
 
