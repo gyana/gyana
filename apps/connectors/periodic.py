@@ -18,6 +18,8 @@ def update_connectors_from_fivetran():
             succeeded_at = clients.fivetran().get(connector).get("succeeded_at")
             if succeeded_at is not None:
                 connector.update_fivetran_succeeded_at(succeeded_at)
+                # update any newly created tables
+                complete_connector_sync(connector)
 
         except FivetranClientError:
             pass

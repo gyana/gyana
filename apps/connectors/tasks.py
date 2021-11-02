@@ -42,6 +42,11 @@ def complete_connector_sync(connector: Connector):
     # calculate the *new* tables that should be added to database and
     # map them onto tables in our database
     new_bq_ids = bq_ids - {t.bq_id for t in integration.table_set.all()}
+
+    # there are no new tables to add (used in incremental sync)
+    if len(new_bq_ids) == 0:
+        return
+
     tables = [get_table_from_bq_id(bq_id, connector) for bq_id in new_bq_ids]
 
     with transaction.atomic():
