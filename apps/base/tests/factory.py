@@ -8,6 +8,7 @@ from apps.columns.models import (
 )
 from apps.connectors.models import Connector
 from apps.dashboards.models import Dashboard
+from apps.filters.models import Filter
 from apps.integrations.models import Integration
 from apps.nodes.models import Node
 from apps.projects.models import Project
@@ -164,3 +165,9 @@ class FormulaColumnFactory(factory.django.DjangoModelFactory):
 class WindowColumnFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = WindowColumn
+
+
+@register
+class FilterFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Filter
