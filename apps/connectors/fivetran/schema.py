@@ -3,7 +3,8 @@ from itertools import chain
 from typing import Dict, List, Optional
 
 from apps.base import clients
-from apps.connectors.bigquery import check_bq_id_exists, get_bq_ids_from_dataset_safe
+from apps.connectors.bigquery import (check_bq_id_exists,
+                                      get_bq_ids_from_dataset_safe)
 
 from .config import ServiceTypeEnum
 
@@ -146,7 +147,7 @@ class FivetranSchemaObj:
         # only one table, validate it exists
         if service_type == ServiceTypeEnum.WEBHOOKS_REPORTS:
             bq_id = f'{self.schema_prefix}.{self.conf.static_config["table"]}'
-            return {bq_id} if check_bq_id_exists(bq_id) else {}
+            return {bq_id} if check_bq_id_exists(bq_id) else set()
 
         # api_cloud
         # cross reference fivetran schema and bigquery dataset

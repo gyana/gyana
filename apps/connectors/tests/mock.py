@@ -7,11 +7,11 @@ def get_mock_list_tables(num_tables):
     return [BqTable(f"project.dataset.table_{n}") for n in range(1, num_tables + 1)]
 
 
-def get_mock_schema(num_tables, service="google_analytics"):
+def get_mock_schema(num_tables, service="google_analytics", disabled=None):
     tables = {
         f"table_{n}": {
             "name_in_destination": f"table_{n}",
-            "enabled": True,
+            "enabled": disabled is None or n not in disabled,
             "enabled_patch_settings": {"allowed": True},
         }
         for n in range(1, num_tables + 1)

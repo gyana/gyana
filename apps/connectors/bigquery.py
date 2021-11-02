@@ -33,7 +33,7 @@ def get_bq_ids_from_dataset_safe(dataset_id):
         }
 
     except NotFound:
-        return {}
+        return set()
 
 
 def check_bq_id_exists(bq_id):
