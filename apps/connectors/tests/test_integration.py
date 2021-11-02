@@ -57,6 +57,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     schema_obj = get_mock_schema(1)  # connector with a single table
     fivetran.get_schemas.return_value = schema_obj
     bigquery.get_table().num_rows = 10
+    bigquery.list_tables.return_value = get_mock_list_tables(1)
 
     LIST = f"/projects/{project.id}/integrations"
     CONNECTORS = f"{LIST}/connectors"
@@ -118,7 +119,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     assert fivetran.get_schemas.call_args.args == (connector,)
 
     # fivetran initial sync request will happen on post
-    r = client.post(f"{DETAIL}/configure")
+    r = client.post(f"{DETAIL}/configure", data={"dataset_tables": ["table_1"]})
     assertRedirects(r, f"{DETAIL}/load")
 
     assert fivetran.update_schemas.call_count == 1
@@ -144,6 +145,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
 
     # checking back explicitly will also complete
     integration.state = Integration.State.LOAD
+    integration.table_set.all().delete()
     integration.save()
 
     r = client.get(f"{DETAIL}/load")
