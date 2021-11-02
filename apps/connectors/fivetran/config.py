@@ -1,9 +1,18 @@
+from dataclasses import dataclass, field
 from functools import lru_cache
+from typing import Any, Dict
 
 import yaml
 
 SERVICES = "apps/connectors/fivetran/services.yaml"
 METADATA = "apps/connectors/fivetran/metadata.yaml"
+
+
+@dataclass
+class Service:
+    service_type: str = "api_cloud"
+    static_config: Dict[str, Any] = field(default_factory=dict)
+    internal: bool = False
 
 
 @lru_cache
@@ -15,6 +24,14 @@ def get_services():
         services[service] = {**services[service], **metadata.get(service, {})}
 
     return services
+
+
+@lru_cache
+def get_services_obj():
+
+    services = yaml.load(open(SERVICES, "r"))
+
+    return {k: Service(**v) for k, v in services.items()}
 
 
 @lru_cache

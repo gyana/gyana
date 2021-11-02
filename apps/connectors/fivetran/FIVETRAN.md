@@ -18,9 +18,10 @@ We have downloaded the configuration from all connectors from the
 We have an internal configuration in `services.yaml` with the following extra information:
 
 - `internal`: if true, only show for superusers
-- `requires_schema_prefix`: only true for database connectors, e.g. Postgres
+- `service_type`: one of `api_cloud`, `database`, `webhooks_reports` or `event_tracking`
 - `static_config`: extra configuration settings that need to be appended to a creation request
-- `reports`: hard-coded set of reports for certain connectors, e.g. Google Analytics
+  - `table`: hard-coded table name for certain connectors, e.g. Webhooks
+  - `reports`: hard-coded set of reports for certain connectors, e.g. Google Analytics
 
 ## Implementation
 

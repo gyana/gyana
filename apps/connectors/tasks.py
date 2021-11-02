@@ -4,7 +4,6 @@ from django.utils import timezone
 
 from apps.base import clients
 from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
-from apps.connectors.fivetran.config import get_services
 from apps.connectors.models import Connector
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
@@ -101,16 +100,18 @@ def check_new_tables_added_to_schema(connector: Connector):
 
 def run_connector_sync(connector: Connector):
 
-    service_type = get_services()[connector].get("service_type", "api_cloud")
+    service_type = connector.conf.service_type
 
     is_initial_sync = requires_sync = connector.integration.table_set.count() == 0
 
-    # after initial sync is done, a resync is required if the user added new tables
-    # but not if they only deleted tables
-
+    # if a user updates the fivetran schema, we need to reflect it by triggering
+    # a resync (if the user added new tables), or deleting them from bigquery
+    # (if they removed them)
+    #
+    # only required for api_cloud and database sources
     if not is_initial_sync and service_type in [
         "api_cloud",
-        "databases",
+        "database",
     ]:
         delete_tables_not_in_schema(connector)
         requires_sync = check_new_tables_added_to_schema(connector)

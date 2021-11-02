@@ -5,7 +5,7 @@ import requests
 from django.conf import settings
 
 from ..models import Connector
-from .config import get_services
+from .config import get_services_obj
 from .schema import FivetranSchemaObj
 
 # wrapper for the Fivetran connectors REST API, documented here
@@ -26,9 +26,9 @@ class FivetranClient:
 
         # https://fivetran.com/docs/rest-api/connectors#createaconnector
 
-        service_conf = get_services()[service]
+        service_conf = get_services_obj()[service]
 
-        config = service_conf.get("static_config", {})
+        config = service_conf.static_config
 
         # https://fivetran.com/docs/rest-api/connectors/config
         # database connectors require schema_prefix, rather than schema
@@ -38,9 +38,7 @@ class FivetranClient:
             schema = f"{SLUG}_{schema}"
 
         config[
-            "schema_prefix"
-            if service_conf.get("requires_schema_prefix") == "t"
-            else "schema"
+            "schema_prefix" if service_conf.service_type == "database" else "schema"
         ] = schema
 
         res = requests.post(

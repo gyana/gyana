@@ -7,7 +7,7 @@ from django.utils import timezone
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
 
-from .fivetran.config import get_services
+from .fivetran.config import get_services_obj
 
 FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
 FIVETRAN_SYNC_FREQUENCY_HOURS = 6
@@ -77,9 +77,8 @@ class Connector(BaseModel):
         self.integration = integration
 
     @property
-    def is_database(self):
-        service_conf = get_services()[self.service]
-        return service_conf.get("requires_schema_prefix") == "t"
+    def conf(self):
+        return get_services_obj()[self.service]
 
     def update_fivetran_succeeded_at(self, succeeded_at: str):
 

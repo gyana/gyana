@@ -5,9 +5,6 @@ from typing import Dict, List, Optional
 from apps.base import clients
 from apps.connectors.bigquery import check_bq_id_exists, get_bq_ids_from_dataset_safe
 
-from ..models import Connector
-from .config import get_services
-
 # wrapper for fivetran schema information
 # https://fivetran.com/docs/rest-api/connectors#retrieveaconnectorschemaconfig
 # the schema includes the datasets, tables and individual columns
@@ -64,11 +61,8 @@ class FivetranSchema:
 
 class FivetranSchemaObj:
     def __init__(self, schemas_dict, connector):
-        service_conf = get_services()[connector.service]
-
-        self.connector = connector
-        self.requires_schema_prefix = service_conf.get("requires_schema_prefix") == "t"
-        self.schema_prefix = connector.schema if self.requires_schema_prefix else None
+        self.conf = connector.conf
+        self.schema_prefix = connector.schema
         self.schemas = [FivetranSchema(key=k, **s) for k, s in schemas_dict.items()]
 
     def to_dict(self):
@@ -78,9 +72,7 @@ class FivetranSchemaObj:
 
         # used in deletion to determine bigquery datasets associated with a connector
 
-        service = get_services()[self.connector.service]
-
-        if not service.get("service_type", "api_cloud") != "database":
+        if not self.conf.service_type != "database":
             return {self.schema_prefix}
 
         # a database connector used multiple bigquery datasets
@@ -106,8 +98,7 @@ class FivetranSchemaObj:
         #
         # an empty return indicates that there is no data in bigquery yet
 
-        service = get_services()[self.connector.service]
-        service_type = service.get("service_type", "api_cloud")
+        service_type = self.conf.service_type
 
         # event_tracking
         if service_type == "event_tracking":
@@ -115,7 +106,7 @@ class FivetranSchemaObj:
 
         # webhooks_reports
         if service_type == "webhooks_reports":
-            bq_id = f'{self.schema_prefix}.{service["static_config"]["table"]}'
+            bq_id = f'{self.schema_prefix}.{self.conf.static_config["table"]}'
             return {bq_id} if check_bq_id_exists(bq_id) else {}
 
         # api_cloud
