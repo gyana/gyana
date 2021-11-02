@@ -1,12 +1,12 @@
 import uuid
-from typing import Dict, List
+from typing import Dict
 
 import requests
 from django.conf import settings
 
 from ..models import Connector
 from .config import get_services
-from .schema import FivetranSchema, schemas_to_dict, schemas_to_obj
+from .schema import FivetranSchemaObj
 
 # wrapper for the Fivetran connectors REST API, documented here
 # https://fivetran.com/docs/rest-api/connectors
@@ -141,7 +141,7 @@ class FivetranClient:
 
         return not (status["is_historical_sync"] or status["sync_state"] == "syncing")
 
-    def reload_schemas(self, connector: Connector) -> List[FivetranSchema]:
+    def reload_schemas(self, connector: Connector) -> FivetranSchemaObj:
 
         # https://fivetran.com/docs/rest-api/connectors#reloadaconnectorschemaconfig
 
@@ -153,7 +153,7 @@ class FivetranClient:
         if res["code"] != "Success":
             raise FivetranClientError(res)
 
-        return schemas_to_obj(res["data"].get("schemas", {}))
+        return FivetranSchemaObj(res["data"].get("schemas", {}), connector)
 
     def get_schemas(self, connector: Connector):
 
@@ -172,15 +172,15 @@ class FivetranClient:
             raise FivetranClientError(res)
 
         # schema not included for Google Sheets connector
-        return schemas_to_obj(res["data"].get("schemas", {}))
+        return FivetranSchemaObj(res["data"].get("schemas", {}), connector)
 
-    def update_schemas(self, connector: Connector, schemas: List[FivetranSchema]):
+    def update_schemas(self, connector: Connector, schemas: FivetranSchemaObj):
 
         # https://fivetran.com/docs/rest-api/connectors#modifyaconnectorschemaconfig
 
         res = requests.patch(
             f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}/schemas",
-            json={"schemas": schemas_to_dict(schemas)},
+            json={"schemas": schemas.to_dict()},
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 
@@ -204,7 +204,7 @@ class FivetranClient:
             raise FivetranClientError(res)
 
 
-if settings.MOCK_FIVETRAN:
-    from .mock import MockFivetranClient
+# if settings.MOCK_FIVETRAN:
+#     from .mock import MockFivetranClient
 
-    FivetranClient = MockFivetranClient
+#     FivetranClient = MockFivetranClient

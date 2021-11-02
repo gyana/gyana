@@ -5,6 +5,7 @@ from typing import Dict, List, Optional
 from apps.base import clients
 
 from ..models import Connector
+from .config import get_services
 
 # wrapper for fivetran schema information
 # https://fivetran.com/docs/rest-api/connectors#retrieveaconnectorschemaconfig
@@ -60,12 +61,81 @@ class FivetranSchema:
         return self.name_in_destination.replace("_", " ").title()
 
 
-def schemas_to_obj(schemas_dict):
-    return [FivetranSchema(key=k, **s) for k, s in schemas_dict.items()]
+class FivetranSchemaObj:
+    def __init__(self, schemas_dict, connector):
+        self.connector = connector
+        self.requires_schema_prefix = (
+            get_services()[connector.service].get("requires_schema_prefix") == "t"
+        )
+        self.schema_prefix = connector.schema if self.requires_schema_prefix else None
+        self.schemas = [FivetranSchema(key=k, **s) for k, s in schemas_dict.items()]
+
+    def to_dict(self):
+        return {s.key: s.asdict() for s in self.schemas}
+
+    def get_bq_datasets(self):
+
+        # used in deletion to determine bigquery datasets associated with a connector
+
+        if not self.requires_schema_prefix:
+            return {self.schema_prefix}
+
+        # a database connector used multiple bigquery datasets
+        return {
+            f"{self.schema_prefix}_{s.name_in_destination}"
+            for s in self.schemas
+            if s.enabled
+        }
+
+    def get_bq_ids(self):
+
+        # definitive function to map from a fivetran schema object to one or more
+        # bigquery schemas with one or more tables
+        #
+        # api_cloud = fixed tables in one schema
+        # database = fixed tables in multiple schemas
+        # webhooks_reports = single table in one schema (no schema provided)
+        # event_tracking = dynamic tables in one schema (no schema provided)
+        #
+        # the fivetran getting started diagram has a good summary of the options
+        # https://fivetran.com/docs/getting-started/core-concepts
+        # and the rest of the docs cover each section in detail
+
+        # event_tracking
+        service = get_services()[self.connector.service]
+        if service.get("event_tracking") == "t":
+            return set()
+
+        # webhooks_reports
+        static_table = service.get("static_config", {}).get("table")
+        if static_table is not None:
+            return {f"{self.schema_prefix}.{static_table}"}
+
+        # api_cloud
+        if self.requires_schema_prefix is None:
+            return {
+                f"{self.schema_prefix}.{table.name_in_destination}"
+                for table in self.schemas[0].tables
+                if table.is_enabled
+            }
+
+        # databases
+        enabled_schemas = [s for s in self.schemas if s.enabled]
+
+        return {
+            f"{self.schema_prefix}_{schema.name_in_destination}.{table.name_in_destination}"
+            for schema in enabled_schemas
+            for table in schema.tables
+            if table.is_enabled
+        }
 
 
-def schemas_to_dict(schemas):
-    return {s.key: s.asdict() for s in schemas}
+# def schemas_to_obj(schemas_dict):
+#     return [FivetranSchema(key=k, **s) for k, s in schemas_dict.items()]
+
+
+# def schemas_to_dict(schemas):
+#     return {s.key: s.asdict() for s in schemas}
 
 
 def get_bq_datasets_from_schemas(connector):

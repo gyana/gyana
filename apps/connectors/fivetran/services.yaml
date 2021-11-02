@@ -209,11 +209,13 @@ recharge: {}
 recurly: {}
 sage_intacct: {}
 salesforce: {}
-segment: {}
+segment:
+  event_tracking: t
 sendgrid: {}
 shopify: {}
 snapchat_ads: {}
-snowplow: {}
+snowplow:
+  event_tracking: t
 sql_server:
   requires_schema_prefix: t
 sql_server_rds:

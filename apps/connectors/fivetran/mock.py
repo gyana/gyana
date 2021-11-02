@@ -8,7 +8,7 @@ from django.urls.base import reverse
 from django.utils import timezone
 
 from ..models import Connector
-from .schema import schemas_to_dict, schemas_to_obj
+from .schema import FivetranSchemaObj
 
 SCHEMA_FIXTURES_DIR = "apps/connectors/fivetran/fixtures"
 MOCK_SCHEMA_DIR = os.path.abspath(".mock/.schema")
@@ -85,16 +85,16 @@ class MockFivetranClient:
 
     def get_schemas(self, connector):
         if connector.id in self._schema_cache:
-            return schemas_to_obj(self._schema_cache[connector.id])
+            return FivetranSchemaObj(self._schema_cache[connector.id], connector)
 
         service = connector.service if connector is not None else "google_analytics"
         fivetran_id = connector.fivetran_id if connector is not None else "humid_rifle"
 
         with open(f"{SCHEMA_FIXTURES_DIR}/{service}_{fivetran_id}.json", "r") as f:
-            return schemas_to_obj(json.load(f))
+            return FivetranSchemaObj(json.load(f), connector)
 
     def update_schemas(self, connector, schemas):
-        self._schema_cache[connector.id] = schemas_to_dict(schemas)
+        self._schema_cache[connector.id] = schemas.to_dict()
 
     def delete(self, connector):
         pass
