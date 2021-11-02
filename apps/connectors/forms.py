@@ -7,7 +7,7 @@ from apps.base import clients
 from apps.base.forms import BaseModelForm
 
 from .fivetran.client import FivetranClientError
-from .fivetran.config import get_services
+from .fivetran.config import ServiceTypeEnum, get_services
 from .fivetran.schema import update_schema_from_cleaned_data
 from .models import Connector
 from .widgets import ConnectorSchemaMultiSelect
@@ -54,14 +54,16 @@ class ConnectorUpdateForm(forms.ModelForm):
 
         super().__init__(*args, **kwargs)
 
-        schemas = clients.fivetran().get_schemas(self.instance)
+        schema_obj = clients.fivetran().get_schemas(self.instance)
 
-        for schema in schemas:
+        for schema in schema_obj.schemas:
 
             self.fields[f"{schema.name_in_destination}_schema"] = forms.BooleanField(
                 initial=schema.enabled,
                 label=schema.display_name,
-                widget=CheckboxInput() if self.instance.is_database else HiddenInput(),
+                widget=CheckboxInput()
+                if self.instance.conf.service_type == ServiceTypeEnum.DATABASE
+                else HiddenInput(),
                 help_text="Include or exclude this schema",
                 required=False,
             )

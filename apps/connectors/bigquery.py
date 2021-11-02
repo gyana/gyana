@@ -20,14 +20,14 @@ def get_bq_ids_from_dataset_safe(dataset_id):
 
     try:
         bq_tables = client.list_tables(dataset_id)
-        return [
+        return {
             f"{t.dataset_id}.{t.table_id}"
             for t in bq_tables
             if t.table_id not in FIVETRAN_SYSTEM_TABLES
-        ]
+        }
 
     except NotFound:
-        return []
+        return {}
 
 
 def check_bq_id_exists(bq_id):

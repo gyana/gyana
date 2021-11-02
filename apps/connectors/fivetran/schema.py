@@ -148,9 +148,9 @@ def update_schema_from_cleaned_data(connector, cleaned_data):
     # construct the payload from cleaned data
 
     # mutate the schema information based on user input
-    schemas = clients.fivetran().get_schemas(connector)
+    schema_obj = clients.fivetran().get_schemas(connector)
 
-    for schema in schemas:
+    for schema in schema_obj.schemas:
         schema.enabled = f"{schema.name_in_destination}_schema" in cleaned_data
         # only patch tables that are allowed
         schema.tables = [
@@ -165,4 +165,4 @@ def update_schema_from_cleaned_data(connector, cleaned_data):
             # if access issues, e.g. per column access in Postgres
             table.columns = {}
 
-    clients.fivetran().update_schemas(connector, schemas)
+    clients.fivetran().update_schemas(connector, schema_obj)
