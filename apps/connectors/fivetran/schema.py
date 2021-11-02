@@ -1,5 +1,4 @@
 from dataclasses import asdict, dataclass
-from itertools import chain
 from typing import Dict, List, Optional
 
 from apps.base import clients
@@ -36,6 +35,9 @@ class FivetranTable:
 @dataclass
 class FivetranSchema:
     key: str
+    service_type: ServiceTypeEnum
+    schema_prefix: str
+
     name_in_destination: str
     enabled: bool
     tables: List[FivetranTable]
@@ -46,14 +48,22 @@ class FivetranSchema:
     def asdict(self):
         res = {**asdict(self), "tables": {t.key: t.asdict() for t in self.tables}}
         res.pop("key")
+        res.pop("service_type")
+        res.pop("schema_prefix")
         return res
+
+    @property
+    def dataset_id(self):
+        if self.service_type == ServiceTypeEnum.DATABASE:
+            return f"{self.schema_prefix}_{self.name_in_destination}"
+        return self.schema_prefix
 
     @property
     def enabled_bq_ids(self):
         return {
-            f"{self.name_in_destination}.{table.name_in_destination}"
+            f"{self.dataset_id}.{table.name_in_destination}"
             for table in self.tables
-            if table.enabled and self.enabled
+            if table.enabled
         }
 
     @property
@@ -65,7 +75,15 @@ class FivetranSchemaObj:
     def __init__(self, schemas_dict, connector):
         self.conf = connector.conf
         self.schema_prefix = connector.schema
-        self.schemas = [FivetranSchema(key=k, **s) for k, s in schemas_dict.items()]
+        self.schemas = [
+            FivetranSchema(
+                key=k,
+                service_type=self.conf.service_type,
+                schema_prefix=self.schema_prefix,
+                **s,
+            )
+            for k, s in schemas_dict.items()
+        ]
 
     def to_dict(self):
         return {s.key: s.asdict() for s in self.schemas}
@@ -78,11 +96,7 @@ class FivetranSchemaObj:
             return {self.schema_prefix}
 
         # a database connector used multiple bigquery datasets
-        return {
-            f"{self.schema_prefix}_{s.name_in_destination}"
-            for s in self.schemas
-            if s.enabled
-        }
+        return {s.dataset_id for s in self.schemas if s.enabled}
 
     def get_bq_ids(self):
 
@@ -114,28 +128,18 @@ class FivetranSchemaObj:
         # api_cloud
         if service_type == ServiceTypeEnum.API_CLOUD:
             actual_bq_ids = get_bq_ids_from_dataset_safe(self.schema_prefix)
-            schema_bq_ids = {
-                f"{self.schema_prefix}.{table.name_in_destination}"
-                for table in self.schemas[0].tables
-                if table.is_enabled
-            }
+            # only databases have multiple schemas
+            schema_bq_ids = self.schemas[0].enabled_bq_ids
             return actual_bq_ids & schema_bq_ids
 
         # databases
-        enabled_schemas = [s for s in self.schemas if s.enabled]
         actual_bq_ids = {
-            get_bq_ids_from_dataset_safe(
-                f"{self.schema_prefix}_{schema.name_in_destination}"
-            )
-            for schema in enabled_schemas
+            bq_id
+            for dataset_id in self.get_bq_datasets()
+            for bq_id in get_bq_ids_from_dataset_safe(dataset_id)
         }
-        actual_bq_ids = set(chain(*actual_bq_ids))
-
         schema_bq_ids = {
-            f"{self.schema_prefix}_{schema.name_in_destination}.{table.name_in_destination}"
-            for schema in enabled_schemas
-            for table in schema.tables
-            if table.is_enabled
+            bq_id for s in self.schemas for bq_id in s.enabled_bq_ids if s.enabled
         }
         return actual_bq_ids & schema_bq_ids
 
