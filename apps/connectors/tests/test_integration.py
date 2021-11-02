@@ -13,9 +13,14 @@ from apps.connectors.periodic import check_syncing_connectors_from_fivetran
 from apps.integrations.models import Integration
 from django.utils import timezone
 from google.api_core.exceptions import NotFound
+from google.cloud.bigquery.table import Table as BqTable
 from pytest_django.asserts import assertContains, assertNotContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
+
+
+def get_mock_list_tables(num_tables):
+    return [BqTable(f"project.dataset.table_{n}") for n in range(1, num_tables + 1)]
 
 
 def get_mock_schema(num_tables):
@@ -117,7 +122,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     assertRedirects(r, f"{DETAIL}/load")
 
     assert fivetran.update_schemas.call_count == 1
-    assert fivetran.update_schemas.call_args.args == (connector, [schema])
+    assert fivetran.update_schemas.call_args.args == (connector, schema_obj)
     assert fivetran.start_initial_sync.call_count == 1
     assert fivetran.start_initial_sync.call_args.args == (connector,)
 
@@ -169,13 +174,12 @@ def test_connector_create_regression(
     fivetran.has_completed_sync.return_value = True
     schema_obj = get_mock_schema(1)  # connector with a single table
     fivetran.get_schemas.return_value = schema_obj
+    bigquery.get_table().num_rows = 10
 
-    # not shared with our service account
-    def raise_(exc):
-        raise exc
+    # test: state is not set to done until bigquery has tables
 
     # fivetran reports completed but bigquery is not ready
-    bigquery.get_table = lambda bq_id: raise_(NotFound("not found"))
+    bigquery.list_tables.return_value = get_mock_list_tables(0)
     check_syncing_connectors_from_fivetran.delay()
 
     integration.refresh_from_db()
@@ -183,8 +187,7 @@ def test_connector_create_regression(
     assert integration.table_set.count() == 0
 
     # bigquery is not up to date
-    bigquery.get_table = Mock()
-    bigquery.get_table().num_rows = 10
+    bigquery.list_tables.return_value = get_mock_list_tables(1)
     check_syncing_connectors_from_fivetran.delay()
 
     integration.refresh_from_db()
@@ -210,6 +213,7 @@ def test_status_on_pending_page(
     fivetran.get_schemas.return_value = schema_obj
     fivetran.has_completed_sync.return_value = False
     bigquery.get_table().num_rows = 10
+    bigquery.list_tables.return_value = get_mock_list_tables(1)
 
     LIST = f"/projects/{project.id}/integrations"
 
@@ -247,6 +251,7 @@ def test_update_tables_in_non_database(
     client,
     logged_in_user,
     fivetran,
+    bigquery,
     connector_factory,
     integration_table_factory,
 ):
@@ -258,6 +263,7 @@ def test_update_tables_in_non_database(
 
     schema_obj = get_mock_schema(2)
     fivetran.get_schemas.return_value = schema_obj
+    bigquery.list_tables.return_value = get_mock_list_tables(2)
 
     for table in schema_obj.schemas[0].tables:
         integration_table_factory(
