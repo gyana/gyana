@@ -57,7 +57,7 @@
       <h3>You have no workflows</h3>
       <form class="inline"
             method="post"
-            action="{% url 'project_workflows:create' project.id  %}">
+            action="{% url 'project_workflows:create' project.id %}">
         {% csrf_token %}
         <input type="hidden" name="project" value="{{ project.id }}" />
         <p>
