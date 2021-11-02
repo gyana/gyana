@@ -1,4 +1,5 @@
 adroll:
+  service_type: webhooks_reports
   static_config:
     table: adroll_table
 adwords:
@@ -37,12 +38,16 @@ amplitude: {}
 apple_search_ads: {}
 asana: {}
 aurora:
+  service_type: database
   requires_schema_prefix: t
 aurora_postgres:
+  service_type: database
   requires_schema_prefix: t
 azure_postgres:
+  service_type: database
   requires_schema_prefix: t
 azure_sql_db:
+  service_type: database
   requires_schema_prefix: t
 bingads: {}
 braintree: {}
@@ -152,12 +157,15 @@ google_analytics:
         config_type: Prebuilt
         prebuilt_report: TRAFFIC
 google_cloud_postgresql:
+  service_type: database
   requires_schema_prefix: t
 google_cloud_mysql:
+  service_type: database
   requires_schema_prefix: t
 google_search_console: {}
 google_sheets:
   internal: t
+  service_type: webhooks_reports
   static_config:
     table: sheets_table
 greenhouse: {}
@@ -165,6 +173,7 @@ heap: {}
 height: {}
 helpscout: {}
 heroku_postgres:
+  service_type: database
   requires_schema_prefix: t
 hubspot: {}
 instagram_business: {}
@@ -176,33 +185,44 @@ kustomer: {}
 lever: {}
 linkedin_ads: {}
 magento_mysql:
+  service_type: database
   requires_schema_prefix: t
 magento_mysql_rds:
+  service_type: database
   requires_schema_prefix: t
 mailchimp: {}
 mandrill: {}
 maria:
+  service_type: database
   requires_schema_prefix: t
 maria_rds:
+  service_type: database
   requires_schema_prefix: t
 maria_azure:
+  service_type: database
   requires_schema_prefix: t
 mixpanel: {}
 mongo:
+  service_type: database
   requires_schema_prefix: t
 mysql:
+  service_type: database
   requires_schema_prefix: t
 mysql_azure:
+  service_type: database
   requires_schema_prefix: t
 mysql_rds:
+  service_type: database
   requires_schema_prefix: t
 outbrain: {}
 pardot: {}
 pinterest_ads: {}
 pipedrive: {}
 postgres:
+  service_type: database
   requires_schema_prefix: t
 postgres_rds:
+  service_type: database
   requires_schema_prefix: t
 quickbooks: {}
 recharge: {}
@@ -210,15 +230,17 @@ recurly: {}
 sage_intacct: {}
 salesforce: {}
 segment:
-  event_tracking: t
+  service_type: event_tracking
 sendgrid: {}
 shopify: {}
 snapchat_ads: {}
 snowplow:
-  event_tracking: t
+  service_type: event_tracking
 sql_server:
+  service_type: database
   requires_schema_prefix: t
 sql_server_rds:
+  service_type: database
   requires_schema_prefix: t
 square: {}
 stripe: {}
@@ -229,11 +251,13 @@ twilio: {}
 twitter: {}
 typeform: {}
 webhooks:
+  service_type: webhooks_reports
   static_config:
     table: webhooks_table
 uservoice: {}
 xero: {}
 youtube_analytics:
+  service_type: webhooks_reports
   static_config:
     table: youtube_analytics_table
 zendesk: {}

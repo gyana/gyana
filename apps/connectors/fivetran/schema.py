@@ -3,6 +3,7 @@ from itertools import chain
 from typing import Dict, List, Optional
 
 from apps.base import clients
+from apps.connectors.bigquery import check_bq_id_exists, get_bq_ids_from_dataset_safe
 
 from ..models import Connector
 from .config import get_services
@@ -63,10 +64,10 @@ class FivetranSchema:
 
 class FivetranSchemaObj:
     def __init__(self, schemas_dict, connector):
+        service_conf = get_services()[connector.service]
+
         self.connector = connector
-        self.requires_schema_prefix = (
-            get_services()[connector.service].get("requires_schema_prefix") == "t"
-        )
+        self.requires_schema_prefix = service_conf.get("requires_schema_prefix") == "t"
         self.schema_prefix = connector.schema if self.requires_schema_prefix else None
         self.schemas = [FivetranSchema(key=k, **s) for k, s in schemas_dict.items()]
 
@@ -75,9 +76,11 @@ class FivetranSchemaObj:
 
     def get_bq_datasets(self):
 
+        service = get_services()[self.connector.service]
+
         # used in deletion to determine bigquery datasets associated with a connector
 
-        if not self.requires_schema_prefix:
+        if not service.get("service_type", "api_cloud") != "database":
             return {self.schema_prefix}
 
         # a database connector used multiple bigquery datasets
@@ -100,34 +103,47 @@ class FivetranSchemaObj:
         # the fivetran getting started diagram has a good summary of the options
         # https://fivetran.com/docs/getting-started/core-concepts
         # and the rest of the docs cover each section in detail
+        #
+        # an empty return indicates that there is no data in bigquery yet
+
+        service = get_services()[self.connector.service]
+        service_type = service.get("service_type", "api_cloud")
 
         # event_tracking
-        service = get_services()[self.connector.service]
-        if service.get("event_tracking") == "t":
-            return set()
+        if service_type == "event_tracking":
+            return get_bq_ids_from_dataset_safe(self.schema_prefix)
 
         # webhooks_reports
-        static_table = service.get("static_config", {}).get("table")
-        if static_table is not None:
-            return {f"{self.schema_prefix}.{static_table}"}
+        if service_type == "webhooks_reports":
+            bq_id = f'{self.schema_prefix}.{service["static_config"]["table"]}'
+            return {bq_id} if check_bq_id_exists(bq_id) else {}
 
         # api_cloud
-        if self.requires_schema_prefix is None:
-            return {
+        if service_type == "api_cloud":
+            actual_bq_ids = get_bq_ids_from_dataset_safe(self.schema_prefix)
+            schema_bq_ids = {
                 f"{self.schema_prefix}.{table.name_in_destination}"
                 for table in self.schemas[0].tables
                 if table.is_enabled
             }
+            return actual_bq_ids & schema_bq_ids
 
         # databases
         enabled_schemas = [s for s in self.schemas if s.enabled]
+        actual_bq_ids = {
+            get_bq_ids_from_dataset_safe(
+                f"{self.schema_prefix}_{schema.name_in_destination}"
+            )
+            for schema in enabled_schemas
+        }
 
-        return {
+        schema_bq_ids = {
             f"{self.schema_prefix}_{schema.name_in_destination}.{table.name_in_destination}"
             for schema in enabled_schemas
             for table in schema.tables
             if table.is_enabled
         }
+        return actual_bq_ids & schema_bq_ids
 
 
 # def schemas_to_obj(schemas_dict):
