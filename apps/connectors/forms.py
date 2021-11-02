@@ -7,7 +7,7 @@ from apps.base import clients
 from apps.base.forms import BaseModelForm
 
 from .fivetran.client import FivetranClientError
-from .fivetran.config import ServiceTypeEnum, get_services
+from .fivetran.config import ServiceTypeEnum, get_services_obj
 from .fivetran.schema import update_schema_from_cleaned_data
 from .models import Connector
 from .widgets import ConnectorSchemaMultiSelect
@@ -41,7 +41,7 @@ class ConnectorCreateForm(BaseModelForm):
         instance.fivetran_id = self._fivetran_id
         instance.schema = self._schema
         instance.create_integration(
-            get_services()[self._service]["name"], self._created_by, self._project
+            get_services_obj()[self._service].name, self._created_by, self._project
         )
 
 

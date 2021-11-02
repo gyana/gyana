@@ -28,59 +28,52 @@ class ServiceTypeEnum(Enum):
 
 @dataclass
 class Service:
+    id: str
+
+    # internal configuration
     service_type: ServiceTypeEnum = "api_cloud"
     static_config: Dict[str, Any] = field(default_factory=dict)
     internal: bool = False
+
+    # fivetran metadata
+    description: str = ""
+    icon_path: str = ""
+    icon_url: str = ""
+    id: str = ""
+    link_to_docs: str = ""
+    link_to_erd: str = ""
+    name: str = ""
+    type: str = ""
 
     def __post_init__(self):
         self.service_type = ServiceTypeEnum(self.service_type)
 
 
 @lru_cache
-def get_services():
+def get_services_obj():
     services = yaml.load(open(SERVICES, "r"))
     metadata = yaml.load(open(METADATA, "r"))
-
-    for service in services:
-        services[service] = {**services[service], **metadata.get(service, {})}
-
-    return services
-
-
-@lru_cache
-def get_services_obj():
-
-    services = yaml.load(open(SERVICES, "r"))
-
-    return {k: Service(**v) for k, v in services.items()}
+    return {k: Service(id, **v, **metadata[k]) for k, v in services.items()}
 
 
 @lru_cache
 def get_service_categories(show_internal=False):
-    services = get_services()
-    service_categories = []
-
-    for service in services:
-        if services[service]["type"] not in service_categories and (
-            show_internal or not services[service].get("internal")
-        ):
-            service_categories.append(services[service]["type"])
-
-    return service_categories
+    services = get_services_obj()
+    return sorted([s.type for s in services if (show_internal or not s.internal)])
 
 
 def get_services_query(category=None, search=None, show_internal=False):
-    services = list(get_services().values())
+    services = list(get_services_obj().values())
 
     if (category := category) is not None:
-        services = [s for s in services if s["type"] == category]
+        services = [s for s in services if s.type == category]
 
     if (search := search) is not None:
-        services = [s for s in services if search.lower() in s["name"].lower()]
+        services = [s for s in services if search.lower() in s.name.lower()]
 
     if not show_internal:
-        services = [s for s in services if not s.get("internal")]
+        services = [s for s in services if not s.internal]
 
-    services = sorted(services, key=lambda s: s["name"])
+    services = sorted(services, key=lambda s: s.name)
 
     return services

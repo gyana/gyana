@@ -15,7 +15,11 @@ from apps.base.analytics import (
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 
-from .fivetran.config import get_service_categories, get_services, get_services_query
+from .fivetran.config import (
+    get_service_categories,
+    get_services_obj,
+    get_services_query,
+)
 from .forms import ConnectorCreateForm
 from .models import Connector
 
@@ -34,7 +38,7 @@ class ConnectorCreate(ProjectMixin, CreateView):
         )
         context_data["services_query"] = services_query
         context_data["services_query_count"] = len(services_query)
-        context_data["services"] = get_services()
+        context_data["services"] = get_services_obj()
         context_data["service_categories"] = get_service_categories(
             show_internal=self.request.user.is_superuser
         )
