@@ -92,7 +92,7 @@ class FivetranSchemaObj:
 
         # used in deletion to determine bigquery datasets associated with a connector
 
-        if not self.conf.service_type != ServiceTypeEnum.DATABASE:
+        if self.conf.service_type != ServiceTypeEnum.DATABASE:
             return {self.schema_prefix}
 
         # a database connector used multiple bigquery datasets

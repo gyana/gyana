@@ -76,9 +76,9 @@ class MockFivetranClient:
         return f"{reverse('connectors:mock')}?redirect_uri={redirect_uri}"
 
     def has_completed_sync(self, connector):
-        return (
-            timezone.now() - self._started.get(connector.id, timezone.now())
-        ).total_seconds() > self.REFRESH_SYNC_SECONDS
+        if (started := self._started.get(connector.id)) is None:
+            return True
+        return (timezone.now() - started).total_seconds() > self.REFRESH_SYNC_SECONDS
 
     def reload_schemas(self, connector):
         pass
