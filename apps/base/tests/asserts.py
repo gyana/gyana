@@ -76,3 +76,7 @@ def assertSelectorHasAttribute(response, selector, attribute):
     soup = BeautifulSoup(response.content)
     element = soup.select(selector)[0]
     assert element.has_attr(attribute)
+
+
+def assertFormChoicesLength(form, field_name, length):
+    assert len(list(form.fields[field_name].choices)) == length
