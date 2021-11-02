@@ -158,7 +158,7 @@ google_cloud_mysql:
   service_type: database
 google_search_console: {}
 google_sheets:
-  internal: t
+  internal: true
   service_type: webhooks_reports
   static_config:
     table: sheets_table
