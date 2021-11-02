@@ -16,6 +16,12 @@ def delete_connector_datasets(connector):
 
 def get_bq_ids_from_dataset_safe(dataset_id):
 
+    # fetch all tables in a dataset and compute biquery ids (dataset.table)
+    # return empty set if dataset does not exist (hence "_safe")
+    #
+    # this is useful for the fivetran schema logic as not all the schemas and
+    # tables reported by fivetran may actually be created in bigquery
+
     client = clients.bigquery()
 
     try:

@@ -61,15 +61,20 @@ class FivetranSchema:
 
     @property
     def enabled_bq_ids(self):
+        # the bigquery ids that fivetran intends to create
         return {
             f"{self.dataset_id}.{table.name_in_destination}"
             for table in self.tables
             if table.enabled
         }
 
+    @property
+    def actual_bq_ids(self):
+        # the actual bigquery ids in bigquery
+        return get_bq_ids_from_dataset_safe(self.dataset_id)
+
     def get_bq_ids(self):
-        actual_bq_ids = get_bq_ids_from_dataset_safe(self.schema_prefix)
-        return actual_bq_ids & self.enabled_bq_ids
+        return self.actual_bq_ids & self.enabled_bq_ids
 
     @property
     def display_name(self):
