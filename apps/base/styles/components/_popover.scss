@@ -14,6 +14,6 @@
 }
 
 [data-popover-target*='body'] {
-  z-index: var(--z-ui);
+  z-index: var(--z-modal);
   display: none;
 }

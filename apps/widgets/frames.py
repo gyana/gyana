@@ -134,6 +134,22 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
                 "type": form.instance.kind,
             },
         )
+        context = {
+            "widget": self.object,
+            "project": self.project,
+            "dashboard": self.dashboard,
+        }
+        try:
+            add_output_context(context, self.object, self.request)
+            if self.object.error:
+                self.object.error = None
+        except Exception as e:
+            error = error_name_to_snake(e)
+            self.object.error = error
+            if not template_exists(f"widgets/errors/{error}.html"):
+                logging.warning(e, exc_info=e)
+                honeybadger.notify(e)
+
         if self.request.POST.get("submit") == "Save & Preview":
             analytics.track(
                 self.request.user.id,
@@ -156,12 +172,6 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             },
         )
 
-        context = {
-            "widget": self.object,
-            "project": self.project,
-            "dashboard": self.dashboard,
-        }
-        add_output_context(context, self.object, self.request)
         return TurboStreamResponse(
             [
                 TurboStream(f"widgets-output-{self.object.id}-stream")
@@ -183,7 +193,17 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
                 "project": self.project,
                 "dashboard": self.dashboard,
             }
-            add_output_context(context, self.object, self.request)
+            try:
+                add_output_context(context, self.object, self.request)
+                if self.object.error:
+                    self.object.error = None
+            except Exception as e:
+                error = error_name_to_snake(e)
+                self.object.error = error
+                if not template_exists(f"widgets/errors/{error}.html"):
+                    logging.warning(e, exc_info=e)
+                    honeybadger.notify(e)
+
             return TurboStreamResponse(
                 [
                     TurboStream(f"widgets-output-{self.object.id}-stream")
@@ -217,8 +237,6 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
             if template_exists(error_template):
                 context["error_template"] = error_template
             else:
-                logging.warning(e, exc_info=e)
-                honeybadger.notify(e)
                 context["error_template"] = "widgets/errors/default.html"
 
         return context

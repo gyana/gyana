@@ -12,7 +12,7 @@
     </div>
     <form action="{% url 'hijack:release' %}" method="POST" class="djhj-actions" data-turbo="false">
       {% csrf_token %}
-      <input type="hidden" name="next" value="{% url 'admin:users_customuser_changelist' %}">
+      <input type="hidden" name="next" value="{% url 'admin:users_customuser_changelist' %}" />
       <button class="djhj-button" onclick="document.getElementById('djhj').style.display = 'none';" type="button">
         {% trans 'hide' %}
       </button>

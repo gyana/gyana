@@ -1,7 +1,7 @@
 {% extends "web/app/project_base.html" %}
 {% load static %}
 
-{% block app-class%}workflow-detail{% endblock %}
+{% block app-class %}workflow-detail{% endblock %}
 
 {% block app %}
 <div class="workflow-detail__header">
@@ -10,29 +10,29 @@
       {% csrf_token %}
 
       <input
-        class='input__inline'
+        class="input__inline"
         id="name"
         type="text"
         name="name"
         value="{{ object.name }}"
         onBlur="this.form.requestSubmit();"
-      ></input>
+       />
     </form>
   </turbo-frame>
   
-  <div data-controller='workflow-last-run'
+  <div data-controller="workflow-last-run"
        data-workflow-last-run-src-value="{% url 'workflows:last_run' object.id %}"
-       class='mr-auto'>
+       class="mr-auto">
     <turbo-frame id="workflow-last-run">
       {% include 'workflows/last_run.html' %}
     </turbo-frame>
   </div>
 
   <span class="button button--circle button--tertiary">
-    {% include 'components/_duplicate.html' with object_name='workflow' %}
+    {% include 'components/_duplicate.html' with object_name="workflow" %}
   </span>
 
-  <div data-controller='popover'>
+  <div data-controller="popover">
     <span
       data-controller="tooltip"
       data-popover-target="trigger"
@@ -63,7 +63,7 @@
           src="{% url "nodes:update" request.GET.modal_item %}"
         {% endif %}
       >
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
+        <div class="placeholder-scr placeholder-scr--fillscreen">
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
         </div>
       </turbo-frame>
@@ -71,7 +71,7 @@
     {% include 'components/modal_closing_warning.html' %}
   </div>
 
-  <dnd-flow class='w-full' workflowId="{{ object.id }}"></dnd-flow>
+  <dnd-flow class="w-full" workflowId="{{ object.id }}"></dnd-flow>
 </div>
 {{ nodes|json_script:'nodes' }}
 

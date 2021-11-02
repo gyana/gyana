@@ -44,6 +44,6 @@ def setup_periodic_tasks(sender, **kwargs):
 
     # calculate the credit balance every beginning of the month
     sender.add_periodic_task(
-        crontab(day_of_month=1),
+        crontab(0, 0, day_of_month=1),
         signature("apps.teams.periodic.calculate_monthly_credit_statement"),
     )

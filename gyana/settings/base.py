@@ -71,6 +71,7 @@ THIRD_PARTY_APPS = [
     "hijack.contrib.admin",
     "waffle",
     "safedelete",
+    "djpaddle",
 ]
 
 # Put your project-specific apps here
@@ -294,7 +295,7 @@ SITE_ID = 1
 
 # DRF config
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 100,
@@ -394,3 +395,25 @@ HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY")
 HEROKU_APP = os.environ.get("HEROKU_APP")
 
 CNAME_DOMAIN = os.environ.get("CNAME_DOMAIN")
+
+# can be found at https://vendors.paddle.com/authentication
+# needs a default value
+DJPADDLE_VENDOR_ID = os.getenv("DJPADDLE_VENDOR_ID", "0000")
+
+# create one at https://vendors.paddle.com/authentication
+# needs a default value
+DJPADDLE_API_KEY = os.getenv("DJPADDLE_API_KEY", "0000")
+
+# can be found at https://vendors.paddle.com/public-key
+# needs a valid RSA key, but this is meaningless
+DJPADDLE_PUBLIC_KEY = os.getenv(
+    "DJPADDLE_PUBLIC_KEY",
+    """-----BEGIN PUBLIC KEY-----
+MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGmojhfiUOJztHJyWdRehmQuBVQa
+ZP10acfRWBQsLFxK+HRzycYKQlzZxGKz+89qmZOvylS0HdS5m20ghEdfUeNW7HRU
+ZT/srO/tz4Jlr7+QtKIiO+GD8KTIqWJNB+gca0ZaocTUtfMEEb/ESTIHdFfns706
+KYXRy8564UME3qd3AgMBAAE=
+-----END PUBLIC KEY-----""",
+)
+
+DJPADDLE_SANDBOX = True

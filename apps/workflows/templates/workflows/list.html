@@ -23,7 +23,7 @@
     action="{% url 'project_workflows:create' project.id %}"
   >
     {% csrf_token %}
-    <input type="hidden" name="project" value="{{ project.id }}"></input>
+    <input type="hidden" name="project" value="{{ project.id }}" />
 
     <div class="flex gap-8 mt-7">
       <button class="button button--primary flex-1" type="submit">
@@ -57,9 +57,9 @@
       <h3>You have no workflows</h3>
       <form class="inline"
             method="post"
-            action="{% url 'project_workflows:create' project.id  %}">
+            action="{% url 'project_workflows:create' project.id %}">
         {% csrf_token %}
-        <input type="hidden" name="project" value="{{ project.id }}"></input>
+        <input type="hidden" name="project" value="{{ project.id }}" />
         <p>
           Why not
           <button type="submit" class="link">

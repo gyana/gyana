@@ -14,7 +14,7 @@ def get_sheets_id_from_url(url: str):
 def get_metadata_from_sheet(sheet: Sheet):
 
     sheet_id = get_sheets_id_from_url(sheet.url)
-    client = clients.sheetss()
+    client = clients.sheets()
     return client.spreadsheets().get(spreadsheetId=sheet_id).execute()
 
 

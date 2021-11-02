@@ -9,7 +9,7 @@
       value="{{user.id}}"
       class="checkbox__hidden"
       {% if user.is_current_user or user.is_project_member %}checked{% endif %}
-    ></input>
+     />
     <label class="checkbox 
       {% if user.is_current_user %}
         checkbox__active
@@ -24,11 +24,11 @@
     <div class='flex flex-col'>
       <span>
         {% if user.first_name or user.last_name %}
-          {{user.first_name}} {{user.last_name}} - 
+          {{user.first_name}} {{ user.last_name }} - 
         {% endif %}
         {{user.username}}
       </span>
-      <small>{{user.email}}</small>
+      <small>{{ user.email }}</small>
     </div>
     </label>
   </div>

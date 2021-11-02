@@ -27,3 +27,5 @@ def update_team_row_limits():
 @shared_task
 def calculate_monthly_credit_statement():
     calculate_credit_statement()
+
+    honeybadger_check_in("ArIlWd")

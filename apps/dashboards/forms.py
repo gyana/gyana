@@ -17,12 +17,13 @@ class DashboardCreateForm(forms.ModelForm):
 
 
 class DashboardForm(forms.ModelForm):
+    name = forms.CharField(required=False)
     width = forms.IntegerField(required=False)
     height = forms.IntegerField(required=False)
 
     class Meta:
         model = Dashboard
-        fields = ["width", "height"]
+        fields = ["name", "width", "height"]
 
 
 class DashboardShareForm(LiveUpdateForm):

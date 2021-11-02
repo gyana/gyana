@@ -37,7 +37,8 @@ class WorkflowTable(tables.Table):
     last_run = NaturalDatetimeColumn()
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
-    status = StatusColumn(template_name="columns/status.html")
+    # TODO: Fix orderable for status column.
+    status = StatusColumn(template_name="columns/status.html", orderable=False)
     duplicate = DuplicateColumn(
         template_name="components/_duplicate.html",
         verbose_name="Actions",

@@ -49,7 +49,8 @@ class IntegrationListTable(Table):
 
     name = Column(linkify=True)
     num_rows = RowCountColumn()
-    kind = Column(accessor="display_kind")
+    # TODO: Fix orderable on kind column.
+    kind = Column(accessor="display_kind", orderable=False)
     created_ready = NaturalDatetimeColumn(verbose_name="Added")
 
     def order_num_rows(self, queryset, is_descending):

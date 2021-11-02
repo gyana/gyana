@@ -1,19 +1,16 @@
 {% with id=widget.attrs.id %}
-
-<div>
-  <input 
+<div class="relative">
+  <input
     name="{{ widget.name }}"
     id="{{ id }}"
     class="checkbox__hidden"
-    value="{{ widget.value }}" 
-    type="checkbox" 
+    value="{{ widget.value }}"
+    type="checkbox"
     {% include "django/forms/widgets/attrs.html" %}
-  ></input>
-  <label 
-    class="checkbox checkbox__enabled" 
-    for="{{ id }}"
-  >
-    {{widget.label }}
+  />
+
+  <label class="checkbox checkbox__enabled" for="{{ id }}">
+    {{ widget.label }}
   </label>
 </div>
 {% endwith %}

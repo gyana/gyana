@@ -1,11 +1,20 @@
 {% extends "teams/base.html" %}
 {% load humanize %}
 {% load help_utils %}
+{% load waffle_tags %}
 
 {% block tab %}
 <section class="account">
   <h2 class="mb-7">Billing</h2>
 
+  {% flag 'subscriptions' %}
+    {% if not team.subscription %}
+      <a href="{% url 'teams:plan' team.id %}" class="link">Upgrade</a>
+    {% else %}
+      You are currently subscribed to {{ team.subscription.plan.name }}.
+    {% endif %}
+  {% endflag %}
+  
   <div class="account__plan">
     <div class="card card--none">
       <table class="table">
@@ -42,7 +51,7 @@
 
           <tr>
             <td><h3>Projects</h3></td>
-            <td>{{ team.total_projects }} / {% if team.plan.projects != -1 %}{{ team.plan.projects }}{% else %}∞</i>{% endif %}</td>
+            <td>{{ team.total_projects }} / {% if team.plan.projects != -1 %}{{ team.plan.projects }}{% else %}∞{% endif %}</td>
           </tr>
 
           <tr>
@@ -63,7 +72,7 @@
           {% if team.plan.custom_branding %}
             <tr>
               <td><h3>Custom branding</h3></td>
-              <td><i class="fa fa-check text-green"></i></i></td>
+              <td><i class="fa fa-check text-green"></i></td>
             </tr>
           {% endif %}
 
@@ -77,7 +86,7 @@
           {% if team.plan.sub_accounts %}
             <tr>
               <td><h3>Sub Accounts</h3></td>
-              <td>{{ team.total_invite_only_projects }} / {% if  team.plan.sub_accounts != -1 %}{{ team.plan.sub_accounts }}{% else %}∞</i>{% endif %}</td>
+              <td>{{ team.total_invite_only_projects }} / {% if  team.plan.sub_accounts != -1 %}{{ team.plan.sub_accounts }}{% else %}∞{% endif %}</td>
             </tr>
           {% endif %}
 
@@ -92,11 +101,13 @@
       </table>
     </div>
   </div>
+</section>
 
 {% if team.appsumocode_set.count > 0 %}
 <div id="appsumo-list" class="mt-7">
   <h2 class="mb-3">AppSumo</h2>
-  <turbo-frame id="team_appsumo:list" src="{% url 'team_appsumo:list' team.id %}" target="_top"></turbo-frame>
+
+  <turbo-frame id="team_appsumo:list" src="{% url 'team_appsumo:list' team.id %}"></turbo-frame>
 </div>
 {% endif %}
 {% endblock %}

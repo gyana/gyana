@@ -1,6 +1,7 @@
 amqp==5.0.6; python_version >= "3.6"
 analytics-python==1.4.0
 asgiref==3.4.1; python_version >= "3.6"
+atomicwrites==1.4.0; python_version >= "3.6" and python_full_version < "3.0.0" and sys_platform == "win32" or sys_platform == "win32" and python_version >= "3.6" and python_full_version >= "3.4.0"
 attrs==20.3.0; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.4.0")
 autopep8==1.5.7; python_version >= "3.6"
 backoff==1.10.0; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.5.0")
@@ -15,30 +16,30 @@ click-didyoumean==0.0.3; python_version >= "3.6"
 click-plugins==1.1.1; python_version >= "3.6"
 click-repl==0.2.0; python_version >= "3.6"
 click==7.1.2; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
+colorama==0.4.4; python_version >= "3.6" and python_full_version < "3.0.0" and sys_platform == "win32" or sys_platform == "win32" and python_version >= "3.6" and python_full_version >= "3.5.0"
 conditional==1.3; python_version >= "3.5"
 coreapi==2.3.3
 coreschema==0.0.4
-crispy-tailwind==0.5.0; python_version >= "3.5"
 cryptography==3.4.8; python_version >= "3.6"
 defusedxml==0.7.1; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0"
 dj-database-url==0.5.0
+dj-paddle @ git+https://github.com/paddle-python/dj-paddle@8945137c9ff70ae00d519625f81b10d1bc6bf071
 django-admin-tools==0.9.1
 django-allauth==0.44.0
 django-anymail==8.4; python_version >= "3.5"
 django-clone==2.9.4; python_version >= "3.5"
-django-crispy-forms==1.12.0; python_version >= "3.6"
 django-dirtyfields==1.7.0; python_version >= "3.6"
 django-filter==2.4.0; python_version >= "3.5"
 django-heroku==0.3.1
 django-hijack==3.0.0
 django-invitations==1.9.3
+django-safedelete==1.1.0
 django-silk @ git+https://github.com/jazzband/django-silk@21a4058c2a758fac687f837cb523175c64c567c3 ; python_version >= "3.6"
-django-storages==1.11.1; python_version >= "3.5"
+django-storages==1.12.2; python_version >= "3.5"
 django-tables2==2.4.0
 django-turbo-allauth==0.0.9; python_version >= "3.8"
 django-turbo-response==0.0.48; python_version >= "3.8"
 django-waffle==2.2.1
-django-safedelete==1.1.0
 django==3.2.7; python_version >= "3.6"
 djangorestframework==3.12.4; python_version >= "3.5"
 future==0.18.2; python_version >= "3.5" and python_full_version < "3.0.0" or python_full_version >= "3.3.0" and python_version >= "3.5"
@@ -67,6 +68,7 @@ ibis-bigquery==0.1.1; python_version >= "3.7"
 ibis-framework==1.4.0; python_version >= "3.7"
 idna==3.2; python_version >= "3.5" and python_full_version < "3.0.0" or python_full_version >= "3.6.0" and python_version >= "3.5"
 inflection==0.5.1; python_version >= "3.5"
+iniconfig==1.1.1; python_version >= "3.6"
 itypes==1.2.0
 jinja2==3.0.1; python_version >= "3.6"
 kombu==5.1.0; python_version >= "3.6"
@@ -80,23 +82,30 @@ mypy-extensions==0.4.3; python_version >= "3.7"
 numpy==1.21.2; python_version >= "3.7" and python_version < "3.11" and python_full_version >= "3.7.1"
 oauthlib==3.1.1; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" and python_version >= "3.6"
 packaging==21.0; python_version >= "3.7" and python_version < "3.10"
+paddle-client==1.0.0; python_full_version >= "3.5.0" and python_full_version < "4.0.0"
 pandas==1.3.2; python_full_version >= "3.7.1"
 pathvalidate==2.4.1; python_version >= "3.5"
+phpserialize==1.3
+pluggy==1.0.0; python_version >= "3.6"
 prompt-toolkit==3.0.20; python_full_version >= "3.6.2" and python_version >= "3.6"
 proto-plus==1.19.0; python_version >= "3.7" and python_version < "3.10"
 protobuf==3.17.3; python_version >= "3.7" and python_version < "3.10"
 psutil==5.8.0; python_version >= "2.6" and python_full_version < "3.0.0" or python_full_version >= "3.4.0"
 psycopg2-binary==2.9.1; python_version >= "3.6"
 psycopg2==2.9.1; python_version >= "3.6"
+py==1.10.0; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" and python_version >= "3.6"
 pyarrow==4.0.1; python_version >= "3.6"
 pyasn1-modules==0.2.8; python_version >= "3.6"
 pyasn1==0.4.8; python_version >= "3.6" and python_version < "4"
 pycodestyle==2.7.0; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" and python_version >= "3.6"
 pycparser==2.20; python_version >= "3.6" and python_full_version < "3.0.0" or python_version >= "3.6" and python_full_version >= "3.4.0"
+pycryptodome==3.11.0; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0"
 pydata-google-auth==1.2.0; python_version >= "3.7"
 pygments==2.10.0; python_version >= "3.6"
-pyjwt==2.1.0; python_version >= "3.8"
+pyjwt==2.3.0; python_version >= "3.8"
 pyparsing==2.4.7; python_version >= "3.6" and python_full_version < "3.0.0" and python_version < "3.10" or python_version >= "3.6" and python_version < "3.10" and python_full_version >= "3.3.0"
+pytest-mock==3.6.1; python_version >= "3.6"
+pytest==6.2.5; python_version >= "3.6"
 python-dateutil==2.8.2; python_full_version >= "3.7.1" and python_version >= "3.7" and (python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.3.0")
 python3-openid==3.2.0; python_version >= "3.8"
 pytz==2021.1; python_version >= "3.7" and python_full_version >= "3.7.1"
@@ -104,7 +113,7 @@ pyyaml==5.4.1; (python_version >= "2.7" and python_full_version < "3.0.0") or (p
 redis==3.5.3; python_version >= "3.6" and python_full_version < "3.0.0" or python_version >= "3.6" and python_full_version >= "3.5.0"
 regex==2021.8.28; python_version >= "3.7"
 requests-oauthlib==1.3.0; python_version >= "3.8" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" and python_version >= "3.8"
-requests==2.26.0; python_version >= "3.8" and python_full_version < "3.0.0" and python_version < "3.10" or python_full_version >= "3.6.0" and python_version >= "3.8" and python_version < "3.10"
+requests==2.26.0; python_full_version >= "3.6.0" and python_version >= "3.8" and python_version < "3.10" and python_full_version < "4.0.0"
 rsa==4.7.2; python_version >= "3.6" and python_version < "4"
 six==1.16.0; python_full_version >= "3.7.1" and python_version >= "3.6" and python_version < "3.10" and (python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.3.0" and python_version >= "3.6") and (python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "2.7") and (python_version >= "3.7" and python_full_version < "3.0.0" or python_full_version >= "3.3.0" and python_version >= "3.7")
 sqlparse==0.4.1; python_version >= "3.6"

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponse
@@ -7,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableMixin, SingleTableView
+from djpaddle.models import Plan
 
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
@@ -40,6 +42,16 @@ class TeamPlan(LoginRequiredMixin, TurboUpdateView):
         kwargs = super().get_form_kwargs()
         kwargs["user"] = self.request.user
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["paddle_plan"] = Plan.objects.first()
+        context["djpaddle_checkout_success_redirect"] = reverse(
+            "teams:account", args=(self.object.id,)
+        )
+        context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
+        context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
+        return context
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.id,))

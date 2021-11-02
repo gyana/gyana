@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from djpaddle.models import Subscription
 from safedelete.models import SafeDeleteModel
 from storages.backends.gcloud import GoogleCloudStorage
 
@@ -40,6 +41,9 @@ class Team(BaseModel, SafeDeleteModel):
     # calculating every view is too expensive
     row_count = models.BigIntegerField(default=0)
     row_count_calculated = models.DateTimeField(null=True)
+    subscription = models.OneToOneField(
+        Subscription, null=True, on_delete=models.SET_NULL
+    )
 
     def save(self, *args, **kwargs):
         from .bigquery import create_team_dataset
