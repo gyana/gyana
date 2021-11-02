@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from enum import Enum
 from functools import lru_cache
 from typing import Any, Dict
 
@@ -8,11 +9,21 @@ SERVICES = "apps/connectors/fivetran/services.yaml"
 METADATA = "apps/connectors/fivetran/metadata.yaml"
 
 
+class ServiceTypeEnum(Enum):
+    API_CLOUD = "api_cloud"
+    DATABASE = "database"
+    WEBHOOKS_REPORTS = "webhooks_reports"
+    EVENT_TRACKING = "event_tracking"
+
+
 @dataclass
 class Service:
-    service_type: str = "api_cloud"
+    service_type: ServiceTypeEnum = "api_cloud"
     static_config: Dict[str, Any] = field(default_factory=dict)
     internal: bool = False
+
+    def __post_init__(self):
+        self.service_type = ServiceTypeEnum(self.service_type)
 
 
 @lru_cache

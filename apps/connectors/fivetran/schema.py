@@ -5,6 +5,8 @@ from typing import Dict, List, Optional
 from apps.base import clients
 from apps.connectors.bigquery import check_bq_id_exists, get_bq_ids_from_dataset_safe
 
+from .config import ServiceTypeEnum
+
 # wrapper for fivetran schema information
 # https://fivetran.com/docs/rest-api/connectors#retrieveaconnectorschemaconfig
 # the schema includes the datasets, tables and individual columns
@@ -72,7 +74,7 @@ class FivetranSchemaObj:
 
         # used in deletion to determine bigquery datasets associated with a connector
 
-        if not self.conf.service_type != "database":
+        if not self.conf.service_type != ServiceTypeEnum.DATABASE:
             return {self.schema_prefix}
 
         # a database connector used multiple bigquery datasets
@@ -101,16 +103,16 @@ class FivetranSchemaObj:
         service_type = self.conf.service_type
 
         # event_tracking
-        if service_type == "event_tracking":
+        if service_type == ServiceTypeEnum.EVENT_TRACKING:
             return get_bq_ids_from_dataset_safe(self.schema_prefix)
 
         # webhooks_reports
-        if service_type == "webhooks_reports":
+        if service_type == ServiceTypeEnum.WEBHOOKS_REPORTS:
             bq_id = f'{self.schema_prefix}.{self.conf.static_config["table"]}'
             return {bq_id} if check_bq_id_exists(bq_id) else {}
 
         # api_cloud
-        if service_type == "api_cloud":
+        if service_type == ServiceTypeEnum.API_CLOUD:
             actual_bq_ids = get_bq_ids_from_dataset_safe(self.schema_prefix)
             schema_bq_ids = {
                 f"{self.schema_prefix}.{table.name_in_destination}"

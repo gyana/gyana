@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from apps.base import clients
 from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
+from apps.connectors.fivetran.config import ServiceTypeEnum
 from apps.connectors.models import Connector
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
@@ -110,8 +111,8 @@ def run_connector_sync(connector: Connector):
     #
     # only required for api_cloud and database sources
     if not is_initial_sync and service_type in [
-        "api_cloud",
-        "database",
+        ServiceTypeEnum.API_CLOUD,
+        ServiceTypeEnum.DATABASE,
     ]:
         delete_tables_not_in_schema(connector)
         requires_sync = check_new_tables_added_to_schema(connector)

@@ -5,7 +5,7 @@ import requests
 from django.conf import settings
 
 from ..models import Connector
-from .config import get_services_obj
+from .config import ServiceTypeEnum, get_services_obj
 from .schema import FivetranSchemaObj
 
 # wrapper for the Fivetran connectors REST API, documented here
@@ -38,7 +38,9 @@ class FivetranClient:
             schema = f"{SLUG}_{schema}"
 
         config[
-            "schema_prefix" if service_conf.service_type == "database" else "schema"
+            "schema_prefix"
+            if service_conf.service_type == ServiceTypeEnum.DATABASE
+            else "schema"
         ] = schema
 
         res = requests.post(
