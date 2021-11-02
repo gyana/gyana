@@ -103,15 +103,6 @@ class FivetranSchemaObj:
         # definitive function to map from a fivetran schema object to one or more
         # bigquery schemas with one or more tables
         #
-        # api_cloud = fixed tables in one schema
-        # database = fixed tables in multiple schemas
-        # webhooks_reports = single table in one schema (no schema provided)
-        # event_tracking = dynamic tables in one schema (no schema provided)
-        #
-        # the fivetran getting started diagram has a good summary of the options
-        # https://fivetran.com/docs/getting-started/core-concepts
-        # and the rest of the docs cover each section in detail
-        #
         # an empty return indicates that there is no data in bigquery yet
 
         service_type = self.conf.service_type

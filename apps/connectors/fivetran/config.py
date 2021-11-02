@@ -10,6 +10,16 @@ METADATA = "apps/connectors/fivetran/metadata.yaml"
 
 
 class ServiceTypeEnum(Enum):
+
+    # api_cloud = fixed tables in one schema
+    # database = fixed tables in multiple schemas
+    # webhooks_reports = single table in one schema (no schema provided)
+    # event_tracking = dynamic tables in one schema (no schema provided)
+    #
+    # the fivetran getting started diagram has a good summary of the options
+    # https://fivetran.com/docs/getting-started/core-concepts
+    # and the rest of the docs cover each service type in detail
+
     API_CLOUD = "api_cloud"
     DATABASE = "database"
     WEBHOOKS_REPORTS = "webhooks_reports"
