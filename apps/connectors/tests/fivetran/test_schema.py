@@ -9,6 +9,8 @@ from ..mock import get_mock_list_tables, get_mock_schema
 
 def test_connector_schema_serde():
 
+    # test: serialization and de-serialization
+
     num_tables = 2
 
     tables = {
