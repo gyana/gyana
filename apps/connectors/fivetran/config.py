@@ -28,14 +28,13 @@ class ServiceTypeEnum(Enum):
 
 @dataclass
 class Service:
-    id: str
-
     # internal configuration
     service_type: ServiceTypeEnum = "api_cloud"
     static_config: Dict[str, Any] = field(default_factory=dict)
     internal: bool = False
 
     # fivetran metadata
+    id: str = ""
     description: str = ""
     icon_path: str = ""
     icon_url: str = ""
@@ -53,22 +52,25 @@ class Service:
 def get_services_obj():
     services = yaml.load(open(SERVICES, "r"))
     metadata = yaml.load(open(METADATA, "r"))
-    return {k: Service(id, **v, **metadata[k]) for k, v in services.items()}
+    return {k: Service(**v, **metadata[k]) for k, v in services.items()}
 
 
 @lru_cache
 def get_service_categories(show_internal=False):
     services = get_services_obj()
-    return sorted([s.type for s in services if (show_internal or not s.internal)])
+    categories = [
+        s.type for s in services.values() if (show_internal or not s.internal)
+    ]
+    return sorted(list(set(categories)))
 
 
 def get_services_query(category=None, search=None, show_internal=False):
     services = list(get_services_obj().values())
 
-    if (category := category) is not None:
+    if category is not None:
         services = [s for s in services if s.type == category]
 
-    if (search := search) is not None:
+    if search is not None:
         services = [s for s in services if search.lower() in s.name.lower()]
 
     if not show_internal:
