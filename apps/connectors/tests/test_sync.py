@@ -1,7 +1,11 @@
 from datetime import timedelta
 
 import pytest
-from apps.connectors.sync import handle_syncing_connector, start_connector_sync
+from apps.connectors.sync import (
+    _synchronise_tables_for_connector,
+    handle_syncing_connector,
+    start_connector_sync,
+)
 from apps.integrations.models import Integration
 from django.utils import timezone
 
@@ -10,7 +14,39 @@ from .mock import get_mock_fivetran_connector, get_mock_list_tables, get_mock_sc
 pytestmark = pytest.mark.django_db
 
 
-def test_start_connector_sync(logged_in_user, connector_factory, fivetran, bigquery):
+def test_synchronise_tables_for_connector(logged_in_user, connector_factory, bigquery):
+
+    team = logged_in_user.teams.first()
+    connector = connector_factory(integration__project__team=team)
+    bigquery.get_table().num_rows = 10
+    integration = connector.integration
+
+    # create new tables
+    bq_ids = {"dataset.table_1", "dataset.table_2"}
+    _synchronise_tables_for_connector(connector, bq_ids)
+
+    assert integration.table_set.count() == 2
+    table = integration.table_set.first()
+    assert table.bq_dataset == "dataset"
+    assert table.bq_table == "table_2"
+
+    assert team.row_count == 20
+
+    # no new tables to create
+    _synchronise_tables_for_connector(connector, bq_ids)
+
+    # create two tables, delete a table
+    bq_ids = {"dataset.table_2", "dataset.table_3", "dataset.table_4"}
+    _synchronise_tables_for_connector(connector, bq_ids)
+
+    assert integration.table_set.count() == 3
+    assert not integration.table_set.filter(bq_table="table_1").exists()
+
+    team.refresh_from_db()
+    assert team.row_count == 30
+
+
+def test_start_connector_sync(logged_in_user, connector_factory, fivetran):
 
     connector = connector_factory(
         integration__project__team=logged_in_user.teams.first(),
