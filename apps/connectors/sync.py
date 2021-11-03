@@ -57,15 +57,8 @@ def start_connector_sync(connector: Connector):
 
     if connector.is_historical_sync:
         clients.fivetran().start_initial_sync(connector)
-    else:
-        # it is possible to skip a resync if no new tables are added and the
-        # connector uses a known schema object
-        skip_resync = (
-            connector.conf.service_uses_schema
-            and not connector.schema_obj.check_new_bq_ids(connector.integration.bq_ids)
-        )
-        if not skip_resync:
-            clients.fivetran().start_update_sync(connector)
+    elif not connector.can_skip_resync:
+        clients.fivetran().start_update_sync(connector)
 
     connector.fivetran_sync_started = timezone.now()
     connector.save()

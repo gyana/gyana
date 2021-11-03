@@ -152,6 +152,16 @@ class Connector(BaseModel):
             f"{settings.EXTERNAL_URL}{internal_redirect}",
         )
 
+    @property
+    def can_skip_resync(self):
+        # it is possible to skip a resync if no new tables are added and the
+        # connector uses a known schema object (api_cloud and databases)
+        # this enables users to deselect tables fast
+        return (
+            self.conf.service_uses_schema
+            and len(self.schema_obj.enabled_bq_ids - self.integration.bq_ids) == 0
+        )
+
     def _parse_fivetran_timestamp(self, timestamp):
         if timestamp is not None:
             return datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%f%z")
