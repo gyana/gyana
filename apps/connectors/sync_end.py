@@ -6,7 +6,6 @@ from django.utils import timezone
 
 from apps.base import clients
 from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
-from apps.connectors.fivetran.config import ServiceTypeEnum
 from apps.connectors.models import Connector
 from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
@@ -70,6 +69,7 @@ def handle_syncing_connector(connector):
     if fivetran_obj.status.setup_state != "connected":
         integration.state = Integration.State.ERROR
         integration.save()
+        return
 
     # the historical or incremental sync is ongoing
     if fivetran_obj.is_syncing:
