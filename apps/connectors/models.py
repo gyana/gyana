@@ -190,3 +190,8 @@ class Connector(BaseModel):
 
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+    def sync_updates_from_fivetran(self):
+        data = clients.fivetran().get(self)
+        self.update_kwargs_from_fivetran(data)
+        self.save()

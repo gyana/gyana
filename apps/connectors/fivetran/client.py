@@ -74,7 +74,7 @@ class FivetranClient:
         if res["code"] != "Success":
             raise FivetranClientError(res)
 
-        return FivetranConnector(**res["data"])
+        return res["data"]
 
     def get_authorize_url(self, connector: Connector, redirect_uri: str) -> str:
 
