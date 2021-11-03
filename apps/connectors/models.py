@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -39,23 +41,65 @@ class ConnectorsManager(models.Manager):
 
 
 class Connector(BaseModel):
+    class ScheduleType(models.TextChoices):
+        AUTO = "auto", "Auto"
+        MANUAL = "manual", "Manual"
+
+    class SetupState(models.TextChoices):
+        BROKEN = "broken", "Broken"
+        INCOMPLETE = "incomplete", "Incomplete"
+        CONNECTED = "connected", "Connected"
+
+    class SyncState(models.TextChoices):
+        SCHEDULED = "scheduled", "Scheduled"
+        SYNCING = "syncing", "Syncing"
+        PAUSED = "paused", "Paused"
+        RESCHEDULED = "rescheduled", "Rescheduled"
+
+    class UpdateState(models.TextChoices):
+        ON_SCHEDULE = "on_schedule", "On Schedule"
+        DELAYED = "delayed", "Delayed"
+
+    # internal fields
 
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 
-    # service name, see services.yaml
-    service = models.TextField(max_length=255)
-    # unique identifier for API requests in fivetran
-    fivetran_id = models.TextField()
-    # schema or schema_prefix for storage in bigquery
-    schema = models.TextField()
-
-    # do not display unfinished connectors that are not authorized as pending
-    # we delete along with corresponding Fivetran model
+    # true after the first authorization, connectors that are never successfully
+    # authorized are deleted after 7 days (along with corresponding Fivetran model)
     fivetran_authorized = models.BooleanField(default=False)
-    # keep track of sync succeeded time from fivetran
-    fivetran_succeeded_at = models.DateTimeField(null=True)
     # keep track of when a manual sync is triggered
     fivetran_sync_started = models.DateTimeField(null=True)
+
+    # automatically sync the fields from fivetran connector to this model
+    # https://fivetran.com/docs/rest-api/connectors#fields
+
+    # unique identifier for API requests in fivetran
+    fivetran_id = models.TextField()
+    group_id = models.TextField()
+    # service name, see services.yaml
+    service = models.TextField(max_length=255)
+    service_version = models.IntegerField()
+    # schema or schema_prefix for storage in bigquery
+    schema = models.TextField()
+    paused = models.BooleanField()
+    pause_after_trial = models.BooleanField()
+    connected_by = models.TextField()
+    created_at = models.DateTimeField()
+    succeeded_at = models.DateTimeField(null=True)
+    failed_at = models.DateTimeField(null=True)
+    # in minutes, 1440 is daily
+    sync_frequency = models.IntegerField()
+    # specified in one hour increments starting from 00:00 to 23:00
+    daily_sync_time = models.CharField(max_length=6, null=True)
+    schedule_type = models.CharField(max_length=8, choices=ScheduleType.choices)
+    setup_state = models.CharField(max_length=16, choices=SetupState.choices)
+    sync_state = models.CharField(max_length=16, choices=SyncState.choices)
+    update_state = models.CharField(max_length=16, choices=UpdateState.choices)
+    is_historical_sync = models.BooleanField()
+    tasks = models.JSONField()
+    warnings = models.JSONField()
+    config = models.JSONField()
+    source_sync_details = models.JSONField(null=True)
 
     # deprecated: track the celery task
     sync_task_id = models.UUIDField(null=True)
@@ -110,3 +154,39 @@ class Connector(BaseModel):
             self,
             f"{settings.EXTERNAL_URL}{internal_redirect}",
         )
+
+    def _parse_fivetran_timestamp(self, timestamp):
+        if timestamp is not None:
+            return datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%f%z")
+
+    def update_kwargs_from_fivetran(self, data):
+
+        status = data["status"]
+
+        kwargs = {
+            "fivetran_id": data["id"],
+            "group_id": data["group_id"],
+            "service": data["service"],
+            "service_version": data["service_version"],
+            "schema": data["schema"],
+            "paused": data["paused"],
+            "pause_after_trial": data["pause_after_trial"],
+            "connected_by": data["connected_by"],
+            "created_at": self._parse_fivetran_timestamp(data["created_at"]),
+            "succeeded_at": self._parse_fivetran_timestamp(data["succeeded_at"]),
+            "failed_at": self._parse_fivetran_timestamp(data["failed_at"]),
+            "sync_frequency": data["sync_frequency"],
+            "daily_sync_time": data.get("daily_sync_time"),
+            "schedule_type": data["schedule_type"],
+            "setup_state": status["setup_state"],
+            "sync_state": status["sync_state"],
+            "update_state": status["update_state"],
+            "is_historical_sync": status["is_historical_sync"],
+            "tasks": status["tasks"],
+            "warnings": status["warnings"],
+            "config": data["config"],
+            "source_sync_details": data.get("source_sync_details"),
+        }
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)

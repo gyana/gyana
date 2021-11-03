@@ -60,18 +60,7 @@ class FivetranClient:
         if res["code"] != "Success":
             raise FivetranClientError(res)
 
-        # response schema https://fivetran.com/docs/rest-api/connectors#response_1
-        #  {
-        #   "code": "Success",
-        #   "message": "Connector has been created",
-        #   "data": {
-        #       "id": "{{ fivetran_id }}",
-        #       # returns odd results for Google Sheets
-        #       "schema": "{{ schema }}",
-        #       ...
-        #    }
-        #  }
-        return {"fivetran_id": res["data"]["id"], "schema": schema}
+        return res["data"]
 
     def get(self, connector: Connector):
 

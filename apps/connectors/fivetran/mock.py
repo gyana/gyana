@@ -58,7 +58,30 @@ class MockFivetranClient:
             Connector.objects.filter(service=service).order_by("id").first()
             or Connector.objects.filter(service=self.DEFAULT_SERVICE).first()
         )
-        return {"fivetran_id": connector.fivetran_id, "schema": connector.schema}
+        return {
+            "id": connector.fivetran_id,
+            "group_id": "group_id",
+            "service": "adwords",
+            "service_version": 4,
+            "schema": connector.schema,
+            "paused": True,
+            "pause_after_trial": True,
+            "connected_by": "monitoring_assuring",
+            "created_at": "2021-01-01T00:00:00.000000Z",
+            "succeeded_at": "2021-01-01T00:00:00.000000Z",
+            "failed_at": None,
+            "sync_frequency": 360,
+            "schedule_type": "auto",
+            "status": {
+                "setup_state": "connected",
+                "sync_state": "scheduled",
+                "update_state": "delayed",
+                "is_historical_sync": True,
+                "tasks": [],
+                "warnings": [],
+            },
+            "config": {},
+        }
 
     def get(self, connector):
         started = self._started.get(connector.id)

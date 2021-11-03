@@ -29,17 +29,14 @@ class ConnectorCreateForm(BaseModelForm):
 
         # try to create fivetran entity
         try:
-            res = clients.fivetran().create(self._service, self._project.team.id)
+            data = clients.fivetran().create(self._service, self._project.team.id)
         except FivetranClientError as e:
             raise ValidationError(str(e))
 
-        self._fivetran_id = res["fivetran_id"]
-        self._schema = res["schema"]
+        self._data = data
 
     def pre_save(self, instance):
-        instance.service = self._service
-        instance.fivetran_id = self._fivetran_id
-        instance.schema = self._schema
+        instance.update_kwargs_from_fivetran(self._data)
         instance.create_integration(
             get_services_obj()[self._service].name, self._created_by, self._project
         )
