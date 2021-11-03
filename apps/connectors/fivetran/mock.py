@@ -83,13 +83,14 @@ class MockFivetranClient:
             "sync_frequency": 360,
             "schedule_type": "auto",
             "status": {
-                "setup_state": "broken",
+                "setup_state": "connected",
                 "sync_state": "scheduled",
                 "update_state": "delayed",
                 "is_historical_sync": is_historical_sync,
                 "tasks": [{"code": "reconnect", "message": "Reconnect"}],
                 "warnings": [],
             },
+            "config": {},
         }
 
         return FivetranConnector(**data)
