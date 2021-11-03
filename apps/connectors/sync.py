@@ -12,7 +12,8 @@ GRACE_PERIOD = 1800
 
 def _sync_tables_for_connector(connector: Connector):
 
-    bq_ids = connector.schema_obj.bq_ids
+    bq_tables = connector.bq_tables
+    bq_ids = {f"{t.dataset_id}.{t.table_id}" for t in bq_tables}
 
     # DELETE tables that should no longer exist in bigquery, as fivetran does not
     # delete for us. It will cascade onto bigquery as well.
@@ -75,7 +76,7 @@ def end_connector_sync(connector, is_initial):
 
     connector.sync_updates_from_fivetran()
 
-    if is_initial and len(connector.schema_obj.bq_ids) == 0:
+    if is_initial and len(connector.bq_tables) == 0:
 
         grace_period_elapsed = (
             timezone.now() - connector.succeeded_at

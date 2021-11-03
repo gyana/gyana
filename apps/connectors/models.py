@@ -1,4 +1,5 @@
 from datetime import datetime
+from functools import cached_property
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -8,6 +9,7 @@ from django.utils import timezone
 
 from apps.base import clients
 from apps.base.models import BaseModel
+from apps.connectors.bigquery import get_bq_table_safe, get_bq_tables_for_connector
 from apps.connectors.fivetran.schema import FivetranSchemaObj
 from apps.connectors.sync import end_connector_sync
 from apps.integrations.models import Integration
@@ -161,6 +163,10 @@ class Connector(BaseModel):
             self.conf.service_uses_schema
             and len(self.schema_obj.enabled_bq_ids - self.integration.bq_ids) == 0
         )
+
+    @cached_property
+    def bq_tables(self):
+        return get_bq_tables_for_connector(self)
 
     def _parse_fivetran_timestamp(self, timestamp):
         if timestamp is not None:

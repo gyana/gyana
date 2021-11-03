@@ -6,7 +6,6 @@ from django.conf import settings
 
 from ..models import Connector
 from .config import ServiceTypeEnum, get_services_obj
-from .connector import FivetranConnector
 from .schema import FivetranSchemaObj
 
 # wrapper for the Fivetran connectors REST API, documented here
