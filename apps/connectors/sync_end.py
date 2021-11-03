@@ -24,26 +24,33 @@ def _get_table_from_bq_id(bq_id, connector):
     )
 
 
-def _create_tables_if_not_exist_for_connector(connector: Connector, bq_ids: List[str]):
+def _synchronise_tables_for_connector(connector: Connector, bq_ids: List[str]):
 
+    # delete OUTDATED tables that should no longer exist in bigquery
+    # fivetran does not delete for us
+    #
     # calculate the NEW tables that should be added to database and
     # map them onto tables in our database
 
-    integration = connector.integration
-    new_bq_ids = bq_ids - {t.bq_id for t in integration.table_set.all()}
+    for table in connector.integration.table_set.all():
+        if table.bq_id not in bq_ids:
+            table.delete()
 
-    # there are no new tables to add (used in incremental sync)
-    if len(new_bq_ids) == 0:
-        return
+    create_bq_ids = bq_ids - connector.integration.bq_ids
 
-    tables = [_get_table_from_bq_id(bq_id, connector) for bq_id in new_bq_ids]
+    if len(create_bq_ids) > 0:
 
-    with transaction.atomic():
-        # this will fail with unique constraint error if there is a concurrent job
-        Table.objects.bulk_create(tables)
+        tables = [_get_table_from_bq_id(bq_id, connector) for bq_id in create_bq_ids]
 
-        for table in tables:
-            table.update_num_rows()
+        with transaction.atomic():
+            # this will fail with unique constraint error if there is a concurrent job
+            Table.objects.bulk_create(tables)
+
+            for table in tables:
+                table.update_num_rows()
+
+    # re-calculate total rows after tables are updated
+    connector.integration.project.team.update_row_count()
 
 
 def handle_syncing_connector(connector):
@@ -99,7 +106,7 @@ def handle_syncing_connector(connector):
 
     send_email = integration.table_set.count() == 0
 
-    _create_tables_if_not_exist_for_connector(connector, bq_ids)
+    _synchronise_tables_for_connector(connector, bq_ids)
 
     integration.state = Integration.State.DONE
     integration.save()

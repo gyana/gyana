@@ -181,3 +181,7 @@ class Integration(CloneMixin, BaseModel):
             return self.table_set.get(pk=table_pk)
         except (Table.DoesNotExist, ValueError):
             return self.table_set.first()
+
+    @property
+    def bq_ids(self):
+        return {table.bq_id for table in self.table_set.all()}
