@@ -77,13 +77,14 @@ def handle_syncing_connector(connector):
     # none of the fivetran tables are available in bigquery yet
     elif len(bq_ids := clients.fivetran().get_schemas(connector).get_bq_ids()) == 0:
 
-        # non dynamic connectors have a 30 minute grace period due to issues with fivetran
-        has_failed = (
+        # - event_tracking and webhooks: user did not send any data yet
+        # - otherwise: issues with fivetran, keep a 30 minute grace period for it to fix itself
+        is_error = (
             connector.conf.service_is_dynamic
             or (timezone.now() - fivetran_obj.succeeded_at).total_seconds > 1800
         )
 
-        if has_failed:
+        if is_error:
             integration.state = Integration.State.ERROR
             integration.save()
 
