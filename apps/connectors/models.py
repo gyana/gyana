@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.conf import settings
+from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -8,6 +9,7 @@ from django.utils import timezone
 from apps.base import clients
 from apps.base.models import BaseModel
 from apps.connectors.fivetran.schema import FivetranSchemaObj
+from apps.connectors.sync import end_connector_sync
 from apps.integrations.models import Integration
 
 from .fivetran.config import get_services_obj
@@ -187,15 +189,20 @@ class Connector(BaseModel):
             setattr(self, key, value)
 
     def sync_updates_from_fivetran(self):
-        succeeded_at = self.succeeded_at
+        previous_succeeded_at = self.succeeded_at
 
         data = clients.fivetran().get(self)
         self.update_kwargs_from_fivetran(data)
         self.save()
 
-        if self.succeeded_at != succeeded_at:
-            for table in self.integration.table_set.all():
-                table.update_data_updated(succeeded_at)
+        # fivetran setup is broken or incomplete
+        if self.setup_state != self.SetupState.CONNECTED:
+            self.integration.state = Integration.State.ERROR
+            self.integration.save()
+
+        # a new sync is completed
+        if self.succeeded_at != previous_succeeded_at:
+            end_connector_sync(self, is_initial=previous_succeeded_at is None)
 
     def sync_schema_obj_from_fivetran(self):
 

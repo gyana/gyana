@@ -14,47 +14,43 @@ from apps.tables.models import Table
 GRACE_PERIOD = 1800
 
 
-def _get_table_from_bq_id(bq_id, connector):
-    dataset_id, table_id = bq_id.split(".")
-    return Table(
-        source=Table.Source.INTEGRATION,
-        bq_table=table_id,
-        bq_dataset=dataset_id,
-        project=connector.integration.project,
-        integration=connector.integration,
-    )
-
-
 def _synchronise_tables_for_connector(connector: Connector, bq_ids: List[str]):
 
-    # DELETE tables that should no longer exist in bigquery
-    # (fivetran does not delete for us - it will cascade onto bigquery as well)
-    #
-    # CREATE tables to map new tables in bigquery
+    # DELETE tables that should no longer exist in bigquery, as fivetran does not
+    # delete for us. It will cascade onto bigquery as well.
 
     for table in connector.integration.table_set.all():
         if table.bq_id not in bq_ids:
             table.delete()
 
+    # CREATE tables to map new tables in bigquery
+
     create_bq_ids = bq_ids - connector.integration.bq_ids
 
     if len(create_bq_ids) > 0:
 
-        tables = [_get_table_from_bq_id(bq_id, connector) for bq_id in create_bq_ids]
+        tables = [
+            Table(
+                source=Table.Source.INTEGRATION,
+                bq_table=bq_id.split(".")[0],
+                bq_dataset=bq_id.split(".")[1],
+                project=connector.integration.project,
+                integration=connector.integration,
+            )
+            for bq_id in create_bq_ids
+        ]
 
         with transaction.atomic():
             # this will fail with unique constraint error if there is a concurrent job
             Table.objects.bulk_create(tables)
 
-            for table in tables:
-                table.update_num_rows()
+    # UPDATE all tables with statistics from bigquery
+
+    for table in tables:
+        table.update_num_rows()
 
     # re-calculate total rows after tables are updated
     connector.integration.project.team.update_row_count()
-
-
-def _check_new_tables(connector: Connector):
-    return len(connector.schema_obj.enabled_bq_ids - connector.integration.bq_ids) > 0
 
 
 def start_connector_sync(connector: Connector):
@@ -64,7 +60,11 @@ def start_connector_sync(connector: Connector):
     else:
         # it is possible to skip a resync if no new tables are added and the
         # connector uses a known schema object
-        if not connector.conf.service_uses_schema or _check_new_tables(connector):
+        skip_resync = (
+            connector.conf.service_uses_schema
+            and not connector.schema_obj.check_new_bq_ids(connector.integration.bq_ids)
+        )
+        if not skip_resync:
             clients.fivetran().start_update_sync(connector)
 
     connector.fivetran_sync_started = timezone.now()
@@ -74,11 +74,9 @@ def start_connector_sync(connector: Connector):
     connector.integration.save()
 
 
-def handle_syncing_connector(connector):
+def end_connector_sync(connector, is_initial):
 
     # handle syncing fivetran connector, either via polling or user interaction
-    # - validate the setup state is "connected"
-    # - check historical sync is completed
     # - check at least one table is available in bigquery
     #   - error for event style connectors (webhooks and event_tracking)
     #   - 30 minute grace period for the other connectors due to issues with fivetran
@@ -88,18 +86,10 @@ def handle_syncing_connector(connector):
     connector.sync_updates_from_fivetran()
 
     integration = connector.integration
-
-    # fivetran setup is broken or incomplete
-    if connector.setup_state != "connected":
-        integration.state = Integration.State.ERROR
-        integration.save()
-
-    # the historical or incremental sync is ongoing
-    elif connector.is_syncing:
-        pass
+    bq_ids = connector.schema_obj.get_bq_ids()
 
     # none of the fivetran tables are available in bigquery yet
-    elif len(bq_ids := connector.schema_obj.get_bq_ids()) == 0:
+    if is_initial and len(bq_ids) == 0:
 
         # - event_tracking and webhooks: user did not send any data yet
         # - otherwise: issues with fivetran, keep a 30 minute grace period for it to fix itself
@@ -112,29 +102,29 @@ def handle_syncing_connector(connector):
             integration.state = Integration.State.ERROR
             integration.save()
 
-    else:
+        return
 
-        send_email = integration.table_set.count() == 0
+    _synchronise_tables_for_connector(connector, bq_ids)
 
-        _synchronise_tables_for_connector(connector, bq_ids)
+    integration.state = Integration.State.DONE
+    integration.save()
 
-        integration.state = Integration.State.DONE
-        integration.save()
+    if integration.created_by and is_initial:
 
-        if integration.created_by and send_email:
+        email = integration_ready_email(integration, integration.created_by)
+        email.send()
 
-            email = integration_ready_email(integration, integration.created_by)
-            email.send()
+        time_to_sync = (
+            connector.succeeded - connector.fivetran_sync_started
+        ).total_seconds()
 
-            analytics.track(
-                integration.created_by.id,
-                INTEGRATION_SYNC_SUCCESS_EVENT,
-                {
-                    "id": integration.id,
-                    "kind": integration.kind,
-                    "row_count": integration.num_rows,
-                    # "time_to_sync": int(
-                    #     (load_job.ended - load_job.started).total_seconds()
-                    # ),
-                },
-            )
+        analytics.track(
+            integration.created_by.id,
+            INTEGRATION_SYNC_SUCCESS_EVENT,
+            {
+                "id": integration.id,
+                "kind": integration.kind,
+                "row_count": integration.num_rows,
+                "time_to_sync": int(time_to_sync),
+            },
+        )

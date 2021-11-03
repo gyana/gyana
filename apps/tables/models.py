@@ -90,10 +90,6 @@ class Table(CloneMixin, BaseModel):
         return f"https://console.cloud.google.com/bigquery?project={settings.GCP_PROJECT}&p={settings.GCP_PROJECT}&d={self.bq_dataset}&t={self.bq_table}&page=table"
 
     def update_num_rows(self):
-        self.num_rows = self.bq_obj.num_rows
-        self.save()
-
-    def update_data_updated(self, data_updated):
-        self.data_updated = data_updated
+        # TODO: Update last modified as well and rename this method
         self.num_rows = self.bq_obj.num_rows
         self.save()
