@@ -1,5 +1,5 @@
 from dataclasses import asdict, dataclass
-from functools import cache
+from functools import cache, cached_property
 from itertools import chain
 from typing import Dict, List, Optional
 
@@ -75,7 +75,8 @@ class FivetranSchema:
         # the actual bigquery ids we see in bigquery
         return get_bq_ids_from_dataset_safe(self.dataset_id)
 
-    def get_bq_ids(self):
+    @property
+    def bq_ids(self):
         # determine the bigquery ids we want to map into our database for this
         # schema. we take the intersection of what fivetran says it will create
         # vs what bigquery reports was actually created, this:
@@ -143,8 +144,8 @@ class FivetranSchemaObj:
         # database
         return set(chain(*(schema.enabled_bq_ids for schema in self.enabled_schemas)))
 
-    @cache
-    def get_bq_ids(self):
+    @cached_property
+    def bq_ids(self):
 
         # definitive function to map from a fivetran schema object to one or more
         # bigquery schemas with one or more tables
@@ -168,11 +169,11 @@ class FivetranSchemaObj:
         # cross reference fivetran schema and bigquery dataset
         if service_type == ServiceTypeEnum.API_CLOUD:
             # only databases have multiple schemas
-            return self.schemas[0].get_bq_ids()
+            return self.schemas[0].bq_ids
 
         # database
         # ditto api_cloud but for multiple schemas/datasets
-        return set(chain(*(schema.get_bq_ids() for schema in self.enabled_schemas)))
+        return set(chain(*(schema.bq_ids for schema in self.enabled_schemas)))
 
 
 def update_schema_from_cleaned_data(connector, cleaned_data):

@@ -1,20 +1,18 @@
-from typing import List
-
-import analytics
 from django.db import transaction
 from django.utils import timezone
 
 from apps.base import clients
-from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
 from apps.connectors.models import Connector
-from apps.integrations.emails import integration_ready_email
+from apps.integrations.emails import send_integration_ready_email
 from apps.integrations.models import Integration
 from apps.tables.models import Table
 
 GRACE_PERIOD = 1800
 
 
-def _synchronise_tables_for_connector(connector: Connector, bq_ids: List[str]):
+def _sync_tables_for_connector(connector: Connector):
+
+    bq_ids = connector.schema_obj.bq_ids
 
     # DELETE tables that should no longer exist in bigquery, as fivetran does not
     # delete for us. It will cascade onto bigquery as well.
@@ -74,50 +72,29 @@ def end_connector_sync(connector, is_initial):
     #   - error for event style connectors (webhooks and event_tracking)
     #   - 30 minute grace period for the other connectors due to issues with fivetran
     # - synchronize the tables in bigquery to our database
-    # - [optionally] send an email
 
     connector.sync_updates_from_fivetran()
 
-    integration = connector.integration
-    bq_ids = connector.schema_obj.get_bq_ids()
-
-    # none of the fivetran tables are available in bigquery yet
-    if is_initial and len(bq_ids) == 0:
-
-        # - event_tracking and webhooks: user did not send any data yet
-        # - otherwise: issues with fivetran, keep a 30 minute grace period for it to fix itself
+    if is_initial and len(connector.schema_obj.bq_ids) == 0:
 
         grace_period_elapsed = (
             timezone.now() - connector.succeeded_at
         ).total_seconds() > GRACE_PERIOD
 
         if connector.conf.service_is_dynamic or grace_period_elapsed:
-            integration.state = Integration.State.ERROR
-            integration.save()
+            connector.integration.state = Integration.State.ERROR
+            connector.integration.save()
 
         return
 
-    _synchronise_tables_for_connector(connector, bq_ids)
+    _sync_tables_for_connector(connector)
 
-    integration.state = Integration.State.DONE
-    integration.save()
+    connector.integration.state = Integration.State.DONE
+    connector.integration.save()
 
-    if integration.created_by and is_initial:
-
-        email = integration_ready_email(integration, integration.created_by)
-        email.send()
-
+    if is_initial:
         time_to_sync = (
-            connector.succeeded - connector.fivetran_sync_started
+            connector.succeeded_at - connector.fivetran_sync_started
         ).total_seconds()
 
-        analytics.track(
-            integration.created_by.id,
-            INTEGRATION_SYNC_SUCCESS_EVENT,
-            {
-                "id": integration.id,
-                "kind": integration.kind,
-                "row_count": integration.num_rows,
-                "time_to_sync": int(time_to_sync),
-            },
-        )
+        send_integration_ready_email(time_to_sync)
