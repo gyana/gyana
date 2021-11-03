@@ -69,17 +69,15 @@ def handle_syncing_connector(connector):
     if fivetran_obj.status.setup_state != "connected":
         integration.state = Integration.State.ERROR
         integration.save()
-        return
 
     # the historical or incremental sync is ongoing
-    if fivetran_obj.is_syncing:
-        return
-
-    bq_ids = clients.fivetran().get_schemas(connector).get_bq_ids()
+    elif fivetran_obj.is_syncing:
+        pass
 
     # none of the fivetran tables are available in bigquery yet
-    if len(bq_ids) == 0:
+    elif len(bq_ids := clients.fivetran().get_schemas(connector).get_bq_ids()) == 0:
 
+        # non dynamic connectors have a 30 minute grace period due to issues with fivetran
         has_failed = (
             connector.conf.service_is_dynamic
             or (timezone.now() - fivetran_obj.succeeded_at).total_seconds > 1800
@@ -89,29 +87,29 @@ def handle_syncing_connector(connector):
             integration.state = Integration.State.ERROR
             integration.save()
 
-        return
+    else:
 
-    send_email = integration.table_set.count() == 0
+        send_email = integration.table_set.count() == 0
 
-    _synchronise_tables_for_connector(connector, bq_ids)
+        _synchronise_tables_for_connector(connector, bq_ids)
 
-    integration.state = Integration.State.DONE
-    integration.save()
+        integration.state = Integration.State.DONE
+        integration.save()
 
-    if integration.created_by and send_email:
+        if integration.created_by and send_email:
 
-        email = integration_ready_email(integration, integration.created_by)
-        email.send()
+            email = integration_ready_email(integration, integration.created_by)
+            email.send()
 
-        analytics.track(
-            integration.created_by.id,
-            INTEGRATION_SYNC_SUCCESS_EVENT,
-            {
-                "id": integration.id,
-                "kind": integration.kind,
-                "row_count": integration.num_rows,
-                # "time_to_sync": int(
-                #     (load_job.ended - load_job.started).total_seconds()
-                # ),
-            },
-        )
+            analytics.track(
+                integration.created_by.id,
+                INTEGRATION_SYNC_SUCCESS_EVENT,
+                {
+                    "id": integration.id,
+                    "kind": integration.kind,
+                    "row_count": integration.num_rows,
+                    # "time_to_sync": int(
+                    #     (load_job.ended - load_job.started).total_seconds()
+                    # ),
+                },
+            )
