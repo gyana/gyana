@@ -6,7 +6,7 @@
   <span data-tooltip-target="body">{{ object.fivetran_succeeded_at }}</span>
 </h2>
 <p>Most recent data imported</p>
-{% if broken %}
+{% if object.requires_authorization %}
   <p class="text-red">
     Your connector is broken. Try
     <a class="link" href="{{ object.fivetran_authorization_url }}" data-turbo-frame="_top">

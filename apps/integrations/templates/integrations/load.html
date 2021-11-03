@@ -23,8 +23,8 @@
           {% elif integration.state == 'error' %}
             <i class="fas fa-fw fa-times text-red fa-2x text-xl mr-4"></i>
             <div class="flex flex-col">
-              {% if broken %}
-                <h4>Your connector is incomplete or broken. {% link_article 'integrations' 'error' %}</h4>
+              {% if integration.source_obj.requires_authorization %}
+                <h4>Your connector is broken. {% link_article 'integrations' 'error' %}</h4>
                 <p>
                   Try
                   <a class="link" href="{{ integration.source_obj.fivetran_authorization_url }}" data-turbo-frame="_top">

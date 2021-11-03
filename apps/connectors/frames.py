@@ -32,12 +32,5 @@ class ConnectorStatus(TurboFrameDetailView):
     turbo_frame_dom_id = "connectors:status"
 
     def get_context_data(self, **kwargs):
-
-        context_data = super().get_context_data(**kwargs)
-        fivetran_connector = clients.fivetran().get(self.object)
-
-        if fivetran_connector.succeeded_at is not None:
-            self.object.update_fivetran_succeeded_at(fivetran_connector.succeeded_at)
-
-        context_data["broken"] = fivetran_connector.status.setup_state != "connected"
-        return context_data
+        self.object.sync_updates_from_fivetran()
+        return super().get_context_data(**kwargs)

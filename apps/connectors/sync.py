@@ -54,15 +54,12 @@ def _synchronise_tables_for_connector(connector: Connector, bq_ids: List[str]):
 
 
 def _check_new_tables(connector: Connector):
-    bq_ids = clients.fivetran().get_schemas(connector).enabled_bq_ids
-    return len(bq_ids - connector.integration.bq_ids) > 0
+    return len(connector.schema_obj.enabled_bq_ids - connector.integration.bq_ids) > 0
 
 
 def start_connector_sync(connector: Connector):
 
-    fivetran_obj = clients.fivetran().get(connector)
-
-    if fivetran_obj.status.is_historical_sync:
+    if connector.is_historical_sync:
         clients.fivetran().start_initial_sync(connector)
     else:
         # it is possible to skip a resync if no new tables are added and the
@@ -88,26 +85,27 @@ def handle_syncing_connector(connector):
     # - synchronize the tables in bigquery to our database
     # - [optionally] send an email
 
+    connector.sync_updates_from_fivetran()
+
     integration = connector.integration
-    fivetran_obj = clients.fivetran().get(connector)
 
     # fivetran setup is broken or incomplete
-    if fivetran_obj.status.setup_state != "connected":
+    if connector.setup_state != "connected":
         integration.state = Integration.State.ERROR
         integration.save()
 
     # the historical or incremental sync is ongoing
-    elif fivetran_obj.status.is_syncing:
+    elif connector.is_syncing:
         pass
 
     # none of the fivetran tables are available in bigquery yet
-    elif len(bq_ids := clients.fivetran().get_schemas(connector).get_bq_ids()) == 0:
+    elif len(bq_ids := connector.schema_obj.get_bq_ids()) == 0:
 
         # - event_tracking and webhooks: user did not send any data yet
         # - otherwise: issues with fivetran, keep a 30 minute grace period for it to fix itself
 
         grace_period_elapsed = (
-            timezone.now() - fivetran_obj.succeeded_at
+            timezone.now() - connector.succeeded_at
         ).total_seconds() > GRACE_PERIOD
 
         if connector.conf.service_is_dynamic or grace_period_elapsed:

@@ -51,9 +51,9 @@ class ConnectorUpdateForm(forms.ModelForm):
 
         super().__init__(*args, **kwargs)
 
-        schema_obj = clients.fivetran().get_schemas(self.instance)
+        self.instance.sync_schema_obj_from_fivetran()
 
-        for schema in schema_obj.schemas:
+        for schema in self.instance.schema_obj.schemas:
 
             self.fields[f"{schema.name_in_destination}_schema"] = forms.BooleanField(
                 initial=schema.enabled,
@@ -85,7 +85,9 @@ class ConnectorUpdateForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         try:
-            update_schema_from_cleaned_data(self.instance, cleaned_data)
+            schema_obj = update_schema_from_cleaned_data(self.instance, cleaned_data)
+            clients.fivetran().update_schemas(self.instance, schema_obj.to_dict())
+            self.instance.sync_schema_obj_from_fivetran()
         except FivetranClientError as e:
             honeybadger.notify(e)
             raise ValidationError(

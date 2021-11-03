@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from apps.base import clients
 from apps.base.models import BaseModel
+from apps.connectors.fivetran.schema import FivetranSchemaObj
 from apps.integrations.models import Integration
 
 from .fivetran.config import get_services_obj
@@ -100,6 +101,8 @@ class Connector(BaseModel):
     warnings = models.JSONField()
     config = models.JSONField()
     source_sync_details = models.JSONField(null=True)
+    # https://fivetran.com/docs/rest-api/connectors#retrieveaconnectorschemaconfig
+    schema_config = models.JSONField(null=True)
 
     # deprecated: track the celery task
     sync_task_id = models.UUIDField(null=True)
@@ -124,21 +127,13 @@ class Connector(BaseModel):
     def conf(self):
         return get_services_obj()[self.service]
 
-    def update_fivetran_succeeded_at(self, succeeded_at: str):
+    @property
+    def schema_obj(self):
+        return FivetranSchemaObj(self.schema_config, self.conf, self.schema)
 
-        # ignore outdated information
-        if (
-            self.fivetran_succeeded_at is not None
-            and self.fivetran_succeeded_at > succeeded_at
-        ):
-            return
-
-        self.fivetran_succeeded_at = succeeded_at
-        self.save()
-
-        # update all tables too
-        for table in self.integration.table_set.all():
-            table.update_data_updated(succeeded_at)
+    @property
+    def requires_authorization(self):
+        return self.setup_state != self.SetupState.CONNECTED
 
     @property
     def fivetran_authorization_url(self):
@@ -192,6 +187,17 @@ class Connector(BaseModel):
             setattr(self, key, value)
 
     def sync_updates_from_fivetran(self):
+        succeeded_at = self.succeeded_at
+
         data = clients.fivetran().get(self)
         self.update_kwargs_from_fivetran(data)
+        self.save()
+
+        if self.succeeded_at != succeeded_at:
+            for table in self.integration.table_set.all():
+                table.update_data_updated(succeeded_at)
+
+    def sync_schema_obj_from_fivetran(self):
+
+        self.schema_config = clients.fivetran().get_schemas(self.instance)
         self.save()

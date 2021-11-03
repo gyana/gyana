@@ -205,15 +205,6 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["sync_task_id"] = self.object.source_obj.sync_task_id
-
-        if (
-            self.object.kind == Integration.Kind.CONNECTOR
-            and self.object.state == Integration.State.ERROR
-        ):
-            fivetran_obj = clients.fivetran().get(self.object.source_obj)
-            if fivetran_obj.status.setup_state != "connected":
-                context_data["broken"] = True
-
         return context_data
 
     def form_valid(self, form):

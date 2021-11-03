@@ -6,9 +6,7 @@ FIVETRAN_SYSTEM_TABLES = {"fivetran_audit", "fivetran_audit_warning"}
 
 
 def delete_connector_datasets(connector):
-    schema_obj = clients.fivetran().get_schemas(connector)
-
-    for dataset in schema_obj.get_bq_datasets():
+    for dataset in connector.schema_obj.get_bq_datasets():
         clients.bigquery().delete_dataset(
             dataset, delete_contents=True, not_found_ok=True
         )

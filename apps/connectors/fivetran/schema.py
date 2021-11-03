@@ -2,7 +2,6 @@ from dataclasses import asdict, dataclass
 from itertools import chain
 from typing import Dict, List, Optional
 
-from apps.base import clients
 from apps.connectors.bigquery import check_bq_id_exists, get_bq_ids_from_dataset_safe
 
 from .config import ServiceTypeEnum
@@ -177,10 +176,9 @@ class FivetranSchemaObj:
 
 
 def update_schema_from_cleaned_data(connector, cleaned_data):
-    # construct the payload from cleaned data
+    # mutate the schema_obj based on cleaned_data
 
-    # mutate the schema information based on user input
-    schema_obj = clients.fivetran().get_schemas(connector)
+    schema_obj = connector.schema_obj
 
     for schema in schema_obj.schemas:
         schema.enabled = f"{schema.name_in_destination}_schema" in cleaned_data
@@ -197,4 +195,4 @@ def update_schema_from_cleaned_data(connector, cleaned_data):
             # if access issues, e.g. per column access in Postgres
             table.columns = {}
 
-    clients.fivetran().update_schemas(connector, schema_obj)
+    return schema_obj
