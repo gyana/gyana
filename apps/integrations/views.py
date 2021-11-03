@@ -2,7 +2,7 @@ import analytics
 from apps.base import clients
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
 from apps.base.turbo import TurboUpdateView
-from apps.connectors.sync_end import handle_syncing_connector
+from apps.connectors.sync import handle_syncing_connector
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import KIND_TO_SYNC_TASK
 from apps.projects.mixins import ProjectMixin

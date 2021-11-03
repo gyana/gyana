@@ -1,6 +1,5 @@
 import json
 import os
-import time
 from functools import cache
 from glob import glob
 
@@ -8,6 +7,7 @@ from django.urls.base import reverse
 from django.utils import timezone
 
 from ..models import Connector
+from .connector import FivetranConnector
 from .schema import FivetranSchemaObj
 
 SCHEMA_FIXTURES_DIR = "apps/connectors/fivetran/fixtures"
@@ -61,10 +61,38 @@ class MockFivetranClient:
         return {"fivetran_id": connector.fivetran_id, "schema": connector.schema}
 
     def get(self, connector):
-        return {
+        started = self._started.get(connector.id)
+        is_historical_sync = (
+            (timezone.now() - started).total_seconds() < self.REFRESH_SYNC_SECONDS
+            if started is not None
+            else False
+        )
+
+        data = {
+            "id": "connector_id",
+            "group_id": "group_id",
+            "service": "adwords",
+            "service_version": 4,
+            "schema": "adwords.schema",
+            "paused": True,
+            "pause_after_trial": True,
+            "connected_by": "monitoring_assuring",
+            "created_at": "2021-01-01T00:00:00.000000Z",
             "succeeded_at": "2021-01-01T00:00:00.000000Z",
-            "status": {"setup_state": "broken"},
+            "failed_at": None,
+            "sync_frequency": 360,
+            "schedule_type": "auto",
+            "status": {
+                "setup_state": "broken",
+                "sync_state": "scheduled",
+                "update_state": "delayed",
+                "is_historical_sync": is_historical_sync,
+                "tasks": [{"code": "reconnect", "message": "Reconnect"}],
+                "warnings": [],
+            },
         }
+
+        return FivetranConnector(**data)
 
     def start_initial_sync(self, connector):
         self._started[connector.id] = timezone.now()
@@ -74,11 +102,6 @@ class MockFivetranClient:
 
     def get_authorize_url(self, connector, redirect_uri):
         return f"{reverse('connectors:mock')}?redirect_uri={redirect_uri}"
-
-    def has_completed_sync(self, connector):
-        if (started := self._started.get(connector.id)) is None:
-            return True
-        return (timezone.now() - started).total_seconds() > self.REFRESH_SYNC_SECONDS
 
     def reload_schemas(self, connector):
         pass

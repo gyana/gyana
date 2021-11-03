@@ -1,4 +1,4 @@
-from apps.connectors.sync_start import start_connector_sync
+from apps.connectors.sync import start_connector_sync
 from apps.sheets.tasks import run_sheet_sync
 from apps.uploads.tasks import run_upload_sync
 

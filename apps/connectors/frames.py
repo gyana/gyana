@@ -5,7 +5,7 @@ from apps.base import clients
 from apps.base.frames import TurboFrameDetailView
 
 from .models import Connector
-from .sync_end import handle_syncing_connector
+from .sync import handle_syncing_connector
 
 
 class ConnectorIcon(TurboFrameDetailView):

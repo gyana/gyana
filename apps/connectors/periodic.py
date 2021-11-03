@@ -5,7 +5,7 @@ from apps.base.tasks import honeybadger_check_in
 
 from .fivetran.client import FivetranClientError
 from .models import Connector
-from .sync_end import handle_syncing_connector
+from .sync import handle_syncing_connector
 
 
 @shared_task

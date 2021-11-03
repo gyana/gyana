@@ -1,63 +1,13 @@
 import uuid
-from dataclasses import dataclass
-from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Dict
 
 import requests
 from django.conf import settings
 
 from ..models import Connector
 from .config import ServiceTypeEnum, get_services_obj
+from .connector import FivetranConnector
 from .schema import FivetranSchemaObj
-
-# wrapper for fivetran connector information returned from api
-# https://fivetran.com/docs/rest-api/connectors#fields
-
-
-@dataclass
-class FivetranConnectorStatus:
-    setup_state: str  # broken | incomplete | connected
-    sync_state: str  # scheduled | syncing | paused | rescheduled
-    update_state: str  # on_schedule | delayed
-    is_historical_sync: bool
-    tasks: List[Dict[str, str]]
-    warnings: List[Dict[str, str]]
-
-    @property
-    def is_syncing(self):
-        return self.is_historical_sync or self.sync_state == "syncing"
-
-
-@dataclass
-class FivetranConnector:
-    id: str
-    group_id: str
-    service: str
-    service_version: str
-    schema: str
-    paused: bool
-    pause_after_trial: bool
-    connected_by: str
-    created_at: str
-    succeeded_at: Optional[str]
-    failed_at: Optional[str]
-    sync_frequency: int
-    schedule_type: str  # auto | manual
-    status: FivetranConnectorStatus
-    config: Dict[str, Any]
-    daily_sync_time: Optional[int] = None  # only defined if sync_frequency = 1440
-    source_sync_details: Dict[str, Any] = None  # only defined for certain connectors
-
-    def __post_init__(self):
-        self.status = FivetranConnectorStatus(**self.status)
-        # timezone (UTC) information is parsed automatically
-        if self.succeeded_at is not None:
-            self.succeeded_at = datetime.strptime(
-                self.succeeded_at, "%Y-%m-%dT%H:%M:%S.%f%z"
-            )
-        if self.failed_at is not None:
-            self.failed_at = datetime.strptime(self.failed_at, "%Y-%m-%dT%H:%M:%S.%f%z")
-
 
 # wrapper for the Fivetran connectors REST API, documented here
 # https://fivetran.com/docs/rest-api/connectors
@@ -178,20 +128,6 @@ class FivetranClient:
 
         return res
 
-    def has_completed_sync(self, connector: Connector) -> bool:
-
-        res = requests.get(
-            f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}",
-            headers=settings.FIVETRAN_HEADERS,
-        ).json()
-
-        if res["code"] != "Success":
-            raise FivetranClientError(res)
-
-        status = res["data"]["status"]
-
-        return not (status["is_historical_sync"] or status["sync_state"] == "syncing")
-
     def reload_schemas(self, connector: Connector) -> FivetranSchemaObj:
 
         # https://fivetran.com/docs/rest-api/connectors#reloadaconnectorschemaconfig
@@ -259,7 +195,7 @@ class FivetranClient:
             raise FivetranClientError(res)
 
 
-# if settings.MOCK_FIVETRAN:
-#     from .mock import MockFivetranClient
+if settings.MOCK_FIVETRAN:
+    from .mock import MockFivetranClient
 
-#     FivetranClient = MockFivetranClient
+    FivetranClient = MockFivetranClient
