@@ -128,6 +128,23 @@ class FivetranSchemaObj:
 
         return {self.schema_prefix}
 
+    @property
+    def enabled_bq_ids(self):
+
+        # only defined for api_cloud and database
+
+        service_type = self.conf.service_type
+
+        # api_cloud
+        # cross reference fivetran schema and bigquery dataset
+        if service_type == ServiceTypeEnum.API_CLOUD:
+            # only databases have multiple schemas
+            return self.schemas[0].enabled_bq_ids
+
+        # database
+        # ditto api_cloud but for multiple schemas/datasets
+        return set(chain(*(schema.enabled_bq_ids for schema in self.enabled_schemas)))
+
     def get_bq_ids(self):
 
         # definitive function to map from a fivetran schema object to one or more

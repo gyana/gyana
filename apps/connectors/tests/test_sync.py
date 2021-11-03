@@ -1,13 +1,59 @@
 from datetime import timedelta
 
 import pytest
-from apps.connectors.sync import handle_syncing_connector
+from apps.connectors.sync import handle_syncing_connector, start_connector_sync
 from apps.integrations.models import Integration
 from django.utils import timezone
 
 from .mock import get_mock_fivetran_connector, get_mock_list_tables, get_mock_schema
 
 pytestmark = pytest.mark.django_db
+
+
+def test_start_connector_sync(logged_in_user, connector_factory, fivetran, bigquery):
+
+    connector = connector_factory(
+        integration__project__team=logged_in_user.teams.first(),
+        integration__state=Integration.State.LOAD,
+        integration__ready=False,
+    )
+    integration = connector.integration
+
+    # test: start the initial or update connector sync
+
+    # initial sync
+    fivetran.get.return_value = get_mock_fivetran_connector(
+        connector, is_historical_sync=True
+    )
+
+    start_connector_sync(connector)
+    assert fivetran.start_initial_sync.call_count == 1
+    assert fivetran.start_initial_sync.call_args.args == (connector,)
+    assert connector.fivetran_sync_started is not None
+    integration.refresh_from_db()
+    assert integration.state == Integration.State.LOAD
+
+    # update sync
+    fivetran.get.return_value = get_mock_fivetran_connector(connector)
+
+    # connector uses schema and not tables updated
+    fivetran.get_schemas.return_value = get_mock_schema(0)
+    start_connector_sync(connector)
+    assert fivetran.start_update_sync.call_count == 0
+    assert connector.integration.state == Integration.State.LOAD
+
+    # connector uses schema and tables updated
+    fivetran.get_schemas.return_value = get_mock_schema(1)
+    start_connector_sync(connector)
+    assert fivetran.start_update_sync.call_count == 1
+    assert fivetran.start_update_sync.call_args.args == (connector,)
+
+    # connector does not use schema
+    connector.service = "segment"
+    connector.save()
+    start_connector_sync(connector)
+    assert fivetran.start_update_sync.call_count == 2
+    assert fivetran.start_update_sync.call_args.args == (connector,)
 
 
 def test_handle_syncing_connector(
@@ -20,6 +66,8 @@ def test_handle_syncing_connector(
         service="google_analytics",
     )
     integration = connector.integration
+
+    # test: logic to handle a syncing fivetran connector, including all errors
 
     # fivetran setup is broken or incomplete
     fivetran.get.return_value = get_mock_fivetran_connector(
@@ -74,6 +122,7 @@ def test_handle_syncing_connector(
     integration.save()
     fivetran.get_schemas.return_value = get_mock_schema(0, service="segment")
     bigquery.list_tables.return_value = get_mock_list_tables(1)
+    bigquery.get_table().num_rows = 10
     handle_syncing_connector(connector)
     assert integration.state == Integration.State.DONE
     assert integration.table_set.count() == 1

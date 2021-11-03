@@ -54,7 +54,7 @@ def _synchronise_tables_for_connector(connector: Connector, bq_ids: List[str]):
 
 
 def _check_new_tables(connector: Connector):
-    bq_ids = clients.fivetran().get_schemas(connector).get_bq_ids()
+    bq_ids = clients.fivetran().get_schemas(connector).enabled_bq_ids
     return len(bq_ids - connector.integration.bq_ids) > 0
 
 
