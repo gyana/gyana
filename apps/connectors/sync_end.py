@@ -71,7 +71,7 @@ def handle_syncing_connector(connector):
         integration.save()
 
     # the historical or incremental sync is ongoing
-    elif fivetran_obj.is_syncing:
+    elif fivetran_obj.status.is_syncing:
         pass
 
     # none of the fivetran tables are available in bigquery yet

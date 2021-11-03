@@ -204,6 +204,29 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["sync_task_id"] = self.object.source_obj.sync_task_id
+
+        if (
+            self.object.kind == Integration.Kind.CONNECTOR
+            and self.object.state == Integration.State.ERROR
+        ):
+            connector = self.object.source_obj
+            fivetran_obj = clients.fivetran().get(connector)
+
+            if fivetran_obj.status.setup_state != "connected":
+                internal_redirect = reverse(
+                    "project_integrations_connectors:authorize",
+                    args=(
+                        self.object.project.id,
+                        connector.id,
+                    ),
+                )
+
+                context_data["fivetran_url"] = clients.fivetran().get_authorize_url(
+                    connector,
+                    f"{settings.EXTERNAL_URL}{internal_redirect}",
+                )
+                context_data["broken"] = True
+
         return context_data
 
     def form_valid(self, form):
