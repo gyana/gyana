@@ -68,7 +68,7 @@ def get_mock_schema(
         }
         schema_obj = FivetranSchemaObj(
             {"schema": schema},
-            service_conf=get_services_obj()[service],
+            service_type=get_services_obj()[service].service_type,
             schema_prefix="dataset",
         )
         return schema_obj
@@ -84,7 +84,7 @@ def get_mock_schema(
 
     schema_obj = FivetranSchemaObj(
         {schema["name_in_destination"]: schema for schema in schemas},
-        service_conf=get_services_obj()[service],
+        service_type=get_services_obj()[service].service_type,
         schema_prefix="dataset",
     )
     return schema_obj

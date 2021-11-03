@@ -130,7 +130,9 @@ class Connector(BaseModel):
 
     @property
     def schema_obj(self):
-        return FivetranSchemaObj(self.schema_config, self.conf, self.schema)
+        return FivetranSchemaObj(
+            self.schema_config, self.conf.service_type, self.schema
+        )
 
     @property
     def requires_authorization(self):

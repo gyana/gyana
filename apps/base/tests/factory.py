@@ -18,6 +18,7 @@ from apps.teams.models import Team
 from apps.uploads.models import Upload
 from apps.widgets.models import Widget
 from apps.workflows.models import Workflow
+from django.utils import timezone
 from pytest_factoryboy import register
 
 import factory
@@ -55,9 +56,25 @@ class ConnectorFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Connector
 
+    fivetran_id = "fivetran_id"
+    group_id = "group_id"
     service = "google_analytics"
+    service_version = 0
     schema = "schema"
+    paused = False
+    pause_after_trial = False
+    connected_by = ""
+    created_at = timezone.now()
     fivetran_authorized = True
+    sync_frequency = 360
+    schedule_type = "auto"
+    setup_state = Connector.SetupState.CONNECTED
+    sync_state = Connector.SyncState.SCHEDULED
+    update_state = Connector.UpdateState.ON_SCHEDULE
+    is_historical_sync = False
+    tasks = []
+    warnings = []
+    config = {}
     integration = factory.SubFactory(
         IntegrationFactory, kind=Integration.Kind.CONNECTOR, name="Google Analytics"
     )
