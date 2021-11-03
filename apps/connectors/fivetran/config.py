@@ -57,6 +57,14 @@ class Service:
             ServiceTypeEnum.EVENT_TRACKING,
         }
 
+    @property
+    def service_uses_schema(self):
+        # the tables can be managed via the fivetran schema object
+        return self.service_type in {
+            ServiceTypeEnum.API_CLOUD,
+            ServiceTypeEnum.DATABASE,
+        }
+
 
 @lru_cache
 def get_services_obj():
