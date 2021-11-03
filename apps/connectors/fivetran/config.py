@@ -49,6 +49,14 @@ class Service:
     def __post_init__(self):
         self.service_type = ServiceTypeEnum(self.service_type)
 
+    @property
+    def service_is_dynamic(self):
+        # the tables are not available until an initial event is sent and synced
+        return self.service_type in {
+            ServiceTypeEnum.WEBHOOKS,
+            ServiceTypeEnum.EVENT_TRACKING,
+        }
+
 
 @lru_cache
 def get_services_obj():

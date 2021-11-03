@@ -23,6 +23,10 @@ class FivetranConnectorStatus:
     tasks: List[Dict[str, str]]
     warnings: List[Dict[str, str]]
 
+    @property
+    def is_syncing(self):
+        return self.is_historical_sync or self.sync_state == "syncing"
+
 
 @dataclass
 class FivetranConnector:
