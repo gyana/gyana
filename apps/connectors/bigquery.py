@@ -37,7 +37,7 @@ def _get_bq_tables_from_dataset_safe(dataset_id, enabled_table_ids=None):
 
 def _get_bq_table_safe(dataset_id, table_id):
     try:
-        clients.bigquery().get_table(f"{dataset_id}.{table_id}")
+        return clients.bigquery().get_table(f"{dataset_id}.{table_id}")
     except NotFound:
         return
 

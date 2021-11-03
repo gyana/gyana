@@ -1,11 +1,6 @@
 from apps.cnames.models import CName
-from apps.columns.models import (
-    AddColumn,
-    AggregationColumn,
-    EditColumn,
-    FormulaColumn,
-    WindowColumn,
-)
+from apps.columns.models import (AddColumn, AggregationColumn, EditColumn,
+                                 FormulaColumn, WindowColumn)
 from apps.connectors.models import Connector
 from apps.dashboards.models import Dashboard
 from apps.filters.models import Filter
@@ -60,7 +55,7 @@ class ConnectorFactory(factory.django.DjangoModelFactory):
     group_id = "group_id"
     service = "google_analytics"
     service_version = 0
-    schema = "schema"
+    schema = "dataset"
     paused = False
     pause_after_trial = False
     connected_by = ""
