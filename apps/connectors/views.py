@@ -7,14 +7,19 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 
 from apps.base import clients
-from apps.base.analytics import (INTEGRATION_AUTHORIZED_EVENT,
-                                 INTEGRATION_CREATED_EVENT,
-                                 NEW_INTEGRATION_START_EVENT)
+from apps.base.analytics import (
+    INTEGRATION_AUTHORIZED_EVENT,
+    INTEGRATION_CREATED_EVENT,
+    NEW_INTEGRATION_START_EVENT,
+)
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 
-from .fivetran.config import (get_service_categories, get_services_obj,
-                              get_services_query)
+from .fivetran.config import (
+    get_service_categories,
+    get_services_obj,
+    get_services_query,
+)
 from .forms import ConnectorCreateForm
 from .models import Connector
 
@@ -69,7 +74,7 @@ class ConnectorCreate(ProjectMixin, CreateView):
             },
         )
 
-        return self.object.fivetran_url
+        return redirect(self.object.fivetran_authorization_url)
 
 
 class ConnectorAuthorize(ProjectMixin, DetailView):
@@ -79,6 +84,10 @@ class ConnectorAuthorize(ProjectMixin, DetailView):
         self.object = self.get_object()
         self.object.fivetran_authorized = True
         self.object.save()
+
+        # for re-authorization
+        self.object.integration.state = Integration.State.UPDATE
+        self.object.integration.save()
 
         analytics.track(
             self.request.user.id,
