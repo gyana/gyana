@@ -19,6 +19,7 @@ def sync_updates_from_fivetran(connector):
     ).json()
 
     if res["code"] != "Success":
+        print("Unable to find connector", connector.id, connector.fivetran_id, connector.schema)
         return
 
     data = res["data"]

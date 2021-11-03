@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from apps.connectors.fivetran.config import get_services_obj
-from apps.connectors.fivetran.connector import FivetranConnector
 from apps.connectors.fivetran.schema import FivetranSchemaObj
 from django.utils import timezone
 from google.cloud.bigquery.table import Table as BqTable
@@ -43,7 +42,7 @@ def get_mock_fivetran_connector(
         "config": {},
     }
 
-    return FivetranConnector(**data)
+    return data
 
 
 def get_mock_schema(

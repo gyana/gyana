@@ -2,8 +2,8 @@ from datetime import timedelta
 
 import pytest
 from apps.connectors.sync import (
-    _synchronise_tables_for_connector,
-    handle_syncing_connector,
+    _sync_tables_for_connector,
+    end_connector_sync,
     start_connector_sync,
 )
 from apps.integrations.models import Integration
@@ -23,7 +23,7 @@ def test_synchronise_tables_for_connector(logged_in_user, connector_factory, big
 
     # create new tables
     bq_ids = {"dataset.table_1", "dataset.table_2"}
-    _synchronise_tables_for_connector(connector, bq_ids)
+    _sync_tables_for_connector(connector, bq_ids)
 
     assert integration.table_set.count() == 2
     assert integration.table_set.filter(
@@ -32,11 +32,11 @@ def test_synchronise_tables_for_connector(logged_in_user, connector_factory, big
     assert team.row_count == 20
 
     # no new tables to create
-    _synchronise_tables_for_connector(connector, bq_ids)
+    _sync_tables_for_connector(connector, bq_ids)
 
     # create two tables, delete a table
     bq_ids = {"dataset.table_2", "dataset.table_3", "dataset.table_4"}
-    _synchronise_tables_for_connector(connector, bq_ids)
+    _sync_tables_for_connector(connector, bq_ids)
 
     assert integration.table_set.count() == 3
     assert not integration.table_set.filter(bq_table="table_1").exists()
@@ -107,7 +107,7 @@ def test_handle_syncing_connector(
     fivetran.get.return_value = get_mock_fivetran_connector(
         connector, is_historical_sync=True, is_broken=True
     )
-    handle_syncing_connector(connector)
+    end_connector_sync(connector)
     integration.refresh_from_db()
     assert integration.state == Integration.State.ERROR
 
@@ -117,7 +117,7 @@ def test_handle_syncing_connector(
     fivetran.get.return_value = get_mock_fivetran_connector(
         connector, is_historical_sync=True
     )
-    handle_syncing_connector(connector)
+    end_connector_sync(connector)
     integration.refresh_from_db()
     assert integration.state == Integration.State.LOAD
 
@@ -129,7 +129,7 @@ def test_handle_syncing_connector(
     bigquery.list_tables.return_value = get_mock_list_tables(0)
 
     # api_cloud before grace period
-    handle_syncing_connector(connector)
+    end_connector_sync(connector)
     integration.refresh_from_db()
     assert integration.state == Integration.State.LOAD
 
@@ -137,7 +137,7 @@ def test_handle_syncing_connector(
     fivetran.get.return_value = get_mock_fivetran_connector(
         connector, succeeded_at=timezone.now() - timedelta(hours=1)
     )
-    handle_syncing_connector(connector)
+    end_connector_sync(connector)
     integration.refresh_from_db()
     assert integration.state == Integration.State.ERROR
 
@@ -147,7 +147,7 @@ def test_handle_syncing_connector(
     connector.service = "segment"
     connector.save()
     fivetran.get.return_value = get_mock_fivetran_connector(connector)
-    handle_syncing_connector(connector)
+    end_connector_sync(connector)
     integration.refresh_from_db()
     assert integration.state == Integration.State.ERROR
 
@@ -157,6 +157,6 @@ def test_handle_syncing_connector(
     fivetran.get_schemas.return_value = get_mock_schema(0, service="segment")
     bigquery.list_tables.return_value = get_mock_list_tables(1)
     bigquery.get_table().num_rows = 10
-    handle_syncing_connector(connector)
+    end_connector_sync(connector)
     assert integration.state == Integration.State.DONE
     assert integration.table_set.count() == 1
