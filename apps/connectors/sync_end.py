@@ -26,11 +26,10 @@ def _get_table_from_bq_id(bq_id, connector):
 
 def _synchronise_tables_for_connector(connector: Connector, bq_ids: List[str]):
 
-    # delete OUTDATED tables that should no longer exist in bigquery
-    # fivetran does not delete for us
+    # DELETE tables that should no longer exist in bigquery
+    # (fivetran does not delete for us - it will cascade onto bigquery as well)
     #
-    # calculate the NEW tables that should be added to database and
-    # map them onto tables in our database
+    # CREATE tables to map new tables in bigquery
 
     for table in connector.integration.table_set.all():
         if table.bq_id not in bq_ids:
