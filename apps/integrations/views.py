@@ -2,7 +2,7 @@ import analytics
 from apps.base import clients
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
 from apps.base.turbo import TurboUpdateView
-from apps.connectors.tasks import complete_connector_sync
+from apps.connectors.sync_end import handle_syncing_connector
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import KIND_TO_SYNC_TASK
 from apps.projects.mixins import ProjectMixin
@@ -189,8 +189,7 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
         self.object = self.get_object()
 
         if self.object.kind == Integration.Kind.CONNECTOR:
-            if clients.fivetran().has_completed_sync(self.object.source_obj):
-                complete_connector_sync(self.object.source_obj)
+            handle_syncing_connector(self.object.source_obj)
 
         if self.object.state not in [
             Integration.State.LOAD,

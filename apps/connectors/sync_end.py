@@ -13,7 +13,7 @@ from apps.integrations.models import Integration
 from apps.tables.models import Table
 
 
-def get_table_from_bq_id(bq_id, connector):
+def _get_table_from_bq_id(bq_id, connector):
     dataset_id, table_id = bq_id.split(".")
     return Table(
         source=Table.Source.INTEGRATION,
@@ -24,7 +24,7 @@ def get_table_from_bq_id(bq_id, connector):
     )
 
 
-def create_tables_if_not_exist_for_connector(connector: Connector, bq_ids: List[str]):
+def _create_tables_if_not_exist_for_connector(connector: Connector, bq_ids: List[str]):
 
     # calculate the NEW tables that should be added to database and
     # map them onto tables in our database
@@ -36,7 +36,7 @@ def create_tables_if_not_exist_for_connector(connector: Connector, bq_ids: List[
     if len(new_bq_ids) == 0:
         return
 
-    tables = [get_table_from_bq_id(bq_id, connector) for bq_id in new_bq_ids]
+    tables = [_get_table_from_bq_id(bq_id, connector) for bq_id in new_bq_ids]
 
     with transaction.atomic():
         # this will fail with unique constraint error if there is a concurrent job
@@ -44,60 +44,6 @@ def create_tables_if_not_exist_for_connector(connector: Connector, bq_ids: List[
 
         for table in tables:
             table.update_num_rows()
-
-
-def delete_tables_not_in_schema(connector: Connector):
-    # if we've deleted tables, we'll need to delete them from BigQuery
-
-    schema_obj = clients.fivetran().get_schemas(connector)
-    bq_ids = schema_obj.get_bq_ids()
-
-    for table in connector.integration.table_set.all():
-        if table.bq_id not in bq_ids:
-            table.delete()
-
-    # re-calculate total rows after tables are deleted
-    connector.integration.project.team.update_row_count()
-
-
-def check_new_tables_added_to_schema(connector: Connector):
-    # if we've added new tables, we need to trigger resync
-    # otherwise, we don't want to make the user wait
-
-    schema_obj = clients.fivetran().get_schemas(connector)
-    bq_ids = schema_obj.get_bq_ids()
-
-    current_bq_ids = {t.bq_id for t in connector.integration.table_set.all()}
-
-    return len(bq_ids - current_bq_ids) > 0
-
-
-def run_connector_sync(connector: Connector):
-
-    service_type = connector.conf.service_type
-
-    is_initial_sync = requires_sync = connector.integration.table_set.count() == 0
-
-    # if a user updates the fivetran schema, we need to reflect it by triggering
-    # a resync (if the user added new tables), or deleting them from bigquery
-    # (if they removed them)
-    #
-    # only required for api_cloud and database sources
-    if not is_initial_sync and service_type in [
-        ServiceTypeEnum.API_CLOUD,
-        ServiceTypeEnum.DATABASE,
-    ]:
-        delete_tables_not_in_schema(connector)
-        requires_sync = check_new_tables_added_to_schema(connector)
-
-    if requires_sync:
-        clients.fivetran().start_initial_sync(connector)
-
-        connector.fivetran_sync_started = timezone.now()
-        connector.save()
-
-        connector.integration.state = Integration.State.LOAD
-        connector.integration.save()
 
 
 def handle_syncing_connector(connector):
@@ -123,6 +69,7 @@ def handle_syncing_connector(connector):
 
     if not has_completed_sync:
         return
+
     schema_obj = clients.fivetran().get_schemas(connector)
 
     # a list of all bigquery ids that (1) are available in bigquery and
@@ -139,12 +86,12 @@ def handle_syncing_connector(connector):
             ServiceTypeEnum.EVENT_TRACKING,
             ServiceTypeEnum.WEBHOOKS,
         ]
-        static_has_field = (
+        static_has_failed = (
             timezone.now() - fivetran_obj.succeeded_at
         ).total_seconds > 1800
 
         # for webhooks and event_tracking, alert the user that events are not received yet
-        if dynamic_has_failed or static_has_field:
+        if dynamic_has_failed or static_has_failed:
             integration.state = Integration.State.ERROR
             integration.save()
 
@@ -152,7 +99,7 @@ def handle_syncing_connector(connector):
 
     send_email = integration.table_set.count() == 0
 
-    create_tables_if_not_exist_for_connector(connector, bq_ids)
+    _create_tables_if_not_exist_for_connector(connector, bq_ids)
 
     integration.state = Integration.State.DONE
     integration.save()

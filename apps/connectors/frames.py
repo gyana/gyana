@@ -5,7 +5,7 @@ from apps.base import clients
 from apps.base.frames import TurboFrameDetailView
 
 from .models import Connector
-from .tasks import complete_connector_sync
+from .sync_end import handle_syncing_connector
 
 
 class ConnectorIcon(TurboFrameDetailView):
@@ -17,8 +17,7 @@ class ConnectorIcon(TurboFrameDetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        if clients.fivetran().has_completed_sync(self.object):
-            complete_connector_sync(self.object)
+        handle_syncing_connector(self.object)
 
         context_data["icon"] = self.object.integration.state_icon
         context_data["text"] = self.object.integration.state_text
