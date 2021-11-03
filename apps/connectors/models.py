@@ -172,7 +172,6 @@ class Connector(BaseModel):
             return datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%f%z")
 
     def update_kwargs_from_fivetran(self, data):
-
         status = data["status"]
 
         kwargs = {
@@ -222,6 +221,5 @@ class Connector(BaseModel):
             end_connector_sync(self, is_initial=previous_succeeded_at is None)
 
     def sync_schema_obj_from_fivetran(self):
-
-        self.schema_config = clients.fivetran().get_schemas(self.instance)
+        self.schema_config = clients.fivetran().get_schemas(self)
         self.save()

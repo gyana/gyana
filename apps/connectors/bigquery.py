@@ -24,10 +24,12 @@ def _get_bq_tables_from_dataset_safe(dataset_id, enabled_table_ids=None):
     # this is useful for the fivetran schema logic as not all the schemas and
     # tables reported by fivetran may actually be created in bigquery
 
+    print(dataset_id)
+
     try:
-        bq_tables = clients.bigquery().list_tables(dataset_id)
+        bq_tables = list(clients.bigquery().list_tables(dataset_id))
         if enabled_table_ids is None:
-            return [t for t in bq_tables and t.table_id not in FIVETRAN_SYSTEM_TABLES]
+            return [t for t in bq_tables if t.table_id not in FIVETRAN_SYSTEM_TABLES]
         return [t for t in bq_tables if t.table_id in enabled_table_ids]
     except NotFound:
         return set()

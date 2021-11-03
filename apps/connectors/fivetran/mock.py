@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 from functools import cache
 from glob import glob
 
@@ -7,7 +8,6 @@ from django.urls.base import reverse
 from django.utils import timezone
 
 from ..models import Connector
-from .schema import FivetranSchemaObj
 
 SCHEMA_FIXTURES_DIR = "apps/connectors/fivetran/fixtures"
 MOCK_SCHEMA_DIR = os.path.abspath(".mock/.schema")
@@ -60,7 +60,7 @@ class MockFivetranClient:
         return {
             "id": connector.fivetran_id,
             "group_id": "group_id",
-            "service": "adwords",
+            "service": connector.service,
             "service_version": 4,
             "schema": connector.schema,
             "paused": True,
@@ -89,18 +89,23 @@ class MockFivetranClient:
             if started is not None
             else False
         )
+        succeeded_at = (
+            datetime.strftime(timezone.now(), "%Y-%m-%dT%H:%M:%S.%f%z")
+            if not is_historical_sync
+            else None
+        )
 
         data = {
-            "id": "connector_id",
+            "id": connector.fivetran_id,
             "group_id": "group_id",
-            "service": "adwords",
+            "service": connector.service,
             "service_version": 4,
-            "schema": "adwords.schema",
+            "schema": connector.schema,
             "paused": True,
             "pause_after_trial": True,
             "connected_by": "monitoring_assuring",
             "created_at": "2021-01-01T00:00:00.000000Z",
-            "succeeded_at": "2021-01-01T00:00:00.000000Z",
+            "succeeded_at": succeeded_at,
             "failed_at": None,
             "sync_frequency": 360,
             "schedule_type": "auto",
@@ -140,7 +145,7 @@ class MockFivetranClient:
             return json.load(f)
 
     def update_schemas(self, connector, schemas):
-        self._schema_cache[connector.id] = schemas.to_dict()
+        self._schema_cache[connector.id] = schemas
 
     def delete(self, connector):
         pass

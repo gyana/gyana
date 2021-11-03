@@ -85,7 +85,8 @@ class ConnectorUpdateForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         try:
-            schema_obj = update_schema_from_cleaned_data(self.instance, cleaned_data)
+            schema_obj = self.instance.schema_obj
+            schema_obj.update_schema_from_cleaned_data(cleaned_data)
             clients.fivetran().update_schemas(self.instance, schema_obj.to_dict())
             self.instance.sync_schema_obj_from_fivetran()
         except FivetranClientError as e:

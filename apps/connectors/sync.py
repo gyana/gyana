@@ -31,8 +31,8 @@ def _sync_tables_for_connector(connector: Connector):
         tables = [
             Table(
                 source=Table.Source.INTEGRATION,
-                bq_table=bq_id.split(".")[0],
-                bq_dataset=bq_id.split(".")[1],
+                bq_dataset=bq_id.split(".")[0],
+                bq_table=bq_id.split(".")[1],
                 project=connector.integration.project,
                 integration=connector.integration,
             )
@@ -73,8 +73,6 @@ def end_connector_sync(connector, is_initial):
     #   - error for event style connectors (webhooks and event_tracking)
     #   - 30 minute grace period for the other connectors due to issues with fivetran
     # - synchronize the tables in bigquery to our database
-
-    connector.sync_updates_from_fivetran()
 
     if is_initial and len(connector.bq_tables) == 0:
 

@@ -1,5 +1,8 @@
 from dataclasses import asdict, dataclass
+from itertools import chain
 from typing import Dict, List, Optional
+
+from .config import ServiceTypeEnum
 
 # wrapper for fivetran schema information
 # https://fivetran.com/docs/rest-api/connectors#retrieveaconnectorschemaconfig
@@ -30,6 +33,8 @@ class FivetranTable:
 @dataclass
 class FivetranSchema:
     key: str
+    service_type: ServiceTypeEnum
+    schema_prefix: str
 
     name_in_destination: str
     enabled: bool
@@ -50,43 +55,69 @@ class FivetranSchema:
         return self.name_in_destination.replace("_", " ").title()
 
     @property
+    def dataset_id(self):
+        # database connectors have multiple bigquery datasets
+        if self.service_type == ServiceTypeEnum.DATABASE:
+            return f"{self.schema_prefix}_{self.name_in_destination}"
+        return self.schema_prefix
+
+    @property
+    def enabled_tables(self):
+        return {table for table in self.tables if table.enabled}
+
+    @property
     def enabled_table_ids(self):
-        return {table.name_in_destination for table in self.tables if table.enabled}
+        return {table.name_in_destination for table in self.enabled_tables}
+
+    @property
+    def enabled_bq_ids(self):
+        # the bigquery ids that fivetran intends to create based on the schema
+        # the user can has the option to disable individual tables
+        return {
+            f"{self.dataset_id}.{table.name_in_destination}"
+            for table in self.enabled_tables
+        }
 
 
 class FivetranSchemaObj:
-    def __init__(self, schemas_dict, service_conf, schema_prefix):
-        self.conf = service_conf
-        self.schema_prefix = schema_prefix
-        self.schemas = [FivetranSchema(key=k, **s) for k, s in schemas_dict.items()]
+    def __init__(self, schemas_dict, service_type, schema_prefix):
+        self.schemas = [
+            FivetranSchema(
+                key=key,
+                service_type=service_type,
+                schema_prefix=schema_prefix,
+                **schema,
+            )
+            for key, schema in schemas_dict.items()
+        ]
 
     def to_dict(self):
-        return {s.key: s.asdict() for s in self.schemas}
+        return {schema.key: schema.asdict() for schema in self.schemas}
 
     @property
     def enabled_schemas(self):
         # the user can has the option to disable individual schemas
-        return [s for s in self.schemas if s.enabled]
+        return [schema for schema in self.schemas if schema.enabled]
 
+    @property
+    def enabled_bq_ids(self):
+        # api_cloud only has one schema
+        return set(chain(*(schema.enabled_bq_ids for schema in self.enabled_schemas)))
 
-def update_schema_from_cleaned_data(connector, cleaned_data):
-    # mutate the schema_obj based on cleaned_data
+    def mutate_from_cleaned_data(self, cleaned_data):
+        # mutate the schema_obj based on cleaned_data from form
 
-    schema_obj = connector.schema_obj
-
-    for schema in schema_obj.schemas:
-        schema.enabled = f"{schema.name_in_destination}_schema" in cleaned_data
-        # only patch tables that are allowed
-        schema.tables = [
-            t for t in schema.tables if t.enabled_patch_settings["allowed"]
-        ]
-        for table in schema.tables:
-            # field does not exist if all unchecked
-            table.enabled = table.name_in_destination in cleaned_data.get(
-                f"{schema.name_in_destination}_tables", []
-            )
-            # no need to patch the columns information and it can break
-            # if access issues, e.g. per column access in Postgres
-            table.columns = {}
-
-    return schema_obj
+        for schema in self.schemas:
+            schema.enabled = f"{schema.name_in_destination}_schema" in cleaned_data
+            # only patch tables that are allowed
+            schema.tables = [
+                t for t in schema.tables if t.enabled_patch_settings["allowed"]
+            ]
+            for table in schema.tables:
+                # field does not exist if all unchecked
+                table.enabled = table.name_in_destination in cleaned_data.get(
+                    f"{schema.name_in_destination}_tables", []
+                )
+                # no need to patch the columns information and it can break
+                # if access issues, e.g. per column access in Postgres
+                table.columns = {}
