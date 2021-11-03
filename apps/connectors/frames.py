@@ -1,11 +1,6 @@
-from django.conf import settings
-from django.urls import reverse
-
-from apps.base import clients
 from apps.base.frames import TurboFrameDetailView
 
 from .models import Connector
-from .sync import handle_syncing_connector
 
 
 class ConnectorIcon(TurboFrameDetailView):
@@ -17,7 +12,7 @@ class ConnectorIcon(TurboFrameDetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        handle_syncing_connector(self.object)
+        self.object.sync_updates_from_fivetran()
 
         context_data["icon"] = self.object.integration.state_icon
         context_data["text"] = self.object.integration.state_text
