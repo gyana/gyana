@@ -153,6 +153,17 @@ class Connector(BaseModel):
             f"{settings.EXTERNAL_URL}{internal_redirect}",
         )
 
+    @cached_property
+    def expected_bq_ids(self):
+        from apps.connectors.bigquery import get_bq_tables_for_connector
+
+        bq_tables = get_bq_tables_for_connector(self)
+        return {f"{t.dataset_id}.{t.table_id}" for t in bq_tables}
+
+    @property
+    def current_bq_ids(self):
+        return {table.bq_id for table in self.integration.table_set.all()}
+
     @property
     def can_skip_resync(self):
         # it is possible to skip a resync if no new tables are added and the
@@ -160,14 +171,8 @@ class Connector(BaseModel):
         # this enables users to deselect tables fast
         return (
             self.conf.service_uses_schema
-            and len(self.schema_obj.enabled_bq_ids - self.integration.bq_ids) == 0
+            and len(self.schema_obj.enabled_bq_ids - self.current_bq_ids) == 0
         )
-
-    @cached_property
-    def bq_tables(self):
-        from apps.connectors.bigquery import get_bq_tables_for_connector
-
-        return get_bq_tables_for_connector(self)
 
     def _parse_fivetran_timestamp(self, timestamp):
         if timestamp is not None:

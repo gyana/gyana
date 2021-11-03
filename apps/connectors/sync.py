@@ -12,19 +12,16 @@ GRACE_PERIOD = 1800
 
 def _sync_tables_for_connector(connector: Connector):
 
-    bq_tables = connector.bq_tables
-    bq_ids = {f"{t.dataset_id}.{t.table_id}" for t in bq_tables}
-
     # DELETE tables that should no longer exist in bigquery, as fivetran does not
     # delete for us. It will cascade onto bigquery as well.
 
     for table in connector.integration.table_set.all():
-        if table.bq_id not in bq_ids:
+        if table.bq_id not in connector.expected_bq_ids:
             table.delete()
 
     # CREATE tables to map new tables in bigquery
 
-    create_bq_ids = bq_ids - connector.integration.bq_ids
+    create_bq_ids = connector.expected_bq_ids - connector.current_bq_ids
 
     if len(create_bq_ids) > 0:
 
