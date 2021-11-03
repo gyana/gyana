@@ -18,7 +18,7 @@ def delete_connector_datasets(connector):
         )
 
 
-def get_bq_tables_from_dataset_safe(dataset_id, enabled_table_ids=None):
+def _get_bq_tables_from_dataset_safe(dataset_id, enabled_table_ids=None):
 
     # fetch all tables in a dataset and return empty set if does not exist
     # this is useful for the fivetran schema logic as not all the schemas and
@@ -33,7 +33,7 @@ def get_bq_tables_from_dataset_safe(dataset_id, enabled_table_ids=None):
         return set()
 
 
-def get_bq_table_safe(dataset_id, table_id):
+def _get_bq_table_safe(dataset_id, table_id):
     try:
         clients.bigquery().get_table(f"{dataset_id}.{table_id}")
     except NotFound:
@@ -59,25 +59,25 @@ def get_bq_tables_for_connector(connector):
 
     # one dataset, multiple dynamic tables
     if service_type == ServiceTypeEnum.EVENT_TRACKING:
-        return get_bq_tables_from_dataset_safe(connector.schema)
+        return _get_bq_tables_from_dataset_safe(connector.schema)
 
     # one dataset, one fixed table
     if service_type in [ServiceTypeEnum.WEBHOOKS, ServiceTypeEnum.REPORTING_API]:
-        bq_table = get_bq_table_safe(
+        bq_table = _get_bq_table_safe(
             connector.schema, connector.conf.static_config["table"]
         )
         return {bq_table} if bq_table is not None else set()
 
     # one dataset, multiple fixed tables determined by schema
     if service_type == ServiceTypeEnum.API_CLOUD:
-        return get_bq_tables_from_dataset_safe(
+        return _get_bq_tables_from_dataset_safe(
             connector.schema,
             enabled_table_ids=connector.schema_obj.schemas[0].enabled_table_ids,
         )
 
     # multiple datasets, multiple fixed tables determined by schema
     bq_table_generator = (
-        get_bq_tables_from_dataset_safe(
+        _get_bq_tables_from_dataset_safe(
             # database connectors have multiple bigquery datasets and use a schema prefix
             f"{connector.schema}_{schema.name_in_destination}",
             schema.enabled_table_ids,
