@@ -11,6 +11,8 @@ from apps.integrations.emails import integration_ready_email
 from apps.integrations.models import Integration
 from apps.tables.models import Table
 
+GRACE_PERIOD = 1800
+
 
 def _get_table_from_bq_id(bq_id, connector):
     dataset_id, table_id = bq_id.split(".")
@@ -103,12 +105,12 @@ def handle_syncing_connector(connector):
 
         # - event_tracking and webhooks: user did not send any data yet
         # - otherwise: issues with fivetran, keep a 30 minute grace period for it to fix itself
-        is_error = (
-            connector.conf.service_is_dynamic
-            or (timezone.now() - fivetran_obj.succeeded_at).total_seconds > 1800
-        )
 
-        if is_error:
+        grace_period_elapsed = (
+            timezone.now() - fivetran_obj.succeeded_at
+        ).total_seconds() > GRACE_PERIOD
+
+        if connector.conf.service_is_dynamic or grace_period_elapsed:
             integration.state = Integration.State.ERROR
             integration.save()
 

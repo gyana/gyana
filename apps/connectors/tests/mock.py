@@ -1,10 +1,49 @@
+from datetime import datetime
+
 from apps.connectors.fivetran.config import get_services_obj
+from apps.connectors.fivetran.connector import FivetranConnector
 from apps.connectors.fivetran.schema import FivetranSchemaObj
+from django.utils import timezone
 from google.cloud.bigquery.table import Table as BqTable
 
 
 def get_mock_list_tables(num_tables, dataset="dataset"):
     return [BqTable(f"project.{dataset}.table_{n}") for n in range(1, num_tables + 1)]
+
+
+def get_mock_fivetran_connector(
+    connector, is_historical_sync=False, is_broken=False, succeeded_at=None
+):
+
+    if succeeded_at is None:
+        succeeded_at = timezone.now()
+
+    data = {
+        "id": connector.id,
+        "group_id": "group_id",
+        "service": connector.service,
+        "service_version": 4,
+        "schema": connector.schema,
+        "paused": True,
+        "pause_after_trial": True,
+        "connected_by": "monitoring_assuring",
+        "created_at": "2021-01-01T00:00:00.000000Z",
+        "succeeded_at": datetime.strftime(succeeded_at, "%Y-%m-%dT%H:%M:%S.%f%z"),
+        "failed_at": None,
+        "sync_frequency": 360,
+        "schedule_type": "auto",
+        "status": {
+            "setup_state": "broken" if is_broken else "connected",
+            "sync_state": "scheduled",
+            "update_state": "delayed",
+            "is_historical_sync": is_historical_sync,
+            "tasks": [{"code": "reconnect", "message": "Reconnect"}],
+            "warnings": [],
+        },
+        "config": {},
+    }
+
+    return FivetranConnector(**data)
 
 
 def get_mock_schema(
