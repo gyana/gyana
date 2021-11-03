@@ -2,8 +2,8 @@
 {% load static %}
 
 <h2 id="connectors-status" data-controller="tooltip">
-  {{ object.fivetran_succeeded_at|naturaltime }}
-  <span data-tooltip-target="body">{{ object.fivetran_succeeded_at }}</span>
+  {{ object.succeeded_at|naturaltime }}
+  <span data-tooltip-target="body">{{ object.succeeded_at }}</span>
 </h2>
 <p>Most recent data imported</p>
 {% if object.requires_authorization %}

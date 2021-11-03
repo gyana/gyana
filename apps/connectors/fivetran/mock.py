@@ -7,7 +7,6 @@ from django.urls.base import reverse
 from django.utils import timezone
 
 from ..models import Connector
-from .connector import FivetranConnector
 from .schema import FivetranSchemaObj
 
 SCHEMA_FIXTURES_DIR = "apps/connectors/fivetran/fixtures"
@@ -116,7 +115,7 @@ class MockFivetranClient:
             "config": {},
         }
 
-        return FivetranConnector(**data)
+        return data
 
     def start_initial_sync(self, connector):
         self._started[connector.id] = timezone.now()
@@ -132,15 +131,13 @@ class MockFivetranClient:
 
     def get_schemas(self, connector):
         if connector.id in self._schema_cache:
-            return FivetranSchemaObj(
-                self._schema_cache[connector.id], connector.conf, connector.schema
-            )
+            return self._schema_cache[connector.id]
 
         service = connector.service if connector is not None else "google_analytics"
         fivetran_id = connector.fivetran_id if connector is not None else "humid_rifle"
 
         with open(f"{SCHEMA_FIXTURES_DIR}/{service}_{fivetran_id}.json", "r") as f:
-            return FivetranSchemaObj(json.load(f), connector.conf, connector.schema)
+            return json.load(f)
 
     def update_schemas(self, connector, schemas):
         self._schema_cache[connector.id] = schemas.to_dict()

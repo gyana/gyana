@@ -2,16 +2,13 @@ from datetime import datetime
 from functools import cached_property
 
 from django.conf import settings
-from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
 from apps.base import clients
 from apps.base.models import BaseModel
-from apps.connectors.bigquery import get_bq_table_safe, get_bq_tables_for_connector
 from apps.connectors.fivetran.schema import FivetranSchemaObj
-from apps.connectors.sync import end_connector_sync
 from apps.integrations.models import Integration
 
 from .fivetran.config import get_services_obj
@@ -41,8 +38,8 @@ class ConnectorsManager(models.Manager):
 
         # checks fivetran connectors every FIVETRAN_SYNC_FREQUENCY_HOURS seconds for
         # possible updated data, until sync has completed
-        # using exclude as need to include where fivetran_succeeded_at is null
-        return self.exclude(fivetran_succeeded_at__gt=exclude_succeeded_at_after).all()
+        # using exclude as need to include where succeeded_at is null
+        return self.exclude(succeeded_at__gt=exclude_succeeded_at_after).all()
 
 
 class Connector(BaseModel):
@@ -166,6 +163,8 @@ class Connector(BaseModel):
 
     @cached_property
     def bq_tables(self):
+        from apps.connectors.bigquery import get_bq_tables_for_connector
+
         return get_bq_tables_for_connector(self)
 
     def _parse_fivetran_timestamp(self, timestamp):
@@ -205,6 +204,8 @@ class Connector(BaseModel):
             setattr(self, key, value)
 
     def sync_updates_from_fivetran(self):
+        from apps.connectors.sync import end_connector_sync
+
         previous_succeeded_at = self.succeeded_at
 
         data = clients.fivetran().get(self)

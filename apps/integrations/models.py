@@ -29,8 +29,7 @@ class IntegrationsManager(models.Manager):
     def broken(self):
         return self.ready().filter(
             kind=Integration.Kind.CONNECTOR,
-            connector__fivetran_succeeded_at__lt=timezone.now()
-            - timezone.timedelta(hours=24),
+            connector__succeeded_at__lt=timezone.now() - timezone.timedelta(hours=24),
         )
 
     def needs_attention(self):
