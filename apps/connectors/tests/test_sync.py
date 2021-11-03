@@ -26,10 +26,9 @@ def test_synchronise_tables_for_connector(logged_in_user, connector_factory, big
     _synchronise_tables_for_connector(connector, bq_ids)
 
     assert integration.table_set.count() == 2
-    table = integration.table_set.first()
-    assert table.bq_dataset == "dataset"
-    assert table.bq_table == "table_2"
-
+    assert integration.table_set.filter(
+        bq_dataset="dataset", bq_table="table_2"
+    ).exists()
     assert team.row_count == 20
 
     # no new tables to create
@@ -41,7 +40,6 @@ def test_synchronise_tables_for_connector(logged_in_user, connector_factory, big
 
     assert integration.table_set.count() == 3
     assert not integration.table_set.filter(bq_table="table_1").exists()
-
     team.refresh_from_db()
     assert team.row_count == 30
 

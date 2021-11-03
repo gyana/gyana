@@ -190,6 +190,7 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
 
         if self.object.kind == Integration.Kind.CONNECTOR:
             handle_syncing_connector(self.object.source_obj)
+            self.object.refresh_from_db()
 
         if self.object.state not in [
             Integration.State.LOAD,
