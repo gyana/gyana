@@ -45,7 +45,7 @@ def _sync_tables_for_connector(connector: Connector):
 
     # UPDATE all tables with statistics from bigquery
 
-    for table in tables:
+    for table in connector.integration.table_set.all():
         table.update_num_rows()
 
     # re-calculate total rows after tables are updated
@@ -96,4 +96,4 @@ def end_connector_sync(connector, is_initial):
             connector.succeeded_at - connector.fivetran_sync_started
         ).total_seconds()
 
-        send_integration_ready_email(time_to_sync)
+        send_integration_ready_email(connector.integration, time_to_sync)

@@ -63,7 +63,7 @@ class FivetranSchema:
 
     @property
     def enabled_tables(self):
-        return {table for table in self.tables if table.enabled}
+        return [table for table in self.tables if table.enabled]
 
     @property
     def enabled_table_ids(self):

@@ -7,8 +7,7 @@ from apps.base import clients
 from apps.base.forms import BaseModelForm
 
 from .fivetran.client import FivetranClientError
-from .fivetran.config import ServiceTypeEnum, get_services_obj
-from .fivetran.schema import update_schema_from_cleaned_data
+from .fivetran.config import ServiceTypeEnum
 from .models import Connector
 from .widgets import ConnectorSchemaMultiSelect
 
@@ -37,9 +36,7 @@ class ConnectorCreateForm(BaseModelForm):
 
     def pre_save(self, instance):
         instance.update_kwargs_from_fivetran(self._data)
-        instance.create_integration(
-            get_services_obj()[self._service].name, self._created_by, self._project
-        )
+        instance.create_integration(instance.conf.name, self._created_by, self._project)
 
 
 class ConnectorUpdateForm(forms.ModelForm):
@@ -86,7 +83,7 @@ class ConnectorUpdateForm(forms.ModelForm):
         cleaned_data = super().clean()
         try:
             schema_obj = self.instance.schema_obj
-            schema_obj.update_schema_from_cleaned_data(cleaned_data)
+            schema_obj.mutate_from_cleaned_data(cleaned_data)
             clients.fivetran().update_schemas(self.instance, schema_obj.to_dict())
             self.instance.sync_schema_obj_from_fivetran()
         except FivetranClientError as e:
