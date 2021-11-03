@@ -1,9 +1,9 @@
-from datetime import datetime
-
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 
+from apps.base import clients
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
 
@@ -95,3 +95,18 @@ class Connector(BaseModel):
         # update all tables too
         for table in self.integration.table_set.all():
             table.update_data_updated(succeeded_at)
+
+    @property
+    def fivetran_authorization_url(self):
+        internal_redirect = reverse(
+            "project_integrations_connectors:authorize",
+            args=(
+                self.integration.project.id,
+                self.id,
+            ),
+        )
+
+        return clients.fivetran().get_authorize_url(
+            self,
+            f"{settings.EXTERNAL_URL}{internal_redirect}",
+        )

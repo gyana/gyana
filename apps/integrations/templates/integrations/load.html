@@ -27,7 +27,7 @@
                 <h4>Your connector is incomplete or broken. {% link_article 'integrations' 'error' %}</h4>
                 <p>
                   Try
-                  <a class="link" href="{{ fivetran_url }}" data-turbo-frame="_top">
+                  <a class="link" href="{{ integration.source_obj.fivetran_authorization_url }}" data-turbo-frame="_top">
                     fixing it
                   </a>
                   or reach out to support.

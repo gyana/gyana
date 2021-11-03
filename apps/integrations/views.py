@@ -210,22 +210,8 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
             self.object.kind == Integration.Kind.CONNECTOR
             and self.object.state == Integration.State.ERROR
         ):
-            connector = self.object.source_obj
-            fivetran_obj = clients.fivetran().get(connector)
-
+            fivetran_obj = clients.fivetran().get(self.object.source_obj)
             if fivetran_obj.status.setup_state != "connected":
-                internal_redirect = reverse(
-                    "project_integrations_connectors:authorize",
-                    args=(
-                        self.object.project.id,
-                        connector.id,
-                    ),
-                )
-
-                context_data["fivetran_url"] = clients.fivetran().get_authorize_url(
-                    connector,
-                    f"{settings.EXTERNAL_URL}{internal_redirect}",
-                )
                 context_data["broken"] = True
 
         return context_data
