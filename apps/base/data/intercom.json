@@ -66,7 +66,12 @@
     "pyramid": "5563345#h_dd17adff3a",
     "radar": "5563345#h_84f92f434c",
     "bubble": "5563345#h_965f2af691",
-    "heatmap": "5563345#h_97cff5c2de"
+    "heatmap": "5563345#h_97cff5c2de",
+    "timeseries-line": "5563345#h_7071842310",
+    "timeseries-line_stacked": "5563345#h_7071842310",
+    "timeseries-column": "5563345#h_7071842310",
+    "timeseries-column-stacked": "5563345#h_7071842310",
+    "timeseries-area": "5563345#h_7071842310"
   },
   "integrations_future": {
     "overview": "5548599-integrations-overview",

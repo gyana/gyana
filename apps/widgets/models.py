@@ -32,6 +32,14 @@ class Widget(CloneMixin, BaseModel):
         RADAR = "radar", "Radar"
         BUBBLE = "bubble", "Bubble"
         HEATMAP = "heatmap", "Heatmap"
+        TIMESERIES_LINE = "timeseries-line", "Timeseries"
+        TIMESERIES_STACKED_LINE = "timeseries-line_stacked", "Stacked Timeseries"
+        TIMESERIES_COLUMN = "timeseries-column", "Column Timeseries"
+        TIMESERIES_STACKED_COLUMN = (
+            "timeseries-column-stacked",
+            "Stacked Column Timeseries",
+        )
+        TIMESERIES_AREA = "timeseries-area", "Area Timeseries"
 
     class Aggregator(models.TextChoices):
         # These aggregators should reflect the names described in the ibis api, none is an exception
@@ -135,6 +143,11 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.RADAR.value: ("fa-radar",),
     Widget.Kind.BUBBLE.value: ("fa-soap",),
     Widget.Kind.HEATMAP.value: ("fa-map",),
+    Widget.Kind.TIMESERIES_LINE.value: ("fa-chart-line",),
+    Widget.Kind.TIMESERIES_STACKED_LINE.value: ("fa-chart-line",),
+    Widget.Kind.TIMESERIES_COLUMN.value: ("fa-chart-bar",),
+    Widget.Kind.TIMESERIES_STACKED_COLUMN.value: ("fa-chart-bar",),
+    Widget.Kind.TIMESERIES_AREA.value: ("fa-chart-area",),
 }
 
 

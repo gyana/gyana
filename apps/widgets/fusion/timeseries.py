@@ -70,7 +70,7 @@ def to_stack(type_, widget, df, query):
 
 
 def to_timeseries(widget, df, query):
-    timeseries = CHART_DATA[widget.kind](widget, df, query)
+    timeseries = TIMESERIES_DATA[widget.kind](widget, df, query)
     chart_id = f"{widget.pk}-{short_hash()}"
 
     chart = FusionCharts(
@@ -86,10 +86,10 @@ def to_timeseries(widget, df, query):
     return chart, chart_id
 
 
-CHART_DATA = {
-    Widget.Kind.LINE: partial(to_multivariate, "line"),
-    Widget.Kind.COLUMN: partial(to_multivariate, "column"),
-    Widget.Kind.AREA: partial(to_multivariate, "area"),
-    Widget.Kind.STACKED_LINE: partial(to_stack, "line"),
-    Widget.Kind.STACKED_COLUMN: partial(to_stack, "column"),
+TIMESERIES_DATA = {
+    Widget.Kind.TIMESERIES_LINE: partial(to_multivariate, "line"),
+    Widget.Kind.TIMESERIES_COLUMN: partial(to_multivariate, "column"),
+    Widget.Kind.TIMESERIES_AREA: partial(to_multivariate, "area"),
+    Widget.Kind.TIMESERIES_STACKED_LINE: partial(to_stack, "line"),
+    Widget.Kind.TIMESERIES_STACKED_COLUMN: partial(to_stack, "column"),
 }

@@ -24,7 +24,7 @@
     {% endwith %}
   {% endif %}
 </fieldset>
-{% if form.kind.value ==  'stackedbar2d' or form.kind.value ==  'stackedcolumn2d' or form.kind.value ==  'msline-stacked'  %}
+{% if form.kind.value ==  'stackedbar2d' or form.kind.value ==  'stackedcolumn2d' or form.kind.value ==  'msline-stacked' or form.kind.value == "timeseries-line-stacked" or form.kind.value == "timeseries-column-stacked" %}
   <fieldset>
     <label for="{{ form.second_dimension.id_for_label }}">
       {{ form.second_dimension.label}}
