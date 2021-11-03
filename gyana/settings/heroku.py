@@ -42,6 +42,7 @@ USE_HASHIDS = True
 HONEYBADGER = {
     "API_KEY": os.environ.get("HONEYBADGER_API_KEY"),
     "FORCE_REPORT_DATA": True,
+    "EXCLUDED_EXCEPTIONS": ["Http404"],
 }
 
 # Disable admin-style browsable api endpoint

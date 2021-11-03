@@ -85,6 +85,7 @@ class Widget(CloneMixin, BaseModel):
     )
 
     stack_100_percent = models.BooleanField(default=False)
+    error = models.CharField(max_length=300, null=True)
 
     _clone_m2o_or_o2m_fields = [
         "aggregations",
@@ -98,6 +99,8 @@ class Widget(CloneMixin, BaseModel):
     def is_valid(self) -> bool:
         """Returns bool stating whether this Widget is ready to be displayed"""
         # TODO: right now you also need to update the query in DashboardOverview dashboards/frames
+        if self.error:
+            return False
         if self.kind == self.Kind.TEXT:
             return True
         if not self.table:

@@ -659,7 +659,7 @@ resolved_reference = "21a4058c2a758fac687f837cb523175c64c567c3"
 
 [[package]]
 name = "django-storages"
-version = "1.12.2"
+version = "1.12.3"
 description = "Support for many storage backends in Django"
 category = "main"
 optional = false
@@ -1044,7 +1044,7 @@ requests = ">=1.2.3"
 
 [[package]]
 name = "honeybadger"
-version = "0.6.0"
+version = "0.8.0"
 description = "Send Python and Django errors to Honeybadger"
 category = "main"
 optional = false
@@ -2343,8 +2343,8 @@ django-safedelete = [
 ]
 django-silk = []
 django-storages = [
-    {file = "django-storages-1.12.2.tar.gz", hash = "sha256:0013ebe4904521e2fa28f33591a03a7210304d73363e7eadd7cdcf81c12ba003"},
-    {file = "django_storages-1.12.2-py3-none-any.whl", hash = "sha256:683b70617f4be9baa17b2d6d7df46cf6afe31b5eb17ece3ca82f773f555592a7"},
+    {file = "django-storages-1.12.3.tar.gz", hash = "sha256:a475edb2f0f04c4f7e548919a751ecd50117270833956ed5bd585c0575d2a5e7"},
+    {file = "django_storages-1.12.3-py3-none-any.whl", hash = "sha256:204a99f218b747c46edbfeeb1310d357f83f90fa6a6024d8d0a3f422570cee84"},
 ]
 django-tables2 = [
     {file = "django-tables2-2.4.0.tar.gz", hash = "sha256:4eb526464ee56a0b7d827d1da9a4f257e44edb5e1cbb6a0cfb6ca0fed70d8e4f"},
@@ -2517,7 +2517,7 @@ heroku3 = [
     {file = "heroku3-4.2.3.tar.gz", hash = "sha256:4b20efa22f2901f96e9c89aceef7388637db83346541c6988d8c48bac8305900"},
 ]
 honeybadger = [
-    {file = "honeybadger-0.6.0-py3-none-any.whl", hash = "sha256:825eea3ad787c17c9fe2dedeaa85fe784c22f6d77f6642f75db4c45e188786e1"},
+    {file = "honeybadger-0.8.0-py3-none-any.whl", hash = "sha256:b443f0e6f982ce11fc10adce3f054da08f8b264632b39e733606c4cb64c1287f"},
 ]
 honeycomb-beeline = [
     {file = "honeycomb-beeline-2.17.1.tar.gz", hash = "sha256:efbacff572fc43cf14c83f108f67de507b414f2e593136dd0b0b7c874cc5d350"},

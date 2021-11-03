@@ -38,7 +38,7 @@ preview mode.
         <button  
           data-controller="tooltip"
           data-action="click->tf-modal#open"
-          id="widget-update-{{object.id}}"  
+          id="widget-update-{{ object.id }}"  
           data-item="{{ object.id }}"
           data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
         >
@@ -60,7 +60,7 @@ preview mode.
           title="Duplicate"
         >
           {% csrf_token %}
-          <button id="widget-duplicate-{{object.id}}" type='submit'>
+          <button id="widget-duplicate-{{ object.id }}" type='submit'>
             <i class="fas fa-fw fa-copy"></i>
           </button>
           <span data-tooltip-target="body">Duplicate</span>
@@ -68,7 +68,7 @@ preview mode.
 
         <div class="flex" data-controller="tooltip popover">
           <button
-            id="widget-delete-{{object.id}}"
+            id="widget-delete-{{ object.id }}"
             title="Delete"
             data-popover-target="trigger" 
             data-action="click->popover#trigger:capture"
@@ -87,9 +87,9 @@ preview mode.
     </div>
   </div>
 </gy-widget>
+
 {% if is_new %}
 <script>
-  document.getElementById("widget-{{object.id}}").children[0].scrollIntoView()
-
+  document.getElementById("widget-{{ object.id }}").children[0].scrollIntoView()
 </script>
 {% endif %}

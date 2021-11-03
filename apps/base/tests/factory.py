@@ -1,7 +1,16 @@
 from apps.cnames.models import CName
+from apps.columns.models import (
+    AddColumn,
+    AggregationColumn,
+    EditColumn,
+    FormulaColumn,
+    WindowColumn,
+)
 from apps.connectors.models import Connector
 from apps.dashboards.models import Dashboard
+from apps.filters.models import Filter
 from apps.integrations.models import Integration
+from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.sheets.models import Sheet
 from apps.tables.models import Table
@@ -28,6 +37,7 @@ class ProjectFactory(factory.django.DjangoModelFactory):
         model = Project
 
     name = "Project"
+    team = factory.SubFactory(TeamFactory)
 
 
 @register
@@ -115,3 +125,49 @@ class CNameFactory(factory.django.DjangoModelFactory):
         model = CName
 
     domain = "test.domain.com"
+
+
+@register
+class NodeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Node
+
+    workflow = factory.SubFactory(WorkflowFactory)
+    x = 0
+    y = 0
+
+
+@register
+class AggregationColumnFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AggregationColumn
+
+
+@register
+class EditColumnFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = EditColumn
+
+
+@register
+class AddColumnFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AddColumn
+
+
+@register
+class FormulaColumnFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = FormulaColumn
+
+
+@register
+class WindowColumnFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = WindowColumn
+
+
+@register
+class FilterFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Filter

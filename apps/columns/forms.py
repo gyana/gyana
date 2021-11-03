@@ -2,7 +2,13 @@ from apps.base.aggregations import AGGREGATION_TYPE_MAP
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
 from apps.base.widgets import SelectWithDisable
-from apps.columns.models import EditColumn
+from apps.columns.models import (
+    AddColumn,
+    AggregationColumn,
+    EditColumn,
+    FormulaColumn,
+    WindowColumn,
+)
 from django import forms
 from ibis.expr.datatypes import Floating
 
@@ -28,6 +34,7 @@ class AggregationColumnForm(SchemaFormMixin, LiveUpdateForm):
             "column": "Select the column to aggregate over",
             "function": "Select the aggregation function",
         }
+        model = AggregationColumn
 
     def get_live_fields(self):
         fields = ["column"]
@@ -98,6 +105,7 @@ class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
 
 class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
+        model = AddColumn
         fields = (
             "column",
             "string_function",
@@ -143,6 +151,7 @@ class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
 class FormulaColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
         fields = ("formula", "label")
+        model = FormulaColumn
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -153,6 +162,7 @@ class FormulaColumnForm(SchemaFormMixin, LiveUpdateForm):
 class WindowColumnForm(SchemaFormMixin, LiveUpdateForm):
     class Meta:
         fields = ("column", "function", "group_by", "order_by", "ascending", "label")
+        model = WindowColumn
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

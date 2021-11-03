@@ -51,7 +51,7 @@
 
           <tr>
             <td><h3>Projects</h3></td>
-            <td>{{ team.total_projects }} / {% if team.plan.projects != -1 %}{{ team.plan.projects }}{% else %}∞</i>{% endif %}</td>
+            <td>{{ team.total_projects }} / {% if team.plan.projects != -1 %}{{ team.plan.projects }}{% else %}∞{% endif %}</td>
           </tr>
 
           <tr>
@@ -72,7 +72,7 @@
           {% if team.plan.custom_branding %}
             <tr>
               <td><h3>Custom branding</h3></td>
-              <td><i class="fa fa-check text-green"></i></i></td>
+              <td><i class="fa fa-check text-green"></i></td>
             </tr>
           {% endif %}
 
@@ -86,7 +86,7 @@
           {% if team.plan.sub_accounts %}
             <tr>
               <td><h3>Sub Accounts</h3></td>
-              <td>{{ team.total_invite_only_projects }} / {% if  team.plan.sub_accounts != -1 %}{{ team.plan.sub_accounts }}{% else %}∞</i>{% endif %}</td>
+              <td>{{ team.total_invite_only_projects }} / {% if  team.plan.sub_accounts != -1 %}{{ team.plan.sub_accounts }}{% else %}∞{% endif %}</td>
             </tr>
           {% endif %}
 
@@ -101,6 +101,7 @@
       </table>
     </div>
   </div>
+</section>
 
 {% if team.appsumocode_set.count > 0 %}
 <div id="appsumo-list" class="mt-7">

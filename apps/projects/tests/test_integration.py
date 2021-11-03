@@ -6,6 +6,7 @@ from apps.base.tests.asserts import (
     assertOK,
     assertSelectorHasAttribute,
     assertSelectorLength,
+    assertSelectorText,
 )
 from apps.users.models import CustomUser
 from django.utils import timezone
@@ -145,3 +146,24 @@ def test_private_projects(client, logged_in_user):
     client.force_login(other_user)
     assertSelectorLength(client.get(f"/teams/{team.id}"), "table tbody tr", 0)
     assert client.get(f"/projects/{project.id}").status_code == 404
+
+
+def test_free_tier_project_limit(client, logged_in_user, project_factory):
+    # Create 3 projects
+    team = logged_in_user.teams.first()
+    [project_factory(team=team) for i in range(3)]
+
+    r = client.get(f"/teams/{team.id}")
+    assertSelectorText(
+        r,
+        "div[class='card card--none']",
+        "You have reached the maximum number of projects on your current plan.",
+    )
+    r = client.post(
+        f"/teams/{team.id}/projects/new",
+        data={
+            "name": "Metrics",
+            "access": "everyone",
+        },
+    )
+    assert r.status_code == 422

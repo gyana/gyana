@@ -1,8 +1,8 @@
 <form method="post" action="{% url 'project_workflows:create_from_integration' project.id %}">
   {% csrf_token %}
 
-  <input type="hidden" name="project" value="{{ integration.project.id }}"></input>
-  <input type="hidden" name="integration" value="{{ integration.id }}"></input>
+  <input type="hidden" name="project" value="{{ integration.project.id }}" />
+  <input type="hidden" name="integration" value="{{ integration.id }}" />
   <button submit="type" class="button button--filled button--sm">
     <i class="fas fa-fw fa-plus"></i>
     Create workflow
