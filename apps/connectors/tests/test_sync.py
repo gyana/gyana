@@ -23,7 +23,7 @@ def test_sync_tables_for_connector(logged_in_user, connector_factory, bigquery):
 
     # create new tables
     bq_ids = {"dataset.table_1", "dataset.table_2"}
-    connector.expected_bq_ids = bq_ids
+    connector.actual_bq_ids = bq_ids
     _sync_tables_for_connector(connector)
 
     assert integration.table_set.count() == 2
@@ -39,7 +39,7 @@ def test_sync_tables_for_connector(logged_in_user, connector_factory, bigquery):
     bigquery.get_table().num_rows = 20
 
     bq_ids = {"dataset.table_2", "dataset.table_3", "dataset.table_4"}
-    connector.expected_bq_ids = bq_ids
+    connector.actual_bq_ids = bq_ids
 
     _sync_tables_for_connector(connector)
 

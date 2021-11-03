@@ -16,14 +16,14 @@ def _sync_tables_for_connector(connector: Connector):
     # delete for us. It will cascade onto bigquery as well.
 
     for table in connector.integration.table_set.all():
-        if table.bq_id not in connector.expected_bq_ids:
+        if table.bq_id not in connector.actual_bq_ids:
             table.delete()
 
     # CREATE tables to map new tables in bigquery
 
-    create_bq_ids = connector.expected_bq_ids - connector.current_bq_ids
+    new_bq_ids = connector.actual_bq_ids - connector.synced_bq_ids
 
-    if len(create_bq_ids) > 0:
+    if len(new_bq_ids) > 0:
 
         tables = [
             Table(
@@ -33,7 +33,7 @@ def _sync_tables_for_connector(connector: Connector):
                 project=connector.integration.project,
                 integration=connector.integration,
             )
-            for bq_id in create_bq_ids
+            for bq_id in new_bq_ids
         ]
 
         with transaction.atomic():
@@ -71,7 +71,7 @@ def end_connector_sync(connector, is_initial):
     #   - 30 minute grace period for the other connectors due to issues with fivetran
     # - synchronize the tables in bigquery to our database
 
-    if is_initial and len(connector.bq_tables) == 0:
+    if is_initial and len(connector.actual_bq_ids) == 0:
 
         grace_period_elapsed = (
             timezone.now() - connector.succeeded_at
