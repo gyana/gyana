@@ -1,24 +1,15 @@
-import random
-import string
-
 import numpy as np
 import pandas as pd
 from apps.widgets.bigquery import get_unique_column_names
+from apps.widgets.fusion.utils import (
+    DEFAULT_HEIGHT,
+    DEFAULT_WIDTH,
+    TO_FUSION_CHART,
+    short_hash,
+)
 from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget
 
 from .fusioncharts import FusionCharts
-
-
-def short_hash():
-    return "".join(
-        random.choice(string.ascii_letters + string.digits) for n in range(6)
-    )
-
-
-DEFAULT_WIDTH = "100%"
-DEFAULT_HEIGHT = "100%"
-
-TO_FUSION_CHART = {Widget.Kind.STACKED_LINE: "msline"}
 
 
 def _create_axis_names(widget):

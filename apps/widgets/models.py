@@ -99,8 +99,6 @@ class Widget(CloneMixin, BaseModel):
     def is_valid(self) -> bool:
         """Returns bool stating whether this Widget is ready to be displayed"""
         # TODO: right now you also need to update the query in DashboardOverview dashboards/frames
-        if self.error:
-            return False
         if self.kind == self.Kind.TEXT:
             return True
         if not self.table:
