@@ -55,16 +55,13 @@ def test_start_connector_sync(logged_in_user, connector_factory, fivetran):
         integration__project__team=logged_in_user.teams.first(),
         integration__state=Integration.State.LOAD,
         integration__ready=False,
+        is_historical_sync=True,
     )
     integration = connector.integration
 
     # test: start the initial or update connector sync
 
     # initial sync
-    fivetran.get.return_value = get_mock_fivetran_connector(
-        connector, is_historical_sync=True
-    )
-
     start_connector_sync(connector)
     assert fivetran.start_initial_sync.call_count == 1
     assert fivetran.start_initial_sync.call_args.args == (connector,)
@@ -73,16 +70,19 @@ def test_start_connector_sync(logged_in_user, connector_factory, fivetran):
     assert integration.state == Integration.State.LOAD
 
     # update sync
-    fivetran.get.return_value = get_mock_fivetran_connector(connector)
+    connector.is_historical_sync = False
+    connector.save()
 
     # connector uses schema and not tables updated
-    fivetran.get_schemas.return_value = get_mock_schema(0)
+    connector.schema_config = get_mock_schema(0).to_dict()
+    connector.save()
     start_connector_sync(connector)
     assert fivetran.start_update_sync.call_count == 0
     assert connector.integration.state == Integration.State.LOAD
 
     # connector uses schema and tables updated
-    fivetran.get_schemas.return_value = get_mock_schema(1)
+    connector.schema_config = get_mock_schema(1).to_dict()
+    connector.save()
     start_connector_sync(connector)
     assert fivetran.start_update_sync.call_count == 1
     assert fivetran.start_update_sync.call_args.args == (connector,)
