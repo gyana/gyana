@@ -19,12 +19,12 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
 
     project = project_factory(team=logged_in_user.teams.first())
 
-    fivetran.create.return_value = {"fivetran_id": "fid", "schema": "sid"}
     fivetran.get_authorize_url.side_effect = (
         lambda c, r: f"http://fivetran.url?redirect_uri={r}"
     )
     schema_obj = get_mock_schema(1)  # connector with a single table
     fivetran.get_schemas.return_value = schema_obj
+    fivetran.create.return_value = get_mock_fivetran_connector(is_historical_sync=True)
     bigquery.get_table().num_rows = 10
     bigquery.list_tables.return_value = get_mock_list_tables(1)
 
@@ -62,8 +62,8 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
         "google_analytics",
         project.team.id,
     )
-    assert connector.fivetran_id == "fid"
-    assert connector.schema == "sid"
+    assert connector.fivetran_id == "fivetran_id"
+    assert connector.schema == "dataset"
 
     assert fivetran.get_authorize_url.call_count == 1
     assert fivetran.get_authorize_url.call_args.args == (
@@ -88,14 +88,12 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     assert fivetran.get_schemas.call_args.args == (connector,)
 
     # fivetran initial sync request will happen on post
-    fivetran.get.return_value = get_mock_fivetran_connector(
-        connector, is_historical_sync=True
-    )
+    fivetran.get.return_value = get_mock_fivetran_connector(is_historical_sync=True)
     r = client.post(f"{DETAIL}/configure", data={"dataset_tables": ["table_1"]})
     assertRedirects(r, f"{DETAIL}/load")
 
     assert fivetran.update_schemas.call_count == 1
-    assert fivetran.update_schemas.call_args.args == (connector, schema_obj)
+    assert fivetran.update_schemas.call_args.args == (connector, schema_obj.to_dict())
     assert fivetran.start_initial_sync.call_count == 1
     assert fivetran.start_initial_sync.call_args.args == (connector,)
 
@@ -105,7 +103,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     assertLink(r, f"{LIST}/pending", "pending integrations")
 
     # the user leaves the page and periodic job runs in background
-    fivetran.get.return_value = get_mock_fivetran_connector(connector)
+    fivetran.get.return_value = get_mock_fivetran_connector(succeeded_at=timezone.now())
     check_syncing_connectors_from_fivetran.delay()
 
     integration.refresh_from_db()
@@ -116,6 +114,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     fivetran.get.call_args.args == (connector,)
 
     # checking back explicitly will also complete
+    fivetran.get.return_value = get_mock_fivetran_connector(succeeded_at=timezone.now())
     integration.state = Integration.State.LOAD
     integration.table_set.all().delete()
     integration.save()
@@ -130,45 +129,6 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     # assert len(mail.outbox) == 1
 
 
-def test_connector_create_regression(
-    logged_in_user,
-    bigquery,
-    fivetran,
-    connector_factory,
-):
-
-    connector = connector_factory(
-        integration__ready=False,
-        integration__state=Integration.State.LOAD,
-        integration__project__team=logged_in_user.teams.first(),
-        fivetran_sync_started=timezone.now(),
-    )
-    integration = connector.integration
-
-    fivetran.get.return_value = get_mock_fivetran_connector(connector)
-    schema_obj = get_mock_schema(1)  # connector with a single table
-    fivetran.get_schemas.return_value = schema_obj
-    bigquery.get_table().num_rows = 10
-
-    # test: state is not set to done until bigquery has tables
-
-    # fivetran reports completed but bigquery is not ready
-    bigquery.list_tables.return_value = get_mock_list_tables(0)
-    check_syncing_connectors_from_fivetran.delay()
-
-    integration.refresh_from_db()
-    assert integration.state == Integration.State.LOAD
-    assert integration.table_set.count() == 0
-
-    # bigquery is not up to date
-    bigquery.list_tables.return_value = get_mock_list_tables(1)
-    check_syncing_connectors_from_fivetran.delay()
-
-    integration.refresh_from_db()
-    assert integration.state == Integration.State.DONE
-    assert integration.table_set.count() == 1
-
-
 def test_status_on_pending_page(
     client,
     logged_in_user,
@@ -180,14 +140,11 @@ def test_status_on_pending_page(
         integration__ready=False,
         integration__state=Integration.State.LOAD,
         integration__project__team=logged_in_user.teams.first(),
+        schema_config=get_mock_schema(1).to_dict(),
     )
     project = connector.integration.project
 
-    schema_obj = get_mock_schema(1)
-    fivetran.get_schemas.return_value = schema_obj
-    fivetran.get.return_value = get_mock_fivetran_connector(
-        connector, is_historical_sync=True
-    )
+    fivetran.get.return_value = get_mock_fivetran_connector(connector)
     bigquery.get_table().num_rows = 10
     bigquery.list_tables.return_value = get_mock_list_tables(1)
 
@@ -206,7 +163,7 @@ def test_status_on_pending_page(
 
     assert fivetran.get.call_count == 1
     assert fivetran.get.call_args.args == (connector,)
-    fivetran.get.return_value = get_mock_fivetran_connector(connector)
+    fivetran.get.return_value = get_mock_fivetran_connector(succeeded_at=timezone.now())
 
     # done
     r = client.get_turbo_frame(
