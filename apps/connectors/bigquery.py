@@ -33,9 +33,9 @@ def _get_bq_tables_from_dataset_safe(dataset_id, enabled_table_ids=None):
         return set()
 
 
-def _get_bq_table_safe(dataset_id, table_id):
+def _get_bq_table_safe(biqquery_id):
     try:
-        return clients.bigquery().get_table(f"{dataset_id}.{table_id}")
+        return clients.bigquery().get_table(biqquery_id)
     except NotFound:
         return
 
@@ -63,9 +63,7 @@ def get_bq_tables_for_connector(connector):
 
     # one dataset, one fixed table
     if service_type in [ServiceTypeEnum.WEBHOOKS, ServiceTypeEnum.REPORTING_API]:
-        bq_table = _get_bq_table_safe(
-            connector.schema, connector.conf.static_config["table"]
-        )
+        bq_table = _get_bq_table_safe(connector.schema)
         return {bq_table} if bq_table is not None else set()
 
     # one dataset, multiple fixed tables determined by schema

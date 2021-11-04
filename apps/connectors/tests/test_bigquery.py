@@ -44,6 +44,7 @@ def test_get_bq_tables_for_connector_webhooks_reports(
 
     connector = connector_factory(
         service="webhooks",
+        schema="dataset.webhooks_table",
         integration__project__team=logged_in_user.teams.first(),
     )
 
