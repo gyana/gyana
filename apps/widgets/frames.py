@@ -61,6 +61,7 @@ class WidgetList(DashboardMixin, TurboFrameListView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+        context_data["categories"] = Widget.Category.choices
         context_data["choices"] = WIDGET_CHOICES_ARRAY
         modal_item = self.request.GET.get("modal_item")
         context_data["modal_item"] = int(modal_item) if modal_item else modal_item

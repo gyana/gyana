@@ -81,16 +81,17 @@
   </div>
 
   <turbo-frame id="dashboard-share"  src="{% url 'dashboards:share' object.id %}">
-  <button class="button button--circle {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}">
-    {% if  object.shared_status == 'public' %}<i class='far fa-fw fa-link'></i>
-    {% elif object.shared_status == 'private' %}<i class='far fa-fw fa-unlink'></i>
-    {% elif object.shared_status == 'password_protected' %}<i class='far fa-fw fa-lock'></i>
-    {% endif %}
-  </button>
+    <button class="button button--sm {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}">
+      {% if  object.shared_status == 'public' %}<i class='far fa-fw fa-link'></i>
+      {% elif object.shared_status == 'private' %}<i class='far fa-fw fa-unlink'></i>
+      {% elif object.shared_status == 'password_protected' %}<i class='far fa-fw fa-lock'></i>
+      {% endif %}
+      Share
+    </button>
   </turbo-frame>
 
   {% if request.GET.mode != 'view' %}
-  {% include 'dashboards/_add_widget.html' with choices=choices %}
+  {% include 'dashboards/_add_widget.html' with choices=choices categories=categories %}
   {% endif %}
 
   {% if not request.GET.mode or request.GET.mode == 'edit' %}
