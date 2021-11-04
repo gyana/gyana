@@ -223,9 +223,12 @@ class Connector(BaseModel):
             self.integration.state = Integration.State.ERROR
             self.integration.save()
 
+        is_initial = not self.integration.table_set.exists()
+        is_grace_period = previous_succeeded_at is not None and is_initial
+
         # a new sync is completed
-        if self.succeeded_at != previous_succeeded_at:
-            end_connector_sync(self, is_initial=previous_succeeded_at is None)
+        if self.succeeded_at != previous_succeeded_at or is_grace_period:
+            end_connector_sync(self, is_initial)
 
     def sync_schema_obj_from_fivetran(self):
         self.schema_config = clients.fivetran().get_schemas(self)
