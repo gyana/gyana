@@ -10,9 +10,7 @@ FIVETRAN_SYSTEM_TABLES = {"fivetran_audit", "fivetran_audit_warning"}
 
 def delete_connector_datasets(connector):
 
-    datasets = connector.integration.table_set.values("bq_dataset").distinct()
-
-    for dataset in datasets:
+    for dataset in connector.fivetran_datasets | connector.synced_datasets:
         clients.bigquery().delete_dataset(
             dataset, delete_contents=True, not_found_ok=True
         )

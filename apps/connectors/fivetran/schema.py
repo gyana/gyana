@@ -100,6 +100,11 @@ class FivetranSchemaObj:
         return [schema for schema in self.schemas if schema.enabled]
 
     @property
+    def all_datasets(self):
+        # all possible datasets, including those not enabled
+        return {schema.dataset_id for schema in self.schemas}
+
+    @property
     def enabled_bq_ids(self):
         # api_cloud only has one schema
         return set(chain(*(schema.enabled_bq_ids for schema in self.enabled_schemas)))

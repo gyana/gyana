@@ -2,7 +2,7 @@ from datetime import datetime
 from functools import cached_property
 
 from django.conf import settings
-from django.db import models
+from django.db import connection, models
 from django.urls import reverse
 from django.utils import timezone
 
@@ -11,7 +11,7 @@ from apps.base.models import BaseModel
 from apps.connectors.fivetran.schema import FivetranSchemaObj
 from apps.integrations.models import Integration
 
-from .fivetran.config import get_services_obj
+from .fivetran.config import ServiceTypeEnum, get_services_obj
 
 FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
 FIVETRAN_SYNC_FREQUENCY_HOURS = 6
@@ -179,6 +179,26 @@ class Connector(BaseModel):
     def _parse_fivetran_timestamp(self, timestamp):
         if timestamp is not None:
             return datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%f%z")
+
+    @property
+    def synced_datasets(self):
+        return set(self.integration.table_set.values("bq_dataset").distinct())
+
+    @property
+    def fivetran_datasets(self):
+
+        # all the datasets derived from the fivetran schema and schema_config information
+
+        if self.conf.service_type == ServiceTypeEnum.DATABASE:
+            return self.schema_obj.all_datasets
+
+        if self.conf.service_type in [
+            ServiceTypeEnum.WEBHOOKS,
+            ServiceTypeEnum.REPORTING_API,
+        ]:
+            return {self.schema.split(".")[0]}
+
+        return {self.schema}
 
     def update_kwargs_from_fivetran(self, data):
         status = data["status"]
