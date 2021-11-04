@@ -5,6 +5,43 @@
 
 {% block app %}
 <div class="workflow-detail__header">
+  <div
+    data-controller="popover"
+    data-placement="bottom-start"
+    data-theme="popover-menu"
+  >
+    <button class="button button--circle button--tertiary">
+      <i class="fas fa-fw fa-ellipsis-v"></i>
+    </button>
+
+    <template data-popover-target="body">
+      <form 
+        method="POST"
+        action="{% url "workflows:duplicate" object.id %}"
+        class="form--no-layout"
+      >
+        {% csrf_token %}
+
+        <button
+          type='submit'
+          class="list__item list__item--interactive w-full"
+          id="workflows-duplicate-{{ object.id }}"
+          data-controller="tooltip"
+          data-loading-false
+        >
+          Duplicate
+        </button>
+      </form>
+
+      <a
+        class="list__item list__item--interactive w-full"
+        href="{% url 'project_workflows:delete' project.id object.id %}"
+      >
+        Delete
+      </a>
+    </template>
+  </div>
+
   <turbo-frame id="workflow-name">
     <form method="post" action="{% url 'project_workflows:detail' project.id object.id %}" class="form">
       {% csrf_token %}
@@ -26,26 +63,6 @@
     <turbo-frame id="workflow-last-run">
       {% include 'workflows/last_run.html' %}
     </turbo-frame>
-  </div>
-
-  <span class="button button--circle button--tertiary">
-    {% include 'components/_duplicate.html' with object_name="workflow" %}
-  </span>
-
-  <div data-controller="popover">
-    <span
-      data-controller="tooltip"
-      data-popover-target="trigger"
-      data-action="click->popover#trigger"
-      class="button button--circle button--tertiary"
-    >
-      <i class="far fa-fw fa-trash"></i>
-      <span data-tooltip-target="body">Delete workflow</span>
-    </span>
-
-    <div data-popover-target="body" class="popover-body">
-      {% include 'workflows/_delete.html' %}
-    </div>
   </div>
 </div>
 
