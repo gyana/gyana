@@ -16,6 +16,7 @@ class Widget(CloneMixin, BaseModel):
 
     class Kind(models.TextChoices):
         TEXT = "text", "Text"
+        METRIC = "metric", "Metric"
         TABLE = "table", "Table"
         # using fusioncharts name for database
         COLUMN = "mscolumn2d", "Column"
@@ -41,7 +42,6 @@ class Widget(CloneMixin, BaseModel):
             "Stacked Column Timeseries",
         )
         TIMESERIES_AREA = "timeseries-area", "Area Timeseries"
-        METRIC = "metric", "Metric"
 
     class Aggregator(models.TextChoices):
         # These aggregators should reflect the names described in the ibis api, none is an exception
@@ -136,6 +136,7 @@ NO_DIMENSION_WIDGETS = [
 
 WIDGET_KIND_TO_WEB = {
     Widget.Kind.TEXT.value: ("fa-text",),
+    Widget.Kind.METRIC.value: ("fa-value-absolute",),
     Widget.Kind.TABLE.value: ("fa-table",),
     Widget.Kind.COLUMN.value: ("fa-chart-bar",),
     Widget.Kind.STACKED_COLUMN.value: ("fa-chart-bar",),
@@ -157,7 +158,6 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.TIMESERIES_COLUMN.value: ("fa-chart-bar",),
     Widget.Kind.TIMESERIES_STACKED_COLUMN.value: ("fa-chart-bar",),
     Widget.Kind.TIMESERIES_AREA.value: ("fa-chart-area",),
-    Widget.Kind.METRIC.value: ("fa-value-absolute",),
 }
 
 
