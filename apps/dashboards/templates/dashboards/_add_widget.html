@@ -1,4 +1,4 @@
-<div data-controller="popover">
+<div data-controller="popover" data-theme="popover-add-widget">
   <button
     class="button button--sm"
     data-popover-target="trigger"
@@ -8,20 +8,28 @@
   </button>
 
   <template data-popover-target="body">
-    {% for id, txt, icon in choices %}
-    <form
-      method="post"
-      action="{% url 'dashboard_widgets:create' project.id dashboard.id %}?mode=edit"
-      class="form--no-layout"
-    >
-      {% csrf_token %}
+    {% for id, category in categories %}
+      <h4 class="mb-3">{{ category }}</h4>
+      
+      <div class="grid grid-cols-2 mb-3">
+        {% for id, txt, icon, choice_category in choices %}
+          {% if choice_category|lower == category|lower %}
+          <form
+            method="post"
+            action="{% url 'dashboard_widgets:create' project.id dashboard.id %}?mode=edit"
+            class="form--no-layout"
+          >
+            {% csrf_token %}
 
-      <input type='hidden' name='kind' id="id_kind_{{ forloop.counter }}" value="{{ id }}" />
+            <input type='hidden' name='kind' id="id_kind_{{ forloop.counter }}" value="{{ id }}" />
 
-      <button type="submit" class="list__item list__item--interactive w-full" data-loading-false data-action="popover#trigger">
-        <p><i class="fas {{ icon }} text-blue mr-2"></i> {{ txt }}</p>
-      </button>
-    </form>
+            <button type="submit" class="list__item list__item--interactive w-full" data-loading-false data-action="popover#trigger">
+              <p><i class="fas fa-fw {{ icon }} text-blue mr-2"></i> {{ txt }}</p>
+            </button>
+          </form>
+          {% endif %}
+        {% endfor %}
+      </div>
     {% endfor %}
   </template>
 </div>

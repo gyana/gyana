@@ -116,6 +116,7 @@ class DashboardDetail(ProjectMixin, TurboUpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+        context_data["categories"] = Widget.Category.choices
         context_data["choices"] = WIDGET_CHOICES_ARRAY
 
         return context_data
