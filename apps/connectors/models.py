@@ -283,5 +283,12 @@ class Connector(BaseModel):
         )
 
     @property
+    def latest_sync_failed(self):
+        return (
+            self.failed_at is not None
+            and self.failed_at > self.fivetran_sync_started
+        )
+
+    @property
     def latest_sync_validated(self):
         return self.succeeded_at == self.bigquery_succeeded_at

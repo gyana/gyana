@@ -37,6 +37,13 @@
     </div>
   {% endif %}
   <table class="table card card--none">
+    <thead>
+     <tr>
+       <th>Step</th>
+       <th>Status</th>
+       <th>Actions</th>
+     </tr>
+    </thead>
     <tbody>
       <tr>
         <td><h3>Setup</h3></td>
@@ -45,6 +52,11 @@
             <i class="{{ connector.setup_state_icon }}"></i>
             <span data-tooltip-target="body">{{ connector.get_setup_state_display }}</span>
           </p>
+        </td>
+        <td>
+          <a class="link" href="{{ connector.fivetran_authorization_url }}" data-turbo-frame="_top">
+            Setup connector
+          </a>
         </td>
       </tr>
       <tr>
@@ -57,11 +69,19 @@
             {% elif connector.latest_sync_completed %}
               <i class="fa fa-check text-green"></i>
               <span data-tooltip-target="body">Completed</span>
+            {% elif connector.latest_sync_failed %}
+              <i class="fa fa-times text-red"></i>
+              <span data-tooltip-target="body">Failed</span>
             {% else %}
               <i class="{{ connector.sync_state_icon }}"></i>
               <span data-tooltip-target="body">{{ connector.get_sync_state_display }}</span>
             {% endif %}
           </p>
+        </td>
+        <td>
+          <a class="link" href="{% url 'project_integrations:configure' project.id integration.id %}">
+            Trigger sync
+          </a>
         </td>
       </tr>
       <tr>
@@ -82,6 +102,11 @@
               <span data-tooltip-target="body">Validating - synced data in destination</span>
             {% endif %}
           </p>
+        </td>
+        <td>
+          <a class="link" href="#" onClick='window.location.reload()'>
+            Reload page
+          </a>
         </td>
       </tr>
     </tbody>
