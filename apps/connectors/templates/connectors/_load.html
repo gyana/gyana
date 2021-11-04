@@ -1,0 +1,55 @@
+{% load help_utils %}
+
+<div class='integration__file-validate'>
+  {% if integration.state == 'load' %}
+    <i class="fad fa-fw fa-spinner-third fa-spin fa-2x text-blue text-4xl"></i>
+    <div class='flex flex-col ml-4 space-y-4'>
+      <h1>Validating and importing your {{ integration.name }} {{ integration.kind }}...</h1>
+      <p>
+        This can take anywhere from 5 minutes to an hour. You'll get an email when it's ready.
+      </p>
+      <p class="alert">
+          We recommend you continue with your work. You can manually keep track of progress, either by refreshing this page,
+          or in <a class="link" href="{% url 'project_integrations:pending' project.id %}">pending integrations</a>.
+      </p>
+    </div>
+  {% elif integration.state == 'error' %}
+    <i class="fas fa-fw fa-times text-red fa-2x text-4xl"></i>
+    <div class="flex flex-col">
+      {% if connector.requires_authorization %}
+        <h1>Your connector setup is broken {% link_article 'integrations' 'error' %}</h1>
+        <p>
+          Try
+          <a class="link" href="{{ connector.fivetran_authorization_url }}" data-turbo-frame="_top">
+            fixing it
+          </a>
+          or reach out to support.
+        </p>
+      {% elif connector.conf.service_is_dynamic %}
+        <h1>No data is available {% link_article 'integrations' 'error' %}</h1>
+        <p>Your connector is setup, but we haven't received any data yet.</p>
+        <p class="alert">Check that you are sending events, and
+          <a class="link" href="{% url 'project_integrations:configure' project.id integration.id %}">trigger another sync</a>
+        after a few minutes.
+        </p>
+        <p>Reach out to us if the error persists.</p>
+      {% endif %}
+    </div>
+  {% endif %}
+  <table class="table card card--none">
+    <tbody>
+      <tr>
+        <td><h3>Setup</h3></td>
+        <td>{{ connector.setup_state }}</td>
+      </tr>
+      <tr>
+        <td><h3>Sync</h3></td>
+        <td>{{ connector.sync_state }}</td>
+      </tr>
+      <tr>
+        <td><h3>Validation</h3></td>
+        <td>{{ connector.latest_sync_validated }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

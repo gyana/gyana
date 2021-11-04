@@ -250,3 +250,7 @@ class Connector(BaseModel):
     def sync_schema_obj_from_fivetran(self):
         self.schema_config = clients.fivetran().get_schemas(self)
         self.save()
+
+    @property
+    def latest_sync_validated(self):
+        return self.succeeded_at == self.bigquery_succeeded_at

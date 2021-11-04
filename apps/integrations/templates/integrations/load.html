@@ -7,55 +7,7 @@
   <div class='flex flex-col flex-1 max-w-3xl'>
     <div class="flex flex-1 justify-center items-center">
       {% if integration.kind == 'connector' %}
-
-        {% if integration.state == 'load' %}
-            <i class="fad fa-fw fa-spinner-third fa-spin fa-2x text-blue text-4xl"></i>
-            <div class='flex flex-col ml-4 space-y-4'>
-              <h1>Validating and importing your {{ object.display_kind }} connector...</h1>
-                <p>
-                  This can take anywhere from 5 minutes to an hour. You'll get an email when it's ready.
-                </p>
-                <p class="alert">
-                  We recommend you continue with your work. You can manually keep track of progress, either by refreshing this page,
-                  or in <a class="link" href="{% url 'project_integrations:pending' project.id %}">pending integrations</a>.
-                </p>
-            </div>
-          {% elif integration.state == 'error' %}
-            <i class="fas fa-fw fa-times text-red fa-2x text-xl mr-4"></i>
-            <div class="flex flex-col">
-              {% if integration.source_obj.requires_authorization %}
-                <h4>Your connector is broken. {% link_article 'integrations' 'error' %}</h4>
-                <p>
-                  Try
-                  <a class="link" href="{{ integration.source_obj.fivetran_authorization_url }}" data-turbo-frame="_top">
-                    fixing it
-                  </a>
-                  or reach out to support.
-                </p>
-              {% elif integration.source_obj.conf.service_is_dynamic %}
-                <h4>Your connector is setup, but we haven't received any data yet. {% link_article 'integrations' 'error' %}</h4>
-                <p class="alert">Check that you are sending events, and
-                  <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">trigger another sync</a>
-                after a few minutes.
-                </p>
-              {% else %}
-                <h4>Errors occurred when validating your connector. {% link_article 'integrations' 'error' %}</h4>
-                <p>Reach out to us if the error persists.</p>
-                <div class="flex space-x-2 my-2">
-                  <form method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
-                      {% csrf_token %}
-
-                      {% include "django/forms/default_form.html" %}
-
-                      <button type="submit" class="button button--outline">
-                        Retry
-                      </button>
-                  </form>
-                  <a class="button ml-2" href="{% url 'project_integrations:configure' project.id object.id %}">Configure</a>
-                </div>
-              {% endif %}
-            </div>
-          {% endif %}
+        {% include 'connectors/_load.html' with connector=integration.connector %}
       {% else %}
         <div
             class='integration__file-validate'
@@ -92,8 +44,6 @@
                 <p>If the problem persists, you can upload the CSV to Google Sheets and use our
                   <a class="link" href="{% url 'project_integrations_sheets:create' project.id %}">sheets integration.</a>
                 </p>
-              {% elif object.kind == 'connector' %}
-                <p>Reach out to us if the error persists.</p>
               {% endif %}
               <p id="failure-message"/>
               <div class="flex space-x-2 my-2">
