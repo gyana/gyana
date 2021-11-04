@@ -224,7 +224,10 @@ class Connector(BaseModel):
             self.integration.save()
 
         is_initial = not self.integration.table_set.exists()
-        is_grace_period = previous_succeeded_at is not None and is_initial
+        is_loading = self.integration.state == Integration.State.LOAD
+        is_grace_period = (
+            previous_succeeded_at is not None and is_initial and is_loading
+        )
 
         # a new sync is completed
         if self.succeeded_at != previous_succeeded_at or is_grace_period:
