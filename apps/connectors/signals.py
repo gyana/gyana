@@ -21,4 +21,3 @@ def delete_fivetran_connector(sender, instance, *args, **kwargs):
         clients.fivetran().delete(instance)
     except FivetranClientError as exc:
         honeybadger.notify(exc)
-        print(exc)

@@ -96,7 +96,4 @@ def test_mutate_from_cleaned_data(schema_dict):
 
     schema_obj.mutate_from_cleaned_data(cleaned_data)
 
-    print(schema_obj.to_dict())
-    print(output_schema_dict)
-
     assert schema_obj.to_dict() == output_schema_dict
