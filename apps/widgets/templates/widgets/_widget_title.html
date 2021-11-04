@@ -1,1 +1,8 @@
-{% if object.kind != "text" %}<h3 id="widget-name-{{object.id}}-stream" class="text-center py-4 {% if not object.name %}hidden{% endif %}">{{ object.name }}</h3>{% endif%}
+{% if object.kind != "text" and object.kind != "metric" %}
+  <h3
+    id="widget-name-{{ object.id }}-stream"
+    class="text-center py-4 {% if not object.name %}hidden{% endif %}"
+  >
+    {{ object.name }}
+  </h3>
+{% endif%}
