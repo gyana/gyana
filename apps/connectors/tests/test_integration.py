@@ -1,16 +1,14 @@
 import pytest
-from apps.base.tests.asserts import (
-    assertFormRenders,
-    assertLink,
-    assertOK,
-    assertSelectorLength,
-)
+from apps.base.tests.asserts import (assertFormRenders, assertLink, assertOK,
+                                     assertSelectorLength)
 from apps.connectors.periodic import check_syncing_connectors_from_fivetran
 from apps.integrations.models import Integration
 from django.utils import timezone
-from pytest_django.asserts import assertContains, assertNotContains, assertRedirects
+from pytest_django.asserts import (assertContains, assertNotContains,
+                                   assertRedirects)
 
-from .mock import get_mock_fivetran_connector, get_mock_list_tables, get_mock_schema
+from .mock import (get_mock_fivetran_connector, get_mock_list_tables,
+                   get_mock_schema)
 
 pytestmark = pytest.mark.django_db
 
@@ -23,7 +21,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
         lambda c, r: f"http://fivetran.url?redirect_uri={r}"
     )
     schema_obj = get_mock_schema(1)  # connector with a single table
-    fivetran.get_schemas.return_value = schema_obj
+    fivetran.get_schemas.return_value = schema_obj.to_dict()
     fivetran.create.return_value = get_mock_fivetran_connector(is_historical_sync=True)
     bigquery.get_table().num_rows = 10
     bigquery.list_tables.return_value = get_mock_list_tables(1)

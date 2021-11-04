@@ -228,5 +228,5 @@ class Connector(BaseModel):
             end_connector_sync(self, is_initial=previous_succeeded_at is None)
 
     def sync_schema_obj_from_fivetran(self):
-        self.schema_config = clients.fivetran().get_schemas(self).to_dict()
+        self.schema_config = clients.fivetran().get_schemas(self)
         self.save()
