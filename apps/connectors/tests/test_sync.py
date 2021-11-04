@@ -18,7 +18,6 @@ def test_sync_tables_for_connector(logged_in_user, connector_factory, bigquery):
 
     team = logged_in_user.teams.first()
     connector = connector_factory(integration__project__team=team)
-    bigquery.get_table().num_rows = 10
     integration = connector.integration
 
     # create new tables
@@ -138,7 +137,6 @@ def test_end_connector_sync(logged_in_user, connector_factory, bigquery):
     # clear the cached property
     del connector.actual_bq_ids
     bigquery.list_tables.return_value = get_mock_list_tables(1)
-    bigquery.get_table().num_rows = 10
     end_connector_sync(connector, is_initial=True)
     assert integration.state == Integration.State.DONE
     assert integration.table_set.count() == 1

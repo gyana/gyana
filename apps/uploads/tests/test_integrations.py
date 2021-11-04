@@ -25,7 +25,6 @@ def test_upload_create(client, logged_in_user, project_factory, bigquery):
     # mock the configuration
     bigquery.load_table_from_uri().exception = lambda: False
     bigquery.reset_mock()  # reset the call count
-    bigquery.get_table().num_rows = 10
 
     GCS_URL = "path/to/gcs"
     FIELD_DELIMITER = Upload.FieldDelimiter.COMMA

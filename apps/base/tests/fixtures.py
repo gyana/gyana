@@ -6,6 +6,7 @@ import waffle
 from apps.base import clients
 from apps.teams.models import Team
 from apps.users.models import CustomUser
+from django.utils import timezone
 from ibis_bigquery.client import rename_partitioned_column
 from waffle.templatetags import waffle_tags
 
@@ -92,6 +93,9 @@ def bigquery(mocker, settings):
         "get_schema",
         mock_ibis_client_get_schema,
     )
+
+    client.get_table().num_rows = 10
+    client.get_table().modified = timezone.now()
 
     yield client
 
