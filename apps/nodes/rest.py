@@ -2,10 +2,13 @@ import json
 
 import coreapi
 from apps.base.analytics import NODE_CONNECTED_EVENT, NODE_CREATED_EVENT, track_node
+from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from rest_framework import viewsets
-from rest_framework.decorators import api_view, schema
+from rest_framework.decorators import api_view, permission_classes, schema
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.schemas import AutoSchema
 
@@ -16,7 +19,7 @@ from .serializers import NodeSerializer
 class NodeViewSet(viewsets.ModelViewSet):
     serializer_class = NodeSerializer
     filterset_fields = ["workflow"]
-
+    permission_classes = (IsAuthenticated,)
     # Overwriting queryset to prevent access to nodes that don't belong to
     # the user's team
     def get_queryset(self):
