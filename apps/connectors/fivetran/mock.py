@@ -13,6 +13,37 @@ SCHEMA_FIXTURES_DIR = "apps/connectors/fivetran/fixtures"
 MOCK_SCHEMA_DIR = os.path.abspath(".mock/.schema")
 
 
+def get_connector_json(connector, is_historical_sync=False, succeeded_at=None):
+
+    if succeeded_at is not None:
+        succeeded_at = datetime.strftime(succeeded_at, "%Y-%m-%dT%H:%M:%S.%f%z")
+
+    return {
+        "id": connector.fivetran_id,
+        "group_id": "group_id",
+        "service": connector.service,
+        "service_version": 4,
+        "schema": connector.schema,
+        "paused": True,
+        "pause_after_trial": True,
+        "connected_by": "monitoring_assuring",
+        "created_at": "2021-01-01T00:00:00.000000Z",
+        "succeeded_at": succeeded_at,
+        "failed_at": None,
+        "sync_frequency": 360,
+        "schedule_type": "auto",
+        "status": {
+            "setup_state": "connected",
+            "sync_state": "scheduled",
+            "update_state": "delayed",
+            "is_historical_sync": is_historical_sync,
+            "tasks": [],
+            "warnings": [],
+        },
+        "config": {},
+    }
+
+
 @cache
 def get_fixture_fivetran_ids():
     return [
@@ -57,30 +88,7 @@ class MockFivetranClient:
             Connector.objects.filter(service=service).order_by("id").first()
             or Connector.objects.filter(service=self.DEFAULT_SERVICE).first()
         )
-        return {
-            "id": connector.fivetran_id,
-            "group_id": "group_id",
-            "service": connector.service,
-            "service_version": 4,
-            "schema": connector.schema,
-            "paused": True,
-            "pause_after_trial": True,
-            "connected_by": "monitoring_assuring",
-            "created_at": "2021-01-01T00:00:00.000000Z",
-            "succeeded_at": "2021-01-01T00:00:00.000000Z",
-            "failed_at": None,
-            "sync_frequency": 360,
-            "schedule_type": "auto",
-            "status": {
-                "setup_state": "connected",
-                "sync_state": "scheduled",
-                "update_state": "delayed",
-                "is_historical_sync": True,
-                "tasks": [],
-                "warnings": [],
-            },
-            "config": {},
-        }
+        return get_connector_json(connector, is_historical_sync=True)
 
     def get(self, connector):
         started = self._started.get(connector.id)
@@ -89,38 +97,11 @@ class MockFivetranClient:
             if started is not None
             else False
         )
-        succeeded_at = (
-            datetime.strftime(timezone.now(), "%Y-%m-%dT%H:%M:%S.%f%z")
-            if not is_historical_sync
-            else None
+        succeeded_at = timezone.now() if not is_historical_sync else None
+
+        return get_connector_json(
+            connector, is_historical_sync=is_historical_sync, succeeded_at=succeeded_at
         )
-
-        data = {
-            "id": connector.fivetran_id,
-            "group_id": "group_id",
-            "service": connector.service,
-            "service_version": 4,
-            "schema": connector.schema,
-            "paused": True,
-            "pause_after_trial": True,
-            "connected_by": "monitoring_assuring",
-            "created_at": "2021-01-01T00:00:00.000000Z",
-            "succeeded_at": succeeded_at,
-            "failed_at": None,
-            "sync_frequency": 360,
-            "schedule_type": "auto",
-            "status": {
-                "setup_state": "connected",
-                "sync_state": "scheduled",
-                "update_state": "delayed",
-                "is_historical_sync": is_historical_sync,
-                "tasks": [{"code": "reconnect", "message": "Reconnect"}],
-                "warnings": [],
-            },
-            "config": {},
-        }
-
-        return data
 
     def start_initial_sync(self, connector):
         self._started[connector.id] = timezone.now()
