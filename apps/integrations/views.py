@@ -66,15 +66,19 @@ class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
 # Tabs
 
 
-class IntegrationDetail(ReadyMixin, TurboUpdateView):
+class IntegrationDetail(ReadyMixin, DetailView):
     template_name = "integrations/detail.html"
     model = Integration
-    form_class = IntegrationForm
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["table"] = UsedInTable(self.object.used_in)
-        return context
+        context_data = super().get_context_data(**kwargs)
+        context_data["tables"] = self.object.table_set.order_by("bq_table").all()
+        return context_data
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["table"] = UsedInTable(self.object.used_in)
+    #     return context
 
     def get_success_url(self) -> str:
         return reverse(

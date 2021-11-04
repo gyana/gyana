@@ -38,10 +38,12 @@
 </div>
 
 <div class="flex items-center space-x-2 p-4 pl-8 bg-white border-b border-gray">
-  <p>
-    <strong>{{ integration.num_rows }}</strong> row{{ integration.num_rows|pluralize }} •
-    <strong>{{ integration.num_tables }}</strong> table{{ integration.num_tables|pluralize }} •
-  </p>
+  {% if integration.ready %}
+    <p>
+      <strong>{{ integration.num_rows }}</strong> row{{ integration.num_rows|pluralize }} •
+      <strong>{{ integration.num_tables }}</strong> table{{ integration.num_tables|pluralize }} •
+    </p>
+  {% endif %}
   <img class="h-8 w-8 rounded-full" src="{{ integration.created_by.avatar_url }}">
   <p>
     <strong>{{ integration.created_by.get_full_name }}</strong> created this integration
