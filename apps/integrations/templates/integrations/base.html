@@ -41,6 +41,9 @@
   <p>
     <strong>{{ integration.num_rows }}</strong> row{{ integration.num_rows|pluralize }} •
     <strong>{{ integration.num_tables }}</strong> table{{ integration.num_tables|pluralize }} •
+  </p>
+  <img class="h-8 w-8 rounded-full" src="{{ integration.created_by.avatar_url }}">
+  <p>
     <strong>{{ integration.created_by.get_full_name }}</strong> created this integration <strong>{{ integration.created|naturaltime }}</strong>
   </p>
 </div>
