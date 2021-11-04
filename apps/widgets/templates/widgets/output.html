@@ -7,6 +7,8 @@
         {% include 'widgets/visuals/grid.html' %}
       {% elif widget.kind == "text" %}
         {% include 'widgets/visuals/text.html' %}
+      {% elif  widget.kind == 'metric' %}
+        {% include 'widgets/visuals/metric.html' %}
       {% elif widget.kind %}
         {% include 'widgets/visuals/chart.html' %}
       {% endif %}

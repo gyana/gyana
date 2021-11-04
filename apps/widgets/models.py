@@ -40,6 +40,7 @@ class Widget(CloneMixin, BaseModel):
             "Stacked Column Timeseries",
         )
         TIMESERIES_AREA = "timeseries-area", "Area Timeseries"
+        METRIC = "metric", "Metric"
 
     class Aggregator(models.TextChoices):
         # These aggregators should reflect the names described in the ibis api, none is an exception
@@ -113,6 +114,8 @@ class Widget(CloneMixin, BaseModel):
             return False
         if self.kind == self.Kind.TABLE:
             return True
+        if self.kind == self.Kind.METRIC:
+            return self.aggregations.count() == 1
         if self.kind == self.Kind.RADAR:
             return self.aggregations.count() >= 3
         if self.kind in [self.Kind.FUNNEL, self.Kind.PYRAMID]:
@@ -123,7 +126,12 @@ class Widget(CloneMixin, BaseModel):
         return False
 
 
-NO_DIMENSION_WIDGETS = [Widget.Kind.RADAR, Widget.Kind.FUNNEL, Widget.Kind.PYRAMID]
+NO_DIMENSION_WIDGETS = [
+    Widget.Kind.RADAR,
+    Widget.Kind.FUNNEL,
+    Widget.Kind.PYRAMID,
+    Widget.Kind.METRIC,
+]
 
 WIDGET_KIND_TO_WEB = {
     Widget.Kind.TEXT.value: ("fa-text",),
@@ -148,6 +156,7 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.TIMESERIES_COLUMN.value: ("fa-chart-bar",),
     Widget.Kind.TIMESERIES_STACKED_COLUMN.value: ("fa-chart-bar",),
     Widget.Kind.TIMESERIES_AREA.value: ("fa-chart-area",),
+    Widget.Kind.METRIC.value: ("fa-value-absolute",),
 }
 
 
