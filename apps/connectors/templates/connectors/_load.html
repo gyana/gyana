@@ -51,7 +51,7 @@
         <td><h3>Sync</h3></td>
         <td>
           <p data-controller="tooltip">
-            {% if not connector.setup_state != 'connected' %}
+            {% if connector.setup_state != 'connected' %}
               <i class="fa fa-horizontal-rule"></i>
               <span data-tooltip-target="body">Waiting - for setup to complete</span>
             {% elif connector.latest_sync_completed %}
@@ -68,7 +68,7 @@
         <td><h3>Validation</h3></td>
         <td>
           <p data-controller="tooltip">
-            {% if not connector.setup_state != 'connected' or not connector.latest_sync_completed %}
+            {% if connector.setup_state != 'connected' or not connector.latest_sync_completed %}
               <i class="fa fa-horizontal-rule"></i>
               <span data-tooltip-target="body">Waiting - for sync to complete</span>
             {% elif connector.latest_sync_validated %}

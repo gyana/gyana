@@ -260,8 +260,8 @@ class Connector(BaseModel):
             self.integration.save()
 
         # # a new sync is completed
-        # if self.succeeded_at != self.bigquery_succeeded_at:
-        #     end_connector_sync(self, not self.integration.table_set.exists())
+        if self.succeeded_at != self.bigquery_succeeded_at:
+            end_connector_sync(self, not self.integration.table_set.exists())
 
     def sync_schema_obj_from_fivetran(self):
         self.schema_config = clients.fivetran().get_schemas(self)
