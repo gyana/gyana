@@ -45,9 +45,7 @@ def run_sheet_sync_task(self, sheet_id):
             with catchtime() as get_time_to_sync:
                 import_table_from_sheet(table=table, sheet=sheet)
 
-            table.num_rows = table.bq_obj.num_rows
-            table.data_updated = datetime.now()
-            table.save()
+            table.sync_updates_from_bigquery()
 
             sheet.last_synced = datetime.now()
             sheet.save()

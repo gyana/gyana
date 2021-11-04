@@ -43,7 +43,7 @@ def _sync_tables_for_connector(connector: Connector):
     # UPDATE all tables with statistics from bigquery
 
     for table in connector.integration.table_set.all():
-        table.update_num_rows()
+        table.sync_updates_from_bigquery()
 
     # re-calculate total rows after tables are updated
     connector.integration.project.team.update_row_count()

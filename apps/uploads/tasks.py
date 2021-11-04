@@ -41,9 +41,7 @@ def run_upload_sync_task(self, upload_id: int):
             with catchtime() as get_time_to_sync:
                 import_table_from_upload(table=table, upload=upload)
 
-            table.num_rows = table.bq_obj.num_rows
-            table.data_updated = timezone.now()
-            table.save()
+            table.sync_updates_from_bigquery()
 
             upload.last_synced = timezone.now()
             upload.save()
