@@ -6,8 +6,9 @@ from django.conf import settings
 from django.db import models
 from model_clone import CloneMixin
 
-DEFAULT_WIDTH = 500
-DEFAULT_HEIGHT = 400
+# Need to be a multiple of GRID_SIZE found in GyWidget.tsx
+DEFAULT_WIDTH = 495
+DEFAULT_HEIGHT = 390
 
 
 class Widget(CloneMixin, BaseModel):
