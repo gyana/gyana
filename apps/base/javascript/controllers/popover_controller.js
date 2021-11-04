@@ -1,36 +1,41 @@
 import { Controller } from '@hotwired/stimulus'
+import tippy from 'tippy.js';
 
+/**
+ * Tippy.js powered interactable popover.
+ * 
+ * @link https://atomiks.github.io/tippyjs/
+ * 
+ * @example
+ * <div data-controller="popover">
+ *  <button class="button">Click me!</button>
+ * 
+ *  <template data-popover-target="body">
+ *    <h1>You can use HTML in popovers</h1>
+ *  </template>
+ * </p>
+ */
 export default class extends Controller {
-  static targets = ['trigger', 'body']
-  static values = {
-    dontHideBody: String,
-    position: String,
-  }
+  static targets = ['body']
 
   connect() {
-    this.element.style.position = 'relative'
+    console.assert(this.hasBodyTarget, "Popover controllers need a body target")
 
-    this.listener = function (e) {
-      if (!this.element.contains(e.target)) {
-        this.bodyTarget.style.display = 'none'
-      }
-    }
-
-    window.addEventListener('click', this.listener.bind(this))
-
-    if (this.dontHideBodyValue === 'True') {
-      this.bodyTarget.style.display = 'block'
-    }
-
-    this.bodyTarget.style.position = this.positionValue || 'absolute'
-    this.bodyTarget.style.right = 0
+    tippy(this.element, {
+      allowHTML: true,
+      animation: false,
+      arrow: false,
+      content: this.bodyTarget.innerHTML,
+      delay: 0,
+      interactive: true,
+      placement: this.element.dataset.placement || 'bottom',
+      theme: this.element.dataset.theme || 'popover',
+      trigger: 'click',
+    })
   }
 
   disconnect() {
-    window.removeEventListener('click', this.listener)
-  }
-
-  trigger(event) {
-    this.bodyTarget.style.display = 'block' == this.bodyTarget.style.display ? 'none' : 'block'
+    // https://atomiks.github.io/tippyjs/v6/tippy-instance/#-property
+    this.element._tippy.destroy()
   }
 }
