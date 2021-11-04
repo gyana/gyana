@@ -17,7 +17,7 @@
   .tippy-content {
     padding: 0;
 
-    > * {
+    .list__item {
       border-radius: 0;
     }
   }

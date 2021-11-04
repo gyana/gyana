@@ -7,22 +7,21 @@
     Add widget <i class="fas fa-chevron-down"></i>
   </button>
 
-  <ul
-    data-popover-target="body"
-    class="popover-body popover-body--center list list--bordered"
-  >
+  <template data-popover-target="body">
     {% for id, txt, icon in choices %}
-    <li class="whitespace-nowrap" data-id="{{ id }}">
-      <form method="post" action="{% url 'dashboard_widgets:create' project.id dashboard.id %}?mode=edit" class="form">
-        {% csrf_token %}
+    <form
+      method="post"
+      action="{% url 'dashboard_widgets:create' project.id dashboard.id %}?mode=edit"
+      class="form--no-layout"
+    >
+      {% csrf_token %}
 
-        <input type='hidden' name='kind' id="id_kind_{{ forloop.counter }}" value="{{ id }}" />
+      <input type='hidden' name='kind' id="id_kind_{{ forloop.counter }}" value="{{ id }}" />
 
-        <button type="submit" class="list__item list__item--interactive w-full" data-loading-false data-action="popover#trigger">
-          <p><i class="fas {{ icon }} text-blue mr-2"></i> {{ txt }}</p>
-        </button>
-      </form>
-    </li>
+      <button type="submit" class="list__item list__item--interactive w-full" data-loading-false data-action="popover#trigger">
+        <p><i class="fas {{ icon }} text-blue mr-2"></i> {{ txt }}</p>
+      </button>
+    </form>
     {% endfor %}
-  </ul>
+  </template>
 </div>
