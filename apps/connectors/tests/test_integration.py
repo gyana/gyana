@@ -181,56 +181,6 @@ def test_status_on_pending_page(
     assert connector.integration.state == Integration.State.DONE
 
 
-def test_update_tables_in_non_database(
-    client,
-    logged_in_user,
-    fivetran,
-    bigquery,
-    connector_factory,
-    integration_table_factory,
-):
-    connector = connector_factory(
-        integration__project__team=logged_in_user.teams.first()
-    )
-    integration = connector.integration
-    project = integration.project
-
-    schema_obj = get_mock_schema(2)
-    fivetran.get.return_value = get_mock_fivetran_connector()
-    fivetran.get_schemas.return_value = schema_obj
-    bigquery.list_tables.return_value = get_mock_list_tables(2)
-
-    for table in schema_obj.schemas[0].tables:
-        integration_table_factory(
-            bq_table=table.name_in_destination, project=project, integration=integration
-        )
-
-    DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
-
-    # test: if the user removes tables in the configure form, those tables are
-    # deleted
-
-    assert integration.table_set.count() == 2
-
-    # update the schema in fivetran
-    r = client.get(f"{DETAIL}/configure")
-    assertOK(r)
-    assertFormRenders(r, ["name", "dataset_tables", "dataset_schema"])
-
-    r = client.post(f"{DETAIL}/configure", data={"dataset_tables": ["table_1"]})
-    assertRedirects(r, f"{DETAIL}/load", target_status_code=302)
-    assert fivetran.update_schemas.call_count == 1
-    schema_tables = fivetran.update_schemas.call_args.args[1].schemas[0].tables
-    enabled_tables = [t for t in schema_tables if t.enabled]
-    assert len(enabled_tables) == 1
-    assert schema_tables[0].key == "table_1"
-
-    # slightly hacky - this is working because the code mutates the mock schema object
-
-    # remove those tables
-    assert integration.table_set.count() == 1
-
-
 def test_status_broken(client, logged_in_user, fivetran, connector_factory):
 
     connector = connector_factory(
