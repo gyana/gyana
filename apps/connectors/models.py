@@ -71,6 +71,8 @@ class Connector(BaseModel):
     fivetran_authorized = models.BooleanField(default=False)
     # keep track of when a manual sync is triggered
     fivetran_sync_started = models.DateTimeField(null=True)
+    # the value of succeeded_at when tables were last synced from bigquery
+    bigquery_succeeded_at = models.DateTimeField(null=True)
 
     # automatically sync the fields from fivetran connector to this model
     # https://fivetran.com/docs/rest-api/connectors#fields
@@ -212,8 +214,6 @@ class Connector(BaseModel):
     def sync_updates_from_fivetran(self):
         from apps.connectors.sync import end_connector_sync
 
-        previous_succeeded_at = self.succeeded_at
-
         data = clients.fivetran().get(self)
         self.update_kwargs_from_fivetran(data)
         self.save()
@@ -223,15 +223,9 @@ class Connector(BaseModel):
             self.integration.state = Integration.State.ERROR
             self.integration.save()
 
-        is_initial = not self.integration.table_set.exists()
-        is_loading = self.integration.state == Integration.State.LOAD
-        is_grace_period = (
-            previous_succeeded_at is not None and is_initial and is_loading
-        )
-
         # a new sync is completed
-        if self.succeeded_at != previous_succeeded_at or is_grace_period:
-            end_connector_sync(self, is_initial)
+        if self.succeeded_at != self.bigquery_succeeded_at:
+            end_connector_sync(self, not self.integration.table_set.exists())
 
     def sync_schema_obj_from_fivetran(self):
         self.schema_config = clients.fivetran().get_schemas(self)
