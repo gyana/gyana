@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import time, timedelta
 
 import pytest
 from apps.connectors.sync import (
@@ -9,7 +9,7 @@ from apps.connectors.sync import (
 from apps.integrations.models import Integration
 from django.utils import timezone
 
-from .mock import get_mock_fivetran_connector, get_mock_list_tables, get_mock_schema
+from .mock import get_mock_list_tables, get_mock_schema
 
 pytestmark = pytest.mark.django_db
 
@@ -95,54 +95,30 @@ def test_start_connector_sync(logged_in_user, connector_factory, fivetran):
     assert fivetran.start_update_sync.call_args.args == (connector,)
 
 
-def test_handle_syncing_connector(
-    logged_in_user, connector_factory, fivetran, bigquery
-):
+def test_end_connector_sync(logged_in_user, connector_factory, bigquery):
     connector = connector_factory(
         integration__project__team=logged_in_user.teams.first(),
         integration__state=Integration.State.LOAD,
         integration__ready=False,
-        service="google_analytics",
+        schema_config=get_mock_schema(1).to_dict(),
+        fivetran_sync_started=timezone.now(),
+        succeeded_at=timezone.now(),
     )
     integration = connector.integration
 
-    # test: logic to handle a syncing fivetran connector, including all errors
-
-    # fivetran setup is broken or incomplete
-    fivetran.get.return_value = get_mock_fivetran_connector(
-        connector, is_historical_sync=True, is_broken=True
-    )
-    end_connector_sync(connector)
-    integration.refresh_from_db()
-    assert integration.state == Integration.State.ERROR
-
-    # the historical or incremental sync is ongoing
-    integration.state = Integration.State.LOAD
-    integration.save()
-    fivetran.get.return_value = get_mock_fivetran_connector(
-        connector, is_historical_sync=True
-    )
-    end_connector_sync(connector)
-    integration.refresh_from_db()
-    assert integration.state == Integration.State.LOAD
+    # test: logic to handle a completed fivetran sync
 
     # none of the fivetran tables are available in bigquery yet
-    fivetran.get.return_value = get_mock_fivetran_connector(
-        connector,
-    )
-    fivetran.get_schemas.return_value = get_mock_schema(0)
     bigquery.list_tables.return_value = get_mock_list_tables(0)
 
     # api_cloud before grace period
-    end_connector_sync(connector)
-    integration.refresh_from_db()
+    end_connector_sync(connector, is_initial=True)
     assert integration.state == Integration.State.LOAD
 
     # api_cloud after grace period
-    fivetran.get.return_value = get_mock_fivetran_connector(
-        connector, succeeded_at=timezone.now() - timedelta(hours=1)
-    )
-    end_connector_sync(connector)
+    connector.succeeded_at = timezone.now() - timedelta(hours=1)
+    connector.save()
+    end_connector_sync(connector, is_initial=True)
     integration.refresh_from_db()
     assert integration.state == Integration.State.ERROR
 
@@ -150,18 +126,19 @@ def test_handle_syncing_connector(
     integration.state = Integration.State.LOAD
     integration.save()
     connector.service = "segment"
+    connector.succeeded_at = timezone.now()
     connector.save()
-    fivetran.get.return_value = get_mock_fivetran_connector(connector)
-    end_connector_sync(connector)
+    end_connector_sync(connector, is_initial=True)
     integration.refresh_from_db()
     assert integration.state == Integration.State.ERROR
 
     # data is available in bigquery (with event_tracking)
     integration.state = Integration.State.LOAD
     integration.save()
-    fivetran.get_schemas.return_value = get_mock_schema(0, service="segment")
+    # clear the cached property
+    del connector.actual_bq_ids
     bigquery.list_tables.return_value = get_mock_list_tables(1)
     bigquery.get_table().num_rows = 10
-    end_connector_sync(connector)
+    end_connector_sync(connector, is_initial=True)
     assert integration.state == Integration.State.DONE
     assert integration.table_set.count() == 1

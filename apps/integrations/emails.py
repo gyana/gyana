@@ -15,16 +15,16 @@ def send_integration_ready_email(integration, time_to_sync):
         email = integration_ready_email(integration, integration.created_by)
         email.send()
 
-    analytics.track(
-        integration.created_by.id,
-        INTEGRATION_SYNC_SUCCESS_EVENT,
-        {
-            "id": integration.id,
-            "kind": integration.kind,
-            "row_count": integration.num_rows,
-            "time_to_sync": int(time_to_sync),
-        },
-    )
+        analytics.track(
+            integration.created_by.id,
+            INTEGRATION_SYNC_SUCCESS_EVENT,
+            {
+                "id": integration.id,
+                "kind": integration.kind,
+                "row_count": integration.num_rows,
+                "time_to_sync": int(time_to_sync),
+            },
+        )
 
 
 def integration_ready_email(integration: Integration, recipient: CustomUser):

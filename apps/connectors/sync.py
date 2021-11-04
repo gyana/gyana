@@ -63,7 +63,7 @@ def start_connector_sync(connector: Connector):
     connector.integration.save()
 
 
-def end_connector_sync(connector, is_initial):
+def end_connector_sync(connector, is_initial=False):
 
     # handle syncing fivetran connector, either via polling or user interaction
     # - check at least one table is available in bigquery
