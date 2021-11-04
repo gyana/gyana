@@ -141,10 +141,11 @@ def test_status_on_pending_page(
         integration__state=Integration.State.LOAD,
         integration__project__team=logged_in_user.teams.first(),
         schema_config=get_mock_schema(1).to_dict(),
+        fivetran_sync_started=timezone.now(),
     )
     project = connector.integration.project
 
-    fivetran.get.return_value = get_mock_fivetran_connector(connector)
+    fivetran.get.return_value = get_mock_fivetran_connector()
     bigquery.get_table().num_rows = 10
     bigquery.list_tables.return_value = get_mock_list_tables(1)
 
@@ -195,7 +196,7 @@ def test_update_tables_in_non_database(
     project = integration.project
 
     schema_obj = get_mock_schema(2)
-    fivetran.get.return_value = get_mock_fivetran_connector(connector)
+    fivetran.get.return_value = get_mock_fivetran_connector()
     fivetran.get_schemas.return_value = schema_obj
     bigquery.list_tables.return_value = get_mock_list_tables(2)
 
@@ -238,7 +239,7 @@ def test_status_broken(client, logged_in_user, fivetran, connector_factory):
     integration = connector.integration
     project = integration.project
 
-    fivetran.get.return_value = get_mock_fivetran_connector(connector, is_broken=True)
+    fivetran.get.return_value = get_mock_fivetran_connector(is_broken=True)
     fivetran.get_authorize_url.side_effect = (
         lambda c, r: f"http://fivetran.url?redirect_uri={r}"
     )
