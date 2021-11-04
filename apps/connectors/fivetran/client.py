@@ -6,7 +6,6 @@ from django.conf import settings
 
 from ..models import Connector
 from .config import ServiceTypeEnum, get_services_obj
-from .schema import FivetranSchemaObj
 
 # wrapper for the Fivetran connectors REST API, documented here
 # https://fivetran.com/docs/rest-api/connectors
@@ -116,7 +115,7 @@ class FivetranClient:
 
         return res
 
-    def reload_schemas(self, connector: Connector) -> FivetranSchemaObj:
+    def reload_schemas(self, connector: Connector):
 
         # https://fivetran.com/docs/rest-api/connectors#reloadaconnectorschemaconfig
 
@@ -128,9 +127,7 @@ class FivetranClient:
         if res["code"] != "Success":
             raise FivetranClientError(res)
 
-        return FivetranSchemaObj(
-            res["data"].get("schemas", {}), connector.conf, connector.schema
-        )
+        return res["data"].get("schemas", {})
 
     def get_schemas(self, connector: Connector):
 
@@ -151,7 +148,7 @@ class FivetranClient:
         # schema not included for certain connector (e.g. sheets)
         return res["data"].get("schemas", {})
 
-    def update_schemas(self, connector: Connector, schemas: FivetranSchemaObj):
+    def update_schemas(self, connector: Connector, schemas):
 
         # https://fivetran.com/docs/rest-api/connectors#modifyaconnectorschemaconfig
 
