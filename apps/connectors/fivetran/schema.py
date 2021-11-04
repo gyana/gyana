@@ -108,6 +108,10 @@ class FivetranSchemaObj:
         # mutate the schema_obj based on cleaned_data from form
 
         for schema in self.schemas:
+            print(
+                f"{schema.name_in_destination}_schema",
+                f"{schema.name_in_destination}_schema" in cleaned_data,
+            )
             schema.enabled = f"{schema.name_in_destination}_schema" in cleaned_data
             # only patch tables that are allowed
             schema.tables = [
