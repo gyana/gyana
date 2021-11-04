@@ -5,19 +5,20 @@
 
 {% block tab %}
 <div class="flex flex-col flex-1 pad">
+
   <div class="flex flex-col mb-7">
-    <div class="flex flex-row">
+    {% comment %} <div class="flex flex-row">
       <div class="mr-auto">
         <h2>Referenced</h2>
         <p>All the places this integration is used in</p>
-      </div>
+      </div> {% endcomment %}
         {% comment %} <div class='flex flex-row gap-2'>
         {% include 'workflows/create_from_integration.html' %}
         {% include 'dashboards/create_from_integration.html' %}
       </div> {% endcomment %}
-    </div>
+    {% comment %} </div> {% endcomment %}
 
-    <div class="card card--none flex-1 mt-7">
+    <div class="card card--none flex-1">
       {% if integration.used_in|length == 0 %}
       <div class="table__empty">
         <h3>Time to use your integration</h3>
@@ -32,8 +33,11 @@
       {% endif %}
     </div>
   </div>
+</div>
 
-  <div class="flex gap-7 mt-auto">
+{% endblock %}
+
+  {% comment %} <div class="flex gap-7 mt-auto">
     {% if object.kind == 'sheet' %}
     <div class="card">
       <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
@@ -72,7 +76,4 @@
       </h2>
       <p>Created by</p>
     </div>
-  </div>
-</div>
-
-{% endblock %}
+  </div> {% endcomment %}

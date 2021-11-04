@@ -1,5 +1,6 @@
 {% extends "web/app/project_base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block app %}
 <div class="workflow-detail__header">
@@ -34,6 +35,14 @@
     <span data-tooltip-target="body">Go to Google Sheet</span>
   </a>
   {% endif %}
+</div>
+
+<div class="flex items-center space-x-2 p-4 pl-8 bg-white border-b border-gray">
+  <p>
+    <strong>{{ integration.num_rows }}</strong> row{{ integration.num_rows|pluralize }} •
+    <strong>{{ integration.num_tables }}</strong> table{{ integration.num_tables|pluralize }} •
+    <strong>{{ integration.created_by.get_full_name }}</strong> created this integration <strong>{{ integration.created|naturaltime }}</strong>
+  </p>
 </div>
 
 <nav id='tabbar' class="tabbar tabbar--top">

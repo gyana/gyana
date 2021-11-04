@@ -122,6 +122,10 @@ class Integration(CloneMixin, BaseModel):
         )
 
     @property
+    def num_tables(self):
+        return self.table_set.count()
+
+    @property
     def last_synced(self):
         return getattr(self, self.kind).last_synced
 
