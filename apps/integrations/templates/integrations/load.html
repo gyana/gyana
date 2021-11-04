@@ -33,9 +33,10 @@
                   or reach out to support.
                 </p>
               {% elif integration.source_obj.conf.service_is_dynamic %}
-                <h4>Your connector is setup, we haven't received any data yet. {% link_article 'integrations' 'error' %}</h4>
+                <h4>Your connector is setup, but we haven't received any data yet. {% link_article 'integrations' 'error' %}</h4>
                 <p class="alert">Check that you are sending events, and
                   <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">trigger another sync</a>
+                after a few minutes.
                 </p>
               {% else %}
                 <h4>Errors occurred when validating your connector. {% link_article 'integrations' 'error' %}</h4>
