@@ -169,7 +169,7 @@ def test_resync_after_source_update(
     team = logged_in_user.teams.first()
     sheet = sheet_factory(
         integration__project__team=team,
-        drive_file_last_modified=datetime(2020, 9, 1, 0, 0, 0),
+        drive_file_last_modified_at_sync=datetime(2020, 9, 1, 0, 0, 0),
     )
     integration = sheet.integration
     # mock drive client to check last updated information

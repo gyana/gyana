@@ -1851,7 +1851,7 @@
       "integration": 2,
       "url": "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit",
       "cell_range": "store_info!A1:D11",
-      "drive_file_last_modified": "2021-08-08T16:46:04.194Z",
+      "drive_file_last_modified_at_sync": "2021-08-08T16:46:04.194Z",
       "sync_task_id": "aa5c3086-1f87-434f-9d5b-48bd69786b33",
       "sync_started": "2021-08-08T20:28:24.090Z"
     }

@@ -13,12 +13,15 @@ class Sheet(CloneMixin, BaseModel):
 
     url = models.URLField()
     cell_range = models.CharField(max_length=64, null=True, blank=True)
-    # updated prior to each sync
-    drive_file_last_modified = models.DateTimeField(null=True)
+    # essentially the version of the file that was synced
+    drive_file_last_modified_at_sync = models.DateTimeField(null=True)
 
     # track the celery task
     sync_task_id = models.UUIDField(null=True)
     sync_started = models.DateTimeField(null=True)
+
+    # automatically sync metadata from google drive
+    drive_modified_date = models.DateTimeField(null=True)
 
     @property
     def is_syncing(self):
@@ -38,3 +41,13 @@ class Sheet(CloneMixin, BaseModel):
             created_by=created_by,
         )
         self.integration = integration
+
+    def sync_updates_from_drive(self):
+        from apps.sheets.sheets import get_last_modified_from_drive_file
+
+        self.drive_modified_date = get_last_modified_from_drive_file(self)
+        self.save()
+
+    @property
+    def up_to_date(self):
+        return self.drive_modified_date == self.drive_file_last_modified_at_sync

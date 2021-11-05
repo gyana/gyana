@@ -44,10 +44,15 @@
       <strong>{{ integration.num_tables }}</strong> table{{ integration.num_tables|pluralize }} •
     </p>
   {% endif %}
-  <img class="h-8 w-8 rounded-full" src="{{ integration.created_by.avatar_url }}">
+  {% if integration.created_by %}<img class="h-8 w-8 rounded-full" src="{{ integration.created_by.avatar_url }}">{% endif %}
   <p>
     <strong>{{ integration.created_by.get_full_name }}</strong> created this integration
     <strong>{% include 'columns/natural_datetime.html' with datetime=integration.created %}</strong>
+    {% if object.kind == 'sheet' %}
+      • <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
+        {% include "sheets/status.html" with object=object.sheet %}
+      </turbo-frame>
+    {% endif %}
   </p>
 </div>
 
