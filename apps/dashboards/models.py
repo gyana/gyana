@@ -1,6 +1,7 @@
 from apps.base.models import BaseModel
 from apps.projects.models import Project
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import (check_password, is_password_usable,
                                          make_password)
@@ -26,6 +27,10 @@ class Dashboard(CloneMixin, BaseModel):
     password_set = models.DateTimeField(null=True, editable=False)
     width = models.IntegerField(default=1200)
     height = models.IntegerField(default=840)
+
+    palette_colors = ArrayField(models.CharField(max_length=6), null=True, size=20)
+    background_color = models.CharField(default="ffffff", max_length=6)
+
     _clone_m2o_or_o2m_fields = ["widget_set"]
 
     # Stores the raw password if set_password() is called so that it can

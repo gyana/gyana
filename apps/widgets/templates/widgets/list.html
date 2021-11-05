@@ -14,7 +14,10 @@
   </header>
   {% endif %}
   
-  <div class="widgets__canvas">
+  <div
+    class="widgets__canvas"
+    style="--background-color: #{{ dashboard.background_color }};"
+  >
     <div
       id="dashboard-widget-container"
       class="{% if request.GET.mode != 'view' %}widgets__grid{%endif%}"
