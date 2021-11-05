@@ -169,10 +169,6 @@ def test_integration_create_pending_load_and_approve(
     assertSelectorLength(r, "table tbody tr", 1)
     assertLink(r, DETAIL, "Store info")
 
-    # redirect from detail page
-    r = client.get(DETAIL)
-    assertRedirects(r, f"{DETAIL}/done")
-
     # load (redirects to done)
     r = client.get(f"{DETAIL}/load")
     assertRedirects(r, f"{DETAIL}/done")
