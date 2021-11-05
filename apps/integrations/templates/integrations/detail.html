@@ -21,7 +21,7 @@
   <div class="card card--none">
     <nav id='tabbar-setup' class="flex flex-col items-center w-full  py-2 border-b border-gray pl-4">
       <div class="flex flex-row items-center space-x-2">
-        <a class="hover:underline {% if not request.GET.vew or request.GET.view == 'preview' %} text-blue {% endif %}"
+        <a class="hover:underline {% if not request.GET.view or request.GET.view == 'preview' %} text-blue {% endif %}"
             href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=preview">
             <p>Preview</p>
         </a>
