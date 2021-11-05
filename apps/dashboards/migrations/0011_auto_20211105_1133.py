@@ -7,18 +7,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboards', '0010_dashboard_password_set'),
+        ("dashboards", "0010_dashboard_password_set"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dashboard',
-            name='background_color',
-            field=models.CharField(default='ffffff', max_length=6),
+            model_name="dashboard",
+            name="background_color",
+            field=models.CharField(default="ffffff", max_length=6),
         ),
         migrations.AddField(
-            model_name='dashboard',
-            name='palette_colors',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=6), null=True, size=20),
+            model_name="dashboard",
+            name="palette_colors",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(max_length=6), null=True, size=20
+            ),
         ),
     ]

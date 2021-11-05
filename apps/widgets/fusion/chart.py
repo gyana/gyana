@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+
 from apps.widgets.bigquery import get_unique_column_names
 from apps.widgets.fusion.utils import (
     DEFAULT_HEIGHT,

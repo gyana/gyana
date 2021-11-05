@@ -1,14 +1,18 @@
-from apps.base.models import BaseModel
-from apps.projects.models import Project
 from django.conf import settings
-from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth import password_validation
-from django.contrib.auth.hashers import (check_password, is_password_usable,
-                                         make_password)
+from django.contrib.auth.hashers import (
+    check_password,
+    is_password_usable,
+    make_password,
+)
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy
 from model_clone import CloneMixin
+
+from apps.base.models import BaseModel
+from apps.projects.models import Project
 
 
 class Dashboard(CloneMixin, BaseModel):

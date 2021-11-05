@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboards', '0011_auto_20211105_1133'),
+        ("dashboards", "0011_auto_20211105_1133"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dashboard',
-            name='grid_size',
+            model_name="dashboard",
+            name="grid_size",
             field=models.IntegerField(default=15),
         ),
     ]
