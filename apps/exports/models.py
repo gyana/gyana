@@ -33,3 +33,6 @@ class Export(BaseModel):
     @property
     def bq_table_id(self):
         return f"export_{self.pk}"
+
+    def get_table_name(self):
+        return f"Node:{self.node.id}:{self.pk}"
