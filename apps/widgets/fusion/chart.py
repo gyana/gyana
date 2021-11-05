@@ -41,7 +41,9 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     dataSource = {
         "chart": {
             "stack100Percent": "1" if widget.stack_100_percent else "0",
-            "theme": "fusion, mySampleTheme",
+            # Themes can override each other, the values in the right-most theme
+            # take precedence.
+            "theme": "fusion, CustomDashboardTheme",
             **axis_names,
         },
         **data,
