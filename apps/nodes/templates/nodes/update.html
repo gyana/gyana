@@ -14,7 +14,10 @@
       <turbo-frame id="node-editable-title">
         {% include 'nodes/name.html' %}
       </turbo-frame>
-      <div class="ml-auto">
+      <div class="ml-auto flex flex-row gap-3 items-center">
+        <turbo-frame id='export-create'>
+          {% include 'exports/create.html' with parent_id=node.id%}
+        </turbo-frame>
         {% if node.kind != "input" and node.kind != "output" %}
           {% link_article 'workflows' node.kind %}
         {% endif %}

@@ -24,6 +24,7 @@ class Table(CloneMixin, BaseModel):
         WORKFLOW_NODE = "workflow_node", "Workflow node"
         INTERMEDIATE_NODE = "intermediate_node", "Intermediate node"
         CACHE_NODE = "cache_node", "Cache node"
+        EXPORT = "export", "Export"
 
     bq_table = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
     bq_dataset = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)

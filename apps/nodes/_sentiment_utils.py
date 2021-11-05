@@ -10,7 +10,6 @@ from apps.tables.models import Table
 from apps.teams.models import CreditTransaction, OutOfCreditsException
 from celery.app import shared_task
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from google.cloud import bigquery
 from google.cloud.language import (
