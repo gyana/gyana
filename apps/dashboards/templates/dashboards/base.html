@@ -120,5 +120,5 @@
 {% endblock %}
 
 {% block page_js %}
-{% include 'components/fusionchart_scripts.html' %}
+  {% include 'components/fusionchart_scripts.html' with palette_colors=object.palette_colors %}
 {% endblock %}

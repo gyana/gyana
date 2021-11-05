@@ -10,6 +10,9 @@ ignore = "T003,H021,H006,H013,H016"
 use_gitignore = true
 indent = 2
 
+[tool.isort]
+profile = "black"
+
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "gyana.settings.development"
 

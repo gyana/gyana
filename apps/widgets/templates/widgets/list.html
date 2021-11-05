@@ -14,12 +14,19 @@
   </header>
   {% endif %}
   
-  <div class="widgets__canvas">
+  <div
+    class="widgets__canvas"
+    style="--background-color:#{{ dashboard.background_color }};"
+  >
     <div
       id="dashboard-widget-container"
       class="{% if request.GET.mode != 'view' %}widgets__grid{%endif%}"
       data-controller="widget-list"
-      style="min-width:{{ dashboard.width }}px;min-height:{{ dashboard.height }}px;"
+      style="
+        min-width:{{ dashboard.width }}px;
+        min-height:{{ dashboard.height }}px;
+        --grid-size:{{ dashboard.grid_size }}px;
+      "
     >
       {% for object in object_list %}
       {% include 'widgets/widget_component.html' %}

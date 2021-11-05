@@ -1,10 +1,13 @@
 import uuid
 
-from apps.base.live_update_form import LiveUpdateForm
 from django import forms
+from django.contrib.postgres.forms import SimpleArrayField
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.forms.widgets import HiddenInput, PasswordInput
 from django.utils import timezone
+
+from apps.base.live_update_form import LiveUpdateForm
 
 from .models import Dashboard
 
@@ -20,10 +23,28 @@ class DashboardForm(forms.ModelForm):
     name = forms.CharField(required=False)
     width = forms.IntegerField(required=False)
     height = forms.IntegerField(required=False)
+    grid_size = forms.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(1200)], required=False
+    )
+    palette_colors = SimpleArrayField(
+        forms.CharField(),
+        help_text="A list of HEX color values separated by a comma (,)",
+        required=False,
+    )
+    background_color = forms.CharField(
+        help_text="HEX color value to use for the background", required=False
+    )
 
     class Meta:
         model = Dashboard
-        fields = ["name", "width", "height"]
+        fields = [
+            "name",
+            "width",
+            "height",
+            "grid_size",
+            "palette_colors",
+            "background_color",
+        ]
 
 
 class DashboardShareForm(LiveUpdateForm):

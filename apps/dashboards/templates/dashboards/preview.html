@@ -1,8 +1,14 @@
 <div class='widgets flex items-center justify-center'>
-  <div id="dashboard-widget-container"
-        class="widgets__canvas"
-        data-controller="widget-list"
-        style="width:{{ object.width }}px;height:{{object.height}}px;">
+  <div
+    id="dashboard-widget-container"
+    class="widgets__canvas"
+    data-controller="widget-list"
+    style="
+      width:{{ object.width }}px;
+      height:{{ object.height }}px;
+      --background-color: #{{ object.background_color }};
+    "
+  >
     {% for widget in object.widget_set.all %}
     <gy-widget id="widget-{{ widget.id }}">
       <div
@@ -12,6 +18,7 @@
         data-y="{{ widget.y }}"
         data-width="{{ widget.width }}"
         data-height="{{ widget.height }}"
+        data-grid-size="{{ object.grid_size }}"
       >
         <div class="widget-card h-full">
           <div class='widget-card__visual widget-card__visual--view'>
@@ -33,4 +40,4 @@
   </div>
 </div>
 
-{% include 'components/fusionchart_scripts.html' %}
+{% include 'components/fusionchart_scripts.html' with palette_colors=object.palette_colors %}

@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+
 from apps.widgets.bigquery import get_unique_column_names
 from apps.widgets.fusion.utils import (
     DEFAULT_HEIGHT,
@@ -41,7 +42,9 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     dataSource = {
         "chart": {
             "stack100Percent": "1" if widget.stack_100_percent else "0",
-            "theme": "fusion",
+            # Themes can override each other, the values in the right-most theme
+            # take precedence.
+            "theme": "fusion, CustomDashboardTheme",
             **axis_names,
         },
         **data,
