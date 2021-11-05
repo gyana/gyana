@@ -22,8 +22,15 @@ class DashboardForm(forms.ModelForm):
     name = forms.CharField(required=False)
     width = forms.IntegerField(required=False)
     height = forms.IntegerField(required=False)
-    palette_colors = SimpleArrayField(forms.CharField(), required=False)
-    background_color = forms.CharField(required=False)
+    palette_colors = SimpleArrayField(
+        forms.CharField(),
+        help_text="A list of HEX color values separated by a comma (,)",
+        required=False
+    )
+    background_color = forms.CharField(
+        help_text="HEX color value to use for the background",
+        required=False
+    )
 
     class Meta:
         model = Dashboard
