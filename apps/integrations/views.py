@@ -66,7 +66,7 @@ class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
 # Tabs
 
 
-class IntegrationDetail(ReadyMixin, DetailView):
+class IntegrationDetail(ProjectMixin, DetailView):
     template_name = "integrations/detail.html"
     model = Integration
 
@@ -81,7 +81,7 @@ class IntegrationDetail(ReadyMixin, DetailView):
         )
 
 
-class IntegrationReferences(ProjectMixin, DetailView):
+class IntegrationReferences(ReadyMixin, DetailView):
     template_name = "integrations/references.html"
     model = Integration
 

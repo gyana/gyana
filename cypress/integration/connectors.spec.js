@@ -10,7 +10,7 @@ describe('connectors', () => {
     cy.visit('/projects/1/integrations')
 
     cy.contains('New Integration').click()
-    cy.contains('New Connector').click()
+    cy.contains('New Connector').click({ force: true })
 
     cy.url().should('contain', '/projects/1/integrations/connectors/new')
     // all Fivetran connectors are mocked via MockFivetranClient
