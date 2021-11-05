@@ -48,9 +48,12 @@ class Connector(BaseModel):
         MANUAL = "manual", "Manual"
 
     class SetupState(models.TextChoices):
-        BROKEN = "broken", "Broken"
-        INCOMPLETE = "incomplete", "Incomplete"
-        CONNECTED = "connected", "Connected"
+        BROKEN = "broken", "Broken - the connector setup config is broken"
+        INCOMPLETE = (
+            "incomplete",
+            "Incomplete - the setup config is incomplete, the setup tests never succeeded",
+        )
+        CONNECTED = "connected", "Connected - the connector is properly set up"
 
     class SyncState(models.TextChoices):
         SCHEDULED = "scheduled", "Scheduled - the sync is waiting to be run"
@@ -62,8 +65,14 @@ class Connector(BaseModel):
         )
 
     class UpdateState(models.TextChoices):
-        ON_SCHEDULE = "on_schedule", "On Schedule"
-        DELAYED = "delayed", "Delayed"
+        ON_SCHEDULE = (
+            "on_schedule",
+            "On Schedule - the sync is running smoothly, no delays",
+        )
+        DELAYED = (
+            "delayed",
+            "Delayed -  the data is delayed for a longer time than expected for the update",
+        )
 
     SETUP_STATE_TO_ICON = {
         SetupState.CONNECTED: "fa fa-check text-green",
@@ -285,8 +294,7 @@ class Connector(BaseModel):
     @property
     def latest_sync_failed(self):
         return (
-            self.failed_at is not None
-            and self.failed_at > self.fivetran_sync_started
+            self.failed_at is not None and self.failed_at > self.fivetran_sync_started
         )
 
     @property
