@@ -17,7 +17,7 @@
       </turbo-frame>
       <div class="ml-auto flex flex-row gap-3 items-center">
         {% flag "beta" %}<turbo-frame id='export-create'>
-          {% include 'exports/create.html' with parent_id=node.id%}
+          {% include 'exports/create.html' with parent_id=node.id parent_type='node'%}
         </turbo-frame>
         {% endflag %}
         {% if node.kind != "input" and node.kind != "output" %}

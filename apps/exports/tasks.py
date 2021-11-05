@@ -13,7 +13,6 @@ from django.db import transaction
 from django.template import Context
 from django.template.loader import get_template
 from google.cloud import bigquery
-from google.cloud.storage import Blob
 
 from .models import Export
 
@@ -22,30 +21,19 @@ from .models import Export
 def export_to_gcs(export_id, user_id):
     export = Export.objects.get(pk=export_id)
     user = CustomUser.objects.get(pk=user_id)
-    node = export.node
 
     with transaction.atomic():
-        table = Table(
-            source=Table.Source.EXPORT,
-            bq_table=export.bq_table_id,
-            bq_dataset=node.workflow.project.team.tables_dataset_id,
-            project=node.workflow.project,
-            export=export,
-        )
-        table.save()
         query = get_query_from_node(export.node)
         client = clients.bigquery()
-        job_config = bigquery.QueryJobConfig(
-            destination=f"{settings.GCP_PROJECT}.{table.bq_id}"
-        )
-        job = client.query(query.compile(), job_config=job_config)
+
+        job = client.query(query.compile())
         job.result()
         export.status = Export.Status.BQ_TABLE_CREATED
         export.save()
 
-    filepath = f"exports/{export.bq_table_id}-{short_hash()}.csv"
+    filepath = f"exports/{export.table_id}-{short_hash()}.csv"
     gcs_path = f"{settings.GS_BUCKET_NAME}/{filepath}"
-    extract_job = client.extract_table(table.bq_id, f"gs://{gcs_path}")
+    extract_job = client.extract_table(job.destination, f"gs://{gcs_path}")
     extract_job.result()
 
     with transaction.atomic():
