@@ -15,7 +15,7 @@ from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
 from .forms import KIND_TO_FORM_CLASS, IntegrationForm
-from .mixins import ReadyMixin
+from .mixins import STATE_TO_URL_REDIRECT, ReadyMixin
 from .models import Integration
 from .tables import IntegrationListTable, IntegrationPendingTable, ReferencesTable
 
@@ -69,6 +69,13 @@ class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
 class IntegrationDetail(ProjectMixin, DetailView):
     template_name = "integrations/detail.html"
     model = Integration
+
+    def get(self, request, *args, **kwargs):
+        integration = self.get_object()
+        if not integration.ready and integration.state != Integration.State.DONE:
+            url_name = STATE_TO_URL_REDIRECT[integration.state]
+            return redirect(url_name, self.project.id, integration.id)
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -219,6 +226,20 @@ class IntegrationDone(ProjectMixin, TurboUpdateView):
     template_name = "integrations/done.html"
     model = Integration
     fields = []
+
+    def get(self, request, *args, **kwargs):
+
+        self.object = self.get_object()
+
+        if self.object.state in [
+            Integration.State.LOAD,
+            Integration.State.ERROR,
+        ]:
+            return redirect(
+                "project_integrations:load", self.project.id, self.object.id
+            )
+
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

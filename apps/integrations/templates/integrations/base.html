@@ -74,7 +74,7 @@
       Sync
     </a>
   {% endif %}
-  {% if object.ready or object.state == 'done' %}
+  {% if object.ready %}
     <a class="tabbar__link {% if request.resolver_match.url_name == 'references' %} tabbar__link--active {% endif %}"
       href="{% url 'project_integrations:references' project.id object.id %}">
       References

@@ -167,6 +167,13 @@ class Integration(CloneMixin, BaseModel):
         return f"Integration:{self.name}"
 
     def get_absolute_url(self):
+
+        from apps.integrations.mixins import STATE_TO_URL_REDIRECT
+
+        if not self.ready:
+            url_name = STATE_TO_URL_REDIRECT[self.state]
+            return reverse(url_name, args=(self.project.id, self.id))
+
         return reverse("project_integrations:detail", args=(self.project.id, self.id))
 
     def icon(self):
