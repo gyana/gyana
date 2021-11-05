@@ -27,6 +27,7 @@ class Dashboard(CloneMixin, BaseModel):
     password_set = models.DateTimeField(null=True, editable=False)
     width = models.IntegerField(default=1200)
     height = models.IntegerField(default=840)
+    grid_size = models.IntegerField(default=15)
 
     palette_colors = ArrayField(models.CharField(max_length=6), null=True, size=20)
     background_color = models.CharField(default="ffffff", max_length=6)
