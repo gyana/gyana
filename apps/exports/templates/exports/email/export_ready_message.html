@@ -1,0 +1,11 @@
+{% extends "web/emails/base.html" %}
+
+{% block title %}
+Your export is ready!
+{% endblock %}
+
+{% block body %}
+<p>
+  Click <a href="https://storage.cloud.google.com/{{ gcs_path }}">here to download</a> your CSV export.
+</p>
+{% endblock %}
