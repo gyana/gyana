@@ -16,7 +16,7 @@
         {% include 'nodes/name.html' %}
       </turbo-frame>
       <div class="ml-auto flex flex-row gap-3 items-center">
-        {% flag "beta" %}<turbo-frame id='export-create'>
+        {% flag "beta" %}<turbo-frame id='exports:create'>
           {% include 'exports/create.html' with parent_id=node.id parent_type='node'%}
         </turbo-frame>
         {% endflag %}

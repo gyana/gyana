@@ -34,6 +34,9 @@
             href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=detail">
             <p>Detail</p>
         </a>
+        <turbo-frame id='exports:create'>
+          {% include 'exports/create.html' with parent_id=table_id parent_type='integration_table' %}
+        </turbo-frame>
       </div>
     </nav>
     <div class="flex flex-row">

@@ -1,18 +1,17 @@
 from datetime import datetime as dt
 from datetime import timedelta
 
-from apps.base import clients
-from apps.base.utils import short_hash
-from apps.nodes.bigquery import get_query_from_node
-from apps.tables.models import Table
-from apps.users.models import CustomUser
 from celery.app import shared_task
 from django.conf import settings
 from django.core.mail.message import EmailMultiAlternatives
 from django.db import transaction
-from django.template import Context
 from django.template.loader import get_template
-from google.cloud import bigquery
+
+from apps.base import clients
+from apps.base.utils import short_hash
+from apps.nodes.bigquery import get_query_from_node
+from apps.tables.bigquery import get_query_from_table
+from apps.users.models import CustomUser
 
 from .models import Export
 
@@ -23,7 +22,10 @@ def export_to_gcs(export_id, user_id):
     user = CustomUser.objects.get(pk=user_id)
 
     with transaction.atomic():
-        query = get_query_from_node(export.node)
+        if export.node:
+            query = get_query_from_node(export.node)
+        else:
+            query = get_query_from_table(export.integration_table)
         client = clients.bigquery()
 
         job = client.query(query.compile())

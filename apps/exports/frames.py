@@ -1,10 +1,11 @@
 from functools import cached_property
 
+from django.urls.base import reverse
+
 from apps.base.frames import TurboFrameCreateView
 from apps.exports.tasks import export_to_gcs
 from apps.nodes.models import Node
 from apps.tables.models import Table
-from django.urls.base import reverse
 
 from .forms import ExportForm
 from .models import Export
@@ -14,7 +15,7 @@ class ExportCreate(TurboFrameCreateView):
     template_name = "exports/create.html"
     model = Export
     fields = []
-    turbo_frame_dom_id = "export-create"
+    turbo_frame_dom_id = "exports:create"
 
     @cached_property
     def node(self):

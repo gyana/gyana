@@ -1,9 +1,4 @@
 import analytics
-from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
-from apps.base.turbo import TurboUpdateView
-from apps.integrations.filters import IntegrationFilter
-from apps.integrations.tasks import KIND_TO_SYNC_TASK
-from apps.projects.mixins import ProjectMixin
 from django.conf import settings
 from django.db.models.query import QuerySet
 from django.shortcuts import redirect
@@ -13,6 +8,12 @@ from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
+
+from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
+from apps.base.turbo import TurboUpdateView
+from apps.integrations.filters import IntegrationFilter
+from apps.integrations.tasks import KIND_TO_SYNC_TASK
+from apps.projects.mixins import ProjectMixin
 
 from .forms import KIND_TO_FORM_CLASS, IntegrationForm
 from .mixins import STATE_TO_URL_REDIRECT, ReadyMixin
@@ -80,6 +81,9 @@ class IntegrationDetail(ProjectMixin, DetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data["tables"] = self.object.table_set.order_by("bq_table").all()
+        context_data["table_id"] = self.object.get_table_by_pk_safe(
+            self.request.GET.get("table_id")
+        ).id
         return context_data
 
     def get_success_url(self) -> str:
