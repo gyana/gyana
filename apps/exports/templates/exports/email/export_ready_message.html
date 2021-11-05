@@ -6,6 +6,8 @@ Your export is ready!
 
 {% block body %}
 <p>
-  Click <a href="https://storage.cloud.google.com/{{ gcs_path }}">here to download</a> your CSV export.
+  Click <a href="{{ url }}">here to download</a> your CSV export.
+
+  The link is valid for 7 days.
 </p>
 {% endblock %}

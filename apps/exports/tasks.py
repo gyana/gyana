@@ -1,5 +1,11 @@
 from datetime import datetime as dt
+from datetime import timedelta
 
+from apps.base import clients
+from apps.base.utils import short_hash
+from apps.nodes.bigquery import get_query_from_node
+from apps.tables.models import Table
+from apps.users.models import CustomUser
 from celery.app import shared_task
 from django.conf import settings
 from django.core.mail.message import EmailMultiAlternatives
@@ -7,12 +13,7 @@ from django.db import transaction
 from django.template import Context
 from django.template.loader import get_template
 from google.cloud import bigquery
-
-from apps.base import clients
-from apps.base.utils import short_hash
-from apps.nodes.bigquery import get_query_from_node
-from apps.tables.models import Table
-from apps.users.models import CustomUser
+from google.cloud.storage import Blob
 
 from .models import Export
 
@@ -42,9 +43,8 @@ def export_to_gcs(export_id, user_id):
         export.status = Export.Status.BQ_TABLE_CREATED
         export.save()
 
-    gcs_path = (
-        f"{settings.GS_BUCKET_NAME}/exports/{export.bq_table_id}-{short_hash()}.csv"
-    )
+    filepath = f"exports/{export.bq_table_id}-{short_hash()}.csv"
+    gcs_path = f"{settings.GS_BUCKET_NAME}/{filepath}"
     extract_job = client.extract_table(table.bq_id, f"gs://{gcs_path}")
     extract_job.result()
 
@@ -56,13 +56,17 @@ def export_to_gcs(export_id, user_id):
     message_template_plain = get_template("exports/email/export_ready_message.txt")
     message_template = get_template("exports/email/export_ready_message.html")
 
+    blob = clients.get_bucket().blob(filepath)
+    url = blob.generate_signed_url(
+        version="v4", expiration=dt.now() + timedelta(days=7)
+    )
     message = EmailMultiAlternatives(
         "Your export is ready",
-        message_template_plain.render({"user": user, "gcs_path": gcs_path}),
+        message_template_plain.render({"user": user, "url": url}),
         "Gyana Notifications <notifications@gyana.com>",
         [user.email],
     )
     message.attach_alternative(
-        message_template.render({"user": user, "gcs_path": gcs_path}), "text/html"
+        message_template.render({"user": user, "url": url}), "text/html"
     )
     message.send()
