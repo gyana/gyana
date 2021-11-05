@@ -4,10 +4,9 @@
 {% load humanize %}
 
 {% block tab %}
-<div class="flex flex-col flex-1 pad">
-  <div class="flex flex-col mb-7">
-    <div class="card card--none flex-1">
-      {% if integration.used_in|length == 0 %}
+<div class="flex flex-col space-y-6 flex-1 pad">
+  {% if integration.used_in|length == 0 %}
+    <div class="card card--none">
       <div class="table__empty">
         <h3>Time to use your integration</h3>
         <p class="text-black-50 mt-3">
@@ -16,70 +15,69 @@
           and <a href="{% url 'project_dashboards:list' project.id %}" class="link">dashboards</a> next.
         </p>
       </div>
-      {% else %}
-        {% render_table table %}
-      {% endif %}
     </div>
-  </div>
+  {% endif %}
 
-  <div class="flex-1 overflow-auto">
-    <div class="card card--none py-4 overflow-auto">
-      <nav id='tabbar-setup' class="flex flex-col items-center w-full bg-gray-20 py-2 border-b border-gray pl-4">
-        <div class="flex flex-row items-center space-x-2">
-          <a class="hover:underline {% if not request.GET.vew or request.GET.view == 'preview' %} text-blue {% endif %}"
-              href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=preview">
-              <p>Preview</p>
-          </a>
-          <p>•</p>
-          <a class="hover:underline {% if request.GET.view == 'schema' %} text-blue {% endif %}"
-              href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=schema">
-              <p>Schema</p>
-          </a>  
-          <p>•</p>
-          <a class="hover:underline {% if request.GET.view == 'detail' %} text-blue {% endif %}"
-              href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=detail">
-              <p>Detail</p>
-          </a>
-        </div>
-      </nav>
-      <div class="flex flex-row">
-        {% if tables|length > 1 %}
-          <div class="bg-gray-20 overflow-auto w-100 border-gray border-0 border-r flex-shrink-0">
-            <ul class="px-4 py-2">
-              {% for table in tables %}
-              <li class="my-2">
-                <p class="truncate hover:underline {% if table.id|slugify == request.GET.table_id or not request.GET.table_id and forloop.counter0 == 0 %}text-blue underline{% endif %}">
-                  <a title="{{ table.bq_table }}" href="?table_id={{ table.id }}">{{ table.humanize }}</a>
-                </p>
-              </li>
-              {% endfor %}
-            </ul> 
-          </div>
-        {% endif %}
-        {% if request.GET.view == 'schema' %}
-          <turbo-frame
-            class="block w-full"
-            id="integrations:schema"
-            src="{% url 'integrations:schema' object.id %}?table_id={{ request.GET.table_id }}"
-          >
-            <div class='placeholder-scr placeholder-scr--fillscreen'>
-              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-              <p class='placeholder-scr__title'>Loading schema...</p>
-            </div>
-          </turbo-frame>
-        {% else %}
-          <turbo-frame
-            class="block w-full"
-            id="integrations:grid"
-            src="{% url 'integrations:grid' object.id %}?table_id={{ request.GET.table_id }}"
-          >
-            <div class='placeholder-scr placeholder-scr--fillscreen'>
-              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-              <p class='placeholder-scr__title'>Loading preview...</p>
-            </div>
-          </turbo-frame>
-        {% endif %}
+  <div class="card card--none">
+    <nav id='tabbar-setup' class="flex flex-col items-center w-full  py-2 border-b border-gray pl-4">
+      <div class="flex flex-row items-center space-x-2">
+        <a class="hover:underline {% if not request.GET.vew or request.GET.view == 'preview' %} text-blue {% endif %}"
+            href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=preview">
+            <p>Preview</p>
+        </a>
+        <p>•</p>
+        <a class="hover:underline {% if request.GET.view == 'schema' %} text-blue {% endif %}"
+            href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=schema">
+            <p>Schema</p>
+        </a>  
+        <p>•</p>
+        <a class="hover:underline {% if request.GET.view == 'detail' %} text-blue {% endif %}"
+            href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=detail">
+            <p>Detail</p>
+        </a>
       </div>
+    </nav>
+    <div class="flex flex-row">
+      {% if tables|length > 1 %}
+        <div class="bg-gray-20 overflow-auto w-100 border-gray border-0 border-r flex-shrink-0 p-4">
+          <ul class="flex flex-col space-y-2">
+            {% for table in tables %}
+            <li>
+              <p>
+                <a class="truncate hover:underline 
+                  {% if table.id|slugify == request.GET.table_id or not request.GET.table_id and forloop.counter0 == 0 %}text-blue{% endif %}"
+                  title="{{ table.bq_table }}" href="?table_id={{ table.id }}">
+                  {{ table.humanize }}
+                </a>
+              </p>
+            </li>
+            {% endfor %}
+          </ul> 
+        </div>
+      {% endif %}
+      {% if request.GET.view == 'schema' %}
+        <turbo-frame
+          class="block w-full overflow-auto"
+          id="integrations:schema"
+          src="{% url 'integrations:schema' object.id %}?table_id={{ request.GET.table_id }}"
+        >
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+            <p class='placeholder-scr__title'>Loading schema...</p>
+          </div>
+        </turbo-frame>
+      {% else %}
+        <turbo-frame
+          class="block w-full overflow-auto"
+          id="integrations:grid"
+          src="{% url 'integrations:grid' object.id %}?table_id={{ request.GET.table_id }}"
+        >
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+            <p class='placeholder-scr__title'>Loading preview...</p>
+          </div>
+        </turbo-frame>
+      {% endif %}
     </div>
   </div>
 </div>
