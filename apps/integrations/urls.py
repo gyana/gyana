@@ -73,9 +73,9 @@ project_urlpatterns = (
             name="delete",
         ),
         path(
-            "<hashid:pk>/data",
-            login_and_project_required(views.IntegrationData.as_view()),
-            name="data",
+            "<hashid:pk>/references",
+            login_and_project_required(views.IntegrationReferences.as_view()),
+            name="references",
         ),
         path(
             "<hashid:pk>/settings",
