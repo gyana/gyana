@@ -11,18 +11,20 @@
     </button>
   </div>
 
-  <form
-    method="post"
-    class="pad max-w-4xl"
-    data-tf-modal-target='form'
-    action="{% url 'project_dashboards:settings' project.id object.id %}"
-  >
-    {% csrf_token %}
+  <div class="flex-1 overflow-auto">
+    <form
+      method="post"
+      class="pad max-w-4xl"
+      data-tf-modal-target='form'
+      action="{% url 'project_dashboards:settings' project.id object.id %}"
+    >
+      {% csrf_token %}
 
-    {% include "django/forms/default_form.html" %}
+      {% include "django/forms/default_form.html" with optional=False %}
 
-    <button type="submit" class="button button--success w-full">
-      Save
-    </button>
-  </form>
+      <button type="submit" class="button button--success w-full">
+        Save
+      </button>
+    </form>
+  </div>
 </section>

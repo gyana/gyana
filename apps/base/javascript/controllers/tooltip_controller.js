@@ -28,6 +28,8 @@ export default class extends Controller {
 
   disconnect() {
     // https://atomiks.github.io/tippyjs/v6/tippy-instance/#-property
-    this.element._tippy.destroy()
+    if (this.element._tippy) {
+      this.element._tippy.destroy()
+    }
   }
 }

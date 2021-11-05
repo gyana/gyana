@@ -88,7 +88,7 @@ class StructureTable(Table):
     name = Column()
 
 
-class UsedInTable(Table):
+class ReferencesTable(Table):
     class Meta:
         model = Integration
         attrs = {"class": "table"}
@@ -100,3 +100,5 @@ class UsedInTable(Table):
         )
 
     name = Column(linkify=True)
+    created = NaturalDatetimeColumn()
+    updated = NaturalDatetimeColumn()

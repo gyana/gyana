@@ -122,6 +122,10 @@ class Integration(CloneMixin, BaseModel):
         )
 
     @property
+    def num_tables(self):
+        return self.table_set.count()
+
+    @property
     def last_synced(self):
         return getattr(self, self.kind).last_synced
 
@@ -163,6 +167,13 @@ class Integration(CloneMixin, BaseModel):
         return f"Integration:{self.name}"
 
     def get_absolute_url(self):
+
+        from apps.integrations.mixins import STATE_TO_URL_REDIRECT
+
+        if not self.ready:
+            url_name = STATE_TO_URL_REDIRECT[self.state]
+            return reverse(url_name, args=(self.project.id, self.id))
+
         return reverse("project_integrations:detail", args=(self.project.id, self.id))
 
     def icon(self):
@@ -173,12 +184,13 @@ class Integration(CloneMixin, BaseModel):
     def get_table_by_pk_safe(self, table_pk):
         from apps.tables.models import Table
 
-        if table_pk is None:
-            return self.table_set.first()
+        # none or empty string
+        if not table_pk:
+            return self.table_set.order_by("bq_table").first()
         try:
             return self.table_set.get(pk=table_pk)
         except (Table.DoesNotExist, ValueError):
-            return self.table_set.first()
+            return self.table_set.order_by("bq_table").first()
 
     @property
     def bq_ids(self):

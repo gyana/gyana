@@ -1,8 +1,8 @@
 import hashlib
 
 from django.conf import settings
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from storages.backends.gcloud import GoogleCloudStorage
 
@@ -49,11 +49,11 @@ class CustomUser(AbstractUser):
         storage=GoogleCloudStorage(
             bucket_name=settings.GS_PUBLIC_BUCKET_NAME,
             cache_control=settings.GS_PUBLIC_CACHE_CONTROL,
-            querystring_auth=False
+            querystring_auth=False,
         ),
         upload_to="profile-pictures/",
         null=True,
-        blank=True
+        blank=True,
     )
     onboarded = models.BooleanField(default=False)
     company_industry = models.CharField(
@@ -93,3 +93,7 @@ class CustomUser(AbstractUser):
     @property
     def teams_admin_of(self):
         return self.teams.filter(membership__role=roles.ROLE_ADMIN).all()
+
+    @property
+    def is_creators_only_integration(self):
+        return self.created_by.integration_set.count() == 1

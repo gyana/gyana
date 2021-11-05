@@ -55,7 +55,7 @@ def run_upload_sync_task(self, upload_id: int):
         raise e
 
     if created:
-        send_integration_ready_email(integration, get_time_to_sync())
+        send_integration_ready_email(integration, int(get_time_to_sync()))
 
     return integration.id
 

@@ -15,7 +15,7 @@ describe('integrations', () => {
     cy.url().should('contain', '/projects/1/integrations')
 
     cy.contains('New Integration').click()
-    cy.contains('Add Sheet').click()
+    cy.contains('Add Sheet').click({ force: true })
 
     // start with runtime error
     cy.url().should('contain', '/projects/1/integrations/sheets/new')
@@ -36,7 +36,7 @@ describe('integrations', () => {
 
     cy.contains('Confirm', { timeout: BIGQUERY_TIMEOUT }).click()
     // only 10/15 rows imported
-    cy.contains('10 Rows')
+    cy.contains('10 rows')
 
     // todo: next step in the flow
   })

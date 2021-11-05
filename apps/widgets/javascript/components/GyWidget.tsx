@@ -6,9 +6,6 @@ import { Rnd as ReactRnd } from 'react-rnd'
 
 const client = getApiClient()
 
-// Should be the same as in the _widget.scss
-const GRID_SIZE = 15
-
 const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> = ({
   children,
   root,
@@ -19,7 +16,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
   const id = children.props['data-id']
 
   // Utilised to decide the clamping on interaction as well as clamps for placement
-  const stepSize = GRID_SIZE
+  const stepSize = children.props['data-grid-size'] || 15
 
   const [x, setX] = useState(() => parseInt(children.props['data-x']) || 0)
   const [y, setY] = useState(() => parseInt(children.props['data-y']) || 0)

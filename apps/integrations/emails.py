@@ -1,15 +1,16 @@
 import analytics
-from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
-from apps.integrations.models import Integration
-from apps.users.models import CustomUser
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.urls import reverse
 
+from apps.base.analytics import INTEGRATION_SYNC_SUCCESS_EVENT
+from apps.integrations.models import Integration
+from apps.users.models import CustomUser
+
 from .models import Integration
 
 
-def send_integration_ready_email(integration, time_to_sync):
+def send_integration_ready_email(integration, time_to_sync=None):
 
     if integration.created_by:
         email = integration_ready_email(integration, integration.created_by)
@@ -22,7 +23,7 @@ def send_integration_ready_email(integration, time_to_sync):
                 "id": integration.id,
                 "kind": integration.kind,
                 "row_count": integration.num_rows,
-                "time_to_sync": int(time_to_sync),
+                "time_to_sync": time_to_sync,
             },
         )
 

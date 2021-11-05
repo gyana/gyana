@@ -1,24 +1,11 @@
 {% extends "integrations/base.html" %}
-{% load render_table from django_tables2 %}
 {% load static %}
 {% load humanize %}
 
 {% block tab %}
-<div class="flex flex-col flex-1 pad">
-  <div class="flex flex-col mb-7">
-    <div class="flex flex-row">
-      <div class="mr-auto">
-        <h2>Referenced</h2>
-        <p>All the places this integration is used in</p>
-      </div>
-        {% comment %} <div class='flex flex-row gap-2'>
-        {% include 'workflows/create_from_integration.html' %}
-        {% include 'dashboards/create_from_integration.html' %}
-      </div> {% endcomment %}
-    </div>
-
-    <div class="card card--none flex-1 mt-7">
-      {% if integration.used_in|length == 0 %}
+<div class="flex flex-col space-y-6 flex-1 pad">
+  {% if integration.is_creators_only_integration and integration.created_by == request.user %}
+    <div class="card card--none">
       <div class="table__empty">
         <h3>Time to use your integration</h3>
         <p class="text-black-50 mt-3">
@@ -27,50 +14,80 @@
           and <a href="{% url 'project_dashboards:list' project.id %}" class="link">dashboards</a> next.
         </p>
       </div>
-      {% else %}
-        {% render_table table %}
+    </div>
+  {% endif %}
+
+  <div class="card card--none">
+    <nav id='tabbar-setup' class="flex flex-col items-center w-full  py-2 border-b border-gray pl-4">
+      <div class="flex flex-row items-center space-x-2">
+        <a class="hover:underline {% if not request.GET.view or request.GET.view == 'preview' %} text-blue {% endif %}"
+            href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=preview">
+            <p>Preview</p>
+        </a>
+        <p>•</p>
+        <a class="hover:underline {% if request.GET.view == 'schema' %} text-blue {% endif %}"
+            href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=schema">
+            <p>Schema</p>
+        </a>  
+        <p>•</p>
+        <a class="hover:underline {% if request.GET.view == 'detail' %} text-blue {% endif %}"
+            href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=detail">
+            <p>Detail</p>
+        </a>
+      </div>
+    </nav>
+    <div class="flex flex-row">
+      {% if tables|length > 1 %}
+        <div class="bg-gray-20 overflow-auto w-100 border-gray border-0 border-r flex-shrink-0 p-4">
+          <ul class="flex flex-col space-y-2">
+            {% for table in tables %}
+            <li>
+              <p>
+                <a class="truncate hover:underline 
+                  {% if table.id|slugify == request.GET.table_id or not request.GET.table_id and forloop.counter0 == 0 %}text-blue{% endif %}"
+                  title="{{ table.bq_table }}" href="?table_id={{ table.id }}&view={{ request.GET.view }}">
+                  {{ table.humanize }}
+                </a>
+              </p>
+            </li>
+            {% endfor %}
+          </ul> 
+        </div>
       {% endif %}
-    </div>
-  </div>
-
-  <div class="flex gap-7 mt-auto">
-    {% if object.kind == 'sheet' %}
-    <div class="card">
-      <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-          <p class='placeholder-scr__title'>Loading...</p>
-        </div>
-      </turbo-frame>
-    </div>
-    {% elif object.kind == 'connector' %}
-    <div class="card card--center flex-1 flex-col">
-      <turbo-frame id="connectors:status" src="{% url 'connectors:status' object.connector.id %}">
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-          <p class='placeholder-scr__title'>Loading...</p>
-        </div>
-      </turbo-frame>
-    </div>
-    {% endif %}
-
-    <div class="card card--center flex-1 flex-col">
-      <h2>{{integration.created|naturaltime}}</h2>
-      <p>First created</p>
-    </div>
-
-    {% if integration.num_rows %}
-    <div class="card card--center flex-1 flex-col">
-      <h2>{{ integration.num_rows }}</h2>
-      <p>Rows</p>
-    </div>
-    {% endif %}
-
-    <div class="card card--center flex-1 flex-col">
-      <h2>
-        {{ integration.created_by.username }}
-      </h2>
-      <p>Created by</p>
+      {% if request.GET.view == 'schema' %}
+        <turbo-frame
+          class="block w-full overflow-auto"
+          id="integrations:schema"
+          src="{% url 'integrations:schema' object.id %}?table_id={{ request.GET.table_id }}"
+        >
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+            <p class='placeholder-scr__title'>Loading schema...</p>
+          </div>
+        </turbo-frame>
+      {% elif request.GET.view == 'detail' %}
+        <turbo-frame
+          class="block w-full overflow-auto"
+          id="integrations:table_detail"
+          src="{% url 'integrations:table_detail' object.id %}?table_id={{ request.GET.table_id }}"
+        >
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+            <p class='placeholder-scr__title'>Loading detail...</p>
+          </div>
+        </turbo-frame>
+      {% else %}
+        <turbo-frame
+          class="block w-full overflow-auto"
+          id="integrations:grid"
+          src="{% url 'integrations:grid' object.id %}?table_id={{ request.GET.table_id }}"
+        >
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+            <p class='placeholder-scr__title'>Loading preview...</p>
+          </div>
+        </turbo-frame>
+      {% endif %}
     </div>
   </div>
 </div>

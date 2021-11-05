@@ -2,7 +2,7 @@ from datetime import datetime
 from functools import cached_property
 
 from django.conf import settings
-from django.db import connection, models
+from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
@@ -48,19 +48,44 @@ class Connector(BaseModel):
         MANUAL = "manual", "Manual"
 
     class SetupState(models.TextChoices):
-        BROKEN = "broken", "Broken"
-        INCOMPLETE = "incomplete", "Incomplete"
-        CONNECTED = "connected", "Connected"
+        BROKEN = "broken", "Broken - the connector setup config is broken"
+        INCOMPLETE = (
+            "incomplete",
+            "Incomplete - the setup config is incomplete, the setup tests never succeeded",
+        )
+        CONNECTED = "connected", "Connected - the connector is properly set up"
 
     class SyncState(models.TextChoices):
-        SCHEDULED = "scheduled", "Scheduled"
-        SYNCING = "syncing", "Syncing"
-        PAUSED = "paused", "Paused"
-        RESCHEDULED = "rescheduled", "Rescheduled"
+        SCHEDULED = "scheduled", "Scheduled - the sync is waiting to be run"
+        SYNCING = "syncing", "Syncing - the sync is currently running"
+        PAUSED = "paused", "Paused - the sync is currently paused"
+        RESCHEDULED = (
+            "rescheduled",
+            "Rescheduled - the sync is waiting until more API calls are available in the source service",
+        )
 
     class UpdateState(models.TextChoices):
-        ON_SCHEDULE = "on_schedule", "On Schedule"
-        DELAYED = "delayed", "Delayed"
+        ON_SCHEDULE = (
+            "on_schedule",
+            "On Schedule - the sync is running smoothly, no delays",
+        )
+        DELAYED = (
+            "delayed",
+            "Delayed -  the data is delayed for a longer time than expected for the update",
+        )
+
+    SETUP_STATE_TO_ICON = {
+        SetupState.CONNECTED: "fa fa-check text-green",
+        SetupState.INCOMPLETE: "fa fa-exclamation-circle text-orange",
+        SetupState.BROKEN: "fa fa-times text-red",
+    }
+
+    SYNC_STATE_TO_ICON = {
+        SyncState.SCHEDULED: "fa fa-clock",
+        SyncState.SYNCING: "fa fa-spinner-third fa-spin",
+        SyncState.PAUSED: "fa fa-pause",
+        SyncState.RESCHEDULED: "fa fa-history",
+    }
 
     # internal fields
 
@@ -250,3 +275,28 @@ class Connector(BaseModel):
     def sync_schema_obj_from_fivetran(self):
         self.schema_config = clients.fivetran().get_schemas(self)
         self.save()
+
+    @property
+    def setup_state_icon(self):
+        return self.SETUP_STATE_TO_ICON[self.setup_state]
+
+    @property
+    def sync_state_icon(self):
+        return self.SYNC_STATE_TO_ICON[self.sync_state]
+
+    @property
+    def latest_sync_completed(self):
+        return (
+            self.succeeded_at is not None
+            and self.succeeded_at > self.fivetran_sync_started
+        )
+
+    @property
+    def latest_sync_failed(self):
+        return (
+            self.failed_at is not None and self.failed_at > self.fivetran_sync_started
+        )
+
+    @property
+    def latest_sync_validated(self):
+        return self.succeeded_at == self.bigquery_succeeded_at
