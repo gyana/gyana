@@ -167,7 +167,7 @@ def test_integration_create_pending_load_and_approve(
     r = client.get(f"{LIST}/pending")
     assertOK(r)
     assertSelectorLength(r, "table tbody tr", 1)
-    assertLink(r, DETAIL, "Store info")
+    assertLink(r, f"{DETAIL}/done", "Store info")
 
     # load (redirects to done)
     r = client.get(f"{DETAIL}/load")
