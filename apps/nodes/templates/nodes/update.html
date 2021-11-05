@@ -1,4 +1,5 @@
 {% load help_utils %}
+{% load waffle_tags %}
 
 {% with parents=node.parents.all %}
 
@@ -15,9 +16,10 @@
         {% include 'nodes/name.html' %}
       </turbo-frame>
       <div class="ml-auto flex flex-row gap-3 items-center">
-        <turbo-frame id='export-create'>
+        {% flag "beta" %}<turbo-frame id='export-create'>
           {% include 'exports/create.html' with parent_id=node.id%}
         </turbo-frame>
+        {% endflag %}
         {% if node.kind != "input" and node.kind != "output" %}
           {% link_article 'workflows' node.kind %}
         {% endif %}
