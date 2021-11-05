@@ -68,10 +68,10 @@
               <span data-tooltip-target="body">Waiting - for setup to complete</span>
             {% elif connector.latest_sync_completed %}
               <i class="fa fa-check text-green"></i>
-              <span data-tooltip-target="body">Synced</span>
+              <span data-tooltip-target="body">Synced - the data is synced from the source</span>
             {% elif connector.latest_sync_failed %}
               <i class="fa fa-times text-red"></i>
-              <span data-tooltip-target="body">Failed</span>
+              <span data-tooltip-target="body">Failed - unable to complete the sync</span>
             {% else %}
               <i class="{{ connector.sync_state_icon }}"></i>
               <span data-tooltip-target="body">{{ connector.get_sync_state_display }}</span>
@@ -99,7 +99,7 @@
               <span data-tooltip-target="body">Failed - no synced data found</span>
             {% else %}
               <i class="fa fa-spinner-third fa-spin"></i>
-              <span data-tooltip-target="body">Validating - synced data in destination</span>
+              <span data-tooltip-target="body">Validating - validate the synced data</span>
             {% endif %}
           </p>
         </td>
