@@ -6,8 +6,9 @@ from django.conf import settings
 from django.db import models
 from model_clone import CloneMixin
 
-DEFAULT_WIDTH = 500
-DEFAULT_HEIGHT = 400
+# Need to be a multiple of GRID_SIZE found in GyWidget.tsx
+DEFAULT_WIDTH = 495
+DEFAULT_HEIGHT = 390
 
 
 class Widget(CloneMixin, BaseModel):
@@ -15,6 +16,7 @@ class Widget(CloneMixin, BaseModel):
 
     class Kind(models.TextChoices):
         TEXT = "text", "Text"
+        METRIC = "metric", "Metric"
         TABLE = "table", "Table"
         # using fusioncharts name for database
         COLUMN = "mscolumn2d", "Column"
@@ -113,6 +115,8 @@ class Widget(CloneMixin, BaseModel):
             return False
         if self.kind == self.Kind.TABLE:
             return True
+        if self.kind == self.Kind.METRIC:
+            return self.aggregations.count() == 1
         if self.kind == self.Kind.RADAR:
             return self.aggregations.count() >= 3
         if self.kind in [self.Kind.FUNNEL, self.Kind.PYRAMID]:
@@ -123,10 +127,16 @@ class Widget(CloneMixin, BaseModel):
         return False
 
 
-NO_DIMENSION_WIDGETS = [Widget.Kind.RADAR, Widget.Kind.FUNNEL, Widget.Kind.PYRAMID]
+NO_DIMENSION_WIDGETS = [
+    Widget.Kind.RADAR,
+    Widget.Kind.FUNNEL,
+    Widget.Kind.PYRAMID,
+    Widget.Kind.METRIC,
+]
 
 WIDGET_KIND_TO_WEB = {
     Widget.Kind.TEXT.value: ("fa-text",),
+    Widget.Kind.METRIC.value: ("fa-value-absolute",),
     Widget.Kind.TABLE.value: ("fa-table",),
     Widget.Kind.COLUMN.value: ("fa-chart-bar",),
     Widget.Kind.STACKED_COLUMN.value: ("fa-chart-bar",),

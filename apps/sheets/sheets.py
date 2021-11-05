@@ -28,5 +28,4 @@ def get_metadata_from_drive_file(sheet: Sheet):
 def get_last_modified_from_drive_file(sheet: Sheet):
 
     drive_file = get_metadata_from_drive_file(sheet)
-
     return parse_datetime(drive_file["modifiedDate"])

@@ -39,3 +39,19 @@ def table_to_output(widget: Widget) -> Dict[str, Any]:
     query = get_query_from_filters(query, widget.filters.all())
 
     return get_table(query.schema(), query)
+
+
+def metric_to_output(widget):
+    query = get_query_from_table(widget.table)
+    query = get_query_from_filters(query, widget.filters.all())
+
+    aggregation = widget.aggregations.first()
+    query = getattr(query[aggregation.column], aggregation.function)().name(
+        aggregation.column
+    )
+
+    return (
+        clients.bigquery()
+        .get_query_results(query.compile())
+        .rows_dict[0][aggregation.column]
+    )

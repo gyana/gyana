@@ -27,7 +27,7 @@
             {% else %}
                 <p>This will add a total of <strong>{{ object.num_rows|intcomma }}</strong> rows to your team.</p>
                 
-                <p>You can <a class="link" href="{% url 'project_integrations:data' project.id object.id %}">preview</a> the data
+                <p>You can <a class="link" href="{% url 'project_integrations:detail' project.id object.id %}">preview</a> the data
                     and <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">re-configure</a> the import
                     now{% if object.kind != 'upload' %}, or come back later at any time{% endif %}.
 

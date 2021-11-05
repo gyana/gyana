@@ -17,13 +17,17 @@ from apps.base.table_data import RequestConfig
 from apps.base.templates import template_exists
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
-from apps.widgets.visuals import MaxRowsExceeded, chart_to_output, table_to_output
+from apps.widgets.visuals import (
+    MaxRowsExceeded,
+    chart_to_output,
+    metric_to_output,
+    table_to_output,
+)
 from django.db.models.query import QuerySet
 from django.urls import reverse
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
 from honeybadger import honeybadger
-from ibis.common.exceptions import IntegrityError
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 
@@ -42,6 +46,8 @@ def add_output_context(context, widget, request):
                 context["table"] = RequestConfig(
                     request,
                 ).configure(table)
+        elif widget.kind == Widget.Kind.METRIC:
+            context["metric"] = metric_to_output(widget)
         else:
             chart, chart_id = chart_to_output(widget)
             context.update(chart)

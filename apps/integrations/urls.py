@@ -19,6 +19,11 @@ urlpatterns = [
         login_and_integration_required(frames.IntegrationSchema.as_view()),
         name="schema",
     ),
+    path(
+        "<hashid:pk>/table_detail",
+        login_and_integration_required(frames.IntegrationTableDetail.as_view()),
+        name="table_detail",
+    ),
 ]
 
 project_urlpatterns = (
@@ -68,9 +73,9 @@ project_urlpatterns = (
             name="delete",
         ),
         path(
-            "<hashid:pk>/data",
-            login_and_project_required(views.IntegrationData.as_view()),
-            name="data",
+            "<hashid:pk>/references",
+            login_and_project_required(views.IntegrationReferences.as_view()),
+            name="references",
         ),
         path(
             "<hashid:pk>/settings",

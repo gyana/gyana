@@ -17,7 +17,7 @@ from django_tables2.views import SingleTableMixin
 from .forms import KIND_TO_FORM_CLASS, IntegrationForm
 from .mixins import ReadyMixin
 from .models import Integration
-from .tables import IntegrationListTable, IntegrationPendingTable, UsedInTable
+from .tables import IntegrationListTable, IntegrationPendingTable, ReferencesTable
 
 # Overview
 
@@ -66,15 +66,14 @@ class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
 # Tabs
 
 
-class IntegrationDetail(ReadyMixin, TurboUpdateView):
+class IntegrationDetail(ProjectMixin, DetailView):
     template_name = "integrations/detail.html"
     model = Integration
-    form_class = IntegrationForm
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["table"] = UsedInTable(self.object.used_in)
-        return context
+        context_data = super().get_context_data(**kwargs)
+        context_data["tables"] = self.object.table_set.order_by("bq_table").all()
+        return context_data
 
     def get_success_url(self) -> str:
         return reverse(
@@ -82,14 +81,14 @@ class IntegrationDetail(ReadyMixin, TurboUpdateView):
         )
 
 
-class IntegrationData(ProjectMixin, DetailView):
-    template_name = "integrations/data.html"
+class IntegrationReferences(ReadyMixin, DetailView):
+    template_name = "integrations/references.html"
     model = Integration
 
     def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data["tables"] = self.object.table_set.order_by("bq_table").all()
-        return context_data
+        context = super().get_context_data(**kwargs)
+        context["table"] = ReferencesTable(self.object.used_in)
+        return context
 
 
 class IntegrationSettings(ProjectMixin, TurboUpdateView):

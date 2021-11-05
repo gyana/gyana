@@ -11,7 +11,7 @@ describe('uploads', () => {
   })
   it('upload valid CSV', () => {
     cy.contains('New Integration').click()
-    cy.contains('Upload CSV').click()
+    cy.contains('Upload CSV').click({ force: true })
 
     cy.url().should('contain', '/projects/1/integrations/uploads/new')
     cy.get('input[type=file]').attachFile('store_info.csv')
@@ -24,12 +24,11 @@ describe('uploads', () => {
     // review the table and approve
     cy.contains('preview').click()
     cy.contains('Employees')
-    cy.contains('Setup').click()
+    cy.contains('Sync').click()
     cy.contains('Confirm').click()
 
     // bigquery file upload needs longer wait
-    cy.contains('Data', { timeout: BIGQUERY_TIMEOUT })
-    cy.contains('Overview')
+    cy.contains('Overview', { timeout: BIGQUERY_TIMEOUT })
     // validate row count
     cy.contains('15')
 
@@ -38,7 +37,7 @@ describe('uploads', () => {
     cy.get('input[name=name]').should('have.value', 'store_info')
 
     // cannot edit upload setup
-    cy.contains('Setup').should('not.exist')
+    cy.contains('Sync').should('not.exist')
   })
   it('streamed uploads with chunks', () => {
     cy.visit('/projects/1/integrations/uploads/new', {
@@ -55,7 +54,7 @@ describe('uploads', () => {
     // wait for entire process to happen successfully
     cy.get('button[type=submit]').click()
     cy.contains('Confirm', { timeout: BIGQUERY_TIMEOUT }).click()
-    cy.contains('Data')
+    cy.contains('Overview')
     // 2250 lines of CSV including header
     cy.contains(2249)
   })

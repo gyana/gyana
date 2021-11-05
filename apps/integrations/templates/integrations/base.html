@@ -1,5 +1,6 @@
 {% extends "web/app/project_base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block app %}
 <div class="workflow-detail__header">
@@ -36,24 +37,47 @@
   {% endif %}
 </div>
 
+{% if integration.ready %}
+  <div class="flex items-center space-x-2 p-4 pl-8 bg-white border-b border-gray">
+      <p>
+        <strong>{{ integration.num_rows }}</strong> row{{ integration.num_rows|pluralize }} •
+        <strong>{{ integration.num_tables }}</strong> table{{ integration.num_tables|pluralize }} •
+      </p>
+    {% if integration.created_by %}<img class="h-8 w-8 rounded-full" src="{{ integration.created_by.avatar_url }}">{% endif %}
+    <p>
+      <strong>{{ integration.created_by.get_full_name }}</strong> created this integration
+      <strong>{% include 'columns/natural_datetime.html' with datetime=integration.created %}</strong>
+      {% if object.kind == 'sheet' %}
+        • <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
+          {% include "sheets/status.html" with object=object.sheet %}
+        </turbo-frame>
+      {% elif object.kind == 'connector' %}
+        • <turbo-frame id="connectors:status" src="{% url 'connectors:status' object.connector.id %}">
+          {% include "connectors/status.html" with object=object.connector %}
+        </turbo-frame>
+      {% endif %}
+    </p>
+  </div>
+{% endif %}
+
 <nav id='tabbar' class="tabbar tabbar--top">
-  {% if object.ready %}
+  {% if object.ready or object.state == 'done' %}
     <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
       href="{% url 'project_integrations:detail' project.id object.id %}">
       Overview
-    </a>
-  {% endif %}
-  {% if object.ready or object.state == 'done' %}
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'data' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:data' project.id object.id %}">
-      Data
     </a>
   {% endif %}
   {% comment %} Uploads cannot be setup again after approval {% endcomment %}
   {% if not object.ready or object.kind != object.Kind.UPLOAD %}
     <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %}"
       href="{% url 'project_integrations:done' project.id object.id %}">
-      Setup
+      Sync
+    </a>
+  {% endif %}
+  {% if object.ready or object.state == 'done' %}
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'references' %} tabbar__link--active {% endif %}"
+      href="{% url 'project_integrations:references' project.id object.id %}">
+      References
     </a>
   {% endif %}
   <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"

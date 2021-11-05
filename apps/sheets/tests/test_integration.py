@@ -169,7 +169,7 @@ def test_resync_after_source_update(
     team = logged_in_user.teams.first()
     sheet = sheet_factory(
         integration__project__team=team,
-        drive_file_last_modified=datetime(2020, 9, 1, 0, 0, 0),
+        drive_file_last_modified_at_sync=datetime(2020, 9, 1, 0, 0, 0),
     )
     integration = sheet.integration
     # mock drive client to check last updated information
@@ -186,8 +186,8 @@ def test_resync_after_source_update(
     # sheet is out of date
     r = client.get_turbo_frame(f"{DETAIL}", f"/sheets/{sheet.id}/status")
     assertOK(r)
-    assertContains(r, "This Google Sheet was updated since the last sync.")
-    assertLink(r, f"{DETAIL}/configure", "Import the latest data")
+    assertContains(r, "sync the latest data")
+    assertLink(r, f"{DETAIL}/configure", "sync the latest data")
 
     r = client.get(f"{DETAIL}/configure")
     assertOK(r)
@@ -198,7 +198,7 @@ def test_resync_after_source_update(
     # sheet is up to date
     r = client.get_turbo_frame(f"{DETAIL}", f"/sheets/{sheet.id}/status")
     assertOK(r)
-    assertContains(r, "You've already synced the latest data.")
+    assertContains(r, "up to date")
 
     # no email
     assert len(mail.outbox) == 0

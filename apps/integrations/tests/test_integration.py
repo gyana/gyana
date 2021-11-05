@@ -43,7 +43,6 @@ def test_integration_crudl(client, logged_in_user, sheet_factory):
     # update
     r = client.get(f"{DETAIL}/settings")
     assertOK(r)
-    assertFormRenders(r, ["name"])
     assertLink(r, f"{DETAIL}/delete", "Delete")
 
     r = client.post(f"{DETAIL}/settings", data={"name": "Store Info"})
@@ -63,7 +62,7 @@ def test_integration_crudl(client, logged_in_user, sheet_factory):
     assert project.integration_set.count() == 0
 
 
-def test_structure_and_preview(
+def test_integration_schema_and_preview(
     client, logged_in_user, bigquery, sheet_factory, integration_table_factory
 ):
     team = logged_in_user.teams.first()
@@ -84,13 +83,9 @@ def test_structure_and_preview(
 
     DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
 
-    r = client.get(DETAIL)
-    assertOK(r)
-    assertLink(r, f"{DETAIL}/data", "Data")
-
     # structure
     r = client.get_turbo_frame(
-        f"{DETAIL}/data", f"/integrations/{integration.id}/schema?table_id="
+        f"{DETAIL}?view=schema", f"/integrations/{integration.id}/schema?table_id="
     )
     assertOK(r)
     assertSelectorLength(r, "table tbody tr", 2)
@@ -100,9 +95,9 @@ def test_structure_and_preview(
     assert bigquery.get_table.call_count == 1
     assert bigquery.get_table.call_args.args == (table.bq_id,)
 
-    # preview
+    # preview (default)
     r = client.get_turbo_frame(
-        f"{DETAIL}/data?view=preview",
+        f"{DETAIL}",
         f"/integrations/{integration.id}/grid?table_id=",
     )
     assertOK(r)
@@ -130,7 +125,7 @@ def test_structure_and_preview(
     )
 
 
-def test_create_pending_load_and_approve(
+def test_integration_create_pending_load_and_approve(
     client, logged_in_user, project_factory, sheet_factory, integration_table_factory
 ):
     team = logged_in_user.teams.first()
@@ -174,10 +169,6 @@ def test_create_pending_load_and_approve(
     assertSelectorLength(r, "table tbody tr", 1)
     assertLink(r, DETAIL, "Store info")
 
-    # redirect from detail page
-    r = client.get(DETAIL)
-    assertRedirects(r, f"{DETAIL}/done")
-
     # load (redirects to done)
     r = client.get(f"{DETAIL}/load")
     assertRedirects(r, f"{DETAIL}/done")
@@ -186,7 +177,7 @@ def test_create_pending_load_and_approve(
     r = client.get(f"{DETAIL}/done")
     assertOK(r)
     assertContains(r, "Review import")
-    assertLink(r, f"{DETAIL}/data", "preview")
+    assertLink(r, f"{DETAIL}", "preview")
     assertLink(r, f"{DETAIL}/configure", "re-configure")
     # todo: fix this!
     assertFormRenders(r, ["name"])
@@ -210,7 +201,7 @@ def test_create_pending_load_and_approve(
     assertLink(r, f"{DETAIL}/configure", "configuration")
 
 
-def test_exceeds_row_limit(
+def test_integration_exceeds_row_limit(
     client, logged_in_user, sheet_factory, integration_table_factory
 ):
     team = logged_in_user.teams.first()

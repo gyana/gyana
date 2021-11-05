@@ -1,5 +1,3 @@
-from functools import cached_property
-
 from apps.base.bigquery import get_humanize_from_bigquery_type
 from apps.base.frames import TurboFrameDetailView, TurboFrameTemplateView
 from apps.base.table_data import RequestConfig, get_table
@@ -8,6 +6,7 @@ from apps.projects.mixins import ProjectMixin
 from apps.tables.bigquery import get_bq_table_schema_from_table, get_query_from_table
 from django_tables2.views import SingleTableMixin
 
+from .mixins import TableInstanceMixin
 from .models import Integration
 
 
@@ -39,21 +38,11 @@ class IntegrationOverview(ProjectMixin, TurboFrameTemplateView):
         return context_data
 
 
-class IntegrationGrid(SingleTableMixin, TurboFrameDetailView):
+class IntegrationGrid(TableInstanceMixin, SingleTableMixin, TurboFrameDetailView):
     template_name = "integrations/grid.html"
     model = Integration
     paginate_by = 15
     turbo_frame_dom_id = "integrations:grid"
-
-    @cached_property
-    def table_instance(self):
-        table_id = self.request.GET.get("table_id")
-        return self.object.get_table_by_pk_safe(table_id)
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data["table_instance"] = self.table_instance
-        return context_data
 
     def get_table(self, **kwargs):
         query = get_query_from_table(self.table_instance)
@@ -64,22 +53,12 @@ class IntegrationGrid(SingleTableMixin, TurboFrameDetailView):
         ).configure(table)
 
 
-class IntegrationSchema(SingleTableMixin, TurboFrameDetailView):
+class IntegrationSchema(TableInstanceMixin, SingleTableMixin, TurboFrameDetailView):
     template_name = "integrations/schema.html"
     model = Integration
     paginate_by = 15
     turbo_frame_dom_id = "integrations:schema"
     table_class = StructureTable
-
-    @cached_property
-    def table_instance(self):
-        table_id = self.request.GET.get("table_id")
-        return self.object.get_table_by_pk_safe(table_id)
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data["table_instance"] = self.table_instance
-        return context_data
 
     def get_table_data(self, **kwargs):
 
@@ -87,3 +66,9 @@ class IntegrationSchema(SingleTableMixin, TurboFrameDetailView):
             {"type": get_humanize_from_bigquery_type(t.field_type), "name": str(t.name)}
             for t in get_bq_table_schema_from_table(self.table_instance)
         ]
+
+
+class IntegrationTableDetail(TableInstanceMixin, TurboFrameDetailView):
+    template_name = "integrations/table_detail.html"
+    model = Integration
+    turbo_frame_dom_id = "integrations:table_detail"

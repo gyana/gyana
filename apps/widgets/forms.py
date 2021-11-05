@@ -157,6 +157,7 @@ FORMS = {
     Widget.Kind.RADAR: GenericWidgetForm,
     Widget.Kind.HEATMAP: TwoDimensionForm,
     Widget.Kind.BUBBLE: OneDimensionForm,
+    Widget.Kind.METRIC: GenericWidgetForm,
 }
 
 
