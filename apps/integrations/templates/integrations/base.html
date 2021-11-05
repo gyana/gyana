@@ -52,7 +52,12 @@
       • <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
         {% include "sheets/status.html" with object=object.sheet %}
       </turbo-frame>
+    {% elif object.kind == 'connector' %}
+      • <turbo-frame id="connectors:status" src="{% url 'connectors:status' object.connector.id %}">
+        {% include "connectors/status.html" with object=object.connector %}
+      </turbo-frame>
     {% endif %}
+
   </p>
 </div>
 
