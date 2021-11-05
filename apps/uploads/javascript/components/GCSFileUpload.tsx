@@ -14,7 +14,7 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
   const inputFileRef = useRef<HTMLInputElement>(null)
   const inputNameRef = useRef<HTMLInputElement>(null)
   const [progress, setProgress] = useState(0)
-  const [stage, setStage] = useState<Stage>('initial')
+  const [stage, setStage] = useState<Stage>('error')
   const [error, setError] = useState<string>()
 
   useEffect(() => {
@@ -73,7 +73,11 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
         <li>
           <div className='integration__file-upload'>
             {stage === 'initial' ? (
-              <>
+              <div className="flex flex-col">
+                <h2>Drag and drop a file here</h2>
+
+                <p className="text-black-50 text-center my-3">or</p>
+
                 <label className='button button--success button--outline' htmlFor='gcsfileupload'>
                   Choose a file to upload
                 </label>
@@ -85,33 +89,31 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
                   accept='.csv'
                   hidden
                 />
-              </>
+              </div>
             ) : stage === 'progress' ? (
-              <>
+              <div className="flex flex-col">
                 <div className='integration__file-progress mr-4'>
-                  <svg height='80' width='80' style={{ strokeDashoffset: 220 - progress * 2.2 }}>
-                    <circle cx='40' cy='40' r='35' strokeWidth='3' fill='transparent' />
+                  <svg height='120' width='120' style={{ strokeDashoffset: 220 - progress * 2.2 }}>
+                    <circle cx='60' cy='60' r='35' strokeWidth='3' fill='transparent' />
                   </svg>
                   <h4>{progress}%</h4>
                 </div>
-                <div>
-                  <p>This might take a few minutes, stay on the page.</p>
-                </div>
-              </>
+                <p>This might take a few minutes, stay on the page.</p>
+              </div>
             ) : stage === 'done' ? (
               <>
-                <i className='fas fa-check text-green text-xl mr-4'></i>
-                <div>
-                  <h4>File uploaded</h4>
-                </div>
+                <i className='fas fa-fw fa-4x fa-check text-green'></i>
+                <h4>File uploaded</h4>
+                <p>You'll be redirected shortly</p>
               </>
             ) : (
               <>
-                <i className='fas fa-times text-red text-xl mr-4'></i>
-                <div className='flex flex-col'>
-                  <h4>Errors occurred when uploading your file</h4>
-                  <p>{error}</p>
-                </div>
+                <i className='fas fa-fw fa-4x fa-times text-red'></i>
+                <h4>Errors occurred when uploading your file</h4>
+                <p>{error}</p>
+                <a onClick={() => setStage('initial')} className="button button--tertiary cursor-pointer">
+                  Go back
+                </a>
               </>
             )}
           </div>
