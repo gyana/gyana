@@ -1,8 +1,11 @@
 from datetime import datetime as dt
 
 from apps.base import clients
+from apps.base.utils import short_hash
 from apps.nodes.bigquery import get_query_from_node
 from apps.tables.models import Table
+from apps.users.models import CustomUser
+from celery.app import shared_task
 from django.conf import settings
 from django.core.mail.message import EmailMessage
 from django.db import transaction
@@ -11,8 +14,10 @@ from google.cloud import bigquery
 from .models import Export
 
 
-def export_to_gcs(export, user):
-    # export = Export.objects.get(pk=export_id)
+@shared_task
+def export_to_gcs(export_id, user_id):
+    export = Export.objects.get(pk=export_id)
+    user = CustomUser.objects.get(pk=user_id)
     node = export.node
 
     with transaction.atomic():
@@ -34,7 +39,9 @@ def export_to_gcs(export, user):
         export.status = Export.Status.BQ_TABLE_CREATED
         export.save()
 
-    gcs_path = f"{settings.GS_BUCKET_NAME}/exports/{export.bq_table_id}-{dt.now().isoformat()}.csv"
+    gcs_path = (
+        f"{settings.GS_BUCKET_NAME}/exports/{export.bq_table_id}-{short_hash()}.csv"
+    )
     extract_job = client.extract_table(table.bq_id, f"gs://{gcs_path}")
     extract_job.result()
     with transaction.atomic():

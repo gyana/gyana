@@ -1,10 +1,11 @@
 import json
 from functools import partial
 
+from apps.base.utils import short_hash
 from apps.widgets.models import COUNT_COLUMN_NAME, Widget
 
 from .fusioncharts import FusionCharts, FusionTable, TimeSeries
-from .utils import DEFAULT_HEIGHT, DEFAULT_WIDTH, short_hash
+from .utils import DEFAULT_HEIGHT, DEFAULT_WIDTH
 
 TYPE_TO_FORMAT = {
     "Timestamp": "%Y-%m-%dT%H:%M:%S",

@@ -1,12 +1,8 @@
 import numpy as np
 import pandas as pd
+from apps.base.utils import short_hash
 from apps.widgets.bigquery import get_unique_column_names
-from apps.widgets.fusion.utils import (
-    DEFAULT_HEIGHT,
-    DEFAULT_WIDTH,
-    TO_FUSION_CHART,
-    short_hash,
-)
+from apps.widgets.fusion.utils import DEFAULT_HEIGHT, DEFAULT_WIDTH, TO_FUSION_CHART
 from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget
 
 from .fusioncharts import FusionCharts

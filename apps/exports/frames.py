@@ -23,7 +23,7 @@ class ExportCreate(TurboFrameCreateView):
         form.instance.node = self.node
         form.instance.save()
 
-        export_to_gcs(form.instance, self.request.user)
+        export_to_gcs.delay(form.instance.id, self.request.user.id)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
