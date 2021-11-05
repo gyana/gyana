@@ -268,7 +268,7 @@ class Connector(BaseModel):
             self.integration.state = Integration.State.ERROR
             self.integration.save()
 
-        # # a new sync is completed
+        # a new sync is completed
         if self.succeeded_at != self.bigquery_succeeded_at:
             end_connector_sync(self, not self.integration.table_set.exists())
 
