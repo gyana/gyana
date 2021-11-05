@@ -71,7 +71,7 @@
   {% if not object.ready or object.kind != object.Kind.UPLOAD %}
     <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %}"
       href="{% url 'project_integrations:done' project.id object.id %}">
-      Import
+      Sync
     </a>
   {% endif %}
   {% if object.ready or object.state == 'done' %}

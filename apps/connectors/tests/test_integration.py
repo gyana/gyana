@@ -199,9 +199,9 @@ def test_status_broken(client, logged_in_user, fivetran, connector_factory):
 
     r = client.get_turbo_frame(f"{DETAIL}", f"/connectors/{connector.id}/status")
     assertOK(r)
-    assertContains(r, "Your connector is broken.")
+    assertContains(r, "needs attention")
     redirect_uri = f"http://localhost:8000{LIST}/connectors/{connector.id}/authorize"
-    assertLink(r, f"http://fivetran.url?redirect_uri={redirect_uri}", "fixing it")
+    assertLink(r, f"http://fivetran.url?redirect_uri={redirect_uri}", "needs attention")
 
 
 def test_connector_search_and_categories(client, logged_in_user, project_factory):
