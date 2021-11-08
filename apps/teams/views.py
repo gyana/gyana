@@ -46,7 +46,10 @@ class TeamPlan(LoginRequiredMixin, TurboUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["paddle_plan"] = Plan.objects.first()
+        context["paddle_pro_plan"] = Plan.objects.get(pk=settings.DJPADDLE_PRO_PLAN_ID)
+        context["paddle_business_plan"] = Plan.objects.get(
+            pk=settings.DJPADDLE_BUSINESS_PLAN_ID
+        )
         context["djpaddle_checkout_success_redirect"] = reverse(
             "team_checkouts:success", args=(self.object.id,)
         )

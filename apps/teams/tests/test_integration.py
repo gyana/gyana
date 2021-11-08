@@ -189,10 +189,16 @@ def test_account_limit_warning_and_disabled(client, project_factory):
     assertNotFound(client.get(f"/projects/{project.id}/integrations/uploads/new"))
 
 
-def test_subscriptions(client, logged_in_user):
+def test_subscriptions(client, logged_in_user, settings):
 
     team = logged_in_user.teams.first()
-    plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
+    pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
+    business_plan = Plan.objects.create(
+        name="Pro", billing_type="month", billing_period=1
+    )
+
+    settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
+    settings.DJPADDLE_BUSINESS_PLAN_ID = business_plan.id
 
     r = client.get(f"/teams/{team.id}/account")
     assertOK(r)
@@ -201,9 +207,12 @@ def test_subscriptions(client, logged_in_user):
     r = client.get(f"/teams/{team.id}/plan")
     assertOK(r)
     assertContains(r, "Upgrade to Pro")
+    assertContains(r, "Upgrade to Business")
     # check for paddle attributes
-    SELECTOR = f"""a[data-product='{plan.id}'][data-passthrough='{{"user_id": {logged_in_user.id}, "team_id": {team.id}}}']"""
-    assertSelectorLength(r, SELECTOR, 1)
+    passthrough = f'{{"user_id": {logged_in_user.id}, "team_id": {team.id}}}'
+    assertSelectorLength(r, f"a[data-passthrough='{passthrough}']", 2)
+    assertSelectorLength(r, f"[data-product='{pro_plan.id}']", 1)
+    assertSelectorLength(r, f"[data-product='{business_plan.id}']", 1)
 
     # clicking will launch the javascript checkout
     # this will re-direct to checkout completion page
@@ -228,7 +237,7 @@ def test_subscriptions(client, logged_in_user):
         quantity=1,
         source="test.url",
         status=Subscription.STATUS_ACTIVE,
-        plan=plan,
+        plan=pro_plan,
         unit_price=30,
         update_url="https://update.url",
         created_at=timezone.now(),

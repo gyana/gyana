@@ -52,7 +52,7 @@
 
         {% flag 'subscriptions' %}
           <a href="#!" class="button button--primary w-full paddle_button"
-            data-product="{{ paddle_plan.id }}" data-theme="none"
+            data-product="{{ paddle_pro_plan.id }}" data-theme="none"
             data-passthrough='{"user_id": {{ request.user.id }}, "team_id": {{ object.id }}}'>
             Upgrade to Pro
           </a>
@@ -84,7 +84,15 @@
         <p class="mt-8 mb-3"><span class="h1">$150</span>/mo</p>
         <p class="mb-6"><strong>10 Million</strong> rows of data</p>
 
-        <button class="button button--primary w-full" disabled>Available soon</button>
+        {% flag 'subscriptions' %}
+          <a href="#!" class="button button--primary w-full paddle_button"
+            data-product="{{ paddle_business_plan.id }}" data-theme="none"
+            data-passthrough='{"user_id": {{ request.user.id }}, "team_id": {{ object.id }}}'>
+            Upgrade to Business
+          </a>
+        {% else %}
+          <button class="button button--primary w-full" disabled>Available soon</button>
+        {% endflag %}
       </div>
 
       <hr>
