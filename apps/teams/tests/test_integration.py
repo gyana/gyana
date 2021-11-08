@@ -1,4 +1,9 @@
+from datetime import timedelta
+from uuid import uuid4
+
 import pytest
+from django.utils import timezone
+from djpaddle.models import Checkout, Plan, Subscription
 from pytest_django.asserts import assertContains, assertRedirects
 
 from apps.base.tests.asserts import (
@@ -187,5 +192,54 @@ def test_account_limit_warning_and_disabled(client, project_factory):
 def test_subscriptions(client, logged_in_user):
 
     team = logged_in_user.teams.first()
+    plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
 
-    assertOK(client.get(f"/teams/{team.id}/account/"))
+    r = client.get(f"/teams/{team.id}/account")
+    assertOK(r)
+    assertLink(r, f"/teams/{team.id}/plan", "Upgrade")
+
+    r = client.get(f"/teams/{team.id}/plan")
+    assertOK(r)
+    assertContains(r, "Upgrade to Pro")
+    # check for paddle attributes
+    SELECTOR = f"""a[data-product='{plan.id}'][data-passthrough='{{"user_id": {logged_in_user.id}, "team_id": {team.id}}}']"""
+    assertSelectorLength(r, SELECTOR, 1)
+
+    # clicking will launch the javascript checkout
+    # this will re-direct to checkout completion page
+    # the checkout is inserted by Paddle JS, and the subscription is added via webhook
+
+    checkout = Checkout.objects.create(
+        id=uuid4(),
+        completed=True,
+        passthrough={"user_id": logged_in_user.id, "team_id": team.id},
+    )
+    Subscription.objects.create(
+        id=uuid4(),
+        subscriber=team,
+        cancel_url="https://cancel.url",
+        checkout_id=checkout.id,
+        currency="GBP",
+        email=logged_in_user.email,
+        event_time=timezone.now(),
+        marketing_consent=True,
+        next_bill_date=timezone.now() + timedelta(weeks=4),
+        passthrough={"user_id": logged_in_user.id, "team_id": team.id},
+        quantity=1,
+        source="test.url",
+        status=Subscription.STATUS_ACTIVE,
+        plan=plan,
+        unit_price=30,
+        update_url="https://update.url",
+        created_at=timezone.now(),
+        updated_at=timezone.now(),
+    )
+    r = client.get(f"/teams/{team.id}/checkout/success?checkout={checkout.id}")
+    assertOK(r)
+    assertLink(r, f"/teams/{team.id}/account", "Take me there")
+
+    r = client.get(f"/teams/{team.id}/account")
+    assertOK(r)
+    assertContains(r, "You are currently subscribed to Pro.")
+    assertLink(r, "https://update.url", "Update Payment Method")
+    assertLink(r, "https://cancel.url", "Cancel Subscription")

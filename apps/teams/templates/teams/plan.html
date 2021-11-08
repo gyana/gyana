@@ -53,7 +53,7 @@
         {% flag 'subscriptions' %}
           <a href="#!" class="button button--primary w-full paddle_button"
             data-product="{{ paddle_plan.id }}" data-theme="none"
-            data-passthrough='{"user_id": {{ request.user.id }}, "team_id": {{ object.id }} }'>
+            data-passthrough='{"user_id": {{ request.user.id }}, "team_id": {{ object.id }}}'>
             Upgrade to Pro
           </a>
         {% else %}

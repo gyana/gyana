@@ -187,6 +187,11 @@ class Team(BaseModel, SafeDeleteModel):
             Q(status="active") | Q(status="deleted", next_bill_date__gte=timezone.now())
         ).exists()
 
+    def active_subscription(self):
+        return self.subscriptions.filter(
+            Q(status="active") | Q(status="deleted", next_bill_date__gte=timezone.now())
+        ).first()
+
 
 class Membership(BaseModel):
     """
