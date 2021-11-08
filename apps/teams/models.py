@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
+from djpaddle.models import Subscription
 from safedelete.models import SafeDeleteModel
 from storages.backends.gcloud import GoogleCloudStorage
 

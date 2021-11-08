@@ -1,4 +1,6 @@
 import pytest
+from pytest_django.asserts import assertContains, assertRedirects
+
 from apps.base.tests.asserts import (
     assertFormRenders,
     assertLink,
@@ -9,7 +11,6 @@ from apps.base.tests.asserts import (
 )
 from apps.teams.models import Team
 from apps.users.models import CustomUser
-from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
 
@@ -181,3 +182,10 @@ def test_account_limit_warning_and_disabled(client, project_factory):
     assertNotFound(client.get(f"/projects/{project.id}/integrations/connectors/new"))
     assertNotFound(client.get(f"/projects/{project.id}/integrations/sheets/new"))
     assertNotFound(client.get(f"/projects/{project.id}/integrations/uploads/new"))
+
+
+def test_subscriptions(client, logged_in_user):
+
+    team = logged_in_user.teams.first()
+
+    assertOK(client.get(f"/teams/{team.id}/account/"))
