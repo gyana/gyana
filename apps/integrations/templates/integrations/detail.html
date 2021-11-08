@@ -36,9 +36,11 @@
             <p>Detail</p>
         </a>
         {% flag "beta" %}
-          <turbo-frame id='exports:create'>
-            {% include 'exports/create.html' with parent_id=table_id parent_type='integration_table' %}
-          </turbo-frame>
+          {% if table_id %}
+            <turbo-frame id='exports:create'>
+              {% include 'exports/create.html' with parent_id=table_id parent_type='integration_table' %}
+            </turbo-frame>
+          {% endif %}
         {% endflag %}
       </div>
     </nav>
