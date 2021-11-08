@@ -1,9 +1,10 @@
-from apps.base.models import BaseModel
-from apps.nodes.models import Node
-from apps.tables.models import Table
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+
+from apps.base.models import BaseModel
+from apps.nodes.models import Node
+from apps.tables.models import Table
 
 
 class Export(BaseModel):
@@ -11,6 +12,7 @@ class Export(BaseModel):
         RUNNING = "running", "Running"
         BQ_TABLE_CREATED = "table_created", "Table created"
         EXPORTED = "exported", "Exported"
+        SUCCEEDED = "succeeded", "Succeeded"
 
     node = models.ForeignKey(
         Node, related_name="exports", on_delete=models.CASCADE, null=True

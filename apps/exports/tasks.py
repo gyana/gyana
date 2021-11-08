@@ -4,7 +4,6 @@ from datetime import timedelta
 from celery.app import shared_task
 from django.conf import settings
 from django.core.mail.message import EmailMultiAlternatives
-from django.db import transaction
 from django.template.loader import get_template
 
 from apps.base import clients
@@ -21,27 +20,25 @@ def export_to_gcs(export_id, user_id):
     export = Export.objects.get(pk=export_id)
     user = CustomUser.objects.get(pk=user_id)
 
-    with transaction.atomic():
-        if export.node:
-            query = get_query_from_node(export.node)
-        else:
-            query = get_query_from_table(export.integration_table)
-        client = clients.bigquery()
+    if export.node:
+        query = get_query_from_node(export.node)
+    else:
+        query = get_query_from_table(export.integration_table)
+    client = clients.bigquery()
 
-        job = client.query(query.compile())
-        job.result()
-        export.status = Export.Status.BQ_TABLE_CREATED
-        export.save()
+    job = client.query(query.compile())
+    job.result()
+    export.status = Export.Status.BQ_TABLE_CREATED
+    export.save()
 
     filepath = f"exports/{export.table_id}-{short_hash()}.csv"
     gcs_path = f"{settings.GS_BUCKET_NAME}/{filepath}"
     extract_job = client.extract_table(job.destination, f"gs://{gcs_path}")
     extract_job.result()
 
-    with transaction.atomic():
-        export.gcs_path = gcs_path
-        export.status = Export.Status.EXPORTED
-        export.save()
+    export.gcs_path = gcs_path
+    export.status = Export.Status.EXPORTED
+    export.save()
 
     message_template_plain = get_template("exports/email/export_ready_message.txt")
     message_template = get_template("exports/email/export_ready_message.html")
@@ -60,3 +57,6 @@ def export_to_gcs(export_id, user_id):
         message_template.render({"user": user, "url": url}), "text/html"
     )
     message.send()
+
+    export.status = Export.Status.SUCCEEDED
+    export.save()

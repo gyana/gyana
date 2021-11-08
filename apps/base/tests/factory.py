@@ -1,6 +1,15 @@
+import factory
+from django.utils import timezone
+from pytest_factoryboy import register
+
 from apps.cnames.models import CName
-from apps.columns.models import (AddColumn, AggregationColumn, EditColumn,
-                                 FormulaColumn, WindowColumn)
+from apps.columns.models import (
+    AddColumn,
+    AggregationColumn,
+    EditColumn,
+    FormulaColumn,
+    WindowColumn,
+)
 from apps.connectors.models import Connector
 from apps.dashboards.models import Dashboard
 from apps.filters.models import Filter
@@ -13,10 +22,6 @@ from apps.teams.models import Team
 from apps.uploads.models import Upload
 from apps.widgets.models import Widget
 from apps.workflows.models import Workflow
-from django.utils import timezone
-from pytest_factoryboy import register
-
-import factory
 
 
 @register
@@ -103,6 +108,7 @@ class IntegrationTableFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Table
 
+    project = factory.SubFactory(ProjectFactory)
     source = Table.Source.INTEGRATION
     bq_table = "table"
     bq_dataset = "dataset"

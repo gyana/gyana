@@ -3,12 +3,13 @@ from unittest.mock import MagicMock
 import ibis.expr.schema as sch
 import pytest
 import waffle
-from apps.base import clients
-from apps.teams.models import Team
-from apps.users.models import CustomUser
 from django.utils import timezone
 from ibis_bigquery.client import rename_partitioned_column
 from waffle.templatetags import waffle_tags
+
+from apps.base import clients
+from apps.teams.models import Team
+from apps.users.models import CustomUser
 
 
 class BlankMiddleware:
@@ -132,7 +133,9 @@ def heroku(mocker):
 @pytest.fixture
 def logged_in_user(client):
     team = Team.objects.create(name="Vayu")
-    user = CustomUser.objects.create_user("test", onboarded=True)
+    user = CustomUser.objects.create_user(
+        "test", email="test@gyana.com", onboarded=True
+    )
     team.members.add(user, through_defaults={"role": "admin"})
     client.force_login(user)
     return user
