@@ -6,16 +6,17 @@ import pytest
 from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
 from apps.integrations.models import Integration
 from django.core import mail
-from pytest_django.asserts import (assertContains, assertFormError,
-                                   assertRedirects)
+from pytest_django.asserts import assertContains, assertFormError, assertRedirects
 
 pytestmark = pytest.mark.django_db
+
 
 @pytest.fixture(autouse=True)
 def bq_table_schema_is_not_string_only(mocker):
     mocker.patch(
         "apps.sheets.bigquery.bq_table_schema_is_string_only", return_value=False
     )
+
 
 def test_sheet_create(
     client,
@@ -35,7 +36,6 @@ def test_sheet_create(
     # mock the configuration
     bigquery.query().exception = lambda: False
     bigquery.reset_mock()
-    bigquery.get_table().num_rows = 10
     # mock drive client to check last updated information
     drive_v2.files().get().execute = Mock(
         return_value={"modifiedDate": "2020-10-01T00:00:00Z"}
@@ -169,7 +169,7 @@ def test_resync_after_source_update(
     team = logged_in_user.teams.first()
     sheet = sheet_factory(
         integration__project__team=team,
-        drive_file_last_modified=datetime(2020, 9, 1, 0, 0, 0),
+        drive_file_last_modified_at_sync=datetime(2020, 9, 1, 0, 0, 0),
     )
     integration = sheet.integration
     # mock drive client to check last updated information
@@ -178,7 +178,6 @@ def test_resync_after_source_update(
     )
     bigquery.query().exception = lambda: False
     bigquery.reset_mock()  # reset the call count
-    bigquery.get_table().num_rows = 10
 
     DETAIL = f"/projects/{integration.project.id}/integrations/{integration.id}"
 
@@ -187,8 +186,8 @@ def test_resync_after_source_update(
     # sheet is out of date
     r = client.get_turbo_frame(f"{DETAIL}", f"/sheets/{sheet.id}/status")
     assertOK(r)
-    assertContains(r, "This Google Sheet was updated since the last sync.")
-    assertLink(r, f"{DETAIL}/configure", "Import the latest data")
+    assertContains(r, "sync the latest data")
+    assertLink(r, f"{DETAIL}/configure", "sync the latest data")
 
     r = client.get(f"{DETAIL}/configure")
     assertOK(r)
@@ -199,7 +198,7 @@ def test_resync_after_source_update(
     # sheet is up to date
     r = client.get_turbo_frame(f"{DETAIL}", f"/sheets/{sheet.id}/status")
     assertOK(r)
-    assertContains(r, "You've already synced the latest data.")
+    assertContains(r, "up to date")
 
     # no email
     assert len(mail.outbox) == 0

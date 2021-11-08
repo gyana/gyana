@@ -3,7 +3,6 @@ from itertools import chain
 
 from apps.base.models import BaseModel
 from apps.base.table import ICONS
-from apps.connectors.fivetran.config import get_services
 from apps.dashboards.models import Dashboard
 from apps.projects.models import Project
 from apps.users.models import CustomUser
@@ -30,8 +29,7 @@ class IntegrationsManager(models.Manager):
     def broken(self):
         return self.ready().filter(
             kind=Integration.Kind.CONNECTOR,
-            connector__fivetran_succeeded_at__lt=timezone.now()
-            - timezone.timedelta(hours=24),
+            connector__succeeded_at__lt=timezone.now() - timezone.timedelta(hours=24),
         )
 
     def needs_attention(self):
@@ -124,6 +122,10 @@ class Integration(CloneMixin, BaseModel):
         )
 
     @property
+    def num_tables(self):
+        return self.table_set.count()
+
+    @property
     def last_synced(self):
         return getattr(self, self.kind).last_synced
 
@@ -158,26 +160,38 @@ class Integration(CloneMixin, BaseModel):
         return (
             self.get_kind_display()
             if self.kind != self.Kind.CONNECTOR
-            else get_services()[self.connector.service]["name"]
+            else self.connector.conf.name
         )
 
     def get_table_name(self):
         return f"Integration:{self.name}"
 
     def get_absolute_url(self):
+
+        from apps.integrations.mixins import STATE_TO_URL_REDIRECT
+
+        if not self.ready:
+            url_name = STATE_TO_URL_REDIRECT[self.state]
+            return reverse(url_name, args=(self.project.id, self.id))
+
         return reverse("project_integrations:detail", args=(self.project.id, self.id))
 
     def icon(self):
         if self.kind == Integration.Kind.CONNECTOR:
-            return f"images/integrations/fivetran/{get_services()[self.connector.service]['icon_path']}"
+            return f"images/integrations/fivetran/{self.connector.conf.icon_path}"
         return f"images/integrations/{self.kind}.svg"
 
     def get_table_by_pk_safe(self, table_pk):
         from apps.tables.models import Table
 
-        if table_pk is None:
-            return self.table_set.first()
+        # none or empty string
+        if not table_pk:
+            return self.table_set.order_by("bq_table").first()
         try:
             return self.table_set.get(pk=table_pk)
         except (Table.DoesNotExist, ValueError):
-            return self.table_set.first()
+            return self.table_set.order_by("bq_table").first()
+
+    @property
+    def bq_ids(self):
+        return {table.bq_id for table in self.table_set.all()}

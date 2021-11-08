@@ -87,20 +87,23 @@
       "name": "Vayu",
       "override_row_limit": null,
       "row_count": 0,
-      "row_count_calculated": null
+      "row_count_calculated": null,
+      "subscription": null
     }
   },
   {
     "model": "teams.team",
     "pk": 2,
     "fields": {
+      "deleted": null,
       "created": "2021-07-26T14:53:37.577Z",
       "updated": "2021-07-26T14:53:37.587Z",
       "icon": "",
       "name": "Alone",
       "override_row_limit": null,
       "row_count": 15,
-      "row_count_calculated": null
+      "row_count_calculated": null,
+      "subscription": null
     }
   },
   {
@@ -114,7 +117,8 @@
       "name": "Admin Templates",
       "override_row_limit": null,
       "row_count": 12943,
-      "row_count_calculated": "2021-08-31T00:58:25.986Z"
+      "row_count_calculated": "2021-08-31T00:58:25.986Z",
+      "subscription": null
     }
   },
   {
@@ -405,7 +409,8 @@
       "height": 435,
       "x": 0,
       "y": 0,
-      "stack_100_percent": false
+      "stack_100_percent": false,
+      "error": null
     }
   },
   {
@@ -428,7 +433,8 @@
       "height": 405,
       "x": 0,
       "y": 435,
-      "stack_100_percent": false
+      "stack_100_percent": false,
+      "error": null
     }
   },
   {
@@ -1845,7 +1851,7 @@
       "integration": 2,
       "url": "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit",
       "cell_range": "store_info!A1:D11",
-      "drive_file_last_modified": "2021-08-08T16:46:04.194Z",
+      "drive_file_last_modified_at_sync": "2021-08-08T16:46:04.194Z",
       "sync_task_id": "aa5c3086-1f87-434f-9d5b-48bd69786b33",
       "sync_started": "2021-08-08T20:28:24.090Z"
     }
@@ -1855,14 +1861,42 @@
     "pk": 1,
     "fields": {
       "created": "2021-08-10T10:03:16.771Z",
-      "updated": "2021-08-10T10:03:16.771Z",
+      "updated": "2021-11-03T17:31:36.882Z",
       "integration": 6,
-      "service": "heroku_postgres",
-      "fivetran_id": "plexus_impatient",
-      "schema": "team_1_heroku_postgres_0e684903d1044f7280bb061fd3c179a4",
       "fivetran_authorized": true,
-      "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
       "fivetran_sync_started": null,
+      "fivetran_id": "plexus_impatient",
+      "group_id": "general_candor",
+      "service": "heroku_postgres",
+      "service_version": 3,
+      "schema": "team_1_heroku_postgres_0e684903d1044f7280bb061fd3c179a4",
+      "paused": false,
+      "pause_after_trial": false,
+      "connected_by": "residual_typing",
+      "created_at": "2021-08-10T14:10:36.984Z",
+      "succeeded_at": "2021-08-25T12:26:16.959Z",
+      "failed_at": "2021-09-08T18:07:29.001Z",
+      "sync_frequency": 360,
+      "daily_sync_time": null,
+      "schedule_type": "auto",
+      "setup_state": "broken",
+      "sync_state": "rescheduled",
+      "update_state": "delayed",
+      "is_historical_sync": false,
+      "tasks": [{ "code": "change_in_tls_detected", "message": "Revalidate TLS Certificate" }],
+      "warnings": [
+        { "code": "long_term_broken_connector", "message": "Connector broken for over 7 days" }
+      ],
+      "config": {
+        "host": "ec2-52-50-171-4.eu-west-1.compute.amazonaws.com",
+        "port": 5432,
+        "user": "dzabfqmpyswfll",
+        "database": "dfjd6hoi1qur8d",
+        "password": "******",
+        "update_method": "XMIN",
+        "connection_type": "Directly"
+      },
+      "source_sync_details": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1872,14 +1906,32 @@
     "pk": 2,
     "fields": {
       "created": "2021-08-10T10:40:23.586Z",
-      "updated": "2021-08-10T10:40:23.586Z",
+      "updated": "2021-11-03T17:31:34.953Z",
       "integration": 7,
-      "service": "facebook_ads",
-      "fivetran_id": "legate_wandered",
-      "schema": "team_1_facebook_ads_563a564c28cc469dba73faf6dea0799e",
       "fivetran_authorized": true,
-      "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
       "fivetran_sync_started": null,
+      "fivetran_id": "legate_wandered",
+      "group_id": "general_candor",
+      "service": "facebook_ads",
+      "service_version": 0,
+      "schema": "team_1_facebook_ads_563a564c28cc469dba73faf6dea0799e",
+      "paused": false,
+      "pause_after_trial": false,
+      "connected_by": "residual_typing",
+      "created_at": "2021-08-10T10:35:57.270Z",
+      "succeeded_at": "2021-11-03T12:21:16.479Z",
+      "failed_at": "2021-10-04T21:32:53.448Z",
+      "sync_frequency": 360,
+      "daily_sync_time": null,
+      "schedule_type": "auto",
+      "setup_state": "connected",
+      "sync_state": "scheduled",
+      "update_state": "on_schedule",
+      "is_historical_sync": false,
+      "tasks": [],
+      "warnings": [],
+      "config": { "sync_mode": "AllAccounts", "sync_metadata": true, "timeframe_months": "SIX" },
+      "source_sync_details": { "account_ids": ["act_78363492"] },
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1889,14 +1941,207 @@
     "pk": 3,
     "fields": {
       "created": "2021-08-10T10:40:23.586Z",
-      "updated": "2021-08-10T10:40:23.586Z",
+      "updated": "2021-11-03T17:31:35.855Z",
       "integration": 8,
-      "service": "google_analytics",
-      "fivetran_id": "humid_rifle",
-      "schema": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
       "fivetran_authorized": true,
-      "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
       "fivetran_sync_started": null,
+      "fivetran_id": "humid_rifle",
+      "group_id": "general_candor",
+      "service": "google_analytics",
+      "service_version": 1,
+      "schema": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "paused": false,
+      "pause_after_trial": false,
+      "connected_by": "residual_typing",
+      "created_at": "2021-07-29T12:44:47.204Z",
+      "succeeded_at": "2021-11-03T12:27:44.782Z",
+      "failed_at": "2021-10-05T06:30:23.170Z",
+      "sync_frequency": 360,
+      "daily_sync_time": null,
+      "schedule_type": "auto",
+      "setup_state": "connected",
+      "sync_state": "scheduled",
+      "update_state": "on_schedule",
+      "is_historical_sync": false,
+      "tasks": [],
+      "warnings": [],
+      "config": {
+        "reports": [
+          {
+            "table": "adwords_campaigns",
+            "metrics": [
+              "goalValueAll",
+              "sessions",
+              "adClicks",
+              "goalCompletionsAll",
+              "adCost",
+              "CPC",
+              "goalConversionRateAll",
+              "users",
+              "bounceRate"
+            ],
+            "dimensions": ["date", "adwordsCampaignID"],
+            "config_type": "Prebuilt",
+            "prebuilt_report": "ADWORDS_CAMPAIGNS"
+          },
+          {
+            "table": "adwords_hourly_stats",
+            "metrics": [
+              "goalValueAll",
+              "sessions",
+              "adClicks",
+              "goalCompletionsAll",
+              "adCost",
+              "CPC",
+              "pageviewsPerSession",
+              "goalConversionRateAll",
+              "users",
+              "bounceRate"
+            ],
+            "dimensions": ["date", "dateHour"],
+            "config_type": "Prebuilt",
+            "prebuilt_report": "ADWORDS_HOURLY_STATS"
+          },
+          {
+            "table": "adwords_keyword",
+            "metrics": [
+              "goalValueAll",
+              "sessions",
+              "adClicks",
+              "goalCompletionsAll",
+              "adCost",
+              "CPC",
+              "pageviewsPerSession",
+              "goalConversionRateAll",
+              "users",
+              "bounceRate"
+            ],
+            "dimensions": ["date", "keyword"],
+            "config_type": "Prebuilt",
+            "prebuilt_report": "ADWORDS_KEYWORD"
+          },
+          {
+            "table": "audience_overview",
+            "metrics": [
+              "newUsers",
+              "sessions",
+              "sessionsPerUser",
+              "pageviews",
+              "avgSessionDuration",
+              "pageviewsPerSession",
+              "users",
+              "bounceRate"
+            ],
+            "dimensions": ["date"],
+            "config_type": "Prebuilt",
+            "prebuilt_report": "AUDIENCE_OVERVIEW"
+          },
+          {
+            "table": "browser_and_operating_system_overview",
+            "metrics": [
+              "goalValueAll",
+              "newUsers",
+              "sessions",
+              "avgSessionDuration",
+              "goalCompletionsAll",
+              "pageviewsPerSession",
+              "goalConversionRateAll",
+              "users",
+              "bounceRate"
+            ],
+            "dimensions": ["date", "browser", "operatingSystem"],
+            "config_type": "Prebuilt",
+            "prebuilt_report": "BROWSER_AND_OPERATING_SYSTEM_OVERVIEW"
+          },
+          {
+            "table": "campaign_performance",
+            "metrics": [
+              "goalValueAll",
+              "newUsers",
+              "sessions",
+              "goalCompletionsAll",
+              "pageviewsPerSession",
+              "goalConversionRateAll",
+              "users",
+              "bounceRate"
+            ],
+            "dimensions": ["date", "campaign"],
+            "config_type": "Prebuilt",
+            "prebuilt_report": "CAMPAIGN_PERFORMANCE"
+          },
+          {
+            "table": "channel_traffic",
+            "metrics": [
+              "goalValueAll",
+              "newUsers",
+              "sessions",
+              "avgSessionDuration",
+              "goalCompletionsAll",
+              "percentNewSessions",
+              "pageviewsPerSession",
+              "goalConversionRateAll",
+              "users",
+              "bounceRate"
+            ],
+            "dimensions": ["date", "channelGrouping"],
+            "config_type": "Prebuilt",
+            "prebuilt_report": "CHANNEL_TRAFFIC"
+          },
+          {
+            "table": "events_overview",
+            "metrics": [
+              "eventValue",
+              "totalEvents",
+              "sessionsWithEvent",
+              "eventsPerSessionWithEvent",
+              "avgEventValue",
+              "uniqueEvents"
+            ],
+            "dimensions": ["date", "eventCategory"],
+            "config_type": "Prebuilt",
+            "prebuilt_report": "EVENTS_OVERVIEW"
+          },
+          {
+            "table": "social_media_acquisitions",
+            "metrics": [
+              "sessions",
+              "newUsers",
+              "pageviews",
+              "avgSessionDuration",
+              "transactionRevenue",
+              "percentNewSessions",
+              "pageviewsPerSession",
+              "transactions",
+              "transactionsPerSession",
+              "bounceRate"
+            ],
+            "dimensions": ["date", "socialNetwork"],
+            "config_type": "Prebuilt",
+            "prebuilt_report": "SOCIAL_MEDIA_ACQUISITIONS"
+          },
+          {
+            "table": "traffic",
+            "metrics": [
+              "pageviews",
+              "avgTimeOnPage",
+              "pageValue",
+              "uniquePageviews",
+              "exitRate",
+              "entrances",
+              "users",
+              "bounceRate"
+            ],
+            "dimensions": ["date", "pageTitle"],
+            "config_type": "Prebuilt",
+            "prebuilt_report": "TRAFFIC"
+          }
+        ],
+        "accounts": ["82798099"],
+        "profiles": ["237044023"],
+        "sync_mode": "SpecificAccounts",
+        "timeframe_months": "ALL_TIME"
+      },
+      "source_sync_details": { "profile_ids": ["237044023"] },
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1906,14 +2151,34 @@
     "pk": 8,
     "fields": {
       "created": "2021-08-10T12:54:44.273Z",
-      "updated": "2021-08-10T12:54:44.273Z",
+      "updated": "2021-11-03T17:31:34.021Z",
       "integration": 9,
-      "service": "shopify",
-      "fivetran_id": "overtime_froze",
-      "schema": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
       "fivetran_authorized": true,
-      "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
       "fivetran_sync_started": null,
+      "fivetran_id": "overtime_froze",
+      "group_id": "general_candor",
+      "service": "shopify",
+      "service_version": 0,
+      "schema": "team_1_shopify_3d74304d54144cf59f97f304da4e6d95",
+      "paused": false,
+      "pause_after_trial": false,
+      "connected_by": "residual_typing",
+      "created_at": "2021-08-10T12:53:47.812Z",
+      "succeeded_at": "2021-08-24T06:37:48.417Z",
+      "failed_at": "2021-09-21T22:48:08.033Z",
+      "sync_frequency": 360,
+      "daily_sync_time": null,
+      "schedule_type": "auto",
+      "setup_state": "broken",
+      "sync_state": "rescheduled",
+      "update_state": "on_schedule",
+      "is_historical_sync": true,
+      "tasks": [{ "code": "reconnect", "message": "Reconnect" }],
+      "warnings": [
+        { "code": "long_term_broken_connector", "message": "Connector broken for over 7 days" }
+      ],
+      "config": { "shop": "gyanalimited" },
+      "source_sync_details": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1923,14 +2188,83 @@
     "pk": 9,
     "fields": {
       "created": "2021-08-30T19:05:46.412Z",
-      "updated": "2021-08-30T19:20:38.338Z",
+      "updated": "2021-11-03T17:31:33.091Z",
       "integration": 13,
-      "service": "google_analytics",
-      "fivetran_id": "preshow_regardless",
-      "schema": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "fivetran_authorized": true,
-      "fivetran_succeeded_at": "1970-01-01T00:00:00Z",
       "fivetran_sync_started": null,
+      "fivetran_id": "preshow_regardless",
+      "group_id": "general_candor",
+      "service": "google_analytics",
+      "service_version": 1,
+      "schema": "team_13_google_analytics_75cb232675b24a089c27fd1ab9168860",
+      "paused": true,
+      "pause_after_trial": false,
+      "connected_by": "residual_typing",
+      "created_at": "2021-08-19T12:45:25.684Z",
+      "succeeded_at": null,
+      "failed_at": null,
+      "sync_frequency": 360,
+      "daily_sync_time": null,
+      "schedule_type": "auto",
+      "setup_state": "incomplete",
+      "sync_state": "paused",
+      "update_state": "on_schedule",
+      "is_historical_sync": true,
+      "tasks": [],
+      "warnings": [],
+      "config": {
+        "reports": [
+          {
+            "table": "adwords_campaigns",
+            "config_type": "Prebuilt",
+            "prebuilt_report": "ADWORDS_CAMPAIGNS"
+          },
+          {
+            "table": "adwords_hourly_stats",
+            "config_type": "Prebuilt",
+            "prebuilt_report": "ADWORDS_HOURLY_STATS"
+          },
+          {
+            "table": "adwords_keyword",
+            "config_type": "Prebuilt",
+            "prebuilt_report": "ADWORDS_KEYWORD"
+          },
+          {
+            "table": "audience_overview",
+            "config_type": "Prebuilt",
+            "prebuilt_report": "AUDIENCE_OVERVIEW"
+          },
+          {
+            "table": "browser_and_operating_system_overview",
+            "config_type": "Prebuilt",
+            "prebuilt_report": "BROWSER_AND_OPERATING_SYSTEM_OVERVIEW"
+          },
+          {
+            "table": "campaign_performance",
+            "config_type": "Prebuilt",
+            "prebuilt_report": "CAMPAIGN_PERFORMANCE"
+          },
+          {
+            "table": "channel_traffic",
+            "config_type": "Prebuilt",
+            "prebuilt_report": "CHANNEL_TRAFFIC"
+          },
+          {
+            "table": "events_overview",
+            "config_type": "Prebuilt",
+            "prebuilt_report": "EVENTS_OVERVIEW"
+          },
+          {
+            "table": "social_media_acquisitions",
+            "config_type": "Prebuilt",
+            "prebuilt_report": "SOCIAL_MEDIA_ACQUISITIONS"
+          },
+          { "table": "traffic", "config_type": "Prebuilt", "prebuilt_report": "TRAFFIC" }
+        ],
+        "sync_mode": "AllAccounts",
+        "timeframe_months": "ALL_TIME"
+      },
+      "source_sync_details": null,
       "sync_task_id": null,
       "sync_started": null
     }

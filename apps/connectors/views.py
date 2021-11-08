@@ -15,7 +15,11 @@ from apps.base.analytics import (
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 
-from .fivetran.config import get_service_categories, get_services, get_services_query
+from .fivetran.config import (
+    get_service_categories,
+    get_services_obj,
+    get_services_query,
+)
 from .forms import ConnectorCreateForm
 from .models import Connector
 
@@ -34,7 +38,7 @@ class ConnectorCreate(ProjectMixin, CreateView):
         )
         context_data["services_query"] = services_query
         context_data["services_query_count"] = len(services_query)
-        context_data["services"] = get_services()
+        context_data["services"] = get_services_obj()
         context_data["service_categories"] = get_service_categories(
             show_internal=self.request.user.is_superuser
         )
@@ -70,20 +74,7 @@ class ConnectorCreate(ProjectMixin, CreateView):
             },
         )
 
-        internal_redirect = reverse(
-            "project_integrations_connectors:authorize",
-            args=(
-                self.project.id,
-                self.object.id,
-            ),
-        )
-
-        return redirect(
-            clients.fivetran().get_authorize_url(
-                self.object,
-                f"{settings.EXTERNAL_URL}{internal_redirect}",
-            )
-        )
+        return redirect(self.object.fivetran_authorization_url)
 
 
 class ConnectorAuthorize(ProjectMixin, DetailView):
@@ -93,6 +84,10 @@ class ConnectorAuthorize(ProjectMixin, DetailView):
         self.object = self.get_object()
         self.object.fivetran_authorized = True
         self.object.save()
+
+        # for re-authorization
+        self.object.integration.state = Integration.State.UPDATE
+        self.object.integration.save()
 
         analytics.track(
             self.request.user.id,

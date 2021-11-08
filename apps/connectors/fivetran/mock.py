@@ -1,6 +1,6 @@
 import json
 import os
-import time
+from datetime import datetime
 from functools import cache
 from glob import glob
 
@@ -8,10 +8,40 @@ from django.urls.base import reverse
 from django.utils import timezone
 
 from ..models import Connector
-from .schema import schemas_to_dict, schemas_to_obj
 
 SCHEMA_FIXTURES_DIR = "apps/connectors/fivetran/fixtures"
 MOCK_SCHEMA_DIR = os.path.abspath(".mock/.schema")
+
+
+def get_connector_json(connector, is_historical_sync=False, succeeded_at=None):
+
+    if succeeded_at is not None:
+        succeeded_at = datetime.strftime(succeeded_at, "%Y-%m-%dT%H:%M:%S.%f%z")
+
+    return {
+        "id": connector.fivetran_id,
+        "group_id": "group_id",
+        "service": connector.service,
+        "service_version": 4,
+        "schema": connector.schema,
+        "paused": True,
+        "pause_after_trial": True,
+        "connected_by": "monitoring_assuring",
+        "created_at": "2021-01-01T00:00:00.000000Z",
+        "succeeded_at": succeeded_at,
+        "failed_at": None,
+        "sync_frequency": 360,
+        "schedule_type": "auto",
+        "status": {
+            "setup_state": "connected",
+            "sync_state": "scheduled",
+            "update_state": "delayed",
+            "is_historical_sync": is_historical_sync,
+            "tasks": [],
+            "warnings": [],
+        },
+        "config": {},
+    }
 
 
 @cache
@@ -58,13 +88,20 @@ class MockFivetranClient:
             Connector.objects.filter(service=service).order_by("id").first()
             or Connector.objects.filter(service=self.DEFAULT_SERVICE).first()
         )
-        return {"fivetran_id": connector.fivetran_id, "schema": connector.schema}
+        return get_connector_json(connector, is_historical_sync=True)
 
     def get(self, connector):
-        return {
-            "succeeded_at": "2021-01-01T00:00:00.000000Z",
-            "status": {"setup_state": "broken"},
-        }
+        started = self._started.get(connector.id)
+        is_historical_sync = (
+            (timezone.now() - started).total_seconds() < self.REFRESH_SYNC_SECONDS
+            if started is not None
+            else False
+        )
+        succeeded_at = timezone.now() if not is_historical_sync else None
+
+        return get_connector_json(
+            connector, is_historical_sync=is_historical_sync, succeeded_at=succeeded_at
+        )
 
     def start_initial_sync(self, connector):
         self._started[connector.id] = timezone.now()
@@ -75,26 +112,21 @@ class MockFivetranClient:
     def get_authorize_url(self, connector, redirect_uri):
         return f"{reverse('connectors:mock')}?redirect_uri={redirect_uri}"
 
-    def has_completed_sync(self, connector):
-        return (
-            timezone.now() - self._started.get(connector.id, timezone.now())
-        ).total_seconds() > self.REFRESH_SYNC_SECONDS
-
     def reload_schemas(self, connector):
         pass
 
     def get_schemas(self, connector):
         if connector.id in self._schema_cache:
-            return schemas_to_obj(self._schema_cache[connector.id])
+            return self._schema_cache[connector.id]
 
         service = connector.service if connector is not None else "google_analytics"
         fivetran_id = connector.fivetran_id if connector is not None else "humid_rifle"
 
         with open(f"{SCHEMA_FIXTURES_DIR}/{service}_{fivetran_id}.json", "r") as f:
-            return schemas_to_obj(json.load(f))
+            return json.load(f)
 
     def update_schemas(self, connector, schemas):
-        self._schema_cache[connector.id] = schemas_to_dict(schemas)
+        self._schema_cache[connector.id] = schemas
 
     def delete(self, connector):
         pass

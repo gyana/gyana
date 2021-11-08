@@ -7,8 +7,7 @@ from apps.base import clients
 from apps.base.forms import BaseModelForm
 
 from .fivetran.client import FivetranClientError
-from .fivetran.config import get_services
-from .fivetran.schema import update_schema_from_cleaned_data
+from .fivetran.config import ServiceTypeEnum
 from .models import Connector
 from .widgets import ConnectorSchemaMultiSelect
 
@@ -29,20 +28,15 @@ class ConnectorCreateForm(BaseModelForm):
 
         # try to create fivetran entity
         try:
-            res = clients.fivetran().create(self._service, self._project.team.id)
+            data = clients.fivetran().create(self._service, self._project.team.id)
         except FivetranClientError as e:
             raise ValidationError(str(e))
 
-        self._fivetran_id = res["fivetran_id"]
-        self._schema = res["schema"]
+        self._data = data
 
     def pre_save(self, instance):
-        instance.service = self._service
-        instance.fivetran_id = self._fivetran_id
-        instance.schema = self._schema
-        instance.create_integration(
-            get_services()[self._service]["name"], self._created_by, self._project
-        )
+        instance.update_kwargs_from_fivetran(self._data)
+        instance.create_integration(instance.conf.name, self._created_by, self._project)
 
 
 class ConnectorUpdateForm(forms.ModelForm):
@@ -54,14 +48,16 @@ class ConnectorUpdateForm(forms.ModelForm):
 
         super().__init__(*args, **kwargs)
 
-        schemas = clients.fivetran().get_schemas(self.instance)
+        self.instance.sync_schema_obj_from_fivetran()
 
-        for schema in schemas:
+        for schema in self.instance.schema_obj.schemas:
 
             self.fields[f"{schema.name_in_destination}_schema"] = forms.BooleanField(
                 initial=schema.enabled,
                 label=schema.display_name,
-                widget=CheckboxInput() if self.instance.is_database else HiddenInput(),
+                widget=CheckboxInput()
+                if self.instance.conf.service_type == ServiceTypeEnum.DATABASE
+                else HiddenInput(),
                 help_text="Include or exclude this schema",
                 required=False,
             )
@@ -86,7 +82,10 @@ class ConnectorUpdateForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         try:
-            update_schema_from_cleaned_data(self.instance, cleaned_data)
+            schema_obj = self.instance.schema_obj
+            schema_obj.mutate_from_cleaned_data(cleaned_data)
+            clients.fivetran().update_schemas(self.instance, schema_obj.to_dict())
+            self.instance.sync_schema_obj_from_fivetran()
         except FivetranClientError as e:
             honeybadger.notify(e)
             raise ValidationError(

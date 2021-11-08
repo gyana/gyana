@@ -1,20 +1,28 @@
-from apps.base.aggregations import AggregationFunctions
-from apps.base.models import BaseModel
-from apps.dashboards.models import Dashboard
-from apps.tables.models import Table
 from django.conf import settings
 from django.db import models
 from model_clone import CloneMixin
 
-DEFAULT_WIDTH = 500
-DEFAULT_HEIGHT = 400
+from apps.base.aggregations import AggregationFunctions
+from apps.base.models import BaseModel
+from apps.dashboards.models import Dashboard
+from apps.tables.models import Table
+
+# Need to be a multiple of GRID_SIZE found in GyWidget.tsx
+DEFAULT_WIDTH = 495
+DEFAULT_HEIGHT = 390
 
 
 class Widget(CloneMixin, BaseModel):
     _clone_m2o_or_o2m_fields = ["filters", "aggregations"]
 
+    class Category(models.TextChoices):
+        SIMPLE = "simple", "Simple"
+        TIMESERIES = "timeseries", "Timeseries"
+        ADVANCED = "advanced", "Advanced"
+
     class Kind(models.TextChoices):
         TEXT = "text", "Text"
+        METRIC = "metric", "Metric"
         TABLE = "table", "Table"
         # using fusioncharts name for database
         COLUMN = "mscolumn2d", "Column"
@@ -32,6 +40,14 @@ class Widget(CloneMixin, BaseModel):
         RADAR = "radar", "Radar"
         BUBBLE = "bubble", "Bubble"
         HEATMAP = "heatmap", "Heatmap"
+        TIMESERIES_LINE = "timeseries-line", "Line"
+        TIMESERIES_STACKED_LINE = "timeseries-line_stacked", "Stacked Line"
+        TIMESERIES_COLUMN = "timeseries-column", "Column"
+        TIMESERIES_STACKED_COLUMN = (
+            "timeseries-column-stacked",
+            "Stacked Column",
+        )
+        TIMESERIES_AREA = "timeseries-area", "Area"
 
     class Aggregator(models.TextChoices):
         # These aggregators should reflect the names described in the ibis api, none is an exception
@@ -85,6 +101,7 @@ class Widget(CloneMixin, BaseModel):
     )
 
     stack_100_percent = models.BooleanField(default=False)
+    error = models.CharField(max_length=300, null=True)
 
     _clone_m2o_or_o2m_fields = [
         "aggregations",
@@ -104,6 +121,8 @@ class Widget(CloneMixin, BaseModel):
             return False
         if self.kind == self.Kind.TABLE:
             return True
+        if self.kind == self.Kind.METRIC:
+            return self.aggregations.count() == 1
         if self.kind == self.Kind.RADAR:
             return self.aggregations.count() >= 3
         if self.kind in [self.Kind.FUNNEL, self.Kind.PYRAMID]:
@@ -113,27 +132,48 @@ class Widget(CloneMixin, BaseModel):
 
         return False
 
+    @property
+    def category(self):
+        return WIDGET_KIND_TO_WEB[self.kind][1]
 
-NO_DIMENSION_WIDGETS = [Widget.Kind.RADAR, Widget.Kind.FUNNEL, Widget.Kind.PYRAMID]
+
+NO_DIMENSION_WIDGETS = [
+    Widget.Kind.RADAR,
+    Widget.Kind.FUNNEL,
+    Widget.Kind.PYRAMID,
+    Widget.Kind.METRIC,
+]
 
 WIDGET_KIND_TO_WEB = {
-    Widget.Kind.TEXT.value: ("fa-text",),
-    Widget.Kind.TABLE.value: ("fa-table",),
-    Widget.Kind.COLUMN.value: ("fa-chart-bar",),
-    Widget.Kind.STACKED_COLUMN.value: ("fa-chart-bar",),
-    Widget.Kind.BAR.value: ("fa-chart-bar",),
-    Widget.Kind.STACKED_BAR.value: ("fa-chart-bar",),
-    Widget.Kind.LINE.value: ("fa-chart-line",),
-    Widget.Kind.STACKED_LINE.value: ("fa-chart-line",),
-    Widget.Kind.PIE.value: ("fa-chart-pie",),
-    Widget.Kind.AREA.value: ("fa-chart-area",),
-    Widget.Kind.DONUT.value: ("fa-dot-circle",),
-    Widget.Kind.SCATTER.value: ("fa-chart-scatter",),
-    Widget.Kind.FUNNEL.value: ("fa-filter",),
-    Widget.Kind.PYRAMID.value: ("fa-triangle",),
-    Widget.Kind.RADAR.value: ("fa-radar",),
-    Widget.Kind.BUBBLE.value: ("fa-soap",),
-    Widget.Kind.HEATMAP.value: ("fa-map",),
+    Widget.Kind.TEXT.value: ("fa-text", Widget.Category.SIMPLE),
+    Widget.Kind.METRIC.value: ("fa-value-absolute", Widget.Category.SIMPLE),
+    Widget.Kind.TABLE.value: ("fa-table", Widget.Category.SIMPLE),
+    Widget.Kind.COLUMN.value: ("fa-chart-bar", Widget.Category.SIMPLE),
+    Widget.Kind.STACKED_COLUMN.value: ("fa-chart-bar", Widget.Category.ADVANCED),
+    Widget.Kind.BAR.value: ("fa-chart-bar", Widget.Category.SIMPLE),
+    Widget.Kind.STACKED_BAR.value: ("fa-chart-bar", Widget.Category.ADVANCED),
+    Widget.Kind.LINE.value: ("fa-chart-line", Widget.Category.SIMPLE),
+    Widget.Kind.STACKED_LINE.value: ("fa-chart-line", Widget.Category.ADVANCED),
+    Widget.Kind.PIE.value: ("fa-chart-pie", Widget.Category.SIMPLE),
+    Widget.Kind.AREA.value: ("fa-chart-area", Widget.Category.ADVANCED),
+    Widget.Kind.DONUT.value: ("fa-dot-circle", Widget.Category.SIMPLE),
+    Widget.Kind.SCATTER.value: ("fa-chart-scatter", Widget.Category.ADVANCED),
+    Widget.Kind.FUNNEL.value: ("fa-filter", Widget.Category.ADVANCED),
+    Widget.Kind.PYRAMID.value: ("fa-triangle", Widget.Category.ADVANCED),
+    Widget.Kind.RADAR.value: ("fa-radar", Widget.Category.ADVANCED),
+    Widget.Kind.BUBBLE.value: ("fa-soap", Widget.Category.ADVANCED),
+    Widget.Kind.HEATMAP.value: ("fa-map", Widget.Category.ADVANCED),
+    Widget.Kind.TIMESERIES_LINE.value: ("fa-chart-line", Widget.Category.TIMESERIES),
+    Widget.Kind.TIMESERIES_STACKED_LINE.value: (
+        "fa-chart-line",
+        Widget.Category.TIMESERIES,
+    ),
+    Widget.Kind.TIMESERIES_COLUMN.value: ("fa-chart-bar", Widget.Category.TIMESERIES),
+    Widget.Kind.TIMESERIES_STACKED_COLUMN.value: (
+        "fa-chart-bar",
+        Widget.Category.TIMESERIES,
+    ),
+    Widget.Kind.TIMESERIES_AREA.value: ("fa-chart-area", Widget.Category.TIMESERIES),
 }
 
 

@@ -1,15 +1,14 @@
 @use "utilities/mixins";
 
 .widgets {
-  --grid-size: 15px;
-
   display: flex;
   flex-direction: column;
   margin: 0 auto;
   padding: 0 1.6rem 0 0;
 
   &__canvas {
-    background-color: var(--c-white);
+    --background-color: var(--c-white);
+    background-color: var(--background-color);
     border: 1px solid var(--c-gray);
     display: inline-block;
     margin: 0 auto 1.6rem auto;
@@ -21,7 +20,9 @@
   }
 
   &__grid {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' id='Layer_1' x='0px' y='0px' viewBox='0 0 15 15' enable-background='new 0 0 15 15' xml:space='preserve' height='15px' width='15px'%3E%3Cg%3E%3Crect stroke-opacity='0' rx='1' id='svg_1' height='6' width='6' y='3' x='3' fill='%23fafafa'/%3E%3C/g%3E%3C/svg%3E");
+    --grid-size: 15px;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' id='Layer_1' x='0px' y='0px' viewBox='0 0 15 15' enable-background='new 0 0 15 15' xml:space='preserve' height='15px' width='15px'%3E%3Cg%3E%3Crect stroke-opacity='0' rx='1' id='svg_1' height='6' width='6' y='3' x='3' opacity='0.8' fill='%23fafafa'/%3E%3C/g%3E%3C/svg%3E");
     background-size: var(--grid-size) var(--grid-size);
   }
 }

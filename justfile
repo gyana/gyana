@@ -62,6 +62,11 @@ format:
     black .
     isort .
 
+alias bf := branchformat
+branchformat:
+    git diff --name-only main '***.py' | xargs black
+    git diff --name-only main '***.py' | xargs isort
+
 # Count total lines of code that need to be maintained
 cloc:
     cloc $(git ls-files) --exclude-dir=migrations,tests,vendors --exclude-ext=svg,csv,json,yaml,md,toml

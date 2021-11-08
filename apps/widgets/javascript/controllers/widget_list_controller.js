@@ -11,8 +11,11 @@ export default class extends Controller {
     widgets.forEach((target) => {
       target.onmousedown = function () {
         widgets.forEach((widget) => {
+          widget.dataset.focused = false
           widget.style.zIndex = null
         })
+
+        target.dataset.focused = true
         target.style.zIndex = 1
       }
     })

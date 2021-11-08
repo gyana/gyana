@@ -44,9 +44,21 @@ SingleMetricFormset = forms.inlineformset_factory(
     form=AggregationColumnForm,
     can_delete=True,
     extra=0,
+    min_num=1,
     max_num=1,
     formset=RequiredInlineFormset,
 )
+
+OptionalMetricFormset = forms.inlineformset_factory(
+    Widget,
+    AggregationColumn,
+    form=AggregationColumnForm,
+    can_delete=True,
+    extra=0,
+    max_num=1,
+    formset=RequiredInlineFormset,
+)
+
 
 XYMetricFormset = forms.inlineformset_factory(
     Widget,
@@ -76,13 +88,14 @@ XYZMetricFormset = forms.inlineformset_factory(
 # TODO: If at any point these contain more than one value we need to reconsider the logic
 # in widgets/widgets.py to calculate the maxMetrics
 FORMSETS = {
-    Widget.Kind.PIE: [SingleMetricFormset],
-    Widget.Kind.STACKED_BAR: [SingleMetricFormset],
-    Widget.Kind.STACKED_COLUMN: [SingleMetricFormset],
+    Widget.Kind.PIE: [OptionalMetricFormset],
+    Widget.Kind.STACKED_BAR: [OptionalMetricFormset],
+    Widget.Kind.STACKED_COLUMN: [OptionalMetricFormset],
     Widget.Kind.SCATTER: [XYMetricFormset],
     Widget.Kind.BUBBLE: [XYZMetricFormset],
-    Widget.Kind.HEATMAP: [SingleMetricFormset],
+    Widget.Kind.HEATMAP: [OptionalMetricFormset],
     Widget.Kind.RADAR: [create_min_formset(3)],
     Widget.Kind.PYRAMID: [create_min_formset(2)],
     Widget.Kind.FUNNEL: [create_min_formset(2)],
+    Widget.Kind.METRIC: [SingleMetricFormset],
 }

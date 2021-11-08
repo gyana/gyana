@@ -16,10 +16,7 @@
     border-radius: 5px;
     display: flex;
     min-height: 32px;
-    
-    > :first-child {
-      padding: 0 0.4rem;
-    }
+    padding: 0 0.8rem;
     
     &--interactive {
       cursor: pointer;

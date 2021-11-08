@@ -1,18 +1,10 @@
 {% load humanize %}
 {% load static %}
 
-<h2 id="connectors-status" data-controller="tooltip">
-  {{ object.fivetran_succeeded_at|naturaltime }}
-  <span data-tooltip-target="body">{{ object.fivetran_succeeded_at }}</span>
-</h2>
-<p>Most recent data imported</p>
-{% if broken %}
-  <p class="text-red">
-    Your connector is broken. Try
-    <a class="link" href="{{ fivetran_url }}" data-turbo-frame="_top">
-      fixing it
+last synced at <strong>{% include 'columns/natural_datetime.html' with datetime=object.succeeded_at %}</strong>
+{% if object.requires_authorization %}
+  • <a class="link text-red" href="{{ object.fivetran_authorization_url }}" data-turbo-frame="_top">
+      needs attention
     </a>
-    or reach out to support.
-  </p>
 {% endif %}
 

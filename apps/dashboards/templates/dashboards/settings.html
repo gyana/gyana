@@ -11,30 +11,20 @@
     </button>
   </div>
 
-  <form
-    method="post"
-    class="pad max-w-4xl"
-    data-tf-modal-target='form'
-    action="{% url 'project_dashboards:settings' project.id object.id %}"
-  >
-    {% csrf_token %}
-
-    {% include "django/forms/default_form.html" %}
-
-    <button type="submit" class="button button--success w-full">
-      Save
-    </button>
-  </form>
-
-  <div class="pad border-t border-gray mt-auto">
-    <h2 class="mb-3">Delete dashboard</h2>
-    <p class="mb-3">If you would like to delete this dashboard press the button below.</p>
-
-    <a
-      class="button button--danger"
-      href="{% url 'project_dashboards:delete' project.id object.id %}"
+  <div class="flex-1 overflow-auto">
+    <form
+      method="post"
+      class="pad max-w-4xl"
+      data-tf-modal-target='form'
+      action="{% url 'project_dashboards:settings' project.id object.id %}"
     >
-      Delete
-    </a>
+      {% csrf_token %}
+
+      {% include "django/forms/default_form.html" with optional=False %}
+
+      <button type="submit" class="button button--success w-full">
+        Save
+      </button>
+    </form>
   </div>
 </section>

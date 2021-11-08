@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db.models.signals import post_delete
 from django.dispatch.dispatcher import receiver
+from honeybadger import honeybadger
 
 from apps.base import clients
 from apps.connectors.fivetran.client import FivetranClientError
@@ -18,5 +19,5 @@ def delete_fivetran_connector(sender, instance, *args, **kwargs):
 
     try:
         clients.fivetran().delete(instance)
-    except FivetranClientError as e:
-        print(e)
+    except FivetranClientError as exc:
+        honeybadger.notify(exc)

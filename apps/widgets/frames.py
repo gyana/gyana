@@ -17,13 +17,17 @@ from apps.base.table_data import RequestConfig
 from apps.base.templates import template_exists
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
-from apps.widgets.visuals import MaxRowsExceeded, chart_to_output, table_to_output
+from apps.widgets.visuals import (
+    MaxRowsExceeded,
+    chart_to_output,
+    metric_to_output,
+    table_to_output,
+)
 from django.db.models.query import QuerySet
 from django.urls import reverse
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
 from honeybadger import honeybadger
-from ibis.common.exceptions import IntegrityError
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 
@@ -42,6 +46,8 @@ def add_output_context(context, widget, request):
                 context["table"] = RequestConfig(
                     request,
                 ).configure(table)
+        elif widget.kind == Widget.Kind.METRIC:
+            context["metric"] = metric_to_output(widget)
         else:
             chart, chart_id = chart_to_output(widget)
             context.update(chart)
@@ -55,6 +61,7 @@ class WidgetList(DashboardMixin, TurboFrameListView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+        context_data["categories"] = Widget.Category.choices
         context_data["choices"] = WIDGET_CHOICES_ARRAY
         modal_item = self.request.GET.get("modal_item")
         context_data["modal_item"] = int(modal_item) if modal_item else modal_item
@@ -134,6 +141,22 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
                 "type": form.instance.kind,
             },
         )
+        context = {
+            "widget": self.object,
+            "project": self.project,
+            "dashboard": self.dashboard,
+        }
+        try:
+            add_output_context(context, self.object, self.request)
+            if self.object.error:
+                self.object.error = None
+        except Exception as e:
+            error = error_name_to_snake(e)
+            self.object.error = error
+            if not template_exists(f"widgets/errors/{error}.html"):
+                logging.warning(e, exc_info=e)
+                honeybadger.notify(e)
+
         if self.request.POST.get("submit") == "Save & Preview":
             analytics.track(
                 self.request.user.id,
@@ -156,12 +179,6 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             },
         )
 
-        context = {
-            "widget": self.object,
-            "project": self.project,
-            "dashboard": self.dashboard,
-        }
-        add_output_context(context, self.object, self.request)
         return TurboStreamResponse(
             [
                 TurboStream(f"widgets-output-{self.object.id}-stream")
@@ -183,7 +200,17 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
                 "project": self.project,
                 "dashboard": self.dashboard,
             }
-            add_output_context(context, self.object, self.request)
+            try:
+                add_output_context(context, self.object, self.request)
+                if self.object.error:
+                    self.object.error = None
+            except Exception as e:
+                error = error_name_to_snake(e)
+                self.object.error = error
+                if not template_exists(f"widgets/errors/{error}.html"):
+                    logging.warning(e, exc_info=e)
+                    honeybadger.notify(e)
+
             return TurboStreamResponse(
                 [
                     TurboStream(f"widgets-output-{self.object.id}-stream")
@@ -217,8 +244,6 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
             if template_exists(error_template):
                 context["error_template"] = error_template
             else:
-                logging.warning(e, exc_info=e)
-                honeybadger.notify(e)
                 context["error_template"] = "widgets/errors/default.html"
 
         return context

@@ -1,3 +1,5 @@
+import re
+
 import pytest
 from bs4 import BeautifulSoup
 
@@ -57,8 +59,12 @@ def assertFormRenders(response, expected_fields=[]):
     soup = BeautifulSoup(response.content)
 
     matches = soup.select("form input,select,textarea")
-    IGNORE_LIST = ["csrfmiddlewaretoken", "hidden_live"]
-    fields = [m["name"] for m in matches if m["name"] not in IGNORE_LIST]
+    IGNORE_LIST = ["csrfmiddlewaretoken", "hidden_live", "__prefix__"]
+    fields = [
+        m["name"]
+        for m in matches
+        if not re.compile(f".*({'|'.join(IGNORE_LIST)}).*").match(m["name"])
+    ]
     assert set(fields) == set(
         expected_fields
     ), f"{set(fields)} != {set(expected_fields)}"
@@ -70,3 +76,7 @@ def assertSelectorHasAttribute(response, selector, attribute):
     soup = BeautifulSoup(response.content)
     element = soup.select(selector)[0]
     assert element.has_attr(attribute)
+
+
+def assertFormChoicesLength(form, field_name, length):
+    assert len(list(form.fields[field_name].choices)) == length

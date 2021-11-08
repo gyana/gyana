@@ -22,7 +22,11 @@
     <label for="{{ bound_field.id_for_label}}">
       <span>
         {{ bound_field.label }}
-        {% if not bound_field.field.required %}<span class="text-black-50">- optional</span>{% endif %}
+
+        {% if not bound_field.field.required and not optional == False %}
+        <span class="text-black-50">- optional</span>
+        {% endif %}
+
         {% if bound_field.help_text %}
         <p class="input__help-text">{{ bound_field.help_text }}</p>
         {% endif %}

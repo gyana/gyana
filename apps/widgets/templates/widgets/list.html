@@ -14,12 +14,19 @@
   </header>
   {% endif %}
   
-  <div class="widgets__canvas">
+  <div
+    class="widgets__canvas"
+    style="--background-color:#{{ dashboard.background_color }};"
+  >
     <div
       id="dashboard-widget-container"
       class="{% if request.GET.mode != 'view' %}widgets__grid{%endif%}"
       data-controller="widget-list"
-      style="min-width:{{ dashboard.width }}px;min-height:{{ dashboard.height }}px;"
+      style="
+        min-width:{{ dashboard.width }}px;
+        min-height:{{ dashboard.height }}px;
+        --grid-size:{{ dashboard.grid_size }}px;
+      "
     >
       {% for object in object_list %}
       {% include 'widgets/widget_component.html' %}
@@ -31,8 +38,7 @@
             <i class="placeholder-scr__icon far fa-map-marker-question fa-2x"></i>
             <p class='placeholder-scr__title mb-2'>This dashboard needs some widgets!</p>
 
-            {% include 'dashboards/_add_widget.html' with choices=choices %}
-
+            {% include 'dashboards/_add_widget.html' with choices=choices categories=categories %}
           </div>
         </div>
       </div>

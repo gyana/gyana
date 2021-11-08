@@ -14,14 +14,14 @@
 
   {% with project_meta|get_description:page_description as description %}
   {% with project_meta|get_image_url:page_image as image %}
-  <meta name="description" content="{{ description }}">
-  <meta name="keywords" content="{{ project_meta.KEYWORDS }}">
+  <meta name="description" content="{{ description }}" />
+  <meta name="keywords" content="{{ project_meta.KEYWORDS }}" />
 
   <!-- Twitter Card data -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="{{ title }}">
-  <meta name="twitter:description" content="{{ description }}">
-  <meta name="twitter:image" content="{{ image }}">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="{{ title }}" />
+  <meta name="twitter:description" content="{{ description }}" />
+  <meta name="twitter:image" content="{{ image }}" />
 
   <!-- Open Graph data -->
   <meta property="og:title" content="{{ title }}" />
@@ -30,7 +30,7 @@
   <meta property="og:image" content="{{ image }}" />
   <meta property="og:description" content="{{ description }}" />
   <meta property="og:site_name" content="{{ project_meta.NAME }}" />
-  <link rel="canonical" href="{% if page_canonical_url %}{{ page_canonical_url }}{% else %}{{ page_url }}{% endif %}">
+  <link rel="canonical" href="{% if page_canonical_url %}{{ page_canonical_url }}{% else %}{{ page_url }}{% endif %}" />
   {% endwith %}
   {% endwith %}
 {% endif %}

@@ -1,16 +1,15 @@
 {% load humanize %}
 {% load static %}
 
-{% if out_of_date %}
-    <p>This Google Sheet was updated since the last sync.</p>
+{% if not object.up_to_date %}
+    <a class="link" href="{% url 'project_integrations:configure' object.integration.project.id object.integration.id %}" data-turbo-frame="_top">
+        sync the latest data
+    </a>
+{% elif object.integration.state == 'load' %}
+    <a class="link" href="{% url 'project_integrations:configure' object.integration.project.id object.integration.id %}" data-turbo-frame="_top">
+        syncing
+    </a>
+    <i class="fad fa-fw fa-spinner-third fa-spin text-blue"></i>
 {% else %}
-    <p>You've already synced the latest data.</p>
+    up to date
 {% endif %}
-
-<a class="link" href="{% url 'project_integrations:configure' object.integration.project.id object.integration.id %}" data-turbo-frame="_top">
-    {% if object.integration.state == 'load' %}
-        <p>View import in progress.</p>
-    {% else %}
-        <p>Import the latest data.</p>
-    {% endif %}
-</a>

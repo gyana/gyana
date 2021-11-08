@@ -3,22 +3,25 @@
 {% block tab %}
 
 <div class="pad flex flex-1 justify-center items-center">
-    <div class='flex flex-col flex-1 max-w-3xl'>
-        <h1 class="flex items-center justify-center gap-3 mb-7">Configure import</h1>
-        <div class="flex flex-1 justify-center items-center">
-            <form method="post" action="{{ request.get_full_path }}" class="form">
-                <p class="alert mb-4">
-                    If you're not sure about these settings, we recommend you start with the defaults and tweak them later.
-                </p>
+  <div class='flex flex-col flex-1 max-w-3xl'>
+    <h1 class="flex items-center justify-center gap-3 mb-7">Configure import</h1>
 
-                {% csrf_token %}
+    <div class="flex flex-1 justify-center items-center">
+      <form method="POST" action="{{ request.get_full_path }}">
+        {% csrf_token %}
 
-                {% include "django/forms/default_form.html" %}
+        <p class="alert mb-4">
+          If you're not sure about these settings, we recommend you start with the defaults and tweak them later.
+        </p>
 
-                <button type="submit" class="button button--filled button--success mt-4">Import</button>
-            </form>
-        </div>
+        {% include "django/forms/default_form.html" %}
+
+        <button type="submit" class="button button--success mt-4 w-full">
+          Import
+        </button>
+      </form>
     </div>
+  </div>
 </div>
 
 {% endblock %}

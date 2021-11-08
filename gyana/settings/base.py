@@ -295,7 +295,7 @@ SITE_ID = 1
 
 # DRF config
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 100,
@@ -386,6 +386,7 @@ HONEYBADGER = {
     "ENVIRONMENT": ENVIRONMENT,
     # enables us to use "development" and send data
     "FORCE_REPORT_DATA": True,
+    "EXCLUDED_EXCEPTIONS": ["Http404", "DoesNotExist"],
 }
 
 HELLONEXT_SSO_TOKEN = os.environ.get("HELLONEXT_SSO_TOKEN")

@@ -1,0 +1,22 @@
+{% extends "integrations/base.html" %}
+{% load render_table from django_tables2 %}
+
+{% block tab %}
+  <div class="pad">
+    <p class="mb-4">Workflows and dashboards that reference this integration</p>
+    <div class="card card--none">
+    {% if integration.used_in|length == 0 %}
+      <div class="table__empty">
+        <h3>Time to use your integration</h3>
+        <p class="text-black-50 mt-3">
+          Learn how to use your integration in
+          <a href="{% url 'project_workflows:list' project.id %}" class="link">workflows</a>
+          and <a href="{% url 'project_dashboards:list' project.id %}" class="link">dashboards</a> next.
+        </p>
+      </div>
+      {% else %}
+        {% render_table table %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

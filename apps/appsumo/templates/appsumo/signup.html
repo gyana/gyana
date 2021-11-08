@@ -6,7 +6,7 @@
 <section>
   <label for="" class="mb-6">
     <p>AppSumo code</p>
-    <input type="text" disabled value={{ view.kwargs.code }}>
+    <input type="text" disabled value={{ view.kwargs.code }} />
   </label>
 
   <a class="button button--primary button--outline button--google w-full" href="{% provider_login_url 'google' %}?next={% url 'appsumo:redeem' request.resolver_match.kwargs.code %}&appsumo=true">

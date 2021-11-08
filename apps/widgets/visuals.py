@@ -4,9 +4,10 @@ from apps.base import clients
 from apps.base.table_data import get_table
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
+from apps.widgets.fusion.timeseries import TIMESERIES_DATA, to_timeseries
 
 from .bigquery import get_query_from_widget
-from .chart import to_chart
+from .fusion.chart import to_chart
 from .models import Widget
 
 CHART_MAX_ROWS = 1000
@@ -17,13 +18,19 @@ class MaxRowsExceeded(Exception):
 
 
 def chart_to_output(widget: Widget) -> Dict[str, Any]:
+    query = get_query_from_widget(widget)
     result = clients.bigquery().get_query_results(
-        get_query_from_widget(widget).compile(), max_results=CHART_MAX_ROWS
+        query.compile(), max_results=CHART_MAX_ROWS
     )
-    if result.total_rows > CHART_MAX_ROWS:
+    if (result.total_rows or 0) > CHART_MAX_ROWS:
         raise MaxRowsExceeded
     df = result.rows_df
-    chart, chart_id = to_chart(df, widget)
+
+    if widget.kind in TIMESERIES_DATA:
+        chart, chart_id = to_timeseries(widget, df, query)
+    else:
+        chart, chart_id = to_chart(df, widget)
+
     return {"chart": chart.render()}, chart_id
 
 
@@ -32,3 +39,19 @@ def table_to_output(widget: Widget) -> Dict[str, Any]:
     query = get_query_from_filters(query, widget.filters.all())
 
     return get_table(query.schema(), query)
+
+
+def metric_to_output(widget):
+    query = get_query_from_table(widget.table)
+    query = get_query_from_filters(query, widget.filters.all())
+
+    aggregation = widget.aggregations.first()
+    query = getattr(query[aggregation.column], aggregation.function)().name(
+        aggregation.column
+    )
+
+    return (
+        clients.bigquery()
+        .get_query_results(query.compile())
+        .rows_dict[0][aggregation.column]
+    )

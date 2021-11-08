@@ -1,8 +1,6 @@
 import analytics
-from apps.base import clients
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
 from apps.base.turbo import TurboUpdateView
-from apps.connectors.tasks import complete_connector_sync
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import KIND_TO_SYNC_TASK
 from apps.projects.mixins import ProjectMixin
@@ -17,9 +15,9 @@ from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
 from .forms import KIND_TO_FORM_CLASS, IntegrationForm
-from .mixins import ReadyMixin
+from .mixins import STATE_TO_URL_REDIRECT, ReadyMixin
 from .models import Integration
-from .tables import IntegrationListTable, IntegrationPendingTable, UsedInTable
+from .tables import IntegrationListTable, IntegrationPendingTable, ReferencesTable
 
 # Overview
 
@@ -68,15 +66,23 @@ class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
 # Tabs
 
 
-class IntegrationDetail(ReadyMixin, TurboUpdateView):
+class IntegrationDetail(ProjectMixin, DetailView):
     template_name = "integrations/detail.html"
     model = Integration
-    form_class = IntegrationForm
+
+    def get(self, request, *args, **kwargs):
+        integration = self.get_object()
+        
+        if not integration.ready and integration.state != Integration.State.DONE:
+            url_name = STATE_TO_URL_REDIRECT[integration.state]
+            return redirect(url_name, self.project.id, integration.id)
+
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["table"] = UsedInTable(self.object.used_in)
-        return context
+        context_data = super().get_context_data(**kwargs)
+        context_data["tables"] = self.object.table_set.order_by("bq_table").all()
+        return context_data
 
     def get_success_url(self) -> str:
         return reverse(
@@ -84,14 +90,14 @@ class IntegrationDetail(ReadyMixin, TurboUpdateView):
         )
 
 
-class IntegrationData(ProjectMixin, DetailView):
-    template_name = "integrations/data.html"
+class IntegrationReferences(ReadyMixin, DetailView):
+    template_name = "integrations/references.html"
     model = Integration
 
     def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data["tables"] = self.object.table_set.order_by("bq_table").all()
-        return context_data
+        context = super().get_context_data(**kwargs)
+        context["table"] = ReferencesTable(self.object.used_in)
+        return context
 
 
 class IntegrationSettings(ProjectMixin, TurboUpdateView):
@@ -187,6 +193,10 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
     def get(self, request, *args, **kwargs):
 
         self.object = self.get_object()
+
+        if self.object.kind == Integration.Kind.CONNECTOR:
+            self.object.connector.sync_updates_from_fivetran()
+
         if self.object.state not in [
             Integration.State.LOAD,
             Integration.State.ERROR,
@@ -194,13 +204,6 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
             return redirect(
                 "project_integrations:done", self.project.id, self.object.id
             )
-
-        if self.object.kind == Integration.Kind.CONNECTOR:
-            if clients.fivetran().has_completed_sync(self.object.source_obj):
-                complete_connector_sync(self.object.source_obj)
-                return redirect(
-                    "project_integrations:done", self.project.id, self.object.id
-                )
 
         return super().get(request, *args, **kwargs)
 
@@ -225,6 +228,20 @@ class IntegrationDone(ProjectMixin, TurboUpdateView):
     template_name = "integrations/done.html"
     model = Integration
     fields = []
+
+    def get(self, request, *args, **kwargs):
+
+        self.object = self.get_object()
+
+        if self.object.state in [
+            Integration.State.LOAD,
+            Integration.State.ERROR,
+        ]:
+            return redirect(
+                "project_integrations:load", self.project.id, self.object.id
+            )
+
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

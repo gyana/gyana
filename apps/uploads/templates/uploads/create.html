@@ -3,25 +3,25 @@
 {% load help_utils %}
 
 {% block app %}
-
-<div class="flex flex-1 justify-center items-center">
-  <div class='flex flex-col flex-1 max-w-3xl'>
-    <h1 class="flex items-center justify-center gap-3 mb-7">
-      Upload a CSV file
-      {% link_article 'integrations' 'upload' %}
-      {% link_video 'upload' %}
-    </h1>
-        
-    <div class="flex flex-1 justify-center items-center" id='create-container'>
-      <form id="create-form" method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
+<h1 class="flex pad items-center gap-3">
+  CSV Upload
+  {% link_article 'integrations' 'upload' %}
+  {% link_video 'upload' %}
+</h1>
+<div class="upload-csv flex flex-1 justify-center items-center">
+  <div class='upload-csv__form flex flex-col items-center flex-1'>
+    <form
+      method="POST"
+      id="create-form"
+      action="{{ request.get_full_path }}"
+      class="form--no-layout w-full"
+    >
+      <div class="flex flex-1 items-center" id='create-container'>
         {% csrf_token %}
 
-        {% include "django/forms/default_form.html" %}
-
-        {% comment %} <button class="button button--success w-full">Upload a file</button> {% endcomment %}
-        {% comment %} <p>It may take a moment to upload your file. To keep the upload going, stay within the app.</p> {% endcomment %}
-      </form>
-    </div>
+        {{ form.file_gcs_path }}
+      </div>
+    </form>
   </div>
 </div>
 

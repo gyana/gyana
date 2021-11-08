@@ -23,6 +23,7 @@ $button-colors: (
   align-items: baseline;
   border-radius: 5px;
   display: inline-flex;
+  flex-direction: row;
   font-size: 1.6rem;
   font-weight: 500;
   gap: 0.8em;

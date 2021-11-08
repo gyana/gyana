@@ -2,6 +2,43 @@
 
 {% block app %}
 <div class="dashboard__header">
+  <div
+    data-controller="popover"
+    data-placement="bottom-start"
+    data-theme="popover-menu"
+  >
+    <button class="button button--circle button--tertiary">
+      <i class="fas fa-fw fa-ellipsis-v"></i>
+    </button>
+
+    <template data-popover-target="body">
+      <form 
+        method="POST"
+        action="{% url "dashboards:duplicate" object.id %}"
+        class="form--no-layout"
+      >
+        {% csrf_token %}
+
+        <button
+          type='submit'
+          class="list__item list__item--interactive w-full"
+          id="dashboards-duplicate-{{ object.id }}"
+          data-controller="tooltip"
+          data-loading-false
+        >
+          Duplicate
+        </button>
+      </form>
+
+      <a
+        class="list__item list__item--interactive w-full"
+        href="{% url 'project_dashboards:delete' project.id object.id %}"
+      >
+        Delete
+      </a>
+    </template>
+  </div>
+
   <turbo-frame id="dashboard-name" class="flex-1 mr-auto">
     <form
       method="post"
@@ -20,12 +57,6 @@
       />
     </form>
   </turbo-frame>
-
-  <div class="button button--circle button--tertiary">
-    {% include 'components/_duplicate.html' with object_name="dashboard" %}
-  </div>
-
-  <vr></vr>
 
   <div data-controller="tooltip tf-modal">
     <button
@@ -50,16 +81,17 @@
   </div>
 
   <turbo-frame id="dashboard-share"  src="{% url 'dashboards:share' object.id %}">
-  <button class="button button--circle {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}">
-    {% if  object.shared_status == 'public' %}<i class='far fa-fw fa-link'></i>
-    {% elif object.shared_status == 'private' %}<i class='far fa-fw fa-unlink'></i>
-    {% elif object.shared_status == 'password_protected' %}<i class='far fa-fw fa-lock'></i>
-    {% endif %}
-  </button>
+    <button class="button button--sm {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}">
+      {% if  object.shared_status == 'public' %}<i class='far fa-fw fa-link'></i>
+      {% elif object.shared_status == 'private' %}<i class='far fa-fw fa-unlink'></i>
+      {% elif object.shared_status == 'password_protected' %}<i class='far fa-fw fa-lock'></i>
+      {% endif %}
+      Share
+    </button>
   </turbo-frame>
 
   {% if request.GET.mode != 'view' %}
-  {% include 'dashboards/_add_widget.html' with choices=choices %}
+  {% include 'dashboards/_add_widget.html' with choices=choices categories=categories %}
   {% endif %}
 
   {% if not request.GET.mode or request.GET.mode == 'edit' %}
@@ -88,5 +120,5 @@
 {% endblock %}
 
 {% block page_js %}
-{% include 'components/fusionchart_scripts.html' %}
+  {% include 'components/fusionchart_scripts.html' with palette_colors=object.palette_colors %}
 {% endblock %}
