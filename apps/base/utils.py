@@ -1,2 +1,3 @@
 def create_column_choices(schema):
-    return [("", "No column selected"), *[(col, col) for col in schema]]
+    columns = sorted([(col, col) for col in schema], key=lambda x: str.casefold(x[1]))
+    return [("", "No column selected"), *columns]
