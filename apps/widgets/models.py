@@ -1,10 +1,11 @@
+from django.conf import settings
+from django.db import models
+from model_clone import CloneMixin
+
 from apps.base.aggregations import AggregationFunctions
 from apps.base.models import BaseModel
 from apps.dashboards.models import Dashboard
 from apps.tables.models import Table
-from django.conf import settings
-from django.db import models
-from model_clone import CloneMixin
 
 # Need to be a multiple of GRID_SIZE found in GyWidget.tsx
 DEFAULT_WIDTH = 495
@@ -131,6 +132,10 @@ class Widget(CloneMixin, BaseModel):
 
         return False
 
+    @property
+    def category(self):
+        return WIDGET_KIND_TO_WEB[self.kind][1]
+
 
 NO_DIMENSION_WIDGETS = [
     Widget.Kind.RADAR,
@@ -159,9 +164,15 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.BUBBLE.value: ("fa-soap", Widget.Category.ADVANCED),
     Widget.Kind.HEATMAP.value: ("fa-map", Widget.Category.ADVANCED),
     Widget.Kind.TIMESERIES_LINE.value: ("fa-chart-line", Widget.Category.TIMESERIES),
-    Widget.Kind.TIMESERIES_STACKED_LINE.value: ("fa-chart-line", Widget.Category.TIMESERIES),
+    Widget.Kind.TIMESERIES_STACKED_LINE.value: (
+        "fa-chart-line",
+        Widget.Category.TIMESERIES,
+    ),
     Widget.Kind.TIMESERIES_COLUMN.value: ("fa-chart-bar", Widget.Category.TIMESERIES),
-    Widget.Kind.TIMESERIES_STACKED_COLUMN.value: ("fa-chart-bar", Widget.Category.TIMESERIES),
+    Widget.Kind.TIMESERIES_STACKED_COLUMN.value: (
+        "fa-chart-bar",
+        Widget.Category.TIMESERIES,
+    ),
     Widget.Kind.TIMESERIES_AREA.value: ("fa-chart-area", Widget.Category.TIMESERIES),
 }
 

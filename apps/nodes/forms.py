@@ -1,20 +1,17 @@
 from functools import cached_property
 
-from apps.base.live_update_form import LiveUpdateForm
-from apps.columns.forms import AGGREGATION_TYPE_MAP
-from apps.columns.models import Column
-from apps.nodes.bigquery import get_query_from_node
-from apps.nodes.formsets import KIND_TO_FORMSETS
-from apps.tables.models import Table
 from django import forms
 from django.forms.widgets import HiddenInput
 
+from apps.base.live_update_form import LiveUpdateForm
+from apps.base.utils import create_column_choices
+from apps.columns.forms import AGGREGATION_TYPE_MAP
+from apps.columns.models import Column
+from apps.nodes.formsets import KIND_TO_FORMSETS
+from apps.tables.models import Table
+
 from .models import Node
 from .widgets import InputNode, MultiSelect
-
-
-def _create_choices(schema):
-    return [("", "No column selected"), *[(col, col) for col in schema]]
 
 
 class NodeForm(LiveUpdateForm):
@@ -128,11 +125,11 @@ class JoinNodeForm(NodeForm):
         super().__init__(*args, **kwargs)
 
         self.fields["join_left"] = forms.ChoiceField(
-            choices=_create_choices(self.instance.parents.first().schema),
+            choices=create_column_choices(self.instance.parents.first().schema),
             help_text=self.fields["join_left"].help_text,
         )
         self.fields["join_right"] = forms.ChoiceField(
-            choices=_create_choices(self.instance.parents.last().schema),
+            choices=create_column_choices(self.instance.parents.last().schema),
             help_text=self.fields["join_right"].help_text,
         )
 
@@ -167,7 +164,7 @@ class PivotNodeForm(NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         schema = self.instance.parents.first().schema
-        column_choices = _create_choices(schema)
+        column_choices = create_column_choices(schema)
 
         self.fields["pivot_index"] = forms.ChoiceField(
             choices=column_choices,
@@ -225,7 +222,7 @@ class SentimentNodeForm(NodeForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
         super().__init__(*args, **kwargs)
-        self.fields["sentiment_column"].choices = _create_choices(
+        self.fields["sentiment_column"].choices = create_column_choices(
             [name for name, type_ in self.columns.items() if type_.name == "String"]
         )
 

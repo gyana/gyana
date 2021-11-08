@@ -386,7 +386,7 @@ HONEYBADGER = {
     "ENVIRONMENT": ENVIRONMENT,
     # enables us to use "development" and send data
     "FORCE_REPORT_DATA": True,
-    "EXCLUDED_EXCEPTIONS": ["Http404"],
+    "EXCLUDED_EXCEPTIONS": ["Http404", "DoesNotExist"],
 }
 
 HELLONEXT_SSO_TOKEN = os.environ.get("HELLONEXT_SSO_TOKEN")

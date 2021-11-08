@@ -1,6 +1,6 @@
-from apps.base.live_update_form import LiveUpdateForm
-from apps.base.widgets import SelectWithDisable
 from django import forms
+
+from apps.base.live_update_form import LiveUpdateForm
 
 from .models import Project
 from .widgets import MemberSelect

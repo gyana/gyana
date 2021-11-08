@@ -1,6 +1,8 @@
 from django import forms
 from django.forms.models import BaseInlineFormSet
 
+from apps.base.utils import create_column_choices
+
 
 class RequiredInlineFormset(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
@@ -18,9 +20,6 @@ class InlineColumnFormset(RequiredInlineFormset):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.form.base_fields["column"] = forms.ChoiceField(
-            choices=[
-                ("", "No column selected"),
-                *[(col, col) for col in self.instance.parents.first().schema],
-            ],
+            choices=create_column_choices(self.instance.parents.first().schema),
             help_text=self.form.base_fields["column"].help_text,
         )

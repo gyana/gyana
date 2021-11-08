@@ -1,8 +1,10 @@
-from apps.base.live_update_form import LiveUpdateForm
-from apps.base.schema_form_mixin import SchemaFormMixin
-from apps.filters.models import PREDICATE_MAP, Filter
 from django import forms
 from django.forms.widgets import Input, TextInput
+
+from apps.base.live_update_form import LiveUpdateForm
+from apps.base.schema_form_mixin import SchemaFormMixin
+from apps.base.utils import create_column_choices
+from apps.filters.models import PREDICATE_MAP, Filter
 
 from .widgets import DatetimeInput, SelectAutocomplete
 
@@ -117,9 +119,7 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
             )
 
         if self.schema:
-            self.fields["column"].choices = [
-                ("", "No column selected"),
-            ] + [(col, col) for col in self.schema]
+            self.fields["column"].choices = create_column_choices(self.schema)
 
     def save(self, commit=True):
         instance = super().save(commit=False)
