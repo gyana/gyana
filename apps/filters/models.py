@@ -1,7 +1,8 @@
-from apps.base.models import SaveParentModel
-from apps.widgets.models import Widget
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+
+from apps.base.models import SaveParentModel
+from apps.widgets.models import Widget
 
 
 class Filter(SaveParentModel):
@@ -118,3 +119,11 @@ PREDICATE_MAP = {
     Filter.Type.FLOAT: "numeric_predicate",
     Filter.Type.INTEGER: "numeric_predicate",
 }
+
+NO_VALUE = [
+    Filter.NumericPredicate.ISNULL,
+    Filter.NumericPredicate.NOTNULL,
+    Filter.StringPredicate.ISLOWERCASE,
+    Filter.StringPredicate.ISUPPERCASE,
+    *Filter.DatetimePredicate,
+]
