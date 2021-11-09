@@ -19,8 +19,8 @@ def _create_axis_names(widget):
         }
     if widget.kind == Widget.Kind.HEATMAP:
         return {
-            "xAxisName": widget.dimension,
-            "yAxisName": widget.second_dimension,
+            "yAxisName": widget.dimension,
+            "xAxisName": widget.second_dimension,
         }
     if widget.kind in NO_DIMENSION_WIDGETS:
         {}
