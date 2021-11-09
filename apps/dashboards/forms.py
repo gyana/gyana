@@ -3,7 +3,7 @@ import uuid
 from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.forms.widgets import HiddenInput, PasswordInput
 from django.utils import timezone
 
@@ -26,24 +26,25 @@ class DashboardForm(forms.ModelForm):
     grid_size = forms.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(1200)], required=False
     )
-    palette_colors = SimpleArrayField(
-        forms.CharField(),
-        help_text="A list of HEX color values separated by a comma (,)",
-        required=False,
-    )
+    # palette_colors = SimpleArrayField(
+    #     forms.CharField(),
+    #     help_text="A list of HEX color values separated by a comma (,)",
+    #     required=False,
+    # )
     background_color = forms.CharField(
-        help_text="HEX color value to use for the background", required=False
+        help_text="Color to use for the background of the dashboard",
+        required=False,
+        widget=forms.TextInput(attrs={"type": "color"})
     )
 
     class Meta:
         model = Dashboard
         fields = [
+            "background_color",
             "name",
             "width",
             "height",
             "grid_size",
-            "palette_colors",
-            "background_color",
         ]
 
 
