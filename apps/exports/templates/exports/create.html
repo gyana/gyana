@@ -5,7 +5,7 @@
 </script>
 {% endif %}
 
-<form method="post" action="{% url 'exports:create' parent_type parent_id%}" class="form">
+<form method="post" action="{% url target_url parent_id%}" class="form">
   {% csrf_token %}
 
   <button type="submit" class="button button--circle button--tertiary button--outline button--sm">
