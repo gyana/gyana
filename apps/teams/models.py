@@ -181,12 +181,14 @@ class Team(BaseModel, SafeDeleteModel):
     def check_new_rows(self, num_rows):
         return self.add_new_rows(num_rows) > self.row_limit
 
+    @property
     def has_subscription(self):
         # https://tkainrad.dev/posts/implementing-paddle-payments-for-my-django-saas/
         return self.subscriptions.filter(
             Q(status="active") | Q(status="deleted", next_bill_date__gte=timezone.now())
         ).exists()
 
+    @property
     def active_subscription(self):
         return self.subscriptions.filter(
             Q(status="active") | Q(status="deleted", next_bill_date__gte=timezone.now())

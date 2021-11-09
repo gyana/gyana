@@ -1,5 +1,5 @@
+import paddle
 from django.conf import settings
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponse
 from django.http.response import Http404
@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableMixin, SingleTableView
-from djpaddle.models import Checkout, Plan
+from djpaddle.models import Checkout, Plan, paddle_client
 
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
@@ -19,7 +19,7 @@ from .models import Membership, Team
 from .tables import TeamMembershipTable, TeamProjectsTable
 
 
-class TeamCreate(LoginRequiredMixin, TurboCreateView):
+class TeamCreate(TurboCreateView):
     model = Team
     form_class = TeamCreateForm
     template_name = "teams/create.html"
@@ -33,7 +33,7 @@ class TeamCreate(LoginRequiredMixin, TurboCreateView):
         return reverse("teams:plan", args=(self.object.id,))
 
 
-class TeamPlan(LoginRequiredMixin, TurboUpdateView):
+class TeamPlan(TurboUpdateView):
     model = Team
     form_class = TeamCreateForm
     template_name = "teams/plan.html"
@@ -61,7 +61,35 @@ class TeamPlan(LoginRequiredMixin, TurboUpdateView):
         return reverse("teams:detail", args=(self.object.id,))
 
 
-class TeamUpdate(LoginRequiredMixin, TurboUpdateView):
+class TeamChangePlan(TurboUpdateView):
+    model = Team
+    fields = []
+    template_name = "teams/change_plan.html"
+    pk_url_kwarg = "team_id"
+
+    @property
+    def plan(self):
+        return Plan.objects.get(pk=self.request.GET["plan_id"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["new_price"] = paddle_client.get_plan(self.plan.id)["recurring_price"][
+            self.object.active_subscription.currency
+        ]
+        context["plan"] = self.plan
+        return context
+
+    def form_valid(self, form) -> HttpResponse:
+        paddle_client.update_subscription(
+            self.object.active_subscription.id, plan_id=self.plan.id
+        )
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse("teams:account", args=(self.object.id,))
+
+
+class TeamUpdate(TurboUpdateView):
     template_name = "teams/update.html"
     form_class = TeamUpdateForm
     model = Team
@@ -71,7 +99,7 @@ class TeamUpdate(LoginRequiredMixin, TurboUpdateView):
         return reverse("teams:update", args=(self.object.id,))
 
 
-class TeamDelete(LoginRequiredMixin, DeleteView):
+class TeamDelete(DeleteView):
     template_name = "teams/delete.html"
     model = Team
     pk_url_kwarg = "team_id"

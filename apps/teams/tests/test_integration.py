@@ -252,3 +252,9 @@ def test_subscriptions(client, logged_in_user, settings):
     assertContains(r, "You are currently subscribed to Pro.")
     assertLink(r, "https://update.url", "Update Payment Method")
     assertLink(r, "https://cancel.url", "Cancel Subscription")
+    assertLink(r, f"/teams/{team.id}/plan", "Change Plan")
+
+    # upgrade to business
+    r = client.get(f"/teams/{team.id}/plan")
+    assertContains(r, 'Your current plan')
+    assertContains(r, 'Upgrade to Business')

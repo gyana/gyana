@@ -57,9 +57,9 @@
                 Your current plan
               </button>
             {% else %}
-              <button class="button button--tertiary w-full">
-                Downgrade
-              </button>
+              <a href="{% url 'teams:change_plan' team.id %}?plan_id={{ paddle_pro_plan.id }}" class="button button--primary w-full">
+                Downgrade to Pro
+              </a>
             {% endif %}
           {% else %}
           <a href="#!" class="button button--primary w-full paddle_button"
@@ -103,9 +103,9 @@
                 Your current plan
               </button>
             {% else %}
-              <button class="button button--primary w-full">
+              <a href="{% url 'teams:change_plan' team.id %}?plan_id={{ paddle_business_plan.id }}" class="button button--primary w-full">
                 Upgrade to Business
-              </button>
+              </a>
             {% endif %}
           {% else %}
             <a href="#!" class="button button--primary w-full paddle_button"
