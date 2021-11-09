@@ -1,17 +1,13 @@
-from datetime import datetime as dt
-from datetime import timedelta
-
 from celery.app import shared_task
 from django.conf import settings
-from django.core.mail.message import EmailMultiAlternatives
-from django.template.loader import get_template
+from django.utils import timezone
 
-from apps.base import clients
-from apps.base.utils import short_hash
+from apps.exports.emails import send_export_email
 from apps.nodes.bigquery import get_query_from_node
 from apps.tables.bigquery import get_query_from_table
 from apps.users.models import CustomUser
 
+from .bigquery import query_to_gcs
 from .models import Export
 
 
@@ -24,39 +20,10 @@ def export_to_gcs(export_id, user_id):
         query = get_query_from_node(export.node)
     else:
         query = get_query_from_table(export.integration_table)
-    client = clients.bigquery()
 
-    job = client.query(query.compile())
-    job.result()
-    export.status = Export.Status.BQ_TABLE_CREATED
-    export.save()
+    query_to_gcs(query.compile(), f"gs://{settings.GS_BUCKET_NAME}/{export.path}")
 
-    filepath = f"exports/{export.table_id}-{short_hash()}.csv"
-    gcs_path = f"{settings.GS_BUCKET_NAME}/{filepath}"
-    extract_job = client.extract_table(job.destination, f"gs://{gcs_path}")
-    extract_job.result()
+    send_export_email(export.path, user)
 
-    export.gcs_path = gcs_path
-    export.status = Export.Status.EXPORTED
-    export.save()
-
-    message_template_plain = get_template("exports/email/export_ready_message.txt")
-    message_template = get_template("exports/email/export_ready_message.html")
-
-    blob = clients.get_bucket().blob(filepath)
-    url = blob.generate_signed_url(
-        version="v4", expiration=dt.now() + timedelta(days=7)
-    )
-    message = EmailMultiAlternatives(
-        "Your export is ready",
-        message_template_plain.render({"user": user, "url": url}),
-        "Gyana Notifications <notifications@gyana.com>",
-        [user.email],
-    )
-    message.attach_alternative(
-        message_template.render({"user": user, "url": url}), "text/html"
-    )
-    message.send()
-
-    export.status = Export.Status.SUCCEEDED
+    export.exported_at = timezone.now()
     export.save()
