@@ -1,7 +1,7 @@
 import json
+import uuid
 from functools import partial
 
-from apps.base.utils import short_hash
 from apps.widgets.models import COUNT_COLUMN_NAME, Widget
 
 from .fusioncharts import FusionCharts, FusionTable, TimeSeries
@@ -72,7 +72,7 @@ def to_stack(type_, widget, df, query):
 
 def to_timeseries(widget, df, query):
     timeseries = TIMESERIES_DATA[widget.kind](widget, df, query)
-    chart_id = f"{widget.pk}-{short_hash()}"
+    chart_id = f"{widget.pk}-{uuid.uuid4()}"
 
     chart = FusionCharts(
         "timeseries",

@@ -1,7 +1,8 @@
+import uuid
+
 import numpy as np
 import pandas as pd
 
-from apps.base.utils import short_hash
 from apps.widgets.bigquery import get_unique_column_names
 from apps.widgets.fusion.utils import DEFAULT_HEIGHT, DEFAULT_WIDTH, TO_FUSION_CHART
 from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget
@@ -46,7 +47,7 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
         **data,
     }
 
-    chart_id = f"{widget.pk}-{short_hash()}"
+    chart_id = f"{widget.pk}-{uuid.uuid4()}"
     return (
         FusionCharts(
             TO_FUSION_CHART.get(widget.kind) or widget.kind,
