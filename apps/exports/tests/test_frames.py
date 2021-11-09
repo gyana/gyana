@@ -12,7 +12,7 @@ pytestmark = pytest.mark.django_db
 @pytest.fixture
 def export_to_gcs(mocker):
     return mocker.patch(
-        "apps.exports.tasks.export_to_gcs",
+        "apps.exports.frames.export_to_gcs",
     )
 
 
