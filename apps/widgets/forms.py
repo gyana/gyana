@@ -142,8 +142,6 @@ class StackedChartForm(GenericWidgetForm):
 
         if table:
             fields += [
-                "sort_by",
-                "sort_ascending",
                 "dimension",
                 "second_dimension",
             ]
