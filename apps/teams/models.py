@@ -122,6 +122,13 @@ class Team(BaseModel, SafeDeleteModel):
         if self.active_codes > 0:
             return {**PLANS["appsumo"], **get_deal(self.appsumocode_set.all())}
 
+        if self.has_subscription:
+            if self.active_subscription.plan.id == settings.DJPADDLE_BUSINESS_PLAN_ID:
+                return PLANS["business"]
+            elif self.active_subscription.plan.id == settings.DJPADDLE_PRO_PLAN_ID:
+                return PLANS["pro"]
+
+
         return PLANS["free"]
 
     @cached_property
@@ -154,6 +161,10 @@ class Team(BaseModel, SafeDeleteModel):
         from apps.projects.models import Project
 
         return self.project_set.filter(access=Project.Access.INVITE_ONLY).count()
+
+    @property
+    def total_cnames(self):
+        return self.cname_set.count()
 
     @property
     def can_create_project(self):

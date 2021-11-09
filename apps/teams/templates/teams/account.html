@@ -88,7 +88,7 @@
           {% if team.plan.cnames %}
             <tr>
               <td><h3>Custom domains</h3></td>
-              <td>{{ team.plan.cnames }}</td>
+              <td>{{ team.total_cnames }} / {% if  team.plan.cnames != -1 %}{{ team.plan.cnames }}{% else %}∞{% endif %}</td>
             </tr>
           {% endif %}
 
