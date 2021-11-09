@@ -101,13 +101,13 @@
       </table>
     </div>
   </div>
+
+  {% if team.appsumocode_set.count > 0 %}
+  <div id="appsumo-list" class="mt-7">
+    <h2 class="mb-3">AppSumo</h2>
+
+    <turbo-frame id="team_appsumo:list" src="{% url 'team_appsumo:list' team.id %}"></turbo-frame>
+  </div>
+  {% endif %}
 </section>
-
-{% if team.appsumocode_set.count > 0 %}
-<div id="appsumo-list" class="mt-7">
-  <h2 class="mb-3">AppSumo</h2>
-
-  <turbo-frame id="team_appsumo:list" src="{% url 'team_appsumo:list' team.id %}"></turbo-frame>
-</div>
-{% endif %}
 {% endblock %}
