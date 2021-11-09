@@ -1,5 +1,7 @@
 from django import forms
 
+from apps.base.utils import create_column_choices
+
 
 class SchemaFormMixin:
     @property
@@ -16,9 +18,6 @@ class SchemaFormMixin:
 
         if self.fields.get("column"):
             self.fields["column"] = forms.ChoiceField(
-                choices=[
-                    ("", "No column selected"),
-                    *[(col, col) for col in self.schema],
-                ],
+                choices=create_column_choices(self.schema),
                 help_text=self.base_fields["column"].help_text,
             )

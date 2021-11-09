@@ -14,15 +14,15 @@ export default class extends Controller {
 
     window.addEventListener('keydown', (event) => {
       if (event.key == 'Escape') {
-        this.forceClose()
+        this.close(event)
       }
     })
 
     // Close the modal when clicking outside of the frame
     // TODO: Fix clicking and draging outside of modal closing.
-    this.modalTarget.addEventListener('mousedown', (e) => {
+    this.modalTarget.addEventListener('mousedown', (event) => {
       if (!this.turboFrameTarget.contains(e.target)) {
-        this.forceClose()
+        this.close(event)
       }
     })
   }
@@ -88,7 +88,7 @@ export default class extends Controller {
   }
 
   close(e) {
-    if (this.changed) {
+    if (this.hasClosingWarningTarget && this.changed) {
       this.closingWarningTarget.classList.remove('hidden')
     } else {
       if (e.currentTarget.getAttribute('type') == 'submit') {

@@ -50,6 +50,8 @@ braintree: {}
 branch: {}
 delighted: {}
 dynamodb: {}
+facebook_ad_account:
+  sunset: true
 facebook_ads:
   static_config:
     custom_tables:

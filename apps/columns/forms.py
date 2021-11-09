@@ -1,6 +1,10 @@
+from django import forms
+from ibis.expr.datatypes import Floating
+
 from apps.base.aggregations import AGGREGATION_TYPE_MAP
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
+from apps.base.utils import create_column_choices
 from apps.base.widgets import SelectWithDisable
 from apps.columns.models import (
     AddColumn,
@@ -9,8 +13,6 @@ from apps.columns.models import (
     FormulaColumn,
     WindowColumn,
 )
-from django import forms
-from ibis.expr.datatypes import Floating
 
 from .bigquery import AllOperations
 from .widgets import CodeMirror
@@ -167,11 +169,7 @@ class WindowColumnForm(SchemaFormMixin, LiveUpdateForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        choices = [
-            ("", "No column selected"),
-            *[(col, col) for col in self.schema],
-        ]
-
+        choices = create_column_choices(self.schema)
         self.fields["column"] = forms.ChoiceField(
             choices=choices,
             help_text=self.base_fields["column"].help_text,

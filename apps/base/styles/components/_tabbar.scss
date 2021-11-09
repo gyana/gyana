@@ -9,6 +9,7 @@
     flex: 1 1 0%;
   }
 
+  &__item,
   &__link {
     position: relative;
     border-bottom: 1px solid var(--c-gray);
@@ -18,7 +19,9 @@
     padding: 1.6rem;
     text-align: center;
     z-index: var(--z-default);
+  }
 
+  &__link {
     &:hover {
       background-color: var(--c-gray-50);
     }
@@ -31,7 +34,7 @@
     }
 
     &--disabled {
-      opacity: 0.5;
+      color: var(--c-black-20);
       cursor: not-allowed;
     }
   }

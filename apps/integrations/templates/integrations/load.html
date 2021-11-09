@@ -10,16 +10,16 @@
         {% include 'connectors/_load.html' with connector=integration.connector %}
       {% else %}
         <div
-            class='integration__file-validate'
-            data-controller="celery-progress"
-            data-celery-progress-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
-            data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
-            data-celery-progress-redirect-url-value="{% url 'project_integrations:done' project.id object.id %}"
-            {% if done %} data-celery-progress-done-value {% endif %}
-            >
+          class='integration__file-validate'
+          data-controller="celery-progress"
+          data-celery-progress-task-url-value="{% url 'celery_progress:task_status' sync_task_id %}"
+          data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
+          data-celery-progress-redirect-url-value="{% url 'project_integrations:done' project.id object.id %}"
+          {% if done %} data-celery-progress-done-value {% endif %}
+        >
+          <i class="fad fa-fw fa-spinner-third fa-spin fa-3x text-blue"></i>
 
-          <i class="fad fa-fw fa-spinner-third fa-spin fa-2x text-blue text-4xl"></i>
-          <div class='flex flex-col ml-4 space-y-4'>
+          <div class="flex flex-col gap-4">
             <h1>Validating and importing your {{ object.kind }}...</h1>
             <p>
               This can take anywhere from a few seconds to a minute.
@@ -30,34 +30,53 @@
           </div>
 
           <template id="success-template">
-            <i class="fas fa-fw fa-check fa-2x text-green"></i>
+            <i class="fas fa-fw fa-check fa-3x text-green"></i>
+
             <div class='flex flex-col'>
-              <h1>{{ object.kind|title }} successfully validated and imported.</h4>
+              <h1>{{ object.kind|title }} successfully imported</h4>
             </div>
           </template>
 
           <template id="failure-template">
-            <i class="fas fa-fw fa-times text-red fa-2x text-xl mr-4"></i>
-            <div class="flex flex-col">
-              <h4>Errors occurred when validating your {{ object.kind }}. {% link_article 'integrations' 'error' %}</h4>
-              {% if object.kind == 'upload' %}
-                <p>If the problem persists, you can upload the CSV to Google Sheets and use our
-                  <a class="link" href="{% url 'project_integrations_sheets:create' project.id %}">sheets integration.</a>
-                </p>
-              {% endif %}
-              <p id="failure-message"/>
-              <div class="flex space-x-2 my-2">
-                <form method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
-                    {% csrf_token %}
+            <i class="fas fa-fw fa-times text-red fa-3x mr-4"></i>
 
-                    {% include "django/forms/default_form.html" %}
-
-                    <button type="submit" class="button button--outline">
-                      Retry
-                    </button>
-                </form>
-                <a class="button ml-2" href="{% url 'project_integrations:configure' project.id object.id %}">Configure</a>
+            <div class="flex flex-col space-y-4">
+              <div class="flex justify-center items-center gap-3">
+                <h1>Something went wrong</h1>
+                {% link_article 'integrations' 'error' %}
               </div>
+
+              <p>
+                Our servers had this to say: <strong id="failure-message"></strong>
+              </p>
+
+              {% if object.kind == 'upload' %}
+              <p>
+                If the problem persists, you can upload the CSV to Google Sheets and use our
+                <a class="link" href="{% url 'project_integrations_sheets:create' project.id %}">sheets integration.</a>
+              </p>
+              {% endif %}
+
+              <form
+                method="POST"
+                action="{{ request.get_full_path }}"
+                class="form--no-layout"
+              >
+                {% csrf_token %}
+                {% include "django/forms/default_form.html" %}
+
+                <div class="flex gap-3 w-full">
+                  <button type="submit" class="button button--tertiary flex-1">
+                    Retry
+                  </button>
+
+                  <a
+                    class="button flex-1"
+                    href="{% url 'project_integrations:configure' project.id object.id %}">
+                    Configure
+                  </a>
+                </div>
+              </form>
             </div>
           </template>
         </div>

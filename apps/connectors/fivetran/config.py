@@ -34,6 +34,7 @@ class Service:
     service_type: ServiceTypeEnum = "api_cloud"
     static_config: Dict[str, Any] = field(default_factory=dict)
     internal: bool = False
+    sunset: bool = False
 
     # fivetran metadata
     id: str = ""
@@ -93,6 +94,8 @@ def get_services_query(category=None, search=None, show_internal=False):
 
     if not show_internal:
         services = [s for s in services if not s.internal]
+
+    services = [s for s in services if not s.sunset]
 
     services = sorted(services, key=lambda s: s.name)
 

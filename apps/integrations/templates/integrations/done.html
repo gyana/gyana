@@ -4,51 +4,60 @@
 {% block tab %}
 
 <div class="pad flex flex-1 justify-center items-center">
-    <div class='flex flex-col flex-1 max-w-3xl'>
-        <h1 class="flex items-center justify-center gap-3 mb-7">
-            {% if exceeds_row_limit %}
-                Insufficient rows
-            {% elif not integration.ready %}
-                Review import
-            {% else %}
-                Success
-            {% endif %}
-        </h1>
-        <div class="flex flex-1 justify-center items-center">
-            <div>
-        {% if not integration.ready %}
-            {% if exceeds_row_limit %}
-                <p>Adding this data will bring your total rows to <strong>{{ projected_num_rows|intcomma }}</strong>,
-                    which exceeds your row limit of <strong>{{ project.team.row_limit|intcomma }}</strong>.</p>
+  <div class='flex flex-col flex-1 max-w-3xl'>
+    <h1 class="flex items-center justify-center gap-3 mb-7">
+      {% if exceeds_row_limit %}
+      Insufficient rows
+      {% elif not integration.ready %}
+      Review import
+      {% else %}
+      Success
+      {% endif %}
+    </h1>
 
-                <p class="alert mb-4">
-                    You can either reduce your row count, or reach out for an upgrade.
-                </p>
-            {% else %}
-                <p>This will add a total of <strong>{{ object.num_rows|intcomma }}</strong> rows to your team.</p>
-                
-                <p>You can <a class="link" href="{% url 'project_integrations:detail' project.id object.id %}">preview</a> the data
-                    and <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">re-configure</a> the import
-                    now{% if object.kind != 'upload' %}, or come back later at any time{% endif %}.
+    <div class="flex flex-col flex-1 justify-center gap-3">
+      {% if not integration.ready %}
+        {% if exceeds_row_limit %}
+        <p>Adding this data will bring your total rows to <strong>{{ projected_num_rows|intcomma }}</strong>,
+        which exceeds your row limit of <strong>{{ project.team.row_limit|intcomma }}</strong>.</p>
 
-                <p class="alert mb-4">
-                    This data source will be available in your project after you confirm.
-                </p>
-
-                <form method="post" action="{{ request.get_full_path }}" class="form max-w-xl">
-                    {% csrf_token %}
-                    <button type="submit" class="button button--success mt-4">
-                        Confirm
-                    </button>
-                </form>
-            {% endif %}
+        <p class="alert">
+          You can either reduce your row count, or reach out for an upgrade.
+        </p>
         {% else %}
-            <p><strong>Your data is ready.</strong> You can still edit your
-                <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">configuration</a> if you want to make more changes or trigger an import.
-            </p>
+        <p>This will add a total of <strong>{{ object.num_rows|intcomma }}</strong> rows to your team.</p>
+
+        <p>
+          You can <a class="link" href="{% url 'project_integrations:detail' project.id object.id %}">preview</a> the data
+          and <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">re-configure</a> the import
+          now{% if object.kind != 'upload' %}, or come back later at any time{% endif %}.
+        </p>
+
+        <p class="alert">
+          This data source will be available in your project after you confirm.
+        </p>
+
+        <form
+          method="POST"
+          action="{{ request.get_full_path }}"
+          class="form--no-layout w-full"
+        >
+          {% csrf_token %}
+
+          <button type="submit" class="button button--success w-full">
+            Confirm
+          </button>
+        </form>
+
         {% endif %}
-        </div>
-        </div>
+      {% else %}
+      <p>
+        <strong>Your data is ready.</strong> You can still edit your
+        <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">configuration</a> 
+        if you want to make more changes or trigger an import.
+      </p>
+      {% endif %}
     </div>
+  </div>
 </div>
 {% endblock %}

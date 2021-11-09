@@ -1,9 +1,13 @@
-from apps.base.live_update_form import LiveUpdateForm
-from apps.tables.models import Table
 from django import forms
+from ibis.expr.datatypes import Date, Time, Timestamp
+
+from apps.base.live_update_form import LiveUpdateForm
+from apps.base.utils import create_column_choices
+from apps.base.widgets import SelectWithDisable
+from apps.tables.models import Table
 
 from .formsets import FORMSETS, AggregationColumnFormset, FilterFormset
-from .models import Widget
+from .models import WIDGET_KIND_TO_WEB, Widget
 from .widgets import SourceSelect, VisualSelect
 
 
@@ -53,6 +57,18 @@ class GenericWidgetForm(LiveUpdateForm):
         return formsets
 
 
+def disable_non_time(schema):
+    return {
+        name: "You can only select datetime, time or date columns for timeseries charts."
+        for name, type_ in schema.items()
+        if not isinstance(type_, (Time, Timestamp, Date))
+    }
+
+
+def is_timeseries_chart(kind):
+    return WIDGET_KIND_TO_WEB[kind][1] == Widget.Category.TIMESERIES
+
+
 class OneDimensionForm(GenericWidgetForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -61,11 +77,12 @@ class OneDimensionForm(GenericWidgetForm):
         schema = Table.objects.get(pk=table).schema if table else None
 
         if schema and "dimension" in self.fields:
-            columns = [
-                ("", "No column selected"),
-                *[(column, column) for column in schema],
-            ]
-            self.fields["dimension"].choices = columns
+
+            if is_timeseries_chart(self.get_live_field("kind")):
+                self.fields["dimension"].widget = SelectWithDisable(
+                    disabled=disable_non_time(schema)
+                )
+            self.fields["dimension"].choices = create_column_choices(schema)
 
     def get_live_fields(self):
         fields = super().get_live_fields()
@@ -84,7 +101,11 @@ class TwoDimensionForm(GenericWidgetForm):
         schema = Table.objects.get(pk=table).schema if table else None
 
         if schema:
-            columns = [(column, column) for column in schema]
+            columns = create_column_choices(schema)
+            if is_timeseries_chart(self.get_live_field("kind")):
+                self.fields["dimension"].widget = SelectWithDisable(
+                    disabled=disable_non_time(schema)
+                )
             self.fields["dimension"].choices = columns
             self.fields["dimension"].label = "X"
             self.fields["second_dimension"].choices = columns
@@ -107,10 +128,8 @@ class StackedChartForm(GenericWidgetForm):
         schema = Table.objects.get(pk=table).schema if table else None
 
         if schema:
-            choices = [
-                ("", "No column selected"),
-                *[(column, column) for column in schema],
-            ]
+            choices = create_column_choices(schema)
+
             self.fields["dimension"].choices = choices
             self.fields["second_dimension"].choices = choices
             # Can't overwrite label in Meta because we would have to overwrite the whole thing

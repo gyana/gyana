@@ -1,8 +1,3 @@
-import random
-import string
-
-
-def short_hash():
-    return "".join(
-        random.choice(string.ascii_letters + string.digits) for n in range(6)
-    )
+def create_column_choices(schema):
+    columns = sorted([(col, col) for col in schema], key=lambda x: str.casefold(x[1]))
+    return [("", "No column selected"), *columns]

@@ -24,10 +24,7 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
         # TODO: make an abstraction with default values per widget kind
         if form.instance.kind == Widget.Kind.TEXT:
             form.instance.width = 300
-            form.instance.height = 200
-
-        if lowest_widget := self.dashboard.widget_set.order_by("-y").first():
-            form.instance.y = lowest_widget.y + lowest_widget.height
+            form.instance.height = 195
 
         with transaction.atomic():
             super().form_valid(form)

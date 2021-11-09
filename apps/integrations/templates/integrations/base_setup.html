@@ -2,34 +2,46 @@
 {% load humanize %}
 
 {% block extra_tab %}
-
 {% with request.resolver_match.url_name as url_name %}
-    <nav id='tabbar-setup' class="tabbar">
+<nav id='tabbar-setup' class="tabbar">
+  <a
+    class="tabbar__link {% if not url_name in 'configure,done' %}tabbar__link--disabled{% endif %} {% if url_name == 'configure' %}tabbar__link--active{% endif %}"
+    {% if url_name in 'configure,done' %}
+    href="{% url 'project_integrations:configure' project.id object.id %}"
+    {% endif %}
+  >
+    Configure
+  </a>
 
-        <a class="tabbar__link {% if not url_name in 'configure,done' %} tabbar__link--disabled {% endif %} {% if url_name == 'configure' %} tabbar__link--active {% endif %}"
-            {% if url_name in 'configure,done' %} href="{% url 'project_integrations:configure' project.id object.id %}" {% endif %}>
-            Configure
-        </a>
-        <a class="tabbar__link">
-            <i class="fa fa-arrow-right"></i>
-        </a>
-        <a class="tabbar__link {% if url_name != 'load' %} tabbar__link--disabled {% endif %} {% if url_name == "load" %} tabbar__link--active {% endif %}"
-            {% if url_name == 'load' %} href="{% url 'project_integrations:configure' project.id object.id %}" {% endif %}>
-            Import
-        </a>
-        <a class="tabbar__link">
-            <i class="fa fa-arrow-right"></i>
-        </a>
-        <a class="tabbar__link {% if integration.state == 'done' or integration.ready and url_name == 'configure' %} {% else %} tabbar__link--disabled {% endif %} {% if url_name == "done" %} tabbar__link--active {% endif %}"
-            {% if integration.state == 'done' or integration.ready and url_name == 'configure' %} href="{% url 'project_integrations:done' project.id object.id %}" {% endif %}>
-            {% if not integration.ready %}
-                Review
-            {% else %}
-                Success
-            {% endif %}
-        </a>
-    </nav>
+  <a class="tabbar__item">
+    <i class="fa fa-arrow-right"></i>
+  </a>
 
+  <a
+    class="tabbar__link {% if url_name != 'load' %}tabbar__link--disabled{% endif %} {% if url_name == "load" %}tabbar__link--active{% endif %}"
+    {% if url_name == 'load' %}
+    href="{% url 'project_integrations:configure' project.id object.id %}"
+    {% endif %}
+  >
+    Import
+  </a>
+
+  <a class="tabbar__item">
+    <i class="fa fa-arrow-right"></i>
+  </a>
+
+  <a
+    class="tabbar__link {% if integration.state == 'done' or integration.ready and url_name == 'configure' %}{% else %}tabbar__link--disabled{% endif %} {% if url_name == "done" %}tabbar__link--active{% endif %}"
+    {% if integration.state == 'done' or integration.ready and url_name == 'configure' %}
+    href="{% url 'project_integrations:done' project.id object.id %}"
+    {% endif %}
+  >
+    {% if not integration.ready %}
+    Review
+    {% else %}
+    Success
+    {% endif %}
+  </a>
+</nav>
 {% endwith %}
-
 {% endblock  %}
