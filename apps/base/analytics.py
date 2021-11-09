@@ -1,6 +1,7 @@
 from typing import Final
 
 import analytics
+
 from apps.nodes.models import Node
 from apps.users.models import CustomUser
 
@@ -50,6 +51,11 @@ WIDGET_CONFIGURED_EVENT: Final = "Widget configured"
 WIDGET_PREVIEWED_EVENT: Final = "Widget previewed"
 WIDGET_COMPLETED_EVENT: Final = "Widget completed"
 DASHBOARD_SHARED_PUBLIC_EVENT: Final = "Dashboard shared public"
+
+
+# exports
+
+EXPORT_CREATED: Final = "Export created"
 
 
 def identify_user(user: CustomUser):

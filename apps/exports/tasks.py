@@ -1,7 +1,9 @@
+import analytics
 from celery.app import shared_task
 from django.conf import settings
 from django.utils import timezone
 
+from apps.base.analytics import EXPORT_CREATED
 from apps.exports.emails import send_export_email
 from apps.nodes.bigquery import get_query_from_node
 from apps.tables.bigquery import get_query_from_table
@@ -27,3 +29,11 @@ def export_to_gcs(export_id, user_id):
 
     export.exported_at = timezone.now()
     export.save()
+
+    analytics.track(
+        user.id,
+        EXPORT_CREATED,
+        {
+            "id": export.id,
+        },
+    )
