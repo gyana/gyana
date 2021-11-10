@@ -3,10 +3,7 @@ IMPORTANT: Any style/layout changs here should also be made to
 apps/dashboards/templates/dashboards/preview.html to reflect the changes in
 preview mode.
 {% endcomment %}
-<gy-widget
-  id="widget-{{ object.id }}"
-  {% if is_new %}data-action="mousedown->widget-list#register:once"{% endif %}
->
+<gy-widget id="widget-{{ object.id }}">
   <div
     class="h-full w-full"
     data-id="{{ object.id }}"
@@ -68,12 +65,7 @@ preview mode.
         </form>
 
         <div class="flex" data-controller="tooltip popover">
-          <button
-            id="widget-delete-{{ object.id }}"
-            title="Delete"
-            data-popover-target="trigger" 
-            data-action="click->popover#trigger:capture"
-          >
+          <button id="widget-delete-{{ object.id }}" title="Delete">
             <i class="fas fa-fw fa-trash cursor-pointer"></i>
           </button>
 
@@ -88,9 +80,3 @@ preview mode.
     </div>
   </div>
 </gy-widget>
-
-{% if is_new %}
-<script>
-  document.getElementById("widget-{{ object.id }}").children[0].scrollIntoView()
-</script>
-{% endif %}

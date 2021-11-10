@@ -1,39 +1,28 @@
 import { Controller } from '@hotwired/stimulus'
 
-// Clicking a widget brings it to the foreground using z-index
-
+/**
+ * Adds a focus attribute and changes the z-index when clicking a widget.
+ */
 export default class extends Controller {
   static targets = ['widget']
 
-  register(event) {
-    const widgets = this.widgetTargets
+  widgetTargetConnected(element) {
+    element.addEventListener("mousedown", function () {
+      this.focusWidget(element)
+    }.bind(this))
 
-    widgets.forEach((target) => {
-      target.onmousedown = function () {
-        widgets.forEach((widget) => {
-          widget.dataset.focused = false
-          widget.style.zIndex = null
-        })
-
-        target.dataset.focused = true
-        target.style.zIndex = 1
-      }
-    })
-
-    // When event is defined it means this function is called from a DOM element
-    // which then means that we need to register a new widget. To make sure
-    // we keep the overlap consistent for this new element we manually set
-    // the zindex for the closest widget target
-    if (event) {
-      const closest = event.target.closest('[data-widget-list-target="widget"]')
-      widgets.forEach((widget) => {
-        widget.style.zIndex = null
-      })
-      closest.style.zIndex = 1
-    }
+    this.focusWidget(element)
   }
 
-  connect() {
-    this.register()
+  focusWidget(widget) {
+    const widgets = this.widgetTargets
+
+    widgets.forEach((widget) => {
+      widget.dataset.focused = false
+      widget.style.zIndex = null
+    })
+
+    widget.dataset.focused = true
+    widget.style.zIndex = 1
   }
 }

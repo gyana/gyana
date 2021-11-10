@@ -8,7 +8,8 @@
 <script src="{% static "fusioncharts/fusioncharts.timeseries.js" %}"></script>
 <script src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
 
-<script defer>
+{% if palette_colors|length > 0 %}
+<script>
 FusionCharts.register('theme', {
   name: 'CustomDashboardTheme',
   theme: {
@@ -20,3 +21,4 @@ FusionCharts.register('theme', {
   }
 });
 </script>
+{% endif %}
