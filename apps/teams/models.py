@@ -128,7 +128,6 @@ class Team(BaseModel, SafeDeleteModel):
             elif self.active_subscription.plan.id == settings.DJPADDLE_PRO_PLAN_ID:
                 return PLANS["pro"]
 
-
         return PLANS["free"]
 
     @cached_property

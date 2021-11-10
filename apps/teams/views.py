@@ -61,22 +61,22 @@ class TeamPlan(TurboUpdateView):
         return reverse("teams:detail", args=(self.object.id,))
 
 
-class TeamChangePlan(TurboUpdateView):
+class TeamSubscription(TurboUpdateView):
     model = Team
     fields = []
-    template_name = "teams/change_plan.html"
+    template_name = "teams/subscription.html"
     pk_url_kwarg = "team_id"
 
-    @property
-    def plan(self):
-        return Plan.objects.get(pk=self.request.GET["plan_id"])
+    # @property
+    # def plan(self):
+    #     return Plan.objects.get(pk=self.request.GET["plan_id"])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["new_price"] = paddle_client.get_plan(self.plan.id)["recurring_price"][
-            self.object.active_subscription.currency
-        ]
-        context["plan"] = self.plan
+        # context["new_price"] = paddle_client.get_plan(self.plan.id)["recurring_price"][
+        #     self.object.active_subscription.currency
+        # ]
+        # context["plan"] = self.plan
         return context
 
     def form_valid(self, form) -> HttpResponse:

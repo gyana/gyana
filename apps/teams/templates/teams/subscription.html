@@ -7,7 +7,7 @@
 
 <div class="flex flex-col justify-center items-center h-full">
   <div class="flex flex-col mb-7 text-center">
-    <h2>Confirmation</h2>
+    <h2>Your current subscription</h2>
     <p>
       You are about to change to {{ plan.name }} for ${{ new_price }} per month.
     </p>
@@ -21,6 +21,14 @@
       </button>
     </form>
   </div>
+  <div class="flex flex-col mb-7 text-center">
+    <h2>Cancel Subscription</h2>
+    <p>
+      Something not right? Want to keep using Gyana but something is not working out for you?
+    </p>
+    <a href="{{ team.active_subscription.cancel_url }}" class="button button--tertiary" data-turbo="false">
+      I'm sure I want to cancel
+    </a>
   </div>
 </div>
 {% endblock %}

@@ -51,9 +51,9 @@ urlpatterns = [
         name="plan",
     ),
     path(
-        "<hashid:team_id>/change_plan",
-        login_and_team_required(views.TeamChangePlan.as_view()),
-        name="change_plan",
+        "<hashid:team_id>/subscription",
+        login_and_team_required(views.TeamSubscription.as_view()),
+        name="subscription",
     ),
     path(
         "<hashid:team_id>/update",
