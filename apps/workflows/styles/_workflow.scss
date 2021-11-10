@@ -93,6 +93,13 @@
     height: 100%;
     overflow: hidden;
     width: 100%;
+
+    turbo-frame {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
   }
 
   .workflow-node {
