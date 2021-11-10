@@ -21,7 +21,7 @@ export default class extends Controller {
     // Close the modal when clicking outside of the frame
     // TODO: Fix clicking and draging outside of modal closing.
     this.modalTarget.addEventListener('mousedown', (event) => {
-      if (!this.turboFrameTarget.contains(e.target)) {
+      if (!this.turboFrameTarget.contains(event.target)) {
         this.close(event)
       }
     })

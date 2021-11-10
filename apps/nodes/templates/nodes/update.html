@@ -1,8 +1,6 @@
 {% load help_utils %}
 {% load waffle_tags %}
 
-{% with parents=node.parents.all %}
-
 {% if parent_error_node is None %}
 
   {% if node.kind == "input" or node.has_enough_parents %}
@@ -74,54 +72,13 @@
 
   <div class="workflow-modal__section">
     <div class="workflow-modal__table">
-      <nav class="tabbar">
-        {% if help_template%}
-        <a class="tabbar__link {% if show_docs%}tabbar__link--active{% endif %}"
-          href="{% url 'nodes:update' object.id %}?show_docs=true"
-        >
-          Doc
-        </a>
-        {% endif %}
-        {% for parent in parents %}
-        <a class="tabbar__link {% if preview_node_id == parent.id %} tabbar__link--active {% endif %}"
-          href="{% url 'nodes:update' object.id %}?preview_node_id={{ parent.id }}">
-          Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
-        </a>
-        {% endfor %}
-        <a class="tabbar__link  {% if preview_node_id == object.id and not show_docs %} tabbar__link--active {% endif %}"
-          href="{% url 'nodes:update' object.id %}?preview_node_id={{ object.id }}">
-          Result
-        </a>
-        <a
-          class="tabbar__link"
-          href="{% article_url 'workflows' node.kind %}"
-          target="_blank"
-          data-controller="tooltip"
-        >
-          <i class="fas fa-fw fa-external-link"></i> Help
-          <span data-tooltip-target="body">Open knowledge base article</span>
-        </a>
-        
-        <div class="absolute top-0 right-0">
-          <button
-            class="tf-modal__close tf-modal__close--inline ml-auto"
-            data-action="click->tf-modal#close"
-            data-loading-false
-          >
-            <i class="fal fa-times fa-lg"></i>
-          </button>
+      <turbo-frame id="nodes:grid" src="{% url 'nodes:grid' preview_node_id %}">
+        {% include 'nodes/modal_nav_bar.html' %}
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          <p class='placeholder-scr__title'>Loading preview...</p>
         </div>
-      </nav>
-      {% if show_docs%}
-        {% include help_template %}
-      {% else%}
-        <turbo-frame id="workflows-grid" src="{% url 'nodes:grid' preview_node_id %}">
-          <div class='placeholder-scr placeholder-scr--fillscreen'>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-            <p class='placeholder-scr__title'>Loading preview...</p>
-          </div>
-        </turbo-frame>
-      {% endif %}
+      </turbo-frame>
     </div>
 
   {% else %}
@@ -139,4 +96,3 @@
 
 {% endif %}
 
-{% endwith %}

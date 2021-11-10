@@ -1,14 +1,27 @@
 {% load render_table from django_tables2 %}
 
+{% include 'nodes/modal_nav_bar.html' %}
+
 {% if not node.is_valid %}
+
   {% include 'nodes/_zero_state.html' %}
+
+{% elif show_docs%}
+        
+  {% include help_template %}
+
 {% elif node.error %}
-<div class='workflow-node__visual'>
-  {% if error_template %}
-    {% include error_template %}
-  {% else %}
-    {% include 'nodes/errors/default.html' %}
-  {% endif %}
+
+  <div class='workflow-node__visual'>
+    {% if error_template %}
+      {% include error_template %}
+    {% else %}
+      {% include 'nodes/errors/default.html' %}
+    {% endif %}
+  </div>
+
 {% else %}
+
   {% render_table table %}
+
 {% endif %}
