@@ -97,12 +97,11 @@ def to_scatter(widget, df):
     aggregations = widget.aggregations.all()
     unique_names = get_unique_column_names(aggregations, [widget.dimension])
     x, y = [unique_names.get(value, value.column) for value in aggregations][:2]
-    df = df.rename(columns={x: "x", y: "y", widget.dimension: "id"})
+    df = df.rename(columns={x: "x", y: "y"})
     return {
-        "categories": [{"category": [{"label": str(x)} for x in df.x.to_list()]}],
         "dataset": [
             {
-                "data": df[["x", "y", "id"]].to_dict(orient="records"),
+                "data": df[["x", "y"]].to_dict(orient="records"),
             }
         ],
     }
