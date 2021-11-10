@@ -10,11 +10,17 @@ from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableMixin, SingleTableView
 from djpaddle.models import Checkout, Plan, paddle_client
+from turbo_response.views import TurboFormView
 
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 
-from .forms import MembershipUpdateForm, TeamCreateForm, TeamUpdateForm
+from .forms import (
+    MembershipUpdateForm,
+    TeamCreateForm,
+    TeamSubscriptionForm,
+    TeamUpdateForm,
+)
 from .models import Membership, Team
 from .tables import TeamMembershipTable, TeamProjectsTable
 
@@ -63,27 +69,24 @@ class TeamPlan(TurboUpdateView):
 
 class TeamSubscription(TurboUpdateView):
     model = Team
-    fields = []
+    form_class = TeamSubscriptionForm
     template_name = "teams/subscription.html"
     pk_url_kwarg = "team_id"
 
-    # @property
-    # def plan(self):
-    #     return Plan.objects.get(pk=self.request.GET["plan_id"])
+    def get_initial(self):
+        return {"plan": self.object.active_subscription.plan.id}
+
+    @property
+    def plan(self):
+        return Plan.objects.get(pk=self.get_form()["plan"].value())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context["new_price"] = paddle_client.get_plan(self.plan.id)["recurring_price"][
-        #     self.object.active_subscription.currency
-        # ]
-        # context["plan"] = self.plan
+        context["new_price"] = paddle_client.get_plan(self.plan.id)["recurring_price"][
+            self.object.active_subscription.currency
+        ]
+        context["plan"] = self.plan
         return context
-
-    def form_valid(self, form) -> HttpResponse:
-        paddle_client.update_subscription(
-            self.object.active_subscription.id, plan_id=self.plan.id
-        )
-        return super().form_valid(form)
 
     def get_success_url(self) -> str:
         return reverse("teams:account", args=(self.object.id,))
