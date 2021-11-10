@@ -116,6 +116,10 @@ class Team(BaseModel, SafeDeleteModel):
         return self.appsumoextra_set.count() > 0
 
     @property
+    def is_free(self):
+        return self.active_codes == 0 and not self.has_subscription
+
+    @property
     def plan(self):
         from apps.appsumo.account import get_deal
 

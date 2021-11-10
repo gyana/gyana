@@ -13,7 +13,7 @@
       <p class="text-blue">
         {% if team.has_subscription %}Gyana{% endif %} {{ team.plan.name }}
       </p>
-      {% if team.plan.name == 'Free' %}
+      {% if team.is_free %}
         <a href="{% url 'teams:plan' team.id %}" class="button button--sm button--success">Upgrade your plan</a>
         <p>
           Upgrade to the Pro plan or Business plan and get access to more rows, advanced security features and 
