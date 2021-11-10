@@ -46,6 +46,13 @@
             </tr>
             <tr>
               <td>
+                <a href="{% url 'teams:payments' team.id %}" class="link" data-turbo="false">
+                  View Payments & Invoices
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>
                 <a href="{{ team.active_subscription.update_url }}" class="link" data-turbo="false">
                   Update Payment Method
                 </a>

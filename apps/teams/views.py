@@ -20,7 +20,7 @@ from .forms import (
     TeamUpdateForm,
 )
 from .models import Membership, Team
-from .tables import TeamMembershipTable, TeamProjectsTable
+from .tables import TeamMembershipTable, TeamPaymentsTable, TeamProjectsTable
 
 
 class TeamCreate(TurboCreateView):
@@ -96,6 +96,21 @@ class TeamSubscription(TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse("teams:account", args=(self.object.id,))
+
+
+class TeamPayments(SingleTableMixin, DetailView):
+    model = Team
+    table_class = TeamPaymentsTable
+    template_name = "teams/payments.html"
+    pk_url_kwarg = "team_id"
+
+    def get_table_data(self):
+        return paddle_client.list_subscription_payments(
+            self.object.active_subscription.id, is_paid=True
+        )
+
+    def get_table_kwargs(self):
+        return {"order_by": "-payout_date"}
 
 
 class TeamUpdate(TurboUpdateView):

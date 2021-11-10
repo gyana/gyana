@@ -47,13 +47,18 @@ urlpatterns = [
     ),
     path(
         "<hashid:team_id>/plan",
-        login_and_team_required(views.TeamPlan.as_view()),
+        login_and_admin_required(views.TeamPlan.as_view()),
         name="plan",
     ),
     path(
         "<hashid:team_id>/subscription",
-        login_and_team_required(views.TeamSubscription.as_view()),
+        login_and_admin_required(views.TeamSubscription.as_view()),
         name="subscription",
+    ),
+    path(
+        "<hashid:team_id>/payments",
+        login_and_admin_required(views.TeamPayments.as_view()),
+        name="payments",
     ),
     path(
         "<hashid:team_id>/update",
