@@ -12,7 +12,7 @@ export default class extends Controller {
       this.modalTarget.classList.remove('hidden')
     }
 
-    window.addEventListener('keydown', (event) => {
+    window.addEventListener('keyup', (event) => {
       if (event.key == 'Escape') {
         this.close(event)
       }
@@ -91,9 +91,10 @@ export default class extends Controller {
     if (this.hasClosingWarningTarget && this.changed) {
       this.closingWarningTarget.classList.remove('hidden')
     } else {
-      if (e.currentTarget.getAttribute('type') == 'submit') {
+      if (e.currentTarget.getAttribute && e.currentTarget.getAttribute('type') == 'submit') {
         this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='close']"))
       }
+
       this.forceClose()
     }
   }
