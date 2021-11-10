@@ -2,6 +2,7 @@ import analytics
 from allauth.account.forms import SignupForm
 from django import forms
 from django.conf import settings
+from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from djpaddle.models import paddle_client
 
@@ -103,6 +104,9 @@ class TeamSubscriptionForm(LiveUpdateForm):
             (settings.DJPADDLE_BUSINESS_PLAN_ID, "Business"),
         ),
         label="Your plan",
+        help_text=mark_safe(
+            '<a href="https://www.gyana.com/pricing" class="link">Learn more</a> on our website.'
+        ),
     )
 
     def post_save(self, instance):
