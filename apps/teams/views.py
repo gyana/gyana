@@ -1,16 +1,14 @@
-import paddle
 from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse
 from django.http.response import Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableMixin, SingleTableView
 from djpaddle.models import Checkout, Plan, paddle_client
-from turbo_response.views import TurboFormView
 
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
@@ -44,6 +42,14 @@ class TeamPlan(TurboUpdateView):
     form_class = TeamCreateForm
     template_name = "teams/plan.html"
     pk_url_kwarg = "team_id"
+
+    def get(self, request, *args, **kwargs):
+        team = self.get_object()
+
+        if team.has_subscription:
+            return redirect("teams:subscription", team.id)
+
+        return super().get(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

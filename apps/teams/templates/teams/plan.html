@@ -45,23 +45,11 @@
         <p class="mb-6"><strong>1 Million</strong> rows of data</p>
 
         {% flag 'subscriptions' %}
-          {% if team.has_subscription %}
-            {% if team.active_subscription.plan.id == paddle_pro_plan.id %}
-              <button disabled class="button button--primary w-full">
-                Your current plan
-              </button>
-            {% else %}
-              <a href="{% url 'teams:subscription' team.id %}" class="button button--primary w-full">
-                Downgrade to Pro
-              </a>
-            {% endif %}
-          {% else %}
           <a href="#!" class="button button--primary w-full paddle_button"
             data-product="{{ paddle_pro_plan.id }}" data-theme="none"
             data-passthrough='{"user_id": {{ request.user.id }}, "team_id": {{ object.id }}}'>
             Upgrade to Pro
           </a>
-          {% endif %}
         {% else %}
           <button class="button button--primary w-full" disabled>Available soon</button>
         {% endflag %}
@@ -91,23 +79,11 @@
         <p class="mb-6"><strong>10 Million</strong> rows of data</p>
 
         {% flag 'subscriptions' %}
-          {% if team.has_subscription %}
-            {% if team.active_subscription.plan.id == paddle_business_plan.id %}
-              <button disabled class="button button--primary w-full">
-                Your current plan
-              </button>
-            {% else %}
-              <a href="{% url 'teams:subscription' team.id %}" class="button button--primary w-full">
-                Upgrade to Business
-              </a>
-            {% endif %}
-          {% else %}
-            <a href="#!" class="button button--primary w-full paddle_button"
-              data-product="{{ paddle_business_plan.id }}" data-theme="none"
-              data-passthrough='{"user_id": {{ request.user.id }}, "team_id": {{ object.id }}}'>
-              Upgrade to Business
-            </a>
-          {% endif %}
+          <a href="#!" class="button button--primary w-full paddle_button"
+            data-product="{{ paddle_business_plan.id }}" data-theme="none"
+            data-passthrough='{"user_id": {{ request.user.id }}, "team_id": {{ object.id }}}'>
+            Upgrade to Business
+          </a>
         {% else %}
           <button class="button button--primary w-full" disabled>Available soon</button>
         {% endflag %}
