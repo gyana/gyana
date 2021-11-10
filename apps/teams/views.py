@@ -11,7 +11,6 @@ from django_tables2.views import SingleTableMixin, SingleTableView
 from djpaddle.models import Checkout, Plan, paddle_client
 
 from apps.base.turbo import TurboCreateView, TurboUpdateView
-from apps.teams.mixins import TeamMixin
 
 from .forms import (
     MembershipUpdateForm,
@@ -19,7 +18,9 @@ from .forms import (
     TeamSubscriptionForm,
     TeamUpdateForm,
 )
+from .mixins import TeamMixin
 from .models import Membership, Team
+from .paddle import get_plan_price_for_currency, list_payments_for_team
 from .tables import TeamMembershipTable, TeamPaymentsTable, TeamProjectsTable
 
 
@@ -88,10 +89,9 @@ class TeamSubscription(TurboUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["new_price"] = paddle_client.get_plan(self.plan.id)["recurring_price"][
-            self.object.active_subscription.currency
-        ]
-        context["plan"] = self.plan
+        context["new_price"] = get_plan_price_for_currency(
+            self.plan, self.object.active_subscription.currency
+        )
         return context
 
     def get_success_url(self) -> str:
@@ -105,9 +105,7 @@ class TeamPayments(SingleTableMixin, DetailView):
     pk_url_kwarg = "team_id"
 
     def get_table_data(self):
-        return paddle_client.list_subscription_payments(
-            self.object.active_subscription.id, is_paid=True
-        )
+        return list_payments_for_team(self.object)
 
     def get_table_kwargs(self):
         return {"order_by": "-payout_date"}

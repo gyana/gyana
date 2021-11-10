@@ -4,7 +4,6 @@ from django import forms
 from django.conf import settings
 from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from djpaddle.models import paddle_client
 
 from apps.base.analytics import (
     SIGNED_UP_EVENT,
@@ -16,6 +15,7 @@ from apps.base.live_update_form import LiveUpdateForm
 from apps.teams import roles
 
 from .models import Membership, Team
+from .paddle import update_plan_for_team
 
 
 class TeamSignupForm(SignupForm):
@@ -110,7 +110,5 @@ class TeamSubscriptionForm(LiveUpdateForm):
     )
 
     def post_save(self, instance):
-        paddle_client.update_subscription(
-            instance.active_subscription.id, plan_id=int(self.cleaned_data["plan"])
-        )
+        update_plan_for_team(instance, int(self.cleaned_data["plan"]))
         return super().post_save(instance)
