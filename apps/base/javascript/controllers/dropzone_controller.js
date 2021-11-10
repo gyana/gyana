@@ -22,12 +22,6 @@ export default class extends Controller {
     window.addEventListener("drop", (e) => {
       e.preventDefault()
 
-      if (e.target.type !== 'text') {
-        if (/(.*)?(docs.google.com\/spreadsheets\/)(.*)?/.test(e.dataTransfer.getData("text"))) {
-          window.location.href = this.element.dataset.sheetsUrl + '?url=' + encodeURI(e.dataTransfer.getData("text"))
-        }
-      }
-
       if (this.hasInputTarget) {
         this.inputTarget.files = e.dataTransfer.files
         // Force GCSFileUpload.tsx to start the upload.

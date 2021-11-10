@@ -1,0 +1,11 @@
+{% extends "account/email/base_message.txt" %}
+
+{% block content %}
+{% autoescape off %}
+Your export is ready to download!
+
+To download your CSV export click on this link: {{ url }}
+
+The link is valid for 7 days.
+{% endautoescape %}
+{% endblock %}

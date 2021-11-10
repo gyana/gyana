@@ -116,7 +116,9 @@ class TwoDimensionForm(GenericWidgetForm):
         table = self.get_live_field("table")
 
         if table:
-            fields += ["sort_by", "sort_ascending", "dimension", "second_dimension"]
+            if not is_timeseries_chart(self.get_live_field("kind")):
+                fields += ["sort_by", "sort_ascending"]
+            fields += ["dimension", "second_dimension"]
         return fields
 
 
@@ -142,8 +144,6 @@ class StackedChartForm(GenericWidgetForm):
 
         if table:
             fields += [
-                "sort_by",
-                "sort_ascending",
                 "dimension",
                 "second_dimension",
             ]

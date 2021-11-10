@@ -1,9 +1,9 @@
 <textarea 
-  data-controller='widget-visuals-text'
-  data-widget-visuals-text-id-value='{{object.id}}'
-  class="flex-1"
-  style='resize:none;border:none;' 
-  placeholder='Type your notes here...' 
-  wrap='soft'
-  {% if request.GET.mode != 'edit'%}readonly{% endif %}
+  data-controller="widget-visuals-text"
+  data-widget-visuals-text-id-value="{{object.id}}"
+  class="flex-1 h-full"
+  style="resize:none;border:none;" 
+  placeholder="Type your notes here..." 
+  wrap="soft"
+  {% if request.GET.mode != "edit"%}readonly{% endif %}
 >{% if object.text_content %}{{ object.text_content }}{% endif %}</textarea>

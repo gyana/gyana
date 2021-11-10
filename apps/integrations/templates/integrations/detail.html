@@ -1,6 +1,7 @@
 {% extends "integrations/base.html" %}
 {% load static %}
 {% load humanize %}
+{% load waffle_tags %}
 
 {% block tab %}
 <div class="flex flex-col space-y-6 flex-1 pad">
@@ -34,6 +35,13 @@
             href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=detail">
             <p>Detail</p>
         </a>
+        {% flag "beta" %}
+          {% if table_id %}
+            <turbo-frame id='exports:create_integration_table'>
+              {% include 'exports/create.html' with parent_id=table_id target_url='exports:create_integration_table' %}
+            </turbo-frame>
+          {% endif %}
+        {% endflag %}
       </div>
     </nav>
     <div class="flex flex-row">

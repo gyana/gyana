@@ -69,11 +69,6 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
         context = super().get_context_data(**kwargs)
         context["workflow"] = self.object.workflow
         context["preview_node_id"] = self.preview_node_id
-        context["show_docs"] = self.request.GET.get("show_docs", False) == "true"
-
-        # Node-specific documentation
-        if self.object.kind == Node.Kind.FORMULA:
-            context["help_template"] = "nodes/help/formula.html"
 
         # Add node type to list if it requires live updates
         context["do_live_updates"] = self.object.kind in [
@@ -128,10 +123,16 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
     template_name = "nodes/grid.html"
     model = Node
     paginate_by = 15
-    turbo_frame_dom_id = "workflows-grid"
+    turbo_frame_dom_id = "nodes:grid"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["show_docs"] = self.request.GET.get("show_docs", False) == "true"
+        context["preview_node_id"] = self.preview_node.id
+        # Node-specific documentation
+        if self.object.kind == Node.Kind.FORMULA:
+            context["help_template"] = "nodes/help/formula.html"
+
         if self.object.error:
             error_template = f"nodes/errors/{self.object.kind}_{self.object.error}.html"
             if template_exists(error_template):
@@ -144,9 +145,15 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
                 context["error_template"] = "nodes/errors/default.html"
         return context
 
+    @property
+    def preview_node(self):
+        if not (preview_id := self.request.GET.get("preview_node_id")):
+            return self.object
+        return Node.objects.get(pk=preview_id)
+
     def get_table(self, **kwargs):
         try:
-            query = get_query_from_node(self.object)
+            query = get_query_from_node(self.preview_node)
             if isinstance(query, ScalarExpr):
                 schema = {query._name: query.type()}
             else:
@@ -166,7 +173,7 @@ class NodeCreditConfirmation(TurboFrameUpdateView):
     model = Node
     fields = ("always_use_credits",)
     template_name = "nodes/errors/credit_exception.html"
-    turbo_frame_dom_id = "workflows-grid"
+    turbo_frame_dom_id = "nodes:grid"
 
     def get_success_url(self) -> str:
         return reverse(

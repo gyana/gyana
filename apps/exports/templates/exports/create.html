@@ -1,0 +1,15 @@
+
+{% if show_alert %}
+<script type="text/javascript">
+  alert("Your export is being processed you should receive an e-mail once it's ready")
+</script>
+{% endif %}
+
+<form method="post" action="{% url target_url parent_id%}" class="form">
+  {% csrf_token %}
+
+  <button type="submit" class="button button--circle button--tertiary button--outline button--sm">
+    <i class='fa fa-download'></i>
+  </button>
+</form>
+

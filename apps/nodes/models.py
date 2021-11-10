@@ -1,4 +1,3 @@
-from datetime import datetime as dt
 from functools import cached_property
 
 from dirtyfields import DirtyFieldsMixin

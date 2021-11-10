@@ -53,6 +53,11 @@ WIDGET_COMPLETED_EVENT: Final = "Widget completed"
 DASHBOARD_SHARED_PUBLIC_EVENT: Final = "Dashboard shared public"
 
 
+# exports
+
+EXPORT_CREATED: Final = "Export created"
+
+
 def identify_user(user: CustomUser):
     analytics.identify(
         user.id,

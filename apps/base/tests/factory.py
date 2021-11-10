@@ -108,6 +108,7 @@ class IntegrationTableFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Table
 
+    project = factory.SubFactory(ProjectFactory)
     source = Table.Source.INTEGRATION
     bq_table = "table"
     bq_dataset = "dataset"

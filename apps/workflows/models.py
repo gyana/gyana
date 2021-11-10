@@ -26,4 +26,11 @@ class Workflow(CloneMixin, BaseModel):
 
     @property
     def out_of_date(self):
-        return self.last_run < self.data_updated if self.last_run else True
+        if not self.last_run:
+            return True
+
+        input_nodes = self.nodes.filter(kind="input").all()
+        latest_input_update = max(
+            input_node.input_table.data_updated for input_node in input_nodes
+        )
+        return self.last_run < max(self.data_updated, latest_input_update)
