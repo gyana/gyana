@@ -136,6 +136,9 @@ class WidgetFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Widget
 
+    dashboard = factory.SubFactory(DashboardFactory)
+    table = factory.SubFactory(IntegrationTableFactory)
+
 
 @register
 class CNameFactory(factory.django.DjangoModelFactory):
