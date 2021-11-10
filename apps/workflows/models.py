@@ -1,8 +1,9 @@
-from apps.projects.models import Project
-from apps.base.models import BaseModel
 from django.db import models
 from django.urls import reverse
 from model_clone import CloneMixin
+
+from apps.base.models import BaseModel
+from apps.projects.models import Project
 
 
 class Workflow(CloneMixin, BaseModel):

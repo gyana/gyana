@@ -1,7 +1,8 @@
-from apps.base.models import SaveParentModel
-from apps.widgets.models import Widget
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+
+from apps.base.models import SaveParentModel
+from apps.widgets.models import Widget
 
 
 class Filter(SaveParentModel):

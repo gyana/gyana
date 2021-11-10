@@ -1,6 +1,7 @@
 from typing import Final
 
 import analytics
+
 from apps.nodes.models import Node
 from apps.users.models import CustomUser
 

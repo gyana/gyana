@@ -1,8 +1,9 @@
 import pytest
+from django.http import QueryDict
+
 from apps.base.tests.asserts import assertFormChoicesLength
 from apps.base.tests.mock_data import TABLE
 from apps.filters.forms import FilterForm
-from django.http import QueryDict
 
 pytestmark = pytest.mark.django_db
 

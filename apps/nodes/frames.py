@@ -1,5 +1,13 @@
 import logging
 
+from django import forms
+from django.http.response import HttpResponse
+from django.urls import reverse
+from django.utils import timezone
+from django_tables2.tables import Table
+from django_tables2.views import SingleTableMixin
+from ibis.expr.types import ScalarExpr
+
 from apps.base.analytics import (
     NODE_COMPLETED_EVENT,
     NODE_PREVIEWED_EVENT,
@@ -13,13 +21,6 @@ from apps.base.frames import (
 )
 from apps.base.table_data import RequestConfig, get_table
 from apps.base.templates import template_exists
-from django import forms
-from django.http.response import HttpResponse
-from django.urls import reverse
-from django.utils import timezone
-from django_tables2.tables import Table
-from django_tables2.views import SingleTableMixin
-from ibis.expr.types import ScalarExpr
 
 from .bigquery import NodeResultNone, get_query_from_node
 from .forms import KIND_TO_FORM
