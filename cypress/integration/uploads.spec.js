@@ -19,7 +19,7 @@ describe('uploads', () => {
     cy.url().should('contain', `/projects/1/integrations/${id}/configure`)
     cy.get('button[type=submit]').click()
     cy.contains('Validating and importing your upload...')
-    cy.contains('Upload successfully validated and imported.', { timeout: BIGQUERY_TIMEOUT })
+    cy.contains('Upload successfully imported', { timeout: BIGQUERY_TIMEOUT })
 
     // review the table and approve
     cy.contains('preview').click()
