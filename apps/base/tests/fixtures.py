@@ -1,14 +1,16 @@
+from enum import auto
 from unittest.mock import MagicMock
 
 import ibis.expr.schema as sch
 import pytest
 import waffle
-from apps.base import clients
-from apps.teams.models import Team
-from apps.users.models import CustomUser
 from django.utils import timezone
 from ibis_bigquery.client import rename_partitioned_column
 from waffle.templatetags import waffle_tags
+
+from apps.base import clients
+from apps.teams.models import Team
+from apps.users.models import CustomUser
 
 
 class BlankMiddleware:
@@ -127,6 +129,11 @@ def heroku(mocker):
     client = MagicMock()
     mocker.patch("apps.base.clients.heroku", return_value=client)
     yield client
+
+
+@pytest.fixture(autouse=True)
+def paddle(mocker):
+    yield mocker.patch("djpaddle.models.paddle_client")
 
 
 @pytest.fixture

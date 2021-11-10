@@ -189,7 +189,7 @@ def test_account_limit_warning_and_disabled(client, project_factory):
     assertNotFound(client.get(f"/projects/{project.id}/integrations/uploads/new"))
 
 
-def test_subscriptions(client, logged_in_user, settings):
+def test_team_subscriptions(client, logged_in_user, settings):
 
     team = logged_in_user.teams.first()
     pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
@@ -249,12 +249,14 @@ def test_subscriptions(client, logged_in_user, settings):
 
     r = client.get(f"/teams/{team.id}/account")
     assertOK(r)
-    assertContains(r, "You are currently subscribed to Pro.")
+    assertContains(r, "Gyana Pro")
+    assertLink(r, f"/teams/{team.id}/subscription", "Manage Subscription")
+    assertLink(r, f"/teams/{team.id}/payments", "View Payments & Receipts")
     assertLink(r, "https://update.url", "Update Payment Method")
-    assertLink(r, "https://cancel.url", "Cancel Subscription")
-    assertLink(r, f"/teams/{team.id}/plan", "Change Plan")
 
     # upgrade to business
-    r = client.get(f"/teams/{team.id}/plan")
-    assertContains(r, 'Your current plan')
-    assertContains(r, 'Upgrade to Business')
+    r = client.get(f"/teams/{team.id}/subscription")
+
+    # redirect
+
+    # cancel
