@@ -20,9 +20,15 @@ from apps.users.models import CustomUser
 pytestmark = pytest.mark.django_db
 
 
-def test_team_crudl(client, logged_in_user, bigquery):
+def test_team_crudl(client, logged_in_user, bigquery, settings):
 
     team = logged_in_user.teams.first()
+    pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
+    business_plan = Plan.objects.create(
+        name="Pro", billing_type="month", billing_period=1
+    )
+    settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
+    settings.DJPADDLE_BUSINESS_PLAN_ID = business_plan.id
     # the fixture creates a new team
     bigquery.reset_mock()
 
@@ -48,7 +54,7 @@ def test_team_crudl(client, logged_in_user, bigquery):
     # choose plan
     r = client.get(f"/teams/{new_team.id}/plan")
     assertOK(r)
-    assertLink(r, f"/teams/{new_team.id}", "Choose plan")
+    assertLink(r, f"/teams/{new_team.id}", "Continue")
 
     # read
     r = client.get(f"/teams/{new_team.id}")
@@ -196,6 +202,8 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     business_plan = Plan.objects.create(
         name="Pro", billing_type="month", billing_period=1
     )
+    settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
+    settings.DJPADDLE_BUSINESS_PLAN_ID = business_plan.id
     paddle.get_plan.side_effect = lambda id_: {
         "recurring_price": {"USD": 30 if id_ == pro_plan.id else 150}
     }
@@ -213,9 +221,6 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
             "receipt_url": "https://receipt-2.url",
         },
     ]
-
-    settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
-    settings.DJPADDLE_BUSINESS_PLAN_ID = business_plan.id
 
     r = client.get(f"/teams/{team.id}/account")
     assertOK(r)

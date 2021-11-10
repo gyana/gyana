@@ -133,7 +133,7 @@ def heroku(mocker):
 
 @pytest.fixture(autouse=True)
 def paddle(mocker):
-    yield mocker.patch("djpaddle.models.paddle_client")
+    yield mocker.patch("apps.base.clients.paddle")
 
 
 @pytest.fixture

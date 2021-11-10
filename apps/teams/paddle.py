@@ -1,4 +1,4 @@
-from djpaddle.models import paddle_client
+from apps.base import clients
 
 
 def get_subscriber_by_payload(team_model, payload):
@@ -10,14 +10,14 @@ def get_subscriber_by_payload(team_model, payload):
 
 
 def list_payments_for_team(team):
-    return paddle_client.list_subscription_payments(
+    return clients.paddle.list_subscription_payments(
         team.active_subscription.id, is_paid=True
     )
 
 
 def get_plan_price_for_currency(plan, currency):
-    return paddle_client.get_plan(plan.id)["recurring_price"][currency]
+    return clients.paddle.get_plan(plan.id)["recurring_price"][currency]
 
 
 def update_plan_for_team(team, plan_id):
-    paddle_client.update_subscription(team.active_subscription.id, plan_id=plan_id)
+    clients.paddle.update_subscription(team.active_subscription.id, plan_id=plan_id)
