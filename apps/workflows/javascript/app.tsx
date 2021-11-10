@@ -74,6 +74,9 @@ class ReactDndFlow extends HTMLElement {
       this
     )
   }
+  disconnectedCallback() {
+    ReactDOM.unmountComponentAtNode(this)
+  }
 }
 
 customElements.get('dnd-flow') || customElements.define('dnd-flow', ReactDndFlow)

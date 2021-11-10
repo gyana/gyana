@@ -64,6 +64,10 @@ class SourceSelect extends HTMLElement {
     this.appendChild(mountPoint)
     ReactDOM.render(<SourceSelect_ options={options} selected={selected} name={name} />, mountPoint)
   }
+
+  disconnectedCallback() {
+    ReactDOM.unmountComponentAtNode(this)
+  }
 }
 
 export default SourceSelect

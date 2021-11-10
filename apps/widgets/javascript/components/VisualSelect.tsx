@@ -82,7 +82,6 @@ const VisualSelect_: React.FC<{
 class VisualSelect extends HTMLElement {
   connectedCallback() {
     const mountPoint = document.createElement('div')
-
     // Because the Select dropdown will be absolute positioned we need to make the outer div relative
     mountPoint.setAttribute('class', 'relative')
     const selected = this.attributes['selected'].value
@@ -90,6 +89,10 @@ class VisualSelect extends HTMLElement {
 
     this.appendChild(mountPoint)
     ReactDOM.render(<VisualSelect_ selected={selected} options={options} />, mountPoint)
+  }
+
+  disconnectedCallback() {
+    ReactDOM.unmountComponentAtNode(this)
   }
 }
 

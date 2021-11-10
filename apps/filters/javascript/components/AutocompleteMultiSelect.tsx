@@ -174,6 +174,10 @@ class AutocompleteMultiSelect extends HTMLElement {
       mountPoint
     )
   }
+
+  disconnectedCallback() {
+    ReactDOM.unmountComponentAtNode(this)
+  }
 }
 
 export default AutocompleteMultiSelect
