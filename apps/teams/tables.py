@@ -90,7 +90,6 @@ class TeamPaymentsTable(Table):
     payout_date = Column(verbose_name="Date")
     amount = Column()
     currency = Column()
-    is_paid = BooleanColumn(verbose_name="Paid")
     receipt_url = URLColumn(
         text=lambda record: "Download Receipt"
         if record.get("receipt_url") is not None

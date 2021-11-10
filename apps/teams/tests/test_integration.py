@@ -199,6 +199,20 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     paddle.get_plan.side_effect = lambda id_: {
         "recurring_price": {"USD": 30 if id_ == pro_plan.id else 150}
     }
+    paddle.list_subscription_payments.return_value = [
+        {
+            "payout_date": "2021-11-01",
+            "amount": 30,
+            "currency": "USD",
+            "receipt_url": "https://receipt-1.url",
+        },
+        {
+            "payout_date": "2021-12-01",
+            "amount": 30,
+            "currency": "USD",
+            "receipt_url": "https://receipt-2.url",
+        },
+    ]
 
     settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
     settings.DJPADDLE_BUSINESS_PLAN_ID = business_plan.id
@@ -284,3 +298,9 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     # cancel
     r = client.get(f"/teams/{team.id}/subscription")
     assertLink(r, "https://cancel.url", "I'm sure I want to cancel")
+
+    # payments
+    r = client.get(f"/teams/{team.id}/payments")
+    assertOK(r)
+    assertSelectorLength(r, "table tbody tr", 2)
+    assertLink(r, "https://receipt-1.url", "Download Receipt")
