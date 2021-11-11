@@ -285,6 +285,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
         data={"plan": str(business_plan.id)},
     )
     # the new price is calculated and shown
+    print(r.content)
     assertContains(r, "150", status_code=422)
 
     r = client.post(
