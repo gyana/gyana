@@ -4,10 +4,6 @@ from typing import Iterator, List, Tuple
 
 import numpy as np
 import pandas as pd
-from apps.base import clients
-from apps.nodes.models import Node
-from apps.tables.models import Table
-from apps.teams.models import CreditTransaction, OutOfCreditsException
 from celery.app import shared_task
 from django.db import transaction
 from django.utils import timezone
@@ -17,6 +13,11 @@ from google.cloud.language import (
     Document,
     LanguageServiceClient,
 )
+
+from apps.base import clients
+from apps.nodes.models import Node
+from apps.tables.models import Table
+from apps.teams.models import CreditTransaction, OutOfCreditsException
 
 from ._utils import create_or_replace_intermediate_table, get_parent_updated
 

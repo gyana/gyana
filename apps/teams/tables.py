@@ -1,12 +1,14 @@
 from django.db import models
 from django.template import loader
-from django_tables2 import Column, LinkColumn, Table
+from django_tables2 import Column, DateColumn, LinkColumn, Table
+from django_tables2.columns.booleancolumn import BooleanColumn
+from django_tables2.columns.urlcolumn import URLColumn
 from django_tables2.utils import A
 
 from apps.base.table import NaturalDatetimeColumn
+from apps.base.templatetags.admin_utils import verbose_name
 from apps.projects.models import Project
 from apps.teams.models import Membership
-from apps.users.models import CustomUser
 
 
 class TeamMembershipTable(Table):
@@ -79,3 +81,18 @@ class TeamProjectsTable(Table):
             dashboard_count_=models.Count("dashboard")
         ).order_by(("-" if is_descending else "") + "dashboard_count_")
         return (queryset, True)
+
+
+class TeamPaymentsTable(Table):
+    class Meta:
+        attrs = {"class": "table"}
+
+    payout_date = Column(verbose_name="Date")
+    amount = Column()
+    currency = Column()
+    receipt_url = URLColumn(
+        text=lambda record: "Download Receipt"
+        if record.get("receipt_url") is not None
+        else "",
+        verbose_name="",
+    )

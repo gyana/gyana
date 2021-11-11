@@ -14,13 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from apps.base.converters import HashIdConverter
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, register_converter
 from django.urls.converters import IntConverter
 from rest_framework.documentation import get_schemajs_view, include_docs_urls
+
+from apps.base.converters import HashIdConverter
 
 register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "hashid")
 
@@ -70,6 +71,7 @@ teams_urlpatterns = [
     path("<hashid:team_id>/invites/", include(invite_urls.team_urlpatterns)),
     path("<hashid:team_id>/projects/", include(project_urls.team_urlpatterns)),
     path("<hashid:team_id>/members/", include(team_urls.membership_urlpatterns)),
+    path("<hashid:team_id>/checkout/", include(team_urls.checkout_urlpatterns)),
     path("<hashid:team_id>/appsumo/", include(appsumo_urls.team_urlpatterns)),
     path("<hashid:team_id>/templates/", include(template_urls.team_urlpatterns)),
     path("<hashid:team_id>/cnames/", include(cname_urls.team_urlpatterns)),

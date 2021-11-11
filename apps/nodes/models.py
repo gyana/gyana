@@ -1,16 +1,17 @@
 from functools import cached_property
 
-from apps.base.aggregations import AggregationFunctions
-from apps.base.models import BaseModel
-from apps.nodes.config import NODE_CONFIG
-from apps.tables.models import Table
-from apps.workflows.models import Workflow
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from ibis.expr.types import ScalarExpr
 from model_clone import CloneMixin
+
+from apps.base.aggregations import AggregationFunctions
+from apps.base.models import BaseModel
+from apps.nodes.config import NODE_CONFIG
+from apps.tables.models import Table
+from apps.workflows.models import Workflow
 
 
 class Node(DirtyFieldsMixin, CloneMixin, BaseModel):

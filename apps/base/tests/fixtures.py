@@ -1,3 +1,4 @@
+from enum import auto
 from unittest.mock import MagicMock
 
 import ibis.expr.schema as sch
@@ -127,6 +128,13 @@ def fivetran(mocker, settings):
 def heroku(mocker):
     client = MagicMock()
     mocker.patch("apps.base.clients.heroku", return_value=client)
+    yield client
+
+
+@pytest.fixture(autouse=True)
+def paddle(mocker):
+    client = MagicMock()
+    mocker.patch("apps.base.clients.paddle", return_value=client)
     yield client
 
 

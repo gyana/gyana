@@ -2,6 +2,7 @@ from functools import cached_property
 
 from django.conf import settings
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from djpaddle.models import Subscription
@@ -41,9 +42,6 @@ class Team(BaseModel, SafeDeleteModel):
     # calculating every view is too expensive
     row_count = models.BigIntegerField(default=0)
     row_count_calculated = models.DateTimeField(null=True)
-    subscription = models.OneToOneField(
-        Subscription, null=True, on_delete=models.SET_NULL
-    )
 
     def save(self, *args, **kwargs):
         from .bigquery import create_team_dataset
@@ -118,11 +116,21 @@ class Team(BaseModel, SafeDeleteModel):
         return self.appsumoextra_set.count() > 0
 
     @property
+    def is_free(self):
+        return self.active_codes == 0 and not self.has_subscription
+
+    @property
     def plan(self):
         from apps.appsumo.account import get_deal
 
         if self.active_codes > 0:
             return {**PLANS["appsumo"], **get_deal(self.appsumocode_set.all())}
+
+        if self.has_subscription:
+            if self.active_subscription.plan.id == settings.DJPADDLE_BUSINESS_PLAN_ID:
+                return PLANS["business"]
+            elif self.active_subscription.plan.id == settings.DJPADDLE_PRO_PLAN_ID:
+                return PLANS["pro"]
 
         return PLANS["free"]
 
@@ -158,6 +166,10 @@ class Team(BaseModel, SafeDeleteModel):
         return self.project_set.filter(access=Project.Access.INVITE_ONLY).count()
 
     @property
+    def total_cnames(self):
+        return self.cname_set.count()
+
+    @property
     def can_create_project(self):
         if self.plan["projects"] == -1:
             return True
@@ -182,6 +194,19 @@ class Team(BaseModel, SafeDeleteModel):
 
     def check_new_rows(self, num_rows):
         return self.add_new_rows(num_rows) > self.row_limit
+
+    @property
+    def has_subscription(self):
+        # https://tkainrad.dev/posts/implementing-paddle-payments-for-my-django-saas/
+        return self.subscriptions.filter(
+            Q(status="active") | Q(status="deleted", next_bill_date__gte=timezone.now())
+        ).exists()
+
+    @property
+    def active_subscription(self):
+        return self.subscriptions.filter(
+            Q(status="active") | Q(status="deleted", next_bill_date__gte=timezone.now())
+        ).first()
 
 
 class Membership(BaseModel):

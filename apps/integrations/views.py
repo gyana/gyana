@@ -73,7 +73,7 @@ class IntegrationDetail(ProjectMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         integration = self.get_object()
-        
+
         if not integration.ready and integration.state != Integration.State.DONE:
             url_name = STATE_TO_URL_REDIRECT[integration.state]
             return redirect(url_name, self.project.id, integration.id)

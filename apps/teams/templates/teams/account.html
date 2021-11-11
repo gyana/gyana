@@ -7,22 +7,67 @@
 <section class="account">
   <h2 class="mb-7">Billing</h2>
 
-  {% flag 'subscriptions' %}
-    {% if not team.subscription %}
-      <a href="{% url 'teams:plan' team.id %}" class="link">Upgrade</a>
-    {% else %}
-      You are currently subscribed to {{ team.subscription.plan.name }}.
-    {% endif %}
-  {% endflag %}
+  <div class="card card--none max-w-xl mb-4 flex flex-col space-y-4">
+    <div class="pad flex flex-col space-y-2">
+      <h2>Plan</h2>
+      <p class="text-blue">
+        {% if team.has_subscription %}Gyana{% endif %} {{ team.plan.name }}
+      </p>
+      {% if team.is_free %}
+        <a href="{% url 'teams:plan' team.id %}" class="button button--sm button--success">Upgrade your plan</a>
+        <p>
+          Upgrade to the Pro plan or Business plan and get access to more rows, advanced security features and 
+          <a href="https://gyana.com/pricing" class="link">more...</a>
+        </p>
+      {% endif %}
+    </div>
+    {% flag 'subscriptions' %}
+      {% if team.has_subscription %}
+        <table class="table">
+          <tbody>
+            <tr>
+              <td><h3>Next renewal on</h3></td>
+              <td>
+                <p>{{ team.active_subscription.next_bill_date|date:'M d, Y' }}</p>
+              </td>
+            </tr>
+            <tr>
+              <td><h3>Invoices sent to</h3></td>
+              <td>
+                <p>{{ team.active_subscription.email }}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="{% url 'teams:subscription' team.id %}" class="link" data-turbo="false">
+                  Manage Subscription
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="{% url 'teams:payments' team.id %}" class="link" data-turbo="false">
+                  View Payments & Receipts
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="{{ team.active_subscription.update_url }}" class="link" data-turbo="false">
+                  Update Payment Method
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        {% endif %}
+    {% endflag %}
+  </div>
   
   <div class="account__plan">
     <div class="card card--none">
       <table class="table">
         <tbody>
-          <tr>  
-            <td><h3>Plan</h3></td>
-            <td class="text-blue">{{ team.plan.name }}</td>
-          </tr>
           <tr>
             <td><h3>Rows used</h3></td>
             <td>
@@ -79,7 +124,7 @@
           {% if team.plan.cnames %}
             <tr>
               <td><h3>Custom domains</h3></td>
-              <td>{{ team.plan.cnames }}</td>
+              <td>{{ team.total_cnames }} / {% if  team.plan.cnames != -1 %}{{ team.plan.cnames }}{% else %}∞{% endif %}</td>
             </tr>
           {% endif %}
 

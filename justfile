@@ -64,8 +64,8 @@ format:
 
 alias bf := branchformat
 branchformat:
-    git diff --name-only main '***.py' | xargs black
-    git diff --name-only main '***.py' | xargs isort
+    git diff --diff-filter=M --name-only main '***.py' | xargs black
+    git diff --diff-filter=M --name-only main '***.py' | xargs isort
 
 # Count total lines of code that need to be maintained
 cloc:

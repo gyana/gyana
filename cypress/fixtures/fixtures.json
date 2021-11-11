@@ -9,7 +9,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-10-22T00:46:20.772Z",
+      "last_login": "2021-11-08T23:50:19.876Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -33,7 +33,7 @@
     "pk": 2,
     "fields": {
       "password": "pbkdf2_sha256$260000$N2BmQRuSSYGvpQnPKCw9fj$UhUCkfx7qdzWPNYP/XUbi3L4hvP5/7f+N4nmrqTPceM=",
-      "last_login": "2021-08-31T00:57:44.039Z",
+      "last_login": "2021-11-08T23:57:20.145Z",
       "is_superuser": true,
       "username": "admin",
       "first_name": "",
@@ -87,8 +87,7 @@
       "name": "Vayu",
       "override_row_limit": null,
       "row_count": 0,
-      "row_count_calculated": null,
-      "subscription": null
+      "row_count_calculated": null
     }
   },
   {
@@ -102,8 +101,7 @@
       "name": "Alone",
       "override_row_limit": null,
       "row_count": 15,
-      "row_count_calculated": null,
-      "subscription": null
+      "row_count_calculated": null
     }
   },
   {
@@ -117,8 +115,21 @@
       "name": "Admin Templates",
       "override_row_limit": null,
       "row_count": 12943,
-      "row_count_calculated": "2021-08-31T00:58:25.986Z",
-      "subscription": null
+      "row_count_calculated": "2021-08-31T00:58:25.986Z"
+    }
+  },
+  {
+    "model": "teams.team",
+    "pk": 6,
+    "fields": {
+      "deleted": null,
+      "created": "2021-11-08T23:50:26.037Z",
+      "updated": "2021-11-08T23:50:26.037Z",
+      "icon": "",
+      "name": "Billing",
+      "override_row_limit": null,
+      "row_count": 0,
+      "row_count_calculated": null
     }
   },
   {
@@ -151,6 +162,17 @@
       "updated": "2021-08-20T13:49:01.950Z",
       "team": 2,
       "user": 3,
+      "role": "admin"
+    }
+  },
+  {
+    "model": "teams.membership",
+    "pk": 4,
+    "fields": {
+      "created": "2021-11-08T23:50:26.735Z",
+      "updated": "2021-11-08T23:50:26.735Z",
+      "team": 6,
+      "user": 1,
       "role": "admin"
     }
   },
@@ -386,7 +408,10 @@
       "password": null,
       "password_set": null,
       "width": 1200,
-      "height": 840
+      "height": 840,
+      "grid_size": 15,
+      "palette_colors": null,
+      "background_color": "ffffff"
     }
   },
   {
@@ -1853,7 +1878,8 @@
       "cell_range": "store_info!A1:D11",
       "drive_file_last_modified_at_sync": "2021-08-08T16:46:04.194Z",
       "sync_task_id": "aa5c3086-1f87-434f-9d5b-48bd69786b33",
-      "sync_started": "2021-08-08T20:28:24.090Z"
+      "sync_started": "2021-08-08T20:28:24.090Z",
+      "drive_modified_date": null
     }
   },
   {
@@ -1865,6 +1891,7 @@
       "integration": 6,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
+      "bigquery_succeeded_at": null,
       "fivetran_id": "plexus_impatient",
       "group_id": "general_candor",
       "service": "heroku_postgres",
@@ -1897,6 +1924,7 @@
         "connection_type": "Directly"
       },
       "source_sync_details": null,
+      "schema_config": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1910,6 +1938,7 @@
       "integration": 7,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
+      "bigquery_succeeded_at": null,
       "fivetran_id": "legate_wandered",
       "group_id": "general_candor",
       "service": "facebook_ads",
@@ -1932,6 +1961,7 @@
       "warnings": [],
       "config": { "sync_mode": "AllAccounts", "sync_metadata": true, "timeframe_months": "SIX" },
       "source_sync_details": { "account_ids": ["act_78363492"] },
+      "schema_config": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -1945,6 +1975,7 @@
       "integration": 8,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
+      "bigquery_succeeded_at": null,
       "fivetran_id": "humid_rifle",
       "group_id": "general_candor",
       "service": "google_analytics",
@@ -2142,6 +2173,7 @@
         "timeframe_months": "ALL_TIME"
       },
       "source_sync_details": { "profile_ids": ["237044023"] },
+      "schema_config": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -2155,6 +2187,7 @@
       "integration": 9,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
+      "bigquery_succeeded_at": null,
       "fivetran_id": "overtime_froze",
       "group_id": "general_candor",
       "service": "shopify",
@@ -2179,6 +2212,7 @@
       ],
       "config": { "shop": "gyanalimited" },
       "source_sync_details": null,
+      "schema_config": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -2192,6 +2226,7 @@
       "integration": 13,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
+      "bigquery_succeeded_at": null,
       "fivetran_id": "preshow_regardless",
       "group_id": "general_candor",
       "service": "google_analytics",
@@ -2265,6 +2300,7 @@
         "timeframe_months": "ALL_TIME"
       },
       "source_sync_details": null,
+      "schema_config": null,
       "sync_task_id": null,
       "sync_started": null
     }
@@ -2331,6 +2367,11 @@
     "fields": { "user": 3, "email": "alone@gyana.com", "verified": true, "primary": true }
   },
   {
+    "model": "account.emailaddress",
+    "pk": 3,
+    "fields": { "user": 2, "email": "admin@gyana.com", "verified": true, "primary": true }
+  },
+  {
     "model": "socialaccount.socialapp",
     "pk": 1,
     "fields": {
@@ -2380,6 +2421,121 @@
       "modified": "2021-10-13T13:06:37.292Z",
       "groups": [],
       "users": []
+    }
+  },
+  {
+    "model": "waffle.flag",
+    "pk": 3,
+    "fields": {
+      "name": "subscriptions",
+      "everyone": true,
+      "percent": null,
+      "testing": false,
+      "superusers": true,
+      "staff": false,
+      "authenticated": false,
+      "languages": "",
+      "rollout": false,
+      "note": "",
+      "created": "2021-11-08T23:57:46Z",
+      "modified": "2021-11-08T23:57:56.064Z",
+      "groups": [],
+      "users": []
+    }
+  },
+  {
+    "model": "djpaddle.plan",
+    "pk": 18567,
+    "fields": {
+      "created_at": "2021-11-08T23:50:38.699Z",
+      "updated_at": "2021-11-08T23:50:38.699Z",
+      "name": "Pro",
+      "billing_type": "month",
+      "billing_period": 1,
+      "trial_days": 0
+    }
+  },
+  {
+    "model": "djpaddle.plan",
+    "pk": 18932,
+    "fields": {
+      "created_at": "2021-11-08T23:50:38.706Z",
+      "updated_at": "2021-11-08T23:50:38.706Z",
+      "name": "Business",
+      "billing_type": "month",
+      "billing_period": 1,
+      "trial_days": 0
+    }
+  },
+  {
+    "model": "djpaddle.price",
+    "pk": 1,
+    "fields": {
+      "created_at": "2021-11-08T23:50:38.704Z",
+      "updated_at": "2021-11-08T23:50:38.704Z",
+      "plan": 18567,
+      "currency": "USD",
+      "quantity": 0.0,
+      "recurring": false
+    }
+  },
+  {
+    "model": "djpaddle.price",
+    "pk": 2,
+    "fields": {
+      "created_at": "2021-11-08T23:50:38.704Z",
+      "updated_at": "2021-11-08T23:50:38.704Z",
+      "plan": 18567,
+      "currency": "USD",
+      "quantity": 30.0,
+      "recurring": true
+    }
+  },
+  {
+    "model": "djpaddle.price",
+    "pk": 3,
+    "fields": {
+      "created_at": "2021-11-08T23:50:38.724Z",
+      "updated_at": "2021-11-08T23:50:38.724Z",
+      "plan": 18932,
+      "currency": "USD",
+      "quantity": 0.0,
+      "recurring": false
+    }
+  },
+  {
+    "model": "djpaddle.price",
+    "pk": 4,
+    "fields": {
+      "created_at": "2021-11-08T23:50:38.724Z",
+      "updated_at": "2021-11-08T23:50:38.724Z",
+      "plan": 18932,
+      "currency": "USD",
+      "quantity": 150.0,
+      "recurring": true
+    }
+  },
+  {
+    "model": "djpaddle.subscription",
+    "pk": "169194",
+    "fields": {
+      "created_at": "2021-11-08T23:01:08.216Z",
+      "updated_at": "2021-11-08T23:01:08.216Z",
+      "subscriber": 6,
+      "cancel_url": "https://sandbox-subscription-management.paddle.com/subscription/169194/hash/15a7bd9fe78a9c6b5ca80ad02542588644ae45ee1f0c3f6d4d33c3bd2a6001c0/cancel",
+      "checkout_id": "333888-chre4dda3d055ef-388e24a6c2",
+      "currency": "USD",
+      "email": "test@gyana.com",
+      "event_time": "2021-11-08T23:01:07Z",
+      "marketing_consent": false,
+      "next_bill_date": "2021-12-08T00:00:00Z",
+      "passthrough": "{\"user_id\": 1, \"team_id\": 6}",
+      "quantity": 1,
+      "source": "localhost:8000",
+      "status": "active",
+      "plan": 18567,
+      "unit_price": 30.0,
+      "update_url": "https://sandbox-subscription-management.paddle.com/subscription/169194/hash/15a7bd9fe78a9c6b5ca80ad02542588644ae45ee1f0c3f6d4d33c3bd2a6001c0/update"
     }
   }
 ]

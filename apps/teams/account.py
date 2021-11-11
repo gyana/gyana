@@ -12,6 +12,9 @@ def get_row_limit(team: Team):
     if team.override_row_limit is not None:
         return team.override_row_limit
 
+    if team.has_subscription:
+        return team.plan["rows"]
+
     rows = max(
         DEFAULT_ROW_LIMIT,
         get_deal(team.appsumocode_set.all())["rows"],
@@ -28,6 +31,9 @@ def get_row_limit(team: Team):
 
 def get_credits(team: Team):
     from apps.appsumo.account import get_deal
+
+    if team.has_subscription:
+        return team.plan["credits"]
 
     return max(DEFAULT_CREDIT_LIMIT, get_deal(team.appsumocode_set.all())["credits"])
 

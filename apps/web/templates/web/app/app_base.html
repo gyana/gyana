@@ -85,7 +85,7 @@
 
 <li>
   <a
-    class="sidebar__link {% if request.resolver_match.url_name == 'account' %}sidebar__link--active{% endif %}"
+    class="sidebar__link {% if request.resolver_match.url_name in 'account,subscription,plan,payments' %}sidebar__link--active{% endif %}"
     href="{% url 'teams:account' team.id %}"
   >
     <i class="far fa-fw fa-wallet"></i>Billing

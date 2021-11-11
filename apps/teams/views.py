@@ -1,24 +1,30 @@
 from django.conf import settings
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponse
 from django.http.response import Http404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableMixin, SingleTableView
-from djpaddle.models import Plan
+from djpaddle.models import Checkout, Plan, paddle_client
 
 from apps.base.turbo import TurboCreateView, TurboUpdateView
-from apps.teams.mixins import TeamMixin
 
-from .forms import MembershipUpdateForm, TeamCreateForm, TeamUpdateForm
+from .forms import (
+    MembershipUpdateForm,
+    TeamCreateForm,
+    TeamSubscriptionForm,
+    TeamUpdateForm,
+)
+from .mixins import TeamMixin
 from .models import Membership, Team
-from .tables import TeamMembershipTable, TeamProjectsTable
+from .paddle import get_plan_price_for_currency, list_payments_for_team
+from .tables import TeamMembershipTable, TeamPaymentsTable, TeamProjectsTable
 
 
-class TeamCreate(LoginRequiredMixin, TurboCreateView):
+class TeamCreate(TurboCreateView):
     model = Team
     form_class = TeamCreateForm
     template_name = "teams/create.html"
@@ -32,11 +38,19 @@ class TeamCreate(LoginRequiredMixin, TurboCreateView):
         return reverse("teams:plan", args=(self.object.id,))
 
 
-class TeamPlan(LoginRequiredMixin, TurboUpdateView):
+class TeamPlan(TurboUpdateView):
     model = Team
     form_class = TeamCreateForm
     template_name = "teams/plan.html"
     pk_url_kwarg = "team_id"
+
+    def get(self, request, *args, **kwargs):
+        team = self.get_object()
+
+        if team.has_subscription:
+            return redirect("teams:subscription", team.id)
+
+        return super().get(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -45,9 +59,12 @@ class TeamPlan(LoginRequiredMixin, TurboUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["paddle_plan"] = Plan.objects.first()
+        context["paddle_pro_plan"] = Plan.objects.get(pk=settings.DJPADDLE_PRO_PLAN_ID)
+        context["paddle_business_plan"] = Plan.objects.get(
+            pk=settings.DJPADDLE_BUSINESS_PLAN_ID
+        )
         context["djpaddle_checkout_success_redirect"] = reverse(
-            "teams:account", args=(self.object.id,)
+            "team_checkouts:success", args=(self.object.id,)
         )
         context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
         context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
@@ -57,7 +74,44 @@ class TeamPlan(LoginRequiredMixin, TurboUpdateView):
         return reverse("teams:detail", args=(self.object.id,))
 
 
-class TeamUpdate(LoginRequiredMixin, TurboUpdateView):
+class TeamSubscription(TurboUpdateView):
+    model = Team
+    form_class = TeamSubscriptionForm
+    template_name = "teams/subscription.html"
+    pk_url_kwarg = "team_id"
+
+    def get_initial(self):
+        return {"plan": self.object.active_subscription.plan.id}
+
+    @property
+    def plan(self):
+        return Plan.objects.get(pk=self.get_form()["plan"].value())
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["new_price"] = get_plan_price_for_currency(
+            self.plan, self.object.active_subscription.currency
+        )
+        return context
+
+    def get_success_url(self) -> str:
+        return reverse("teams:account", args=(self.object.id,))
+
+
+class TeamPayments(SingleTableMixin, DetailView):
+    model = Team
+    table_class = TeamPaymentsTable
+    template_name = "teams/payments.html"
+    pk_url_kwarg = "team_id"
+
+    def get_table_data(self):
+        return list_payments_for_team(self.object)
+
+    def get_table_kwargs(self):
+        return {"order_by": "-payout_date"}
+
+
+class TeamUpdate(TurboUpdateView):
     template_name = "teams/update.html"
     form_class = TeamUpdateForm
     model = Team
@@ -67,7 +121,7 @@ class TeamUpdate(LoginRequiredMixin, TurboUpdateView):
         return reverse("teams:update", args=(self.object.id,))
 
 
-class TeamDelete(LoginRequiredMixin, DeleteView):
+class TeamDelete(DeleteView):
     template_name = "teams/delete.html"
     model = Team
     pk_url_kwarg = "team_id"
@@ -144,3 +198,11 @@ class MembershipDelete(TeamMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("team_members:list", args=(self.team.id,))
+
+
+class CheckoutSuccess(TeamMixin, DetailView):
+    template_name = "checkout/success.html"
+    model = Checkout
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Checkout, id=self.request.GET.get("checkout"))

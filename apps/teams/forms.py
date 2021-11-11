@@ -1,6 +1,8 @@
 import analytics
 from allauth.account.forms import SignupForm
 from django import forms
+from django.conf import settings
+from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from apps.base.analytics import (
@@ -9,9 +11,11 @@ from apps.base.analytics import (
     identify_user,
     identify_user_group,
 )
+from apps.base.live_update_form import LiveUpdateForm
 from apps.teams import roles
 
 from .models import Membership, Team
+from .paddle import update_plan_for_team
 
 
 class TeamSignupForm(SignupForm):
@@ -38,9 +42,7 @@ class TeamCreateForm(forms.ModelForm):
         model = Team
         fields = ("name",)
         labels = {"name": "Name your team"}
-        help_texts = {
-            "name": "We recommend you use the name of your organisation"
-        }
+        help_texts = {"name": "We recommend you use the name of your organisation"}
 
     def __init__(self, *args, **kwargs):
         self._user = kwargs.pop("user")
@@ -63,8 +65,11 @@ class TeamCreateForm(forms.ModelForm):
 class TeamUpdateForm(forms.ModelForm):
     class Meta:
         model = Team
-        fields = ("icon", "name",)
-        widgets = {"icon": forms.ClearableFileInput(attrs={'accept':'image/*'})}
+        fields = (
+            "icon",
+            "name",
+        )
+        widgets = {"icon": forms.ClearableFileInput(attrs={"accept": "image/*"})}
         help_texts = {
             "icon": "For best results use a square image",
         }
@@ -86,3 +91,27 @@ class MembershipUpdateForm(forms.ModelForm):
             ].help_text = (
                 "You cannot make yourself a member because there is no admin left"
             )
+
+
+class TeamSubscriptionForm(LiveUpdateForm):
+    class Meta:
+        model = Team
+        fields = ()
+
+    plan = forms.ChoiceField(
+        label="Your plan",
+        help_text=mark_safe(
+            '<a href="https://www.gyana.com/pricing" class="link">Learn more</a> on our website.'
+        ),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["plan"].choices = (
+            (settings.DJPADDLE_PRO_PLAN_ID, "Pro"),
+            (settings.DJPADDLE_BUSINESS_PLAN_ID, "Business"),
+        )
+
+    def post_save(self, instance):
+        update_plan_for_team(instance, int(self.cleaned_data["plan"]))
+        return super().post_save(instance)

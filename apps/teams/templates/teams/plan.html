@@ -1,17 +1,11 @@
-{% extends "web/app/app_base.html" %}
+{% extends "teams/base.html" %}
 {% load waffle_tags %}
 
-{% block sidebar %}{% endblock %}
-
-{% block app %}
+{% block tab %}
 
 <div class="flex flex-col justify-center items-center h-full">
   <div class="flex flex-col mb-7 text-center">
     <h2>Choose a plan for your team</h2>
-    <p>
-      Monthly paid plans will be available in the near future, for now all new
-      teams are on the free plan.
-    </p>
   </div>
 
   <div class="plan">
@@ -23,8 +17,8 @@
         <p class="mt-8 mb-3"><span class="h1">It's free</span></p>
         <p class="mb-6"><strong>50k</strong> rows of data</p>
 
-        <a href="{% url 'teams:detail' team.id %}" class="button button--primary w-full">
-          Choose plan
+        <a href="{% url 'teams:detail' team.id %}" class="button button--tertiary w-full">
+          Continue
         </a>
       </div>
 
@@ -52,8 +46,8 @@
 
         {% flag 'subscriptions' %}
           <a href="#!" class="button button--primary w-full paddle_button"
-            data-product="{{ paddle_plan.id }}" data-theme="none"
-            data-passthrough='{"user_id": {{ request.user.id }}, "team_id": {{ object.id }} }'>
+            data-product="{{ paddle_pro_plan.id }}" data-theme="none"
+            data-passthrough='{"user_id": {{ request.user.id }}, "team_id": {{ object.id }}}'>
             Upgrade to Pro
           </a>
         {% else %}
@@ -84,7 +78,15 @@
         <p class="mt-8 mb-3"><span class="h1">$150</span>/mo</p>
         <p class="mb-6"><strong>10 Million</strong> rows of data</p>
 
-        <button class="button button--primary w-full" disabled>Available soon</button>
+        {% flag 'subscriptions' %}
+          <a href="#!" class="button button--primary w-full paddle_button"
+            data-product="{{ paddle_business_plan.id }}" data-theme="none"
+            data-passthrough='{"user_id": {{ request.user.id }}, "team_id": {{ object.id }}}'>
+            Upgrade to Business
+          </a>
+        {% else %}
+          <button class="button button--primary w-full" disabled>Available soon</button>
+        {% endflag %}
       </div>
 
       <hr>
