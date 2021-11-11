@@ -1,4 +1,4 @@
-import { Controller } from '@hotwired/stimulus'
+import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static values = {
@@ -25,13 +25,13 @@ export default class extends Controller {
   }
 
   async onSuccess() {
-    const successTemplate = this.element.querySelector('#success-template')
+    const successTemplate = this.element.querySelector("#success-template")
     if (successTemplate !== null) {
       const successNode = successTemplate.content.cloneNode(true)
-      this.element.innerHTML = ''
+      this.element.innerHTML = ""
       this.element.appendChild(successNode)
 
-      window.removeEventListener('beforeunload', this.onUnloadCall)
+      window.removeEventListener("beforeunload", this.onUnloadCall)
       if (this.redirectUrlValue) {
         setTimeout(() => {
           Turbo.visit(this.redirectUrlValue)
@@ -44,44 +44,47 @@ export default class extends Controller {
   }
 
   onError(progressBarElement, progressBarMessageElement, excMessage, data) {
-    const failureNode = this.element.querySelector('#failure-template').content.cloneNode(true)
-    this.element.innerHTML = ''
+    const failureNode = this.element.querySelector("#failure-template").content.cloneNode(true)
+    this.element.innerHTML = ""
     this.element.appendChild(failureNode)
-    this.element.querySelector('#failure-message').textContent = excMessage || ''
+    this.element.querySelector("#failure-message").textContent = excMessage || ""
   }
 
   connect() {
     if (!this.dontStartValue) {
       this.element.insertAdjacentHTML(
-        'beforeend',
-        `<div id='progress-bar' style='display:none;'>
+        "beforeend",
+        `<div id="progress-bar" style="display:none;">
           <div id="progress-bar-message"></div>
         </div>`
       )
-      this.onUnloadCall = (e) => {
-        e.preventDefault()
-        e.returnValue = ''
-      }
-      window.addEventListener('beforeunload', this.onUnloadCall)
-      if (typeof CeleryProgressBar !== 'undefined') {
+
+      window.addEventListener("beforeunload", this.handleBeforeUnload)
+
+      if (typeof CeleryProgressBar !== "undefined") {
         this.init()
       } else {
-        var script = document.createElement('script')
+        var script = document.createElement("script")
         script.src = this.scriptUrlValue
-        script.onload = () => window.dispatchEvent(new Event('celeryProgress:load'))
+        script.onload = () => window.dispatchEvent(new Event("celeryProgress:load"))
         document.head.appendChild(script)
 
-        // Binding our init function to this, allowing us to access this class' values
+        // Binding our init function to this, allowing us to access this class" values
         const init = this.init.bind(this)
 
-        window.addEventListener('celeryProgress:load', init, { once: true })
+        window.addEventListener("celeryProgress:load", init, { once: true })
       }
     }
   }
 
   disconnect() {
     if (!this.dontStartValue) {
-      window.removeEventListener('beforeunload', this.onUnloadCall)
+      window.removeEventListener("beforeunload", this.onUnloadCall)
     }
+  }
+
+  handleBeforeUnload(event) {
+    event.preventDefault()
+    event.returnValue = ""
   }
 }
