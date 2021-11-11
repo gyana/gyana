@@ -14,7 +14,8 @@
         {% if team.has_subscription %}Gyana{% endif %} {{ team.plan.name }}
       </p>
       {% if team.is_free %}
-        <a href="{% url 'teams:plan' team.id %}" class="button button--sm button--success">Upgrade your plan</a>
+        {% comment %} data-turbo="false" to enable Paddle JS to load{% endcomment %}
+        <a data-turbo="false" href="{% url 'teams:plan' team.id %}" class="button button--sm button--success">Upgrade your plan</a>
         <p>
           Upgrade to the Pro plan or Business plan and get access to more rows, advanced security features and 
           <a href="https://gyana.com/pricing" class="link">more...</a>

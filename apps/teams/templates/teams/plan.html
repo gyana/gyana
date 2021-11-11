@@ -41,13 +41,16 @@
         <h4 class="h4 text-blue mb-3">Pro</h1>
         <p class="mb-auto">For small teams and freelancers</p>
         
-        <p class="mt-8 mb-3"><span class="h1">$30</span>/mo</p>
+        <p class="mt-8 mb-3">
+          <span data-product="{{ paddle_pro_plan.id }}" class="h1 paddle-gross">
+            <i class="fa fa-spinner-third fa-spin"></i>
+          </span>/mo
+        </p>
         <p class="mb-6"><strong>1 Million</strong> rows of data</p>
 
         {% flag 'subscriptions' %}
-          <a href="#!" class="button button--primary w-full paddle_button"
-            data-product="{{ paddle_pro_plan.id }}" data-theme="none"
-            data-passthrough='{"user_id": {{ request.user.id }}, "team_id": {{ object.id }}}'>
+          {% comment %} data-turbo="false" clears the Paddle JS library {% endcomment %}
+          <a data-turbo="false" href="{% url 'teams:checkout' team.id %}" class="button button--primary w-full">
             Upgrade to Pro
           </a>
         {% else %}
@@ -75,13 +78,16 @@
         <h4 class="h4 text-blue mb-3">Business</h1>
         <p class="mb-auto">For growing teams and agencies</p>
         
-        <p class="mt-8 mb-3"><span class="h1">$150</span>/mo</p>
+        <p class="mt-8 mb-3">
+          <span data-product="{{ paddle_business_plan.id }}" class="h1 paddle-gross">
+            <i class="fa fa-spinner-third fa-spin"></i>
+          </span>/mo
+        </p>
         <p class="mb-6"><strong>10 Million</strong> rows of data</p>
 
         {% flag 'subscriptions' %}
-          <a href="#!" class="button button--primary w-full paddle_button"
-            data-product="{{ paddle_business_plan.id }}" data-theme="none"
-            data-passthrough='{"user_id": {{ request.user.id }}, "team_id": {{ object.id }}}'>
+          {% comment %} data-turbo="false" clears the Paddle JS library {% endcomment %}
+          <a data-turbo="false" href="{% url 'teams:checkout' team.id %}" class="button button--primary w-full">
             Upgrade to Business
           </a>
         {% else %}
@@ -107,5 +113,4 @@
 
 {% block page_js %}
   {% include "djpaddle_paddlejs.html" %}
-  {% include "djpaddle_post_checkout.html" %}
 {% endblock %}

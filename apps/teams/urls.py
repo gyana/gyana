@@ -51,6 +51,11 @@ urlpatterns = [
         name="plan",
     ),
     path(
+        "<hashid:team_id>/checkout",
+        login_and_admin_required(views.TeamCheckout.as_view()),
+        name="checkout",
+    ),
+    path(
         "<hashid:team_id>/subscription",
         login_and_admin_required(views.TeamSubscription.as_view()),
         name="subscription",

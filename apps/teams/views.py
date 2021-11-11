@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableMixin, SingleTableView
-from djpaddle.models import Checkout, Plan, paddle_client
+from djpaddle.models import Checkout, Plan
 
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 
@@ -74,6 +74,18 @@ class TeamPlan(TurboUpdateView):
         return reverse("teams:detail", args=(self.object.id,))
 
 
+class TeamCheckout(DetailView):
+    model = Team
+    template_name = "teams/checkout.html"
+    pk_url_kwarg = "team_id"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
+        context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
+        return context
+
+
 class TeamSubscription(TurboUpdateView):
     model = Team
     form_class = TeamSubscriptionForm
@@ -92,6 +104,8 @@ class TeamSubscription(TurboUpdateView):
         context["new_price"] = get_plan_price_for_currency(
             self.plan, self.object.active_subscription.currency
         )
+        context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
+        context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
         return context
 
     def get_success_url(self) -> str:
