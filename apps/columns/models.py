@@ -1,10 +1,11 @@
+from django.conf import settings
+from django.core.validators import RegexValidator
+from django.db import models
+
 from apps.base.aggregations import AggregationFunctions
 from apps.base.models import SaveParentModel
 from apps.nodes.models import Node
 from apps.widgets.models import Widget
-from django.conf import settings
-from django.core.validators import RegexValidator
-from django.db import models
 
 from .bigquery import (
     CommonOperations,
@@ -69,6 +70,12 @@ class AbstractOperationColumn(SaveParentModel):
                 **DatetimeOperations,
             }.items()
         ),
+        null=True,
+    )
+
+    boolean_function = models.CharField(
+        max_length=20,
+        choices=((key, value.label) for key, value in {**CommonOperations}.items()),
         null=True,
     )
 

@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 
-from apps.columns.transformer import TreeToIbis
 from lark import Lark
+
+from apps.columns.transformer import TreeToIbis
 
 parser = Lark.open("formula.lark", rel_to=__file__, start="formula")
 
@@ -17,6 +18,7 @@ CommonOperations = {
     "isnull": Operation("is empty"),
     "notnull": Operation("is not empty"),
 }
+
 
 StringOperations = {
     "fillna": Operation("fill empty values", 1, "string_value"),

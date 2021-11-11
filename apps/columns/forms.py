@@ -26,6 +26,7 @@ IBIS_TO_FUNCTION = {
     "Timestamp": "datetime_function",
     "Date": "date_function",
     "Time": "time_function",
+    "Boolean": "boolean_function",
 }
 
 
@@ -66,6 +67,7 @@ class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
             "integer_function",
             "date_function",
             "time_function",
+            "boolean_function",
             "datetime_function",
             "integer_value",
             "float_value",
@@ -78,6 +80,7 @@ class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
             "date_function": "Operation",
             "time_function": "Operation",
             "datetime_function": "Operation",
+            "boolean_function": "Operation",
             "integer_value": "Value",
             "float_value": "Value",
             "string_value": "Value",
@@ -114,6 +117,7 @@ class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
             "integer_function",
             "date_function",
             "time_function",
+            "boolean_function",
             "datetime_function",
             "integer_value",
             "float_value",
@@ -126,6 +130,7 @@ class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
             "integer_function": "Operation",
             "date_function": "Operation",
             "time_function": "Operation",
+            "boolean_function": "Operation",
             "datetime_function": "Operation",
             "integer_value": "Value",
             "float_value": "Value",
