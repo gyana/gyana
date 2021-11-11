@@ -45,7 +45,7 @@ class TeamSignupForm(SignupForm):
 
     def save(self, request):
         user = super().save(request)
-        identify_user(user)
+        identify_user(user, signup_source="waitlist")
 
         analytics.track(user.id, SIGNED_UP_EVENT)
 

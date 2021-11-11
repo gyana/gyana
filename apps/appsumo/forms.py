@@ -1,9 +1,10 @@
 from allauth.account.forms import SignupForm
-from apps.base import analytics
-from apps.base.forms import BaseModelForm
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import transaction
+
+from apps.base import analytics
+from apps.base.forms import BaseModelForm
 
 from .models import AppsumoCode, AppsumoReview
 
@@ -91,7 +92,7 @@ class AppsumoSignupForm(SignupForm):
             user = super().save(request)
             self._code.redeem_new_team(self.cleaned_data["team"], user)
 
-        analytics.identify_user(user)
+        analytics.identify_user(user, signup_source="appsumo")
         return user
 
 

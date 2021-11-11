@@ -58,16 +58,20 @@ DASHBOARD_SHARED_PUBLIC_EVENT: Final = "Dashboard shared public"
 EXPORT_CREATED: Final = "Export created"
 
 
-def identify_user(user: CustomUser):
-    analytics.identify(
-        user.id,
-        {
-            "username": user.username,
-            "name": f"{user.first_name} {user.last_name}",
-            "email": user.email,
-            # TODO: add plan information here
-        },
-    )
+def identify_user(user: CustomUser, signup_source=None):
+
+    traits = {
+        "username": user.username,
+        "name": f"{user.first_name} {user.last_name}",
+        "email": user.email,
+        # TODO: add plan information here
+    }
+
+    if signup_source is not None:
+        # appsumo OR waitlist OR website
+        traits["signup_source"] = signup_source
+
+    analytics.identify(user.id, traits)
 
 
 def identify_user_group(user: CustomUser, team):
