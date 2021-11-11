@@ -31,6 +31,29 @@ NO_AGGREGATION_DATA = {
     ]
 }
 
+MULTI_VALUE_DATA_COUNT = {
+    "categories": [{"category": [{"label": label} for label in DIMENSION]}],
+    "dataset": [{"data": [{"value": value} for value in [2, 4] * 5]}],
+}
+
+MULTI_VALUE_DATA_AGGREGATION = {
+    "categories": [{"category": [{"label": label} for label in DIMENSION]}],
+    "dataset": [{"data": [{"value": value} for value in range(10)]}],
+}
+
+MULTI_VALUE_DATA_MULTI = {
+    "categories": [{"category": [{"label": label} for label in DIMENSION]}],
+    "dataset": [
+        {
+            "seriesname": label,
+            "data": [{"value": value} for value in iterator],
+        }
+        for label, iterator in [
+            ("medals", range(10)),
+            ("points", range(10, 20)),
+        ]
+    ],
+}
 
 TWO_DIMENSION_DF = pd.DataFrame(
     {
@@ -39,6 +62,15 @@ TWO_DIMENSION_DF = pd.DataFrame(
         "medals": range(10),
     }
 )
+
+
+STACK_DATA = {
+    "categories": [{"category": [{"label": label} for label in DIMENSION]}],
+    "dataset": [
+        {"seriesname": str(color), "data": [{"value": value} for value in iterator]}
+        for color, iterator in zip(range(5), zip(range(5), range(5, 10)))
+    ],
+}
 
 COLORRANGE = {
     "colorrange": {
@@ -182,6 +214,139 @@ NO_DIMENSION_DF = pd.DataFrame({"medals": [10], "points": [20], "wins": [30]})
                 "dataset": [{"data": [{"value": value} for value in [10, 20, 30]]}],
             },
             id="radar",
+        ),
+        pytest.param(
+            Widget.Kind.FUNNEL,
+            NO_DIMENSION_DF,
+            [AGGREGATION_1, AGGREGATION_2, AGGREGATION_3],
+            {
+                "data": [
+                    {"label": label, "value": value}
+                    for label, value in [("medals", 10), ("points", 20), ("wins", 30)]
+                ]
+            },
+            id="funnel",
+        ),
+        pytest.param(
+            Widget.Kind.PYRAMID,
+            NO_DIMENSION_DF,
+            [AGGREGATION_1, AGGREGATION_2, AGGREGATION_3],
+            {
+                "data": [
+                    {"label": label, "value": value}
+                    for label, value in [
+                        ("wins", 30),
+                        ("points", 20),
+                        ("medals", 10),
+                    ]
+                ]
+            },
+            id="pyramid",
+        ),
+        pytest.param(
+            Widget.Kind.COLUMN,
+            ONE_DIMENSION_DF,
+            [],
+            MULTI_VALUE_DATA_COUNT,
+            id="column no aggregation",
+        ),
+        pytest.param(
+            Widget.Kind.COLUMN,
+            ONE_DIMENSION_DF,
+            [AGGREGATION_1],
+            MULTI_VALUE_DATA_AGGREGATION,
+            id="column one aggregation",
+        ),
+        pytest.param(
+            Widget.Kind.COLUMN,
+            ONE_DIMENSION_DF,
+            [AGGREGATION_1, AGGREGATION_2],
+            MULTI_VALUE_DATA_MULTI,
+            id="column two aggregations",
+        ),
+        pytest.param(
+            Widget.Kind.BAR,
+            ONE_DIMENSION_DF,
+            [],
+            MULTI_VALUE_DATA_COUNT,
+            id="bar no aggregation",
+        ),
+        pytest.param(
+            Widget.Kind.BAR,
+            ONE_DIMENSION_DF,
+            [AGGREGATION_1],
+            MULTI_VALUE_DATA_AGGREGATION,
+            id="bar one aggregation",
+        ),
+        pytest.param(
+            Widget.Kind.BAR,
+            ONE_DIMENSION_DF,
+            [AGGREGATION_1, AGGREGATION_2],
+            MULTI_VALUE_DATA_MULTI,
+            id="bar two aggregations",
+        ),
+        pytest.param(
+            Widget.Kind.LINE,
+            ONE_DIMENSION_DF,
+            [],
+            MULTI_VALUE_DATA_COUNT,
+            id="line no aggregation",
+        ),
+        pytest.param(
+            Widget.Kind.LINE,
+            ONE_DIMENSION_DF,
+            [AGGREGATION_1],
+            MULTI_VALUE_DATA_AGGREGATION,
+            id="line one aggregation",
+        ),
+        pytest.param(
+            Widget.Kind.LINE,
+            ONE_DIMENSION_DF,
+            [AGGREGATION_1, AGGREGATION_2],
+            MULTI_VALUE_DATA_MULTI,
+            id="line three aggregations",
+        ),
+        pytest.param(
+            Widget.Kind.AREA,
+            ONE_DIMENSION_DF,
+            [],
+            MULTI_VALUE_DATA_COUNT,
+            id="area no aggregation",
+        ),
+        pytest.param(
+            Widget.Kind.AREA,
+            ONE_DIMENSION_DF,
+            [AGGREGATION_1],
+            MULTI_VALUE_DATA_AGGREGATION,
+            id="area one aggregation",
+        ),
+        pytest.param(
+            Widget.Kind.AREA,
+            ONE_DIMENSION_DF,
+            [AGGREGATION_1, AGGREGATION_2],
+            MULTI_VALUE_DATA_MULTI,
+            id="area three aggregations",
+        ),
+        pytest.param(
+            Widget.Kind.STACKED_COLUMN,
+            TWO_DIMENSION_DF,
+            [AGGREGATION_1],
+            STACK_DATA,
+            id="stacked column one aggregations and second dimension",
+        ),
+        pytest.param(
+            Widget.Kind.STACKED_BAR,
+            TWO_DIMENSION_DF,
+            [AGGREGATION_1],
+            STACK_DATA,
+            id="stacked bar one aggregations and second dimension",
+        ),
+        pytest.param(
+            Widget.Kind.STACKED_LINE,
+            TWO_DIMENSION_DF,
+            [AGGREGATION_1],
+            STACK_DATA,
+            id="stacked line one aggregations and second dimension",
         ),
     ],
 )
