@@ -65,7 +65,7 @@ TWO_DIMENSION_DF = pd.DataFrame(
 
 
 STACK_DATA = {
-    "categories": [{"category": [{"label": label} for label in DIMENSION]}],
+    "categories": [{"category": [{"label": label} for label in ["a", "b"]]}],
     "dataset": [
         {"seriesname": str(color), "data": [{"value": value} for value in iterator]}
         for color, iterator in zip(range(5), zip(range(5), range(5, 10)))
@@ -347,6 +347,27 @@ NO_DIMENSION_DF = pd.DataFrame({"medals": [10], "points": [20], "wins": [30]})
             [AGGREGATION_1],
             STACK_DATA,
             id="stacked line one aggregations and second dimension",
+        ),
+        pytest.param(
+            Widget.Kind.BUBBLE,
+            ONE_DIMENSION_DF,
+            [AGGREGATION_1, AGGREGATION_2, {"column": "count", "function": "count"}],
+            {
+                "categories": [
+                    {"category": [{"label": str(label)} for label in range(10)]}
+                ],
+                "dataset": [
+                    {
+                        "data": [
+                            {"x": x, "y": y, "z": z, "id": i}
+                            for x, y, z, i in zip(
+                                range(10), range(10, 20), [2, 4] * 5, DIMENSION
+                            )
+                        ]
+                    }
+                ],
+            },
+            id="bubble",
         ),
     ],
 )
