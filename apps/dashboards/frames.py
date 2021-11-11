@@ -1,14 +1,16 @@
+from django.db.models import Count, Q
+from django.urls.base import reverse
+from turbo_response import TurboStream
+from turbo_response.response import TurboStreamResponse
+
 from apps.base.frames import (
     TurboFrameDetailView,
     TurboFrameTemplateView,
     TurboFrameUpdateView,
 )
-from apps.base.turbo import TurboUpdateView
 from apps.dashboards.forms import DashboardShareForm
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import Widget
-from django.db.models import Count, Q
-from django.urls.base import reverse
 
 from .forms import DashboardForm
 from .models import Dashboard
@@ -83,4 +85,14 @@ class DashboardSettings(ProjectMixin, TurboFrameUpdateView):
     def get_success_url(self) -> str:
         return reverse(
             "project_dashboards:detail", args=(self.project.id, self.object.id)
+        )
+
+    def form_invalid(self, form):
+        context = self.get_context_data()
+        return TurboStreamResponse(
+            [
+                TurboStream(self.turbo_frame_dom_id)
+                .replace.template(self.template_name, context)
+                .render()
+            ]
         )
