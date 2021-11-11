@@ -34,7 +34,7 @@ class Dashboard(CloneMixin, BaseModel):
     grid_size = models.IntegerField(default=15)
 
     palette_colors = ArrayField(models.CharField(max_length=6), null=True, size=20)
-    background_color = models.CharField(default="ffffff", max_length=6)
+    background_color = models.CharField(default="#ffffff", max_length=7)
 
     _clone_m2o_or_o2m_fields = ["widget_set"]
 

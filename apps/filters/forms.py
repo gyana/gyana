@@ -4,7 +4,7 @@ from django.forms.widgets import Input, TextInput
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
 from apps.base.utils import create_column_choices
-from apps.filters.models import PREDICATE_MAP, Filter
+from apps.filters.models import NO_VALUE, PREDICATE_MAP, Filter
 
 from .widgets import DatetimeInput, SelectAutocomplete
 
@@ -86,20 +86,9 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
                 fields += [predicate]
                 if (
                     pred := self.get_live_field(predicate)
-                ) is not None and pred not in [
-                    "isnull",
-                    "notnull",
-                    "isupper",
-                    "islower",
-                    "today",
-                    "tomorrow",
-                    "yesterday",
-                ]:
+                ) is not None and pred not in NO_VALUE:
 
-                    if pred in ["isin", "notin"]:
-                        fields += [value + "s"]
-                    else:
-                        fields += [value]
+                    fields += [value + "s"] if pred in ["isin", "notin"] else [value]
 
             if filter_type == Filter.Type.BOOL:
                 fields += [value]

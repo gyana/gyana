@@ -96,6 +96,7 @@ PROJECT_APPS = [
     "apps.appsumo",
     "apps.templates",
     "apps.cnames.apps.CNamesConfig",
+    "apps.exports",
 ]
 
 INSTALLED_APPS = (

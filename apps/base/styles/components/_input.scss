@@ -98,6 +98,15 @@ input[type='search'] {
   @extend %input;
 }
 
+input[type='color'] {
+  @extend %input;
+
+  border: none;
+  height: 3.2rem;
+  padding: 0;
+  width: 100%;
+}
+
 textarea {
   @extend %input;
 

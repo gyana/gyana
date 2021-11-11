@@ -1,6 +1,8 @@
-<p class="text-black-50">
+{% load humanize %}
+
+<p class="small text-black-50">
   {% if object.last_run %}
-  Last run: {{ object.last_run }}
+  Last run: {{ object.last_run|naturaltime }}
   {% else %}
   Press the run button after adding some nodes to run this workflow
   {% endif %}

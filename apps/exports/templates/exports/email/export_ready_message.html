@@ -1,0 +1,13 @@
+{% extends "web/emails/base.html" %}
+
+{% block title %}
+Your export is ready!
+{% endblock %}
+
+{% block body %}
+<p>
+  Click <a href="{{ url }}">here to download</a> your CSV export.
+
+  The link is valid for 7 days.
+</p>
+{% endblock %}

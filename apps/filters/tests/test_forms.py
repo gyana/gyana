@@ -1,43 +1,205 @@
 import pytest
+from django.http import QueryDict
+
 from apps.base.tests.asserts import assertFormChoicesLength
 from apps.base.tests.mock_data import TABLE
 from apps.filters.forms import FilterForm
-from django.http import QueryDict
+from apps.filters.models import Filter
 
 pytestmark = pytest.mark.django_db
 
+COLUMN_LENGTH = 9
+NUMERIC_LENGTH = 11
+STRING_LENGTH = 13
+TIME_LENGTH = 9
+DATETIME_LENGTH = 15
 
-def test_filter_form(filter_factory, node_factory):
+NUMERIC_NO_VALUE = [Filter.NumericPredicate.ISNULL, Filter.NumericPredicate.NOTNULL]
+STRING_NO_VALUE = [
+    Filter.StringPredicate.ISNULL,
+    Filter.StringPredicate.NOTNULL,
+    Filter.StringPredicate.ISUPPERCASE,
+    Filter.StringPredicate.ISLOWERCASE,
+]
+TIME_NO_VALUE = [Filter.TimePredicate.ISNULL, Filter.TimePredicate.NOTNULL]
+DATETIME_NO_VALUE = TIME_NO_VALUE + [
+    Filter.DatetimePredicate.TODAY,
+    Filter.DatetimePredicate.TOMORROW,
+    Filter.DatetimePredicate.YESTERDAY,
+    Filter.DatetimePredicate.ONEMONTHAGO,
+    Filter.DatetimePredicate.ONEWEEKAGO,
+    Filter.DatetimePredicate.ONEYEARAGO,
+]
+
+NUMERIC_VALUE = [
+    Filter.NumericPredicate.EQUAL,
+    Filter.NumericPredicate.NEQUAL,
+    Filter.NumericPredicate.GREATERTHAN,
+    Filter.NumericPredicate.GREATERTHANEQUAL,
+    Filter.NumericPredicate.LESSTHAN,
+    Filter.NumericPredicate.LESSTHANEQUAL,
+]
+NUMERIC_VALUES = [Filter.NumericPredicate.ISIN, Filter.NumericPredicate.NOTIN]
+STRING_VALUE = [
+    Filter.StringPredicate.EQUAL,
+    Filter.StringPredicate.NEQUAL,
+    Filter.StringPredicate.CONTAINS,
+    Filter.StringPredicate.NOTCONTAINS,
+    Filter.StringPredicate.STARTSWITH,
+    Filter.StringPredicate.ENDSWITH,
+]
+STRING_VALUES = [Filter.StringPredicate.ISIN, Filter.StringPredicate.NOTIN]
+TIME_VALUE = [
+    Filter.TimePredicate.ON,
+    Filter.TimePredicate.NOTON,
+    Filter.TimePredicate.BEFORE,
+    Filter.TimePredicate.BEFOREON,
+    Filter.TimePredicate.AFTER,
+    Filter.TimePredicate.AFTERON,
+]
+
+
+def parametrize_column_predicate(
+    column, column_type, predicate_name, predicate_length, predicates, value_name=None
+):
+    return [
+        pytest.param(
+            {"column": column, predicate_name: predicate},
+            {"hidden_live", "column", predicate_name}
+            | ({value_name} if value_name else set()),
+            {"column": COLUMN_LENGTH, predicate_name: predicate_length},
+            id=f"{column_type} column with {predicate}",
+        )
+        for predicate in predicates
+    ]
+
+
+@pytest.mark.parametrize(
+    "data, expected_fields, choice_lengths",
+    [
+        pytest.param(
+            {},
+            {"hidden_live", "column"},
+            {"column": COLUMN_LENGTH},
+            id="empty form",
+        ),
+        pytest.param(
+            {"column": "id"},
+            {"hidden_live", "column", "numeric_predicate"},
+            {"column": COLUMN_LENGTH, "numeric_predicate": NUMERIC_LENGTH},
+            id="integer column",
+        ),
+        *parametrize_column_predicate(
+            "id", "integer", "numeric_predicate", NUMERIC_LENGTH, NUMERIC_NO_VALUE
+        ),
+        *parametrize_column_predicate(
+            "stars", "float", "numeric_predicate", NUMERIC_LENGTH, NUMERIC_NO_VALUE
+        ),
+        *parametrize_column_predicate(
+            "athlete", "string", "string_predicate", STRING_LENGTH, STRING_NO_VALUE
+        ),
+        *parametrize_column_predicate(
+            "lunch", "time", "time_predicate", TIME_LENGTH, TIME_NO_VALUE
+        ),
+        *parametrize_column_predicate(
+            "birthday", "date", "datetime_predicate", DATETIME_LENGTH, DATETIME_NO_VALUE
+        ),
+        *parametrize_column_predicate(
+            "updated",
+            "datetime",
+            "datetime_predicate",
+            DATETIME_LENGTH,
+            DATETIME_NO_VALUE,
+        ),
+        *parametrize_column_predicate(
+            "id",
+            "integer",
+            "numeric_predicate",
+            NUMERIC_LENGTH,
+            NUMERIC_VALUE,
+            "integer_value",
+        ),
+        *parametrize_column_predicate(
+            "stars",
+            "float",
+            "numeric_predicate",
+            NUMERIC_LENGTH,
+            NUMERIC_VALUE,
+            "float_value",
+        ),
+        *parametrize_column_predicate(
+            "id",
+            "integer",
+            "numeric_predicate",
+            NUMERIC_LENGTH,
+            NUMERIC_VALUES,
+            "integer_values",
+        ),
+        *parametrize_column_predicate(
+            "stars",
+            "float",
+            "numeric_predicate",
+            NUMERIC_LENGTH,
+            NUMERIC_VALUES,
+            "float_values",
+        ),
+        *parametrize_column_predicate(
+            "athlete",
+            "string",
+            "string_predicate",
+            STRING_LENGTH,
+            STRING_VALUE,
+            "string_value",
+        ),
+        *parametrize_column_predicate(
+            "athlete",
+            "string",
+            "string_predicate",
+            STRING_LENGTH,
+            STRING_VALUES,
+            "string_values",
+        ),
+        *parametrize_column_predicate(
+            "lunch",
+            "time",
+            "time_predicate",
+            TIME_LENGTH,
+            TIME_VALUE,
+            "time_value",
+        ),
+        *parametrize_column_predicate(
+            "updated",
+            "datetime",
+            "datetime_predicate",
+            DATETIME_LENGTH,
+            TIME_VALUE,
+            "datetime_value",
+        ),
+        *parametrize_column_predicate(
+            "birthday",
+            "datetime",
+            "datetime_predicate",
+            DATETIME_LENGTH,
+            TIME_VALUE,
+            "date_value",
+        ),
+        pytest.param(
+            {"column": "is_nice"},
+            {"hidden_live", "column", "bool_value"},
+            {},
+            id="bool column",
+        ),
+    ],
+)
+def test_filter_form(
+    data, expected_fields, choice_lengths, filter_factory, node_factory
+):
     filter_ = filter_factory(node=node_factory())
-    form = FilterForm(instance=filter_, schema=TABLE.schema())
+    query_dict = QueryDict(mutable=True)
+    query_dict.update(data)
+    form = FilterForm(instance=filter_, schema=TABLE.schema(), data=query_dict)
 
-    assert set(form.fields.keys()) == {"hidden_live", "column"}
-    assertFormChoicesLength(form, "column", 9)
+    assert set(form.fields.keys()) == expected_fields
 
-    data = QueryDict(mutable=True)
-    data["column"] = "id"
-    form = FilterForm(instance=filter_, schema=TABLE.schema(), data=data)
-    assert set(form.fields.keys()) == {"hidden_live", "column", "numeric_predicate"}
-    assertFormChoicesLength(form, "numeric_predicate", 11)
-
-    data["numeric_predicate"] = "isnull"
-    form = FilterForm(instance=filter_, schema=TABLE.schema(), data=data)
-    assert set(form.fields.keys()) == {"hidden_live", "column", "numeric_predicate"}
-
-    data["numeric_predicate"] = "equal"
-    form = FilterForm(instance=filter_, schema=TABLE.schema(), data=data)
-    assert set(form.fields.keys()) == {
-        "hidden_live",
-        "column",
-        "numeric_predicate",
-        "integer_value",
-    }
-
-    data["numeric_predicate"] = "isin"
-    form = FilterForm(instance=filter_, schema=TABLE.schema(), data=data)
-    assert set(form.fields.keys()) == {
-        "hidden_live",
-        "column",
-        "numeric_predicate",
-        "integer_values",
-    }
+    for field, length in choice_lengths.items():
+        assertFormChoicesLength(form, field, length)

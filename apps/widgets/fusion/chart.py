@@ -1,13 +1,10 @@
+import uuid
+
 import numpy as np
 import pandas as pd
 
 from apps.widgets.bigquery import get_unique_column_names
-from apps.widgets.fusion.utils import (
-    DEFAULT_HEIGHT,
-    DEFAULT_WIDTH,
-    TO_FUSION_CHART,
-    short_hash,
-)
+from apps.widgets.fusion.utils import DEFAULT_HEIGHT, DEFAULT_WIDTH, TO_FUSION_CHART
 from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget
 
 from .fusioncharts import FusionCharts
@@ -22,8 +19,8 @@ def _create_axis_names(widget):
         }
     if widget.kind == Widget.Kind.HEATMAP:
         return {
-            "xAxisName": widget.dimension,
-            "yAxisName": widget.second_dimension,
+            "yAxisName": widget.dimension,
+            "xAxisName": widget.second_dimension,
         }
     if widget.kind in NO_DIMENSION_WIDGETS:
         {}
@@ -50,7 +47,7 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
         **data,
     }
 
-    chart_id = f"{widget.pk}-{short_hash()}"
+    chart_id = f"{widget.pk}-{uuid.uuid4()}"
     return (
         FusionCharts(
             TO_FUSION_CHART.get(widget.kind) or widget.kind,

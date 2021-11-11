@@ -14,7 +14,7 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
   const inputFileRef = useRef<HTMLInputElement>(null)
   const inputNameRef = useRef<HTMLInputElement>(null)
   const [progress, setProgress] = useState(0)
-  const [stage, setStage] = useState<Stage>('error')
+  const [stage, setStage] = useState<Stage>('initial')
   const [error, setError] = useState<string>()
 
   useEffect(() => {

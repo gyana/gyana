@@ -11,7 +11,7 @@
     data-theme="popover-menu"
   >
     <button class="button button--circle button--tertiary">
-      <i class="fas fa-fw fa-ellipsis-v"></i>
+      <i class="fas fa-fw fa-ellipsis-h"></i>
     </button>
 
     <template data-popover-target="body">
@@ -57,9 +57,11 @@
     </form>
   </turbo-frame>
   
-  <div data-controller="workflow-last-run"
-       data-workflow-last-run-src-value="{% url 'workflows:last_run' object.id %}"
-       class="mr-auto">
+  <div
+    data-controller="workflow-last-run"
+    data-workflow-last-run-src-value="{% url 'workflows:last_run' object.id %}"
+    class="mr-auto"
+  >
     <turbo-frame id="workflow-last-run">
       {% include 'workflows/last_run.html' %}
     </turbo-frame>

@@ -1,12 +1,13 @@
 import analytics
-from apps.base.analytics import WIDGET_CREATED_EVENT, WIDGET_DUPLICATED_EVENT
-from apps.base.turbo import TurboCreateView, TurboUpdateView
-from apps.dashboards.mixins import DashboardMixin
 from django.db import transaction
 from django.urls import reverse
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 from turbo_response.views import TurboStreamDeleteView
+
+from apps.base.analytics import WIDGET_CREATED_EVENT, WIDGET_DUPLICATED_EVENT
+from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.dashboards.mixins import DashboardMixin
 
 from .forms import WidgetDuplicateForm
 from .models import Widget
@@ -24,10 +25,7 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
         # TODO: make an abstraction with default values per widget kind
         if form.instance.kind == Widget.Kind.TEXT:
             form.instance.width = 300
-            form.instance.height = 200
-
-        if lowest_widget := self.dashboard.widget_set.order_by("-y").first():
-            form.instance.y = lowest_widget.y + lowest_widget.height
+            form.instance.height = 195
 
         with transaction.atomic():
             super().form_valid(form)
