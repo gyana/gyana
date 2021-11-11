@@ -424,3 +424,6 @@ DJPADDLE_LINK_STALE_SUBSCRIPTIONS = False
 
 DJPADDLE_PRO_PLAN_ID = int(os.getenv("DJPADDLE_PRO_PLAN_ID", default="0"))
 DJPADDLE_BUSINESS_PLAN_ID = int(os.getenv("DJPADDLE_BUSINESS_PLAN_ID", default="0"))
+
+# https://stackoverflow.com/questions/47153776/how-to-store-third-party-apps-migrations-in-django
+MIGRATION_MODULES = {"djpaddle": "apps.teams.migrate.djpaddle"}
