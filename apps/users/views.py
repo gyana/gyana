@@ -2,6 +2,7 @@ import analytics
 import jwt
 from django.conf import settings
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic.base import View
 
 from apps.base.analytics import ONBOARDING_COMPLETED_EVENT
