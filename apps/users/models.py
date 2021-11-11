@@ -102,12 +102,11 @@ class CustomUser(AbstractUser):
         return self.created_by.integration_set.count() == 1
 
 
-class ApprovedWaitlistUser(BaseModel):
-
+class ApprovedWaitlistEmail(BaseModel):
     email = models.EmailField()
 
 
-class ApprovedWaitlistBatch(BaseModel):
+class ApprovedWaitlistEmailBatch(BaseModel):
     data = models.FileField(
         upload_to=f"{SLUG}/approved_waitlist_batch"
         if SLUG
@@ -119,8 +118,8 @@ class ApprovedWaitlistBatch(BaseModel):
         super().save(*args, **kwargs)
 
         emails = pd.read_csv(self.data.file.open(), names=["email"]).email.tolist()
-        waitlist_users = [ApprovedWaitlistUser(email=email) for email in emails]
-        ApprovedWaitlistUser.objects.bulk_create(waitlist_users)
+        waitlist_users = [ApprovedWaitlistEmail(email=email) for email in emails]
+        ApprovedWaitlistEmail.objects.bulk_create(waitlist_users)
 
         self.success = True
         super().save(*args, **kwargs)
