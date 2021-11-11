@@ -63,9 +63,6 @@ class TeamPlan(TurboUpdateView):
         context["paddle_business_plan"] = Plan.objects.get(
             pk=settings.DJPADDLE_BUSINESS_PLAN_ID
         )
-        context["djpaddle_checkout_success_redirect"] = reverse(
-            "team_checkouts:success", args=(self.object.id,)
-        )
         context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
         context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
         return context
@@ -81,6 +78,9 @@ class TeamCheckout(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["plan"] = Plan.objects.get(
+            pk=self.request.GET.get("plan") or settings.DJPADDLE_PRO_PLAN_ID
+        )
         context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
         context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
         return context

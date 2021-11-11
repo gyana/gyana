@@ -16,7 +16,6 @@ export default class extends Controller {
   static targets = ['total', 'recurring']
 
   updatePrices(data) {
-    console.error(data)
     const total = data.eventData.checkout.prices.customer.total
     const currencySymbol = getSymbolFromCurrency(data.eventData.checkout.prices.customer.currency)
 
@@ -40,6 +39,12 @@ export default class extends Controller {
       debug: this.debugValue,
       eventCallback: (data) => {
         this.updatePrices(data)
+
+        if (data.event === 'Checkout.Complete') {
+          // bug fix: by default, dj-paddle will redirect to "null"
+          data.eventData.checkout.redirect_url = ''
+          window.checkoutComplete(data.eventData)
+        }
       },
     })
 
