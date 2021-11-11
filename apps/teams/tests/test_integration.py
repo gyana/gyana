@@ -285,7 +285,6 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
         data={"plan": str(business_plan.id)},
     )
     # the new price is calculated and shown
-    print(r.content)
     assert paddle.get_plan.call_count == 2
     assert paddle.get_plan.call_args.args == (business_plan.id,)
     assertContains(r, "150", status_code=422)
@@ -313,5 +312,5 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     assertSelectorLength(r, "table tbody tr", 2)
     assertLink(r, "https://receipt-1.url", "Download Receipt")
     assert paddle.list_subscription_payments.call_count == 1
-    assert paddle.list_subscription_payments.call_args.args == (subscription.id,)
+    assert paddle.list_subscription_payments.call_args.args == (str(subscription.id),)
     assert paddle.list_subscription_payments.call_args.kwargs == {"is_paid": True}
