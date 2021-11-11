@@ -3,30 +3,46 @@ import { Controller } from '@hotwired/stimulus'
 export default class extends Controller {
   static targets = ["input"]
 
+  initialize() {
+    this.boundHandleDrop = this.handleDrop.bind(this)
+    this.boundHandlePaste = this.handlePaste.bind(this)
+  }
+
   connect() {
     // Prevent browser from catching files.
-    this.element.addEventListener("dragover", (e) => {
-      e.preventDefault()
-    })
+    this.element.addEventListener("dragover", this.handleDragover)
+    window.addEventListener("paste", this.boundHandlePaste)
+    window.addEventListener("drop", this.boundHandleDrop)
+  }
 
-    window.addEventListener("paste", (e) => {
-      const paste = (e.clipboardData || window.clipboardData).getData('text');
+  disconnect() {
+    this.element.removeEventListener("dragover", this.handleDragover)
+    window.removeEventListener("drop", this.boundHandlePaste)
+    window.removeEventListener("drop", this.boundHandleDrop)
+  }
 
-      if (e.target.type !== 'text') {
-        if (/(.*)?(docs.google.com\/spreadsheets\/)(.*)?/.test(paste)) {
-          window.location.href = this.element.dataset.sheetsUrl + '?url=' + encodeURI(paste)
-        }
+  handleDragover(event) {
+    event.preventDefault()
+  }
+
+  handlePaste(event) {
+    const paste = (event.clipboardData || window.clipboardData).getData('text');
+
+    if (event.target.type !== 'text') {
+      if (/(.*)?(docs.google.com\/spreadsheets\/)(.*)?/.test(paste)) {
+        window.location.href = this.element.dataset.sheetsUrl + '?url=' + encodeURI(paste)
       }
-    })
+    }
+  }
 
-    window.addEventListener("drop", (e) => {
-      e.preventDefault()
+  handleDrop(event) {
+    event.preventDefault()
 
-      if (this.hasInputTarget) {
-        this.inputTarget.files = e.dataTransfer.files
-        // Force GCSFileUpload.tsx to start the upload.
-        this.inputTarget.dispatchEvent(new Event('change'))
-      }
-    })
+    if (this.hasInputTarget) {
+      this.inputTarget.files = event.dataTransfer.files
+
+      // Force GCSFileUpload.tsx to start the upload.
+      this.inputTarget.dispatchEvent(new Event('change'))
+    }
   }
 }
