@@ -105,6 +105,10 @@ class CustomUser(AbstractUser):
 class ApprovedWaitlistEmail(BaseModel):
     email = models.EmailField()
 
+    @staticmethod
+    def check(email):
+        return ApprovedWaitlistEmail.objects.filter(email__iexact=email).exists()
+
 
 class ApprovedWaitlistEmailBatch(BaseModel):
     data = models.FileField(
@@ -118,7 +122,9 @@ class ApprovedWaitlistEmailBatch(BaseModel):
         super().save(*args, **kwargs)
 
         emails = pd.read_csv(self.data.file.open(), names=["email"]).email.tolist()
-        waitlist_users = [ApprovedWaitlistEmail(email=email) for email in emails]
+        waitlist_users = [
+            ApprovedWaitlistEmail(email=email.lower()) for email in emails
+        ]
         ApprovedWaitlistEmail.objects.bulk_create(waitlist_users)
 
         self.success = True

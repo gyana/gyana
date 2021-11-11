@@ -31,7 +31,7 @@ class UsersAccountAdapter(DefaultAccountAdapter):
         if request.session.pop("socialaccount_appsumo", False):
             return True
 
-        return False
+        return True
 
 
 # Taken from https://stackoverflow.com/a/30591838
