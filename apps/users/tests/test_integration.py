@@ -1,10 +1,11 @@
 import re
 
 import pytest
-from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
-from apps.users.models import CustomUser
 from django.core import mail
-from pytest_django.asserts import assertContains, assertRedirects
+from pytest_django.asserts import assertContains, assertFormError, assertRedirects
+
+from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
+from apps.users.models import ApprovedWaitlistEmail, CustomUser
 
 pytestmark = pytest.mark.django_db
 
@@ -29,13 +30,27 @@ def test_login(client):
     assertRedirects(r, "/teams/new")
 
 
-def test_sign_up_with_onboarding(client):
+def test_sign_up_with_waitlist_approval(client):
 
     r = client.get("/signup/")
     assertOK(r)
-    assertContains(r, "Sign Up Closed")
+    assertFormRenders(r, ["email", "password1"])
 
-    # todo: migrate onboarding logic here when signup is enabled
+    r = client.post(
+        "/signup/", data={"email": "waitlist@gyana.com", "password1": "seewhatmatters"}
+    )
+    ERROR = 'Gyana is currently invite only. <a href="https://www.gyana.com" class="link">Join our waitlist.</a>'
+    assertFormError(r, "form", None, ERROR)
+
+    ApprovedWaitlistEmail.objects.create(email="waitlist@gyana.com")
+
+    r = client.post(
+        "/signup/", data={"email": "waitlist@gyana.com", "password1": "seewhatmatters"}
+    )
+    assertRedirects(r, "/", status_code=303, target_status_code=302)
+
+    r = client.get("/")
+    assertRedirects(r, "/users/onboarding/")
 
 
 def test_reset_password(client):
