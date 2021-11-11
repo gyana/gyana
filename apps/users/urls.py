@@ -4,7 +4,7 @@ from django.urls import include, path
 from django.views.defaults import page_not_found
 from django.views.generic.base import RedirectView
 
-from . import views, frames
+from . import frames, views
 
 app_name = "users"
 urlpatterns = [
@@ -14,7 +14,6 @@ urlpatterns = [
         name="onboarding",
     ),
     path("feedback", login_required(views.UserFeedback.as_view()), name="feedback"),
-
     # Trubo frames
     path("profile", login_required(frames.UserProfileModal.as_view()), name="profile"),
 ]
@@ -26,11 +25,6 @@ accounts_urlpatterns = [
         page_not_found,
         {"exception": Exception("Not Found")},
         name="account_email",
-    ),
-    path(
-        "google/login/",
-        views.appsumo_oauth2_login,
-        name="google_login",
     ),
     # Redirecting old signin link to account_login
     path("signin/", RedirectView.as_view(pattern_name="account_login")),

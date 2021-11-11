@@ -103,10 +103,10 @@ class CustomUser(AbstractUser):
 
 
 class ApprovedWaitlistEmail(BaseModel):
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
 
     @staticmethod
-    def check(email):
+    def check_approved(email):
         return ApprovedWaitlistEmail.objects.filter(email__iexact=email).exists()
 
 

@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 
 from apps.teams.admin import TeamMembershipInline
 
-from .models import CustomUser
+from .models import ApprovedWaitlistEmail, ApprovedWaitlistEmailBatch, CustomUser
 
 
 class EmailAddressInline(admin.TabularInline):
@@ -25,3 +25,17 @@ class CustomUserAdmin(UserAdmin):
     )
 
     inlines = [TeamMembershipInline, EmailAddressInline]
+
+
+@admin.register(ApprovedWaitlistEmail)
+class ApprovedWaitlistEmailAdmin(admin.ModelAdmin):
+    list_display = ["email"]
+    fields = ["email"]
+    readonly_fields = ["email"]
+
+
+@admin.register(ApprovedWaitlistEmailBatch)
+class ApprovedWaitlistEmailBatchAdmin(admin.ModelAdmin):
+    list_display = ["data", "success"]
+    fields = ["data", "success"]
+    readonly_fields = ["success"]

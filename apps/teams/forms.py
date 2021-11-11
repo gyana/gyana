@@ -34,10 +34,10 @@ class TeamSignupForm(SignupForm):
         cleaned_data = super().clean()
         email = cleaned_data["email"].lower()
 
-        if not ApprovedWaitlistEmail.check(email):
+        if not ApprovedWaitlistEmail.check_approved(email):
             raise forms.ValidationError(
                 mark_safe(
-                    'Gyana is currently invite only. <a href="https://www.gyana.com" class="email_error">Join our waitlist.</a>'
+                    'Gyana is currently invite only. <a href="https://www.gyana.com" class="link">Join our waitlist.</a>'
                 )
             )
 

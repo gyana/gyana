@@ -1,25 +1,15 @@
 import analytics
 import jwt
-from allauth.account.utils import send_email_confirmation
-from allauth.socialaccount.providers.google.views import oauth2_login
 from django.conf import settings
-from django.http import HttpResponse
 from django.shortcuts import redirect
-from django.urls import reverse, reverse_lazy
-from django.views.decorators.http import require_POST
 from django.views.generic.base import View
 
 from apps.base.analytics import ONBOARDING_COMPLETED_EVENT
 from apps.base.mixins import PageTitleMixin
 from apps.base.turbo import TurboUpdateView
 
-from .forms import CustomUserChangeForm, UserNameForm, UserOnboardingForm
+from .forms import UserNameForm, UserOnboardingForm
 from .models import CustomUser
-
-
-def appsumo_oauth2_login(request, *args, **kwargs):
-    request.session["socialaccount_appsumo"] = "appsumo" in request.GET
-    return oauth2_login(request, *args, **kwargs)
 
 
 class UserOnboarding(PageTitleMixin, TurboUpdateView):

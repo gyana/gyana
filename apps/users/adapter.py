@@ -16,21 +16,6 @@ class UsersAccountAdapter(DefaultAccountAdapter):
         (Comment reproduced from the overridden method.)
         """
 
-        # for the invitations app, see
-        # https://github.com/bee-keeper/django-invitations/blob/master/invitations/models.py#L76
-        if hasattr(request, "session") and request.session.get(
-            "account_verified_email"
-        ):
-            return True
-
-        # AppSumo redeem email/password
-        if "code" in request.resolver_match.kwargs:
-            return True
-
-        # AppSumo redeem social login
-        if request.session.pop("socialaccount_appsumo", False):
-            return True
-
         return True
 
 
