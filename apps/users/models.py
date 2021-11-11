@@ -1,11 +1,14 @@
 import hashlib
 
+import pandas as pd
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from storages.backends.gcloud import GoogleCloudStorage
 
+from apps.base.clients import SLUG
+from apps.base.models import BaseModel
 from apps.teams import roles
 
 
@@ -97,3 +100,27 @@ class CustomUser(AbstractUser):
     @property
     def is_creators_only_integration(self):
         return self.created_by.integration_set.count() == 1
+
+
+class ApprovedWaitlistUser(BaseModel):
+
+    email = models.EmailField()
+
+
+class ApprovedWaitlistBatch(BaseModel):
+    data = models.FileField(
+        upload_to=f"{SLUG}/approved_waitlist_batch"
+        if SLUG
+        else "approved_waitlist_batch"
+    )
+    success = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        emails = pd.read_csv(self.data.file.open(), names=["email"]).email.tolist()
+        waitlist_users = [ApprovedWaitlistUser(email=email) for email in emails]
+        ApprovedWaitlistUser.objects.bulk_create(waitlist_users)
+
+        self.success = True
+        super().save(*args, **kwargs)
