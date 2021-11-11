@@ -45,8 +45,6 @@ class TeamSignupForm(SignupForm):
                 )
             )
 
-        return cleaned_data
-
     def save(self, request):
         user = super().save(request)
         identify_user(user, signup_source="waitlist")
