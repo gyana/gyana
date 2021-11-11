@@ -200,7 +200,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     team = logged_in_user.teams.first()
     pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
     business_plan = Plan.objects.create(
-        name="Pro", billing_type="month", billing_period=1
+        name="Business", billing_type="month", billing_period=1
     )
     settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
     settings.DJPADDLE_BUSINESS_PLAN_ID = business_plan.id
@@ -286,6 +286,8 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     )
     # the new price is calculated and shown
     print(r.content)
+    assert paddle.get_plan.call_count == 2
+    assert paddle.get_plan.call_args.args == (business_plan.id,)
     assertContains(r, "150", status_code=422)
 
     r = client.post(
@@ -310,3 +312,6 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     assertOK(r)
     assertSelectorLength(r, "table tbody tr", 2)
     assertLink(r, "https://receipt-1.url", "Download Receipt")
+    assert paddle.list_subscription_payments.call_count == 1
+    assert paddle.list_subscription_payments.call_args.args == (subscription.id,)
+    assert paddle.list_subscription_payments.call_args.kwargs == {"is_paid": True}
