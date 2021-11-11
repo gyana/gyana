@@ -1,3 +1,4 @@
+import json
 import logging
 
 from django import forms
@@ -189,3 +190,26 @@ class NodeCreditConfirmation(TurboFrameUpdateView):
         self.object.save()
 
         return r
+
+
+with open("apps/columns/functions.json") as f:
+    FUNCTIONS = json.loads(f.read())
+
+
+class FormulaHelp(TurboFrameDetailView):
+    model = Node
+    template_name = "nodes/help/formula.html"
+    # This view replaces the node grid so we need to provide the same
+    # turbo frame dom id
+    turbo_frame_dom_id = "nodes:grid"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["show_docs"] = self.request.GET.get("show_docs", False) == "true"
+        q = self.request.GET.get("q")
+        context["functions"] = (
+            list(filter(lambda f: f["name"].startswith(q), FUNCTIONS))
+            if q
+            else FUNCTIONS
+        )
+        return context

@@ -1,3 +1,6 @@
+
+{% include 'nodes/modal_nav_bar.html' %}
+
 <div class="workflow-node__help">
   <h1>Formula Docs</h2>
     <p>
@@ -43,8 +46,19 @@
     </p>
     
     <h2>Functions</h2>
+
+    <form role='search' method="get" 
+      action="{% url 'nodes:formula' node.id %}?show_docs=true"
+    >
+        <input type='search' name='q' 
+          id='id_search' 
+          placeholder="Search function"
+          value="{{ request.GET.q }}"
+        ></input>   
+    </form>
+
     <div class="functions">
-      {% for function in "apps/columns/functions.json"|read_json %}
+      {% for function in functions %}
       <div class='function-pill'>
         <h4>{{function.name}}(<em>
           {{ function.arguments|join:", " }}
