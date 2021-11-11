@@ -54,10 +54,14 @@
       {% endif %}
     </header>
 
-    <div class="widgets__canvas">
-      <div id="dashboard-widget-container"
-          data-controller="widget-list"
-          style="width:{{ object.width }}px;height:{{object.height}}px;">
+    <div
+      class="widgets__canvas"
+      style="--background-color:{{ object.background_color }};"
+    >
+      <div
+        id="dashboard-widget-container"
+        data-controller="widget-list"
+        style="width:{{ object.width }}px;height:{{object.height}}px;">
         {% for widget in object.widget_set.all %}
         <gy-widget id="widget-{{ widget.id }}">
           <div
