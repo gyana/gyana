@@ -13,6 +13,7 @@ from apps.base.analytics import (
     identify_user_group,
 )
 from apps.base.live_update_form import LiveUpdateForm
+from apps.invites.models import Invite
 from apps.teams import roles
 from apps.users.models import ApprovedWaitlistEmail
 
@@ -34,7 +35,10 @@ class TeamSignupForm(SignupForm):
         cleaned_data = super().clean()
         email = cleaned_data["email"].lower()
 
-        if not ApprovedWaitlistEmail.check_approved(email):
+        waitlist_approved = ApprovedWaitlistEmail.check_approved(email)
+        accepted_invite = Invite.check_email_accepted(email)
+
+        if not waitlist_approved and not accepted_invite:
             raise forms.ValidationError(
                 mark_safe(
                     'Gyana is currently invite only. <a href="https://www.gyana.com" class="link">Join our waitlist.</a>'

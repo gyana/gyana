@@ -12,7 +12,7 @@ from .models import Invite
 def add_user_to_accepted_teams(user: CustomUser):
 
     teams = user.teams.all()
-    for invite in Invite.objects.filter(email=user.email, accepted=True).all():
+    for invite in Invite.accepted_by_email(user.email):
         if not invite.team in teams:
             invite.team.members.add(user, through_defaults={"role": invite.role})
             identify_user_group(user, invite.team)

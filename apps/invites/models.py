@@ -66,3 +66,11 @@ class Invite(AbstractBaseInvitation):
 
     def __str__(self):
         return "Invite: {0}".format(self.email)
+
+    @staticmethod
+    def accepted_by_email(email):
+        return Invite.objects.filter(email=email, accepted=True).all()
+
+    @staticmethod
+    def check_email_accepted(email):
+        return Invite.objects.filter(email=email, accepted=True).exists()
