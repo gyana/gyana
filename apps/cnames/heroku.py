@@ -27,7 +27,8 @@ HEROKU_DOMAIN_STATE_TO_MESSAGE = {
 
 
 def create_heroku_domain(cname: CName):
-    clients.heroku().add_domain(cname.domain)
+    # https://github.com/martyzz1/heroku3.py/blob/master/README.rst#domains
+    clients.heroku().add_domain(cname.domain, None)
 
 
 def get_heroku_domain_status(cname: CName):
