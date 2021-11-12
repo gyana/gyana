@@ -2,6 +2,7 @@ import functools
 
 import ibis.expr.datatypes as dt
 from django.core.cache import cache
+from django.template.loader import get_template
 from django_tables2 import Column, Table
 from django_tables2.config import RequestConfig as BaseRequestConfig
 from django_tables2.data import TableData
@@ -109,6 +110,13 @@ def get_type_class(type_):
         return "column column--time"
 
 
+class BigQueryColumn(Column):
+    def render(self, value):
+        if value is None:
+            return get_template("columns/empty_cell.html").render()
+        return super().render(value)
+
+
 def get_table(schema, query, **kwargs):
     """Dynamically creates a table class and adds the correct table data
 
@@ -116,7 +124,11 @@ def get_table(schema, query, **kwargs):
     """
     # Inspired by https://stackoverflow.com/questions/16696066/django-tables2-dynamically-adding-columns-to-table-not-adding-attrs-to-table
     attrs = {
-        name: Column(verbose_name=name, attrs={"th": {"class": get_type_class(type_)}})
+        name: BigQueryColumn(
+            empty_values=(),
+            verbose_name=name,
+            attrs={"th": {"class": get_type_class(type_)}},
+        )
         for name, type_ in schema.items()
     }
     attrs["Meta"] = type("Meta", (), {"attrs": {"class": "table"}})
