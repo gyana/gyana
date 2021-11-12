@@ -15,6 +15,20 @@ from apps.base.models import BaseModel
 from apps.projects.models import Project
 
 
+# These were taken from fusioncharts.theme.fusion.js as the default values
+# for a chart palette.
+def getFusionThemePalette():
+    return [
+        "#5D62B5",
+        "#29C3BE",
+        "#F2726F",
+        "#FFC533",
+        "#62B58F",
+        "#BC95DF",
+        "#67CDF2",
+    ]
+
+
 class Dashboard(CloneMixin, BaseModel):
     class SharedStatus(models.TextChoices):
         PRIVATE = "private", "Private"
@@ -33,7 +47,11 @@ class Dashboard(CloneMixin, BaseModel):
     height = models.IntegerField(default=840)
     grid_size = models.IntegerField(default=15)
 
-    palette_colors = ArrayField(models.CharField(max_length=6), null=True, size=20)
+    palette_colors = ArrayField(
+        models.CharField(default="#5D62B5", max_length=7),
+        size=10,
+        default=getFusionThemePalette,
+    )
     background_color = models.CharField(default="#ffffff", max_length=7)
 
     _clone_m2o_or_o2m_fields = ["widget_set"]
