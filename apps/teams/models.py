@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
-from djpaddle.models import Subscription
+from djpaddle.models import Checkout, Subscription
 from safedelete.models import SafeDeleteModel
 from storages.backends.gcloud import GoogleCloudStorage
 
@@ -42,6 +42,9 @@ class Team(BaseModel, SafeDeleteModel):
     # calculating every view is too expensive
     row_count = models.BigIntegerField(default=0)
     row_count_calculated = models.DateTimeField(null=True)
+
+    # the last checkout associated with this team (until subscription information syncs via webhook from Paddle)
+    last_checkout = models.OneToOneField(Checkout, null=True, on_delete=models.SET_NULL)
 
     def save(self, *args, **kwargs):
         from .bigquery import create_team_dataset
@@ -194,6 +197,14 @@ class Team(BaseModel, SafeDeleteModel):
 
     def check_new_rows(self, num_rows):
         return self.add_new_rows(num_rows) > self.row_limit
+
+    @property
+    def recently_completed_checkout(self):
+        return (
+            self.last_checkout is not None
+            and self.last_checkout.completed
+            and (timezone.now() - self.last_checkout.created_at).total_seconds() < 3600
+        )
 
     @property
     def has_subscription(self):

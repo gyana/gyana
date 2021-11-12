@@ -10,16 +10,22 @@
   <div class="card card--none max-w-xl mb-4 flex flex-col space-y-4">
     <div class="pad flex flex-col space-y-2">
       <h2>Plan</h2>
-      <p class="text-blue">
-        {% if team.has_subscription %}Gyana{% endif %} {{ team.plan.name }}
-      </p>
-      {% if team.is_free %}
-        {% comment %} data-turbo="false" to enable Paddle JS to load{% endcomment %}
-        <a data-turbo="false" href="{% url 'teams:plan' team.id %}" class="button button--sm button--success">Upgrade your plan</a>
+      {% if team.recently_completed_checkout and not team.has_subscription %}
         <p>
-          Upgrade to the Pro plan or Business plan and get access to more rows, advanced security features and 
-          <a href="https://gyana.com/pricing" class="link">more...</a>
+          Information about your new subscription will be available here in a moment.
         </p>
+      {% else %}
+        <p class="text-blue">
+          {% if team.has_subscription %}Gyana{% endif %} {{ team.plan.name }}
+        </p>
+        {% if team.is_free %}
+          {% comment %} data-turbo="false" to enable Paddle JS to load{% endcomment %}
+          <a data-turbo="false" href="{% url 'teams:plan' team.id %}" class="button button--sm button--success">Upgrade your plan</a>
+          <p>
+            Upgrade to the Pro plan or Business plan and get access to more rows, advanced security features and 
+            <a href="https://gyana.com/pricing" class="link">more...</a>
+          </p>
+        {% endif %}
       {% endif %}
     </div>
     {% flag 'subscriptions' %}
