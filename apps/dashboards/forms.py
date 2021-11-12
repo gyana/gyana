@@ -87,9 +87,9 @@ class DashboardForm(forms.ModelForm):
     class Meta:
         model = Dashboard
         fields = [
+            "name",
             "background_color",
             "palette_colors",
-            "name",
             "width",
             "height",
             "grid_size",
