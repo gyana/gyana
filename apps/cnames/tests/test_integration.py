@@ -57,7 +57,7 @@ def test_cname_crudl(client, logged_in_user, heroku):
     cname = team.cname_set.first()
     cname.domain == "test.domain.com"
     assert heroku.add_domain.call_count == 1
-    assert heroku.add_domain.call_args.args == ("test.domain.com",)
+    assert heroku.add_domain.call_args.args == ("test.domain.com", None)
 
     # read and update not enabled
 
@@ -87,7 +87,7 @@ def test_cname_crudl(client, logged_in_user, heroku):
     assertOK(r)
     assertSelectorLength(r, ".fa-check", 1)
     assert heroku.get_domain.call_count == 1
-    assert heroku.get_domain.call_args.args == ("test.domain.com", None)
+    assert heroku.get_domain.call_args.args == ("test.domain.com",)
 
     # delete
     heroku.reset_mock()
