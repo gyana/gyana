@@ -2,6 +2,9 @@ from unittest import mock
 from uuid import uuid4
 
 import pytest
+from django.utils import timezone
+from pytest_django.asserts import assertFormError, assertRedirects
+
 from apps.appsumo.models import AppsumoCode
 from apps.base.tests.asserts import (
     assertFormRenders,
@@ -12,8 +15,6 @@ from apps.base.tests.asserts import (
 )
 from apps.dashboards.models import Dashboard
 from apps.teams.models import Team
-from django.utils import timezone
-from pytest_django.asserts import assertFormError, assertRedirects
 
 pytestmark = pytest.mark.django_db
 
@@ -86,7 +87,7 @@ def test_cname_crudl(client, logged_in_user, heroku):
     assertOK(r)
     assertSelectorLength(r, ".fa-check", 1)
     assert heroku.get_domain.call_count == 1
-    assert heroku.get_domain.call_args.args == ("test.domain.com",)
+    assert heroku.get_domain.call_args.args == ("test.domain.com", None)
 
     # delete
     heroku.reset_mock()
