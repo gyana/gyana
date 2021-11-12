@@ -11,7 +11,7 @@
 
       {% if team.is_free %}
       {% comment %} data-turbo="false" to enable Paddle JS to load{% endcomment %}
-      <a data-turbo="false" href="{% url 'teams:plan' team.id %}" class="button button--sm button--success">Upgrade your plan</a>
+      <a data-turbo="false" href="{% url 'teams:plans' team.id %}" class="button button--sm button--success">Upgrade your plan</a>
       {% endif %}
     </header>
 

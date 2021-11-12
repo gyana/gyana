@@ -35,13 +35,13 @@ class TeamCreate(TurboCreateView):
         return kwargs
 
     def get_success_url(self) -> str:
-        return reverse("teams:plan", args=(self.object.id,))
+        return reverse("teams:plans", args=(self.object.id,))
 
 
-class TeamPlan(TurboUpdateView):
+class TeamPlans(TurboUpdateView):
     model = Team
     form_class = TeamCreateForm
-    template_name = "teams/plan.html"
+    template_name = "teams/plans.html"
     pk_url_kwarg = "team_id"
 
     def get(self, request, *args, **kwargs):
