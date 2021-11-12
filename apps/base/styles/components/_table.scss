@@ -28,22 +28,23 @@
         display: inline;
         font-family: 'Font Awesome 5 Pro';
         font-weight: 900;
-        margin-right: 0.5em;
+        margin-left: 0.5em;
         position: relative;
       }
-      &--numeric &::before {
+
+      &--numeric::before {
         content: '\f292';
       }
 
-      &--string &::before {
+      &--string::before {
         content: '\f031';
       }
 
-      &--time &::before {
+      &--time::before {
         content: '\f073';
       }
 
-      &--boolean &::before {
+      &--boolean::before {
         content: '\f058';
       }
     }
