@@ -1,3 +1,4 @@
+import json
 from datetime import timedelta
 from uuid import uuid4
 
@@ -224,26 +225,34 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
 
     r = client.get(f"/teams/{team.id}/account")
     assertOK(r)
-    assertLink(r, f"/teams/{team.id}/plan", "Upgrade")
+    assertLink(r, f"/teams/{team.id}/plans", "Upgrade")
 
-    r = client.get(f"/teams/{team.id}/plan")
+    r = client.get(f"/teams/{team.id}/plans")
     assertOK(r)
-    assertContains(r, "Upgrade to Pro")
-    assertContains(r, "Upgrade to Business")
-    # check for paddle attributes
-    passthrough = f'{{"user_id": {logged_in_user.id}, "team_id": {team.id}}}'
-    assertSelectorLength(r, f"a[data-passthrough='{passthrough}']", 2)
+    assertLink(r, f"/teams/{team.id}/checkout?plan={pro_plan.id}", "Upgrade to Pro")
+    assertLink(
+        r, f"/teams/{team.id}/checkout?plan={business_plan.id}", "Upgrade to Business"
+    )
+    # check for paddle attributes on prices
     assertSelectorLength(r, f"[data-product='{pro_plan.id}']", 1)
     assertSelectorLength(r, f"[data-product='{business_plan.id}']", 1)
+    assertSelectorLength(r, ".paddle-gross", 2)
 
-    # clicking will launch the javascript checkout
-    # this will re-direct to checkout completion page
-    # the checkout is inserted by Paddle JS, and the subscription is added via webhook
+    r = client.get(f"/teams/{team.id}/checkout?plan={pro_plan.id}")
+    assertOK(r)
+    # assertions for the paddle stimulus controller
+    assertSelectorLength(r, f"div[data-paddle-plan-value='{pro_plan.id}']", 1)
+    assertSelectorLength(r, f"div[data-paddle-email-value='{logged_in_user.email}']", 1)
+    assertSelectorLength(r, f"div[data-paddle-marketing-consent-value='0']", 1)
+    passthrough = f'{{"user_id": {logged_in_user.id}, "team_id": {team.id}}}'
+    assertSelectorLength(r, f"div[data-paddle-passthrough-value='{passthrough}']", 1)
+
+    # the inline checkout is inserted by Paddle JS, and the subscription is added via webhook
 
     checkout = Checkout.objects.create(
         id=uuid4(),
         completed=True,
-        passthrough={"user_id": logged_in_user.id, "team_id": team.id},
+        passthrough=json.dumps({"user_id": logged_in_user.id, "team_id": team.id}),
     )
     subscription = Subscription.objects.create(
         id=uuid4(),
@@ -255,7 +264,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
         event_time=timezone.now(),
         marketing_consent=True,
         next_bill_date=timezone.now() + timedelta(weeks=4),
-        passthrough={"user_id": logged_in_user.id, "team_id": team.id},
+        passthrough=json.dumps({"user_id": logged_in_user.id, "team_id": team.id}),
         quantity=1,
         source="test.url",
         status=Subscription.STATUS_ACTIVE,
