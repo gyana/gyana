@@ -120,7 +120,11 @@ class Team(BaseModel, SafeDeleteModel):
 
     @property
     def is_free(self):
-        return self.active_codes == 0 and not self.has_subscription
+        return (
+            self.active_codes == 0
+            and not self.has_subscription
+            and not self.recently_completed_checkout
+        )
 
     @property
     def plan(self):
