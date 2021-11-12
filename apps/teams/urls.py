@@ -47,7 +47,7 @@ urlpatterns = [
     ),
     path(
         "<hashid:team_id>/plans",
-        login_and_admin_required(views.TeamPlan.as_view()),
+        login_and_admin_required(views.TeamPlans.as_view()),
         name="plans",
     ),
     path(
