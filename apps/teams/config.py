@@ -22,7 +22,7 @@ PLANS = {
         "white_labeling": True,
     },
     "appsumo": {
-        "name": "Lifetime Deal for Gyana (AppSumo)",
+        "name": "AppSumo Lifetime Deal",
         "projects": -1,
         "custom_branding": True,
     },
