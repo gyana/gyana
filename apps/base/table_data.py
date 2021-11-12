@@ -1,5 +1,6 @@
 import functools
 
+import ibis.expr.datatypes as dt
 from django.core.cache import cache
 from django_tables2 import Column, Table
 from django_tables2.config import RequestConfig as BaseRequestConfig
@@ -97,13 +98,27 @@ class RequestConfig(BaseRequestConfig):
         return super().configure(table)
 
 
+def get_type_class(type_):
+    if isinstance(type_, (dt.Floating, dt.Integer)):
+        return "column column--numeric"
+    if isinstance(type_, dt.String):
+        return "column column--string"
+    if isinstance(type_, dt.Boolean):
+        return "column column--boolean"
+    if isinstance(type_, (dt.Date, dt.Time, dt.Time)):
+        return "column column--time"
+
+
 def get_table(schema, query, **kwargs):
     """Dynamically creates a table class and adds the correct table data
 
     See https://django-tables2.readthedocs.io/en/stable/_modules/django_tables2/views.html
     """
     # Inspired by https://stackoverflow.com/questions/16696066/django-tables2-dynamically-adding-columns-to-table-not-adding-attrs-to-table
-    attrs = {name: Column(verbose_name=name) for name in schema}
+    attrs = {
+        name: Column(verbose_name=name, attrs={"th": {"class": get_type_class(type_)}})
+        for name, type_ in schema.items()
+    }
     attrs["Meta"] = type("Meta", (), {"attrs": {"class": "table"}})
     table_class = type("DynamicTable", (Table,), attrs)
 
