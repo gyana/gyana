@@ -2,7 +2,10 @@
   {
     "model": "sites.site",
     "pk": 1,
-    "fields": { "domain": "localhost:8000", "name": "localhost:8000" }
+    "fields": {
+      "domain": "localhost:8000",
+      "name": "localhost:8000"
+    }
   },
   {
     "model": "users.customuser",
@@ -410,8 +413,16 @@
       "width": 1200,
       "height": 840,
       "grid_size": 15,
-      "palette_colors": null,
-      "background_color": "ffffff"
+      "palette_colors": [
+        "#5D62B5",
+        "#29C3BE",
+        "#F2726F",
+        "#FFC533",
+        "#62B58F",
+        "#BC95DF",
+        "#67CDF2"
+      ],
+      "background_color": "#ffffff"
     }
   },
   {
@@ -866,7 +877,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1]
+      "parents": [
+        1
+      ]
     }
   },
   {
@@ -905,7 +918,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1]
+      "parents": [
+        1
+      ]
     }
   },
   {
@@ -944,7 +959,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1]
+      "parents": [
+        1
+      ]
     }
   },
   {
@@ -983,7 +1000,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1]
+      "parents": [
+        1
+      ]
     }
   },
   {
@@ -1022,7 +1041,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1]
+      "parents": [
+        1
+      ]
     }
   },
   {
@@ -1061,7 +1082,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1]
+      "parents": [
+        1
+      ]
     }
   },
   {
@@ -1100,7 +1123,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1]
+      "parents": [
+        1
+      ]
     }
   },
   {
@@ -1139,7 +1164,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1]
+      "parents": [
+        1
+      ]
     }
   },
   {
@@ -1178,7 +1205,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1]
+      "parents": [
+        1
+      ]
     }
   },
   {
@@ -1217,7 +1246,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1]
+      "parents": [
+        1
+      ]
     }
   },
   {
@@ -1256,7 +1287,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1]
+      "parents": [
+        1
+      ]
     }
   },
   {
@@ -1295,7 +1328,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1]
+      "parents": [
+        1
+      ]
     }
   },
   {
@@ -1334,7 +1369,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1]
+      "parents": [
+        1
+      ]
     }
   },
   {
@@ -1451,7 +1488,10 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1, 17]
+      "parents": [
+        1,
+        17
+      ]
     }
   },
   {
@@ -1529,7 +1569,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1]
+      "parents": [
+        1
+      ]
     }
   },
   {
@@ -1568,7 +1610,10 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1, 20]
+      "parents": [
+        1,
+        20
+      ]
     }
   },
   {
@@ -1607,7 +1652,10 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1, 20]
+      "parents": [
+        1,
+        20
+      ]
     }
   },
   {
@@ -1685,7 +1733,9 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [23]
+      "parents": [
+        23
+      ]
     }
   },
   {
@@ -1763,7 +1813,10 @@
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
       "has_been_saved": false,
-      "parents": [1, 20]
+      "parents": [
+        1,
+        20
+      ]
     }
   },
   {
@@ -1910,9 +1963,17 @@
       "sync_state": "rescheduled",
       "update_state": "delayed",
       "is_historical_sync": false,
-      "tasks": [{ "code": "change_in_tls_detected", "message": "Revalidate TLS Certificate" }],
+      "tasks": [
+        {
+          "code": "change_in_tls_detected",
+          "message": "Revalidate TLS Certificate"
+        }
+      ],
       "warnings": [
-        { "code": "long_term_broken_connector", "message": "Connector broken for over 7 days" }
+        {
+          "code": "long_term_broken_connector",
+          "message": "Connector broken for over 7 days"
+        }
       ],
       "config": {
         "host": "ec2-52-50-171-4.eu-west-1.compute.amazonaws.com",
@@ -1959,8 +2020,16 @@
       "is_historical_sync": false,
       "tasks": [],
       "warnings": [],
-      "config": { "sync_mode": "AllAccounts", "sync_metadata": true, "timeframe_months": "SIX" },
-      "source_sync_details": { "account_ids": ["act_78363492"] },
+      "config": {
+        "sync_mode": "AllAccounts",
+        "sync_metadata": true,
+        "timeframe_months": "SIX"
+      },
+      "source_sync_details": {
+        "account_ids": [
+          "act_78363492"
+        ]
+      },
       "schema_config": null,
       "sync_task_id": null,
       "sync_started": null
@@ -2011,7 +2080,10 @@
               "users",
               "bounceRate"
             ],
-            "dimensions": ["date", "adwordsCampaignID"],
+            "dimensions": [
+              "date",
+              "adwordsCampaignID"
+            ],
             "config_type": "Prebuilt",
             "prebuilt_report": "ADWORDS_CAMPAIGNS"
           },
@@ -2029,7 +2101,10 @@
               "users",
               "bounceRate"
             ],
-            "dimensions": ["date", "dateHour"],
+            "dimensions": [
+              "date",
+              "dateHour"
+            ],
             "config_type": "Prebuilt",
             "prebuilt_report": "ADWORDS_HOURLY_STATS"
           },
@@ -2047,7 +2122,10 @@
               "users",
               "bounceRate"
             ],
-            "dimensions": ["date", "keyword"],
+            "dimensions": [
+              "date",
+              "keyword"
+            ],
             "config_type": "Prebuilt",
             "prebuilt_report": "ADWORDS_KEYWORD"
           },
@@ -2063,7 +2141,9 @@
               "users",
               "bounceRate"
             ],
-            "dimensions": ["date"],
+            "dimensions": [
+              "date"
+            ],
             "config_type": "Prebuilt",
             "prebuilt_report": "AUDIENCE_OVERVIEW"
           },
@@ -2080,7 +2160,11 @@
               "users",
               "bounceRate"
             ],
-            "dimensions": ["date", "browser", "operatingSystem"],
+            "dimensions": [
+              "date",
+              "browser",
+              "operatingSystem"
+            ],
             "config_type": "Prebuilt",
             "prebuilt_report": "BROWSER_AND_OPERATING_SYSTEM_OVERVIEW"
           },
@@ -2096,7 +2180,10 @@
               "users",
               "bounceRate"
             ],
-            "dimensions": ["date", "campaign"],
+            "dimensions": [
+              "date",
+              "campaign"
+            ],
             "config_type": "Prebuilt",
             "prebuilt_report": "CAMPAIGN_PERFORMANCE"
           },
@@ -2114,7 +2201,10 @@
               "users",
               "bounceRate"
             ],
-            "dimensions": ["date", "channelGrouping"],
+            "dimensions": [
+              "date",
+              "channelGrouping"
+            ],
             "config_type": "Prebuilt",
             "prebuilt_report": "CHANNEL_TRAFFIC"
           },
@@ -2128,7 +2218,10 @@
               "avgEventValue",
               "uniqueEvents"
             ],
-            "dimensions": ["date", "eventCategory"],
+            "dimensions": [
+              "date",
+              "eventCategory"
+            ],
             "config_type": "Prebuilt",
             "prebuilt_report": "EVENTS_OVERVIEW"
           },
@@ -2146,7 +2239,10 @@
               "transactionsPerSession",
               "bounceRate"
             ],
-            "dimensions": ["date", "socialNetwork"],
+            "dimensions": [
+              "date",
+              "socialNetwork"
+            ],
             "config_type": "Prebuilt",
             "prebuilt_report": "SOCIAL_MEDIA_ACQUISITIONS"
           },
@@ -2162,17 +2258,28 @@
               "users",
               "bounceRate"
             ],
-            "dimensions": ["date", "pageTitle"],
+            "dimensions": [
+              "date",
+              "pageTitle"
+            ],
             "config_type": "Prebuilt",
             "prebuilt_report": "TRAFFIC"
           }
         ],
-        "accounts": ["82798099"],
-        "profiles": ["237044023"],
+        "accounts": [
+          "82798099"
+        ],
+        "profiles": [
+          "237044023"
+        ],
         "sync_mode": "SpecificAccounts",
         "timeframe_months": "ALL_TIME"
       },
-      "source_sync_details": { "profile_ids": ["237044023"] },
+      "source_sync_details": {
+        "profile_ids": [
+          "237044023"
+        ]
+      },
       "schema_config": null,
       "sync_task_id": null,
       "sync_started": null
@@ -2206,11 +2313,21 @@
       "sync_state": "rescheduled",
       "update_state": "on_schedule",
       "is_historical_sync": true,
-      "tasks": [{ "code": "reconnect", "message": "Reconnect" }],
-      "warnings": [
-        { "code": "long_term_broken_connector", "message": "Connector broken for over 7 days" }
+      "tasks": [
+        {
+          "code": "reconnect",
+          "message": "Reconnect"
+        }
       ],
-      "config": { "shop": "gyanalimited" },
+      "warnings": [
+        {
+          "code": "long_term_broken_connector",
+          "message": "Connector broken for over 7 days"
+        }
+      ],
+      "config": {
+        "shop": "gyanalimited"
+      },
       "source_sync_details": null,
       "schema_config": null,
       "sync_task_id": null,
@@ -2294,7 +2411,11 @@
             "config_type": "Prebuilt",
             "prebuilt_report": "SOCIAL_MEDIA_ACQUISITIONS"
           },
-          { "table": "traffic", "config_type": "Prebuilt", "prebuilt_report": "TRAFFIC" }
+          {
+            "table": "traffic",
+            "config_type": "Prebuilt",
+            "prebuilt_report": "TRAFFIC"
+          }
         ],
         "sync_mode": "AllAccounts",
         "timeframe_months": "ALL_TIME"
@@ -2359,17 +2480,32 @@
   {
     "model": "account.emailaddress",
     "pk": 1,
-    "fields": { "user": 1, "email": "test@gyana.com", "verified": true, "primary": true }
+    "fields": {
+      "user": 1,
+      "email": "test@gyana.com",
+      "verified": true,
+      "primary": true
+    }
   },
   {
     "model": "account.emailaddress",
     "pk": 2,
-    "fields": { "user": 3, "email": "alone@gyana.com", "verified": true, "primary": true }
+    "fields": {
+      "user": 3,
+      "email": "alone@gyana.com",
+      "verified": true,
+      "primary": true
+    }
   },
   {
     "model": "account.emailaddress",
     "pk": 3,
-    "fields": { "user": 2, "email": "admin@gyana.com", "verified": true, "primary": true }
+    "fields": {
+      "user": 2,
+      "email": "admin@gyana.com",
+      "verified": true,
+      "primary": true
+    }
   },
   {
     "model": "socialaccount.socialapp",
@@ -2380,7 +2516,9 @@
       "client_id": "766404612569-gn5hok52al6q1ob04rfmha8k4bns09me.apps.googleusercontent.com",
       "secret": "l9xbaHAi5xf4WuRji3PiTq-z",
       "key": "",
-      "sites": [1]
+      "sites": [
+        1
+      ]
     }
   },
   {

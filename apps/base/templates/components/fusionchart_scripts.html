@@ -7,19 +7,3 @@
 <script src="{% static "fusioncharts/fusioncharts.powercharts.js" %}"></script>
 <script src="{% static "fusioncharts/fusioncharts.timeseries.js" %}"></script>
 <script src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
-
-<script>
-FusionCharts.register('theme', {
-  name: 'CustomDashboardTheme',
-  theme: {
-    base: {
-      chart: {
-        bgColor: "#ffffff",
-        {% if palette_colors|length > 0 %}
-        paletteColors: "{% autoescape off %}{{ palette_colors|join:"," }}{% endautoescape %}",
-        {% endif %}
-      },
-    }
-  }
-});
-</script>

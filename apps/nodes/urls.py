@@ -1,6 +1,7 @@
-from apps.workflows.access import login_and_workflow_required
 from django.urls import path
 from rest_framework import routers
+
+from apps.workflows.access import login_and_workflow_required
 
 from . import frames, rest
 from .access import login_and_node_required
@@ -21,6 +22,11 @@ urlpatterns = [
         "<int:pk>/credit_confirmation",
         login_and_node_required(frames.NodeCreditConfirmation.as_view()),
         name="credit-confirmation",
+    ),
+    path(
+        "<int:pk>/formula",
+        login_and_node_required(frames.FormulaHelp.as_view()),
+        name="formula",
     ),
     # rest
     path(

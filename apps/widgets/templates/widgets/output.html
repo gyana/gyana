@@ -1,23 +1,22 @@
 <div 
-  id="widgets-output-{{widget.id}}-stream"
+  id="widgets-output-{{ widget.id }}-stream"
   style="display: flex; flex: 1 1 0%; min-height: 0;overflow: auto;"
 >
-  {% if widget.is_valid and not error_template%}
-      {% if widget.kind == "table" %}
-        {% include 'widgets/visuals/grid.html' %}
-      {% elif widget.kind == "text" %}
-        {% include 'widgets/visuals/text.html' %}
-      {% elif  widget.kind == 'metric' %}
-        {% include 'widgets/visuals/metric.html' %}
-      {% elif widget.kind %}
-        {% include 'widgets/visuals/chart.html' %}
-      {% endif %}
+  {% if widget.is_valid and not error_template %}
+    {% if widget.kind == "table" %}
+      {% include 'widgets/visuals/grid.html' %}
+    {% elif widget.kind == "text" %}
+      {% include 'widgets/visuals/text.html' %}
+    {% elif  widget.kind == 'metric' %}
+      {% include 'widgets/visuals/metric.html' %}
+    {% elif widget.kind %}
+      {% include 'widgets/visuals/chart.html' %}
+    {% endif %}
   {% elif not widget.is_valid %}
-    <div class='flex flex-col items-center justify-center flex-1  p-10'>
-     {% include 'widgets/errors/_configure_widget.html' %}
-    </div>
+  <div class='flex flex-col items-center justify-center flex-1  p-10'>
+    {% include 'widgets/errors/_configure_widget.html' %}
+  </div>
   {% else %}
     {% include error_template %}
   {% endif %}
-
-</div>  
+</div>
