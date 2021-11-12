@@ -12,6 +12,57 @@ from apps.base.live_update_form import LiveUpdateForm
 from .models import Dashboard
 
 
+class PaletteColorsWidget(forms.MultiWidget):
+    def __init__(self, *args, **kwargs):
+        super(PaletteColorsWidget, self).__init__(
+            [
+                forms.TextInput(attrs={"type": "color"}),
+                forms.TextInput(attrs={"type": "color"}),
+                forms.TextInput(attrs={"type": "color"}),
+                forms.TextInput(attrs={"type": "color"}),
+                forms.TextInput(attrs={"type": "color"}),
+                forms.TextInput(attrs={"type": "color"}),
+                forms.TextInput(attrs={"type": "color"}),
+                forms.TextInput(attrs={"type": "color"}),
+                forms.TextInput(attrs={"type": "color"}),
+                forms.TextInput(attrs={"type": "color"}),
+            ],
+            *args,
+            **kwargs
+        )
+
+    def decompress(self, value):
+        if value:
+            return value.split(" ")
+
+        return [None]
+
+
+class PaletteColorsField(forms.MultiValueField):
+    widget = PaletteColorsWidget
+
+    def __init__(self, *args, **kwargs):
+        super(PaletteColorsField, self).__init__(
+            (
+                forms.CharField(),
+                forms.CharField(),
+                forms.CharField(),
+                forms.CharField(),
+                forms.CharField(),
+                forms.CharField(),
+                forms.CharField(),
+                forms.CharField(),
+                forms.CharField(),
+                forms.CharField(),
+            ),
+            *args,
+            **kwargs
+        )
+
+    def compress(self, data_list):
+        return data_list
+
+
 class DashboardCreateForm(forms.ModelForm):
     class Meta:
         model = Dashboard
@@ -26,21 +77,18 @@ class DashboardForm(forms.ModelForm):
     grid_size = forms.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(1200)], required=False
     )
-    # palette_colors = SimpleArrayField(
-    #     forms.CharField(),
-    #     help_text="A list of HEX color values separated by a comma (,)",
-    #     required=False,
-    # )
+    palette_colors = PaletteColorsField(required=False)
     background_color = forms.CharField(
         help_text="Color to use for the background of the dashboard",
         required=False,
-        widget=forms.TextInput(attrs={"type": "color"})
+        widget=forms.TextInput(attrs={"type": "color"}),
     )
 
     class Meta:
         model = Dashboard
         fields = [
             "background_color",
+            "palette_colors",
             "name",
             "width",
             "height",
