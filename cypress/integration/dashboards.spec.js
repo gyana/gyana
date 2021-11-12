@@ -5,7 +5,7 @@ import { getModelStartId, BIGQUERY_TIMEOUT } from '../support/utils'
 const createWidget = (kind) => {
   cy.contains('Add widget').click()
   cy.contains(kind).click()
-  cy.contains('This widget needs to be configured!')
+  cy.contains('This widget needs to be configured')
   cy.contains('configured').click()
   cy.contains('-----------').click()
   cy.contains('store_info').click()
@@ -27,7 +27,7 @@ describe('dashboards', () => {
     cy.get(`input[value="Marauder's Map"]`)
     cy.visit('/projects/1/dashboards/')
     cy.contains("Marauder's Map").click()
-    cy.get('div[class="tabbar tabbar--top"]').contains('Settings').click()
+    cy.get('i[class*="fa-ellipsis-h"]').click()
     cy.get('a').contains('Delete').click()
     cy.contains('Yes').click()
     cy.contains('Display data metrics and share')
