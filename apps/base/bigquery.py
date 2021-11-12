@@ -1,3 +1,5 @@
+import functools
+import hashlib
 import re
 
 import pandas as pd
@@ -63,10 +65,20 @@ def bq_table_schema_is_string_only(bq_table):
     )
 
 
+@functools.lru_cache
+def get_bigquery_column_md5(column):
+    return hashlib.md5(column.encode("utf-8")).hexdigest()
+
+
 class QueryResults(_QueryResults):
     @property
     def rows_dict(self):
         return [{k: v for k, v in row.items()} for row in self.rows]
+
+    def get_rows_dict_md5(self):
+        return [
+            {get_bigquery_column_md5(k): v for k, v in row.items()} for row in self.rows
+        ]
 
     @property
     def rows_df(self):
