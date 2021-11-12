@@ -39,25 +39,6 @@
     </template>
   </div>
 
-  <turbo-frame id="dashboard-name" class="flex-1 mr-auto">
-    <form
-      method="post"
-      action="{% url 'project_dashboards:detail' project.id object.id %}"
-      class="form--no-layout w-full"
-    >
-      {% csrf_token %}
-
-      <input
-        class='input__inline mr-auto'
-        id="name"
-        type="text"
-        name="name"
-        value="{{ object.name }}"
-        onBlur="this.form.requestSubmit();"
-      />
-    </form>
-  </turbo-frame>
-
   <div data-controller="tooltip tf-modal">
     <button
       data-action="click->tf-modal#open"
@@ -80,31 +61,51 @@
     </div>
   </div>
 
-  <turbo-frame id="dashboard-share"  src="{% url 'dashboards:share' object.id %}">
-    <button class="button button--sm {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}">
-      {% if  object.shared_status == 'public' %}<i class='far fa-fw fa-link'></i>
-      {% elif object.shared_status == 'private' %}<i class='far fa-fw fa-unlink'></i>
-      {% elif object.shared_status == 'password_protected' %}<i class='far fa-fw fa-lock'></i>
-      {% endif %}
-      Share
-    </button>
+  <turbo-frame id="dashboard-name" class="flex-1 mr-auto">
+    <form
+      method="post"
+      action="{% url 'project_dashboards:detail' project.id object.id %}"
+      class="form--no-layout w-full"
+    >
+      {% csrf_token %}
+
+      <input
+        class='input__inline mr-auto'
+        id="name"
+        type="text"
+        name="name"
+        value="{{ object.name }}"
+        onBlur="this.form.requestSubmit();"
+      />
+    </form>
   </turbo-frame>
 
   {% if request.GET.mode != 'view' %}
   {% include 'dashboards/_add_widget.html' with choices=choices categories=categories %}
   {% endif %}
 
-  {% if not request.GET.mode or request.GET.mode == 'edit' %}
-  <a href="?mode=view" class="button button--sm" data-controller="tooltip">
-    <i class="fas fa-fw fa-eye"></i> Preview
+  <turbo-frame id="dashboard-share"  src="{% url 'dashboards:share' object.id %}">
+    <button class="button button--circle {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}">
+      {% if  object.shared_status == 'public' %}<i class='far fa-fw fa-link'></i>
+      {% elif object.shared_status == 'private' %}<i class='far fa-fw fa-unlink'></i>
+      {% elif object.shared_status == 'password_protected' %}<i class='far fa-fw fa-lock'></i>
+      {% endif %}
+    </button>
+  </turbo-frame>
+  
+  <div data-controller="tooltip">
+    {% if not request.GET.mode or request.GET.mode == 'edit' %}
+    <a href="?mode=view" class="button button--circle button--tertiary">
+      <i class="fas fa-fw fa-eye"></i>
+    </a>
+    {% else %}
+    <a href="?mode=edit" class="button button--circle">
+      <i class="fas fa-fw fa-pen"></i>
+    </a>
+    {% endif %}
+
     <span data-tooltip-target="body">Click to change view mode</span>
-  </a>
-  {% else %}
-  <a href="?mode=edit" class="button button--sm" data-controller="tooltip">
-    <i class="fas fa-fw fa-pen"></i> Edit
-    <span data-tooltip-target="body">Click to change view mode</span>
-  </a>
-  {% endif %}
+  </div>
 </div>
 
 {% block tab %}
