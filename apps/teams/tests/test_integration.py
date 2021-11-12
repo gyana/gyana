@@ -271,7 +271,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
 
     r = client.get(f"/teams/{team.id}/account")
     assertOK(r)
-    assertContains(r, "Gyana Pro")
+    assertContains(r, "Pro")
     assertLink(r, f"/teams/{team.id}/subscription", "Manage Subscription")
     assertLink(r, f"/teams/{team.id}/payments", "View Payments & Receipts")
     assertLink(r, "https://update.url", "Update Payment Method")
