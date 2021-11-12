@@ -1,3 +1,4 @@
+import json
 import logging
 
 from django import forms
@@ -6,6 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
+from fuzzywuzzy import fuzz
 from ibis.expr.types import ScalarExpr
 
 from apps.base.analytics import (
@@ -189,3 +191,48 @@ class NodeCreditConfirmation(TurboFrameUpdateView):
         self.object.save()
 
         return r
+
+
+with open("apps/columns/functions.json") as f:
+    FUNCTIONS = json.loads(f.read())
+
+
+CATEGORIES = ["all", "generic", "text", "math", "time & date"]
+ICONS = {
+    "generic": "fa-globe",
+    "text": "fa-text",
+    "math": "fa-sigma",
+    "time & date": "fa-clock",
+}
+
+FUNCTIONS = [{**f, "icon": ICONS[f["categories"][0]]} for f in FUNCTIONS]
+
+
+def filter_functions(function, q, category):
+    is_category = category == "all" or category in function["categories"]
+    is_fuzzy = not q or fuzz.token_sort_ratio(function["name"], q.lower()) > 40
+    return is_fuzzy and is_category
+
+
+class FormulaHelp(TurboFrameDetailView):
+    model = Node
+    template_name = "nodes/help/formula.html"
+    # This view replaces the node grid so we need to provide the same
+    # turbo frame dom id
+    turbo_frame_dom_id = "nodes:grid"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["show_docs"] = self.request.GET.get("show_docs", False) == "true"
+        q = self.request.GET.get("q")
+        selected_category = self.request.GET.get("category", "all")
+        context["functions"] = [
+            function
+            for function in FUNCTIONS
+            if filter_functions(function, q, selected_category)
+        ]
+
+        context["categories"] = CATEGORIES
+        context["selected_category"] = selected_category
+
+        return context

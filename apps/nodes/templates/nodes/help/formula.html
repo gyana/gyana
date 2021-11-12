@@ -1,4 +1,7 @@
-<div class="workflow-node__help">
+
+{% include 'nodes/modal_nav_bar.html' %}
+
+<div class="formula">
   <h1>Formula Docs</h2>
     <p>
       The formula node supports arbitrary arithmetic operations between numeric
@@ -43,10 +46,31 @@
     </p>
     
     <h2>Functions</h2>
+
+    <form role='search' method="get" 
+      action="{% url 'nodes:formula' node.id %}?show_docs=true"
+    >
+      <input type='search' name='q' 
+        id='id_search' 
+        placeholder="Search functions"
+        value="{{ request.GET.q }}"
+      ></input>   
+      
+      <div class='category'>
+        {% for category in categories %}
+        
+          <button type='submit' name='category' value="{{category}}" 
+          class="category__pill {% if category == selected_category  %} category__selected {% endif %}">{{category}}</button>
+        
+        {% endfor %}
+      </div>
+    </form>
+
     <div class="functions">
-      {% for function in "apps/columns/functions.json"|read_json %}
+      {% for function in functions %}
       <div class='function-pill'>
-        <h4>{{function.name}}(<em>
+        <h4>
+        <i class="fa {{ function.icon }}"></i> {{function.name}}(<em>
           {{ function.arguments|join:", " }}
         </em>)</h4>
         <span>{{ function.description }}</span>

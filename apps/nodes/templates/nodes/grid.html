@@ -6,13 +6,9 @@
 
   {% include 'nodes/_zero_state.html' %}
 
-{% elif show_docs%}
-        
-  {% include help_template %}
-
 {% elif node.error %}
 
-  <div class='workflow-node__visual'>
+  <div class='node__visual'>
     {% if error_template %}
       {% include error_template %}
     {% else %}
