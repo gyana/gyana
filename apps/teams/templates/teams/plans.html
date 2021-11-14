@@ -47,8 +47,7 @@
         <p class="mb-6"><strong>1 Million</strong> rows of data</p>
 
         {% flag 'subscriptions' %}
-          {% comment %} data-turbo="false" clears the Paddle JS library {% endcomment %}
-          <a data-turbo="false" href="{% url 'teams:checkout' team.id %}?plan={{ paddle_pro_plan.id }}" class="button button--primary w-full">
+          <a href="{% url 'teams:checkout' team.id %}?plan={{ paddle_pro_plan.id }}" class="button button--primary w-full">
             Upgrade to Pro
           </a>
         {% else %}
@@ -82,8 +81,7 @@
         <p class="mb-6"><strong>10 Million</strong> rows of data</p>
 
         {% flag 'subscriptions' %}
-          {% comment %} data-turbo="false" clears the Paddle JS library {% endcomment %}
-          <a data-turbo="false" href="{% url 'teams:checkout' team.id %}?plan={{ paddle_business_plan.id }}" class="button button--primary w-full">
+          <a href="{% url 'teams:checkout' team.id %}?plan={{ paddle_business_plan.id }}" class="button button--primary w-full">
             Upgrade to Business
           </a>
         {% else %}
@@ -108,5 +106,15 @@
 {% endblock %}
 
 {% block page_js %}
-  {% include "djpaddle_paddlejs.html" %}
+  <script type="text/javascript">
+  {% if DJPADDLE_SANDBOX %}
+  Paddle.Environment.set('sandbox');
+  {% endif %}
+  Paddle.Setup({
+      vendor:  {{ DJPADDLE_VENDOR_ID }},
+      {% if debug %}
+      debug: true,
+      {% endif %}
+  });
+  </script>
 {% endblock %}
