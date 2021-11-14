@@ -16,9 +16,36 @@
       height: 3.9rem;
       text-align: left;
       white-space: nowrap;
-      
+
       &:last-child {
         width: 100%;
+      }
+    }
+
+    .column {
+      &::before {
+        color: var(--c-black-50);
+        display: inline;
+        font-family: 'Font Awesome 5 Pro';
+        font-weight: 900;
+        margin-left: 0.5em;
+        position: relative;
+      }
+
+      &--numeric::before {
+        content: '\f292';
+      }
+
+      &--string::before {
+        content: '\f031';
+      }
+
+      &--time::before {
+        content: '\f073';
+      }
+
+      &--boolean::before {
+        content: '\f058';
       }
     }
 
@@ -27,7 +54,7 @@
         color: var(--c-black-50);
         content: '\f0dc';
         display: inline;
-        font-family: "Font Awesome 5 Pro";
+        font-family: 'Font Awesome 5 Pro';
         font-weight: 900;
         margin-left: 0.5em;
         position: relative;
@@ -65,8 +92,8 @@
 
   td a[href]:not(.button) {
     color: var(--c-blue);
-    padding: 1.2rem 0; 
-    
+    padding: 1.2rem 0;
+
     &:hover {
       text-decoration: underline;
     }
@@ -76,7 +103,7 @@
     &:first-child {
       border-top-left-radius: 10px;
     }
-    
+
     &:last-child {
       width: 100%;
       border-top-right-radius: 10px;

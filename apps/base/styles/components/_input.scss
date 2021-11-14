@@ -105,6 +105,11 @@ input[type='color'] {
   height: 3.2rem;
   padding: 0;
   width: 100%;
+
+  &::-webkit-color-swatch,
+  &::-moz-color-swatch {
+    border: 1px solid var(--c-gray);
+  }
 }
 
 textarea {

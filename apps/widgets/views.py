@@ -67,6 +67,8 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
             ),
         )
 
+import logging
+logger = logging.getLogger()
 
 class WidgetDetail(DashboardMixin, TurboUpdateView):
     template_name = "widgets/detail.html"
