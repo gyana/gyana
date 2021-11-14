@@ -1,6 +1,11 @@
 {% extends "teams/base.html" %}
 {% load waffle_tags %}
 
+{% block page_head %}
+  <meta name="turbo-visit-control" content="reload">
+  {% include "djpaddle_paddlejs.html" %}
+{% endblock %}
+
 {% block tab %}
 
 <div class="flex flex-col justify-center items-center h-full">
@@ -42,7 +47,7 @@
         <p class="mb-auto">For small teams and freelancers</p>
         
         <p class="mt-8 mb-3">
-          <span data-product="{{ paddle_pro_plan.id }}" class="h1 paddle-gross"/>/mo
+          <span data-product="{{ paddle_pro_plan.id }}" class="h1 paddle-gross"></span>/mo
         </p>
         <p class="mb-6"><strong>1 Million</strong> rows of data</p>
 
@@ -76,7 +81,7 @@
         <p class="mb-auto">For growing teams and agencies</p>
         
         <p class="mt-8 mb-3">
-          <span data-product="{{ paddle_business_plan.id }}" class="h1 paddle-gross"/>/mo
+          <span data-product="{{ paddle_business_plan.id }}" class="h1 paddle-gross"></span>/mo
         </p>
         <p class="mb-6"><strong>10 Million</strong> rows of data</p>
 
@@ -103,18 +108,4 @@
     </div>
   </div>
 </div>
-{% endblock %}
-
-{% block page_js %}
-  <script type="text/javascript">
-  {% if DJPADDLE_SANDBOX %}
-  Paddle.Environment.set('sandbox');
-  {% endif %}
-  Paddle.Setup({
-      vendor:  {{ DJPADDLE_VENDOR_ID }},
-      {% if debug %}
-      debug: true,
-      {% endif %}
-  });
-  </script>
 {% endblock %}
