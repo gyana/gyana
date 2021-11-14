@@ -1,7 +1,7 @@
-{% extends "web/base.html" %}
+{% extends "teams/base.html" %}
 {% load static %}
 
-{% block banner %}
+{% comment %} {% block banner %}
   {% if project.team.warning %}
     <div class="banner banner--warning">
       <p>
@@ -19,9 +19,9 @@
       </p>
     </div>
   {% endif %}
-{% endblock %}
+{% endblock %} {% endcomment %}
 
-{% block sidebar_content %}
+{% comment %} {% block sidebar_content %}
 <a class="sidebar__link sidebar__link--border" href="{% url 'teams:detail' project.team.id %}">
   {% if project.team.icon %}<img src="{{ project.team.icon.url }}" />{% else %}<span class="team_logo">{{ project.team.name|slice:1 }}</span>{% endif %}
   <strong class="h3">
@@ -101,17 +101,18 @@
   </a>
 </li>
 {% endwith %}
-{% endblock %}
+{% endblock %} {% endcomment %}
 
 {% block body %}
 
-{% block notifications %}{% endblock %}
+{% comment %} {% block notifications %}{% endblock %} {% endcomment %}
 
 <section
   class="project"
   data-controller="dropzone"
   data-sheets-url="{% url 'project_integrations_sheets:create' project.id %}"
 >
+  {% include 'web/components/projects_nav.html' %}
   <section class="flex flex-col flex-1 overflow-auto {% block app-class %}{% endblock %}">
     {% block app %}{% endblock %}
   </section>

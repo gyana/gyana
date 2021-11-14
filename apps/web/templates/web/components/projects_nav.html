@@ -1,0 +1,22 @@
+<nav id='tabbar' class="tabbar tabbar--top">
+  <a class="tabbar__link {% if request.resolver_match.view_name == 'projects:detail' %} tabbar__link--active {% endif %}"
+    href="{% url 'projects:detail' project.id %}">
+    Overview
+  </a>
+  <a class="tabbar__link {% if 'project_integrations' in request.resolver_match.app_name %} tabbar__link--active {% endif %}"
+    href="{% url 'project_integrations:list' project.id %}">
+    Integrations
+  </a>
+    <a class="tabbar__link {% if request.resolver_match.app_name == 'project_workflows' %} tabbar__link--active {% endif %}"
+    href="{% url 'project_workflows:list' project.id %}">
+    Workflows
+  </a>
+  <a class="tabbar__link {% if request.resolver_match.app_name == 'project_dashboards' %} tabbar__link--active {% endif %}"
+    href="{% url 'project_dashboards:list' project.id %}">
+    Dashboards
+  </a>
+  <a class="tabbar__link {% if request.resolver_match.view_name == 'projects:update' %} tabbar__link--active {% endif %}"
+    href="{% url 'projects:update' project.id %}">
+    Settings
+  </a>
+</nav>

@@ -1,12 +1,13 @@
 import analytics
-from apps.base.analytics import PROJECT_CREATED_EVENT
-from apps.base.turbo import TurboCreateView, TurboUpdateView
-from apps.teams.mixins import TeamMixin
 from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from waffle import flag_is_active
+
+from apps.base.analytics import PROJECT_CREATED_EVENT
+from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.teams.mixins import TeamMixin
 
 from .forms import ProjectCreateForm, ProjectForm
 from .models import Project
@@ -40,6 +41,11 @@ class ProjectDetail(DetailView):
     model = Project
     pk_url_kwarg = "project_id"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["team"] = self.object.team
+        return context
+
     def get(self, request, *args, **kwargs):
         object = self.get_object()
 
@@ -55,6 +61,11 @@ class ProjectUpdate(TurboUpdateView):
     form_class = ProjectForm
     pk_url_kwarg = "project_id"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["team"] = self.object.team
+        return context
+
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
         form_kwargs["current_user"] = self.request.user
@@ -69,6 +80,11 @@ class ProjectDelete(DeleteView):
     template_name = "projects/delete.html"
     model = Project
     pk_url_kwarg = "project_id"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["team"] = self.object.team
+        return context
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.team.id,))

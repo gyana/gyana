@@ -64,19 +64,29 @@
 
 <li><hr></li>
 
+<li class="sidebar__link">
+  Projects
+</li>
+
+{% for project in team.project_set.all %}
 <li>
   <a
-    class="sidebar__link {% if request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
-    href="{% url 'teams:detail' team.id %}"
+    class="sidebar__link {% if request.resolver_match.kwargs.project_id == project.id %}sidebar__link--active{% endif %}"
+    href="{% url 'projects:detail' project.id %}"
   >
-    <i class="far fa-fw fa-folders"></i>Projects
+    <i class="far fa-fw fa-folders"></i>{{ project.name }}
   </a>
+</li>
+{% endfor %}
+
+<li class="sidebar__link">
+  Team
 </li>
 
 {% if request.user|is_admin_of:team %}
 <li>
   <a
-    class="sidebar__link {% if request.resolver_match.url_name == 'list' %}sidebar__link--active{% endif %}"
+    class="sidebar__link {% if request.resolver_match.view_name == 'team_members:list' %}sidebar__link--active{% endif %}"
     href="{% url 'team_members:list' team.id %}"
   >
     <i class="far fa-fw fa-users"></i>Members
@@ -85,7 +95,7 @@
 
 <li>
   <a
-    class="sidebar__link {% if request.resolver_match.url_name in 'account,subscription,plan,payments' %}sidebar__link--active{% endif %}"
+    class="sidebar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name in 'account,subscription,plan,checkout' %}sidebar__link--active{% endif %}"
     href="{% url 'teams:account' team.id %}"
   >
     <i class="far fa-fw fa-wallet"></i>Billing
@@ -94,7 +104,7 @@
 
 <li>
   <a
-    class="sidebar__link {% if request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
+    class="sidebar__link {% if request.resolver_match.view_name == 'teams:update' %}sidebar__link--active{% endif %}"
     href="{% url 'teams:update' team.id %}"
   >
     <i class="far fa-fw fa-cog"></i>Settings
