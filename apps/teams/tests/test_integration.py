@@ -308,7 +308,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     assert paddle.update_subscription.call_args.kwargs == {"plan_id": business_plan.id}
 
     # redirect
-    r = client.get(f"/teams/{team.id}/plan")
+    r = client.get(f"/teams/{team.id}/plans")
     assertRedirects(r, f"/teams/{team.id}/subscription")
 
     # cancel
