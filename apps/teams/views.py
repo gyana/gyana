@@ -80,7 +80,9 @@ class TeamCheckout(DetailView):
         context = super().get_context_data(**kwargs)
         plan_id = self.request.GET.get("plan") or settings.DJPADDLE_PRO_PLAN_ID
         context["plan"] = Plan.objects.get(pk=plan_id)
-        context["paddle_pro_plan_id"] = Plan.objects.get(pk=settings.DJPADDLE_PRO_PLAN_ID)
+        context["paddle_pro_plan_id"] = Plan.objects.get(
+            pk=settings.DJPADDLE_PRO_PLAN_ID
+        )
         context["paddle_business_plan_id"] = Plan.objects.get(
             pk=settings.DJPADDLE_BUSINESS_PLAN_ID
         )
@@ -215,11 +217,3 @@ class MembershipDelete(TeamMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("team_members:list", args=(self.team.id,))
-
-
-class CheckoutSuccess(TeamMixin, DetailView):
-    template_name = "checkout/success.html"
-    model = Checkout
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(Checkout, id=self.request.GET.get("checkout"))

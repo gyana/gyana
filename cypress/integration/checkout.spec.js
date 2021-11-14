@@ -76,7 +76,7 @@ describe('checkout', () => {
     getIframeBody().find('[data-testid=paymentSuccess]', { timeout: 10000 })
 
     // validate
-    cy.get('#sidebar').within(() => cy.contains('Billing').click())
+    cy.contains('Go to billing').click()
     cy.contains('Information about your new subscription will be available here in a moment.')
   })
 })

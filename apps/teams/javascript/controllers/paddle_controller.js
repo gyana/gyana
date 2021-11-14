@@ -13,7 +13,7 @@ export default class extends Controller {
     passthrough: String,
   }
 
-  static targets = ['total', 'recurring']
+  static targets = ['total', 'recurring', 'checkoutMessage', 'successMessage']
 
   updatePrices(data) {
     const total = data.eventData.checkout.prices.customer.total
@@ -44,6 +44,9 @@ export default class extends Controller {
           // bug fix: by default, dj-paddle will redirect to "null"
           data.eventData.checkout.redirect_url = ''
           window.checkoutComplete(data.eventData)
+
+          this.checkoutMessageTarget.classList.add('hidden')
+          this.successMessageTarget.classList.remove('hidden')
         }
       },
     })

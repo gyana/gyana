@@ -274,9 +274,6 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
         created_at=timezone.now(),
         updated_at=timezone.now(),
     )
-    r = client.get(f"/teams/{team.id}/checkout/success?checkout={checkout.id}")
-    assertOK(r)
-    assertLink(r, f"/teams/{team.id}/account", "Take me there")
 
     r = client.get(f"/teams/{team.id}/account")
     assertOK(r)
