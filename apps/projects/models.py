@@ -1,4 +1,4 @@
-from functools import cached_property
+from django.utils.functional import cached_property
 
 from apps.base.models import BaseModel
 from apps.cnames.models import CName

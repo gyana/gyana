@@ -1,4 +1,4 @@
-from functools import cached_property
+from django.utils.functional import cached_property
 
 from django.conf import settings
 from django.db import models

@@ -1,4 +1,4 @@
-from functools import cached_property
+from django.utils.functional import cached_property
 
 from django import forms
 from django.forms.widgets import HiddenInput
