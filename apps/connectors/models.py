@@ -214,8 +214,10 @@ class Connector(BaseModel):
         has_started = timezone.now() > self.next_daily_sync
         not_connected = self.setup_state != self.SetupState.CONNECTED
         paused = self.sync_state == self.SyncState.PAUSED
-        succeeded = self.succeeded_at > self.next_daily_sync
-        failed = self.failed_at > self.next_daily_sync
+        succeeded = (
+            self.succeeded_at is not None and self.succeeded_at > self.next_daily_sync
+        )
+        failed = self.failed_at is not None and self.failed_at > self.next_daily_sync
 
         return has_started and (not_connected or paused or succeeded or failed)
 
