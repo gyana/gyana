@@ -12,9 +12,9 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             """
-ALTER TABLE columns_formulacolumn
-SET formula =
-    REPLACE(
+UPDATE columns_formulacolumn
+SET formula = 
+REPLACE(
         REPLACE(
             REPLACE(
                 REPLACE(
@@ -24,40 +24,40 @@ SET formula =
                                 REPLACE(
                                     REPLACE(
                                         REPLACE(
-                                            REPLACE(formula, "cast(", "convert("), 
-                                            "ceil(", 
-                                            "ceiling("
+                                            REPLACE(formula, 'cast(', 'convert('), 
+                                            'ceil(', 
+                                            'ceiling('
                                         ),
-                                        "fillna(",
-                                        "fillnull("
+                                        'fillna(',
+                                        'fillnull('
                                     ),
-                                    "strip(",
-                                    "trim("
+                                    'strip(',
+                                    'trim('
                                 ),
-                                "mul(",
-                                "product("
+                                'mul(',
+                                'product('
                             ),
-                            "pow(",
-                            "power("
+                            'pow(',
+                            'power('
                         ),
-                        "re_extract(",
-                        "regex_extract("
+                        're_extract(',
+                        'regex_extract('
                     ),
-                    "re_search(",
-                    "regex_search("
+                    're_search(',
+                    'regex_search('
                 ),
-                "re_replace(",
-                "regex_replace("
+                're_replace(',
+                'regex_replace('
             ),
-            "strftime(",
-            "format_datetime("
+            'strftime(',
+            'format_datetime('
         ),
-        "sub(",
-        "subtract("
+        'sub(',
+        'subtract('
     )
 """,
             reverse_sql="""
-ALTER TABLE columns_formulacolumn
+UPDATE columns_formulacolumn
 SET formula =
     REPLACE(
         REPLACE(
@@ -69,36 +69,36 @@ SET formula =
                                 REPLACE(
                                     REPLACE(
                                         REPLACE(
-                                            REPLACE(formula, "convert(", "cast("), 
-                                            "ceiling(",
-                                            "ceil("
+                                            REPLACE(formula, 'convert(', 'cast('), 
+                                            'ceiling(',
+                                            'ceil('
                                         ),
-                                        "fillnull(",
-                                        "fillna("
+                                        'fillnull(',
+                                        'fillna('
                                     ),
-                                    "trim(",
-                                    "strip("
+                                    'trim(',
+                                    'strip('
                                 ),
-                                "product(",
-                                "mul("
+                                'product(',
+                                'mul('
                             ),
-                            "power(",
-                            "pow("
+                            'power(',
+                            'pow('
                         ),
-                        "regex_extract(",
-                        "re_extract("
+                        'regex_extract(',
+                        're_extract('
                     ),
-                    "regex_search(",
-                    "re_search("
+                    'regex_search(',
+                    're_search('
                 ),
-                "regex_replace(",
-                "re_replace("
+                'regex_replace(',
+                're_replace('
             ),
-            "format_datetime(",
-            "strftime("
+            'format_datetime(',
+            'strftime('
         ),
-        "subtract(",
-        "sub("
+        'subtract(',
+        'sub('
     )
 """,
         )
