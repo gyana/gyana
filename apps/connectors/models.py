@@ -276,6 +276,13 @@ class Connector(BaseModel):
         self.schema_config = clients.fivetran().get_schemas(self)
         self.save()
 
+    def update_daily_sync_time_if_changed(self):
+        daily_sync_time = self.integration.project.next_sync_time_utc_string
+
+        if daily_sync_time != self.daily_sync_time:
+            clients.fivetran().update(self, {"daily_sync_time": daily_sync_time})
+            self.sync_updates_from_fivetran()
+
     @property
     def setup_state_icon(self):
         return self.SETUP_STATE_TO_ICON[self.setup_state]

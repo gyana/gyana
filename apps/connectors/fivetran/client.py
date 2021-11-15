@@ -76,6 +76,21 @@ class FivetranClient:
 
         return res["data"]
 
+    def update(self, connector: Connector, data):
+
+        # https://fivetran.com/docs/rest-api/connectors#modifyaconnector
+
+        res = requests.patch(
+            f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}",
+            json=data,
+            headers=settings.FIVETRAN_HEADERS,
+        ).json()
+
+        if res["code"] != "Success":
+            raise FivetranClientError(res)
+
+        return res
+
     def get_authorize_url(self, connector: Connector, redirect_uri: str) -> str:
 
         # https://fivetran.com/docs/rest-api/connectors/connect-card#connectcard

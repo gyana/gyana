@@ -89,6 +89,14 @@ class Project(CloneMixin, BaseModel):
             or 0
         )
 
+    def update_connectors_daily_sync_time(self):
+        from apps.connectors.models import Connector
+
+        connectors = Connector.objects.filter(integration__project=self).all()
+
+        for connector in connectors:
+            connector.update_daily_sync_time_if_changed()
+
     def get_absolute_url(self):
         return reverse("projects:detail", args=(self.id,))
 
