@@ -28,7 +28,11 @@ class ConnectorCreateForm(BaseModelForm):
 
         # try to create fivetran entity
         try:
-            data = clients.fivetran().create(self._service, self._project.team.id)
+            data = clients.fivetran().create(
+                self._service,
+                self._project.team.id,
+                self._project.next_sync_time_utc_string,
+            )
         except FivetranClientError as e:
             raise ValidationError(str(e))
 

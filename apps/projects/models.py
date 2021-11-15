@@ -1,8 +1,10 @@
-from datetime import time
+from datetime import time, timedelta
 
+import pytz
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.functional import cached_property
 from model_clone.mixins.clone import CloneMixin
 
@@ -38,6 +40,21 @@ class Project(CloneMixin, BaseModel):
 
     def __str__(self):
         return self.name
+
+    @property
+    def next_sync_time_utc_string(self):
+        # Calculate the next sync time in UTC. It will change over time thanks
+        # to daily savings. Start with the local time of the user, calculate
+        # the next sync time they expect to see, and convert it back to UTC.
+
+        today_local = timezone.now().astimezone(self.team.timezone)
+        next_sync_time_local = today_local.replace(
+            hour=self.daily_schedule_time.hour, minute=0
+        )
+        if next_sync_time_local < today_local:
+            next_sync_time_local += timedelta(days=1)
+
+        return next_sync_time_local.astimezone(pytz.UTC).strftime("%H:%M")
 
     @property
     def integration_count(self):

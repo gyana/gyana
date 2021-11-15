@@ -68,3 +68,7 @@
     flex: 1 1 0%;
   }
 }
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  background: none;
+}

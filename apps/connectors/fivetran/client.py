@@ -20,7 +20,7 @@ class FivetranClientError(Exception):
 
 
 class FivetranClient:
-    def create(self, service, team_id) -> Dict:
+    def create(self, service, team_id, daily_sync_time) -> Dict:
         from apps.base.clients import SLUG
 
         # https://fivetran.com/docs/rest-api/connectors#createaconnector
@@ -50,6 +50,8 @@ class FivetranClient:
                 # no access credentials yet
                 "run_setup_tests": False,
                 "paused": True,
+                "sync_frequency": 1440,
+                "daily_sync_time": daily_sync_time,
                 "config": config,
             },
             headers=settings.FIVETRAN_HEADERS,
