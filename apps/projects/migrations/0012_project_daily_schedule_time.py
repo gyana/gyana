@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="project",
-            name="daily_schedule_hour",
+            name="daily_schedule_time",
             field=models.TimeField(default=datetime.time(0, 0)),
         ),
     ]

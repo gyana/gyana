@@ -15,11 +15,11 @@ class ProjectForm(LiveUpdateForm):
             "access",
             "members",
             "cname",
-            "daily_schedule_hour",
+            "daily_schedule_time",
         ]
         widgets = {
             "members": MemberSelect(),
-            "daily_schedule_hour": forms.TimeInput(attrs={"step": "3600"}),
+            "daily_schedule_time": forms.TimeInput(attrs={"step": "3600"}),
         }
         labels = {"cname": "Custom domain"}
 
@@ -46,15 +46,16 @@ class ProjectForm(LiveUpdateForm):
                 "Invite only projects are not available on your current plan"
             )
 
-        self.fields[
-            "daily_schedule_hour"
-        ].help_text = f"Daily schedule is run {self._team.timezone_with_gtm_offset}"
+        if daily_schedule_time_field := self.fields.get("daily_schedule_time"):
+            daily_schedule_time_field.help_text = (
+                f"Select an hour in {self._team.timezone_with_gtm_offset}"
+            )
 
-    def clean_daily_schedule_hour(self):
-        return self.cleaned_data["daily_schedule_hour"].replace(minute=0)
+    def clean_daily_schedule_time(self):
+        return self.cleaned_data["daily_schedule_time"].replace(minute=0)
 
     def get_live_fields(self):
-        fields = ["name", "description", "access", "cname", "daily_schedule_hour"]
+        fields = ["name", "description", "access", "cname", "daily_schedule_time"]
 
         if self.get_live_field("access") == Project.Access.INVITE_ONLY:
             fields += ["members"]
