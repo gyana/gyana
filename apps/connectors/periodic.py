@@ -8,7 +8,7 @@ from .models import Connector
 
 @shared_task
 def update_connectors_from_fivetran():
-    connectors_to_check = Connector.objects.needs_periodic_sync_check()
+    connectors_to_check = Connector.objects.needs_daily_sync_check()
 
     for connector in connectors_to_check:
         try:

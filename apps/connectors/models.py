@@ -30,14 +30,10 @@ class ConnectorsManager(models.Manager):
             fivetran_sync_started__gt=include_sync_started_after,
         )
 
-    def needs_periodic_sync_check(self):
-
-        exclude_succeeded_at_after = timezone.now() - timezone.timedelta(
-            hours=FIVETRAN_SYNC_FREQUENCY_HOURS
-        )
+    def needs_daily_sync_check(self):
 
         # check connectors where next_daily_sync is in past
-        return self.exclude(next_daily_sync__lt=timezone.now()).all()
+        return self.filter(next_daily_sync__lt=timezone.now()).all()
 
 
 class Connector(BaseModel):
