@@ -22,14 +22,14 @@
   },
   {
     "id": "cast",
-    "name": "cast",
+    "name": "convert",
     "categories": ["generic"],
     "arguments": ["value", "type"],
     "description": "Change type of a column to a different data type"
   },
   {
     "id": "ceil",
-    "name": "ceil",
+    "name": "ceiling",
     "categories": ["math"],
     "arguments": ["value"],
     "description": "Round up to the nearest integer value greater than or equal to this value"
@@ -106,7 +106,7 @@
   },
   {
     "id": "fillna",
-    "name": "fillna",
+    "name": "fillnull",
     "categories": ["generic"],
     "arguments": ["value", "fill_value"],
     "description": "Replace nulls with value"
@@ -211,7 +211,7 @@
   },
   {
     "id": "lstrip",
-    "name": "lstrip",
+    "name": "ltrim",
     "categories": ["text"],
     "arguments": ["text"],
     "description": "Remove white space on the left of text"
@@ -239,7 +239,7 @@
   },
   {
     "id": "mul",
-    "name": "mul",
+    "name": "product",
     "categories": ["math"],
     "arguments": ["factor", "factor"],
     "description": "Multiply values"
@@ -253,28 +253,28 @@
   },
   {
     "id": "pow",
-    "name": "pow",
+    "name": "power",
     "categories": ["math"],
     "arguments": ["value", "power"],
     "description": "Calculate the power of a value"
   },
   {
     "id": "re_extract",
-    "name": "re_extract",
+    "name": "regex_extract",
     "categories": ["text"],
     "arguments": ["text", "pattern", "index"],
     "description": "Returns specified index, 0 indexed, from string based on regex pattern given"
   },
   {
     "id": "re_replace",
-    "name": "re_replace",
+    "name": "regex_replace",
     "categories": ["text"],
     "arguments": ["text", "pattern", "relacement"],
     "description": "Replaces match found by regex with replacement string."
   },
   {
     "id": "re_search",
-    "name": "re_search",
+    "name": "regex_search",
     "categories": ["text"],
     "arguments": ["text", "pattern"],
     "description": "Search string values using a regular expression."
@@ -323,7 +323,7 @@
   },
   {
     "id": "rstrip",
-    "name": "rstrip",
+    "name": "rtrim",
     "categories": ["text"],
     "arguments": ["text"],
     "description": "Remove white space on the right of text"
@@ -344,21 +344,21 @@
   },
   {
     "id": "strftime",
-    "name": "strftime",
+    "name": "format_datetime",
     "categories": ["time & date"],
     "arguments": ["datetime", "format"],
     "description": "Format timestamp into string with given format"
   },
   {
     "id": "strip",
-    "name": "strip",
+    "name": "trim",
     "categories": ["text"],
     "arguments": ["text"],
     "description": "Remove white space surrounding the text"
   },
   {
     "id": "sub",
-    "name": "sub",
+    "name": "subtract",
     "categories": ["math"],
     "arguments": ["minuend", "subtrahend"],
     "description": "Substract value from value"
