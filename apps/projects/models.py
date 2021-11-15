@@ -1,12 +1,14 @@
+from datetime import time
+
+from django.conf import settings
+from django.db import models
+from django.urls import reverse
 from django.utils.functional import cached_property
+from model_clone.mixins.clone import CloneMixin
 
 from apps.base.models import BaseModel
 from apps.cnames.models import CName
 from apps.teams.models import Team
-from django.conf import settings
-from django.db import models
-from django.urls import reverse
-from model_clone.mixins.clone import CloneMixin
 
 
 class Project(CloneMixin, BaseModel):
@@ -29,6 +31,8 @@ class Project(CloneMixin, BaseModel):
         through="ProjectMembership",
     )
     cname = models.ForeignKey(CName, on_delete=models.SET_NULL, null=True, blank=True)
+    # default midnight
+    daily_schedule_hour = models.TimeField(default=time())
 
     _clone_m2o_or_o2m_fields = ["integration_set", "workflow_set", "dashboard_set"]
 

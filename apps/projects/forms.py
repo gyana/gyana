@@ -9,8 +9,18 @@ from .widgets import MemberSelect
 class ProjectForm(LiveUpdateForm):
     class Meta:
         model = Project
-        fields = ["name", "description", "access", "members", "cname"]
-        widgets = {"members": MemberSelect()}
+        fields = [
+            "name",
+            "description",
+            "access",
+            "members",
+            "cname",
+            "daily_schedule_hour",
+        ]
+        widgets = {
+            "members": MemberSelect(),
+            "daily_schedule_hour": forms.TimeInput(attrs={"step": "3600"}),
+        }
         labels = {"cname": "Custom domain"}
 
     def __init__(self, current_user, *args, **kwargs):
@@ -36,8 +46,15 @@ class ProjectForm(LiveUpdateForm):
                 "Invite only projects are not available on your current plan"
             )
 
+        self.fields[
+            "daily_schedule_hour"
+        ].help_text = f"Daily schedule is run {self._team.timezone_with_gtm_offset}"
+
+    def clean_daily_schedule_hour(self):
+        return self.cleaned_data["daily_schedule_hour"].replace(minute=0)
+
     def get_live_fields(self):
-        fields = ["name", "description", "access", "cname"]
+        fields = ["name", "description", "access", "cname", "daily_schedule_hour"]
 
         if self.get_live_field("access") == Project.Access.INVITE_ONLY:
             fields += ["members"]

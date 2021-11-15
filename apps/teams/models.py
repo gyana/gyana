@@ -8,6 +8,7 @@ from djpaddle.models import Checkout
 from safedelete.models import SafeDeleteModel
 from storages.backends.gcloud import GoogleCloudStorage
 from timezone_field import TimeZoneField
+from timezone_field.choices import with_gmt_offset
 
 from apps.base.models import BaseModel
 
@@ -66,6 +67,10 @@ class Team(BaseModel, SafeDeleteModel):
         )
         self.row_count_calculated = timezone.now()
         self.save()
+
+    @property
+    def timezone_with_gtm_offset(self):
+        return with_gmt_offset([self.timezone])[0][1]
 
     @property
     def warning(self):
