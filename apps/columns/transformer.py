@@ -61,7 +61,7 @@ class TreeToIbis(Transformer):
         function_name = token.value.lower()
         function = next(filter(lambda f: f["name"] == function_name, FUNCTIONS))
         func = getattr(caller, function["id"])
-        if "..." in function["arguments"]:
+        if "..." in function["arguments"] and function["id"] != "coalesce":
             return func(args)
         if odd_func := ODD_FUNCTIONS.get(function["id"]):
             return odd_func(func, args)
