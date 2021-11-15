@@ -1,4 +1,7 @@
 import pytest
+from django.utils import timezone
+from pytest_django.asserts import assertContains, assertNotContains, assertRedirects
+
 from apps.base.tests.asserts import (
     assertFormRenders,
     assertLink,
@@ -7,8 +10,6 @@ from apps.base.tests.asserts import (
 )
 from apps.connectors.periodic import check_syncing_connectors_from_fivetran
 from apps.integrations.models import Integration
-from django.utils import timezone
-from pytest_django.asserts import assertContains, assertNotContains, assertRedirects
 
 from .mock import get_mock_fivetran_connector, get_mock_list_tables, get_mock_schema
 
@@ -60,6 +61,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     assert fivetran.create.call_args.args == (
         "google_analytics",
         project.team.id,
+        "00:00",
     )
     assert connector.fivetran_id == "fivetran_id"
     assert connector.schema == "dataset"
