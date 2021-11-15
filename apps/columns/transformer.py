@@ -21,6 +21,7 @@ TYPES = {
     "str": dt.string,
     "time": dt.time,
     "timestamp": dt.timestamp,
+    "text": dt.string,
 }
 
 
@@ -61,7 +62,9 @@ class TreeToIbis(Transformer):
         function_name = token.value.lower()
         function = next(filter(lambda f: f["name"] == function_name, FUNCTIONS))
         func = getattr(caller, function["id"])
-        if "..." in function["arguments"] and function["id"] != "coalesce":
+        if function["id"] != "coalesce" and any(
+            arg.get("repeatable") for arg in function["arguments"]
+        ):
             return func(args)
         if odd_func := ODD_FUNCTIONS.get(function["id"]):
             return odd_func(func, args)

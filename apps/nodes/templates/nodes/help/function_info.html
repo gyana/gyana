@@ -1,9 +1,18 @@
 <div class='function-info'>
-  <h4>
+  <h3>
     <i class="fa {{ function.icon }} text-blue"></i>
-    {{function.name}}(<em>
-      {{ function.arguments|join:", " }}
-    </em>)
-  </h4>
-  <span>{{ function.description }}</span>
+    {{function.name}}(
+      <em>{% include 'nodes/help/_arguments.html' with arguments=function.arguments %}</em>
+      )
+  </h3>
+  <p>{{ function.description }}</p>
+
+  <h4 class='my-2'>Arguments</h4>
+  <ul>
+  {% for argument in function.arguments %}
+
+  <li><i>{{argument.name}}:</i> {{argument.description}}</li>
+
+  {% endfor %}
+  </ul>
 </div>

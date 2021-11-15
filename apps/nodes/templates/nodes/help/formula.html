@@ -42,7 +42,7 @@
           class="textarea"
           name="{{ widget.name }}"
           readonly
-        >join("", strip(first_name), " ", strip(last_name))</textarea>
+        >join("", trim(first_name), " ", trim(last_name))</textarea>
       </div>
     </p>
     
@@ -73,9 +73,9 @@
 
       <div class='function-pill' data-action="click->formula-drawer#open" data-src="{{function.id}}">
         <h4>
-          <i class="fa {{ function.icon }} text-blue"></i> {{function.name}}(<em>
-            {{ function.arguments|join:", " }}
-          </em>)
+          <i class="fa {{ function.icon }} text-blue"></i> {{function.name}}(
+            <em>{% include 'nodes/help/_arguments.html' with arguments=function.arguments %}</em>
+          )
         </h4>
       </div>
 

@@ -3,7 +3,7 @@
     "id": "abs",
     "name": "abs",
     "categories": ["math"],
-    "arguments": ["number"],
+    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
     "keywords": ["absolute", "modulus", "sign", "positive"],
     "description": "Calculate the absolute value of a numeric value."
   },
@@ -11,7 +11,10 @@
     "id": "add",
     "name": "add",
     "categories": ["math"],
-    "arguments": ["number", "number"],
+    "arguments": [
+      { "name": "number", "description": "a numeric scalar or column" },
+      { "name": "number", "description": "a numeric scalar or column" }
+    ],
     "keywords": ["addition", "plus", "summation"],
     "description": "Adds two numeric values together."
   },
@@ -19,7 +22,11 @@
     "id": "between",
     "name": "between",
     "categories": ["generic"],
-    "arguments": ["value", "lower", "upper"],
+    "arguments": [
+      { "name": "value", "description": "a scalar or column" },
+      { "name": "lower", "description": "a scalar or column representing the lower bound" },
+      { "name": "upper", "description": "a scalar or column representing the upper bound" }
+    ],
     "keywords": ["in", "range"],
     "description": "Check if value falls between the lower/upper bounds."
   },
@@ -27,7 +34,10 @@
     "id": "cast",
     "name": "convert",
     "categories": ["generic"],
-    "arguments": ["value", "type"],
+    "arguments": [
+      { "name": "value", "description": "a scalar or column" },
+      { "name": "type", "description": "the type to convert to e.g. `text`" }
+    ],
     "keywords": ["cast", "type", "change"],
     "description": "Change the type of a value to a different data type."
   },
@@ -35,7 +45,7 @@
     "id": "ceil",
     "name": "ceiling",
     "categories": ["math"],
-    "arguments": ["value"],
+    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
     "keywords": ["round", "upper", "decimal"],
     "description": "Round a numeric value up to the nearest integer value greater than or equal to this value."
   },
@@ -43,7 +53,10 @@
     "id": "coalesce",
     "name": "coalesce",
     "categories": ["generic"],
-    "arguments": ["value", "second_value", "..."],
+    "arguments": [
+      { "name": "value", "description": "a scalar or column" },
+      { "name": "value", "description": "a scalar or column", "repeatable": true }
+    ],
     "keywords": ["concatenate", "null", "join", "merge"],
     "description": "Returns the first non-null value from the passed arguments in left-to-right order"
   },
@@ -51,7 +64,10 @@
     "id": "contains",
     "name": "contains",
     "categories": ["text"],
-    "arguments": ["text", "value"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "text", "description": "a text scalar or column" }
+    ],
     "keywords": ["in"],
     "descrition": "Determine if indicated text value is exactly contained in the text."
   },
@@ -59,7 +75,7 @@
     "id": "date",
     "name": "date",
     "categories": ["time & date"],
-    "arguments": ["date"],
+    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
     "keywords": [],
     "description": "Get date part from a timestamp value"
   },
@@ -67,7 +83,7 @@
     "id": "day",
     "name": "day",
     "categories": ["time & date"],
-    "arguments": ["date"],
+    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
     "keywords": [],
     "description": "Get the day of month from a date or timestamp value"
   },
@@ -75,7 +91,7 @@
     "id": "day_of_week",
     "name": "day_of_week",
     "categories": ["time & date"],
-    "arguments": ["date"],
+    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
     "keywords": [],
     "description": "Get day of the week from date or timestamp"
   },
@@ -83,7 +99,10 @@
     "id": "div",
     "name": "divide",
     "categories": ["math"],
-    "arguments": ["dividend", "divisor"],
+    "arguments": [
+      { "name": "dividend", "description": "a numeric scalar or column" },
+      { "name": "divisor", "description": "a numeric scalar or column" }
+    ],
     "keywords": ["division"],
     "description": "Divide value by value"
   },
@@ -91,7 +110,7 @@
     "id": "epoch_seconds",
     "name": "epoch_seconds",
     "categories": ["time & date"],
-    "arguments": ["timestamp"],
+    "arguments": [{ "name": "timestamp", "description": "a timestamp scalar or column" }],
     "keywords": ["unix", "since"],
     "description": "Seconds passed since 00:00:00 UTC on 1 January 1970 also called UNIX time"
   },
@@ -99,7 +118,7 @@
     "id": "exp",
     "name": "exp",
     "categories": ["math"],
-    "arguments": ["value"],
+    "arguments": [{ "name": "value", "description": "a scalar or column" }],
     "keywords": ["euler", "power", "exponential"],
     "description": "Calculate exponential value"
   },
@@ -107,7 +126,10 @@
     "id": "find",
     "name": "find",
     "categories": ["text"],
-    "arguments": ["text", "searchtext"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "searchtext", "description": "a text scalar or column" }
+    ],
     "keywords": ["position", "search"],
     "description": "Returns position (0 indexed) of first occurence of subtext"
   },
@@ -115,7 +137,7 @@
     "id": "floor",
     "name": "floor",
     "categories": ["math"],
-    "arguments": ["value"],
+    "arguments": [{ "name": "value", "description": "a scalar or column" }],
     "keywords": ["round", "down"],
     "description": "Rounding down a numeric value to the greatest integer less or eqqual"
   },
@@ -123,7 +145,10 @@
     "id": "fillna",
     "name": "fillnull",
     "categories": ["generic"],
-    "arguments": ["value", "fill_value"],
+    "arguments": [
+      { "name": "value", "description": "a scalar or column" },
+      { "name": "fill_value", "description": "a scalar or column" }
+    ],
     "keywords": ["replace"],
     "description": "Replace nulls with value"
   },
@@ -131,7 +156,7 @@
     "id": "hash",
     "name": "hash",
     "categories": ["generic"],
-    "arguments": ["value"],
+    "arguments": [{ "name": "value", "description": "a scalar or column" }],
     "keywords": ["encrypt", "obscure"],
     "description": "Produces a cryptographic fingerprint from value using the Fingerprint64 method"
   },
@@ -139,7 +164,7 @@
     "id": "hour",
     "name": "hour",
     "categories": ["time & date"],
-    "arguments": ["time"],
+    "arguments": [{ "name": "time", "description": "a time scalar or column" }],
     "keywords": [],
     "description": "Get the hour from date or timestamp"
   },
@@ -147,7 +172,17 @@
     "id": "ifelse",
     "name": "ifelse",
     "categories": ["generic"],
-    "arguments": ["condition", "true_value", "false_value"],
+    "arguments": [
+      { "name": "condition", "description": "a condition of a boolean column or scalar" },
+      {
+        "name": "true_value",
+        "description": "scalar or column that is return if condition is true"
+      },
+      {
+        "name": "false_value",
+        "description": "scalar or column that is return if condition is false"
+      }
+    ],
     "keywords": ["condition"],
     "description": "Returns the first value if condition is true if not it returns the second value"
   },
@@ -155,7 +190,7 @@
     "id": "isnull",
     "name": "isnull",
     "categories": ["generic"],
-    "arguments": ["value"],
+    "arguments": [{ "name": "value", "description": "a scalar or column" }],
     "keywords": ["null", "empty"],
     "description": "Check whether value is null"
   },
@@ -163,7 +198,13 @@
     "id": "join",
     "name": "join",
     "categories": ["text"],
-    "arguments": ["delimiter", "text", "..."],
+    "arguments": [
+      {
+        "name": "delimiter",
+        "description": "a value that is used to separate the following arguments"
+      },
+      { "name": "text", "description": "a text scalar or column", "repeatable": true }
+    ],
     "keywords": ["merge", "concatenate"],
     "description": "Concatenate text using first text as delimiter"
   },
@@ -171,7 +212,13 @@
     "id": "left",
     "name": "left",
     "categories": ["text"],
-    "arguments": ["text", "nchars"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      {
+        "name": "nchars",
+        "description": "a numeric scalar or column indicating the number of characters from left that are returned"
+      }
+    ],
     "keywords": ["reduce"],
     "description": "Return up to n characters starting from start of each text"
   },
@@ -179,7 +226,7 @@
     "id": "length",
     "name": "length",
     "categories": ["text"],
-    "arguments": ["text"],
+    "arguments": [{ "name": "text", "description": "a text scalar or column" }],
     "keywords": [],
     "description": "Calculate character length from text"
   },
@@ -187,7 +234,10 @@
     "id": "like",
     "name": "like",
     "categories": ["text"],
-    "arguments": ["text", "pattern"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "pattern", "description": "a text scalar or column" }
+    ],
     "keywords": ["compare"],
     "description": "Compare text with another text"
   },
@@ -195,7 +245,7 @@
     "id": "ln",
     "name": "ln",
     "categories": ["math"],
-    "arguments": ["value"],
+    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
     "keywords": ["logarithm"],
     "description": "Natural logarithm"
   },
@@ -203,7 +253,10 @@
     "id": "log",
     "name": "log",
     "categories": ["math"],
-    "arguments": ["value", "base"],
+    "arguments": [
+      { "name": "number", "description": "a numeric scalar or column" },
+      { "name": "base", "description": "a numeric scalar or column" }
+    ],
     "keywords": ["logarithm"],
     "description": "Logarithm with base `base`"
   },
@@ -211,7 +264,7 @@
     "id": "log2",
     "name": "log2",
     "categories": ["math"],
-    "arguments": ["value"],
+    "arguments": [{ "name": "number", "description": "a number scalar or column" }],
     "keywords": ["logarithm"],
     "description": "Logarithm with base 2"
   },
@@ -219,7 +272,7 @@
     "id": "log10",
     "name": "log10",
     "categories": ["math"],
-    "arguments": ["value"],
+    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
     "keywords": ["logarithm"],
     "description": "Logarithm with base 10"
   },
@@ -227,7 +280,7 @@
     "id": "lower",
     "name": "lower",
     "categories": ["text"],
-    "arguments": ["text"],
+    "arguments": [{ "name": "text", "description": "a text scalar or column" }],
     "keywords": ["case"],
     "description": "Text to lowercase"
   },
@@ -235,7 +288,14 @@
     "id": "lpad",
     "name": "lpad",
     "categories": ["text"],
-    "arguments": ["text", "length", "[fillchar]"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      {
+        "name": "length",
+        "description": "a numeric scalar or column indicating the length of the resulting text"
+      },
+      { "name": "fillchar", "description": "a text scalar or column", "optional": true }
+    ],
     "keywords": [],
     "description": "Returns string of given length by truncating (on left) or padding (on left) original string"
   },
@@ -243,7 +303,7 @@
     "id": "lstrip",
     "name": "ltrim",
     "categories": ["text"],
-    "arguments": ["text"],
+    "arguments": [{ "name": "text", "description": "a text scalar or column" }],
     "keywords": ["whitespace", "strip"],
     "description": "Remove white space on the left of text"
   },
@@ -251,7 +311,7 @@
     "id": "millisecond",
     "name": "millisecond",
     "categories": ["time & date"],
-    "arguments": ["time"],
+    "arguments": [{ "name": "time", "description": "a time scalar or column" }],
     "keywords": [],
     "description": "Get the milliseconds from date or timestamp"
   },
@@ -259,7 +319,7 @@
     "id": "minute",
     "name": "minute",
     "categories": ["time & date"],
-    "arguments": ["time"],
+    "arguments": [{ "name": "time", "description": "a time scalar or column" }],
     "keywords": [],
     "description": "Get the minute from date or timestamp"
   },
@@ -267,7 +327,7 @@
     "id": "month",
     "name": "month",
     "categories": ["time & date"],
-    "arguments": ["date"],
+    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
     "keywords": [],
     "description": "Get the month from date or timestamp"
   },
@@ -275,7 +335,10 @@
     "id": "mul",
     "name": "product",
     "categories": ["math"],
-    "arguments": ["factor", "factor"],
+    "arguments": [
+      { "name": "number", "description": "a numeric scalar or column" },
+      { "name": "number", "description": "a numeric scalar or column" }
+    ],
     "keywords": ["multiply"],
     "description": "Multiply values"
   },
@@ -283,7 +346,7 @@
     "id": "notnull",
     "name": "notnull",
     "categories": ["generic"],
-    "arguments": ["value"],
+    "arguments": [{ "name": "value", "description": "a scalar or column" }],
     "keywords": [],
     "description": "Check whether a value is null"
   },
@@ -291,7 +354,10 @@
     "id": "pow",
     "name": "power",
     "categories": ["math"],
-    "arguments": ["value", "power"],
+    "arguments": [
+      { "name": "number", "description": "a numeric scalar or column" },
+      { "name": "exponent", "description": "a numeric scalar or column" }
+    ],
     "keywords": ["exponential"],
     "description": "Calculate the power of a value"
   },
@@ -299,7 +365,11 @@
     "id": "re_extract",
     "name": "regex_extract",
     "categories": ["text"],
-    "arguments": ["text", "pattern", "index"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "pattern", "description": "a text scalar or column" },
+      { "name": "index", "description": "a numeric scalar or column" }
+    ],
     "keywords": ["regex"],
     "description": "Returns specified index, 0 indexed, from string based on regex pattern given"
   },
@@ -307,15 +377,25 @@
     "id": "re_replace",
     "name": "regex_replace",
     "categories": ["text"],
-    "arguments": ["text", "pattern", "relacement"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "pattern", "description": "a text scalar or column that is being replaced by " },
+      {
+        "name": "replace",
+        "description": "a text scalar or column that replaces the pattern in text"
+      }
+    ],
     "keywords": ["regex"],
-    "description": "Replaces match found by regex with replacement string."
+    "description": "Replaces match found by regex with replace string."
   },
   {
     "id": "re_search",
     "name": "regex_search",
     "categories": ["text"],
-    "arguments": ["text", "pattern"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "pattern", "description": "a text scalar or column" }
+    ],
     "keywords": ["regex"],
     "description": "Search string values using a regular expression."
   },
@@ -323,7 +403,10 @@
     "id": "repeat",
     "name": "repeat",
     "categories": ["text"],
-    "arguments": ["text", "n"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "n", "description": "a numeric scalar or column" }
+    ],
     "keywords": [],
     "description": "Repeat text n times"
   },
@@ -331,15 +414,22 @@
     "id": "replace",
     "name": "replace",
     "categories": ["text"],
-    "arguments": ["text", "pattern", "replacement"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "pattern", "description": "a text scalar or column" },
+      {
+        "name": "replace",
+        "description": "a text scalar or column that replaces the pattern in text"
+      }
+    ],
     "keywords": [],
-    "description": "Replaces each exactly occurrence of pattern with given replacement string."
+    "description": "Replaces each exactly occurrence of pattern with given replace string."
   },
   {
     "id": "reverse",
     "name": "reverse",
     "categories": ["text"],
-    "arguments": ["text"],
+    "arguments": [{ "name": "text", "description": "a text scalar or column" }],
     "keywords": ["inverse"],
     "description": "Reverse text order"
   },
@@ -347,7 +437,13 @@
     "id": "right",
     "name": "right",
     "categories": ["text"],
-    "arguments": ["text", "nchars"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      {
+        "name": "nchars",
+        "description": "a numeric scalar or column indicating the number of characters from right that are returned"
+      }
+    ],
     "keywords": ["reduce"],
     "description": "Return up to n characters starting from end of each text."
   },
@@ -355,7 +451,10 @@
     "id": "round",
     "name": "round",
     "categories": ["math"],
-    "arguments": ["value", "digits"],
+    "arguments": [
+      { "name": "number", "description": "a numeric scalar or column" },
+      { "name": "digits", "description": "an integer scalar or column" }
+    ],
     "keywords": [],
     "description": "Round value to n decimal"
   },
@@ -363,7 +462,11 @@
     "id": "rpad",
     "name": "rpad",
     "categories": ["text"],
-    "arguments": ["text", "length", "[fillchar]"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "length", "description": "a numeric scalar or column" },
+      { "name": "fillchar", "description": "a numeric scalar or column", "optional": true }
+    ],
     "keywords": [],
     "description": "Returns string of given length by truncating (on right) or padding (on right) original string"
   },
@@ -371,7 +474,7 @@
     "id": "rstrip",
     "name": "rtrim",
     "categories": ["text"],
-    "arguments": ["text"],
+    "arguments": [{ "name": "text", "description": "a text scalar or column" }],
     "keywords": ["strip"],
     "description": "Remove white space on the right of text"
   },
@@ -379,7 +482,7 @@
     "id": "second",
     "name": "second",
     "categories": ["time & date"],
-    "arguments": ["time"],
+    "arguments": [{ "name": "time", "description": "a time scalar or column" }],
     "keywords": [],
     "description": "Get the seconds from time or timestamp"
   },
@@ -387,7 +490,7 @@
     "id": "sqrt",
     "name": "sqrt",
     "categories": ["math"],
-    "arguments": ["value"],
+    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
     "keywords": ["root"],
     "description": "Calculate the square root"
   },
@@ -395,7 +498,10 @@
     "id": "strftime",
     "name": "format_datetime",
     "categories": ["time & date"],
-    "arguments": ["datetime", "format"],
+    "arguments": [
+      { "name": "datetime", "description": "a datetime scalar or column" },
+      { "name": "format", "description": "determines how the resulting text is formatted" }
+    ],
     "keywords": ["strftime"],
     "description": "Format timestamp into string with given format"
   },
@@ -403,7 +509,7 @@
     "id": "strip",
     "name": "trim",
     "categories": ["text"],
-    "arguments": ["text"],
+    "arguments": [{ "name": "text", "description": "a text scalar or column" }],
     "keywords": ["strip"],
     "description": "Remove white space surrounding the text"
   },
@@ -411,7 +517,10 @@
     "id": "sub",
     "name": "subtract",
     "categories": ["math"],
-    "arguments": ["minuend", "subtrahend"],
+    "arguments": [
+      { "name": "minuend", "description": "a numeric scalar or column" },
+      { "name": "subtrahend", "description": "a numeric scalar or column" }
+    ],
     "keywords": ["minus"],
     "description": "Substract value from value"
   },
@@ -419,7 +528,12 @@
     "id": "substitute",
     "name": "substitute",
     "categories": ["text"],
-    "arguments": ["text", "value", "[replace]", "[else]"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "pattern", "description": "a text scalar or column" },
+      { "name": "replace", "description": "a text scalar or column", "optional": true },
+      { "name": "else", "description": "a text scalar or column", "optional": true }
+    ],
     "keywords": ["replace"],
     "description": "Replace one or more values"
   },
@@ -427,7 +541,7 @@
     "id": "time",
     "name": "time",
     "categories": ["time & date"],
-    "arguments": ["datetime"],
+    "arguments": [{ "name": "datetime", "description": "a datetime scalar or column" }],
     "keywords": [],
     "description": "Get the time from a timestamp"
   },
@@ -435,15 +549,25 @@
     "id": "to_timestamp",
     "name": "datetime_seconds",
     "categories": ["time & date"],
-    "arguments": ["integer", "unit"],
+    "arguments": [
+      { "name": "seconds", "description": "an integer scalar or column" },
+      {
+        "name": "unit",
+        "description": "\"s\" for seconds, \"ms\" for milliseconds, \"us\" for microseconds "
+      }
+    ],
     "keywords": [],
-    "description": "Create a datetime from an integer as the number of seconds from January 1st, 1970 UTC (unix time)"
+    "description": "Create a datetime from an integer as the number of unit since from January 1st, 1970 UTC (unix time)"
   },
   {
     "id": "timestamp_diff",
     "name": "datetime_diff",
     "categories": ["time & date"],
-    "arguments": ["datetime", "datetime", "unit"],
+    "arguments": [
+      { "name": "datetime", "description": "a datetime scalar or column" },
+      { "name": "datetime", "description": "a datetime scalar or column" },
+      { "name": "unit", "description": "unit of the difference e.g. \"s\" for seconds" }
+    ],
     "keywords": [],
     "description": "Get the difference between two datetimes in a given unit"
   },
@@ -451,7 +575,10 @@
     "id": "truncate",
     "name": "truncate",
     "categories": ["time & date"],
-    "arguments": ["datetime", "unit"],
+    "arguments": [
+      { "name": "datetime", "description": "a datetime scalar or column" },
+      { "name": "unit", "description": "unit e.g. \"s\" for seconds" }
+    ],
     "keywords": [],
     "description": "Zero out smaller-size units beyond indicated unit"
   },
@@ -459,7 +586,7 @@
     "id": "upper",
     "name": "upper",
     "categories": ["text"],
-    "arguments": ["text"],
+    "arguments": [{ "name": "text", "description": "a text scalar or column" }],
     "keywords": [],
     "description": "Capitalize text."
   },
@@ -467,7 +594,7 @@
     "id": "year",
     "name": "year",
     "categories": ["time & date"],
-    "arguments": ["date"],
+    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
     "keywords": [],
     "description": "Get the year from date"
   }
