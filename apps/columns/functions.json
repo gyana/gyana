@@ -28,7 +28,7 @@
     "name": "convert",
     "categories": ["generic"],
     "arguments": ["value", "type"],
-    "kewywords": ["cast", "type", "change"],
+    "keywords": ["cast", "type", "change"],
     "description": "Change the type of a value to a different data type."
   },
   {
@@ -36,7 +36,7 @@
     "name": "ceiling",
     "categories": ["math"],
     "arguments": ["value"],
-    "kewywords": ["round", "upper", "decimal"],
+    "keywords": ["round", "upper", "decimal"],
     "description": "Round a numeric value up to the nearest integer value greater than or equal to this value."
   },
   {
@@ -44,7 +44,7 @@
     "name": "coalesce",
     "categories": ["generic"],
     "arguments": ["value", "second_value", "..."],
-    "kewywords": ["concatenate", "null", "join", "merge"],
+    "keywords": ["concatenate", "null", "join", "merge"],
     "description": "Returns the first non-null value from the passed arguments in left-to-right order"
   },
   {
@@ -52,7 +52,7 @@
     "name": "contains",
     "categories": ["text"],
     "arguments": ["text", "value"],
-    "kewywords": ["in"],
+    "keywords": ["in"],
     "descrition": "Determine if indicated text value is exactly contained in the text."
   },
   {
@@ -60,7 +60,7 @@
     "name": "date",
     "categories": ["time & date"],
     "arguments": ["date"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Get date part from a timestamp value"
   },
   {
@@ -68,7 +68,7 @@
     "name": "day",
     "categories": ["time & date"],
     "arguments": ["date"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Get the day of month from a date or timestamp value"
   },
   {
@@ -76,7 +76,7 @@
     "name": "day_of_week",
     "categories": ["time & date"],
     "arguments": ["date"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Get day of the week from date or timestamp"
   },
   {
@@ -84,7 +84,7 @@
     "name": "divide",
     "categories": ["math"],
     "arguments": ["dividend", "divisor"],
-    "kewywords": ["division"],
+    "keywords": ["division"],
     "description": "Divide value by value"
   },
   {
@@ -92,7 +92,7 @@
     "name": "epoch_seconds",
     "categories": ["time & date"],
     "arguments": ["timestamp"],
-    "kewywords": ["unix", "since"],
+    "keywords": ["unix", "since"],
     "description": "Seconds passed since 00:00:00 UTC on 1 January 1970 also called UNIX time"
   },
   {
@@ -100,7 +100,7 @@
     "name": "exp",
     "categories": ["math"],
     "arguments": ["value"],
-    "kewywords": ["euler", "power", "exponential"],
+    "keywords": ["euler", "power", "exponential"],
     "description": "Calculate exponential value"
   },
   {
@@ -108,7 +108,7 @@
     "name": "find",
     "categories": ["text"],
     "arguments": ["text", "searchtext"],
-    "kewywords": ["position", "search"],
+    "keywords": ["position", "search"],
     "description": "Returns position (0 indexed) of first occurence of subtext"
   },
   {
@@ -116,7 +116,7 @@
     "name": "floor",
     "categories": ["math"],
     "arguments": ["value"],
-    "kewywords": ["round", "down"],
+    "keywords": ["round", "down"],
     "description": "Rounding down a numeric value to the greatest integer less or eqqual"
   },
   {
@@ -124,7 +124,7 @@
     "name": "fillnull",
     "categories": ["generic"],
     "arguments": ["value", "fill_value"],
-    "kewywords": ["replace"],
+    "keywords": ["replace"],
     "description": "Replace nulls with value"
   },
   {
@@ -132,7 +132,7 @@
     "name": "hash",
     "categories": ["generic"],
     "arguments": ["value"],
-    "kewywords": ["encrypt", "obscure"],
+    "keywords": ["encrypt", "obscure"],
     "description": "Produces a cryptographic fingerprint from value using the Fingerprint64 method"
   },
   {
@@ -140,7 +140,7 @@
     "name": "hour",
     "categories": ["time & date"],
     "arguments": ["time"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Get the hour from date or timestamp"
   },
   {
@@ -148,7 +148,7 @@
     "name": "ifelse",
     "categories": ["generic"],
     "arguments": ["condition", "true_value", "false_value"],
-    "kewywords": ["condition"],
+    "keywords": ["condition"],
     "description": "Returns the first value if condition is true if not it returns the second value"
   },
   {
@@ -156,7 +156,7 @@
     "name": "isnull",
     "categories": ["generic"],
     "arguments": ["value"],
-    "kewywords": ["null", "empty"],
+    "keywords": ["null", "empty"],
     "description": "Check whether value is null"
   },
   {
@@ -164,7 +164,7 @@
     "name": "join",
     "categories": ["text"],
     "arguments": ["delimiter", "text", "..."],
-    "kewywords": ["merge", "concatenate"],
+    "keywords": ["merge", "concatenate"],
     "description": "Concatenate text using first text as delimiter"
   },
   {
@@ -172,7 +172,7 @@
     "name": "left",
     "categories": ["text"],
     "arguments": ["text", "nchars"],
-    "kewywords": ["reduce"],
+    "keywords": ["reduce"],
     "description": "Return up to n characters starting from start of each text"
   },
   {
@@ -180,7 +180,7 @@
     "name": "length",
     "categories": ["text"],
     "arguments": ["text"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Calculate character length from text"
   },
   {
@@ -188,7 +188,7 @@
     "name": "like",
     "categories": ["text"],
     "arguments": ["text", "pattern"],
-    "kewywords": ["compare"],
+    "keywords": ["compare"],
     "description": "Compare text with another text"
   },
   {
@@ -196,7 +196,7 @@
     "name": "ln",
     "categories": ["math"],
     "arguments": ["value"],
-    "kewywords": [],
+    "keywords": ["logarithm"],
     "description": "Natural logarithm"
   },
   {
@@ -204,7 +204,7 @@
     "name": "log",
     "categories": ["math"],
     "arguments": ["value", "base"],
-    "kewywords": [],
+    "keywords": ["logarithm"],
     "description": "Logarithm with base `base`"
   },
   {
@@ -212,7 +212,7 @@
     "name": "log2",
     "categories": ["math"],
     "arguments": ["value"],
-    "kewywords": [],
+    "keywords": ["logarithm"],
     "description": "Logarithm with base 2"
   },
   {
@@ -220,7 +220,7 @@
     "name": "log10",
     "categories": ["math"],
     "arguments": ["value"],
-    "kewywords": [],
+    "keywords": ["logarithm"],
     "description": "Logarithm with base 10"
   },
   {
@@ -228,7 +228,7 @@
     "name": "lower",
     "categories": ["text"],
     "arguments": ["text"],
-    "kewywords": [],
+    "keywords": ["case"],
     "description": "Text to lowercase"
   },
   {
@@ -236,7 +236,7 @@
     "name": "lpad",
     "categories": ["text"],
     "arguments": ["text", "length", "[fillchar]"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Returns string of given length by truncating (on left) or padding (on left) original string"
   },
   {
@@ -244,7 +244,7 @@
     "name": "ltrim",
     "categories": ["text"],
     "arguments": ["text"],
-    "kewywords": [],
+    "keywords": ["whitespace", "strip"],
     "description": "Remove white space on the left of text"
   },
   {
@@ -252,7 +252,7 @@
     "name": "millisecond",
     "categories": ["time & date"],
     "arguments": ["time"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Get the milliseconds from date or timestamp"
   },
   {
@@ -260,7 +260,7 @@
     "name": "minute",
     "categories": ["time & date"],
     "arguments": ["time"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Get the minute from date or timestamp"
   },
   {
@@ -268,7 +268,7 @@
     "name": "month",
     "categories": ["time & date"],
     "arguments": ["date"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Get the month from date or timestamp"
   },
   {
@@ -276,7 +276,7 @@
     "name": "product",
     "categories": ["math"],
     "arguments": ["factor", "factor"],
-    "kewywords": [],
+    "keywords": ["multiply"],
     "description": "Multiply values"
   },
   {
@@ -284,7 +284,7 @@
     "name": "notnull",
     "categories": ["generic"],
     "arguments": ["value"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Check whether a value is null"
   },
   {
@@ -292,7 +292,7 @@
     "name": "power",
     "categories": ["math"],
     "arguments": ["value", "power"],
-    "kewywords": [],
+    "keywords": ["exponential"],
     "description": "Calculate the power of a value"
   },
   {
@@ -300,7 +300,7 @@
     "name": "regex_extract",
     "categories": ["text"],
     "arguments": ["text", "pattern", "index"],
-    "kewywords": [],
+    "keywords": ["regex"],
     "description": "Returns specified index, 0 indexed, from string based on regex pattern given"
   },
   {
@@ -308,7 +308,7 @@
     "name": "regex_replace",
     "categories": ["text"],
     "arguments": ["text", "pattern", "relacement"],
-    "kewywords": [],
+    "keywords": ["regex"],
     "description": "Replaces match found by regex with replacement string."
   },
   {
@@ -316,7 +316,7 @@
     "name": "regex_search",
     "categories": ["text"],
     "arguments": ["text", "pattern"],
-    "kewywords": [],
+    "keywords": ["regex"],
     "description": "Search string values using a regular expression."
   },
   {
@@ -324,7 +324,7 @@
     "name": "repeat",
     "categories": ["text"],
     "arguments": ["text", "n"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Repeat text n times"
   },
   {
@@ -332,7 +332,7 @@
     "name": "replace",
     "categories": ["text"],
     "arguments": ["text", "pattern", "replacement"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Replaces each exactly occurrence of pattern with given replacement string."
   },
   {
@@ -340,7 +340,7 @@
     "name": "reverse",
     "categories": ["text"],
     "arguments": ["text"],
-    "kewywords": [],
+    "keywords": ["inverse"],
     "description": "Reverse text order"
   },
   {
@@ -348,7 +348,7 @@
     "name": "right",
     "categories": ["text"],
     "arguments": ["text", "nchars"],
-    "kewywords": [],
+    "keywords": ["reduce"],
     "description": "Return up to n characters starting from end of each text."
   },
   {
@@ -356,7 +356,7 @@
     "name": "round",
     "categories": ["math"],
     "arguments": ["value", "digits"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Round value to n decimal"
   },
   {
@@ -364,7 +364,7 @@
     "name": "rpad",
     "categories": ["text"],
     "arguments": ["text", "length", "[fillchar]"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Returns string of given length by truncating (on right) or padding (on right) original string"
   },
   {
@@ -372,7 +372,7 @@
     "name": "rtrim",
     "categories": ["text"],
     "arguments": ["text"],
-    "kewywords": [],
+    "keywords": ["strip"],
     "description": "Remove white space on the right of text"
   },
   {
@@ -380,7 +380,7 @@
     "name": "second",
     "categories": ["time & date"],
     "arguments": ["time"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Get the seconds from time or timestamp"
   },
   {
@@ -388,7 +388,7 @@
     "name": "sqrt",
     "categories": ["math"],
     "arguments": ["value"],
-    "kewywords": [],
+    "keywords": ["root"],
     "description": "Calculate the square root"
   },
   {
@@ -396,7 +396,7 @@
     "name": "format_datetime",
     "categories": ["time & date"],
     "arguments": ["datetime", "format"],
-    "kewywords": [],
+    "keywords": ["strftime"],
     "description": "Format timestamp into string with given format"
   },
   {
@@ -404,7 +404,7 @@
     "name": "trim",
     "categories": ["text"],
     "arguments": ["text"],
-    "kewywords": [],
+    "keywords": ["strip"],
     "description": "Remove white space surrounding the text"
   },
   {
@@ -412,7 +412,7 @@
     "name": "subtract",
     "categories": ["math"],
     "arguments": ["minuend", "subtrahend"],
-    "kewywords": [],
+    "keywords": ["minus"],
     "description": "Substract value from value"
   },
   {
@@ -420,7 +420,7 @@
     "name": "substitute",
     "categories": ["text"],
     "arguments": ["text", "value", "[replace]", "[else]"],
-    "kewywords": [],
+    "keywords": ["replace"],
     "description": "Replace one or more values"
   },
   {
@@ -428,7 +428,7 @@
     "name": "time",
     "categories": ["time & date"],
     "arguments": ["datetime"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Get the time from a timestamp"
   },
   {
@@ -436,7 +436,7 @@
     "name": "datetime_seconds",
     "categories": ["time & date"],
     "arguments": ["integer", "unit"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Create a datetime from an integer as the number of seconds from January 1st, 1970 UTC (unix time)"
   },
   {
@@ -444,7 +444,7 @@
     "name": "datetime_diff",
     "categories": ["time & date"],
     "arguments": ["datetime", "datetime", "unit"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Get the difference between two datetimes in a given unit"
   },
   {
@@ -452,7 +452,7 @@
     "name": "truncate",
     "categories": ["time & date"],
     "arguments": ["datetime", "unit"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Zero out smaller-size units beyond indicated unit"
   },
   {
@@ -460,7 +460,7 @@
     "name": "upper",
     "categories": ["text"],
     "arguments": ["text"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Capitalize text."
   },
   {
@@ -468,7 +468,7 @@
     "name": "year",
     "categories": ["time & date"],
     "arguments": ["date"],
-    "kewywords": [],
+    "keywords": [],
     "description": "Get the year from date"
   }
 ]
