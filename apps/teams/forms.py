@@ -12,6 +12,7 @@ from apps.base.analytics import (
     identify_user,
     identify_user_group,
 )
+from apps.base.forms import BaseModelForm
 from apps.base.live_update_form import LiveUpdateForm
 from apps.invites.models import Invite
 from apps.teams import roles
@@ -79,7 +80,7 @@ class TeamCreateForm(forms.ModelForm):
         return instance
 
 
-class TeamUpdateForm(forms.ModelForm):
+class TeamUpdateForm(BaseModelForm):
     class Meta:
         model = Team
         fields = ("icon", "name", "timezone")
@@ -88,6 +89,10 @@ class TeamUpdateForm(forms.ModelForm):
             "icon": "For best results use a square image",
             "timezone": "We use this to display time information and to schedule workflows",
         }
+
+    def post_save(self, instance):
+        for project in instance.project_set.all():
+            project.update_connectors_daily_sync_time()
 
 
 class MembershipUpdateForm(forms.ModelForm):

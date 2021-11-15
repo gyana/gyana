@@ -1,9 +1,10 @@
 from datetime import datetime
 
-from apps.connectors.fivetran.config import get_services_obj
-from apps.connectors.fivetran.schema import FivetranSchemaObj
 from django.utils import timezone
 from google.cloud.bigquery.table import Table as BqTable
+
+from apps.connectors.fivetran.config import get_services_obj
+from apps.connectors.fivetran.schema import FivetranSchemaObj
 
 
 def get_mock_list_tables(num_tables, dataset="dataset"):
@@ -16,6 +17,7 @@ def get_mock_fivetran_connector(
     is_historical_sync=False,
     is_broken=False,
     succeeded_at=None,
+    daily_sync_time=None,
 ):
 
     if succeeded_at is not None:
@@ -33,7 +35,8 @@ def get_mock_fivetran_connector(
         "created_at": "2021-01-01T00:00:00.000000Z",
         "succeeded_at": succeeded_at,
         "failed_at": None,
-        "sync_frequency": 360,
+        "sync_frequency": 1440,
+        "daily_sync_time": daily_sync_time or "00:00",
         "schedule_type": "auto",
         "status": {
             "setup_state": "broken" if is_broken else "connected",

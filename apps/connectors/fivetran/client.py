@@ -76,7 +76,7 @@ class FivetranClient:
 
         return res["data"]
 
-    def update(self, connector: Connector, data):
+    def update(self, connector: Connector, **data):
 
         # https://fivetran.com/docs/rest-api/connectors#modifyaconnector
 
