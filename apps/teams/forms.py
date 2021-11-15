@@ -82,13 +82,11 @@ class TeamCreateForm(forms.ModelForm):
 class TeamUpdateForm(forms.ModelForm):
     class Meta:
         model = Team
-        fields = (
-            "icon",
-            "name",
-        )
+        fields = ("icon", "name", "timezone")
         widgets = {"icon": forms.ClearableFileInput(attrs={"accept": "image/*"})}
         help_texts = {
             "icon": "For best results use a square image",
+            "timezone": "We use this to display time information and to schedule workflows",
         }
 
 

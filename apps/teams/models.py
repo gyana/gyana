@@ -1,13 +1,13 @@
-from django.utils.functional import cached_property
-
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
-from djpaddle.models import Checkout, Subscription
+from django.utils.functional import cached_property
+from djpaddle.models import Checkout
 from safedelete.models import SafeDeleteModel
 from storages.backends.gcloud import GoogleCloudStorage
+from timezone_field import TimeZoneField
 
 from apps.base.models import BaseModel
 
@@ -45,6 +45,7 @@ class Team(BaseModel, SafeDeleteModel):
 
     # the last checkout associated with this team (until subscription information syncs via webhook from Paddle)
     last_checkout = models.OneToOneField(Checkout, null=True, on_delete=models.SET_NULL)
+    timezone = TimeZoneField(default="GMT", choices_display="WITH_GMT_OFFSET")
 
     def save(self, *args, **kwargs):
         from .bigquery import create_team_dataset
