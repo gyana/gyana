@@ -2,88 +2,90 @@
 {% include 'nodes/modal_nav_bar.html' %}
 
 <div class="formula" data-controller='formula-drawer'>
-  <h1>Formula Docs</h2>
-  <p>
-    The formula node supports arbitrary arithmetic operations between numeric
-    columns and column transformations through function library (see below).
-  </p>
+  <div class="formula__content">
+    <h1>Formula Docs</h2>
+    <p>
+      The formula node supports arbitrary arithmetic operations between numeric
+      columns and column transformations through function library (see below).
+    </p>
 
-  <h3>Examples</h3>
+    <h3>Examples</h3>
 
-  <h4>Payable tax</h4>
+    <h4>Payable tax</h4>
 
-  <p>
-    To calculate the payable tax on our profits, we can substract the
-    <strong>Cost</strong> from <strong>Revenue</strong> and multiple the resulting
-    <strong>Profit</strong> with the <strong>Tax</strong> value.
-  </p>
-  <div data-controller='codemirror'>
-    <script id="columns" type="application/json">
-    ["Revenue", "Cost", "Tax"]
-  </script>
-    <textarea data-codemirror-target='textarea'
-      class="textarea"
-      name="{{ widget.name }}"
-      readonly
-    >(Revenue - Cost)*(Tax/100)</textarea>
-  </div>
-
-  <h4>Create full names</h4>
-  <p>
-    To generate full names, we can combine the <strong>first_name</strong>
-    and <strong>last_name</strong> columns. We also clean the names from unnecessary
-    whitespace.
+    <p>
+      To calculate the payable tax on our profits, we can substract the
+      <strong>Cost</strong> from <strong>Revenue</strong> and multiple the resulting
+      <strong>Profit</strong> with the <strong>Tax</strong> value.
+    </p>
     <div data-controller='codemirror'>
       <script id="columns" type="application/json">
-    ["last_name", "first_name"]
-  </script>
+      ["Revenue", "Cost", "Tax"]
+    </script>
       <textarea data-codemirror-target='textarea'
         class="textarea"
         name="{{ widget.name }}"
         readonly
-      >join("", strip(first_name), " ", strip(last_name))</textarea>
+      >(Revenue - Cost)*(Tax/100)</textarea>
     </div>
-  </p>
-  
-  <h2>Functions</h2>
 
-  <form role='search' method="get" 
-    action="{% url 'nodes:formula' node.id %}?show_docs=true"
-  >
-    <input type='search' name='q' 
-      id='id_search' 
-      placeholder="Search functions"
-      value="{{ request.GET.q }}"
-    ></input>   
+    <h4>Create full names</h4>
+    <p>
+      To generate full names, we can combine the <strong>first_name</strong>
+      and <strong>last_name</strong> columns. We also clean the names from unnecessary
+      whitespace.
+      <div data-controller='codemirror'>
+        <script id="columns" type="application/json">
+      ["last_name", "first_name"]
+    </script>
+        <textarea data-codemirror-target='textarea'
+          class="textarea"
+          name="{{ widget.name }}"
+          readonly
+        >join("", strip(first_name), " ", strip(last_name))</textarea>
+      </div>
+    </p>
     
-    <div class='category'>
-      {% for category in categories %}
+    <h2>Functions</h2>
+
+    <form role='search' method="get" 
+      action="{% url 'nodes:formula' node.id %}?show_docs=true"
+    >
+      <input type='search' name='q' 
+        id='id_search' 
+        placeholder="Search functions"
+        value="{{ request.GET.q }}"
+      ></input>   
       
-        <button type='submit' name='category' value="{{category}}" 
-        class="category__pill {% if category == selected_category  %} category__selected {% endif %}">{{category}}</button>
-      
+      <div class='category'>
+        {% for category in categories %}
+        
+          <button type='submit' name='category' value="{{category}}" 
+          class="category__pill {% if category == selected_category  %} category__selected {% endif %}">{{category}}</button>
+        
+        {% endfor %}
+      </div>
+    </form>
+
+    <div class="functions">
+
+      {% for function in functions %}
+
+      <div class='function-pill' data-action="click->formula-drawer#open" data-src="{{function.id}}">
+        <h4>
+          <i class="fa {{ function.icon }} text-blue"></i> {{function.name}}(<em>
+            {{ function.arguments|join:", " }}
+          </em>)
+        </h4>
+      </div>
+
       {% endfor %}
+
     </div>
-  </form>
-
-  <div class="functions">
-
-    {% for function in functions %}
-
-    <div class='function-pill' data-action="click->formula-drawer#open" data-src="{{function.id}}">
-      <h4>
-        <i class="fa {{ function.icon }}"></i> {{function.name}}(<em>
-          {{ function.arguments|join:", " }}
-        </em>)
-      </h4>
-    </div>
-
-    {% endfor %}
-
   </div>
   <div class="formula__drawer closed" data-formula-drawer-target='drawer'>
     <button
-        class="absolute top-0 right-5"
+        class="absolute top-4 right-4"
         data-action="click->formula-drawer#close"
         data-loading-false
       >

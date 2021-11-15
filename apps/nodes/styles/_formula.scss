@@ -1,0 +1,84 @@
+.formula {
+  height: 100%;
+  overflow: auto;
+
+  width: 100%;
+  position: relative;
+
+  &__content {
+    padding: 1.6rem;
+    display: flex;
+    flex-flow: column;
+    gap: 0.8rem;
+  }
+
+  &__drawer {
+    position: sticky;
+    width: 100%;
+    // If changing the height also change in .closed
+    height: 18rem;
+    bottom: 0;
+    background-color: var(--c-white);
+    padding: 1.6rem;
+    border-top: 1px solid var(--c-gray);
+
+    transition: bottom 300ms;
+
+    &.closed {
+      display: none;
+      bottom: -18rem;
+    }
+
+    em {
+      color: var(--c-black-20);
+    }
+  }
+}
+
+.category {
+  display: flex;
+  width: 100%;
+
+  &__pill {
+    border: 1px solid var(--c-gray);
+    padding: 0.6rem;
+    text-transform: capitalize;
+    flex: 1 1 0%;
+
+    & + & {
+      border-left: none;
+    }
+
+    &:hover {
+      background-color: var(--c-gray-50);
+    }
+  }
+
+  &__selected {
+    background-color: var(--c-gray);
+  }
+}
+
+.functions {
+  display: grid;
+  grid-auto-rows: minmax(0, 1fr);
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+
+  .function-pill {
+    border: 1px solid var(--c-gray);
+    border-radius: 5px;
+    padding: 0.6rem;
+    display: flex;
+    flex-flow: column;
+
+    &:hover {
+      border: 1px solid var(--c-blue-50);
+      background-color: var(--c-gray-10);
+    }
+
+    em {
+      color: var(--c-black-20);
+    }
+  }
+}
