@@ -28,6 +28,11 @@ urlpatterns = [
         login_and_node_required(frames.FormulaHelp.as_view()),
         name="formula",
     ),
+    path(
+        "<int:pk>/function_info",
+        login_and_node_required(frames.FunctionInfo.as_view()),
+        name="function-info",
+    ),
     # rest
     path(
         "<int:pk>/duplicate",

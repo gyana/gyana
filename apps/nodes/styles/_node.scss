@@ -42,6 +42,33 @@
   overflow: auto;
   padding: 1.6rem;
   width: 100%;
+  position: relative;
+
+  &__drawer {
+    position: absolute;
+    width: 100%;
+    height: 10rem;
+    bottom: 0;
+    background-color: var(--c-white);
+    padding: 1.6rem;
+    border-top: 1px solid var(--c-gray);
+
+    transition: bottom 300ms;
+
+    &.closed {
+      display: hidden;
+      // Needs to be the same as height above
+      bottom: -10rem;
+    }
+
+    em {
+      color: var(--c-black-20);
+    }
+
+    i {
+      color: var(--c-blue);
+    }
+  }
 }
 
 .category {
