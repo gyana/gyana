@@ -205,7 +205,7 @@ class Connector(BaseModel):
         )
 
     @property
-    def daily_schedule_check_completed(self):
+    def daily_sync_check_completed(self):
 
         has_started = timezone.now() > self.next_daily_sync
         not_connected = self.setup_state != self.SetupState.CONNECTED
@@ -282,8 +282,8 @@ class Connector(BaseModel):
         if self.schema_config is None:
             self.sync_schema_obj_from_fivetran()
 
-        # fivetran setup is broken or incomplete
-        if self.setup_state != self.SetupState.CONNECTED:
+        # fivetran setup is broken or incomplete or latest sync failed
+        if self.setup_state != self.SetupState.CONNECTED or self.latest_sync_failed:
             self.integration.state = Integration.State.ERROR
             self.integration.save()
 
@@ -291,7 +291,7 @@ class Connector(BaseModel):
         if self.succeeded_at != self.bigquery_succeeded_at:
             end_connector_sync(self, not self.integration.table_set.exists())
 
-        if self.daily_schedule_check_completed:
+        if self.daily_sync_check_completed:
             self.next_daily_sync = self.integration.project.next_daily_sync
             self.save()
 
