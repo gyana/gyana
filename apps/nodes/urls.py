@@ -3,7 +3,7 @@ from rest_framework import routers
 
 from apps.workflows.access import login_and_workflow_required
 
-from . import frames, rest
+from . import frames, rest, views
 from .access import login_and_node_required
 
 app_name = "nodes"
@@ -32,6 +32,13 @@ urlpatterns = [
         "<int:pk>/function_info",
         login_and_node_required(frames.FunctionInfo.as_view()),
         name="function-info",
+    ),
+    # This is linked no-where and only used to generate the intercom
+    # article article
+    path(
+        "functions_reference",
+        views.FunctionReference.as_view(),
+        name="function-reference",
     ),
     # rest
     path(

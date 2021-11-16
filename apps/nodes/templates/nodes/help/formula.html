@@ -1,3 +1,4 @@
+{% load formula_utils %}
 
 {% include 'nodes/modal_nav_bar.html' %}
 
@@ -46,7 +47,9 @@
       </div>
     </p>
     
-    <h2>Functions</h2>
+    <h2>Functions <a class="ml-auto" href="{% link_function '' %}">
+      <i class="fa fa-external-link fa-xs text-black-50"></i>
+    </a></h2>
 
     <form role='search' method="get" 
       action="{% url 'nodes:formula' node.id %}?show_docs=true"

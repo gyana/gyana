@@ -5,7 +5,8 @@
     "categories": ["math"],
     "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
     "keywords": ["absolute", "modulus", "sign", "positive"],
-    "description": "Calculate the absolute value of a numeric value."
+    "description": "Calculate the absolute value of a numeric value.",
+    "intercom_id": "h_264a9d933f"
   },
   {
     "id": "add",
@@ -16,10 +17,12 @@
       { "name": "y", "description": "a numeric scalar or column" }
     ],
     "keywords": ["addition", "plus", "summation"],
-    "description": "Adds two numeric values together."
+    "description": "Adds two numeric values together.",
+    "intercom_id": "h_738d20f230"
   },
   {
     "id": "between",
+    "intercom_id": "h_a9cc3a0a3d",
     "name": "between",
     "categories": ["generic"],
     "arguments": [
@@ -32,6 +35,7 @@
   },
   {
     "id": "cast",
+    "intercom_id": "h_ddfcca142c",
     "name": "convert",
     "categories": ["generic"],
     "arguments": [
@@ -43,6 +47,7 @@
   },
   {
     "id": "ceil",
+    "intercom_id": "h_218a142af3",
     "name": "ceiling",
     "categories": ["math"],
     "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
@@ -51,6 +56,7 @@
   },
   {
     "id": "coalesce",
+    "intercom_id": "h_44d2f59986",
     "name": "coalesce",
     "categories": ["generic"],
     "arguments": [
@@ -65,6 +71,7 @@
   },
   {
     "id": "contains",
+    "intercom_id": "h_b9329fef23",
     "name": "contains",
     "categories": ["text"],
     "arguments": [
@@ -76,6 +83,7 @@
   },
   {
     "id": "date",
+    "intercom_id": "h_7bb6a3fa70",
     "name": "date",
     "categories": ["time & date"],
     "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
@@ -84,6 +92,7 @@
   },
   {
     "id": "day",
+    "intercom_id": "h_ecd043956a",
     "name": "day",
     "categories": ["time & date"],
     "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
@@ -92,6 +101,7 @@
   },
   {
     "id": "day_of_week",
+    "intercom_id": "h_f6fbea587b",
     "name": "day_of_week",
     "categories": ["time & date"],
     "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
@@ -100,6 +110,7 @@
   },
   {
     "id": "div",
+    "intercom_id": "h_7b007df78a",
     "name": "divide",
     "categories": ["math"],
     "arguments": [
@@ -111,6 +122,7 @@
   },
   {
     "id": "epoch_seconds",
+    "intercom_id": "h_2c996ea737",
     "name": "epoch_seconds",
     "categories": ["time & date"],
     "arguments": [{ "name": "timestamp", "description": "a timestamp scalar or column" }],
@@ -119,6 +131,7 @@
   },
   {
     "id": "exp",
+    "intercom_id": "h_c84d5ed650",
     "name": "exp",
     "categories": ["math"],
     "arguments": [{ "name": "value", "description": "a scalar or column" }],
@@ -127,6 +140,7 @@
   },
   {
     "id": "find",
+    "intercom_id": "h_aa466be968",
     "name": "find",
     "categories": ["text"],
     "arguments": [
@@ -138,6 +152,7 @@
   },
   {
     "id": "floor",
+    "intercom_id": "h_df5f7f5059",
     "name": "floor",
     "categories": ["math"],
     "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
@@ -146,6 +161,7 @@
   },
   {
     "id": "fillna",
+    "intercom_id": "h_0b497e764f",
     "name": "fillnull",
     "categories": ["generic"],
     "arguments": [
@@ -157,6 +173,7 @@
   },
   {
     "id": "hash",
+    "intercom_id": "h_809fd0e127",
     "name": "hash",
     "categories": ["generic"],
     "arguments": [{ "name": "value", "description": "a scalar or column" }],
@@ -165,6 +182,7 @@
   },
   {
     "id": "hour",
+    "intercom_id": "h_002ffd3c21",
     "name": "hour",
     "categories": ["time & date"],
     "arguments": [{ "name": "time", "description": "a time scalar or column" }],
@@ -173,6 +191,7 @@
   },
   {
     "id": "ifelse",
+    "intercom_id": "h_5544e3c4a8",
     "name": "ifelse",
     "categories": ["generic"],
     "arguments": [
@@ -194,6 +213,7 @@
   },
   {
     "id": "isnull",
+    "intercom_id": "h_c58a5312b4",
     "name": "isnull",
     "categories": ["generic"],
     "arguments": [{ "name": "value", "description": "a scalar or column" }],
@@ -202,6 +222,7 @@
   },
   {
     "id": "join",
+    "intercom_id": "h_e8a12705a7",
     "name": "join",
     "categories": ["text"],
     "arguments": [
@@ -216,6 +237,7 @@
   },
   {
     "id": "left",
+    "intercom_id": "h_b7cf94950a",
     "name": "left",
     "categories": ["text"],
     "arguments": [
@@ -230,6 +252,7 @@
   },
   {
     "id": "length",
+    "intercom_id": "h_e194df2ac5",
     "name": "length",
     "categories": ["text"],
     "arguments": [{ "name": "text", "description": "a text scalar or column" }],
@@ -238,6 +261,7 @@
   },
   {
     "id": "like",
+    "intercom_id": "h_1caad62c6c",
     "name": "like",
     "categories": ["text"],
     "arguments": [
@@ -249,6 +273,7 @@
   },
   {
     "id": "ln",
+    "intercom_id": "h_3c84e9fd9b",
     "name": "ln",
     "categories": ["math"],
     "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
@@ -257,6 +282,7 @@
   },
   {
     "id": "log",
+    "intercom_id": "h_4102aa3d8b",
     "name": "log",
     "categories": ["math"],
     "arguments": [
@@ -268,6 +294,7 @@
   },
   {
     "id": "log2",
+    "intercom_id": "h_248a774ec0",
     "name": "log2",
     "categories": ["math"],
     "arguments": [{ "name": "number", "description": "a number scalar or column" }],
@@ -276,6 +303,7 @@
   },
   {
     "id": "log10",
+    "intercom_id": "h_d67c30672e",
     "name": "log10",
     "categories": ["math"],
     "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
@@ -284,6 +312,7 @@
   },
   {
     "id": "lower",
+    "intercom_id": "h_88a7224048",
     "name": "lower",
     "categories": ["text"],
     "arguments": [{ "name": "text", "description": "a text scalar or column" }],
@@ -292,6 +321,7 @@
   },
   {
     "id": "lpad",
+    "intercom_id": "h_7f2130d336",
     "name": "lpad",
     "categories": ["text"],
     "arguments": [
@@ -307,6 +337,7 @@
   },
   {
     "id": "lstrip",
+    "intercom_id": "h_9375298f89",
     "name": "ltrim",
     "categories": ["text"],
     "arguments": [{ "name": "text", "description": "a text scalar or column" }],
@@ -315,6 +346,7 @@
   },
   {
     "id": "millisecond",
+    "intercom_id": "h_f8eaa41e09",
     "name": "millisecond",
     "categories": ["time & date"],
     "arguments": [{ "name": "time", "description": "a time scalar or column" }],
@@ -323,6 +355,7 @@
   },
   {
     "id": "minute",
+    "intercom_id": "h_309f0a510a",
     "name": "minute",
     "categories": ["time & date"],
     "arguments": [{ "name": "time", "description": "a time scalar or column" }],
@@ -331,6 +364,7 @@
   },
   {
     "id": "month",
+    "intercom_id": "h_e51b2b6d85",
     "name": "month",
     "categories": ["time & date"],
     "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
@@ -339,6 +373,7 @@
   },
   {
     "id": "mul",
+    "intercom_id": "h_45c7e37d25",
     "name": "product",
     "categories": ["math"],
     "arguments": [
@@ -350,6 +385,7 @@
   },
   {
     "id": "notnull",
+    "intercom_id": "h_8505fc49ac",
     "name": "notnull",
     "categories": ["generic"],
     "arguments": [{ "name": "value", "description": "a scalar or column" }],
@@ -358,6 +394,7 @@
   },
   {
     "id": "pow",
+    "intercom_id": "h_4fd230d9c0",
     "name": "power",
     "categories": ["math"],
     "arguments": [
@@ -369,6 +406,7 @@
   },
   {
     "id": "re_extract",
+    "intercom_id": "h_acd3aae983",
     "name": "regex_extract",
     "categories": ["text"],
     "arguments": [
@@ -381,6 +419,7 @@
   },
   {
     "id": "re_replace",
+    "intercom_id": "h_80b1f649c3",
     "name": "regex_replace",
     "categories": ["text"],
     "arguments": [
@@ -396,6 +435,7 @@
   },
   {
     "id": "re_search",
+    "intercom_id": "h_e38cac0f36",
     "name": "regex_search",
     "categories": ["text"],
     "arguments": [
@@ -407,6 +447,7 @@
   },
   {
     "id": "repeat",
+    "intercom_id": "h_de740e93f3",
     "name": "repeat",
     "categories": ["text"],
     "arguments": [
@@ -418,6 +459,7 @@
   },
   {
     "id": "replace",
+    "intercom_id": "h_043e71460a",
     "name": "replace",
     "categories": ["text"],
     "arguments": [
@@ -433,6 +475,7 @@
   },
   {
     "id": "reverse",
+    "intercom_id": "h_1b50caf2e5",
     "name": "reverse",
     "categories": ["text"],
     "arguments": [{ "name": "text", "description": "a text scalar or column" }],
@@ -441,6 +484,7 @@
   },
   {
     "id": "right",
+    "intercom_id": "h_4186981a30",
     "name": "right",
     "categories": ["text"],
     "arguments": [
@@ -455,6 +499,7 @@
   },
   {
     "id": "round",
+    "intercom_id": "h_b4595a5fc8",
     "name": "round",
     "categories": ["math"],
     "arguments": [
@@ -466,6 +511,7 @@
   },
   {
     "id": "rpad",
+    "intercom_id": "h_70e8240209",
     "name": "rpad",
     "categories": ["text"],
     "arguments": [
@@ -478,6 +524,7 @@
   },
   {
     "id": "rstrip",
+    "intercom_id": "h_e90bfd8892",
     "name": "rtrim",
     "categories": ["text"],
     "arguments": [{ "name": "text", "description": "a text scalar or column" }],
@@ -486,6 +533,7 @@
   },
   {
     "id": "second",
+    "intercom_id": "h_80a157991d",
     "name": "second",
     "categories": ["time & date"],
     "arguments": [{ "name": "time", "description": "a time scalar or column" }],
@@ -494,6 +542,7 @@
   },
   {
     "id": "sqrt",
+    "intercom_id": "h_5658fd9ed4",
     "name": "sqrt",
     "categories": ["math"],
     "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
@@ -502,6 +551,7 @@
   },
   {
     "id": "strftime",
+    "intercom_id": "h_eb1e5b2670",
     "name": "format_datetime",
     "categories": ["time & date"],
     "arguments": [
@@ -513,6 +563,7 @@
   },
   {
     "id": "strip",
+    "intercom_id": "h_91d62a622b",
     "name": "trim",
     "categories": ["text"],
     "arguments": [{ "name": "text", "description": "a text scalar or column" }],
@@ -521,6 +572,7 @@
   },
   {
     "id": "sub",
+    "intercom_id": "h_bf1a4024eb",
     "name": "subtract",
     "categories": ["math"],
     "arguments": [
@@ -532,6 +584,7 @@
   },
   {
     "id": "substitute",
+    "intercom_id": "h_07e6681d0f",
     "name": "substitute",
     "categories": ["text"],
     "arguments": [
@@ -545,6 +598,7 @@
   },
   {
     "id": "time",
+    "intercom_id": "h_e881b3e3c5",
     "name": "time",
     "categories": ["time & date"],
     "arguments": [{ "name": "datetime", "description": "a datetime scalar or column" }],
@@ -553,6 +607,7 @@
   },
   {
     "id": "to_timestamp",
+    "intercom_id": "h_44a8714f2e",
     "name": "datetime_seconds",
     "categories": ["time & date"],
     "arguments": [
@@ -567,6 +622,7 @@
   },
   {
     "id": "timestamp_diff",
+    "intercom_id": "h_ecd429d987",
     "name": "datetime_diff",
     "categories": ["time & date"],
     "arguments": [
@@ -579,6 +635,7 @@
   },
   {
     "id": "truncate",
+    "intercom_id": "h_3ddcff9d5b",
     "name": "truncate",
     "categories": ["time & date"],
     "arguments": [
@@ -590,6 +647,7 @@
   },
   {
     "id": "upper",
+    "intercom_id": "h_34f98b5e4f",
     "name": "upper",
     "categories": ["text"],
     "arguments": [{ "name": "text", "description": "a text scalar or column" }],
@@ -598,6 +656,7 @@
   },
   {
     "id": "year",
+    "intercom_id": "h_c5181a0592",
     "name": "year",
     "categories": ["time & date"],
     "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
