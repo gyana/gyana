@@ -1,4 +1,4 @@
-from datetime import time, timedelta
+from datetime import datetime, time, timedelta
 
 import pytz
 from django.conf import settings
@@ -54,7 +54,10 @@ class Project(CloneMixin, BaseModel):
         if next_sync_time_local < today_local:
             next_sync_time_local += timedelta(days=1)
 
-        return next_sync_time_local.astimezone(pytz.UTC)
+        next_sync_time_utc = next_sync_time_local.astimezone(pytz.UTC)
+        # for timezones with 15/30/45 minute offset, we prefer to round down
+        # to guarantee it has started
+        return next_sync_time_utc.replace(minute=0)
 
     @property
     def next_sync_time_utc_string(self):

@@ -279,6 +279,9 @@ class Connector(BaseModel):
         self.update_kwargs_from_fivetran(data)
         self.save()
 
+        if self.schema_config is None:
+            self.sync_schema_obj_from_fivetran()
+
         # fivetran setup is broken or incomplete
         if self.setup_state != self.SetupState.CONNECTED:
             self.integration.state = Integration.State.ERROR
@@ -304,7 +307,7 @@ class Connector(BaseModel):
         daily_sync_time = self.integration.project.next_sync_time_utc_string
 
         if daily_sync_time != self.daily_sync_time:
-            clients.fivetran().update(self, {"daily_sync_time": daily_sync_time})
+            clients.fivetran().update(self, daily_sync_time=daily_sync_time)
             self.sync_updates_from_fivetran()
 
         if self.next_daily_sync > timezone.now():

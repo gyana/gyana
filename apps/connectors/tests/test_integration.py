@@ -260,8 +260,7 @@ def test_connector_schedule(client, logged_in_user, fivetran, connector_factory)
     )
     assertRedirects(r, f"/projects/{project.id}/update", status_code=303)
 
-    # todo
-    # assert connector.daily_sync_time == "03:30"
+    assert connector.daily_sync_time == "03:30"
     assert fivetran.update.call_count == 1
     # the UTC time, given Kolkata is +05:30, rounded down to nearest hour
     assert fivetran.update.call_args.args == (connector,)
