@@ -1,9 +1,10 @@
 from apps.base import clients
 
 
-def get_subscriber_by_payload(team_model, payload):
+def get_subscriber_by_payload(Subscriber, payload):
     team_id = payload["team_id"]
-    team = team_model.objects.filter(pk=team_id).first()
+    # Subscriber is Team model
+    team = Subscriber.objects.filter(pk=team_id).first()
 
     if team is not None:
         return team
