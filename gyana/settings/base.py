@@ -28,6 +28,9 @@ SECRET_KEY = "BITuHkgTLhSfOHAewSSxNKRZfvYuzjPhdbIhaztE"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# True in pytest
+TEST = False
+
 ALLOWED_HOSTS = ["*"]
 # custom allowed hosts middleware for cnames
 CNAME_ALLOWED_HOSTS = []

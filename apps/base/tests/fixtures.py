@@ -24,6 +24,8 @@ class BlankMiddleware:
 
 @pytest.fixture(autouse=True)
 def patches(mocker, settings):
+    settings.TEST = True
+
     mocker.patch("analytics.track")
     mocker.patch("apps.base.analytics.identify_user")
 
