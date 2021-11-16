@@ -2,28 +2,19 @@
 
 import { getModelStartId } from '../support/utils'
 
-const NOT_REDEEMED = '12345678'
-
 const newProjectUrl = `/projects/${getModelStartId('projects.project')}`
 
 const newTeamId = getModelStartId('teams.team')
 
 describe('signup', () => {
   it('signup with code', () => {
-    cy.visit(`/appsumo/${NOT_REDEEMED}`)
-
-    cy.url().should('contain', `/appsumo/signup/${NOT_REDEEMED}`)
-    cy.contains('AppSumo code')
-    cy.get(`input[value=${NOT_REDEEMED}]`).should('be.disabled')
-
-    cy.get('input[name=email]').type('appsumo@gyana.com')
+    // waitlist approved user
+    cy.visit('/signup')
+    cy.get('input[name=email]').type('waitlist@gyana.com')
     cy.get('input[name=password1]').type('seewhatmatters')
-    cy.get('input[name=team]').type('Teamsumo')
     cy.get('button[type=submit]').click()
 
     cy.url().should('contain', '/confirm-email/')
-
-    cy.wait(1000)
 
     cy.outbox().then((outbox) => {
       const msg = outbox['messages'][0]
@@ -33,7 +24,7 @@ describe('signup', () => {
     })
 
     // onboarding
-    cy.get('input[name=first_name]').type('Appsumo')
+    cy.get('input[name=first_name]').type('Waitlist')
     cy.get('input[name=last_name]').type('User')
     cy.contains('Next').click()
 
@@ -42,9 +33,17 @@ describe('signup', () => {
     cy.get('select[name=company_size]').select('2-10')
     cy.get('button[type=submit]').click()
 
-    cy.url().should('contain', `/teams/${newTeamId}`)
+    // new team
+    cy.url().should('contain', '/teams')
+    cy.get('input[name=name]').type('My team')
+    cy.get('button[type=submit]').click()
+
+    // select plan and continue
+    cy.url().should('contain', `/teams/${newTeamId}/plans`)
+    cy.contains('Continue').click()
 
     // new project
+    cy.url().should('contain', `/teams/${newTeamId}`)
     cy.contains('Create a new project').click()
 
     cy.url().should('contain', `/teams/${newTeamId}/projects/new`)

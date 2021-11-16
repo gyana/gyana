@@ -1,10 +1,10 @@
 from datetime import datetime
-from functools import cached_property
 
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.functional import cached_property
 
 from apps.base import clients
 from apps.base.models import BaseModel

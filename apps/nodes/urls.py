@@ -1,8 +1,9 @@
-from apps.workflows.access import login_and_workflow_required
 from django.urls import path
 from rest_framework import routers
 
-from . import frames, rest
+from apps.workflows.access import login_and_workflow_required
+
+from . import frames, rest, views
 from .access import login_and_node_required
 
 app_name = "nodes"
@@ -21,6 +22,23 @@ urlpatterns = [
         "<int:pk>/credit_confirmation",
         login_and_node_required(frames.NodeCreditConfirmation.as_view()),
         name="credit-confirmation",
+    ),
+    path(
+        "<int:pk>/formula",
+        login_and_node_required(frames.FormulaHelp.as_view()),
+        name="formula",
+    ),
+    path(
+        "<int:pk>/function_info",
+        login_and_node_required(frames.FunctionInfo.as_view()),
+        name="function-info",
+    ),
+    # This is linked no-where and only used to generate the intercom
+    # article article
+    path(
+        "functions_reference",
+        views.FunctionReference.as_view(),
+        name="function-reference",
     ),
     # rest
     path(

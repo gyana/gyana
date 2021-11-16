@@ -1,3 +1,4 @@
+import json
 from datetime import timedelta
 from uuid import uuid4
 
@@ -46,13 +47,13 @@ def test_team_crudl(client, logged_in_user, bigquery, settings):
     r = client.post("/teams/new", data={"name": "Neera"})
     assert logged_in_user.teams.count() == 2
     new_team = logged_in_user.teams.first()
-    assertRedirects(r, f"/teams/{new_team.id}/plan", status_code=303)
+    assertRedirects(r, f"/teams/{new_team.id}/plans", status_code=303)
 
     assert bigquery.create_dataset.call_count == 1
     assert bigquery.create_dataset.call_args.args == (new_team.tables_dataset_id,)
 
     # choose plan
-    r = client.get(f"/teams/{new_team.id}/plan")
+    r = client.get(f"/teams/{new_team.id}/plans")
     assertOK(r)
     assertLink(r, f"/teams/{new_team.id}", "Continue")
 
@@ -224,26 +225,34 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
 
     r = client.get(f"/teams/{team.id}/account")
     assertOK(r)
-    assertLink(r, f"/teams/{team.id}/plan", "Upgrade")
+    assertLink(r, f"/teams/{team.id}/plans", "Upgrade")
 
-    r = client.get(f"/teams/{team.id}/plan")
+    r = client.get(f"/teams/{team.id}/plans")
     assertOK(r)
-    assertContains(r, "Upgrade to Pro")
-    assertContains(r, "Upgrade to Business")
-    # check for paddle attributes
-    passthrough = f'{{"user_id": {logged_in_user.id}, "team_id": {team.id}}}'
-    assertSelectorLength(r, f"a[data-passthrough='{passthrough}']", 2)
+    assertLink(r, f"/teams/{team.id}/checkout?plan={pro_plan.id}", "Upgrade to Pro")
+    assertLink(
+        r, f"/teams/{team.id}/checkout?plan={business_plan.id}", "Upgrade to Business"
+    )
+    # check for paddle attributes on prices
     assertSelectorLength(r, f"[data-product='{pro_plan.id}']", 1)
     assertSelectorLength(r, f"[data-product='{business_plan.id}']", 1)
+    assertSelectorLength(r, ".paddle-gross", 2)
 
-    # clicking will launch the javascript checkout
-    # this will re-direct to checkout completion page
-    # the checkout is inserted by Paddle JS, and the subscription is added via webhook
+    r = client.get(f"/teams/{team.id}/checkout?plan={pro_plan.id}")
+    assertOK(r)
+    # assertions for the paddle stimulus controller
+    assertSelectorLength(r, f"div[data-paddle-plan-value='{pro_plan.id}']", 1)
+    assertSelectorLength(r, f"div[data-paddle-email-value='{logged_in_user.email}']", 1)
+    assertSelectorLength(r, f"div[data-paddle-marketing-consent-value='0']", 1)
+    passthrough = f'{{"user_id": {logged_in_user.id}, "team_id": {team.id}}}'
+    assertSelectorLength(r, f"div[data-paddle-passthrough-value='{passthrough}']", 1)
+
+    # the inline checkout is inserted by Paddle JS, and the subscription is added via webhook
 
     checkout = Checkout.objects.create(
         id=uuid4(),
         completed=True,
-        passthrough={"user_id": logged_in_user.id, "team_id": team.id},
+        passthrough=json.dumps({"user_id": logged_in_user.id, "team_id": team.id}),
     )
     subscription = Subscription.objects.create(
         id=uuid4(),
@@ -255,7 +264,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
         event_time=timezone.now(),
         marketing_consent=True,
         next_bill_date=timezone.now() + timedelta(weeks=4),
-        passthrough={"user_id": logged_in_user.id, "team_id": team.id},
+        passthrough=json.dumps({"user_id": logged_in_user.id, "team_id": team.id}),
         quantity=1,
         source="test.url",
         status=Subscription.STATUS_ACTIVE,
@@ -265,13 +274,10 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
         created_at=timezone.now(),
         updated_at=timezone.now(),
     )
-    r = client.get(f"/teams/{team.id}/checkout/success?checkout={checkout.id}")
-    assertOK(r)
-    assertLink(r, f"/teams/{team.id}/account", "Take me there")
 
     r = client.get(f"/teams/{team.id}/account")
     assertOK(r)
-    assertContains(r, "Gyana Pro")
+    assertContains(r, "Pro")
     assertLink(r, f"/teams/{team.id}/subscription", "Manage Subscription")
     assertLink(r, f"/teams/{team.id}/payments", "View Payments & Receipts")
     assertLink(r, "https://update.url", "Update Payment Method")
@@ -299,7 +305,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     assert paddle.update_subscription.call_args.kwargs == {"plan_id": business_plan.id}
 
     # redirect
-    r = client.get(f"/teams/{team.id}/plan")
+    r = client.get(f"/teams/{team.id}/plans")
     assertRedirects(r, f"/teams/{team.id}/subscription")
 
     # cancel

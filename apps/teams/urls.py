@@ -6,17 +6,6 @@ from .access import login_and_admin_required, login_and_team_required
 
 app_name = "teams"
 
-checkout_urlpatterns = (
-    [
-        path(
-            "success",
-            login_and_admin_required(views.CheckoutSuccess.as_view()),
-            name="success",
-        )
-    ],
-    "team_checkouts",
-)
-
 membership_urlpatterns = (
     [
         path(
@@ -46,9 +35,14 @@ urlpatterns = [
         name="detail",
     ),
     path(
-        "<hashid:team_id>/plan",
-        login_and_admin_required(views.TeamPlan.as_view()),
-        name="plan",
+        "<hashid:team_id>/plans",
+        login_and_admin_required(views.TeamPlans.as_view()),
+        name="plans",
+    ),
+    path(
+        "<hashid:team_id>/checkout",
+        login_and_admin_required(views.TeamCheckout.as_view()),
+        name="checkout",
     ),
     path(
         "<hashid:team_id>/subscription",

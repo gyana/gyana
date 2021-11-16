@@ -1,3 +1,4 @@
+import json
 import logging
 
 from django import forms
@@ -6,6 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
+from fuzzywuzzy import process
 from ibis.expr.types import ScalarExpr
 
 from apps.base.analytics import (
@@ -128,7 +130,7 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["show_docs"] = self.request.GET.get("show_docs", False) == "true"
-        context["preview_node_id"] = self.preview_node.id
+        context["preview_node"] = self.preview_node
         # Node-specific documentation
         if self.object.kind == Node.Kind.FORMULA:
             context["help_template"] = "nodes/help/formula.html"
@@ -189,3 +191,67 @@ class NodeCreditConfirmation(TurboFrameUpdateView):
         self.object.save()
 
         return r
+
+
+with open("apps/columns/functions.json") as f:
+    FUNCTIONS = json.loads(f.read())
+
+
+CATEGORIES = ["all", "generic", "text", "math", "time & date"]
+ICONS = {
+    "generic": "fa-globe",
+    "text": "fa-text",
+    "math": "fa-sigma",
+    "time & date": "fa-clock",
+}
+
+FUNCTIONS = [{**f, "icon": ICONS[f["categories"][0]]} for f in FUNCTIONS]
+
+
+def filter_functions(function, q, category):
+    is_category = category == "all" or category in function["categories"]
+    is_fuzzy = (
+        not q
+        or process.extractOne(q.lower(), [function["name"], *function["keywords"]])[1]
+        > 60
+    )
+    return is_fuzzy and is_category
+
+
+class FormulaHelp(TurboFrameDetailView):
+    model = Node
+    template_name = "nodes/help/formula.html"
+    # This view replaces the node grid so we need to provide the same
+    # turbo frame dom id
+    turbo_frame_dom_id = "nodes:grid"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["show_docs"] = self.request.GET.get("show_docs", False) == "true"
+        q = self.request.GET.get("q")
+        selected_category = self.request.GET.get("category", "all")
+        context["functions"] = [
+            function
+            for function in FUNCTIONS
+            if filter_functions(function, q, selected_category)
+        ]
+
+        context["categories"] = CATEGORIES
+        context["selected_category"] = selected_category
+
+        return context
+
+
+class FunctionInfo(TurboFrameDetailView):
+    turbo_frame_dom_id = "nodes:function-info"
+    template_name = "nodes/help/function_info.html"
+    # Node provided for access check we could consider making these urls public but
+    # right now they are unstyled
+    model = Node
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        function_id = self.request.GET["function"]
+        context["function"] = next(filter(lambda x: x["id"] == function_id, FUNCTIONS))
+        return context

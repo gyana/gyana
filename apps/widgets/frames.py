@@ -32,7 +32,7 @@ from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 
 from .forms import FORMS
-from .models import WIDGET_CHOICES_ARRAY, Widget
+from .models import WIDGET_KIND_TO_WEB, WIDGET_CHOICES_ARRAY, Widget
 
 
 def add_output_context(context, widget, request):
@@ -237,6 +237,8 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["project"] = self.get_object().dashboard.project
+        context["widget_icon"] = WIDGET_KIND_TO_WEB[self.get_object().kind][0]
+
         try:
             add_output_context(context, self.object, self.request)
         except Exception as e:

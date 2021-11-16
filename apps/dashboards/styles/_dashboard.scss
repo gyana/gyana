@@ -56,3 +56,10 @@
     z-index: var(--z-ui);
   }
 }
+
+.palette-colors {
+  display: grid;
+  gap: 1.6rem;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}

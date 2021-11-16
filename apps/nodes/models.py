@@ -1,4 +1,4 @@
-from functools import cached_property
+from django.utils.functional import cached_property
 
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings

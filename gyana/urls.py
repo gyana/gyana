@@ -71,7 +71,6 @@ teams_urlpatterns = [
     path("<hashid:team_id>/invites/", include(invite_urls.team_urlpatterns)),
     path("<hashid:team_id>/projects/", include(project_urls.team_urlpatterns)),
     path("<hashid:team_id>/members/", include(team_urls.membership_urlpatterns)),
-    path("<hashid:team_id>/checkout/", include(team_urls.checkout_urlpatterns)),
     path("<hashid:team_id>/appsumo/", include(appsumo_urls.team_urlpatterns)),
     path("<hashid:team_id>/templates/", include(template_urls.team_urlpatterns)),
     path("<hashid:team_id>/cnames/", include(cname_urls.team_urlpatterns)),

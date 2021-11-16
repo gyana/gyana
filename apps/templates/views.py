@@ -1,8 +1,11 @@
-from functools import cached_property
+from django.utils.functional import cached_property
 
 import analytics
-from apps.base.analytics import (TEMPLATE_COMPLETED_EVENT,
-                                 TEMPLATE_CREATED_EVENT, TEMPLATE_VIEWED_EVENT)
+from apps.base.analytics import (
+    TEMPLATE_COMPLETED_EVENT,
+    TEMPLATE_CREATED_EVENT,
+    TEMPLATE_VIEWED_EVENT,
+)
 from apps.base.frames import TurboFrameListView
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.projects.mixins import ProjectMixin
@@ -13,11 +16,9 @@ from django.urls.base import reverse
 from django_tables2 import SingleTableView
 from django_tables2.views import SingleTableMixin
 
-from .forms import (TemplateInstanceCreateExistingForm,
-                    TemplateInstanceCreateNewForm)
+from .forms import TemplateInstanceCreateExistingForm, TemplateInstanceCreateNewForm
 from .models import Template, TemplateInstance
-from .tables import (TemplateInstanceTable, TemplateIntegrationTable,
-                     TemplateTable)
+from .tables import TemplateInstanceTable, TemplateIntegrationTable, TemplateTable
 
 
 class TemplateList(TeamMixin, SingleTableView, TurboFrameListView):

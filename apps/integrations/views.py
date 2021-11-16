@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView
-from django.views.generic.edit import DeleteView
+from django.views.generic.edit import DeleteView, UpdateView
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
@@ -67,9 +67,10 @@ class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
 # Tabs
 
 
-class IntegrationDetail(ProjectMixin, DetailView):
+class IntegrationDetail(ProjectMixin, UpdateView):
     template_name = "integrations/detail.html"
     model = Integration
+    fields = ["name"]
 
     def get(self, request, *args, **kwargs):
         integration = self.get_object()
