@@ -136,5 +136,4 @@ def get_table(schema, query, **kwargs):
     table_class = type("DynamicTable", (Table,), attrs)
 
     table_data = BigQueryTableData(query)
-
     return table_class(data=table_data, **kwargs)
