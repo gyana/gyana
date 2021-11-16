@@ -91,8 +91,7 @@ class TeamUpdateForm(BaseModelForm):
         }
 
     def post_save(self, instance):
-        for project in instance.project_set.all():
-            project.update_connectors_daily_sync_time()
+        instance.update_connectors_daily_sync_time()
 
 
 class MembershipUpdateForm(forms.ModelForm):

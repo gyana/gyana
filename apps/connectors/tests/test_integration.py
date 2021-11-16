@@ -241,7 +241,7 @@ def test_connector_schedule(client, logged_in_user, fivetran, connector_factory)
     connector = connector_factory(integration__project__team=team)
     integration = connector.integration
     project = integration.project
-    fivetran.get.return_value = get_mock_fivetran_connector(daily_sync_time="03:30")
+    fivetran.get.return_value = get_mock_fivetran_connector(daily_sync_time="03:00")
 
     # +05:30 GMT with no daylight savings (testing is easier)
     team.timezone = pytz.timezone("Asia/Kolkata")
@@ -260,19 +260,28 @@ def test_connector_schedule(client, logged_in_user, fivetran, connector_factory)
     )
     assertRedirects(r, f"/projects/{project.id}/update", status_code=303)
 
-    assert connector.daily_sync_time == "03:30"
+    project.refresh_from_db()
+    connector.refresh_from_db()
+
+    assert project.daily_schedule_time.strftime("%H:%M") == "09:00"
+    # test logic for 30 minute offset as well
+    assert connector.daily_sync_time == "03:00"
     assert fivetran.update.call_count == 1
     # the UTC time, given Kolkata is +05:30, rounded down to nearest hour
     assert fivetran.update.call_args.args == (connector,)
-    assert fivetran.update.call_args.kwargs == {"daily_sync_time": "03:30"}
+    assert fivetran.update.call_args.kwargs == {"daily_sync_time": "03:00"}
 
     # update the timezone in a team via UI
+    fivetran.get.return_value = get_mock_fivetran_connector(daily_sync_time="01:00")
     # +08:00 GMT with no daylight savings
     r = client.post(
         f"/teams/{team.id}/update",
         data={"name": "Team", "timezone": "Asia/Shanghai"},
     )
     assertRedirects(r, f"/teams/{team.id}/update", status_code=303)
+
+    project.refresh_from_db()
+    connector.refresh_from_db()
 
     assert connector.daily_sync_time == "01:00"
     assert fivetran.update.call_count == 2

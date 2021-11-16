@@ -79,6 +79,7 @@ class ConnectorFactory(factory.django.DjangoModelFactory):
     integration = factory.SubFactory(
         IntegrationFactory, kind=Integration.Kind.CONNECTOR, name="Google Analytics"
     )
+    schema_config = {}
 
 
 @register

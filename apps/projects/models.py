@@ -100,7 +100,6 @@ class Project(CloneMixin, BaseModel):
         from apps.connectors.models import Connector
 
         connectors = Connector.objects.filter(integration__project=self).all()
-
         for connector in connectors:
             connector.update_daily_sync_time_if_changed()
 
