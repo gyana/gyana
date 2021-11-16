@@ -310,6 +310,7 @@ class Connector(BaseModel):
             clients.fivetran().update(self, daily_sync_time=daily_sync_time)
             self.sync_updates_from_fivetran()
 
+        # we don't want to update the next daily sync if it is currently happening
         if self.next_daily_sync > timezone.now():
             self.next_daily_sync = self.integration.project.next_daily_sync
             self.save()
