@@ -355,6 +355,11 @@ def create_extract_unary_param(func_name, sql_name=None):
             ),
             id="nest ifelse with datetime function",
         ),
+        pytest.param(
+            'regex_extract(\'{"id": "1234", "name": "John"}\', \'{"id": "(.*?)",\', 0)',
+            'SELECT REGEXP_EXTRACT_ALL(\'{"id": "1234", "name": "John"}\', r\'{"id": "(.*?)",\')[SAFE_OFFSET(0)] AS `tmp`',
+            id="regex_extract with quote nesting",
+        ),
     ],
 )
 def test_formula(formula, expected_sql):

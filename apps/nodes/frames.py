@@ -130,7 +130,7 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["show_docs"] = self.request.GET.get("show_docs", False) == "true"
-        context["preview_node_id"] = self.preview_node.id
+        context["preview_node"] = self.preview_node
         # Node-specific documentation
         if self.object.kind == Node.Kind.FORMULA:
             context["help_template"] = "nodes/help/formula.html"

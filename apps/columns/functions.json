@@ -12,8 +12,8 @@
     "name": "add",
     "categories": ["math"],
     "arguments": [
-      { "name": "number", "description": "a numeric scalar or column" },
-      { "name": "number", "description": "a numeric scalar or column" }
+      { "name": "x", "description": "a numeric scalar or column" },
+      { "name": "y", "description": "a numeric scalar or column" }
     ],
     "keywords": ["addition", "plus", "summation"],
     "description": "Adds two numeric values together."
@@ -54,8 +54,11 @@
     "name": "coalesce",
     "categories": ["generic"],
     "arguments": [
-      { "name": "value", "description": "a scalar or column" },
-      { "name": "value", "description": "a scalar or column", "repeatable": true }
+      {
+        "name": "value",
+        "description": "scalars or columns, uses the first not null record",
+        "repeatable": true
+      }
     ],
     "keywords": ["concatenate", "null", "join", "merge"],
     "description": "Returns the first non-null value from the passed arguments in left-to-right order"
@@ -65,11 +68,11 @@
     "name": "contains",
     "categories": ["text"],
     "arguments": [
-      { "name": "text", "description": "a text scalar or column" },
-      { "name": "text", "description": "a text scalar or column" }
+      { "name": "text", "description": "a text scalar or column that should contain pattern" },
+      { "name": "pattern", "description": "a text scalar or column that should be in text" }
     ],
     "keywords": ["in"],
-    "descrition": "Determine if indicated text value is exactly contained in the text."
+    "description": "Determine if text exactly contains the given pattern."
   },
   {
     "id": "date",
@@ -104,7 +107,7 @@
       { "name": "divisor", "description": "a numeric scalar or column" }
     ],
     "keywords": ["division"],
-    "description": "Divide value by value"
+    "description": "Divide dividend by divisor"
   },
   {
     "id": "epoch_seconds",
@@ -131,13 +134,13 @@
       { "name": "searchtext", "description": "a text scalar or column" }
     ],
     "keywords": ["position", "search"],
-    "description": "Returns position (0 indexed) of first occurence of subtext"
+    "description": "Returns position (0 indexed) of first occurence of searchtext in text"
   },
   {
     "id": "floor",
     "name": "floor",
     "categories": ["math"],
-    "arguments": [{ "name": "value", "description": "a scalar or column" }],
+    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
     "keywords": ["round", "down"],
     "description": "Rounding down a numeric value to the greatest integer less or eqqual"
   },
@@ -150,7 +153,7 @@
       { "name": "fill_value", "description": "a scalar or column" }
     ],
     "keywords": ["replace"],
-    "description": "Replace nulls with value"
+    "description": "Replace nulls in value with fill_value"
   },
   {
     "id": "hash",
@@ -173,7 +176,10 @@
     "name": "ifelse",
     "categories": ["generic"],
     "arguments": [
-      { "name": "condition", "description": "a condition of a boolean column or scalar" },
+      {
+        "name": "condition",
+        "description": "a condition of a boolean column, scalar or another formula"
+      },
       {
         "name": "true_value",
         "description": "scalar or column that is return if condition is true"
@@ -206,7 +212,7 @@
       { "name": "text", "description": "a text scalar or column", "repeatable": true }
     ],
     "keywords": ["merge", "concatenate"],
-    "description": "Concatenate text using first text as delimiter"
+    "description": "Concatenate text with the delimiter"
   },
   {
     "id": "left",
@@ -220,7 +226,7 @@
       }
     ],
     "keywords": ["reduce"],
-    "description": "Return up to n characters starting from start of each text"
+    "description": "Return up to nchars characters starting from start of each text"
   },
   {
     "id": "length",
@@ -239,7 +245,7 @@
       { "name": "pattern", "description": "a text scalar or column" }
     ],
     "keywords": ["compare"],
-    "description": "Compare text with another text"
+    "description": "Compare text with another pattern, returns True if pattern is like text"
   },
   {
     "id": "ln",
@@ -247,7 +253,7 @@
     "categories": ["math"],
     "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
     "keywords": ["logarithm"],
-    "description": "Natural logarithm"
+    "description": "Returns the natural logarithm of number"
   },
   {
     "id": "log",
@@ -258,7 +264,7 @@
       { "name": "base", "description": "a numeric scalar or column" }
     ],
     "keywords": ["logarithm"],
-    "description": "Logarithm with base `base`"
+    "description": "Returns the logarithm with base of number"
   },
   {
     "id": "log2",
@@ -266,7 +272,7 @@
     "categories": ["math"],
     "arguments": [{ "name": "number", "description": "a number scalar or column" }],
     "keywords": ["logarithm"],
-    "description": "Logarithm with base 2"
+    "description": "Returns the logarithm with base 2 of number"
   },
   {
     "id": "log10",
@@ -274,7 +280,7 @@
     "categories": ["math"],
     "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
     "keywords": ["logarithm"],
-    "description": "Logarithm with base 10"
+    "description": "Returns the logarithm with base 10 of number"
   },
   {
     "id": "lower",
@@ -282,7 +288,7 @@
     "categories": ["text"],
     "arguments": [{ "name": "text", "description": "a text scalar or column" }],
     "keywords": ["case"],
-    "description": "Text to lowercase"
+    "description": "Turns text to lowercase"
   },
   {
     "id": "lpad",
@@ -336,11 +342,11 @@
     "name": "product",
     "categories": ["math"],
     "arguments": [
-      { "name": "number", "description": "a numeric scalar or column" },
-      { "name": "number", "description": "a numeric scalar or column" }
+      { "name": "x", "description": "a numeric scalar or column" },
+      { "name": "y", "description": "a numeric scalar or column" }
     ],
     "keywords": ["multiply"],
-    "description": "Multiply values"
+    "description": "Multiply x and y"
   },
   {
     "id": "notnull",
@@ -348,7 +354,7 @@
     "categories": ["generic"],
     "arguments": [{ "name": "value", "description": "a scalar or column" }],
     "keywords": [],
-    "description": "Check whether a value is null"
+    "description": "Check whether value is null"
   },
   {
     "id": "pow",
@@ -359,7 +365,7 @@
       { "name": "exponent", "description": "a numeric scalar or column" }
     ],
     "keywords": ["exponential"],
-    "description": "Calculate the power of a value"
+    "description": "Calculate the number to the power of exponent"
   },
   {
     "id": "re_extract",
@@ -371,7 +377,7 @@
       { "name": "index", "description": "a numeric scalar or column" }
     ],
     "keywords": ["regex"],
-    "description": "Returns specified index, 0 indexed, from string based on regex pattern given"
+    "description": "Returns specified index, 0 indexed, from text based on regex pattern given"
   },
   {
     "id": "re_replace",
@@ -386,7 +392,7 @@
       }
     ],
     "keywords": ["regex"],
-    "description": "Replaces match found by regex with replace string."
+    "description": "Replaces match found in text by regex pattern with replace text."
   },
   {
     "id": "re_search",
@@ -397,7 +403,7 @@
       { "name": "pattern", "description": "a text scalar or column" }
     ],
     "keywords": ["regex"],
-    "description": "Search string values using a regular expression."
+    "description": "Search regex pattern in text"
   },
   {
     "id": "repeat",
@@ -423,7 +429,7 @@
       }
     ],
     "keywords": [],
-    "description": "Replaces each exactly occurrence of pattern with given replace string."
+    "description": "Replaces each exact occurrence of pattern in text with replace"
   },
   {
     "id": "reverse",
@@ -431,7 +437,7 @@
     "categories": ["text"],
     "arguments": [{ "name": "text", "description": "a text scalar or column" }],
     "keywords": ["inverse"],
-    "description": "Reverse text order"
+    "description": "Reverse text character order"
   },
   {
     "id": "right",
@@ -445,7 +451,7 @@
       }
     ],
     "keywords": ["reduce"],
-    "description": "Return up to n characters starting from end of each text."
+    "description": "Return up to nchar characters starting from end of each text."
   },
   {
     "id": "round",
@@ -456,7 +462,7 @@
       { "name": "digits", "description": "an integer scalar or column" }
     ],
     "keywords": [],
-    "description": "Round value to n decimal"
+    "description": "Round number to digit decimal positon"
   },
   {
     "id": "rpad",
@@ -522,7 +528,7 @@
       { "name": "subtrahend", "description": "a numeric scalar or column" }
     ],
     "keywords": ["minus"],
-    "description": "Substract value from value"
+    "description": "Substract subtrahend from minuend"
   },
   {
     "id": "substitute",
@@ -535,7 +541,7 @@
       { "name": "else", "description": "a text scalar or column", "optional": true }
     ],
     "keywords": ["replace"],
-    "description": "Replace one or more values"
+    "description": "Replace text if with replace if pattern is equal to text optional replace with else"
   },
   {
     "id": "time",
@@ -564,12 +570,12 @@
     "name": "datetime_diff",
     "categories": ["time & date"],
     "arguments": [
-      { "name": "datetime", "description": "a datetime scalar or column" },
-      { "name": "datetime", "description": "a datetime scalar or column" },
+      { "name": "minuend", "description": "a datetime scalar or column" },
+      { "name": "subtrahend", "description": "a datetime scalar or column" },
       { "name": "unit", "description": "unit of the difference e.g. \"s\" for seconds" }
     ],
     "keywords": [],
-    "description": "Get the difference between two datetimes in a given unit"
+    "description": "Get the difference between minuend and subtrahend in the given unit"
   },
   {
     "id": "truncate",

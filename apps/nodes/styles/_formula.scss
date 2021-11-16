@@ -22,7 +22,7 @@
     padding: 1.6rem;
     border-top: 1px solid var(--c-gray);
 
-    transition: bottom 300ms;
+    transition: bottom 500ms;
 
     &.closed {
       display: none;
@@ -39,11 +39,8 @@
     }
 
     ul {
-      list-style-type: circle;
-    }
-    li {
-      display: list-item;
-      list-style-type: circle;
+      list-style-type: disc;
+      padding-left: 2rem;
     }
   }
 }
