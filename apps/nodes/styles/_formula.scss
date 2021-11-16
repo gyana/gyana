@@ -29,11 +29,20 @@
       bottom: -18rem;
     }
 
+    .description {
+      margin-top: 0.8rem;
+      display: block;
+    }
+
     em {
       color: var(--c-black-20);
     }
 
     ul {
+      list-style-type: circle;
+    }
+    li {
+      display: list-item;
       list-style-type: circle;
     }
   }
