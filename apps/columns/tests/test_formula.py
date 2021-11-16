@@ -360,3 +360,23 @@ def create_extract_unary_param(func_name, sql_name=None):
 def test_formula(formula, expected_sql):
     sql = ibis_bigquery.compile(compile_formula(TABLE, formula))
     assert sql == expected_sql
+
+
+@pytest.mark.parametrize(
+    "formula, expected",
+    [
+        pytest.param(
+            '"erratum humanum est"',
+            "erratum humanum est",
+            id="strings with double quotes",
+        ),
+        pytest.param(
+            "'erratum humanum est'",
+            "erratum humanum est",
+            id="strings with single quotes",
+        ),
+    ],
+)
+def test_string(formula, expected):
+    result = compile_formula(TABLE, formula)
+    assert result == expected

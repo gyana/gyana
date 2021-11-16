@@ -51,6 +51,9 @@ class TreeToIbis(Transformer):
     def string(self, token):
         return token.value.strip('"')
 
+    def string_(self, token):
+        return token.value.strip("'")
+
     def column(self, token):
         return self.query[token.value]
 
