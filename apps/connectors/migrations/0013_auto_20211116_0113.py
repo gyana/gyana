@@ -36,7 +36,7 @@ def update_connectors_to_daily(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("connectors", "0013_connector_next_daily_sync"),
+        ("connectors", "0012_auto_20211105_1018"),
     ]
 
     operations = [

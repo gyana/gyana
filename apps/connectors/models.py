@@ -111,12 +111,6 @@ class Connector(BaseModel):
     sync_task_id = models.UUIDField(null=True)
     sync_started = models.DateTimeField(null=True)
 
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.next_daily_sync = self.integration.project.next_daily_sync
-
-        super().save(*args, **kwargs)
-
     @property
     def fivetran_dashboard_url(self):
         return f"https://fivetran.com/dashboard/connectors/{self.service}/{self.schema}?requiredGroup={settings.FIVETRAN_GROUP}"
