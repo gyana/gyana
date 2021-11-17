@@ -90,8 +90,11 @@ class TeamUpdateForm(BaseModelForm):
             "timezone": "We use this to display time information and to schedule workflows",
         }
 
+    def pre_save(self, instance):
+        self._timezone_is_dirty = "timezone" in instance.get_dirty_fields()
+
     def post_save(self, instance):
-        if "timezone" in instance.get_dirty_fields():
+        if self._timezone_is_dirty:
             instance.update_connectors_daily_sync_time()
 
 
