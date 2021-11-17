@@ -240,6 +240,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
         connectors_dict = {c.fivetran_id: c for c in connectors}
 
         for data in clients.fivetran().list():
+            # ignore orphaned connectors
             if data["id"] in connectors_dict:
                 connector = connectors_dict[data["id"]]
                 connector.sync_updates_from_fivetran(data)
