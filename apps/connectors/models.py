@@ -230,7 +230,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
 
         # only available for individual connector get (not group list)
         if "config" in data:
-            setattr(data, "config", data["config"])
+            self.config = data["config"]
 
     @staticmethod
     def sync_all_updates_from_fivetran():
