@@ -222,12 +222,15 @@ class Connector(DirtyFieldsMixin, BaseModel):
             "is_historical_sync": status["is_historical_sync"],
             "tasks": status["tasks"],
             "warnings": status["warnings"],
-            "config": data["config"],
             "source_sync_details": data.get("source_sync_details"),
         }
 
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+        # only available for individual connector get (not group list)
+        if 'config' in data:
+            setattr(data, 'config')
 
     @staticmethod
     def sync_all_updates_from_fivetran():

@@ -87,7 +87,7 @@ class FivetranClient:
                 headers=settings.FIVETRAN_HEADERS,
                 params={"limit": 100, "cursor": next_cursor},
             ).json()
-            yield page["data"]["items"]
+            yield from page["data"]["items"]
             if (next_cursor := page["data"].get("next_cursor")) is None:
                 break
 
