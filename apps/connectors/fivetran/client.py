@@ -1,3 +1,4 @@
+import math
 import uuid
 from typing import Dict
 
@@ -75,6 +76,22 @@ class FivetranClient:
             raise FivetranClientError(res)
 
         return res["data"]
+
+    def list(self):
+        session = requests.Session()
+        url = f"{settings.FIVETRAN_URL}/groups/{settings.FIVETRAN_GROUP}/connectors"
+        next_cursor = None
+        limit = 100
+
+        while True:
+            page = session.get(
+                url,
+                headers=settings.FIVETRAN_HEADERS,
+                params={"limit": limit, "cursor": next_cursor},
+            ).json()
+            yield page["data"]["items"]
+            if (next_cursor := page["data"].get("next_cursor")) is None:
+                break
 
     def update(self, connector: Connector, **data):
 

@@ -17,25 +17,6 @@ FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
 FIVETRAN_SYNC_FREQUENCY_HOURS = 6
 
 
-class ConnectorsManager(models.Manager):
-    def needs_initial_sync_check(self):
-
-        include_sync_started_after = timezone.now() - timezone.timedelta(
-            hours=FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS
-        )
-
-        # connectors that are currently syncing within 24 hour timeout
-        return self.filter(
-            integration__state=Integration.State.LOAD,
-            fivetran_sync_started__gt=include_sync_started_after,
-        )
-
-    def needs_daily_sync_check(self):
-
-        # check connectors where next_daily_sync is in past
-        return self.filter(next_daily_sync__lt=timezone.now()).all()
-
-
 class Connector(BaseModel):
     class ScheduleType(models.TextChoices):
         AUTO = "auto", "Auto"
@@ -92,9 +73,6 @@ class Connector(BaseModel):
     fivetran_sync_started = models.DateTimeField(null=True)
     # the value of succeeded_at when tables were last synced from bigquery
     bigquery_succeeded_at = models.DateTimeField(null=True)
-    # next daily sync time, determined by team timezone and project daily_sync_time, as UTC
-    # not the same time each day in UTC due to daylight savings
-    next_daily_sync = models.DateTimeField()
 
     # automatically sync the fields from fivetran connector to this model
     # https://fivetran.com/docs/rest-api/connectors#fields
@@ -132,8 +110,6 @@ class Connector(BaseModel):
     # deprecated: track the celery task
     sync_task_id = models.UUIDField(null=True)
     sync_started = models.DateTimeField(null=True)
-
-    objects = ConnectorsManager()
 
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -204,19 +180,6 @@ class Connector(BaseModel):
             and len(self.schema_obj.enabled_bq_ids - self.synced_bq_ids) == 0
         )
 
-    @property
-    def daily_sync_check_completed(self):
-
-        has_started = timezone.now() > self.next_daily_sync
-        not_connected = self.setup_state != self.SetupState.CONNECTED
-        paused = self.sync_state == self.SyncState.PAUSED
-        succeeded = (
-            self.succeeded_at is not None and self.succeeded_at > self.next_daily_sync
-        )
-        failed = self.failed_at is not None and self.failed_at > self.next_daily_sync
-
-        return has_started and (not_connected or paused or succeeded or failed)
-
     def _parse_fivetran_timestamp(self, timestamp):
         if timestamp is not None:
             return datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%f%z")
@@ -272,18 +235,43 @@ class Connector(BaseModel):
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-    def sync_updates_from_fivetran(self):
+    @staticmethod
+    def sync_all_updates_from_fivetran():
+
+        # until Fivetran implements webhooks, the most reliable syncing method
+        # is to list all connectors via /groups/{{ group_id }}/connectors and
+        # sync changes locally every 10 minutes
+
+        connectors = Connector.objects.all()
+        connectors_dict = {c.fivetran_id: c for c in connectors}
+
+        for data in clients.fivetran().list():
+            connector = connectors_dict[data["id"]]
+            connector.sync_updates_from_fivetran(data)
+
+        Connector.objects.bulk_update(connectors)
+
+    def sync_updates_from_fivetran(self, data=None):
         from apps.connectors.sync import end_connector_sync
 
-        data = clients.fivetran().get(self)
-        self.update_kwargs_from_fivetran(data)
-        self.save()
+        if data is None:
+            data = clients.fivetran().get(self)
+            self.update_kwargs_from_fivetran(data)
+            self.save()
 
         if self.schema_config is None:
             self.sync_schema_obj_from_fivetran()
 
-        # fivetran setup is broken or incomplete or latest sync failed
-        if self.setup_state != self.SetupState.CONNECTED or self.latest_sync_failed:
+        # update fivetran sync time if user has updated timezone/daily sync time
+        # or daylight savings time is going in/out tomorrow
+        daily_sync_time = self.integration.project.next_sync_time_utc_string
+        if daily_sync_time != self.daily_sync_time:
+            clients.fivetran().update(self, daily_sync_time=daily_sync_time)
+            self.daily_sync_time = daily_sync_time
+            self.save()
+
+        # fivetran setup is broken or incomplete
+        if self.setup_state != self.SetupState.CONNECTED:
             self.integration.state = Integration.State.ERROR
             self.integration.save()
 
@@ -291,29 +279,9 @@ class Connector(BaseModel):
         if self.succeeded_at != self.bigquery_succeeded_at:
             end_connector_sync(self, not self.integration.table_set.exists())
 
-        if self.daily_sync_check_completed:
-            self.next_daily_sync = self.integration.project.next_daily_sync
-            self.save()
-
     def sync_schema_obj_from_fivetran(self):
         self.schema_config = clients.fivetran().get_schemas(self)
         self.save()
-
-    def update_daily_sync_time_if_changed(self):
-
-        # Either the time is updated by the user, or daylight savings are
-        # coming into effect
-
-        daily_sync_time = self.integration.project.next_sync_time_utc_string
-
-        if daily_sync_time != self.daily_sync_time:
-            clients.fivetran().update(self, daily_sync_time=daily_sync_time)
-            self.sync_updates_from_fivetran()
-
-        # we don't want to update the next daily sync if it is currently happening
-        if self.next_daily_sync > timezone.now():
-            self.next_daily_sync = self.integration.project.next_daily_sync
-            self.save()
 
     @property
     def setup_state_icon(self):

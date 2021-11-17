@@ -1,6 +1,7 @@
 from datetime import datetime, time, timedelta
 
 import pytz
+from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -13,7 +14,7 @@ from apps.cnames.models import CName
 from apps.teams.models import Team
 
 
-class Project(CloneMixin, BaseModel):
+class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
     class Access(models.TextChoices):
         EVERYONE = ("everyone", "Everyone in your team can access")
         INVITE_ONLY = ("invite", "Only invited team members can access")
@@ -101,7 +102,7 @@ class Project(CloneMixin, BaseModel):
 
         connectors = Connector.objects.filter(integration__project=self).all()
         for connector in connectors:
-            connector.update_daily_sync_time_if_changed()
+            connector.sync_updates_from_fivetran()
 
     def get_absolute_url(self):
         return reverse("projects:detail", args=(self.id,))

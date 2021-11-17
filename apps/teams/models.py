@@ -1,3 +1,4 @@
+from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
@@ -18,7 +19,7 @@ from .config import PLANS
 WARNING_BUFFER = 0.2
 
 
-class Team(BaseModel, SafeDeleteModel):
+class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
     class Meta:
         ordering = ("-created",)
 

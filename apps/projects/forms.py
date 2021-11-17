@@ -103,4 +103,5 @@ class ProjectUpdateForm(MemberSelectMixin, LiveUpdateForm):
         return fields
 
     def post_save(self, instance):
-        instance.update_connectors_daily_sync_time()
+        if "daily_schedule_time" in instance.get_dirty_fields():
+            instance.update_connectors_daily_sync_time()
