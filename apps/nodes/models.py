@@ -61,7 +61,11 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     x = models.FloatField()
     y = models.FloatField()
     parents = models.ManyToManyField(
-        "self", symmetrical=False, related_name="children", blank=True
+        "self",
+        symmetrical=False,
+        related_name="children",
+        blank=True,
+        through="NodeParents",
     )
 
     data_updated = models.DateTimeField(null=True, editable=False)
@@ -271,3 +275,9 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     @property
     def explanation(self):
         return NODE_CONFIG[self.kind]["explanation"]
+
+
+class NodeParents(models.Model):
+
+    from_node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="parent")
+    to_node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="child")

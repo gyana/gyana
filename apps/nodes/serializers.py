@@ -1,5 +1,6 @@
-from apps.filters.models import Filter
 from rest_framework import serializers
+
+from apps.filters.models import Filter
 
 from .config import NODE_CONFIG
 from .models import Node, Workflow
@@ -9,6 +10,7 @@ class NodeSerializer(serializers.ModelSerializer):
 
     workflow = serializers.PrimaryKeyRelatedField(queryset=Workflow.objects.all())
     description = serializers.SerializerMethodField()
+    parents = serializers.PrimaryKeyRelatedField(queryset=Node.objects.all(), many=True)
 
     class Meta:
         model = Node
@@ -54,11 +56,11 @@ def get_aggregation_desc(obj):
 
 
 def get_union_desc(obj):
-    return f"Distinct" if obj.union_distinct else ""
+    return "Distinct" if obj.union_distinct else ""
 
 
 def get_except_desc(obj):
-    return f"Except"
+    return "Except"
 
 
 def get_sort_desc(obj):
