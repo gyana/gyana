@@ -1,3 +1,4 @@
+import analytics
 from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse
@@ -11,6 +12,7 @@ from django_tables2.views import SingleTableMixin, SingleTableView
 from djpaddle.models import Plan
 from djpaddle.views import PaddlePostCheckoutApiView as BasePaddlePostCheckoutApiView
 
+from apps.base.analytics import CHECKOUT_COMPLETED_EVENT, CHECKOUT_OPENED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 
 from .forms import (
@@ -77,10 +79,14 @@ class TeamCheckout(DetailView):
     template_name = "teams/checkout.html"
     pk_url_kwarg = "team_id"
 
+    @property
+    def plan(self):
+        plan_id = self.request.GET.get("plan") or settings.DJPADDLE_PRO_PLAN_ID
+        return Plan.objects.get(pk=plan_id)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        plan_id = self.request.GET.get("plan") or settings.DJPADDLE_PRO_PLAN_ID
-        context["plan"] = Plan.objects.get(pk=plan_id)
+        context["plan"] = self.plan
         context["paddle_pro_plan"] = Plan.objects.get(pk=settings.DJPADDLE_PRO_PLAN_ID)
         context["paddle_business_plan"] = Plan.objects.get(
             pk=settings.DJPADDLE_BUSINESS_PLAN_ID
@@ -89,10 +95,14 @@ class TeamCheckout(DetailView):
         context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
         return context
 
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        analytics.track(request.user.id, CHECKOUT_OPENED_EVENT, {"plan": self.plan.id})
+        return super().get(request, *args, **kwargs)
+
 
 class PaddlePostCheckoutApiView(BasePaddlePostCheckoutApiView):
     def post(self, request, *args, **kwargs):
-        print("HI")
+        analytics.track(request.user.id, CHECKOUT_COMPLETED_EVENT)
         return super().post(request, *args, **kwargs)
 
 
