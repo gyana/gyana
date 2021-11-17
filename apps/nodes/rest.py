@@ -50,8 +50,8 @@ class NodeViewSet(viewsets.ModelViewSet):
                 ),
             )
             # Explicitly update node when parents are updated
-            # node.data_updated = timezone.now()
-            # node.save()
+            node.data_updated = timezone.now()
+            node.save()
 
 
 @api_view(http_method_names=["POST"])
