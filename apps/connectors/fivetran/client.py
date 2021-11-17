@@ -80,13 +80,12 @@ class FivetranClient:
         session = requests.Session()
         url = f"{settings.FIVETRAN_URL}/groups/{settings.FIVETRAN_GROUP}/connectors"
         next_cursor = None
-        limit = 100
 
         while True:
             page = session.get(
                 url,
                 headers=settings.FIVETRAN_HEADERS,
-                params={"limit": limit, "cursor": next_cursor},
+                params={"limit": 100, "cursor": next_cursor},
             ).json()
             yield page["data"]["items"]
             if (next_cursor := page["data"].get("next_cursor")) is None:
