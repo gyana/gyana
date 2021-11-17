@@ -8,6 +8,7 @@ from google.cloud.bigquery.query import _QueryResults
 from .ibis.client import *
 from .ibis.compiler import *
 from .ibis.patch import *
+from .utils import md5
 
 BIGQUERY_TYPE_TO_HUMAN = {
     "ARRAY": None,
@@ -67,6 +68,10 @@ class QueryResults(_QueryResults):
     @property
     def rows_dict(self):
         return [{k: v for k, v in row.items()} for row in self.rows]
+
+    @property
+    def rows_dict_by_md5(self):
+        return [{md5(k): v for k, v in row.items()} for row in self.rows]
 
     @property
     def rows_df(self):

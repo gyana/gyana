@@ -1,3 +1,4 @@
+{% load formula_utils %}
 
 {% include 'nodes/modal_nav_bar.html' %}
 
@@ -42,11 +43,13 @@
           class="textarea"
           name="{{ widget.name }}"
           readonly
-        >join("", strip(first_name), " ", strip(last_name))</textarea>
+        >join("", trim(first_name), " ", trim(last_name))</textarea>
       </div>
     </p>
     
-    <h2>Functions</h2>
+    <h2>Functions <a class="ml-auto" href="{% link_function '' %}">
+      <i class="fa fa-external-link fa-xs text-black-50"></i>
+    </a></h2>
 
     <form role='search' method="get" 
       action="{% url 'nodes:formula' node.id %}?show_docs=true"
@@ -73,9 +76,9 @@
 
       <div class='function-pill' data-action="click->formula-drawer#open" data-src="{{function.id}}">
         <h4>
-          <i class="fa {{ function.icon }} text-blue"></i> {{function.name}}(<em>
-            {{ function.arguments|join:", " }}
-          </em>)
+          <i class="fa {{ function.icon }} text-blue"></i> {{function.name}}(
+            <em>{% include 'nodes/help/_arguments.html' with arguments=function.arguments %}</em>
+          )
         </h4>
       </div>
 

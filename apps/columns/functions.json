@@ -3,413 +3,664 @@
     "id": "abs",
     "name": "abs",
     "categories": ["math"],
-    "arguments": ["value"],
-    "description": "Calculate the absolute value"
+    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
+    "keywords": ["absolute", "modulus", "sign", "positive"],
+    "description": "Calculate the absolute value of a numeric value.",
+    "intercom_id": "h_264a9d933f"
   },
   {
     "id": "add",
     "name": "add",
     "categories": ["math"],
-    "arguments": ["addend", "addend"],
-    "description": "Add two values"
+    "arguments": [
+      { "name": "x", "description": "a numeric scalar or column" },
+      { "name": "y", "description": "a numeric scalar or column" }
+    ],
+    "keywords": ["addition", "plus", "summation"],
+    "description": "Adds two numeric values together.",
+    "intercom_id": "h_738d20f230"
   },
   {
     "id": "between",
+    "intercom_id": "h_a9cc3a0a3d",
     "name": "between",
     "categories": ["generic"],
-    "arguments": ["value", "lower", "upper"],
-    "description": "Check if value falls between the lower/upper bounds passed"
+    "arguments": [
+      { "name": "value", "description": "a scalar or column" },
+      { "name": "lower", "description": "a scalar or column representing the lower bound" },
+      { "name": "upper", "description": "a scalar or column representing the upper bound" }
+    ],
+    "keywords": ["in", "range"],
+    "description": "Check if value falls between the lower/upper bounds."
   },
   {
     "id": "cast",
-    "name": "cast",
+    "intercom_id": "h_ddfcca142c",
+    "name": "convert",
     "categories": ["generic"],
-    "arguments": ["value", "type"],
-    "description": "Change type of a column to a different data type"
+    "arguments": [
+      { "name": "value", "description": "a scalar or column" },
+      { "name": "type", "description": "the type to convert to e.g. `text`" }
+    ],
+    "keywords": ["cast", "type", "change"],
+    "description": "Change the type of a value to a different data type."
   },
   {
     "id": "ceil",
-    "name": "ceil",
+    "intercom_id": "h_218a142af3",
+    "name": "ceiling",
     "categories": ["math"],
-    "arguments": ["value"],
-    "description": "Round up to the nearest integer value greater than or equal to this value"
+    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
+    "keywords": ["round", "upper", "decimal"],
+    "description": "Round a numeric value up to the nearest integer value greater than or equal to this value."
   },
   {
     "id": "coalesce",
+    "intercom_id": "h_44d2f59986",
     "name": "coalesce",
     "categories": ["generic"],
-    "arguments": ["value", "second_value", "etc."],
-    "description": "Compute the first non-null value(s) from the passed arguments in left-to-right order."
+    "arguments": [
+      {
+        "name": "value",
+        "description": "scalars or columns, uses the first not null record",
+        "repeatable": true
+      }
+    ],
+    "keywords": ["concatenate", "null", "join", "merge"],
+    "description": "Returns the first non-null value from the passed arguments in left-to-right order"
   },
   {
     "id": "contains",
+    "intercom_id": "h_b9329fef23",
     "name": "contains",
     "categories": ["text"],
-    "arguments": ["text", "value"],
-    "descrition": "Determine if indicated value is exactly contained in the text."
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column that should contain pattern" },
+      { "name": "pattern", "description": "a text scalar or column that should be in text" }
+    ],
+    "keywords": ["in"],
+    "description": "Determine if text exactly contains the given pattern."
   },
   {
     "id": "date",
+    "intercom_id": "h_7bb6a3fa70",
     "name": "date",
     "categories": ["time & date"],
-    "arguments": ["date"],
-    "description": "Get date from timestamp"
+    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
+    "keywords": [],
+    "description": "Get date part from a timestamp value"
   },
   {
     "id": "day",
+    "intercom_id": "h_ecd043956a",
     "name": "day",
     "categories": ["time & date"],
-    "arguments": ["date"],
-    "description": "Get day from date or timestamp"
+    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
+    "keywords": [],
+    "description": "Get the day of month from a date or timestamp value"
   },
   {
     "id": "day_of_week",
+    "intercom_id": "h_f6fbea587b",
     "name": "day_of_week",
     "categories": ["time & date"],
-    "arguments": ["date"],
+    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
+    "keywords": [],
     "description": "Get day of the week from date or timestamp"
   },
   {
     "id": "div",
+    "intercom_id": "h_7b007df78a",
     "name": "divide",
     "categories": ["math"],
-    "arguments": ["dividend", "divisor"],
-    "description": "Divide value by value"
+    "arguments": [
+      { "name": "dividend", "description": "a numeric scalar or column" },
+      { "name": "divisor", "description": "a numeric scalar or column" }
+    ],
+    "keywords": ["division"],
+    "description": "Divide dividend by divisor"
   },
   {
     "id": "epoch_seconds",
+    "intercom_id": "h_2c996ea737",
     "name": "epoch_seconds",
     "categories": ["time & date"],
-    "arguments": ["datetime"],
-    "description": "Seconds since 00:00:00 UTC on 1 January 1970 also called UNIX time"
+    "arguments": [{ "name": "timestamp", "description": "a timestamp scalar or column" }],
+    "keywords": ["unix", "since"],
+    "description": "Seconds passed since 00:00:00 UTC on 1 January 1970 also called UNIX time"
   },
   {
     "id": "exp",
+    "intercom_id": "h_c84d5ed650",
     "name": "exp",
     "categories": ["math"],
-    "arguments": ["value"],
+    "arguments": [{ "name": "value", "description": "a scalar or column" }],
+    "keywords": ["euler", "power", "exponential"],
     "description": "Calculate exponential value"
   },
   {
     "id": "find",
+    "intercom_id": "h_aa466be968",
     "name": "find",
     "categories": ["text"],
-    "arguments": ["text", "searchtext"],
-    "description": "Returns position (0 indexed) of first occurence of subtext"
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "searchtext", "description": "a text scalar or column" }
+    ],
+    "keywords": ["position", "search"],
+    "description": "Returns position (0 indexed) of first occurence of searchtext in text"
   },
   {
     "id": "floor",
+    "intercom_id": "h_df5f7f5059",
     "name": "floor",
     "categories": ["math"],
-    "arguments": ["value"],
-    "description": "Round down"
+    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
+    "keywords": ["round", "down"],
+    "description": "Rounding down a numeric value to the greatest integer less or eqqual"
   },
   {
     "id": "fillna",
-    "name": "fillna",
+    "intercom_id": "h_0b497e764f",
+    "name": "fillnull",
     "categories": ["generic"],
-    "arguments": ["value", "fill_value"],
-    "description": "Replace nulls with value"
+    "arguments": [
+      { "name": "value", "description": "a scalar or column" },
+      { "name": "fill_value", "description": "a scalar or column" }
+    ],
+    "keywords": ["replace"],
+    "description": "Replace nulls in value with fill_value"
   },
   {
     "id": "hash",
+    "intercom_id": "h_809fd0e127",
     "name": "hash",
     "categories": ["generic"],
-    "arguments": ["value"],
-    "description": "Hash value"
+    "arguments": [{ "name": "value", "description": "a scalar or column" }],
+    "keywords": ["encrypt", "obscure"],
+    "description": "Produces a cryptographic fingerprint from value using the Fingerprint64 method"
   },
   {
     "id": "hour",
+    "intercom_id": "h_002ffd3c21",
     "name": "hour",
     "categories": ["time & date"],
-    "arguments": ["time"],
+    "arguments": [{ "name": "time", "description": "a time scalar or column" }],
+    "keywords": [],
     "description": "Get the hour from date or timestamp"
   },
   {
     "id": "ifelse",
+    "intercom_id": "h_5544e3c4a8",
     "name": "ifelse",
     "categories": ["generic"],
-    "arguments": ["condition", "true_value", "false_value"],
-    "description": "If condition then use first value if not then second"
+    "arguments": [
+      {
+        "name": "condition",
+        "description": "a condition of a boolean column, scalar or another formula"
+      },
+      {
+        "name": "true_value",
+        "description": "scalar or column that is return if condition is true"
+      },
+      {
+        "name": "false_value",
+        "description": "scalar or column that is return if condition is false"
+      }
+    ],
+    "keywords": ["condition"],
+    "description": "Returns the first value if condition is true if not it returns the second value"
   },
   {
     "id": "isnull",
+    "intercom_id": "h_c58a5312b4",
     "name": "isnull",
     "categories": ["generic"],
-    "arguments": ["value"],
-    "description": "Check value is null"
+    "arguments": [{ "name": "value", "description": "a scalar or column" }],
+    "keywords": ["null", "empty"],
+    "description": "Check whether value is null"
   },
   {
     "id": "join",
+    "intercom_id": "h_e8a12705a7",
     "name": "join",
     "categories": ["text"],
-    "arguments": ["delimiter", "text", "..."],
-    "description": "Concatenate text using first text as delimiter"
+    "arguments": [
+      {
+        "name": "delimiter",
+        "description": "a value that is used to separate the following arguments"
+      },
+      { "name": "text", "description": "a text scalar or column", "repeatable": true }
+    ],
+    "keywords": ["merge", "concatenate"],
+    "description": "Concatenate text with the delimiter"
   },
   {
     "id": "left",
+    "intercom_id": "h_b7cf94950a",
     "name": "left",
     "categories": ["text"],
-    "arguments": ["text", "nchars"],
-    "description": "Return up to n characters starting from start of each text"
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      {
+        "name": "nchars",
+        "description": "a numeric scalar or column indicating the number of characters from left that are returned"
+      }
+    ],
+    "keywords": ["reduce"],
+    "description": "Return up to nchars characters starting from start of each text"
   },
   {
     "id": "length",
+    "intercom_id": "h_e194df2ac5",
     "name": "length",
     "categories": ["text"],
-    "arguments": ["text"],
+    "arguments": [{ "name": "text", "description": "a text scalar or column" }],
+    "keywords": [],
     "description": "Calculate character length from text"
   },
   {
     "id": "like",
+    "intercom_id": "h_1caad62c6c",
     "name": "like",
     "categories": ["text"],
-    "arguments": ["text", "pattern"],
-    "description": "Compare text with another text"
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "pattern", "description": "a text scalar or column" }
+    ],
+    "keywords": ["compare"],
+    "description": "Compare text with another pattern, returns True if pattern is like text"
   },
   {
     "id": "ln",
+    "intercom_id": "h_3c84e9fd9b",
     "name": "ln",
     "categories": ["math"],
-    "arguments": ["value"],
-    "description": "Natural logarithm"
+    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
+    "keywords": ["logarithm"],
+    "description": "Returns the natural logarithm of number"
   },
   {
     "id": "log",
+    "intercom_id": "h_4102aa3d8b",
     "name": "log",
     "categories": ["math"],
-    "arguments": ["value", "base"],
-    "description": "Logarithm with base `base`"
+    "arguments": [
+      { "name": "number", "description": "a numeric scalar or column" },
+      { "name": "base", "description": "a numeric scalar or column" }
+    ],
+    "keywords": ["logarithm"],
+    "description": "Returns the logarithm with base of number"
   },
   {
     "id": "log2",
+    "intercom_id": "h_248a774ec0",
     "name": "log2",
     "categories": ["math"],
-    "arguments": ["value"],
-    "description": "Logarithm with base 2"
+    "arguments": [{ "name": "number", "description": "a number scalar or column" }],
+    "keywords": ["logarithm"],
+    "description": "Returns the logarithm with base 2 of number"
   },
   {
     "id": "log10",
+    "intercom_id": "h_d67c30672e",
     "name": "log10",
     "categories": ["math"],
-    "arguments": ["value"],
-    "description": "Logarithm with base 10"
+    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
+    "keywords": ["logarithm"],
+    "description": "Returns the logarithm with base 10 of number"
   },
   {
     "id": "lower",
+    "intercom_id": "h_88a7224048",
     "name": "lower",
     "categories": ["text"],
-    "arguments": ["text"],
-    "description": "Text to lowercase"
+    "arguments": [{ "name": "text", "description": "a text scalar or column" }],
+    "keywords": ["case"],
+    "description": "Turns text to lowercase"
   },
   {
     "id": "lpad",
+    "intercom_id": "h_7f2130d336",
     "name": "lpad",
     "categories": ["text"],
-    "arguments": ["text", "length", "*fillchar"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      {
+        "name": "length",
+        "description": "a numeric scalar or column indicating the length of the resulting text"
+      },
+      { "name": "fillchar", "description": "a text scalar or column", "optional": true }
+    ],
+    "keywords": [],
     "description": "Returns string of given length by truncating (on left) or padding (on left) original string"
   },
   {
     "id": "lstrip",
-    "name": "lstrip",
+    "intercom_id": "h_9375298f89",
+    "name": "ltrim",
     "categories": ["text"],
-    "arguments": ["text"],
+    "arguments": [{ "name": "text", "description": "a text scalar or column" }],
+    "keywords": ["whitespace", "strip"],
     "description": "Remove white space on the left of text"
   },
   {
     "id": "millisecond",
+    "intercom_id": "h_f8eaa41e09",
     "name": "millisecond",
     "categories": ["time & date"],
-    "arguments": ["time"],
+    "arguments": [{ "name": "time", "description": "a time scalar or column" }],
+    "keywords": [],
     "description": "Get the milliseconds from date or timestamp"
   },
   {
     "id": "minute",
+    "intercom_id": "h_309f0a510a",
     "name": "minute",
     "categories": ["time & date"],
-    "arguments": ["time"],
+    "arguments": [{ "name": "time", "description": "a time scalar or column" }],
+    "keywords": [],
     "description": "Get the minute from date or timestamp"
   },
   {
     "id": "month",
+    "intercom_id": "h_e51b2b6d85",
     "name": "month",
     "categories": ["time & date"],
-    "arguments": ["date"],
+    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
+    "keywords": [],
     "description": "Get the month from date or timestamp"
   },
   {
     "id": "mul",
-    "name": "mul",
+    "intercom_id": "h_45c7e37d25",
+    "name": "product",
     "categories": ["math"],
-    "arguments": ["factor", "factor"],
-    "description": "Multiply values"
+    "arguments": [
+      { "name": "x", "description": "a numeric scalar or column" },
+      { "name": "y", "description": "a numeric scalar or column" }
+    ],
+    "keywords": ["multiply"],
+    "description": "Multiply x and y"
   },
   {
     "id": "notnull",
+    "intercom_id": "h_8505fc49ac",
     "name": "notnull",
     "categories": ["generic"],
-    "arguments": ["value"],
-    "description": "Check whether a value is null"
+    "arguments": [{ "name": "value", "description": "a scalar or column" }],
+    "keywords": [],
+    "description": "Check whether value is null"
   },
   {
     "id": "pow",
-    "name": "pow",
+    "intercom_id": "h_4fd230d9c0",
+    "name": "power",
     "categories": ["math"],
-    "arguments": ["value", "power"],
-    "description": "Calculate the power of a value"
+    "arguments": [
+      { "name": "number", "description": "a numeric scalar or column" },
+      { "name": "exponent", "description": "a numeric scalar or column" }
+    ],
+    "keywords": ["exponential"],
+    "description": "Calculate the number to the power of exponent"
   },
   {
     "id": "re_extract",
-    "name": "re_extract",
+    "intercom_id": "h_acd3aae983",
+    "name": "regex_extract",
     "categories": ["text"],
-    "arguments": ["text", "pattern", "index"],
-    "description": "Returns specified index, 0 indexed, from string based on regex pattern given"
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "pattern", "description": "a text scalar or column" },
+      { "name": "index", "description": "a numeric scalar or column" }
+    ],
+    "keywords": ["regex"],
+    "description": "Returns specified index, 0 indexed, from text based on regex pattern given"
   },
   {
     "id": "re_replace",
-    "name": "re_replace",
+    "intercom_id": "h_80b1f649c3",
+    "name": "regex_replace",
     "categories": ["text"],
-    "arguments": ["text", "pattern", "relacement"],
-    "description": "Replaces match found by regex with replacement string."
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "pattern", "description": "a text scalar or column that is being replaced by " },
+      {
+        "name": "replace",
+        "description": "a text scalar or column that replaces the pattern in text"
+      }
+    ],
+    "keywords": ["regex"],
+    "description": "Replaces match found in text by regex pattern with replace text."
   },
   {
     "id": "re_search",
-    "name": "re_search",
+    "intercom_id": "h_e38cac0f36",
+    "name": "regex_search",
     "categories": ["text"],
-    "arguments": ["text", "pattern"],
-    "description": "Search string values using a regular expression."
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "pattern", "description": "a text scalar or column" }
+    ],
+    "keywords": ["regex"],
+    "description": "Search regex pattern in text"
   },
   {
     "id": "repeat",
+    "intercom_id": "h_de740e93f3",
     "name": "repeat",
     "categories": ["text"],
-    "arguments": ["text", "n"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "n", "description": "a numeric scalar or column" }
+    ],
+    "keywords": [],
     "description": "Repeat text n times"
   },
   {
     "id": "replace",
+    "intercom_id": "h_043e71460a",
     "name": "replace",
     "categories": ["text"],
-    "arguments": ["text", "pattern", "replacement"],
-    "description": "Replaces each exactly occurrence of pattern with given replacement string."
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "pattern", "description": "a text scalar or column" },
+      {
+        "name": "replace",
+        "description": "a text scalar or column that replaces the pattern in text"
+      }
+    ],
+    "keywords": [],
+    "description": "Replaces each exact occurrence of pattern in text with replace"
   },
   {
     "id": "reverse",
+    "intercom_id": "h_1b50caf2e5",
     "name": "reverse",
     "categories": ["text"],
-    "arguments": ["text"],
-    "description": "Reverse text order"
+    "arguments": [{ "name": "text", "description": "a text scalar or column" }],
+    "keywords": ["inverse"],
+    "description": "Reverse text character order"
   },
   {
     "id": "right",
+    "intercom_id": "h_4186981a30",
     "name": "right",
     "categories": ["text"],
-    "arguments": ["text", "nchars"],
-    "description": "Return up to n characters starting from end of each text."
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      {
+        "name": "nchars",
+        "description": "a numeric scalar or column indicating the number of characters from right that are returned"
+      }
+    ],
+    "keywords": ["reduce"],
+    "description": "Return up to nchar characters starting from end of each text."
   },
   {
     "id": "round",
+    "intercom_id": "h_b4595a5fc8",
     "name": "round",
     "categories": ["math"],
-    "arguments": ["value", "digits"],
-    "description": "Round value to n decimal"
+    "arguments": [
+      { "name": "number", "description": "a numeric scalar or column" },
+      { "name": "digits", "description": "an integer scalar or column" }
+    ],
+    "keywords": [],
+    "description": "Round number to digit decimal positon"
   },
   {
     "id": "rpad",
+    "intercom_id": "h_70e8240209",
     "name": "rpad",
     "categories": ["text"],
-    "arguments": ["text", "length", "*fillchar"],
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "length", "description": "a numeric scalar or column" },
+      { "name": "fillchar", "description": "a numeric scalar or column", "optional": true }
+    ],
+    "keywords": [],
     "description": "Returns string of given length by truncating (on right) or padding (on right) original string"
   },
   {
     "id": "rstrip",
-    "name": "rstrip",
+    "intercom_id": "h_e90bfd8892",
+    "name": "rtrim",
     "categories": ["text"],
-    "arguments": ["text"],
+    "arguments": [{ "name": "text", "description": "a text scalar or column" }],
+    "keywords": ["strip"],
     "description": "Remove white space on the right of text"
   },
   {
     "id": "second",
+    "intercom_id": "h_80a157991d",
     "name": "second",
     "categories": ["time & date"],
-    "arguments": ["time"],
+    "arguments": [{ "name": "time", "description": "a time scalar or column" }],
+    "keywords": [],
     "description": "Get the seconds from time or timestamp"
   },
   {
     "id": "sqrt",
+    "intercom_id": "h_5658fd9ed4",
     "name": "sqrt",
     "categories": ["math"],
-    "arguments": ["value"],
+    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
+    "keywords": ["root"],
     "description": "Calculate the square root"
   },
   {
     "id": "strftime",
-    "name": "strftime",
+    "intercom_id": "h_eb1e5b2670",
+    "name": "format_datetime",
     "categories": ["time & date"],
-    "arguments": ["datetime", "format"],
+    "arguments": [
+      { "name": "datetime", "description": "a datetime scalar or column" },
+      { "name": "format", "description": "determines how the resulting text is formatted" }
+    ],
+    "keywords": ["strftime"],
     "description": "Format timestamp into string with given format"
   },
   {
     "id": "strip",
-    "name": "strip",
+    "intercom_id": "h_91d62a622b",
+    "name": "trim",
     "categories": ["text"],
-    "arguments": ["text"],
+    "arguments": [{ "name": "text", "description": "a text scalar or column" }],
+    "keywords": ["strip"],
     "description": "Remove white space surrounding the text"
   },
   {
     "id": "sub",
-    "name": "sub",
+    "intercom_id": "h_bf1a4024eb",
+    "name": "subtract",
     "categories": ["math"],
-    "arguments": ["minuend", "subtrahend"],
-    "description": "Substract value from value"
+    "arguments": [
+      { "name": "minuend", "description": "a numeric scalar or column" },
+      { "name": "subtrahend", "description": "a numeric scalar or column" }
+    ],
+    "keywords": ["minus"],
+    "description": "Substract subtrahend from minuend"
   },
   {
     "id": "substitute",
+    "intercom_id": "h_07e6681d0f",
     "name": "substitute",
     "categories": ["text"],
-    "arguments": ["text", "value", "*replace", "*else"],
-    "description": "Replace one or more values"
+    "arguments": [
+      { "name": "text", "description": "a text scalar or column" },
+      { "name": "pattern", "description": "a text scalar or column" },
+      { "name": "replace", "description": "a text scalar or column", "optional": true },
+      { "name": "else", "description": "a text scalar or column", "optional": true }
+    ],
+    "keywords": ["replace"],
+    "description": "Replace text if with replace if pattern is equal to text optional replace with else"
   },
   {
     "id": "time",
+    "intercom_id": "h_e881b3e3c5",
     "name": "time",
     "categories": ["time & date"],
-    "arguments": ["datetime"],
+    "arguments": [{ "name": "datetime", "description": "a datetime scalar or column" }],
+    "keywords": [],
     "description": "Get the time from a timestamp"
   },
   {
     "id": "to_timestamp",
+    "intercom_id": "h_44a8714f2e",
     "name": "datetime_seconds",
     "categories": ["time & date"],
-    "arguments": ["integer", "unit"],
-    "description": "Create a datetime from an integer as the number of seconds from January 1st, 1970 UTC (unix time)"
+    "arguments": [
+      { "name": "seconds", "description": "an integer scalar or column" },
+      {
+        "name": "unit",
+        "description": "\"s\" for seconds, \"ms\" for milliseconds, \"us\" for microseconds "
+      }
+    ],
+    "keywords": [],
+    "description": "Create a datetime from an integer as the number of unit since from January 1st, 1970 UTC (unix time)"
   },
   {
     "id": "timestamp_diff",
+    "intercom_id": "h_ecd429d987",
     "name": "datetime_diff",
     "categories": ["time & date"],
-    "arguments": ["datetime", "datetime", "unit"],
-    "description": "Get the difference between two datetimes in a given unit"
+    "arguments": [
+      { "name": "minuend", "description": "a datetime scalar or column" },
+      { "name": "subtrahend", "description": "a datetime scalar or column" },
+      { "name": "unit", "description": "unit of the difference e.g. \"s\" for seconds" }
+    ],
+    "keywords": [],
+    "description": "Get the difference between minuend and subtrahend in the given unit"
   },
   {
     "id": "truncate",
+    "intercom_id": "h_3ddcff9d5b",
     "name": "truncate",
     "categories": ["time & date"],
-    "arguments": ["datetime", "unit"],
+    "arguments": [
+      { "name": "datetime", "description": "a datetime scalar or column" },
+      { "name": "unit", "description": "unit e.g. \"s\" for seconds" }
+    ],
+    "keywords": [],
     "description": "Zero out smaller-size units beyond indicated unit"
   },
   {
     "id": "upper",
+    "intercom_id": "h_34f98b5e4f",
     "name": "upper",
     "categories": ["text"],
-    "arguments": ["text"],
+    "arguments": [{ "name": "text", "description": "a text scalar or column" }],
+    "keywords": [],
     "description": "Capitalize text."
   },
   {
     "id": "year",
+    "intercom_id": "h_c5181a0592",
     "name": "year",
     "categories": ["time & date"],
-    "arguments": ["date"],
+    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
+    "keywords": [],
     "description": "Get the year from date"
   }
 ]

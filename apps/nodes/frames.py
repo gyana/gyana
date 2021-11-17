@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
-from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
 from ibis.expr.types import ScalarExpr
 
 from apps.base.analytics import (
@@ -130,7 +130,7 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["show_docs"] = self.request.GET.get("show_docs", False) == "true"
-        context["preview_node_id"] = self.preview_node.id
+        context["preview_node"] = self.preview_node
         # Node-specific documentation
         if self.object.kind == Node.Kind.FORMULA:
             context["help_template"] = "nodes/help/formula.html"
@@ -210,7 +210,11 @@ FUNCTIONS = [{**f, "icon": ICONS[f["categories"][0]]} for f in FUNCTIONS]
 
 def filter_functions(function, q, category):
     is_category = category == "all" or category in function["categories"]
-    is_fuzzy = not q or fuzz.token_sort_ratio(function["name"], q.lower()) > 40
+    is_fuzzy = (
+        not q
+        or process.extractOne(q.lower(), [function["name"], *function["keywords"]])[1]
+        > 60
+    )
     return is_fuzzy and is_category
 
 

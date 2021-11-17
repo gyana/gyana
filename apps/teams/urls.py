@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.urls import path
+from django.urls import include, path
 
 from . import views
 from .access import login_and_admin_required, login_and_team_required
@@ -25,6 +25,19 @@ membership_urlpatterns = (
         ),
     ],
     "team_members",
+)
+
+paddle_urlpatterns = (
+    [
+        # https://github.com/pennersr/django-allauth/issues/1109
+        path(
+            "post-checkout/",
+            views.PaddlePostCheckoutApiView.as_view(),
+            name="post_checkout_api",
+        ),
+        path("", include("djpaddle.urls")),
+    ],
+    "djpaddle",
 )
 
 urlpatterns = [

@@ -22,16 +22,26 @@
     padding: 1.6rem;
     border-top: 1px solid var(--c-gray);
 
-    transition: bottom 300ms;
+    transition: bottom 500ms;
 
     &.closed {
       display: none;
       bottom: -18rem;
     }
 
-    em {
-      color: var(--c-black-20);
+    .description {
+      margin-top: 0.8rem;
+      display: block;
     }
+  }
+
+  em {
+    color: var(--c-black-20);
+  }
+
+  ul {
+    list-style-type: disc;
+    padding-left: 2rem;
   }
 }
 

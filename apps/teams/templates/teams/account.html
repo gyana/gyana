@@ -101,29 +101,39 @@
       {% if team.has_subscription %}
       <h2>Billing</h2>
 
+      {% if team.active_subscription.status == 'deleted' %}
+        <p class="alert">
+          You've cancelled your subscription, and you will lose access to your plan on <strong>{{ team.active_subscription.next_bill_date|date:'M d, Y'}}</strong>.
+        </p>
+      {% endif %}
+
       <div class="account__plan card card--none">
         <table class="table">
           <tbody>
-            <tr>
-              <td><h3>Next renewal on</h3></td>
-              <td>
-                <p>{{ team.active_subscription.next_bill_date|date:'M d, Y' }}</p>
-              </td>
-            </tr>
+            {% if team.active_subscription.status == 'active' %}
+              <tr>
+                <td><h3>Next renewal on</h3></td>
+                <td>
+                  <p>{{ team.active_subscription.next_bill_date|date:'M d, Y' }}</p>
+                </td>
+              </tr>
+            {% endif %}
             <tr>
               <td><h3>Invoices sent to</h3></td>
               <td>
                 <p>{{ team.active_subscription.email }}</p>
               </td>
             </tr>
-            <tr>
-              <td>
-                <a href="{% url 'teams:subscription' team.id %}" class="link" data-turbo="false">
-                  Manage Subscription
-                </a>
-              </td>
-              <td></td>
-            </tr>
+            {% if team.active_subscription.status == 'active' %}
+              <tr>
+                <td>
+                  <a href="{% url 'teams:subscription' team.id %}" class="link" data-turbo="false">
+                    Manage Subscription
+                  </a>
+                </td>
+                <td></td>
+              </tr>
+            {% endif %}
             <tr>
               <td>
                 <a href="{% url 'teams:payments' team.id %}" class="link" data-turbo="false">
@@ -132,14 +142,16 @@
               </td>
               <td></td>
             </tr>
-            <tr>
-              <td>
-                <a href="{{ team.active_subscription.update_url }}" class="link" data-turbo="false">
-                  Update Payment Method
-                </a>
-              </td>
-              <td></td>
-            </tr>
+            {% if self.active_subscription.status == 'active' %}
+              <tr>
+                <td>
+                  <a href="{{ team.active_subscription.update_url }}" class="link" data-turbo="false">
+                    Update Payment Method
+                  </a>
+                </td>
+                <td></td>
+              </tr>
+            {% endif %}
           </tbody>
         </table>
       </div>

@@ -3,12 +3,13 @@ import functools
 import ibis.expr.datatypes as dt
 from django.core.cache import cache
 from django.template.loader import get_template
-from django_tables2 import Column, Table
+from django_tables2 import A, Column, Table
 from django_tables2.config import RequestConfig as BaseRequestConfig
 from django_tables2.data import TableData
 from django_tables2.templatetags.django_tables2 import QuerystringNode
 
 from apps.base import clients
+from apps.base.utils import md5
 
 # Monkey patch the querystring templatetag for the pagination links
 # Without this links only lead to the whole document url and add query parameter
@@ -64,8 +65,8 @@ class BigQueryTableData(TableData):
     def __getitem__(self, page: slice):
         """Fetches the data for the current page"""
         if not self._page_selected:
-            return self._get_query_results().rows_dict[: page.stop - page.start]
-        return self._get_query_results(page.start, page.stop).rows_dict
+            return self._get_query_results().rows_dict_by_md5[: page.stop - page.start]
+        return self._get_query_results(page.start, page.stop).rows_dict_by_md5
 
     def __len__(self):
         """Fetches the total size from BigQuery"""
@@ -124,7 +125,7 @@ def get_table(schema, query, **kwargs):
     """
     # Inspired by https://stackoverflow.com/questions/16696066/django-tables2-dynamically-adding-columns-to-table-not-adding-attrs-to-table
     attrs = {
-        name: BigQueryColumn(
+        md5(name): BigQueryColumn(
             empty_values=(),
             verbose_name=name,
             attrs={"th": {"class": get_type_class(type_)}},

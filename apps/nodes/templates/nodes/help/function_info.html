@@ -1,9 +1,25 @@
+{% load formula_utils %}
+
+
 <div class='function-info'>
-  <h4>
+  
+  <h3>
     <i class="fa {{ function.icon }} text-blue"></i>
-    {{function.name}}(<em>
-      {{ function.arguments|join:", " }}
-    </em>)
-  </h4>
-  <span>{{ function.description }}</span>
+    {{function.name}}(
+      <em>{% include 'nodes/help/_arguments.html' with arguments=function.arguments %}</em>
+      )
+    <a class="ml-auto" href="{% link_function function.intercom_id%}">
+      <i class="fa fa-external-link fa-sm text-black-50"></i>
+    </a>
+  </h3>
+  <span class='description'>{{ function.description }}</span>
+
+  <h4 class='my-2'>Arguments</h4>
+  <ul>
+  {% for argument in function.arguments %}
+
+  <li><i>{{argument.name}}:</i> {{argument.description}}</li>
+
+  {% endfor %}
+  </ul>
 </div>

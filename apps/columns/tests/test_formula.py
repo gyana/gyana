@@ -1,5 +1,6 @@
 import ibis_bigquery
 import pytest
+
 from apps.base.tests.mock_data import TABLE
 from apps.columns.bigquery import compile_formula
 
@@ -44,32 +45,32 @@ def create_extract_unary_param(func_name, sql_name=None):
         pytest.param(
             "isnull(athlete)",
             QUERY.format("`athlete` IS NULL"),
-            id="is null",
+            id="isnull",
         ),
         pytest.param(
             "notnull(stars)",
             QUERY.format("`stars` IS NOT NULL"),
-            id="not null",
+            id="notnull",
         ),
         pytest.param(
-            'fillna(athlete, "Usain Bolt")',
+            'fillnull(athlete, "Usain Bolt")',
             QUERY.format("IFNULL(`athlete`, 'Usain Bolt')"),
-            id="fill NA",
+            id="fillnull",
         ),
         pytest.param(
-            'cast(medals, "float")',
+            'convert(medals, "float")',
             QUERY.format("CAST(`medals` AS FLOAT64)"),
-            id="cast int to float",
+            id="convert int to float",
         ),
         pytest.param(
-            'cast(athlete, "timestamp")',
+            'convert(athlete, "timestamp")',
             QUERY.format("CAST(`athlete` AS TIMESTAMP)"),
-            id="cast string to datetime",
+            id="convert string to datetime",
         ),
         pytest.param(
-            'cast(birthday, "str")',
+            'convert(birthday, "str")',
             QUERY.format("CAST(`birthday` AS STRING)"),
-            id="cast date to string",
+            id="convert date to string",
         ),
         pytest.param(
             "coalesce(id, medals, stars)",
@@ -119,9 +120,9 @@ def create_extract_unary_param(func_name, sql_name=None):
         create_str_unary_param("upper"),
         create_str_unary_param("length"),
         create_str_unary_param("reverse"),
-        create_str_unary_param("strip", "trim"),
-        create_str_unary_param("lstrip", "ltrim"),
-        create_str_unary_param("rstrip", "rtrim"),
+        create_str_unary_param("trim"),
+        create_str_unary_param("ltrim"),
+        create_str_unary_param("rtrim"),
         pytest.param(
             "rpad(athlete,3)",
             QUERY.format("rpad(`athlete`, 3, ' ')"),
@@ -149,19 +150,19 @@ def create_extract_unary_param(func_name, sql_name=None):
             id="repeat",
         ),
         pytest.param(
-            're_extract(athlete, "ough", 2)',
+            'regex_extract(athlete, "ough", 2)',
             QUERY.format("REGEXP_EXTRACT_ALL(`athlete`, r'ough')[SAFE_OFFSET(2)]"),
-            id="re_extract",
+            id="regex_extract",
         ),
         pytest.param(
-            're_replace(athlete, "ough", "uff")',
+            'regex_replace(athlete, "ough", "uff")',
             QUERY.format("REGEXP_REPLACE(`athlete`, r'ough', 'uff')"),
-            id="re_replace",
+            id="regex_replace",
         ),
         pytest.param(
-            're_search(athlete, "Will.*")',
+            'regex_search(athlete, "Will.*")',
             QUERY.format("REGEXP_CONTAINS(`athlete`, r'Will.*')"),
-            id="re_search",
+            id="regex_search",
         ),
         pytest.param(
             'replace(athlete, "ough", "uff")',
@@ -200,7 +201,7 @@ def create_extract_unary_param(func_name, sql_name=None):
             QUERY.format("`medals` BETWEEN 2 AND 10"),
             id="between integer column",
         ),
-        create_int_unary_param("ceil"),
+        create_int_unary_param("ceiling", "ceil"),
         pytest.param(
             "divide(medals, stars)",
             QUERY.format("IEEE_DIVIDE(`medals`, `stars`)"),
@@ -231,7 +232,7 @@ def create_extract_unary_param(func_name, sql_name=None):
         ),
         create_int_unary_param("log10"),
         pytest.param(
-            "mul(stars, medals)",
+            "product(stars, medals)",
             QUERY.format("`stars` * `medals`"),
             id="multiply int and float column",
         ),
@@ -246,12 +247,12 @@ def create_extract_unary_param(func_name, sql_name=None):
             id="multiply float column and int scalar",
         ),
         pytest.param(
-            "pow(stars, medals)",
+            "power(stars, medals)",
             QUERY.format("pow(`stars`, `medals`)"),
             id="float column to the power of int column",
         ),
         pytest.param(
-            "sub(stars, medals)",
+            "subtract(stars, medals)",
             QUERY.format("`stars` - `medals`"),
             id="subtract int column from float column",
         ),
@@ -287,9 +288,9 @@ def create_extract_unary_param(func_name, sql_name=None):
             id="between date column",
         ),
         pytest.param(
-            'strftime(updated,"%d-%m")',
+            'format_datetime(updated,"%d-%m")',
             QUERY.format("FORMAT_TIMESTAMP('%d-%m', `updated`, 'UTC')"),
-            id="strftime",
+            id="format_datetime",
         ),
         pytest.param(
             'truncate(updated, "ms")',
@@ -354,8 +355,33 @@ def create_extract_unary_param(func_name, sql_name=None):
             ),
             id="nest ifelse with datetime function",
         ),
+        pytest.param(
+            'regex_extract(\'{"id": "1234", "name": "John"}\', \'{"id": "(.*?)",\', 0)',
+            'SELECT REGEXP_EXTRACT_ALL(\'{"id": "1234", "name": "John"}\', r\'{"id": "(.*?)",\')[SAFE_OFFSET(0)] AS `tmp`',
+            id="regex_extract with quote nesting",
+        ),
     ],
 )
 def test_formula(formula, expected_sql):
     sql = ibis_bigquery.compile(compile_formula(TABLE, formula))
     assert sql == expected_sql
+
+
+@pytest.mark.parametrize(
+    "formula, expected",
+    [
+        pytest.param(
+            '"erratum humanum est"',
+            "erratum humanum est",
+            id="strings with double quotes",
+        ),
+        pytest.param(
+            "'erratum humanum est'",
+            "erratum humanum est",
+            id="strings with single quotes",
+        ),
+    ],
+)
+def test_string(formula, expected):
+    result = compile_formula(TABLE, formula)
+    assert result == expected
