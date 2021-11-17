@@ -1,9 +1,9 @@
 from datetime import datetime
 
+from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.functional import cached_property
 
 from apps.base import clients
@@ -17,7 +17,7 @@ FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
 FIVETRAN_SYNC_FREQUENCY_HOURS = 6
 
 
-class Connector(BaseModel):
+class Connector(DirtyFieldsMixin, BaseModel):
     class ScheduleType(models.TextChoices):
         AUTO = "auto", "Auto"
         MANUAL = "manual", "Manual"
@@ -242,8 +242,8 @@ class Connector(BaseModel):
         for data in clients.fivetran().list():
             connector = connectors_dict[data["id"]]
             connector.sync_updates_from_fivetran(data)
-
-        Connector.objects.bulk_update(connectors)
+            if connector.is_dirty():
+                connector.save()
 
     def sync_updates_from_fivetran(self, data=None):
         from apps.connectors.sync import end_connector_sync
