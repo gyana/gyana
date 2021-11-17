@@ -61,6 +61,10 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
         return next_sync_time_utc.replace(minute=0)
 
     @property
+    def truncated_daily_schedule_time(self):
+        return self.next_daily_sync.astimezone(self.team.timezone).time()
+
+    @property
     def next_sync_time_utc_string(self):
         return self.next_daily_sync.strftime("%H:%M")
 
