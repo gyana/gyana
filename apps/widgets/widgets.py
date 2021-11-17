@@ -41,7 +41,7 @@ class VisualSelect(ChoiceWidget):
             {
                 "id": choice.value,
                 "name": choice.label,
-                "icon": WIDGET_KIND_TO_WEB[choice.value],
+                "icon": WIDGET_KIND_TO_WEB[choice.value][0],
                 "maxMetrics": MAX_NUMS.get(choice.value) or -1,
             }
             for choice in Widget.Kind
