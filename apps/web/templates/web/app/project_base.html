@@ -112,7 +112,6 @@
   data-controller="dropzone"
   data-sheets-url="{% url 'project_integrations_sheets:create' project.id %}"
 >
-  {% include 'web/components/projects_nav.html' %}
   <section class="flex flex-col flex-1 overflow-auto {% block app-class %}{% endblock %}">
     {% block app %}{% endblock %}
   </section>

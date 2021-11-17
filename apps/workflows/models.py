@@ -1,3 +1,5 @@
+from functools import cached_property
+
 from django.db import models
 from django.urls import reverse
 from model_clone import CloneMixin
@@ -34,3 +36,6 @@ class Workflow(CloneMixin, BaseModel):
             input_node.input_table.data_updated for input_node in input_nodes
         )
         return self.last_run < max(self.data_updated, latest_input_update)
+
+    def icon(self):
+        return "fa-sitemap"

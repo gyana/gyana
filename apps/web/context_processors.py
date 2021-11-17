@@ -6,9 +6,8 @@ from .meta import absolute_url
 
 
 def user_meta(request):
-    return {
-        "sidebar_collapsed": request.session.get("sidebar_collapsed", False)
-    }
+    return {}
+
 
 def project_meta(request):
     # modify these values as needed and add whatever else you want globally available here

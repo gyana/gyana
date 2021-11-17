@@ -8,8 +8,6 @@ app_name = "web"
 
 urlpatterns = [
     path("", views.home, name="home"),
-    path("toggle-sidebar", views.toggle_sidebar),
-
     # Trubo frames
     path("help", frames.HelpModal.as_view(), name="help"),
 ]

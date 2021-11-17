@@ -4,24 +4,25 @@
 
 {% block banner %}
   {% if team and team.warning %}
-    <div class="banner banner--warning">
-      <p>
-        You're exceeding your row count limit.
-        <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i></a>
-      </p>
-    </div>
+  <div class="banner banner--warning">
+    <p>
+      You're exceeding your row count limit.
+      <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i></a>
+    </p>
+  </div>
   {% endif %}
 
   {% if team and not team.enabled %}
-    <div class="banner banner--danger">
-      <p>
-        You've exceeded your row count limit by over 20%, your team is
-        temporarily disabled. <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i></a>
-      </p>
-    </div>
+  <div class="banner banner--danger">
+    <p>
+      You've exceeded your row count limit by over 20%, your team is
+      temporarily disabled. <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i></a>
+    </p>
+  </div>
   {% endif %}
 {% endblock %}
 
+{% comment %} 
 {% block secondary_sidebar %}
 <div class="sidebar">
   <div class="sidebar__body">
@@ -50,23 +51,71 @@
     </li> 
   </div>
 </div>
-{% endblock %}
+{% endblock %} {% endcomment %}
 
 {% block sidebar_content %}
-<li>
-  <a id="heading" class="sidebar__link" href="">
-    {% if team.icon %}<img src="{{ team.icon.url }}" />{% else %}<span class="team_logo">{{ team.name|slice:1 }}</span>{% endif %}
-    <strong class="h3">
-      {{ team.name }}
-    </strong>
-  </a>
-</li>
+<div class="sidebar__header">
+  <div class="flex-1" data-controller="tf-modal">
+    <a
+      id="heading"
+      data-action="click->tf-modal#open"
+      data-src="{% url 'teams:list' %}"
+    >
+      {% if team.icon %}
+      <img src="{{ team.icon.url }}" />
+      {% else %}
+      <span class="team_logo">{{ team.name|slice:1 }}</span>
+      {% endif %}
 
-<li><hr></li>
+      <span>{{ team.name }}</span>
+    </a>
 
-<li class="sidebar__link">
-  Projects
-</li>
+    <div data-tf-modal-target="modal" class="tf-modal tf-modal--auto hidden">
+      <div class="card card--none card--modal flex-col flex-1 overflow-auto">
+        <turbo-frame 
+          id="teams:list"
+          data-tf-modal-target="turboFrame"
+        ></turbo-frame>
+      </div>
+    </div>
+  </div>
+
+  <div data-controller="tf-modal">
+    <a
+      id="heading"
+      data-action="click->tf-modal#open"
+      data-src="{% url 'users:profile' %}"
+    >
+      <img src="{{ user.avatar_url }}" />
+    </a>
+
+    <div data-tf-modal-target="modal" class="tf-modal tf-modal--auto hidden">
+      <div class="card card--none card--modal flex-col flex-1 overflow-auto">
+        <turbo-frame 
+          id="users:profile"
+          data-tf-modal-target="turboFrame"
+        ></turbo-frame>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if team.recent_objects|length %}
+<h4 class="sidebar__title">Recent</h4>
+
+  {% for object in project.recent_objects %}
+  <li>
+    <a
+      class="sidebar__link {% if request.path == object.get_absolute_url %}sidebar__link--active{% endif %}"
+      href="{{ object.get_absolute_url }}"
+    >
+      <i class="far fa-fw {{ object.icon }}"></i>{{ object.name }}
+    </a>
+  </li>
+  {% endfor %}
+{% endif %}
+
+<h4 class="sidebar__title">Projects</h4>
 
 {% for project in team.project_set.all %}
 <li>
@@ -76,41 +125,47 @@
   >
     <i class="far fa-fw fa-folders"></i>{{ project.name }}
   </a>
-</li>
-{% endfor %}
 
-<li class="sidebar__link">
-  Team
-</li>
-
-{% if request.user|is_admin_of:team %}
-<li>
+  {% if request.resolver_match.kwargs.project_id == project.id %}
   <a
-    class="sidebar__link {% if request.resolver_match.view_name == 'team_members:list' %}sidebar__link--active{% endif %}"
-    href="{% url 'team_members:list' team.id %}"
+    class="sidebar__link {% if 'project_integrations' in request.resolver_match.app_name %}sidebar__link--active{% endif %}"
+    href="{% url 'project_integrations:list' project.id %}"
   >
-    <i class="far fa-fw fa-users"></i>Members
+    <i class="far fa-fw fa-database"></i>Integrations
   </a>
-</li>
 
-<li>
   <a
-    class="sidebar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name in 'account,subscription,plan,checkout' %}sidebar__link--active{% endif %}"
-    href="{% url 'teams:account' team.id %}"
+    class="sidebar__link {% if request.resolver_match.app_name == 'project_workflows' %}sidebar__link--active{% endif %}"
+    href="{% url 'project_workflows:list' project.id %}"
   >
-    <i class="far fa-fw fa-wallet"></i>Billing
+    <i class="far fa-fw fa-sitemap"></i>Workflows
   </a>
-</li>
 
-<li>
   <a
-    class="sidebar__link {% if request.resolver_match.view_name == 'teams:update' %}sidebar__link--active{% endif %}"
-    href="{% url 'teams:update' team.id %}"
+    class="sidebar__link {% if request.resolver_match.app_name == 'project_dashboards' %}sidebar__link--active{% endif %}"
+    href="{% url 'project_dashboards:list' project.id %}"
+  >
+    <i class="far fa-fw fa-chart-pie"></i>Dashboards
+  </a>
+
+  <a
+    class="sidebar__link {% if request.resolver_match.view_name == 'projects:update' %}sidebar__link--active{% endif %}"
+    href="{% url 'projects:update' project.id %}"
   >
     <i class="far fa-fw fa-cog"></i>Settings
   </a>
+  {% endif %}
 </li>
-{% endif %}
+{% endfor %}
+
+<li>
+  <a
+    class="sidebar__link {% if request.resolver_match.view_name == 'team_projects:create' %}sidebar__link--active{% endif %}"
+    href="{% url 'team_projects:create' team.id %}"
+  >
+    <i class="far fa-fw fa-plus"></i>New project
+  </a>
+</li>
 {% endblock %}
 
 {% block body %}

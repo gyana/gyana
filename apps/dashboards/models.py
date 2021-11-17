@@ -1,3 +1,5 @@
+from functools import cached_property
+
 from django.conf import settings
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import (
@@ -100,6 +102,9 @@ class Dashboard(CloneMixin, BaseModel):
         Return False if set_unusable_password() has been called for this user.
         """
         return is_password_usable(self.password)
+
+    def icon(self):
+        return "fa-chart-pie"
 
     @property
     def public_url(self):

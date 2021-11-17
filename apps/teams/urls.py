@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
-from . import views
+from . import frames, views
 from .access import login_and_admin_required, login_and_team_required
 
 app_name = "teams"
@@ -75,4 +75,6 @@ urlpatterns = [
         login_and_admin_required(views.TeamAccount.as_view()),
         name="account",
     ),
+    # Turbo frames
+    path("", login_required(frames.TeamListModal.as_view()), name="list"),
 ]

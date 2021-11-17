@@ -1,6 +1,7 @@
 import django_tables2 as tables
-from apps.integrations.tables import PendingStatusColumn
 from django_tables2.utils import A
+
+from apps.integrations.tables import PendingStatusColumn
 
 from .models import Template, TemplateInstance, TemplateIntegration
 
@@ -42,7 +43,7 @@ class TemplateIntegrationTable(tables.Table):
     action = tables.TemplateColumn(
         """
         {% if record.target_integration is not None %}
-            <a class="link" href="{{ record.target_integration.get_absolute_url }}" data-turbo-frame="_top"> Edit </a>
+            <a class="link" href="{{ record.target_integration.url }}" data-turbo-frame="_top"> Edit </a>
         {% else %}
              <a class="link" href="{% url 'project_integrations_connectors:create' table.project.id %}?service={{ record.source_integration.connector.service }}" data-turbo-frame="_top"> Connect </a>
         {% endif %}

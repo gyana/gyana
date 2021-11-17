@@ -1,7 +1,8 @@
 from functools import cached_property
 
-from apps.projects.mixins import ProjectMixin
 from django.shortcuts import redirect
+
+from apps.projects.mixins import ProjectMixin
 
 from .models import Integration
 

@@ -1,12 +1,14 @@
 from functools import cached_property
+from itertools import chain
 
-from apps.base.models import BaseModel
-from apps.cnames.models import CName
-from apps.teams.models import Team
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from model_clone.mixins.clone import CloneMixin
+
+from apps.base.models import BaseModel
+from apps.cnames.models import CName
+from apps.teams.models import Team
 
 
 class Project(CloneMixin, BaseModel):
@@ -56,6 +58,17 @@ class Project(CloneMixin, BaseModel):
     @property
     def has_pending_templates(self):
         return self.templateinstance_set.filter(completed=False).count() != 0
+
+    @property
+    def recent_objects(self):
+        workflows = self.workflow_set.filter()
+        dashboards = self.dashboard_set.filter()
+
+        recent_items = sorted(
+            chain(workflows, dashboards), key=lambda item: item.created, reverse=True
+        )
+
+        return recent_items[:2]
 
     @cached_property
     def num_rows(self):
