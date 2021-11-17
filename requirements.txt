@@ -37,6 +37,7 @@ django-safedelete==1.1.0
 django-silk @ git+https://github.com/jazzband/django-silk@21a4058c2a758fac687f837cb523175c64c567c3 ; python_version >= "3.6"
 django-storages==1.12.3; python_version >= "3.5"
 django-tables2==2.4.0
+django-timezone-field==4.2.1; python_version >= "3.5"
 django-turbo-allauth==0.0.9; python_version >= "3.8"
 django-turbo-response==0.0.48; python_version >= "3.8"
 django-waffle==2.2.1

@@ -76,12 +76,16 @@ def test_team_crudl(client, logged_in_user, bigquery, settings):
     # update
     r = client.get(f"/teams/{new_team.id}/update")
     assertOK(r)
-    assertFormRenders(r, ["icon", "name"])
+    assertFormRenders(r, ["icon", "name", "timezone"])
 
-    r = client.post(f"/teams/{new_team.id}/update", data={"name": "Agni"})
+    r = client.post(
+        f"/teams/{new_team.id}/update",
+        data={"name": "Agni", "timezone": "Asia/Kolkata"},
+    )
     assertRedirects(r, f"/teams/{new_team.id}/update", status_code=303)
     new_team.refresh_from_db()
     assert new_team.name == "Agni"
+    assert str(new_team.timezone) == "Asia/Kolkata"
 
     # delete
     r = client.get(f"/teams/{new_team.id}/delete")

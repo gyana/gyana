@@ -37,29 +37,21 @@ def link_checkout_to_team(sender, instance, *args, **kwargs):
     team.save()
 
 
+# These signals run after internal djpaddle signals. The subsription_id and
+# subscription_plan_id signals are removed by djpaddle, so we don't know what the
+# plan is.
+
+
 @receiver(subscription_created)
 def track_subscription_created(sender, payload, *args, **kwargs):
-    analytics.track(
-        payload["user_id"],
-        SUBSCRIPTION_CREATED_EVENT,
-        {"plan": payload["subscription_plan_id"]},
-    )
+    analytics.track(payload["user_id"], SUBSCRIPTION_CREATED_EVENT)
 
 
 @receiver(subscription_updated)
 def track_subscription_updated(sender, payload, *args, **kwargs):
-    if payload["old_subscription_plan_id"] != payload["subscription_plan_id"]:
-        analytics.track(
-            payload["user_id"],
-            SUBSCRIPTION_UPDATED_EVENT,
-            {"plan": payload["subscription_plan_id"]},
-        )
+    analytics.track(payload["user_id"], SUBSCRIPTION_UPDATED_EVENT)
 
 
 @receiver(subscription_cancelled)
 def track_subscription_cancelled(sender, payload, *args, **kwargs):
-    analytics.track(
-        payload["user_id"],
-        SUBSCRIPTION_CANCELLED_EVENT,
-        {"plan": payload["subscription_plan_id"]},
-    )
+    analytics.track(payload["user_id"], SUBSCRIPTION_CANCELLED_EVENT)

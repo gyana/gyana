@@ -1,13 +1,15 @@
-from django.utils.functional import cached_property
-
+from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
-from djpaddle.models import Checkout, Subscription
+from django.utils.functional import cached_property
+from djpaddle.models import Checkout
 from safedelete.models import SafeDeleteModel
 from storages.backends.gcloud import GoogleCloudStorage
+from timezone_field import TimeZoneField
+from timezone_field.choices import with_gmt_offset
 
 from apps.base.models import BaseModel
 
@@ -17,7 +19,7 @@ from .config import PLANS
 WARNING_BUFFER = 0.2
 
 
-class Team(BaseModel, SafeDeleteModel):
+class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
     class Meta:
         ordering = ("-created",)
 
@@ -45,6 +47,7 @@ class Team(BaseModel, SafeDeleteModel):
 
     # the last checkout associated with this team (until subscription information syncs via webhook from Paddle)
     last_checkout = models.OneToOneField(Checkout, null=True, on_delete=models.SET_NULL)
+    timezone = TimeZoneField(default="GMT", choices_display="WITH_GMT_OFFSET")
 
     def save(self, *args, **kwargs):
         from .bigquery import create_team_dataset
@@ -65,6 +68,10 @@ class Team(BaseModel, SafeDeleteModel):
         )
         self.row_count_calculated = timezone.now()
         self.save()
+
+    @property
+    def timezone_with_gtm_offset(self):
+        return with_gmt_offset([self.timezone])[0][1]
 
     @property
     def warning(self):
@@ -222,6 +229,10 @@ class Team(BaseModel, SafeDeleteModel):
         return self.subscriptions.filter(
             Q(status="active") | Q(status="deleted", next_bill_date__gte=timezone.now())
         ).first()
+
+    def update_connectors_daily_sync_time(self):
+        for project in self.project_set.all():
+            project.update_connectors_daily_sync_time()
 
 
 class Membership(BaseModel):

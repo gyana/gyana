@@ -1,4 +1,7 @@
 import pytest
+from django.utils import timezone
+from pytest_django.asserts import assertContains, assertRedirects
+
 from apps.appsumo.models import AppsumoCode
 from apps.base.tests.asserts import (
     assertFormRenders,
@@ -9,8 +12,6 @@ from apps.base.tests.asserts import (
     assertSelectorText,
 )
 from apps.users.models import CustomUser
-from django.utils import timezone
-from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
 
@@ -58,7 +59,9 @@ def test_project_crudl(client, logged_in_user):
     # update
     r = client.get(f"/projects/{project.id}/update")
     assertOK(r)
-    assertFormRenders(r, ["name", "description", "access", "cname"])
+    assertFormRenders(
+        r, ["name", "description", "access", "cname", "daily_schedule_time"]
+    )
     assertLink(r, f"/projects/{project.id}/delete", "Delete")
 
     r = client.post(
@@ -67,10 +70,11 @@ def test_project_crudl(client, logged_in_user):
             "name": "KPIs",
             "description": "All the company kpis",
             "access": "everyone",
+            "daily_schedule_time": "00:00",
             "submit": True,
         },
     )
-    assertRedirects(r, f"/projects/{project.id}", status_code=303)
+    assertRedirects(r, f"/projects/{project.id}/update", status_code=303)
 
     project.refresh_from_db()
     assert project.name == "KPIs"

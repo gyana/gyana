@@ -12,6 +12,7 @@ from apps.base.analytics import (
     identify_user,
     identify_user_group,
 )
+from apps.base.forms import BaseModelForm
 from apps.base.live_update_form import LiveUpdateForm
 from apps.invites.models import Invite
 from apps.teams import roles
@@ -79,17 +80,22 @@ class TeamCreateForm(forms.ModelForm):
         return instance
 
 
-class TeamUpdateForm(forms.ModelForm):
+class TeamUpdateForm(BaseModelForm):
     class Meta:
         model = Team
-        fields = (
-            "icon",
-            "name",
-        )
+        fields = ("icon", "name", "timezone")
         widgets = {"icon": forms.ClearableFileInput(attrs={"accept": "image/*"})}
         help_texts = {
             "icon": "For best results use a square image",
+            "timezone": "We use this to display time information and to schedule workflows",
         }
+
+    def pre_save(self, instance):
+        self._timezone_is_dirty = "timezone" in instance.get_dirty_fields()
+
+    def post_save(self, instance):
+        if self._timezone_is_dirty:
+            instance.update_connectors_daily_sync_time()
 
 
 class MembershipUpdateForm(forms.ModelForm):

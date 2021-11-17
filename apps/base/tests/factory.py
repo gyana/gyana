@@ -66,7 +66,8 @@ class ConnectorFactory(factory.django.DjangoModelFactory):
     connected_by = ""
     created_at = timezone.now()
     fivetran_authorized = True
-    sync_frequency = 360
+    sync_frequency = 1440
+    daily_sync_time = "00:00"
     schedule_type = "auto"
     setup_state = Connector.SetupState.CONNECTED
     sync_state = Connector.SyncState.SCHEDULED
@@ -78,6 +79,7 @@ class ConnectorFactory(factory.django.DjangoModelFactory):
     integration = factory.SubFactory(
         IntegrationFactory, kind=Integration.Kind.CONNECTOR, name="Google Analytics"
     )
+    schema_config = {}
 
 
 @register

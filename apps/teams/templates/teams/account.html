@@ -142,7 +142,7 @@
               </td>
               <td></td>
             </tr>
-            {% if self.active_subscription.status == 'active' %}
+            {% if team.active_subscription.status == 'active' %}
               <tr>
                 <td>
                   <a href="{{ team.active_subscription.update_url }}" class="link" data-turbo="false">

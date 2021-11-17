@@ -75,6 +75,7 @@ THIRD_PARTY_APPS = [
     "waffle",
     "safedelete",
     "djpaddle",
+    "timezone_field",
 ]
 
 # Put your project-specific apps here
