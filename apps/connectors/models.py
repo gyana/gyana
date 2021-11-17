@@ -240,29 +240,22 @@ class Connector(DirtyFieldsMixin, BaseModel):
         connectors_dict = {c.fivetran_id: c for c in connectors}
 
         for data in clients.fivetran().list():
-            connector = connectors_dict[data["id"]]
-            connector.sync_updates_from_fivetran(data)
-            if connector.is_dirty():
-                connector.save()
+            if data["id"] in connectors_dict:
+                connector = connectors_dict[data["id"]]
+                connector.sync_updates_from_fivetran(data)
 
     def sync_updates_from_fivetran(self, data=None):
         from apps.connectors.sync import end_connector_sync
 
-        if data is None:
-            data = clients.fivetran().get(self)
-            self.update_kwargs_from_fivetran(data)
-            self.save()
+        data = data or clients.fivetran().get(self)
+        self.update_kwargs_from_fivetran(data)
 
         if self.schema_config is None:
             self.sync_schema_obj_from_fivetran()
 
         # update fivetran sync time if user has updated timezone/daily sync time
         # or daylight savings time is going in/out tomorrow
-        daily_sync_time = self.integration.project.next_sync_time_utc_string
-        if daily_sync_time != self.daily_sync_time:
-            clients.fivetran().update(self, daily_sync_time=daily_sync_time)
-            self.daily_sync_time = daily_sync_time
-            self.save()
+        self.daily_sync_time = self.integration.project.next_sync_time_utc_string
 
         # fivetran setup is broken or incomplete
         if self.setup_state != self.SetupState.CONNECTED:
@@ -272,6 +265,11 @@ class Connector(DirtyFieldsMixin, BaseModel):
         # a new sync is completed
         if self.succeeded_at != self.bigquery_succeeded_at:
             end_connector_sync(self, not self.integration.table_set.exists())
+
+        if self.is_dirty():
+            if "daily_sync_time" in self.get_dirty_fields():
+                clients.fivetran().update(self, daily_sync_time=self.daily_sync_time)
+            self.save()
 
     def sync_schema_obj_from_fivetran(self):
         self.schema_config = clients.fivetran().get_schemas(self)

@@ -106,6 +106,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
 
     # the user leaves the page and periodic job runs in background
     fivetran.get.return_value = get_mock_fivetran_connector(succeeded_at=timezone.now())
+    fivetran.list.return_value = [get_mock_fivetran_connector(succeeded_at=timezone.now())]
     sync_all_updates_from_fivetran.delay()
 
     integration.refresh_from_db()
