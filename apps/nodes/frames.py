@@ -8,7 +8,6 @@ from django.utils import timezone
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 from fuzzywuzzy import process
-from ibis.expr.types import ScalarExpr
 
 from apps.base.analytics import (
     NODE_COMPLETED_EVENT,
@@ -156,10 +155,7 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
     def get_table(self, **kwargs):
         try:
             query = get_query_from_node(self.preview_node)
-            if isinstance(query, ScalarExpr):
-                schema = {query._name: query.type()}
-            else:
-                schema = query.schema()
+            schema = query.schema()
             table = get_table(schema, query, **kwargs)
 
             return RequestConfig(

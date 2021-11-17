@@ -1,10 +1,8 @@
-from django.utils.functional import cached_property
-
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
-from ibis.expr.types import ScalarExpr
+from django.utils.functional import cached_property
 from model_clone import CloneMixin
 
 from apps.base.aggregations import AggregationFunctions
@@ -237,11 +235,6 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         from .bigquery import get_query_from_node
 
         query = get_query_from_node(self)
-        # Group by
-        # can return a scalar when counting over the whole
-        # input table, it doesn't have a schema method
-        if isinstance(query, ScalarExpr):
-            return {query._name: query.type()}
         return query.schema()
 
     @property
