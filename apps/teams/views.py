@@ -80,10 +80,10 @@ class TeamCheckout(DetailView):
         context = super().get_context_data(**kwargs)
         plan_id = self.request.GET.get("plan") or settings.DJPADDLE_PRO_PLAN_ID
         context["plan"] = Plan.objects.get(pk=plan_id)
-        context["paddle_pro_plan_id"] = Plan.objects.get(
+        context["paddle_pro_plan"] = Plan.objects.get(
             pk=settings.DJPADDLE_PRO_PLAN_ID
         )
-        context["paddle_business_plan_id"] = Plan.objects.get(
+        context["paddle_business_plan"] = Plan.objects.get(
             pk=settings.DJPADDLE_BUSINESS_PLAN_ID
         )
         context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
