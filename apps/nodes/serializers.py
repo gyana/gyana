@@ -1,16 +1,29 @@
+from itertools import count, filterfalse
+
+from django.db import transaction
 from rest_framework import serializers
 
 from apps.filters.models import Filter
 
 from .config import NODE_CONFIG
-from .models import Node, Workflow
+from .models import Node, NodeParents, Workflow
+
+
+# Serialize model with a m2m through model inspired by
+# https://stackoverflow.com/questions/17256724/include-intermediary-through-model-in-responses-in-django-rest-framework
+class ParentshipSerializer(serializers.HyperlinkedModelSerializer):
+    parent_id = serializers.ReadOnlyField(source="parent.id")
+
+    class Meta:
+        model = NodeParents
+        fields = ("id", "parent_id", "position")
 
 
 class NodeSerializer(serializers.ModelSerializer):
 
     workflow = serializers.PrimaryKeyRelatedField(queryset=Workflow.objects.all())
     description = serializers.SerializerMethodField()
-    parents = serializers.PrimaryKeyRelatedField(queryset=Node.objects.all(), many=True)
+    parents = ParentshipSerializer(source="parent_set", many=True, required=False)
 
     class Meta:
         model = Node
@@ -25,7 +38,46 @@ class NodeSerializer(serializers.ModelSerializer):
             "description",
             "error",
             "text_text",
+            "parents",
         )
+
+    def update(self, instance, validated_data):
+        if "parent_set" in validated_data:
+            current_parents = instance.parent_set.all()
+            new_parents = self.initial_data["parents"]
+            to_be_deleted = [
+                parent
+                for parent in current_parents
+                if parent.parent_id
+                not in [int(parent["parent_id"]) for parent in new_parents]
+            ]
+            to_be_created = [
+                parent["parent_id"]
+                for parent in new_parents
+                if int(parent["parent_id"])
+                not in [parent.parent_id for parent in current_parents]
+            ]
+            existing_positions = [
+                parent.position
+                for parent in current_parents
+                if parent not in to_be_deleted
+            ]
+            with transaction.atomic():
+
+                for parent in to_be_deleted:
+                    parent.delete()
+
+                for parent in to_be_created:
+                    position = next(
+                        filterfalse(existing_positions.__contains__, count(0))
+                    )
+                    instance.parent_set.create(parent_id=parent, position=position)
+
+                    existing_positions.append(position)
+
+            validated_data.pop("parent_set")
+
+        return super().update(instance, validated_data)
 
     def get_description(self, obj):
         return DESCRIPTIONS[obj.kind](obj)
