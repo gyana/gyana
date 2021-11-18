@@ -1,4 +1,12 @@
-Before merging the pull request make sure you:
+## Before merging:
 
-- [ ] Had a look through the changes yourself and are sure nothing is broken
-- [ ] Requested a quick code review if you aren't 100% sure about the changes 
+- [ ] Run both pytest and cypress 
+- [ ] Look through the changes and make sure nothing is broken
+
+### If you aren't sure about anything:  
+
+- [ ] Ask for a code review
+
+### If you installed a new package:
+
+- [ ] Export requirements.txt
