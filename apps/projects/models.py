@@ -1,7 +1,6 @@
+from datetime import datetime, time, timedelta
 from functools import cached_property
 from itertools import chain
-
-from datetime import datetime, time, timedelta
 
 import pytz
 from dirtyfields import DirtyFieldsMixin

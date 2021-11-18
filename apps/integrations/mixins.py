@@ -1,6 +1,5 @@
-from django.utils.functional import cached_property
-
 from django.shortcuts import redirect
+from django.utils.functional import cached_property
 
 from apps.projects.mixins import ProjectMixin
 

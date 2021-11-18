@@ -1,8 +1,7 @@
-from django.utils.functional import cached_property
-
 import analytics
 from django.shortcuts import redirect
 from django.urls.base import reverse
+from django.utils.functional import cached_property
 from django_tables2 import SingleTableView
 from django_tables2.views import SingleTableMixin
 

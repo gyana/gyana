@@ -1,7 +1,6 @@
 {% load static %}
 
 {% block app %}
-
 <style>
   .card--modal .button {
     border-radius: 0;
@@ -34,19 +33,23 @@
   </div>
 
   {% for user_team in request.user.teams.all %}
-  <a class="button button--tertiary" href="">
+  <a
+    class="button button--tertiary"
+    href="{% url 'teams:detail' user_team.id %}"
+    data-turbo-frame="_top"
+  >
     {% if user_team.icon %}<img src="{{ user_team.icon.url }}" />{% else %}<span class="team_logo">{{ user_team.name|slice:1|capfirst }}</span>{% endif %}
     {{ user_team.name }}
   </a>
   {% endfor %}
 
-  <a class="button button--tertiary" href="">
+  <a class="button button--tertiary" href="{% url 'teams:create' %}">
     <i class="fas fa-fw fa-plus"></i>Create a new team
   </a>
 
   <a
     class="button button--tertiary"
-    href="{% url 'account_logout' %}"
+    href="{% url 'teams:update' team_id %}"
     data-turbo-frame="_top"
   >
     <i class="fas fa-fw fa-cog"></i>Team settings
@@ -54,7 +57,7 @@
 
   <a
     class="button button--tertiary"
-    href="{% url 'account_logout' %}"
+    href="{% url 'teams:account' team_id %}"
     data-turbo-frame="_top"
   >
     <i class="fas fa-fw fa-wallet"></i>Plan and billing
@@ -62,7 +65,7 @@
 
   <a
     class="button button--tertiary"
-    href="{% url 'account_logout' %}"
+    href="{% url 'team_members:list' team_id %}"
     data-turbo-frame="_top"
   >
     <i class="fas fa-fw fa-users"></i>Members
