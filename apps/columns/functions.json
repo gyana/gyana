@@ -40,7 +40,10 @@
     "categories": ["generic"],
     "arguments": [
       { "name": "value", "description": "a scalar or column" },
-      { "name": "type", "description": "the type to convert to e.g. `text`" }
+      {
+        "name": "type",
+        "description": "the type to convert, accepts `text`, `float`, `int`, `str`, `time`, `date` and `timestamp`"
+      }
     ],
     "keywords": ["cast", "type", "change"],
     "description": "Change the type of a value to a different data type."
