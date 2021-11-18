@@ -41,40 +41,46 @@ class NodeSerializer(serializers.ModelSerializer):
             "parents",
         )
 
+    def create(self, validated_data):
+        # Parents are only provided in tests right now
+        parent_set = validated_data.pop("parent_set", None)
+        instance = super().create(validated_data)
+        if parent_set:
+            self.update_parents(instance)
+        return instance
+
+    def update_parents(self, instance):
+        current_parents = instance.parent_set.all()
+        new_parents = self.initial_data["parents"]
+        to_be_deleted = [
+            parent
+            for parent in current_parents
+            if parent.parent_id
+            not in [int(parent["parent_id"]) for parent in new_parents]
+        ]
+        to_be_created = [
+            parent["parent_id"]
+            for parent in new_parents
+            if int(parent["parent_id"])
+            not in [parent.parent_id for parent in current_parents]
+        ]
+        existing_positions = [
+            parent.position for parent in current_parents if parent not in to_be_deleted
+        ]
+        with transaction.atomic():
+
+            for parent in to_be_deleted:
+                parent.delete()
+
+            for parent in to_be_created:
+                position = next(filterfalse(existing_positions.__contains__, count(0)))
+                instance.parent_set.create(parent_id=parent, position=position)
+
+                existing_positions.append(position)
+
     def update(self, instance, validated_data):
         if "parent_set" in validated_data:
-            current_parents = instance.parent_set.all()
-            new_parents = self.initial_data["parents"]
-            to_be_deleted = [
-                parent
-                for parent in current_parents
-                if parent.parent_id
-                not in [int(parent["parent_id"]) for parent in new_parents]
-            ]
-            to_be_created = [
-                parent["parent_id"]
-                for parent in new_parents
-                if int(parent["parent_id"])
-                not in [parent.parent_id for parent in current_parents]
-            ]
-            existing_positions = [
-                parent.position
-                for parent in current_parents
-                if parent not in to_be_deleted
-            ]
-            with transaction.atomic():
-
-                for parent in to_be_deleted:
-                    parent.delete()
-
-                for parent in to_be_created:
-                    position = next(
-                        filterfalse(existing_positions.__contains__, count(0))
-                    )
-                    instance.parent_set.create(parent_id=parent, position=position)
-
-                    existing_positions.append(position)
-
+            self.update_parents(instance)
             validated_data.pop("parent_set")
 
         return super().update(instance, validated_data)
