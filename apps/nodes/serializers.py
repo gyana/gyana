@@ -50,6 +50,8 @@ class NodeSerializer(serializers.ModelSerializer):
         return instance
 
     def update_parents(self, instance):
+        # The frontend sends a list of all parents so we need to figure out
+        # which ones to delete and which ones to add
         current_parents = instance.parent_set.all()
         new_parents = self.initial_data["parents"]
         to_be_deleted = [
@@ -72,6 +74,8 @@ class NodeSerializer(serializers.ModelSerializer):
             for parent in to_be_deleted:
                 parent.delete()
 
+            # We want to make sure parents are always added incrementally so
+            # We always fill the missing positions starting from 0
             for parent in to_be_created:
                 position = next(filterfalse(existing_positions.__contains__, count(0)))
                 instance.parent_set.create(parent_id=parent, position=position)
