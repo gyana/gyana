@@ -43,7 +43,11 @@
   </a>
   {% endfor %}
 
-  <a class="button button--tertiary" href="{% url 'teams:create' %}">
+  <a
+    class="button button--tertiary"
+    href="{% url 'teams:create' %}"
+    data-turbo-frame="_top"
+  >
     <i class="fas fa-fw fa-plus"></i>Create a new team
   </a>
 
