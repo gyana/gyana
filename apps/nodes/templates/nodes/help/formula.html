@@ -1,8 +1,10 @@
+{% load formula_utils %}
 
 {% include 'nodes/modal_nav_bar.html' %}
 
-<div class="formula">
-  <h1>Formula Docs</h2>
+<div class="formula" data-controller='formula-drawer'>
+  <div class="formula__content">
+    <h1>Formula Docs</h2>
     <p>
       The formula node supports arbitrary arithmetic operations between numeric
       columns and column transformations through function library (see below).
@@ -41,11 +43,13 @@
           class="textarea"
           name="{{ widget.name }}"
           readonly
-        >join(strip(first_name), " ", strip(last_name))</textarea>
+        >join("", trim(first_name), " ", trim(last_name))</textarea>
       </div>
     </p>
     
-    <h2>Functions</h2>
+    <h2>Functions <a class="ml-auto" href="{% link_function '' %}">
+      <i class="fa fa-external-link fa-xs text-black-50"></i>
+    </a></h2>
 
     <form role='search' method="get" 
       action="{% url 'nodes:formula' node.id %}?show_docs=true"
@@ -67,14 +71,33 @@
     </form>
 
     <div class="functions">
+
       {% for function in functions %}
-      <div class='function-pill'>
+
+      <div class='function-pill' data-action="click->formula-drawer#open" data-src="{{function.id}}">
         <h4>
-        <i class="fa {{ function.icon }}"></i> {{function.name}}(<em>
-          {{ function.arguments|join:", " }}
-        </em>)</h4>
-        <span>{{ function.description }}</span>
+          <i class="fa {{ function.icon }} text-blue"></i> {{function.name}}(
+            <em>{% include 'nodes/help/_arguments.html' with arguments=function.arguments %}</em>
+          )
+        </h4>
       </div>
+
       {% endfor %}
+
     </div>
+  </div>
+  <div class="formula__drawer closed" data-formula-drawer-target='drawer'>
+    <button
+        class="absolute top-4 right-4"
+        data-action="click->formula-drawer#close"
+        data-loading-false
+      >
+        <i class="fal fa-times fa-sm"></i>
+    </button>
+    <turbo-frame id="nodes:function-info" 
+      data-formula-drawer-target='turboFrame'
+      src="{% url "nodes:function-info" node.id %}"
+    >
+    </turbo-frame>
+  </div>
 </div>

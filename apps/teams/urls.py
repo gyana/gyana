@@ -1,21 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from django.urls import path
+from django.urls import include, path
 
 from . import frames, views
 from .access import login_and_admin_required, login_and_team_required
 
 app_name = "teams"
-
-checkout_urlpatterns = (
-    [
-        path(
-            "success",
-            login_and_admin_required(views.CheckoutSuccess.as_view()),
-            name="success",
-        )
-    ],
-    "team_checkouts",
-)
 
 membership_urlpatterns = (
     [
@@ -38,6 +27,19 @@ membership_urlpatterns = (
     "team_members",
 )
 
+paddle_urlpatterns = (
+    [
+        # https://github.com/pennersr/django-allauth/issues/1109
+        path(
+            "post-checkout/",
+            views.PaddlePostCheckoutApiView.as_view(),
+            name="post_checkout_api",
+        ),
+        path("", include("djpaddle.urls")),
+    ],
+    "djpaddle",
+)
+
 urlpatterns = [
     path("new", login_required(views.TeamCreate.as_view()), name="create"),
     path(
@@ -46,9 +48,14 @@ urlpatterns = [
         name="detail",
     ),
     path(
-        "<hashid:team_id>/plan",
-        login_and_admin_required(views.TeamPlan.as_view()),
-        name="plan",
+        "<hashid:team_id>/plans",
+        login_and_admin_required(views.TeamPlans.as_view()),
+        name="plans",
+    ),
+    path(
+        "<hashid:team_id>/checkout",
+        login_and_admin_required(views.TeamCheckout.as_view()),
+        name="checkout",
     ),
     path(
         "<hashid:team_id>/subscription",

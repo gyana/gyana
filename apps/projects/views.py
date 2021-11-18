@@ -3,13 +3,12 @@ from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
-from waffle import flag_is_active
 
 from apps.base.analytics import PROJECT_CREATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 
-from .forms import ProjectCreateForm, ProjectForm
+from .forms import ProjectCreateForm, ProjectUpdateForm
 from .models import Project
 
 
@@ -58,7 +57,7 @@ class ProjectDetail(DetailView):
 class ProjectUpdate(TurboUpdateView):
     template_name = "projects/update.html"
     model = Project
-    form_class = ProjectForm
+    form_class = ProjectUpdateForm
     pk_url_kwarg = "project_id"
 
     def get_context_data(self, **kwargs):
@@ -73,7 +72,7 @@ class ProjectUpdate(TurboUpdateView):
         return form_kwargs
 
     def get_success_url(self) -> str:
-        return reverse("projects:detail", args=(self.object.id,))
+        return reverse("projects:update", args=(self.object.id,))
 
 
 class ProjectDelete(DeleteView):

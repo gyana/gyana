@@ -13,7 +13,7 @@ from apps.base.turbo import TurboCreateView, TurboUpdateView
 
 class TurboFrame500Mixin:
     def dispatch(self, request, *args, **kwargs):
-        if settings.DEBUG:
+        if settings.DEBUG or settings.TEST:
             return super().dispatch(request, *args, **kwargs)
         try:
             return super().dispatch(request, *args, **kwargs)

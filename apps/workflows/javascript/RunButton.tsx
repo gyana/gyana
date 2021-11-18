@@ -31,50 +31,52 @@ const RunButton: React.FC<{
     return () => window.removeEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
   })
 
+  const disabled = !hasOutput || loading || !isOutOfDate
   return (
     <div className='dndflow__run-button'>
       <button
-        disabled={!hasOutput || loading || !isOutOfDate}
         onClick={() => {
-          setLoading(true)
+          if (!disabled) {
+            setLoading(true)
 
-          client
-            .action(window.schema, ['workflows', 'run_workflow', 'create'], {
-              id: workflowId,
-            })
-            .then((res) => {
-              if (res) {
-                setElements(
-                  elements.map((el) => {
-                    if (isNode(el)) {
-                      const error = res[parseInt(el.id)]
-                      // Add error to node if necessary
-                      if (error) {
-                        el.data['error'] = error
+            client
+              .action(window.schema, ['workflows', 'run_workflow', 'create'], {
+                id: workflowId,
+              })
+              .then((res) => {
+                if (res) {
+                  setElements(
+                    elements.map((el) => {
+                      if (isNode(el)) {
+                        const error = res[parseInt(el.id)]
+                        // Add error to node if necessary
+                        if (error) {
+                          el.data['error'] = error
+                        }
+                        // Remove error if necessary
+                        else if (el.data.error) {
+                          delete el.data['error']
+                        }
                       }
-                      // Remove error if necessary
-                      else if (el.data.error) {
-                        delete el.data['error']
-                      }
-                    }
-                    return el
-                  })
-                )
-                if (Object.keys(res).length === 0) {
-                  setIsOutOfDate(false)
-                  setHasBeenRun(false)
-                  window.dispatchEvent(new Event(GyanaEvents.RUN_WORKFLOW))
+                      return el
+                    })
+                  )
+                  if (Object.keys(res).length === 0) {
+                    setIsOutOfDate(false)
+                    setHasBeenRun(false)
+                    window.dispatchEvent(new Event(GyanaEvents.RUN_WORKFLOW))
+                  }
+                  setLoading(false)
                 }
+                alert('Workflow finished running!')
+              })
+              .catch(() => {
                 setLoading(false)
-              }
-              alert('Workflow finished running!')
-            })
-            .catch(() => {
-              setLoading(false)
-              alert('Workflow failed running')
-            })
+                alert('Workflow failed running')
+              })
+          }
         }}
-        className='button button--sm button--outline button--success'
+        className={`button button--sm button--outline button--success ${disabled && 'disabled'}`}
         data-controller='tooltip'
       >
         <i className='fas fa-fw fa-play'></i> Run

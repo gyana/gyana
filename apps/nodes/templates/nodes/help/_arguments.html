@@ -1,0 +1,2 @@
+{% comment %}Can't break lines because it introduces bad whitespace{% endcomment %}
+{% for argument in arguments %}{% if argument.optional %} [{% endif %}{% if not forloop.first %}, {% endif %}{{ argument.name }}{% if argument.repeatable %}, ...{% endif %}{% if argument.optional %}]{% endif %}{% endfor %}

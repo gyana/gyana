@@ -1,15 +1,18 @@
+import analytics
 from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse
 from django.http.response import Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableMixin, SingleTableView
-from djpaddle.models import Checkout, Plan, paddle_client
+from djpaddle.models import Plan
+from djpaddle.views import PaddlePostCheckoutApiView as BasePaddlePostCheckoutApiView
 
+from apps.base.analytics import CHECKOUT_COMPLETED_EVENT, CHECKOUT_OPENED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 
 from .forms import (
@@ -35,13 +38,13 @@ class TeamCreate(TurboCreateView):
         return kwargs
 
     def get_success_url(self) -> str:
-        return reverse("teams:plan", args=(self.object.id,))
+        return reverse("teams:plans", args=(self.object.id,))
 
 
-class TeamPlan(TurboUpdateView):
+class TeamPlans(TurboUpdateView):
     model = Team
     form_class = TeamCreateForm
-    template_name = "teams/plan.html"
+    template_name = "teams/plans.html"
     pk_url_kwarg = "team_id"
 
     def get(self, request, *args, **kwargs):
@@ -63,15 +66,44 @@ class TeamPlan(TurboUpdateView):
         context["paddle_business_plan"] = Plan.objects.get(
             pk=settings.DJPADDLE_BUSINESS_PLAN_ID
         )
-        context["djpaddle_checkout_success_redirect"] = reverse(
-            "team_checkouts:success", args=(self.object.id,)
-        )
         context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
         context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
         return context
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.id,))
+
+
+class TeamCheckout(DetailView):
+    model = Team
+    template_name = "teams/checkout.html"
+    pk_url_kwarg = "team_id"
+
+    @property
+    def plan(self):
+        plan_id = self.request.GET.get("plan") or settings.DJPADDLE_PRO_PLAN_ID
+        return Plan.objects.get(pk=plan_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["plan"] = self.plan
+        context["paddle_pro_plan"] = Plan.objects.get(pk=settings.DJPADDLE_PRO_PLAN_ID)
+        context["paddle_business_plan"] = Plan.objects.get(
+            pk=settings.DJPADDLE_BUSINESS_PLAN_ID
+        )
+        context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
+        context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
+        return context
+
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        analytics.track(request.user.id, CHECKOUT_OPENED_EVENT, {"plan": self.plan.id})
+        return super().get(request, *args, **kwargs)
+
+
+class PaddlePostCheckoutApiView(BasePaddlePostCheckoutApiView):
+    def post(self, request, *args, **kwargs):
+        analytics.track(request.user.id, CHECKOUT_COMPLETED_EVENT)
+        return super().post(request, *args, **kwargs)
 
 
 class TeamSubscription(TurboUpdateView):
@@ -92,6 +124,8 @@ class TeamSubscription(TurboUpdateView):
         context["new_price"] = get_plan_price_for_currency(
             self.plan, self.object.active_subscription.currency
         )
+        context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
+        context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
         return context
 
     def get_success_url(self) -> str:
@@ -198,11 +232,3 @@ class MembershipDelete(TeamMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("team_members:list", args=(self.team.id,))
-
-
-class CheckoutSuccess(TeamMixin, DetailView):
-    template_name = "checkout/success.html"
-    model = Checkout
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(Checkout, id=self.request.GET.get("checkout"))

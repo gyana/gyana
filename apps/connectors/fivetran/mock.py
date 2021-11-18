@@ -103,6 +103,13 @@ class MockFivetranClient:
             connector, is_historical_sync=is_historical_sync, succeeded_at=succeeded_at
         )
 
+    def list(self):
+        for connector in Connector.objects.all():
+            yield self.get(connector)
+
+    def update(self, connector, **data):
+        pass
+
     def start_initial_sync(self, connector):
         self._started[connector.id] = timezone.now()
 

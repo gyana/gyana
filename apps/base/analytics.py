@@ -52,6 +52,12 @@ WIDGET_PREVIEWED_EVENT: Final = "Widget previewed"
 WIDGET_COMPLETED_EVENT: Final = "Widget completed"
 DASHBOARD_SHARED_PUBLIC_EVENT: Final = "Dashboard shared public"
 
+# subscriptions
+CHECKOUT_OPENED_EVENT: Final = "Checkout opened"
+CHECKOUT_COMPLETED_EVENT: Final = "Checkout completed"
+SUBSCRIPTION_CREATED_EVENT: Final = "Subscription created"
+SUBSCRIPTION_UPDATED_EVENT: Final = "Subscription updated"
+SUBSCRIPTION_CANCELLED_EVENT: Final = "Subscription cancelled"
 
 # exports
 

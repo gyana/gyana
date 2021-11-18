@@ -2,11 +2,11 @@
 
 {% include 'nodes/modal_nav_bar.html' %}
 
-{% if not node.is_valid %}
+{% if not preview_node.is_valid %}
 
   {% include 'nodes/_zero_state.html' %}
 
-{% elif node.error %}
+{% elif preview_node.error %}
 
   <div class='node__visual'>
     {% if error_template %}

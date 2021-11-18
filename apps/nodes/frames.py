@@ -7,8 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
-from fuzzywuzzy import fuzz
-from ibis.expr.types import ScalarExpr
+from fuzzywuzzy import process
 
 from apps.base.analytics import (
     NODE_COMPLETED_EVENT,
@@ -130,7 +129,7 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["show_docs"] = self.request.GET.get("show_docs", False) == "true"
-        context["preview_node_id"] = self.preview_node.id
+        context["preview_node"] = self.preview_node
         # Node-specific documentation
         if self.object.kind == Node.Kind.FORMULA:
             context["help_template"] = "nodes/help/formula.html"
@@ -156,10 +155,7 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
     def get_table(self, **kwargs):
         try:
             query = get_query_from_node(self.preview_node)
-            if isinstance(query, ScalarExpr):
-                schema = {query._name: query.type()}
-            else:
-                schema = query.schema()
+            schema = query.schema()
             table = get_table(schema, query, **kwargs)
 
             return RequestConfig(
@@ -210,7 +206,11 @@ FUNCTIONS = [{**f, "icon": ICONS[f["categories"][0]]} for f in FUNCTIONS]
 
 def filter_functions(function, q, category):
     is_category = category == "all" or category in function["categories"]
-    is_fuzzy = not q or fuzz.token_sort_ratio(function["name"], q.lower()) > 40
+    is_fuzzy = (
+        not q
+        or process.extractOne(q.lower(), [function["name"], *function["keywords"]])[1]
+        > 60
+    )
     return is_fuzzy and is_category
 
 
@@ -235,4 +235,19 @@ class FormulaHelp(TurboFrameDetailView):
         context["categories"] = CATEGORIES
         context["selected_category"] = selected_category
 
+        return context
+
+
+class FunctionInfo(TurboFrameDetailView):
+    turbo_frame_dom_id = "nodes:function-info"
+    template_name = "nodes/help/function_info.html"
+    # Node provided for access check we could consider making these urls public but
+    # right now they are unstyled
+    model = Node
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        function_id = self.request.GET["function"]
+        context["function"] = next(filter(lambda x: x["id"] == function_id, FUNCTIONS))
         return context

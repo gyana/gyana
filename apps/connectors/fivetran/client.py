@@ -20,7 +20,7 @@ class FivetranClientError(Exception):
 
 
 class FivetranClient:
-    def create(self, service, team_id) -> Dict:
+    def create(self, service, team_id, daily_sync_time) -> Dict:
         from apps.base.clients import SLUG
 
         # https://fivetran.com/docs/rest-api/connectors#createaconnector
@@ -50,6 +50,8 @@ class FivetranClient:
                 # no access credentials yet
                 "run_setup_tests": False,
                 "paused": True,
+                "sync_frequency": 1440,
+                "daily_sync_time": daily_sync_time,
                 "config": config,
             },
             headers=settings.FIVETRAN_HEADERS,
@@ -73,6 +75,36 @@ class FivetranClient:
             raise FivetranClientError(res)
 
         return res["data"]
+
+    def list(self):
+        session = requests.Session()
+        url = f"{settings.FIVETRAN_URL}/groups/{settings.FIVETRAN_GROUP}/connectors"
+        next_cursor = None
+
+        while True:
+            page = session.get(
+                url,
+                headers=settings.FIVETRAN_HEADERS,
+                params={"limit": 100, "cursor": next_cursor},
+            ).json()
+            yield from page["data"]["items"]
+            if (next_cursor := page["data"].get("next_cursor")) is None:
+                break
+
+    def update(self, connector: Connector, **data):
+
+        # https://fivetran.com/docs/rest-api/connectors#modifyaconnector
+
+        res = requests.patch(
+            f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}",
+            json=data,
+            headers=settings.FIVETRAN_HEADERS,
+        ).json()
+
+        if res["code"] != "Success":
+            raise FivetranClientError(res)
+
+        return res
 
     def get_authorize_url(self, connector: Connector, redirect_uri: str) -> str:
 

@@ -1,0 +1,66 @@
+{% extends "teams/base.html" %}
+{% load waffle_tags %}
+
+{% block page_head %}
+  <meta name="turbo-visit-control" content="reload">
+  <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
+  {% include "djpaddle_post_checkout.html" %}
+{% endblock %}
+
+{% block tab %}
+
+<div data-controller="paddle"
+  data-paddle-vendor-id-value="{{ DJPADDLE_VENDOR_ID }}"
+  {% if DJPADDLE_SANDBOX %}data-paddle-sandbox-value="true"{% endif %} 
+  {% if debug %}data-paddle-debug-value="true"{% endif %}
+  data-paddle-plan-value="{{ plan.id }}"
+  data-paddle-email-value="{{ request.user.email }}"
+  data-paddle-marketing-consent-value="{% if request.user.marketing_allowed %}1{% else %}0{% endif %}"
+  data-paddle-passthrough-value='{"user_id": {{ request.user.id }}, "team_id": {{ object.id }}}'
+  class="flex flex-col justify-center items-center h-full"
+  >
+  <div class="flex flex-row items-center">
+    <div data-paddle-target="checkoutMessage" class="pad w-1/2">
+      <div class="mb-16">
+        <h2 class="mb-8">Unlock the full power of Gyana</h2>
+
+        <ul class="flex flex-col gap-7">
+          {% if plan.id == paddle_business_plan.id %}
+            <li><p> <i class="fas fa-fw fa-check text-green"></i> Up to <strong>10 million</strong> rows of data</p></li>
+          {% else %}
+            <li><p> <i class="fas fa-fw fa-check text-green"></i> Up to <strong>1 million</strong> rows of data</p></li>
+          {% endif %}
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> Unlimited collaboration</p></li>
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> Priority support</p></li>
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> Cancel anytime</p></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="mb-8">Your subscription</h2>
+          <div class="flex flex-row items-end">
+            <h1 class="mr-2">Gyana Pro</h1>
+            <p><a class='link' href="{% url 'teams:plans' team.id %}" class="link">Change</a></p>
+          </div>
+
+          <h4 class="mt-8 mb-3">Your total is
+            <span class="h2 text-blue" data-paddle-target="total"></span>
+            <span class="text-sm">(inc. VAT)</span>
+          </h4>
+          <p class="mt-3 mb-8">Then <span data-paddle-target="recurring"></span>/month</p>
+      </div>
+    </div>
+
+    <div data-paddle-target="successMessage" class="hidden pad w-1/2 max-w-2xl">
+      <h2 class="mb-8"><i class="fas fa-fw fa-check text-green"></i> Success</h2>
+      <p class="mb-4">Your account will reflect your new plan information in a few moments. If you have any issues, reach out to us via
+      <a href="mailto:support@gyana.com" class="link">email</a> or our chat.</p>
+      <p class="mb-8"><strong>We can't wait to see what you do with Gyana.</strong></p>
+      <a class="button" href="{% url 'teams:account' team.id %}">
+        Go to billing
+      </a>
+    </div>
+    <div class="checkout-container card" style="width: 600px;"></div>
+  </div>
+</div>
+{% endblock %}

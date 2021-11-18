@@ -69,6 +69,7 @@ django-safedelete = "^1.1.0"
 dj-paddle = {git = "https://github.com/paddle-python/dj-paddle", rev = "8945137c9ff70ae00d519625f81b10d1bc6bf071"}
 fuzzywuzzy = "^0.18.0"
 python-Levenshtein = "^0.12.2"
+django-timezone-field = "^4.2.1"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

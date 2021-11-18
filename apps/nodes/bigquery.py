@@ -3,13 +3,14 @@ import logging
 from functools import wraps
 
 import ibis
+from ibis.expr.datatypes import String
+
 from apps.base import clients
 from apps.base.errors import error_name_to_snake
 from apps.columns.bigquery import compile_formula, compile_function
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.teams.models import OutOfCreditsException
-from ibis.expr.datatypes import String
 
 from ._sentiment_utils import CreditException, get_gcp_sentiment
 from ._utils import create_or_replace_intermediate_table, get_parent_updated
@@ -121,7 +122,9 @@ def get_aggregation_query(node, query):
         query = query.group_by(groups)
     if aggregations:
         return query.aggregate(aggregations)
-    return query.count()
+    # query.count() returns a scalar
+    # use aggregate to return TableExpr
+    return query.aggregate(query.count())
 
 
 def get_union_query(node, query, *queries):

@@ -71,7 +71,6 @@ teams_urlpatterns = [
     path("<hashid:team_id>/invites/", include(invite_urls.team_urlpatterns)),
     path("<hashid:team_id>/projects/", include(project_urls.team_urlpatterns)),
     path("<hashid:team_id>/members/", include(team_urls.membership_urlpatterns)),
-    path("<hashid:team_id>/checkout/", include(team_urls.checkout_urlpatterns)),
     path("<hashid:team_id>/appsumo/", include(appsumo_urls.team_urlpatterns)),
     path("<hashid:team_id>/templates/", include(template_urls.team_urlpatterns)),
     path("<hashid:team_id>/cnames/", include(cname_urls.team_urlpatterns)),
@@ -102,7 +101,7 @@ urlpatterns = [
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),
-    path("paddle/", include("djpaddle.urls", namespace="djpaddle")),
+    path("paddle/", include(team_urls.paddle_urlpatterns)),
     # API docs
     # these are needed for schema.js
     path("docs/", include_docs_urls(title="API Docs")),
