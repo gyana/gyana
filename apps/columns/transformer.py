@@ -21,6 +21,7 @@ TYPES = {
     "str": dt.string,
     "time": dt.time,
     "timestamp": dt.timestamp,
+    "date": dt.date,
     "text": dt.string,
 }
 

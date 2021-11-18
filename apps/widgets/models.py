@@ -40,14 +40,14 @@ class Widget(CloneMixin, BaseModel):
         RADAR = "radar", "Radar"
         BUBBLE = "bubble", "Bubble"
         HEATMAP = "heatmap", "Heatmap"
-        TIMESERIES_LINE = "timeseries-line", "Line"
-        TIMESERIES_STACKED_LINE = "timeseries-line_stacked", "Stacked Line"
-        TIMESERIES_COLUMN = "timeseries-column", "Column"
+        TIMESERIES_LINE = "timeseries-line", "Line Timeseries"
+        TIMESERIES_STACKED_LINE = "timeseries-line_stacked", "Stacked Line Timeseries"
+        TIMESERIES_COLUMN = "timeseries-column", "Column Timeseries"
         TIMESERIES_STACKED_COLUMN = (
             "timeseries-column-stacked",
-            "Stacked Column",
+            "Stacked Column Timeseries",
         )
-        TIMESERIES_AREA = "timeseries-area", "Area"
+        TIMESERIES_AREA = "timeseries-area", "Area Timeseries"
 
     class Aggregator(models.TextChoices):
         # These aggregators should reflect the names described in the ibis api, none is an exception
@@ -144,36 +144,67 @@ NO_DIMENSION_WIDGETS = [
     Widget.Kind.METRIC,
 ]
 
+# widget = (icon, category, verbose_name)
 WIDGET_KIND_TO_WEB = {
-    Widget.Kind.TEXT.value: ("fa-text", Widget.Category.SIMPLE),
-    Widget.Kind.METRIC.value: ("fa-value-absolute", Widget.Category.SIMPLE),
-    Widget.Kind.TABLE.value: ("fa-table", Widget.Category.SIMPLE),
-    Widget.Kind.COLUMN.value: ("fa-chart-bar", Widget.Category.SIMPLE),
-    Widget.Kind.STACKED_COLUMN.value: ("fa-chart-bar", Widget.Category.ADVANCED),
-    Widget.Kind.BAR.value: ("fa-chart-bar", Widget.Category.SIMPLE),
-    Widget.Kind.STACKED_BAR.value: ("fa-chart-bar", Widget.Category.ADVANCED),
-    Widget.Kind.LINE.value: ("fa-chart-line", Widget.Category.SIMPLE),
-    Widget.Kind.STACKED_LINE.value: ("fa-chart-line", Widget.Category.ADVANCED),
-    Widget.Kind.PIE.value: ("fa-chart-pie", Widget.Category.SIMPLE),
-    Widget.Kind.AREA.value: ("fa-chart-area", Widget.Category.ADVANCED),
-    Widget.Kind.DONUT.value: ("fa-dot-circle", Widget.Category.SIMPLE),
-    Widget.Kind.SCATTER.value: ("fa-chart-scatter", Widget.Category.ADVANCED),
-    Widget.Kind.FUNNEL.value: ("fa-filter", Widget.Category.ADVANCED),
-    Widget.Kind.PYRAMID.value: ("fa-triangle", Widget.Category.ADVANCED),
-    Widget.Kind.RADAR.value: ("fa-radar", Widget.Category.ADVANCED),
-    Widget.Kind.BUBBLE.value: ("fa-soap", Widget.Category.ADVANCED),
-    Widget.Kind.HEATMAP.value: ("fa-map", Widget.Category.ADVANCED),
-    Widget.Kind.TIMESERIES_LINE.value: ("fa-chart-line", Widget.Category.TIMESERIES),
+    Widget.Kind.TEXT.value: ("fa-text", Widget.Category.SIMPLE, "Text"),
+    Widget.Kind.METRIC.value: ("fa-value-absolute", Widget.Category.SIMPLE, "Metric"),
+    Widget.Kind.TABLE.value: ("fa-table", Widget.Category.SIMPLE, "Table"),
+    Widget.Kind.COLUMN.value: ("fa-chart-bar", Widget.Category.SIMPLE, "Column"),
+    Widget.Kind.STACKED_COLUMN.value: (
+        "fa-chart-bar",
+        Widget.Category.ADVANCED,
+        "Stacked Column",
+    ),
+    Widget.Kind.BAR.value: ("fa-chart-bar", Widget.Category.SIMPLE, "Bar"),
+    Widget.Kind.STACKED_BAR.value: (
+        "fa-chart-bar",
+        Widget.Category.ADVANCED,
+        "Stacked Bar",
+    ),
+    Widget.Kind.LINE.value: ("fa-chart-line", Widget.Category.SIMPLE, "Line"),
+    Widget.Kind.STACKED_LINE.value: (
+        "fa-chart-line",
+        Widget.Category.ADVANCED,
+        "Stacked Line",
+    ),
+    Widget.Kind.PIE.value: ("fa-chart-pie", Widget.Category.SIMPLE, "Pie"),
+    Widget.Kind.AREA.value: ("fa-chart-area", Widget.Category.ADVANCED, "Area"),
+    Widget.Kind.DONUT.value: ("fa-dot-circle", Widget.Category.SIMPLE, "Donut"),
+    Widget.Kind.SCATTER.value: (
+        "fa-chart-scatter",
+        Widget.Category.ADVANCED,
+        "Scatter",
+    ),
+    Widget.Kind.FUNNEL.value: ("fa-filter", Widget.Category.ADVANCED, "Funnel"),
+    Widget.Kind.PYRAMID.value: ("fa-triangle", Widget.Category.ADVANCED, "Pyramid"),
+    Widget.Kind.RADAR.value: ("fa-radar", Widget.Category.ADVANCED, "Radar"),
+    Widget.Kind.BUBBLE.value: ("fa-soap", Widget.Category.ADVANCED, "Bubble"),
+    Widget.Kind.HEATMAP.value: ("fa-map", Widget.Category.ADVANCED, "Heatmap"),
+    Widget.Kind.TIMESERIES_LINE.value: (
+        "fa-chart-line",
+        Widget.Category.TIMESERIES,
+        "Line",
+    ),
     Widget.Kind.TIMESERIES_STACKED_LINE.value: (
         "fa-chart-line",
         Widget.Category.TIMESERIES,
+        "Stacked Line",
     ),
-    Widget.Kind.TIMESERIES_COLUMN.value: ("fa-chart-bar", Widget.Category.TIMESERIES),
+    Widget.Kind.TIMESERIES_COLUMN.value: (
+        "fa-chart-bar",
+        Widget.Category.TIMESERIES,
+        "Column",
+    ),
     Widget.Kind.TIMESERIES_STACKED_COLUMN.value: (
         "fa-chart-bar",
         Widget.Category.TIMESERIES,
+        "Stacked Column",
     ),
-    Widget.Kind.TIMESERIES_AREA.value: ("fa-chart-area", Widget.Category.TIMESERIES),
+    Widget.Kind.TIMESERIES_AREA.value: (
+        "fa-chart-area",
+        Widget.Category.TIMESERIES,
+        "Area",
+    ),
 }
 
 

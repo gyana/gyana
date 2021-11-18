@@ -8,7 +8,7 @@
       <h4 class="mb-3">{{ category }}</h4>
       
       <div class="grid grid-cols-2 mb-3">
-        {% for id, txt, icon, choice_category in choices %}
+        {% for id, txt, icon, choice_category, verbose_name in choices %}
           {% if choice_category|lower == category|lower %}
           <form
             method="post"
@@ -20,7 +20,7 @@
             <input type='hidden' name='kind' id="id_kind_{{ forloop.counter }}" value="{{ id }}" />
 
             <button type="submit" class="list__item list__item--interactive w-full" data-loading-false data-action="popover#trigger">
-              <p><i class="fas fa-fw {{ icon }} text-blue mr-2"></i> {{ txt }}</p>
+              <p><i class="fas fa-fw {{ icon }} text-blue mr-2"></i> {{ verbose_name }}</p>
             </button>
           </form>
           {% endif %}

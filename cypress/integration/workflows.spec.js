@@ -34,7 +34,8 @@ describe('workflows', () => {
     cy.story('Duplicate workflow and delete duplicate ')
     cy.get('table').within(() => cy.get('button[type=submit]').click())
     cy.contains('Copy of Magical workflow').click()
-    cy.get('span[data-popover-target=trigger]').click()
+    cy.get('i[class*="fa-ellipsis-h"]').click()
+    cy.get('a').contains('Delete').click()
     cy.contains('Yes').click()
     cy.contains('Copy of Magical workflow').should('not.exist')
   })
@@ -49,7 +50,6 @@ describe('workflows', () => {
 
     cy.get(`[data-id=${startId}]`).dblclick()
     cy.contains('store_info').click()
-    cy.contains('Save & Preview').should('not.be.disabled').click()
     cy.contains('Blackpool')
     cy.get('.tf-modal__close').click()
     cy.reactFlowDrag(startId, { x: 150, y: 300 })

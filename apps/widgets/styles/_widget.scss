@@ -26,3 +26,23 @@
     background-size: var(--grid-size) var(--grid-size);
   }
 }
+
+.metric {
+  align-self: center;
+  margin: 0 auto;
+  overflow: hidden;
+  text-align: center;
+
+  &__title {
+    color: var(--c-black-50);
+    margin-bottom: 0.6rem;
+  }
+
+  &__value {
+    font-size: 6rem;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

@@ -10,7 +10,7 @@ from apps.base import clients
 def send_export_email(file_path, user):
     blob = clients.get_bucket().blob(file_path)
     url = blob.generate_signed_url(
-        version="v4", expiration=dt.now() + timedelta(days=7)
+        version="v4", expiration=dt.now() + timedelta(days=7), scheme="https"
     )
 
     message_template_plain = get_template("exports/email/export_ready_message.txt")
