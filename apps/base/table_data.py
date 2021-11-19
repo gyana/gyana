@@ -83,7 +83,7 @@ class BigQueryTableData(TableData):
 
     def order_by(self, aliases):
         sort_by = [
-            (self.get_column_from_md5([alias.replace("-", "")]), alias.startswith("-"))
+            (self.get_column_from_md5(alias.replace("-", "")), alias.startswith("-"))
             for alias in aliases
         ]
         self.data = self.data.sort_by(sort_by)
