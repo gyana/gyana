@@ -11,7 +11,10 @@
         {% csrf_token %}
 
         <p class="alert mb-4">
-          If you're not sure about these settings, we recommend you start with the defaults and tweak them later.
+          If you're not sure about these options, we recommend you start with the defaults and tweak them later.
+          {% if object.kind == 'connector' %}
+            You can also go back to the <a href="{{ object.connector.fivetran_authorization_url }}" class="link">authorization</a> page.
+          {% endif %}
         </p>
 
         {% include "django/forms/default_form.html" %}

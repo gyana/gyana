@@ -56,7 +56,8 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     assert integration.created_by == logged_in_user
 
     redirect_uri = f"http://localhost:8000{CONNECTORS}/{connector.id}/authorize"
-    assertRedirects(r, f"http://fivetran.url?redirect_uri={redirect_uri}")
+    authorization_uri = f"http://fivetran.url?redirect_uri={redirect_uri}"
+    assertRedirects(r, authorization_uri)
 
     assert fivetran.create.call_count == 1
     assert fivetran.create.call_args.args == (
@@ -85,6 +86,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
     assertOK(r)
     # todo: fix this!
     assertFormRenders(r, ["name", "dataset_schema", "dataset_tables"])
+    assertLink(r, authorization_uri, "authorization")
 
     assert fivetran.get_schemas.call_count == 1
     assert fivetran.get_schemas.call_args.args == (connector,)
@@ -106,7 +108,9 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project_fa
 
     # the user leaves the page and periodic job runs in background
     fivetran.get.return_value = get_mock_fivetran_connector(succeeded_at=timezone.now())
-    fivetran.list.return_value = [get_mock_fivetran_connector(succeeded_at=timezone.now())]
+    fivetran.list.return_value = [
+        get_mock_fivetran_connector(succeeded_at=timezone.now())
+    ]
     sync_all_updates_from_fivetran.delay()
 
     integration.refresh_from_db()
