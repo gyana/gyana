@@ -32,9 +32,9 @@ class Sheet(CloneMixin, BaseModel):
     # automatically sync metadata from google drive
     drive_modified_date = models.DateTimeField(null=True)
 
-    # the next time to check for a sync from Google Sheets
     is_scheduled = models.BooleanField(default=False)
-    next_daily_sync = models.DateTimeField()
+    # the next time to check for a sync from Google Sheets
+    next_daily_sync = models.DateTimeField(null=True)
     succeeded_at = models.DateTimeField(null=True)
     failed_at = models.DateTimeField(null=True)
 
