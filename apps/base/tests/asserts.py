@@ -18,8 +18,6 @@ def assertLink(response, url, text=None, title=None):
         matches = [m for m in matches if text in m.text]
     elif title is not None:
         matches = [m for m in matches if title in m["title"]]
-    else:
-        assert False, 'You need to specify "text" or "title"'
 
     error_list = [m.get("href") for m in original_matches]
 
