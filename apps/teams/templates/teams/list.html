@@ -3,12 +3,12 @@
 {% block app %}
 <style>
   .card--modal .button {
+    align-items: center;
     border-radius: 0;
     border-top: 0;
-    text-align: left;
     justify-content: flex-start;
-    align-items: center;
     padding-left: 1.6rem;
+    text-align: left;
   }
 
   .card--modal .button--tertiary .fa-fw {
@@ -38,8 +38,17 @@
     href="{% url 'teams:detail' user_team.id %}"
     data-turbo-frame="_top"
   >
-    {% if user_team.icon %}<img src="{{ user_team.icon.url }}" />{% else %}<span class="team_logo">{{ user_team.name|slice:1|capfirst }}</span>{% endif %}
+    {% if user_team.icon %}
+    <img src="{{ user_team.icon.url }}" />
+    {% else %}
+    <span class="team_logo">{{ user_team.name|slice:1|capfirst }}</span>
+    {% endif %}
+
     {{ user_team.name }}
+
+    {% if user_team.id == team_id %}
+    <i class="fas fa-fw fa-check ml-auto text-blue"></i>
+    {% endif %}
   </a>
   {% endfor %}
 

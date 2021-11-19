@@ -16,6 +16,7 @@ urlpatterns = [
     path("feedback", login_required(views.UserFeedback.as_view()), name="feedback"),
     # Trubo frames
     path("profile", login_required(frames.UserProfileModal.as_view()), name="profile"),
+    path("settings", login_required(frames.UserSettingsModal.as_view()), name="settings"),
 ]
 
 accounts_urlpatterns = [

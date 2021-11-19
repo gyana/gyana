@@ -29,11 +29,14 @@ export default class extends Controller {
 
   open(event) {
     this.turboFrameTarget.removeAttribute('src')
-    this.turboFrameTarget.innerHTML = `
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
-        </div>
-      `
+
+    if (this.turboFrameTarget.innerHTML == "") {
+      this.turboFrameTarget.innerHTML = `
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
+          </div>
+        `
+    }
 
     this.turboFrameTarget.setAttribute('src', event.currentTarget.getAttribute('data-src'))
 

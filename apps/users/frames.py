@@ -11,8 +11,8 @@ from .forms import CustomUserChangeForm
 from .models import CustomUser
 
 
-class UserProfileModal(PageTitleMixin, TurboFrameUpdateView):
-    template_name = "account/profile.html"
+class UserSettingsModal(PageTitleMixin, TurboFrameUpdateView):
+    template_name = "account/settings.html"
     model = CustomUser
     form_class = CustomUserChangeForm
     success_url = reverse_lazy("users:profile")
@@ -39,3 +39,14 @@ class UserProfileModal(PageTitleMixin, TurboFrameUpdateView):
 
         return super().form_valid(form)
 
+
+class UserProfileModal(PageTitleMixin, TurboFrameUpdateView):
+    template_name = "account/profile.html"
+    model = CustomUser
+    form_class = CustomUserChangeForm
+    success_url = reverse_lazy("users:profile")
+    page_title = "Your Account"
+    turbo_frame_dom_id = "users:profile"
+
+    def get_object(self, queryset=None):
+        return self.request.user
