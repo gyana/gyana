@@ -5,7 +5,6 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.functional import cached_property
-from honeybadger import honeybadger
 
 from apps.base import clients
 from apps.base.models import BaseModel
@@ -282,8 +281,9 @@ class Connector(DirtyFieldsMixin, BaseModel):
         try:
             self.schema_config = clients.fivetran().get_schemas(self)
             self.save()
-        except FivetranClientError as exc:
-            honeybadger.notify(exc)
+        except FivetranClientError:
+            # certain connectors fail to return schema objects
+            pass
 
     @property
     def setup_state_icon(self):
