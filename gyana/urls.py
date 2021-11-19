@@ -80,6 +80,7 @@ teams_urlpatterns = [
 urlpatterns = [
     path("admin_tools/", include("admin_tools.urls")),
     path("admin/", admin.site.urls),
+    path("dateslicer/", include("apps.dateslicers.urls")),
     path("exports/", include("apps.exports.urls")),
     path("users/", include("apps.users.urls")),
     path("filters/", include("apps.filters.urls")),
