@@ -103,6 +103,11 @@ class Widget(CloneMixin, BaseModel):
     stack_100_percent = models.BooleanField(default=False)
     error = models.CharField(max_length=300, null=True)
 
+    dateslice_column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+    )
+
     _clone_m2o_or_o2m_fields = [
         "aggregations",
         "filters",
