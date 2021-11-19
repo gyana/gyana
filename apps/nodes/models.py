@@ -278,6 +278,9 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
 
 class NodeParents(models.Model):
+    class Meta:
+        unique_together = ("child", "position")
+        ordering = ("position",)
 
     child = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="parent_set")
     parent = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="child_set")
