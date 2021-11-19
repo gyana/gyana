@@ -81,8 +81,15 @@
   </turbo-frame>
 
   {% if request.GET.mode != 'view' %}
-  {% include 'dashboards/_add_widget.html' with choices=choices categories=categories %}
+    {% include 'dashboards/_add_widget.html' with choices=choices categories=categories %}
+
+    <turbo-frame id='dateslicers:create'>
+      {% include 'dateslicers/create.html' with dashboard=dashboard %}
+    </turbo-frame>
+
   {% endif %}
+
+
 
   <turbo-frame id="dashboard-share"  src="{% url 'dashboards:share' object.id %}">
     <button class="button button--circle {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}">

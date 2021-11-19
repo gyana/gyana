@@ -4,9 +4,10 @@ from django.forms.widgets import Input, TextInput
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
 from apps.base.utils import create_column_choices
+from apps.base.widgets import DatetimeInput
 from apps.filters.models import NO_VALUE, PREDICATE_MAP, Filter
 
-from .widgets import DatetimeInput, SelectAutocomplete
+from .widgets import SelectAutocomplete
 
 IBIS_TO_TYPE = {
     "Int8": Filter.Type.INTEGER,

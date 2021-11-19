@@ -14,6 +14,7 @@ from .widgets import SourceSelect, VisualSelect
 class GenericWidgetForm(LiveUpdateForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
+    dateslice_column = forms.ChoiceField(choices=())
 
     class Meta:
         model = Widget
@@ -25,6 +26,7 @@ class GenericWidgetForm(LiveUpdateForm):
             "sort_by",
             "sort_ascending",
             "stack_100_percent",
+            "dateslice_column",
         ]
         widgets = {"kind": VisualSelect(), "table": SourceSelect()}
 
@@ -40,9 +42,18 @@ class GenericWidgetForm(LiveUpdateForm):
             ).exclude(
                 source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
             )
+            table = self.get_live_field("table")
+            schema = Table.objects.get(pk=table).schema if table else None
+            if "dateslice_column" in self.fields and schema:
+                self.fields["dateslice_column"].choices = create_column_choices(schema)
 
     def get_live_fields(self):
-        return ["table", "kind"]
+        fields = ["table", "kind"]
+
+        if self.get_live_field("table"):
+            fields += ["dateslice_column"]
+
+        return fields
 
     def get_live_formsets(self):
         if self.get_live_field("table") is None:

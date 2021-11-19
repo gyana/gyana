@@ -1,4 +1,6 @@
 import ibis
+
+from apps.dateslicers.bigquery import slice_query
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget
@@ -35,7 +37,8 @@ def get_query_from_widget(widget: Widget):
 
     query = get_query_from_table(widget.table)
     query = get_query_from_filters(query, widget.filters.all())
-
+    if (date_slicer := widget.dashboard.date_slicer) and widget.dateslice_column:
+        query = slice_query(query, widget.dateslice_column, date_slicer)
     aggregations = widget.aggregations.all()
 
     groups = [widget.dimension] if widget.kind not in NO_DIMENSION_WIDGETS else []

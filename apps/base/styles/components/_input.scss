@@ -51,7 +51,7 @@ input[type='email'] {
   [type='password'] ~ .fa-fw::after {
     content: '\f070';
   }
-  
+
   [type='text'] ~ .fa-fw::after {
     content: '\f06e';
   }
@@ -215,6 +215,10 @@ input.input,
     align-items: center;
     flex-direction: row;
     gap: 0.8rem;
+  }
+
+  &--sm {
+    padding: 0.4rem;
   }
 }
 

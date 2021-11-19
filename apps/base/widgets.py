@@ -1,4 +1,6 @@
-from django.forms.widgets import Select
+import datetime as dt
+
+from django.forms.widgets import Input, Select
 
 
 class SelectWithDisable(Select):
@@ -19,4 +21,19 @@ class SelectWithDisable(Select):
                 if (value := option["value"]) in self.disabled:
                     option["attrs"]["disabled"] = True
                     option["attrs"]["title"] = self.disabled[value]
+        return context
+
+
+# Adding the html with input type="datetime-local" wasn't enoug
+# Djangos DatetimeInput already formats the value to a string that is
+# Hard to overwrite (basically we would need to hardcode the `T` into the string)
+class DatetimeInput(Input):
+    input_type = "datetime-local"
+    template_name = "django/forms/widgets/input.html"
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["widget"]["value"] = (
+            value.isoformat() if isinstance(value, dt.datetime) else value
+        )
         return context

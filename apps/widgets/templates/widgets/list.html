@@ -13,7 +13,10 @@
     {% endif %}
   </header>
   {% endif %}
-  
+    {% if dashboard.date_slicer %}
+      <turbo-frame id='dateslicers:update' src="{% url 'dateslicers:update' dashboard.date_slicer.id %}">
+      </turbo-frame>
+    {% endif %}
   <div
     class="widgets__canvas"
     style="--background-color:{{ dashboard.background_color }};"

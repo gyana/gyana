@@ -1,14 +1,12 @@
 
-{% extends "web/app/settings_base.html" %}
-
-{% block app %}
-<h1>Create</h1>
 <form method="post" action="{% url 'dateslicers:create' %}" class="form">
   {% csrf_token %}
 
-  {% include "django/forms/default_form.html" %}
+  <input type='hidden' name='dashboard_id' value="{{dashboard.id}}"></input>
 
-  <button type="submit" class="button button--filled button--success">Create</button>
+  <button type="submit" class="button button--circle button--tertiary">
+    <i class="fa fa-calendar"></i>
+  </button>
 </form>
-{% endblock %}
+
 
