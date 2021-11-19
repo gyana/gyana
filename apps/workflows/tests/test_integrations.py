@@ -1,11 +1,10 @@
 import pytest
-from django.utils import timezone
+from django.db.models import Q
 from pytest_django.asserts import assertContains, assertRedirects
 
 from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
-from apps.base.tests.mock_data import TABLE
-from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.nodes.models import Node
+from apps.workflows.models import Workflow
 
 pytestmark = pytest.mark.django_db
 
@@ -55,74 +54,35 @@ def test_workflow_crudl(client, project_factory, logged_in_user, workflow_factor
     assertOK(r)
 
 
-def test_workflow_run(
-    client,
-    project_factory,
-    logged_in_user,
-    workflow_factory,
-    node_factory,
-    integration_table_factory,
-    bigquery,
+def test_workflow_duplication(
+    client, project_factory, logged_in_user, workflow_factory, node_factory
 ):
-    """Also tests last_run and out_of_date"""
-    mock_bq_client_with_schema(
-        bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
-    )
     project = project_factory(team=logged_in_user.teams.first())
-    workflow = workflow_factory(project=project)
+    name = "What is the universe?"
+    workflow = workflow_factory(project=project, name=name)
 
-    # check is out_of_date returns out_of_date has not been run
-    r = client.get(f"/workflows/{workflow.id}/out_of_date")
-    assertOK(r)
-    assert r.data["isOutOfDate"]
-    assert not r.data["hasBeenRun"]
-    output_node = node_factory(
-        kind=Node.Kind.OUTPUT, name="The answer", workflow=workflow
+    input_1, input_2 = node_factory.create_batch(
+        2, kind=Node.Kind.INPUT, workflow=workflow
     )
+    join_node = node_factory(kind=Node.Kind.JOIN, workflow=workflow)
+    join_node.parents.add(input_1)
+    join_node.parents.add(input_2)
 
-    # test running the workflow returns a dictionary with an error
-    r = client.post(f"/workflows/{workflow.id}/run_workflow")
-    assertOK(r)
-    assert r.data == {output_node.id: "node_result_none"}
+    r = client.post(f"/workflows/{workflow.id}/duplicate")
+    assertRedirects(r, f"/projects/{project.id}/workflows/", status_code=303)
 
-    input_node = node_factory(
-        kind=Node.Kind.INPUT, input_table=integration_table_factory(), workflow=workflow
-    )
+    assert Workflow.objects.count() == 2
+    assert Node.objects.count() == 6
 
-    output_node.parents.add(input_node)
+    new_workflow = Workflow.objects.filter(~Q(id=workflow.id)).first()
+    assert new_workflow.name == f"Copy of {name}"
+    assert new_workflow.last_run is None
 
-    with pytest.raises(Node.table.RelatedObjectDoesNotExist):
-        output_node.table
+    new_input_1, new_input_2 = new_workflow.nodes.filter(kind=Node.Kind.INPUT).all()
+    new_join_node = new_workflow.nodes.filter(kind=Node.Kind.JOIN).first()
 
-    # check last run returns not been run
-    r = client.get(f"/workflows/{workflow.id}/last_run")
-    assertOK(r)
-    assertContains(
-        r, "Press the run button after adding some nodes to run this workflow"
-    )
-
-    r = client.post(f"/workflows/{workflow.id}/run_workflow")
-    assertOK(r)
-    output_node.refresh_from_db()
-    assert output_node.table
-
-    # check last runs last run
-    r = client.get(f"/workflows/{workflow.id}/last_run")
-    assertContains(r, "Last run:")
-
-    # check out_of_date is not out_of_date and has been run
-    r = client.get(f"/workflows/{workflow.id}/out_of_date")
-    assertOK(r)
-    assert not r.data["isOutOfDate"]
-    assert r.data["hasBeenRun"]
-
-    # fake data update and check is out of date
-    # update workflow otherwise changes are overwritten
-    workflow.refresh_from_db()
-    workflow.data_updated = timezone.now()
-    workflow.save()
-    r = client.get(f"/workflows/{workflow.id}/out_of_date")
-    assertOK(r)
-    assert r.data["isOutOfDate"]
-    assert r.data["hasBeenRun"]
-    #
+    # TODO: assert that order is kept after merging parent order PR
+    assert {p.id for p in new_join_node.parents.all()} == {
+        new_input_1.id,
+        new_input_2.id,
+    }
