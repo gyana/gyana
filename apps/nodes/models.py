@@ -60,11 +60,11 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     kind = models.CharField(max_length=16, choices=Kind.choices)
     x = models.FloatField()
     y = models.FloatField()
-    parents = models.ManyToManyField(
+    _parents = models.ManyToManyField(
         "self",
         symmetrical=False,
         blank=True,
-        through="NodeParents",
+        through="Edge",
         through_fields=["child", "parent"],
     )
 
@@ -276,8 +276,12 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     def explanation(self):
         return NODE_CONFIG[self.kind]["explanation"]
 
+    @property
+    def parents(self):
+        return self._parents.order_by("child_set")
 
-class NodeParents(models.Model):
+
+class Edge(models.Model):
     class Meta:
         unique_together = ("child", "position")
         ordering = ("position",)

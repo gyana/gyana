@@ -14,13 +14,13 @@ class Migration(migrations.Migration):
         migrations.SeparateDatabaseAndState(
             database_operations=[
                 migrations.RunSQL(
-                    sql="ALTER TABLE nodes_node_parents RENAME TO nodes_nodeparents",
-                    reverse_sql="ALTER TABLE nodes_nodeparents RENAME TO nodes_node_parents",
+                    sql="ALTER TABLE nodes_node_parents RENAME TO nodes_edge",
+                    reverse_sql="ALTER TABLE nodes_edge RENAME TO nodes_node_parents",
                 ),
             ],
             state_operations=[
                 migrations.CreateModel(
-                    name="NodeParents",
+                    name="Edge",
                     fields=[
                         (
                             "id",
@@ -55,24 +55,24 @@ class Migration(migrations.Migration):
                     field=models.ManyToManyField(
                         blank=True,
                         related_name="children",
-                        through="nodes.NodeParents",
+                        through="nodes.Edge",
                         to="nodes.Node",
                     ),
                 ),
             ],
         ),
         migrations.AddField(
-            model_name="nodeparents",
+            model_name="edge",
             name="position",
             field=models.IntegerField(default=0),
         ),
         migrations.RenameField(
-            model_name="nodeparents",
+            model_name="edge",
             old_name="from_node",
             new_name="child",
         ),
         migrations.RenameField(
-            model_name="nodeparents",
+            model_name="edge",
             old_name="to_node",
             new_name="parent",
         ),
@@ -80,11 +80,11 @@ class Migration(migrations.Migration):
             model_name="node",
             name="parents",
             field=models.ManyToManyField(
-                blank=True, through="nodes.NodeParents", to="nodes.Node"
+                blank=True, through="nodes.Edge", to="nodes.Node"
             ),
         ),
         migrations.AlterField(
-            model_name="nodeparents",
+            model_name="edge",
             name="child",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
@@ -93,7 +93,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="nodeparents",
+            model_name="edge",
             name="parent",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
@@ -106,9 +106,9 @@ class Migration(migrations.Migration):
             """
 WITH order_cte AS (
     SELECT id, count(*) over(partition by child_id order by id) -1 AS position
-    FROM nodes_nodeparents
+    FROM nodes_edge
 )
-UPDATE nodes_nodeparents n
+UPDATE nodes_edge n
 SET position = c.position
 FROM order_cte c
 WHERE c.id = n.id
