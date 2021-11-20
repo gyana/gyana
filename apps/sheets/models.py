@@ -63,7 +63,8 @@ class Sheet(CloneMixin, BaseModel):
         from apps.sheets.sheets import get_last_modified_from_drive_file
 
         self.drive_modified_date = get_last_modified_from_drive_file(self)
-        self.save()
+        # avoid a race condition with the sync task
+        self.save(update_fields=["drive_modified_date"])
 
     @property
     def up_to_date(self):
