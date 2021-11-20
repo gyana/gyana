@@ -77,10 +77,6 @@ class Sheet(CloneMixin, BaseModel):
             return True
         return (timezone.now() - self.succeeded_at).days > RETRY_LIMIT_DAYS
 
-    @property
-    def last_run_at(self):
-        return max(filter(None, [self.succeeded_at, self.failed_at]), default=None)
-
     def update_next_daily_sync(self):
         if not self.is_scheduled:
             self.next_daily_sync = None

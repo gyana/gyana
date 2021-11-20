@@ -52,12 +52,6 @@ def test_integration_crudl(client, logged_in_user, sheet_factory):
     assertOK(r)
     assertLink(r, f"{DETAIL}/delete", "Delete")
 
-    r = client.post(f"{DETAIL}/settings", data={"name": "Store Info"})
-    assertRedirects(r, f"{DETAIL}/settings", status_code=303)
-
-    integration.refresh_from_db()
-    assert integration.name == "Store Info"
-
     # delete
     r = client.get(f"{DETAIL}/delete")
     assertOK(r)
