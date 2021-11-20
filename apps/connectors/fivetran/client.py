@@ -7,6 +7,8 @@ from django.conf import settings
 from ..models import Connector
 from .config import ServiceTypeEnum, get_services_obj
 
+RELOAD_SCHEMAS_TIMEOUT = 10
+
 # wrapper for the Fivetran connectors REST API, documented here
 # https://fivetran.com/docs/rest-api/connectors
 # on error, raise a FivetranClientError and it will be managed in
@@ -154,6 +156,7 @@ class FivetranClient:
         res = requests.post(
             f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}/schemas/reload",
             headers=settings.FIVETRAN_HEADERS,
+            timeout=RELOAD_SCHEMAS_TIMEOUT,
         ).json()
 
         if res["code"] != "Success":

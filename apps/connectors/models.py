@@ -254,9 +254,6 @@ class Connector(DirtyFieldsMixin, BaseModel):
         data = data or clients.fivetran().get(self)
         self.update_kwargs_from_fivetran(data)
 
-        if self.schema_config is None:
-            self.sync_schema_obj_from_fivetran()
-
         # update fivetran sync time if user has updated timezone/daily sync time
         # or daylight savings time is going in/out tomorrow
         self.daily_sync_time = self.integration.project.next_sync_time_utc_string
@@ -268,6 +265,8 @@ class Connector(DirtyFieldsMixin, BaseModel):
 
         # a new sync is completed
         if self.succeeded_at != self.bigquery_succeeded_at:
+            if self.schema_config is None:
+                self.sync_schema_obj_from_fivetran()
             end_connector_sync(self, not self.integration.table_set.exists())
 
         if self.is_dirty():
