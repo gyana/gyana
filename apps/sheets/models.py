@@ -71,11 +71,10 @@ class Sheet(CloneMixin, BaseModel):
 
     @property
     def retry_limit_exceeded(self):
-        # stop retrying a failed connected after three days of errors with no
-        # updates from the user
-        return (
-            timezone.now() - max(filter(None, [self.succeeded_at, self.updated]))
-        ).days > RETRY_LIMIT_DAYS
+        # stop retrying a failed connected after three days of errors
+        if self.succeeded_at is None:
+            return True
+        return (timezone.now() - self.succeeded_at).days > RETRY_LIMIT_DAYS
 
     @property
     def last_run_at(self):
