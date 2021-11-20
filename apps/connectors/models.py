@@ -188,6 +188,8 @@ class Connector(DirtyFieldsMixin, BaseModel):
         # all the datasets derived from the fivetran schema and schema_config information
 
         if self.conf.service_type == ServiceTypeEnum.DATABASE:
+            if self.schema_config is None:
+                return set()
             return self.schema_obj.all_datasets
 
         if self.conf.service_type in [
