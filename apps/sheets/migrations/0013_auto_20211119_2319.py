@@ -6,28 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sheets', '0012_auto_20211105_0139'),
+        ("sheets", "0012_auto_20211105_0139"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='sheet',
-            name='failed_at',
+            model_name="sheet",
+            name="failed_at",
             field=models.DateTimeField(null=True),
         ),
         migrations.AddField(
-            model_name='sheet',
-            name='is_scheduled',
+            model_name="sheet",
+            name="is_scheduled",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='sheet',
-            name='next_daily_sync',
+            model_name="sheet",
+            name="next_daily_sync",
             field=models.DateTimeField(null=True),
         ),
         migrations.AddField(
-            model_name='sheet',
-            name='succeeded_at',
+            model_name="sheet",
+            name="succeeded_at",
             field=models.DateTimeField(null=True),
         ),
     ]

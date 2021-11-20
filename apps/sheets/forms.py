@@ -1,8 +1,9 @@
 import googleapiclient
-from apps.base import clients
-from apps.base.forms import BaseModelForm
 from django import forms
 from django.core.exceptions import ValidationError
+
+from apps.base import clients
+from apps.base.forms import BaseModelForm
 
 from .models import Sheet
 from .sheets import get_sheets_id_from_url
@@ -11,9 +12,12 @@ from .sheets import get_sheets_id_from_url
 class SheetCreateForm(BaseModelForm):
     class Meta:
         model = Sheet
-        fields = ["url"]
+        fields = ["url", "is_scheduled"]
         help_texts = {}
-        labels = {"url": "Google Sheets URL"}
+        labels = {
+            "url": "Google Sheets URL",
+            "is_scheduled": "Automatically sync new data",
+        }
 
     def __init__(self, *args, **kwargs):
         url = kwargs.pop("url")
@@ -23,6 +27,9 @@ class SheetCreateForm(BaseModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields["url"].initial = url
+        self.fields[
+            "is_scheduled"
+        ].help_text = f"Daily at {self._project.daily_schedule_time} in {self._project.team.timezone}"
 
     def clean_url(self):
         url = self.cleaned_data["url"]
