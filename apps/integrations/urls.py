@@ -1,5 +1,6 @@
-from apps.projects.access import login_and_project_required
 from django.urls import path
+
+from apps.projects.access import login_and_project_required
 
 from . import cache, frames, views
 from .access import login_and_integration_required
@@ -61,11 +62,6 @@ project_urlpatterns = (
             "<hashid:pk>",
             login_and_project_required(views.IntegrationDetail.as_view()),
             name="detail",
-        ),
-        path(
-            "<hashid:pk>/update",
-            login_and_project_required(views.IntegrationUpdate.as_view()),
-            name="update",
         ),
         path(
             "<hashid:pk>/delete",

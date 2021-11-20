@@ -99,7 +99,7 @@ class TeamUpdateForm(BaseModelForm):
 
     def post_save(self, instance):
         if self._timezone_is_dirty:
-            instance.update_connectors_daily_sync_time()
+            instance.update_daily_sync_time()
 
 
 class MembershipUpdateForm(forms.ModelForm):

@@ -101,12 +101,17 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
             or 0
         )
 
-    def update_connectors_daily_sync_time(self):
+    def update_daily_sync_time(self):
         from apps.connectors.models import Connector
+        from apps.sheets.models import Sheet
 
         connectors = Connector.objects.filter(integration__project=self).all()
         for connector in connectors:
             connector.sync_updates_from_fivetran()
+
+        sheets = Sheet.objects.filter(integration__project=self).all()
+        for sheet in sheets:
+            sheet.update_next_daily_sync()
 
     def get_absolute_url(self):
         return reverse("projects:detail", args=(self.id,))

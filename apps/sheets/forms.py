@@ -1,5 +1,4 @@
 import googleapiclient
-from django import forms
 from django.core.exceptions import ValidationError
 
 from apps.base import clients
@@ -52,9 +51,10 @@ class SheetCreateForm(BaseModelForm):
         instance.create_integration(
             self._sheet["properties"]["title"], self._created_by, self._project
         )
+        instance.update_next_daily_sync()
 
 
-class SheetUpdateForm(forms.ModelForm):
+class SheetUpdateForm(BaseModelForm):
     class Meta:
         model = Sheet
         fields = ["cell_range"]
@@ -73,3 +73,19 @@ class SheetUpdateForm(forms.ModelForm):
             raise ValidationError(e.reason.strip())
 
         return cell_range
+
+
+class SheetSettingsForm(BaseModelForm):
+    class Meta:
+        model = Sheet
+        fields = ["is_scheduled"]
+        labels = {"is_scheduled": "Automatically sync new data"}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        project = self.instance.integration.project
+        help_text = f"Daily at {project.daily_schedule_time} in {project.team.timezone}"
+        self.fields["is_scheduled"].help_text = help_text
+
+    def pre_save(self, instance):
+        instance.update_next_daily_sync()

@@ -74,9 +74,18 @@ class Sheet(CloneMixin, BaseModel):
         # stop retrying a failed connected after three days of errors with no
         # updates from the user
         return (
-            timezone.now() - max(self.succeeded_at, self.updated)
+            timezone.now() - max(filter(None, [self.succeeded_at, self.updated]))
         ).days > RETRY_LIMIT_DAYS
 
+    @property
+    def last_run_at(self):
+        return max(filter(None, [self.succeeded_at, self.failed_at]), default=None)
+
     def update_next_daily_sync(self):
-        self.next_daily_sync = self.integration.project.next_daily_sync
+        if not self.is_scheduled:
+            self.next_daily_sync = None
+        # if self.next_daily_sync > self.last_run_at, wait for the current job
+        # to complete, and it will automatically update the next_daily_sync
+        elif self.next_daily_sync is None or self.last_run_at < self.next_daily_sync:
+            self.next_daily_sync = self.integration.project.next_daily_sync
         self.save()
