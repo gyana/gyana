@@ -7,6 +7,8 @@ from django.conf import settings
 from ..models import Connector
 from .config import ServiceTypeEnum, get_services_obj
 
+# certain connectors (e.g. azure_sql_db) will block /schemas/reload for >2 mins
+# before failing due to authentication error
 RELOAD_SCHEMAS_TIMEOUT = 10
 
 # wrapper for the Fivetran connectors REST API, documented here
