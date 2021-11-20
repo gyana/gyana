@@ -84,8 +84,8 @@ class Sheet(CloneMixin, BaseModel):
     def update_next_daily_sync(self):
         if not self.is_scheduled:
             self.next_daily_sync = None
-        # if self.next_daily_sync > self.last_run_at, wait for the current job
+        # if timezone.now() > self.next_daily_sync, wait for the current job
         # to complete, and it will automatically update the next_daily_sync
-        elif self.next_daily_sync is None or self.last_run_at < self.next_daily_sync:
+        elif self.next_daily_sync is None or timezone.now() < self.next_daily_sync:
             self.next_daily_sync = self.integration.project.next_daily_sync
         self.save()
