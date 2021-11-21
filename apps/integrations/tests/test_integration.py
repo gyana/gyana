@@ -1,4 +1,8 @@
+import hashlib
+
 import pytest
+from pytest_django.asserts import assertContains, assertRedirects
+
 from apps.base.tests.asserts import (
     assertFormRenders,
     assertLink,
@@ -9,9 +13,12 @@ from apps.base.tests.mocks import (
     mock_bq_client_with_records,
     mock_bq_client_with_schema,
 )
-from pytest_django.asserts import assertContains, assertRedirects
 
 pytestmark = pytest.mark.django_db
+
+
+def md5(content):
+    return hashlib.md5(content.encode("utf-8")).hexdigest()
 
 
 def test_integration_crudl(client, logged_in_user, sheet_factory):
@@ -122,6 +129,23 @@ def test_integration_schema_and_preview(
     assert bigquery.get_query_results.call_count == 2
     assert bigquery.get_query_results.call_args.args == (
         "SELECT *\nFROM `project.dataset.table`\nLIMIT 5 OFFSET 15",
+    )
+
+    # preview page 2 with sort
+    SORT_URL = (
+        f"/integrations/{integration.id}/grid?table_id=&page=2&sort={md5('name')}"
+    )
+    assertLink(r, SORT_URL)
+
+    r = client.get(SORT_URL)
+    assertOK(r)
+    assertSelectorLength(r, "table tbody tr", 20)
+    assertContains(r, "Vayu")
+    assertContains(r, "2")
+
+    assert bigquery.get_query_results.call_count == 3
+    assert bigquery.get_query_results.call_args.args == (
+        "SELECT *\nFROM `project.dataset.table`\nORDER BY `name` DESC\nLIMIT 5 OFFSET 15",
     )
 
 

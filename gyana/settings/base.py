@@ -421,7 +421,7 @@ KYXRy8564UME3qd3AgMBAAE=
 -----END PUBLIC KEY-----""",
 )
 
-DJPADDLE_SANDBOX = True
+DJPADDLE_SANDBOX = os.getenv("DJPADDLE_SANDBOX", default="True") == "True"
 DJPADDLE_SUBSCRIBER_MODEL = "teams.Team"
 DJPADDLE_SUBSCRIBER_BY_PAYLOAD = "apps.teams.paddle.get_subscriber_by_payload"
 DJPADDLE_LINK_STALE_SUBSCRIPTIONS = False

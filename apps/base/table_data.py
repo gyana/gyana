@@ -78,10 +78,15 @@ class BigQueryTableData(TableData):
 
         return total_rows
 
+    def get_column_from_md5(self, md5):
+        return self.table.columns[md5].verbose_name
+
     def order_by(self, aliases):
-        self.data = self.data.sort_by(
-            [(alias.replace("-", ""), alias.startswith("-")) for alias in aliases]
-        )
+        sort_by = [
+            (self.get_column_from_md5(alias.replace("-", "")), alias.startswith("-"))
+            for alias in aliases
+        ]
+        self.data = self.data.sort_by(sort_by)
 
     def set_table(self, table):
         """
