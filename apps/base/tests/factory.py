@@ -111,6 +111,7 @@ class IntegrationTableFactory(factory.django.DjangoModelFactory):
         model = Table
 
     project = factory.SubFactory(ProjectFactory)
+    integration = factory.SubFactory(IntegrationFactory)
     source = Table.Source.INTEGRATION
     bq_table = "table"
     bq_dataset = "dataset"
