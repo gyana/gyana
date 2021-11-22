@@ -44,7 +44,7 @@ def test_workflow_run(
         kind=Node.Kind.INPUT, input_table=integration_table_factory(), workflow=workflow
     )
 
-    output_node.parents.add(input_node)
+    output_node._parents.add(input_node)
 
     with pytest.raises(Node.table.RelatedObjectDoesNotExist):
         output_node.table
