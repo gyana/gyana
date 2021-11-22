@@ -13,10 +13,16 @@
     {% endif %}
   </header>
   {% endif %}
-    {% if dashboard.date_slicer %}
-      <turbo-frame id='dateslicers:update' src="{% url 'dateslicers:update' dashboard.date_slicer.id %}">
-      </turbo-frame>
-    {% endif %}
+    
+      {% if dashboard.date_slicer %}
+        <turbo-frame id='dateslicers:update' src="{% url 'dateslicers:update' dashboard.date_slicer.id %}">
+          <div class='placeholder-scr'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          </div>
+        </turbo-frame>
+        {% else %}
+        <div id='dateslicers:update-stream'></div>
+      {% endif %}
   <div
     class="widgets__canvas"
     style="--background-color:{{ dashboard.background_color }};"

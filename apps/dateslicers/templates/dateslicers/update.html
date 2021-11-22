@@ -1,11 +1,13 @@
 
 
-<form method="post" action="{% url 'dateslicers:update' object.id %}" class="form--no-layout">
-  {% csrf_token %}
+<div id='dateslicers:update-stream' class='dateslicer-remove'>
+  <form method="post" action="{% url 'dateslicers:update' object.id %}" class="form--no-layout">
+    {% csrf_token %}
 
-  <div class='flex flex-row items-center'>
-    {% include "django/forms/default_form.html" %}
-  </div>
-</form>
-
+    <div class='flex flex-row items-center'>
+      {% include "django/forms/default_form.html" %}
+    </div>
+  </form>
+  {% include 'dateslicers/delete.html' %}
+</div>
 
