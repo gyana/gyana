@@ -18,8 +18,7 @@ pytestmark = pytest.mark.django_db
 def test_widget_crudl(
     client,
     dashboard_factory,
-    project_factory,
-    logged_in_user,
+    project,
     integration_table_factory,
     bigquery,
     widget_factory,
@@ -27,7 +26,6 @@ def test_widget_crudl(
     mock_bq_client_with_schema(
         bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
     )
-    project = project_factory(team=logged_in_user.teams.first())
     table = integration_table_factory(project=project)
     dashboard = dashboard_factory(project=project)
 

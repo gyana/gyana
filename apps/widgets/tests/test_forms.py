@@ -22,12 +22,10 @@ pytestmark = pytest.mark.django_db
 @pytest.fixture
 def setup(
     bigquery,
-    logged_in_user,
-    project_factory,
+    project,
     dashboard_factory,
     integration_table_factory,
 ):
-    project = project_factory(team=logged_in_user.teams.first())
     mock_bq_client_with_schema(
         bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
     )
