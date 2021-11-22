@@ -156,7 +156,7 @@ def test_update(client, setup):
 def test_duplicate(client, setup):
     workflows, nodes = setup
     join_node = nodes[workflows[1]]["join"]
-
+    input_1, input_2 = nodes[workflows[1]]["inputs"]
     r = client.post(f"/nodes/{join_node.id}/duplicate")
     assertOK(r)
     assert Node.objects.filter(workflow=workflows[1], kind=Node.Kind.JOIN).count() == 2
@@ -164,7 +164,7 @@ def test_duplicate(client, setup):
     assert data["name"] == "Copy of Join" and data["x"] == 50 and data["y"] == 50
     new_join = Node.objects.filter(workflow=workflows[1], kind=Node.Kind.JOIN).last()
     assert new_join.name == "Copy of Join"
-    assert [p.id for p in new_join.parents.all()] == [5, 6]
+    assert [p.id for p in new_join.parents.all()] == [input_1.id, input_2.id]
 
 
 def test_update_positions(client, setup):
