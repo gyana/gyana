@@ -12,7 +12,7 @@ def create_and_connect(kind, node_factory, table, workflow):
         kind=Node.Kind.INPUT, input_table=table, workflow=workflow
     )
     node = node_factory(kind=kind, workflow=workflow, x=50, y=50)
-    node._parents.add(input_node)
+    node.parents.add(input_node)
     return node
 
 
@@ -95,7 +95,7 @@ def test_join_form(setup, node_factory):
     secondary_input = node_factory(
         kind=Node.Kind.INPUT, input_table=table, workflow=workflow, x=25, y=25
     )
-    node._parents.add(secondary_input, through_defaults={"position": 1})
+    node.parents.add(secondary_input, through_defaults={"position": 1})
     form = KIND_TO_FORM[node.kind](instance=node)
 
     assert set(form.fields.keys()) == {

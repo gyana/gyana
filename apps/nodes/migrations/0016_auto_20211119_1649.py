@@ -6,21 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('nodes', '0015_node_parents_through_model'),
+        ("nodes", "0015_node_parents_through_model"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='edge',
-            options={'ordering': ('position',)},
-        ),
-        migrations.RenameField(
-            model_name='node',
-            old_name='parents',
-            new_name='_parents',
+            name="edge",
+            options={"ordering": ("position",)},
         ),
         migrations.AlterUniqueTogether(
-            name='edge',
-            unique_together={('child', 'position')},
+            name="edge",
+            unique_together={("child", "position")},
         ),
     ]

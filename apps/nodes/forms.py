@@ -123,7 +123,7 @@ class JoinNodeForm(NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        parents = self.instance.parents.order_by("parent_set__position").all()
+        parents = self.instance.parents_ordered.all()
 
         self.fields["join_left"] = forms.ChoiceField(
             choices=create_column_choices(parents.first().schema),

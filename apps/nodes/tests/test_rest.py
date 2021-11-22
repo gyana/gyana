@@ -28,8 +28,8 @@ def setup(workflow_factory, node_factory, project):
         nodes[workflow] = workflow_nodes
 
     second_join = nodes[workflows[1]]["join"]
-    second_join._parents.add(nodes[workflows[1]]["inputs"][0])
-    second_join._parents.add(
+    second_join.parents.add(nodes[workflows[1]]["inputs"][0])
+    second_join.parents.add(
         nodes[workflows[1]]["inputs"][1], through_defaults={"position": 1}
     )
 

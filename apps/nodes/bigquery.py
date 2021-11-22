@@ -343,7 +343,7 @@ def get_query_from_node(node):
 
     for node in nodes:
         func = NODE_FROM_CONFIG[node.kind]
-        args = [results[parent] for parent in node.parents.all()]
+        args = [results[parent] for parent in node.parents_ordered.all()]
 
         if not _validate_arity(func, len(args)):
             raise NodeResultNone(node)

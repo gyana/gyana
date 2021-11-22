@@ -66,8 +66,8 @@ def test_workflow_duplication(
     )
     join_node = node_factory(kind=Node.Kind.JOIN, workflow=workflow)
     # Hard code position in reverse addition order
-    join_node._parents.add(input_1, through_defaults={"position": 1})
-    join_node._parents.add(input_2, through_defaults={"position": 0})
+    join_node.parents.add(input_1, through_defaults={"position": 1})
+    join_node.parents.add(input_2, through_defaults={"position": 0})
 
     r = client.post(f"/workflows/{workflow.id}/duplicate")
     assertRedirects(r, f"/projects/{project.id}/workflows/", status_code=303)
