@@ -23,28 +23,28 @@
     }
 
     .column {
-      &::before {
+      a::before {
         color: var(--c-black-50);
         display: inline;
         font-family: 'Font Awesome 5 Pro';
         font-weight: 900;
-        margin-left: 0.5em;
+        margin-right: 0.6rem;
         position: relative;
       }
 
-      &--numeric::before {
+      &--numeric a::before {
         content: '\f292';
       }
 
-      &--string::before {
+      &--string a::before {
         content: '\f031';
       }
 
-      &--time::before {
+      &--time a::before {
         content: '\f073';
       }
 
-      &--boolean::before {
+      &--boolean a::before {
         content: '\f058';
       }
     }
@@ -56,7 +56,7 @@
         display: inline;
         font-family: 'Font Awesome 5 Pro';
         font-weight: 900;
-        margin-left: 0.5em;
+        margin-left: 0.6rem;
         position: relative;
       }
 
