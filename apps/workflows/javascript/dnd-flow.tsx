@@ -46,7 +46,7 @@ const DnDFlow = ({ client, workflowId }) => {
   const updateParents = (id: string, parents: string[]) =>
     client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
       id,
-      parents,
+      parents: parents.map((p) => ({ parent_id: p })),
     })
 
   const getIncomingNodes = (target: string) => {
@@ -178,8 +178,8 @@ const DnDFlow = ({ client, workflowId }) => {
             return [
               ...acc,
               ...curr.parents.map((p) => ({
-                id: `reactflow__edge-${p}null-${curr.id}null`,
-                source: p.toString(),
+                id: `reactflow__edge-${p.parent_id}null-${curr.id}null`,
+                source: p.parent_id.toString(),
                 sourceHandle: null,
                 type: 'smoothstep',
                 targetHandle: null,

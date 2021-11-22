@@ -74,7 +74,7 @@ def identify_user(user: CustomUser, signup_source=None):
     }
 
     if signup_source is not None:
-        # appsumo OR waitlist OR website
+        # appsumo OR waitlist OR invite OR website
         traits["signup_source"] = signup_source
 
     analytics.identify(user.id, traits)

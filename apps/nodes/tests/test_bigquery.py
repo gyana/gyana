@@ -7,6 +7,10 @@ from unittest.mock import MagicMock, Mock
 
 import pandas as pd
 import pytest
+from django.utils import timezone
+from google.cloud.bigquery.schema import SchemaField
+from google.cloud.bigquery.table import Table as BqTable
+
 from apps.base import clients
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import TABLE_NAME, PickableMock
@@ -25,9 +29,6 @@ from apps.nodes.bigquery import (
 )
 from apps.nodes.models import Node
 from apps.teams.models import CreditTransaction
-from django.utils import timezone
-from google.cloud.bigquery.schema import SchemaField
-from google.cloud.bigquery.table import Table as BqTable
 
 pytestmark = pytest.mark.django_db
 
@@ -187,7 +188,8 @@ def test_join_node(setup):
         join_left="id",
         join_right="id",
     )
-    join_node.parents.add(input_node, second_input_node)
+    join_node.parents.add(input_node)
+    join_node.parents.add(second_input_node, through_defaults={"position": 1})
 
     query = get_query_from_node(join_node)
     # Mocking the table conditionally requires a little bit more work
@@ -249,7 +251,8 @@ def test_union_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    union_node.parents.add(input_node, second_input_node)
+    union_node.parents.add(input_node)
+    union_node.parents.add(second_input_node, through_defaults={"position": 1})
 
     assert get_query_from_node(union_node).compile() == UNION_QUERY
 
@@ -268,7 +271,8 @@ def test_except_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    except_node.parents.add(input_node, second_input_node)
+    except_node.parents.add(input_node)
+    except_node.parents.add(second_input_node, through_defaults={"position": 1})
 
     assert get_query_from_node(except_node).compile() == UNION_QUERY.replace(
         "UNION ALL", "EXCEPT DISTINCT"
@@ -284,7 +288,8 @@ def test_intersect_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    intersect_node.parents.add(input_node, second_input_node)
+    intersect_node.parents.add(input_node)
+    intersect_node.parents.add(second_input_node, through_defaults={"position": 1})
 
     assert get_query_from_node(intersect_node).compile() == UNION_QUERY.replace(
         "UNION ALL", "INTERSECT DISTINCT"

@@ -155,7 +155,7 @@ def test_private_projects(client, logged_in_user):
 def test_free_tier_project_limit(client, logged_in_user, project_factory):
     # Create 3 projects
     team = logged_in_user.teams.first()
-    [project_factory(team=team) for i in range(3)]
+    project_factory.create_batch(3, team=team)
 
     r = client.get(f"/teams/{team.id}")
     assertSelectorText(

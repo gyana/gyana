@@ -1,7 +1,6 @@
-from django.utils.functional import cached_property
-
 from django import forms
 from django.forms.widgets import HiddenInput
+from django.utils.functional import cached_property
 
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.utils import create_column_choices
@@ -124,12 +123,14 @@ class JoinNodeForm(NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        parents = self.instance.parents_ordered.all()
+
         self.fields["join_left"] = forms.ChoiceField(
-            choices=create_column_choices(self.instance.parents.first().schema),
+            choices=create_column_choices(parents.first().schema),
             help_text=self.fields["join_left"].help_text,
         )
         self.fields["join_right"] = forms.ChoiceField(
-            choices=create_column_choices(self.instance.parents.last().schema),
+            choices=create_column_choices(parents.last().schema),
             help_text=self.fields["join_right"].help_text,
         )
 

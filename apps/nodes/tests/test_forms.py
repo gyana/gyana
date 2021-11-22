@@ -1,7 +1,8 @@
 import pytest
+from django.http import QueryDict
+
 from apps.nodes.forms import KIND_TO_FORM
 from apps.nodes.models import Node
-from django.http import QueryDict
 
 pytestmark = pytest.mark.django_db
 
@@ -94,7 +95,7 @@ def test_join_form(setup, node_factory):
     secondary_input = node_factory(
         kind=Node.Kind.INPUT, input_table=table, workflow=workflow, x=25, y=25
     )
-    node.parents.add(secondary_input)
+    node.parents.add(secondary_input, through_defaults={"position": 1})
     form = KIND_TO_FORM[node.kind](instance=node)
 
     assert set(form.fields.keys()) == {

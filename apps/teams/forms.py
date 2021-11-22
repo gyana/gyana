@@ -36,10 +36,10 @@ class TeamSignupForm(SignupForm):
         cleaned_data = super().clean()
         email = cleaned_data["email"].lower()
 
-        waitlist_approved = ApprovedWaitlistEmail.check_approved(email)
-        accepted_invite = Invite.check_email_accepted(email)
+        self._waitlist_approved = ApprovedWaitlistEmail.check_approved(email)
+        self._accepted_invite = Invite.check_email_accepted(email)
 
-        if not waitlist_approved and not accepted_invite:
+        if not self._waitlist_approved and not self._accepted_invite:
             raise forms.ValidationError(
                 mark_safe(
                     'Gyana is currently invite only. <a href="https://www.gyana.com" class="link">Join our waitlist.</a>'
@@ -48,7 +48,11 @@ class TeamSignupForm(SignupForm):
 
     def save(self, request):
         user = super().save(request)
-        identify_user(user, signup_source="waitlist")
+        # prefer to assign as an invite than a waitlist
+        if self._accepted_invite:
+            identify_user(user, signup_source="invite")
+        elif self._waitlist_approved:
+            identify_user(user, signup_source="waitlist")
 
         analytics.track(user.id, SIGNED_UP_EVENT)
 

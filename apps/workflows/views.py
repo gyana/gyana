@@ -1,4 +1,13 @@
 import analytics
+from django import forms
+from django.db.models.query import QuerySet
+from django.http.response import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.utils import timezone
+from django.views.generic.edit import DeleteView
+from django_tables2 import SingleTableView
+
 from apps.base.analytics import (
     WORKFLOW_CREATED_EVENT,
     WORKFLOW_CREATED_EVENT_FROM_INTEGRATION,
@@ -9,14 +18,6 @@ from apps.integrations.models import Integration
 from apps.nodes.config import get_node_config_with_arity
 from apps.nodes.models import Node
 from apps.projects.mixins import ProjectMixin
-from django import forms
-from django.db.models.query import QuerySet
-from django.http.response import HttpResponse
-from django.shortcuts import get_object_or_404
-from django.urls import reverse
-from django.utils import timezone
-from django.views.generic.edit import DeleteView
-from django_tables2 import SingleTableView
 
 from .forms import WorkflowForm, WorkflowFormCreate
 from .models import Workflow
@@ -162,8 +163,10 @@ class WorkflowDuplicate(TurboUpdateView):
         # Then copy the relationships
         for node in nodes:
             node_clone = node_map[node]
-            for parent in node.parents.iterator():
-                node_clone.parents.add(node_map[parent])
+            for parent in node.parent_set.iterator():
+                node_clone.parent_set.create(
+                    parent_id=node_map[parent.parent].id, position=parent.position
+                )
 
         return r
 

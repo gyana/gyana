@@ -1,7 +1,6 @@
 import json
 
 import coreapi
-from apps.base.analytics import NODE_CONNECTED_EVENT, NODE_CREATED_EVENT, track_node
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
@@ -11,6 +10,8 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.schemas import AutoSchema
+
+from apps.base.analytics import NODE_CONNECTED_EVENT, NODE_CREATED_EVENT, track_node
 
 from .models import NODE_CONFIG, Node
 from .serializers import NodeSerializer
@@ -65,8 +66,8 @@ def duplicate_node(request, pk):
     )
 
     # Add more M2M here if necessary
-    for parent in node.parents.iterator():
-        clone.parents.add(parent)
+    for parent in node.parent_set.iterator():
+        clone.parents.add(parent.parent, through_defaults={"position": parent.position})
     return Response(NodeSerializer(clone).data)
 
 
