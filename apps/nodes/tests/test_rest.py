@@ -32,6 +32,7 @@ def setup(workflow_factory, node_factory, project):
     second_join.parents.add(
         nodes[workflows[1]]["inputs"][1], through_defaults={"position": 1}
     )
+    return workflows, nodes
 
 
 def test_create(client, workflow_factory, project):
@@ -45,41 +46,44 @@ def test_create(client, workflow_factory, project):
 
 
 def test_list(client, setup):
+    workflows, _ = setup
     r = client.get(API_URL)
     assertOK(r)
     assert r.data["count"] == 8
 
     # filter by workflow
-    workflow = Workflow.objects.first()
-    r = client.get(f"{API_URL}?workflow={workflow.id}")
+    r = client.get(f"{API_URL}?workflow={workflows[0].id}")
     assertOK(r)
     assert r.data["count"] == 4
 
 
 def test_delete(client, setup):
-    workflow = Workflow.objects.first()
-    join_node = Node.objects.filter(workflow=workflow, kind=Node.Kind.JOIN).first()
+    workflows, nodes = setup
+    join_node = nodes[workflows[0]]["join"]
     r = client.delete(f"{API_URL}{join_node.id}/")
     assert r.status_code == 204
 
-    assert Node.objects.filter(workflow=workflow, kind=Node.Kind.JOIN).first() is None
+    assert (
+        Node.objects.filter(workflow=workflows[0], kind=Node.Kind.JOIN).first() is None
+    )
 
 
 def test_get(client, setup):
-    workflow = Workflow.objects.first()
-    join_node = Node.objects.filter(workflow=workflow, kind=Node.Kind.JOIN).first()
+    workflows, nodes = setup
+    input_nodes = nodes[workflows[1]]["inputs"]
+    join_node = nodes[workflows[1]]["join"]
     r = client.get(f"{API_URL}{join_node.id}/")
     assertOK(r)
     assert r.json() == {
-        "id": 7,
+        "id": join_node.id,
         "kind": "join",
         "name": None,
         "x": 0.0,
         "y": 0.0,
-        "workflow": workflow.id,
+        "workflow": workflows[1].id,
         "parents": [
-            {"id": 1, "parent_id": 5, "position": 0},
-            {"id": 2, "parent_id": 6, "position": 1},
+            {"id": p.id, "parent_id": p.parent_id, "position": p.position}
+            for p in join_node.parent_set.all()
         ],
         "description": "None=None inner",
         "error": None,
@@ -88,9 +92,9 @@ def test_get(client, setup):
 
 
 def test_update(client, setup):
-    workflow = Workflow.objects.last()
-    join_node = Node.objects.filter(workflow=workflow, kind=Node.Kind.JOIN).first()
-    input_nodes = Node.objects.filter(workflow=workflow, kind=Node.Kind.INPUT).all()
+    workflows, nodes = setup
+    join_node = nodes[workflows[0]]["join"]
+    input_nodes = nodes[workflows[0]]["inputs"]
     # update name
     r = client.patch(
         f"{API_URL}{join_node.id}/",
@@ -150,27 +154,32 @@ def test_update(client, setup):
 
 
 def test_duplicate(client, setup):
-    workflow = Workflow.objects.first()
-    join_node = Node.objects.filter(workflow=workflow, kind=Node.Kind.JOIN).first()
+    workflows, nodes = setup
+    join_node = nodes[workflows[1]]["join"]
 
     r = client.post(f"/nodes/{join_node.id}/duplicate")
     assertOK(r)
-    assert Node.objects.filter(workflow=workflow, kind=Node.Kind.JOIN).count() == 2
+    assert Node.objects.filter(workflow=workflows[1], kind=Node.Kind.JOIN).count() == 2
     data = r.json()
     assert data["name"] == "Copy of Join" and data["x"] == 50 and data["y"] == 50
-    new_join = Node.objects.filter(workflow=workflow, kind=Node.Kind.JOIN).last()
+    new_join = Node.objects.filter(workflow=workflows[1], kind=Node.Kind.JOIN).last()
     assert new_join.name == "Copy of Join"
     assert [p.id for p in new_join.parents.all()] == [5, 6]
 
 
 def test_update_positions(client, setup):
-    workflow = Workflow.objects.last()
+    workflows, nodes = setup
+    input_1, input_2 = nodes[workflows[1]]["inputs"]
     r = client.post(
-        f"/workflows/{workflow.id}/update_positions",
-        data=[{"id": "1", "x": 10, "y": 10}, {"id": "2", "x": 20, "y": 20}],
+        f"/workflows/{workflows[1].id}/update_positions",
+        data=[
+            {"id": str(input_1.id), "x": 10, "y": 10},
+            {"id": str(input_2.id), "x": 20, "y": 20},
+        ],
         content_type="application/json",
     )
     assertOK(r)
-    input_1, input_2 = Node.objects.filter(workflow=workflow, kind=Node.Kind.INPUT)
+    input_1.refresh_from_db()
+    input_2.refresh_from_db()
     assert input_1.x == 10 and input_1.y == 10
     assert input_2.x == 20 and input_2.y == 20
