@@ -46,7 +46,7 @@ const DnDFlow = ({ client, workflowId }) => {
   const updateParents = (id: string, parents: string[]) =>
     client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
       id,
-      parents: parents.map((p) => ({ parent_id: p, position: 0 })),
+      parents: parents.map((p) => ({ parent_id: p })),
     })
 
   const getIncomingNodes = (target: string) => {
