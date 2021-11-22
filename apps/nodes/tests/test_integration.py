@@ -131,7 +131,7 @@ def test_join_node(client, node_factory, setup):
     second_input = node_factory(
         kind=Node.Kind.INPUT, input_table=table, workflow=workflow
     )
-    join_node._parents.add(second_input)
+    join_node._parents.add(second_input, through_defaults={"position": 1})
 
     r = client.get(f"/nodes/{join_node.id}")
     assertOK(r)

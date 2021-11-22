@@ -95,7 +95,7 @@ def test_join_form(setup, node_factory):
     secondary_input = node_factory(
         kind=Node.Kind.INPUT, input_table=table, workflow=workflow, x=25, y=25
     )
-    node._parents.add(secondary_input)
+    node._parents.add(secondary_input, through_defaults={"position": 1})
     form = KIND_TO_FORM[node.kind](instance=node)
 
     assert set(form.fields.keys()) == {

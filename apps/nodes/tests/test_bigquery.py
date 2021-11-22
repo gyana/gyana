@@ -188,7 +188,8 @@ def test_join_node(setup):
         join_left="id",
         join_right="id",
     )
-    join_node._parents.add(input_node, second_input_node)
+    join_node._parents.add(input_node)
+    join_node._parents.add(second_input_node, through_defaults={"position": 1})
 
     query = get_query_from_node(join_node)
     # Mocking the table conditionally requires a little bit more work
@@ -250,7 +251,8 @@ def test_union_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    union_node._parents.add(input_node, second_input_node)
+    union_node._parents.add(input_node)
+    union_node._parents.add(second_input_node, through_defaults={"position": 1})
 
     assert get_query_from_node(union_node).compile() == UNION_QUERY
 
@@ -269,7 +271,8 @@ def test_except_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    except_node._parents.add(input_node, second_input_node)
+    except_node._parents.add(input_node)
+    except_node._parents.add(second_input_node, through_defaults={"position": 1})
 
     assert get_query_from_node(except_node).compile() == UNION_QUERY.replace(
         "UNION ALL", "EXCEPT DISTINCT"
@@ -285,7 +288,8 @@ def test_intersect_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    intersect_node._parents.add(input_node, second_input_node)
+    intersect_node._parents.add(input_node)
+    intersect_node._parents.add(second_input_node, through_defaults={"position": 1})
 
     assert get_query_from_node(intersect_node).compile() == UNION_QUERY.replace(
         "UNION ALL", "INTERSECT DISTINCT"
