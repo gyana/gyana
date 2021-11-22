@@ -1,12 +1,13 @@
+<div id='dateslicers:create-stream'>
+  <form method="post" action="{% url 'dateslicers:create' %}" class="form">
+    {% csrf_token %}
 
-<form method="post" action="{% url 'dateslicers:create' %}" class="form">
-  {% csrf_token %}
+    <input type='hidden' name='dashboard_id' value="{{dashboard.id}}"></input>
 
-  <input type='hidden' name='dashboard_id' value="{{dashboard.id}}"></input>
-
-  <button type="submit" class="button button--circle button--tertiary">
-    <i class="fa fa-calendar"></i>
-  </button>
-</form>
+    <button {% if dashboard.date_slicer %}disabled{% endif %} type="submit" class="button button--circle button--tertiary">
+      <i class="fa fa-calendar"></i>
+    </button>
+  </form>
+</div>
 
 
