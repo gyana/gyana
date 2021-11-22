@@ -7,6 +7,10 @@ from unittest.mock import MagicMock, Mock
 
 import pandas as pd
 import pytest
+from django.utils import timezone
+from google.cloud.bigquery.schema import SchemaField
+from google.cloud.bigquery.table import Table as BqTable
+
 from apps.base import clients
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import TABLE_NAME, PickableMock
@@ -25,9 +29,6 @@ from apps.nodes.bigquery import (
 )
 from apps.nodes.models import Node
 from apps.teams.models import CreditTransaction
-from django.utils import timezone
-from google.cloud.bigquery.schema import SchemaField
-from google.cloud.bigquery.table import Table as BqTable
 
 pytestmark = pytest.mark.django_db
 
@@ -153,7 +154,7 @@ def test_ouput_node(setup):
     output_node = Node.objects.create(
         kind=Node.Kind.OUTPUT, workflow=workflow, **DEFAULT_X_Y
     )
-    output_node.parents.add(input_node)
+    output_node._parents.add(input_node)
     query = get_query_from_node(output_node)
 
     assert query.compile() == INPUT_QUERY
@@ -164,7 +165,7 @@ def test_select_node(setup):
     select_node = Node.objects.create(
         kind=Node.Kind.SELECT, workflow=workflow, **DEFAULT_X_Y
     )
-    select_node.parents.add(input_node)
+    select_node._parents.add(input_node)
     select_node.columns.add(
         Column(column="athlete"), Column(column="birthday"), bulk=False
     )
@@ -187,7 +188,7 @@ def test_join_node(setup):
         join_left="id",
         join_right="id",
     )
-    join_node.parents.add(input_node, second_input_node)
+    join_node._parents.add(input_node, second_input_node)
 
     query = get_query_from_node(join_node)
     # Mocking the table conditionally requires a little bit more work
@@ -208,7 +209,7 @@ def test_aggregation_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    aggregation_node.parents.add(input_node)
+    aggregation_node._parents.add(input_node)
 
     assert get_query_from_node(aggregation_node).compile() == INPUT_QUERY.replace(
         "*", "count(*) AS `count`"
@@ -249,7 +250,7 @@ def test_union_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    union_node.parents.add(input_node, second_input_node)
+    union_node._parents.add(input_node, second_input_node)
 
     assert get_query_from_node(union_node).compile() == UNION_QUERY
 
@@ -268,7 +269,7 @@ def test_except_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    except_node.parents.add(input_node, second_input_node)
+    except_node._parents.add(input_node, second_input_node)
 
     assert get_query_from_node(except_node).compile() == UNION_QUERY.replace(
         "UNION ALL", "EXCEPT DISTINCT"
@@ -284,7 +285,7 @@ def test_intersect_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    intersect_node.parents.add(input_node, second_input_node)
+    intersect_node._parents.add(input_node, second_input_node)
 
     assert get_query_from_node(intersect_node).compile() == UNION_QUERY.replace(
         "UNION ALL", "INTERSECT DISTINCT"
@@ -299,7 +300,7 @@ def test_sort_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    sort_node.parents.add(input_node)
+    sort_node._parents.add(input_node)
 
     sort_node.sort_columns.create(column="id")
     sort_query = f"{INPUT_QUERY}\nORDER BY `id`"
@@ -317,7 +318,7 @@ def test_limit_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    limit_node.parents.add(input_node)
+    limit_node._parents.add(input_node)
 
     limit_query = (
         f"SELECT `id`, `athlete`, `birthday`"
@@ -342,7 +343,7 @@ def test_filter_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    filter_node.parents.add(input_node)
+    filter_node._parents.add(input_node)
     filter_node.filters.create(
         column="athlete",
         string_predicate=Filter.StringPredicate.NOTNULL,
@@ -373,7 +374,7 @@ def test_edit_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    edit_node.parents.add(input_node)
+    edit_node._parents.add(input_node)
 
     edit_node.edit_columns.create(column="id", integer_function="isnull")
     assert get_query_from_node(edit_node).compile() == INPUT_QUERY.replace(
@@ -394,7 +395,7 @@ def test_add_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    add_node.parents.add(input_node)
+    add_node._parents.add(input_node)
 
     add_node.add_columns.create(column="id", integer_function="isnull", label="booly")
     assert get_query_from_node(add_node).compile() == INPUT_QUERY.replace(
@@ -417,7 +418,7 @@ def test_rename_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    rename_node.parents.add(input_node)
+    rename_node._parents.add(input_node)
 
     rename_node.rename_columns.create(column="birthday", new_name="bd")
     assert get_query_from_node(rename_node).compile() == INPUT_QUERY.replace(
@@ -438,7 +439,7 @@ def test_formula_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    formula_node.parents.add(input_node)
+    formula_node._parents.add(input_node)
 
     formula_node.formula_columns.create(formula="upper(athlete)", label="grand_athlete")
     assert get_query_from_node(formula_node).compile() == INPUT_QUERY.replace(
@@ -459,7 +460,7 @@ def test_distinct_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    distinct_node.parents.add(input_node)
+    distinct_node._parents.add(input_node)
 
     distinct_node.columns.create(column="athlete")
 
@@ -488,7 +489,7 @@ def test_window_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    window_node.parents.add(input_node)
+    window_node._parents.add(input_node)
 
     window = window_node.window_columns.create(
         column="athlete", function="count", label="window"
@@ -530,7 +531,7 @@ def test_pivot_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    pivot_node.parents.add(input_node)
+    pivot_node._parents.add(input_node)
 
     pivot_node.pivot_column = "athlete"
     pivot_node.pivot_index = "id"
@@ -553,7 +554,7 @@ def test_unpivot_node(setup):
         workflow=workflow,
         **DEFAULT_X_Y,
     )
-    unpivot_node.parents.add(input_node)
+    unpivot_node._parents.add(input_node)
 
     unpivot_node.unpivot_column = "category"
     unpivot_node.unpivot_value = "value"
@@ -613,7 +614,7 @@ def _create_sentiment_node(input_node, workflow):
         sentiment_column="athlete",
         data_updated=timezone.now(),
     )
-    node.parents.add(input_node)
+    node._parents.add(input_node)
     return node
 
 
