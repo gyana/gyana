@@ -3,10 +3,11 @@ from unittest.mock import Mock, patch
 
 import googleapiclient
 import pytest
-from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
-from apps.integrations.models import Integration
 from django.core import mail
 from pytest_django.asserts import assertContains, assertFormError, assertRedirects
+
+from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
+from apps.integrations.models import Integration
 
 pytestmark = pytest.mark.django_db
 
@@ -21,14 +22,12 @@ def bq_table_schema_is_not_string_only(mocker):
 def test_sheet_create(
     client,
     logged_in_user,
-    project_factory,
+    project,
     bigquery,
     sheets,
     drive_v2,
 ):
 
-    team = logged_in_user.teams.first()
-    project = project_factory(team=team)
     # mock sheet client to get title from Google Sheets
     sheets.spreadsheets().get().execute = Mock(
         return_value={"properties": {"title": "Store Info"}}

@@ -12,8 +12,7 @@ pytestmark = pytest.mark.django_db
 
 def test_workflow_run(
     client,
-    project_factory,
-    logged_in_user,
+    project,
     workflow_factory,
     node_factory,
     integration_table_factory,
@@ -23,7 +22,6 @@ def test_workflow_run(
     mock_bq_client_with_schema(
         bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
     )
-    project = project_factory(team=logged_in_user.teams.first())
     workflow = workflow_factory(project=project)
 
     # check is out_of_date returns out_of_date has not been run

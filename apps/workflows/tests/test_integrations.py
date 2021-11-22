@@ -9,8 +9,7 @@ from apps.workflows.models import Workflow
 pytestmark = pytest.mark.django_db
 
 
-def test_workflow_crudl(client, project_factory, logged_in_user, workflow_factory):
-    project = project_factory(team=logged_in_user.teams.first())
+def test_workflow_crudl(client, project, workflow_factory):
     project_url = f"/projects/{project.id}"
 
     # zero state
@@ -54,10 +53,7 @@ def test_workflow_crudl(client, project_factory, logged_in_user, workflow_factor
     assertOK(r)
 
 
-def test_workflow_duplication(
-    client, project_factory, logged_in_user, workflow_factory, node_factory
-):
-    project = project_factory(team=logged_in_user.teams.first())
+def test_workflow_duplication(client, project, workflow_factory, node_factory):
     name = "What is the universe?"
     workflow = workflow_factory(project=project, name=name)
 

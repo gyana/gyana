@@ -150,10 +150,9 @@ def test_integration_schema_and_preview(
 
 
 def test_integration_create_pending_load_and_approve(
-    client, logged_in_user, project_factory, sheet_factory, integration_table_factory
+    client, logged_in_user, project, sheet_factory, integration_table_factory
 ):
     team = logged_in_user.teams.first()
-    project = project_factory(team=team)
 
     LIST = f"/projects/{project.id}/integrations"
 
