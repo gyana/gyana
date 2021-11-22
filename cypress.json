@@ -5,5 +5,10 @@
     "runMode": 2,
     "openMode": 0
   },
-  "chromeWebSecurity": false
+  "chromeWebSecurity": false,
+  "blockHosts": [
+    "www.loom.com",
+    "*.loom.com",
+    "*loom.com"
+  ]
 }

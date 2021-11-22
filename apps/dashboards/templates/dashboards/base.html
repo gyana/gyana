@@ -2,13 +2,54 @@
 
 {% block app %}
 <div class="dashboard__header">
+  <div data-controller="tooltip tf-modal">
+    <button
+      data-action="click->tf-modal#open"
+      data-src="{% url 'project_dashboards:settings' project.id object.id %}"
+      class="button button--circle button--tertiary"
+    >
+      <i class="far fa-fw fa-cog"></i>
+    </button>
+
+    <span data-tooltip-target="body">Settings</span>
+
+    <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
+      <div class="card card--none card--modal flex-col flex-1 overflow-auto">
+        <turbo-frame
+          id="dashboard:settings"
+          data-tf-modal-target="turboFrame"
+          target="_top"
+        ></turbo-frame>
+      </div>
+    </div>
+  </div>
+
+  <turbo-frame id="dashboard-name" class="flex-1 mr-auto">
+    <form
+      method="POST"
+      action="{% url 'project_dashboards:detail' project.id object.id %}"
+      class="form--no-layout w-full"
+    >
+      {% csrf_token %}
+
+      <input
+        class='input__inline mr-auto'
+        id="name"
+        type="text"
+        name="name"
+        value="{{ object.name }}"
+        onBlur="this.form.requestSubmit();"
+      />
+    </form>
+  </turbo-frame>
+
   <div
     data-controller="popover"
     data-placement="bottom-start"
     data-theme="popover-menu"
   >
-    <button class="button button--circle button--tertiary">
-      <i class="fas fa-fw fa-ellipsis-h"></i>
+    <button class="button button--sm button--tertiary">
+      More <i class="fas fa-chevron-down"></i>
     </button>
 
     <template data-popover-target="body">
@@ -39,51 +80,6 @@
     </template>
   </div>
 
-  <div data-controller="tooltip tf-modal">
-    <button
-      data-action="click->tf-modal#open"
-      data-src="{% url 'project_dashboards:settings' project.id object.id %}"
-      class="button button--circle button--tertiary"
-    >
-      <i class="far fa-fw fa-cog"></i>
-    </button>
-
-    <span data-tooltip-target="body">Settings</span>
-
-    <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
-      <div class="card card--none card--modal flex-col flex-1 overflow-auto">
-        <turbo-frame
-          id="dashboard:settings"
-          data-tf-modal-target="turboFrame"
-          target="_top"
-        ></turbo-frame>
-      </div>
-    </div>
-  </div>
-
-  <turbo-frame id="dashboard-name" class="flex-1 mr-auto">
-    <form
-      method="post"
-      action="{% url 'project_dashboards:detail' project.id object.id %}"
-      class="form--no-layout w-full"
-    >
-      {% csrf_token %}
-
-      <input
-        class='input__inline mr-auto'
-        id="name"
-        type="text"
-        name="name"
-        value="{{ object.name }}"
-        onBlur="this.form.requestSubmit();"
-      />
-    </form>
-  </turbo-frame>
-
-  {% if request.GET.mode != 'view' %}
-  {% include 'dashboards/_add_widget.html' with choices=choices categories=categories %}
-  {% endif %}
-
   <turbo-frame id="dashboard-share"  src="{% url 'dashboards:share' object.id %}">
     <button class="button button--circle {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}">
       {% if  object.shared_status == 'public' %}<i class='far fa-fw fa-link'></i>
@@ -95,17 +91,21 @@
   
   <div data-controller="tooltip">
     {% if not request.GET.mode or request.GET.mode == 'edit' %}
-    <a href="?mode=view" class="button button--circle button--tertiary">
-      <i class="fas fa-fw fa-eye"></i>
+    <a href="?mode=view" class="button button--sm button--tertiary">
+      <i class="fas fa-fw fa-eye"></i>Preview
     </a>
     {% else %}
     <a href="?mode=edit" class="button button--circle">
-      <i class="fas fa-fw fa-pen"></i>
+      <i class="fas fa-fw fa-pen"></i>Edit
     </a>
     {% endif %}
 
     <span data-tooltip-target="body">Click to change view mode</span>
   </div>
+
+  {% if request.GET.mode != 'view' %}
+  {% include 'dashboards/_add_widget.html' with choices=choices categories=categories %}
+  {% endif %}
 </div>
 
 {% block tab %}

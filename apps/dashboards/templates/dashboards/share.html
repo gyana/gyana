@@ -3,7 +3,7 @@
 <div data-controller='popover'>
   <button
     id="dashboard-share-{{ object.id }}"
-    class="button button--circle {% if object.shared_status != 'private' %}button--success{% else %}button--tertiary{% endif %}"
+    class="button button--sm button--tertiary {% if object.shared_status != 'private' %}button--success{% else %}button--tertiary{% endif %}"
     data-controller="tooltip"
     data-popover-target="trigger"
     data-action="popover#trigger"
@@ -12,6 +12,8 @@
     {% elif object.shared_status == 'private' %}<i class='far fa-fw fa-unlink'></i>
     {% elif object.shared_status == 'password_protected' %}<i class='far fa-fw fa-lock'></i>
     {% endif %}
+
+    Share
 
     <span data-tooltip-target="body">
       {% if  object.shared_status == 'password_protected' %}
