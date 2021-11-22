@@ -5,6 +5,7 @@ from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 
 from apps.base.frames import TurboFrameCreateView, TurboFrameUpdateView
+from apps.widgets.frames import add_output_context
 
 from .forms import DateSlicerForm
 from .models import DateSlicer
@@ -53,6 +54,25 @@ class DateSlicerUpdate(TurboFrameUpdateView):
     model = DateSlicer
     form_class = DateSlicerForm
     turbo_frame_dom_id = "dateslicers:update"
+
+    def form_valid(self, form):
+        super().form_valid(form)
+        dashboard = form.instance.dashboard
+        streams = []
+        for widget in dashboard.widget_set.all():
+            if widget.dateslice_column and widget.is_valid:
+                context = {
+                    "widget": widget,
+                    "dashboard": dashboard,
+                    "project": dashboard.project,
+                }
+                add_output_context(context, widget, self.request)
+                streams.append(
+                    TurboStream(f"widgets-output-{widget.id}-stream")
+                    .replace.template("widgets/output.html", context)
+                    .render(request=self.request)
+                )
+        return TurboStreamResponse(streams)
 
     def get_success_url(self) -> str:
         return reverse("dateslicers:update", args=(self.object.id,))
