@@ -149,3 +149,8 @@ def logged_in_user(client):
     team.members.add(user, through_defaults={"role": "admin"})
     client.force_login(user)
     return user
+
+
+@pytest.fixture
+def project(project_factory, logged_in_user):
+    return project_factory(team=logged_in_user.teams.first())
