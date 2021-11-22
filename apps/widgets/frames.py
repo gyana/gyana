@@ -1,6 +1,14 @@
 import logging
 
 import analytics
+from django.db.models.query import QuerySet
+from django.urls import reverse
+from django_tables2.tables import Table as DjangoTable
+from django_tables2.views import SingleTableMixin
+from honeybadger import honeybadger
+from turbo_response import TurboStream
+from turbo_response.response import TurboStreamResponse
+
 from apps.base.analytics import (
     WIDGET_COMPLETED_EVENT,
     WIDGET_CONFIGURED_EVENT,
@@ -17,19 +25,7 @@ from apps.base.table_data import RequestConfig
 from apps.base.templates import template_exists
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
-from apps.widgets.visuals import (
-    MaxRowsExceeded,
-    chart_to_output,
-    metric_to_output,
-    table_to_output,
-)
-from django.db.models.query import QuerySet
-from django.urls import reverse
-from django_tables2.tables import Table as DjangoTable
-from django_tables2.views import SingleTableMixin
-from honeybadger import honeybadger
-from turbo_response import TurboStream
-from turbo_response.response import TurboStreamResponse
+from apps.widgets.visuals import chart_to_output, metric_to_output, table_to_output
 
 from .forms import FORMS
 from .models import WIDGET_CHOICES_ARRAY, Widget

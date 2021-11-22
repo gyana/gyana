@@ -2,7 +2,12 @@ import pytest
 from pytest_django.asserts import assertContains, assertRedirects
 from turbo_response.response import TurboStreamResponse
 
-from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertLink,
+    assertOK,
+    assertSelectorLength,
+)
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.widgets.models import Widget
@@ -17,6 +22,7 @@ def test_widget_crudl(
     logged_in_user,
     integration_table_factory,
     bigquery,
+    widget_factory,
 ):
     mock_bq_client_with_schema(
         bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
@@ -76,9 +82,13 @@ def test_widget_crudl(
     assert widget.dimension == "athlete"
 
     # delete
-    # TODO: fails for some reason
-    # r = client.get(f"{dashboard_url}/widgets/{widget.id}/delete")
-    # assertOK(r)
-    # assertFormRenders(r)
     r = client.delete(f"{dashboard_url}/widgets/{widget.id}/delete")
     assert Widget.objects.first() is None
+
+    # list
+    widget_factory.create_batch(
+        10, kind=Widget.Kind.COLUMN, dashboard=dashboard, table=table
+    )
+    r = client.get(f"{dashboard_url}/widgets/")
+    assertOK(r)
+    assertSelectorLength(r, "gy-widget", 10)
