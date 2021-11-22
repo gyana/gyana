@@ -309,7 +309,7 @@ NODE_FROM_CONFIG = {
 
 def _get_all_parents(node):
     # yield parents before child => topological order
-    for parent in node.parents.order_by("parent_set__position").all():
+    for parent in node.parents_ordered.all():
         yield from _get_all_parents(parent)
     yield node
 
