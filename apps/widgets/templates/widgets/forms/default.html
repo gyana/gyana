@@ -51,7 +51,28 @@
           {{ form.kind }}
         </div>
       </div>
-      {{form.dateslice_column}}
+      <div data-controller='widget-slice' class='flex flex-row items-center gap-2'>
+
+        {{form.dateslice_column}}
+        <button 
+          type='button'
+          data-widget-slice-target="removeButton"
+          data-action="widget-slice#remove"
+          class='button button--sm button--tertiary button--circle {% if not show_dateslice_column%}hidden{%endif%}'
+        ><i class='fa fa-times'></i></button>
+
+
+        <button 
+          class="button button--sm {% if show_dateslice_column%}hidden{%endif%}"
+          data-widget-slice-target='addButton' 
+          type='button' 
+          data-action="widget-slice#add" 
+          data-turbo='false'
+        ><i class='fa fa-plus'></i> Add datetime slice column
+        </button>
+        
+        
+      </div>
       <hr>
 
       {% block widget_form %}

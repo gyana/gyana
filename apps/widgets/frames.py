@@ -125,6 +125,13 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             args=(self.project.id, self.dashboard.id),
         )
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["show_dateslice_column"] = bool(
+            context["form"].get_live_field("dateslice_column")
+        )
+        return context
+
     def form_valid(self, form):
         r = super().form_valid(form)
 

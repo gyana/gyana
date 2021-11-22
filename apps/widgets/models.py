@@ -106,6 +106,7 @@ class Widget(CloneMixin, BaseModel):
     dateslice_column = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         null=True,
+        help_text="Select a temporal column that will be used when using the dashboard date slicer",
     )
 
     _clone_m2o_or_o2m_fields = [
