@@ -1,13 +1,37 @@
 
 
-<div id='dateslicers:update-stream' class='dateslicer-remove'>
-  <form method="post" action="{% url 'dateslicers:update' object.id %}" class="form--no-layout">
-    {% csrf_token %}
+<div
+  id='dateslicers:update-stream'
+  class='dateslicer'
+  data-controller='popover'
+  data-placement='bottom-start'
+  data-theme='popover-dateslicer'
+>
+  <button >
+    <i class="fa fa-calendar"></i> 
+    {% if object.is_empty %}
 
-    <div class='flex flex-row items-center'>
-      {% include "django/forms/default_form.html" %}
-    </div>
-  </form>
+      No date range selected_category
+
+    {% else %}
+
+      {% if object.start %}Start <strong>{{object.start}}</strong>{% endif %}
+      {% if object.end %}End <strong>{{object.end}}</strong>{% endif %}
+
+    {% endif %}
+  </button>
+  <template data-popover-target="body">
+    <div class='dateslicer-popover'>
+      <form method="post" action="{% url 'dateslicers:update' object.id %}" class="form--no-layout popover-body">
+        {% csrf_token %}
+
+        <div class='flex flex-row items-center'>
+          {% include "django/forms/default_form.html" %}
+        </div>
+        <button type="submit" class="button button--success button--sm">Apply</button>
+      </form>
+  </div>
+  </template>
   {% include 'dateslicers/delete.html' %}
 </div>
 

@@ -8,12 +8,16 @@ from .models import DateSlicer
 class DateSlicerForm(forms.ModelForm):
     class Meta:
         model = DateSlicer
-        fields = ["start", "end"]
+        fields = ["date_range", "start", "end"]
         widgets = {
             "start": DatetimeInput(
-                attrs={"class": "input--sm", "onblur": "this.form.requestSubmit();"}
+                attrs={
+                    "class": "input--sm",
+                }
             ),
             "end": DatetimeInput(
-                attrs={"class": "input--sm", "onblur": "this.form.requestSubmit();"}
+                attrs={
+                    "class": "input--sm",
+                }
             ),
         }

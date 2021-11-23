@@ -2,9 +2,10 @@ import datetime as dt
 import functools
 from typing import List
 
-from apps.filters.models import PREDICATE_MAP, Filter
 from dateutil.relativedelta import relativedelta
 from ibis.expr.types import TimestampValue
+
+from apps.filters.models import PREDICATE_MAP, Filter
 
 
 def eq(query, column, value):
@@ -91,8 +92,8 @@ def tomorrow(query, column, value):
 
 def yesterday(query, column, value):
     date = get_date(query[column])
-    tomorrow = dt.date.today() - dt.timedelta(days=1)
-    return query[date == tomorrow]
+    yesterday_ = dt.date.today() - dt.timedelta(days=1)
+    return query[date == yesterday_]
 
 
 def one_week_ago(query, column, value):
