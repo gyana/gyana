@@ -239,6 +239,21 @@
     "description": "Concatenate text with the delimiter"
   },
   {
+    "id": "json_extract",
+    "intercom_id": "h_71b2404d43",
+    "name": "json_extract",
+    "categories": ["text"],
+    "arguments": [
+      {
+        "name": "json",
+        "description": "a text value in JSON format"
+      },
+      { "name": "path", "description": "path to the desired item in the format e.g. `$.a.b[0]`" }
+    ],
+    "keywords": ["json"],
+    "description": "Extract a field inside JSON, returns text"
+  },
+  {
     "id": "left",
     "intercom_id": "h_b7cf94950a",
     "name": "left",

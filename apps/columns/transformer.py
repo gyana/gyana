@@ -1,8 +1,9 @@
 import json
 
 import ibis
-from ibis.expr import datatypes as dt
 from lark import Transformer, v_args
+
+from .types import TYPES
 
 with open("apps/columns/functions.json", "r") as file:
     # TODO: Add back
@@ -15,27 +16,17 @@ with open("apps/columns/functions.json", "r") as file:
 
 FUNCTIONS = json.loads(data)
 
-TYPES = {
-    "float": dt.float64,
-    "int": dt.int64,
-    "str": dt.string,
-    "time": dt.time,
-    "timestamp": dt.timestamp,
-    "date": dt.date,
-    "text": dt.string,
-}
-
 
 def _hash(func, args):
     return func("farm_fingerprint")
 
 
-def _cast(func, args):
+def convert(func, args):
     type_ = TYPES[args[0]]
     return func(type_)
 
 
-ODD_FUNCTIONS = {"hash": _hash, "cast": _cast}
+ODD_FUNCTIONS = {"hash": _hash, "cast": convert}
 
 
 @v_args(inline=True)

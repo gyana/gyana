@@ -673,6 +673,31 @@ def test_sentiment_query(mocker, logged_in_user, setup):
     assert team.current_credit_balance == 2
 
 
+def test_convert_node(setup):
+    input_node, workflow = setup
+    convert_node = Node.objects.create(
+        kind=Node.Kind.CONVERT,
+        workflow=workflow,
+        **DEFAULT_X_Y,
+    )
+    convert_node.parents.add(input_node)
+
+    for column, target_type in [
+        ("athlete", "int"),
+        ("id", "text"),
+        ("birthday", "timestamp"),
+    ]:
+        convert_node.convert_columns.create(column=column, target_type=target_type)
+
+    assert get_query_from_node(convert_node).compile() == INPUT_QUERY.replace(
+        "*",
+        """\
+CAST(`id` AS STRING) AS `id`, \
+CAST(`athlete` AS INT64) AS `athlete`,
+       CAST(`birthday` AS TIMESTAMP) AS `birthday`""",
+    )
+
+
 def test_sentiment_query_out_of_credits(logged_in_user, setup):
     input_node, workflow = setup
     sentiment_node = _create_sentiment_node(input_node, workflow)

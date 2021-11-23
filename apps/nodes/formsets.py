@@ -1,17 +1,33 @@
 # fmt: off
+from django import forms
+
 from apps.base.formsets import InlineColumnFormset, RequiredInlineFormset
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.schema_form_mixin import SchemaFormMixin
-from apps.columns.forms import (AddColumnForm, AggregationColumnForm,
-                                FormulaColumnForm, OperationColumnForm,
-                                WindowColumnForm)
-from apps.columns.models import (AddColumn, AggregationColumn, Column,
-                                 EditColumn, FormulaColumn, RenameColumn,
-                                 SecondaryColumn, SortColumn, WindowColumn)
+from apps.columns.forms import (
+    AddColumnForm,
+    AggregationColumnForm,
+    ConvertColumnForm,
+    FormulaColumnForm,
+    OperationColumnForm,
+    WindowColumnForm,
+)
+from apps.columns.models import (
+    AddColumn,
+    AggregationColumn,
+    Column,
+    ConvertColumn,
+    EditColumn,
+    FormulaColumn,
+    RenameColumn,
+    SecondaryColumn,
+    SortColumn,
+    WindowColumn,
+)
+
 # fmt: on
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
-from django import forms
 
 from .models import Node
 
@@ -129,6 +145,10 @@ WindowColumnFormSet = forms.inlineformset_factory(
     min_num=1,
 )
 
+ConvertColumnFormSet = forms.inlineformset_factory(
+    Node, ConvertColumn, can_delete=True, form=ConvertColumnForm, extra=0, min_num=1
+)
+
 KIND_TO_FORMSETS = {
     "aggregation": [ColumnFormSet, AggregationColumnFormSet],
     "sort": [SortColumnFormSet],
@@ -139,4 +159,5 @@ KIND_TO_FORMSETS = {
     "formula": [FormulaColumnFormSet],
     "unpivot": [UnpivotColumnFormSet, SelectColumnFormSet],
     "window": [WindowColumnFormSet],
+    "convert": [ConvertColumnFormSet],
 }
