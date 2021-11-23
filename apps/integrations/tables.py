@@ -3,7 +3,7 @@ from django.template import Context
 from django.template.loader import get_template
 from django_tables2 import Column, Table, TemplateColumn
 
-from apps.base.table import ImageColumn, NaturalDatetimeColumn, NaturalDayColumn
+from apps.base.table import NaturalDatetimeColumn, NaturalDayColumn
 
 from .models import Integration
 
@@ -53,9 +53,11 @@ class IntegrationListTable(Table):
         attrs = {"class": "table"}
 
     name = Column(linkify=True)
-    icon = ImageColumn(orderable=False)
-    kind = Column(accessor="display_kind", orderable=False)
-    state = PendingStatusColumn()
+    icon = TemplateColumn(
+        template_name="columns/image.html", orderable=False, verbose_name="Source"
+    )
+    kind = Column(accessor="display_kind", orderable=False, verbose_name="")
+    state = PendingStatusColumn(verbose_name="Status")
     num_rows = RowCountColumn()
     last_synced = NaturalDayColumn(orderable=False)
     actions = TemplateColumn(
