@@ -1,5 +1,6 @@
-from apps.projects.access import login_and_project_required
 from django.urls import path
+
+from apps.projects.access import login_and_project_required
 
 from . import cache, frames, views
 from .access import login_and_integration_required
@@ -31,11 +32,6 @@ project_urlpatterns = (
         # views
         path(
             "", login_and_project_required(views.IntegrationList.as_view()), name="list"
-        ),
-        path(
-            "pending",
-            login_and_project_required(views.IntegrationPending.as_view()),
-            name="pending",
         ),
         path(
             "overview",

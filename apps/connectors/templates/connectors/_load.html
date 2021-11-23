@@ -10,7 +10,7 @@
       </p>
       <p class="alert">
           We recommend you continue with your work. You can manually keep track of progress, either by refreshing this page,
-          or in <a class="link" href="{% url 'project_integrations:pending' project.id %}">pending integrations</a>.
+          or in <a class="link" href="{% url 'project_integrations:list' project.id %}">integrations</a>.
       </p>
     </div>
   {% elif integration.state == 'error' %}

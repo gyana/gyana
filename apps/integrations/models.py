@@ -1,16 +1,17 @@
 from datetime import timedelta
 from itertools import chain
 
+from django.db import models
+from django.urls import reverse
+from django.utils import timezone
+from model_clone.mixins.clone import CloneMixin
+
 from apps.base.models import BaseModel
 from apps.base.table import ICONS
 from apps.dashboards.models import Dashboard
 from apps.projects.models import Project
 from apps.users.models import CustomUser
 from apps.workflows.models import Workflow
-from django.db import models
-from django.urls import reverse
-from django.utils import timezone
-from model_clone.mixins.clone import CloneMixin
 
 PENDING_DELETE_AFTER_DAYS = 7
 
@@ -86,14 +87,14 @@ class Integration(CloneMixin, BaseModel):
         State.UPDATE: ICONS["warning"],
         State.LOAD: ICONS["loading"],
         State.ERROR: ICONS["error"],
-        State.DONE: ICONS["warning"],
+        State.DONE: ICONS["success"],
     }
 
     STATE_TO_MESSAGE = {
         State.UPDATE: "Incomplete setup",
-        State.LOAD: "Importing",
+        State.LOAD: "Syncing",
         State.ERROR: "Error",
-        State.DONE: "Ready to review",
+        State.DONE: "Success",
     }
 
     def __str__(self):

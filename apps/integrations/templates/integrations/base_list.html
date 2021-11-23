@@ -94,18 +94,6 @@
   </div>
 </div>
 
-<nav id='tabbar' class="tabbar">
-  <a class="tabbar__link {% if request.resolver_match.url_name == 'list' %} tabbar__link--active {% endif %}"
-     href="{% url 'project_integrations:list' project.id %}">
-    Ready
-  </a>
-  
-  <a class="tabbar__link {% if request.resolver_match.url_name == 'pending' %} tabbar__link--active {% endif %}"
-     href="{% url 'project_integrations:pending' project.id %}">
-    Pending {% if pending_integration_count > 0 %} ({{ pending_integration_count }}) {% endif %}
-  </a>
-</nav>
-
 <div class="pad overflow-auto">
   {% block tab %}{% endblock %}
 </div> 
