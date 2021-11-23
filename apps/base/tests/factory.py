@@ -6,6 +6,7 @@ from apps.cnames.models import CName
 from apps.columns.models import (
     AddColumn,
     AggregationColumn,
+    ConvertColumn,
     EditColumn,
     FormulaColumn,
     WindowColumn,
@@ -166,11 +167,15 @@ class AggregationColumnFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = AggregationColumn
 
+    node = factory.SubFactory(NodeFactory)
+
 
 @register
 class EditColumnFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = EditColumn
+
+    node = factory.SubFactory(NodeFactory)
 
 
 @register
@@ -178,11 +183,15 @@ class AddColumnFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = AddColumn
 
+    node = factory.SubFactory(NodeFactory)
+
 
 @register
 class FormulaColumnFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = FormulaColumn
+
+    node = factory.SubFactory(NodeFactory)
 
 
 @register
@@ -190,8 +199,20 @@ class WindowColumnFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = WindowColumn
 
+    node = factory.SubFactory(NodeFactory)
+
 
 @register
 class FilterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Filter
+
+    node = factory.SubFactory(NodeFactory)
+
+
+@register
+class ConvertColumnFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ConvertColumn
+
+    node = factory.SubFactory(NodeFactory)

@@ -19,6 +19,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     class Kind(models.TextChoices):
         ADD = "add", "Add"
         AGGREGATION = "aggregation", "Group and Aggregate"
+        CONVERT = "convert", "Convert"
         DISTINCT = "distinct", "Distinct"
         EDIT = "edit", "Edit"
         FILTER = "filter", "Filter"

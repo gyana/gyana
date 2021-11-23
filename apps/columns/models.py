@@ -101,6 +101,29 @@ class Column(SaveParentModel):
     node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="columns")
 
 
+class ConvertColumn(SaveParentModel):
+    class TargetTypes(models.TextChoices):
+        TEXT = "text", "Text"
+        INT = "int", "Integer"
+        FLOAT = "float", "Decimal"
+        BOOL = "bool", "Bool"
+        DATE = "date", "Date"
+        TIME = "time", "Time"
+        DATETIME = "timestamp", "Datetime"
+
+    column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, help_text="Select column"
+    )
+    target_type = models.CharField(
+        max_length=16,
+        choices=TargetTypes.choices,
+        help_text="Select type to convert to",
+    )
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="convert_columns"
+    )
+
+
 class SecondaryColumn(SaveParentModel):
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     node = models.ForeignKey(

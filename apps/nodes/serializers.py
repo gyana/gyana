@@ -205,6 +205,10 @@ def get_sentiment_desc(obj):
     return f"Analysis sentiment of {obj.sentiment_column}."
 
 
+def get_convert_desc(obj):
+    return f"Convert {', '.join(f'{col.column} to {col.target_type}' for col in obj.convert_columns.iterator())}"
+
+
 DESCRIPTIONS = {
     "input": get_input_desc,
     "limit": get_limit_desc,
@@ -227,4 +231,5 @@ DESCRIPTIONS = {
     "intersect": get_intersection_desc,
     "sentiment": get_sentiment_desc,
     "window": get_window_desc,
+    "convert": get_convert_desc,
 }

@@ -57,6 +57,7 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
             "formula_columns",
             "sort_columns",
             "window_columns",
+            "convert_columns",
         ]:
             return {"schema": self.object.parents.first().schema}
 

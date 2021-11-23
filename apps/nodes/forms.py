@@ -262,4 +262,5 @@ KIND_TO_FORM = {
     "intersect": DefaultNodeForm,
     "sentiment": SentimentNodeForm,
     "window": DefaultNodeForm,
+    "convert": DefaultNodeForm,
 }

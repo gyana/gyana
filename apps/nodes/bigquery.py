@@ -7,7 +7,7 @@ from ibis.expr.datatypes import String
 
 from apps.base import clients
 from apps.base.errors import error_name_to_snake
-from apps.columns.bigquery import compile_formula, compile_function
+from apps.columns.bigquery import compile_formula, compile_function, convert_column
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.teams.models import OutOfCreditsException
@@ -283,6 +283,15 @@ def get_sentiment_query(node, parent):
     return conn.table(bq_table, database=bq_dataset)
 
 
+def get_convert_query(node, query):
+    converted_columns = {
+        column.column: convert_column(query, column)
+        for column in node.convert_columns.iterator()
+    }
+
+    return query.mutate(**converted_columns)
+
+
 NODE_FROM_CONFIG = {
     "input": get_input_query,
     "output": get_output_query,
@@ -304,6 +313,7 @@ NODE_FROM_CONFIG = {
     "intersect": get_intersect_query,
     "sentiment": get_sentiment_query,
     "window": get_window_query,
+    "convert": get_convert_query,
 }
 
 

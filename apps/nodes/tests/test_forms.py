@@ -197,6 +197,7 @@ def kind_param(kind):
         kind_param(Node.Kind.INTERSECT),
         kind_param(Node.Kind.WINDOW),
         kind_param(Node.Kind.EXCEPT),
+        kind_param(Node.Kind.CONVERT),
     ],
 )
 def test_default_form(kind, setup, node_factory):

@@ -606,3 +606,40 @@ def test_sentiment_node(client, logged_in_user, node_factory, setup):
 
     assert sentiment_node.sentiment_column == "athlete"
     assert sentiment_node.always_use_credits == True
+
+
+def test_convert_node(client, node_factory, setup):
+    table, workflow = setup
+    convert_base = base_formset("convert_columns")
+    convert_node, r = create_and_connect_node(
+        client, Node.Kind.CONVERT, node_factory, table, workflow
+    )
+
+    assertFormRenders(
+        r,
+        [
+            *convert_base.keys(),
+            "name",
+            "convert_columns-0-node",
+            "convert_columns-0-id",
+            "convert_columns-0-column",
+            "convert_columns-0-target_type",
+            "convert_columns-0-DELETE",
+        ],
+    )
+
+    r = update_node(
+        client,
+        convert_node.id,
+        {
+            **convert_base,
+            "convert_columns-0-node": convert_node.id,
+            "convert_columns-0-column": "id",
+            "convert_columns-0-target_type": "text",
+        },
+    )
+    convert_node.refresh_from_db()
+
+    convert = convert_node.convert_columns.first()
+    assert convert.column == "id"
+    assert convert.target_type == "text"
