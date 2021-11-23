@@ -3,7 +3,7 @@ from django.template import Context
 from django.template.loader import get_template
 from django_tables2 import Column, Table, TemplateColumn
 
-from apps.base.table import ImageColumn, NaturalDatetimeColumn
+from apps.base.table import ImageColumn, NaturalDatetimeColumn, NaturalDayColumn
 
 from .models import Integration
 
@@ -54,14 +54,10 @@ class IntegrationListTable(Table):
 
     name = Column(linkify=True)
     icon = ImageColumn(orderable=False)
-    # TODO: Fix orderable on kind column.
     kind = Column(accessor="display_kind", orderable=False)
     state = PendingStatusColumn()
     num_rows = RowCountColumn()
-    last_synced = NaturalDatetimeColumn(
-        accessor="connector__bigquery_succeeded_at",
-        verbose_name="Last synced",
-    )
+    last_synced = NaturalDayColumn(orderable=False)
     actions = TemplateColumn(
         template_name="integrations/columns/actions.html",
         orderable=False,

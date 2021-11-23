@@ -128,7 +128,11 @@ class Integration(CloneMixin, BaseModel):
 
     @property
     def last_synced(self):
-        return getattr(self, self.kind).last_synced
+        if self.kind == self.Kind.CONNECTOR:
+            return self.connector.bigquery_succeeded_at
+        elif self.kind == self.Kind.SHEET:
+            return self.sheet.drive_file_last_modified_at_sync
+        return self.created_ready
 
     @property
     def used_in_workflows(self):

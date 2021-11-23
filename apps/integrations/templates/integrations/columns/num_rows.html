@@ -1,5 +1,6 @@
 {% load humanize %}
 {% if record.num_rows == 0 %}
+    —
 {% elif record.ready %}
     {{ record.num_rows|intcomma }}
 {% else %}

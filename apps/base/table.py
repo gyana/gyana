@@ -17,6 +17,13 @@ class NaturalDatetimeColumn(tables.Column):
         return get_template("columns/natural_datetime.html").render(context.flatten())
 
 
+class NaturalDayColumn(tables.Column):
+    def render(self, record, table, value, **kwargs):
+        context = getattr(table, "context", Context())
+        context["datetime"] = value
+        return get_template("columns/natural_day.html").render(context.flatten())
+
+
 class DuplicateColumn(tables.TemplateColumn):
     def render(self, record, table, **kwargs):
         context = getattr(table, "context", Context())
