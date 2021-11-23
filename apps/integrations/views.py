@@ -35,6 +35,7 @@ class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
         queryset = self.project.integration_set
 
         context_data["integration_count"] = queryset.visible().count()
+        context_data["pending_integration_count"] = queryset.pending().count()
         context_data["show_zero_state"] = queryset.visible().count() == 0
         context_data["integration_kinds"] = Integration.Kind.choices
 

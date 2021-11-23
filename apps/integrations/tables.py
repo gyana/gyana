@@ -49,7 +49,6 @@ class RowCountColumn(TemplateColumn):
 class IntegrationListTable(Table):
     class Meta:
         model = Integration
-        # fields = ("name", "kind", "created_ready", "ready")
         fields = ()
         attrs = {"class": "table"}
 
