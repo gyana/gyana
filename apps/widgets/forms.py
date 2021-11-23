@@ -14,7 +14,6 @@ from .widgets import SourceSelect, VisualSelect
 class GenericWidgetForm(LiveUpdateForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
-    dateslice_column = forms.ChoiceField(choices=(), required=False)
 
     class Meta:
         model = Widget
@@ -45,16 +44,19 @@ class GenericWidgetForm(LiveUpdateForm):
             table = self.get_live_field("table")
             schema = Table.objects.get(pk=table).schema if table else None
             if "dateslice_column" in self.fields and schema:
-                self.fields["dateslice_column"].widget = SelectWithDisable(
-                    disabled=disable_non_time(schema),
-                    attrs={
-                        "data-widget-slice-target": "input",
-                        "class": "hidden"
-                        if not self.get_live_field("dateslice_column")
-                        else "",
-                    },
+                self.fields["dateslice_column"] = forms.ChoiceField(
+                    required=False,
+                    widget=SelectWithDisable(
+                        disabled=disable_non_time(schema),
+                        attrs={
+                            "class": "hidden"
+                            if not self.get_live_field("dateslice_column")
+                            else "",
+                        },
+                    ),
+                    choices=create_column_choices(schema),
+                    help_text=self.base_fields["dateslice_column"].help_text,
                 )
-                self.fields["dateslice_column"].choices = create_column_choices(schema)
 
     def get_live_fields(self):
         fields = ["table", "kind"]

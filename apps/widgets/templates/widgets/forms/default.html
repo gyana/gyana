@@ -51,16 +51,18 @@
           {{ form.kind }}
         </div>
       </div>
-      <div data-controller='widget-slice' class='flex flex-row items-center gap-2'>
-
-        {{form.dateslice_column}}
-        <button 
-          type='button'
-          data-widget-slice-target="removeButton"
-          data-action="widget-slice#remove"
-          class='button button--sm button--tertiary button--circle {% if not show_dateslice_column%}hidden{%endif%}'
-        ><i class='fa fa-times'></i></button>
-
+      <div data-controller='widget-slice'>
+        <div data-widget-slice-target ="input">
+          <p class="input__help-text">{{ form.dateslice_column.help_text }}</p>
+          <div class='flex flex-row items-center gap-2'>
+            {{form.dateslice_column}}
+            <button 
+              type='button'
+              data-action="widget-slice#remove"
+              class='button button--sm button--tertiary button--circle {% if not show_dateslice_column%}hidden{%endif%}'
+            ><i class='fa fa-times'></i></button>
+          </div>
+        </div>
 
         <button 
           class="button button--sm {% if show_dateslice_column%}hidden{%endif%}"
