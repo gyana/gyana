@@ -36,7 +36,3 @@ class DateSlicer(BaseModel):
 
     def get_absolute_url(self):
         return reverse("dateslicers:detail", args=(self.pk,))
-
-    @property
-    def is_empty(self):
-        return bool(self.start and self.end)

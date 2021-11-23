@@ -3,15 +3,15 @@
 <div
   id='dateslicers:update-stream'
   class='dateslicer'
-  data-controller='popover'
+  {% comment %} data-controller='popover'
   data-placement='bottom-start'
-  data-theme='popover-dateslicer'
+  data-theme='popover-dateslicer' {% endcomment %}
 >
   <button >
     <i class="fa fa-calendar"></i> 
-    {% if object.is_empty %}
+    {% if object.date_range != "custom" %}
 
-      No date range selected_category
+      {{object.get_date_range_display}}
 
     {% else %}
 
@@ -20,18 +20,30 @@
 
     {% endif %}
   </button>
-  <template data-popover-target="body">
+  {% comment %} <template data-popover-target="body"> {% endcomment %}
     <div class='dateslicer-popover'>
-      <form method="post" action="{% url 'dateslicers:update' object.id %}" class="form--no-layout popover-body">
+      <form 
+        id="dateslicer-update-form"
+        method="post" action="{% url 'dateslicers:update' object.id %}" 
+        class="form--no-layout popover-body"
+        data-controller="live-update"
+
+      >
+        <span data-live-update-target="loading" class="hidden">
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+        </span>
+
         {% csrf_token %}
 
-        <div class='flex flex-row items-center'>
-          {% include "django/forms/default_form.html" %}
-        </div>
-        <button type="submit" class="button button--success button--sm">Apply</button>
+        {% comment %}TODO: Add data-live-update-ignore to the start and end input  {% endcomment %}
+        {% include "django/forms/default_form.html" %}
+
+        <button type="submit" class="button button--success button--sm"
+          name="submit" value="submit"
+          >Apply</button>
       </form>
   </div>
-  </template>
+  {% comment %} </template> {% endcomment %}
   {% include 'dateslicers/delete.html' %}
 </div>
 

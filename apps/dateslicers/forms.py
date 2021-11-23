@@ -1,11 +1,12 @@
 from django import forms
 
+from apps.base.live_update_form import LiveUpdateForm
 from apps.base.widgets import DatetimeInput
 
 from .models import DateSlicer
 
 
-class DateSlicerForm(forms.ModelForm):
+class DateSlicerForm(LiveUpdateForm):
     class Meta:
         model = DateSlicer
         fields = ["date_range", "start", "end"]
@@ -21,3 +22,9 @@ class DateSlicerForm(forms.ModelForm):
                 }
             ),
         }
+
+    def get_live_fields(self):
+        fields = ["date_range"]
+        if self.get_live_field("date_range") == DateSlicer.Range.CUSTOM:
+            fields += ["start", "end"]
+        return fields

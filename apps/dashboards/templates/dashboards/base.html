@@ -106,10 +106,10 @@
   </div>
 
   {% if request.GET.mode != 'view' %}
+
+    {% include 'dateslicers/create.html' with dashboard=dashboard %}
   
     {% include 'dashboards/_add_widget.html' with choices=choices categories=categories %}
-    
-    {% include 'dateslicers/create.html' with dashboard=dashboard %}
     
   {% endif %}
 </div>

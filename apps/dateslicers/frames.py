@@ -14,7 +14,7 @@ from .models import DateSlicer
 class DateSlicerCreate(TurboFrameCreateView):
     template_name = "dateslicers/create.html"
     model = DateSlicer
-    form_class = DateSlicerForm
+    fields = []
     turbo_frame_dom_id = "dateslicers:create"
 
     @cached_property
@@ -56,7 +56,9 @@ class DateSlicerUpdate(TurboFrameUpdateView):
     turbo_frame_dom_id = "dateslicers:update"
 
     def form_valid(self, form):
-        super().form_valid(form)
+        r = super().form_valid(form)
+        if form.is_live:
+            return r
         dashboard = form.instance.dashboard
         streams = []
         for widget in dashboard.widget_set.all():
@@ -72,7 +74,14 @@ class DateSlicerUpdate(TurboFrameUpdateView):
                     .replace.template("widgets/output.html", context)
                     .render(request=self.request)
                 )
-        return TurboStreamResponse(streams)
+        return TurboStreamResponse(
+            [
+                *streams,
+                TurboStream("dateslicers:update-stream")
+                .replace.template(self.template_name, self.get_context_data())
+                .render(request=self.request),
+            ]
+        )
 
     def get_success_url(self) -> str:
         return reverse("dateslicers:update", args=(self.object.id,))

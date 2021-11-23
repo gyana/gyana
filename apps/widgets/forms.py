@@ -48,11 +48,6 @@ class GenericWidgetForm(LiveUpdateForm):
                     required=False,
                     widget=SelectWithDisable(
                         disabled=disable_non_time(schema),
-                        attrs={
-                            "class": "hidden"
-                            if not self.get_live_field("dateslice_column")
-                            else "",
-                        },
                     ),
                     choices=create_column_choices(schema),
                     help_text=self.base_fields["dateslice_column"].help_text,

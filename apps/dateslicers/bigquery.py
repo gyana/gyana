@@ -17,7 +17,7 @@ def this_week(query, column):
 def this_year(query, column):
     date = filters.get_date(query[column])
     today = dt.date.today()
-    return query[date.year() == today.year & date <= today]
+    return query[(date.year() == today.year) & (date <= today)]
 
 
 RANGE_FUNCTIONS = {
@@ -29,7 +29,7 @@ RANGE_FUNCTIONS = {
 
 
 def slice_query(query, column, date_slicer):
-    if date_slicer.date_range:
+    if date_slicer.date_range != DateSlicer.Range.CUSTOM:
         range_filter = RANGE_FUNCTIONS[date_slicer.date_range]
         return range_filter(query, column)
 
