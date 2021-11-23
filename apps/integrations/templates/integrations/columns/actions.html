@@ -1,8 +1,17 @@
-{% if record.ready %}
-{% else %}
-  {% if record.state == 'done' %}
-  <i>
-    You need to <a href="{% url 'project_integrations:done' record.project.id record.id %}" class="link">review</a> the initial sync to complete
-  </i>
+<div class="flex items-center space-x-2">
+  {% if record.ready %}
+  {% else %}
+    {% if record.state == 'done' %}
+      <i>
+        <i class="fa fa-info-circle text-blue"></i>
+        You need to <a href="{% url 'project_integrations:done' record.project.id record.id %}" class="link">review</a> the initial sync to continue
+      </i>
+    {% endif %}
+    {% if record.close_to_deletion_datetime %}
+      <i>
+        <i class="fa fa-exclamation-circle text-red"></i>
+        This integration is incomplete and will be deleted in <strong>{% include 'columns/natural_datetime.html' with datetime=record.deletion_datetime %}</strong>
+      </i>
+    {% endif %}
   {% endif %}
-{% endif %}
+</div>

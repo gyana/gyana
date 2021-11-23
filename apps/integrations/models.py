@@ -135,6 +135,14 @@ class Integration(CloneMixin, BaseModel):
         return self.created_ready
 
     @property
+    def deletion_datetime(self):
+        return self.created + timedelta(days=PENDING_DELETE_AFTER_DAYS)
+
+    @property
+    def close_to_deletion_datetime(self):
+        return (timezone.now() - self.deletion_datetime).days < 3
+
+    @property
     def used_in_workflows(self):
         return (
             Workflow.objects.filter(nodes__input_table__in=self.table_set.all())

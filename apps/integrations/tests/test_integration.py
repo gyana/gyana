@@ -186,12 +186,6 @@ def test_integration_create_pending_load_and_approve(
     # the load stage requires celery progress (javascript)
     # we assume that the task was run successfully and is done
 
-    # pending page
-    r = client.get(f"{LIST}/pending")
-    assertOK(r)
-    assertSelectorLength(r, "table tbody tr", 1)
-    assertLink(r, f"{DETAIL}/done", "Store info")
-
     # load (redirects to done)
     r = client.get(f"{DETAIL}/load")
     assertRedirects(r, f"{DETAIL}/done")
