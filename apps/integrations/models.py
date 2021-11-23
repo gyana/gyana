@@ -131,8 +131,12 @@ class Integration(CloneMixin, BaseModel):
         return getattr(self, self.kind).last_synced
 
     @property
-    def pending_deletion(self):
+    def deletion_datetime(self):
         return self.created + timedelta(days=PENDING_DELETE_AFTER_DAYS)
+
+    @property
+    def close_to_deletion_datetime(self):
+        return (self.deletion_datetime - timezone.now()).days < 3
 
     @property
     def used_in_workflows(self):

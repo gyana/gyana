@@ -1,21 +1,11 @@
-from django import template
 from django.db.models.aggregates import Sum
 from django.template import Context
 from django.template.loader import get_template
-from django.utils.html import format_html
 from django_tables2 import Column, Table, TemplateColumn
 
-from apps.base.table import NaturalDatetimeColumn
+from apps.base.table import ImageColumn, NaturalDatetimeColumn
 
 from .models import Integration
-
-
-class ImageColumn(Column):
-    def render(self, value):
-        return format_html(
-            '<img src="/static/{url}" class="fav" height="20px", width="20px">',
-            url=value,
-        )
 
 
 class PendingStatusColumn(Column):
@@ -64,15 +54,20 @@ class IntegrationListTable(Table):
         attrs = {"class": "table"}
 
     name = Column(linkify=True)
-    icon = ImageColumn(accessor="icon", orderable=False)
+    icon = ImageColumn(orderable=False)
     # TODO: Fix orderable on kind column.
     kind = Column(accessor="display_kind", orderable=False)
     state = PendingStatusColumn()
     num_rows = RowCountColumn()
-    actions = TemplateColumn(template_name="integrations/columns/actions.html")
-    # ready = BooleanColumn()
-    # created_ready = NaturalDatetimeColumn(verbose_name="Added")
-    # pending_deletion = NaturalDatetimeColumn(verbose_name="Expires")
+    last_synced = NaturalDatetimeColumn(
+        accessor="connector__bigquery_succeeded_at",
+        verbose_name="Last synced",
+    )
+    actions = TemplateColumn(
+        template_name="integrations/columns/actions.html",
+        orderable=False,
+        verbose_name="",
+    )
 
     def order_num_rows(self, queryset, is_descending):
         queryset = queryset.annotate(num_rows_agg=Sum("table__num_rows")).order_by(

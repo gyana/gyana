@@ -2,10 +2,10 @@
 {% else %}
   <i>
     {% if record.state == 'done' %}
-      You need to <a href="{% url 'project_integrations:done' record.project.id record.id %}" class="link">review</a> the initial sync
-    {% else %}
-      {% comment %} Waiting to complete the initial sync {% endcomment %}
+      You need to <a href="{% url 'project_integrations:done' record.project.id record.id %}" class="link">review</a> the initial sync.
     {% endif %}
-    {% comment %} or it will be deleted in <strong>{% include "columns/natural_datetime.html" with datetime=record.pending_deletion %}</strong> {% endcomment %}
+    {% if record.close_to_deletion_datetime %}
+      Auto-deleted in <strong>{% include "columns/natural_datetime.html" with datetime=record.deletion_datetime %}</strong>.
+    {% endif %}
   </i>
 {% endif %}

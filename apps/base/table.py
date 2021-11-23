@@ -22,3 +22,8 @@ class DuplicateColumn(tables.TemplateColumn):
         context = getattr(table, "context", Context())
         context["object"] = record
         return get_template(self.template_name).render(context.flatten())
+
+
+class ImageColumn(tables.TemplateColumn):
+    def __init__(self, **kwargs):
+        super().__init__(self, template_name="columns/image.html", **kwargs)
