@@ -14,6 +14,7 @@ from apps.columns.forms import (
 )
 
 pytestmark = pytest.mark.django_db
+from apps.columns.models import EditColumn
 
 
 def test_aggregation_form(aggregation_column_factory, node_factory):
@@ -118,3 +119,48 @@ def test_convert_form(convert_column_factory):
     assert set(form.fields.keys()) == {"hidden_live", "column", "target_type"}
     assertFormChoicesLength(form, "column", 9)
     assertFormChoicesLength(form, "target_type", 8)
+
+
+@pytest.mark.parametrize(
+    "edit, fields",
+    [
+        pytest.param(EditColumn(), ["column"], id="Empty edit"),
+        pytest.param(
+            EditColumn(column="id"), ["column", "integer_function"], id="Integer column"
+        ),
+        pytest.param(
+            EditColumn(column="id", integer_function="sub"),
+            ["column", "integer_function", "float_value"],
+            id="Integer column with function",
+        ),
+        pytest.param(
+            EditColumn(column="stars", integer_function="sub"),
+            ["column", "integer_function", "float_value"],
+            id="Float column",
+        ),
+        pytest.param(
+            EditColumn(column="athlete"),
+            ["column", "string_function"],
+            id="String column",
+        ),
+        pytest.param(
+            EditColumn(column="athlete", string_function="like"),
+            ["column", "string_function", "string_value"],
+            id="String column with function",
+        ),
+        pytest.param(
+            EditColumn(column="updated"),
+            ["column", "datetime_function"],
+            id="Datetime column",
+        ),
+        pytest.param(
+            EditColumn(column="birthday"), ["column", "date_function"], id="Date column"
+        ),
+        pytest.param(
+            EditColumn(column="lunch"), ["column", "time_function"], id="Time column"
+        ),
+    ],
+)
+def test_edit_live_fields(edit, fields):
+    form = OperationColumnForm(schema=TABLE.schema(), instance=edit)
+    assert form.get_live_fields() == fields

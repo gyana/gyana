@@ -150,4 +150,4 @@ def _json_extract(t, expr):
     t_value = t.translate(value)
     t_json_path = t.translate(json_path)
 
-    return f"JSON_EXTRACT({t_value}, {t_json_path})"
+    return f"JSON_QUERY({t_value}, {t_json_path})"

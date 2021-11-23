@@ -1,8 +1,8 @@
 import ibis_bigquery
 import pytest
+
 from apps.base.tests.mock_data import TABLE
 from apps.columns.bigquery import compile_function
-from apps.columns.forms import OperationColumnForm
 from apps.columns.models import EditColumn
 
 QUERY = """SELECT {} AS `tmp`
@@ -239,48 +239,3 @@ def create_extract_edit(column, extraction, type_):
 def test_compile_function(edit, expected_sql):
     sql = ibis_bigquery.compile(compile_function(TABLE, edit))
     assert sql == expected_sql
-
-
-@pytest.mark.parametrize(
-    "edit, fields",
-    [
-        pytest.param(EditColumn(), ["column"], id="Empty edit"),
-        pytest.param(
-            EditColumn(column="id"), ["column", "integer_function"], id="Integer column"
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="sub"),
-            ["column", "integer_function", "float_value"],
-            id="Integer column with function",
-        ),
-        pytest.param(
-            EditColumn(column="stars", integer_function="sub"),
-            ["column", "integer_function", "float_value"],
-            id="Float column",
-        ),
-        pytest.param(
-            EditColumn(column="athlete"),
-            ["column", "string_function"],
-            id="String column",
-        ),
-        pytest.param(
-            EditColumn(column="athlete", string_function="like"),
-            ["column", "string_function", "string_value"],
-            id="String column with function",
-        ),
-        pytest.param(
-            EditColumn(column="updated"),
-            ["column", "datetime_function"],
-            id="Datetime column",
-        ),
-        pytest.param(
-            EditColumn(column="birthday"), ["column", "date_function"], id="Date column"
-        ),
-        pytest.param(
-            EditColumn(column="lunch"), ["column", "time_function"], id="Time column"
-        ),
-    ],
-)
-def test_edit_live_fields(edit, fields):
-    form = OperationColumnForm(schema=TABLE.schema(), instance=edit)
-    assert form.get_live_fields() == fields
