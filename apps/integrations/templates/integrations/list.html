@@ -105,6 +105,12 @@
     </div>
   </form>
 
+  {% if project.integrations_for_review > 0 %}
+    <p class="alert mb-4">
+      You have {{ project.integrations_for_review }} synced integration{{ project.integrations_for_review|pluralize }} to review.
+    </p>
+  {% endif %}
+
   <div class="card card--none mb-8">
     {% render_table table %}
 

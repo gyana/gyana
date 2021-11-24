@@ -49,7 +49,7 @@
     href="{% url 'project_integrations:list' project.id %}"
     data-controller="tooltip"
     data-placement="right">
-    <i class="far fa-fw fa-database mr-6"></i>Integrations
+    <i class="far fa-fw fa-database mr-6"></i>Integrations {% if project.integrations_for_review > 0 %}({{ project.integrations_for_review }}){% endif %}
     <span data-tooltip-target="body">Integrations</span>
   </a>
 </li>
