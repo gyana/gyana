@@ -8,7 +8,7 @@ const createWidget = (kind) => {
   cy.contains('This widget needs to be configured')
   cy.contains('configured').click()
   cy.contains('-----------').click()
-  cy.contains('store_info').click({ force: true })
+  cy.contains('store_info').click()
 }
 
 const widgetStartId = getModelStartId('widgets.widget')
@@ -17,6 +17,19 @@ describe('dashboards', () => {
   beforeEach(() => {
     cy.login()
     cy.visit('/projects/1/dashboards/')
+    cy.contains('Display data metrics and share')
+  })
+
+  it('create, rename, and delete dashboard', () => {
+    cy.contains('Create a new dashboard').click()
+    cy.contains('This dashboard needs some widgets!')
+    cy.get('input[value=Untitled]').clear().type("Marauder's Map{enter}")
+    cy.get(`input[value="Marauder's Map"]`)
+    cy.visit('/projects/1/dashboards/')
+    cy.contains("Marauder's Map").click()
+    cy.get('i[class*="fa-ellipsis-h"]').click()
+    cy.get('a').contains('Delete').click()
+    cy.contains('Yes').click()
     cy.contains('Display data metrics and share')
   })
 
@@ -46,6 +59,79 @@ describe('dashboards', () => {
     cy.get(`#widget-delete-${widgetStartId}`).click({ force: true })
     cy.contains('Yes').click({ force: true })
     cy.get(`#widget-${widgetStartId}`).should('not.exist')
+  })
+
+  it('duplicates dashboard with new widgets', () => {
+    // Duplicates a dashboard with a table widget
+    // Then changes the widget kind and checks whether the original
+    // widget hasn't changed
+    // TODO: Maybe add test for widget relations like filters or values
+    cy.contains('Create a new dashboard').click()
+    createWidget('Table')
+    cy.contains('Save & Close').should('not.be.disabled').click()
+
+    cy.visit('/projects/1/dashboards/')
+    cy.get(`#dashboard-duplicate-${dashboardStartId}`).click()
+    cy.contains('Copy of Untitled').click()
+    cy.contains('Blackpool', { timeout: BIGQUERY_TIMEOUT })
+
+    // TODO: trigger the hover and remove the force click
+    // cy.get('#widgets-output-2').trigger('mouseover')
+    cy.get(`#widget-update-${widgetStartId + 1}`).click({ force: true })
+    cy.get('select-visual').find('button').click()
+    cy.get('select-visual').contains('Column').click()
+    cy.get('select[name=dimension]').select('Location')
+    cy.get('[data-formset-prefix-value=aggregations]').within((el) => {
+      cy.wrap(el).get('button').click()
+    })
+    cy.get('select[name=aggregations-0-column]').select('store_id')
+    cy.get('select[name=aggregations-0-function]').select('MEAN')
+    cy.contains('Save & Close').click()
+
+    cy.visit('/projects/1/dashboards/')
+    cy.contains(/^Untitled$/).click()
+    cy.contains('Alex', { timeout: BIGQUERY_TIMEOUT })
+  })
+
+  it('shares a dashboard with a widget', () => {
+    cy.contains('Create a new dashboard').click()
+    createWidget('Table')
+    cy.contains('Save & Close').should('not.be.disabled').click()
+    cy.logout()
+
+    cy.visit(`/projects/1/dashboards/${dashboardStartId}`)
+    cy.location('pathname').should('equal', '/login/')
+
+    cy.login()
+    cy.visit(`/projects/1/dashboards/${dashboardStartId}`)
+    cy.get(`#dashboard-share-${dashboardStartId}`).click()
+    cy.get('select').select('public')
+    cy.get('#dashboard-share-update').click()
+
+    cy.contains(
+      /localhost:8000\/dashboards\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/
+    )
+      .invoke('text')
+      .then((text) => {
+        const sharedUrl = text.trim()
+        cy.logout()
+
+        cy.visit(sharedUrl)
+        cy.contains('David')
+
+        cy.login()
+        cy.visit(`/projects/1/dashboards/${dashboardStartId}`)
+        cy.get(`#dashboard-share-${dashboardStartId}`).click()
+        cy.get('select').select('private')
+        cy.get('#dashboard-share-update').should('not.be.disabled')
+        cy.get('#dashboard-share-update').click()
+        cy.get('.fa-link')
+        cy.logout()
+
+        // cy.visit fails on 404 by default
+        cy.visit(sharedUrl, { failOnStatusCode: false })
+        cy.contains('404 - Not Found')
+      })
   })
 
   it('created workflow shows in dashboard', () => {
