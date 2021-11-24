@@ -80,14 +80,36 @@
     </template>
   </div>
 
-  <turbo-frame id="dashboard-share"  src="{% url 'dashboards:share' object.id %}">
-    <button class="button button--circle {% if  object.shared_status == 'public' %}button--success{% else %}button--tertiary{% endif %}">
+  
+  <div data-controller='popover'>
+    <button
+      id="dashboard-share-{{ object.id }}"
+      class="button button--sm button--tertiary {% if object.shared_status != 'private' %}button--success{% else %}button--tertiary{% endif %}"
+      data-controller="tooltip"
+    >
       {% if  object.shared_status == 'public' %}<i class='far fa-fw fa-link'></i>
       {% elif object.shared_status == 'private' %}<i class='far fa-fw fa-unlink'></i>
       {% elif object.shared_status == 'password_protected' %}<i class='far fa-fw fa-lock'></i>
       {% endif %}
+
+      Share
+
+      <span data-tooltip-target="body">
+        {% if  object.shared_status == 'password_protected' %}
+        Password protected dashboard
+        {% elif object.shared_status == 'public' %}
+        Public dashboard
+        {% else %}
+        Private dashboard
+        {% endif %}
+      </span>
     </button>
-  </turbo-frame>
+      <template data-popover-target="body" class="popover-body max-w-lg card card--sm"> 
+        <turbo-frame id="dashboard-share"  src="{% url 'dashboards:share' object.id %}">
+        </turbo-frame>
+      </template>
+  </div>
+  
   
   <div data-controller="tooltip">
     {% if not request.GET.mode or request.GET.mode == 'edit' %}

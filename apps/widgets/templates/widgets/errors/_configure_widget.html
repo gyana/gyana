@@ -2,6 +2,7 @@
 <p class="mt-4">
   This widget needs to be
   <button 
+    data-cy="widget-configure"
     data-action="click->tf-modal#open" 
     class='link'
     data-src="{% url "dashboard_widgets:update" project.id dashboard.id widget.id %}"
