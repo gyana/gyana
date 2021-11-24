@@ -96,7 +96,7 @@ class IntegrationSettings(ProjectMixin, TurboUpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs.update({"instance": self.object.source_obj})
+        kwargs.update({"instance": self.object.source_obj, "request": self.request})
         return kwargs
 
     def form_valid(self, form):

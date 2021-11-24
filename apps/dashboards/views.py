@@ -1,16 +1,6 @@
 import copy
 
 import analytics
-from apps.base.analytics import (
-    DASHBOARD_CREATED_EVENT,
-    DASHBOARD_CREATED_EVENT_FROM_INTEGRATION,
-    DASHBOARD_DUPLICATED_EVENT,
-)
-from apps.base.turbo import TurboCreateView, TurboUpdateView
-from apps.dashboards.tables import DashboardTable
-from apps.integrations.models import Integration
-from apps.projects.mixins import ProjectMixin
-from apps.widgets.models import WIDGET_CHOICES_ARRAY, Widget
 from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -23,7 +13,17 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView
 from django_tables2 import SingleTableView
-from waffle import flag_is_active
+
+from apps.base.analytics import (
+    DASHBOARD_CREATED_EVENT,
+    DASHBOARD_CREATED_EVENT_FROM_INTEGRATION,
+    DASHBOARD_DUPLICATED_EVENT,
+)
+from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.dashboards.tables import DashboardTable
+from apps.integrations.models import Integration
+from apps.projects.mixins import ProjectMixin
+from apps.widgets.models import WIDGET_CHOICES_ARRAY, Widget
 
 from .forms import DashboardCreateForm, DashboardForm, DashboardLoginForm
 from .models import Dashboard
