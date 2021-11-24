@@ -18,8 +18,12 @@ PENDING_DELETE_AFTER_DAYS = 7
 
 class IntegrationsManager(models.Manager):
     def visible(self):
-        # hide un-authorized fivetran connectors, cleanup up periodically
-        return self.exclude(connector__fivetran_authorized=False)
+        # hide un-authorized fivetran connectors and pending connectors with >7
+        # days, cleanup up periodically
+        return self.exclude(connector__fivetran_authorized=False).exclude(
+            created__lt=timezone.now() - timedelta(days=PENDING_DELETE_AFTER_DAYS),
+            ready=False,
+        )
 
     def pending(self):
         return self.visible().filter(ready=False)
@@ -87,14 +91,14 @@ class Integration(CloneMixin, BaseModel):
         State.UPDATE: ICONS["warning"],
         State.LOAD: ICONS["loading"],
         State.ERROR: ICONS["error"],
-        State.DONE: ICONS["success"],
+        State.DONE: ICONS["info"],
     }
 
     STATE_TO_MESSAGE = {
         State.UPDATE: "Incomplete setup",
-        State.LOAD: "Syncing",
+        State.LOAD: "Importing",
         State.ERROR: "Error",
-        State.DONE: "Success",
+        State.DONE: "Ready to review",
     }
 
     def __str__(self):
@@ -135,12 +139,12 @@ class Integration(CloneMixin, BaseModel):
         return self.created_ready
 
     @property
-    def deletion_datetime(self):
-        return self.created + timedelta(days=PENDING_DELETE_AFTER_DAYS)
-
-    @property
-    def close_to_deletion_datetime(self):
-        return (timezone.now() - self.deletion_datetime).days < 3
+    def expires(self):
+        if self.ready:
+            return
+        return max(
+            timezone.now(), self.created + timedelta(days=PENDING_DELETE_AFTER_DAYS)
+        )
 
     @property
     def used_in_workflows(self):

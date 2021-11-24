@@ -60,11 +60,7 @@ class IntegrationListTable(Table):
     state = PendingStatusColumn(verbose_name="Status")
     num_rows = RowCountColumn()
     last_synced = NaturalDayColumn(orderable=False)
-    actions = TemplateColumn(
-        template_name="integrations/columns/actions.html",
-        orderable=False,
-        verbose_name="",
-    )
+    expires = NaturalDatetimeColumn(orderable=False)
 
     def order_num_rows(self, queryset, is_descending):
         queryset = queryset.annotate(num_rows_agg=Sum("table__num_rows")).order_by(
