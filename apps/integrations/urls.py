@@ -34,11 +34,6 @@ project_urlpatterns = (
             "", login_and_project_required(views.IntegrationList.as_view()), name="list"
         ),
         path(
-            "pending",
-            login_and_project_required(views.IntegrationPending.as_view()),
-            name="pending",
-        ),
-        path(
             "overview",
             login_and_project_required(frames.IntegrationOverview.as_view()),
             name="overview",

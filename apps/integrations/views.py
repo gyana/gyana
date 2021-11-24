@@ -17,7 +17,7 @@ from apps.projects.mixins import ProjectMixin
 from .forms import KIND_TO_FORM_CLASS, KIND_TO_SETTINGS_FORM_CLASS, IntegrationForm
 from .mixins import STATE_TO_URL_REDIRECT, ReadyMixin
 from .models import Integration
-from .tables import IntegrationListTable, IntegrationPendingTable, ReferencesTable
+from .tables import IntegrationListTable, ReferencesTable
 
 # Overview
 
@@ -33,7 +33,7 @@ class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
         context_data = super().get_context_data(**kwargs)
         queryset = self.project.integration_set
 
-        context_data["integration_count"] = queryset.ready().count()
+        context_data["integration_count"] = queryset.visible().count()
         context_data["pending_integration_count"] = queryset.pending().count()
         context_data["show_zero_state"] = queryset.visible().count() == 0
         context_data["integration_kinds"] = Integration.Kind.choices
@@ -41,25 +41,8 @@ class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
         return context_data
 
     def get_queryset(self) -> QuerySet:
-        return self.project.integration_set.ready().prefetch_related("table_set").all()
-
-
-class IntegrationPending(ProjectMixin, SingleTableMixin, FilterView):
-    template_name = "integrations/pending.html"
-    model = Integration
-    table_class = IntegrationPendingTable
-    paginate_by = 20
-    filterset_class = IntegrationFilter
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        queryset = self.project.integration_set
-        context_data["pending_integration_count"] = queryset.pending().count()
-        return context_data
-
-    def get_queryset(self) -> QuerySet:
         return (
-            self.project.integration_set.pending().prefetch_related("table_set").all()
+            self.project.integration_set.visible().prefetch_related("table_set").all()
         )
 
 

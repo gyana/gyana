@@ -1,32 +1,134 @@
-{% extends "integrations/base_list.html" %}
+{% extends "web/app/project_base.html" %}
+{% load help_utils %}
 {% load render_table from django_tables2 %}
 
-{% block tab %}
-{% comment %} Click a hidden submit button for Turbo to capture event {% endcomment %}
-<form method="get" onchange="this.querySelector('button').click()">
-  <button type="submit" class="hidden"></button>
-  <div class='flex flex-row space-x-4 w-1/2 mb-4'>
-    {{ filter.form.name }}
-    {{ filter.form.kind }}
+{% block app %}
+{% if show_zero_state %}
+<div class="table__empty">
+  <i class="fas fa-fw fa-4x fa-database text-black-50 mb-7"></i>
+  <h3 class="mb-3">Import a source of data, like a CSV file or Google Sheet</h3>
+  <p>
+    Watch the video below to see how you can get started with integrations, if
+    you prefer to just get started upload a CSV below. You can always watch the
+    videos later, right in our help center!
+  </p>
+</div>
+
+<div class="mx-auto" style="width: 48rem;">
+  {% embed_loom 'integrations' %}
+
+  <div class="flex gap-8 mt-7 items-center">
+    <a
+      href="{% url 'project_integrations_uploads:create' project.id %}"
+      class="button button--primary flex-1"
+    >
+      Upload CSV
+    </a>
+
+    <p class="text-black-50">or</p>
+
+    <a
+      href="{% url 'project_integrations_sheets:create' project.id %}"
+      class="button button--primary flex-1"
+    >
+      Add a Google Sheet
+    </a>
   </div>
-</form>
 
-<div class="card card--none mb-8">
-  {% render_table table %}
+  <p class="alert mt-7">
+   We recommend you start with a Google Sheet or CSV to get going fast. Connectors
+   take up to an hour for the initial data sync.
+  </p>
 
-  {% if integration_count == 0 %}
-  <div class="table__empty">
-    <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
-    <h3>You have no integrations</h3>
+  <div class="flex gap-8 mt-7">
+    <a
+      href="{% url 'project_integrations_connectors:create' project.id %}"
+      class="button button--tertiary flex-1"
+    >
+      Add a connector
+    </a>
+  </div>
+</div>
+{% else %}
+<div class="page-header">
+  <div class="mr-auto">
+    <h1 class="flex items-center gap-3">
+      Integrations
+      {% link_article 'overview' 'integrations' %}
+      {% link_video 'integrations' %}
+    </h1>
+    <p>A source of data, like a CSV file, Google Sheet, ads account, database, or web app.</p>
+  </div>
+
+  <div class="flex ml-4">
     {% if project.team.enabled %}
-      <p>
-        Upload a <a href="{% url 'project_integrations_uploads:create' project.id %}" class="link">CSV</a>,
-        connect a <a href="{% url 'project_integrations_sheets:create' project.id %}" class="link">sheet</a>, or
-        add an <a href="{% url 'project_integrations_connectors:create' project.id %}" class="link">connector</a> to see it
-        here.
-      </p>
+    <div data-controller='popover'>
+      <button class="button button--sm">
+        New Integration <i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
+      </button>
+
+      <ul data-popover-target="body" class="list list--bordered" style="margin-top:6px;">
+        <li class="list__item list__item--interactive">
+          <a class="" href="{% url 'project_integrations_uploads:create' project.id %}">
+            <i class="fas fa-fw fa-upload mr-4"></i> Upload CSV
+          </a>
+        </li>
+
+        <li class="list__item list__item--interactive">
+          <a class="" href="{% url 'project_integrations_sheets:create' project.id %}">
+            <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
+          </a>
+        </li>
+
+        <li class="list__item list__item--interactive">
+          <a class="" href="{% url 'project_integrations_connectors:create' project.id %}">
+            <i class="fas fa-fw fa-plus mr-4"></i> New Connector
+          </a>
+        </li>
+      </ul>
+    </div>
+    {% else %}
+    <button disabled class="button button--sm disabled">
+      New Integration <i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
+    </button>
     {% endif %}
   </div>
-  {% endif %}
 </div>
+
+<div class="pad overflow-auto">
+  {% comment %} Click a hidden submit button for Turbo to capture event {% endcomment %}
+  <form method="get" onchange="this.querySelector('button').click()">
+    <button type="submit" class="hidden"></button>
+    <div class='flex flex-row space-x-4 w-1/2 mb-4'>
+      {{ filter.form.name }}
+      {{ filter.form.kind }}
+    </div>
+  </form>
+
+  {% if project.integrations_for_review > 0 %}
+    <p class="alert mb-4">
+      You have {{ project.integrations_for_review }} synced integration{{ project.integrations_for_review|pluralize }} to review.
+    </p>
+  {% endif %}
+
+  <div class="card card--none mb-8">
+    {% render_table table %}
+
+    {% if integration_count == 0 %}
+    <div class="table__empty">
+      <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
+      <h3>You have no integrations</h3>
+      {% if project.team.enabled %}
+        <p>
+          Upload a <a href="{% url 'project_integrations_uploads:create' project.id %}" class="link">CSV</a>,
+          connect a <a href="{% url 'project_integrations_sheets:create' project.id %}" class="link">sheet</a>, or
+          add an <a href="{% url 'project_integrations_connectors:create' project.id %}" class="link">connector</a> to see it
+          here.
+        </p>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div> 
+{% endif %}
 {% endblock %}

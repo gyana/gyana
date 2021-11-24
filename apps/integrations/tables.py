@@ -1,8 +1,9 @@
-from apps.base.table import NaturalDatetimeColumn
 from django.db.models.aggregates import Sum
 from django.template import Context
 from django.template.loader import get_template
-from django_tables2 import Column, Table
+from django_tables2 import BooleanColumn, Column, Table, TemplateColumn
+
+from apps.base.table import NaturalDatetimeColumn, NaturalDayColumn
 
 from .models import Integration
 
@@ -29,10 +30,14 @@ class PendingStatusColumn(Column):
         return get_template("columns/status.html").render(context.flatten())
 
 
-class RowCountColumn(Column):
+class RowCountColumn(TemplateColumn):
     def __init__(self, **kwargs):
         verbose_name = kwargs.pop("verbose_name", "Rows")
-        super().__init__(verbose_name=verbose_name, **kwargs)
+        super().__init__(
+            verbose_name=verbose_name,
+            template_name="integrations/columns/num_rows.html",
+            **kwargs
+        )
 
     def order(self, queryset, is_descending):
         queryset = queryset.annotate(num_rows_agg=Sum("table__num_rows")).order_by(
@@ -44,39 +49,25 @@ class RowCountColumn(Column):
 class IntegrationListTable(Table):
     class Meta:
         model = Integration
-        fields = ("name", "kind", "created_ready")
+        fields = ()
         attrs = {"class": "table"}
 
     name = Column(linkify=True)
+    icon = TemplateColumn(
+        template_name="columns/image.html", orderable=False, verbose_name="Source"
+    )
+    kind = Column(accessor="display_kind", orderable=False, verbose_name="")
+    ready = BooleanColumn()
+    state = PendingStatusColumn(verbose_name="Status")
     num_rows = RowCountColumn()
-    # TODO: Fix orderable on kind column.
-    kind = Column(accessor="display_kind", orderable=False)
-    created_ready = NaturalDatetimeColumn(verbose_name="Added")
+    last_synced = NaturalDayColumn(orderable=False)
+    expires = NaturalDatetimeColumn(orderable=False)
 
     def order_num_rows(self, queryset, is_descending):
         queryset = queryset.annotate(num_rows_agg=Sum("table__num_rows")).order_by(
             ("-" if is_descending else "") + "num_rows_agg"
         )
         return (queryset, True)
-
-
-class IntegrationPendingTable(Table):
-    class Meta:
-        model = Integration
-        fields = (
-            "name",
-            "kind",
-            "num_rows",
-            "created",
-        )
-        attrs = {"class": "table"}
-
-    name = Column(linkify=True)
-    num_rows = RowCountColumn()
-    kind = Column(accessor="display_kind")
-    created = NaturalDatetimeColumn(verbose_name="Started")
-    state = PendingStatusColumn()
-    pending_deletion = NaturalDatetimeColumn(verbose_name="Expires")
 
 
 class StructureTable(Table):

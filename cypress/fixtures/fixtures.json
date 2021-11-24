@@ -97,7 +97,8 @@
       "override_row_limit": null,
       "row_count": 0,
       "row_count_calculated": null,
-      "last_checkout": null
+      "last_checkout": null,
+      "timezone": "GMT"
     }
   },
   {
@@ -112,7 +113,8 @@
       "override_row_limit": null,
       "row_count": 15,
       "row_count_calculated": null,
-      "last_checkout": null
+      "last_checkout": null,
+      "timezone": "GMT"
     }
   },
   {
@@ -127,7 +129,8 @@
       "override_row_limit": null,
       "row_count": 12943,
       "row_count_calculated": "2021-08-31T00:58:25.986Z",
-      "last_checkout": null
+      "last_checkout": null,
+      "timezone": "GMT"
     }
   },
   {
@@ -142,7 +145,8 @@
       "override_row_limit": null,
       "row_count": 0,
       "row_count_calculated": null,
-      "last_checkout": null
+      "last_checkout": null,
+      "timezone": "GMT"
     }
   },
   {
@@ -200,7 +204,8 @@
       "ready": true,
       "access": "everyone",
       "description": "",
-      "cname": null
+      "cname": null,
+      "daily_schedule_time": "00:00:00"
     }
   },
   {
@@ -214,7 +219,8 @@
       "ready": true,
       "access": "everyone",
       "description": "",
-      "cname": null
+      "cname": null,
+      "daily_schedule_time": "00:00:00"
     }
   },
   {
@@ -228,7 +234,8 @@
       "ready": true,
       "access": "everyone",
       "description": "Two widgets for Google Analytics in a Cypress test.",
-      "cname": null
+      "cname": null,
+      "daily_schedule_time": "00:00:00"
     }
   },
   {
@@ -839,8 +846,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": []
+      "has_been_saved": false
     }
   },
   {
@@ -878,8 +884,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1]
+      "has_been_saved": false
     }
   },
   {
@@ -917,8 +922,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1]
+      "has_been_saved": false
     }
   },
   {
@@ -956,8 +960,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1]
+      "has_been_saved": false
     }
   },
   {
@@ -995,8 +998,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1]
+      "has_been_saved": false
     }
   },
   {
@@ -1034,8 +1036,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1]
+      "has_been_saved": false
     }
   },
   {
@@ -1073,8 +1074,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1]
+      "has_been_saved": false
     }
   },
   {
@@ -1112,8 +1112,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1]
+      "has_been_saved": false
     }
   },
   {
@@ -1151,8 +1150,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1]
+      "has_been_saved": false
     }
   },
   {
@@ -1190,8 +1188,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1]
+      "has_been_saved": false
     }
   },
   {
@@ -1229,8 +1226,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1]
+      "has_been_saved": false
     }
   },
   {
@@ -1268,8 +1264,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1]
+      "has_been_saved": false
     }
   },
   {
@@ -1307,8 +1302,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1]
+      "has_been_saved": false
     }
   },
   {
@@ -1346,8 +1340,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1]
+      "has_been_saved": false
     }
   },
   {
@@ -1385,8 +1378,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": []
+      "has_been_saved": false
     }
   },
   {
@@ -1424,8 +1416,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": []
+      "has_been_saved": false
     }
   },
   {
@@ -1463,8 +1454,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1, 17]
+      "has_been_saved": false
     }
   },
   {
@@ -1502,8 +1492,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": []
+      "has_been_saved": false
     }
   },
   {
@@ -1541,8 +1530,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1]
+      "has_been_saved": false
     }
   },
   {
@@ -1580,8 +1568,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1, 20]
+      "has_been_saved": false
     }
   },
   {
@@ -1619,8 +1606,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1, 20]
+      "has_been_saved": false
     }
   },
   {
@@ -1658,8 +1644,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": []
+      "has_been_saved": false
     }
   },
   {
@@ -1697,8 +1682,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [23]
+      "has_been_saved": false
     }
   },
   {
@@ -1736,8 +1720,7 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": []
+      "has_been_saved": false
     }
   },
   {
@@ -1775,10 +1758,32 @@
       "uses_credits": 0,
       "credit_use_confirmed": null,
       "credit_confirmed_user": null,
-      "has_been_saved": false,
-      "parents": [1, 20]
+      "has_been_saved": false
     }
   },
+  { "model": "nodes.edge", "pk": 1, "fields": { "child": 2, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 2, "fields": { "child": 3, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 3, "fields": { "child": 4, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 4, "fields": { "child": 5, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 5, "fields": { "child": 6, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 6, "fields": { "child": 7, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 7, "fields": { "child": 8, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 8, "fields": { "child": 9, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 9, "fields": { "child": 11, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 10, "fields": { "child": 12, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 11, "fields": { "child": 13, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 12, "fields": { "child": 14, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 13, "fields": { "child": 15, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 14, "fields": { "child": 18, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 15, "fields": { "child": 18, "parent": 17, "position": 1 } },
+  { "model": "nodes.edge", "pk": 16, "fields": { "child": 20, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 17, "fields": { "child": 21, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 18, "fields": { "child": 21, "parent": 20, "position": 1 } },
+  { "model": "nodes.edge", "pk": 19, "fields": { "child": 22, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 20, "fields": { "child": 22, "parent": 20, "position": 1 } },
+  { "model": "nodes.edge", "pk": 21, "fields": { "child": 24, "parent": 23, "position": 0 } },
+  { "model": "nodes.edge", "pk": 22, "fields": { "child": 26, "parent": 1, "position": 0 } },
+  { "model": "nodes.edge", "pk": 23, "fields": { "child": 26, "parent": 20, "position": 1 } },
   {
     "model": "columns.aggregationcolumn",
     "pk": 1,

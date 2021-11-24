@@ -101,6 +101,10 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
             or 0
         )
 
+    @cached_property
+    def integrations_for_review(self):
+        return self.integration_set.review().count()
+
     def update_daily_sync_time(self):
         from apps.connectors.models import Connector
         from apps.sheets.models import Sheet

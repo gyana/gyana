@@ -1,24 +1,29 @@
 from datetime import timedelta
 from itertools import chain
 
+from django.db import models
+from django.urls import reverse
+from django.utils import timezone
+from model_clone.mixins.clone import CloneMixin
+
 from apps.base.models import BaseModel
 from apps.base.table import ICONS
 from apps.dashboards.models import Dashboard
 from apps.projects.models import Project
 from apps.users.models import CustomUser
 from apps.workflows.models import Workflow
-from django.db import models
-from django.urls import reverse
-from django.utils import timezone
-from model_clone.mixins.clone import CloneMixin
 
 PENDING_DELETE_AFTER_DAYS = 7
 
 
 class IntegrationsManager(models.Manager):
     def visible(self):
-        # hide un-authorized fivetran connectors, cleanup up periodically
-        return self.exclude(connector__fivetran_authorized=False)
+        # hide un-authorized fivetran connectors and pending connectors with >7
+        # days, cleanup up periodically
+        return self.exclude(connector__fivetran_authorized=False).exclude(
+            created__lt=timezone.now() - timedelta(days=PENDING_DELETE_AFTER_DAYS),
+            ready=False,
+        )
 
     def pending(self):
         return self.visible().filter(ready=False)
@@ -47,9 +52,13 @@ class IntegrationsManager(models.Manager):
     def uploads(self):
         return self.ready().filter(kind=Integration.Kind.UPLOAD)
 
+    def review(self):
+        return self.pending().filter(state=Integration.State.DONE)
+
     def pending_should_be_deleted(self):
-        return self.pending().filter(
-            created__lt=timezone.now() - timedelta(days=PENDING_DELETE_AFTER_DAYS)
+        return self.filter(
+            ready=False,
+            created__lt=timezone.now() - timedelta(days=PENDING_DELETE_AFTER_DAYS),
         )
 
 
@@ -86,7 +95,7 @@ class Integration(CloneMixin, BaseModel):
         State.UPDATE: ICONS["warning"],
         State.LOAD: ICONS["loading"],
         State.ERROR: ICONS["error"],
-        State.DONE: ICONS["warning"],
+        State.DONE: ICONS["info"],
     }
 
     STATE_TO_MESSAGE = {
@@ -127,11 +136,19 @@ class Integration(CloneMixin, BaseModel):
 
     @property
     def last_synced(self):
-        return getattr(self, self.kind).last_synced
+        if self.kind == self.Kind.CONNECTOR:
+            return self.connector.bigquery_succeeded_at
+        elif self.kind == self.Kind.SHEET:
+            return self.sheet.drive_file_last_modified_at_sync
+        return self.created_ready
 
     @property
-    def pending_deletion(self):
-        return self.created + timedelta(days=PENDING_DELETE_AFTER_DAYS)
+    def expires(self):
+        if self.ready:
+            return
+        return max(
+            timezone.now(), self.created + timedelta(days=PENDING_DELETE_AFTER_DAYS)
+        )
 
     @property
     def used_in_workflows(self):
