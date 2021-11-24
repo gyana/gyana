@@ -207,8 +207,6 @@ class FilterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Filter
 
-    node = factory.SubFactory(NodeFactory)
-
 
 @register
 class ConvertColumnFactory(factory.django.DjangoModelFactory):

@@ -13,6 +13,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView
 from django_tables2 import SingleTableView
+from turbo_response.response import HttpResponseSeeOther
 
 from apps.base.analytics import (
     DASHBOARD_CREATED_EVENT,
@@ -161,10 +162,11 @@ class DashboardDuplicate(TurboUpdateView):
                 "id": form.instance.id,
             },
         )
-        return r
-
-    def get_success_url(self) -> str:
-        return reverse("project_dashboards:list", args=(self.object.project.id,))
+        return HttpResponseSeeOther(
+            reverse(
+                "project_dashboards:detail", args=(self.object.project.id, clone.id)
+            )
+        )
 
 
 class DashboardPublic(DetailView):

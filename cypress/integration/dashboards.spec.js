@@ -48,38 +48,6 @@ describe('dashboards', () => {
     cy.get(`#widget-${widgetStartId}`).should('not.exist')
   })
 
-  it('duplicates dashboard with new widgets', () => {
-    // Duplicates a dashboard with a table widget
-    // Then changes the widget kind and checks whether the original
-    // widget hasn't changed
-    // TODO: Maybe add test for widget relations like filters or values
-    cy.contains('Create a new dashboard').click()
-    createWidget('Table')
-    cy.contains('Save & Close').should('not.be.disabled').click()
-
-    cy.visit('/projects/1/dashboards/')
-    cy.get(`#dashboard-duplicate-${dashboardStartId}`).click()
-    cy.contains('Copy of Untitled').click()
-    cy.contains('Blackpool', { timeout: BIGQUERY_TIMEOUT })
-
-    // TODO: trigger the hover and remove the force click
-    // cy.get('#widgets-output-2').trigger('mouseover')
-    cy.get(`#widget-update-${widgetStartId + 1}`).click({ force: true })
-    cy.get('select-visual').find('button').click()
-    cy.get('select-visual').contains('Column').click()
-    cy.get('select[name=dimension]').select('Location')
-    cy.get('[data-formset-prefix-value=aggregations]').within((el) => {
-      cy.wrap(el).get('button').click()
-    })
-    cy.get('select[name=aggregations-0-column]').select('store_id')
-    cy.get('select[name=aggregations-0-function]').select('MEAN')
-    cy.contains('Save & Close').click()
-
-    cy.visit('/projects/1/dashboards/')
-    cy.contains(/^Untitled$/).click()
-    cy.contains('Alex', { timeout: BIGQUERY_TIMEOUT })
-  })
-
   it('created workflow shows in dashboard', () => {
     const id = getModelStartId('nodes.node')
 

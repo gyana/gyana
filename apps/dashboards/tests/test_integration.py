@@ -157,3 +157,41 @@ def test_dashboard_share(
     assert r.status_code == 404
     r = client.get(WIDGET)
     assert r.status_code == 404
+
+
+def test_dashboard_duplication(
+    client,
+    project,
+    dashboard_factory,
+    widget_factory,
+    integration_table_factory,
+    filter_factory,
+):
+    name = "My dashboard"
+    dashboard = dashboard_factory(project=project, name=name)
+    table = integration_table_factory()
+    widget = widget_factory(dashboard=dashboard, table=table)
+    filter_ = filter_factory(widget=widget, column="My column")
+
+    r = client.post(f"/dashboards/{dashboard.id}/duplicate")
+    print(r.content)
+    assert project.dashboard_set.count() == 2
+    new_dashboard = project.dashboard_set.exclude(id=dashboard.id).first()
+    NEW_DETAIL = f"/projects/{project.id}/dashboards/{new_dashboard.id}"
+
+    assertRedirects(r, NEW_DETAIL, status_code=303)
+    assert new_dashboard is not None
+    assert new_dashboard.name == f"Copy of {name}"
+
+    assert new_dashboard.widget_set.count() == 1
+    new_widget = new_dashboard.widget_set.first()
+
+    # preserve name and table information
+    assert new_widget.name == widget.name
+    assert new_widget.table == widget.table
+
+    # linked models are duplicated
+    new_filter = new_widget.filters.first()
+    assert new_filter is not None
+    assert filter_ != new_filter
+    assert filter_.column == new_filter.column
