@@ -74,11 +74,7 @@ def to_timeseries(widget, df, query):
     timeseries = TIMESERIES_DATA[widget.kind](widget, df, query)
     chart_id = f"{widget.pk}-{uuid.uuid4()}"
 
-    timeseries.AddAttribute(
-        "styleDefinition",
-        json.dumps({"bg": {"fill-opacity": 0}}),
-    )
-
+    timeseries.AddAttribute("styleDefinition", json.dumps({"bg": {"fill-opacity": 0}}))
     timeseries.AddAttribute("navigator", json.dumps({"enabled": 0}))
     timeseries.AddAttribute(
         "extensions",
