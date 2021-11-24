@@ -103,11 +103,7 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     @cached_property
     def integrations_for_review(self):
-        from apps.integrations.models import Integration
-
-        return self.integration_set.filter(
-            state=Integration.State.DONE, ready=False
-        ).count()
+        return self.integration_set.review().count()
 
     def update_connectors_daily_sync_time(self):
         from apps.connectors.models import Connector

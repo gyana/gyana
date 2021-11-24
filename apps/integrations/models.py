@@ -52,6 +52,9 @@ class IntegrationsManager(models.Manager):
     def uploads(self):
         return self.ready().filter(kind=Integration.Kind.UPLOAD)
 
+    def review(self):
+        return self.pending().filter(state=Integration.State.DONE)
+
     def pending_should_be_deleted(self):
         return self.filter(
             ready=False,
