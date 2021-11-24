@@ -14,7 +14,6 @@ FusionCharts && FusionCharts.register('theme', {
   theme: {
     base: {
       chart: {
-        bgColor: "{{ dashboard.background_color }}",
         paletteColors: "{% autoescape off %}{{ dashboard.palette_colors|join:"," }}{% endautoescape %}",
       },
     }

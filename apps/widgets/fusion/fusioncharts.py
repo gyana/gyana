@@ -33,6 +33,7 @@ class FusionCharts:
         self.constructorOptions["height"] = height
         self.constructorOptions["renderAt"] = renderAt
         self.constructorOptions["dataFormat"] = dataFormat
+        self.constructorOptions["containerBackgroundOpacity"] = 0
         # dataSource = unicode(dataSource, errors='replace')
         if isinstance(dataSource, TimeSeries):
             self.timeSeriesObject = dataSource

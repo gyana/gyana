@@ -42,6 +42,7 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
             # Themes can override each other, the values in the right-most theme
             # take precedence.
             "theme": "fusion, CustomDashboardTheme",
+            "bgAlpha": "0",
             **axis_names,
         },
         **data,

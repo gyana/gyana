@@ -76,7 +76,7 @@ def to_timeseries(widget, df, query):
 
     timeseries.AddAttribute(
         "styleDefinition",
-        json.dumps({"bg": {"fill": widget.dashboard.background_color}}),
+        json.dumps({"bg": {"fill-opacity": 0}}),
     )
 
     timeseries.AddAttribute("navigator", json.dumps({"enabled": 0}))
