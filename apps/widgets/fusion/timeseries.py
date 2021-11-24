@@ -74,6 +74,35 @@ def to_timeseries(widget, df, query):
     timeseries = TIMESERIES_DATA[widget.kind](widget, df, query)
     chart_id = f"{widget.pk}-{uuid.uuid4()}"
 
+    timeseries.AddAttribute(
+        "styleDefinition",
+        json.dumps({"bg": {"fill": widget.dashboard.background_color}}),
+    )
+
+    timeseries.AddAttribute("navigator", json.dumps({"enabled": 0}))
+    timeseries.AddAttribute(
+        "extensions",
+        json.dumps(
+            {
+                "standardRangeSelector": {"enabled": "0"},
+                "customRangeSelector": {"enabled": "0"},
+            }
+        ),
+    )
+
+    timeseries.AddAttribute(
+        "chart",
+        json.dumps(
+            {
+                "theme": "fusion, CustomDashboardTheme",
+                "style": {
+                    "background": "bg",
+                    "canvas": "bg",
+                },
+            }
+        ),
+    )
+
     chart = FusionCharts(
         "timeseries",
         f"chart-{chart_id}",
