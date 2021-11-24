@@ -1,7 +1,7 @@
 from django.db.models.aggregates import Sum
 from django.template import Context
 from django.template.loader import get_template
-from django_tables2 import Column, Table, TemplateColumn
+from django_tables2 import BooleanColumn, Column, Table, TemplateColumn
 
 from apps.base.table import NaturalDatetimeColumn, NaturalDayColumn
 
@@ -57,6 +57,7 @@ class IntegrationListTable(Table):
         template_name="columns/image.html", orderable=False, verbose_name="Source"
     )
     kind = Column(accessor="display_kind", orderable=False, verbose_name="")
+    ready = BooleanColumn()
     state = PendingStatusColumn(verbose_name="Status")
     num_rows = RowCountColumn()
     last_synced = NaturalDayColumn(orderable=False)
