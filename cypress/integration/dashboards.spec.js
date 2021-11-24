@@ -80,47 +80,6 @@ describe('dashboards', () => {
     cy.contains('Alex', { timeout: BIGQUERY_TIMEOUT })
   })
 
-  it('shares a dashboard with a widget', () => {
-    cy.contains('Create a new dashboard').click()
-    createWidget('Table')
-    cy.contains('Save & Close').should('not.be.disabled').click()
-    cy.logout()
-
-    cy.visit(`/projects/1/dashboards/${dashboardStartId}`)
-    cy.location('pathname').should('equal', '/login/')
-
-    cy.login()
-    cy.visit(`/projects/1/dashboards/${dashboardStartId}`)
-    cy.get(`#dashboard-share-${dashboardStartId}`).click()
-    cy.get('select').select('public')
-    cy.get('#dashboard-share-update').click()
-
-    cy.contains(
-      /localhost:8000\/dashboards\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/
-    )
-      .invoke('text')
-      .then((text) => {
-        const sharedUrl = text.trim()
-        cy.logout()
-
-        cy.visit(sharedUrl)
-        cy.contains('David')
-
-        cy.login()
-        cy.visit(`/projects/1/dashboards/${dashboardStartId}`)
-        cy.get(`#dashboard-share-${dashboardStartId}`).click()
-        cy.get('select').select('private')
-        cy.get('#dashboard-share-update').should('not.be.disabled')
-        cy.get('#dashboard-share-update').click()
-        cy.get('.fa-link')
-        cy.logout()
-
-        // cy.visit fails on 404 by default
-        cy.visit(sharedUrl, { failOnStatusCode: false })
-        cy.contains('404 - Not Found')
-      })
-  })
-
   it('created workflow shows in dashboard', () => {
     const id = getModelStartId('nodes.node')
 

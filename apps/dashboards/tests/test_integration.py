@@ -1,7 +1,7 @@
 from uuid import uuid4
 
 import pytest
-from pytest_django.asserts import assertContains, assertRedirects
+from pytest_django.asserts import assertContains, assertFormError, assertRedirects
 
 from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
 from apps.dashboards.models import Dashboard
@@ -58,39 +58,40 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     assertOK(r)
 
 
-def test_dashboard_share(client, project, dashboard_factory, widget_factory):
+def test_dashboard_share(
+    client, logged_in_user, project, dashboard_factory, widget_factory
+):
     dashboard = dashboard_factory(project=project)
     widget = widget_factory(dashboard=dashboard)
 
-    PUBLIC = f"/dashboards/{dashboard.shared_id}"
     DETAIL = f"/projects/{project.id}/dashboards/{dashboard.id}"
     WIDGET = f"{DETAIL}/widgets/{widget.id}/output"
-
-    # not accessible
-    r = client.get(PUBLIC)
-    assert r.status_code == 403
-    r = client.get(WIDGET)
-    assert r.status_code == 403
 
     # share a dashboard
     r = client.get_turbo_frame(DETAIL, f"/dashboards/{dashboard.id}/share")
     assertOK(r)
-    assertFormRenders(["shared_status"])
+    assertFormRenders(r, ["shared_status"])
 
     # public
     r = client.post(
         f"/dashboards/{dashboard.id}/share",
         data={"shared_status": Dashboard.SharedStatus.PUBLIC, "submit": True},
     )
-    assertRedirects(r, f"/dashboards/{dashboard.id}/share")
+    assertRedirects(r, f"/dashboards/{dashboard.id}/share", status_code=303)
+    dashboard.refresh_from_db()
+    assert dashboard.shared_id is not None
+    PUBLIC = f"/dashboards/{dashboard.shared_id}"
 
     # check access
+    client.logout()
+
     r = client.get(PUBLIC)
     assertOK(r)
     r = client.get(WIDGET)
     assertOK(r)
 
     # password protected
+    client.force_login(logged_in_user)
     r = client.post(
         f"/dashboards/{dashboard.id}/share",
         data={"shared_status": Dashboard.SharedStatus.PASSWORD_PROTECTED},
@@ -103,22 +104,25 @@ def test_dashboard_share(client, project, dashboard_factory, widget_factory):
         data={
             "shared_status": Dashboard.SharedStatus.PASSWORD_PROTECTED,
             "password": "secret",
+            "submit": True,
         },
     )
-    assertRedirects(r, f"/dashboards/{dashboard.id}/share")
+    assertRedirects(r, f"/dashboards/{dashboard.id}/share", status_code=303)
 
     # check access
+    client.logout()
+
     r = client.get(PUBLIC)
     assertRedirects(r, f"{PUBLIC}/login")
     r = client.get(WIDGET)
-    assert r.status_code == 403
+    assert r.status_code == 404
 
     r = client.get(f"{PUBLIC}/login")
     assertOK(r)
 
     # wrong password
     r = client.post(f"{PUBLIC}/login", data={"password": "wrong"})
-    assert r.status_code == 403
+    assertFormError(r, "form", "password", "Wrong password")
 
     # right password
     r = client.post(f"{PUBLIC}/login", data={"password": "secret"})
@@ -133,4 +137,23 @@ def test_dashboard_share(client, project, dashboard_factory, widget_factory):
 
     # logout
     r = client.get(f"{PUBLIC}/logout")
-    assertRedirects(r, "/", status_code=403)
+    assertRedirects(r, f"{PUBLIC}/login")
+
+    # not accessible
+    r = client.get(PUBLIC)
+    assertRedirects(r, f"{PUBLIC}/login")
+    r = client.get(WIDGET)
+    assert r.status_code == 404
+
+    # stop share
+    client.force_login(logged_in_user)
+    r = client.post(
+        f"/dashboards/{dashboard.id}/share",
+        data={"shared_status": Dashboard.SharedStatus.PRIVATE, "submit": True},
+    )
+
+    client.logout()
+    r = client.get(PUBLIC)
+    assert r.status_code == 404
+    r = client.get(WIDGET)
+    assert r.status_code == 404
