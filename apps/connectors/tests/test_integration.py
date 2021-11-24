@@ -175,7 +175,7 @@ def test_status_on_integrations_page(
         f"/connectors/{connector.id}/icon",
     )
     assertOK(r)
-    assertSelectorLength(r, ".fa-check-circle", 1)
+    assertSelectorLength(r, ".fa-info-circle", 1)
 
     assert fivetran.get.call_count == 2
     assert fivetran.get.call_args.args == (connector,)

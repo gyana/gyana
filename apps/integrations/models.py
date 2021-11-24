@@ -53,8 +53,9 @@ class IntegrationsManager(models.Manager):
         return self.ready().filter(kind=Integration.Kind.UPLOAD)
 
     def pending_should_be_deleted(self):
-        return self.pending().filter(
-            created__lt=timezone.now() - timedelta(days=PENDING_DELETE_AFTER_DAYS)
+        return self.filter(
+            ready=False,
+            created__lt=timezone.now() - timedelta(days=PENDING_DELETE_AFTER_DAYS),
         )
 
 
