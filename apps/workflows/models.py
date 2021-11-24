@@ -30,7 +30,15 @@ class Workflow(CloneMixin, BaseModel):
             return True
 
         input_nodes = self.nodes.filter(kind="input").all()
+        input_tables = [
+            input_node.input_table
+            for input_node in input_nodes
+            if input_node.input_table
+        ]
+        if not input_tables:
+            return True
+
         latest_input_update = max(
-            input_node.input_table.data_updated for input_node in input_nodes
+            input_table.data_updated for input_table in input_tables
         )
         return self.last_run < max(self.data_updated, latest_input_update)

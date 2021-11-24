@@ -17,10 +17,7 @@ from .mock import get_mock_fivetran_connector, get_mock_list_tables, get_mock_sc
 pytestmark = pytest.mark.django_db
 
 
-def test_connector_create(client, logged_in_user, bigquery, fivetran, project_factory):
-
-    project = project_factory(team=logged_in_user.teams.first())
-
+def test_connector_create(client, logged_in_user, bigquery, fivetran, project):
     fivetran.get_authorize_url.side_effect = (
         lambda c, r: f"http://fivetran.url?redirect_uri={r}"
     )
@@ -212,9 +209,7 @@ def test_status_broken(client, logged_in_user, fivetran, connector_factory):
     assertLink(r, f"http://fivetran.url?redirect_uri={redirect_uri}", "needs attention")
 
 
-def test_connector_search_and_categories(client, logged_in_user, project_factory):
-
-    project = project_factory(team=logged_in_user.teams.first())
+def test_connector_search_and_categories(client, logged_in_user, project):
 
     LIST = f"/projects/{project.id}/integrations"
     CONNECTORS = f"{LIST}/connectors"

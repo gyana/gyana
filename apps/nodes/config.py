@@ -148,6 +148,13 @@ NODE_CONFIG = {
         "section": "Column manipulations",
         "explanation": "Use the window and calculate node to calculate a metric for each row, by looking at other rows in the chosen window.",
     },
+    "convert": {
+        "displayName": "Convert",
+        "icon": "fa-transporter-3",
+        "description": "Convert the data types of columns",
+        "section": "Column manipulations",
+        "explanation": "Use the convert node to change the data type of columns",
+    },
 }
 
 

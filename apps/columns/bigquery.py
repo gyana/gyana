@@ -4,6 +4,8 @@ from lark import Lark
 
 from apps.columns.transformer import TreeToIbis
 
+from .types import TYPES
+
 parser = Lark.open("formula.lark", rel_to=__file__, start="formula")
 
 
@@ -96,3 +98,8 @@ def compile_formula(query, formula):
     tree = parser.parse(formula)
 
     return TreeToIbis(query).transform(tree)
+
+
+def convert_column(query, convert_column):
+    type_ = TYPES[convert_column.target_type]
+    return query[convert_column.column].cast(type_)

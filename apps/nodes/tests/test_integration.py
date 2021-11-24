@@ -1,6 +1,13 @@
+import json
+
 import pytest
-from apps.base.tests.asserts import (assertFormRenders, assertOK,
-                                     assertSelectorLength, assertSelectorText)
+
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertOK,
+    assertSelectorLength,
+    assertSelectorText,
+)
 from apps.nodes.models import Node
 
 pytestmark = pytest.mark.django_db
@@ -29,13 +36,16 @@ def create_and_connect_node(client, kind, node_factory, table, workflow):
     )
     r = client.post(
         "/nodes/api/nodes/",
-        data={
-            "kind": kind,
-            "workflow": workflow.id,
-            "x": 50,
-            "y": 50,
-            "parents": [input_node.id],
-        },
+        data=json.dumps(
+            {
+                "kind": kind,
+                "workflow": workflow.id,
+                "x": 50,
+                "y": 50,
+                "parents": [{"parent_id": input_node.id}],
+            }
+        ),
+        content_type="application/json",
     )
     assert r.status_code == 201
 
@@ -121,7 +131,7 @@ def test_join_node(client, node_factory, setup):
     second_input = node_factory(
         kind=Node.Kind.INPUT, input_table=table, workflow=workflow
     )
-    join_node.parents.add(second_input)
+    join_node.parents.add(second_input, through_defaults={"position": 1})
 
     r = client.get(f"/nodes/{join_node.id}")
     assertOK(r)
@@ -596,3 +606,40 @@ def test_sentiment_node(client, logged_in_user, node_factory, setup):
 
     assert sentiment_node.sentiment_column == "athlete"
     assert sentiment_node.always_use_credits == True
+
+
+def test_convert_node(client, node_factory, setup):
+    table, workflow = setup
+    convert_base = base_formset("convert_columns")
+    convert_node, r = create_and_connect_node(
+        client, Node.Kind.CONVERT, node_factory, table, workflow
+    )
+
+    assertFormRenders(
+        r,
+        [
+            *convert_base.keys(),
+            "name",
+            "convert_columns-0-node",
+            "convert_columns-0-id",
+            "convert_columns-0-column",
+            "convert_columns-0-target_type",
+            "convert_columns-0-DELETE",
+        ],
+    )
+
+    r = update_node(
+        client,
+        convert_node.id,
+        {
+            **convert_base,
+            "convert_columns-0-node": convert_node.id,
+            "convert_columns-0-column": "id",
+            "convert_columns-0-target_type": "text",
+        },
+    )
+    convert_node.refresh_from_db()
+
+    convert = convert_node.convert_columns.first()
+    assert convert.column == "id"
+    assert convert.target_type == "text"

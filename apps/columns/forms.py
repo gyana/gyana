@@ -9,6 +9,7 @@ from apps.base.widgets import SelectWithDisable
 from apps.columns.models import (
     AddColumn,
     AggregationColumn,
+    ConvertColumn,
     EditColumn,
     FormulaColumn,
     WindowColumn,
@@ -210,3 +211,15 @@ class WindowColumnForm(SchemaFormMixin, LiveUpdateForm):
             fields += ["function", "group_by", "order_by", "ascending", "label"]
 
         return fields
+
+
+class ConvertColumnForm(SchemaFormMixin, LiveUpdateForm):
+    class Meta:
+        fields = ("column", "target_type")
+        model = ConvertColumn
+        labels = {"target_type": "Type"}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["column"].choices = create_column_choices(self.schema)

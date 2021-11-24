@@ -1,6 +1,3 @@
-from ibis_bigquery import BigQueryExprTranslator
-from ibis_bigquery.compiler import _timestamp_units
-
 import ibis.expr.datatypes as dt
 import ibis.expr.rules as rlz
 from ibis.expr.operations import (
@@ -18,6 +15,8 @@ from ibis.expr.types import (
     TimestampValue,
     TimeValue,
 )
+from ibis_bigquery import BigQueryExprTranslator
+from ibis_bigquery.compiler import _timestamp_units
 
 compiles = BigQueryExprTranslator.compiles
 
@@ -130,3 +129,25 @@ def _compiles_timestamp_diff_op(op, bq_func, unit):
 _compiles_timestamp_diff_op(TimestampDiff, "TIMESTAMP_DIFF", "SECOND")
 _compiles_timestamp_diff_op(TimeDiff, "TIME_DIFF", "SECOND")
 _compiles_timestamp_diff_op(DateDiff, "DATE_DIFF", "DAY")
+
+
+class JSONExtract(ValueOp):
+    value = Arg(rlz.string)
+    json_path = Arg(rlz.string)
+    output_type = rlz.shape_like("value", dt.string)
+
+
+def json_extract(value, json_path):
+    return JSONExtract(value, json_path).to_expr()
+
+
+StringValue.json_extract = json_extract
+
+
+@compiles(JSONExtract)
+def _json_extract(t, expr):
+    value, json_path = expr.op().args
+    t_value = t.translate(value)
+    t_json_path = t.translate(json_path)
+
+    return f"JSON_QUERY({t_value}, {t_json_path})"

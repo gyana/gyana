@@ -1,12 +1,13 @@
 from unittest.mock import patch
 
 import pytest
-from apps.base.tests.asserts import assertFormRenders, assertOK
-from apps.integrations.models import Integration
-from apps.uploads.models import Upload
 from django.core import mail
 from google.cloud.bigquery import job
 from pytest_django.asserts import assertRedirects
+
+from apps.base.tests.asserts import assertFormRenders, assertOK
+from apps.integrations.models import Integration
+from apps.uploads.models import Upload
 
 pytestmark = pytest.mark.django_db
 
@@ -18,10 +19,8 @@ def bq_table_schema_is_not_string_only(mocker):
     )
 
 
-def test_upload_create(client, logged_in_user, project_factory, bigquery):
+def test_upload_create(client, logged_in_user, project, bigquery):
 
-    team = logged_in_user.teams.first()
-    project = project_factory(team=team)
     # mock the configuration
     bigquery.load_table_from_uri().exception = lambda: False
     bigquery.reset_mock()  # reset the call count

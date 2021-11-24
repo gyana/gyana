@@ -19,6 +19,7 @@ FORMSET_LABELS = {
     "filters": "Filters",
     "secondary_columns": "Select specific columns",
     "window_columns": "Window columns",
+    "convert_columns": "Select columns to convert",
     "values": "Additional values",
 }
 

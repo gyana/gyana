@@ -117,6 +117,11 @@ def create_extract_unary_param(func_name, sql_name=None):
             QUERY.format("ARRAY_TO_STRING([`athlete`, 'that genius'], ', ')"),
             id="join",
         ),
+        pytest.param(
+            'json_extract(\'{"class":{"id": 3}}\', "$.class.id")',
+            "SELECT JSON_QUERY('{\"class\":{\"id\": 3}}', '$.class.id') AS `tmp`",
+            id="json_extract",
+        ),
         create_str_unary_param("upper"),
         create_str_unary_param("length"),
         create_str_unary_param("reverse"),
