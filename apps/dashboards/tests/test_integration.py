@@ -1,7 +1,10 @@
+from uuid import uuid4
+
 import pytest
 from pytest_django.asserts import assertContains, assertRedirects
 
 from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
+from apps.dashboards.models import Dashboard
 
 pytestmark = pytest.mark.django_db
 
@@ -53,3 +56,81 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     assertLink(r, f"{LIST}/?page=2", "2")
     r = client.get(f"{LIST}/?page=2")
     assertOK(r)
+
+
+def test_dashboard_share(client, project, dashboard_factory, widget_factory):
+    dashboard = dashboard_factory(project=project)
+    widget = widget_factory(dashboard=dashboard)
+
+    PUBLIC = f"/dashboards/{dashboard.shared_id}"
+    DETAIL = f"/projects/{project.id}/dashboards/{dashboard.id}"
+    WIDGET = f"{DETAIL}/widgets/{widget.id}/output"
+
+    # not accessible
+    r = client.get(PUBLIC)
+    assert r.status_code == 403
+    r = client.get(WIDGET)
+    assert r.status_code == 403
+
+    # share a dashboard
+    r = client.get_turbo_frame(DETAIL, f"/dashboards/{dashboard.id}/share")
+    assertOK(r)
+    assertFormRenders(["shared_status"])
+
+    # public
+    r = client.post(
+        f"/dashboards/{dashboard.id}/share",
+        data={"shared_status": Dashboard.SharedStatus.PUBLIC, "submit": True},
+    )
+    assertRedirects(r, f"/dashboards/{dashboard.id}/share")
+
+    # check access
+    r = client.get(PUBLIC)
+    assertOK(r)
+    r = client.get(WIDGET)
+    assertOK(r)
+
+    # password protected
+    r = client.post(
+        f"/dashboards/{dashboard.id}/share",
+        data={"shared_status": Dashboard.SharedStatus.PASSWORD_PROTECTED},
+    )
+    assert r.status_code == 422
+    assertFormRenders(r, ["shared_status", "password"])
+
+    r = client.post(
+        f"/dashboards/{dashboard.id}/share",
+        data={
+            "shared_status": Dashboard.SharedStatus.PASSWORD_PROTECTED,
+            "password": "secret",
+        },
+    )
+    assertRedirects(r, f"/dashboards/{dashboard.id}/share")
+
+    # check access
+    r = client.get(PUBLIC)
+    assertRedirects(r, f"{PUBLIC}/login")
+    r = client.get(WIDGET)
+    assert r.status_code == 403
+
+    r = client.get(f"{PUBLIC}/login")
+    assertOK(r)
+
+    # wrong password
+    r = client.post(f"{PUBLIC}/login", data={"password": "wrong"})
+    assert r.status_code == 403
+
+    # right password
+    r = client.post(f"{PUBLIC}/login", data={"password": "secret"})
+    assertRedirects(r, PUBLIC)
+
+    # access persists in session
+    r = client.get(PUBLIC)
+    assertOK(r)
+    assertLink(r, f"{PUBLIC}/logout", "Forget me")
+    r = client.get(WIDGET)
+    assertOK(r)
+
+    # logout
+    r = client.get(f"{PUBLIC}/logout")
+    assertRedirects(r, "/", status_code=403)
