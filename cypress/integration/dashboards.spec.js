@@ -8,7 +8,7 @@ const createWidget = (kind) => {
   cy.contains('This widget needs to be configured')
   cy.contains('configured').click()
   cy.contains('-----------').click()
-  cy.contains('store_info').click()
+  cy.contains('store_info').click({ force: true })
 }
 
 const widgetStartId = getModelStartId('widgets.widget')
@@ -17,19 +17,6 @@ describe('dashboards', () => {
   beforeEach(() => {
     cy.login()
     cy.visit('/projects/1/dashboards/')
-    cy.contains('Display data metrics and share')
-  })
-
-  it('create, rename, and delete dashboard', () => {
-    cy.contains('Create a new dashboard').click()
-    cy.contains('This dashboard needs some widgets!')
-    cy.get('input[value=Untitled]').clear().type("Marauder's Map{enter}")
-    cy.get(`input[value="Marauder's Map"]`)
-    cy.visit('/projects/1/dashboards/')
-    cy.contains("Marauder's Map").click()
-    cy.get('i[class*="fa-ellipsis-h"]').click()
-    cy.get('a').contains('Delete').click()
-    cy.contains('Yes').click()
     cy.contains('Display data metrics and share')
   })
 
