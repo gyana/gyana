@@ -12,8 +12,8 @@
     display: flex;
     flex-flow: column;
     justify-content: center;
-
     padding: 0;
+
     height: 12rem;
     width: 12rem;
 
@@ -23,7 +23,6 @@
 
     &-output {
       color: var(--c-pink);
-      border-radius: 100%;
 
       &.selected {
         border: 2px solid var(--c-pink);
@@ -32,7 +31,6 @@
 
     &-input {
       color: var(--c-green);
-      border-radius: 100%;
 
       &.selected {
         border: 2px solid var(--c-green);
