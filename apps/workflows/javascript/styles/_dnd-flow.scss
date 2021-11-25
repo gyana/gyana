@@ -185,17 +185,6 @@
 .dndflow {
   display: flex;
   height: 100%;
-
-  &__run-button {
-    position: absolute;
-    right: 1.6rem;
-    top: 1.6rem;
-    z-index: var(--z-ui);
-
-    button {
-      background-color: var(--c-white);
-    }
-  }
 }
 
 .dndflow .reactflow-wrapper {

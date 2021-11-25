@@ -5,13 +5,38 @@
 
 {% block app %}
 <div class="workflow-detail__header">
+  <turbo-frame id="workflow-name">
+    <form method="post" action="{% url 'project_workflows:detail' project.id object.id %}" class="form">
+      {% csrf_token %}
+
+      <input
+        class="input__inline"
+        id="name"
+        type="text"
+        name="name"
+        value="{{ object.name }}"
+        onBlur="this.form.requestSubmit();"
+       />
+    </form>
+  </turbo-frame>
+  
+  <div
+    data-controller="workflow-last-run"
+    data-workflow-last-run-src-value="{% url 'workflows:last_run' object.id %}"
+    class="mr-auto"
+  >
+    <turbo-frame id="workflow-last-run">
+      {% include 'workflows/last_run.html' %}
+    </turbo-frame>
+  </div>
+
   <div
     data-controller="popover"
     data-placement="bottom-start"
     data-theme="popover-menu"
   >
-    <button class="button button--circle button--tertiary">
-      <i class="fas fa-fw fa-ellipsis-h"></i>
+    <button class="button button--sm button--tertiary">
+      More <i class="fas fa-chevron-down"></i>
     </button>
 
     <template data-popover-target="body">
@@ -42,30 +67,7 @@
     </template>
   </div>
 
-  <turbo-frame id="workflow-name">
-    <form method="post" action="{% url 'project_workflows:detail' project.id object.id %}" class="form">
-      {% csrf_token %}
-
-      <input
-        class="input__inline"
-        id="name"
-        type="text"
-        name="name"
-        value="{{ object.name }}"
-        onBlur="this.form.requestSubmit();"
-       />
-    </form>
-  </turbo-frame>
-  
-  <div
-    data-controller="workflow-last-run"
-    data-workflow-last-run-src-value="{% url 'workflows:last_run' object.id %}"
-    class="mr-auto"
-  >
-    <turbo-frame id="workflow-last-run">
-      {% include 'workflows/last_run.html' %}
-    </turbo-frame>
-  </div>
+  <div id="run-button-portal"></div>
 </div>
 
 <div

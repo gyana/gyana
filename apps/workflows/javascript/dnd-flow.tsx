@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import ReactDOM from 'react-dom'
 
 import ReactFlow, {
   addEdge,
@@ -33,6 +34,7 @@ enum LoadingStates {
 }
 
 const DnDFlow = ({ client, workflowId }) => {
+  const runButtonPortal = document.getElementById('run-button-portal')
   const reactFlowWrapper = useRef(null)
   const [reactFlowInstance, setReactFlowInstance] = useState(null)
   const [elements, setElements] = useState<(Edge | Node)[]>([])
@@ -277,17 +279,22 @@ const DnDFlow = ({ client, workflowId }) => {
               />
             </Controls>
             <Background gap={GRID_GAP} />
-            <RunButton
-              hasOutput={hasOutput}
-              hasBeenRun={hasBeenRun}
-              setHasBeenRun={setHasBeenRun}
-              client={client}
-              workflowId={workflowId}
-              elements={elements}
-              setElements={setElements}
-              isOutOfDate={isOutOfDate}
-              setIsOutOfDate={setIsOutOfDate}
-            />
+
+            {ReactDOM.createPortal(
+              <RunButton
+                hasOutput={hasOutput}
+                hasBeenRun={hasBeenRun}
+                setHasBeenRun={setHasBeenRun}
+                client={client}
+                workflowId={workflowId}
+                elements={elements}
+                setElements={setElements}
+                isOutOfDate={isOutOfDate}
+                setIsOutOfDate={setIsOutOfDate}
+              />,
+              runButtonPortal
+            )}
+
             {(viewHasChanged || initialLoad === LoadingStates.loading) && (
               <div className='placeholder-scr placeholder-scr--fillscreen'>
                 <i className='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
