@@ -33,17 +33,17 @@ def get_query_from_table(table: Table) -> TableExpr:
 
     conn = ibis_client()
 
-    key = _get_cache_key_for_table(table)
-    tbl = cache.get(key)
+    # key = _get_cache_key_for_table(table)
+    # tbl = cache.get(key)
 
-    if tbl is None:
-        tbl = conn.table(table.bq_table, database=table.bq_dataset)
+    # if tbl is None:
+    tbl = conn.table(table.bq_table, database=table.bq_dataset)
 
-        # the client is not pickle-able
-        tbl.op().source = None
-        cache.set(key, tbl, 24 * 3600)
+    # the client is not pickle-able
+    # tbl.op().source = None
+    # cache.set(key, tbl, 24 * 3600)
 
-    tbl.op().source = conn
+    # tbl.op().source = conn
 
     if (
         table.integration is not None
