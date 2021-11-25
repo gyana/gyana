@@ -1,36 +1,20 @@
 'use strict'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 import { ReactFlowProvider } from 'react-flow-renderer'
 import DnDFlow from './dnd-flow'
+import { useBlockUntilSchemaReady } from './hooks/useBlockUntilSchemaReady'
 
-let auth = new coreapi.auth.SessionAuthentication({
-  csrfCookieName: 'csrftoken',
-  csrfHeaderName: 'X-CSRFToken',
-})
+declare global {
+  interface Window {
+    schema: any
+  }
+}
 
-let client = new coreapi.Client({ auth: auth })
+const Canvas: React.FC<Props> = ({ workflowId }) => {
+  const { finishedPinging, schemaReady } = useBlockUntilSchemaReady()
 
-const PAUSE = 200
-const MAX_TIME = 5000
-const Canvas: React.FC<{ client: coreapi.Client; workflowId: number }> = ({
-  client,
-  workflowId,
-}) => {
-  const [finishedPinging, setFinishedPinging] = useState(false)
-
-  useEffect(() => {
-    const checkSchemaExists = async () => {
-      for (let time = 0; time < MAX_TIME; time += PAUSE) {
-        if (window.schema) break
-        await new Promise((resolve) => setTimeout(resolve, PAUSE))
-      }
-      setFinishedPinging(true)
-    }
-    checkSchemaExists()
-  }, [])
-
-  if (window.schema) return <DnDFlow client={client} workflowId={workflowId} />
+  if (schemaReady) return <DnDFlow workflowId={workflowId} />
 
   return (
     <div className='dndflow'>
@@ -69,7 +53,7 @@ class ReactDndFlow extends HTMLElement {
     const workflowId = this.attributes['workflowId'].value
     ReactDOM.render(
       <ReactFlowProvider>
-        <Canvas client={client} workflowId={workflowId} />
+        <Canvas workflowId={workflowId} />
       </ReactFlowProvider>,
       this
     )

@@ -22,6 +22,10 @@ import RunButton from './RunButton'
 
 import Sidebar from './sidebar'
 
+import { getApiClient } from 'apps/base/javascript/api'
+
+const client = getApiClient()
+
 import './styles/_dnd-flow.scss'
 
 const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
@@ -33,7 +37,7 @@ enum LoadingStates {
   failed,
 }
 
-const DnDFlow = ({ client, workflowId }) => {
+const DnDFlow = ({ workflowId }) => {
   const runButtonPortal = document.getElementById('run-button-portal')
   const reactFlowWrapper = useRef(null)
   const [reactFlowInstance, setReactFlowInstance] = useState(null)
