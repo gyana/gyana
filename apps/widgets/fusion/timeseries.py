@@ -91,6 +91,7 @@ def to_timeseries(widget, df, query):
         json.dumps(
             {
                 "theme": "fusion, CustomDashboardTheme",
+                "paletteColors": ",".join(widget.dashboard.palette_colors),
                 "style": {
                     "background": "bg",
                     "canvas": "bg",
