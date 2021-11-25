@@ -3,7 +3,7 @@ import functools
 import ibis.expr.datatypes as dt
 from django.core.cache import cache
 from django.template.loader import get_template
-from django_tables2 import A, Column, Table
+from django_tables2 import Column, Table
 from django_tables2.config import RequestConfig as BaseRequestConfig
 from django_tables2.data import TableData
 from django_tables2.templatetags.django_tables2 import QuerystringNode
@@ -47,7 +47,7 @@ class BigQueryTableData(TableData):
     ):
         self.data = data
         # calculate before the order_by is applied, as len is not effected
-        self._len_key = str(hash(self.data))
+        self._len_key = f"cache-table-length-{str(hash(self.data))}"
 
     @property
     def _page_selected(self):
