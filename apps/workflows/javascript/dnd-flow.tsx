@@ -325,13 +325,24 @@ const DnDFlow = ({ client, workflowId }) => {
 
                 <div className='flex items-center max-w-lg gap-7'>
                   <i className={`fas fa-fw ${NODES['filter'].icon} text-blue fa-2x`}></i>
-                  <p>Clean and filter your data by dragging in different types of nodes</p>
+                  <p>
+                    Drag and connect other <strong>Transformation</strong> nodes to clean and filter
+                    your data
+                  </p>
                 </div>
 
                 <div className='flex items-center max-w-lg gap-7'>
                   <i className={`fas fa-fw ${NODES['output'].icon} text-pink fa-2x`}></i>
                   <p>
-                    Once you are happy with your data, drag in a <strong>Save Data</strong> node
+                    Once you are happy with your results, drag in a <strong>Save Data</strong> node
+                    and name it
+                  </p>
+                </div>
+
+                <div className='flex items-center max-w-lg gap-7'>
+                  <i className={`fas fa-fw fa-play-circle text-green fa-2x`}></i>
+                  <p>
+                    Press <strong>Run</strong> in the top right to create the new data source
                   </p>
                 </div>
               </div>
