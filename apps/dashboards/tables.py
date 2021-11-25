@@ -1,7 +1,8 @@
 import django_tables2 as tables
-from apps.base.table import ICONS, DuplicateColumn, NaturalDatetimeColumn
 from django.template import Context
 from django.template.loader import get_template
+
+from apps.base.table import ICONS, DuplicateColumn, NaturalDatetimeColumn
 
 from .models import Dashboard
 
@@ -31,5 +32,7 @@ class DashboardTable(tables.Table):
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
     duplicate = DuplicateColumn(
-        template_name="components/_duplicate.html", orderable=False
+        template_name="components/_duplicate.html",
+        orderable=False,
+        verbose_name="Actions",
     )
