@@ -3,13 +3,9 @@ import { NODES } from './interfaces'
 
 type Element = Node | Edge
 
-export const getIncomingNodes = (elements: Element[], target: string): [Node, Node[]] => {
-  const targetElement = elements.find((el) => isNode(el) && el.id === target) as Node
-  return [targetElement, getIncomers(targetElement, elements)]
-}
-
 export const canAddEdge = (elements: Element[], target: string) => {
-  const [targetElement, incomingNodes] = getIncomingNodes(elements, target)
+  const targetElement = elements.find((el) => isNode(el) && el.id === target) as Node
+  const incomingNodes = getIncomers(targetElement, elements)
 
   // Node arity is defined in nodes/bigquery.py
   // Join (2), Union/Except/Insert (-1 = Inf), otherwise (1)

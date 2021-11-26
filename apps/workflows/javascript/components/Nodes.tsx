@@ -1,5 +1,14 @@
 import React, { useContext, useState } from 'react'
-import { ElementId, Handle, NodeProps, Position, useStoreState } from 'react-flow-renderer'
+import {
+  Node,
+  ElementId,
+  getIncomers,
+  Handle,
+  isNode,
+  NodeProps,
+  Position,
+  useStoreState,
+} from 'react-flow-renderer'
 import { getApiClient } from 'apps/base/javascript/api'
 import NodeButtons, { DeleteButton } from './NodeButtons'
 import { DnDContext, IDnDContext } from '../context'
@@ -14,9 +23,15 @@ interface Props<T = any> {
   data: T
 }
 
+const useGetIncomingCount = (id: string) => {
+  const { elements } = useContext(DnDContext) as IDnDContext
+  const targetElement = elements.find((el) => isNode(el) && el.id === id)
+  return targetElement ? getIncomers(targetElement, elements).length : 0
+}
+
 const NodeContent: React.FC<Props> = ({ id, data }) => {
   const [, , zoom] = useStoreState((state) => state.transform)
-  const showContent = zoom >= 1
+  const showContent = zoom >= 1.2
 
   return (
     <>
@@ -46,10 +61,8 @@ const InputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => (
 )
 
 const OutputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
-  const { getIncomingNodes } = useContext(DnDContext) as IDnDContext
-  const incoming = getIncomingNodes(id)
-
-  const showWarning = incoming[1].length < 1
+  const incomingCount = useGetIncomingCount(id)
+  const showWarning = incomingCount == 0
   return (
     <>
       {showWarning && <WarningIcon text='Save Data needs one input connection' />}
@@ -66,10 +79,9 @@ const DefaultNode: React.FC<NodeProps> = ({
   targetPosition = Position.Left,
   sourcePosition = Position.Right,
 }) => {
-  const { getIncomingNodes } = useContext(DnDContext) as IDnDContext
-  const incoming = getIncomingNodes(id)
+  const incomingCount = useGetIncomingCount(id)
 
-  const showWarning = data.kind === 'join' ? incoming[1].length != 2 : incoming[1].length == 0
+  const showWarning = data.kind === 'join' ? incomingCount != 2 : incomingCount == 0
   const warningMessage =
     data.kind === 'join'
       ? 'Join needs two input connections'

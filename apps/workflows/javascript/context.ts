@@ -1,5 +1,4 @@
 import { createContext } from 'react'
-import { Node } from 'react-flow-renderer'
 
 export interface IDnDContext {
   workflowId: number
@@ -11,7 +10,6 @@ export interface IDnDContext {
   setIsOutOfDate: (isOutOfDate: boolean) => void
   setNeedsFitView: (needsFitView: boolean) => void
   removeById: (id: string) => void
-  getIncomingNodes: (id: string) => [Node, Node[]]
   addNode: (data: any) => void
 }
 

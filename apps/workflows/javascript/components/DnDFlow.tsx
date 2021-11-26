@@ -21,7 +21,6 @@ import ZeroState from './ZeroState'
 import ErrorState from './ErrorState'
 import LoadingState from './LoadingState'
 import useDnDActions from '../hooks/useDnDActions'
-import { getIncomingNodes } from '../edges'
 
 const GRID_GAP = 20
 
@@ -98,7 +97,6 @@ const DnDFlow = ({ workflowId }) => {
           const edges = data.parents.map((parent) => toEdge(node, parent))
           setElements((es) => es.concat(node, edges))
         },
-        getIncomingNodes: (target: string) => getIncomingNodes(elements, target),
       }}
     >
       <div className='reactflow-wrapper' ref={reactFlowWrapper}>
