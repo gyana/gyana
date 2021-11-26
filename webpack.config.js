@@ -13,7 +13,7 @@ module.exports = {
     tailwind: './apps/base/styles/vendors/tailwind.pcss',
     turbo: './apps/base/javascript/turbo.ts',
     stimulus: './apps/base/javascript/stimulus.ts',
-    workflow: './apps/workflows/javascript/app.tsx',
+    workflow: './apps/workflows/javascript/dnd-flow.tsx',
     components: './apps/base/javascript/components.ts',
   },
   output: {
@@ -46,7 +46,7 @@ module.exports = {
           options: {
             name: '[name].[ext]',
             outputPath: 'fonts/',
-            publicPath: '../fonts'
+            publicPath: '../fonts',
           },
         },
       },

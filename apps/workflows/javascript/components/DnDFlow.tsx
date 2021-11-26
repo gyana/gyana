@@ -23,7 +23,7 @@ import { getApiClient } from 'apps/base/javascript/api'
 
 const client = getApiClient()
 
-import './styles/_dnd-flow.scss'
+import '../styles/_dnd-flow.scss'
 
 const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
 const GRID_GAP = 20
