@@ -10,7 +10,7 @@ export interface INode {
     icon: string
     description: string
     section: string
-    maxParents?: number
+    maxParents: number
   }
 }
 

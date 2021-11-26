@@ -1,15 +1,11 @@
 import { Edge, Node, getIncomers, isNode, isEdge } from 'react-flow-renderer'
-import { INode, NODES } from './interfaces'
+import { NODES } from './interfaces'
 
 type Element = Node | Edge
 
-export const getIncomingNodes = (elements: Element[], target: string) => {
-  const targetElement = elements.filter((el) => isNode(el) && el.id === target)[0] as
-    | Node
-    | undefined
-  return targetElement
-    ? ([targetElement, getIncomers(targetElement, elements)] as [Node, Node[]])
-    : null
+export const getIncomingNodes = (elements: Element[], target: string): [Node, Node[]] => {
+  const targetElement = elements.find((el) => isNode(el) && el.id === target) as Node
+  return [targetElement, getIncomers(targetElement, elements)]
 }
 
 export const canAddEdge = (elements: Element[], target: string) => {
