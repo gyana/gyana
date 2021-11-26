@@ -1,5 +1,12 @@
 import React, { useCallback } from 'react'
-import { isNode, useStoreState, ControlButton, Edge, Node } from 'react-flow-renderer'
+import {
+  isNode,
+  useStoreState,
+  ControlButton,
+  Edge,
+  Node,
+  useZoomPanHelper,
+} from 'react-flow-renderer'
 import { getApiClient } from 'apps/base/javascript/api'
 import { getLayoutedElements } from '../layout'
 
@@ -8,16 +15,12 @@ const client = getApiClient()
 interface Props {
   elements: (Node | Edge)[]
   setElements: (elements: (Node | Edge)[]) => void
-  setViewHasChanged
   workflowId: string
 }
 
-const LayoutButton: React.FC<Props> = ({
-  elements,
-  setElements,
-  setViewHasChanged,
-  workflowId,
-}) => {
+const LayoutButton: React.FC<Props> = ({ elements, setElements, workflowId }) => {
+  const { fitView } = useZoomPanHelper()
+
   const nodes = useStoreState((state) => state.nodes)
 
   const onLayout = useCallback(() => {
@@ -30,7 +33,7 @@ const LayoutButton: React.FC<Props> = ({
         .filter(isNode)
         .map((el) => ({ id: el.id, x: el.position.x, y: el.position.y })),
     })
-    setViewHasChanged(true)
+    fitView()
   }, [elements, nodes])
 
   return (

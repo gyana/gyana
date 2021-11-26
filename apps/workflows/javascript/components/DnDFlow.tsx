@@ -3,10 +3,8 @@ import ReactDOM from 'react-dom'
 
 import ReactFlow, {
   Controls,
-  isNode,
   Edge,
   Node,
-  getIncomers,
   useZoomPanHelper,
   Background,
   ConnectionLineType,
@@ -35,13 +33,12 @@ enum LoadingStates {
 
 const DnDFlow = ({ workflowId }) => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null)
-  const [elements, setElements] = useState<(Edge | Node)[]>([])
   const { fitView } = useZoomPanHelper()
+
+  const [elements, setElements] = useState<(Edge | Node)[]>([])
   const [isOutOfDate, setIsOutOfDate] = useState(false)
   const [hasBeenRun, setHasBeenRun] = useState(false)
-  // State whether the initial element load has been done
   const [initialLoad, setInitialLoad] = useState(LoadingStates.loading)
-  const [viewHasChanged, setViewHasChanged] = useState(false)
 
   const setElementsDirty = (updater) => {
     setElements(updater)
@@ -56,7 +53,7 @@ const DnDFlow = ({ workflowId }) => {
       try {
         const [nodes, edges] = await listAll(workflowId)
         setElements([...nodes, ...edges])
-        setViewHasChanged(true)
+        fitView()
         setInitialLoad(LoadingStates.loaded)
       } catch {
         setInitialLoad(LoadingStates.failed)
@@ -72,13 +69,6 @@ const DnDFlow = ({ workflowId }) => {
       setIsOutOfDate(res.isOutOfDate)
     })
   }, [])
-
-  useEffect(() => {
-    if (viewHasChanged) {
-      fitView()
-      setViewHasChanged(false)
-    }
-  }, [viewHasChanged])
 
   return (
     <>
@@ -115,15 +105,10 @@ const DnDFlow = ({ workflowId }) => {
             minZoom={0.05}
           >
             <Controls>
-              <LayoutButton
-                elements={elements}
-                setElements={setElements}
-                setViewHasChanged={setViewHasChanged}
-                workflowId={workflowId}
-              />
+              <LayoutButton elements={elements} setElements={setElements} workflowId={workflowId} />
             </Controls>
             <Background gap={GRID_GAP} />
-            {(viewHasChanged || initialLoad === LoadingStates.loading) && <LoadingState />}
+            {initialLoad === LoadingStates.loading && <LoadingState />}
             {initialLoad === LoadingStates.failed && (
               <ErrorState error='Failed loading your nodes!' />
             )}
