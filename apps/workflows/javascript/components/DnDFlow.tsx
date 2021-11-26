@@ -36,9 +36,9 @@ const DnDFlow = ({ workflowId }) => {
   const { fitView } = useZoomPanHelper()
 
   const [elements, setElements] = useState<(Edge | Node)[]>([])
-  const [isOutOfDate, setIsOutOfDate] = useState(false)
-  const [hasBeenRun, setHasBeenRun] = useState(false)
   const [initialLoad, setInitialLoad] = useState(LoadingStates.loading)
+  const [hasBeenRun, setHasBeenRun] = useState(false)
+  const [isOutOfDate, setIsOutOfDate] = useState(false)
 
   const setElementsDirty = (updater) => {
     setElements(updater)
@@ -71,50 +71,48 @@ const DnDFlow = ({ workflowId }) => {
   }, [])
 
   return (
-    <>
+    <DnDContext.Provider
+      value={{
+        workflowId,
+        removeById: (id: string) => {
+          const elemenToRemove = elements.filter((el) => el.id === id)
+          onElementsRemove(elemenToRemove)
+        },
+        addNode: (data) => {
+          const node = toNode(data, { x: data.x, y: data.y })
+          const edges = data.parents.map((parent) => toEdge(node, parent))
+          setElements((es) => es.concat(node, edges))
+        },
+        getIncomingNodes: (target: string) => getIncomingNodes(elements, target),
+      }}
+    >
       <div className='reactflow-wrapper' ref={reactFlowWrapper}>
-        <DnDContext.Provider
-          value={{
-            workflowId,
-            removeById: (id: string) => {
-              const elemenToRemove = elements.filter((el) => el.id === id)
-              onElementsRemove(elemenToRemove)
-            },
-            addNode: (data) => {
-              const node = toNode(data, { x: data.x, y: data.y })
-              const edges = data.parents.map((parent) => toEdge(node, parent))
-              setElements((es) => es.concat(node, edges))
-            },
-            getIncomingNodes: (target: string) => getIncomingNodes(elements, target),
-          }}
+        <ReactFlow
+          nodeTypes={defaultNodeTypes}
+          elements={elements}
+          connectionLineType={ConnectionLineType.SmoothStep}
+          onConnect={onConnect}
+          onElementsRemove={onElementsRemove}
+          onEdgeUpdate={onEdgeUpdate}
+          onLoad={onLoad}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          onNodeDragStop={onNodeDragStop}
+          snapToGrid={true}
+          snapGrid={[GRID_GAP, GRID_GAP]}
+          maxZoom={2}
+          minZoom={0.05}
         >
-          <ReactFlow
-            nodeTypes={defaultNodeTypes}
-            elements={elements}
-            connectionLineType={ConnectionLineType.SmoothStep}
-            onConnect={onConnect}
-            onElementsRemove={onElementsRemove}
-            onEdgeUpdate={onEdgeUpdate}
-            onLoad={onLoad}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onNodeDragStop={onNodeDragStop}
-            snapToGrid={true}
-            snapGrid={[GRID_GAP, GRID_GAP]}
-            maxZoom={2}
-            minZoom={0.05}
-          >
-            <Controls>
-              <LayoutButton elements={elements} setElements={setElements} workflowId={workflowId} />
-            </Controls>
-            <Background gap={GRID_GAP} />
-            {initialLoad === LoadingStates.loading && <LoadingState />}
-            {initialLoad === LoadingStates.failed && (
-              <ErrorState error='Failed loading your nodes!' />
-            )}
-            {initialLoad === LoadingStates.loaded && elements.length === 0 && <ZeroState />}
-          </ReactFlow>
-        </DnDContext.Provider>
+          <Controls>
+            <LayoutButton elements={elements} setElements={setElements} workflowId={workflowId} />
+          </Controls>
+          <Background gap={GRID_GAP} />
+          {initialLoad === LoadingStates.loading && <LoadingState />}
+          {initialLoad === LoadingStates.failed && (
+            <ErrorState error='Failed loading your nodes!' />
+          )}
+          {initialLoad === LoadingStates.loaded && elements.length === 0 && <ZeroState />}
+        </ReactFlow>
       </div>
 
       {ReactDOM.createPortal(
@@ -130,7 +128,7 @@ const DnDFlow = ({ workflowId }) => {
         />,
         document.getElementById('run-button-portal') as HTMLDivElement
       )}
-    </>
+    </DnDContext.Provider>
   )
 }
 
