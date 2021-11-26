@@ -23,6 +23,7 @@ import ZeroState from './ZeroState'
 import ErrorState from './ErrorState'
 import LoadingState from './LoadingState'
 import useDnDActions from '../hooks/useDnDActions'
+import { getIncomingNodes } from '../edges'
 
 const GRID_GAP = 20
 
@@ -45,15 +46,6 @@ const DnDFlow = ({ workflowId }) => {
   const setElementsDirty = (updater) => {
     setElements(updater)
     setIsOutOfDate(true)
-  }
-
-  const getIncomingNodes = (target: string) => {
-    const targetElement = elements.filter((el) => isNode(el) && el.id === target)[0] as
-      | Node
-      | undefined
-    return targetElement
-      ? ([targetElement, getIncomers(targetElement, elements)] as [Node, Node[]])
-      : null
   }
 
   const { onLoad, onDragOver, onDrop, onNodeDragStop, onConnect, onEdgeUpdate, onElementsRemove } =
@@ -88,24 +80,24 @@ const DnDFlow = ({ workflowId }) => {
     }
   }, [viewHasChanged])
 
-  const nodeContext = {
-    removeById: (id: string) => {
-      const elemenToRemove = elements.filter((el) => el.id === id)
-      onElementsRemove(elemenToRemove)
-    },
-    addNode: (data) => {
-      const node = toNode(data, { x: data.x, y: data.y })
-      const edges = data.parents.map((parent) => toEdge(node, parent))
-      setElements((es) => es.concat(node, edges))
-    },
-    getIncomingNodes,
-    workflowId,
-  }
-
   return (
     <>
       <div className='reactflow-wrapper' ref={reactFlowWrapper}>
-        <NodeContext.Provider value={nodeContext}>
+        <NodeContext.Provider
+          value={{
+            removeById: (id: string) => {
+              const elemenToRemove = elements.filter((el) => el.id === id)
+              onElementsRemove(elemenToRemove)
+            },
+            addNode: (data) => {
+              const node = toNode(data, { x: data.x, y: data.y })
+              const edges = data.parents.map((parent) => toEdge(node, parent))
+              setElements((es) => es.concat(node, edges))
+            },
+            getIncomingNodes: (target: string) => getIncomingNodes(elements, target),
+            workflowId,
+          }}
+        >
           <ReactFlow
             nodeTypes={defaultNodeTypes}
             elements={elements}

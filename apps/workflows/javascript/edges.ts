@@ -5,7 +5,7 @@ const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
 
 type Element = Node | Edge
 
-const getIncomingNodes = (elements: Element[], target: string) => {
+export const getIncomingNodes = (elements: Element[], target: string) => {
   const targetElement = elements.filter((el) => isNode(el) && el.id === target)[0] as
     | Node
     | undefined
