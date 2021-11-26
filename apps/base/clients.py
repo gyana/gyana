@@ -58,6 +58,7 @@ def bigquery():
     )
 
 
+@lru_cache
 def ibis_client():
     return ibis_bigquery.connect(
         project_id=settings.GCP_PROJECT, auth_external_data=True
