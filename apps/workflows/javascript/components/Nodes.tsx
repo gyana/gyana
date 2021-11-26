@@ -83,12 +83,16 @@ const DefaultNode: React.FC<NodeProps> = ({
 
   const showWarning =
     incoming && (data.kind === 'join' ? incoming[1].length != 2 : incoming[1].length == 0)
+  const warningMessage =
+    data.kind === 'join'
+      ? 'Join node requires two input nodes'
+      : `${data.label} node needs at least one input node`
 
   return (
     <>
       <NodeButtons id={id} />
       {data.error && <ErrorIcon text={data.error} />}
-      {showWarning && <WarningIcon text={`${data.label} node needs to be connected to a node`} />}
+      {showWarning && <WarningIcon text={warningMessage} />}
       <Handle type='target' position={targetPosition} isConnectable={isConnectable} />
 
       <i

@@ -4,16 +4,7 @@ import { NodeContext } from '../context'
 
 const client = getApiClient()
 
-export const DeleteButton = ({ id }) => {
-  const { removeById } = useContext(NodeContext)
-  return (
-    <button onClick={() => removeById(id)} title='Delete'>
-      <i className='fas fa-fw fa-trash fa-lg'></i>
-    </button>
-  )
-}
-
-const OpenButton = ({ id }) => {
+const EditButton = ({ id }) => {
   return (
     <button
       data-action='click->tf-modal#open'
@@ -22,6 +13,15 @@ const OpenButton = ({ id }) => {
       title='Edit'
     >
       <i className='fas fa-fw fa-edit fa-lg'></i>
+    </button>
+  )
+}
+
+export const DeleteButton = ({ id }) => {
+  const { removeById } = useContext(NodeContext)
+  return (
+    <button onClick={() => removeById(id)} title='Delete'>
+      <i className='fas fa-fw fa-trash fa-lg'></i>
     </button>
   )
 }
@@ -47,7 +47,7 @@ const DuplicateButton = ({ id }) => {
 const NodeButtons = ({ id }) => {
   return (
     <div className='react-flow__buttons'>
-      <OpenButton id={id} />
+      <EditButton id={id} />
       <DuplicateButton id={id} />
       <DeleteButton id={id} />
     </div>
