@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { Handle, NodeProps, Position, useStoreState } from 'react-flow-renderer'
+import { ElementId, Handle, NodeProps, Position, useStoreState } from 'react-flow-renderer'
 import { getApiClient } from 'apps/base/javascript/api'
 import NodeButtons, { DeleteButton } from './NodeButtons'
 import { NodeContext } from '../context'
@@ -9,16 +9,19 @@ import { ErrorIcon, WarningIcon } from './NodeIcons'
 
 const client = getApiClient()
 
-const InputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
+interface Props<T = any> {
+  id: ElementId
+  data: T
+}
+
+const NodeContent: React.FC<Props> = ({ id, data }) => {
   const [, , zoom] = useStoreState((state) => state.transform)
-  const showContent = zoom >= 1.8
+  const showContent = zoom >= 1
 
   return (
     <>
-      <NodeButtons id={id} />
       {data.error && <ErrorIcon text={data.error} />}
-      <NodeName id={id} name={data.label} />
-
+      <NodeButtons id={id} />
       <i
         className={`fas fa-fw ${data.icon}  ${showContent && 'absolute opacity-10'}`}
         data-src={`/nodes/${id}`}
@@ -30,40 +33,28 @@ const InputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
           <NodeDescription id={id} data={data} />
         </div>
       )}
-
-      <Handle type='source' position={Position.Right} isConnectable={isConnectable} />
+      <NodeName id={id} name={data.label} />
     </>
   )
 }
 
-const OutputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
-  const [, , zoom] = useStoreState((state) => state.transform)
-  const showContent = zoom >= 1.8
+const InputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => (
+  <>
+    <NodeContent id={id} data={data} />
+    <Handle type='source' position={Position.Right} isConnectable={isConnectable} />
+  </>
+)
 
+const OutputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
   const { getIncomingNodes } = useContext(NodeContext)
   const incoming = getIncomingNodes(id)
 
   const showWarning = incoming && incoming[1].length < 1
   return (
     <>
-      <NodeButtons id={id} />
-      {data.error && <ErrorIcon text={data.error} />}
-      {showWarning && <WarningIcon text='Output needs to be connected!' />}
+      {showWarning && <WarningIcon text='Save Data needs one input connection' />}
+      <NodeContent id={id} data={data} />
       <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
-
-      <i
-        data-action='dblclick->tf-modal#open'
-        data-src={`/nodes/${id}`}
-        data-item={id}
-        className={`fas fa-fw ${data.icon} ${showContent && 'absolute opacity-10'}`}
-      ></i>
-      {showContent && (
-        <div className='p-2'>
-          <NodeDescription id={id} data={data} />
-        </div>
-      )}
-
-      <NodeName id={id} name={data.label} />
     </>
   )
 }
@@ -75,9 +66,6 @@ const DefaultNode: React.FC<NodeProps> = ({
   targetPosition = Position.Left,
   sourcePosition = Position.Right,
 }) => {
-  const [, , zoom] = useStoreState((state) => state.transform)
-  const showContent = zoom >= 1.8
-
   const { getIncomingNodes } = useContext(NodeContext)
   const incoming = getIncomingNodes(id)
 
@@ -85,26 +73,14 @@ const DefaultNode: React.FC<NodeProps> = ({
     incoming && (data.kind === 'join' ? incoming[1].length != 2 : incoming[1].length == 0)
   const warningMessage =
     data.kind === 'join'
-      ? 'Join node requires two input nodes'
-      : `${data.label} node needs at least one input node`
+      ? 'Join needs two input connections'
+      : `${data.label} needs at least one input connection`
 
   return (
     <>
-      <NodeButtons id={id} />
-      {data.error && <ErrorIcon text={data.error} />}
       {showWarning && <WarningIcon text={warningMessage} />}
       <Handle type='target' position={targetPosition} isConnectable={isConnectable} />
-
-      <i
-        data-action='dblclick->tf-modal#open'
-        data-src={`/nodes/${id}`}
-        data-item={id}
-        className={`fas fa-fw ${data.icon} ${showContent && 'absolute opacity-10'}`}
-      ></i>
-      {showContent && <NodeDescription id={id} data={data} />}
-
-      <NodeName id={id} name={data.label} />
-
+      <NodeContent id={id} data={data} />
       <Handle type='source' position={sourcePosition} isConnectable={isConnectable} />
     </>
   )
