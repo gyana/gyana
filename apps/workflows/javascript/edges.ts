@@ -1,0 +1,65 @@
+import { Edge, Node, getIncomers, isNode, isEdge } from 'react-flow-renderer'
+import { INode } from './interfaces'
+
+const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
+
+type Element = Node | Edge
+
+const getIncomingNodes = (elements: Element[], target: string) => {
+  const targetElement = elements.filter((el) => isNode(el) && el.id === target)[0] as
+    | Node
+    | undefined
+  return targetElement
+    ? ([targetElement, getIncomers(targetElement, elements)] as [Node, Node[]])
+    : null
+}
+
+export const canAddEdge = (elements: Element[], target: string) => {
+  const [targetElement, incomingNodes] = getIncomingNodes(elements, target)
+
+  // Node arity is defined in nodes/bigquery.py
+  // Join (2), Union/Except/Insert (-1 = Inf), otherwise (1)
+  const maxParents = NODES[targetElement.data.kind].maxParents
+
+  if (maxParents === -1 || incomingNodes.length < maxParents) {
+    return true
+  } else {
+    // TODO: Add notification here
+    // alert("You can't add any more incoming edges to this node")
+    return false
+  }
+}
+
+export const addEdgeToParents = (elements: Element[], source: string, target: string) => {
+  return [
+    ...elements.filter((el) => isEdge(el) && el.target === target).map((el) => (el as Edge).source),
+    source,
+  ]
+}
+
+export const removeEdgeFromParents = (elements: Element[], edge: Edge) => {
+  return elements
+    .filter((el) => isEdge(el) && el.target === edge.target && el.source !== edge.source)
+    .map((el) => (el as Edge).source)
+}
+
+export const updateEdgeSourceInParents = (elements: Element[], oldEdge: Edge, newEdge: Edge) => {
+  return elements
+    .filter((el) => isEdge(el) && el.target === oldEdge.target && el.source !== oldEdge.source)
+    .map((el) => (el as Edge).source)
+}
+
+export const updateEdgeTargetInParents = (elements: Element[], oldEdge: Edge, newEdge: Edge) => {
+  const oldParents = elements
+    .filter((el) => isEdge(el) && el.target === oldEdge.target && el.source !== oldEdge.source)
+    .map((el) => (el as Edge).source)
+
+  const newParents = [
+    ...elements
+      .filter((el) => isEdge(el) && el.target === newEdge.target)
+      .map((el) => (el as Edge).source),
+    newEdge.source,
+  ]
+
+  return [oldParents, newParents]
+}

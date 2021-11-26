@@ -39,7 +39,7 @@ export const updateParentEdges = (id: string, parents: string[]): void =>
     parents: parents.map((p) => ({ parent_id: p })),
   })
 
-export const listAll = async (workflowId: string): Promise<[Node[], Edge[]][]> => {
+export const listAll = async (workflowId: string): Promise<[Node[], Edge[]]> => {
   const result = await client.action(window.schema, ['nodes', 'api', 'nodes', 'list'], {
     workflow: workflowId,
   })
