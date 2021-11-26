@@ -28,7 +28,7 @@ const LayoutButton: React.FC = () => {
 
   return (
     <ControlButton data-controller='tooltip' onClick={onLayout}>
-      <i title='Format workflow' className='fas fa-fw fa-sort-size-down'></i>
+      <i className='fas fa-fw fa-sort-size-down'></i>
       <template data-tooltip-target='body'>Format</template>
     </ControlButton>
   )

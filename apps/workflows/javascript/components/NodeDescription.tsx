@@ -1,12 +1,12 @@
 import { GyanaEvents } from 'apps/base/javascript/events'
 import React, { useContext, useState, useEffect } from 'react'
 import { getApiClient } from 'apps/base/javascript/api'
-import { DnDContext } from '../context'
+import { DnDContext, IDnDContext } from '../context'
 
 const client = getApiClient()
 
 const NodeDescription = ({ id, data }) => {
-  const { workflowId } = useContext(DnDContext)
+  const { workflowId } = useContext(DnDContext) as IDnDContext
 
   const [description, setDescription] = useState()
 

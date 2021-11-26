@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { getApiClient } from 'apps/base/javascript/api'
-import { DnDContext } from '../context'
+import { DnDContext, IDnDContext } from '../context'
 
 const client = getApiClient()
 
@@ -18,7 +18,7 @@ const EditButton = ({ id }) => {
 }
 
 export const DeleteButton = ({ id }) => {
-  const { removeById } = useContext(DnDContext)
+  const { removeById } = useContext(DnDContext) as IDnDContext
   return (
     <button onClick={() => removeById(id)} title='Delete'>
       <i className='fas fa-fw fa-trash fa-lg'></i>
@@ -27,7 +27,7 @@ export const DeleteButton = ({ id }) => {
 }
 
 const DuplicateButton = ({ id }) => {
-  const { addNode } = useContext(DnDContext)
+  const { addNode } = useContext(DnDContext) as IDnDContext
   return (
     <button
       onClick={() =>
