@@ -5,18 +5,20 @@ type Element = Node | Edge
 
 export const canAddEdge = (elements: Element[], target: string) => {
   const targetElement = elements.find((el) => isNode(el) && el.id === target) as Node
-  const incomingNodes = getIncomers(targetElement, elements)
+  if (targetElement) {
+    const incomingNodes = getIncomers(targetElement, elements)
 
-  // Node arity is defined in nodes/bigquery.py
-  // Join (2), Union/Except/Insert (-1 = Inf), otherwise (1)
-  const maxParents = NODES[targetElement.data.kind].maxParents
+    // Node arity is defined in nodes/bigquery.py
+    // Join (2), Union/Except/Insert (-1 = Inf), otherwise (1)
+    const maxParents = NODES[targetElement.data.kind].maxParents
 
-  if (maxParents === -1 || incomingNodes.length < maxParents) {
-    return true
-  } else {
-    // TODO: Add notification here
-    // alert("You can't add any more incoming edges to this node")
-    return false
+    if (maxParents === -1 || incomingNodes.length < maxParents) {
+      return true
+    } else {
+      // TODO: Add notification here
+      // alert("You can't add any more incoming edges to this node")
+      return false
+    }
   }
 }
 

@@ -6,22 +6,25 @@ import { getApiClient } from 'apps/base/javascript/api'
 const client = getApiClient()
 
 interface Props {
-  name: string
   id: string
+  name: string
+  kind: string
 }
 
-const NodeName: React.FC<Props> = ({ name, id }) => {
+const NodeName: React.FC<Props> = ({ id, name, kind }) => {
   const [text, setText] = useState(name)
-  const updateName = useDebouncedCallback((name: string) => {
-    client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
+  const updateName = useDebouncedCallback(async (name: string) => {
+    await client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
       id,
       name,
-    }),
-      300
-  })
+    })
+    if (kind == 'output') {
+      window.dispatchEvent(new CustomEvent(`${GyanaEvents.UPDATE_NODE}-${id}`))
+    }
+  }, 300)
 
   useEffect(() => {
-    text !== name && updateName(text)
+    if (text !== name) updateName(text)
   }, [text])
 
   useEffect(() => {

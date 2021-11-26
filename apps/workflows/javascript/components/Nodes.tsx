@@ -48,7 +48,7 @@ const NodeContent: React.FC<Props> = ({ id, data }) => {
           <NodeDescription id={id} data={data} />
         </div>
       )}
-      <NodeName id={id} name={data.label} />
+      <NodeName id={id} name={data.label} kind={data.kind} />
     </>
   )
 }
