@@ -1,5 +1,5 @@
 import dagre from 'dagre'
-import { isNode, Edge, Node } from 'react-flow-renderer'
+import { isNode, Edge, Node, Position } from 'react-flow-renderer'
 
 const dagreGraph = new dagre.graphlib.Graph()
 dagreGraph.setDefaultEdgeLabel(() => ({}))
@@ -13,7 +13,7 @@ const BUTTON_SPACING = 40
 export const getLayoutedElements = (elements: (Node | Edge)[], nodes: Node[]) => {
   elements.forEach((el) => {
     if (isNode(el)) {
-      const node = nodes.find((node) => node.id === el.id)
+      const node = nodes.find((node) => node.id === el.id) as Node
       dagreGraph.setNode(el.id, {
         width: node.__rf.width,
         height: node.__rf.height + BUTTON_SPACING,
@@ -28,9 +28,9 @@ export const getLayoutedElements = (elements: (Node | Edge)[], nodes: Node[]) =>
   return elements.map((el) => {
     if (isNode(el)) {
       const nodeWithPosition = dagreGraph.node(el.id)
-      el.targetPosition = 'left'
-      el.sourcePosition = 'right'
-      const node = nodes.find((node) => node.id === el.id)
+      el.targetPosition = Position.Left
+      el.sourcePosition = Position.Right
+      const node = nodes.find((node) => node.id === el.id) as Node
 
       // unfortunately we need this little hack to pass a slightly different position
       // to notify react flow about the change. Moreover we are shifting the dagre node position

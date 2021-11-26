@@ -1,4 +1,5 @@
 import { createContext } from 'react'
+import { Node } from 'react-flow-renderer'
 
 export interface IDnDContext {
   workflowId: number
