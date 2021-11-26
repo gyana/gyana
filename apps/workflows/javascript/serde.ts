@@ -1,8 +1,11 @@
-import { Node, Edge, Position } from 'react-flow-renderer'
+import { Node, Edge, XYPosition } from 'react-flow-renderer'
 import { INode } from './interfaces'
+
 const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
 
-export const toNode = (res, position): Node => ({
+// Utilities to convert from coreapi JSON response to react-flow-renderer
+
+export const toNode = (res, position: XYPosition): Node => ({
   id: `${res.id}`,
   type: ['input', 'output', 'text'].includes(res.kind) ? res.kind : 'default',
   data: {
@@ -16,14 +19,14 @@ export const toNode = (res, position): Node => ({
   position,
 })
 
-export const toEdge = (node, parent): Edge => {
+export const toEdge = (res, parent): Edge => {
   return {
-    id: `reactflow__edge-${parent.parent_id}null-${node.id}null`,
+    id: `reactflow__edge-${parent.parent_id}null-${res.id}null`,
     source: parent.parent_id.toString(),
     sourceHandle: null,
     type: 'smoothstep',
     targetHandle: null,
     arrowHeadType: 'arrowclosed',
-    target: node.id.toString(),
+    target: res.id.toString(),
   }
 }

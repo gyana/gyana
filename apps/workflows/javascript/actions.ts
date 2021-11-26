@@ -1,13 +1,14 @@
-import { INode } from './interfaces'
 import { getApiClient } from 'apps/base/javascript/api'
-import { Node } from 'react-flow-renderer'
+import { Node, XYPosition } from 'react-flow-renderer'
 import { toEdge, toNode } from './serde'
 
 const client = getApiClient()
 
-const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
-
-export const createNode = async (workflowId: number, type: string, position) => {
+export const createNode = async (
+  workflowId: number,
+  type: string,
+  position: XYPosition
+): Promise<Node> => {
   const result = await client.action(window.schema, ['nodes', 'api', 'nodes', 'create'], {
     kind: type,
     workflow: workflowId,
@@ -18,7 +19,7 @@ export const createNode = async (workflowId: number, type: string, position) => 
   return toNode(result, position)
 }
 
-export const moveNode = (node) => {
+export const moveNode = (node: Node): void => {
   client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
     id: node.id,
     x: node.position.x,

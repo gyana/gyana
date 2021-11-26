@@ -145,23 +145,12 @@ const DnDFlow = ({ workflowId }) => {
     onElementsRemove(elemenToRemove)
   }
 
-  const onLoad = (_reactFlowInstance) => setReactFlowInstance(_reactFlowInstance)
-
-  const onDragOver = (event) => {
-    event.preventDefault()
-    event.dataTransfer.dropEffect = 'move'
-  }
-
   const getPosition = (event) => {
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect()
     return reactFlowInstance.project({
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
     })
-  }
-
-  const onDragStop = (event, node) => {
-    moveNode(node)
   }
 
   const syncElements = async () => {
@@ -195,9 +184,7 @@ const DnDFlow = ({ workflowId }) => {
     event.preventDefault()
     const type = event.dataTransfer.getData('application/reactflow')
     const position = getPosition(event)
-
     const newNode = await createNode(workflowId, type, position)
-
     setElements((es) => es.concat(newNode))
     setIsOutOfDate(true)
   }
@@ -219,10 +206,13 @@ const DnDFlow = ({ workflowId }) => {
           onConnect={onConnect}
           onElementsRemove={onElementsRemove}
           onEdgeUpdate={onEdgeUpdate}
-          onLoad={onLoad}
+          onLoad={(instance) => setReactFlowInstance(instance)}
           onDrop={onDrop}
-          onDragOver={onDragOver}
-          onNodeDragStop={onDragStop}
+          onDragOver={(event) => {
+            event.preventDefault()
+            event.dataTransfer.dropEffect = 'move'
+          }}
+          onNodeDragStop={(event, node) => moveNode(node)}
           snapToGrid={true}
           snapGrid={[GRID_GAP, GRID_GAP]}
           maxZoom={2}
