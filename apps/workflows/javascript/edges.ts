@@ -1,7 +1,5 @@
 import { Edge, Node, getIncomers, isNode, isEdge } from 'react-flow-renderer'
-import { INode } from './interfaces'
-
-const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
+import { INode, NODES } from './interfaces'
 
 type Element = Node | Edge
 
@@ -43,22 +41,25 @@ export const removeEdgeFromParents = (elements: Element[], edge: Edge) => {
     .map((el) => (el as Edge).source)
 }
 
-export const updateEdgeSourceInParents = (elements: Element[], oldEdge: Edge, newEdge: Edge) => {
+export const updateEdgeSourceInParents = (elements: Element[], oldEdge: Edge) => {
   return elements
     .filter((el) => isEdge(el) && el.target === oldEdge.target && el.source !== oldEdge.source)
     .map((el) => (el as Edge).source)
 }
 
-export const updateEdgeTargetInParents = (elements: Element[], oldEdge: Edge, newEdge: Edge) => {
+export const updateEdgeTargetInParents = (
+  elements: Element[],
+  oldEdge: Edge,
+  source: string,
+  target: string
+) => {
   const oldParents = elements
     .filter((el) => isEdge(el) && el.target === oldEdge.target && el.source !== oldEdge.source)
     .map((el) => (el as Edge).source)
 
   const newParents = [
-    ...elements
-      .filter((el) => isEdge(el) && el.target === newEdge.target)
-      .map((el) => (el as Edge).source),
-    newEdge.source,
+    ...elements.filter((el) => isEdge(el) && el.target === target).map((el) => (el as Edge).source),
+    source,
   ]
 
   return [oldParents, newParents]

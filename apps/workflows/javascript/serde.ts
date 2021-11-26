@@ -1,7 +1,5 @@
-import { Node, Edge, XYPosition } from 'react-flow-renderer'
-import { INode } from './interfaces'
-
-const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
+import { Node, Edge, XYPosition, ArrowHeadType } from 'react-flow-renderer'
+import { NODES } from './interfaces'
 
 // Utilities to convert from coreapi JSON response to react-flow-renderer
 
@@ -26,7 +24,7 @@ export const toEdge = (res, parent): Edge => {
     sourceHandle: null,
     type: 'smoothstep',
     targetHandle: null,
-    arrowHeadType: 'arrowclosed',
+    arrowHeadType: ArrowHeadType.ArrowClosed,
     target: res.id.toString(),
   }
 }

@@ -13,3 +13,7 @@ export interface INode {
     maxParents?: number
   }
 }
+
+export const NODES = JSON.parse(
+  (document.getElementById('nodes') as HTMLScriptElement).textContent as string
+) as INode

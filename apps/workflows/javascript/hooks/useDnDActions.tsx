@@ -6,6 +6,8 @@ import {
   Edge,
   Node,
   OnLoadParams,
+  Connection,
+  ArrowHeadType,
 } from 'react-flow-renderer'
 
 import '../styles/_dnd-flow.scss'
@@ -31,12 +33,12 @@ const useDnDActions = (
 
   const onLoad = (instance) => setReactFlowInstance(instance)
 
-  const onDragOver = (event) => {
+  const onDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault()
     event.dataTransfer.dropEffect = 'move'
   }
 
-  const onDrop = async (event: DragEvent) => {
+  const onDrop = async (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault()
     const { dataTransfer, clientX, clientY } = event
 
@@ -56,35 +58,50 @@ const useDnDActions = (
     }
   }
 
-  const onNodeDragStop = (event, node) => moveNode(node)
+  const onNodeDragStop = (event: React.DragEvent<HTMLDivElement>, node: Node) => moveNode(node)
 
-  const onConnect = (params) => {
-    if (canAddEdge(elements, params.target)) {
-      updateParentEdges(params.target, addEdgeToParents(elements, params.source, params.target))
+  const onConnect = (connection: Edge) => {
+    if (canAddEdge(elements, connection.target)) {
+      updateParentEdges(
+        connection.target,
+        addEdgeToParents(elements, connection.source, connection.target)
+      )
       setElementsDirty((els) =>
-        addEdge({ ...params, arrowHeadType: 'arrowclosed', type: 'smoothstep' }, els)
+        addEdge(
+          { ...connection, arrowHeadType: ArrowHeadType.ArrowClosed, type: 'smoothstep' },
+          els
+        )
       )
     }
   }
 
-  const onEdgeUpdate = (oldEdge: Edge, newEdge: Edge) => {
-    // Update the target of the edge
-    if (oldEdge.source === newEdge.source) {
-      if (canAddEdge(elements, newEdge.target)) {
-        const [oldParents, newParents] = updateEdgeTargetInParents(elements, oldEdge, newEdge)
-        updateParentEdges(oldEdge.target, oldParents)
-        updateParentEdges(newEdge.target, newParents)
-        setElementsDirty((els) => updateEdge(oldEdge, newEdge, els))
+  const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) => {
+    const { source, target } = newConnection
+
+    if (target !== null && source !== null) {
+      // Update the target of the edge
+      if (oldEdge.source === source) {
+        if (canAddEdge(elements, target)) {
+          const [oldParents, newParents] = updateEdgeTargetInParents(
+            elements,
+            oldEdge,
+            source,
+            target
+          )
+          updateParentEdges(oldEdge.target, oldParents)
+          updateParentEdges(target, newParents)
+          setElementsDirty((els) => updateEdge(oldEdge, newConnection, els))
+        }
       }
-    }
-    // Update the source of the edge
-    else {
-      updateParentEdges(newEdge.target, updateEdgeSourceInParents(elements, oldEdge, newEdge))
-      setElementsDirty((els) => updateEdge(oldEdge, newEdge, els))
+      // Update the source of the edge
+      else {
+        updateParentEdges(target, updateEdgeSourceInParents(elements, oldEdge))
+        setElementsDirty((els) => updateEdge(oldEdge, newConnection, els))
+      }
     }
   }
 
-  const onElementsRemove = (elementsToRemove) => {
+  const onElementsRemove = (elementsToRemove: Element[]) => {
     setElementsDirty((els) => removeElements(elementsToRemove, els))
     elementsToRemove.forEach((el) => {
       if (isNode(el)) {

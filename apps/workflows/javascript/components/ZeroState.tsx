@@ -1,7 +1,5 @@
 import React from 'react'
-import { INode } from '../interfaces'
-
-const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
+import { NODES } from '../interfaces'
 
 const ZeroState: React.FC = () => (
   <div className='placeholder-scr placeholder-scr--fillscreen gap-10'>
