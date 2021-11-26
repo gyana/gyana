@@ -17,13 +17,14 @@ import ReactFlow, {
 } from 'react-flow-renderer'
 import { INode } from '../interfaces'
 import LayoutButton from './LayoutButton'
-import defaultNodeTypes, { NodeContext } from './Nodes'
+import defaultNodeTypes from './Nodes'
 import RunButton from './RunButton'
 import { getApiClient } from 'apps/base/javascript/api'
 
 const client = getApiClient()
 
 import '../styles/_dnd-flow.scss'
+import { NodeContext } from '../context'
 
 const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
 const GRID_GAP = 20
