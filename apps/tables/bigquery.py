@@ -45,6 +45,15 @@ def get_query_from_table(table: Table) -> TableExpr:
 
     tbl.op().source = conn
 
+    if (
+        table.integration is not None
+        and table.integration.kind == table.integration.Kind.CONNECTOR
+    ):
+        # Drop the intersection of fivetran cols and schema cols
+        tbl = tbl.drop(set(tbl.schema().names) & FIVETRAN_COLUMNS)
+
+    return tbl
+
 
 def get_bq_table_schema_from_table(table: Table):
     schema = clients.bigquery().get_table(table.bq_id).schema
