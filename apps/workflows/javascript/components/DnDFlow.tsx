@@ -68,12 +68,24 @@ const DnDFlow = ({ workflowId }) => {
       : null
   }
 
-  const onConnect = (params) => {
-    const [targetElement, incomingNodes] = getIncomingNodes(params.target)
+  const canAddEdge = (target: string) => {
+    const [targetElement, incomingNodes] = getIncomingNodes(target)
 
-    // All nodes except Join (2) and Union (inf) can only have one parent
+    // Node arity is defined in nodes/bigquery.py
+    // Join (2), Union/Except/Insert (-1 = Inf), otherwise (1)
     const maxParents = NODES[targetElement.data.kind].maxParents
+
     if (maxParents === -1 || incomingNodes.length < maxParents) {
+      return true
+    } else {
+      // TODO: Add notification here
+      // alert("You can't add any more incoming edges to this node")
+      return false
+    }
+  }
+
+  const onConnect = (params) => {
+    if (canAddEdge(params.target)) {
       const parents = elements
         .filter((el) => isEdge(el) && el.target === params.target)
         .map((el) => el.source)
@@ -109,11 +121,7 @@ const DnDFlow = ({ workflowId }) => {
       // We need to remove the source from the previous target and
       // add it to the new one
 
-      const [targetElement, incomingNodes] = getIncomingNodes(newEdge.target)
-      // All nodes except Join (2) and Union (inf) can only have one parent
-      const maxParents = NODES[targetElement.data.kind].maxParents || 1
-
-      if (maxParents === -1 || incomingNodes.length < maxParents) {
+      if (canAddEdge(newEdge.target)) {
         const oldParents = elements
           .filter(
             (el) => isEdge(el) && el.target === oldEdge.target && el.source !== oldEdge.source
