@@ -285,7 +285,6 @@ const DnDFlow = ({ workflowId }) => {
               hasOutput={hasOutput}
               hasBeenRun={hasBeenRun}
               setHasBeenRun={setHasBeenRun}
-              client={client}
               workflowId={workflowId}
               elements={elements}
               setElements={setElements}

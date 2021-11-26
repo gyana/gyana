@@ -1,8 +1,11 @@
 import { Edge, isNode, Node } from 'react-flow-renderer'
 import React, { useEffect, useState } from 'react'
 import { GyanaEvents } from 'apps/base/javascript/events'
+import { getApiClient } from 'apps/base/javascript/api'
 
-const RunButton: React.FC<{
+const client = getApiClient()
+
+interface Props {
   hasOutput: boolean
   hasBeenRun: boolean
   setHasBeenRun: (x: boolean) => void
@@ -12,12 +15,13 @@ const RunButton: React.FC<{
   setElements: (elements: (Node | Edge)[]) => void
   isOutOfDate: boolean
   setIsOutOfDate: (x: boolean) => void
-}> = ({
+}
+
+const RunButton: React.FC<Props> = ({
   hasOutput,
   hasBeenRun,
   setHasBeenRun,
   workflowId,
-  client,
   elements,
   setElements,
   isOutOfDate,
@@ -31,53 +35,50 @@ const RunButton: React.FC<{
     return () => window.removeEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
   })
 
-  const disabled = !hasOutput || loading || !isOutOfDate
   return (
-    <div className='dndflow__run-button'>
+    <div className='dndflow__run-button' data-controller='tooltip'>
       <button
         onClick={() => {
-          if (!disabled) {
-            setLoading(true)
+          setLoading(true)
 
-            client
-              .action(window.schema, ['workflows', 'run_workflow', 'create'], {
-                id: workflowId,
-              })
-              .then((res) => {
-                if (res) {
-                  setElements(
-                    elements.map((el) => {
-                      if (isNode(el)) {
-                        const error = res[parseInt(el.id)]
-                        // Add error to node if necessary
-                        if (error) {
-                          el.data['error'] = error
-                        }
-                        // Remove error if necessary
-                        else if (el.data.error) {
-                          delete el.data['error']
-                        }
+          client
+            .action(window.schema, ['workflows', 'run_workflow', 'create'], {
+              id: workflowId,
+            })
+            .then((res) => {
+              if (res) {
+                setElements(
+                  elements.map((el) => {
+                    if (isNode(el)) {
+                      const error = res[parseInt(el.id)]
+                      // Add error to node if necessary
+                      if (error) {
+                        el.data['error'] = error
                       }
-                      return el
-                    })
-                  )
-                  if (Object.keys(res).length === 0) {
-                    setIsOutOfDate(false)
-                    setHasBeenRun(false)
-                    window.dispatchEvent(new Event(GyanaEvents.RUN_WORKFLOW))
-                  }
-                  setLoading(false)
+                      // Remove error if necessary
+                      else if (el.data.error) {
+                        delete el.data['error']
+                      }
+                    }
+                    return el
+                  })
+                )
+                if (Object.keys(res).length === 0) {
+                  setIsOutOfDate(false)
+                  setHasBeenRun(false)
+                  window.dispatchEvent(new Event(GyanaEvents.RUN_WORKFLOW))
                 }
-                alert('Workflow finished running!')
-              })
-              .catch(() => {
                 setLoading(false)
-                alert('Workflow failed running')
-              })
-          }
+              }
+              alert('Workflow finished running!')
+            })
+            .catch(() => {
+              setLoading(false)
+              alert('Workflow failed running')
+            })
         }}
-        className={`button button--sm button--success ${disabled && 'disabled'}`}
-        data-controller='tooltip'
+        className='button button--sm button--success'
+        disabled={!hasOutput || loading || !isOutOfDate}
       >
         {loading ? (
           <i className='fad fa-fw fa-spinner-third fa-spin' />
@@ -89,7 +90,7 @@ const RunButton: React.FC<{
           {!hasOutput ? (
             <span>Workflow needs a Save Data node to run</span>
           ) : (
-            <span>Run a workflow to use results in dashboards and other workflows.</span>
+            <span>Run workflow to create or update your output data sources</span>
           )}
         </div>
       </button>
