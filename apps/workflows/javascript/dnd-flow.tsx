@@ -19,9 +19,6 @@ import { INode } from './interfaces'
 import LayoutButton from './LayoutButton'
 import defaultNodeTypes, { NodeContext } from './Nodes'
 import RunButton from './RunButton'
-
-import Sidebar from './sidebar'
-
 import { getApiClient } from 'apps/base/javascript/api'
 
 const client = getApiClient()
@@ -254,107 +251,104 @@ const DnDFlow = ({ workflowId }) => {
   }
 
   return (
-    <div className='dndflow'>
-      <div className='reactflow-wrapper' ref={reactFlowWrapper}>
-        <NodeContext.Provider value={{ removeById, client, getIncomingNodes, addNode, workflowId }}>
-          <ReactFlow
-            nodeTypes={defaultNodeTypes}
-            elements={elements}
-            connectionLineType={ConnectionLineType.SmoothStep}
-            onConnect={onConnect}
-            onElementsRemove={onElementsRemove}
-            onEdgeUpdate={onEdgeUpdate}
-            onLoad={onLoad}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onNodeDragStop={onDragStop}
-            snapToGrid={true}
-            snapGrid={[GRID_GAP, GRID_GAP]}
-            maxZoom={2}
-            minZoom={0.05}
-          >
-            <Controls>
-              <LayoutButton
-                elements={elements}
-                setElements={setElements}
-                client={client}
-                setViewHasChanged={setViewHasChanged}
-                workflowId={workflowId}
-              />
-            </Controls>
-            <Background gap={GRID_GAP} />
+    <div className='reactflow-wrapper' ref={reactFlowWrapper}>
+      <NodeContext.Provider value={{ removeById, client, getIncomingNodes, addNode, workflowId }}>
+        <ReactFlow
+          nodeTypes={defaultNodeTypes}
+          elements={elements}
+          connectionLineType={ConnectionLineType.SmoothStep}
+          onConnect={onConnect}
+          onElementsRemove={onElementsRemove}
+          onEdgeUpdate={onEdgeUpdate}
+          onLoad={onLoad}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          onNodeDragStop={onDragStop}
+          snapToGrid={true}
+          snapGrid={[GRID_GAP, GRID_GAP]}
+          maxZoom={2}
+          minZoom={0.05}
+        >
+          <Controls>
+            <LayoutButton
+              elements={elements}
+              setElements={setElements}
+              client={client}
+              setViewHasChanged={setViewHasChanged}
+              workflowId={workflowId}
+            />
+          </Controls>
+          <Background gap={GRID_GAP} />
 
-            {ReactDOM.createPortal(
-              <RunButton
-                hasOutput={hasOutput}
-                hasBeenRun={hasBeenRun}
-                setHasBeenRun={setHasBeenRun}
-                client={client}
-                workflowId={workflowId}
-                elements={elements}
-                setElements={setElements}
-                isOutOfDate={isOutOfDate}
-                setIsOutOfDate={setIsOutOfDate}
-              />,
-              runButtonPortal
-            )}
+          {ReactDOM.createPortal(
+            <RunButton
+              hasOutput={hasOutput}
+              hasBeenRun={hasBeenRun}
+              setHasBeenRun={setHasBeenRun}
+              client={client}
+              workflowId={workflowId}
+              elements={elements}
+              setElements={setElements}
+              isOutOfDate={isOutOfDate}
+              setIsOutOfDate={setIsOutOfDate}
+            />,
+            runButtonPortal
+          )}
 
-            {(viewHasChanged || initialLoad === LoadingStates.loading) && (
-              <div className='placeholder-scr placeholder-scr--fillscreen'>
-                <i className='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
-                Loading...
-              </div>
-            )}
-            {initialLoad === LoadingStates.failed && (
-              <div className='placeholder-scr placeholder-scr--fillscreen'>
-                <i className='fa fa-exclamation-triangle text-red fa-4x mb-3'></i>
-                <p>Failed loading your nodes!</p>
+          {(viewHasChanged || initialLoad === LoadingStates.loading) && (
+            <div className='placeholder-scr placeholder-scr--fillscreen'>
+              <i className='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
+              Loading...
+            </div>
+          )}
+          {initialLoad === LoadingStates.failed && (
+            <div className='placeholder-scr placeholder-scr--fillscreen'>
+              <i className='fa fa-exclamation-triangle text-red fa-4x mb-3'></i>
+              <p>Failed loading your nodes!</p>
+              <p>
+                Contact{' '}
+                <a className='link' href='mailto: support@gyana.com'>
+                  support@gyana.com
+                </a>{' '}
+                for support.
+              </p>
+            </div>
+          )}
+          {initialLoad === LoadingStates.loaded && elements.length === 0 && (
+            <div className='placeholder-scr placeholder-scr--fillscreen gap-10'>
+              <div className='flex items-center max-w-lg gap-7'>
+                <i className={`fas fa-fw ${NODES['input'].icon} text-green fa-2x`}></i>
                 <p>
-                  Contact{' '}
-                  <a className='link' href='mailto: support@gyana.com'>
-                    support@gyana.com
-                  </a>{' '}
-                  for support.
+                  Start building your workflow by dragging in a <strong>Get data</strong> node
                 </p>
               </div>
-            )}
-            {initialLoad === LoadingStates.loaded && elements.length === 0 && (
-              <div className='placeholder-scr placeholder-scr--fillscreen gap-10'>
-                <div className='flex items-center max-w-lg gap-7'>
-                  <i className={`fas fa-fw ${NODES['input'].icon} text-green fa-2x`}></i>
-                  <p>
-                    Start building your workflow by dragging in a <strong>Get data</strong> node
-                  </p>
-                </div>
 
-                <div className='flex items-center max-w-lg gap-7'>
-                  <i className={`fas fa-fw ${NODES['filter'].icon} text-blue fa-2x`}></i>
-                  <p>
-                    Drag and connect other <strong>Transformation</strong> nodes to clean and filter
-                    your data
-                  </p>
-                </div>
-
-                <div className='flex items-center max-w-lg gap-7'>
-                  <i className={`fas fa-fw ${NODES['output'].icon} text-pink fa-2x`}></i>
-                  <p>
-                    Once you are happy with your results, drag in a <strong>Save Data</strong> node
-                    and name it
-                  </p>
-                </div>
-
-                <div className='flex items-center max-w-lg gap-7'>
-                  <i className={`fas fa-fw fa-play-circle text-green fa-2x`}></i>
-                  <p>
-                    Press <strong>Run</strong> in the top right to create the new data source
-                  </p>
-                </div>
+              <div className='flex items-center max-w-lg gap-7'>
+                <i className={`fas fa-fw ${NODES['filter'].icon} text-blue fa-2x`}></i>
+                <p>
+                  Drag and connect other <strong>Transformation</strong> nodes to clean and filter
+                  your data
+                </p>
               </div>
-            )}
-          </ReactFlow>
-        </NodeContext.Provider>
-      </div>
-      <Sidebar />
+
+              <div className='flex items-center max-w-lg gap-7'>
+                <i className={`fas fa-fw ${NODES['output'].icon} text-pink fa-2x`}></i>
+                <p>
+                  Once you are happy with your results, drag in a <strong>Save Data</strong> node
+                  and name it
+                </p>
+              </div>
+
+              <div className='flex items-center max-w-lg gap-7'>
+                <i className={`fas fa-fw fa-play-circle text-green fa-2x`}></i>
+                <p>
+                  Press <strong>Run</strong> in the top right to create the new data source
+                </p>
+              </div>
+            </div>
+          )}
+        </ReactFlow>
+      </NodeContext.Provider>
     </div>
   )
 }

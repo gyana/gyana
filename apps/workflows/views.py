@@ -116,6 +116,11 @@ class WorkflowDetail(ProjectMixin, TurboUpdateView):
         # copy dict because it's cached
         nodes = get_node_config_with_arity().copy()
         context["nodes"] = nodes
+        context["sections"] = [
+            "Table manipulations",
+            "Column manipulations",
+            "Annotation",
+        ]
         return context
 
     def get_success_url(self) -> str:
