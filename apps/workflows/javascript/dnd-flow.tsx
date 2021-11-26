@@ -273,7 +273,6 @@ const DnDFlow = ({ workflowId }) => {
             <LayoutButton
               elements={elements}
               setElements={setElements}
-              client={client}
               setViewHasChanged={setViewHasChanged}
               workflowId={workflowId}
             />

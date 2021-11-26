@@ -10,7 +10,6 @@ interface Props {
   hasBeenRun: boolean
   setHasBeenRun: (x: boolean) => void
   workflowId: string
-  client
   elements: (Node | Edge)[]
   setElements: (elements: (Node | Edge)[]) => void
   isOutOfDate: boolean
