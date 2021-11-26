@@ -1,12 +1,12 @@
 # fmt: off
 from django import forms
 
-from apps.base.formsets import InlineColumnFormset, RequiredInlineFormset
-from apps.base.live_update_form import LiveUpdateForm
-from apps.base.schema_form_mixin import SchemaFormMixin
+from apps.base.formsets import RequiredInlineFormset
 from apps.columns.forms import (
     AddColumnForm,
     AggregationColumnForm,
+    BaseLiveSchemaForm,
+    BaseSchemaForm,
     ConvertColumnForm,
     FormulaColumnForm,
     OperationColumnForm,
@@ -31,39 +31,30 @@ from apps.filters.models import Filter
 
 from .models import Node
 
-SchemaLiveForm = type(
-    "SchemaLiveForm",
-    (
-        SchemaFormMixin,
-        LiveUpdateForm,
-    ),
-    {},
-)
-
 AggregationColumnFormSet = forms.inlineformset_factory(
     Node,
     AggregationColumn,
     form=AggregationColumnForm,
     extra=0,
     can_delete=True,
-    formset=InlineColumnFormset,
+    formset=RequiredInlineFormset,
 )
 
 ColumnFormSet = forms.inlineformset_factory(
     Node,
     Column,
-    form=LiveUpdateForm,
+    form=BaseLiveSchemaForm,
     fields=("column",),
     extra=0,
     can_delete=True,
-    formset=InlineColumnFormset,
+    formset=RequiredInlineFormset,
 )
 
 
 SortColumnFormSet = forms.inlineformset_factory(
     Node,
     SortColumn,
-    form=SchemaLiveForm,
+    form=BaseLiveSchemaForm,
     fields=("column", "ascending"),
     can_delete=True,
     extra=0,
@@ -79,7 +70,7 @@ EditColumnFormSet = forms.inlineformset_factory(
     can_delete=True,
     extra=0,
     min_num=1,
-    formset=InlineColumnFormset,
+    formset=RequiredInlineFormset,
 )
 
 AddColumnFormSet = forms.inlineformset_factory(
@@ -89,7 +80,7 @@ AddColumnFormSet = forms.inlineformset_factory(
     can_delete=True,
     extra=0,
     min_num=1,
-    formset=InlineColumnFormset,
+    formset=RequiredInlineFormset,
 )
 
 FormulaColumnFormSet = forms.inlineformset_factory(
@@ -105,7 +96,7 @@ FormulaColumnFormSet = forms.inlineformset_factory(
 RenameColumnFormSet = forms.inlineformset_factory(
     Node,
     RenameColumn,
-    form=SchemaLiveForm,
+    form=BaseLiveSchemaForm,
     fields=("column", "new_name"),
     can_delete=True,
     extra=0,
@@ -121,18 +112,20 @@ SelectColumnFormSet = forms.inlineformset_factory(
     Node,
     SecondaryColumn,
     fields=("column",),
+    form=BaseSchemaForm,
     can_delete=True,
     extra=0,
-    formset=InlineColumnFormset,
+    formset=RequiredInlineFormset,
 )
 
 UnpivotColumnFormSet = forms.inlineformset_factory(
     Node,
     Column,
     fields=("column",),
+    form=BaseSchemaForm,
     can_delete=True,
     extra=0,
-    formset=InlineColumnFormset,
+    formset=RequiredInlineFormset,
     min_num=1,
 )
 
