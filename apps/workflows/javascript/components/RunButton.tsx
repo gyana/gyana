@@ -32,7 +32,7 @@ const RunButton: React.FC<Props> = ({
 
     window.addEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
     return () => window.removeEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
-  })
+  }, [])
 
   return (
     <div className='dndflow__run-button' data-controller='tooltip'>

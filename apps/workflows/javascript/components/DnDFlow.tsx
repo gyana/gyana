@@ -14,7 +14,7 @@ import defaultNodeTypes from './Nodes'
 import RunButton from './RunButton'
 
 import '../styles/_dnd-flow.scss'
-import { NodeContext } from '../context'
+import { DnDContext } from '../context'
 import { getWorkflowStatus, listAll } from '../actions'
 import { toEdge, toNode } from '../serde'
 import ZeroState from './ZeroState'
@@ -73,8 +73,9 @@ const DnDFlow = ({ workflowId }) => {
   return (
     <>
       <div className='reactflow-wrapper' ref={reactFlowWrapper}>
-        <NodeContext.Provider
+        <DnDContext.Provider
           value={{
+            workflowId,
             removeById: (id: string) => {
               const elemenToRemove = elements.filter((el) => el.id === id)
               onElementsRemove(elemenToRemove)
@@ -85,7 +86,6 @@ const DnDFlow = ({ workflowId }) => {
               setElements((es) => es.concat(node, edges))
             },
             getIncomingNodes: (target: string) => getIncomingNodes(elements, target),
-            workflowId,
           }}
         >
           <ReactFlow
@@ -114,7 +114,7 @@ const DnDFlow = ({ workflowId }) => {
             )}
             {initialLoad === LoadingStates.loaded && elements.length === 0 && <ZeroState />}
           </ReactFlow>
-        </NodeContext.Provider>
+        </DnDContext.Provider>
       </div>
 
       {ReactDOM.createPortal(
