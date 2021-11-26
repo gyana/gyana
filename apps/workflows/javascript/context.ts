@@ -1,8 +1,16 @@
 import { createContext } from 'react'
 
-export const DnDContext = createContext({
-  workflowId: '',
-  removeById: (id: string) => {},
-  getIncomingNodes: (id: string): [Node, Node[]] | null => null,
-  addNode: (node) => {},
-})
+export interface IDnDContext {
+  workflowId: number
+  elements
+  setElements
+  hasBeenRun: boolean
+  setHasBeenRun: (hasBeenRun: boolean) => void
+  isOutOfDate: boolean
+  setIsOutOfDate: (isOutOfDate: boolean) => void
+  removeById: (id: string) => void
+  getIncomingNodes: (id: string) => [Node, Node[]] | null
+  addNode: (data: any) => void
+}
+
+export const DnDContext = createContext<IDnDContext | null>(null)

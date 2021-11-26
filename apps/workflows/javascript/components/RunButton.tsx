@@ -1,35 +1,20 @@
-import { Edge, isNode, Node } from 'react-flow-renderer'
-import React, { useEffect, useState } from 'react'
+import { isNode } from 'react-flow-renderer'
+import React, { useContext, useEffect, useState } from 'react'
 import { GyanaEvents } from 'apps/base/javascript/events'
 import { getApiClient } from 'apps/base/javascript/api'
+import { DnDContext, IDnDContext } from '../context'
 
 const client = getApiClient()
 
-interface Props {
-  hasOutput: boolean
-  hasBeenRun: boolean
-  setHasBeenRun: (x: boolean) => void
-  workflowId: string
-  elements: (Node | Edge)[]
-  setElements: (elements: (Node | Edge)[]) => void
-  isOutOfDate: boolean
-  setIsOutOfDate: (x: boolean) => void
-}
+const RunButton: React.FC = () => {
+  const { workflowId, elements, setElements, setHasBeenRun, isOutOfDate, setIsOutOfDate } =
+    useContext(DnDContext) as IDnDContext
 
-const RunButton: React.FC<Props> = ({
-  hasOutput,
-  hasBeenRun,
-  setHasBeenRun,
-  workflowId,
-  elements,
-  setElements,
-  isOutOfDate,
-  setIsOutOfDate,
-}) => {
+  const hasOutput = elements.some((el) => el.type === 'output')
   const [loading, setLoading] = useState(false)
+
   useEffect(() => {
     const update = () => setIsOutOfDate(true)
-
     window.addEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
     return () => window.removeEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
   }, [])

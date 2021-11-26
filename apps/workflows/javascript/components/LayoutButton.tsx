@@ -1,25 +1,14 @@
-import React, { useCallback } from 'react'
-import {
-  isNode,
-  useStoreState,
-  ControlButton,
-  Edge,
-  Node,
-  useZoomPanHelper,
-} from 'react-flow-renderer'
+import React, { useCallback, useContext } from 'react'
+import { isNode, useStoreState, ControlButton, useZoomPanHelper } from 'react-flow-renderer'
 import { getApiClient } from 'apps/base/javascript/api'
 import { getLayoutedElements } from '../layout'
+import { DnDContext, IDnDContext } from '../context'
 
 const client = getApiClient()
 
-interface Props {
-  elements: (Node | Edge)[]
-  setElements: (elements: (Node | Edge)[]) => void
-  workflowId: string
-}
-
-const LayoutButton: React.FC<Props> = ({ elements, setElements, workflowId }) => {
+const LayoutButton: React.FC = () => {
   const { fitView } = useZoomPanHelper()
+  const { workflowId, elements, setElements } = useContext(DnDContext) as IDnDContext
 
   const nodes = useStoreState((state) => state.nodes)
 

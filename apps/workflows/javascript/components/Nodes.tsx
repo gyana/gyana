@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { ElementId, Handle, NodeProps, Position, useStoreState } from 'react-flow-renderer'
 import { getApiClient } from 'apps/base/javascript/api'
 import NodeButtons, { DeleteButton } from './NodeButtons'
-import { DnDContext } from '../context'
+import { DnDContext, IDnDContext } from '../context'
 import NodeName from './NodeName'
 import NodeDescription from './NodeDescription'
 import { ErrorIcon, WarningIcon } from './NodeIcons'
@@ -46,7 +46,7 @@ const InputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => (
 )
 
 const OutputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
-  const { getIncomingNodes } = useContext(DnDContext)
+  const { getIncomingNodes } = useContext(DnDContext) as IDnDContext
   const incoming = getIncomingNodes(id)
 
   const showWarning = incoming && incoming[1].length < 1
@@ -66,7 +66,7 @@ const DefaultNode: React.FC<NodeProps> = ({
   targetPosition = Position.Left,
   sourcePosition = Position.Right,
 }) => {
-  const { getIncomingNodes } = useContext(DnDContext)
+  const { getIncomingNodes } = useContext(DnDContext) as IDnDContext
   const incoming = getIncomingNodes(id)
 
   const showWarning =

@@ -74,6 +74,12 @@ const DnDFlow = ({ workflowId }) => {
     <DnDContext.Provider
       value={{
         workflowId,
+        elements,
+        setElements,
+        hasBeenRun,
+        setHasBeenRun,
+        isOutOfDate,
+        setIsOutOfDate,
         removeById: (id: string) => {
           const elemenToRemove = elements.filter((el) => el.id === id)
           onElementsRemove(elemenToRemove)
@@ -104,7 +110,7 @@ const DnDFlow = ({ workflowId }) => {
           minZoom={0.05}
         >
           <Controls>
-            <LayoutButton elements={elements} setElements={setElements} workflowId={workflowId} />
+            <LayoutButton />
           </Controls>
           <Background gap={GRID_GAP} />
           {initialLoad === LoadingStates.loading && <LoadingState />}
@@ -116,16 +122,7 @@ const DnDFlow = ({ workflowId }) => {
       </div>
 
       {ReactDOM.createPortal(
-        <RunButton
-          hasOutput={elements.some((el) => el.type === 'output')}
-          hasBeenRun={hasBeenRun}
-          setHasBeenRun={setHasBeenRun}
-          workflowId={workflowId}
-          elements={elements}
-          setElements={setElements}
-          isOutOfDate={isOutOfDate}
-          setIsOutOfDate={setIsOutOfDate}
-        />,
+        <RunButton />,
         document.getElementById('run-button-portal') as HTMLDivElement
       )}
     </DnDContext.Provider>
