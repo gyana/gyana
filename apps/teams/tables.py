@@ -35,6 +35,7 @@ class TeamProjectsTable(Table):
     class Meta:
         model = Project
         attrs = {"class": "table"}
+        template_name = "web/tables/projects.html"
         fields = (
             "name",
             "num_rows",
@@ -45,10 +46,11 @@ class TeamProjectsTable(Table):
             "updated",
             "access",
         )
+        order_by = "-updated"
 
     name = Column(linkify=True)
     created = NaturalDatetimeColumn()
-    updated = NaturalDatetimeColumn()
+    updated = NaturalDatetimeColumn(verbose_name="Last updated")
     num_rows = Column(verbose_name="Rows")
     integration_count = Column(verbose_name="Integrations")
     workflow_count = Column(verbose_name="Workflows")
