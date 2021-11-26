@@ -49,7 +49,7 @@ const OutputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
   const { getIncomingNodes } = useContext(DnDContext) as IDnDContext
   const incoming = getIncomingNodes(id)
 
-  const showWarning = incoming && incoming[1].length < 1
+  const showWarning = incoming[1].length < 1
   return (
     <>
       {showWarning && <WarningIcon text='Save Data needs one input connection' />}
@@ -69,8 +69,7 @@ const DefaultNode: React.FC<NodeProps> = ({
   const { getIncomingNodes } = useContext(DnDContext) as IDnDContext
   const incoming = getIncomingNodes(id)
 
-  const showWarning =
-    incoming && (data.kind === 'join' ? incoming[1].length != 2 : incoming[1].length == 0)
+  const showWarning = data.kind === 'join' ? incoming[1].length != 2 : incoming[1].length == 0
   const warningMessage =
     data.kind === 'join'
       ? 'Join needs two input connections'

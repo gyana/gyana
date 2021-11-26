@@ -10,7 +10,7 @@ export interface IDnDContext {
   setIsOutOfDate: (isOutOfDate: boolean) => void
   setNeedsFitView: (needsFitView: boolean) => void
   removeById: (id: string) => void
-  getIncomingNodes: (id: string) => [Node, Node[]] | null
+  getIncomingNodes: (id: string) => [Node, Node[]]
   addNode: (data: any) => void
 }
 
