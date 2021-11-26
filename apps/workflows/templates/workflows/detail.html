@@ -5,12 +5,14 @@
 
 {% block app %}
 <div class="workflow-detail__header">
-  <turbo-frame id="workflow-name">
-    <form method="post" action="{% url 'project_workflows:detail' project.id object.id %}" class="form">
+  <turbo-frame id="workflow-name" class="flex-1 mr-auto">
+    <form method="post"
+      action="{% url 'project_workflows:detail' project.id object.id %}" class="form"
+       class="form--no-layout w-full">
       {% csrf_token %}
 
       <input
-        class="input__inline"
+        class="input__inline mr-auto"
         id="name"
         type="text"
         name="name"
@@ -92,7 +94,61 @@
     {% include 'components/modal_closing_warning.html' %}
   </div>
 
-  <dnd-flow class="w-full" workflowId="{{ object.id }}"></dnd-flow>
+  <div class='w-full dndflow'>
+    <dnd-flow class="w-full" workflowId="{{ object.id }}"></dnd-flow>
+    <aside class='dnd-sidebar'>
+      <div class='dnd-sidebar__header'>
+        {% for kind, node in nodes.items %}
+          {% if node.section == "Input/Output" %}
+            <div
+              id="dnd-node-{{ kind }}"
+              class='dnd-sidebar__node'
+              draggable="true"
+              ondragstart="event.dataTransfer.setData('application/reactflow', '{{ kind }}'); event.dataTransfer.effectAllowed = 'move';"
+            >
+              <i class="dnd-sidebar__icon fas fa-fw fa-lg {{ node.icon }}"></i>
+              <div class='flex flex-col'>
+                <div class='flex items-center'>
+                  <h4 class='dnd-sidebar__name'>{{ node.displayName }}</h4>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% for section in sections %}
+        <div class='active pad' data-controller='collapsable'>
+          <h3 class='cursor-pointer' data-action='click->collapsable#toggle'>
+            {{ section }}
+          </h3>
+          <div
+            class='collapsable flex flex-col max-h-0 overflow-hidden'
+            data-collapsable-target='body'
+          >
+          {% for kind, node in nodes.items %}
+            {% if node.section == section %}
+              <div
+                id="dnd-node-{{ kind }}"
+                class='dnd-sidebar__node'
+                ondragstart="event.dataTransfer.setData('application/reactflow', '{{ kind }}'); event.dataTransfer.effectAllowed = 'move';"
+                draggable="true"
+              >
+                <i class="dnd-sidebar__icon fas fa-fw fa-lg {{ node.icon }}"></i>
+                <div class='flex flex-col'>
+                  <div class='flex items-center'>
+                    <h4 class='dnd-sidebar__name'>{{ node.displayName }}</h4>
+                  </div>
+                  <p class='dnd-sidebar__description'>{{ node.description }}</p>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+          </div>
+        </div>
+        <hr />
+      {% endfor %}
+    </aside>
+  </div>
 </div>
 {{ nodes|json_script:'nodes' }}
 

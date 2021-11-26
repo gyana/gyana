@@ -1,5 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
-import tippy from 'tippy.js';
+import tippy from 'tippy.js'
 
 /**
  * Simple Tippy.js stimulus wrapper.
@@ -16,7 +16,7 @@ export default class extends Controller {
   static targets = ['body']
 
   connect() {
-    console.assert(this.hasBodyTarget, "Tooltip controllers need a body target")
+    console.assert(this.hasBodyTarget, 'Tooltip controllers need a body target')
 
     tippy(this.element, {
       animation: false,
