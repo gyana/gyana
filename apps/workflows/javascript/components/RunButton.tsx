@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { GyanaEvents } from 'apps/base/javascript/events'
 import { getApiClient } from 'apps/base/javascript/api'
 import { DnDContext, IDnDContext } from '../context'
+import Tippy from '@tippyjs/react'
 
 const client = getApiClient()
 
@@ -19,66 +20,67 @@ const RunButton: React.FC = () => {
     return () => window.removeEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
   }, [])
 
-  return (
-    <div className='dndflow__run-button' data-controller='tooltip'>
-      <button
-        onClick={() => {
-          setLoading(true)
+  const tooltip = !hasOutput
+    ? 'Workflow needs a Save Data node to run'
+    : !isOutOfDate
+    ? "You haven't made any new changes"
+    : 'Run workflow to create or update your output data sources'
 
-          client
-            .action(window.schema, ['workflows', 'run_workflow', 'create'], {
-              id: workflowId,
-            })
-            .then((res) => {
-              if (res) {
-                setElements(
-                  elements.map((el) => {
-                    if (isNode(el)) {
-                      const error = res[parseInt(el.id)]
-                      // Add error to node if necessary
-                      if (error) {
-                        el.data['error'] = error
+  return (
+    <Tippy content={tooltip}>
+      <div className='dndflow__run-button'>
+        <button
+          onClick={() => {
+            setLoading(true)
+
+            client
+              .action(window.schema, ['workflows', 'run_workflow', 'create'], {
+                id: workflowId,
+              })
+              .then((res) => {
+                if (res) {
+                  setElements(
+                    elements.map((el) => {
+                      if (isNode(el)) {
+                        const error = res[parseInt(el.id)]
+                        // Add error to node if necessary
+                        if (error) {
+                          el.data['error'] = error
+                        }
+                        // Remove error if necessary
+                        else if (el.data.error) {
+                          delete el.data['error']
+                        }
                       }
-                      // Remove error if necessary
-                      else if (el.data.error) {
-                        delete el.data['error']
-                      }
-                    }
-                    return el
-                  })
-                )
-                if (Object.keys(res).length === 0) {
-                  setIsOutOfDate(false)
-                  setHasBeenRun(false)
-                  window.dispatchEvent(new Event(GyanaEvents.RUN_WORKFLOW))
+                      return el
+                    })
+                  )
+                  if (Object.keys(res).length === 0) {
+                    setIsOutOfDate(false)
+                    setHasBeenRun(false)
+                    window.dispatchEvent(new Event(GyanaEvents.RUN_WORKFLOW))
+                  }
+                  setLoading(false)
                 }
+                alert('Workflow finished running!')
+              })
+              .catch(() => {
                 setLoading(false)
-              }
-              alert('Workflow finished running!')
-            })
-            .catch(() => {
-              setLoading(false)
-              alert('Workflow failed running')
-            })
-        }}
-        className='button button--sm button--success'
-        disabled={!hasOutput || loading || !isOutOfDate}
-      >
-        {loading ? (
-          <i className='fad fa-fw fa-spinner-third fa-spin' />
-        ) : (
-          <i className='fas fa-fw fa-play'></i>
-        )}
-        Run
-        <div data-tooltip-target='body'>
-          {!hasOutput ? (
-            <span>Workflow needs a Save Data node to run</span>
+                alert('Workflow failed running')
+              })
+          }}
+          className='button button--sm button--success'
+          disabled={!hasOutput || loading || !isOutOfDate}
+        >
+          {loading ? (
+            <i className='fad fa-fw fa-spinner-third fa-spin' />
           ) : (
-            <span>Run workflow to create or update your output data sources</span>
+            <i className='fas fa-fw fa-play'></i>
           )}
-        </div>
-      </button>
-    </div>
+          Run
+        </button>
+      </div>
+    </Tippy>
   )
 }
 
