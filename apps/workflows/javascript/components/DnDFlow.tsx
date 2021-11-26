@@ -25,6 +25,15 @@ const client = getApiClient()
 
 import '../styles/_dnd-flow.scss'
 import { NodeContext } from '../context'
+import {
+  createNode,
+  deleteNode,
+  getWorkflowStatus,
+  listAll,
+  moveNode,
+  updateParentEdges,
+} from '../actions'
+import { toEdge, toNode } from '../serde'
 
 const NODES = JSON.parse(document.getElementById('nodes').textContent) as INode
 const GRID_GAP = 20
@@ -47,12 +56,6 @@ const DnDFlow = ({ workflowId }) => {
   const [initialLoad, setInitialLoad] = useState(LoadingStates.loading)
   const [viewHasChanged, setViewHasChanged] = useState(false)
 
-  const updateParents = (id: string, parents: string[]) =>
-    client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
-      id,
-      parents: parents.map((p) => ({ parent_id: p })),
-    })
-
   const getIncomingNodes = (target: string) => {
     const targetElement = elements.filter((el) => isNode(el) && el.id === target)[0] as
       | Node
@@ -72,7 +75,7 @@ const DnDFlow = ({ workflowId }) => {
         .filter((el) => isEdge(el) && el.target === params.target)
         .map((el) => el.source)
 
-      updateParents(params.target, [...parents, params.source])
+      updateParentEdges(params.target, [...parents, params.source])
       setElements((els) =>
         addEdge({ ...params, arrowHeadType: 'arrowclosed', type: 'smoothstep' }, els)
       )
@@ -83,23 +86,22 @@ const DnDFlow = ({ workflowId }) => {
     setElements((els) => removeElements(elementsToRemove, els))
     elementsToRemove.forEach((el) => {
       if (isNode(el)) {
-        client.action(window.schema, ['nodes', 'api', 'nodes', 'delete'], {
-          id: el.id,
-        })
+        deleteNode(el)
       } else {
         const parents = elements
           .filter(
-            (currEl) => isEdge(currEl) && currEl.target === el.target && currEl.source !== el.source
+            (currEl) =>
+              isEdge(currEl) && currEl.target === edge.target && currEl.source !== edge.source
           )
           .map((currEl) => currEl.source)
 
-        updateParents(el.target, parents)
+        updateParentEdges(edge.target, parents)
       }
     })
     setIsOutOfDate(true)
   }
 
-  const onEdgeUpdate = (oldEdge, newEdge) => {
+  const onEdgeUpdate = (oldEdge: Edge, newEdge: Edge) => {
     // User changed the target
     if (oldEdge.source === newEdge.source) {
       // We need to remove the source from the previous target and
@@ -115,13 +117,13 @@ const DnDFlow = ({ workflowId }) => {
             (el) => isEdge(el) && el.target === oldEdge.target && el.source !== oldEdge.source
           )
           .map((el) => el.source)
-        updateParents(oldEdge.target, oldParents)
+        updateParentEdges(oldEdge.target, oldParents)
 
         const newParents = elements
           .filter((el) => isEdge(el) && el.target === newEdge.target)
           .map((el) => el.source)
 
-        updateParents(newEdge.target, [...newParents, newEdge.source])
+        updateParentEdges(newEdge.target, [...newParents, newEdge.source])
         setElements((els) => updateEdge(oldEdge, newEdge, els))
       }
     }
@@ -132,7 +134,7 @@ const DnDFlow = ({ workflowId }) => {
         .filter((el) => isEdge(el) && el.target === oldEdge.target && el.source !== oldEdge.source)
         .map((el) => el.source)
 
-      updateParents(newEdge.target, [...parents, newEdge.source])
+      updateParentEdges(newEdge.target, [...parents, newEdge.source])
       setElements((els) => updateEdge(oldEdge, newEdge, els))
     }
     setIsOutOfDate(true)
@@ -159,56 +161,27 @@ const DnDFlow = ({ workflowId }) => {
   }
 
   const onDragStop = (event, node) => {
-    const { position } = node
-
-    client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
-      id: node.id,
-      x: position.x,
-      y: position.y,
-    })
+    moveNode(node)
   }
 
-  const syncElements = () =>
-    client
-      .action(window.schema, ['nodes', 'api', 'nodes', 'list'], {
-        workflow: workflowId,
-      })
-      .then((result) => {
-        const newElements = result.results.map((r) => createNewNode(r, { x: r.x, y: r.y }))
-
-        const edges = result.results
-          .filter((r) => r.parents.length)
-          .reduce((acc, curr) => {
-            return [
-              ...acc,
-              ...curr.parents.map((p) => ({
-                id: `reactflow__edge-${p.parent_id}null-${curr.id}null`,
-                source: p.parent_id.toString(),
-                sourceHandle: null,
-                type: 'smoothstep',
-                targetHandle: null,
-                arrowHeadType: 'arrowclosed',
-                target: curr.id.toString(),
-              })),
-            ]
-          }, [])
-        setElements([...newElements, ...edges])
-        setViewHasChanged(true)
-        setInitialLoad(LoadingStates.loaded)
-      })
-      .catch(() => {
-        setInitialLoad(LoadingStates.failed)
-      })
+  const syncElements = async () => {
+    try {
+      const [nodes, edges] = await listAll(workflowId)
+      setElements([...nodes, ...edges])
+      setViewHasChanged(true)
+      setInitialLoad(LoadingStates.loaded)
+    } catch {
+      setInitialLoad(LoadingStates.failed)
+    }
+  }
 
   useEffect(() => {
     syncElements()
 
-    client
-      .action(window.schema, ['workflows', 'out_of_date', 'list'], { id: workflowId })
-      .then((res) => {
-        setHasBeenRun(res.hasBeenRun)
-        setIsOutOfDate(res.isOutOfDate)
-      })
+    getWorkflowStatus(workflowId).then((res) => {
+      setHasBeenRun(res.hasBeenRun)
+      setIsOutOfDate(res.isOutOfDate)
+    })
   }, [])
 
   useEffect(() => {
@@ -223,14 +196,7 @@ const DnDFlow = ({ workflowId }) => {
     const type = event.dataTransfer.getData('application/reactflow')
     const position = getPosition(event)
 
-    const result = await client.action(window.schema, ['nodes', 'api', 'nodes', 'create'], {
-      kind: type,
-      workflow: workflowId,
-      x: position.x,
-      y: position.y,
-    })
-
-    const newNode = createNewNode(result, position)
+    const newNode = await createNode(workflowId, type, position)
 
     setElements((es) => es.concat(newNode))
     setIsOutOfDate(true)
@@ -238,16 +204,8 @@ const DnDFlow = ({ workflowId }) => {
 
   const hasOutput = elements.some((el) => el.type === 'output')
   const addNode = (data) => {
-    const node = createNewNode(data, { x: data.x, y: data.y })
-    const edges = data.parents.map((p) => ({
-      id: `reactflow__edge-${p}null-${node.id}null`,
-      source: p.toString(),
-      sourceHandle: null,
-      type: 'smoothstep',
-      targetHandle: null,
-      arrowHeadType: 'arrow',
-      target: node.id.toString(),
-    }))
+    const node = toNode(data, { x: data.x, y: data.y })
+    const edges = data.parents.map((parent) => toEdge(node, parent))
     setElements((es) => es.concat(node, edges))
   }
 
@@ -351,19 +309,5 @@ const DnDFlow = ({ workflowId }) => {
     </div>
   )
 }
-
-const createNewNode = (res, position) => ({
-  id: `${res.id}`,
-  type: ['input', 'output', 'text'].includes(res.kind) ? res.kind : 'default',
-  data: {
-    label: res.name || NODES[res.kind].displayName,
-    icon: NODES[res.kind].icon,
-    kind: res.kind,
-    error: res.error,
-    ...(res.kind === 'text' ? { text: res.text_text } : {}),
-    description: res.description,
-  },
-  position,
-})
 
 export default DnDFlow
