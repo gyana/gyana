@@ -14,12 +14,16 @@ interface Props {
 const SafeDnDFlow: React.FC<Props> = ({ workflowId }) => {
   const { finishedPinging, schemaReady } = useBlockUntilSchemaReady()
 
-  if (schemaReady) return <DnDFlow workflowId={workflowId} />
-
   return (
-    <div className='dndflow'>
-      {finishedPinging ? <ErrorState error='Something went wrong!' /> : <LoadingState />}
-    </div>
+    <>
+      {schemaReady ? (
+        <DnDFlow workflowId={workflowId} />
+      ) : !finishedPinging ? (
+        <LoadingState />
+      ) : (
+        <ErrorState error='Something went wrong!' />
+      )}
+    </>
   )
 }
 
