@@ -39,6 +39,7 @@ const DnDFlow = ({ workflowId }) => {
   const [initialLoad, setInitialLoad] = useState(LoadingStates.loading)
   const [hasBeenRun, setHasBeenRun] = useState(false)
   const [isOutOfDate, setIsOutOfDate] = useState(false)
+  const [needsFitView, setNeedsFitView] = useState(false)
 
   const setElementsDirty = (updater) => {
     setElements(updater)
@@ -53,7 +54,7 @@ const DnDFlow = ({ workflowId }) => {
       try {
         const [nodes, edges] = await listAll(workflowId)
         setElements([...nodes, ...edges])
-        fitView()
+        setNeedsFitView(true)
         setInitialLoad(LoadingStates.loaded)
       } catch {
         setInitialLoad(LoadingStates.failed)
@@ -62,6 +63,13 @@ const DnDFlow = ({ workflowId }) => {
 
     syncElements()
   }, [])
+
+  useEffect(() => {
+    if (needsFitView) {
+      fitView()
+      setNeedsFitView(false)
+    }
+  }, [needsFitView])
 
   useEffect(() => {
     getWorkflowStatus(workflowId).then((res) => {
@@ -80,6 +88,7 @@ const DnDFlow = ({ workflowId }) => {
         setHasBeenRun,
         isOutOfDate,
         setIsOutOfDate,
+        setNeedsFitView,
         removeById: (id: string) => {
           const elemenToRemove = elements.filter((el) => el.id === id)
           onElementsRemove(elemenToRemove)
@@ -113,7 +122,7 @@ const DnDFlow = ({ workflowId }) => {
             <LayoutButton />
           </Controls>
           <Background gap={GRID_GAP} />
-          {initialLoad === LoadingStates.loading && <LoadingState />}
+          {(needsFitView || initialLoad === LoadingStates.loading) && <LoadingState />}
           {initialLoad === LoadingStates.failed && (
             <ErrorState error='Failed loading your nodes!' />
           )}

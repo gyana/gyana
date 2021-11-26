@@ -1,5 +1,5 @@
 import React, { useCallback, useContext } from 'react'
-import { isNode, useStoreState, ControlButton, useZoomPanHelper } from 'react-flow-renderer'
+import { isNode, useStoreState, ControlButton } from 'react-flow-renderer'
 import { getApiClient } from 'apps/base/javascript/api'
 import { getLayoutedElements } from '../layout'
 import { DnDContext, IDnDContext } from '../context'
@@ -7,8 +7,9 @@ import { DnDContext, IDnDContext } from '../context'
 const client = getApiClient()
 
 const LayoutButton: React.FC = () => {
-  const { fitView } = useZoomPanHelper()
-  const { workflowId, elements, setElements } = useContext(DnDContext) as IDnDContext
+  const { workflowId, elements, setElements, setNeedsFitView } = useContext(
+    DnDContext
+  ) as IDnDContext
 
   const nodes = useStoreState((state) => state.nodes)
 
@@ -22,7 +23,7 @@ const LayoutButton: React.FC = () => {
         .filter(isNode)
         .map((el) => ({ id: el.id, x: el.position.x, y: el.position.y })),
     })
-    fitView()
+    setNeedsFitView(true)
   }, [elements, nodes])
 
   return (
