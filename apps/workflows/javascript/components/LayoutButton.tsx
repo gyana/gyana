@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { isNode, useStoreState, ControlButton, Edge, Node } from 'react-flow-renderer'
 import { getApiClient } from 'apps/base/javascript/api'
-import { getLayoutedElements } from './layout'
+import { getLayoutedElements } from '../layout'
 
 const client = getApiClient()
 
