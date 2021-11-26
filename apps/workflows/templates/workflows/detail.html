@@ -148,6 +148,7 @@
     </aside>
   </div>
 </div>
+{{ nodes|json_script:'nodes' }}
 
 <script src="{% static 'js/workflow-bundle.js' %}"></script>
 <link rel="stylesheet" href="{% static 'css/workflow.css' %}" />
