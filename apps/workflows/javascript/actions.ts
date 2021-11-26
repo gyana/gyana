@@ -1,5 +1,5 @@
 import { getApiClient } from 'apps/base/javascript/api'
-import { Node, XYPosition } from 'react-flow-renderer'
+import { Node, Edge, XYPosition } from 'react-flow-renderer'
 import { toEdge, toNode } from './serde'
 
 const client = getApiClient()
@@ -27,19 +27,19 @@ export const moveNode = (node: Node): void => {
   })
 }
 
-export const deleteNode = (node: Node) => {
+export const deleteNode = (node: Node): void => {
   client.action(window.schema, ['nodes', 'api', 'nodes', 'delete'], {
     id: node.id,
   })
 }
 
-export const updateParentEdges = (id: string, parents: string[]) =>
+export const updateParentEdges = (id: string, parents: string[]): void =>
   client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
     id,
     parents: parents.map((p) => ({ parent_id: p })),
   })
 
-export const listAll = async (workflowId: string) => {
+export const listAll = async (workflowId: string): Promise<[Node[], Edge[]][]> => {
   const result = await client.action(window.schema, ['nodes', 'api', 'nodes', 'list'], {
     workflow: workflowId,
   })

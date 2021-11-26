@@ -3,6 +3,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { ReactFlowProvider } from 'react-flow-renderer'
 import DnDFlow from './components/DnDFlow'
+import ErrorState from './components/ErrorState'
+import LoadingState from './components/LoadingState'
 import { useBlockUntilSchemaReady } from './hooks/useBlockUntilSchemaReady'
 
 interface Props {
@@ -16,32 +18,7 @@ const SafeDnDFlow: React.FC<Props> = ({ workflowId }) => {
 
   return (
     <div className='dndflow'>
-      <div className='placeholder-scr placeholder-scr--fillscreen'>
-        {finishedPinging ? (
-          <div className='flex flex-col items-center'>
-            <i className='fa fa-exclamation-triangle text-red fa-4x mb-3'></i>
-            <p>Something went wrong!</p>
-            <p>
-              Contact{' '}
-              <a className='link' href='mailto: support@gyana.com'>
-                support@gyana.com
-              </a>{' '}
-              for support.
-            </p>
-            <p>
-              Or try reloading{' '}
-              <button onClick={() => window.location.reload()}>
-                <i className='far fa-sync text-blue'></i>
-              </button>
-            </p>
-          </div>
-        ) : (
-          <>
-            <i className='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
-            <span>Loading</span>
-          </>
-        )}
-      </div>
+      {finishedPinging ? <ErrorState error='Something went wrong!' /> : <LoadingState />}
     </div>
   )
 }

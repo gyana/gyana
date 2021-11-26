@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    schema: any
+  }
+}
+
 export interface INode {
   [kind: string]: {
     displayName: string
