@@ -1,6 +1,6 @@
 import { GyanaEvents } from 'apps/base/javascript/events'
 import React, { useState, useEffect } from 'react'
-import { getNode } from '../actions'
+import { getNode } from '../api'
 
 const NodeDescription = ({ id, data }) => {
   const [description, setDescription] = useState()

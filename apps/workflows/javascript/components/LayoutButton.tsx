@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react'
 import { isNode, useStoreState, ControlButton } from 'react-flow-renderer'
 import { getLayoutedElements } from '../layout'
 import { DnDContext, IDnDContext } from '../context'
-import { updateWorkflowLayout } from '../actions'
+import { updateWorkflowLayout } from '../api'
 
 const LayoutButton: React.FC = () => {
   const { workflowId, elements, setElements, setNeedsFitView } = useContext(

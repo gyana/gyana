@@ -15,7 +15,7 @@ import NodeName from './NodeName'
 import NodeDescription from './NodeDescription'
 import { ErrorIcon, WarningIcon } from './NodeIcons'
 import { NODES } from '../interfaces'
-import { updateNode } from '../actions'
+import { updateNode } from '../api'
 
 interface Props<T = any> {
   id: ElementId

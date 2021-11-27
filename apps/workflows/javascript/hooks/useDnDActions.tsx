@@ -12,7 +12,7 @@ import {
 } from 'react-flow-renderer'
 
 import '../styles/_dnd-flow.scss'
-import { createEdge, createNode, deleteEdge, deleteNode, moveNode, updateEdge } from '../actions'
+import { createEdge, createNode, deleteEdge, deleteNode, moveNode, updateEdge } from '../api'
 import { RefObject, useState } from 'react'
 import { NODES } from '../interfaces'
 

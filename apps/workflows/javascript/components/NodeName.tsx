@@ -1,7 +1,7 @@
 import { GyanaEvents } from 'apps/base/javascript/events'
 import React, { useState, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
-import { updateNode } from '../actions'
+import { updateNode } from '../api'
 
 interface Props {
   id: string
