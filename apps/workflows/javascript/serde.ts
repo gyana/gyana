@@ -19,7 +19,7 @@ export const toNode = (res, position: XYPosition): Node => ({
 
 export const toEdge = (res, parent): Edge => {
   return {
-    id: `reactflow__edge-${parent.parent_id}null-${res.id}null`,
+    id: `edge-${parent.id}`,
     source: parent.parent_id.toString(),
     sourceHandle: null,
     type: 'smoothstep',

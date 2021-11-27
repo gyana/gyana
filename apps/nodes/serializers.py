@@ -9,9 +9,15 @@ from .config import NODE_CONFIG
 from .models import Edge, Node, Workflow
 
 
+class EdgeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Edge
+        fields = ("id", "child", "parent", "position")
+
+
 # Serialize model with a m2m through model inspired by
 # https://stackoverflow.com/questions/17256724/include-intermediary-through-model-in-responses-in-django-rest-framework
-class EdgeSerializer(serializers.HyperlinkedModelSerializer):
+class M2MEdgeSerializer(serializers.HyperlinkedModelSerializer):
     parent_id = serializers.ReadOnlyField(source="parent.id")
 
     class Meta:
@@ -23,7 +29,7 @@ class NodeSerializer(serializers.ModelSerializer):
 
     workflow = serializers.PrimaryKeyRelatedField(queryset=Workflow.objects.all())
     description = serializers.SerializerMethodField()
-    parents = EdgeSerializer(source="parent_set", many=True, required=False)
+    parents = M2MEdgeSerializer(source="parent_set", many=True, required=False)
 
     class Meta:
         model = Node

@@ -1,11 +1,9 @@
 import json
 
 import coreapi
-from django.contrib.auth.models import AnonymousUser
-from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from rest_framework import viewsets
-from rest_framework.decorators import api_view, permission_classes, schema
+from rest_framework.decorators import api_view, schema
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -13,8 +11,18 @@ from rest_framework.schemas import AutoSchema
 
 from apps.base.analytics import NODE_CONNECTED_EVENT, NODE_CREATED_EVENT, track_node
 
-from .models import NODE_CONFIG, Node
-from .serializers import NodeSerializer
+from .models import NODE_CONFIG, Edge, Node
+from .serializers import EdgeSerializer, NodeSerializer
+
+
+class EdgeViewSet(viewsets.ModelViewSet):
+    serializer_class = EdgeSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Edge.objects.filter(
+            parent__workflow__project__team__in=self.request.user.teams.all()
+        ).all()
 
 
 class NodeViewSet(viewsets.ModelViewSet):

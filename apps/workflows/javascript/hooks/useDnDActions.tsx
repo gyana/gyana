@@ -7,21 +7,41 @@ import {
   Node,
   OnLoadParams,
   Connection,
-  ArrowHeadType,
+  getIncomers,
 } from 'react-flow-renderer'
 
 import '../styles/_dnd-flow.scss'
-import { createNode, deleteNode, moveNode, updateParentEdges } from '../actions'
 import {
-  addEdgeToParents,
-  canAddEdge,
-  removeEdgeFromParents,
-  updateEdgeSourceInParents,
-  updateEdgeTargetInParents,
-} from '../edges'
+  createEdge,
+  createNode,
+  deleteEdge,
+  deleteNode,
+  moveNode,
+  updateEdgeAction,
+} from '../actions'
 import { RefObject, useState } from 'react'
+import { NODES } from '../interfaces'
 
 type Element = Node | Edge
+
+const canAddEdge = (elements: Element[], target: string) => {
+  const targetElement = elements.find((el) => isNode(el) && el.id === target) as Node
+  if (targetElement) {
+    const incomingNodes = getIncomers(targetElement, elements)
+
+    // Node arity is defined in nodes/bigquery.py
+    // Join (2), Union/Except/Insert (-1 = Inf), otherwise (1)
+    const maxParents = NODES[targetElement.data.kind].maxParents
+
+    if (maxParents === -1 || incomingNodes.length < maxParents) {
+      return true
+    } else {
+      // TODO: Add notification here
+      // alert("You can't add any more incoming edges to this node")
+      return false
+    }
+  }
+}
 
 const useDnDActions = (
   workflowId: number,
@@ -60,18 +80,10 @@ const useDnDActions = (
 
   const onNodeDragStop = (event: React.DragEvent<HTMLDivElement>, node: Node) => moveNode(node)
 
-  const onConnect = (connection: Edge) => {
+  const onConnect = async (connection: Connection) => {
     if (canAddEdge(elements, connection.target)) {
-      updateParentEdges(
-        connection.target,
-        addEdgeToParents(elements, connection.source, connection.target)
-      )
-      setElementsDirty((els) =>
-        addEdge(
-          { ...connection, arrowHeadType: ArrowHeadType.ArrowClosed, type: 'smoothstep' },
-          els
-        )
-      )
+      const edge = await createEdge(connection)
+      setElementsDirty((els) => addEdge(edge, els))
     }
   }
 
@@ -79,23 +91,8 @@ const useDnDActions = (
     const { source, target } = newConnection
 
     if (target !== null && source !== null) {
-      // Update the target of the edge
-      if (oldEdge.source === source) {
-        if (canAddEdge(elements, target)) {
-          const [oldParents, newParents] = updateEdgeTargetInParents(
-            elements,
-            oldEdge,
-            source,
-            target
-          )
-          updateParentEdges(oldEdge.target, oldParents)
-          updateParentEdges(target, newParents)
-          setElementsDirty((els) => updateEdge(oldEdge, newConnection, els))
-        }
-      }
-      // Update the source of the edge
-      else {
-        updateParentEdges(target, updateEdgeSourceInParents(elements, oldEdge))
+      if (oldEdge.target === target || canAddEdge(elements, target)) {
+        updateEdgeAction(oldEdge, newConnection)
         setElementsDirty((els) => updateEdge(oldEdge, newConnection, els))
       }
     }
@@ -107,7 +104,7 @@ const useDnDActions = (
       if (isNode(el)) {
         deleteNode(el)
       } else {
-        updateParentEdges(el.target, removeEdgeFromParents(elements, el))
+        deleteEdge(el)
       }
     })
   }
