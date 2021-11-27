@@ -74,7 +74,7 @@ def duplicate_node(request, pk):
     )
 
     # Add more M2M here if necessary
-    for parent in node.parent_set.iterator():
+    for parent in node.parent_edges.iterator():
         clone.parents.add(parent.parent, through_defaults={"position": parent.position})
     return Response(NodeSerializer(clone).data)
 

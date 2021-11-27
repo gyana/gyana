@@ -2,7 +2,6 @@ import pytest
 
 from apps.base.tests.asserts import assertOK
 from apps.nodes.models import Node
-from apps.workflows.models import Workflow
 
 pytestmark = pytest.mark.django_db
 
@@ -83,74 +82,12 @@ def test_get(client, setup):
         "workflow": workflows[1].id,
         "parents": [
             {"id": p.id, "parent_id": p.parent_id, "position": p.position}
-            for p in join_node.parent_set.all()
+            for p in join_node.parent_edges.all()
         ],
         "description": "None=None inner",
         "error": None,
         "text_text": None,
     }
-
-
-def test_update(client, setup):
-    workflows, nodes = setup
-    join_node = nodes[workflows[0]]["join"]
-    input_nodes = nodes[workflows[0]]["inputs"]
-    # update name
-    r = client.patch(
-        f"{API_URL}{join_node.id}/",
-        data={"name": "Join node"},
-        content_type="application/json",
-    )
-    assertOK(r)
-    join_node.refresh_from_db()
-    assert join_node.name == "Join node"
-    assert len(r.data["parents"]) == 0
-
-    # update parents
-    r = client.patch(
-        f"{API_URL}{join_node.id}/",
-        content_type="application/json",
-        data={
-            "parents": [
-                {
-                    "parent_id": input_nodes[0].id,
-                }
-            ]
-        },
-    )
-    assertOK(r)
-    assert join_node.parents.first() == input_nodes[0]
-
-    r = client.patch(
-        f"{API_URL}{join_node.id}/",
-        content_type="application/json",
-        data={
-            "parents": [
-                {
-                    "parent_id": input_nodes[0].id,
-                },
-                {"parent_id": input_nodes[1].id},
-            ]
-        },
-    )
-    assertOK(r)
-    assert join_node.parents.count() == 2
-    assert join_node.parent_set.filter(parent=input_nodes[1]).first().position == 1
-
-    # not adding a node to the parents removes it
-    r = client.patch(
-        f"{API_URL}{join_node.id}/",
-        content_type="application/json",
-        data={
-            "parents": [
-                {
-                    "parent_id": input_nodes[0].id,
-                }
-            ]
-        },
-    )
-    assertOK(r)
-    assert join_node.parents.count() == 1
 
 
 def test_duplicate(client, setup):

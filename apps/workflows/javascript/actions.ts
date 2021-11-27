@@ -98,7 +98,7 @@ export const listAll = async (workflowId: string): Promise<[Node[], Edge[]]> => 
   const nodes = result.results.map((r) => toNode(r, { x: r.x, y: r.y }))
   const edges = result.results
     .map((r) =>
-      r.parents.map((parent) => toEdge(parent.id, parent.parent_id, r.id, parent.position))
+      r.parent_edges.map((edge) => toEdge(edge.id, edge.parent, edge.child, edge.position))
     )
     .flat()
   return [nodes, edges]

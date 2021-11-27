@@ -82,5 +82,5 @@ def test_workflow_duplication(client, project, workflow_factory, node_factory):
         new_input_1.id,
         new_input_2.id,
     }
-    assert new_input_1.child_set.first().position == 1
-    assert new_input_2.child_set.first().position == 0
+    assert new_input_1.child_edges.first().position == 1
+    assert new_input_2.child_edges.first().position == 0
