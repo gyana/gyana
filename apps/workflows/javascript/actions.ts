@@ -1,5 +1,5 @@
 import { getApiClient } from 'apps/base/javascript/api'
-import { Node, Edge, XYPosition, Connection, ArrowHeadType } from 'react-flow-renderer'
+import { Node, Edge, XYPosition, Connection } from 'react-flow-renderer'
 import { toEdge, toNode } from './serde'
 
 const client = getApiClient()
@@ -40,21 +40,10 @@ export const createEdge = async (connection: Connection) => {
     position: parseInt(connection.targetHandle as string),
   })
 
-  return {
-    id: `reactflow__edge-${result.parent}${result.position}-${result.child}null`,
-    source: result.parent.toString(),
-    sourceHandle: null,
-    type: 'smoothstep',
-    targetHandle: result.position.toString(),
-    arrowHeadType: ArrowHeadType.ArrowClosed,
-    target: result.child.toString(),
-    data: {
-      id: result.id,
-    },
-  }
+  return toEdge(result.id, result.parent, result.child, result.position)
 }
 
-export const updateEdgeAction = (edge: Edge, connection: Connection): void => {
+export const updateEdge = (edge: Edge, connection: Connection): void => {
   client.action(window.schema, ['nodes', 'api', 'edges', 'partial_update'], {
     id: edge.data.id,
     parent: connection.source,
@@ -74,7 +63,11 @@ export const listAll = async (workflowId: string): Promise<[Node[], Edge[]]> => 
     workflow: workflowId,
   })
   const nodes = result.results.map((r) => toNode(r, { x: r.x, y: r.y }))
-  const edges = result.results.map((r) => r.parents.map((parent) => toEdge(r, parent))).flat()
+  const edges = result.results
+    .map((r) =>
+      r.parents.map((parent) => toEdge(parent.id, parent.parent_id, r.id, parent.position))
+    )
+    .flat()
   return [nodes, edges]
 }
 

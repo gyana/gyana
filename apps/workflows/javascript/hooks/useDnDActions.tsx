@@ -1,7 +1,7 @@
 import {
   addEdge,
   removeElements,
-  updateEdge,
+  updateEdge as updateEdgeElements,
   isNode,
   Edge,
   Node,
@@ -11,14 +11,7 @@ import {
 } from 'react-flow-renderer'
 
 import '../styles/_dnd-flow.scss'
-import {
-  createEdge,
-  createNode,
-  deleteEdge,
-  deleteNode,
-  moveNode,
-  updateEdgeAction,
-} from '../actions'
+import { createEdge, createNode, deleteEdge, deleteNode, moveNode, updateEdge } from '../actions'
 import { RefObject, useState } from 'react'
 import { NODES } from '../interfaces'
 
@@ -93,8 +86,8 @@ const useDnDActions = (
     if (target !== null && source !== null) {
       // need to check the arity of a target element
       if (oldEdge.target === target || canAddEdge(elements, target)) {
-        updateEdgeAction(oldEdge, newConnection)
-        setElementsDirty((els) => updateEdge(oldEdge, newConnection, els))
+        updateEdge(oldEdge, newConnection)
+        setElementsDirty((els) => updateEdgeElements(oldEdge, newConnection, els))
       }
     }
   }

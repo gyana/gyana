@@ -17,17 +17,17 @@ export const toNode = (res, position: XYPosition): Node => ({
   position,
 })
 
-export const toEdge = (res, parent): Edge => {
+export const toEdge = (id: number, parent: number, child: number, position: number): Edge => {
   return {
-    id: `reactflow__edge-${parent.parent_id}${parent.position}-${res.id}null`,
-    source: parent.parent_id.toString(),
+    id: `reactflow__edge-${parent}${position}-${child}null`,
+    source: parent.toString(),
     sourceHandle: null,
     type: 'smoothstep',
-    targetHandle: parent.position.toString(),
+    targetHandle: parent.toString(),
     arrowHeadType: ArrowHeadType.ArrowClosed,
-    target: res.id.toString(),
+    target: child.toString(),
     data: {
-      id: parent.id,
+      id,
     },
   }
 }
