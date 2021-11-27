@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   Node,
   ElementId,
@@ -8,6 +8,7 @@ import {
   NodeProps,
   Position,
   useStoreState,
+  useUpdateNodeInternals,
 } from 'react-flow-renderer'
 import { getApiClient } from 'apps/base/javascript/api'
 import NodeButtons, { DeleteButton } from './NodeButtons'
@@ -15,6 +16,7 @@ import { DnDContext, IDnDContext } from '../context'
 import NodeName from './NodeName'
 import NodeDescription from './NodeDescription'
 import { ErrorIcon, WarningIcon } from './NodeIcons'
+import { NODES } from '../interfaces'
 
 const client = getApiClient()
 
@@ -80,6 +82,7 @@ const DefaultNode: React.FC<NodeProps> = ({
   sourcePosition = Position.Right,
 }) => {
   const incomingCount = useGetIncomingCount(id)
+  const updateNodeInternals = useUpdateNodeInternals()
 
   const showWarning = data.kind === 'join' ? incomingCount != 2 : incomingCount == 0
   const warningMessage =
@@ -87,10 +90,26 @@ const DefaultNode: React.FC<NodeProps> = ({
       ? 'Join needs two input connections'
       : `${data.label} needs at least one input connection`
 
+  const maxParents = NODES[data.kind].maxParents
+  const handles = maxParents === -1 ? incomingCount + 1 : maxParents
+
+  useEffect(() => {
+    updateNodeInternals(id)
+  }, [id, incomingCount])
+
   return (
     <>
       {showWarning && <WarningIcon text={warningMessage} />}
-      <Handle type='target' position={targetPosition} isConnectable={isConnectable} />
+      {Array.from(Array(handles), (x, idx) => (
+        <Handle
+          key={idx}
+          type='target'
+          position={targetPosition}
+          isConnectable={isConnectable}
+          id={idx.toString()}
+          style={{ top: `${Math.round((100 * (idx + 1)) / (handles + 1))}%`, borderRadius: 0 }}
+        />
+      ))}
       <NodeContent id={id} data={data} />
       <Handle type='source' position={sourcePosition} isConnectable={isConnectable} />
     </>

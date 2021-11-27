@@ -91,6 +91,7 @@ const useDnDActions = (
     const { source, target } = newConnection
 
     if (target !== null && source !== null) {
+      // need to check the arity of a target element
       if (oldEdge.target === target || canAddEdge(elements, target)) {
         updateEdgeAction(oldEdge, newConnection)
         setElementsDirty((els) => updateEdge(oldEdge, newConnection, els))

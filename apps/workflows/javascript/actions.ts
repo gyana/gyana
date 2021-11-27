@@ -37,30 +37,35 @@ export const createEdge = async (connection: Connection) => {
   const result = await client.action(window.schema, ['nodes', 'api', 'edges', 'create'], {
     parent: connection.source,
     child: connection.target,
+    position: parseInt(connection.targetHandle as string),
   })
 
   return {
-    id: `edge-${result.id}`,
+    id: `reactflow__edge-${result.parent}${result.position}-${result.child}null`,
     source: result.parent.toString(),
     sourceHandle: null,
     type: 'smoothstep',
-    targetHandle: null,
+    targetHandle: result.position.toString(),
     arrowHeadType: ArrowHeadType.ArrowClosed,
     target: result.child.toString(),
+    data: {
+      id: result.id,
+    },
   }
 }
 
 export const updateEdgeAction = (edge: Edge, connection: Connection): void => {
   client.action(window.schema, ['nodes', 'api', 'edges', 'partial_update'], {
-    id: edge.id.replace('edge-', ''),
+    id: edge.data.id,
     parent: connection.source,
     child: connection.target,
+    position: parseInt(connection.targetHandle as string),
   })
 }
 
 export const deleteEdge = (edge: Edge): void => {
   client.action(window.schema, ['nodes', 'api', 'edges', 'delete'], {
-    id: edge.id.replace('edge-', ''),
+    id: edge.data.id,
   })
 }
 
