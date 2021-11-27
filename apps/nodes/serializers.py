@@ -16,7 +16,7 @@ class NodeSerializer(serializers.ModelSerializer):
 
     workflow = serializers.PrimaryKeyRelatedField(queryset=Workflow.objects.all())
     description = serializers.SerializerMethodField()
-    parent_edges = EdgeSerializer(source="parent_edges", many=True, required=False)
+    parent_edges = EdgeSerializer(many=True, required=False)
 
     class Meta:
         model = Node

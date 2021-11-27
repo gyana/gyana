@@ -94,8 +94,8 @@ const DnDFlow = ({ workflowId }) => {
         },
         addNode: (data) => {
           const node = toNode(data, { x: data.x, y: data.y })
-          const edges = data.parents.map((parent) =>
-            toEdge(parent.id, parent.parent_id, node.id, parent.position)
+          const edges = data.parent_edges.map((edge) =>
+            toEdge(edge.id, edge.parent, edge.child, edge.position)
           )
           setElements((es) => es.concat(node, edges))
         },
