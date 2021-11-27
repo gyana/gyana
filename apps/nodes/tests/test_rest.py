@@ -94,6 +94,21 @@ def test_get(client, setup):
     }
 
 
+def test_update(client, setup):
+    workflows, nodes = setup
+    join_node = nodes[workflows[0]]["join"]
+    # update name
+    r = client.patch(
+        f"{API_URL}{join_node.id}/",
+        data={"name": "Join node"},
+        content_type="application/json",
+    )
+    assertOK(r)
+    join_node.refresh_from_db()
+    assert join_node.name == "Join node"
+    assert len(r.data["parents"]) == 0
+
+
 def test_duplicate(client, setup):
     workflows, nodes = setup
     join_node = nodes[workflows[1]]["join"]
