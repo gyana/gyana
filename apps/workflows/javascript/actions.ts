@@ -52,6 +52,11 @@ export const createNode = async (
   return toNode(result, position)
 }
 
+export const getNode = async (id: string) =>
+  await client.action(window.schema, ['nodes', 'api', 'nodes', 'read'], {
+    id,
+  })
+
 export const moveNode = (node: Node): void => {
   client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
     id: node.id,
@@ -60,10 +65,30 @@ export const moveNode = (node: Node): void => {
   })
 }
 
+export const updateNode = async (id: string, data: any) => {
+  await client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
+    id,
+    ...data,
+  })
+}
+
 export const deleteNode = (node: Node): void => {
   client.action(window.schema, ['nodes', 'api', 'nodes', 'delete'], {
     id: node.id,
   })
+}
+
+export const duplicateNode = async (id: string) => {
+  const res = client.action(window.schema, ['nodes', 'duplicate', 'create'], {
+    id,
+  })
+
+  const node = toNode(res, { x: res.x, y: res.y })
+  const edges = res.parent_edges.map((edge) =>
+    toEdge(edge.id, edge.parent, edge.child, edge.position)
+  )
+
+  return [node, edges]
 }
 
 export const createEdge = async (connection: Connection) => {
@@ -107,3 +132,9 @@ export const listAll = async (workflowId: string): Promise<[Node[], Edge[]]> => 
 export const getWorkflowStatus = (workflowId: string) => {
   return client.action(window.schema, ['workflows', 'out_of_date', 'list'], { id: workflowId })
 }
+
+export const updateWorkflowLayout = (id: number, nodes: { id: string; x: number; y: number }[]) =>
+  client.action(window.schema, ['workflows', 'update_positions', 'create'], {
+    id,
+    nodes,
+  })

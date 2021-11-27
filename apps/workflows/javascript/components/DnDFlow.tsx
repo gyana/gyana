@@ -15,7 +15,7 @@ import RunButton from './RunButton'
 
 import '../styles/_dnd-flow.scss'
 import { DnDContext } from '../context'
-import { getWorkflowStatus, listAll } from '../actions'
+import { duplicateNode, getWorkflowStatus, listAll } from '../actions'
 import { toEdge, toNode } from '../actions'
 import ZeroState from './ZeroState'
 import ErrorState from './ErrorState'
@@ -88,15 +88,12 @@ const DnDFlow = ({ workflowId }) => {
         isOutOfDate,
         setIsOutOfDate,
         setNeedsFitView,
-        removeById: (id: string) => {
+        deleteNodeById: (id: string) => {
           const elemenToRemove = elements.filter((el) => el.id === id)
           onElementsRemove(elemenToRemove)
         },
-        addNode: (data) => {
-          const node = toNode(data, { x: data.x, y: data.y })
-          const edges = data.parent_edges.map((edge) =>
-            toEdge(edge.id, edge.parent, edge.child, edge.position)
-          )
+        duplicateNode: async (id: string) => {
+          const [node, edges] = await duplicateNode(id)
           setElements((es) => es.concat(node, edges))
         },
       }}

@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 import {
-  Node,
   ElementId,
   getIncomers,
   Handle,
@@ -10,15 +9,13 @@ import {
   useStoreState,
   useUpdateNodeInternals,
 } from 'react-flow-renderer'
-import { getApiClient } from 'apps/base/javascript/api'
 import NodeButtons, { DeleteButton } from './NodeButtons'
 import { DnDContext, IDnDContext } from '../context'
 import NodeName from './NodeName'
 import NodeDescription from './NodeDescription'
 import { ErrorIcon, WarningIcon } from './NodeIcons'
 import { NODES } from '../interfaces'
-
-const client = getApiClient()
+import { updateNode } from '../actions'
 
 interface Props<T = any> {
   id: ElementId
@@ -119,19 +116,13 @@ const DefaultNode: React.FC<NodeProps> = ({
 const TextNode: React.FC<NodeProps> = ({ id, data }: NodeProps) => {
   const [text, setText] = useState(data.text || '')
 
-  const update = () =>
-    client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
-      id,
-      text_text: text,
-    })
-
   // TODO: Resizing is broken so it's disabled.
   return (
     <>
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        onBlur={update}
+        onBlur={() => updateNode(id, { text_text: text })}
         placeholder={'Leave a note to annotate the workflow...'}
         style={{ resize: 'none', borderRadius: '10px' }}
       />
