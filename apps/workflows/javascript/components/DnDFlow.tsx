@@ -16,7 +16,7 @@ import RunButton from './RunButton'
 import '../styles/_dnd-flow.scss'
 import { DnDContext } from '../context'
 import { getWorkflowStatus, listAll } from '../actions'
-import { toEdge, toNode } from '../serde'
+import { toEdge, toNode } from '../actions'
 import ZeroState from './ZeroState'
 import ErrorState from './ErrorState'
 import LoadingState from './LoadingState'
@@ -94,7 +94,9 @@ const DnDFlow = ({ workflowId }) => {
         },
         addNode: (data) => {
           const node = toNode(data, { x: data.x, y: data.y })
-          const edges = data.parents.map((parent) => toEdge(node, parent))
+          const edges = data.parents.map((parent) =>
+            toEdge(parent.id, parent.parent_id, node.id, parent.position)
+          )
           setElements((es) => es.concat(node, edges))
         },
       }}

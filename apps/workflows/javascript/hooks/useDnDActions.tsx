@@ -8,6 +8,7 @@ import {
   OnLoadParams,
   Connection,
   getIncomers,
+  isEdge,
 } from 'react-flow-renderer'
 
 import '../styles/_dnd-flow.scss'
@@ -17,7 +18,11 @@ import { NODES } from '../interfaces'
 
 type Element = Node | Edge
 
-const canAddEdge = (elements: Element[], target: string) => {
+const canAddEdge = (elements: Element[], target: string, targetHandle: string) => {
+  // every target in unique
+  if (elements.some((el) => isEdge(el) && el.target == target && el.targetHandle == targetHandle))
+    return false
+
   const targetElement = elements.find((el) => isNode(el) && el.id === target) as Node
   if (targetElement) {
     const incomingNodes = getIncomers(targetElement, elements)
@@ -74,18 +79,20 @@ const useDnDActions = (
   const onNodeDragStop = (event: React.DragEvent<HTMLDivElement>, node: Node) => moveNode(node)
 
   const onConnect = async (connection: Connection) => {
-    if (canAddEdge(elements, connection.target)) {
+    const { target, targetHandle } = connection
+
+    if (canAddEdge(elements, target, targetHandle)) {
       const edge = await createEdge(connection)
       setElementsDirty((els) => addEdge(edge, els))
     }
   }
 
   const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) => {
-    const { source, target } = newConnection
+    const { source, target, targetHandle } = newConnection
 
     if (target !== null && source !== null) {
       // need to check the arity of a target element
-      if (oldEdge.target === target || canAddEdge(elements, target)) {
+      if (oldEdge.target === target || canAddEdge(elements, target, targetHandle as string)) {
         updateEdge(oldEdge, newConnection)
         setElementsDirty((els) => updateEdgeElements(oldEdge, newConnection, els))
       }

@@ -24,7 +24,7 @@ export const toEdge = (id: number, parent: number, child: number, position: numb
     source: parent.toString(),
     sourceHandle: null,
     type: 'smoothstep',
-    targetHandle: parent.toString(),
+    targetHandle: position.toString(),
     arrowHeadType: ArrowHeadType.ArrowClosed,
     target: child.toString(),
     data: {
