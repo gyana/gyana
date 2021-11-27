@@ -69,7 +69,6 @@ def test_delete(client, setup):
 
 def test_get(client, setup):
     workflows, nodes = setup
-    input_nodes = nodes[workflows[1]]["inputs"]
     join_node = nodes[workflows[1]]["join"]
     r = client.get(f"{API_URL}{join_node.id}/")
     assertOK(r)
@@ -80,8 +79,13 @@ def test_get(client, setup):
         "x": 0.0,
         "y": 0.0,
         "workflow": workflows[1].id,
-        "parents": [
-            {"id": p.id, "parent_id": p.parent_id, "position": p.position}
+        "parent_edges": [
+            {
+                "id": p.id,
+                "parent": p.parent_id,
+                "child": p.child_id,
+                "position": p.position,
+            }
             for p in join_node.parent_edges.all()
         ],
         "description": "None=None inner",
