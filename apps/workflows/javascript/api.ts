@@ -18,15 +18,23 @@ export const toNode = (res, position: XYPosition): Node => ({
   position,
 })
 
+// Copied from react flow src/graph.ts
+export const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection) =>
+  `reactflow__edge-${source}${sourceHandle}-${target}${targetHandle}`
+
+export const EDGE_DEFAULTS = { type: 'smoothstep', arrowHeadType: ArrowHeadType.ArrowClosed }
+
 export const toEdge = (id: number, parent: number, child: number, position: number): Edge => {
-  return {
-    id: `reactflow__edge-${parent}${position}-${child}null`,
+  const edgeParams = {
     source: parent.toString(),
     sourceHandle: null,
-    type: 'smoothstep',
-    targetHandle: position.toString(),
-    arrowHeadType: ArrowHeadType.ArrowClosed,
     target: child.toString(),
+    targetHandle: position.toString(),
+  }
+  return {
+    id: getEdgeId(edgeParams),
+    ...edgeParams,
+    ...EDGE_DEFAULTS,
     data: {
       id,
     },

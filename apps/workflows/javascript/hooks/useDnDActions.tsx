@@ -9,10 +9,20 @@ import {
   Connection,
   getIncomers,
   isEdge,
+  ArrowHeadType,
 } from 'react-flow-renderer'
 
 import '../styles/_dnd-flow.scss'
-import { createEdge, createNode, deleteEdge, deleteNode, moveNode, updateEdge } from '../api'
+import {
+  createEdge,
+  createNode,
+  deleteEdge,
+  deleteNode,
+  EDGE_DEFAULTS,
+  getEdgeId,
+  moveNode,
+  updateEdge,
+} from '../api'
 import { RefObject, useState } from 'react'
 import { NODES } from '../interfaces'
 
@@ -85,8 +95,11 @@ const useDnDActions = (
 
   const onConnect = async (connection: Connection) => {
     if (canAddEdge(elements, connection)) {
+      setElementsDirty((els) => addEdge({ ...connection, ...EDGE_DEFAULTS }, els))
       const edge = await createEdge(connection)
-      setElementsDirty((els) => addEdge(edge, els))
+      setElementsDirty((els) => {
+        return els.filter((e) => e.id !== edge.id).concat(edge)
+      })
     }
   }
 
