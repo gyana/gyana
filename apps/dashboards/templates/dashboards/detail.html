@@ -1,4 +1,127 @@
-{% extends "dashboards/base.html" %}
+{% extends "web/app/project_base.html" %}
+
+{% block app %}
+<div class="dashboard__header">
+  <div data-controller="tooltip tf-modal">
+    <button
+      data-action="click->tf-modal#open"
+      data-src="{% url 'project_dashboards:settings' project.id object.id %}"
+      class="button button--circle button--tertiary"
+    >
+      <i class="far fa-fw fa-cog"></i>
+    </button>
+
+    <span data-tooltip-target="body">Settings</span>
+
+    <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
+      <div class="card card--none card--modal flex-col flex-1 overflow-auto">
+        <turbo-frame
+          id="dashboard:settings"
+          data-tf-modal-target="turboFrame"
+          target="_top"
+        ></turbo-frame>
+      </div>
+    </div>
+  </div>
+
+  <turbo-frame id="dashboard-name" class="flex-1 mr-auto">
+    <form
+      method="POST"
+      action="{% url 'project_dashboards:detail' project.id object.id %}"
+      class="form--no-layout w-full"
+    >
+      {% csrf_token %}
+
+      <input
+        class='input__inline mr-auto'
+        id="name"
+        type="text"
+        name="name"
+        value="{{ object.name }}"
+        onBlur="this.form.requestSubmit();"
+      />
+    </form>
+  </turbo-frame>
+
+  <div
+    data-controller="popover"
+    data-placement="bottom-start"
+    data-theme="popover-menu"
+  >
+    <button class="button button--sm button--tertiary">
+      More <i class="fas fa-chevron-down"></i>
+    </button>
+
+    <template data-popover-target="body">
+      <form 
+        method="POST"
+        action="{% url "dashboards:duplicate" object.id %}"
+        class="form--no-layout"
+      >
+        {% csrf_token %}
+
+        <button
+          type='submit'
+          class="list__item list__item--interactive w-full"
+          id="dashboards-duplicate-{{ object.id }}"
+          data-controller="tooltip"
+          data-loading-false
+        >
+          Duplicate
+        </button>
+      </form>
+
+      <a
+        class="list__item list__item--interactive w-full"
+        href="{% url 'project_dashboards:delete' project.id object.id %}"
+      >
+        Delete
+      </a>
+    </template>
+  </div>
+
+  
+  <div data-controller='tf-modal'>
+    <button
+      id="dashboard-share-{{ object.id }}"
+      class="button button--sm button--primary {% if object.shared_status != 'private' %}button--success{% else %}button--tertiary{% endif %}"
+      data-action="click->tf-modal#open"
+      data-controller="tooltip"
+      data-src="{% url 'dashboards:share' object.id %}"
+    >
+      <i class='far fa-fw fa-share'></i>
+      Share
+      <span data-tooltip-target="body">Share a public or password-protected link</span>
+    </button>
+    <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
+      <div class="card card--none card--modal flex-col flex-1 overflow-auto">
+        <turbo-frame
+          id="dashboard-share"
+          data-tf-modal-target="turboFrame"
+        ></turbo-frame>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div data-controller="tooltip">
+    {% if not request.GET.mode or request.GET.mode == 'edit' %}
+    <a href="?mode=view" class="button button--sm button--tertiary">
+      <i class="fas fa-fw fa-eye"></i>Preview
+    </a>
+    {% else %}
+    <a href="?mode=edit" class="button button--sm">
+      <i class="fas fa-fw fa-pen"></i>Edit
+    </a>
+    {% endif %}
+
+    <span data-tooltip-target="body">Click to change view mode</span>
+  </div>
+
+  {% if request.GET.mode != 'view' %}
+  {% include 'dashboards/_add_widget.html' with choices=choices categories=categories %}
+  {% endif %}
+</div>
 
 {% block tab %}
 <div class="dashboard">
@@ -9,4 +132,9 @@
     target="_top">
   </turbo-frame>
 </div>
+{% endblock tab %}
+{% endblock %}
+
+{% block page_js %}
+  {% include 'components/fusionchart_scripts.html' with palette_colors=object.palette_colors %}
 {% endblock %}
