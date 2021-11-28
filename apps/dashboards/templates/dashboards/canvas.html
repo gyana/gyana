@@ -30,7 +30,7 @@
         --grid-size:{{ dashboard.grid_size }}px;
       "
     >
-      {% for object in object_list %}
+      {% for object in dashboard.widget_set.all %}
       {% include 'widgets/widget_component.html' %}
       {% empty %}
       {% if request.GET.mode != 'view' %}

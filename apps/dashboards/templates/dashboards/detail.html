@@ -96,12 +96,7 @@
 
 <div class="w-full flex flex-row">
   <div class="dashboard">
-    <turbo-frame 
-      id="widgets"
-      src="{% url 'dashboard_widgets:list' project.id object.id %}?mode={{ request.GET.mode|default:'edit' }}{% if request.GET.modal_item %}&modal_item={{ request.GET.modal_item }}{% endif %}"
-      class="flex"
-      target="_top">
-    </turbo-frame>
+    {% include "dashboards/canvas.html" %}
   </div>
   {% if request.GET.mode != 'view' %}
     <aside class="" style="width: 34rem;">
