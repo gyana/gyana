@@ -79,12 +79,24 @@
       </a>
     </template>
   </div>
-
   
+  <div data-controller="tooltip">
+    {% if not request.GET.mode or request.GET.mode == 'edit' %}
+    <a href="?mode=view" class="button button--sm button--tertiary">
+      <i class="fas fa-fw fa-eye"></i>Preview
+    </a>
+    {% else %}
+    <a href="?mode=edit" class="button button--sm">
+      <i class="fas fa-fw fa-pen"></i>Edit
+    </a>
+    {% endif %}
+    <span data-tooltip-target="body">Click to change view mode</span>
+  </div>
+
   <div data-controller='tf-modal'>
     <button
       id="dashboard-share-{{ object.id }}"
-      class="button button--sm button--primary {% if object.shared_status != 'private' %}button--success{% else %}button--tertiary{% endif %}"
+      class="button button--sm button--success"
       data-action="click->tf-modal#open"
       data-controller="tooltip"
       data-src="{% url 'dashboards:share' object.id %}"
@@ -102,34 +114,56 @@
       </div>
     </div>
   </div>
-  
-  
-  <div data-controller="tooltip">
-    {% if not request.GET.mode or request.GET.mode == 'edit' %}
-    <a href="?mode=view" class="button button--sm button--tertiary">
-      <i class="fas fa-fw fa-eye"></i>Preview
-    </a>
-    {% else %}
-    <a href="?mode=edit" class="button button--sm">
-      <i class="fas fa-fw fa-pen"></i>Edit
-    </a>
-    {% endif %}
-
-    <span data-tooltip-target="body">Click to change view mode</span>
-  </div>
-
-  {% if request.GET.mode != 'view' %}
-  {% include 'dashboards/_add_widget.html' with choices=choices categories=categories %}
-  {% endif %}
 </div>
 
-<div class="dashboard">
-  <turbo-frame 
-    id="widgets"
-    src="{% url 'dashboard_widgets:list' project.id object.id %}?mode={{ request.GET.mode|default:'edit' }}{% if request.GET.modal_item %}&modal_item={{ request.GET.modal_item }}{% endif %}"
-    class="flex"
-    target="_top">
-  </turbo-frame>
+<div class="w-full flex flex-row">
+  <div class="dashboard">
+    <turbo-frame 
+      id="widgets"
+      src="{% url 'dashboard_widgets:list' project.id object.id %}?mode={{ request.GET.mode|default:'edit' }}{% if request.GET.modal_item %}&modal_item={{ request.GET.modal_item }}{% endif %}"
+      class="flex"
+      target="_top">
+    </turbo-frame>
+  </div>
+  {% if request.GET.mode != 'view' %}
+    <div class="dnd-sidebar">
+      <div class='active pad' data-controller='collapsable'>
+        <h3 class='cursor-pointer' data-action='click->collapsable#toggle'>
+          Widgets
+        </h3>
+        <div
+          class='collapsable flex flex-col max-h-0 overflow-hidden'
+          data-collapsable-target='body'
+        >
+        {% for id, category in categories %}
+          <h4 class="my-6">{{ category }}</h4>
+          
+          <div class="grid grid-cols-2 mb-3">
+            {% for id, txt, icon, choice_category, verbose_name in choices %}
+              {% if choice_category|lower == category|lower %}
+                <div
+                  id="widget-{{ kind }}"
+                  class="list__item list__item--interactive w-full"
+                  {% comment %} ondragstart="event.dataTransfer.setData('application/reactflow', '{{ kind }}'); event.dataTransfer.effectAllowed = 'move';" {% endcomment %}
+                  draggable="true"
+                >
+                  <i class="dnd-sidebar__icon fas fa-fw fa-lg {{ icon }}"></i>
+                  <div class='flex flex-col'>
+                    <div class='flex items-center'>
+                      <h4 class='dnd-sidebar__name'>{{ verbose_name }}</h4>
+                    </div>
+                    {% comment %} <p class='dnd-sidebar__description'>{{ node.description }}</p> {% endcomment %}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endfor %}
+        </div>
+      </div>
+      <hr />
+    </div>
+  {% endif %}
 </div>
 {% endblock %}
 
