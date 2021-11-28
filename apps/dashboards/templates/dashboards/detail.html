@@ -126,7 +126,7 @@
     </turbo-frame>
   </div>
   {% if request.GET.mode != 'view' %}
-    <div class="dnd-sidebar">
+    <div class="dnd-sidebar" style="width: 34rem;">
       <div class='active pad' data-controller='collapsable'>
         <h3 class='cursor-pointer' data-action='click->collapsable#toggle'>
           Widgets
@@ -147,7 +147,7 @@
                   {% comment %} ondragstart="event.dataTransfer.setData('application/reactflow', '{{ kind }}'); event.dataTransfer.effectAllowed = 'move';" {% endcomment %}
                   draggable="true"
                 >
-                  <i class="dnd-sidebar__icon fas fa-fw fa-lg {{ icon }}"></i>
+                  <i class="dnd-sidebar__icon fas fa-fw fa-lg {{ icon }} mr-2"></i>
                   <div class='flex flex-col'>
                     <div class='flex items-center'>
                       <h4 class='dnd-sidebar__name'>{{ verbose_name }}</h4>
