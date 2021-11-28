@@ -106,7 +106,6 @@ def test_update(client, setup):
     assertOK(r)
     join_node.refresh_from_db()
     assert join_node.name == "Join node"
-    assert len(r.data["parents"]) == 0
 
 
 def test_duplicate(client, setup):
