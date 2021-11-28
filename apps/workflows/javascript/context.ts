@@ -10,7 +10,7 @@ export interface IDnDContext {
   setIsOutOfDate: (isOutOfDate: boolean) => void
   setNeedsFitView: (needsFitView: boolean) => void
   deleteNodeById: (id: string) => void
-  duplicateNode: (id: string) => void
+  duplicateNodeById: (id: string) => void
 }
 
 export const DnDContext = createContext<IDnDContext | null>(null)

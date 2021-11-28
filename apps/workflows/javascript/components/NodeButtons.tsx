@@ -24,9 +24,9 @@ export const DeleteButton = ({ id }) => {
 }
 
 const DuplicateButton = ({ id }) => {
-  const { duplicateNode } = useContext(DnDContext) as IDnDContext
+  const { duplicateNodeById } = useContext(DnDContext) as IDnDContext
   return (
-    <button onClick={() => duplicateNode(id)} title='Copy'>
+    <button onClick={() => duplicateNodeById(id)} title='Copy'>
       <i className='fas fa-fw fa-copy fa-lg' />
     </button>
   )

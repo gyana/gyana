@@ -16,7 +16,6 @@ import RunButton from './RunButton'
 import '../styles/_dnd-flow.scss'
 import { DnDContext } from '../context'
 import { duplicateNode, getWorkflowStatus, listAll } from '../api'
-import { toEdge, toNode } from '../api'
 import ZeroState from './ZeroState'
 import ErrorState from './ErrorState'
 import LoadingState from './LoadingState'
@@ -92,7 +91,7 @@ const DnDFlow = ({ workflowId }) => {
           const elemenToRemove = elements.filter((el) => el.id === id)
           onElementsRemove(elemenToRemove)
         },
-        duplicateNode: async (id: string) => {
+        duplicateNodeById: async (id: string) => {
           const [node, edges] = await duplicateNode(id)
           setElements((es) => es.concat(node, edges))
         },
