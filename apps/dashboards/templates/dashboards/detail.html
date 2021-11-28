@@ -99,7 +99,7 @@
     {% include "dashboards/canvas.html" %}
   </div>
   {% if request.GET.mode != 'view' %}
-    <aside class="" style="width: 34rem;">
+    <aside class="dnd-sidebar" style="width: 34rem;">
       <div class="p-4">
         <div data-controller="tooltip tf-modal">
           <button
@@ -107,7 +107,7 @@
             data-src="{% url 'project_dashboards:settings' project.id object.id %}"
             class="button button--sm button--tertiary"
           >
-            <i class="far fa-fw fa-paint-brush"></i> Theme and layout
+            <i class="far fa-fw fa-paint-brush"></i> Theme and Layout
           </button>
 
           <span data-tooltip-target="body">Customize dimensions, grid spacing and color palette</span>
