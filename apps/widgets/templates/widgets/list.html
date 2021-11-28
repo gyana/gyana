@@ -1,19 +1,6 @@
 {% load static %}
 
-<div class="widgets" data-controller="tf-modal" data-open-on-param>
-  {% if request.GET.mode == 'view' %}
-  <header class="flex w-full justify-between mb-7">
-    <div class="flex flex-col justify-center self-start">
-      <p>{{ project.team.name }}</p>
-      <h1>{{ dashboard.name }}</h1>
-    </div>
-
-    {% if not project.team.plan.custom_branding %}
-      <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
-    {% endif %}
-  </header>
-  {% endif %}
-  
+<div class="widgets" data-controller="tf-modal" data-open-on-param>  
   <div
     class="widgets__canvas"
     style="--background-color:{{ dashboard.background_color }};"
