@@ -16,7 +16,7 @@ from .models import Widget
 class WidgetCreate(DashboardMixin, TurboCreateView):
     template_name = "widgets/create.html"
     model = Widget
-    fields = ["kind"]
+    fields = ["kind", "x", "y"]
 
     def form_valid(self, form):
         form.instance.dashboard = self.dashboard
@@ -67,8 +67,11 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
             ),
         )
 
+
 import logging
+
 logger = logging.getLogger()
+
 
 class WidgetDetail(DashboardMixin, TurboUpdateView):
     template_name = "widgets/detail.html"

@@ -144,7 +144,7 @@
                 <div
                   id="widget-{{ kind }}"
                   class="list__item list__item--interactive w-full"
-                  {% comment %} ondragstart="event.dataTransfer.setData('application/reactflow', '{{ kind }}'); event.dataTransfer.effectAllowed = 'move';" {% endcomment %}
+                  ondragstart="event.dataTransfer.setData('application/gydashboard', '{{ id }}'); event.dataTransfer.effectAllowed = 'move';"
                   draggable="true"
                 >
                   <i class="dnd-sidebar__icon fas fa-fw fa-lg {{ icon }} mr-2"></i>

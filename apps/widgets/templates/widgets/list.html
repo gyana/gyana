@@ -2,9 +2,24 @@
 
 <div class="widgets" data-controller="tf-modal" data-open-on-param>  
   <div
+    data-controller="canvas"
     class="widgets__canvas"
     style="--background-color:{{ dashboard.background_color }};"
   >
+    <form
+      method="post"
+      action="{% url 'dashboard_widgets:create' project.id dashboard.id %}?mode=edit"
+      class="hidden"
+      data-canvas-target="form"
+    >
+      {% csrf_token %}
+
+      <input name='kind' id="id_kind" value="" />
+      <input name='x' id="id_x" value="" />
+      <input name='y' id="id_y" value="" />
+
+      <button type="submit"></button>
+    </form>
     <div
       id="dashboard-widget-container"
       class="{% if request.GET.mode != 'view' %}widgets__grid{%endif%}"
