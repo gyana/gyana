@@ -31,20 +31,39 @@
       "
     >
       {% for object in dashboard.widget_set.all %}
-      {% include 'widgets/widget_component.html' %}
+        {% include 'widgets/widget_component.html' %}
       {% empty %}
-      {% if request.GET.mode != 'view' %}
-      <div id='dashboard-widget-placeholder' class="w-full p-2">
-        <div class="widget-card">
-          <div class='placeholder-scr placeholder-scr--fillscreen'>
-            <i class="placeholder-scr__icon far fa-map-marker-question fa-2x"></i>
-            <p class='placeholder-scr__title mb-2'>This dashboard needs some widgets!</p>
+        {% if request.GET.mode != 'view' %}
+          <div id='dashboard-widget-placeholder' class="placeholder-scr placeholder-scr--fillscreen mt-96 gap-10">
+            <div class="flex items-center max-w-lg gap-7">
+              <i class="fas fa-fw fa-chart-bar text-blue fa-2x"></i>
+              <p>
+                Start building your dashboard by dragging in a <strong>widget</strong>
+              </p>
+            </div>
 
-            {% include 'dashboards/_add_widget.html' with choices=choices categories=categories %}
+            <div class="flex items-center max-w-lg gap-7">
+              <i class="fas fa-fw fa-edit text-black-50 fa-2x"></i>
+              <p>
+                <strong>Edit</strong> to customize data sources, dimensions, metrics and filters
+              </p>
+            </div>
+
+            <div class="flex items-center max-w-lg gap-7">
+              <i class="fas fa-fw fa-paint-brush text-pink fa-2x"></i>
+              <p>
+                Make your dashboard unique with <strong>theme and layout</strong> settings
+              </p>
+            </div>
+
+            <div class="flex items-center max-w-lg gap-7">
+              <i class="fas fa-fw fa-share text-green fa-2x"></i>
+              <p>
+                <strong>Share</strong> your dashboard as a public or password-protected link
+              </p>
+            </div>
           </div>
-        </div>
-      </div>
-      {% endif %}
+        {% endif %}
       {% endfor %}
     </div>
   </div>
