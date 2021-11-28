@@ -16,16 +16,11 @@
   <div class="pad">
     <div class="flex mb-3 justify-between items-center">
       <h2>
-        {% if object.shared_status == "private" %}
-        Private
-        {% elif object.shared_status == "public" %}
-        Public
-        {% elif object.shared_status == "password_protected" %}
-        Password Protected
-        {% endif %}
+        {{ object.get_shared_status_display }}
       </h2>
       {% link_article 'dashboards' 'share' %}
     </div>
+    
     <p class="mb-4">
       {% if object.shared_status == "private" %} 
         This dashboard is currently <strong>private</strong>. 
