@@ -32,14 +32,7 @@ class NodeSerializer(serializers.ModelSerializer):
             "text_text",
             "parent_edges",
         )
-
-    def create(self, validated_data):
-        # Parents are only provided in tests right now
-        parent_edges = validated_data.pop("parent_edges", None)
-        instance = super().create(validated_data)
-        if parent_edges:
-            self.update_parents(instance)
-        return instance
+        read_only = ["parent_edges"]
 
     def get_description(self, obj):
         return DESCRIPTIONS[obj.kind](obj)
