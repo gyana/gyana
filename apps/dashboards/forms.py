@@ -71,7 +71,6 @@ class DashboardCreateForm(forms.ModelForm):
 
 
 class DashboardForm(forms.ModelForm):
-    name = forms.CharField(required=False)
     width = forms.IntegerField(required=False)
     height = forms.IntegerField(required=False)
     grid_size = forms.IntegerField(
@@ -87,7 +86,6 @@ class DashboardForm(forms.ModelForm):
     class Meta:
         model = Dashboard
         fields = [
-            "name",
             "background_color",
             "palette_colors",
             "width",

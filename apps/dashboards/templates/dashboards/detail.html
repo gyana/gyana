@@ -2,28 +2,6 @@
 
 {% block app %}
 <div class="dashboard__header">
-  <div data-controller="tooltip tf-modal">
-    <button
-      data-action="click->tf-modal#open"
-      data-src="{% url 'project_dashboards:settings' project.id object.id %}"
-      class="button button--circle button--tertiary"
-    >
-      <i class="far fa-fw fa-cog"></i>
-    </button>
-
-    <span data-tooltip-target="body">Settings</span>
-
-    <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
-      <div class="card card--none card--modal flex-col flex-1 overflow-auto">
-        <turbo-frame
-          id="dashboard:settings"
-          data-tf-modal-target="turboFrame"
-          target="_top"
-        ></turbo-frame>
-      </div>
-    </div>
-  </div>
-
   <turbo-frame id="dashboard-name" class="flex-1 mr-auto">
     <form
       method="POST"
@@ -126,7 +104,30 @@
     </turbo-frame>
   </div>
   {% if request.GET.mode != 'view' %}
-    <div class="dnd-sidebar" style="width: 34rem;">
+    <aside class="" style="width: 34rem;">
+      <div class="p-4">
+        <div data-controller="tooltip tf-modal">
+          <button
+            data-action="click->tf-modal#open"
+            data-src="{% url 'project_dashboards:settings' project.id object.id %}"
+            class="button button--sm button--tertiary"
+          >
+            <i class="far fa-fw fa-cog"></i> Customize
+          </button>
+
+          <span data-tooltip-target="body">Customize grid and color palette</span>
+
+          <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
+            <div class="card card--none card--modal flex-col flex-1 overflow-auto">
+              <turbo-frame
+                id="dashboard:settings"
+                data-tf-modal-target="turboFrame"
+                target="_top"
+              ></turbo-frame>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class='active pad' data-controller='collapsable'>
         <h3 class='cursor-pointer' data-action='click->collapsable#toggle'>
           Widgets
@@ -162,7 +163,7 @@
         </div>
       </div>
       <hr />
-    </div>
+    </aside>
   {% endif %}
 </div>
 {% endblock %}
