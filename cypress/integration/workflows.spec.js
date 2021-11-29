@@ -65,7 +65,7 @@ describe('workflows', () => {
 
     cy.story('Run workflow')
     cy.contains('Run').click()
-    cy.contains('Last run')
+    cy.contains('last run')
     cy.get('.sidebar__link--active').click()
     cy.contains('Uptodate')
     cy.contains('Magical workflow')

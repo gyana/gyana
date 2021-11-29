@@ -50,9 +50,7 @@ def test_workflow_run(
     # check last run returns not been run
     r = client.get(f"/workflows/{workflow.id}/last_run")
     assertOK(r)
-    assertContains(
-        r, "Press the run button after adding some nodes to run this workflow"
-    )
+    assertContains(r, "run this workflow")
 
     r = client.post(f"/workflows/{workflow.id}/run_workflow")
     assertOK(r)
