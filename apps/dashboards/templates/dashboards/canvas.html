@@ -6,6 +6,7 @@
     class="widgets__canvas"
     style="--background-color:{{ dashboard.background_color }};"
   >
+    {% comment %} Hidden form used by canvas controller {% endcomment %}
     <form
       method="post"
       action="{% url 'dashboard_widgets:create' project.id dashboard.id %}?mode=edit"
