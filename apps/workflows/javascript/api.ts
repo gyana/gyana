@@ -87,7 +87,7 @@ export const deleteNode = (node: Node): void => {
 }
 
 export const duplicateNode = async (id: string) => {
-  const res = client.action(window.schema, ['nodes', 'duplicate', 'create'], {
+  const res = await client.action(window.schema, ['nodes', 'duplicate', 'create'], {
     id,
   })
 
