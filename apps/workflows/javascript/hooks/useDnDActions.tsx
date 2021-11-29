@@ -9,7 +9,6 @@ import {
   Connection,
   getIncomers,
   isEdge,
-  ArrowHeadType,
 } from 'react-flow-renderer'
 
 import '../styles/_dnd-flow.scss'
@@ -19,7 +18,6 @@ import {
   deleteEdge,
   deleteNode,
   EDGE_DEFAULTS,
-  getEdgeId,
   moveNode,
   updateEdge,
 } from '../api'
