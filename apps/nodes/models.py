@@ -283,7 +283,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         return self.parents.order_by("child_edges")
 
 
-class Edge(models.Model):
+class Edge(BaseModel):
     class Meta:
         unique_together = ("child", "position")
         ordering = ("position",)

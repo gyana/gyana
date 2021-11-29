@@ -1,7 +1,8 @@
-from apps.base import clients
-from apps.tables.models import Table
 from django.db import transaction
 from django.utils import timezone
+
+from apps.base import clients
+from apps.tables.models import Table
 
 
 def get_parent_updated(node):
@@ -12,6 +13,9 @@ def get_parent_updated(node):
     # e.g. whether a file has been synced again or a workflow ran
     if node.kind == "input":
         yield node.input_table.data_updated
+
+    # any update operation on an edge will change the output for a child node
+    yield from node.parent_edges.values_list("updated")
 
     for parent in node.parents.all():
         yield from get_parent_updated(parent)
