@@ -106,7 +106,7 @@ def track_edge(user: CustomUser, edge: Edge, track_id: str, **kwargs):
             # legacy
             "id": edge.child.id,
             "type": edge.child.kind,
-            "workflow_id": edge.child.id,
+            "workflow_id": edge.child.workflow_id,
             # new from 29/11/2021
             "edge_id": edge.id,
             "parent": edge.parent.id,
