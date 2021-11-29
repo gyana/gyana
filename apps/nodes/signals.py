@@ -12,6 +12,6 @@ def update_workflow_on_node_deletion(sender, instance, *args, **kwargs):
 
 
 @receiver(post_delete, sender=Edge)
-def update_workflow_on_node_deletion(sender, instance, *args, **kwargs):
+def update_workflow_on_edge_deletion(sender, instance, *args, **kwargs):
     instance.child.data_updated = timezone.now()
     instance.child.save()
