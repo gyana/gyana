@@ -288,6 +288,11 @@ class Edge(BaseModel):
         unique_together = ("child", "position")
         ordering = ("position",)
 
+    def save(self, *args, **kwargs):
+        self.child.data_updated = timezone.now()
+        self.child.save()
+        return super().save(*args, **kwargs)
+
     child = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="parent_edges"
     )

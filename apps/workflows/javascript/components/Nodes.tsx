@@ -66,7 +66,7 @@ const OutputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
     <>
       {showWarning && <WarningIcon text='Save Data needs one input connection' />}
       <NodeContent id={id} data={data} />
-      <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
+      <Handle type='target' position={Position.Left} id='0' isConnectable={isConnectable} />
     </>
   )
 }

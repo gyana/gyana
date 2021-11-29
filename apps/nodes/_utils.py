@@ -14,9 +14,6 @@ def get_parent_updated(node):
     if node.kind == "input":
         yield node.input_table.data_updated
 
-    # any update operation on an edge will change the output for a child node
-    yield from node.parent_edges.values_list("updated")
-
     for parent in node.parents.all():
         yield from get_parent_updated(parent)
 
