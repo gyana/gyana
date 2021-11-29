@@ -1761,29 +1761,259 @@
       "has_been_saved": false
     }
   },
-  { "model": "nodes.edge", "pk": 1, "fields": { "child": 2, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 2, "fields": { "child": 3, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 3, "fields": { "child": 4, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 4, "fields": { "child": 5, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 5, "fields": { "child": 6, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 6, "fields": { "child": 7, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 7, "fields": { "child": 8, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 8, "fields": { "child": 9, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 9, "fields": { "child": 11, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 10, "fields": { "child": 12, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 11, "fields": { "child": 13, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 12, "fields": { "child": 14, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 13, "fields": { "child": 15, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 14, "fields": { "child": 18, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 15, "fields": { "child": 18, "parent": 17, "position": 1 } },
-  { "model": "nodes.edge", "pk": 16, "fields": { "child": 20, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 17, "fields": { "child": 21, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 18, "fields": { "child": 21, "parent": 20, "position": 1 } },
-  { "model": "nodes.edge", "pk": 19, "fields": { "child": 22, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 20, "fields": { "child": 22, "parent": 20, "position": 1 } },
-  { "model": "nodes.edge", "pk": 21, "fields": { "child": 24, "parent": 23, "position": 0 } },
-  { "model": "nodes.edge", "pk": 22, "fields": { "child": 26, "parent": 1, "position": 0 } },
-  { "model": "nodes.edge", "pk": 23, "fields": { "child": 26, "parent": 20, "position": 1 } },
+  {
+    "model": "nodes.edge",
+    "pk": 1,
+    "fields": {
+      "created": "2021-08-10T07:31:49.994Z",
+      "updated": "2021-08-10T07:32:53.406Z",
+      "child": 2,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 2,
+    "fields": {
+      "created": "2021-08-10T07:32:58.092Z",
+      "updated": "2021-08-10T07:33:00.909Z",
+      "child": 3,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 3,
+    "fields": {
+      "created": "2021-08-10T07:33:08.633Z",
+      "updated": "2021-08-10T07:33:11.853Z",
+      "child": 4,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 4,
+    "fields": {
+      "created": "2021-08-10T07:33:18.823Z",
+      "updated": "2021-08-10T07:33:28.498Z",
+      "child": 5,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 5,
+    "fields": {
+      "created": "2021-08-10T07:33:21.412Z",
+      "updated": "2021-08-10T07:33:32.042Z",
+      "child": 6,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 6,
+    "fields": {
+      "created": "2021-08-10T07:33:35.104Z",
+      "updated": "2021-08-10T07:33:38.806Z",
+      "child": 7,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 7,
+    "fields": {
+      "created": "2021-08-10T07:33:43.482Z",
+      "updated": "2021-08-10T07:33:48.305Z",
+      "child": 8,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 8,
+    "fields": {
+      "created": "2021-08-10T07:33:54.419Z",
+      "updated": "2021-08-10T07:33:58.373Z",
+      "child": 9,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 9,
+    "fields": {
+      "created": "2021-08-10T07:34:30.965Z",
+      "updated": "2021-08-10T07:34:34.624Z",
+      "child": 11,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 10,
+    "fields": {
+      "created": "2021-08-10T07:34:40.253Z",
+      "updated": "2021-08-10T07:34:44.739Z",
+      "child": 12,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 11,
+    "fields": {
+      "created": "2021-08-10T07:34:47.451Z",
+      "updated": "2021-08-10T07:34:53.035Z",
+      "child": 13,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 12,
+    "fields": {
+      "created": "2021-08-10T07:34:55.755Z",
+      "updated": "2021-08-10T07:34:59.053Z",
+      "child": 14,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 13,
+    "fields": {
+      "created": "2021-08-10T07:35:01.558Z",
+      "updated": "2021-08-10T07:35:05.058Z",
+      "child": 15,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 14,
+    "fields": {
+      "created": "2021-08-10T07:35:50.306Z",
+      "updated": "2021-08-10T07:36:58.312Z",
+      "child": 18,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 15,
+    "fields": {
+      "created": "2021-08-10T07:35:50.306Z",
+      "updated": "2021-08-10T07:36:58.312Z",
+      "child": 18,
+      "parent": 17,
+      "position": 1
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 16,
+    "fields": {
+      "created": "2021-08-11T09:10:15.616Z",
+      "updated": "2021-08-11T09:14:29.745Z",
+      "child": 20,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 17,
+    "fields": {
+      "created": "2021-08-11T09:14:32.857Z",
+      "updated": "2021-08-11T09:14:41.227Z",
+      "child": 21,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 18,
+    "fields": {
+      "created": "2021-08-11T09:14:32.857Z",
+      "updated": "2021-08-11T09:14:41.227Z",
+      "child": 21,
+      "parent": 20,
+      "position": 1
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 19,
+    "fields": {
+      "created": "2021-08-11T12:38:17.873Z",
+      "updated": "2021-08-11T12:41:29.069Z",
+      "child": 22,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 20,
+    "fields": {
+      "created": "2021-08-11T12:38:17.873Z",
+      "updated": "2021-08-11T12:41:29.069Z",
+      "child": 22,
+      "parent": 20,
+      "position": 1
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 21,
+    "fields": {
+      "created": "2021-08-11T14:08:06.112Z",
+      "updated": "2021-08-11T14:08:13.417Z",
+      "child": 24,
+      "parent": 23,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 22,
+    "fields": {
+      "created": "2021-09-10T15:59:04.409Z",
+      "updated": "2021-09-10T15:59:15.610Z",
+      "child": 26,
+      "parent": 1,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 23,
+    "fields": {
+      "created": "2021-09-10T15:59:04.409Z",
+      "updated": "2021-09-10T15:59:15.610Z",
+      "child": 26,
+      "parent": 20,
+      "position": 1
+    }
+  },
   {
     "model": "columns.aggregationcolumn",
     "pk": 1,
@@ -1897,7 +2127,11 @@
       "drive_file_last_modified_at_sync": "2021-08-08T16:46:04.194Z",
       "sync_task_id": "aa5c3086-1f87-434f-9d5b-48bd69786b33",
       "sync_started": "2021-08-08T20:28:24.090Z",
-      "drive_modified_date": null
+      "drive_modified_date": null,
+      "is_scheduled": false,
+      "next_daily_sync": null,
+      "succeeded_at": null,
+      "failed_at": null
     }
   },
   {
