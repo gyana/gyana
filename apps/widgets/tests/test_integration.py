@@ -82,11 +82,3 @@ def test_widget_crudl(
     # delete
     r = client.delete(f"{dashboard_url}/widgets/{widget.id}/delete")
     assert Widget.objects.first() is None
-
-    # list
-    widget_factory.create_batch(
-        10, kind=Widget.Kind.COLUMN, dashboard=dashboard, table=table
-    )
-    r = client.get(f"{dashboard_url}/widgets/")
-    assertOK(r)
-    assertSelectorLength(r, "gy-widget", 10)

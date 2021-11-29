@@ -26,7 +26,7 @@ from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import WIDGET_CHOICES_ARRAY, Widget
 
-from .forms import DashboardCreateForm, DashboardForm, DashboardLoginForm
+from .forms import DashboardCreateForm, DashboardLoginForm, DashboardNameForm
 from .models import Dashboard
 
 
@@ -113,7 +113,7 @@ class DashboardCreateFromIntegration(ProjectMixin, TurboCreateView):
 class DashboardDetail(ProjectMixin, TurboUpdateView):
     template_name = "dashboards/detail.html"
     model = Dashboard
-    form_class = DashboardForm
+    form_class = DashboardNameForm
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
