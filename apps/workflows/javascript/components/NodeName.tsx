@@ -1,9 +1,7 @@
 import { GyanaEvents } from 'apps/base/javascript/events'
 import React, { useState, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
-import { getApiClient } from 'apps/base/javascript/api'
-
-const client = getApiClient()
+import { updateNode } from '../api'
 
 interface Props {
   id: string
@@ -14,10 +12,7 @@ interface Props {
 const NodeName: React.FC<Props> = ({ id, name, kind }) => {
   const [text, setText] = useState(name)
   const updateName = useDebouncedCallback(async (name: string) => {
-    await client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
-      id,
-      name,
-    })
+    await updateNode(id, { name })
     if (kind == 'output') {
       window.dispatchEvent(new CustomEvent(`${GyanaEvents.UPDATE_NODE}-${id}`))
     }

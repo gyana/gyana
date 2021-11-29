@@ -25,6 +25,12 @@ class Workflow(CloneMixin, BaseModel):
         return any(node.error is not None for node in self.nodes.all())
 
     @property
+    def output_nodes(self):
+        from apps.nodes.models import Node
+
+        return self.nodes.filter(kind=Node.Kind.OUTPUT)
+
+    @property
     def out_of_date(self):
         if not self.last_run:
             return True
