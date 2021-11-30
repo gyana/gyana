@@ -180,12 +180,10 @@ def test_dashboard_duplication(
     filter_ = filter_factory(widget=widget, column="My column")
 
     r = client.post(f"/dashboards/{dashboard.id}/duplicate")
-    print(r.content)
     assert project.dashboard_set.count() == 2
     new_dashboard = project.dashboard_set.exclude(id=dashboard.id).first()
-    NEW_DETAIL = f"/projects/{project.id}/dashboards/{new_dashboard.id}"
 
-    assertRedirects(r, NEW_DETAIL, status_code=303)
+    assertRedirects(r, f"/projects/{project.id}/dashboards/", status_code=303)
     assert new_dashboard is not None
     assert new_dashboard.name == f"Copy of {name}"
 

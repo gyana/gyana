@@ -162,11 +162,10 @@ class DashboardDuplicate(TurboUpdateView):
                 "id": form.instance.id,
             },
         )
-        return HttpResponseSeeOther(
-            reverse(
-                "project_dashboards:detail", args=(self.object.project.id, clone.id)
-            )
-        )
+        return r
+
+    def get_success_url(self) -> str:
+        return reverse("project_dashboards:list", args=(self.object.project.id,))
 
 
 class DashboardPublic(DetailView):
