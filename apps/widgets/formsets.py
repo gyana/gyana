@@ -101,11 +101,7 @@ class CombinationChartForm(AggregationColumnForm):
         }
 
     def get_live_fields(self):
-        fields = ["kind"]
-        if self.get_live_field("kind"):
-            fields += super().get_live_fields()
-            fields += ["on_secondary"]
-        return fields
+        return [*super().get_live_fields(), "kind", " on_secondary"]
 
 
 CombinationChartFormset = forms.inlineformset_factory(

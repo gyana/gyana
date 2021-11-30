@@ -224,6 +224,9 @@ COUNT_COLUMN_NAME = "count"
 
 
 class CombinationChart(BaseModel):
+    class Meta:
+        ordering = ("created",)
+
     class Kind(models.TextChoices):
         LINE = "line", "Line"
         AREA = "area", "Area"

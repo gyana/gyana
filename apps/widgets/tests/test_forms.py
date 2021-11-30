@@ -6,6 +6,7 @@ from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.widgets.forms import FORMS
 from apps.widgets.formsets import (
     AggregationColumnFormset,
+    CombinationChartFormset,
     FilterFormset,
     Min2Formset,
     Min3Formset,
@@ -94,6 +95,9 @@ def test_generic_form(kind, formset_classes, setup, widget_factory):
         ),
         pytest.param(
             Widget.Kind.BUBBLE, {FilterFormset, XYZMetricFormset}, id="bubble"
+        ),
+        pytest.param(
+            Widget.Kind.COMBO, {FilterFormset, CombinationChartFormset}, id="combo"
         ),
     ],
 )
