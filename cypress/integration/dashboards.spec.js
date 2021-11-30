@@ -1,10 +1,10 @@
 /// <reference types="cypress" />
 
-import { getModelStartId, BIGQUERY_TIMEOUT } from '../support/utils'
+import { getModelStartId } from '../support/utils'
 
-const createWidget = (kind) => {
-  cy.get('[data-cy=widget-add-dropdown]').first().click()
-  cy.contains(kind).click()
+const createWidget = (kind, offsetX, offsetY) => {
+  cy.drag(`#widget-${kind}`)
+  cy.drop('.widgets', { offsetX, offsetY })
   cy.get('[data-cy=widget-configure]').click()
   cy.get('select-source[name=table]').click()
   cy.contains('store_info').click({ force: true })
@@ -24,7 +24,7 @@ describe('dashboards', () => {
     cy.get('input[id=name]').clear().type('Magical dashboard{enter}')
 
     // create a table widget and view in the dashboard
-    createWidget('Table')
+    createWidget('table', 0, 0)
     cy.contains('Save & Preview').should('not.be.disabled').click()
     cy.contains('Edinburgh')
 
@@ -33,7 +33,7 @@ describe('dashboards', () => {
     cy.get(`#widget-${widgetStartId}`).contains('London')
 
     // chart with aggregrations
-    createWidget('Bar')
+    createWidget('msbar2d', 0, 400)
     cy.get('select[name=dimension]').select('Owner')
     cy.get('[data-formset-prefix-value=aggregations]').within((el) => {
       cy.wrap(el).get('button').should('not.be.disabled').click({ force: true })
@@ -48,7 +48,6 @@ describe('dashboards', () => {
 
     // delete a widget
     cy.get(`#widget-delete-${widgetStartId}`).click({ force: true })
-    cy.contains('Yes').click({ force: true })
     cy.get(`#widget-${widgetStartId}`).should('not.exist')
 
     // share

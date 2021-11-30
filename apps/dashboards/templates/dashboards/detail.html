@@ -138,7 +138,7 @@
             {% for id, txt, icon, choice_category, verbose_name in choices %}
               {% if choice_category|lower == category|lower %}
                 <div
-                  id="widget-{{ kind }}"
+                  id="widget-{{ id }}"
                   class="list__item list__item--interactive w-full"
                   ondragstart="event.dataTransfer.setData('application/gydashboard', '{{ id }}'); event.dataTransfer.effectAllowed = 'move';"
                   draggable="true"
