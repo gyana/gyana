@@ -1,12 +1,12 @@
 # fmt: off
 from django import forms
 
+from apps.base.forms import BaseSchemaForm
 from apps.base.formsets import RequiredInlineFormset
+from apps.base.live_update_form import BaseLiveSchemaForm
 from apps.columns.forms import (
     AddColumnForm,
     AggregationColumnForm,
-    BaseLiveSchemaForm,
-    BaseSchemaForm,
     ConvertColumnForm,
     FormulaColumnForm,
     OperationColumnForm,

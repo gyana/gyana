@@ -1,4 +1,5 @@
 import ibis
+
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget
@@ -36,7 +37,10 @@ def get_query_from_widget(widget: Widget):
     query = get_query_from_table(widget.table)
     query = get_query_from_filters(query, widget.filters.all())
 
-    aggregations = widget.aggregations.all()
+    if widget.category == Widget.Category.COMBO:
+        aggregations = widget.charts.all()
+    else:
+        aggregations = widget.aggregations.all()
 
     groups = [widget.dimension] if widget.kind not in NO_DIMENSION_WIDGETS else []
     if (

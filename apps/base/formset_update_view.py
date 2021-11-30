@@ -21,6 +21,7 @@ FORMSET_LABELS = {
     "window_columns": "Window columns",
     "convert_columns": "Select columns to convert",
     "values": "Additional values",
+    "charts": "Charts",
 }
 
 

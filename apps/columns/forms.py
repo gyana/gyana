@@ -2,8 +2,7 @@ from django import forms
 from ibis.expr.datatypes import Floating
 
 from apps.base.aggregations import AGGREGATION_TYPE_MAP
-from apps.base.live_update_form import LiveUpdateForm
-from apps.base.schema_form_mixin import SchemaFormMixin
+from apps.base.live_update_form import BaseLiveSchemaForm
 from apps.base.utils import create_column_choices
 from apps.base.widgets import SelectWithDisable
 from apps.columns.models import (
@@ -29,14 +28,6 @@ IBIS_TO_FUNCTION = {
     "Time": "time_function",
     "Boolean": "boolean_function",
 }
-
-
-class BaseSchemaForm(SchemaFormMixin, forms.ModelForm):
-    pass
-
-
-class BaseLiveSchemaForm(SchemaFormMixin, LiveUpdateForm):
-    pass
 
 
 class AggregationColumnForm(BaseLiveSchemaForm):

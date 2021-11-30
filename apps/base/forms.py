@@ -1,6 +1,8 @@
 from django import forms
 from django.db import transaction
 
+from apps.base.schema_form_mixin import SchemaFormMixin
+
 
 class BaseModelForm(forms.ModelForm):
     def pre_save(self, instance):
@@ -20,3 +22,7 @@ class BaseModelForm(forms.ModelForm):
                 self.save_m2m()
                 self.post_save(instance)
         return instance
+
+
+class BaseSchemaForm(SchemaFormMixin, forms.ModelForm):
+    pass

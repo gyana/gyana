@@ -23,7 +23,27 @@ def _create_axis_names(widget):
             "xAxisName": widget.second_dimension,
         }
     if widget.kind in NO_DIMENSION_WIDGETS:
-        {}
+        return {}
+    if widget.category == Widget.Category.COMBO:
+        primary_chart = widget.charts.filter(on_secondary=False).first()
+        secondary_chart = widget.charts.filter(on_secondary=True).first()
+        unique_names = get_unique_column_names(
+            [primary_chart, *([secondary_chart] if secondary_chart else [])],
+            [widget.dimension],
+        )
+        return {
+            "xAxisName": widget.dimension,
+            "pYAxisName": unique_names.get(primary_chart, primary_chart.column),
+            **(
+                {
+                    "sYAxisName": unique_names.get(
+                        secondary_chart, secondary_chart.column
+                    )
+                }
+                if secondary_chart
+                else {}
+            ),
+        }
 
     return {
         "xAxisName": widget.dimension,
@@ -222,6 +242,33 @@ def to_stack(widget, df):
     }
 
 
+def to_combo_chart(widget, df):
+    charts = widget.charts.all()
+    unique_names = get_unique_column_names(charts, [widget.dimension])
+    return {
+        "categories": [
+            {
+                "category": [
+                    {"label": str(dimension)}
+                    for dimension in df[widget.dimension].to_list()
+                ]
+            }
+        ],
+        "dataset": [
+            {
+                "seriesname": chart.column,
+                "renderAs": chart.kind,
+                "parentYAxis": "S" if chart.on_secondary else "P",
+                "data": [
+                    {"value": value}
+                    for value in df[unique_names.get(chart, chart.column)].to_list()
+                ],
+            }
+            for chart in charts
+        ],
+    }
+
+
 CHART_DATA = {
     Widget.Kind.BUBBLE: to_bubble,
     Widget.Kind.HEATMAP: to_heatmap,
@@ -238,4 +285,5 @@ CHART_DATA = {
     Widget.Kind.AREA: to_multi_value_data,
     Widget.Kind.LINE: to_multi_value_data,
     Widget.Kind.STACKED_LINE: to_stack,
+    Widget.Kind.COMBO: to_combo_chart,
 }

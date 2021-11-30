@@ -175,6 +175,7 @@ FORMS = {
     Widget.Kind.HEATMAP: TwoDimensionForm,
     Widget.Kind.BUBBLE: OneDimensionForm,
     Widget.Kind.METRIC: GenericWidgetForm,
+    Widget.Kind.COMBO: OneDimensionForm,
 }
 
 
