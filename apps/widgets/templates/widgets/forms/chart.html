@@ -22,6 +22,11 @@
       <label>Metrics</label>
       {% include "components/formset.html" with formset=formset %}
     {% endwith %}
+  {% elif formsets.Charts %}
+    {% with formset=formsets.Charts %}
+      <label>Charts</label>
+      {% include "components/formset.html" with formset=formset %}
+    {% endwith %}
   {% endif %}
 </fieldset>
 {% if form.kind.value ==  'stackedbar2d' or form.kind.value ==  'stackedcolumn2d' or form.kind.value ==  'msline-stacked' or form.kind.value == "timeseries-line-stacked" or form.kind.value == "timeseries-column-stacked" %}

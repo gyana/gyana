@@ -234,5 +234,5 @@ class CombinationChart(BaseModel):
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     function = models.CharField(max_length=20, choices=AggregationFunctions.choices)
     on_secondary = models.BooleanField(
-        default=False, help_text="Plot on a secondary Y axis"
+        default=False, help_text="Plot on a secondary Y-axis"
     )
