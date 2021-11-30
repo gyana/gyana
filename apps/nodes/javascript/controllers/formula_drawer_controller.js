@@ -4,7 +4,7 @@ export default class extends Controller {
   static targets = ['turboFrame', 'drawer']
 
   open(e) {
-    const src = new URL(location.origin + this.turboFrameTarget.getAttribute('src'))
+    const src = new URL(location.origin + this.turboFrameTarget.getAttribute('data-src'))
     this.turboFrameTarget.removeAttribute('src')
     this.turboFrameTarget.innerHTML = `
         <div class='placeholder-scr placeholder-scr--fillscreen'>
