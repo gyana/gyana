@@ -30,6 +30,7 @@ const RunButton: React.FC = () => {
     <Tippy content={tooltip}>
       <div className='dndflow__run-button'>
         <button
+          data-cy='workflow-run'
           onClick={() => {
             setLoading(true)
 

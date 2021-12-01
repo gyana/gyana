@@ -21,7 +21,7 @@ describe('workflows', () => {
     cy.visit('/projects/1/workflows/')
   })
 
-  it('workflow editor', () => {
+  it.only('workflow editor', () => {
     cy.get('[data-cy=workflow-create]').click()
     cy.get('input[id=name]').clear().type('Magical workflow{enter}')
 
@@ -64,8 +64,8 @@ describe('workflows', () => {
     cy.contains('Save & Close').click()
 
     cy.story('Run workflow')
-    cy.contains('Run').click()
-    cy.contains('last run')
+    cy.get('[data-cy=workflow-run]').click()
+    cy.contains('Last run')
     cy.get('.sidebar__link--active').click()
     cy.contains('Uptodate')
     cy.contains('Magical workflow')
