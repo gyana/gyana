@@ -106,13 +106,20 @@ def test_one_dimension_form(kind, formset_classes, setup, widget_factory):
     widget = widget_factory(kind=kind, table=table, dashboard=dashboard)
     form = FORMS[kind](instance=widget)
 
-    assert set(form.get_live_fields()) == {
-        "kind",
-        "table",
-        "sort_by",
-        "sort_ascending",
-        "dimension",
-    }
+    if kind == Widget.Kind.COMBO:
+        assert set(form.get_live_fields()) == {
+            "kind",
+            "table",
+            "dimension",
+        }
+    else:
+        assert set(form.get_live_fields()) == {
+            "kind",
+            "table",
+            "sort_by",
+            "sort_ascending",
+            "dimension",
+        }
     assert set(form.get_live_formsets()) == formset_classes
     assertFormChoicesLength(form, "dimension", 9)
 
