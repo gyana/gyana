@@ -55,10 +55,6 @@ class DateSlicerUpdate(TurboFrameUpdateView):
     form_class = DateSlicerForm
     turbo_frame_dom_id = "dateslicers:update"
 
-    @property
-    def is_public(self):
-        return self.request.GET.get("is_public") == "true"
-
     def form_valid(self, form):
         r = super().form_valid(form)
         if form.is_live:
@@ -89,11 +85,6 @@ class DateSlicerUpdate(TurboFrameUpdateView):
 
     def get_success_url(self) -> str:
         return reverse("dateslicers:update", args=(self.object.id,))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["is_public"] = self.is_public
-        return context
 
 
 class DateSlicerDelete(DeleteView):
