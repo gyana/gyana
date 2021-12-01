@@ -280,14 +280,23 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     @property
     def parents_ordered(self):
-        return self.parents.order_by("child_set")
+        return self.parents.order_by("child_edges")
 
 
-class Edge(models.Model):
+class Edge(BaseModel):
     class Meta:
         unique_together = ("child", "position")
         ordering = ("position",)
 
-    child = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="parent_set")
-    parent = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="child_set")
+    def save(self, *args, **kwargs):
+        self.child.data_updated = timezone.now()
+        self.child.save()
+        return super().save(*args, **kwargs)
+
+    child = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="parent_edges"
+    )
+    parent = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="child_edges"
+    )
     position = models.IntegerField(default=0)

@@ -1,12 +1,168 @@
-{% extends "dashboards/base.html" %}
+{% extends "web/app/project_base.html" %}
 
-{% block tab %}
-<div class="dashboard">
-  <turbo-frame 
-    id="widgets"
-    src="{% url 'dashboard_widgets:list' project.id object.id %}?mode={{ request.GET.mode|default:'edit' }}{% if request.GET.modal_item %}&modal_item={{ request.GET.modal_item }}{% endif %}"
-    class="flex"
-    target="_top">
+{% block app %}
+<div class="dashboard__header">
+  <turbo-frame id="dashboard-name" class="flex-1 mr-auto">
+    <form
+      method="POST"
+      action="{% url 'project_dashboards:detail' project.id object.id %}"
+      class="form--no-layout w-full"
+    >
+      {% csrf_token %}
+
+      <input
+        class='input__inline mr-auto'
+        id="name"
+        type="text"
+        name="name"
+        value="{{ object.name }}"
+        onBlur="this.form.requestSubmit();"
+      />
+    </form>
   </turbo-frame>
+
+  <div
+    data-controller="popover"
+    data-placement="bottom-start"
+    data-theme="popover-menu"
+  >
+    <button class="button button--sm button--tertiary">
+      More <i class="fas fa-chevron-down"></i>
+    </button>
+
+    <template data-popover-target="body">
+      <form 
+        method="POST"
+        action="{% url "dashboards:duplicate" object.id %}"
+        class="form--no-layout"
+      >
+        {% csrf_token %}
+
+        <button
+          type='submit'
+          class="list__item list__item--interactive w-full"
+          id="dashboards-duplicate-{{ object.id }}"
+          data-controller="tooltip"
+          data-loading-false
+        >
+          Duplicate
+        </button>
+      </form>
+
+      <a
+        class="list__item list__item--interactive w-full"
+        href="{% url 'project_dashboards:delete' project.id object.id %}"
+      >
+        Delete
+      </a>
+    </template>
+  </div>
+  
+  <div data-controller="tooltip">
+    {% if not request.GET.mode or request.GET.mode == 'edit' %}
+    <a href="?mode=view" class="button button--sm button--tertiary">
+      <i class="fas fa-fw fa-eye"></i>Preview
+    </a>
+    {% else %}
+    <a href="?mode=edit" class="button button--sm">
+      <i class="fas fa-fw fa-pen"></i>Edit
+    </a>
+    {% endif %}
+    <span data-tooltip-target="body">Click to change view mode</span>
+  </div>
+
+  <div data-controller='tf-modal'>
+    <button
+      id="dashboard-share-{{ object.id }}"
+      class="button button--sm button--success"
+      data-action="click->tf-modal#open"
+      data-controller="tooltip"
+      data-src="{% url 'dashboards:share' object.id %}"
+    >
+      <i class='far fa-fw fa-share'></i>
+      Share
+      <span data-tooltip-target="body">Share a public or password-protected link</span>
+    </button>
+    <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
+      <div class="card card--none card--modal flex-col flex-1 overflow-auto">
+        <turbo-frame
+          id="dashboard-share"
+          data-tf-modal-target="turboFrame"
+        ></turbo-frame>
+      </div>
+    </div>
+  </div>
 </div>
+
+<div class="w-full flex flex-row">
+  <div class="dashboard">
+    {% include "dashboards/canvas.html" %}
+  </div>
+  {% if request.GET.mode != 'view' %}
+    <aside class="dnd-sidebar" style="width: 34rem;">
+      <div class="p-4">
+        <div data-controller="tooltip tf-modal">
+          <button
+            data-action="click->tf-modal#open"
+            data-src="{% url 'project_dashboards:settings' project.id object.id %}"
+            class="button button--sm button--tertiary"
+          >
+            <i class="far fa-fw fa-paint-brush"></i> Theme and Layout
+          </button>
+
+          <span data-tooltip-target="body">Customize dimensions, grid spacing and color palette</span>
+
+          <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
+            <div class="card card--none card--modal flex-col flex-1 overflow-auto">
+              <turbo-frame
+                id="dashboard:settings"
+                data-tf-modal-target="turboFrame"
+                target="_top"
+              ></turbo-frame>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='active pad' data-controller='collapsable'>
+        <h3 class='cursor-pointer' data-action='click->collapsable#toggle'>
+          Widgets
+        </h3>
+        <div
+          class='collapsable flex flex-col max-h-0 overflow-hidden'
+          data-collapsable-target='body'
+        >
+        {% for id, category in categories %}
+          <h4 class="my-6">{{ category }}</h4>
+          
+          <div class="grid grid-cols-2 mb-3">
+            {% for id, txt, icon, choice_category, verbose_name in choices %}
+              {% if choice_category|lower == category|lower %}
+                <div
+                  id="widget-{{ id }}"
+                  class="list__item list__item--interactive w-full"
+                  ondragstart="event.dataTransfer.setData('application/gydashboard', '{{ id }}'); event.dataTransfer.effectAllowed = 'move';"
+                  draggable="true"
+                >
+                  <i class="dnd-sidebar__icon fas fa-fw fa-lg {{ icon }} mr-2"></i>
+                  <div class='flex flex-col'>
+                    <div class='flex items-center'>
+                      <h4 class='dnd-sidebar__name'>{{ verbose_name }}</h4>
+                    </div>
+                    {% comment %} <p class='dnd-sidebar__description'>{{ node.description }}</p> {% endcomment %}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endfor %}
+        </div>
+      </div>
+      <hr />
+    </aside>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block page_js %}
+  {% include 'components/fusionchart_scripts.html' with palette_colors=object.palette_colors %}
 {% endblock %}

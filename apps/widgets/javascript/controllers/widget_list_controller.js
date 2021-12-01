@@ -7,22 +7,17 @@ export default class extends Controller {
   static targets = ['widget']
 
   widgetTargetConnected(element) {
-    element.addEventListener("mousedown", function () {
-      this.focusWidget(element)
-    }.bind(this))
-
-    this.focusWidget(element)
-  }
-
-  focusWidget(widget) {
-    const widgets = this.widgetTargets
-
-    widgets.forEach((widget) => {
-      widget.dataset.focused = false
-      widget.style.zIndex = null
-    })
-
-    widget.dataset.focused = true
-    widget.style.zIndex = 1
+    document.addEventListener(
+      'mousedown',
+      function (event) {
+        if (element.contains(event.target)) {
+          element.dataset.focused = true
+          element.style.zIndex = 1
+        } else {
+          element.dataset.focused = false
+          element.style.zIndex = null
+        }
+      }.bind(this)
+    )
   }
 }

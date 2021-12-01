@@ -1,7 +1,8 @@
-from apps.base import clients
-from apps.tables.models import Table
 from django.db import transaction
 from django.utils import timezone
+
+from apps.base import clients
+from apps.tables.models import Table
 
 
 def get_parent_updated(node):

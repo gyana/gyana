@@ -1,0 +1,50 @@
+{% load django_tables2 %}
+{% load humanize %}
+{% load i18n %}
+{% load help_utils %}
+
+{% block table-wrapper %}
+<div class="table table-container">
+  <div class="card card--none">
+    {% for project in table.paginated_rows %}
+    <div class="project-card">
+      <header>
+        <a href="{% url 'projects:detail' project.record.id %}">{{ project.record.name }}</a>
+
+        {% if project.record.access == "everyone" %}
+        <i data-controller="tooltip" class="fas fa-fw fa-lock-open ml-auto">
+          <span data-tooltip-target="body">All team members have access</span>
+        </i>
+        {% else %}
+        <i data-controller="tooltip"  class="fas fa-fw fa-lock ml-auto">
+          <span data-tooltip-target="body">Only permitted members have access</span>
+        </i>
+        {% endif %}
+      </header>
+
+      {% if project.record.description %}
+      <p>{{ project.record.description }}</p>
+      {% else %}
+      <p class="text-black-50">No description...</p>
+      {% endif %}
+
+      <footer>
+        <p>{{ project.record.num_rows|intcomma }} rows used</p>
+
+        <a href="{% url 'project_integrations:list' project.record.id %}">
+          <i class="far fa-fw fa-database"></i>{{ project.record.integration_count }}
+        </a>
+        <a href="{% url 'project_workflows:list' project.record.id %}">
+          <i class="far fa-fw fa-sitemap"></i>{{ project.record.workflow_count }}
+        </a>
+        <a href="{% url 'project_dashboards:list' project.record.id %}">
+          <i class="far fa-fw fa-chart-pie"></i>{{ project.record.dashboard_count }}
+        </a>
+
+        <p class="ml-auto">Last updated: {% include 'columns/natural_datetime.html' with datetime=project.record.updated %}</p>
+      </footer>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock table-wrapper %}

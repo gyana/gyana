@@ -8,7 +8,7 @@ from apps.tables.models import Table
 
 from .formsets import FORMSETS, AggregationColumnFormset, FilterFormset
 from .models import WIDGET_KIND_TO_WEB, Widget
-from .widgets import SourceSelect, VisualSelect
+from .widgets import SourceSelect
 
 
 class GenericWidgetForm(LiveUpdateForm):
@@ -26,7 +26,7 @@ class GenericWidgetForm(LiveUpdateForm):
             "sort_ascending",
             "stack_100_percent",
         ]
-        widgets = {"kind": VisualSelect(), "table": SourceSelect()}
+        widgets = {"table": SourceSelect()}
 
     def __init__(self, *args, **kwargs):
         # https://stackoverflow.com/a/30766247/15425660

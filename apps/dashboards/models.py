@@ -33,7 +33,7 @@ class Dashboard(CloneMixin, BaseModel):
     class SharedStatus(models.TextChoices):
         PRIVATE = "private", "Private"
         PUBLIC = "public", "Public"
-        PASSWORD_PROTECTED = "password_protected", "Password-protected"
+        PASSWORD_PROTECTED = "password_protected", "Password Protected"
 
     name = models.CharField(max_length=255, default="Untitled")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)

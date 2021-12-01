@@ -1,27 +1,58 @@
 import {
   addEdge,
   removeElements,
-  updateEdge,
+  updateEdge as updateEdgeElements,
   isNode,
   Edge,
   Node,
   OnLoadParams,
   Connection,
-  ArrowHeadType,
+  getIncomers,
+  isEdge,
 } from 'react-flow-renderer'
 
 import '../styles/_dnd-flow.scss'
-import { createNode, deleteNode, moveNode, updateParentEdges } from '../actions'
 import {
-  addEdgeToParents,
-  canAddEdge,
-  removeEdgeFromParents,
-  updateEdgeSourceInParents,
-  updateEdgeTargetInParents,
-} from '../edges'
+  createEdge,
+  createNode,
+  deleteEdge,
+  deleteNode,
+  EDGE_DEFAULTS,
+  moveNode,
+  updateEdge,
+} from '../api'
 import { RefObject, useState } from 'react'
+import { NODES } from '../interfaces'
 
 type Element = Node | Edge
+
+const canAddEdge = (elements: Element[], connection: Connection) => {
+  const { source, target, targetHandle } = connection
+
+  // every target handle has a unique connection
+  if (elements.some((el) => isEdge(el) && el.target == target && el.targetHandle == targetHandle))
+    return false
+
+  // not possible to connect same parent to child twice
+  if (elements.some((el) => isEdge(el) && el.source == source && el.target == target)) return false
+
+  const targetElement = elements.find((el) => isNode(el) && el.id === target) as Node
+  if (targetElement) {
+    const incomingNodes = getIncomers(targetElement, elements)
+
+    // Node arity is defined in nodes/bigquery.py
+    // Join (2), Union/Except/Insert (-1 = Inf), otherwise (1)
+    const maxParents = NODES[targetElement.data.kind].maxParents
+
+    if (maxParents === -1 || incomingNodes.length < maxParents) {
+      return true
+    } else {
+      // TODO: Add notification here
+      // alert("You can't add any more incoming edges to this node")
+      return false
+    }
+  }
+}
 
 const useDnDActions = (
   workflowId: number,
@@ -60,18 +91,13 @@ const useDnDActions = (
 
   const onNodeDragStop = (event: React.DragEvent<HTMLDivElement>, node: Node) => moveNode(node)
 
-  const onConnect = (connection: Edge) => {
-    if (canAddEdge(elements, connection.target)) {
-      updateParentEdges(
-        connection.target,
-        addEdgeToParents(elements, connection.source, connection.target)
-      )
-      setElementsDirty((els) =>
-        addEdge(
-          { ...connection, arrowHeadType: ArrowHeadType.ArrowClosed, type: 'smoothstep' },
-          els
-        )
-      )
+  const onConnect = async (connection: Connection) => {
+    if (canAddEdge(elements, connection)) {
+      setElementsDirty((els) => addEdge({ ...connection, ...EDGE_DEFAULTS }, els))
+      const edge = await createEdge(connection)
+      setElementsDirty((els) => {
+        return els.filter((e) => e.id !== edge.id).concat(edge)
+      })
     }
   }
 
@@ -79,24 +105,10 @@ const useDnDActions = (
     const { source, target } = newConnection
 
     if (target !== null && source !== null) {
-      // Update the target of the edge
-      if (oldEdge.source === source) {
-        if (canAddEdge(elements, target)) {
-          const [oldParents, newParents] = updateEdgeTargetInParents(
-            elements,
-            oldEdge,
-            source,
-            target
-          )
-          updateParentEdges(oldEdge.target, oldParents)
-          updateParentEdges(target, newParents)
-          setElementsDirty((els) => updateEdge(oldEdge, newConnection, els))
-        }
-      }
-      // Update the source of the edge
-      else {
-        updateParentEdges(target, updateEdgeSourceInParents(elements, oldEdge))
-        setElementsDirty((els) => updateEdge(oldEdge, newConnection, els))
+      // need to check the arity of a target element
+      if (oldEdge.target === target || canAddEdge(elements, newConnection)) {
+        updateEdge(oldEdge, newConnection)
+        setElementsDirty((els) => updateEdgeElements(oldEdge, newConnection, els))
       }
     }
   }
@@ -107,7 +119,7 @@ const useDnDActions = (
       if (isNode(el)) {
         deleteNode(el)
       } else {
-        updateParentEdges(el.target, removeEdgeFromParents(elements, el))
+        deleteEdge(el)
       }
     })
   }

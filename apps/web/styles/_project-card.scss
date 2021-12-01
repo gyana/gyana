@@ -1,0 +1,45 @@
+.project-card {
+  display: flex;
+  flex-flow: column;
+  padding: 1.6rem;
+  
+  & + & {
+    border-top: 1px solid var(--c-gray);
+  }
+
+  a {
+    color: var(--c-blue);
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+  }
+  
+  header {
+    display: flex;
+
+    i {
+      color: var(--c-black-50);
+    }
+  }
+  
+  footer {
+    align-items: center;
+    display: flex;
+    font-size: 1.2rem;
+    gap: 1.6rem;
+    margin-top: 1.6rem;
+
+    a, p {
+      color: var(--c-black-50);
+      display: flex;
+      font-size: inherit;
+      font-weight: normal;
+      gap: 0.3rem;
+      margin-bottom: 0;
+    }
+    
+    a:hover {
+      color: var(--c-blue-50);
+      transition: color 0.1s ease;
+    }
+  }
+}

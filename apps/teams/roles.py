@@ -9,11 +9,11 @@ ROLE_CHOICES = (
 
 
 def user_can_access_team(user, team):
-    return user.is_superuser or is_member(user, team)
+    return is_member(user, team)
 
 
 def user_can_administer_team(user, team):
-    return user.is_superuser or is_admin(user, team)
+    return is_admin(user, team)
 
 
 def is_member(user, team):

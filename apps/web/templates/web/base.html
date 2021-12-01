@@ -70,6 +70,10 @@
 
         <li class="mt-auto"><hr /></li>
 
+        {% if user.is_superuser %}
+        {% include 'web/components/admin.html' %}
+        {% endif %}
+
         <li>
           <a
             id="changelogWidgetID"
@@ -95,10 +99,6 @@
         </li>
 
         <li><hr /></li>
-
-        {% if user.is_superuser %}
-        {% include 'web/components/admin.html' %}
-        {% endif %}
 
         <li data-controller="tf-modal">
           <a
