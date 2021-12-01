@@ -54,11 +54,19 @@
         <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
       {% endif %}
     </header>
-
+    {% if object.date_slicer %}
+      <turbo-frame id='dateslicers:update' src="{% url 'dateslicers:update' dashboard.date_slicer.id %}?is_public=true">
+        <div class='placeholder-scr'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+        </div>
+      </turbo-frame>
+      {% else %}
+      <div id='dateslicers:update-stream'></div>
+    {% endif %}
     <div
       class="widgets__canvas"
       style="--background-color:{{ object.background_color }};"
-    >
+    > 
       <div
         id="dashboard-widget-container"
         data-controller="widget-list"

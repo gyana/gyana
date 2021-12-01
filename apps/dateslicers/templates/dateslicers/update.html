@@ -24,7 +24,8 @@
     <div class='dateslicer-popover'>
       <form 
         id="dateslicer-update-form"
-        method="post" action="{% url 'dateslicers:update' object.id %}" 
+        method="post" 
+        action="{% url 'dateslicers:update' object.id %}?{% if is_public %}is_public=true{% endif %}" 
         class="form--no-layout popover-body"
         data-controller="live-update"
 
@@ -44,6 +45,6 @@
       </form>
   </div>
   {% comment %} </template> {% endcomment %}
-  {% include 'dateslicers/delete.html' %}
+  {% if not is_public %}{% include 'dateslicers/delete.html' %}{% endif %}
 </div>
 
