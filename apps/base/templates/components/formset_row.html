@@ -16,7 +16,7 @@
     {% for field in form.visible_fields %}
     <label
         {% if field.name == 'DELETE' %}style="display: none;" {% endif %}
-        {% if field.name == 'ascending' %}class="input__toggle"{% endif %}
+        {% if field.widget_type == 'checkbox' %}class="input__toggle"{% endif %}
     >
         {% if field.help_text %}
         <p class="input__help-text">
