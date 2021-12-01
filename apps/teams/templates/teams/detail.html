@@ -60,15 +60,21 @@
       </template>
     </div>
 
-    {% if  team.can_create_project%}
-    <a class="button button--sm" href="{% url 'team_projects:create' team.id %}">
+    {% if team.can_create_project %}
+    <a
+      class="button button--sm"
+      href="{% url 'team_projects:create' team.id %}"
+    >
       <i class="fas fa-fw fa-plus"></i> New Project
     </a>
     {% else %}
-    <div data-controller='tooltip'>
-      <a disabled class="button button--sm" href="{% url 'team_projects:create' team.id %}">
+    <div data-controller='tooltip' id="new-project">
+      <p
+        class="button button--sm"
+        disabled
+      >
         <i class="fas fa-fw fa-plus"></i> New Project
-      </a>
+      </p>
       <span data-tooltip-target="body">
         You have reached the maximum number of projects on your current plan.
       </span>

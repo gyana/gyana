@@ -51,7 +51,6 @@ def test_project_crudl(client, logged_in_user):
     # list
     r = client.get(f"/teams/{team.id}")
     assertOK(r)
-    assertSelectorLength(r, "table tbody tr", 1)
     assertLink(r, f"/projects/{project.id}", "Metrics")
     # normal link
     assertLink(r, f"/teams/{team.id}/projects/new", "New Project")
@@ -143,7 +142,6 @@ def test_private_projects(client, logged_in_user):
     assert project is not None
 
     # validate access
-    assertSelectorLength(client.get(f"/teams/{team.id}"), "table tbody tr", 1)
     assertOK(client.get(f"/projects/{project.id}"))
 
     # validate forbidden
@@ -160,7 +158,7 @@ def test_free_tier_project_limit(client, logged_in_user, project_factory):
     r = client.get(f"/teams/{team.id}")
     assertSelectorText(
         r,
-        "div[class='card card--none']",
+        "#new-project",
         "You have reached the maximum number of projects on your current plan.",
     )
     r = client.post(
