@@ -168,8 +168,8 @@ class WorkflowDuplicate(TurboUpdateView):
         # Then copy the relationships
         for node in nodes:
             node_clone = node_map[node]
-            for parent in node.parent_set.iterator():
-                node_clone.parent_set.create(
+            for parent in node.parent_edges.iterator():
+                node_clone.parent_edges.create(
                     parent_id=node_map[parent.parent].id, position=parent.position
                 )
 

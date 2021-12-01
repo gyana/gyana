@@ -3,7 +3,12 @@ from uuid import uuid4
 import pytest
 from pytest_django.asserts import assertContains, assertFormError, assertRedirects
 
-from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertLink,
+    assertOK,
+    assertSelectorLength,
+)
 from apps.dashboards.models import Dashboard
 
 pytestmark = pytest.mark.django_db
@@ -30,8 +35,7 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     r = client.get(DETAIL)
     assertOK(r)
     # TODO: Fix this
-    assertFormRenders(r, ["name", "kind"])
-    # TODO: Fix inner text
+    assertFormRenders(r, ["name", "x", "y", "kind"])
     assertLink(r, f"{DETAIL}/delete", "Delete")
 
     # update/rename
@@ -68,7 +72,9 @@ def test_dashboard_share(
     WIDGET = f"{DETAIL}/widgets/{widget.id}/output"
 
     # share a dashboard
-    r = client.get_turbo_frame(DETAIL, f"/dashboards/{dashboard.id}/share")
+    r = client.get(DETAIL)
+    assertSelectorLength(r, f'button[data-src="/dashboards/{dashboard.id}/share"]', 1)
+    r = client.get(f"/dashboards/{dashboard.id}/share")
     assertOK(r)
     assertFormRenders(r, ["shared_status"])
 
@@ -174,12 +180,10 @@ def test_dashboard_duplication(
     filter_ = filter_factory(widget=widget, column="My column")
 
     r = client.post(f"/dashboards/{dashboard.id}/duplicate")
-    print(r.content)
     assert project.dashboard_set.count() == 2
     new_dashboard = project.dashboard_set.exclude(id=dashboard.id).first()
-    NEW_DETAIL = f"/projects/{project.id}/dashboards/{new_dashboard.id}"
 
-    assertRedirects(r, NEW_DETAIL, status_code=303)
+    assertRedirects(r, f"/projects/{project.id}/dashboards/", status_code=303)
     assert new_dashboard is not None
     assert new_dashboard.name == f"Copy of {name}"
 

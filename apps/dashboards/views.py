@@ -26,7 +26,7 @@ from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import WIDGET_CHOICES_ARRAY, Widget
 
-from .forms import DashboardCreateForm, DashboardForm, DashboardLoginForm
+from .forms import DashboardCreateForm, DashboardLoginForm, DashboardNameForm
 from .models import Dashboard
 
 
@@ -113,7 +113,7 @@ class DashboardCreateFromIntegration(ProjectMixin, TurboCreateView):
 class DashboardDetail(ProjectMixin, TurboUpdateView):
     template_name = "dashboards/detail.html"
     model = Dashboard
-    form_class = DashboardForm
+    form_class = DashboardNameForm
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -162,11 +162,10 @@ class DashboardDuplicate(TurboUpdateView):
                 "id": form.instance.id,
             },
         )
-        return HttpResponseSeeOther(
-            reverse(
-                "project_dashboards:detail", args=(self.object.project.id, clone.id)
-            )
-        )
+        return r
+
+    def get_success_url(self) -> str:
+        return reverse("project_dashboards:list", args=(self.object.project.id,))
 
 
 class DashboardPublic(DetailView):

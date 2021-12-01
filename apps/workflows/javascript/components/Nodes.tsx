@@ -1,6 +1,5 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
-  Node,
   ElementId,
   getIncomers,
   Handle,
@@ -8,15 +7,15 @@ import {
   NodeProps,
   Position,
   useStoreState,
+  useUpdateNodeInternals,
 } from 'react-flow-renderer'
-import { getApiClient } from 'apps/base/javascript/api'
 import NodeButtons, { DeleteButton } from './NodeButtons'
 import { DnDContext, IDnDContext } from '../context'
 import NodeName from './NodeName'
 import NodeDescription from './NodeDescription'
 import { ErrorIcon, WarningIcon } from './NodeIcons'
-
-const client = getApiClient()
+import { NODES } from '../interfaces'
+import { updateNode } from '../api'
 
 interface Props<T = any> {
   id: ElementId
@@ -67,7 +66,7 @@ const OutputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
     <>
       {showWarning && <WarningIcon text='Save Data needs one input connection' />}
       <NodeContent id={id} data={data} />
-      <Handle type='target' position={Position.Left} isConnectable={isConnectable} />
+      <Handle type='target' position={Position.Left} id='0' isConnectable={isConnectable} />
     </>
   )
 }
@@ -80,6 +79,7 @@ const DefaultNode: React.FC<NodeProps> = ({
   sourcePosition = Position.Right,
 }) => {
   const incomingCount = useGetIncomingCount(id)
+  const updateNodeInternals = useUpdateNodeInternals()
 
   const showWarning = data.kind === 'join' ? incomingCount != 2 : incomingCount == 0
   const warningMessage =
@@ -87,10 +87,26 @@ const DefaultNode: React.FC<NodeProps> = ({
       ? 'Join needs two input connections'
       : `${data.label} needs at least one input connection`
 
+  const maxParents = NODES[data.kind].maxParents
+  const handles = maxParents === -1 ? incomingCount + 1 : maxParents
+
+  useEffect(() => {
+    updateNodeInternals(id)
+  }, [id, incomingCount])
+
   return (
     <>
       {showWarning && <WarningIcon text={warningMessage} />}
-      <Handle type='target' position={targetPosition} isConnectable={isConnectable} />
+      {Array.from(Array(handles), (x, idx) => (
+        <Handle
+          key={idx}
+          type='target'
+          position={targetPosition}
+          isConnectable={isConnectable}
+          id={idx.toString()}
+          style={{ top: `${Math.round((100 * (idx + 1)) / (handles + 1))}%`, borderRadius: 0 }}
+        />
+      ))}
       <NodeContent id={id} data={data} />
       <Handle type='source' position={sourcePosition} isConnectable={isConnectable} />
     </>
@@ -100,19 +116,13 @@ const DefaultNode: React.FC<NodeProps> = ({
 const TextNode: React.FC<NodeProps> = ({ id, data }: NodeProps) => {
   const [text, setText] = useState(data.text || '')
 
-  const update = () =>
-    client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
-      id,
-      text_text: text,
-    })
-
   // TODO: Resizing is broken so it's disabled.
   return (
     <>
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        onBlur={update}
+        onBlur={() => updateNode(id, { text_text: text })}
         placeholder={'Leave a note to annotate the workflow...'}
         style={{ resize: 'none', borderRadius: '10px' }}
       />

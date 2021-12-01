@@ -1,9 +1,8 @@
 import uuid
 
 from django import forms
-from django.contrib.postgres.forms import SimpleArrayField
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.forms.widgets import HiddenInput, PasswordInput
 from django.utils import timezone
 
@@ -70,8 +69,13 @@ class DashboardCreateForm(forms.ModelForm):
         widgets = {"project": HiddenInput()}
 
 
+class DashboardNameForm(forms.ModelForm):
+    class Meta:
+        model = Dashboard
+        fields = ["name"]
+
+
 class DashboardForm(forms.ModelForm):
-    name = forms.CharField(required=False)
     width = forms.IntegerField(required=False)
     height = forms.IntegerField(required=False)
     grid_size = forms.IntegerField(
@@ -87,7 +91,6 @@ class DashboardForm(forms.ModelForm):
     class Meta:
         model = Dashboard
         fields = [
-            "name",
             "background_color",
             "palette_colors",
             "width",

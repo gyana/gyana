@@ -50,23 +50,6 @@ def add_output_context(context, widget, request):
             context["chart_id"] = chart_id
 
 
-class WidgetList(DashboardMixin, TurboFrameListView):
-    template_name = "widgets/list.html"
-    model = Widget
-    turbo_frame_dom_id = "widgets"
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data["categories"] = Widget.Category.choices
-        context_data["choices"] = WIDGET_CHOICES_ARRAY
-        modal_item = self.request.GET.get("modal_item")
-        context_data["modal_item"] = int(modal_item) if modal_item else modal_item
-        return context_data
-
-    def get_queryset(self) -> QuerySet:
-        return Widget.objects.filter(dashboard=self.dashboard)
-
-
 class WidgetName(TurboFrameUpdateView):
     model = Widget
     fields = ("name",)

@@ -1,69 +1,80 @@
 {% load help_utils %}
 
-<div class="flex mb-3 justify-between items-center">
-  <h2>
-    {% if object.shared_status == "private" %}
-    Private
-    {% elif object.shared_status == "public" %}
-    Public
-    {% elif object.shared_status == "password_protected" %}
-    Password Protected
+<section class="flex flex-col h-full whitespace-normal">
+  <div class="workflow-detail__header">
+    <h3 class="mr-auto">Share</h3>
+
+    <button
+      class="tf-modal__close"
+      data-action="click->tf-modal#close"
+      data-loading-false
+    >
+      <i class="fal fa-times fa-lg"></i>
+    </button>
+  </div>
+
+  <div class="pad">
+    <div class="flex mb-3 justify-between items-center">
+      <h2>
+        {{ object.get_shared_status_display }}
+      </h2>
+      {% link_article 'dashboards' 'share' %}
+    </div>
+    
+    <p class="mb-4">
+      {% if object.shared_status == "private" %} 
+        This dashboard is currently <strong>private</strong>. 
+        Only members of your team can view and edit it.
+      {% elif object.shared_status == "public" %}
+        This dashboard is currently <strong>public</strong>. 
+        Everyone with the link below can view it.
+      {% elif object.shared_status == "password_protected" %}
+        This dashboard is currently <strong>password-protected</strong>. 
+        Everyone with the link below and your chosen password can view it.
+      {% endif %}
+    </p>
+
+    {% if object.shared_status != 'private' %}
+      <div data-controller="to-clipboard" class='clipboard-copy mb-4'>
+        <a 
+          class="link"
+          href="{{ dashboard.public_url }}" 
+          data-to-clipboard-target='target'
+          data-turbo="false"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          {{ dashboard.public_url }}
+        </a>
+
+        <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
+          <i class='fa fa-clipboard'></i>
+        </button>
+      </div>
     {% endif %}
-  </h2>
-  {% link_article 'dashboards' 'share' %}
-</div>
-<p class="mb-7">
-  {% if object.shared_status == "private" %} 
-    This dashboard is currently <strong>private</strong>. 
-    Only members of your team can view and edit it.
-  {% elif object.shared_status == "public" %}
-    This dashboard is currently <strong>public</strong>. 
-    Everyone with the link below can view it.
-  {% elif object.shared_status == "password_protected" %}
-    This dashboard is currently <strong>password-protected</strong>. 
-    Everyone with the link below and your chosen password can view it.
-  {% endif %}
-</p>
 
-<form
-  class="mb-3"
-  id='dashboard-share-form'
-  method="post"
-  action="{% url 'dashboards:share' object.id %}"
-  data-controller='live-update'
->
-  {% csrf_token %}
-  <span data-live-update-target="loading" class="workflow-detail__sidebar__loading hidden">
-    <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
-  </span>
-  {% include "django/forms/default_form.html" %}
+    <form
+      class="mb-3"
+      id='dashboard-share-form'
+      method="post"
+      action="{% url 'dashboards:share' object.id %}"
+      data-controller='live-update'
+    >
+      {% csrf_token %}
+      <span data-live-update-target="loading" class="workflow-detail__sidebar__loading hidden">
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+      </span>
+      {% include "django/forms/default_form.html" %}
 
-  <button
-    id="dashboard-share-update"
-    class="button button--success button--sm w-full"
-    value='submit'
-    name='submit'
-    type='submit'
-  >
-    Update
-  </button>
-</form>
-
-{% if object.shared_status != 'private' %}
-<div data-controller="to-clipboard" class='clipboard-copy'>
-  <a 
-    class="link"
-    href="{{ dashboard.public_url }}" 
-    data-to-clipboard-target='target'
-    data-turbo="false"
-    target="_blank"
-    rel="noreferrer noopener"
-  >
-    {{ dashboard.public_url }}
-  </a>
-
-  <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
-    <i class='fa fa-clipboard'></i>
-  </button>
-</div>
-{% endif %}
+      <button
+        id="dashboard-share-update"
+        class="button button--success button--sm w-full"
+        value='submit'
+        name='submit'
+        type='submit'
+      >
+        Update
+      </button>
+    </form>
+  </div>
+</section>

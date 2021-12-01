@@ -34,25 +34,12 @@ def create_and_connect_node(client, kind, node_factory, table, workflow):
     input_node = node_factory(
         kind=Node.Kind.INPUT, input_table=table, workflow=workflow
     )
-    r = client.post(
-        "/nodes/api/nodes/",
-        data=json.dumps(
-            {
-                "kind": kind,
-                "workflow": workflow.id,
-                "x": 50,
-                "y": 50,
-                "parents": [{"parent_id": input_node.id}],
-            }
-        ),
-        content_type="application/json",
-    )
-    assert r.status_code == 201
+    node = Node.objects.create(kind=kind, workflow=input_node.workflow, x=50, y=50)
+    node.parents.add(input_node)
+    node.save()
 
-    node = Node.objects.get(pk=r.data["id"])
     r = client.get(f"/nodes/{node.id}")
     assertOK(r)
-
     return node, r
 
 
