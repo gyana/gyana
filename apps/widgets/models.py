@@ -19,7 +19,7 @@ class Widget(CloneMixin, BaseModel):
         SIMPLE = "simple", "Simple"
         TIMESERIES = "timeseries", "Timeseries"
         ADVANCED = "advanced", "Advanced"
-        COMBO = "combo", "Combination"
+        COMBO = "combination", "Combination"
 
     class Kind(models.TextChoices):
         TEXT = "text", "Text"
