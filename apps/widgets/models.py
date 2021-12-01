@@ -16,10 +16,10 @@ class Widget(CloneMixin, BaseModel):
     _clone_m2o_or_o2m_fields = ["filters", "aggregations"]
 
     class Category(models.TextChoices):
-        SIMPLE = "simple", "Simple"
-        TIMESERIES = "timeseries", "Timeseries"
-        ADVANCED = "advanced", "Advanced"
-        COMBO = "combination", "Combination"
+        SIMPLE = "simple", "Simple charts"
+        TIMESERIES = "timeseries", "Timeseries charts"
+        ADVANCED = "advanced", "Advanced charts"
+        COMBO = "combination", "Combination charts"
 
     class Kind(models.TextChoices):
         TEXT = "text", "Text"

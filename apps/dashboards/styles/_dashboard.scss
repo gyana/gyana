@@ -2,6 +2,7 @@
   flex: 1 1 0%;
   overflow: auto;
   padding: 1.6rem;
+  height: 100%;
 
   &__header {
     align-items: center;
@@ -10,8 +11,14 @@
     display: flex;
     flex-shrink: 0;
     gap: 1.6rem;
-    height: 4.8rem;
+    height: 4.2rem;
     padding: 0 1.6rem;
+  }
+
+  & + .dnd-sidebar {
+    .dnd-sidebar__node {
+      min-height: auto;
+    }
   }
 }
 
