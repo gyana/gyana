@@ -89,7 +89,9 @@ class OneDimensionForm(GenericWidgetForm):
         table = self.get_live_field("table")
 
         if table:
-            fields += ["sort_by", "sort_ascending", "dimension"]
+            fields += ["dimension"]
+            if self.get_live_field("kind") != Widget.Kind.COMBO:
+                fields += ["sort_by", "sort_ascending"]
         return fields
 
 
