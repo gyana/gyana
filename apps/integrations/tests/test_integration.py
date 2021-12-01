@@ -52,12 +52,6 @@ def test_integration_crudl(client, logged_in_user, sheet_factory):
     assertOK(r)
     assertLink(r, f"{DETAIL}/delete", "Delete")
 
-    r = client.post(f"{DETAIL}/settings", data={"name": "Store Info"})
-    assertRedirects(r, f"{DETAIL}/settings", status_code=303)
-
-    integration.refresh_from_db()
-    assert integration.name == "Store Info"
-
     # delete
     r = client.get(f"{DETAIL}/delete")
     assertOK(r)
@@ -185,12 +179,6 @@ def test_integration_create_pending_load_and_approve(
     # the create and configure steps are tested in individual apps
     # the load stage requires celery progress (javascript)
     # we assume that the task was run successfully and is done
-
-    # pending page
-    r = client.get(f"{LIST}/pending")
-    assertOK(r)
-    assertSelectorLength(r, "table tbody tr", 1)
-    assertLink(r, f"{DETAIL}/done", "Store info")
 
     # load (redirects to done)
     r = client.get(f"{DETAIL}/load")

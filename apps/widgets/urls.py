@@ -1,7 +1,8 @@
-from apps.projects.access import login_and_project_required
 from django.urls import path
 from django.views.decorators.cache import cache_control
 from rest_framework import routers
+
+from apps.projects.access import login_and_project_required
 
 from . import cache, frames, rest, views
 from .access import (
@@ -44,7 +45,6 @@ dashboard_urlpatterns = (
             name="delete",
         ),
         # frames
-        path("", login_and_project_required(frames.WidgetList.as_view()), name="list"),
         path(
             "<hashid:pk>/update",
             login_and_project_required(frames.WidgetUpdate.as_view()),

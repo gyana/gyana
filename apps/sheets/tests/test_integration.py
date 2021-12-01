@@ -4,7 +4,12 @@ from unittest.mock import Mock, patch
 import googleapiclient
 import pytest
 from django.core import mail
-from pytest_django.asserts import assertContains, assertFormError, assertRedirects
+from pytest_django.asserts import (
+    assertContains,
+    assertFormError,
+    assertNotContains,
+    assertRedirects,
+)
 
 from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
 from apps.integrations.models import Integration
@@ -49,9 +54,11 @@ def test_sheet_create(
     # create
     r = client.get(f"{LIST}/sheets/new")
     assertOK(r)
-    assertFormRenders(r, ["url"])
+    assertFormRenders(r, ["url", "is_scheduled"])
 
-    r = client.post(f"{LIST}/sheets/new", data={"url": SHEETS_URL})
+    r = client.post(
+        f"{LIST}/sheets/new", data={"url": SHEETS_URL, "is_scheduled": True}
+    )
 
     integration = project.integration_set.first()
     assert integration is not None
@@ -95,6 +102,28 @@ def test_sheet_create(
     # assert len(mail.outbox) == 1
 
 
+def test_sheet_settings(client, logged_in_user, sheet_factory):
+
+    team = logged_in_user.teams.first()
+    SHEET_URL = "https://docs.google.com/spreadsheets/d/16h15cF3r_7bFjSAeKcy6nnNDpi-CS-NEgUKNCRGXs1E/edit"
+    sheet = sheet_factory(url=SHEET_URL, integration__project__team=team)
+
+    LIST = f"/projects/{sheet.integration.project.id}/integrations"
+    DETAIL = f"{LIST}/{sheet.integration.id}"
+
+    r = client.get(f"{DETAIL}/settings")
+    assertOK(r)
+    # todo: fix this!
+    assertFormRenders(r, ["name", "is_scheduled"])
+
+    r = client.post(f"{DETAIL}/settings", data={"is_scheduled": False})
+    assertRedirects(r, f"{DETAIL}/settings")
+
+    sheet.refresh_from_db()
+    assert not sheet.is_scheduled
+    assert sheet.next_daily_sync is None
+
+
 def test_validation_failures(client, logged_in_user, sheet_factory, sheets):
     team = logged_in_user.teams.first()
     SHEET_URL = "https://docs.google.com/spreadsheets/d/16h15cF3r_7bFjSAeKcy6nnNDpi-CS-NEgUKNCRGXs1E/edit"
@@ -107,10 +136,13 @@ def test_validation_failures(client, logged_in_user, sheet_factory, sheets):
 
     r = client.get(f"{LIST}/sheets/new")
     assertOK(r)
-    assertFormRenders(r, ["url"])
+    assertFormRenders(r, ["is_scheduled", "url"])
 
     # not a valid url
-    r = client.post(f"{LIST}/sheets/new", data={"url": "https://www.google.com"})
+    r = client.post(
+        f"{LIST}/sheets/new",
+        data={"url": "https://www.google.com", "is_scheduled": True},
+    )
     assertFormError(r, "form", "url", "The URL to the sheet seems to be invalid.")
 
     # not shared with our service account
@@ -120,7 +152,7 @@ def test_validation_failures(client, logged_in_user, sheet_factory, sheets):
     sheets.spreadsheets().get().execute = lambda: raise_(
         googleapiclient.errors.HttpError(Mock(), b"")
     )
-    r = client.post(f"{LIST}/sheets/new", data={"url": SHEET_URL})
+    r = client.post(f"{LIST}/sheets/new", data={"url": SHEET_URL, "is_scheduled": True})
     ERROR = "We couldn't access the sheet using the URL provided! Did you give access to the right email?"
     assertFormError(r, "form", "url", ERROR)
 
@@ -197,7 +229,7 @@ def test_resync_after_source_update(
     # sheet is up to date
     r = client.get_turbo_frame(f"{DETAIL}", f"/sheets/{sheet.id}/status")
     assertOK(r)
-    assertContains(r, "up to date")
+    assertNotContains(r, "sync the latest data")
 
     # no email
     assert len(mail.outbox) == 0

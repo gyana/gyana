@@ -1,12 +1,12 @@
 from django import forms
 
 from apps.base.formsets import RequiredInlineFormset
-from apps.columns.forms import AggregationColumnForm
+from apps.columns.forms import AggregationColumnForm, BaseLiveSchemaForm
 from apps.columns.models import AggregationColumn
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
 
-from .models import Widget
+from .models import CombinationChart, Widget
 
 FilterFormset = forms.inlineformset_factory(
     Widget,
@@ -89,6 +89,31 @@ Min2Formset = create_min_formset(2)
 Min3Formset = create_min_formset(3)
 # TODO: If at any point these contain more than one value we need to reconsider the logic
 # in widgets/widgets.py to calculate the maxMetrics
+
+
+class CombinationChartForm(AggregationColumnForm):
+    class Meta:
+        fields = ("kind", "column", "function", "on_secondary")
+        model = CombinationChart
+        help_texts = {
+            "column": "Select the column to aggregate over",
+            "function": "Select the aggregation function",
+        }
+
+    def get_live_fields(self):
+        return [*super().get_live_fields(), "kind", "on_secondary"]
+
+
+CombinationChartFormset = forms.inlineformset_factory(
+    Widget,
+    CombinationChart,
+    form=CombinationChartForm,
+    can_delete=True,
+    min_num=1,
+    extra=0,
+    formset=RequiredInlineFormset,
+)
+
 FORMSETS = {
     Widget.Kind.PIE: [OptionalMetricFormset],
     Widget.Kind.STACKED_BAR: [OptionalMetricFormset],
@@ -100,4 +125,5 @@ FORMSETS = {
     Widget.Kind.PYRAMID: [Min2Formset],
     Widget.Kind.FUNNEL: [Min2Formset],
     Widget.Kind.METRIC: [SingleMetricFormset],
+    Widget.Kind.COMBO: [CombinationChartFormset],
 }

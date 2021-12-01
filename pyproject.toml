@@ -70,6 +70,7 @@ dj-paddle = {git = "https://github.com/paddle-python/dj-paddle", rev = "8945137c
 fuzzywuzzy = "^0.18.0"
 python-Levenshtein = "^0.12.2"
 django-timezone-field = "^4.2.1"
+django-redis = "^5.0.0"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

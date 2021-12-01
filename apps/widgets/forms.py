@@ -8,7 +8,7 @@ from apps.tables.models import Table
 
 from .formsets import FORMSETS, AggregationColumnFormset, FilterFormset
 from .models import WIDGET_KIND_TO_WEB, Widget
-from .widgets import SourceSelect, VisualSelect
+from .widgets import SourceSelect
 
 
 class GenericWidgetForm(LiveUpdateForm):
@@ -27,7 +27,7 @@ class GenericWidgetForm(LiveUpdateForm):
             "stack_100_percent",
             "dateslice_column",
         ]
-        widgets = {"kind": VisualSelect(), "table": SourceSelect()}
+        widgets = {"table": SourceSelect()}
 
     def __init__(self, *args, **kwargs):
         # https://stackoverflow.com/a/30766247/15425660
@@ -106,7 +106,9 @@ class OneDimensionForm(GenericWidgetForm):
         table = self.get_live_field("table")
 
         if table:
-            fields += ["sort_by", "sort_ascending", "dimension"]
+            fields += ["dimension"]
+            if self.get_live_field("kind") != Widget.Kind.COMBO:
+                fields += ["sort_by", "sort_ascending"]
         return fields
 
 
@@ -192,6 +194,7 @@ FORMS = {
     Widget.Kind.HEATMAP: TwoDimensionForm,
     Widget.Kind.BUBBLE: OneDimensionForm,
     Widget.Kind.METRIC: GenericWidgetForm,
+    Widget.Kind.COMBO: OneDimensionForm,
 }
 
 

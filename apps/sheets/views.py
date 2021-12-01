@@ -1,11 +1,12 @@
 import analytics
+from django.conf import settings
+from django.urls import reverse
+from django.urls.base import reverse
+
 from apps.base.analytics import INTEGRATION_CREATED_EVENT, NEW_INTEGRATION_START_EVENT
 from apps.base.turbo import TurboCreateView
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
-from django.conf import settings
-from django.urls import reverse
-from django.urls.base import reverse
 
 from .forms import SheetCreateForm
 from .models import Sheet
@@ -21,7 +22,7 @@ class SheetCreate(ProjectMixin, TurboCreateView):
         kwargs["project"] = self.project
         kwargs["created_by"] = self.request.user
         kwargs["url"] = self.request.GET.get("url")
-
+        kwargs["request"] = self.request
         return kwargs
 
     def get(self, request, *args, **kwargs):

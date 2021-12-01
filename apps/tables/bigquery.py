@@ -22,7 +22,7 @@ FIVETRAN_COLUMNS = set(
 
 
 def _get_cache_key_for_table(table):
-    return get_cache_key(id=table.id, data_updated=str(table.data_updated))
+    return f"cache-ibis-table-{get_cache_key(id=table.id, data_updated=str(table.data_updated))}"
 
 
 def get_query_from_table(table: Table) -> TableExpr:

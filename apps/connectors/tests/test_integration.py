@@ -101,7 +101,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project):
     r = client.get(f"{DETAIL}/load")
     assertOK(r)
     assertContains(r, "Google Analytics")
-    assertLink(r, f"{LIST}/pending", "pending integrations")
+    assertLink(r, f"{LIST}/", "integrations")
 
     # the user leaves the page and periodic job runs in background
     fivetran.get.return_value = get_mock_fivetran_connector(succeeded_at=timezone.now())
@@ -133,7 +133,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project):
     # assert len(mail.outbox) == 1
 
 
-def test_status_on_pending_page(
+def test_status_on_integrations_page(
     client,
     logged_in_user,
     bigquery,
@@ -154,12 +154,12 @@ def test_status_on_pending_page(
 
     LIST = f"/projects/{project.id}/integrations"
 
-    # test: the status indicator on the pending page will be loading, until the
+    # test: the status indicator on the integrations page will be loading, until the
     # connector has completed the sync
 
     # loading
     r = client.get_turbo_frame(
-        f"{LIST}/pending",
+        f"{LIST}/",
         f"/connectors/{connector.id}/icon",
     )
     assertOK(r)
@@ -171,11 +171,11 @@ def test_status_on_pending_page(
 
     # done
     r = client.get_turbo_frame(
-        f"{LIST}/pending",
+        f"{LIST}/",
         f"/connectors/{connector.id}/icon",
     )
     assertOK(r)
-    assertSelectorLength(r, ".fa-exclamation-triangle", 1)
+    assertSelectorLength(r, ".fa-info-circle", 1)
 
     assert fivetran.get.call_count == 2
     assert fivetran.get.call_args.args == (connector,)

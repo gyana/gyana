@@ -2,8 +2,7 @@ from django import forms
 from ibis.expr.datatypes import Floating
 
 from apps.base.aggregations import AGGREGATION_TYPE_MAP
-from apps.base.live_update_form import LiveUpdateForm
-from apps.base.schema_form_mixin import SchemaFormMixin
+from apps.base.live_update_form import BaseLiveSchemaForm
 from apps.base.utils import create_column_choices
 from apps.base.widgets import SelectWithDisable
 from apps.columns.models import (
@@ -31,7 +30,7 @@ IBIS_TO_FUNCTION = {
 }
 
 
-class AggregationColumnForm(SchemaFormMixin, LiveUpdateForm):
+class AggregationColumnForm(BaseLiveSchemaForm):
     class Meta:
         fields = ("column", "function")
         help_texts = {
@@ -59,7 +58,7 @@ class AggregationColumnForm(SchemaFormMixin, LiveUpdateForm):
             ]
 
 
-class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
+class OperationColumnForm(BaseLiveSchemaForm):
     class Meta:
         model = EditColumn
         fields = (
@@ -109,7 +108,7 @@ class OperationColumnForm(SchemaFormMixin, LiveUpdateForm):
         return super().save(commit=commit)
 
 
-class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
+class AddColumnForm(BaseLiveSchemaForm):
     class Meta:
         model = AddColumn
         fields = (
@@ -156,7 +155,7 @@ class AddColumnForm(SchemaFormMixin, LiveUpdateForm):
         return fields
 
 
-class FormulaColumnForm(SchemaFormMixin, LiveUpdateForm):
+class FormulaColumnForm(BaseLiveSchemaForm):
     class Meta:
         fields = ("formula", "label")
         model = FormulaColumn
@@ -167,7 +166,7 @@ class FormulaColumnForm(SchemaFormMixin, LiveUpdateForm):
         self.fields["formula"].widget = CodeMirror(self.schema)
 
 
-class WindowColumnForm(SchemaFormMixin, LiveUpdateForm):
+class WindowColumnForm(BaseLiveSchemaForm):
     class Meta:
         fields = ("column", "function", "group_by", "order_by", "ascending", "label")
         model = WindowColumn
@@ -213,7 +212,7 @@ class WindowColumnForm(SchemaFormMixin, LiveUpdateForm):
         return fields
 
 
-class ConvertColumnForm(SchemaFormMixin, LiveUpdateForm):
+class ConvertColumnForm(BaseLiveSchemaForm):
     class Meta:
         fields = ("column", "target_type")
         model = ConvertColumn

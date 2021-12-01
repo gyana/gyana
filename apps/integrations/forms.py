@@ -1,7 +1,8 @@
-from apps.connectors.forms import ConnectorUpdateForm
-from apps.sheets.forms import SheetUpdateForm
-from apps.uploads.forms import UploadUpdateForm
 from django import forms
+
+from apps.connectors.forms import ConnectorSettingsForm, ConnectorUpdateForm
+from apps.sheets.forms import SheetSettingsForm, SheetUpdateForm
+from apps.uploads.forms import UploadSettingsForm, UploadUpdateForm
 
 from .models import Integration
 
@@ -16,4 +17,10 @@ KIND_TO_FORM_CLASS = {
     Integration.Kind.CONNECTOR: ConnectorUpdateForm,
     Integration.Kind.SHEET: SheetUpdateForm,
     Integration.Kind.UPLOAD: UploadUpdateForm,
+}
+
+KIND_TO_SETTINGS_FORM_CLASS = {
+    Integration.Kind.CONNECTOR: ConnectorSettingsForm,
+    Integration.Kind.SHEET: SheetSettingsForm,
+    Integration.Kind.UPLOAD: UploadSettingsForm,
 }

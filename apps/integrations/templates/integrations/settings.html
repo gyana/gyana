@@ -3,13 +3,15 @@
 {% block tab %}
 <div class="flex flex-col flex-1 overflow-auto">
   <div class="max-w-lg mb-auto pad">
-    {% comment %} <form method="post" action="{% url 'project_integrations:update' project.id object.id %}" class="form">
-      {% csrf_token %}
+    {% if form.fields %}
+      <form method="post" action="{% url 'project_integrations:settings' project.id object.id %}" class="form">
+        {% csrf_token %}
 
-      {% include "django/forms/default_form.html" %}
+        {% include "django/forms/default_form.html" %}
 
-      <button type="submit" class="button button--filled button--success">Save changes</button>
-    </form> {% endcomment %}
+        <button type="submit" class="button button--filled button--success">Save changes</button>
+      </form>
+    {% endif %}
   </div>
 
   <div class="pad border-t border-gray">

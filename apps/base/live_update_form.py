@@ -2,6 +2,7 @@ from django import forms
 from django.utils.datastructures import MultiValueDict
 
 from apps.base.forms import BaseModelForm
+from apps.base.schema_form_mixin import SchemaFormMixin
 
 
 class LiveUpdateForm(BaseModelForm):
@@ -73,3 +74,7 @@ class LiveUpdateForm(BaseModelForm):
     def get_live_fields(self):
         # by default the behaviour is a normal form
         return [f for f in self.fields.keys() if f != "hidden_live"]
+
+
+class BaseLiveSchemaForm(SchemaFormMixin, LiveUpdateForm):
+    pass

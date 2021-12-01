@@ -11,6 +11,7 @@
 @use "../../teams/styles/plan";
 
 @use "../../web/styles/landing";
+@use "../../web/styles/project-card";
 @use "../../web/styles/sidebar";
 
 @use "../../nodes/styles/index";
@@ -18,5 +19,6 @@
 @use "../../widgets/styles/widget";
 
 @use "../../workflows/styles/workflow";
+@use "../../workflows/styles/dnd-sidebar";
 
 @use "../../uploads/styles/upload_csv";

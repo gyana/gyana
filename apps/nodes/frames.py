@@ -47,21 +47,7 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
     turbo_frame_dom_id = "workflow-modal"
 
     def get_formset_form_kwargs(self, formset):
-
-        if formset.get_default_prefix() in [
-            "add_columns",
-            "rename_columns",
-            "edit_columns",
-            "aggregations",
-            "filters",
-            "formula_columns",
-            "sort_columns",
-            "window_columns",
-            "convert_columns",
-        ]:
-            return {"schema": self.object.parents.first().schema}
-
-        return {}
+        return {"schema": self.object.parents.first().schema}
 
     @property
     def preview_node_id(self):

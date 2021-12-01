@@ -148,3 +148,15 @@ def test_no_dimension(kind, setup, widget_factory):
     query = get_query_from_widget(widget)
 
     assert query.compile() == NO_DIMENSION_THREE_AGGREGATIONS_QUERY
+
+
+def test_combo_chart(setup, widget_factory):
+    widget = widget_factory(kind=Widget.Kind.COMBO, dimension="is_nice")
+    widget.charts.create(column="stars", function="sum")
+    query = get_query_from_widget(widget)
+
+    assert query.compile() == SINGLE_DIMENSION_SINGLE_AGGREGATION_QUERY
+    widget.charts.create(column="athlete", function="count")
+    query = get_query_from_widget(widget)
+
+    assert query.compile() == SINGLE_DIMENSION_TWO_AGGREGATIONS_QUERY

@@ -2,7 +2,7 @@ from typing import Final
 
 import analytics
 
-from apps.nodes.models import Node
+from apps.nodes.models import Edge, Node
 from apps.users.models import CustomUser
 
 # users
@@ -94,4 +94,25 @@ def track_node(user: CustomUser, node: Node, track_id: str, **kwargs):
         user.id,
         track_id,
         {"id": node.id, "type": node.kind, "workflow_id": node.workflow.id, **kwargs},
+    )
+
+
+def track_edge(user: CustomUser, edge: Edge, track_id: str, **kwargs):
+    """Sends tracking event with default fields. Allows for kwargs to be added as additional properties"""
+    analytics.track(
+        user.id,
+        track_id,
+        {
+            # legacy
+            "id": edge.child.id,
+            "type": edge.child.kind,
+            "workflow_id": edge.child.workflow_id,
+            # new from 29/11/2021
+            "edge_id": edge.id,
+            "parent": edge.parent.id,
+            "child": edge.child.id,
+            "parent_kind": edge.parent.kind,
+            "child_kind": edge.child.kind,
+        },
+        **kwargs,
     )

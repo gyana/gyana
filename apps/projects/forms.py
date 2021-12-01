@@ -109,4 +109,4 @@ class ProjectUpdateForm(MemberSelectMixin, LiveUpdateForm):
 
     def post_save(self, instance):
         if self._daily_schedule_time_is_dirty:
-            instance.update_connectors_daily_sync_time()
+            instance.update_daily_sync_time()

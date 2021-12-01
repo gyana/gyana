@@ -1,6 +1,5 @@
 import django_filters
 from django import forms
-from django.db import models
 
 from .models import Integration
 
@@ -13,7 +12,7 @@ class IntegrationFilter(django_filters.FilterSet):
 
     class Meta:
         model = Integration
-        fields = ["name", "kind"]
+        fields = ("name", "kind")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

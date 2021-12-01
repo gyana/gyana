@@ -1,6 +1,7 @@
+from django import forms
+
 from apps.base.forms import BaseModelForm
 from apps.uploads.widgets import GCSFileUpload
-from django import forms
 
 from .models import Upload
 
@@ -32,3 +33,9 @@ class UploadUpdateForm(forms.ModelForm):
         help_texts = {
             "field_delimiter": "A field delimiter is a character that separates cells in a CSV table."
         }
+
+
+class UploadSettingsForm(BaseModelForm):
+    class Meta:
+        model = Upload
+        fields = []

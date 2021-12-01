@@ -41,3 +41,8 @@ def setup_periodic_tasks(sender, **kwargs):
         crontab(0, 0, day_of_month=1),
         signature("apps.teams.periodic.calculate_monthly_credit_statement"),
     )
+    sender.add_periodic_task(
+        # every ten minutes
+        crontab(minute="*/10"),
+        signature("apps.sheets.periodic.run_periodic_sheet_sync"),
+    )

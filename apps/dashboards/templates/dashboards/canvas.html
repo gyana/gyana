@@ -1,0 +1,91 @@
+{% load static %}
+
+<div class="widgets" data-controller="tf-modal" data-open-on-param>  
+  <div
+    data-controller="canvas"
+    class="widgets__canvas"
+    style="--background-color:{{ dashboard.background_color }};"
+  >
+    {% comment %} Hidden form used by canvas controller {% endcomment %}
+    <form
+      method="post"
+      action="{% url 'dashboard_widgets:create' project.id dashboard.id %}?mode=edit"
+      class="hidden"
+      data-canvas-target="form"
+    >
+      {% csrf_token %}
+
+      <input name='kind' id="id_kind" value="" />
+      <input name='x' id="id_x" value="" />
+      <input name='y' id="id_y" value="" />
+
+      <button type="submit"></button>
+    </form>
+    <div
+      id="dashboard-widget-container"
+      class="{% if request.GET.mode != 'view' %}widgets__grid{%endif%}"
+      data-controller="widget-list"
+      style="
+        min-width:{{ dashboard.width }}px;
+        min-height:{{ dashboard.height }}px;
+        --grid-size:{{ dashboard.grid_size }}px;
+      "
+    >
+      {% for object in dashboard.widget_set.all %}
+        {% include 'widgets/widget_component.html' %}
+      {% empty %}
+        {% if request.GET.mode != 'view' %}
+          <div id='dashboard-widget-placeholder' class="placeholder-scr placeholder-scr--fillscreen mt-96 gap-10">
+            <div class="flex items-center max-w-lg gap-7">
+              <i class="fas fa-fw fa-chart-bar text-blue fa-2x"></i>
+              <p>
+                Start building your dashboard by dragging in a <strong>widget</strong>
+              </p>
+            </div>
+
+            <div class="flex items-center max-w-lg gap-7">
+              <i class="fas fa-fw fa-edit text-black-50 fa-2x"></i>
+              <p>
+                <strong>Edit</strong> to customize data sources, dimensions, metrics and filters
+              </p>
+            </div>
+
+            <div class="flex items-center max-w-lg gap-7">
+              <i class="fas fa-fw fa-paint-brush text-pink fa-2x"></i>
+              <p>
+                Make your dashboard unique with <strong>theme and layout</strong> settings
+              </p>
+            </div>
+
+            <div class="flex items-center max-w-lg gap-7">
+              <i class="fas fa-fw fa-share text-green fa-2x"></i>
+              <p>
+                <strong>Share</strong> your dashboard as a public or password-protected link
+              </p>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% comment %}
+  The modal needs to be below the container because otherwise the
+  updated output turbo-stream would update the chart inside the modal.
+  {% endcomment %}
+  <div data-tf-modal-target="modal" class="tf-modal hidden">
+    <div class="card card--none card--modal flex-col flex-1 overflow-auto">
+      <turbo-frame 
+        id="widget-modal"
+        data-tf-modal-target="turboFrame"
+        {% if modal_item %}
+          src="{% url "dashboard_widgets:update" project.id dashboard.id modal_item%}"
+        {% endif %}
+      >
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
+        </div>
+      </turbo-frame>
+    </div>
+  </div>
+  {% include 'components/modal_closing_warning.html' %}
+</div>

@@ -2,6 +2,11 @@ import re
 
 import pytest
 from bs4 import BeautifulSoup
+from bs4.element import CData, NavigableString, TemplateString
+
+# bs4 ignores text within templates tags, but for our product they are designed
+# to be displayed with javascript
+BS4_TYPES = [NavigableString, TemplateString, CData]
 
 pytestmark = pytest.mark.django_db
 
@@ -15,11 +20,11 @@ def assertLink(response, url, text=None, title=None):
     matches = [m for m in original_matches if m.get("href") == url]
 
     if text is not None:
-        matches = [m for m in matches if text in m.text]
+        matches = [m for m in matches if text in m.get_text(types=BS4_TYPES)]
     elif title is not None:
         matches = [m for m in matches if title in m["title"]]
 
-    error_list = [m.get("href") for m in original_matches]
+    error_list = [m for m in original_matches]
 
     assert len(matches) == 1, f"Possible matches are {error_list}"
 

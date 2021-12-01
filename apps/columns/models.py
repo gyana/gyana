@@ -5,7 +5,7 @@ from django.db import models
 from apps.base.aggregations import AggregationFunctions
 from apps.base.models import SaveParentModel
 from apps.nodes.models import Node
-from apps.widgets.models import Widget
+from apps.widgets.models import CombinationChart, Widget
 
 from .bigquery import (
     CommonOperations,

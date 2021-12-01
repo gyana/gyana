@@ -61,8 +61,8 @@ Cypress.Commands.add('drag', (selector) => {
   return cy.get(selector).trigger('dragstart', { dataTransfer }).trigger('drag', { dataTransfer })
 })
 
-Cypress.Commands.add('drop', (selector) => {
-  return cy.get(selector).trigger('drop', { dataTransfer })
+Cypress.Commands.add('drop', (selector, event = {}) => {
+  return cy.get(selector).trigger('drop', { dataTransfer, ...event })
 })
 
 // https://github.com/wbkd/react-flow/blob/main/cypress/support/commands.js

@@ -1,13 +1,8 @@
 import pytest
-from pytest_django.asserts import assertContains, assertRedirects
+from pytest_django.asserts import assertContains
 from turbo_response.response import TurboStreamResponse
 
-from apps.base.tests.asserts import (
-    assertFormRenders,
-    assertLink,
-    assertOK,
-    assertSelectorLength,
-)
+from apps.base.tests.asserts import assertLink, assertOK
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.widgets.models import Widget
@@ -38,7 +33,7 @@ def test_widget_crudl(
     # create
     r = client.post(
         f"{dashboard_url}/widgets/new",
-        data={"kind": Widget.Kind.COLUMN},
+        data={"x": 50, "y": 100, "kind": Widget.Kind.COLUMN},
     )
     widget = Widget.objects.first()
     assertOK(r)
@@ -82,11 +77,3 @@ def test_widget_crudl(
     # delete
     r = client.delete(f"{dashboard_url}/widgets/{widget.id}/delete")
     assert Widget.objects.first() is None
-
-    # list
-    widget_factory.create_batch(
-        10, kind=Widget.Kind.COLUMN, dashboard=dashboard, table=table
-    )
-    r = client.get(f"{dashboard_url}/widgets/")
-    assertOK(r)
-    assertSelectorLength(r, "gy-widget", 10)

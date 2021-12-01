@@ -1,7 +1,8 @@
 {% extends "teams/base.html" %}
+{% load render_table from django_tables2 %}
+{% load django_tables2 %}
 {% load humanize %}
 {% load waffle_tags %}
-{% load render_table from django_tables2 %}
 {% load help_utils %}
 
 {% block tab %}
@@ -25,39 +26,64 @@
   {% endflag %}
 
   {% if project_count > 0 %}
-  <div class="flex mb-3 justify-between">
-    <h2 class="flex gap-3 items-center">
+  <div class="flex mb-3 gap-3">
+    <h2 class="flex gap-3 items-center mr-auto">
       Your Projects {% link_article 'overview' 'collaborate' %}
     </h2>
-    {% if  team.can_create_project%}
-      <a class="button button--sm" href="{% url 'team_projects:create' team.id %}">
-        <i class="fas fa-fw fa-plus"></i> New Project
-      </a>
-    {% else %}
-      <div data-controller='tooltip'>
-        <a disabled class="button button--sm" href="{% url 'team_projects:create' team.id %}">
-          <i class="fas fa-fw fa-plus"></i> New Project
+
+    <div
+      data-controller="popover"
+      data-placement="bottom-end"
+      data-theme="popover-menu"
+    >
+      <button class="button button--sm button--tertiary">
+        Sort <i class="fas fa-chevron-down"></i>
+      </button>
+
+      <template data-popover-target="body">
+        {% for column in table.columns.iterorderable %}
+        <a
+          class="list__item list__item--interactive w-full {{ column.attrs.th.class }} "
+          {% if column.is_ordered %}
+          href="{% querystring table.prefixed_order_by_field=""%}"
+          {% else %}
+          href="{% querystring table.prefixed_order_by_field=column.order_by_alias.opposite %}"
+          {% endif %}
+        >
+          <span class="mr-7">
+            {{ column.header }}
+          </span>
+
+          <i class="fas fa-fw fa-check ml-auto {% if not column.is_ordered %}invisible{% endif %}"></i>
         </a>
-        <span data-tooltip-target="body">
-          You have reached the maximum number of projects on your current plan.
-        </span>
-      </div>      
+        {% endfor %}
+      </template>
+    </div>
+
+    {% if team.can_create_project %}
+    <a
+      class="button button--sm"
+      href="{% url 'team_projects:create' team.id %}"
+    >
+      <i class="fas fa-fw fa-plus"></i> New Project
+    </a>
+    {% else %}
+    <div data-controller='tooltip' id="new-project">
+      <p
+        class="button button--sm"
+        disabled
+      >
+        <i class="fas fa-fw fa-plus"></i> New Project
+      </p>
+      <span data-tooltip-target="body">
+        You have reached the maximum number of projects on your current plan.
+      </span>
+    </div>
     {% endif %}
   </div>
-  <div class="card card--none">
-    {% render_table table %}
 
-    <p class="pad pad--sm small">
-      {% if  team.can_create_project%}
-        <a class="link" href="{% url 'team_projects:create' team.id %}">
-          <i class="fas fa-fw fa-plus mr-2"></i>Create a new project
-        </a>
-      {% else %}
-        You have reached the maximum number of projects on your current plan. 
-        Please <a class='link' href="{% url 'teams:account' team.id%}" data-turbo-frame="_top">upgrade</a> to create more projects. 
-      {% endif %}
-    </p>
-  </div>
+  {% render_table table %}
+
   {% else %}
   <div class="table__empty">
     <i class="fas fa-fw fa-4x fa-sparkles text-orange mb-7"></i>

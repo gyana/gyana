@@ -34,12 +34,15 @@
     <li><hr></li>
 
     {% for user_team in request.user.teams.all %}
-    <li>
-      <a class="sidebar__link {% if user_team.id == team.id %}sidebar__link--active{% endif %}"
+    <li data-controller="tooltip" data-placement="right">
+      <a
+        class="sidebar__link {% if user_team.id == team.id %}sidebar__link--active{% endif %}"
         href="{% url 'teams:detail' user_team.id %}"
-        title="{{ user_team.name }}">
+      >
         {% if user_team.icon %}<img src="{{ user_team.icon.url }}" />{% else %}<span class="team_logo">{{ user_team.name|slice:1|capfirst }}</span>{% endif %}{{ user_team.name }}
       </a>
+
+      <span data-tooltip-target="body">{{ user_team.name }}</span>
     </li>
     {% endfor %}
 

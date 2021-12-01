@@ -1,17 +1,15 @@
-from datetime import datetime
-
-from apps.base.time import catchtime
-from apps.integrations.emails import send_integration_ready_email
-from apps.integrations.models import Integration
-from apps.tables.models import Table
 from celery import shared_task
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
+from apps.base.time import catchtime
+from apps.integrations.emails import send_integration_ready_email
+from apps.integrations.models import Integration
+from apps.tables.models import Table
+
 from .bigquery import import_table_from_sheet
 from .models import Sheet
-from .sheets import get_last_modified_from_drive_file
 
 
 @shared_task(bind=True)
@@ -35,25 +33,30 @@ def run_sheet_sync_task(self, sheet_id):
                 project=integration.project,
             )
 
-            sheet.drive_file_last_modified_at_sync = get_last_modified_from_drive_file(
-                sheet
-            )
+            sheet.sync_updates_from_drive()
 
             with catchtime() as get_time_to_sync:
                 import_table_from_sheet(table=table, sheet=sheet)
 
             table.sync_updates_from_bigquery()
 
-            sheet.last_synced = datetime.now()
+            sheet.drive_file_last_modified_at_sync = sheet.drive_modified_date
+            sheet.succeeded_at = timezone.now()
             sheet.save()
 
             integration.state = Integration.State.DONE
             integration.save()
 
     except Exception as e:
+        sheet.failed_at = timezone.now()
+        sheet.save()
+
         integration.state = Integration.State.ERROR
         integration.save()
         raise e
+
+    finally:
+        sheet.update_next_daily_sync()
 
     if created:
         send_integration_ready_email(integration, int(get_time_to_sync()))
@@ -71,3 +74,16 @@ def run_sheet_sync(sheet: Sheet):
     sheet.sync_task_id = result.task_id
     sheet.sync_started = timezone.now()
     sheet.save()
+
+
+def run_periodic_sheet_sync(sheet: Sheet):
+
+    sheet.sync_updates_from_drive()
+
+    if sheet.retry_limit_exceeded:
+        sheet.update_next_daily_sync()
+    elif sheet.up_to_date:
+        sheet.succeeded_at = timezone.now()
+        sheet.update_next_daily_sync()
+    else:
+        run_sheet_sync(sheet)

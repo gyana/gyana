@@ -1,20 +1,2 @@
-<div style="height: 100%; width: 100%;" id="chart-{{ chart_id }}-container" />
+<div style="height: 100%; width: 100%;" id="chart-{{ chart_id }}-container"/>
 <div data-controller="turbo-issue-186-workaround">{{ chart|safe }}</div>
-
-<script>
-FusionCharts && FusionCharts.register('theme', {
-  name: 'CustomDashboardTheme',
-  theme: {
-    base: {
-      chart: {
-        bgColor: "{{ dashboard.background_color }}",
-        paletteColors: "{% autoescape off %}{{ dashboard.palette_colors|join:"," }}{% endautoescape %}",
-      },
-    }
-  }
-});
-
-FusionCharts && FusionCharts.addEventListener("initialized", function(eventObj, eventArgs) {
-  eventObj.sender.setChartAttribute("theme", "fusion, CustomDashboardTheme")
-});
-</script>

@@ -64,7 +64,7 @@ describe('workflows', () => {
     cy.contains('Save & Close').click()
 
     cy.story('Run workflow')
-    cy.contains('Run').click()
+    cy.get('[data-cy=workflow-run]').click()
     cy.contains('Last run')
     cy.get('.sidebar__link--active').click()
     cy.contains('Uptodate')

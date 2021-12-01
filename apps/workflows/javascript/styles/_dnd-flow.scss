@@ -12,8 +12,8 @@
     display: flex;
     flex-flow: column;
     justify-content: center;
-
     padding: 0;
+
     height: 12rem;
     width: 12rem;
 
@@ -23,7 +23,6 @@
 
     &-output {
       color: var(--c-pink);
-      border-radius: 100%;
 
       &.selected {
         border: 2px solid var(--c-pink);
@@ -32,7 +31,6 @@
 
     &-input {
       color: var(--c-green);
-      border-radius: 100%;
 
       &.selected {
         border: 2px solid var(--c-green);
@@ -92,7 +90,6 @@
     background-color: var(--c-transparent);
     border-radius: 0;
     border: 0;
-    height: 100%;
     right: 0;
     display: flex;
     justify-content: center;
@@ -185,17 +182,6 @@
 .dndflow {
   display: flex;
   height: 100%;
-
-  &__run-button {
-    position: absolute;
-    right: 1.6rem;
-    top: 1.6rem;
-    z-index: var(--z-ui);
-
-    button {
-      background-color: var(--c-white);
-    }
-  }
 }
 
 .dndflow .reactflow-wrapper {

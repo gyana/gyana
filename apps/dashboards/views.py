@@ -13,7 +13,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView
 from django_tables2 import SingleTableView
-from waffle import flag_is_active
+from turbo_response.response import HttpResponseSeeOther
 
 from apps.base.analytics import (
     DASHBOARD_CREATED_EVENT,
@@ -26,7 +26,7 @@ from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import WIDGET_CHOICES_ARRAY, Widget
 
-from .forms import DashboardCreateForm, DashboardForm, DashboardLoginForm
+from .forms import DashboardCreateForm, DashboardLoginForm, DashboardNameForm
 from .models import Dashboard
 
 
@@ -113,7 +113,7 @@ class DashboardCreateFromIntegration(ProjectMixin, TurboCreateView):
 class DashboardDetail(ProjectMixin, TurboUpdateView):
     template_name = "dashboards/detail.html"
     model = Dashboard
-    form_class = DashboardForm
+    form_class = DashboardNameForm
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

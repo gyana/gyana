@@ -92,7 +92,7 @@ PROJECT_APPS = [
     "apps.tables.apps.TablesConfig",
     "apps.invites.apps.InvitesConfig",
     "apps.base.apps.BaseConfig",
-    "apps.nodes",
+    "apps.nodes.apps.NodesConfig",
     "apps.columns",
     "apps.uploads",
     "apps.sheets",

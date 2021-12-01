@@ -14,12 +14,3 @@ class RequiredInlineFormset(BaseInlineFormSet):
         for form in self.forms:
             form.empty_permitted = False
             form.use_required_attribute = True
-
-
-class InlineColumnFormset(RequiredInlineFormset):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.form.base_fields["column"] = forms.ChoiceField(
-            choices=create_column_choices(self.instance.parents.first().schema),
-            help_text=self.form.base_fields["column"].help_text,
-        )

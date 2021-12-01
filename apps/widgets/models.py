@@ -19,6 +19,7 @@ class Widget(CloneMixin, BaseModel):
         SIMPLE = "simple", "Simple"
         TIMESERIES = "timeseries", "Timeseries"
         ADVANCED = "advanced", "Advanced"
+        COMBO = "combination", "Combination"
 
     class Kind(models.TextChoices):
         TEXT = "text", "Text"
@@ -48,6 +49,7 @@ class Widget(CloneMixin, BaseModel):
             "Stacked Column Timeseries",
         )
         TIMESERIES_AREA = "timeseries-area", "Area Timeseries"
+        COMBO = "mscombidy2d", "Combination chart"
 
     class Aggregator(models.TextChoices):
         # These aggregators should reflect the names described in the ibis api, none is an exception
@@ -211,6 +213,11 @@ WIDGET_KIND_TO_WEB = {
         Widget.Category.TIMESERIES,
         "Area",
     ),
+    Widget.Kind.COMBO.value: (
+        f"fa-analytics",
+        Widget.Category.COMBO,
+        "Combination chart",
+    ),
 }
 
 
@@ -220,3 +227,21 @@ WIDGET_CHOICES_ARRAY = [
 
 
 COUNT_COLUMN_NAME = "count"
+
+
+class CombinationChart(BaseModel):
+    class Meta:
+        ordering = ("created",)
+
+    class Kind(models.TextChoices):
+        LINE = "line", "Line"
+        AREA = "area", "Area"
+        COLUMN = "column", "Column"
+
+    widget = models.ForeignKey(Widget, on_delete=models.CASCADE, related_name="charts")
+    kind = models.CharField(max_length=32, choices=Kind.choices, default=Kind.COLUMN)
+    column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
+    function = models.CharField(max_length=20, choices=AggregationFunctions.choices)
+    on_secondary = models.BooleanField(
+        default=False, help_text="Plot on a secondary Y-axis"
+    )

@@ -1,6 +1,6 @@
 .tabbar {
   display: flex;
-  height: 4.8rem;
+  height: 4.2rem;
 
   &::after {
     border-bottom: 1px solid var(--c-gray);
@@ -16,7 +16,9 @@
     color: var(--c-black-50);
     font-size: 1.4rem;
     line-height: 1.6rem;
-    padding: 1.6rem;
+    padding: 0 1.6rem;
+    display: flex;
+    align-items: center;
     text-align: center;
     z-index: var(--z-default);
   }

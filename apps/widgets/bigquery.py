@@ -41,6 +41,11 @@ def get_query_from_widget(widget: Widget, date_slicer):
         query = slice_query(query, widget.dateslice_column, date_slicer)
     aggregations = widget.aggregations.all()
 
+    if widget.category == Widget.Category.COMBO:
+        aggregations = widget.charts.all()
+    else:
+        aggregations = widget.aggregations.all()
+
     groups = [widget.dimension] if widget.kind not in NO_DIMENSION_WIDGETS else []
     if (
         widget.kind

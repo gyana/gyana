@@ -53,6 +53,7 @@ urlpatterns = [
 router = routers.DefaultRouter()
 # Access should be handled on the viewset
 router.register("api/nodes", rest.NodeViewSet, basename="Node")
+router.register("api/edges", rest.EdgeViewSet, basename="Edge")
 
 
 urlpatterns += router.urls

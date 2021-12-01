@@ -1,7 +1,6 @@
 from apps.base.frames import TurboFrameDetailView
 
 from .models import Sheet
-from .sheets import get_last_modified_from_drive_file
 
 
 class SheetStatus(TurboFrameDetailView):

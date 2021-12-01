@@ -1,0 +1,8 @@
+{% load humanize %}
+{% if record.num_rows == 0 %}
+    —
+{% elif record.ready %}
+    {{ record.num_rows|intcomma }}
+{% else %}
+    <i>{{ record.num_rows|intcomma }}*</i>
+{% endif %}

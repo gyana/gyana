@@ -72,6 +72,24 @@ STACK_DATA = {
     ],
 }
 
+COMBO_DATA = {
+    "categories": [{"category": [{"label": label} for label in DIMENSION]}],
+    "dataset": [
+        {
+            "seriesname": "medals",
+            "renderAs": "column",
+            "parentYAxis": "P",
+            "data": [{"value": value} for value in range(10)],
+        },
+        {
+            "seriesname": "points",
+            "renderAs": "line",
+            "parentYAxis": "S",
+            "data": [{"value": value} for value in range(10, 20)],
+        },
+    ],
+}
+
 COLORRANGE = {
     "colorrange": {
         "gradient": "0",
@@ -380,3 +398,11 @@ def test_chart_data(widget_factory, kind, df, aggregations, data_expected):
     data = CHART_DATA[widget.kind](widget, df)
 
     assert data == data_expected
+
+
+def test_chart_combo_data(widget_factory):
+    widget = widget_factory(kind=Widget.Kind.COMBO, dimension="dimension")
+    widget.charts.create(**AGGREGATION_1)
+    widget.charts.create(**AGGREGATION_2, kind="line", on_secondary=True)
+    data = CHART_DATA[widget.kind](widget, ONE_DIMENSION_DF)
+    assert data == COMBO_DATA

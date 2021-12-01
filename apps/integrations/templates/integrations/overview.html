@@ -65,7 +65,7 @@
       <p class="text-black-50">
         <i class="fa fa-info-circle"></i>
         You have {{ integrations.attention|intcomma }} pending integration{{ integrations.attention|pluralize }} that need{{ integrations.attention|pluralize:"s," }}
-          your <a class="link" href="{% url 'project_integrations:pending' project.id %}" data-turbo-frame="_top">attention</a>.
+          your <a class="link" href="{% url 'project_integrations:list' project.id %}" data-turbo-frame="_top">attention</a>.
       </p>
       {% endif %} 
 

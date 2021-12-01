@@ -1,42 +1,37 @@
-import { Edge, isNode, Node } from 'react-flow-renderer'
-import React, { useEffect, useState } from 'react'
+import { isNode } from 'react-flow-renderer'
+import React, { useContext, useEffect, useState } from 'react'
 import { GyanaEvents } from 'apps/base/javascript/events'
+import { getApiClient } from 'apps/base/javascript/api'
+import { DnDContext, IDnDContext } from '../context'
+import Tippy from '@tippyjs/react'
 
-const RunButton: React.FC<{
-  hasOutput: boolean
-  hasBeenRun: boolean
-  setHasBeenRun: (x: boolean) => void
-  workflowId: string
-  client
-  elements: (Node | Edge)[]
-  setElements: (elements: (Node | Edge)[]) => void
-  isOutOfDate: boolean
-  setIsOutOfDate: (x: boolean) => void
-}> = ({
-  hasOutput,
-  hasBeenRun,
-  setHasBeenRun,
-  workflowId,
-  client,
-  elements,
-  setElements,
-  isOutOfDate,
-  setIsOutOfDate,
-}) => {
+const client = getApiClient()
+
+const RunButton: React.FC = () => {
+  const { workflowId, elements, setElements, setHasBeenRun, isOutOfDate, setIsOutOfDate } =
+    useContext(DnDContext) as IDnDContext
+
+  const hasOutput = elements.some((el) => el.type === 'output')
   const [loading, setLoading] = useState(false)
+
   useEffect(() => {
     const update = () => setIsOutOfDate(true)
-
     window.addEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
     return () => window.removeEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
-  })
+  }, [])
 
-  const disabled = !hasOutput || loading || !isOutOfDate
+  const tooltip = !hasOutput
+    ? 'Workflow needs a Save Data node to run'
+    : !isOutOfDate
+    ? "You haven't made any new changes"
+    : 'Run workflow to create or update your output data sources'
+
   return (
-    <div className='dndflow__run-button'>
-      <button
-        onClick={() => {
-          if (!disabled) {
+    <Tippy content={tooltip}>
+      <div className='dndflow__run-button'>
+        <button
+          data-cy='workflow-run'
+          onClick={() => {
             setLoading(true)
 
             client
@@ -74,26 +69,19 @@ const RunButton: React.FC<{
                 setLoading(false)
                 alert('Workflow failed running')
               })
-          }
-        }}
-        className={`button button--sm button--outline button--success ${disabled && 'disabled'}`}
-        data-controller='tooltip'
-      >
-        <i className='fas fa-fw fa-play'></i> Run
-        {loading && (
-          <div className='absolute m-auto'>
-            <i className='fad fa-spinner-third fa-spin' />
-          </div>
-        )}
-        <div data-tooltip-target='body'>
-          {!hasOutput && hasBeenRun ? (
-            <span>Workflow needs output node to run</span>
+          }}
+          className='button button--sm button--success'
+          disabled={!hasOutput || loading || !isOutOfDate}
+        >
+          {loading ? (
+            <i className='fad fa-fw fa-spinner-third fa-spin' />
           ) : (
-            <span>Run a workflow to use results in dashboards and other workflows.</span>
+            <i className='fas fa-fw fa-play'></i>
           )}
-        </div>
-      </button>
-    </div>
+          Run
+        </button>
+      </div>
+    </Tippy>
   )
 }
 
