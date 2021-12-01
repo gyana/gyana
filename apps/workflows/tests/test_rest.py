@@ -50,7 +50,7 @@ def test_workflow_run(
     # check last run returns not been run
     r = client.get(f"/workflows/{workflow.id}/last_run")
     assertOK(r)
-    assertContains(r, "run this workflow")
+    assertContains(r, "Run this workflow")
 
     r = client.post(f"/workflows/{workflow.id}/run_workflow")
     assertOK(r)
@@ -59,7 +59,7 @@ def test_workflow_run(
 
     # check last runs last run
     r = client.get(f"/workflows/{workflow.id}/last_run")
-    assertContains(r, "last run")
+    assertContains(r, "Last run")
 
     # check out_of_date is not out_of_date and has been run
     r = client.get(f"/workflows/{workflow.id}/out_of_date")
