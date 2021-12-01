@@ -17,8 +17,8 @@ class MaxRowsExceeded(Exception):
     pass
 
 
-def chart_to_output(widget: Widget) -> Dict[str, Any]:
-    query = get_query_from_widget(widget)
+def chart_to_output(widget: Widget, date_slicer) -> Dict[str, Any]:
+    query = get_query_from_widget(widget, date_slicer)
     result = clients.bigquery().get_query_results(
         query.compile(), max_results=CHART_MAX_ROWS
     )

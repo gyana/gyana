@@ -31,7 +31,7 @@ from .forms import FORMS
 from .models import WIDGET_CHOICES_ARRAY, Widget
 
 
-def add_output_context(context, widget, request):
+def add_output_context(context, widget, request, date_slicer):
     if widget.is_valid:
         if widget.kind == Widget.Kind.TEXT:
             pass
@@ -45,7 +45,7 @@ def add_output_context(context, widget, request):
         elif widget.kind == Widget.Kind.METRIC:
             context["metric"] = metric_to_output(widget)
         else:
-            chart, chart_id = chart_to_output(widget)
+            chart, chart_id = chart_to_output(widget, date_slicer)
             context.update(chart)
             context["chart_id"] = chart_id
 
@@ -150,7 +150,9 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             "dashboard": self.dashboard,
         }
         try:
-            add_output_context(context, self.object, self.request)
+            add_output_context(
+                context, self.object, self.request, self.dashboard.date_slicer
+            )
             if self.object.error:
                 self.object.error = None
         except Exception as e:
@@ -204,7 +206,9 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
                 "dashboard": self.dashboard,
             }
             try:
-                add_output_context(context, self.object, self.request)
+                add_output_context(
+                    context, self.object, self.request, self.dashboard.date_slicer
+                )
                 if self.object.error:
                     self.object.error = None
             except Exception as e:
@@ -241,7 +245,9 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
         context = super().get_context_data(**kwargs)
         context["project"] = self.get_object().dashboard.project
         try:
-            add_output_context(context, self.object, self.request)
+            add_output_context(
+                context, self.object, self.request, self.dashboard.date_slicer
+            )
         except Exception as e:
             error_template = f"widgets/errors/{error_name_to_snake(e)}.html"
             if template_exists(error_template):
