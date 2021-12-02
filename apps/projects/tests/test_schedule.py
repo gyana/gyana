@@ -5,6 +5,7 @@ from pytest_django.asserts import assertRedirects
 
 from apps.base.tests.asserts import assertFormRenders, assertOK
 from apps.connectors.tests.mock import get_mock_fivetran_connector
+from apps.projects.periodic import run_schedule_for_project
 
 pytestmark = pytest.mark.django_db
 
@@ -64,11 +65,13 @@ def test_connector_schedule(client, logged_in_user, fivetran, connector_factory)
     assert fivetran.update.call_args.kwargs == {"daily_sync_time": "01:00"}
 
 
-def test_sheet_schedule(client, logged_in_user, sheet_factory):
+def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
 
     team = logged_in_user.teams.first()
     project = team.project
     sheet = sheet_factory(integration__project__team=team)
+    other_sheet = sheet_factory(integration__project__team=team)
+    run_sheet_sync_task = mocker.patch("apps.sheets.tasks.run_sheet_sync_task")
 
     # Enable scheduling for sheets, update time and timezone, and then remove
     # the schedule.
@@ -94,6 +97,11 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory):
     assert periodic_task.args == (project.id,)
     assert periodic_task.crontab.hour == project.daily_schedule_time.hour
     assert periodic_task.crontab.timezone == team.timezone
+
+    # Check the schedule works
+    run_schedule_for_project(project.id)
+    assert run_sheet_sync_task.call_count == 1
+    assert run_sheet_sync_task.call_args.args == (sheet.id,)
 
     # Update the timezone
     r = client.post(
