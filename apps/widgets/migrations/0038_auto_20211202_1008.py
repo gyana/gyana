@@ -6,17 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('widgets', '0037_auto_20211130_1029'),
+        ("widgets", "0037_auto_20211130_1029"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='combinationchart',
-            options={'ordering': ('created',)},
+            name="combinationchart",
+            options={"ordering": ("created",)},
         ),
         migrations.AlterField(
-            model_name='combinationchart',
-            name='on_secondary',
-            field=models.BooleanField(default=False, help_text='Plot on a secondary Y-axis'),
+            model_name="combinationchart",
+            name="on_secondary",
+            field=models.BooleanField(
+                default=False, help_text="Plot on a secondary Y-axis"
+            ),
         ),
     ]
