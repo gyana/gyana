@@ -2129,7 +2129,6 @@
       "sync_started": "2021-08-08T20:28:24.090Z",
       "drive_modified_date": null,
       "is_scheduled": false,
-      "next_daily_sync": null,
       "succeeded_at": null,
       "failed_at": null
     }

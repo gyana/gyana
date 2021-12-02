@@ -1,14 +1,11 @@
-import random
-from datetime import time, timedelta
+from datetime import time
 
-import pytz
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.functional import cached_property
-from django_celery_beat.models import CrontabSchedule, PeriodicTask
+from django_celery_beat.models import PeriodicTask
 from model_clone.mixins.clone import CloneMixin
 
 from apps.base.models import BaseModel
@@ -48,61 +45,22 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
         return self.name
 
     @property
-    def next_daily_sync(self):
-        # Calculate the next sync time in UTC. It will change over time thanks
-        # to daily savings. Start with the local time of the user, calculate
-        # the next sync time they expect to see, and convert it back to UTC.
-
-        today_local = timezone.now().astimezone(self.team.timezone)
-        next_sync_time_local = today_local.replace(
-            hour=self.daily_schedule_time.hour, minute=0, second=0, microsecond=0
-        )
-        if next_sync_time_local < today_local:
-            next_sync_time_local += timedelta(days=1)
-
-        next_sync_time_utc = next_sync_time_local.astimezone(pytz.UTC)
-        # for timezones with 15/30/45 minute offset, we prefer to round down
-        # to guarantee it has started
-        return next_sync_time_utc.replace(minute=0)
-
-    @property
     def truncated_daily_schedule_time(self):
-        return self.next_daily_sync.astimezone(self.team.timezone).time()
+        from .schedule import get_next_daily_sync_in_utc_from_project
+
+        # The sync time for connectors in 15/30/45 offset timezones is earlier, due to limitations of Fivetran
+        return (
+            get_next_daily_sync_in_utc_from_project(self)
+            .astimezone(self.team.timezone)
+            .time()
+        )
 
     @property
     def next_sync_time_utc_string(self):
-        return self.next_daily_sync.strftime("%H:%M")
+        from .schedule import get_next_daily_sync_in_utc_from_project
 
-    @property
-    def needs_periodic_task(self):
-        from apps.sheets.models import Sheet
-
-        return Sheet.objects.filter(
-            integration__project=self, is_scheduled=True
-        ).exists()
-
-    def create_periodic_task(self):
-        offset = random.randint(0, 59)
-
-        schedule = CrontabSchedule.objects.create(
-            minute=offset,
-            hour=self.daily_schedule_time.hour,
-            timezone=self.team.timezone,
-        )
-
-        periodic_task = PeriodicTask.objects.create(
-            crontab=schedule,
-            name=f"Project schedule for pk={self.id}",
-            task="apps.projects.tasks.run_schedule_for_project",
-        )
-
-        return periodic_task
-
-    def create_periodic_task_if_needed(self):
-        if self.needs_periodic_task and self.periodic_task is None:
-            self.periodic_task = self.create_periodic_task()
-        elif not self.needs_periodic_task and self.periodic_task is not None:
-            self.periodic_task.delete()
+        # For daily sync, Fivetran requires a HH:MM formatted string in UTC
+        return get_next_daily_sync_in_utc_from_project(self).strftime("%H:%M")
 
     @property
     def integration_count(self):
@@ -141,12 +99,30 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
     def integrations_for_review(self):
         return self.integration_set.review().count()
 
+    @property
+    def needs_schedule(self):
+        from apps.sheets.models import Sheet
+
+        # A project only requires an active shedule if there are scheduled
+        # entities like Google Sheets.
+
+        return Sheet.objects.filter(
+            integration__project=self, is_scheduled=True
+        ).exists()
+
+    def update_schedule(self):
+        from .schedule import update_periodic_task_from_project
+
+        update_periodic_task_from_project(self)
+
     def update_daily_sync_time(self):
         from apps.connectors.models import Connector
 
         connectors = Connector.objects.filter(integration__project=self).all()
         for connector in connectors:
             connector.sync_updates_from_fivetran()
+
+        self.update_schedule()
 
     def get_absolute_url(self):
         return reverse("projects:detail", args=(self.id,))
