@@ -44,5 +44,5 @@ def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
         # every ten minutes
         crontab(minute="*/10"),
-        signature("apps.sheets.periodic.run_periodic_sheet_sync"),
+        signature("apps.sheets.periodic.run_schedule_for_sheets"),
     )
