@@ -52,11 +52,19 @@ class IntegrationListTable(Table):
         fields = ()
         attrs = {"class": "table"}
 
-    name = Column(linkify=True)
     icon = TemplateColumn(
-        template_name="columns/image.html", orderable=False, verbose_name="Source"
+        template_name="columns/image.html",
+        orderable=False,
+        verbose_name="",
+        attrs={"th": {"style": "min-width: auto; width: 0%;"}},
     )
-    kind = Column(accessor="display_kind", orderable=False, verbose_name="")
+    name = Column(linkify=True)
+    kind = Column(
+        accessor="display_kind",
+        orderable=False,
+        verbose_name="Kind",
+        attrs={"th": {"style": "min-width: auto; width: 0%;"}},
+    )
     ready = BooleanColumn()
     state = PendingStatusColumn(verbose_name="Status")
     num_rows = RowCountColumn()
