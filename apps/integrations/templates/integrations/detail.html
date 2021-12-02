@@ -35,13 +35,15 @@
             href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=detail">
             <p>Detail</p>
         </a>
-        {% flag "beta" %}
-          {% if table_id %}
-            <turbo-frame id='exports:create_integration_table'>
-              {% include 'exports/create.html' with parent_id=table_id target_url='exports:create_integration_table' %}
-            </turbo-frame>
-          {% endif %}
-        {% endflag %}
+
+        {% comment %} TODO: {% if table_id %}
+
+          <turbo-frame id='exports:create_integration_table' class='ml-auto'>
+            {% include 'exports/create.html' with parent_id=table_id target_url='exports:create_integration_table' %}
+          </turbo-frame>
+
+        {% endif %} {% endcomment %}
+
       </div>
     </nav>
     <div class="flex flex-row">

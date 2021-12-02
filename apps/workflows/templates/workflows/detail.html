@@ -104,7 +104,7 @@
               id="dnd-node-{{ kind }}"
               class="dnd-sidebar__node"
               draggable="true"
-              ondragstart="event.dataTransfer.setData("application/reactflow", "{{ kind }}"); event.dataTransfer.effectAllowed = "move";"
+              ondragstart='event.dataTransfer.setData("application/reactflow", "{{ kind }}"); event.dataTransfer.effectAllowed = "move";'
             >
               <i class="dnd-sidebar__icon fas fa-fw fa-lg {{ node.icon }}"></i>
               <div class="flex flex-col">
@@ -130,7 +130,7 @@
             <div
               id="dnd-node-{{ kind }}"
               class="dnd-sidebar__node"
-              ondragstart="event.dataTransfer.setData("application/reactflow", "{{ kind }}"); event.dataTransfer.effectAllowed = "move";"
+              ondragstart='event.dataTransfer.setData("application/reactflow", "{{ kind }}"); event.dataTransfer.effectAllowed = "move";'
               draggable="true"
             >
               <i class="dnd-sidebar__icon fas fa-fw fa-lg {{ node.icon }}"></i>

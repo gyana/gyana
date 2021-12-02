@@ -163,6 +163,8 @@ class WorkflowDuplicate(TurboUpdateView):
         # First create the mapping between original and cloned nodes
         for node in nodes:
             node_clone = node.make_clone({"workflow": clone})
+            node_clone.data_updated = timezone.now()
+            node_clone.save()
             node_map[node] = node_clone
 
         # Then copy the relationships
