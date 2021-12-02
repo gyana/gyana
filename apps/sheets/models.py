@@ -13,10 +13,10 @@ RETRY_LIMIT_DAYS = 3
 
 
 class SheetsManager(models.Manager):
-    def scheduled_for_today(self):
+    def scheduled_for_today_in_project(self, project):
         # stop trying to sync a scheduled sheet after 3 days of failure
         return (
-            self.filter(is_scheduled=True)
+            self.filter(integration__project=project, is_scheduled=True)
             .annotate(last_succeeded=F("failed_at") - F("succeeded_at"))
             .filter(
                 Q(succeeded_at__isnull=True)
