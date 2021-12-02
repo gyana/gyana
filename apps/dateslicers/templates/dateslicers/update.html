@@ -25,7 +25,11 @@
       <form 
         id="dateslicer-update-form"
         method="post" 
-        action="{% url 'dateslicers:update' object.id %}?{% if is_public %}is_public=true{% endif %}" 
+        action="{% if is_public %}
+          {% url 'dateslicers:update-public' object.id %}
+        {% else %}
+          {% url 'dateslicers:update' object.id %}
+        {% endif %}" 
         class="form--no-layout popover-body"
         data-controller="live-update"
 

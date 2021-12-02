@@ -2,7 +2,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views.generic.edit import DeleteView
 from turbo_response import TurboStream
-from turbo_response.response import TurboStreamResponse
+from turbo_response.response import HttpResponseSeeOther, TurboStreamResponse
 
 from apps.base.frames import TurboFrameCreateView, TurboFrameUpdateView
 from apps.widgets.frames import add_output_context
@@ -55,10 +55,7 @@ class DateSlicerUpdate(TurboFrameUpdateView):
     form_class = DateSlicerForm
     turbo_frame_dom_id = "dateslicers:update"
 
-    def form_valid(self, form):
-        r = super().form_valid(form)
-        if form.is_live:
-            return r
+    def get_stream_response(self, form):
         dashboard = form.instance.dashboard
         streams = []
         for widget in dashboard.widget_set.all():
@@ -83,8 +80,29 @@ class DateSlicerUpdate(TurboFrameUpdateView):
             ]
         )
 
+    def form_valid(self, form):
+        r = super().form_valid(form)
+        if form.is_live:
+            return r
+        return self.get_stream_response(form)
+
     def get_success_url(self) -> str:
         return reverse("dateslicers:update", args=(self.object.id,))
+
+
+class DateSlicerPublicUpdate(DateSlicerUpdate):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["is_public"] = True
+        return context
+
+    def get_success_url(self) -> str:
+        return reverse("dateslicers:update-public", args=(self.object.id,))
+
+    def form_valid(self, form):
+        if form.is_live:
+            return HttpResponseSeeOther(self.get_success_url())
+        return self.get_stream_response(form)
 
 
 class DateSlicerDelete(DeleteView):
