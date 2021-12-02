@@ -104,7 +104,7 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
         from apps.sheets.models import Sheet
 
         # A project only requires an active shedule if there are scheduled
-        # entities like Google Sheets.
+        # entities like sheets, workflows, apis etc.
 
         return Sheet.objects.filter(
             integration__project=self, is_scheduled=True
