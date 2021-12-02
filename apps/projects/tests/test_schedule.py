@@ -1,3 +1,5 @@
+import json
+
 import pytest
 import pytz
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
@@ -68,9 +70,10 @@ def test_connector_schedule(client, logged_in_user, fivetran, connector_factory)
 def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
 
     team = logged_in_user.teams.first()
-    project = team.project
     sheet = sheet_factory(integration__project__team=team)
-    other_sheet = sheet_factory(integration__project__team=team)
+    project = sheet.integration.project
+    # an extra sheet to check logic
+    sheet_factory(integration__project=project)
     run_sheet_sync_task = mocker.patch("apps.sheets.tasks.run_sheet_sync_task")
 
     # Enable scheduling for sheets, update time and timezone, and then remove
@@ -91,11 +94,12 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
     sheet.refresh_from_db()
     assert sheet.is_scheduled
 
+    project.refresh_from_db()
     assert project.periodic_task is not None
     periodic_task = project.periodic_task
     assert periodic_task.task == "apps.projects.tasks.run_schedule_for_project"
-    assert periodic_task.args == (project.id,)
-    assert periodic_task.crontab.hour == project.daily_schedule_time.hour
+    assert json.loads(periodic_task.args) == [project.id]
+    assert periodic_task.crontab.hour == str(project.daily_schedule_time.hour)
     assert periodic_task.crontab.timezone == team.timezone
 
     # Check the schedule works
@@ -111,7 +115,7 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
     assertRedirects(r, f"/teams/{team.id}/update", status_code=303)
 
     periodic_task.refresh_from_db()
-    assert periodic_task.crontab.timezone == "Asia/Shanghai"
+    assert str(periodic_task.crontab.timezone) == "Asia/Shanghai"
 
     # Remove the schedule
     r = client.post(f"{DETAIL}/settings", data={"is_scheduled": False})

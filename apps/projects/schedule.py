@@ -1,3 +1,4 @@
+import json
 from datetime import timedelta
 
 import pytz
@@ -43,7 +44,7 @@ def update_periodic_task_from_project(project: Project):
                 # name is unique, prevents duplicate schedules for a single project
                 name=f"schedule.project.pk={project.id}",
                 task="apps.projects.tasks.run_schedule_for_project",
-                args=(project.id,),
+                args=json.dumps([project.id]),
             )
 
             project.periodic_task = periodic_task

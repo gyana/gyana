@@ -56,6 +56,8 @@ class SheetCreateForm(BaseModelForm):
         instance.create_integration(
             self._sheet["properties"]["title"], self._created_by, self._project
         )
+
+    def post_save(self, instance):
         instance.integration.project.update_schedule()
 
 
@@ -95,5 +97,5 @@ class SheetSettingsForm(BaseModelForm):
         if not flag_is_active(request, "beta"):
             self.fields.pop("is_scheduled")
 
-    def pre_save(self, instance):
+    def post_save(self, instance):
         instance.integration.project.update_schedule()
