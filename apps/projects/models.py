@@ -1,3 +1,4 @@
+import random
 from datetime import time, timedelta
 
 import pytz
@@ -7,7 +8,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
-from django_celery_beat.models import PeriodicTask
+from django_celery_beat.models import CrontabSchedule, PeriodicTask
 from model_clone.mixins.clone import CloneMixin
 
 from apps.base.models import BaseModel
@@ -71,6 +72,37 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
     @property
     def next_sync_time_utc_string(self):
         return self.next_daily_sync.strftime("%H:%M")
+
+    @property
+    def needs_periodic_task(self):
+        from apps.sheets.models import Sheet
+
+        return Sheet.objects.filter(
+            integration__project=self, is_scheduled=True
+        ).exists()
+
+    def create_periodic_task(self):
+        offset = random.randint(0, 59)
+
+        schedule = CrontabSchedule.objects.create(
+            minute=offset,
+            hour=self.daily_schedule_time.hour,
+            timezone=self.team.timezone,
+        )
+
+        periodic_task = PeriodicTask.objects.create(
+            crontab=schedule,
+            name=f"Project schedule for pk={self.id}",
+            task="apps.projects.tasks.run_schedule_for_project",
+        )
+
+        return periodic_task
+
+    def create_periodic_task_if_needed(self):
+        if self.needs_periodic_task and self.periodic_task is None:
+            self.periodic_task = self.create_periodic_task()
+        elif not self.needs_periodic_task and self.periodic_task is not None:
+            self.periodic_task.delete()
 
     @property
     def integration_count(self):

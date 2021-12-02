@@ -56,6 +56,7 @@ class SheetCreateForm(BaseModelForm):
         instance.create_integration(
             self._sheet["properties"]["title"], self._created_by, self._project
         )
+        instance.integration.project.create_periodic_task_if_needed()
 
 
 class SheetUpdateForm(BaseModelForm):
@@ -93,3 +94,6 @@ class SheetSettingsForm(BaseModelForm):
         self.fields["is_scheduled"].help_text = help_text
         if not flag_is_active(request, "beta"):
             self.fields.pop("is_scheduled")
+
+    def pre_save(self, instance):
+        instance.integration.project.create_periodic_task_if_needed()
