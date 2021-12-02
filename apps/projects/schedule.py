@@ -4,8 +4,6 @@ import pytz
 from django.utils import timezone
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
-from apps.sheets.models import Sheet
-
 from .models import Project
 
 

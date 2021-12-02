@@ -1,5 +1,5 @@
 from datetime import datetime
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 import googleapiclient
 import pytest
@@ -98,30 +98,7 @@ def test_sheet_create(
     r = client.get(f"{DETAIL}/load")
     assertRedirects(r, f"{DETAIL}/done")
 
-    # todo: email
-    # assert len(mail.outbox) == 1
-
-
-def test_sheet_settings(client, logged_in_user, sheet_factory):
-
-    team = logged_in_user.teams.first()
-    SHEET_URL = "https://docs.google.com/spreadsheets/d/16h15cF3r_7bFjSAeKcy6nnNDpi-CS-NEgUKNCRGXs1E/edit"
-    sheet = sheet_factory(url=SHEET_URL, integration__project__team=team)
-
-    LIST = f"/projects/{sheet.integration.project.id}/integrations"
-    DETAIL = f"{LIST}/{sheet.integration.id}"
-
-    r = client.get(f"{DETAIL}/settings")
-    assertOK(r)
-    # todo: fix this!
-    assertFormRenders(r, ["name", "is_scheduled"])
-
-    r = client.post(f"{DETAIL}/settings", data={"is_scheduled": False})
-    assertRedirects(r, f"{DETAIL}/settings")
-
-    sheet.refresh_from_db()
-    assert not sheet.is_scheduled
-    assert sheet.next_daily_sync is None
+    assert len(mail.outbox) == 1
 
 
 def test_validation_failures(client, logged_in_user, sheet_factory, sheets):

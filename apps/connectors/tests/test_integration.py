@@ -1,5 +1,5 @@
 import pytest
-import pytz
+from django.core import mail
 from django.utils import timezone
 from pytest_django.asserts import assertContains, assertNotContains, assertRedirects
 
@@ -129,8 +129,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project):
     integration.refresh_from_db()
     assert integration.state == Integration.State.DONE
 
-    # todo: email
-    # assert len(mail.outbox) == 1
+    assert len(mail.outbox) == 1
 
 
 def test_status_on_integrations_page(
