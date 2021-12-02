@@ -12,8 +12,9 @@ def run_schedule_for_project(project_id):
 
     project = Project.objects.get(pk=project_id)
 
+    # cleanup periodic task for projects with no scheduled items
     if not project.needs_schedule:
-        project.periodic_task.delete()
+        project.update_schedule()
         return
 
     for sheet in (

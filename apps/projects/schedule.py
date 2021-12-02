@@ -51,10 +51,11 @@ def update_periodic_task_from_project(project: Project):
             project.periodic_task = periodic_task
             project.save()
         else:
-            schedule = project.periodic_task.schedule
-            schedule.hour = project.daily_schedule_time.hour
-            schedule.timezone = project.team.timezone
-            schedule.save()
+            crontab = project.periodic_task.crontab
+            crontab.hour = project.daily_schedule_time.hour
+            crontab.timezone = project.team.timezone
+            crontab.save()
 
     elif project.periodic_task is not None:
-        project.periodic_task.delete()
+        # cascading delete to periodic_task
+        project.periodic_task.crontab.delete()
