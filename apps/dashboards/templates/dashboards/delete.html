@@ -13,8 +13,10 @@
     {% csrf_token %}
 
     <div class='flex gap-3 w-full'>
-      <a href="{% url 'project_dashboards:settings' project.id object.id %}"
-         class="button button--tertiary flex-1">
+      <a 
+        href="{% url 'project_dashboards:detail' project.id object.id %}"
+        class="button button--tertiary flex-1"
+      >
         Go back
       </a>
 

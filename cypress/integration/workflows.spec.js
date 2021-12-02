@@ -21,7 +21,7 @@ describe('workflows', () => {
     cy.visit('/projects/1/workflows/')
   })
 
-  it('workflow editor', () => {
+  it.only('workflow editor', () => {
     cy.get('[data-cy=workflow-create]').click()
     cy.get('input[id=name]').clear().type('Magical workflow{enter}')
 
