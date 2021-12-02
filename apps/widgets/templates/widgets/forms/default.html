@@ -79,7 +79,7 @@
 
       {% block widget_form %}
 
-      {% with array='name kind table'%}
+      {% with array='name kind table dateslice_column'%}
       {% for bound_field in form.visible_fields %}
       {% if bound_field.name not in array.split %}
         <div class="input-group">

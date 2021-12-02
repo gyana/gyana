@@ -38,12 +38,12 @@ def add_output_context(context, widget, request, date_slicer):
         elif widget.kind == Widget.Kind.TABLE:
             # avoid duplicating work for widget output
             if "table" not in context:
-                table = table_to_output(widget)
+                table = table_to_output(widget, date_slicer)
                 context["table"] = RequestConfig(
                     request,
                 ).configure(table)
         elif widget.kind == Widget.Kind.METRIC:
-            context["metric"] = metric_to_output(widget)
+            context["metric"] = metric_to_output(widget, date_slicer)
         else:
             chart, chart_id = chart_to_output(widget, date_slicer)
             context.update(chart)
@@ -242,7 +242,7 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
 
     def get_table(self, **kwargs):
         if self.object.is_valid and self.object.kind == Widget.Kind.TABLE:
-            table = table_to_output(self.object)
+            table = table_to_output(self.object, self.object.dashboard.date_slicer)
             return RequestConfig(
                 self.request, paginate=self.get_table_pagination(table)
             ).configure(table)

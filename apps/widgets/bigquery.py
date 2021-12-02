@@ -33,12 +33,8 @@ def get_unique_column_names(aggregations, groups):
     }
 
 
-def get_query_from_widget(widget: Widget, date_slicer):
+def get_query_from_widget(widget: Widget, query):
 
-    query = get_query_from_table(widget.table)
-    query = get_query_from_filters(query, widget.filters.all())
-    if date_slicer and widget.dateslice_column:
-        query = slice_query(query, widget.dateslice_column, date_slicer)
     aggregations = widget.aggregations.all()
 
     if widget.category == Widget.Category.COMBO:
