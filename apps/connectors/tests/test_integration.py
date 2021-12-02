@@ -117,6 +117,8 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project):
     fivetran.get.call_count == 3
     fivetran.get.call_args.args == (connector,)
 
+    assert len(mail.outbox) == 1
+
     # checking back explicitly will also complete
     fivetran.get.return_value = get_mock_fivetran_connector(succeeded_at=timezone.now())
     integration.state = Integration.State.LOAD
@@ -128,8 +130,6 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project):
 
     integration.refresh_from_db()
     assert integration.state == Integration.State.DONE
-
-    assert len(mail.outbox) == 1
 
 
 def test_status_on_integrations_page(
