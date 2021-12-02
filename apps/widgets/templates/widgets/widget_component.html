@@ -30,7 +30,7 @@ preview mode.
         </turbo-frame>
       </div>
 
-      {% if request.GET.mode == 'edit' %}
+      {% if not request.GET.mode or request.GET.mode == "edit" %}
       <div class='widget-card__commands'>
         {% if object.kind != "text" %}
         <button  
