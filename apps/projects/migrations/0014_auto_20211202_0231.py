@@ -20,6 +20,7 @@ def get_periodic_task(project):
         crontab=schedule,
         name=f"Project schedule for pk={project.id}",
         task="apps.projects.tasks.run_schedule_for_project",
+        enabled=False
     )
 
     return periodic_task
