@@ -7,11 +7,11 @@ from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
 
 def get_periodic_task(project):
-    offset = random.randint(0, 60)
+    offset = random.randint(0, 59)
     # create a periodic task in this timezone
     # offset is to reduce load
     schedule = CrontabSchedule.objects.create(
-        minute=f"{offset}-59",
+        minute=offset,
         hour=project.daily_schedule_time.hour,
         timezone=project.team.timezone,
     )
