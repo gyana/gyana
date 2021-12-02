@@ -33,7 +33,7 @@ def update_periodic_task_from_project(project: Project):
     # Create, update or delete a periodic task for a project
 
     if project.needs_schedule:
-        if not project.periodic_task:
+        if project.periodic_task is None:
             schedule = CrontabSchedule.objects.create(
                 minute=0,
                 hour=project.daily_schedule_time.hour,
@@ -56,5 +56,5 @@ def update_periodic_task_from_project(project: Project):
             schedule.timezone = project.team.timezone
             schedule.save()
 
-    elif project.periodic_task:
+    elif project.periodic_task is not None:
         project.periodic_task.delete()
