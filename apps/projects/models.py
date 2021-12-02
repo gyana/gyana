@@ -1,4 +1,4 @@
-from datetime import datetime, time, timedelta
+from datetime import time, timedelta
 
 import pytz
 from dirtyfields import DirtyFieldsMixin
@@ -7,6 +7,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
+from django_celery_beat.models import PeriodicTask
 from model_clone.mixins.clone import CloneMixin
 
 from apps.base.models import BaseModel
@@ -36,6 +37,9 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
     cname = models.ForeignKey(CName, on_delete=models.SET_NULL, null=True, blank=True)
     # default midnight
     daily_schedule_time = models.TimeField(default=time())
+    periodic_task = models.OneToOneField(
+        PeriodicTask, null=True, on_delete=models.SET_NULL
+    )
 
     _clone_m2o_or_o2m_fields = ["integration_set", "workflow_set", "dashboard_set"]
 
