@@ -55,9 +55,6 @@ def run_sheet_sync_task(self, sheet_id):
         integration.save()
         raise e
 
-    finally:
-        sheet.update_next_daily_sync()
-
     if created:
         send_integration_ready_email(integration, int(get_time_to_sync()))
 
@@ -80,10 +77,7 @@ def run_periodic_sheet_sync(sheet: Sheet):
 
     sheet.sync_updates_from_drive()
 
-    if sheet.retry_limit_exceeded:
-        sheet.update_next_daily_sync()
-    elif sheet.up_to_date:
+    if sheet.up_to_date:
         sheet.succeeded_at = timezone.now()
-        sheet.update_next_daily_sync()
     else:
         run_sheet_sync(sheet)
