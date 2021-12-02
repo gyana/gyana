@@ -2,14 +2,13 @@ from celery import shared_task
 
 from apps.base.tasks import honeybadger_check_in
 from apps.sheets.models import Sheet
+from apps.sheets.tasks import run_sheet_sync_task
 
 from .models import Project
 
 
 @shared_task
 def run_schedule_for_project(project_id):
-
-    from apps.sheets.tasks import run_sheet_sync_task
 
     project = Project.objects.get(pk=project_id)
 

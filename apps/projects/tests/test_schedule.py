@@ -102,11 +102,6 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
     assert periodic_task.crontab.hour == str(project.daily_schedule_time.hour)
     assert periodic_task.crontab.timezone == team.timezone
 
-    # Check the schedule works
-    run_schedule_for_project(project.id)
-    assert run_sheet_sync_task.call_count == 1
-    assert run_sheet_sync_task.call_args.args == (sheet.id,)
-
     # Update the timezone
     r = client.post(
         f"/teams/{team.id}/update",
