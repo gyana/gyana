@@ -13,7 +13,7 @@ from .models import Sheet
 
 
 @shared_task(bind=True)
-def run_sheet_sync_task(self, sheet_id):
+def run_sheet_sync_task(self, sheet_id, skip_up_to_date=False):
     sheet = get_object_or_404(Sheet, pk=sheet_id)
     integration = sheet.integration
 
@@ -35,12 +35,13 @@ def run_sheet_sync_task(self, sheet_id):
 
             sheet.sync_updates_from_drive()
 
-            with catchtime() as get_time_to_sync:
-                import_table_from_sheet(table=table, sheet=sheet)
+            if not sheet.up_to_date and skip_up_to_date:
+                with catchtime() as get_time_to_sync:
+                    import_table_from_sheet(table=table, sheet=sheet)
 
-            table.sync_updates_from_bigquery()
+                table.sync_updates_from_bigquery()
+                sheet.drive_file_last_modified_at_sync = sheet.drive_modified_date
 
-            sheet.drive_file_last_modified_at_sync = sheet.drive_modified_date
             sheet.succeeded_at = timezone.now()
             sheet.save()
 
@@ -71,13 +72,3 @@ def run_sheet_sync(sheet: Sheet):
     sheet.sync_task_id = result.task_id
     sheet.sync_started = timezone.now()
     sheet.save()
-
-
-def run_periodic_sheet_sync(sheet: Sheet):
-
-    sheet.sync_updates_from_drive()
-
-    if sheet.up_to_date:
-        sheet.succeeded_at = timezone.now()
-    else:
-        run_sheet_sync(sheet)

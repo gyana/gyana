@@ -1,7 +1,7 @@
 from celery import shared_task
 
 from apps.sheets.models import Sheet
-from apps.sheets.tasks import run_periodic_sheet_sync
+from apps.sheets.tasks import run_sheet_sync_task
 
 from .models import Project
 
@@ -18,4 +18,4 @@ def run_schedule_for_project(project_id):
     for sheet in (
         Sheet.objects.filter(integration__project=project).needs_daily_sync().all()
     ):
-        run_periodic_sheet_sync(sheet.id)
+        run_sheet_sync_task(sheet.id, skip_up_to_date=True)
