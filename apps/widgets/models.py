@@ -3,7 +3,7 @@ from django.db import models
 from model_clone import CloneMixin
 
 from apps.base.aggregations import AggregationFunctions
-from apps.base.models import BaseModel
+from apps.base.models import BaseModel, SaveParentModel
 from apps.dashboards.models import Dashboard
 from apps.tables.models import Table
 
@@ -13,7 +13,7 @@ DEFAULT_HEIGHT = 390
 
 
 class Widget(CloneMixin, BaseModel):
-    _clone_m2o_or_o2m_fields = ["filters", "aggregations"]
+    _clone_m2o_or_o2m_fields = ["filters", "aggregations", "charts"]
 
     class Category(models.TextChoices):
         SIMPLE = "simple", "Simple charts"
@@ -104,11 +104,6 @@ class Widget(CloneMixin, BaseModel):
 
     stack_100_percent = models.BooleanField(default=False)
     error = models.CharField(max_length=300, null=True)
-
-    _clone_m2o_or_o2m_fields = [
-        "aggregations",
-        "filters",
-    ]
 
     def __str__(self):
         return f"<Widget {self.kind} on {self.table}>"
@@ -223,7 +218,7 @@ WIDGET_CHOICES_ARRAY = [
 COUNT_COLUMN_NAME = "count"
 
 
-class CombinationChart(BaseModel):
+class CombinationChart(SaveParentModel):
     class Meta:
         ordering = ("created",)
 

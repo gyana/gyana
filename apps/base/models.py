@@ -34,4 +34,6 @@ class SaveParentModel(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     @property
     def parent(self):
-        return getattr(self, "node") or self.widget
+        if hasattr(self, "node") and (node := getattr(self, "node")):
+            return node
+        return self.widget
