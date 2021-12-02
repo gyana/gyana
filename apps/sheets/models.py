@@ -3,7 +3,6 @@ from datetime import timedelta
 
 from django.db import models
 from django.db.models import F, Q
-from django.utils import timezone
 from model_clone.mixins.clone import CloneMixin
 
 from apps.base.celery import is_bigquery_task_running
@@ -14,7 +13,7 @@ RETRY_LIMIT_DAYS = 3
 
 
 class SheetsManager(models.Manager):
-    def needs_daily_sync(self):
+    def scheduled_for_today(self):
         # stop trying to sync a scheduled sheet after 3 days of failure
         return (
             self.filter(is_scheduled=True)

@@ -16,6 +16,6 @@ def run_schedule_for_project(project_id):
         return
 
     for sheet in (
-        Sheet.objects.filter(integration__project=project).needs_daily_sync().all()
+        Sheet.objects.filter(integration__project=project).scheduled_for_today().all()
     ):
         run_sheet_sync_task(sheet.id, skip_up_to_date=True)
