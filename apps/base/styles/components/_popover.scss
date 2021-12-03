@@ -32,6 +32,6 @@
 }
 
 .tippy-box[data-theme~='popover-dateslicer'] {
-  width: 600px;
-  max-width: 600px;
+  width: max-content;
+  max-width: 600px !important;
 }

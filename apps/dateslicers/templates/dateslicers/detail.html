@@ -1,3 +1,19 @@
-<button disabled class="button button--circle button--tertiary">
-  <i class="fa fa-calendar"></i>
+<button 
+  id='dateslicers:update-stream'
+  class='dateslicer'
+  data-action='dblclick->tf-modal#open'
+  data-src="{% url 'dateslicers:update' object.id %}"
+>
+  <i class="fa fa-calendar"></i> 
+  {% if object.date_range != "custom" %}
+
+    {{object.get_date_range_display}}
+
+  {% else %}
+
+    {% if object.start %}Start <strong>{{object.start}}</strong>{% endif %}
+    {% if object.end %}End <strong>{{object.end}}</strong>{% endif %}
+
+  {% endif %}
 </button>
+{% if not is_public %}{% include 'dateslicers/delete.html' %}{% endif %}

@@ -1,54 +1,31 @@
 
 
-<div
-  id='dateslicers:update-stream'
-  class='dateslicer'
-  {% comment %} data-controller='popover'
-  data-placement='bottom-start'
-  data-theme='popover-dateslicer' {% endcomment %}
->
-  <button >
-    <i class="fa fa-calendar"></i> 
-    {% if object.date_range != "custom" %}
-
-      {{object.get_date_range_display}}
-
+<div class='dateslicer-popover'>
+  <form 
+    id="dateslicer-update-form"
+    method="post" 
+    action="{% if is_public %}
+      {% url 'dateslicers:update-public' object.id %}
     {% else %}
+      {% url 'dateslicers:update' object.id %}
+    {% endif %}" 
+    class="form--no-layout popover-body"
+    data-controller="live-update"
 
-      {% if object.start %}Start <strong>{{object.start}}</strong>{% endif %}
-      {% if object.end %}End <strong>{{object.end}}</strong>{% endif %}
+  >
+    <span data-live-update-target="loading" class="hidden">
+      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+    </span>
 
-    {% endif %}
-  </button>
-  {% comment %} <template data-popover-target="body"> {% endcomment %}
-    <div class='dateslicer-popover'>
-      <form 
-        id="dateslicer-update-form"
-        method="post" 
-        action="{% if is_public %}
-          {% url 'dateslicers:update-public' object.id %}
-        {% else %}
-          {% url 'dateslicers:update' object.id %}
-        {% endif %}" 
-        class="form--no-layout popover-body"
-        data-controller="live-update"
+    {% csrf_token %}
 
-      >
-        <span data-live-update-target="loading" class="hidden">
-          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
-        </span>
+    {% comment %}TODO: Add data-live-update-ignore to the start and end input  {% endcomment %}
+    {% include "django/forms/default_form.html" %}
 
-        {% csrf_token %}
-
-        {% comment %}TODO: Add data-live-update-ignore to the start and end input  {% endcomment %}
-        {% include "django/forms/default_form.html" %}
-
-        <button type="submit" class="button button--success button--sm"
-          name="submit" value="submit"
-          >Apply</button>
-      </form>
-  </div>
-  {% comment %} </template> {% endcomment %}
-  {% if not is_public %}{% include 'dateslicers/delete.html' %}{% endif %}
+    <button type="submit" class="button button--success button--sm"
+      name="submit" value="submit"
+      >Apply</button>
+  </form>
 </div>
+
 
