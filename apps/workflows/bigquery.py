@@ -75,9 +75,11 @@ def run_all_workflows(project: Project):
 
     try:
         for workflow in ts.static_order():
-            # todo: add failed_at and check for blocked
-            # is_blocked = any(w.failed for w in graph[workflow])
-            # if not is_blocked...
+            # todo:
+            # skip if previous step didn't run yet
+            # run if all previous steps succeeded
+            # skip if any previous step failed
+            # skip if all previous steps succeeded (idempotency)
             run_workflow(workflow)
 
     except CycleError:
