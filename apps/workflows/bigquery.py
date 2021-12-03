@@ -40,8 +40,12 @@ def run_workflow(workflow: Workflow):
                 table.save()
 
     if workflow.failed:
+        workflow.failed_at = timezone.now()
+        workflow.save(update_fields=["failed_at"])
+
         return {node.id: node.error for node in workflow.nodes.all() if node.error}
 
+    workflow.succeeded_at = timezone.now()
     workflow.last_run = timezone.now()
     # Use fields to not trigger auto_now on the updated field
     workflow.save(update_fields=["last_run"])

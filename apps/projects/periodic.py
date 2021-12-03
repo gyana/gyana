@@ -64,7 +64,12 @@ def run_schedule_for_project(project_id: int):
             # is designed to be idempotent, we can keep running this task until
             # everything has completed successfully.
 
-            if not entity.up_to_date and all(e.up_to_date for e in graph[entity]):
+            if (
+                hasattr(entity, "is_scheduled")
+                and entity.is_scheduled
+                and not entity.up_to_date
+                and all(e.up_to_date for e in graph[entity])
+            ):
                 entity.run_for_schedule()
 
     except CycleError:

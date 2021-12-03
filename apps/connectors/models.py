@@ -309,3 +309,7 @@ class Connector(DirtyFieldsMixin, SchedulableModel):
     @property
     def latest_sync_validated(self):
         return self.succeeded_at == self.bigquery_succeeded_at
+
+    def run_for_schedule(self):
+        # todo: run fivetran daily sync manually at our preferred time
+        return
