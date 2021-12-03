@@ -2,11 +2,11 @@ from django.db import models
 from django.urls import reverse
 from model_clone import CloneMixin
 
-from apps.base.models import BaseModel
+from apps.base.models import SchedulableModel
 from apps.projects.models import Project
 
 
-class Workflow(CloneMixin, BaseModel):
+class Workflow(CloneMixin, SchedulableModel):
     name = models.CharField(max_length=255, default="Untitled")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     last_run = models.DateTimeField(null=True)

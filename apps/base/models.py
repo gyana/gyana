@@ -37,3 +37,13 @@ class SaveParentModel(DirtyFieldsMixin, CloneMixin, BaseModel):
         if hasattr(self, "node") and (node := getattr(self, "node")):
             return node
         return self.widget
+
+
+class SchedulableModel(BaseModel):
+    class Meta(BaseModel.Meta):
+        abstract = True
+
+    # currently ignored in connectors
+    is_scheduled = models.BooleanField(default=False)
+    succeeded_at = models.DateTimeField(null=True)
+    failed_at = models.DateTimeField(null=True)
