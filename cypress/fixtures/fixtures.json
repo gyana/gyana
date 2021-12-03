@@ -9,7 +9,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-11-08T23:50:19.876Z",
+      "last_login": "2021-12-03T23:50:23.273Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -198,14 +198,15 @@
     "pk": 1,
     "fields": {
       "created": "2021-07-27T13:14:54.847Z",
-      "updated": "2021-07-27T13:14:54.852Z",
+      "updated": "2021-12-03T23:55:23.830Z",
       "name": "Cypress test project",
       "team": 1,
       "ready": true,
       "access": "everyone",
       "description": "",
       "cname": null,
-      "daily_schedule_time": "00:00:00"
+      "daily_schedule_time": "00:00:00",
+      "periodic_task": 1
     }
   },
   {
@@ -220,7 +221,8 @@
       "access": "everyone",
       "description": "",
       "cname": null,
-      "daily_schedule_time": "00:00:00"
+      "daily_schedule_time": "00:00:00",
+      "periodic_task": null
     }
   },
   {
@@ -235,7 +237,8 @@
       "access": "everyone",
       "description": "Two widgets for Google Analytics in a Cypress test.",
       "cname": null,
-      "daily_schedule_time": "00:00:00"
+      "daily_schedule_time": "00:00:00",
+      "periodic_task": null
     }
   },
   {
@@ -409,10 +412,43 @@
     "fields": {
       "created": "2021-08-10T07:31:33.634Z",
       "updated": "2021-09-10T15:59:15.605Z",
+      "is_scheduled": false,
+      "succeeded_at": null,
+      "failed_at": null,
       "name": "Untitled",
       "project": 2,
       "last_run": null,
       "data_updated": "2021-09-10T15:59:15.605Z"
+    }
+  },
+  {
+    "model": "workflows.workflow",
+    "pk": 2,
+    "fields": {
+      "created": "2021-12-03T23:50:30.046Z",
+      "updated": "2021-12-03T23:52:38.243Z",
+      "is_scheduled": true,
+      "succeeded_at": null,
+      "failed_at": null,
+      "name": "Initial workflow",
+      "project": 1,
+      "last_run": "2021-12-03T23:52:58.722Z",
+      "data_updated": "2021-12-03T23:52:05.947Z"
+    }
+  },
+  {
+    "model": "workflows.workflow",
+    "pk": 3,
+    "fields": {
+      "created": "2021-12-03T23:52:42.072Z",
+      "updated": "2021-12-03T23:55:15.172Z",
+      "is_scheduled": true,
+      "succeeded_at": null,
+      "failed_at": null,
+      "name": "Dependent workflow",
+      "project": 1,
+      "last_run": "2021-12-03T23:55:11.732Z",
+      "data_updated": "2021-12-03T23:54:57.237Z"
     }
   },
   {
@@ -496,6 +532,32 @@
       "float_value": null,
       "float_values": null,
       "integer_value": 5,
+      "integer_values": null,
+      "time_predicate": null,
+      "datetime_predicate": null,
+      "time_value": null,
+      "date_value": null,
+      "datetime_value": null,
+      "string_predicate": null,
+      "string_value": null,
+      "string_values": null,
+      "bool_value": true
+    }
+  },
+  {
+    "model": "filters.filter",
+    "pk": 2,
+    "fields": {
+      "created": "2021-12-03T23:51:35.045Z",
+      "updated": "2021-12-03T23:51:35.045Z",
+      "widget": null,
+      "node": 30,
+      "column": "Employees",
+      "type": "INTEGER",
+      "numeric_predicate": "greaterthan",
+      "float_value": null,
+      "float_values": null,
+      "integer_value": 3,
       "integer_values": null,
       "time_predicate": null,
       "datetime_predicate": null,
@@ -794,6 +856,60 @@
       "cache_node": null,
       "num_rows": 15,
       "data_updated": "2021-08-31T00:58:23.746Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 20,
+    "fields": {
+      "created": "2021-12-03T23:51:57.193Z",
+      "updated": "2021-12-03T23:51:58.995Z",
+      "bq_table": "intermediate_node_000000031",
+      "bq_dataset": "cypress_team_000001_tables",
+      "project": 1,
+      "source": "intermediate_node",
+      "integration": null,
+      "workflow_node": null,
+      "intermediate_node": 31,
+      "cache_node": null,
+      "num_rows": 0,
+      "data_updated": "2021-12-03T23:51:58.995Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 21,
+    "fields": {
+      "created": "2021-12-03T23:52:56.929Z",
+      "updated": "2021-12-03T23:52:58.711Z",
+      "bq_table": "output_node_000000029",
+      "bq_dataset": "cypress_team_000001_tables",
+      "project": 1,
+      "source": "workflow_node",
+      "integration": null,
+      "workflow_node": 29,
+      "intermediate_node": null,
+      "cache_node": null,
+      "num_rows": 0,
+      "data_updated": "2021-12-03T23:52:58.711Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 22,
+    "fields": {
+      "created": "2021-12-03T23:55:09.737Z",
+      "updated": "2021-12-03T23:55:11.723Z",
+      "bq_table": "output_node_000000035",
+      "bq_dataset": "cypress_team_000001_tables",
+      "project": 1,
+      "source": "workflow_node",
+      "integration": null,
+      "workflow_node": 35,
+      "intermediate_node": null,
+      "cache_node": null,
+      "num_rows": 0,
+      "data_updated": "2021-12-03T23:55:11.723Z"
     }
   },
   {
@@ -1762,6 +1878,272 @@
     }
   },
   {
+    "model": "nodes.node",
+    "pk": 27,
+    "fields": {
+      "created": "2021-12-03T23:50:48.947Z",
+      "updated": "2021-12-03T23:52:11.701Z",
+      "workflow": 2,
+      "name": "Store info sheet",
+      "kind": "input",
+      "x": 0.0002399768031052987,
+      "y": 105.0,
+      "data_updated": "2021-12-03T23:51:10.224Z",
+      "error": null,
+      "intermediate_table": null,
+      "cache_table": null,
+      "input_table": 2,
+      "select_mode": "keep",
+      "join_how": "inner",
+      "join_left": null,
+      "join_right": null,
+      "union_distinct": false,
+      "limit_limit": 100,
+      "limit_offset": null,
+      "text_text": null,
+      "pivot_index": null,
+      "pivot_column": null,
+      "pivot_value": null,
+      "pivot_aggregation": null,
+      "unpivot_value": null,
+      "unpivot_column": null,
+      "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
+      "has_been_saved": true
+    }
+  },
+  {
+    "model": "nodes.node",
+    "pk": 29,
+    "fields": {
+      "created": "2021-12-03T23:50:57.390Z",
+      "updated": "2021-12-03T23:52:16.372Z",
+      "workflow": 2,
+      "name": "Pivoted",
+      "kind": "output",
+      "x": 510.00023348711096,
+      "y": 105.0,
+      "data_updated": "2021-12-03T23:52:05.946Z",
+      "error": null,
+      "intermediate_table": null,
+      "cache_table": null,
+      "input_table": null,
+      "select_mode": "keep",
+      "join_how": "inner",
+      "join_left": null,
+      "join_right": null,
+      "union_distinct": false,
+      "limit_limit": 100,
+      "limit_offset": null,
+      "text_text": null,
+      "pivot_index": null,
+      "pivot_column": null,
+      "pivot_value": null,
+      "pivot_aggregation": null,
+      "unpivot_value": null,
+      "unpivot_column": null,
+      "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
+      "has_been_saved": false
+    }
+  },
+  {
+    "model": "nodes.node",
+    "pk": 30,
+    "fields": {
+      "created": "2021-12-03T23:51:17.188Z",
+      "updated": "2021-12-03T23:51:37.580Z",
+      "workflow": 2,
+      "name": null,
+      "kind": "filter",
+      "x": 170.00004036749016,
+      "y": 210.0,
+      "data_updated": "2021-12-03T23:51:35.037Z",
+      "error": null,
+      "intermediate_table": null,
+      "cache_table": null,
+      "input_table": null,
+      "select_mode": "keep",
+      "join_how": "inner",
+      "join_left": null,
+      "join_right": null,
+      "union_distinct": false,
+      "limit_limit": 100,
+      "limit_offset": null,
+      "text_text": null,
+      "pivot_index": null,
+      "pivot_column": null,
+      "pivot_value": null,
+      "pivot_aggregation": null,
+      "unpivot_value": null,
+      "unpivot_column": null,
+      "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
+      "has_been_saved": true
+    }
+  },
+  {
+    "model": "nodes.node",
+    "pk": 31,
+    "fields": {
+      "created": "2021-12-03T23:51:41.546Z",
+      "updated": "2021-12-03T23:52:01.739Z",
+      "workflow": 2,
+      "name": null,
+      "kind": "pivot",
+      "x": 340.000304190932,
+      "y": 210.0,
+      "data_updated": "2021-12-03T23:51:58.991Z",
+      "error": null,
+      "intermediate_table": 20,
+      "cache_table": null,
+      "input_table": null,
+      "select_mode": "keep",
+      "join_how": "inner",
+      "join_left": null,
+      "join_right": null,
+      "union_distinct": false,
+      "limit_limit": 100,
+      "limit_offset": null,
+      "text_text": null,
+      "pivot_index": "Location",
+      "pivot_column": "Owner",
+      "pivot_value": "Employees",
+      "pivot_aggregation": "sum",
+      "unpivot_value": null,
+      "unpivot_column": null,
+      "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
+      "has_been_saved": true
+    }
+  },
+  {
+    "model": "nodes.node",
+    "pk": 32,
+    "fields": {
+      "created": "2021-12-03T23:52:47.542Z",
+      "updated": "2021-12-03T23:53:14.145Z",
+      "workflow": 3,
+      "name": "Pivoted",
+      "kind": "input",
+      "x": 0.00013261587996916924,
+      "y": 420.0,
+      "data_updated": "2021-12-03T23:53:05.623Z",
+      "error": null,
+      "intermediate_table": null,
+      "cache_table": null,
+      "input_table": 21,
+      "select_mode": "keep",
+      "join_how": "inner",
+      "join_left": null,
+      "join_right": null,
+      "union_distinct": false,
+      "limit_limit": 100,
+      "limit_offset": null,
+      "text_text": null,
+      "pivot_index": null,
+      "pivot_column": null,
+      "pivot_value": null,
+      "pivot_aggregation": null,
+      "unpivot_value": null,
+      "unpivot_column": null,
+      "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
+      "has_been_saved": true
+    }
+  },
+  {
+    "model": "nodes.node",
+    "pk": 34,
+    "fields": {
+      "created": "2021-12-03T23:53:49.589Z",
+      "updated": "2021-12-03T23:54:51.921Z",
+      "workflow": 3,
+      "name": null,
+      "kind": "formula",
+      "x": 170.00030118870623,
+      "y": 420.0,
+      "data_updated": "2021-12-03T23:54:48.739Z",
+      "error": null,
+      "intermediate_table": null,
+      "cache_table": null,
+      "input_table": null,
+      "select_mode": "keep",
+      "join_how": "inner",
+      "join_left": null,
+      "join_right": null,
+      "union_distinct": false,
+      "limit_limit": 100,
+      "limit_offset": null,
+      "text_text": null,
+      "pivot_index": null,
+      "pivot_column": null,
+      "pivot_value": null,
+      "pivot_aggregation": null,
+      "unpivot_value": null,
+      "unpivot_column": null,
+      "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
+      "has_been_saved": true
+    }
+  },
+  {
+    "model": "nodes.node",
+    "pk": 35,
+    "fields": {
+      "created": "2021-12-03T23:54:54.642Z",
+      "updated": "2021-12-03T23:55:06.001Z",
+      "workflow": 3,
+      "name": "Coalesced",
+      "kind": "output",
+      "x": 340.0002430063872,
+      "y": 420.0,
+      "data_updated": "2021-12-03T23:54:57.237Z",
+      "error": null,
+      "intermediate_table": null,
+      "cache_table": null,
+      "input_table": null,
+      "select_mode": "keep",
+      "join_how": "inner",
+      "join_left": null,
+      "join_right": null,
+      "union_distinct": false,
+      "limit_limit": 100,
+      "limit_offset": null,
+      "text_text": null,
+      "pivot_index": null,
+      "pivot_column": null,
+      "pivot_value": null,
+      "pivot_aggregation": null,
+      "unpivot_value": null,
+      "unpivot_column": null,
+      "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
+      "has_been_saved": false
+    }
+  },
+  {
     "model": "nodes.edge",
     "pk": 1,
     "fields": {
@@ -2015,6 +2397,61 @@
     }
   },
   {
+    "model": "nodes.edge",
+    "pk": 26,
+    "fields": {
+      "created": "2021-12-03T23:51:19.570Z",
+      "updated": "2021-12-03T23:51:19.570Z",
+      "child": 30,
+      "parent": 27,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 27,
+    "fields": {
+      "created": "2021-12-03T23:51:44.724Z",
+      "updated": "2021-12-03T23:51:44.724Z",
+      "child": 31,
+      "parent": 30,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 28,
+    "fields": {
+      "created": "2021-12-03T23:52:05.973Z",
+      "updated": "2021-12-03T23:52:05.973Z",
+      "child": 29,
+      "parent": 31,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 29,
+    "fields": {
+      "created": "2021-12-03T23:53:53.476Z",
+      "updated": "2021-12-03T23:53:53.476Z",
+      "child": 34,
+      "parent": 32,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 30,
+    "fields": {
+      "created": "2021-12-03T23:54:57.247Z",
+      "updated": "2021-12-03T23:54:57.247Z",
+      "child": 35,
+      "parent": 34,
+      "position": 0
+    }
+  },
+  {
     "model": "columns.aggregationcolumn",
     "pk": 1,
     "fields": {
@@ -2048,6 +2485,50 @@
       "function": "sum",
       "node": null,
       "widget": 3
+    }
+  },
+  {
+    "model": "columns.formulacolumn",
+    "pk": 1,
+    "fields": {
+      "created": "2021-12-03T23:54:22.018Z",
+      "updated": "2021-12-03T23:54:22.018Z",
+      "node": 34,
+      "formula": "coalesce(Alex, 0)",
+      "label": "Alex"
+    }
+  },
+  {
+    "model": "columns.formulacolumn",
+    "pk": 2,
+    "fields": {
+      "created": "2021-12-03T23:54:48.730Z",
+      "updated": "2021-12-03T23:54:48.730Z",
+      "node": 34,
+      "formula": "coalesce(Matt, 0)",
+      "label": "Matt"
+    }
+  },
+  {
+    "model": "columns.formulacolumn",
+    "pk": 3,
+    "fields": {
+      "created": "2021-12-03T23:54:48.738Z",
+      "updated": "2021-12-03T23:54:48.738Z",
+      "node": 34,
+      "formula": "coalesce(Kanar, 0)",
+      "label": "Kanar"
+    }
+  },
+  {
+    "model": "columns.formulacolumn",
+    "pk": 4,
+    "fields": {
+      "created": "2021-12-03T23:54:48.747Z",
+      "updated": "2021-12-03T23:54:48.747Z",
+      "node": 34,
+      "formula": "coalesce(Floris, 0)",
+      "label": "Floris"
     }
   },
   {
@@ -2120,17 +2601,17 @@
     "pk": 1,
     "fields": {
       "created": "2021-08-08T20:28:24.090Z",
-      "updated": "2021-08-08T20:28:28.005Z",
+      "updated": "2021-12-03T23:55:23.784Z",
+      "is_scheduled": true,
+      "succeeded_at": null,
+      "failed_at": null,
       "integration": 2,
       "url": "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit",
       "cell_range": "store_info!A1:D11",
       "drive_file_last_modified_at_sync": "2021-08-08T16:46:04.194Z",
       "sync_task_id": "aa5c3086-1f87-434f-9d5b-48bd69786b33",
       "sync_started": "2021-08-08T20:28:24.090Z",
-      "drive_modified_date": null,
-      "is_scheduled": false,
-      "succeeded_at": null,
-      "failed_at": null
+      "drive_modified_date": "2021-10-21T20:18:31.669Z"
     }
   },
   {
@@ -2139,6 +2620,9 @@
     "fields": {
       "created": "2021-08-10T10:03:16.771Z",
       "updated": "2021-11-03T17:31:36.882Z",
+      "is_scheduled": false,
+      "succeeded_at": "2021-08-25T12:26:16.959Z",
+      "failed_at": "2021-09-08T18:07:29.001Z",
       "integration": 6,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
@@ -2152,8 +2636,6 @@
       "pause_after_trial": false,
       "connected_by": "residual_typing",
       "created_at": "2021-08-10T14:10:36.984Z",
-      "succeeded_at": "2021-08-25T12:26:16.959Z",
-      "failed_at": "2021-09-08T18:07:29.001Z",
       "sync_frequency": 360,
       "daily_sync_time": null,
       "schedule_type": "auto",
@@ -2186,6 +2668,9 @@
     "fields": {
       "created": "2021-08-10T10:40:23.586Z",
       "updated": "2021-11-03T17:31:34.953Z",
+      "is_scheduled": false,
+      "succeeded_at": "2021-11-03T12:21:16.479Z",
+      "failed_at": "2021-10-04T21:32:53.448Z",
       "integration": 7,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
@@ -2199,8 +2684,6 @@
       "pause_after_trial": false,
       "connected_by": "residual_typing",
       "created_at": "2021-08-10T10:35:57.270Z",
-      "succeeded_at": "2021-11-03T12:21:16.479Z",
-      "failed_at": "2021-10-04T21:32:53.448Z",
       "sync_frequency": 360,
       "daily_sync_time": null,
       "schedule_type": "auto",
@@ -2223,6 +2706,9 @@
     "fields": {
       "created": "2021-08-10T10:40:23.586Z",
       "updated": "2021-11-03T17:31:35.855Z",
+      "is_scheduled": false,
+      "succeeded_at": "2021-11-03T12:27:44.782Z",
+      "failed_at": "2021-10-05T06:30:23.170Z",
       "integration": 8,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
@@ -2236,8 +2722,6 @@
       "pause_after_trial": false,
       "connected_by": "residual_typing",
       "created_at": "2021-07-29T12:44:47.204Z",
-      "succeeded_at": "2021-11-03T12:27:44.782Z",
-      "failed_at": "2021-10-05T06:30:23.170Z",
       "sync_frequency": 360,
       "daily_sync_time": null,
       "schedule_type": "auto",
@@ -2435,6 +2919,9 @@
     "fields": {
       "created": "2021-08-10T12:54:44.273Z",
       "updated": "2021-11-03T17:31:34.021Z",
+      "is_scheduled": false,
+      "succeeded_at": "2021-08-24T06:37:48.417Z",
+      "failed_at": "2021-09-21T22:48:08.033Z",
       "integration": 9,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
@@ -2448,8 +2935,6 @@
       "pause_after_trial": false,
       "connected_by": "residual_typing",
       "created_at": "2021-08-10T12:53:47.812Z",
-      "succeeded_at": "2021-08-24T06:37:48.417Z",
-      "failed_at": "2021-09-21T22:48:08.033Z",
       "sync_frequency": 360,
       "daily_sync_time": null,
       "schedule_type": "auto",
@@ -2474,6 +2959,9 @@
     "fields": {
       "created": "2021-08-30T19:05:46.412Z",
       "updated": "2021-11-03T17:31:33.091Z",
+      "is_scheduled": false,
+      "succeeded_at": null,
+      "failed_at": null,
       "integration": 13,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
@@ -2487,8 +2975,6 @@
       "pause_after_trial": false,
       "connected_by": "residual_typing",
       "created_at": "2021-08-19T12:45:25.684Z",
-      "succeeded_at": null,
-      "failed_at": null,
       "sync_frequency": 360,
       "daily_sync_time": null,
       "schedule_type": "auto",
@@ -2787,6 +3273,51 @@
       "plan": 18567,
       "unit_price": 30.0,
       "update_url": "https://sandbox-subscription-management.paddle.com/subscription/169194/hash/15a7bd9fe78a9c6b5ca80ad02542588644ae45ee1f0c3f6d4d33c3bd2a6001c0/update"
+    }
+  },
+  {
+    "model": "django_celery_beat.crontabschedule",
+    "pk": 1,
+    "fields": {
+      "minute": "0",
+      "hour": "0",
+      "day_of_week": "*",
+      "day_of_month": "*",
+      "month_of_year": "*",
+      "timezone": "GMT"
+    }
+  },
+  {
+    "model": "django_celery_beat.periodictasks",
+    "pk": 1,
+    "fields": { "last_update": "2021-12-03T23:55:23.820Z" }
+  },
+  {
+    "model": "django_celery_beat.periodictask",
+    "pk": 1,
+    "fields": {
+      "name": "schedule.project.pk=1",
+      "task": "apps.projects.periodic.run_schedule_for_project",
+      "interval": null,
+      "crontab": 1,
+      "solar": null,
+      "clocked": null,
+      "args": "[1]",
+      "kwargs": "{}",
+      "queue": null,
+      "exchange": null,
+      "routing_key": null,
+      "headers": "{}",
+      "priority": null,
+      "expires": null,
+      "expire_seconds": null,
+      "one_off": false,
+      "start_time": null,
+      "enabled": true,
+      "last_run_at": null,
+      "total_run_count": 0,
+      "date_changed": "2021-12-03T23:55:23.828Z",
+      "description": ""
     }
   }
 ]
