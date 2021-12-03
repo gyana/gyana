@@ -1,7 +1,7 @@
 name: Pytest Unit Tests
 
 concurrency: 
-  group: pytest-${{ github.ref }}
+  group: pytest-${{ github.head_ref }}
   cancel-in-progress: true
 
 on:
