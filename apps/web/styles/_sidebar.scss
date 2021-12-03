@@ -167,6 +167,20 @@
     font-weight: 500;
     height: 4.2rem;
     padding: 0 1rem;
+
+    div {
+      font-size: 0;
+    }
+  
+    div:first-letter {
+      font-size: inherit;
+    }
+  
+    div::after {
+      content: '.';
+      font-size: inherit;
+      display: inline-block;
+    }
   }
 
   #sidebar-toggle {
@@ -178,6 +192,18 @@
       // Swaps the icon of the sidebar toggle to the opposite chevron.
       label[for='sidebar-toggle'] i::before {
         content: '\f053';
+      }
+
+      .sidebar__title {
+        justify-content: flex-start;
+
+        div {
+          font-size: inherit;
+
+          &::after {
+            display: none;
+          }
+        }
       }
     }
   }

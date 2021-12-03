@@ -1,8 +1,5 @@
-from unittest.mock import patch
-
 import pytest
 from django.core import mail
-from google.cloud.bigquery import job
 from pytest_django.asserts import assertRedirects
 
 from apps.base.tests.asserts import assertFormRenders, assertOK
@@ -87,5 +84,4 @@ def test_upload_create(client, logged_in_user, project, bigquery):
     r = client.get(f"{DETAIL}/load")
     assertRedirects(r, f"{DETAIL}/done")
 
-    # todo: email
-    # assert len(mail.outbox) == 1
+    assert len(mail.outbox) == 1

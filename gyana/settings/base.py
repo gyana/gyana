@@ -76,6 +76,7 @@ THIRD_PARTY_APPS = [
     "safedelete",
     "djpaddle",
     "timezone_field",
+    "django_celery_beat",
 ]
 
 # Put your project-specific apps here
@@ -312,7 +313,11 @@ REST_FRAMEWORK = {
 # Celery setup (using redis)
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
-
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_TASK_ROUTES = {
+    "apps.*.tasks.*": {"queue": "priority"},
+    "apps.*.periodic.*": {"queue": "celery"},
+}
 
 # Pegasus config
 

@@ -15,7 +15,7 @@ from apps.base import clients
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import TABLE_NAME, PickableMock
 from apps.columns.models import Column
-from apps.filters.models import Filter
+from apps.filters.models import DateRange, Filter
 from apps.nodes._sentiment_utils import (
     DELIMITER,
     SENTIMENT_COLUMN_NAME,
@@ -361,7 +361,7 @@ def test_filter_node(setup):
 
     filter_node.filters.create(
         column="birthday",
-        datetime_predicate=Filter.DatetimePredicate.TODAY,
+        datetime_predicate=DateRange.TODAY,
         type=Filter.Type.DATE,
     )
     assert get_query_from_node(filter_node).compile() == (

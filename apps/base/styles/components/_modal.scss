@@ -36,6 +36,14 @@
       max-width: 56rem;
     }
   }
+
+  &--auto {
+    & > :first-child {
+      align-self: center;
+      max-height: auto;
+      max-width: 56rem;
+    }
+  }
 }
 
 @keyframes scale-in-center {

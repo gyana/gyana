@@ -1,7 +1,8 @@
 import textwrap
+from datetime import timedelta
 
 from django.db import models
-from django.utils import timezone
+from django.db.models import F, Q
 from model_clone.mixins.clone import CloneMixin
 
 from apps.base.celery import is_bigquery_task_running
@@ -12,8 +13,22 @@ RETRY_LIMIT_DAYS = 3
 
 
 class SheetsManager(models.Manager):
-    def needs_daily_sync(self):
-        return self.filter(is_scheduled=True, next_daily_sync__lt=timezone.now())
+    def is_scheduled_in_project(self, project):
+        # For a sheet to be synced on the daily schedule, it needs to be ready
+        # (i.e. approved) and manually tagged as is_scheduled by the user. If it
+        # fails to sync for more than 3 days, the schedule is stopped until it is
+        # fixed by the user.
+        return (
+            self.filter(
+                integration__project=project, integration__ready=True, is_scheduled=True
+            )
+            .annotate(last_succeeded=F("failed_at") - F("succeeded_at"))
+            .filter(
+                Q(succeeded_at__isnull=True)
+                | Q(failed_at__isnull=True)
+                | Q(last_succeeded__lt=timedelta(days=3))
+            )
+        )
 
 
 class Sheet(CloneMixin, BaseModel):
@@ -33,8 +48,6 @@ class Sheet(CloneMixin, BaseModel):
     drive_modified_date = models.DateTimeField(null=True)
 
     is_scheduled = models.BooleanField(default=False)
-    # the next time to check for a sync from Google Sheets
-    next_daily_sync = models.DateTimeField(null=True)
     succeeded_at = models.DateTimeField(null=True)
     failed_at = models.DateTimeField(null=True)
 
@@ -69,19 +82,3 @@ class Sheet(CloneMixin, BaseModel):
     @property
     def up_to_date(self):
         return self.drive_modified_date == self.drive_file_last_modified_at_sync
-
-    @property
-    def retry_limit_exceeded(self):
-        # stop retrying a failed connected after three days of errors
-        if self.succeeded_at is None:
-            return True
-        return (timezone.now() - self.succeeded_at).days > RETRY_LIMIT_DAYS
-
-    def update_next_daily_sync(self):
-        if not self.is_scheduled:
-            self.next_daily_sync = None
-        # if timezone.now() > self.next_daily_sync, wait for the current job
-        # to complete, and it will automatically update the next_daily_sync
-        elif self.next_daily_sync is None or timezone.now() < self.next_daily_sync:
-            self.next_daily_sync = self.integration.project.next_daily_sync
-        self.save()

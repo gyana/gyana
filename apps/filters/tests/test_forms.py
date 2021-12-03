@@ -4,7 +4,7 @@ from django.http import QueryDict
 from apps.base.tests.asserts import assertFormChoicesLength
 from apps.base.tests.mock_data import TABLE
 from apps.filters.forms import FilterForm
-from apps.filters.models import Filter
+from apps.filters.models import DateRange, Filter
 
 pytestmark = pytest.mark.django_db
 
@@ -12,7 +12,7 @@ COLUMN_LENGTH = 9
 NUMERIC_LENGTH = 11
 STRING_LENGTH = 13
 TIME_LENGTH = 9
-DATETIME_LENGTH = 15
+DATETIME_LENGTH = 34
 
 NUMERIC_NO_VALUE = [Filter.NumericPredicate.ISNULL, Filter.NumericPredicate.NOTNULL]
 STRING_NO_VALUE = [
@@ -23,12 +23,27 @@ STRING_NO_VALUE = [
 ]
 TIME_NO_VALUE = [Filter.TimePredicate.ISNULL, Filter.TimePredicate.NOTNULL]
 DATETIME_NO_VALUE = TIME_NO_VALUE + [
-    Filter.DatetimePredicate.TODAY,
-    Filter.DatetimePredicate.TOMORROW,
-    Filter.DatetimePredicate.YESTERDAY,
-    Filter.DatetimePredicate.ONEMONTHAGO,
-    Filter.DatetimePredicate.ONEWEEKAGO,
-    Filter.DatetimePredicate.ONEYEARAGO,
+    DateRange.TODAY,
+    DateRange.TOMORROW,
+    DateRange.YESTERDAY,
+    DateRange.ONEMONTHAGO,
+    DateRange.ONEWEEKAGO,
+    DateRange.ONEYEARAGO,
+    DateRange.THIS_WEEK,
+    DateRange.LAST_WEEK,
+    DateRange.LAST_7,
+    DateRange.LAST_14,
+    DateRange.LAST_28,
+    DateRange.THIS_MONTH,
+    DateRange.LAST_MONTH,
+    DateRange.LAST_30,
+    DateRange.LAST_90,
+    DateRange.THIS_QUARTER,
+    DateRange.LAST_QUARTER,
+    DateRange.LAST_180,
+    DateRange.LAST_12_MONTH,
+    DateRange.LAST_YEAR,
+    DateRange.THIS_YEAR,
 ]
 
 NUMERIC_VALUE = [

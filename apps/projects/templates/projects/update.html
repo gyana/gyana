@@ -6,7 +6,7 @@
     <h1 class="project-settings__title">Settings</h1>
 
     {% if project.daily_schedule_time != project.truncated_daily_schedule_time %}
-      <p class="alert mb-4">Due to platform limitations for timezones with 15/30/45 minute GMT offsets, your schedule will start at {{ project.truncated_daily_schedule_time }}.</p>
+      <p class="alert mb-4">Due to platform limitations for timezones with 15/30/45 minute GMT offsets, your connectors will start at {{ project.truncated_daily_schedule_time }}.</p>
     {% endif %}
 
     <form 

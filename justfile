@@ -11,7 +11,7 @@ dev:
     python ./manage.py runserver
 
 celery:
-    watchexec -w apps -e py -r "celery -A gyana worker -l INFO"
+    watchexec -w apps -e py -r "celery -A gyana worker -Q celery,priority -l INFO"
 
 beat:
     watchexec -w apps -e py -r "celery -A gyana beat -l INFO"

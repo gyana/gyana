@@ -29,7 +29,28 @@
   </strong>
 </a>
 
-<a class="sidebar__title" title="{{ project.name }}" href="{% url 'projects:detail' project.id %}">{{ project.name }}</a>
+<style>
+  .sidebar__title div {
+    font-size: 0;
+  }
+
+  .sidebar__title div:first-letter {
+    font-size: 1.8rem;
+  }
+
+  .sidebar__title div::after {
+    content: '.';
+    font-size: 1.8rem;
+    display: inline-block;
+  }
+</style>
+<a
+  class="sidebar__title"
+  title="{{ project.name }}"
+  href="{% url 'projects:detail' project.id %}"
+>
+  <div>{{ project.name }}</div>
+</a>
 
 {% with app_name=request.resolver_match.app_name %}
 

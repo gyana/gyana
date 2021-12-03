@@ -13,7 +13,7 @@ from .models import Sheet
 
 
 @shared_task(bind=True)
-def run_sheet_sync_task(self, sheet_id):
+def run_sheet_sync_task(self, sheet_id, skip_up_to_date=False):
     sheet = get_object_or_404(Sheet, pk=sheet_id)
     integration = sheet.integration
 
@@ -35,17 +35,20 @@ def run_sheet_sync_task(self, sheet_id):
 
             sheet.sync_updates_from_drive()
 
-            with catchtime() as get_time_to_sync:
-                import_table_from_sheet(table=table, sheet=sheet)
+            if not (sheet.up_to_date and skip_up_to_date):
+                with catchtime() as get_time_to_sync:
+                    import_table_from_sheet(table=table, sheet=sheet)
 
-            table.sync_updates_from_bigquery()
+                table.sync_updates_from_bigquery()
+                sheet.drive_file_last_modified_at_sync = sheet.drive_modified_date
 
-            sheet.drive_file_last_modified_at_sync = sheet.drive_modified_date
             sheet.succeeded_at = timezone.now()
             sheet.save()
 
             integration.state = Integration.State.DONE
             integration.save()
+
+            sheet.integration.project.update_schedule()
 
     except Exception as e:
         sheet.failed_at = timezone.now()
@@ -54,9 +57,6 @@ def run_sheet_sync_task(self, sheet_id):
         integration.state = Integration.State.ERROR
         integration.save()
         raise e
-
-    finally:
-        sheet.update_next_daily_sync()
 
     if created:
         send_integration_ready_email(integration, int(get_time_to_sync()))
@@ -74,16 +74,3 @@ def run_sheet_sync(sheet: Sheet):
     sheet.sync_task_id = result.task_id
     sheet.sync_started = timezone.now()
     sheet.save()
-
-
-def run_periodic_sheet_sync(sheet: Sheet):
-
-    sheet.sync_updates_from_drive()
-
-    if sheet.retry_limit_exceeded:
-        sheet.update_next_daily_sync()
-    elif sheet.up_to_date:
-        sheet.succeeded_at = timezone.now()
-        sheet.update_next_daily_sync()
-    else:
-        run_sheet_sync(sheet)

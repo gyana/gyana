@@ -97,8 +97,6 @@ class IntegrationSettings(ProjectMixin, TurboUpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.update({"instance": self.object.source_obj})
-        if self.object.kind == Integration.Kind.SHEET:
-            kwargs.update({"request": self.request})
         return kwargs
 
     def form_valid(self, form):
