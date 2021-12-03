@@ -15,7 +15,7 @@ from apps.base import clients
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import TABLE_NAME, PickableMock
 from apps.columns.models import Column
-from apps.filters.models import Filter
+from apps.filters.models import DateRange, Filter
 from apps.nodes._sentiment_utils import (
     DELIMITER,
     SENTIMENT_COLUMN_NAME,
