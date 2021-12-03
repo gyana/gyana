@@ -130,7 +130,7 @@ def last_week(query, column):
     # If this week is first of this year we are interested in the last week of last year
     if week == 1:
         year -= 1
-        week = 53
+        week = 52
     else:
         week -= 1
     return query[(date.year() == year) & (date.isoweek() == week)]
@@ -156,7 +156,7 @@ def last_month(query, column):
 
 
 def get_quarter(date):
-    return (date.month - 1) // 3
+    return (date.month - 1) // 3 + 1
 
 
 def this_quarter(query, column):
