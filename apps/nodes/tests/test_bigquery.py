@@ -361,7 +361,7 @@ def test_filter_node(setup):
 
     filter_node.filters.create(
         column="birthday",
-        datetime_predicate=Filter.DatetimePredicate.TODAY,
+        datetime_predicate=DateRange.TODAY,
         type=Filter.Type.DATE,
     )
     assert get_query_from_node(filter_node).compile() == (

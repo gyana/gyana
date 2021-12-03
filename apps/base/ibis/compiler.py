@@ -151,3 +151,23 @@ def _json_extract(t, expr):
     t_json_path = t.translate(json_path)
 
     return f"JSON_QUERY({t_value}, {t_json_path})"
+
+
+class ISOWeek(ValueOp):
+    arg = Arg(rlz.one_of([rlz.date, rlz.timestamp]))
+    output_type = rlz.shape_like("arg", dt.int32)
+
+
+def isoweek(arg):
+    return ISOWeek(arg).to_expr()
+
+
+DateValue.isoweek = isoweek
+TimestampValue.isoweek = isoweek
+
+
+@compiles(ISOWeek)
+def _isoweek(t, expr):
+    (arg,) = expr.op().args
+
+    return f"ISOWEEK {t.translate(arg)}"

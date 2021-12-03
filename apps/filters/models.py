@@ -5,6 +5,30 @@ from apps.base.models import SaveParentModel
 from apps.widgets.models import Widget
 
 
+class DateRange(models.TextChoices):
+    TODAY = "today", "today"
+    TOMORROW = "tomorrow", "tomorrow"
+    YESTERDAY = "yesterday", "yesterday"
+    ONEWEEKAGO = "oneweekago", "one week ago"
+    ONEMONTHAGO = "onemonthago", "one month ago"
+    ONEYEARAGO = "oneyearago", "one year ago"
+    THIS_WEEK = "thisweek", "This week (starts Monday)"
+    LAST_WEEK = "lastweek", "Last week (starts Monday)"
+    LAST_7 = "last7", "Last 7 days"
+    LAST_14 = "last14", "Last 14 days"
+    LAST_28 = "last28", "Last 28 days"
+    THIS_MONTH = "thismonth", "This month to date"
+    LAST_MONTH = "lastmonth", "Last month"
+    LAST_30 = "last30", "Last 30 days"
+    LAST_90 = "last90", "Last 90 days"
+    THIS_QUARTER = "thisquarter", "This quarter to date"
+    LAST_QUARTER = "lastquarter", "Last quarter"
+    LAST_180 = "last180", "Last 180 days"
+    LAST_12_MONTH = "last12month", "Last 12 months"
+    LAST_YEAR = "lastyear", "Last calendar year"
+    THIS_YEAR = "thisyear", "This year (January - today)"
+
+
 class Filter(SaveParentModel):
     class Type(models.TextChoices):
         INTEGER = "INTEGER", "Integer"
@@ -54,14 +78,6 @@ class Filter(SaveParentModel):
         ISNULL = "isnull", "is empty"
         NOTNULL = "notnull", "is not empty"
 
-    class DatetimePredicate(models.TextChoices):
-        TODAY = "today", "today"
-        TOMORROW = "tomorrow", "tomorrow"
-        YESTERDAY = "yesterday", "yesterday"
-        ONEWEEKAGO = "oneweekago", "one week ago"
-        ONEMONTHAGO = "onemonthago", "one month ago"
-        ONEYEARAGO = "oneyearago", "one year ago"
-
     widget = models.ForeignKey(
         Widget, on_delete=models.CASCADE, null=True, related_name="filters"
     )
@@ -87,7 +103,7 @@ class Filter(SaveParentModel):
     )
     datetime_predicate = models.CharField(
         max_length=16,
-        choices=TimePredicate.choices + DatetimePredicate.choices,
+        choices=TimePredicate.choices + DateRange.choices,
         null=True,
     )
 
@@ -125,5 +141,5 @@ NO_VALUE = [
     Filter.NumericPredicate.NOTNULL,
     Filter.StringPredicate.ISLOWERCASE,
     Filter.StringPredicate.ISUPPERCASE,
-    *Filter.DatetimePredicate,
+    *DateRange,
 ]
