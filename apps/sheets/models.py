@@ -19,7 +19,7 @@ class SheetsManager(models.Manager):
         # fails to sync for more than 3 days, the schedule is stopped until it is
         # fixed by the user.
         return (
-            self.self.filter(
+            self.filter(
                 integration__project=project, integration__ready=True, is_scheduled=True
             )
             .annotate(last_succeeded=F("failed_at") - F("succeeded_at"))
