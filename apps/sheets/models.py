@@ -76,5 +76,10 @@ class Sheet(CloneMixin, SchedulableModel):
         self.save(update_fields=["drive_modified_date"])
 
     @property
-    def up_to_date(self):
+    def up_to_date_with_drive(self):
         return self.drive_modified_date == self.drive_file_last_modified_at_sync
+
+    def run_for_schedule(self):
+        from .tasks import run_sheet_sync_task
+
+        return run_sheet_sync_task(self, skip_up_to_date=True)

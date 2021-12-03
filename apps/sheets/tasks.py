@@ -35,7 +35,7 @@ def run_sheet_sync_task(self, sheet_id, skip_up_to_date=False):
 
             sheet.sync_updates_from_drive()
 
-            if not (sheet.up_to_date and skip_up_to_date):
+            if not (sheet.up_to_date_with_drive and skip_up_to_date):
                 with catchtime() as get_time_to_sync:
                     import_table_from_sheet(table=table, sheet=sheet)
 

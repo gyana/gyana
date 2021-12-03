@@ -1,4 +1,4 @@
-from datetime import time
+from datetime import time, timedelta
 
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
@@ -61,6 +61,11 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
 
         # For daily sync, Fivetran requires a HH:MM formatted string in UTC
         return get_next_daily_sync_in_utc_from_project(self).strftime("%H:%M")
+
+    @property
+    def latest_schedule(self):
+        # the most recent schedule time in the past
+        return self.truncated_daily_schedule_time - timedelta(days=1)
 
     @property
     def integration_count(self):
