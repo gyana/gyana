@@ -1,3 +1,4 @@
+from datetime import date
 from datetime import datetime as dt
 from datetime import timedelta
 
@@ -464,6 +465,13 @@ PARAMS = [
         id="Date on this week",
     ),
     pytest.param(
+        create_date_filter(DateRange.THIS_WEEK_UP_TO_DATE),
+        QUERY.format(
+            f"`birthday` BETWEEN DATE '{(TODAY - timedelta(days=TODAY.weekday())).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+        ),
+        id="Date on this week up to date",
+    ),
+    pytest.param(
         create_date_filter(DateRange.LAST_WEEK),
         QUERY.format(
             f"(EXTRACT(year from `birthday`) = {LAST_WEEK_YEAR}) AND\n      (ISOWEEK `birthday` = {LAST_WEEK})"
@@ -484,6 +492,13 @@ PARAMS = [
         id="Date on this month",
     ),
     pytest.param(
+        create_date_filter(DateRange.THIS_MONTH_UP_TO_DATE),
+        QUERY.format(
+            f"`birthday` BETWEEN DATE '{(TODAY.replace(day=1)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+        ),
+        id="Date on this month up to date",
+    ),
+    pytest.param(
         create_date_filter(DateRange.LAST_MONTH),
         QUERY.format(
             f"(EXTRACT(year from `birthday`) = {LAST_MONTH_YEAR}) AND\n      (EXTRACT(month from `birthday`) = {LAST_MONTH})"
@@ -492,10 +507,15 @@ PARAMS = [
     ),
     pytest.param(
         create_date_filter(DateRange.THIS_YEAR),
+        QUERY.format(f"EXTRACT(year from `birthday`) = {YEAR }"),
+        id="Date on this year",
+    ),
+    pytest.param(
+        create_date_filter(DateRange.THIS_YEAR_UP_TO_DATE),
         QUERY.format(
             f"(EXTRACT(year from `birthday`) = {YEAR }) AND\n      (`birthday` <= DATE '2021-12-03')"
         ),
-        id="Date on this year",
+        id="Date on this year up to date",
     ),
     pytest.param(
         create_date_filter(DateRange.LAST_YEAR),
@@ -508,6 +528,13 @@ PARAMS = [
             f"(EXTRACT(year from `birthday`) = {YEAR}) AND\n      (EXTRACT(quarter from `birthday`) = {QUARTER})"
         ),
         id="Date on this quarter",
+    ),
+    pytest.param(
+        create_date_filter(DateRange.THIS_QUARTER_UP_TO_DATE),
+        QUERY.format(
+            f"`birthday` BETWEEN DATE '{date(TODAY.year, (QUARTER-1)*3+1, 1).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+        ),
+        id="Date on this quarter up to date",
     ),
     pytest.param(
         create_date_filter(DateRange.LAST_QUARTER),

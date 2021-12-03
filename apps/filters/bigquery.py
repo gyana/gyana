@@ -124,6 +124,13 @@ def this_week(query, column):
     return query[(date.year() == year) & (date.isoweek() == week)]
 
 
+def this_week_up_todate(query, column):
+    date = get_date(query[column])
+    today = dt.date.today()
+    start_of_week = today - dt.timedelta(days=today.weekday())
+    return query[date.between(start_of_week, today)]
+
+
 def last_week(query, column):
     date = get_date(query[column])
     year, week, _ = dt.date.today().isocalendar()
@@ -149,6 +156,12 @@ def this_month(query, column):
     return query[(date.year() == today.year) & (date.month() == today.month)]
 
 
+def this_month_up_to_date(query, column):
+    date = get_date(query[column])
+    today = dt.date.today()
+    return query[date.between(today.replace(day=1), today)]
+
+
 def last_month(query, column):
     date = get_date(query[column])
     last_month = dt.date.today() - relativedelta(months=1)
@@ -167,6 +180,14 @@ def this_quarter(query, column):
     return query[(date.year() == today.year) & (date.quarter() == quarter)]
 
 
+def this_quarter_up_to_date(query, column):
+    date = get_date(query[column])
+    today = dt.date.today()
+    quarter = get_quarter(today)
+
+    return query[date.between(dt.date(today.year, (quarter - 1) * 3 + 1, 1), today)]
+
+
 def last_quarter(query, column):
     date = get_date(query[column])
     today = dt.date.today()
@@ -182,6 +203,12 @@ def last_quarter(query, column):
 
 
 def this_year(query, column):
+    date = get_date(query[column])
+    year = dt.date.today().year
+    return query[date.year() == year]
+
+
+def this_year_up_todate(query, column):
     date = get_date(query[column])
     today = dt.date.today()
     return query[(date.year() == today.year) & (date <= today)]
@@ -228,18 +255,22 @@ FILTER_MAP = {
     DateRange.ONEMONTHAGO: one_month_ago,
     DateRange.ONEYEARAGO: one_year_ago,
     DateRange.THIS_WEEK: this_week,
+    DateRange.THIS_WEEK_UP_TO_DATE: this_week_up_todate,
     DateRange.LAST_WEEK: last_week,
     DateRange.LAST_7: partial(last_n_days, days=7),
     DateRange.LAST_14: partial(last_n_days, days=14),
     DateRange.LAST_28: partial(last_n_days, days=28),
     DateRange.LAST_30: partial(last_n_days, days=30),
     DateRange.THIS_MONTH: this_month,
+    DateRange.THIS_MONTH_UP_TO_DATE: this_month_up_to_date,
     DateRange.LAST_MONTH: last_month,
     DateRange.LAST_90: partial(last_n_days, days=90),
     DateRange.THIS_QUARTER: this_quarter,
+    DateRange.THIS_QUARTER_UP_TO_DATE: this_quarter_up_to_date,
     DateRange.LAST_QUARTER: last_quarter,
     DateRange.LAST_180: partial(last_n_days, days=180),
     DateRange.THIS_YEAR: this_year,
+    DateRange.THIS_YEAR_UP_TO_DATE: this_year_up_todate,
     DateRange.LAST_12_MONTH: last_12_month,
     DateRange.LAST_YEAR: last_year,
     Filter.Type.BOOL: filter_boolean,
