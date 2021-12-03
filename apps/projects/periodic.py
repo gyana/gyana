@@ -68,7 +68,11 @@ def run_schedule_for_project(project_id: int):
                 hasattr(entity, "is_scheduled")
                 and entity.is_scheduled
                 and not entity.up_to_date
-                and all(e.up_to_date for e in graph[entity])
+                and all(
+                    e.up_to_date
+                    for e in graph[entity]
+                    if hasattr(e, "is_scheduled") and e.is_scheduled
+                )
             ):
                 entity.run_for_schedule()
 
