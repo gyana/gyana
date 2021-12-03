@@ -97,7 +97,7 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
     project.refresh_from_db()
     assert project.periodic_task is not None
     periodic_task = project.periodic_task
-    assert periodic_task.task == "apps.projects.tasks.run_schedule_for_project"
+    assert periodic_task.task == "apps.projects.periodic.run_schedule_for_project"
     assert json.loads(periodic_task.args) == [project.id]
     assert periodic_task.crontab.hour == str(project.daily_schedule_time.hour)
     assert periodic_task.crontab.timezone == team.timezone
