@@ -1,8 +1,5 @@
 name: Pytest Unit Tests
 
-concurrency: 
-  group: pytest-${{ github.ref }}
-
 on:
   push:
     branches: [ main, release ]
