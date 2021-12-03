@@ -311,5 +311,6 @@ class Connector(DirtyFieldsMixin, SchedulableModel):
         return self.succeeded_at == self.bigquery_succeeded_at
 
     def run_for_schedule(self):
-        # todo: run fivetran daily sync manually at our preferred time
-        return
+        # handled automatically by fivetran, although in future we could set
+        # the schedule_type to "manual" and run at our preferred time
+        pass
