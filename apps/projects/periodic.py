@@ -97,8 +97,8 @@ def run_schedule_for_project(self, project_id: int):
         # todo: add an error to the schedule to track "is_circular"
         pass
 
-    honeybadger_check_in("j6IrRd")
-
     # We need to keep retrying until the connectors either fail or succeeded
     if retry:
-        self.retry(countdown=10, max_retries=6 * 6)
+        self.retry(countdown=RETRY_COUNTDOWN, max_retries=MAX_RETRIES)
+
+    honeybadger_check_in("j6IrRd")
