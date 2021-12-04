@@ -64,6 +64,9 @@ class ProjectCreateForm(MemberSelectMixin, LiveUpdateForm):
     def pre_save(self, instance):
         instance.team = self._team
 
+    def post_save(self, instance):
+        instance.create_schedule()
+
 
 class ProjectUpdateForm(MemberSelectMixin, LiveUpdateForm):
     class Meta:

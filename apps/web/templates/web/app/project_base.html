@@ -98,6 +98,16 @@
     <span data-tooltip-target="body">Dashboards</span>
   </a>
 </li>
+
+<li>
+  <a class="sidebar__link {% if app_name == "project_schedule" %}sidebar__link--active{% endif %}"
+    href="{% url 'project_schedule:detail' project.id %}"
+    data-controller="tooltip"
+    data-placement="right">
+    <i class="far fa-fw fa-calendar mr-6"></i>Schedule
+    <span data-tooltip-target="body">Schedule</span>
+  </a>
+</li>
 {% endif %}
 
 {% if not project.ready %}

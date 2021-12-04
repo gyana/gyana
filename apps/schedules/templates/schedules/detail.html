@@ -1,9 +1,12 @@
-{% extends "web/app/settings_base.html" %}
-<!---->
+{% extends "web/app/project_base.html" %}
+{% load static %}
+
 {% block app %}
-<h1>Detail</h1>
-<p>{{ object.name }}</p>
-<a href="{% url 'schedules:list' %}"
-  >List</a
->
+<div class="flex flex-1 overflow-hidden">
+  <div class="w-full dndflow">
+    <schedule-flow projectId="{{ project.id }}"></schedule-flow>
+  </div>
+</div>
+<script src="{% static "js/schedule-bundle.js" %}"></script>
+<link rel="stylesheet" href="{% static "css/schedule.css" %}" />
 {% endblock %} 

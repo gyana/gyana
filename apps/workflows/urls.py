@@ -1,4 +1,5 @@
 from django.urls import path
+from rest_framework import routers
 
 from apps.projects.access import login_and_project_required
 
@@ -31,6 +32,10 @@ urlpatterns = [
         name="last_run",
     ),
 ]
+
+router = routers.DefaultRouter()
+router.register("api/workflows", rest.WorkflowViewSet, basename="Workflow")
+urlpatterns += router.urls
 
 
 project_urlpatterns = (
