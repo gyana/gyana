@@ -82,4 +82,4 @@ class Sheet(CloneMixin, SchedulableModel):
     def run_for_schedule(self):
         from .tasks import run_sheet_sync_task
 
-        return run_sheet_sync_task(self, skip_up_to_date=True)
+        return run_sheet_sync_task(self.id, skip_up_to_date=True)

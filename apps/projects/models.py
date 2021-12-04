@@ -11,7 +11,6 @@ from model_clone.mixins.clone import CloneMixin
 from apps.base.models import BaseModel
 from apps.cnames.models import CName
 from apps.teams.models import Team
-from apps.workflows.models import Workflow
 
 
 class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
@@ -65,8 +64,10 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     @property
     def latest_schedule(self):
+        from .schedule import get_next_daily_sync_in_utc_from_project
+
         # the most recent schedule time in the past
-        return self.truncated_daily_schedule_time - timedelta(days=1)
+        return get_next_daily_sync_in_utc_from_project(self) - timedelta(days=1)
 
     @property
     def integration_count(self):
@@ -108,6 +109,7 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
     @property
     def needs_schedule(self):
         from apps.sheets.models import Sheet
+        from apps.workflows.models import Workflow
 
         # A project only requires an active shedule if there are scheduled
         # entities like sheets, workflows, apis etc.

@@ -48,4 +48,4 @@ def run_workflow(workflow: Workflow):
     workflow.succeeded_at = timezone.now()
     workflow.last_run = timezone.now()
     # Use fields to not trigger auto_now on the updated field
-    workflow.save(update_fields=["last_run"])
+    workflow.save(update_fields=["succeeded_at", "last_run"])

@@ -40,9 +40,7 @@ def run_schedule_for_project(project_id: int):
     graph = {
         workflow: [
             _get_entity_from_input_table(node.input_table)
-            for node in workflow.nodes.filter(
-                kind=Node.Kind.INPUT, input_table__source=Table.Source.WORKFLOW_NODE
-            )
+            for node in workflow.nodes.filter(kind=Node.Kind.INPUT)
             .select_related("input_table__workflow_node__workflow")
             .select_related("input_table__integration__sheet")
             .select_related("input_table__integration__connector")
