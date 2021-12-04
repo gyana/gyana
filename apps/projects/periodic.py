@@ -3,6 +3,7 @@ from graphlib import CycleError, TopologicalSorter
 from celery import shared_task
 
 from apps.base.tasks import honeybadger_check_in
+from apps.connectors.models import Connector
 from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.sheets.models import Sheet
@@ -63,6 +64,9 @@ def run_schedule_for_project(project_id: int):
             # is designed to be idempotent, we can keep running this task until
             # everything has completed successfully.
 
+            for e in graph[entity]:
+                e.refresh_from_db()
+
             if (
                 hasattr(entity, "is_scheduled")
                 and entity.is_scheduled
@@ -70,7 +74,9 @@ def run_schedule_for_project(project_id: int):
                 and all(
                     e.up_to_date
                     for e in graph[entity]
-                    if hasattr(e, "is_scheduled") and e.is_scheduled
+                    if (hasattr(e, "is_scheduled") and e.is_scheduled)
+                    # connectors are always scheduled
+                    or isinstance(e, Connector)
                 )
             ):
                 entity.run_for_schedule()
