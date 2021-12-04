@@ -7,6 +7,7 @@ from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.sheets.models import Sheet
 from apps.tables.models import Table
+from apps.workflows.models import Workflow
 
 from .models import Project
 
@@ -33,7 +34,7 @@ def run_schedule_for_project(project_id: int):
     # a topological sort for any graph of hashables and raises a cycle error if
     # there is a circularity.
 
-    workflows = project.workflow_set.filter(is_scheduled=True).all()
+    workflows = Workflow.objects.is_scheduled_in_project(project).all()
 
     # one query per workflow, in future we would optimize into a single query
     graph = {

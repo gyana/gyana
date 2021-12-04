@@ -11,6 +11,7 @@ from model_clone.mixins.clone import CloneMixin
 from apps.base.models import BaseModel
 from apps.cnames.models import CName
 from apps.teams.models import Team
+from apps.workflows.models import Workflow
 
 
 class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
@@ -111,7 +112,10 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
         # A project only requires an active shedule if there are scheduled
         # entities like sheets, workflows, apis etc.
 
-        return Sheet.objects.is_scheduled_in_project(self).exists()
+        return (
+            Sheet.objects.is_scheduled_in_project(self).exists()
+            or Workflow.objects.is_scheduled_in_project(self).exists()
+        )
 
     def update_schedule(self):
         from .schedule import update_periodic_task_from_project

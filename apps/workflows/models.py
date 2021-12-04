@@ -1,9 +1,28 @@
+from datetime import timedelta
+
 from django.db import models
+from django.db.models import F, Q
 from django.urls import reverse
 from model_clone import CloneMixin
 
 from apps.base.models import SchedulableModel
 from apps.projects.models import Project
+
+
+class WorkflowsManager(models.Manager):
+    def is_scheduled_in_project(self, project):
+        # For a workflow to be run on the daily schedule, it needs to have been run
+        # and manually tagged as is_scheduled by the user. If it fails to run for more
+        # than 3 days, the schedule is stopped until it is fixed by the user.
+        return (
+            self.filter(project=project, last_run__isnull=False, is_scheduled=True)
+            .annotate(last_succeeded=F("failed_at") - F("succeeded_at"))
+            .filter(
+                Q(succeeded_at__isnull=True)
+                | Q(failed_at__isnull=True)
+                | Q(last_succeeded__lt=timedelta(days=3))
+            )
+        )
 
 
 class Workflow(CloneMixin, SchedulableModel):
@@ -13,6 +32,8 @@ class Workflow(CloneMixin, SchedulableModel):
     data_updated = models.DateTimeField(
         auto_now_add=True,
     )
+
+    objects = WorkflowsManager()
 
     def __str__(self):
         return self.name
