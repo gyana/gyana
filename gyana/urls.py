@@ -33,6 +33,7 @@ from apps.integrations import urls as integration_urls
 from apps.invites import urls as invite_urls
 from apps.nodes import urls as node_urls
 from apps.projects import urls as project_urls
+from apps.schedules import urls as schedule_urls
 from apps.sheets import urls as sheet_urls
 from apps.teams import urls as team_urls
 from apps.templates import urls as template_urls
@@ -64,6 +65,7 @@ project_urlpatterns = [
         include(widget_urls.dashboard_urlpatterns),
     ),
     path("<hashid:project_id>/templates/", include(template_urls.project_urlpatterns)),
+    path("<hashid:project_id>/schedule/", include(schedule_urls.project_urlpatterns)),
 ]
 
 teams_urlpatterns = [
