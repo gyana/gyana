@@ -1,5 +1,6 @@
 {% extends "web/app/project_base.html" %}
 {% load static %}
+{% load waffle_tags %}
 
 {% block app-class %}workflow-detail{% endblock %}
 
@@ -69,6 +70,7 @@
     </template>
   </div>
 
+  {% flag 'schedule' %}
   <div data-controller="tooltip tf-modal">
     <button
       data-action="click->tf-modal#open"
@@ -89,6 +91,7 @@
       </div>
     </div>
   </div>
+  {% endflag %}
 
   <div id="run-button-portal"></div>
 </div>
