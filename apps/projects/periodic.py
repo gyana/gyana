@@ -33,7 +33,7 @@ def run_schedule_for_project(self, project_id: int):
     project.update_schedule()
 
     # skip workflow if nothing to run
-    if not project.periodic_task:
+    if project.periodic_task is None:
         return
 
     # Run all the workflows in a project. The python graphlib library will build
