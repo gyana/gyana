@@ -9,10 +9,13 @@ export const EditButton = ({ absoluteUrl }) => {
   )
 }
 
-export const ScheduleButton = ({ id, model, isScheduled }) => {
+export const ScheduleButton = ({ id, model, isScheduled, fetchLatest }) => {
   return (
     <button
-      onClick={() => updateSchedulable(id, model, !isScheduled)}
+      onClick={async () => {
+        await updateSchedulable(id, model, !isScheduled)
+        fetchLatest()
+      }}
       title={isScheduled ? 'Pause' : 'Play'}
     >
       <i className={`fas fa-fw fa-lg ${isScheduled ? 'fa-pause-circle' : 'fa-play-circle'}`} />

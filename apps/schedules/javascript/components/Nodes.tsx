@@ -1,7 +1,8 @@
 import Tippy from '@tippyjs/react'
 import { EditButton, ScheduleButton } from './NodeButtons'
-import React from 'react'
+import React, { useState } from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
+import { getIntegration, getWorkflow } from '../api'
 
 interface StatusProps {
   succeeded: boolean
@@ -24,7 +25,11 @@ export const StatusIcon: React.FC<StatusProps> = ({ succeeded, isScheduled }) =>
   )
 }
 
-const IntegrationNode: React.FC<NodeProps> = ({ id, data }) => {
+const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
+  const [data, setData] = useState(initialData)
+
+  const fetchLatest = async () => setData(await getIntegration(data.id))
+
   const sourceObj = data[data.kind]
 
   return (
@@ -36,6 +41,7 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data }) => {
             id={data?.sheet?.id}
             model={`${data.kind}s`}
             isScheduled={sourceObj.is_scheduled}
+            fetchLatest={fetchLatest}
           />
         )}
         <EditButton absoluteUrl={data.absolute_url} />
@@ -53,30 +59,45 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data }) => {
   )
 }
 
-const WorkflowNode: React.FC<NodeProps> = ({ id, data }) => (
-  <>
-    <p className='absolute -top-12'> {data.name}</p>
-    <div className='react-flow__buttons'>
-      <ScheduleButton id={data.id} model='workflows' isScheduled={data.is_scheduled} />
-      <EditButton absoluteUrl={data.absolute_url} />
-    </div>
-    <StatusIcon succeeded={data.succeeded} isScheduled={data.is_scheduled} />
-    <Handle type='target' position={Position.Left} isConnectable={false} />
-    <i className={`fas fa-fw fa-sitemap ${data.is_scheduled ? 'text-blue' : 'text-black-50'}`}></i>
-    <Handle type='source' position={Position.Right} isConnectable={false} />
-  </>
-)
+const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
+  const [data, setData] = useState(initialData)
 
-const DashboardNode: React.FC<NodeProps> = ({ id, data }) => (
-  <>
-    <p className='absolute -top-12'> {data.name}</p>
-    <div className='react-flow__buttons'>
-      <EditButton absoluteUrl={data.absolute_url} />
-    </div>
-    <Handle type='target' position={Position.Left} isConnectable={false} />
-    <i className='fas fa-fw fa-chart-pie'></i>
-  </>
-)
+  const fetchLatest = async () => setData(await getWorkflow(data.id))
+
+  return (
+    <>
+      <p className='absolute -top-12'> {data.name}</p>
+      <div className='react-flow__buttons'>
+        <ScheduleButton
+          id={data.id}
+          model='workflows'
+          isScheduled={data.is_scheduled}
+          fetchLatest={fetchLatest}
+        />
+        <EditButton absoluteUrl={data.absolute_url} />
+      </div>
+      <StatusIcon succeeded={data.succeeded} isScheduled={data.is_scheduled} />
+      <Handle type='target' position={Position.Left} isConnectable={false} />
+      <i
+        className={`fas fa-fw fa-sitemap ${data.is_scheduled ? 'text-blue' : 'text-black-50'}`}
+      ></i>
+      <Handle type='source' position={Position.Right} isConnectable={false} />
+    </>
+  )
+}
+
+const DashboardNode: React.FC<NodeProps> = ({ id, data }) => {
+  return (
+    <>
+      <p className='absolute -top-12'> {data.name}</p>
+      <div className='react-flow__buttons'>
+        <EditButton absoluteUrl={data.absolute_url} />
+      </div>
+      <Handle type='target' position={Position.Left} isConnectable={false} />
+      <i className='fas fa-fw fa-chart-pie'></i>
+    </>
+  )
+}
 
 const defaultNodeTypes = {
   integration: IntegrationNode,
