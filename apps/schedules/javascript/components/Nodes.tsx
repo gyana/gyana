@@ -10,11 +10,7 @@ interface StatusProps {
 
 export const StatusIcon: React.FC<StatusProps> = ({ succeeded, isScheduled }) => {
   return (
-    <Tippy
-      content={
-        !isScheduled ? 'Paused' : succeeded ? 'Most recent run succeeded' : 'Most recent run failed'
-      }
-    >
+    <Tippy content={!isScheduled ? 'Paused' : succeeded ? 'Active' : 'Broken'}>
       <div className='flex items-center justify-around absolute -top-2 -right-2 rounded-full w-6 h-6'>
         {!isScheduled ? (
           <i className='fa fa-pause-circle fa-2x text-black-20'></i>
