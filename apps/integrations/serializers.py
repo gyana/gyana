@@ -1,22 +1,10 @@
 from rest_framework import serializers
 
-from apps.connectors.models import Connector
-from apps.sheets.models import Sheet
+from apps.connectors.serializers import ConnectorSerializer
+from apps.sheets.serializers import SheetSerializer
 from apps.uploads.models import Upload
 
 from .models import Integration
-
-
-class ConnectorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Connector
-        fields = ("id", "is_scheduled", "failed_at", "succeeded")
-
-
-class SheetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Sheet
-        fields = ("id", "is_scheduled", "failed_at", "succeeded")
 
 
 class UploadSerializer(serializers.ModelSerializer):

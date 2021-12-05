@@ -1,7 +1,9 @@
-from apps.projects.access import login_and_project_enabled_required
 from django.urls import path
+from rest_framework import routers
 
-from . import frames, views
+from apps.projects.access import login_and_project_enabled_required
+
+from . import frames, rest, views
 from .access import login_and_sheet_required
 
 app_name = "sheets"
@@ -12,6 +14,10 @@ urlpatterns = [
         name="status",
     ),
 ]
+
+router = routers.DefaultRouter()
+router.register("api/sheets", rest.SheetViewSet, basename="Sheet")
+urlpatterns += router.urls
 
 integration_urlpatterns = (
     [

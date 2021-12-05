@@ -1,12 +1,13 @@
 from django.conf import settings
 from django.urls import path
+from rest_framework import routers
 
 from apps.projects.access import (
     login_and_project_enabled_required,
     login_and_project_required,
 )
 
-from . import frames, views
+from . import frames, rest, views
 from .access import login_and_connector_required
 
 app_name = "connectors"
@@ -28,6 +29,9 @@ if settings.DEBUG:
         path("mock", views.ConnectorMock.as_view(), name="mock"),
     ]
 
+router = routers.DefaultRouter()
+router.register("api/connectors", rest.ConnectorViewSet, basename="Connector")
+urlpatterns += router.urls
 
 integration_urlpatterns = (
     [

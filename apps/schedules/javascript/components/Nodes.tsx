@@ -1,5 +1,5 @@
 import Tippy from '@tippyjs/react'
-import NodeButtons from './NodeButtons'
+import { EditButton, ScheduleButton } from './NodeButtons'
 import React from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
 
@@ -34,13 +34,16 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data }) => {
   return (
     <>
       <p className='absolute -top-12'> {data.name}</p>
-      <NodeButtons
-        id={data.id}
-        model='integrations'
-        isScheduled={sourceObj.is_scheduled}
-        absoluteUrl={data.absolute_url}
-        schedulable
-      />
+      <div className='react-flow__buttons'>
+        {data.kind !== 'upload' && (
+          <ScheduleButton
+            id={data?.sheet?.id}
+            model={`${data.kind}s`}
+            isScheduled={sourceObj.is_scheduled}
+          />
+        )}
+        <EditButton absoluteUrl={data.absolute_url} />
+      </div>
       {sourceObj.is_scheduled !== undefined && (
         <StatusIcon succeeded={data.succeeded} isScheduled={sourceObj.is_scheduled} />
       )}
@@ -57,13 +60,10 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data }) => {
 const WorkflowNode: React.FC<NodeProps> = ({ id, data }) => (
   <>
     <p className='absolute -top-12'> {data.name}</p>
-    <NodeButtons
-      id={data.id}
-      model='workflows'
-      isScheduled={data.is_scheduled}
-      absoluteUrl={data.absolute_url}
-      schedulable
-    />
+    <div className='react-flow__buttons'>
+      <ScheduleButton id={data.id} model='workflows' isScheduled={data.is_scheduled} />
+      <EditButton absoluteUrl={data.absolute_url} />
+    </div>
     <StatusIcon succeeded={data.succeeded} isScheduled={data.is_scheduled} />
     <Handle type='target' position={Position.Left} isConnectable={false} />
     <i className={`fas fa-fw fa-sitemap ${data.is_scheduled ? 'text-blue' : 'text-black-50'}`}></i>
@@ -74,7 +74,9 @@ const WorkflowNode: React.FC<NodeProps> = ({ id, data }) => (
 const DashboardNode: React.FC<NodeProps> = ({ id, data }) => (
   <>
     <p className='absolute -top-12'> {data.name}</p>
-    <NodeButtons id={id} absoluteUrl={data.absolute_url} />
+    <div className='react-flow__buttons'>
+      <EditButton absoluteUrl={data.absolute_url} />
+    </div>
     <Handle type='target' position={Position.Left} isConnectable={false} />
     <i className='fas fa-fw fa-chart-pie'></i>
   </>
