@@ -4,21 +4,21 @@ import { Handle, NodeProps, Position } from 'react-flow-renderer'
 const IntegrationNode: React.FC<NodeProps> = () => (
   <>
     <i className='fas fa-fw fa-database'></i>
-    <Handle type='source' position={Position.Right} />
+    <Handle type='source' position={Position.Right} isConnectable={false} />
   </>
 )
 
 const WorkflowNode: React.FC<NodeProps> = () => (
   <>
-    <Handle type='target' position={Position.Left} />
+    <Handle type='target' position={Position.Left} isConnectable={false} />
     <i className='fas fa-fw fa-sitemap'></i>
-    <Handle type='source' position={Position.Right} />
+    <Handle type='source' position={Position.Right} isConnectable={false} />
   </>
 )
 
 const DashboardNode: React.FC<NodeProps> = () => (
   <>
-    <Handle type='target' position={Position.Left} />
+    <Handle type='target' position={Position.Left} isConnectable={false} />
     <i className='fas fa-fw fa-chart-pie'></i>
   </>
 )
