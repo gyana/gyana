@@ -1,7 +1,6 @@
-from django.utils.functional import cached_property
-
 from django.conf import settings
 from django.db import models
+from django.utils.functional import cached_property
 from model_clone.mixins.clone import CloneMixin
 
 from apps.base import clients
@@ -84,6 +83,17 @@ class Table(CloneMixin, BaseModel):
                 return f"{self.integration.name} - {self.bq_table}"
             return self.integration.name
         return f"{self.workflow_node.workflow.name} - {self.workflow_node.name or 'Untitled'}"
+
+    @property
+    def source_obj(self):
+        if self.source == self.Source.INTEGRATION:
+            return self.integration
+        elif self.source == self.Source.WORKFLOW_NODE:
+            return self.workflow_node.workflow
+        elif self.source == self.Source.INTERMEDIATE_NODE:
+            return self.intermediate_node.workflow
+        elif self.source == self.Source.CACHE_NODE:
+            return self.cache_node.workflow
 
     @property
     def bq_dashboard_url(self):

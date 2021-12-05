@@ -1,26 +1,19 @@
 from rest_framework import serializers
 
-from apps.nodes.models import Node
-from apps.tables.models import Table
-
-from .models import Workflow
+from .models import Dashboard
 
 
-class WorkflowSerializer(serializers.ModelSerializer):
+class DashboardSerializer(serializers.ModelSerializer):
     schedule_node_id = serializers.SerializerMethodField()
     parents = serializers.SerializerMethodField()
 
     class Meta:
-        model = Workflow
+        model = Dashboard
         fields = (
             "id",
             "name",
             "project",
-            "last_run",
-            "data_updated",
-            "is_scheduled",
-            "succeeded_at",
-            "failed_at",
+            "shared_status",
             "schedule_node_id",
             "parents",
         )
@@ -29,8 +22,5 @@ class WorkflowSerializer(serializers.ModelSerializer):
         return f"{obj._meta.db_table}-{obj.id}"
 
     def get_parents(self, obj):
-        parents = [
-            node.input_table.source_obj
-            for node in obj.nodes.filter(kind=Node.Kind.INPUT)
-        ]
+        parents = {widget.table.source_obj for widget in obj.widget_set.all()}
         return [f"{source._meta.db_table}-{source.id}" for source in parents]

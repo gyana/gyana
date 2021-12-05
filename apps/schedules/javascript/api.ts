@@ -3,7 +3,7 @@ import { getApiClient } from 'apps/base/javascript/api'
 import { ArrowHeadType, Connection, Edge, Node } from 'react-flow-renderer'
 
 export const toNode = (res): Node => ({
-  id: `${res.id}`,
+  id: res.schedule_node_id.toString(),
   type: 'default',
   data: {},
   position: { x: 0, y: 0 },
@@ -31,13 +31,23 @@ export const toEdge = (parent: number, child: number): Edge => {
 const client = getApiClient()
 
 export const listWorkflows = async (projectId: number) => {
-  const result = await client.action(window.schema, ['workflows', 'api', 'workflows', 'list'], {
-    project: projectId,
-  })
+  const entities = await Promise.all([
+    client.action(window.schema, ['integrations', 'api', 'integrations', 'list'], {
+      project: projectId,
+    }),
+    client.action(window.schema, ['workflows', 'api', 'workflows', 'list'], {
+      project: projectId,
+    }),
+    client.action(window.schema, ['dashboards', 'api', 'dashboards', 'list'], {
+      project: projectId,
+    }),
+  ])
 
-  const nodes = result.results.map((r) => toNode(r))
-  const edges = result.results
-    .map((r) => r.parents.map((parent_id) => toEdge(parent_id, r.id)))
+  const results = entities.map((r) => r.results).flat()
+
+  const nodes = results.map((r) => toNode(r))
+  const edges = results
+    .map((r) => (r.parents || []).map((parent_id) => toEdge(parent_id, r.schedule_node_id)))
     .flat()
 
   return [nodes, edges]

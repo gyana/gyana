@@ -1,8 +1,9 @@
 from django.urls import path
+from rest_framework import routers
 
 from apps.projects.access import login_and_project_required
 
-from . import cache, frames, views
+from . import cache, frames, rest, views
 from .access import login_and_integration_required
 
 app_name = "integrations"
@@ -26,6 +27,10 @@ urlpatterns = [
         name="table_detail",
     ),
 ]
+
+router = routers.DefaultRouter()
+router.register("api/integrations", rest.IntegrationViewSet, basename="Integration")
+urlpatterns += router.urls
 
 project_urlpatterns = (
     [
