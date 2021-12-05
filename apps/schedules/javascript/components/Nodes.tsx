@@ -2,7 +2,7 @@ import Tippy from '@tippyjs/react'
 import { EditButton, ScheduleButton } from './NodeButtons'
 import React, { useState } from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
-import { getIntegration, getWorkflow } from '../api'
+import { getIntegration, getWorkflow, updateSchedulable } from '../api'
 
 interface StatusProps {
   succeeded: boolean
@@ -38,10 +38,11 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
       <div className='react-flow__buttons'>
         {data.kind !== 'upload' && (
           <ScheduleButton
-            id={data?.sheet?.id}
-            model={`${data.kind}s`}
             isScheduled={sourceObj.is_scheduled}
-            fetchLatest={fetchLatest}
+            onClick={async () => {
+              await updateSchedulable(sourceObj.id, `${data.kind}s`, !sourceObj.is_scheduled)
+              fetchLatest()
+            }}
           />
         )}
         <EditButton absoluteUrl={data.absolute_url} />
@@ -68,10 +69,11 @@ const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
       <p className='absolute -top-12'> {data.name}</p>
       <div className='react-flow__buttons'>
         <ScheduleButton
-          id={data.id}
-          model='workflows'
           isScheduled={data.is_scheduled}
-          fetchLatest={fetchLatest}
+          onClick={async () => {
+            await updateSchedulable(data.id, 'workflows', !data.is_scheduled)
+            fetchLatest()
+          }}
         />
         <EditButton absoluteUrl={data.absolute_url} />
       </div>

@@ -1,5 +1,4 @@
 import React from 'react'
-import { updateSchedulable } from '../api'
 
 export const EditButton = ({ absoluteUrl }) => {
   return (
@@ -9,15 +8,9 @@ export const EditButton = ({ absoluteUrl }) => {
   )
 }
 
-export const ScheduleButton = ({ id, model, isScheduled, fetchLatest }) => {
+export const ScheduleButton = ({ isScheduled, onClick }) => {
   return (
-    <button
-      onClick={async () => {
-        await updateSchedulable(id, model, !isScheduled)
-        fetchLatest()
-      }}
-      title={isScheduled ? 'Pause' : 'Play'}
-    >
+    <button onClick={onClick} title={isScheduled ? 'Pause' : 'Play'}>
       <i className={`fas fa-fw fa-lg ${isScheduled ? 'fa-pause-circle' : 'fa-play-circle'}`} />
     </button>
   )
