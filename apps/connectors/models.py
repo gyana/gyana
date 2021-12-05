@@ -7,9 +7,10 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 
 from apps.base import clients
-from apps.base.models import SchedulableModel
+from apps.base.models import BaseModel
 from apps.connectors.fivetran.schema import FivetranSchemaObj
 from apps.integrations.models import Integration
+from apps.schedules.mixins import ScheduleMixin
 
 from .fivetran.config import ServiceTypeEnum, get_services_obj
 
@@ -17,7 +18,7 @@ FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
 FIVETRAN_SYNC_FREQUENCY_HOURS = 6
 
 
-class Connector(DirtyFieldsMixin, SchedulableModel):
+class Connector(DirtyFieldsMixin, ScheduleMixin, BaseModel):
     class ScheduleType(models.TextChoices):
         AUTO = "auto", "Auto"
         MANUAL = "manual", "Manual"
@@ -89,7 +90,7 @@ class Connector(DirtyFieldsMixin, SchedulableModel):
     pause_after_trial = models.BooleanField()
     connected_by = models.TextField()
     created_at = models.DateTimeField()
-    # (succeeded_at and failed_at are provided by the ScheduleMixin)
+    # (succeeded_at and failed_at are provided by the schedule mixin)
     # in minutes, 1440 is daily
     sync_frequency = models.IntegerField()
     # specified in one hour increments starting from 00:00 to 23:00
@@ -109,6 +110,11 @@ class Connector(DirtyFieldsMixin, SchedulableModel):
     # deprecated: track the celery task
     sync_task_id = models.UUIDField(null=True)
     sync_started = models.DateTimeField(null=True)
+
+    # for the schedule mixin
+    is_scheduled = models.BooleanField(default=True)
+    succeeded_at = models.DateTimeField(null=True)
+    failed_at = models.DateTimeField(null=True)
 
     @property
     def fivetran_dashboard_url(self):

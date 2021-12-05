@@ -5,8 +5,9 @@ from django.db.models import F, Q
 from django.urls import reverse
 from model_clone import CloneMixin
 
-from apps.base.models import SchedulableModel
+from apps.base.models import BaseModel
 from apps.projects.models import Project
+from apps.schedules.mixins import ScheduleMixin
 
 
 class WorkflowsManager(models.Manager):
@@ -25,13 +26,18 @@ class WorkflowsManager(models.Manager):
         )
 
 
-class Workflow(CloneMixin, SchedulableModel):
+class Workflow(CloneMixin, ScheduleMixin, BaseModel):
     name = models.CharField(max_length=255, default="Untitled")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     last_run = models.DateTimeField(null=True)
     data_updated = models.DateTimeField(
         auto_now_add=True,
     )
+
+    # for the schedule mixin
+    is_scheduled = models.BooleanField(default=False)
+    succeeded_at = models.DateTimeField(null=True)
+    failed_at = models.DateTimeField(null=True)
 
     objects = WorkflowsManager()
 

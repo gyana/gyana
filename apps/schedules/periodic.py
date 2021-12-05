@@ -10,7 +10,7 @@ from apps.sheets.models import Sheet
 from apps.tables.models import Table
 from apps.workflows.models import Workflow
 
-from .models import Project
+from ..projects.models import Project
 
 # Retry every 10 minutes for next 6 hours, this will continue to try until
 # the incremental connector resyncs are completed.

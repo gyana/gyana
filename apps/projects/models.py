@@ -1,11 +1,8 @@
-from datetime import time, timedelta
-
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.functional import cached_property
-from django_celery_beat.models import PeriodicTask
 from model_clone.mixins.clone import CloneMixin
 
 from apps.base.models import BaseModel
@@ -33,41 +30,16 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
         through="ProjectMembership",
     )
     cname = models.ForeignKey(CName, on_delete=models.SET_NULL, null=True, blank=True)
-    # default midnight
-    daily_schedule_time = models.TimeField(default=time())
-    periodic_task = models.OneToOneField(
-        PeriodicTask, null=True, on_delete=models.SET_NULL
-    )
+    # # default midnight
+    # daily_schedule_time = models.TimeField(default=time())
+    # periodic_task = models.OneToOneField(
+    #     PeriodicTask, null=True, on_delete=models.SET_NULL
+    # )
 
     _clone_m2o_or_o2m_fields = ["integration_set", "workflow_set", "dashboard_set"]
 
     def __str__(self):
         return self.name
-
-    @property
-    def truncated_daily_schedule_time(self):
-        from .schedule import get_next_daily_sync_in_utc_from_project
-
-        # The sync time for connectors in 15/30/45 offset timezones is earlier, due to limitations of Fivetran
-        return (
-            get_next_daily_sync_in_utc_from_project(self)
-            .astimezone(self.team.timezone)
-            .time()
-        )
-
-    @property
-    def next_sync_time_utc_string(self):
-        from .schedule import get_next_daily_sync_in_utc_from_project
-
-        # For daily sync, Fivetran requires a HH:MM formatted string in UTC
-        return get_next_daily_sync_in_utc_from_project(self).strftime("%H:%M")
-
-    @property
-    def latest_schedule(self):
-        from .schedule import get_next_daily_sync_in_utc_from_project
-
-        # the most recent schedule time in the past
-        return get_next_daily_sync_in_utc_from_project(self) - timedelta(days=1)
 
     @property
     def integration_count(self):
@@ -105,33 +77,6 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
     @cached_property
     def integrations_for_review(self):
         return self.integration_set.review().count()
-
-    @property
-    def needs_schedule(self):
-        from apps.sheets.models import Sheet
-        from apps.workflows.models import Workflow
-
-        # A project only requires an active shedule if there are scheduled
-        # entities like sheets, workflows, apis etc.
-
-        return (
-            Sheet.objects.is_scheduled_in_project(self).exists()
-            or Workflow.objects.is_scheduled_in_project(self).exists()
-        )
-
-    def update_schedule(self):
-        from .schedule import update_periodic_task_from_project
-
-        update_periodic_task_from_project(self)
-
-    def update_daily_sync_time(self):
-        from apps.connectors.models import Connector
-
-        connectors = Connector.objects.filter(integration__project=self).all()
-        for connector in connectors:
-            connector.sync_updates_from_fivetran()
-
-        self.update_schedule()
 
     def create_schedule(self):
         from apps.schedules.models import Schedule

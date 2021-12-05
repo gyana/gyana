@@ -1,11 +1,10 @@
 from django.urls import reverse
-from django.views.generic import DetailView
 from turbo_response.views import TurboUpdateView
 
 from apps.projects.mixins import ProjectMixin
-from apps.projects.periodic import run_all_workflows
 
 from .models import Schedule
+from .periodic import run_all_workflows
 
 
 class ScheduleDetail(ProjectMixin, TurboUpdateView):

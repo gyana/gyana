@@ -7,7 +7,6 @@ from pytest_django.asserts import assertRedirects
 
 from apps.base.tests.asserts import assertFormRenders, assertOK
 from apps.connectors.tests.mock import get_mock_fivetran_connector
-from apps.projects.periodic import run_schedule_for_project
 
 pytestmark = pytest.mark.django_db
 

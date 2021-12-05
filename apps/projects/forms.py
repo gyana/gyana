@@ -77,7 +77,7 @@ class ProjectUpdateForm(MemberSelectMixin, LiveUpdateForm):
             "access",
             "members",
             "cname",
-            "daily_schedule_time",
+            # "daily_schedule_time",
         ]
         widgets = {
             "members": MemberSelect(),
