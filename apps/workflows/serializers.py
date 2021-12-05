@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from apps.nodes.models import Node
-from apps.tables.models import Table
 
 from .models import Workflow
 
@@ -9,6 +8,7 @@ from .models import Workflow
 class WorkflowSerializer(serializers.ModelSerializer):
     schedule_node_id = serializers.SerializerMethodField()
     parents = serializers.SerializerMethodField()
+    absolute_url = serializers.URLField(source="get_absolute_url", read_only=True)
 
     class Meta:
         model = Workflow
@@ -23,6 +23,7 @@ class WorkflowSerializer(serializers.ModelSerializer):
             "failed_at",
             "schedule_node_id",
             "parents",
+            "absolute_url",
         )
 
     def get_schedule_node_id(self, obj):

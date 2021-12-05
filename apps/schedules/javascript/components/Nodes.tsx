@@ -1,4 +1,5 @@
 import Tippy from '@tippyjs/react'
+import NodeButtons from './NodeButtons'
 import React from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
 
@@ -17,11 +18,13 @@ export const ScheduledIcon: React.FC = ({ isScheduled }) => {
   )
 }
 
-const IntegrationNode: React.FC<NodeProps> = ({ data }) => {
+const IntegrationNode: React.FC<NodeProps> = ({ id, data }) => {
   const sourceObj = data[data.kind]
 
   return (
     <>
+      <p className='absolute -top-12'> {data.name}</p>
+      <NodeButtons id={id} absoluteUrl={data.absolute_url} />
       <ScheduledIcon isScheduled={sourceObj.is_scheduled} />
       <i className='fas fa-fw fa-database'></i>
       <Handle type='source' position={Position.Right} isConnectable={false} />
@@ -29,8 +32,10 @@ const IntegrationNode: React.FC<NodeProps> = ({ data }) => {
   )
 }
 
-const WorkflowNode: React.FC<NodeProps> = ({ data }) => (
+const WorkflowNode: React.FC<NodeProps> = ({ id, data }) => (
   <>
+    <p className='absolute -top-12'> {data.name}</p>
+    <NodeButtons id={id} absoluteUrl={data.absolute_url} />
     <ScheduledIcon isScheduled={data.is_scheduled} />
     <Handle type='target' position={Position.Left} isConnectable={false} />
     <i className='fas fa-fw fa-sitemap'></i>
@@ -38,8 +43,10 @@ const WorkflowNode: React.FC<NodeProps> = ({ data }) => (
   </>
 )
 
-const DashboardNode: React.FC<NodeProps> = () => (
+const DashboardNode: React.FC<NodeProps> = ({ id, data }) => (
   <>
+    <p className='absolute -top-12'> {data.name}</p>
+    <NodeButtons id={id} absoluteUrl={data.absolute_url} />
     <Handle type='target' position={Position.Left} isConnectable={false} />
     <i className='fas fa-fw fa-chart-pie'></i>
   </>

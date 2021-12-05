@@ -30,6 +30,7 @@ class IntegrationSerializer(serializers.ModelSerializer):
     connector = ConnectorSerializer()
     sheet = SheetSerializer()
     upload = UploadSerializer()
+    absolute_url = serializers.URLField(source="get_absolute_url", read_only=True)
 
     class Meta:
         model = Integration
@@ -46,6 +47,7 @@ class IntegrationSerializer(serializers.ModelSerializer):
             "connector",
             "sheet",
             "upload",
+            "absolute_url",
         )
 
     def get_schedule_node_id(self, obj):
