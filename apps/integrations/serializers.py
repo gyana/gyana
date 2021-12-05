@@ -48,6 +48,7 @@ class IntegrationSerializer(serializers.ModelSerializer):
             "sheet",
             "upload",
             "absolute_url",
+            "icon",
         )
 
     def get_schedule_node_id(self, obj):
