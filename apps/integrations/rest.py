@@ -13,6 +13,8 @@ class IntegrationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request is None:
             return Integration.objects.none()
-        return Integration.objects.filter(
-            project__team__in=self.request.user.teams.all()
-        ).all()
+        return (
+            Integration.objects.visible()
+            .filter(project__team__in=self.request.user.teams.all())
+            .all()
+        )

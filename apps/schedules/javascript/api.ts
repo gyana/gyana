@@ -2,12 +2,15 @@ import { getApiClient } from 'apps/base/javascript/api'
 
 import { ArrowHeadType, Connection, Edge, Node } from 'react-flow-renderer'
 
-export const toNode = (res): Node => ({
-  id: res.schedule_node_id.toString(),
-  type: 'default',
-  data: {},
-  position: { x: 0, y: 0 },
-})
+export const toNode = (res): Node => {
+  return {
+    id: res.schedule_node_id.toString(),
+    // e.g. "workflows_workflow-1"
+    type: res.schedule_node_id.toString().split('-')[0].split('_')[1],
+    data: {},
+    position: { x: 0, y: 0 },
+  }
+}
 
 export const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection) =>
   `reactflow__edge-${source}${sourceHandle}-${target}${targetHandle}`

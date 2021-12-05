@@ -6,15 +6,14 @@ import ReactFlow, {
   Controls,
   Edge,
   Node,
-  useZoomPanHelper,
   Background,
   ConnectionLineType,
-  useStoreState,
 } from 'react-flow-renderer'
 import { listWorkflows } from '../api'
 
 import 'apps/workflows/javascript/styles/_dnd-flow.scss'
 import LayoutButton from './LayoutButton'
+import defaultNodeTypes from './Nodes'
 
 const GRID_GAP = 20
 
@@ -51,7 +50,7 @@ const ScheduleFlow: React.FC<Props> = ({ projectId }) => {
   return (
     <div className='reactflow-wrapper' ref={reactFlowWrapper}>
       <ReactFlow
-        // nodeTypes={defaultNodeTypes}
+        nodeTypes={defaultNodeTypes}
         elements={elements}
         connectionLineType={ConnectionLineType.SmoothStep}
         snapToGrid={true}
