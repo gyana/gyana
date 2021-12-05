@@ -6,6 +6,18 @@
   <h3 class="flex-1 mr-auto">
     Schedule
   </h3>
+
+  <form method="post">
+    {% csrf_token %}
+
+    {% include "django/forms/default_form.html" %}
+
+    <div class='dndflow__run-button'>
+      <button type="submit" class='button button--sm button--success'>
+        <i class='fas fa-fw fa-play'></i> Run workflows in order
+      </button>
+    </div>
+  </form>
 </div>
 
 <div class="flex flex-1 overflow-hidden">

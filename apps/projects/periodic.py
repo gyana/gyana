@@ -25,16 +25,13 @@ def _get_entity_from_input_table(table: Table):
         return table.integration.source_obj
 
 
-@shared_task(bind=True)
-def run_schedule_for_project(self, project_id: int):
+def run_all_sheets(project: Project):
 
-    project = Project.objects.get(pk=project_id)
+    for sheet in Sheet.objects.is_scheduled_in_project(project).all():
+        sheet.run_for_schedule()
 
-    project.update_schedule()
 
-    # skip workflow if nothing to run
-    if project.periodic_task is None:
-        return
+def run_all_workflows(project: Project, override=False):
 
     # Run all the workflows in a project. The python graphlib library will build
     # a topological sort for any graph of hashables and raises a cycle error if
@@ -55,10 +52,6 @@ def run_schedule_for_project(self, project_id: int):
         for workflow in workflows
     }
 
-    graph.update(
-        {sheet: [] for sheet in Sheet.objects.is_scheduled_in_project(project).all()}
-    )
-
     ts = TopologicalSorter(graph)
 
     retry = False
@@ -66,36 +59,56 @@ def run_schedule_for_project(self, project_id: int):
     try:
         for entity in ts.static_order():
 
-            # Run a step when all the previous steps have run (even if they failed,
-            # to keep it simple we don't propagate "blocked" information). This
-            # is designed to be idempotent, we can keep running this task until
-            # everything has completed successfully.
+            if isinstance(entity, Workflow):
 
-            for e in graph[entity]:
-                e.refresh_from_db()
+                # Run a step when all the previous steps have run (even if they failed,
+                # to keep it simple we don't propagate "blocked" information). This
+                # is designed to be idempotent, we can keep running this task until
+                # everything has completed successfully.
 
-            scheduled_parents = [
-                e
-                for e in graph[entity]
-                if (hasattr(e, "is_scheduled") and e.is_scheduled)
-                # connectors are always scheduled
-                or isinstance(e, Connector)
-            ]
+                for e in graph[entity]:
+                    e.refresh_from_db()
 
-            if any(not e.up_to_date for e in scheduled_parents):
-                retry = True
+                scheduled_parents = [
+                    e
+                    for e in graph[entity]
+                    if (hasattr(e, "is_scheduled") and e.is_scheduled)
+                    # connectors are always scheduled
+                    or isinstance(e, Connector)
+                ]
 
-            if (
-                hasattr(entity, "is_scheduled")
-                and entity.is_scheduled
-                and not entity.up_to_date
-                and all(e.up_to_date for e in scheduled_parents)
-            ):
-                entity.run_for_schedule()
+                if any(not e.up_to_date for e in scheduled_parents):
+                    retry = True
+
+                if override or (
+                    hasattr(entity, "is_scheduled")
+                    and entity.is_scheduled
+                    and not entity.up_to_date
+                    and all(e.up_to_date for e in scheduled_parents)
+                ):
+                    entity.run_for_schedule()
 
     except CycleError:
         # todo: add an error to the schedule to track "is_circular"
         pass
+
+    return retry
+
+
+@shared_task(bind=True)
+def run_schedule_for_project(self, project_id: int):
+
+    project = Project.objects.get(pk=project_id)
+
+    project.update_schedule()
+
+    # skip workflow if nothing to run
+    if project.periodic_task is None:
+        return
+
+    run_all_sheets(project)
+
+    retry = run_all_workflows(project)
 
     # We need to keep retrying until the connectors either fail or succeeded
     if retry:
