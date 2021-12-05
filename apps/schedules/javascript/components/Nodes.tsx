@@ -47,7 +47,7 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
         <EditButton absoluteUrl={data.absolute_url} />
       </div>
       {sourceObj.is_scheduled !== undefined && (
-        <StatusIcon succeeded={data.succeeded} isScheduled={sourceObj.is_scheduled} />
+        <StatusIcon succeeded={sourceObj.succeeded} isScheduled={sourceObj.is_scheduled} />
       )}
       <img
         className={`h-24 w-24 ${!sourceObj.is_scheduled ? 'filter grayscale' : ''}`}
