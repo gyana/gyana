@@ -14,7 +14,7 @@ class IntegrationViewSet(viewsets.ModelViewSet):
         if self.request is None:
             return Integration.objects.none()
         return (
-            Integration.objects.visible()
+            Integration.objects.ready()
             .filter(project__team__in=self.request.user.teams.all())
             .all()
         )

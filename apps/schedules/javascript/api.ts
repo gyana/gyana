@@ -7,7 +7,7 @@ export const toNode = (res): Node => {
     id: res.schedule_node_id.toString(),
     // e.g. "workflows_workflow-1"
     type: res.schedule_node_id.toString().split('-')[0].split('_')[1],
-    data: {},
+    data: res,
     position: { x: 0, y: 0 },
   }
 }
