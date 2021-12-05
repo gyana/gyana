@@ -33,6 +33,13 @@ export const toEdge = (parent: number, child: number): Edge => {
 
 const client = getApiClient()
 
+export const updateSchedulable = async (id: number, model: string, isScheduled: boolean) => {
+  await client.action(window.schema, [model, 'api', model, 'partial_update'], {
+    id,
+    is_scheduled: isScheduled,
+  })
+}
+
 export const listWorkflows = async (projectId: number) => {
   const entities = await Promise.all([
     client.action(window.schema, ['integrations', 'api', 'integrations', 'list'], {
