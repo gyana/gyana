@@ -21,6 +21,24 @@ export const ScheduledIcon: React.FC<Props> = ({ isScheduled }) => {
   )
 }
 
+interface StatusProps {
+  succeeded: boolean
+}
+
+export const StatusIcon: React.FC<StatusProps> = ({ succeeded }) => {
+  return (
+    <Tippy content={succeeded ? 'Most recent run succeeded' : 'Most recent run failed'}>
+      <div className='flex items-center justify-around absolute -top-2 -right-2 rounded-full w-6 h-6'>
+        {succeeded ? (
+          <i className='fa fa-check-circle fa-2x text-green'></i>
+        ) : (
+          <i className='fa fa-times-circle fa-2x text-red'></i>
+        )}
+      </div>
+    </Tippy>
+  )
+}
+
 const IntegrationNode: React.FC<NodeProps> = ({ id, data }) => {
   const sourceObj = data[data.kind]
 
@@ -31,7 +49,7 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data }) => {
       {sourceObj.is_scheduled !== undefined && (
         <ScheduledIcon isScheduled={sourceObj.is_scheduled} />
       )}
-      {/* <i className='fas fa-fw fa-database'></i> */}
+      <StatusIcon succeeded={data.succeeded} />
       <img className='h-24 w-24' src={`/static/${data.icon}`} title='{{ object.name }}' />
       <Handle type='source' position={Position.Right} isConnectable={false} />
     </>
@@ -43,6 +61,7 @@ const WorkflowNode: React.FC<NodeProps> = ({ id, data }) => (
     <p className='absolute -top-12'> {data.name}</p>
     <NodeButtons id={id} absoluteUrl={data.absolute_url} />
     <ScheduledIcon isScheduled={data.is_scheduled} />
+    <StatusIcon succeeded={data.succeeded} />
     <Handle type='target' position={Position.Left} isConnectable={false} />
     <i className='fas fa-fw fa-sitemap'></i>
     <Handle type='source' position={Position.Right} isConnectable={false} />

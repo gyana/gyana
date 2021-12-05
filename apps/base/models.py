@@ -66,3 +66,9 @@ class SchedulableModel(BaseModel):
 
     def run_for_schedule(self):
         raise NotImplementedError
+
+    @property
+    def succeeded(self):
+        return self.succeeded_at is not None and (
+            self.failed_at is None or self.succeeded_at > self.failed_at
+        )

@@ -10,13 +10,13 @@ from .models import Integration
 class ConnectorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Connector
-        fields = ("id", "is_scheduled", "failed_at")
+        fields = ("id", "is_scheduled", "failed_at", "succeeded")
 
 
 class SheetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sheet
-        fields = ("id", "is_scheduled", "failed_at")
+        fields = ("id", "is_scheduled", "failed_at", "succeeded")
 
 
 class UploadSerializer(serializers.ModelSerializer):
