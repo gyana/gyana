@@ -4,23 +4,32 @@ import { Node, Edge, useStoreState, ControlButton, useZoomPanHelper } from 'reac
 
 interface Props {
   elements: (Edge | Node)[]
-  setElements: (elements: (Edge | Node)[]) => void
+  setElements: React.Dispatch<React.SetStateAction<(Edge | Node)[]>>
 }
 
 const LayoutButton: React.FC<Props> = ({ elements, setElements }) => {
   const nodes = useStoreState((state) => state.nodes)
   const { fitView } = useZoomPanHelper()
   const [shouldLayout, setShouldLayout] = useState(true)
+  const [hasLayout, setHasLayout] = useState(false)
 
   // https://github.com/wbkd/react-flow/issues/1353
   useEffect(() => {
     if (shouldLayout && nodes.length > 0 && nodes.every((el) => el.__rf.width && el.__rf.height)) {
       const layoutedElements = getLayoutedElements(elements, nodes)
       setElements(layoutedElements)
-      fitView()
+      setHasLayout(true)
       setShouldLayout(false)
     }
   }, [shouldLayout, nodes])
+
+  // wait for layout to update and only then fit view
+  useEffect(() => {
+    if (hasLayout) {
+      fitView()
+      setHasLayout(false)
+    }
+  }, [hasLayout])
 
   const onLayout = () => setShouldLayout(true)
 
