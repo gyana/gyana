@@ -15,5 +15,5 @@ class WidgetPartialUpdate(viewsets.GenericViewSet, mixins.UpdateModelMixin):
         if self.request is None:
             return Widget.objects.all()
         return Widget.objects.filter(
-            dashboard__project__team__in=self.request.user.teams.all()
+            dashboard__project__team__members=self.request.user
         ).all()

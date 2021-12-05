@@ -13,5 +13,5 @@ class ConnectorViewSet(viewsets.ModelViewSet):
         if self.request is None:
             return Connector.objects.none()
         return Connector.objects.filter(
-            integration__project__team__in=self.request.user.teams.all()
+            integration__project__team__members=self.request.user
         ).all()

@@ -20,9 +20,7 @@ class WorkflowViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request is None:
             return Workflow.objects.none()
-        return Workflow.objects.filter(
-            project__team__in=self.request.user.teams.all()
-        ).all()
+        return Workflow.objects.filter(project__team__members=self.request.user).all()
 
 
 @api_view(http_method_names=["POST"])

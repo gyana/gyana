@@ -13,6 +13,4 @@ class DashboardViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request is None:
             return Dashboard.objects.none()
-        return Dashboard.objects.filter(
-            project__team__in=self.request.user.teams.all()
-        ).all()
+        return Dashboard.objects.filter(project__team__members=self.request.user).all()

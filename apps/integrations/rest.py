@@ -15,6 +15,6 @@ class IntegrationViewSet(viewsets.ModelViewSet):
             return Integration.objects.none()
         return (
             Integration.objects.visible()
-            .filter(project__team__in=self.request.user.teams.all())
+            .filter(project__team__members=self.request.user)
             .all()
         )
