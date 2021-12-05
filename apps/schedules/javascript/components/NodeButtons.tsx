@@ -3,7 +3,7 @@ import { updateSchedulable } from '../api'
 
 const EditButton = ({ absoluteUrl }) => {
   return (
-    <a href={absoluteUrl} title='Edit'>
+    <a className='text-black-50 mt-3' href={absoluteUrl} title='Edit'>
       <i className='fas fa-fw fa-lg fa-edit'></i>
     </a>
   )
