@@ -52,7 +52,6 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
       <img
         className={`h-24 w-24 ${!sourceObj.is_scheduled ? 'filter grayscale' : ''}`}
         src={`/static/${data.icon}`}
-        title='{{ object.name }}'
       />
       <Handle type='source' position={Position.Right} isConnectable={false} />
     </>
