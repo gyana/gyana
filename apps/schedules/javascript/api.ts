@@ -35,8 +35,6 @@ export const listWorkflows = async (projectId: number) => {
     project: projectId,
   })
 
-  console.log(result)
-
   const nodes = result.results.map((r) => toNode(r))
   const edges = result.results
     .map((r) => r.parents.map((parent_id) => toEdge(parent_id, r.id)))

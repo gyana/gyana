@@ -2,9 +2,15 @@
 {% load static %}
 
 {% block app %}
+<div class="workflow-detail__header">
+  <h3 class="flex-1 mr-auto">
+    Schedule
+  </h3>
+</div>
+
 <div class="flex flex-1 overflow-hidden">
   <div class="w-full dndflow">
-    <schedule-flow projectId="{{ project.id }}"></schedule-flow>
+    <schedule-flow class="w-full" projectId="{{ project.id }}"></schedule-flow>
   </div>
 </div>
 <script src="{% static "js/schedule-bundle.js" %}"></script>
