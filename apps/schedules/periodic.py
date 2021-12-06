@@ -3,7 +3,7 @@ from graphlib import CycleError
 from celery import shared_task
 
 from apps.base.tasks import honeybadger_check_in
-from apps.projects.models import Project
+from apps.schedules.models import Schedule
 from apps.sheets.tasks import run_scheduled_sheets
 from apps.workflows.bigquery import run_scheduled_workflows
 
@@ -14,19 +14,19 @@ MAX_RETRIES = 3600 / RETRY_COUNTDOWN * 12
 
 
 @shared_task(bind=True)
-def run_schedule_for_project(self, project_id: int):
+def run_schedule(self, schedule_id: int):
 
-    project = Project.objects.get(pk=project_id)
+    schedule = Schedule.objects.get(pk=schedule_id)
 
-    project.update_schedule()
+    schedule.update_schedule()
 
     # skip workflow if nothing to run
-    if project.schedule.periodic_task is None:
+    if schedule.periodic_task is None:
         return
 
-    run_scheduled_sheets(project)
+    run_scheduled_sheets(schedule.project)
     try:
-        run_scheduled_workflows(project)
+        run_scheduled_workflows(schedule.project)
     except CycleError:
         # todo: add an error to the schedule to track "is_circular"
         pass

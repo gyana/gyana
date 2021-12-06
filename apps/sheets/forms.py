@@ -54,7 +54,7 @@ class SheetCreateForm(BaseModelForm):
         )
 
     def post_save(self, instance):
-        instance.integration.project.update_schedule()
+        instance.integration.project.schedule.update_schedule()
 
 
 class SheetUpdateForm(BaseModelForm):
@@ -91,4 +91,4 @@ class SheetSettingsForm(BaseModelForm):
         self.fields["is_scheduled"].help_text = help_text
 
     def post_save(self, instance):
-        instance.integration.project.update_schedule()
+        instance.integration.project.schedule.update_schedule()

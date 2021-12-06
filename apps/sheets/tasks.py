@@ -49,7 +49,7 @@ def run_sheet_sync_task(self, sheet_id, skip_up_to_date=False):
             integration.state = Integration.State.DONE
             integration.save()
 
-            sheet.integration.project.update_schedule()
+            sheet.integration.project.schedule.update_schedule()
 
     except Exception as e:
         sheet.failed_at = timezone.now()

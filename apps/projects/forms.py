@@ -1,6 +1,7 @@
 from django import forms
 
 from apps.base.live_update_form import LiveUpdateForm
+from apps.schedules.models import Schedule
 
 from .models import Project
 from .widgets import MemberSelect
@@ -65,7 +66,7 @@ class ProjectCreateForm(MemberSelectMixin, LiveUpdateForm):
         instance.team = self._team
 
     def post_save(self, instance):
-        instance.create_schedule()
+        Schedule.create_with_periodic_task(instance)
 
 
 class ProjectUpdateForm(MemberSelectMixin, LiveUpdateForm):

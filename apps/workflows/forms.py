@@ -32,4 +32,4 @@ class WorkflowSettingsForm(BaseModelForm):
         self.fields["is_scheduled"].help_text = help_text
 
     def post_save(self, instance):
-        instance.project.update_schedule()
+        instance.project.schedule.update_schedule()

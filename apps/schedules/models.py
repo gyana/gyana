@@ -1,7 +1,8 @@
+import json
 from datetime import time, timedelta
 
 from django.db import models
-from django_celery_beat.models import PeriodicTask
+from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
 from apps.base.models import BaseModel
 from apps.projects.models import Project
@@ -14,6 +15,31 @@ class Schedule(BaseModel):
         PeriodicTask, null=True, on_delete=models.SET_NULL
     )
     project = models.OneToOneField(Project, on_delete=models.CASCADE)
+
+    @staticmethod
+    def create_with_periodic_task(project: Project):
+
+        schedule = Schedule.objects.create(project=project)
+
+        schedule = CrontabSchedule.objects.create(
+            minute=0,
+            hour=schedule.daily_schedule_time.hour,
+            timezone=schedule.project.team.timezone,
+        )
+
+        periodic_task = PeriodicTask.objects.create(
+            crontab=schedule,
+            # name is unique, prevents duplicate schedules for a single project
+            name=f"schedules_schedule.pk={schedule.id}",
+            task="apps.schedules.periodic.run_schedule",
+            args=json.dumps([schedule.id]),
+            enabled=False,
+        )
+
+        schedule.periodic_task = periodic_task
+        schedule.save()
+
+        return schedule
 
     @property
     def next_daily_sync_in_utc(self):
@@ -50,9 +76,11 @@ class Schedule(BaseModel):
         )
 
     def update_schedule(self):
-        from .schedule import update_periodic_task_from_schedule
-
-        update_periodic_task_from_schedule(self)
+        self.periodic_task.crontab.update(
+            hour=self.daily_schedule_time.hour,
+            timezone=self.project.team.timezone,
+        )
+        self.periodic_task.update(enabled=self.needs_schedule)
 
     def update_daily_sync_time(self):
         from apps.connectors.models import Connector

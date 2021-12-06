@@ -78,11 +78,6 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
     def integrations_for_review(self):
         return self.integration_set.review().count()
 
-    def create_schedule(self):
-        from apps.schedules.models import Schedule
-
-        Schedule.objects.create(project=self)
-
     def get_absolute_url(self):
         return reverse("projects:detail", args=(self.id,))
 
