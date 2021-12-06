@@ -28,7 +28,7 @@ class WorkflowSettingsForm(BaseModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         project = self.instance.project
-        help_text = f"Daily at {project.daily_schedule_time} in {project.team.timezone}"
+        help_text = f"Daily at {project.schedule.daily_schedule_time} in {project.team.timezone}"
         self.fields["is_scheduled"].help_text = help_text
 
     def post_save(self, instance):

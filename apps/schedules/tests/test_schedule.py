@@ -39,7 +39,7 @@ def test_connector_schedule(client, logged_in_user, fivetran, connector_factory)
     project.refresh_from_db()
     connector.refresh_from_db()
 
-    assert project.daily_schedule_time.strftime("%H:%M") == "09:00"
+    assert project.schedule.daily_schedule_time.strftime("%H:%M") == "09:00"
     # test logic for 30 minute offset as well
     assert connector.daily_sync_time == "03:00"
     assert fivetran.update.call_count == 1
@@ -98,7 +98,7 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
     periodic_task = project.periodic_task
     assert periodic_task.task == "apps.projects.periodic.run_schedule_for_project"
     assert json.loads(periodic_task.args) == [project.id]
-    assert periodic_task.crontab.hour == str(project.daily_schedule_time.hour)
+    assert periodic_task.crontab.hour == str(project.schedule.daily_schedule_time.hour)
     assert periodic_task.crontab.timezone == team.timezone
 
     # Update the timezone

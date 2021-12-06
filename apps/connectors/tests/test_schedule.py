@@ -35,7 +35,7 @@ def test_connector_schedule(client, logged_in_user, fivetran, connector_factory)
     project.refresh_from_db()
     connector.refresh_from_db()
 
-    assert project.daily_schedule_time.strftime("%H:%M") == "09:00"
+    assert project.schedule.daily_schedule_time.strftime("%H:%M") == "09:00"
     # test logic for 30 minute offset as well
     assert connector.daily_sync_time == "03:00"
     assert fivetran.update.call_count == 1
