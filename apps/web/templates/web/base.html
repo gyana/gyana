@@ -52,7 +52,9 @@
   {% endblock %}
 
   <main>
-    {% block secondary_sidebar %}{% endblock %}
+    {% block team_sidebar %}
+      {% include "web/components/team_sidebar.html" %}
+    {% endblock %}
 
     {% block sidebar %}
     <div id="sidebar" class="sidebar" data-controller="web-sidebar">
@@ -92,7 +94,7 @@
             data-controller="tooltip"
             data-placement="right"
           >
-            <i class="fas fa-fw fa-comment-alt"></i> Join our Slack
+            <i class="fas fa-fw fa-comments-alt"></i> Join our Slack
 
             <span data-tooltip-target="body">Join our Slack</span>
           </a>
