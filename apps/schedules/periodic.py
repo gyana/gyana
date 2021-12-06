@@ -4,8 +4,8 @@ from celery import shared_task
 
 from apps.base.tasks import honeybadger_check_in
 from apps.schedules.models import Schedule
-from apps.sheets.tasks import run_scheduled_sheets
-from apps.workflows.bigquery import run_scheduled_workflows
+from apps.sheets.schedule import run_scheduled_sheets
+from apps.workflows.schedule import run_scheduled_workflows
 
 # Retry every 10 minutes for next 12 hours, this will continue to try until
 # the incremental connector resyncs are completed.
