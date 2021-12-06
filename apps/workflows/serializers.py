@@ -35,4 +35,4 @@ class WorkflowSerializer(serializers.ModelSerializer):
             node.input_table.source_obj
             for node in obj.nodes.filter(kind=Node.Kind.INPUT)
         ]
-        return [f"{source._meta.db_table}-{source.id}" for source in parents]
+        return [self.get_schedule_node_id(source) for source in parents]
