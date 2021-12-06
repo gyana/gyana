@@ -16,7 +16,6 @@ def test_widget_crudl(
     project,
     integration_table_factory,
     bigquery,
-    widget_factory,
 ):
     mock_bq_client_with_schema(
         bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
