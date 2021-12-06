@@ -41,10 +41,24 @@ export const getWorkflow = async (id: number) => {
   return await client.action(window.schema, ['workflows', 'api', 'workflows', 'read'], { id })
 }
 
-export const updateSchedulable = async (id: number, model: string, isScheduled: boolean) => {
-  await client.action(window.schema, [model, 'api', model, 'partial_update'], {
+export const updateConnector = async (id: number, data: any) => {
+  return await client.action(window.schema, ['sheets', 'api', 'sheets', 'partial_update'], {
     id,
-    is_scheduled: isScheduled,
+    ...data,
+  })
+}
+
+export const updateSheet = async (id: number, data: any) => {
+  return await client.action(window.schema, ['sheets', 'api', 'sheets', 'partial_update'], {
+    id,
+    ...data,
+  })
+}
+
+export const updateWorkflow = async (id: number, data: any) => {
+  return await client.action(window.schema, ['workflows', 'api', 'workflows', 'partial_update'], {
+    id,
+    ...data,
   })
 }
 

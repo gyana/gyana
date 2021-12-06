@@ -2,7 +2,7 @@ import Tippy from '@tippyjs/react'
 import { EditButton, ScheduleButton } from './NodeButtons'
 import React, { useState } from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
-import { getIntegration, getWorkflow, updateSchedulable } from '../api'
+import { getIntegration, getWorkflow, updateConnector, updateSheet, updateWorkflow } from '../api'
 
 interface StatusProps {
   succeeded: boolean
@@ -28,8 +28,6 @@ export const StatusIcon: React.FC<StatusProps> = ({ succeeded, isScheduled }) =>
 const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
   const [data, setData] = useState(initialData)
 
-  const fetchLatest = async () => setData(await getIntegration(data.id))
-
   const sourceObj = data[data.kind]
 
   return (
@@ -40,8 +38,11 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
           <ScheduleButton
             isScheduled={sourceObj.is_scheduled}
             onClick={async () => {
-              await updateSchedulable(sourceObj.id, `${data.kind}s`, !sourceObj.is_scheduled)
-              fetchLatest()
+              if (data.kind == 'connector')
+                await updateConnector(sourceObj.id, { is_scheduled: !sourceObj.is_scheduled })
+              else if (data.kind == 'sheet')
+                await updateSheet(sourceObj.id, { is_scheduled: !sourceObj.is_scheduled })
+              setData(await getIntegration(data.id))
             }}
           />
         )}
@@ -62,8 +63,6 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
 const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
   const [data, setData] = useState(initialData)
 
-  const fetchLatest = async () => setData(await getWorkflow(data.id))
-
   return (
     <>
       <p className='absolute -top-12'> {data.name}</p>
@@ -71,8 +70,7 @@ const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
         <ScheduleButton
           isScheduled={data.is_scheduled}
           onClick={async () => {
-            await updateSchedulable(data.id, 'workflows', !data.is_scheduled)
-            fetchLatest()
+            setData(await updateWorkflow(data.id, { is_scheduled: !data.is_scheduled }))
           }}
         />
         <EditButton absoluteUrl={data.absolute_url} />
