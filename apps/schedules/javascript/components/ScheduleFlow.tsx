@@ -14,6 +14,7 @@ import { listWorkflows } from '../api'
 import 'apps/workflows/javascript/styles/_dnd-flow.scss'
 import LayoutButton from './LayoutButton'
 import defaultNodeTypes from './Nodes'
+import ZeroState from './ZeroState'
 
 const GRID_GAP = 20
 
@@ -65,7 +66,7 @@ const ScheduleFlow: React.FC<Props> = ({ projectId }) => {
         {initialLoad === LoadingStates.loading && <LoadingState />}
         {initialLoad === LoadingStates.failed && <ErrorState error='Failed loading your nodes!' />}
         {/* TODO: Add a zero state */}
-        {/* {initialLoad === LoadingStates.loaded && elements.length === 0 && <ZeroState />} */}
+        {initialLoad === LoadingStates.loaded && elements.length === 0 && <ZeroState />}
       </ReactFlow>
     </div>
   )
