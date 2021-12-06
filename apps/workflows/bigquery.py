@@ -64,14 +64,14 @@ def run_workflows(project: Project):
 
     # one query per workflow, in future we would optimize into a single query
     graph = {
-        workflow: [
+        workflow: {
             node.input_table.workflow_node.workflow
             for node in workflow.nodes.filter(
                 kind=Node.Kind.INPUT, input_table__source=Table.Source.WORKFLOW_NODE
             )
             .select_related("input_table__workflow_node__workflow")
             .all()
-        ]
+        }
         for workflow in workflows
     }
 

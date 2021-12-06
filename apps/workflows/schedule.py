@@ -17,14 +17,14 @@ def run_scheduled_workflows(project: Project):
 
     # one query per workflow, in future we would optimize into a single query
     graph = {
-        workflow: [
+        workflow: {
             node.input_table.source_obj
             for node in workflow.nodes.filter(kind=Node.Kind.INPUT)
             .select_related("input_table__workflow_node__workflow")
             .select_related("input_table__integration__sheet")
             .select_related("input_table__integration__connector")
             .all()
-        ]
+        }
         for workflow in workflows
     }
 
