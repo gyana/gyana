@@ -37,7 +37,7 @@ def test_team_crudl(client, logged_in_user, bigquery, settings):
     assertRedirects(client.get("/"), f"/teams/{team.id}")
     r = client.get(f"/teams/{team.id}")
     assertOK(r)
-    assertLink(r, f"/teams/new", "New Team")
+    assertLink(r, f"/teams/new")
 
     # create
     r = client.get("/teams/new")
@@ -69,7 +69,7 @@ def test_team_crudl(client, logged_in_user, bigquery, settings):
     assertRedirects(client.get("/"), f"/teams/{team.id}")
 
     # switcher
-    assertLink(r, f"/teams/{team.id}", "Vayu")
+    assertLink(r, f"/teams/{team.id}")
 
     # list -> NA
 
