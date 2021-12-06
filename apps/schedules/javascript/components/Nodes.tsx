@@ -2,7 +2,7 @@ import Tippy from '@tippyjs/react'
 import { EditButton, ScheduleButton } from './NodeButtons'
 import React, { useState } from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
-import { getIntegration, getWorkflow, updateConnector, updateSheet, updateWorkflow } from '../api'
+import { getIntegration, updateConnector, updateSheet, updateWorkflow } from '../api'
 
 interface StatusProps {
   succeeded: boolean
