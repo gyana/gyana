@@ -1,12 +1,14 @@
+from graphlib import CycleError
+
 from django.urls import reverse
 from turbo_response.views import TurboUpdateView
 
 from apps.base.frames import TurboFrameUpdateView
 from apps.projects.mixins import ProjectMixin
+from apps.workflows.bigquery import run_workflows
 
 from .forms import ScheduleSettingsForm
 from .models import Schedule
-from .periodic import run_all_workflows
 
 
 class ScheduleDetail(ProjectMixin, TurboUpdateView):
@@ -15,7 +17,11 @@ class ScheduleDetail(ProjectMixin, TurboUpdateView):
     fields = []
 
     def form_valid(self, form):
-        run_all_workflows(self.project, override=True)
+        try:
+            run_workflows(self.project)
+        except CycleError:
+            # todo: add an error to the schedule to track "is_circular"
+            pass
         return super().form_valid(form)
 
     def get_object(self):

@@ -6,6 +6,7 @@ from django.utils import timezone
 from apps.base.time import catchtime
 from apps.integrations.emails import send_integration_ready_email
 from apps.integrations.models import Integration
+from apps.projects.models import Project
 from apps.tables.models import Table
 
 from .bigquery import import_table_from_sheet
@@ -74,3 +75,9 @@ def run_sheet_sync(sheet: Sheet):
     sheet.sync_task_id = result.task_id
     sheet.sync_started = timezone.now()
     sheet.save()
+
+
+def run_scheduled_sheets(project: Project):
+
+    for sheet in Sheet.objects.is_scheduled_in_project(project).all():
+        run_sheet_sync_task(sheet.id, skip_up_to_date=True)

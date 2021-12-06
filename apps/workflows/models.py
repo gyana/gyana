@@ -75,8 +75,3 @@ class Workflow(CloneMixin, ScheduleMixin, BaseModel):
             input_table.data_updated for input_table in input_tables
         )
         return self.last_run < max(self.data_updated, latest_input_update)
-
-    def run_for_schedule(self):
-        from .bigquery import run_workflow
-
-        return run_workflow(self)
