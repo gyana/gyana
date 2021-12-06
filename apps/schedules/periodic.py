@@ -7,7 +7,6 @@ from apps.connectors.models import Connector
 from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.sheets.models import Sheet
-from apps.tables.models import Table
 from apps.workflows.models import Workflow
 
 from ..projects.models import Project
@@ -16,13 +15,6 @@ from ..projects.models import Project
 # the incremental connector resyncs are completed.
 RETRY_COUNTDOWN = 60 * 10
 MAX_RETRIES = 3600 / RETRY_COUNTDOWN * 24
-
-
-def _get_entity_from_input_table(table: Table):
-    if table.source == Table.Source.WORKFLOW_NODE:
-        return table.workflow_node.workflow
-    else:
-        return table.integration.source_obj
 
 
 def run_all_sheets(project: Project):
@@ -42,7 +34,7 @@ def run_all_workflows(project: Project, override=False):
     # one query per workflow, in future we would optimize into a single query
     graph = {
         workflow: [
-            _get_entity_from_input_table(node.input_table)
+            node.input_table.source_obj
             for node in workflow.nodes.filter(kind=Node.Kind.INPUT)
             .select_related("input_table__workflow_node__workflow")
             .select_related("input_table__integration__sheet")
