@@ -2,6 +2,7 @@ import json
 from datetime import time, timedelta
 
 from django.db import models
+from django.db.models import Q
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
 from apps.base.models import BaseModel
@@ -73,6 +74,24 @@ class Schedule(BaseModel):
         return (
             Sheet.objects.is_scheduled_in_project(self.project).exists()
             or Workflow.objects.is_scheduled_in_project(self.project).exists()
+        )
+
+    @property
+    def has_pending_tasks(self):
+        from apps.sheets.models import Sheet
+        from apps.workflows.models import Workflow
+
+        # check for schedule entities which have neither succeeded or failed today
+
+        expr = Q(failed_at__gt=self.latest_schedule) | Q(
+            succeeded_at__gt=self.latest_schedule
+        )
+
+        return (
+            Sheet.objects.is_scheduled_in_project(self.project).exclude(expr).exists()
+            or Workflow.objects.is_scheduled_in_project(self.project)
+            .exclude(expr)
+            .exists()
         )
 
     def update_schedule(self):

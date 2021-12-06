@@ -21,7 +21,7 @@ def run_schedule(self, schedule_id: int):
     schedule.update_schedule()
 
     # skip workflow if nothing to run
-    if schedule.periodic_task is None:
+    if not schedule.periodic_task.enabled:
         return
 
     run_scheduled_sheets(schedule.project)
@@ -31,11 +31,8 @@ def run_schedule(self, schedule_id: int):
         # todo: add an error to the schedule to track "is_circular"
         pass
 
-    # todo: compute retry criteria here
-    retry = False
-
     # We need to keep retrying until the connectors either fail or succeeded
-    if retry:
+    if schedule.has_pending_tasks:
         self.retry(countdown=RETRY_COUNTDOWN, max_retries=MAX_RETRIES)
 
     honeybadger_check_in("j6IrRd")
