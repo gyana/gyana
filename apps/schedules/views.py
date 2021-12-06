@@ -18,7 +18,9 @@ class ScheduleDetail(ProjectMixin, TurboUpdateView):
 
     def form_valid(self, form):
         try:
-            run_workflows(self.project)
+            result = run_workflows.delay(self.project.id)
+            self.object.run_task_id = result.task_id
+            self.object.save()
         except CycleError:
             # todo: add an error to the schedule to track "is_circular"
             pass

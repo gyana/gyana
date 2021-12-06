@@ -30,11 +30,6 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
         through="ProjectMembership",
     )
     cname = models.ForeignKey(CName, on_delete=models.SET_NULL, null=True, blank=True)
-    # # default midnight
-    # daily_schedule_time = models.TimeField(default=time())
-    # periodic_task = models.OneToOneField(
-    #     PeriodicTask, null=True, on_delete=models.SET_NULL
-    # )
 
     _clone_m2o_or_o2m_fields = ["integration_set", "workflow_set", "dashboard_set"]
 

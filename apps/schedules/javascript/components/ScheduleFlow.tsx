@@ -15,6 +15,7 @@ import 'apps/workflows/javascript/styles/_dnd-flow.scss'
 import LayoutButton from './LayoutButton'
 import defaultNodeTypes from './Nodes'
 import ZeroState from './ZeroState'
+import useRunProgress from '../hooks/useRunProgress'
 
 const GRID_GAP = 20
 
@@ -26,13 +27,17 @@ enum LoadingStates {
 
 interface Props {
   projectId: number
+  runTaskUrl: string
+  celeryProgressUrl: string
 }
 
-const ScheduleFlow: React.FC<Props> = ({ projectId }) => {
+const ScheduleFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUrl }) => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null)
 
   const [elements, setElements] = useState<(Edge | Node)[]>([])
   const [initialLoad, setInitialLoad] = useState(LoadingStates.loading)
+
+  const output = useRunProgress(runTaskUrl, celeryProgressUrl)
 
   useEffect(() => {
     const syncElements = async () => {
@@ -63,6 +68,7 @@ const ScheduleFlow: React.FC<Props> = ({ projectId }) => {
           <LayoutButton elements={elements} setElements={setElements} />
         </Controls>
         <Background gap={GRID_GAP} />
+        {runTaskUrl}
         {initialLoad === LoadingStates.loading && <LoadingState />}
         {initialLoad === LoadingStates.failed && <ErrorState error='Failed loading your nodes!' />}
         {initialLoad === LoadingStates.loaded && elements.length === 0 && <ZeroState />}

@@ -9,15 +9,21 @@ import ScheduleFlow from './components/ScheduleFlow'
 
 interface Props {
   projectId: number
+  runTaskUrl: string
+  celeryProgressUrl: string
 }
 
-const SafeScheduleFlow: React.FC<Props> = ({ projectId }) => {
+const SafeScheduleFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUrl }) => {
   const { finishedPinging, schemaReady } = useBlockUntilSchemaReady()
 
   return (
     <>
       {schemaReady ? (
-        <ScheduleFlow projectId={projectId} />
+        <ScheduleFlow
+          projectId={projectId}
+          runTaskUrl={runTaskUrl}
+          celeryProgressUrl={celeryProgressUrl}
+        />
       ) : !finishedPinging ? (
         <LoadingState />
       ) : (
@@ -30,9 +36,15 @@ const SafeScheduleFlow: React.FC<Props> = ({ projectId }) => {
 class ReactDndFlow extends HTMLElement {
   connectedCallback() {
     const projectId = this.attributes['projectId'].value
+    const runTaskUrl = this.attributes['runTaskUrl'].value
+    const celeryProgressUrl = this.attributes['celeryProgressUrl'].value
     ReactDOM.render(
       <ReactFlowProvider>
-        <SafeScheduleFlow projectId={projectId} />
+        <SafeScheduleFlow
+          projectId={projectId}
+          runTaskUrl={runTaskUrl}
+          celeryProgressUrl={celeryProgressUrl}
+        />
       </ReactFlowProvider>,
       this
     )

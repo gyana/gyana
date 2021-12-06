@@ -1,5 +1,6 @@
 from graphlib import TopologicalSorter
 
+from celery import shared_task
 from django.db import transaction
 from django.utils import timezone
 
@@ -54,7 +55,10 @@ def run_workflow(workflow: Workflow):
     workflow.save(update_fields=["succeeded_at", "last_run"])
 
 
-def run_workflows(project: Project):
+@shared_task
+def run_workflows(project_id: int):
+
+    project = Project.objects.get(pk=project_id)
 
     # Run all the workflows in a project. The python graphlib library will build
     # a topological sort for any graph of hashables and raises a cycle error if

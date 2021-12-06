@@ -17,6 +17,7 @@ class Schedule(BaseModel):
     periodic_task = models.OneToOneField(
         PeriodicTask, null=True, on_delete=models.SET_NULL
     )
+    run_task_id = models.UUIDField(null=True)
     project = models.OneToOneField(Project, on_delete=models.CASCADE)
 
     @staticmethod
@@ -112,11 +113,13 @@ class Schedule(BaseModel):
         )
 
     def update_schedule(self):
-        self.periodic_task.crontab.update(
-            hour=self.daily_schedule_time.hour,
-            timezone=self.project.team.timezone,
-        )
-        self.periodic_task.update(enabled=self.needs_schedule)
+        crontab = self.periodic_task.crontab
+        crontab.hour = self.daily_schedule_time.hour
+        crontab.timezone = self.project.team.timezone
+        crontab.save()
+
+        self.periodic_task.enabled = self.needs_schedule
+        self.save()
 
     def update_daily_sync_time(self):
         from apps.connectors.models import Connector

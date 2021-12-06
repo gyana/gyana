@@ -44,9 +44,13 @@
 
 <div class="flex flex-1 overflow-hidden">
   <div class="w-full dndflow">
-    <schedule-flow class="w-full" projectId="{{ project.id }}"></schedule-flow>
+    <schedule-flow class="w-full"
+      projectId="{{ project.id }}"
+      runTaskUrl="{% url 'celery_progress:task_status' object.run_task_id %}"
+      celeryProgressUrl="{% static 'celery_progress/celery_progress.js' %}">
+    </schedule-flow>
   </div>
 </div>
 <script src="{% static "js/schedule-bundle.js" %}"></script>
 <link rel="stylesheet" href="{% static "css/schedule.css" %}" />
-{% endblock %} 
+{% endblock %}
