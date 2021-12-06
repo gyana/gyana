@@ -34,13 +34,6 @@ def mock_bq_client_data(bigquery):
         mock.total_rows = len(INPUT_DATA)
         return mock
 
-    def result(query, **kwargs):
-        mock = PickableMock()
-        mock.result = Mock(return_value=INPUT_DATA)
-        mock.total_rows = len(INPUT_DATA)
-        return mock
-
-    bigquery.query = Mock(side_effect=result)
     bigquery.get_query_results = Mock(side_effect=side_effect)
 
 

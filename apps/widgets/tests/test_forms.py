@@ -175,12 +175,13 @@ def test_two_dimension_form(kind, formset_classes, setup, widget_factory):
 def test_dateslice_column_is_added(setup, widget_factory, date_slicer_factory):
     dashboard, table = setup
     widget = widget_factory(kind=Widget.Kind.TABLE, table=table, dashboard=dashboard)
-    form = FORMS[widget.kind](instance=widget)
+    form = FORMS[widget.kind](instance=widget, project=dashboard.project)
 
     assert set(form.get_live_fields()) == {"kind", "table"}
 
     dashboard.date_slicer = date_slicer_factory()
 
-    form = FORMS[widget.kind](instance=widget)
+    form = FORMS[widget.kind](instance=widget, project=dashboard.project)
 
     assert set(form.get_live_fields()) == {"kind", "table", "dateslice_column"}
+    assertFormChoicesLength(form, "dateslice_column", 9)
