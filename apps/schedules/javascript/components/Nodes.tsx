@@ -1,32 +1,49 @@
 import Tippy from '@tippyjs/react'
 import { EditButton, ScheduleButton } from './NodeButtons'
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
-import { getIntegration, updateConnector, updateSheet, updateWorkflow } from '../api'
+import { getIntegration, getWorkflow, updateConnector, updateSheet, updateWorkflow } from '../api'
+import { IScheduleContext, ScheduleContext } from '../context'
 
 interface StatusProps {
   scheduleStatus: string
+  runStatus: string
 }
 
-const STATUS_TO_MESSAGE = {
+const SCHEDULE_STATUS_TO_MESSAGE = {
   incomplete: 'Incomplete',
   paused: 'Paused',
   broken: 'Broken',
   active: 'Active',
 }
 
-const STATUS_TO_ICON = {
+const SCHEDULE_STATUS_TO_ICON = {
   incomplete: 'fa-construction text-black-20',
   paused: 'fa-pause-circle text-black-20',
   broken: 'fa-times-circle text-red',
   active: 'fa-check-circle text-green',
 }
 
-export const StatusIcon: React.FC<StatusProps> = ({ scheduleStatus }) => {
+export const StatusIcon: React.FC<StatusProps> = ({ scheduleStatus, runStatus }) => {
   return (
-    <Tippy content={STATUS_TO_MESSAGE[scheduleStatus]}>
+    <Tippy content={SCHEDULE_STATUS_TO_MESSAGE[scheduleStatus]}>
       <div className='flex items-center justify-around absolute -top-2 -right-2 rounded-full w-6 h-6'>
-        <i className={`fa fa-2x ${STATUS_TO_ICON[scheduleStatus]}`}></i>
+        {runStatus === 'done' ? (
+          <i className={`fa fa-2x fa-fw ${SCHEDULE_STATUS_TO_ICON[scheduleStatus]}`}></i>
+        ) : (
+          <div className='relative'>
+            <i
+              style={{ color: '#cbccd6' }}
+              className={`fa fa-2x fa-fw absolute ${SCHEDULE_STATUS_TO_ICON[scheduleStatus]}`}
+            ></i>
+            <i
+              className={`fad fa-fw fa-2x ${
+                runStatus === 'running' ? 'fa-play-circle' : 'fa-spinner-third fa-spin'
+              }`}
+            ></i>
+            {/* {runStatus === 'running' && <i className='fad fa-fw fa-2x absolute fa-play-circle'></i>} */}
+          </div>
+        )}
       </div>
     </Tippy>
   )
@@ -34,6 +51,19 @@ export const StatusIcon: React.FC<StatusProps> = ({ scheduleStatus }) => {
 
 const IntegrationNode: React.FC<NodeProps> = ({ data: initialData }) => {
   const [data, setData] = useState(initialData)
+  const { runInfo } = useContext(ScheduleContext) as IScheduleContext
+
+  const initialRunStatus = data.up_to_date ? 'done' : 'pending'
+  const runStatus = runInfo?.run || runInfo[data.id] || initialRunStatus
+
+  useEffect(() => {
+    const update = async () => {
+      if (runStatus !== initialRunStatus && runStatus === 'done') {
+        setData(await getIntegration(data.id))
+      }
+    }
+    update()
+  }, [runStatus])
 
   const sourceObj = data[data.kind]
 
@@ -55,8 +85,8 @@ const IntegrationNode: React.FC<NodeProps> = ({ data: initialData }) => {
         )}
         <EditButton absoluteUrl={data.absolute_url} />
       </div>
-      {sourceObj.schedule_status !== 'paused' && (
-        <StatusIcon scheduleStatus={sourceObj.schedule_status} />
+      {data.kind !== 'upload' && (
+        <StatusIcon scheduleStatus={sourceObj.schedule_status} runStatus={runStatus} />
       )}
       <img
         className={`h-24 w-24 ${!sourceObj.is_scheduled ? 'filter grayscale' : ''}`}
@@ -70,6 +100,19 @@ const IntegrationNode: React.FC<NodeProps> = ({ data: initialData }) => {
 const WorkflowNode: React.FC<NodeProps> = ({ data: initialData }) => {
   const [data, setData] = useState(initialData)
 
+  const { runInfo } = useContext(ScheduleContext) as IScheduleContext
+  const initialRunStatus = data.up_to_date ? 'done' : 'pending'
+  const runStatus = runInfo?.run || runInfo[data.id] || initialRunStatus
+
+  useEffect(() => {
+    const update = async () => {
+      if (runStatus !== initialRunStatus && runStatus === 'done') {
+        setData(await getWorkflow(data.id))
+      }
+    }
+    update()
+  }, [runStatus])
+
   return (
     <>
       <p className='absolute -top-12'> {data.name}</p>
@@ -82,7 +125,7 @@ const WorkflowNode: React.FC<NodeProps> = ({ data: initialData }) => {
         />
         <EditButton absoluteUrl={data.absolute_url} />
       </div>
-      <StatusIcon scheduleStatus={data.schedule_status} />
+      <StatusIcon scheduleStatus={data.schedule_status} runStatus={runStatus} />
       <Handle type='target' position={Position.Left} isConnectable={false} />
       <i
         className={`fas fa-fw fa-sitemap ${data.is_scheduled ? 'text-blue' : 'text-black-50'}`}

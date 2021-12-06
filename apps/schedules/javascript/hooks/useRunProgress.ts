@@ -2,11 +2,18 @@ import { useEffect, useState } from 'react'
 
 const useRunProgress = (runTaskUrl: string, celeryProgressUrl: string) => {
   const [ready, setReady] = useState(false)
+  const [runInfo, setRunInfo] = useState({})
 
   const init = () => {
     CeleryProgressBar.initProgressBar(runTaskUrl, {
-      onSuccess: () => console.log('Done'),
-      onProgress: () => console.log('Progress'),
+      onSuccess: () => {
+        setRunInfo((runInfo) => ({ ...runInfo, run: 'done' }))
+      },
+      onProgress: (_, __, progress) => {
+        if (progress.description) {
+          setRunInfo(JSON.parse(progress.description))
+        }
+      },
     })
     setReady(true)
   }
@@ -25,7 +32,7 @@ const useRunProgress = (runTaskUrl: string, celeryProgressUrl: string) => {
     }
   }, [ready])
 
-  return {}
+  return { runInfo }
 }
 
 export default useRunProgress

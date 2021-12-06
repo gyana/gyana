@@ -18,6 +18,8 @@ class Schedule(BaseModel):
         PeriodicTask, null=True, on_delete=models.SET_NULL
     )
     run_task_id = models.UUIDField(null=True)
+    run_started_at = models.DateTimeField(null=True)
+
     project = models.OneToOneField(Project, on_delete=models.CASCADE)
 
     @staticmethod

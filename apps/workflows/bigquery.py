@@ -1,6 +1,8 @@
+import json
 from graphlib import TopologicalSorter
 
 from celery import shared_task
+from celery_progress.backend import ProgressRecorder
 from django.db import transaction
 from django.utils import timezone
 
@@ -55,8 +57,12 @@ def run_workflow(workflow: Workflow):
     workflow.save(update_fields=["succeeded_at", "last_run"])
 
 
-@shared_task
-def run_workflows(project_id: int):
+@shared_task(bind=True)
+def run_workflows(self, project_id: int):
+
+    progress_recorder = ProgressRecorder(self)
+
+    run_info = {}
 
     project = Project.objects.get(pk=project_id)
 
@@ -82,4 +88,8 @@ def run_workflows(project_id: int):
     ts = TopologicalSorter(graph)
 
     for workflow in ts.static_order():
+        run_info[workflow.id] = "running"
+        progress_recorder.set_progress(0, 0, description=json.dumps(run_info))
         run_workflow(workflow)
+        run_info[workflow.id] = "done"
+        progress_recorder.set_progress(0, 0, description=json.dumps(run_info))

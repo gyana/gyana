@@ -1,6 +1,7 @@
 from graphlib import CycleError
 
 from django.urls import reverse
+from django.utils import timezone
 from turbo_response.views import TurboUpdateView
 
 from apps.base.frames import TurboFrameUpdateView
@@ -20,6 +21,7 @@ class ScheduleDetail(ProjectMixin, TurboUpdateView):
         try:
             result = run_workflows.delay(self.project.id)
             self.object.run_task_id = result.task_id
+            self.object.run_started_at = timezone.now()
             self.object.save()
         except CycleError:
             # todo: add an error to the schedule to track "is_circular"

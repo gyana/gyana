@@ -16,6 +16,7 @@ import LayoutButton from './LayoutButton'
 import defaultNodeTypes from './Nodes'
 import ZeroState from './ZeroState'
 import useRunProgress from '../hooks/useRunProgress'
+import { ScheduleContext } from '../context'
 
 const GRID_GAP = 20
 
@@ -37,7 +38,7 @@ const ScheduleFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUr
   const [elements, setElements] = useState<(Edge | Node)[]>([])
   const [initialLoad, setInitialLoad] = useState(LoadingStates.loading)
 
-  const output = useRunProgress(runTaskUrl, celeryProgressUrl)
+  const { runInfo } = useRunProgress(runTaskUrl, celeryProgressUrl)
 
   useEffect(() => {
     const syncElements = async () => {
@@ -54,25 +55,33 @@ const ScheduleFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUr
   }, [])
 
   return (
-    <div className='reactflow-wrapper' ref={reactFlowWrapper}>
-      <ReactFlow
-        nodeTypes={defaultNodeTypes}
-        elements={elements}
-        connectionLineType={ConnectionLineType.SmoothStep}
-        snapToGrid={true}
-        snapGrid={[GRID_GAP, GRID_GAP]}
-        maxZoom={2}
-        minZoom={0.05}
-      >
-        <Controls>
-          <LayoutButton elements={elements} setElements={setElements} />
-        </Controls>
-        <Background gap={GRID_GAP} />
-        {initialLoad === LoadingStates.loading && <LoadingState />}
-        {initialLoad === LoadingStates.failed && <ErrorState error='Failed loading your nodes!' />}
-        {initialLoad === LoadingStates.loaded && elements.length === 0 && <ZeroState />}
-      </ReactFlow>
-    </div>
+    <ScheduleContext.Provider
+      value={{
+        runInfo,
+      }}
+    >
+      <div className='reactflow-wrapper' ref={reactFlowWrapper}>
+        <ReactFlow
+          nodeTypes={defaultNodeTypes}
+          elements={elements}
+          connectionLineType={ConnectionLineType.SmoothStep}
+          snapToGrid={true}
+          snapGrid={[GRID_GAP, GRID_GAP]}
+          maxZoom={2}
+          minZoom={0.05}
+        >
+          <Controls>
+            <LayoutButton elements={elements} setElements={setElements} />
+          </Controls>
+          <Background gap={GRID_GAP} />
+          {initialLoad === LoadingStates.loading && <LoadingState />}
+          {initialLoad === LoadingStates.failed && (
+            <ErrorState error='Failed loading your nodes!' />
+          )}
+          {initialLoad === LoadingStates.loaded && elements.length === 0 && <ZeroState />}
+        </ReactFlow>
+      </div>
+    </ScheduleContext.Provider>
   )
 }
 

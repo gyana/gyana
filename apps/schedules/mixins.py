@@ -8,7 +8,10 @@ class ScheduleMixin:
     @property
     def up_to_date(self):
 
-        latest = self._schedule.latest_schedule
+        latest = self._schedule.run_started_at
+
+        if latest is None:
+            return True
 
         just_failed = self.failed_at is not None and self.failed_at > latest
         just_succeeded = self.succeeded_at is not None and self.succeeded_at > latest
