@@ -14,7 +14,7 @@ class DateSlicer(BaseModel):
     start = models.DateTimeField(blank=True, null=True)
     end = models.DateTimeField(blank=True, null=True)
     date_range = models.CharField(
-        max_length=16,
+        max_length=20,
         choices=DateRange.choices + CustomChoice.choices,
         blank=True,
         default=DateRange.THIS_YEAR,
