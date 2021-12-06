@@ -12,14 +12,10 @@ class DateSlicerForm(LiveUpdateForm):
         fields = ["date_range", "start", "end"]
         widgets = {
             "start": DatetimeInput(
-                attrs={
-                    "class": "input--sm",
-                }
+                attrs={"class": "input--sm", "data-live-update-ignore": ""}
             ),
             "end": DatetimeInput(
-                attrs={
-                    "class": "input--sm",
-                }
+                attrs={"class": "input--sm", "data-live-update-ignore": ""}
             ),
         }
 
