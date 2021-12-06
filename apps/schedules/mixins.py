@@ -23,3 +23,15 @@ class ScheduleMixin:
         return self.succeeded_at is not None and (
             self.failed_at is None or self.succeeded_at > self.failed_at
         )
+
+    @property
+    def schedule_status(self):
+
+        if self.succeeded_at is None:
+            return "incomplete"
+        if self.is_scheduled is None:
+            return "paused"
+        if self.failed_at is not None and self.failed_at > self.succeeded_at:
+            return "broken"
+
+        return "active"

@@ -24,7 +24,7 @@ class WorkflowSerializer(serializers.ModelSerializer):
             "schedule_node_id",
             "parents",
             "absolute_url",
-            "succeeded",
+            "schedule_status",
         )
 
     def get_schedule_node_id(self, obj):

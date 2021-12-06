@@ -5,21 +5,28 @@ import { Handle, NodeProps, Position } from 'react-flow-renderer'
 import { getIntegration, updateConnector, updateSheet, updateWorkflow } from '../api'
 
 interface StatusProps {
-  succeeded: boolean
-  isScheduled: boolean
+  scheduleStatus: string
 }
 
-export const StatusIcon: React.FC<StatusProps> = ({ succeeded, isScheduled }) => {
+const STATUS_TO_MESSAGE = {
+  incomplete: 'Incomplete',
+  paused: 'Paused',
+  broken: 'Broken',
+  active: 'Active',
+}
+
+const STATUS_TO_ICON = {
+  incomplete: 'fa-construction text-black-20',
+  paused: 'fa-pause-circle text-black-20',
+  broken: 'fa-times-circle text-red',
+  active: 'fa-check-circle text-green',
+}
+
+export const StatusIcon: React.FC<StatusProps> = ({ scheduleStatus }) => {
   return (
-    <Tippy content={!isScheduled ? 'Paused' : succeeded ? 'Active' : 'Broken'}>
+    <Tippy content={STATUS_TO_MESSAGE[scheduleStatus]}>
       <div className='flex items-center justify-around absolute -top-2 -right-2 rounded-full w-6 h-6'>
-        {!isScheduled ? (
-          <i className='fa fa-pause-circle fa-2x text-black-20'></i>
-        ) : succeeded ? (
-          <i className='fa fa-check-circle fa-2x text-green'></i>
-        ) : (
-          <i className='fa fa-times-circle fa-2x text-red'></i>
-        )}
+        <i className={`fa fa-2x ${STATUS_TO_ICON[scheduleStatus]}`}></i>
       </div>
     </Tippy>
   )
@@ -48,8 +55,8 @@ const IntegrationNode: React.FC<NodeProps> = ({ data: initialData }) => {
         )}
         <EditButton absoluteUrl={data.absolute_url} />
       </div>
-      {sourceObj.is_scheduled !== undefined && (
-        <StatusIcon succeeded={sourceObj.succeeded} isScheduled={sourceObj.is_scheduled} />
+      {sourceObj.schedule_status !== 'paused' && (
+        <StatusIcon scheduleStatus={sourceObj.schedule_status} />
       )}
       <img
         className={`h-24 w-24 ${!sourceObj.is_scheduled ? 'filter grayscale' : ''}`}
@@ -75,7 +82,7 @@ const WorkflowNode: React.FC<NodeProps> = ({ data: initialData }) => {
         />
         <EditButton absoluteUrl={data.absolute_url} />
       </div>
-      <StatusIcon succeeded={data.succeeded} isScheduled={data.is_scheduled} />
+      <StatusIcon scheduleStatus={data.schedule_status} />
       <Handle type='target' position={Position.Left} isConnectable={false} />
       <i
         className={`fas fa-fw fa-sitemap ${data.is_scheduled ? 'text-blue' : 'text-black-50'}`}
