@@ -3,22 +3,13 @@
 <div class="widgets" data-controller="tf-modal" data-open-on-param>
 
   {% if dashboard.date_slicer %}
-  <div data-controller="tf-modal" data-open-on-param>
 
-    {% include 'dateslicers/detail.html' with object=dashboard.date_slicer%}
-
-    <div data-tf-modal-target="modal" class="tf-modal hidden" >
-      <div class="card card--none card--modal flex-col flex-1">
-        <turbo-frame 
-          id='dateslicers:update' 
-          data-tf-modal-target="turboFrame"
-        >
-          <div class='placeholder-scr'>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-          </div>
-        </turbo-frame>
+    <turbo-frame id='dateslicers:update' src="{% url 'dateslicers:update' dashboard.date_slicer.id %}">
+      <div class='placeholder-scr'>
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
       </div>
-    </div>
+    </turbo-frame>
+
   {% else %}
 
     <div id='dateslicers:update-stream'></div>
