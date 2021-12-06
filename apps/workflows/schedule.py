@@ -49,4 +49,6 @@ def run_scheduled_workflows(project: Project):
             and not workflow.up_to_date
             and all(e.up_to_date for e in scheduled_parents)
         ):
+            yield workflow.schedule_node_id, "running"
             run_workflow(workflow)
+            yield workflow.schedule_node_id, "done"

@@ -14,7 +14,6 @@ class UploadSerializer(serializers.ModelSerializer):
 
 
 class IntegrationSerializer(serializers.ModelSerializer):
-    schedule_node_id = serializers.SerializerMethodField()
     connector = ConnectorSerializer()
     sheet = SheetSerializer()
     upload = UploadSerializer()
@@ -38,6 +37,3 @@ class IntegrationSerializer(serializers.ModelSerializer):
             "absolute_url",
             "icon",
         )
-
-    def get_schedule_node_id(self, obj):
-        return f"{obj._meta.db_table}-{obj.id}"

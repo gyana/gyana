@@ -1,6 +1,8 @@
+import json
 from graphlib import CycleError
 
 from celery import shared_task
+from celery_progress.backend import ProgressRecorder
 
 from apps.base.tasks import honeybadger_check_in
 from apps.schedules.models import Schedule
@@ -16,6 +18,9 @@ MAX_RETRIES = 3600 / RETRY_COUNTDOWN * 12
 @shared_task(bind=True)
 def run_schedule(self, schedule_id: int):
 
+    progress_recorder = ProgressRecorder(self)
+    run_info = {}
+
     schedule = Schedule.objects.get(pk=schedule_id)
 
     schedule.update_schedule()
@@ -24,9 +29,13 @@ def run_schedule(self, schedule_id: int):
     if not schedule.periodic_task.enabled:
         return
 
-    run_scheduled_sheets(schedule.project)
+    for schedule_node_id, run_status in run_scheduled_sheets(schedule.project):
+        run_info[schedule_node_id] = run_status
+        progress_recorder.set_progress(0, 0, description=json.dumps(run_info))
     try:
-        run_scheduled_workflows(schedule.project)
+        for schedule_node_id, run_status in run_scheduled_workflows(schedule.project):
+            run_info[schedule_node_id] = run_status
+            progress_recorder.set_progress(0, 0, description=json.dumps(run_info))
     except CycleError:
         # todo: add an error to the schedule to track "is_circular"
         pass

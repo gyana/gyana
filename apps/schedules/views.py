@@ -6,7 +6,7 @@ from turbo_response.views import TurboUpdateView
 
 from apps.base.frames import TurboFrameUpdateView
 from apps.projects.mixins import ProjectMixin
-from apps.workflows.bigquery import run_workflows
+from apps.schedules.periodic import run_schedule
 
 from .forms import ScheduleSettingsForm
 from .models import Schedule
@@ -19,7 +19,7 @@ class ScheduleDetail(ProjectMixin, TurboUpdateView):
 
     def form_valid(self, form):
         try:
-            result = run_workflows.delay(self.project.id)
+            result = run_schedule.delay(self.project.id)
             self.object.run_task_id = result.task_id
             self.object.run_started_at = timezone.now()
             self.object.save()

@@ -49,12 +49,12 @@ export const StatusIcon: React.FC<StatusProps> = ({ scheduleStatus, runStatus })
   )
 }
 
-const IntegrationNode: React.FC<NodeProps> = ({ data: initialData }) => {
+const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
   const [data, setData] = useState(initialData)
   const { runInfo } = useContext(ScheduleContext) as IScheduleContext
 
   const initialRunStatus = data.up_to_date ? 'done' : 'pending'
-  const runStatus = runInfo?.run || runInfo[data.id] || initialRunStatus
+  const runStatus = runInfo?.run || runInfo[id] || initialRunStatus
 
   useEffect(() => {
     const update = async () => {
@@ -97,12 +97,12 @@ const IntegrationNode: React.FC<NodeProps> = ({ data: initialData }) => {
   )
 }
 
-const WorkflowNode: React.FC<NodeProps> = ({ data: initialData }) => {
+const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
   const [data, setData] = useState(initialData)
 
   const { runInfo } = useContext(ScheduleContext) as IScheduleContext
   const initialRunStatus = data.up_to_date ? 'done' : 'pending'
-  const runStatus = runInfo?.run || runInfo[data.id] || initialRunStatus
+  const runStatus = runInfo?.run || runInfo[id] || initialRunStatus
 
   useEffect(() => {
     const update = async () => {

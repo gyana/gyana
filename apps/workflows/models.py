@@ -75,3 +75,7 @@ class Workflow(CloneMixin, ScheduleMixin, BaseModel):
             input_table.data_updated for input_table in input_tables
         )
         return self.last_run < max(self.data_updated, latest_input_update)
+
+    @property
+    def schedule_node_id(self):
+        return f"{self._meta.db_table}-{self.id}"

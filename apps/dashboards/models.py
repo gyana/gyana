@@ -109,3 +109,7 @@ class Dashboard(CloneMixin, BaseModel):
             else settings.EXTERNAL_URL
         )
         return f"{domain}/dashboards/{self.shared_id}"
+
+    @property
+    def schedule_node_id(self):
+        return f"{self._meta.db_table}-{self.id}"

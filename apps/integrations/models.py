@@ -212,3 +212,7 @@ class Integration(CloneMixin, BaseModel):
     @property
     def bq_ids(self):
         return {table.bq_id for table in self.table_set.all()}
+
+    @property
+    def schedule_node_id(self):
+        return f"{self._meta.db_table}-{self.id}"
