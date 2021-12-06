@@ -1,11 +1,12 @@
+from django.db import transaction
+from django.utils import timezone
+
 from apps.base import clients
 from apps.base.errors import error_name_to_snake
 from apps.nodes.bigquery import NodeResultNone, get_query_from_node
 from apps.nodes.models import Node
 from apps.tables.models import Table
 from apps.workflows.models import Workflow
-from django.db import transaction
-from django.utils import timezone
 
 
 def run_workflow(workflow: Workflow):
@@ -39,8 +40,12 @@ def run_workflow(workflow: Workflow):
                 table.save()
 
     if workflow.failed:
+        workflow.failed_at = timezone.now()
+        workflow.save(update_fields=["failed_at"])
+
         return {node.id: node.error for node in workflow.nodes.all() if node.error}
 
+    workflow.succeeded_at = timezone.now()
     workflow.last_run = timezone.now()
     # Use fields to not trigger auto_now on the updated field
-    workflow.save(update_fields=["last_run"])
+    workflow.save(update_fields=["succeeded_at", "last_run"])

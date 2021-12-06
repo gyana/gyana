@@ -6,7 +6,7 @@ from django.db.models import F, Q
 from model_clone.mixins.clone import CloneMixin
 
 from apps.base.celery import is_bigquery_task_running
-from apps.base.models import BaseModel
+from apps.base.models import SchedulableModel
 from apps.integrations.models import Integration
 
 RETRY_LIMIT_DAYS = 3
@@ -31,7 +31,7 @@ class SheetsManager(models.Manager):
         )
 
 
-class Sheet(CloneMixin, BaseModel):
+class Sheet(CloneMixin, SchedulableModel):
 
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 
@@ -46,10 +46,6 @@ class Sheet(CloneMixin, BaseModel):
 
     # automatically sync metadata from google drive
     drive_modified_date = models.DateTimeField(null=True)
-
-    is_scheduled = models.BooleanField(default=False)
-    succeeded_at = models.DateTimeField(null=True)
-    failed_at = models.DateTimeField(null=True)
 
     objects = SheetsManager()
 
@@ -80,5 +76,10 @@ class Sheet(CloneMixin, BaseModel):
         self.save(update_fields=["drive_modified_date"])
 
     @property
-    def up_to_date(self):
+    def up_to_date_with_drive(self):
         return self.drive_modified_date == self.drive_file_last_modified_at_sync
+
+    def run_for_schedule(self):
+        from .tasks import run_sheet_sync_task
+
+        return run_sheet_sync_task(self.id, skip_up_to_date=True)

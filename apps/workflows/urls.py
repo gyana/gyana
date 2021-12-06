@@ -1,5 +1,6 @@
-from apps.projects.access import login_and_project_required
 from django.urls import path
+
+from apps.projects.access import login_and_project_required
 
 from . import frames, rest, views
 from .access import login_and_workflow_required
@@ -54,6 +55,11 @@ project_urlpatterns = (
             "<hashid:pk>",
             login_and_project_required(views.WorkflowDetail.as_view()),
             name="detail",
+        ),
+        path(
+            "<hashid:pk>/settings",
+            login_and_project_required(frames.WorkflowSettings.as_view()),
+            name="settings",
         ),
         path(
             "<hashid:pk>/delete",

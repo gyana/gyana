@@ -513,7 +513,7 @@ PARAMS = [
     pytest.param(
         create_date_filter(DateRange.THIS_YEAR_UP_TO_DATE),
         QUERY.format(
-            f"(EXTRACT(year from `birthday`) = {YEAR }) AND\n      (`birthday` <= DATE '2021-12-03')"
+            f"(EXTRACT(year from `birthday`) = {YEAR }) AND\n      (`birthday` <= DATE '{TODAY.strftime('%Y-%m-%d')}')"
         ),
         id="Date on this year up to date",
     ),

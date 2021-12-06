@@ -1,8 +1,15 @@
-from apps.base.frames import TurboFrameDetailView, TurboFrameTemplateView
+from django.db.models import F
+from django.urls import reverse
+
+from apps.base.frames import (
+    TurboFrameDetailView,
+    TurboFrameTemplateView,
+    TurboFrameUpdateView,
+)
 from apps.nodes.models import Node
 from apps.projects.mixins import ProjectMixin
-from django.db.models import F
 
+from .forms import WorkflowSettingsForm
 from .models import Workflow
 
 
@@ -35,9 +42,7 @@ class WorkflowOverview(ProjectMixin, TurboFrameTemplateView):
             "operational": incomplete + outdated + failed == 0,
         }
 
-        context_data["integrations"] = {
-            "ready": integrations.ready().count()
-        }
+        context_data["integrations"] = {"ready": integrations.ready().count()}
 
         return context_data
 
@@ -46,3 +51,15 @@ class WorkflowLastRun(TurboFrameDetailView):
     template_name = "workflows/last_run.html"
     model = Workflow
     turbo_frame_dom_id = "workflow-last-run"
+
+
+class WorkflowSettings(ProjectMixin, TurboFrameUpdateView):
+    template_name = "workflows/settings.html"
+    model = Workflow
+    form_class = WorkflowSettingsForm
+    turbo_frame_dom_id = "workflows:settings"
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_workflows:settings", args=(self.project.id, self.object.id)
+        )

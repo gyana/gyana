@@ -1,4 +1,4 @@
-from datetime import time
+from datetime import time, timedelta
 
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
@@ -63,6 +63,13 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
         return get_next_daily_sync_in_utc_from_project(self).strftime("%H:%M")
 
     @property
+    def latest_schedule(self):
+        from .schedule import get_next_daily_sync_in_utc_from_project
+
+        # the most recent schedule time in the past
+        return get_next_daily_sync_in_utc_from_project(self) - timedelta(days=1)
+
+    @property
     def integration_count(self):
         return self.integration_set.exclude(
             connector__fivetran_authorized=False
@@ -102,11 +109,15 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
     @property
     def needs_schedule(self):
         from apps.sheets.models import Sheet
+        from apps.workflows.models import Workflow
 
         # A project only requires an active shedule if there are scheduled
         # entities like sheets, workflows, apis etc.
 
-        return Sheet.objects.is_scheduled_in_project(self).exists()
+        return (
+            Sheet.objects.is_scheduled_in_project(self).exists()
+            or Workflow.objects.is_scheduled_in_project(self).exists()
+        )
 
     def update_schedule(self):
         from .schedule import update_periodic_task_from_project
