@@ -1,8 +1,3 @@
-import json
-from graphlib import TopologicalSorter
-
-from celery import shared_task
-from celery_progress.backend import ProgressRecorder
 from django.db import transaction
 from django.utils import timezone
 
@@ -10,7 +5,6 @@ from apps.base import clients
 from apps.base.errors import error_name_to_snake
 from apps.nodes.bigquery import NodeResultNone, get_query_from_node
 from apps.nodes.models import Node
-from apps.projects.models import Project
 from apps.tables.models import Table
 from apps.workflows.models import Workflow
 
