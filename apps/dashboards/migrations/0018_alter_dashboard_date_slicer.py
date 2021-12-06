@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("dateslicers", "0002_dateslicer_date_range"),
+        ("dateslicers", "0001_initial"),
         ("dashboards", "0017_dashboard_date_slicer"),
     ]
 
