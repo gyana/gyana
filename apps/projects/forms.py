@@ -77,12 +77,8 @@ class ProjectUpdateForm(MemberSelectMixin, LiveUpdateForm):
             "access",
             "members",
             "cname",
-            # "daily_schedule_time",
         ]
-        widgets = {
-            "members": MemberSelect(),
-            "daily_schedule_time": forms.TimeInput(attrs={"step": "3600"}),
-        }
+        widgets = {"members": MemberSelect()}
         labels = {"cname": "Custom domain"}
 
     def __init__(self, *args, **kwargs):
@@ -92,11 +88,6 @@ class ProjectUpdateForm(MemberSelectMixin, LiveUpdateForm):
             cname_field.empty_label = "Default domain (gyana.com)"
             cname_field.queryset = self._team.cname_set.all()
 
-        if daily_schedule_time_field := self.fields.get("daily_schedule_time"):
-            daily_schedule_time_field.help_text = (
-                f"Select an hour in {self._team.timezone_with_gtm_offset}"
-            )
-
     def get_live_fields(self):
         fields = ["name", "description", "access", "cname", "daily_schedule_time"]
 
@@ -104,12 +95,3 @@ class ProjectUpdateForm(MemberSelectMixin, LiveUpdateForm):
             fields += ["members"]
 
         return fields
-
-    def pre_save(self, instance):
-        self._daily_schedule_time_is_dirty = (
-            "daily_schedule_time" in instance.get_dirty_fields()
-        )
-
-    def post_save(self, instance):
-        if self._daily_schedule_time_is_dirty:
-            instance.update_daily_sync_time()
