@@ -46,30 +46,6 @@
       border-bottom: 1px solid var(--c-gray);
     }
 
-    & + & {
-      padding: 0 0 0 4.2rem;
-
-      &::before {
-        content: '';
-        position: absolute;
-        left: 1.4rem;
-        width: 0.3rem;
-        height: 75%;
-        top: -20%;
-        background: var(--c-gray);
-      }
-
-      &::after {
-        content: '';
-        position: absolute;
-        left: 1.4rem;
-        width: 1.6rem;
-        height: 0.3rem;
-        left: 1.6rem;
-        background: var(--c-gray);
-      }
-    }
-
     .h3 {
       line-height: 2rem;
       overflow: hidden;
@@ -80,21 +56,6 @@
   &__link {
     color: var(--c-black);
 
-    .team_logo {
-      align-items: center;
-      background-color: var(--c-blue-10);
-      border-radius: 5px;
-      color: var(--c-blue);
-      display: inline-flex;
-      font-weight: 900;
-      height: 2.4rem;
-      justify-content: center;
-      line-height: 2.4rem;
-      margin-right: 1.2rem;
-      min-width: 2.4rem;
-      width: 2.4rem;
-    }
-
     &--active {
       border-color: var(--c-blue);
       background-color: var(--c-gray-10);
@@ -103,26 +64,6 @@
 
       @include mixins.fa-icon {
         font-weight: 900;
-      }
-    }
-
-    &--badge {
-      align-items: center;
-      background-color: var(--c-transparent);
-      border-left: none;
-      border-radius: 5px;
-      border: 1px solid var(--c-gray);
-      color: var(--c-black-50);
-      font-weight: 500;
-      height: 4.2rem;
-      margin: 0 0 1.6rem 1rem;
-      padding: 1rem 0 1rem 0.5rem;
-      position: relative;
-      right: -5px;
-      width: calc(100% - 1rem);
-
-      .fas {
-        color: var(--c-orange);
       }
     }
 
@@ -173,12 +114,12 @@
     }
   
     div:first-letter {
-      font-size: inherit;
+      font-size: 1.8rem;
     }
   
     div::after {
       content: '.';
-      font-size: inherit;
+      font-size: 1.8rem;
       display: inline-block;
     }
   }
@@ -191,7 +132,7 @@
 
       // Swaps the icon of the sidebar toggle to the opposite chevron.
       label[for='sidebar-toggle'] i::before {
-        content: '\f053';
+        content: '\f323';
       }
 
       .sidebar__title {
@@ -213,7 +154,7 @@
     gap: 0;
 
     i::before {
-      content: '\f054';
+      content: '\f324';
     }
   }
 }

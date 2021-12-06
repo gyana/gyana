@@ -22,50 +22,20 @@
   {% endif %}
 {% endblock %}
 
-{% block secondary_sidebar %}
-<div class="sidebar">
-  <div class="sidebar__body">
-    <div class="sidebar__link">
-      <a title="View your teams" href="{% url 'web:home' %}">
-        <img src="{% static 'images/logo.png' %}">
-      </a>
-    </div>
-
-    <li><hr></li>
-
-    {% for user_team in request.user.teams.all %}
-    <li data-controller="tooltip" data-placement="right">
-      <a
-        class="sidebar__link {% if user_team.id == team.id %}sidebar__link--active{% endif %}"
-        href="{% url 'teams:detail' user_team.id %}"
-      >
-        {% if user_team.icon %}<img src="{{ user_team.icon.url }}" />{% else %}<span class="team_logo">{{ user_team.name|slice:1|capfirst }}</span>{% endif %}{{ user_team.name }}
-      </a>
-
-      <span data-tooltip-target="body">{{ user_team.name }}</span>
-    </li>
-    {% endfor %}
-
-    <li>
-      <a id="sidebar-newteam" class="sidebar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'create' %}sidebar__link--active{% endif %}" title="New Team" href="{% url 'teams:create' %}">
-        <i class="fas fa-fw fa-plus mr-6"></i>New Team
-      </a>
-    </li> 
-  </div>
-</div>
-{% endblock %}
-
 {% block sidebar_content %}
-<li>
-  <a id="heading" class="sidebar__link" href="">
-    {% if team.icon %}<img src="{{ team.icon.url }}" />{% else %}<span class="team_logo">{{ team.name|slice:1 }}</span>{% endif %}
-    <strong class="h3">
-      {{ team.name }}
-    </strong>
-  </a>
-</li>
+<a id="heading" class="sidebar__link sidebar__link--border" href="">
+  {% if team.icon %}
+  <img src="{{ team.icon.url }}" />
+  {% else %}
+  <span class="team_logo">
+    {{ team.name|slice:1 }}
+  </span>
+  {% endif %}
 
-<li><hr></li>
+  <strong class="h3">
+    {{ team.name }}
+  </strong>
+</a>
 
 <li>
   <a

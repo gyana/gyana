@@ -1,0 +1,41 @@
+@use "utilities/mixins";
+
+.team-sidebar {
+  background-color: var(--c-gray-10);
+  border-right: 1px solid var(--c-gray);
+  display: flex;
+  flex-flow: column;
+  flex: 0 0 6rem;
+  overflow: hidden;
+  transition: width 0.25s ease;
+  white-space: nowrap;
+
+  .sidebar__link {
+    justify-content: center;
+    padding-left: 0;
+
+    img,
+    .team_logo {
+      margin: 0;
+    }
+
+    @include mixins.fa-icon {
+      margin: 0;
+    }
+  }
+}
+
+.team_logo {
+  align-items: center;
+  background-color: var(--c-blue-10);
+  border-radius: 5px;
+  color: var(--c-blue);
+  display: inline-flex;
+  font-weight: 900;
+  height: 2.4rem;
+  justify-content: center;
+  line-height: 2.4rem;
+  margin-right: 1.2rem;
+  min-width: 2.4rem;
+  width: 2.4rem;
+}

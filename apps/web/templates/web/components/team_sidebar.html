@@ -1,0 +1,36 @@
+{% load static %}
+
+<div class="team-sidebar">
+  <div class="sidebar__link sidebar__link--border">
+    <a title="View your teams" href="{% url 'web:home' %}">
+      <img src="{% static 'images/logo.png' %}">
+    </a>
+  </div>
+
+  {% for user_team in request.user.teams.all %}
+  <li data-controller="tooltip" data-placement="right">
+    <a
+      class="sidebar__link sidebar__team {% if user_team.id == team.id %}sidebar__link--active{% endif %}"
+      href="{% url 'teams:detail' user_team.id %}"
+    >
+      {% if user_team.icon %}
+      <img src="{{ user_team.icon.url }}" />
+      {% else %}
+      <span class="team_logo">
+        {{ user_team.name|slice:1|capfirst }}
+      </span>
+      {% endif %}
+    </a>
+
+    <span data-tooltip-target="body">{{ user_team.name }}</span>
+  </li>
+  {% endfor %}
+
+  <li data-controller="tooltip" data-placement="right">
+    <a id="sidebar-newteam" class="sidebar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'create' %}sidebar__link--active{% endif %}" title="New Team" href="{% url 'teams:create' %}">
+      <i class="fas fa-fw fa-plus mr-6"></i>
+    </a>
+
+    <span data-tooltip-target="body">New team</span>
+  </li> 
+</div>

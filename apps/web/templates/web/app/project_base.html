@@ -21,6 +21,8 @@
   {% endif %}
 {% endblock %}
 
+{% block team_sidebar %}{% endblock %}
+
 {% block sidebar_content %}
 <a class="sidebar__link sidebar__link--border" href="{% url 'teams:detail' project.team.id %}">
   {% if project.team.icon %}<img src="{{ project.team.icon.url }}" />{% else %}<span class="team_logo">{{ project.team.name|slice:1 }}</span>{% endif %}
@@ -29,21 +31,6 @@
   </strong>
 </a>
 
-<style>
-  .sidebar__title div {
-    font-size: 0;
-  }
-
-  .sidebar__title div:first-letter {
-    font-size: 1.8rem;
-  }
-
-  .sidebar__title div::after {
-    content: '.';
-    font-size: 1.8rem;
-    display: inline-block;
-  }
-</style>
 <a
   class="sidebar__title"
   title="{{ project.name }}"

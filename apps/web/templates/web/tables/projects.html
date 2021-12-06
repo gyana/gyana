@@ -41,7 +41,9 @@
           <i class="far fa-fw fa-chart-pie"></i>{{ project.record.dashboard_count }}
         </a>
 
-        <p class="ml-auto">Last updated: {% include 'columns/natural_datetime.html' with datetime=project.record.updated %}</p>
+        <p class="ml-auto">
+          Last updated: {% include 'columns/natural_datetime.html' with datetime=project.record.updated team_timezone=project.record.team.timezone %}
+        </p>
       </footer>
     </div>
     {% endfor %}
