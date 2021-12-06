@@ -4,7 +4,7 @@ class ScheduleMixin:
         return (
             self.integration if hasattr(self, "integration") else self
         ).project.schedule
-    
+
     @property
     def up_to_date(self):
 
@@ -14,12 +14,6 @@ class ScheduleMixin:
         just_succeeded = self.succeeded_at is not None and self.succeeded_at > latest
 
         return just_failed or just_succeeded
-
-    @property
-    def succeeded(self):
-        return self.succeeded_at is not None and (
-            self.failed_at is None or self.succeeded_at > self.failed_at
-        )
 
     @property
     def schedule_status(self):
