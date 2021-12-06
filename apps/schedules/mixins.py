@@ -23,7 +23,7 @@ class ScheduleMixin:
 
         if self.succeeded_at is None:
             return "incomplete"
-        if self.is_scheduled is None:
+        if not self.is_scheduled:
             return "paused"
         if self.failed_at is not None and self.failed_at > self.succeeded_at:
             return "broken"

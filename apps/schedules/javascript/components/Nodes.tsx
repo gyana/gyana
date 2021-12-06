@@ -28,7 +28,7 @@ export const StatusIcon: React.FC<StatusProps> = ({ scheduleStatus, runStatus })
   return (
     <Tippy content={SCHEDULE_STATUS_TO_MESSAGE[scheduleStatus]}>
       <div className='flex items-center justify-around absolute -top-2 -right-2 rounded-full w-6 h-6'>
-        {runStatus === 'done' ? (
+        {runStatus === 'done' || scheduleStatus === 'paused' ? (
           <i className={`fa fa-2x fa-fw ${SCHEDULE_STATUS_TO_ICON[scheduleStatus]}`}></i>
         ) : (
           <div className='relative'>
@@ -41,7 +41,6 @@ export const StatusIcon: React.FC<StatusProps> = ({ scheduleStatus, runStatus })
                 runStatus === 'running' ? 'fa-play-circle' : 'fa-spinner-third fa-spin'
               }`}
             ></i>
-            {/* {runStatus === 'running' && <i className='fad fa-fw fa-2x absolute fa-play-circle'></i>} */}
           </div>
         )}
       </div>
