@@ -90,7 +90,7 @@ class ProjectUpdateForm(MemberSelectMixin, LiveUpdateForm):
             cname_field.queryset = self._team.cname_set.all()
 
     def get_live_fields(self):
-        fields = ["name", "description", "access", "cname", "daily_schedule_time"]
+        fields = ["name", "description", "access", "cname"]
 
         if self.get_live_field("access") == Project.Access.INVITE_ONLY:
             fields += ["members"]
