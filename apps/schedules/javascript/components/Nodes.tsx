@@ -25,7 +25,7 @@ export const StatusIcon: React.FC<StatusProps> = ({ succeeded, isScheduled }) =>
   )
 }
 
-const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
+const IntegrationNode: React.FC<NodeProps> = ({ data: initialData }) => {
   const [data, setData] = useState(initialData)
 
   const sourceObj = data[data.kind]
@@ -60,7 +60,7 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
   )
 }
 
-const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
+const WorkflowNode: React.FC<NodeProps> = ({ data: initialData }) => {
   const [data, setData] = useState(initialData)
 
   return (
@@ -85,7 +85,7 @@ const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
   )
 }
 
-const DashboardNode: React.FC<NodeProps> = ({ id, data }) => {
+const DashboardNode: React.FC<NodeProps> = ({ data }) => {
   return (
     <>
       <p className='absolute -top-12'> {data.name}</p>
