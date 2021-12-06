@@ -7,7 +7,11 @@ const useRunProgress = (runTaskUrl: string, celeryProgressUrl: string) => {
   const init = () => {
     CeleryProgressBar.initProgressBar(runTaskUrl, {
       onSuccess: () => {
-        setRunInfo((runInfo) => ({ ...runInfo, run: 'done' }))
+        setRunInfo((runInfo) => {
+          // refresh the page to keep run button in sync with react app
+          if (Object.keys(runInfo).length > 0) Turbo.visit(window.location)
+          return { ...runInfo, run: 'done' }
+        })
       },
       onProgress: (_, __, progress) => {
         if (progress.description) {
