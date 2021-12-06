@@ -68,7 +68,6 @@ const ScheduleFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUr
           <LayoutButton elements={elements} setElements={setElements} />
         </Controls>
         <Background gap={GRID_GAP} />
-        {runTaskUrl}
         {initialLoad === LoadingStates.loading && <LoadingState />}
         {initialLoad === LoadingStates.failed && <ErrorState error='Failed loading your nodes!' />}
         {initialLoad === LoadingStates.loaded && elements.length === 0 && <ZeroState />}
