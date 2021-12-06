@@ -65,7 +65,6 @@ const ScheduleFlow: React.FC<Props> = ({ projectId }) => {
         <Background gap={GRID_GAP} />
         {initialLoad === LoadingStates.loading && <LoadingState />}
         {initialLoad === LoadingStates.failed && <ErrorState error='Failed loading your nodes!' />}
-        {/* TODO: Add a zero state */}
         {initialLoad === LoadingStates.loaded && elements.length === 0 && <ZeroState />}
       </ReactFlow>
     </div>
