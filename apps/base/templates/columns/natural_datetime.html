@@ -5,6 +5,7 @@
 
 <span data-controller="tooltip">
   {{ datetime|naturaltime }}
+
   {% timezone team_timezone %}
   <span data-tooltip-target="body">{{ datetime }}</span>
   {% endtimezone %}
