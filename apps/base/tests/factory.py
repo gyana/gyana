@@ -13,6 +13,7 @@ from apps.columns.models import (
 )
 from apps.connectors.models import Connector
 from apps.dashboards.models import Dashboard
+from apps.dateslicers.models import DateSlicer
 from apps.filters.models import Filter
 from apps.integrations.models import Integration
 from apps.nodes.models import Node
@@ -214,3 +215,9 @@ class ConvertColumnFactory(factory.django.DjangoModelFactory):
         model = ConvertColumn
 
     node = factory.SubFactory(NodeFactory)
+
+
+@register
+class DateSlicerFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = DateSlicer
