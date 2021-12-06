@@ -5,9 +5,7 @@ import pytest
 
 from apps.base.tests.mock_data import TABLE
 from apps.dateslicers.bigquery import slice_query
-from apps.dateslicers.models import DateSlicer
-
-Range = DateSlicer.Range
+from apps.dateslicers.models import CustomChoice, DateSlicer
 
 
 QUERY = "SELECT *\nFROM olympians\nWHERE {}"
@@ -17,9 +15,9 @@ QUERY = "SELECT *\nFROM olympians\nWHERE {}"
     "date_range, expected_sql",
     [
         pytest.param(
-            Range.TODAY,
+            CustomChoice.CUSTOM,
             QUERY.format(f"`birthday` = DATE '{dt.date.today().isoformat()}'"),
-            id="today",
+            id="custom",
         )
     ],
 )

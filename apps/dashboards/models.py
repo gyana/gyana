@@ -12,7 +12,6 @@ from django.utils.translation import gettext_lazy
 from model_clone import CloneMixin
 
 from apps.base.models import BaseModel
-from apps.dateslicers.models import DateSlicer
 from apps.projects.models import Project
 
 
@@ -55,7 +54,9 @@ class Dashboard(CloneMixin, BaseModel):
     )
     background_color = models.CharField(default="#ffffff", max_length=7)
 
-    date_slicer = models.OneToOneField(DateSlicer, on_delete=models.SET_NULL, null=True)
+    date_slicer = models.OneToOneField(
+        "dateslicers.DateSlicer", on_delete=models.SET_NULL, null=True
+    )
 
     _clone_m2o_or_o2m_fields = ["widget_set"]
 
