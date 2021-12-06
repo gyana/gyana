@@ -12,10 +12,6 @@
   </div>
 
   <div class="flex-1 overflow-auto">
-    {% if object.daily_schedule_time != object.truncated_daily_schedule_time %}
-      <p class="alert mb-4">Due to platform limitations for timezones with 15/30/45 minute GMT offsets, your connectors will start at {{ object.truncated_daily_schedule_time }}.</p>
-    {% endif %}
-
     <form
       method="post"
       class="pad max-w-4xl"
@@ -23,6 +19,10 @@
       action="{% url 'project_schedule:settings' project.id %}"
     >
       {% csrf_token %}
+
+      {% if object.daily_schedule_time != object.truncated_daily_schedule_time %}
+        <p class="alert mb-4">Due to platform limitations for timezones with 15/30/45 minute GMT offsets, your connectors will start at {{ object.truncated_daily_schedule_time }}.</p>
+      {% endif %}
 
       {% include "django/forms/default_form.html" with optional=False %}
 

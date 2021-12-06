@@ -24,7 +24,7 @@ class Schedule(BaseModel):
     @property
     def truncated_daily_schedule_time(self):
         # The sync time for connectors in 15/30/45 offset timezones is earlier, due to limitations of Fivetran
-        return self.next_daily_sync_in_utc.astimezone(self.team.timezone).time()
+        return self.next_daily_sync_in_utc.astimezone(self.project.team.timezone).time()
 
     @property
     def next_sync_time_utc_string(self):
@@ -50,9 +50,9 @@ class Schedule(BaseModel):
         )
 
     def update_schedule(self):
-        from .schedule import update_periodic_task_from_project
+        from .schedule import update_periodic_task_from_schedule
 
-        update_periodic_task_from_project(self)
+        update_periodic_task_from_schedule(self)
 
     def update_daily_sync_time(self):
         from apps.connectors.models import Connector

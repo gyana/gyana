@@ -263,7 +263,9 @@ class Connector(DirtyFieldsMixin, ScheduleMixin, BaseModel):
 
         # update fivetran sync time if user has updated timezone/daily sync time
         # or daylight savings time is going in/out tomorrow
-        self.daily_sync_time = self.integration.project.next_sync_time_utc_string
+        self.daily_sync_time = (
+            self.integration.project.schedule.next_sync_time_utc_string
+        )
 
         # fivetran setup is broken or incomplete
         if self.setup_state != self.SetupState.CONNECTED:

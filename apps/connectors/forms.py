@@ -31,7 +31,7 @@ class ConnectorCreateForm(BaseModelForm):
             data = clients.fivetran().create(
                 self._service,
                 self._project.team.id,
-                self._project.next_sync_time_utc_string,
+                self._project.schedule.next_sync_time_utc_string,
             )
         except FivetranClientError as e:
             raise ValidationError(str(e))
