@@ -32,7 +32,7 @@ def run_schedule(self, schedule_id: int):
         pass
 
     # We need to keep retrying until the connectors either fail or succeeded
-    if schedule.has_pending_tasks:
+    if not schedule.latest_schedule_is_complete:
         self.retry(countdown=RETRY_COUNTDOWN, max_retries=MAX_RETRIES)
 
     honeybadger_check_in("j6IrRd")

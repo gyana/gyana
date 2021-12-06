@@ -92,7 +92,7 @@ class Schedule(BaseModel):
         )
 
     @property
-    def has_pending_tasks(self):
+    def latest_schedule_is_complete(self):
         from apps.sheets.models import Sheet
         from apps.workflows.models import Workflow
 
@@ -103,8 +103,10 @@ class Schedule(BaseModel):
         )
 
         return (
-            Sheet.objects.is_scheduled_in_project(self.project).exclude(expr).exists()
-            or Workflow.objects.is_scheduled_in_project(self.project)
+            not Sheet.objects.is_scheduled_in_project(self.project)
+            .exclude(expr)
+            .exists()
+            and not Workflow.objects.is_scheduled_in_project(self.project)
             .exclude(expr)
             .exists()
         )
