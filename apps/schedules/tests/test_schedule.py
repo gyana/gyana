@@ -94,8 +94,8 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
     assert sheet.is_scheduled
 
     project.refresh_from_db()
-    assert project.periodic_task is not None
-    periodic_task = project.periodic_task
+    assert project.schedule.periodic_task is not None
+    periodic_task = project.schedule.periodic_task
     assert periodic_task.task == "apps.projects.periodic.run_schedule_for_project"
     assert json.loads(periodic_task.args) == [project.id]
     assert periodic_task.crontab.hour == str(project.schedule.daily_schedule_time.hour)
@@ -116,6 +116,6 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
     assertRedirects(r, f"{DETAIL}/settings")
 
     project.refresh_from_db()
-    assert project.periodic_task is None
+    assert project.schedule.periodic_task is None
     assert PeriodicTask.objects.count() == 0
     assert CrontabSchedule.objects.count() == 0

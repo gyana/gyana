@@ -103,7 +103,7 @@ def run_schedule_for_project(self, project_id: int):
     project.update_schedule()
 
     # skip workflow if nothing to run
-    if project.periodic_task is None:
+    if project.schedule.periodic_task is None:
         return
 
     run_all_sheets(project)
