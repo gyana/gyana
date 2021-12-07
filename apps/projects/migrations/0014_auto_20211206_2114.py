@@ -23,7 +23,8 @@ def add_periodic_task(schedule):
         enabled=False,
     )
 
-    schedule.periodic_task = periodic_task
+    # to get around a weird class mismatch error
+    schedule.periodic_task_id = periodic_task.id
     schedule.save()
 
 
