@@ -204,9 +204,7 @@
       "ready": true,
       "access": "everyone",
       "description": "",
-      "cname": null,
-      "daily_schedule_time": "00:00:00",
-      "periodic_task": 1
+      "cname": null
     }
   },
   {
@@ -220,9 +218,7 @@
       "ready": true,
       "access": "everyone",
       "description": "",
-      "cname": null,
-      "daily_schedule_time": "00:00:00",
-      "periodic_task": null
+      "cname": null
     }
   },
   {
@@ -236,9 +232,7 @@
       "ready": true,
       "access": "everyone",
       "description": "Two widgets for Google Analytics in a Cypress test.",
-      "cname": null,
-      "daily_schedule_time": "00:00:00",
-      "periodic_task": null
+      "cname": null
     }
   },
   {
@@ -3273,51 +3267,6 @@
       "plan": 18567,
       "unit_price": 30.0,
       "update_url": "https://sandbox-subscription-management.paddle.com/subscription/169194/hash/15a7bd9fe78a9c6b5ca80ad02542588644ae45ee1f0c3f6d4d33c3bd2a6001c0/update"
-    }
-  },
-  {
-    "model": "django_celery_beat.crontabschedule",
-    "pk": 1,
-    "fields": {
-      "minute": "0",
-      "hour": "0",
-      "day_of_week": "*",
-      "day_of_month": "*",
-      "month_of_year": "*",
-      "timezone": "GMT"
-    }
-  },
-  {
-    "model": "django_celery_beat.periodictasks",
-    "pk": 1,
-    "fields": { "last_update": "2021-12-03T23:55:23.820Z" }
-  },
-  {
-    "model": "django_celery_beat.periodictask",
-    "pk": 1,
-    "fields": {
-      "name": "schedule.project.pk=1",
-      "task": "apps.projects.periodic.run_schedule_for_project",
-      "interval": null,
-      "crontab": 1,
-      "solar": null,
-      "clocked": null,
-      "args": "[1]",
-      "kwargs": "{}",
-      "queue": null,
-      "exchange": null,
-      "routing_key": null,
-      "headers": "{}",
-      "priority": null,
-      "expires": null,
-      "expire_seconds": null,
-      "one_off": false,
-      "start_time": null,
-      "enabled": true,
-      "last_run_at": null,
-      "total_run_count": 0,
-      "date_changed": "2021-12-03T23:55:23.828Z",
-      "description": ""
     }
   }
 ]
