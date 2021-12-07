@@ -181,7 +181,10 @@ def test_cname_middleware_for_public_dashboard(
 
     # access control public update
     control = control_factory(dashboard=dashboard)
-    r = client.get(f"/controls/{control.id}/update-public", HTTP_HOST="test.domain.com")
+    r = client.get(
+        f"/projects/{project.id}/dashboards/{dashboard.id}/controls/{control.id}/update-public",
+        HTTP_HOST="test.domain.com",
+    )
     assertOK(r)
 
     # incorrect domain fails
