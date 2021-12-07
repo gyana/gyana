@@ -22,6 +22,7 @@ class SheetCreate(ProjectMixin, TurboCreateView):
         kwargs["project"] = self.project
         kwargs["created_by"] = self.request.user
         kwargs["url"] = self.request.GET.get("url")
+        kwargs["request"] = self.request
         return kwargs
 
     def get(self, request, *args, **kwargs):
