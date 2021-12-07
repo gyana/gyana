@@ -18,6 +18,13 @@ FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
 FIVETRAN_SYNC_FREQUENCY_HOURS = 6
 
 
+class ConnectorsManager(models.Manager):
+    def is_scheduled_in_project(self, project):
+        return self.filter(
+            integration__project=project, integration__ready=True, is_scheduled=True
+        )
+
+
 class Connector(DirtyFieldsMixin, ScheduleMixin, BaseModel):
     class ScheduleType(models.TextChoices):
         AUTO = "auto", "Auto"
@@ -115,6 +122,8 @@ class Connector(DirtyFieldsMixin, ScheduleMixin, BaseModel):
     is_scheduled = models.BooleanField(default=True)
     succeeded_at = models.DateTimeField(null=True)
     failed_at = models.DateTimeField(null=True)
+
+    objects = ConnectorsManager()
 
     @property
     def fivetran_dashboard_url(self):

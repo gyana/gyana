@@ -2,9 +2,16 @@ from graphlib import TopologicalSorter
 
 from apps.nodes.models import Node
 from apps.projects.models import Project
+from apps.tables.models import Table
 from apps.workflows.models import Workflow
 
 from .bigquery import run_workflow
+
+
+def _get_source(table: Table):
+    if table.source == Table.Source.INTEGRATION:
+        return table.integration.source_obj
+    return table.workflow_node.workflow
 
 
 def run_scheduled_workflows(project: Project):
@@ -18,7 +25,7 @@ def run_scheduled_workflows(project: Project):
     # one query per workflow, in future we would optimize into a single query
     graph = {
         workflow: {
-            node.input_table.source_obj
+            _get_source(node.input_table)
             for node in workflow.nodes.filter(kind=Node.Kind.INPUT)
             .select_related("input_table__workflow_node__workflow")
             .select_related("input_table__integration__sheet")

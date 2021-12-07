@@ -6,6 +6,7 @@ from celery_progress.backend import ProgressRecorder
 from django.utils import timezone
 
 from apps.base.tasks import honeybadger_check_in
+from apps.connectors.schedule import run_scheduled_connectors
 from apps.schedules.models import Schedule
 from apps.sheets.schedule import run_scheduled_sheets
 from apps.workflows.schedule import run_scheduled_workflows
@@ -29,6 +30,10 @@ def run_schedule(self, schedule_id: int):
     # skip workflow if nothing to run
     if not schedule.periodic_task.enabled:
         return
+
+    for schedule_node_id, run_status in run_scheduled_connectors(schedule.project):
+        run_info[schedule_node_id] = run_status
+        progress_recorder.set_progress(0, 0, description=json.dumps(run_info))
 
     for schedule_node_id, run_status in run_scheduled_sheets(schedule.project):
         run_info[schedule_node_id] = run_status
