@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('connectors', '0013_auto_20211116_0113'),
+        ("connectors", "0013_auto_20211116_0113"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='connector',
-            name='is_scheduled',
-            field=models.BooleanField(default=False),
+            model_name="connector",
+            name="is_scheduled",
+            field=models.BooleanField(default=True),
         ),
     ]
