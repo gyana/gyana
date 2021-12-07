@@ -8,14 +8,14 @@ from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
 def add_periodic_task(schedule):
 
-    schedule = CrontabSchedule.objects.create(
+    crontab = CrontabSchedule.objects.create(
         minute=0,
         hour=schedule.daily_schedule_time.hour,
         timezone=schedule.project.team.timezone,
     )
 
     periodic_task = PeriodicTask.objects.create(
-        crontab=schedule,
+        crontab=crontab,
         # name is unique, prevents duplicate schedules for a single project
         name=f"schedules_schedule.pk={schedule.id}",
         task="apps.schedules.periodic.run_schedule",
