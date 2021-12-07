@@ -73,7 +73,7 @@ def test_sheet_create(
     r = client.get(f"{DETAIL}/configure")
     assertOK(r)
     # todo: fix this!
-    assertFormRenders(r, ["name", "cell_range"])
+    assertFormRenders(r, ["name", "sheet_name", "cell_range"])
 
     assert bigquery.query.call_count == 0
 
@@ -136,7 +136,7 @@ def test_validation_failures(client, logged_in_user, sheet_factory, sheets):
     # invalid cell range
     r = client.get(f"{DETAIL}/configure")
     assertOK(r)
-    assertFormRenders(r, ["name", "cell_range"])
+    assertFormRenders(r, ["name", "sheet_name", "cell_range"])
 
     error = googleapiclient.errors.HttpError(Mock(), b"")
     error.reason = "Unable to parse range: does_not_exist!A1:D11"
