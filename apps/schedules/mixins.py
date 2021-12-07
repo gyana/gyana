@@ -1,3 +1,19 @@
+from enum import Enum
+
+
+class ScheduleStatus(Enum):
+    PAUSED = "paused"
+    INCOMPLETE = "incomplete"
+    BROKEN = "broken"
+    ACTIVE = "active"
+
+
+class RunStatus(Enum):
+    PENDING = "pending"
+    RUNNING = "running"
+    DONE = "done"
+
+
 class ScheduleMixin:
     @property
     def _schedule(self):
@@ -24,31 +40,30 @@ class ScheduleMixin:
         run_started_at = self._schedule.run_started_at
 
         if run_started_at is None:
-            return "done"
+            return RunStatus.DONE.value
 
         just_failed = self.failed_at and self.failed_at > run_started_at
         just_succeeded = self.succeeded_at and self.succeeded_at > run_started_at
 
         if just_failed or just_succeeded:
-            return "done"
+            return RunStatus.DONE.value
 
         if (
             hasattr(self, "fivetran_sync_started")
             and self.fivetran_sync_started
             and self.fivetran_sync_started > run_started_at
         ):
-            return "running"
+            return RunStatus.RUNNING.value
 
-        return 'pending'
+        return RunStatus.PENDING.value
 
     @property
     def schedule_status(self):
 
         if self.succeeded_at is None:
-            return "incomplete"
+            return ScheduleStatus.INCOMPLETE.value
         if not self.is_scheduled:
-            return "paused"
+            return ScheduleStatus.PAUSED.value
         if self.failed_at is not None and self.failed_at > self.succeeded_at:
-            return "broken"
-
-        return "active"
+            return ScheduleStatus.BROKEN.value
+        return ScheduleStatus.ACTIVE.value
