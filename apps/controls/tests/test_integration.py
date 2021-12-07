@@ -52,9 +52,9 @@ def test_control_crudl(
         kind=Widget.Kind.COLUMN,
         table=integration_table_factory(project=project),
     )
-
+    control_url = f"/projects/{project.id}/dashboards/{dashboard.id}/controls/"
     # create
-    r = client.post("/controls/new", data={"dashboard_id": dashboard.id})
+    r = client.post(control_url + "new", data={"dashboard_id": dashboard.id})
 
     assertOK(r)
     control = Control.objects.first()
@@ -63,18 +63,18 @@ def test_control_crudl(
     assertContains(r, "controls:create-stream")
 
     # update
-    r = client.get(f"/controls/{control.id}/update")
+    r = client.get(control_url + f"{control.id}/update")
     assertOK(r)
     assertFormRenders(r, ["date_range"])
 
     r = client.post(
-        f"/controls/{control.id}/update", data={"date_range": CustomChoice.CUSTOM}
+        control_url + f"{control.id}/update", data={"date_range": CustomChoice.CUSTOM}
     )
     assert r.status_code == 422
     assertFormRenders(r, ["date_range", "start", "end"])
 
     r = client.post(
-        f"/controls/{control.id}/update",
+        control_url + f"{control.id}/update",
         data={"date_range": CustomChoice.CUSTOM, "submit": "submit"},
     )
     assertOK(r)
@@ -87,7 +87,7 @@ def test_control_crudl(
     assert control.date_range == CustomChoice.CUSTOM
 
     # delete
-    r = client.delete(f"/controls/{control.id}/delete")
+    r = client.delete(control_url + f"{control.id}/delete")
     assert Control.objects.first() is None
 
 
@@ -103,7 +103,7 @@ def test_public_date_slice_not_updating(
     )
     control = control_factory(dashboard=dashboard)
     r = client.post(
-        f"/controls/{control.id}/update-public",
+        f"/projects/{project.id}/dashboards/{dashboard.id}/controls/{control.id}/update-public",
         data={"date_range": CustomChoice.CUSTOM, "submit": "submit"},
     )
     assertOK(r)

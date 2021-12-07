@@ -64,7 +64,12 @@ project_urlpatterns = [
         include(widget_urls.dashboard_urlpatterns),
     ),
     path("<hashid:project_id>/templates/", include(template_urls.project_urlpatterns)),
+    path(
+        "<hashid:project_id>/dashboards/<hashid:dashboard_id>/controls/",
+        include("apps.controls.urls"),
+    ),
 ]
+
 
 teams_urlpatterns = [
     path("", include("apps.teams.urls")),
@@ -80,7 +85,6 @@ teams_urlpatterns = [
 urlpatterns = [
     path("admin_tools/", include("admin_tools.urls")),
     path("admin/", admin.site.urls),
-    path("controls/", include("apps.controls.urls")),
     path("exports/", include("apps.exports.urls")),
     path("users/", include("apps.users.urls")),
     path("filters/", include("apps.filters.urls")),

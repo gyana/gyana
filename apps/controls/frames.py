@@ -5,23 +5,18 @@ from turbo_response import TurboStream
 from turbo_response.response import HttpResponseSeeOther, TurboStreamResponse
 
 from apps.base.frames import TurboFrameCreateView, TurboFrameUpdateView
+from apps.dashboards.mixins import DashboardMixin
 from apps.widgets.frames import add_output_context
 
 from .forms import ControlForm
 from .models import Control
 
 
-class ControlCreate(TurboFrameCreateView):
+class ControlCreate(DashboardMixin, TurboFrameCreateView):
     template_name = "controls/create.html"
     model = Control
     fields = []
     turbo_frame_dom_id = "controls:create"
-
-    @cached_property
-    def dashboard(self):
-        from apps.dashboards.models import Dashboard
-
-        return Dashboard.objects.get(pk=self.request.POST["dashboard_id"])
 
     def form_valid(self, form):
         form.instance.dashboard = self.dashboard
@@ -48,7 +43,7 @@ class ControlCreate(TurboFrameCreateView):
         return reverse("controls:create")
 
 
-class ControlUpdate(TurboFrameUpdateView):
+class ControlUpdate(DashboardMixin, TurboFrameUpdateView):
     template_name = "controls/update.html"
     model = Control
     form_class = ControlForm
@@ -104,12 +99,11 @@ class ControlPublicUpdate(ControlUpdate):
         return self.get_stream_response(form)
 
 
-class ControlDelete(DeleteView):
+class ControlDelete(DashboardMixin, DeleteView):
     template_name = "controls/delete.html"
     model = Control
 
     def delete(self, request, *args, **kwargs):
-        dashboard = self.get_object().dashboard
         super().delete(request, *args, **kwargs)
         return TurboStreamResponse(
             [
@@ -117,7 +111,7 @@ class ControlDelete(DeleteView):
                     "<div id='controls:update-stream'></div>", is_safe=True
                 ),
                 TurboStream("controls:create-stream")
-                .replace.template("controls/create.html", {"dashboard": dashboard})
+                .replace.template("controls/create.html", {"dashboard": self.dashboard})
                 .render(request=request),
             ]
         )

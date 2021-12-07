@@ -12,6 +12,7 @@ CNAME_ALLOWED = [
     "dashboard_widgets:output",
     "dashboards:login",
     "dashboards:logout",
+    "controls:update-public",
 ]
 
 
