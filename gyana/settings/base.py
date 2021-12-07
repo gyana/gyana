@@ -103,7 +103,7 @@ PROJECT_APPS = [
     "apps.templates",
     "apps.cnames.apps.CNamesConfig",
     "apps.exports",
-    "apps.runs",
+    "apps.runs.apps.RunsConfig",
 ]
 
 INSTALLED_APPS = (
