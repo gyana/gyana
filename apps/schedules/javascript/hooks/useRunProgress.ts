@@ -13,6 +13,8 @@ const useRunProgress = (runTaskUrl: string | undefined, celeryProgressUrl: strin
           return { ...runInfo, run: 'done' }
         })
       },
+      // override the default, retries are used for connectors
+      onRetry: () => {},
       onProgress: (_, __, progress) => {
         if (progress.description) {
           setRunInfo(JSON.parse(progress.description))

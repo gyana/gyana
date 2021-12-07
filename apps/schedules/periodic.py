@@ -2,6 +2,7 @@ import json
 from graphlib import CycleError
 
 from celery import shared_task
+from celery.exceptions import Retry
 from celery_progress.backend import ProgressRecorder
 from django.conf import settings
 from django.utils import timezone
@@ -50,7 +51,13 @@ def run_schedule(self, schedule_id: int, trigger=False):
 
     # We need to keep retrying until the connectors either fail or succeeded
     if not schedule.latest_schedule_is_complete:
-        self.retry(countdown=RETRY_COUNTDOWN, max_retries=MAX_RETRIES, when=10)
+        return self.retry(
+            # compatability with celery_progress
+            exc=Retry(when=RETRY_COUNTDOWN),
+            countdown=RETRY_COUNTDOWN,
+            max_retries=MAX_RETRIES,
+            when=10,
+        )
 
     # todo: failed at criteria based on all entities
     schedule.succeeded_at = timezone.now()
