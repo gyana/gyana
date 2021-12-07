@@ -9,7 +9,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-12-03T23:50:23.273Z",
+      "last_login": "2021-12-07T01:11:27.013Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -90,13 +90,13 @@
     "pk": 1,
     "fields": {
       "created": "2021-07-26T14:53:37.577Z",
-      "updated": "2021-07-26T14:53:37.587Z",
+      "updated": "2021-12-07T01:12:20.470Z",
       "deleted": null,
       "icon": "",
       "name": "Vayu",
       "override_row_limit": null,
-      "row_count": 0,
-      "row_count_calculated": null,
+      "row_count": 17966,
+      "row_count_calculated": "2021-12-07T01:12:20.470Z",
       "last_checkout": null,
       "timezone": "GMT"
     }
@@ -345,13 +345,13 @@
     "pk": 8,
     "fields": {
       "created": "2021-08-10T10:40:23.584Z",
-      "updated": "2021-08-10T12:01:16.317Z",
+      "updated": "2021-12-07T01:12:20.474Z",
       "project": 1,
       "kind": "connector",
       "name": "Google Analytics",
-      "state": "update",
-      "ready": false,
-      "created_ready": "2021-08-10T10:40:23.584Z",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-12-07T01:12:17.071Z",
       "created_by": 1
     }
   },
@@ -904,6 +904,186 @@
       "cache_node": null,
       "num_rows": 0,
       "data_updated": "2021-12-03T23:55:11.723Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 23,
+    "fields": {
+      "created": "2021-12-07T01:12:12.860Z",
+      "updated": "2021-12-07T01:12:20.463Z",
+      "bq_table": "events_overview",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 8,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "cache_node": null,
+      "num_rows": 360,
+      "data_updated": "2021-12-07T00:24:06.931Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 24,
+    "fields": {
+      "created": "2021-12-07T01:12:12.860Z",
+      "updated": "2021-12-07T01:12:20.254Z",
+      "bq_table": "adwords_hourly_stats",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 8,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "cache_node": null,
+      "num_rows": 6218,
+      "data_updated": "2021-12-07T00:23:44.305Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 25,
+    "fields": {
+      "created": "2021-12-07T01:12:12.860Z",
+      "updated": "2021-12-07T01:12:20.041Z",
+      "bq_table": "adwords_campaigns",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 8,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "cache_node": null,
+      "num_rows": 302,
+      "data_updated": "2021-12-07T00:23:42.865Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 26,
+    "fields": {
+      "created": "2021-12-07T01:12:12.860Z",
+      "updated": "2021-12-07T01:12:19.873Z",
+      "bq_table": "adwords_keyword",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 8,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "cache_node": null,
+      "num_rows": 621,
+      "data_updated": "2021-12-07T00:23:56.448Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 27,
+    "fields": {
+      "created": "2021-12-07T01:12:12.860Z",
+      "updated": "2021-12-07T01:12:19.672Z",
+      "bq_table": "campaign_performance",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 8,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "cache_node": null,
+      "num_rows": 487,
+      "data_updated": "2021-12-07T00:23:54.876Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 28,
+    "fields": {
+      "created": "2021-12-07T01:12:12.860Z",
+      "updated": "2021-12-07T01:12:19.472Z",
+      "bq_table": "social_media_acquisitions",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 8,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "cache_node": null,
+      "num_rows": 794,
+      "data_updated": "2021-12-07T00:23:55.801Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 29,
+    "fields": {
+      "created": "2021-12-07T01:12:12.860Z",
+      "updated": "2021-12-07T01:12:19.243Z",
+      "bq_table": "traffic",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 8,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "cache_node": null,
+      "num_rows": 4145,
+      "data_updated": "2021-12-07T00:23:55.093Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 30,
+    "fields": {
+      "created": "2021-12-07T01:12:12.860Z",
+      "updated": "2021-12-07T01:12:18.931Z",
+      "bq_table": "browser_and_operating_system_overview",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 8,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "cache_node": null,
+      "num_rows": 3381,
+      "data_updated": "2021-12-07T00:23:42.653Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 31,
+    "fields": {
+      "created": "2021-12-07T01:12:12.860Z",
+      "updated": "2021-12-07T01:12:18.717Z",
+      "bq_table": "audience_overview",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 8,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "cache_node": null,
+      "num_rows": 303,
+      "data_updated": "2021-12-07T00:23:42.611Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 32,
+    "fields": {
+      "created": "2021-12-07T01:12:12.861Z",
+      "updated": "2021-12-07T01:12:18.517Z",
+      "bq_table": "channel_traffic",
+      "bq_dataset": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
+      "project": 1,
+      "source": "integration",
+      "integration": 8,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "cache_node": null,
+      "num_rows": 1298,
+      "data_updated": "2021-12-07T00:24:09.015Z"
     }
   },
   {
@@ -2651,7 +2831,7 @@
       "schema_config": null,
       "sync_task_id": null,
       "sync_started": null,
-      "is_scheduled": false,
+      "is_scheduled": true,
       "succeeded_at": "2021-08-25T12:26:16.959Z",
       "failed_at": "2021-09-08T18:07:29.001Z"
     }
@@ -2689,7 +2869,7 @@
       "schema_config": null,
       "sync_task_id": null,
       "sync_started": null,
-      "is_scheduled": false,
+      "is_scheduled": true,
       "succeeded_at": "2021-11-03T12:21:16.479Z",
       "failed_at": "2021-10-04T21:32:53.448Z"
     }
@@ -2699,212 +2879,104 @@
     "pk": 3,
     "fields": {
       "created": "2021-08-10T10:40:23.586Z",
-      "updated": "2021-11-03T17:31:35.855Z",
+      "updated": "2021-12-07T01:12:20.477Z",
       "integration": 8,
       "fivetran_authorized": true,
-      "fivetran_sync_started": null,
-      "bigquery_succeeded_at": null,
+      "fivetran_sync_started": "2021-12-07T01:12:07.323Z",
+      "bigquery_succeeded_at": "2021-12-07T01:12:18.081Z",
       "fivetran_id": "humid_rifle",
-      "group_id": "general_candor",
+      "group_id": "group_id",
       "service": "google_analytics",
-      "service_version": 1,
+      "service_version": 4,
       "schema": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2",
-      "paused": false,
-      "pause_after_trial": false,
-      "connected_by": "residual_typing",
-      "created_at": "2021-07-29T12:44:47.204Z",
+      "paused": true,
+      "pause_after_trial": true,
+      "connected_by": "monitoring_assuring",
+      "created_at": "2021-01-01T00:00:00Z",
       "sync_frequency": 360,
-      "daily_sync_time": null,
+      "daily_sync_time": "00:00",
       "schedule_type": "auto",
       "setup_state": "connected",
       "sync_state": "scheduled",
-      "update_state": "on_schedule",
+      "update_state": "delayed",
       "is_historical_sync": false,
       "tasks": [],
       "warnings": [],
-      "config": {
-        "reports": [
-          {
-            "table": "adwords_campaigns",
-            "metrics": [
-              "goalValueAll",
-              "sessions",
-              "adClicks",
-              "goalCompletionsAll",
-              "adCost",
-              "CPC",
-              "goalConversionRateAll",
-              "users",
-              "bounceRate"
-            ],
-            "dimensions": ["date", "adwordsCampaignID"],
-            "config_type": "Prebuilt",
-            "prebuilt_report": "ADWORDS_CAMPAIGNS"
+      "config": {},
+      "source_sync_details": null,
+      "schema_config": {
+        "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2": {
+          "tables": {
+            "traffic": {
+              "columns": {},
+              "enabled": true,
+              "name_in_destination": "traffic",
+              "enabled_patch_settings": { "allowed": true }
+            },
+            "adwords_keyword": {
+              "columns": {},
+              "enabled": true,
+              "name_in_destination": "adwords_keyword",
+              "enabled_patch_settings": { "allowed": true }
+            },
+            "channel_traffic": {
+              "columns": {},
+              "enabled": true,
+              "name_in_destination": "channel_traffic",
+              "enabled_patch_settings": { "allowed": true }
+            },
+            "events_overview": {
+              "columns": {},
+              "enabled": true,
+              "name_in_destination": "events_overview",
+              "enabled_patch_settings": { "allowed": true }
+            },
+            "adwords_campaigns": {
+              "columns": {},
+              "enabled": true,
+              "name_in_destination": "adwords_campaigns",
+              "enabled_patch_settings": { "allowed": true }
+            },
+            "audience_overview": {
+              "columns": {},
+              "enabled": true,
+              "name_in_destination": "audience_overview",
+              "enabled_patch_settings": { "allowed": true }
+            },
+            "adwords_hourly_stats": {
+              "columns": {},
+              "enabled": true,
+              "name_in_destination": "adwords_hourly_stats",
+              "enabled_patch_settings": { "allowed": true }
+            },
+            "campaign_performance": {
+              "columns": {},
+              "enabled": true,
+              "name_in_destination": "campaign_performance",
+              "enabled_patch_settings": { "allowed": true }
+            },
+            "social_media_acquisitions": {
+              "columns": {},
+              "enabled": true,
+              "name_in_destination": "social_media_acquisitions",
+              "enabled_patch_settings": { "allowed": true }
+            },
+            "browser_and_operating_system_overview": {
+              "columns": {},
+              "enabled": true,
+              "name_in_destination": "browser_and_operating_system_overview",
+              "enabled_patch_settings": { "allowed": true }
+            }
           },
-          {
-            "table": "adwords_hourly_stats",
-            "metrics": [
-              "goalValueAll",
-              "sessions",
-              "adClicks",
-              "goalCompletionsAll",
-              "adCost",
-              "CPC",
-              "pageviewsPerSession",
-              "goalConversionRateAll",
-              "users",
-              "bounceRate"
-            ],
-            "dimensions": ["date", "dateHour"],
-            "config_type": "Prebuilt",
-            "prebuilt_report": "ADWORDS_HOURLY_STATS"
-          },
-          {
-            "table": "adwords_keyword",
-            "metrics": [
-              "goalValueAll",
-              "sessions",
-              "adClicks",
-              "goalCompletionsAll",
-              "adCost",
-              "CPC",
-              "pageviewsPerSession",
-              "goalConversionRateAll",
-              "users",
-              "bounceRate"
-            ],
-            "dimensions": ["date", "keyword"],
-            "config_type": "Prebuilt",
-            "prebuilt_report": "ADWORDS_KEYWORD"
-          },
-          {
-            "table": "audience_overview",
-            "metrics": [
-              "newUsers",
-              "sessions",
-              "sessionsPerUser",
-              "pageviews",
-              "avgSessionDuration",
-              "pageviewsPerSession",
-              "users",
-              "bounceRate"
-            ],
-            "dimensions": ["date"],
-            "config_type": "Prebuilt",
-            "prebuilt_report": "AUDIENCE_OVERVIEW"
-          },
-          {
-            "table": "browser_and_operating_system_overview",
-            "metrics": [
-              "goalValueAll",
-              "newUsers",
-              "sessions",
-              "avgSessionDuration",
-              "goalCompletionsAll",
-              "pageviewsPerSession",
-              "goalConversionRateAll",
-              "users",
-              "bounceRate"
-            ],
-            "dimensions": ["date", "browser", "operatingSystem"],
-            "config_type": "Prebuilt",
-            "prebuilt_report": "BROWSER_AND_OPERATING_SYSTEM_OVERVIEW"
-          },
-          {
-            "table": "campaign_performance",
-            "metrics": [
-              "goalValueAll",
-              "newUsers",
-              "sessions",
-              "goalCompletionsAll",
-              "pageviewsPerSession",
-              "goalConversionRateAll",
-              "users",
-              "bounceRate"
-            ],
-            "dimensions": ["date", "campaign"],
-            "config_type": "Prebuilt",
-            "prebuilt_report": "CAMPAIGN_PERFORMANCE"
-          },
-          {
-            "table": "channel_traffic",
-            "metrics": [
-              "goalValueAll",
-              "newUsers",
-              "sessions",
-              "avgSessionDuration",
-              "goalCompletionsAll",
-              "percentNewSessions",
-              "pageviewsPerSession",
-              "goalConversionRateAll",
-              "users",
-              "bounceRate"
-            ],
-            "dimensions": ["date", "channelGrouping"],
-            "config_type": "Prebuilt",
-            "prebuilt_report": "CHANNEL_TRAFFIC"
-          },
-          {
-            "table": "events_overview",
-            "metrics": [
-              "eventValue",
-              "totalEvents",
-              "sessionsWithEvent",
-              "eventsPerSessionWithEvent",
-              "avgEventValue",
-              "uniqueEvents"
-            ],
-            "dimensions": ["date", "eventCategory"],
-            "config_type": "Prebuilt",
-            "prebuilt_report": "EVENTS_OVERVIEW"
-          },
-          {
-            "table": "social_media_acquisitions",
-            "metrics": [
-              "sessions",
-              "newUsers",
-              "pageviews",
-              "avgSessionDuration",
-              "transactionRevenue",
-              "percentNewSessions",
-              "pageviewsPerSession",
-              "transactions",
-              "transactionsPerSession",
-              "bounceRate"
-            ],
-            "dimensions": ["date", "socialNetwork"],
-            "config_type": "Prebuilt",
-            "prebuilt_report": "SOCIAL_MEDIA_ACQUISITIONS"
-          },
-          {
-            "table": "traffic",
-            "metrics": [
-              "pageviews",
-              "avgTimeOnPage",
-              "pageValue",
-              "uniquePageviews",
-              "exitRate",
-              "entrances",
-              "users",
-              "bounceRate"
-            ],
-            "dimensions": ["date", "pageTitle"],
-            "config_type": "Prebuilt",
-            "prebuilt_report": "TRAFFIC"
-          }
-        ],
-        "accounts": ["82798099"],
-        "profiles": ["237044023"],
-        "sync_mode": "SpecificAccounts",
-        "timeframe_months": "ALL_TIME"
+          "enabled": true,
+          "name_in_destination": "team_1_google_analytics_a3b8bcf82f804f43a998ce683f332be2"
+        }
       },
-      "source_sync_details": { "profile_ids": ["237044023"] },
-      "schema_config": null,
       "sync_task_id": null,
       "sync_started": null,
-      "is_scheduled": false,
-      "succeeded_at": "2021-11-03T12:27:44.782Z",
-      "failed_at": "2021-10-05T06:30:23.170Z"
+      "is_scheduled": true,
+      "succeeded_at": "2021-12-07T01:12:18.081Z",
+      "failed_at": null
     }
   },
   {
@@ -2942,7 +3014,7 @@
       "schema_config": null,
       "sync_task_id": null,
       "sync_started": null,
-      "is_scheduled": false,
+      "is_scheduled": true,
       "succeeded_at": "2021-08-24T06:37:48.417Z",
       "failed_at": "2021-09-21T22:48:08.033Z"
     }
@@ -3031,7 +3103,7 @@
       "schema_config": null,
       "sync_task_id": null,
       "sync_started": null,
-      "is_scheduled": false,
+      "is_scheduled": true,
       "succeeded_at": null,
       "failed_at": null
     }
