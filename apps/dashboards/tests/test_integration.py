@@ -35,7 +35,7 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     r = client.get(DETAIL)
     assertOK(r)
     # TODO: Fix this
-    assertFormRenders(r, ["name", "x", "dashboard_id", "y", "kind"])
+    assertFormRenders(r, ["name", "x", "y", "kind"])
     assertLink(r, f"{DETAIL}/delete", "Delete")
 
     # update/rename
