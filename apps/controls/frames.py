@@ -58,7 +58,7 @@ class ControlUpdate(TurboFrameUpdateView):
         dashboard = form.instance.dashboard
         streams = []
         for widget in dashboard.widget_set.all():
-            if widget.dateslice_column and widget.is_valid:
+            if widget.date_column and widget.is_valid:
                 context = {
                     "widget": widget,
                     "dashboard": dashboard,

@@ -25,7 +25,7 @@ class GenericWidgetForm(LiveUpdateForm):
             "sort_by",
             "sort_ascending",
             "stack_100_percent",
-            "dateslice_column",
+            "date_column",
         ]
         widgets = {"table": SourceSelect()}
 
@@ -43,21 +43,21 @@ class GenericWidgetForm(LiveUpdateForm):
             )
             table = self.get_live_field("table")
             schema = Table.objects.get(pk=table).schema if table else None
-            if "dateslice_column" in self.fields and schema:
-                self.fields["dateslice_column"] = forms.ChoiceField(
+            if "date_column" in self.fields and schema:
+                self.fields["date_column"] = forms.ChoiceField(
                     required=False,
                     widget=SelectWithDisable(
                         disabled=disable_non_time(schema),
                     ),
                     choices=create_column_choices(schema),
-                    help_text=self.base_fields["dateslice_column"].help_text,
+                    help_text=self.base_fields["date_column"].help_text,
                 )
 
     def get_live_fields(self):
         fields = ["table", "kind"]
 
         if self.get_live_field("table") and self.instance.dashboard.has_control:
-            fields += ["dateslice_column"]
+            fields += ["date_column"]
 
         return fields
 

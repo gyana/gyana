@@ -22,8 +22,8 @@ def pre_filter(widget, control):
     query = get_query_from_table(widget.table)
     query = get_query_from_filters(query, widget.filters.all())
 
-    if control and widget.dateslice_column:
-        query = slice_query(query, widget.dateslice_column, control)
+    if control and widget.date_column:
+        query = slice_query(query, widget.date_column, control)
     return query
 
 

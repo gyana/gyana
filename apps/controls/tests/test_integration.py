@@ -47,7 +47,7 @@ def test_control_crudl(
     # add a widget with a dateslice column so it's picked up when creating the output stream
     dashboard = dashboard_factory(project=project)
     widget = dashboard.widget_set.create(
-        dateslice_column="birthday",
+        date_column="birthday",
         dimension="athlete",
         kind=Widget.Kind.COLUMN,
         table=integration_table_factory(project=project),

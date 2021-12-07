@@ -110,8 +110,8 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["show_dateslice_column"] = bool(
-            context["form"].get_live_field("dateslice_column")
+        context["show_date_column"] = bool(
+            context["form"].get_live_field("date_column")
         )
         return context
 
@@ -193,7 +193,10 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             }
             try:
                 add_output_context(
-                    context, self.object, self.request, self.dashboard.control
+                    context,
+                    self.object,
+                    self.request,
+                    self.dashboard.control if self.dashboard.has_control else None,
                 )
                 if self.object.error:
                     self.object.error = None
@@ -232,7 +235,10 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
         context["project"] = self.get_object().dashboard.project
         try:
             add_output_context(
-                context, self.object, self.request, self.dashboard.control
+                context,
+                self.object,
+                self.request,
+                self.dashboard.control if self.dashboard.has_control else None,
             )
         except Exception as e:
             error_template = f"widgets/errors/{error_name_to_snake(e)}.html"
@@ -245,7 +251,10 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
 
     def get_table(self, **kwargs):
         if self.object.is_valid and self.object.kind == Widget.Kind.TABLE:
-            table = table_to_output(self.object, self.object.dashboard.control)
+            table = table_to_output(
+                self.object,
+                self.dashboard.control if self.dashboard.has_control else None,
+            )
             return RequestConfig(
                 self.request, paginate=self.get_table_pagination(table)
             ).configure(table)

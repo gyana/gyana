@@ -172,7 +172,7 @@ def test_two_dimension_form(kind, formset_classes, setup, widget_factory):
     assertFormChoicesLength(form, "second_dimension", 9)
 
 
-def test_dateslice_column_is_added(setup, widget_factory, control_factory):
+def test_date_column_is_added(setup, widget_factory, control_factory):
     dashboard, table = setup
     widget = widget_factory(kind=Widget.Kind.TABLE, table=table, dashboard=dashboard)
     form = FORMS[widget.kind](instance=widget, project=dashboard.project)
@@ -183,5 +183,5 @@ def test_dateslice_column_is_added(setup, widget_factory, control_factory):
 
     form = FORMS[widget.kind](instance=widget, project=dashboard.project)
 
-    assert set(form.get_live_fields()) == {"kind", "table", "dateslice_column"}
-    assertFormChoicesLength(form, "dateslice_column", 9)
+    assert set(form.get_live_fields()) == {"kind", "table", "date_column"}
+    assertFormChoicesLength(form, "date_column", 9)

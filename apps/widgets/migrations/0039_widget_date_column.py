@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="widget",
-            name="dateslice_column",
+            name="date_column",
             field=models.CharField(
                 help_text="Select a temporal column that will be used when using the dashboard date slicer",
                 max_length=300,
