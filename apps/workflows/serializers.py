@@ -24,6 +24,7 @@ class WorkflowSerializer(serializers.ModelSerializer):
             "parents",
             "absolute_url",
             "schedule_status",
+            "run_status",
             "up_to_date",
         )
 

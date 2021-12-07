@@ -3,6 +3,7 @@ from graphlib import CycleError
 
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
+from django.conf import settings
 from django.utils import timezone
 
 from apps.base.tasks import honeybadger_check_in
@@ -13,12 +14,12 @@ from apps.workflows.schedule import run_scheduled_workflows
 
 # Retry every 10 minutes for next 12 hours, this will continue to try until
 # the incremental connector resyncs are completed.
-RETRY_COUNTDOWN = 60 * 10
-MAX_RETRIES = 3600 / RETRY_COUNTDOWN * 12
+RETRY_COUNTDOWN = 5 if settings.MOCK_FIVETRAN else 60 * 10
+MAX_RETRIES = 1 if settings.MOCK_FIVETRAN else 3600 / RETRY_COUNTDOWN * 12
 
 
 @shared_task(bind=True)
-def run_schedule(self, schedule_id: int):
+def run_schedule(self, schedule_id: int, trigger=False):
 
     progress_recorder = ProgressRecorder(self)
     run_info = {}
@@ -31,9 +32,10 @@ def run_schedule(self, schedule_id: int):
     if not schedule.periodic_task.enabled:
         return
 
-    for schedule_node_id, run_status in run_scheduled_connectors(schedule.project):
-        run_info[schedule_node_id] = run_status
-        progress_recorder.set_progress(0, 0, description=json.dumps(run_info))
+    if trigger:
+        for schedule_node_id, run_status in run_scheduled_connectors(schedule.project):
+            run_info[schedule_node_id] = run_status
+            progress_recorder.set_progress(0, 0, description=json.dumps(run_info))
 
     for schedule_node_id, run_status in run_scheduled_sheets(schedule.project):
         run_info[schedule_node_id] = run_status
@@ -48,7 +50,7 @@ def run_schedule(self, schedule_id: int):
 
     # We need to keep retrying until the connectors either fail or succeeded
     if not schedule.latest_schedule_is_complete:
-        self.retry(countdown=RETRY_COUNTDOWN, max_retries=MAX_RETRIES)
+        self.retry(countdown=RETRY_COUNTDOWN, max_retries=MAX_RETRIES, when=10)
 
     # todo: failed at criteria based on all entities
     schedule.succeeded_at = timezone.now()

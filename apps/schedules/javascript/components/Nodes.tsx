@@ -54,7 +54,7 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
 
   const sourceObj = data[data.kind]
 
-  const initialRunStatus = sourceObj.up_to_date ? 'done' : 'pending'
+  const initialRunStatus = sourceObj.run_status
   const runStatus = runInfo?.run || runInfo[id] || initialRunStatus
 
   useEffect(() => {
@@ -100,7 +100,7 @@ const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
   const [data, setData] = useState(initialData)
 
   const { runInfo } = useContext(ScheduleContext) as IScheduleContext
-  const initialRunStatus = data.up_to_date ? 'done' : 'pending'
+  const initialRunStatus = data.run_status
   const runStatus = runInfo?.run || runInfo[id] || initialRunStatus
 
   useEffect(() => {

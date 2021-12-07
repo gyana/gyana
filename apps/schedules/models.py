@@ -111,13 +111,14 @@ class Schedule(BaseModel):
 
     @property
     def latest_schedule_is_complete(self):
+        from apps.connectors.models import Connector
         from apps.sheets.models import Sheet
         from apps.workflows.models import Workflow
 
         # check for schedule entities which have neither succeeded or failed today
 
-        expr = Q(failed_at__gt=self.latest_schedule) | Q(
-            succeeded_at__gt=self.latest_schedule
+        expr = Q(failed_at__gt=self.run_started_at) | Q(
+            succeeded_at__gt=self.run_started_at
         )
 
         return (
@@ -125,6 +126,9 @@ class Schedule(BaseModel):
             .exclude(expr)
             .exists()
             and not Workflow.objects.is_scheduled_in_project(self.project)
+            .exclude(expr)
+            .exists()
+            and not Connector.objects.is_scheduled_in_project(self.project)
             .exclude(expr)
             .exists()
         )

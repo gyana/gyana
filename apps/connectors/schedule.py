@@ -22,3 +22,6 @@ def run_scheduled_connectors(project: Project):
 
             connector.integration.state = Integration.State.LOAD
             connector.integration.save()
+
+        else:
+            connector.sync_updates_from_fivetran()

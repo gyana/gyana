@@ -28,7 +28,7 @@ class ScheduleDetail(ProjectMixin, TurboUpdateView):
 
         else:
             try:
-                result = run_schedule.delay(self.object.id)
+                result = run_schedule.delay(self.object.id, trigger=True)
                 self.object.run_task_id = result.task_id
                 self.object.run_started_at = timezone.now()
                 self.object.save()
