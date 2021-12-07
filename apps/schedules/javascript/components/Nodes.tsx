@@ -5,23 +5,26 @@ import { Handle, NodeProps, Position } from 'react-flow-renderer'
 import { getIntegration, getWorkflow, updateConnector, updateSheet, updateWorkflow } from '../api'
 import { IScheduleContext, ScheduleContext } from '../context'
 
-interface StatusProps {
-  scheduleStatus: string
-  runStatus: string
-}
+type ScheduleStatus = 'paused' | 'incomplete' | 'broken' | 'active'
+type RunStatus = 'pending' | 'running' | 'done'
 
-const SCHEDULE_STATUS_TO_MESSAGE = {
+const SCHEDULE_STATUS_TO_MESSAGE: { [key in ScheduleStatus]: string } = {
   incomplete: 'Incomplete',
   paused: 'Paused',
   broken: 'Broken',
   active: 'Active',
 }
 
-const SCHEDULE_STATUS_TO_ICON = {
+const SCHEDULE_STATUS_TO_ICON: { [key in ScheduleStatus]: string } = {
   incomplete: 'fa-construction text-black-20',
   paused: 'fa-pause-circle text-black-20',
   broken: 'fa-times-circle text-red',
   active: 'fa-check-circle text-green',
+}
+
+interface StatusProps {
+  scheduleStatus: ScheduleStatus
+  runStatus: RunStatus
 }
 
 export const StatusIcon: React.FC<StatusProps> = ({ scheduleStatus, runStatus }) => {
@@ -55,7 +58,7 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
   const sourceObj = data[data.kind]
 
   const initialRunStatus = sourceObj.run_status
-  const runStatus = runInfo?.run || runInfo[id] || initialRunStatus
+  const runStatus = (runInfo?.run || runInfo[id] || initialRunStatus) as RunStatus
 
   useEffect(() => {
     const update = async () => {
@@ -101,7 +104,7 @@ const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
 
   const { runInfo } = useContext(ScheduleContext) as IScheduleContext
   const initialRunStatus = data.run_status
-  const runStatus = runInfo?.run || runInfo[id] || initialRunStatus
+  const runStatus = (runInfo?.run || runInfo[id] || initialRunStatus) as RunStatus
 
   useEffect(() => {
     const update = async () => {

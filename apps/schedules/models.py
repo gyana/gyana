@@ -15,7 +15,10 @@ class Schedule(BaseModel):
     # default midnight
     daily_schedule_time = models.TimeField(default=time())
     periodic_task = models.OneToOneField(
-        PeriodicTask, null=True, on_delete=models.SET_NULL
+        PeriodicTask,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="project_schedule",
     )
     run_task_id = models.UUIDField(null=True)
     run_started_at = models.DateTimeField(null=True)

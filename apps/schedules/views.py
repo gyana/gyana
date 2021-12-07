@@ -38,7 +38,9 @@ class ScheduleDetail(ProjectMixin, TurboUpdateView):
         return super().form_valid(form)
 
     def get_object(self):
-        return self.project.schedule
+        schedule = self.project.schedule
+        schedule.update_schedule()
+        return schedule
 
     def get_success_url(self):
         return reverse("project_schedule:detail", args=(self.project.id,))
