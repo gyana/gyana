@@ -548,6 +548,17 @@ django-timezone-field = ">=4.1.0,<5.0"
 python-crontab = ">=2.3.4"
 
 [[package]]
+name = "django-celery-results"
+version = "2.2.0"
+description = "Celery result backends for Django."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+celery = ">=5.0,<6.0"
+
+[[package]]
 name = "django-clone"
 version = "2.9.4"
 description = "Create a clone of a django model instance."
@@ -2140,7 +2151,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.*"
-content-hash = "a7726c2fe440733930bb4424d8d8b3785ac660c88eb8b6a31a66c2107cc43941"
+content-hash = "79a930136aebabde2e8d32527bc0b4bfa7e5fab5fb8b9041ef48f7f972dd4541"
 
 [metadata.files]
 amqp = [
@@ -2396,6 +2407,10 @@ django-anymail = [
 django-celery-beat = [
     {file = "django-celery-beat-2.2.1.tar.gz", hash = "sha256:97ae5eb309541551bdb07bf60cc57cadacf42a74287560ced2d2c06298620234"},
     {file = "django_celery_beat-2.2.1-py2.py3-none-any.whl", hash = "sha256:ab43049634fd18dc037927d7c2c7d5f67f95283a20ebbda55f42f8606412e66c"},
+]
+django-celery-results = [
+    {file = "django_celery_results-2.2.0-py2.py3-none-any.whl", hash = "sha256:d5f83fad9091e52cd6dbb3ca80632153ad14b6cdac4d73258e040f92717237cb"},
+    {file = "django_celery_results-2.2.0.tar.gz", hash = "sha256:cc0285090a306f97f1d4b7929ed98af0475bf6db2568976b3387de4fbe812edc"},
 ]
 django-clone = [
     {file = "django-clone-2.9.4.tar.gz", hash = "sha256:b38d4e2dcce4f6ded7fc5a8b2eed8d0932b114825bffebd2de087f7e361bc262"},
