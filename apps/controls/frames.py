@@ -22,9 +22,10 @@ class ControlCreate(DashboardMixin, TurboFrameCreateView):
         form.instance.dashboard = self.dashboard
         super().form_valid(form)
         context = self.get_context_data()
-        context["dashboard"] = self.dashboard
         context_update = {
             "object": self.object,
+            "dashboard": self.dashboard,
+            "project": self.project,
             "form": ControlForm(instance=self.object),
         }
 
@@ -40,7 +41,13 @@ class ControlCreate(DashboardMixin, TurboFrameCreateView):
         )
 
     def get_success_url(self) -> str:
-        return reverse("controls:create")
+        return reverse(
+            "controls:create",
+            args=(
+                self.project.id,
+                self.dashboard.id,
+            ),
+        )
 
 
 class ControlUpdate(DashboardMixin, TurboFrameUpdateView):
@@ -81,7 +88,14 @@ class ControlUpdate(DashboardMixin, TurboFrameUpdateView):
         return self.get_stream_response(form)
 
     def get_success_url(self) -> str:
-        return reverse("controls:update", args=(self.object.id,))
+        return reverse(
+            "controls:update",
+            args=(
+                self.project.id,
+                self.dashboard.id,
+                self.object.id,
+            ),
+        )
 
 
 class ControlPublicUpdate(ControlUpdate):
@@ -91,7 +105,14 @@ class ControlPublicUpdate(ControlUpdate):
         return context
 
     def get_success_url(self) -> str:
-        return reverse("controls:update-public", args=(self.object.id,))
+        return reverse(
+            "controls:update-public",
+            args=(
+                self.project.id,
+                self.dashboard.id,
+                self.object.id,
+            ),
+        )
 
     def form_valid(self, form):
         if form.is_live:
@@ -111,11 +132,20 @@ class ControlDelete(DashboardMixin, DeleteView):
                     "<div id='controls:update-stream'></div>", is_safe=True
                 ),
                 TurboStream("controls:create-stream")
-                .replace.template("controls/create.html", {"dashboard": self.dashboard})
+                .replace.template(
+                    "controls/create.html",
+                    {"dashboard": self.dashboard, "project": self.project},
+                )
                 .render(request=request),
             ]
         )
 
     def get_success_url(self) -> str:
-        # Won't actually return a response to hear
-        return reverse("controls:create")
+        # Won't actually return a response to here
+        return reverse(
+            "controls:create",
+            args=(
+                self.project.id,
+                self.dashboard.id,
+            ),
+        )
