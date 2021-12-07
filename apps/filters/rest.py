@@ -1,15 +1,16 @@
 import ibis.expr.datatypes as dt
-from apps.base.clients import get_dataframe
+from django.http import Http404
+from rest_framework.decorators import api_view
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+
+from apps.base import clients
 from apps.nodes.bigquery import get_query_from_node
 from apps.nodes.models import Node
 from apps.projects.access import user_can_access_project
 from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
 from apps.widgets.models import Widget
-from django.http import Http404
-from rest_framework.decorators import api_view
-from rest_framework.generics import get_object_or_404
-from rest_framework.response import Response
 
 
 @api_view(http_method_names=["GET"])
@@ -42,14 +43,17 @@ def autocomplete_options(request):
     ):
         # For widgets we are sending the table information
         # To make sure we always have the correct one
+        # For nodes we actually want the parent of the parent
         query = (
             get_query_from_table(get_object_or_404(Table, pk=request.GET["tableId"]))
             if parentType == "widget"
-            else get_query_from_node(parent)
+            else get_query_from_node(parent.parents.first())
         )
 
-        options = (
-            get_dataframe(
+        client = clients.bigquery()
+        options = [
+            row[column]
+            for row in client.get_query_results(
                 query[query[column].cast(dt.String()).lower().startswith(q)]
                 .projection([column])
                 .distinct()
@@ -58,10 +62,8 @@ def autocomplete_options(request):
                 # and send in chunks
                 .limit(20)
                 .compile()
-            )
-            .values.flatten()
-            .tolist()
-        )
+            ).rows_dict
+        ]
         return Response(options)
 
     raise Http404
