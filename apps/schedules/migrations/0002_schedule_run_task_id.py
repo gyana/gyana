@@ -6,13 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('schedules', '0001_initial'),
+        ("schedules", "0001_initial"),
+        ("projects", "0014_auto_20211206_2114"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='schedule',
-            name='run_task_id',
+            model_name="schedule",
+            name="run_task_id",
             field=models.UUIDField(null=True),
         ),
     ]

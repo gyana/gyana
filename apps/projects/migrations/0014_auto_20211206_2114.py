@@ -52,6 +52,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("projects", "0013_project_periodic_task"),
+        ("schedules", "0001_initial"),
     ]
 
     operations = [migrations.RunPython(code=forwards_func, reverse_code=backwards_func)]

@@ -406,13 +406,13 @@
     "fields": {
       "created": "2021-08-10T07:31:33.634Z",
       "updated": "2021-09-10T15:59:15.605Z",
-      "is_scheduled": false,
-      "succeeded_at": null,
-      "failed_at": null,
       "name": "Untitled",
       "project": 2,
       "last_run": null,
-      "data_updated": "2021-09-10T15:59:15.605Z"
+      "data_updated": "2021-09-10T15:59:15.605Z",
+      "is_scheduled": false,
+      "succeeded_at": null,
+      "failed_at": null
     }
   },
   {
@@ -421,13 +421,13 @@
     "fields": {
       "created": "2021-12-03T23:50:30.046Z",
       "updated": "2021-12-03T23:52:38.243Z",
-      "is_scheduled": true,
-      "succeeded_at": null,
-      "failed_at": null,
       "name": "Initial workflow",
       "project": 1,
       "last_run": "2021-12-03T23:52:58.722Z",
-      "data_updated": "2021-12-03T23:52:05.947Z"
+      "data_updated": "2021-12-03T23:52:05.947Z",
+      "is_scheduled": true,
+      "succeeded_at": null,
+      "failed_at": null
     }
   },
   {
@@ -436,13 +436,13 @@
     "fields": {
       "created": "2021-12-03T23:52:42.072Z",
       "updated": "2021-12-03T23:55:15.172Z",
-      "is_scheduled": true,
-      "succeeded_at": null,
-      "failed_at": null,
       "name": "Dependent workflow",
       "project": 1,
       "last_run": "2021-12-03T23:55:11.732Z",
-      "data_updated": "2021-12-03T23:54:57.237Z"
+      "data_updated": "2021-12-03T23:54:57.237Z",
+      "is_scheduled": true,
+      "succeeded_at": null,
+      "failed_at": null
     }
   },
   {
@@ -2596,16 +2596,16 @@
     "fields": {
       "created": "2021-08-08T20:28:24.090Z",
       "updated": "2021-12-03T23:55:23.784Z",
-      "is_scheduled": true,
-      "succeeded_at": null,
-      "failed_at": null,
       "integration": 2,
       "url": "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit",
       "cell_range": "store_info!A1:D11",
       "drive_file_last_modified_at_sync": "2021-08-08T16:46:04.194Z",
       "sync_task_id": "aa5c3086-1f87-434f-9d5b-48bd69786b33",
       "sync_started": "2021-08-08T20:28:24.090Z",
-      "drive_modified_date": "2021-10-21T20:18:31.669Z"
+      "drive_modified_date": "2021-10-21T20:18:31.669Z",
+      "is_scheduled": true,
+      "succeeded_at": null,
+      "failed_at": null
     }
   },
   {
@@ -2614,9 +2614,6 @@
     "fields": {
       "created": "2021-08-10T10:03:16.771Z",
       "updated": "2021-11-03T17:31:36.882Z",
-      "is_scheduled": false,
-      "succeeded_at": "2021-08-25T12:26:16.959Z",
-      "failed_at": "2021-09-08T18:07:29.001Z",
       "integration": 6,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
@@ -2653,7 +2650,10 @@
       "source_sync_details": null,
       "schema_config": null,
       "sync_task_id": null,
-      "sync_started": null
+      "sync_started": null,
+      "is_scheduled": false,
+      "succeeded_at": "2021-08-25T12:26:16.959Z",
+      "failed_at": "2021-09-08T18:07:29.001Z"
     }
   },
   {
@@ -2662,9 +2662,6 @@
     "fields": {
       "created": "2021-08-10T10:40:23.586Z",
       "updated": "2021-11-03T17:31:34.953Z",
-      "is_scheduled": false,
-      "succeeded_at": "2021-11-03T12:21:16.479Z",
-      "failed_at": "2021-10-04T21:32:53.448Z",
       "integration": 7,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
@@ -2691,7 +2688,10 @@
       "source_sync_details": { "account_ids": ["act_78363492"] },
       "schema_config": null,
       "sync_task_id": null,
-      "sync_started": null
+      "sync_started": null,
+      "is_scheduled": false,
+      "succeeded_at": "2021-11-03T12:21:16.479Z",
+      "failed_at": "2021-10-04T21:32:53.448Z"
     }
   },
   {
@@ -2700,9 +2700,6 @@
     "fields": {
       "created": "2021-08-10T10:40:23.586Z",
       "updated": "2021-11-03T17:31:35.855Z",
-      "is_scheduled": false,
-      "succeeded_at": "2021-11-03T12:27:44.782Z",
-      "failed_at": "2021-10-05T06:30:23.170Z",
       "integration": 8,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
@@ -2904,7 +2901,10 @@
       "source_sync_details": { "profile_ids": ["237044023"] },
       "schema_config": null,
       "sync_task_id": null,
-      "sync_started": null
+      "sync_started": null,
+      "is_scheduled": false,
+      "succeeded_at": "2021-11-03T12:27:44.782Z",
+      "failed_at": "2021-10-05T06:30:23.170Z"
     }
   },
   {
@@ -2913,9 +2913,6 @@
     "fields": {
       "created": "2021-08-10T12:54:44.273Z",
       "updated": "2021-11-03T17:31:34.021Z",
-      "is_scheduled": false,
-      "succeeded_at": "2021-08-24T06:37:48.417Z",
-      "failed_at": "2021-09-21T22:48:08.033Z",
       "integration": 9,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
@@ -2944,7 +2941,10 @@
       "source_sync_details": null,
       "schema_config": null,
       "sync_task_id": null,
-      "sync_started": null
+      "sync_started": null,
+      "is_scheduled": false,
+      "succeeded_at": "2021-08-24T06:37:48.417Z",
+      "failed_at": "2021-09-21T22:48:08.033Z"
     }
   },
   {
@@ -2953,9 +2953,6 @@
     "fields": {
       "created": "2021-08-30T19:05:46.412Z",
       "updated": "2021-11-03T17:31:33.091Z",
-      "is_scheduled": false,
-      "succeeded_at": null,
-      "failed_at": null,
       "integration": 13,
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
@@ -3033,7 +3030,10 @@
       "source_sync_details": null,
       "schema_config": null,
       "sync_task_id": null,
-      "sync_started": null
+      "sync_started": null,
+      "is_scheduled": false,
+      "succeeded_at": null,
+      "failed_at": null
     }
   },
   {
@@ -3085,6 +3085,54 @@
       "created": "2021-08-30T21:44:56.106Z",
       "updated": "2021-08-30T21:44:56.106Z",
       "project": 6
+    }
+  },
+  {
+    "model": "schedules.schedule",
+    "pk": 1,
+    "fields": {
+      "created": "2021-12-07T00:40:22.654Z",
+      "updated": "2021-12-07T00:40:22.654Z",
+      "daily_schedule_time": "00:00:00",
+      "periodic_task": null,
+      "run_task_id": null,
+      "run_started_at": null,
+      "succeeded_at": null,
+      "failed_at": null,
+      "cancelled_at": null,
+      "project": 1
+    }
+  },
+  {
+    "model": "schedules.schedule",
+    "pk": 2,
+    "fields": {
+      "created": "2021-12-07T00:40:22.666Z",
+      "updated": "2021-12-07T00:40:22.666Z",
+      "daily_schedule_time": "00:00:00",
+      "periodic_task": null,
+      "run_task_id": null,
+      "run_started_at": null,
+      "succeeded_at": null,
+      "failed_at": null,
+      "cancelled_at": null,
+      "project": 6
+    }
+  },
+  {
+    "model": "schedules.schedule",
+    "pk": 3,
+    "fields": {
+      "created": "2021-12-07T00:40:22.672Z",
+      "updated": "2021-12-07T00:40:22.672Z",
+      "daily_schedule_time": "00:00:00",
+      "periodic_task": null,
+      "run_task_id": null,
+      "run_started_at": null,
+      "succeeded_at": null,
+      "failed_at": null,
+      "cancelled_at": null,
+      "project": 2
     }
   },
   {
@@ -3267,6 +3315,131 @@
       "plan": 18567,
       "unit_price": 30.0,
       "update_url": "https://sandbox-subscription-management.paddle.com/subscription/169194/hash/15a7bd9fe78a9c6b5ca80ad02542588644ae45ee1f0c3f6d4d33c3bd2a6001c0/update"
+    }
+  },
+  {
+    "model": "django_celery_beat.crontabschedule",
+    "pk": 2,
+    "fields": {
+      "minute": "0",
+      "hour": "0",
+      "day_of_week": "*",
+      "day_of_month": "*",
+      "month_of_year": "*",
+      "timezone": "GMT"
+    }
+  },
+  {
+    "model": "django_celery_beat.crontabschedule",
+    "pk": 3,
+    "fields": {
+      "minute": "0",
+      "hour": "0",
+      "day_of_week": "*",
+      "day_of_month": "*",
+      "month_of_year": "*",
+      "timezone": "GMT"
+    }
+  },
+  {
+    "model": "django_celery_beat.crontabschedule",
+    "pk": 4,
+    "fields": {
+      "minute": "0",
+      "hour": "0",
+      "day_of_week": "*",
+      "day_of_month": "*",
+      "month_of_year": "*",
+      "timezone": "GMT"
+    }
+  },
+  {
+    "model": "django_celery_beat.periodictasks",
+    "pk": 1,
+    "fields": { "last_update": "2021-12-07T00:40:22.694Z" }
+  },
+  {
+    "model": "django_celery_beat.periodictask",
+    "pk": 2,
+    "fields": {
+      "name": "schedules_schedule.pk=2",
+      "task": "apps.schedules.periodic.run_schedule",
+      "interval": null,
+      "crontab": 2,
+      "solar": null,
+      "clocked": null,
+      "args": "[2]",
+      "kwargs": "{}",
+      "queue": null,
+      "exchange": null,
+      "routing_key": null,
+      "headers": "{}",
+      "priority": null,
+      "expires": null,
+      "expire_seconds": null,
+      "one_off": false,
+      "start_time": null,
+      "enabled": false,
+      "last_run_at": null,
+      "total_run_count": 0,
+      "date_changed": "2021-12-07T00:40:22.663Z",
+      "description": ""
+    }
+  },
+  {
+    "model": "django_celery_beat.periodictask",
+    "pk": 3,
+    "fields": {
+      "name": "schedules_schedule.pk=3",
+      "task": "apps.schedules.periodic.run_schedule",
+      "interval": null,
+      "crontab": 3,
+      "solar": null,
+      "clocked": null,
+      "args": "[3]",
+      "kwargs": "{}",
+      "queue": null,
+      "exchange": null,
+      "routing_key": null,
+      "headers": "{}",
+      "priority": null,
+      "expires": null,
+      "expire_seconds": null,
+      "one_off": false,
+      "start_time": null,
+      "enabled": false,
+      "last_run_at": null,
+      "total_run_count": 0,
+      "date_changed": "2021-12-07T00:40:22.670Z",
+      "description": ""
+    }
+  },
+  {
+    "model": "django_celery_beat.periodictask",
+    "pk": 4,
+    "fields": {
+      "name": "schedules_schedule.pk=4",
+      "task": "apps.schedules.periodic.run_schedule",
+      "interval": null,
+      "crontab": 4,
+      "solar": null,
+      "clocked": null,
+      "args": "[4]",
+      "kwargs": "{}",
+      "queue": null,
+      "exchange": null,
+      "routing_key": null,
+      "headers": "{}",
+      "priority": null,
+      "expires": null,
+      "expire_seconds": null,
+      "one_off": false,
+      "start_time": null,
+      "enabled": false,
+      "last_run_at": null,
+      "total_run_count": 0,
+      "date_changed": "2021-12-07T00:40:22.693Z",
+      "description": ""
     }
   }
 ]
