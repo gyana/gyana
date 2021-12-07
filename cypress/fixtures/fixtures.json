@@ -9,7 +9,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-12-07T01:11:27.013Z",
+      "last_login": "2021-12-07T12:06:27.964Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -446,6 +446,21 @@
     }
   },
   {
+    "model": "workflows.workflow",
+    "pk": 4,
+    "fields": {
+      "created": "2021-12-07T12:06:55.120Z",
+      "updated": "2021-12-07T12:07:16.781Z",
+      "name": "Depends on GA",
+      "project": 1,
+      "last_run": "2021-12-07T12:07:31.667Z",
+      "data_updated": "2021-12-07T12:07:16.781Z",
+      "is_scheduled": false,
+      "succeeded_at": "2021-12-07T12:07:31.667Z",
+      "failed_at": null
+    }
+  },
+  {
     "model": "dashboards.dashboard",
     "pk": 1,
     "fields": {
@@ -453,6 +468,25 @@
       "updated": "2021-08-31T00:59:24.659Z",
       "name": "Basic metrics",
       "project": 6,
+      "shared_status": "private",
+      "shared_id": null,
+      "password": null,
+      "password_set": null,
+      "width": 1200,
+      "height": 840,
+      "grid_size": 15,
+      "palette_colors": "[\"#5D62B5\", \"#29C3BE\", \"#F2726F\", \"#FFC533\", \"#62B58F\", \"#BC95DF\", \"#67CDF2\"]",
+      "background_color": "#ffffff"
+    }
+  },
+  {
+    "model": "dashboards.dashboard",
+    "pk": 2,
+    "fields": {
+      "created": "2021-12-07T12:06:38.115Z",
+      "updated": "2021-12-07T12:06:52.357Z",
+      "name": "My dashboard",
+      "project": 1,
       "shared_status": "private",
       "shared_id": null,
       "password": null,
@@ -508,6 +542,30 @@
       "height": 405,
       "x": 0,
       "y": 435,
+      "stack_100_percent": false,
+      "error": null
+    }
+  },
+  {
+    "model": "widgets.widget",
+    "pk": 4,
+    "fields": {
+      "created": "2021-12-07T12:06:40.054Z",
+      "updated": "2021-12-07T12:06:47.522Z",
+      "dashboard": 2,
+      "table": 22,
+      "text_content": null,
+      "kind": "table",
+      "aggregator": "",
+      "dimension": null,
+      "second_dimension": null,
+      "name": null,
+      "sort_by": "dimension",
+      "sort_ascending": true,
+      "width": 495,
+      "height": 390,
+      "x": 0,
+      "y": 0,
       "stack_100_percent": false,
       "error": null
     }
@@ -1084,6 +1142,24 @@
       "cache_node": null,
       "num_rows": 1298,
       "data_updated": "2021-12-07T00:24:09.015Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 33,
+    "fields": {
+      "created": "2021-12-07T12:07:29.720Z",
+      "updated": "2021-12-07T12:07:31.657Z",
+      "bq_table": "output_node_000000037",
+      "bq_dataset": "cypress_team_000001_tables",
+      "project": 1,
+      "source": "workflow_node",
+      "integration": null,
+      "workflow_node": 37,
+      "intermediate_node": null,
+      "cache_node": null,
+      "num_rows": 0,
+      "data_updated": "2021-12-07T12:07:31.657Z"
     }
   },
   {
@@ -2318,6 +2394,120 @@
     }
   },
   {
+    "model": "nodes.node",
+    "pk": 36,
+    "fields": {
+      "created": "2021-12-07T12:07:00.223Z",
+      "updated": "2021-12-07T12:07:26.766Z",
+      "workflow": 4,
+      "name": "GA audience overview",
+      "kind": "input",
+      "x": 0.0009600395647397854,
+      "y": 0.0,
+      "data_updated": "2021-12-07T12:07:04.175Z",
+      "error": null,
+      "intermediate_table": null,
+      "cache_table": null,
+      "input_table": 31,
+      "select_mode": "keep",
+      "join_how": "inner",
+      "join_left": null,
+      "join_right": null,
+      "union_distinct": false,
+      "limit_limit": 100,
+      "limit_offset": null,
+      "text_text": null,
+      "pivot_index": null,
+      "pivot_column": null,
+      "pivot_value": null,
+      "pivot_aggregation": null,
+      "unpivot_value": null,
+      "unpivot_column": null,
+      "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
+      "has_been_saved": true
+    }
+  },
+  {
+    "model": "nodes.node",
+    "pk": 37,
+    "fields": {
+      "created": "2021-12-07T12:07:07.261Z",
+      "updated": "2021-12-07T12:07:20.057Z",
+      "workflow": 4,
+      "name": "users",
+      "kind": "output",
+      "x": 340.0001083168975,
+      "y": 0.0,
+      "data_updated": "2021-12-07T12:07:11.874Z",
+      "error": null,
+      "intermediate_table": null,
+      "cache_table": null,
+      "input_table": null,
+      "select_mode": "keep",
+      "join_how": "inner",
+      "join_left": null,
+      "join_right": null,
+      "union_distinct": false,
+      "limit_limit": 100,
+      "limit_offset": null,
+      "text_text": null,
+      "pivot_index": null,
+      "pivot_column": null,
+      "pivot_value": null,
+      "pivot_aggregation": null,
+      "unpivot_value": null,
+      "unpivot_column": null,
+      "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
+      "has_been_saved": false
+    }
+  },
+  {
+    "model": "nodes.node",
+    "pk": 38,
+    "fields": {
+      "created": "2021-12-07T12:07:08.605Z",
+      "updated": "2021-12-07T12:07:22.901Z",
+      "workflow": 4,
+      "name": "select users",
+      "kind": "select",
+      "x": 170.00011938905016,
+      "y": 0.0,
+      "data_updated": "2021-12-07T12:07:16.781Z",
+      "error": null,
+      "intermediate_table": null,
+      "cache_table": null,
+      "input_table": null,
+      "select_mode": "keep",
+      "join_how": "inner",
+      "join_left": null,
+      "join_right": null,
+      "union_distinct": false,
+      "limit_limit": 100,
+      "limit_offset": null,
+      "text_text": null,
+      "pivot_index": null,
+      "pivot_column": null,
+      "pivot_value": null,
+      "pivot_aggregation": null,
+      "unpivot_value": null,
+      "unpivot_column": null,
+      "sentiment_column": null,
+      "always_use_credits": false,
+      "uses_credits": 0,
+      "credit_use_confirmed": null,
+      "credit_confirmed_user": null,
+      "has_been_saved": true
+    }
+  },
+  {
     "model": "nodes.edge",
     "pk": 1,
     "fields": {
@@ -2623,6 +2813,48 @@
       "child": 35,
       "parent": 34,
       "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 31,
+    "fields": {
+      "created": "2021-12-07T12:07:10.261Z",
+      "updated": "2021-12-07T12:07:10.261Z",
+      "child": 38,
+      "parent": 36,
+      "position": 0
+    }
+  },
+  {
+    "model": "nodes.edge",
+    "pk": 32,
+    "fields": {
+      "created": "2021-12-07T12:07:11.902Z",
+      "updated": "2021-12-07T12:07:11.902Z",
+      "child": 37,
+      "parent": 38,
+      "position": 0
+    }
+  },
+  {
+    "model": "columns.column",
+    "pk": 3,
+    "fields": {
+      "created": "2021-12-07T12:07:16.780Z",
+      "updated": "2021-12-07T12:07:16.780Z",
+      "column": "date",
+      "node": 38
+    }
+  },
+  {
+    "model": "columns.column",
+    "pk": 4,
+    "fields": {
+      "created": "2021-12-07T12:07:16.803Z",
+      "updated": "2021-12-07T12:07:16.803Z",
+      "column": "users",
+      "node": 38
     }
   },
   {
@@ -3164,7 +3396,7 @@
     "pk": 1,
     "fields": {
       "created": "2021-12-07T01:10:35.618Z",
-      "updated": "2021-12-07T01:10:35.635Z",
+      "updated": "2021-12-07T12:06:32.605Z",
       "daily_schedule_time": "00:00:00",
       "periodic_task": 6,
       "run_task_id": null,
@@ -3290,6 +3522,26 @@
       "note": "",
       "created": "2021-11-08T23:57:46Z",
       "modified": "2021-11-08T23:57:56.064Z",
+      "groups": [],
+      "users": []
+    }
+  },
+  {
+    "model": "waffle.flag",
+    "pk": 4,
+    "fields": {
+      "name": "schedule",
+      "everyone": true,
+      "percent": null,
+      "testing": false,
+      "superusers": true,
+      "staff": false,
+      "authenticated": false,
+      "languages": "",
+      "rollout": false,
+      "note": "",
+      "created": "2021-10-04T15:59:32Z",
+      "modified": "2021-10-04T15:59:37.292Z",
       "groups": [],
       "users": []
     }
@@ -3476,7 +3728,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2021-12-07T01:10:35.683Z" }
+    "fields": { "last_update": "2021-12-07T12:06:32.578Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
