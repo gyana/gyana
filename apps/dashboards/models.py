@@ -54,10 +54,6 @@ class Dashboard(CloneMixin, BaseModel):
     )
     background_color = models.CharField(default="#ffffff", max_length=7)
 
-    date_slicer = models.OneToOneField(
-        "dateslicers.DateSlicer", on_delete=models.SET_NULL, null=True
-    )
-
     _clone_m2o_or_o2m_fields = ["widget_set"]
 
     # Stores the raw password if set_password() is called so that it can
@@ -113,3 +109,7 @@ class Dashboard(CloneMixin, BaseModel):
             else settings.EXTERNAL_URL
         )
         return f"{domain}/dashboards/{self.shared_id}"
+
+    @property
+    def has_control(self):
+        return hasattr(self, "control")

@@ -1,6 +1,6 @@
 import ibis
 
-from apps.dateslicers.bigquery import slice_query
+from apps.controls.bigquery import slice_query
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget

@@ -80,7 +80,7 @@
     </div>
   </div>
   
-  {% include 'dateslicers/create.html' with dashboard=dashboard %}
+  {% include 'controls/create.html' with dashboard=dashboard %}
 
   <div data-controller="tooltip">
     {% if not request.GET.mode or request.GET.mode == "edit" %}

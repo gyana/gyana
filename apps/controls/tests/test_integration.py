@@ -10,8 +10,8 @@ from turbo_response.response import TurboStreamResponse
 from apps.base.tests.asserts import assertFormRenders, assertOK
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import PickableMock, mock_bq_client_with_schema
+from apps.controls.models import Control, CustomChoice
 from apps.dashboards.models import Dashboard
-from apps.dateslicers.models import CustomChoice, DateSlicer
 from apps.filters.models import DateRange
 from apps.widgets.models import Widget
 
@@ -37,7 +37,7 @@ def mock_bq_client_data(bigquery):
     bigquery.get_query_results = Mock(side_effect=side_effect)
 
 
-def test_dateslice_crudl(
+def test_control_crudl(
     client, project, dashboard_factory, bigquery, integration_table_factory
 ):
     mock_bq_client_with_schema(
@@ -54,61 +54,60 @@ def test_dateslice_crudl(
     )
 
     # create
-    r = client.post("/dateslicer/new", data={"dashboard_id": dashboard.id})
+    r = client.post("/controls/new", data={"dashboard_id": dashboard.id})
 
     assertOK(r)
-    date_slicer = DateSlicer.objects.first()
+    control = Control.objects.first()
     assert isinstance(r, TurboStreamResponse)
-    assert date_slicer is not None
-    assertContains(r, "dateslicers:create-stream")
+    assert control is not None
+    assertContains(r, "controls:create-stream")
 
     # update
-    r = client.get(f"/dateslicer/{date_slicer.id}/update")
+    r = client.get(f"/controls/{control.id}/update")
     assertOK(r)
     assertFormRenders(r, ["date_range"])
 
     r = client.post(
-        f"/dateslicer/{date_slicer.id}/update", data={"date_range": CustomChoice.CUSTOM}
+        f"/controls/{control.id}/update", data={"date_range": CustomChoice.CUSTOM}
     )
     assert r.status_code == 422
     assertFormRenders(r, ["date_range", "start", "end"])
 
     r = client.post(
-        f"/dateslicer/{date_slicer.id}/update",
+        f"/controls/{control.id}/update",
         data={"date_range": CustomChoice.CUSTOM, "submit": "submit"},
     )
     assertOK(r)
-    date_slicer.refresh_from_db()
+    control.refresh_from_db()
     assert isinstance(r, TurboStreamResponse)
-    assertContains(r, "dateslicers:update-stream")
+    assertContains(r, "controls:update-stream")
 
     # is sending the widget output
     assertContains(r, f"widgets-output-{widget.id}-stream")
-    assert date_slicer.date_range == CustomChoice.CUSTOM
+    assert control.date_range == CustomChoice.CUSTOM
 
     # delete
-    r = client.delete(f"/dateslicer/{date_slicer.id}/delete")
-    assert DateSlicer.objects.first() is None
+    r = client.delete(f"/controls/{control.id}/delete")
+    assert Control.objects.first() is None
 
 
 def test_public_date_slice_not_updating(
-    client, project, dashboard_factory, date_slicer_factory
+    client, project, dashboard_factory, control_factory
 ):
-    """Tests that on submission on a public dashboard the date_slicer is not
+    """Tests that on submission on a public dashboard the control is not
     actually updating"""
     dashboard = dashboard_factory(
         project=project,
         shared_status=Dashboard.SharedStatus.PUBLIC,
         shared_id=uuid.uuid4(),
-        date_slicer=date_slicer_factory(),
     )
-
+    control = control_factory(dashboard=dashboard)
     r = client.post(
-        f"/dateslicer/{dashboard.date_slicer.id}/update-public",
+        f"/controls/{control.id}/update-public",
         data={"date_range": CustomChoice.CUSTOM, "submit": "submit"},
     )
     assertOK(r)
     assert isinstance(r, TurboStreamResponse)
 
-    dashboard.date_slicer.refresh_from_db()
-    assert dashboard.date_slicer.date_range == DateRange.THIS_YEAR
+    control.refresh_from_db()
+    assert control.date_range == DateRange.THIS_YEAR

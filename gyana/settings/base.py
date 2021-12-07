@@ -102,7 +102,7 @@ PROJECT_APPS = [
     "apps.templates",
     "apps.cnames.apps.CNamesConfig",
     "apps.exports",
-    "apps.dateslicers",
+    "apps.controls",
 ]
 
 INSTALLED_APPS = (

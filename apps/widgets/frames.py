@@ -31,21 +31,21 @@ from .forms import FORMS
 from .models import WIDGET_CHOICES_ARRAY, Widget
 
 
-def add_output_context(context, widget, request, date_slicer):
+def add_output_context(context, widget, request, control):
     if widget.is_valid:
         if widget.kind == Widget.Kind.TEXT:
             pass
         elif widget.kind == Widget.Kind.TABLE:
             # avoid duplicating work for widget output
             if "table" not in context:
-                table = table_to_output(widget, date_slicer)
+                table = table_to_output(widget, control)
                 context["table"] = RequestConfig(
                     request,
                 ).configure(table)
         elif widget.kind == Widget.Kind.METRIC:
-            context["metric"] = metric_to_output(widget, date_slicer)
+            context["metric"] = metric_to_output(widget, control)
         else:
-            chart, chart_id = chart_to_output(widget, date_slicer)
+            chart, chart_id = chart_to_output(widget, control)
             context.update(chart)
             context["chart_id"] = chart_id
 
@@ -134,7 +134,10 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
         }
         try:
             add_output_context(
-                context, self.object, self.request, self.dashboard.date_slicer
+                context,
+                self.object,
+                self.request,
+                self.dashboard.control if self.dashboard.has_control else None,
             )
             if self.object.error:
                 self.object.error = None
@@ -190,7 +193,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             }
             try:
                 add_output_context(
-                    context, self.object, self.request, self.dashboard.date_slicer
+                    context, self.object, self.request, self.dashboard.control
                 )
                 if self.object.error:
                     self.object.error = None
@@ -229,7 +232,7 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
         context["project"] = self.get_object().dashboard.project
         try:
             add_output_context(
-                context, self.object, self.request, self.dashboard.date_slicer
+                context, self.object, self.request, self.dashboard.control
             )
         except Exception as e:
             error_template = f"widgets/errors/{error_name_to_snake(e)}.html"
@@ -242,7 +245,7 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
 
     def get_table(self, **kwargs):
         if self.object.is_valid and self.object.kind == Widget.Kind.TABLE:
-            table = table_to_output(self.object, self.object.dashboard.date_slicer)
+            table = table_to_output(self.object, self.object.dashboard.control)
             return RequestConfig(
                 self.request, paginate=self.get_table_pagination(table)
             ).configure(table)

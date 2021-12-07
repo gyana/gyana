@@ -3,12 +3,12 @@ from django import forms
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.widgets import DatetimeInput
 
-from .models import CustomChoice, DateSlicer
+from .models import CustomChoice, Control
 
 
-class DateSlicerForm(LiveUpdateForm):
+class ControlForm(LiveUpdateForm):
     class Meta:
-        model = DateSlicer
+        model = Control
         fields = ["date_range", "start", "end"]
         widgets = {
             "start": DatetimeInput(

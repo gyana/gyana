@@ -1,11 +1,11 @@
 
 
 <div
-  id='dateslicers:update-stream'
-  class='dateslicer'
+  id='controls:update-stream'
+  class='control'
   data-controller='popover'
   data-placement='bottom-start'
-  data-theme='popover-dateslicer'
+  data-theme='popover-control'
 >
   <button >
     <i class="fa fa-calendar"></i> 
@@ -20,14 +20,14 @@
 
     {% endif %}
   </button>
-  <div class='dateslicer-popover' data-popover-target="body">
+  <div class='control-popover' data-popover-target="body">
     <form 
-      id="dateslicer-update-form"
+      id="control-update-form"
       method="post" 
       action="{% if is_public %}
-        {% url 'dateslicers:update-public' object.id %}
+        {% url 'controls:update-public' object.id %}
       {% else %}
-        {% url 'dateslicers:update' object.id %}
+        {% url 'controls:update' object.id %}
       {% endif %}" 
       class="form--no-layout popover-body"
       data-controller="live-update"
@@ -45,6 +45,6 @@
         >Apply</button>
     </form>
   </div>
-  {% if not is_public %}{% include 'dateslicers/delete.html' %}{% endif %}
+  {% if not is_public %}{% include 'controls/delete.html' %}{% endif %}
 </div>
 

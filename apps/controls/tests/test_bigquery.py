@@ -4,8 +4,8 @@ import ibis_bigquery
 import pytest
 
 from apps.base.tests.mock_data import TABLE
-from apps.dateslicers.bigquery import slice_query
-from apps.dateslicers.models import CustomChoice, DateSlicer
+from apps.controls.bigquery import slice_query
+from apps.controls.models import CustomChoice, Control
 
 QUERY = "SELECT *\nFROM olympians\nWHERE {}"
 
@@ -42,7 +42,7 @@ DAVIDS_BIRTHDAY = dt.date(1992, 8, 3)
     ],
 )
 def test_slice_query_ranges(date_range, start, end, expected_sql):
-    date_slicer = DateSlicer(date_range=date_range, start=start, end=end)
-    query = slice_query(TABLE, "birthday", date_slicer)
+    control = Control(date_range=date_range, start=start, end=end)
+    query = slice_query(TABLE, "birthday", control)
 
     assert ibis_bigquery.compile(query) == expected_sql

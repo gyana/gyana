@@ -2,9 +2,9 @@
 
 <div class="widgets" data-controller="tf-modal" data-open-on-param>
 
-  {% if dashboard.date_slicer %}
+  {% if dashboard.has_control %}
 
-    <turbo-frame id='dateslicers:update' src="{% url 'dateslicers:update' dashboard.date_slicer.id %}">
+    <turbo-frame id='controls:update' src="{% url 'controls:update' dashboard.control.id %}">
       <div class='placeholder-scr'>
         <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
       </div>
@@ -12,7 +12,7 @@
 
   {% else %}
 
-    <div id='dateslicers:update-stream'></div>
+    <div id='controls:update-stream'></div>
 
   {% endif %}
 

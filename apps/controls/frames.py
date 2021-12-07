@@ -7,15 +7,15 @@ from turbo_response.response import HttpResponseSeeOther, TurboStreamResponse
 from apps.base.frames import TurboFrameCreateView, TurboFrameUpdateView
 from apps.widgets.frames import add_output_context
 
-from .forms import DateSlicerForm
-from .models import DateSlicer
+from .forms import ControlForm
+from .models import Control
 
 
-class DateSlicerCreate(TurboFrameCreateView):
-    template_name = "dateslicers/create.html"
-    model = DateSlicer
+class ControlCreate(TurboFrameCreateView):
+    template_name = "controls/create.html"
+    model = Control
     fields = []
-    turbo_frame_dom_id = "dateslicers:create"
+    turbo_frame_dom_id = "controls:create"
 
     @cached_property
     def dashboard(self):
@@ -24,36 +24,35 @@ class DateSlicerCreate(TurboFrameCreateView):
         return Dashboard.objects.get(pk=self.request.POST["dashboard_id"])
 
     def form_valid(self, form):
-        r = super().form_valid(form)
-        self.dashboard.date_slicer = form.instance
-        self.dashboard.save()
+        form.instance.dashboard = self.dashboard
+        super().form_valid(form)
         context = self.get_context_data()
         context["dashboard"] = self.dashboard
         context_update = {
             "object": self.object,
-            "form": DateSlicerForm(instance=self.object),
+            "form": ControlForm(instance=self.object),
         }
 
         return TurboStreamResponse(
             [
-                TurboStream("dateslicers:create-stream")
+                TurboStream("controls:create-stream")
                 .replace.template(self.template_name, context)
                 .render(request=self.request),
-                TurboStream("dateslicers:update-stream")
-                .replace.template("dateslicers/update.html", context_update)
+                TurboStream("controls:update-stream")
+                .replace.template("controls/update.html", context_update)
                 .render(request=self.request),
             ]
         )
 
     def get_success_url(self) -> str:
-        return reverse("dateslicers:create")
+        return reverse("controls:create")
 
 
-class DateSlicerUpdate(TurboFrameUpdateView):
-    template_name = "dateslicers/update.html"
-    model = DateSlicer
-    form_class = DateSlicerForm
-    turbo_frame_dom_id = "dateslicers:update"
+class ControlUpdate(TurboFrameUpdateView):
+    template_name = "controls/update.html"
+    model = Control
+    form_class = ControlForm
+    turbo_frame_dom_id = "controls:update"
 
     def get_stream_response(self, form):
         dashboard = form.instance.dashboard
@@ -74,7 +73,7 @@ class DateSlicerUpdate(TurboFrameUpdateView):
         return TurboStreamResponse(
             [
                 *streams,
-                TurboStream("dateslicers:update-stream")
+                TurboStream("controls:update-stream")
                 .replace.template(self.template_name, self.get_context_data())
                 .render(request=self.request),
             ]
@@ -87,17 +86,17 @@ class DateSlicerUpdate(TurboFrameUpdateView):
         return self.get_stream_response(form)
 
     def get_success_url(self) -> str:
-        return reverse("dateslicers:update", args=(self.object.id,))
+        return reverse("controls:update", args=(self.object.id,))
 
 
-class DateSlicerPublicUpdate(DateSlicerUpdate):
+class ControlPublicUpdate(ControlUpdate):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["is_public"] = True
         return context
 
     def get_success_url(self) -> str:
-        return reverse("dateslicers:update-public", args=(self.object.id,))
+        return reverse("controls:update-public", args=(self.object.id,))
 
     def form_valid(self, form):
         if form.is_live:
@@ -105,25 +104,24 @@ class DateSlicerPublicUpdate(DateSlicerUpdate):
         return self.get_stream_response(form)
 
 
-class DateSlicerDelete(DeleteView):
-    template_name = "dateslicers/delete.html"
-    model = DateSlicer
+class ControlDelete(DeleteView):
+    template_name = "controls/delete.html"
+    model = Control
 
     def delete(self, request, *args, **kwargs):
         dashboard = self.get_object().dashboard
         super().delete(request, *args, **kwargs)
-        dashboard.date_slicer = None
         return TurboStreamResponse(
             [
-                TurboStream("dateslicers:update-stream").replace.render(
-                    "<div id='dateslicers:update-stream'></div>", is_safe=True
+                TurboStream("controls:update-stream").replace.render(
+                    "<div id='controls:update-stream'></div>", is_safe=True
                 ),
-                TurboStream("dateslicers:create-stream")
-                .replace.template("dateslicers/create.html", {"dashboard": dashboard})
+                TurboStream("controls:create-stream")
+                .replace.template("controls/create.html", {"dashboard": dashboard})
                 .render(request=request),
             ]
         )
 
     def get_success_url(self) -> str:
         # Won't actually return a response to hear
-        return reverse("dateslicers:create")
+        return reverse("controls:create")

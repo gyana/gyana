@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from apps.base import clients
 from apps.base.table_data import get_table
-from apps.dateslicers.bigquery import slice_query
+from apps.controls.bigquery import slice_query
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.widgets.fusion.timeseries import TIMESERIES_DATA, to_timeseries
@@ -18,17 +18,17 @@ class MaxRowsExceeded(Exception):
     pass
 
 
-def pre_filter(widget, date_slicer):
+def pre_filter(widget, control):
     query = get_query_from_table(widget.table)
     query = get_query_from_filters(query, widget.filters.all())
 
-    if date_slicer and widget.dateslice_column:
-        query = slice_query(query, widget.dateslice_column, date_slicer)
+    if control and widget.dateslice_column:
+        query = slice_query(query, widget.dateslice_column, control)
     return query
 
 
-def chart_to_output(widget: Widget, date_slicer) -> Dict[str, Any]:
-    query = pre_filter(widget, date_slicer)
+def chart_to_output(widget: Widget, control) -> Dict[str, Any]:
+    query = pre_filter(widget, control)
     query = get_query_from_widget(widget, query)
     result = clients.bigquery().get_query_results(
         query.compile(), max_results=CHART_MAX_ROWS
@@ -45,14 +45,14 @@ def chart_to_output(widget: Widget, date_slicer) -> Dict[str, Any]:
     return {"chart": chart.render()}, chart_id
 
 
-def table_to_output(widget: Widget, date_slicer) -> Dict[str, Any]:
-    query = pre_filter(widget, date_slicer)
+def table_to_output(widget: Widget, control) -> Dict[str, Any]:
+    query = pre_filter(widget, control)
 
     return get_table(query.schema(), query)
 
 
-def metric_to_output(widget, date_slicer):
-    query = pre_filter(widget, date_slicer)
+def metric_to_output(widget, control):
+    query = pre_filter(widget, control)
 
     aggregation = widget.aggregations.first()
     query = getattr(query[aggregation.column], aggregation.function)().name(

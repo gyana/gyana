@@ -11,8 +11,8 @@ def last_modified_widget_output(request, project_id, dashboard_id, pk):
         if widget.table
         else widget.updated
     )
-    if (date_slicer := widget.dashboard.date_slicer) and widget.dateslice_column:
-        return max(widget_update, date_slicer.updated)
+    if hasattr(widget.dashboard, "control") and widget.dateslice_column:
+        return max(widget_update, widget.dashboard.control.updated)
     return widget_update
 
 

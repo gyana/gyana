@@ -56,7 +56,7 @@ class GenericWidgetForm(LiveUpdateForm):
     def get_live_fields(self):
         fields = ["table", "kind"]
 
-        if self.get_live_field("table") and self.instance.dashboard.date_slicer:
+        if self.get_live_field("table") and self.instance.dashboard.has_control:
             fields += ["dateslice_column"]
 
         return fields
