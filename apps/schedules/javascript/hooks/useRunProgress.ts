@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-const useRunProgress = (runTaskUrl: string, celeryProgressUrl: string) => {
+const useRunProgress = (runTaskUrl: string | undefined, celeryProgressUrl: string) => {
   const [ready, setReady] = useState(false)
   const [runInfo, setRunInfo] = useState({})
 
@@ -23,7 +23,7 @@ const useRunProgress = (runTaskUrl: string, celeryProgressUrl: string) => {
   }
 
   useEffect(() => {
-    if (!ready) {
+    if (!ready && runTaskUrl) {
       if (typeof CeleryProgressBar === 'undefined') {
         var script = document.createElement('script')
         script.src = celeryProgressUrl

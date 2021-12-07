@@ -34,20 +34,33 @@
     {% include "django/forms/default_form.html" %}
 
     <div data-controller="tooltip" class='dndflow__run-button'>
-      <button type="submit" class='button button--sm button--success'>
-        <i class='fas fa-fw fa-play'></i> Run
-        <span data-tooltip-target="body">Run all workflows in order</span>
-      </button>
+      {% if object.is_running %}
+        <button type="submit" name="cancel" class='button button--sm button--danger'>
+          <i class='fas fa-fw fa-times'></i> Cancel
+          <span data-tooltip-target="body">Cancel the current run</span>
+        </button>
+      {% else %}
+        <button type="submit" name="run" class='button button--sm button--success'>
+          <i class='fas fa-fw fa-play'></i> Run
+          <span data-tooltip-target="body">Run all workflows in order</span>
+        </button>
+      {% endif %}
     </div>
   </form>
 </div>
+
+{% if object.is_running %}
+  <p class="alert"> A run is currently in progress </p>
+{% endif %}
 
 <div class="flex flex-1 overflow-hidden">
   <div class="w-full dndflow">
     <schedule-flow class="w-full"
       projectId="{{ project.id }}"
+      celeryProgressUrl="{% static 'celery_progress/celery_progress.js' %}"
+      {% if object.is_running %}
       runTaskUrl="{% url 'celery_progress:task_status' object.run_task_id %}"
-      celeryProgressUrl="{% static 'celery_progress/celery_progress.js' %}">
+      {% endif %}
     </schedule-flow>
   </div>
 </div>

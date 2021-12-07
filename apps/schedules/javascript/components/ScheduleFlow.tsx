@@ -28,8 +28,8 @@ enum LoadingStates {
 
 interface Props {
   projectId: number
-  runTaskUrl: string
   celeryProgressUrl: string
+  runTaskUrl?: string
 }
 
 const ScheduleFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUrl }) => {

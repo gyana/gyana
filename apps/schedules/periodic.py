@@ -3,6 +3,7 @@ from graphlib import CycleError
 
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
+from django.utils import timezone
 
 from apps.base.tasks import honeybadger_check_in
 from apps.schedules.models import Schedule
@@ -43,5 +44,9 @@ def run_schedule(self, schedule_id: int):
     # We need to keep retrying until the connectors either fail or succeeded
     if not schedule.latest_schedule_is_complete:
         self.retry(countdown=RETRY_COUNTDOWN, max_retries=MAX_RETRIES)
+
+    # todo: failed at criteria based on all entities
+    schedule.succeeded_at = timezone.now()
+    schedule.save()
 
     honeybadger_check_in("j6IrRd")

@@ -1,5 +1,6 @@
 from graphlib import CycleError
 
+import celery
 from django.urls import reverse
 from django.utils import timezone
 from turbo_response.views import TurboUpdateView
@@ -18,14 +19,22 @@ class ScheduleDetail(ProjectMixin, TurboUpdateView):
     fields = []
 
     def form_valid(self, form):
-        try:
-            result = run_schedule.delay(self.project.id)
-            self.object.run_task_id = result.task_id
-            self.object.run_started_at = timezone.now()
+
+        if self.request.POST.get("submit") == "cancel":
+            result = celery.result.AsyncResult(str(self.object.run_task_id))
+            result.revoke(terminate=True)
+            self.object.cancelled_at = timezone.now()
             self.object.save()
-        except CycleError:
-            # todo: add an error to the schedule to track "is_circular"
-            pass
+
+        else:
+            try:
+                result = run_schedule.delay(self.project.id)
+                self.object.run_task_id = result.task_id
+                self.object.run_started_at = timezone.now()
+                self.object.save()
+            except CycleError:
+                # todo: add an error to the schedule to track "is_circular"
+                pass
         return super().form_valid(form)
 
     def get_object(self):

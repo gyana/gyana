@@ -20,7 +20,22 @@ class Schedule(BaseModel):
     run_task_id = models.UUIDField(null=True)
     run_started_at = models.DateTimeField(null=True)
 
+    succeeded_at = models.DateTimeField(null=True)
+    failed_at = models.DateTimeField(null=True)
+    cancelled_at = models.DateTimeField(null=True)
+
     project = models.OneToOneField(Project, on_delete=models.CASCADE)
+
+    @property
+    def is_running(self):
+        if self.run_started_at is None:
+            return False
+
+        return not (
+            (self.succeeded_at and self.succeeded_at > self.run_started_at)
+            or (self.failed_at and self.failed_at > self.run_started_at)
+            or (self.cancelled_at and self.cancelled_at > self.run_started_at)
+        )
 
     @staticmethod
     def create_with_periodic_task(project: Project):

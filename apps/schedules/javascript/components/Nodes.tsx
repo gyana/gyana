@@ -52,7 +52,9 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
   const [data, setData] = useState(initialData)
   const { runInfo } = useContext(ScheduleContext) as IScheduleContext
 
-  const initialRunStatus = data.up_to_date ? 'done' : 'pending'
+  const sourceObj = data[data.kind]
+
+  const initialRunStatus = sourceObj.up_to_date ? 'done' : 'pending'
   const runStatus = runInfo?.run || runInfo[id] || initialRunStatus
 
   useEffect(() => {
@@ -63,8 +65,6 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
     }
     update()
   }, [runStatus])
-
-  const sourceObj = data[data.kind]
 
   return (
     <>
