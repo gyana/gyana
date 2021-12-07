@@ -1,7 +1,8 @@
 import re
 
-from apps.base import clients
 from django.utils.dateparse import parse_datetime
+
+from apps.base import clients
 
 from .models import Sheet
 
@@ -29,3 +30,11 @@ def get_last_modified_from_drive_file(sheet: Sheet):
 
     drive_file = get_metadata_from_drive_file(sheet)
     return parse_datetime(drive_file["modifiedDate"])
+
+
+def get_cell_range(sheet_name, cell_range):
+    return (
+        f"{sheet_name}!{cell_range}"
+        if sheet_name and cell_range
+        else sheet_name or cell_range
+    )

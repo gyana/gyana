@@ -36,7 +36,20 @@ class Sheet(CloneMixin, SchedulableModel):
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 
     url = models.URLField()
-    cell_range = models.CharField(max_length=64, null=True, blank=True)
+    # Max length of sheet name seems to be 50
+    sheet_name = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        verbose_name="Sheet selection",
+        help_text="Select a specific sheet by submitting the tab name",
+    )
+    cell_range = models.CharField(
+        max_length=64,
+        null=True,
+        blank=True,
+        help_text="Select a range of cells e.g. A2:D14",
+    )
     # essentially the version of the file that was synced
     drive_file_last_modified_at_sync = models.DateTimeField(null=True)
 

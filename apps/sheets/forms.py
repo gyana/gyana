@@ -6,7 +6,7 @@ from apps.base import clients
 from apps.base.forms import BaseModelForm
 
 from .models import Sheet
-from .sheets import get_sheets_id_from_url
+from .sheets import get_cell_range, get_sheets_id_from_url
 
 
 class SheetCreateForm(BaseModelForm):
@@ -60,17 +60,17 @@ class SheetCreateForm(BaseModelForm):
 class SheetUpdateForm(BaseModelForm):
     class Meta:
         model = Sheet
-        fields = ["cell_range"]
+        fields = ["sheet_name", "cell_range"]
 
     def clean_cell_range(self):
+        sheet_name = self.cleaned_data["sheet_name"]
         cell_range = self.cleaned_data["cell_range"]
-
         sheet_id = get_sheets_id_from_url(self.instance.url)
 
         client = clients.sheets()
         try:
             client.spreadsheets().get(
-                spreadsheetId=sheet_id, ranges=cell_range
+                spreadsheetId=sheet_id, ranges=get_cell_range(sheet_name, cell_range)
             ).execute()
         except googleapiclient.errors.HttpError as e:
             raise ValidationError(e.reason.strip())
