@@ -40,6 +40,20 @@
 {% endblock %}
 
 {% block sidebar_content %}
+<a id="heading" class="sidebar__link sidebar__link--border" href="">
+  {% if team.icon %}
+  <img src="{{ team.icon.url }}" />
+  {% else %}
+  <span class="team_logo">
+    {{ team.name|slice:1 }}
+  </span>
+  {% endif %}
+
+  <strong class="h3">
+    {{ team.name }}
+  </strong>
+</a>
+
 <a
   class="sidebar__link {% if request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
   href="{% url 'teams:detail' team.id %}"
