@@ -491,7 +491,8 @@
       "x": 0,
       "y": 0,
       "stack_100_percent": false,
-      "error": null
+      "error": null,
+      "date_column": null
     }
   },
   {
@@ -515,7 +516,8 @@
       "x": 0,
       "y": 435,
       "stack_100_percent": false,
-      "error": null
+      "error": null,
+      "date_column": null
     }
   },
   {
@@ -2597,6 +2599,7 @@
       "failed_at": null,
       "integration": 2,
       "url": "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit",
+      "sheet_name": null,
       "cell_range": "store_info!A1:D11",
       "drive_file_last_modified_at_sync": "2021-08-08T16:46:04.194Z",
       "drive_modified_date": "2021-10-21T20:18:31.669Z"
@@ -3083,91 +3086,105 @@
   },
   {
     "model": "runs.run",
-    "pk": 11,
+    "pk": 1,
     "fields": {
-      "created": "2021-12-07T23:46:52.566Z",
-      "updated": "2021-12-07T23:46:52.570Z",
+      "created": "2021-12-08T14:12:05.990Z",
+      "updated": "2021-12-08T14:12:05.990Z",
+      "state": "success",
+      "done": "2021-09-05T00:58:20.370Z",
       "task_id": "b157cb85-ba71-4a56-983e-7cf7a6b09e73",
-      "result": 9,
-      "source": "",
+      "result": null,
+      "source": "integration",
       "integration": 14,
       "workflow": null
     }
   },
   {
     "model": "runs.run",
-    "pk": 12,
+    "pk": 2,
     "fields": {
-      "created": "2021-12-07T23:46:52.574Z",
-      "updated": "2021-12-07T23:46:52.576Z",
-      "task_id": "68d9915e-1e50-4718-86df-ed6e42a04e62",
-      "result": 10,
-      "source": "",
+      "created": "2021-12-08T14:12:06.013Z",
+      "updated": "2021-12-08T14:12:06.013Z",
+      "state": "success",
+      "done": "2021-09-04T19:05:46.412Z",
+      "task_id": "43529d47-5c82-41fd-a55a-15f746e67a15",
+      "result": null,
+      "source": "integration",
       "integration": 13,
       "workflow": null
     }
   },
   {
     "model": "runs.run",
-    "pk": 13,
+    "pk": 3,
     "fields": {
-      "created": "2021-12-07T23:46:52.578Z",
-      "updated": "2021-12-07T23:46:52.580Z",
+      "created": "2021-12-08T14:12:06.014Z",
+      "updated": "2021-12-08T14:12:06.014Z",
+      "state": "success",
+      "done": "2021-08-16T14:07:41.043Z",
       "task_id": "232cd31d-a6e6-4e67-95ff-5afd45560277",
-      "result": 11,
-      "source": "",
+      "result": null,
+      "source": "integration",
       "integration": 5,
       "workflow": null
     }
   },
   {
     "model": "runs.run",
-    "pk": 14,
+    "pk": 4,
     "fields": {
-      "created": "2021-12-07T23:46:52.582Z",
-      "updated": "2021-12-07T23:46:52.601Z",
+      "created": "2021-12-08T14:12:06.015Z",
+      "updated": "2021-12-08T14:12:06.015Z",
+      "state": "success",
+      "done": "2021-08-15T07:32:04.919Z",
       "task_id": "d0e6091d-7343-4cfb-9d38-92a59cad92b3",
-      "result": 12,
-      "source": "",
+      "result": null,
+      "source": "integration",
       "integration": 4,
       "workflow": null
     }
   },
   {
     "model": "runs.run",
-    "pk": 15,
+    "pk": 5,
     "fields": {
-      "created": "2021-12-07T23:46:52.602Z",
-      "updated": "2021-12-07T23:46:52.605Z",
+      "created": "2021-12-08T14:12:06.017Z",
+      "updated": "2021-12-08T14:12:06.017Z",
+      "state": "success",
+      "done": "2021-08-15T07:30:01.347Z",
       "task_id": "1a2e3e76-3a94-4284-8d7d-48f604690ffc",
-      "result": 13,
-      "source": "",
+      "result": null,
+      "source": "integration",
       "integration": 3,
       "workflow": null
     }
   },
   {
     "model": "runs.run",
-    "pk": 16,
+    "pk": 6,
     "fields": {
-      "created": "2021-12-07T23:46:52.608Z",
-      "updated": "2021-12-07T23:46:52.610Z",
+      "created": "2021-12-08T14:12:06.018Z",
+      "updated": "2021-12-08T14:12:06.018Z",
+      "state": "success",
+      "done": "2021-08-13T20:28:24.090Z",
       "task_id": "aa5c3086-1f87-434f-9d5b-48bd69786b33",
-      "result": 14,
-      "source": "",
+      "result": null,
+      "source": "integration",
       "integration": 2,
       "workflow": null
     }
   },
   {
     "model": "runs.run",
-    "pk": 17,
+    "pk": 7,
     "fields": {
-      "created": "2021-12-07T23:46:52.612Z",
-      "updated": "2021-12-07T23:46:52.614Z",
-      "task_id": "2e0bd6da-0a33-4a08-ad2a-74bc831f04b5",
-      "result": 15,
-      "source": "",
+      "created": "2021-12-08T14:12:06.020Z",
+      "updated": "2021-12-08T14:12:06.020Z",
+      "state": "success",
+      "done": "2021-08-01T13:17:27.984Z",
+      "task_id": "a2b7f156-3970-4a3a-92d4-a6bd8d63275a",
+      "result": null,
+      "source": "integration",
       "integration": 1,
       "workflow": null
     }
@@ -3369,7 +3386,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2021-12-07T23:41:35.455Z" }
+    "fields": { "last_update": "2021-12-08T14:11:56.647Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
@@ -3397,139 +3414,6 @@
       "total_run_count": 0,
       "date_changed": "2021-12-03T23:55:23.828Z",
       "description": ""
-    }
-  },
-  {
-    "model": "django_celery_results.taskresult",
-    "pk": 9,
-    "fields": {
-      "task_id": "b157cb85-ba71-4a56-983e-7cf7a6b09e73",
-      "task_name": "apps.uploads.tasks.run_upload_sync_task",
-      "task_args": "(6,)",
-      "task_kwargs": "{}",
-      "status": "SUCCESS",
-      "worker": "celery@unknown",
-      "content_type": "application/json",
-      "content_encoding": "utf-8",
-      "result": "14",
-      "date_created": "2021-12-07T23:46:52.567Z",
-      "date_done": "2021-12-07T23:46:52.567Z",
-      "traceback": null,
-      "meta": "{\"children\": []}"
-    }
-  },
-  {
-    "model": "django_celery_results.taskresult",
-    "pk": 10,
-    "fields": {
-      "task_id": "68d9915e-1e50-4718-86df-ed6e42a04e62",
-      "task_name": "apps.connectors.tasks.run_connector_sync_task",
-      "task_args": "(9,)",
-      "task_kwargs": "{}",
-      "status": "SUCCESS",
-      "worker": "celery@unknown",
-      "content_type": "application/json",
-      "content_encoding": "utf-8",
-      "result": "13",
-      "date_created": "2021-12-07T23:46:52.574Z",
-      "date_done": "2021-12-07T23:46:52.574Z",
-      "traceback": null,
-      "meta": "{\"children\": []}"
-    }
-  },
-  {
-    "model": "django_celery_results.taskresult",
-    "pk": 11,
-    "fields": {
-      "task_id": "232cd31d-a6e6-4e67-95ff-5afd45560277",
-      "task_name": "apps.uploads.tasks.run_upload_sync_task",
-      "task_args": "(4,)",
-      "task_kwargs": "{}",
-      "status": "SUCCESS",
-      "worker": "celery@unknown",
-      "content_type": "application/json",
-      "content_encoding": "utf-8",
-      "result": "5",
-      "date_created": "2021-12-07T23:46:52.578Z",
-      "date_done": "2021-12-07T23:46:52.578Z",
-      "traceback": null,
-      "meta": "{\"children\": []}"
-    }
-  },
-  {
-    "model": "django_celery_results.taskresult",
-    "pk": 12,
-    "fields": {
-      "task_id": "d0e6091d-7343-4cfb-9d38-92a59cad92b3",
-      "task_name": "apps.uploads.tasks.run_upload_sync_task",
-      "task_args": "(3,)",
-      "task_kwargs": "{}",
-      "status": "SUCCESS",
-      "worker": "celery@unknown",
-      "content_type": "application/json",
-      "content_encoding": "utf-8",
-      "result": "4",
-      "date_created": "2021-12-07T23:46:52.599Z",
-      "date_done": "2021-12-07T23:46:52.599Z",
-      "traceback": null,
-      "meta": "{\"children\": []}"
-    }
-  },
-  {
-    "model": "django_celery_results.taskresult",
-    "pk": 13,
-    "fields": {
-      "task_id": "1a2e3e76-3a94-4284-8d7d-48f604690ffc",
-      "task_name": "apps.uploads.tasks.run_upload_sync_task",
-      "task_args": "(2,)",
-      "task_kwargs": "{}",
-      "status": "SUCCESS",
-      "worker": "celery@unknown",
-      "content_type": "application/json",
-      "content_encoding": "utf-8",
-      "result": "3",
-      "date_created": "2021-12-07T23:46:52.603Z",
-      "date_done": "2021-12-07T23:46:52.603Z",
-      "traceback": null,
-      "meta": "{\"children\": []}"
-    }
-  },
-  {
-    "model": "django_celery_results.taskresult",
-    "pk": 14,
-    "fields": {
-      "task_id": "aa5c3086-1f87-434f-9d5b-48bd69786b33",
-      "task_name": "apps.sheets.tasks.run_sheet_sync_task",
-      "task_args": "(1,)",
-      "task_kwargs": "{}",
-      "status": "SUCCESS",
-      "worker": "celery@unknown",
-      "content_type": "application/json",
-      "content_encoding": "utf-8",
-      "result": "2",
-      "date_created": "2021-12-07T23:46:52.608Z",
-      "date_done": "2021-12-07T23:46:52.608Z",
-      "traceback": null,
-      "meta": "{\"children\": []}"
-    }
-  },
-  {
-    "model": "django_celery_results.taskresult",
-    "pk": 15,
-    "fields": {
-      "task_id": "2e0bd6da-0a33-4a08-ad2a-74bc831f04b5",
-      "task_name": "apps.uploads.tasks.run_upload_sync_task",
-      "task_args": "(1,)",
-      "task_kwargs": "{}",
-      "status": "SUCCESS",
-      "worker": "celery@unknown",
-      "content_type": "application/json",
-      "content_encoding": "utf-8",
-      "result": "1",
-      "date_created": "2021-12-07T23:46:52.612Z",
-      "date_done": "2021-12-07T23:46:52.612Z",
-      "traceback": null,
-      "meta": "{\"children\": []}"
     }
   }
 ]
