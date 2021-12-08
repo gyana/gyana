@@ -1,6 +1,7 @@
 from datetime import timedelta
 from itertools import chain
 
+from celery import states
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -217,14 +218,20 @@ class Integration(CloneMixin, BaseModel):
     def latest_run(self):
         return self.run_set.first()
 
-    @property
-    def computed_state(self):
+    def update_state_from_latest_run(self):
         if self.kind == self.Kind.CONNECTOR:
-            return self.connector.state
-        if not self.latest_run:
-            return self.State.UPDATE
-        return self.latest_run.state
+            return
 
-    def update_state(self):
-        self.state = self.computed_state
-        self.save()
+        if not self.latest_run:
+            self.state = self.State.UPDATE
+        elif (
+            not self.latest_run.result
+            or self.latest_run.result.status in states.UNREADY_STATES
+        ):
+            self.state = Integration.State.LOAD
+        elif self.latest_run.result.status in states.EXCEPTION_STATES:
+            self.state = Integration.State.ERROR
+        else:
+            self.state = Integration.State.DONE
+
+        self.save(update_fields=["state"])

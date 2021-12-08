@@ -17,4 +17,4 @@ def update_run_on_task_result_save(sender, instance, *args, **kwargs):
 @receiver(post_save, sender=Run)
 def update_integration_on_run_save(sender, instance, *args, **kwargs):
     if instance.source == Run.Source.INTEGRATION:
-        instance.integration.update_state()
+        instance.integration.update_state_from_latest_run()
