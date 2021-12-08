@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
                         max_length=8,
                     ),
                 ),
-                ("started_at", models.DateTimeField(null=True, auto_now_add=True)),
+                ("started_at", models.DateTimeField(null=True)),
                 ("completed_at", models.DateTimeField(null=True)),
                 ("task_id", models.UUIDField(null=True)),
                 (

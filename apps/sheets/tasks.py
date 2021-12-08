@@ -3,6 +3,7 @@ from uuid import uuid4
 from celery import shared_task
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from apps.base.time import catchtime
 from apps.integrations.emails import send_integration_ready_email
@@ -54,6 +55,7 @@ def run_sheet_sync(sheet: Sheet, skip_up_to_date=False):
         integration=sheet.integration,
         task_id=uuid4(),
         state=JobRun.State.RUNNING,
+        started_at=timezone.now(),
     )
     run_sheet_sync_task.apply_async(
         (sheet.id,), {"skip_up_to_date": skip_up_to_date}, task_id=run.task_id
