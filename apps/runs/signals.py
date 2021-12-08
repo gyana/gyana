@@ -12,6 +12,5 @@ def update_run_on_task_result_save(sender, instance, *args, **kwargs):
     if run:
         if not run.result:
             run.result = instance
-            run.save()
-
         run.update_run_from_result()
+        run.save()

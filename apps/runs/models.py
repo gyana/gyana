@@ -85,4 +85,3 @@ class JobRun(DirtyFieldsMixin, BaseModel):
                 self.state = JobRun.State.SUCCESS
 
             self.completed_at = self.result.date_done
-            self.save()

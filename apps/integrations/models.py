@@ -235,4 +235,4 @@ class Integration(CloneMixin, BaseModel):
             if not self.latest_run
             else self.RUN_STATE_TO_INTEGRATION_STATE[self.latest_run.state]
         )
-        self.save(update_fields=["state"])
+        self.save()
