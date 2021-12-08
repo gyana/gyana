@@ -13,7 +13,7 @@ from apps.base.turbo import TurboUpdateView
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import KIND_TO_SYNC_TASK
 from apps.projects.mixins import ProjectMixin
-from apps.runs.tables import RunTable
+from apps.runs.tables import JobRunTable
 
 from .forms import KIND_TO_FORM_CLASS, KIND_TO_SETTINGS_FORM_CLASS, IntegrationForm
 from .mixins import STATE_TO_URL_REDIRECT, ReadyMixin
@@ -90,7 +90,7 @@ class IntegrationReferences(ReadyMixin, DetailView):
 class IntegrationRuns(ReadyMixin, SingleTableMixin, DetailView):
     template_name = "integrations/runs.html"
     model = Integration
-    table_class = RunTable
+    table_class = JobRunTable
     paginate_by = 15
 
     def get_table_data(self):

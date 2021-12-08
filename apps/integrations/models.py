@@ -11,7 +11,7 @@ from apps.base.models import BaseModel
 from apps.base.table import ICONS
 from apps.dashboards.models import Dashboard
 from apps.projects.models import Project
-from apps.runs.models import Run
+from apps.runs.models import JobRun
 from apps.users.models import CustomUser
 from apps.workflows.models import Workflow
 
@@ -108,9 +108,9 @@ class Integration(CloneMixin, BaseModel):
     }
 
     RUN_STATE_TO_INTEGRATION_STATE = {
-        Run.State.RUNNING: State.LOAD,
-        Run.State.FAILED: State.ERROR,
-        Run.State.SUCCESS: State.DONE,
+        JobRun.State.RUNNING: State.LOAD,
+        JobRun.State.FAILED: State.ERROR,
+        JobRun.State.SUCCESS: State.DONE,
     }
 
     def __str__(self):
@@ -223,7 +223,7 @@ class Integration(CloneMixin, BaseModel):
 
     @property
     def latest_run(self):
-        return self.run_set.first()
+        return self.runs.order_by("-created").first()
 
     def update_state_from_latest_run(self):
 

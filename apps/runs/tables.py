@@ -4,7 +4,7 @@ from django.template.loader import get_template
 
 from apps.base.table import NaturalDatetimeColumn
 
-from .models import Run
+from .models import JobRun
 
 
 class RunStateColumn(tables.Column):
@@ -17,11 +17,11 @@ class RunStateColumn(tables.Column):
         return get_template("columns/status.html").render(context.flatten())
 
 
-class RunTable(tables.Table):
+class JobRunTable(tables.Table):
     class Meta:
-        model = Run
+        model = JobRun
         attrs = {"class": "table"}
         fields = ("created", "duration", "state")
 
     created = NaturalDatetimeColumn(verbose_name="Triggered")
-    state = RunStateColumn(verbose_name='Status')
+    state = RunStateColumn(verbose_name="Status")

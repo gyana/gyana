@@ -41,7 +41,7 @@ STATE_TO_RUN_STATE = {
 
 def forwards(apps, schema_editor):
     Integration = apps.get_model("integrations", "Integration")
-    Run = apps.get_model("runs", "Run")
+    JobRun = apps.get_model("runs", "JobRun")
 
     # to maintain backwards compatability for uploads and sheets, we need to generate
     # a mock run object and optionally a celery results task if it completed (success or error)
@@ -60,7 +60,7 @@ def forwards(apps, schema_editor):
         sync_started = source_obj.sync_started or source_obj.created
 
         if task_id:
-            Run.objects.create(
+            JobRun.objects.create(
                 integration=integration,
                 source=Source.INTEGRATION,
                 task_id=task_id,
@@ -72,9 +72,9 @@ def forwards(apps, schema_editor):
 
 
 def backwards(apps, schema_editor):
-    Run = apps.get_model("runs", "Run")
+    JobRun = apps.get_model("runs", "JobRun")
 
-    Run.objects.all().delete()
+    JobRun.objects.all().delete()
     TaskResult.objects.all().delete()
 
 

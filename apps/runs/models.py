@@ -8,7 +8,7 @@ from apps.base.models import BaseModel
 from apps.base.table import ICONS
 
 
-class Run(BaseModel):
+class JobRun(BaseModel):
     class Source(models.TextChoices):
         INTEGRATION = "integration", "Integration"
         WORKFLOW = "workflow", "Workflow"
@@ -26,10 +26,13 @@ class Run(BaseModel):
     result = models.OneToOneField(TaskResult, null=True, on_delete=models.SET_NULL)
     source = models.CharField(max_length=16, choices=Source.choices)
     integration = models.ForeignKey(
-        "integrations.Integration", null=True, on_delete=models.CASCADE
+        "integrations.Integration",
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="runs",
     )
     workflow = models.ForeignKey(
-        "workflows.Workflow", null=True, on_delete=models.CASCADE
+        "workflows.Workflow", null=True, on_delete=models.CASCADE, related_name="runs"
     )
 
     STATE_TO_ICON = {
@@ -67,11 +70,11 @@ class Run(BaseModel):
     def update_run_from_result(self):
         if self.result:
             if self.result.status in states.UNREADY_STATES:
-                self.state = Run.State.RUNNING
+                self.state = JobRun.State.RUNNING
             elif self.result.status in states.EXCEPTION_STATES:
-                self.state = Run.State.FAILED
+                self.state = JobRun.State.FAILED
             else:
-                self.state = Run.State.SUCCESS
+                self.state = JobRun.State.SUCCESS
 
             self.done = self.result.date_done
             self.save()
