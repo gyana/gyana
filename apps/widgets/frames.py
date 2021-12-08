@@ -31,21 +31,21 @@ from .forms import FORMS
 from .models import WIDGET_CHOICES_ARRAY, Widget
 
 
-def add_output_context(context, widget, request):
+def add_output_context(context, widget, request, control):
     if widget.is_valid:
         if widget.kind == Widget.Kind.TEXT:
             pass
         elif widget.kind == Widget.Kind.TABLE:
             # avoid duplicating work for widget output
             if "table" not in context:
-                table = table_to_output(widget)
+                table = table_to_output(widget, control)
                 context["table"] = RequestConfig(
                     request,
                 ).configure(table)
         elif widget.kind == Widget.Kind.METRIC:
-            context["metric"] = metric_to_output(widget)
+            context["metric"] = metric_to_output(widget, control)
         else:
-            chart, chart_id = chart_to_output(widget)
+            chart, chart_id = chart_to_output(widget, control)
             context.update(chart)
             context["chart_id"] = chart_id
 
@@ -108,6 +108,13 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             args=(self.project.id, self.dashboard.id),
         )
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["show_date_column"] = bool(
+            context["form"].get_live_field("date_column")
+        )
+        return context
+
     def form_valid(self, form):
         r = super().form_valid(form)
 
@@ -126,7 +133,12 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             "dashboard": self.dashboard,
         }
         try:
-            add_output_context(context, self.object, self.request)
+            add_output_context(
+                context,
+                self.object,
+                self.request,
+                self.dashboard.control if self.dashboard.has_control else None,
+            )
             if self.object.error:
                 self.object.error = None
         except Exception as e:
@@ -180,7 +192,12 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
                 "dashboard": self.dashboard,
             }
             try:
-                add_output_context(context, self.object, self.request)
+                add_output_context(
+                    context,
+                    self.object,
+                    self.request,
+                    self.dashboard.control if self.dashboard.has_control else None,
+                )
                 if self.object.error:
                     self.object.error = None
             except Exception as e:
@@ -217,7 +234,12 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
         context = super().get_context_data(**kwargs)
         context["project"] = self.get_object().dashboard.project
         try:
-            add_output_context(context, self.object, self.request)
+            add_output_context(
+                context,
+                self.object,
+                self.request,
+                self.dashboard.control if self.dashboard.has_control else None,
+            )
         except Exception as e:
             error_template = f"widgets/errors/{error_name_to_snake(e)}.html"
             if template_exists(error_template):
@@ -229,7 +251,10 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
 
     def get_table(self, **kwargs):
         if self.object.is_valid and self.object.kind == Widget.Kind.TABLE:
-            table = table_to_output(self.object)
+            table = table_to_output(
+                self.object,
+                self.dashboard.control if self.dashboard.has_control else None,
+            )
             return RequestConfig(
                 self.request, paginate=self.get_table_pagination(table)
             ).configure(table)

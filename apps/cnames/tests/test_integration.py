@@ -121,7 +121,12 @@ def test_cname_validation(client, logged_in_user, c_name_factory):
 
 @can_create_cname
 def test_cname_middleware_for_public_dashboard(
-    client, logged_in_user, c_name_factory, dashboard_factory, widget_factory
+    client,
+    logged_in_user,
+    c_name_factory,
+    dashboard_factory,
+    widget_factory,
+    control_factory,
 ):
     team = logged_in_user.teams.first()
     cname = c_name_factory(team=team)
@@ -170,6 +175,14 @@ def test_cname_middleware_for_public_dashboard(
     # individual widget output
     r = client.get(
         f"/projects/{project.id}/dashboards/{dashboard.id}/widgets/{widget.id}/output",
+        HTTP_HOST="test.domain.com",
+    )
+    assertOK(r)
+
+    # access control public update
+    control = control_factory(dashboard=dashboard)
+    r = client.get(
+        f"/projects/{project.id}/dashboards/{dashboard.id}/controls/{control.id}/update-public",
         HTTP_HOST="test.domain.com",
     )
     assertOK(r)

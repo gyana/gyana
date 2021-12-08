@@ -6,7 +6,7 @@ from apps.base import clients
 from apps.base.forms import BaseModelForm
 
 from .models import Sheet
-from .sheets import get_sheets_id_from_url
+from .sheets import get_cell_range, get_sheets_id_from_url
 
 
 class SheetCreateForm(BaseModelForm):
@@ -23,6 +23,7 @@ class SheetCreateForm(BaseModelForm):
         url = kwargs.pop("url")
         self._project = kwargs.pop("project")
         self._created_by = kwargs.pop("created_by")
+        request = kwargs.pop("request")
 
         super().__init__(*args, **kwargs)
 
@@ -30,6 +31,9 @@ class SheetCreateForm(BaseModelForm):
         self.fields[
             "is_scheduled"
         ].help_text = f"Daily at {self._project.daily_schedule_time} in {self._project.team.timezone}"
+
+        if not flag_is_active(request, "beta"):
+            self.fields.pop("is_scheduled")
 
     def clean_url(self):
         url = self.cleaned_data["url"]
@@ -60,17 +64,17 @@ class SheetCreateForm(BaseModelForm):
 class SheetUpdateForm(BaseModelForm):
     class Meta:
         model = Sheet
-        fields = ["cell_range"]
+        fields = ["sheet_name", "cell_range"]
 
     def clean_cell_range(self):
+        sheet_name = self.cleaned_data["sheet_name"]
         cell_range = self.cleaned_data["cell_range"]
-
         sheet_id = get_sheets_id_from_url(self.instance.url)
 
         client = clients.sheets()
         try:
             client.spreadsheets().get(
-                spreadsheetId=sheet_id, ranges=cell_range
+                spreadsheetId=sheet_id, ranges=get_cell_range(sheet_name, cell_range)
             ).execute()
         except googleapiclient.errors.HttpError as e:
             raise ValidationError(e.reason.strip())
@@ -85,10 +89,13 @@ class SheetSettingsForm(BaseModelForm):
         labels = {"is_scheduled": "Automatically sync new data"}
 
     def __init__(self, *args, **kwargs):
+        request = kwargs.pop("request")
         super().__init__(*args, **kwargs)
         project = self.instance.integration.project
         help_text = f"Daily at {project.daily_schedule_time} in {project.team.timezone}"
         self.fields["is_scheduled"].help_text = help_text
+        if not flag_is_active(request, "beta"):
+            self.fields.pop("is_scheduled")
 
     def post_save(self, instance):
         instance.integration.project.update_schedule()

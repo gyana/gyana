@@ -1,3 +1,5 @@
+{% load waffle_tags %}
+
 <div class='widget-update-sidebar'>
   <turbo-frame id="widget-editable-name" class="workflow-detail__header">
     {% include 'widgets/name.html' %}
@@ -51,12 +53,39 @@
           {{ form.kind }}
         </div>
       </div>
+      {% flag 'beta' %}
+        {% if form.date_column %}
 
+          <div data-controller='widget-slice' >
+            <div data-widget-slice-target ="input" class='{% if not show_date_column%}hidden{%endif%}'>
+              <p class="input__help-text">{{ form.date_column.help_text }}</p>
+              <div class='flex flex-row items-center gap-2'>
+                {{form.date_column}}
+                <button 
+                  type='button'
+                  data-action="widget-slice#remove"
+                  class='button button--sm button--tertiary button--circle'
+                ><i class='fa fa-times'></i></button>
+              </div>
+            </div>
+
+            <button 
+              class="button button--sm {% if show_date_column %}hidden{%endif%}"
+              data-widget-slice-target='addButton' 
+              type='button' 
+              data-action="widget-slice#add" 
+              data-turbo='false'
+            ><i class='fa fa-plus'></i> Add datetime slice column
+            </button>
+          </div>
+
+        {% endif %}
+      {% endflag %}
       <hr>
 
       {% block widget_form %}
 
-      {% with array='name kind table'%}
+      {% with array='name kind table date_column'%}
       {% for bound_field in form.visible_fields %}
       {% if bound_field.name not in array.split %}
         <div class="input-group">

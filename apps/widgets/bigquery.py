@@ -1,5 +1,6 @@
 import ibis
 
+from apps.controls.bigquery import slice_query
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget
@@ -32,10 +33,9 @@ def get_unique_column_names(aggregations, groups):
     }
 
 
-def get_query_from_widget(widget: Widget):
+def get_query_from_widget(widget: Widget, query):
 
-    query = get_query_from_table(widget.table)
-    query = get_query_from_filters(query, widget.filters.all())
+    aggregations = widget.aggregations.all()
 
     if widget.category == Widget.Category.COMBO:
         aggregations = widget.charts.all()

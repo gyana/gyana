@@ -2,24 +2,41 @@
 {% load static %}
 {% load team_tags %}
 
+{% firstof team project.team as team %}
+
 {% block banner %}
   {% if team and team.warning %}
-    <div class="banner banner--warning">
-      <p>
-        You're exceeding your row count limit.
-        <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i></a>
-      </p>
-    </div>
+  <div class="banner banner--warning">
+    <p>
+      You're exceeding your row count limit.
+      <a
+        href="{% url 'teams:account' team.id %}"
+        class="text-white font-bold underline"
+      >
+        Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i>
+      </a>
+    </p>
+  </div>
   {% endif %}
 
   {% if team and not team.enabled %}
-    <div class="banner banner--danger">
-      <p>
-        You've exceeded your row count limit by over 20%, your team is
-        temporarily disabled. <a href="{% url 'teams:account' team.id %}" class="text-white font-bold underline"> Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i></a>
-      </p>
-    </div>
+  <div class="banner banner--danger">
+    <p>
+      You've exceeded your row count limit by over 20%, your team is
+      temporarily disabled.
+      <a
+        href="{% url 'teams:account' team.id %}"
+        class="text-white font-bold underline"
+      >
+        Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i>
+      </a>
+    </p>
+  </div>
   {% endif %}
+{% endblock %}
+
+{% block team_sidebar %}
+  {% include "web/components/team_sidebar.html" %}
 {% endblock %}
 
 {% block sidebar_content %}
@@ -37,49 +54,41 @@
   </strong>
 </a>
 
-<li>
-  <a
-    class="sidebar__link {% if request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
-    href="{% url 'teams:detail' team.id %}"
-  >
-    <i class="far fa-fw fa-folders"></i>Projects
-  </a>
-</li>
+<a
+  class="sidebar__link {% if request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
+  href="{% url 'teams:detail' team.id %}"
+>
+  <i class="far fa-fw fa-folders"></i>Projects
+</a>
 
 {% if request.user|is_admin_of:team %}
-<li>
-  <a
-    class="sidebar__link {% if request.resolver_match.url_name == 'list' %}sidebar__link--active{% endif %}"
-    href="{% url 'team_members:list' team.id %}"
-  >
-    <i class="far fa-fw fa-users"></i>Members
-  </a>
-</li>
+<a
+  class="sidebar__link {% if request.resolver_match.url_name == 'list' %}sidebar__link--active{% endif %}"
+  href="{% url 'team_members:list' team.id %}"
+>
+  <i class="far fa-fw fa-users"></i>Members
+</a>
 
-<li>
-  <a
-    class="sidebar__link {% if request.resolver_match.url_name in 'account,subscription,plan,payments' %}sidebar__link--active{% endif %}"
-    href="{% url 'teams:account' team.id %}"
-  >
-    <i class="far fa-fw fa-wallet"></i>Billing
-  </a>
-</li>
+<a
+  class="sidebar__link {% if request.resolver_match.url_name in 'account,subscription,plan,payments' %}sidebar__link--active{% endif %}"
+  href="{% url 'teams:account' team.id %}"
+>
+  <i class="far fa-fw fa-wallet"></i>Billing
+</a>
 
-<li>
-  <a
-    class="sidebar__link {% if request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
-    href="{% url 'teams:update' team.id %}"
-  >
-    <i class="far fa-fw fa-cog"></i>Settings
-  </a>
-</li>
+<a
+  class="sidebar__link {% if request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
+  href="{% url 'teams:update' team.id %}"
+>
+  <i class="far fa-fw fa-cog"></i>Settings
+</a>
 {% endif %}
 {% endblock %}
 
 {% block body %}
-{% block notifications %}{% endblock %}
+  {% block notifications %}{% endblock %}
 
-<section class="flex flex-col flex-1 overflow-hidden {% block app-class %}{% endblock %}">
-  {% block app %}{% endblock %}
-</section>
+  <section class="flex flex-col flex-1 overflow-hidden {% block app-class %}{% endblock %}">
+    {% block app %}{% endblock %}
+  </section>
 {% endblock body %}

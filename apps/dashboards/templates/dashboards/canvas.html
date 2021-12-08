@@ -1,6 +1,21 @@
 {% load static %}
 
-<div class="widgets" data-controller="tf-modal" data-open-on-param>  
+<div class="widgets" data-controller="tf-modal" data-open-on-param>
+
+  {% if dashboard.has_control %}
+
+    <turbo-frame id='controls:update' src="{% url 'controls:update' project.id dashboard.id dashboard.control.id %}">
+      <div class='placeholder-scr'>
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+      </div>
+    </turbo-frame>
+
+  {% else %}
+
+    <div id='controls:update-stream'></div>
+
+  {% endif %}
+
   <div
     data-controller="canvas"
     class="widgets__canvas"

@@ -1,21 +1,15 @@
 from unittest.mock import Mock
 
 import pytest
-from apps.sheets.bigquery import import_table_from_sheet
 from google.cloud.bigquery.schema import SchemaField
+
+from apps.sheets.bigquery import import_table_from_sheet
 
 pytestmark = pytest.mark.django_db
 
 
-def test_sheet_all_string(
-    logged_in_user, bigquery, sheet_factory, integration_table_factory
-):
-
-    sheet = sheet_factory(integration__project__team=logged_in_user.teams.first())
-    table = integration_table_factory(
-        project=sheet.integration.project, integration=sheet.integration
-    )
-
+@pytest.fixture
+def mock_bigquery(bigquery):
     bigquery.query().exception = lambda: False
     # the initial query
     bigquery.query().schema = [
@@ -27,6 +21,14 @@ def test_sheet_all_string(
     result_mock.values.return_value = ["Name", "Age"]
     bigquery.query().result.return_value = [result_mock]
     bigquery.reset_mock()
+
+
+def test_sheet_all_string(
+    project, mock_bigquery, bigquery, sheet_factory, integration_table_factory
+):
+
+    sheet = sheet_factory(integration__project=project)
+    table = integration_table_factory(project=project, integration=sheet.integration)
 
     import_table_from_sheet(table, sheet)
 
@@ -66,3 +68,38 @@ def test_sheet_all_string(
     assert len(schema) == 2
     assert schema[0].name == "Name"
     assert schema[0].field_type == "STRING"
+
+
+def get_cell_range_from_job(bigquery):
+    return (
+        bigquery.query.call_args_list[0]
+        .kwargs["job_config"]
+        .table_definitions["table_external"]
+        .options.range
+    )
+
+
+def test_cell_range_construction(
+    project, mock_bigquery, bigquery, sheet_factory, integration_table_factory
+):
+
+    sheet = sheet_factory(integration__project=project, cell_range=None)
+    table = integration_table_factory(project=project, integration=sheet.integration)
+
+    import_table_from_sheet(table, sheet)
+    assert get_cell_range_from_job(bigquery) is None
+    bigquery.reset_mock()
+
+    sheet.cell_range = "A1:B2"
+    import_table_from_sheet(table, sheet)
+    assert get_cell_range_from_job(bigquery) == sheet.cell_range
+    bigquery.reset_mock()
+
+    sheet.sheet_name = "Easy"
+    import_table_from_sheet(table, sheet)
+    assert get_cell_range_from_job(bigquery) == f"{sheet.sheet_name}!{sheet.cell_range}"
+    bigquery.reset_mock()
+
+    sheet.cell_range = None
+    import_table_from_sheet(table, sheet)
+    assert get_cell_range_from_job(bigquery) == sheet.sheet_name

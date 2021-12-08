@@ -4,6 +4,7 @@ from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.widgets.bigquery import get_query_from_widget
 from apps.widgets.models import NO_DIMENSION_WIDGETS, Widget
+from apps.widgets.visuals import pre_filter
 
 pytestmark = pytest.mark.django_db
 
@@ -81,7 +82,7 @@ simple_params = pytest.mark.parametrize(
 @simple_params
 def test_only_one_dimension(kind, setup, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice")
-    query = get_query_from_widget(widget)
+    query = get_query_from_widget(widget, pre_filter(widget, None))
 
     assert query.compile() == SINGLE_DIMENSION_QUERY
 
@@ -90,7 +91,7 @@ def test_only_one_dimension(kind, setup, widget_factory):
 def test_one_dimension_one_aggregation(kind, setup, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice")
     widget.aggregations.create(column="stars", function="sum")
-    query = get_query_from_widget(widget)
+    query = get_query_from_widget(widget, pre_filter(widget, None))
 
     assert query.compile() == SINGLE_DIMENSION_SINGLE_AGGREGATION_QUERY
 
@@ -100,7 +101,7 @@ def test_one_dimension_two_aggregations(kind, setup, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice")
     widget.aggregations.create(column="stars", function="sum")
     widget.aggregations.create(column="athlete", function="count")
-    query = get_query_from_widget(widget)
+    query = get_query_from_widget(widget, pre_filter(widget, None))
 
     assert query.compile() == SINGLE_DIMENSION_TWO_AGGREGATIONS_QUERY
 
@@ -123,7 +124,7 @@ stacked_params = pytest.mark.parametrize(
 @stacked_params
 def test_two_dimension(kind, setup, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice", second_dimension="medals")
-    query = get_query_from_widget(widget)
+    query = get_query_from_widget(widget, pre_filter(widget, None))
 
     assert query.compile() == TWO_DIMENSION_QUERY
 
@@ -132,7 +133,7 @@ def test_two_dimension(kind, setup, widget_factory):
 def test_two_dimension_one_aggregation(kind, setup, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice", second_dimension="medals")
     widget.aggregations.create(column="stars", function="sum")
-    query = get_query_from_widget(widget)
+    query = get_query_from_widget(widget, pre_filter(widget, None))
 
     assert query.compile() == TWO_DIMENSION_SINGLE_AGGREGATION_QUERY
 
@@ -145,7 +146,7 @@ def test_no_dimension(kind, setup, widget_factory):
     widget.aggregations.create(column="stars", function="sum")
     widget.aggregations.create(column="athlete", function="count")
     widget.aggregations.create(column="id", function="mean")
-    query = get_query_from_widget(widget)
+    query = get_query_from_widget(widget, pre_filter(widget, None))
 
     assert query.compile() == NO_DIMENSION_THREE_AGGREGATIONS_QUERY
 
@@ -153,10 +154,10 @@ def test_no_dimension(kind, setup, widget_factory):
 def test_combo_chart(setup, widget_factory):
     widget = widget_factory(kind=Widget.Kind.COMBO, dimension="is_nice")
     widget.charts.create(column="stars", function="sum")
-    query = get_query_from_widget(widget)
+    query = get_query_from_widget(widget, pre_filter(widget, None))
 
     assert query.compile() == SINGLE_DIMENSION_SINGLE_AGGREGATION_QUERY
     widget.charts.create(column="athlete", function="count")
-    query = get_query_from_widget(widget)
+    query = get_query_from_widget(widget, pre_filter(widget, None))
 
     assert query.compile() == SINGLE_DIMENSION_TWO_AGGREGATIONS_QUERY

@@ -103,6 +103,7 @@ PROJECT_APPS = [
     "apps.templates",
     "apps.cnames.apps.CNamesConfig",
     "apps.exports",
+    "apps.controls",
     "apps.runs.apps.RunsConfig",
 ]
 

@@ -105,6 +105,12 @@ class Widget(CloneMixin, BaseModel):
     stack_100_percent = models.BooleanField(default=False)
     error = models.CharField(max_length=300, null=True)
 
+    date_column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        null=True,
+        help_text="Select a temporal column that will be used when using the dashboard date slicer",
+    )
+
     def __str__(self):
         return f"<Widget {self.kind} on {self.table}>"
 

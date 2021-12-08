@@ -64,7 +64,12 @@ project_urlpatterns = [
         include(widget_urls.dashboard_urlpatterns),
     ),
     path("<hashid:project_id>/templates/", include(template_urls.project_urlpatterns)),
+    path(
+        "<hashid:project_id>/dashboards/<hashid:dashboard_id>/controls/",
+        include("apps.controls.urls"),
+    ),
 ]
+
 
 teams_urlpatterns = [
     path("", include("apps.teams.urls")),

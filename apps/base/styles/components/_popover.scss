@@ -5,7 +5,8 @@
 
 .tippy-box[data-theme~='popover'],
 .tippy-box[data-theme~='popover-menu'],
-.tippy-box[data-theme~='popover-add-widget'] {
+.tippy-box[data-theme~='popover-add-widget'],
+.tippy-box[data-theme~='popover-control'] {
   background-color: white;
   border: 1px solid var(--c-gray);
   border-radius: 5px;
@@ -28,4 +29,9 @@
   max-height: 32rem;
   overflow: auto;
   white-space: nowrap;
+}
+
+.tippy-box[data-theme~='popover-control'] {
+  width: max-content;
+  max-width: 600px !important;
 }

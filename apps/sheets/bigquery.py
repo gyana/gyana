@@ -1,10 +1,12 @@
-from apps.base import clients
-from apps.base.bigquery import bq_table_schema_is_string_only, sanitize_bq_column_name
-from apps.tables.models import Table
 from google.cloud import bigquery
 from google.cloud.bigquery.job.query import QueryJob
 
+from apps.base import clients
+from apps.base.bigquery import bq_table_schema_is_string_only, sanitize_bq_column_name
+from apps.tables.models import Table
+
 from .models import Sheet
+from .sheets import get_cell_range
 
 
 def _create_external_table(
@@ -20,8 +22,10 @@ def _create_external_table(
 
     external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
     external_config.source_uris = [sheet.url]
-    if sheet.cell_range:
-        external_config.options.range = sheet.cell_range
+    if sheet.sheet_name or sheet.cell_range:
+        external_config.options.range = get_cell_range(
+            sheet.sheet_name, sheet.cell_range
+        )
     for k, v in job_kwargs.items():
         if k == "skip_leading_rows":
             setattr(external_config.options, k, v)

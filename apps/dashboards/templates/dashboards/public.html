@@ -54,11 +54,19 @@
         <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
       {% endif %}
     </header>
-
+    {% if dashboard.has_control %}
+      <turbo-frame id='controls:update' src="{% url 'controls:update-public' project.id dashboard.id dashboard.control.id %}">
+        <div class='placeholder-scr'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+        </div>
+      </turbo-frame>
+    {% else %}
+      <div id='controls:update-stream'></div>
+    {% endif %}
     <div
       class="widgets__canvas"
       style="--background-color:{{ object.background_color }};"
-    >
+    > 
       <div
         id="dashboard-widget-container"
         data-controller="widget-list"
@@ -93,15 +101,15 @@
       </div>
     </div>
 
-    {% if dashboard.shared_status == 'password_protected' %}
-    <footer class="pb-7">
-      <p>
-        <small>
-          <a class="link" href="{% url 'dashboards:logout' dashboard.shared_id %}">Forget me on this browser</a>
-        </small>
+    <footer class="widget__public-footer">
+      <p class="small">
+        Dashboard updated <abbr>{% include "columns/natural_datetime.html" with datetime=dashboard.updated %}</abbr>
       </p>
+
+      {% if dashboard.shared_status == 'password_protected' %}
+      <a class="link small" href="{% url 'dashboards:logout' dashboard.shared_id %}">Forget me on this browser</a>
+      {% endif %}
     </footer>
-    {% endif %}
   </div>
 
   {% include 'components/fusionchart_scripts.html' %}

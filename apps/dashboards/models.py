@@ -109,3 +109,7 @@ class Dashboard(CloneMixin, BaseModel):
             else settings.EXTERNAL_URL
         )
         return f"{domain}/dashboards/{self.shared_id}"
+
+    @property
+    def has_control(self):
+        return hasattr(self, "control")

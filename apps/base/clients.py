@@ -71,11 +71,6 @@ def get_bucket():
     return client.get_bucket(settings.GS_BUCKET_NAME)
 
 
-def get_dataframe(query):
-    client = bigquery()
-    return client.query(query).result().to_dataframe(create_bqstorage_client=False)
-
-
 @lru_cache
 def fivetran():
     from apps.connectors.fivetran.client import FivetranClient

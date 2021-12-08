@@ -1,0 +1,14 @@
+.control {
+  position: relative;
+  padding-bottom: 1.6rem;
+
+  .button--circle {
+    position: absolute;
+    top: -0.8rem;
+    right: -0.8rem;
+  }
+}
+
+.control-popover {
+  width: 400px;
+}

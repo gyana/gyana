@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block sidebar %}
-{# Getting rid of the top navigation bar here. #}
-{% endblock %}
+{# Getting rid of the sidebar here. #}
+{% endblock sidebar %}
 
 {% block body %}
 <div class="landing">
@@ -46,9 +46,9 @@
   </div>
 
   <div class="landing__image">
-  {% block image %}
-  <img src="{% static 'images/landing.png' %}" />
-  {% endblock %}
+    {% block image %}
+      <img src="{% static 'images/landing.png' %}" />
+    {% endblock %}
   </div>
 </div>
 {% endblock %}

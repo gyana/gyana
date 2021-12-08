@@ -1,6 +1,6 @@
 from django.db import models
 from django.template import loader
-from django_tables2 import Column, DateColumn, LinkColumn, Table
+from django_tables2 import Column, DateColumn, LinkColumn, Table, TemplateColumn
 from django_tables2.columns.booleancolumn import BooleanColumn
 from django_tables2.columns.urlcolumn import URLColumn
 from django_tables2.utils import A
@@ -16,12 +16,19 @@ class TeamMembershipTable(Table):
         model = Membership
         attrs = {"class": "table"}
         fields = (
+            A("user__avatar_url"),
             A("user__email"),
             "role",
             A("user__last_login"),
             A("user__date_joined"),
         )
 
+    user__avatar_url = TemplateColumn(
+        template_name="columns/image.html",
+        orderable=False,
+        verbose_name="",
+        attrs={"th": {"style": "min-width: auto; width: 0%;"}},
+    )
     user__email = LinkColumn(
         verbose_name="Email",
         viewname="team_members:update",

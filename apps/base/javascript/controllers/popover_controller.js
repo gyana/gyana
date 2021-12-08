@@ -1,25 +1,25 @@
 import { Controller } from '@hotwired/stimulus'
-import tippy from 'tippy.js';
+import tippy from 'tippy.js'
 
 /**
  * Tippy.js powered interactable popover.
- * 
+ *
  * @link https://atomiks.github.io/tippyjs/
- * 
+ *
  * @example
  * <div data-controller="popover">
  *  <button class="button">Click me!</button>
- * 
+ *
  *  <template data-popover-target="body">
  *    <h1>You can use HTML in popovers</h1>
  *  </template>
- * </p>
+ * </div>
  */
 export default class extends Controller {
   static targets = ['body']
 
   connect() {
-    console.assert(this.hasBodyTarget, "Popover controllers need a body target")
+    console.assert(this.hasBodyTarget, 'Popover controllers need a body target')
 
     tippy(this.element, {
       allowHTML: true,

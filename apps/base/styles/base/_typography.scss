@@ -36,6 +36,12 @@ a {
   line-height: inherit;
 }
 
+abbr {
+  text-decoration-color: var(--c-black-20);
+  text-decoration-line: underline;
+  text-decoration: dotted;
+}
+
 small,
 .small {
   font-size: 1.2rem;

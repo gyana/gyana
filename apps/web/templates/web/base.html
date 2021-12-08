@@ -8,8 +8,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="turbo-cache-control" content="no-cache" />
 
-  {% include 'web/components/meta.html' %}
-  {% include 'web/components/favicon.html' %}
+  {% include "web/components/meta.html" %}
+  {% include "web/components/favicon.html" %}
 
   <link rel="preconnect" href="https://fonts.gstatic.com" />
   <link
@@ -17,44 +17,42 @@
     rel="stylesheet"
   />
 
-  <link rel="stylesheet" href="{% static 'css/fontawesome.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/tailwind.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
+  <link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
+  <link rel="stylesheet" href="{% static "css/style.css" %}" />
 
   {% comment %} Before all javascript is loaded {% endcomment %}
   {% comment %} {% if HONEYBADGER_API_KEY %}
-  {% include 'web/components/honeybadger.html' %}
+  {% include "web/components/honeybadger.html" %}
   {% endif %} {% endcomment %}
 
   <script type="module">
-    import * as hotwiredTurbo from '{% static 'js/turbo-bundle.js' %}';
+    import * as hotwiredTurbo from "{% static "js/turbo-bundle.js" %}";
   </script>
-  <script src="{% static 'js/stimulus-bundle.js' %}"></script>
-  <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
-  <script src="{% url 'api_schemajs' %}"></script>
+  <script src="{% static "js/stimulus-bundle.js" %}"></script>
+  <script src="{% static "rest_framework/js/coreapi-0.1.1.js" %}"></script>
+  <script src="{% url "api_schemajs" %}"></script>
 
   {% if SEGMENT_ANALYTICS_JS_WRITE_KEY %}
-  {% include 'web/components/analytics.html' %}
+  {% include "web/components/analytics.html" %}
   {% endif %}
 
   {% if GOOGLE_ANALYTICS_ID %}
-  {% include 'web/components/google_analytics.html' %}
+  {% include "web/components/google_analytics.html" %}
   {% endif %}
 
   {% block page_head %}{% endblock %}
 </head>
 
-<body data-controller='on-submit-loading'>
+<body data-controller="on-submit-loading">
   {% block banner %}{% endblock %}
 
   {% block messages %}
-  {% include 'web/components/messages.html' %}
+  {% include "web/components/messages.html" %}
   {% endblock %}
 
   <main>
-    {% block team_sidebar %}
-      {% include "web/components/team_sidebar.html" %}
-    {% endblock %}
+    {% block team_sidebar %}{% endblock team_sidebar %}
 
     {% block sidebar %}
     <div id="sidebar" class="sidebar" data-controller="web-sidebar">
@@ -70,43 +68,35 @@
       <nav class="sidebar__body">
         {% block sidebar_content %}{% endblock %}
 
-        <li class="mt-auto"><hr /></li>
+        <hr class="mt-auto" />
 
         {% if user.is_superuser %}
-        {% include 'web/components/admin.html' %}
+        {% include "web/components/admin.html" %}
         {% endif %}
 
-        <li>
-          <a
-            id="changelogWidgetID"
-            class="sidebar__link cursor-pointer"
-          >
-            <i class="fas fa-fw fa-bullhorn"></i>What's New?
-          </a>
-        </li>
+        <a
+          id="changelogWidgetID"
+          class="sidebar__link sidebar__link--border cursor-pointer"
+        >
+          <i class="fas fa-fw fa-bullhorn"></i>What"s New?
+        </a>
 
-        <li><hr /></li>
+        <a
+          href="https://join.slack.com/t/gyanacommunity/shared_invite/zt-vly76dna-dxv12CkXdanlwqMam5zDPQ"
+          class="sidebar__link sidebar__link--border"
+          data-controller="tooltip"
+          data-placement="right"
+        >
+          <i class="fas fa-fw fa-comments-alt"></i> Join our Slack
 
-        <li>
-          <a
-            href="https://join.slack.com/t/gyanacommunity/shared_invite/zt-vly76dna-dxv12CkXdanlwqMam5zDPQ"
-            class="sidebar__link"
-            data-controller="tooltip"
-            data-placement="right"
-          >
-            <i class="fas fa-fw fa-comments-alt"></i> Join our Slack
+          <span data-tooltip-target="body">Join our Slack</span>
+        </a>
 
-            <span data-tooltip-target="body">Join our Slack</span>
-          </a>
-        </li>
-
-        <li><hr /></li>
-
-        <li data-controller="tf-modal">
+        <div data-controller="tf-modal">
           <a
             data-action="click->tf-modal#open"
-            data-src="{% url 'web:help' %}"
-            class="sidebar__link"
+            data-src="{% url "web:help" %}"
+            class="sidebar__link sidebar__link--border"
           >
             <i class="fas fa-fw fa-question"></i>Help
           </a>
@@ -119,15 +109,13 @@
               ></turbo-frame>
             </div>
           </div>
-        </li>
+        </div>
 
-        <li><hr /></li>
-
-        <li data-controller="tf-modal">
+        <div data-controller="tf-modal">
           <a
             data-action="click->tf-modal#open"
-            data-src="{% url 'users:profile' %}"
-            class="sidebar__link"
+            data-src="{% url "users:profile" %}"
+            class="sidebar__link sidebar__link--border"
           >
             <img src="{{ user.avatar_url }}" />Your Account
           </a>
@@ -140,19 +128,15 @@
               ></turbo-frame>
             </div>
           </div>
-        </li>
+        </div>
 
-        <li><hr /></li>
-
-        <li>
-          <label
-            class="sidebar__link"
-            for="sidebar-toggle"
-            data-action="click->web-sidebar#toggle"
-          >
-            <i class="fas fa-fw"></i>Collapse
-          </label>
-        </li>
+        <label
+          class="sidebar__link"
+          for="sidebar-toggle"
+          data-action="click->web-sidebar#toggle"
+        >
+          <i class="fas fa-fw"></i>Collapse
+        </label>
       </nav>
     </div>
     {% endblock %}
@@ -160,7 +144,7 @@
     {% block body %}{% endblock %}
   </main>
 
-  {% include 'web/components/hellonext_changelog.html' %}
+  {% include "web/components/hellonext_changelog.html" %}
 
   {% block page_js %}{% endblock %}
 </body>

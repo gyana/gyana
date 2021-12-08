@@ -93,8 +93,8 @@ def tomorrow(query, column):
 
 def yesterday(query, column):
     date = get_date(query[column])
-    tomorrow = dt.date.today() - dt.timedelta(days=1)
-    return query[date == tomorrow]
+    yesterday_ = dt.date.today() - dt.timedelta(days=1)
+    return query[date == yesterday_]
 
 
 def one_week_ago(query, column):
@@ -231,23 +231,7 @@ def filter_boolean(query, column, value):
     return query[query[column] == value]
 
 
-FILTER_MAP = {
-    Filter.StringPredicate.EQUAL: eq,
-    Filter.StringPredicate.NEQUAL: neq,
-    Filter.StringPredicate.CONTAINS: contains,
-    Filter.StringPredicate.NOTCONTAINS: not_contains,
-    Filter.StringPredicate.ISNULL: isnull,
-    Filter.StringPredicate.NOTNULL: notnull,
-    Filter.StringPredicate.STARTSWITH: startswith,
-    Filter.StringPredicate.ENDSWITH: endswith,
-    Filter.StringPredicate.ISUPPERCASE: isupper,
-    Filter.StringPredicate.ISLOWERCASE: islower,
-    Filter.NumericPredicate.GREATERTHAN: gt,
-    Filter.NumericPredicate.GREATERTHANEQUAL: gte,
-    Filter.NumericPredicate.LESSTHAN: lt,
-    Filter.NumericPredicate.LESSTHANEQUAL: lte,
-    Filter.NumericPredicate.ISIN: isin,
-    Filter.NumericPredicate.NOTIN: notin,
+DATETIME_FILTERS = {
     DateRange.TODAY: today,
     DateRange.TOMORROW: tomorrow,
     DateRange.YESTERDAY: yesterday,
@@ -273,6 +257,26 @@ FILTER_MAP = {
     DateRange.THIS_YEAR_UP_TO_DATE: this_year_up_todate,
     DateRange.LAST_12_MONTH: last_12_month,
     DateRange.LAST_YEAR: last_year,
+}
+
+FILTER_MAP = {
+    Filter.StringPredicate.EQUAL: eq,
+    Filter.StringPredicate.NEQUAL: neq,
+    Filter.StringPredicate.CONTAINS: contains,
+    Filter.StringPredicate.NOTCONTAINS: not_contains,
+    Filter.StringPredicate.ISNULL: isnull,
+    Filter.StringPredicate.NOTNULL: notnull,
+    Filter.StringPredicate.STARTSWITH: startswith,
+    Filter.StringPredicate.ENDSWITH: endswith,
+    Filter.StringPredicate.ISUPPERCASE: isupper,
+    Filter.StringPredicate.ISLOWERCASE: islower,
+    Filter.NumericPredicate.GREATERTHAN: gt,
+    Filter.NumericPredicate.GREATERTHANEQUAL: gte,
+    Filter.NumericPredicate.LESSTHAN: lt,
+    Filter.NumericPredicate.LESSTHANEQUAL: lte,
+    Filter.NumericPredicate.ISIN: isin,
+    Filter.NumericPredicate.NOTIN: notin,
+    **DATETIME_FILTERS,
     Filter.Type.BOOL: filter_boolean,
 }
 

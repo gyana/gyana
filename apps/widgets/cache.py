@@ -6,11 +6,14 @@ from .models import Widget
 
 def last_modified_widget_output(request, project_id, dashboard_id, pk):
     widget = Widget.objects.get(pk=pk)
-    return (
+    widget_update = (
         max(widget.updated, widget.table.data_updated)
         if widget.table
         else widget.updated
     )
+    if widget.dashboard.has_control and widget.date_column:
+        return max(widget_update, widget.dashboard.control.updated)
+    return widget_update
 
 
 def etag_widget_output(request, project_id, dashboard_id, pk):
