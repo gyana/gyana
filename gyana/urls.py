@@ -98,7 +98,6 @@ urlpatterns = [
     path("appsumo/", include("apps.appsumo.urls")),
     path("templates/", include("apps.templates.urls")),
     path("cnames/", include("apps.cnames.urls")),
-    path("runs/", include("apps.runs.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),
