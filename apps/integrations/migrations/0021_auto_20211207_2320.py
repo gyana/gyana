@@ -88,8 +88,4 @@ class Migration(migrations.Migration):
         ("django_celery_results", "0010_remove_duplicate_indices"),
     ]
 
-    operations = [
-        migrations.operations.RunPython(
-            forwards, reverse_code=migrations.operations.RunPython.noop
-        )
-    ]
+    operations = [migrations.operations.RunPython(forwards, reverse_code=backwards)]
