@@ -20,6 +20,25 @@ class State(models.TextChoices):
     DONE = "done", "Done"
 
 
+class RunState(models.TextChoices):
+    PENDING = "pending", "Pending"
+    RUNNING = "running", "Running"
+    FAILED = "failed", "Failed"
+    SUCCESS = "success", "Success"
+
+
+class Source(models.TextChoices):
+    INTEGRATION = "integration", "Integration"
+    WORKFLOW = "workflow", "Workflow"
+
+
+STATE_TO_RUN_STATE = {
+    State.LOAD: RunState.RUNNING,
+    State.ERROR: RunState.FAILED,
+    State.DONE: RunState.SUCCESS,
+}
+
+
 def forwards(apps, schema_editor):
     Integration = apps.get_model("integrations", "Integration")
     Run = apps.get_model("runs", "Run")
@@ -41,32 +60,15 @@ def forwards(apps, schema_editor):
         sync_started = source_obj.sync_started or source_obj.created
 
         if task_id:
-            run = Run.objects.create(
+            Run.objects.create(
                 integration=integration,
+                source=Source.INTEGRATION,
                 task_id=task_id,
                 created=sync_started,
+                state=STATE_TO_RUN_STATE[state],
+                # an estimate since we didn't track this information
+                done=sync_started + timedelta(5),
             )
-
-            if state in [State.ERROR, State.DONE]:
-                result = TaskResult.objects.create(
-                    task_id=task_id,
-                    task_name=f"apps.{kind}s.tasks.run_{kind}_sync_task",
-                    task_args=str((source_obj.id,)),
-                    task_kwargs="{}",
-                    # the only thing that actually matters for backwards compatability
-                    status="SUCCESS" if state == State.DONE else "FAILURE",
-                    worker="celery@unknown",
-                    content_type="application/json",
-                    content_encoding="utf-8",
-                    result=str(integration.id),
-                    date_created=sync_started,
-                    # an estimate since we didn't track this information
-                    date_done=sync_started + timedelta(5),
-                    traceback=None,
-                    meta='{"children": []}',
-                )
-                run.result_id = result.id
-                run.save()
 
 
 def backwards(apps, schema_editor):

@@ -21,6 +21,7 @@ class Run(BaseModel):
 
     # state is manually updated, or computed from celery result
     state = models.CharField(max_length=8, choices=State.choices)
+    done = models.DateTimeField(null=True)
     task_id = models.UUIDField(null=True)
     result = models.OneToOneField(TaskResult, null=True, on_delete=models.SET_NULL)
     source = models.CharField(max_length=16, choices=Source.choices)
@@ -63,7 +64,7 @@ class Run(BaseModel):
                 seconds=round((self.result.date_done - self.created).total_seconds())
             )
 
-    def update_state_from_result(self):
+    def update_run_from_result(self):
         if self.result:
             if self.result.status in states.UNREADY_STATES:
                 self.state = Run.State.RUNNING
@@ -71,4 +72,6 @@ class Run(BaseModel):
                 self.state = Run.State.FAILED
             else:
                 self.state = Run.State.SUCCESS
+
+            self.done = self.result.date_done
             self.save()

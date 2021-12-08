@@ -14,7 +14,7 @@ def update_run_on_task_result_save(sender, instance, *args, **kwargs):
             run.result = instance
             run.save()
 
-        run.update_state_from_result()
+        run.update_run_from_result()
 
 
 @receiver(post_save, sender=Run)

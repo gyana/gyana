@@ -6,16 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sheets', '0014_remove_sheet_next_daily_sync'),
+        ("sheets", "0015_auto_20211207_1150"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='sheet',
-            name='sync_started',
+            model_name="sheet",
+            name="sync_started",
         ),
         migrations.RemoveField(
-            model_name='sheet',
-            name='sync_task_id',
+            model_name="sheet",
+            name="sync_task_id",
         ),
     ]
