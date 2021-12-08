@@ -3,6 +3,7 @@ from unittest.mock import Mock
 
 import googleapiclient
 import pytest
+from celery import states
 from django.core import mail
 from pytest_django.asserts import (
     assertContains,
@@ -98,6 +99,12 @@ def test_sheet_create(
     r = client.get(f"{DETAIL}/load")
     assertRedirects(r, f"{DETAIL}/done")
 
+    # validate the run and task result exist
+    assert integration.run_set.count() == 1
+    run = integration.run_set.first()
+    assert run.result is not None
+    assert run.result.status == states.SUCCESS
+
     assert len(mail.outbox) == 1
 
 
@@ -146,11 +153,14 @@ def test_validation_failures(client, logged_in_user, sheet_factory, sheets):
     assertFormError(r, "form", "cell_range", error.reason)
 
 
-def test_runtime_error(client, logged_in_user, sheet_factory, bigquery):
+def test_runtime_error(client, logged_in_user, sheet_factory, bigquery, drive_v2):
 
     team = logged_in_user.teams.first()
     sheet = sheet_factory(integration__project__team=team)
     integration = sheet.integration
+    drive_v2.files().get().execute = Mock(
+        return_value={"modifiedDate": "2020-10-01T00:00:00Z"}
+    )
 
     DETAIL = f"/projects/{integration.project.id}/integrations/{integration.id}"
 
@@ -159,15 +169,16 @@ def test_runtime_error(client, logged_in_user, sheet_factory, bigquery):
     bigquery.query().exception = lambda: True
     bigquery.query().errors = [{"message": "No columns found in the schema."}]
 
+    # celery eager mode does not store error results in the backend, but it is enough
+    # to check an exception happens
+
     with pytest.raises(Exception):
         client.post(
             f"{DETAIL}/configure",
             data={"cell_range": "store_info!A20:D21"},
         )
 
-    integration.refresh_from_db()
-    assert integration.state == Integration.State.ERROR
-    assert integration.table_set.count() == 0
+    assert sheet.integration.run_set.count() == 1
 
 
 def test_resync_after_source_update(

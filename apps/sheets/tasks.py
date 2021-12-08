@@ -40,6 +40,7 @@ def run_sheet_sync_task(self, sheet_id, skip_up_to_date=False):
 
             table.sync_updates_from_bigquery()
             sheet.drive_file_last_modified_at_sync = sheet.drive_modified_date
+            sheet.save()
 
     if created:
         send_integration_ready_email(integration, int(get_time_to_sync()))

@@ -52,10 +52,12 @@
     </a>
   {% endif %}
   {% if object.ready %}
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'runs' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:runs' project.id object.id %}">
-      Runs
-    </a>
+    {% if object.kind == object.Kind.SHEET %}
+      <a class="tabbar__link {% if request.resolver_match.url_name == 'runs' %} tabbar__link--active {% endif %}"
+        href="{% url 'project_integrations:runs' project.id object.id %}">
+        Runs
+      </a>
+    {% endif %}
     <a class="tabbar__link {% if request.resolver_match.url_name == 'references' %} tabbar__link--active {% endif %}"
       href="{% url 'project_integrations:references' project.id object.id %}">
       References
