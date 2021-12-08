@@ -28,6 +28,7 @@ django-admin-tools==0.9.1
 django-allauth==0.44.0
 django-anymail==8.4; python_version >= "3.5"
 django-celery-beat==2.2.1
+django-celery-results==2.2.0
 django-clone==2.9.4; python_version >= "3.5"
 django-dirtyfields==1.7.0; python_version >= "3.6"
 django-filter==2.4.0; python_version >= "3.5"
