@@ -1,0 +1,11 @@
+{% extends "integrations/base.html" %}
+{% load render_table from django_tables2 %}
+
+{% block tab %}
+  <div class="pad">
+    <p class="mb-4">All the historical runs for this integration</p>
+    <div class="card card--none">
+      {% render_table table %}
+    </div>
+  </div>
+{% endblock %}

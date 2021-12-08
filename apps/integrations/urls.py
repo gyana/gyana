@@ -69,6 +69,11 @@ project_urlpatterns = (
             name="references",
         ),
         path(
+            "<hashid:pk>/runs",
+            login_and_project_required(views.IntegrationRuns.as_view()),
+            name="runs",
+        ),
+        path(
             "<hashid:pk>/settings",
             login_and_project_required(views.IntegrationSettings.as_view()),
             name="settings",

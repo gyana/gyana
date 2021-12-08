@@ -11,6 +11,6 @@ class RunTable(tables.Table):
         attrs = {"class": "table"}
         fields = ("created",)
 
-    created = NaturalDatetimeColumn(verbose_name="Started")
-    completed = NaturalDatetimeColumn(accessor="result__date_done")
+    created = NaturalDatetimeColumn(verbose_name="Start")
+    completed = NaturalDatetimeColumn(accessor="result__date_done", verbose_name="End")
     status = NaturalDatetimeColumn(accessor="result__status")

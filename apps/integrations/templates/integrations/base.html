@@ -52,15 +52,15 @@
     </a>
   {% endif %}
   {% if object.ready %}
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'runs' %} tabbar__link--active {% endif %}"
+      href="{% url 'project_integrations:runs' project.id object.id %}">
+      Runs
+    </a>
     <a class="tabbar__link {% if request.resolver_match.url_name == 'references' %} tabbar__link--active {% endif %}"
       href="{% url 'project_integrations:references' project.id object.id %}">
       References
     </a>
   {% endif %}
-  <a class="tabbar__link {% if request.resolver_match.app_name == 'runs' %} tabbar__link--active {% endif %}"
-    href="{% url 'runs:list' %}">
-    Runs
-  </a>
   <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
     href="{% url 'project_integrations:settings' project.id object.id %}">
     Settings
