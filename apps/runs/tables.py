@@ -23,5 +23,5 @@ class RunTable(tables.Table):
         attrs = {"class": "table"}
         fields = ("created", "duration", "state")
 
-    created = NaturalDatetimeColumn(verbose_name="Started")
-    state = RunStateColumn()
+    created = NaturalDatetimeColumn(verbose_name="Triggered")
+    state = RunStateColumn(verbose_name='Status')

@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from celery import states
 from django.db import models
 from django_celery_results.models import TaskResult
@@ -52,8 +54,11 @@ class Run(BaseModel):
 
     @property
     def duration(self):
+        # round to nearest second for display
         if self.result:
-            return self.result.date_done - self.created
+            return timedelta(
+                seconds=round((self.result.date_done - self.created).total_seconds())
+            )
 
     @property
     def state(self):
