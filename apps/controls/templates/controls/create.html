@@ -1,3 +1,6 @@
+{% load waffle_tags %}
+
+{% flag 'beta' %}
 <div id='controls:create-stream'>
   <form method="post" action="{% url 'controls:create' project.id dashboard.id%}" class="form">
     {% csrf_token %}
@@ -7,5 +10,5 @@
     </button>
   </form>
 </div>
-
+{% endflag %}
 

@@ -1,4 +1,5 @@
 {% extends "web/app/project_base.html" %}
+{% load waffle_tags %}
 
 {% block app %}
 <div class="dashboard__header">
@@ -81,7 +82,7 @@
   </div>
   
   {% include 'controls/create.html' with dashboard=dashboard %}
-
+  
   <div data-controller="tooltip">
     {% if not request.GET.mode or request.GET.mode == "edit" %}
     <a href="?mode=view" class="button button--sm button--tertiary">
