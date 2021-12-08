@@ -21,7 +21,7 @@ class JobRunTable(tables.Table):
     class Meta:
         model = JobRun
         attrs = {"class": "table"}
-        fields = ("created", "duration", "state")
+        fields = ("started_at", "duration", "state")
 
-    created = NaturalDatetimeColumn(verbose_name="Triggered")
+    started_at = NaturalDatetimeColumn(verbose_name="Started")
     state = RunStateColumn(verbose_name="Status")

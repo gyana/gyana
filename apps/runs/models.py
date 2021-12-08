@@ -63,7 +63,7 @@ class JobRun(BaseModel):
     @property
     def duration(self):
         # round to nearest second for display
-        if self.result:
+        if self.started_at and self.completed_at:
             return timedelta(
                 seconds=round((self.completed_at - self.started_at).total_seconds())
             )
