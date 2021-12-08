@@ -1,6 +1,7 @@
 from enum import auto
 from unittest.mock import MagicMock
 
+import celery
 import ibis.expr.schema as sch
 import pytest
 import waffle
@@ -37,6 +38,7 @@ def patches(mocker, settings):
     # run celery tasks within the same thread synchronously
     settings.CELERY_TASK_ALWAYS_EAGER = True
     settings.CELERY_TASK_EAGER_PROPAGATES = True
+    settings.CELERY_TASK_STORE_EAGER_RESULT = True
 
     # all the clients are mocked
     settings.MOCK_REMOTE_OBJECT_DELETION = False

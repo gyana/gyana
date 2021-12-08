@@ -192,27 +192,27 @@ python-versions = "~=3.5"
 
 [[package]]
 name = "celery"
-version = "5.1.2"
+version = "5.2.1"
 description = "Distributed Task Queue."
 category = "main"
 optional = false
-python-versions = ">=3.6,"
+python-versions = ">=3.7,"
 
 [package.dependencies]
 billiard = ">=3.6.4.0,<4.0"
-click = ">=7.0,<8.0"
+click = ">=8.0,<9.0"
 click-didyoumean = ">=0.0.3"
 click-plugins = ">=1.1.1"
-click-repl = ">=0.1.6"
-kombu = ">=5.1.0,<6.0"
-pytz = ">0.0-dev"
-redis = {version = ">=3.2.0", optional = true, markers = "extra == \"redis\""}
+click-repl = ">=0.2.0"
+kombu = ">=5.2.2,<6.0"
+pytz = ">0.dev.0"
+redis = {version = ">=3.4.1,<4.0.0", optional = true, markers = "extra == \"redis\""}
 vine = ">=5.0.0,<6.0"
 
 [package.extras]
 arangodb = ["pyArango (>=1.3.2)"]
 auth = ["cryptography"]
-azureblockblob = ["azure-storage-blob (==12.6.0)"]
+azureblockblob = ["azure-storage-blob (==12.9.0)"]
 brotli = ["brotli (>=1.0.0)", "brotlipy (>=0.7.0)"]
 cassandra = ["cassandra-driver (<3.21.0)"]
 consul = ["python-consul2"]
@@ -222,21 +222,21 @@ couchdb = ["pycouchdb"]
 django = ["Django (>=1.11)"]
 dynamodb = ["boto3 (>=1.9.178)"]
 elasticsearch = ["elasticsearch"]
-eventlet = ["eventlet (>=0.26.1)"]
-gevent = ["gevent (>=1.0.0)"]
+eventlet = ["eventlet (>=0.32.0)"]
+gevent = ["gevent (>=1.5.0)"]
 librabbitmq = ["librabbitmq (>=1.5.0)"]
 memcache = ["pylibmc"]
-mongodb = ["pymongo[srv] (>=3.3.0)"]
+mongodb = ["pymongo[srv] (>=3.3.0,<3.12.1)"]
 msgpack = ["msgpack"]
 pymemcache = ["python-memcached"]
 pyro = ["pyro4"]
 pytest = ["pytest-celery"]
-redis = ["redis (>=3.2.0)"]
+redis = ["redis (>=3.4.1,<4.0.0)"]
 s3 = ["boto3 (>=1.9.125)"]
 slmq = ["softlayer-messaging (>=1.0.3)"]
 solar = ["ephem"]
 sqlalchemy = ["sqlalchemy"]
-sqs = ["boto3 (>=1.9.125)", "pycurl (==7.43.0.5)"]
+sqs = ["kombu"]
 tblib = ["tblib (>=1.3.0)", "tblib (>=1.5.0)"]
 yaml = ["PyYAML (>=3.10)"]
 zookeeper = ["kazoo (>=1.3.1)"]
@@ -295,11 +295,14 @@ unicode_backport = ["unicodedata2"]
 
 [[package]]
 name = "click"
-version = "7.1.2"
+version = "8.0.3"
 description = "Composable command line interface toolkit"
 category = "main"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+python-versions = ">=3.6"
+
+[package.dependencies]
+colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
 name = "click-didyoumean"
@@ -1179,10 +1182,10 @@ regex = "*"
 toolz = "*"
 
 [package.extras]
-all = ["google-cloud-bigquery[pandas,bqstorage] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
-bigquery = ["google-cloud-bigquery[pandas,bqstorage] (>=1.12.0,<2.0.0dev)", "pydata-google-auth"]
+all = ["google-cloud-bigquery[bqstorage,pandas] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
+bigquery = ["google-cloud-bigquery[bqstorage,pandas] (>=1.12.0,<2.0.0dev)", "pydata-google-auth"]
 clickhouse = ["clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
-develop = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash", "google-cloud-bigquery[pandas,bqstorage] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "black", "click", "pydocstyle (==4.0.1)", "flake8", "isort", "mypy", "pre-commit", "pygit2", "pytest (>=4.5)"]
+develop = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymapd (==0.24)", "pyarrow", "pymysql", "requests-kerberos", "graphviz", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash", "google-cloud-bigquery[bqstorage,pandas] (>=1.12.0,<2.0.0dev)", "pydata-google-auth", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "black", "click", "pydocstyle (==4.0.1)", "flake8", "isort", "mypy", "pre-commit", "pygit2", "pytest (>=4.5)"]
 geospatial = ["geoalchemy2", "geopandas", "shapely"]
 hdf5 = ["tables (>=3.0.0)"]
 impala = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.1,<1.3.7)", "requests", "impyla[kerberos] (>=0.15.0)"]
@@ -1316,11 +1319,11 @@ jinja2 = "*"
 
 [[package]]
 name = "kombu"
-version = "5.1.0"
+version = "5.2.2"
 description = "Messaging library for Python."
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.dependencies]
 amqp = ">=5.0.6,<6.0.0"
@@ -1330,15 +1333,15 @@ vine = "*"
 azureservicebus = ["azure-servicebus (>=7.0.0)"]
 azurestoragequeues = ["azure-storage-queue"]
 consul = ["python-consul (>=0.6.0)"]
-librabbitmq = ["librabbitmq (>=1.5.2)"]
-mongodb = ["pymongo (>=3.3.0)"]
+librabbitmq = ["librabbitmq (>=2.0.0)"]
+mongodb = ["pymongo (>=3.3.0,<3.12.1)"]
 msgpack = ["msgpack"]
 pyro = ["pyro4"]
 qpid = ["qpid-python (>=0.26)", "qpid-tools (>=0.26)"]
-redis = ["redis (>=3.3.11)"]
+redis = ["redis (>=3.4.1,<4.0.0)"]
 slmq = ["softlayer-messaging (>=1.0.3)"]
 sqlalchemy = ["sqlalchemy"]
-sqs = ["boto3 (>=1.4.4)", "pycurl (==7.43.0.2)", "urllib3 (<1.26)"]
+sqs = ["boto3 (>=1.9.12)", "pycurl (>=7.44.1,<7.45.0)", "urllib3 (>=1.26.7)"]
 yaml = ["PyYAML (>=3.10)"]
 zookeeper = ["kazoo (>=1.3.1)"]
 
@@ -2221,8 +2224,8 @@ cachetools = [
     {file = "cachetools-4.2.2.tar.gz", hash = "sha256:61b5ed1e22a0924aed1d23b478f37e8d52549ff8a961de2909c69bf950020cff"},
 ]
 celery = [
-    {file = "celery-5.1.2-py3-none-any.whl", hash = "sha256:9dab2170b4038f7bf10ef2861dbf486ddf1d20592290a1040f7b7a1259705d42"},
-    {file = "celery-5.1.2.tar.gz", hash = "sha256:8d9a3de9162965e97f8e8cc584c67aad83b3f7a267584fa47701ed11c3e0d4b0"},
+    {file = "celery-5.2.1-py3-none-any.whl", hash = "sha256:cc63ea6572d558be65297ba6db7a7979e64c0a3d0d61212d6302ef1ca05a0d22"},
+    {file = "celery-5.2.1.tar.gz", hash = "sha256:b41a590b49caf8e6498a57db628e580d5f8dc6febda0f42de5d783aed5b7f808"},
 ]
 celery-progress = [
     {file = "celery-progress-0.1.1.tar.gz", hash = "sha256:b2622d1b410a763412810f0293153c984f4a0220b76769bd701b5b45e583ddad"},
@@ -2288,8 +2291,8 @@ charset-normalizer = [
     {file = "charset_normalizer-2.0.4-py3-none-any.whl", hash = "sha256:0c8911edd15d19223366a194a513099a302055a962bca2cec0f54b8b63175d8b"},
 ]
 click = [
-    {file = "click-7.1.2-py2.py3-none-any.whl", hash = "sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc"},
-    {file = "click-7.1.2.tar.gz", hash = "sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a"},
+    {file = "click-8.0.3-py3-none-any.whl", hash = "sha256:353f466495adaeb40b6b5f592f9f91cb22372351c84caeb068132442a4518ef3"},
+    {file = "click-8.0.3.tar.gz", hash = "sha256:410e932b050f5eed773c4cda94de75971c89cdb3155a72a0831139a79e5ecb5b"},
 ]
 click-didyoumean = [
     {file = "click-didyoumean-0.0.3.tar.gz", hash = "sha256:112229485c9704ff51362fe34b2d4f0b12fc71cc20f6d2b3afabed4b8bfa6aeb"},
@@ -2683,8 +2686,8 @@ jinja2-time = [
     {file = "jinja2_time-0.2.0-py2.py3-none-any.whl", hash = "sha256:d3eab6605e3ec8b7a0863df09cc1d23714908fa61aa6986a845c20ba488b4efa"},
 ]
 kombu = [
-    {file = "kombu-5.1.0-py3-none-any.whl", hash = "sha256:e2dedd8a86c9077c350555153825a31e456a0dc20c15d5751f00137ec9c75f0a"},
-    {file = "kombu-5.1.0.tar.gz", hash = "sha256:01481d99f4606f6939cdc9b637264ed353ee9e3e4f62cfb582324142c41a572d"},
+    {file = "kombu-5.2.2-py3-none-any.whl", hash = "sha256:d36f0cde6a18d9eb7b6b3aa62a59bfdff7f5724689850e447eca5be8efc9d501"},
+    {file = "kombu-5.2.2.tar.gz", hash = "sha256:0f5d0763fb916808f617b886697b2be28e6bc35026f08e679697fc814b48a608"},
 ]
 lark = [
     {file = "lark-0.11.3.tar.gz", hash = "sha256:3100d9749b5a85735ec428b83100876a5da664804579e729c23a36341f961e7e"},

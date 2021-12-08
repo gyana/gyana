@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from celery import shared_task
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -46,8 +48,9 @@ def run_sheet_sync_task(self, sheet_id, skip_up_to_date=False):
 
 
 def run_sheet_sync(sheet: Sheet):
-    Run.objects.create(
+    run = Run.objects.create(
         source=Run.Source.INTEGRATION,
         integration=sheet.integration,
-        task_id=run_sheet_sync_task.delay(sheet.id).task_id,
+        task_id=uuid4(),
     )
+    run_sheet_sync_task.apply_async((sheet.id,), task_id=run.task_id)

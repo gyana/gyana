@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from celery import shared_task
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -43,8 +45,7 @@ def run_upload_sync_task(self, upload_id: int):
 
 
 def run_upload_sync(upload: Upload):
-    Run.objects.create(
-        source=Run.Source.INTEGRATION,
-        integration=upload.integration,
-        task_id=run_upload_sync_task.delay(upload.id).task_id,
+    run = Run.objects.create(
+        source=Run.Source.INTEGRATION, integration=upload.integration, task_id=uuid4()
     )
+    run_upload_sync_task.apply_async((upload.id,), task_id=run.task_id)
