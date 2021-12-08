@@ -211,6 +211,10 @@ def test_integration_create_pending_load_and_approve(
     assertContains(r, "Success")
     assertLink(r, f"{DETAIL}/configure", "configuration")
 
+    # view list of runs
+    r = client.get(f"{DETAIL}/runs")
+    assertOK(r)
+
 
 def test_integration_exceeds_row_limit(
     client, logged_in_user, sheet_factory, integration_table_factory
