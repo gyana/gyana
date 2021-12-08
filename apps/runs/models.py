@@ -14,11 +14,14 @@ class Run(BaseModel):
         WORKFLOW = "workflow", "Workflow"
 
     class State(models.TextChoices):
+        PENDING = "pending", "Pending"
         RUNNING = "running", "Running"
         FAILED = "failed", "Failed"
         SUCCESS = "success", "Success"
 
-    task_id = models.UUIDField()
+    # state is manually updated, or computed from celery result
+    state = models.CharField(max_length=8, choices=State.choices)
+    task_id = models.UUIDField(null=True)
     result = models.OneToOneField(TaskResult, null=True, on_delete=models.SET_NULL)
     source = models.CharField(max_length=16, choices=Source.choices)
     integration = models.ForeignKey(
@@ -60,10 +63,12 @@ class Run(BaseModel):
                 seconds=round((self.result.date_done - self.created).total_seconds())
             )
 
-    @property
-    def state(self):
-        if not self.result or self.result.status in states.UNREADY_STATES:
-            return Run.State.RUNNING
-        if self.result.status in states.EXCEPTION_STATES:
-            return Run.State.FAILED
-        return Run.State.SUCCESS
+    def update_state_from_result(self):
+        if self.result:
+            if self.result.status in states.UNREADY_STATES:
+                self.state = Run.State.RUNNING
+            elif self.result.status in states.EXCEPTION_STATES:
+                self.state = Run.State.FAILED
+            else:
+                self.state = Run.State.SUCCESS
+            self.save()

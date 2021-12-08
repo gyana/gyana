@@ -53,6 +53,7 @@ def run_sheet_sync(sheet: Sheet, skip_up_to_date=False):
         source=Run.Source.INTEGRATION,
         integration=sheet.integration,
         task_id=uuid4(),
+        state=Run.State.RUNNING,
     )
     run_sheet_sync_task.apply_async(
         (sheet.id,), {"skip_up_to_date": skip_up_to_date}, task_id=run.task_id

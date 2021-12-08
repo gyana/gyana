@@ -46,6 +46,9 @@ def run_upload_sync_task(self, upload_id: int):
 
 def run_upload_sync(upload: Upload):
     run = Run.objects.create(
-        source=Run.Source.INTEGRATION, integration=upload.integration, task_id=uuid4()
+        source=Run.Source.INTEGRATION,
+        integration=upload.integration,
+        task_id=uuid4(),
+        state=Run.State.RUNNING,
     )
     run_upload_sync_task.apply_async((upload.id,), task_id=run.task_id)

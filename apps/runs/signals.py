@@ -10,8 +10,11 @@ def update_run_on_task_result_save(sender, instance, *args, **kwargs):
     run = Run.objects.filter(task_id=instance.task_id).first()
 
     if run:
-        run.result = instance
-        run.save()
+        if not run.result:
+            run.result = instance
+            run.save()
+
+        run.update_state_from_result()
 
 
 @receiver(post_save, sender=Run)
