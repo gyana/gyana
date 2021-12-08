@@ -100,8 +100,8 @@ def test_sheet_create(
     assertRedirects(r, f"{DETAIL}/done")
 
     # validate the run and task result exist
-    assert integration.run_set.count() == 1
-    run = integration.run_set.first()
+    assert integration.runs.count() == 1
+    run = integration.runs.first()
     assert run.result is not None
     assert run.result.status == states.SUCCESS
 
@@ -178,7 +178,7 @@ def test_runtime_error(client, logged_in_user, sheet_factory, bigquery, drive_v2
             data={"cell_range": "store_info!A20:D21"},
         )
 
-    assert sheet.integration.run_set.count() == 1
+    assert sheet.integration.runs.count() == 1
 
 
 def test_resync_after_source_update(

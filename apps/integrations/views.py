@@ -94,7 +94,7 @@ class IntegrationRuns(ReadyMixin, SingleTableMixin, DetailView):
     paginate_by = 15
 
     def get_table_data(self):
-        return self.object.run_set.all()
+        return self.object.runs.all()
 
 
 class IntegrationSettings(ProjectMixin, TurboUpdateView):
