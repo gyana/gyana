@@ -189,11 +189,6 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
 
         return super().get(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data["sync_task_id"] = self.object.source_obj.sync_task_id
-        return context_data
-
     def form_valid(self, form):
         KIND_TO_SYNC_TASK[self.object.kind](self.object.source_obj)
         # don't assigned the result to self.object

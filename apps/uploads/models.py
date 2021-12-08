@@ -1,12 +1,12 @@
 import textwrap
 from os.path import splitext
 
-from apps.base.celery import is_bigquery_task_running
-from apps.base.models import BaseModel
-from apps.integrations.models import Integration
 from django.conf import settings
 from django.db import models
 from model_clone.mixins.clone import CloneMixin
+
+from apps.base.models import BaseModel
+from apps.integrations.models import Integration
 
 
 class Upload(CloneMixin, BaseModel):
@@ -21,14 +21,6 @@ class Upload(CloneMixin, BaseModel):
     field_delimiter = models.CharField(
         max_length=8, choices=FieldDelimiter.choices, default=FieldDelimiter.COMMA
     )
-
-    # track the celery task
-    sync_task_id = models.UUIDField(null=True)
-    sync_started = models.DateTimeField(null=True)
-
-    @property
-    def is_syncing(self):
-        return is_bigquery_task_running(self.sync_task_id, self.sync_started)
 
     @property
     def field_delimiter_char(self):

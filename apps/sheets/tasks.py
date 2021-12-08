@@ -1,11 +1,9 @@
 from celery import shared_task
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
 
 from apps.base.time import catchtime
 from apps.integrations.emails import send_integration_ready_email
-from apps.integrations.models import Integration
 from apps.runs.models import Run
 from apps.tables.models import Table
 
@@ -22,42 +20,24 @@ def run_sheet_sync_task(self, sheet_id, skip_up_to_date=False):
     # database will rollback automatically if there is an error with the bigquery
     # table creation, avoids orphaned table entities
 
-    try:
+    with transaction.atomic():
 
-        with transaction.atomic():
+        table, created = Table.objects.get_or_create(
+            integration=integration,
+            source=Table.Source.INTEGRATION,
+            bq_table=sheet.table_id,
+            bq_dataset=integration.project.team.tables_dataset_id,
+            project=integration.project,
+        )
 
-            table, created = Table.objects.get_or_create(
-                integration=integration,
-                source=Table.Source.INTEGRATION,
-                bq_table=sheet.table_id,
-                bq_dataset=integration.project.team.tables_dataset_id,
-                project=integration.project,
-            )
+        sheet.sync_updates_from_drive()
 
-            sheet.sync_updates_from_drive()
+        if not (sheet.up_to_date_with_drive and skip_up_to_date):
+            with catchtime() as get_time_to_sync:
+                import_table_from_sheet(table=table, sheet=sheet)
 
-            if not (sheet.up_to_date_with_drive and skip_up_to_date):
-                with catchtime() as get_time_to_sync:
-                    import_table_from_sheet(table=table, sheet=sheet)
-
-                table.sync_updates_from_bigquery()
-                sheet.drive_file_last_modified_at_sync = sheet.drive_modified_date
-
-            sheet.succeeded_at = timezone.now()
-            sheet.save()
-
-            integration.state = Integration.State.DONE
-            integration.save()
-
-            sheet.integration.project.update_schedule()
-
-    except Exception as e:
-        sheet.failed_at = timezone.now()
-        sheet.save()
-
-        integration.state = Integration.State.ERROR
-        integration.save()
-        raise e
+            table.sync_updates_from_bigquery()
+            sheet.drive_file_last_modified_at_sync = sheet.drive_modified_date
 
     if created:
         send_integration_ready_email(integration, int(get_time_to_sync()))
@@ -66,14 +46,8 @@ def run_sheet_sync_task(self, sheet_id, skip_up_to_date=False):
 
 
 def run_sheet_sync(sheet: Sheet):
-
-    sheet.integration.state = Integration.State.LOAD
-    sheet.integration.save()
-
-    result = run_sheet_sync_task.delay(sheet.id)
-    sheet.refresh_from_db()  # required for tests
-    sheet.sync_task_id = result.task_id
-    sheet.sync_started = timezone.now()
-    sheet.save()
-
-    Run.objects.create(integration=sheet.integration, task_id=result.task_id)
+    Run.objects.create(
+        source=Run.Source.INTEGRATION,
+        integration=sheet.integration,
+        task_id=run_sheet_sync_task.delay(sheet.id).task_id,
+    )

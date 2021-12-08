@@ -5,7 +5,6 @@ from django.db import models
 from django.db.models import F, Q
 from model_clone.mixins.clone import CloneMixin
 
-from apps.base.celery import is_bigquery_task_running
 from apps.base.models import SchedulableModel
 from apps.integrations.models import Integration
 
@@ -39,19 +38,10 @@ class Sheet(CloneMixin, SchedulableModel):
     cell_range = models.CharField(max_length=64, null=True, blank=True)
     # essentially the version of the file that was synced
     drive_file_last_modified_at_sync = models.DateTimeField(null=True)
-
-    # track the celery task
-    sync_task_id = models.UUIDField(null=True)
-    sync_started = models.DateTimeField(null=True)
-
     # automatically sync metadata from google drive
     drive_modified_date = models.DateTimeField(null=True)
 
     objects = SheetsManager()
-
-    @property
-    def is_syncing(self):
-        return is_bigquery_task_running(self.sync_task_id, self.sync_started)
 
     @property
     def table_id(self):

@@ -6,9 +6,15 @@ from .models import Run
 
 
 @receiver(post_save, sender=TaskResult)
-def update_workflow_on_node_deletion(sender, instance, *args, **kwargs):
+def update_run_on_task_result_save(sender, instance, *args, **kwargs):
     run = Run.objects.filter(task_id=instance.task_id).first()
 
     if run:
         run.result = instance
         run.save()
+
+
+@receiver(post_save, sender=Run)
+def update_integration_on_run_save(sender, instance, *args, **kwargs):
+    if instance.source == Run.Source.INTEGRATION:
+        instance.integration.update_state()

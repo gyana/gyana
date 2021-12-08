@@ -3094,6 +3094,97 @@
     }
   },
   {
+    "model": "runs.run",
+    "pk": 11,
+    "fields": {
+      "created": "2021-12-07T23:46:52.566Z",
+      "updated": "2021-12-07T23:46:52.570Z",
+      "task_id": "b157cb85-ba71-4a56-983e-7cf7a6b09e73",
+      "result": 9,
+      "source": "",
+      "integration": 14,
+      "workflow": null
+    }
+  },
+  {
+    "model": "runs.run",
+    "pk": 12,
+    "fields": {
+      "created": "2021-12-07T23:46:52.574Z",
+      "updated": "2021-12-07T23:46:52.576Z",
+      "task_id": "68d9915e-1e50-4718-86df-ed6e42a04e62",
+      "result": 10,
+      "source": "",
+      "integration": 13,
+      "workflow": null
+    }
+  },
+  {
+    "model": "runs.run",
+    "pk": 13,
+    "fields": {
+      "created": "2021-12-07T23:46:52.578Z",
+      "updated": "2021-12-07T23:46:52.580Z",
+      "task_id": "232cd31d-a6e6-4e67-95ff-5afd45560277",
+      "result": 11,
+      "source": "",
+      "integration": 5,
+      "workflow": null
+    }
+  },
+  {
+    "model": "runs.run",
+    "pk": 14,
+    "fields": {
+      "created": "2021-12-07T23:46:52.582Z",
+      "updated": "2021-12-07T23:46:52.601Z",
+      "task_id": "d0e6091d-7343-4cfb-9d38-92a59cad92b3",
+      "result": 12,
+      "source": "",
+      "integration": 4,
+      "workflow": null
+    }
+  },
+  {
+    "model": "runs.run",
+    "pk": 15,
+    "fields": {
+      "created": "2021-12-07T23:46:52.602Z",
+      "updated": "2021-12-07T23:46:52.605Z",
+      "task_id": "1a2e3e76-3a94-4284-8d7d-48f604690ffc",
+      "result": 13,
+      "source": "",
+      "integration": 3,
+      "workflow": null
+    }
+  },
+  {
+    "model": "runs.run",
+    "pk": 16,
+    "fields": {
+      "created": "2021-12-07T23:46:52.608Z",
+      "updated": "2021-12-07T23:46:52.610Z",
+      "task_id": "aa5c3086-1f87-434f-9d5b-48bd69786b33",
+      "result": 14,
+      "source": "",
+      "integration": 2,
+      "workflow": null
+    }
+  },
+  {
+    "model": "runs.run",
+    "pk": 17,
+    "fields": {
+      "created": "2021-12-07T23:46:52.612Z",
+      "updated": "2021-12-07T23:46:52.614Z",
+      "task_id": "2e0bd6da-0a33-4a08-ad2a-74bc831f04b5",
+      "result": 15,
+      "source": "",
+      "integration": 1,
+      "workflow": null
+    }
+  },
+  {
     "model": "account.emailaddress",
     "pk": 1,
     "fields": { "user": 1, "email": "test@gyana.com", "verified": true, "primary": true }
@@ -3290,7 +3381,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2021-12-03T23:55:23.820Z" }
+    "fields": { "last_update": "2021-12-07T23:41:35.455Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
@@ -3318,6 +3409,139 @@
       "total_run_count": 0,
       "date_changed": "2021-12-03T23:55:23.828Z",
       "description": ""
+    }
+  },
+  {
+    "model": "django_celery_results.taskresult",
+    "pk": 9,
+    "fields": {
+      "task_id": "b157cb85-ba71-4a56-983e-7cf7a6b09e73",
+      "task_name": "apps.uploads.tasks.run_upload_sync_task",
+      "task_args": "(6,)",
+      "task_kwargs": "{}",
+      "status": "SUCCESS",
+      "worker": "celery@unknown",
+      "content_type": "application/json",
+      "content_encoding": "utf-8",
+      "result": "14",
+      "date_created": "2021-12-07T23:46:52.567Z",
+      "date_done": "2021-12-07T23:46:52.567Z",
+      "traceback": null,
+      "meta": "{\"children\": []}"
+    }
+  },
+  {
+    "model": "django_celery_results.taskresult",
+    "pk": 10,
+    "fields": {
+      "task_id": "68d9915e-1e50-4718-86df-ed6e42a04e62",
+      "task_name": "apps.connectors.tasks.run_connector_sync_task",
+      "task_args": "(9,)",
+      "task_kwargs": "{}",
+      "status": "SUCCESS",
+      "worker": "celery@unknown",
+      "content_type": "application/json",
+      "content_encoding": "utf-8",
+      "result": "13",
+      "date_created": "2021-12-07T23:46:52.574Z",
+      "date_done": "2021-12-07T23:46:52.574Z",
+      "traceback": null,
+      "meta": "{\"children\": []}"
+    }
+  },
+  {
+    "model": "django_celery_results.taskresult",
+    "pk": 11,
+    "fields": {
+      "task_id": "232cd31d-a6e6-4e67-95ff-5afd45560277",
+      "task_name": "apps.uploads.tasks.run_upload_sync_task",
+      "task_args": "(4,)",
+      "task_kwargs": "{}",
+      "status": "SUCCESS",
+      "worker": "celery@unknown",
+      "content_type": "application/json",
+      "content_encoding": "utf-8",
+      "result": "5",
+      "date_created": "2021-12-07T23:46:52.578Z",
+      "date_done": "2021-12-07T23:46:52.578Z",
+      "traceback": null,
+      "meta": "{\"children\": []}"
+    }
+  },
+  {
+    "model": "django_celery_results.taskresult",
+    "pk": 12,
+    "fields": {
+      "task_id": "d0e6091d-7343-4cfb-9d38-92a59cad92b3",
+      "task_name": "apps.uploads.tasks.run_upload_sync_task",
+      "task_args": "(3,)",
+      "task_kwargs": "{}",
+      "status": "SUCCESS",
+      "worker": "celery@unknown",
+      "content_type": "application/json",
+      "content_encoding": "utf-8",
+      "result": "4",
+      "date_created": "2021-12-07T23:46:52.599Z",
+      "date_done": "2021-12-07T23:46:52.599Z",
+      "traceback": null,
+      "meta": "{\"children\": []}"
+    }
+  },
+  {
+    "model": "django_celery_results.taskresult",
+    "pk": 13,
+    "fields": {
+      "task_id": "1a2e3e76-3a94-4284-8d7d-48f604690ffc",
+      "task_name": "apps.uploads.tasks.run_upload_sync_task",
+      "task_args": "(2,)",
+      "task_kwargs": "{}",
+      "status": "SUCCESS",
+      "worker": "celery@unknown",
+      "content_type": "application/json",
+      "content_encoding": "utf-8",
+      "result": "3",
+      "date_created": "2021-12-07T23:46:52.603Z",
+      "date_done": "2021-12-07T23:46:52.603Z",
+      "traceback": null,
+      "meta": "{\"children\": []}"
+    }
+  },
+  {
+    "model": "django_celery_results.taskresult",
+    "pk": 14,
+    "fields": {
+      "task_id": "aa5c3086-1f87-434f-9d5b-48bd69786b33",
+      "task_name": "apps.sheets.tasks.run_sheet_sync_task",
+      "task_args": "(1,)",
+      "task_kwargs": "{}",
+      "status": "SUCCESS",
+      "worker": "celery@unknown",
+      "content_type": "application/json",
+      "content_encoding": "utf-8",
+      "result": "2",
+      "date_created": "2021-12-07T23:46:52.608Z",
+      "date_done": "2021-12-07T23:46:52.608Z",
+      "traceback": null,
+      "meta": "{\"children\": []}"
+    }
+  },
+  {
+    "model": "django_celery_results.taskresult",
+    "pk": 15,
+    "fields": {
+      "task_id": "2e0bd6da-0a33-4a08-ad2a-74bc831f04b5",
+      "task_name": "apps.uploads.tasks.run_upload_sync_task",
+      "task_args": "(1,)",
+      "task_kwargs": "{}",
+      "status": "SUCCESS",
+      "worker": "celery@unknown",
+      "content_type": "application/json",
+      "content_encoding": "utf-8",
+      "result": "1",
+      "date_created": "2021-12-07T23:46:52.612Z",
+      "date_done": "2021-12-07T23:46:52.612Z",
+      "traceback": null,
+      "meta": "{\"children\": []}"
     }
   }
 ]

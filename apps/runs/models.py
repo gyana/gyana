@@ -1,3 +1,5 @@
+import celery
+from celery import states
 from django.db import models
 from django_celery_results.models import TaskResult
 
@@ -22,3 +24,17 @@ class Run(BaseModel):
     @property
     def source_obj(self):
         return getattr(self, self.source)
+
+    @property
+    def async_result(self):
+        return celery.result.AsyncResult(str(self.task_id))
+
+    @property
+    def state(self):
+        from apps.integrations.models import Integration
+
+        if not self.result or self.result.status in states.UNREADY_STATES:
+            return Integration.State.LOAD
+        if self.result.status in states.EXCEPTION_STATES:
+            return Integration.State.ERROR
+        return Integration.State.DONE

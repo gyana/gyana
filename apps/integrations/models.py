@@ -212,3 +212,19 @@ class Integration(CloneMixin, BaseModel):
     @property
     def bq_ids(self):
         return {table.bq_id for table in self.table_set.all()}
+
+    @property
+    def latest_run(self):
+        return self.run_set.first()
+
+    @property
+    def computed_state(self):
+        if self.kind == self.Kind.CONNECTOR:
+            return self.connector.state
+        if not self.latest_run:
+            return self.State.UPDATE
+        return self.latest_run.state
+
+    def update_state(self):
+        self.state = self.computed_state
+        self.save()
