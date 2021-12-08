@@ -37,6 +37,30 @@
   {% endif %}
 </div>
 
+{% if integration.ready %}
+  <div class="workflow-detail__header flex items-center space-x-2 p-4 pl-8 bg-white border-b border-gray">
+    <p>
+      <strong>{{ integration.num_rows }}</strong> row{{ integration.num_rows|pluralize }} •
+      <strong>{{ integration.num_tables }}</strong> table{{ integration.num_tables|pluralize }} •
+    </p>
+
+    {% if integration.created_by %}<img class="h-8 w-8 rounded-full" src="{{ integration.created_by.avatar_url }}">{% endif %}
+    <p class="m-0">
+      <strong>{{ integration.created_by.get_full_name }}</strong> created this integration
+      <strong>{% include 'columns/natural_datetime.html' with datetime=integration.created %}</strong>
+      {% if object.kind == 'sheet' %}
+        • <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
+          {% include "sheets/status.html" with object=object.sheet %}
+        </turbo-frame>
+      {% elif object.kind == 'connector' %}
+        • <turbo-frame id="connectors:status" src="{% url 'connectors:status' object.connector.id %}">
+          {% include "connectors/status.html" with object=object.connector %}
+        </turbo-frame>
+      {% endif %}
+    </p>
+  </div>
+{% endif %}
+
 <nav id='tabbar' class="tabbar tabbar--top">
   {% if object.ready or object.state == 'done' %}
     <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
@@ -61,30 +85,6 @@
     href="{% url 'project_integrations:settings' project.id object.id %}">
     Settings
   </a>
-
-
-{% if integration.ready %}
-<div class="flex items-center space-x-2 p-4 pl-8 bg-white border-b border-gray">
-    <p>
-      <strong>{{ integration.num_rows }}</strong> row{{ integration.num_rows|pluralize }} •
-      <strong>{{ integration.num_tables }}</strong> table{{ integration.num_tables|pluralize }} •
-    </p>
-  {% if integration.created_by %}<img class="h-8 w-8 rounded-full" src="{{ integration.created_by.avatar_url }}">{% endif %}
-  <p>
-    <strong>{{ integration.created_by.get_full_name }}</strong> created this integration
-    <strong>{% include 'columns/natural_datetime.html' with datetime=integration.created %}</strong>
-    {% if object.kind == 'sheet' %}
-      • <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
-        {% include "sheets/status.html" with object=object.sheet %}
-      </turbo-frame>
-    {% elif object.kind == 'connector' %}
-      • <turbo-frame id="connectors:status" src="{% url 'connectors:status' object.connector.id %}">
-        {% include "connectors/status.html" with object=object.connector %}
-      </turbo-frame>
-    {% endif %}
-  </p>
-</div>
-{% endif %}
 </nav>
 
 {% block extra_tab %}{% endblock %}
