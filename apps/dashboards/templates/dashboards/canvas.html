@@ -1,7 +1,9 @@
 {% load static %}
+{% load waffle_tags %}
 
 <div class="widgets" data-controller="tf-modal" data-open-on-param>
 
+  {% flag 'beta' %}
   {% if dashboard.has_control %}
 
     <turbo-frame id='controls:update' src="{% url 'controls:update' project.id dashboard.id dashboard.control.id %}">
@@ -15,7 +17,7 @@
     <div id='controls:update-stream'></div>
 
   {% endif %}
-
+  {% endflag %}
   <div
     data-controller="canvas"
     class="widgets__canvas"

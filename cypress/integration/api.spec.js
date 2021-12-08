@@ -25,26 +25,4 @@ describe('Api access control', () => {
       expect(data.map((node) => node.id)).to.not.contain(1)
     })
   })
-
-  it('Filter autocompletes', () => {
-    cy.login()
-    cy.request('get', '/filters/autocomplete?q=&parentType=node&parentId=20&column=Employees').then(
-      (response) => {
-        expect(response.status).to.equal(200)
-
-        const data = response.body
-        expect(data).to.have.length(8)
-        expect(data).to.contain(12)
-      }
-    )
-
-    cy.logout()
-    cy.login('alone@gyana.com')
-    cy.request({
-      url: '/filters/autocomplete?q=&parentType=node&parentId=20&column=Employees',
-      failOnStatusCode: false,
-    }).then((response) => {
-      expect(response.status).to.equal(404)
-    })
-  })
 })
