@@ -22,11 +22,6 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
       fileRef.current.addEventListener('change', async (event) => {
         setStage('progress')
 
-        // Ask user if they are sure they want to navigate away
-        window.onbeforeunload = function () {
-          return true
-        }
-
         const file = event.target.files[0]
 
         const { url: target, path } = await getApiClient().action(
@@ -41,7 +36,14 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
           target,
           file,
           listeners: {
-            onProgress: setProgress,
+            onProgress: (progress) => {
+              // Ask user if they are sure they want to navigate away
+              window.onbeforeunload = function () {
+                return true
+              }
+
+              setProgress(progress)
+            },
             onSuccess: () => {
               setStage('done')
 
