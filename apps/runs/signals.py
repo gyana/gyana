@@ -15,9 +15,3 @@ def update_run_on_task_result_save(sender, instance, *args, **kwargs):
             run.save()
 
         run.update_run_from_result()
-
-
-@receiver(post_save, sender=JobRun)
-def update_integration_on_run_save(sender, instance, created, *args, **kwargs):
-    if instance.source == JobRun.Source.INTEGRATION:
-        instance.integration.update_state_from_latest_run()

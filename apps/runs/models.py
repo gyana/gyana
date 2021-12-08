@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from celery import states
+from dirtyfields import DirtyFieldsMixin
 from django.db import models
 from django_celery_results.models import TaskResult
 
@@ -8,7 +9,7 @@ from apps.base.models import BaseModel
 from apps.base.table import ICONS
 
 
-class JobRun(BaseModel):
+class JobRun(DirtyFieldsMixin, BaseModel):
     class Source(models.TextChoices):
         INTEGRATION = "integration", "Integration"
         WORKFLOW = "workflow", "Workflow"
@@ -47,6 +48,12 @@ class JobRun(BaseModel):
         State.FAILED: "Failed",
         State.SUCCESS: "Success",
     }
+
+    def save(self, *args, **kwargs):
+        dirty = set(self.get_dirty_fields()) & {"state"}
+        super().save(*args, **kwargs)
+        if dirty:
+            self.source_obj.update_state_from_latest_run()
 
     @property
     def source_obj(self):

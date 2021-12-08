@@ -19,7 +19,7 @@ Inspired by projects like Airflow, Dagster and Prefect.
 
 ## Computed properties
 
-We are using Django signals to automatically compute state properties.
+We are using Django signals and save method overrides to automatically compute state properties.
 
 - The state of an individual `JobRun` or a `GraphRun` is computed from the celery `TaskResult`
 - The state of a `JobRun` within a `GraphRun` is manually computed with a single execution, rather than launching individual celery tasks per `JobRun`
