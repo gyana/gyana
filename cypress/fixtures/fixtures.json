@@ -3085,11 +3085,11 @@
     }
   },
   {
-    "model": "runs.run",
+    "model": "runs.jobrun",
     "pk": 1,
     "fields": {
-      "created": "2021-12-08T14:12:05.990Z",
-      "updated": "2021-12-08T14:12:05.990Z",
+      "created": "2021-12-08T14:50:44.590Z",
+      "updated": "2021-12-08T14:50:44.590Z",
       "state": "success",
       "done": "2021-09-05T00:58:20.370Z",
       "task_id": "b157cb85-ba71-4a56-983e-7cf7a6b09e73",
@@ -3100,14 +3100,14 @@
     }
   },
   {
-    "model": "runs.run",
+    "model": "runs.jobrun",
     "pk": 2,
     "fields": {
-      "created": "2021-12-08T14:12:06.013Z",
-      "updated": "2021-12-08T14:12:06.013Z",
+      "created": "2021-12-08T14:50:44.593Z",
+      "updated": "2021-12-08T14:50:44.593Z",
       "state": "success",
       "done": "2021-09-04T19:05:46.412Z",
-      "task_id": "43529d47-5c82-41fd-a55a-15f746e67a15",
+      "task_id": "47fc23ea-f1bd-4816-bee8-a99f561e4cc1",
       "result": null,
       "source": "integration",
       "integration": 13,
@@ -3115,11 +3115,11 @@
     }
   },
   {
-    "model": "runs.run",
+    "model": "runs.jobrun",
     "pk": 3,
     "fields": {
-      "created": "2021-12-08T14:12:06.014Z",
-      "updated": "2021-12-08T14:12:06.014Z",
+      "created": "2021-12-08T14:50:44.595Z",
+      "updated": "2021-12-08T14:50:44.595Z",
       "state": "success",
       "done": "2021-08-16T14:07:41.043Z",
       "task_id": "232cd31d-a6e6-4e67-95ff-5afd45560277",
@@ -3130,11 +3130,11 @@
     }
   },
   {
-    "model": "runs.run",
+    "model": "runs.jobrun",
     "pk": 4,
     "fields": {
-      "created": "2021-12-08T14:12:06.015Z",
-      "updated": "2021-12-08T14:12:06.015Z",
+      "created": "2021-12-08T14:50:44.596Z",
+      "updated": "2021-12-08T14:50:44.596Z",
       "state": "success",
       "done": "2021-08-15T07:32:04.919Z",
       "task_id": "d0e6091d-7343-4cfb-9d38-92a59cad92b3",
@@ -3145,11 +3145,11 @@
     }
   },
   {
-    "model": "runs.run",
+    "model": "runs.jobrun",
     "pk": 5,
     "fields": {
-      "created": "2021-12-08T14:12:06.017Z",
-      "updated": "2021-12-08T14:12:06.017Z",
+      "created": "2021-12-08T14:50:44.597Z",
+      "updated": "2021-12-08T14:50:44.597Z",
       "state": "success",
       "done": "2021-08-15T07:30:01.347Z",
       "task_id": "1a2e3e76-3a94-4284-8d7d-48f604690ffc",
@@ -3160,11 +3160,11 @@
     }
   },
   {
-    "model": "runs.run",
+    "model": "runs.jobrun",
     "pk": 6,
     "fields": {
-      "created": "2021-12-08T14:12:06.018Z",
-      "updated": "2021-12-08T14:12:06.018Z",
+      "created": "2021-12-08T14:50:44.599Z",
+      "updated": "2021-12-08T14:50:44.599Z",
       "state": "success",
       "done": "2021-08-13T20:28:24.090Z",
       "task_id": "aa5c3086-1f87-434f-9d5b-48bd69786b33",
@@ -3175,14 +3175,14 @@
     }
   },
   {
-    "model": "runs.run",
+    "model": "runs.jobrun",
     "pk": 7,
     "fields": {
-      "created": "2021-12-08T14:12:06.020Z",
-      "updated": "2021-12-08T14:12:06.020Z",
+      "created": "2021-12-08T14:50:44.600Z",
+      "updated": "2021-12-08T14:50:44.600Z",
       "state": "success",
       "done": "2021-08-01T13:17:27.984Z",
-      "task_id": "a2b7f156-3970-4a3a-92d4-a6bd8d63275a",
+      "task_id": "d412212c-859d-41d3-bebb-d97464b98190",
       "result": null,
       "source": "integration",
       "integration": 1,
@@ -3386,7 +3386,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2021-12-08T14:11:56.647Z" }
+    "fields": { "last_update": "2021-12-08T14:50:29.661Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
