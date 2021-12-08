@@ -21,7 +21,8 @@ class JobRun(BaseModel):
 
     # state is manually updated, or computed from celery result
     state = models.CharField(max_length=8, choices=State.choices)
-    done = models.DateTimeField(null=True)
+    started_at = models.DateTimeField(null=True, auto_now_add=True)
+    completed_at = models.DateTimeField(null=True)
     task_id = models.UUIDField(null=True)
     result = models.OneToOneField(TaskResult, null=True, on_delete=models.SET_NULL)
     source = models.CharField(max_length=16, choices=Source.choices)
@@ -64,7 +65,7 @@ class JobRun(BaseModel):
         # round to nearest second for display
         if self.result:
             return timedelta(
-                seconds=round((self.result.date_done - self.created).total_seconds())
+                seconds=round((self.completed_at - self.started_at).total_seconds())
             )
 
     def update_run_from_result(self):
@@ -76,5 +77,5 @@ class JobRun(BaseModel):
             else:
                 self.state = JobRun.State.SUCCESS
 
-            self.done = self.result.date_done
+            self.completed_at = self.result.date_done
             self.save()

@@ -64,10 +64,10 @@ def forwards(apps, schema_editor):
                 integration=integration,
                 source=Source.INTEGRATION,
                 task_id=task_id,
-                created=sync_started,
-                state=STATE_TO_RUN_STATE[state],
+                started_at=sync_started,
                 # an estimate since we didn't track this information
-                done=sync_started + timedelta(5),
+                completed_at=sync_started + timedelta(seconds=5),
+                state=STATE_TO_RUN_STATE[state],
             )
 
 
