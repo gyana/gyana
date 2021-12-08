@@ -48,10 +48,12 @@ def run_sheet_sync_task(self, sheet_id, skip_up_to_date=False):
     return integration.id
 
 
-def run_sheet_sync(sheet: Sheet):
+def run_sheet_sync(sheet: Sheet, skip_up_to_date=False):
     run = Run.objects.create(
         source=Run.Source.INTEGRATION,
         integration=sheet.integration,
         task_id=uuid4(),
     )
-    run_sheet_sync_task.apply_async((sheet.id,), task_id=run.task_id)
+    run_sheet_sync_task.apply_async(
+        (sheet.id,), {"skip_up_to_date": skip_up_to_date}, task_id=run.task_id
+    )
