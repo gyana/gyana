@@ -11,6 +11,7 @@ from apps.base.models import BaseModel
 from apps.base.table import ICONS
 from apps.dashboards.models import Dashboard
 from apps.projects.models import Project
+from apps.runs.models import Run
 from apps.users.models import CustomUser
 from apps.workflows.models import Workflow
 
@@ -104,6 +105,12 @@ class Integration(CloneMixin, BaseModel):
         State.LOAD: "Importing",
         State.ERROR: "Error",
         State.DONE: "Ready to review",
+    }
+
+    RUN_STATE_TO_INTEGRATION_STATE = {
+        Run.State.RUNNING: State.LOAD,
+        Run.State.FAILED: State.ERROR,
+        Run.State.SUCCESS: State.DONE,
     }
 
     def __str__(self):
@@ -219,19 +226,13 @@ class Integration(CloneMixin, BaseModel):
         return self.run_set.first()
 
     def update_state_from_latest_run(self):
+
         if self.kind == self.Kind.CONNECTOR:
             return
 
-        if not self.latest_run:
-            self.state = self.State.UPDATE
-        elif (
-            not self.latest_run.result
-            or self.latest_run.result.status in states.UNREADY_STATES
-        ):
-            self.state = Integration.State.LOAD
-        elif self.latest_run.result.status in states.EXCEPTION_STATES:
-            self.state = Integration.State.ERROR
-        else:
-            self.state = Integration.State.DONE
-
+        self.state = (
+            self.State.UPDATE
+            if not self.latest_run
+            else self.RUN_STATE_TO_INTEGRATION_STATE[self.latest_run.state]
+        )
         self.save(update_fields=["state"])
