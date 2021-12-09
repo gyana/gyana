@@ -1,13 +1,14 @@
 from datetime import time, timedelta
 
 import pytest
+from django.utils import timezone
+
 from apps.connectors.sync import (
     _sync_tables_for_connector,
     end_connector_sync,
     start_connector_sync,
 )
 from apps.integrations.models import Integration
-from django.utils import timezone
 
 from .mock import get_mock_list_tables, get_mock_schema
 
@@ -61,7 +62,7 @@ def test_start_connector_sync(logged_in_user, connector_factory, fivetran):
     # test: start the initial or update connector sync
 
     # initial sync
-    start_connector_sync(connector)
+    start_connector_sync(connector, None)
     assert fivetran.start_initial_sync.call_count == 1
     assert fivetran.start_initial_sync.call_args.args == (connector,)
     assert connector.fivetran_sync_started is not None
@@ -75,21 +76,21 @@ def test_start_connector_sync(logged_in_user, connector_factory, fivetran):
     # connector uses schema and not tables updated
     connector.schema_config = get_mock_schema(0).to_dict()
     connector.save()
-    start_connector_sync(connector)
+    start_connector_sync(connector, None)
     assert fivetran.start_update_sync.call_count == 0
     assert connector.integration.state == Integration.State.LOAD
 
     # connector uses schema and tables updated
     connector.schema_config = get_mock_schema(1).to_dict()
     connector.save()
-    start_connector_sync(connector)
+    start_connector_sync(connector, None)
     assert fivetran.start_update_sync.call_count == 1
     assert fivetran.start_update_sync.call_args.args == (connector,)
 
     # connector does not use schema
     connector.service = "segment"
     connector.save()
-    start_connector_sync(connector)
+    start_connector_sync(connector, None)
     assert fivetran.start_update_sync.call_count == 2
     assert fivetran.start_update_sync.call_args.args == (connector,)
 

@@ -33,10 +33,15 @@ def test_workflow_run(
         kind=Node.Kind.OUTPUT, name="The answer", workflow=workflow
     )
 
-    # test running the workflow returns a dictionary with an error
-    r = client.post(f"/workflows/{workflow.id}/run_workflow")
+    # test running the workflow without an input fails
+    # in celery eager mode, it directly raises the exception
+    with pytest.raises(Exception):
+        r = client.post(f"/workflows/{workflow.id}/run_workflow")
+
+    # errors returned separately
+    r = client.get(f"/workflows/{workflow.id}/out_of_date")
     assertOK(r)
-    assert r.data == {output_node.id: "node_result_none"}
+    assert r.data["errors"] == {output_node.id: "node_result_none"}
 
     input_node = node_factory(
         kind=Node.Kind.INPUT, input_table=integration_table_factory(), workflow=workflow
