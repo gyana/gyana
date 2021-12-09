@@ -29,7 +29,7 @@ def has_errors(workflow):
 
 
 def forwards(apps, schema_editor):
-    Workflow = apps.get_model("workflow", "Workflow")
+    Workflow = apps.get_model("workflows", "Workflow")
     JobRun = apps.get_model("runs", "JobRun")
 
     # to maintain backwards compatability, add an initial run
@@ -49,7 +49,7 @@ def forwards(apps, schema_editor):
             workflow.state = (
                 WorkflowState.SUCCESS if not failed else WorkflowState.FAILED
             )
-            workflow.save()
+            workflow.save(update_fields=["state"])
 
 
 def backwards(apps, schema_editor):
