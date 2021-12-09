@@ -58,7 +58,7 @@ class Workflow(CloneMixin, SchedulableModel):
         State.INCOMPLETE: "Workflow setup is incomplete",
         State.RUNNING: "Workflow is currently running",
         State.FAILED: "One of the nodes in this workflow failed",
-        State.SUCCESS: "Workflow run successfully and is up to date",
+        State.SUCCESS: "Workflow ran successfully and is up to date",
     }
 
     RUN_STATE_TO_WORKFLOW_STATE = {
