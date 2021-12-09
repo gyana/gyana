@@ -1,12 +1,10 @@
 from uuid import uuid4
 
-import analytics
 from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from apps.base.analytics import WORFKLOW_RUN_EVENT
 from apps.runs.models import JobRun
 
 from .bigquery import run_workflow
@@ -22,19 +20,9 @@ def workflow_run(request, pk):
         task_id=uuid4(),
         state=JobRun.State.RUNNING,
         started_at=timezone.now(),
+        user=request.user,
     )
-    run_workflow.apply_async((workflow.id,), task_id=run.task_id)
-
-    # analytics.track(
-    #     request.user.id,
-    #     WORFKLOW_RUN_EVENT,
-    #     {
-    #         "id": workflow.id,
-    #         "success": not bool(errors),
-    #         **{f"error_{idx}": errors[key] for idx, key in enumerate(errors.keys())},
-    #     },
-    # )
-
+    run_workflow.apply_async((run.id,), task_id=run.task_id)
     return Response({"task_id": run.task_id})
 
 
