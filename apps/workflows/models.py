@@ -74,3 +74,6 @@ class Workflow(CloneMixin, SchedulableModel):
         from .bigquery import run_workflow
 
         return run_workflow(self)
+
+    def update_state_from_latest_run(self):
+        pass

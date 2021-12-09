@@ -1,5 +1,6 @@
 from django.db.models import F
 from django.urls import reverse
+from django_tables2 import SingleTableMixin
 
 from apps.base.frames import (
     TurboFrameDetailView,
@@ -8,6 +9,7 @@ from apps.base.frames import (
 )
 from apps.nodes.models import Node
 from apps.projects.mixins import ProjectMixin
+from apps.runs.tables import JobRunTable
 
 from .forms import WorkflowSettingsForm
 from .models import Workflow
@@ -53,11 +55,16 @@ class WorkflowLastRun(TurboFrameDetailView):
     turbo_frame_dom_id = "workflow-last-run"
 
 
-class WorkflowSettings(ProjectMixin, TurboFrameUpdateView):
+class WorkflowSettings(ProjectMixin, SingleTableMixin, TurboFrameUpdateView):
     template_name = "workflows/settings.html"
     model = Workflow
     form_class = WorkflowSettingsForm
+    table_class = JobRunTable
+    paginate_by = 15
     turbo_frame_dom_id = "workflows:settings"
+
+    def get_table_data(self):
+        return self.object.runs.all()
 
     def get_success_url(self) -> str:
         return reverse(

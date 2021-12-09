@@ -1,8 +1,11 @@
 import analytics
-from apps.base.analytics import WORFKLOW_RUN_EVENT
+from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
+
+from apps.base.analytics import WORFKLOW_RUN_EVENT
+from apps.runs.models import JobRun
 
 from .bigquery import run_workflow
 from .models import Workflow
@@ -11,7 +14,13 @@ from .models import Workflow
 @api_view(http_method_names=["POST"])
 def workflow_run(request, pk):
     workflow = get_object_or_404(Workflow, pk=pk)
-    errors = run_workflow(workflow) or {}
+    run = JobRun.objects.create(
+        source=JobRun.Source.WORKFLOW,
+        workflow=workflow,
+        state=JobRun.State.RUNNING,
+        started_at=timezone.now(),
+    )
+    errors = run_workflow(workflow, run) or {}
 
     analytics.track(
         request.user.id,
