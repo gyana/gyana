@@ -47,7 +47,6 @@ def run_workflow(self, run_id: int):
                 table.save()
 
     if run.user:
-        errors = {node.id: node.error for node in workflow.nodes.all() if node.error}
         analytics.track(
             run.user.id,
             WORFKLOW_RUN_EVENT,
@@ -55,7 +54,8 @@ def run_workflow(self, run_id: int):
                 "id": workflow.id,
                 "success": not workflow.failed,
                 **{
-                    f"error_{idx}": errors[key] for idx, key in enumerate(errors.keys())
+                    f"error_{idx}": workflow.errors[key]
+                    for idx, key in enumerate(workflow.errors.keys())
                 },
             },
         )

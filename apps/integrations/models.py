@@ -1,7 +1,6 @@
 from datetime import timedelta
 from itertools import chain
 
-from celery import states
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
