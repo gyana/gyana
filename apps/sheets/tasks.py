@@ -9,6 +9,7 @@ from apps.base.time import catchtime
 from apps.integrations.emails import send_integration_ready_email
 from apps.runs.models import JobRun
 from apps.tables.models import Table
+from apps.users.models import CustomUser
 
 from .bigquery import import_table_from_sheet
 from .models import Sheet
@@ -49,13 +50,14 @@ def run_sheet_sync_task(self, sheet_id, skip_up_to_date=False):
     return integration.id
 
 
-def run_sheet_sync(sheet: Sheet, skip_up_to_date=False):
+def run_sheet_sync(sheet: Sheet, user: CustomUser, skip_up_to_date=False):
     run = JobRun.objects.create(
         source=JobRun.Source.INTEGRATION,
         integration=sheet.integration,
         task_id=uuid4(),
         state=JobRun.State.RUNNING,
         started_at=timezone.now(),
+        user=user
     )
     run_sheet_sync_task.apply_async(
         (sheet.id,), {"skip_up_to_date": skip_up_to_date}, task_id=run.task_id

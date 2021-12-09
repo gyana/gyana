@@ -25,7 +25,7 @@ class JobRun(DirtyFieldsMixin, BaseModel):
     state = models.CharField(max_length=8, choices=State.choices)
     started_at = models.DateTimeField(null=True)
     completed_at = models.DateTimeField(null=True)
-    user = models.ForeignKey(CustomUser, null=True)
+    user = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
     task_id = models.UUIDField(null=True)
     result = models.OneToOneField(TaskResult, null=True, on_delete=models.SET_NULL)
     source = models.CharField(max_length=16, choices=Source.choices)

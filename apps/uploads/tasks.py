@@ -10,6 +10,7 @@ from apps.integrations.emails import send_integration_ready_email
 from apps.runs.models import JobRun
 from apps.tables.models import Table
 from apps.uploads.bigquery import import_table_from_upload
+from apps.users.models import CustomUser
 
 from .models import Upload
 
@@ -45,12 +46,13 @@ def run_upload_sync_task(self, upload_id: int):
     return integration.id
 
 
-def run_upload_sync(upload: Upload):
+def run_upload_sync(upload: Upload, user: CustomUser):
     run = JobRun.objects.create(
         source=JobRun.Source.INTEGRATION,
         integration=upload.integration,
         task_id=uuid4(),
         state=JobRun.State.RUNNING,
         started_at=timezone.now(),
+        user=user,
     )
     run_upload_sync_task.apply_async((upload.id,), task_id=run.task_id)
