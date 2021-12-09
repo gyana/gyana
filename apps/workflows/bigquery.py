@@ -1,3 +1,4 @@
+from celery import shared_task
 from django.db import transaction
 from django.utils import timezone
 
@@ -5,12 +6,13 @@ from apps.base import clients
 from apps.base.errors import error_name_to_snake
 from apps.nodes.bigquery import NodeResultNone, get_query_from_node
 from apps.nodes.models import Node
-from apps.runs.models import JobRun
 from apps.tables.models import Table
 from apps.workflows.models import Workflow
 
 
-def run_workflow(workflow: Workflow, run: JobRun):
+@shared_task(bind=True)
+def run_workflow(self, workflow_id: int):
+    workflow = Workflow.objects.get(pk=workflow_id)
     output_nodes = workflow.nodes.filter(kind=Node.Kind.OUTPUT).all()
     client = clients.bigquery()
 
@@ -40,7 +42,5 @@ def run_workflow(workflow: Workflow, run: JobRun):
                 table.data_updated = timezone.now()
                 table.save()
 
-    run.state = JobRun.State.FAILED if workflow.failed else JobRun.State.SUCCESS
-    run.completed_at = timezone.now()
-    run.save()
-    return {node.id: node.error for node in workflow.nodes.all() if node.error}
+    if workflow.failed:
+        raise Exception
