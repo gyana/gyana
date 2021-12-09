@@ -60,7 +60,7 @@ class WorkflowSettings(ProjectMixin, SingleTableMixin, TurboFrameUpdateView):
     model = Workflow
     form_class = WorkflowSettingsForm
     table_class = JobRunTable
-    paginate_by = 15
+    paginate_by = 10
     turbo_frame_dom_id = "workflows:settings"
 
     def get_table_data(self):
