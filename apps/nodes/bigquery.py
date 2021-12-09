@@ -130,7 +130,13 @@ def get_aggregation_query(node, query):
 def get_union_query(node, query, *queries):
     colnames = query.schema()
     for parent in queries:
-        query = query.union(parent, distinct=node.union_distinct)
+        if set(parent.schema()) == set(colnames):
+            # Project to make sure columns are in the same order
+            query = query.union(
+                parent.projection(colnames), distinct=node.union_distinct
+            )
+        else:
+            raise ibis.common.exceptions.RelationError
     # Need to `select *` so we can operate on the query
     return query.projection(colnames)
 
