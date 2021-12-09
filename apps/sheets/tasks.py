@@ -2,7 +2,6 @@ from uuid import uuid4
 
 from celery import shared_task
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from apps.base.time import catchtime
@@ -16,9 +15,10 @@ from .models import Sheet
 
 
 @shared_task(bind=True)
-def run_sheet_sync_task(self, sheet_id, skip_up_to_date=False):
-    sheet = get_object_or_404(Sheet, pk=sheet_id)
-    integration = sheet.integration
+def run_sheet_sync_task(self, run_id, skip_up_to_date=False):
+    run = JobRun.objects.get(pk=run_id)
+    integration = run.integration
+    sheet = integration.sheet
 
     # we need to save the table instance to get the PK from database, this ensures
     # database will rollback automatically if there is an error with the bigquery
@@ -57,8 +57,8 @@ def run_sheet_sync(sheet: Sheet, user: CustomUser, skip_up_to_date=False):
         task_id=uuid4(),
         state=JobRun.State.RUNNING,
         started_at=timezone.now(),
-        user=user
+        user=user,
     )
     run_sheet_sync_task.apply_async(
-        (sheet.id,), {"skip_up_to_date": skip_up_to_date}, task_id=run.task_id
+        (run.id,), {"skip_up_to_date": skip_up_to_date}, task_id=run.task_id
     )

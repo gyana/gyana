@@ -2,7 +2,6 @@ from uuid import uuid4
 
 from celery import shared_task
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from apps.base.time import catchtime
@@ -16,10 +15,11 @@ from .models import Upload
 
 
 @shared_task(bind=True)
-def run_upload_sync_task(self, upload_id: int):
+def run_upload_sync_task(self, run_id: int):
 
-    upload = get_object_or_404(Upload, pk=upload_id)
-    integration = upload.integration
+    run = JobRun.objects.get(pk=run_id)
+    integration = run.integration
+    upload = integration.upload
 
     # we need to save the table instance to get the PK from database, this ensures
     # database will rollback automatically if there is an error with the bigquery
@@ -55,4 +55,4 @@ def run_upload_sync(upload: Upload, user: CustomUser):
         started_at=timezone.now(),
         user=user,
     )
-    run_upload_sync_task.apply_async((upload.id,), task_id=run.task_id)
+    run_upload_sync_task.apply_async((run.id,), task_id=run.task_id)
