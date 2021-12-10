@@ -14,3 +14,7 @@ class DashboardMixin(ProjectMixin):
         context = super().get_context_data(**kwargs)
         context["dashboard"] = self.dashboard
         return context
+
+    @cached_property
+    def page(self):
+        return self.dashboard.pages.get(position=self.request.GET.get("page", 1))

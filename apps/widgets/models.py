@@ -4,7 +4,7 @@ from model_clone import CloneMixin
 
 from apps.base.aggregations import AggregationFunctions
 from apps.base.models import BaseModel, SaveParentModel
-from apps.dashboards.models import Dashboard
+from apps.dashboards.models import Dashboard, Page
 from apps.tables.models import Table
 
 # Need to be a multiple of GRID_SIZE found in GyWidget.tsx
@@ -58,7 +58,9 @@ class Widget(CloneMixin, BaseModel):
         SUM = "sum", "Sum"
         MEAN = "mean", "Average"
 
-    dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE)
+    page = models.ForeignKey(
+        Page, on_delete=models.CASCADE, null=True, related_name="widgets"
+    )
 
     table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True)
 

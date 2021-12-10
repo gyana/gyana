@@ -15,7 +15,7 @@ def login_and_project_required_or_public_or_in_template(view_func):
     @wraps(view_func)
     def decorator(request, *args, **kwargs):
         widget = Widget.objects.get(pk=kwargs["pk"])
-        dashboard = widget.dashboard
+        dashboard = widget.page.dashboard
 
         if not dashboard or dashboard.project.team.deleted:
             return render(request, "404.html", status=404)
@@ -33,9 +33,9 @@ def login_and_project_required_or_public_or_in_template(view_func):
         user = request.user
         if not user.is_authenticated:
             return render(request, "404.html", status=404)
-        if widget.dashboard.project.is_template:
+        if widget.page.dashboard.project.is_template:
             return view_func(request, *args, **kwargs)
-        project = widget.dashboard.project
+        project = widget.page.dashboard.project
         if user_can_access_project(user, project):
             return view_func(request, *args, **kwargs)
 
@@ -46,7 +46,7 @@ def login_and_project_required_or_public_or_in_template(view_func):
 
 def widget_of_team(user, pk, *args, **kwargs):
     widget = get_object_or_404(Widget, pk=pk)
-    return user_can_access_project(user, widget.dashboard.project)
+    return user_can_access_project(user, widget.page.dashboard.project)
 
 
 login_and_widget_required = login_and_permission_to_access(widget_of_team)

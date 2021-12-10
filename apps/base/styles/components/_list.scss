@@ -17,13 +17,18 @@
     display: flex;
     min-height: 32px;
     padding: 0 0.8rem;
-    
+
     &--interactive {
       cursor: pointer;
 
       &:hover {
         background-color: var(--c-gray);
       }
+    }
+
+    &.disabled {
+      color: var(--c-black-20);
+      background-color: var(--c-gray-50);
     }
   }
 }
