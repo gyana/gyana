@@ -49,7 +49,7 @@ def setup(
 )
 def test_generic_form(kind, formset_classes, setup, widget_factory):
     dashboard, table = setup
-    widget = widget_factory(kind=kind, table=table, dashboard=dashboard)
+    widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
     form = FORMS[kind](instance=widget)
 
     assert set(form.get_live_fields()) == {"kind", "table"}
@@ -103,7 +103,7 @@ def test_generic_form(kind, formset_classes, setup, widget_factory):
 )
 def test_one_dimension_form(kind, formset_classes, setup, widget_factory):
     dashboard, table = setup
-    widget = widget_factory(kind=kind, table=table, dashboard=dashboard)
+    widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
     form = FORMS[kind](instance=widget)
 
     if kind == Widget.Kind.COMBO:
@@ -159,7 +159,7 @@ def test_one_dimension_form(kind, formset_classes, setup, widget_factory):
 )
 def test_two_dimension_form(kind, formset_classes, setup, widget_factory):
     dashboard, table = setup
-    widget = widget_factory(kind=kind, table=table, dashboard=dashboard)
+    widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
     form = FORMS[kind](instance=widget)
 
     fields = {"kind", "table", "dimension", "second_dimension"}
@@ -174,7 +174,9 @@ def test_two_dimension_form(kind, formset_classes, setup, widget_factory):
 
 def test_date_column_is_added(setup, widget_factory, control_factory):
     dashboard, table = setup
-    widget = widget_factory(kind=Widget.Kind.TABLE, table=table, dashboard=dashboard)
+    widget = widget_factory(
+        kind=Widget.Kind.TABLE, table=table, page__dashboard=dashboard
+    )
     form = FORMS[widget.kind](instance=widget, project=dashboard.project)
 
     assert set(form.get_live_fields()) == {"kind", "table"}

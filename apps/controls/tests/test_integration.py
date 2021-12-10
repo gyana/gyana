@@ -46,7 +46,8 @@ def test_control_crudl(
     mock_bq_client_data(bigquery)
     # add a widget with a dateslice column so it's picked up when creating the output stream
     dashboard = dashboard_factory(project=project)
-    widget = dashboard.widget_set.create(
+    page = dashboard.pages.create()
+    widget = page.widgets.create(
         date_column="birthday",
         dimension="athlete",
         kind=Widget.Kind.COLUMN,

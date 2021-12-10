@@ -22,7 +22,7 @@ def test_widget_crudl(
     )
     table = integration_table_factory(project=project)
     dashboard = dashboard_factory(project=project)
-
+    page = dashboard.pages.create()
     dashboard_url = f"/projects/{project.id}/dashboards/{dashboard.id}"
     # TODO: Not used right now, maybe replace _add_widget.html with create.html
     r = client.get(f"{dashboard_url}/widgets/new")
@@ -32,7 +32,7 @@ def test_widget_crudl(
     # create
     r = client.post(
         f"{dashboard_url}/widgets/new",
-        data={"x": 50, "y": 100, "kind": Widget.Kind.COLUMN},
+        data={"x": 50, "y": 100, "kind": Widget.Kind.COLUMN, "page": page.id},
     )
     widget = Widget.objects.first()
     assertOK(r)

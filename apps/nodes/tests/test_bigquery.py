@@ -238,7 +238,7 @@ def test_aggregation_node(setup):
 UNION_QUERY = (
     f"SELECT `id`, `athlete`, `birthday`"
     f"\nFROM (\n{textwrap.indent(INPUT_QUERY, '  ')}\n  UNION ALL"
-    f"\n{textwrap.indent(INPUT_QUERY, '  ')}\n) t0"
+    f"\n{textwrap.indent(INPUT_QUERY.replace('*', '`id`, `athlete`, `birthday`'), '  ')}\n) t0"
 )
 
 

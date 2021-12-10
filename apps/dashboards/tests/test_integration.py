@@ -35,7 +35,7 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     r = client.get(DETAIL)
     assertOK(r)
     # TODO: Fix this
-    assertFormRenders(r, ["name", "x", "y", "kind"])
+    assertFormRenders(r, ["name", "x", "y", "kind", "page"])
     assertLink(r, f"{DETAIL}/delete", "Delete")
 
     # update/rename
@@ -66,7 +66,7 @@ def test_dashboard_share(
     client, logged_in_user, project, dashboard_factory, widget_factory
 ):
     dashboard = dashboard_factory(project=project)
-    widget = widget_factory(dashboard=dashboard)
+    widget = widget_factory(page__dashboard=dashboard)
 
     DETAIL = f"/projects/{project.id}/dashboards/{dashboard.id}"
     WIDGET = f"{DETAIL}/widgets/{widget.id}/output"
@@ -176,7 +176,7 @@ def test_dashboard_duplication(
     name = "My dashboard"
     dashboard = dashboard_factory(project=project, name=name)
     table = integration_table_factory()
-    widget = widget_factory(dashboard=dashboard, table=table)
+    widget = widget_factory(page__dashboard=dashboard, table=table)
     filter_ = filter_factory(widget=widget, column="My column")
 
     r = client.post(f"/dashboards/{dashboard.id}/duplicate")
@@ -187,8 +187,9 @@ def test_dashboard_duplication(
     assert new_dashboard is not None
     assert new_dashboard.name == f"Copy of {name}"
 
-    assert new_dashboard.widget_set.count() == 1
-    new_widget = new_dashboard.widget_set.first()
+    new_dashboard_page = new_dashboard.pages.first()
+    assert new_dashboard_page.widgets.count() == 1
+    new_widget = new_dashboard_page.widgets.first()
 
     # preserve name and table information
     assert new_widget.name == widget.name
