@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from model_clone import CloneMixin
 
@@ -10,6 +11,20 @@ from apps.tables.models import Table
 # Need to be a multiple of GRID_SIZE found in GyWidget.tsx
 DEFAULT_WIDTH = 495
 DEFAULT_HEIGHT = 390
+
+
+# These were taken from fusioncharts.theme.fusion.js as the default values
+# for a chart palette.
+def getFusionThemePalette():
+    return [
+        "#5D62B5",
+        "#29C3BE",
+        "#F2726F",
+        "#FFC533",
+        "#62B58F",
+        "#BC95DF",
+        "#67CDF2",
+    ]
 
 
 class Widget(CloneMixin, BaseModel):
@@ -110,6 +125,14 @@ class Widget(CloneMixin, BaseModel):
         null=True,
         help_text="Select a temporal column that will be used when using the dashboard date slicer",
     )
+
+    palette_colors = ArrayField(
+        models.CharField(default="#5D62B5", max_length=7),
+        size=10,
+        null=True,
+    )
+    background_color = models.CharField(max_length=7, null=True)
+    show_tooltips = models.BooleanField(null=True)
 
     def __str__(self):
         return f"<Widget {self.kind} on {self.table}>"

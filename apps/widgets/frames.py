@@ -27,7 +27,7 @@ from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, metric_to_output, table_to_output
 
-from .forms import FORMS
+from .forms import FORMS, WidgetStyleForm
 from .models import WIDGET_CHOICES_ARRAY, Widget
 
 
@@ -113,6 +113,8 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
         context["show_date_column"] = bool(
             context["form"].get_live_field("date_column")
         )
+        context["styleForm"] = WidgetStyleForm(instance=self.object)
+
         return context
 
     def form_valid(self, form):
@@ -220,6 +222,28 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
                 ]
             )
         return r
+
+
+class WidgetStyle(DashboardMixin, TurboFrameUpdateView):
+    template_name = "widgets/update.html"
+    model = Widget
+    turbo_frame_dom_id = "widget-modal-style"
+    form_class = WidgetStyleForm
+
+    def get_success_url(self) -> str:
+        if self.request.POST.get("submit") == "Save & Preview":
+            return reverse(
+                "dashboard_widgets:update",
+                args=(
+                    self.project.id,
+                    self.dashboard.id,
+                    self.object.id,
+                ),
+            )
+        return reverse(
+            "project_dashboards:detail",
+            args=(self.project.id, self.dashboard.id),
+        )
 
 
 class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):

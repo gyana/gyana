@@ -53,6 +53,7 @@ def _create_axis_names(widget):
 
 def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     """Render a chart from a table."""
+    pallete_colors = widget.palette_colors or widget.dashboard.palette_colors
 
     data = CHART_DATA[widget.kind](widget, df)
     axis_names = _create_axis_names(widget)
@@ -62,8 +63,13 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
             # Themes can override each other, the values in the right-most theme
             # take precedence.
             "theme": "fusion",
-            "paletteColors": ",".join(widget.dashboard.palette_colors),
-            "bgAlpha": "0",
+            "paletteColors": ",".join(pallete_colors),
+            "bgColor": widget.background_color or "#ffffff",
+            "bgAlpha": "100" if widget.background_color else "0",
+            "showToolTip": widget.show_tooltips if widget.show_tooltips is not None else True,
+            "exportenabled": "1",
+            "exportmode": "client",
+            "exportFileName": widget.name if widget.name else "untitled_chart",
             **axis_names,
         },
         **data,
