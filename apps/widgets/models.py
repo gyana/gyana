@@ -26,8 +26,23 @@ def getFusionThemePalette():
         "#67CDF2",
     ]
 
+class WidgetStyle(models.Model):
+    class Meta:
+        abstract = True
 
-class Widget(CloneMixin, BaseModel):
+    palette_colors = ArrayField(
+        models.CharField(default="#5D62B5", max_length=7),
+        size=10,
+        null=True,
+    )
+    background_color = models.CharField(max_length=7, null=True)
+
+    # Fusionchart configuration
+    show_tooltips = models.BooleanField(null=True)
+    font_size = models.DecimalField(max_digits=6, decimal_places=2, null=True)
+
+
+class Widget(WidgetStyle, CloneMixin, BaseModel):
     _clone_m2o_or_o2m_fields = ["filters", "aggregations", "charts"]
 
     class Category(models.TextChoices):
@@ -125,14 +140,6 @@ class Widget(CloneMixin, BaseModel):
         null=True,
         help_text="Select a temporal column that will be used when using the dashboard date slicer",
     )
-
-    palette_colors = ArrayField(
-        models.CharField(default="#5D62B5", max_length=7),
-        size=10,
-        null=True,
-    )
-    background_color = models.CharField(max_length=7, null=True)
-    show_tooltips = models.BooleanField(null=True)
 
     def __str__(self):
         return f"<Widget {self.kind} on {self.table}>"

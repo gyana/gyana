@@ -214,4 +214,4 @@ class WidgetStyleForm(forms.ModelForm):
 
     class Meta:
         model = Widget
-        fields = ["palette_colors", "background_color", "show_tooltips"]
+        fields = ["palette_colors", "background_color", "show_tooltips", "font_size"]

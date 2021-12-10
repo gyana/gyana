@@ -66,7 +66,10 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
             "paletteColors": ",".join(pallete_colors),
             "bgColor": widget.background_color or "#ffffff",
             "bgAlpha": "100" if widget.background_color else "0",
-            "showToolTip": widget.show_tooltips if widget.show_tooltips is not None else True,
+            "showToolTip": widget.show_tooltips
+            if widget.show_tooltips is not None
+            else True,
+            "baseFontSize": widget.font_size if f"{widget.font_size}rem" else "2rem",
             "exportenabled": "1",
             "exportmode": "client",
             "exportFileName": widget.name if widget.name else "untitled_chart",
