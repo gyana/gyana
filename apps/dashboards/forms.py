@@ -76,8 +76,12 @@ class DashboardNameForm(forms.ModelForm):
 
 
 class DashboardForm(forms.ModelForm):
-    width = forms.IntegerField(required=False)
-    height = forms.IntegerField(required=False)
+    width = forms.IntegerField(
+        required=False, widget=forms.NumberInput(attrs={"step": "15"})
+    )
+    height = forms.IntegerField(
+        required=False, widget=forms.NumberInput(attrs={"step": "15"})
+    )
     grid_size = forms.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(1200)], required=False
     )
@@ -97,7 +101,12 @@ class DashboardForm(forms.ModelForm):
             "height",
             "grid_size",
         ]
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
+        self.fields["width"].widget.attrs.update({"step": self.instance.grid_size})
+        self.fields["height"].widget.attrs.update({"step": self.instance.grid_size})
 
 class DashboardShareForm(LiveUpdateForm):
     class Meta:

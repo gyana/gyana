@@ -5,26 +5,13 @@ from model_clone import CloneMixin
 
 from apps.base.aggregations import AggregationFunctions
 from apps.base.models import BaseModel, SaveParentModel
-from apps.dashboards.models import Dashboard
+from apps.dashboards.models import Dashboard, getFusionThemePalette
 from apps.tables.models import Table
 
 # Need to be a multiple of GRID_SIZE found in GyWidget.tsx
 DEFAULT_WIDTH = 495
 DEFAULT_HEIGHT = 390
 
-
-# These were taken from fusioncharts.theme.fusion.js as the default values
-# for a chart palette.
-def getFusionThemePalette():
-    return [
-        "#5D62B5",
-        "#29C3BE",
-        "#F2726F",
-        "#FFC533",
-        "#62B58F",
-        "#BC95DF",
-        "#67CDF2",
-    ]
 
 class WidgetStyle(models.Model):
     class Meta:
@@ -39,7 +26,7 @@ class WidgetStyle(models.Model):
 
     # Fusionchart configuration
     show_tooltips = models.BooleanField(null=True)
-    font_size = models.DecimalField(max_digits=6, decimal_places=2, null=True)
+    font_size = models.IntegerField(null=True)
 
 
 class Widget(WidgetStyle, CloneMixin, BaseModel):
