@@ -114,10 +114,10 @@ class Dashboard(CloneMixin, BaseModel):
     def has_control(self):
         return hasattr(self, "control")
 
-    def yield_all_widgets(self):
-        for page in self.pages.iterator():
-            yield from page.widgets.iterator()
-        return
+    def get_all_widgets(self):
+        from apps.widgets.models import Widget
+
+        return Widget.objects.filter(page__dashboard=self).all()
 
 
 class Page(CloneMixin, BaseModel):

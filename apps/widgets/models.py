@@ -58,9 +58,7 @@ class Widget(CloneMixin, BaseModel):
         SUM = "sum", "Sum"
         MEAN = "mean", "Average"
 
-    page = models.ForeignKey(
-        Page, on_delete=models.CASCADE, null=True, related_name="widgets"
-    )
+    page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name="widgets")
 
     table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True)
 
