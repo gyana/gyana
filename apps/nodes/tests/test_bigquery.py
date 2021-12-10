@@ -242,6 +242,13 @@ UNION_QUERY = (
 )
 
 
+EXCEPT_QUERY = (
+    f"SELECT `id`, `athlete`, `birthday`"
+    f"\nFROM (\n{textwrap.indent(INPUT_QUERY, '  ')}\n  EXCEPT DISTINCT"
+    f"\n{textwrap.indent(INPUT_QUERY, '  ')}\n) t0"
+)
+
+
 def test_union_node(setup):
     input_node, workflow = setup
     second_input_node = input_node.make_clone()
@@ -274,9 +281,7 @@ def test_except_node(setup):
     except_node.parents.add(input_node)
     except_node.parents.add(second_input_node, through_defaults={"position": 1})
 
-    assert get_query_from_node(except_node).compile() == UNION_QUERY.replace(
-        "UNION ALL", "EXCEPT DISTINCT"
-    )
+    assert get_query_from_node(except_node).compile() == EXCEPT_QUERY
 
 
 def test_intersect_node(setup):
@@ -291,8 +296,8 @@ def test_intersect_node(setup):
     intersect_node.parents.add(input_node)
     intersect_node.parents.add(second_input_node, through_defaults={"position": 1})
 
-    assert get_query_from_node(intersect_node).compile() == UNION_QUERY.replace(
-        "UNION ALL", "INTERSECT DISTINCT"
+    assert get_query_from_node(intersect_node).compile() == EXCEPT_QUERY.replace(
+        "EXCEPT DISTINCT", "INTERSECT DISTINCT"
     )
 
 
