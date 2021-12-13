@@ -31,7 +31,7 @@ class WorkflowOverview(ProjectMixin, TurboFrameTemplateView):
         )
         nodes = Node.objects.filter(workflow__project=self.project)
         incomplete = workflows.filter(state=Workflow.State.INCOMPLETE).count()
-        outdated = workflows.filter(last_run__lte=F("data_updated")).count()
+        outdated = workflows.filter(last_run__started_at__lte=F("data_updated")).count()
         failed = workflows.filter(state=Workflow.State.FAILED).count()
 
         context_data["workflows"] = {

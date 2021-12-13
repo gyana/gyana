@@ -25,7 +25,9 @@ class WorkflowTable(tables.Table):
         attrs = {"class": "table"}
 
     name = tables.Column(linkify=True)
-    last_run = NaturalDatetimeColumn()
+    last_run = NaturalDatetimeColumn(
+        accessor="last_run__started_at", verbose_name="Last run"
+    )
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
     # TODO: Fix orderable for status column.

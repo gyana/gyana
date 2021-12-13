@@ -1,5 +1,6 @@
-from apps.nodes.admin import NodeInline
 from django.contrib import admin
+
+from apps.nodes.admin import NodeInline
 
 from .models import Workflow
 

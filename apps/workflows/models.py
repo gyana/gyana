@@ -40,7 +40,12 @@ class Workflow(CloneMixin, SchedulableModel):
     state = models.CharField(
         max_length=16, choices=State.choices, default=State.INCOMPLETE
     )
-    last_run = models.DateTimeField(null=True)
+    last_run = models.OneToOneField(
+        "runs.JobRun",
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="workflow_last_run_for",
+    )
     data_updated = models.DateTimeField(
         auto_now_add=True,
     )
@@ -115,7 +120,7 @@ class Workflow(CloneMixin, SchedulableModel):
         if not latest_input_updated:
             return True
 
-        return self.last_run < max(self.data_updated, latest_input_updated)
+        return self.last_run.started_at < max(self.data_updated, latest_input_updated)
 
     def run_for_schedule(self):
         from .bigquery import run_workflow
@@ -129,9 +134,6 @@ class Workflow(CloneMixin, SchedulableModel):
             else self.RUN_STATE_TO_WORKFLOW_STATE[self.latest_run.state]
         )
         self.last_run = (
-            self.runs.filter(completed_at__isnull=False)
-            .order_by("-started_at")
-            .first()
-            .started_at
+            self.runs.filter(completed_at__isnull=False).order_by("-started_at").first()
         )
         self.save(update_fields=["state", "last_run"])
