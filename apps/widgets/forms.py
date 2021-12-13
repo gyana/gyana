@@ -27,6 +27,7 @@ class GenericWidgetForm(LiveUpdateForm):
             "sort_ascending",
             "stack_100_percent",
             "date_column",
+            "show_summary_row",
         ]
         widgets = {"table": SourceSelect()}
 
@@ -57,9 +58,13 @@ class GenericWidgetForm(LiveUpdateForm):
     def get_live_fields(self):
         fields = ["table", "kind"]
 
-        if self.get_live_field("table") and self.instance.dashboard.has_control:
+        if self.get_live_field("table") and self.instance.page.dashboard.has_control:
             fields += ["date_column"]
 
+        if self.get_live_field("kind") == Widget.Kind.TABLE and self.get_live_field(
+            "table"
+        ):
+            fields += ["show_summary_row"]
         return fields
 
     def get_live_formsets(self):
@@ -70,7 +75,7 @@ class GenericWidgetForm(LiveUpdateForm):
         kind = self.get_live_field("kind")
         if chart_formsets := FORMSETS.get(kind):
             formsets += chart_formsets
-        elif kind not in [Widget.Kind.TABLE]:
+        else:
             formsets += [AggregationColumnFormset]
         return formsets
 

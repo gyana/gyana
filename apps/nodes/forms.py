@@ -82,8 +82,8 @@ class SelectNodeForm(NodeForm):
 
     def save(self, *args, **kwargs):
         self.instance.columns.all().delete()
-        self.instance.columns.set(
-            [Column(column=column) for column in self.cleaned_data["select_columns"]],
+        self.instance.columns.add(
+            *[Column(column=column) for column in self.cleaned_data["select_columns"]],
             bulk=False,
         )
         return super().save(*args, **kwargs)
@@ -106,8 +106,11 @@ class DistinctNodeForm(NodeForm):
 
     def save(self, *args, **kwargs):
         self.instance.columns.all().delete()
-        self.instance.columns.set(
-            [Column(column=column) for column in self.cleaned_data["distinct_columns"]],
+        self.instance.columns.add(
+            *[
+                Column(column=column)
+                for column in self.cleaned_data["distinct_columns"]
+            ],
             bulk=False,
         )
         return super().save(*args, **kwargs)

@@ -53,7 +53,7 @@ def _create_axis_names(widget):
 
 def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     """Render a chart from a table."""
-    pallete_colors = widget.palette_colors or widget.dashboard.palette_colors
+    pallete_colors = widget.palette_colors or widget.page.dashboard.palette_colors
 
     data = CHART_DATA[widget.kind](widget, df)
     axis_names = _create_axis_names(widget)

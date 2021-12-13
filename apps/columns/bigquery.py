@@ -103,3 +103,37 @@ def compile_formula(query, formula):
 def convert_column(query, convert_column):
     type_ = TYPES[convert_column.target_type]
     return query[convert_column.column].cast(type_)
+
+
+def resolve_colname(colname, computation, column_names):
+    """If a column is aggregated over more than once
+    Generate a new column as combination of computation and column_name"""
+    if column_names.count(colname) > 1:
+        return f"{computation}_{colname}"
+    return colname
+
+
+def get_aggregate_expr(query, colname, computation, column_names):
+    """Creates an aggregation"""
+    column = getattr(query, colname)
+
+    colname = resolve_colname(colname, computation, column_names)
+    return getattr(column, computation)().name(colname)
+
+
+def aggregate_columns(query, instance):
+    """Aggregates over multiple aggregations and resolves name conflicts"""
+    groups = [col.column for col in instance.columns.all()]
+    aggregations = instance.aggregations.all()
+    column_names = [agg.column for agg in aggregations]
+    aggregations = [
+        get_aggregate_expr(query, agg.column, agg.function, column_names)
+        for agg in instance.aggregations.all()
+    ]
+    if groups:
+        query = query.group_by(groups)
+    if aggregations:
+        return query.aggregate(aggregations)
+    # query.count() returns a scalar
+    # use aggregate to return TableExpr
+    return query.aggregate(query.count())

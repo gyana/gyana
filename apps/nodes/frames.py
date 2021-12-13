@@ -143,7 +143,7 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
         try:
             query = get_query_from_node(self.preview_node)
             schema = query.schema()
-            table = get_table(schema, query, **kwargs)
+            table = get_table(schema, query, None, **kwargs)
 
             return RequestConfig(
                 self.request, paginate=self.get_table_pagination(table)

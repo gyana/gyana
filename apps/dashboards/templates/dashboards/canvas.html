@@ -35,6 +35,7 @@
       <input name='kind' id="id_kind" value="" />
       <input name='x' id="id_x" value="" />
       <input name='y' id="id_y" value="" />
+      <input name='page' id="id_page" value="{{page.id}}"/>
 
       <button type="submit"></button>
     </form>
@@ -48,7 +49,7 @@
         --grid-size:{{ dashboard.grid_size }}px;
       "
     >
-      {% for object in dashboard.widget_set.all %}
+      {% for object in page.widgets.all %}
         {% include 'widgets/widget_component.html' %}
       {% empty %}
         {% if request.GET.mode != 'view' %}

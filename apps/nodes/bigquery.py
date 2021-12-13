@@ -7,7 +7,13 @@ from ibis.expr.datatypes import String
 
 from apps.base import clients
 from apps.base.errors import error_name_to_snake
-from apps.columns.bigquery import compile_formula, compile_function, convert_column
+from apps.columns.bigquery import (
+    aggregate_columns,
+    compile_formula,
+    compile_function,
+    convert_column,
+    get_aggregate_expr,
+)
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.teams.models import OutOfCreditsException
@@ -37,17 +43,6 @@ def _rename_duplicates(left, right, left_col, right_col):
     right_col = f"{right_col}_right" if right_col in duplicates else right_col
 
     return left, right, left_col, right_col
-
-
-def _get_aggregate_expr(query, colname, computation, column_names):
-    """Creates an aggregation"""
-    column = getattr(query, colname)
-    # If a column is aggregated over more than once
-    # Generate a new column as combination of computation and column_name
-    new_colname = colname
-    if column_names.count(colname) > 1:
-        new_colname = f"{computation}_{colname}"
-    return getattr(column, computation)().name(new_colname)
 
 
 def _format_literal(value, type_):
@@ -111,20 +106,7 @@ def get_join_query(node, left, right):
 
 
 def get_aggregation_query(node, query):
-    groups = [col.column for col in node.columns.all()]
-    aggregation_models = node.aggregations.all()
-    column_names = [agg.column for agg in aggregation_models]
-    aggregations = [
-        _get_aggregate_expr(query, agg.column, agg.function, column_names)
-        for agg in node.aggregations.all()
-    ]
-    if groups:
-        query = query.group_by(groups)
-    if aggregations:
-        return query.aggregate(aggregations)
-    # query.count() returns a scalar
-    # use aggregate to return TableExpr
-    return query.aggregate(query.count())
+    return aggregate_columns(query, node)
 
 
 def get_union_query(node, query, *queries):
@@ -263,7 +245,7 @@ def get_unpivot_query(node, parent):
 def get_window_query(node, query):
     aggregations = []
     for window in node.window_columns.all():
-        aggregation = _get_aggregate_expr(
+        aggregation = get_aggregate_expr(
             query, window.column, window.function, []
         ).name(window.label)
 

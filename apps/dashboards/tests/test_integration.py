@@ -28,6 +28,7 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     r = client.post(f"{LIST}/new", data={"project": project.id})
     dashboard = project.dashboard_set.first()
     assert dashboard is not None
+    assert dashboard.pages.first() is not None
     DETAIL = f"{LIST}/{dashboard.id}"
     assertRedirects(r, DETAIL, status_code=303)
 
@@ -35,7 +36,7 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     r = client.get(DETAIL)
     assertOK(r)
     # TODO: Fix this
-    assertFormRenders(r, ["name", "x", "y", "kind"])
+    assertFormRenders(r, ["name", "x", "y", "kind", "page"])
     assertLink(r, f"{DETAIL}/delete", "Delete")
 
     # update/rename
@@ -44,6 +45,21 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     assertRedirects(r, DETAIL, status_code=303)
     dashboard.refresh_from_db()
     assert dashboard.name == new_name
+
+    # add page
+    r = client.post(f"{DETAIL}/pages/new")
+    assertRedirects(r, f"{DETAIL}?page=2", status_code=302)
+    page = dashboard.pages.last()
+    assert page.position == 2
+
+    r = client.get(r.url)
+    assertOK(r)
+    assertContains(r, "Page 2 of 2")
+
+    # delete page
+    r = client.delete(f"{DETAIL}/pages/{page.id}")
+    assertRedirects(r, f"{DETAIL}?page=1", status_code=302)
+    assert dashboard.pages.count() == 1
 
     # delete
     r = client.get(f"{DETAIL}/delete")
@@ -66,7 +82,7 @@ def test_dashboard_share(
     client, logged_in_user, project, dashboard_factory, widget_factory
 ):
     dashboard = dashboard_factory(project=project)
-    widget = widget_factory(dashboard=dashboard)
+    widget = widget_factory(page__dashboard=dashboard)
 
     DETAIL = f"/projects/{project.id}/dashboards/{dashboard.id}"
     WIDGET = f"{DETAIL}/widgets/{widget.id}/output"
@@ -176,7 +192,7 @@ def test_dashboard_duplication(
     name = "My dashboard"
     dashboard = dashboard_factory(project=project, name=name)
     table = integration_table_factory()
-    widget = widget_factory(dashboard=dashboard, table=table)
+    widget = widget_factory(page__dashboard=dashboard, table=table)
     filter_ = filter_factory(widget=widget, column="My column")
 
     r = client.post(f"/dashboards/{dashboard.id}/duplicate")
@@ -187,8 +203,9 @@ def test_dashboard_duplication(
     assert new_dashboard is not None
     assert new_dashboard.name == f"Copy of {name}"
 
-    assert new_dashboard.widget_set.count() == 1
-    new_widget = new_dashboard.widget_set.first()
+    new_dashboard_page = new_dashboard.pages.first()
+    assert new_dashboard_page.widgets.count() == 1
+    new_widget = new_dashboard_page.widgets.first()
 
     # preserve name and table information
     assert new_widget.name == widget.name

@@ -1,7 +1,4 @@
-from django import forms
 from django.forms.models import BaseInlineFormSet
-
-from apps.base.utils import create_column_choices
 
 
 class RequiredInlineFormset(BaseInlineFormSet):

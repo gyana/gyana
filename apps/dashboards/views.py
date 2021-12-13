@@ -11,7 +11,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import DeleteView, FormView
+from django.views.generic.edit import CreateView, DeleteView, FormView
 from django_tables2 import SingleTableView
 from turbo_response.response import HttpResponseSeeOther
 
@@ -21,13 +21,14 @@ from apps.base.analytics import (
     DASHBOARD_DUPLICATED_EVENT,
 )
 from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.dashboards.mixins import DashboardMixin
 from apps.dashboards.tables import DashboardTable
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import WIDGET_CHOICES_ARRAY, Widget
 
 from .forms import DashboardCreateForm, DashboardLoginForm, DashboardNameForm
-from .models import Dashboard
+from .models import Dashboard, Page
 
 
 class DashboardList(ProjectMixin, SingleTableView):
@@ -67,6 +68,8 @@ class DashboardCreate(ProjectMixin, TurboCreateView):
 
     def form_valid(self, form):
         r = super().form_valid(form)
+        # Create page
+        form.instance.pages.create()
 
         analytics.track(
             self.request.user.id,
@@ -89,6 +92,9 @@ class DashboardCreateFromIntegration(ProjectMixin, TurboCreateView):
 
     def form_valid(self, form):
         r = super().form_valid(form)
+        # Create page
+        page = form.instance.pages.create()
+
         analytics.track(
             self.request.user.id,
             DASHBOARD_CREATED_EVENT_FROM_INTEGRATION,
@@ -98,7 +104,7 @@ class DashboardCreateFromIntegration(ProjectMixin, TurboCreateView):
             Integration, pk=self.request.POST["integration"]
         )
         table = integration.table_set.first()
-        self.object.widget_set.create(
+        page.widgets.create(
             kind=Widget.Kind.TABLE,
             name=f"Table from {integration.name}",
             table=table,
@@ -116,11 +122,15 @@ class DashboardDetail(ProjectMixin, TurboUpdateView):
     form_class = DashboardNameForm
 
     def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data["categories"] = Widget.Category.choices
-        context_data["choices"] = WIDGET_CHOICES_ARRAY
-
-        return context_data
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Widget.Category.choices
+        context["choices"] = WIDGET_CHOICES_ARRAY
+        page = self.object.pages.get(position=self.request.GET.get("page", 1))
+        context["page"] = page
+        context["page_count"] = self.object.pages.count()
+        context["next_page"] = page.position + 1
+        context["previous_page"] = page.position - 1
+        return context
 
     def get_success_url(self) -> str:
         return reverse(
@@ -178,6 +188,11 @@ class DashboardPublic(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["project"] = self.object.project
+        page = self.object.pages.get(position=self.request.GET.get("page", 1))
+        context["page"] = page
+        context["page_count"] = self.object.pages.count()
+        context["next_page"] = page.position + 1
+        context["previous_page"] = page.position - 1
         return context
 
 
@@ -224,3 +239,42 @@ class DashboardLogout(TemplateView):
         return HttpResponseRedirect(
             reverse("dashboards:login", args=(self.dashboard.shared_id,))
         )
+
+
+class PageCreate(DashboardMixin, CreateView):
+    model = Page
+    fields = []
+
+    def form_valid(self, form):
+        form.instance.dashboard = self.dashboard
+        form.instance.position = self.dashboard.pages.count() + 1
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?page={self.object.position}"
+
+
+class PageDelete(DashboardMixin, DeleteView):
+    model = Page
+    fields = []
+
+    def delete(self, request, *args, **kwargs):
+        page = self.get_object()
+        # The delete button should be disabled for the last page but just in case
+        # this will not delete but return the same page
+        if page.position == 1:
+            return HttpResponseRedirect(
+                f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?page={page.position}"
+            )
+        r = super().delete(request, *args, **kwargs)
+
+        for follow_page in self.dashboard.pages.filter(
+            position__gt=page.position
+        ).iterator():
+            follow_page.position = follow_page.position - 1
+            follow_page.save()
+
+        return r
+
+    def get_success_url(self) -> str:
+        return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?page={min(self.object.position, self.dashboard.pages.count()-1)}"

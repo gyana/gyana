@@ -1,5 +1,6 @@
-from apps.widgets.serializers import WidgetSerializer
 from rest_framework import mixins, viewsets
+
+from apps.widgets.serializers import WidgetSerializer
 
 from .models import Widget
 
@@ -15,5 +16,5 @@ class WidgetPartialUpdate(viewsets.GenericViewSet, mixins.UpdateModelMixin):
         if self.request is None:
             return Widget.objects.all()
         return Widget.objects.filter(
-            dashboard__project__team__in=self.request.user.teams.all()
+            page__dashboard__project__team__in=self.request.user.teams.all()
         ).all()

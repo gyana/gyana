@@ -123,7 +123,7 @@ class BigQueryColumn(Column):
         return super().render(value)
 
 
-def get_table(schema, query, **kwargs):
+def get_table(schema, query, footer=None, **kwargs):
     """Dynamically creates a table class and adds the correct table data
 
     See https://django-tables2.readthedocs.io/en/stable/_modules/django_tables2/views.html
@@ -134,6 +134,7 @@ def get_table(schema, query, **kwargs):
             empty_values=(),
             verbose_name=name,
             attrs={"th": {"class": get_type_class(type_)}},
+            footer=footer.get(name) if footer else None,
         )
         for name, type_ in schema.items()
     }

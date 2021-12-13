@@ -5,7 +5,7 @@ from model_clone import CloneMixin
 
 from apps.base.aggregations import AggregationFunctions
 from apps.base.models import BaseModel, SaveParentModel
-from apps.dashboards.models import Dashboard, getFusionThemePalette
+from apps.dashboards.models import Dashboard, Page, getFusionThemePalette
 from apps.tables.models import Table
 
 # Need to be a multiple of GRID_SIZE found in GyWidget.tsx
@@ -75,7 +75,7 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
         SUM = "sum", "Sum"
         MEAN = "mean", "Average"
 
-    dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE)
+    page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name="widgets")
 
     table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True)
 
@@ -126,6 +126,9 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         null=True,
         help_text="Select a temporal column that will be used when using the dashboard date slicer",
+    )
+    show_summary_row = models.BooleanField(
+        default=False, help_text="Display a summary row at the bottom of your table"
     )
 
     def __str__(self):
