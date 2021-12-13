@@ -40,7 +40,6 @@ class Workflow(CloneMixin, SchedulableModel):
     state = models.CharField(
         max_length=16, choices=State.choices, default=State.INCOMPLETE
     )
-    last_run = models.DateTimeField(null=True)
     data_updated = models.DateTimeField(
         auto_now_add=True,
     )
@@ -134,4 +133,4 @@ class Workflow(CloneMixin, SchedulableModel):
             if not self.latest_run
             else self.RUN_STATE_TO_WORKFLOW_STATE[self.latest_run.state]
         )
-        self.save()
+        self.save(update_fields=["state"])
