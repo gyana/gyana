@@ -3,8 +3,8 @@
 <div class="form__description">{{ form.form_description }}</div>
 {% endif %}
 
-{% for bound_field in form.visible_fields %}
 <div class="input-group">
+{% for bound_field in form.visible_fields %}
   {% if bound_field.widget_type == "palettecolors" %}
   <label for="{{ bound_field.id_for_label}}">
     <span>
@@ -60,8 +60,8 @@
   {% if not form.is_live %}
   {{ bound_field.errors }}
   {% endif %}
+  {% endfor %}
 </div>
-{% endfor %}
 
 {% for label, formset in formsets.items %}
 <fieldset>
