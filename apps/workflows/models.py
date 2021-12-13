@@ -40,6 +40,7 @@ class Workflow(CloneMixin, SchedulableModel):
     state = models.CharField(
         max_length=16, choices=State.choices, default=State.INCOMPLETE
     )
+    last_run = models.DateTimeField(null=True)
     data_updated = models.DateTimeField(
         auto_now_add=True,
     )
