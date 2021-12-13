@@ -16,7 +16,7 @@ from .models import Widget
 class WidgetCreate(DashboardMixin, TurboCreateView):
     template_name = "widgets/create.html"
     model = Widget
-    fields = ["kind", "x", "y"]
+    fields = ["kind", "x", "y", "page"]
 
     def form_valid(self, form):
         form.instance.dashboard = self.dashboard
@@ -79,7 +79,7 @@ class WidgetDetail(DashboardMixin, TurboUpdateView):
     form_class = WidgetDuplicateForm
 
     def form_valid(self, form):
-        lowest_widget = self.dashboard.widget_set.order_by("-y").first()
+        lowest_widget = self.page.widgets.order_by("-y").first()
         clone = self.object.make_clone(
             attrs={
                 "name": "Copy of " + (self.object.name or ""),

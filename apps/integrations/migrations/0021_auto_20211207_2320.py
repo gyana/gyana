@@ -48,8 +48,8 @@ def forwards(apps, schema_editor):
     # the original information is stored in the redis backend which is not persisted
     # for more than 24 hours
 
-    for integration in Integration.objects.exclude(
-        kind=Kind.CONNECTOR, state=State.UPDATE
+    for integration in Integration.objects.exclude(kind=Kind.CONNECTOR).exclude(
+        state=State.UPDATE
     ):
 
         kind = integration.kind

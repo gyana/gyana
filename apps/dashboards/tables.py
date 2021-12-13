@@ -11,7 +11,7 @@ class StatusColumn(tables.TemplateColumn):
     def render(self, record, table, **kwargs):
         context = getattr(table, "context", Context())
         context["object_name"] = "dashboard"
-        if any(not widget.is_valid for widget in record.widget_set.iterator()):
+        if any(not widget.is_valid for widget in record.get_all_widgets()):
             context["icon"] = ICONS["warning"]
             context["text"] = "This dashboard contains at least one incomplete widget."
         else:

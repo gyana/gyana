@@ -1,6 +1,7 @@
-from apps.projects.access import login_and_project_required
 from django.contrib.auth.decorators import login_required
 from django.urls import path
+
+from apps.projects.access import login_and_project_required
 
 from . import frames, views
 from .access import (
@@ -76,6 +77,16 @@ project_urlpatterns = (
             "<hashid:pk>/delete",
             login_and_project_required(views.DashboardDelete.as_view()),
             name="delete",
+        ),
+        path(
+            "<hashid:dashboard_id>/pages/new",
+            views.PageCreate.as_view(),
+            name="page-create",
+        ),
+        path(
+            "<hashid:dashboard_id>/pages/<hashid:pk>",
+            views.PageDelete.as_view(),
+            name="page-delete",
         ),
         # Turbo frames
         path(

@@ -1,10 +1,11 @@
+from django_tables2.views import SingleTableMixin
+
 from apps.base.bigquery import get_humanize_from_bigquery_type
 from apps.base.frames import TurboFrameDetailView, TurboFrameTemplateView
 from apps.base.table_data import RequestConfig, get_table
 from apps.integrations.tables import StructureTable
 from apps.projects.mixins import ProjectMixin
 from apps.tables.bigquery import get_bq_table_schema_from_table, get_query_from_table
-from django_tables2.views import SingleTableMixin
 
 from .mixins import TableInstanceMixin
 from .models import Integration
@@ -46,7 +47,7 @@ class IntegrationGrid(TableInstanceMixin, SingleTableMixin, TurboFrameDetailView
 
     def get_table(self, **kwargs):
         query = get_query_from_table(self.table_instance)
-        table = get_table(query.schema(), query, **kwargs)
+        table = get_table(query.schema(), query, None, **kwargs)
 
         return RequestConfig(
             self.request, paginate=self.get_table_pagination(table)

@@ -1,3 +1,6 @@
+from django import forms
+from django.db import transaction
+
 from apps.dashboards.models import Dashboard
 from apps.integrations.models import Integration
 from apps.projects.models import Project
@@ -5,8 +8,6 @@ from apps.tables.models import Table
 from apps.templates.bigquery import copy_write_truncate_bq_table
 from apps.templates.duplicate import get_target_table_from_source_table
 from apps.widgets.models import Widget
-from django import forms
-from django.db import transaction
 
 from .models import TemplateInstance, TemplateIntegration
 
@@ -139,7 +140,7 @@ class TemplateInstanceUpdateForm(forms.ModelForm):
                 # references between duplicated entities. For example, the
                 # duplication for a table and widget is:
                 #   project -> integration_set -> table_set
-                #   project -> dashboard_set -> widget_set
+                #   project -> dashboard_set -> pages -> widgets
                 # but the table_id in the widget does not point to the duplicated
                 # table, but the original. We need to manually update these.
                 # Plus we also need to point the connector tables to the new

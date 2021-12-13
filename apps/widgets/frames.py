@@ -90,7 +90,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["project"] = self.get_object().dashboard.project
+        kwargs["project"] = self.dashboard.project
         return kwargs
 
     def get_success_url(self) -> str:
@@ -232,7 +232,7 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["project"] = self.get_object().dashboard.project
+        context["project"] = self.dashboard.project
         try:
             add_output_context(
                 context,

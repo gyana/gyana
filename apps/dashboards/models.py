@@ -35,6 +35,8 @@ class Dashboard(CloneMixin, BaseModel):
         PUBLIC = "public", "Public"
         PASSWORD_PROTECTED = "password_protected", "Password Protected"
 
+    _clone_m2o_or_o2m_fields = ["pages"]
+
     name = models.CharField(max_length=255, default="Untitled")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     shared_status = models.CharField(
@@ -53,8 +55,6 @@ class Dashboard(CloneMixin, BaseModel):
         default=getFusionThemePalette,
     )
     background_color = models.CharField(default="#ffffff", max_length=7)
-
-    _clone_m2o_or_o2m_fields = ["widget_set"]
 
     # Stores the raw password if set_password() is called so that it can
     # be passed to password_changed() after the model is saved.
@@ -113,3 +113,20 @@ class Dashboard(CloneMixin, BaseModel):
     @property
     def has_control(self):
         return hasattr(self, "control")
+
+    def get_all_widgets(self):
+        from apps.widgets.models import Widget
+
+        return Widget.objects.filter(page__dashboard=self).all()
+
+
+class Page(CloneMixin, BaseModel):
+    class Meta:
+        unique_together = ("dashboard", "position")
+
+    _clone_m2o_or_o2m_fields = ["widgets"]
+
+    dashboard = models.ForeignKey(
+        Dashboard, on_delete=models.CASCADE, related_name="pages"
+    )
+    position = models.IntegerField(default=1)

@@ -84,6 +84,25 @@
       <hr>
 
       {% block widget_form %}
+      
+      {% with formsets|dict_key:"Group columns" as formset %}
+        {% if formset %}
+        <fieldset>
+          <label>Groups</label>
+          {% include "components/formset.html" with formset=formset %}
+        </fieldset>
+        {% endif %}
+      {% endwith %}
+      
+
+      {% if formsets.Aggregations %}
+        {% with formset=formsets.Aggregations %}
+          <fieldset>
+            <label>Metrics</label>
+            {% include "components/formset.html" with formset=formset %}
+          </fieldset>
+        {% endwith %}
+      {% endif %}
 
       {% with array='name kind table date_column'%}
       {% for bound_field in form.visible_fields %}
@@ -94,8 +113,8 @@
             {{ bound_field }}
             <span>
               {{ bound_field.label }}
-              <p class=" input__help-text">{{ bound_field.help_text }}</p>
-              {% if not bound_field.field.required %}<span class="text-black-50">- optional</span>{% endif %}
+              <p class=" input__help-text">{{ bound_field.help_text }} {% if not bound_field.field.required %}<span>- optional</span>{% endif %}</p>
+              
             </span>
           </label>
           {% elif bound_field.subwidgets|length == 1 %}
@@ -127,7 +146,7 @@
       {% endblock %}
 
       {% for label, formset in formsets.items %}
-      {% if label != "Aggregations" and label != "Charts" %}
+      {% if label != "Aggregations" and label != "Charts" and label != "Group columns" %}
         <fieldset>
           <label>{{ label }}</label>
           {% include "components/formset.html" with formset=formset %}

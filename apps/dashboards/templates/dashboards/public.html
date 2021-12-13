@@ -47,6 +47,35 @@
         <div class="flex flex-col">
           <p>{{ project.team.name }}</p>
           <h1>{{ dashboard.name }}</h1>
+
+          {% if page_count > 1 %}
+
+          <small>
+            {% if previous_page == 0 %}
+        
+              <i class="fa fa-chevron-left text-gray"></i>
+        
+            {% else %}
+        
+              <a href="{% url 'dashboards:public' object.shared_id %}?page={{ previous_page }}"><i class="fa fa-chevron-left"></i></a>
+            
+            {% endif %}
+        
+            Page {{page.position}} of {{page_count}}
+        
+            {% if next_page > page_count %}
+        
+              <i class="fa fa-chevron-right text-gray"></i>
+        
+            {% else %}
+          
+              <a href="{% url 'dashboards:public' object.shared_id %}?page={{next_page}}"><i class="fa fa-chevron-right"></i></a>
+            
+            {% endif %}
+          </small>
+
+          {% endif %}
+
         </div>
       </div>
 
@@ -71,7 +100,7 @@
         id="dashboard-widget-container"
         data-controller="widget-list"
         style="width:{{ object.width }}px;height:{{object.height}}px;">
-        {% for widget in object.widget_set.all %}
+        {% for widget in page.widgets.all %}
         <gy-widget id="widget-{{ widget.id }}">
           <div
             class="h-full w-full"

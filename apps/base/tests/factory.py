@@ -12,8 +12,8 @@ from apps.columns.models import (
     WindowColumn,
 )
 from apps.connectors.models import Connector
-from apps.dashboards.models import Dashboard
 from apps.controls.models import Control
+from apps.dashboards.models import Dashboard, Page
 from apps.filters.models import Filter
 from apps.integrations.models import Integration
 from apps.nodes.models import Node
@@ -137,11 +137,19 @@ class DashboardFactory(factory.django.DjangoModelFactory):
 
 
 @register
+class PageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Page
+
+    dashboard = factory.SubFactory(DashboardFactory)
+
+
+@register
 class WidgetFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Widget
 
-    dashboard = factory.SubFactory(DashboardFactory)
+    page = factory.SubFactory(PageFactory)
     table = factory.SubFactory(IntegrationTableFactory)
 
 

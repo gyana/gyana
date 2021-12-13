@@ -135,7 +135,7 @@ def test_cname_middleware_for_public_dashboard(
         shared_status=Dashboard.SharedStatus.PUBLIC,
         shared_id=uuid4(),
     )
-    widget = widget_factory(dashboard=dashboard)
+    widget = widget_factory(page__dashboard=dashboard)
     other_dashboard = dashboard_factory(
         project__team=team,
         shared_status=Dashboard.SharedStatus.PUBLIC,
@@ -211,6 +211,7 @@ def test_cname_middleware_for_password_protected_dashboard(
         password_set=timezone.now(),
         shared_id=uuid4(),
     )
+    dashboard.pages.create()
     dashboard.set_password("seewhatmatters")
     dashboard.save()
 

@@ -2,7 +2,7 @@ from django import forms
 
 from apps.base.formsets import RequiredInlineFormset
 from apps.columns.forms import AggregationColumnForm, BaseLiveSchemaForm
-from apps.columns.models import AggregationColumn
+from apps.columns.models import AggregationColumn, Column
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
 
@@ -23,6 +23,16 @@ AggregationColumnFormset = forms.inlineformset_factory(
     form=AggregationColumnForm,
     can_delete=True,
     extra=0,
+    formset=RequiredInlineFormset,
+)
+
+ColumnFormset = forms.inlineformset_factory(
+    Widget,
+    Column,
+    form=BaseLiveSchemaForm,
+    fields=("column",),
+    extra=0,
+    can_delete=True,
     formset=RequiredInlineFormset,
 )
 
@@ -126,4 +136,5 @@ FORMSETS = {
     Widget.Kind.FUNNEL: [Min2Formset],
     Widget.Kind.METRIC: [SingleMetricFormset],
     Widget.Kind.COMBO: [CombinationChartFormset],
+    Widget.Kind.TABLE: [ColumnFormset, AggregationColumnFormset],
 }

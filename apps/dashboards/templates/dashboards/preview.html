@@ -9,7 +9,7 @@
       --background-color:{{ object.background_color }};
     "
   >
-    {% for widget in object.widget_set.all %}
+    {% for widget in page.widgets.all %}
     <gy-widget id="widget-{{ widget.id }}">
       <div
         class="h-full w-full"
