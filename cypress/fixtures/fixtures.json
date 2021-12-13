@@ -9,7 +9,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-12-03T23:50:23.273Z",
+      "last_login": "2021-12-13T22:48:22.456Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -418,7 +418,7 @@
       "name": "Untitled",
       "project": 2,
       "state": "incomplete",
-      "last_run": null,
+      "last_success_run": null,
       "data_updated": "2021-09-10T15:59:15.605Z"
     }
   },
@@ -434,7 +434,7 @@
       "name": "Initial workflow",
       "project": 1,
       "state": "success",
-      "last_run": "2021-12-03T23:52:58.722Z",
+      "last_success_run": 9,
       "data_updated": "2021-12-03T23:52:05.947Z"
     }
   },
@@ -450,7 +450,7 @@
       "name": "Dependent workflow",
       "project": 1,
       "state": "success",
-      "last_run": "2021-12-03T23:55:11.732Z",
+      "last_success_run": 8,
       "data_updated": "2021-12-03T23:54:57.237Z"
     }
   },
@@ -477,8 +477,8 @@
     "model": "dashboards.page",
     "pk": 1,
     "fields": {
-      "created": "2021-12-13T17:23:33.548Z",
-      "updated": "2021-12-13T17:23:33.548Z",
+      "created": "2021-12-13T22:47:57.268Z",
+      "updated": "2021-12-13T22:47:57.268Z",
       "dashboard": 1,
       "position": 1
     }
@@ -488,7 +488,7 @@
     "pk": 1,
     "fields": {
       "created": "2021-08-30T19:29:50.988Z",
-      "updated": "2021-12-13T17:23:33.774Z",
+      "updated": "2021-12-13T22:47:57.507Z",
       "page": 1,
       "table": 12,
       "text_content": null,
@@ -514,7 +514,7 @@
     "pk": 3,
     "fields": {
       "created": "2021-08-31T00:59:24.656Z",
-      "updated": "2021-12-13T17:23:33.770Z",
+      "updated": "2021-12-13T22:47:57.505Z",
       "page": 1,
       "table": 19,
       "text_content": null,
@@ -3222,8 +3222,8 @@
     "model": "runs.jobrun",
     "pk": 8,
     "fields": {
-      "created": "2021-12-13T17:23:34.343Z",
-      "updated": "2021-12-13T17:23:34.343Z",
+      "created": "2021-12-13T22:47:58.099Z",
+      "updated": "2021-12-13T22:47:58.099Z",
       "state": "success",
       "started_at": "2021-12-03T23:55:06.732Z",
       "completed_at": "2021-12-03T23:55:11.732Z",
@@ -3239,8 +3239,8 @@
     "model": "runs.jobrun",
     "pk": 9,
     "fields": {
-      "created": "2021-12-13T17:23:34.346Z",
-      "updated": "2021-12-13T17:23:34.346Z",
+      "created": "2021-12-13T22:47:58.102Z",
+      "updated": "2021-12-13T22:47:58.102Z",
       "state": "success",
       "started_at": "2021-12-03T23:52:53.722Z",
       "completed_at": "2021-12-03T23:52:58.722Z",
@@ -3449,7 +3449,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2021-12-13T17:22:55.580Z" }
+    "fields": { "last_update": "2021-12-13T22:47:47.818Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
