@@ -6,6 +6,7 @@ from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.widgets.forms import FORMS
 from apps.widgets.formsets import (
     AggregationColumnFormset,
+    ColumnFormset,
     CombinationChartFormset,
     FilterFormset,
     Min2Formset,
@@ -38,7 +39,11 @@ def setup(
 @pytest.mark.parametrize(
     "kind, formset_classes",
     [
-        pytest.param(Widget.Kind.TABLE, {FilterFormset}, id="table"),
+        pytest.param(
+            Widget.Kind.TABLE,
+            {FilterFormset, ColumnFormset, AggregationColumnFormset},
+            id="table",
+        ),
         pytest.param(Widget.Kind.FUNNEL, {FilterFormset, Min2Formset}, id="funnel"),
         pytest.param(Widget.Kind.PYRAMID, {FilterFormset, Min2Formset}, id="pyramid"),
         pytest.param(Widget.Kind.RADAR, {FilterFormset, Min3Formset}, id="radar"),
@@ -51,8 +56,10 @@ def test_generic_form(kind, formset_classes, setup, widget_factory):
     dashboard, table = setup
     widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
     form = FORMS[kind](instance=widget)
-
-    assert set(form.get_live_fields()) == {"kind", "table"}
+    fields = {"kind", "table"}
+    if kind == Widget.Kind.TABLE:
+        fields |= {"show_summary_row"}
+    assert set(form.get_live_fields()) == fields
     assert set(form.get_live_formsets()) == formset_classes
 
 
@@ -179,11 +186,16 @@ def test_date_column_is_added(setup, widget_factory, control_factory):
     )
     form = FORMS[widget.kind](instance=widget, project=dashboard.project)
 
-    assert set(form.get_live_fields()) == {"kind", "table"}
+    assert set(form.get_live_fields()) == {"kind", "show_summary_row", "table"}
 
     control_factory(dashboard=dashboard)
 
     form = FORMS[widget.kind](instance=widget, project=dashboard.project)
 
-    assert set(form.get_live_fields()) == {"kind", "table", "date_column"}
+    assert set(form.get_live_fields()) == {
+        "kind",
+        "table",
+        "show_summary_row",
+        "date_column",
+    }
     assertFormChoicesLength(form, "date_column", 9)

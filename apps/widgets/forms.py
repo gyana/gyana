@@ -60,7 +60,9 @@ class GenericWidgetForm(LiveUpdateForm):
         if self.get_live_field("table") and self.instance.page.dashboard.has_control:
             fields += ["date_column"]
 
-        if self.get_live_field("kind") and self.get_live_field("table"):
+        if self.get_live_field("kind") == Widget.Kind.TABLE and self.get_live_field(
+            "table"
+        ):
             fields += ["show_summary_row"]
         return fields
 
