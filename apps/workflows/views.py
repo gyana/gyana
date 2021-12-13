@@ -156,7 +156,7 @@ class WorkflowDuplicate(TurboUpdateView):
         clone = self.object.make_clone(
             attrs={
                 "name": "Copy of " + self.object.name,
-                "last_run": None,
+                "last_success_run": None,
                 "state": Workflow.State.INCOMPLETE,
             }
         )

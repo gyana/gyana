@@ -34,22 +34,23 @@ def forwards(apps, schema_editor):
 
     # to maintain backwards compatability, add an initial run
 
-    for workflow in Workflow.objects.all():
+    for workflow in Workflow.objects.iterator():
 
         if workflow.last_run:
-            failed = has_errors(workflow)
             JobRun.objects.create(
                 workflow=workflow,
                 source=Source.WORKFLOW,
                 # an estimate since we didn't track this information
                 started_at=workflow.last_run - timedelta(seconds=5),
                 completed_at=workflow.last_run,
-                state=State.SUCCESS if not failed else State.FAILED,
+                state=State.SUCCESS,
             )
-            workflow.state = (
-                WorkflowState.SUCCESS if not failed else WorkflowState.FAILED
-            )
-            workflow.save(update_fields=["state"])
+            workflow.state = WorkflowState.SUCCESS
+
+        if has_errors(workflow):
+            workflow.state = WorkflowState.FAILED
+
+        workflow.save(update_fields=["state"])
 
 
 def backwards(apps, schema_editor):

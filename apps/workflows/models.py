@@ -18,7 +18,11 @@ class WorkflowsManager(models.Manager):
         # and manually tagged as is_scheduled by the user. If it fails to run for more
         # than 3 days, the schedule is stopped until it is fixed by the user.
         return (
-            self.filter(project=project, last_run__isnull=False, is_scheduled=True)
+            self.filter(
+                project=project,
+                last_success_run__isnull=False,
+                is_scheduled=True,
+            )
             .annotate(last_succeeded=F("failed_at") - F("succeeded_at"))
             .filter(
                 Q(succeeded_at__isnull=True)
@@ -40,11 +44,11 @@ class Workflow(CloneMixin, SchedulableModel):
     state = models.CharField(
         max_length=16, choices=State.choices, default=State.INCOMPLETE
     )
-    last_run = models.OneToOneField(
+    last_success_run = models.OneToOneField(
         "runs.JobRun",
         null=True,
         on_delete=models.SET_NULL,
-        related_name="workflow_last_run_for",
+        related_name="workflow_last_success_run_for",
     )
     data_updated = models.DateTimeField(
         auto_now_add=True,
@@ -110,7 +114,7 @@ class Workflow(CloneMixin, SchedulableModel):
 
     @property
     def out_of_date(self):
-        if not self.last_run:
+        if not self.last_success_run:
             return True
 
         latest_input_updated = Table.objects.filter(
@@ -120,7 +124,9 @@ class Workflow(CloneMixin, SchedulableModel):
         if not latest_input_updated:
             return True
 
-        return self.last_run.started_at < max(self.data_updated, latest_input_updated)
+        return self.last_success_run.started_at < max(
+            self.data_updated, latest_input_updated
+        )
 
     def run_for_schedule(self):
         from .bigquery import run_workflow
@@ -133,7 +139,7 @@ class Workflow(CloneMixin, SchedulableModel):
             if not self.latest_run
             else self.RUN_STATE_TO_WORKFLOW_STATE[self.latest_run.state]
         )
-        self.last_run = (
-            self.runs.filter(completed_at__isnull=False).order_by("-started_at").first()
+        self.last_success_run = (
+            self.runs.filter(state=JobRun.State.SUCCESS).order_by("-started_at").first()
         )
-        self.save(update_fields=["state", "last_run"])
+        self.save(update_fields=["state", "last_success_run"])

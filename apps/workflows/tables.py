@@ -21,12 +21,12 @@ class StatusColumn(tables.TemplateColumn):
 class WorkflowTable(tables.Table):
     class Meta:
         model = Workflow
-        fields = ("name", "last_run", "created", "updated")
+        fields = ("name", "last_success_run", "created", "updated")
         attrs = {"class": "table"}
 
     name = tables.Column(linkify=True)
-    last_run = NaturalDatetimeColumn(
-        accessor="last_run__started_at", verbose_name="Last run"
+    last_success_run = NaturalDatetimeColumn(
+        accessor="last_success_run__started_at", verbose_name="Last successful run"
     )
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
