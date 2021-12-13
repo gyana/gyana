@@ -90,10 +90,6 @@ class Workflow(CloneMixin, SchedulableModel):
         return self.runs.order_by("-created").first()
 
     @property
-    def latest_completed_run(self):
-        return self.runs.filter(completed_at__isnull=False).order_by("-created").first()
-
-    @property
     def failed(self):
         return self.nodes.exclude(error__isnull=True).exists()
 
@@ -109,7 +105,7 @@ class Workflow(CloneMixin, SchedulableModel):
 
     @property
     def out_of_date(self):
-        if not self.latest_completed_run:
+        if not self.last_run:
             return True
 
         latest_input_updated = Table.objects.filter(
@@ -119,9 +115,7 @@ class Workflow(CloneMixin, SchedulableModel):
         if not latest_input_updated:
             return True
 
-        return self.latest_completed_run.started_at < max(
-            self.data_updated, latest_input_updated
-        )
+        return self.last_run < max(self.data_updated, latest_input_updated)
 
     def run_for_schedule(self):
         from .bigquery import run_workflow
@@ -134,4 +128,10 @@ class Workflow(CloneMixin, SchedulableModel):
             if not self.latest_run
             else self.RUN_STATE_TO_WORKFLOW_STATE[self.latest_run.state]
         )
-        self.save(update_fields=["state"])
+        self.last_run = (
+            self.runs.filter(completed_at__isnull=False)
+            .order_by("-started_at")
+            .first()
+            .started_at
+        )
+        self.save(update_fields=["state", "last_run"])

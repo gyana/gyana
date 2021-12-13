@@ -32,7 +32,7 @@ def workflow_out_of_date(request, pk):
     return Response(
         {
             "isOutOfDate": workflow.out_of_date,
-            "hasBeenRun": workflow.latest_completed_run is not None,
+            "hasBeenRun": workflow.last_run is not None,
             "errors": workflow.errors,
         }
     )
