@@ -18,11 +18,11 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="workflow",
-            name="last_run",
+            name="last_success_run",
             field=models.OneToOneField(
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
-                related_name="workflow_last_run_for",
+                related_name="workflow_last_success_run_for",
                 to="runs.jobrun",
             ),
         ),

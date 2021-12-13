@@ -14,10 +14,10 @@ def forwards(apps, schema_editor):
     Workflow = apps.get_model("workflows", "Workflow")
 
     for workflow in Workflow.objects.iterator():
-        workflow.last_run = (
+        workflow.last_success_run = (
             workflow.runs.filter(state=State.SUCCESS).order_by("-started_at").first()
         )
-        workflow.save(update_fields=["last_run"])
+        workflow.save(update_fields=["last_success_run"])
 
 
 class Migration(migrations.Migration):
