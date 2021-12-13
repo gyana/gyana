@@ -28,6 +28,7 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     r = client.post(f"{LIST}/new", data={"project": project.id})
     dashboard = project.dashboard_set.first()
     assert dashboard is not None
+    assert dashboard.pages.first() is not None
     DETAIL = f"{LIST}/{dashboard.id}"
     assertRedirects(r, DETAIL, status_code=303)
 
@@ -44,6 +45,21 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     assertRedirects(r, DETAIL, status_code=303)
     dashboard.refresh_from_db()
     assert dashboard.name == new_name
+
+    # add page
+    r = client.post(f"{DETAIL}/pages/new")
+    assertRedirects(r, f"{DETAIL}?page=2", status_code=302)
+    page = dashboard.pages.last()
+    assert page.position == 2
+
+    r = client.get(r.url)
+    assertOK(r)
+    assertContains(r, "Page 2 of 2")
+
+    # delete page
+    r = client.delete(f"{DETAIL}/pages/{page.id}")
+    assertRedirects(r, f"{DETAIL}?page=1", status_code=302)
+    assert dashboard.pages.count() == 1
 
     # delete
     r = client.get(f"{DETAIL}/delete")

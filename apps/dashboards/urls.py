@@ -79,12 +79,12 @@ project_urlpatterns = (
             name="delete",
         ),
         path(
-            "dashboards/<hashid:dashboard_id>/pages/new",
+            "<hashid:dashboard_id>/pages/new",
             views.PageCreate.as_view(),
             name="page-create",
         ),
         path(
-            "dashboards/<hashid:dashboard_id>/pages/<hashid:pk>",
+            "<hashid:dashboard_id>/pages/<hashid:pk>",
             views.PageDelete.as_view(),
             name="page-delete",
         ),
