@@ -111,7 +111,7 @@ class Widget(CloneMixin, BaseModel):
         help_text="Select a temporal column that will be used when using the dashboard date slicer",
     )
     show_summary_row = models.BooleanField(
-        default=False, help_text="Show a summary row at the bottom of your table"
+        default=False, help_text="Display a summary row at the bottom of your table"
     )
 
     def __str__(self):

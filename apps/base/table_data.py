@@ -134,7 +134,7 @@ def get_table(schema, query, footer=None, **kwargs):
             empty_values=(),
             verbose_name=name,
             attrs={"th": {"class": get_type_class(type_)}},
-            footer=footer[name] if footer else None,
+            footer=footer.get(name) if footer else None,
         )
         for name, type_ in schema.items()
     }
