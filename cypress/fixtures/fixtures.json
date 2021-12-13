@@ -474,12 +474,22 @@
     }
   },
   {
+    "model": "dashboards.page",
+    "pk": 1,
+    "fields": {
+      "created": "2021-12-13T17:23:33.548Z",
+      "updated": "2021-12-13T17:23:33.548Z",
+      "dashboard": 1,
+      "position": 1
+    }
+  },
+  {
     "model": "widgets.widget",
     "pk": 1,
     "fields": {
       "created": "2021-08-30T19:29:50.988Z",
-      "updated": "2021-08-30T19:31:11.874Z",
-      "dashboard": 1,
+      "updated": "2021-12-13T17:23:33.774Z",
+      "page": 1,
       "table": 12,
       "text_content": null,
       "kind": "msline",
@@ -495,7 +505,8 @@
       "y": 0,
       "stack_100_percent": false,
       "error": null,
-      "date_column": null
+      "date_column": null,
+      "show_summary_row": false
     }
   },
   {
@@ -503,8 +514,8 @@
     "pk": 3,
     "fields": {
       "created": "2021-08-31T00:59:24.656Z",
-      "updated": "2021-08-31T01:00:36.450Z",
-      "dashboard": 1,
+      "updated": "2021-12-13T17:23:33.770Z",
+      "page": 1,
       "table": 19,
       "text_content": null,
       "kind": "mscolumn2d",
@@ -520,7 +531,8 @@
       "y": 435,
       "stack_100_percent": false,
       "error": null,
-      "date_column": null
+      "date_column": null,
+      "show_summary_row": false
     }
   },
   {
@@ -3210,8 +3222,8 @@
     "model": "runs.jobrun",
     "pk": 8,
     "fields": {
-      "created": "2021-12-09T03:59:03.511Z",
-      "updated": "2021-12-09T03:59:03.511Z",
+      "created": "2021-12-13T17:23:34.343Z",
+      "updated": "2021-12-13T17:23:34.343Z",
       "state": "success",
       "started_at": "2021-12-03T23:55:06.732Z",
       "completed_at": "2021-12-03T23:55:11.732Z",
@@ -3227,8 +3239,8 @@
     "model": "runs.jobrun",
     "pk": 9,
     "fields": {
-      "created": "2021-12-09T03:59:03.514Z",
-      "updated": "2021-12-09T03:59:03.514Z",
+      "created": "2021-12-13T17:23:34.346Z",
+      "updated": "2021-12-13T17:23:34.346Z",
       "state": "success",
       "started_at": "2021-12-03T23:52:53.722Z",
       "completed_at": "2021-12-03T23:52:58.722Z",
@@ -3437,7 +3449,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2021-12-09T03:58:55.456Z" }
+    "fields": { "last_update": "2021-12-13T17:22:55.580Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
