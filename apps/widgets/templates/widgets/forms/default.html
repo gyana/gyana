@@ -84,6 +84,21 @@
       <hr>
 
       {% block widget_form %}
+      
+      {% with formsets|dict_key:"Group columns" as formset %}
+        {% if formset %}
+          <label>Groups</label>
+          {% include "components/formset.html" with formset=formset %}
+        {% endif %}
+      {% endwith %}
+      
+
+      {% if formsets.Aggregations %}
+        {% with formset=formsets.Aggregations %}
+          <label>Metrics</label>
+          {% include "components/formset.html" with formset=formset %}
+        {% endwith %}
+      {% endif %}
 
       {% with array='name kind table date_column'%}
       {% for bound_field in form.visible_fields %}
@@ -127,7 +142,7 @@
       {% endblock %}
 
       {% for label, formset in formsets.items %}
-      {% if label != "Aggregations" and label != "Charts" %}
+      {% if label != "Aggregations" and label != "Charts" and label != "Group columns" %}
         <fieldset>
           <label>{{ label }}</label>
           {% include "components/formset.html" with formset=formset %}

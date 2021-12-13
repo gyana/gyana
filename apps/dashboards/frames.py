@@ -24,7 +24,7 @@ class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
         context_data = super().get_context_data(**kwargs)
 
         integrations = self.project.integration_set
-        widgets = Widget.objects.filter(dashboard__project=self.project)
+        widgets = Widget.objects.filter(page__dashboard__project=self.project)
         # equivalent to is_valid, but efficient query
         incomplete = widgets.annotate(agg_count=Count("aggregations")).exclude(
             Q(kind=Widget.Kind.TEXT)
@@ -32,7 +32,9 @@ class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
             | (Q(kind=Widget.Kind.RADAR) & ~Q(agg_count__lte=3))
             | (~Q(table=None) & ~Q(dimension=None) & ~Q(aggregations__column=None))
         )
-        dashboards_incomplete = incomplete.values_list("dashboard").distinct().count()
+        dashboards_incomplete = (
+            incomplete.values_list("page__dashboard").distinct().count()
+        )
 
         context_data["dashboards"] = {
             "total": self.project.dashboard_set.count(),

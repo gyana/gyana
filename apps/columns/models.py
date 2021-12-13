@@ -98,7 +98,12 @@ class Column(SaveParentModel):
     column = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, help_text="Select columns"
     )
-    node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="columns")
+    node = models.ForeignKey(
+        Node, null=True, on_delete=models.CASCADE, related_name="columns"
+    )
+    widget = models.ForeignKey(
+        Widget, on_delete=models.CASCADE, related_name="columns", null=True
+    )
 
 
 class ConvertColumn(SaveParentModel):
