@@ -12,6 +12,13 @@ from .forms import ProjectCreateForm, ProjectUpdateForm
 from .models import Project
 
 
+class ProjectTeamMixin:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["team"] = self.object.team
+        return context
+
+
 class ProjectCreate(TeamMixin, TurboCreateView):
     template_name = "projects/create.html"
     model = Project
@@ -35,7 +42,7 @@ class ProjectCreate(TeamMixin, TurboCreateView):
         return redirect
 
 
-class ProjectDetail(DetailView):
+class ProjectDetail(ProjectTeamMixin, DetailView):
     template_name = "projects/detail.html"
     model = Project
     pk_url_kwarg = "project_id"
@@ -49,7 +56,7 @@ class ProjectDetail(DetailView):
         return super().get(request, *args, **kwargs)
 
 
-class ProjectUpdate(TurboUpdateView):
+class ProjectUpdate(ProjectTeamMixin, TurboUpdateView):
     template_name = "projects/update.html"
     model = Project
     form_class = ProjectUpdateForm
@@ -65,7 +72,7 @@ class ProjectUpdate(TurboUpdateView):
         return reverse("projects:update", args=(self.object.id,))
 
 
-class ProjectDelete(DeleteView):
+class ProjectDelete(ProjectTeamMixin, DeleteView):
     template_name = "projects/delete.html"
     model = Project
     pk_url_kwarg = "project_id"

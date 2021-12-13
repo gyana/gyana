@@ -56,12 +56,17 @@
 
     {% block sidebar %}
     <div id="sidebar" class="sidebar" data-controller="web-sidebar">
+      
       <input
         id="sidebar-toggle"
         type="checkbox"
         role="button"
         data-web-sidebar-target="toggle"
+        {% if request.resolver_match.app_name == 'project_workflows' and request.resolver_match.url_name == 'detail' %}
+        {% elif request.resolver_match.app_name == 'project_dashboards' and request.resolver_match.url_name == 'detail' %}
+        {% else %}
         {% if not sidebar_collapsed %}checked{% endif %}
+        {% endif %}
         hidden
       />
 
