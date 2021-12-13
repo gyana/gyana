@@ -70,7 +70,8 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
             if widget.show_tooltips is not None
             else True,
             "baseFontSize": widget.font_size if f"{widget.font_size}rem" else "2rem",
-            "exportenabled": "1",
+            # Fusioncharts client-side export feature
+            "exportenabled": "0",
             "exportmode": "client",
             "exportFileName": widget.name if widget.name else "untitled_chart",
             **axis_names,
