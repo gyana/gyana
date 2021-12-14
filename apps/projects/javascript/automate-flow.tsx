@@ -9,21 +9,15 @@ import AutomateFlow from './components/AutomateFlow'
 
 interface Props {
   projectId: number
-  celeryProgressUrl: string
-  runTaskUrl?: string
 }
 
-const SafeAutomateFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUrl }) => {
+const SafeAutomateFlow: React.FC<Props> = ({ projectId }) => {
   const { finishedPinging, schemaReady } = useBlockUntilSchemaReady()
 
   return (
     <>
       {schemaReady ? (
-        <AutomateFlow
-          projectId={projectId}
-          runTaskUrl={runTaskUrl}
-          celeryProgressUrl={celeryProgressUrl}
-        />
+        <AutomateFlow projectId={projectId} />
       ) : !finishedPinging ? (
         <LoadingState />
       ) : (
@@ -36,15 +30,9 @@ const SafeAutomateFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgre
 class ReactDndFlow extends HTMLElement {
   connectedCallback() {
     const projectId = this.attributes['projectId'].value
-    const celeryProgressUrl = this.attributes['celeryProgressUrl'].value
-    const runTaskUrl = this.attributes['runTaskUrl']?.value
     ReactDOM.render(
       <ReactFlowProvider>
-        <SafeAutomateFlow
-          projectId={projectId}
-          runTaskUrl={runTaskUrl}
-          celeryProgressUrl={celeryProgressUrl}
-        />
+        <SafeAutomateFlow projectId={projectId} />
       </ReactFlowProvider>,
       this
     )

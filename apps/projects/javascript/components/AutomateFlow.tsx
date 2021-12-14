@@ -1,7 +1,7 @@
 import ErrorState from 'apps/workflows/javascript/components/ErrorState'
 import LoadingState from 'apps/workflows/javascript/components/LoadingState'
 import React, { useState, useRef, useEffect } from 'react'
-
+import ReactDOM from 'react-dom'
 import ReactFlow, {
   Controls,
   Edge,
@@ -9,14 +9,14 @@ import ReactFlow, {
   Background,
   ConnectionLineType,
 } from 'react-flow-renderer'
-import { listWorkflows } from '../api'
+import { listProjectAll } from '../api'
 
 import 'apps/workflows/javascript/styles/_dnd-flow.scss'
 import LayoutButton from './LayoutButton'
 import defaultNodeTypes from './Nodes'
 import ZeroState from './ZeroState'
-import useRunProgress from '../hooks/useRunProgress'
 import { AutomateContext } from '../context'
+import RunButton from './RunButton'
 
 const GRID_GAP = 20
 
@@ -28,22 +28,19 @@ enum LoadingStates {
 
 interface Props {
   projectId: number
-  celeryProgressUrl: string
-  runTaskUrl?: string
 }
 
-const AutomateFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUrl }) => {
+const AutomateFlow: React.FC<Props> = ({ projectId }) => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null)
 
   const [elements, setElements] = useState<(Edge | Node)[]>([])
   const [initialLoad, setInitialLoad] = useState(LoadingStates.loading)
-
-  const { runInfo } = useRunProgress(runTaskUrl, celeryProgressUrl)
+  const [runInfo, setRunInfo] = useState({})
 
   useEffect(() => {
     const syncElements = async () => {
       try {
-        const [nodes, edges] = await listWorkflows(projectId)
+        const [nodes, edges] = await listProjectAll(projectId)
         setElements([...nodes, ...edges])
         setInitialLoad(LoadingStates.loaded)
       } catch {
@@ -81,6 +78,11 @@ const AutomateFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUr
           {initialLoad === LoadingStates.loaded && elements.length === 0 && <ZeroState />}
         </ReactFlow>
       </div>
+
+      {ReactDOM.createPortal(
+        <RunButton projectId={projectId} setRunInfo={setRunInfo} />,
+        document.getElementById('run-button-portal') as HTMLDivElement
+      )}
     </AutomateContext.Provider>
   )
 }

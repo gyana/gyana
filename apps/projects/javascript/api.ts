@@ -41,7 +41,7 @@ export const getWorkflow = async (id: number) => {
   return await client.action(window.schema, ['workflows', 'api', 'workflows', 'read'], { id })
 }
 
-export const listWorkflows = async (projectId: number) => {
+export const listProjectAll = async (projectId: number) => {
   const entities = await Promise.all([
     client.action(window.schema, ['integrations', 'api', 'integrations', 'list'], {
       project: projectId,
@@ -62,4 +62,10 @@ export const listWorkflows = async (projectId: number) => {
     .flat()
 
   return [nodes, edges]
+}
+
+export const runProject = (projectId: number) => {
+  return client.action(window.schema, ['projects', 'run', 'create'], {
+    project_id: projectId,
+  })
 }

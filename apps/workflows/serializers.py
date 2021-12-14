@@ -34,6 +34,8 @@ class WorkflowSerializer(serializers.ModelSerializer):
     def get_parents(self, obj):
         parents = {
             node.input_table.source_obj
-            for node in obj.nodes.filter(kind=Node.Kind.INPUT)
+            for node in obj.nodes.filter(
+                kind=Node.Kind.INPUT, input_table__isnull=False
+            )
         }
         return [source.schedule_node_id for source in parents]

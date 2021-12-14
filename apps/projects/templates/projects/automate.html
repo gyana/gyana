@@ -28,42 +28,15 @@
     </div>
   </div>
 
-  <form method="post">
-    {% csrf_token %}
-
-    {% include "django/forms/default_form.html" %}
-
-    <div data-controller="tooltip" class='dndflow__run-button'>
-      {% if object.is_running %}
-        <button type="submit" name="cancel" class='button button--sm button--danger'>
-          <i class='fas fa-fw fa-times'></i> Cancel
-          <span data-tooltip-target="body">Cancel the current run</span>
-        </button>
-      {% else %}
-        <button type="submit" name="run" class='button button--sm button--success'>
-          <i class='fas fa-fw fa-play'></i> Run
-          <span data-tooltip-target="body">Run all workflows in order</span>
-        </button>
-      {% endif %}
-    </div>
-  </form>
+  <div id="run-button-portal"></div>
 </div>
-
-{% if object.is_running %}
-  <p class="alert"> A run is currently in progress </p>
-{% endif %}
 
 <div class="flex flex-1 overflow-hidden">
   <div class="w-full dndflow">
-    <automate-flow class="w-full"
-      projectId="{{ project.id }}"
-      celeryProgressUrl="{% static 'celery_progress/celery_progress.js' %}"
-      {% if object.latest_run.state == object.latest_run.State.RUNNING %}
-      runTaskUrl="{% url 'celery_progress:task_status' object.latest_run.task_id %}"
-      {% endif %}
-    </automate-flow>
+    <automate-flow class="w-full" projectId="{{ project.id }}"></automate-flow>
   </div>
 </div>
+<script src="{% static 'celery_progress/celery_progress.js' %}"></script>
 <script src="{% static "js/automate-bundle.js" %}"></script>
 <link rel="stylesheet" href="{% static "css/schedule.css" %}" />
 {% endblock %}

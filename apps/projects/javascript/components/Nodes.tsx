@@ -40,16 +40,16 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
   const { runInfo } = useContext(AutomateContext) as IAutomateContext
 
   const initialRunState = data.latest_run.state
-  const runState = (runInfo?.run || runInfo[id] || initialRunState) as RunState
+  const runState = (runInfo?.project || runInfo[id] || initialRunState) as RunState
 
-  // useEffect(() => {
-  //   const update = async () => {
-  //     if (runState !== initialRunState && runState === 'success') {
-  //       setData(await getIntegration(data.id))
-  //     }
-  //   }
-  //   update()
-  // }, [runState])
+  useEffect(() => {
+    const update = async () => {
+      if (runState !== initialRunState) {
+        setData(await getIntegration(data.id))
+      }
+    }
+    update()
+  }, [runState])
 
   return (
     <>
@@ -57,7 +57,7 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
       <div className='react-flow__buttons'>
         <EditButton absoluteUrl={data.absolute_url} />
       </div>
-      {data.kind !== 'upload' && <StatusIcon runState={runState} />}
+      {data.kind !== 'upload' && <StatusIcon runState={data.latest_run.state} />}
       <img className='h-24 w-24' src={`/static/${data.icon}`} />
       <Handle type='source' position={Position.Right} isConnectable={false} />
     </>
@@ -69,16 +69,16 @@ const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
 
   const { runInfo } = useContext(AutomateContext) as IAutomateContext
   const initialRunState = data.latest_run.state
-  const runState = (runInfo?.run || runInfo[id] || initialRunState) as RunState
+  const runState = (runInfo?.project || runInfo[id] || initialRunState) as RunState
 
-  // useEffect(() => {
-  //   const update = async () => {
-  //     if (runState !== initialRunState && runState === 'success') {
-  //       setData(await getWorkflow(data.id))
-  //     }
-  //   }
-  //   update()
-  // }, [runState])
+  useEffect(() => {
+    const update = async () => {
+      if (runState !== initialRunState) {
+        setData(await getWorkflow(data.id))
+      }
+    }
+    update()
+  }, [runState])
 
   return (
     <>
@@ -86,7 +86,7 @@ const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
       <div className='react-flow__buttons'>
         <EditButton absoluteUrl={data.absolute_url} />
       </div>
-      <StatusIcon runState={runState} />
+      <StatusIcon runState={data.latest_run.state} />
       <Handle type='target' position={Position.Left} isConnectable={false} />
       <i className='fas fa-fw fa-sitemap text-blue'></i>
       <Handle type='source' position={Position.Right} isConnectable={false} />

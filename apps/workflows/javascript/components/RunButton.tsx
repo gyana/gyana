@@ -35,7 +35,6 @@ const RunButton: React.FC = () => {
       },
       onError: async () => {
         const errors = (await getWorkflowStatus(workflowId)).errors
-        console.log(errors, elements)
         setElements((elements) =>
           elements.map((el) => {
             if (isNode(el)) {

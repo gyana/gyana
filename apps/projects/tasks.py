@@ -34,7 +34,6 @@ def _get_entity_from_input_table(table: Table):
 def run_project_task(self, graph_run_id: int):
 
     progress_recorder = ProgressRecorder(self)
-    run_info = {}
 
     graph_run = GraphRun.objects.get(pk=graph_run_id)
     project = graph_run.project
@@ -55,7 +54,9 @@ def run_project_task(self, graph_run_id: int):
     graph = {
         workflow: [
             _get_entity_from_input_table(node.input_table)
-            for node in workflow.nodes.filter(kind=Node.Kind.INPUT)
+            for node in workflow.nodes.filter(
+                kind=Node.Kind.INPUT, input_table__isnull=False
+            )
             .select_related("input_table__workflow_node__workflow")
             .select_related("input_table__integration__sheet")
             .select_related("input_table__integration__connector")
@@ -81,6 +82,12 @@ def run_project_task(self, graph_run_id: int):
         )
         for entity in graph
     }
+
+    run_info = {
+        job_run.source_obj.schedule_node_id: job_run.state
+        for job_run in job_runs.values()
+    }
+    progress_recorder.set_progress(0, 0, description=json.dumps(run_info))
 
     ts = TopologicalSorter(graph)
 
@@ -111,6 +118,9 @@ def run_project_task(self, graph_run_id: int):
         # todo: add an error to the schedule to track "is_circular"
         pass
 
+    if graph_run.runs.filter(state=JobRun.State.FAILED).exists():
+        raise Exception
+
 
 def run_project(project: Project, user: CustomUser):
     graph_run = GraphRun.objects.create(
@@ -121,3 +131,4 @@ def run_project(project: Project, user: CustomUser):
         user=user,
     )
     run_project_task.apply_async((graph_run.id,), task_id=graph_run.task_id)
+    return graph_run

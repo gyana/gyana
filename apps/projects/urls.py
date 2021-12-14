@@ -2,7 +2,7 @@ from django.urls import path
 
 from apps.teams.access import login_and_team_required
 
-from . import frames, views
+from . import frames, rest, views
 from .access import login_and_project_required
 
 app_name = "projects"
@@ -31,6 +31,11 @@ urlpatterns = [
         "<hashid:project_id>/runs",
         login_and_project_required(frames.ProjectRuns.as_view()),
         name="runs",
+    ),
+    path(
+        "<hashid:project_id>/run",
+        login_and_project_required(rest.project_run),
+        name="run",
     ),
 ]
 

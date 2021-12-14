@@ -1,16 +1,11 @@
-from graphlib import CycleError
-
 import analytics
-import celery
 from django.shortcuts import redirect
 from django.urls.base import reverse
-from django.utils import timezone
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 
 from apps.base.analytics import PROJECT_CREATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
-from apps.projects.tasks import run_project
 from apps.teams.mixins import TeamMixin
 
 from .forms import ProjectCreateForm, ProjectUpdateForm
@@ -79,23 +74,22 @@ class ProjectDelete(DeleteView):
         return reverse("teams:detail", args=(self.object.team.id,))
 
 
-class ProjectAutomate(TurboUpdateView):
+class ProjectAutomate(DetailView):
     template_name = "projects/automate.html"
     model = Project
-    fields = []
     pk_url_kwarg = "project_id"
 
-    def form_valid(self, form):
+    # def form_valid(self, form):
 
-        if self.request.POST.get("submit") == "cancel":
-            result = celery.result.AsyncResult(str(self.object.run_task_id))
-            result.revoke(terminate=True)
-            self.object.cancelled_at = timezone.now()
-            self.object.save()
+    #     if self.request.POST.get("submit") == "cancel":
+    #         result = celery.result.AsyncResult(str(self.object.run_task_id))
+    #         result.revoke(terminate=True)
+    #         self.object.cancelled_at = timezone.now()
+    #         self.object.save()
 
-        else:
-            run_project(self.object, self.request.user)
-        return super().form_valid(form)
+    #     else:
+    #         run_project(self.object, self.request.user)
+    #     return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
