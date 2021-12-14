@@ -1,8 +1,8 @@
 import Tippy from '@tippyjs/react'
-import { EditButton, ScheduleButton } from './NodeButtons'
+import { EditButton } from './NodeButtons'
 import React, { useContext, useEffect, useState } from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
-import { getIntegration, getWorkflow, updateConnector, updateSheet, updateWorkflow } from '../api'
+import { getIntegration, getWorkflow } from '../api'
 import { IAutomateContext, AutomateContext } from '../context'
 
 type ScheduleStatus = 'paused' | 'incomplete' | 'broken' | 'active'
@@ -73,18 +73,6 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
     <>
       <p className='absolute -top-12'> {data.name}</p>
       <div className='react-flow__buttons'>
-        {data.kind !== 'upload' && (
-          <ScheduleButton
-            isScheduled={sourceObj.is_scheduled}
-            onClick={async () => {
-              if (data.kind == 'connector')
-                await updateConnector(sourceObj.id, { is_scheduled: !sourceObj.is_scheduled })
-              else if (data.kind == 'sheet')
-                await updateSheet(sourceObj.id, { is_scheduled: !sourceObj.is_scheduled })
-              setData(await getIntegration(data.id))
-            }}
-          />
-        )}
         <EditButton absoluteUrl={data.absolute_url} />
       </div>
       {data.kind !== 'upload' && (
@@ -119,12 +107,6 @@ const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
     <>
       <p className='absolute -top-12'> {data.name}</p>
       <div className='react-flow__buttons'>
-        <ScheduleButton
-          isScheduled={data.is_scheduled}
-          onClick={async () => {
-            setData(await updateWorkflow(data.id, { is_scheduled: !data.is_scheduled }))
-          }}
-        />
         <EditButton absoluteUrl={data.absolute_url} />
       </div>
       <StatusIcon scheduleStatus={data.schedule_status} runStatus={runStatus} />

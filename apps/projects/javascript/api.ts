@@ -41,27 +41,6 @@ export const getWorkflow = async (id: number) => {
   return await client.action(window.schema, ['workflows', 'api', 'workflows', 'read'], { id })
 }
 
-export const updateConnector = async (id: number, data: any) => {
-  return await client.action(window.schema, ['sheets', 'api', 'sheets', 'partial_update'], {
-    id,
-    ...data,
-  })
-}
-
-export const updateSheet = async (id: number, data: any) => {
-  return await client.action(window.schema, ['sheets', 'api', 'sheets', 'partial_update'], {
-    id,
-    ...data,
-  })
-}
-
-export const updateWorkflow = async (id: number, data: any) => {
-  return await client.action(window.schema, ['workflows', 'api', 'workflows', 'partial_update'], {
-    id,
-    ...data,
-  })
-}
-
 export const listWorkflows = async (projectId: number) => {
   const entities = await Promise.all([
     client.action(window.schema, ['integrations', 'api', 'integrations', 'list'], {
