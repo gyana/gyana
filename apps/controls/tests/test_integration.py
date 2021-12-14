@@ -102,7 +102,8 @@ def test_public_date_slice_not_updating(
         shared_status=Dashboard.SharedStatus.PUBLIC,
         shared_id=uuid.uuid4(),
     )
-    control = control_factory(dashboard=dashboard)
+    dashboard.pages.create()
+    control = control_factory(page=dashboard.pages.first())
     r = client.post(
         f"/projects/{project.id}/dashboards/{dashboard.id}/controls/{control.id}/update-public",
         data={"date_range": CustomChoice.CUSTOM, "submit": "submit"},

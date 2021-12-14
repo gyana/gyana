@@ -40,7 +40,6 @@ class Migration(migrations.Migration):
                 on_delete=django.db.models.deletion.CASCADE,
                 to="dashboards.page",
             ),
-            preserve_default=False,
         ),
         migrations.AlterField(
             model_name="control",

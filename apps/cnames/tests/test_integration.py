@@ -180,7 +180,7 @@ def test_cname_middleware_for_public_dashboard(
     assertOK(r)
 
     # access control public update
-    control = control_factory(dashboard=dashboard)
+    control = control_factory(page=dashboard.pages.first())
     r = client.get(
         f"/projects/{project.id}/dashboards/{dashboard.id}/controls/{control.id}/update-public",
         HTTP_HOST="test.domain.com",
