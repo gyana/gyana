@@ -1,8 +1,6 @@
 {% extends "web/app/app_base.html" %}
 {% load static %}
 
-{% comment %} {% block team_sidebar %}{% endblock %} {% endcomment %}
-
 {% block sidebar_content %}
 <a class="sidebar__link sidebar__link--border" href="{% url 'teams:detail' project.team.id %}">
   {% if project.team.icon %}<img src="{{ project.team.icon.url }}" />{% else %}<span class="team_logo">{{ project.team.name|slice:1 }}</span>{% endif %}
