@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import F, Q
 from model_clone.mixins.clone import CloneMixin
 
-from apps.base.models import BaseModel, SchedulableModel
+from apps.base.models import BaseModel
 from apps.integrations.models import Integration
 
 RETRY_LIMIT_DAYS = 3

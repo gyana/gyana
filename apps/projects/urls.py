@@ -28,9 +28,9 @@ urlpatterns = [
         name="automate",
     ),
     path(
-        "<hashid:project_id>/automate/settings",
-        login_and_project_required(frames.ProjectSettings.as_view()),
-        name="settings",
+        "<hashid:project_id>/runs",
+        login_and_project_required(frames.ProjectRuns.as_view()),
+        name="runs",
     ),
 ]
 
