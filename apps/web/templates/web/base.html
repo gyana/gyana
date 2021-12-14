@@ -136,7 +136,9 @@
         <label
           class="sidebar__link"
           for="sidebar-toggle"
+          {% if request.resolver_match.view_name not in 'project_workflows:detail,project_dashboards:detail' %}
           data-action="click->web-sidebar#toggle"
+          {% endif %}
         >
           <i class="fas fa-fw"></i>Collapse
         </label>
