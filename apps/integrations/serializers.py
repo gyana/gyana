@@ -13,17 +13,10 @@ class IntegrationSerializer(serializers.ModelSerializer):
         model = Integration
         fields = (
             "id",
-            "project",
             "kind",
             "name",
             "state",
-            "ready",
-            "created_ready",
-            "created_by",
             "automate_node_id",
-            "connector",
-            "sheet",
-            "upload",
             "absolute_url",
             "icon",
             "latest_run",

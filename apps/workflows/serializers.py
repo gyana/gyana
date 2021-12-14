@@ -16,18 +16,9 @@ class WorkflowSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            "project",
-            "last_success_run",
-            "data_updated",
-            "is_scheduled",
-            # "succeeded_at",
-            # "failed_at",
             "automate_node_id",
             "parents",
             "absolute_url",
-            # "schedule_status",
-            # "run_status",
-            # "up_to_date",
             "latest_run",
         )
 

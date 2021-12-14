@@ -12,8 +12,6 @@ class DashboardSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            "project",
-            "shared_status",
             "automate_node_id",
             "parents",
             "absolute_url",

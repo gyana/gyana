@@ -4,7 +4,6 @@ from django_tables2.views import SingleTableMixin
 from apps.base.frames import TurboFrameUpdateView
 from apps.runs.tables import GraphRunTable
 
-from .forms import ProjectUpdateForm
 from .models import Project
 
 
@@ -12,7 +11,6 @@ class ProjectRuns(SingleTableMixin, TurboFrameUpdateView):
     template_name = "projects/runs.html"
     model = Project
     fields = []
-    # form_class = ProjectUpdateForm
     table_class = GraphRunTable
     paginate_by = 10
     turbo_frame_dom_id = "projects:runs"

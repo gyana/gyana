@@ -79,18 +79,6 @@ class ProjectAutomate(DetailView):
     model = Project
     pk_url_kwarg = "project_id"
 
-    # def form_valid(self, form):
-
-    #     if self.request.POST.get("submit") == "cancel":
-    #         result = celery.result.AsyncResult(str(self.object.run_task_id))
-    #         result.revoke(terminate=True)
-    #         self.object.cancelled_at = timezone.now()
-    #         self.object.save()
-
-    #     else:
-    #         run_project(self.object, self.request.user)
-    #     return super().form_valid(form)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         self.object.update_schedule()
