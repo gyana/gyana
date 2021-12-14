@@ -59,7 +59,7 @@
       projectId="{{ project.id }}"
       celeryProgressUrl="{% static 'celery_progress/celery_progress.js' %}"
       {% if object.is_running %}
-      runTaskUrl="{% url 'celery_progress:task_status' object.run_task_id %}"
+      runTaskUrl="{% url 'celery_progress:task_status' object.latest_run.task_id %}"
       {% endif %}
     </automate-flow>
   </div>

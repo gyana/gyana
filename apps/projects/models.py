@@ -136,6 +136,10 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
     def get_absolute_url(self):
         return reverse("projects:detail", args=(self.id,))
 
+    @property
+    def latest_run(self):
+        return self.runs.order_by("-started_at").first()
+
 
 class ProjectMembership(BaseModel):
     """

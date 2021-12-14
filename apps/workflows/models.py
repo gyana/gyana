@@ -98,7 +98,7 @@ class Workflow(CloneMixin, BaseModel):
 
     @property
     def latest_run(self):
-        return self.runs.order_by("-created").first()
+        return self.runs.order_by("-started_at").first()
 
     @property
     def failed(self):
