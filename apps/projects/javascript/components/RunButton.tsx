@@ -36,7 +36,7 @@ const RunButton: React.FC<Props> = ({ projectId, setRunInfo }) => {
     <Tippy content='Run all your integrations and workflows in order'>
       <div className='dndflow__run-button'>
         <button
-          data-cy='workflow-run'
+          data-cy='project-run'
           onClick={async () => {
             setLoading(true)
             const result = await runProject(projectId)

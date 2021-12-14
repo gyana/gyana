@@ -9,6 +9,7 @@
 
   <div data-controller="tooltip tf-modal">
     <button
+      data-cy="settings"
       data-action="click->tf-modal#open"
       data-src="{% url "projects:runs" project.id %}"
       class="button button--sm button--tertiary"
@@ -16,7 +17,7 @@
       <i class="fas fa-fw fa-cog"></i> Settings
     </button>
 
-    <span data-tooltip-target="body">Set the daily schedule time</span>
+    <span data-tooltip-target="body">View all runs for this project</span>
 
     <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
       <div class="card card--none card--modal flex-col flex-1 overflow-auto">
