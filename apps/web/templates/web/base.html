@@ -56,12 +56,15 @@
 
     {% block sidebar %}
     <div id="sidebar" class="sidebar" data-controller="web-sidebar">
+      
       <input
         id="sidebar-toggle"
         type="checkbox"
         role="button"
         data-web-sidebar-target="toggle"
-        {% if not sidebar_collapsed %}checked{% endif %}
+        {% if not sidebar_collapsed and request.resolver_match.view_name not in 'project_workflows:detail,project_dashboards:detail' %}
+        checked
+        {% endif %}
         hidden
       />
 
@@ -133,7 +136,9 @@
         <label
           class="sidebar__link"
           for="sidebar-toggle"
+          {% if request.resolver_match.view_name not in 'project_workflows:detail,project_dashboards:detail' %}
           data-action="click->web-sidebar#toggle"
+          {% endif %}
         >
           <i class="fas fa-fw"></i>Collapse
         </label>

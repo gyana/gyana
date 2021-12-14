@@ -1,7 +1,5 @@
-{% extends "web/base.html" %}
+{% extends "web/app/app_base.html" %}
 {% load static %}
-
-{% block team_sidebar %}{% endblock %}
 
 {% block sidebar_content %}
 <a class="sidebar__link sidebar__link--border" href="{% url 'teams:detail' project.team.id %}">

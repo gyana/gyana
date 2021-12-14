@@ -1,6 +1,6 @@
 """
 Used in Heroku config vars:
-https://dashboard.heroku.com/apps/gyana-mvp/settings
+https://dashboard.heroku.com/apps/gyana-dev/settings
 """
 import os
 
@@ -24,7 +24,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 CNAME_ALLOWED_HOSTS = [
     ".gyana.com",
-    "gyana-mvp.herokuapp.com",
+    "gyana-dev.herokuapp.com",
     "gyana-release.herokuapp.com",
     "gyana-beta.herokuapp.com",
 ]

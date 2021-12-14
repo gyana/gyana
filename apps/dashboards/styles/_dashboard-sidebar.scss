@@ -1,0 +1,32 @@
+.dashboard-sidebar {
+  background-color: var(--c-white);
+  border-left: 1px solid var(--c-gray);
+  display: flex;
+  flex-flow: column;
+  overflow: auto;
+  width: 24rem;
+  z-index: var(--z-default);
+
+  &__item {
+    align-items: center;
+    cursor: grab;
+    display: flex;
+    font-size: 1.4rem;
+    gap: 1rem;
+    height: 3.2rem;
+    padding: 0 0.1rem 0 0.5rem;
+
+    &:hover {
+      background: var(--c-blue-10);
+      border-radius: 5px;
+    }
+  }
+
+  &__icon {
+    color: var(--c-blue);
+  }
+
+  &__name {
+    flex: 1 1 0%;
+  }
+}
