@@ -84,8 +84,3 @@ class Sheet(CloneMixin, BaseModel):
     @property
     def up_to_date_with_drive(self):
         return self.drive_modified_date == self.drive_file_last_modified_at_sync
-
-    def run_for_schedule(self):
-        from .tasks import run_sheet_sync
-
-        return run_sheet_sync(self, skip_up_to_date=True)
