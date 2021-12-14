@@ -6,7 +6,7 @@ from django.utils import timezone
 from apps.integrations.models import Integration
 from apps.nodes.models import Node
 from apps.projects.tasks import run_project_task
-from apps.runs.models import GraphRun
+from apps.runs.models import GraphRun, JobRun
 from apps.workflows.models import Workflow
 
 pytestmark = pytest.mark.django_db
@@ -89,3 +89,25 @@ def test_run_project(
 
     assert integration.latest_run.started_at < workflow_1.latest_run.started_at
     assert workflow_1.latest_run.started_at < workflow_2.latest_run.started_at
+
+    # an error is raised by workflow_1
+
+    def side_effect(job_run_id):
+        job_run = JobRun.objects.get(pk=job_run_id)
+        if job_run.source == JobRun.Source.WORKFLOW and job_run.workflow == workflow_1:
+            raise Exception
+
+    run_workflow.side_effect = side_effect
+
+    graph_run = GraphRun.objects.create(
+        project=project,
+        task_id=uuid4(),
+        state=GraphRun.State.RUNNING,
+        started_at=timezone.now(),
+    )
+
+    with pytest.raises(Exception):
+        run_project_task(graph_run.id)
+
+    workflow_1.refresh_from_db()
+    assert workflow_1.state == Workflow.State.FAILED

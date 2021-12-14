@@ -102,7 +102,7 @@ def run_project_task(self, graph_run_id: int):
                     workflow_tasks.run_workflow(job_run.id)
                 job_run.state = JobRun.State.SUCCESS
 
-            except Exception as exc:
+            except Exception:
                 job_run.state = JobRun.State.FAILED
 
             finally:
