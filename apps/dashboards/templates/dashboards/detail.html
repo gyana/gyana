@@ -206,7 +206,7 @@
   </div>
 
   {% if request.GET.mode != "view" %}
-  <aside class="dnd-sidebar" style="width: 34rem;">
+  <aside class="dashboard-sidebar">
     {% for category_id, category in categories %}
     <div class="active pad" data-controller="collapsable">
       <h3 class="cursor-pointer" data-action="click->collapsable#toggle">
@@ -217,23 +217,18 @@
         class="collapsable flex flex-col max-h-0 overflow-hidden"
         data-collapsable-target="body"
       >
-        <div class="grid grid-cols-2 mb-3 pb-3 pt-7">
+        <div class="flex flex-col gap-3 pt-4">
           {% for id, txt, icon, choice_category, verbose_name in choices %}
             {% if choice_category|lower == category_id|lower %}
             <div
               id="widget-{{ id }}"
-              class="dnd-sidebar__node w-full cursor-draggable"
+              class="dashboard-sidebar__item w-full cursor-draggable"
               ondragstart="event.dataTransfer.setData('application/gydashboard', '{{ id }}'); event.dataTransfer.effectAllowed = 'move';"
               draggable="true"
             >
-              <i class="dnd-sidebar__icon fas fa-fw fa-lg {{ icon }} mr-2"></i>
-
-              <div class="flex flex-col">
-                <div class="flex items-center">
-                  <h4 class="dnd-sidebar__name">{{ verbose_name }}</h4>
-                </div>
-                {% comment %} <p class="dnd-sidebar__description">{{ node.description }}</p> {% endcomment %}
-              </div>
+              <i class="dashboard-sidebar__icon fas fa-fw fa-lg {{ icon }}"></i>
+              <p class="dashboard-sidebar__name">{{ verbose_name }}</p>
+              <i class="fas fa-fw fa-grip-vertical fa-sm text-black-10"></i>
             </div>
             {% endif %}
           {% endfor %}
