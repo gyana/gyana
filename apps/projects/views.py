@@ -10,6 +10,7 @@ from django.views.generic.edit import DeleteView
 
 from apps.base.analytics import PROJECT_CREATED_EVENT
 from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.projects.tasks import run_project
 from apps.teams.mixins import TeamMixin
 
 from .forms import ProjectCreateForm, ProjectUpdateForm
@@ -94,7 +95,7 @@ class ProjectAutomate(TurboUpdateView):
 
         else:
             try:
-                result = run_schedule.delay(self.object.id, trigger=True)
+                result = run_project.delay(self.object.id)
                 self.object.run_task_id = result.task_id
                 self.object.run_started_at = timezone.now()
                 self.object.save()

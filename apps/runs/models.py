@@ -41,6 +41,7 @@ class JobRun(DirtyFieldsMixin, BaseModel):
     workflow = models.ForeignKey(
         "workflows.Workflow", null=True, on_delete=models.CASCADE, related_name="runs"
     )
+    graph_run = models.ForeignKey("runs.GraphRun", null=True, on_delete=models.CASCADE)
 
     STATE_TO_ICON = {
         State.RUNNING: ICONS["loading"],

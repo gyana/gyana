@@ -1,5 +1,6 @@
 import json
 from graphlib import CycleError, TopologicalSorter
+from uuid import uuid4
 
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
@@ -13,6 +14,8 @@ from apps.tables.models import Table
 from apps.users.models import CustomUser
 from apps.workflows.bigquery import run_workflow
 from apps.workflows.models import Workflow
+
+from .models import Project
 
 
 def _update_progress_from_job_run(progress_recorder, run_info, job_run):
@@ -28,13 +31,12 @@ def _get_entity_from_input_table(table: Table):
 
 
 @shared_task(bind=True)
-def run_project_task(self, graph_run_id: int, user_id: int):
+def run_project_task(self, graph_run_id: int):
 
     progress_recorder = ProgressRecorder(self)
     run_info = {}
 
     graph_run = GraphRun.objects.get(pk=graph_run_id)
-    user = CustomUser.objects.get(pk=user_id)
     project = graph_run.project
 
     project.update_schedule()
@@ -72,7 +74,8 @@ def run_project_task(self, graph_run_id: int, user_id: int):
             integration=entity.integration if hasattr(entity, "integration") else None,
             workflow=entity if isinstance(entity, Workflow) else None,
             started_at=timezone.now(),
-            user=user,
+            user=graph_run.user,
+            graph_run=graph_run,
         )
         for entity in graph
     }
@@ -104,3 +107,14 @@ def run_project_task(self, graph_run_id: int, user_id: int):
     except CycleError:
         # todo: add an error to the schedule to track "is_circular"
         pass
+
+
+def run_project(project: Project, user: CustomUser):
+    graph_run = GraphRun.objects.create(
+        project=project,
+        task_id=uuid4(),
+        state=JobRun.State.RUNNING,
+        started_at=timezone.now(),
+        user=user,
+    )
+    run_project_task.apply_async((graph_run.id,), task_id=graph_run.task_id)
