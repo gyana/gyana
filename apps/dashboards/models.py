@@ -111,7 +111,7 @@ class Dashboard(CloneMixin, BaseModel):
         return f"{domain}/dashboards/{self.shared_id}"
 
     @property
-    def schedule_node_id(self):
+    def automate_node_id(self):
         return f"{self._meta.db_table}-{self.id}"
 
     @property

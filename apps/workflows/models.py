@@ -142,5 +142,5 @@ class Workflow(CloneMixin, BaseModel):
         self.save(update_fields=["state", "last_success_run"])
 
     @property
-    def schedule_node_id(self):
+    def automate_node_id(self):
         return f"{self._meta.db_table}-{self.id}"

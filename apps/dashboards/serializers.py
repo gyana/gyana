@@ -14,11 +14,11 @@ class DashboardSerializer(serializers.ModelSerializer):
             "name",
             "project",
             "shared_status",
-            "schedule_node_id",
+            "automate_node_id",
             "parents",
             "absolute_url",
         )
 
     def get_parents(self, obj):
         parents = {widget.table.source_obj for widget in obj.get_all_widgets()}
-        return [source.schedule_node_id for source in parents]
+        return [source.automate_node_id for source in parents]

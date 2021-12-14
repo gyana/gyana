@@ -20,7 +20,7 @@ class IntegrationSerializer(serializers.ModelSerializer):
             "ready",
             "created_ready",
             "created_by",
-            "schedule_node_id",
+            "automate_node_id",
             "connector",
             "sheet",
             "upload",

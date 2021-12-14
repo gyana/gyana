@@ -22,7 +22,7 @@ class WorkflowSerializer(serializers.ModelSerializer):
             "is_scheduled",
             # "succeeded_at",
             # "failed_at",
-            "schedule_node_id",
+            "automate_node_id",
             "parents",
             "absolute_url",
             # "schedule_status",
@@ -38,4 +38,4 @@ class WorkflowSerializer(serializers.ModelSerializer):
                 kind=Node.Kind.INPUT, input_table__isnull=False
             )
         }
-        return [source.schedule_node_id for source in parents]
+        return [source.automate_node_id for source in parents]

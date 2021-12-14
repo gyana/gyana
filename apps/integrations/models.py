@@ -238,5 +238,5 @@ class Integration(CloneMixin, BaseModel):
         self.save()
 
     @property
-    def schedule_node_id(self):
+    def automate_node_id(self):
         return f"{self._meta.db_table}-{self.id}"
