@@ -114,11 +114,10 @@ def run_project_task(self, graph_run_id: int):
                 job_run.save()
 
     except CycleError:
-        # todo: add an error to the schedule to track "is_circular"
-        pass
+        Exception("Your integrations and workflows have a circular dependency")
 
     if graph_run.runs.filter(state=JobRun.State.FAILED).exists():
-        raise Exception
+        raise Exception("Not all of your integrations or workflows completed successfully")
 
 
 def run_project(project: Project, user: CustomUser):

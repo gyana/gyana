@@ -17,10 +17,10 @@ const RunButton: React.FC<Props> = ({ projectId, setRunInfo }) => {
         setRunInfo((runInfo) => ({ ...runInfo, project: 'success' }))
         alert('Project finished running!')
       },
-      onError: () => {
+      onError: (_, __, excMessage) => {
         setLoading(false)
         setRunInfo((runInfo) => ({ ...runInfo, project: 'failed' }))
-        alert('Project failed running')
+        alert(`Project failed running: ${excMessage}`)
       },
       onProgress: (_, __, progress) => {
         if (progress.description) {
