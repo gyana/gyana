@@ -61,7 +61,8 @@ def run_schedule_for_project(self, project_id: int):
 
     ts = TopologicalSorter(graph)
 
-    retry = False
+    # todo: retry logic is removed temporarily [2021-12-14]
+    # retry = False
 
     try:
         for entity in ts.static_order():
@@ -82,8 +83,8 @@ def run_schedule_for_project(self, project_id: int):
                 or isinstance(e, Connector)
             ]
 
-            if any(not e.up_to_date for e in scheduled_parents):
-                retry = True
+            # if any(not e.up_to_date for e in scheduled_parents):
+            #     retry = True
 
             if (
                 hasattr(entity, "is_scheduled")
@@ -98,7 +99,7 @@ def run_schedule_for_project(self, project_id: int):
         pass
 
     # We need to keep retrying until the connectors either fail or succeeded
-    if retry:
-        self.retry(countdown=RETRY_COUNTDOWN, max_retries=MAX_RETRIES)
+    # if retry:
+    #     self.retry(countdown=RETRY_COUNTDOWN, max_retries=MAX_RETRIES)
 
     honeybadger_check_in("j6IrRd")
