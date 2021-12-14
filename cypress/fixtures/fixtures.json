@@ -9,7 +9,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-12-13T22:48:22.456Z",
+      "last_login": "2021-12-14T21:17:42.897Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -468,12 +468,41 @@
     }
   },
   {
+    "model": "dashboards.dashboard",
+    "pk": 2,
+    "fields": {
+      "created": "2021-12-14T21:17:52.313Z",
+      "updated": "2021-12-14T21:17:58.692Z",
+      "name": "Results",
+      "project": 1,
+      "shared_status": "private",
+      "shared_id": null,
+      "password": null,
+      "password_set": null,
+      "width": 1200,
+      "height": 840,
+      "grid_size": 15,
+      "palette_colors": "[\"#5D62B5\", \"#29C3BE\", \"#F2726F\", \"#FFC533\", \"#62B58F\", \"#BC95DF\", \"#67CDF2\"]",
+      "background_color": "#ffffff"
+    }
+  },
+  {
     "model": "dashboards.page",
     "pk": 1,
     "fields": {
       "created": "2021-12-13T22:47:57.268Z",
       "updated": "2021-12-13T22:47:57.268Z",
       "dashboard": 1,
+      "position": 1
+    }
+  },
+  {
+    "model": "dashboards.page",
+    "pk": 2,
+    "fields": {
+      "created": "2021-12-14T21:17:52.317Z",
+      "updated": "2021-12-14T21:17:52.317Z",
+      "dashboard": 2,
       "position": 1
     }
   },
@@ -523,6 +552,32 @@
       "height": 405,
       "x": 0,
       "y": 435,
+      "stack_100_percent": false,
+      "error": null,
+      "date_column": null,
+      "show_summary_row": false
+    }
+  },
+  {
+    "model": "widgets.widget",
+    "pk": 4,
+    "fields": {
+      "created": "2021-12-14T21:17:58.685Z",
+      "updated": "2021-12-14T21:18:07.387Z",
+      "page": 2,
+      "table": 22,
+      "text_content": null,
+      "kind": "table",
+      "aggregator": "",
+      "dimension": null,
+      "second_dimension": null,
+      "name": null,
+      "sort_by": "dimension",
+      "sort_ascending": true,
+      "width": 495,
+      "height": 390,
+      "x": 0,
+      "y": 0,
       "stack_100_percent": false,
       "error": null,
       "date_column": null,
@@ -3445,7 +3500,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2021-12-14T21:15:47.490Z" }
+    "fields": { "last_update": "2021-12-14T21:17:43.153Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
