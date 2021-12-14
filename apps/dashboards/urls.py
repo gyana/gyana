@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
+from rest_framework import routers
 
 from apps.projects.access import login_and_project_required
 
@@ -47,6 +48,10 @@ urlpatterns = [
         name="preview",
     ),
 ]
+
+router = routers.DefaultRouter()
+router.register("api/dashboards", rest.DashboardViewSet, basename="Dashboard")
+urlpatterns += router.urls
 
 project_urlpatterns = (
     [

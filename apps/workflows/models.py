@@ -143,3 +143,7 @@ class Workflow(CloneMixin, SchedulableModel):
             self.runs.filter(state=JobRun.State.SUCCESS).order_by("-started_at").first()
         )
         self.save(update_fields=["state", "last_success_run"])
+
+    @property
+    def schedule_node_id(self):
+        return f"{self._meta.db_table}-{self.id}"

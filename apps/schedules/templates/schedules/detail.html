@@ -1,0 +1,69 @@
+{% extends "web/app/project_base.html" %}
+{% load static %}
+
+{% block app %}
+<div class="workflow-detail__header">
+  <h3 class="flex-1 mr-auto">
+    Schedule
+  </h3>
+
+  <div data-controller="tooltip tf-modal">
+    <button
+      data-action="click->tf-modal#open"
+      data-src="{% url "project_schedule:settings" project.id %}"
+      class="button button--sm button--tertiary"
+    >
+      <i class="fas fa-fw fa-cog"></i> Settings
+    </button>
+
+    <span data-tooltip-target="body">Set the daily schedule time</span>
+
+    <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
+      <div class="card card--none card--modal flex-col flex-1 overflow-auto">
+        <turbo-frame
+          id="project_schedule:settings"
+          data-tf-modal-target="turboFrame"
+        ></turbo-frame>
+      </div>
+    </div>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+
+    {% include "django/forms/default_form.html" %}
+
+    <div data-controller="tooltip" class='dndflow__run-button'>
+      {% if object.is_running %}
+        <button type="submit" name="cancel" class='button button--sm button--danger'>
+          <i class='fas fa-fw fa-times'></i> Cancel
+          <span data-tooltip-target="body">Cancel the current run</span>
+        </button>
+      {% else %}
+        <button type="submit" name="run" class='button button--sm button--success'>
+          <i class='fas fa-fw fa-play'></i> Run
+          <span data-tooltip-target="body">Run all workflows in order</span>
+        </button>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+{% if object.is_running %}
+  <p class="alert"> A run is currently in progress </p>
+{% endif %}
+
+<div class="flex flex-1 overflow-hidden">
+  <div class="w-full dndflow">
+    <schedule-flow class="w-full"
+      projectId="{{ project.id }}"
+      celeryProgressUrl="{% static 'celery_progress/celery_progress.js' %}"
+      {% if object.is_running %}
+      runTaskUrl="{% url 'celery_progress:task_status' object.run_task_id %}"
+      {% endif %}
+    </schedule-flow>
+  </div>
+</div>
+<script src="{% static "js/schedule-bundle.js" %}"></script>
+<link rel="stylesheet" href="{% static "css/schedule.css" %}" />
+{% endblock %}

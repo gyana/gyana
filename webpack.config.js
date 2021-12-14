@@ -12,6 +12,7 @@ module.exports = {
     fontawesome: './apps/base/styles/vendors/fontawesome.css',
     tailwind: './apps/base/styles/vendors/tailwind.pcss',
     turbo: './apps/base/javascript/turbo.ts',
+    schedule: './apps/schedules/javascript/schedule-flow.tsx',
     stimulus: './apps/base/javascript/stimulus.ts',
     workflow: './apps/workflows/javascript/dnd-flow.tsx',
     components: './apps/base/javascript/components.ts',

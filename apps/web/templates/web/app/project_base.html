@@ -57,6 +57,14 @@
   <i class="far fa-fw fa-chart-pie mr-6"></i>Dashboards
   <span data-tooltip-target="body">Dashboards</span>
 </a>
+
+<a class="sidebar__link {% if app_name == "project_schedule" %}sidebar__link--active{% endif %}"
+  href="{% url 'project_schedule:detail' project.id %}"
+  data-controller="tooltip"
+  data-placement="right">
+  <i class="far fa-fw fa-calendar mr-6"></i>Schedule
+  <span data-tooltip-target="body">Schedule</span>
+</a>
 {% endif %}
 
 {% if not project.ready %}

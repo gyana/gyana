@@ -31,7 +31,6 @@ psycopg2-binary = "^2.8.6"
 djangorestframework = "^3.12.2"
 coreapi = "^2.3.3"
 django-anymail = {extras = ["mailgun"], version = "^8.2"}
-celery-progress = "^0.1.0"
 celery = {extras = ["redis"], version = "^5.0.5"}
 gunicorn = "^20.0.4"
 django-heroku = "^0.3.1"
@@ -72,6 +71,7 @@ python-Levenshtein = "^0.12.2"
 django-timezone-field = "^4.2.1"
 django-redis = "^5.0.0"
 django-celery-beat = "^2.2.1"
+celery-progress = "^0.1.1"
 django-celery-results = "^2.2.0"
 
 [tool.poetry.dev-dependencies]
