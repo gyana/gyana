@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from apps.integrations.models import Integration
 from apps.nodes.models import Node
-from apps.projects.tasks import run_project_task
+from apps.projects import tasks
 from apps.runs.models import GraphRun, JobRun
 from apps.workflows.models import Workflow
 
@@ -21,7 +21,7 @@ def test_run_project(
     mocker,
 ):
     run_sheet_sync_task = mocker.patch("apps.sheets.tasks.run_sheet_sync_task")
-    run_workflow = mocker.patch("apps.workflows.bigquery.run_workflow")
+    run_workflow_task = mocker.patch("apps.workflows.tasks.run_workflow_task")
 
     # integration -> workflow_1 -> workflow_2
 
@@ -62,7 +62,7 @@ def test_run_project(
         started_at=timezone.now(),
     )
 
-    run_project_task(graph_run.id)
+    tasks.run_project_task(graph_run.id)
 
     integration.refresh_from_db()
     workflow_1.refresh_from_db()
@@ -77,9 +77,9 @@ def test_run_project(
     assert run_sheet_sync_task.call_count == 1
     assert run_sheet_sync_task.call_args.args == (integration.latest_run.id,)
 
-    assert run_workflow.call_count == 2
-    assert run_workflow.call_args_list[0].args == (workflow_1.latest_run.id,)
-    assert run_workflow.call_args_list[1].args == (workflow_2.latest_run.id,)
+    assert run_workflow_task.call_count == 2
+    assert run_workflow_task.call_args_list[0].args == (workflow_1.latest_run.id,)
+    assert run_workflow_task.call_args_list[1].args == (workflow_2.latest_run.id,)
 
     assert graph_run.runs.count() == 3
     assert graph_run.runs.filter(state=GraphRun.State.SUCCESS).count() == 3
@@ -97,7 +97,7 @@ def test_run_project(
         if job_run.source == JobRun.Source.WORKFLOW and job_run.workflow == workflow_1:
             raise Exception
 
-    run_workflow.side_effect = side_effect
+    run_workflow_task.side_effect = side_effect
 
     graph_run = GraphRun.objects.create(
         project=project,
@@ -107,7 +107,7 @@ def test_run_project(
     )
 
     with pytest.raises(Exception):
-        run_project_task(graph_run.id)
+        tasks.run_project_task(graph_run.id)
 
     workflow_1.refresh_from_db()
     assert workflow_1.state == Workflow.State.FAILED

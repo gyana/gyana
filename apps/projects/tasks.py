@@ -12,7 +12,7 @@ from apps.sheets import tasks as sheet_tasks
 from apps.sheets.models import Sheet
 from apps.tables.models import Table
 from apps.users.models import CustomUser
-from apps.workflows import bigquery as workflow_tasks
+from apps.workflows import tasks as workflow_tasks
 from apps.workflows.models import Workflow
 
 from .models import Project
@@ -99,7 +99,7 @@ def run_project_task(self, graph_run_id: int):
                 if isinstance(entity, Sheet):
                     sheet_tasks.run_sheet_sync_task(job_run.id, skip_up_to_date=True)
                 elif isinstance(entity, Workflow):
-                    workflow_tasks.run_workflow(job_run.id)
+                    workflow_tasks.run_workflow_task(job_run.id)
                 job_run.state = JobRun.State.SUCCESS
 
             except Exception:

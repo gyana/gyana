@@ -9,8 +9,8 @@ from apps.projects.models import Project
 from apps.sheets.models import Sheet
 from apps.sheets.tasks import run_sheet_sync
 from apps.tables.models import Table
-from apps.workflows.bigquery import run_workflow
 from apps.workflows.models import Workflow
+from apps.workflows.tasks import run_workflow
 
 from .models import Project
 
