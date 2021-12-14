@@ -137,7 +137,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
                 context,
                 self.object,
                 self.request,
-                self.dashboard.control if self.dashboard.has_control else None,
+                self.page.control if self.page.has_control else None,
             )
             if self.object.error:
                 self.object.error = None
@@ -196,7 +196,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
                     context,
                     self.object,
                     self.request,
-                    self.dashboard.control if self.dashboard.has_control else None,
+                    self.page.control if self.page.has_control else None,
                 )
                 if self.object.error:
                     self.object.error = None
@@ -238,7 +238,7 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
                 context,
                 self.object,
                 self.request,
-                self.dashboard.control if self.dashboard.has_control else None,
+                self.page.control if self.page.has_control else None,
             )
         except Exception as e:
             error_template = f"widgets/errors/{error_name_to_snake(e)}.html"
@@ -253,7 +253,7 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
         if self.object.is_valid and self.object.kind == Widget.Kind.TABLE:
             table = table_to_output(
                 self.object,
-                self.dashboard.control if self.dashboard.has_control else None,
+                self.page.control if self.page.has_control else None,
             )
             return RequestConfig(
                 self.request, paginate=self.get_table_pagination(table)

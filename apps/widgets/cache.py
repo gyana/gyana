@@ -11,8 +11,8 @@ def last_modified_widget_output(request, project_id, dashboard_id, pk):
         if widget.table
         else widget.updated
     )
-    if widget.page.dashboard.has_control and widget.date_column:
-        return max(widget_update, widget.page.dashboard.control.updated)
+    if widget.page.has_control and widget.date_column:
+        return max(widget_update, widget.page.control.updated)
     return widget_update
 
 

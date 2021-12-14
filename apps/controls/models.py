@@ -23,7 +23,7 @@ class Control(BaseModel):
         default=DateRange.THIS_YEAR,
     )
 
-    dashboard = models.OneToOneField("dashboards.Dashboard", on_delete=models.CASCADE)
+    page = models.OneToOneField("dashboards.Page", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.pk

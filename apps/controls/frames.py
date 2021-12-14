@@ -19,13 +19,14 @@ class ControlCreate(DashboardMixin, TurboFrameCreateView):
     turbo_frame_dom_id = "controls:create"
 
     def form_valid(self, form):
-        form.instance.dashboard = self.dashboard
+        form.instance.page = self.page
         super().form_valid(form)
         context = self.get_context_data()
         context_update = {
             "object": self.object,
             "dashboard": self.dashboard,
             "project": self.project,
+            "page": self.page,
             "form": ControlForm(instance=self.object),
         }
 
@@ -41,13 +42,14 @@ class ControlCreate(DashboardMixin, TurboFrameCreateView):
         )
 
     def get_success_url(self) -> str:
-        return reverse(
+        base_url = reverse(
             "controls:create",
             args=(
                 self.project.id,
                 self.dashboard.id,
             ),
         )
+        return f"{base_url}?page={self.page.position}"
 
 
 class ControlUpdate(DashboardMixin, TurboFrameUpdateView):
@@ -57,14 +59,14 @@ class ControlUpdate(DashboardMixin, TurboFrameUpdateView):
     turbo_frame_dom_id = "controls:update"
 
     def get_stream_response(self, form):
-        dashboard = form.instance.dashboard
         streams = []
-        for widget in dashboard.get_all_widgets():
+        for widget in self.dashboard.get_all_widgets():
             if widget.date_column and widget.is_valid:
                 context = {
                     "widget": widget,
-                    "dashboard": dashboard,
-                    "project": dashboard.project,
+                    "dashboard": self.dashboard,
+                    "project": self.project,
+                    "page": self.page,
                 }
                 add_output_context(context, widget, self.request, form.instance)
                 streams.append(
@@ -119,6 +121,10 @@ class ControlPublicUpdate(ControlUpdate):
             return HttpResponseSeeOther(self.get_success_url())
         return self.get_stream_response(form)
 
+    @cached_property
+    def page(self):
+        return self.dashboard.pages.get(position=self.request.GET.get("page", 1))
+
 
 class ControlDelete(DashboardMixin, DeleteView):
     template_name = "controls/delete.html"
@@ -134,7 +140,11 @@ class ControlDelete(DashboardMixin, DeleteView):
                 TurboStream("controls:create-stream")
                 .replace.template(
                     "controls/create.html",
-                    {"dashboard": self.dashboard, "project": self.project},
+                    {
+                        "dashboard": self.dashboard,
+                        "project": self.project,
+                        "page": self.page,
+                    },
                 )
                 .render(request=request),
             ]

@@ -83,8 +83,8 @@
         <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
       {% endif %}
     </header>
-    {% if dashboard.has_control %}
-      <turbo-frame id='controls:update' src="{% url 'controls:update-public' project.id dashboard.id dashboard.control.id %}">
+    {% if page.has_control %}
+      <turbo-frame id='controls:update' src="{% url 'controls:update-public' project.id dashboard.id page.control.id %}">
         <div class='placeholder-scr'>
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
         </div>

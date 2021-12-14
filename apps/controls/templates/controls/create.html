@@ -2,10 +2,10 @@
 
 {% flag 'beta' %}
 <div id='controls:create-stream'>
-  <form method="post" action="{% url 'controls:create' project.id dashboard.id%}" class="form">
+  <form method="post" action="{% url 'controls:create' project.id dashboard.id%}?page={{ page.position }}" class="form">
     {% csrf_token %}
 
-    <button {% if dashboard.has_control %}disabled{% endif %} type="submit" class="button button--sm button--tertiary">
+    <button {% if page.has_control %}disabled{% endif %} type="submit" class="button button--sm button--tertiary">
       <i class="fa fa-calendar"></i> Date filter
     </button>
   </form>

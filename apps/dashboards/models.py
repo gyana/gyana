@@ -110,10 +110,6 @@ class Dashboard(CloneMixin, BaseModel):
         )
         return f"{domain}/dashboards/{self.shared_id}"
 
-    @property
-    def has_control(self):
-        return hasattr(self, "control")
-
     def get_all_widgets(self):
         from apps.widgets.models import Widget
 
@@ -130,3 +126,7 @@ class Page(CloneMixin, BaseModel):
         Dashboard, on_delete=models.CASCADE, related_name="pages"
     )
     position = models.IntegerField(default=1)
+
+    @property
+    def has_control(self):
+        return hasattr(self, "control")
