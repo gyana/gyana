@@ -37,3 +37,8 @@ class SaveParentModel(DirtyFieldsMixin, CloneMixin, BaseModel):
         if hasattr(self, "node") and (node := getattr(self, "node")):
             return node
         return self.widget
+
+    @property
+    def entity_id(self):
+        # A unique identifier for this entity across all models
+        return f"{self._meta.db_table}-{self.id}"

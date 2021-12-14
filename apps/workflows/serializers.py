@@ -16,7 +16,7 @@ class WorkflowSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            "automate_node_id",
+            "entity_id",
             "parents",
             "absolute_url",
             "latest_run",
@@ -29,4 +29,4 @@ class WorkflowSerializer(serializers.ModelSerializer):
                 kind=Node.Kind.INPUT, input_table__isnull=False
             )
         }
-        return [source.automate_node_id for source in parents]
+        return [source.entity_id for source in parents]

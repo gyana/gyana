@@ -19,7 +19,7 @@ from .models import Project
 
 
 def _update_progress_from_job_run(progress_recorder, run_info, job_run):
-    run_info[job_run.source_obj.automate_node_id] = job_run.state
+    run_info[job_run.source_obj.entity_id] = job_run.state
     progress_recorder.set_progress(0, 0, description=json.dumps(run_info))
 
 
@@ -84,8 +84,7 @@ def run_project_task(self, graph_run_id: int):
     }
 
     run_info = {
-        job_run.source_obj.automate_node_id: job_run.state
-        for job_run in job_runs.values()
+        job_run.source_obj.entity_id: job_run.state for job_run in job_runs.values()
     }
     progress_recorder.set_progress(0, 0, description=json.dumps(run_info))
 

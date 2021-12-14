@@ -16,7 +16,7 @@ class IntegrationSerializer(serializers.ModelSerializer):
             "kind",
             "name",
             "state",
-            "automate_node_id",
+            "entity_id",
             "absolute_url",
             "icon",
             "latest_run",

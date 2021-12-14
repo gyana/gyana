@@ -236,7 +236,3 @@ class Integration(CloneMixin, BaseModel):
             else self.RUN_STATE_TO_INTEGRATION_STATE[self.latest_run.state]
         )
         self.save()
-
-    @property
-    def automate_node_id(self):
-        return f"{self._meta.db_table}-{self.id}"

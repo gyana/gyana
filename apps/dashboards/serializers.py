@@ -12,11 +12,11 @@ class DashboardSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            "automate_node_id",
+            "entity_id",
             "parents",
             "absolute_url",
         )
 
     def get_parents(self, obj):
         parents = {widget.table.source_obj for widget in obj.get_all_widgets()}
-        return [source.automate_node_id for source in parents]
+        return [source.entity_id for source in parents]

@@ -4,9 +4,9 @@ import { ArrowHeadType, Connection, Edge, Node } from 'react-flow-renderer'
 
 export const toNode = (res): Node => {
   return {
-    id: res.automate_node_id.toString(),
+    id: res.entity_id.toString(),
     // e.g. "workflows_workflow-1"
-    type: res.automate_node_id.toString().split('-')[0].split('_')[1],
+    type: res.entity_id.toString().split('-')[0].split('_')[1],
     data: res,
     position: { x: 0, y: 0 },
   }
@@ -58,7 +58,7 @@ export const listProjectAll = async (projectId: number) => {
 
   const nodes = results.map((r) => toNode(r))
   const edges = results
-    .map((r) => (r.parents || []).map((parent_id) => toEdge(parent_id, r.automate_node_id)))
+    .map((r) => (r.parents || []).map((parent_id) => toEdge(parent_id, r.entity_id)))
     .flat()
 
   return [nodes, edges]
