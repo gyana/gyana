@@ -102,7 +102,7 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
 const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
   const [data, setData] = useState(initialData)
 
-  const { runInfo } = useContext(ScheduleContext) as IScheduleContext
+  const { runInfo } = useContext(AutomateContext) as IAutomateContext
   const initialRunStatus = data.run_status
   const runStatus = (runInfo?.run || runInfo[id] || initialRunStatus) as RunStatus
 

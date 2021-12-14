@@ -20,5 +20,5 @@ class DashboardSerializer(serializers.ModelSerializer):
         )
 
     def get_parents(self, obj):
-        parents = {widget.table.source_obj for widget in obj.widget_set.all()}
+        parents = {widget.table.source_obj for widget in obj.get_all_widgets()}
         return [source.schedule_node_id for source in parents]

@@ -58,7 +58,7 @@
   <span data-tooltip-target="body">Dashboards</span>
 </a>
 
-<a class="sidebar__link {% if app_name == "projects" and url_name == "automate" %}sidebar__link--active{% endif %}"
+<a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == "automate" %}sidebar__link--active{% endif %}"
   href="{% url 'projects:automate' project.id %}"
   data-controller="tooltip"
   data-placement="right">
