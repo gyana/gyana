@@ -1,6 +1,10 @@
+from graphlib import CycleError
+
 import analytics
+import celery
 from django.shortcuts import redirect
 from django.urls.base import reverse
+from django.utils import timezone
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 
@@ -72,3 +76,36 @@ class ProjectDelete(DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.team.id,))
+
+
+class ProjectAutomate(TurboUpdateView):
+    template_name = "projects/automate.html"
+    model = Project
+    fields = []
+
+    def form_valid(self, form):
+
+        if self.request.POST.get("submit") == "cancel":
+            result = celery.result.AsyncResult(str(self.object.run_task_id))
+            result.revoke(terminate=True)
+            self.object.cancelled_at = timezone.now()
+            self.object.save()
+
+        else:
+            try:
+                result = run_schedule.delay(self.object.id, trigger=True)
+                self.object.run_task_id = result.task_id
+                self.object.run_started_at = timezone.now()
+                self.object.save()
+            except CycleError:
+                # todo: add an error to the schedule to track "is_circular"
+                pass
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        self.object.update_schedule()
+        return context
+
+    def get_success_url(self):
+        return reverse("projects:automate", args=(self.object.id,))

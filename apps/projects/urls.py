@@ -1,5 +1,6 @@
-from apps.teams.access import login_and_team_required
 from django.urls import path
+
+from apps.teams.access import login_and_team_required
 
 from . import views
 from .access import login_and_project_required
@@ -20,6 +21,16 @@ urlpatterns = [
         "<hashid:project_id>/delete",
         login_and_project_required(views.ProjectDelete.as_view()),
         name="delete",
+    ),
+    path(
+        "<hashid:project_id>/automate",
+        login_and_project_required(views.ProjectAutomate.as_view()),
+        name="automate",
+    ),
+    path(
+        "<hashid:project_id>/automate/settings",
+        login_and_project_required(views.ScheduleSettings.as_view()),
+        name="settings",
     ),
 ]
 
