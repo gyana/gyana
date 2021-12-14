@@ -7,7 +7,9 @@ from apps.connectors.models import Connector
 from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.sheets.models import Sheet
+from apps.sheets.tasks import run_sheet_sync
 from apps.tables.models import Table
+from apps.workflows.bigquery import run_workflow
 from apps.workflows.models import Workflow
 
 from .models import Project
@@ -89,10 +91,13 @@ def run_schedule_for_project(self, project_id: int):
             if (
                 hasattr(entity, "is_scheduled")
                 and entity.is_scheduled
-                and not entity.up_to_date
-                and all(e.up_to_date for e in scheduled_parents)
+                # and not entity.up_to_date
+                # and all(e.up_to_date for e in scheduled_parents)
             ):
-                entity.run_for_schedule()
+                if isinstance(entity, Sheet):
+                    run_sheet_sync(entity, skip_up_to_date=True)
+                elif isinstance(entity, Workflow):
+                    run_workflow(self)
 
     except CycleError:
         # todo: add an error to the schedule to track "is_circular"

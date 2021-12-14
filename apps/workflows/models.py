@@ -5,7 +5,7 @@ from django.db.models import F, Max, Q
 from django.urls import reverse
 from model_clone import CloneMixin
 
-from apps.base.models import SchedulableModel
+from apps.base.models import BaseModel
 from apps.base.table import ICONS
 from apps.projects.models import Project
 from apps.runs.models import JobRun
@@ -32,7 +32,7 @@ class WorkflowsManager(models.Manager):
         )
 
 
-class Workflow(CloneMixin, SchedulableModel):
+class Workflow(CloneMixin, BaseModel):
     class State(models.TextChoices):
         INCOMPLETE = "incomplete", "Incomplete"
         RUNNING = "running", "Running"
@@ -53,6 +53,7 @@ class Workflow(CloneMixin, SchedulableModel):
     data_updated = models.DateTimeField(
         auto_now_add=True,
     )
+    is_scheduled = models.BooleanField(default=False)
 
     objects = WorkflowsManager()
 
@@ -127,11 +128,6 @@ class Workflow(CloneMixin, SchedulableModel):
         return self.last_success_run.started_at < max(
             self.data_updated, latest_input_updated
         )
-
-    def run_for_schedule(self):
-        from .bigquery import run_workflow
-
-        return run_workflow(self)
 
     def update_state_from_latest_run(self):
         self.state = (

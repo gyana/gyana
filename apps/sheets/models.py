@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import F, Q
 from model_clone.mixins.clone import CloneMixin
 
-from apps.base.models import SchedulableModel
+from apps.base.models import BaseModel, SchedulableModel
 from apps.integrations.models import Integration
 
 RETRY_LIMIT_DAYS = 3
@@ -30,7 +30,7 @@ class SheetsManager(models.Manager):
         )
 
 
-class Sheet(CloneMixin, SchedulableModel):
+class Sheet(CloneMixin, BaseModel):
 
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 
@@ -53,6 +53,9 @@ class Sheet(CloneMixin, SchedulableModel):
     drive_file_last_modified_at_sync = models.DateTimeField(null=True)
     # automatically sync metadata from google drive
     drive_modified_date = models.DateTimeField(null=True)
+
+    # todo: move to the integration model
+    is_scheduled = models.BooleanField(default=False)
 
     objects = SheetsManager()
 
