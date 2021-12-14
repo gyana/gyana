@@ -116,7 +116,7 @@ def run_project(project: Project, user: CustomUser):
     graph_run = GraphRun.objects.create(
         project=project,
         task_id=uuid4(),
-        state=JobRun.State.RUNNING,
+        state=GraphRun.State.RUNNING,
         started_at=timezone.now(),
         user=user,
     )

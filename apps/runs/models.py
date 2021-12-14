@@ -41,7 +41,9 @@ class JobRun(DirtyFieldsMixin, BaseModel):
     workflow = models.ForeignKey(
         "workflows.Workflow", null=True, on_delete=models.CASCADE, related_name="runs"
     )
-    graph_run = models.ForeignKey("runs.GraphRun", null=True, on_delete=models.CASCADE, related_name="runs")
+    graph_run = models.ForeignKey(
+        "runs.GraphRun", null=True, on_delete=models.CASCADE, related_name="runs"
+    )
 
     STATE_TO_ICON = {
         State.RUNNING: ICONS["loading"],
@@ -150,10 +152,10 @@ class GraphRun(DirtyFieldsMixin, BaseModel):
     def update_run_from_result(self):
         if self.result:
             if self.result.status in states.UNREADY_STATES:
-                self.state = JobRun.State.RUNNING
+                self.state = GraphRun.State.RUNNING
             elif self.result.status in states.EXCEPTION_STATES:
-                self.state = JobRun.State.FAILED
+                self.state = GraphRun.State.FAILED
             else:
-                self.state = JobRun.State.SUCCESS
+                self.state = GraphRun.State.SUCCESS
 
             self.completed_at = self.result.date_done

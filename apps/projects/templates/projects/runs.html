@@ -14,7 +14,7 @@
   </div>
 
   <div class="flex-1 overflow-auto">
-    <form
+    {% comment %} <form
       method="post"
       class="pad max-w-4xl"
       data-tf-modal-target='form'
@@ -22,19 +22,15 @@
     >
       {% csrf_token %}
 
-      {% if object.daily_schedule_time != object.truncated_daily_schedule_time %}
-        <p class="alert mb-4">Due to platform limitations for timezones with 15/30/45 minute GMT offsets, your connectors will start at {{ object.truncated_daily_schedule_time }}</p>
-      {% endif %}
-
       {% include "django/forms/default_form.html" with optional=False %}
 
       <button type="submit" class="button button--success w-full">
         Save
       </button>
-    </form>
+    </form> {% endcomment %}
 
     <div class="pad">
-      <p class="mb-4">All the historical runs for this workflow</p>
+      <p class="mb-4">All the historical runs for this project</p>
       <div class="card card--none">
         {% render_table table %}
       </div>
