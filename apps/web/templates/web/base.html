@@ -62,10 +62,8 @@
         type="checkbox"
         role="button"
         data-web-sidebar-target="toggle"
-        {% if request.resolver_match.app_name == 'project_workflows' and request.resolver_match.url_name == 'detail' %}
-        {% elif request.resolver_match.app_name == 'project_dashboards' and request.resolver_match.url_name == 'detail' %}
-        {% else %}
-        {% if not sidebar_collapsed %}checked{% endif %}
+        {% if not sidebar_collapsed and request.resolver_match.view_name not in 'project_workflows:detail,project_dashboards:detail' %}
+        checked
         {% endif %}
         hidden
       />
