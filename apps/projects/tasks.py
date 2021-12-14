@@ -8,11 +8,11 @@ from django.utils import timezone
 
 from apps.nodes.models import Node
 from apps.runs.models import GraphRun, JobRun
+from apps.sheets import tasks as sheet_tasks
 from apps.sheets.models import Sheet
-from apps.sheets.tasks import run_sheet_sync_task
 from apps.tables.models import Table
 from apps.users.models import CustomUser
-from apps.workflows.bigquery import run_workflow
+from apps.workflows import bigquery as workflow_tasks
 from apps.workflows.models import Workflow
 
 from .models import Project
@@ -97,9 +97,9 @@ def run_project_task(self, graph_run_id: int):
 
             try:
                 if isinstance(entity, Sheet):
-                    run_sheet_sync_task(job_run.id, skip_up_to_date=True)
+                    sheet_tasks.run_sheet_sync_task(job_run.id, skip_up_to_date=True)
                 elif isinstance(entity, Workflow):
-                    run_workflow(job_run.id)
+                    workflow_tasks.run_workflow(job_run.id)
                 job_run.state = JobRun.State.SUCCESS
 
             except Exception as exc:

@@ -20,7 +20,8 @@ def test_run_project(
     node_factory,
     mocker,
 ):
-    mocker.patch.object(backend, "ProgressRecorder")
+    mocker.patch("apps.sheets.tasks.run_sheet_sync_task")
+    mocker.patch("apps.workflows.bigquery.run_workflow")
 
     project = project_factory()
     integration_table = integration_table_factory(
@@ -51,5 +52,6 @@ def test_run_project(
 
     run_project_task(graph_run.id)
 
-    # graph_run.refresh_from_db()
-    # assert graph_run.state == GraphRun.State.SUCCESS
+    assert graph_run.runs.count() == 2
+    assert graph_run.runs.filter(state=GraphRun.State.SUCCESS).count() == 2
+    assert not graph_run.runs.exclude(state=GraphRun.State.SUCCESS).exists()
