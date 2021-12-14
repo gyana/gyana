@@ -78,7 +78,7 @@ class ControlUpdate(DashboardMixin, TurboFrameUpdateView):
             [
                 *streams,
                 TurboStream("controls:update-stream")
-                .replace.template(self.template_name, self.get_context_data())
+                .replace.template(self.template_name, self.get_context_data(form=form))
                 .render(request=self.request),
             ]
         )
@@ -115,6 +115,18 @@ class ControlPublicUpdate(ControlUpdate):
                 self.object.id,
             ),
         )
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if self.request.method == "GET":
+            kwargs.update({"data": self.request.GET})
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        if not self.request.GET:
+            return super().get(request, *args, **kwargs)
+        self.request.POST = self.request.GET
+        return self.post(request, *args, **kwargs)
 
     def form_valid(self, form):
         if form.is_live:
