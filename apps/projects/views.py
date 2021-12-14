@@ -81,7 +81,7 @@ class ProjectDelete(ProjectTeamMixin, DeleteView):
         return reverse("teams:detail", args=(self.object.team.id,))
 
 
-class ProjectAutomate(DetailView):
+class ProjectAutomate(ProjectTeamMixin, DetailView):
     template_name = "projects/automate.html"
     model = Project
     pk_url_kwarg = "project_id"

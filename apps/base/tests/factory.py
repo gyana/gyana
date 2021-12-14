@@ -18,6 +18,7 @@ from apps.filters.models import Filter
 from apps.integrations.models import Integration
 from apps.nodes.models import Node
 from apps.projects.models import Project
+from apps.runs.models import GraphRun, JobRun
 from apps.sheets.models import Sheet
 from apps.tables.models import Table
 from apps.teams.models import Team
@@ -229,3 +230,15 @@ class ConvertColumnFactory(factory.django.DjangoModelFactory):
 class ControlFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Control
+
+
+@register
+class JobRunFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = JobRun
+
+
+@register
+class GraphRunFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = GraphRun
