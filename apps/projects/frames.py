@@ -7,10 +7,10 @@ from .models import Project
 
 
 class ProjectSettings(TurboFrameUpdateView):
-    template_name = "projects/automate_settings.html"
+    template_name = "projects/settings.html"
     model = Project
     form_class = ProjectUpdateForm
-    turbo_frame_dom_id = "projects:automate_settings"
+    turbo_frame_dom_id = "projects:settings"
 
     def get_success_url(self):
-        return reverse("projects:automate_settings", args=(self.project.id,))
+        return reverse("projects:settings", args=(self.project.id,))

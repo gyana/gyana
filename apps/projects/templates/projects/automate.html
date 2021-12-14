@@ -4,13 +4,13 @@
 {% block app %}
 <div class="workflow-detail__header">
   <h3 class="flex-1 mr-auto">
-    Schedule
+    Automate
   </h3>
 
   <div data-controller="tooltip tf-modal">
     <button
       data-action="click->tf-modal#open"
-      data-src="{% url "project_schedule:settings" project.id %}"
+      data-src="{% url "projects:settings" project.id %}"
       class="button button--sm button--tertiary"
     >
       <i class="fas fa-fw fa-cog"></i> Settings
@@ -21,7 +21,7 @@
     <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
       <div class="card card--none card--modal flex-col flex-1 overflow-auto">
         <turbo-frame
-          id="project_schedule:settings"
+          id="projects:settings"
           data-tf-modal-target="turboFrame"
         ></turbo-frame>
       </div>
@@ -64,6 +64,6 @@
     </schedule-flow>
   </div>
 </div>
-<script src="{% static "js/schedule-bundle.js" %}"></script>
+<script src="{% static "js/project-bundle.js" %}"></script>
 <link rel="stylesheet" href="{% static "css/schedule.css" %}" />
 {% endblock %}

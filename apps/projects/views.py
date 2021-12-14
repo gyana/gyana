@@ -82,6 +82,7 @@ class ProjectAutomate(TurboUpdateView):
     template_name = "projects/automate.html"
     model = Project
     fields = []
+    pk_url_kwarg = "project_id"
 
     def form_valid(self, form):
 

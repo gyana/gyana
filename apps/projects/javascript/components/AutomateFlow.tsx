@@ -16,7 +16,7 @@ import LayoutButton from './LayoutButton'
 import defaultNodeTypes from './Nodes'
 import ZeroState from './ZeroState'
 import useRunProgress from '../hooks/useRunProgress'
-import { ScheduleContext } from '../context'
+import { AutomateContext } from '../context'
 
 const GRID_GAP = 20
 
@@ -32,7 +32,7 @@ interface Props {
   runTaskUrl?: string
 }
 
-const ScheduleFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUrl }) => {
+const AutomateFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUrl }) => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null)
 
   const [elements, setElements] = useState<(Edge | Node)[]>([])
@@ -55,7 +55,7 @@ const ScheduleFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUr
   }, [])
 
   return (
-    <ScheduleContext.Provider
+    <AutomateContext.Provider
       value={{
         runInfo,
       }}
@@ -81,8 +81,8 @@ const ScheduleFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUr
           {initialLoad === LoadingStates.loaded && elements.length === 0 && <ZeroState />}
         </ReactFlow>
       </div>
-    </ScheduleContext.Provider>
+    </AutomateContext.Provider>
   )
 }
 
-export default ScheduleFlow
+export default AutomateFlow

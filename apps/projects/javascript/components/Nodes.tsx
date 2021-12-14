@@ -3,7 +3,7 @@ import { EditButton, ScheduleButton } from './NodeButtons'
 import React, { useContext, useEffect, useState } from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
 import { getIntegration, getWorkflow, updateConnector, updateSheet, updateWorkflow } from '../api'
-import { IScheduleContext, ScheduleContext } from '../context'
+import { IAutomateContext, AutomateContext } from '../context'
 
 type ScheduleStatus = 'paused' | 'incomplete' | 'broken' | 'active'
 type RunStatus = 'pending' | 'running' | 'done'
@@ -53,7 +53,7 @@ export const StatusIcon: React.FC<StatusProps> = ({ scheduleStatus, runStatus })
 
 const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
   const [data, setData] = useState(initialData)
-  const { runInfo } = useContext(ScheduleContext) as IScheduleContext
+  const { runInfo } = useContext(AutomateContext) as IAutomateContext
 
   const sourceObj = data[data.kind]
 

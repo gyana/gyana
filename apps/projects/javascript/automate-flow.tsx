@@ -5,7 +5,7 @@ import { useBlockUntilSchemaReady } from 'apps/workflows/javascript/hooks/useBlo
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { ReactFlowProvider } from 'react-flow-renderer'
-import ScheduleFlow from './components/ScheduleFlow'
+import AutomateFlow from './components/AutomateFlow'
 
 interface Props {
   projectId: number
@@ -13,13 +13,13 @@ interface Props {
   runTaskUrl?: string
 }
 
-const SafeScheduleFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUrl }) => {
+const SafeAutomateFlow: React.FC<Props> = ({ projectId, runTaskUrl, celeryProgressUrl }) => {
   const { finishedPinging, schemaReady } = useBlockUntilSchemaReady()
 
   return (
     <>
       {schemaReady ? (
-        <ScheduleFlow
+        <AutomateFlow
           projectId={projectId}
           runTaskUrl={runTaskUrl}
           celeryProgressUrl={celeryProgressUrl}
@@ -40,7 +40,7 @@ class ReactDndFlow extends HTMLElement {
     const runTaskUrl = this.attributes['runTaskUrl']?.value
     ReactDOM.render(
       <ReactFlowProvider>
-        <SafeScheduleFlow
+        <SafeAutomateFlow
           projectId={projectId}
           runTaskUrl={runTaskUrl}
           celeryProgressUrl={celeryProgressUrl}
@@ -54,4 +54,4 @@ class ReactDndFlow extends HTMLElement {
   }
 }
 
-customElements.get('schedule-flow') || customElements.define('schedule-flow', ReactDndFlow)
+customElements.get('automate-flow') || customElements.define('automate-flow', ReactDndFlow)

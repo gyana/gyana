@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
-export interface IScheduleContext {
+export interface IAutomateContext {
   runInfo: { [key: number]: any }
 }
 
-export const ScheduleContext = createContext<IScheduleContext | null>(null)
+export const AutomateContext = createContext<IAutomateContext | null>(null)
