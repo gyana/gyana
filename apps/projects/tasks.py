@@ -3,7 +3,7 @@ from graphlib import CycleError, TopologicalSorter
 from uuid import uuid4
 
 from celery import shared_task
-from celery_progress.backend import ProgressRecorder
+from celery_progress import backend
 from django.utils import timezone
 
 from apps.nodes.models import Node
@@ -33,22 +33,16 @@ def _get_entity_from_input_table(table: Table):
 @shared_task(bind=True)
 def run_project_task(self, graph_run_id: int):
 
-    progress_recorder = ProgressRecorder(self)
+    progress_recorder = backend.ProgressRecorder(self)
 
     graph_run = GraphRun.objects.get(pk=graph_run_id)
     project = graph_run.project
-
-    project.update_schedule()
-
-    # skip workflow if nothing to run
-    if project.periodic_task is None:
-        return
 
     # Run all the workflows in a project. The python graphlib library will build
     # a topological sort for any graph of hashables and raises a cycle error if
     # there is a circularity.
 
-    workflows = Workflow.objects.is_scheduled_in_project(project).all()
+    workflows = project.workflow_set.all()
 
     # one query per workflow, in future we would optimize into a single query
     graph = {
@@ -66,7 +60,10 @@ def run_project_task(self, graph_run_id: int):
     }
 
     graph.update(
-        {sheet: [] for sheet in Sheet.objects.is_scheduled_in_project(project).all()}
+        {
+            sheet: []
+            for sheet in Sheet.objects.filter(integration__project=project).all()
+        }
     )
 
     job_runs = {
@@ -105,7 +102,7 @@ def run_project_task(self, graph_run_id: int):
                     run_workflow(job_run.id)
                 job_run.state = JobRun.State.SUCCESS
 
-            except Exception:
+            except Exception as exc:
                 job_run.state = JobRun.State.FAILED
 
             finally:
@@ -117,7 +114,9 @@ def run_project_task(self, graph_run_id: int):
         Exception("Your integrations and workflows have a circular dependency")
 
     if graph_run.runs.filter(state=JobRun.State.FAILED).exists():
-        raise Exception("Not all of your integrations or workflows completed successfully")
+        raise Exception(
+            "Not all of your integrations or workflows completed successfully"
+        )
 
 
 def run_project(project: Project, user: CustomUser):

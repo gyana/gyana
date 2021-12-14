@@ -138,6 +138,29 @@ class DashboardFactory(factory.django.DjangoModelFactory):
 
 
 @register
+class NodeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Node
+
+    workflow = factory.SubFactory(WorkflowFactory)
+    x = 0
+    y = 0
+
+
+@register
+class WorkflowTableFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Table
+
+    project = factory.SubFactory(ProjectFactory)
+    workflow_node = factory.SubFactory(NodeFactory, kind=Node.Kind.OUTPUT)
+    source = Table.Source.WORKFLOW_NODE
+    bq_table = "table"
+    bq_dataset = "dataset"
+    num_rows = 10
+
+
+@register
 class PageFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Page
@@ -160,16 +183,6 @@ class CNameFactory(factory.django.DjangoModelFactory):
         model = CName
 
     domain = "test.domain.com"
-
-
-@register
-class NodeFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Node
-
-    workflow = factory.SubFactory(WorkflowFactory)
-    x = 0
-    y = 0
 
 
 @register
