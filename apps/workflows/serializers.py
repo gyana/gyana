@@ -18,14 +18,14 @@ class WorkflowSerializer(serializers.ModelSerializer):
             "last_success_run",
             "data_updated",
             "is_scheduled",
-            "succeeded_at",
-            "failed_at",
+            # "succeeded_at",
+            # "failed_at",
             "schedule_node_id",
             "parents",
             "absolute_url",
             # "schedule_status",
             # "run_status",
-            "up_to_date",
+            # "up_to_date",
         )
 
     def get_parents(self, obj):

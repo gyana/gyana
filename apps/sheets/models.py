@@ -21,12 +21,12 @@ class SheetsManager(models.Manager):
             self.filter(
                 integration__project=project, integration__ready=True, is_scheduled=True
             )
-            .annotate(last_succeeded=F("failed_at") - F("succeeded_at"))
-            .filter(
-                Q(succeeded_at__isnull=True)
-                | Q(failed_at__isnull=True)
-                | Q(last_succeeded__lt=timedelta(days=3))
-            )
+            # .annotate(last_succeeded=F("failed_at") - F("succeeded_at"))
+            # .filter(
+            #     Q(succeeded_at__isnull=True)
+            #     | Q(failed_at__isnull=True)
+            #     | Q(last_succeeded__lt=timedelta(days=3))
+            # )
         )
 
 
