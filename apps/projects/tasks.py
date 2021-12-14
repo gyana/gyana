@@ -73,7 +73,6 @@ def run_project_task(self, graph_run_id: int):
             else JobRun.Source.WORKFLOW,
             integration=entity.integration if hasattr(entity, "integration") else None,
             workflow=entity if isinstance(entity, Workflow) else None,
-            started_at=timezone.now(),
             user=graph_run.user,
             graph_run=graph_run,
         )
@@ -92,6 +91,7 @@ def run_project_task(self, graph_run_id: int):
 
             job_run = job_runs[entity]
             job_run.state = JobRun.State.RUNNING
+            job_run.started_at = timezone.now()
             _update_progress_from_job_run(progress_recorder, run_info, job_run)
             job_run.save()
 
