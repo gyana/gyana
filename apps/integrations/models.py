@@ -71,6 +71,7 @@ class Integration(CloneMixin, BaseModel):
 
     class State(models.TextChoices):
         UPDATE = "update", "Update"
+        PENDING = "pending", "Pending"
         LOAD = "load", "Load"
         ERROR = "error", "Error"
         DONE = "done", "Done"
@@ -94,6 +95,7 @@ class Integration(CloneMixin, BaseModel):
 
     STATE_TO_ICON = {
         State.UPDATE: ICONS["warning"],
+        State.PENDING: ICONS["pending"],
         State.LOAD: ICONS["loading"],
         State.ERROR: ICONS["error"],
         State.DONE: ICONS["info"],
@@ -101,13 +103,14 @@ class Integration(CloneMixin, BaseModel):
 
     STATE_TO_MESSAGE = {
         State.UPDATE: "Incomplete setup",
+        State.PENDING: "Pending",
         State.LOAD: "Importing",
         State.ERROR: "Error",
         State.DONE: "Ready to review",
     }
 
     RUN_STATE_TO_INTEGRATION_STATE = {
-        JobRun.State.PENDING: State.LOAD,
+        JobRun.State.PENDING: State.PENDING,
         JobRun.State.RUNNING: State.LOAD,
         JobRun.State.FAILED: State.ERROR,
         JobRun.State.SUCCESS: State.DONE,

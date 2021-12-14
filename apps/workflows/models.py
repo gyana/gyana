@@ -35,6 +35,7 @@ class WorkflowsManager(models.Manager):
 class Workflow(CloneMixin, BaseModel):
     class State(models.TextChoices):
         INCOMPLETE = "incomplete", "Incomplete"
+        PENDING = "pending", "Pending"
         RUNNING = "running", "Running"
         FAILED = "failed", "Failed"
         SUCCESS = "success", "Success"
@@ -59,6 +60,7 @@ class Workflow(CloneMixin, BaseModel):
 
     STATE_TO_ICON = {
         State.INCOMPLETE: ICONS["warning"],
+        State.PENDING: ICONS["pending"],
         State.RUNNING: ICONS["loading"],
         State.FAILED: ICONS["error"],
         State.SUCCESS: ICONS["success"],
@@ -66,13 +68,14 @@ class Workflow(CloneMixin, BaseModel):
 
     STATE_TO_MESSAGE = {
         State.INCOMPLETE: "Workflow setup is incomplete",
+        State.PENDING: "Workflow is pending",
         State.RUNNING: "Workflow is currently running",
         State.FAILED: "One of the nodes in this workflow failed",
         State.SUCCESS: "Workflow ran successfully and is up to date",
     }
 
     RUN_STATE_TO_WORKFLOW_STATE = {
-        JobRun.State.PENDING: State.RUNNING,
+        JobRun.State.PENDING: State.PENDING,
         JobRun.State.RUNNING: State.RUNNING,
         JobRun.State.FAILED: State.FAILED,
         JobRun.State.SUCCESS: State.SUCCESS,
