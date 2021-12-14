@@ -177,6 +177,7 @@
 </div>
 {{ nodes|json_script:"nodes" }}
 
+<script src="{% static 'celery_progress/celery_progress.js' %}"></script>
 <script src="{% static "js/workflow-bundle.js" %}"></script>
 <link rel="stylesheet" href="{% static "css/workflow.css" %}" />
 {% endblock %}

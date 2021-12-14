@@ -1,7 +1,6 @@
 from datetime import timedelta
 from itertools import chain
 
-from celery import states
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -223,7 +222,7 @@ class Integration(CloneMixin, BaseModel):
 
     @property
     def latest_run(self):
-        return self.runs.order_by("-created").first()
+        return self.runs.order_by("-started_at").first()
 
     def update_state_from_latest_run(self):
 

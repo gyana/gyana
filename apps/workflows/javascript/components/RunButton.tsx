@@ -1,11 +1,9 @@
 import { isNode } from 'react-flow-renderer'
 import React, { useContext, useEffect, useState } from 'react'
 import { GyanaEvents } from 'apps/base/javascript/events'
-import { getApiClient } from 'apps/base/javascript/api'
 import { DnDContext, IDnDContext } from '../context'
 import Tippy from '@tippyjs/react'
-
-const client = getApiClient()
+import { getWorkflowStatus, runWorkflow } from '../api'
 
 const RunButton: React.FC = () => {
   const { workflowId, elements, setElements, setHasBeenRun, isOutOfDate, setIsOutOfDate } =
@@ -20,55 +18,66 @@ const RunButton: React.FC = () => {
     return () => window.removeEventListener(GyanaEvents.UPDATE_WORKFLOW, update)
   }, [])
 
-  const tooltip = !hasOutput
-    ? 'Workflow needs a Save Data node to run'
-    : !isOutOfDate
-    ? "You haven't made any new changes"
-    : 'Run workflow to create or update your output data sources'
+  const initCeleryProgress = (taskId: string) => {
+    CeleryProgressBar.initProgressBar(`/celery-progress/${taskId}`, {
+      onSuccess: () => {
+        setElements((elements) =>
+          elements.map((el) => {
+            delete el.data.error
+            return el
+          })
+        )
+        setIsOutOfDate(false)
+        setHasBeenRun(false)
+        window.dispatchEvent(new Event(GyanaEvents.RUN_WORKFLOW))
+        setLoading(false)
+        alert('Workflow finished running!')
+      },
+      onError: async () => {
+        const errors = (await getWorkflowStatus(workflowId)).errors
+        console.log(errors, elements)
+        setElements((elements) =>
+          elements.map((el) => {
+            if (isNode(el)) {
+              const error = errors[parseInt(el.id)]
+              // Add error to node if necessary
+              if (error) {
+                el.data['error'] = error
+              }
+              // Remove error if necessary
+              else if (el.data.error) {
+                delete el.data['error']
+              }
+            }
+            return el
+          })
+        )
+        setLoading(false)
+        alert('Workflow failed running')
+      },
+      // override the defaults, otherwise they will raise errors
+      onRetry: () => {},
+      onProgress: () => {},
+    })
+  }
 
   return (
-    <Tippy content={tooltip}>
+    <Tippy
+      content={
+        !hasOutput
+          ? 'Workflow needs a Save Data node to run'
+          : !isOutOfDate
+          ? "You haven't made any new changes"
+          : 'Run workflow to create or update your output data sources'
+      }
+    >
       <div className='dndflow__run-button'>
         <button
           data-cy='workflow-run'
-          onClick={() => {
+          onClick={async () => {
             setLoading(true)
-
-            client
-              .action(window.schema, ['workflows', 'run_workflow', 'create'], {
-                id: workflowId,
-              })
-              .then((res) => {
-                if (res) {
-                  setElements(
-                    elements.map((el) => {
-                      if (isNode(el)) {
-                        const error = res[parseInt(el.id)]
-                        // Add error to node if necessary
-                        if (error) {
-                          el.data['error'] = error
-                        }
-                        // Remove error if necessary
-                        else if (el.data.error) {
-                          delete el.data['error']
-                        }
-                      }
-                      return el
-                    })
-                  )
-                  if (Object.keys(res).length === 0) {
-                    setIsOutOfDate(false)
-                    setHasBeenRun(false)
-                    window.dispatchEvent(new Event(GyanaEvents.RUN_WORKFLOW))
-                  }
-                  setLoading(false)
-                }
-                alert('Workflow finished running!')
-              })
-              .catch(() => {
-                setLoading(false)
-                alert('Workflow failed running')
-              })
+            const result = await runWorkflow(workflowId)
+            initCeleryProgress(result.task_id)
           }}
           className='button button--sm button--success'
           disabled={!hasOutput || loading || !isOutOfDate}

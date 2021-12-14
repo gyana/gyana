@@ -9,7 +9,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-12-03T23:50:23.273Z",
+      "last_login": "2021-12-13T22:48:22.456Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -417,7 +417,8 @@
       "failed_at": null,
       "name": "Untitled",
       "project": 2,
-      "last_run": null,
+      "state": "incomplete",
+      "last_success_run": null,
       "data_updated": "2021-09-10T15:59:15.605Z"
     }
   },
@@ -432,7 +433,8 @@
       "failed_at": null,
       "name": "Initial workflow",
       "project": 1,
-      "last_run": "2021-12-03T23:52:58.722Z",
+      "state": "success",
+      "last_success_run": 9,
       "data_updated": "2021-12-03T23:52:05.947Z"
     }
   },
@@ -447,7 +449,8 @@
       "failed_at": null,
       "name": "Dependent workflow",
       "project": 1,
-      "last_run": "2021-12-03T23:55:11.732Z",
+      "state": "success",
+      "last_success_run": 8,
       "data_updated": "2021-12-03T23:54:57.237Z"
     }
   },
@@ -471,12 +474,22 @@
     }
   },
   {
+    "model": "dashboards.page",
+    "pk": 1,
+    "fields": {
+      "created": "2021-12-13T22:47:57.268Z",
+      "updated": "2021-12-13T22:47:57.268Z",
+      "dashboard": 1,
+      "position": 1
+    }
+  },
+  {
     "model": "widgets.widget",
     "pk": 1,
     "fields": {
       "created": "2021-08-30T19:29:50.988Z",
-      "updated": "2021-08-30T19:31:11.874Z",
-      "dashboard": 1,
+      "updated": "2021-12-13T22:47:57.507Z",
+      "page": 1,
       "table": 12,
       "text_content": null,
       "kind": "msline",
@@ -492,7 +505,8 @@
       "y": 0,
       "stack_100_percent": false,
       "error": null,
-      "date_column": null
+      "date_column": null,
+      "show_summary_row": false
     }
   },
   {
@@ -500,8 +514,8 @@
     "pk": 3,
     "fields": {
       "created": "2021-08-31T00:59:24.656Z",
-      "updated": "2021-08-31T01:00:36.450Z",
-      "dashboard": 1,
+      "updated": "2021-12-13T22:47:57.505Z",
+      "page": 1,
       "table": 19,
       "text_content": null,
       "kind": "mscolumn2d",
@@ -517,7 +531,8 @@
       "y": 435,
       "stack_100_percent": false,
       "error": null,
-      "date_column": null
+      "date_column": null,
+      "show_summary_row": false
     }
   },
   {
@@ -3093,6 +3108,7 @@
       "state": "success",
       "started_at": "2021-08-31T00:58:20.370Z",
       "completed_at": "2021-08-31T00:58:25.370Z",
+      "user": null,
       "task_id": "b157cb85-ba71-4a56-983e-7cf7a6b09e73",
       "result": null,
       "source": "integration",
@@ -3109,6 +3125,7 @@
       "state": "success",
       "started_at": "2021-08-30T19:05:46.412Z",
       "completed_at": "2021-08-30T19:05:51.412Z",
+      "user": null,
       "task_id": "046b5f1f-d1c7-4546-af58-b9ba9fd961b2",
       "result": null,
       "source": "integration",
@@ -3125,6 +3142,7 @@
       "state": "success",
       "started_at": "2021-08-11T14:07:41.043Z",
       "completed_at": "2021-08-11T14:07:46.043Z",
+      "user": null,
       "task_id": "232cd31d-a6e6-4e67-95ff-5afd45560277",
       "result": null,
       "source": "integration",
@@ -3141,6 +3159,7 @@
       "state": "success",
       "started_at": "2021-08-10T07:32:04.919Z",
       "completed_at": "2021-08-10T07:32:09.919Z",
+      "user": null,
       "task_id": "d0e6091d-7343-4cfb-9d38-92a59cad92b3",
       "result": null,
       "source": "integration",
@@ -3157,6 +3176,7 @@
       "state": "success",
       "started_at": "2021-08-10T07:30:01.347Z",
       "completed_at": "2021-08-10T07:30:06.347Z",
+      "user": null,
       "task_id": "1a2e3e76-3a94-4284-8d7d-48f604690ffc",
       "result": null,
       "source": "integration",
@@ -3173,6 +3193,7 @@
       "state": "success",
       "started_at": "2021-08-08T20:28:24.090Z",
       "completed_at": "2021-08-08T20:28:29.090Z",
+      "user": null,
       "task_id": "aa5c3086-1f87-434f-9d5b-48bd69786b33",
       "result": null,
       "source": "integration",
@@ -3189,11 +3210,46 @@
       "state": "success",
       "started_at": "2021-07-27T13:17:27.984Z",
       "completed_at": "2021-07-27T13:17:32.984Z",
+      "user": null,
       "task_id": "df9e7627-b19a-4400-b0e8-894ca1ff9124",
       "result": null,
       "source": "integration",
       "integration": 1,
       "workflow": null
+    }
+  },
+  {
+    "model": "runs.jobrun",
+    "pk": 8,
+    "fields": {
+      "created": "2021-12-13T22:47:58.099Z",
+      "updated": "2021-12-13T22:47:58.099Z",
+      "state": "success",
+      "started_at": "2021-12-03T23:55:06.732Z",
+      "completed_at": "2021-12-03T23:55:11.732Z",
+      "user": null,
+      "task_id": null,
+      "result": null,
+      "source": "workflow",
+      "integration": null,
+      "workflow": 3
+    }
+  },
+  {
+    "model": "runs.jobrun",
+    "pk": 9,
+    "fields": {
+      "created": "2021-12-13T22:47:58.102Z",
+      "updated": "2021-12-13T22:47:58.102Z",
+      "state": "success",
+      "started_at": "2021-12-03T23:52:53.722Z",
+      "completed_at": "2021-12-03T23:52:58.722Z",
+      "user": null,
+      "task_id": null,
+      "result": null,
+      "source": "workflow",
+      "integration": null,
+      "workflow": 2
     }
   },
   {
@@ -3393,7 +3449,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2021-12-08T15:16:11.949Z" }
+    "fields": { "last_update": "2021-12-13T22:47:47.818Z" }
   },
   {
     "model": "django_celery_beat.periodictask",

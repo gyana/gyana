@@ -1,12 +1,15 @@
 from datetime import timedelta
 
 from django.db import models
-from django.db.models import F, Q
+from django.db.models import F, Max, Q
 from django.urls import reverse
 from model_clone import CloneMixin
 
 from apps.base.models import SchedulableModel
+from apps.base.table import ICONS
 from apps.projects.models import Project
+from apps.runs.models import JobRun
+from apps.tables.models import Table
 
 
 class WorkflowsManager(models.Manager):
@@ -15,7 +18,11 @@ class WorkflowsManager(models.Manager):
         # and manually tagged as is_scheduled by the user. If it fails to run for more
         # than 3 days, the schedule is stopped until it is fixed by the user.
         return (
-            self.filter(project=project, last_run__isnull=False, is_scheduled=True)
+            self.filter(
+                project=project,
+                last_success_run__isnull=False,
+                is_scheduled=True,
+            )
             .annotate(last_succeeded=F("failed_at") - F("succeeded_at"))
             .filter(
                 Q(succeeded_at__isnull=True)
@@ -26,14 +33,48 @@ class WorkflowsManager(models.Manager):
 
 
 class Workflow(CloneMixin, SchedulableModel):
+    class State(models.TextChoices):
+        INCOMPLETE = "incomplete", "Incomplete"
+        RUNNING = "running", "Running"
+        FAILED = "failed", "Failed"
+        SUCCESS = "success", "Success"
+
     name = models.CharField(max_length=255, default="Untitled")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    last_run = models.DateTimeField(null=True)
+    state = models.CharField(
+        max_length=16, choices=State.choices, default=State.INCOMPLETE
+    )
+    last_success_run = models.OneToOneField(
+        "runs.JobRun",
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="workflow_last_success_run_for",
+    )
     data_updated = models.DateTimeField(
         auto_now_add=True,
     )
 
     objects = WorkflowsManager()
+
+    STATE_TO_ICON = {
+        State.INCOMPLETE: ICONS["warning"],
+        State.RUNNING: ICONS["loading"],
+        State.FAILED: ICONS["error"],
+        State.SUCCESS: ICONS["success"],
+    }
+
+    STATE_TO_MESSAGE = {
+        State.INCOMPLETE: "Workflow setup is incomplete",
+        State.RUNNING: "Workflow is currently running",
+        State.FAILED: "One of the nodes in this workflow failed",
+        State.SUCCESS: "Workflow ran successfully and is up to date",
+    }
+
+    RUN_STATE_TO_WORKFLOW_STATE = {
+        JobRun.State.RUNNING: State.RUNNING,
+        JobRun.State.FAILED: State.FAILED,
+        JobRun.State.SUCCESS: State.SUCCESS,
+    }
 
     def __str__(self):
         return self.name
@@ -42,8 +83,28 @@ class Workflow(CloneMixin, SchedulableModel):
         return reverse("project_workflows:detail", args=(self.project.id, self.id))
 
     @property
+    def state_icon(self):
+        if self.out_of_date:
+            return ICONS["warning"]
+        return self.STATE_TO_ICON[self.state]
+
+    @property
+    def state_text(self):
+        if self.out_of_date:
+            return "Workflow has been updated since it's last run"
+        return self.STATE_TO_MESSAGE[self.state]
+
+    @property
+    def latest_run(self):
+        return self.runs.order_by("-created").first()
+
+    @property
     def failed(self):
-        return any(node.error is not None for node in self.nodes.all())
+        return self.nodes.exclude(error__isnull=True).exists()
+
+    @property
+    def errors(self):
+        return {node.id: node.error for node in self.nodes.exclude(error__isnull=True)}
 
     @property
     def output_nodes(self):
@@ -53,24 +114,32 @@ class Workflow(CloneMixin, SchedulableModel):
 
     @property
     def out_of_date(self):
-        if not self.last_run:
+        if not self.last_success_run:
             return True
 
-        input_nodes = self.nodes.filter(kind="input").all()
-        input_tables = [
-            input_node.input_table
-            for input_node in input_nodes
-            if input_node.input_table
-        ]
-        if not input_tables:
+        latest_input_updated = Table.objects.filter(
+            input_nodes__workflow=self
+        ).aggregate(data_updated=Max("data_updated"))["data_updated"]
+
+        if not latest_input_updated:
             return True
 
-        latest_input_update = max(
-            input_table.data_updated for input_table in input_tables
+        return self.last_success_run.started_at < max(
+            self.data_updated, latest_input_updated
         )
-        return self.last_run < max(self.data_updated, latest_input_update)
 
     def run_for_schedule(self):
         from .bigquery import run_workflow
 
         return run_workflow(self)
+
+    def update_state_from_latest_run(self):
+        self.state = (
+            self.State.INCOMPLETE
+            if not self.latest_run
+            else self.RUN_STATE_TO_WORKFLOW_STATE[self.latest_run.state]
+        )
+        self.last_success_run = (
+            self.runs.filter(state=JobRun.State.SUCCESS).order_by("-started_at").first()
+        )
+        self.save(update_fields=["state", "last_success_run"])
