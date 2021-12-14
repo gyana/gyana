@@ -13,12 +13,12 @@ import LayoutButton from './LayoutButton'
 import defaultNodeTypes from './Nodes'
 import RunButton from './RunButton'
 
-import '../styles/_dnd-flow.scss'
+import 'apps/base/javascript/styles/_react-flow.scss'
 import { DnDContext } from '../context'
 import { duplicateNode, getWorkflowStatus, listAll } from '../api'
 import ZeroState from './ZeroState'
-import ErrorState from './ErrorState'
-import LoadingState from './LoadingState'
+import ErrorState from 'apps/base/javascript/components/ErrorState'
+import LoadingState from 'apps/base/javascript/components/LoadingState'
 import useDnDActions from '../hooks/useDnDActions'
 
 const GRID_GAP = 20

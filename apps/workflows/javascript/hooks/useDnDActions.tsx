@@ -11,7 +11,6 @@ import {
   isEdge,
 } from 'react-flow-renderer'
 
-import '../styles/_dnd-flow.scss'
 import {
   createEdge,
   createNode,

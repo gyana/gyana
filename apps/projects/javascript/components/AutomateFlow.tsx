@@ -1,5 +1,5 @@
-import ErrorState from 'apps/workflows/javascript/components/ErrorState'
-import LoadingState from 'apps/workflows/javascript/components/LoadingState'
+import ErrorState from 'apps/base/javascript/components/ErrorState'
+import LoadingState from 'apps/base/javascript/components/LoadingState'
 import React, { useState, useRef, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import ReactFlow, {
@@ -11,7 +11,7 @@ import ReactFlow, {
 } from 'react-flow-renderer'
 import { listProjectAll } from '../api'
 
-import 'apps/workflows/javascript/styles/_dnd-flow.scss'
+import 'apps/base/javascript/styles/_react-flow.scss'
 import LayoutButton from './LayoutButton'
 import defaultNodeTypes from './Nodes'
 import ZeroState from './ZeroState'

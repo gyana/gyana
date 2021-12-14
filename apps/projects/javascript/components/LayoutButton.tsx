@@ -1,4 +1,4 @@
-import { getLayoutedElements } from 'apps/workflows/javascript/layout'
+import { getLayoutedElements } from 'apps/base/javascript/layout'
 import React, { useEffect, useState } from 'react'
 import { Node, Edge, useStoreState, ControlButton, useZoomPanHelper } from 'react-flow-renderer'
 
