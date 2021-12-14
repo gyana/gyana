@@ -1,23 +1,13 @@
 from rest_framework import serializers
 
+from apps.runs.serializers import JobRunSerializer
+
 from .models import Integration
-
-# from apps.connectors.serializers import ConnectorSerializer
-# from apps.sheets.serializers import SheetSerializer
-# from apps.uploads.models import Upload
-
-
-# class UploadSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Upload
-#         fields = ("id",)
 
 
 class IntegrationSerializer(serializers.ModelSerializer):
-    # connector = ConnectorSerializer()
-    # sheet = SheetSerializer()
-    # upload = UploadSerializer()
     absolute_url = serializers.URLField(source="get_absolute_url", read_only=True)
+    latest_run = JobRunSerializer()
 
     class Meta:
         model = Integration
@@ -36,4 +26,5 @@ class IntegrationSerializer(serializers.ModelSerializer):
             "upload",
             "absolute_url",
             "icon",
+            "latest_run",
         )

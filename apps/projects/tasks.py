@@ -104,6 +104,7 @@ def run_project_task(self, graph_run_id: int):
 
             finally:
                 _update_progress_from_job_run(progress_recorder, run_info, job_run)
+                job_run.completed_at = timezone.now()
                 job_run.save()
 
     except CycleError:

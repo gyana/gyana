@@ -1,12 +1,14 @@
 from rest_framework import serializers
 
 from apps.nodes.models import Node
+from apps.runs.serializers import JobRunSerializer
 
 from .models import Workflow
 
 
 class WorkflowSerializer(serializers.ModelSerializer):
     parents = serializers.SerializerMethodField()
+    latest_run = JobRunSerializer()
     absolute_url = serializers.URLField(source="get_absolute_url", read_only=True)
 
     class Meta:
@@ -26,6 +28,7 @@ class WorkflowSerializer(serializers.ModelSerializer):
             # "schedule_status",
             # "run_status",
             # "up_to_date",
+            "latest_run",
         )
 
     def get_parents(self, obj):

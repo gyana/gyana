@@ -5,47 +5,31 @@ import { Handle, NodeProps, Position } from 'react-flow-renderer'
 import { getIntegration, getWorkflow } from '../api'
 import { IAutomateContext, AutomateContext } from '../context'
 
-type ScheduleStatus = 'paused' | 'incomplete' | 'broken' | 'active'
-type RunStatus = 'pending' | 'running' | 'done'
+type RunState = 'pending' | 'running' | 'failed' | 'success'
 
-const SCHEDULE_STATUS_TO_MESSAGE: { [key in ScheduleStatus]: string } = {
-  incomplete: 'Incomplete',
-  paused: 'Paused',
-  broken: 'Broken',
-  active: 'Active',
+const STATE_TO_MESSAGE: { [key in RunState]: string } = {
+  pending: 'Pending',
+  running: 'Running',
+  failed: 'Failed',
+  success: 'Success',
 }
 
-const SCHEDULE_STATUS_TO_ICON: { [key in ScheduleStatus]: string } = {
-  incomplete: 'fa-construction text-black-20',
-  paused: 'fa-pause-circle text-black-20',
-  broken: 'fa-times-circle text-red',
-  active: 'fa-check-circle text-green',
+const STATE_TO_ICON: { [key in RunState]: string } = {
+  pending: 'fa-clock',
+  running: 'fa-spinner-third fa-spin',
+  failed: 'fa-times-circle text-red',
+  success: 'fa-check-circle text-green',
 }
 
-interface StatusProps {
-  scheduleStatus: ScheduleStatus
-  runStatus: RunStatus
+interface StateProps {
+  runState: RunState
 }
 
-export const StatusIcon: React.FC<StatusProps> = ({ scheduleStatus, runStatus }) => {
+export const StatusIcon: React.FC<StateProps> = ({ runState }) => {
   return (
-    <Tippy content={SCHEDULE_STATUS_TO_MESSAGE[scheduleStatus]}>
+    <Tippy content={STATE_TO_MESSAGE[runState]}>
       <div className='flex items-center justify-around absolute -top-2 -right-2 rounded-full w-6 h-6'>
-        {runStatus === 'done' || scheduleStatus === 'paused' ? (
-          <i className={`fa fa-2x fa-fw ${SCHEDULE_STATUS_TO_ICON[scheduleStatus]}`}></i>
-        ) : (
-          <div className='relative'>
-            <i
-              style={{ color: '#cbccd6' }}
-              className={`fa fa-2x fa-fw absolute ${SCHEDULE_STATUS_TO_ICON[scheduleStatus]}`}
-            ></i>
-            <i
-              className={`fad fa-fw fa-2x ${
-                runStatus === 'running' ? 'fa-play-circle' : 'fa-spinner-third fa-spin'
-              }`}
-            ></i>
-          </div>
-        )}
+        <i className={`fad fa-2x fa-fw ${STATE_TO_ICON[runState]}`}></i>
       </div>
     </Tippy>
   )
@@ -55,19 +39,17 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
   const [data, setData] = useState(initialData)
   const { runInfo } = useContext(AutomateContext) as IAutomateContext
 
-  const sourceObj = data[data.kind]
-
-  const initialRunStatus = sourceObj.run_status
-  const runStatus = (runInfo?.run || runInfo[id] || initialRunStatus) as RunStatus
+  const initialRunState = data.latest_run.state
+  const runState = (runInfo?.run || runInfo[id] || initialRunState) as RunState
 
   useEffect(() => {
     const update = async () => {
-      if (runStatus !== initialRunStatus && runStatus === 'done') {
+      if (runState !== initialRunState && runState === 'success') {
         setData(await getIntegration(data.id))
       }
     }
     update()
-  }, [runStatus])
+  }, [runState])
 
   return (
     <>
@@ -75,13 +57,8 @@ const IntegrationNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
       <div className='react-flow__buttons'>
         <EditButton absoluteUrl={data.absolute_url} />
       </div>
-      {data.kind !== 'upload' && (
-        <StatusIcon scheduleStatus={sourceObj.schedule_status} runStatus={runStatus} />
-      )}
-      <img
-        className={`h-24 w-24 ${!sourceObj.is_scheduled ? 'filter grayscale' : ''}`}
-        src={`/static/${data.icon}`}
-      />
+      {data.kind !== 'upload' && <StatusIcon runState={data.latest_run.state} />}
+      <img className='h-24 w-24' src={`/static/${data.icon}`} />
       <Handle type='source' position={Position.Right} isConnectable={false} />
     </>
   )
@@ -91,17 +68,17 @@ const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
   const [data, setData] = useState(initialData)
 
   const { runInfo } = useContext(AutomateContext) as IAutomateContext
-  const initialRunStatus = data.run_status
-  const runStatus = (runInfo?.run || runInfo[id] || initialRunStatus) as RunStatus
+  const initialRunState = data.latest_run.state
+  const runState = (runInfo?.run || runInfo[id] || initialRunState) as RunState
 
   useEffect(() => {
     const update = async () => {
-      if (runStatus !== initialRunStatus && runStatus === 'done') {
+      if (runState !== initialRunState && runState === 'success') {
         setData(await getWorkflow(data.id))
       }
     }
     update()
-  }, [runStatus])
+  }, [runState])
 
   return (
     <>
@@ -109,11 +86,9 @@ const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
       <div className='react-flow__buttons'>
         <EditButton absoluteUrl={data.absolute_url} />
       </div>
-      <StatusIcon scheduleStatus={data.schedule_status} runStatus={runStatus} />
+      <StatusIcon runState={data.latest_run.state} />
       <Handle type='target' position={Position.Left} isConnectable={false} />
-      <i
-        className={`fas fa-fw fa-sitemap ${data.is_scheduled ? 'text-blue' : 'text-black-50'}`}
-      ></i>
+      <i className='fas fa-fw fa-sitemap text-blue'></i>
       <Handle type='source' position={Position.Right} isConnectable={false} />
     </>
   )
