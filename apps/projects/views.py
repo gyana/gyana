@@ -94,14 +94,7 @@ class ProjectAutomate(TurboUpdateView):
             self.object.save()
 
         else:
-            try:
-                result = run_project.delay(self.object.id)
-                self.object.run_task_id = result.task_id
-                self.object.run_started_at = timezone.now()
-                self.object.save()
-            except CycleError:
-                # todo: add an error to the schedule to track "is_circular"
-                pass
+            run_project(self.object, self.request.user)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

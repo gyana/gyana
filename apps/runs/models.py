@@ -25,7 +25,7 @@ class JobRun(DirtyFieldsMixin, BaseModel):
         SUCCESS = "success", "Success"
 
     # state is manually updated, or computed from celery result
-    state = models.CharField(max_length=8, choices=State.choices)
+    state = models.CharField(max_length=8, choices=State.choices, default=State.PENDING)
     started_at = models.DateTimeField(null=True)
     completed_at = models.DateTimeField(null=True)
     user = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
@@ -41,7 +41,7 @@ class JobRun(DirtyFieldsMixin, BaseModel):
     workflow = models.ForeignKey(
         "workflows.Workflow", null=True, on_delete=models.CASCADE, related_name="runs"
     )
-    graph_run = models.ForeignKey("runs.GraphRun", null=True, on_delete=models.CASCADE)
+    graph_run = models.ForeignKey("runs.GraphRun", null=True, on_delete=models.CASCADE, related_name="runs")
 
     STATE_TO_ICON = {
         State.RUNNING: ICONS["loading"],
@@ -128,8 +128,8 @@ class GraphRun(DirtyFieldsMixin, BaseModel):
     def save(self, *args, **kwargs):
         dirty = set(self.get_dirty_fields()) & {"state"}
         super().save(*args, **kwargs)
-        if dirty:
-            self.project.update_state_from_latest_run()
+        # if dirty:
+        #     self.project.update_state_from_latest_run()
 
     @property
     def state_icon(self):

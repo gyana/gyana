@@ -107,6 +107,7 @@ class Integration(CloneMixin, BaseModel):
     }
 
     RUN_STATE_TO_INTEGRATION_STATE = {
+        JobRun.State.PENDING: State.LOAD,
         JobRun.State.RUNNING: State.LOAD,
         JobRun.State.FAILED: State.ERROR,
         JobRun.State.SUCCESS: State.DONE,
