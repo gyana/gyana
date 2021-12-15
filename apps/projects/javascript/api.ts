@@ -9,7 +9,7 @@ export const toNode = (res): Node => {
     type: res.entity_id.toString().split('-')[0].split('_')[1],
     data: res,
     position: { x: 0, y: 0 },
-    className: res.is_scheduled ? 'react-flow__node--scheduled' : '',
+    ...(res.is_scheduled && { className: 'react-flow__node--scheduled' }),
   }
 }
 
