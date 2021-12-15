@@ -11,7 +11,6 @@ from apps.integrations.models import Integration
 from apps.nodes.models import Node
 from apps.runs.models import GraphRun, JobRun
 from apps.sheets import tasks as sheet_tasks
-from apps.sheets.models import Sheet
 from apps.tables.models import Table
 from apps.users.models import CustomUser
 from apps.workflows import tasks as workflow_tasks
@@ -32,6 +31,12 @@ def _get_entity_from_input_table(table: Table):
         return table.integration
 
 
+def _is_scheduled(entity):
+    if isinstance(entity, Integration):
+        return entity.sheet.is_scheduled
+    return entity.is_scheduled
+
+
 @shared_task(bind=True)
 def run_project_task(self, graph_run_id: int, scheduled_only=False):
 
@@ -43,8 +48,6 @@ def run_project_task(self, graph_run_id: int, scheduled_only=False):
     # Run all the workflows and sheets in a project. The python graphlib library will build
     # a topological sort for any graph of hashables and raises a cycle error if
     # there is a circularity.
-
-    workflows = project.workflow_set.all()
 
     # one query per workflow, in future we would optimize into a single query
     graph = {
@@ -61,7 +64,7 @@ def run_project_task(self, graph_run_id: int, scheduled_only=False):
             .select_related("input_table__integration")
             .all()
         ]
-        for workflow in workflows
+        for workflow in project.workflow_set.all()
     }
 
     graph.update(
@@ -72,6 +75,13 @@ def run_project_task(self, graph_run_id: int, scheduled_only=False):
             ).all()
         }
     )
+
+    if scheduled_only:
+        graph = {
+            entity: [parent for parent in parents if _is_scheduled(parent)]
+            for entity, parents in graph.items()
+            if _is_scheduled(entity)
+        }
 
     job_runs = {
         entity: JobRun.objects.create(
@@ -95,9 +105,6 @@ def run_project_task(self, graph_run_id: int, scheduled_only=False):
 
     try:
         for entity in ts.static_order():
-
-            if scheduled_only and not entity.is_scheduled:
-                continue
 
             job_run = job_runs[entity]
             job_run.state = JobRun.State.RUNNING

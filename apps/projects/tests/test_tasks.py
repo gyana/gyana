@@ -114,3 +114,24 @@ def test_run_project(
 
     workflow_1.refresh_from_db()
     assert workflow_1.state == Workflow.State.FAILED
+
+    # test scheduled behaviour
+
+    run_workflow_task.side_effect = None
+
+    integration.sheet.is_scheduled = True
+    integration.sheet.save()
+    workflow_2.is_scheduled = True
+    workflow_2.save()
+
+    graph_run = GraphRun.objects.create(
+        project=project,
+        task_id=uuid4(),
+        state=GraphRun.State.RUNNING,
+        started_at=timezone.now(),
+    )
+
+    tasks.run_project_task(graph_run.id, scheduled_only=True)
+
+    assert graph_run.runs.count() == 2
+    assert {run.source_obj for run in graph_run.runs.all()} == {integration, workflow_2}
