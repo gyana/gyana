@@ -106,7 +106,7 @@ def run_project_task(self, graph_run_id: int, scheduled_only=False):
             job_run.save()
 
             try:
-                if isinstance(entity, Sheet):
+                if isinstance(entity, Integration):
                     sheet_tasks.run_sheet_sync_task(job_run.id, skip_up_to_date=True)
                 elif isinstance(entity, Workflow):
                     workflow_tasks.run_workflow_task(job_run.id)
