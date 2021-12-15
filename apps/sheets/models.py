@@ -11,25 +11,6 @@ from apps.integrations.models import Integration
 RETRY_LIMIT_DAYS = 3
 
 
-class SheetsManager(models.Manager):
-    def is_scheduled_in_project(self, project):
-        # For a sheet to be synced on the daily schedule, it needs to be ready
-        # (i.e. approved) and manually tagged as is_scheduled by the user. If it
-        # fails to sync for more than 3 days, the schedule is stopped until it is
-        # fixed by the user.
-        return (
-            self.filter(
-                integration__project=project, integration__ready=True, is_scheduled=True
-            )
-            # .annotate(last_succeeded=F("failed_at") - F("succeeded_at"))
-            # .filter(
-            #     Q(succeeded_at__isnull=True)
-            #     | Q(failed_at__isnull=True)
-            #     | Q(last_succeeded__lt=timedelta(days=3))
-            # )
-        )
-
-
 class Sheet(CloneMixin, BaseModel):
 
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
@@ -56,8 +37,6 @@ class Sheet(CloneMixin, BaseModel):
 
     # todo: move to the integration model
     is_scheduled = models.BooleanField(default=False)
-
-    objects = SheetsManager()
 
     @property
     def table_id(self):
