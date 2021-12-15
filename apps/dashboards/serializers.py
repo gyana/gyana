@@ -19,6 +19,7 @@ class DashboardSerializer(serializers.ModelSerializer):
 
     def get_parents(self, obj):
         parents = {
-            widget.table.source_obj for widget in obj.get_all_widgets() if widget.table
+            widget.table.source_obj
+            for widget in obj.widgets.filter(table__isnull=False).all()
         }
         return [source.entity_id for source in parents]
