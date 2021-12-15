@@ -2,11 +2,14 @@ import json
 
 import pytest
 import pytz
+from celery.exceptions import RetryTaskError
+from django.utils import timezone
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 from pytest_django.asserts import assertRedirects
 
 from apps.base.tests.asserts import assertFormRenders, assertOK
 from apps.connectors.tests.mock import get_mock_fivetran_connector
+from apps.projects import periodic
 
 pytestmark = pytest.mark.django_db
 
@@ -119,3 +122,26 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
     assert project.periodic_task is None
     assert PeriodicTask.objects.count() == 0
     assert CrontabSchedule.objects.count() == 0
+
+
+def test_run_schedule_for_periodic(
+    project_factory, sheet_factory, connector_factory, mocker
+):
+
+    mocker.patch("apps.projects.tasks.run_project_task")
+
+    project = project_factory()
+    sheet = sheet_factory(integration__project=project, is_scheduled=True)
+    connector = connector_factory(integration__project=project)
+
+    project.update_schedule()
+
+    assert project.periodic_task is not None
+
+    with pytest.raises(RetryTaskError):
+        periodic.run_schedule_for_project.delay(project.id)
+
+    connector.succeeded_at = timezone.now()
+    connector.save()
+
+    periodic.run_schedule_for_project.delay(project.id)
