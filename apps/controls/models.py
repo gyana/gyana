@@ -30,3 +30,20 @@ class Control(BaseModel):
 
     def get_absolute_url(self):
         return reverse("controls:detail", args=(self.pk,))
+
+
+class ControlWidget(BaseModel):
+    page = models.ForeignKey(
+        "dashboards.Page", on_delete=models.CASCADE, related_name="control_widgets"
+    )
+    control = models.ForeignKey(
+        Control, on_delete=models.CASCADE, related_name="control_widgets"
+    )
+    x = models.IntegerField(
+        default=0,
+        help_text="The x field is in absolute pixel value.",
+    )
+    y = models.IntegerField(
+        default=0,
+        help_text="The y field is in absolute pixel value.",
+    )

@@ -39,6 +39,20 @@
 
       <button type="submit"></button>
     </form>
+    <form
+      method="post"
+      action="{% url 'controls:create' project.id dashboard.id %}"
+      class="hidden"
+      data-canvas-target="formControl"
+    >
+      {% csrf_token %}
+
+      <input name='x' id="id_x" value="" />
+      <input name='y' id="id_y" value="" />
+      <input name='page' id="id_page" value="{{page.id}}"/>
+
+      <button type="submit"></button>
+    </form>
     <div
       id="dashboard-widget-container"
       class="{% if request.GET.mode != 'view' %}widgets__grid{%endif%}"
