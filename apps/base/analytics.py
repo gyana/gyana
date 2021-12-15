@@ -17,6 +17,7 @@ INVITE_ACCEPTED_EVENT: Final = "Invite accepted"
 
 # projects
 PROJECT_CREATED_EVENT: Final = "Project created"
+PROJECT_RUN_EVENT: Final = "Project run"
 
 # templates
 TEMPLATE_VIEWED_EVENT: Final = "Template viewed"
@@ -60,7 +61,6 @@ SUBSCRIPTION_UPDATED_EVENT: Final = "Subscription updated"
 SUBSCRIPTION_CANCELLED_EVENT: Final = "Subscription cancelled"
 
 # exports
-
 EXPORT_CREATED: Final = "Export created"
 
 

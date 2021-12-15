@@ -55,14 +55,7 @@ def run_workflow_task(self, run_id: int):
         analytics.track(
             run.user.id,
             WORFKLOW_RUN_EVENT,
-            {
-                "id": workflow.id,
-                "success": not workflow.failed,
-                **{
-                    f"error_{idx}": workflow.errors[key]
-                    for idx, key in enumerate(workflow.errors.keys())
-                },
-            },
+            {"id": workflow.id, "success": not workflow.failed},
         )
 
     if workflow.failed:
