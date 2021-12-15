@@ -4,8 +4,10 @@ from uuid import uuid4
 
 from celery import shared_task
 from celery_progress import backend
+from django.db.models import Q
 from django.utils import timezone
 
+from apps.integrations.models import Integration
 from apps.nodes.models import Node
 from apps.runs.models import GraphRun, JobRun
 from apps.sheets import tasks as sheet_tasks
@@ -27,18 +29,18 @@ def _get_entity_from_input_table(table: Table):
     if table.source == Table.Source.WORKFLOW_NODE:
         return table.workflow_node.workflow
     else:
-        return table.integration.source_obj
+        return table.integration
 
 
 @shared_task(bind=True)
-def run_project_task(self, graph_run_id: int):
+def run_project_task(self, graph_run_id: int, scheduled_only=False):
 
     progress_recorder = backend.ProgressRecorder(self)
 
     graph_run = GraphRun.objects.get(pk=graph_run_id)
     project = graph_run.project
 
-    # Run all the workflows in a project. The python graphlib library will build
+    # Run all the workflows and sheets in a project. The python graphlib library will build
     # a topological sort for any graph of hashables and raises a cycle error if
     # there is a circularity.
 
@@ -49,11 +51,14 @@ def run_project_task(self, graph_run_id: int):
         workflow: [
             _get_entity_from_input_table(node.input_table)
             for node in workflow.nodes.filter(
-                kind=Node.Kind.INPUT, input_table__isnull=False
+                kind=Node.Kind.INPUT,
+            )
+            .filter(
+                Q(input_table__integration__kind=Integration.Kind.SHEET)
+                | Q(input_table__source=Table.Source.WORKFLOW_NODE)
             )
             .select_related("input_table__workflow_node__workflow")
-            .select_related("input_table__integration__sheet")
-            .select_related("input_table__integration__connector")
+            .select_related("input_table__integration")
             .all()
         ]
         for workflow in workflows
@@ -61,17 +66,19 @@ def run_project_task(self, graph_run_id: int):
 
     graph.update(
         {
-            sheet: []
-            for sheet in Sheet.objects.filter(integration__project=project).all()
+            integration: []
+            for integration in project.integration_set.filter(
+                kind=Integration.Kind.SHEET
+            ).all()
         }
     )
 
     job_runs = {
         entity: JobRun.objects.create(
             source=JobRun.Source.INTEGRATION
-            if hasattr(entity, "integration")
+            if isinstance(entity, Integration)
             else JobRun.Source.WORKFLOW,
-            integration=entity.integration if hasattr(entity, "integration") else None,
+            integration=entity if isinstance(entity, Integration) else None,
             workflow=entity if isinstance(entity, Workflow) else None,
             user=graph_run.user,
             graph_run=graph_run,
@@ -88,6 +95,9 @@ def run_project_task(self, graph_run_id: int):
 
     try:
         for entity in ts.static_order():
+
+            if scheduled_only and not entity.is_scheduled:
+                continue
 
             job_run = job_runs[entity]
             job_run.state = JobRun.State.RUNNING
