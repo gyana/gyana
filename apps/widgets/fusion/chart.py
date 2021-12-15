@@ -53,12 +53,6 @@ def _create_axis_names(widget):
 
 def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     """Render a chart from a table."""
-    import logging
-    logger = logging.getLogger(__name__)
-
-    logger.critical(widget)
-    logger.critical(widget.page)
-    logger.critical(widget.page.dashboard.palette_colors)
 
     data = CHART_DATA[widget.kind](widget, df)
     axis_names = _create_axis_names(widget)

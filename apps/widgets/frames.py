@@ -32,12 +32,6 @@ from .models import WIDGET_CHOICES_ARRAY, Widget
 
 
 def add_output_context(context, widget, request, control):
-
-    import logging
-    logger = logging.getLogger(__name__)
-
-    logger.critical("add output context running")
-
     if widget.is_valid:
         if widget.kind == Widget.Kind.TEXT:
             pass
