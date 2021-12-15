@@ -239,3 +239,11 @@ class Integration(CloneMixin, BaseModel):
             else self.RUN_STATE_TO_INTEGRATION_STATE[self.latest_run.state]
         )
         self.save()
+
+    @property
+    def is_scheduled(self):
+        if self.kind == self.Kind.CONNECTOR:
+            return True
+        elif self.kind == self.Kind.SHEET:
+            return self.sheet.is_scheduled
+        return False

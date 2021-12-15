@@ -20,6 +20,7 @@ class WorkflowSerializer(serializers.ModelSerializer):
             "parents",
             "absolute_url",
             "latest_run",
+            "is_scheduled",
         )
 
     def get_parents(self, obj):

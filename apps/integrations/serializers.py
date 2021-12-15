@@ -20,4 +20,5 @@ class IntegrationSerializer(serializers.ModelSerializer):
             "absolute_url",
             "icon",
             "latest_run",
+            "is_scheduled",
         )
