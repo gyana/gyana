@@ -33,7 +33,7 @@ urlpatterns = [
         name="runs",
     ),
     path(
-        "<hashid:project_id>/run",
+        "<int:project_id>/run",
         login_and_project_required(rest.project_run),
         name="run",
     ),
