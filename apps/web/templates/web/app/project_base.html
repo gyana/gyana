@@ -1,5 +1,6 @@
 {% extends "web/app/app_base.html" %}
 {% load static %}
+{% load waffle_tags %}
 
 {% block sidebar_content %}
 <a class="sidebar__link sidebar__link--border" href="{% url 'teams:detail' project.team.id %}">
@@ -56,13 +57,16 @@
   <span data-tooltip-target="body">Dashboards</span>
 </a>
 
-<a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == "automate" %}sidebar__link--active{% endif %}"
-  href="{% url 'projects:automate' project.id %}"
-  data-controller="tooltip"
-  data-placement="right">
-  <i class="far fa-fw fa-robot mr-6"></i>Automate
-  <span data-tooltip-target="body">Automate</span>
-</a>
+{% flag 'beta' %}
+  <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == "automate" %}sidebar__link--active{% endif %}"
+    href="{% url 'projects:automate' project.id %}"
+    data-controller="tooltip"
+    data-placement="right">
+    <i class="far fa-fw fa-robot mr-6"></i>Automate
+    <span data-tooltip-target="body">Automate</span>
+  </a>
+{% endflag %}
+
 {% endif %}
 
 {% if not project.ready %}
