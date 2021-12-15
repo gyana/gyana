@@ -9,6 +9,13 @@ interface IProps {
 
 type Stage = 'initial' | 'progress' | 'done' | 'error'
 
+function handleBeforeUnload(event) {
+  // Preventing default in Firefox will always show pop-up
+  event.preventDefault()
+  // Chrome requires returnValue to be set to show pop-up
+  event.returnValue = ""
+}
+
 const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
   const fileRef = useRef<HTMLInputElement>(null)
   const inputFileRef = useRef<HTMLInputElement>(null)
@@ -19,6 +26,8 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
 
   useEffect(() => {
     if (fileRef.current && inputFileRef.current && inputNameRef.current) {
+      window.addEventListener("beforeunload", handleBeforeUnload)
+
       fileRef.current.addEventListener('change', async (event) => {
         setStage('progress')
 
@@ -37,17 +46,12 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
           file,
           listeners: {
             onProgress: (progress) => {
-              // Ask user if they are sure they want to navigate away
-              window.onbeforeunload = function () {
-                return true
-              }
-
               setProgress(progress)
             },
             onSuccess: () => {
-              setStage('done')
+              window.removeEventListener("beforeunload", handleBeforeUnload)
 
-              window.onbeforeunload = null
+              setStage('done')
 
               inputFileRef.current.value = path
               inputNameRef.current.value = file.name
