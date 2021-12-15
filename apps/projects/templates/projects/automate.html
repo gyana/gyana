@@ -1,10 +1,12 @@
 {% extends "web/app/project_base.html" %}
 {% load static %}
+{% load help_utils %}
 
 {% block app %}
 <div class="workflow-detail__header">
-  <h3 class="flex-1 mr-auto">
+  <h3 class="flex items-center gap-3 mr-auto">
     Automate
+    {% link_article 'overview' 'automate' %}
   </h3>
 
   <div data-controller="tooltip tf-modal">
