@@ -21,19 +21,16 @@
     {% endif %}
   </button>
   <div class='control-popover' data-popover-target="body">
-
     <form 
       id="control-update-form"
-      method="{% if is_public %}get{%else%}post{% endif %}" 
+      method="post" 
       action="{% if is_public %}
         {% url 'controls:update-public' project.id dashboard.id object.id %}
       {% else %}
         {% url 'controls:update' project.id dashboard.id object.id %}
       {% endif %}" 
       class="form--no-layout popover-body"
-      data-controller="live-update url-param"
-      data-url-param-target="form"
-      data-action="submit->url-param#updateURL"
+      data-controller="live-update"
 
     >
       <span data-live-update-target="loading" class="hidden">
@@ -47,7 +44,6 @@
         name="submit" value="submit"
         >Apply</button>
     </form>
-
   </div>
   {% if not is_public %}{% include 'controls/delete.html' %}{% endif %}
 </div>

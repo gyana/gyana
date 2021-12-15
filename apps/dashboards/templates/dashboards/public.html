@@ -84,7 +84,7 @@
       {% endif %}
     </header>
     {% if page.has_control %}
-      <turbo-frame id='controls:update' src="{% url 'controls:update-public' project.id dashboard.id page.control.id %}?{{request.GET.urlencode}}">
+      <turbo-frame id='controls:update' src="{% url 'controls:update-public' project.id dashboard.id page.control.id %}">
         <div class='placeholder-scr'>
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
         </div>
