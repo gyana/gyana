@@ -246,4 +246,5 @@ class Integration(CloneMixin, BaseModel):
             return True
         elif self.kind == self.Kind.SHEET:
             return self.sheet.is_scheduled
-        return False
+        elif self.kind == self.Kind.UPLOAD:
+            return False

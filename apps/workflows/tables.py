@@ -28,6 +28,7 @@ class WorkflowTable(tables.Table):
     last_success_run = NaturalDatetimeColumn(
         accessor="last_success_run__started_at", verbose_name="Last successful run"
     )
+    is_scheduled = tables.BooleanColumn(verbose_name="Scheduled")
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
     # TODO: Fix orderable for status column.
