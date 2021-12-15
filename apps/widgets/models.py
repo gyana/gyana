@@ -27,6 +27,7 @@ class WidgetStyle(models.Model):
     # Fusionchart configuration
     show_tooltips = models.BooleanField(null=True)
     font_size = models.IntegerField(null=True)
+    font_color = models.CharField(null=True, max_length=7)
 
 
 class Widget(WidgetStyle, CloneMixin, BaseModel):

@@ -57,6 +57,9 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
 
     data = CHART_DATA[widget.kind](widget, df)
     axis_names = _create_axis_names(widget)
+
+    # All Fusioncharts attributes can be found here:
+    # https://www.fusioncharts.com/dev/chart-attributes/area2d
     dataSource = {
         "chart": {
             "stack100Percent": "1" if widget.stack_100_percent else "0",
@@ -69,7 +72,9 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
             "showToolTip": widget.show_tooltips
             if widget.show_tooltips is not None
             else True,
-            "baseFontSize": widget.font_size if f"{widget.font_size}rem" else "2rem",
+            "baseFontSize": widget.font_size if f"{widget.font_size}px" else f"{widget.page.dashboard.font_size}px",
+            "baseFontColor": widget.font_color if widget.font_color else widget.page.dashboard.font_color,
+            "outCnvBaseFontColor": widget.font_color if widget.font_color else widget.page.dashboard.font_color,
             # Fusioncharts client-side export feature
             "exportenabled": "0",
             "exportmode": "client",

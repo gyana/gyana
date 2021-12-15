@@ -1,5 +1,8 @@
 <div class="metric">
+  {% if widget.name %}
   <h4 class="metric__title">{{ widget.name }}</h4>
+  {% endif %}
+
   <h2 class="metric__value">
     {{ metric }}
   </h2>

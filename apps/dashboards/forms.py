@@ -22,9 +22,6 @@ class PaletteColorsWidget(forms.MultiWidget):
                 forms.TextInput(attrs={"type": "color"}),
                 forms.TextInput(attrs={"type": "color"}),
                 forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
             ],
             *args,
             **kwargs
@@ -43,9 +40,6 @@ class PaletteColorsField(forms.MultiValueField):
     def __init__(self, *args, **kwargs):
         super(PaletteColorsField, self).__init__(
             (
-                forms.CharField(),
-                forms.CharField(),
-                forms.CharField(),
                 forms.CharField(),
                 forms.CharField(),
                 forms.CharField(),
@@ -87,7 +81,10 @@ class DashboardForm(forms.ModelForm):
     )
     palette_colors = PaletteColorsField(required=False)
     background_color = forms.CharField(
-        help_text="Color to use for the background of the dashboard",
+        required=False,
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
+    font_color = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={"type": "color"}),
     )
@@ -96,17 +93,20 @@ class DashboardForm(forms.ModelForm):
         model = Dashboard
         fields = [
             "background_color",
+            "font_color",
+            "font_size",
             "palette_colors",
             "width",
             "height",
             "grid_size",
         ]
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields["width"].widget.attrs.update({"step": self.instance.grid_size})
         self.fields["height"].widget.attrs.update({"step": self.instance.grid_size})
+
 
 class DashboardShareForm(LiveUpdateForm):
     class Meta:

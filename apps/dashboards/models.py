@@ -14,22 +14,25 @@ from model_clone import CloneMixin
 from apps.base.models import BaseModel
 from apps.projects.models import Project
 
-
-# These were taken from fusioncharts.theme.fusion.js as the default values
-# for a chart palette.
-def getFusionThemePalette():
-    return [
-        "#5D62B5",
-        "#29C3BE",
-        "#F2726F",
-        "#FFC533",
-        "#62B58F",
-        "#BC95DF",
-        "#67CDF2",
-    ]
+from .utils import getFusionThemePalette
 
 
-class Dashboard(CloneMixin, BaseModel):
+class DashboardSettings(models.Model):
+    class Meta:
+        abstract = True
+
+    grid_size = models.IntegerField(default=15)
+    palette_colors = ArrayField(
+        models.CharField(default="#5D62B5", max_length=7),
+        size=10,
+        default=getFusionThemePalette,
+    )
+    background_color = models.CharField(default="#ffffff", max_length=7)
+    font_size = models.IntegerField(default="16")
+    font_color = models.CharField(default="#000000", max_length=7)
+
+
+class Dashboard(DashboardSettings, CloneMixin, BaseModel):
     class SharedStatus(models.TextChoices):
         PRIVATE = "private", "Private"
         PUBLIC = "public", "Public"
@@ -47,14 +50,6 @@ class Dashboard(CloneMixin, BaseModel):
     password_set = models.DateTimeField(null=True, editable=False)
     width = models.IntegerField(default=1200)
     height = models.IntegerField(default=840)
-    grid_size = models.IntegerField(default=15)
-
-    palette_colors = ArrayField(
-        models.CharField(default="#5D62B5", max_length=7),
-        size=10,
-        default=getFusionThemePalette,
-    )
-    background_color = models.CharField(default="#ffffff", max_length=7)
 
     # Stores the raw password if set_password() is called so that it can
     # be passed to password_changed() after the model is saved.

@@ -230,7 +230,6 @@ class WidgetStyle(DashboardMixin, TurboFrameUpdateView):
     turbo_frame_dom_id = "widget-modal-style"
     form_class = WidgetStyleForm
 
-
     def form_valid(self, form):
         r = super().form_valid(form)
 
@@ -301,18 +300,24 @@ class WidgetStyle(DashboardMixin, TurboFrameUpdateView):
 
     def get_success_url(self) -> str:
         if self.request.POST.get("submit") == "Save & Preview":
-            return "{}?{}".format(reverse(
-                "dashboard_widgets:update",
-                args=(
-                    self.project.id,
-                    self.dashboard.id,
-                    self.object.id,
+            return "{}?{}".format(
+                reverse(
+                    "dashboard_widgets:update",
+                    args=(
+                        self.project.id,
+                        self.dashboard.id,
+                        self.object.id,
+                    ),
                 ),
-            ), "show_style=True")
-        return "{}?{}".format(reverse(
-            "project_dashboards:detail",
-            args=(self.project.id, self.dashboard.id),
-        ), "show_style=True")
+                "show_style=True",
+            )
+        return "{}?{}".format(
+            reverse(
+                "project_dashboards:detail",
+                args=(self.project.id, self.dashboard.id),
+            ),
+            "show_style=True",
+        )
 
 
 class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
