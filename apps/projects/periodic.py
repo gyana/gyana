@@ -24,17 +24,17 @@ MAX_RETRIES = 3600 / RETRY_COUNTDOWN * 24
 def run_schedule_for_project(self, project_id: int):
 
     project = Project.objects.get(pk=project_id)
-
     project.update_schedule()
+
+    # skip and delete periodic taks if nothing to schedule
+    if project.periodic_task is None:
+        return
 
     current_schedule = get_next_daily_sync_in_utc_from_project(project) - timedelta(
         days=1
     )
 
-    # skip workflow if nothing to run
-    if project.periodic_task is None:
-        return
-
+    # wait until all the connectors we expect to sync have completed for today
     connectors_not_ready = (
         Connector.objects.filter(
             setup_state=Connector.SetupState.CONNECTED,
@@ -47,7 +47,6 @@ def run_schedule_for_project(self, project_id: int):
         .exists()
     )
 
-    # We need to keep retrying until the running connectors either fail or succeed
     if connectors_not_ready:
         self.retry(countdown=RETRY_COUNTDOWN, max_retries=MAX_RETRIES)
 
