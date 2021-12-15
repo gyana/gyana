@@ -89,7 +89,7 @@ const WorkflowNode: React.FC<NodeProps> = ({ id, data: initialData }) => {
       </div>
       <StatusIcon runState={data.latest_run.state} />
       <Handle type='target' position={Position.Left} isConnectable={false} />
-      <i className='fas fa-fw fa-sitemap text-blue'></i>
+      <i className='fas fa-fw fa-sitemap'></i>
       <Handle type='source' position={Position.Right} isConnectable={false} />
     </>
   )
