@@ -26,7 +26,7 @@ def run_schedule_for_project(self, project_id: int):
     project = Project.objects.get(pk=project_id)
     project.update_schedule()
 
-    # skip and delete periodic taks if nothing to schedule
+    # skip and delete periodic tasks if nothing to schedule
     if project.periodic_task is None:
         return
 
