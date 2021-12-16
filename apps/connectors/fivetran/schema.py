@@ -3,6 +3,9 @@ from itertools import chain
 from typing import Dict, List, Optional
 
 from .config import ServiceTypeEnum
+from .services.facebook import get_enabled_table_ids_for_facebook_ads
+
+SERVICE_TO_TABLE_IDS = {"facebook_ads": get_enabled_table_ids_for_facebook_ads}
 
 # wrapper for fivetran schema information
 # https://fivetran.com/docs/rest-api/connectors#retrieveaconnectorschemaconfig
@@ -67,6 +70,8 @@ class FivetranSchema:
 
     @property
     def enabled_table_ids(self):
+        if self.service_type in SERVICE_TO_TABLE_IDS:
+            return SERVICE_TO_TABLE_IDS[self.service_type](self.enabled_tables)
         return {table.name_in_destination for table in self.enabled_tables}
 
     @property
