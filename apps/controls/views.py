@@ -9,6 +9,7 @@ from apps.base.turbo import TurboCreateView
 from apps.controls.forms import ControlForm
 from apps.controls.models import Control, ControlWidget
 from apps.dashboards.mixins import DashboardMixin
+from apps.widgets.frames import add_output_context
 
 
 class ControlWidgetCreate(DashboardMixin, TurboCreateView):
@@ -60,11 +61,31 @@ class ControlWidgetDelete(DashboardMixin, TurboStreamDeleteView):
     model = ControlWidget
 
     def delete(self, request, *args, **kwargs):
-        if self.page.control_widgets.count() == 1:
-            self.object_id = self.get_object().id
-            self.page.control.delete()
-            return self.render_turbo_stream()
-        return super().delete(request, *args, **kwargs)
+        if self.page.control_widgets.count() != 1:
+            return super().delete(request, *args, **kwargs)
+
+        self.object_id = self.get_object().id
+        self.page.control.delete()
+        streams = []
+        for widget in self.page.widgets.all():
+            context = {
+                "widget": widget,
+                "dashboard": self.dashboard,
+                "page": self.page,
+                "project": self.project,
+            }
+            add_output_context(context, widget, self.request, None)
+            streams.append(
+                TurboStream(f"widgets-output-{widget.id}-stream")
+                .replace.template("widgets/output.html", context)
+                .render(request=self.request)
+            )
+        return TurboStreamResponse(
+            [
+                *streams,
+                TurboStream(f"control-widget-{self.object_id}").remove.render(),
+            ]
+        )
 
     def get_success_url(self) -> str:
         return reverse(
