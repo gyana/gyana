@@ -9,7 +9,7 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$260000$KjelrmNP13xJ9V5H9LukHM$it0FFNUenhfj8L+k8ezAij2xqs9GEQ1OQLmOKkVvyqM=",
-      "last_login": "2021-12-14T21:17:42.897Z",
+      "last_login": "2021-12-16T01:44:42.164Z",
       "is_superuser": false,
       "username": "test",
       "first_name": "",
@@ -90,13 +90,13 @@
     "pk": 1,
     "fields": {
       "created": "2021-07-26T14:53:37.577Z",
-      "updated": "2021-07-26T14:53:37.587Z",
+      "updated": "2021-12-16T01:46:48.925Z",
       "deleted": null,
       "icon": "",
       "name": "Vayu",
       "override_row_limit": null,
-      "row_count": 0,
-      "row_count_calculated": null,
+      "row_count": 257,
+      "row_count_calculated": "2021-12-16T01:46:48.925Z",
       "last_checkout": null,
       "timezone": "GMT"
     }
@@ -404,6 +404,21 @@
       "ready": true,
       "created_ready": "2021-08-31T00:58:25.975Z",
       "created_by": 2
+    }
+  },
+  {
+    "model": "integrations.integration",
+    "pk": 15,
+    "fields": {
+      "created": "2021-12-16T01:46:40.572Z",
+      "updated": "2021-12-16T01:46:48.894Z",
+      "project": 1,
+      "kind": "customapi",
+      "name": "JSON todos",
+      "state": "done",
+      "ready": true,
+      "created_ready": "2021-12-16T01:46:48.891Z",
+      "created_by": 1
     }
   },
   {
@@ -976,6 +991,24 @@
       "cache_node": null,
       "num_rows": 0,
       "data_updated": "2021-12-03T23:55:11.723Z"
+    }
+  },
+  {
+    "model": "tables.table",
+    "pk": 23,
+    "fields": {
+      "created": "2021-12-16T01:46:43.181Z",
+      "updated": "2021-12-16T01:46:45.982Z",
+      "bq_table": "customapi_000000001",
+      "bq_dataset": "cypress_team_000001_tables",
+      "project": 1,
+      "source": "integration",
+      "integration": 15,
+      "workflow_node": null,
+      "intermediate_node": null,
+      "cache_node": null,
+      "num_rows": 200,
+      "data_updated": "2021-12-16T01:46:44.986Z"
     }
   },
   {
@@ -3304,6 +3337,36 @@
     }
   },
   {
+    "model": "runs.jobrun",
+    "pk": 10,
+    "fields": {
+      "created": "2021-12-16T01:46:42.564Z",
+      "updated": "2021-12-16T01:46:46.040Z",
+      "state": "success",
+      "started_at": "2021-12-16T01:46:42.563Z",
+      "completed_at": "2021-12-16T01:46:46.036Z",
+      "user": 1,
+      "task_id": "32f7a738-c597-4aae-9429-303873aaad18",
+      "result": 1,
+      "source": "integration",
+      "integration": 15,
+      "workflow": null,
+      "graph_run": null
+    }
+  },
+  {
+    "model": "customapis.customapi",
+    "pk": 1,
+    "fields": {
+      "created": "2021-12-16T01:46:40.573Z",
+      "updated": "2021-12-16T01:46:43.169Z",
+      "integration": 15,
+      "url": "https://jsonplaceholder.typicode.com/todos",
+      "json_path": "$",
+      "ndjson_file": "cypress/custom_api_jsonnl/customapi_1.ndjson"
+    }
+  },
+  {
     "model": "account.emailaddress",
     "pk": 1,
     "fields": { "user": 1, "email": "test@gyana.com", "verified": true, "primary": true }
@@ -3500,7 +3563,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2021-12-14T21:17:43.153Z" }
+    "fields": { "last_update": "2021-12-16T01:46:40.594Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
@@ -3528,6 +3591,25 @@
       "total_run_count": 0,
       "date_changed": "2021-12-03T23:55:23.828Z",
       "description": ""
+    }
+  },
+  {
+    "model": "django_celery_results.taskresult",
+    "pk": 1,
+    "fields": {
+      "task_id": "32f7a738-c597-4aae-9429-303873aaad18",
+      "task_name": "apps.customapis.tasks.run_customapi_sync_task",
+      "task_args": "\"(10,)\"",
+      "task_kwargs": "\"{}\"",
+      "status": "SUCCESS",
+      "worker": "celery@192.168.1.150",
+      "content_type": "application/json",
+      "content_encoding": "utf-8",
+      "result": "15",
+      "date_created": "2021-12-16T01:46:46.036Z",
+      "date_done": "2021-12-16T01:46:46.036Z",
+      "traceback": null,
+      "meta": "{\"children\": []}"
     }
   }
 ]
