@@ -5,6 +5,7 @@
 
   .react-flow__node {
     align-items: center;
+    background-color: var(--c-white);
     border-radius: 10px;
     border: 2px solid var(--c-gray-20);
     box-shadow: 4px 10px 30px rgba(0, 0, 0, 0.08);
@@ -81,6 +82,10 @@
       justify-content: center;
       align-items: center;
       font-size: 5.6rem;
+    }
+
+    & > img {
+      pointer-events: none;
     }
 
     &:hover,
