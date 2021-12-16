@@ -1,5 +1,5 @@
-from apps.apis.tasks import run_customapi_sync
 from apps.connectors.sync import start_connector_sync
+from apps.customapis.tasks import run_customapi_sync
 from apps.sheets.tasks import run_sheet_sync
 from apps.uploads.tasks import run_upload_sync
 from apps.users.models import CustomUser

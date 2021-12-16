@@ -1,9 +1,13 @@
+from django import forms
+
 from apps.base.forms import BaseModelForm
 
 from .models import CustomApi
 
 
 class CustomApiCreateForm(BaseModelForm):
+    name = forms.CharField(max_length=255)
+
     class Meta:
         model = CustomApi
         fields = ["url", "json_path"]
@@ -15,7 +19,9 @@ class CustomApiCreateForm(BaseModelForm):
         super().__init__(*args, **kwargs)
 
     def pre_save(self, instance):
-        instance.create_integration(self._created_by, self._project)
+        instance.create_integration(
+            self.cleaned_data["name"], self._created_by, self._project
+        )
 
     def post_save(self, instance):
         instance.integration.project.update_schedule()

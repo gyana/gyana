@@ -25,10 +25,10 @@ from apps.base.converters import HashIdConverter
 
 register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "hashid")
 
-from apps.apis import urls as api_urls
 from apps.appsumo import urls as appsumo_urls
 from apps.cnames import urls as cname_urls
 from apps.connectors import urls as connector_urls
+from apps.customapis import urls as api_urls
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
 from apps.invites import urls as invite_urls

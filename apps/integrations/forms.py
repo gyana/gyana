@@ -1,7 +1,7 @@
 from django import forms
 
-from apps.apis.forms import CustomApiUpdateForm
 from apps.connectors.forms import ConnectorSettingsForm, ConnectorUpdateForm
+from apps.customapis.forms import CustomApiUpdateForm
 from apps.sheets.forms import SheetSettingsForm, SheetUpdateForm
 from apps.uploads.forms import UploadSettingsForm, UploadUpdateForm
 
