@@ -3,7 +3,11 @@ from django.urls import path
 from rest_framework import routers
 
 from . import frames, rest, views
-from .access import control_of_public, login_and_control_required
+from .access import (
+    control_of_public,
+    login_and_control_required,
+    login_and_control_widget_required,
+)
 
 app_name = "controls"
 
@@ -30,7 +34,7 @@ dashboard_urlpatterns = (
         ),
         path(
             "<hashid:pk>/delete",
-            login_and_control_required(frames.ControlDelete.as_view()),
+            login_and_control_widget_required(views.ControlWidgetDelete.as_view()),
             name="delete",
         ),
     ],

@@ -1,10 +1,9 @@
 from django.urls import reverse
 from django.utils.functional import cached_property
-from django.views.generic.edit import DeleteView
 from turbo_response import TurboStream
 from turbo_response.response import HttpResponseSeeOther, TurboStreamResponse
 
-from apps.base.frames import TurboFrameCreateView, TurboFrameUpdateView
+from apps.base.frames import TurboFrameUpdateView
 from apps.dashboards.mixins import DashboardMixin
 from apps.widgets.frames import add_output_context
 
@@ -20,7 +19,7 @@ class ControlUpdate(DashboardMixin, TurboFrameUpdateView):
 
     def get_stream_response(self, form):
         streams = []
-        for widget in self.dashboard.get_all_widgets():
+        for widget in self.dashboard.widgets:
             if widget.date_column and widget.is_valid:
                 context = {
                     "widget": widget,
@@ -96,38 +95,3 @@ class ControlPublicUpdate(ControlUpdate):
     @cached_property
     def page(self):
         return self.dashboard.pages.get(position=self.request.GET.get("page", 1))
-
-
-class ControlDelete(DashboardMixin, DeleteView):
-    template_name = "controls/delete.html"
-    model = Control
-
-    def delete(self, request, *args, **kwargs):
-        super().delete(request, *args, **kwargs)
-        return TurboStreamResponse(
-            [
-                TurboStream("controls:update-stream").replace.render(
-                    "<div id='controls:update-stream'></div>", is_safe=True
-                ),
-                TurboStream("controls:create-stream")
-                .replace.template(
-                    "controls/create.html",
-                    {
-                        "dashboard": self.dashboard,
-                        "project": self.project,
-                        "page": self.page,
-                    },
-                )
-                .render(request=request),
-            ]
-        )
-
-    def get_success_url(self) -> str:
-        # Won't actually return a response to here
-        return reverse(
-            "dashboard_controls:create",
-            args=(
-                self.project.id,
-                self.dashboard.id,
-            ),
-        )
