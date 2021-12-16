@@ -10,7 +10,7 @@ from apps.integrations.models import Integration
 class CustomApi(BaseModel):
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 
-    url = models.URLField()
+    url = models.URLField(max_length=2048)
     json_path = models.TextField(default="$")
 
     ndjson_file = models.FileField(
@@ -26,11 +26,11 @@ class CustomApi(BaseModel):
     def gcs_uri(self):
         return f"gs://{settings.GS_BUCKET_NAME}/{self.ndjson_file.name}"
 
-    def create_integration(self, title, created_by, project):
+    def create_integration(self, created_by, project):
         integration = Integration.objects.create(
             project=project,
             kind=Integration.Kind.CUSTOMAPI,
-            name=title,
+            name=self.url,
             created_by=created_by,
         )
         self.integration = integration

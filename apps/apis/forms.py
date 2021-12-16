@@ -15,7 +15,7 @@ class CustomApiCreateForm(BaseModelForm):
         super().__init__(*args, **kwargs)
 
     def pre_save(self, instance):
-        instance.create_integration("API", self._created_by, self._project)
+        instance.create_integration(self._created_by, self._project)
 
     def post_save(self, instance):
         instance.integration.project.update_schedule()
