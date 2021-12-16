@@ -137,6 +137,12 @@ export const listAll = async (workflowId: string): Promise<[Node[], Edge[]]> => 
   return [nodes, edges]
 }
 
+export const runWorkflow = (workflowId: number) => {
+  return client.action(window.schema, ['workflows', 'run_workflow', 'create'], {
+    id: workflowId,
+  })
+}
+
 export const getWorkflowStatus = (workflowId: string) => {
   return client.action(window.schema, ['workflows', 'out_of_date', 'list'], { id: workflowId })
 }

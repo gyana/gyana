@@ -4,7 +4,7 @@ from django.template.loader import get_template
 
 from apps.base.table import NaturalDatetimeColumn
 
-from .models import JobRun
+from .models import GraphRun, JobRun
 
 
 class RunStateColumn(tables.Column):
@@ -20,6 +20,16 @@ class RunStateColumn(tables.Column):
 class JobRunTable(tables.Table):
     class Meta:
         model = JobRun
+        attrs = {"class": "table"}
+        fields = ("started_at", "duration", "state")
+
+    started_at = NaturalDatetimeColumn(verbose_name="Started")
+    state = RunStateColumn(verbose_name="Status")
+
+
+class GraphRunTable(tables.Table):
+    class Meta:
+        model = GraphRun
         attrs = {"class": "table"}
         fields = ("started_at", "duration", "state")
 

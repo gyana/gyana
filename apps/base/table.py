@@ -8,6 +8,7 @@ ICONS = {
     "warning": "fa-exclamation-triangle text-orange",
     "loading": "fa-circle-notch fa-spin",
     "info": "fa-info-circle text-blue",
+    "pending": "fa-clock",
 }
 
 

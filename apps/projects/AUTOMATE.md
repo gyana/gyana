@@ -1,4 +1,4 @@
-# Schedule
+# Automate
 
 Inspired by projects like Airflow, Dagster and Prefect.
 

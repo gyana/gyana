@@ -1,6 +1,7 @@
 ## Before merging:
 
-- [ ] Run both pytest and cypress 
+- [ ] Run pytest
+- [ ] Run cypress
 - [ ] Look through the changes and make sure nothing is broken
 
 ### If you aren't sure about anything:  

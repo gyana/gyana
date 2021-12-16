@@ -154,7 +154,11 @@ class WorkflowDuplicate(TurboUpdateView):
         )
 
         clone = self.object.make_clone(
-            attrs={"name": "Copy of " + self.object.name, "last_run": None}
+            attrs={
+                "name": "Copy of " + self.object.name,
+                "last_success_run": None,
+                "state": Workflow.State.INCOMPLETE,
+            }
         )
 
         node_map = {}

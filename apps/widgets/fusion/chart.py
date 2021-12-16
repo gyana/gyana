@@ -53,17 +53,37 @@ def _create_axis_names(widget):
 
 def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     """Render a chart from a table."""
+    pallete_colors = widget.palette_colors or widget.page.dashboard.palette_colors
 
     data = CHART_DATA[widget.kind](widget, df)
     axis_names = _create_axis_names(widget)
+
+    # All Fusioncharts attributes can be found here:
+    # https://www.fusioncharts.com/dev/chart-attributes/area2d
     dataSource = {
         "chart": {
             "stack100Percent": "1" if widget.stack_100_percent else "0",
             # Themes can override each other, the values in the right-most theme
             # take precedence.
             "theme": "fusion",
-            "paletteColors": ",".join(widget.page.dashboard.palette_colors),
-            "bgAlpha": "0",
+            "paletteColors": ",".join(pallete_colors),
+            "bgColor": widget.background_color or "#ffffff",
+            "bgAlpha": "100" if widget.background_color else "0",
+            "showToolTip": widget.show_tooltips
+            if widget.show_tooltips is not None
+            else True,
+            "baseFont": widget.page.dashboard.font_family,
+            "baseFontSize": widget.page.dashboard.font_size,
+            "baseFontColor": widget.font_color
+            if widget.font_color
+            else widget.page.dashboard.font_color,
+            "outCnvBaseFontColor": widget.font_color
+            if widget.font_color
+            else widget.page.dashboard.font_color,
+            # Fusioncharts client-side export feature
+            "exportenabled": "0",
+            "exportmode": "client",
+            "exportFileName": widget.name if widget.name else "untitled_chart",
             **axis_names,
         },
         **data,

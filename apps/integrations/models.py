@@ -1,7 +1,6 @@
 from datetime import timedelta
 from itertools import chain
 
-from celery import states
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -69,9 +68,11 @@ class Integration(CloneMixin, BaseModel):
         SHEET = "sheet", "Sheet"
         UPLOAD = "upload", "Upload"
         CONNECTOR = "connector", "Connector"
+        CUSTOMAPI = "customapi", "Custom API"
 
     class State(models.TextChoices):
         UPDATE = "update", "Update"
+        PENDING = "pending", "Pending"
         LOAD = "load", "Load"
         ERROR = "error", "Error"
         DONE = "done", "Done"
@@ -95,6 +96,7 @@ class Integration(CloneMixin, BaseModel):
 
     STATE_TO_ICON = {
         State.UPDATE: ICONS["warning"],
+        State.PENDING: ICONS["pending"],
         State.LOAD: ICONS["loading"],
         State.ERROR: ICONS["error"],
         State.DONE: ICONS["info"],
@@ -102,12 +104,14 @@ class Integration(CloneMixin, BaseModel):
 
     STATE_TO_MESSAGE = {
         State.UPDATE: "Incomplete setup",
+        State.PENDING: "Pending",
         State.LOAD: "Importing",
         State.ERROR: "Error",
         State.DONE: "Ready to review",
     }
 
     RUN_STATE_TO_INTEGRATION_STATE = {
+        JobRun.State.PENDING: State.PENDING,
         JobRun.State.RUNNING: State.LOAD,
         JobRun.State.FAILED: State.ERROR,
         JobRun.State.SUCCESS: State.DONE,
@@ -223,7 +227,7 @@ class Integration(CloneMixin, BaseModel):
 
     @property
     def latest_run(self):
-        return self.runs.order_by("-created").first()
+        return self.runs.order_by("-started_at").first()
 
     def update_state_from_latest_run(self):
 
@@ -236,3 +240,12 @@ class Integration(CloneMixin, BaseModel):
             else self.RUN_STATE_TO_INTEGRATION_STATE[self.latest_run.state]
         )
         self.save()
+
+    @property
+    def is_scheduled(self):
+        if self.kind == self.Kind.CONNECTOR:
+            return True
+        elif self.kind == self.Kind.SHEET:
+            return self.sheet.is_scheduled
+        elif self.kind == self.Kind.UPLOAD:
+            return False

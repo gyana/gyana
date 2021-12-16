@@ -4,6 +4,7 @@ from ibis.expr.datatypes import Date, Time, Timestamp
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.utils import create_column_choices
 from apps.base.widgets import SelectWithDisable
+from apps.dashboards.forms import PaletteColorsField
 from apps.tables.models import Table
 
 from .formsets import FORMSETS, AggregationColumnFormset, FilterFormset
@@ -207,3 +208,15 @@ class WidgetDuplicateForm(forms.ModelForm):
     class Meta:
         model = Widget
         fields = ()
+
+
+class WidgetStyleForm(forms.ModelForm):
+    palette_colors = PaletteColorsField(required=False)
+    background_color = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
+
+    class Meta:
+        model = Widget
+        fields = ["palette_colors", "background_color", "show_tooltips", "font_size"]

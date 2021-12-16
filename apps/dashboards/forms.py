@@ -22,9 +22,6 @@ class PaletteColorsWidget(forms.MultiWidget):
                 forms.TextInput(attrs={"type": "color"}),
                 forms.TextInput(attrs={"type": "color"}),
                 forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
             ],
             *args,
             **kwargs
@@ -43,9 +40,6 @@ class PaletteColorsField(forms.MultiValueField):
     def __init__(self, *args, **kwargs):
         super(PaletteColorsField, self).__init__(
             (
-                forms.CharField(),
-                forms.CharField(),
-                forms.CharField(),
                 forms.CharField(),
                 forms.CharField(),
                 forms.CharField(),
@@ -76,14 +70,21 @@ class DashboardNameForm(forms.ModelForm):
 
 
 class DashboardForm(forms.ModelForm):
-    width = forms.IntegerField(required=False)
-    height = forms.IntegerField(required=False)
+    width = forms.IntegerField(
+        required=False, widget=forms.NumberInput(attrs={"step": "15"})
+    )
+    height = forms.IntegerField(
+        required=False, widget=forms.NumberInput(attrs={"step": "15"})
+    )
     grid_size = forms.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(1200)], required=False
     )
     palette_colors = PaletteColorsField(required=False)
     background_color = forms.CharField(
-        help_text="Color to use for the background of the dashboard",
+        required=False,
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
+    font_color = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={"type": "color"}),
     )
@@ -91,12 +92,22 @@ class DashboardForm(forms.ModelForm):
     class Meta:
         model = Dashboard
         fields = [
+            "font_family",
+            "font_size",
+            "font_color",
             "background_color",
             "palette_colors",
             "width",
             "height",
             "grid_size",
+            "show_widget_border",
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["width"].widget.attrs.update({"step": self.instance.grid_size})
+        self.fields["height"].widget.attrs.update({"step": self.instance.grid_size})
 
 
 class DashboardShareForm(LiveUpdateForm):

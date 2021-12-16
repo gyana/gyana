@@ -1,6 +1,7 @@
 .tabbar {
   display: flex;
   height: 4.2rem;
+  flex: 0 0 4.2rem;
 
   &::after {
     border-bottom: 1px solid var(--c-gray);

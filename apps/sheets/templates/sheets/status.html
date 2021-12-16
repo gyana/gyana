@@ -1,7 +1,7 @@
 {% load humanize %}
 {% load static %}
 
-last synced at <strong>{% include 'columns/natural_datetime.html' with datetime=object.integration.latest_run.result.date_done %}</strong>
+last synced at <strong>{% include 'columns/natural_datetime.html' with datetime=object.integration.latest_run.started_at %}</strong>
 
 {% if not object.up_to_date_with_drive %}
     • <a class="link" href="{% url 'project_integrations:configure' object.integration.project.id object.integration.id %}" data-turbo-frame="_top">

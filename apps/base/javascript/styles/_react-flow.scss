@@ -49,6 +49,11 @@
       }
     }
 
+    &--scheduled {
+      background-color: var(--c-green-10);
+      border: 2px solid var(--c-green-20);
+    }
+
     &-default.selected:hover,
     &-output.selected:hover,
     &-input.selected:hover {

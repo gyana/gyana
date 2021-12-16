@@ -7,7 +7,7 @@ from .models import Widget
 def last_modified_widget_output(request, project_id, dashboard_id, pk):
     widget = Widget.objects.get(pk=pk)
     widget_update = (
-        max(widget.updated, widget.table.data_updated)
+        max(widget.updated, widget.table.data_updated, widget.page.dashboard.updated)
         if widget.table
         else widget.updated
     )

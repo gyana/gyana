@@ -10,5 +10,6 @@ class ProjectMixin:
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["team"] = self.project.team
         context["project"] = self.project
         return context

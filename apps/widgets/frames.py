@@ -27,7 +27,7 @@ from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, metric_to_output, table_to_output
 
-from .forms import FORMS
+from .forms import FORMS, WidgetStyleForm
 from .models import WIDGET_CHOICES_ARRAY, Widget
 
 
@@ -113,6 +113,8 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
         context["show_date_column"] = bool(
             context["form"].get_live_field("date_column")
         )
+        context["styleForm"] = WidgetStyleForm(instance=self.object)
+
         return context
 
     def form_valid(self, form):
@@ -220,6 +222,102 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
                 ]
             )
         return r
+
+
+class WidgetStyle(DashboardMixin, TurboFrameUpdateView):
+    template_name = "widgets/update.html"
+    model = Widget
+    turbo_frame_dom_id = "widget-modal-style"
+    form_class = WidgetStyleForm
+
+    def form_valid(self, form):
+        r = super().form_valid(form)
+
+        analytics.track(
+            self.request.user.id,
+            WIDGET_CONFIGURED_EVENT,
+            {
+                "id": form.instance.id,
+                "dashboard_id": self.dashboard.id,
+                "type": form.instance.kind,
+            },
+        )
+        context = {
+            "widget": self.object,
+            "project": self.project,
+            "dashboard": self.dashboard,
+        }
+        try:
+            add_output_context(
+                context,
+                self.object,
+                self.request,
+                self.dashboard.control if self.dashboard.has_control else None,
+            )
+            if self.object.error:
+                self.object.error = None
+        except Exception as e:
+            error = error_name_to_snake(e)
+            self.object.error = error
+            if not template_exists(f"widgets/errors/{error}.html"):
+                logging.warning(e, exc_info=e)
+                honeybadger.notify(e)
+
+        if self.request.POST.get("submit") == "Save & Preview":
+            analytics.track(
+                self.request.user.id,
+                WIDGET_PREVIEWED_EVENT,
+                {
+                    "id": form.instance.id,
+                    "dashboard_id": self.dashboard.id,
+                    "type": form.instance.kind,
+                },
+            )
+            return r
+
+        analytics.track(
+            self.request.user.id,
+            WIDGET_COMPLETED_EVENT,
+            {
+                "id": form.instance.id,
+                "dashboard_id": self.dashboard.id,
+                "type": form.instance.kind,
+            },
+        )
+
+        return TurboStreamResponse(
+            [
+                TurboStream(f"widgets-output-{self.object.id}-stream")
+                .replace.template("widgets/output.html", context)
+                .render(request=self.request),
+                TurboStream(f"widget-name-{self.object.id}-stream")
+                .replace.template(
+                    "widgets/_widget_title.html", {"object": self.get_object}
+                )
+                .render(),
+            ]
+        )
+
+    def get_success_url(self) -> str:
+        if self.request.POST.get("submit") == "Save & Preview":
+            return "{}?{}".format(
+                reverse(
+                    "dashboard_widgets:update",
+                    args=(
+                        self.project.id,
+                        self.dashboard.id,
+                        self.object.id,
+                    ),
+                ),
+                "show_style=True",
+            )
+        return "{}?{}".format(
+            reverse(
+                "project_dashboards:detail",
+                args=(self.project.id, self.dashboard.id),
+            ),
+            "show_style=True",
+        )
 
 
 class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):

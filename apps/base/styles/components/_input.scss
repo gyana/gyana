@@ -137,10 +137,6 @@ label {
   line-height: 1.6rem;
   width: 100%;
 
-  & + & {
-    margin-top: 0.6rem;
-  }
-
   &:focus-within,
   &:focus-within label {
     color: var(--c-blue);
@@ -148,6 +144,7 @@ label {
 
   &.label--row {
     flex-flow: row;
+    align-items: center;
   }
 
   ul li {
@@ -305,10 +302,10 @@ label.checkbox__checked {
 .input-group {
   display: flex;
   flex-flow: column;
-  gap: 0.5rem;
+  gap: 1.2rem;
   width: 100%;
 
   & + & {
-    margin-top: 0.6rem;
+    margin-top: 1.6rem;
   }
 }

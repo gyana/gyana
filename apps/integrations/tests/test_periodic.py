@@ -1,9 +1,10 @@
 from datetime import timedelta
 
 import pytest
-from apps.integrations.models import Integration
-from apps.integrations.periodic import delete_outdated_pending_integrations
 from django.utils import timezone
+
+from apps.integrations import periodic
+from apps.integrations.models import Integration
 
 PENDING_DELETE_AFTER_DAYS = 7
 
@@ -21,18 +22,18 @@ def test_delete_outdated_pending_integrations(logged_in_user, integration_factor
     integration.save()
     assert Integration.objects.count() == 1
 
-    delete_outdated_pending_integrations.delay()
+    periodic.delete_outdated_pending_integrations.delay()
     assert Integration.objects.count() == 1
 
     integration.created = timezone.now() - timedelta(days=PENDING_DELETE_AFTER_DAYS - 1)
     integration.ready = False
     integration.save()
 
-    delete_outdated_pending_integrations.delay()
+    periodic.delete_outdated_pending_integrations.delay()
     assert Integration.objects.count() == 1
 
     integration.created = timezone.now() - timedelta(days=PENDING_DELETE_AFTER_DAYS + 1)
     integration.save()
 
-    delete_outdated_pending_integrations.delay()
+    periodic.delete_outdated_pending_integrations.delay()
     assert Integration.objects.count() == 0

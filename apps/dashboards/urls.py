@@ -1,9 +1,9 @@
-from django.contrib.auth.decorators import login_required
 from django.urls import path
+from rest_framework import routers
 
 from apps.projects.access import login_and_project_required
 
-from . import frames, views
+from . import frames, rest, views
 from .access import (
     dashboard_is_in_template,
     dashboard_is_password_protected,
@@ -47,6 +47,10 @@ urlpatterns = [
         name="preview",
     ),
 ]
+
+router = routers.DefaultRouter()
+router.register("api/dashboards", rest.DashboardViewSet, basename="Dashboard")
+urlpatterns += router.urls
 
 project_urlpatterns = (
     [

@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from 'react'
 import { isNode, useStoreState, ControlButton } from 'react-flow-renderer'
-import { getLayoutedElements } from '../layout'
+import { getLayoutedElements } from 'apps/base/javascript/layout'
 import { DnDContext, IDnDContext } from '../context'
 import { updateWorkflowLayout } from '../api'
 

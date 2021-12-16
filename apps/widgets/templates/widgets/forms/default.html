@@ -5,6 +5,61 @@
     {% include 'widgets/name.html' %}
   </turbo-frame>
 
+  {% flag "beta" %}
+  <div class="tabbar">
+    <a
+      href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
+      class="tabbar__link {% if not request.GET.show_style %}tabbar__link--active{% endif %}"
+    >
+      Data
+    </a>
+    <a
+      href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?show_style=true"
+      class="tabbar__link {% if request.GET.show_style %}tabbar__link--active{% endif %}"
+    >
+      Style
+    </a>
+  </div>
+  {% endflag %}
+
+  {% if request.GET.show_style %}
+  <form 
+    id="widget-update-form"
+    class="widget-update-sidebar__form"
+    action="{% url 'dashboard_widgets:update-style' project.id dashboard.id object.id %}" 
+    method="post"
+    data-controller="live-update" 
+    data-action="change->tf-modal#change submit->tf-modal#save"
+    data-tf-modal-target='form'
+  >
+    {% csrf_token %}
+
+    <div class="flex flex-col flex-1 w-full pad">
+      {% include "django/forms/default_form.html" with form=styleForm only %}
+    </div>
+
+    <div class="widget-update__footer">
+      <button
+        type="submit"
+        name="submit"
+        value="Save & Close"
+        class="button button--success flex-1"
+        data-action="click->tf-modal#forceClose"
+      >
+        Save & Close
+      </button>
+
+      <button
+        type="submit"
+        name="submit"
+        value="Save & Preview"
+        class="button button--outline button--success flex-1"
+      >
+        Save & Preview
+      </button>
+    </div>
+  </form>
+  {% else %}
   <form 
     id="widget-update-form"
     class="widget-update-sidebar__form"
@@ -14,15 +69,16 @@
     data-action="change->tf-modal#change submit->tf-modal#save"
     data-tf-modal-target='form'
   >  
-  {% comment %} The pressed button is outside the form this is just to trigger the submit {% endcomment %}
-      <button
-        class="hidden"
-        type="submit"
-        formnovalidate
-        name="close"
-        value="close"
-      >
-      </button>
+    {% comment %}
+    The pressed button is outside the form this is just to trigger the submit
+    {% endcomment %}
+    <button
+      class="hidden"
+      type="submit"
+      formnovalidate
+      name="close"
+      value="close"
+    ></button>
     {% csrf_token %}
 
     {% for hidden_field in form.hidden_fields %}
@@ -35,52 +91,52 @@
       </span>
 
       <div class="flex flex-row gap-7">
-        <div class="flex-1">
-          <label for="{{ form.table.id_for_label }}">
+        <div class="flex-1 gap-3">
+          <label class="label--row mb-3" for="{{ form.table.id_for_label }}">
+            <i class="fas fa-fw fa-file text-black-50"></i>
             {{ form.table.label }}
-            <p class=" input__help-text">{{ form.table.help_text }}</p>
           </label>
-
+          <p class=" input__help-text">{{ form.table.help_text }}</p>
+          
           {{ form.table }}
         </div>
 
-        <div class="flex-1">
-          <label for="{{ form.table.id_for_label }}">
+        <div class="flex-1 gap-3">
+          <label class="label--row mb-3" for="{{ form.table.id_for_label }}">
+            <i class="fas fa-fw fa-chart-line text-black-50"></i>
             {{ form.kind.label }}
-            <p class=" input__help-text">{{ bound_fields.kind.help_text }}</p>
           </label>
+          <p class="input__help-text">{{ bound_fields.kind.help_text }}</p>
 
           {{ form.kind }}
         </div>
       </div>
+
       {% flag 'beta' %}
         {% if form.date_column %}
-
-          <div data-controller='widget-slice' >
-            <div data-widget-slice-target ="input" class='{% if not show_date_column%}hidden{%endif%}'>
-              <p class="input__help-text">{{ form.date_column.help_text }}</p>
-              <div class='flex flex-row items-center gap-2'>
-                {{form.date_column}}
-                <button 
-                  type='button'
-                  data-action="widget-slice#remove"
-                  class='button button--sm button--tertiary button--circle'
-                ><i class='fa fa-times'></i></button>
-              </div>
+        <div data-controller='widget-slice' >
+          <div data-widget-slice-target ="input" class='{% if not show_date_column%}hidden{%endif%}'>
+            <p class="input__help-text">{{ form.date_column.help_text }}</p>
+              <button 
+                type='button'
+                data-action="widget-slice#remove"
+                class='button button--sm button--tertiary button--circle'
+              ><i class='fa fa-times'></i></button>
             </div>
-
-            <button 
-              class="button button--sm {% if show_date_column %}hidden{%endif%}"
-              data-widget-slice-target='addButton' 
-              type='button' 
-              data-action="widget-slice#add" 
-              data-turbo='false'
-            ><i class='fa fa-plus'></i> Add datetime slice column
-            </button>
           </div>
 
+          <button 
+            class="button button--sm {% if show_date_column %}hidden{%endif%}"
+            data-widget-slice-target='addButton' 
+            type='button' 
+            data-action="widget-slice#add" 
+            data-turbo='false'
+          ><i class='fa fa-plus'></i> Add datetime slice column
+          </button>
+        </div>
         {% endif %}
       {% endflag %}
+
       <hr>
 
       {% block widget_form %}
@@ -171,6 +227,7 @@
       >
         Save & Close
       </button>
+
       <button
         type="submit"
         name="submit"
@@ -181,4 +238,5 @@
       </button>
     </div>
   </form>
+  {% endif %}
 </div>

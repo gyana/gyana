@@ -73,7 +73,7 @@ def test_workflow_duplication(client, project, workflow_factory, node_factory):
 
     new_workflow = Workflow.objects.filter(~Q(id=workflow.id)).first()
     assert new_workflow.name == f"Copy of {name}"
-    assert new_workflow.last_run is None
+    assert new_workflow.last_success_run is None
 
     new_input_1, new_input_2 = new_workflow.nodes.filter(kind=Node.Kind.INPUT).all()
     new_join_node = new_workflow.nodes.filter(kind=Node.Kind.JOIN).first()

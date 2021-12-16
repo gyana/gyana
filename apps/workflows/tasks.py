@@ -1,16 +1,28 @@
+from uuid import uuid4
+
+import analytics
+from celery import shared_task
 from django.db import transaction
 from django.utils import timezone
 
 from apps.base import clients
+from apps.base.analytics import WORFKLOW_RUN_EVENT
 from apps.base.errors import error_name_to_snake
 from apps.nodes.bigquery import NodeResultNone, get_query_from_node
 from apps.nodes.models import Node
+from apps.runs.models import JobRun
 from apps.tables.models import Table
-from apps.workflows.models import Workflow
+from apps.users.models import CustomUser
+
+from .models import Workflow
 
 
-def run_workflow(workflow: Workflow):
+@shared_task(bind=True)
+def run_workflow_task(self, run_id: int):
+    run = JobRun.objects.get(pk=run_id)
+    workflow = run.workflow
     output_nodes = workflow.nodes.filter(kind=Node.Kind.OUTPUT).all()
+
     client = clients.bigquery()
 
     for node in output_nodes:
@@ -39,13 +51,25 @@ def run_workflow(workflow: Workflow):
                 table.data_updated = timezone.now()
                 table.save()
 
+    if run.user:
+        analytics.track(
+            run.user.id,
+            WORFKLOW_RUN_EVENT,
+            {"id": workflow.id, "success": not workflow.failed},
+        )
+
     if workflow.failed:
-        workflow.failed_at = timezone.now()
-        workflow.save(update_fields=["failed_at"])
+        raise Exception
 
-        return {node.id: node.error for node in workflow.nodes.all() if node.error}
 
-    workflow.succeeded_at = timezone.now()
-    workflow.last_run = timezone.now()
-    # Use fields to not trigger auto_now on the updated field
-    workflow.save(update_fields=["succeeded_at", "last_run"])
+def run_workflow(workflow: Workflow, user: CustomUser):
+    run = JobRun.objects.create(
+        source=JobRun.Source.WORKFLOW,
+        workflow=workflow,
+        task_id=uuid4(),
+        state=JobRun.State.RUNNING,
+        started_at=timezone.now(),
+        user=user,
+    )
+    run_workflow_task.apply_async((run.id,), task_id=str(run.task_id))
+    return run

@@ -23,7 +23,7 @@ class EdgeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Edge.objects.filter(
-            parent__workflow__project__team__in=self.request.user.teams.all()
+            parent__workflow__project__team__members=self.request.user
         ).all()
 
     def perform_create(self, serializer):
@@ -45,7 +45,7 @@ class NodeViewSet(viewsets.ModelViewSet):
         if self.request is None:
             return Node.objects.none()
         return Node.objects.filter(
-            workflow__project__team__in=self.request.user.teams.all()
+            workflow__project__team__members=self.request.user
         ).all()
 
     def perform_create(self, serializer):

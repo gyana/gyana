@@ -1,0 +1,39 @@
+{% load render_table from django_tables2 %}
+
+<section class="flex flex-col h-full whitespace-normal">
+  <div class="workflow-detail__header">
+    <h3 class="mr-auto">Settings</h3>
+
+    <button
+      class="tf-modal__close"
+      data-action="click->tf-modal#close"
+      data-loading-false
+    >
+      <i class="fal fa-times fa-lg"></i>
+    </button>
+  </div>
+
+  <div class="flex-1 overflow-auto">
+    {% comment %} <form
+      method="post"
+      class="pad max-w-4xl"
+      data-tf-modal-target='form'
+      action="{% url 'projects:runs' project.id %}"
+    >
+      {% csrf_token %}
+
+      {% include "django/forms/default_form.html" with optional=False %}
+
+      <button type="submit" class="button button--success w-full">
+        Save
+      </button>
+    </form> {% endcomment %}
+
+    <div class="pad">
+      <p class="mb-4">All the historical runs for this project</p>
+      <div class="card card--none">
+        {% render_table table %}
+      </div>
+    </div> 
+  </div>
+</section>

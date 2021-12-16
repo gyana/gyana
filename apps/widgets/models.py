@@ -1,10 +1,11 @@
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from model_clone import CloneMixin
 
 from apps.base.aggregations import AggregationFunctions
 from apps.base.models import BaseModel, SaveParentModel
-from apps.dashboards.models import Dashboard, Page
+from apps.dashboards.models import Dashboard, Page, getFusionThemePalette
 from apps.tables.models import Table
 
 # Need to be a multiple of GRID_SIZE found in GyWidget.tsx
@@ -12,7 +13,24 @@ DEFAULT_WIDTH = 495
 DEFAULT_HEIGHT = 390
 
 
-class Widget(CloneMixin, BaseModel):
+class WidgetStyle(models.Model):
+    class Meta:
+        abstract = True
+
+    palette_colors = ArrayField(
+        models.CharField(default="#5D62B5", max_length=7),
+        size=10,
+        null=True,
+    )
+    background_color = models.CharField(max_length=7, null=True)
+
+    # Fusionchart configuration
+    show_tooltips = models.BooleanField(null=True)
+    font_size = models.IntegerField(null=True)
+    font_color = models.CharField(null=True, max_length=7)
+
+
+class Widget(WidgetStyle, CloneMixin, BaseModel):
     _clone_m2o_or_o2m_fields = ["filters", "aggregations", "charts"]
 
     class Category(models.TextChoices):

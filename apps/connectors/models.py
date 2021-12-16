@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 
 from apps.base import clients
-from apps.base.models import SchedulableModel
+from apps.base.models import BaseModel
 from apps.connectors.fivetran.schema import FivetranSchemaObj
 from apps.integrations.models import Integration
 
@@ -17,7 +17,7 @@ FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
 FIVETRAN_SYNC_FREQUENCY_HOURS = 6
 
 
-class Connector(DirtyFieldsMixin, SchedulableModel):
+class Connector(DirtyFieldsMixin, BaseModel):
     class ScheduleType(models.TextChoices):
         AUTO = "auto", "Auto"
         MANUAL = "manual", "Manual"
@@ -89,7 +89,8 @@ class Connector(DirtyFieldsMixin, SchedulableModel):
     pause_after_trial = models.BooleanField()
     connected_by = models.TextField()
     created_at = models.DateTimeField()
-    # (succeeded_at and failed_at are provided by the ScheduleMixin)
+    succeeded_at = models.DateTimeField(null=True)
+    failed_at = models.DateTimeField(null=True)
     # in minutes, 1440 is daily
     sync_frequency = models.IntegerField()
     # specified in one hour increments starting from 00:00 to 23:00
@@ -309,8 +310,3 @@ class Connector(DirtyFieldsMixin, SchedulableModel):
     @property
     def latest_sync_validated(self):
         return self.succeeded_at == self.bigquery_succeeded_at
-
-    def run_for_schedule(self):
-        # handled automatically by fivetran, although in future we could set
-        # the schedule_type to "manual" and run at our preferred time
-        pass

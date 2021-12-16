@@ -1,0 +1,31 @@
+{% extends "web/app/project_settings_base.html" %}
+{% load static %}
+{% load help_utils %}
+
+{% block app %}
+<div class="flex flex-1 justify-center items-center">
+  <div class="flex flex-col max-w-3xl">
+    <div class="flex flex-col text-center mb-7">
+      <h1>
+        Fetch data from a custom API
+        {% comment %}
+          {% link_article 'integrations' 'api' %}
+          {% link_video 'api' %}
+        {% endcomment %}
+      </h1>
+      <p></p>
+    </div>
+
+    <p class="alert mt-6">You can add more advanced configuration like HTTP verb, query params and headers in the next step.</p>
+    
+    <form method="post" class="mt-7">
+      {% csrf_token %}
+
+      {% include "django/forms/default_form.html" %}
+
+      <button type="submit" class="button button--filled button--success w-full">Create</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

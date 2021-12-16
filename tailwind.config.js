@@ -27,7 +27,7 @@ module.exports = {
         DEFAULT: 'var(--c-gray)',
         50: 'var(--c-gray-50)',
         20: 'var(--c-gray-20)',
-        20: 'var(--c-gray-10)',
+        10: 'var(--c-gray-10)',
       },
       blue: {
         DEFAULT: 'var(--c-blue)',

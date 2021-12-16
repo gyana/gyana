@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import transaction
 from django.utils import timezone
 
@@ -49,7 +50,7 @@ def _sync_tables_for_connector(connector: Connector):
     connector.integration.project.team.update_row_count()
 
 
-def start_connector_sync(connector: Connector):
+def start_connector_sync(connector: Connector, user: User):
 
     if connector.is_historical_sync:
         clients.fivetran().start_initial_sync(connector)
