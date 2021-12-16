@@ -2757,11 +2757,11 @@
       "fivetran_authorized": true,
       "fivetran_sync_started": null,
       "bigquery_succeeded_at": null,
-      "fivetran_id": "legate_wandered",
+      "fivetran_id": "grown_animation",
       "group_id": "general_candor",
       "service": "facebook_ads",
       "service_version": 0,
-      "schema": "team_1_facebook_ads_563a564c28cc469dba73faf6dea0799e",
+      "schema": "mvp_team_000013_facebook_ads_7966a65c27b148d98168df553dd7b81b",
       "paused": false,
       "pause_after_trial": false,
       "connected_by": "residual_typing",
@@ -3341,7 +3341,7 @@
     "pk": 10,
     "fields": {
       "created": "2021-12-16T01:46:42.564Z",
-      "updated": "2021-12-16T01:46:46.040Z",
+      "updated": "2021-12-16T13:28:34.118Z",
       "state": "success",
       "started_at": "2021-12-16T01:46:42.563Z",
       "completed_at": "2021-12-16T01:46:46.036Z",
@@ -3563,7 +3563,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2021-12-16T01:46:40.594Z" }
+    "fields": { "last_update": "2021-12-16T13:28:34.076Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
