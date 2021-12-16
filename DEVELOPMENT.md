@@ -120,7 +120,7 @@ Manually fix failed tests in the UI and re-run the tests suite to confirm.
 For more in-depth information see [DEPLOYMENT.md](DEPLOYMENT.md)
 
 Run `just export` and push to main. View errors on
-[Heroku](https://dashboard.heroku.com/apps/gyana-mvp).
+[Heroku](https://dashboard.heroku.com/apps/gyana-dev).
 
 ## Javascript
 

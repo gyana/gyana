@@ -1,5 +1,6 @@
 import inspect
 import logging
+import re
 from functools import wraps
 
 import ibis
@@ -45,6 +46,14 @@ def _rename_duplicates(left, right, left_col, right_col):
     return left, right, left_col, right_col
 
 
+def _format_string(value):
+    if not re.compile("[a-zA-Z_]").match(value[0]):
+        value = "_" + value[1:]
+
+    value = re.sub(re.compile("[\(\) @$%€^&*-+]"), "_", value)
+    return value
+
+
 def _format_literal(value, type_):
     """Formats a value to the right SQL type to be used in a string query.
 
@@ -53,7 +62,7 @@ def _format_literal(value, type_):
     if value is None:
         return "null"
     if isinstance(type_, String):
-        return f'"{value}" {value.replace(" ", "_")}'
+        return f'"{value}" {_format_string(value)}'
     return str(value)
 
 

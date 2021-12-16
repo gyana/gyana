@@ -116,7 +116,8 @@ class Dashboard(DashboardSettings, CloneMixin, BaseModel):
     def has_control(self):
         return hasattr(self, "control")
 
-    def get_all_widgets(self):
+    @property
+    def widgets(self):
         from apps.widgets.models import Widget
 
         return Widget.objects.filter(page__dashboard=self).all()

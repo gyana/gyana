@@ -92,3 +92,14 @@ class Table(CloneMixin, BaseModel):
         self.data_updated = self.bq_obj.modified
         self.num_rows = self.bq_obj.num_rows
         self.save()
+
+    @property
+    def source_obj(self):
+        if self.source == self.Source.INTEGRATION:
+            return self.integration
+        elif self.source == self.Source.WORKFLOW_NODE:
+            return self.workflow_node.workflow
+        elif self.source == self.Source.INTERMEDIATE_NODE:
+            return self.intermediate_node.workflow
+        elif self.source == self.Source.CACHE_NODE:
+            return self.cache_node.workflow

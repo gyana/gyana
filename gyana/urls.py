@@ -28,6 +28,7 @@ register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "h
 from apps.appsumo import urls as appsumo_urls
 from apps.cnames import urls as cname_urls
 from apps.connectors import urls as connector_urls
+from apps.customapis import urls as api_urls
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
 from apps.invites import urls as invite_urls
@@ -46,6 +47,7 @@ schemajs_view = get_schemajs_view(title="API")
 
 integration_urlpatterns = [
     path("", include(integration_urls.project_urlpatterns)),
+    path("apis/", include(api_urls.integration_urlpatterns)),
     path("connectors/", include(connector_urls.integration_urlpatterns)),
     path("sheets/", include(sheet_urls.integration_urlpatterns)),
     path("uploads/", include(upload_urls.integration_urlpatterns)),

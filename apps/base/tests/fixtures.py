@@ -35,6 +35,9 @@ def patches(mocker, settings):
     mocker.patch.object(waffle, "flag_is_active", return_value=True)
     mocker.patch.object(waffle_tags, "flag_is_active", return_value=True)
 
+    # disable celery progress
+    mocker.patch("celery_progress.backend.ProgressRecorder")
+
     # run celery tasks within the same thread synchronously
     settings.CELERY_TASK_ALWAYS_EAGER = True
     settings.CELERY_TASK_EAGER_PROPAGATES = True

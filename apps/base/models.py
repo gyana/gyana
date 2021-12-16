@@ -16,6 +16,11 @@ class BaseModel(models.Model):
         abstract = True
         ordering = ("-updated",)
 
+    @property
+    def entity_id(self):
+        # A unique identifier for this entity across all models
+        return f"{self._meta.db_table}-{self.id}"
+
 
 class SaveParentModel(DirtyFieldsMixin, CloneMixin, BaseModel):
     class Meta:
@@ -37,32 +42,3 @@ class SaveParentModel(DirtyFieldsMixin, CloneMixin, BaseModel):
         if hasattr(self, "node") and (node := getattr(self, "node")):
             return node
         return self.widget
-
-
-class SchedulableModel(BaseModel):
-    class Meta(BaseModel.Meta):
-        abstract = True
-
-    # currently ignored in connectors
-    is_scheduled = models.BooleanField(default=False)
-    succeeded_at = models.DateTimeField(null=True)
-    failed_at = models.DateTimeField(null=True)
-
-    @property
-    def _project(self):
-        return (
-            self.integration.project if hasattr(self, "integration") else self.project
-        )
-
-    @property
-    def up_to_date(self):
-
-        latest = self._project.latest_schedule
-
-        just_failed = self.failed_at is not None and self.failed_at > latest
-        just_succeeded = self.succeeded_at is not None and self.succeeded_at > latest
-
-        return just_failed or just_succeeded
-
-    def run_for_schedule(self):
-        raise NotImplementedError

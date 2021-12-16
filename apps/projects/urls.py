@@ -2,7 +2,7 @@ from django.urls import path
 
 from apps.teams.access import login_and_team_required
 
-from . import views
+from . import frames, rest, views
 from .access import login_and_project_required
 
 app_name = "projects"
@@ -21,6 +21,21 @@ urlpatterns = [
         "<hashid:project_id>/delete",
         login_and_project_required(views.ProjectDelete.as_view()),
         name="delete",
+    ),
+    path(
+        "<hashid:project_id>/automate",
+        login_and_project_required(views.ProjectAutomate.as_view()),
+        name="automate",
+    ),
+    path(
+        "<hashid:project_id>/runs",
+        login_and_project_required(frames.ProjectRuns.as_view()),
+        name="runs",
+    ),
+    path(
+        "<int:project_id>/run",
+        login_and_project_required(rest.project_run),
+        name="run",
     ),
 ]
 

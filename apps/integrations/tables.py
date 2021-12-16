@@ -1,14 +1,14 @@
+import django_tables2 as tables
 from django.db.models.aggregates import Sum
 from django.template import Context
 from django.template.loader import get_template
-from django_tables2 import BooleanColumn, Column, Table, TemplateColumn
 
 from apps.base.table import NaturalDatetimeColumn, NaturalDayColumn
 
 from .models import Integration
 
 
-class PendingStatusColumn(Column):
+class PendingStatusColumn(tables.Column):
     def render(self, record, table, **kwargs):
         context = getattr(table, "context", Context())
         instance = self.accessor.resolve(record) if self.accessor else record
@@ -30,7 +30,7 @@ class PendingStatusColumn(Column):
         return get_template("columns/status.html").render(context.flatten())
 
 
-class RowCountColumn(TemplateColumn):
+class RowCountColumn(tables.TemplateColumn):
     def __init__(self, **kwargs):
         verbose_name = kwargs.pop("verbose_name", "Rows")
         super().__init__(
@@ -46,27 +46,28 @@ class RowCountColumn(TemplateColumn):
         return (queryset, True)
 
 
-class IntegrationListTable(Table):
+class IntegrationListTable(tables.Table):
     class Meta:
         model = Integration
         fields = ()
         attrs = {"class": "table"}
 
-    icon = TemplateColumn(
+    icon = tables.TemplateColumn(
         template_name="columns/image.html",
         orderable=False,
         verbose_name="",
         attrs={"th": {"style": "min-width: auto; width: 0%;"}},
     )
-    name = Column(linkify=True)
-    kind = Column(
+    name = tables.Column(linkify=True)
+    kind = tables.Column(
         accessor="display_kind",
         orderable=False,
         verbose_name="Kind",
         attrs={"th": {"style": "min-width: auto; width: 0%;"}},
     )
-    ready = BooleanColumn()
+    ready = tables.BooleanColumn()
     state = PendingStatusColumn(verbose_name="Status")
+    is_scheduled = tables.BooleanColumn(verbose_name="Scheduled")
     num_rows = RowCountColumn()
     last_synced = NaturalDayColumn(orderable=False)
     expires = NaturalDatetimeColumn(orderable=False)
@@ -78,16 +79,16 @@ class IntegrationListTable(Table):
         return (queryset, True)
 
 
-class StructureTable(Table):
+class StructureTable(tables.Table):
     class Meta:
         fields = ("name", "type")
         attrs = {"class": "table-data"}
 
-    type = Column()
-    name = Column()
+    type = tables.Column()
+    name = tables.Column()
 
 
-class ReferencesTable(Table):
+class ReferencesTable(tables.Table):
     class Meta:
         model = Integration
         attrs = {"class": "table"}
@@ -98,6 +99,6 @@ class ReferencesTable(Table):
             "updated",
         )
 
-    name = Column(linkify=True)
+    name = tables.Column(linkify=True)
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()

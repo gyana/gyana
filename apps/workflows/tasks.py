@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 import analytics
 from celery import shared_task
 from django.db import transaction
@@ -10,10 +12,13 @@ from apps.nodes.bigquery import NodeResultNone, get_query_from_node
 from apps.nodes.models import Node
 from apps.runs.models import JobRun
 from apps.tables.models import Table
+from apps.users.models import CustomUser
+
+from .models import Workflow
 
 
 @shared_task(bind=True)
-def run_workflow(self, run_id: int):
+def run_workflow_task(self, run_id: int):
     run = JobRun.objects.get(pk=run_id)
     workflow = run.workflow
     output_nodes = workflow.nodes.filter(kind=Node.Kind.OUTPUT).all()
@@ -50,15 +55,21 @@ def run_workflow(self, run_id: int):
         analytics.track(
             run.user.id,
             WORFKLOW_RUN_EVENT,
-            {
-                "id": workflow.id,
-                "success": not workflow.failed,
-                **{
-                    f"error_{idx}": workflow.errors[key]
-                    for idx, key in enumerate(workflow.errors.keys())
-                },
-            },
+            {"id": workflow.id, "success": not workflow.failed},
         )
 
     if workflow.failed:
         raise Exception
+
+
+def run_workflow(workflow: Workflow, user: CustomUser):
+    run = JobRun.objects.create(
+        source=JobRun.Source.WORKFLOW,
+        workflow=workflow,
+        task_id=uuid4(),
+        state=JobRun.State.RUNNING,
+        started_at=timezone.now(),
+        user=user,
+    )
+    run_workflow_task.apply_async((run.id,), task_id=str(run.task_id))
+    return run

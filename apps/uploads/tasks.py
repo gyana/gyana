@@ -55,4 +55,4 @@ def run_upload_sync(upload: Upload, user: CustomUser):
         started_at=timezone.now(),
         user=user,
     )
-    run_upload_sync_task.apply_async((run.id,), task_id=run.task_id)
+    run_upload_sync_task.apply_async((run.id,), task_id=str(run.task_id))

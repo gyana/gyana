@@ -3,9 +3,9 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { ReactFlowProvider } from 'react-flow-renderer'
 import DnDFlow from './components/DnDFlow'
-import ErrorState from './components/ErrorState'
-import LoadingState from './components/LoadingState'
-import { useBlockUntilSchemaReady } from './hooks/useBlockUntilSchemaReady'
+import ErrorState from 'apps/base/javascript/components/ErrorState'
+import LoadingState from 'apps/base/javascript/components/LoadingState'
+import { useBlockUntilSchemaReady } from 'apps/base/javascript/hooks/useBlockUntilSchemaReady'
 
 interface Props {
   workflowId: number

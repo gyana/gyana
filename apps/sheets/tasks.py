@@ -60,5 +60,5 @@ def run_sheet_sync(sheet: Sheet, user: CustomUser, skip_up_to_date=False):
         user=user,
     )
     run_sheet_sync_task.apply_async(
-        (run.id,), {"skip_up_to_date": skip_up_to_date}, task_id=run.task_id
+        (run.id,), {"skip_up_to_date": skip_up_to_date}, task_id=str(run.task_id)
     )

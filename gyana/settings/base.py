@@ -105,6 +105,7 @@ PROJECT_APPS = [
     "apps.exports",
     "apps.controls",
     "apps.runs.apps.RunsConfig",
+    "apps.customapis",
 ]
 
 INSTALLED_APPS = (
@@ -314,13 +315,12 @@ REST_FRAMEWORK = {
 
 # Celery setup (using redis)
 CELERY_BROKER_URL = "redis://localhost:6379/0"
-CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_TASK_ROUTES = {
     "apps.*.tasks.*": {"queue": "priority"},
     "apps.*.periodic.*": {"queue": "celery"},
 }
-CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_BACKEND = "django-db"
 
 # Pegasus config
 

@@ -9,7 +9,7 @@ from apps.base.tests.asserts import (
     assertOK,
     assertSelectorLength,
 )
-from apps.connectors.periodic import sync_all_updates_from_fivetran
+from apps.connectors import periodic
 from apps.integrations.models import Integration
 
 from .mock import get_mock_fivetran_connector, get_mock_list_tables, get_mock_schema
@@ -108,7 +108,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project):
     fivetran.list.return_value = [
         get_mock_fivetran_connector(succeeded_at=timezone.now())
     ]
-    sync_all_updates_from_fivetran.delay()
+    periodic.sync_all_updates_from_fivetran.delay()
 
     integration.refresh_from_db()
     assert integration.state == Integration.State.DONE

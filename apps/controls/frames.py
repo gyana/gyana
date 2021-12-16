@@ -59,7 +59,7 @@ class ControlUpdate(DashboardMixin, TurboFrameUpdateView):
     def get_stream_response(self, form):
         dashboard = form.instance.dashboard
         streams = []
-        for widget in dashboard.get_all_widgets():
+        for widget in dashboard.widgets.all():
             if widget.date_column and widget.is_valid:
                 context = {
                     "widget": widget,

@@ -21,7 +21,7 @@ describe('workflows', () => {
     cy.visit('/projects/1/workflows/')
   })
 
-  it.only('workflow editor', () => {
+  it('workflow editor', () => {
     cy.get('[data-cy=workflow-create]').click()
     cy.get('input[id=name]').clear().type('Magical workflow{enter}')
 
@@ -66,7 +66,7 @@ describe('workflows', () => {
     cy.story('Run workflow')
     cy.get('[data-cy=workflow-run]').click()
     cy.contains('Last successful run')
-    cy.get('.sidebar__link--active').click()
+    cy.get('.fa-sitemap').click()
     cy.contains('Workflow ran successfully and is up to date')
     cy.contains('Magical workflow')
   })

@@ -1,40 +1,19 @@
-from datetime import timedelta
-
 from django.db import models
-from django.db.models import F, Max, Q
+from django.db.models import Max
 from django.urls import reverse
 from model_clone import CloneMixin
 
-from apps.base.models import SchedulableModel
+from apps.base.models import BaseModel
 from apps.base.table import ICONS
 from apps.projects.models import Project
 from apps.runs.models import JobRun
 from apps.tables.models import Table
 
 
-class WorkflowsManager(models.Manager):
-    def is_scheduled_in_project(self, project):
-        # For a workflow to be run on the daily schedule, it needs to have been run
-        # and manually tagged as is_scheduled by the user. If it fails to run for more
-        # than 3 days, the schedule is stopped until it is fixed by the user.
-        return (
-            self.filter(
-                project=project,
-                last_success_run__isnull=False,
-                is_scheduled=True,
-            )
-            .annotate(last_succeeded=F("failed_at") - F("succeeded_at"))
-            .filter(
-                Q(succeeded_at__isnull=True)
-                | Q(failed_at__isnull=True)
-                | Q(last_succeeded__lt=timedelta(days=3))
-            )
-        )
-
-
-class Workflow(CloneMixin, SchedulableModel):
+class Workflow(CloneMixin, BaseModel):
     class State(models.TextChoices):
         INCOMPLETE = "incomplete", "Incomplete"
+        PENDING = "pending", "Pending"
         RUNNING = "running", "Running"
         FAILED = "failed", "Failed"
         SUCCESS = "success", "Success"
@@ -53,11 +32,11 @@ class Workflow(CloneMixin, SchedulableModel):
     data_updated = models.DateTimeField(
         auto_now_add=True,
     )
-
-    objects = WorkflowsManager()
+    is_scheduled = models.BooleanField(default=False)
 
     STATE_TO_ICON = {
         State.INCOMPLETE: ICONS["warning"],
+        State.PENDING: ICONS["pending"],
         State.RUNNING: ICONS["loading"],
         State.FAILED: ICONS["error"],
         State.SUCCESS: ICONS["success"],
@@ -65,12 +44,14 @@ class Workflow(CloneMixin, SchedulableModel):
 
     STATE_TO_MESSAGE = {
         State.INCOMPLETE: "Workflow setup is incomplete",
+        State.PENDING: "Workflow is pending",
         State.RUNNING: "Workflow is currently running",
         State.FAILED: "One of the nodes in this workflow failed",
         State.SUCCESS: "Workflow ran successfully and is up to date",
     }
 
     RUN_STATE_TO_WORKFLOW_STATE = {
+        JobRun.State.PENDING: State.PENDING,
         JobRun.State.RUNNING: State.RUNNING,
         JobRun.State.FAILED: State.FAILED,
         JobRun.State.SUCCESS: State.SUCCESS,
@@ -96,7 +77,7 @@ class Workflow(CloneMixin, SchedulableModel):
 
     @property
     def latest_run(self):
-        return self.runs.order_by("-created").first()
+        return self.runs.order_by("-started_at").first()
 
     @property
     def failed(self):
@@ -127,11 +108,6 @@ class Workflow(CloneMixin, SchedulableModel):
         return self.last_success_run.started_at < max(
             self.data_updated, latest_input_updated
         )
-
-    def run_for_schedule(self):
-        from .bigquery import run_workflow
-
-        return run_workflow(self)
 
     def update_state_from_latest_run(self):
         self.state = (

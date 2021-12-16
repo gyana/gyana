@@ -169,3 +169,17 @@ def test_free_tier_project_limit(client, logged_in_user, project_factory):
         },
     )
     assert r.status_code == 422
+
+
+def test_automate(client, logged_in_user, project_factory, graph_run_factory):
+
+    team = logged_in_user.teams.first()
+    project = project_factory(team=team)
+    graph_run_factory.create_batch(3, project=project)
+
+    r = client.get(f"/projects/{project.id}/automate")
+    assertOK(r)
+
+    r = client.get(f"/projects/{project.id}/runs")
+    assertOK(r)
+    assertSelectorLength(r, "table tbody tr", 3)

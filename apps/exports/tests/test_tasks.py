@@ -6,8 +6,8 @@ from django.core import mail
 
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
+from apps.exports import tasks
 from apps.exports.models import Export
-from apps.exports.tasks import export_to_gcs
 from apps.nodes.models import Node
 
 pytestmark = pytest.mark.django_db
@@ -43,7 +43,7 @@ def test_export_to_gcs(
     export = Export(node=input_node, created_by=logged_in_user)
     export.save()
 
-    export_to_gcs(export.id, logged_in_user.id)
+    tasks.export_to_gcs(export.id, logged_in_user.id)
 
     export.refresh_from_db()
 

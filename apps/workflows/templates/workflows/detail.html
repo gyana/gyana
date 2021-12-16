@@ -1,6 +1,5 @@
 {% extends "web/app/project_base.html" %}
 {% load static %}
-{% load waffle_tags %}
 
 {% block app-class %}workflow-detail{% endblock %}
 
@@ -70,17 +69,16 @@
     </template>
   </div>
 
-  {% flag 'schedule' %}
   <div data-controller="tooltip tf-modal">
     <button
       data-action="click->tf-modal#open"
       data-src="{% url "project_workflows:settings" project.id object.id %}"
       class="button button--sm button--tertiary"
     >
-      <i class="fas fa-fw fa-calendar"></i> Schedule
+      <i class="fas fa-fw fa-cog"></i> Settings
     </button>
 
-    <span data-tooltip-target="body">Schedule this workflow</span>
+    <span data-tooltip-target="body">View historical runs and enable scheduling</span>
 
     <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
       <div class="card card--none card--modal flex-col flex-1 overflow-auto">
@@ -91,7 +89,6 @@
       </div>
     </div>
   </div>
-  {% endflag %}
 
   <div id="run-button-portal"></div>
 </div>

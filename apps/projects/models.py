@@ -108,15 +108,16 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     @property
     def needs_schedule(self):
-        from apps.sheets.models import Sheet
-        from apps.workflows.models import Workflow
+        from apps.integrations.models import Integration
 
         # A project only requires an active shedule if there are scheduled
         # entities like sheets, workflows, apis etc.
 
         return (
-            Sheet.objects.is_scheduled_in_project(self).exists()
-            or Workflow.objects.is_scheduled_in_project(self).exists()
+            self.integration_set.filter(
+                kind=Integration.Kind.SHEET, sheet__is_scheduled=True
+            ).exists()
+            or self.workflow_set.filter(is_scheduled=True).exists()
         )
 
     def update_schedule(self):
@@ -135,6 +136,10 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     def get_absolute_url(self):
         return reverse("projects:detail", args=(self.id,))
+
+    @property
+    def latest_run(self):
+        return self.runs.order_by("-started_at").first()
 
 
 class ProjectMembership(BaseModel):
