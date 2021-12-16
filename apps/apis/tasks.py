@@ -70,6 +70,4 @@ def run_customapi_sync(customapi: CustomApi, user: CustomUser, skip_up_to_date=F
         started_at=timezone.now(),
         user=user,
     )
-    run_customapi_sync_task.apply_async(
-        (run.id,), {"skip_up_to_date": skip_up_to_date}, task_id=str(run.task_id)
-    )
+    run_customapi_sync_task.apply_async((run.id,), task_id=str(run.task_id))
