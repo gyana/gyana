@@ -24,18 +24,16 @@ def run_customapi_sync_task(self, run_id):
     integration = run.integration
     customapi = integration.customapi
 
-    # fetch data from the api
+    # fetch data from the api, extract the list of items, write to GCS as
+    # newline delimited JSON
     response = requests.get(customapi.url).json()
     jsonpath_expr = parse(customapi.json_path)
     data = jsonpath_expr.find(response)[0].value
     ndjson = "\n".join([json.dumps(item) for item in data])
-
-    # write to GCS, overwrite previous version of file
     customapi.ndjson_file.save(
         f"customapi_{customapi.id}.ndjson", ContentFile(ndjson.encode("utf-8"))
     )
 
-    # run the BigQuery load job
     # we need to save the table instance to get the PK from database, this ensures
     # database will rollback automatically if there is an error with the bigquery
     # table creation, avoids orphaned table entities

@@ -3437,7 +3437,7 @@
     "model": "waffle.flag",
     "pk": 3,
     "fields": {
-      "name": "subscriptions",
+      "name": "alpha",
       "everyone": true,
       "percent": null,
       "testing": false,
@@ -3447,8 +3447,8 @@
       "languages": "",
       "rollout": false,
       "note": "",
-      "created": "2021-11-08T23:57:46Z",
-      "modified": "2021-11-08T23:57:56.064Z",
+      "created": "2021-10-04T15:59:32Z",
+      "modified": "2021-10-04T15:59:37.292Z",
       "groups": [],
       "users": []
     }

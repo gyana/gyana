@@ -1,6 +1,7 @@
 {% extends "web/app/project_base.html" %}
 {% load help_utils %}
 {% load render_table from django_tables2 %}
+{% load waffle_tags %}
 
 {% block app %}
 {% if show_zero_state %}
@@ -86,11 +87,13 @@
           </a>
         </li>
 
+        {% flag 'alpha' %}
         <li class="list__item list__item--interactive">
           <a class="" href="{% url 'project_integrations_apis:create' project.id %}">
             <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API
           </a>
         </li>
+        {% endflag %}
       </ul>
     </div>
     {% else %}

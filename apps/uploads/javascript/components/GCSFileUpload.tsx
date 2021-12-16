@@ -13,7 +13,7 @@ function handleBeforeUnload(event) {
   // Preventing default in Firefox will always show pop-up
   event.preventDefault()
   // Chrome requires returnValue to be set to show pop-up
-  event.returnValue = ""
+  event.returnValue = ''
 }
 
 const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
@@ -26,7 +26,7 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
 
   useEffect(() => {
     if (fileRef.current && inputFileRef.current && inputNameRef.current) {
-      window.addEventListener("beforeunload", handleBeforeUnload)
+      window.addEventListener('beforeunload', handleBeforeUnload)
 
       fileRef.current.addEventListener('change', async (event) => {
         setStage('progress')
@@ -49,7 +49,7 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
               setProgress(progress)
             },
             onSuccess: () => {
-              window.removeEventListener("beforeunload", handleBeforeUnload)
+              window.removeEventListener('beforeunload', handleBeforeUnload)
 
               setStage('done')
 
