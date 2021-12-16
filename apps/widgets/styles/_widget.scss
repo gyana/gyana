@@ -19,10 +19,9 @@
   }
 
   &__grid {
-    --grid-size: 15px;
-
-    background-size: var(--grid-size) var(--grid-size);
-    background-image: radial-gradient(circle, var(--c-gray-50) 2px, rgba(0, 0, 0, 0) 1px);
+    background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.025),rgba(0, 0, 0, 0.025) 1px, transparent 1px, transparent 15px), repeating-linear-gradient(-90deg, rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.025) 1px, transparent 1px, transparent 15px);
+    background-position: 1px 1px;
+    background-size: 15px 15px;
   }
 }
 
