@@ -72,9 +72,16 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
             "showToolTip": widget.show_tooltips
             if widget.show_tooltips is not None
             else True,
-            "baseFontSize": widget.font_size if f"{widget.font_size}px" else f"{widget.page.dashboard.font_size}px",
-            "baseFontColor": widget.font_color if widget.font_color else widget.page.dashboard.font_color,
-            "outCnvBaseFontColor": widget.font_color if widget.font_color else widget.page.dashboard.font_color,
+            "baseFont": widget.page.dashboard.font_family,
+            "baseFontSize": widget.font_size
+            if f"{widget.font_size}px"
+            else f"{widget.page.dashboard.font_size}px",
+            "baseFontColor": widget.font_color
+            if widget.font_color
+            else widget.page.dashboard.font_color,
+            "outCnvBaseFontColor": widget.font_color
+            if widget.font_color
+            else widget.page.dashboard.font_color,
             # Fusioncharts client-side export feature
             "exportenabled": "0",
             "exportmode": "client",

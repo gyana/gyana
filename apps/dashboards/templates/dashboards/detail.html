@@ -1,6 +1,15 @@
 {% extends "web/app/project_base.html" %}
 {% load waffle_tags %}
 
+{% block page_head %}
+  {% if dashboard.font_family %}
+  <link
+    href="https://fonts.googleapis.com/css2?family={{ dashboard.font_family }}:wght@400&display=swap"
+    rel="stylesheet"
+  />
+  {% endif %}
+{% endblock page_head %}
+
 {% block app %}
 <div class="dashboard__header">
   <turbo-frame id="dashboard-name" class="flex-1 mr-auto">

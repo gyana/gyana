@@ -1,7 +1,6 @@
-from django.utils.functional import cached_property
-
 from django.conf import settings
 from django.db import models
+from django.utils.functional import cached_property
 from model_clone.mixins.clone import CloneMixin
 
 from apps.base import clients

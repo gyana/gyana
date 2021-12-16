@@ -95,6 +95,7 @@ class DashboardForm(forms.ModelForm):
             "background_color",
             "font_color",
             "font_size",
+            "font_family",
             "palette_colors",
             "width",
             "height",

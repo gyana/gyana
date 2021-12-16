@@ -1,5 +1,6 @@
-from apps.teams.access import login_and_team_required
 from django.urls import path
+
+from apps.teams.access import login_and_team_required
 
 from . import views
 from .access import login_and_project_required

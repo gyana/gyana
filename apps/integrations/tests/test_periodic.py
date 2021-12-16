@@ -1,9 +1,10 @@
 from datetime import timedelta
 
 import pytest
+from django.utils import timezone
+
 from apps.integrations.models import Integration
 from apps.integrations.periodic import delete_outdated_pending_integrations
-from django.utils import timezone
 
 PENDING_DELETE_AFTER_DAYS = 7
 
