@@ -44,7 +44,7 @@ class ControlUpdate(UpdateWidgetsMixin, TurboFrameUpdateView):
         r = super().form_valid(form)
         if form.is_live:
             return r
-        return self.get_stream_response()
+        return self.get_stream_response(form)
 
     def get_success_url(self) -> str:
         return reverse(

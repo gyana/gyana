@@ -34,7 +34,7 @@ class ControlWidget(BaseModel):
         "dashboards.Page", on_delete=models.CASCADE, related_name="control_widgets"
     )
     control = models.ForeignKey(
-        Control, on_delete=models.CASCADE, related_name="control_widgets"
+        Control, on_delete=models.CASCADE, related_name="widgets"
     )
     x = models.IntegerField(
         default=0,
