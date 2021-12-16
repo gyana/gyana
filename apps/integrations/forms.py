@@ -18,12 +18,12 @@ KIND_TO_FORM_CLASS = {
     Integration.Kind.CONNECTOR: ConnectorUpdateForm,
     Integration.Kind.SHEET: SheetUpdateForm,
     Integration.Kind.UPLOAD: UploadUpdateForm,
-    Integration.Kind.CUSTOM_API: CustomApiUpdateForm,
+    Integration.Kind.CUSTOMAPI: CustomApiUpdateForm,
 }
 
 KIND_TO_SETTINGS_FORM_CLASS = {
     Integration.Kind.CONNECTOR: ConnectorSettingsForm,
     Integration.Kind.SHEET: SheetSettingsForm,
     Integration.Kind.UPLOAD: UploadSettingsForm,
-    Integration.Kind.CUSTOM_API: CustomApiUpdateForm,
+    Integration.Kind.CUSTOMAPI: CustomApiUpdateForm,
 }

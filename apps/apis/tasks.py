@@ -3,42 +3,73 @@ from uuid import uuid4
 
 import requests
 from celery import shared_task
+from django.core.files.base import ContentFile
+from django.db import transaction
 from django.utils import timezone
 from jsonpath_ng import parse
 
+from apps.base.time import catchtime
+from apps.integrations.emails import send_integration_ready_email
 from apps.runs.models import JobRun
+from apps.tables.models import Table
 from apps.users.models import CustomUser
 
-from .models import Sheet
+from .bigquery import import_table_from_customapi
+from .models import CustomApi
 
 
 @shared_task(bind=True)
-def run_api_sync_task(self, run_id):
+def run_customapi_sync_task(self, run_id):
     run = JobRun.objects.get(pk=run_id)
     integration = run.integration
-    custom_api = integration.custom_api
+    customapi = integration.customapi
 
     # fetch data from the api
-    response = requests.get(custom_api.url).json()
-    jsonpath_expr = parse(custom_api.json_path)
+    response = requests.get(customapi.url).json()
+    jsonpath_expr = parse(customapi.json_path)
     data = jsonpath_expr.find(response)[0].value
     ndjson = "\n".join([json.dumps(item) for item in data])
 
-    # write to GCS
-    custom_api.ndjson_file.save(custom_api.integration.name, ndjson)
+    # write to GCS, overwrite previous version of file
+    customapi.ndjson_file.save(
+        f"customapi_{customapi.id}.ndjson", ContentFile(ndjson.encode("utf-8"))
+    )
 
     # run the BigQuery load job
+    # we need to save the table instance to get the PK from database, this ensures
+    # database will rollback automatically if there is an error with the bigquery
+    # table creation, avoids orphaned table entities
+
+    with transaction.atomic():
+
+        table, created = Table.objects.get_or_create(
+            integration=integration,
+            source=Table.Source.INTEGRATION,
+            bq_table=customapi.table_id,
+            bq_dataset=integration.project.team.tables_dataset_id,
+            project=integration.project,
+        )
+
+        with catchtime() as get_time_to_sync:
+            import_table_from_customapi(table=table, customapi=customapi)
+
+        table.sync_updates_from_bigquery()
+
+    if created:
+        send_integration_ready_email(integration, int(get_time_to_sync()))
+
+    return integration.id
 
 
-def run_api_sync(sheet: Sheet, user: CustomUser, skip_up_to_date=False):
+def run_customapi_sync(customapi: CustomApi, user: CustomUser, skip_up_to_date=False):
     run = JobRun.objects.create(
         source=JobRun.Source.INTEGRATION,
-        integration=sheet.integration,
+        integration=customapi.integration,
         task_id=uuid4(),
         state=JobRun.State.RUNNING,
         started_at=timezone.now(),
         user=user,
     )
-    run_api_sync_task.apply_async(
+    run_customapi_sync_task.apply_async(
         (run.id,), {"skip_up_to_date": skip_up_to_date}, task_id=str(run.task_id)
     )

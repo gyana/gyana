@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.db import models
+from django.db.models.fields import related
 
 from apps.base.clients import SLUG
 from apps.base.models import BaseModel
@@ -16,10 +18,18 @@ class CustomApi(BaseModel):
         null=True,
     )
 
+    @property
+    def table_id(self):
+        return f"customapi_{self.id:09}"
+
+    @property
+    def gcs_uri(self):
+        return f"gs://{settings.GS_BUCKET_NAME}/{self.ndjson_file.name}"
+
     def create_integration(self, title, created_by, project):
         integration = Integration.objects.create(
             project=project,
-            kind=Integration.Kind.API,
+            kind=Integration.Kind.CUSTOMAPI,
             name=title,
             created_by=created_by,
         )
