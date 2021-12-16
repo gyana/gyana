@@ -4,35 +4,21 @@ from turbo_response import TurboStream
 from turbo_response.response import HttpResponseSeeOther, TurboStreamResponse
 
 from apps.base.frames import TurboFrameUpdateView
-from apps.dashboards.mixins import DashboardMixin
-from apps.widgets.frames import add_output_context
 
 from .forms import ControlForm
+from .mixins import UpdateWidgetsMixin
 from .models import Control
 
 
-class ControlUpdate(DashboardMixin, TurboFrameUpdateView):
+class ControlUpdate(UpdateWidgetsMixin, TurboFrameUpdateView):
     template_name = "controls/update.html"
     model = Control
     form_class = ControlForm
     turbo_frame_dom_id = "controls:update"
 
     def get_stream_response(self, form):
-        streams = []
-        for widget in self.dashboard.widgets:
-            if widget.date_column and widget.is_valid:
-                context = {
-                    "widget": widget,
-                    "dashboard": self.dashboard,
-                    "project": self.project,
-                    "page": self.page,
-                }
-                add_output_context(context, widget, self.request, form.instance)
-                streams.append(
-                    TurboStream(f"widgets-output-{widget.id}-stream")
-                    .replace.template("widgets/output.html", context)
-                    .render(request=self.request)
-                )
+        streams = self.get_widget_stream_responses(form.instance)
+
         for control_widget in self.page.control_widgets.iterator():
             context = {
                 "object": control_widget,
@@ -58,7 +44,7 @@ class ControlUpdate(DashboardMixin, TurboFrameUpdateView):
         r = super().form_valid(form)
         if form.is_live:
             return r
-        return self.get_stream_response(form)
+        return self.get_stream_response()
 
     def get_success_url(self) -> str:
         return reverse(

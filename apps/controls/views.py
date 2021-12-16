@@ -6,13 +6,12 @@ from turbo_response.response import TurboStreamResponse
 from turbo_response.views import TurboStreamDeleteView
 
 from apps.base.turbo import TurboCreateView
-from apps.controls.forms import ControlForm
 from apps.controls.models import Control, ControlWidget
-from apps.dashboards.mixins import DashboardMixin
-from apps.widgets.frames import add_output_context
+
+from .mixins import UpdateWidgetsMixin
 
 
-class ControlWidgetCreate(DashboardMixin, TurboCreateView):
+class ControlWidgetCreate(UpdateWidgetsMixin, TurboCreateView):
     template_name = "controls/create.html"
     model = ControlWidget
     fields = ["x", "y", "page"]
@@ -30,6 +29,7 @@ class ControlWidgetCreate(DashboardMixin, TurboCreateView):
 
         return TurboStreamResponse(
             [
+                *self.get_widget_stream_responses(form.instance.control),
                 TurboStream("dashboard-widget-placeholder").remove.render(),
                 TurboStream("dashboard-widget-container")
                 .append.template(
@@ -56,33 +56,20 @@ class ControlWidgetCreate(DashboardMixin, TurboCreateView):
         )
 
 
-class ControlWidgetDelete(DashboardMixin, TurboStreamDeleteView):
+class ControlWidgetDelete(UpdateWidgetsMixin, TurboStreamDeleteView):
     template_name = "controls/delete.html"
     model = ControlWidget
 
     def delete(self, request, *args, **kwargs):
+        self.object_id = self.get_object().id
         if self.page.control_widgets.count() != 1:
             return super().delete(request, *args, **kwargs)
 
-        self.object_id = self.get_object().id
         self.page.control.delete()
-        streams = []
-        for widget in self.page.widgets.all():
-            context = {
-                "widget": widget,
-                "dashboard": self.dashboard,
-                "page": self.page,
-                "project": self.project,
-            }
-            add_output_context(context, widget, self.request, None)
-            streams.append(
-                TurboStream(f"widgets-output-{widget.id}-stream")
-                .replace.template("widgets/output.html", context)
-                .render(request=self.request)
-            )
+
         return TurboStreamResponse(
             [
-                *streams,
+                *self.get_widget_stream_responses(None),
                 TurboStream(f"control-widget-{self.object_id}").remove.render(),
             ]
         )

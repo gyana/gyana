@@ -10,12 +10,8 @@
     <div class="widget-card h-full">
       <div class='widget-card__visual p-2'>
         
-          <i class="fa fa-calendar"></i>
-          {% if object.control.date_range != "custom" %}
-
-            {{ object.control.get_date_range_display }}
-
-          {% else %}
+          <span><i class="fa fa-calendar mr-2"></i>{{ object.control.get_date_range_display }}</span>
+          {% if object.control.date_range == "custom" %}
 
             {% if object.control.start %}Start <strong>{{object.control.start}}</strong>{% endif %}
             {% if object.control.end %}End <strong>{{object.control.end}}</strong>{% endif %}
@@ -23,16 +19,23 @@
           {% endif %}
         
       </div>
-      <div class='widget-card__commands'
-        data-controller='popover'
-        data-placement='top-center'
-        data-theme='popover-control'
-      >
-        <button  data-controller="tooltip">
-          <i class="fas fa-fw fa-edit"></i>
-          <span data-tooltip-target="body">Edit</span>
-        </button>
-    
+      <div class='widget-card__commands'>
+        <div
+          data-controller='popover'
+          data-placement='top-left'
+          data-theme='popover-control'
+        >
+          <button  data-controller="tooltip">
+            <i class="fas fa-fw fa-edit"></i>
+            <span data-tooltip-target="body">Edit</span>
+          </button>
+          <div class='control-popover' data-popover-target="body">
+            <turbo-frame id="controls:update"
+              src="{% url 'dashboard_controls:update' project.id dashboard.id object.control.id %}"
+            ></turbo-frame>
+          </div>
+        </div>
+
         <form
           data-controller="tooltip"
           method="post"
@@ -45,11 +48,7 @@
           <span data-tooltip-target="body">Delete</span>
         </form>
 
-        <div class='control-popover' data-popover-target="body">
-          <turbo-frame id="controls:update"
-            src="{% url 'dashboard_controls:update' project.id dashboard.id object.control.id %}"
-          ></turbo-frame>
-        </div>
+        
       </div>
     </div>
   </div>
