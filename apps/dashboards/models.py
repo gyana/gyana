@@ -37,8 +37,8 @@ class DashboardSettings(models.Model):
         default=getFusionThemePalette,
     )
     background_color = models.CharField(default="#ffffff", max_length=7)
-    font_size = models.IntegerField(default="16")
-    font_color = models.CharField(default="#000000", max_length=7)
+    font_size = models.IntegerField(default="14")
+    font_color = models.CharField(default="#6a6b77", max_length=7)
     font_family = models.CharField(
         max_length=30, default=FontFamily.ROBOTO, choices=FontFamily.choices
     )
