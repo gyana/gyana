@@ -68,6 +68,7 @@ class Integration(CloneMixin, BaseModel):
         SHEET = "sheet", "Sheet"
         UPLOAD = "upload", "Upload"
         CONNECTOR = "connector", "Connector"
+        CUSTOM_API = "custom_api", "Custom API"
 
     class State(models.TextChoices):
         UPDATE = "update", "Update"

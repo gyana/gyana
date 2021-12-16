@@ -105,6 +105,7 @@ PROJECT_APPS = [
     "apps.exports",
     "apps.controls",
     "apps.runs.apps.RunsConfig",
+    "apps.apis",
 ]
 
 INSTALLED_APPS = (
