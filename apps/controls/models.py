@@ -28,9 +28,6 @@ class Control(BaseModel):
     def __str__(self):
         return self.pk
 
-    def get_absolute_url(self):
-        return reverse("controls:detail", args=(self.pk,))
-
 
 class ControlWidget(BaseModel):
     page = models.ForeignKey(

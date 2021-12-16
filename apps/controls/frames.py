@@ -12,46 +12,6 @@ from .forms import ControlForm
 from .models import Control
 
 
-class ControlCreate(DashboardMixin, TurboFrameCreateView):
-    template_name = "controls/create.html"
-    model = Control
-    fields = []
-    turbo_frame_dom_id = "controls:create"
-
-    def form_valid(self, form):
-        form.instance.page = self.page
-        super().form_valid(form)
-        context = self.get_context_data()
-        context_update = {
-            "object": self.object,
-            "dashboard": self.dashboard,
-            "project": self.project,
-            "page": self.page,
-            "form": ControlForm(instance=self.object),
-        }
-
-        return TurboStreamResponse(
-            [
-                TurboStream("controls:create-stream")
-                .replace.template(self.template_name, context)
-                .render(request=self.request),
-                TurboStream("controls:update-stream")
-                .replace.template("controls/update.html", context_update)
-                .render(request=self.request),
-            ]
-        )
-
-    def get_success_url(self) -> str:
-        base_url = reverse(
-            "controls:create",
-            args=(
-                self.project.id,
-                self.dashboard.id,
-            ),
-        )
-        return f"{base_url}?page={self.page.position}"
-
-
 class ControlUpdate(DashboardMixin, TurboFrameUpdateView):
     template_name = "controls/update.html"
     model = Control
@@ -74,6 +34,18 @@ class ControlUpdate(DashboardMixin, TurboFrameUpdateView):
                     .replace.template("widgets/output.html", context)
                     .render(request=self.request)
                 )
+        for control_widget in self.page.control_widgets.iterator():
+            context = {
+                "object": control_widget,
+                "dashboard": self.dashboard,
+                "project": self.project,
+            }
+            streams.append(
+                TurboStream(f"control-widget-{control_widget.id}")
+                .replace.template("controls/control-widget.html", context)
+                .render(request=self.request)
+            )
+
         return TurboStreamResponse(
             [
                 *streams,
@@ -91,7 +63,7 @@ class ControlUpdate(DashboardMixin, TurboFrameUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "controls:update",
+            "dashboard_controls:update",
             args=(
                 self.project.id,
                 self.dashboard.id,
@@ -108,7 +80,7 @@ class ControlPublicUpdate(ControlUpdate):
 
     def get_success_url(self) -> str:
         return reverse(
-            "controls:update-public",
+            "dashboard_controls:update-public",
             args=(
                 self.project.id,
                 self.dashboard.id,
@@ -153,7 +125,7 @@ class ControlDelete(DashboardMixin, DeleteView):
     def get_success_url(self) -> str:
         # Won't actually return a response to here
         return reverse(
-            "controls:create",
+            "dashboard_controls:create",
             args=(
                 self.project.id,
                 self.dashboard.id,

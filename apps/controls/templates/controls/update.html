@@ -1,50 +1,23 @@
+<form 
+  id="control-update-form"
+  method="post" 
+  action="{% if is_public %}
+    {% url 'dashboard_controls:update-public' project.id dashboard.id object.id %}
+  {% else %}
+    {% url 'dashboard_controls:update' project.id dashboard.id object.id %}
+  {% endif %}" 
+  class="form--no-layout popover-body"
+  data-controller="live-update"
 
-
-<div
-  id='controls:update-stream'
-  class='control'
-  data-controller='popover'
-  data-placement='bottom-start'
-  data-theme='popover-control'
 >
-  <button >
-    <i class="fa fa-calendar"></i> 
-    {% if object.date_range != "custom" %}
+  <span data-live-update-target="loading" class="hidden">
+    <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+  </span>
 
-      {{object.get_date_range_display}}
+  {% csrf_token %}
+  {% include "django/forms/default_form.html" %}
 
-    {% else %}
-
-      {% if object.start %}Start <strong>{{object.start}}</strong>{% endif %}
-      {% if object.end %}End <strong>{{object.end}}</strong>{% endif %}
-
-    {% endif %}
-  </button>
-  <div class='control-popover' data-popover-target="body">
-    <form 
-      id="control-update-form"
-      method="post" 
-      action="{% if is_public %}
-        {% url 'controls:update-public' project.id dashboard.id object.id %}
-      {% else %}
-        {% url 'controls:update' project.id dashboard.id object.id %}
-      {% endif %}" 
-      class="form--no-layout popover-body"
-      data-controller="live-update"
-
-    >
-      <span data-live-update-target="loading" class="hidden">
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
-      </span>
-
-      {% csrf_token %}
-      {% include "django/forms/default_form.html" %}
-
-      <button type="submit" class="button button--success button--sm"
-        name="submit" value="submit"
-        >Apply</button>
-    </form>
-  </div>
-  {% if not is_public %}{% include 'controls/delete.html' %}{% endif %}
-</div>
-
+  <button type="submit" class="button button--success button--sm"
+    name="submit" value="submit"
+    >Apply</button>
+</form>

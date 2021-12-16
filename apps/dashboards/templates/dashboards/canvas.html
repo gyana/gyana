@@ -2,22 +2,6 @@
 {% load waffle_tags %}
 
 <div class="widgets" data-controller="tf-modal" data-open-on-param>
-
-  {% flag 'beta' %}
-  {% if page.has_control %}
-
-    <turbo-frame id='controls:update' src="{% url 'controls:update' project.id dashboard.id page.control.id %}">
-      <div class='placeholder-scr'>
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-      </div>
-    </turbo-frame>
-
-  {% else %}
-
-    <div id='controls:update-stream'></div>
-
-  {% endif %}
-  {% endflag %}
   <div
     data-controller="canvas"
     class="widgets__canvas"
@@ -41,7 +25,7 @@
     </form>
     <form
       method="post"
-      action="{% url 'controls:create' project.id dashboard.id %}"
+      action="{% url 'dashboard_controls:create' project.id dashboard.id %}"
       class="hidden"
       data-canvas-target="formControl"
     >
@@ -98,6 +82,13 @@
           </div>
         {% endif %}
       {% endfor %}
+
+      {% for object in page.control_widgets.all %}
+          
+          {% include 'controls/control-widget.html' with object=object %}
+          
+      {% endfor %}
+
     </div>
   </div>
   {% comment %}
