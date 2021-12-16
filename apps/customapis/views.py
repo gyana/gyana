@@ -8,7 +8,7 @@ from .models import CustomApi
 
 
 class CustomApiCreate(ProjectMixin, TurboCreateView):
-    template_name = "apis/create.html"
+    template_name = "customapis/create.html"
     model = CustomApi
     form_class = CustomApiCreateForm
 
