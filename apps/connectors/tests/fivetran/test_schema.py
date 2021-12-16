@@ -1,4 +1,5 @@
 import pytest
+
 from apps.connectors.fivetran.config import ServiceTypeEnum
 from apps.connectors.fivetran.schema import FivetranSchemaObj
 
@@ -38,6 +39,7 @@ def test_connector_schema_serde(schema_dict):
 
     schema_obj = FivetranSchemaObj(
         schema_dict,
+        service="google_analytics",
         service_type=ServiceTypeEnum.API_CLOUD,
         schema_prefix="dataset",
     )
@@ -53,6 +55,7 @@ def test_mutate_from_cleaned_data(schema_dict):
 
     schema_obj = FivetranSchemaObj(
         schema_dict,
+        service="google_analytics",
         service_type=ServiceTypeEnum.API_CLOUD,
         schema_prefix="dataset",
     )
