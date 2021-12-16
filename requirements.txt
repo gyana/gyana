@@ -21,6 +21,7 @@ conditional==1.3; python_version >= "3.5"
 coreapi==2.3.3
 coreschema==0.0.4
 cryptography==3.4.8; python_version >= "3.6"
+decorator==5.0.9; python_version >= "3.5"
 defusedxml==0.7.1; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0"
 dj-database-url==0.5.0
 dj-paddle @ git+https://github.com/paddle-python/dj-paddle@8945137c9ff70ae00d519625f81b10d1bc6bf071
@@ -76,6 +77,7 @@ inflection==0.5.1; python_version >= "3.5"
 iniconfig==1.1.1; python_version >= "3.6"
 itypes==1.2.0
 jinja2==3.0.1; python_version >= "3.6"
+jsonpath-ng==1.5.3
 kombu==5.2.2; python_version >= "3.7"
 lark==0.11.3
 libcst==0.3.20; python_version >= "3.7"
@@ -92,6 +94,7 @@ pandas==1.3.2; python_full_version >= "3.7.1"
 pathvalidate==2.4.1; python_version >= "3.5"
 phpserialize==1.3
 pluggy==1.0.0; python_version >= "3.6"
+ply==3.11
 prompt-toolkit==3.0.20; python_full_version >= "3.6.2" and python_version >= "3.7"
 proto-plus==1.19.0; python_version >= "3.7" and python_version < "3.10"
 protobuf==3.17.3; python_version >= "3.7" and python_version < "3.10"
