@@ -48,13 +48,17 @@
     {{ bound_field }}
   </div>
   {% else %}
-  <label for="{{ bound_field.id_for_label }}">
-    {{ bound_field.label }}
-    {% if bound_field.help_text %}
-    <p class="input__help-text">{{ bound_field.help_text }}</p>
-    {% endif %}
-  </label>
-  {{ bound_field }}
+  <div class="label">
+    <label for="{{ bound_field.id_for_label }}">
+      {{ bound_field.label }}
+
+      {% if bound_field.help_text %}
+      <p class="input__help-text">{{ bound_field.help_text }}</p>
+      {% endif %}
+    </label>
+
+    {{ bound_field }}
+  </div>
   {% endif %}
 
   {% if not form.is_live %}

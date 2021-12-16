@@ -4,7 +4,7 @@
 {% block page_head %}
   {% if dashboard.font_family %}
   <link
-    href="https://fonts.googleapis.com/css2?family={{ dashboard.font_family }}:wght@400&display=swap"
+    href="https://fonts.googleapis.com/css2?family={{ dashboard.font_family.split|join:'+' }}:wght@400&display=swap"
     rel="stylesheet"
   />
   {% endif %}

@@ -22,8 +22,13 @@ class DashboardSettings(models.Model):
         abstract = True
 
     class FontFamily(models.TextChoices):
-        ROBOTO = "Roboto", "Roboto"
-        OPEN_SANS = "Open+Sans", "Open Sans"
+        BOOGALOO = "Boogaloo"
+        LATO = "Lato"
+        MERRIWEATHER = "Merriweather"
+        MONTSERRAT = "Montserrat"
+        OPEN_SANS = "Open Sans"
+        ROBOTO = "Roboto"
+        UBUNTU = "Ubuntu"
 
     grid_size = models.IntegerField(default=15)
     palette_colors = ArrayField(
@@ -37,6 +42,7 @@ class DashboardSettings(models.Model):
     font_family = models.CharField(
         max_length=30, default=FontFamily.ROBOTO, choices=FontFamily.choices
     )
+    show_widget_border = models.BooleanField(default=True)
 
 
 class Dashboard(DashboardSettings, CloneMixin, BaseModel):

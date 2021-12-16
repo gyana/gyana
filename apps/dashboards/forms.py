@@ -92,14 +92,15 @@ class DashboardForm(forms.ModelForm):
     class Meta:
         model = Dashboard
         fields = [
-            "background_color",
-            "font_color",
-            "font_size",
             "font_family",
+            "font_size",
+            "font_color",
+            "background_color",
             "palette_colors",
             "width",
             "height",
             "grid_size",
+            "show_widget_border",
         ]
 
     def __init__(self, *args, **kwargs):
