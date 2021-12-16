@@ -26,6 +26,10 @@ def run_customapi_sync_task(self, run_id):
 
     # fetch data from the api, extract the list of items, write to GCS as
     # newline delimited JSON
+    # todo:
+    # - timeouts and max size for request
+    # - validate status code and share error information if failed
+    # - validate jsonpath_expr works and print json if failed
     response = requests.get(customapi.url).json()
     jsonpath_expr = parse(customapi.json_path)
     data = jsonpath_expr.find(response)[0].value
