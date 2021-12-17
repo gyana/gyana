@@ -46,9 +46,9 @@
     </label>
 
     <div class="flex flex-row-reverse">
-      {% if bound_field.field.label_suffix %}
+      {% if bound_field.field.widget.attrs.unit_suffix %}
       <div class="label__unit">
-        <p>{{ bound_field.field.label_suffix  }}</p>
+        <p>{{ bound_field.field.widget.attrs.unit_suffix }}</p>
       </div>
       {% endif %}
 
