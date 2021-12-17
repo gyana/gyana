@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, FormView
@@ -178,7 +179,8 @@ class DashboardDuplicate(TurboUpdateView):
     def get_success_url(self) -> str:
         return reverse("project_dashboards:list", args=(self.object.project.id,))
 
-
+# This allows a shared dashboard to be embeded in an iFrame
+@method_decorator(xframe_options_exempt, name="dispatch")
 class DashboardPublic(DetailView):
     template_name = "dashboards/public.html"
     model = Dashboard
