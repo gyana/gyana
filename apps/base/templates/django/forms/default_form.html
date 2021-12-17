@@ -45,7 +45,15 @@
       </span>
     </label>
 
-    {{ bound_field }}
+    <div class="flex flex-row-reverse">
+      {% if bound_field.field.label_suffix %}
+      <div class="label__unit">
+        <p>{{ bound_field.field.label_suffix  }}</p>
+      </div>
+      {% endif %}
+
+      {{ bound_field }}
+    </div>
   </div>
   {% else %}
   <div class="label">

@@ -169,6 +169,26 @@ label {
   }
 }
 
+.label__unit {
+  align-items: center;
+  background-color: var(--c-gray-20);
+  border-bottom-right-radius: 5px;
+  border-left: 0;
+  border-top-right-radius: 5px;
+  border: 1px solid var(--c-gray);
+  color: var(--c-black);
+  display: flex;
+  font-weight: 400;
+  justify-content: center;
+  padding: 0 0.6rem;
+  width: min-content;
+}
+
+.label__unit + input {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}
+
 .errorlist {
   color: var(--c-red);
   font-size: 1.4rem;
