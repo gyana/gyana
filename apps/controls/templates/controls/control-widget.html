@@ -6,6 +6,9 @@
     data-x="{{ object.x }}"
     data-y="{{ object.y }}"
     data-grid-size="{{ dashboard.grid_size }}"
+    data-controller='popover'
+    data-placement='top-left'
+    data-theme='popover-control'
   >
     <div class="widget-card h-full">
       <div class='widget-card__visual p-2'>
@@ -20,21 +23,10 @@
         
       </div>
       <div class='widget-card__commands'>
-        <div
-          data-controller='popover'
-          data-placement='top-left'
-          data-theme='popover-control'
-        >
-          <button  data-controller="tooltip">
-            <i class="fas fa-fw fa-edit"></i>
-            <span data-tooltip-target="body">Edit</span>
-          </button>
-          <div class='control-popover' data-popover-target="body">
-            <turbo-frame id="controls:update"
-              src="{% url 'dashboard_controls:update' project.id dashboard.id object.control.id %}"
-            ></turbo-frame>
-          </div>
-        </div>
+        <button  data-controller="tooltip" data-popover-target="trigger">
+          <i class="fas fa-fw fa-edit"></i>
+          <span data-tooltip-target="body">Edit</span>
+        </button>
 
         <form
           data-controller="tooltip"
@@ -47,9 +39,14 @@
           </button>
           <span data-tooltip-target="body">Delete</span>
         </form>
-
         
       </div>
+    </div>
+    
+    <div class='control-popover' data-popover-target="body">
+      <turbo-frame id="controls:update"
+        src="{% url 'dashboard_controls:update' project.id dashboard.id object.control.id %}"
+      ></turbo-frame>
     </div>
   </div>
   

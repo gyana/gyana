@@ -16,7 +16,7 @@ import tippy from 'tippy.js'
  * </div>
  */
 export default class extends Controller {
-  static targets = ['body']
+  static targets = ['body', 'trigger']
 
   connect() {
     console.assert(this.hasBodyTarget, 'Popover controllers need a body target')
@@ -28,9 +28,11 @@ export default class extends Controller {
       content: this.bodyTarget.innerHTML,
       delay: 0,
       interactive: true,
+      appendTo: this.element,
       placement: this.element.dataset.placement || 'bottom',
       theme: this.element.dataset.theme || 'popover',
       trigger: 'click',
+      triggerTarget: this.hasTriggerTarget ? this.triggerTarget : this.element,
     })
   }
 
