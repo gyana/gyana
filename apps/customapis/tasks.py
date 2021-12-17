@@ -7,7 +7,8 @@ from django.core.files.base import ContentFile
 from django.db import transaction
 from django.utils import timezone
 from jsonpath_ng import parse
-from requests.api import head
+from requests import Session
+from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 
 from apps.base.time import catchtime
 from apps.integrations.emails import send_integration_ready_email
@@ -17,6 +18,39 @@ from apps.users.models import CustomUser
 
 from .bigquery import import_table_from_customapi
 from .models import CustomApi
+
+
+def _get_authorization_for_api_key(session: Session, customapi: CustomApi):
+    key_value = {customapi.api_key_key: customapi.api_key_value}
+    if customapi.api_key_add_to == CustomApi.ApiKeyAddTo.HTTP_HEADER:
+        session.headers.update(key_value)
+    else:
+        session.params.update(key_value)
+
+
+def _get_authorization_for_bearer_token(session: Session, customapi: CustomApi):
+    session.headers.update({"Authorization": f"Bearer {customapi.bearer_token}"})
+
+
+def _get_authorization_for_basic_auth(session: Session, customapi: CustomApi):
+    session.auth = HTTPBasicAuth(customapi.username, customapi.password)
+
+
+def _get_authorization_for_digest_auth(session: Session, customapi: CustomApi):
+    session.auth = HTTPDigestAuth(customapi.username, customapi.password)
+
+
+AUTHORIZATION = {
+    CustomApi.Authorization.NO_AUTH: lambda session, customapi: None,
+    CustomApi.Authorization.API_KEY: _get_authorization_for_api_key,
+    CustomApi.Authorization.BEARER_TOKEN: _get_authorization_for_bearer_token,
+    CustomApi.Authorization.BASIC_AUTH: _get_authorization_for_basic_auth,
+    CustomApi.Authorization.DIGEST_AUTH: _get_authorization_for_digest_auth,
+}
+
+
+def _get_authorization(session: Session, customapi: CustomApi):
+    AUTHORIZATION[customapi.authorization](session, customapi)
 
 
 @shared_task(bind=True)
@@ -31,12 +65,15 @@ def run_customapi_sync_task(self, run_id):
     # - timeouts and max size for request
     # - validate status code and share error information if failed
     # - validate jsonpath_expr works and print json if failed
-    response = requests.request(
+    session = requests.Session()
+    _get_authorization(session, customapi)
+    response = session.request(
         method=customapi.http_request_method,
         url=customapi.url,
         params={q.key: q.value for q in customapi.queryparams.all()},
         headers={h.key: h.value for h in customapi.httpheaders.all()},
     ).json()
+
     jsonpath_expr = parse(customapi.json_path)
     data = jsonpath_expr.find(response)[0].value
     ndjson = "\n".join([json.dumps(item) for item in data])

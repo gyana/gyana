@@ -77,7 +77,18 @@ class CustomApiCreateForm(BaseModelForm):
 class CustomApiUpdateForm(BaseModelForm):
     class Meta:
         model = CustomApi
-        fields = ["url", "json_path", "http_request_method"]
+        fields = [
+            "url",
+            "json_path",
+            "http_request_method",
+            "authorization",
+            "api_key_key",
+            "api_key_value",
+            "api_key_add_to",
+            "bearer_token",
+            "username",
+            "password",
+        ]
         labels = {
             "url": "URL",
             "json_path": "JSON Path",

@@ -19,6 +19,17 @@ class CustomApi(BaseModel):
         TRACE = "TRACE", "TRACE"
         PATCH = "PATCH", "PATCH"
 
+    class Authorization(models.TextChoices):
+        NO_AUTH = "no_auth", "No Auth"
+        API_KEY = "api_key", "API Key"
+        BEARER_TOKEN = "bearer_token", "Bearer Token"
+        BASIC_AUTH = "basic_auth", "Basic Auth"
+        DIGEST_AUTH = "digest_auth", "Digest Auth"
+
+    class ApiKeyAddTo(models.TextChoices):
+        HTTP_HEADER = "http_header", "HTTP Header"
+        QUERY_PARAMS = "query_params", "Query Params"
+
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 
     url = models.URLField(max_length=2048)
@@ -32,6 +43,23 @@ class CustomApi(BaseModel):
     http_request_method = models.CharField(
         max_length=8, choices=HttpRequestMethod.choices, default=HttpRequestMethod.GET
     )
+    authorization = models.CharField(
+        max_length=16, choices=Authorization.choices, default=Authorization.NO_AUTH
+    )
+
+    # api key
+    api_key_key = models.CharField(max_length=8192, null=True)
+    api_key_value = models.CharField(max_length=8192, null=True)
+    api_key_add_to = models.CharField(
+        max_length=8192, choices=ApiKeyAddTo.choices, default=ApiKeyAddTo.HTTP_HEADER
+    )
+
+    # bearer token
+    bearer_token = models.CharField(max_length=1024, null=True)
+
+    # basic auth or digest auth
+    username = models.CharField(max_length=1024, null=True)
+    password = models.CharField(max_length=1024, null=True)
 
     @property
     def table_id(self):
