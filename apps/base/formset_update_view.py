@@ -33,6 +33,10 @@ def _get_formset_label(formset):
 
 
 class FormsetUpdateView(TurboUpdateView):
+    @cache
+    def get_form(self):
+        return super().get_form()
+
     def get_formset_class(self):
         form = self.get_form()
         if form and hasattr(form, "get_live_formsets"):
