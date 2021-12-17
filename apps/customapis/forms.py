@@ -1,21 +1,51 @@
+from functools import cache
+
 from django import forms
 
 from apps.base.forms import BaseModelForm
 from apps.base.formsets import RequiredInlineFormset
+from apps.base.widgets import DatalistInput
 
-from .models import CustomApi, QueryParam
+from .models import CustomApi, HttpHeader, QueryParam
+
+HEADERS_PATH = "apps/customapis/headers.txt"
+
+
+@cache
+def get_headers():
+    with open(HEADERS_PATH, "r") as f:
+        return f.read().split("\n")
 
 
 class QueryParamForm(BaseModelForm):
     class Meta:
         model = QueryParam
         fields = ["key", "value"]
+        help_texts = {"key": "KEY", "value": "VALUE"}
 
 
 QueryParamFormset = forms.inlineformset_factory(
     CustomApi,
     QueryParam,
     form=QueryParamForm,
+    can_delete=True,
+    extra=0,
+    formset=RequiredInlineFormset,
+)
+
+
+class HttpHeaderForm(BaseModelForm):
+    class Meta:
+        model = HttpHeader
+        fields = ["key", "value"]
+        help_texts = {"key": "KEY", "value": "VALUE"}
+        widgets = {"key": DatalistInput(options=get_headers())}
+
+
+HttpHeaderFormset = forms.inlineformset_factory(
+    CustomApi,
+    HttpHeader,
+    form=HttpHeaderForm,
     can_delete=True,
     extra=0,
     formset=RequiredInlineFormset,
@@ -55,4 +85,4 @@ class CustomApiUpdateForm(BaseModelForm):
         }
 
     def get_live_formsets(self):
-        return [QueryParamFormset]
+        return [QueryParamFormset, HttpHeaderFormset]

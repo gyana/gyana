@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.db.models.fields import related
 
 from apps.base.clients import SLUG
 from apps.base.models import BaseModel
@@ -52,6 +53,17 @@ class CustomApi(BaseModel):
 
 class QueryParam(BaseModel):
 
-    customapi = models.ForeignKey(CustomApi, on_delete=models.CASCADE)
+    customapi = models.ForeignKey(
+        CustomApi, on_delete=models.CASCADE, related_name="queryparams"
+    )
     key = models.CharField(max_length=1024)
     value = models.CharField(max_length=1024)
+
+
+class HttpHeader(BaseModel):
+
+    customapi = models.ForeignKey(
+        CustomApi, on_delete=models.CASCADE, related_name="httpheaders"
+    )
+    key = models.CharField(max_length=8192)
+    value = models.CharField(max_length=8192)

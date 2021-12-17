@@ -22,6 +22,8 @@ FORMSET_LABELS = {
     "convert_columns": "Select columns to convert",
     "values": "Additional values",
     "charts": "Charts",
+    "queryparams": "Query Params",
+    "httpheaders": "HTTP Headers",
 }
 
 
