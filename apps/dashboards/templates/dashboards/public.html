@@ -83,15 +83,6 @@
         <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
       {% endif %}
     </header>
-    {% if page.has_control %}
-      <turbo-frame id='controls:update' src="{% url 'dashboard_controls:update-public' project.id dashboard.id page.control.id %}">
-        <div class='placeholder-scr'>
-          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-        </div>
-      </turbo-frame>
-    {% else %}
-      <div id='controls:update-stream'></div>
-    {% endif %}
     <div
       class="widgets__canvas"
       style="--background-color:{{ object.background_color }};"
@@ -128,6 +119,12 @@
           </div>
         </gy-widget>
         {% endfor %}
+
+      {% for object in page.control_widgets.all %}
+          
+        {% include 'controls/control-widget.html' with object=object control=object.control is_public=True%}
+        
+      {% endfor %}
       </div>
     </div>
 

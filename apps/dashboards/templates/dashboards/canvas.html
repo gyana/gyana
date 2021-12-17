@@ -85,7 +85,7 @@
 
       {% for object in page.control_widgets.all %}
           
-          {% include 'controls/control-widget.html' with object=object %}
+          {% include 'controls/control-widget.html' with object=object control=object.control %}
           
       {% endfor %}
 

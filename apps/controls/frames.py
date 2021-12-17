@@ -18,12 +18,15 @@ class ControlUpdate(UpdateWidgetsMixin, TurboFrameUpdateView):
 
     def get_stream_response(self, form):
         streams = self.get_widget_stream_responses(form.instance)
-
+        current_context = self.get_context_data()
         for control_widget in self.page.control_widgets.iterator():
             context = {
                 "object": control_widget,
+                "control": form.instance,
                 "dashboard": self.dashboard,
                 "project": self.project,
+                "is_public": current_context.get("is_public", False),
+                "request": self.request,
             }
             streams.append(
                 TurboStream(f"control-widget-{control_widget.id}")
@@ -35,7 +38,7 @@ class ControlUpdate(UpdateWidgetsMixin, TurboFrameUpdateView):
             [
                 *streams,
                 TurboStream("controls:update-stream")
-                .replace.template(self.template_name, self.get_context_data())
+                .replace.template(self.template_name, current_context)
                 .render(request=self.request),
             ]
         )
