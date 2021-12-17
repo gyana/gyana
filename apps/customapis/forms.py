@@ -4,11 +4,24 @@ from django import forms
 
 from apps.base.forms import BaseModelForm
 from apps.base.formsets import RequiredInlineFormset
+from apps.base.live_update_form import LiveUpdateForm
 from apps.base.widgets import DatalistInput
 
 from .models import CustomApi, HttpHeader, QueryParam
 
 HEADERS_PATH = "apps/customapis/headers.txt"
+
+AUTHORIZATION_TO_FIELDS = {
+    CustomApi.Authorization.NO_AUTH: [],
+    CustomApi.Authorization.API_KEY: [
+        "api_key_key",
+        "api_key_value",
+        "api_key_add_to",
+    ],
+    CustomApi.Authorization.BEARER_TOKEN: ["bearer_token"],
+    CustomApi.Authorization.BASIC_AUTH: ["username", "password"],
+    CustomApi.Authorization.DIGEST_AUTH: ["username", "password"],
+}
 
 
 @cache
@@ -74,7 +87,7 @@ class CustomApiCreateForm(BaseModelForm):
         instance.integration.project.update_schedule()
 
 
-class CustomApiUpdateForm(BaseModelForm):
+class CustomApiUpdateForm(LiveUpdateForm):
     class Meta:
         model = CustomApi
         fields = [
@@ -93,7 +106,15 @@ class CustomApiUpdateForm(BaseModelForm):
             "url": "URL",
             "json_path": "JSON Path",
             "http_request_method": "HTTP Request Method",
+            "api_key_key": "Key",
+            "api_key_value": "Value",
+            "api_key_add_to": "Add To",
         }
+
+    def get_live_fields(self):
+        live_fields = ["url", "json_path", "http_request_method", "authorization"]
+        live_fields += AUTHORIZATION_TO_FIELDS[self.get_live_field("authorization")]
+        return live_fields
 
     def get_live_formsets(self):
         return [QueryParamFormset, HttpHeaderFormset]

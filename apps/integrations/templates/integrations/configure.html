@@ -7,7 +7,15 @@
     <h1 class="flex items-center justify-center gap-3 mb-7">Configure import</h1>
 
     <div class="flex flex-1 justify-center items-center">
-      <form method="POST" action="{{ request.get_full_path }}">
+      <form 
+        id="configure-update-form"
+        method="POST"
+        action="{{ request.get_full_path }}"
+        {% if object.kind == 'customapi' %}data-controller="live-update"{% endif %}
+        >
+        <span data-live-update-target="loading" class="hidden">
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+        </span>
         {% csrf_token %}
 
         <p class="alert mb-4">
