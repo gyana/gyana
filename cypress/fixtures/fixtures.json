@@ -3363,7 +3363,8 @@
       "integration": 15,
       "url": "https://jsonplaceholder.typicode.com/todos",
       "json_path": "$",
-      "ndjson_file": "cypress/custom_api_jsonnl/customapi_1.ndjson"
+      "ndjson_file": "cypress/custom_api_jsonnl/customapi_1.ndjson",
+      "http_request_method": "GET"
     }
   },
   {
