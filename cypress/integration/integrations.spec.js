@@ -11,7 +11,7 @@ describe('integrations', () => {
     cy.visit('/projects/1')
 
     // todo: zero state
-    cy.contains('2 integrations').click()
+    cy.contains('3 integrations').click()
     cy.url().should('contain', '/projects/1/integrations')
 
     cy.contains('New Integration').click()

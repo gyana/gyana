@@ -3,6 +3,9 @@ from itertools import chain
 from typing import Dict, List, Optional
 
 from .config import ServiceTypeEnum
+from .services.facebook_ads import get_enabled_table_ids_for_facebook_ads
+
+SERVICE_TO_TABLE_IDS = {"facebook_ads": get_enabled_table_ids_for_facebook_ads}
 
 # wrapper for fivetran schema information
 # https://fivetran.com/docs/rest-api/connectors#retrieveaconnectorschemaconfig
@@ -33,6 +36,7 @@ class FivetranTable:
 @dataclass
 class FivetranSchema:
     key: str
+    service: str
     service_type: ServiceTypeEnum
     schema_prefix: str
 
@@ -46,6 +50,7 @@ class FivetranSchema:
     def asdict(self):
         res = {**asdict(self), "tables": {t.key: t.asdict() for t in self.tables}}
         res.pop("key")
+        res.pop("service")
         res.pop("service_type")
         res.pop("schema_prefix")
         return res
@@ -67,6 +72,8 @@ class FivetranSchema:
 
     @property
     def enabled_table_ids(self):
+        if self.service in SERVICE_TO_TABLE_IDS:
+            return SERVICE_TO_TABLE_IDS[self.service](self.enabled_tables)
         return {table.name_in_destination for table in self.enabled_tables}
 
     @property
@@ -80,10 +87,11 @@ class FivetranSchema:
 
 
 class FivetranSchemaObj:
-    def __init__(self, schemas_dict, service_type, schema_prefix):
+    def __init__(self, schemas_dict, service, service_type, schema_prefix):
         self.schemas = [
             FivetranSchema(
                 key=key,
+                service=service,
                 service_type=service_type,
                 schema_prefix=schema_prefix,
                 **schema,

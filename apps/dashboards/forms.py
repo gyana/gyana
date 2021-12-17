@@ -71,13 +71,17 @@ class DashboardNameForm(forms.ModelForm):
 
 class DashboardForm(forms.ModelForm):
     width = forms.IntegerField(
-        required=False, widget=forms.NumberInput(attrs={"step": "15"})
+        required=False,
+        widget=forms.NumberInput(attrs={"step": "15", "unit_suffix": "pixels"}),
     )
     height = forms.IntegerField(
-        required=False, widget=forms.NumberInput(attrs={"step": "15"})
+        required=False,
+        widget=forms.NumberInput(attrs={"step": "15", "unit_suffix": "pixels"}),
     )
     grid_size = forms.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(1200)], required=False
+        validators=[MinValueValidator(1), MaxValueValidator(1200)],
+        required=False,
+        widget=forms.NumberInput(attrs={"unit_suffix": "pixels"}),
     )
     palette_colors = PaletteColorsField(required=False)
     background_color = forms.CharField(
@@ -87,6 +91,9 @@ class DashboardForm(forms.ModelForm):
     font_color = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={"type": "color"}),
+    )
+    font_size = forms.IntegerField(
+        widget=forms.NumberInput(attrs={"unit_suffix": "pixels"}),
     )
 
     class Meta:

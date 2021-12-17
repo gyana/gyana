@@ -7,6 +7,7 @@ from django.core.files.base import ContentFile
 from django.db import transaction
 from django.utils import timezone
 from jsonpath_ng import parse
+from requests.api import head
 
 from apps.base.time import catchtime
 from apps.integrations.emails import send_integration_ready_email
@@ -30,7 +31,12 @@ def run_customapi_sync_task(self, run_id):
     # - timeouts and max size for request
     # - validate status code and share error information if failed
     # - validate jsonpath_expr works and print json if failed
-    response = requests.get(customapi.url).json()
+    response = requests.request(
+        method=customapi.http_request_method,
+        url=customapi.url,
+        params={q.key: q.value for q in customapi.queryparams.all()},
+        headers={h.key: h.value for h in customapi.httpheaders.all()},
+    ).json()
     jsonpath_expr = parse(customapi.json_path)
     data = jsonpath_expr.find(response)[0].value
     ndjson = "\n".join([json.dumps(item) for item in data])

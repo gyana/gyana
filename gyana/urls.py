@@ -28,6 +28,7 @@ register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "h
 from apps.appsumo import urls as appsumo_urls
 from apps.cnames import urls as cname_urls
 from apps.connectors import urls as connector_urls
+from apps.controls import urls as control_urls
 from apps.customapis import urls as api_urls
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
@@ -68,7 +69,7 @@ project_urlpatterns = [
     path("<hashid:project_id>/templates/", include(template_urls.project_urlpatterns)),
     path(
         "<hashid:project_id>/dashboards/<hashid:dashboard_id>/controls/",
-        include("apps.controls.urls"),
+        include(control_urls.dashboard_urlpatterns),
     ),
 ]
 
@@ -88,6 +89,7 @@ urlpatterns = [
     path("admin_tools/", include("admin_tools.urls")),
     path("admin/", admin.site.urls),
     path("exports/", include("apps.exports.urls")),
+    path("controls/", include("apps.controls.urls")),
     path("users/", include("apps.users.urls")),
     path("filters/", include("apps.filters.urls")),
     path("teams/", include(teams_urlpatterns)),

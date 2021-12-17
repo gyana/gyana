@@ -10,7 +10,7 @@ from turbo_response.response import TurboStreamResponse
 from apps.base.tests.asserts import assertFormRenders, assertOK
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import PickableMock, mock_bq_client_with_schema
-from apps.controls.models import Control, CustomChoice
+from apps.controls.models import Control, ControlWidget, CustomChoice
 from apps.dashboards.models import Dashboard
 from apps.filters.models import DateRange
 from apps.widgets.models import Widget
@@ -55,13 +55,16 @@ def test_control_crudl(
     )
     control_url = f"/projects/{project.id}/dashboards/{dashboard.id}/controls/"
     # create
-    r = client.post(control_url + "new", data={"dashboard_id": dashboard.id})
+    r = client.post(control_url + "new", data={"page": page.id, "x": 0, "y": 0})
 
     assertOK(r)
     control = Control.objects.first()
+    control_widget = ControlWidget.objects.first()
     assert isinstance(r, TurboStreamResponse)
     assert control is not None
-    assertContains(r, "controls:create-stream")
+    assert control_widget is not None
+    assertContains(r, "dashboard-widget-container")
+    assertContains(r, f"widgets-output-{widget.id}-stream")
 
     # update
     r = client.get(control_url + f"{control.id}/update")
@@ -88,8 +91,12 @@ def test_control_crudl(
     assert control.date_range == CustomChoice.CUSTOM
 
     # delete
-    r = client.delete(control_url + f"{control.id}/delete")
+    r = client.delete(control_url + f"{control_widget.id}/delete")
+    assertOK(r)
+    assert isinstance(r, TurboStreamResponse)
     assert Control.objects.first() is None
+    assert ControlWidget.objects.first() is None
+    assertContains(r, f"widgets-output-{widget.id}-stream")
 
 
 def test_public_date_slice_not_updating(
@@ -102,7 +109,8 @@ def test_public_date_slice_not_updating(
         shared_status=Dashboard.SharedStatus.PUBLIC,
         shared_id=uuid.uuid4(),
     )
-    control = control_factory(dashboard=dashboard)
+    dashboard.pages.create()
+    control = control_factory(page=dashboard.pages.first())
     r = client.post(
         f"/projects/{project.id}/dashboards/{dashboard.id}/controls/{control.id}/update-public",
         data={"date_range": CustomChoice.CUSTOM, "submit": "submit"},
@@ -112,3 +120,30 @@ def test_public_date_slice_not_updating(
 
     control.refresh_from_db()
     assert control.date_range == DateRange.THIS_YEAR
+
+
+def test_adding_more_control_widgets(
+    client, project, dashboard_factory, control_factory
+):
+    dashboard = dashboard_factory(project=project)
+    page = dashboard.pages.create()
+    control = control_factory(page=page)
+    control_widget = control.widgets.create(page=page)
+
+    control_url = f"/projects/{project.id}/dashboards/{dashboard.id}/controls/"
+    # create 2nd widget doesnt create new control
+    r = client.post(control_url + "new", data={"page": page.id, "x": 0, "y": 0})
+    assertOK(r)
+    assert ControlWidget.objects.count() == 2
+    assert Control.objects.count() == 1
+
+    # deleting the first widget doesnt delete control
+    r = client.delete(f"{control_url}{ControlWidget.objects.first().id}/delete")
+    assertOK(r)
+    assert ControlWidget.objects.count() == 1
+    assert Control.objects.first() is not None
+
+    r = client.delete(f"{control_url}{control_widget.id}/delete")
+    assertOK(r)
+    assert ControlWidget.objects.first() is None
+    assert Control.objects.first() is None

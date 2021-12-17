@@ -13,6 +13,7 @@ class DashboardMixin(ProjectMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["dashboard"] = self.dashboard
+        context["page"] = self.page
         return context
 
     @cached_property

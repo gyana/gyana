@@ -131,7 +131,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
     @property
     def schema_obj(self):
         return FivetranSchemaObj(
-            self.schema_config, self.conf.service_type, self.schema
+            self.schema_config, self.service, self.conf.service_type, self.schema
         )
 
     @property

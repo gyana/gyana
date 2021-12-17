@@ -1,4 +1,5 @@
 import analytics
+from django.db import transaction
 from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -9,6 +10,7 @@ from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
+from apps.base.formset_update_view import FormsetUpdateView
 from apps.base.turbo import TurboUpdateView
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import run_integration
@@ -113,7 +115,7 @@ class IntegrationSettings(ProjectMixin, TurboUpdateView):
         return kwargs
 
     def form_valid(self, form):
-        # don't assigned the result to self.object
+        # don't assign the result to self.object
         form.save()
         return redirect(self.get_success_url())
 
@@ -139,7 +141,7 @@ class IntegrationDelete(ProjectMixin, DeleteView):
 # Setup
 
 
-class IntegrationConfigure(ProjectMixin, TurboUpdateView):
+class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
     template_name = "integrations/configure.html"
     model = Integration
 
@@ -151,6 +153,9 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
             )
         return super().get(request, *args, **kwargs)
 
+    def get_form_instance(self):
+        return self.object.source_obj
+
     def get_form_class(self):
         return KIND_TO_FORM_CLASS[self.object.kind]
 
@@ -160,8 +165,14 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
         return kwargs
 
     def form_valid(self, form):
-        # don't assigned the result to self.object
-        form.save()
+        # don't assign the result to self.object
+        with transaction.atomic():
+            form.save()
+            for formset in self.get_formsets().values():
+                if formset.is_valid():
+                    formset.instance = self.get_form_instance()
+                    formset.save()
+
         run_integration(self.object.kind, self.object.source_obj, self.request.user)
         analytics.track(
             self.request.user.id,

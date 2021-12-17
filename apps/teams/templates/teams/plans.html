@@ -1,5 +1,4 @@
 {% extends "teams/base.html" %}
-{% load waffle_tags %}
 
 {% block page_head %}
   <meta name="turbo-visit-control" content="reload">
@@ -51,14 +50,9 @@
         </p>
         <p class="mb-6"><strong>1 Million</strong> rows of data</p>
 
-        {% flag 'subscriptions' %}
-          <a href="{% url 'teams:checkout' team.id %}?plan={{ paddle_pro_plan.id }}" class="button button--primary w-full">
-            Upgrade to Pro
-          </a>
-        {% else %}
-          <button class="button button--primary w-full" disabled>Available soon</button>
-        {% endflag %}
-
+        <a href="{% url 'teams:checkout' team.id %}?plan={{ paddle_pro_plan.id }}" class="button button--primary w-full">
+          Upgrade to Pro
+        </a>
       </div>
 
       <hr>
@@ -85,13 +79,9 @@
         </p>
         <p class="mb-6"><strong>10 Million</strong> rows of data</p>
 
-        {% flag 'subscriptions' %}
-          <a href="{% url 'teams:checkout' team.id %}?plan={{ paddle_business_plan.id }}" class="button button--primary w-full">
-            Upgrade to Business
-          </a>
-        {% else %}
-          <button class="button button--primary w-full" disabled>Available soon</button>
-        {% endflag %}
+        <a href="{% url 'teams:checkout' team.id %}?plan={{ paddle_business_plan.id }}" class="button button--primary w-full">
+          Upgrade to Business
+        </a>
       </div>
 
       <hr>

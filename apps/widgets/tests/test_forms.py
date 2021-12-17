@@ -188,7 +188,8 @@ def test_date_column_is_added(setup, widget_factory, control_factory):
 
     assert set(form.get_live_fields()) == {"kind", "show_summary_row", "table"}
 
-    control_factory(dashboard=dashboard)
+    control_factory(page=dashboard.pages.first())
+    widget.refresh_from_db()
 
     form = FORMS[widget.kind](instance=widget, project=dashboard.project)
 

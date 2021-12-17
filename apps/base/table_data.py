@@ -120,6 +120,10 @@ class BigQueryColumn(Column):
     def render(self, value):
         if value is None:
             return get_template("columns/empty_cell.html").render()
+        if isinstance(value, float):
+            return get_template("columns/float_cell.html").render(
+                {"value": value, "clean_value": round(value, 2)}
+            )
         return super().render(value)
 
 

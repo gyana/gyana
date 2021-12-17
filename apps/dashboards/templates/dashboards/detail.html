@@ -1,5 +1,4 @@
 {% extends "web/app/project_base.html" %}
-{% load waffle_tags %}
 
 {% block page_head %}
   {% if dashboard.font_family %}
@@ -114,7 +113,7 @@
 
     <span data-tooltip-target="body">Customize dimensions, grid spacing and color palette</span>
 
-    <div data-tf-modal-target="modal" class="tf-modal tf-modal--auto hidden">
+    <div data-tf-modal-target="modal" class="tf-modal tf-modal--auto tf-modal--wide hidden">
       <div class="card card--none card--modal flex-col flex-1 h-full">
         <turbo-frame
           id="dashboard:settings"
@@ -124,8 +123,6 @@
       </div>
     </div>
   </div>
-  
-  {% include 'controls/create.html' with dashboard=dashboard %}
   
   <div data-controller="tooltip">
     {% if not request.GET.mode or request.GET.mode == "edit" %}
@@ -203,6 +200,14 @@
     </div>
     <hr>
     {% endfor %}
+
+    <div class="active pad" data-controller="collapsable">
+      <h3 class="cursor-pointer" data-action="click->collapsable#toggle">
+        Controls
+      </h3>
+      
+      {% include 'controls/create.html' %}
+    </div>
   </aside>
   {% endif %}
 </div>

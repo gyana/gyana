@@ -44,6 +44,21 @@
       max-width: 56rem;
     }
   }
+
+  &--wide {
+    & > :first-child {
+      max-width: 68rem;
+    }
+  }
+}
+
+.modal__body {
+  overflow: hidden;
+}
+
+.modal__sidebar {
+  width: 12rem;
+  border-right: 1px solid var(--c-gray);
 }
 
 @keyframes scale-in-center {

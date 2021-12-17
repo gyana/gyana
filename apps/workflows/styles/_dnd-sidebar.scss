@@ -33,15 +33,15 @@
   }
 
   &__node {
+    // margin-top: 1.2rem;
     align-items: center;
     cursor: grab;
     display: grid;
-    gap: 1rem;
-    grid-template-columns: 1fr 6fr 1fr;
     flex-direction: row;
     font-size: 1.4rem;
+    gap: 1rem;
+    grid-template-columns: 1fr 6fr;
     min-height: 6.8rem;
-    // margin-top: 1.2rem;
 
     &:hover {
       background: var(--c-blue-10);

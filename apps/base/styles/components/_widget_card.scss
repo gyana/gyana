@@ -5,16 +5,19 @@
   position: relative;
 
   &__visual {
-    border: 1px solid var(--c-gray);
     display: flex;
     flex-flow: column;
     flex-grow: 1;
     overflow: hidden;
     width: 100%;
     z-index: calc(var(--z-default) + 1);
-
+    
     &--view {
       border: 1px solid var(--c-gray-50);
+    }
+
+    &--border {
+      border: 1px solid var(--c-gray);
     }
   }
 

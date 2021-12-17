@@ -1,5 +1,4 @@
 import analytics
-from django.db import transaction
 from django.urls import reverse
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
@@ -19,7 +18,6 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
     fields = ["kind", "x", "y", "page"]
 
     def form_valid(self, form):
-        form.instance.dashboard = self.dashboard
 
         # give different dimensions to text widget
         # TODO: make an abstraction with default values per widget kind
@@ -27,9 +25,7 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
             form.instance.width = 300
             form.instance.height = 195
 
-        with transaction.atomic():
-            super().form_valid(form)
-            self.dashboard.save()
+        super().form_valid(form)
 
         analytics.track(
             self.request.user.id,
@@ -84,9 +80,8 @@ class WidgetDetail(DashboardMixin, TurboUpdateView):
 
         clone.save()
         self.clone = clone
-        with transaction.atomic():
-            super().form_valid(form)
-            self.dashboard.save()
+
+        super().form_valid(form)
 
         analytics.track(
             self.request.user.id,

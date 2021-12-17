@@ -16,7 +16,7 @@ preview mode.
     data-grid-size="{{ dashboard.grid_size }}"
   >
     <div class="widget-card h-full">
-      <div class='widget-card__visual'>
+      <div class="widget-card__visual {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}">
         
         {% include 'widgets/_widget_title.html' %}
 

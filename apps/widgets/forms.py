@@ -1,3 +1,5 @@
+import copy
+
 from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
@@ -58,7 +60,7 @@ class GenericWidgetForm(LiveUpdateForm):
     def get_live_fields(self):
         fields = ["table", "kind"]
 
-        if self.get_live_field("table") and self.instance.page.dashboard.has_control:
+        if self.get_live_field("table") and self.instance.page.has_control:
             fields += ["date_column"]
 
         if self.get_live_field("kind") == Widget.Kind.TABLE and self.get_live_field(
@@ -219,4 +221,29 @@ class WidgetStyleForm(forms.ModelForm):
 
     class Meta:
         model = Widget
-        fields = ["palette_colors", "background_color", "show_tooltips", "font_size"]
+        fields = [
+            "palette_colors",
+            "background_color",
+            "show_tooltips",
+            "font_size",
+            "rounding_decimal",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance.kind == Widget.Kind.METRIC:
+            self.fields = copy.deepcopy(
+                {
+                    key: field
+                    for key, field in self.base_fields.items()
+                    if key not in ["palette_color", "font_size", "show_tooltips"]
+                }
+            )
+        else:
+
+            self.fields = {
+                key: field
+                for key, field in self.base_fields.items()
+                if key != "rounding_decimal"
+            }

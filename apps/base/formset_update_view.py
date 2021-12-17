@@ -22,6 +22,8 @@ FORMSET_LABELS = {
     "convert_columns": "Select columns to convert",
     "values": "Additional values",
     "charts": "Charts",
+    "queryparams": "Query Params",
+    "httpheaders": "HTTP Headers",
 }
 
 
@@ -31,10 +33,18 @@ def _get_formset_label(formset):
 
 
 class FormsetUpdateView(TurboUpdateView):
+    @cache
+    def get_form(self):
+        return super().get_form()
+
     def get_formset_class(self):
-        if form := self.get_form():
+        form = self.get_form()
+        if form and hasattr(form, "get_live_formsets"):
             return form.get_live_formsets()
         return []
+
+    def get_form_instance(self):
+        return self.object
 
     def get_formset_form_kwargs(self, formset):
         return {}
@@ -53,7 +63,7 @@ class FormsetUpdateView(TurboUpdateView):
             # POST request for form creation
             formset(
                 self.request.POST,
-                instance=self.object,
+                instance=self.get_form_instance(),
                 **self.get_formset_kwargs(formset),
                 form_kwargs=forms_kwargs,
             )
@@ -62,7 +72,7 @@ class FormsetUpdateView(TurboUpdateView):
             and f"{formset.get_default_prefix()}-TOTAL_FORMS" in self.request.POST
             # initial render
             else formset(
-                instance=self.object,
+                instance=self.get_form_instance(),
                 **self.get_formset_kwargs(formset),
                 form_kwargs=forms_kwargs,
             )
@@ -103,10 +113,10 @@ class FormsetUpdateView(TurboUpdateView):
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
         with transaction.atomic():
-            self.object = form.save()
+            response = super().form_valid(form)
             for formset in self.get_formsets().values():
                 if formset.is_valid():
-                    formset.instance = self.object
+                    formset.instance = self.get_form_instance()
                     formset.save()
 
-        return super().form_valid(form)
+        return response

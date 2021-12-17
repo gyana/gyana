@@ -1,7 +1,6 @@
 {% extends "teams/base.html" %}
 {% load humanize %}
 {% load help_utils %}
-{% load waffle_tags %}
 
 {% block tab %}
 <section class="account">
@@ -97,7 +96,6 @@
       </p>
       {% endif %}
 
-      {% flag 'subscriptions' %}
       {% if team.has_subscription %}
       <h2>Billing</h2>
 
@@ -156,8 +154,6 @@
         </table>
       </div>
       {% endif %}
-
-      {% endflag %}
     {% endif %}
   </div>
 

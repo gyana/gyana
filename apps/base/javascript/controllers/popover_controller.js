@@ -16,11 +16,12 @@ import tippy from 'tippy.js'
  * </div>
  */
 export default class extends Controller {
-  static targets = ['body']
+  static targets = ['body', 'trigger']
 
   connect() {
     console.assert(this.hasBodyTarget, 'Popover controllers need a body target')
 
+    /** @link https://atomiks.github.io/tippyjs/v6/all-props/ */
     tippy(this.element, {
       allowHTML: true,
       animation: false,
@@ -28,9 +29,12 @@ export default class extends Controller {
       content: this.bodyTarget.innerHTML,
       delay: 0,
       interactive: true,
+      appendTo: this.hasTriggerTarget ? this.element : () => document.body,
       placement: this.element.dataset.placement || 'bottom',
       theme: this.element.dataset.theme || 'popover',
+      maxWidth: 'none',
       trigger: 'click',
+      triggerTarget: this.hasTriggerTarget ? this.triggerTarget : this.element,
     })
   }
 

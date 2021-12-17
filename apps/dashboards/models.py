@@ -37,8 +37,8 @@ class DashboardSettings(models.Model):
         default=getFusionThemePalette,
     )
     background_color = models.CharField(default="#ffffff", max_length=7)
-    font_size = models.IntegerField(default="16")
-    font_color = models.CharField(default="#000000", max_length=7)
+    font_size = models.IntegerField(default="14")
+    font_color = models.CharField(default="#6a6b77", max_length=7)
     font_family = models.CharField(
         max_length=30, default=FontFamily.ROBOTO, choices=FontFamily.choices
     )
@@ -119,10 +119,6 @@ class Dashboard(DashboardSettings, CloneMixin, BaseModel):
         return f"{domain}/dashboards/{self.shared_id}"
 
     @property
-    def has_control(self):
-        return hasattr(self, "control")
-
-    @property
     def widgets(self):
         from apps.widgets.models import Widget
 
@@ -139,3 +135,7 @@ class Page(CloneMixin, BaseModel):
         Dashboard, on_delete=models.CASCADE, related_name="pages"
     )
     position = models.IntegerField(default=1)
+
+    @property
+    def has_control(self):
+        return hasattr(self, "control")

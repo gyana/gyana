@@ -75,6 +75,10 @@ class QueryResults(_QueryResults):
 
     @property
     def rows_df(self):
+        if not self.rows:
+            return pd.DataFrame(
+                columns=[schema_field.name for schema_field in self.schema]
+            )
         return pd.DataFrame(self.rows_dict)
 
 
