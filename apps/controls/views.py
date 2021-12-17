@@ -36,6 +36,7 @@ class ControlWidgetCreate(UpdateWidgetsMixin, TurboCreateView):
                     "controls/control-widget.html",
                     {
                         "object": form.instance,
+                        "control": form.instance.control,
                         "project": self.dashboard.project,
                         "dashboard": self.dashboard,
                         "page": self.page,
@@ -45,7 +46,6 @@ class ControlWidgetCreate(UpdateWidgetsMixin, TurboCreateView):
             ]
         )
 
-    # TODO: not right yet
     def get_success_url(self) -> str:
         return reverse(
             "project_dashboards:detail",
