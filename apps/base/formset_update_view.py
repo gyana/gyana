@@ -2,7 +2,7 @@ from functools import cache
 
 from django import forms
 from django.db import transaction
-from django.http.response import HttpResponse, HttpResponseRedirect
+from django.http.response import HttpResponse
 
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.turbo import TurboUpdateView
@@ -109,10 +109,10 @@ class FormsetUpdateView(TurboUpdateView):
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
         with transaction.atomic():
-            self.object = form.save()
+            response = super().form_valid(form)
             for formset in self.get_formsets().values():
                 if formset.is_valid():
                     formset.instance = self.get_form_instance()
                     formset.save()
 
-        return HttpResponseRedirect(self.get_success_url())
+        return response
