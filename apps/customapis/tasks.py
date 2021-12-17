@@ -30,7 +30,9 @@ def run_customapi_sync_task(self, run_id):
     # - timeouts and max size for request
     # - validate status code and share error information if failed
     # - validate jsonpath_expr works and print json if failed
-    response = requests.get(customapi.url).json()
+    response = requests.request(
+        method=customapi.http_request_method, url=customapi.url
+    ).json()
     jsonpath_expr = parse(customapi.json_path)
     data = jsonpath_expr.find(response)[0].value
     ndjson = "\n".join([json.dumps(item) for item in data])

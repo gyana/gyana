@@ -10,8 +10,8 @@ class CustomApiCreateForm(BaseModelForm):
 
     class Meta:
         model = CustomApi
-        fields = ["url", "json_path"]
-        labels = {"url": "URL", "json_path": "JSON Path"}
+        fields = ["url"]
+        labels = {"url": "URL"}
 
     def __init__(self, *args, **kwargs):
         self._project = kwargs.pop("project")
@@ -30,4 +30,9 @@ class CustomApiCreateForm(BaseModelForm):
 class CustomApiUpdateForm(BaseModelForm):
     class Meta:
         model = CustomApi
-        fields = []
+        fields = ["url", "json_path", "http_request_method"]
+        labels = {
+            "url": "URL",
+            "json_path": "JSON Path",
+            "http_request_method": "HTTP Request Method",
+        }
