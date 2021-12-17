@@ -112,7 +112,6 @@
         </div>
       </div>
 
-      {% flag 'beta' %}
       {% if form.date_column %}
         <div data-controller='widget-slice' >
           <div data-widget-slice-target ="input" class='{% if not show_date_column%}hidden{%endif%}'>
@@ -133,11 +132,10 @@
           type='button' 
           data-action="widget-slice#add" 
           data-turbo='false'
-        ><i class='fa fa-plus'></i> Add datetime slice column
+        ><i class='fa fa-plus'></i> Add date control column
         </button>
         </div>
       {% endif %}
-      {% endflag %}
 
       <hr>
 
