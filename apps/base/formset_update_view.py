@@ -2,7 +2,7 @@ from functools import cache
 
 from django import forms
 from django.db import transaction
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, HttpResponseRedirect
 
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.turbo import TurboUpdateView
@@ -36,6 +36,9 @@ class FormsetUpdateView(TurboUpdateView):
             return form.get_live_formsets()
         return []
 
+    def get_form_instance(self):
+        return self.object
+
     def get_formset_form_kwargs(self, formset):
         return {}
 
@@ -53,7 +56,7 @@ class FormsetUpdateView(TurboUpdateView):
             # POST request for form creation
             formset(
                 self.request.POST,
-                instance=self.object,
+                instance=self.get_form_instance(),
                 **self.get_formset_kwargs(formset),
                 form_kwargs=forms_kwargs,
             )
@@ -62,7 +65,7 @@ class FormsetUpdateView(TurboUpdateView):
             and f"{formset.get_default_prefix()}-TOTAL_FORMS" in self.request.POST
             # initial render
             else formset(
-                instance=self.object,
+                instance=self.get_form_instance(),
                 **self.get_formset_kwargs(formset),
                 form_kwargs=forms_kwargs,
             )
@@ -106,7 +109,7 @@ class FormsetUpdateView(TurboUpdateView):
             self.object = form.save()
             for formset in self.get_formsets().values():
                 if formset.is_valid():
-                    formset.instance = self.object
+                    formset.instance = self.get_form_instance()
                     formset.save()
 
-        return super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())

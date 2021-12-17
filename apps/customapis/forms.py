@@ -1,8 +1,25 @@
 from django import forms
 
 from apps.base.forms import BaseModelForm
+from apps.base.formsets import RequiredInlineFormset
 
-from .models import CustomApi
+from .models import CustomApi, QueryParam
+
+
+class QueryParamForm(BaseModelForm):
+    class Meta:
+        model = QueryParam
+        fields = ["key", "value"]
+
+
+QueryParamFormset = forms.inlineformset_factory(
+    CustomApi,
+    QueryParam,
+    form=QueryParamForm,
+    can_delete=True,
+    extra=0,
+    formset=RequiredInlineFormset,
+)
 
 
 class CustomApiCreateForm(BaseModelForm):
@@ -36,3 +53,6 @@ class CustomApiUpdateForm(BaseModelForm):
             "json_path": "JSON Path",
             "http_request_method": "HTTP Request Method",
         }
+
+    def get_live_formsets(self):
+        return [QueryParamFormset]

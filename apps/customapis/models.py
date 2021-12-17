@@ -48,3 +48,10 @@ class CustomApi(BaseModel):
             created_by=created_by,
         )
         self.integration = integration
+
+
+class QueryParam(BaseModel):
+
+    customapi = models.ForeignKey(CustomApi, on_delete=models.CASCADE)
+    key = models.CharField(max_length=1024)
+    value = models.CharField(max_length=1024)
