@@ -29,7 +29,7 @@ export default class extends Controller {
       content: this.bodyTarget.innerHTML,
       delay: 0,
       interactive: true,
-      appendTo: this.element,
+      appendTo: this.hasTriggerTarget ? this.element : () => document.body,
       placement: this.element.dataset.placement || 'bottom',
       theme: this.element.dataset.theme || 'popover',
       maxWidth: 'none',
