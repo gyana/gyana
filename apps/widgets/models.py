@@ -29,6 +29,9 @@ class WidgetStyle(models.Model):
     font_size = models.IntegerField(null=True)
     font_color = models.CharField(null=True, max_length=7)
 
+    # Metric rounding
+    rounding_decimal = models.IntegerField(default=2)
+
 
 class Widget(WidgetStyle, CloneMixin, BaseModel):
     _clone_m2o_or_o2m_fields = ["filters", "aggregations", "charts"]

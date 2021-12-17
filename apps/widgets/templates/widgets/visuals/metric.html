@@ -4,6 +4,6 @@
   {% endif %}
 
   <h2 class="metric__value">
-    {{ metric }}
+    {{ metric|floatformat:widget.rounding_decimal }}
   </h2>
 </div>

@@ -1,3 +1,5 @@
+import copy
+
 from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
@@ -219,4 +221,29 @@ class WidgetStyleForm(forms.ModelForm):
 
     class Meta:
         model = Widget
-        fields = ["palette_colors", "background_color", "show_tooltips", "font_size"]
+        fields = [
+            "palette_colors",
+            "background_color",
+            "show_tooltips",
+            "font_size",
+            "rounding_decimal",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance.kind == Widget.Kind.METRIC:
+            self.fields = copy.deepcopy(
+                {
+                    key: field
+                    for key, field in self.base_fields.items()
+                    if key not in ["palette_color", "font_size", "show_tooltips"]
+                }
+            )
+        else:
+
+            self.fields = {
+                key: field
+                for key, field in self.base_fields.items()
+                if key != "rounding_decimal"
+            }
