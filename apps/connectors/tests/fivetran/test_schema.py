@@ -1,4 +1,5 @@
 import pytest
+
 from apps.connectors.fivetran.config import ServiceTypeEnum
 from apps.connectors.fivetran.schema import FivetranSchemaObj
 
