@@ -111,7 +111,9 @@ def get_join_query(node, left, right):
     to_join = getattr(left, JOINS[node.join_how])
 
     joined = to_join(right, left[left_col] == right[right_col]).materialize()
-    return joined.drop([right_col]).relabel({left_col: node.join_left})
+    if node.join_how == "inner":
+        joined = joined.drop([right_col]).relabel({left_col: node.join_left})
+    return joined
 
 
 def get_aggregation_query(node, query):

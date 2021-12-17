@@ -200,7 +200,22 @@ def test_join_node(setup):
 
     join_node.join_how = "outer"
     query = get_query_from_node(join_node)
-    assert query.compile() == join_query.replace("INNER", "FULL OUTER")
+    assert (
+        query.compile()
+        == """\
+SELECT *
+FROM (
+  SELECT `id` AS `id_left`, `athlete` AS `athlete_left`,
+         `birthday` AS `birthday_left`
+  FROM `project.dataset.table`
+) t0
+  FULL OUTER JOIN (
+    SELECT `id` AS `id_right`, `athlete` AS `athlete_right`,
+           `birthday` AS `birthday_right`
+    FROM `project.dataset.table`
+  ) t1
+    ON t0.`id_left` = t1.`id_right`"""
+    )
 
 
 def test_aggregation_node(setup):
