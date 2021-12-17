@@ -10,9 +10,11 @@ describe('automate', () => {
     cy.get('i.fa-spinner-third').should('have.length', 1)
     cy.get('i.fa-clock').should('have.length', 2)
 
-    cy.get('i.fa-check-circle', { timeout: BIGQUERY_TIMEOUT }).should('have.length', 1)
-    cy.get('i.fa-check-circle', { timeout: BIGQUERY_TIMEOUT }).should('have.length', 2)
-    cy.get('i.fa-check-circle', { timeout: BIGQUERY_TIMEOUT }).should('have.length', 3)
+    const initial = 2
+
+    cy.get('i.fa-check-circle', { timeout: BIGQUERY_TIMEOUT }).should('have.length', initial + 1)
+    cy.get('i.fa-check-circle', { timeout: BIGQUERY_TIMEOUT }).should('have.length', initial + 2)
+    cy.get('i.fa-check-circle', { timeout: BIGQUERY_TIMEOUT }).should('have.length', initial + 3)
 
     cy.get('button[data-cy=settings]').click()
     cy.get('table tbody tr').should('have.length', 1)
