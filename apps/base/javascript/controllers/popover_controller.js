@@ -21,6 +21,7 @@ export default class extends Controller {
   connect() {
     console.assert(this.hasBodyTarget, 'Popover controllers need a body target')
 
+    /** @link https://atomiks.github.io/tippyjs/v6/all-props/ */
     tippy(this.element, {
       allowHTML: true,
       animation: false,
@@ -31,6 +32,7 @@ export default class extends Controller {
       appendTo: this.element,
       placement: this.element.dataset.placement || 'bottom',
       theme: this.element.dataset.theme || 'popover',
+      maxWidth: 'none',
       trigger: 'click',
       triggerTarget: this.hasTriggerTarget ? this.triggerTarget : this.element,
     })

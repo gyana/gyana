@@ -12,6 +12,7 @@
   border-radius: 5px;
   color: var(--c-black);
   width: max-content;
+  max-width: 35rem;
   z-index: var(--z-modal);
 }
 
@@ -33,5 +34,9 @@
 
 .tippy-box[data-theme~='popover-control'] {
   width: max-content;
-  max-width: 600px !important;
+  max-width: 60rem;
+
+  .tippy-content {
+    padding: 0.8rem;
+  }
 }
