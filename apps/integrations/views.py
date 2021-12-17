@@ -115,7 +115,7 @@ class IntegrationSettings(ProjectMixin, TurboUpdateView):
         return kwargs
 
     def form_valid(self, form):
-        # don't assigned the result to self.object
+        # don't assign the result to self.object
         form.save()
         return redirect(self.get_success_url())
 
@@ -165,7 +165,7 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
         return kwargs
 
     def form_valid(self, form):
-        # don't assigned the result to self.object
+        # don't assign the result to self.object
         with transaction.atomic():
             form.save()
             for formset in self.get_formsets().values():
