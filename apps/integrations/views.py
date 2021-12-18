@@ -8,6 +8,7 @@ from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView, UpdateView
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
+from turbo_response.response import HttpResponseSeeOther
 
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
 from apps.base.formset_update_view import FormsetUpdateView
@@ -172,6 +173,9 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
                 if formset.is_valid():
                     formset.instance = self.get_form_instance()
                     formset.save()
+
+        if self.request.POST.get("submit") == "oauth2_authorize":
+            return redirect("customapis:oauth2_login", self.object.source_obj.id)
 
         run_integration(self.object.kind, self.object.source_obj, self.request.user)
         analytics.track(

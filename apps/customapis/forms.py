@@ -21,6 +21,12 @@ AUTHORIZATION_TO_FIELDS = {
     CustomApi.Authorization.BEARER_TOKEN: ["bearer_token"],
     CustomApi.Authorization.BASIC_AUTH: ["username", "password"],
     CustomApi.Authorization.DIGEST_AUTH: ["username", "password"],
+    CustomApi.Authorization.OAUTH2: [
+        "oauth2_client_id",
+        "oauth2_client_secret",
+        "oauth2_authorization_base_url",
+        "oauth2_token_url",
+    ],
 }
 
 
@@ -101,6 +107,10 @@ class CustomApiUpdateForm(LiveUpdateForm):
             "bearer_token",
             "username",
             "password",
+            "oauth2_client_id",
+            "oauth2_client_secret",
+            "oauth2_authorization_base_url",
+            "oauth2_token_url",
         ]
         labels = {
             "url": "URL",
@@ -109,6 +119,10 @@ class CustomApiUpdateForm(LiveUpdateForm):
             "api_key_key": "Key",
             "api_key_value": "Value",
             "api_key_add_to": "Add To",
+            "oauth2_client_id": "Client ID",
+            "oauth2_client_secret": "Client Secret",
+            "oauth2_authorization_base_url": "Auth URL",
+            "oauth2_token_url": "Access Token URL",
         }
 
     def get_live_fields(self):

@@ -25,6 +25,7 @@ class CustomApi(BaseModel):
         BEARER_TOKEN = "bearer_token", "Bearer Token"
         BASIC_AUTH = "basic_auth", "Basic Auth"
         DIGEST_AUTH = "digest_auth", "Digest Auth"
+        OAUTH2 = "oauth2", "OAuth2"
 
     class ApiKeyAddTo(models.TextChoices):
         HTTP_HEADER = "http_header", "HTTP Header"
@@ -60,6 +61,18 @@ class CustomApi(BaseModel):
     # basic auth or digest auth
     username = models.CharField(max_length=1024, null=True)
     password = models.CharField(max_length=1024, null=True)
+
+    # oauth2
+
+    # oauth2 configuration from the user
+    oauth2_client_id = models.CharField(max_length=1024, null=True)
+    oauth2_client_secret = models.CharField(max_length=1024, null=True)
+    oauth2_authorization_base_url = models.URLField(max_length=2048, null=True)
+    oauth2_token_url = models.URLField(max_length=2048, null=True)
+
+    # derived from the server
+    oauth2_state = models.CharField(max_length=1024, null=True)
+    oauth2_token = models.CharField(max_length=1024, null=True)
 
     @property
     def table_id(self):
