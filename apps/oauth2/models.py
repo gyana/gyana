@@ -17,7 +17,7 @@ class OAuth2(BaseModel):
 
     # derived from the server
     state = models.CharField(max_length=1024, null=True)
-    token = models.CharField(max_length=1024, null=True)
+    token = models.JSONField(null=True)
 
     def is_authorized(self):
         return self.token is not None

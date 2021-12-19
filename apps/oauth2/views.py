@@ -48,7 +48,7 @@ class OAuth2Login(DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        session = OAuth2Session(self.object.client_id)
+        session = OAuth2Session(self.object.client_id, scope=self.object.scope)
         authorization_url, state = session.authorization_url(
             self.object.authorization_base_url
         )

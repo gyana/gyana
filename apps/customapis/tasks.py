@@ -9,6 +9,7 @@ from django.utils import timezone
 from jsonpath_ng import parse
 from requests import Session
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
+from requests_oauthlib import OAuth2Session
 
 from apps.base.time import catchtime
 from apps.integrations.emails import send_integration_ready_email
@@ -46,6 +47,8 @@ AUTHORIZATION = {
     CustomApi.Authorization.BEARER_TOKEN: _get_authorization_for_bearer_token,
     CustomApi.Authorization.BASIC_AUTH: _get_authorization_for_basic_auth,
     CustomApi.Authorization.DIGEST_AUTH: _get_authorization_for_digest_auth,
+    # authorization is handled internally by OAuth2Session
+    CustomApi.Authorization.OAUTH2: lambda session, customapi: None,
 }
 
 
@@ -65,7 +68,11 @@ def run_customapi_sync_task(self, run_id):
     # - timeouts and max size for request
     # - validate status code and share error information if failed
     # - validate jsonpath_expr works and print json if failed
-    session = requests.Session()
+    session = (
+        OAuth2Session(token=customapi.oauth2.token)
+        if customapi.authorization == CustomApi.Authorization.OAUTH2
+        else requests.Session()
+    )
     _get_authorization(session, customapi)
     response = session.request(
         method=customapi.http_request_method,
