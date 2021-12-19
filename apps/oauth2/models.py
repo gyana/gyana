@@ -19,8 +19,11 @@ class OAuth2(BaseModel):
     state = models.CharField(max_length=1024, null=True)
     token = models.CharField(max_length=1024, null=True)
 
+    def is_authorized(self):
+        return self.token is not None
+
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("project_oauth2:detail", args=(self.project.id, self.id))
+        return reverse("project_oauth2:update", args=(self.project.id, self.id))

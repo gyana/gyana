@@ -1,5 +1,5 @@
 {% extends "web/app/project_base.html" %}
-
+{% load waffle_tags %}
 {% block app %}
 <div class="flex flex-col flex-1 overflow-auto">
   <div class="mb-auto pad">
@@ -29,12 +29,14 @@
       </span>
     </form>
 
-    <div class="max-w-2xl">
-      <div class="flex items-center mb-7">
-        <h2 class="mr-2">OAuth2</h2>
+    {% flag 'alpha' %}
+      <div>
+        <div class="flex items-center mb-7">
+          <h2 class="mr-2">OAuth2</h2>
+        </div>
+        <turbo-frame id="oauth2:list" src="{% url 'project_oauth2:list' object.id %}" target="_top"></turbo-frame>
       </div>
-      <turbo-frame id="oauth2:list" src="{% url 'project_oauth2:list' object.id %}"></turbo-frame>
-    </div>
+    {% endflag %}
   </div>
 
   <div class="pad border-t border-gray">

@@ -25,11 +25,6 @@ class OAuth2Create(ProjectMixin, TurboCreateView):
         return reverse("project_oauth2:update", args=(self.project.id, self.object.id))
 
 
-class OAuth2Detail(ProjectMixin, DetailView):
-    template_name = "oauth2/detail.html"
-    model = OAuth2
-
-
 class OAuth2Update(ProjectMixin, TurboUpdateView):
     template_name = "oauth2/update.html"
     model = OAuth2
@@ -42,7 +37,9 @@ class OAuth2Update(ProjectMixin, TurboUpdateView):
 class OAuth2Delete(ProjectMixin, DeleteView):
     template_name = "oauth2/delete.html"
     model = OAuth2
-    success_url = reverse_lazy("oauth2:list")
+
+    def get_success_url(self) -> str:
+        return reverse("projects:update", args=(self.project.id,))
 
 
 class OAuth2Login(DetailView):

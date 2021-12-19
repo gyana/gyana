@@ -8,7 +8,7 @@ from .models import OAuth2
 class OAuth2CreateForm(BaseModelForm):
     class Meta:
         model = OAuth2
-        fields = []
+        fields = ["name"]
 
     def __init__(self, *args, **kwargs):
         self._project = kwargs.pop("project")

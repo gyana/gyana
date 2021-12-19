@@ -21,7 +21,6 @@ project_urlpatterns = (
     [
         path("", frames.OAuth2List.as_view(), name="list"),
         path("new", views.OAuth2Create.as_view(), name="create"),
-        path("<hashid:pk>", views.OAuth2Detail.as_view(), name="detail"),
         path("<hashid:pk>/update", views.OAuth2Update.as_view(), name="update"),
         path("<hashid:pk>/delete", views.OAuth2Delete.as_view(), name="delete"),
     ],
