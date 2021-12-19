@@ -87,12 +87,15 @@ def run_customapi_sync_task(self, run_id):
             headers={h.key: h.value for h in customapi.httpheaders.all()},
         )
 
+        context["response"] = response
         response.raise_for_status()
 
         try:
             data = response.json()
         except json.JSONDecodeError:
             raise Exception("Unable to parse the response to JSON.")
+
+        context["json"] = json.dumps(data, indent=2)
 
         jsonpath_expr = parse(customapi.json_path)
         jsonpath_matches = jsonpath_expr.find(data)
@@ -112,6 +115,9 @@ def run_customapi_sync_task(self, run_id):
         customapi.ndjson_file.save(
             f"customapi_{customapi.id}.ndjson", ContentFile(ndjson.encode("utf-8"))
         )
+
+        context["ndjson"] = ndjson
+        context["ndjson_file"] = customapi.ndjson_file
 
     except Exception as exc:
         raise Exception(
