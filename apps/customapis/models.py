@@ -1,9 +1,22 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
+from jsonpath_ng import parse
+from jsonpath_ng.parser import JsonPathParserError
 
 from apps.base.clients import SLUG
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
+
+
+def validate_json_path(value):
+    try:
+        parse(value)
+    except JsonPathParserError as exc:
+        raise ValidationError(
+            "JSONPath expression is not valid: %(exc)s",
+            params={"exc": str(exc)},
+        )
 
 
 class CustomApi(BaseModel):
@@ -33,7 +46,7 @@ class CustomApi(BaseModel):
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 
     url = models.URLField(max_length=2048)
-    json_path = models.TextField(default="$")
+    json_path = models.TextField(default="$", validators=[validate_json_path])
 
     ndjson_file = models.FileField(
         upload_to=f"{SLUG}/custom_api_jsonnl" if SLUG else "custom_api_ndjson",

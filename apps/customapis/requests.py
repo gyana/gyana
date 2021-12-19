@@ -11,7 +11,7 @@ REQUEST_TIMEOUT = 30  # seconds
 # https://stackoverflow.com/a/22347526/15425660
 
 
-def request_safe(session: requests.Session, **kwargs):
+def request_safe(session: requests.Session, **kwargs) -> requests.Response:
     # session.request with a maximum timeout and size
 
     r = session.request(**kwargs, stream=True, timeout=REQUEST_TIMEOUT)

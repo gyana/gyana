@@ -65,10 +65,6 @@ def run_customapi_sync_task(self, run_id):
 
     # fetch data from the api, extract the list of items, write to GCS as
     # newline delimited JSON
-    # todo:
-    # - timeouts and max size for request
-    # - validate status code and share error information if failed
-    # - validate jsonpath_expr works and print json if failed
     session = (
         OAuth2Session(
             token=customapi.oauth2.token, auto_refresh_url=customapi.oauth2.token_url
@@ -84,10 +80,24 @@ def run_customapi_sync_task(self, run_id):
         params={q.key: q.value for q in customapi.queryparams.all()},
         headers={h.key: h.value for h in customapi.httpheaders.all()},
     )
+    response.raise_for_status()
+
+    try:
+        data = response.json()
+    except json.JSONDecodeError:
+        raise ValueError("Unable to parse JSON")
 
     jsonpath_expr = parse(customapi.json_path)
-    data = jsonpath_expr.find(response.json())[0].value
-    ndjson = "\n".join([json.dumps(item) for item in data])
+    jsonpath_matches = jsonpath_expr.find(data)
+
+    if len(jsonpath_matches) == 0:
+        raise Exception("No matches found")
+
+    if len(jsonpath_matches) > 1:
+        raise Exception("More than one match found")
+
+    parsed_data = jsonpath_matches[0].value
+    ndjson = "\n".join([json.dumps(item) for item in parsed_data])
     customapi.ndjson_file.save(
         f"customapi_{customapi.id}.ndjson", ContentFile(ndjson.encode("utf-8"))
     )
