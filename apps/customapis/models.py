@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db import models
-from django.db.models.fields import related
 
 from apps.base.clients import SLUG
 from apps.base.models import BaseModel
@@ -63,16 +62,7 @@ class CustomApi(BaseModel):
     password = models.CharField(max_length=1024, null=True)
 
     # oauth2
-
-    # oauth2 configuration from the user
-    oauth2_client_id = models.CharField(max_length=1024, null=True)
-    oauth2_client_secret = models.CharField(max_length=1024, null=True)
-    oauth2_authorization_base_url = models.URLField(max_length=2048, null=True)
-    oauth2_token_url = models.URLField(max_length=2048, null=True)
-
-    # derived from the server
-    oauth2_state = models.CharField(max_length=1024, null=True)
-    oauth2_token = models.CharField(max_length=1024, null=True)
+    oauth2 = models.ForeignKey("oauth2.OAuth2", null=True, on_delete=models.SET_NULL)
 
     @property
     def table_id(self):
