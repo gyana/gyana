@@ -63,7 +63,7 @@ project_urlpatterns = [
     path(
         "<hashid:project_id>/dashboards/", include(dashboard_urls.project_urlpatterns)
     ),
-    path("<hashid:project_id>/oauth2", include(oauth2_urls.project_urlpatterns)),
+    path("<hashid:project_id>/oauth2/", include(oauth2_urls.project_urlpatterns)),
     path(
         "<hashid:project_id>/dashboards/<hashid:dashboard_id>/widgets/",
         include(widget_urls.dashboard_urlpatterns),

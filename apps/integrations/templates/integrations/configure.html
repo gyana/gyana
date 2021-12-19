@@ -25,13 +25,6 @@
           {% endif %}
         </p>
 
-        {% if object.kind == 'customapi' and object.source_obj.authorization == object.source_obj.Authorization.OAUTH2 %}
-        <p class="mb-2">
-          Your OAuth2 callback URL:
-        </p>
-        <pre class="text-xl p-2" data-to-clipboard-target='target'>{{ request.get_host}}{% url 'customapis:oauth2_callback' object.source_obj.id %}</pre>
-        {% endif %}
-
         {% include "django/forms/default_form.html" %}
 
         <input type="hidden" name="submit" value="oauth2_authorize"/>

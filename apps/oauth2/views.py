@@ -5,31 +5,39 @@ from django.views.generic.edit import DeleteView
 from requests_oauthlib import OAuth2Session
 
 from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.projects.mixins import ProjectMixin
 
-from .forms import OAuth2Form
+from .forms import OAuth2CreateForm, OAuth2UpdateForm
 from .models import OAuth2
 
 
-class OAuth2Create(TurboCreateView):
+class OAuth2Create(ProjectMixin, TurboCreateView):
     template_name = "oauth2/create.html"
     model = OAuth2
-    form_class = OAuth2Form
-    success_url = reverse_lazy("oauth2:list")
+    form_class = OAuth2CreateForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["project"] = self.project
+        return kwargs
+
+    def get_success_url(self) -> str:
+        return reverse("project_oauth2:update", args=(self.project.id, self.object.id))
 
 
-class OAuth2Detail(DetailView):
+class OAuth2Detail(ProjectMixin, DetailView):
     template_name = "oauth2/detail.html"
     model = OAuth2
 
 
-class OAuth2Update(TurboUpdateView):
+class OAuth2Update(ProjectMixin, TurboUpdateView):
     template_name = "oauth2/update.html"
     model = OAuth2
-    form_class = OAuth2Form
+    form_class = OAuth2UpdateForm
     success_url = reverse_lazy("oauth2:list")
 
 
-class OAuth2Delete(DeleteView):
+class OAuth2Delete(ProjectMixin, DeleteView):
     template_name = "oauth2/delete.html"
     model = OAuth2
     success_url = reverse_lazy("oauth2:list")

@@ -31,14 +31,11 @@
 
     <div class="max-w-2xl">
       <div class="flex items-center mb-7">
-        <h2 class="mr-2">OAuth2 Account Access</h2>
-        {% comment %} {% link_article 'overview' 'oauth2' %} {% endcomment %}
+        <h2 class="mr-2">OAuth2</h2>
       </div>
       <turbo-frame id="oauth2:list" src="{% url 'project_oauth2:list' object.id %}"></turbo-frame>
     </div>
   </div>
-
-
 
   <div class="pad border-t border-gray">
     <h2 class="mb-3">Delete project</h2>
