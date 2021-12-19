@@ -8,7 +8,6 @@ from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView, UpdateView
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
-from turbo_response.response import HttpResponseSeeOther
 
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
 from apps.base.formset_update_view import FormsetUpdateView

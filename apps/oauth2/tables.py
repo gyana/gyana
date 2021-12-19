@@ -9,12 +9,7 @@ class OAuth2Table(tables.Table):
     class Meta:
         model = OAuth2
         attrs = {"class": "table"}
-        fields = (
-            "name",
-            "scope",
-            "is_authorized",
-            "created",
-        )
+        fields = ("name", "scope", "is_authorized", "created")
 
     name = tables.Column(linkify=True)
     is_authorized = tables.BooleanColumn(verbose_name="Authorized")
