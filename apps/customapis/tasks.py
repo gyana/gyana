@@ -69,7 +69,9 @@ def run_customapi_sync_task(self, run_id):
     # - validate status code and share error information if failed
     # - validate jsonpath_expr works and print json if failed
     session = (
-        OAuth2Session(token=customapi.oauth2.token)
+        OAuth2Session(
+            token=customapi.oauth2.token, auto_refresh_url=customapi.oauth2.token_url
+        )
         if customapi.authorization == CustomApi.Authorization.OAUTH2
         else requests.Session()
     )
