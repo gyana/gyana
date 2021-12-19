@@ -22,12 +22,30 @@ pre {
     <p>Response</p>
     <table class="table card w-full">
       <tbody>
-        <tr><td>Error</td><td>{{ response.url }}</td></tr>
-        <tr><td>Status Code</td><td>{{ response.status_code }}</td></tr>
-        <tr><td>Reason</td><td>{{ response.reason }}</td></tr>
-        <tr><td>Encoding</td><td>{{ response.encoding }}</td></tr>
-        <tr><td>Headers</td><td>{{ response.headers|safe }}</td></tr>
-        <tr><td>Content</td><td>{{ response.text|truncatechars:1000|safe }}</td></tr>
+        <tr>
+          <td>Error</td>
+          <td>{{ response.url }}</td>
+        </tr>
+        <tr>
+          <td>Status Code</td>
+          <td>{{ response.status_code }}</td>
+        </tr>
+        <tr>
+          <td>Reason</td>
+          <td>{{ response.reason }}</td>
+        </tr>
+        <tr>
+          <td>Encoding</td>
+          <td>{{ response.encoding }}</td>
+        </tr>
+        <tr>
+          <td>Headers</td>
+          <td>{{ response.headers|safe }}</td>
+        </tr>
+        <tr>
+          <td>Content</td>
+          <td>{{ response.text|truncatechars:1000|safe }}</td>
+        </tr>
       </tbody>
     </table>
   {% endif %}
