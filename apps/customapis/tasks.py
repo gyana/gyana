@@ -19,6 +19,7 @@ from apps.users.models import CustomUser
 
 from .bigquery import import_table_from_customapi
 from .models import CustomApi
+from .requests import request_safe
 
 
 def _get_authorization_for_api_key(session: Session, customapi: CustomApi):
@@ -56,7 +57,7 @@ def _get_authorization(session: Session, customapi: CustomApi):
     AUTHORIZATION[customapi.authorization](session, customapi)
 
 
-@shared_task(bind=True)
+@shared_task(bind=True, time_limit=REQUEST_TIMEOUT)
 def run_customapi_sync_task(self, run_id):
     run = JobRun.objects.get(pk=run_id)
     integration = run.integration
@@ -76,15 +77,15 @@ def run_customapi_sync_task(self, run_id):
         else requests.Session()
     )
     _get_authorization(session, customapi)
-    response = session.request(
+    response = request_safe(
         method=customapi.http_request_method,
         url=customapi.url,
         params={q.key: q.value for q in customapi.queryparams.all()},
         headers={h.key: h.value for h in customapi.httpheaders.all()},
-    ).json()
+    )
 
     jsonpath_expr = parse(customapi.json_path)
-    data = jsonpath_expr.find(response)[0].value
+    data = jsonpath_expr.find(response.json())[0].value
     ndjson = "\n".join([json.dumps(item) for item in data])
     customapi.ndjson_file.save(
         f"customapi_{customapi.id}.ndjson", ContentFile(ndjson.encode("utf-8"))
