@@ -14,10 +14,7 @@ REQUEST_TIMEOUT = 30  # seconds
 def request_safe(session: requests.Session, **kwargs):
     # session.request with a maximum timeout and size
 
-    r = session.get(**kwargs, stream=True, timeout=REQUEST_TIMEOUT)
-
-    if int(r.headers.get("Content-Length")) > REQUEST_MAX_SIZE:
-        raise ValueError("Response too large")
+    r = session.request(**kwargs, stream=True, timeout=REQUEST_TIMEOUT)
 
     size = 0
     start = time.time()
@@ -36,3 +33,5 @@ def request_safe(session: requests.Session, **kwargs):
             raise ValueError("Response too large")
 
     r._content = ctt.getvalue()
+
+    return r

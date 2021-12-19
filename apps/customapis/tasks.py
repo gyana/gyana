@@ -19,7 +19,7 @@ from apps.users.models import CustomUser
 
 from .bigquery import import_table_from_customapi
 from .models import CustomApi
-from .requests import request_safe
+from .requests import REQUEST_TIMEOUT, request_safe
 
 
 def _get_authorization_for_api_key(session: Session, customapi: CustomApi):
@@ -78,6 +78,7 @@ def run_customapi_sync_task(self, run_id):
     )
     _get_authorization(session, customapi)
     response = request_safe(
+        session,
         method=customapi.http_request_method,
         url=customapi.url,
         params={q.key: q.value for q in customapi.queryparams.all()},
