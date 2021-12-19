@@ -113,7 +113,7 @@ class CustomApiUpdateForm(LiveUpdateForm):
             "api_key_key": "Key",
             "api_key_value": "Value",
             "api_key_add_to": "Add To",
-            "oauth2": "OAuth2 Account Access",
+            "oauth2": "OAuth2",
         }
 
     def __init__(self, *args, **kwargs):
@@ -126,7 +126,7 @@ class CustomApiUpdateForm(LiveUpdateForm):
             field.queryset = project.oauth2_set.filter(token__isnull=False).all()
             settings_url = reverse("projects:update", args=(project.id,))
             field.help_text = mark_safe(
-                f'You can authorize services with OAuth2 in the project <a href="{settings_url}" class="link">settings</a>'
+                f'You can authorize services with OAuth2 in your project <a href="{settings_url}" class="link">settings</a>'
             )
 
     def get_live_fields(self):

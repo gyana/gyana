@@ -6,9 +6,6 @@ from . import views
 
 app_name = "customapis"
 
-urlpatterns = []
-
-
 integration_urlpatterns = (
     [
         path(
