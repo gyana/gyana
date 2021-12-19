@@ -1,6 +1,8 @@
 from functools import cache
 
 from django import forms
+from django.urls import reverse
+from django.utils.html import mark_safe
 
 from apps.base.forms import BaseModelForm
 from apps.base.formsets import RequiredInlineFormset
@@ -113,6 +115,19 @@ class CustomApiUpdateForm(LiveUpdateForm):
             "api_key_add_to": "Add To",
             "oauth2": "OAuth2 Account Access",
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.get_live_field("authorization") == CustomApi.Authorization.OAUTH2:
+            field = self.fields["oauth2"]
+            project = self.instance.integration.project
+
+            field.queryset = project.oauth2_set.filter(token__isnull=False).all()
+            settings_url = reverse("projects:update", args=(project.id,))
+            field.help_text = mark_safe(
+                f'You can authorize services with OAuth2 in the project <a href="{settings_url}" class="link">settings</a>'
+            )
 
     def get_live_fields(self):
         live_fields = ["url", "json_path", "http_request_method", "authorization"]
