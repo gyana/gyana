@@ -5,6 +5,7 @@ import requests
 from celery import shared_task
 from django.core.files.base import ContentFile
 from django.db import transaction
+from django.template.loader import get_template
 from django.utils import timezone
 from jsonpath_ng import parse
 from requests import Session
@@ -63,44 +64,61 @@ def run_customapi_sync_task(self, run_id):
     integration = run.integration
     customapi = integration.customapi
 
-    # fetch data from the api, extract the list of items, write to GCS as
-    # newline delimited JSON
-    session = (
-        OAuth2Session(
-            token=customapi.oauth2.token, auto_refresh_url=customapi.oauth2.token_url
-        )
-        if customapi.authorization == CustomApi.Authorization.OAUTH2
-        else requests.Session()
-    )
-    _get_authorization(session, customapi)
-    response = request_safe(
-        session,
-        method=customapi.http_request_method,
-        url=customapi.url,
-        params={q.key: q.value for q in customapi.queryparams.all()},
-        headers={h.key: h.value for h in customapi.httpheaders.all()},
-    )
-    response.raise_for_status()
+    # render the error template with debug context
+    context = {}
 
     try:
-        data = response.json()
-    except json.JSONDecodeError:
-        raise ValueError("Unable to parse JSON")
+        # fetch data from the api, extract the list of items, write to GCS as
+        # newline delimited JSON
+        session = (
+            OAuth2Session(
+                token=customapi.oauth2.token,
+                auto_refresh_url=customapi.oauth2.token_url,
+            )
+            if customapi.authorization == CustomApi.Authorization.OAUTH2
+            else requests.Session()
+        )
+        _get_authorization(session, customapi)
+        response = request_safe(
+            session,
+            method=customapi.http_request_method,
+            url=customapi.url,
+            params={q.key: q.value for q in customapi.queryparams.all()},
+            headers={h.key: h.value for h in customapi.httpheaders.all()},
+        )
 
-    jsonpath_expr = parse(customapi.json_path)
-    jsonpath_matches = jsonpath_expr.find(data)
+        response.raise_for_status()
 
-    if len(jsonpath_matches) == 0:
-        raise Exception("No matches found")
+        try:
+            data = response.json()
+        except json.JSONDecodeError:
+            raise Exception("Unable to parse the response to JSON.")
 
-    if len(jsonpath_matches) > 1:
-        raise Exception("More than one match found")
+        jsonpath_expr = parse(customapi.json_path)
+        jsonpath_matches = jsonpath_expr.find(data)
 
-    parsed_data = jsonpath_matches[0].value
-    ndjson = "\n".join([json.dumps(item) for item in parsed_data])
-    customapi.ndjson_file.save(
-        f"customapi_{customapi.id}.ndjson", ContentFile(ndjson.encode("utf-8"))
-    )
+        if len(jsonpath_matches) == 0:
+            raise Exception(
+                "JSONPath expression does not match any part of the JSON response."
+            )
+
+        if len(jsonpath_matches) > 1:
+            raise Exception(
+                "JSONPath expression matches more than one part of the JSON response."
+            )
+
+        parsed_data = jsonpath_matches[0].value
+        ndjson = "\n".join([json.dumps(item) for item in parsed_data])
+        customapi.ndjson_file.save(
+            f"customapi_{customapi.id}.ndjson", ContentFile(ndjson.encode("utf-8"))
+        )
+
+    except Exception as exc:
+        raise Exception(
+            get_template("customapis/_error.html").render(
+                context={"message": str(exc), **context}
+            )
+        )
 
     # we need to save the table instance to get the PK from database, this ensures
     # database will rollback automatically if there is an error with the bigquery

@@ -47,7 +47,7 @@ export default class extends Controller {
     const failureNode = this.element.querySelector("#failure-template").content.cloneNode(true)
     this.element.innerHTML = ""
     this.element.appendChild(failureNode)
-    this.element.querySelector("#failure-message").textContent = excMessage || ""
+    this.element.querySelector('#failure-message').innerHTML = excMessage || ''
   }
 
   connect() {
