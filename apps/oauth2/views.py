@@ -74,8 +74,4 @@ class OAuth2Callback(DetailView):
         )
         self.object.save()
 
-        return redirect(
-            "project_integrations:configure",
-            self.object.integration.project.id,
-            self.object.integration.id,
-        )
+        return redirect("projects:update", self.object.project.id)
