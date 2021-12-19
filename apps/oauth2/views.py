@@ -2,21 +2,12 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
-from django_tables2 import SingleTableView
 from requests_oauthlib import OAuth2Session
 
 from apps.base.turbo import TurboCreateView, TurboUpdateView
 
 from .forms import OAuth2Form
 from .models import OAuth2
-from .tables import OAuth2Table
-
-
-class OAuth2List(SingleTableView):
-    template_name = "oauth2/list.html"
-    model = OAuth2
-    table_class = OAuth2Table
-    paginate_by = 20
 
 
 class OAuth2Create(TurboCreateView):
