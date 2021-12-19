@@ -27,8 +27,6 @@
 
         {% include "django/forms/default_form.html" %}
 
-        <input type="hidden" name="submit" value="oauth2_authorize"/>
-
         {% if object.kind == 'customapi' and object.source_obj.authorization == object.source_obj.Authorization.OAUTH2 %}
           <button type="submit" name="submit" value="oauth2_authorize" class="button button--tertiary mt-4 w-full">
             {% if not object.source_obj.oauth2_token %}

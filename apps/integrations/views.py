@@ -174,9 +174,6 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
                     formset.instance = self.get_form_instance()
                     formset.save()
 
-        if self.request.POST.get("submit") == "oauth2_authorize":
-            return redirect("customapis:oauth2_login", self.object.source_obj.id)
-
         run_integration(self.object.kind, self.object.source_obj, self.request.user)
         analytics.track(
             self.request.user.id,

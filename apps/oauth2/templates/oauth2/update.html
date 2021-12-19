@@ -13,7 +13,7 @@
     </p>
     <pre class="text-xl p-2" data-to-clipboard-target='target'>{{ request.get_host}}{% url 'oauth2:callback' object.id %}</pre>
 
-    <form method="post" class="mt-7">
+    <form method="post" class="mt-7" data-turbo="false">
       {% csrf_token %}
 
       {% include "django/forms/default_form.html" %}
