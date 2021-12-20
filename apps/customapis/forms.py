@@ -132,12 +132,14 @@ BODY_TO_FORMSETS = {
 
 
 class CustomApiCreateForm(BaseModelForm):
-    name = forms.CharField(max_length=255)
+    name = forms.CharField(
+        max_length=255,
+        help_text="E.g. the domain or website, to help you find it later",
+    )
 
     class Meta:
         model = CustomApi
-        fields = ["url"]
-        labels = {"url": "URL"}
+        fields = []
 
     def __init__(self, *args, **kwargs):
         self._project = kwargs.pop("project")
@@ -186,6 +188,8 @@ class CustomApiUpdateForm(LiveUpdateForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.fields["url"].required = True
 
         if self.get_live_field("authorization") == CustomApi.Authorization.OAUTH2:
             field = self.fields["oauth2"]

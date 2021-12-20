@@ -63,7 +63,7 @@ class CustomApi(BaseModel):
 
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 
-    url = models.URLField(max_length=2048)
+    url = models.URLField(max_length=2048, null=True)
     json_path = models.TextField(default="$", validators=[validate_json_path])
 
     ndjson_file = models.FileField(upload_to=with_slug("customapi_ndjson"), null=True)
