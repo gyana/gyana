@@ -1,23 +1,28 @@
 import json
-from datetime import datetime
-from unittest.mock import Mock
 
-import googleapiclient
 import pytest
 import requests
 from celery import states
 from django.core import mail
-from pytest_django.asserts import (
-    assertContains,
-    assertFormError,
-    assertNotContains,
-    assertRedirects,
-)
+from pytest_django.asserts import assertRedirects
 
 from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
 from apps.integrations.models import Integration
 
 pytestmark = pytest.mark.django_db
+
+
+def base_formset(formset):
+    return {
+        f"{formset}-TOTAL_FORMS": 0,
+        f"{formset}-MIN_NUM_FORMS": 1000,
+        f"{formset}-MAX_NUM_FORMS": 1000,
+        f"{formset}-INITIAL_FORMS": 0,
+    }
+
+
+QUERY_PARAMS_BASE_DATA = base_formset("queryparams")
+HTTP_HEADERS_BASE_DATA = base_formset("httpheaders")
 
 
 @pytest.fixture
@@ -72,14 +77,8 @@ def test_customapi_create(client, logged_in_user, project, bigquery, request_saf
             "http_request_method",
             "authorization",
             "body",
-            "queryparams-TOTAL_FORMS",
-            "queryparams-INITIAL_FORMS",
-            "queryparams-MIN_NUM_FORMS",
-            "queryparams-MAX_NUM_FORMS",
-            "httpheaders-TOTAL_FORMS",
-            "httpheaders-INITIAL_FORMS",
-            "httpheaders-MIN_NUM_FORMS",
-            "httpheaders-MAX_NUM_FORMS",
+            *QUERY_PARAMS_BASE_DATA.keys(),
+            *HTTP_HEADERS_BASE_DATA.keys(),
         ],
     )
 
@@ -97,14 +96,8 @@ def test_customapi_create(client, logged_in_user, project, bigquery, request_saf
             "authorization": "no_auth",
             "body": "none",
             "submit": True,
-            "queryparams-TOTAL_FORMS": 0,
-            "queryparams-INITIAL_FORMS": 0,
-            "queryparams-MIN_NUM_FORMS": 0,
-            "queryparams-MAX_NUM_FORMS": 0,
-            "httpheaders-TOTAL_FORMS": 0,
-            "httpheaders-INITIAL_FORMS": 0,
-            "httpheaders-MIN_NUM_FORMS": 0,
-            "httpheaders-MAX_NUM_FORMS": 0,
+            **QUERY_PARAMS_BASE_DATA,
+            **HTTP_HEADERS_BASE_DATA,
         },
     )
     assertRedirects(r, f"{DETAIL}/load", status_code=303)
