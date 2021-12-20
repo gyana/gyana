@@ -4,7 +4,7 @@ from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import DetailView
+from django.views.generic import DetailView, TemplateView
 from django.views.generic.edit import DeleteView, UpdateView
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
@@ -12,6 +12,11 @@ from django_tables2.views import SingleTableMixin
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
 from apps.base.formset_update_view import FormsetUpdateView
 from apps.base.turbo import TurboUpdateView
+from apps.connectors.fivetran.config import (
+    get_service_categories,
+    get_services_obj,
+    get_services_query,
+)
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import run_integration
 from apps.projects.mixins import ProjectMixin
@@ -50,6 +55,25 @@ class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
 
 
 # Tabs
+
+
+class IntegrationCreate(ProjectMixin, TemplateView):
+    template_name = "integrations/create.html"
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        services_query = get_services_query(
+            category=self.request.GET.get("category"),
+            search=self.request.GET.get("search"),
+            show_internal=self.request.user.is_superuser,
+        )
+        context_data["services_query"] = services_query
+        context_data["services_query_count"] = len(services_query)
+        context_data["services"] = get_services_obj()
+        context_data["service_categories"] = get_service_categories(
+            show_internal=self.request.user.is_superuser
+        )
+        return context_data
 
 
 class IntegrationDetail(ProjectMixin, UpdateView):

@@ -39,6 +39,11 @@ project_urlpatterns = (
             "", login_and_project_required(views.IntegrationList.as_view()), name="list"
         ),
         path(
+            "new",
+            login_and_project_required(views.IntegrationCreate.as_view()),
+            name="create",
+        ),
+        path(
             "overview",
             login_and_project_required(frames.IntegrationOverview.as_view()),
             name="overview",

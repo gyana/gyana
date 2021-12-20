@@ -1,0 +1,85 @@
+{% extends "web/app/project_settings_base.html" %}
+{% load static %}
+{% load help_utils %}
+{% load waffle_tags %}
+
+{% block app %}
+<div class='flex flex-col pad'>
+  <div class="flex items-center gap-3">
+    <h2>Choose an integration</h2>
+
+    {% link_article 'integrations' 'connector' %}
+    {% link_video 'connector' %}
+  </div>
+
+  <div class="flex mt-7 gap-7 w-full">
+    <div class="flex-none w-1/3 max-w-sm">
+      <div class="connectors__sidebar sidebar card card--none">
+        <nav class='sidebar__body'>
+          <li>
+            <a 
+              href="{% url 'project_integrations_connectors:create' project.id %}"
+              class="sidebar__link {% if not request.GET.category %} sidebar__link--active {% endif %}">
+              All
+            </a>
+          </li>
+          {% for category in service_categories %}
+            <li>
+              <a 
+                href="{% url 'project_integrations_connectors:create' project.id %}?category={{ category }}"
+                class="sidebar__link {% if category == request.GET.category %} sidebar__link--active {% endif %}">
+                {{ category }}
+              </a>
+            </li>
+          {% endfor %}
+        </nav>
+      </div>
+    </div>
+
+    <div class='flex flex-col w-full max-w-4xl'>
+
+      <form class="connectors__search mb-4" method="GET">
+        <input type="search" name="search" value="{{ request.GET.search }}" placeholder="Search all sources" />
+      </form> 
+
+      <div class='flex space-x-4 mb-4'>
+        <a class="button button--sm button--tertiary flex-1" href="{% url 'project_integrations_uploads:create' project.id %}">
+          <i class="fas fa-fw fa-upload mr-4"></i> CSV
+        </a>
+
+        <a class="button button--sm button--tertiary flex-1" href="{% url 'project_integrations_sheets:create' project.id %}">
+          <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Google Sheet
+        </a>
+
+        <a class="button button--sm button--tertiary flex-1" href="{% url 'project_integrations_sheets:create' project.id %}">
+          <i class="fas fa-fw fa-signal-stream mr-4"></i> Webhook
+        </a>
+
+        {% flag 'alpha' %}
+          <a class="button button--sm button--tertiary flex-1" href="{% url 'project_integrations_customapis:create' project.id %}">
+            <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API
+          </a>
+        {% endflag %}
+      </div>
+
+      <div class="flex-1 flex flex-col space-y-4">
+        <div>
+          <p>{{ services_query_count }} sources</p>
+        </div>
+        {% for service in services_query %}
+          <a class="card card--sm"
+            href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service.id }}">
+            <div class="flex items-center gap-7">
+              <img style="height:2.4rem;"
+                src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
+                  alt="{{ service.name }}"
+              />
+              <h4>{{ service.name }}</h4>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

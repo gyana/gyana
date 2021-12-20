@@ -61,45 +61,18 @@
     <p>A source of data, like a CSV file, Google Sheet, ads account, database, or web app.</p>
   </div>
 
-  <div class="flex ml-4">
+  <div class="flex ml-4 space-x-4">
     {% if project.team.enabled %}
-    <div data-controller='popover'>
-      <button class="button button--sm">
+      <a class="button button--sm button--tertiary" href="{% url 'project_integrations_uploads:create' project.id %}">
+        <i class="fas fa-fw fa-upload mr-4"></i> Upload CSV
+      </a>
+      <a href="{% url 'project_integrations:create' project.id %}" class="button button--sm">
+        <i class="fas fa-fw fa-plus"></i> New Integration
+      </a>
+    {% else %}
+      <button disabled class="button button--sm disabled">
         New Integration <i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
       </button>
-
-      <ul data-popover-target="body" class="list list--bordered" style="margin-top:6px;">
-        <li class="list__item list__item--interactive">
-          <a class="" href="{% url 'project_integrations_uploads:create' project.id %}">
-            <i class="fas fa-fw fa-upload mr-4"></i> Upload CSV
-          </a>
-        </li>
-
-        <li class="list__item list__item--interactive">
-          <a class="" href="{% url 'project_integrations_sheets:create' project.id %}">
-            <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
-          </a>
-        </li>
-
-        <li class="list__item list__item--interactive">
-          <a class="" href="{% url 'project_integrations_connectors:create' project.id %}">
-            <i class="fas fa-fw fa-plus mr-4"></i> New Connector
-          </a>
-        </li>
-
-        {% flag 'alpha' %}
-        <li class="list__item list__item--interactive">
-          <a class="" href="{% url 'project_integrations_customapis:create' project.id %}">
-            <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API
-          </a>
-        </li>
-        {% endflag %}
-      </ul>
-    </div>
-    {% else %}
-    <button disabled class="button button--sm disabled">
-      New Integration <i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
-    </button>
     {% endif %}
   </div>
 </div>
