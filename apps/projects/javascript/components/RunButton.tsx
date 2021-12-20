@@ -28,7 +28,7 @@ const RunButton: React.FC<Props> = ({ projectId, setRunInfo }) => {
         }
       },
       // override the defaults, otherwise they will raise errors
-      onRetry: () => {},
+      onRetry: () => { },
     })
   }
 
@@ -50,7 +50,7 @@ const RunButton: React.FC<Props> = ({ projectId, setRunInfo }) => {
           ) : (
             <i className='fas fa-fw fa-play'></i>
           )}
-          Run
+          Run all
         </button>
       </div>
     </Tippy>

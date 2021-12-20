@@ -45,6 +45,12 @@
     }
   }
 
+  &--tall {
+    & > :first-child {
+      height: 100%;
+    }
+  }
+
   &--full {
     & > :first-child {
       align-self: unset;
