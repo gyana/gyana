@@ -24,8 +24,6 @@ def validate_json_path(value):
 def validate_body_binary(value):
     if value.size > MAX_BODY_BINARY_SIZE:
         raise ValidationError("The maximum file size that can be uploaded is 10MB")
-    else:
-        return value
 
 
 class CustomApi(BaseModel):
