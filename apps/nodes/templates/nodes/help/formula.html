@@ -74,7 +74,7 @@
 
       {% for function in functions %}
 
-      <div class='function-pill' data-action="click->formula-drawer#open" data-src="{{function.id}}">
+      <div class='function-pill' data-action="click->formula-drawer#open" data-modal-src="{{function.id}}">
         <h4>
           <i class="fa {{ function.icon }} text-blue"></i> {{function.name}}(
             <em>{% include 'nodes/help/_arguments.html' with arguments=function.arguments %}</em>
@@ -96,7 +96,7 @@
     </button>
     <turbo-frame id="nodes:function-info" 
       data-formula-drawer-target='turboFrame'
-      data-src="{% url "nodes:function-info" node.id %}"
+      data-modal-src="{% url "nodes:function-info" node.id %}"
     >
     </turbo-frame>
   </div>

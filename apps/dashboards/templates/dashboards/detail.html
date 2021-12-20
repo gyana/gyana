@@ -29,52 +29,7 @@
       />
     </form>
   </turbo-frame>
-  {% if page_count > 1 %}
 
-  <small>
-    {% if previous_page == 0 %}
-
-      <i class="fa fa-chevron-left text-gray"></i>
-
-    {% else %}
-
-      <a href="{% url 'project_dashboards:detail' project.id object.id %}?page={{ previous_page}}"><i class="fa fa-chevron-left"></i></a>
-    
-    {% endif %}
-
-    Page {{page.position}} of {{page_count}}
-
-    {% if next_page > page_count %}
-
-      <i class="fa fa-chevron-right text-gray"></i>
-
-    {% else %}
-  
-      <a href="{% url 'project_dashboards:detail' project.id object.id %}?page={{next_page}}"><i class="fa fa-chevron-right"></i></a>
-    
-    {% endif %}
-  </small>
-    
-  {% else %}
-
-    <form
-      method="POST"
-      action="{% url "project_dashboards:page-create" project.id object.id %}"
-      class="form--no-layout"
-    >
-      {% csrf_token %}
-
-      <button
-        type="submit"
-        class="button button--sm button--tertiary"
-        id="dashboards-add-page-{{ object.id }}-topbar"
-        data-loading-false
-      >
-        <i class="fa fa-plus mr-2"></i> Add new page
-      </button>
-    </form>
-
-  {% endif %}
   <div
     data-controller="popover"
     data-placement="bottom-start"
@@ -147,68 +102,52 @@
     </template>
   </div>
 
-  <div data-controller="tooltip tf-modal">
+  <div data-controller="tooltip">
     <button
       data-action="click->tf-modal#open"
-      data-src="{% url "project_dashboards:settings" project.id object.id %}"
+      data-modal-id="dashboard:settings"
+      data-modal-classes="tf-modal--auto tf-modal--wide"
+      data-modal-src="{% url "project_dashboards:settings" project.id object.id %}"
+      data-modal-target="_top"
       class="button button--sm button--tertiary"
     >
       <i class="fas fa-fw fa-paint-brush"></i> Theme and Layout
     </button>
 
     <span data-tooltip-target="body">Customize dimensions, grid spacing and color palette</span>
-
-    <div data-tf-modal-target="modal" class="tf-modal tf-modal--auto tf-modal--wide hidden">
-      <div class="card card--none card--modal flex-col flex-1 h-full">
-        <turbo-frame
-          id="dashboard:settings"
-          data-tf-modal-target="turboFrame"
-          target="_top"
-        ></turbo-frame>
-      </div>
-    </div>
   </div>
   
   <div data-controller="tooltip">
     {% if not request.GET.mode or request.GET.mode == "edit" %}
     <a href="?mode=view" class="button button--sm button--tertiary">
-      <i class="fas fa-fw fa-eye"></i>Preview
+      <i class="fas fa-fw fa-eye"></i> Preview
     </a>
     {% else %}
     <a href="?mode=edit" class="button button--sm">
-      <i class="fas fa-fw fa-pen"></i>Edit
+      <i class="fas fa-fw fa-pen"></i> Edit
     </a>
     {% endif %}
     <span data-tooltip-target="body">Click to change view mode</span>
   </div>
 
-  <div data-controller="tf-modal">
-    <button
-      id="dashboard-share-{{ object.id }}"
-      class="button button--sm button--success"
-      data-action="click->tf-modal#open"
-      data-controller="tooltip"
-      data-src="{% url "dashboards:share" object.id %}"
-    >
-      <i class="fas fa-fw fa-share"></i>
-      Share
-      <span data-tooltip-target="body">Share a public or password-protected link</span>
-    </button>
-
-    <div data-tf-modal-target="modal" class="tf-modal tf-modal--auto hidden">
-      <div class="card card--none card--modal flex-col flex-1 overflow-auto">
-        <turbo-frame
-          id="dashboard-share"
-          data-tf-modal-target="turboFrame"
-        ></turbo-frame>
-      </div>
-    </div>
-  </div>
+  <button
+    id="dashboard-share-{{ object.id }}"
+    class="button button--sm button--success"
+    data-controller="tooltip"
+    data-action="click->tf-modal#open"
+    data-modal-src="{% url "dashboards:share" object.id %}"
+    data-modal-id="dashboard-share"
+  >
+    <i class="fas fa-fw fa-share"></i> Share
+    <span data-tooltip-target="body">Share a public or password-protected link</span>
+  </button>
 </div>
 
 <div class="w-full flex flex-row overflow-hidden">
   <div class="dashboard">
     {% include "dashboards/canvas.html" %}
+
+    {% include "dashboards/page_controls.html" %}
   </div>
 
   {% if request.GET.mode != "view" %}

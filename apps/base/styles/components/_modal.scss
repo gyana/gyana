@@ -24,8 +24,10 @@
 
   & > :first-child {
     animation: scale-in-center 0.125s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+    align-self: center;
     max-height: 100%;
-    max-width: 100%;
+    height: auto;
+    max-width: 56rem;
   }
 
   &--small {
@@ -37,17 +39,24 @@
     }
   }
 
-  &--auto {
-    & > :first-child {
-      align-self: center;
-      max-height: auto;
-      max-width: 56rem;
-    }
-  }
-
   &--wide {
     & > :first-child {
       max-width: 68rem;
+    }
+  }
+
+  &--tall {
+    & > :first-child {
+      height: 100%;
+    }
+  }
+
+  &--full {
+    & > :first-child {
+      align-self: unset;
+      height: unset;
+      max-height: 100%;
+      max-width: 100%;
     }
   }
 }
