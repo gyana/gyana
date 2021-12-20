@@ -2,15 +2,10 @@ import { Controller } from '@hotwired/stimulus'
 
 // Open a modal with the content populated by a turbo-frame
 export default class extends Controller {
-  static targets = ['modal', 'turboFrame', 'closingWarning', 'form']
+  static targets = ['modal', 'turboFrame', 'closingWarning', 'form', 'onParam']
 
   connect() {
     this.changed = false
-    const params = new URLSearchParams(window.location.search)
-
-    if (params.get('modal_item') && this.element.getAttribute('data-open-on-param') == '') {
-      this.modalTarget.removeAttribute('hidden')
-    }
 
     window.addEventListener('keyup', (event) => {
       if (event.key == 'Escape') {
@@ -25,6 +20,14 @@ export default class extends Controller {
         this.close(event)
       }
     })
+  }
+
+  onParamTargetConnected(target) {
+    const params = new URLSearchParams(window.location.search)
+
+    if (params.get('modal_item')) {
+      this.onParamTarget.click()
+    }
   }
 
   open(event) {
