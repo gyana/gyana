@@ -3,20 +3,31 @@
 {% load waffle_tags %}
 
 {% block sidebar_content %}
-<a class="sidebar__link sidebar__link--border" href="{% url 'teams:detail' project.team.id %}">
+<a
+  class="sidebar__link sidebar__link--border"
+  href="{% url 'teams:detail' project.team.id %}"
+  data-controller="tooltip"
+  data-placement="right"
+>
   {% if project.team.icon %}<img src="{{ project.team.icon.url }}" />{% else %}<span class="team_logo">{{ project.team.name|slice:1 }}</span>{% endif %}
   <strong class="h3">
     {{ project.team.name }}
   </strong>
+
+  <span data-tooltip-target="body">{{ project.team.name }}</span>
 </a>
 
 <a
   class="sidebar__link sidebar__title"
   title="{{ project.name }}"
   href="{% url 'projects:detail' project.id %}"
+  data-controller="tooltip"
+  data-placement="right"
 >
   <i class="fad fa-fw fa-folders mr-6"></i>
   <div>{{ project.name }}</div>
+
+  <span data-tooltip-target="body">{{ project.name }}</span>
 </a>
 
 {% with app_name=request.resolver_match.app_name %}
