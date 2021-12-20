@@ -24,15 +24,21 @@ def base_formset(formset):
 QUERY_PARAMS_BASE_DATA = base_formset("queryparams")
 HTTP_HEADERS_BASE_DATA = base_formset("httpheaders")
 
+TEST_JSON = {
+    "products": [
+        {"name": "neera", "started": 2016},
+        {"name": "vayu", "started": 2019},
+        {"name": "gyana", "started": 2021},
+    ]
+}
+
 
 @pytest.fixture
 def request_safe(mocker):
     # request response with content manually set to json
     request_safe = mocker.patch("apps.customapis.requests.request.request_safe")
     response = requests.Response()
-    response._content = json.dumps(
-        {"products": [{"neera": 2016, "vayu": 2019, "gyana": 2021}]}
-    ).encode("utf-8")
+    response._content = json.dumps(TEST_JSON).encode("utf-8")
     response.status_code = 200
     request_safe.return_value = response
     return request_safe
@@ -105,10 +111,12 @@ def test_customapi_create(client, logged_in_user, project, bigquery, request_saf
         },
     )
     assertRedirects(r, f"{DETAIL}/load", target_status_code=302)
+    customapi.refresh_from_db()
 
     # validate the request
     assert request_safe.call_count == 1
-    assert request_safe.call_args.args == (requests.Session(),)
+    assert len(request_safe.call_args.args) == 1
+    assert isinstance(request_safe.call_args.args[0], requests.Session)
     assert request_safe.call_args.kwargs == {
         "method": "GET",
         "url": "https://json.url",
@@ -117,10 +125,12 @@ def test_customapi_create(client, logged_in_user, project, bigquery, request_saf
     }
 
     # validate the generated JSON file
-    # todo
+    assert customapi.ndjson_file.file.read().splitlines() == [
+        json.dumps(item).encode("utf-8") for item in TEST_JSON["products"]
+    ]
 
     # validate the bigquery load job
-    assert bigquery.query.call_count == 1
+    assert bigquery.load_table_from_uri.call_count == 1
     table = integration.table_set.first()
     assert bigquery.load_table_from_uri.call_args.args == (
         customapi.gcs_uri,
