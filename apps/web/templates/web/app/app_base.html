@@ -40,7 +40,13 @@
 {% endblock %}
 
 {% block sidebar_content %}
-<a id="heading" class="sidebar__link sidebar__link--border" href="">
+<a
+  id="heading"
+  href=""
+  class="sidebar__link sidebar__link--border"
+  data-controller="tooltip"
+  data-placement="right"
+>
   {% if team.icon %}
   <img src="{{ team.icon.url }}" />
   {% else %}
@@ -52,35 +58,53 @@
   <strong class="h3">
     {{ team.name }}
   </strong>
+
+  <span data-tooltip-target="body">{{ team.name }}</span>
 </a>
 
 <a
   class="sidebar__link {% if request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
   href="{% url 'teams:detail' team.id %}"
+  data-controller="tooltip"
+  data-placement="right"
 >
   <i class="far fa-fw fa-folders"></i>Projects
+
+  <span data-tooltip-target="body">Projects</span>
 </a>
 
 {% if request.user|is_admin_of:team %}
 <a
   class="sidebar__link {% if request.resolver_match.url_name == 'list' %}sidebar__link--active{% endif %}"
   href="{% url 'team_members:list' team.id %}"
+  data-controller="tooltip"
+  data-placement="right"
 >
   <i class="far fa-fw fa-users"></i>Members
+
+  <span data-tooltip-target="body">Members</span>
 </a>
 
 <a
   class="sidebar__link {% if request.resolver_match.url_name in 'account,subscription,plan,payments' %}sidebar__link--active{% endif %}"
   href="{% url 'teams:account' team.id %}"
+  data-controller="tooltip"
+  data-placement="right"
 >
   <i class="far fa-fw fa-wallet"></i>Billing
+
+  <span data-tooltip-target="body">Billing</span>
 </a>
 
 <a
   class="sidebar__link {% if request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
   href="{% url 'teams:update' team.id %}"
+  data-controller="tooltip"
+  data-placement="right"
 >
   <i class="far fa-fw fa-cog"></i>Settings
+
+  <span data-tooltip-target="body">Settings</span>
 </a>
 {% endif %}
 {% endblock %}

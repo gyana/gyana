@@ -80,8 +80,12 @@
         <a
           id="changelogWidgetID"
           class="sidebar__link sidebar__link--border cursor-pointer"
+          data-controller="tooltip"
+          data-placement="right"
         >
-          <i class="fas fa-fw fa-bullhorn"></i>What's New?
+          <i class="fas fa-fw fa-bullhorn"></i>What's new?
+
+          <span data-tooltip-target="body">What's new?</span>
         </a>
 
         <a
@@ -100,8 +104,12 @@
             data-action="click->tf-modal#open"
             data-src="{% url "web:help" %}"
             class="sidebar__link sidebar__link--border"
+            data-controller="tooltip"
+            data-placement="right"
           >
             <i class="fas fa-fw fa-question"></i>Help
+
+            <span data-tooltip-target="body">Help</span>
           </a>
 
           <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
@@ -116,11 +124,13 @@
 
         <button
           class="sidebar__link sidebar__link--border" 
-          data-controller="popover"
-          data-placement="right-end"
+          data-controller="popover tooltip"
+          data-placement="right"
           data-theme="popover-menu"
         >
-          <img src="{{ user.avatar_url }}" />Your Account
+          <img src="{{ user.avatar_url }}" />Your account
+
+          <span data-tooltip-target="body">Your account</span>
 
           <template data-popover-target="body">
             <div data-controller="tf-modal">
