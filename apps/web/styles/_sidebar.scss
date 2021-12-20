@@ -117,23 +117,17 @@
     border-bottom: 1px solid var(--c-gray);
     display: flex;
     flex-shrink: 0;
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     font-weight: 500;
     height: 4.2rem;
-    padding: 0 1rem;
 
     div {
-      font-size: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-  
-    div:first-letter {
-      font-size: 1.8rem;
-    }
-  
-    div::after {
-      content: '.';
-      font-size: 1.8rem;
-      display: inline-block;
+    
+    i {
+      color: var(--c-blue);
     }
   }
 
@@ -147,16 +141,31 @@
       label[for='sidebar-toggle'] i::before {
         content: '\f323';
       }
+    }
 
+    &:not(:checked) ~ .sidebar__body {
       .sidebar__title {
-        justify-content: flex-start;
+        padding: 0;
 
         div {
-          font-size: inherit;
+          font-size: 0;
+          flex: 1 1 0%;
+          text-align: center;
+          line-height: normal;
+        }
 
-          &::after {
-            display: none;
-          }
+        div:first-letter {
+          font-size: 1.8rem;
+        }
+      
+        div::after {
+          content: '.';
+          font-size: 1.8rem;
+          display: inline-block;
+        }
+
+        i {
+          display: none;
         }
       }
     }
