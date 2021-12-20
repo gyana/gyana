@@ -146,12 +146,17 @@ def paddle(mocker):
 
 
 @pytest.fixture
-def logged_in_user(client):
+def user():
     team = Team.objects.create(name="Vayu")
     user = CustomUser.objects.create_user(
         "test", email="test@gyana.com", onboarded=True
     )
     team.members.add(user, through_defaults={"role": "admin"})
+    return user
+
+
+@pytest.fixture
+def logged_in_user(client, user):
     client.force_login(user)
     return user
 
