@@ -11,6 +11,10 @@ from apps.integrations.models import Integration
 MAX_BODY_BINARY_SIZE = 10 * 1024 * 1024
 
 
+def with_slug(path):
+    return f"{SLUG}/{path}" if SLUG else path
+
+
 def validate_json_path(value):
     try:
         parse(value)
@@ -62,10 +66,7 @@ class CustomApi(BaseModel):
     url = models.URLField(max_length=2048)
     json_path = models.TextField(default="$", validators=[validate_json_path])
 
-    ndjson_file = models.FileField(
-        upload_to=f"{SLUG + '/' if SLUG else ''}customapi_ndjson",
-        null=True,
-    )
+    ndjson_file = models.FileField(upload_to=with_slug("customapi_ndjson"), null=True)
 
     http_request_method = models.CharField(
         max_length=8, choices=HttpRequestMethod.choices, default=HttpRequestMethod.GET
@@ -98,7 +99,7 @@ class CustomApi(BaseModel):
 
     # binary
     body_binary = models.FileField(
-        upload_to=f"{SLUG + '/' if SLUG else ''}customapi_body_binary",
+        upload_to=with_slug("customapi_body_binary"),
         validators=[validate_body_binary],
         null=True,
     )
@@ -151,7 +152,7 @@ class FormDataEntry(BaseModel):
     key = models.CharField(max_length=8192)
     text = models.CharField(max_length=8192)
     file = models.FileField(
-        upload_to=f"{SLUG + '/' if SLUG else ''}formdataentry_file",
+        upload_to=with_slug("formdataentry_file"),
         validators=[validate_body_binary],
         null=True,
     )
