@@ -69,6 +69,7 @@ export default class extends Controller {
         if (toEl.tagName === 'INPUT') {
           // Do not overwrite the file input
           if (toEl.type === 'file') {
+            fromEl.disabled = false
             return false
           }
           toEl.value = fromEl.value
