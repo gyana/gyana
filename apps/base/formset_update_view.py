@@ -24,6 +24,8 @@ FORMSET_LABELS = {
     "charts": "Charts",
     "queryparams": "Query Params",
     "httpheaders": "HTTP Headers",
+    'formdataentries': 'Form Data',
+    'formurlencodedentries': 'Form Data'
 }
 
 

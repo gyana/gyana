@@ -93,6 +93,8 @@ class CustomApi(BaseModel):
     # oauth2
     oauth2 = models.ForeignKey("oauth2.OAuth2", null=True, on_delete=models.SET_NULL)
 
+    body = models.CharField(max_length=32, choices=Body.choices, default=Body.NONE)
+
     # raw
     body_raw = models.TextField(null=True)
 
@@ -145,7 +147,7 @@ class FormDataEntry(BaseModel):
         FILE = "file", "File"
 
     customapi = models.ForeignKey(
-        CustomApi, on_delete=models.CASCADE, related_name="httpheaders"
+        CustomApi, on_delete=models.CASCADE, related_name="formdataentries"
     )
     format = models.CharField(max_length=4, choices=Format.choices, default=Format.TEXT)
     key = models.CharField(max_length=8192)
@@ -159,7 +161,7 @@ class FormDataEntry(BaseModel):
 
 class FormURLEncodedEntry(BaseModel):
     customapi = models.ForeignKey(
-        CustomApi, on_delete=models.CASCADE, related_name="httpheaders"
+        CustomApi, on_delete=models.CASCADE, related_name="formurlencodedentries"
     )
     key = models.CharField(max_length=8192)
     value = models.CharField(max_length=8192)
