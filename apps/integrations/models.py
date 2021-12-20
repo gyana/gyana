@@ -174,7 +174,7 @@ class Integration(CloneMixin, BaseModel):
     @property
     def used_in_dashboards(self):
         return (
-            Dashboard.objects.filter(widget__table__in=self.table_set.all())
+            Dashboard.objects.filter(pages__widgets__table__in=self.table_set.all())
             .distinct()
             .only("name", "project", "created", "updated")
             .annotate(kind=models.Value("Dashboard", output_field=models.CharField()))
