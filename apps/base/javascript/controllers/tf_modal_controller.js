@@ -2,15 +2,10 @@ import { Controller } from '@hotwired/stimulus'
 
 // Open a modal with the content populated by a turbo-frame
 export default class extends Controller {
-  static targets = ['modal', 'turboFrame', 'closingWarning', 'form']
+  static targets = ['modal', 'turboFrame', 'closingWarning', 'form', 'onParam']
 
   connect() {
     this.changed = false
-    const params = new URLSearchParams(window.location.search)
-
-    if (params.get('modal_item') && this.element.getAttribute('data-open-on-param') == '') {
-      this.modalTarget.classList.remove('hidden')
-    }
 
     window.addEventListener('keyup', (event) => {
       if (event.key == 'Escape') {
@@ -27,23 +22,43 @@ export default class extends Controller {
     })
   }
 
+  onParamTargetConnected(target) {
+    const params = new URLSearchParams(window.location.search)
+
+    if (params.get('modal_item')) {
+      this.onParamTarget.click()
+    }
+  }
+
   open(event) {
-    this.turboFrameTarget.removeAttribute('src')
+    // Turbo removes the placeholder every time, we need to add it to indicate
+    // a loading state.
     this.turboFrameTarget.innerHTML = `
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
-        </div>
-      `
+      <div class='placeholder-scr placeholder-scr--fillscreen'>
+        <i class='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
+      </div>
+    `
 
-    this.turboFrameTarget.setAttribute('src', event.currentTarget.getAttribute('data-src'))
+    this.turboFrameTarget.removeAttribute('src')
+    this.turboFrameTarget.setAttribute('id', event.currentTarget.dataset.modalId)
+    this.turboFrameTarget.setAttribute('src', event.currentTarget.dataset.modalSrc)
+    this.modalTarget.className = "tf-modal"
 
-    if (event.currentTarget.getAttribute('data-item')) {
+    if (event.currentTarget.dataset.modalTarget) {
+      this.turboFrameTarget.setAttribute('target', event.currentTarget.dataset.modalTarget)
+    }
+
+    if (event.currentTarget.dataset.modalClasses) {
+      this.modalTarget.classList.add(...event.currentTarget.dataset.modalClasses.split(' '))
+    }
+
+    if (event.currentTarget.dataset.modalItem) {
       const params = new URLSearchParams(location.search)
-      params.set('modal_item', event.currentTarget.getAttribute('data-item'))
+      params.set('modal_item', event.currentTarget.dataset.modalItem)
       history.replaceState({}, '', `${location.pathname}?${params.toString()}`)
     }
 
-    this.modalTarget.classList.remove('hidden')
+    this.modalTarget.removeAttribute('hidden')
   }
 
   async submit(e) {
@@ -89,7 +104,7 @@ export default class extends Controller {
 
   close(e) {
     if (this.hasClosingWarningTarget && this.changed) {
-      this.closingWarningTarget.classList.remove('hidden')
+      this.closingWarningTarget.removeAttribute('hidden')
     } else {
       if (e.currentTarget.getAttribute && e.currentTarget.getAttribute('type') == 'submit') {
         this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='close']"))
@@ -101,7 +116,7 @@ export default class extends Controller {
 
   forceClose() {
     this.changed = false
-    this.modalTarget.classList.add('hidden')
+    this.modalTarget.setAttribute('hidden', '')
 
     const params = new URLSearchParams(location.search)
     params.delete('modal_item')
@@ -113,7 +128,7 @@ export default class extends Controller {
   }
 
   closeWarning() {
-    this.closingWarningTarget.classList.add('hidden')
+    this.closingWarningTarget.setAttribute('hidden', '')
   }
 
   // Trigger save and preview without clicking save and preview button

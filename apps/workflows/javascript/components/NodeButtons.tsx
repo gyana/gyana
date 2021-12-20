@@ -5,9 +5,12 @@ const EditButton = ({ id }) => {
   return (
     <button
       data-action='click->tf-modal#open'
-      data-src={`/nodes/${id}`}
-      data-item={id}
       title='Edit'
+      data-modal-id='workflow-modal'
+      data-modal-src={`/nodes/${id}`}
+      data-modal-item={id}
+      data-modal-classes='tf-modal--full'
+      data-tf-modal-target='onParam'
     >
       <i className='fas fa-fw fa-edit fa-lg'></i>
     </button>

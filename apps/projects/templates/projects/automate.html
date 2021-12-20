@@ -2,34 +2,27 @@
 {% load static %}
 {% load help_utils %}
 
+{% block app-class %}relative{% endblock app-class %}
+
 {% block app %}
-<div class="workflow-detail__header">
-  <h3 class="flex items-center gap-3 mr-auto">
+<div class="automate__header">
+  <h1 class="flex items-center gap-3 mr-auto">
     Automate
     {% link_article 'overview' 'automate' %}
-  </h3>
+  </h1>
 
-  <div data-controller="tooltip tf-modal">
-    <button
-      data-cy="settings"
-      data-action="click->tf-modal#open"
-      data-src="{% url "projects:runs" project.id %}"
-      class="button button--sm button--tertiary"
-    >
-      <i class="fas fa-fw fa-cog"></i> Settings
-    </button>
+  <button
+    class="button button--sm button--tertiary"
+    data-controller="tooltip"
+    data-cy="settings"
+    data-action="click->tf-modal#open"
+    data-modal-src="{% url "projects:runs" project.id %}"
+    data-modal-id="projects:runs"
+  >
+    <i class="fas fa-fw fa-cog"></i> Settings
 
     <span data-tooltip-target="body">View all runs for this project</span>
-
-    <div data-tf-modal-target="modal" class="tf-modal tf-modal--small hidden">
-      <div class="card card--none card--modal flex-col flex-1 overflow-auto">
-        <turbo-frame
-          id="projects:runs"
-          data-tf-modal-target="turboFrame"
-        ></turbo-frame>
-      </div>
-    </div>
-  </div>
+  </button>
 
   <div id="run-button-portal"></div>
 </div>
