@@ -45,7 +45,6 @@ def run_customapi_sync_task(self, run_id):
         )
         get_authorization(session, customapi)
         body = get_body(session, customapi)
-        print(request.request_safe)
         response = request.request_safe(
             session,
             method=customapi.http_request_method,

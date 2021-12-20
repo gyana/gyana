@@ -40,6 +40,10 @@ def request_safe(mocker):
 
 def test_customapi_create(client, logged_in_user, project, bigquery, request_safe):
 
+    # mock the configuration
+    bigquery.load_table_from_uri().exception = lambda: False
+    bigquery.reset_mock()  # reset the call count
+
     LIST = f"/projects/{project.id}/integrations"
 
     # test: create a new customapi, configure it and complete the sync
@@ -100,12 +104,10 @@ def test_customapi_create(client, logged_in_user, project, bigquery, request_saf
             **HTTP_HEADERS_BASE_DATA,
         },
     )
-    assertRedirects(r, f"{DETAIL}/load", status_code=303)
-
-    assert request_safe.call_count == 1
-    assert bigquery.query.call_count == 1
+    assertRedirects(r, f"{DETAIL}/load", target_status_code=302)
 
     # validate the request
+    assert request_safe.call_count == 1
     assert request_safe.call_args.args == (requests.Session(),)
     assert request_safe.call_args.kwargs == {
         "method": "GET",
@@ -118,6 +120,7 @@ def test_customapi_create(client, logged_in_user, project, bigquery, request_saf
     # todo
 
     # validate the bigquery load job
+    assert bigquery.query.call_count == 1
     table = integration.table_set.first()
     assert bigquery.load_table_from_uri.call_args.args == (
         customapi.gcs_uri,
