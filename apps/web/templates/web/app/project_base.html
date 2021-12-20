@@ -106,7 +106,7 @@
 {% endif %}
 
 <a
-  class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
+  class="sidebar__link {% if request.resolver_match.view_name == 'projects:update' or request.resolver_match.app_name == 'projects_oauth2' %}sidebar__link--active{% endif %}"
   href="{% url 'projects:update' project.id %}"
   data-controller="tooltip"
   data-placement="right"

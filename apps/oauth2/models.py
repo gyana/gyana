@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
@@ -27,3 +28,7 @@ class OAuth2(BaseModel):
 
     def get_absolute_url(self):
         return reverse("project_oauth2:update", args=(self.project.id, self.id))
+
+    @property
+    def callback_url(self):
+        return f'{settings.EXTERNAL_URL}{reverse("oauth2:callback", args=(self.id,))}'

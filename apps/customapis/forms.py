@@ -185,6 +185,11 @@ class CustomApiUpdateForm(LiveUpdateForm):
             "body_raw": "Raw",
             "body_binary": "Binary",
         }
+        help_texts = {
+            "json_path": mark_safe(
+                'Extract part of the JSON result, e.g. under a specific key - <a href="https://github.com/json-path/JSONPath#operators" class="link">learn more</a>'
+            )
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

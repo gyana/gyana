@@ -9,6 +9,7 @@ class OAuth2CreateForm(BaseModelForm):
     class Meta:
         model = OAuth2
         fields = ["name"]
+        help_texts = {"name": "The name of the service, to help you remember it"}
 
     def __init__(self, *args, **kwargs):
         self._project = kwargs.pop("project")

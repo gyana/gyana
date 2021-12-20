@@ -6,9 +6,9 @@
   {% if oauth2_count == 0 %}
   <div class="table__empty">
     <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
-    <h3>You haven't authorized any external services</h3>
+    <h3>You haven't setup any OAuth2 services</h3>
     <p>
-      Why not <a href="{% url 'project_oauth2:create' project.id %}" class="link" data-turbo-frame="_top">create one</a>?
+      Why not <a href="{% url 'project_oauth2:create' project.id %}" class="link" data-turbo-frame="_top">connect one</a>?
     </p>
   </div>
   {% else %}
