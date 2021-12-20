@@ -82,6 +82,7 @@
           class="sidebar__link sidebar__link--border cursor-pointer"
           data-controller="tooltip"
           data-placement="right"
+          data-show-on-collapse="true"
         >
           <i class="fas fa-fw fa-bullhorn"></i>What's new?
 
@@ -93,6 +94,7 @@
           class="sidebar__link sidebar__link--border"
           data-controller="tooltip"
           data-placement="right"
+          data-show-on-collapse="true"
         >
           <i class="fas fa-fw fa-comments-alt"></i> Join our Slack
 
@@ -106,6 +108,7 @@
             class="sidebar__link sidebar__link--border"
             data-controller="tooltip"
             data-placement="right"
+            data-show-on-collapse="true"
           >
             <i class="fas fa-fw fa-question"></i>Help
 
@@ -127,6 +130,7 @@
           data-controller="popover tooltip"
           data-placement="right"
           data-theme="popover-menu"
+          data-show-on-collapse="true"
         >
           <img src="{{ user.avatar_url }}" />Your account
 
@@ -168,8 +172,13 @@
           {% if request.resolver_match.view_name not in 'project_workflows:detail,project_dashboards:detail,projects:automate' %}
           data-action="click->web-sidebar#toggle"
           {% endif %}
+          data-controller="tooltip"
+          data-placement="right"
+          data-show-on-collapse="true"
         >
           <i class="fas fa-fw"></i>Collapse
+
+          <span data-tooltip-target="body">Expand</span>
         </label>
       </nav>
     </div>

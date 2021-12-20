@@ -8,6 +8,7 @@
   href="{% url 'teams:detail' project.team.id %}"
   data-controller="tooltip"
   data-placement="right"
+  data-show-on-collapse="true"
 >
   {% if project.team.icon %}<img src="{{ project.team.icon.url }}" />{% else %}<span class="team_logo">{{ project.team.name|slice:1 }}</span>{% endif %}
   <strong class="h3">
@@ -23,6 +24,7 @@
   href="{% url 'projects:detail' project.id %}"
   data-controller="tooltip"
   data-placement="right"
+  data-show-on-collapse="true"
 >
   <i class="fad fa-fw fa-folders mr-6"></i>
   <div>{{ project.name }}</div>
@@ -36,7 +38,9 @@
 <a class="sidebar__link {% if app_name == 'projects' and request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
   href="{% url 'projects:detail' project.id %}"
   data-controller="tooltip"
-  data-placement="right">
+  data-placement="right"
+  data-show-on-collapse="true"
+>
   <i class="far fa-fw fa-home mr-6"></i>Overview
   <span data-tooltip-target="body">Overview</span>
 </a>
@@ -44,7 +48,9 @@
 <a class="sidebar__link {% if "project_integrations" in app_name %}sidebar__link--active{% endif %}"
   href="{% url 'project_integrations:list' project.id %}"
   data-controller="tooltip"
-  data-placement="right">
+  data-placement="right"
+  data-show-on-collapse="true"
+>
   <i class="far fa-fw fa-database mr-6"></i>Integrations {% if project.integrations_for_review > 0 %}({{ project.integrations_for_review }}){% endif %}
   <span data-tooltip-target="body">Integrations</span>
 </a>
@@ -54,7 +60,9 @@
 <a class="sidebar__link {% if app_name == "project_workflows" %}sidebar__link--active{% endif %}"
   href="{% url 'project_workflows:list' project.id %}"
   data-controller="tooltip"
-  data-placement="right">
+  data-placement="right"
+  data-show-on-collapse="true"
+>
   <i class="far fa-fw fa-sitemap mr-6"></i>Workflows
   <span data-tooltip-target="body">Workflows</span>
 </a>
@@ -64,7 +72,9 @@
 <a class="sidebar__link {% if app_name == "project_dashboards" or app_name == "dashboard_widgets" %}sidebar__link--active{% endif %}"
   href="{% url 'project_dashboards:list' project.id %}"
   data-controller="tooltip"
-  data-placement="right">
+  data-placement="right"
+  data-show-on-collapse="true"
+>
   <i class="far fa-fw fa-chart-pie mr-6"></i>Dashboards
   <span data-tooltip-target="body">Dashboards</span>
 </a>
@@ -73,7 +83,9 @@
   <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == "automate" %}sidebar__link--active{% endif %}"
     href="{% url 'projects:automate' project.id %}"
     data-controller="tooltip"
-    data-placement="right">
+    data-placement="right"
+    data-show-on-collapse="true"
+  >
     <i class="far fa-fw fa-robot mr-6"></i>Automate
     <span data-tooltip-target="body">Automate</span>
   </a>
@@ -85,16 +97,21 @@
 <a class="sidebar__link {% if app_name == 'project_templateinstances' %}sidebar__link--active{% endif %}"
   href="{% url 'project_templateinstances:list' project.id %}"
   data-controller="tooltip"
-  data-placement="right">
+  data-placement="right"
+  data-show-on-collapse="true"
+>
   <i class="far fa-fw fa-construction mr-6"></i>Templates
   <span data-tooltip-target="body">Templates</span>
 </a>
 {% endif %}
 
-<a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
-    href="{% url 'projects:update' project.id %}"
-    data-controller="tooltip"
-    data-placement="right">
+<a
+  class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
+  href="{% url 'projects:update' project.id %}"
+  data-controller="tooltip"
+  data-placement="right"
+  data-show-on-collapse="true"
+>
   <i class="far fa-fw fa-cog mr-6"></i>Settings
   <span data-tooltip-target="body">Settings</span>
 </a>
