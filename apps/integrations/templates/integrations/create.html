@@ -36,31 +36,99 @@
       </div>
     </div>
 
-    <div class='flex flex-col w-full max-w-4xl'>
+    <div class='flex flex-col w-full max-w-4xl space-y-4'>
 
       <form class="connectors__search mb-4" method="GET">
         <input type="search" name="search" value="{{ request.GET.search }}" placeholder="Search all sources" />
       </form> 
 
-      <div class='flex space-x-4 mb-4'>
-        <a class="button button--sm button--tertiary flex-1" href="{% url 'project_integrations_uploads:create' project.id %}">
-          <i class="fas fa-fw fa-upload mr-4"></i> CSV
-        </a>
+      <a class="card card--sm" href="{% url 'project_integrations_uploads:create' project.id %}">
+        <div class="flex items-center gap-7">
+          <i class="fas fa-fw fa-upload"></i> 
+          <div class='flex-col space-y-2'>
+            <h4>CSV</h4>
+            <p>Upload your spreadsheets and export data from web apps.</p>
+          </div>
+        </div>
+      </a>
 
-        <a class="button button--sm button--tertiary flex-1" href="{% url 'project_integrations_sheets:create' project.id %}">
-          <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Google Sheet
-        </a>
+      <a class="card card--sm" href="{% url 'project_integrations_sheets:create' project.id %}">
+        <div class="flex items-center gap-7">
+          <img style="height:2.4rem;"
+            src="{% static 'images/integrations/fivetran/google_sheets.svg' %}"
+              alt="Google Sheet"
+          />
+          <div class='flex-col space-y-2'>
+            <h4>Google Sheet</h4>
+            <p>Manually enter data or sync from online tools.</p>
+          </div>
+        </div>
+      </a>
 
-        <a class="button button--sm button--tertiary flex-1" href="{% url 'project_integrations_sheets:create' project.id %}">
-          <i class="fas fa-fw fa-signal-stream mr-4"></i> Webhook
-        </a>
+      <a class="card card--sm" href="{% url 'project_integrations_customapis:create' project.id %}">
+        <div class="flex items-center gap-7">
+          <i class="fas fa-fw fa-chart-pie"></i> 
+          <div class='flex-col space-y-2'>
+            <h4>Ad Reports</h4>
+            <p>Build flexible reports for advertising platforms like Google and Facebook.</p>
+          </div>
+        </div>
+      </a>
 
-        {% flag 'alpha' %}
-          <a class="button button--sm button--tertiary flex-1" href="{% url 'project_integrations_customapis:create' project.id %}">
-            <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API
-          </a>
-        {% endflag %}
-      </div>
+      <a class="card card--sm" href="{% url 'project_integrations_customapis:create' project.id %}">
+        <div class="flex items-center gap-7">
+          <i class="fas fa-fw fa-browser"></i> 
+          <div class='flex-col space-y-2'>
+            <h4>Applications</h4>
+            <p>Replicate raw data from the web apps you use to run your business.</p>
+          </div>
+        </div>
+      </a>
+
+      <a class="card card--sm" href="{% url 'project_integrations_customapis:create' project.id %}">
+        <div class="flex items-center gap-7">
+          <i class="fas fa-fw fa-database"></i> 
+          <div class='flex-col space-y-2'>
+            <h4>Database</h4>
+            <p>Replicate tables for your internal usage, product or e-commerce sites.</p>
+          </div>
+        </div>
+      </a>
+
+      <a class="card card--sm" href="{% url 'project_integrations_customapis:create' project.id %}">
+        <div class="flex items-center gap-7">
+          <i class="fas fa-fw fa-signal-stream"></i> 
+          <div class='flex-col space-y-2'>
+            <h4>Events</h4>
+            <p>User behaviour data for your application.</p>
+          </div>
+        </div>
+      </a>
+
+      <a class="card card--sm" href="{% url 'project_integrations_connectors:create' project.id %}?service=webhook">
+        <div class="flex items-center gap-7">
+          <img style="height:2.4rem;"
+            src="{% static 'images/integrations/fivetran/webhooks.svg' %}"
+              alt="Webhook"
+          />
+          <div class='flex-col space-y-2'>
+            <h4>Webhook</h4>
+            <p>Push data from other applications into Gyana.</p>
+          </div>
+        </div>
+      </a>
+
+      {% flag 'alpha' %}
+        <a class="card card--sm" href="{% url 'project_integrations_uploads:create' project.id %}">
+          <div class="flex items-center gap-7">
+            <i class="fas fa-fw fa-brackets-curly"></i> 
+            <div class='flex-col space-y-2'>
+              <h4>Custom API</h4>
+              <p>Fetch data from web APIs and services with flexible options including OAuth2.</p>
+            </div>
+          </div>
+        </a>
+      {% endflag %}
 
       <div class="flex-1 flex flex-col space-y-4">
         <div>
