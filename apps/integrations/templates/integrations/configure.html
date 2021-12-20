@@ -11,7 +11,10 @@
         id="configure-update-form"
         method="POST"
         action="{{ request.get_full_path }}"
-        {% if object.kind == 'customapi' %}data-controller="live-update"{% endif %}
+        {% if object.kind == 'customapi' %}
+        data-controller="live-update"
+        enctype='multipart/form-data'
+        {% endif %}
         >
         <span data-live-update-target="loading" class="hidden">
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
