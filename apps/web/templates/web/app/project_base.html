@@ -29,7 +29,7 @@
   <span data-tooltip-target="body">Overview</span>
 </a>
 
-<a class="sidebar__link {% if app_name == "project_integrations" %}sidebar__link--active{% endif %}"
+<a class="sidebar__link {% if "project_integrations" in app_name %}sidebar__link--active{% endif %}"
   href="{% url 'project_integrations:list' project.id %}"
   data-controller="tooltip"
   data-placement="right">
