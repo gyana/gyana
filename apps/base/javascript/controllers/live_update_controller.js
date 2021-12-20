@@ -67,6 +67,11 @@ export default class extends Controller {
       // https://github.com/patrick-steele-idem/morphdom/issues/16#issuecomment-132630185
       onBeforeElUpdated: function (fromEl, toEl) {
         if (toEl.tagName === 'INPUT') {
+          // Do not overwrite the file input
+          if (toEl.type === 'file') {
+            fromEl.disabled = false
+            return false
+          }
           toEl.value = fromEl.value
         }
 

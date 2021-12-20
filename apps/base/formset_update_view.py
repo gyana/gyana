@@ -24,6 +24,8 @@ FORMSET_LABELS = {
     "charts": "Charts",
     "queryparams": "Query Params",
     "httpheaders": "HTTP Headers",
+    "formdataentries": "Form Data",
+    "formurlencodedentries": "Form Data",
 }
 
 
@@ -63,6 +65,7 @@ class FormsetUpdateView(TurboUpdateView):
             # POST request for form creation
             formset(
                 self.request.POST,
+                self.request.FILES,
                 instance=self.get_form_instance(),
                 **self.get_formset_kwargs(formset),
                 form_kwargs=forms_kwargs,

@@ -34,6 +34,7 @@ from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
 from apps.invites import urls as invite_urls
 from apps.nodes import urls as node_urls
+from apps.oauth2 import urls as oauth2_urls
 from apps.projects import urls as project_urls
 from apps.sheets import urls as sheet_urls
 from apps.teams import urls as team_urls
@@ -62,6 +63,7 @@ project_urlpatterns = [
     path(
         "<hashid:project_id>/dashboards/", include(dashboard_urls.project_urlpatterns)
     ),
+    path("<hashid:project_id>/oauth2/", include(oauth2_urls.project_urlpatterns)),
     path(
         "<hashid:project_id>/dashboards/<hashid:dashboard_id>/widgets/",
         include(widget_urls.dashboard_urlpatterns),
@@ -107,6 +109,7 @@ urlpatterns = [
     path("appsumo/", include("apps.appsumo.urls")),
     path("templates/", include("apps.templates.urls")),
     path("cnames/", include("apps.cnames.urls")),
+    path("oauth2/", include("apps.oauth2.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),

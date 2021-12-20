@@ -108,7 +108,6 @@ def test_sign_out(client, logged_in_user):
 
     r = client.get(f"/teams/{team.id}")
     assertOK(r)
-    assertContains(r, "Your Account")
 
     r = client.get(f"/users/profile")
     assertOK(r)

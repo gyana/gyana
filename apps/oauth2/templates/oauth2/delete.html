@@ -1,14 +1,14 @@
-{% extends "web/app/settings_base.html" %}
+{% extends "web/app/project_base.html" %}
 
 {% block app %}
 <div class="card card--sm">
     <h1>Delete</h1>
     <p>Are you sure you want to delete?</p>
     <form method="post"
-          action="{% url 'team_cnames:delete' team.id object.id %}">
+          action="{% url 'project_oauth2:delete' project.id object.id %}">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger" > Yes </button>
-        <a href="{% url 'teams:update' team.id %}"
+        <a href="{% url 'projects:update' project.id %}"
            class="btn btn-default">No</a>
     </form>
 </div>

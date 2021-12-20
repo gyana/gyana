@@ -1,0 +1,26 @@
+{% extends "web/app/project_base.html" %}
+{% load help_utils %}
+
+{% block body %}
+<div class="flex flex-1 justify-center items-center w-full h-full">
+  <div class="flex flex-col max-w-3xl">
+    <div class="flex text-center mb-7 items-center">
+      <h1 class="mr-2">Authorize a external service with OAuth2</h1>
+    </div>
+
+    <p class="mb-2">
+      Your OAuth2 callback URL:
+    </p>
+    <pre class="text-xl p-2" data-to-clipboard-target='target'>{{ request.get_host}}{% url 'oauth2:callback' object.id %}</pre>
+
+    <form method="post" class="mt-7" data-turbo="false">
+      {% csrf_token %}
+
+      {% include "django/forms/default_form.html" %}
+
+      <button type="submit" class="button button--filled button--success w-full">Authorize</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+

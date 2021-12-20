@@ -1,8 +1,8 @@
 {% extends "web/app/project_base.html" %}
-
+{% load waffle_tags %}
 {% block app %}
 <div class="flex flex-col flex-1 overflow-auto">
-  <div class="max-w-lg mb-auto pad">
+  <div class="mb-auto pad">
     <h1 class="project-settings__title">Settings</h1>
 
     {% if project.daily_schedule_time != project.truncated_daily_schedule_time %}
@@ -14,7 +14,7 @@
       data-controller="live-update" 
       method="post" 
       action="{% url 'projects:update' object.id %}" 
-      class="form"
+      class="form max-w-lg mb-8"
     >
       {% csrf_token %}
 
@@ -28,6 +28,15 @@
         <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
       </span>
     </form>
+
+    {% flag 'alpha' %}
+      <div>
+        <div class="flex items-center mb-7">
+          <h2 class="mr-2">OAuth2</h2>
+        </div>
+        <turbo-frame id="oauth2:list" src="{% url 'project_oauth2:list' object.id %}" target="_top"></turbo-frame>
+      </div>
+    {% endflag %}
   </div>
 
   <div class="pad border-t border-gray">

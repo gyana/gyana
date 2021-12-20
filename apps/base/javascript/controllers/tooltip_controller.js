@@ -22,6 +22,13 @@ export default class extends Controller {
       animation: false,
       content: this.bodyTarget.innerText,
       delay: 0,
+      // `data-show-on-collapse="true"` on element hides the tooltip when the
+      // sidebar is expanded.
+      onShow(instance) {
+        if (instance.reference.dataset.showOnCollapse && document.querySelector("#sidebar-toggle:checked")) {
+          return false
+        }
+      },
       placement: this.element.dataset.placement || 'bottom',
     })
   }
