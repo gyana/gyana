@@ -16,11 +16,11 @@ from apps.runs.models import JobRun
 from apps.tables.models import Table
 from apps.users.models import CustomUser
 
-from .authorization import get_authorization
 from .bigquery import import_table_from_customapi
-from .body import get_body
 from .models import CustomApi
-from .requests import REQUEST_TIMEOUT, request_safe
+from .requests.authorization import get_authorization
+from .requests.body import get_body
+from .requests.request import REQUEST_TIMEOUT, request_safe
 
 
 @shared_task(bind=True, time_limit=REQUEST_TIMEOUT)

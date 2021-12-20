@@ -1,6 +1,9 @@
 from requests import Session
 
-from .models import CustomApi, FormDataEntry
+from ..models import CustomApi, FormDataEntry
+
+# discussion of requests files vs data
+# https://stackoverflow.com/a/12385661/15425660
 
 
 def _get_body_for_form_data(session: Session, customapi: CustomApi):

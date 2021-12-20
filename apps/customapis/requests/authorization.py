@@ -1,7 +1,7 @@
 from requests import Session
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 
-from .models import CustomApi
+from ..models import CustomApi
 
 
 def _get_authorization_for_api_key(session: Session, customapi: CustomApi):

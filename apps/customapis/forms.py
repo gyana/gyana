@@ -17,7 +17,7 @@ from .models import (
     QueryParam,
 )
 
-HEADERS_PATH = "apps/customapis/headers.txt"
+HEADERS_PATH = "apps/customapis/requests/headers.txt"
 
 AUTHORIZATION_TO_FIELDS = {
     CustomApi.Authorization.NO_AUTH: [],
