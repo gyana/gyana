@@ -18,7 +18,7 @@
         <nav class='sidebar__body'>
           <li>
             <a 
-              href="{% url 'project_integrations_connectors:create' project.id %}"
+              href="{% url 'project_integrations:create' project.id %}"
               class="sidebar__link {% if not request.GET.category %} sidebar__link--active {% endif %}">
               All
             </a>
@@ -26,7 +26,7 @@
           {% for category in service_categories %}
             <li>
               <a 
-                href="{% url 'project_integrations_connectors:create' project.id %}?category={{ category }}"
+                href="{% url 'project_integrations:create' project.id %}?category={{ category }}"
                 class="sidebar__link {% if category == request.GET.category %} sidebar__link--active {% endif %}">
                 {{ category }}
               </a>
