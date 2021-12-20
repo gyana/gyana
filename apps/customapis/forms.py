@@ -9,7 +9,13 @@ from apps.base.formsets import RequiredInlineFormset
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.widgets import DatalistInput
 
-from .models import CustomApi, HttpHeader, QueryParam
+from .models import (
+    CustomApi,
+    FormDataEntry,
+    FormURLEncodedEntry,
+    HttpHeader,
+    QueryParam,
+)
 
 HEADERS_PATH = "apps/customapis/headers.txt"
 
@@ -24,6 +30,19 @@ AUTHORIZATION_TO_FIELDS = {
     CustomApi.Authorization.BASIC_AUTH: ["username", "password"],
     CustomApi.Authorization.DIGEST_AUTH: ["username", "password"],
     CustomApi.Authorization.OAUTH2: ["oauth2"],
+}
+
+BODY_TO_FIELDS = {
+    CustomApi.Body.NONE: [],
+    CustomApi.Body.FORM_DATA: [],
+    CustomApi.Body.X_WWW_FORM_URLENCODED: [],
+    CustomApi.Body.RAW: ["body_raw"],
+    CustomApi.Body.BINARY: ["body_binary"],
+}
+
+FORMAT_TO_FIELDS = {
+    FormDataEntry.Format.TEXT: ["text"],
+    FormDataEntry.Format.FILE: ["file"],
 }
 
 
@@ -68,6 +87,50 @@ HttpHeaderFormset = forms.inlineformset_factory(
 )
 
 
+class FormDataEntryForm(LiveUpdateForm):
+    class Meta:
+        model = FormDataEntry
+        fields = ["format", "key", "text", "file"]
+        help_texts = {"format": "format", "key": "Key", "text": "Text", "file": "File"}
+
+    def get_live_fields(self):
+        live_fields = ["format", "key"]
+        live_fields += FORMAT_TO_FIELDS[self.get_live_field("format")]
+        return live_fields
+
+
+FormDataEntryFormset = forms.inlineformset_factory(
+    CustomApi,
+    FormDataEntry,
+    form=FormDataEntryForm,
+    can_delete=True,
+    extra=0,
+    formset=RequiredInlineFormset,
+)
+
+
+class FormURLEncodedEntryForm(LiveUpdateForm):
+    class Meta:
+        model = FormURLEncodedEntry
+        fields = ["key", "value"]
+        help_texts = {"key": "Key", "value": "Value"}
+
+
+FormURLEncodedEntryFormset = forms.inlineformset_factory(
+    CustomApi,
+    FormURLEncodedEntry,
+    form=FormURLEncodedEntryForm,
+    can_delete=True,
+    extra=0,
+    formset=RequiredInlineFormset,
+)
+
+BODY_TO_FORMSET = {
+    CustomApi.Body.FORM_DATA: FormDataEntryFormset,
+    CustomApi.Body.X_WWW_FORM_URLENCODED: FormURLEncodedEntryFormset,
+}
+
+
 class CustomApiCreateForm(BaseModelForm):
     name = forms.CharField(max_length=255)
 
@@ -105,6 +168,9 @@ class CustomApiUpdateForm(LiveUpdateForm):
             "username",
             "password",
             "oauth2",
+            "body",
+            "body_raw",
+            "body_binary",
         ]
         labels = {
             "url": "URL",
@@ -114,6 +180,8 @@ class CustomApiUpdateForm(LiveUpdateForm):
             "api_key_value": "Value",
             "api_key_add_to": "Add To",
             "oauth2": "OAuth2",
+            "body_raw": "Raw",
+            "body_binary": "Binary",
         }
 
     def __init__(self, *args, **kwargs):
@@ -132,7 +200,10 @@ class CustomApiUpdateForm(LiveUpdateForm):
     def get_live_fields(self):
         live_fields = ["url", "json_path", "http_request_method", "authorization"]
         live_fields += AUTHORIZATION_TO_FIELDS[self.get_live_field("authorization")]
+        live_fields += BODY_TO_FIELDS[self.get_live_field("body")]
         return live_fields
 
     def get_live_formsets(self):
-        return [QueryParamFormset, HttpHeaderFormset]
+        live_formsets = [QueryParamFormset, HttpHeaderFormset]
+        live_formsets += BODY_TO_FORMSET.get(self.get_live_field("body"), [])
+        return live_formsets

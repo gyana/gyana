@@ -8,6 +8,8 @@ from apps.base.clients import SLUG
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
 
+MAX_BODY_BINARY_SIZE = 10 * 1024 * 1024
+
 
 def validate_json_path(value):
     try:
@@ -17,6 +19,13 @@ def validate_json_path(value):
             "JSONPath expression is not valid: %(exc)s",
             params={"exc": str(exc)},
         )
+
+
+def validate_body_binary(value):
+    if value.size > MAX_BODY_BINARY_SIZE:
+        raise ValidationError("The maximum file size that can be uploaded is 10MB")
+    else:
+        return value
 
 
 class CustomApi(BaseModel):
@@ -43,13 +52,20 @@ class CustomApi(BaseModel):
         HTTP_HEADER = "http_header", "HTTP Header"
         QUERY_PARAMS = "query_params", "Query Params"
 
+    class Body(models.TextChoices):
+        NONE = "none", "none"
+        FORM_DATA = "form-data", "form-data"
+        X_WWW_FORM_URLENCODED = "x-www-form-urlencoded", "x-www-form-urlencoded"
+        RAW = "raw", "raw"
+        BINARY = "binary", "binary"
+
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 
     url = models.URLField(max_length=2048)
     json_path = models.TextField(default="$", validators=[validate_json_path])
 
     ndjson_file = models.FileField(
-        upload_to=f"{SLUG}/custom_api_jsonnl" if SLUG else "custom_api_ndjson",
+        upload_to=f"{SLUG + '/' if SLUG else ''}customapi_ndjson",
         null=True,
     )
 
@@ -76,6 +92,16 @@ class CustomApi(BaseModel):
 
     # oauth2
     oauth2 = models.ForeignKey("oauth2.OAuth2", null=True, on_delete=models.SET_NULL)
+
+    # raw
+    body_raw = models.TextField(null=True)
+
+    # binary
+    body_binary = models.FileField(
+        upload_to=f"{SLUG + '/' if SLUG else ''}customapi_body_binary",
+        validators=[validate_body_binary],
+        null=True,
+    )
 
     @property
     def table_id(self):
@@ -106,6 +132,32 @@ class QueryParam(BaseModel):
 
 class HttpHeader(BaseModel):
 
+    customapi = models.ForeignKey(
+        CustomApi, on_delete=models.CASCADE, related_name="httpheaders"
+    )
+    key = models.CharField(max_length=8192)
+    value = models.CharField(max_length=8192)
+
+
+class FormDataEntry(BaseModel):
+    class Format(models.TextChoices):
+        TEXT = "text", "Text"
+        FILE = "file", "File"
+
+    customapi = models.ForeignKey(
+        CustomApi, on_delete=models.CASCADE, related_name="httpheaders"
+    )
+    format = models.CharField(max_length=4, choices=Format.choices, default=Format.TEXT)
+    key = models.CharField(max_length=8192)
+    text = models.CharField(max_length=8192)
+    file = models.FileField(
+        upload_to=f"{SLUG + '/' if SLUG else ''}formdataentry_file",
+        validators=[validate_body_binary],
+        null=True,
+    )
+
+
+class FormURLEncodedEntry(BaseModel):
     customapi = models.ForeignKey(
         CustomApi, on_delete=models.CASCADE, related_name="httpheaders"
     )
