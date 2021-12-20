@@ -9,7 +9,7 @@ from ..models import CustomApi, FormDataEntry
 def _get_body_for_form_data(session: Session, customapi: CustomApi):
     return {
         "files": {
-            f.key: f.text if f.format == FormDataEntry.Format.TEXT else f.file
+            f.key: f.text if f.format == FormDataEntry.Format.TEXT else f.file.file
             for f in customapi.formdataentries.all()
         }
     }
@@ -24,7 +24,7 @@ def _get_body_for_raw(session: Session, customapi: CustomApi):
 
 
 def _get_body_for_binary(session: Session, customapi: CustomApi):
-    return {"data": customapi.body_binary}
+    return {"data": customapi.body_binary.file}
 
 
 BODY = {
