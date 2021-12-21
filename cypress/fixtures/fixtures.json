@@ -246,14 +246,15 @@
     "pk": 1,
     "fields": {
       "created": "2021-07-27T13:17:27.984Z",
-      "updated": "2021-07-27T13:17:27.987Z",
+      "updated": "2021-12-21T02:00:27.571Z",
       "project": 1,
       "kind": "upload",
       "name": "store_info",
       "state": "done",
       "ready": true,
       "created_ready": "2021-07-27T13:17:27.984Z",
-      "created_by": 1
+      "created_by": 1,
+      "is_scheduled": false
     }
   },
   {
@@ -261,14 +262,15 @@
     "pk": 2,
     "fields": {
       "created": "2021-08-08T20:28:27.809Z",
-      "updated": "2021-08-08T20:28:27.809Z",
+      "updated": "2021-12-21T02:00:27.571Z",
       "project": 1,
       "kind": "sheet",
       "name": "Store info sheet",
       "state": "done",
       "ready": true,
       "created_ready": "2021-08-08T20:28:27.809Z",
-      "created_by": null
+      "created_by": null,
+      "is_scheduled": true
     }
   },
   {
@@ -276,14 +278,15 @@
     "pk": 3,
     "fields": {
       "created": "2021-08-10T07:30:01.375Z",
-      "updated": "2021-08-10T07:30:01.375Z",
+      "updated": "2021-12-21T02:00:27.569Z",
       "project": 2,
       "kind": "upload",
       "name": "store_info",
       "state": "done",
       "ready": true,
       "created_ready": "2021-08-10T07:30:01.375Z",
-      "created_by": null
+      "created_by": null,
+      "is_scheduled": false
     }
   },
   {
@@ -291,14 +294,15 @@
     "pk": 4,
     "fields": {
       "created": "2021-08-10T07:32:04.937Z",
-      "updated": "2021-08-10T07:32:04.937Z",
+      "updated": "2021-12-21T02:00:27.568Z",
       "project": 2,
       "kind": "upload",
       "name": "revenue",
       "state": "done",
       "ready": true,
       "created_ready": "2021-08-10T07:32:04.937Z",
-      "created_by": null
+      "created_by": null,
+      "is_scheduled": false
     }
   },
   {
@@ -306,14 +310,15 @@
     "pk": 5,
     "fields": {
       "created": "2021-08-11T14:07:41.075Z",
-      "updated": "2021-08-11T14:07:41.075Z",
+      "updated": "2021-12-21T02:00:27.565Z",
       "project": 2,
       "kind": "upload",
       "name": "pivot",
       "state": "done",
       "ready": true,
       "created_ready": "2021-08-11T14:07:41.075Z",
-      "created_by": null
+      "created_by": null,
+      "is_scheduled": false
     }
   },
   {
@@ -321,14 +326,15 @@
     "pk": 6,
     "fields": {
       "created": "2021-08-10T10:03:16.769Z",
-      "updated": "2021-08-11T13:35:19.052Z",
+      "updated": "2021-12-21T02:00:27.566Z",
       "project": 1,
       "kind": "connector",
       "name": "Heroku Postgres",
       "state": "update",
       "ready": false,
       "created_ready": "2021-08-10T10:03:16.769Z",
-      "created_by": 1
+      "created_by": 1,
+      "is_scheduled": true
     }
   },
   {
@@ -336,14 +342,15 @@
     "pk": 7,
     "fields": {
       "created": "2021-08-10T10:40:23.584Z",
-      "updated": "2021-08-10T13:34:45.844Z",
+      "updated": "2021-12-21T02:00:27.567Z",
       "project": 1,
       "kind": "connector",
       "name": "Facebook Ads",
       "state": "update",
       "ready": false,
       "created_ready": "2021-08-10T10:40:23.584Z",
-      "created_by": 1
+      "created_by": 1,
+      "is_scheduled": true
     }
   },
   {
@@ -351,14 +358,15 @@
     "pk": 8,
     "fields": {
       "created": "2021-08-10T10:40:23.584Z",
-      "updated": "2021-08-10T12:01:16.317Z",
+      "updated": "2021-12-21T02:00:27.567Z",
       "project": 1,
       "kind": "connector",
       "name": "Google Analytics",
       "state": "update",
       "ready": false,
       "created_ready": "2021-08-10T10:40:23.584Z",
-      "created_by": 1
+      "created_by": 1,
+      "is_scheduled": true
     }
   },
   {
@@ -366,14 +374,15 @@
     "pk": 9,
     "fields": {
       "created": "2021-08-10T12:54:44.272Z",
-      "updated": "2021-08-11T13:29:03.723Z",
+      "updated": "2021-12-21T02:00:27.566Z",
       "project": 1,
       "kind": "connector",
       "name": "Shopify",
       "state": "update",
       "ready": false,
       "created_ready": "2021-08-10T12:54:44.272Z",
-      "created_by": 1
+      "created_by": 1,
+      "is_scheduled": true
     }
   },
   {
@@ -381,14 +390,15 @@
     "pk": 13,
     "fields": {
       "created": "2021-08-30T19:05:46.410Z",
-      "updated": "2021-08-30T19:29:42.002Z",
+      "updated": "2021-12-21T02:00:27.564Z",
       "project": 6,
       "kind": "connector",
       "name": "Google Analytics",
       "state": "done",
       "ready": true,
       "created_ready": "2021-08-30T19:29:42Z",
-      "created_by": 2
+      "created_by": 2,
+      "is_scheduled": true
     }
   },
   {
@@ -396,14 +406,15 @@
     "pk": 14,
     "fields": {
       "created": "2021-08-31T00:58:18.464Z",
-      "updated": "2021-08-31T00:58:25.977Z",
+      "updated": "2021-12-21T02:00:27.564Z",
       "project": 6,
       "kind": "upload",
       "name": "store_info",
       "state": "done",
       "ready": true,
       "created_ready": "2021-08-31T00:58:25.975Z",
-      "created_by": 2
+      "created_by": 2,
+      "is_scheduled": false
     }
   },
   {
@@ -411,14 +422,15 @@
     "pk": 15,
     "fields": {
       "created": "2021-12-16T01:46:40.572Z",
-      "updated": "2021-12-16T01:46:48.894Z",
+      "updated": "2021-12-21T02:00:27.562Z",
       "project": 1,
       "kind": "customapi",
       "name": "JSON todos",
       "state": "done",
       "ready": true,
       "created_ready": "2021-12-16T01:46:48.891Z",
-      "created_by": 1
+      "created_by": 1,
+      "is_scheduled": false
     }
   },
   {
@@ -469,6 +481,13 @@
     "fields": {
       "created": "2021-08-30T19:29:47.252Z",
       "updated": "2021-08-31T00:59:24.659Z",
+      "grid_size": 15,
+      "palette_colors": "[\"#5D62B5\", \"#29C3BE\", \"#F2726F\", \"#FFC533\", \"#62B58F\", \"#BC95DF\", \"#67CDF2\"]",
+      "background_color": "#ffffff",
+      "font_size": 14,
+      "font_color": "#6a6b77",
+      "font_family": "Roboto",
+      "show_widget_border": true,
       "name": "Basic metrics",
       "project": 6,
       "shared_status": "private",
@@ -476,10 +495,7 @@
       "password": null,
       "password_set": null,
       "width": 1200,
-      "height": 840,
-      "grid_size": 15,
-      "palette_colors": "[\"#5D62B5\", \"#29C3BE\", \"#F2726F\", \"#FFC533\", \"#62B58F\", \"#BC95DF\", \"#67CDF2\"]",
-      "background_color": "#ffffff"
+      "height": 840
     }
   },
   {
@@ -488,6 +504,13 @@
     "fields": {
       "created": "2021-12-14T21:17:52.313Z",
       "updated": "2021-12-14T21:17:58.692Z",
+      "grid_size": 15,
+      "palette_colors": "[\"#5D62B5\", \"#29C3BE\", \"#F2726F\", \"#FFC533\", \"#62B58F\", \"#BC95DF\", \"#67CDF2\"]",
+      "background_color": "#ffffff",
+      "font_size": 14,
+      "font_color": "#6a6b77",
+      "font_family": "Roboto",
+      "show_widget_border": true,
       "name": "Results",
       "project": 1,
       "shared_status": "private",
@@ -495,10 +518,7 @@
       "password": null,
       "password_set": null,
       "width": 1200,
-      "height": 840,
-      "grid_size": 15,
-      "palette_colors": "[\"#5D62B5\", \"#29C3BE\", \"#F2726F\", \"#FFC533\", \"#62B58F\", \"#BC95DF\", \"#67CDF2\"]",
-      "background_color": "#ffffff"
+      "height": 840
     }
   },
   {
@@ -527,6 +547,12 @@
     "fields": {
       "created": "2021-08-30T19:29:50.988Z",
       "updated": "2021-12-13T22:47:57.507Z",
+      "palette_colors": null,
+      "background_color": null,
+      "show_tooltips": null,
+      "font_size": null,
+      "font_color": null,
+      "rounding_decimal": 2,
       "page": 1,
       "table": 12,
       "text_content": null,
@@ -553,6 +579,12 @@
     "fields": {
       "created": "2021-08-31T00:59:24.656Z",
       "updated": "2021-12-13T22:47:57.505Z",
+      "palette_colors": null,
+      "background_color": null,
+      "show_tooltips": null,
+      "font_size": null,
+      "font_color": null,
+      "rounding_decimal": 2,
       "page": 1,
       "table": 19,
       "text_content": null,
@@ -579,6 +611,12 @@
     "fields": {
       "created": "2021-12-14T21:17:58.685Z",
       "updated": "2021-12-14T21:18:07.387Z",
+      "palette_colors": null,
+      "background_color": null,
+      "show_tooltips": null,
+      "font_size": null,
+      "font_color": null,
+      "rounding_decimal": 2,
       "page": 2,
       "table": 22,
       "text_content": null,
@@ -2696,8 +2734,7 @@
       "sheet_name": null,
       "cell_range": "store_info!A1:D11",
       "drive_file_last_modified_at_sync": "2021-08-08T16:46:04.194Z",
-      "drive_modified_date": "2021-10-21T20:18:31.669Z",
-      "is_scheduled": true
+      "drive_modified_date": "2021-10-21T20:18:31.669Z"
     }
   },
   {
@@ -3341,7 +3378,7 @@
     "pk": 10,
     "fields": {
       "created": "2021-12-16T01:46:42.564Z",
-      "updated": "2021-12-16T13:28:34.118Z",
+      "updated": "2021-12-21T02:00:17.370Z",
       "state": "success",
       "started_at": "2021-12-16T01:46:42.563Z",
       "completed_at": "2021-12-16T01:46:46.036Z",
@@ -3364,7 +3401,18 @@
       "url": "https://jsonplaceholder.typicode.com/todos",
       "json_path": "$",
       "ndjson_file": "cypress/custom_api_jsonnl/customapi_1.ndjson",
-      "http_request_method": "GET"
+      "http_request_method": "GET",
+      "authorization": "no_auth",
+      "api_key_key": null,
+      "api_key_value": null,
+      "api_key_add_to": "http_header",
+      "bearer_token": null,
+      "username": null,
+      "password": null,
+      "oauth2": null,
+      "body": "none",
+      "body_raw": null,
+      "body_binary": ""
     }
   },
   {
@@ -3564,7 +3612,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2021-12-16T13:28:34.076Z" }
+    "fields": { "last_update": "2021-12-21T02:00:17.343Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
