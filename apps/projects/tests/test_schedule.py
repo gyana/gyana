@@ -91,7 +91,7 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
 
     # Add the schedule
     r = client.post(f"{DETAIL}/settings", data={"is_scheduled": True})
-    assertRedirects(r, f"{DETAIL}/settings")
+    assertRedirects(r, f"{DETAIL}/settings", status_code=303)
 
     sheet.refresh_from_db()
     assert sheet.integration.is_scheduled
@@ -116,7 +116,7 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
 
     # Remove the schedule
     r = client.post(f"{DETAIL}/settings", data={"is_scheduled": False})
-    assertRedirects(r, f"{DETAIL}/settings")
+    assertRedirects(r, f"{DETAIL}/settings", status_code=303)
 
     project.refresh_from_db()
     assert project.periodic_task is None
@@ -131,7 +131,7 @@ def test_run_schedule_for_periodic(
     mocker.patch("apps.projects.tasks.run_project_task")
 
     project = project_factory()
-    sheet = sheet_factory(integration__project=project, is_scheduled=True)
+    sheet = sheet_factory(integration__project=project, integration__is_scheduled=True)
     connector = connector_factory(integration__project=project)
 
     project.update_schedule()

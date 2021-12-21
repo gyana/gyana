@@ -57,7 +57,7 @@ def test_customapi_create(client, logged_in_user, project, bigquery, request_saf
     # create
     r = client.get(f"{LIST}/customapis/new")
     assertOK(r)
-    assertFormRenders(r, ["name"])
+    assertFormRenders(r, ["name", 'is_scheduled'])
 
     r = client.post(f"{LIST}/customapis/new", data={"name": "JSON todos"})
 
