@@ -109,7 +109,7 @@ def run_project_task(self, graph_run_id: int, scheduled_only=False):
 
             try:
                 if isinstance(entity, Integration):
-                    run_integration_task(job_run.id)
+                    run_integration_task(entity.kind, job_run.id)
                 elif isinstance(entity, Workflow):
                     workflow_tasks.run_workflow_task(job_run.id)
                 job_run.state = JobRun.State.SUCCESS
