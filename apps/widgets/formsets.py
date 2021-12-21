@@ -30,7 +30,7 @@ ColumnFormset = forms.inlineformset_factory(
     Widget,
     Column,
     form=BaseLiveSchemaForm,
-    fields=("column",),
+    fields=("column", "rounding", "name"),
     extra=0,
     can_delete=True,
     formset=RequiredInlineFormset,

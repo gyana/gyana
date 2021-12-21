@@ -4,6 +4,7 @@ from django.db import models
 
 from apps.base.aggregations import AggregationFunctions
 from apps.base.models import SaveParentModel
+from apps.columns.currency_symbols import CurrencySymbols
 from apps.nodes.models import Node
 from apps.widgets.models import CombinationChart, Widget
 
@@ -94,7 +95,16 @@ class AbstractOperationColumn(SaveParentModel):
         )
 
 
-class Column(SaveParentModel):
+class ColumnSettings(models.Model):
+    class Meta:
+        abstract = True
+
+    name = models.CharField(max_length=64, null=True, blank=True)
+    rounding = models.IntegerField(default=2)
+    currency = models.CharField(choices=CurrencySymbols.choices, blank=True, null=True)
+
+
+class Column(ColumnSettings, SaveParentModel):
     column = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, help_text="Select columns"
     )
@@ -136,7 +146,7 @@ class SecondaryColumn(SaveParentModel):
     )
 
 
-class AggregationColumn(SaveParentModel):
+class AggregationColumn(ColumnSettings, SaveParentModel):
     class Meta:
         ordering = ("created",)
 

@@ -117,25 +117,34 @@ def get_type_class(type_):
 
 
 class BigQueryColumn(Column):
+    def __init__(self, **kwargs):
+        settings = kwargs.pop("settings")
+        super().__init__(**kwargs)
+        if settings:
+            self.verbose_name = settings["name"] or self.verbose_name
+            self.rounding = settings["rounding"]
+
     def render(self, value):
         if value is None:
             return get_template("columns/empty_cell.html").render()
         if isinstance(value, float):
             return get_template("columns/float_cell.html").render(
-                {"value": value, "clean_value": round(value, 2)}
+                {"value": value, "clean_value": round(value, self.rounding or 2)}
             )
         return super().render(value)
 
 
-def get_table(schema, query, footer=None, **kwargs):
+def get_table(schema, query, footer=None, settings=None, **kwargs):
     """Dynamically creates a table class and adds the correct table data
 
     See https://django-tables2.readthedocs.io/en/stable/_modules/django_tables2/views.html
     """
+    settings = settings or {}
     # Inspired by https://stackoverflow.com/questions/16696066/django-tables2-dynamically-adding-columns-to-table-not-adding-attrs-to-table
     attrs = {
         md5(name): BigQueryColumn(
             empty_values=(),
+            settings=settings.get(name),
             verbose_name=name,
             attrs={"th": {"class": get_type_class(type_)}},
             footer=footer.get(name) if footer else None,

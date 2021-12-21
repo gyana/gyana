@@ -72,8 +72,12 @@ def table_to_output(widget: Widget, control) -> Dict[str, Any]:
         if widget.show_summary_row:
             summary = get_summary_row(query, widget)
         query = aggregate_columns(query, widget)
+    settings = {
+        col.column: {"name": col.name, "rounding": col.rounding}
+        for col in widget.columns.all()
+    }
     return get_table(
-        query.schema(), query, summary if widget.show_summary_row else None
+        query.schema(), query, summary if widget.show_summary_row else None, settings
     )
 
 
