@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from apps.integrations.models import Integration
+from apps.integrations.tasks import run_integration_task
 from apps.nodes.models import Node
 from apps.runs.models import GraphRun, JobRun
 from apps.sheets import tasks as sheet_tasks
@@ -108,7 +109,7 @@ def run_project_task(self, graph_run_id: int, scheduled_only=False):
 
             try:
                 if isinstance(entity, Integration):
-                    sheet_tasks.run_sheet_sync_task(job_run.id, skip_up_to_date=True)
+                    run_integration_task(job_run.id)
                 elif isinstance(entity, Workflow):
                     workflow_tasks.run_workflow_task(job_run.id)
                 job_run.state = JobRun.State.SUCCESS

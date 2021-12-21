@@ -118,7 +118,7 @@ def run_customapi_sync_task(self, run_id):
     return integration.id
 
 
-def run_customapi_sync(customapi: CustomApi, user: CustomUser, skip_up_to_date=False):
+def run_customapi_sync(customapi: CustomApi, user: CustomUser):
     run = JobRun.objects.create(
         source=JobRun.Source.INTEGRATION,
         integration=customapi.integration,

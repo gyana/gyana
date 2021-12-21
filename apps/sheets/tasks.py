@@ -50,7 +50,7 @@ def run_sheet_sync_task(self, run_id, skip_up_to_date=False):
     return integration.id
 
 
-def run_sheet_sync(sheet: Sheet, user: CustomUser, skip_up_to_date=False):
+def run_sheet_sync(sheet: Sheet, user: CustomUser):
     run = JobRun.objects.create(
         source=JobRun.Source.INTEGRATION,
         integration=sheet.integration,
@@ -59,6 +59,4 @@ def run_sheet_sync(sheet: Sheet, user: CustomUser, skip_up_to_date=False):
         started_at=timezone.now(),
         user=user,
     )
-    run_sheet_sync_task.apply_async(
-        (run.id,), {"skip_up_to_date": skip_up_to_date}, task_id=str(run.task_id)
-    )
+    run_sheet_sync_task.apply_async((run.id,), task_id=str(run.task_id))
