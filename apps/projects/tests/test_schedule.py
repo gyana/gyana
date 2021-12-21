@@ -94,7 +94,7 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
     assertRedirects(r, f"{DETAIL}/settings")
 
     sheet.refresh_from_db()
-    assert sheet.is_scheduled
+    assert sheet.integration.is_scheduled
 
     project.refresh_from_db()
     assert project.periodic_task is not None

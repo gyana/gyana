@@ -31,12 +31,6 @@ def _get_entity_from_input_table(table: Table):
         return table.integration
 
 
-def _is_scheduled(entity):
-    if isinstance(entity, Integration):
-        return entity.sheet.is_scheduled
-    return entity.is_scheduled
-
-
 @shared_task(bind=True)
 def run_project_task(self, graph_run_id: int, scheduled_only=False):
 
@@ -71,16 +65,16 @@ def run_project_task(self, graph_run_id: int, scheduled_only=False):
         {
             integration: []
             for integration in project.integration_set.filter(
-                kind=Integration.Kind.SHEET
+                kind__in=[Integration.Kind.SHEET, Integration.Kind.CUSTOMAPI]
             ).all()
         }
     )
 
     if scheduled_only:
         graph = {
-            entity: [parent for parent in parents if _is_scheduled(parent)]
+            entity: [parent for parent in parents if parent.is_scheduled]
             for entity, parents in graph.items()
-            if _is_scheduled(entity)
+            if entity.is_scheduled
         }
 
     job_runs = {

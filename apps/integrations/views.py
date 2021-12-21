@@ -17,7 +17,7 @@ from apps.integrations.tasks import run_integration
 from apps.projects.mixins import ProjectMixin
 from apps.runs.tables import JobRunTable
 
-from .forms import KIND_TO_FORM_CLASS, KIND_TO_SETTINGS_FORM_CLASS, IntegrationForm
+from .forms import KIND_TO_FORM_CLASS, IntegrationUpdateForm
 from .mixins import STATE_TO_URL_REDIRECT, ReadyMixin
 from .models import Integration
 from .tables import IntegrationListTable, ReferencesTable
@@ -102,22 +102,12 @@ class IntegrationRuns(ReadyMixin, SingleTableMixin, DetailView):
 class IntegrationSettings(ProjectMixin, TurboUpdateView):
     template_name = "integrations/settings.html"
     model = Integration
-    form_class = IntegrationForm
-
-    def get_form_class(self):
-        return KIND_TO_SETTINGS_FORM_CLASS[self.object.kind]
+    form_class = IntegrationUpdateForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs.update({"instance": self.object.source_obj})
-        if self.object.kind == Integration.Kind.SHEET:
-            kwargs.update({"request": self.request})
+        kwargs.update({"request": self.request})
         return kwargs
-
-    def form_valid(self, form):
-        # don't assign the result to self.object
-        form.save()
-        return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:
         return reverse(

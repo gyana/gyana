@@ -113,12 +113,13 @@ class CustomApi(BaseModel):
     def gcs_uri(self):
         return f"gs://{settings.GS_BUCKET_NAME}/{self.ndjson_file.name}"
 
-    def create_integration(self, name, created_by, project):
+    def create_integration(self, name, created_by, project, is_scheduled):
         integration = Integration.objects.create(
             project=project,
             kind=Integration.Kind.CUSTOMAPI,
             name=name,
             created_by=created_by,
+            is_scheduled=is_scheduled,
         )
         self.integration = integration
 

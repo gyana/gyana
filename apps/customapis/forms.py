@@ -136,6 +136,7 @@ class CustomApiCreateForm(BaseModelForm):
         max_length=255,
         help_text="E.g. the domain or website, to help you find it later",
     )
+    is_scheduled = forms.BooleanField(label="Automatically sync new data")
 
     class Meta:
         model = CustomApi
@@ -148,7 +149,10 @@ class CustomApiCreateForm(BaseModelForm):
 
     def pre_save(self, instance):
         instance.create_integration(
-            self.cleaned_data["name"], self._created_by, self._project
+            self.cleaned_data["name"],
+            self._created_by,
+            self._project,
+            self.cleaned_data["is_scheduled"],
         )
 
     def post_save(self, instance):

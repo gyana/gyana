@@ -119,8 +119,8 @@ def test_run_project(
 
     run_workflow_task.side_effect = None
 
-    integration.sheet.is_scheduled = True
-    integration.sheet.save()
+    integration.is_scheduled = True
+    integration.save()
     workflow_2.is_scheduled = True
     workflow_2.save()
 

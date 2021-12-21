@@ -115,7 +115,8 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
 
         return (
             self.integration_set.filter(
-                kind=Integration.Kind.SHEET, sheet__is_scheduled=True
+                kind__in=[Integration.Kind.SHEET, Integration.Kind.CUSTOMAPI],
+                is_scheduled=True,
             ).exists()
             or self.workflow_set.filter(is_scheduled=True).exists()
         )

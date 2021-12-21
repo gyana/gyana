@@ -1,4 +1,5 @@
 import googleapiclient
+from django import forms
 from django.core.exceptions import ValidationError
 from waffle import flag_is_active
 
@@ -10,14 +11,13 @@ from .sheets import get_cell_range, get_sheets_id_from_url
 
 
 class SheetCreateForm(BaseModelForm):
+    is_scheduled = forms.BooleanField(label="Automatically sync new data")
+
     class Meta:
         model = Sheet
-        fields = ["url", "is_scheduled"]
+        fields = ["url"]
         help_texts = {}
-        labels = {
-            "url": "Google Sheets URL",
-            "is_scheduled": "Automatically sync new data",
-        }
+        labels = {"url": "Google Sheets URL"}
 
     def __init__(self, *args, **kwargs):
         url = kwargs.pop("url")
@@ -54,7 +54,10 @@ class SheetCreateForm(BaseModelForm):
 
     def pre_save(self, instance):
         instance.create_integration(
-            self._sheet["properties"]["title"], self._created_by, self._project
+            self._sheet["properties"]["title"],
+            self._created_by,
+            self._project,
+            self.cleaned_data["is_scheduled"],
         )
 
     def post_save(self, instance):
@@ -80,22 +83,3 @@ class SheetUpdateForm(BaseModelForm):
             raise ValidationError(e.reason.strip())
 
         return cell_range
-
-
-class SheetSettingsForm(BaseModelForm):
-    class Meta:
-        model = Sheet
-        fields = ["is_scheduled"]
-        labels = {"is_scheduled": "Automatically sync new data"}
-
-    def __init__(self, *args, **kwargs):
-        request = kwargs.pop("request")
-        super().__init__(*args, **kwargs)
-        project = self.instance.integration.project
-        help_text = f"Daily at {project.daily_schedule_time} in {project.team.timezone}"
-        self.fields["is_scheduled"].help_text = help_text
-        if not flag_is_active(request, "beta"):
-            self.fields.pop("is_scheduled")
-
-    def post_save(self, instance):
-        instance.integration.project.update_schedule()

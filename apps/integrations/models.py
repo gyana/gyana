@@ -89,6 +89,8 @@ class Integration(CloneMixin, BaseModel):
     created_ready = models.DateTimeField(null=True)
     created_by = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
 
+    is_scheduled = models.BooleanField(default=False)
+
     objects = IntegrationsManager()
 
     _clone_m2o_or_o2m_fields = ["connector_set", "table_set"]
@@ -240,12 +242,3 @@ class Integration(CloneMixin, BaseModel):
             else self.RUN_STATE_TO_INTEGRATION_STATE[self.latest_run.state]
         )
         self.save()
-
-    @property
-    def is_scheduled(self):
-        if self.kind == self.Kind.CONNECTOR:
-            return True
-        elif self.kind == self.Kind.SHEET:
-            return self.sheet.is_scheduled
-        elif self.kind == self.Kind.UPLOAD:
-            return False

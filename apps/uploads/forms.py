@@ -33,9 +33,3 @@ class UploadUpdateForm(forms.ModelForm):
         help_texts = {
             "field_delimiter": "A field delimiter is a character that separates cells in a CSV table."
         }
-
-
-class UploadSettingsForm(BaseModelForm):
-    class Meta:
-        model = Upload
-        fields = []
