@@ -1,16 +1,11 @@
-from unittest import mock
-
 import pytest
-from django.utils import timezone
-from pytest_django.asserts import assertFormError, assertRedirects
+from pytest_django.asserts import assertRedirects
 
-from apps.appsumo.models import AppsumoCode
 from apps.base.tests.asserts import (
     assertFormRenders,
     assertLink,
     assertOK,
     assertSelectorLength,
-    assertSelectorText,
 )
 
 pytestmark = pytest.mark.django_db
