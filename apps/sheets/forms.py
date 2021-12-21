@@ -11,7 +11,9 @@ from .sheets import get_cell_range, get_sheets_id_from_url
 
 
 class SheetCreateForm(BaseModelForm):
-    is_scheduled = forms.BooleanField(label="Automatically sync new data")
+    is_scheduled = forms.BooleanField(
+        required=False, label="Automatically sync new data"
+    )
 
     class Meta:
         model = Sheet

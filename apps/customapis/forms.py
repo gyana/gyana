@@ -136,7 +136,9 @@ class CustomApiCreateForm(BaseModelForm):
         max_length=255,
         help_text="E.g. the domain or website, to help you find it later",
     )
-    is_scheduled = forms.BooleanField(label="Automatically sync new data")
+    is_scheduled = forms.BooleanField(
+        required=False, label="Automatically sync new data"
+    )
 
     class Meta:
         model = CustomApi
