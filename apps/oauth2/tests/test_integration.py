@@ -12,7 +12,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_oauth2_crudl(client, logged_in_user, project_factory, mocker):
-    mocker.patch(
+    fetch_token = mocker.patch(
         "requests_oauthlib.OAuth2Session.fetch_token",
         return_value={"access_token": "12345"},
     )
@@ -72,6 +72,9 @@ def test_oauth2_crudl(client, logged_in_user, project_factory, mocker):
         r, authorization_url, status_code=302, fetch_redirect_response=False
     )
 
+    assert oauth2.token is None
+    assert fetch_token.call_count == 0
+
     # oauth callback
     mock_code = "1234567890"
     r = client.get(
@@ -79,9 +82,15 @@ def test_oauth2_crudl(client, logged_in_user, project_factory, mocker):
     )
     assertRedirects(r, f"/projects/{project.id}/update")
 
-    assert oauth2.token is None
     oauth2.refresh_from_db()
     assert oauth2.token == {"access_token": "12345"}
+
+    assert fetch_token.call_count == 1
+    assert fetch_token.call_args.args == (oauth2.token_url,)
+    assert fetch_token.call_args.kwargs == {
+        "client_secret": oauth2.client_secret,
+        "authorization_response": f"http://testserver/oauth2/1/callback?code={mock_code}&state={oauth2.state}",
+    }
 
     # list
     r = client.get_turbo_frame(
