@@ -28,7 +28,7 @@ def test_oauth2_crudl(client, logged_in_user, project_factory, mocker):
         f"/projects/{project.id}/update", f"/projects/{project.id}/oauth2/"
     )
     assertOK(r)
-    assertLink(r, f"/projects/{project.id}/oauth2/new", "create one")
+    assertLink(r, f"/projects/{project.id}/oauth2/new", "connect one")
 
     r = client.post(f"/projects/{project.id}/oauth2/new", data={"name": "Github"})
     assert project.oauth2_set.count() == 1
