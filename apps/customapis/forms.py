@@ -174,6 +174,11 @@ class CustomApiUpdateForm(LiveUpdateForm):
             "body_raw",
             "body_binary",
         ]
+        widgets = {
+            "api_key_value": forms.PasswordInput(),
+            "bearer_token": forms.PasswordInput(),
+            "password": forms.PasswordInput(),
+        }
         labels = {
             "url": "URL",
             "json_path": "JSON Path",
@@ -187,7 +192,7 @@ class CustomApiUpdateForm(LiveUpdateForm):
         }
         help_texts = {
             "json_path": mark_safe(
-                'Extract part of the JSON result, e.g. under a specific key - <a href="https://github.com/json-path/JSONPath#operators" class="link">learn more</a>'
+                'Extract part of the JSON result, e.g. under a specific key <a href="https://github.com/json-path/JSONPath#operators" class="link">learn more</a>'
             )
         }
 

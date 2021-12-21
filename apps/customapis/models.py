@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django_cryptography.fields import encrypt
 from jsonpath_ng import parse
 from jsonpath_ng.parser import JsonPathParserError
 
@@ -77,17 +78,17 @@ class CustomApi(BaseModel):
 
     # api key
     api_key_key = models.CharField(max_length=8192, null=True)
-    api_key_value = models.CharField(max_length=8192, null=True)
+    api_key_value = encrypt(models.CharField(max_length=8192, null=True))
     api_key_add_to = models.CharField(
         max_length=8192, choices=ApiKeyAddTo.choices, default=ApiKeyAddTo.HTTP_HEADER
     )
 
     # bearer token
-    bearer_token = models.CharField(max_length=1024, null=True)
+    bearer_token = encrypt(models.CharField(max_length=1024, null=True))
 
     # basic auth or digest auth
     username = models.CharField(max_length=1024, null=True)
-    password = models.CharField(max_length=1024, null=True)
+    password = encrypt(models.CharField(max_length=1024, null=True))
 
     # oauth2
     oauth2 = models.ForeignKey("oauth2.OAuth2", null=True, on_delete=models.SET_NULL)
