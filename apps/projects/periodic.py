@@ -31,7 +31,7 @@ def run_schedule_for_project(self, project_id: int):
         return
 
     # the task_id is maintained for retried tasks, so this will only be created once
-    graph_run = GraphRun.objects.get_or_create(
+    graph_run, _ = GraphRun.objects.get_or_create(
         project=project,
         task_id=self.request.id,
         state=GraphRun.State.RUNNING,
