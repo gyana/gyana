@@ -1,5 +1,7 @@
 from django import forms
+from django.utils.html import mark_safe
 
+from apps.base.forms import BaseModelForm
 from apps.base.live_update_form import LiveUpdateForm
 
 from .models import Project
@@ -74,12 +76,8 @@ class ProjectUpdateForm(MemberSelectMixin, LiveUpdateForm):
             "access",
             "members",
             "cname",
-            "daily_schedule_time",
         ]
-        widgets = {
-            "members": MemberSelect(),
-            "daily_schedule_time": forms.TimeInput(attrs={"step": "3600"}),
-        }
+        widgets = {"members": MemberSelect()}
         labels = {"cname": "Custom domain"}
 
     def __init__(self, *args, **kwargs):
@@ -89,18 +87,39 @@ class ProjectUpdateForm(MemberSelectMixin, LiveUpdateForm):
             cname_field.empty_label = "Default domain (gyana.com)"
             cname_field.queryset = self._team.cname_set.all()
 
-        if daily_schedule_time_field := self.fields.get("daily_schedule_time"):
-            daily_schedule_time_field.help_text = (
-                f"Select an hour in {self._team.timezone_with_gtm_offset}"
-            )
-
     def get_live_fields(self):
-        fields = ["name", "description", "access", "cname", "daily_schedule_time"]
+        fields = ["name", "description", "access", "cname"]
 
         if self.get_live_field("access") == Project.Access.INVITE_ONLY:
             fields += ["members"]
 
         return fields
+
+
+class ProjectRunForm(BaseModelForm):
+    class Meta:
+        model = Project
+        fields = [
+            "daily_schedule_time",
+        ]
+        widgets = {
+            "daily_schedule_time": forms.TimeInput(attrs={"step": "3600"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        daily_schedule_time = self.fields["daily_schedule_time"]
+
+        if self.instance.team.is_free:
+            daily_schedule_time.disabled = True
+            daily_schedule_time.help_text = mark_safe(
+                """Scheduling is only available on a paid plan <a class="link" href="{% url 'teams:plans' team.id %}" data-turbo-frame="_top">learn more</a>"""
+            )
+        else:
+            daily_schedule_time.help_text = (
+                f"Select an hour in {self.instance.team.timezone_with_gtm_offset}"
+            )
 
     def pre_save(self, instance):
         self._daily_schedule_time_is_dirty = (
