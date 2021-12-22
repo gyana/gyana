@@ -33,7 +33,7 @@ class IntegrationUpdateForm(BaseModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        is_scheduled_paid_only(self.fields["is_scheduled"], self.instance.project.team)
+        is_scheduled_paid_only(self.fields["is_scheduled"], self.instance.project)
 
     def post_save(self, instance):
         instance.project.update_schedule()

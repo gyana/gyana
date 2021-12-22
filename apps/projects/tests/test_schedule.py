@@ -30,16 +30,9 @@ def test_connector_schedule(client, logged_in_user, fivetran, connector_factory)
 
     # update the daily sync time in a project via UI
     r = client.post(
-        f"/projects/{project.id}/update",
-        data={
-            "name": "KPIs",
-            "description": "All the company kpis",
-            "access": "everyone",
-            "daily_schedule_time": "09:00",
-            "submit": True,
-        },
+        f"/projects/{project.id}/runs", data={"daily_schedule_time": "09:00"}
     )
-    assertRedirects(r, f"/projects/{project.id}/update", status_code=303)
+    assertRedirects(r, f"/projects/{project.id}/runs", status_code=303)
 
     project.refresh_from_db()
     connector.refresh_from_db()

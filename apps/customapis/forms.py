@@ -150,7 +150,7 @@ class CustomApiCreateForm(BaseModelForm):
         self._created_by = kwargs.pop("created_by")
         super().__init__(*args, **kwargs)
 
-        is_scheduled_paid_only(self.fields["is_scheduled"], self._project.team)
+        is_scheduled_paid_only(self.fields["is_scheduled"], self._project)
 
     def pre_save(self, instance):
         instance.create_integration(

@@ -29,7 +29,7 @@ class SheetCreateForm(BaseModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields["url"].initial = url
-        is_scheduled_paid_only(self.fields["is_scheduled"], self._project.team)
+        is_scheduled_paid_only(self.fields["is_scheduled"], self._project)
 
     def clean_url(self):
         url = self.cleaned_data["url"]

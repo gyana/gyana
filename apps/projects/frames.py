@@ -21,4 +21,4 @@ class ProjectRuns(SingleTableMixin, TurboFrameUpdateView):
         return self.object.runs.all()
 
     def get_success_url(self):
-        return reverse("projects:runs", args=(self.project.id,))
+        return reverse("projects:runs", args=(self.object.id,))
