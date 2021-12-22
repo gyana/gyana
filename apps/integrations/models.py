@@ -231,7 +231,7 @@ class Integration(CloneMixin, BaseModel):
 
     @property
     def latest_run(self):
-        return self.runs.order_by("-started_at").first()
+        return self.runs.order_by("-created").first()
 
     def update_state_from_latest_run(self):
 

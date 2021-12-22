@@ -140,7 +140,7 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     @property
     def latest_run(self):
-        return self.runs.order_by("-started_at").first()
+        return self.runs.order_by("-created").first()
 
 
 class ProjectMembership(BaseModel):
