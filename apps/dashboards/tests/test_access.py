@@ -1,6 +1,9 @@
+import uuid
+
 import pytest
 
 from apps.base.tests.asserts import assertLoginRedirect, assertOK
+from apps.dashboards.models import Dashboard
 
 pytestmark = pytest.mark.django_db
 
@@ -76,5 +79,37 @@ def test_project_required(client, url, dashboard_factory, user):
     assertOK(r)
 
 
-def test_public_dashboard(client):
-    assert False
+def test_public_dashboard(client, dashboard_factory):
+    dashboard = dashboard_factory(shared_id=uuid.uuid4())
+    dashboard.pages.create()
+    r = client.get(f"/dashboards/{dashboard.shared_id}")
+    assert r.status_code == 404
+
+    dashboard.shared_status = Dashboard.SharedStatus.PUBLIC
+    dashboard.save()
+    r = client.get(f"/dashboards/{dashboard.shared_id}")
+    assertOK(r)
+
+
+@pytest.mark.parametrize(
+    "url, success_code",
+    [
+        pytest.param("/dashboards/{}/login", 200, id="login"),
+        pytest.param("/dashboards/{}/logout", 302, id="logout"),
+    ],
+)
+def test_password_protected(client, url, success_code, dashboard_factory):
+    dashboard = dashboard_factory(shared_id=uuid.uuid4())
+    dashboard.pages.create()
+
+    url = url.format(dashboard.shared_id)
+    r = client.get(url)
+    assert r.status_code == 404
+
+    dashboard.shared_status = Dashboard.SharedStatus.PASSWORD_PROTECTED
+    dashboard.save()
+    session = client.session
+    session.update({str(dashboard.shared_id): ""})
+    session.save()
+    r = client.get(url)
+    assert r.status_code == success_code
