@@ -170,7 +170,7 @@ def test_free_tier_project_limit(client, logged_in_user, project_factory):
     assert r.status_code == 422
 
 
-def test_automate(client, logged_in_user, project_factory, graph_run_factory):
+def test_automate(client, logged_in_user, project_factory, graph_run_factory, is_paid):
 
     team = logged_in_user.teams.first()
     project = project_factory(team=team)

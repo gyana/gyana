@@ -164,6 +164,6 @@ def project(project_factory, logged_in_user):
     return project_factory(team=logged_in_user.teams.first())
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def is_paid(mocker):
     mocker.patch.object(Team, "is_free", False)

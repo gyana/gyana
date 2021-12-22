@@ -16,7 +16,9 @@ from apps.runs.models import GraphRun
 pytestmark = pytest.mark.django_db
 
 
-def test_connector_schedule(client, logged_in_user, fivetran, connector_factory):
+def test_connector_schedule(
+    client, logged_in_user, fivetran, connector_factory, is_paid
+):
 
     team = logged_in_user.teams.first()
     connector = connector_factory(integration__project__team=team)
@@ -64,7 +66,7 @@ def test_connector_schedule(client, logged_in_user, fivetran, connector_factory)
     assert fivetran.update.call_args.kwargs == {"daily_sync_time": "01:00"}
 
 
-def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
+def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker, is_paid):
 
     team = logged_in_user.teams.first()
     sheet = sheet_factory(integration__project__team=team)
@@ -120,7 +122,7 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
 
 
 def test_run_schedule_for_periodic(
-    project_factory, sheet_factory, connector_factory, mocker
+    project_factory, sheet_factory, connector_factory, mocker, is_paid
 ):
 
     mocker.patch("apps.projects.tasks.run_project_task")
