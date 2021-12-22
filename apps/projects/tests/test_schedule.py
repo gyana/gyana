@@ -1,4 +1,5 @@
 import json
+from uuid import uuid4
 
 import pytest
 import pytz
@@ -10,6 +11,7 @@ from pytest_django.asserts import assertRedirects
 from apps.base.tests.asserts import assertFormRenders, assertOK
 from apps.connectors.tests.mock import get_mock_fivetran_connector
 from apps.projects import periodic
+from apps.runs.models import GraphRun
 
 pytestmark = pytest.mark.django_db
 
@@ -138,10 +140,20 @@ def test_run_schedule_for_periodic(
 
     assert project.periodic_task is not None
 
+    task_id = str(uuid4())
+
     with pytest.raises(RetryTaskError):
-        periodic.run_schedule_for_project.delay(project.id)
+        periodic.run_schedule_for_project.apply_async((project.id,), task_id=task_id)
+
+    assert project.runs.count() == 1
+    graph_run = project.runs.first()
+    assert graph_run.state == GraphRun.State.RUNNING
 
     connector.succeeded_at = timezone.now()
     connector.save()
 
-    periodic.run_schedule_for_project.delay(project.id)
+    periodic.run_schedule_for_project.apply_async((project.id,), task_id=task_id)
+
+    assert project.runs.count() == 1
+    graph_run.refresh_from_db()
+    assert graph_run.state == GraphRun.State.SUCCESS
