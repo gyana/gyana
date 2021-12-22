@@ -119,7 +119,7 @@ class DashboardForm(forms.ModelForm):
 
         for name, field in self.fields.items():
             if self.category != DASHBOARD_SETTING_TO_CATEGORY[name]:
-                self.fields[name].widget = forms.HiddenInput()
+                field.widget = forms.HiddenInput()
 
 
 class DashboardShareForm(LiveUpdateForm):

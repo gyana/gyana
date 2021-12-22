@@ -230,6 +230,8 @@ class WidgetStyleForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
+        import logging
+        logger = logging.getLogger()
         super().__init__(*args, **kwargs)
 
         if self.instance.kind == Widget.Kind.METRIC:
@@ -241,9 +243,18 @@ class WidgetStyleForm(forms.ModelForm):
                 }
             )
         else:
-
             self.fields = {
                 key: field
                 for key, field in self.base_fields.items()
                 if key != "rounding_decimal"
             }
+
+    # If widget has no value set for a setting, default to dashboard settings.
+    def get_initial_for_field(self, field, field_name):
+        if getattr(self.instance, field_name) is not None:
+            return super().get_initial_for_field(field, field_name)
+
+        if hasattr(self.instance.page.dashboard, field_name):
+            return getattr(self.instance.page.dashboard, field_name)
+
+        return super().get_initial_for_field(field, field_name)
