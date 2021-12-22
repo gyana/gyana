@@ -101,7 +101,9 @@ class ColumnSettings(models.Model):
 
     name = models.CharField(max_length=64, null=True, blank=True)
     rounding = models.IntegerField(default=2)
-    currency = models.CharField(choices=CurrencySymbols.choices, blank=True, null=True)
+    currency = models.CharField(
+        max_length=32, choices=CurrencySymbols.choices, blank=True, null=True
+    )
 
 
 class Column(ColumnSettings, SaveParentModel):
