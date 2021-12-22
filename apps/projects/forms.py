@@ -1,4 +1,5 @@
 from django import forms
+from django.urls import reverse
 from django.utils.html import mark_safe
 
 from apps.base.forms import BaseModelForm
@@ -114,7 +115,7 @@ class ProjectRunForm(BaseModelForm):
         if self.instance.team.is_free:
             daily_schedule_time.disabled = True
             daily_schedule_time.help_text = mark_safe(
-                """Scheduling is only available on a paid plan <a class="link" href="{% url 'teams:plans' team.id %}" data-turbo-frame="_top">learn more</a>"""
+                f'Scheduling is only available on a paid plan <a class="link" href="{reverse("teams:plans", args=(self.instance.team.id, ))}" data-turbo-frame="_top">learn more</a>'
             )
         else:
             daily_schedule_time.help_text = (
