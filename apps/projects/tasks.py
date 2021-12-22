@@ -11,7 +11,6 @@ from apps.integrations.models import Integration
 from apps.integrations.tasks import run_integration_task
 from apps.nodes.models import Node
 from apps.runs.models import GraphRun, JobRun
-from apps.sheets import tasks as sheet_tasks
 from apps.tables.models import Table
 from apps.users.models import CustomUser
 from apps.workflows import tasks as workflow_tasks
@@ -21,8 +20,9 @@ from .models import Project
 
 
 def _update_progress_from_job_run(progress_recorder, run_info, job_run):
-    run_info[job_run.source_obj.entity_id] = job_run.state
-    progress_recorder.set_progress(0, 0, description=json.dumps(run_info))
+    if progress_recorder:
+        run_info[job_run.source_obj.entity_id] = job_run.state
+        progress_recorder.set_progress(0, 0, description=json.dumps(run_info))
 
 
 def _get_entity_from_input_table(table: Table):
@@ -35,7 +35,8 @@ def _get_entity_from_input_table(table: Table):
 @shared_task(bind=True)
 def run_project_task(self, graph_run_id: int, scheduled_only=False):
 
-    progress_recorder = backend.ProgressRecorder(self)
+    # ignore progress recorder when used as a function
+    progress_recorder = backend.ProgressRecorder(self) if self.request.id else None
 
     graph_run = GraphRun.objects.get(pk=graph_run_id)
     project = graph_run.project
@@ -52,7 +53,7 @@ def run_project_task(self, graph_run_id: int, scheduled_only=False):
                 kind=Node.Kind.INPUT,
             )
             .filter(
-                Q(input_table__integration__kind=Integration.Kind.SHEET)
+                Q(input_table__integration__kind__in=Integration.KIND_RUN_IN_PROJECT)
                 | Q(input_table__source=Table.Source.WORKFLOW_NODE)
             )
             .select_related("input_table__workflow_node__workflow")
@@ -66,7 +67,7 @@ def run_project_task(self, graph_run_id: int, scheduled_only=False):
         {
             integration: []
             for integration in project.integration_set.filter(
-                kind__in=[Integration.Kind.SHEET, Integration.Kind.CUSTOMAPI]
+                kind__in=Integration.KIND_RUN_IN_PROJECT
             ).all()
         }
     )
@@ -94,7 +95,8 @@ def run_project_task(self, graph_run_id: int, scheduled_only=False):
     run_info = {
         job_run.source_obj.entity_id: job_run.state for job_run in job_runs.values()
     }
-    progress_recorder.set_progress(0, 0, description=json.dumps(run_info))
+    if progress_recorder:
+        progress_recorder.set_progress(0, 0, description=json.dumps(run_info))
 
     ts = TopologicalSorter(graph)
 

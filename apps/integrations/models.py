@@ -119,6 +119,8 @@ class Integration(CloneMixin, BaseModel):
         JobRun.State.SUCCESS: State.DONE,
     }
 
+    KIND_RUN_IN_PROJECT = [Kind.SHEET, Kind.CUSTOMAPI]
+
     def __str__(self):
         return self.name
 
