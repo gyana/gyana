@@ -12,7 +12,8 @@ from apps.columns.models import (
     WindowColumn,
 )
 from apps.connectors.models import Connector
-from apps.controls.models import Control
+from apps.controls.models import Control, ControlWidget
+from apps.customapis.models import CustomApi
 from apps.dashboards.models import Dashboard, Page
 from apps.filters.models import Filter
 from apps.integrations.models import Integration
@@ -246,6 +247,14 @@ class ControlFactory(factory.django.DjangoModelFactory):
 
 
 @register
+class ControlWidgetFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ControlWidget
+
+    control = factory.SubFactory(ControlFactory)
+
+
+@register
 class JobRunFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = JobRun
@@ -255,3 +264,9 @@ class JobRunFactory(factory.django.DjangoModelFactory):
 class GraphRunFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = GraphRun
+
+
+@register
+class CustomApiFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CustomApi
