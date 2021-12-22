@@ -230,8 +230,6 @@ class WidgetStyleForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
-        import logging
-        logger = logging.getLogger()
         super().__init__(*args, **kwargs)
 
         if self.instance.kind == Widget.Kind.METRIC:
