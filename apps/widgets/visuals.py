@@ -73,7 +73,11 @@ def table_to_output(widget: Widget, control) -> Dict[str, Any]:
             summary = get_summary_row(query, widget)
         query = aggregate_columns(query, widget)
     settings = {
-        col.column: {"name": col.name, "rounding": col.rounding}
+        col.column: {
+            "name": col.name,
+            "rounding": col.rounding,
+            "currency": col.currency,
+        }
         for col in widget.columns.all()
     }
     return get_table(

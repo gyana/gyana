@@ -118,19 +118,25 @@ def get_type_class(type_):
 
 class BigQueryColumn(Column):
     def __init__(self, **kwargs):
-        settings = kwargs.pop("settings")
+        settings = kwargs.pop("settings") or {}
         super().__init__(**kwargs)
-        if settings:
-            self.verbose_name = settings["name"] or self.verbose_name
-            self.rounding = settings["rounding"]
+
+        self.verbose_name = settings.get("name") or self.verbose_name
+        self.rounding = settings.get("rounding", 2)
+        self.currency = settings.get("currency")
 
     def render(self, value):
         if value is None:
             return get_template("columns/empty_cell.html").render()
         if isinstance(value, float):
             return get_template("columns/float_cell.html").render(
-                {"value": value, "clean_value": round(value, self.rounding or 2)}
+                {
+                    "value": value,
+                    "clean_value": f"{self.currency}{round(value, self.rounding)}",
+                }
             )
+        if isinstance(value, int):
+            value = f"{self.currency}{value}"
         return super().render(value)
 
 
