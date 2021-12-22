@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from apps.base.live_update_form import LiveUpdateForm
 
-from .models import Dashboard
+from .models import Dashboard, DASHBOARD_SETTING_TO_CATEGORY
 
 
 class PaletteColorsWidget(forms.MultiWidget):
@@ -104,17 +104,22 @@ class DashboardForm(forms.ModelForm):
             "font_color",
             "background_color",
             "palette_colors",
+            "grid_size",
             "width",
             "height",
-            "grid_size",
             "show_widget_border",
         ]
 
     def __init__(self, *args, **kwargs):
+        self.category = kwargs.pop("category")
         super().__init__(*args, **kwargs)
 
         self.fields["width"].widget.attrs.update({"step": self.instance.grid_size})
         self.fields["height"].widget.attrs.update({"step": self.instance.grid_size})
+
+        for name, field in self.fields.items():
+            if self.category != DASHBOARD_SETTING_TO_CATEGORY[name]:
+                self.fields[name].widget = forms.HiddenInput()
 
 
 class DashboardShareForm(LiveUpdateForm):
