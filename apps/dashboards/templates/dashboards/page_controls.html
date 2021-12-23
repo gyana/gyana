@@ -1,0 +1,53 @@
+<div class="page-controls">
+  {% if previous_page == 0 %}
+    <i class="fas fa-fw fa-chevron-left text-gray"></i>
+  {% else %}
+    <a href="{% url 'project_dashboards:detail' project.id object.id %}?page={{ previous_page}}">
+      <i class="fas fa-fw fa-chevron-left"></i>
+    </a>
+  {% endif %}
+
+  Page {{ page.position }} of {{ page_count }}
+
+  {% if next_page > page_count %}
+  <form
+    method="POST"
+    action="{% url "project_dashboards:page-create" project.id object.id %}"
+    data-controller="tooltip"
+    class="form--no-layout"
+  >
+    {% csrf_token %}
+
+    <button
+      type="submit"
+      id="dashboards-add-page-{{ object.id }}"
+      data-loading-false
+    >
+      <i class="fa fa-fw fa-plus mr-2"></i>
+    </button>
+
+    <div data-tooltip-target="body">Add new page</div>
+  </form>
+  {% else %}
+    <a href="{% url 'project_dashboards:detail' project.id object.id %}?page={{ next_page }}">
+      <i class="fas fa-fw fa-chevron-right"></i>
+    </a>
+  {% endif %}
+</div>
+
+{% comment %} <form
+  method="POST"
+  action="{% url "project_dashboards:page-create" project.id object.id %}"
+  class="form--no-layout"
+>
+  {% csrf_token %}
+
+  <button
+    type="submit"
+    class="button button--sm button--tertiary"
+    id="dashboards-add-page-{{ object.id }}-topbar"
+    data-loading-false
+  >
+    <i class="fa fa-plus mr-2"></i> Add new page
+  </button>
+</form> {% endcomment %}

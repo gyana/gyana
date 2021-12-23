@@ -8,10 +8,22 @@
       <h1 class="mr-2">Authorize a external service with OAuth2</h1>
     </div>
 
-    <p class="mb-2">
-      Your OAuth2 callback URL:
+    <p class="alert mb-4">
+      To start with, register a new application with your OAuth2 provider.
+      You'll get a unique client ID and client secret.
     </p>
-    <pre class="text-xl p-2" data-to-clipboard-target='target'>{{ request.get_host}}{% url 'oauth2:callback' object.id %}</pre>
+
+    <p class="mb-2">
+      You'll need to enter this callback URL:
+    </p>
+    <div data-controller="to-clipboard" class='clipboard-copy mb-4'>
+      <p data-to-clipboard-target='target'>
+        {{ object.callback_url }}
+      </p>
+      <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
+        <i class='fa fa-clipboard'></i>
+      </button>
+    </div>
 
     <form method="post" class="mt-7" data-turbo="false">
       {% csrf_token %}

@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django_cryptography.fields import encrypt
 from jsonpath_ng import parse
 from jsonpath_ng.parser import JsonPathParserError
 
@@ -63,7 +64,7 @@ class CustomApi(BaseModel):
 
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 
-    url = models.URLField(max_length=2048)
+    url = models.URLField(max_length=2048, null=True)
     json_path = models.TextField(default="$", validators=[validate_json_path])
 
     ndjson_file = models.FileField(upload_to=with_slug("customapi_ndjson"), null=True)
@@ -77,17 +78,17 @@ class CustomApi(BaseModel):
 
     # api key
     api_key_key = models.CharField(max_length=8192, null=True)
-    api_key_value = models.CharField(max_length=8192, null=True)
+    api_key_value = encrypt(models.CharField(max_length=8192, null=True))
     api_key_add_to = models.CharField(
         max_length=8192, choices=ApiKeyAddTo.choices, default=ApiKeyAddTo.HTTP_HEADER
     )
 
     # bearer token
-    bearer_token = models.CharField(max_length=1024, null=True)
+    bearer_token = encrypt(models.CharField(max_length=1024, null=True))
 
     # basic auth or digest auth
     username = models.CharField(max_length=1024, null=True)
-    password = models.CharField(max_length=1024, null=True)
+    password = encrypt(models.CharField(max_length=1024, null=True))
 
     # oauth2
     oauth2 = models.ForeignKey("oauth2.OAuth2", null=True, on_delete=models.SET_NULL)
@@ -112,12 +113,13 @@ class CustomApi(BaseModel):
     def gcs_uri(self):
         return f"gs://{settings.GS_BUCKET_NAME}/{self.ndjson_file.name}"
 
-    def create_integration(self, name, created_by, project):
+    def create_integration(self, name, created_by, project, is_scheduled):
         integration = Integration.objects.create(
             project=project,
             kind=Integration.Kind.CUSTOMAPI,
             name=name,
             created_by=created_by,
+            is_scheduled=is_scheduled,
         )
         self.integration = integration
 

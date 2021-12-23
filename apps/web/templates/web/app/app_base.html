@@ -46,6 +46,7 @@
   class="sidebar__link sidebar__link--border"
   data-controller="tooltip"
   data-placement="right"
+  data-show-on-collapse="true"
 >
   {% if team.icon %}
   <img src="{{ team.icon.url }}" />
@@ -67,6 +68,7 @@
   href="{% url 'teams:detail' team.id %}"
   data-controller="tooltip"
   data-placement="right"
+  data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-folders"></i>Projects
 
@@ -79,6 +81,7 @@
   href="{% url 'team_members:list' team.id %}"
   data-controller="tooltip"
   data-placement="right"
+  data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-users"></i>Members
 
@@ -90,6 +93,7 @@
   href="{% url 'teams:account' team.id %}"
   data-controller="tooltip"
   data-placement="right"
+  data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-wallet"></i>Billing
 
@@ -101,6 +105,7 @@
   href="{% url 'teams:update' team.id %}"
   data-controller="tooltip"
   data-placement="right"
+  data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-cog"></i>Settings
 

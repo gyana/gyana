@@ -34,7 +34,7 @@ class WidgetStyle(models.Model):
 
 
 class Widget(WidgetStyle, CloneMixin, BaseModel):
-    _clone_m2o_or_o2m_fields = ["filters", "aggregations", "charts"]
+    _clone_m2o_or_o2m_fields = ["filters", "columns", "aggregations", "charts"]
 
     class Category(models.TextChoices):
         SIMPLE = "simple", "Simple charts"

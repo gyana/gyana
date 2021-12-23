@@ -7,23 +7,20 @@
   <div class="flex flex-col max-w-3xl">
     <div class="flex flex-col text-center mb-7">
       <h1>
-        Fetch data from a custom API
-        {% comment %}
-          {% link_article 'integrations' 'api' %}
-          {% link_video 'api' %}
-        {% endcomment %}
+        Connect a Custom API
+        {% link_article 'integrations' 'customapi' %}
       </h1>
-      <p></p>
+      <p>Fetch data from a JSON API with flexible options including OAuth2.</p>
     </div>
-
-    <p class="alert mt-6">You can add more advanced configuration like HTTP verb, query params and headers in the next step.</p>
     
     <form method="post" class="mt-7">
       {% csrf_token %}
 
       {% include "django/forms/default_form.html" %}
 
-      <button type="submit" class="button button--filled button--success w-full">Create</button>
+      <p class="alert">You can rename this integration at any time.</p>
+
+      <button type="submit" class="button button--filled button--success w-full">Continue</button>
     </form>
   </div>
 </div>

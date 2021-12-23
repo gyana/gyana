@@ -87,10 +87,17 @@ class DashboardSettings(ProjectMixin, TurboFrameUpdateView):
     form_class = DashboardForm
     turbo_frame_dom_id = "dashboard:settings"
 
-    def get_success_url(self) -> str:
-        return reverse(
-            "project_dashboards:detail", args=(self.project.id, self.object.id)
-        )
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["category"] = self.request.GET.get("category")
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Dashboard.Category.choices
+
+        return context
 
     def form_invalid(self, form):
         context = self.get_context_data()
@@ -100,4 +107,9 @@ class DashboardSettings(ProjectMixin, TurboFrameUpdateView):
                 .replace.template(self.template_name, context)
                 .render()
             ]
+        )
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_dashboards:detail", args=(self.project.id, self.object.id)
         )

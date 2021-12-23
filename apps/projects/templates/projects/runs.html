@@ -14,12 +14,16 @@
   </div>
 
   <div class="flex-1 overflow-auto">
-    {% comment %} <form
+
+    <form
       method="post"
       class="pad max-w-4xl"
       data-tf-modal-target='form'
       action="{% url 'projects:runs' project.id %}"
     >
+      {% if not object.needs_schedule and not is_free %}
+        <p class="alert">The daily schedule will only run if you have one or more scheduled integrations or workflows, excluding connectors.</p>
+      {% endif %}
       {% csrf_token %}
 
       {% include "django/forms/default_form.html" with optional=False %}
@@ -27,7 +31,7 @@
       <button type="submit" class="button button--success w-full">
         Save
       </button>
-    </form> {% endcomment %}
+    </form>
 
     <div class="pad">
       <p class="mb-4">All the historical runs for this project</p>

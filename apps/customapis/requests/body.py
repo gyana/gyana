@@ -28,7 +28,7 @@ def _get_body_for_binary(session: Session, customapi: CustomApi):
 
 
 BODY = {
-    CustomApi.Body.NONE: lambda session, customapi: None,
+    CustomApi.Body.NONE: lambda session, customapi: {},
     CustomApi.Body.FORM_DATA: _get_body_for_form_data,
     CustomApi.Body.X_WWW_FORM_URLENCODED: _get_body_for_form_url_encoded,
     CustomApi.Body.RAW: _get_body_for_raw,

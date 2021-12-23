@@ -76,10 +76,10 @@
     </a>
   {% endif %}
   {% if object.ready %}
-    {% if object.kind == object.Kind.SHEET %}
+    {% if object.kind in 'sheet|customapi' %}
       <a class="tabbar__link {% if request.resolver_match.url_name == 'runs' %} tabbar__link--active {% endif %}"
         href="{% url 'project_integrations:runs' project.id object.id %}">
-        Runs
+        History
       </a>
     {% endif %}
     <a class="tabbar__link {% if request.resolver_match.url_name == 'references' %} tabbar__link--active {% endif %}"

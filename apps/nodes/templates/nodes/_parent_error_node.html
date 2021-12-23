@@ -1,4 +1,4 @@
-<div class='m-auto'>
+<p class='m-auto'>
   There is an error in the parent node 
   <strong> 
     {% if object.name %}
@@ -7,9 +7,16 @@
       {{object.display_name}}
     {% endif %}
   </strong>.
+
   <button
     class='link'
-    data-src="/nodes/{{object.id}}"
+    data--modal-src="/nodes/{{object.id}}"
+    data-modal-id=""
     data-action='click->tf-modal#open'
-    data-item="{{object.id}}">Reconfigure</button> it and try opening this node again.
-</div>
+    data-modal-item="{{ object.id }}"
+  >
+    Reconfigure
+  </button>
+
+  it and try opening this node again.
+</p>

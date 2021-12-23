@@ -121,6 +121,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
             kind=Integration.Kind.CONNECTOR,
             name=name,
             created_by=created_by,
+            is_scheduled=True
         )
         self.integration = integration
 

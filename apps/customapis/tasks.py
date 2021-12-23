@@ -18,12 +18,12 @@ from apps.users.models import CustomUser
 
 from .bigquery import import_table_from_customapi
 from .models import CustomApi
+from .requests import request
 from .requests.authorization import get_authorization
 from .requests.body import get_body
-from .requests.request import REQUEST_TIMEOUT, request_safe
 
 
-@shared_task(bind=True, time_limit=REQUEST_TIMEOUT)
+@shared_task(bind=True, time_limit=request.REQUEST_TIMEOUT)
 def run_customapi_sync_task(self, run_id):
     run = JobRun.objects.get(pk=run_id)
     integration = run.integration
@@ -45,7 +45,7 @@ def run_customapi_sync_task(self, run_id):
         )
         get_authorization(session, customapi)
         body = get_body(session, customapi)
-        response = request_safe(
+        response = request.request_safe(
             session,
             method=customapi.http_request_method,
             url=customapi.url,
@@ -118,7 +118,7 @@ def run_customapi_sync_task(self, run_id):
     return integration.id
 
 
-def run_customapi_sync(customapi: CustomApi, user: CustomUser, skip_up_to_date=False):
+def run_customapi_sync(customapi: CustomApi, user: CustomUser):
     run = JobRun.objects.create(
         source=JobRun.Source.INTEGRATION,
         integration=customapi.integration,

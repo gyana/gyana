@@ -1,7 +1,7 @@
 {% load static %}
 {% load waffle_tags %}
 
-<div class="widgets" data-controller="tf-modal" data-open-on-param>
+<div class="widgets">
   <div
     data-controller="canvas"
     class="widgets__canvas"
@@ -95,20 +95,4 @@
   The modal needs to be below the container because otherwise the
   updated output turbo-stream would update the chart inside the modal.
   {% endcomment %}
-  <div data-tf-modal-target="modal" class="tf-modal hidden">
-    <div class="card card--none card--modal flex-col flex-1 overflow-auto">
-      <turbo-frame 
-        id="widget-modal"
-        data-tf-modal-target="turboFrame"
-        {% if modal_item %}
-          src="{% url "dashboard_widgets:update" project.id dashboard.id modal_item%}"
-        {% endif %}
-      >
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
-        </div>
-      </turbo-frame>
-    </div>
-  </div>
-  {% include 'components/modal_closing_warning.html' %}
 </div>

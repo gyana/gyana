@@ -38,9 +38,11 @@ preview mode.
         <button  
           data-controller="tooltip"
           data-action="click->tf-modal#open"
-          id="widget-update-{{ object.id }}"  
-          data-item="{{ object.id }}"
-          data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
+          id="widget-update-{{ object.id }}"
+          data-modal-item="{{ object.id }}"
+          data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
+          data-modal-id="widget-modal"
+          data-modal-classes="tf-modal--full"
         >
           <i class="fas fa-fw fa-edit"></i>
           <span data-tooltip-target="body">Edit</span>
@@ -51,8 +53,10 @@ preview mode.
             data-controller="tooltip"
             data-action="click->tf-modal#open"
             id="widget-update-{{ object.id }}"  
-            data-item="{{ object.id }}"
-            data-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?show_style=true"
+            data-modal-item="{{ object.id }}"
+            data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?show_style=true"
+            data-modal-id="widget-modal"
+            data-modal-classes="tf-modal--full"
           >
             <i class="fas fa-fw fa-paint-brush"></i>
             <span data-tooltip-target="body">Change style</span>

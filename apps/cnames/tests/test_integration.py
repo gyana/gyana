@@ -148,9 +148,7 @@ def test_cname_middleware_for_public_dashboard(
     # update a project to use a cname
     r = client.get(f"/projects/{project.id}/update")
     assertOK(r)
-    assertFormRenders(
-        r, ["name", "description", "access", "cname", "daily_schedule_time"]
-    )
+    assertFormRenders(r, ["name", "description", "access", "cname"])
 
     r = client.post(
         f"/projects/{project.id}/update",
@@ -158,7 +156,6 @@ def test_cname_middleware_for_public_dashboard(
             "name": "Project",
             "access": "everyone",
             "cname": cname.id,
-            "daily_schedule_time": "00:00",
             "submit": True,
         },
     )

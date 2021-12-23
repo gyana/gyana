@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django_cryptography.fields import encrypt
 
 from apps.base.models import BaseModel
 
@@ -10,7 +12,7 @@ class OAuth2(BaseModel):
 
     # oauth2 configuration from the user
     client_id = models.CharField(max_length=1024)
-    client_secret = models.CharField(max_length=1024)
+    client_secret = encrypt(models.CharField(max_length=1024))
     authorization_base_url = models.URLField(max_length=2048)
     token_url = models.URLField(max_length=2048)
     scope = models.CharField(max_length=1024, blank=True)
@@ -27,3 +29,7 @@ class OAuth2(BaseModel):
 
     def get_absolute_url(self):
         return reverse("project_oauth2:update", args=(self.project.id, self.id))
+
+    @property
+    def callback_url(self):
+        return f'{settings.EXTERNAL_URL}{reverse("oauth2:callback", args=(self.id,))}'

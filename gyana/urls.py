@@ -49,7 +49,7 @@ schemajs_view = get_schemajs_view(title="API")
 
 integration_urlpatterns = [
     path("", include(integration_urls.project_urlpatterns)),
-    path("apis/", include(api_urls.integration_urlpatterns)),
+    path("customapis/", include(api_urls.integration_urlpatterns)),
     path("connectors/", include(connector_urls.integration_urlpatterns)),
     path("sheets/", include(sheet_urls.integration_urlpatterns)),
     path("uploads/", include(upload_urls.integration_urlpatterns)),

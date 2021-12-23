@@ -1,12 +1,5 @@
 from itertools import chain
 
-ACTION_FIELDS = [
-    "inline_link_clicks",
-    "outbound_clicks",
-    "website_purchase_roas",
-    "mobile_app_purchase_roas",
-]
-
 ACTION_VIDEO_FIELDS = [
     "video_thruplay_watched_actions",
     "video_30_sec_watched_actions",
@@ -35,8 +28,18 @@ PREBUILT_REPORTS = {
     "delivery_purchase_roas": {
         "fields": [],
         "breakdowns": [],
-        "action_breakdowns": ACTION_FIELDS,
-    }
+        "action_breakdowns": [
+            "inline_link_clicks",
+            "outbound_clicks",
+            "website_purchase_roas",
+            "mobile_app_purchase_roas",
+        ],
+    },
+    "roas": {
+        "fields": [],
+        "breakdowns": [],
+        "action_breakdowns": ["purchase_roas", "website_purchase_roas"],
+    },
 }
 
 

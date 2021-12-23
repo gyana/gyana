@@ -9,6 +9,7 @@ class OAuth2CreateForm(BaseModelForm):
     class Meta:
         model = OAuth2
         fields = ["name"]
+        help_texts = {"name": "The name of the service, to help you remember it"}
 
     def __init__(self, *args, **kwargs):
         self._project = kwargs.pop("project")
@@ -29,9 +30,15 @@ class OAuth2UpdateForm(forms.ModelForm):
             "token_url",
             "scope",
         ]
+        widgets = {"client_secret": forms.PasswordInput()}
         labels = {
             "client_id": "Client ID",
             "client_secret": "Client Secret",
-            "authorization_base_url": "Auth URL",
-            "token_url": "Access Token URL",
+            "authorization_base_url": "Authorization URL",
+            "token_url": "Token URL",
+        }
+        help_texts = {
+            "authorization_base_url": "The authorization URL for your provider, e.g. https://github.com/login/oauth/authorize",
+            "token_url": "The token URL for your provider, e.g. https://github.com/login/oauth/access_token",
+            "scope": "Define what you get access to, required for some services, e.g. repo,gist",
         }

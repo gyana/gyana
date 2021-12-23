@@ -30,6 +30,14 @@ def run_schedule_for_project(self, project_id: int):
     if project.periodic_task is None:
         return
 
+    # the task_id is maintained for retried tasks, so this will only be created once
+    graph_run, _ = GraphRun.objects.get_or_create(
+        project=project,
+        task_id=self.request.id,
+        state=GraphRun.State.RUNNING,
+        defaults={"started_at": timezone.now()},
+    )
+
     current_schedule = get_next_daily_sync_in_utc_from_project(project) - timedelta(
         days=1
     )
@@ -50,12 +58,6 @@ def run_schedule_for_project(self, project_id: int):
     if connectors_not_ready:
         self.retry(countdown=RETRY_COUNTDOWN, max_retries=MAX_RETRIES)
 
-    graph_run = GraphRun.objects.create(
-        project=project,
-        task_id=uuid4(),
-        state=GraphRun.State.RUNNING,
-        started_at=timezone.now(),
-    )
     tasks.run_project_task(graph_run.id, scheduled_only=True)
 
     honeybadger_check_in("j6IrRd")

@@ -70,3 +70,21 @@
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(2, 1fr);
 }
+
+.page-controls {
+  align-items: center;
+  background-color: var(--c-white);
+  border-radius: 5px;
+  border: 1px solid var(--c-gray);
+  bottom: 0;
+  display: inline-flex;
+  font-size: 1.2rem;
+  gap: 0.6rem;
+  justify-content: center;
+  left: 0;
+  line-height: 0;
+  margin: 1.6rem auto 0 auto;
+  padding: 1.2rem;
+  position: sticky;
+  width: max-content;
+}
