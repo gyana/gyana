@@ -10,6 +10,7 @@ from django_tables2.templatetags.django_tables2 import QuerystringNode
 
 from apps.base import clients
 from apps.base.utils import md5
+from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 
 # Monkey patch the querystring templatetag for the pagination links
 # Without this links only lead to the whole document url and add query parameter
@@ -128,15 +129,17 @@ class BigQueryColumn(Column):
     def render(self, value):
         if value is None:
             return get_template("columns/empty_cell.html").render()
+        if isinstance(value, (float, int)) and self.currency:
+            return get_template("columns/currency_cell.html").render(
+                {"value": value, "currency": CURRENCY_SYMBOLS_MAP[self.currency]}
+            )
         if isinstance(value, float):
             return get_template("columns/float_cell.html").render(
                 {
                     "value": value,
-                    "clean_value": f"{self.currency}{round(value, self.rounding)}",
+                    "clean_value": round(value, self.rounding),
                 }
             )
-        if isinstance(value, int):
-            value = f"{self.currency}{value}"
         return super().render(value)
 
 
