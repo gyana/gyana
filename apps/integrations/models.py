@@ -119,6 +119,8 @@ class Integration(CloneMixin, BaseModel):
         JobRun.State.SUCCESS: State.DONE,
     }
 
+    KIND_RUN_IN_PROJECT = [Kind.SHEET, Kind.CUSTOMAPI]
+
     def __str__(self):
         return self.name
 
@@ -229,7 +231,7 @@ class Integration(CloneMixin, BaseModel):
 
     @property
     def latest_run(self):
-        return self.runs.order_by("-started_at").first()
+        return self.runs.order_by("-created").first()
 
     def update_state_from_latest_run(self):
 

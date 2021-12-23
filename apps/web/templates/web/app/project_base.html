@@ -79,17 +79,15 @@
   <span data-tooltip-target="body">Dashboards</span>
 </a>
 
-{% flag 'beta' %}
-  <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == "automate" %}sidebar__link--active{% endif %}"
-    href="{% url 'projects:automate' project.id %}"
-    data-controller="tooltip"
-    data-placement="right"
-    data-show-on-collapse="true"
-  >
-    <i class="far fa-fw fa-robot mr-6"></i>Automate
-    <span data-tooltip-target="body">Automate</span>
-  </a>
-{% endflag %}
+<a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == "automate" %}sidebar__link--active{% endif %}"
+  href="{% url 'projects:automate' project.id %}"
+  data-controller="tooltip"
+  data-placement="right"
+  data-show-on-collapse="true"
+>
+  <i class="far fa-fw fa-robot mr-6"></i>Automate
+  <span data-tooltip-target="body">Automate</span>
+</a>
 
 {% endif %}
 

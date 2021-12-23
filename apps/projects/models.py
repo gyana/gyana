@@ -115,7 +115,7 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
 
         return (
             self.integration_set.filter(
-                kind__in=[Integration.Kind.SHEET, Integration.Kind.CUSTOMAPI],
+                kind__in=Integration.KIND_RUN_IN_PROJECT,
                 is_scheduled=True,
             ).exists()
             or self.workflow_set.filter(is_scheduled=True).exists()
@@ -140,7 +140,7 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     @property
     def latest_run(self):
-        return self.runs.order_by("-started_at").first()
+        return self.runs.order_by("-created").first()
 
 
 class ProjectMembership(BaseModel):

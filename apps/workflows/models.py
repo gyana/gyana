@@ -77,7 +77,7 @@ class Workflow(CloneMixin, BaseModel):
 
     @property
     def latest_run(self):
-        return self.runs.order_by("-started_at").first()
+        return self.runs.order_by("-created").first()
 
     @property
     def failed(self):
@@ -116,6 +116,6 @@ class Workflow(CloneMixin, BaseModel):
             else self.RUN_STATE_TO_WORKFLOW_STATE[self.latest_run.state]
         )
         self.last_success_run = (
-            self.runs.filter(state=JobRun.State.SUCCESS).order_by("-started_at").first()
+            self.runs.filter(state=JobRun.State.SUCCESS).order_by("-created").first()
         )
         self.save(update_fields=["state", "last_success_run"])

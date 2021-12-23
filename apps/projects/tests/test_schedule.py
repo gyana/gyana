@@ -1,4 +1,5 @@
 import json
+from uuid import uuid4
 
 import pytest
 import pytz
@@ -10,11 +11,14 @@ from pytest_django.asserts import assertRedirects
 from apps.base.tests.asserts import assertFormRenders, assertOK
 from apps.connectors.tests.mock import get_mock_fivetran_connector
 from apps.projects import periodic
+from apps.runs.models import GraphRun
 
 pytestmark = pytest.mark.django_db
 
 
-def test_connector_schedule(client, logged_in_user, fivetran, connector_factory):
+def test_connector_schedule(
+    client, logged_in_user, fivetran, connector_factory, is_paid
+):
 
     team = logged_in_user.teams.first()
     connector = connector_factory(integration__project__team=team)
@@ -28,16 +32,9 @@ def test_connector_schedule(client, logged_in_user, fivetran, connector_factory)
 
     # update the daily sync time in a project via UI
     r = client.post(
-        f"/projects/{project.id}/update",
-        data={
-            "name": "KPIs",
-            "description": "All the company kpis",
-            "access": "everyone",
-            "daily_schedule_time": "09:00",
-            "submit": True,
-        },
+        f"/projects/{project.id}/runs", data={"daily_schedule_time": "09:00"}
     )
-    assertRedirects(r, f"/projects/{project.id}/update", status_code=303)
+    assertRedirects(r, f"/projects/{project.id}/runs", status_code=303)
 
     project.refresh_from_db()
     connector.refresh_from_db()
@@ -69,7 +66,7 @@ def test_connector_schedule(client, logged_in_user, fivetran, connector_factory)
     assert fivetran.update.call_args.kwargs == {"daily_sync_time": "01:00"}
 
 
-def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
+def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker, is_paid):
 
     team = logged_in_user.teams.first()
     sheet = sheet_factory(integration__project__team=team)
@@ -125,7 +122,7 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
 
 
 def test_run_schedule_for_periodic(
-    project_factory, sheet_factory, connector_factory, mocker
+    project_factory, sheet_factory, connector_factory, mocker, is_paid
 ):
 
     mocker.patch("apps.projects.tasks.run_project_task")
@@ -138,10 +135,20 @@ def test_run_schedule_for_periodic(
 
     assert project.periodic_task is not None
 
+    task_id = str(uuid4())
+
     with pytest.raises(RetryTaskError):
-        periodic.run_schedule_for_project.delay(project.id)
+        periodic.run_schedule_for_project.apply_async((project.id,), task_id=task_id)
+
+    assert project.runs.count() == 1
+    graph_run = project.runs.first()
+    assert graph_run.state == GraphRun.State.RUNNING
 
     connector.succeeded_at = timezone.now()
     connector.save()
 
-    periodic.run_schedule_for_project.delay(project.id)
+    periodic.run_schedule_for_project.apply_async((project.id,), task_id=task_id)
+
+    assert project.runs.count() == 1
+    graph_run.refresh_from_db()
+    assert graph_run.state == GraphRun.State.SUCCESS

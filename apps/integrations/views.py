@@ -104,11 +104,6 @@ class IntegrationSettings(ProjectMixin, TurboUpdateView):
     model = Integration
     form_class = IntegrationUpdateForm
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs.update({"request": self.request})
-        return kwargs
-
     def get_success_url(self) -> str:
         return reverse(
             "project_integrations:settings", args=(self.project.id, self.object.id)

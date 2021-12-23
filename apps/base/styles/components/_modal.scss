@@ -63,6 +63,17 @@
 
 .modal__body {
   overflow: hidden;
+  flex: 1 1 0%;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    button[type=submit] {
+      margin-top: auto;
+    }
+  }
 }
 
 .modal__sidebar {

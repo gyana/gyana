@@ -67,11 +67,12 @@ def get_summary_row(query, widget):
 
 def table_to_output(widget: Widget, control) -> Dict[str, Any]:
     query = pre_filter(widget, control)
-
+    summary = None
     if widget.columns.first():
         if widget.show_summary_row:
             summary = get_summary_row(query, widget)
         query = aggregate_columns(query, widget)
+
     settings = {
         col.column: {
             "name": col.name,
@@ -80,9 +81,7 @@ def table_to_output(widget: Widget, control) -> Dict[str, Any]:
         }
         for col in widget.columns.all()
     }
-    return get_table(
-        query.schema(), query, summary if widget.show_summary_row else None, settings
-    )
+    return get_table(query.schema(), query, summary, settings)
 
 
 def metric_to_output(widget, control):

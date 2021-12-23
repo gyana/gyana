@@ -21,6 +21,10 @@ class DashboardSettings(models.Model):
     class Meta:
         abstract = True
 
+    class Category(models.TextChoices):
+        GENERAL = "general", "General"
+        CANVAS = "canvas", "Canvas"
+
     class FontFamily(models.TextChoices):
         BOOGALOO = "Boogaloo"
         LATO = "Lato"
@@ -31,6 +35,8 @@ class DashboardSettings(models.Model):
         UBUNTU = "Ubuntu"
 
     grid_size = models.IntegerField(default=15)
+    width = models.IntegerField(default=1200)
+    height = models.IntegerField(default=840)
     palette_colors = ArrayField(
         models.CharField(default="#5D62B5", max_length=7),
         size=10,
@@ -61,8 +67,6 @@ class Dashboard(DashboardSettings, CloneMixin, BaseModel):
     shared_id = models.UUIDField(null=True, blank=True)
     password = models.CharField(gettext_lazy("password"), max_length=128, null=True)
     password_set = models.DateTimeField(null=True, editable=False)
-    width = models.IntegerField(default=1200)
-    height = models.IntegerField(default=840)
 
     # Stores the raw password if set_password() is called so that it can
     # be passed to password_changed() after the model is saved.
@@ -139,3 +143,15 @@ class Page(CloneMixin, BaseModel):
     @property
     def has_control(self):
         return hasattr(self, "control")
+
+DASHBOARD_SETTING_TO_CATEGORY = {
+    "grid_size": Dashboard.Category.CANVAS,
+    "width": Dashboard.Category.CANVAS,
+    "height": Dashboard.Category.CANVAS,
+    "palette_colors": Dashboard.Category.GENERAL,
+    "background_color": Dashboard.Category.GENERAL,
+    "font_size": Dashboard.Category.GENERAL,
+    "font_color": Dashboard.Category.GENERAL,
+    "font_family": Dashboard.Category.GENERAL,
+    "show_widget_border": Dashboard.Category.GENERAL,
+}

@@ -1,3 +1,5 @@
+from datetime import time
+
 import pytest
 from django.utils import timezone
 from pytest_django.asserts import assertContains, assertRedirects
@@ -58,9 +60,7 @@ def test_project_crudl(client, logged_in_user):
     # update
     r = client.get(f"/projects/{project.id}/update")
     assertOK(r)
-    assertFormRenders(
-        r, ["name", "description", "access", "cname", "daily_schedule_time"]
-    )
+    assertFormRenders(r, ["name", "description", "access", "cname"])
     assertLink(r, f"/projects/{project.id}/delete", "Delete")
 
     r = client.post(
@@ -69,7 +69,6 @@ def test_project_crudl(client, logged_in_user):
             "name": "KPIs",
             "description": "All the company kpis",
             "access": "everyone",
-            "daily_schedule_time": "00:00",
             "submit": True,
         },
     )
@@ -171,7 +170,7 @@ def test_free_tier_project_limit(client, logged_in_user, project_factory):
     assert r.status_code == 422
 
 
-def test_automate(client, logged_in_user, project_factory, graph_run_factory):
+def test_automate(client, logged_in_user, project_factory, graph_run_factory, is_paid):
 
     team = logged_in_user.teams.first()
     project = project_factory(team=team)
@@ -182,4 +181,14 @@ def test_automate(client, logged_in_user, project_factory, graph_run_factory):
 
     r = client.get(f"/projects/{project.id}/runs")
     assertOK(r)
+    assertFormRenders(r, ["daily_schedule_time"])
     assertSelectorLength(r, "table tbody tr", 3)
+
+    r = client.post(
+        f"/projects/{project.id}/runs", data={"daily_schedule_time": "06:00"}
+    )
+    assertRedirects(r, f"/projects/{project.id}/runs", status_code=303)
+
+    project.refresh_from_db()
+    print(project.daily_schedule_time)
+    assert project.daily_schedule_time.hour == 6

@@ -13,9 +13,17 @@
 
   <div class="modal__body flex flex-row whitespace-normal">
     <div class="modal__sidebar">
-      <a class="sidebar__link sidebar__link--active" href="#">General</a>
+      {% for category_id, category in categories %}
+        <a
+          class="sidebar__link {% if request.GET.category == category_id %}sidebar__link--active{% endif %}"
+          href="{% url "project_dashboards:settings" project.id object.id %}?category={{ category_id }}"
+          data-turbo-frame="dashboard:settings"
+        >
+          {{ category }}
+        </a>
+      {% endfor %}
     </div>
-  
+
     <div class="flex-1 overflow-auto">
       <form
         method="post"
