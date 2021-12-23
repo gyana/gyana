@@ -321,7 +321,7 @@ label.checkbox__checked {
 
 .toggle {
   display: flex;
-  height: 3.2rem;
+  height: 2.8rem;
   position: relative;
 
   input {
@@ -337,7 +337,7 @@ label.checkbox__checked {
   }
 
   input:checked + &__slider::before {
-    left: calc(100% - 2rem - 0.4rem);
+    left: calc(100% - 1.6rem - 0.4rem);
     background-color: var(--c-blue);
   }
 
@@ -346,23 +346,23 @@ label.checkbox__checked {
     border: 1px solid var(--c-gray);
     display: inline-block;
     height: 100%;
-    width: 4.8rem;
+    width: 4.4rem;
     position: relative;
-    border-radius: 5px;
+    border-radius: 15px;
   }
 
   &__slider::before {
     background-color: var(--c-gray);
-    border-radius: 5px;
+    border-radius: inherit;
     content: '';
     display: block;
-    height: 2rem;
+    height: 1.6rem;
     left: 0.4rem;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     transition: left 0.125s ease, color 0.075s ease;
-    width: 2rem;
+    width: 1.6rem;
   }
 }
 
