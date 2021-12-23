@@ -16,11 +16,14 @@ export default class extends Controller {
   static targets = ['body']
 
   connect() {
-    console.assert(this.hasBodyTarget, 'Tooltip controllers need a body target')
+    console.assert(
+      this.element.dataset.tooltipContent || this.hasBodyTarget,
+      'Tooltip controllers need either a data-tooltip-content attribute or a body target.'
+    )
 
     tippy(this.element, {
       animation: false,
-      content: this.bodyTarget.innerText,
+      content: this.hasBodyTarget ? this.bodyTarget.innerText : this.element.dataset.tooltipContent,
       delay: 0,
       // `data-show-on-collapse="true"` on element hides the tooltip when the
       // sidebar is expanded.
