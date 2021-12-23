@@ -79,7 +79,7 @@ def table_to_output(widget: Widget, control) -> Dict[str, Any]:
             "rounding": col.rounding,
             "currency": col.currency,
         }
-        for col in widget.columns.all()
+        for col in [*widget.columns.all(), *widget.aggregations.all()]
     }
     return get_table(query.schema(), query, summary, settings)
 

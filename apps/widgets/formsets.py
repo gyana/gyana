@@ -1,4 +1,5 @@
 from django import forms
+from ibis.expr.datatypes import Floating, Integer
 
 from apps.base.formsets import RequiredInlineFormset
 from apps.base.widgets import Datalist
@@ -18,21 +19,21 @@ FilterFormset = forms.inlineformset_factory(
     formset=RequiredInlineFormset,
 )
 
-AggregationColumnFormset = forms.inlineformset_factory(
-    Widget,
-    AggregationColumn,
-    form=AggregationColumnForm,
-    can_delete=True,
-    extra=0,
-    formset=RequiredInlineFormset,
-)
-
 
 class ColumnForm(BaseLiveSchemaForm):
     class Meta:
         model = Column
         fields = ("column", "rounding", "name", "currency")
         widgets = {"currency": Datalist(attrs={"data-live-update-ignore": ""})}
+
+    def get_live_fields(self):
+        fields = ["column"]
+        if self.column_type:
+            fields += ["name"]
+
+        if isinstance(self.column_type, (Floating, Integer)):
+            fields += ["rounding", "currency"]
+        return fields
 
 
 ColumnFormset = forms.inlineformset_factory(
@@ -45,11 +46,29 @@ ColumnFormset = forms.inlineformset_factory(
 )
 
 
+class AggregationSettingColumnForm(AggregationColumnForm):
+    def get_live_fields(self):
+        fields = super().get_live_fields()
+        if self.column_type:
+            fields += ["name", "rounding", "currency"]
+        return fields
+
+
+AggregationColumnFormset = forms.inlineformset_factory(
+    Widget,
+    AggregationColumn,
+    form=AggregationSettingColumnForm,
+    can_delete=True,
+    extra=0,
+    formset=RequiredInlineFormset,
+)
+
+
 def create_min_formset(min_num):
     return forms.inlineformset_factory(
         Widget,
         AggregationColumn,
-        form=AggregationColumnForm,
+        form=AggregationSettingColumnForm,
         can_delete=True,
         min_num=min_num,
         extra=0,
@@ -60,7 +79,7 @@ def create_min_formset(min_num):
 SingleMetricFormset = forms.inlineformset_factory(
     Widget,
     AggregationColumn,
-    form=AggregationColumnForm,
+    form=AggregationSettingColumnForm,
     can_delete=True,
     extra=0,
     min_num=1,
@@ -71,7 +90,7 @@ SingleMetricFormset = forms.inlineformset_factory(
 OptionalMetricFormset = forms.inlineformset_factory(
     Widget,
     AggregationColumn,
-    form=AggregationColumnForm,
+    form=AggregationSettingColumnForm,
     can_delete=True,
     extra=0,
     max_num=1,
@@ -82,7 +101,7 @@ OptionalMetricFormset = forms.inlineformset_factory(
 XYMetricFormset = forms.inlineformset_factory(
     Widget,
     AggregationColumn,
-    form=AggregationColumnForm,
+    form=AggregationSettingColumnForm,
     # If can_delete is set to true marked as deleted rows are shown again
     can_delete=True,
     extra=0,
@@ -94,7 +113,7 @@ XYMetricFormset = forms.inlineformset_factory(
 XYZMetricFormset = forms.inlineformset_factory(
     Widget,
     AggregationColumn,
-    form=AggregationColumnForm,
+    form=AggregationSettingColumnForm,
     # If can_delete is set to true marked as deleted rows are shown again
     can_delete=True,
     extra=0,

@@ -4,7 +4,7 @@ from ibis.expr.datatypes import Floating
 from apps.base.aggregations import AGGREGATION_TYPE_MAP
 from apps.base.live_update_form import BaseLiveSchemaForm
 from apps.base.utils import create_column_choices
-from apps.base.widgets import SelectWithDisable
+from apps.base.widgets import Datalist, SelectWithDisable
 from apps.columns.models import (
     AddColumn,
     AggregationColumn,
@@ -32,12 +32,13 @@ IBIS_TO_FUNCTION = {
 
 class AggregationColumnForm(BaseLiveSchemaForm):
     class Meta:
-        fields = ("column", "function")
+        fields = ("column", "function", "rounding", "name", "currency")
         help_texts = {
             "column": "Select the column to aggregate over",
             "function": "Select the aggregation function",
         }
         model = AggregationColumn
+        widgets = {"currency": Datalist(attrs={"data-live-update-ignore": ""})}
 
     def get_live_fields(self):
         fields = ["column"]
@@ -54,7 +55,7 @@ class AggregationColumnForm(BaseLiveSchemaForm):
         if self.column_type is not None:
             self.fields["function"].choices = [
                 (choice.value, choice.name)
-                for choice in AGGREGATION_TYPE_MAP[self.column_type]
+                for choice in AGGREGATION_TYPE_MAP[self.column_type.name]
             ]
 
 
@@ -92,7 +93,9 @@ class OperationColumnForm(BaseLiveSchemaForm):
     def get_live_fields(self):
         fields = ["column"]
 
-        if self.column_type and (function_field := IBIS_TO_FUNCTION[self.column_type]):
+        if self.column_type and (
+            function_field := IBIS_TO_FUNCTION[self.column_type.name]
+        ):
             fields += [function_field]
             operation = AllOperations.get(self.get_live_field(function_field))
             if operation and operation.arguments == 1:
@@ -143,7 +146,9 @@ class AddColumnForm(BaseLiveSchemaForm):
 
     def get_live_fields(self):
         fields = ["column"]
-        if self.column_type and (function_field := IBIS_TO_FUNCTION[self.column_type]):
+        if self.column_type and (
+            function_field := IBIS_TO_FUNCTION[self.column_type.name]
+        ):
             fields += [function_field]
             operation = AllOperations.get(self.get_live_field(function_field))
             if operation and operation.arguments == 1:
@@ -183,7 +188,7 @@ class WindowColumnForm(BaseLiveSchemaForm):
         if self.column_type is not None:
             self.fields["function"].choices = [
                 (choice.value, choice.name)
-                for choice in AGGREGATION_TYPE_MAP[self.column_type]
+                for choice in AGGREGATION_TYPE_MAP[self.column_type.name]
             ]
             self.fields["group_by"] = forms.ChoiceField(
                 choices=choices,

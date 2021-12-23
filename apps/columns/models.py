@@ -99,10 +99,16 @@ class ColumnSettings(models.Model):
     class Meta:
         abstract = True
 
-    name = models.CharField(max_length=64, null=True, blank=True)
-    rounding = models.IntegerField(default=2)
+    name = models.CharField(
+        max_length=64, null=True, blank=True, help_text="Set column header name"
+    )
+    rounding = models.IntegerField(default=2, help_text="Decimal point to round to")
     currency = models.CharField(
-        max_length=32, choices=CurrencySymbols.choices, blank=True, null=True
+        max_length=32,
+        choices=CurrencySymbols.choices,
+        blank=True,
+        null=True,
+        help_text="Select a currency",
     )
 
 
