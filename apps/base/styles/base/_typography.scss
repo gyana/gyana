@@ -36,6 +36,13 @@ a {
   line-height: inherit;
 }
 
+pre {
+  color: var(--c-black-50);
+  font-size: 1.2rem;
+  font-weight: 500;
+  white-space: pre-line;
+}
+
 abbr {
   text-decoration-color: var(--c-black-20);
   text-decoration-line: underline;

@@ -35,22 +35,20 @@
     </p>
 
     {% if object.shared_status != 'private' %}
-      <div data-controller="to-clipboard" class='clipboard-copy mb-4'>
-        <a 
-          class="link"
-          href="{{ dashboard.public_url }}" 
-          data-to-clipboard-target='target'
-          data-turbo="false"
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          {{ dashboard.public_url }}
-        </a>
+    <div data-controller="to-clipboard" class='clipboard-copy mb-4'>
+      <a
+        href="{{ dashboard.public_url }}" 
+        data-turbo="false"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        <pre data-to-clipboard-target="target">{{ dashboard.public_url }}</pre>
+      </a>
 
-        <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
-          <i class='fa fa-clipboard'></i>
-        </button>
-      </div>
+      <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
+        <i class='fa fa-clipboard'></i>
+      </button>
+    </div>
     {% endif %}
 
     <form
@@ -65,6 +63,28 @@
         <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
       </span>
       {% include "django/forms/default_form.html" %}
+
+      {% if object.shared_status != 'private' %}
+      <div>
+        <h3 class="mb-3">Embed code</h3>
+        <p class="mb-4">Since this dashboard is shared, you can also embed it on your website.</p>
+
+        <div data-controller="to-clipboard" class='clipboard-copy mb-4'>
+          <pre
+            data-to-clipboard-target='target'
+            data-turbo="false"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            &lt;iframe src="{{ dashboard.public_url }}" frameborder="0" style="position:width:100%;height:100%;"&gt;&lt;/iframe&gt;
+        </pre>
+    
+          <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
+            <i class='fa fa-clipboard'></i>
+          </button>
+        </div>
+      </div>
+      {% endif %}
 
       <button
         id="dashboard-share-update"
