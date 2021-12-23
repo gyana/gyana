@@ -125,6 +125,8 @@ class DashboardDetail(ProjectMixin, TurboUpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["categories"] = Widget.Category.choices
+        context["font_families"] = Dashboard.FontFamily.choices
+
         context["choices"] = WIDGET_CHOICES_ARRAY
         context["modal_item"] = self.request.GET.get("modal_item")
         page = self.object.pages.get(position=self.request.GET.get("page", 1))
