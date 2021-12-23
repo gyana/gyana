@@ -48,6 +48,7 @@ class DashboardSettings(models.Model):
     font_family = models.CharField(
         max_length=30, default=FontFamily.ROBOTO, choices=FontFamily.choices
     )
+    snap_to_grid = models.BooleanField(default=True)
     show_widget_border = models.BooleanField(default=True)
 
 
@@ -144,10 +145,12 @@ class Page(CloneMixin, BaseModel):
     def has_control(self):
         return hasattr(self, "control")
 
+
 DASHBOARD_SETTING_TO_CATEGORY = {
     "grid_size": Dashboard.Category.CANVAS,
     "width": Dashboard.Category.CANVAS,
     "height": Dashboard.Category.CANVAS,
+    "snap_to_grid": Dashboard.Category.CANVAS,
     "palette_colors": Dashboard.Category.GENERAL,
     "background_color": Dashboard.Category.GENERAL,
     "font_size": Dashboard.Category.GENERAL,

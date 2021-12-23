@@ -13,7 +13,11 @@ preview mode.
     data-y="{{ object.y }}"
     data-width="{{ object.width }}"
     data-height="{{ object.height }}"
+    {% if dashboard.snap_to_grid %}
     data-grid-size="{{ dashboard.grid_size }}"
+    {% else %}
+    data-grid-size="1"
+    {% endif %}
   >
     <div class="widget-card h-full">
       <div class="widget-card__visual {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}">
