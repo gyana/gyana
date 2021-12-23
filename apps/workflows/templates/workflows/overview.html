@@ -5,13 +5,13 @@
   <div class="flex items-baseline gap-3">
     <h3><i class="far fa-fw fa-sitemap text-black-50 mr-3"></i>Workflows</h3>
     {% if workflows.total > 0 %}
-      <p class="text-black-50">
-        - <a class="link" href="{% url 'project_workflows:list' project.id %}" data-turbo-frame="_top">
-            {{ workflows.total }} workflow{{ workflows.total|pluralize }}
-          </a>
-        - {{ workflows.nodes|intcomma }} node{{ workflows.nodes|pluralize }}
-        - {{ workflows.results|intcomma }} result{{ workflows.results|pluralize }} saved
-      </p>
+    <p class="text-black-50 ml-auto">
+      <a class="link" href="{% url 'project_workflows:list' project.id %}" data-turbo-frame="_top">
+        {{ workflows.total }} workflow{{ workflows.total|pluralize }}
+      </a>
+      - {{ workflows.nodes|intcomma }} node{{ workflows.nodes|pluralize }}
+      - {{ workflows.results|intcomma }} result{{ workflows.results|pluralize }} saved
+    </p>
     {% endif %}
   </div>
 

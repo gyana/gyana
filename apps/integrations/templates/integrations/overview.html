@@ -5,12 +5,12 @@
   <div class="flex items-baseline gap-3">
     <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Integrations</h3>
     {% if integrations.ready > 0 %}
-      <p class="text-black-50">
-        - <a class="link" href="{% url 'project_integrations:list' project.id %}" data-turbo-frame="_top">
-            {{ integrations.ready|intcomma }} integration{{ integrations.ready|pluralize }}
-          </a>
-        - {{ project.num_rows|intcomma }} row{{ project.num_rows|pluralize }}
-      </p>
+    <p class="text-black-50 ml-auto">
+      <a class="link" href="{% url 'project_integrations:list' project.id %}" data-turbo-frame="_top">
+        {{ integrations.ready|intcomma }} integration{{ integrations.ready|pluralize }}
+      </a>
+      - {{ project.num_rows|intcomma }} row{{ project.num_rows|pluralize }}
+    </p>
     {% endif %}
   </div>
 
