@@ -179,6 +179,7 @@
     hidden
   >
     <div class="card card--none card--modal">
+      {% block modal.body %}
       <turbo-frame
         class="overflow-hidden flex-1"
         data-tf-modal-target="turboFrame"
@@ -187,6 +188,7 @@
           <i class='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
         </div>
       </turbo-frame>
+      {% endblock modal.body %}
     </div>
   </div>
   {% include "components/modal_closing_warning.html" %}
