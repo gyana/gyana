@@ -2,17 +2,29 @@
 {{ widget.label }}
 
 <input
-  list="datalist"
-  type="{{ widget.type }}"
+  list="{{ widget.name }}"
   name="{{ widget.name }}"
   {% if widget.value != None %}
     value="{{ widget.value|stringformat:'s' }}"
   {% endif %}
   {% include "django/forms/widgets/attrs.html" %}
 />
+<datalist 
+  id="{{ widget.name }}"
+  {% include "django/forms/widgets/attrs.html" %}
+>
+  {% for group_name, group_choices, group_index in widget.optgroups %}
+    {% if group_name %}
+      <optgroup label="{{ group_name }}">
+    {% endif %}
 
-<datalist id="datalist">
-  {% for option in options %}
-    <option>{{ option }}</option>
+    {% for option in group_choices %}
+      {% include option.template_name with widget=option %}
+    {% endfor %}
+
+    {% if group_name %}
+      </optgroup>
+    {% endif %}
+
   {% endfor %}
 </datalist>

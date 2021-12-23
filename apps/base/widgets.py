@@ -39,15 +39,13 @@ class DatetimeInput(Input):
         return context
 
 
-class DatalistInput(Input):
+class Datalist(Select):
     input_type = "text"
     template_name = "django/forms/widgets/datalist.html"
+    option_template_name = "django/forms/widgets/datalist_option.html"
+    add_id_index = False
+    checked_attribute = {"selected": True}
+    option_inherits_attrs = False
 
-    def __init__(self, attrs=None, options=()) -> None:
-        super().__init__(attrs=attrs)
-        self.options = options
-
-    def get_context(self, name, value, attrs):
-        context = super().get_context(name, value, attrs)
-        context["options"] = self.options
-        return context
+    def format_value(self, value):
+        return value or ""

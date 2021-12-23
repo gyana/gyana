@@ -1,6 +1,7 @@
 from django import forms
 
 from apps.base.formsets import RequiredInlineFormset
+from apps.base.widgets import Datalist
 from apps.columns.forms import AggregationColumnForm, BaseLiveSchemaForm
 from apps.columns.models import AggregationColumn, Column
 from apps.filters.forms import FilterForm
@@ -26,11 +27,18 @@ AggregationColumnFormset = forms.inlineformset_factory(
     formset=RequiredInlineFormset,
 )
 
+
+class ColumnForm(BaseLiveSchemaForm):
+    class Meta:
+        model = Column
+        fields = ("column", "rounding", "name", "currency")
+        widgets = {"currency": Datalist(attrs={"data-live-update-ignore": ""})}
+
+
 ColumnFormset = forms.inlineformset_factory(
     Widget,
     Column,
-    form=BaseLiveSchemaForm,
-    fields=("column", "rounding", "name", "currency"),
+    form=ColumnForm,
     extra=0,
     can_delete=True,
     formset=RequiredInlineFormset,

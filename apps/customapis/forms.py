@@ -7,7 +7,7 @@ from django.utils.html import mark_safe
 from apps.base.forms import BaseModelForm
 from apps.base.formsets import RequiredInlineFormset
 from apps.base.live_update_form import LiveUpdateForm
-from apps.base.widgets import DatalistInput
+from apps.base.widgets import Datalist
 
 from .models import (
     CustomApi,
@@ -74,7 +74,9 @@ class HttpHeaderForm(BaseModelForm):
         model = HttpHeader
         fields = ["key", "value"]
         help_texts = {"key": "KEY", "value": "VALUE"}
-        widgets = {"key": DatalistInput(options=get_headers())}
+        widgets = {
+            "key": Datalist(choices=[(header, header) for header in get_headers()])
+        }
 
 
 HttpHeaderFormset = forms.inlineformset_factory(
