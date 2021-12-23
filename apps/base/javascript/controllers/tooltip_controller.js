@@ -11,6 +11,11 @@ import tippy from 'tippy.js'
  *  Hover over me for a tooltip!
  *  <template data-tooltip-target="body">This is the tooltip!</template>
  * </p>
+ * 
+ * @example
+ * <p data-controller="tooltip" data-tooltip-content="This is the tooltip!">
+ *  Hover over me for a tooltip!
+ * </p> 
  */
 export default class extends Controller {
   static targets = ['body']
