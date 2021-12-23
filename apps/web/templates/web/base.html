@@ -81,7 +81,7 @@
           id="changelogWidgetID"
           class="sidebar__link sidebar__link--border cursor-pointer"
           data-controller="tooltip"
-          data-placement="right"
+          data-tooltip-placement="right"
           data-show-on-collapse="true"
         >
           <i class="fas fa-fw fa-bullhorn"></i>What's new?
@@ -105,7 +105,7 @@
           class="sidebar__link sidebar__link--border"
           data-action="click->tf-modal#open"
           data-controller="tooltip"
-          data-placement="right"
+          data-tooltip-placement="right"
           data-modal-src="{% url "web:help" %}"
           data-modal-id="web:help"
           data-modal-classes="tf-modal--tall"
@@ -118,7 +118,8 @@
         <button
           class="sidebar__link sidebar__link--border" 
           data-controller="popover tooltip"
-          data-placement="right"
+          data-tooltip-placement="right"
+          data-placement="right-end"
           data-theme="popover-menu"
           data-show-on-collapse="true"
         >
@@ -141,7 +142,7 @@
               class="list__item list__item--interactive w-full"
               data-turbo-frame="_top"
             >
-              Sign out
+              Sign out <i class="fas fa-fw fa-sign-out text-red ml-auto"></i>
             </a>
           </template>
         </button>
@@ -153,7 +154,7 @@
           data-action="click->web-sidebar#toggle"
           {% endif %}
           data-controller="tooltip"
-          data-placement="right"
+          data-tooltip-placement="right"
           data-show-on-collapse="true"
         >
           <i class="fas fa-fw"></i>Collapse

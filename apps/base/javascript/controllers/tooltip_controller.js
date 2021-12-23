@@ -37,7 +37,7 @@ export default class extends Controller {
           return false
         }
       },
-      placement: this.element.dataset.placement || 'bottom',
+      placement: this.element.dataset.tooltipPlacement || 'bottom',
     })
   }
 

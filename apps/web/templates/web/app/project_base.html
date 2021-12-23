@@ -7,7 +7,7 @@
   class="sidebar__link sidebar__link--border"
   href="{% url 'teams:detail' project.team.id %}"
   data-controller="tooltip"
-  data-placement="right"
+  data-tooltip-placement="right"
   data-show-on-collapse="true"
 >
   {% if project.team.icon %}<img src="{{ project.team.icon.url }}" />{% else %}<span class="team_logo">{{ project.team.name|slice:1 }}</span>{% endif %}
@@ -23,7 +23,7 @@
   title="{{ project.name }}"
   href="{% url 'projects:detail' project.id %}"
   data-controller="tooltip"
-  data-placement="right"
+  data-tooltip-placement="right"
   data-show-on-collapse="true"
 >
   <i class="fad fa-fw fa-folders mr-6"></i>
@@ -38,7 +38,7 @@
 <a class="sidebar__link {% if app_name == 'projects' and request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
   href="{% url 'projects:detail' project.id %}"
   data-controller="tooltip"
-  data-placement="right"
+  data-tooltip-placement="right"
   data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-home mr-6"></i>Overview
@@ -48,7 +48,7 @@
 <a class="sidebar__link {% if "project_integrations" in app_name %}sidebar__link--active{% endif %}"
   href="{% url 'project_integrations:list' project.id %}"
   data-controller="tooltip"
-  data-placement="right"
+  data-tooltip-placement="right"
   data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-database mr-6"></i>Integrations {% if project.integrations_for_review > 0 %}({{ project.integrations_for_review }}){% endif %}
@@ -60,7 +60,7 @@
 <a class="sidebar__link {% if app_name == "project_workflows" %}sidebar__link--active{% endif %}"
   href="{% url 'project_workflows:list' project.id %}"
   data-controller="tooltip"
-  data-placement="right"
+  data-tooltip-placement="right"
   data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-sitemap mr-6"></i>Workflows
@@ -72,7 +72,7 @@
 <a class="sidebar__link {% if app_name == "project_dashboards" or app_name == "dashboard_widgets" %}sidebar__link--active{% endif %}"
   href="{% url 'project_dashboards:list' project.id %}"
   data-controller="tooltip"
-  data-placement="right"
+  data-tooltip-placement="right"
   data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-chart-pie mr-6"></i>Dashboards
@@ -82,7 +82,7 @@
 <a class="sidebar__link {% if app_name == "projects" and request.resolver_match.url_name == "automate" %}sidebar__link--active{% endif %}"
   href="{% url 'projects:automate' project.id %}"
   data-controller="tooltip"
-  data-placement="right"
+  data-tooltip-placement="right"
   data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-robot mr-6"></i>Automate
@@ -95,7 +95,7 @@
 <a class="sidebar__link {% if app_name == 'project_templateinstances' %}sidebar__link--active{% endif %}"
   href="{% url 'project_templateinstances:list' project.id %}"
   data-controller="tooltip"
-  data-placement="right"
+  data-tooltip-placement="right"
   data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-construction mr-6"></i>Templates
@@ -107,7 +107,7 @@
   class="sidebar__link {% if request.resolver_match.view_name == 'projects:update' or request.resolver_match.app_name == 'projects_oauth2' %}sidebar__link--active{% endif %}"
   href="{% url 'projects:update' project.id %}"
   data-controller="tooltip"
-  data-placement="right"
+  data-tooltip-placement="right"
   data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-cog mr-6"></i>Settings
