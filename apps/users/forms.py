@@ -7,23 +7,20 @@ from apps.base.analytics import identify_user
 
 from .models import CustomUser
 
+
 class UserNameForm(forms.ModelForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
     marketing_allowed = forms.BooleanField(
         label="Opt-in to marketing",
         help_text="There is a lot you can do with Gyana, opt-in so we can send you occasional tips. (You can always opt-out)",
-        required=False
+        required=False,
     )
 
     class Meta:
         model = CustomUser
-        fields = [
-            "first_name",
-            "last_name",
-            "marketing_allowed"
-        ]
-    
+        fields = ["first_name", "last_name", "marketing_allowed"]
+
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.onboarded = True
@@ -88,7 +85,11 @@ class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = ["avatar", "email", "first_name", "last_name", "marketing_allowed"]
-        widgets = {"avatar": forms.ClearableFileInput(attrs={'accept':'image/*'})}
+        widgets = {
+            "first_name": forms.TextInput(attrs={"class": "label--half"}),
+            "last_name": forms.TextInput(attrs={"class": "label--half"}),
+            "avatar": forms.ClearableFileInput(attrs={"accept": "image/*"}),
+        }
         labels = {
             "first_name": "First Name",
             "last_name": "Last Name",

@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from apps.base.live_update_form import LiveUpdateForm
 
-from .models import Dashboard, DASHBOARD_SETTING_TO_CATEGORY
+from .models import DASHBOARD_SETTING_TO_CATEGORY, Dashboard
 
 
 class PaletteColorsWidget(forms.MultiWidget):
@@ -72,11 +72,15 @@ class DashboardNameForm(forms.ModelForm):
 class DashboardForm(forms.ModelForm):
     width = forms.IntegerField(
         required=False,
-        widget=forms.NumberInput(attrs={"class": "label--half", "unit_suffix": "pixels"}),
+        widget=forms.NumberInput(
+            attrs={"class": "label--half", "unit_suffix": "pixels"}
+        ),
     )
     height = forms.IntegerField(
         required=False,
-        widget=forms.NumberInput(attrs={"class": "label--half", "unit_suffix": "pixels"}),
+        widget=forms.NumberInput(
+            attrs={"class": "label--half", "unit_suffix": "pixels"}
+        ),
     )
     grid_size = forms.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(1200)],
@@ -93,7 +97,9 @@ class DashboardForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"type": "color"}),
     )
     font_size = forms.IntegerField(
-        widget=forms.NumberInput(attrs={"class": "label--third", "unit_suffix": "pixels"}),
+        widget=forms.NumberInput(
+            attrs={"class": "label--third", "unit_suffix": "pixels"}
+        ),
     )
 
     class Meta:
@@ -110,9 +116,7 @@ class DashboardForm(forms.ModelForm):
             "snap_to_grid",
             "show_widget_border",
         ]
-        labels = {
-            "snap_to_grid": "Snap widgets to grid"
-        }
+        labels = {"snap_to_grid": "Snap widgets to grid"}
 
     def __init__(self, *args, **kwargs):
         self.category = kwargs.pop("category")
