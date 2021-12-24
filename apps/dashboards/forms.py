@@ -97,6 +97,7 @@ class DashboardForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"type": "color"}),
     )
     font_size = forms.IntegerField(
+        required=False,
         widget=forms.NumberInput(
             attrs={"class": "label--third", "unit_suffix": "pixels"}
         ),
@@ -126,7 +127,14 @@ class DashboardForm(forms.ModelForm):
 
         for name, field in self.fields.items():
             if self.category != DASHBOARD_SETTING_TO_CATEGORY[name]:
-                field.widget = forms.HiddenInput()
+                field.required = False
+
+                # Fields that have initial values and multiple widgets will
+                # error as a singular hidden input.
+                if hasattr(field.widget, "widgets"):
+                    field.widget = forms.MultipleHiddenInput()
+                else:
+                    field.widget = forms.HiddenInput()
 
 
 class DashboardShareForm(LiveUpdateForm):
