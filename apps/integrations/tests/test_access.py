@@ -15,11 +15,9 @@ pytestmark = pytest.mark.django_db
         pytest.param("/integrations/{integration_id}/grid", id="grid"),
         pytest.param("/integrations/{integration_id}/schema", id="schema"),
         pytest.param("/integrations/{integration_id}/table_detail", id="table_detail"),
+        pytest.param("/projects/{project_id}/integrations/{integration_id}", id="list"),
         pytest.param(
-            "/projects/{project_id}/integrations/{integration_id}/", id="list"
-        ),
-        pytest.param(
-            "/projects/{project_id}/integrations/{integration_id}/overview",
+            "/projects/{project_id}/integrations/overview",
             id="overview",
         ),
         pytest.param(
@@ -33,7 +31,7 @@ pytestmark = pytest.mark.django_db
             "/projects/{project_id}/integrations/{integration_id}/done", id="done"
         ),
         pytest.param(
-            "/projects/{project_id}/integrations/{integration_id}/detail", id="detail"
+            "/projects/{project_id}/integrations/{integration_id}", id="detail"
         ),
         pytest.param(
             "/projects/{project_id}/integrations/{integration_id}/delete", id="delete"
@@ -76,4 +74,7 @@ def test_integration_access(
         integration_id=user_integration.id, project_id=user_integration.project.id
     )
     r = client.get(second_url)
-    assertOK(r)
+    if "load" in second_url:
+        assert r.status_code == 302
+    else:
+        assertOK(r)

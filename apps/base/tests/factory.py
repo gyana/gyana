@@ -17,6 +17,7 @@ from apps.customapis.models import CustomApi
 from apps.dashboards.models import Dashboard, Page
 from apps.filters.models import Filter
 from apps.integrations.models import Integration
+from apps.invites.models import Invite
 from apps.nodes.models import Node
 from apps.oauth2.models import OAuth2
 from apps.projects.models import Project
@@ -148,6 +149,7 @@ class NodeFactory(factory.django.DjangoModelFactory):
     workflow = factory.SubFactory(WorkflowFactory)
     x = 0
     y = 0
+    kind = Node.Kind.INPUT
 
 
 @register
@@ -278,3 +280,11 @@ class CustomApiFactory(factory.django.DjangoModelFactory):
 class OAuth2Factory(factory.django.DjangoModelFactory):
     class Meta:
         model = OAuth2
+
+
+@register
+class InviteFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Invite
+
+    sent = timezone.now()
