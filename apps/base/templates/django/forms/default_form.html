@@ -30,7 +30,7 @@
     </span>
   </label>
   {% elif bound_field.subwidgets|length == 1 %}
-  <div class="label">
+  <div class="label {{ bound_field.field.widget.attrs.class }}">
     <label for="{{ bound_field.id_for_label}}">
       <span>
         {{ bound_field.label }}
@@ -45,7 +45,7 @@
       </span>
     </label>
 
-    <div class="flex flex-row-reverse">
+    <div class="flex flex-row-reverse mt-auto">
       {% if bound_field.field.widget.attrs.unit_suffix %}
       <div class="label__unit">
         <p>{{ bound_field.field.widget.attrs.unit_suffix }}</p>
@@ -56,7 +56,7 @@
     </div>
   </div>
   {% else %}
-  <div class="label">
+  <div class="label {{ bound_field.field.widget.attrs.class }}">
     <label for="{{ bound_field.id_for_label }}">
       {{ bound_field.label }}
 

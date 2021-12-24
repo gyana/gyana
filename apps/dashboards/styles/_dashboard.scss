@@ -66,9 +66,11 @@
 
 .palette-colors {
   display: grid;
+  flex: 1 1 100%;
   gap: 0.8rem;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(2, 1fr);
+  width: 100%;
 }
 
 .page-controls {

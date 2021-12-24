@@ -1,31 +1,50 @@
 import { Controller } from '@hotwired/stimulus'
 
 // Open a modal with the content populated by a turbo-frame
+/**
+ * Modal controller with content populated by a turbo-frame.
+ * 
+ * Pass turbo-frame specific details via data attributes:
+ * `data-modal-src`, `data-modal-id`
+ * 
+ * @example
+ * <button
+ *   data-action="click->tf-modal#open"
+ *   data-controller="tooltip"
+ *   data-modal-src="{% url "web:help" %}"
+ *   data-modal-id="web:help"
+ *   data-modal-classes="tf-modal--tall"
+ * >
+ *  Click me to open a turbo-frame modal!
+ * </button>
+ */
 export default class extends Controller {
   static targets = ['modal', 'turboFrame', 'closingWarning', 'form', 'onParam']
 
-  connect() {
+  initialize() {
     this.changed = false
+    this.boundHandleKeyup = this.handleKeyup.bind(this)
+    this.boundHandleClick = this.handleClick.bind(this)
+  }
 
-    window.addEventListener('keyup', (event) => {
-      if (event.key == 'Escape') {
-        this.close(event)
-      }
-    })
-
+  connect() {
+    window.addEventListener('keyup', this.boundHandleKeyup)
     // Close the modal when clicking outside of the frame
     // TODO: Fix clicking and draging outside of modal closing.
-    this.modalTarget.addEventListener('click', (event) => {
-      if (!this.turboFrameTarget.contains(event.target)) {
-        this.close(event)
-      }
-    })
+    this.modalTarget.addEventListener('click', this.boundHandleClick)
+  }
+
+  disconnect() {
+    window.removeEventListener('keyup', this.boundHandleKeyup)
+    this.modalTarget.addEventListener('click', this.boundHandleClick)
   }
 
   onParamTargetConnected(target) {
     const params = new URLSearchParams(window.location.search)
 
     if (params.get('modal_item')) {
+      // This is a little hacky, it simulates a click because we need the 
+      // data attributes with the turbo-frame src/id.
       this.onParamTarget.click()
     }
   }
@@ -42,12 +61,12 @@ export default class extends Controller {
     this.turboFrameTarget.removeAttribute('src')
     this.turboFrameTarget.setAttribute('id', event.currentTarget.dataset.modalId)
     this.turboFrameTarget.setAttribute('src', event.currentTarget.dataset.modalSrc)
-    this.modalTarget.className = "tf-modal"
 
     if (event.currentTarget.dataset.modalTarget) {
       this.turboFrameTarget.setAttribute('target', event.currentTarget.dataset.modalTarget)
     }
 
+    this.modalTarget.className = "tf-modal"
     if (event.currentTarget.dataset.modalClasses) {
       this.modalTarget.classList.add(...event.currentTarget.dataset.modalClasses.split(' '))
     }
@@ -144,5 +163,17 @@ export default class extends Controller {
 
   save() {
     this.changed = false
+  }
+
+  handleKeyup(event) {
+    if (event.key == 'Escape') {
+      this.close(event)
+    }
+  }
+
+  handleClick(event) {
+    if (this.hasTurboFrameTarget && !this.turboFrameTarget.contains(event.target)) {
+      this.close(event)
+    }
   }
 }

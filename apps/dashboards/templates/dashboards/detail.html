@@ -7,6 +7,21 @@
     rel="stylesheet"
   />
   {% endif %}
+
+  {% for id, font_family in font_families %}
+  <link
+    href="https://fonts.googleapis.com/css2?family={{ font_family.split|join:'+' }}&text={{ font_family.split|join:''|upper }}"
+    rel="stylesheet"
+  />
+  {% endfor %}
+
+  <style>
+    {% for id, font_family in font_families %}
+    option[value*="{{ font_family }}"] {
+      font-family: "{{ font_family }}";
+    }
+    {% endfor %}
+  </style>
 {% endblock page_head %}
 
 {% block app %}

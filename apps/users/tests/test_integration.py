@@ -106,10 +106,8 @@ def test_sign_out(client, logged_in_user):
     r = client.get("/")
     assertRedirects(r, f"/teams/{team.id}")
 
+    # Test logout link exists
     r = client.get(f"/teams/{team.id}")
-    assertOK(r)
-
-    r = client.get(f"/users/profile")
     assertOK(r)
     assertLink(r, "/logout/", "Sign out")
 

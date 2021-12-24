@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from apps.base.live_update_form import LiveUpdateForm
 
-from .models import Dashboard, DASHBOARD_SETTING_TO_CATEGORY
+from .models import DASHBOARD_SETTING_TO_CATEGORY, Dashboard
 
 
 class PaletteColorsWidget(forms.MultiWidget):
@@ -72,11 +72,15 @@ class DashboardNameForm(forms.ModelForm):
 class DashboardForm(forms.ModelForm):
     width = forms.IntegerField(
         required=False,
-        widget=forms.NumberInput(attrs={"step": "15", "unit_suffix": "pixels"}),
+        widget=forms.NumberInput(
+            attrs={"class": "label--half", "unit_suffix": "pixels"}
+        ),
     )
     height = forms.IntegerField(
         required=False,
-        widget=forms.NumberInput(attrs={"step": "15", "unit_suffix": "pixels"}),
+        widget=forms.NumberInput(
+            attrs={"class": "label--half", "unit_suffix": "pixels"}
+        ),
     )
     grid_size = forms.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(1200)],
@@ -93,29 +97,32 @@ class DashboardForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"type": "color"}),
     )
     font_size = forms.IntegerField(
-        widget=forms.NumberInput(attrs={"unit_suffix": "pixels"}),
+        widget=forms.NumberInput(
+            attrs={"class": "label--third", "unit_suffix": "pixels"}
+        ),
     )
 
     class Meta:
         model = Dashboard
         fields = [
-            "font_family",
             "font_size",
+            "font_family",
             "font_color",
             "background_color",
             "palette_colors",
-            "grid_size",
             "width",
             "height",
+            "grid_size",
+            "snap_to_grid",
             "show_widget_border",
         ]
+        labels = {"snap_to_grid": "Snap widgets to grid"}
 
     def __init__(self, *args, **kwargs):
         self.category = kwargs.pop("category")
         super().__init__(*args, **kwargs)
 
-        self.fields["width"].widget.attrs.update({"step": self.instance.grid_size})
-        self.fields["height"].widget.attrs.update({"step": self.instance.grid_size})
+        self.fields["font_family"].widget.attrs.update({"class": "label--half"})
 
         for name, field in self.fields.items():
             if self.category != DASHBOARD_SETTING_TO_CATEGORY[name]:
