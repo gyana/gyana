@@ -95,9 +95,3 @@ class ConnectorUpdateForm(forms.ModelForm):
             raise ValidationError(
                 "Failed to update, please try again or reach out to support."
             )
-
-
-class ConnectorSettingsForm(BaseModelForm):
-    class Meta:
-        model = Connector
-        fields = []

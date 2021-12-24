@@ -28,7 +28,10 @@ interface StateProps {
 export const StatusIcon: React.FC<StateProps> = ({ state }) => {
   return (
     <Tippy content={STATE_TO_MESSAGE[state]}>
-      <div className='flex items-center justify-around absolute -top-2 -right-2 rounded-full w-6 h-6'>
+      <div
+        data-cy-status={state}
+        className='flex items-center justify-around absolute -top-2 -right-2 rounded-full w-6 h-6'
+      >
         <i className={`fad fa-2x fa-fw ${STATE_TO_ICON[state]}`}></i>
       </div>
     </Tippy>

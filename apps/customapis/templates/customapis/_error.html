@@ -1,0 +1,62 @@
+<style>
+
+table {
+  table-layout: fixed;
+}
+
+td {
+  overflow: scroll;
+}
+
+pre {
+  overflow: scroll;
+}
+
+</style>
+
+<div class="flex flex-col space-y-4 items-left text-left max-w-3xl">
+  <p>Error</p>
+  <h3>{{ message }}</h3>
+
+  {% if response %}
+    <p>Response</p>
+    <table class="table card w-full">
+      <tbody>
+        <tr>
+          <td>Error</td>
+          <td>{{ response.url }}</td>
+        </tr>
+        <tr>
+          <td>Status Code</td>
+          <td>{{ response.status_code }}</td>
+        </tr>
+        <tr>
+          <td>Reason</td>
+          <td>{{ response.reason }}</td>
+        </tr>
+        <tr>
+          <td>Encoding</td>
+          <td>{{ response.encoding }}</td>
+        </tr>
+        <tr>
+          <td>Headers</td>
+          <td>{{ response.headers|safe }}</td>
+        </tr>
+        <tr>
+          <td>Content</td>
+          <td>{{ response.text|truncatechars:1000|safe }}</td>
+        </tr>
+      </tbody>
+    </table>
+  {% endif %}
+
+  {% if json %}
+    <p>Preview parsed JSON</p>
+    <pre class='clipboard-copy'>{{ json|truncatechars:1000|safe }}</pre>
+  {% endif %}
+
+  {% if ndjson %}
+    <p>Preview parsed NDJSON or <a class="link" href="{{ ndjson_file.url }}">download file</a></p>
+    <pre class='clipboard-copy'>{{ ndjson|truncatechars:1000|safe }}</pre>
+  {% endif %}
+</div>

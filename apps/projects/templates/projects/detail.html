@@ -4,21 +4,22 @@
 {% load static %}
 
 {% block app %}
+<header class="page-header">
+  <div class="mr-auto">
+    <h1>{{ project.name }}</h1>
+    {% if project.description %}
+    <p>{{ project.description }}</p>
+    {% else %}
+    <p class="italic opacity-50">
+      No description provided,
+        <a class="link" href="{% url 'projects:update' object.id %}">add one</a>
+    </p>
+    {% endif %}
+  </div>
+</header>
+
 <div class="flex flex-1 items-center justify-center">
-  <div class="flex flex-col items-left max-w-2xl" style="min-width: 42rem;">
-    <header class="page-header">
-      <div class="mr-auto">
-        <h1>{{ project.name }}</h1>
-        {% if project.description %}
-        <p>{{ project.description }}</p>
-        {% else %}
-        <p class="italic opacity-50">
-          No description provided,
-            <a class="link" href="{% url 'projects:update' object.id %}">add one</a>
-        </p>
-        {% endif %}
-      </div>
-    </header>
+  <div class="flex flex-col items-left max-w-4xl" style="min-width: 42rem;">
 
     <section class="flex flex-col pad">
       <turbo-frame id="integrations:overview" src="{% url 'project_integrations:overview' project.id %}">
@@ -36,7 +37,7 @@
         </div>
       </turbo-frame>
 
-      <i class="fas fa-fw fa-chevron-down text-black-20 self-center my-4"></i>
+      <i class="fas fa-fw fa-chevron-down text-black-20 self-center my-6"></i>
 
       <turbo-frame id="workflows:overview" src="{% url 'project_workflows:overview' project.id %}">
         <div class="flex flex-col space-y-3">
@@ -53,7 +54,7 @@
         </div>
       </turbo-frame>
 
-      <i class="fas fa-fw fa-chevron-down text-black-20 self-center my-4"></i>
+      <i class="fas fa-fw fa-chevron-down text-black-20 self-center my-6"></i>
 
       <turbo-frame id="dashboards:overview" src="{% url 'project_dashboards:overview' project.id %}">
         <div class="flex flex-col space-y-3">

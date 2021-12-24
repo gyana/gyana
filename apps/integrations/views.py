@@ -1,4 +1,5 @@
 import analytics
+from django.db import transaction
 from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -9,13 +10,14 @@ from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
+from apps.base.formset_update_view import FormsetUpdateView
 from apps.base.turbo import TurboUpdateView
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import run_integration
 from apps.projects.mixins import ProjectMixin
 from apps.runs.tables import JobRunTable
 
-from .forms import KIND_TO_FORM_CLASS, KIND_TO_SETTINGS_FORM_CLASS, IntegrationForm
+from .forms import KIND_TO_FORM_CLASS, IntegrationUpdateForm
 from .mixins import STATE_TO_URL_REDIRECT, ReadyMixin
 from .models import Integration
 from .tables import IntegrationListTable, ReferencesTable
@@ -100,22 +102,7 @@ class IntegrationRuns(ReadyMixin, SingleTableMixin, DetailView):
 class IntegrationSettings(ProjectMixin, TurboUpdateView):
     template_name = "integrations/settings.html"
     model = Integration
-    form_class = IntegrationForm
-
-    def get_form_class(self):
-        return KIND_TO_SETTINGS_FORM_CLASS[self.object.kind]
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs.update({"instance": self.object.source_obj})
-        if self.object.kind == Integration.Kind.SHEET:
-            kwargs.update({"request": self.request})
-        return kwargs
-
-    def form_valid(self, form):
-        # don't assigned the result to self.object
-        form.save()
-        return redirect(self.get_success_url())
+    form_class = IntegrationUpdateForm
 
     def get_success_url(self) -> str:
         return reverse(
@@ -139,7 +126,7 @@ class IntegrationDelete(ProjectMixin, DeleteView):
 # Setup
 
 
-class IntegrationConfigure(ProjectMixin, TurboUpdateView):
+class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
     template_name = "integrations/configure.html"
     model = Integration
 
@@ -151,6 +138,9 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
             )
         return super().get(request, *args, **kwargs)
 
+    def get_form_instance(self):
+        return self.object.source_obj
+
     def get_form_class(self):
         return KIND_TO_FORM_CLASS[self.object.kind]
 
@@ -160,8 +150,14 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
         return kwargs
 
     def form_valid(self, form):
-        # don't assigned the result to self.object
-        form.save()
+        # don't assign the result to self.object
+        with transaction.atomic():
+            form.save()
+            for formset in self.get_formsets().values():
+                if formset.is_valid():
+                    formset.instance = self.get_form_instance()
+                    formset.save()
+
         run_integration(self.object.kind, self.object.source_obj, self.request.user)
         analytics.track(
             self.request.user.id,

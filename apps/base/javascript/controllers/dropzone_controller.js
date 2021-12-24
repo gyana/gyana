@@ -28,7 +28,7 @@ export default class extends Controller {
   handlePaste(event) {
     const paste = (event.clipboardData || window.clipboardData).getData('text');
 
-    if (event.target.type !== 'text') {
+    if (event.target.tagName !== 'INPUT') {
       if (/(.*)?(docs.google.com\/spreadsheets\/)(.*)?/.test(paste)) {
         window.location.href = this.element.dataset.sheetsUrl + '?url=' + encodeURI(paste)
       }

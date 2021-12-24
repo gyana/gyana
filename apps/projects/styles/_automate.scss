@@ -1,0 +1,16 @@
+.automate__header {
+  align-items: center;
+  background-color: var(--c-transparent);
+  display: flex;
+  flex-direction: row;
+  height: 9.6rem;
+  justify-content: center;
+  left: 0;
+  min-height: 9.6rem;
+  padding: 1.6rem;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  gap: 1.6rem;
+  z-index: var(--z-ui);
+}

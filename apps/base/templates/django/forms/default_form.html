@@ -18,9 +18,9 @@
 
   <div class="palette-colors">{{ bound_field }}</div>
   {% elif bound_field.widget_type == "checkbox" %}
-  <label class="flex flex-row">
+  <label class="flex flex-row items-center gap-4">
     {{ bound_field }}
-
+    
     <span>
       {{ bound_field.label }}
 
@@ -30,7 +30,7 @@
     </span>
   </label>
   {% elif bound_field.subwidgets|length == 1 %}
-  <div class="label">
+  <div class="label {{ bound_field.field.widget.attrs.class }}">
     <label for="{{ bound_field.id_for_label}}">
       <span>
         {{ bound_field.label }}
@@ -45,10 +45,10 @@
       </span>
     </label>
 
-    <div class="flex flex-row-reverse">
-      {% if bound_field.field.label_suffix %}
+    <div class="flex flex-row-reverse mt-auto">
+      {% if bound_field.field.widget.attrs.unit_suffix %}
       <div class="label__unit">
-        <p>{{ bound_field.field.label_suffix  }}</p>
+        <p>{{ bound_field.field.widget.attrs.unit_suffix }}</p>
       </div>
       {% endif %}
 
@@ -56,7 +56,7 @@
     </div>
   </div>
   {% else %}
-  <div class="label">
+  <div class="label {{ bound_field.field.widget.attrs.class }}">
     <label for="{{ bound_field.id_for_label }}">
       {{ bound_field.label }}
 

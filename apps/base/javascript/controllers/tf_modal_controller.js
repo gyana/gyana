@@ -1,49 +1,83 @@
 import { Controller } from '@hotwired/stimulus'
 
 // Open a modal with the content populated by a turbo-frame
+/**
+ * Modal controller with content populated by a turbo-frame.
+ * 
+ * Pass turbo-frame specific details via data attributes:
+ * `data-modal-src`, `data-modal-id`
+ * 
+ * @example
+ * <button
+ *   data-action="click->tf-modal#open"
+ *   data-controller="tooltip"
+ *   data-modal-src="{% url "web:help" %}"
+ *   data-modal-id="web:help"
+ *   data-modal-classes="tf-modal--tall"
+ * >
+ *  Click me to open a turbo-frame modal!
+ * </button>
+ */
 export default class extends Controller {
-  static targets = ['modal', 'turboFrame', 'closingWarning', 'form']
+  static targets = ['modal', 'turboFrame', 'closingWarning', 'form', 'onParam']
+
+  initialize() {
+    this.changed = false
+    this.boundHandleKeyup = this.handleKeyup.bind(this)
+    this.boundHandleClick = this.handleClick.bind(this)
+  }
 
   connect() {
-    this.changed = false
-    const params = new URLSearchParams(window.location.search)
-
-    if (params.get('modal_item') && this.element.getAttribute('data-open-on-param') == '') {
-      this.modalTarget.classList.remove('hidden')
-    }
-
-    window.addEventListener('keyup', (event) => {
-      if (event.key == 'Escape') {
-        this.close(event)
-      }
-    })
-
+    window.addEventListener('keyup', this.boundHandleKeyup)
     // Close the modal when clicking outside of the frame
     // TODO: Fix clicking and draging outside of modal closing.
-    this.modalTarget.addEventListener('click', (event) => {
-      if (!this.turboFrameTarget.contains(event.target)) {
-        this.close(event)
-      }
-    })
+    this.modalTarget.addEventListener('click', this.boundHandleClick)
+  }
+
+  disconnect() {
+    window.removeEventListener('keyup', this.boundHandleKeyup)
+    this.modalTarget.addEventListener('click', this.boundHandleClick)
+  }
+
+  onParamTargetConnected(target) {
+    const params = new URLSearchParams(window.location.search)
+
+    if (params.get('modal_item')) {
+      // This is a little hacky, it simulates a click because we need the 
+      // data attributes with the turbo-frame src/id.
+      this.onParamTarget.click()
+    }
   }
 
   open(event) {
-    this.turboFrameTarget.removeAttribute('src')
+    // Turbo removes the placeholder every time, we need to add it to indicate
+    // a loading state.
     this.turboFrameTarget.innerHTML = `
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
-        </div>
-      `
+      <div class='placeholder-scr placeholder-scr--fillscreen'>
+        <i class='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
+      </div>
+    `
 
-    this.turboFrameTarget.setAttribute('src', event.currentTarget.getAttribute('data-src'))
+    this.turboFrameTarget.removeAttribute('src')
+    this.turboFrameTarget.setAttribute('id', event.currentTarget.dataset.modalId)
+    this.turboFrameTarget.setAttribute('src', event.currentTarget.dataset.modalSrc)
 
-    if (event.currentTarget.getAttribute('data-item')) {
+    if (event.currentTarget.dataset.modalTarget) {
+      this.turboFrameTarget.setAttribute('target', event.currentTarget.dataset.modalTarget)
+    }
+
+    this.modalTarget.className = "tf-modal"
+    if (event.currentTarget.dataset.modalClasses) {
+      this.modalTarget.classList.add(...event.currentTarget.dataset.modalClasses.split(' '))
+    }
+
+    if (event.currentTarget.dataset.modalItem) {
       const params = new URLSearchParams(location.search)
-      params.set('modal_item', event.currentTarget.getAttribute('data-item'))
+      params.set('modal_item', event.currentTarget.dataset.modalItem)
       history.replaceState({}, '', `${location.pathname}?${params.toString()}`)
     }
 
-    this.modalTarget.classList.remove('hidden')
+    this.modalTarget.removeAttribute('hidden')
   }
 
   async submit(e) {
@@ -89,7 +123,7 @@ export default class extends Controller {
 
   close(e) {
     if (this.hasClosingWarningTarget && this.changed) {
-      this.closingWarningTarget.classList.remove('hidden')
+      this.closingWarningTarget.removeAttribute('hidden')
     } else {
       if (e.currentTarget.getAttribute && e.currentTarget.getAttribute('type') == 'submit') {
         this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='close']"))
@@ -101,7 +135,7 @@ export default class extends Controller {
 
   forceClose() {
     this.changed = false
-    this.modalTarget.classList.add('hidden')
+    this.modalTarget.setAttribute('hidden', '')
 
     const params = new URLSearchParams(location.search)
     params.delete('modal_item')
@@ -113,7 +147,7 @@ export default class extends Controller {
   }
 
   closeWarning() {
-    this.closingWarningTarget.classList.add('hidden')
+    this.closingWarningTarget.setAttribute('hidden', '')
   }
 
   // Trigger save and preview without clicking save and preview button
@@ -129,5 +163,17 @@ export default class extends Controller {
 
   save() {
     this.changed = false
+  }
+
+  handleKeyup(event) {
+    if (event.key == 'Escape') {
+      this.close(event)
+    }
+  }
+
+  handleClick(event) {
+    if (this.hasTurboFrameTarget && !this.turboFrameTarget.contains(event.target)) {
+      this.close(event)
+    }
   }
 }

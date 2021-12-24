@@ -35,14 +35,11 @@ class Sheet(CloneMixin, BaseModel):
     # automatically sync metadata from google drive
     drive_modified_date = models.DateTimeField(null=True)
 
-    # todo: move to the integration model
-    is_scheduled = models.BooleanField(default=False)
-
     @property
     def table_id(self):
         return f"sheet_{self.id:09}"
 
-    def create_integration(self, title, created_by, project):
+    def create_integration(self, title, created_by, project, is_scheduled):
         # maximum Google Drive name length is 32767
         name = textwrap.shorten(title, width=255, placeholder="...")
         integration = Integration.objects.create(
@@ -50,6 +47,7 @@ class Sheet(CloneMixin, BaseModel):
             kind=Integration.Kind.SHEET,
             name=name,
             created_by=created_by,
+            is_scheduled=is_scheduled,
         )
         self.integration = integration
 

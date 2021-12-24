@@ -18,6 +18,7 @@ from apps.dashboards.models import Dashboard, Page
 from apps.filters.models import Filter
 from apps.integrations.models import Integration
 from apps.nodes.models import Node
+from apps.oauth2.models import OAuth2
 from apps.projects.models import Project
 from apps.runs.models import GraphRun, JobRun
 from apps.sheets.models import Sheet
@@ -271,3 +272,9 @@ class GraphRunFactory(factory.django.DjangoModelFactory):
 class CustomApiFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CustomApi
+
+
+@register
+class OAuth2Factory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = OAuth2

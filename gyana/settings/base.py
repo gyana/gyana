@@ -106,6 +106,7 @@ PROJECT_APPS = [
     "apps.controls",
     "apps.runs.apps.RunsConfig",
     "apps.customapis",
+    "apps.oauth2",
 ]
 
 INSTALLED_APPS = (

@@ -13,11 +13,11 @@
     <div class="widget-card h-full">
       <div class="widget-card__visual p-2 {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}">
         
-          <span><i class="fa fa-calendar mr-2"></i>{{ object.control.get_date_range_display }}</span>
-          {% if object.control.date_range == "custom" %}
+          <span><i class="fa fa-calendar mr-2"></i>{{ control.get_date_range_display }}</span>
+          {% if control.date_range == "custom" %}
 
-            {% if object.control.start %}Start <strong>{{object.control.start}}</strong>{% endif %}
-            {% if object.control.end %}End <strong>{{object.control.end}}</strong>{% endif %}
+            {% if control.start %}Start <strong>{{control.start}}</strong>{% endif %}
+            {% if control.end %}End <strong>{{control.end}}</strong>{% endif %}
 
           {% endif %}
         
@@ -28,24 +28,32 @@
           <span data-tooltip-target="body">Edit</span>
         </button>
 
-        <form
-          data-controller="tooltip"
-          method="post"
-          action="{% url 'dashboard_controls:delete' project.id dashboard.id object.id %}">
-          {% csrf_token %}
-    
-          <button id="control-widget-delete-{{ object.id }}" type='submit'>
-            <i class="fas fa-fw fa-trash cursor-pointer"></i>
-          </button>
-          <span data-tooltip-target="body">Delete</span>
-        </form>
-        
+        {% if not is_public  and request.GET.mode != 'view' %}
+          <form
+            data-controller="tooltip"
+            method="post"
+            action="
+            {% url 'dashboard_controls:delete' project.id dashboard.id object.id %}">
+            {% csrf_token %}
+      
+            <button id="control-widget-delete-{{ object.id }}" type='submit'>
+              <i class="fas fa-fw fa-trash cursor-pointer"></i>
+            </button>
+            <span data-tooltip-target="body">Delete</span>
+          </form>
+        {% endif %}
+
       </div>
     </div>
     
     <div class='control-popover' data-popover-target="body">
       <turbo-frame id="controls:update"
-        src="{% url 'dashboard_controls:update' project.id dashboard.id object.control.id %}"
+        src="
+        {% if is_public  %}
+          {% url 'dashboard_controls:update-public' project.id dashboard.id control.id %}
+        {% else %}
+          {% url 'dashboard_controls:update' project.id dashboard.id control.id %}?mode={{request.GET.mode}}
+        {% endif %}"
       ></turbo-frame>
     </div>
   </div>

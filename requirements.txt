@@ -28,9 +28,11 @@ dj-paddle @ git+https://github.com/paddle-python/dj-paddle@8945137c9ff70ae00d519
 django-admin-tools==0.9.1
 django-allauth==0.44.0
 django-anymail==8.4; python_version >= "3.5"
+django-appconf==1.0.5; python_version >= "3.6"
 django-celery-beat==2.2.1
 django-celery-results==2.2.0
 django-clone==2.9.4; python_version >= "3.5"
+django-cryptography==1.0; python_version >= "3.5"
 django-dirtyfields==1.7.0; python_version >= "3.6"
 django-filter==2.4.0; python_version >= "3.5"
 django-heroku==0.3.1
@@ -106,7 +108,7 @@ pyarrow==4.0.1; python_version >= "3.6"
 pyasn1-modules==0.2.8; python_version >= "3.6"
 pyasn1==0.4.8; python_version >= "3.6" and python_version < "4"
 pycodestyle==2.7.0; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" and python_version >= "3.6"
-pycparser==2.20; python_version >= "3.6" and python_full_version < "3.0.0" or python_version >= "3.6" and python_full_version >= "3.4.0"
+pycparser==2.20; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" and python_version >= "3.6"
 pycryptodome==3.11.0; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0"
 pydata-google-auth==1.2.0; python_version >= "3.7"
 pygments==2.10.0; python_version >= "3.6"

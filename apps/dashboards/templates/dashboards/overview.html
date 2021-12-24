@@ -5,12 +5,12 @@
   <div class="flex items-baseline gap-3">
     <h3><i class="far fa-fw fa-chart-pie text-black-50 mr-3"></i>Dashboards</h3>
     {% if dashboards.total > 0 %}
-      <p class="text-black-50">
-        - <a class="link" href="{% url 'project_dashboards:list' project.id %}" data-turbo-frame="_top">
-            {{ dashboards.total }} dashboard{{ dashboards.total|pluralize }}
-          </a>
-        - {{ dashboards.widgets|intcomma }} widget{{ dashboards.widgets|pluralize }}
-      </p>
+    <p class="text-black-50 ml-auto">
+      <a class="link" href="{% url 'project_dashboards:list' project.id %}" data-turbo-frame="_top">
+        {{ dashboards.total }} dashboard{{ dashboards.total|pluralize }}
+      </a>
+      - {{ dashboards.widgets|intcomma }} widget{{ dashboards.widgets|pluralize }}
+    </p>
     {% endif %}
   </div>
 

@@ -37,10 +37,12 @@ const NodeContent: React.FC<Props> = ({ id, data }) => {
       {data.error && <ErrorIcon text={data.error} />}
       <NodeButtons id={id} />
       <i
-        className={`fas fa-fw ${data.icon}  ${showContent && 'absolute opacity-10'}`}
-        data-src={`/nodes/${id}`}
+        className={`fas fa-fw ${data.icon} ${showContent && 'absolute opacity-10'}`}
+        data-modal-src={`/nodes/${id}`}
         data-action='dblclick->tf-modal#open'
-        data-item={id}
+        data-modal-item={id}
+        data-modal-id='workflow-modal'
+        data-modal-classes="tf-modal--full"
       ></i>
       {showContent && (
         <div className='p-2'>

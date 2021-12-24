@@ -1,0 +1,18 @@
+{{ widget.choice_label }}
+{{ widget.label }}
+
+<input
+  list="datalist"
+  type="{{ widget.type }}"
+  name="{{ widget.name }}"
+  {% if widget.value != None %}
+    value="{{ widget.value|stringformat:'s' }}"
+  {% endif %}
+  {% include "django/forms/widgets/attrs.html" %}
+/>
+
+<datalist id="datalist">
+  {% for option in options %}
+    <option>{{ option }}</option>
+  {% endfor %}
+</datalist>

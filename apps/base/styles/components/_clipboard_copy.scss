@@ -8,12 +8,12 @@
   justify-content: space-between;
   padding: 0.6rem;
 
-  a {
-    font-size: 1.2rem;
-    color: var(--c-black-50);
-  }
-
   button {
     margin-left: 0.4rem;
+
+    &[data-action]:hover {
+      color: var(--c-blue);
+      cursor: pointer;
+    }
   }
 }
