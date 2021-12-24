@@ -50,6 +50,7 @@ class IntegrationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Integration
 
+    kind = Integration.Kind.UPLOAD
     project = factory.SubFactory(ProjectFactory)
     ready = True
     state = Integration.State.DONE
