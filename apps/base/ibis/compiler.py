@@ -15,8 +15,7 @@ from ibis.expr.types import (
     TimestampValue,
     TimeValue,
 )
-from ibis_bigquery import BigQueryExprTranslator
-from ibis_bigquery.compiler import _timestamp_units
+from ibis_bigquery.compiler import BigQueryExprTranslator, _timestamp_units
 
 compiles = BigQueryExprTranslator.compiles
 

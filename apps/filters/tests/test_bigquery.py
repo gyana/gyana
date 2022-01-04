@@ -84,7 +84,7 @@ MONTH = TODAY.month
 QUARTER = get_quarter(TODAY)
 
 if WEEK == 1:
-    LAST_WEEK = 53
+    LAST_WEEK = 52
     LAST_WEEK_YEAR = YEAR - 1
 else:
     LAST_WEEK = WEEK - 1

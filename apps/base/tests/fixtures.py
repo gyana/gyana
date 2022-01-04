@@ -68,16 +68,8 @@ def bind(instance, name, func):
     )
 
 
-def mock_ibis_client_table(self, name, database):
-    t = super(self.__class__).__get__(self).table(name, database=database)
-    project, dataset, name = t.op().name.split(".")
-    bq_table = self.client.get_table(f"{project}.{dataset}.{name}")
-    return rename_partitioned_column(t, bq_table, self.partition_column)
-
-
-def mock_ibis_client_get_schema(self, name, database):
-    project, dataset = self._parse_project_and_dataset(database)
-    bq_table = self.client.get_table(f"{project}.{dataset}.{name}")
+def mock_ibis_client_get_schema(self, name):
+    bq_table = self.client.get_table(name)
     return sch.infer(bq_table)
 
 
@@ -95,11 +87,6 @@ def bigquery(mocker, settings):
     ibis_client = clients.ibis_client()
     ibis_client.client = client
 
-    bind(
-        ibis_client,
-        "table",
-        mock_ibis_client_table,
-    )
     bind(
         ibis_client,
         "get_schema",
