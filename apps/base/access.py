@@ -17,7 +17,7 @@ def _get_decorated_function(view_func, permission_test_function):
         user = request.user
         if not user.is_authenticated:
             return HttpResponseRedirect(
-                "{}?next={}".format(reverse("account_login"), request.path)
+                f"{reverse('account_login')}?next={request.get_full_path()}"
             )
 
         if permission_test_function(user, *args, **kwargs):

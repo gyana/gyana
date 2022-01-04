@@ -14,7 +14,6 @@ pytestmark = pytest.mark.django_db
         pytest.param("/nodes/{}/credit_confirmation", id="credit_confirmation"),
         pytest.param("/nodes/{}/formula", id="formula"),
         pytest.param("/nodes/{}/function_info?function=abs", id="function_info"),
-        pytest.param("/nodes/{}/duplicate", id="duplicate"),
     ],
 )
 def test_node_required(client, url, node_factory, user):
@@ -28,4 +27,51 @@ def test_node_required(client, url, node_factory, user):
 
     user_node = node_factory(workflow__project__team=user.teams.first())
     r = client.get(url.format(user_node.id))
+    assertOK(r)
+
+
+# Dubplicate only accepts post
+def test_duplicate(client, node_factory, user):
+    node = node_factory()
+    url = f"/nodes/{node.id}/duplicate"
+    assertLoginRedirect(client, url)
+
+    client.force_login(user)
+    r = client.post(url)
+    assert r.status_code == 404
+
+    node.workflow.project.team = user.teams.first()
+    node.workflow.project.save()
+
+    r = client.get(url)
+    assert r.status_code == 405
+
+    r = client.post(url)
+    assertOK(r)
+
+
+def test_update_positions(client, node_factory, user):
+    node = node_factory()
+    url = f"/workflows/{node.workflow.id}/update_positions"
+    assertLoginRedirect(client, url)
+
+    client.force_login(user)
+    data = [
+        {"id": str(node.id), "x": 10, "y": 10},
+    ]
+    r = client.post(
+        url,
+        data=data,
+        content_type="application/json",
+    )
+    assert r.status_code == 404
+
+    node.workflow.project.team = user.teams.first()
+    node.workflow.project.save()
+
+    r = client.post(
+        url,
+        data=data,
+        content_type="application/json",
+    )
     assertOK(r)
