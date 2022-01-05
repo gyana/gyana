@@ -343,7 +343,13 @@ PARAMS = [
         id="date datetime_diff",
     ),
     pytest.param(
-        "day_of_week(birthday)", QUERY.format("EXTRACT(DAYOFWEEK FROM `birthday`)")
+        "day_of_week(birthday)",
+        QUERY.format("EXTRACT(DAYOFWEEK FROM `birthday`)", id="dat_of_week"),
+    ),
+    pytest.param(
+        "weekday(birthday)",
+        "SELECT\n  CASE EXTRACT(DAYOFWEEK FROM `birthday`)\n    WHEN 1 THEN 'Sunday'\n    WHEN 2 THEN 'Monday'\n    WHEN 3 THEN 'Tuesday'\n    WHEN 4 THEN 'Wednesday'\n    WHEN 5 THEN 'Thursday'\n    WHEN 6 THEN 'Friday'\n    WHEN 7 THEN 'Saturday'\n    ELSE CAST(NULL AS STRING)\n  END AS `tmp`\nFROM olympians",
+        id="weekday",
     ),
     # Test nested functions
     pytest.param(
@@ -426,7 +432,4 @@ def extract_function(param):
 
 def test_all_functions_test():
     test_functions = {extract_function(param) for param in PARAMS}
-    print(test_functions)
-    print(len(PARAMS))
-    print(extract_function(create_extract_unary_param("hour")))
     assert test_functions == FUNCTION_NAMES

@@ -673,6 +673,15 @@
     "description": "Capitalize text."
   },
   {
+    "id": "weekday",
+    "intercom_id": "h_1a22b06677",
+    "name": "weekday",
+    "categories": ["time & date"],
+    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
+    "keywords": [],
+    "description": "Gets weekday from a date"
+  },
+  {
     "id": "year",
     "intercom_id": "h_c5181a0592",
     "name": "year",
