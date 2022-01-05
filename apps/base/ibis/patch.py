@@ -19,23 +19,6 @@ class Difference(SetOp):
 query_builder.Intersection = Intersection
 query_builder.Difference = Difference
 
-# def _collect_Difference(self, expr, toplevel=False):
-#     if toplevel:
-#         raise NotImplementedError()
-
-
-# def _collect_Intersection(self, expr, toplevel=False):
-#     if toplevel:
-#         raise NotImplementedError()
-
-
-# compiler.SelectBuilder._collect_Difference = _collect_Difference
-# compiler.SelectBuilder._collect_Intersection = _collect_Intersection
-
-
-# compiler.QueryBuilder.intersect_class = Intersection
-# compiler.QueryBuilder.difference_class = Difference
-
 _DTYPE_TO_IBIS_TYPE["BIGNUMERIC"] = dt.Decimal(76, 38)
 
 
