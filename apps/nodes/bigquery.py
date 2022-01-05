@@ -31,15 +31,19 @@ JOINS = {
 
 
 def _get_duplicate_names(left, right):
-    left_names = set(left.schema())
-    right_names = set(right.schema())
+    left_names = {col.lower() for col in left.schema()}
+    right_names = {col.lower() for col in right.schema()}
     return left_names & right_names
 
 
 def _rename_duplicates(left, right, left_col, right_col):
     duplicates = _get_duplicate_names(left, right)
-    left = left.relabel({d: f"{d}_left" for d in duplicates})
-    right = right.relabel({d: f"{d}_right" for d in duplicates})
+    left = left.relabel(
+        {col: f"{col}_left" for col in left.columns if col.lower() in duplicates}
+    )
+    right = right.relabel(
+        {col: f"{col}_right" for col in right.columns if col.lower() in duplicates}
+    )
     left_col = f"{left_col}_left" if left_col in duplicates else left_col
     right_col = f"{right_col}_right" if right_col in duplicates else right_col
 
