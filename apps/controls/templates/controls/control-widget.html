@@ -11,7 +11,14 @@
     data-theme='popover-control'
   >
     <div class="widget-card h-full">
-      <div class="widget-card__visual p-2 {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}">
+      <div
+        class="widget-card__visual p-2 {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}"
+        style="
+          {% if object.page.dashboard.widget_border_thickness %}border-width:{{ object.page.dashboard.widget_border_thickness }};{% endif %}
+          {% if object.page.dashboard.widget_border_radius %}border-radius:{{ object.page.dashboard.widget_border_radius }};{% endif %}
+          {% if object.page.dashboard.widget_border_color %}border-color:{{ object.page.dashboard.widget_border_color }};{% endif %}
+        "
+      >
         
           <span><i class="fa fa-calendar mr-2"></i>{{ control.get_date_range_display }}</span>
           {% if control.date_range == "custom" %}

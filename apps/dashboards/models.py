@@ -23,6 +23,7 @@ class DashboardSettings(models.Model):
 
     class Category(models.TextChoices):
         GENERAL = "general", "General"
+        WIDGET = "widget", "Widget"
         CANVAS = "canvas", "Canvas"
 
     class FontFamily(models.TextChoices):
@@ -50,6 +51,11 @@ class DashboardSettings(models.Model):
     )
     snap_to_grid = models.BooleanField(default=True)
     show_widget_border = models.BooleanField(default=True)
+
+    widget_background_color = models.CharField(default="#ffffff", max_length=7)
+    widget_border_color = models.CharField(default="#e6e6e6", max_length=7)
+    widget_border_radius = models.IntegerField(default=5)
+    widget_border_thickness = models.IntegerField(default=1)
 
 
 class Dashboard(DashboardSettings, CloneMixin, BaseModel):
@@ -157,4 +163,8 @@ DASHBOARD_SETTING_TO_CATEGORY = {
     "font_color": Dashboard.Category.GENERAL,
     "font_family": Dashboard.Category.GENERAL,
     "show_widget_border": Dashboard.Category.GENERAL,
+    "widget_background_color": Dashboard.Category.WIDGET,
+    "widget_border_color": Dashboard.Category.WIDGET,
+    "widget_border_radius": Dashboard.Category.WIDGET,
+    "widget_border_thickness": Dashboard.Category.WIDGET,
 }

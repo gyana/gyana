@@ -1,0 +1,96 @@
+{% load waffle_tags %}
+
+{% comment %} 
+IMPORTANT: Any style/layout changs here should also be made to
+apps/dashboards/templates/dashboards/preview.html to reflect the changes in
+preview mode.
+{% endcomment %}
+<gy-widget id="widget-{{ object.id }}">
+  <div
+    class="h-full w-full"
+    data-id="{{ object.id }}"
+    data-x="{{ object.x }}"
+    data-y="{{ object.y }}"
+    data-width="{{ object.width }}"
+    data-height="{{ object.height }}"
+    {% if dashboard.snap_to_grid %}
+    data-grid-size="{{ dashboard.grid_size }}"
+    {% else %}
+    data-grid-size="1"
+    {% endif %}
+  >
+    <div class="widget-card h-full">
+      <div
+        class="widget-card__visual {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}"
+        style="
+          {% if object.page.dashboard.widget_border_color %}border-color: {{ object.page.dashboard.widget_border_color }};{% endif %}
+          {% if object.page.dashboard.widget_border_radius %}border-radius: {{ object.page.dashboard.widget_border_radius }}px;{% endif %}
+          {% if object.page.dashboard.widget_border_thickness %}border-width: {{ object.page.dashboard.widget_border_thickness }}px;{% endif %}
+        "
+      >
+        {% block widget %}
+        {% endblock widget %}
+      </div>
+
+      {% if not request.GET.mode or request.GET.mode == "edit" %}
+      <div class='widget-card__commands'>
+        {% block widget.commands %}
+        {% if object.kind != "text" %}
+        <button  
+          data-controller="tooltip"
+          data-action="click->tf-modal#open"
+          id="widget-update-{{ object.id }}"
+          data-modal-item="{{ object.id }}"
+          data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
+          data-modal-id="widget-modal"
+          data-modal-classes="tf-modal--full"
+        >
+          <i class="fas fa-fw fa-edit"></i>
+          <span data-tooltip-target="body">Edit</span>
+        </button>
+
+          {% flag "beta" %}
+          <button  
+            data-controller="tooltip"
+            data-action="click->tf-modal#open"
+            id="widget-update-{{ object.id }}"  
+            data-modal-item="{{ object.id }}"
+            data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?show_style=true"
+            data-modal-id="widget-modal"
+            data-modal-classes="tf-modal--full"
+          >
+            <i class="fas fa-fw fa-paint-brush"></i>
+            <span data-tooltip-target="body">Change style</span>
+          </button>
+          {% endflag %}
+        {% endif %}
+
+        <form
+          data-controller="tooltip"
+          method='post'
+          action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}"
+        >
+          {% csrf_token %}
+          <button id="widget-duplicate-{{ object.id }}" type='submit' data-loading-false>
+            <i class="fas fa-fw fa-copy"></i>
+          </button>
+          <span data-tooltip-target="body">Duplicate</span>
+        </form>
+
+        <form
+          data-controller="tooltip"
+          method="post"
+          action="{% url 'dashboard_widgets:delete' project.id dashboard.id object.id %}">
+          {% csrf_token %}
+
+          <button id="widget-delete-{{ object.id }}" type='submit'>
+            <i class="fas fa-fw fa-trash cursor-pointer"></i>
+          </button>
+          <span data-tooltip-target="body">Delete</span>
+        </form>
+        {% endblock widget.commands %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</gy-widget>
