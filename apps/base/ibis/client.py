@@ -7,4 +7,14 @@ from ibis_bigquery import Backend
 # native connectors are not partitioned, and fivetran documentation suggests
 # by default connectors are not partitioned either, better to remove for now
 # https://fivetran.com/docs/destinations/bigquery/partition-table#converttopartitionedtables
-Backend.table = BaseSQLBackend.table
+# Backend.get_schema = BaseSQLBackend.get_schema
+
+original_table = BaseSQLBackend.table
+
+
+def table(self, name, database=None):
+    self.set_database(database)
+    return original_table(self, name, database)
+
+
+Backend.table = table
