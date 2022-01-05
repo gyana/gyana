@@ -2,8 +2,10 @@ import django_tables2 as tables
 from django.db.models.aggregates import Sum
 from django.template import Context
 from django.template.loader import get_template
+from django.utils.html import escape, format_html
+from django_tables2.utils import AttributeDict
 
-from apps.base.table import NaturalDatetimeColumn, NaturalDayColumn
+from apps.base.table import FaBooleanColumn, NaturalDatetimeColumn, NaturalDayColumn
 
 from .models import Integration
 
@@ -65,9 +67,9 @@ class IntegrationListTable(tables.Table):
         verbose_name="Kind",
         attrs={"th": {"style": "min-width: auto; width: 0%;"}},
     )
-    ready = tables.BooleanColumn()
+    ready = FaBooleanColumn()
     state = PendingStatusColumn(verbose_name="Status")
-    is_scheduled = tables.BooleanColumn(verbose_name="Scheduled")
+    is_scheduled = FaBooleanColumn(verbose_name="Scheduled")
     num_rows = RowCountColumn()
     last_synced = NaturalDayColumn(orderable=False)
     expires = NaturalDatetimeColumn(orderable=False)
