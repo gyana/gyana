@@ -2,6 +2,10 @@
   <h3
     id="widget-name-{{ object.id }}-stream"
     class="text-center py-4 {% if not object.name %}hidden{% endif %}"
+    style="
+      {% if object.page.dashboard.widget_header_font_size %}font-size:{{ object.page.dashboard.widget_header_font_size }}px;{% endif %}
+      {% if object.page.dashboard.widget_background_color %}background-color:{{ object.page.dashboard.widget_background_color }};{% endif %}
+    "
   >
     {{ object.name }}
   </h3>

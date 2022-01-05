@@ -1,7 +1,10 @@
 {% extends "widgets/widget_base.html" %}
 
-{% block widget %}        
-{% include 'widgets/_widget_title.html' %}
+{% block widget %}
+
+{% if object.page.dashboard.show_widget_headers %}
+  {% include 'widgets/_widget_title.html' %}
+{% endif %}
 
 <turbo-frame 
   id="widgets-output-{{ object.id }}"

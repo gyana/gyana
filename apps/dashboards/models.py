@@ -50,8 +50,10 @@ class DashboardSettings(models.Model):
         max_length=30, default=FontFamily.ROBOTO, choices=FontFamily.choices
     )
     snap_to_grid = models.BooleanField(default=True)
-    show_widget_border = models.BooleanField(default=True)
 
+    show_widget_border = models.BooleanField(default=True)
+    show_widget_headers = models.BooleanField(default=True)
+    widget_header_font_size = models.IntegerField(default="18")
     widget_background_color = models.CharField(default="#ffffff", max_length=7)
     widget_border_color = models.CharField(default="#e6e6e6", max_length=7)
     widget_border_radius = models.IntegerField(default=5)
@@ -163,6 +165,8 @@ DASHBOARD_SETTING_TO_CATEGORY = {
     "font_color": Dashboard.Category.GENERAL,
     "font_family": Dashboard.Category.GENERAL,
     "show_widget_border": Dashboard.Category.GENERAL,
+    "show_widget_headers": Dashboard.Category.WIDGET,
+    "widget_header_font_size": Dashboard.Category.WIDGET,
     "widget_background_color": Dashboard.Category.WIDGET,
     "widget_border_color": Dashboard.Category.WIDGET,
     "widget_border_radius": Dashboard.Category.WIDGET,

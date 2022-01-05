@@ -102,6 +102,12 @@ class DashboardForm(forms.ModelForm):
             attrs={"class": "label--third", "unit_suffix": "pixels"}
         ),
     )
+    widget_header_font_size = forms.IntegerField(
+        required=False,
+        widget=forms.NumberInput(
+            attrs={"class": "label--third", "unit_suffix": "pixels"}
+        ),
+    )
     widget_background_color = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={"type": "color"}),
@@ -136,6 +142,8 @@ class DashboardForm(forms.ModelForm):
             "grid_size",
             "snap_to_grid",
             "show_widget_border",
+            "widget_header_font_size",
+            "show_widget_headers",
             "widget_background_color",
             "widget_border_color",
             "widget_border_radius",
