@@ -2,6 +2,9 @@ import React, { useContext } from 'react'
 import { DnDContext, IDnDContext } from '../context'
 
 const EditButton = ({ id }) => {
+  const params = new URLSearchParams(window.location.search);
+  const model_item = params.get("modal_item");
+
   return (
     <button
       data-action='click->tf-modal#open'
@@ -10,7 +13,7 @@ const EditButton = ({ id }) => {
       data-modal-src={`/nodes/${id}`}
       data-modal-item={id}
       data-modal-classes='tf-modal--full'
-      data-tf-modal-target='onParam'
+      data-tf-modal-target={model_item == id ? 'onParam' : ''}
     >
       <i className='fas fa-fw fa-edit fa-lg'></i>
     </button>
