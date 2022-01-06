@@ -71,7 +71,7 @@ def create_date_filter(operation):
 
 def create_datetime_filter(operation):
     return Filter(
-        column="updated",
+        column="when",
         type=Filter.Type.DATETIME,
         datetime_predicate=operation,
         datetime_value="1993-07-26T06:30:12.1234",
@@ -84,7 +84,7 @@ MONTH = TODAY.month
 QUARTER = get_quarter(TODAY)
 
 if WEEK == 1:
-    LAST_WEEK = 53
+    LAST_WEEK = 52
     LAST_WEEK_YEAR = YEAR - 1
 else:
     LAST_WEEK = WEEK - 1
@@ -553,81 +553,81 @@ PARAMS = [
     # Datetime filters
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.ON),
-        QUERY.format("`updated` = TIMESTAMP '1993-07-26T06:30:12.1234'"),
+        QUERY.format("`when` = TIMESTAMP '1993-07-26T06:30:12.1234'"),
         id="Dateime on",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.NOTON),
-        QUERY.format("`updated` != TIMESTAMP '1993-07-26T06:30:12.1234'"),
+        QUERY.format("`when` != TIMESTAMP '1993-07-26T06:30:12.1234'"),
         id="Dateime not on",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.BEFORE),
-        QUERY.format("`updated` < TIMESTAMP '1993-07-26T06:30:12.1234'"),
+        QUERY.format("`when` < TIMESTAMP '1993-07-26T06:30:12.1234'"),
         id="Dateime before",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.BEFOREON),
-        QUERY.format("`updated` <= TIMESTAMP '1993-07-26T06:30:12.1234'"),
+        QUERY.format("`when` <= TIMESTAMP '1993-07-26T06:30:12.1234'"),
         id="Dateime before on",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.AFTER),
-        QUERY.format("`updated` > TIMESTAMP '1993-07-26T06:30:12.1234'"),
+        QUERY.format("`when` > TIMESTAMP '1993-07-26T06:30:12.1234'"),
         id="Dateime after",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.AFTERON),
-        QUERY.format("`updated` >= TIMESTAMP '1993-07-26T06:30:12.1234'"),
+        QUERY.format("`when` >= TIMESTAMP '1993-07-26T06:30:12.1234'"),
         id="Dateime after on",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.ISNULL),
-        QUERY.format("`updated` IS NULL"),
+        QUERY.format("`when` IS NULL"),
         id="Dateime is null",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.NOTNULL),
-        QUERY.format("`updated` IS NOT NULL"),
+        QUERY.format("`when` IS NOT NULL"),
         id="Dateime not null",
     ),
     pytest.param(
         create_datetime_filter(DateRange.TODAY),
-        QUERY.format(f"DATE(`updated`) = DATE '{TODAY.strftime('%Y-%m-%d')}'"),
+        QUERY.format(f"DATE(`when`) = DATE '{TODAY.strftime('%Y-%m-%d')}'"),
         id="Datetime today",
     ),
     pytest.param(
         create_datetime_filter(DateRange.TOMORROW),
         QUERY.format(
-            f"DATE(`updated`) = DATE '{(TODAY + timedelta(days=1)).strftime('%Y-%m-%d')}'"
+            f"DATE(`when`) = DATE '{(TODAY + timedelta(days=1)).strftime('%Y-%m-%d')}'"
         ),
         id="Datetime tomorrow",
     ),
     pytest.param(
         create_datetime_filter(DateRange.YESTERDAY),
         QUERY.format(
-            f"DATE(`updated`) = DATE '{(TODAY - timedelta(days=1)).strftime('%Y-%m-%d')}'"
+            f"DATE(`when`) = DATE '{(TODAY - timedelta(days=1)).strftime('%Y-%m-%d')}'"
         ),
         id="Datetime yesterday",
     ),
     pytest.param(
         create_datetime_filter(DateRange.ONEWEEKAGO),
         QUERY.format(
-            f"DATE(`updated`) BETWEEN DATE '{(TODAY - timedelta(days=7)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"DATE(`when`) BETWEEN DATE '{(TODAY - timedelta(days=7)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
         ),
         id="Datetime one week ago",
     ),
     pytest.param(
         create_datetime_filter(DateRange.ONEMONTHAGO),
         QUERY.format(
-            f"DATE(`updated`) BETWEEN DATE '{(TODAY - relativedelta(months=1)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"DATE(`when`) BETWEEN DATE '{(TODAY - relativedelta(months=1)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
         ),
         id="Datetime one month ago",
     ),
     pytest.param(
         create_datetime_filter(DateRange.ONEYEARAGO),
         QUERY.format(
-            f"DATE(`updated`) BETWEEN DATE '{(TODAY - relativedelta(years=1)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"DATE(`when`) BETWEEN DATE '{(TODAY - relativedelta(years=1)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
         ),
         id="Datetime one year ago",
     ),
@@ -705,12 +705,12 @@ def test_compiles_filter(filter_, expected_sql):
             id="Time column with predicate",
         ),
         pytest.param(
-            Filter(column="updated"),
+            Filter(column="when"),
             ["column", "datetime_predicate"],
             id="Datetime column",
         ),
         pytest.param(
-            Filter(column="updated", datetime_predicate="equal"),
+            Filter(column="when", datetime_predicate="equal"),
             ["column", "datetime_predicate", "datetime_value"],
             id="Datetime column with predicate",
         ),

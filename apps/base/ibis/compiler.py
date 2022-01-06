@@ -15,8 +15,7 @@ from ibis.expr.types import (
     TimestampValue,
     TimeValue,
 )
-from ibis_bigquery import BigQueryExprTranslator
-from ibis_bigquery.compiler import _timestamp_units
+from ibis_bigquery.compiler import BigQueryExprTranslator, _timestamp_units
 
 compiles = BigQueryExprTranslator.compiles
 
@@ -171,3 +170,23 @@ def _isoweek(t, expr):
     (arg,) = expr.op().args
 
     return f"ISOWEEK {t.translate(arg)}"
+
+
+class DayOfWeek(ValueOp):
+    arg = Arg(rlz.one_of([rlz.date, rlz.timestamp]))
+    output_type = rlz.shape_like("arg", dt.int32)
+
+
+def day_of_week(arg):
+    return DayOfWeek(arg).to_expr()
+
+
+DateValue.day_of_week = day_of_week
+TimestampValue.day_of_week = day_of_week
+
+
+@compiles(DayOfWeek)
+def _day_of_week(t, expr):
+    (arg,) = expr.op().args
+
+    return f"EXTRACT(DAYOFWEEK FROM {t.translate(arg)})"

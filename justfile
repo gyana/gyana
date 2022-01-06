@@ -16,8 +16,8 @@ celery:
 beat:
     watchexec -w apps -e py -r "celery -A gyana beat -l INFO"
 
-migrate:
-    ./manage.py migrate
+migrate app='' migration='':
+    ./manage.py migrate {{app}} {{migration}}
 
 seed:
     ./manage.py flush --noinput

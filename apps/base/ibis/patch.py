@@ -1,9 +1,9 @@
+import ibis.expr.datatypes as dt
+from ibis.backends.base.sql import compiler
+from ibis.backends.base.sql.compiler import query_builder
+from ibis.backends.base.sql.compiler.base import SetOp
 from ibis_bigquery.client import _DTYPE_TO_IBIS_TYPE
 from ibis_bigquery.datatypes import TypeTranslationContext, ibis_type_to_bigquery_type
-
-import ibis.expr.datatypes as dt
-from ibis.backends.base_sqlalchemy import compiler
-from ibis.backends.base_sqlalchemy.compiler import SetOp
 
 
 class Intersection(SetOp):
@@ -16,22 +16,8 @@ class Difference(SetOp):
         return ["EXCEPT DISTINCT"] * (len(self.tables) - 1)
 
 
-def _collect_Difference(self, expr, toplevel=False):
-    if toplevel:
-        raise NotImplementedError()
-
-
-def _collect_Intersection(self, expr, toplevel=False):
-    if toplevel:
-        raise NotImplementedError()
-
-
-compiler.SelectBuilder._collect_Difference = _collect_Difference
-compiler.SelectBuilder._collect_Intersection = _collect_Intersection
-
-
-compiler.QueryBuilder.intersect_class = Intersection
-compiler.QueryBuilder.difference_class = Difference
+query_builder.Intersection = Intersection
+query_builder.Difference = Difference
 
 _DTYPE_TO_IBIS_TYPE["BIGNUMERIC"] = dt.Decimal(76, 38)
 

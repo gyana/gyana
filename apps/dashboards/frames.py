@@ -100,6 +100,11 @@ class DashboardSettings(ProjectMixin, TurboFrameUpdateView):
         return context
 
     def form_invalid(self, form):
+        import logging
+        logger = logging.getLogger()
+        logger.critical("Form invalid")
+        logger.critical(form.errors)
+        logger.critical(form.non_field_errors)
         context = self.get_context_data()
         return TurboStreamResponse(
             [

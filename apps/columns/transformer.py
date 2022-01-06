@@ -17,16 +17,31 @@ with open("apps/columns/functions.json", "r") as file:
 FUNCTIONS = json.loads(data)
 
 
-def _hash(func, args):
-    return func("farm_fingerprint")
+def _hash(caller, args):
+    return caller.hash("farm_fingerprint")
 
 
-def convert(func, args):
+def convert(caller, args):
     type_ = TYPES[args[0]]
-    return func(type_)
+    return caller.cast(type_)
 
 
-ODD_FUNCTIONS = {"hash": _hash, "cast": convert}
+def weekday(caller, args):
+    day_of_week = caller.day_of_week()
+    return day_of_week.cases(
+        [
+            (1, "Sunday"),
+            (2, "Monday"),
+            (3, "Tuesday"),
+            (4, "Wednesday"),
+            (5, "Thursday"),
+            (6, "Friday"),
+            (7, "Saturday"),
+        ]
+    )
+
+
+ODD_FUNCTIONS = {"hash": _hash, "cast": convert, "weekday": weekday}
 
 
 @v_args(inline=True)
@@ -56,13 +71,13 @@ class TreeToIbis(Transformer):
             caller = ibis.literal(caller)
         function_name = token.value.lower()
         function = next(filter(lambda f: f["name"] == function_name, FUNCTIONS))
+        if odd_func := ODD_FUNCTIONS.get(function["id"]):
+            return odd_func(caller, args)
         func = getattr(caller, function["id"])
         if function["id"] != "coalesce" and any(
             arg.get("repeatable") for arg in function["arguments"]
         ):
             return func(args)
-        if odd_func := ODD_FUNCTIONS.get(function["id"]):
-            return odd_func(func, args)
         return func(*args)
 
     # -----------------------------------------------------------------------

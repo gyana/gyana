@@ -120,7 +120,7 @@ def parametrize_column_predicate(
             "birthday", "date", "datetime_predicate", DATETIME_LENGTH, DATETIME_NO_VALUE
         ),
         *parametrize_column_predicate(
-            "updated",
+            "when",
             "datetime",
             "datetime_predicate",
             DATETIME_LENGTH,
@@ -183,7 +183,7 @@ def parametrize_column_predicate(
             "time_value",
         ),
         *parametrize_column_predicate(
-            "updated",
+            "when",
             "datetime",
             "datetime_predicate",
             DATETIME_LENGTH,

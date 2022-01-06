@@ -130,10 +130,12 @@ def aggregate_columns(query, instance):
         get_aggregate_expr(query, agg.column, agg.function, column_names)
         for agg in instance.aggregations.all()
     ]
+    if not groups and not aggregations:
+        # query.count() returns a scalar
+        # use aggregate to return TableExpr
+        return query.aggregate(query.count())
     if groups:
         query = query.group_by(groups)
     if aggregations:
         return query.aggregate(aggregations)
-    # query.count() returns a scalar
-    # use aggregate to return TableExpr
-    return query.aggregate(query.count())
+    return query.count()

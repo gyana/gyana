@@ -97,6 +97,33 @@ class DashboardForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"type": "color"}),
     )
     font_size = forms.IntegerField(
+        required=False,
+        widget=forms.NumberInput(
+            attrs={"class": "label--third", "unit_suffix": "pixels"}
+        ),
+    )
+    widget_header_font_size = forms.IntegerField(
+        required=False,
+        widget=forms.NumberInput(
+            attrs={"class": "label--third", "unit_suffix": "pixels"}
+        ),
+    )
+    widget_background_color = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
+    widget_border_color = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
+    widget_border_radius = forms.IntegerField(
+        required=False,
+        widget=forms.NumberInput(
+            attrs={"class": "label--third", "unit_suffix": "pixels"}
+        ),
+    )
+    widget_border_thickness = forms.IntegerField(
+        required=False,
         widget=forms.NumberInput(
             attrs={"class": "label--third", "unit_suffix": "pixels"}
         ),
@@ -115,6 +142,12 @@ class DashboardForm(forms.ModelForm):
             "grid_size",
             "snap_to_grid",
             "show_widget_border",
+            "widget_header_font_size",
+            "show_widget_headers",
+            "widget_background_color",
+            "widget_border_color",
+            "widget_border_radius",
+            "widget_border_thickness",
         ]
         labels = {"snap_to_grid": "Snap widgets to grid"}
 
@@ -126,7 +159,14 @@ class DashboardForm(forms.ModelForm):
 
         for name, field in self.fields.items():
             if self.category != DASHBOARD_SETTING_TO_CATEGORY[name]:
-                field.widget = forms.HiddenInput()
+                field.required = False
+
+                # Fields that have initial values and multiple widgets will
+                # error as a singular hidden input.
+                if hasattr(field.widget, "widgets"):
+                    field.widget = forms.MultipleHiddenInput()
+                else:
+                    field.widget = forms.HiddenInput()
 
 
 class DashboardShareForm(LiveUpdateForm):

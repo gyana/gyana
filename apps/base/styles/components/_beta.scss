@@ -1,0 +1,15 @@
+@use "utilities/mixins";
+.beta {
+  position: relative;
+
+  &::after {
+    color: var(--c-blue);
+    content: 'Beta';
+    display: block;
+    font-size: 1rem;
+    font-weight: normal;
+    left: 100%;
+    position: absolute;
+    top: -35%;
+  }
+}

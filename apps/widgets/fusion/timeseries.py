@@ -44,6 +44,9 @@ def to_multivariate(type_, widget, df, query):
 
 
 def to_stack(type_, widget, df, query):
+    if not widget.second_dimension:
+        return to_multivariate(type_, widget, df, query)
+
     dimension_format, dimension = parse_dimension(query, df, widget.dimension)
 
     aggregation = widget.aggregations.first()

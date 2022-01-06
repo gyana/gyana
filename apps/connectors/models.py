@@ -121,7 +121,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
             kind=Integration.Kind.CONNECTOR,
             name=name,
             created_by=created_by,
-            is_scheduled=True
+            is_scheduled=True,
         )
         self.integration = integration
 
@@ -232,7 +232,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
             setattr(self, key, value)
 
         # only available for individual connector get (not group list)
-        if "config" in data:
+        if "config" in data and data["config"] is not None:
             self.config = data["config"]
 
     @staticmethod
