@@ -10,7 +10,13 @@
   />
 
   <label class="checkbox checkbox__enabled" for="{{ id }}">
-    {{ widget.label.name }}
+    <div class="flex items-center gap-4">
+      <i class="fa fa-2x {{ widget.label.icon }}"></i>
+      <div>
+        <h4>{{ widget.label.title }}</h4>
+        <p>{{ widget.label.description }}</p>
+      </div>
+    </div>
   </label>
 </div>
 {% endwith %}

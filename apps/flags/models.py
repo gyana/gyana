@@ -13,6 +13,13 @@ class Flag(AbstractUserFlag):
 
     teams = models.ManyToManyField("teams.Team", blank=True, related_name="flags")
 
+    title = models.CharField(max_length=128)
+    description = models.TextField(blank=True)
+    # font awesome class name
+    icon = models.CharField(max_length=128)
+    # is feature available for public beta
+    is_public_beta = models.BooleanField(default=False)
+
     def get_flush_keys(self, flush_keys=None):
         flush_keys = super().get_flush_keys(flush_keys)
         companies_cache_key = get_setting(
