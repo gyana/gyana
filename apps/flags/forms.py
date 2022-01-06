@@ -12,7 +12,7 @@ class TeamFlagForm(forms.ModelForm):
         fields = ["flags"]
 
     flags = ModelMultipleChoiceField(
-        queryset=Flag.objects.all(), widget=forms.CheckboxSelectMultiple
+        queryset=Flag.objects.all(), widget=forms.CheckboxSelectMultiple, label=""
     )
 
     def __init__(self, *args, **kwargs):

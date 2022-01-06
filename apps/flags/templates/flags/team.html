@@ -1,13 +1,43 @@
-{% extends "teams/base.html" %}
+{% load help_utils %}
 
-{% block app %}
-<h1>Update</h1>
-<form method="post" action="{% url 'team_flags:team' object.id %}" class="form">
-  {% csrf_token %}
+<section class="flex flex-col h-full whitespace-normal">
+  <div class="workflow-detail__header">
+    <h3 class="mr-auto">Beta Features</h3>
 
-  {% include "django/forms/default_form.html" %}
+    <button
+      class="tf-modal__close"
+      data-action="click->tf-modal#close"
+      data-loading-false
+    >
+      <i class="fal fa-times fa-lg"></i>
+    </button>
+  </div>
 
-  <button type="submit" class="button button--success">Save</button>
-</form>
-{% endblock %}
+  <div class="flex flex-col pad flex-1">
+    <p class="mb-7">
+      Using a new tool can be hard, that's why we want to offer you resoures to
+      help you learn how to use
+      <strong class="text-blue">Gyana</strong>, and offer support when 
+      anything goes wrong.
+    </p>
+
+    <form method="post" action="{% url 'team_flags:team' object.id %}" class="form">
+      {% csrf_token %}
+    
+      {% include "django/forms/default_form.html" %}
+    
+      <button type="submit" class="button button--success">Save</button>
+    </form>
+
+    <div class="flex justify-around gap-7 mt-auto mb-7">
+    </div>
+
+    <footer class="text-center">
+      <p>
+        Have any feedback?
+        <a class="link" href="mailto:support@gyana.com">Send us an email</a>
+      </p>
+    </footer>
+  </div>
+</section>
 

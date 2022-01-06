@@ -1,11 +1,11 @@
 from django.urls import path
 
-from . import views
+from . import frames
 
 app_name = "flags"
 team_urlpatterns = (
     [
-        path("", views.TeamFlags.as_view(), name="team"),
+        path("", frames.TeamFlags.as_view(), name="team"),
     ],
     "team_flags",
 )
