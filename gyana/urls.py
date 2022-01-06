@@ -31,6 +31,7 @@ from apps.connectors import urls as connector_urls
 from apps.controls import urls as control_urls
 from apps.customapis import urls as api_urls
 from apps.dashboards import urls as dashboard_urls
+from apps.flags import urls as flag_urls
 from apps.integrations import urls as integration_urls
 from apps.invites import urls as invite_urls
 from apps.nodes import urls as node_urls
@@ -84,6 +85,7 @@ teams_urlpatterns = [
     path("<hashid:team_id>/appsumo/", include(appsumo_urls.team_urlpatterns)),
     path("<hashid:team_id>/templates/", include(template_urls.team_urlpatterns)),
     path("<hashid:team_id>/cnames/", include(cname_urls.team_urlpatterns)),
+    path("<hashid:team_id>/beta", include(flag_urls.team_urlpatterns)),
 ]
 
 

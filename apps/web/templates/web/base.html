@@ -116,6 +116,18 @@
           <span data-tooltip-target="body">Help</span>
         </a>
 
+        <a
+          href="{% url 'team_flags:team' team.id %}"
+          class="sidebar__link sidebar__link--border"
+          data-controller="tooltip"
+          data-tooltip-placement="right"
+          data-show-on-collapse="true"
+        >
+          <i class="fas fa-fw fa-flask"></i>Beta Features
+
+          <span data-tooltip-target="body">Beta Features</span>
+        </a>
+
         <button
           class="sidebar__link sidebar__link--border" 
           data-controller="popover tooltip"

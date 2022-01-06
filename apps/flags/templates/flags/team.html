@@ -1,0 +1,13 @@
+{% extends "teams/base.html" %}
+
+{% block app %}
+<h1>Update</h1>
+<form method="post" action="{% url 'team_flags:team' object.id %}" class="form">
+  {% csrf_token %}
+
+  {% include "django/forms/default_form.html" %}
+
+  <button type="submit" class="button button--success">Save</button>
+</form>
+{% endblock %}
+

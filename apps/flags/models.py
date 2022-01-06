@@ -7,7 +7,7 @@ from waffle.utils import get_cache, get_setting, keyfmt
 cache = get_cache()
 
 
-class TeamFlag(AbstractUserFlag):
+class Flag(AbstractUserFlag):
     FLAG_COMPANIES_CACHE_KEY = "FLAG_COMPANIES_CACHE_KEY"
     FLAG_COMPANIES_CACHE_KEY_DEFAULT = "flag:%s:teams"
 
@@ -16,7 +16,7 @@ class TeamFlag(AbstractUserFlag):
     def get_flush_keys(self, flush_keys=None):
         flush_keys = super().get_flush_keys(flush_keys)
         companies_cache_key = get_setting(
-            TeamFlag.FLAG_COMPANIES_CACHE_KEY, TeamFlag.FLAG_COMPANIES_CACHE_KEY_DEFAULT
+            Flag.FLAG_COMPANIES_CACHE_KEY, Flag.FLAG_COMPANIES_CACHE_KEY_DEFAULT
         )
         flush_keys.append(keyfmt(companies_cache_key, self.name))
         return flush_keys
@@ -35,8 +35,8 @@ class TeamFlag(AbstractUserFlag):
     def _get_team_ids(self):
         cache_key = keyfmt(
             get_setting(
-                TeamFlag.FLAG_COMPANIES_CACHE_KEY,
-                TeamFlag.FLAG_COMPANIES_CACHE_KEY_DEFAULT,
+                Flag.FLAG_COMPANIES_CACHE_KEY,
+                Flag.FLAG_COMPANIES_CACHE_KEY_DEFAULT,
             ),
             self.name,
         )

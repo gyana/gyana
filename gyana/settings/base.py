@@ -107,6 +107,7 @@ PROJECT_APPS = [
     "apps.runs.apps.RunsConfig",
     "apps.customapis",
     "apps.oauth2",
+    "apps.flags",
 ]
 
 INSTALLED_APPS = (
@@ -443,4 +444,4 @@ DJPADDLE_BUSINESS_PLAN_ID = int(os.getenv("DJPADDLE_BUSINESS_PLAN_ID", default="
 MIGRATION_MODULES = {"djpaddle": "apps.teams.migrate.djpaddle"}
 
 
-WAFFLE_FLAG_MODEL = "teams.TeamFlag"
+WAFFLE_FLAG_MODEL = "flags.Flag"

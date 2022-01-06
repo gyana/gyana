@@ -2,7 +2,6 @@ import analytics
 from allauth.account.forms import SignupForm
 from django import forms
 from django.conf import settings
-from django.forms.models import ModelMultipleChoiceField
 from django.utils.html import mark_safe
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -17,7 +16,6 @@ from apps.base.forms import BaseModelForm
 from apps.base.live_update_form import LiveUpdateForm
 from apps.invites.models import Invite
 from apps.teams import roles
-from apps.teams.flag import TeamFlag
 from apps.users.models import ApprovedWaitlistEmail
 
 from .models import Membership, Team
@@ -96,36 +94,12 @@ class TeamUpdateForm(BaseModelForm):
             "timezone": "We use this to display time information and to schedule workflows",
         }
 
-    join_beta = forms.BooleanField()
-    flags = ModelMultipleChoiceField(
-        queryset=TeamFlag.objects.all(),
-        required=False,
-        widget=forms.CheckboxSelectMultiple
-        # widget=FilteredSelectMultiple('projects', False),
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        from apps.teams.models import TeamFlag
-
-        self.fields["join_beta"].initial = (
-            TeamFlag.objects.get(name="beta").teams.filter(id=self.instance.id).exists()
-        )
-
     def pre_save(self, instance):
         self._timezone_is_dirty = "timezone" in instance.get_dirty_fields()
 
     def post_save(self, instance):
         if self._timezone_is_dirty:
             instance.update_daily_sync_time()
-
-        join_beta = self.cleaned_data["join_beta"]
-
-        from apps.teams.models import TeamFlag
-
-        if join_beta:
-            flag = TeamFlag.objects.get(name="beta")
-            flag.teams.add(instance)
 
 
 class MembershipUpdateForm(forms.ModelForm):
