@@ -3,10 +3,11 @@ import uuid
 import pytest
 from django.utils import timezone
 
-from apps.base.tests.asserts import assertLoginRedirect, assertOK
+from apps.base.tests.asserts import assertLoginRedirect, assertNotFound, assertOK
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.dashboards.models import Dashboard
+from apps.widgets.models import Widget
 
 pytestmark = pytest.mark.django_db
 
@@ -51,7 +52,7 @@ def test_widget_project_required(client, url, user, widget_factory, bigquery):
 
     client.force_login(user)
     r = client.get(url)
-    assert r.status_code == 404
+    assertNotFound(r)
 
     project.team = user.teams.first()
     project.save()
@@ -77,7 +78,7 @@ def test_widget_output(client, user, widget_factory):
     dashboard.save()
 
     r = client.get(url)
-    assert r.status_code == 404
+    assertNotFound(r)
 
     session = client.session
     session.update(
@@ -96,10 +97,33 @@ def test_widget_output(client, user, widget_factory):
     dashboard.save()
     client.force_login(user)
     r = client.get(url)
-    assert r.status_code == 404
+    assertNotFound(r)
 
     dashboard.project.team = user.teams.first()
     dashboard.project.save()
 
     r = client.get(url)
+    assertOK(r)
+
+
+def test_widget_viewset(client, widget_factory, user):
+    widget = widget_factory()
+
+    url = f"/widgets/api/{widget.id}/"
+    r = client.patch(
+        url, data={"kind": Widget.Kind.PIE}, content_type="application/json"
+    )
+    assert r.status_code == 403
+
+    client.force_login(user)
+    r = client.patch(
+        url, data={"kind": Widget.Kind.PIE}, content_type="application/json"
+    )
+    assertNotFound(r)
+
+    widget.page.dashboard.project.team = user.teams.first()
+    widget.page.dashboard.project.save()
+    r = client.patch(
+        url, data={"kind": Widget.Kind.PIE}, content_type="application/json"
+    )
     assertOK(r)

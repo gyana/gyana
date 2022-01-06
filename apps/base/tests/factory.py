@@ -250,6 +250,8 @@ class ControlFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Control
 
+    page = factory.SubFactory(PageFactory)
+
 
 @register
 class ControlWidgetFactory(factory.django.DjangoModelFactory):
@@ -257,6 +259,7 @@ class ControlWidgetFactory(factory.django.DjangoModelFactory):
         model = ControlWidget
 
     control = factory.SubFactory(ControlFactory)
+    page = factory.SubFactory(PageFactory)
 
 
 @register

@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from apps.base.tests.asserts import assertLoginRedirect, assertOK
+from apps.base.tests.asserts import assertLoginRedirect, assertNotFound, assertOK
 from apps.dashboards.models import Dashboard
 
 pytestmark = pytest.mark.django_db
@@ -59,7 +59,7 @@ def test_public_dashboard(client, dashboard_factory):
     dashboard = dashboard_factory(shared_id=uuid.uuid4())
     dashboard.pages.create()
     r = client.get(f"/dashboards/{dashboard.shared_id}")
-    assert r.status_code == 404
+    assertNotFound(r)
 
     dashboard.shared_status = Dashboard.SharedStatus.PUBLIC
     dashboard.save()
@@ -80,7 +80,7 @@ def test_password_protected(client, url, success_code, dashboard_factory):
 
     url = url.format(dashboard.shared_id)
     r = client.get(url)
-    assert r.status_code == 404
+    assertNotFound(r)
 
     dashboard.shared_status = Dashboard.SharedStatus.PASSWORD_PROTECTED
     dashboard.save()
@@ -89,3 +89,20 @@ def test_password_protected(client, url, success_code, dashboard_factory):
     session.save()
     r = client.get(url)
     assert r.status_code == success_code
+
+
+def test_dashboard_viewset(client, dashboard_factory, user):
+    dashboard = dashboard_factory()
+
+    url = f"/dashboards/api/dashboards/{dashboard.id}/"
+    r = client.patch(url, data={"name": "Maradona"}, content_type="application/json")
+    assert r.status_code == 403
+
+    client.force_login(user)
+    r = client.patch(url, data={"name": "Maradona"}, content_type="application/json")
+    assertNotFound(r)
+
+    dashboard.project.team = user.teams.first()
+    dashboard.project.save()
+    r = client.patch(url, data={"name": "Maradona"}, content_type="application/json")
+    assertOK(r)

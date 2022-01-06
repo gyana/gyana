@@ -1,6 +1,6 @@
 import pytest
 
-from apps.base.tests.asserts import assertLoginRedirect, assertOK
+from apps.base.tests.asserts import assertLoginRedirect, assertNotFound, assertOK
 
 pytestmark = pytest.mark.django_db
 
@@ -30,7 +30,7 @@ def test_workflow_required(client, url, user, workflow_factory):
 
     client.force_login(user)
     r = client.get(url)
-    assert r.status_code == 404
+    assertNotFound(r)
 
     workflow.project.team = user.teams.first()
     workflow.project.save()
@@ -45,7 +45,7 @@ def test_run_workflow(client, user, workflow_factory):
 
     client.force_login(user)
     r = client.post(url)
-    assert r.status_code == 404
+    assertNotFound(r)
 
     workflow.project.team = user.teams.first()
     workflow.project.save()
@@ -54,4 +54,21 @@ def test_run_workflow(client, user, workflow_factory):
     assert r.status_code == 405
 
     r = client.post(url)
+    assertOK(r)
+
+
+def test_workflow_viewset(client, workflow_factory, user):
+    workflow = workflow_factory()
+
+    url = f"/workflows/api/workflows/{workflow.id}/"
+    r = client.patch(url, data={"name": "Maradona"}, content_type="application/json")
+    assert r.status_code == 403
+
+    client.force_login(user)
+    r = client.patch(url, data={"name": "Maradona"}, content_type="application/json")
+    assertNotFound(r)
+
+    workflow.project.team = user.teams.first()
+    workflow.project.save()
+    r = client.patch(url, data={"name": "Maradona"}, content_type="application/json")
     assertOK(r)

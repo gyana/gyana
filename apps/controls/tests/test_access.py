@@ -1,6 +1,6 @@
 import pytest
 
-from apps.base.tests.asserts import assertLoginRedirect, assertOK
+from apps.base.tests.asserts import assertLoginRedirect, assertNotFound, assertOK
 
 pytestmark = pytest.mark.django_db
 
@@ -42,4 +42,21 @@ def test_control_widget_project_required(
     dashboard.project.team = user.teams.first()
     dashboard.project.save()
     r = client.get(url)
+    assertOK(r)
+
+
+def test_control_viewset(client, control_widget_factory, user):
+    control = control_widget_factory()
+
+    url = f"/controls/api/{control.id}/"
+    r = client.patch(url, data={"x": 0}, content_type="application/json")
+    assert r.status_code == 403
+
+    client.force_login(user)
+    r = client.patch(url, data={"x": 0}, content_type="application/json")
+    assertNotFound(r)
+
+    control.page.dashboard.project.team = user.teams.first()
+    control.page.dashboard.project.save()
+    r = client.patch(url, data={"x": 0}, content_type="application/json")
     assertOK(r)

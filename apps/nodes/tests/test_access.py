@@ -1,6 +1,7 @@
 import pytest
 
-from apps.base.tests.asserts import assertLoginRedirect, assertOK
+from apps.base.tests.asserts import assertLoginRedirect, assertNotFound, assertOK
+from apps.nodes.models import Node
 
 pytestmark = pytest.mark.django_db
 
@@ -74,4 +75,47 @@ def test_update_positions(client, node_factory, user):
         data=data,
         content_type="application/json",
     )
+    assertOK(r)
+
+
+def test_node_viewset(client, node_factory, user):
+    node = node_factory()
+
+    url = f"/nodes/api/nodes/{node.id}/"
+    r = client.patch(
+        url, data={"kind": Node.Kind.LIMIT}, content_type="application/json"
+    )
+    assert r.status_code == 403
+
+    client.force_login(user)
+    r = client.patch(
+        url, data={"kind": Node.Kind.LIMIT}, content_type="application/json"
+    )
+    assertNotFound(r)
+
+    node.workflow.project.team = user.teams.first()
+    node.workflow.project.save()
+    r = client.patch(
+        url, data={"kind": Node.Kind.LIMIT}, content_type="application/json"
+    )
+    assertOK(r)
+
+
+def test_edge_viewset(client, node_factory, user):
+    node = node_factory()
+    second_node = node_factory()
+    second_node.parents.add(node)
+    edge = second_node.parent_edges.first()
+
+    url = f"/nodes/api/edges/{edge.id}/"
+    r = client.patch(url, data={"position": 0}, content_type="application/json")
+    assert r.status_code == 403
+
+    client.force_login(user)
+    r = client.patch(url, data={"position": 0}, content_type="application/json")
+    assertNotFound(r)
+
+    node.workflow.project.team = user.teams.first()
+    node.workflow.project.save()
+    r = client.patch(url, data={"position": 0}, content_type="application/json")
     assertOK(r)

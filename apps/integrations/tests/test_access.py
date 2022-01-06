@@ -1,6 +1,6 @@
 import pytest
 
-from apps.base.tests.asserts import assertLoginRedirect, assertOK
+from apps.base.tests.asserts import assertLoginRedirect, assertNotFound, assertOK
 from apps.base.tests.mocks import (
     mock_bq_client_with_records,
     mock_bq_client_with_schema,
@@ -61,7 +61,7 @@ def test_integration_access(
 
     client.force_login(user)
     r = client.get(url)
-    assert r.status_code == 404
+    assertNotFound(r)
 
     integration.project.team = user.teams.first()
     integration.project.save()
@@ -70,3 +70,20 @@ def test_integration_access(
         assert r.status_code == 302
     else:
         assertOK(r)
+
+
+def test_integration_viewset(client, integration_factory, user):
+    integration = integration_factory()
+
+    url = f"/integrations/api/integrations/{integration.id}/"
+    r = client.patch(url, data={"name": "Maradona"}, content_type="application/json")
+    assert r.status_code == 403
+
+    client.force_login(user)
+    r = client.patch(url, data={"name": "Maradona"}, content_type="application/json")
+    assertNotFound(r)
+
+    integration.project.team = user.teams.first()
+    integration.project.save()
+    r = client.patch(url, data={"name": "Maradona"}, content_type="application/json")
+    assertOK(r)
