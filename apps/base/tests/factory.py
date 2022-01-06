@@ -187,6 +187,7 @@ class CNameFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CName
 
+    team = factory.SubFactory(TeamFactory)
     domain = "test.domain.com"
 
 
