@@ -11,26 +11,6 @@ pytestmark = pytest.mark.django_db
 @pytest.mark.parametrize(
     "url",
     [
-        pytest.param("/dashboards/{}/duplicate", id="duplicate"),
-        pytest.param("/dashboards/{}/share", id="share"),
-    ],
-)
-def test_dashboard_required(client, url, dashboard_factory, user):
-    dashboard = dashboard_factory()
-    assertLoginRedirect(client, url.format(dashboard.id))
-
-    client.force_login(user)
-    r = client.get(url.format(dashboard.id))
-    assert r.status_code == 404
-
-    user_dashboard = dashboard_factory(project__team=user.teams.first())
-    r = client.get(url.format(user_dashboard.id))
-    assertOK(r)
-
-
-@pytest.mark.parametrize(
-    "url",
-    [
         pytest.param("/projects/{project_id}/dashboards/", id="list"),
         pytest.param("/projects/{project_id}/dashboards/overview", id="overview"),
         pytest.param("/projects/{project_id}/dashboards/new", id="create"),
@@ -53,29 +33,25 @@ def test_dashboard_required(client, url, dashboard_factory, user):
         pytest.param(
             "/projects/{project_id}/dashboards/{dashboard_id}/settings", id="settings"
         ),
+        pytest.param("/dashboards/{dashboard_id}/duplicate", id="duplicate"),
+        pytest.param("/dashboards/{dashboard_id}/share", id="share"),
     ],
 )
 def test_project_required(client, url, dashboard_factory, user):
     dashboard = dashboard_factory()
     page = dashboard.pages.create()
-    first_url = url.format(
+    url = url.format(
         project_id=dashboard.project.id, dashboard_id=dashboard.id, page_id=page.id
     )
-    assertLoginRedirect(client, first_url)
+    assertLoginRedirect(client, url)
 
     client.force_login(user)
-    r = client.get(first_url)
+    r = client.get(url)
     assert r.status_code == 404
 
-    user_dashboard = dashboard_factory(project__team=user.teams.first())
-    page = user_dashboard.pages.create()
-    r = client.get(
-        url.format(
-            project_id=user_dashboard.project.id,
-            dashboard_id=user_dashboard.id,
-            page_id=page.id,
-        )
-    )
+    dashboard.project.team = user.teams.first()
+    dashboard.project.save()
+    r = client.get(url)
     assertOK(r)
 
 

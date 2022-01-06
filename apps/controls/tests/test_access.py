@@ -27,27 +27,19 @@ def test_control_widget_project_required(
     dashboard = dashboard_factory()
     page = dashboard.pages.create()
     control_widget = control_widget_factory(control__page=page, page=page)
-    first_url = url.format(
+    url = url.format(
         project_id=dashboard.project.id,
         dashboard_id=dashboard.id,
         control_id=control_widget.control.id,
         control_widget_id=control_widget.id,
     )
-    assertLoginRedirect(client, first_url)
+    assertLoginRedirect(client, url)
 
     client.force_login(user)
-    r = client.get(first_url)
+    r = client.get(url)
     assert r.status_code == 404
 
-    user_dashboard = dashboard_factory(project__team=user.teams.first())
-    page = user_dashboard.pages.create()
-    user_control_widget = control_widget_factory(control__page=page, page=page)
-    r = client.get(
-        url.format(
-            project_id=user_dashboard.project.id,
-            dashboard_id=user_dashboard.id,
-            control_id=user_control_widget.control.id,
-            control_widget_id=user_control_widget.id,
-        )
-    )
+    dashboard.project.team = user.teams.first()
+    dashboard.project.save()
+    r = client.get(url)
     assertOK(r)
