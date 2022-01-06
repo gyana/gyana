@@ -4,6 +4,7 @@ from django.forms.models import ModelMultipleChoiceField
 from apps.teams.models import Team
 
 from .models import Flag
+from .widgets import FlagCheckboxSelectMultiple
 
 
 class TeamFlagForm(forms.ModelForm):
@@ -12,7 +13,7 @@ class TeamFlagForm(forms.ModelForm):
         fields = ["flags"]
 
     flags = ModelMultipleChoiceField(
-        queryset=Flag.objects.all(), widget=forms.CheckboxSelectMultiple, label=""
+        queryset=Flag.objects.all(), widget=FlagCheckboxSelectMultiple, label=""
     )
 
     def __init__(self, *args, **kwargs):
@@ -21,6 +22,7 @@ class TeamFlagForm(forms.ModelForm):
         self.fields["flags"].initial = self.instance.flags.all().values_list(
             "id", flat=True
         )
+        self.fields["flags"].choices = [(flag.id, flag) for flag in Flag.objects.all()]
 
     def save(self, *args, **kwargs):
         instance = super().save(*args, **kwargs)
