@@ -1,13 +1,13 @@
-from django import forms
 from django.forms.models import ModelMultipleChoiceField
 
+from apps.base.forms import BaseModelForm
 from apps.teams.models import Team
 
 from .models import Flag
 from .widgets import FlagCheckboxSelectMultiple
 
 
-class TeamFlagForm(forms.ModelForm):
+class TeamFlagForm(BaseModelForm):
     class Meta:
         model = Team
         fields = ["flags"]
@@ -19,17 +19,12 @@ class TeamFlagForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields["flags"].initial = self.instance.flags.all().values_list(
-            "id", flat=True
-        )
-        self.fields["flags"].choices = [
-            (flag.id, flag)
-            for flag in Flag.objects.filter(is_public_beta=True, everyone=False).all()
-        ]
+        flags = self.fields["flags"]
+        qs = Flag.objects.filter(is_public_beta=True).exclude(everyone=True).all()
 
-    def save(self, *args, **kwargs):
-        instance = super().save(*args, **kwargs)
+        flags.initial = self.instance.flags.all().values_list("id", flat=True)
+        flags.queryset = qs
+        flags.choices = [(flag.id, flag) for flag in qs]
 
+    def post_save(self, instance):
         instance.flags.set(self.cleaned_data["flags"])
-
-        return instance
