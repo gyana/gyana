@@ -9,12 +9,9 @@ pytestmark = pytest.mark.django_db
     "url",
     [
         pytest.param("/workflows/{workflow_id}/duplicate", id="duplicate"),
-        # pytest.param("/workflows/{workflow_id}/run_workflow", id="run_workflow"),
-        # pytest.param(
-        #     "/workflows/{workflow_id}/workflow_out_of_date", id="workflow_out_of_date"
-        # ),
+        pytest.param("/workflows/{workflow_id}/out_of_date", id="workflow_out_of_date"),
         pytest.param("/workflows/{workflow_id}/last_run", id="last_run"),
-        pytest.param("/projects/{project_id}/workflows", id="list"),
+        pytest.param("/projects/{project_id}/workflows/", id="list"),
         pytest.param("/projects/{project_id}/workflows/overview", id="overview"),
         pytest.param("/projects/{project_id}/workflows/new", id="create"),
         pytest.param("/projects/{project_id}/workflows/{workflow_id}", id="detail"),
@@ -38,4 +35,23 @@ def test_workflow_required(client, url, user, workflow_factory):
     workflow.project.team = user.teams.first()
     workflow.project.save()
     r = client.get(url)
+    assertOK(r)
+
+
+def test_run_workflow(client, user, workflow_factory):
+    workflow = workflow_factory()
+    url = f"/workflows/{workflow.id}/run_workflow"
+    assertLoginRedirect(client, url)
+
+    client.force_login(user)
+    r = client.post(url)
+    assert r.status_code == 404
+
+    workflow.project.team = user.teams.first()
+    workflow.project.save()
+
+    r = client.get(url)
+    assert r.status_code == 405
+
+    r = client.post(url)
     assertOK(r)
