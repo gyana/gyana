@@ -2,31 +2,9 @@ from functools import wraps
 
 from django.shortcuts import get_object_or_404, render
 
-from apps.base.access import login_and_permission_to_access
-from apps.controls.models import Control, ControlWidget
+from apps.controls.models import Control
 from apps.dashboards.access import can_access_password_protected_dashboard
 from apps.dashboards.models import Dashboard
-from apps.projects.access import user_can_access_project
-
-
-def control_of_team(user, pk, *args, **kwargs):
-    control = get_object_or_404(Control, pk=pk)
-    project = control.page.dashboard.project
-    return user_can_access_project(user, project)
-
-
-login_and_control_required = login_and_permission_to_access(control_of_team)
-
-
-def control_widget_of_team(user, pk, *args, **kwargs):
-    widget = get_object_or_404(ControlWidget, pk=pk)
-    project = widget.control.page.dashboard.project
-    return user_can_access_project(user, project)
-
-
-login_and_control_widget_required = login_and_permission_to_access(
-    control_widget_of_team
-)
 
 
 def control_of_public(view_func):

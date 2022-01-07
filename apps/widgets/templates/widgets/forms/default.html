@@ -5,7 +5,6 @@
     {% include 'widgets/name.html' %}
   </turbo-frame>
 
-  {% flag "beta" %}
   <div class="tabbar">
     <a
       href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
@@ -20,7 +19,6 @@
       Style
     </a>
   </div>
-  {% endflag %}
 
   {% if request.GET.show_style %}
   <form 

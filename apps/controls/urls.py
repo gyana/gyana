@@ -2,12 +2,10 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 from rest_framework import routers
 
+from apps.projects.access import login_and_project_required
+
 from . import frames, rest, views
-from .access import (
-    control_of_public,
-    login_and_control_required,
-    login_and_control_widget_required,
-)
+from .access import control_of_public
 
 app_name = "controls"
 
@@ -19,12 +17,12 @@ dashboard_urlpatterns = (
         # Maybe we should move the urls to be under a dashboard url?
         path(
             "new",
-            login_required(views.ControlWidgetCreate.as_view()),
+            login_and_project_required(views.ControlWidgetCreate.as_view()),
             name="create",
         ),
         path(
             "<hashid:pk>/update",
-            login_and_control_required(frames.ControlUpdate.as_view()),
+            login_and_project_required(frames.ControlUpdate.as_view()),
             name="update",
         ),
         path(
@@ -34,7 +32,7 @@ dashboard_urlpatterns = (
         ),
         path(
             "<hashid:pk>/delete",
-            login_and_control_widget_required(views.ControlWidgetDelete.as_view()),
+            login_and_project_required(views.ControlWidgetDelete.as_view()),
             name="delete",
         ),
     ],

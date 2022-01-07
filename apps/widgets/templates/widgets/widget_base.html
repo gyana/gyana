@@ -49,20 +49,18 @@ preview mode.
           <span data-tooltip-target="body">Edit</span>
         </button>
 
-          {% flag "beta" %}
-          <button  
-            data-controller="tooltip"
-            data-action="click->tf-modal#open"
-            id="widget-update-{{ object.id }}"  
-            data-modal-item="{{ object.id }}"
-            data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?show_style=true"
-            data-modal-id="widget-modal"
-            data-modal-classes="tf-modal--full"
-          >
-            <i class="fas fa-fw fa-paint-brush"></i>
-            <span data-tooltip-target="body">Change style</span>
-          </button>
-          {% endflag %}
+        <button
+          data-controller="tooltip"
+          data-action="click->tf-modal#open"
+          id="widget-update-{{ object.id }}"  
+          data-modal-item="{{ object.id }}"
+          data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?show_style=true"
+          data-modal-id="widget-modal"
+          data-modal-classes="tf-modal--full"
+        >
+          <i class="fas fa-fw fa-paint-brush"></i>
+          <span data-tooltip-target="body">Change style</span>
+        </button>
         {% endif %}
 
         <form

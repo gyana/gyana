@@ -250,6 +250,8 @@ class DashboardLogout(TemplateView):
 class PageCreate(DashboardMixin, CreateView):
     model = Page
     fields = []
+    # Not used
+    template_name = "dashboards/create.html"
 
     def form_valid(self, form):
         form.instance.dashboard = self.dashboard
@@ -263,6 +265,8 @@ class PageCreate(DashboardMixin, CreateView):
 class PageDelete(DashboardMixin, DeleteView):
     model = Page
     fields = []
+    # Not used
+    template_name = "dashboards/delete.html"
 
     def delete(self, request, *args, **kwargs):
         page = self.get_object()
