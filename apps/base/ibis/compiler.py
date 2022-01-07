@@ -1,5 +1,6 @@
 import ibis.expr.datatypes as dt
 import ibis.expr.rules as rlz
+from ibis.expr.api import value_counts
 from ibis.expr.operations import (
     Arg,
     DateDiff,
@@ -190,3 +191,60 @@ def _day_of_week(t, expr):
     (arg,) = expr.op().args
 
     return f"EXTRACT(DAYOFWEEK FROM {t.translate(arg)})"
+
+
+class ParseDate(ValueOp):
+    value = Arg(rlz.string)
+    format_ = Arg(rlz.string)
+    output_type = rlz.shape_like("value", dt.date)
+
+
+def parse_date(value, format_):
+    return ParseDate(value, format_).to_expr()
+
+
+StringValue.parse_date = parse_date
+
+
+@compiles(ParseDate)
+def _parse_date(t, expr):
+    value, format_ = expr.op().args
+    return f"PARSE_DATE({t.translate(format_)}, {t.translate(value)})"
+
+
+class ParseTime(ValueOp):
+    value = Arg(rlz.string)
+    format_ = Arg(rlz.string)
+    output_type = rlz.shape_like("value", dt.time)
+
+
+def parse_time(value, format_):
+    return ParseTime(value, format_).to_expr()
+
+
+StringValue.parse_time = parse_time
+
+
+@compiles(ParseTime)
+def _parse_time(t, expr):
+    value, format_ = expr.op().args
+    return f"PARSE_TIME({t.translate(format_)}, {t.translate(value)})"
+
+
+class ParseDatetime(ValueOp):
+    value = Arg(rlz.string)
+    format_ = Arg(rlz.string)
+    output_type = rlz.shape_like("value", dt.timestamp)
+
+
+def parse_datetime(value, format_):
+    return ParseDatetime(value, format_).to_expr()
+
+
+StringValue.parse_datetime = parse_datetime
+
+
+@compiles(ParseDatetime)
+def _parse_datetime(t, expr):
+    value, format_ = expr.op().args
+    return f"PARSE_TIMESTAMP({t.translate(format_)}, {t.translate(value)})"
