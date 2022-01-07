@@ -32,5 +32,6 @@ class TeamFlagForm(BaseModelForm):
     def post_save(self, instance):
         instance.flags.set(self.cleaned_data["flags"])
 
+        # flush waffle cache so updates appear immediately
         for flag in Flag.objects.visible():
             flag.flush()
