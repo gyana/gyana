@@ -86,7 +86,7 @@
   },
   {
     "id": "create_date",
-    "intercom_id": "",
+    "intercom_id": "h_7bb6a3fa70",
     "name": "date",
     "categories": ["time & date"],
     "arguments": [
@@ -99,7 +99,7 @@
   },
   {
     "id": "create_time",
-    "intercom_id": "",
+    "intercom_id": "h_8d84eaeb5d",
     "name": "time",
     "categories": ["time & date"],
     "arguments": [
@@ -112,7 +112,7 @@
   },
   {
     "id": "date",
-    "intercom_id": "h_7bb6a3fa70",
+    "intercom_id": "h_d4a52205ef",
     "name": "extract_date",
     "categories": ["time & date"],
     "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
@@ -438,7 +438,7 @@
   },
   {
     "id": "parse_date",
-    "intercom_id": "",
+    "intercom_id": "h_fdaf7dd22b",
     "name": "parse_date",
     "categories": ["time & date", "text"],
     "arguments": [
@@ -456,7 +456,7 @@
   },
   {
     "id": "parse_time",
-    "intercom_id": "",
+    "intercom_id": "h_cca78b62e0",
     "name": "parse_time",
     "categories": ["time & date", "text"],
     "arguments": [
@@ -474,7 +474,7 @@
   },
   {
     "id": "parse_datetime",
-    "intercom_id": "",
+    "intercom_id": "h_7cd06a77a8",
     "name": "parse_datetime",
     "categories": ["time & date", "text"],
     "arguments": [
