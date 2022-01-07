@@ -85,9 +85,35 @@
     "description": "Determine if text exactly contains the given pattern."
   },
   {
-    "id": "date",
+    "id": "create_date",
     "intercom_id": "h_7bb6a3fa70",
     "name": "date",
+    "categories": ["time & date"],
+    "arguments": [
+      { "name": "year", "description": "a integer scalar or column providing the year" },
+      { "name": "month", "description": "a integer scalar or column providing the month" },
+      { "name": "day", "description": "a integer scalar or column providing the day" }
+    ],
+    "keywords": [],
+    "description": "Create a date from year, month and day"
+  },
+  {
+    "id": "create_time",
+    "intercom_id": "h_8d84eaeb5d",
+    "name": "time",
+    "categories": ["time & date"],
+    "arguments": [
+      { "name": "hour", "description": "a integer scalar or column providing the hour" },
+      { "name": "minute", "description": "a integer scalar or column providing the minute" },
+      { "name": "second", "description": "a integer scalar or column providing the second" }
+    ],
+    "keywords": [],
+    "description": "Create a time from hour, minute and second"
+  },
+  {
+    "id": "date",
+    "intercom_id": "h_d4a52205ef",
+    "name": "extract_date",
     "categories": ["time & date"],
     "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
     "keywords": [],
@@ -411,6 +437,60 @@
     "description": "Check whether value is null"
   },
   {
+    "id": "parse_date",
+    "intercom_id": "h_fdaf7dd22b",
+    "name": "parse_date",
+    "categories": ["time & date", "text"],
+    "arguments": [
+      {
+        "name": "value",
+        "description": "a text scalar or column in the representing a date in `format`"
+      },
+      {
+        "name": "format",
+        "description": "a text scalar or column defining the date format of `value` e.g '%Y-%m-%d'"
+      }
+    ],
+    "keywords": ["parse", "date"],
+    "description": "Creates a date from a provided text and format"
+  },
+  {
+    "id": "parse_time",
+    "intercom_id": "h_cca78b62e0",
+    "name": "parse_time",
+    "categories": ["time & date", "text"],
+    "arguments": [
+      {
+        "name": "value",
+        "description": "a text scalar or column in the representing a time in `format`"
+      },
+      {
+        "name": "format",
+        "description": "a text scalar or column defining the time format of `value` e.g '%Y-%m-%d'"
+      }
+    ],
+    "keywords": ["parse", "time"],
+    "description": "Creates a time from a provided text and format"
+  },
+  {
+    "id": "parse_datetime",
+    "intercom_id": "h_7cd06a77a8",
+    "name": "parse_datetime",
+    "categories": ["time & date", "text"],
+    "arguments": [
+      {
+        "name": "value",
+        "description": "a text scalar or column in the representing a datetime in `format`"
+      },
+      {
+        "name": "format",
+        "description": "a text scalar or column defining the datetime format of `value` e.g '%Y-%m-%d'"
+      }
+    ],
+    "keywords": ["parse", "datetime"],
+    "description": "Creates a datetime from a provided text and format"
+  },
+  {
     "id": "pow",
     "intercom_id": "h_4fd230d9c0",
     "name": "power",
@@ -617,7 +697,7 @@
   {
     "id": "time",
     "intercom_id": "h_e881b3e3c5",
-    "name": "time",
+    "name": "extract_time",
     "categories": ["time & date"],
     "arguments": [{ "name": "datetime", "description": "a datetime scalar or column" }],
     "keywords": [],

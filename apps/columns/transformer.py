@@ -1,6 +1,7 @@
 import json
 
 import ibis
+import ibis.expr.datatypes as dt
 from lark import Transformer, v_args
 
 from .types import TYPES
@@ -41,7 +42,37 @@ def weekday(caller, args):
     )
 
 
-ODD_FUNCTIONS = {"hash": _hash, "cast": convert, "weekday": weekday}
+def _cast_string(py_scalar_or_column):
+    return (
+        ibis.literal(py_scalar_or_column).cast(dt.string)
+        if isinstance(py_scalar_or_column, int)
+        else ibis.cast(py_scalar_or_column, dt.string)
+    )
+
+
+def create_date(caller, args):
+    year = _cast_string(caller)
+    month = _cast_string(args[0])
+    day = _cast_string(args[1])
+    text = year + month + day
+    return text.parse_date("%Y%m%d")
+
+
+def create_time(caller, args):
+    hour = _cast_string(caller)
+    minute = _cast_string(args[0])
+    second = _cast_string(args[1])
+    text = hour + ":" + minute + ":" + second
+    return text.parse_time("%H:%M:%S")
+
+
+ODD_FUNCTIONS = {
+    "hash": _hash,
+    "cast": convert,
+    "weekday": weekday,
+    "create_date": create_date,
+    "create_time": create_time,
+}
 
 
 @v_args(inline=True)

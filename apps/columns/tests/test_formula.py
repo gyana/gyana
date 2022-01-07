@@ -194,6 +194,20 @@ PARAMS = [
         QUERY.format("SUBSTR(`athlete`, -LEAST(LENGTH(`athlete`), 4))"),
         id="right",
     ),
+    pytest.param(
+        "parse_date(athlete, '%Y-%m-%d')",
+        QUERY.format("PARSE_DATE('%Y-%m-%d', `athlete`)", id="parse_date"),
+    ),
+    pytest.param(
+        "parse_time(athlete, '%H:%M:%S')",
+        QUERY.format("PARSE_TIME('%H:%M:%S', `athlete`)", id="parse_time"),
+    ),
+    pytest.param(
+        "parse_datetime(athlete, '%Y-%m-%dT%H:%M:%S')",
+        QUERY.format(
+            "PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S', `athlete`)", id="parse_datetime"
+        ),
+    ),
     # Test numeric operations
     create_int_unary_param("abs"),
     pytest.param(
@@ -281,10 +295,24 @@ PARAMS = [
         "SELECT TIMESTAMP_MILLIS(131313131313) AS `tmp`",
         id="integer to datetime",
     ),
+    pytest.param(
+        "date(1993,07, medals)",
+        QUERY.format(
+            "PARSE_DATE('%Y%m%d', CONCAT(CONCAT(CAST(1993 AS STRING), CAST(7 AS STRING)), CAST(`medals` AS STRING)))"
+        ),
+        id="date",
+    ),
+    pytest.param(
+        "time(12,12, medals)",
+        QUERY.format(
+            "PARSE_TIME('%H:%M:%S', CONCAT(CONCAT(CONCAT(CONCAT(CAST(12 AS STRING), ':'), CAST(12 AS STRING)), ':'), CAST(`medals` AS STRING)))"
+        ),
+        id="time",
+    ),
     # Test datetime operations
     create_extract_unary_param("year"),
-    create_datetime_unary_param("time", "TIME"),
-    create_datetime_unary_param("date", "DATE"),
+    create_datetime_unary_param("extract_time", "TIME"),
+    create_datetime_unary_param("extract_date", "DATE"),
     create_extract_unary_param("second"),
     create_extract_unary_param("month"),
     create_extract_unary_param("minute"),
@@ -333,12 +361,12 @@ PARAMS = [
         id="datetime datetime_diff",
     ),
     pytest.param(
-        'datetime_diff(time(when), lunch, "m")',
+        'datetime_diff(extract_time(when), lunch, "m")',
         QUERY.format("TIME_DIFF(TIME(`when`), `lunch`, MINUTE)"),
         id="time datetime_diff",
     ),
     pytest.param(
-        'datetime_diff(date(when), when, "W")',
+        'datetime_diff(extract_date( when), when, "W")',
         QUERY.format("DATE_DIFF(DATE(`when`), `when`, WEEK)"),
         id="date datetime_diff",
     ),
