@@ -21,6 +21,17 @@
     "intercom_id": "h_738d20f230"
   },
   {
+    "id": "and",
+    "name": "and",
+    "categories": ["generic"],
+    "arguments": [
+      { "name": "value", "description": "boolean scalars or columns", "repeatable": true }
+    ],
+    "keywords": ["and", "logic"],
+    "description": "Logical and operaion",
+    "intercom_id": "h_04efa75b35"
+  },
+  {
     "id": "between",
     "intercom_id": "h_a9cc3a0a3d",
     "name": "between",
@@ -435,6 +446,17 @@
     "arguments": [{ "name": "value", "description": "a scalar or column" }],
     "keywords": [],
     "description": "Check whether value is null"
+  },
+  {
+    "id": "or",
+    "name": "or",
+    "categories": ["generic"],
+    "arguments": [
+      { "name": "value", "description": "boolean scalars or columns", "repeatable": true }
+    ],
+    "keywords": ["or", "logic"],
+    "description": "Logical or operaion",
+    "intercom_id": "h_161ca63d84"
   },
   {
     "id": "parse_date",
