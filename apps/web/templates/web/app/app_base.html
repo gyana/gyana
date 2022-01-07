@@ -101,6 +101,18 @@
 </a>
 
 <a
+  class="sidebar__link {% if request.resolver_match.app_name == 'team_flags' %}sidebar__link--active{% endif %}"
+  href="{% url 'team_flags:team' team.id %}"
+  data-controller="tooltip"
+  data-tooltip-placement="right"
+  data-show-on-collapse="true"
+>
+  <i class="fas fa-fw fa-flask"></i>Beta
+
+  <span data-tooltip-target="body">Beta</span>
+</a>
+
+<a
   class="sidebar__link {% if request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
   href="{% url 'teams:update' team.id %}"
   data-controller="tooltip"

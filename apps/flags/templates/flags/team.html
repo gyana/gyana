@@ -1,33 +1,27 @@
+{% extends "teams/base.html" %}
 {% load help_utils %}
 
-<section class="flex flex-col whitespace-normal">
-  <div class="workflow-detail__header">
-    <h3 class="mr-auto">Beta Features</h3>
+{% block tab %}
+<div class="flex flex-col flex-1 overflow-auto">
+  <div class="pad mb-auto">
+    <div class="max-w-2xl flex flex-col space-y-4">
+      <h2>Beta</h2>
+      
+      <p>
+        Turn on early access to new features from our <strong>beta program</strong>.
+        Have any feedback? <a class="link" href="mailto:support@gyana.com">Send us an email.</a>
+      </p>
+      
+      <p class="alert">Although these beta features may not be ready for public release, they are always of high quality.</p>
 
-    <button
-      class="tf-modal__close"
-      data-action="click->tf-modal#close"
-      data-loading-false
-    >
-      <i class="fal fa-times fa-lg"></i>
-    </button>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% include "django/forms/default_form.html" %}
+
+        <button type="submit" class="button button--success w-full">Save</button>
+      </form>
+    </div>
   </div>
-
-  <div class="flex flex-col pad flex-1">
-    <p>
-      Turn on early access to new features from our <strong>beta program</strong>.
-      Have any feedback? <a class="link" href="mailto:support@gyana.com">Send us an email.</a>
-    </p>
-
-    <p class="alert">Although these beta features may not be ready for public release, they are always of high quality.</p>
-
-    <form method="post" action="{% url 'team_flags:team' object.id %}" class="form">
-      {% csrf_token %}
-    
-      {% include "django/forms/default_form.html" %}
-    
-      <button type="submit" class="button button--success mt-auto">Save</button>
-    </form>
-  </div>
-</section>
-
+</div>
+{% endblock %}
