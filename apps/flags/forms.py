@@ -13,7 +13,10 @@ class TeamFlagForm(BaseModelForm):
         fields = ["flags"]
 
     flags = ModelMultipleChoiceField(
-        queryset=None, widget=FlagCheckboxSelectMultiple, label=""
+        queryset=None,
+        widget=FlagCheckboxSelectMultiple,
+        label="Enable beta features",
+        required=False,
     )
 
     def __init__(self, *args, **kwargs):
@@ -22,11 +25,12 @@ class TeamFlagForm(BaseModelForm):
         flags = self.fields["flags"]
 
         flags.initial = self.instance.flags.all().values_list("id", flat=True)
-        flags.queryset = (
-            Flag.objects.filter(is_public_beta=True).exclude(everyone=True).all()
-        )
+        flags.queryset = Flag.objects.visible()
         # a trick to pass through the entire flag model as a label, to render the widget template
         flags.choices = [(flag.id, flag) for flag in flags.queryset]
 
     def post_save(self, instance):
         instance.flags.set(self.cleaned_data["flags"])
+
+        for flag in Flag.objects.visible():
+            flag.flush()

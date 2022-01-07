@@ -1,4 +1,5 @@
 from django.db import models
+from waffle import managers
 from waffle.models import CACHE_EMPTY, AbstractUserFlag
 from waffle.utils import get_cache, get_setting, keyfmt
 
@@ -7,9 +8,14 @@ from waffle.utils import get_cache, get_setting, keyfmt
 cache = get_cache()
 
 
+class FlagManager(managers.FlagManager):
+    def visible(self):
+        return self.filter(is_public_beta=True).exclude(everyone=True).all()
+
+
 class Flag(AbstractUserFlag):
-    FLAG_COMPANIES_CACHE_KEY = "FLAG_COMPANIES_CACHE_KEY"
-    FLAG_COMPANIES_CACHE_KEY_DEFAULT = "flag:%s:teams"
+    FLAG_TEAMS_CACHE_KEY = "FLAG_TEAMS_CACHE_KEY"
+    FLAG_TEAMS_CACHE_KEY_DEFAULT = "flag:%s:teams"
 
     teams = models.ManyToManyField("teams.Team", blank=True, related_name="flags")
 
@@ -20,12 +26,14 @@ class Flag(AbstractUserFlag):
     # is feature available for public beta
     is_public_beta = models.BooleanField(default=False)
 
+    objects = FlagManager()
+
     def get_flush_keys(self, flush_keys=None):
         flush_keys = super().get_flush_keys(flush_keys)
-        companies_cache_key = get_setting(
-            Flag.FLAG_COMPANIES_CACHE_KEY, Flag.FLAG_COMPANIES_CACHE_KEY_DEFAULT
+        teams_cache_key = get_setting(
+            Flag.FLAG_TEAMS_CACHE_KEY, Flag.FLAG_TEAMS_CACHE_KEY_DEFAULT
         )
-        flush_keys.append(keyfmt(companies_cache_key, self.name))
+        flush_keys.append(keyfmt(teams_cache_key, self.name))
         return flush_keys
 
     def is_active_for_user(self, user):
@@ -34,7 +42,7 @@ class Flag(AbstractUserFlag):
             return is_active
 
         flag_team_ids = self._get_team_ids()
-        user_team_ids = user.teams.all().values_list("pk", flat=True)
+        user_team_ids = set(user.teams.all().values_list("pk", flat=True))
 
         if user_team_ids & flag_team_ids:
             return True
@@ -42,8 +50,8 @@ class Flag(AbstractUserFlag):
     def _get_team_ids(self):
         cache_key = keyfmt(
             get_setting(
-                Flag.FLAG_COMPANIES_CACHE_KEY,
-                Flag.FLAG_COMPANIES_CACHE_KEY_DEFAULT,
+                Flag.FLAG_TEAMS_CACHE_KEY,
+                Flag.FLAG_TEAMS_CACHE_KEY_DEFAULT,
             ),
             self.name,
         )
