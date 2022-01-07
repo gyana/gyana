@@ -114,6 +114,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
           y: newY,
         })
       }}
+      cancel='.ql-editor'
     >
       {children}
     </ReactRnd>
