@@ -15,6 +15,7 @@ from apps.connectors.models import Connector
 from apps.controls.models import Control
 from apps.dashboards.models import Dashboard, Page
 from apps.filters.models import Filter
+from apps.flags.models import Flag
 from apps.integrations.models import Integration
 from apps.nodes.models import Node
 from apps.oauth2.models import OAuth2
@@ -262,3 +263,8 @@ class GraphRunFactory(factory.django.DjangoModelFactory):
 class OAuth2Factory(factory.django.DjangoModelFactory):
     class Meta:
         model = OAuth2
+
+@register
+class FlagFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Flag
