@@ -177,7 +177,7 @@ def _compute_values(client, query):
 
     # clip each row of text so that GPC doesn't charge us more than 1 credit
     # (there are still plenty of characters to infer sentiment for that row)
-    clipped_values = [v[:CHARS_PER_CREDIT] for v in values]
+    clipped_values = [v[:CHARS_PER_CREDIT].strip() for v in values]
     return values, clipped_values
 
 
@@ -205,9 +205,7 @@ def _get_current_values(node):
     parent = get_query_from_node(node.parents.first())
     # We strip whitespace because it interferes with GCPs splitting of sentences
     current_values = (
-        parent.mutate(**{node.sentiment_column: parent[node.sentiment_column].strip()})[
-            [node.sentiment_column]
-        ]
+        parent[[node.sentiment_column]]
         .distinct()
         .relabel({node.sentiment_column: TEXT_COLUMN_NAME})
     )
