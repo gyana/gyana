@@ -379,6 +379,17 @@ PARAMS = [
         "SELECT\n  CASE EXTRACT(DAYOFWEEK FROM `birthday`)\n    WHEN 1 THEN 'Sunday'\n    WHEN 2 THEN 'Monday'\n    WHEN 3 THEN 'Tuesday'\n    WHEN 4 THEN 'Wednesday'\n    WHEN 5 THEN 'Thursday'\n    WHEN 6 THEN 'Friday'\n    WHEN 7 THEN 'Saturday'\n    ELSE CAST(NULL AS STRING)\n  END AS `tmp`\nFROM olympians",
         id="weekday",
     ),
+    # Test boolean functions and and or
+    pytest.param(
+        "and(athlete='Usain Bolt', is_nice, 1=1)",
+        QUERY.format("((`athlete` = 'Usain Bolt') AND `is_nice`) AND TRUE"),
+        id="and",
+    ),
+    pytest.param(
+        "or(athlete='Usain Bolt', is_nice, 1=1)",
+        QUERY.format("((`athlete` = 'Usain Bolt') OR `is_nice`) OR TRUE"),
+        id="or",
+    ),
     # Test nested functions
     pytest.param(
         "(medals + stars)/(stars - 42) * medals",

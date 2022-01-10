@@ -66,7 +66,23 @@ def create_time(caller, args):
     return text.parse_time("%H:%M:%S")
 
 
+def and_(caller, args):
+    query = caller
+    for arg in args:
+        query &= arg
+    return query
+
+
+def or_(caller, args):
+    query = caller
+    for arg in args:
+        query |= arg
+    return query
+
+
 ODD_FUNCTIONS = {
+    "and": and_,
+    "or": or_,
     "hash": _hash,
     "cast": convert,
     "weekday": weekday,
