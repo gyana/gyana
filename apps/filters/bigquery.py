@@ -221,6 +221,13 @@ def last_12_month(query, column):
     return query[date.between(twelve_month_ago, today)]
 
 
+def last_full_12_month(query, column):
+    today = dt.date.today()
+    date = get_date(query[column])
+    twelve_month_ago = (today - relativedelta(months=12)).replace(day=1)
+    return query[date.between(twelve_month_ago, today)]
+
+
 def last_year(query, column):
     date = get_date(query[column])
     last_year = (dt.date.today() - relativedelta(years=1)).year
@@ -256,6 +263,7 @@ DATETIME_FILTERS = {
     DateRange.THIS_YEAR: this_year,
     DateRange.THIS_YEAR_UP_TO_DATE: this_year_up_todate,
     DateRange.LAST_12_MONTH: last_12_month,
+    DateRange.LAST_FULL_12_MONTH: last_full_12_month,
     DateRange.LAST_YEAR: last_year,
 }
 
