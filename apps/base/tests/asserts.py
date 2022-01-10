@@ -83,3 +83,9 @@ def assertSelectorHasAttribute(response, selector, attribute):
 
 def assertFormChoicesLength(form, field_name, length):
     assert len(list(form.fields[field_name].choices)) == length
+
+
+def assertLoginRedirect(client, url):
+    r = client.get(url)
+    assert r.status_code == 302, f"{r.status_code} != 302"
+    assert r.url == f"/login/?next={url}", f"{r.url} != /login/?next={url}"

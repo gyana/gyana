@@ -12,10 +12,12 @@ from apps.columns.models import (
     WindowColumn,
 )
 from apps.connectors.models import Connector
-from apps.controls.models import Control
+from apps.controls.models import Control, ControlWidget
+from apps.customapis.models import CustomApi
 from apps.dashboards.models import Dashboard, Page
 from apps.filters.models import Filter
 from apps.integrations.models import Integration
+from apps.invites.models import Invite
 from apps.nodes.models import Node
 from apps.oauth2.models import OAuth2
 from apps.projects.models import Project
@@ -50,6 +52,7 @@ class IntegrationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Integration
 
+    kind = Integration.Kind.UPLOAD
     project = factory.SubFactory(ProjectFactory)
     ready = True
     state = Integration.State.DONE
@@ -146,6 +149,7 @@ class NodeFactory(factory.django.DjangoModelFactory):
     workflow = factory.SubFactory(WorkflowFactory)
     x = 0
     y = 0
+    kind = Node.Kind.INPUT
 
 
 @register
@@ -183,6 +187,7 @@ class CNameFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CName
 
+    team = factory.SubFactory(TeamFactory)
     domain = "test.domain.com"
 
 
@@ -245,6 +250,17 @@ class ControlFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Control
 
+    page = factory.SubFactory(PageFactory)
+
+
+@register
+class ControlWidgetFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ControlWidget
+
+    control = factory.SubFactory(ControlFactory)
+    page = factory.SubFactory(PageFactory)
+
 
 @register
 class JobRunFactory(factory.django.DjangoModelFactory):
@@ -259,6 +275,20 @@ class GraphRunFactory(factory.django.DjangoModelFactory):
 
 
 @register
+class CustomApiFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CustomApi
+
+
+@register
 class OAuth2Factory(factory.django.DjangoModelFactory):
     class Meta:
         model = OAuth2
+
+
+@register
+class InviteFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Invite
+
+    sent = timezone.now()

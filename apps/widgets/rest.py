@@ -1,4 +1,5 @@
 from rest_framework import mixins, viewsets
+from rest_framework.permissions import IsAuthenticated
 
 from apps.widgets.serializers import WidgetSerializer
 
@@ -7,6 +8,7 @@ from .models import Widget
 
 class WidgetPartialUpdate(viewsets.GenericViewSet, mixins.UpdateModelMixin):
     serializer_class = WidgetSerializer
+    permission_classes = (IsAuthenticated,)
 
     # Overwriting queryset to prevent access to widgets that don't belong to
     # the user's team

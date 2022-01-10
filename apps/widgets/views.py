@@ -116,7 +116,7 @@ class WidgetDetail(DashboardMixin, TurboUpdateView):
         )
 
 
-class WidgetDelete(TurboStreamDeleteView):
+class WidgetDelete(DashboardMixin, TurboStreamDeleteView):
     template_name = "widgets/delete.html"
     model = Widget
 

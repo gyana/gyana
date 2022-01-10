@@ -84,12 +84,12 @@ project_urlpatterns = (
         ),
         path(
             "<hashid:dashboard_id>/pages/new",
-            views.PageCreate.as_view(),
+            login_and_project_required(views.PageCreate.as_view()),
             name="page-create",
         ),
         path(
             "<hashid:dashboard_id>/pages/<hashid:pk>",
-            views.PageDelete.as_view(),
+            login_and_project_required(views.PageDelete.as_view()),
             name="page-delete",
         ),
         # Turbo frames

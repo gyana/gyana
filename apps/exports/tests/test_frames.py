@@ -16,9 +16,11 @@ def export_to_gcs(mocker):
     )
 
 
-def test_export_create_node(client, node_factory, export_to_gcs, logged_in_user):
+def test_export_create_node(
+    client, node_factory, export_to_gcs, logged_in_user, project
+):
 
-    node = node_factory(kind=Node.Kind.INPUT)
+    node = node_factory(kind=Node.Kind.INPUT, workflow__project=project)
     r = client.get(f"/exports/new/node/{node.id}")
     assertOK(r)
     assertContains(r, "fa-download")
@@ -31,10 +33,10 @@ def test_export_create_node(client, node_factory, export_to_gcs, logged_in_user)
 
 
 def test_export_create_integration_table(
-    client, integration_table_factory, export_to_gcs, logged_in_user
+    client, integration_table_factory, export_to_gcs, logged_in_user, project
 ):
 
-    table = integration_table_factory()
+    table = integration_table_factory(integration__project=project)
     r = client.get(f"/exports/new/integration_table/{table.id}")
     assertOK(r)
     assertContains(r, "fa-download")

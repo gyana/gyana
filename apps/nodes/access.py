@@ -1,7 +1,7 @@
+from django.shortcuts import get_object_or_404
+
 from apps.base.access import login_and_permission_to_access
 from apps.projects.access import user_can_access_project
-from apps.workflows.models import Workflow
-from django.shortcuts import get_object_or_404
 
 from .models import Node
 
