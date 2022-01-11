@@ -6,6 +6,8 @@ const debounceTime = 1000
 export default class extends Controller {
   static values = {
     id: String,
+    readOnly: { type: Boolean, default: false },
+    text: String,
   }
 
   initialize() {
@@ -16,9 +18,14 @@ export default class extends Controller {
     this.quill = new Quill('#editor', {
       placeholder: 'Type your notes here...',
       theme: 'snow',
+      readOnly: this.readOnlyValue,
+      modules: {
+        "toolbar": !this.readOnlyValue
+      },
     });
 
     this.quill.on('text-change', this.boundHandleTextChange);
+    this.quill.setContents(JSON.parse(this.textValue))
   }
 
   disconnect() {
@@ -29,10 +36,9 @@ export default class extends Controller {
     return () => {
       const client = getApiClient()
 
-      console.log(this.quill.container)
       client.action(window.schema, ['widgets', 'api', 'partial_update'], {
         id: this.idValue,
-        text_content: this.quill.container.innerHTML,
+        text_content: JSON.stringify(this.quill.getContents()['ops']),
       })
     }
   }
