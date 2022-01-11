@@ -28,6 +28,7 @@ class DateRange(models.TextChoices):
     LAST_QUARTER = "lastquarter", "Last quarter"
     LAST_180 = "last180", "Last 180 days"
     LAST_12_MONTH = "last12month", "Last 12 months"
+    LAST_FULL_12_MONTH = "lastfull12month", "Last full 12 months until today"
     LAST_YEAR = "lastyear", "Last calendar year"
     THIS_YEAR = "thisyear", "This year"
     THIS_YEAR_UP_TO_DATE = "thisyearuptodate", "This year (January - up to date)"
