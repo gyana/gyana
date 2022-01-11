@@ -50,7 +50,7 @@ INPUT_DATA = [
     },
 ]
 
-DISTINCT_QUERY = "SELECT t0.*\nFROM (\n  SELECT DISTINCT `athlete` AS `text`\n  FROM `project.dataset.table`\n) t0\nWHERE t0.`text` IS NOT NULL"
+DISTINCT_QUERY = "SELECT *\nFROM (\n  SELECT `athlete` AS `text`\n  FROM (\n    SELECT DISTINCT `athlete`\n    FROM `project.dataset.table`\n  ) t1\n) t0\nWHERE `text` IS NOT NULL"
 
 
 def mock_bq_client_data(bigquery):

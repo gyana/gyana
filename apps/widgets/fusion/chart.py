@@ -88,6 +88,11 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
             "exportenabled": "0",
             "exportmode": "client",
             "exportFileName": widget.name if widget.name else "untitled_chart",
+            **(
+                {"showLabels": "0"}
+                if widget.kind in [Widget.Kind.PIE, Widget.Kind.DONUT]
+                else {}
+            ),
             **axis_names,
         },
         **data,
