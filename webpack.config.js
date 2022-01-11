@@ -11,7 +11,6 @@ module.exports = {
     automate: './apps/projects/javascript/automate-flow.tsx',
     components: './apps/base/javascript/components.ts',
     fontawesome: './apps/base/styles/vendors/fontawesome.css',
-    quill: './apps/base/javascript/quill.ts',
     stimulus: './apps/base/javascript/stimulus.ts',
     style: './apps/base/styles/style.scss',
     tailwind: './apps/base/styles/vendors/tailwind.pcss',
