@@ -135,11 +135,11 @@
   
   <div data-controller="tooltip">
     {% if not request.GET.mode or request.GET.mode == "edit" %}
-    <a href="?mode=view" class="button button--sm button--tertiary">
+    <a href="?mode=view&page={{page.position}}" class="button button--sm button--tertiary">
       <i class="fas fa-fw fa-eye"></i> Preview
     </a>
     {% else %}
-    <a href="?mode=edit" class="button button--sm">
+    <a href="?mode=edit&page={{page.position}}" class="button button--sm">
       <i class="fas fa-fw fa-pen"></i> Edit
     </a>
     {% endif %}
