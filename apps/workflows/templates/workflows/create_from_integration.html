@@ -3,8 +3,8 @@
 
   <input type="hidden" name="project" value="{{ integration.project.id }}" />
   <input type="hidden" name="integration" value="{{ integration.id }}" />
-  <button submit="type" class="button button--filled button--sm">
-    <i class="fas fa-fw fa-plus"></i>
-    Create workflow
+
+  <button type="submit" href="{% url 'project_integrations_uploads:create' project.id %}">
+    <i class="fas fa-fw fa-sitemap mr-4"></i> New workflow
   </button>
 </form>
