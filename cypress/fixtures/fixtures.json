@@ -3430,11 +3430,11 @@
     }
   },
   {
-    "model": "flags.flag",
+    "model": "teams.flag",
     "pk": 1,
     "fields": {
-      "name": "customapi",
-      "everyone": null,
+      "name": "beta",
+      "everyone": true,
       "percent": null,
       "testing": false,
       "superusers": true,
@@ -3443,19 +3443,14 @@
       "languages": "",
       "rollout": false,
       "note": "",
-      "created": "2022-01-06T20:48:02Z",
-      "modified": "2022-01-06T20:48:54.234Z",
-      "title": "Custom API",
-      "description": "The custom API integration imports data from an API, with flexible configuration options including OAuth2.",
-      "icon": "fa-brackets-curly",
-      "is_public_beta": true,
+      "created": "2021-10-04T15:59:32Z",
+      "modified": "2021-10-04T15:59:37.292Z",
       "groups": [],
-      "users": [],
-      "teams": [5]
+      "users": []
     }
   },
   {
-    "model": "flags.flag",
+    "model": "teams.flag",
     "pk": 2,
     "fields": {
       "name": "templates",
@@ -3468,15 +3463,30 @@
       "languages": "",
       "rollout": false,
       "note": "",
-      "created": "2022-01-06T20:49:04Z",
-      "modified": "2022-01-06T20:49:51.697Z",
-      "title": "Templates",
-      "description": "",
-      "icon": "fa-books",
-      "is_public_beta": false,
+      "created": "2021-10-13T13:06:32Z",
+      "modified": "2021-10-13T13:06:37.292Z",
       "groups": [],
-      "users": [],
-      "teams": []
+      "users": []
+    }
+  },
+  {
+    "model": "teams.flag",
+    "pk": 3,
+    "fields": {
+      "name": "alpha",
+      "everyone": true,
+      "percent": null,
+      "testing": false,
+      "superusers": true,
+      "staff": false,
+      "authenticated": false,
+      "languages": "",
+      "rollout": false,
+      "note": "",
+      "created": "2021-10-04T15:59:32Z",
+      "modified": "2021-10-04T15:59:37.292Z",
+      "groups": [],
+      "users": []
     }
   },
   {
