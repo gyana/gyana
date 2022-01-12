@@ -86,11 +86,13 @@
     <div
       class="widgets__canvas"
       style="--background-color:{{ object.background_color }};"
+      data-controller="widget-list"
     > 
       <div
         id="dashboard-widget-container"
-        data-controller="widget-list"
-        style="width:{{ object.width }}px;height:{{object.height}}px;">
+        style="width:{{ object.width }}px;height:{{object.height}}px;"
+        data-widget-list-target="dashboard"
+      >
         {% for widget in page.widgets.all %}
         <gy-widget id="widget-{{ widget.id }}">
           <div
@@ -142,7 +144,23 @@
     </footer>
   </div>
 
+  <!-- Include the Quill library -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   {% include 'components/fusionchart_scripts.html' %}
+
+  {% comment %}
+  We need this inline as the max-width is variable depending on dashboard size.
+  {% endcomment %}
+  <style>
+    @media only screen and (max-width: {{ object.width }}px) {
+      .widgets,
+      .widgets__canvas {
+        width: 100%;
+        padding: 0;
+      }
+    }
+  </style>
   {% endblock %}
 </body>
 </html>

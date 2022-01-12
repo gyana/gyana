@@ -3,9 +3,9 @@
 
 <div class="widgets">
   <div
-    data-controller="canvas"
     class="widgets__canvas"
     style="--background-color:{{ dashboard.background_color }};"
+    data-controller="canvas widget-list"
   >
     {% comment %} Hidden form used by canvas controller {% endcomment %}
     <form
@@ -40,10 +40,9 @@
     <div
       id="dashboard-widget-container"
       class="{% if request.GET.mode != 'view' %}widgets__grid{%endif%}"
-      data-controller="widget-list"
       style="
-        min-width:{{ dashboard.width }}px;
-        min-height:{{ dashboard.height }}px;
+        width:{{ dashboard.width }}px;
+        height:{{ dashboard.height }}px;
         --grid-size:{{ dashboard.grid_size }}px;
       "
     >
