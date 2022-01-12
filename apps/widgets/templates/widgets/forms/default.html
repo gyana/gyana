@@ -158,7 +158,7 @@
         {% endwith %}
       {% endif %}
 
-      {% with array='name kind table date_column'%}
+      {% with array='name kind table date_column sort_by'%}
       {% for bound_field in form.visible_fields %}
       {% if bound_field.name not in array.split %}
         <div class="input-group">
@@ -196,7 +196,25 @@
       {% endif %}
       {% endfor %}
       {% endwith %}
-      
+        
+      {% if form.sort_by %}
+      <fieldset>
+        <label>{{ form.sort_by.label}}</label>
+
+        <div class="formset-wrapper">
+          {{ form.sort_by }}
+
+          <div>
+            <label class="input__toggle" for="{{ form.sort_ascending.id_for_label }}">
+              <p class="input__help-text">{{ form.sort_ascending.label}}</p>
+
+              {{form.sort_ascending}}
+            </label>
+          </div>
+        </div>
+      </fieldset>
+      {% endif %}
+
       {% endblock %}
 
       {% for label, formset in formsets.items %}
@@ -207,6 +225,7 @@
         </fieldset>
       {% endif %}
       {% endfor %}
+    
 
       {% for error in form.non_field_errors %}
       <p class="text-red">
