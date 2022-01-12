@@ -14,6 +14,7 @@ from apps.base.analytics import (
 )
 from apps.base.forms import BaseModelForm
 from apps.base.live_update_form import LiveUpdateForm
+from apps.base.templatetags.help_utils import INTERCOM_ROOT, get_intercom
 from apps.invites.models import Invite
 from apps.teams import roles
 from apps.users.models import ApprovedWaitlistEmail
@@ -97,7 +98,9 @@ class TeamUpdateForm(BaseModelForm):
     beta = forms.BooleanField(
         required=False,
         label="Join Beta",
-        help_text="Turn on early access to new features from our beta program. Learn more.",
+        help_text=mark_safe(
+            f"""Turn on early access to new features from our beta program. <a href="{INTERCOM_ROOT}/{get_intercom()['overview']['beta']}" target="_blank" class="link">Learn more</a>."""
+        ),
     )
 
     def __init__(self, *args, **kwargs):
