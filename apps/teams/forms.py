@@ -18,7 +18,7 @@ from apps.invites.models import Invite
 from apps.teams import roles
 from apps.users.models import ApprovedWaitlistEmail
 
-from .models import Membership, Team
+from .models import Flag, Membership, Team
 from .paddle import update_plan_for_team
 
 
@@ -94,12 +94,24 @@ class TeamUpdateForm(BaseModelForm):
             "timezone": "We use this to display time information and to schedule workflows",
         }
 
+    beta = forms.BooleanField(
+        required=False,
+        label="Join Beta",
+        help_text="Turn on early access to new features from our beta program. Learn more.",
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["beta"].initial = Flag.check_team_in_beta(self.instance)
+
     def pre_save(self, instance):
         self._timezone_is_dirty = "timezone" in instance.get_dirty_fields()
 
     def post_save(self, instance):
         if self._timezone_is_dirty:
             instance.update_daily_sync_time()
+
+        Flag.set_beta_program_for_team(instance, self.cleaned_data["beta"])
 
 
 class MembershipUpdateForm(forms.ModelForm):
