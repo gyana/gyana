@@ -550,6 +550,13 @@ PARAMS = [
         ),
         id="Date on last 12 month",
     ),
+    pytest.param(
+        create_date_filter(DateRange.LAST_FULL_12_MONTH),
+        QUERY.format(
+            f"`birthday` BETWEEN DATE '{(TODAY.replace(day=1) - relativedelta(months=12)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+        ),
+        id="Date on last full 12 month",
+    ),
     # Datetime filters
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.ON),

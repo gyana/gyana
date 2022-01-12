@@ -44,8 +44,8 @@ def _rename_duplicates(left, right, left_col, right_col):
     right = right.relabel(
         {col: f"{col}_right" for col in right.columns if col.lower() in duplicates}
     )
-    left_col = f"{left_col}_left" if left_col in duplicates else left_col
-    right_col = f"{right_col}_right" if right_col in duplicates else right_col
+    left_col = f"{left_col}_left" if left_col.lower() in duplicates else left_col
+    right_col = f"{right_col}_right" if right_col.lower() in duplicates else right_col
 
     return left, right, left_col, right_col
 
