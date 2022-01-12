@@ -21,9 +21,10 @@ from apps.users.models import CustomUser
 pytestmark = pytest.mark.django_db
 
 
-def test_team_crudl(client, logged_in_user, bigquery, settings):
+def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
 
     team = logged_in_user.teams.first()
+    flag = flag_factory(name="beta")
     pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
     business_plan = Plan.objects.create(
         name="Pro", billing_type="month", billing_period=1
@@ -76,16 +77,24 @@ def test_team_crudl(client, logged_in_user, bigquery, settings):
     # update
     r = client.get(f"/teams/{new_team.id}/update")
     assertOK(r)
-    assertFormRenders(r, ["icon", "name", "timezone"])
+    assertFormRenders(r, ["icon", "name", "timezone", "beta"])
 
     r = client.post(
         f"/teams/{new_team.id}/update",
-        data={"name": "Agni", "timezone": "Asia/Kolkata"},
+        data={"name": "Agni", "timezone": "Asia/Kolkata", "beta": True},
     )
     assertRedirects(r, f"/teams/{new_team.id}/update", status_code=303)
     new_team.refresh_from_db()
     assert new_team.name == "Agni"
     assert str(new_team.timezone) == "Asia/Kolkata"
+    assert new_team in flag.teams.all()
+
+    # remove from beta
+    r = client.post(
+        f"/teams/{new_team.id}/update",
+        data={"name": "Agni", "timezone": "Asia/Kolkata", "beta": False},
+    )
+    assert new_team not in flag.teams.all()
 
     # delete
     r = client.get(f"/teams/{new_team.id}/delete")

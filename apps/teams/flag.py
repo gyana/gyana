@@ -20,20 +20,22 @@ class Flag(AbstractUserFlag):
     @staticmethod
     def check_team_in_beta(team):
         beta_flag = Flag.get_beta_flag()
-        return beta_flag.teams.filter(id=team.id).exists()
+        if beta_flag:
+            return beta_flag.teams.filter(id=team.id).exists()
 
     @staticmethod
     def set_beta_program_for_team(team, beta_program):
         beta_flag = Flag.get_beta_flag()
-        already_in = Flag.check_team_in_beta(team)
+        if beta_flag:
+            already_in = Flag.check_team_in_beta(team)
 
-        if beta_program != already_in:
-            if beta_program:
-                beta_flag.teams.add(team)
-            else:
-                beta_flag.teams.remove(team)
-            # flush waffle cache so updates appear immediately
-            beta_flag.flush()
+            if beta_program != already_in:
+                if beta_program:
+                    beta_flag.teams.add(team)
+                else:
+                    beta_flag.teams.remove(team)
+                # flush waffle cache so updates appear immediately
+                beta_flag.flush()
 
     def get_flush_keys(self, flush_keys=None):
         flush_keys = super().get_flush_keys(flush_keys)

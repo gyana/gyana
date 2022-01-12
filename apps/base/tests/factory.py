@@ -16,7 +16,6 @@ from apps.controls.models import Control, ControlWidget
 from apps.customapis.models import CustomApi
 from apps.dashboards.models import Dashboard, Page
 from apps.filters.models import Filter
-from apps.flags.models import Flag
 from apps.integrations.models import Integration
 from apps.invites.models import Invite
 from apps.nodes.models import Node
@@ -25,7 +24,7 @@ from apps.projects.models import Project
 from apps.runs.models import GraphRun, JobRun
 from apps.sheets.models import Sheet
 from apps.tables.models import Table
-from apps.teams.models import Team
+from apps.teams.models import Flag, Team
 from apps.uploads.models import Upload
 from apps.widgets.models import Widget
 from apps.workflows.models import Workflow
