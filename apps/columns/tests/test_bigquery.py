@@ -261,7 +261,7 @@ PARAMS = [
     pytest.param(
         "birthday",
         DatePeriod.MONTH_ONLY,
-        GROUP_QUERY.format("EXTRACT(month from  `birthday`) AS `birthday`"),
+        GROUP_QUERY.format("EXTRACT(month from `birthday`) AS `birthday`"),
         id="month only",
     ),
     pytest.param(
