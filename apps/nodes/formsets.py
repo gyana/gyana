@@ -7,6 +7,7 @@ from apps.base.live_update_form import BaseLiveSchemaForm
 from apps.columns.forms import (
     AddColumnForm,
     AggregationColumnForm,
+    ColumnForm,
     ConvertColumnForm,
     FormulaColumnForm,
     OperationColumnForm,
@@ -40,16 +41,15 @@ AggregationColumnFormSet = forms.inlineformset_factory(
     formset=RequiredInlineFormset,
 )
 
+
 ColumnFormSet = forms.inlineformset_factory(
     Node,
     Column,
-    form=BaseLiveSchemaForm,
-    fields=("column",),
+    form=ColumnForm,
     extra=0,
     can_delete=True,
     formset=RequiredInlineFormset,
 )
-
 
 SortColumnFormSet = forms.inlineformset_factory(
     Node,

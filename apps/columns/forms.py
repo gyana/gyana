@@ -8,13 +8,14 @@ from apps.base.widgets import SelectWithDisable
 from apps.columns.models import (
     AddColumn,
     AggregationColumn,
+    Column,
     ConvertColumn,
     EditColumn,
     FormulaColumn,
     WindowColumn,
 )
 
-from .bigquery import AllOperations
+from .bigquery import AllOperations, DatePeriod
 from .widgets import CodeMirror
 
 IBIS_TO_FUNCTION = {
@@ -28,6 +29,28 @@ IBIS_TO_FUNCTION = {
     "Time": "time_function",
     "Boolean": "boolean_function",
 }
+
+
+class ColumnForm(BaseLiveSchemaForm):
+    class Meta:
+        fields = ("column", "part")
+        model = Column
+
+    def get_live_fields(self):
+        fields = ["column"]
+        if self.column_type in ["Timestamp", "Date"]:
+            fields += ["part"]
+        return fields
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if "part" in self.fields and self.column_type == "Date":
+            self.fields["part"].choices = [
+                choice
+                for choice in self.fields["part"].choices
+                if choice[0] != DatePeriod.DATE.value
+            ]
 
 
 class AggregationColumnForm(BaseLiveSchemaForm):

@@ -5,11 +5,12 @@ from django.db import models
 from apps.base.aggregations import AggregationFunctions
 from apps.base.models import SaveParentModel
 from apps.nodes.models import Node
-from apps.widgets.models import CombinationChart, Widget
+from apps.widgets.models import Widget
 
 from .bigquery import (
     CommonOperations,
     DateOperations,
+    DatePeriod,
     DatetimeOperations,
     NumericOperations,
     StringOperations,
@@ -95,6 +96,7 @@ class AbstractOperationColumn(SaveParentModel):
 
 
 class Column(SaveParentModel):
+
     column = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, help_text="Select columns"
     )
@@ -103,6 +105,13 @@ class Column(SaveParentModel):
     )
     widget = models.ForeignKey(
         Widget, on_delete=models.CASCADE, related_name="columns", null=True
+    )
+    part = models.CharField(
+        max_length=16,
+        choices=DatePeriod.choices,
+        null=True,
+        blank=True,
+        help_text="Select the desired date part",
     )
 
 
