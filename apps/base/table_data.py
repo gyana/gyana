@@ -105,6 +105,15 @@ class RequestConfig(BaseRequestConfig):
         table.request = self.request
         return super().configure(table)
 
+def get_type_name(type_):
+    if isinstance(type_, (dt.Floating, dt.Integer)):
+        return "Numeric"
+    if isinstance(type_, dt.String):
+        return "String"
+    if isinstance(type_, dt.Boolean):
+        return "Boolean"
+    if isinstance(type_, (dt.Date, dt.Time, dt.Time)):
+        return "Time"
 
 def get_type_class(type_):
     if isinstance(type_, (dt.Floating, dt.Integer)):
@@ -115,7 +124,6 @@ def get_type_class(type_):
         return "column column--boolean"
     if isinstance(type_, (dt.Date, dt.Time, dt.Time)):
         return "column column--time"
-
 
 class BigQueryColumn(Column):
     def __init__(self, **kwargs):
@@ -140,6 +148,14 @@ class BigQueryColumn(Column):
                     "clean_value": round(value, self.rounding),
                 }
             )
+        if isinstance(value, str) and len(value) >= 64:
+            # Truncate row values above 61 characters (61 + 3 ellipsis = 64)
+            self.attrs["td"] = {
+                "data-controller": "tooltip",
+                "data-tooltip-content": value,
+            }
+            return super().render("{}...".format(value[:61]))
+
         return super().render(value)
 
 
@@ -155,7 +171,13 @@ def get_table(schema, query, footer=None, settings=None, **kwargs):
             empty_values=(),
             settings=settings.get(name),
             verbose_name=name,
-            attrs={"th": {"class": get_type_class(type_)}},
+            attrs={
+                "th": {
+                    "class": get_type_class(type_),
+                    "data-controller": "tooltip",
+                    "data-tooltip-content": get_type_name(type_)
+                }
+            },
             footer=footer.get(name) if footer else None,
         )
         for name, type_ in schema.items()

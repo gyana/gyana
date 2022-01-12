@@ -12,7 +12,7 @@ COLUMN_LENGTH = 9
 NUMERIC_LENGTH = 11
 STRING_LENGTH = 13
 TIME_LENGTH = 9
-DATETIME_LENGTH = 34
+DATETIME_LENGTH = 35
 
 NUMERIC_NO_VALUE = [Filter.NumericPredicate.ISNULL, Filter.NumericPredicate.NOTNULL]
 STRING_NO_VALUE = [
@@ -120,7 +120,7 @@ def parametrize_column_predicate(
             "birthday", "date", "datetime_predicate", DATETIME_LENGTH, DATETIME_NO_VALUE
         ),
         *parametrize_column_predicate(
-            "updated",
+            "when",
             "datetime",
             "datetime_predicate",
             DATETIME_LENGTH,
@@ -183,7 +183,7 @@ def parametrize_column_predicate(
             "time_value",
         ),
         *parametrize_column_predicate(
-            "updated",
+            "when",
             "datetime",
             "datetime_predicate",
             DATETIME_LENGTH,

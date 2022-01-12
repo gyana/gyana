@@ -5,7 +5,7 @@ TABLE = ibis.table(
         ("id", "int32"),
         ("athlete", "string"),
         ("birthday", "date"),
-        ("updated", "timestamp"),
+        ("when", "timestamp"),
         ("lunch", "time"),
         ("medals", "int32"),
         ("stars", "double"),

@@ -16,8 +16,8 @@ celery:
 beat:
     watchexec -w apps -e py -r "celery -A gyana beat -l INFO"
 
-migrate:
-    ./manage.py migrate
+migrate app='' migration='':
+    ./manage.py migrate {{app}} {{migration}}
 
 seed:
     ./manage.py flush --noinput
@@ -75,10 +75,10 @@ startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
 
 test TEST=".":
-    python -m pytest --no-migrations --disable-pytest-warnings -k {{TEST}}
+    python -m pytest --no-migrations --ignore=apps/cookiecutter-app --disable-pytest-warnings -k {{TEST}}
 
 test-retry:
-    python -m pytest --no-migrations --disable-pytest-warnings --last-failed
+    python -m pytest --no-migrations --disable-pytest-warnings --last-failed --ignore=apps/cookiecutter-app 
 
 test-ci:
-    python -m pytest --cov --cov-report xml --no-migrations --disable-pytest-warnings
+    python -m pytest --cov --cov-report xml --no-migrations --disable-pytest-warnings --ignore=apps/cookiecutter-app 

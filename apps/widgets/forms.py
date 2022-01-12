@@ -38,7 +38,11 @@ class GenericWidgetForm(LiveUpdateForm):
         project = kwargs.pop("project", None)
 
         super().__init__(*args, **kwargs)
-
+        self.fields["kind"].choices = [
+            choice
+            for choice in self.fields["kind"].choices
+            if choice[0] != Widget.Kind.TEXT
+        ]
         if project:
             self.fields["table"].queryset = Table.available.filter(
                 project=project

@@ -125,8 +125,7 @@ def _reconcile_gcp_scores(
 
     for value in values:
         matched = ""
-        # can't type-hint sentences as they are a "private" GCP class
-        sentences = []  # type: ignore[var-annotated]
+        sentences = []
 
         # to each of our sentences might correspond multiple sentences in GCP's analysis
         # so we combine GCP's scores on sub-sentences to score our full sentence
@@ -178,7 +177,7 @@ def _compute_values(client, query):
 
     # clip each row of text so that GPC doesn't charge us more than 1 credit
     # (there are still plenty of characters to infer sentiment for that row)
-    clipped_values = [v[:CHARS_PER_CREDIT] for v in values]
+    clipped_values = [v[:CHARS_PER_CREDIT].strip() for v in values]
     return values, clipped_values
 
 
@@ -204,10 +203,11 @@ def _get_current_values(node):
     from apps.nodes.bigquery import get_query_from_node
 
     parent = get_query_from_node(node.parents.first())
+    # We strip whitespace because it interferes with GCPs splitting of sentences
     current_values = (
         parent[[node.sentiment_column]]
-        .relabel({node.sentiment_column: TEXT_COLUMN_NAME})
         .distinct()
+        .relabel({node.sentiment_column: TEXT_COLUMN_NAME})
     )
     return current_values[current_values[TEXT_COLUMN_NAME].notnull()]
 

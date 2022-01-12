@@ -5,7 +5,7 @@ import pytest
 
 from apps.base.tests.mock_data import TABLE
 from apps.controls.bigquery import slice_query
-from apps.controls.models import CustomChoice, Control
+from apps.controls.models import Control, CustomChoice
 
 QUERY = "SELECT *\nFROM olympians\nWHERE {}"
 
@@ -14,7 +14,7 @@ DAVIDS_BIRTHDAY = dt.date(1992, 8, 3)
 
 
 @pytest.mark.parametrize(
-    "date_range,start,end, expected_sql",
+    "date_range, start, end, expected_sql",
     [
         pytest.param(
             CustomChoice.CUSTOM,

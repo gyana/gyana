@@ -8,8 +8,8 @@ from django.urls.base import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
-from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, FormView
@@ -125,6 +125,8 @@ class DashboardDetail(ProjectMixin, TurboUpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["categories"] = Widget.Category.choices
+        context["font_families"] = Dashboard.FontFamily.choices
+
         context["choices"] = WIDGET_CHOICES_ARRAY
         context["modal_item"] = self.request.GET.get("modal_item")
         page = self.object.pages.get(position=self.request.GET.get("page", 1))
@@ -178,6 +180,7 @@ class DashboardDuplicate(TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse("project_dashboards:list", args=(self.object.project.id,))
+
 
 # This allows a shared dashboard to be embeded in an iFrame
 @method_decorator(xframe_options_exempt, name="dispatch")
@@ -247,6 +250,8 @@ class DashboardLogout(TemplateView):
 class PageCreate(DashboardMixin, CreateView):
     model = Page
     fields = []
+    # Not used
+    template_name = "dashboards/create.html"
 
     def form_valid(self, form):
         form.instance.dashboard = self.dashboard
@@ -260,6 +265,8 @@ class PageCreate(DashboardMixin, CreateView):
 class PageDelete(DashboardMixin, DeleteView):
     model = Page
     fields = []
+    # Not used
+    template_name = "dashboards/delete.html"
 
     def delete(self, request, *args, **kwargs):
         page = self.get_object()

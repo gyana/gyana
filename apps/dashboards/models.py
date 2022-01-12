@@ -23,6 +23,7 @@ class DashboardSettings(models.Model):
 
     class Category(models.TextChoices):
         GENERAL = "general", "General"
+        WIDGET = "widget", "Widget"
         CANVAS = "canvas", "Canvas"
 
     class FontFamily(models.TextChoices):
@@ -48,7 +49,15 @@ class DashboardSettings(models.Model):
     font_family = models.CharField(
         max_length=30, default=FontFamily.ROBOTO, choices=FontFamily.choices
     )
+    snap_to_grid = models.BooleanField(default=True)
+
     show_widget_border = models.BooleanField(default=True)
+    show_widget_headers = models.BooleanField(default=True)
+    widget_header_font_size = models.IntegerField(default="18")
+    widget_background_color = models.CharField(default="#ffffff", max_length=7)
+    widget_border_color = models.CharField(default="#e6e6e6", max_length=7)
+    widget_border_radius = models.IntegerField(default=5)
+    widget_border_thickness = models.IntegerField(default=1)
 
 
 class Dashboard(DashboardSettings, CloneMixin, BaseModel):
@@ -144,14 +153,22 @@ class Page(CloneMixin, BaseModel):
     def has_control(self):
         return hasattr(self, "control")
 
+
 DASHBOARD_SETTING_TO_CATEGORY = {
     "grid_size": Dashboard.Category.CANVAS,
     "width": Dashboard.Category.CANVAS,
     "height": Dashboard.Category.CANVAS,
+    "snap_to_grid": Dashboard.Category.CANVAS,
     "palette_colors": Dashboard.Category.GENERAL,
     "background_color": Dashboard.Category.GENERAL,
     "font_size": Dashboard.Category.GENERAL,
     "font_color": Dashboard.Category.GENERAL,
     "font_family": Dashboard.Category.GENERAL,
     "show_widget_border": Dashboard.Category.GENERAL,
+    "show_widget_headers": Dashboard.Category.WIDGET,
+    "widget_header_font_size": Dashboard.Category.WIDGET,
+    "widget_background_color": Dashboard.Category.WIDGET,
+    "widget_border_color": Dashboard.Category.WIDGET,
+    "widget_border_radius": Dashboard.Category.WIDGET,
+    "widget_border_thickness": Dashboard.Category.WIDGET,
 }

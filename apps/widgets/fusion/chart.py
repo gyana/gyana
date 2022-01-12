@@ -67,8 +67,12 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
             # take precedence.
             "theme": "fusion",
             "paletteColors": ",".join(pallete_colors),
-            "bgColor": widget.background_color or "#ffffff",
-            "bgAlpha": "100" if widget.background_color else "0",
+            "bgColor": widget.background_color
+            or widget.page.dashboard.widget_background_color
+            or "#ffffff",
+            "bgAlpha": "100"
+            if widget.background_color or widget.page.dashboard.widget_background_color
+            else "0",
             "showToolTip": widget.show_tooltips
             if widget.show_tooltips is not None
             else True,
@@ -84,6 +88,11 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
             "exportenabled": "0",
             "exportmode": "client",
             "exportFileName": widget.name if widget.name else "untitled_chart",
+            **(
+                {"showLabels": "0"}
+                if widget.kind in [Widget.Kind.PIE, Widget.Kind.DONUT]
+                else {}
+            ),
             **axis_names,
         },
         **data,

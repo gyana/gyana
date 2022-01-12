@@ -1,5 +1,6 @@
 from django.contrib import admin
 from safedelete.admin import SafeDeleteAdmin, highlight_deleted
+from waffle.admin import FlagAdmin as WaffleFlagAdmin
 
 from apps.appsumo.admin import (
     AppsumoCodeInline,
@@ -8,7 +9,7 @@ from apps.appsumo.admin import (
 )
 from apps.invites.admin import InviteInline
 
-from .models import Membership, Team
+from .models import Flag, Membership, Team
 
 
 class UserMembershipInline(admin.TabularInline):
@@ -38,3 +39,10 @@ class TeamAdmin(SafeDeleteAdmin):
 
     def row_limit(self, instance):
         return instance.row_limit
+
+
+class FlagAdmin(WaffleFlagAdmin):
+    raw_id_fields = tuple(list(WaffleFlagAdmin.raw_id_fields) + ["teams"])
+
+
+admin.site.register(Flag, FlagAdmin)

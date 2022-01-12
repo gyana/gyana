@@ -2,7 +2,7 @@ import django_tables2 as tables
 from django.template import Context
 from django.template.loader import get_template
 
-from apps.base.table import DuplicateColumn, NaturalDatetimeColumn
+from apps.base.table import DuplicateColumn, NaturalDatetimeColumn, FaBooleanColumn
 
 from .models import Workflow
 
@@ -28,7 +28,7 @@ class WorkflowTable(tables.Table):
     last_success_run = NaturalDatetimeColumn(
         accessor="last_success_run__started_at", verbose_name="Last successful run"
     )
-    is_scheduled = tables.BooleanColumn(verbose_name="Scheduled")
+    is_scheduled = FaBooleanColumn(verbose_name="Scheduled")
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
     # TODO: Fix orderable for status column.

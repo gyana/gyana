@@ -23,7 +23,7 @@ def get_metadata_from_drive_file(sheet: Sheet):
 
     sheet_id = get_sheets_id_from_url(sheet.url)
     client = clients.drive_v2()
-    return client.files().get(fileId=sheet_id).execute()
+    return client.files().get(fileId=sheet_id, supportsAllDrives=True).execute()
 
 
 def get_last_modified_from_drive_file(sheet: Sheet):

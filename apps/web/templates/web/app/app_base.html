@@ -45,7 +45,7 @@
   href=""
   class="sidebar__link sidebar__link--border"
   data-controller="tooltip"
-  data-placement="right"
+  data-tooltip-placement="right"
   data-show-on-collapse="true"
 >
   {% if team.icon %}
@@ -67,7 +67,7 @@
   class="sidebar__link {% if request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
   href="{% url 'teams:detail' team.id %}"
   data-controller="tooltip"
-  data-placement="right"
+  data-tooltip-placement="right"
   data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-folders"></i>Projects
@@ -80,7 +80,7 @@
   class="sidebar__link {% if request.resolver_match.url_name == 'list' %}sidebar__link--active{% endif %}"
   href="{% url 'team_members:list' team.id %}"
   data-controller="tooltip"
-  data-placement="right"
+  data-tooltip-placement="right"
   data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-users"></i>Members
@@ -92,7 +92,7 @@
   class="sidebar__link {% if request.resolver_match.url_name in 'account,subscription,plan,payments' %}sidebar__link--active{% endif %}"
   href="{% url 'teams:account' team.id %}"
   data-controller="tooltip"
-  data-placement="right"
+  data-tooltip-placement="right"
   data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-wallet"></i>Billing
@@ -104,7 +104,7 @@
   class="sidebar__link {% if request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
   href="{% url 'teams:update' team.id %}"
   data-controller="tooltip"
-  data-placement="right"
+  data-tooltip-placement="right"
   data-show-on-collapse="true"
 >
   <i class="far fa-fw fa-cog"></i>Settings

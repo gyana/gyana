@@ -97,46 +97,42 @@
   }
 
   .react-flow__handle {
+    align-items: center;
     background-color: var(--c-transparent);
     border-radius: 0;
-    border: 0;
-    right: 0;
+    border: none;
     display: flex;
+    height: 1px;
     justify-content: center;
-    width: 1.5rem;
+    right: 0;
+    width: 1px;
+    z-index: var(--z-ui);
 
     &::after {
       background-color: var(--c-black-20);
       border-radius: 100%;
+      border: none;
       content: '';
       display: block;
-      height: 1.5rem;
+      height: 1.6rem;
       position: absolute;
-      top: 50%;
-      transform: translate(0, -50%);
-      width: 1.5rem;
+      transition: all 0.125s ease;
+      width: 1.6rem;
     }
 
     // Input
     &-left {
-      left: calc(-1px - 0.75rem);
-      
-      &::after {
-        background-color: var(--c-black-20);
-      }
+      left: -1px;
     }
 
     // Output
     &-right {
-      right: calc(-1px - 0.75rem);
-      
-      &::after {
-        background-color: var(--c-black-20);
-      }
+      right: -1px;
     }
 
     &-connecting::after {
-      border-color: var(--c-blue);
+      background-color: var(--c-blue);
+      transform: scale(1.4);
     }
   }
 

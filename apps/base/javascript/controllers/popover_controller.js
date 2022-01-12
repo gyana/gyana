@@ -25,16 +25,17 @@ export default class extends Controller {
     tippy(this.element, {
       allowHTML: true,
       animation: false,
+      appendTo: this.hasTriggerTarget ? this.element : () => document.body,
       arrow: false,
       content: this.bodyTarget.innerHTML,
       delay: 0,
       interactive: true,
-      appendTo: this.hasTriggerTarget ? this.element : () => document.body,
+      maxWidth: 'none',
       placement: this.element.dataset.placement || 'bottom',
       theme: this.element.dataset.theme || 'popover',
-      maxWidth: 'none',
       trigger: 'click',
       triggerTarget: this.hasTriggerTarget ? this.triggerTarget : this.element,
+      zIndex: 'var(--z-ui)',
     })
   }
 

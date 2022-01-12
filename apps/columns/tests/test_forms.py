@@ -149,7 +149,7 @@ def test_convert_form(convert_column_factory):
             id="String column with function",
         ),
         pytest.param(
-            EditColumn(column="updated"),
+            EditColumn(column="when"),
             ["column", "datetime_function"],
             id="Datetime column",
         ),

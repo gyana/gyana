@@ -1,6 +1,7 @@
 import json
 
 import ibis
+import ibis.expr.datatypes as dt
 from lark import Transformer, v_args
 
 from .types import TYPES
@@ -17,16 +18,77 @@ with open("apps/columns/functions.json", "r") as file:
 FUNCTIONS = json.loads(data)
 
 
-def _hash(func, args):
-    return func("farm_fingerprint")
+def _hash(caller, args):
+    return caller.hash("farm_fingerprint")
 
 
-def convert(func, args):
+def convert(caller, args):
     type_ = TYPES[args[0]]
-    return func(type_)
+    return caller.cast(type_)
 
 
-ODD_FUNCTIONS = {"hash": _hash, "cast": convert}
+def weekday(caller, args):
+    day_of_week = caller.day_of_week()
+    return day_of_week.cases(
+        [
+            (1, "Sunday"),
+            (2, "Monday"),
+            (3, "Tuesday"),
+            (4, "Wednesday"),
+            (5, "Thursday"),
+            (6, "Friday"),
+            (7, "Saturday"),
+        ]
+    )
+
+
+def _cast_string(py_scalar_or_column):
+    return (
+        ibis.literal(py_scalar_or_column).cast(dt.string)
+        if isinstance(py_scalar_or_column, int)
+        else ibis.cast(py_scalar_or_column, dt.string)
+    )
+
+
+def create_date(caller, args):
+    year = _cast_string(caller)
+    month = _cast_string(args[0])
+    day = _cast_string(args[1])
+    text = year + month + day
+    return text.parse_date("%Y%m%d")
+
+
+def create_time(caller, args):
+    hour = _cast_string(caller)
+    minute = _cast_string(args[0])
+    second = _cast_string(args[1])
+    text = hour + ":" + minute + ":" + second
+    return text.parse_time("%H:%M:%S")
+
+
+def and_(caller, args):
+    query = caller
+    for arg in args:
+        query &= arg
+    return query
+
+
+def or_(caller, args):
+    query = caller
+    for arg in args:
+        query |= arg
+    return query
+
+
+ODD_FUNCTIONS = {
+    "and": and_,
+    "or": or_,
+    "hash": _hash,
+    "cast": convert,
+    "weekday": weekday,
+    "create_date": create_date,
+    "create_time": create_time,
+}
 
 
 @v_args(inline=True)
@@ -56,13 +118,13 @@ class TreeToIbis(Transformer):
             caller = ibis.literal(caller)
         function_name = token.value.lower()
         function = next(filter(lambda f: f["name"] == function_name, FUNCTIONS))
+        if odd_func := ODD_FUNCTIONS.get(function["id"]):
+            return odd_func(caller, args)
         func = getattr(caller, function["id"])
         if function["id"] != "coalesce" and any(
             arg.get("repeatable") for arg in function["arguments"]
         ):
             return func(args)
-        if odd_func := ODD_FUNCTIONS.get(function["id"]):
-            return odd_func(func, args)
         return func(*args)
 
     # -----------------------------------------------------------------------

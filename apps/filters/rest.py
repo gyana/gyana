@@ -35,7 +35,7 @@ def autocomplete_options(request):
     )
     if (
         parentType == "widget"
-        and user_can_access_project(request.user, parent.dashboard.project)
+        and user_can_access_project(request.user, parent.page.dashboard.project)
         or (
             parentType == "node"
             and user_can_access_project(request.user, parent.workflow.project)

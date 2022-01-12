@@ -104,7 +104,10 @@
           >
             <div class="widget-card h-full">
               <div class='widget-card__visual widget-card__visual--view {% if widget.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}'>
-                {% include 'widgets/_widget_title.html' with object=widget%}
+                {% if widget.page.dashboard.show_widget_headers %}
+                  {% include 'widgets/_widget_title.html' with object=widget%}
+                {% endif %}
+
                 <turbo-frame
                   id="widgets-output-{{ widget.id }}"
                   src="{% url 'dashboard_widgets:output' project.id dashboard.id widget.id %}"
