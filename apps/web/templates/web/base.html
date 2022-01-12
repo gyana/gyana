@@ -86,18 +86,15 @@
           data-theme="popover-menu"
           data-show-on-collapse="true"
         >
-        <i class="fas fa-fw fa-question"></i></i>Help
+          <i class="fas fa-fw fa-question"></i></i>Help
 
           <template data-popover-target="body">
             <a
               id="changelogWidgetID"
               data-action="click->tf-modal#open"
-              data-controller="tooltip"
-              data-tooltip-placement="right"
               data-modal-src="{% url "web:changelog" %}"
               data-modal-id="web:changelog"
               data-modal-classes="tf-modal--tall"
-              data-show-on-collapse="true"
               class="list__item list__item--interactive w-full"
             >
               What's new?

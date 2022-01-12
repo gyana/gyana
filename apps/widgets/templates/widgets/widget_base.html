@@ -21,7 +21,10 @@ preview mode.
   >
     <div class="widget-card h-full">
       <div
-        class="widget-card__visual {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}"
+        class="
+          widget-card__visual
+          {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}
+        "
         style="
           {% if object.page.dashboard.widget_border_color %}border-color: {{ object.page.dashboard.widget_border_color }};{% endif %}
           {% if object.page.dashboard.widget_border_radius %}border-radius: {{ object.page.dashboard.widget_border_radius }}px;{% endif %}
