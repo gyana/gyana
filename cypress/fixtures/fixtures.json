@@ -86,6 +86,69 @@
     }
   },
   {
+    "model": "teams.flag",
+    "pk": 1,
+    "fields": {
+      "name": "beta",
+      "everyone": true,
+      "percent": null,
+      "testing": false,
+      "superusers": true,
+      "staff": false,
+      "authenticated": false,
+      "languages": "",
+      "rollout": false,
+      "note": "",
+      "created": "2021-10-04T15:59:32Z",
+      "modified": "2021-10-04T15:59:37.292Z",
+      "groups": [],
+      "users": [],
+      "teams": []
+    }
+  },
+  {
+    "model": "teams.flag",
+    "pk": 2,
+    "fields": {
+      "name": "templates",
+      "everyone": false,
+      "percent": null,
+      "testing": false,
+      "superusers": true,
+      "staff": false,
+      "authenticated": false,
+      "languages": "",
+      "rollout": false,
+      "note": "",
+      "created": "2021-10-13T13:06:32Z",
+      "modified": "2021-10-13T13:06:37.292Z",
+      "groups": [],
+      "users": [],
+      "teams": []
+    }
+  },
+  {
+    "model": "teams.flag",
+    "pk": 3,
+    "fields": {
+      "name": "alpha",
+      "everyone": true,
+      "percent": null,
+      "testing": false,
+      "superusers": true,
+      "staff": false,
+      "authenticated": false,
+      "languages": "",
+      "rollout": false,
+      "note": "",
+      "created": "2021-10-04T15:59:32Z",
+      "modified": "2021-10-04T15:59:37.292Z",
+      "groups": [],
+      "users": [],
+      "teams": []
+    }
+  },
+  {
     "model": "teams.team",
     "pk": 1,
     "fields": {
@@ -3392,7 +3455,7 @@
     "pk": 10,
     "fields": {
       "created": "2021-12-16T01:46:42.564Z",
-      "updated": "2022-01-06T20:43:27.126Z",
+      "updated": "2022-01-12T02:02:56.258Z",
       "state": "success",
       "started_at": "2021-12-16T01:46:42.563Z",
       "completed_at": "2021-12-16T01:46:46.036Z",
@@ -3427,66 +3490,6 @@
       "body": "none",
       "body_raw": null,
       "body_binary": ""
-    }
-  },
-  {
-    "model": "teams.flag",
-    "pk": 1,
-    "fields": {
-      "name": "beta",
-      "everyone": true,
-      "percent": null,
-      "testing": false,
-      "superusers": true,
-      "staff": false,
-      "authenticated": false,
-      "languages": "",
-      "rollout": false,
-      "note": "",
-      "created": "2021-10-04T15:59:32Z",
-      "modified": "2021-10-04T15:59:37.292Z",
-      "groups": [],
-      "users": []
-    }
-  },
-  {
-    "model": "teams.flag",
-    "pk": 2,
-    "fields": {
-      "name": "templates",
-      "everyone": false,
-      "percent": null,
-      "testing": false,
-      "superusers": true,
-      "staff": false,
-      "authenticated": false,
-      "languages": "",
-      "rollout": false,
-      "note": "",
-      "created": "2021-10-13T13:06:32Z",
-      "modified": "2021-10-13T13:06:37.292Z",
-      "groups": [],
-      "users": []
-    }
-  },
-  {
-    "model": "teams.flag",
-    "pk": 3,
-    "fields": {
-      "name": "alpha",
-      "everyone": true,
-      "percent": null,
-      "testing": false,
-      "superusers": true,
-      "staff": false,
-      "authenticated": false,
-      "languages": "",
-      "rollout": false,
-      "note": "",
-      "created": "2021-10-04T15:59:32Z",
-      "modified": "2021-10-04T15:59:37.292Z",
-      "groups": [],
-      "users": []
     }
   },
   {
@@ -3626,7 +3629,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2022-01-06T20:43:27.109Z" }
+    "fields": { "last_update": "2022-01-12T02:02:56.241Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
