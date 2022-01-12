@@ -34,6 +34,11 @@
   <script src="{% static 'js/stimulus-bundle.js' %}"></script>
   <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
   <script src="{% url 'api_schemajs' %}"></script>
+
+  <!-- Include the Quill library -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  {% include 'components/fusionchart_scripts.html' %}
 </head>
 <body class="pad">
   {% block body %}
@@ -143,11 +148,6 @@
       {% endif %}
     </footer>
   </div>
-
-  <!-- Include the Quill library -->
-  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-  {% include 'components/fusionchart_scripts.html' %}
 
   {% comment %}
   We need this inline as the max-width is variable depending on dashboard size.
