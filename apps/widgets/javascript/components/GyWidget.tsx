@@ -16,7 +16,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
   const id = children.props['data-id']
 
   // Utilised to decide the clamping on interaction as well as clamps for placement
-  const stepSize = children.props['data-grid-size'] || 15
+  const stepSize = parseInt(children.props['data-grid-size']) || 15
 
   const [x, setX] = useState(() => parseInt(children.props['data-x']) || 0)
   const [y, setY] = useState(() => parseInt(children.props['data-y']) || 0)
@@ -100,8 +100,8 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
           x < 0
             ? 0
             : parent && x + node.clientWidth > parent.offsetWidth
-            ? parent.offsetWidth - node.clientWidth
-            : Math.round(x / stepSize) * stepSize
+              ? parent.offsetWidth - node.clientWidth
+              : Math.round(x / stepSize) * stepSize
         )
         // Snaps the y value to the top of the parent element
         const newY = Math.floor(y > 0 ? Math.round(y / stepSize) * stepSize : 0)
@@ -114,6 +114,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
           y: newY,
         })
       }}
+      cancel='.ql-editor'
     >
       {children}
     </ReactRnd>

@@ -25,7 +25,7 @@ from apps.projects.models import Project
 from apps.runs.models import GraphRun, JobRun
 from apps.sheets.models import Sheet
 from apps.tables.models import Table
-from apps.teams.models import Team
+from apps.teams.models import Flag, Team
 from apps.uploads.models import Upload
 from apps.widgets.models import Widget
 from apps.workflows.models import Workflow
@@ -299,3 +299,9 @@ class InviteFactory(factory.django.DjangoModelFactory):
 class ColumnFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Column
+
+
+@register
+class FlagFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Flag

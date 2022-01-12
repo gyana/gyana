@@ -52,3 +52,14 @@
   width: 100%;
   padding-bottom: 1.6rem;
 }
+
+#editor {
+  border: none;
+  cursor: text;
+}
+
+.widgets .ql-toolbar.ql-snow {
+  background: var(--c-white);
+  border: none;
+  border-bottom: 1px solid var(--c-gray);
+}

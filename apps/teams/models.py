@@ -15,6 +15,7 @@ from apps.base.models import BaseModel
 
 from . import roles
 from .config import PLANS
+from .flag import Flag
 
 WARNING_BUFFER = 0.2
 

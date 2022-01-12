@@ -441,3 +441,6 @@ DJPADDLE_BUSINESS_PLAN_ID = int(os.getenv("DJPADDLE_BUSINESS_PLAN_ID", default="
 
 # https://stackoverflow.com/questions/47153776/how-to-store-third-party-apps-migrations-in-django
 MIGRATION_MODULES = {"djpaddle": "apps.teams.migrate.djpaddle"}
+
+
+WAFFLE_FLAG_MODEL = "teams.Flag"

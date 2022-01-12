@@ -45,6 +45,7 @@
     </form>
   </turbo-frame>
 
+  {% if not request.GET.mode or request.GET.mode == "edit" %}
   <div
     data-controller="popover"
     data-placement="bottom-start"
@@ -66,7 +67,6 @@
           type="submit"
           class="list__item list__item--interactive w-full"
           id="dashboards-duplicate-{{ object.id }}"
-          data-controller="tooltip"
           data-loading-false
         >
           Duplicate
@@ -131,6 +131,7 @@
 
     <span data-tooltip-target="body">Customize dimensions, grid spacing and color palette</span>
   </div>
+  {% endif %}
   
   <div data-controller="tooltip">
     {% if not request.GET.mode or request.GET.mode == "edit" %}
@@ -211,5 +212,9 @@
 {% endblock %}
 
 {% block page_js %}
+  <!-- Include the Quill library -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
   {% include "components/fusionchart_scripts.html" with palette_colors=object.palette_colors %}
 {% endblock %}
