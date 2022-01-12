@@ -27,6 +27,7 @@ def get_not_deleted_entries(data, regex):
 class GenericWidgetForm(LiveUpdateForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
+    sort_column = forms.ChoiceField(choices=(), required=False)
 
     class Meta:
         model = Widget
@@ -36,6 +37,7 @@ class GenericWidgetForm(LiveUpdateForm):
             "dimension",
             "second_dimension",
             "sort_by",
+            "sort_column",
             "sort_ascending",
             "stack_100_percent",
             "date_column",
@@ -86,12 +88,11 @@ class GenericWidgetForm(LiveUpdateForm):
                 )
                 columns = group_columns + aggregations
                 if columns:
-                    self.fields["sort_by"].choices = [("", "No column selected")] + [
-                        (name, name) for name in columns
-                    ]
+                    self.fields["sort_column"].choices = [
+                        ("", "No column selected")
+                    ] + [(name, name) for name in columns]
                 else:
-                    self.fields["sort_by"].choices = create_column_choices(schema)
-                self.fields["sort_by"].required = False
+                    self.fields["sort_column"].choices = create_column_choices(schema)
 
     def get_live_fields(self):
         fields = ["table", "kind"]
@@ -102,7 +103,7 @@ class GenericWidgetForm(LiveUpdateForm):
         if self.get_live_field("kind") == Widget.Kind.TABLE and self.get_live_field(
             "table"
         ):
-            fields += ["sort_by", "show_summary_row"]
+            fields += ["sort_column", "show_summary_row"]
         return fields
 
     def get_live_formsets(self):

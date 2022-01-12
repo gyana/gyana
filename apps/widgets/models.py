@@ -103,6 +103,9 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
         choices=(("dimension", "Dimension"), ("metric", "Metric")),
         default="dimension",
     )
+    sort_column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, blank=True, null=True
+    )
     sort_ascending = models.BooleanField(default=True)
 
     # display state

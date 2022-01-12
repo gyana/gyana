@@ -158,7 +158,7 @@
         {% endwith %}
       {% endif %}
 
-      {% with array='name kind table date_column sort_by'%}
+      {% with array='name kind table date_column sort_column'%}
       {% for bound_field in form.visible_fields %}
       {% if bound_field.name not in array.split %}
         <div class="input-group">
@@ -197,12 +197,12 @@
       {% endfor %}
       {% endwith %}
         
-      {% if form.sort_by %}
+      {% if form.sort_column %}
       <fieldset>
-        <label>{{ form.sort_by.label}}</label>
+        <label>{{ form.sort_column.label}}</label>
 
         <div class="formset-wrapper">
-          {{ form.sort_by }}
+          {{ form.sort_column }}
 
           <div>
             <label class="input__toggle" for="{{ form.sort_ascending.id_for_label }}">
