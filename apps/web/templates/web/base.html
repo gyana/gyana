@@ -77,44 +77,50 @@
         {% include "web/components/admin.html" %}
         {% endif %}
 
-        <a
-          id="changelogWidgetID"
-          class="sidebar__link sidebar__link--border cursor-pointer"
-          data-controller="tooltip"
+        <button
+          class="sidebar__link sidebar__link--border" 
+          data-controller="popover tooltip"
           data-tooltip-placement="right"
+          data-tooltip-content="Help"
+          data-placement="right-end"
+          data-theme="popover-menu"
           data-show-on-collapse="true"
         >
-          <i class="fas fa-fw fa-bullhorn"></i>What's new?
+        <i class="fas fa-fw fa-question"></i></i>Help
 
-          <span data-tooltip-target="body">What's new?</span>
-        </a>
+          <template data-popover-target="body">
+            <a
+              id="changelogWidgetID"
+              data-action="click->tf-modal#open"
+              data-controller="tooltip"
+              data-tooltip-placement="right"
+              data-modal-src="{% url "web:changelog" %}"
+              data-modal-id="web:changelog"
+              data-modal-classes="tf-modal--tall"
+              data-show-on-collapse="true"
+              class="list__item list__item--interactive w-full"
+            >
+              What's new?
+            </a>
 
-        <a
-          href="https://join.slack.com/t/gyanacommunity/shared_invite/zt-vly76dna-dxv12CkXdanlwqMam5zDPQ"
-          class="sidebar__link sidebar__link--border"
-          data-controller="tooltip"
-          data-tooltip-placement="right"
-          data-show-on-collapse="true"
-        >
-          <i class="fas fa-fw fa-comments-alt"></i> Join our Slack
+            <a
+              href="https://join.slack.com/t/gyanacommunity/shared_invite/zt-vly76dna-dxv12CkXdanlwqMam5zDPQ"
+              class="list__item list__item--interactive w-full"
+            >
+              Join our Slack
+            </a>
 
-          <span data-tooltip-target="body">Join our Slack</span>
-        </a>
-
-        <a
-          class="sidebar__link sidebar__link--border"
-          data-action="click->tf-modal#open"
-          data-controller="tooltip"
-          data-tooltip-placement="right"
-          data-modal-src="{% url "web:help" %}"
-          data-modal-id="web:help"
-          data-modal-classes="tf-modal--tall"
-          data-show-on-collapse="true"
-        >
-          <i class="fas fa-fw fa-question"></i>Help
-
-          <span data-tooltip-target="body">Help</span>
-        </a>
+            <a
+              data-action="click->tf-modal#open"
+              data-modal-src="{% url "web:help" %}"
+              data-modal-id="web:help"
+              data-modal-classes="tf-modal--tall"
+              class="list__item list__item--interactive w-full"
+            >
+              Getting started
+            </a>
+          </template>
+        </button>
 
         <button
           class="sidebar__link sidebar__link--border" 
@@ -168,8 +174,6 @@
 
     {% block body %}{% endblock %}
   </main>
-
-  {% include "web/components/hellonext_changelog.html" %}
 
   {% comment %}
   For use with the `tf_modal_controller.js` controller.
