@@ -58,7 +58,7 @@ def test_generic_form(kind, formset_classes, setup, widget_factory):
     form = FORMS[kind](instance=widget)
     fields = {"kind", "table"}
     if kind == Widget.Kind.TABLE:
-        fields |= {"show_summary_row"}
+        fields |= {"show_summary_row", "sort_column", "sort_ascending"}
     assert set(form.get_live_fields()) == fields
     assert set(form.get_live_formsets()) == formset_classes
 
@@ -197,6 +197,8 @@ def test_date_column_is_added(setup, widget_factory, control_factory):
         "kind",
         "table",
         "show_summary_row",
+        "sort_column",
+        "sort_ascending",
         "date_column",
     }
     assertFormChoicesLength(form, "date_column", 9)
