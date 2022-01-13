@@ -267,6 +267,12 @@ DATETIME_FILTERS = {
     DateRange.LAST_YEAR: last_year,
 }
 
+PREVIOUS_DATERANGE = {
+    DateRange.ONEWEEKAGO: one_week_ago,
+    DateRange.ONEMONTHAGO: one_month_ago,
+    DateRange.ONEYEARAGO: one_year_ago,
+}
+
 FILTER_MAP = {
     Filter.StringPredicate.EQUAL: eq,
     Filter.StringPredicate.NEQUAL: neq,
@@ -289,7 +295,7 @@ FILTER_MAP = {
 }
 
 
-def get_query_from_filter(query, filter: Filter):
+def get_query_from_filter(query, filter: Filter, use_previous_period):
     column = filter.column
     predicate = (
         getattr(filter, PREDICATE_MAP[filter.type])
@@ -305,5 +311,9 @@ def get_query_from_filter(query, filter: Filter):
     return func(query, column, value)
 
 
-def get_query_from_filters(query, filters: List[Filter]):
-    return reduce(get_query_from_filter, filters, query)
+def get_query_from_filters(query, filters: List[Filter], use_previous_period: False):
+    return reduce(
+        partial(get_query_from_filter, use_previous_period=use_previous_period),
+        filters,
+        query,
+    )
