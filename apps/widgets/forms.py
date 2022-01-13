@@ -195,7 +195,10 @@ class StackedChartForm(GenericWidgetForm):
 
         if schema:
             choices = create_column_choices(schema)
-
+            if is_timeseries_chart(self.get_live_field("kind")):
+                self.fields["dimension"].widget = SelectWithDisable(
+                    disabled=disable_non_time(schema)
+                )
             self.fields["dimension"].choices = choices
             self.fields["second_dimension"].choices = choices
             # Can't overwrite label in Meta because we would have to overwrite the whole thing
