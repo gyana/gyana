@@ -184,9 +184,9 @@ class CustomApiUpdateForm(LiveUpdateForm):
             "body_binary",
         ]
         widgets = {
-            "api_key_value": forms.PasswordInput(),
-            "bearer_token": forms.PasswordInput(),
-            "password": forms.PasswordInput(),
+            "api_key_value": forms.PasswordInput(render_value=True),
+            "bearer_token": forms.PasswordInput(render_value=True),
+            "password": forms.PasswordInput(render_value=True),
         }
         labels = {
             "url": "URL",

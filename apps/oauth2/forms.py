@@ -30,7 +30,7 @@ class OAuth2UpdateForm(forms.ModelForm):
             "token_url",
             "scope",
         ]
-        widgets = {"client_secret": forms.PasswordInput()}
+        widgets = {"client_secret": forms.PasswordInput(render_value=True)}
         labels = {
             "client_id": "Client ID",
             "client_secret": "Client Secret",
