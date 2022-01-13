@@ -143,7 +143,7 @@ def test_validation_failures(client, logged_in_user, sheet_factory, sheets):
     # invalid cell range
     r = client.get(f"{DETAIL}/configure")
     assertOK(r)
-    assertFormRenders(r, ["name", "sheet_name", "cell_range"])
+    assertFormRenders(r, ["sheet_name", "cell_range"], "#configure-update-form")
 
     error = googleapiclient.errors.HttpError(Mock(), b"")
     error.reason = "Unable to parse range: does_not_exist!A1:D11"

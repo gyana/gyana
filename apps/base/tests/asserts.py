@@ -56,12 +56,18 @@ def assertNotFound(response):
     assert response.status_code == 404, f"{response.status_code} != 404"
 
 
-def assertFormRenders(response, expected_fields=[]):
+def assertFormRenders(response, expected_fields=[], formSelector=None):
     __tracebackhide__ = True
 
     soup = BeautifulSoup(response.content)
 
-    matches = soup.select("form input,select,textarea")
+    if formSelector is not None:
+        matches = soup.select(
+            f"{formSelector} input,{formSelector} select,{formSelector} textarea"
+        )
+    else:
+        matches = soup.select("form input,select,textarea")
+
     IGNORE_LIST = ["csrfmiddlewaretoken", "hidden_live", "__prefix__"]
     fields = [
         m["name"]

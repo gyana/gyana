@@ -3,8 +3,8 @@
 
   <input type="hidden" name="project" value="{{ integration.project.id }}"/>
   <input type="hidden" name="integration" value="{{ integration.id }}" />
-  <button submit="type" class="button button--filled button--sm">
-    <i class="fas fa-fw fa-plus"></i>
-    Create dashboard
-  </button>
+
+  <button type="submit" href="{% url 'project_integrations_sheets:create' project.id %}">
+    <i class="fas fa-fw fa-chart-pie mr-4"></i> New dashboard
+  </a>
 </form>

@@ -11,7 +11,7 @@
         {% csrf_token %}
 
         <input
-          class='input__inline'
+          class="input__inline"
           id="name"
           type="text"
           name="name"
@@ -35,29 +35,57 @@
     <span data-tooltip-target="body">Go to Google Sheet</span>
   </a>
   {% endif %}
+
+  {% if integration.ready %}
+  <div data-controller='popover'>
+    <button class="button button--sm">
+      Use in<i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
+    </button>
+
+    <ul data-popover-target="body" class="list list--bordered" style="margin-top:6px;">
+      <li class="list__item list__item--interactive">
+        {% include "workflows/create_from_integration.html" %}
+      </li>
+
+      <li class="list__item list__item--interactive">
+        {% include "dashboards/create_from_integration.html" %}
+      </li>
+    </ul>
+  </div>
+  {% endif %}
 </div>
 
 {% if integration.ready %}
   <div class="workflow-detail__header flex items-center space-x-2 p-4 pl-8 bg-white border-b border-gray">
-    <p>
-      <strong>{{ integration.num_rows }}</strong> row{{ integration.num_rows|pluralize }} •
-      <strong>{{ integration.num_tables }}</strong> table{{ integration.num_tables|pluralize }} •
-    </p>
+    <div class="flex items-center">
+      <p>
+        <strong>{{ integration.num_rows }}</strong> row{{ integration.num_rows|pluralize }} •
+        <strong>{{ integration.num_tables }}</strong> table{{ integration.num_tables|pluralize }} •
+      </p>
+  
+      <p class="flex items-center gap-2 m-0">
+        {% if integration.created_by %}
+        <img
+          class="h-8 w-8 rounded-full ml-2"
+          src="{{ integration.created_by.avatar_url }}"
+          alt="{{ integration.created_by.get_display_name }}"
+        />
+        {% endif %}
 
-    {% if integration.created_by %}<img class="h-8 w-8 rounded-full" src="{{ integration.created_by.avatar_url }}">{% endif %}
-    <p class="m-0">
-      <strong>{{ integration.created_by.get_full_name }}</strong> created this integration
-      <strong>{% include 'columns/natural_datetime.html' with datetime=integration.created %}</strong>
-      {% if object.kind == 'sheet' %}
-        • <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
-          {% include "sheets/status.html" with object=object.sheet %}
-        </turbo-frame>
-      {% elif object.kind == 'connector' %}
-        • <turbo-frame id="connectors:status" src="{% url 'connectors:status' object.connector.id %}">
-          {% include "connectors/status.html" with object=object.connector %}
-        </turbo-frame>
-      {% endif %}
-    </p>
+        <strong>{{ integration.created_by.get_display_name }}</strong> created this integration
+        <strong>{% include 'columns/natural_datetime.html' with datetime=integration.created %}</strong>
+
+        {% if object.kind == 'sheet' %}
+          • <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
+            {% include "sheets/status.html" with object=object.sheet %}
+          </turbo-frame>
+        {% elif object.kind == 'connector' %}
+          • <turbo-frame id="connectors:status" src="{% url 'connectors:status' object.connector.id %}">
+            {% include "connectors/status.html" with object=object.connector %}
+          </turbo-frame>
+        {% endif %}
+      </p>
+    </div>
   </div>
 {% endif %}
 

@@ -16,9 +16,19 @@
           <span data-tooltip-target="body">All team members have access</span>
         </i>
         {% else %}
-        <i data-controller="tooltip"  class="fas fa-fw fa-lock ml-auto">
-          <span data-tooltip-target="body">Only permitted members have access</span>
-        </i>
+        <div class="flex items-center ml-auto">
+          {% for member in project.record.members.all %}
+            <img
+              class="h-7 w-7 rounded-full ml-2"
+              src="{{ member.avatar_url }}"
+              alt="{{ member.get_display_name }}"
+            />
+          {% endfor %}
+
+          <i data-controller="tooltip"  class="fas fa-fw fa-lock ml-4">
+            <span data-tooltip-target="body">Only permitted members have access</span>
+          </i>
+        </div>
         {% endif %}
       </header>
 

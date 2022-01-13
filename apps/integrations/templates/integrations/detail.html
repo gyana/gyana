@@ -19,33 +19,33 @@
   {% endif %}
 
   <div class="card card--none">
-    <nav id='tabbar-setup' class="flex flex-col items-center w-full  py-2 border-b border-gray pl-4">
-      <div class="flex flex-row items-center space-x-2">
-        <a class="hover:underline {% if not request.GET.view or request.GET.view == 'preview' %} text-blue {% endif %}"
-            href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=preview">
-            <p>Preview</p>
-        </a>
-        <p>•</p>
-        <a class="hover:underline {% if request.GET.view == 'schema' %} text-blue {% endif %}"
-            href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=schema">
-            <p>Schema</p>
-        </a>  
-        <p>•</p>
-        <a class="hover:underline {% if request.GET.view == 'detail' %} text-blue {% endif %}"
-            href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=detail">
-            <p>Detail</p>
-        </a>
+    <div class="tabbar">
+      <a
+        class="tabbar__link {% if not request.GET.view or request.GET.view == 'preview' %}tabbar__link--active{% endif %}"
+        href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=preview"
+      >
+        Preview
+      </a>
+      <a
+        class="tabbar__link {% if request.GET.view == 'schema' %}tabbar__link--active{% endif %}"
+        href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=schema"
+      >
+        Schema
+      </a>
+      <a
+        class="tabbar__link {% if request.GET.view == 'detail' %}tabbar__link--active{% endif %}"
+        href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=detail"
+      >
+        Detail
+      </a>
 
-        {% comment %} TODO: {% if table_id %}
+      {% comment %} TODO: {% if table_id %}
+        <turbo-frame id='exports:create_integration_table' class='ml-auto'>
+          {% include 'exports/create.html' with parent_id=table_id target_url='exports:create_integration_table' %}
+        </turbo-frame>
+      {% endif %} {% endcomment %}
+    </div>
 
-          <turbo-frame id='exports:create_integration_table' class='ml-auto'>
-            {% include 'exports/create.html' with parent_id=table_id target_url='exports:create_integration_table' %}
-          </turbo-frame>
-
-        {% endif %} {% endcomment %}
-
-      </div>
-    </nav>
     <div class="flex flex-row">
       {% if tables|length > 1 %}
         <div class="bg-gray-20 overflow-auto w-100 border-gray border-0 border-r flex-shrink-0 p-4">

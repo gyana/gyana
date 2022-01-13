@@ -32,7 +32,11 @@
       {% include "django/forms/default_form.html" %}
 
       <div class="flex w-full">
-        <button type="submit" class="button button--success w-full">Save</button>
+        <button 
+          data-action="click->tf-modal#save"
+          type="submit" 
+          class="button button--success w-full"
+        >Save</button>
       </div>
     </form>
   </div>

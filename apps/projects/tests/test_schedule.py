@@ -83,8 +83,7 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker, is_paid):
 
     r = client.get(f"{DETAIL}/settings")
     assertOK(r)
-    # todo: fix this!
-    assertFormRenders(r, ["name", "is_scheduled"])
+    assertFormRenders(r, ["is_scheduled"], "#integration-schedule-form")
 
     # Add the schedule
     r = client.post(f"{DETAIL}/settings", data={"is_scheduled": True})

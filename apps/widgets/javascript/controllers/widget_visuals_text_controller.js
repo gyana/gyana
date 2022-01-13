@@ -19,6 +19,7 @@ export default class extends Controller {
       placeholder: 'Type your notes here...',
       theme: 'snow',
       readOnly: this.readOnlyValue,
+      bounds: this.element,
       modules: {
         "toolbar": !this.readOnlyValue
       },

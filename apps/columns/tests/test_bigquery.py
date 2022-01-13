@@ -2,8 +2,10 @@ import ibis_bigquery
 import pytest
 
 from apps.base.tests.mock_data import TABLE
-from apps.columns.bigquery import compile_function
+from apps.columns.bigquery import DatePeriod, aggregate_columns, compile_function
 from apps.columns.models import EditColumn
+
+pytestmark = pytest.mark.django_db
 
 QUERY = """SELECT {} AS `tmp`
 FROM olympians"""
@@ -239,3 +241,58 @@ def create_extract_edit(column, extraction, type_):
 def test_compile_function(edit, expected_sql):
     sql = ibis_bigquery.compile(compile_function(TABLE, edit))
     assert sql == expected_sql
+
+
+GROUP_QUERY = "SELECT {}, count(*) AS `count`\nFROM olympians\nGROUP BY 1"
+
+PARAMS = [
+    pytest.param(
+        "birthday",
+        DatePeriod.MONTH,
+        GROUP_QUERY.format("DATE_TRUNC(`birthday`, MONTH) AS `birthday`"),
+        id="month",
+    ),
+    pytest.param(
+        "birthday",
+        DatePeriod.WEEK,
+        GROUP_QUERY.format("DATE_TRUNC(`birthday`, WEEK) AS `birthday`"),
+        id="week",
+    ),
+    pytest.param(
+        "birthday",
+        DatePeriod.MONTH_ONLY,
+        GROUP_QUERY.format("EXTRACT(month from `birthday`) AS `birthday`"),
+        id="month only",
+    ),
+    pytest.param(
+        "when",
+        DatePeriod.DATE,
+        GROUP_QUERY.format("DATE(`when`) AS `when`"),
+        id="date",
+    ),
+    pytest.param(
+        "birthday",
+        DatePeriod.YEAR,
+        GROUP_QUERY.format("EXTRACT(year from `birthday`) AS `birthday`"),
+        id="year",
+    ),
+    pytest.param(
+        "birthday",
+        DatePeriod.QUARTER,
+        GROUP_QUERY.format("DATE_TRUNC(`birthday`, QUARTER) AS `birthday`"),
+        id="quarter",
+    ),
+]
+
+
+@pytest.mark.parametrize("name, part, expected_sql", PARAMS)
+def test_column_part_group(name, part, expected_sql, column_factory, node_factory):
+    node = node_factory()
+    column_factory(column=name, part=part, node=node)
+    sql = ibis_bigquery.compile(aggregate_columns(TABLE, node))
+    assert sql == expected_sql
+
+
+def test_all_parts_tested():
+    tested_parts = {test.values[1] for test in PARAMS}
+    assert tested_parts == set(DatePeriod)

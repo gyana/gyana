@@ -12,6 +12,7 @@ urlpatterns = [
 
     # Trubo frames
     path("help", frames.HelpModal.as_view(), name="help"),
+    path("changelog", frames.ChangelogModal.as_view(), name="changelog"),
 ]
 
 # Users should not be able to access error pages directly.

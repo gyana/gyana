@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from django.db.models import TextChoices
+from ibis.expr import datatypes as idt
 from lark import Lark
 
 from apps.columns.transformer import TreeToIbis
@@ -121,9 +123,62 @@ def get_aggregate_expr(query, colname, computation, column_names):
     return getattr(column, computation)().name(colname)
 
 
+def truncate_month(column):
+    return column.truncate("M")
+
+
+def truncate_week(column):
+    return column.truncate("W")
+
+
+def extract_year(column):
+    return column.year()
+
+
+def extract_month(column):
+    return column.month()
+
+
+def extract_date(column):
+    return column.date()
+
+
+def truncate_quarter(column):
+    return column.truncate("Q")
+
+
+class DatePeriod(TextChoices):
+    DATE = "date", "Date"
+    WEEK = "week", "Week with year"
+    MONTH = "month", "Month with year"
+    MONTH_ONLY = "monthonly", "Month without year"
+    YEAR = "year", "Year"
+    QUARTER = "quarter", "Quarter with year"
+
+
+PART_MAP = {
+    DatePeriod.MONTH: truncate_month,
+    DatePeriod.MONTH_ONLY: extract_month,
+    DatePeriod.YEAR: extract_year,
+    DatePeriod.DATE: extract_date,
+    DatePeriod.WEEK: truncate_week,
+    DatePeriod.QUARTER: truncate_quarter,
+}
+
+
+def _get_groups(query, instance):
+    groups = []
+    for column in instance.columns.all():
+        group = query[column.column]
+        if isinstance(group.type(), (idt.Date, idt.Timestamp)) and column.part:
+            group = PART_MAP[column.part](group).name(column.column)
+        groups.append(group)
+    return groups
+
+
 def aggregate_columns(query, instance):
     """Aggregates over multiple aggregations and resolves name conflicts"""
-    groups = [col.column for col in instance.columns.all()]
+    groups = _get_groups(query, instance)
     aggregations = instance.aggregations.all()
     column_names = [agg.column for agg in aggregations]
     aggregations = [

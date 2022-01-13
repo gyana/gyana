@@ -6,6 +6,7 @@ from apps.cnames.models import CName
 from apps.columns.models import (
     AddColumn,
     AggregationColumn,
+    Column,
     ConvertColumn,
     EditColumn,
     FormulaColumn,
@@ -292,6 +293,13 @@ class InviteFactory(factory.django.DjangoModelFactory):
         model = Invite
 
     sent = timezone.now()
+
+
+@register
+class ColumnFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Column
+
 
 @register
 class FlagFactory(factory.django.DjangoModelFactory):
