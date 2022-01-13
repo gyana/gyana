@@ -1,4 +1,5 @@
 import json
+from itertools import chain
 from uuid import uuid4
 
 import requests
@@ -10,6 +11,7 @@ from django.utils import timezone
 from jsonpath_ng import parse
 from requests_oauthlib import OAuth2Session
 
+from apps.base.bigquery import sanitize_bq_column_name
 from apps.base.time import catchtime
 from apps.integrations.emails import send_integration_ready_email
 from apps.runs.models import JobRun
@@ -72,13 +74,20 @@ def run_customapi_sync_task(self, run_id):
                 "JSONPath expression does not match any part of the JSON response."
             )
 
-        if len(jsonpath_matches) > 1:
-            raise Exception(
-                "JSONPath expression matches more than one part of the JSON response."
-            )
+        # Merge results for JSON Path expression with multiple matches
+        # e.g. airtable API $.records[*].fields
+        parsed_data = chain.from_iterable(
+            [match.value] if not isinstance(match.value, list) else match.value
+            for match in jsonpath_matches
+        )
 
-        parsed_data = jsonpath_matches[0].value
-        ndjson = "\n".join([json.dumps(item) for item in parsed_data])
+        # bigquery does not automatically sanitize
+        sanitized_data = [
+            {sanitize_bq_column_name(k): v for k, v in record.items()}
+            for record in parsed_data
+        ]
+
+        ndjson = "\n".join([json.dumps(item) for item in sanitized_data])
         customapi.ndjson_file.save(
             f"customapi_{customapi.id}.ndjson", ContentFile(ndjson.encode("utf-8"))
         )
