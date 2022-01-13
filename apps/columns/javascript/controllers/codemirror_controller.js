@@ -70,8 +70,8 @@ CodeMirror.defineSimpleMode('gyanaformula', {
       regex: operationRegex,
       token: 'keyword',
     },
-    { regex: columnRegex, token: 'variable' },
     { regex: /TRUE|FALSE/, token: 'atom' },
+    { regex: columnRegex, token: 'variable' },
     { regex: /[0-9]+/i, token: 'number' },
     { regex: /[-+\/*=<>!]+/, token: 'operator' },
   ],
@@ -131,8 +131,10 @@ const registerLinter = (columns) =>
         if (
           newline[m.index + m[0].length] != '(' &&
           !columnNames.includes(m[0]) &&
-          !(newline[m.index + m[0].length] == '"' && newline[m.index - 1] == '"')
+          !(newline[m.index + m[0].length] == '"' && newline[m.index - 1] == '"') &&
+          !['TRUE', 'FALSE'].includes(m[0])
         ) {
+          console.log(m)
           result.push({
             message: `Column ${m[0]} does not exist`,
             severity: 'error',
