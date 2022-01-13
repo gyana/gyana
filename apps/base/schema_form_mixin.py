@@ -8,7 +8,7 @@ class SchemaFormMixin:
     def column_type(self):
         column = self.get_live_field("column")
         if self.schema and column in self.schema:
-            return self.schema[column].name
+            return self.schema[column]
         return None
 
     def __init__(self, *args, **kwargs):

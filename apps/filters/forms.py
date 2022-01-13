@@ -79,7 +79,7 @@ class FilterForm(SchemaFormMixin, LiveUpdateForm):
 
         fields = ["column"]
         if self.column_type:
-            filter_type = IBIS_TO_TYPE[self.column_type]
+            filter_type = IBIS_TO_TYPE[self.column_type.name]
             predicate = PREDICATE_MAP.get(filter_type)
             value = f"{filter_type.lower()}_value"
 

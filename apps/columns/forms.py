@@ -1,5 +1,5 @@
 from django import forms
-from ibis.expr.datatypes import Floating
+from ibis.expr.datatypes import Date, Floating, Timestamp
 
 from apps.base.aggregations import AGGREGATION_TYPE_MAP
 from apps.base.live_update_form import BaseLiveSchemaForm
@@ -38,14 +38,14 @@ class ColumnForm(BaseLiveSchemaForm):
 
     def get_live_fields(self):
         fields = ["column"]
-        if self.column_type in ["Timestamp", "Date"]:
+        if isinstance(self.column_type, (Timestamp, Date)):
             fields += ["part"]
         return fields
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if "part" in self.fields and self.column_type == "Date":
+        if "part" in self.fields and isinstance(self.column_type, Date):
             self.fields["part"].choices = [
                 choice
                 for choice in self.fields["part"].choices
@@ -77,7 +77,7 @@ class AggregationColumnForm(BaseLiveSchemaForm):
         if self.column_type is not None:
             self.fields["function"].choices = [
                 (choice.value, choice.name)
-                for choice in AGGREGATION_TYPE_MAP[self.column_type]
+                for choice in AGGREGATION_TYPE_MAP[self.column_type.name]
             ]
 
 
@@ -115,7 +115,9 @@ class OperationColumnForm(BaseLiveSchemaForm):
     def get_live_fields(self):
         fields = ["column"]
 
-        if self.column_type and (function_field := IBIS_TO_FUNCTION[self.column_type]):
+        if self.column_type and (
+            function_field := IBIS_TO_FUNCTION[self.column_type.name]
+        ):
             fields += [function_field]
             operation = AllOperations.get(self.get_live_field(function_field))
             if operation and operation.arguments == 1:
@@ -166,7 +168,9 @@ class AddColumnForm(BaseLiveSchemaForm):
 
     def get_live_fields(self):
         fields = ["column"]
-        if self.column_type and (function_field := IBIS_TO_FUNCTION[self.column_type]):
+        if self.column_type and (
+            function_field := IBIS_TO_FUNCTION[self.column_type.name]
+        ):
             fields += [function_field]
             operation = AllOperations.get(self.get_live_field(function_field))
             if operation and operation.arguments == 1:
@@ -206,7 +210,7 @@ class WindowColumnForm(BaseLiveSchemaForm):
         if self.column_type is not None:
             self.fields["function"].choices = [
                 (choice.value, choice.name)
-                for choice in AGGREGATION_TYPE_MAP[self.column_type]
+                for choice in AGGREGATION_TYPE_MAP[self.column_type.name]
             ]
             self.fields["group_by"] = forms.ChoiceField(
                 choices=choices,
