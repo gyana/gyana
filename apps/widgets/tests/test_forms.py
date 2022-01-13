@@ -185,20 +185,19 @@ def test_date_column_is_added(setup, widget_factory, control_factory):
         kind=Widget.Kind.TABLE, table=table, page__dashboard=dashboard
     )
     form = FORMS[widget.kind](instance=widget, project=dashboard.project)
-
-    assert set(form.get_live_fields()) == {"kind", "show_summary_row", "table"}
+    default_set = {
+        "kind",
+        "show_summary_row",
+        "sort_column",
+        "sort_ascending",
+        "table",
+    }
+    assert set(form.get_live_fields()) == default_set
 
     control_factory(page=dashboard.pages.first())
     widget.refresh_from_db()
 
     form = FORMS[widget.kind](instance=widget, project=dashboard.project)
 
-    assert set(form.get_live_fields()) == {
-        "kind",
-        "table",
-        "show_summary_row",
-        "sort_column",
-        "sort_ascending",
-        "date_column",
-    }
+    assert set(form.get_live_fields()) == default_set | {"date_column"}
     assertFormChoicesLength(form, "date_column", 9)
