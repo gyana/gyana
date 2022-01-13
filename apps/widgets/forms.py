@@ -12,7 +12,7 @@ from apps.dashboards.forms import PaletteColorsField
 from apps.tables.models import Table
 
 from .formsets import FORMSETS, AggregationColumnFormset, FilterFormset
-from .models import WIDGET_KIND_TO_WEB, Widget
+from .models import COUNT_COLUMN_NAME, WIDGET_KIND_TO_WEB, Widget
 from .widgets import SourceSelect
 
 
@@ -88,6 +88,8 @@ class GenericWidgetForm(LiveUpdateForm):
                 )
                 columns = group_columns + aggregations
                 if columns:
+                    if not aggregations:
+                        columns += [COUNT_COLUMN_NAME]
                     self.fields["sort_column"].choices = [
                         ("", "No column selected")
                     ] + [(name, name) for name in columns]
@@ -103,7 +105,7 @@ class GenericWidgetForm(LiveUpdateForm):
         if self.get_live_field("kind") == Widget.Kind.TABLE and self.get_live_field(
             "table"
         ):
-            fields += ["sort_column", "show_summary_row"]
+            fields += ["sort_column", "sort_ascending", "show_summary_row"]
         return fields
 
     def get_live_formsets(self):

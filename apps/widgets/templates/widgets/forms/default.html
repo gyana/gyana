@@ -158,7 +158,7 @@
         {% endwith %}
       {% endif %}
 
-      {% with array='name kind table date_column sort_column'%}
+      {% with array='name kind table date_column sort_column sort_ascending'%}
       {% for bound_field in form.visible_fields %}
       {% if bound_field.name not in array.split %}
         <div class="input-group">
