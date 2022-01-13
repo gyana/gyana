@@ -18,6 +18,7 @@ IBIS_TO_TYPE = {
     "Time": Filter.Type.TIME,
     "Date": Filter.Type.DATE,
     "Float64": Filter.Type.FLOAT,
+    "Decimal": Filter.Type.FLOAT,
     "Boolean": Filter.Type.BOOL,
 }
 
