@@ -133,13 +133,7 @@ def this_week_up_todate(query, column):
 
 def last_week(query, column):
     date = get_date(query[column])
-    year, week, _ = dt.date.today().isocalendar()
-    # If this week is first of this year we are interested in the last week of last year
-    if week == 1:
-        year -= 1
-        week = 52
-    else:
-        week -= 1
+    year, week, _ = (dt.date.today() - dt.timedelta(days=7)).isocalendar()
     return query[(date.year() == year) & (date.isoweek() == week)]
 
 
@@ -267,10 +261,74 @@ DATETIME_FILTERS = {
     DateRange.LAST_YEAR: last_year,
 }
 
+
+def previous_week(query, column):
+    date = get_date(query[column])
+    one_week_ago = dt.date.today() - dt.timedelta(days=7)
+    two_weeks_ago = one_week_ago - dt.timedelta(days=7)
+    return query[date.between(one_week_ago, two_weeks_ago)]
+
+
+def previous_month(query, column):
+    date = get_date(query[column])
+    one_month_ago = dt.date.today() - relativedelta(months=1)
+    two_months_ago = one_month_ago - relativedelta(months=1)
+    return query[date.between(one_month_ago, two_months_ago)]
+
+
+def previous_year(query, column):
+    date = get_date(query[column])
+    one_year_ago = dt.date.today() - relativedelta(years=1)
+    two_years_ago = one_year_ago - relativedelta(years=1)
+    return query[date.between(one_year_ago, two_years_ago)]
+
+
+def previous_last_week(query, column):
+    date = get_date(query[column])
+    year, week, _ = (dt.date.today() - dt.timedelta(days=14)).isocalendar()
+    return query[(date.year() == year) & (date.isoweek() == week)]
+
+
+def previous_last_n_days(query, column, days):
+    date = get_date(query[column])
+    end_day = dt.date.today() - dt.timedelta(days=days)
+    n_days_ago = end_day - dt.timedelta(days=days)
+    return query[date.between(n_days_ago, end_day)]
+
+
+def previous_last_month(query, column):
+    date = get_date(query[column])
+    last_month = dt.date.today() - relativedelta(months=2)
+    return query[(date.year() == last_month.year) & (date.month() == last_month.month)]
+
+
+def previous_last_12_month(query, column):
+    date = get_date(query[column])
+    one_year_ago = dt.date.today() - relativedelta(months=12)
+    two_years_ago = one_year_ago - relativedelta(months=12)
+    return query[date.between(one_year_ago, two_years_ago)]
+
+
+def previous_last_year(query, column):
+    date = get_date(query[column])
+    last_year = (dt.date.today() - relativedelta(years=2)).year
+    return query[date.year() == last_year]
+
+
 PREVIOUS_DATERANGE = {
-    DateRange.ONEWEEKAGO: one_week_ago,
-    DateRange.ONEMONTHAGO: one_month_ago,
-    DateRange.ONEYEARAGO: one_year_ago,
+    DateRange.ONEWEEKAGO: previous_week,
+    DateRange.ONEMONTHAGO: previous_month,
+    DateRange.ONEYEARAGO: previous_year,
+    DateRange.LAST_WEEK: previous_last_week,
+    DateRange.LAST_7: partial(previous_last_n_days, days=7),
+    DateRange.LAST_14: partial(previous_last_n_days, days=14),
+    DateRange.LAST_28: partial(previous_last_n_days, days=28),
+    DateRange.LAST_30: partial(previous_last_n_days, days=30),
+    DateRange.LAST_MONTH: previous_last_month,
+    DateRange.LAST_90: partial(previous_last_n_days, days=90),
+    DateRange.LAST_180: partial(previous_last_n_days, days=180),
+    DateRange.LAST_12_MONTH: previous_last_12_month,
+    DateRange.LAST_YEAR: previous_last_year,
 }
 
 FILTER_MAP = {
@@ -302,7 +360,7 @@ def get_query_from_filter(query, filter: Filter, use_previous_period):
         if filter.type != Filter.Type.BOOL
         else None
     )
-    func = FILTER_MAP[predicate or filter.type]
+    func = PREVIOUS_DATERANGE.get(predicate) or FILTER_MAP[predicate or filter.type]
     value_str = "values" if predicate in ["isin", "notin"] else "value"
     value = getattr(filter, f"{filter.type.lower()}_{value_str}")
     func_params = signature(func).parameters

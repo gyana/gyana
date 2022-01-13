@@ -42,6 +42,8 @@ class GenericWidgetForm(LiveUpdateForm):
             "stack_100_percent",
             "date_column",
             "show_summary_row",
+            "compare_previous_period",
+            "positive_decrease",
         ]
         widgets = {"table": SourceSelect()}
 
@@ -106,6 +108,8 @@ class GenericWidgetForm(LiveUpdateForm):
             "table"
         ):
             fields += ["sort_column", "sort_ascending", "show_summary_row"]
+        if self.get_live_field("kind") == Widget.Kind.METRIC:
+            fields += ["compare_previous_period", "positive_decrease"]
         return fields
 
     def get_live_formsets(self):
