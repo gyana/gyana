@@ -60,7 +60,7 @@ def get_summary_row(query, widget):
     query = query.aggregate(aggregations)
     summary = clients.bigquery().get_query_results(query.compile()).rows_dict[0]
     return {
-        **summary,
+        **{key: round(value, 2) for key, value in summary.items()},
         group.column: "Total",
     }
 

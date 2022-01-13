@@ -104,6 +104,7 @@ class RequestConfig(BaseRequestConfig):
         table.request = self.request
         return super().configure(table)
 
+
 def get_type_name(type_):
     if isinstance(type_, (dt.Floating, dt.Integer)):
         return "Numeric"
@@ -114,6 +115,7 @@ def get_type_name(type_):
     if isinstance(type_, (dt.Date, dt.Time, dt.Time)):
         return "Time"
 
+
 def get_type_class(type_):
     if isinstance(type_, (dt.Floating, dt.Integer)):
         return "column column--numeric"
@@ -123,6 +125,7 @@ def get_type_class(type_):
         return "column column--boolean"
     if isinstance(type_, (dt.Date, dt.Time, dt.Time)):
         return "column column--time"
+
 
 class BigQueryColumn(Column):
     def render(self, value):
@@ -157,7 +160,7 @@ def get_table(schema, query, footer=None, **kwargs):
                 "th": {
                     "class": get_type_class(type_),
                     "data-controller": "tooltip",
-                    "data-tooltip-content": get_type_name(type_)
+                    "data-tooltip-content": get_type_name(type_),
                 }
             },
             footer=footer.get(name) if footer else None,
