@@ -11,7 +11,7 @@ from apps.columns.bigquery import aggregate_columns
 from apps.dashboards.forms import PaletteColorsField
 from apps.tables.models import Table
 
-from .formsets import FORMSETS, AggregationColumnFormset, FilterFormset
+from .formsets import FORMSETS, AggregationColumnFormset, ControlFormset, FilterFormset
 from .models import COUNT_COLUMN_NAME, WIDGET_KIND_TO_WEB, Widget
 from .widgets import SourceSelect
 
@@ -99,7 +99,7 @@ class GenericWidgetForm(LiveUpdateForm):
     def get_live_fields(self):
         fields = ["table", "kind"]
 
-        if self.get_live_field("table") and self.instance.page.has_control:
+        if self.get_live_field("table"):
             fields += ["date_column"]
 
         if self.get_live_field("kind") == Widget.Kind.TABLE and self.get_live_field(
@@ -113,11 +113,16 @@ class GenericWidgetForm(LiveUpdateForm):
             return []
 
         formsets = [FilterFormset]
+
+        if self.get_live_field("date_column"):
+            # Inserting at the beginning because we want it to be before the filter
+            formsets.insert(0, ControlFormset)
         kind = self.get_live_field("kind")
         if chart_formsets := FORMSETS.get(kind):
             formsets += chart_formsets
         else:
             formsets += [AggregationColumnFormset]
+
         return formsets
 
 

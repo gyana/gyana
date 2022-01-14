@@ -3,6 +3,8 @@ from django import forms
 from apps.base.formsets import RequiredInlineFormset
 from apps.columns.forms import AggregationColumnForm, BaseLiveSchemaForm
 from apps.columns.models import AggregationColumn, Column
+from apps.controls.forms import ControlForm
+from apps.controls.models import Control
 from apps.filters.forms import FilterForm
 from apps.filters.models import Filter
 
@@ -34,6 +36,16 @@ ColumnFormset = forms.inlineformset_factory(
     extra=0,
     can_delete=True,
     formset=RequiredInlineFormset,
+)
+
+ControlFormset = forms.inlineformset_factory(
+    Widget,
+    Control,
+    form=ControlForm,
+    can_delete=True,
+    max_num=1,
+    formset=RequiredInlineFormset,
+    extra=0,
 )
 
 

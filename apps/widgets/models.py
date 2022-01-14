@@ -138,10 +138,6 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
         default=False, help_text="Display a summary row at the bottom of your table"
     )
 
-    control = models.OneToOneField(
-        "controls.Control", on_delete=models.SET_NULL, null=True
-    )
-
     def __str__(self):
         return f"<Widget {self.kind} on {self.table}>"
 
@@ -169,6 +165,10 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
     @property
     def category(self):
         return WIDGET_KIND_TO_WEB[self.kind][1]
+
+    @property
+    def has_control(self):
+        return hasattr(self, "control")
 
 
 NO_DIMENSION_WIDGETS = [

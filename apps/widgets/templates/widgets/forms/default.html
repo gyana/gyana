@@ -217,8 +217,18 @@
 
       {% endblock %}
 
+      {% if formsets.control %}
+        {% with formset=formsets.control %}
+          <fieldset>
+            <label>Date range</label>
+            <p class='input__help-text'>The selected date range overrides the page wide date range control.</p>
+            {% include "components/formset.html" with formset=formset %}
+          </fieldset>
+        {% endwith %}
+      {% endif %}
+
       {% for label, formset in formsets.items %}
-      {% if label != "Aggregations" and label != "Charts" and label != "Group columns" %}
+      {% if label != "Aggregations" and label != "Charts" and label != "Group columns" and label != "control"%}
         <fieldset>
           <label>{{ label }}</label>
           {% include "components/formset.html" with formset=formset %}
