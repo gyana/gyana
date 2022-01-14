@@ -43,7 +43,11 @@ def add_output_context(context, widget, request, control):
                     request,
                 ).configure(table)
         elif widget.kind == Widget.Kind.METRIC:
-            context["metric"] = metric_to_output(widget, control)
+            metric = metric_to_output(widget, control)
+            if widget.compare_previous_period:
+                previous_metric = metric_to_output(widget, control, True)
+                context["change"] = (metric - previous_metric) / previous_metric * 100
+            context["metric"] = metric
         else:
             chart, chart_id = chart_to_output(widget, control)
             context.update(chart)

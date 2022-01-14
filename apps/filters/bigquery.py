@@ -353,14 +353,17 @@ FILTER_MAP = {
 }
 
 
-def get_query_from_filter(query, filter: Filter, use_previous_period):
+def get_query_from_filter(query, filter: Filter, use_previous_period=False):
     column = filter.column
     predicate = (
         getattr(filter, PREDICATE_MAP[filter.type])
         if filter.type != Filter.Type.BOOL
         else None
     )
-    func = PREVIOUS_DATERANGE.get(predicate) or FILTER_MAP[predicate or filter.type]
+    if use_previous_period and (previous_func := PREVIOUS_DATERANGE.get(predicate)):
+        func = previous_func
+    else:
+        func = FILTER_MAP[predicate or filter.type]
     value_str = "values" if predicate in ["isin", "notin"] else "value"
     value = getattr(filter, f"{filter.type.lower()}_{value_str}")
     func_params = signature(func).parameters
@@ -369,7 +372,7 @@ def get_query_from_filter(query, filter: Filter, use_previous_period):
     return func(query, column, value)
 
 
-def get_query_from_filters(query, filters: List[Filter], use_previous_period: False):
+def get_query_from_filters(query, filters: List[Filter], use_previous_period=False):
     return reduce(
         partial(get_query_from_filter, use_previous_period=use_previous_period),
         filters,

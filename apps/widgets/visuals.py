@@ -19,9 +19,9 @@ class MaxRowsExceeded(Exception):
     pass
 
 
-def pre_filter(widget, control):
+def pre_filter(widget, control, use_previous_period=False):
     query = get_query_from_table(widget.table)
-    query = get_query_from_filters(query, widget.filters.all())
+    query = get_query_from_filters(query, widget.filters.all(), use_previous_period)
 
     if control and widget.date_column:
         query = slice_query(query, widget.date_column, control)
@@ -78,8 +78,8 @@ def table_to_output(widget: Widget, control) -> Dict[str, Any]:
     return get_table(query.schema(), query, summary)
 
 
-def metric_to_output(widget, control):
-    query = pre_filter(widget, control)
+def metric_to_output(widget, control, use_previous_period=False):
+    query = pre_filter(widget, control, use_previous_period)
 
     aggregation = widget.aggregations.first()
     query = getattr(query[aggregation.column], aggregation.function)().name(
