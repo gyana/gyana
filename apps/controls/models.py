@@ -1,5 +1,4 @@
 from django.db import models
-from django.urls import reverse
 
 from apps.base.models import BaseModel
 from apps.filters.models import DateRange
@@ -14,16 +13,20 @@ class Control(BaseModel):
         DATE_RANGE = "date_range", "Date range"
 
     kind = models.CharField(max_length=16, default=Kind.DATE_RANGE)
-    start = models.DateTimeField(blank=True, null=True)
-    end = models.DateTimeField(blank=True, null=True)
+    start = models.DateTimeField(
+        blank=True, null=True, help_text="Select the start date"
+    )
+    end = models.DateTimeField(blank=True, null=True, help_text="Select the end date")
     date_range = models.CharField(
         max_length=20,
         choices=DateRange.choices + CustomChoice.choices,
         blank=True,
         default=DateRange.THIS_YEAR,
+        help_text="Select the time period",
     )
 
-    page = models.OneToOneField("dashboards.Page", on_delete=models.CASCADE)
+    page = models.OneToOneField("dashboards.Page", on_delete=models.CASCADE, null=True)
+    widget = models.OneToOneField("widgets.Widget", on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.pk

@@ -16,14 +16,14 @@ dashboard_urlpatterns = (
     [
         # Maybe we should move the urls to be under a dashboard url?
         path(
-            "new",
+            "new-widget",
             login_and_project_required(views.ControlWidgetCreate.as_view()),
-            name="create",
+            name="create-widget",
         ),
         path(
-            "<hashid:pk>/update",
+            "<hashid:pk>/update-widget",
             login_and_project_required(frames.ControlUpdate.as_view()),
-            name="update",
+            name="update-widget",
         ),
         path(
             "<hashid:pk>/update-public",
@@ -31,9 +31,9 @@ dashboard_urlpatterns = (
             name="update-public",
         ),
         path(
-            "<hashid:pk>/delete",
+            "<hashid:pk>/delete-widget",
             login_and_project_required(views.ControlWidgetDelete.as_view()),
-            name="delete",
+            name="delete-widget",
         ),
     ],
     "dashboard_controls",

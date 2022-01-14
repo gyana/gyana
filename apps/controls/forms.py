@@ -1,12 +1,12 @@
 from django import forms
 
-from apps.base.live_update_form import LiveUpdateForm
+from apps.base.live_update_form import BaseLiveSchemaForm
 from apps.base.widgets import DatetimeInput
 
-from .models import CustomChoice, Control
+from .models import Control, CustomChoice
 
 
-class ControlForm(LiveUpdateForm):
+class ControlForm(BaseLiveSchemaForm):
     class Meta:
         model = Control
         fields = ["date_range", "start", "end"]

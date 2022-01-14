@@ -173,7 +173,11 @@ class DashboardShareForm(LiveUpdateForm):
     class Meta:
         model = Dashboard
         fields = ["shared_status", "password"]
-        widgets = {"password": PasswordInput(attrs={"autocomplete": "one-time-code"})}
+        widgets = {
+            "password": PasswordInput(
+                render_value=True, attrs={"autocomplete": "one-time-code"}
+            )
+        }
 
     def get_live_fields(self):
         fields = ["shared_status"]

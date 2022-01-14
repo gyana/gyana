@@ -52,7 +52,6 @@
     {% endif %}
 
     <form
-      class="mb-3"
       id="dashboard-share-form"
       method="post"
       action="{% url "dashboards:share" object.id %}"
@@ -64,38 +63,38 @@
       </span>
       {% include "django/forms/default_form.html" %}
 
-      {% if object.shared_status != "private" %}
-      <div>
-        <h3 class="mb-3">Embed code</h3>
-        <p class="mb-4">Since this dashboard is shared, you can also embed it on your website.</p>
-
-        <div data-controller="to-clipboard" class="clipboard-copy mb-4">
-          <pre
-            data-to-clipboard-target="target"
-            data-turbo="false"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            &lt;iframe src="{{ dashboard.public_url }}" frameborder="0" style="position:width:100%;height:100%;"&gt;&lt;/iframe&gt;
-        </pre>
-    
-          <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
-            <i class="fa fa-clipboard"></i>
-          </button>
-        </div>
-      </div>
-      {% endif %}
-
       <button
-        id="dashboard-share-update"
         class="button button--success button--sm w-full"
-        value="submit"
+        data-turbo-frame="dashboard-share"
+        id="dashboard-share-update"
         name="submit"
         type="submit"
-        data-turbo-frame="dashboard-share"
+        value="submit"
       >
         Update
       </button>
     </form>
+
+    {% if object.shared_status != "private" %}
+    <div class="mt-7">
+      <h3 class="mb-3">Embed code</h3>
+      <p class="mb-4">Since this dashboard is shared, you can also embed it on your website.</p>
+
+      <div data-controller="to-clipboard" class="clipboard-copy mb-4">
+        <pre
+          data-to-clipboard-target="target"
+          data-turbo="false"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          &lt;iframe src="{{ dashboard.public_url }}" frameborder="0" style="position:width:100%;height:100%;"&gt;&lt;/iframe&gt;
+      </pre>
+  
+        <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
+          <i class="fa fa-clipboard"></i>
+        </button>
+      </div>
+    </div>
+    {% endif %}
   </div>
 </section>

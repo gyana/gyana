@@ -54,6 +54,7 @@ facebook_ad_account:
   sunset: true
 facebook_ads:
   static_config:
+    timeframe_months: ALL_TIME
     custom_tables:
       - table_name: action_canvas_component
         config_type: Prebuilt

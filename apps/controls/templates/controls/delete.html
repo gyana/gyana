@@ -1,5 +1,5 @@
 <form method="post"
-      action="{% url 'dashboard_controls:delete' project.id dashboard.id object.id %}">
+      action="{% url 'dashboard_controls:delete-widget' project.id dashboard.id object.id %}">
   {% csrf_token %}
   <button class="button button--sm button--circle button--tertiary" 
     type="submit">

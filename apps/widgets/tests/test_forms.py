@@ -56,7 +56,7 @@ def test_generic_form(kind, formset_classes, setup, widget_factory):
     dashboard, table = setup
     widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
     form = FORMS[kind](instance=widget)
-    fields = {"kind", "table"}
+    fields = {"kind", "table", "date_column"}
     if kind == Widget.Kind.TABLE:
         fields |= {"show_summary_row", "sort_column", "sort_ascending"}
     assert set(form.get_live_fields()) == fields
@@ -118,6 +118,7 @@ def test_one_dimension_form(kind, formset_classes, setup, widget_factory):
             "kind",
             "table",
             "dimension",
+            "date_column",
         }
     else:
         assert set(form.get_live_fields()) == {
@@ -126,6 +127,7 @@ def test_one_dimension_form(kind, formset_classes, setup, widget_factory):
             "sort_by",
             "sort_ascending",
             "dimension",
+            "date_column",
         }
     assert set(form.get_live_formsets()) == formset_classes
     assertFormChoicesLength(form, "dimension", 9)
@@ -169,7 +171,7 @@ def test_two_dimension_form(kind, formset_classes, setup, widget_factory):
     widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
     form = FORMS[kind](instance=widget)
 
-    fields = {"kind", "table", "dimension", "second_dimension"}
+    fields = {"kind", "table", "dimension", "second_dimension", "date_column"}
     if kind not in [Widget.Kind.STACKED_LINE, Widget.Kind.HEATMAP]:
         fields |= {"stack_100_percent"}
 
@@ -177,27 +179,3 @@ def test_two_dimension_form(kind, formset_classes, setup, widget_factory):
     assert set(form.get_live_formsets()) == formset_classes
     assertFormChoicesLength(form, "dimension", 9)
     assertFormChoicesLength(form, "second_dimension", 9)
-
-
-def test_date_column_is_added(setup, widget_factory, control_factory):
-    dashboard, table = setup
-    widget = widget_factory(
-        kind=Widget.Kind.TABLE, table=table, page__dashboard=dashboard
-    )
-    form = FORMS[widget.kind](instance=widget, project=dashboard.project)
-    default_set = {
-        "kind",
-        "show_summary_row",
-        "sort_column",
-        "sort_ascending",
-        "table",
-    }
-    assert set(form.get_live_fields()) == default_set
-
-    control_factory(page=dashboard.pages.first())
-    widget.refresh_from_db()
-
-    form = FORMS[widget.kind](instance=widget, project=dashboard.project)
-
-    assert set(form.get_live_fields()) == default_set | {"date_column"}
-    assertFormChoicesLength(form, "date_column", 9)

@@ -4,6 +4,7 @@ import re
 from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
+from apps.base.forms import BaseModelForm
 from apps.base.live_update_form import LiveUpdateForm
 from apps.base.utils import create_column_choices
 from apps.base.widgets import SelectWithDisable
@@ -11,7 +12,7 @@ from apps.columns.bigquery import aggregate_columns
 from apps.dashboards.forms import PaletteColorsField
 from apps.tables.models import Table
 
-from .formsets import FORMSETS, AggregationColumnFormset, FilterFormset
+from .formsets import FORMSETS, AggregationColumnFormset, ControlFormset, FilterFormset
 from .models import COUNT_COLUMN_NAME, WIDGET_KIND_TO_WEB, Widget
 from .widgets import SourceSelect
 
@@ -101,7 +102,7 @@ class GenericWidgetForm(LiveUpdateForm):
     def get_live_fields(self):
         fields = ["table", "kind"]
 
-        if self.get_live_field("table") and self.instance.page.has_control:
+        if self.get_live_field("table"):
             fields += ["date_column"]
 
         if self.get_live_field("kind") == Widget.Kind.TABLE and self.get_live_field(
@@ -117,11 +118,16 @@ class GenericWidgetForm(LiveUpdateForm):
             return []
 
         formsets = [FilterFormset]
+
+        if self.get_live_field("date_column"):
+            # Inserting at the beginning because we want it to be before the filter
+            formsets.insert(0, ControlFormset)
         kind = self.get_live_field("kind")
         if chart_formsets := FORMSETS.get(kind):
             formsets += chart_formsets
         else:
             formsets += [AggregationColumnFormset]
+
         return formsets
 
 
@@ -225,6 +231,26 @@ class StackedChartForm(GenericWidgetForm):
         return fields
 
 
+class IframeWidgetForm(BaseModelForm):
+    url = forms.URLField(
+        label="Embed URL",
+        widget=forms.URLInput(attrs={"placeholder": "e.g. https://markets.ft.com/data/"}),
+        required=False,
+    )
+
+    class Meta:
+        model = Widget
+        fields = [
+            "url",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        # https://stackoverflow.com/a/30766247/15425660
+        project = kwargs.pop("project", None)
+
+        super().__init__(*args, **kwargs)
+
+
 FORMS = {
     Widget.Kind.TABLE: GenericWidgetForm,
     Widget.Kind.BAR: OneDimensionForm,
@@ -249,6 +275,7 @@ FORMS = {
     Widget.Kind.BUBBLE: OneDimensionForm,
     Widget.Kind.METRIC: GenericWidgetForm,
     Widget.Kind.COMBO: OneDimensionForm,
+    Widget.Kind.IFRAME: IframeWidgetForm,
 }
 
 
