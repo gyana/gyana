@@ -55,7 +55,7 @@ def test_control_crudl(
     )
     control_url = f"/projects/{project.id}/dashboards/{dashboard.id}/controls/"
     # create
-    r = client.post(control_url + "new", data={"page": page.id, "x": 0, "y": 0})
+    r = client.post(control_url + "new-widget", data={"page": page.id, "x": 0, "y": 0})
 
     assertOK(r)
     control = Control.objects.first()
@@ -67,31 +67,32 @@ def test_control_crudl(
     assertContains(r, f"widgets-output-{widget.id}-stream")
 
     # update
-    r = client.get(control_url + f"{control.id}/update")
+    r = client.get(control_url + f"{control.id}/update-widget")
     assertOK(r)
     assertFormRenders(r, ["date_range"])
 
     r = client.post(
-        control_url + f"{control.id}/update", data={"date_range": CustomChoice.CUSTOM}
+        control_url + f"{control.id}/update-widget",
+        data={"date_range": CustomChoice.CUSTOM},
     )
     assert r.status_code == 422
     assertFormRenders(r, ["date_range", "start", "end"])
 
     r = client.post(
-        control_url + f"{control.id}/update",
+        control_url + f"{control.id}/update-widget",
         data={"date_range": CustomChoice.CUSTOM, "submit": "submit"},
     )
     assertOK(r)
     control.refresh_from_db()
     assert isinstance(r, TurboStreamResponse)
-    assertContains(r, "controls:update-stream")
+    assertContains(r, "controls:update-widget-stream")
 
     # is sending the widget output
     assertContains(r, f"widgets-output-{widget.id}-stream")
     assert control.date_range == CustomChoice.CUSTOM
 
     # delete
-    r = client.delete(control_url + f"{control_widget.id}/delete")
+    r = client.delete(control_url + f"{control_widget.id}/delete-widget")
     assertOK(r)
     assert isinstance(r, TurboStreamResponse)
     assert Control.objects.first() is None
@@ -132,18 +133,18 @@ def test_adding_more_control_widgets(
 
     control_url = f"/projects/{project.id}/dashboards/{dashboard.id}/controls/"
     # create 2nd widget doesnt create new control
-    r = client.post(control_url + "new", data={"page": page.id, "x": 0, "y": 0})
+    r = client.post(control_url + "new-widget", data={"page": page.id, "x": 0, "y": 0})
     assertOK(r)
     assert ControlWidget.objects.count() == 2
     assert Control.objects.count() == 1
 
     # deleting the first widget doesnt delete control
-    r = client.delete(f"{control_url}{ControlWidget.objects.first().id}/delete")
+    r = client.delete(f"{control_url}{ControlWidget.objects.first().id}/delete-widget")
     assertOK(r)
     assert ControlWidget.objects.count() == 1
     assert Control.objects.first() is not None
 
-    r = client.delete(f"{control_url}{control_widget.id}/delete")
+    r = client.delete(f"{control_url}{control_widget.id}/delete-widget")
     assertOK(r)
     assert ControlWidget.objects.first() is None
     assert Control.objects.first() is None

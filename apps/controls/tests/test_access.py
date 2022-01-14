@@ -9,15 +9,16 @@ pytestmark = pytest.mark.django_db
     "url",
     [
         pytest.param(
-            "/projects/{project_id}/dashboards/{dashboard_id}/controls/new", id="create"
+            "/projects/{project_id}/dashboards/{dashboard_id}/controls/new-widget",
+            id="create-widget",
         ),
         pytest.param(
-            "/projects/{project_id}/dashboards/{dashboard_id}/controls/{control_id}/update",
-            id="update",
+            "/projects/{project_id}/dashboards/{dashboard_id}/controls/{control_id}/update-widget",
+            id="update-widget",
         ),
         pytest.param(
-            "/projects/{project_id}/dashboards/{dashboard_id}/controls/{control_widget_id}/delete",
-            id="delete",
+            "/projects/{project_id}/dashboards/{dashboard_id}/controls/{control_widget_id}/delete-widget",
+            id="delete-widget",
         ),
     ],
 )

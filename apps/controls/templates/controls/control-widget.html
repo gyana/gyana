@@ -40,7 +40,7 @@
             data-controller="tooltip"
             method="post"
             action="
-            {% url 'dashboard_controls:delete' project.id dashboard.id object.id %}">
+            {% url 'dashboard_controls:delete-widget' project.id dashboard.id object.id %}">
             {% csrf_token %}
       
             <button id="control-widget-delete-{{ object.id }}" type='submit'>
@@ -54,12 +54,12 @@
     </div>
     
     <div class='control-popover' data-popover-target="body">
-      <turbo-frame id="controls:update"
+      <turbo-frame id="controls:update-widget"
         src="
         {% if is_public  %}
           {% url 'dashboard_controls:update-public' project.id dashboard.id control.id %}
         {% else %}
-          {% url 'dashboard_controls:update' project.id dashboard.id control.id %}?mode={{request.GET.mode}}
+          {% url 'dashboard_controls:update-widget' project.id dashboard.id control.id %}?mode={{request.GET.mode}}
         {% endif %}"
       ></turbo-frame>
     </div>

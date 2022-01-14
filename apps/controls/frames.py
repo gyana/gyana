@@ -14,7 +14,7 @@ class ControlUpdate(UpdateWidgetsMixin, TurboFrameUpdateView):
     template_name = "controls/update.html"
     model = Control
     form_class = ControlForm
-    turbo_frame_dom_id = "controls:update"
+    turbo_frame_dom_id = "controls:update-widget"
 
     def get_stream_response(self, form):
         streams = self.get_widget_stream_responses(form.instance)
@@ -37,7 +37,7 @@ class ControlUpdate(UpdateWidgetsMixin, TurboFrameUpdateView):
         return TurboStreamResponse(
             [
                 *streams,
-                TurboStream("controls:update-stream")
+                TurboStream("controls:update-widget-stream")
                 .replace.template(self.template_name, current_context)
                 .render(request=self.request),
             ]
@@ -51,7 +51,7 @@ class ControlUpdate(UpdateWidgetsMixin, TurboFrameUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "dashboard_controls:update",
+            "dashboard_controls:update-widget",
             args=(
                 self.project.id,
                 self.dashboard.id,
