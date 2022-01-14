@@ -109,7 +109,14 @@ class GenericWidgetForm(LiveUpdateForm):
             "table"
         ):
             fields += ["sort_column", "sort_ascending", "show_summary_row"]
-        if self.get_live_field("kind") == Widget.Kind.METRIC:
+        if self.get_live_field("kind") == Widget.Kind.METRIC and (
+            self.instance.page.has_control
+            or (
+                get_not_deleted_entries(self.data, "control-[0-9]*-date_range")
+                if self.data
+                else self.instance.has_control
+            )
+        ):
             fields += ["compare_previous_period", "positive_decrease"]
         return fields
 
@@ -234,7 +241,9 @@ class StackedChartForm(GenericWidgetForm):
 class IframeWidgetForm(BaseModelForm):
     url = forms.URLField(
         label="Embed URL",
-        widget=forms.URLInput(attrs={"placeholder": "e.g. https://markets.ft.com/data/"}),
+        widget=forms.URLInput(
+            attrs={"placeholder": "e.g. https://markets.ft.com/data/"}
+        ),
         required=False,
     )
 

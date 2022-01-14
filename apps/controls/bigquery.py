@@ -2,20 +2,164 @@ import datetime as dt
 from functools import partial
 
 from dateutil.relativedelta import relativedelta
+from ibis.expr.types import TimestampValue
 
-from apps.filters.bigquery import (
-    DATETIME_FILTERS,
-    get_date,
-    get_quarter,
-    last_month,
-    last_week,
-    last_year,
-    today,
-    yesterday,
-)
 from apps.filters.models import DateRange
 
 from .models import CustomChoice
+
+
+def get_date(column):
+    if isinstance(column, TimestampValue):
+        return column.date()
+    return column
+
+
+def today(query, column):
+    date = get_date(query[column])
+    today = dt.date.today()
+    return query[date == today]
+
+
+def tomorrow(query, column):
+    date = get_date(query[column])
+    tomorrow = dt.date.today() + dt.timedelta(days=1)
+    return query[date == tomorrow]
+
+
+def yesterday(query, column):
+    date = get_date(query[column])
+    yesterday_ = dt.date.today() - dt.timedelta(days=1)
+    return query[date == yesterday_]
+
+
+def one_week_ago(query, column):
+    date = get_date(query[column])
+    today = dt.date.today()
+    one_week = today - dt.timedelta(days=7)
+    return query[date.between(one_week, today)]
+
+
+def one_month_ago(query, column):
+    date = get_date(query[column])
+    today = dt.date.today()
+    one_month = today - relativedelta(months=1)
+    return query[date.between(one_month, today)]
+
+
+def one_year_ago(query, column):
+    date = get_date(query[column])
+    today = dt.date.today()
+    one_year = today - relativedelta(years=1)
+    return query[date.between(one_year, today)]
+
+
+def this_week(query, column):
+    date = get_date(query[column])
+    year, week, _ = dt.date.today().isocalendar()
+    return query[(date.year() == year) & (date.isoweek() == week)]
+
+
+def this_week_up_todate(query, column):
+    date = get_date(query[column])
+    today = dt.date.today()
+    start_of_week = today - dt.timedelta(days=today.weekday())
+    return query[date.between(start_of_week, today)]
+
+
+def last_week(query, column):
+    date = get_date(query[column])
+    year, week, _ = (dt.date.today() - dt.timedelta(days=7)).isocalendar()
+    return query[(date.year() == year) & (date.isoweek() == week)]
+
+
+def last_n_days(query, column, days):
+    date = get_date(query[column])
+    today = dt.date.today()
+    n_days_ago = today - dt.timedelta(days=days)
+    return query[date.between(n_days_ago, today)]
+
+
+def this_month(query, column):
+    date = get_date(query[column])
+    today = dt.date.today()
+    return query[(date.year() == today.year) & (date.month() == today.month)]
+
+
+def this_month_up_to_date(query, column):
+    date = get_date(query[column])
+    today = dt.date.today()
+    return query[date.between(today.replace(day=1), today)]
+
+
+def last_month(query, column):
+    date = get_date(query[column])
+    last_month = dt.date.today() - relativedelta(months=1)
+    return query[(date.year() == last_month.year) & (date.month() == last_month.month)]
+
+
+def get_quarter(date):
+    return (date.month - 1) // 3 + 1
+
+
+def this_quarter(query, column):
+    date = get_date(query[column])
+    today = dt.date.today()
+    quarter = get_quarter(today)
+
+    return query[(date.year() == today.year) & (date.quarter() == quarter)]
+
+
+def this_quarter_up_to_date(query, column):
+    date = get_date(query[column])
+    today = dt.date.today()
+    quarter = get_quarter(today)
+
+    return query[date.between(dt.date(today.year, (quarter - 1) * 3 + 1, 1), today)]
+
+
+def last_quarter(query, column):
+    date = get_date(query[column])
+    today_last_quarter = dt.date.today() - relativedelta(months=3)
+    quarter = get_quarter(today_last_quarter)
+
+    return query[(date.year() == today_last_quarter.year) & (date.quarter() == quarter)]
+
+
+def this_year(query, column):
+    date = get_date(query[column])
+    year = dt.date.today().year
+    return query[date.year() == year]
+
+
+def this_year_up_todate(query, column):
+    date = get_date(query[column])
+    today = dt.date.today()
+    return query[(date.year() == today.year) & (date <= today)]
+
+
+def last_12_month(query, column):
+    date = get_date(query[column])
+    today = dt.date.today()
+    twelve_month_ago = today - relativedelta(months=12)
+    return query[date.between(twelve_month_ago, today)]
+
+
+def last_full_12_month(query, column):
+    today = dt.date.today()
+    date = get_date(query[column])
+    twelve_month_ago = (today - relativedelta(months=12)).replace(day=1)
+    return query[date.between(twelve_month_ago, today)]
+
+
+def last_year(query, column):
+    date = get_date(query[column])
+    last_year = (dt.date.today() - relativedelta(years=1)).year
+    return query[date.year() == last_year]
+
+
+def filter_boolean(query, column, value):
+    return query[query[column] == value]
 
 
 def previous_week(query, column):
@@ -131,42 +275,145 @@ def previous_last_full_12_month(query, column):
     return query[date.between(twelve_month_ago, today_last_year)]
 
 
-PREVIOUS_DATERANGE = {
-    DateRange.TODAY: yesterday,
-    DateRange.TOMORROW: today,
-    DateRange.YESTERDAY: day_before_yesterday,
-    DateRange.ONEWEEKAGO: previous_week,
-    DateRange.ONEMONTHAGO: previous_month,
-    DateRange.ONEYEARAGO: previous_year,
-    DateRange.THIS_WEEK: last_week,
-    DateRange.THIS_WEEK_UP_TO_DATE: previous_this_week_uptodate,
-    DateRange.LAST_WEEK: previous_last_week,
-    DateRange.LAST_7: partial(previous_last_n_days, days=7),
-    DateRange.LAST_14: partial(previous_last_n_days, days=14),
-    DateRange.LAST_28: partial(previous_last_n_days, days=28),
-    DateRange.LAST_30: partial(previous_last_n_days, days=30),
-    DateRange.THIS_MONTH: last_month,
-    DateRange.THIS_MONTH_UP_TO_DATE: previous_this_month_uptodate,
-    DateRange.LAST_MONTH: previous_last_month,
-    DateRange.LAST_90: partial(previous_last_n_days, days=90),
-    DateRange.THIS_QUARTER: previous_this_quarter,
-    DateRange.THIS_QUARTER_UP_TO_DATE: previous_this_quarter_uptodate,
-    DateRange.LAST_QUARTER: previous_last_quarter,
-    DateRange.LAST_180: partial(previous_last_n_days, days=180),
-    DateRange.THIS_YEAR: last_year,
-    DateRange.THIS_YEAR_UP_TO_DATE: previous_this_year_up_todate,
-    DateRange.LAST_12_MONTH: previous_last_12_month,
-    DateRange.LAST_FULL_12_MONTH: previous_last_full_12_month,
-    DateRange.LAST_YEAR: previous_last_year,
+DATETIME_FILTERS = {
+    DateRange.TODAY: {
+        "function": today,
+        "previous_function": yesterday,
+        "previous_label": "yesterday",
+    },
+    DateRange.TOMORROW: {
+        "function": tomorrow,
+        "previous_function": today,
+        "previous_label": "today",
+    },
+    DateRange.YESTERDAY: {
+        "function": yesterday,
+        "previous_function": day_before_yesterday,
+        "previous_label": "day before yesterday",
+    },
+    DateRange.ONEWEEKAGO: {
+        "function": one_week_ago,
+        "previous_function": previous_week,
+        "previous_label": "two weeks",
+    },
+    DateRange.ONEMONTHAGO: {
+        "function": one_month_ago,
+        "previous_function": previous_month,
+        "previous_label": "two months",
+    },
+    DateRange.ONEYEARAGO: {
+        "function": one_year_ago,
+        "previous_function": previous_year,
+        "previous_label": "two years",
+    },
+    DateRange.THIS_WEEK: {
+        "function": this_week,
+        "previous_function": last_week,
+        "previous_label": "last week",
+    },
+    DateRange.THIS_WEEK_UP_TO_DATE: {
+        "function": this_week_up_todate,
+        "previous_function": previous_this_week_uptodate,
+        "previous_label": "last week until 7 days",
+    },
+    DateRange.LAST_WEEK: {
+        "function": last_week,
+        "previous_function": previous_last_week,
+        "previous_label": "two weeks",
+    },
+    DateRange.LAST_7: {
+        "function": partial(last_n_days, days=7),
+        "previous_function": partial(previous_last_n_days, days=7),
+        "previous_label": "14 days",
+    },
+    DateRange.LAST_14: {
+        "function": partial(last_n_days, days=14),
+        "previous_function": partial(previous_last_n_days, days=14),
+        "previous_label": "28 days",
+    },
+    DateRange.LAST_28: {
+        "function": partial(last_n_days, days=28),
+        "previous_function": partial(previous_last_n_days, days=28),
+        "previous_label": "56 days",
+    },
+    DateRange.LAST_30: {
+        "function": partial(last_n_days, days=30),
+        "previous_function": partial(previous_last_n_days, days=30),
+        "previous_label": "60 days",
+    },
+    DateRange.THIS_MONTH: {
+        "function": this_month,
+        "previous_function": last_month,
+        "previous_label": "last month",
+    },
+    DateRange.THIS_MONTH_UP_TO_DATE: {
+        "function": this_month_up_to_date,
+        "previous_function": previous_this_month_uptodate,
+        "previous_label": "last month until the same day of month",
+    },
+    DateRange.LAST_MONTH: {
+        "function": last_month,
+        "previous_function": previous_last_month,
+        "previous_label": "two months",
+    },
+    DateRange.LAST_90: {
+        "function": partial(last_n_days, days=90),
+        "previous_function": partial(previous_last_n_days, days=90),
+        "previous_label": "180 days",
+    },
+    DateRange.THIS_QUARTER: {
+        "function": this_quarter,
+        "previous_function": previous_this_quarter,
+        "previous_label": "last quarter",
+    },
+    DateRange.THIS_QUARTER_UP_TO_DATE: {
+        "function": this_quarter_up_to_date,
+        "previous_function": previous_this_quarter_uptodate,
+        "previous_label": "last quarter same",
+    },
+    DateRange.LAST_QUARTER: {
+        "function": last_quarter,
+        "previous_function": previous_last_quarter,
+        "previous_label": "two quarters",
+    },
+    DateRange.LAST_180: {
+        "function": partial(last_n_days, days=180),
+        "previous_function": partial(previous_last_n_days, days=180),
+        "previous_label": "360 days",
+    },
+    DateRange.THIS_YEAR: {
+        "function": this_year,
+        "previous_function": last_year,
+        "previous_label": "last year",
+    },
+    DateRange.THIS_YEAR_UP_TO_DATE: {
+        "function": this_year_up_todate,
+        "previous_function": previous_this_year_up_todate,
+        "previous_label": "last year same day",
+    },
+    DateRange.LAST_12_MONTH: {
+        "function": last_12_month,
+        "previous_function": previous_last_12_month,
+        "previous_label": "24 months",
+    },
+    DateRange.LAST_FULL_12_MONTH: {
+        "function": last_full_12_month,
+        "previous_function": previous_last_full_12_month,
+        "previous_label": "24 months ago same day",
+    },
+    DateRange.LAST_YEAR: {
+        "function": last_year,
+        "previous_function": previous_last_year,
+        "previous_label": "two years",
+    },
 }
 
 
 def slice_query(query, column, control, use_previous_period):
     if control.date_range != CustomChoice.CUSTOM:
+        func = DATETIME_FILTERS[control.date_range]
         range_filter = (
-            DATETIME_FILTERS[control.date_range]
-            if not use_previous_period
-            else PREVIOUS_DATERANGE[control.date_range]
+            func["function"] if not use_previous_period else func["previous_function"]
         )
         return range_filter(query, column)
 

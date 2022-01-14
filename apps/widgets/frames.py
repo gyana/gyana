@@ -23,6 +23,7 @@ from apps.base.frames import (
 )
 from apps.base.table_data import RequestConfig
 from apps.base.templates import template_exists
+from apps.controls.bigquery import DATETIME_FILTERS
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, metric_to_output, table_to_output
@@ -51,7 +52,9 @@ def add_output_context(context, widget, request, control):
             ):
                 previous_metric = metric_to_output(widget, control, True)
                 context["change"] = (metric - previous_metric) / previous_metric * 100
-                context["period"] = used_control.get_date_range_display().lower()
+                context["period"] = DATETIME_FILTERS[used_control.date_range][
+                    "previous_label"
+                ]
 
             context["metric"] = metric
         else:

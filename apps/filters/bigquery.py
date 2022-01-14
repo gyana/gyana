@@ -6,6 +6,7 @@ from typing import List
 from dateutil.relativedelta import relativedelta
 from ibis.expr.types import TimestampValue
 
+from apps.controls.bigquery import DATETIME_FILTERS
 from apps.filters.models import PREDICATE_MAP, DateRange, Filter
 
 
@@ -226,36 +227,6 @@ def filter_boolean(query, column, value):
     return query[query[column] == value]
 
 
-DATETIME_FILTERS = {
-    DateRange.TODAY: today,
-    DateRange.TOMORROW: tomorrow,
-    DateRange.YESTERDAY: yesterday,
-    DateRange.ONEWEEKAGO: one_week_ago,
-    DateRange.ONEMONTHAGO: one_month_ago,
-    DateRange.ONEYEARAGO: one_year_ago,
-    DateRange.THIS_WEEK: this_week,
-    DateRange.THIS_WEEK_UP_TO_DATE: this_week_up_todate,
-    DateRange.LAST_WEEK: last_week,
-    DateRange.LAST_7: partial(last_n_days, days=7),
-    DateRange.LAST_14: partial(last_n_days, days=14),
-    DateRange.LAST_28: partial(last_n_days, days=28),
-    DateRange.LAST_30: partial(last_n_days, days=30),
-    DateRange.THIS_MONTH: this_month,
-    DateRange.THIS_MONTH_UP_TO_DATE: this_month_up_to_date,
-    DateRange.LAST_MONTH: last_month,
-    DateRange.LAST_90: partial(last_n_days, days=90),
-    DateRange.THIS_QUARTER: this_quarter,
-    DateRange.THIS_QUARTER_UP_TO_DATE: this_quarter_up_to_date,
-    DateRange.LAST_QUARTER: last_quarter,
-    DateRange.LAST_180: partial(last_n_days, days=180),
-    DateRange.THIS_YEAR: this_year,
-    DateRange.THIS_YEAR_UP_TO_DATE: this_year_up_todate,
-    DateRange.LAST_12_MONTH: last_12_month,
-    DateRange.LAST_FULL_12_MONTH: last_full_12_month,
-    DateRange.LAST_YEAR: last_year,
-}
-
-
 FILTER_MAP = {
     Filter.StringPredicate.EQUAL: eq,
     Filter.StringPredicate.NEQUAL: neq,
@@ -273,7 +244,7 @@ FILTER_MAP = {
     Filter.NumericPredicate.LESSTHANEQUAL: lte,
     Filter.NumericPredicate.ISIN: isin,
     Filter.NumericPredicate.NOTIN: notin,
-    **DATETIME_FILTERS,
+    **{key: value["function"] for key, value in DATETIME_FILTERS.items()},
     Filter.Type.BOOL: filter_boolean,
 }
 
