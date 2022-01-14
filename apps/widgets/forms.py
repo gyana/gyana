@@ -55,8 +55,8 @@ class GenericWidgetForm(LiveUpdateForm):
             choice
             for choice in self.fields["kind"].choices
             if choice[0] != Widget.Kind.TEXT
-            or choice[0] != Widget.Kind.IMAGE
-            or choice[0] != Widget.Kind.IFRAME
+            and choice[0] != Widget.Kind.IMAGE
+            and choice[0] != Widget.Kind.IFRAME
         ]
         if project:
             self.fields["table"].queryset = Table.available.filter(
