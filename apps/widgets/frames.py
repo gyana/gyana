@@ -28,7 +28,7 @@ from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, metric_to_output, table_to_output
 
 from .forms import FORMS, WidgetStyleForm
-from .models import WIDGET_CHOICES_ARRAY, Widget
+from .models import Widget
 
 
 def add_output_context(context, widget, request, control):

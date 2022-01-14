@@ -11,12 +11,12 @@
 
     <p class="metric__comparison">
       <span class="
-        {% if change > 0 and not widget.positive_decrease %}
-          text-green
+        {% if change < 0 and not widget.positive_decrease %}
+          text-red
         {% elif change == 0%}
           text-black-50
         {%else%}
-          text-red
+          text-green
         {% endif %}">
         <i class="fa 
           {% if change > 0 %}
