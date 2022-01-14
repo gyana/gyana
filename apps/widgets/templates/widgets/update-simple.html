@@ -1,0 +1,53 @@
+{% load static %}
+
+<section class="flex flex-col h-full whitespace-normal">
+  <div class="workflow-detail__header">
+    <turbo-frame id="widget-editable-name" class="mr-auto">
+      {% include 'widgets/name.html' %}
+    </turbo-frame>
+
+    <button
+      class="tf-modal__close"
+      data-action="click->tf-modal#close"
+      data-loading-false
+    >
+      <i class="fal fa-times fa-lg"></i>
+    </button>
+  </div>
+
+  <div class="flex flex-col pad flex-1">
+    <form 
+      id="widget-update-form"
+      class="widget-update-sidebar__form"
+      action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
+      method="post"
+      data-controller="live-update" 
+      data-action="change->tf-modal#change submit->tf-modal#save"
+      data-tf-modal-target='form'
+    >  
+      {% comment %}
+      The pressed button is outside the form this is just to trigger the submit
+      {% endcomment %}
+      <button
+        class="hidden"
+        type="submit"
+        formnovalidate
+        name="close"
+        value="close"
+      ></button>
+      {% csrf_token %}
+
+      {% include "django/forms/default_form.html" with optional=False %}
+
+      <button
+        type="submit"
+        name="submit"
+        value="Save & Close"
+        class="button button--success button--filled w-full"
+        data-action="click->tf-modal#forceClose"
+      >
+        Save
+      </button>  
+    </form>
+  </div>
+</section>

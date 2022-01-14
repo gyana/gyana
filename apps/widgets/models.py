@@ -71,6 +71,7 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
         )
         TIMESERIES_AREA = "timeseries-area", "Area Timeseries"
         COMBO = "mscombidy2d", "Combination chart"
+        IFRAME = "iframe", "iframe"
 
     class Aggregator(models.TextChoices):
         # These aggregators should reflect the names described in the ibis api, none is an exception
@@ -85,6 +86,9 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
 
     # Text attributes
     text_content = models.TextField(null=True, blank=True)
+
+    # iFrame attributes
+    url = models.URLField(null=True, blank=True)
 
     # Chart attributes
     kind = models.CharField(max_length=32, choices=Kind.choices, default=Kind.COLUMN)
@@ -146,6 +150,8 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
         """Returns bool stating whether this Widget is ready to be displayed"""
         # TODO: right now you also need to update the query in DashboardOverview dashboards/frames
         if self.kind == self.Kind.TEXT:
+            return True
+        if self.kind == self.Kind.IFRAME:
             return True
         if not self.table:
             return False
@@ -239,6 +245,11 @@ WIDGET_KIND_TO_WEB = {
         f"fa-analytics",
         Widget.Category.COMBO,
         "Combination chart",
+    ),
+    Widget.Kind.IFRAME.value: (
+        f"fa-browser",
+        Widget.Category.SIMPLE,
+        "URL Embed",
     ),
 }
 

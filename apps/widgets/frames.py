@@ -35,6 +35,8 @@ def add_output_context(context, widget, request, control):
     if widget.is_valid:
         if widget.kind == Widget.Kind.TEXT:
             pass
+        elif widget.kind == Widget.Kind.IFRAME:
+            pass
         elif widget.kind == Widget.Kind.TABLE:
             # avoid duplicating work for widget output
             if "table" not in context:
@@ -64,9 +66,14 @@ class WidgetName(TurboFrameUpdateView):
 
 
 class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
-    template_name = "widgets/update.html"
     model = Widget
     turbo_frame_dom_id = "widget-modal"
+
+    def get_template_names(self):
+        if self.object.kind == Widget.Kind.IFRAME:
+            return "widgets/update-simple.html"
+
+        return "widgets/update.html"
 
     def get_form_class(self):
         return FORMS[self.request.POST.get("kind") or self.object.kind]
@@ -110,10 +117,15 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["show_date_column"] = bool(
-            context["form"].get_live_field("date_column")
-        )
-        context["styleForm"] = WidgetStyleForm(instance=self.object)
+        if self.object.kind == Widget.Kind.TEXT:
+            pass
+        elif self.object.kind == Widget.Kind.IFRAME:
+            pass
+        else:
+            context["show_date_column"] = bool(
+                context["form"].get_live_field("date_column")
+            )
+            context["styleForm"] = WidgetStyleForm(instance=self.object)
 
         return context
 
