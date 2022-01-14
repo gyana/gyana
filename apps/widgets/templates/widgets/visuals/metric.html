@@ -7,14 +7,29 @@
     {{ metric|floatformat:widget.rounding_decimal }}
   </h2>
 
-  {% if change %}
+  {% if change is not None %}
 
     <p class="metric__comparison">
-      <span class="{% if change > 0 and not widget.positive_decrease %}text-green {%else%}text-red{% endif %}">
-        <i class="fa fa-arrow-{% if change > 0 %}up {% else %}down{% endif %}"></i>
+      <span class="
+        {% if change > 0 and not widget.positive_decrease %}
+          text-green
+        {% elif change == 0%}
+          text-black-50
+        {%else%}
+          text-red
+        {% endif %}">
+        <i class="fa 
+          {% if change > 0 %}
+            fa-arrow-up
+          {%elif change == 0 %}
+            fa-minus
+          {% else %}
+            fa-arrow-down
+          {% endif %}"
+        ></i>
         {{ change|floatformat:2 }}%
       </span>
-      compared to last period
+      <span>compared to previous {{period}}</span>
     </p>
 
   {% endif %}
