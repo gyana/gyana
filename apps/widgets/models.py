@@ -4,6 +4,7 @@ from django.db import models
 from model_clone import CloneMixin
 
 from apps.base.aggregations import AggregationFunctions
+from apps.base.clients import SLUG
 from apps.base.models import BaseModel, SaveParentModel
 from apps.dashboards.models import Dashboard, Page, getFusionThemePalette
 from apps.tables.models import Table
@@ -44,6 +45,7 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
 
     class Kind(models.TextChoices):
         TEXT = "text", "Text"
+        IMAGE = "image", "Image"
         METRIC = "metric", "Metric"
         TABLE = "table", "Table"
         # using fusioncharts name for database
@@ -90,11 +92,18 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
     # iFrame attributes
     url = models.URLField(null=True, blank=True)
 
+    # Image attributes
+    image = models.FileField(
+        upload_to=f"{SLUG}/dashboard_images" if SLUG else "dashboard_images",
+        null=True,
+        blank=True,
+    )
+
     # Chart attributes
     kind = models.CharField(max_length=32, choices=Kind.choices, default=Kind.COLUMN)
     aggregator = models.CharField(max_length=32, choices=Aggregator.choices)
-    # maximum length of bigquery column name
     dimension = models.CharField(
+        # maximum length of bigquery column name
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         null=True,
     )
@@ -149,6 +158,8 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
     def is_valid(self) -> bool:
         """Returns bool stating whether this Widget is ready to be displayed"""
         # TODO: right now you also need to update the query in DashboardOverview dashboards/frames
+        if self.kind == self.Kind.IMAGE:
+            return True
         if self.kind == self.Kind.TEXT:
             return True
         if self.kind == self.Kind.IFRAME:
@@ -187,6 +198,7 @@ NO_DIMENSION_WIDGETS = [
 # widget = (icon, category, verbose_name)
 WIDGET_KIND_TO_WEB = {
     Widget.Kind.TEXT.value: ("fa-text", Widget.Category.SIMPLE, "Text"),
+    Widget.Kind.IMAGE.value: ("fa-image", Widget.Category.SIMPLE, "Image"),
     Widget.Kind.METRIC.value: ("fa-value-absolute", Widget.Category.SIMPLE, "Metric"),
     Widget.Kind.TABLE.value: ("fa-table", Widget.Category.SIMPLE, "Table"),
     Widget.Kind.COLUMN.value: ("fa-chart-bar", Widget.Category.SIMPLE, "Column"),

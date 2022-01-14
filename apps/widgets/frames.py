@@ -37,6 +37,8 @@ def add_output_context(context, widget, request, control):
             pass
         elif widget.kind == Widget.Kind.IFRAME:
             pass
+        elif widget.kind == Widget.Kind.IMAGE:
+            pass
         elif widget.kind == Widget.Kind.TABLE:
             # avoid duplicating work for widget output
             if "table" not in context:
@@ -72,6 +74,8 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
     def get_template_names(self):
         if self.object.kind == Widget.Kind.IFRAME:
             return "widgets/update-simple.html"
+        if self.object.kind == Widget.Kind.IMAGE:
+            return "widgets/update-simple.html"
 
         return "widgets/update.html"
 
@@ -101,6 +105,11 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
         return kwargs
 
     def get_success_url(self) -> str:
+        import logging
+        logger = logging.getLogger()
+
+        logger.critical("what teh fuck is gong on")
+        logger.critical(self.request.POST.get("submit"))
         if self.request.POST.get("submit") == "Save & Preview":
             return reverse(
                 "dashboard_widgets:update",
@@ -121,6 +130,8 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             pass
         elif self.object.kind == Widget.Kind.IFRAME:
             pass
+        elif self.object.kind == Widget.Kind.IMAGE:
+            pass
         else:
             context["show_date_column"] = bool(
                 context["form"].get_live_field("date_column")
@@ -131,6 +142,14 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
 
     def form_valid(self, form):
         r = super().form_valid(form)
+
+        import logging
+        logger = logging.getLogger()
+
+        logger.critical("form wtf")
+        logger.critical(form)
+        logger.critical(form.instance)
+        logger.critical(form.instance.image)
 
         analytics.track(
             self.request.user.id,

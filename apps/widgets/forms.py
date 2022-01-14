@@ -55,6 +55,8 @@ class GenericWidgetForm(LiveUpdateForm):
             choice
             for choice in self.fields["kind"].choices
             if choice[0] != Widget.Kind.TEXT
+            or choice[0] != Widget.Kind.IMAGE
+            or choice[0] != Widget.Kind.IFRAME
         ]
         if project:
             self.fields["table"].queryset = Table.available.filter(
@@ -230,7 +232,9 @@ class StackedChartForm(GenericWidgetForm):
 class IframeWidgetForm(BaseModelForm):
     url = forms.URLField(
         label="Embed URL",
-        widget=forms.URLInput(attrs={"placeholder": "e.g. https://markets.ft.com/data/"}),
+        widget=forms.URLInput(
+            attrs={"placeholder": "e.g. https://markets.ft.com/data/"}
+        ),
         required=False,
     )
 
@@ -239,6 +243,24 @@ class IframeWidgetForm(BaseModelForm):
         fields = [
             "url",
         ]
+
+    def __init__(self, *args, **kwargs):
+        # https://stackoverflow.com/a/30766247/15425660
+        project = kwargs.pop("project", None)
+
+        super().__init__(*args, **kwargs)
+
+
+class ImageWidgetForm(BaseModelForm):
+    class Meta:
+        model = Widget
+        fields = [
+            "kind",
+            "image",
+        ]
+        widgets = {
+            "kind": forms.HiddenInput()
+        }
 
     def __init__(self, *args, **kwargs):
         # https://stackoverflow.com/a/30766247/15425660
@@ -272,6 +294,7 @@ FORMS = {
     Widget.Kind.METRIC: GenericWidgetForm,
     Widget.Kind.COMBO: OneDimensionForm,
     Widget.Kind.IFRAME: IframeWidgetForm,
+    Widget.Kind.IMAGE: ImageWidgetForm,
 }
 
 

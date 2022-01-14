@@ -21,10 +21,13 @@
       class="widget-update-sidebar__form"
       action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
       method="post"
-      data-controller="live-update" 
-      data-action="change->tf-modal#change submit->tf-modal#save"
-      data-tf-modal-target='form'
+      data-tf-modal-target="form"
+      {% if object.kind == "image" %}
+      enctype='multipart/form-data'
+      {% endif %}
     >  
+      {% csrf_token %}
+
       {% comment %}
       The pressed button is outside the form this is just to trigger the submit
       {% endcomment %}
@@ -35,7 +38,10 @@
         name="close"
         value="close"
       ></button>
-      {% csrf_token %}
+
+      <span data-live-update-target="loading" class="workflow-detail__sidebar__loading hidden">
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+      </span>
 
       {% include "django/forms/default_form.html" with optional=False %}
 

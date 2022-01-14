@@ -1,0 +1,16 @@
+{% if widget.image %}
+  <img
+    src="{{ widget.image.url }}"
+    style="margin:0 auto;"
+    width="auto"
+    height="100%"
+    draggable="false"
+  />
+{% else %}
+  <div class="flex justify-center items-center flex-1 text-center whitespace-normal pad">
+    <div class='flex flex-col items-center justify-center' style="min-height:16rem;">
+      <i class="far fa-fw fa-image text-black-50 fa-3x"></i>
+      <p class="mt-4">You need to add an image to this widget</p>
+    </div>
+  </div>
+{% endif %}

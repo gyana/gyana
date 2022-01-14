@@ -46,7 +46,7 @@ preview mode.
           data-modal-item="{{ object.id }}"
           data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
           data-modal-id="widget-modal"
-          {% if object.kind == "iframe" %}
+          {% if object.kind == "iframe" or object.kind == "image" %}
           data-modal-classes="tf-modal--auto"
           {% else %}
           data-modal-classes="tf-modal--full"
@@ -57,7 +57,7 @@ preview mode.
         </button>
         {% endif %}
 
-        {% if object.kind != "text" and object.kind != "iframe" %}
+        {% if object.kind != "text" and object.kind != "iframe" and object.kind != "image" %}
         <button
           data-controller="tooltip"
           data-action="click->tf-modal#open"

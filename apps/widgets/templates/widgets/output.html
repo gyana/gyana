@@ -9,6 +9,8 @@
       {% include 'widgets/visuals/text.html' %}
     {% elif widget.kind == "iframe" %}
       {% include 'widgets/visuals/iframe.html' %}
+    {% elif widget.kind == "image" %}
+      {% include 'widgets/visuals/image.html' %}
     {% elif  widget.kind == 'metric' %}
       {% include 'widgets/visuals/metric.html' %}
     {% elif widget.kind %}
