@@ -78,6 +78,8 @@ THIRD_PARTY_APPS = [
     "timezone_field",
     "django_celery_beat",
     "django_celery_results",
+    # TODO: Remove after website migration is complete
+    "heroicons",
 ]
 
 # Put your project-specific apps here
@@ -107,6 +109,7 @@ PROJECT_APPS = [
     "apps.runs.apps.RunsConfig",
     "apps.customapis",
     "apps.oauth2",
+    "apps.website",
 ]
 
 INSTALLED_APPS = (
