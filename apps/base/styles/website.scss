@@ -6,7 +6,8 @@
 // Base styles that apply throughout the entire site.
 // Minimal classes should be present here, usually mirroring default elements.
 // i.e `strong, .strong { ... }`
-@use "base";
+// TODO: Decide what to do for website
+// @use "base";
 
 // Reusable components, accompanied by usage documentation.
 @use "components";
@@ -25,6 +26,6 @@
 @import "tippy.js/dist/tippy.css"; // This import must be AFTER any @use/at-use
 
 :root {
-  font-size: 100%;
   font-family: Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+
