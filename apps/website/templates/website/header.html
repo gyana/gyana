@@ -14,10 +14,14 @@
         <button
           type="button"
           class="bg-white rounded-md p-2 inline-flex items-center justify-center text-black-20 hover:text-black-50 font-normal hover:bg-gray focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-50"
-          {% comment %} onClick={() => setShowMenu(true)} {% endcomment %}
+          data-controller="popover"
+          data-theme="popover-menu"
         >
           <span class="sr-only">Open menu</span>
           {% heroicon 'menu' class="h-6 w-6" style="solid"%}
+          <template data-popover-target="body">
+            {% include 'website/mobile_menu.html' %}
+          </template>
         </button>
       </div>
       <nav class="hidden md:flex space-x-10 text-blue-50">
