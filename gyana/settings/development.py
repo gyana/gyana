@@ -44,3 +44,5 @@ MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
 
 # for code coverage
 TEMPLATES[0]["OPTIONS"]["debug"] = True
+
+ENABLE_WEBSITE = True
