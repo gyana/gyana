@@ -1,12 +1,9 @@
-from enum import auto
 from unittest.mock import MagicMock
 
-import celery
 import ibis.expr.schema as sch
 import pytest
 import waffle
 from django.utils import timezone
-from ibis_bigquery.client import rename_partitioned_column
 from waffle.templatetags import waffle_tags
 
 from apps.base import clients

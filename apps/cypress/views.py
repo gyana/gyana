@@ -6,9 +6,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 
 from apps.base import clients
-from apps.base.cypress_mail import Outbox
 from apps.integrations.periodic import delete_outdated_pending_integrations
 from apps.teams.periodic import update_team_row_limits
+
+from .mail import Outbox
 
 
 @api_view(["GET"])

@@ -123,7 +123,7 @@ urlpatterns = [
 
 if settings.CYPRESS_URLS:
     urlpatterns += [
-        path("cypress/", include("apps.base.cypress_urls")),
+        path("cypress/", include("apps.cypress.urls")),
     ]
 
 if settings.DEBUG:
