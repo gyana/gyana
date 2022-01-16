@@ -5,9 +5,9 @@ from django.conf import settings
 from google.cloud import bigquery
 from google.cloud.bigquery.query import _QueryResults
 
-from ..ibis.client import *
-from ..ibis.compiler import *
-from ..ibis.patch import *
+from .ibis.client import *
+from .ibis.compiler import *
+from .ibis.patch import *
 from .utils import md5
 
 BIGQUERY_TYPE_TO_HUMAN = {
