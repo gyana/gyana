@@ -114,7 +114,6 @@ urlpatterns = [
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),
     path("paddle/", include(team_urls.paddle_urlpatterns)),
-    path("", include("apps.website.urls")),
     # API docs
     # these are needed for schema.js
     path("docs/", include_docs_urls(title="API Docs")),

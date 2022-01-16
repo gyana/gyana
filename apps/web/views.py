@@ -10,7 +10,7 @@ from apps.teams.models import Team
 
 
 class Home(TemplateView):
-    template_name = "website/home.html"
+    template_name = "web/site/home.html"
 
     def get(self, request, *args, **kwargs):
 
