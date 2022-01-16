@@ -2,7 +2,7 @@ from django import forms
 from django.forms.widgets import HiddenInput
 from django.utils.functional import cached_property
 
-from apps.base.live_update_form import LiveUpdateForm
+from apps.base.forms import LiveUpdateForm
 from apps.base.utils import create_column_choices
 from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column

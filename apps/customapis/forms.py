@@ -7,7 +7,7 @@ from django.utils.html import mark_safe
 from apps.base.account import is_scheduled_paid_only
 from apps.base.forms import BaseModelForm
 from apps.base.formsets import RequiredInlineFormset
-from apps.base.live_update_form import LiveUpdateForm
+from apps.base.forms import LiveUpdateForm
 from apps.base.widgets import DatalistInput
 
 from .models import (

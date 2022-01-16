@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.html import mark_safe
 
 from apps.base.forms import BaseModelForm
-from apps.base.live_update_form import LiveUpdateForm
+from apps.base.forms import LiveUpdateForm
 
 from .models import Project
 from .widgets import MemberSelect

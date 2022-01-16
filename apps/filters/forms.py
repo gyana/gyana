@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.widgets import Input, TextInput
 
-from apps.base.live_update_form import BaseLiveSchemaForm
+from apps.base.forms import BaseLiveSchemaForm
 from apps.base.utils import create_column_choices
 from apps.base.widgets import DatetimeInput
 from apps.filters.models import NO_VALUE, PREDICATE_MAP, Filter

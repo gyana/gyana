@@ -13,7 +13,7 @@ from apps.base.analytics import (
     identify_user_group,
 )
 from apps.base.forms import BaseModelForm
-from apps.base.live_update_form import LiveUpdateForm
+from apps.base.forms import LiveUpdateForm
 from apps.base.templatetags.help_utils import INTERCOM_ROOT, get_intercom
 from apps.invites.models import Invite
 from apps.teams import roles

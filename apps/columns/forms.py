@@ -2,7 +2,7 @@ from django import forms
 from ibis.expr.datatypes import Date, Floating, Timestamp
 
 from apps.base.aggregations import AGGREGATION_TYPE_MAP
-from apps.base.live_update_form import BaseLiveSchemaForm
+from apps.base.forms import BaseLiveSchemaForm
 from apps.base.utils import create_column_choices
 from apps.base.widgets import SelectWithDisable
 from apps.columns.models import (

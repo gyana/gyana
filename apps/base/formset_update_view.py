@@ -4,8 +4,8 @@ from django import forms
 from django.db import transaction
 from django.http.response import HttpResponse
 
-from apps.base.live_update_form import LiveUpdateForm
-from apps.base.turbo import TurboUpdateView
+from .forms import LiveUpdateForm
+from .turbo import TurboUpdateView
 
 # temporary overrides for formset labels
 FORMSET_LABELS = {

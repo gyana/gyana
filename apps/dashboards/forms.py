@@ -6,7 +6,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.forms.widgets import HiddenInput, PasswordInput
 from django.utils import timezone
 
-from apps.base.live_update_form import LiveUpdateForm
+from apps.base.forms import LiveUpdateForm
 
 from .models import DASHBOARD_SETTING_TO_CATEGORY, Dashboard
 
