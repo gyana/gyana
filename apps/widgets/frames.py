@@ -14,14 +14,14 @@ from apps.base.analytics import (
     WIDGET_CONFIGURED_EVENT,
     WIDGET_PREVIEWED_EVENT,
 )
-from apps.base.errors import error_name_to_snake
+from apps.base.core.errors import error_name_to_snake
+from apps.base.core.table_data import RequestConfig
 from apps.base.frames import (
     TurboFrameDetailView,
     TurboFrameFormsetUpdateView,
     TurboFrameListView,
     TurboFrameUpdateView,
 )
-from apps.base.table_data import RequestConfig
 from apps.base.templates import template_exists
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
@@ -106,6 +106,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
 
     def get_success_url(self) -> str:
         import logging
+
         logger = logging.getLogger()
 
         logger.critical("what teh fuck is gong on")
@@ -144,6 +145,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
         r = super().form_valid(form)
 
         import logging
+
         logger = logging.getLogger()
 
         logger.critical("form wtf")

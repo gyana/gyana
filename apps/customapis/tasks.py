@@ -11,8 +11,8 @@ from django.utils import timezone
 from jsonpath_ng import parse
 from requests_oauthlib import OAuth2Session
 
-from apps.base.bigquery import sanitize_bq_column_name
-from apps.base.time import catchtime
+from apps.base.core.bigquery import sanitize_bq_column_name
+from apps.base.core.time import catchtime
 from apps.integrations.emails import send_integration_ready_email
 from apps.runs.models import JobRun
 from apps.tables.models import Table

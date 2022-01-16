@@ -1,7 +1,7 @@
 import pytest
 from django.http import QueryDict
 
-from apps.base.aggregations import AggregationFunctions
+from apps.base.core.aggregations import AggregationFunctions
 from apps.base.tests.asserts import assertFormChoicesLength
 from apps.base.tests.mock_data import TABLE
 from apps.columns.forms import (

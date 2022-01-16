@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models
 
-from apps.base.aggregations import AggregationFunctions
+from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import SaveParentModel
 from apps.nodes.models import Node
 from apps.widgets.models import Widget

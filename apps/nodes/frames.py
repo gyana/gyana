@@ -15,12 +15,12 @@ from apps.base.analytics import (
     NODE_UPDATED_EVENT,
     track_node,
 )
+from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.frames import (
     TurboFrameDetailView,
     TurboFrameFormsetUpdateView,
     TurboFrameUpdateView,
 )
-from apps.base.table_data import RequestConfig, get_table
 from apps.base.templates import template_exists
 
 from .bigquery import NodeResultNone, get_query_from_node

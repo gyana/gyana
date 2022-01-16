@@ -1,8 +1,8 @@
 from django_tables2.views import SingleTableMixin
 
-from apps.base.bigquery import get_humanize_from_bigquery_type
+from apps.base.core.bigquery import get_humanize_from_bigquery_type
+from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.frames import TurboFrameDetailView, TurboFrameTemplateView
-from apps.base.table_data import RequestConfig, get_table
 from apps.integrations.tables import StructureTable
 from apps.projects.mixins import ProjectMixin
 from apps.tables.bigquery import get_bq_table_schema_from_table, get_query_from_table

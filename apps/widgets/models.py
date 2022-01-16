@@ -3,8 +3,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from model_clone import CloneMixin
 
-from apps.base.aggregations import AggregationFunctions
 from apps.base.clients import SLUG
+from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import BaseModel, SaveParentModel
 from apps.dashboards.models import Dashboard, Page, getFusionThemePalette
 from apps.tables.models import Table

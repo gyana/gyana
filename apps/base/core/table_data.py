@@ -9,7 +9,7 @@ from django_tables2.data import TableData
 from django_tables2.templatetags.django_tables2 import QuerystringNode
 
 from apps.base import clients
-from apps.base.utils import md5
+from apps.base.core.utils import md5
 
 # Monkey patch the querystring templatetag for the pagination links
 # Without this links only lead to the whole document url and add query parameter

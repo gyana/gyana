@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 from apps.base import clients
-from apps.base.table_data import get_table
+from apps.base.core.table_data import get_table
 from apps.columns.bigquery import aggregate_columns, resolve_colname
 from apps.controls.bigquery import slice_query
 from apps.filters.bigquery import get_query_from_filters

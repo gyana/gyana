@@ -6,7 +6,7 @@ from ibis.expr.datatypes import Date, Time, Timestamp
 
 from apps.base.forms import BaseModelForm
 from apps.base.forms import LiveUpdateForm
-from apps.base.utils import create_column_choices
+from apps.base.core.utils import create_column_choices
 from apps.base.widgets import SelectWithDisable
 from apps.columns.bigquery import aggregate_columns
 from apps.dashboards.forms import PaletteColorsField

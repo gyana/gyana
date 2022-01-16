@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from model_clone import CloneMixin
 
-from apps.base.aggregations import AggregationFunctions
+from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import BaseModel
 from apps.nodes.config import NODE_CONFIG
 from apps.tables.models import Table

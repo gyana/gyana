@@ -7,7 +7,7 @@ import ibis
 from ibis.expr.datatypes import String
 
 from apps.base import clients
-from apps.base.errors import error_name_to_snake
+from apps.base.core.errors import error_name_to_snake
 from apps.columns.bigquery import (
     aggregate_columns,
     compile_formula,
