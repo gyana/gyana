@@ -1,0 +1,120 @@
+{% load static heroicons %}
+
+<div class="relative bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex justify-between items-center py-6 md:justify-start md:space-x-10">
+      <div class="flex items-center justify-start lg:w-0 lg:flex-1">
+        <a href="/">
+          <span class="text-2xl text-blue font-semibold">
+            Gyana
+          </span>
+        </a>
+      </div>
+      <div class="-mr-2 -my-2 md:hidden">
+        <button
+          type="button"
+          class="bg-white rounded-md p-2 inline-flex items-center justify-center text-black-20 hover:text-black-50 font-normal hover:bg-gray focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-50"
+          data-controller="popover"
+          data-theme="popover-menu"
+        >
+          <span class="sr-only">Open menu</span>
+          {% heroicon 'menu' class="h-6 w-6" style="solid"%}
+          <template data-popover-target="body">
+            {% include 'web/site/mobile_menu.html' %}
+          </template>
+        </button>
+      </div>
+      <nav class="hidden md:flex space-x-10 text-blue-50">
+        <a
+          href="/#features"
+          class="text-black-50 font-normal hover:text-black"
+        >
+          Features
+        </a>
+        <a
+          href="/pricing"
+          class="text-black-50 font-normal hover:text-black"
+        >
+          Pricing
+        </a>
+        <div class="relative" ref={resourcesRef}>
+          <button
+            type="button"
+            class="group bg-white rounded-md text-black-50 font-normal inline-flex items-center hover:text-black focus:outline-none focus:text-black"
+            data-controller="popover"
+            data-theme="popover-menu"
+          >
+            <span>Resources</span>
+            {% heroicon 'chevron-down' class="ml-2 h-5 w-5 text-black-20 group-hover:text-black-50 font-normal" style="solid" %}
+
+            <template data-popover-target="body">
+              <div class="absolute z-10 -ml-4 mt-3 transform px-2 w-screen max-w-md sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2">
+                <div class="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
+                  <div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
+                    <a
+                      href="/blog"
+                      class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
+                    >
+                      {% heroicon 'pencil-alt' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}
+                      <div class="ml-4">
+                        <p class="text-base font-normal text-black">Blog</p>
+                        <p class="mt-1 text-sm text-black-50">Learn about tips, updates and company culture.</p>
+                      </div>
+                    </a>
+                    <a
+                      href="https://intercom.help/gyana/en/collections/3117612-gyana-2-0-explained"
+                      class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
+                    >
+                      {% heroicon 'question-mark-circle' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}
+                      <div class="ml-4">
+                        <p class="text-base font-normal text-black">Help Center</p>
+                        <p class="mt-1 text-sm text-black-50">Get all of your questions answered.</p>
+                      </div>
+                    </a>
+                    <a
+                      href="https://feedback.gyana.com"
+                      class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
+                    >
+                      {% heroicon 'chat-alt' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}
+                      <div class="ml-4">
+                        <p class="text-base font-normal text-black">Feedback</p>
+                        <p class="mt-1 text-sm text-black-50">Have your say on the development of Gyana.</p>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </button>
+        </div>
+      </nav>
+      <div class="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
+        <a
+          href="{% url 'account_login' %}"
+          class="whitespace-nowrap text-black-50 font-normal hover:text-black"
+        >
+          Sign in
+        </a>
+        <a
+          href="https://gyana-data.typeform.com/to/v2XTy0j3"
+          id="CTA_header"
+          class="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-blue hover:bg-blue-50"
+        >
+          Request access
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {% comment %} {/* <!--
+    Mobile menu, show/hide based on mobile menu state.
+
+    Entering: "duration-200 ease-out"
+      From: "opacity-0 scale-95"
+      To: "opacity-100 scale-100"
+    Leaving: "duration-100 ease-in"
+      From: "opacity-100 scale-100"
+      To: "opacity-0 scale-95"
+  --> */} {% endcomment %}
+  {% comment %} {showMenu && <MobileMenu closeMenu={() => setShowMenu(false)} />} {% endcomment %}
+</div>

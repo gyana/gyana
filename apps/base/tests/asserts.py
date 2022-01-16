@@ -11,7 +11,7 @@ BS4_TYPES = [NavigableString, TemplateString, CData]
 pytestmark = pytest.mark.django_db
 
 
-def assertLink(response, url, text=None, title=None):
+def assertLink(response, url, text=None, title=None, total=1):
     __tracebackhide__ = True
 
     soup = BeautifulSoup(response.content)
@@ -26,7 +26,7 @@ def assertLink(response, url, text=None, title=None):
 
     error_list = [m for m in original_matches]
 
-    assert len(matches) == 1, f"Possible matches are {error_list}"
+    assert len(matches) == total, f"Possible matches are {error_list}"
 
 
 def assertSelectorLength(response, selector, length):

@@ -78,6 +78,8 @@ THIRD_PARTY_APPS = [
     "timezone_field",
     "django_celery_beat",
     "django_celery_results",
+    # TODO: Remove after website migration is complete
+    "heroicons",
 ]
 
 # Put your project-specific apps here
@@ -231,6 +233,7 @@ ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_LOGOUT_REDIRECT_URL = "/login/"
 
 ACCOUNT_FORMS = {
     "login": "apps.users.forms.UserLoginForm",
@@ -444,3 +447,6 @@ MIGRATION_MODULES = {"djpaddle": "apps.teams.migrate.djpaddle"}
 
 
 WAFFLE_FLAG_MODEL = "teams.Flag"
+
+# TODO: Remove once the website is enabled
+ENABLE_WEBSITE = os.getenv("ENABLE_WEBSITE", default="False") == "True"

@@ -7,9 +7,8 @@ from . import frames, views
 app_name = "web"
 
 urlpatterns = [
-    path("", views.home, name="home"),
+    path("", views.Home.as_view(), name="home"),
     path("toggle-sidebar", views.toggle_sidebar),
-
     # Trubo frames
     path("help", frames.HelpModal.as_view(), name="help"),
     path("changelog", frames.ChangelogModal.as_view(), name="changelog"),

@@ -1,0 +1,31 @@
+@charset "utf-8";
+
+// SCSS specific code/styles. Functions/mixins/variables belong here.
+@use "utilities";
+
+// Base styles that apply throughout the entire site.
+// Minimal classes should be present here, usually mirroring default elements.
+// i.e `strong, .strong { ... }`
+// TODO: Decide what to do for website
+// @use "base";
+
+// Reusable components, accompanied by usage documentation.
+@use "components";
+
+// App-specific code, not used anywhere else but a specific view or a set of them.
+// At some point, would be nice to bundle split per app.
+@use "apps";
+
+// Third-party libraries.
+
+// We compile most thrid party CSS files separately to avoid overly long
+// webpack compile times when developing.
+// @use "vendors/tailwind";
+// @use "vendors/fontawesome.css";
+@use "vendors/libcodemirror";
+@import "tippy.js/dist/tippy.css"; // This import must be AFTER any @use/at-use
+
+:root {
+  font-family: Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+

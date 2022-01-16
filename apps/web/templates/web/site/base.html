@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="turbo-cache-control" content="no-cache" />
+
+  {% include "web/components/meta.html" %}
+  {% include "web/components/favicon.html" %}
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  {% comment %} <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+    rel="stylesheet"
+  /> {% endcomment %}
+  <link
+  // font-medium to font-extrabold
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
+  <link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
+  {% comment %} TODO: Decide whether to use app stylesheet to develop independently {% endcomment %}
+  <link rel="stylesheet" href="{% static "css/website.css" %}" />
+
+  <script type="module">
+    import * as hotwiredTurbo from "{% static "js/turbo-bundle.js" %}";
+  </script>
+  <script src="{% static "js/stimulus-bundle.js" %}"></script>
+
+  {% comment %} TODO: WEBSITE_GOOGLE_ANALYTICS_ID {% endcomment %}
+  {% if GOOGLE_ANALYTICS_ID %}
+  {% include "web/components/google_analytics.html" %}
+  {% endif %}
+</head>
+
+<body>
+  {% include 'web/site/header.html' %}
+  {% block body %}{% endblock %}
+  {% include 'web/site/footer.html' %}
+</body>
+</html>

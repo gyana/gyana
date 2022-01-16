@@ -13,6 +13,7 @@ module.exports = {
     fontawesome: './apps/base/styles/vendors/fontawesome.css',
     stimulus: './apps/base/javascript/stimulus.ts',
     style: './apps/base/styles/style.scss',
+    website: './apps/base/styles/website.scss',
     tailwind: './apps/base/styles/vendors/tailwind.pcss',
     turbo: './apps/base/javascript/turbo.ts',
     workflow: './apps/workflows/javascript/dnd-flow.tsx',
