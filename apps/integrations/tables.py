@@ -5,7 +5,7 @@ from django.template.loader import get_template
 from django.utils.html import escape, format_html
 from django_tables2.utils import AttributeDict
 
-from apps.base.table import FaBooleanColumn, NaturalDatetimeColumn, NaturalDayColumn
+from apps.base.tables import FaBooleanColumn, NaturalDatetimeColumn, NaturalDayColumn
 
 from .models import Integration
 

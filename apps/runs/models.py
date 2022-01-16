@@ -6,7 +6,7 @@ from django.db import models
 from django_celery_results.models import TaskResult
 
 from apps.base.models import BaseModel
-from apps.base.table import ICONS
+from apps.base.tables import ICONS
 from apps.users.models import CustomUser
 
 # While JobRun and GraphRun share functionality, we're not inheriting from an

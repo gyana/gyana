@@ -2,7 +2,7 @@ import django_tables2 as tables
 from django.template import Context
 from django.template.loader import get_template
 
-from apps.base.table import ICONS, DuplicateColumn, NaturalDatetimeColumn
+from apps.base.tables import ICONS, DuplicateColumn, NaturalDatetimeColumn
 
 from .models import Dashboard
 

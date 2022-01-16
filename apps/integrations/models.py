@@ -7,7 +7,7 @@ from django.utils import timezone
 from model_clone.mixins.clone import CloneMixin
 
 from apps.base.models import BaseModel
-from apps.base.table import ICONS
+from apps.base.tables import ICONS
 from apps.dashboards.models import Dashboard
 from apps.projects.models import Project
 from apps.runs.models import JobRun

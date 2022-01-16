@@ -2,7 +2,7 @@ import django_tables2 as tables
 from django.template import Context
 from django.template.loader import get_template
 
-from apps.base.table import DuplicateColumn, NaturalDatetimeColumn, FaBooleanColumn
+from apps.base.tables import DuplicateColumn, NaturalDatetimeColumn, FaBooleanColumn
 
 from .models import Workflow
 

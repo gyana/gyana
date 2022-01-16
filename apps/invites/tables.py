@@ -1,7 +1,7 @@
 import django_tables2 as tables
 from django_tables2.utils import A
 
-from apps.base.table import NaturalDatetimeColumn
+from apps.base.tables import NaturalDatetimeColumn
 
 from .models import Invite
 

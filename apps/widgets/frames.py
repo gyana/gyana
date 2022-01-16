@@ -14,7 +14,7 @@ from apps.base.analytics import (
     WIDGET_CONFIGURED_EVENT,
     WIDGET_PREVIEWED_EVENT,
 )
-from apps.base.core.errors import error_name_to_snake
+from apps.base.core.utils import error_name_to_snake
 from apps.base.core.table_data import RequestConfig
 from apps.base.frames import (
     TurboFrameDetailView,

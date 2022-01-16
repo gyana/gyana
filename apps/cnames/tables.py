@@ -1,6 +1,6 @@
 import django_tables2 as tables
 
-from apps.base.table import NaturalDatetimeColumn
+from apps.base.tables import NaturalDatetimeColumn
 
 from .models import CName
 
@@ -16,7 +16,5 @@ class CNameTable(tables.Table):
     # TODO: Fix orderable for status column.
     status = tables.TemplateColumn(template_name="cnames/_status.html", orderable=False)
     actions = tables.TemplateColumn(
-        template_name="cnames/actions.html",
-        verbose_name="Actions",
-        orderable=False
+        template_name="cnames/actions.html", verbose_name="Actions", orderable=False
     )

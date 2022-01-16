@@ -5,7 +5,7 @@ from django_tables2.columns.booleancolumn import BooleanColumn
 from django_tables2.columns.urlcolumn import URLColumn
 from django_tables2.utils import A
 
-from apps.base.table import NaturalDatetimeColumn
+from apps.base.tables import NaturalDatetimeColumn
 from apps.base.templatetags.admin_utils import verbose_name
 from apps.projects.models import Project
 from apps.teams.models import Membership

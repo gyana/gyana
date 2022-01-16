@@ -4,7 +4,7 @@ from django.urls import reverse
 from model_clone import CloneMixin
 
 from apps.base.models import BaseModel
-from apps.base.table import ICONS
+from apps.base.tables import ICONS
 from apps.projects.models import Project
 from apps.runs.models import JobRun
 from apps.tables.models import Table
