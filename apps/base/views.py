@@ -3,9 +3,19 @@ from functools import cache
 from django import forms
 from django.db import transaction
 from django.http.response import HttpResponse
+from django.views.generic.edit import CreateView, UpdateView
+from turbo_response.mixins import TurboFormMixin
 
 from .forms import LiveUpdateForm
-from .turbo import TurboUpdateView
+
+
+class TurboCreateView(TurboFormMixin, CreateView):
+    ...
+
+
+class TurboUpdateView(TurboFormMixin, UpdateView):
+    ...
+
 
 # temporary overrides for formset labels
 FORMSET_LABELS = {

@@ -21,7 +21,7 @@ from apps.base.analytics import (
     DASHBOARD_CREATED_EVENT_FROM_INTEGRATION,
     DASHBOARD_DUPLICATED_EVENT,
 )
-from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.base.views import TurboCreateView, TurboUpdateView
 from apps.dashboards.mixins import DashboardMixin
 from apps.dashboards.tables import DashboardTable
 from apps.integrations.models import Integration

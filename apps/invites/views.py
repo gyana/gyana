@@ -11,7 +11,7 @@ from django_tables2 import SingleTableView
 
 from apps.base.analytics import INVITE_SENT_EVENT
 from apps.base.frames import TurboFrameListView
-from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.base.views import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 
 from .forms import InviteForm, InviteUpdateForm

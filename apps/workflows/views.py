@@ -13,7 +13,7 @@ from apps.base.analytics import (
     WORKFLOW_CREATED_EVENT_FROM_INTEGRATION,
     WORKFLOW_DUPLICATED_EVENT,
 )
-from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.base.views import TurboCreateView, TurboUpdateView
 from apps.integrations.models import Integration
 from apps.nodes.config import get_node_config_with_arity
 from apps.nodes.models import Node

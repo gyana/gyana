@@ -1,14 +1,15 @@
 from allauth.account.views import SignupView
-from apps.base.mixins import PageTitleMixin
-from apps.base.turbo import TurboCreateView, TurboUpdateView
-from apps.teams.mixins import TeamMixin
-from apps.users.helpers import require_email_confirmation
 from django.shortcuts import get_object_or_404, redirect
 from django.urls.base import reverse
 from django.views.generic import DetailView
 from turbo_response.mixins import TurboFormMixin
 from turbo_response.response import HttpResponseSeeOther
 from turbo_response.views import TurboFormView
+
+from apps.base.mixins import PageTitleMixin
+from apps.base.views import TurboCreateView, TurboUpdateView
+from apps.teams.mixins import TeamMixin
+from apps.users.helpers import require_email_confirmation
 
 from .forms import (
     AppsumoCodeForm,

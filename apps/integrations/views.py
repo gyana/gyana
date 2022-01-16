@@ -10,8 +10,8 @@ from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
-from apps.base.formset_update_view import FormsetUpdateView
-from apps.base.turbo import TurboUpdateView
+from apps.base.views import TurboUpdateView
+from apps.base.views import FormsetUpdateView
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import run_integration
 from apps.projects.mixins import ProjectMixin
