@@ -42,7 +42,7 @@ class TeamProjectsTable(Table):
     class Meta:
         model = Project
         attrs = {"class": "table"}
-        template_name = "web/tables/projects.html"
+        template_name = "teams/tables/projects.html"
         fields = (
             "name",
             "num_rows",
