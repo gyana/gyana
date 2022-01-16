@@ -2,7 +2,6 @@ from django import forms
 from django.db import transaction
 from django.utils.datastructures import MultiValueDict
 
-from apps.base.forms import BaseModelForm
 from apps.base.core.utils import create_column_choices
 
 
