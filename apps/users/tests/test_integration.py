@@ -2,7 +2,7 @@ import re
 
 import pytest
 from django.core import mail
-from pytest_django.asserts import assertContains, assertFormError, assertRedirects
+from pytest_django.asserts import assertFormError, assertRedirects
 
 from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
 from apps.users.models import ApprovedWaitlistEmail, CustomUser
@@ -15,7 +15,9 @@ def test_login(client):
         "test", email="test@gyana.com", password="seewhatmatters", onboarded=True
     )
 
-    assertRedirects(client.get("/"), "/login/")
+    r = client.get("/")
+    assertOK(r)
+    assertLink(r, "/login/", "Sign in", total=2)
 
     r = client.get("/login/")
     assertOK(r)
@@ -113,7 +115,4 @@ def test_sign_out(client, logged_in_user):
 
     # logout
     r = client.get("/logout/")
-    assertRedirects(r, "/", target_status_code=302)
-
-    r = client.get("/")
     assertRedirects(r, "/login/")
