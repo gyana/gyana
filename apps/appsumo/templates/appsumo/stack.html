@@ -1,6 +1,6 @@
 {% extends "teams/base.html" %}
 
-{% block tab %}
+{% block app %}
 <div class="max-w-xl pad">
   <form method="post" action="{% url 'team_appsumo:stack' team.id %}" class="w-full">
     {% csrf_token %}

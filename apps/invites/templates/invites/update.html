@@ -1,7 +1,7 @@
 
 {% extends "teams/base.html" %}
 
-{% block tab %}
+{% block app %}
 <h1>Update</h1>
 <form method="post" action="{% url 'team_invites:update' team.id object.id %}" class="form">
   {% csrf_token %}
