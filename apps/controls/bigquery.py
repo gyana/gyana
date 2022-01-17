@@ -166,21 +166,21 @@ def previous_week(query, column):
     date = get_date(query[column])
     one_week_ago = dt.date.today() - dt.timedelta(days=7)
     two_weeks_ago = one_week_ago - dt.timedelta(days=7)
-    return query[date.between(one_week_ago, two_weeks_ago)]
+    return query[date.between(two_weeks_ago, one_week_ago)]
 
 
 def previous_month(query, column):
     date = get_date(query[column])
     one_month_ago = dt.date.today() - relativedelta(months=1)
     two_months_ago = one_month_ago - relativedelta(months=1)
-    return query[date.between(one_month_ago, two_months_ago)]
+    return query[date.between(two_months_ago, one_month_ago)]
 
 
 def previous_year(query, column):
     date = get_date(query[column])
     one_year_ago = dt.date.today() - relativedelta(years=1)
     two_years_ago = one_year_ago - relativedelta(years=1)
-    return query[date.between(one_year_ago, two_years_ago)]
+    return query[date.between(two_years_ago, one_year_ago)]
 
 
 def previous_last_week(query, column):
@@ -206,7 +206,7 @@ def previous_last_12_month(query, column):
     date = get_date(query[column])
     one_year_ago = dt.date.today() - relativedelta(months=12)
     two_years_ago = one_year_ago - relativedelta(months=12)
-    return query[date.between(one_year_ago, two_years_ago)]
+    return query[date.between(two_years_ago, one_year_ago)]
 
 
 def previous_last_year(query, column):
@@ -224,13 +224,13 @@ def day_before_yesterday(query, column):
 def previous_this_week_uptodate(query, column):
     date = get_date(query[column])
     today_last_week = dt.date.today() - dt.timedelta(days=7)
-    start_of_week = today - dt.timedelta(days=today_last_week.weekday())
+    start_of_week = today_last_week - dt.timedelta(days=today_last_week.weekday())
     return query[date.between(start_of_week, today_last_week)]
 
 
 def previous_this_month_uptodate(query, column):
     date = get_date(query[column])
-    today_last_month = dt.date.today() - relativedelta(month=1)
+    today_last_month = dt.date.today() - relativedelta(months=1)
     return query[date.between(today_last_month.replace(day=1), today_last_month)]
 
 
