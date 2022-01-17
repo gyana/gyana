@@ -134,7 +134,6 @@ const registerLinter = (columns) =>
           !(newline[m.index + m[0].length] == '"' && newline[m.index - 1] == '"') &&
           !['TRUE', 'FALSE'].includes(m[0])
         ) {
-          console.log(m)
           result.push({
             message: `Column ${m[0]} does not exist`,
             severity: 'error',
