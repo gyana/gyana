@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.urls import reverse_lazy
 from django.urls.base import reverse
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
 
 from apps.base.views import TurboCreateView
@@ -35,3 +36,7 @@ class CNameDelete(TeamMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("teams:update", args=(self.team.id,))
+
+
+class CNameSuccess(TemplateView):
+    template_name = "cnames/success.html"
