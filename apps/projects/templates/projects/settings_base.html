@@ -1,17 +1,16 @@
 {% extends "projects/base.html" %}
 {% load static %}
 
-{% block body %}
+{% block main %}
+  {% block notifications %}{% endblock %}
 
-{% block notifications %}{% endblock %}
-
-<section
-  class="project"
-  data-controller="dropzone"
-  data-sheets-url="{% url 'project_integrations_sheets:create' project.id %}"
->
-  <section class="project-settings {% block app-class %}{% endblock %}">
-    {% block app %}{% endblock %}
+  <section
+    class="project"
+    data-controller="dropzone"
+    data-sheets-url="{% url 'project_integrations_sheets:create' project.id %}"
+  >
+    <section class="project-settings {% block app-class %}{% endblock %}">
+      {% block app %}{% endblock %}
+    </section>
   </section>
-</section>
-{% endblock body %}
+{% endblock main %}
