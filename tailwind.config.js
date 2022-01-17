@@ -79,5 +79,8 @@ module.exports = {
     ringOffsetWidth: false,
     ringOffsetColor: false,
   },
-  plugins: [],
+  plugins: [
+    // TODO: decide whether to replace with native prose class for typography
+    require('@tailwindcss/typography'),
+  ],
 }
