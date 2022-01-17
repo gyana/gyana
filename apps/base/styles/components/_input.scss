@@ -131,10 +131,11 @@ select {
   color: var(--c-black);
   display: flex;
   flex-flow: column;
+  flex: 1 1 100%;
   font-size: 1.4rem;
   gap: 0.4rem;
   line-height: 1.6rem;
-  flex: 1 1 100%;
+  position: relative;
 
   &:focus-within,
   &:focus-within label {

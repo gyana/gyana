@@ -11,34 +11,34 @@
     {% for hidden in form.hidden_fields %}
       {{ hidden }}
     {% endfor %}
-    
-    
+
     {% for field in form.visible_fields %}
     <label
-        {% if field.name == 'DELETE' %}style="display: none;" {% endif %}
-        {% if field.widget_type == 'checkbox' %}class="input__toggle"{% endif %}
+      {% if field.name == 'DELETE' %}style="display: none;" {% endif %}
+      {% if field.widget_type == 'checkbox' %}class="input__toggle"{% endif %}
     >
-        {% if field.help_text %}
-        <p class="input__help-text">
-          {{ field.help_text }}
-          {% if not field.field.required and field.name != 'ascending'%} - optional{% endif %}
-        </p>
-        {% endif %}
+      {% if field.help_text %}
+      <p class="input__help-text">
+        {{ field.help_text }}
+        {% if not field.field.required and field.name != 'ascending'%} - optional{% endif %}
+      </p>
+      {% endif %}
 
-        {% if not form.is_live %}
-        {{ field.errors.as_ul }}
-        {% endif %}
+      {% if not form.is_live %}
+      {{ field.errors.as_ul }}
+      {% endif %}
 
-        {{ field }}
+      {{ field }}
     </label>
     {% endfor %}
 
     {% if not formset.hide_delete_button %}
-      <button class="button button--sm button--circle button--tertiary ml-4" 
+      <button
+        class="button button--sm button--circle button--tertiary ml-4" 
         type="submit"
         data-action="click->formset#remove"
       >
-          <i class="far fa-fw fa-times"></i>
+        <i class="far fa-fw fa-times"></i>
       </button>
     {% endif %}
 </div>
