@@ -14,8 +14,8 @@ from apps.base.analytics import (
     WIDGET_CONFIGURED_EVENT,
     WIDGET_PREVIEWED_EVENT,
 )
-from apps.base.core.utils import error_name_to_snake
 from apps.base.core.table_data import RequestConfig
+from apps.base.core.utils import error_name_to_snake
 from apps.base.frames import (
     TurboFrameDetailView,
     TurboFrameFormsetUpdateView,
@@ -116,12 +116,6 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
         return kwargs
 
     def get_success_url(self) -> str:
-        import logging
-
-        logger = logging.getLogger()
-
-        logger.critical("what teh fuck is gong on")
-        logger.critical(self.request.POST.get("submit"))
         if self.request.POST.get("submit") == "Save & Preview":
             return reverse(
                 "dashboard_widgets:update",
@@ -154,15 +148,6 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
 
     def form_valid(self, form):
         r = super().form_valid(form)
-
-        import logging
-
-        logger = logging.getLogger()
-
-        logger.critical("form wtf")
-        logger.critical(form)
-        logger.critical(form.instance)
-        logger.critical(form.instance.image)
 
         analytics.track(
             self.request.user.id,
