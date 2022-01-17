@@ -20,6 +20,9 @@ from django.contrib import admin
 from django.urls import include, path, register_converter
 from django.urls.converters import IntConverter
 from rest_framework.documentation import get_schemajs_view, include_docs_urls
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.core import urls as wagtail_urls
+from wagtail.documents import urls as wagtaildocs_urls
 
 from apps.base.converters import HashIdConverter
 
@@ -114,6 +117,9 @@ urlpatterns = [
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),
     path("paddle/", include(team_urls.paddle_urlpatterns)),
+    path("cms/", include(wagtailadmin_urls)),
+    path("documents/", include(wagtaildocs_urls)),
+    path("pages/", include(wagtail_urls)),
     # API docs
     # these are needed for schema.js
     path("docs/", include_docs_urls(title="API Docs")),
