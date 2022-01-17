@@ -48,6 +48,9 @@ class HostMiddleware:
         resolver_match = resolve(request.path_info)
         route_name = f"{':'.join(resolver_match.app_names)}:{resolver_match.url_name}"
 
+        if route_name == "cnames:success":
+            return self.get_response(request)
+
         if route_name in CNAME_ALLOWED:
 
             dashboard_has_cname = (
