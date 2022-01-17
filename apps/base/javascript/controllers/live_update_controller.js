@@ -31,9 +31,7 @@ export default class extends Controller {
     }
   }
 
-  listener = async (event) => {
-    if (this.clicked_button) return
-    if (event.target.hasAttribute('data-live-update-ignore')) return
+  updateForm = async (event) => {
     const form = this.element
 
     // manually POST the form and get HTML response
@@ -90,6 +88,11 @@ export default class extends Controller {
 
     this.clicked_button = false
     this.loadingTarget.classList.add('hidden')
+  }
+
+  listener = async (event) => {
+    if (this.clicked_button || event.target.hasAttribute('data-live-update-ignore')) return
+    this.updateForm(event)
   }
 
   connect() {

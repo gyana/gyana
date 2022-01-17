@@ -18,7 +18,8 @@
 
     <button 
       id="{{ formset.get_default_prefix }}-add" 
-      type="submit" class="button button--sm button--rounded  " 
+      type="submit" 
+      class="button button--sm button--rounded  " 
       data-action="click->formset#add"
       {% if formset.can_add == False %}disabled{% endif %}
       

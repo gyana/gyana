@@ -26,14 +26,21 @@
     </div>
     
     <form id="node-update-form"
-          class="form--no-layout overflow-hidden flex-1"
-          action="{% url 'nodes:update' node.id %}"
-          method="post"
-          data-tf-modal-target='form'
-          {% if do_live_updates %}
-          data-controller="live-update"
-          {% endif %}
-          data-action="change->tf-modal#change">
+      class="form--no-layout overflow-hidden flex-1"
+      action="{% url 'nodes:update' node.id %}"
+      method="post"
+      data-tf-modal-target='form'
+      {% if do_live_updates %}
+      data-controller="live-update"
+      {% endif %}
+      data-action="
+        change->tf-modal#change 
+        formset:remove->live-update#updateForm 
+        formset:add->live-update#updateForm 
+        formset:remove->tf-modal#change 
+        formset:add->tf-modal#change
+      "
+    >
 
       <div data-cy="update-sidebar" class="workflow-detail__sidebar">
         <p class='pb-5'>{{ node.explanation }}</p>
