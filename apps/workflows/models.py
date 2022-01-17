@@ -11,6 +11,9 @@ from apps.tables.models import Table
 
 
 class Workflow(CloneMixin, BaseModel):
+    _clone_excluded_m2m_fields = ["runs"]
+    _clone_excluded_o2o_fields = ["last_success_run", "latest_run"]
+
     class State(models.TextChoices):
         INCOMPLETE = "incomplete", "Incomplete"
         PENDING = "pending", "Pending"
