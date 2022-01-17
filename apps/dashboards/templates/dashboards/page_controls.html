@@ -9,11 +9,14 @@
 
   Page {{ page.position }} of {{ page_count }}
 
-  {% if next_page > page_count %}
+  {% if next_page > page_count and request.GET.mode == "view" %}
+  <i class="fas fa-fw fa-chevron-right text-black-20"></i>
+  {% elif next_page > page_count %}
   <form
     method="POST"
     action="{% url "project_dashboards:page-create" project.id object.id %}"
     data-controller="tooltip"
+    data-tooltip-content="Add new page"
     class="form--no-layout"
   >
     {% csrf_token %}
@@ -25,8 +28,6 @@
     >
       <i class="fa fa-fw fa-plus mr-2"></i>
     </button>
-
-    <div data-tooltip-target="body">Add new page</div>
   </form>
   {% else %}
     <a href="{% url 'project_dashboards:detail' project.id object.id %}?page={{ next_page }}&mode={{request.GET.mode}}">
