@@ -98,6 +98,7 @@ class DashboardForm(forms.ModelForm):
     )
     font_size = forms.IntegerField(
         required=False,
+        initial=14,
         widget=forms.NumberInput(
             attrs={"class": "label--third", "unit_suffix": "pixels"}
         ),

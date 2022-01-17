@@ -30,13 +30,21 @@
     </span>
   </label>
   {% elif bound_field.subwidgets|length == 1 %}
-  <div class="label {{ bound_field.field.widget.attrs.class }}">
+  <div
+    data-controller="reset-default"
+    data-reset-default-initial-value="{{ bound_field.field.initial }}"
+    class="label {{ bound_field.field.widget.attrs.class }}"
+  >
     <label for="{{ bound_field.id_for_label}}">
-      <span>
+      <span class="flex items-center">
         {{ bound_field.label }}
 
         {% if not bound_field.field.required and not optional == False %}
         <span class="text-black-50">- optional</span>
+        {% endif %}
+
+        {% if bound_field.field.initial and bound_field.value != bound_field.field.initial %}
+        <a class="small link ml-auto" data-action="click->reset-default#reset">Reset to default</a>
         {% endif %}
 
         {% if bound_field.help_text %}
