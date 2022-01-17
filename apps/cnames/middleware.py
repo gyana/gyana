@@ -14,7 +14,6 @@ CNAME_ALLOWED = [
     "dashboards:login",
     "dashboards:logout",
     "dashboard_controls:update-public",
-    "cnames:success",
 ]
 
 
