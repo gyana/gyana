@@ -19,9 +19,22 @@
   }
 
   &__grid {
-    background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.025),rgba(0, 0, 0, 0.025) 1px, transparent 1px, transparent 15px), repeating-linear-gradient(-90deg, rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.025) 1px, transparent 1px, transparent 15px);
+    background-image: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.025),
+        rgba(0, 0, 0, 0.025) 1px,
+        transparent 1px,
+        transparent var(--grid-size)
+      ),
+      repeating-linear-gradient(
+        -90deg,
+        rgba(0, 0, 0, 0.025),
+        rgba(0, 0, 0, 0.025) 1px,
+        transparent 1px,
+        transparent var(--grid-size)
+      );
     background-position: 1px 1px;
-    background-size: 15px 15px;
+    background-size: var(--grid-size) var(--grid-size);
   }
 }
 
@@ -42,6 +55,11 @@
     text-align: center;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  &__comparison {
+    font-size: 3rem;
+    color: var(--c-black-50);
   }
 }
 

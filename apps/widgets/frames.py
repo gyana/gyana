@@ -23,12 +23,13 @@ from apps.base.frames import (
     TurboFrameUpdateView,
 )
 from apps.base.templates import template_exists
+from apps.controls.bigquery import DATETIME_FILTERS
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, metric_to_output, table_to_output
 
 from .forms import FORMS, WidgetStyleForm
-from .models import WIDGET_CHOICES_ARRAY, Widget
+from .models import Widget
 
 
 def add_output_context(context, widget, request, control):
@@ -47,7 +48,17 @@ def add_output_context(context, widget, request, control):
                     request,
                 ).configure(table)
         elif widget.kind == Widget.Kind.METRIC:
-            context["metric"] = metric_to_output(widget, control)
+            metric = metric_to_output(widget, control)
+            if widget.compare_previous_period and (
+                used_control := widget.control if widget.has_control else control
+            ):
+                previous_metric = metric_to_output(widget, control, True)
+                context["change"] = (metric - previous_metric) / previous_metric * 100
+                context["period"] = DATETIME_FILTERS[used_control.date_range][
+                    "previous_label"
+                ]
+
+            context["metric"] = metric
         else:
             chart, chart_id = chart_to_output(widget, control)
             context.update(chart)

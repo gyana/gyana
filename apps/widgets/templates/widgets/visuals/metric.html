@@ -6,4 +6,31 @@
   <h2 class="metric__value">
     {{ metric|floatformat:widget.rounding_decimal }}
   </h2>
+
+  {% if change is not None %}
+
+    <p class="metric__comparison">
+      <span class="
+        {% if change < 0 and not widget.positive_decrease %}
+          text-red
+        {% elif change == 0%}
+          text-black-50
+        {%else%}
+          text-green
+        {% endif %}">
+        <i class="fa 
+          {% if change > 0 %}
+            fa-arrow-up
+          {%elif change == 0 %}
+            fa-minus
+          {% else %}
+            fa-arrow-down
+          {% endif %}"
+        ></i>
+        {{ change|floatformat:2 }}%
+      </span>
+      <span>compared to previous {{period}}</span>
+    </p>
+
+  {% endif %}
 </div>

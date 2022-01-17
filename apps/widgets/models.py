@@ -150,6 +150,10 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
     show_summary_row = models.BooleanField(
         default=False, help_text="Display a summary row at the bottom of your table"
     )
+    compare_previous_period = models.BooleanField(
+        default=False, verbose_name="Compare with previous period", help_text=""
+    )
+    positive_decrease = models.BooleanField(default=False)
 
     def __str__(self):
         return f"<Widget {self.kind} on {self.table}>"
