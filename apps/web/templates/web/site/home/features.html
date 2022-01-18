@@ -1,0 +1,172 @@
+{% load static %}
+<div
+  id="features"
+  class="relative bg-white pt-16 pb-32 overflow-hidden"
+>
+  <div class="relative">
+    <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
+      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0">
+        <div>
+          <div>
+            <span class="flex-shrink-0">
+              <span class="w-10 h-10 flex items-center justify-center border-2 border-indigo-600 rounded-full">
+                <span class="text-indigo-600">01</span>
+              </span>
+            </span>
+          </div>
+          <div class="mt-6">
+            <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
+              Integrate all your online data
+            </h2>
+            <p class="mt-4 text-lg text-gray-600 mb-4">
+              One-click connections to 80+ popular files, apps and
+              databases, with more added every month. Get access to the raw
+              data, always up to date.
+              <a
+                href="/integrations"
+                class="text-gray-600 hover:text-indigo-600 underline"
+              >
+                Learn more.
+              </a>
+            </p>
+            <IntegrationsMini />
+          </div>
+        </div>
+        {% comment %}
+          <div class="mt-8 border-t border-gray-200 pt-6">
+            <blockquote>
+              <div>
+                <p class="text-base text-gray-600">
+                  &ldquo;Gyana contains so many connectors, including GSheet,
+                  Asana, Facebook etc. - one of the most comprehensive I saw.
+                  And you can also easily transform data using the Tables
+                  (imagining Power Query with a simpler interface)&rdquo;
+                </p>
+              </div>
+              <footer class="mt-3">
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <img
+                      class="h-6 w-6 rounded-full"
+                      src="/img/customer/hoang.jpeg"
+                      alt=""
+                    />
+                  </div>
+                  <div class="text-base font-normal text-gray-700">
+                    Phan Vũ Hoàng, myE
+                  </div>
+                </div>
+              </footer>
+            </blockquote>
+          </div>
+        {% endcomment %}
+      </div>
+      <div class="mt-12 sm:mt-16 lg:mt-0">
+        <div class="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
+          <img
+            class="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
+            src="{% static '/images/site/home/integrations.jpg' %}"
+            alt="Integrations feature"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-24">
+    <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
+      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
+        <div>
+          <div>
+            <span class="flex-shrink-0">
+              <span class="w-10 h-10 flex items-center justify-center border-2 border-indigo-600 rounded-full">
+                <span class="text-indigo-600">02</span>
+              </span>
+            </span>
+          </div>
+          <div class="mt-6">
+            <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
+              Automate everything with workflows
+            </h2>
+            <p class="mt-4 text-lg text-gray-600 mb-4">
+              A drag-n-drop visual data editor to transform data, calculate
+              metrics and automate work. Build your analysis pipeline once,
+              and tweak for future projects.
+            </p>
+            <Transformations />
+          </div>
+        </div>
+      </div>
+      <div class="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1">
+        <div class="pr-4 -ml-48 sm:pr-6 md:-ml-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
+          <img
+            class="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none"
+            src="{% static '/images/site/home/workflows.jpg' %}"
+            alt="Workflows feature"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-24">
+    <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
+      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0">
+        <div>
+          <div>
+            <span class="flex-shrink-0">
+              <span class="w-10 h-10 flex items-center justify-center border-2 border-indigo-600 rounded-full">
+                <span class="text-indigo-600">03</span>
+              </span>
+            </span>
+          </div>
+          <div class="mt-6">
+            <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
+              Build your ideal custom dashboard
+            </h2>
+            <p class="mt-4 text-lg text-gray-600">
+              Choose from a variety of flexible visualizations and connect
+              to any data. Schedule daily updates, add interactive filters
+              and share with your clients and collaborators.
+            </p>
+          </div>
+        </div>
+        <Charts />
+        {% comment %} 
+          <div class="mt-8 border-t border-gray-200 pt-6">
+            <blockquote>
+              <div>
+                <p class="text-base text-gray-600">
+                  &ldquo;The UI and UX are great all around, and it has very
+                  powerful features for building out the tables and data
+                  functions. Very happy so far.&rdquo;
+                </p>
+              </div>
+              <footer class="mt-3">
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <img
+                      class="h-6 w-6 rounded-full"
+                      src="https://images.unsplash.com/photo-1509783236416-c9ad59bae472?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
+                      alt=""
+                    />
+                  </div>
+                  <div class="text-base font-normal text-gray-700">
+                    Zain Lawson, Domestic Workers Unite
+                  </div>
+                </div>
+              </footer>
+            </blockquote>
+          </div>
+        {% endcomment %}
+      </div>
+      <div class="mt-12 sm:mt-16 lg:mt-0">
+        <div class="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
+          <img
+            class="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
+            src="{% static '/images/site/home/dashboards.jpg' %}"
+            alt="Dashboard feature"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
