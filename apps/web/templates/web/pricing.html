@@ -1,5 +1,5 @@
 {% extends 'web/site_base.html' %}
-{% load heroicons %}
+{% load heroicons markdownify %}
 
 {% block body %}
   <div class="bg-white">
@@ -68,6 +68,28 @@
             </div>
           </div>
         {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white">
+    <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:py-20 lg:px-8">
+      <div class="lg:grid lg:grid-cols-3 lg:gap-8">
+        <div>
+          <h2 class="text-3xl font-extrabold text-gray-900">
+            Frequently asked questions
+          </h2>
+          <p class="mt-4 text-lg text-gray-600">
+            Can’t find the answer you’re looking for? Reach out to us in the
+            chat.
+          </p>
+        </div>
+        <div class="prose prose-indigo text-gray-600 mx-auto mt-12 lg:mt-0 lg:col-span-2">
+          {% for faq in content.faqs %}
+            <h3> {{ faq.q }} </h3>
+            <p> {{ faq.a }} </p>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
