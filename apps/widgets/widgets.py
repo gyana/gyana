@@ -17,7 +17,7 @@ class SourceSelect(ChoiceWidget):
 
         context["widget"]["options"] = [
             {"icon": ICONS[option.source], "id": option.id, "label": option.owner_name}
-            for option in self.choices
+            for option in self.choices.queryset
         ]
 
         context["widget"]["selected"] = value
