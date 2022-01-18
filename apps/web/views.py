@@ -53,6 +53,15 @@ class Pricing(TemplateView):
         return context
 
 
+class About(TemplateView):
+    template_name = "web/about.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["content"] = get_content("about.yaml")
+        return context
+
+
 class PrivacyPolicy(TemplateView):
     template_name = "web/privacy_policy.html"
 

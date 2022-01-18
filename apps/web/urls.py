@@ -7,12 +7,15 @@ from . import frames, views
 app_name = "web"
 
 urlpatterns = [
+    # site
     path("", views.Home.as_view(), name="home"),
-    path("legal/pricing", views.Pricing.as_view(), name="pricing"),
+    path("pricing", views.Pricing.as_view(), name="pricing"),
+    path("about", views.About.as_view(), name="about"),
     path("legal/privacy-policy", views.PrivacyPolicy.as_view(), name="privacy-policy"),
-    path("terms-of-use", views.TermsOfUse.as_view(), name="terms-of-use"),
+    path("legal/terms-of-use", views.TermsOfUse.as_view(), name="terms-of-use"),
+    # app
     path("toggle-sidebar", views.toggle_sidebar),
-    # Trubo frames
+    # frames
     path("help", frames.HelpModal.as_view(), name="help"),
     path("changelog", frames.ChangelogModal.as_view(), name="changelog"),
 ]
