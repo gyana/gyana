@@ -1,12 +1,19 @@
+{% load static %}
+
 <fieldset name="{{ widget.name }}" data-controller="node-input">
  {% for option in widget.options %}
   <label 
     data-node-input-target="label"
-    class="checkbox {% if option.id == widget.selected %}checkbox__checked{% endif %}" 
+    class="checkbox {% if option.id == widget.selected %}checkbox__checked{% endif %}"
     id="{{ option.id }}"
     data-action="click->node-input#select click->tf-modal#preview"
   >
-    <i class="{{ option.icon }}"></i>{{ option.label }}
+    {% if option.image %}
+    <img src="{% static option.image %}" style="width: 1.4rem;">
+    {% else %}
+    <i class="{{ option.icon }}"></i>
+    {% endif %}
+    {{ option.label }}
   </label>
   {% endfor %}
 
