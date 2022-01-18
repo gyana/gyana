@@ -42,7 +42,7 @@ const NodeContent: React.FC<Props> = ({ id, data }) => {
         data-action='dblclick->tf-modal#open'
         data-modal-item={id}
         data-modal-id='workflow-modal'
-        data-modal-classes="tf-modal--full"
+        data-modal-classes='tf-modal--full'
       ></i>
       {showContent && (
         <div className='p-2'>

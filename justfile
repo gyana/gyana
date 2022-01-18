@@ -3,6 +3,11 @@
 
 service_account := "gyana-1511894275181-50f107d4db00.json"
 
+# django apps for fixtures
+excludes := "-e admin -e auth.permission -e contenttypes -e sessions -e silk -e wagtailcore -e wagtaildocs -e wagtailembeds -e wagtailforms -e wagtailimages -e wagtailredirects -e wagtailsearch -e wagtailusers"
+wagtail := "wagtailcore wagtaildocs wagtailembeds wagtailforms wagtailimages wagtailredirects wagtailsearch wagtailusers"
+wagtail_excludes := "-e wagtailcore.groupcollectionpermission -e wagtailcore.grouppagepermission -e wagtailimages.rendition -e wagtailcore.pagelogentry"
+
 # Default command, do not add any commands above it.
 default:
   @just dev
@@ -22,12 +27,24 @@ migrate app='' migration='':
 seed:
     ./manage.py flush --noinput
     ./manage.py loaddata cypress/fixtures/fixtures.json
-
+    ./manage.py loaddata cypress/fixtures/fixtures-wagtail.json
+    
 fixtures:
-    ./manage.py dumpdata --natural-foreign -e admin -e auth.permission -e contenttypes -e sessions -e silk \
-        -e wagtailcore.groupcollectionpermission -e wagtailcore.grouppagepermission -e wagtailimages.rendition \
-         > cypress/fixtures/fixtures.json
-    yarn prettier --write cypress/fixtures/fixtures.json
+    ./manage.py dumpdata {{ excludes }} > cypress/fixtures/fixtures.json
+    yarn prettier --write
+
+seed-wagtail:
+    ./manage.py loaddata cypress/fixtures/fixtures-wagtail.json
+    ./manage.py loaddata cypress/fixtures/fixtures-wagtail-custom.json
+
+fixtures-wagtail:
+    ./manage.py purge_revisions
+    # natural-foreign for wagtail references to contenttypes
+    # https://docs.wagtail.io/en/stable/advanced_topics/testing.html#using-dumpdata
+    ./manage.py dumpdata --natural-foreign {{ wagtail }} {{ wagtail_excludes }} -e blog > cypress/fixtures/fixtures-wagtail.json
+    # wagtail custom page fixtures need to run after wagtailcore_locale
+    ./manage.py dumpdata blog > cypress/fixtures/fixtures-wagtail-custom.json
+    yarn prettier --write
 
 shell:
     ./manage.py shell -i ipython

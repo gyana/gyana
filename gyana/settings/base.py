@@ -123,7 +123,7 @@ PROJECT_APPS = [
     "apps.runs.apps.RunsConfig",
     "apps.customapis",
     "apps.oauth2",
-    "apps.blog"
+    "apps.blog",
 ]
 
 INSTALLED_APPS = (

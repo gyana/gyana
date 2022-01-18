@@ -92,8 +92,8 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
           x < 0
             ? 0
             : parent && x + node.clientWidth > parent.offsetWidth
-              ? parent.offsetWidth - node.clientWidth
-              : Math.round(x / stepSize) * stepSize
+            ? parent.offsetWidth - node.clientWidth
+            : Math.round(x / stepSize) * stepSize
         )
         // Snaps the y value to the top of the parent element
         const newY = Math.floor(y > 0 ? Math.round(y / stepSize) * stepSize : 0)
