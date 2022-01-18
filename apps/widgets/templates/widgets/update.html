@@ -33,8 +33,11 @@
     </nav>
 
     {% if widget.is_valid %}
-      <turbo-frame class="overflow-auto" id="widgets-output-{{ widget.id }}"
-                    src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}">
+      <turbo-frame
+        class="flex flex-1 overflow-auto"
+        id="widgets-output-{{ widget.id }}"
+        src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}"
+      >
         <div class='placeholder-scr placeholder-scr--fillscreen'>
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
           <p class='placeholder-scr__title'>Loading widget...</p>
