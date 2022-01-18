@@ -14,102 +14,23 @@
       </strong>
     </p>
     <div class="mt-12 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-16">
-
-      <div>
+      {% for feature in features %}
         <div>
-          <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white-opacity-10">
-            {% heroicon 'sparkles' class="w-6 h-6 text-white" style="solid" %}
-          </span>
+          <div>
+            <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white-opacity-10">
+              {% heroicon feature.icon class="w-6 h-6 text-white" style="solid" %}
+            </span>
+          </div>
+          <div class="mt-6">
+            <h3 class="text-lg font-medium text-white">
+              {{ feature.name }}
+            </h3>
+            <p class="mt-2 text-base text-indigo-200">
+              {{ feature.description }}
+            </p>
+          </div>
         </div>
-        <div class="mt-6">
-          <h3 class="text-lg font-medium text-white">
-            Automate your work
-          </h3>
-          <p class="mt-2 text-base text-indigo-200">
-            Turn manual processes in automated workflows. Schedule periodic updates and build-reusable templates.
-          </p>
-        </div>
-      </div>
-
-      <div>
-        <div>
-          <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white-opacity-10">
-            {% heroicon 'database' class="w-6 h-6 text-white" style="solid" %}
-          </span>
-        </div>
-        <div class="mt-6">
-          <h3 class="text-lg font-medium text-white">
-            Connect to the web
-          </h3>
-          <p class="mt-2 text-base text-indigo-200">
-            Build a single data store for your business apps, marketing tools, databases and custom APIs. Always up to date.
-          </p>
-        </div>
-      </div>
-
-      <div>
-        <div>
-          <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white-opacity-10">
-            {% heroicon 'credit-card' class="w-6 h-6 text-white" style="solid" %}
-          </span>
-        </div>
-        <div class="mt-6">
-          <h3 class="text-lg font-medium text-white">
-            Pay for what you use
-          </h3>
-          <p class="mt-2 text-base text-indigo-200">
-            Our transparent pricing model scales with data usage, not users. Because you shouldn't have to pay to collaborate.
-          </p>
-        </div>
-      </div>
-
-      <div>
-        <div>
-          <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white-opacity-10">
-            {% heroicon 'user-group' class="w-6 h-6 text-white" style="solid" %}
-          </span>
-        </div>
-        <div class="mt-6">
-          <h3 class="text-lg font-medium text-white">
-            Empower your team
-          </h3>
-          <p class="mt-2 text-base text-indigo-200">
-            Turn ad hoc requests into repeatable solutions you can hand off to your team. Decentralize your expertise.
-          </p>
-        </div>
-      </div>
-
-      <div>
-        <div>
-          <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white-opacity-10">
-            {% heroicon 'user-group' class="w-6 h-6 text-white" style="solid" %}
-          </span>
-        </div>
-        <div class="mt-6">
-          <h3 class="text-lg font-medium text-white">
-            Scale beyond your computer
-          </h3>
-          <p class="mt-2 text-base text-indigo-200">
-            Gyana works in cloud, not your local machine. No need to worry about spreadsheet row limits or overheated laptops.
-          </p>
-        </div>
-      </div>
-      
-      <div>
-        <div>
-          <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white-opacity-10">
-            {% heroicon 'view-grid' class="w-6 h-6 text-white" style="solid" %}
-          </span>
-        </div>
-        <div class="mt-6">
-          <h3 class="text-lg font-medium text-white">
-            Manage your clients
-          </h3>
-          <p class="mt-2 text-base text-indigo-200">
-            Assign separate clients to isolated workspaces. Share unique links to your reports with custom branding and your domain.
-          </p>
-        </div>
-      </div>
+      {% endfor %}
     </div>
   </div>
 </div>
