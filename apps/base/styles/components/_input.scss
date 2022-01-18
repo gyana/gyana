@@ -131,10 +131,11 @@ select {
   color: var(--c-black);
   display: flex;
   flex-flow: column;
+  flex: 1 1 100%;
   font-size: 1.4rem;
   gap: 0.4rem;
   line-height: 1.6rem;
-  flex: 1 1 100%;
+  position: relative;
 
   &:focus-within,
   &:focus-within label {
@@ -249,7 +250,7 @@ input.input,
 label.checkbox {
   border-radius: 5px;
   border: 1px solid var(--c-gray);
-  color: var(--c-black-50);
+  color: var(--c-black);
   cursor: pointer;
   display: flex;
   flex-direction: row;
@@ -267,7 +268,8 @@ label.checkbox {
 
   &:hover {
     background-color: var(--c-gray-20);
-
+    color: var(--c-blue);
+    
     &::after {
       content: '\f14a';
     }
@@ -290,13 +292,14 @@ label.checkbox__checked {
 
 // based on https://www.sarasoueidan.com/blog/inclusively-hiding-and-styling-checkboxes-and-radio-buttons/
 .checkbox__hidden {
-  opacity: 0;
+  left: -100vw;
   position: absolute;
+  top: 0;
+  visibility: hidden;
 
   // Inspired by https://css-tricks.com/the-checkbox-hack/
   &:checked ~ label.checkbox__enabled {
     border: 1px solid var(--c-blue);
-    color: var(--c-black);
 
     &::after {
       color: var(--c-blue);
@@ -306,7 +309,6 @@ label.checkbox__checked {
 
   &:checked ~ label.checkbox__disabled {
     border: 1px solid var(--c-gray);
-    color: var(--c-black);
 
     &::after {
       color: var(--c-gray);
@@ -316,7 +318,6 @@ label.checkbox__checked {
 
   &:checked ~ label.checkbox__active {
     border: 1px solid var(--c-green);
-    color: var(--c-black);
     cursor: default;
 
     &::after {

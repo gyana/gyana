@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.http import HttpResponseForbidden
 from django.http.request import split_domain_port, validate_host
+from django.shortcuts import redirect
 from django.urls import resolve
 
 from apps.dashboards.models import Dashboard
@@ -38,9 +39,16 @@ class HostMiddleware:
         if not cname:
             return HttpResponseForbidden()
 
+        # domain without any path redirects to success message
+        if request.path == "/":
+            return redirect("cnames:success")
+
         # only public dashboards owned by team are available
         resolver_match = resolve(request.path_info)
         route_name = f"{':'.join(resolver_match.app_names)}:{resolver_match.url_name}"
+
+        if route_name == "cnames:success":
+            return self.get_response(request)
 
         if route_name in CNAME_ALLOWED:
 

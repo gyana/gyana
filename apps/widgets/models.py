@@ -38,6 +38,7 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
     _clone_m2o_or_o2m_fields = ["filters", "columns", "aggregations", "charts"]
 
     class Category(models.TextChoices):
+        CONTENT = "content", "Content"
         SIMPLE = "simple", "Simple charts"
         TIMESERIES = "timeseries", "Timeseries charts"
         ADVANCED = "advanced", "Advanced charts"
@@ -201,8 +202,13 @@ NO_DIMENSION_WIDGETS = [
 
 # widget = (icon, category, verbose_name)
 WIDGET_KIND_TO_WEB = {
-    Widget.Kind.TEXT.value: ("fa-text", Widget.Category.SIMPLE, "Text"),
-    Widget.Kind.IMAGE.value: ("fa-image", Widget.Category.SIMPLE, "Image"),
+    Widget.Kind.TEXT.value: ("fa-text", Widget.Category.CONTENT, "Text"),
+    Widget.Kind.IMAGE.value: ("fa-image", Widget.Category.CONTENT, "Image"),
+    Widget.Kind.IFRAME.value: (
+        f"fa-browser",
+        Widget.Category.CONTENT,
+        "URL Embed",
+    ),
     Widget.Kind.METRIC.value: ("fa-value-absolute", Widget.Category.SIMPLE, "Metric"),
     Widget.Kind.TABLE.value: ("fa-table", Widget.Category.SIMPLE, "Table"),
     Widget.Kind.COLUMN.value: ("fa-chart-bar", Widget.Category.SIMPLE, "Column"),
@@ -265,11 +271,6 @@ WIDGET_KIND_TO_WEB = {
         f"fa-analytics",
         Widget.Category.COMBO,
         "Combination chart",
-    ),
-    Widget.Kind.IFRAME.value: (
-        f"fa-browser",
-        Widget.Category.SIMPLE,
-        "URL Embed",
     ),
 }
 
