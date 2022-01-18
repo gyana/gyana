@@ -83,4 +83,4 @@ class ControlPublicUpdate(ControlUpdate):
 
     @cached_property
     def page(self):
-        return self.dashboard.pages.get(position=self.request.GET.get("page", 1))
+        return self.dashboard.pages.get(position=self.request.GET.get("dashboardPage", 1))

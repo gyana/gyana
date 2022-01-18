@@ -76,7 +76,7 @@ class DashboardPreview(TurboFrameDetailView):
         context = super().get_context_data(**kwargs)
         context["project"] = self.object.project
         context["page"] = self.object.pages.get(
-            position=self.request.GET.get("page", 1)
+            position=self.request.GET.get("dashboardPage", 1)
         )
         return context
 

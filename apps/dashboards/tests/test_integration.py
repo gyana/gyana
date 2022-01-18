@@ -48,7 +48,7 @@ def test_dashboard_crudl(client, project, dashboard_factory):
 
     # add page
     r = client.post(f"{DETAIL}/pages/new")
-    assertRedirects(r, f"{DETAIL}?page=2", status_code=302)
+    assertRedirects(r, f"{DETAIL}?dashboardPage=2", status_code=302)
     page = dashboard.pages.last()
     assert page.position == 2
 
@@ -58,7 +58,7 @@ def test_dashboard_crudl(client, project, dashboard_factory):
 
     # delete page
     r = client.delete(f"{DETAIL}/pages/{page.id}")
-    assertRedirects(r, f"{DETAIL}?page=1", status_code=302)
+    assertRedirects(r, f"{DETAIL}?dashboardPage=1", status_code=302)
     assert dashboard.pages.count() == 1
 
     # delete
