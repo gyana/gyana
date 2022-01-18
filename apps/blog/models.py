@@ -49,6 +49,9 @@ class BlogIndexPage(Page):
 
     content_panels = Page.content_panels + [FieldPanel("intro", classname="full")]
 
+    parent_page_types = ["wagtailcore.Page"]
+    subpage_types = ["blog.BlogPage"]
+
     def get_context(self, request):
         context = super().get_context(request)
         blogpages = self.get_children().live().order_by("-first_published_at")
@@ -100,8 +103,7 @@ class BlogPage(Page):
         ImageChooserPanel("feed_image"),
     ]
 
-    # parent_page_types = ["wagtail.Page"]
-    # parent_page_types = []
+    parent_page_types = ["blog.BlogIndexPage"]
     subpage_types = []
 
     @property
