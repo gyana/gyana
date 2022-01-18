@@ -53,6 +53,14 @@ class Pricing(TemplateView):
         return context
 
 
+class PrivacyPolicy(TemplateView):
+    template_name = "web/privacy_policy.html"
+
+
+class TermsOfUse(TemplateView):
+    template_name = "web/terms_of_use.html"
+
+
 @api_view(["POST"])
 def toggle_sidebar(request):
     request.session["sidebar_collapsed"] = not request.session.get(
