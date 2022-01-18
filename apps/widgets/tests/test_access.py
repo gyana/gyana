@@ -35,6 +35,10 @@ pytestmark = pytest.mark.django_db
             "/projects/{project_id}/dashboards/{dashboard_id}/widgets/{widget_id}/update-style",
             id="update-style",
         ),
+        pytest.param(
+            "/projects/{project_id}/dashboards/{dashboard_id}/widgets/{widget_id}/input",
+            id="input",
+        ),
     ],
 )
 def test_widget_project_required(client, url, user, widget_factory, bigquery):
