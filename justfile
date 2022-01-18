@@ -3,7 +3,7 @@
 
 service_account := "gyana-1511894275181-50f107d4db00.json"
 excludes := "-e admin -e auth.permission -e contenttypes -e sessions -e silk"
-wagtail_excludes := "-e wagtailcore.groupcollectionpermission -e wagtailcore.grouppagepermission -e wagtailimages.rendition -e wagtailcore_pagelogentry"
+wagtail_excludes := "-e wagtailcore.groupcollectionpermission -e wagtailcore.grouppagepermission -e wagtailimages.rendition -e wagtailcore.pagelogentry -e wagtailcore.modellogentry"
 
 # Default command, do not add any commands above it.
 default:

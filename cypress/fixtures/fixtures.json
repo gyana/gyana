@@ -67,7 +67,7 @@
     "pk": 2,
     "fields": {
       "password": "pbkdf2_sha256$260000$N2BmQRuSSYGvpQnPKCw9fj$UhUCkfx7qdzWPNYP/XUbi3L4hvP5/7f+N4nmrqTPceM=",
-      "last_login": "2022-01-18T10:08:49.240Z",
+      "last_login": "2022-01-18T12:57:55.669Z",
       "is_superuser": true,
       "username": "admin",
       "first_name": "",
@@ -3504,7 +3504,7 @@
     "pk": 10,
     "fields": {
       "created": "2021-12-16T01:46:42.564Z",
-      "updated": "2022-01-18T10:58:50.500Z",
+      "updated": "2022-01-18T12:57:35.118Z",
       "state": "success",
       "started_at": "2021-12-16T01:46:42.563Z",
       "completed_at": "2021-12-16T01:46:46.036Z",
@@ -3678,7 +3678,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2022-01-18T10:58:50.467Z" }
+    "fields": { "last_update": "2022-01-18T12:57:35.106Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
@@ -3771,7 +3771,7 @@
     "fields": {
       "content_type": ["wagtailcore", "page"],
       "object_id": "1",
-      "title_norm": 2.3333333333333335,
+      "title_norm": 2.5,
       "autocomplete": "'root':1",
       "title": "'root':1B",
       "body": ""
@@ -3783,7 +3783,7 @@
     "fields": {
       "content_type": ["wagtailcore", "page"],
       "object_id": "2",
-      "title_norm": 0.5833333333333334,
+      "title_norm": 0.625,
       "autocomplete": "'new':4 'site':6 'to':2 'wagtail':5 'welcome':1 'your':3",
       "title": "'new':4B 'site':6B 'wagtail':5B 'welcom':1B",
       "body": ""
@@ -3846,38 +3846,6 @@
       "site_name": "",
       "root_page": 2,
       "is_default_site": true
-    }
-  },
-  {
-    "model": "wagtailcore.modellogentry",
-    "pk": 1,
-    "fields": {
-      "content_type": ["blog", "blogauthor"],
-      "label": "David Kell",
-      "action": "wagtail.create",
-      "data_json": "\"\"",
-      "timestamp": "2022-01-18T10:11:40.959Z",
-      "uuid": "f42d7a53-b089-4abc-9c21-0d4e33957f07",
-      "user": ["admin"],
-      "content_changed": false,
-      "deleted": false,
-      "object_id": "1"
-    }
-  },
-  {
-    "model": "wagtailcore.modellogentry",
-    "pk": 2,
-    "fields": {
-      "content_type": ["blog", "blogcategory"],
-      "label": "News",
-      "action": "wagtail.create",
-      "data_json": "\"\"",
-      "timestamp": "2022-01-18T10:11:49.838Z",
-      "uuid": "927d2dde-6f72-4c20-bc87-0828460a52d9",
-      "user": ["admin"],
-      "content_changed": false,
-      "deleted": false,
-      "object_id": "1"
     }
   },
   {
@@ -4063,74 +4031,6 @@
     "fields": { "name": "Moderators approval", "active": true }
   },
   { "model": "wagtailcore.groupapprovaltask", "pk": 1, "fields": { "groups": [["Moderators"]] } },
-  {
-    "model": "wagtailcore.pagelogentry",
-    "pk": 1,
-    "fields": {
-      "content_type": ["blog", "blogindexpage"],
-      "label": "Blog",
-      "action": "wagtail.create",
-      "data_json": "\"\"",
-      "timestamp": "2022-01-18T10:10:49.820Z",
-      "uuid": "cf442a66-883e-496e-93e6-452407a2fe31",
-      "user": ["admin"],
-      "content_changed": true,
-      "deleted": false,
-      "page": 3,
-      "revision": null
-    }
-  },
-  {
-    "model": "wagtailcore.pagelogentry",
-    "pk": 2,
-    "fields": {
-      "content_type": ["blog", "blogindexpage"],
-      "label": "Blog",
-      "action": "wagtail.publish",
-      "data_json": "null",
-      "timestamp": "2022-01-18T10:10:50.111Z",
-      "uuid": "cf442a66-883e-496e-93e6-452407a2fe31",
-      "user": ["admin"],
-      "content_changed": true,
-      "deleted": false,
-      "page": 3,
-      "revision": 1
-    }
-  },
-  {
-    "model": "wagtailcore.pagelogentry",
-    "pk": 3,
-    "fields": {
-      "content_type": ["blog", "blogpage"],
-      "label": "Gyana 2021, Wrapped",
-      "action": "wagtail.create",
-      "data_json": "\"\"",
-      "timestamp": "2022-01-18T10:13:56.446Z",
-      "uuid": "febf4d46-543d-477e-aeef-896b63768ae5",
-      "user": ["admin"],
-      "content_changed": true,
-      "deleted": false,
-      "page": 4,
-      "revision": null
-    }
-  },
-  {
-    "model": "wagtailcore.pagelogentry",
-    "pk": 4,
-    "fields": {
-      "content_type": ["blog", "blogpage"],
-      "label": "Gyana 2021, Wrapped",
-      "action": "wagtail.publish",
-      "data_json": "null",
-      "timestamp": "2022-01-18T10:13:56.792Z",
-      "uuid": "febf4d46-543d-477e-aeef-896b63768ae5",
-      "user": ["admin"],
-      "content_changed": true,
-      "deleted": false,
-      "page": 4,
-      "revision": 2
-    }
-  },
   {
     "model": "wagtailcore.pagesubscription",
     "pk": 1,
