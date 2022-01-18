@@ -1,8 +1,10 @@
+import json
 import uuid
 
 import numpy as np
 import pandas as pd
 
+from apps.base.core.utils import default_json_encoder
 from apps.widgets.bigquery import get_unique_column_names
 from apps.widgets.fusion.utils import DEFAULT_HEIGHT, DEFAULT_WIDTH, TO_FUSION_CHART
 from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget
@@ -55,7 +57,9 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     """Render a chart from a table."""
     pallete_colors = widget.palette_colors or widget.page.dashboard.palette_colors
 
-    data = CHART_DATA[widget.kind](widget, df)
+    data = json.loads(
+        json.dumps(CHART_DATA[widget.kind](widget, df), default=default_json_encoder)
+    )
     axis_names = _create_axis_names(widget)
 
     # All Fusioncharts attributes can be found here:

@@ -64,7 +64,14 @@
     action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
     method="post"
     data-controller="live-update" 
-    data-action="change->tf-modal#change submit->tf-modal#save"
+    data-action="
+      change->tf-modal#change 
+      submit->tf-modal#save 
+      formset:remove->live-update#updateForm 
+      formset:add->live-update#updateForm 
+      formset:remove->tf-modal#change 
+      formset:add->tf-modal#change
+    "
     data-tf-modal-target='form'
   >  
     {% comment %}

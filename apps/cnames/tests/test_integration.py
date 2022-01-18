@@ -89,6 +89,13 @@ def test_cname_crudl(client, logged_in_user, heroku):
     assert heroku.get_domain.call_count == 1
     assert heroku.get_domain.call_args.args == ("test.domain.com",)
 
+    # check cname is setup
+    r = client.get("/", HTTP_HOST="test.domain.com")
+    assertRedirects(r, "/cnames/success", fetch_redirect_response=False)
+
+    r = client.get("/cnames/success", HTTP_HOST="test.domain.com")
+    assertOK(r)
+
     # delete
     heroku.reset_mock()
     r = client.get(f"/teams/{team.id}/cnames/{cname.id}/delete")

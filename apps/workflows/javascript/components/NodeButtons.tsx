@@ -2,8 +2,8 @@ import React, { useContext } from 'react'
 import { DnDContext, IDnDContext } from '../context'
 
 const EditButton = ({ id }) => {
-  const params = new URLSearchParams(window.location.search);
-  const model_item = params.get("modal_item");
+  const params = new URLSearchParams(window.location.search)
+  const model_item = params.get('modal_item')
 
   return (
     <button

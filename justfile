@@ -2,6 +2,8 @@
 # Read https://github.com/casey/just#quick-start before editing.
 
 service_account := "gyana-1511894275181-50f107d4db00.json"
+excludes := "-e admin -e auth.permission -e contenttypes -e sessions -e silk"
+wagtail_excludes := "-e wagtailcore.groupcollectionpermission -e wagtailcore.grouppagepermission -e wagtailimages.rendition -e wagtailcore.pagelogentry -e wagtailcore.modellogentry"
 
 # Default command, do not add any commands above it.
 default:
@@ -22,10 +24,16 @@ migrate app='' migration='':
 seed:
     ./manage.py flush --noinput
     ./manage.py loaddata cypress/fixtures/fixtures.json
+    ./manage.py loaddata cypress/fixtures/fixtures-wagtail.json
 
 fixtures:
-    ./manage.py dumpdata -e admin -e auth -e contenttypes -e sessions -e silk > cypress/fixtures/fixtures.json
-    yarn prettier --write cypress/fixtures/fixtures.json
+    ./manage.py purge_revisions
+    # natural-foreign for wagtail references to contenttypes
+    # https://docs.wagtail.io/en/stable/advanced_topics/testing.html#using-dumpdata
+    ./manage.py dumpdata --natural-foreign -e blog {{ excludes }} {{ wagtail_excludes }} > cypress/fixtures/fixtures.json
+    # wagtail custom page fixtures need to run after wagtailcore_locale
+    ./manage.py dumpdata blog > cypress/fixtures/fixtures-wagtail.json
+    yarn prettier --write cypress/fixtures/fixtures.json cypress/fixtures/fixtures-wagtail.json
 
 shell:
     ./manage.py shell -i ipython

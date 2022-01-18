@@ -7,15 +7,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="turbo-cache-control" content="no-cache" />
+  {% comment %} TODO: Remove to enable turbo drive everywhere {% endcomment %}
+  <meta name="turbo-visit-control" content="reload">
 
   {% include "web/components/meta.html" %}
   {% include "web/components/favicon.html" %}
 
   <link rel="preconnect" href="https://fonts.gstatic.com" />
-  {% comment %} <link
-    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
-    rel="stylesheet"
-  /> {% endcomment %}
   <link
   // font-medium to font-extrabold
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"

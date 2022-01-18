@@ -1,0 +1,158 @@
+{% extends "web/base.html" %}
+{% load static %}
+{% load team_tags %}
+
+{% block banner %}
+  {% if team and team.warning %}
+  <div class="banner banner--warning">
+    <p>
+      You're exceeding your row count limit.
+      <a
+        href="{% url 'teams:account' team.id %}"
+        class="text-white font-bold underline"
+      >
+        Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i>
+      </a>
+    </p>
+  </div>
+  {% endif %}
+
+  {% if team and not team.enabled %}
+  <div class="banner banner--danger">
+    <p>
+      You've exceeded your row count limit by over 20%, your team is
+      temporarily disabled.
+      <a
+        href="{% url 'teams:account' team.id %}"
+        class="text-white font-bold underline"
+      >
+        Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i>
+      </a>
+    </p>
+  </div>
+  {% endif %}
+{% endblock %}
+
+{% block body %}
+
+  {% include "web/components/team_sidebar.html" %}
+
+  <div id="sidebar" class="sidebar" data-controller="web-sidebar">
+    
+    <input
+      id="sidebar-toggle"
+      type="checkbox"
+      role="button"
+      data-web-sidebar-target="toggle"
+      {% if not sidebar_collapsed and request.resolver_match.view_name not in 'project_workflows:detail,project_dashboards:detail,projects:automate' %}
+      checked
+      {% endif %}
+      hidden
+    />
+
+    <nav class="sidebar__body">
+      {% block sidebar_content %}{% endblock %}
+
+      <hr class="mt-auto" />
+
+      {% if user.is_superuser %}
+      {% include "web/components/admin.html" %}
+      {% endif %}
+
+      <button
+        class="sidebar__link sidebar__link--border" 
+        data-controller="popover tooltip"
+        data-tooltip-placement="right"
+        data-tooltip-content="Help"
+        data-placement="right-end"
+        data-theme="popover-menu"
+        data-show-on-collapse="true"
+      >
+        <i class="fas fa-fw fa-question"></i></i>Help
+
+        <template data-popover-target="body">
+          <a
+            id="changelogWidgetID"
+            data-action="click->tf-modal#open"
+            data-modal-src="{% url "web:changelog" %}"
+            data-modal-id="web:changelog"
+            data-modal-classes="tf-modal--tall"
+            class="list__item list__item--interactive w-full"
+          >
+            What's new?
+          </a>
+
+          <a
+            href="https://join.slack.com/t/gyanacommunity/shared_invite/zt-vly76dna-dxv12CkXdanlwqMam5zDPQ"
+            class="list__item list__item--interactive w-full"
+          >
+            Join our Slack
+          </a>
+
+          <a
+            data-action="click->tf-modal#open"
+            data-modal-src="{% url "web:help" %}"
+            data-modal-id="web:help"
+            data-modal-classes="tf-modal--tall"
+            class="list__item list__item--interactive w-full"
+          >
+            Getting started
+          </a>
+        </template>
+      </button>
+
+      <button
+        class="sidebar__link sidebar__link--border" 
+        data-controller="popover tooltip"
+        data-tooltip-placement="right"
+        data-placement="right-end"
+        data-theme="popover-menu"
+        data-show-on-collapse="true"
+      >
+        <img src="{{ user.avatar_url }}" />Your account
+
+        <span data-tooltip-target="body">Your account</span>
+
+        <template data-popover-target="body">
+          <a
+            data-action="click->tf-modal#open"
+            data-modal-src="{% url "users:profile" %}"
+            data-modal-id="users:profile"
+            class="list__item list__item--interactive w-full"
+          >
+            Account settings
+          </a>
+
+          <a
+            href="{% url 'account_logout' %}"
+            class="list__item list__item--interactive w-full"
+            data-turbo-frame="_top"
+          >
+            Sign out <i class="fas fa-fw fa-sign-out text-red ml-auto"></i>
+          </a>
+        </template>
+      </button>
+
+      <label
+        class="sidebar__link"
+        for="sidebar-toggle"
+        {% if request.resolver_match.view_name not in 'project_workflows:detail,project_dashboards:detail,projects:automate' %}
+        data-action="click->web-sidebar#toggle"
+        {% endif %}
+        data-controller="tooltip"
+        data-tooltip-placement="right"
+        data-show-on-collapse="true"
+      >
+        <i class="fas fa-fw"></i>Collapse
+
+        <span data-tooltip-target="body">Expand</span>
+      </label>
+    </nav>
+  </div>
+
+  {% block notifications %}{% endblock %}
+
+  <section class="flex flex-col flex-1 overflow-hidden {% block app-class %}{% endblock %}">
+    {% block main %}{% endblock %}
+  </section>
+{% endblock %}

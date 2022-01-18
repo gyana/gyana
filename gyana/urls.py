@@ -20,6 +20,9 @@ from django.contrib import admin
 from django.urls import include, path, register_converter
 from django.urls.converters import IntConverter
 from rest_framework.documentation import get_schemajs_view, include_docs_urls
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.core import urls as wagtail_urls
+from wagtail.documents import urls as wagtaildocs_urls
 
 from apps.base.converters import HashIdConverter
 
@@ -119,6 +122,9 @@ urlpatterns = [
     path("docs/", include_docs_urls(title="API Docs")),
     path("schemajs/", schemajs_view, name="api_schemajs"),
     path("", include(users_urls.accounts_urlpatterns)),
+    path("cms/", include(wagtailadmin_urls)),
+    path("documents/", include(wagtaildocs_urls)),
+    path("", include(wagtail_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.CYPRESS_URLS:

@@ -80,6 +80,20 @@ THIRD_PARTY_APPS = [
     "django_celery_results",
     # TODO: Remove after website migration is complete
     "heroicons",
+    # wagtail
+    "wagtail.contrib.forms",
+    "wagtail.contrib.redirects",
+    "wagtail.embeds",
+    "wagtail.sites",
+    "wagtail.users",
+    "wagtail.snippets",
+    "wagtail.documents",
+    "wagtail.images",
+    "wagtail.search",
+    "wagtail.admin",
+    "wagtail.core",
+    "modelcluster",
+    "taggit",
 ]
 
 # Put your project-specific apps here
@@ -109,6 +123,7 @@ PROJECT_APPS = [
     "apps.runs.apps.RunsConfig",
     "apps.customapis",
     "apps.oauth2",
+    "apps.blog",
 ]
 
 INSTALLED_APPS = (
@@ -129,6 +144,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "hijack.middleware.HijackUserMiddleware",
     "waffle.middleware.WaffleMiddleware",
+    "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
 LOGGING = {
@@ -450,3 +466,10 @@ WAFFLE_FLAG_MODEL = "teams.Flag"
 
 # TODO: Remove once the website is enabled
 ENABLE_WEBSITE = os.getenv("ENABLE_WEBSITE", default="False") == "True"
+
+WAGTAIL_SITE_NAME = "Gyana CMS"
+WAGTAILSEARCH_BACKENDS = {
+    "default": {
+        "BACKEND": "wagtail.search.backends.database",
+    }
+}

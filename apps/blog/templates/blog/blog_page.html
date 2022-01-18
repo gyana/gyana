@@ -1,0 +1,37 @@
+{% extends 'web/site_base.html' %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% block body %}
+  <div class="relative py-8 bg-white overflow-hidden">
+    <div class="relative px-4 sm:px-6 lg:px-8">
+      <div class="text-lg max-w-2xl mx-auto space-y-2 sm:space-y-4 lg:space-y-8">
+        {% image page.feed_image original %}
+        <h1>
+          <span class="block text-4xl leading-8 font-extrabold text-gray-900 sm:text-5xl">
+            {{ page.title }}
+          </span>
+        </h1>
+        <div class="flex items-center space-x-3">
+          <div class="flex-shrink-0">
+            {% image page.author.avatar width-56 class="rounded-md" %}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="focus:outline-none">
+              <p class="text font-normal text-gray-900">
+                {{ page.author.name }}
+              </p>
+              <p class="text-base text-gray-500 truncate">
+                {{ page.date }}
+                • {{ page.readtime }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6 prose prose-blue text-gray-700 mx-auto">
+        {{ page.body|richtext }}
+      </div>
+    </div>
+  </div>
+{% endblock %}

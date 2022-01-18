@@ -1,5 +1,39 @@
 [
   {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+      "name": "Moderators",
+      "permissions": [
+        ["access_admin", "wagtailadmin", "admin"],
+        ["add_document", "wagtaildocs", "document"],
+        ["change_document", "wagtaildocs", "document"],
+        ["choose_document", "wagtaildocs", "document"],
+        ["delete_document", "wagtaildocs", "document"],
+        ["add_image", "wagtailimages", "image"],
+        ["change_image", "wagtailimages", "image"],
+        ["delete_image", "wagtailimages", "image"]
+      ]
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 2,
+    "fields": {
+      "name": "Editors",
+      "permissions": [
+        ["access_admin", "wagtailadmin", "admin"],
+        ["add_document", "wagtaildocs", "document"],
+        ["change_document", "wagtaildocs", "document"],
+        ["choose_document", "wagtaildocs", "document"],
+        ["delete_document", "wagtaildocs", "document"],
+        ["add_image", "wagtailimages", "image"],
+        ["change_image", "wagtailimages", "image"],
+        ["delete_image", "wagtailimages", "image"]
+      ]
+    }
+  },
+  {
     "model": "sites.site",
     "pk": 1,
     "fields": { "domain": "localhost:8000", "name": "localhost:8000" }
@@ -33,7 +67,7 @@
     "pk": 2,
     "fields": {
       "password": "pbkdf2_sha256$260000$N2BmQRuSSYGvpQnPKCw9fj$UhUCkfx7qdzWPNYP/XUbi3L4hvP5/7f+N4nmrqTPceM=",
-      "last_login": "2022-01-06T20:47:38.242Z",
+      "last_login": "2022-01-18T12:57:55.669Z",
       "is_superuser": true,
       "username": "admin",
       "first_name": "",
@@ -219,7 +253,7 @@
       "created": "2021-07-26T14:53:37.584Z",
       "updated": "2021-07-26T14:53:37.584Z",
       "team": 1,
-      "user": 1,
+      "user": ["test"],
       "role": "admin"
     }
   },
@@ -230,7 +264,7 @@
       "created": "2021-08-30T18:56:05.352Z",
       "updated": "2021-08-30T18:56:05.352Z",
       "team": 5,
-      "user": 2,
+      "user": ["admin"],
       "role": "admin"
     }
   },
@@ -241,7 +275,7 @@
       "created": "2021-08-20T13:49:01.950Z",
       "updated": "2021-08-20T13:49:01.950Z",
       "team": 2,
-      "user": 3,
+      "user": ["alone"],
       "role": "admin"
     }
   },
@@ -252,7 +286,7 @@
       "created": "2021-11-08T23:50:26.735Z",
       "updated": "2021-11-08T23:50:26.735Z",
       "team": 6,
-      "user": 1,
+      "user": ["test"],
       "role": "admin"
     }
   },
@@ -316,7 +350,7 @@
       "state": "done",
       "ready": true,
       "created_ready": "2021-07-27T13:17:27.984Z",
-      "created_by": 1,
+      "created_by": ["test"],
       "is_scheduled": false
     }
   },
@@ -396,7 +430,7 @@
       "state": "update",
       "ready": false,
       "created_ready": "2021-08-10T10:03:16.769Z",
-      "created_by": 1,
+      "created_by": ["test"],
       "is_scheduled": true
     }
   },
@@ -412,7 +446,7 @@
       "state": "update",
       "ready": false,
       "created_ready": "2021-08-10T10:40:23.584Z",
-      "created_by": 1,
+      "created_by": ["test"],
       "is_scheduled": true
     }
   },
@@ -428,7 +462,7 @@
       "state": "update",
       "ready": false,
       "created_ready": "2021-08-10T10:40:23.584Z",
-      "created_by": 1,
+      "created_by": ["test"],
       "is_scheduled": true
     }
   },
@@ -444,7 +478,7 @@
       "state": "update",
       "ready": false,
       "created_ready": "2021-08-10T12:54:44.272Z",
-      "created_by": 1,
+      "created_by": ["test"],
       "is_scheduled": true
     }
   },
@@ -460,7 +494,7 @@
       "state": "done",
       "ready": true,
       "created_ready": "2021-08-30T19:29:42Z",
-      "created_by": 2,
+      "created_by": ["admin"],
       "is_scheduled": true
     }
   },
@@ -476,7 +510,7 @@
       "state": "done",
       "ready": true,
       "created_ready": "2021-08-31T00:58:25.975Z",
-      "created_by": 2,
+      "created_by": ["admin"],
       "is_scheduled": false
     }
   },
@@ -492,7 +526,7 @@
       "state": "done",
       "ready": true,
       "created_ready": "2021-12-16T01:46:48.891Z",
-      "created_by": 1,
+      "created_by": ["test"],
       "is_scheduled": false
     }
   },
@@ -633,12 +667,15 @@
       "page": 1,
       "table": 12,
       "text_content": null,
+      "url": null,
+      "image": "",
       "kind": "msline",
       "aggregator": "",
       "dimension": "date",
       "second_dimension": null,
       "name": "Bounce rate and session duration",
       "sort_by": "dimension",
+      "sort_column": null,
       "sort_ascending": true,
       "width": 1200,
       "height": 435,
@@ -647,7 +684,9 @@
       "stack_100_percent": false,
       "error": null,
       "date_column": null,
-      "show_summary_row": false
+      "show_summary_row": false,
+      "compare_previous_period": false,
+      "positive_decrease": false
     }
   },
   {
@@ -665,12 +704,15 @@
       "page": 1,
       "table": 19,
       "text_content": null,
+      "url": null,
+      "image": "",
       "kind": "mscolumn2d",
       "aggregator": "",
       "dimension": "Owner",
       "second_dimension": null,
       "name": "Employees by owner",
       "sort_by": "value",
+      "sort_column": null,
       "sort_ascending": false,
       "width": 1200,
       "height": 405,
@@ -679,7 +721,9 @@
       "stack_100_percent": false,
       "error": null,
       "date_column": null,
-      "show_summary_row": false
+      "show_summary_row": false,
+      "compare_previous_period": false,
+      "positive_decrease": false
     }
   },
   {
@@ -697,12 +741,15 @@
       "page": 2,
       "table": 22,
       "text_content": null,
+      "url": null,
+      "image": "",
       "kind": "table",
       "aggregator": "",
       "dimension": null,
       "second_dimension": null,
       "name": null,
       "sort_by": "dimension",
+      "sort_column": null,
       "sort_ascending": true,
       "width": 495,
       "height": 390,
@@ -711,7 +758,9 @@
       "stack_100_percent": false,
       "error": null,
       "date_column": null,
-      "show_summary_row": false
+      "show_summary_row": false,
+      "compare_previous_period": false,
+      "positive_decrease": false
     }
   },
   {
@@ -1133,7 +1182,7 @@
       "accepted": true,
       "key": "ygr7agub5cippprocdbilirifuxzikuzrifk3cjur0pbdlovqv7mym5loz8mgtsm",
       "sent": "2021-07-29T09:32:54.990Z",
-      "inviter": 1,
+      "inviter": ["test"],
       "email": "member@gyana.com",
       "team": 1,
       "role": "member",
@@ -3455,11 +3504,11 @@
     "pk": 10,
     "fields": {
       "created": "2021-12-16T01:46:42.564Z",
-      "updated": "2022-01-12T02:02:56.258Z",
+      "updated": "2022-01-18T12:57:35.118Z",
       "state": "success",
       "started_at": "2021-12-16T01:46:42.563Z",
       "completed_at": "2021-12-16T01:46:46.036Z",
-      "user": 1,
+      "user": ["test"],
       "task_id": "32f7a738-c597-4aae-9429-303873aaad18",
       "result": 1,
       "source": "integration",
@@ -3495,17 +3544,17 @@
   {
     "model": "account.emailaddress",
     "pk": 1,
-    "fields": { "user": 1, "email": "test@gyana.com", "verified": true, "primary": true }
+    "fields": { "user": ["test"], "email": "test@gyana.com", "verified": true, "primary": true }
   },
   {
     "model": "account.emailaddress",
     "pk": 2,
-    "fields": { "user": 3, "email": "alone@gyana.com", "verified": true, "primary": true }
+    "fields": { "user": ["alone"], "email": "alone@gyana.com", "verified": true, "primary": true }
   },
   {
     "model": "account.emailaddress",
     "pk": 3,
-    "fields": { "user": 2, "email": "admin@gyana.com", "verified": true, "primary": true }
+    "fields": { "user": ["admin"], "email": "admin@gyana.com", "verified": true, "primary": true }
   },
   {
     "model": "socialaccount.socialapp",
@@ -3516,7 +3565,7 @@
       "client_id": "766404612569-gn5hok52al6q1ob04rfmha8k4bns09me.apps.googleusercontent.com",
       "secret": "l9xbaHAi5xf4WuRji3PiTq-z",
       "key": "",
-      "sites": [1]
+      "sites": [["localhost:8000"]]
     }
   },
   {
@@ -3629,7 +3678,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2022-01-12T02:02:56.241Z" }
+    "fields": { "last_update": "2022-01-18T12:57:35.106Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
@@ -3677,5 +3726,319 @@
       "traceback": null,
       "meta": "{\"children\": []}"
     }
+  },
+  {
+    "model": "wagtailimages.image",
+    "pk": 1,
+    "fields": {
+      "collection": 1,
+      "title": "david-kell",
+      "file": "original_images/david-kell.jpeg",
+      "width": 400,
+      "height": 400,
+      "created_at": "2022-01-18T10:11:38.599Z",
+      "uploaded_by_user": ["admin"],
+      "focal_point_x": null,
+      "focal_point_y": null,
+      "focal_point_width": null,
+      "focal_point_height": null,
+      "file_size": 30074,
+      "file_hash": "274f9f7c91a21efe6eb7079bb11b1db412ec2db0"
+    }
+  },
+  {
+    "model": "wagtailimages.image",
+    "pk": 2,
+    "fields": {
+      "collection": 1,
+      "title": "Gyana 2021",
+      "file": "original_images/Gyana_2021.png",
+      "width": 3072,
+      "height": 1730,
+      "created_at": "2022-01-18T10:13:31.869Z",
+      "uploaded_by_user": ["admin"],
+      "focal_point_x": null,
+      "focal_point_y": null,
+      "focal_point_width": null,
+      "focal_point_height": null,
+      "file_size": 202526,
+      "file_hash": "17d9aeab1f9d00123f2669e5c4a50f10bb18ec2e"
+    }
+  },
+  {
+    "model": "wagtailsearch.indexentry",
+    "pk": 1,
+    "fields": {
+      "content_type": ["wagtailcore", "page"],
+      "object_id": "1",
+      "title_norm": 2.5,
+      "autocomplete": "'root':1",
+      "title": "'root':1B",
+      "body": ""
+    }
+  },
+  {
+    "model": "wagtailsearch.indexentry",
+    "pk": 2,
+    "fields": {
+      "content_type": ["wagtailcore", "page"],
+      "object_id": "2",
+      "title_norm": 0.625,
+      "autocomplete": "'new':4 'site':6 'to':2 'wagtail':5 'welcome':1 'your':3",
+      "title": "'new':4B 'site':6B 'wagtail':5B 'welcom':1B",
+      "body": ""
+    }
+  },
+  {
+    "model": "wagtailsearch.indexentry",
+    "pk": 3,
+    "fields": {
+      "content_type": ["blog", "blogindexpage"],
+      "object_id": "3",
+      "title_norm": 1.0,
+      "autocomplete": "",
+      "title": "",
+      "body": ""
+    }
+  },
+  {
+    "model": "wagtailsearch.indexentry",
+    "pk": 6,
+    "fields": {
+      "content_type": ["wagtailimages", "image"],
+      "object_id": "1",
+      "title_norm": 0.75,
+      "autocomplete": "'david':2 'david-kell':1 'kell':3",
+      "title": "'david':2A 'david-kel':1A 'kell':3A",
+      "body": ""
+    }
+  },
+  {
+    "model": "wagtailsearch.indexentry",
+    "pk": 8,
+    "fields": {
+      "content_type": ["wagtailimages", "image"],
+      "object_id": "2",
+      "title_norm": 1.1,
+      "autocomplete": "'2021':2 'gyana':1",
+      "title": "'2021':2A 'gyana':1A",
+      "body": ""
+    }
+  },
+  {
+    "model": "wagtailsearch.indexentry",
+    "pk": 10,
+    "fields": {
+      "content_type": ["blog", "blogpage"],
+      "object_id": "4",
+      "title_norm": 1.0,
+      "autocomplete": "",
+      "title": "",
+      "body": "'100k':70 '2.0':40 '2021':30,103,197,334 '2022':332,370 '367':169 '394':171 '78':256 '780':170 'action':429 'although':177 'analysi':385 'analyt':349,472 'api':405 'app':363 'appetit':201 'applic':473 'appreci':275 'awesom':316 'beauti':263 'belong':266 'best':322 'bi':350 'big':487 'blank':222 'blog':500 'break':523 'build':79,203,374,391,420,468 'builder':191,216,283 'built':41,147,250,498 'busi':58 'call':102 'challeng':336 'chanc':9 'chat':99 'code':127,361 'come':519 'commit':292 'communiti':44,208,214 'complet':426,505 'connector':86,403 'content':493 'creat':235 'creativ':312 'custom':49,119,404 'dashboard':90,388,407 'data':56,63,76,120,174,345,383,427,435,471 'data-driven':62 'david':524 'day':477 'definit':109 'develop':462 'discov':50 'driven':64 'educ':492 'email':447 'enabl':430,465 'engin':77 'enterpris':344 'etl':347 'everyon':3 'exceed':239 'expect':241 'export':441 'eye':397 'fantast':43 'featur':418 'final':146,480 'focus':488 'forecast':455 'foundat':377 'fundament':341 'get':141,220,324 'go':483 'goal':423 'goldberg':83 'good':33 'googl':443 'guid':379 'gyana':36,39,176,204,297,394,475,526 'hand':225 'happi':1 'help':12,46,450 'hire':72 'holiday':2 'hundr':400 'iam':352 'impact':159 'import':513 'interfac':128 'introduc':416 'keep':314,395 'know':278,511 'kudo':245 'launch':38 'learn':195,459,490 'less':130 'like':296,440 'll':271,319,414 'lot':25 'm':182 'machin':84,458 'manag':368 'mean':23 'model':348 'month':479 'never':272 'new':51,402,417 'next':330 'no-cod':125,359 'node':257 'note':180 'number':193 'one':194,365 'option':68 'orchestr':351 'person':248,366 'plan':372 'platform':121,295,428,463 'possibl':114 'post':501 'power':116 'pre':497 'pre-built':496 'predict':448 'principl':380 'privileg':306 'proud':152 'prove':108 'put':485 're':6,150,156,482 'read':7 'realli':151,264 'record':255 'result':436,456 'revamp':506 'right':217 'risk':288 'row':172 'rube':82 'rube-goldberg':81 'see':157 'send':446 'sheet':444 'singl':358 'slate':223 'someth':148 'sourc':384 'spend':69 'spreadsheet':88 'stack':346 'subscript':134 'sure':184 'sync':165 'take':290,339 'tate':269 'team':74,527 'templat':499 'thank':20,298 'theme':408 'thing':261,439 'third':111 'thousand':47,98 'today':57 'told':93 'took':136 'top':410 'total':167 'toward':421 'trend':453 'truli':274 'trust':301 'tutori':227,495 'two':67 'understand':286,452 'unleash':310 'us':13,29,94,137,302 'use':433,457 'user':162,188,210 've':145,238 'video':101,494 'walkthrough':502 'want':60 'watch':308 'way':16,52,112,328 'web':362 'websit':509 'whatev':381 'wonder':522 'word':187 'work':54 'workflow':252,386 'wrap':354 'year':18,34,106 'zap':87 'zoom':133"
+    }
+  },
+  {
+    "model": "wagtailcore.site",
+    "pk": 1,
+    "fields": {
+      "hostname": "localhost",
+      "port": 80,
+      "site_name": "",
+      "root_page": 2,
+      "is_default_site": true
+    }
+  },
+  {
+    "model": "wagtailcore.collection",
+    "pk": 1,
+    "fields": { "path": "0001", "depth": 1, "numchild": 0, "name": "Root" }
+  },
+  { "model": "wagtailcore.locale", "pk": 1, "fields": { "language_code": "en" } },
+  {
+    "model": "wagtailcore.page",
+    "pk": 1,
+    "fields": {
+      "path": "0001",
+      "depth": 1,
+      "numchild": 1,
+      "translation_key": "60961f77-be5a-4b6a-a207-2156955d12c9",
+      "locale": 1,
+      "title": "Root",
+      "draft_title": "Root",
+      "slug": "root",
+      "content_type": ["wagtailcore", "page"],
+      "live": true,
+      "has_unpublished_changes": false,
+      "url_path": "/",
+      "owner": null,
+      "seo_title": "",
+      "show_in_menus": false,
+      "search_description": "",
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "first_published_at": null,
+      "last_published_at": null,
+      "latest_revision_created_at": null,
+      "live_revision": null,
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 2,
+    "fields": {
+      "path": "00010001",
+      "depth": 2,
+      "numchild": 2,
+      "translation_key": "ab44508e-9dc1-4829-ae13-585f09dce0f9",
+      "locale": 1,
+      "title": "Welcome to your new Wagtail site!",
+      "draft_title": "Welcome to your new Wagtail site!",
+      "slug": "home",
+      "content_type": ["wagtailcore", "page"],
+      "live": true,
+      "has_unpublished_changes": false,
+      "url_path": "/home/",
+      "owner": null,
+      "seo_title": "",
+      "show_in_menus": false,
+      "search_description": "",
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "first_published_at": null,
+      "last_published_at": null,
+      "latest_revision_created_at": null,
+      "live_revision": null,
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 3,
+    "fields": {
+      "path": "000100010001",
+      "depth": 3,
+      "numchild": 2,
+      "translation_key": "aaefe705-543f-48d6-abe6-106cb00cd3d0",
+      "locale": 1,
+      "title": "Blog",
+      "draft_title": "Blog",
+      "slug": "blog",
+      "content_type": ["blog", "blogindexpage"],
+      "live": true,
+      "has_unpublished_changes": false,
+      "url_path": "/home/blog/",
+      "owner": ["admin"],
+      "seo_title": "",
+      "show_in_menus": false,
+      "search_description": "",
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "first_published_at": "2022-01-18T10:10:49.993Z",
+      "last_published_at": "2022-01-18T10:10:49.993Z",
+      "latest_revision_created_at": "2022-01-18T10:10:49.901Z",
+      "live_revision": 1,
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 4,
+    "fields": {
+      "path": "0001000100010001",
+      "depth": 4,
+      "numchild": 0,
+      "translation_key": "396af017-d226-47af-9f50-6b2d0d5bbe3a",
+      "locale": 1,
+      "title": "Gyana 2021, Wrapped",
+      "draft_title": "Gyana 2021, Wrapped",
+      "slug": "gyana-2021-wrapped",
+      "content_type": ["blog", "blogpage"],
+      "live": true,
+      "has_unpublished_changes": false,
+      "url_path": "/home/blog/gyana-2021-wrapped/",
+      "owner": ["admin"],
+      "seo_title": "Gyana 2021, Wrapped",
+      "show_in_menus": false,
+      "search_description": "Happy holidays everyone. Our review of Gyana in 2021, reflections on no-code data platforms and what comes next. Have a wonderful break!",
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "first_published_at": "2022-01-18T10:13:56.619Z",
+      "last_published_at": "2022-01-18T10:13:56.619Z",
+      "latest_revision_created_at": "2022-01-18T10:13:56.513Z",
+      "live_revision": 2,
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.pagerevision",
+    "pk": 1,
+    "fields": {
+      "page": 3,
+      "submitted_for_moderation": false,
+      "created_at": "2022-01-18T10:10:49.901Z",
+      "user": ["admin"],
+      "content_json": "{\"pk\": 3, \"path\": \"000100010001\", \"depth\": 3, \"numchild\": 0, \"translation_key\": \"aaefe705-543f-48d6-abe6-106cb00cd3d0\", \"locale\": 1, \"title\": \"Blog\", \"draft_title\": \"Blog\", \"slug\": \"blog\", \"content_type\": 66, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/blog/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": false, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"alias_of\": null, \"intro\": \"<p data-block-key=\\\"4e4yt\\\">Learn about tips, product updates and company culture.</p>\", \"wagtail_admin_comments\": []}",
+      "approved_go_live_at": null
+    }
+  },
+  {
+    "model": "wagtailcore.pagerevision",
+    "pk": 2,
+    "fields": {
+      "page": 4,
+      "submitted_for_moderation": false,
+      "created_at": "2022-01-18T10:13:56.513Z",
+      "user": ["admin"],
+      "content_json": "{\"pk\": 4, \"path\": \"0001000100010001\", \"depth\": 4, \"numchild\": 0, \"translation_key\": \"396af017-d226-47af-9f50-6b2d0d5bbe3a\", \"locale\": 1, \"title\": \"Gyana 2021, Wrapped\", \"draft_title\": \"Gyana 2021, Wrapped\", \"slug\": \"gyana-2021-wrapped\", \"content_type\": 67, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/blog/gyana-2021-wrapped/\", \"owner\": 2, \"seo_title\": \"Gyana 2021, Wrapped\", \"show_in_menus\": false, \"search_description\": \"Happy holidays everyone. Our review of Gyana in 2021, reflections on no-code data platforms and what comes next. Have a wonderful break!\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"alias_of\": null, \"date\": \"2021-12-23\", \"intro\": \"Happy holidays everyone. Our review of Gyana in 2021, reflections on no-code data platforms and what comes next. Have a wonderful break!\", \"body\": \"<p data-block-key=\\\"qp20u\\\">Happy holidays everyone.</p><p data-block-key=\\\"3lgul\\\">If you\\u2019re reading this, chances are you helped us in some way this year. So \\u2026 thank you. It means a lot, to all of us.</p><p data-block-key=\\\"6s335\\\"><b>2021 was a good year for Gyana.</b> We launched <a href=\\\"https://www.gyana.com/blog/the-next-chapter-of-gyana\\\"><b>Gyana 2.0</b></a>, built our fantastic <a href=\\\"https://www.facebook.com/groups/891928461364849\\\"><b>community</b></a> and helped thousands of customers discover new ways to <a href=\\\"https://www.gyana.com/blog/learnings-from-one-week-with-gyana\\\"><b>work with data</b></a>.</p><p data-block-key=\\\"7ut64\\\">Today, businesses who want be data-driven have only two options: spend $100k and hire a team of data engineers, or build a <a href=\\\"https://en.wikipedia.org/wiki/Rube_Goldberg_machine\\\"><b>Rube-Goldberg machine</b></a> of connectors, zaps, spreadsheets and dashboards. As you told us, in over a thousand chats and video calls.</p><p data-block-key=\\\"6cqls\\\">2021 is the year we proved, definitely, a third way is possible - the power of a custom data platform but with a no-code interface, for less than your Zoom subscription.</p><p data-block-key=\\\"cn533\\\">It took us a while to get here, but we\\u2019ve finally built something we\\u2019re really proud of. And we\\u2019re seeing the impact with our users, who have synced a total of <b>367,780,394 rows of data</b> into Gyana.</p><p data-block-key=\\\"8bf96\\\">Although on that note, I\\u2019m not sure about that word \\u201cusers\\u201d\\u2026</p><h3 data-block-key=\\\"6pl6e\\\"><b>For the builders...</b></h3><p data-block-key=\\\"aii78\\\">My number one learning in 2021 is about the appetite to build.</p><p data-block-key=\\\"3ntg9\\\">Gyana is not a community of \\u201cusers\\u201d, it\\u2019s a community of \\u201cbuilders\\u201d. Right now, you get a blank slate, a handful of tutorials, and it\\u2019s up to you to create. And you\\u2019ve exceeded our expectations, and then some.</p><p data-block-key=\\\"4vv4r\\\">Kudos to the person who built a workflow with a record <b>78 nodes</b>. It\\u2019s a thing of beauty. Really, it belongs in the Tate. You\\u2019ll never be truly appreciated, but we know what you did.</p><p data-block-key=\\\"drsgh\\\">As builders ourselves, we understand the risk you take when committing to a platform like Gyana. Thank you for trusting us. <b>It\\u2019s a privilege to watch you unleash your creativity.</b> You keep being awesome, and we\\u2019ll do our best to get out of your way.</p><h3 data-block-key=\\\"pknt\\\"><b>What next for 2022?</b></h3><p data-block-key=\\\"2gs33\\\">For 2021, we challenged ourselves to take the fundamentals of an enterprise data stack (ETL, modelling, analytics , BI, orchestration, IAM, \\u2026) and wrap it into a <b>single no-code web app that one person can manage</b>.</p><p data-block-key=\\\"2osjs\\\">In 2022, we plan to build on that foundation. Our guiding principle: whatever the data source, analysis workflow, or dashboard - <b>you can build it in Gyana</b>. Keep an eye out for hundreds of new connectors, custom APIs and dashboards themes.</p><p data-block-key=\\\"ddptv\\\">On top of that, we\\u2019ll be introducing new features to build towards our goal of the complete data platform. <b>Actions</b> enable you to use your data results to do things - like export a Google Sheet or send emails. <b>Predictions</b> will help you understand trends and forecast results using machine learning. And our <b>developer platform</b> will enable you to build your own data analytics application on Gyana - in days, not months.</p><p data-block-key=\\\"60lr9\\\">Finally, we\\u2019re going to put a <i>big</i> focus on learning and educational content. Video tutorials, pre-built templates, blog posts, walkthroughs, and a complete revamp of the website \\u2026 <b>we know how important it is and it\\u2019s coming</b>.</p><p data-block-key=\\\"1etb1\\\">Have a wonderful break!</p><p data-block-key=\\\"7raus\\\">\\u2764\\ufe0f David + the Gyana team</p>\", \"feed_image\": 2, \"category\": 1, \"author\": 1, \"wagtail_admin_comments\": []}",
+      "approved_go_live_at": null
+    }
+  },
+  { "model": "wagtailcore.workflowpage", "pk": 1, "fields": { "workflow": 1 } },
+  {
+    "model": "wagtailcore.workflowtask",
+    "pk": 1,
+    "fields": { "sort_order": 0, "workflow": 1, "task": 1 }
+  },
+  {
+    "model": "wagtailcore.task",
+    "pk": 1,
+    "fields": {
+      "name": "Moderators approval",
+      "content_type": ["wagtailcore", "groupapprovaltask"],
+      "active": true
+    }
+  },
+  {
+    "model": "wagtailcore.workflow",
+    "pk": 1,
+    "fields": { "name": "Moderators approval", "active": true }
+  },
+  { "model": "wagtailcore.groupapprovaltask", "pk": 1, "fields": { "groups": [["Moderators"]] } },
+  {
+    "model": "wagtailcore.pagesubscription",
+    "pk": 1,
+    "fields": { "user": ["admin"], "page": 3, "comment_notifications": true }
+  },
+  {
+    "model": "wagtailcore.pagesubscription",
+    "pk": 2,
+    "fields": { "user": ["admin"], "page": 4, "comment_notifications": true }
   }
 ]

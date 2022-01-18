@@ -36,7 +36,7 @@ describe('dashboards', () => {
     createWidget('msbar2d', 0, 400)
     cy.get('select[name=dimension]').select('Owner')
     cy.get('[data-formset-prefix-value=aggregations]').within((el) => {
-      cy.wrap(el).get('button').should('not.be.disabled').click({ force: true })
+      cy.wrap(el).get('button').should('not.be.disabled').click({ turbo: false })
     })
     cy.get('select[name=aggregations-0-column]').select('Employees')
     cy.get('select[name=aggregations-0-function]').select('SUM')

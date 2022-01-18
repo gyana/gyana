@@ -1,0 +1,23 @@
+[
+  { "model": "blog.blogcategory", "pk": 1, "fields": { "name": "News" } },
+  { "model": "blog.blogauthor", "pk": 1, "fields": { "name": "David Kell", "avatar": 1 } },
+  {
+    "model": "blog.blogindexpage",
+    "pk": 3,
+    "fields": {
+      "intro": "<p data-block-key=\"4e4yt\">Learn about tips, product updates and company culture.</p>"
+    }
+  },
+  {
+    "model": "blog.blogpage",
+    "pk": 4,
+    "fields": {
+      "date": "2021-12-23",
+      "intro": "Happy holidays everyone. Our review of Gyana in 2021, reflections on no-code data platforms and what comes next. Have a wonderful break!",
+      "body": "<p data-block-key=\"qp20u\">Happy holidays everyone.</p><p data-block-key=\"3lgul\">If you’re reading this, chances are you helped us in some way this year. So … thank you. It means a lot, to all of us.</p><p data-block-key=\"6s335\"><b>2021 was a good year for Gyana.</b> We launched <a href=\"https://www.gyana.com/blog/the-next-chapter-of-gyana\"><b>Gyana 2.0</b></a>, built our fantastic <a href=\"https://www.facebook.com/groups/891928461364849\"><b>community</b></a> and helped thousands of customers discover new ways to <a href=\"https://www.gyana.com/blog/learnings-from-one-week-with-gyana\"><b>work with data</b></a>.</p><p data-block-key=\"7ut64\">Today, businesses who want be data-driven have only two options: spend $100k and hire a team of data engineers, or build a <a href=\"https://en.wikipedia.org/wiki/Rube_Goldberg_machine\"><b>Rube-Goldberg machine</b></a> of connectors, zaps, spreadsheets and dashboards. As you told us, in over a thousand chats and video calls.</p><p data-block-key=\"6cqls\">2021 is the year we proved, definitely, a third way is possible - the power of a custom data platform but with a no-code interface, for less than your Zoom subscription.</p><p data-block-key=\"cn533\">It took us a while to get here, but we’ve finally built something we’re really proud of. And we’re seeing the impact with our users, who have synced a total of <b>367,780,394 rows of data</b> into Gyana.</p><p data-block-key=\"8bf96\">Although on that note, I’m not sure about that word “users”…</p><h3 data-block-key=\"6pl6e\"><b>For the builders...</b></h3><p data-block-key=\"aii78\">My number one learning in 2021 is about the appetite to build.</p><p data-block-key=\"3ntg9\">Gyana is not a community of “users”, it’s a community of “builders”. Right now, you get a blank slate, a handful of tutorials, and it’s up to you to create. And you’ve exceeded our expectations, and then some.</p><p data-block-key=\"4vv4r\">Kudos to the person who built a workflow with a record <b>78 nodes</b>. It’s a thing of beauty. Really, it belongs in the Tate. You’ll never be truly appreciated, but we know what you did.</p><p data-block-key=\"drsgh\">As builders ourselves, we understand the risk you take when committing to a platform like Gyana. Thank you for trusting us. <b>It’s a privilege to watch you unleash your creativity.</b> You keep being awesome, and we’ll do our best to get out of your way.</p><h3 data-block-key=\"pknt\"><b>What next for 2022?</b></h3><p data-block-key=\"2gs33\">For 2021, we challenged ourselves to take the fundamentals of an enterprise data stack (ETL, modelling, analytics , BI, orchestration, IAM, …) and wrap it into a <b>single no-code web app that one person can manage</b>.</p><p data-block-key=\"2osjs\">In 2022, we plan to build on that foundation. Our guiding principle: whatever the data source, analysis workflow, or dashboard - <b>you can build it in Gyana</b>. Keep an eye out for hundreds of new connectors, custom APIs and dashboards themes.</p><p data-block-key=\"ddptv\">On top of that, we’ll be introducing new features to build towards our goal of the complete data platform. <b>Actions</b> enable you to use your data results to do things - like export a Google Sheet or send emails. <b>Predictions</b> will help you understand trends and forecast results using machine learning. And our <b>developer platform</b> will enable you to build your own data analytics application on Gyana - in days, not months.</p><p data-block-key=\"60lr9\">Finally, we’re going to put a <i>big</i> focus on learning and educational content. Video tutorials, pre-built templates, blog posts, walkthroughs, and a complete revamp of the website … <b>we know how important it is and it’s coming</b>.</p><p data-block-key=\"1etb1\">Have a wonderful break!</p><p data-block-key=\"7raus\">❤️ David + the Gyana team</p>",
+      "feed_image": 2,
+      "category": 1,
+      "author": 1
+    }
+  }
+]

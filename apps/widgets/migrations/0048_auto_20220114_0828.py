@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("widgets", "0046_auto_20220114_1128"),
+        ("widgets", "0047_auto_20220114_1710"),
     ]
 
     operations = [

@@ -11,6 +11,9 @@ from apps.tables.models import Table
 
 
 class Workflow(CloneMixin, BaseModel):
+    _clone_excluded_m2m_fields = ["runs"]
+    _clone_excluded_o2o_fields = ["last_success_run", "latest_run"]
+
     class State(models.TextChoices):
         INCOMPLETE = "incomplete", "Incomplete"
         PENDING = "pending", "Pending"
@@ -86,6 +89,26 @@ class Workflow(CloneMixin, BaseModel):
     @property
     def errors(self):
         return {node.id: node.error for node in self.nodes.exclude(error__isnull=True)}
+
+    @property
+    def input_tables_fk(self):
+        return [
+            node.input_table.id
+            for node in self.input_nodes.filter(input_table__isnull=False)
+        ]
+
+    @property
+    def input_tables(self):
+        return [
+            node.input_table
+            for node in self.input_nodes.filter(input_table__isnull=False)
+        ]
+
+    @property
+    def input_nodes(self):
+        from apps.nodes.models import Node
+
+        return self.nodes.filter(kind=Node.Kind.INPUT)
 
     @property
     def output_nodes(self):

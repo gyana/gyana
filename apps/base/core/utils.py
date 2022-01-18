@@ -1,7 +1,9 @@
+import datetime as dt
 import hashlib
 import json
 import re
 from contextlib import contextmanager
+from decimal import Decimal
 from time import perf_counter
 
 pattern = re.compile(r"(?<!^)(?=[A-Z])")
@@ -30,3 +32,11 @@ def md5_kwargs(**kwargs):
 def create_column_choices(schema):
     columns = sorted([(col, col) for col in schema], key=lambda x: str.casefold(x[1]))
     return [("", "No column selected"), *columns]
+
+
+def default_json_encoder(obj):
+    if isinstance(obj, Decimal):
+        return str(obj)
+    if isinstance(obj, (dt.date, dt.datetime, dt.time)):
+        return obj.isoformat()
+    raise TypeError("Object of type '%s' is not JSON serializable" % type(obj).__name__)

@@ -17,6 +17,18 @@
   </label>
 
   <div class="palette-colors">{{ bound_field }}</div>
+  {% elif bound_field.widget_type == "connectorschemamultiselect" %}
+  <div class="w-full {{ bound_field.field.widget.attrs.class }}">
+    <label>
+      {{ bound_field.label }}
+
+      {% if bound_field.help_text %}
+      <p class="input__help-text">{{ bound_field.help_text }}</p>
+      {% endif %}
+    </label>
+
+    {{ bound_field }}
+  </div>
   {% elif bound_field.widget_type == "checkbox" %}
   <label class="flex flex-row items-center gap-4 w-full">
     {{ bound_field }}
