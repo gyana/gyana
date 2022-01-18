@@ -2,8 +2,8 @@ from django import forms
 from django.forms.widgets import HiddenInput
 from django.utils.functional import cached_property
 
-from apps.base.forms import LiveUpdateForm
 from apps.base.core.utils import create_column_choices
+from apps.base.forms import LiveUpdateForm
 from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column
 from apps.nodes.formsets import KIND_TO_FORMSETS
@@ -49,9 +49,22 @@ class InputNodeForm(NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         instance = kwargs.get("instance")
-        self.fields["input_table"].queryset = Table.available.filter(
-            project=instance.workflow.project
-        ).exclude(source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE])
+
+        availableTables = (
+            Table.available.filter(project=instance.workflow.project)
+            .exclude(
+                source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
+            )
+            .order_by("-updated")
+        )
+
+        self.fields["input_table"].choices = [
+            (str(table), table)
+            for table in sorted(
+                availableTables,
+                key=lambda table: table not in instance.workflow.input_tables,
+            )
+        ]
 
 
 class OutputNodeForm(NodeForm):

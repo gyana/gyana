@@ -16,7 +16,7 @@ class InputNode(ChoiceWidget):
                 "image": option.integration.icon if option.integration else None,
                 "label": option.owner_name,
             }
-            for option in self.choices.queryset
+            for name, option in self.choices
         ]
 
         context["widget"]["selected"] = value
