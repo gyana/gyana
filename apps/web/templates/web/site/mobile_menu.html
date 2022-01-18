@@ -5,59 +5,68 @@
     <div class="grid grid-cols-2 gap-y-4 gap-x-8">
       <a
         href="/#features"
-        class="text-base font-normal text-black hover:text-black-50"
+        class="text-base font-normal text-gray-900 hover:text-gray-700"
       >
         Features
       </a>
       <a
         href="/pricing"
-        class="text-base font-normal text-black hover:text-black-50"
+        class="text-base font-normal text-gray-900 hover:text-gray-700"
       >
         Pricing
       </a>
 
       <a
         href="/company"
-        class="text-base font-normal text-black hover:text-black-50"
+        class="text-base font-normal text-gray-900 hover:text-gray-700"
       >
         About
       </a>
       <a
         href="/blog"
-        class="text-base font-normal text-black hover:text-black-50"
+        class="text-base font-normal text-gray-900 hover:text-gray-700"
       >
         Blog
       </a>
       <a
         href="https://intercom.help/gyana/en/collections/3117612-gyana-2-0-explained"
-        class="text-base font-normal text-black hover:text-black-50"
+        class="text-base font-normal text-gray-900 hover:text-gray-700"
       >
         Help Center
       </a>
       <a
         href="https://feedback.gyana.com"
-        class="text-base font-normal text-black hover:text-black-50"
+        class="text-base font-normal text-gray-900 hover:text-gray-700"
       >
         Feedback
       </a>
     </div>
     <div>
-      <a
-        href="https://gyana-data.typeform.com/to/v2XTy0j3"
-        id="CTA_header"
-        class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-normal text-white bg-blue hover:bg-indigo-700"
-      >
-        Request access
-      </a>
-      <p class="mt-6 text-center text-base font-normal text-black-50">
-        Existing customer?
+      {% if request.user.is_authenticated %}
         <a
-          href="{% url 'account_login' %}"
-          class="text-blue hover:text-blue-50"
+          href="/"
+          class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-normal text-white bg-indigo-600 hover:bg-indigo-700"
         >
-          Sign in
+          Go to app
         </a>
-      </p>
+      {% else %}
+        <a
+          href="https://gyana-data.typeform.com/to/v2XTy0j3"
+          id="CTA_header"
+          class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-normal text-white bg-indigo-600 hover:bg-indigo-700"
+        >
+          Request access
+        </a>
+        <p class="mt-6 text-center text-base font-normal text-gray-600">
+          Existing customer?
+          <a
+            href="{% url 'account_login' %}"
+            class="text-indigo-600 hover:text-indigo-500"
+          >
+            Sign in
+          </a>
+        </p>
+      {% endif %}
     </div>
   </div>
 </div>
