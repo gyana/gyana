@@ -1,4 +1,3 @@
-import yaml
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
@@ -9,11 +8,7 @@ from rest_framework.decorators import api_view
 
 from apps.teams.models import Team
 
-CONTENT_ROOT = "apps/web/content"
-
-
-def home_content():
-    return yaml.load(open(f"{CONTENT_ROOT}/home.yaml", "r"))
+from .content import get_content
 
 
 class Home(TemplateView):
@@ -45,7 +40,7 @@ class Home(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["content"] = home_content()
+        context["content"] = get_content("home.yaml")
         return context
 
 
