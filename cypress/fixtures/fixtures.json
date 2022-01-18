@@ -1,5 +1,39 @@
 [
   {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+      "name": "Moderators",
+      "permissions": [
+        ["access_admin", "wagtailadmin", "admin"],
+        ["add_document", "wagtaildocs", "document"],
+        ["change_document", "wagtaildocs", "document"],
+        ["choose_document", "wagtaildocs", "document"],
+        ["delete_document", "wagtaildocs", "document"],
+        ["add_image", "wagtailimages", "image"],
+        ["change_image", "wagtailimages", "image"],
+        ["delete_image", "wagtailimages", "image"]
+      ]
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 2,
+    "fields": {
+      "name": "Editors",
+      "permissions": [
+        ["access_admin", "wagtailadmin", "admin"],
+        ["add_document", "wagtaildocs", "document"],
+        ["change_document", "wagtaildocs", "document"],
+        ["choose_document", "wagtaildocs", "document"],
+        ["delete_document", "wagtaildocs", "document"],
+        ["add_image", "wagtailimages", "image"],
+        ["change_image", "wagtailimages", "image"],
+        ["delete_image", "wagtailimages", "image"]
+      ]
+    }
+  },
+  {
     "model": "sites.site",
     "pk": 1,
     "fields": { "domain": "localhost:8000", "name": "localhost:8000" }
@@ -219,7 +253,7 @@
       "created": "2021-07-26T14:53:37.584Z",
       "updated": "2021-07-26T14:53:37.584Z",
       "team": 1,
-      "user": 1,
+      "user": ["test"],
       "role": "admin"
     }
   },
@@ -230,7 +264,7 @@
       "created": "2021-08-30T18:56:05.352Z",
       "updated": "2021-08-30T18:56:05.352Z",
       "team": 5,
-      "user": 2,
+      "user": ["admin"],
       "role": "admin"
     }
   },
@@ -241,7 +275,7 @@
       "created": "2021-08-20T13:49:01.950Z",
       "updated": "2021-08-20T13:49:01.950Z",
       "team": 2,
-      "user": 3,
+      "user": ["alone"],
       "role": "admin"
     }
   },
@@ -252,7 +286,7 @@
       "created": "2021-11-08T23:50:26.735Z",
       "updated": "2021-11-08T23:50:26.735Z",
       "team": 6,
-      "user": 1,
+      "user": ["test"],
       "role": "admin"
     }
   },
@@ -316,7 +350,7 @@
       "state": "done",
       "ready": true,
       "created_ready": "2021-07-27T13:17:27.984Z",
-      "created_by": 1,
+      "created_by": ["test"],
       "is_scheduled": false
     }
   },
@@ -396,7 +430,7 @@
       "state": "update",
       "ready": false,
       "created_ready": "2021-08-10T10:03:16.769Z",
-      "created_by": 1,
+      "created_by": ["test"],
       "is_scheduled": true
     }
   },
@@ -412,7 +446,7 @@
       "state": "update",
       "ready": false,
       "created_ready": "2021-08-10T10:40:23.584Z",
-      "created_by": 1,
+      "created_by": ["test"],
       "is_scheduled": true
     }
   },
@@ -428,7 +462,7 @@
       "state": "update",
       "ready": false,
       "created_ready": "2021-08-10T10:40:23.584Z",
-      "created_by": 1,
+      "created_by": ["test"],
       "is_scheduled": true
     }
   },
@@ -444,7 +478,7 @@
       "state": "update",
       "ready": false,
       "created_ready": "2021-08-10T12:54:44.272Z",
-      "created_by": 1,
+      "created_by": ["test"],
       "is_scheduled": true
     }
   },
@@ -460,7 +494,7 @@
       "state": "done",
       "ready": true,
       "created_ready": "2021-08-30T19:29:42Z",
-      "created_by": 2,
+      "created_by": ["admin"],
       "is_scheduled": true
     }
   },
@@ -476,7 +510,7 @@
       "state": "done",
       "ready": true,
       "created_ready": "2021-08-31T00:58:25.975Z",
-      "created_by": 2,
+      "created_by": ["admin"],
       "is_scheduled": false
     }
   },
@@ -492,7 +526,7 @@
       "state": "done",
       "ready": true,
       "created_ready": "2021-12-16T01:46:48.891Z",
-      "created_by": 1,
+      "created_by": ["test"],
       "is_scheduled": false
     }
   },
@@ -633,12 +667,15 @@
       "page": 1,
       "table": 12,
       "text_content": null,
+      "url": null,
+      "image": "",
       "kind": "msline",
       "aggregator": "",
       "dimension": "date",
       "second_dimension": null,
       "name": "Bounce rate and session duration",
       "sort_by": "dimension",
+      "sort_column": null,
       "sort_ascending": true,
       "width": 1200,
       "height": 435,
@@ -647,7 +684,9 @@
       "stack_100_percent": false,
       "error": null,
       "date_column": null,
-      "show_summary_row": false
+      "show_summary_row": false,
+      "compare_previous_period": false,
+      "positive_decrease": false
     }
   },
   {
@@ -665,12 +704,15 @@
       "page": 1,
       "table": 19,
       "text_content": null,
+      "url": null,
+      "image": "",
       "kind": "mscolumn2d",
       "aggregator": "",
       "dimension": "Owner",
       "second_dimension": null,
       "name": "Employees by owner",
       "sort_by": "value",
+      "sort_column": null,
       "sort_ascending": false,
       "width": 1200,
       "height": 405,
@@ -679,7 +721,9 @@
       "stack_100_percent": false,
       "error": null,
       "date_column": null,
-      "show_summary_row": false
+      "show_summary_row": false,
+      "compare_previous_period": false,
+      "positive_decrease": false
     }
   },
   {
@@ -697,12 +741,15 @@
       "page": 2,
       "table": 22,
       "text_content": null,
+      "url": null,
+      "image": "",
       "kind": "table",
       "aggregator": "",
       "dimension": null,
       "second_dimension": null,
       "name": null,
       "sort_by": "dimension",
+      "sort_column": null,
       "sort_ascending": true,
       "width": 495,
       "height": 390,
@@ -711,7 +758,9 @@
       "stack_100_percent": false,
       "error": null,
       "date_column": null,
-      "show_summary_row": false
+      "show_summary_row": false,
+      "compare_previous_period": false,
+      "positive_decrease": false
     }
   },
   {
@@ -1133,7 +1182,7 @@
       "accepted": true,
       "key": "ygr7agub5cippprocdbilirifuxzikuzrifk3cjur0pbdlovqv7mym5loz8mgtsm",
       "sent": "2021-07-29T09:32:54.990Z",
-      "inviter": 1,
+      "inviter": ["test"],
       "email": "member@gyana.com",
       "team": 1,
       "role": "member",
@@ -3455,11 +3504,11 @@
     "pk": 10,
     "fields": {
       "created": "2021-12-16T01:46:42.564Z",
-      "updated": "2022-01-12T02:02:56.258Z",
+      "updated": "2022-01-18T10:06:37.432Z",
       "state": "success",
       "started_at": "2021-12-16T01:46:42.563Z",
       "completed_at": "2021-12-16T01:46:46.036Z",
-      "user": 1,
+      "user": ["test"],
       "task_id": "32f7a738-c597-4aae-9429-303873aaad18",
       "result": 1,
       "source": "integration",
@@ -3495,17 +3544,17 @@
   {
     "model": "account.emailaddress",
     "pk": 1,
-    "fields": { "user": 1, "email": "test@gyana.com", "verified": true, "primary": true }
+    "fields": { "user": ["test"], "email": "test@gyana.com", "verified": true, "primary": true }
   },
   {
     "model": "account.emailaddress",
     "pk": 2,
-    "fields": { "user": 3, "email": "alone@gyana.com", "verified": true, "primary": true }
+    "fields": { "user": ["alone"], "email": "alone@gyana.com", "verified": true, "primary": true }
   },
   {
     "model": "account.emailaddress",
     "pk": 3,
-    "fields": { "user": 2, "email": "admin@gyana.com", "verified": true, "primary": true }
+    "fields": { "user": ["admin"], "email": "admin@gyana.com", "verified": true, "primary": true }
   },
   {
     "model": "socialaccount.socialapp",
@@ -3516,7 +3565,7 @@
       "client_id": "766404612569-gn5hok52al6q1ob04rfmha8k4bns09me.apps.googleusercontent.com",
       "secret": "l9xbaHAi5xf4WuRji3PiTq-z",
       "key": "",
-      "sites": [1]
+      "sites": [["localhost:8000"]]
     }
   },
   {
@@ -3629,7 +3678,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2022-01-12T02:02:56.241Z" }
+    "fields": { "last_update": "2022-01-18T10:06:37.416Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
@@ -3677,5 +3726,133 @@
       "traceback": null,
       "meta": "{\"children\": []}"
     }
-  }
+  },
+  {
+    "model": "wagtailsearch.indexentry",
+    "pk": 1,
+    "fields": {
+      "content_type": ["wagtailcore", "page"],
+      "object_id": "1",
+      "title_norm": 2.5,
+      "autocomplete": "'root':1",
+      "title": "'root':1B",
+      "body": ""
+    }
+  },
+  {
+    "model": "wagtailsearch.indexentry",
+    "pk": 2,
+    "fields": {
+      "content_type": ["wagtailcore", "page"],
+      "object_id": "2",
+      "title_norm": 0.625,
+      "autocomplete": "'new':4 'site':6 'to':2 'wagtail':5 'welcome':1 'your':3",
+      "title": "'new':4B 'site':6B 'wagtail':5B 'welcom':1B",
+      "body": ""
+    }
+  },
+  {
+    "model": "wagtailcore.site",
+    "pk": 1,
+    "fields": {
+      "hostname": "localhost",
+      "port": 80,
+      "site_name": "",
+      "root_page": 2,
+      "is_default_site": true
+    }
+  },
+  {
+    "model": "wagtailcore.collection",
+    "pk": 1,
+    "fields": { "path": "0001", "depth": 1, "numchild": 0, "name": "Root" }
+  },
+  { "model": "wagtailcore.locale", "pk": 1, "fields": { "language_code": "en" } },
+  {
+    "model": "wagtailcore.page",
+    "pk": 1,
+    "fields": {
+      "path": "0001",
+      "depth": 1,
+      "numchild": 1,
+      "translation_key": "60961f77-be5a-4b6a-a207-2156955d12c9",
+      "locale": 1,
+      "title": "Root",
+      "draft_title": "Root",
+      "slug": "root",
+      "content_type": ["wagtailcore", "page"],
+      "live": true,
+      "has_unpublished_changes": false,
+      "url_path": "/",
+      "owner": null,
+      "seo_title": "",
+      "show_in_menus": false,
+      "search_description": "",
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "first_published_at": null,
+      "last_published_at": null,
+      "latest_revision_created_at": null,
+      "live_revision": null,
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 2,
+    "fields": {
+      "path": "00010001",
+      "depth": 2,
+      "numchild": 0,
+      "translation_key": "ab44508e-9dc1-4829-ae13-585f09dce0f9",
+      "locale": 1,
+      "title": "Welcome to your new Wagtail site!",
+      "draft_title": "Welcome to your new Wagtail site!",
+      "slug": "home",
+      "content_type": ["wagtailcore", "page"],
+      "live": true,
+      "has_unpublished_changes": false,
+      "url_path": "/home/",
+      "owner": null,
+      "seo_title": "",
+      "show_in_menus": false,
+      "search_description": "",
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "first_published_at": null,
+      "last_published_at": null,
+      "latest_revision_created_at": null,
+      "live_revision": null,
+      "alias_of": null
+    }
+  },
+  { "model": "wagtailcore.workflowpage", "pk": 1, "fields": { "workflow": 1 } },
+  {
+    "model": "wagtailcore.workflowtask",
+    "pk": 1,
+    "fields": { "sort_order": 0, "workflow": 1, "task": 1 }
+  },
+  {
+    "model": "wagtailcore.task",
+    "pk": 1,
+    "fields": {
+      "name": "Moderators approval",
+      "content_type": ["wagtailcore", "groupapprovaltask"],
+      "active": true
+    }
+  },
+  {
+    "model": "wagtailcore.workflow",
+    "pk": 1,
+    "fields": { "name": "Moderators approval", "active": true }
+  },
+  { "model": "wagtailcore.groupapprovaltask", "pk": 1, "fields": { "groups": [["Moderators"]] } }
 ]
