@@ -44,6 +44,15 @@ class Home(TemplateView):
         return context
 
 
+class Pricing(TemplateView):
+    template_name = "web/pricing.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["content"] = get_content("pricing.yaml")
+        return context
+
+
 @api_view(["POST"])
 def toggle_sidebar(request):
     request.session["sidebar_collapsed"] = not request.session.get(

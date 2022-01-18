@@ -8,6 +8,7 @@ app_name = "web"
 
 urlpatterns = [
     path("", views.Home.as_view(), name="home"),
+    path("pricing", views.Pricing.as_view(), name="pricing"),
     path("toggle-sidebar", views.toggle_sidebar),
     # Trubo frames
     path("help", frames.HelpModal.as_view(), name="help"),
