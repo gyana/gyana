@@ -1,3 +1,5 @@
+{% load static %}
+
 <fieldset name="{{ widget.name }}" data-controller="node-input">
  {% for option in widget.options %}
   <label 
@@ -6,7 +8,12 @@
     id="{{ option.id }}"
     data-action="click->node-input#select click->tf-modal#preview"
   >
-    <i class="{{ option.icon }}"></i>{{ option.label }}
+    {% if option.image %}
+    <img src="{% static option.image %}" width="14px" alt="">
+    {% else %}
+    <i class="{{ option.icon }}"></i>
+    {% endif %}
+    {{ option.label }}
   </label>
   {% endfor %}
 

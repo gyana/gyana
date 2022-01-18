@@ -1,5 +1,6 @@
-from apps.widgets.widgets import ICONS
 from django.forms.widgets import ChoiceWidget
+
+from apps.widgets.widgets import ICONS
 
 
 class InputNode(ChoiceWidget):
@@ -9,7 +10,12 @@ class InputNode(ChoiceWidget):
         context = super().get_context(name, value, attrs)
 
         context["widget"]["options"] = [
-            {"icon": ICONS[option.source], "id": option.id, "label": option.owner_name}
+            {
+                "icon": ICONS[option.source],
+                "id": option.id,
+                "image": option.integration.icon if option.integration else None,
+                "label": option.owner_name,
+            }
             for option in self.choices.queryset
         ]
 
