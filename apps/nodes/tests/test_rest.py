@@ -42,7 +42,7 @@ def test_duplicate(client, setup):
     assertOK(r)
     assert Node.objects.filter(workflow=workflows[1], kind=Node.Kind.JOIN).count() == 2
     data = r.json()
-    assert data["name"] == "Copy of Join" and data["x"] == 50 and data["y"] == 50
+    assert data["name"] == "Copy of Join" and data["x"] == 80 and data["y"] == 80
     new_join = Node.objects.filter(workflow=workflows[1], kind=Node.Kind.JOIN).last()
     assert new_join.name == "Copy of Join"
     assert [p.id for p in new_join.parents.all()] == [input_1.id, input_2.id]
