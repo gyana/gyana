@@ -33,3 +33,10 @@
 .bg-white-opacity-10 {
   background: rgba(255, 255, 255, .1);
 }
+
+// Temporary fix for modal flashing, taken from base.scss
+[hidden] {
+  // It's considered dangerous to use !important but this needs to override any
+  // displays set on the element later in the flow.
+  display: none !important;
+}
