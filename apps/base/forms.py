@@ -127,19 +127,17 @@ class BaseSchemaForm(SchemaFormMixin, forms.ModelForm):
 
 
 class LiveFormsetForm(BaseLiveSchemaForm):
-    def __init__(self, *args, **kwargs):
-        self.formset_kwargs = kwargs.pop("formset_kwargs")
-        self.formset_form_kwargs = kwargs.pop("formset_form_kwargs")
-        super().__init__(*args, **kwargs)
-
     def get_live_formsets(self):
         return []
 
     def get_formset_kwargs(self, formset):
         return {}
 
+    def get_formset_form_kwargs(self, formset):
+        return {}
+
     def get_formset(self, formset):
-        forms_kwargs = self.formset_form_kwargs
+        forms_kwargs = self.get_formset_form_kwargs(formset)
 
         # provide a reference to parent instance in live update forms
         if issubclass(formset.form, LiveUpdateForm):
@@ -154,7 +152,7 @@ class LiveFormsetForm(BaseLiveSchemaForm):
                 self.data,
                 # self.request.FILES,?
                 instance=self.instance,
-                **self.formset_kwargs,
+                **self.get_formset_kwargs(formset),
                 form_kwargs=forms_kwargs,
             )
             # form is only bound if formset is in previous render, otherwise load from database
@@ -162,7 +160,7 @@ class LiveFormsetForm(BaseLiveSchemaForm):
             # initial render
             else formset(
                 instance=self.instance,
-                **self.formset_kwargs,
+                **self.get_formset_kwargs(formset),
                 form_kwargs=forms_kwargs,
             )
         )

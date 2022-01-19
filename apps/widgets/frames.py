@@ -94,23 +94,6 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
     def get_form_class(self):
         return FORMS[self.request.POST.get("kind") or self.object.kind]
 
-    def get_formset_kwargs(self, formset):
-        kind = self.request.POST.get("kind") or self.object.kind
-        if kind == Widget.Kind.SCATTER:
-            return {"names": ["X", "Y"]}
-        if kind == Widget.Kind.BUBBLE:
-            return {"names": ["X", "Y", "Z"]}
-        return {}
-
-    def get_formset_form_kwargs(self, formset):
-        table = self.request.POST.get("table") or getattr(self.object, "table")
-        formset_kwargs = {}
-        if table is not None:
-            formset_kwargs["schema"] = (
-                table if isinstance(table, Table) else Table.objects.get(pk=table)
-            ).schema
-        return formset_kwargs
-
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         table = self.request.POST.get("table") or getattr(self.object, "table")
@@ -120,20 +103,6 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
             ).schema
 
         kwargs["project"] = self.dashboard.project
-        kwargs["formset_kwargs"] = {}
-
-        table = self.request.POST.get("table") or getattr(self.object, "table")
-        formset_form_kwargs = {}
-        if table is not None:
-            formset_form_kwargs["schema"] = (
-                table if isinstance(table, Table) else Table.objects.get(pk=table)
-            ).schema
-        kind = self.request.POST.get("kind") or self.object.kind
-        if kind == Widget.Kind.SCATTER:
-            formset_form_kwargs = {"names": ["X", "Y"]}
-        elif kind == Widget.Kind.BUBBLE:
-            formset_form_kwargs["formset_form_kwargs"] = {"names": ["X", "Y", "Z"]}
-        kwargs["formset_form_kwargs"] = formset_form_kwargs
         return kwargs
 
     def get_success_url(self) -> str:

@@ -67,7 +67,6 @@ class FormsetUpdateView(TurboUpdateView):
             response = super().form_valid(form)
             for formset in form.get_formsets().values():
                 if formset.is_valid():
-                    # formset.instance = self.object
                     formset.save()
 
         return response

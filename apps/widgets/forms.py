@@ -139,6 +139,14 @@ class GenericWidgetForm(LiveFormsetForm):
 
         return formsets
 
+    def get_formset_kwargs(self, formset):
+        kind = self.get_live_field("kind")
+        if kind == Widget.Kind.SCATTER:
+            return {"names": ["X", "Y"]}
+        if kind == Widget.Kind.BUBBLE:
+            return {"names": ["X", "Y", "Z"]}
+        return {}
+
 
 def disable_non_time(schema):
     return {
