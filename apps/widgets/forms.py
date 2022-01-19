@@ -4,11 +4,9 @@ import re
 from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
-from apps.base.forms import BaseModelForm
-from apps.base.forms import LiveUpdateForm
 from apps.base.core.utils import create_column_choices
+from apps.base.forms import BaseModelForm, LiveFormsetForm, LiveFormsetMixin
 from apps.base.widgets import SelectWithDisable
-from apps.columns.bigquery import aggregate_columns
 from apps.dashboards.forms import PaletteColorsField
 from apps.tables.models import Table
 
@@ -25,7 +23,7 @@ def get_not_deleted_entries(data, regex):
     ]
 
 
-class GenericWidgetForm(LiveUpdateForm):
+class GenericWidgetForm(LiveFormsetForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
     sort_column = forms.ChoiceField(choices=(), required=False)
@@ -56,10 +54,10 @@ class GenericWidgetForm(LiveUpdateForm):
         self.fields["kind"].choices = [
             choice
             for choice in self.fields["kind"].choices
-            if choice[0] != Widget.Kind.TEXT
-            and choice[0] != Widget.Kind.IMAGE
-            and choice[0] != Widget.Kind.IFRAME
+            if choice[0]
+            not in [Widget.Kind.TEXT, Widget.Kind.IMAGE, Widget.Kind.IFRAME]
         ]
+
         if project:
             self.fields["table"].queryset = Table.available.filter(
                 project=project
@@ -79,18 +77,17 @@ class GenericWidgetForm(LiveUpdateForm):
                 )
 
             if table and self.get_live_field("kind") == Widget.Kind.TABLE:
-                group_columns = (
-                    get_not_deleted_entries(kwargs["data"], "columns-[0-9]*-column")
-                    if kwargs.get("data")
-                    else [col.column for col in self.instance.columns.all()]
-                )
-                aggregations = (
-                    get_not_deleted_entries(
-                        kwargs["data"], "aggregations-[0-9]*-column"
-                    )
-                    if kwargs.get("data")
-                    else [col.column for col in self.instance.aggregations.all()]
-                )
+                formsets = self.get_formsets()
+                group_columns = [
+                    form.instance.column
+                    for form in formsets["Group columns"].forms
+                    if not form.deleted
+                ]
+                aggregations = [
+                    form.instance.column
+                    for form in formsets["Aggregations"].forms
+                    if not form.deleted
+                ]
                 columns = group_columns + aggregations
                 if columns:
                     if not aggregations:
@@ -103,20 +100,23 @@ class GenericWidgetForm(LiveUpdateForm):
 
     def get_live_fields(self):
         fields = ["table", "kind"]
-
-        if self.get_live_field("table"):
+        table = self.get_live_field("table")
+        if table:
             fields += ["date_column"]
 
-        if self.get_live_field("kind") == Widget.Kind.TABLE and self.get_live_field(
-            "table"
-        ):
+        if self.get_live_field("kind") == Widget.Kind.TABLE and table:
             fields += ["sort_column", "sort_ascending", "show_summary_row"]
-        if self.get_live_field("kind") == Widget.Kind.METRIC and (
-            self.instance.page.has_control
-            or (
-                get_not_deleted_entries(self.data, "control-[0-9]*-date_range")
-                if self.data
-                else self.instance.has_control
+
+        if (
+            self.get_live_field("kind") == Widget.Kind.METRIC
+            and table
+            and self.get_live_field("date_column")
+            and (
+                self.instance.page.has_control
+                or (
+                    (controls := self.get_formsets().get("control"))
+                    and len([form for form in controls.forms if not form.deleted]) == 1
+                )
             )
         ):
             fields += ["compare_previous_period", "positive_decrease"]
@@ -138,6 +138,14 @@ class GenericWidgetForm(LiveUpdateForm):
             formsets += [AggregationColumnFormset]
 
         return formsets
+
+    def get_formset_kwargs(self, formset):
+        kind = self.get_live_field("kind")
+        if kind == Widget.Kind.SCATTER:
+            return {"names": ["X", "Y"]}
+        if kind == Widget.Kind.BUBBLE:
+            return {"names": ["X", "Y", "Z"]}
+        return {}
 
 
 def disable_non_time(schema):
@@ -240,7 +248,7 @@ class StackedChartForm(GenericWidgetForm):
         return fields
 
 
-class IframeWidgetForm(BaseModelForm):
+class IframeWidgetForm(LiveFormsetMixin, BaseModelForm):
     url = forms.URLField(
         label="Embed URL",
         widget=forms.URLInput(
@@ -262,7 +270,7 @@ class IframeWidgetForm(BaseModelForm):
         super().__init__(*args, **kwargs)
 
 
-class ImageWidgetForm(BaseModelForm):
+class ImageWidgetForm(LiveFormsetMixin, BaseModelForm):
     class Meta:
         model = Widget
         fields = [

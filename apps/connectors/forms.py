@@ -4,7 +4,7 @@ from django.forms.widgets import CheckboxInput, HiddenInput
 from honeybadger import honeybadger
 
 from apps.base import clients
-from apps.base.forms import BaseModelForm
+from apps.base.forms import BaseModelForm, LiveFormsetMixin
 
 from .fivetran.client import FivetranClientError
 from .fivetran.config import ServiceTypeEnum
@@ -43,7 +43,7 @@ class ConnectorCreateForm(BaseModelForm):
         instance.create_integration(instance.conf.name, self._created_by, self._project)
 
 
-class ConnectorUpdateForm(forms.ModelForm):
+class ConnectorUpdateForm(LiveFormsetMixin, forms.ModelForm):
     class Meta:
         model = Connector
         fields = []

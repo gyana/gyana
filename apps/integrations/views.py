@@ -10,8 +10,7 @@ from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
-from apps.base.views import TurboUpdateView
-from apps.base.views import FormsetUpdateView
+from apps.base.views import FormsetUpdateView, TurboUpdateView
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import run_integration
 from apps.projects.mixins import ProjectMixin
@@ -153,9 +152,8 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
         # don't assign the result to self.object
         with transaction.atomic():
             form.save()
-            for formset in self.get_formsets().values():
+            for formset in form.get_formsets().values():
                 if formset.is_valid():
-                    formset.instance = self.get_form_instance()
                     formset.save()
 
         run_integration(self.object.kind, self.object.source_obj, self.request.user)

@@ -31,12 +31,7 @@ export default class extends Controller {
     const wrapper = e.target.closest(this.wrapperSelector)
 
     const input = wrapper.querySelector("input[name*='-DELETE']")
-    input.value = 'on'
-
-    const TOTAL_FORMS = this.element.querySelector(`#id_${this.prefixValue}-TOTAL_FORMS`)
-    const total = parseInt(TOTAL_FORMS.value)
-
-    TOTAL_FORMS.value = parseInt(total) - 1
+    input.checked = true
 
     wrapper.querySelectorAll('[required]').forEach((el) => {
       el.removeAttribute('required')

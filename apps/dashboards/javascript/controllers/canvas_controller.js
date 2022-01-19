@@ -21,7 +21,6 @@ export default class extends Controller {
         const data = event.dataTransfer.getData('application/gydashboard')
 
         // Use a hidden form to create a widget and add to canvas via turbo stream
-        console.log(event.offsetX, event.offsetY)
         this.formTarget.querySelector('[name=kind]').value = data
         // Default width is double
         this.formTarget.querySelector('[name=x]').value = event.offsetX - 248

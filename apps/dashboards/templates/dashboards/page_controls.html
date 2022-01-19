@@ -2,7 +2,7 @@
   {% if previous_page == 0 %}
     <i class="fas fa-fw fa-chevron-left text-gray"></i>
   {% else %}
-    <a href="{% url 'project_dashboards:detail' project.id object.id %}?page={{ previous_page}}&mode={{request.GET.mode}}">
+    <a href="{% url 'project_dashboards:detail' project.id object.id %}?dashboardPage={{ previous_page}}&mode={{request.GET.mode}}">
       <i class="fas fa-fw fa-chevron-left"></i>
     </a>
   {% endif %}
@@ -30,7 +30,7 @@
     </button>
   </form>
   {% else %}
-    <a href="{% url 'project_dashboards:detail' project.id object.id %}?page={{ next_page }}&mode={{request.GET.mode}}">
+    <a href="{% url 'project_dashboards:detail' project.id object.id %}?dashboardPage={{ next_page }}&mode={{request.GET.mode}}">
       <i class="fas fa-fw fa-chevron-right"></i>
     </a>
   {% endif %}

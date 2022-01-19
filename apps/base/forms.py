@@ -1,8 +1,36 @@
+from functools import cache
+
 from django import forms
 from django.db import transaction
 from django.utils.datastructures import MultiValueDict
 
 from apps.base.core.utils import create_column_choices
+
+# temporary overrides for formset labels
+FORMSET_LABELS = {
+    "columns": "Group columns",
+    "aggregations": "Aggregations",
+    "sort_columns": "Sort columns",
+    "edit_columns": "Edit columns",
+    "add_columns": "Add columns",
+    "rename_columns": "Rename columns",
+    "formula_columns": "Formula columns",
+    "filters": "Filters",
+    "secondary_columns": "Select specific columns",
+    "window_columns": "Window columns",
+    "convert_columns": "Select columns to convert",
+    "values": "Additional values",
+    "charts": "Charts",
+    "queryparams": "Query Params",
+    "httpheaders": "HTTP Headers",
+    "formdataentries": "Form Data",
+    "formurlencodedentries": "Form Data",
+}
+
+
+def _get_formset_label(formset):
+    prefix = formset.get_default_prefix()
+    return FORMSET_LABELS.get(prefix, prefix)
 
 
 class SchemaFormMixin:
@@ -115,10 +143,74 @@ class LiveUpdateForm(BaseModelForm):
         # by default the behaviour is a normal form
         return [f for f in self.fields.keys() if f != "hidden_live"]
 
+    @property
+    def deleted(self):
+        return self.data.get(f"{self.prefix}-DELETE") == "on"
+
 
 class BaseLiveSchemaForm(SchemaFormMixin, LiveUpdateForm):
     pass
 
 
 class BaseSchemaForm(SchemaFormMixin, forms.ModelForm):
+    pass
+
+
+class LiveFormsetMixin:
+    def get_live_formsets(self):
+        return []
+
+    def get_formset_kwargs(self, formset):
+        return {}
+
+    def get_formset_form_kwargs(self, formset):
+        return {}
+
+    def get_formset(self, formset):
+        forms_kwargs = self.get_formset_form_kwargs(formset)
+
+        # provide a reference to parent instance in live update forms
+        if issubclass(formset.form, LiveUpdateForm):
+            forms_kwargs["parent_instance"] = self.instance
+
+        if issubclass(formset.form, SchemaFormMixin):
+            forms_kwargs["schema"] = self.schema
+
+        formset = (
+            # POST request for form creation
+            formset(
+                self.data,
+                # self.request.FILES,?
+                instance=self.instance,
+                **self.get_formset_kwargs(formset),
+                form_kwargs=forms_kwargs,
+            )
+            # form is only bound if formset is in previous render, otherwise load from database
+            if self.data and f"{formset.get_default_prefix()}-TOTAL_FORMS" in self.data
+            # initial render
+            else formset(
+                instance=self.instance,
+                **self.get_formset_kwargs(formset),
+                form_kwargs=forms_kwargs,
+            )
+        )
+        # When the post contains the wrong total forms number new forms aren't
+        # created. This happens for example when changing the widget kind.
+        if len(formset.forms) < formset.min_num:
+            formset.forms.extend(
+                formset._construct_form(i, **forms_kwargs)
+                for i in range(len(formset.forms), formset.min_num)
+            )
+
+        return formset
+
+    @cache
+    def get_formsets(self):
+        return {
+            _get_formset_label(formset): self.get_formset(formset)
+            for formset in self.get_live_formsets()
+        }
+
+
+class LiveFormsetForm(LiveFormsetMixin, BaseLiveSchemaForm):
     pass

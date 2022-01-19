@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 
 from apps.base import clients
 from apps.base.account import is_scheduled_paid_only
-from apps.base.forms import BaseModelForm
+from apps.base.forms import BaseModelForm, LiveFormsetMixin
 
 from .models import Sheet
 from .sheets import get_cell_range, get_sheets_id_from_url
@@ -60,7 +60,7 @@ class SheetCreateForm(BaseModelForm):
         instance.integration.project.update_schedule()
 
 
-class SheetUpdateForm(BaseModelForm):
+class SheetUpdateForm(LiveFormsetMixin, BaseModelForm):
     class Meta:
         model = Sheet
         fields = ["sheet_name", "cell_range"]

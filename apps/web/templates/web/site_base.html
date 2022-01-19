@@ -10,7 +10,11 @@
   {% comment %} TODO: Remove to enable turbo drive everywhere {% endcomment %}
   <meta name="turbo-visit-control" content="reload">
 
-  {% include "web/components/meta.html" %}
+  {% block meta %}
+    <title>Gyana | BI & Analytics for the web</title>
+    <meta name="description" content="Gyana delivers the power of business intelligence and data analytics in a web interface. Build repeatable workflows and dashboards with all your online data." /> 
+  {% endblock  %}
+
   {% include "web/components/favicon.html" %}
 
   <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -40,5 +44,20 @@
   {% include 'web/site/header.html' %}
   {% block body %}{% endblock %}
   {% include 'web/site/footer.html' %}
+
+  <script
+  type="text/javascript"
+  src="https://app.termly.io/embed.min.js"
+  data-auto-block="on"
+  data-website-uuid="20dd078f-264a-4111-8007-320b21ee3234"
+  ></script>
+  <button
+    class="termly-cookie-preference-button"
+    type="button"
+    style="background: white; width: 165px; height: 30px; border-radius: 3px; border: 1px solid #5f7d9c; font-family: Roboto, Arial; font-size: 10px; color: #5f7d9c; font-weight: 600; box-sizing: border-box; cursor: pointer; padding: 0; outline: none;"
+    onclick="displayPreferenceModal()"
+  >
+      Manage Cookie Preferences
+  </button>
 </body>
 </html>

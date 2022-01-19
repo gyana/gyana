@@ -46,9 +46,6 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
     model = Node
     turbo_frame_dom_id = "workflow-modal"
 
-    def get_formset_form_kwargs(self, formset):
-        return {"schema": self.object.parents.first().schema}
-
     @property
     def preview_node_id(self):
         return int(self.request.GET.get("preview_node_id", self.object.id))
@@ -92,6 +89,8 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
         form_kwargs = super().get_form_kwargs()
         if self.object.kind == Node.Kind.SENTIMENT:
             form_kwargs["user"] = self.request.user
+        if parent := self.object.parents.first():
+            form_kwargs["schema"] = parent.schema
         return form_kwargs
 
     def get_success_url(self) -> str:

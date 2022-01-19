@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.base.forms import BaseModelForm
+from apps.base.forms import BaseModelForm, LiveFormsetMixin
 from apps.uploads.widgets import GCSFileUpload
 
 from .models import Upload
@@ -26,7 +26,7 @@ class UploadCreateForm(BaseModelForm):
         )
 
 
-class UploadUpdateForm(forms.ModelForm):
+class UploadUpdateForm(LiveFormsetMixin, forms.ModelForm):
     class Meta:
         model = Upload
         fields = ["field_delimiter"]

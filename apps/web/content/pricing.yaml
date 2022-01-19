@@ -1,0 +1,62 @@
+tiers:
+  - name: Free
+    href: https://gyana-data.typeform.com/to/v2XTy0j3
+    priceMonthly: 0
+    rows: <strong>50k</strong> rows of data
+    description: 'Get started, free forever'
+    includedHeader: What's included
+    includedFeatures:
+      - Up to 3 projects
+      - Unlimited members
+      - All our integrations
+      - Live chat support
+  - name: Pro
+    href: https://gyana-data.typeform.com/to/v2XTy0j3
+    priceMonthly: 30
+    rows: <strong>1 million</strong> rows of data
+    description: For small teams and freelancers
+    includedHeader: 'Everything in free, plus'
+    includedFeatures:
+      - Unlimited projects
+      - Unbranded dashboards
+      - Project permissions
+      - Scheduled flows
+    extraRows: 30
+  - name: Business
+    href: https://gyana-data.typeform.com/to/v2XTy0j3
+    priceMonthly: 150
+    rows: <strong>10 million</strong> rows of data
+    description: For growing teams and agencies
+    includedHeader: 'Everything in pro, plus'
+    includedFeatures:
+      - White-label
+      - Custom domains
+      - External collaborators <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-normal bg-gray-100 text-gray-800">Soon</span>
+    extraRows: 15
+  - name: Enterprise
+    href: mailto:joyeeta.das@gyana.com
+    priceMonthly: -1
+    rows: <strong>Custom</strong> volume to suit your needs
+    includedHeader: Coming soon
+    description: Scale to large organisations
+    includedFeatures:
+      - SAML-based SSO
+      - Dedicated manager
+      - Personalized onboarding
+faqs:
+  - q: What is a row of data?
+    a: Every integration you connect to Gyana (like a file, Google Sheet or Facebook
+      account) is made up of one or more tables (think a Spreadsheet, but bigger). The
+      tables are made up of rows - so for example, if your table is a list of your
+      customers, each row is a customer. With Gyana you only pay for the integration
+      storage - any intermediate results you create are free.
+  - q: Are the integrations live?
+    a: Yes - we pull the latest data from your data sources. You'll always be looking
+      at the freshest insights, without any extra work.
+  - q: Where is my data stored?
+    a: Your data is stored securely by our cloud technology partners, and is encrypted
+      at rest. Gyana is ISO 27001 certified, the gold standard for information
+      security. Reach out to us if you'd like to learn more.
+  - q: What about GDPR?
+    a: Gyana is committed to GDPR compliance. Your data is always located in the UK and
+      EU, and we act as your data processing partner.

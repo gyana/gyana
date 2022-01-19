@@ -1,0 +1,38 @@
+<div class="bg-gray-50">
+  <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:py-12 lg:px-8">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-3xl font-extrabold text-gray-900">
+        Working with data today is <em>frustrating</em>
+      </h2>
+      <p class="mt-4 text-lg text-gray-600">
+        Every minute you spend <strong>messing around with CSVs</strong> or
+        <strong>duct taping apps together</strong> is a minute lost to focus
+        on your business.
+      </p>
+    </div>
+    <dl class="mt-12 space-y-10 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 lg:grid-cols-4 lg:gap-x-8">
+
+      {% for pain_point in content.pain_points %}
+        <div class="relative">
+          <dt>
+            <span class="absolute text-4xl" aria-hidden="true">
+              {{ pain_point.icon }}
+            </span>
+            <p class="mt-2 ml-12 text-base text-gray-600">
+              {{ pain_point.description|safe }}
+            </p>
+          </dt>
+        </div>
+      {% endfor %}
+
+    </dl>
+    <div class="max-w-3xl mx-auto text-center mt-12">
+      <p class="mt-4 text-lg text-gray-600">
+        <strong>The problem?</strong> Traditional BI tools were designed for
+        an offline world. One database, simple charts, limited flexibility,
+        no collaboration. The world has moved on, and now it's time for BI
+        to follow.
+      </p>
+    </div>
+  </div>
+</div>

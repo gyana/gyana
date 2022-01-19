@@ -94,25 +94,14 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
     def get_form_class(self):
         return FORMS[self.request.POST.get("kind") or self.object.kind]
 
-    def get_formset_kwargs(self, formset):
-        kind = self.request.POST.get("kind") or self.object.kind
-        if kind == Widget.Kind.SCATTER:
-            return {"names": ["X", "Y"]}
-        if kind == Widget.Kind.BUBBLE:
-            return {"names": ["X", "Y", "Z"]}
-        return {}
-
-    def get_formset_form_kwargs(self, formset):
-        table = self.request.POST.get("table") or getattr(self.object, "table")
-        formset_kwargs = {}
-        if table is not None:
-            formset_kwargs["schema"] = (
-                table if isinstance(table, Table) else Table.objects.get(pk=table)
-            ).schema
-        return formset_kwargs
-
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
+        table = self.request.POST.get("table") or getattr(self.object, "table")
+        if table is not None:
+            kwargs["schema"] = (
+                table if isinstance(table, Table) else Table.objects.get(pk=table)
+            ).schema
+
         kwargs["project"] = self.dashboard.project
         return kwargs
 
@@ -133,13 +122,11 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.object.kind == Widget.Kind.TEXT:
-            pass
-        elif self.object.kind == Widget.Kind.IFRAME:
-            pass
-        elif self.object.kind == Widget.Kind.IMAGE:
-            pass
-        else:
+        if self.object.kind not in [
+            Widget.Kind.TEXT,
+            Widget.Kind.IFRAME,
+            Widget.Kind.IMAGE,
+        ]:
             context["show_date_column"] = bool(
                 context["form"].get_live_field("date_column")
             )
