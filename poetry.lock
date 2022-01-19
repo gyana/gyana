@@ -1352,9 +1352,9 @@ regex = "*"
 toolz = "*"
 
 [package.extras]
-all = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.3)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymysql", "requests-kerberos", "graphviz", "sqlalchemy (<1.4)", "clickhouse-sqlalchemy", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "dask[array,dataframe] (>=2021.1.1,<2021.5.0 || >2021.6.0)"]
+all = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.3)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymysql", "requests-kerberos", "graphviz", "sqlalchemy (<1.4)", "clickhouse-sqlalchemy", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "dask[dataframe,array] (>=2021.1.1,<2021.5.0 || >2021.6.0)"]
 clickhouse = ["sqlalchemy (<1.4)", "clickhouse-sqlalchemy", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
-dask = ["dask[array,dataframe] (>=2021.1.1,<2021.5.0 || >2021.6.0)"]
+dask = ["dask[dataframe,array] (>=2021.1.1,<2021.5.0 || >2021.6.0)"]
 geospatial = ["geoalchemy2", "geopandas", "shapely"]
 hdf5 = ["tables (>=3.0.0)"]
 impala = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.3)", "requests", "impyla[kerberos] (>=0.15.0)"]
@@ -2474,6 +2474,22 @@ docs = ["pyenchant (>=3.1.1,<4)", "sphinxcontrib-spelling (>=5.4.0,<6)", "Sphinx
 testing = ["python-dateutil (>=2.7)", "pytz (>=2014.7)", "elasticsearch (>=5.0,<6.0)", "Jinja2 (>=2.11,<3.0)", "boto3 (>=1.16,<1.17)", "freezegun (>=0.3.8)", "openpyxl (>=2.6.4)", "Unidecode (>=0.04.14,<2.0)", "coverage (>=3.7.0)", "flake8 (>=3.6.0)", "isort (==5.6.4)", "flake8-blind-except (==0.1.1)", "flake8-print (==2.0.2)", "doc8 (==0.8.1)", "jinjalint (>=0.5)", "docutils (==0.15)", "django-taggit (>=1.3.0,<2.0)", "polib (>=1.1,<2.0)"]
 
 [[package]]
+name = "wagtail-factories"
+version = "2.0.1"
+description = "Factory boy classes for wagtail"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+factory-boy = ">=2.8.0"
+wagtail = ">=2.0"
+
+[package.extras]
+docs = ["sphinx (>=1.4.0)"]
+test = ["pytest (==6.0.1)", "pytest-django (==3.9.0)", "pytest-cov (==2.7.1)", "pytest-pythonpath (==0.7.3)", "psycopg2 (>=2.3.1)", "coverage (==4.5.3)", "isort (==4.3.21)", "flake8 (==3.7.8)", "flake8-blind-except (==0.1.1)", "flake8-debugger (==3.1.0)"]
+
+[[package]]
 name = "wcwidth"
 version = "0.2.5"
 description = "Measures the displayed width of unicode strings in a terminal"
@@ -2548,7 +2564,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.*"
-content-hash = "a8bb3d8c065d014fca0ebb0dd396acd96f7cccfac8d2b908a2dcbe36417fd551"
+content-hash = "c31c03af51c5acf8bd747a5bc7a5859901e0a798b06c05da14fa6518ff6a6650"
 
 [metadata.files]
 amqp = [
@@ -4015,6 +4031,10 @@ vine = [
 wagtail = [
     {file = "wagtail-2.15.1-py3-none-any.whl", hash = "sha256:6f1bc7960a7028a6e665a0f5a15ef2ba89faad66060bc4b3952a922fbef1713b"},
     {file = "wagtail-2.15.1.tar.gz", hash = "sha256:97eb520db0056d576b698e832de2ecfa3d795e9ed12e4b9ab738623c1b6277a0"},
+]
+wagtail-factories = [
+    {file = "wagtail_factories-2.0.1-py2.py3-none-any.whl", hash = "sha256:e2bd1a22e67b70e1603fc292e97f6f998ee0169477e1f71b5c53368630f1d088"},
+    {file = "wagtail_factories-2.0.1.tar.gz", hash = "sha256:3eeb55199f2c9ffbfe14979a94766d724c9e9f4d8f561df61097884e63bd537f"},
 ]
 wcwidth = [
     {file = "wcwidth-0.2.5-py2.py3-none-any.whl", hash = "sha256:beb4802a9cebb9144e99086eff703a642a13d6a0052920003a230f3294bbe784"},
