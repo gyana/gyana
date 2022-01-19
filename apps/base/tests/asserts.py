@@ -12,7 +12,7 @@ pytestmark = pytest.mark.django_db
 
 
 def assertLink(response, url, text=None, title=None, total=1):
-    __tracebackhide__ = False
+    __tracebackhide__ = True
 
     soup = BeautifulSoup(response.content)
     original_matches = soup.select("a")
