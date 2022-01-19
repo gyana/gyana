@@ -55,7 +55,7 @@ def setup(
 def test_generic_form(kind, formset_classes, setup, widget_factory):
     dashboard, table = setup
     widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
-    form = FORMS[kind](instance=widget)
+    form = FORMS[kind](instance=widget, schema=TABLE.schema())
     fields = {"kind", "table", "date_column"}
     if kind == Widget.Kind.TABLE:
         fields |= {"show_summary_row", "sort_column", "sort_ascending"}
