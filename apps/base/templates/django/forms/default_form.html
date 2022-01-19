@@ -43,8 +43,10 @@
   </label>
   {% elif bound_field.subwidgets|length == 1 %}
   <div
+    {% if bound_field.field.initial %}
     data-controller="reset-default"
     data-reset-default-initial-value="{{ bound_field.field.initial }}"
+    {% endif %}
     class="label {{ bound_field.field.widget.attrs.class }}"
   >
     <label for="{{ bound_field.id_for_label}}">
@@ -55,10 +57,14 @@
         <span class="text-black-50">- optional</span>
         {% endif %}
 
-        {% if bound_field.field.initial and bound_field.value != bound_field.field.initial %}
-        <a class="small link ml-auto" data-action="click->reset-default#reset">Reset to default</a>
-        {% endif %}
-
+        <a
+          class="small link ml-auto"
+          data-reset-default-target="control"
+          hidden
+        >
+          Reset to default
+        </a>
+        
         {% if bound_field.help_text %}
         <p class="input__help-text">{{ bound_field.help_text }}</p>
         {% endif %}
