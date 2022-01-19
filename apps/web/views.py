@@ -7,7 +7,9 @@ from django.views.generic import TemplateView
 from rest_framework.decorators import api_view
 
 from apps.connectors.fivetran.config import get_services_obj
+from apps.nodes.config import NODE_CONFIG
 from apps.teams.models import Team
+from apps.widgets.models import WIDGET_KIND_TO_WEB
 
 from .content import get_content
 
@@ -42,6 +44,9 @@ class Home(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["content"] = get_content("home.yaml")
+        context["services"] = get_services_obj()
+        context["node_config"] = NODE_CONFIG
+        context["widget_config"] = WIDGET_KIND_TO_WEB
         return context
 
 
@@ -59,7 +64,7 @@ class Integrations(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['services'] = get_services_obj()
+        context["services"] = get_services_obj()
         return context
 
 

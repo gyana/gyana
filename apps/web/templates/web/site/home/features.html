@@ -29,7 +29,15 @@
                 Learn more.
               </a>
             </p>
-            <IntegrationsMini />
+            <div class="flex flex-wrap">
+              {% for service in services.values %}
+                <img
+                  class="h-6 w-6 p-1"
+                  src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
+                  alt={{ service.name }}
+                />
+              {% endfor %}
+            </div>
           </div>
         </div>
         {% comment %}
@@ -92,7 +100,13 @@
               metrics and automate work. Build your analysis pipeline once,
               and tweak for future projects.
             </p>
-            <Transformations />
+            <div class="flex flex-wrap space-x-2">
+              {% for node_type in node_config.values %}
+                <div class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-normal bg-indigo-100 text-gray-800 mt-2">
+                  {{ node_type.displayName }}
+                </div>
+              {% endfor %}
+            </div>
           </div>
         </div>
       </div>
@@ -129,7 +143,13 @@
             </p>
           </div>
         </div>
-        <Charts />
+        <div class="flex flex-wrap space-x-2">
+          {% for widget_type in widget_config.values %}
+            <div class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-normal bg-indigo-100 text-gray-800 mt-2">
+              {{ widget_type.2 }}
+            </div>
+          {% endfor %}
+        </div>
         {% comment %} 
           <div class="mt-8 border-t border-gray-200 pt-6">
             <blockquote>
