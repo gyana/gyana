@@ -5,7 +5,7 @@ from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
 from apps.base.core.utils import create_column_choices
-from apps.base.forms import BaseModelForm, LiveFormsetForm
+from apps.base.forms import BaseModelForm, LiveFormsetForm, LiveFormsetMixin
 from apps.base.widgets import SelectWithDisable
 from apps.dashboards.forms import PaletteColorsField
 from apps.tables.models import Table
@@ -100,20 +100,23 @@ class GenericWidgetForm(LiveFormsetForm):
 
     def get_live_fields(self):
         fields = ["table", "kind"]
-
-        if self.get_live_field("table"):
+        table = self.get_live_field("table")
+        if table:
             fields += ["date_column"]
 
-        if self.get_live_field("kind") == Widget.Kind.TABLE and self.get_live_field(
-            "table"
-        ):
+        if self.get_live_field("kind") == Widget.Kind.TABLE and table:
             fields += ["sort_column", "sort_ascending", "show_summary_row"]
 
-        if self.get_live_field("kind") == Widget.Kind.METRIC and (
-            self.instance.page.has_control
-            or (
-                (controls := self.get_formsets().get("control"))
-                and len([form for form in controls.forms if not form.deleted]) == 1
+        if (
+            self.get_live_field("kind") == Widget.Kind.METRIC
+            and table
+            and self.get_live_field("date_column")
+            and (
+                self.instance.page.has_control
+                or (
+                    (controls := self.get_formsets().get("control"))
+                    and len([form for form in controls.forms if not form.deleted]) == 1
+                )
             )
         ):
             fields += ["compare_previous_period", "positive_decrease"]
@@ -245,7 +248,7 @@ class StackedChartForm(GenericWidgetForm):
         return fields
 
 
-class IframeWidgetForm(BaseModelForm):
+class IframeWidgetForm(LiveFormsetMixin, BaseModelForm):
     url = forms.URLField(
         label="Embed URL",
         widget=forms.URLInput(
@@ -267,7 +270,7 @@ class IframeWidgetForm(BaseModelForm):
         super().__init__(*args, **kwargs)
 
 
-class ImageWidgetForm(BaseModelForm):
+class ImageWidgetForm(LiveFormsetMixin, BaseModelForm):
     class Meta:
         model = Widget
         fields = [
