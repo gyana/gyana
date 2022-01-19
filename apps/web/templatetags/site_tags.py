@@ -1,6 +1,3 @@
-import functools
-import json
-
 from django import template
 
 EXTERNAL_URLS = {
