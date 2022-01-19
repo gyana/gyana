@@ -11,6 +11,7 @@ from apps.nodes.config import NODE_CONFIG
 from apps.teams.models import Team
 from apps.widgets.models import WIDGET_KIND_TO_WEB
 
+from .cache import cache_site
 from .content import get_content
 
 
@@ -39,7 +40,7 @@ class Home(TemplateView):
         if not settings.ENABLE_WEBSITE:
             return redirect("account_login")
 
-        return super().get(request, *args, **kwargs)
+        return cache_site(super().get)(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -9,7 +9,7 @@ app_name = "web"
 
 urlpatterns = [
     # site
-    path("", cache_site(views.Home.as_view()), name="home"),
+    path("", views.Home.as_view(), name="home"),  # cache_site in view.get
     path("pricing", cache_site(views.Pricing.as_view()), name="pricing"),
     path("integrations", cache_site(views.Integrations.as_view()), name="integrations"),
     path("about", cache_site(views.About.as_view()), name="about"),
