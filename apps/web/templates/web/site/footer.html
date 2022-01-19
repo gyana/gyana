@@ -15,7 +15,7 @@
             <ul class="mt-4 space-y-4">
               <li>
                 <a
-                  href="/#features"
+                  href="{% url 'web:home' %}#features"
                   class="text-base text-gray-600 hover:text-gray-900"
                 >
                   Features
@@ -23,7 +23,7 @@
               </li>
               <li>
                 <a
-                  href="/pricing"
+                  href="{% url 'web:pricing' %}"
                   class="text-base text-gray-600 hover:text-gray-900"
                 >
                   Pricing
@@ -65,7 +65,7 @@
             <ul class="mt-4 space-y-4">
               <li>
                 <a
-                  href="/about"
+                  href="{% url 'web:about' %}"
                   class="text-base text-gray-600 hover:text-gray-900"
                 >
                   About
@@ -74,7 +74,7 @@
 
               <li>
                 <a
-                  href="/about#careers"
+                  href="{% url 'web:about' %}#careers"
                   class="text-base text-gray-600 hover:text-gray-900"
                 >
                   Careers
@@ -98,7 +98,7 @@
             <ul class="mt-4 space-y-4">
               <li>
                 <a
-                  href="/legal/privacy-policy"
+                  href="{% url 'web:privacy-policy' %}"
                   class="text-base text-gray-600 hover:text-gray-900"
                 >
                   Privacy
@@ -107,7 +107,7 @@
 
               <li>
                 <a
-                  href="/legal/terms-of-use"
+                  href="{% url 'web:terms-of-use' %}"
                   class="text-base text-gray-600 hover:text-gray-900"
                 >
                   Terms
