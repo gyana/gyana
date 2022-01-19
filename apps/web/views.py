@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
 from rest_framework.decorators import api_view
 
+from apps.connectors.fivetran.config import get_services_obj
 from apps.teams.models import Team
 
 from .content import get_content
@@ -50,6 +51,15 @@ class Pricing(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["content"] = get_content("pricing.yaml")
+        return context
+
+
+class Integrations(TemplateView):
+    template_name = "web/integrations.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['services'] = get_services_obj()
         return context
 
 

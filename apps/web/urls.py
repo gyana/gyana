@@ -10,6 +10,7 @@ urlpatterns = [
     # site
     path("", views.Home.as_view(), name="home"),
     path("pricing", views.Pricing.as_view(), name="pricing"),
+    path("integrations", views.Integrations.as_view(), name="integrations"),
     path("about", views.About.as_view(), name="about"),
     path("legal/privacy-policy", views.PrivacyPolicy.as_view(), name="privacy-policy"),
     path("legal/terms-of-use", views.TermsOfUse.as_view(), name="terms-of-use"),
