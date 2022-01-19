@@ -46,7 +46,10 @@ preview mode.
           data-modal-item="{{ object.id }}"
           data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
           data-modal-id="widget-modal"
-          {% if object.kind == "iframe" or object.kind == "image" %}
+          {% if request.GET.modal_item == object.id|stringformat:"i" %}
+          data-tf-modal-target="onParam"
+          {% endif %}
+          {% if object.kind in "iframe,image" %}
           data-modal-classes="tf-modal--auto"
           {% else %}
           data-modal-classes="tf-modal--full"
