@@ -4,9 +4,9 @@ import re
 from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
-from apps.base.forms import BaseModelForm
-from apps.base.forms import LiveUpdateForm
 from apps.base.core.utils import create_column_choices
+from apps.base.forms import BaseModelForm, LiveFormsetForm, LiveUpdateForm
+from apps.base.views import _get_formset_label
 from apps.base.widgets import SelectWithDisable
 from apps.columns.bigquery import aggregate_columns
 from apps.dashboards.forms import PaletteColorsField
@@ -25,7 +25,7 @@ def get_not_deleted_entries(data, regex):
     ]
 
 
-class GenericWidgetForm(LiveUpdateForm):
+class GenericWidgetForm(LiveFormsetForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
     sort_column = forms.ChoiceField(choices=(), required=False)
@@ -56,10 +56,10 @@ class GenericWidgetForm(LiveUpdateForm):
         self.fields["kind"].choices = [
             choice
             for choice in self.fields["kind"].choices
-            if choice[0] != Widget.Kind.TEXT
-            and choice[0] != Widget.Kind.IMAGE
-            and choice[0] != Widget.Kind.IFRAME
+            if choice[0]
+            not in [Widget.Kind.TEXT, Widget.Kind.IMAGE, Widget.Kind.IFRAME]
         ]
+
         if project:
             self.fields["table"].queryset = Table.available.filter(
                 project=project

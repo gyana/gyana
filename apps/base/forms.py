@@ -1,3 +1,5 @@
+from functools import cache
+
 from django import forms
 from django.db import transaction
 from django.utils.datastructures import MultiValueDict
@@ -122,3 +124,63 @@ class BaseLiveSchemaForm(SchemaFormMixin, LiveUpdateForm):
 
 class BaseSchemaForm(SchemaFormMixin, forms.ModelForm):
     pass
+
+
+class LiveFormsetForm(BaseLiveSchemaForm):
+    def __init__(self, *args, **kwargs):
+        self.formset_kwargs = kwargs.pop("formset_kwargs")
+        self.formset_form_kwargs = kwargs.pop("formset_form_kwargs")
+        super().__init__(*args, **kwargs)
+
+    def get_live_formsets(self):
+        return []
+
+    def get_formset_kwargs(self, formset):
+        return {}
+
+    def get_formset(self, formset):
+        forms_kwargs = self.formset_form_kwargs
+
+        # provide a reference to parent instance in live update forms
+        if issubclass(formset.form, LiveUpdateForm):
+            forms_kwargs["parent_instance"] = self.instance
+
+        if issubclass(formset.form, BaseLiveSchemaForm):
+            forms_kwargs["schema"] = self.schema
+
+        formset = (
+            # POST request for form creation
+            formset(
+                self.data,
+                # self.request.FILES,?
+                instance=self.instance,
+                **self.formset_kwargs,
+                form_kwargs=forms_kwargs,
+            )
+            # form is only bound if formset is in previous render, otherwise load from database
+            if self.data and f"{formset.get_default_prefix()}-TOTAL_FORMS" in self.data
+            # initial render
+            else formset(
+                instance=self.instance,
+                **self.formset_kwargs,
+                form_kwargs=forms_kwargs,
+            )
+        )
+        # When the post contains the wrong total forms number new forms aren't
+        # created. This happens for example when changing the widget kind.
+        if len(formset.forms) < formset.min_num:
+            formset.forms.extend(
+                formset._construct_form(i, **forms_kwargs)
+                for i in range(len(formset.forms), formset.min_num)
+            )
+
+        return formset
+
+    @cache
+    def get_formsets(self):
+        from .views import _get_formset_label
+
+        return {
+            _get_formset_label(formset): self.get_formset(formset)
+            for formset in self.get_live_formsets()
+        }
