@@ -6,6 +6,32 @@ from django.utils.datastructures import MultiValueDict
 
 from apps.base.core.utils import create_column_choices
 
+# temporary overrides for formset labels
+FORMSET_LABELS = {
+    "columns": "Group columns",
+    "aggregations": "Aggregations",
+    "sort_columns": "Sort columns",
+    "edit_columns": "Edit columns",
+    "add_columns": "Add columns",
+    "rename_columns": "Rename columns",
+    "formula_columns": "Formula columns",
+    "filters": "Filters",
+    "secondary_columns": "Select specific columns",
+    "window_columns": "Window columns",
+    "convert_columns": "Select columns to convert",
+    "values": "Additional values",
+    "charts": "Charts",
+    "queryparams": "Query Params",
+    "httpheaders": "HTTP Headers",
+    "formdataentries": "Form Data",
+    "formurlencodedentries": "Form Data",
+}
+
+
+def _get_formset_label(formset):
+    prefix = formset.get_default_prefix()
+    return FORMSET_LABELS.get(prefix, prefix)
+
 
 class SchemaFormMixin:
     @property
@@ -126,7 +152,7 @@ class BaseSchemaForm(SchemaFormMixin, forms.ModelForm):
     pass
 
 
-class LiveFormsetForm(BaseLiveSchemaForm):
+class LiveFormsetMixin:
     def get_live_formsets(self):
         return []
 
@@ -143,7 +169,7 @@ class LiveFormsetForm(BaseLiveSchemaForm):
         if issubclass(formset.form, LiveUpdateForm):
             forms_kwargs["parent_instance"] = self.instance
 
-        if issubclass(formset.form, BaseLiveSchemaForm):
+        if issubclass(formset.form, SchemaFormMixin):
             forms_kwargs["schema"] = self.schema
 
         formset = (
@@ -176,9 +202,11 @@ class LiveFormsetForm(BaseLiveSchemaForm):
 
     @cache
     def get_formsets(self):
-        from .views import _get_formset_label
-
         return {
             _get_formset_label(formset): self.get_formset(formset)
             for formset in self.get_live_formsets()
         }
+
+
+class LiveFormsetForm(LiveFormsetMixin, BaseLiveSchemaForm):
+    pass

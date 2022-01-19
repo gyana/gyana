@@ -5,10 +5,8 @@ from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
 from apps.base.core.utils import create_column_choices
-from apps.base.forms import BaseModelForm, LiveFormsetForm, LiveUpdateForm
-from apps.base.views import _get_formset_label
+from apps.base.forms import BaseModelForm, LiveFormsetForm
 from apps.base.widgets import SelectWithDisable
-from apps.columns.bigquery import aggregate_columns
 from apps.dashboards.forms import PaletteColorsField
 from apps.tables.models import Table
 

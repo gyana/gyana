@@ -5,9 +5,8 @@ from django.urls import reverse
 from django.utils.html import mark_safe
 
 from apps.base.account import is_scheduled_paid_only
-from apps.base.forms import BaseModelForm
+from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveUpdateForm
 from apps.base.formsets import RequiredInlineFormset
-from apps.base.forms import LiveUpdateForm
 from apps.base.widgets import DatalistInput
 
 from .models import (
@@ -164,7 +163,7 @@ class CustomApiCreateForm(BaseModelForm):
         instance.integration.project.update_schedule()
 
 
-class CustomApiUpdateForm(LiveUpdateForm):
+class CustomApiUpdateForm(LiveFormsetMixin, LiveUpdateForm):
     class Meta:
         model = CustomApi
         fields = [

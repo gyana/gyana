@@ -17,33 +17,6 @@ class TurboUpdateView(TurboFormMixin, UpdateView):
     ...
 
 
-# temporary overrides for formset labels
-FORMSET_LABELS = {
-    "columns": "Group columns",
-    "aggregations": "Aggregations",
-    "sort_columns": "Sort columns",
-    "edit_columns": "Edit columns",
-    "add_columns": "Add columns",
-    "rename_columns": "Rename columns",
-    "formula_columns": "Formula columns",
-    "filters": "Filters",
-    "secondary_columns": "Select specific columns",
-    "window_columns": "Window columns",
-    "convert_columns": "Select columns to convert",
-    "values": "Additional values",
-    "charts": "Charts",
-    "queryparams": "Query Params",
-    "httpheaders": "HTTP Headers",
-    "formdataentries": "Form Data",
-    "formurlencodedentries": "Form Data",
-}
-
-
-def _get_formset_label(formset):
-    prefix = formset.get_default_prefix()
-    return FORMSET_LABELS.get(prefix, prefix)
-
-
 class FormsetUpdateView(TurboUpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
