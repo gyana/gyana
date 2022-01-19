@@ -100,7 +100,13 @@ We setup the app in the Heroku UI, key points to note:
 Heroku config variables, with production examples:
 
 ```bash
+CNAME_DOMAIN = cname.gyana.com
 DJANGO_SETTINGS_MODULE = gyana.settings.heroku
+DJPADDLE_VENDOR_ID = {{ vendor_id }}
+DJPADDLE_API_KEY = {{ api_key }}
+DJPADDLE_PUBLIC_KEY = {{ public_key }}
+DJPADDLE_PRO_PLAN_ID = {{ pro_plan_id }}
+DJPADDLE_BUSINESS_PLAN_ID = {{ business_plan_id }}
 ENVIRONMENT = production
 EXTERNAL_URL = https://app.gyana.com
 FIVETRAN_GROUP = intended_monsieur
@@ -122,6 +128,7 @@ SECRET_KEY = {{ secret_key }} # generate online
 SEGMENT_ANALYTICS_JS_WRITE_KEY = {{ segment_js_secret }}
 SEGMENT_ANALYTICS_WRITE_KEY = {{ segment_py_secret }}
 SENDGRID_API_KEY = {{ sendgrid_api_secret }}
+WEBSITE_GOOGLE_ANALYTICS_ID = {{ key }}
 ```
 
 The database and redis config variable are generated automatically by the add-ons.
