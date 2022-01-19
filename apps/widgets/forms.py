@@ -77,18 +77,17 @@ class GenericWidgetForm(LiveFormsetForm):
                 )
 
             if table and self.get_live_field("kind") == Widget.Kind.TABLE:
-                group_columns = (
-                    get_not_deleted_entries(kwargs["data"], "columns-[0-9]*-column")
-                    if kwargs.get("data")
-                    else [col.column for col in self.instance.columns.all()]
-                )
-                aggregations = (
-                    get_not_deleted_entries(
-                        kwargs["data"], "aggregations-[0-9]*-column"
-                    )
-                    if kwargs.get("data")
-                    else [col.column for col in self.instance.aggregations.all()]
-                )
+                formsets = self.get_formsets()
+                group_columns = [
+                    form.instance.column
+                    for form in formsets["Group columns"].forms
+                    if not form.deleted
+                ]
+                aggregations = [
+                    form.instance.column
+                    for form in formsets["Aggregations"].forms
+                    if not form.deleted
+                ]
                 columns = group_columns + aggregations
                 if columns:
                     if not aggregations:
@@ -109,12 +108,12 @@ class GenericWidgetForm(LiveFormsetForm):
             "table"
         ):
             fields += ["sort_column", "sort_ascending", "show_summary_row"]
+
         if self.get_live_field("kind") == Widget.Kind.METRIC and (
             self.instance.page.has_control
             or (
-                get_not_deleted_entries(self.data, "control-[0-9]*-date_range")
-                if self.data
-                else self.instance.has_control
+                (controls := self.get_formsets().get("control"))
+                and len([form for form in controls.forms if not form.deleted]) == 1
             )
         ):
             fields += ["compare_previous_period", "positive_decrease"]

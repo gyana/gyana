@@ -143,6 +143,10 @@ class LiveUpdateForm(BaseModelForm):
         # by default the behaviour is a normal form
         return [f for f in self.fields.keys() if f != "hidden_live"]
 
+    @property
+    def deleted(self):
+        return self.data.get(f"{self.prefix}-DELETE") == "on"
+
 
 class BaseLiveSchemaForm(SchemaFormMixin, LiveUpdateForm):
     pass
