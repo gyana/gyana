@@ -129,7 +129,7 @@ class DashboardDetail(ProjectMixin, TurboUpdateView):
 
         context["choices"] = WIDGET_CHOICES_ARRAY
         context["modal_item"] = self.request.GET.get("modal_item")
-        page = self.object.pages.get(position=self.request.GET.get("page", 1))
+        page = self.object.pages.get(position=self.request.GET.get("dashboardPage", 1))
         context["page"] = page
         context["page_count"] = self.object.pages.count()
         context["next_page"] = page.position + 1
@@ -194,7 +194,7 @@ class DashboardPublic(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["project"] = self.object.project
-        page = self.object.pages.get(position=self.request.GET.get("page", 1))
+        page = self.object.pages.get(position=self.request.GET.get("dashboardPage", 1))
         context["page"] = page
         context["page_count"] = self.object.pages.count()
         context["next_page"] = page.position + 1
@@ -259,7 +259,7 @@ class PageCreate(DashboardMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?page={self.object.position}"
+        return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?dashboardPage={self.object.position}"
 
 
 class PageDelete(DashboardMixin, DeleteView):
@@ -274,7 +274,7 @@ class PageDelete(DashboardMixin, DeleteView):
         # this will not delete but return the same page
         if page.position == 1:
             return HttpResponseRedirect(
-                f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?page={page.position}"
+                f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?dashboardPage={page.position}"
             )
         r = super().delete(request, *args, **kwargs)
 
@@ -287,4 +287,4 @@ class PageDelete(DashboardMixin, DeleteView):
         return r
 
     def get_success_url(self) -> str:
-        return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?page={min(self.object.position, self.dashboard.pages.count()-1)}"
+        return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?dashboardPage={min(self.object.position, self.dashboard.pages.count()-1)}"

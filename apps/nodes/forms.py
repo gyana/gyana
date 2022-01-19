@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Case, Value, When
 from django.forms.widgets import HiddenInput
 from django.utils.functional import cached_property
 
@@ -49,9 +50,20 @@ class InputNodeForm(NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         instance = kwargs.get("instance")
-        self.fields["input_table"].queryset = Table.available.filter(
-            project=instance.workflow.project
-        ).exclude(source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE])
+
+        self.fields["input_table"].queryset = (
+            Table.available.filter(project=instance.workflow.project)
+            .exclude(
+                source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
+            )
+            .annotate(
+                used_in_workflow=Case(
+                    When(id__in=instance.workflow.input_tables_fk, then=True),
+                    default=False,
+                )
+            )
+            .order_by("-used_in_workflow", "updated")
+        )
 
 
 class OutputNodeForm(NodeForm):
