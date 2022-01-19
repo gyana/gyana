@@ -100,10 +100,10 @@
               metrics and automate work. Build your analysis pipeline once,
               and tweak for future projects.
             </p>
-            <div class="flex flex-wrap space-x-2">
+            <div class="flex flex-wrap gap-x-2 gap-y-1 mt-2">
               {% for node_type in node_config.values %}
                 <div class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-normal bg-indigo-100 text-gray-800 mt-2">
-                  {{ node_type.displayName }}
+                  <i class="fa {{ node_type.icon }} mr-2"></i>{{ node_type.displayName }}
                 </div>
               {% endfor %}
             </div>
@@ -143,10 +143,10 @@
             </p>
           </div>
         </div>
-        <div class="flex flex-wrap space-x-2">
+        <div class="flex flex-wrap gap-x-2 gap-y-1 mt-2">
           {% for widget_type in widget_config.values %}
             <div class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-normal bg-indigo-100 text-gray-800 mt-2">
-              {{ widget_type.2 }}
+              <i class="fa {{ widget_type.0 }} mr-2"> </i>{{ widget_type.2 }}
             </div>
           {% endfor %}
         </div>
