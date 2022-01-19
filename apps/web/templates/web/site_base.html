@@ -40,6 +40,8 @@
   {% if WEBSITE_GOOGLE_ANALYTICS_ID %}
   {% include "web/components/google_analytics.html" with GOOGLE_ANALYTICS_ID=WEBSITE_GOOGLE_ANALYTICS_ID %}
   {% endif %}
+
+  {% include "web/components/intercom-visitors.html" %}
 </head>
 
 <body>
