@@ -6,9 +6,8 @@ from .meta import absolute_url
 
 
 def user_meta(request):
-    return {
-        "sidebar_collapsed": request.session.get("sidebar_collapsed", False)
-    }
+    return {"sidebar_collapsed": request.session.get("sidebar_collapsed", False)}
+
 
 def project_meta(request):
     # modify these values as needed and add whatever else you want globally available here
@@ -33,6 +32,7 @@ def google_analytics_id(request):
     if settings.GOOGLE_ANALYTICS_ID:
         return {
             "GOOGLE_ANALYTICS_ID": settings.GOOGLE_ANALYTICS_ID,
+            "WEBSITE_GOOGLE_ANALYTICS_ID": settings.WEBSITE_GOOGLE_ANALYTICS_ID,
         }
     else:
         return {}

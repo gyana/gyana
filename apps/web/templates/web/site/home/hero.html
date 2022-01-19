@@ -1,4 +1,4 @@
-{% load static heroicons %}
+{% load static heroicons site_tags %}
 
 <div class="bg-white">
   <div class="pt-8 overflow-hidden sm:pt-12 lg:relative lg:py-24">
@@ -6,14 +6,14 @@
       <div>
         <div>
           <a
-            href="/blog/the-next-chapter-of-gyana"
+            href="/blog/gyana-2021-wrapped"
             class="inline-flex space-x-4"
           >
             <span class="rounded bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-600 tracking-wide uppercase">
               What's new
             </span>
             <span class="inline-flex items-center text-sm font-normal text-indigo-600 space-x-1">
-              <span>The next chapter of Gyana</span>
+              <span>Gyana 2021, Wrapped</span>
               {% heroicon 'chevron-right' class="w-5 h-5" style="solid" %}
             </span>
           </a>
@@ -35,7 +35,7 @@
           <div class="sm:flex sm:justify-center lg:justify-start">
             <div class="rounded-md shadow">
               <a
-                href="https://gyana-data.typeform.com/to/v2XTy0j3"
+                href="{% external_url 'waitlist' %}"
                 class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-normal rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
                 id="CTA_home_01"
               >
@@ -45,8 +45,7 @@
           </div>
         </div>
         <p class="mt-6 sm:mt-3 text-sm text-gray-600">
-          Join our early adopter community. You won't wait longer than the
-          end of 2021.
+          Join our early adopter community.
         </p>
         <div class="mt-6">
           <div class="inline-flex items-center divide-x divide-gray-300">
