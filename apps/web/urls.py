@@ -14,15 +14,11 @@ urlpatterns = [
     path("integrations", cache_site(views.Integrations.as_view()), name="integrations"),
     path("about", cache_site(views.About.as_view()), name="about"),
     path(
-        "legal/privacy-policy",
+        "privacy-policy",
         cache_site(views.PrivacyPolicy.as_view()),
         name="privacy-policy",
     ),
-    path(
-        "legal/terms-of-use",
-        cache_site(views.TermsOfUse.as_view()),
-        name="terms-of-use",
-    ),
+    path("terms-of-use", cache_site(views.TermsOfUse.as_view()), name="terms-of-use"),
     # app
     path("toggle-sidebar", views.toggle_sidebar),
     # frames
