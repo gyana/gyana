@@ -10,7 +10,11 @@
   {% comment %} TODO: Remove to enable turbo drive everywhere {% endcomment %}
   <meta name="turbo-visit-control" content="reload">
 
-  {% include "web/components/meta.html" %}
+  {% block meta %}
+    <title>Gyana | BI & Analytics for the web</title>
+    <meta name="description" content="Gyana delivers the power of business intelligence and data analytics in a web interface. Build repeatable workflows and dashboards with all your online data." /> 
+  {% endblock  %}
+
   {% include "web/components/favicon.html" %}
 
   <link rel="preconnect" href="https://fonts.gstatic.com" />
