@@ -29,13 +29,13 @@
         Blog
       </a>
       <a
-        href="/help"
+        href="{% external_url 'help' %}"
         class="text-base font-normal text-gray-900 hover:text-gray-700"
       >
         Help Center
       </a>
       <a
-        href="/roadmap"
+        href="{% external_url 'feedback' %}"
         class="text-base font-normal text-gray-900 hover:text-gray-700"
       >
         Feedback
@@ -51,7 +51,7 @@
         </a>
       {% else %}
         <a
-          href="https://gyana-data.typeform.com/to/v2XTy0j3"
+          href="{% external_url 'waitlist' %}"
           id="CTA_header"
           class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-normal text-white bg-indigo-600 hover:bg-indigo-700"
         >

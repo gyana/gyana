@@ -1,3 +1,5 @@
+{% load site_tags %}
+
 <div class="bg-indigo-700">
   <div class="max-w-3xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
     <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
@@ -7,7 +9,7 @@
       Discover a new way to do business intelligence and data analytics today.
     </p>
     <a
-      href="https://gyana-data.typeform.com/to/v2XTy0j3"
+      href="{% external_url 'waitlist' %}"
       id="CTA_home_02"
       class="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-normal rounded-md text-indigo-600 bg-white hover:bg-indigo-50 sm:w-auto"
     >

@@ -1,4 +1,4 @@
-{% load static heroicons %}
+{% load static heroicons site_tags %}
 
 <div class="bg-white">
   <div class="pt-8 overflow-hidden sm:pt-12 lg:relative lg:py-24">
@@ -35,7 +35,7 @@
           <div class="sm:flex sm:justify-center lg:justify-start">
             <div class="rounded-md shadow">
               <a
-                href="https://gyana-data.typeform.com/to/v2XTy0j3"
+                href="{% external_url 'waitlist' %}"
                 class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-normal rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
                 id="CTA_home_01"
               >
