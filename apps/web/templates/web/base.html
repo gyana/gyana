@@ -8,19 +8,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="turbo-cache-control" content="no-cache" />
 
+  {% block head %}
   {% include "web/components/meta.html" %}
   {% include "web/components/favicon.html" %}
 
-  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link rel="preconnect" href="//fonts.gstatic.com" />
   <link
-    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+    href="//fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
     rel="stylesheet"
   />
   <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap&text=Gyana"
+    href="//fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap&text=Gyana"
     rel="stylesheet"
   />
-
 
   <link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
   <link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
@@ -44,7 +44,8 @@
   {% include "web/components/google_analytics.html" %}
   {% endif %}
 
-  {% block page_head %}{% endblock %}
+  {% block head.extra %}{% endblock head.extra %}
+  {% endblock head%}
 </head>
 
 <body data-controller="tf-modal on-submit-loading">

@@ -1,11 +1,11 @@
 {% extends "teams/base.html" %}
 {% load waffle_tags %}
 
-{% block page_head %}
+{% block head.extra %}
   <meta name="turbo-visit-control" content="reload">
   <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
   {% include "djpaddle_post_checkout.html" %}
-{% endblock %}
+{% endblock head.extra %}
 
 {% block app %}
 
