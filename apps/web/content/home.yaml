@@ -18,8 +18,8 @@ pain_points:
     icon: 📥
 features:
   - name: Automate your work
-    description: Turn manual processes in automated workflows. Schedule periodic updates
-      and build-reusable templates.
+    description: Turn manual processes into automated workflows. Schedule periodic updates
+      and build reusable templates.
     icon: sparkles
   - description: Build a single data store for your business apps, marketing tools,
       databases and custom APIs. Always up to date.
