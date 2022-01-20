@@ -54,17 +54,6 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
         context = super().get_context_data(**kwargs)
         context["workflow"] = self.object.workflow
         context["preview_node_id"] = self.preview_node_id
-
-        # Add node type to list if it requires live updates
-        context["do_live_updates"] = self.object.kind in [
-            "pivot",
-            "add",
-            "edit",
-            "aggregation",
-            "filter",
-            "unpivot",
-            "window",
-        ]
         context["parent_error_node"] = self.parent_error_node
         return context
 
