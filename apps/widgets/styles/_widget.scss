@@ -71,9 +71,13 @@
   padding-bottom: 1.6rem;
 }
 
-#editor {
+[data-controller*=widget-visuals-text] {
   border: none;
   cursor: text;
+}
+
+.widgets .ql-container.ql-snow {
+  border: none;
 }
 
 .widgets .ql-toolbar.ql-snow {

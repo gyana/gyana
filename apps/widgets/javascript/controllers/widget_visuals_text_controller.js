@@ -3,6 +3,14 @@ import { getApiClient } from 'apps/base/javascript/api'
 
 const debounceTime = 1000
 
+const toolbarOptions = [
+  [{ 'header': [1, 2, 3, false] }],
+  ['bold', 'italic', 'underline', 'strike', 'link'],
+  [{ 'align': [] }],
+  [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+  ['clean']
+]
+
 export default class extends Controller {
   static values = {
     id: String,
@@ -15,13 +23,13 @@ export default class extends Controller {
   }
 
   connect() {
-    this.quill = new Quill('#editor', {
+    this.quill = new Quill(this.element, {
       placeholder: 'Type your notes here...',
       theme: 'snow',
       readOnly: this.readOnlyValue,
       bounds: this.element,
       modules: {
-        "toolbar": !this.readOnlyValue
+        toolbar: this.readOnlyValue ? '' : toolbarOptions
       },
     });
 
