@@ -55,6 +55,7 @@ DJANGO_APPS = [
     "django.contrib.sites",
     "django.contrib.humanize",
     "django.contrib.postgres",
+    "django.contrib.sitemaps",
 ]
 
 # Put your third-party apps here

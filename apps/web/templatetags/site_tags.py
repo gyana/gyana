@@ -6,6 +6,8 @@ EXTERNAL_URLS = {
     "feedback": "https://feedback.gyana.com",
     "help": "https://intercom.help/gyana",
     "newsletter": "http://eepurl.com/gAi94b",
+    "onboarding": "https://calendly.com/lorraine-chabeda/30min",
+    "sales": "mailto:joyeeta.das@gyana.com",
     # social
     "facebook": "https://www.facebook.com/GyanaHQ",
     "twitter": "https://twitter.com/GyanaHQ",
