@@ -31,9 +31,7 @@
       action="{% url 'nodes:update' node.id %}"
       method="post"
       data-tf-modal-target='form'
-      {% if do_live_updates %}
       data-controller="live-update"
-      {% endif %}
       data-action="
         change->tf-modal#change 
         formset:remove->live-update#updateForm 
