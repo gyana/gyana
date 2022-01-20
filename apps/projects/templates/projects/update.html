@@ -14,7 +14,7 @@
       data-controller="live-update" 
       method="post" 
       action="{% url 'projects:update' object.id %}" 
-      class="form max-w-lg mb-8"
+      class="form max-w-3xl mb-8"
     >
       {% csrf_token %}
 
@@ -30,12 +30,12 @@
     </form>
 
     {% flag 'beta' %}
-      <div>
-        <div class="flex items-center mb-7">
-          <h2 class="mr-2">OAuth2</h2>
-        </div>
-        <turbo-frame id="oauth2:list" src="{% url 'project_oauth2:list' object.id %}" target="_top"></turbo-frame>
+    <div class="max-w-3xl">
+      <div class="flex items-center mb-7">
+        <h2 class="mr-2">OAuth2</h2>
       </div>
+      <turbo-frame id="oauth2:list" src="{% url 'project_oauth2:list' object.id %}" target="_top"></turbo-frame>
+    </div>
     {% endflag %}
   </div>
 

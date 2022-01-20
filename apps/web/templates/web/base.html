@@ -8,12 +8,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="turbo-cache-control" content="no-cache" />
 
+  {% block head %}
   {% include "web/components/meta.html" %}
   {% include "web/components/favicon.html" %}
 
-  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link rel="preconnect" href="//fonts.gstatic.com" />
   <link
-    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+    href="//fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    href="//fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap&text=Gyana"
     rel="stylesheet"
   />
 
@@ -26,9 +31,7 @@
   {% include "web/components/honeybadger.html" %}
   {% endif %} {% endcomment %}
 
-  <script type="module">
-    import * as hotwiredTurbo from "{% static "js/turbo-bundle.js" %}";
-  </script>
+  <script src="{% static "js/turbo-bundle.js" %}"></script>
   <script src="{% static "js/stimulus-bundle.js" %}"></script>
   <script src="{% static "rest_framework/js/coreapi-0.1.1.js" %}"></script>
   <script src="{% url "api_schemajs" %}"></script>
@@ -41,7 +44,8 @@
   {% include "web/components/google_analytics.html" %}
   {% endif %}
 
-  {% block page_head %}{% endblock %}
+  {% block head.extra %}{% endblock head.extra %}
+  {% endblock head%}
 </head>
 
 <body data-controller="tf-modal on-submit-loading">

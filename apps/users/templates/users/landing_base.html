@@ -5,24 +5,22 @@
 <div class="landing">
   <div class="landing__content">
     <header class="landing__header">
-      <img src="{% static 'images/logo.png' %}" alt="">
-      <div>
-        <h1>Gyana</h1>
+      <h1>Gyana</h1>
 
-        {% block header %}
-        <p>
-          Welcome, sign in to start where you left off. Account creation is 
-          currently closed but you can 
-          <a 
-            href="https://gyana-data.typeform.com/to/v2XTy0j3"
-            class="link"
-          >
-            request access
-          </a>.
-        </p>
-        {% endblock %}
-      </div>
+      {% block header %}
+      <p>
+        Welcome, sign in to start where you left off. Account creation is 
+        currently closed but you can 
+        <a 
+          href="https://gyana-data.typeform.com/to/v2XTy0j3"
+          class="link"
+        >
+          request access
+        </a>.
+      </p>
+      {% endblock %}
     </header>
+
 
     {% block content %}
     {% endblock content %}

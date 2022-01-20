@@ -1,1 +1,1 @@
-export * from '@hotwired/turbo'
+export * as hotwiredTurbo from "@hotwired/turbo"

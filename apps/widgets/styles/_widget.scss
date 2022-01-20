@@ -36,6 +36,17 @@
     background-position: 1px 1px;
     background-size: var(--grid-size) var(--grid-size);
   }
+
+  #dashboard-widget-placeholder {
+    gap: 1.6rem;
+    height: auto;
+    left: 50%;
+    padding: 1.6rem;
+    position: sticky;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: max-content;
+  }
 }
 
 .metric {
