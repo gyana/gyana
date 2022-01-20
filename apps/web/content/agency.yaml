@@ -1,0 +1,10 @@
+problems:
+  - icon: lock-closed
+    heading: Marketing tools are inflexible
+    summary: You'll never get answers with cookie cutter dashboards.
+  - icon: archive
+    heading: BI tools are outdated
+    summary: Tried getting your Facebook data into DataStudio?
+  - icon: credit-card
+    heading: Data warehouses cost $$$
+    summary: And you want every marketing idea to go through a team of data engineers...

@@ -1,4 +1,4 @@
-pain_points:
+problems:
   - description: Repeating the same workflows <strong>every week</strong>
     icon: 😱
   - description: <strong>Manually</strong> downloading CSVs from all my web tools
@@ -16,7 +16,7 @@ pain_points:
     icon: ⌛
   - description: Overwhelmed with <strong>ad hoc</strong> data requests from the team
     icon: 📥
-features:
+solution:
   - name: Automate your work
     description: Turn manual processes in automated workflows. Schedule periodic updates
       and build-reusable templates.

@@ -89,6 +89,11 @@ class TermsOfUse(TemplateView):
 class Agency(TemplateView):
     template_name = "web/agency.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["content"] = get_content("agency.yaml")
+        return context
+
 
 @api_view(["POST"])
 def toggle_sidebar(request):
