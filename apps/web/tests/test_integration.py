@@ -32,16 +32,18 @@ def test_site_links(client):
 
     # header links
     # 3x = header, mobile menu, footer
-    assertLink(r, "/#features", "Features", total=3)
+    assertLink(r, "/agency", "Agency", total=3)
+    assertLink(r, "/#integrations", "Integrations", total=3)
+    assertLink(r, "/#workflows", "Workflows", total=3)
+    assertLink(r, "/#dashboards", "Dashboards", total=3)
     assertLink(r, "/pricing", "Pricing", total=3)
     assertLink(r, "/blog", "Blog", total=3)
     assertLink(r, "https://intercom.help/gyana", "Help Center", total=3)
     assertLink(r, "https://feedback.gyana.com", "Feedback", total=3)
 
-    assertLink(r, "/integrations", "Learn more.")
+    assertLink(r, "/integrations", "View our integrations.")
 
     # footer links
-    assertLink(r, "/integrations", "Integrations")
     assertLink(r, "/about", "About", total=2)
     assertLink(r, "/about#careers", "Careers")
     assertLink(
