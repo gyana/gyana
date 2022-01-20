@@ -79,8 +79,8 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
 
         client.action(window.schema, ['widgets', 'api', 'partial_update'], {
           id,
-          x: x,
-          y: y,
+          x: Math.floor(x),
+          y: Math.floor(y),
           width: width,
           height: height,
         })
@@ -92,8 +92,8 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
           x < 0
             ? 0
             : parent && x + node.clientWidth > parent.offsetWidth
-            ? parent.offsetWidth - node.clientWidth
-            : Math.round(x / stepSize) * stepSize
+              ? parent.offsetWidth - node.clientWidth
+              : Math.round(x / stepSize) * stepSize
         )
         // Snaps the y value to the top of the parent element
         const newY = Math.floor(y > 0 ? Math.round(y / stepSize) * stepSize : 0)
@@ -103,7 +103,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
         client.action(window.schema, ['widgets', 'api', 'partial_update'], {
           id,
           x: Math.floor(newX),
-          y: newY,
+          y: Math.floor(newY),
         })
       }}
       cancel='.ql-editor'
