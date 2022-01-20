@@ -1,4 +1,6 @@
 import pytest
+import wagtail_factories
+from wagtail.core.models import Locale, Site
 
 from apps.base.tests.asserts import assertLink, assertOK
 from apps.users.models import CustomUser
@@ -8,6 +10,9 @@ pytestmark = pytest.mark.django_db
 
 def test_site_pages(client):
     r = client.get("/")
+    assertOK(r)
+
+    r = client.get("/agency")
     assertOK(r)
 
     r = client.get("/pricing")
@@ -65,3 +70,13 @@ def test_site_links(client):
 
     r = client.get("/pricing")
     assertLink(r, "/", "Go to app", total=2)
+
+
+def test_sitemap(client):
+    locale = Locale.objects.create(language_code="en")
+    root_page = wagtail_factories.PageFactory(parent=None, title="Root")
+    site = Site.objects.create(is_default_site=True, root_page=root_page)
+
+    # sitemap
+    r = client.get("/sitemap.xml")
+    assertOK(r)
