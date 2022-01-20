@@ -4,10 +4,10 @@ problems:
     summary: You'll never get answers with cookie cutter dashboards.
   - icon: archive
     heading: BI tools are outdated
-    summary: Tried getting your Facebook data into DataStudio?
+    summary: Tried getting your Facebook data into DataStudio? Reliably?
   - icon: credit-card
-    heading: Data warehouses cost $$$
-    summary: And you want every marketing idea to go through a team of data engineers...
+    heading: Data warehouses are expensive
+    summary: And have fun explaining every marketing strategy to a data engineer...
 solution:
   - icon: sparkles
     heading: Integrations
