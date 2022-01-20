@@ -30,26 +30,30 @@ solution:
     summary: Build reports that feel like an extension of your website, including custom domains.
 get_started:
   - heading: Self service
-    summary: All the basics for starting a new business
+    summary: Gyana is designed for builders. Read our guides, watch videos and learn from the community.
     external_url: help
     cta: Visit the help center
     icon: external-link
     included:
-    - Potenti felis, in cras at at ligula nunc.
-    - Orci neque eget pellentesque.
-  - heading: Training
-    summary: All the basics for starting a new business
+    - In-depth documentation
+    - Video walkthroughs
+    - Active community
+    - Chat support
+  - heading: Video onboarding
+    summary: We'll discuss your use case, demo the product and help you get started building your reports.
     external_url: onboarding
-    cta: Book a training call
+    cta: Schedule a video call
     icon: video-camera
     included:
-    - Potenti felis, in cras at at ligula nunc.
-    - Orci neque eget pellentesque.
+    - Free for all users
+    - Customised for you
+    - Experienced Gyana user
   - heading: Custom solution
-    summary: All the basics for starting a new business
+    summary: Work with our in-house data architects to build your solution, or migrate from another provider.
     external_url: sales
     cta: Talk to us
     icon: chat-alt-2
     included:
-    - Potenti felis, in cras at at ligula nunc.
-    - Orci neque eget pellentesque.
+    - Dedicated solution architect
+    - Tailored package
+    - Migration service
