@@ -86,6 +86,10 @@ class TermsOfUse(TemplateView):
     template_name = "web/terms_of_use.html"
 
 
+class Agency(TemplateView):
+    template_name = "web/agency.html"
+
+
 @api_view(["POST"])
 def toggle_sidebar(request):
     request.session["sidebar_collapsed"] = not request.session.get(

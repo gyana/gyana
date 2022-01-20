@@ -19,6 +19,7 @@ urlpatterns = [
         name="privacy-policy",
     ),
     path("terms-of-use", cache_site(views.TermsOfUse.as_view()), name="terms-of-use"),
+    path("agency", cache_site(views.Agency.as_view()), name="agency"),
     # app
     path("toggle-sidebar", views.toggle_sidebar),
     # frames
