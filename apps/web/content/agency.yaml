@@ -28,3 +28,28 @@ solution:
   - icon: sparkles
     heading: Custom branding
     summary: Build reports that feel like an extension of your website, including custom domains.
+get_started:
+  - heading: Self service
+    summary: All the basics for starting a new business
+    external_url: help
+    cta: Visit the help center
+    icon: external-link
+    included:
+    - Potenti felis, in cras at at ligula nunc.
+    - Orci neque eget pellentesque.
+  - heading: Training
+    summary: All the basics for starting a new business
+    external_url: onboarding
+    cta: Book a training call
+    icon: video-camera
+    included:
+    - Potenti felis, in cras at at ligula nunc.
+    - Orci neque eget pellentesque.
+  - heading: Custom solution
+    summary: All the basics for starting a new business
+    external_url: sales
+    cta: Talk to us
+    icon: chat-alt-2
+    included:
+    - Potenti felis, in cras at at ligula nunc.
+    - Orci neque eget pellentesque.
