@@ -9,20 +9,20 @@ problems:
     heading: Data warehouses are expensive
     summary: And have fun explaining every marketing strategy to a data engineer...
 solution:
-  - icon: sparkles
+  - icon: database
     heading: Integrations
     summary: Live connections your analytics, ad reports, online stores, CRMs, webhooks and more.
-  - icon: sparkles
+  - icon: cursor-click
     heading: No more spreadsheets
     summary: |
       Automate anything you can do in Excel. Say goodbye to #REF! and broken VLOOKUPs.
-  - icon: sparkles
+  - icon: chart-square-bar
     heading: Powerful report builder
     summary: A flexible drag-n-drop editor with 25+ widgets, interactive controls and custom themes.
-  - icon: sparkles
+  - icon: cube
     heading: All in one
     summary: A single interface to manage your data flow, from source to report. Fix issues effortlessly.
-  - icon: sparkles
+  - icon: users
     heading: Account management
     summary: Keep work separate and add custom permissions for sensitive data.
   - icon: sparkles
