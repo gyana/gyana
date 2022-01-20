@@ -1,10 +1,10 @@
-{% load static heroicons %}
+{% load static heroicons site_tags %}
 
 <div class="relative bg-white">
   <div class="max-w-7xl mx-auto px-4 sm:px-6">
     <div class="flex justify-between items-center py-6 md:justify-start md:space-x-10">
       <div class="flex items-center justify-start lg:w-0 lg:flex-1">
-        <a href="/">
+        <a href="{% url 'web:home' %}">
           <span class="text-2xl text-indigo-600 font-semibold">
             Gyana
           </span>
@@ -26,13 +26,13 @@
       </div>
       <nav class="hidden md:flex space-x-10 text-indigo-500">
         <a
-          href="/#features"
+          href="{% url 'web:home' %}#features"
           class="text-gray-600 font-normal hover:text-gray-900"
         >
           Features
         </a>
         <a
-          href="/pricing"
+          href="{% url 'web:pricing' %}"
           class="text-gray-600 font-normal hover:text-gray-900"
         >
           Pricing
@@ -62,7 +62,7 @@
                       </div>
                     </a>
                     <a
-                      href="/help"
+                      href="{% external_url 'help' %}"
                       class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
                     >
                       {% heroicon 'question-mark-circle' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}
@@ -72,7 +72,7 @@
                       </div>
                     </a>
                     <a
-                      href="/roadmap"
+                      href="{% external_url 'feedback' %}"
                       class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
                     >
                       {% heroicon 'chat-alt' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}
@@ -91,7 +91,7 @@
       <div class="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
         {% if request.user.is_authenticated %}
           <a
-            href="/"
+            href="{% url 'web:home' %}"
             class="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
           >
             Go to app
@@ -104,7 +104,7 @@
             Sign in
           </a>
           <a
-            href="https://gyana-data.typeform.com/to/v2XTy0j3"
+            href="{% external_url 'waitlist' %}"
             id="CTA_header"
             class="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
           >

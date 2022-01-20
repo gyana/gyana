@@ -1,4 +1,7 @@
 team:
+  - name: Lorraine Chabeda
+    role: Customer success
+    src: lorraine-chabeda.jpg
   - name: Deepak Shakya
     role: COO
     src: deepak-shakya.jpg
@@ -14,6 +17,3 @@ team:
   - name: Pritesh Kapadia
     role: Product
     src: pritesh-kapadia.jpg
-  - name: Lorraine Chabeda
-    role: Customer success
-    src: lorraine-chabeda.jpg

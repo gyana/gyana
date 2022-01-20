@@ -19,10 +19,10 @@ def test_site_pages(client):
     r = client.get("/about")
     assertOK(r)
 
-    r = client.get("/legal/privacy-policy")
+    r = client.get("/privacy-policy")
     assertOK(r)
 
-    r = client.get("/legal/terms-of-use")
+    r = client.get("/terms-of-use")
     assertOK(r)
 
 
@@ -35,12 +35,13 @@ def test_site_links(client):
     assertLink(r, "/#features", "Features", total=3)
     assertLink(r, "/pricing", "Pricing", total=3)
     assertLink(r, "/blog", "Blog", total=3)
-    assertLink(r, "/help", "Help Center", total=3)
-    assertLink(r, "/roadmap", "Feedback", total=3)
+    assertLink(r, "https://intercom.help/gyana", "Help Center", total=3)
+    assertLink(r, "https://feedback.gyana.com", "Feedback", total=3)
 
     assertLink(r, "/integrations", "Learn more.")
 
     # footer links
+    assertLink(r, "/integrations", "Integrations")
     assertLink(r, "/about", "About", total=2)
     assertLink(r, "/about#careers", "Careers")
     assertLink(
@@ -48,8 +49,8 @@ def test_site_links(client):
         "https://c6df0725-5be1-435b-a2d7-1a90649a7bc5.site.hbuptime.com/",
         "Status page",
     )
-    assertLink(r, "/legal/privacy-policy", "Privacy")
-    assertLink(r, "/legal/terms-of-use", "Terms")
+    assertLink(r, "/privacy-policy", "Privacy")
+    assertLink(r, "/terms-of-use", "Terms")
 
     # app links
     assertLink(

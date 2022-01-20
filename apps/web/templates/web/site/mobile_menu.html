@@ -1,23 +1,23 @@
-{% load heroicons %}
+{% load heroicons site_tags %}
 
 <div class="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-white divide-y-2 divide-gray-50 w-screen">
   <div class="py-6 px-5 space-y-6">
     <div class="grid grid-cols-2 gap-y-4 gap-x-8">
       <a
-        href="/#features"
+        href="{% url 'web:home' %}#features"
         class="text-base font-normal text-gray-900 hover:text-gray-700"
       >
         Features
       </a>
       <a
-        href="/pricing"
+        href="{% url 'web:pricing' %}"
         class="text-base font-normal text-gray-900 hover:text-gray-700"
       >
         Pricing
       </a>
 
       <a
-        href="/about"
+        href="{% url 'web:about' %}"
         class="text-base font-normal text-gray-900 hover:text-gray-700"
       >
         About
@@ -29,13 +29,13 @@
         Blog
       </a>
       <a
-        href="/help"
+        href="{% external_url 'help' %}"
         class="text-base font-normal text-gray-900 hover:text-gray-700"
       >
         Help Center
       </a>
       <a
-        href="/roadmap"
+        href="{% external_url 'feedback' %}"
         class="text-base font-normal text-gray-900 hover:text-gray-700"
       >
         Feedback
@@ -44,14 +44,14 @@
     <div>
       {% if request.user.is_authenticated %}
         <a
-          href="/"
+          href="{% url 'web:home' %}"
           class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-normal text-white bg-indigo-600 hover:bg-indigo-700"
         >
           Go to app
         </a>
       {% else %}
         <a
-          href="https://gyana-data.typeform.com/to/v2XTy0j3"
+          href="{% external_url 'waitlist' %}"
           id="CTA_header"
           class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-normal text-white bg-indigo-600 hover:bg-indigo-700"
         >

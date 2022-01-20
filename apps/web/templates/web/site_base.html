@@ -29,15 +29,19 @@
   {% comment %} TODO: Decide whether to use app stylesheet to develop independently {% endcomment %}
   <link rel="stylesheet" href="{% static "css/website.css" %}" />
 
-  <script type="module">
-    import * as hotwiredTurbo from "{% static "js/turbo-bundle.js" %}";
-  </script>
+  {% comment %} TODO: Decide whether to keep use Turbo for website {% endcomment %}
+  {% comment %}
+    <script type="module">
+      import * as hotwiredTurbo from "{% static "js/turbo-bundle.js" %}";
+    </script>
+  {% endcomment %}
   <script src="{% static "js/stimulus-bundle.js" %}"></script>
 
-  {% comment %} TODO: WEBSITE_GOOGLE_ANALYTICS_ID {% endcomment %}
-  {% if GOOGLE_ANALYTICS_ID %}
-  {% include "web/components/google_analytics.html" %}
+  {% if WEBSITE_GOOGLE_ANALYTICS_ID %}
+  {% include "web/components/google_analytics.html" with GOOGLE_ANALYTICS_ID=WEBSITE_GOOGLE_ANALYTICS_ID %}
   {% endif %}
+
+  {% include "web/components/intercom-visitors.html" %}
 </head>
 
 <body>

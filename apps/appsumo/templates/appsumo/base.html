@@ -18,9 +18,9 @@
       {% block footer %}
       <p>
         By using the app, you agree to our
-        <a href="https://www.gyana.com/legal/terms-of-use" class="link">terms of service</a>
+        <a href="{% url 'web:terms-of-use' %}" class="link">terms of service</a>
         and
-        <a href="https://www.gyana.com/legal/privacy-policy" class="link">privacy policy</a>.
+        <a href="{% url 'web:privacy-policy' %}" class="link">privacy policy</a>.
       </p>
       {% endblock %}
     </footer>
