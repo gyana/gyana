@@ -87,7 +87,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         on_delete=models.SET_NULL,
         null=True,
         related_name="input_nodes",
-        help_text="Select a data source",
+        help_text="Select a table from an integration or workflow",
     )
 
     # Select also uses columns
