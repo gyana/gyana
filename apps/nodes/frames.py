@@ -26,6 +26,7 @@ from apps.base.templates import template_exists
 from .bigquery import NodeResultNone, get_query_from_node
 from .forms import KIND_TO_FORM
 from .models import Node
+from .tables import ReferencesTable
 
 
 class NodeName(TurboFrameUpdateView):
@@ -225,4 +226,15 @@ class FunctionInfo(TurboFrameDetailView):
 
         function_id = self.request.GET["function"]
         context["function"] = next(filter(lambda x: x["id"] == function_id, FUNCTIONS))
+        return context
+
+
+class OutputReference(TurboFrameDetailView):
+    template_name = "nodes/references.html"
+    model = Node
+    turbo_frame_dom_id = "nodes:grid"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["table"] = ReferencesTable(self.object.used_in)
         return context

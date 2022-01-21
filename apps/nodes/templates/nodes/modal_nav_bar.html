@@ -20,6 +20,14 @@
     href="{% url 'nodes:grid' object.id %}?preview_node_id={{ object.id }}">
     Result
   </a>
+  {% if node.kind == "output" %}
+  
+  <a class="tabbar__link  {% if "references" in request.path %} tabbar__link--active {% endif %}"
+    href="{% url 'nodes:references' object.id %}">
+    References
+  </a>
+  
+  {% endif %}
   <a
     class="tabbar__link"
     href="{% article_url 'workflows' node.kind %}"

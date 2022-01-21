@@ -1,3 +1,5 @@
+from itertools import chain
+
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.db import models
@@ -7,6 +9,7 @@ from model_clone import CloneMixin
 
 from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import BaseModel
+from apps.dashboards.models import Dashboard
 from apps.nodes.config import NODE_CONFIG
 from apps.tables.models import Table
 from apps.workflows.models import Workflow
@@ -285,6 +288,28 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     @property
     def parents_ordered(self):
         return self.parents.order_by("child_edges")
+
+    @property
+    def used_in_workflows(self):
+        return (
+            Workflow.objects.filter(nodes__input_table__workflow_node=self)
+            .distinct()
+            .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Workflow", output_field=models.CharField()))
+        )
+
+    @property
+    def used_in_dashboards(self):
+        return (
+            Dashboard.objects.filter(pages__widgets__table__workflow_node=self)
+            .distinct()
+            .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Dashboard", output_field=models.CharField()))
+        )
+
+    @property
+    def used_in(self):
+        return list(chain(self.used_in_workflows, self.used_in_dashboards))
 
 
 class Edge(BaseModel):
