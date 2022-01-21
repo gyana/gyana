@@ -61,7 +61,7 @@ def test_input_node(client, setup):
 
     r = client.get(f"/nodes/{input_node.id}")
     assertSelectorText(r, "label.checkbox", "olympia")
-    assertFormRenders(r, ["input_table", "name"])
+    assertFormRenders(r, ["input_table", "name", "search"])
 
     r = update_node(client, input_node.id, {"input_table": table.id})
     input_node.refresh_from_db()
