@@ -4,7 +4,7 @@
  {% for option in widget.options %}
   <label 
     data-node-input-target="label"
-    class="checkbox {% if option.id == widget.selected %}checkbox__checked{% endif %}"
+    class="checkbox {% if option.id|stringformat:'i' == widget.selected %}checkbox__checked{% endif %}"
     id="{{ option.id }}"
     data-action="click->node-input#select click->tf-modal#preview"
   >
