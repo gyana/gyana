@@ -34,36 +34,40 @@ from .models import Widget
 
 
 def add_output_context(context, widget, request, control):
-    if widget.is_valid:
-        if widget.kind == Widget.Kind.TEXT:
-            pass
-        elif widget.kind == Widget.Kind.IFRAME:
-            pass
-        elif widget.kind == Widget.Kind.IMAGE:
-            pass
-        elif widget.kind == Widget.Kind.TABLE:
-            # avoid duplicating work for widget output
-            if "table" not in context:
-                table = table_to_output(widget, control)
-                context["table"] = RequestConfig(
-                    request,
-                ).configure(table)
-        elif widget.kind == Widget.Kind.METRIC:
-            metric = metric_to_output(widget, control)
-            if widget.compare_previous_period and (
-                used_control := widget.control if widget.has_control else control
-            ):
-                previous_metric = metric_to_output(widget, control, True)
+    if not widget.is_valid:
+        return
+    if widget.kind == Widget.Kind.TEXT:
+        pass
+    elif widget.kind == Widget.Kind.IFRAME:
+        pass
+    elif widget.kind == Widget.Kind.IMAGE:
+        pass
+    elif widget.kind == Widget.Kind.TABLE:
+        # avoid duplicating work for widget output
+        if "table" not in context:
+            table = table_to_output(widget, control)
+            context["table"] = RequestConfig(
+                request,
+            ).configure(table)
+    elif widget.kind == Widget.Kind.METRIC:
+        metric = metric_to_output(widget, control)
+        if widget.compare_previous_period and (
+            used_control := widget.control if widget.has_control else control
+        ):
+            previous_metric = metric_to_output(widget, control, True)
+            if previous_metric is None:
+                context["zero_division"] = True
+            else:
                 context["change"] = (metric - previous_metric) / previous_metric * 100
                 context["period"] = DATETIME_FILTERS[used_control.date_range][
                     "previous_label"
                 ]
 
-            context["metric"] = metric
-        else:
-            chart, chart_id = chart_to_output(widget, control)
-            context.update(chart)
-            context["chart_id"] = chart_id
+        context["metric"] = metric
+    else:
+        chart, chart_id = chart_to_output(widget, control)
+        context.update(chart)
+        context["chart_id"] = chart_id
 
 
 class WidgetName(TurboFrameUpdateView):
