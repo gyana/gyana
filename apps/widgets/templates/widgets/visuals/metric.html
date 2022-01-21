@@ -10,7 +10,7 @@
   <p class="metric__comparison">
   {% if zero_division %}
     No value in previous period
-  {% else %}
+  {% elif change %}
     
       <span class="
         {% if change < 0 and not widget.positive_decrease %}
