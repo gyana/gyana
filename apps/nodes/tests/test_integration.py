@@ -70,6 +70,21 @@ def test_input_node(client, setup):
     assert input_node.input_table.id == table.id
 
 
+def test_input_node_search(client, setup):
+    table, workflow = setup
+    r = client.post(
+        "/nodes/api/nodes/",
+        data={"kind": "input", "workflow": workflow.id, "x": 0, "y": 0},
+    )
+    assert r.status_code == 201
+    input_node = Node.objects.first()
+    assert input_node is not None
+
+    r = update_node(client, input_node.id, {"search": "olympia"})
+    r = client.get(f"/nodes/{input_node.id}")
+    assertSelectorText(r, "label.checkbox", "olympia")
+
+
 def test_output_node(client, node_factory, setup):
     table, workflow = setup
     output_node, r = create_and_connect_node(

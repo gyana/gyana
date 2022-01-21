@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.postgres.search import TrigramSimilarity
-from django.db.models import Case, Q, Value, When
+from django.db.models import Case, Value, When
 from django.forms.widgets import HiddenInput
 from django.utils.functional import cached_property
 
@@ -54,11 +54,7 @@ class InputNodeForm(NodeForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.instance = kwargs.get("instance")
         self.order_fields(["search", "input_table"])
-
-    def get_live_fields(self):
-        fields = ["search", "input_table"]
 
         self.fields["input_table"].queryset = (
             Table.available.filter(project=self.instance.workflow.project)
@@ -74,7 +70,7 @@ class InputNodeForm(NodeForm):
             .order_by("-used_in_workflow", "updated")
         )
 
-        if search := self.data.get("search", None):
+        if search := self.data.get("search"):
             self.fields["input_table"].queryset = (
                 self.fields["input_table"]
                 .queryset.annotate(
@@ -92,14 +88,9 @@ class InputNodeForm(NodeForm):
                         default=TrigramSimilarity("bq_table", search),
                     ),
                 )
-                .filter(
-                    Q(similarity__gte=INPUT_SEARCH_THRESHOLD)
-                    | Q(id=self.instance.input_table.id)
-                )
+                .filter(similarity__gte=INPUT_SEARCH_THRESHOLD)
                 .order_by("-similarity")
             )
-
-        return fields
 
 
 class OutputNodeForm(NodeForm):
