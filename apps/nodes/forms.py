@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Case, Value, When
 from django.forms.widgets import HiddenInput
 from django.utils.functional import cached_property
@@ -12,6 +13,8 @@ from apps.tables.models import Table
 
 from .models import Node
 from .widgets import InputNode, MultiSelect
+
+INPUT_SEARCH_THRESHOLD = 0.3
 
 
 class NodeForm(LiveFormsetForm):
@@ -41,29 +44,54 @@ class DefaultNodeForm(NodeForm):
 
 
 class InputNodeForm(NodeForm):
+    search = forms.CharField(required=False)
+
     class Meta:
         model = Node
         fields = ["input_table"]
-        labels = {"input_table": "Select an integration to get data from:"}
+        labels = {"input_table": "Table"}
         widgets = {"input_table": InputNode()}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        instance = kwargs.get("instance")
+        self.instance = kwargs.get("instance")
+        self.order_fields(["search", "input_table"])
+
+    def get_live_formsets(self):
+        formsets = super().get_live_formsets()
+        search = self.data.get("search", "")
 
         self.fields["input_table"].queryset = (
-            Table.available.filter(project=instance.workflow.project)
+            Table.available.filter(project=self.instance.workflow.project)
             .exclude(
                 source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
             )
             .annotate(
                 used_in_workflow=Case(
-                    When(id__in=instance.workflow.input_tables_fk, then=True),
+                    When(id__in=self.instance.workflow.input_tables_fk, then=True),
                     default=False,
-                )
+                ),
+                similarity=Case(
+                    When(
+                        integration__isnull=False,
+                        then=TrigramSimilarity("integration__name", search),
+                    ),
+                    When(
+                        workflow_node__workflow__name__isnull=False,
+                        then=TrigramSimilarity("workflow_node__workflow__name", search),
+                    ),
+                    default=TrigramSimilarity("bq_table", search),
+                ),
             )
-            .order_by("-used_in_workflow", "updated")
+            .order_by("-used_in_workflow", "updated", "similarity")
         )
+
+        if search is not "":
+            self.fields["input_table"].queryset = self.fields[
+                "input_table"
+            ].queryset.filter(similarity__gte=INPUT_SEARCH_THRESHOLD)
+
+        return formsets
 
 
 class OutputNodeForm(NodeForm):
