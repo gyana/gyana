@@ -117,8 +117,10 @@ export default class extends Controller {
     }
   }
 
-  change() {
-    this.changed = true
+  change(event) {
+    if (event.target.getAttribute("name").toLowerCase() != "search") {
+      this.changed = true
+    }
   }
 
   close(e) {
