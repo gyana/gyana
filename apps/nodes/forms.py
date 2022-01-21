@@ -59,7 +59,6 @@ class InputNodeForm(NodeForm):
 
     def get_live_formsets(self):
         formsets = super().get_live_formsets()
-        search = self.data.get("search", "")
 
         self.fields["input_table"].queryset = (
             Table.available.filter(project=self.instance.workflow.project)
@@ -71,25 +70,31 @@ class InputNodeForm(NodeForm):
                     When(id__in=self.instance.workflow.input_tables_fk, then=True),
                     default=False,
                 ),
-                similarity=Case(
-                    When(
-                        integration__isnull=False,
-                        then=TrigramSimilarity("integration__name", search),
-                    ),
-                    When(
-                        workflow_node__workflow__name__isnull=False,
-                        then=TrigramSimilarity("workflow_node__workflow__name", search),
-                    ),
-                    default=TrigramSimilarity("bq_table", search),
-                ),
             )
-            .order_by("-used_in_workflow", "updated", "similarity")
+            .order_by("-used_in_workflow", "updated")
         )
 
-        if search is not "":
-            self.fields["input_table"].queryset = self.fields[
-                "input_table"
-            ].queryset.filter(similarity__gte=INPUT_SEARCH_THRESHOLD)
+        if search := self.data.get("search", None):
+            self.fields["input_table"].queryset = (
+                self.fields["input_table"]
+                .queryset.annotate(
+                    similarity=Case(
+                        When(
+                            integration__isnull=False,
+                            then=TrigramSimilarity("integration__name", search),
+                        ),
+                        When(
+                            workflow_node__workflow__name__isnull=False,
+                            then=TrigramSimilarity(
+                                "workflow_node__workflow__name", search
+                            ),
+                        ),
+                        default=TrigramSimilarity("bq_table", search),
+                    ),
+                )
+                .order_by("-similarity")
+                .filter(similarity__gte=INPUT_SEARCH_THRESHOLD)
+            )
 
         return formsets
 
