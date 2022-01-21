@@ -55,7 +55,7 @@ def add_output_context(context, widget, request, control):
             used_control := widget.control if widget.has_control else control
         ):
             previous_metric = metric_to_output(widget, control, True)
-            if previous_metric is None:
+            if not previous_metric:
                 context["zero_division"] = True
             else:
                 context["change"] = (metric - previous_metric) / previous_metric * 100
