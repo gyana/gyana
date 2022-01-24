@@ -1,6 +1,7 @@
 from allauth.account import app_settings
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.account.models import EmailAddress
+from allauth.account.signals import user_signed_up
 from allauth.account.utils import user_email, user_field
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 
@@ -17,6 +18,10 @@ class UsersAccountAdapter(DefaultAccountAdapter):
         """
 
         return True
+
+    # for django-invitations
+    def get_user_signed_up_signal(self):
+        return user_signed_up
 
 
 # Taken from https://stackoverflow.com/a/30591838

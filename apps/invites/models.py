@@ -72,5 +72,5 @@ class Invite(AbstractBaseInvitation):
         return Invite.objects.filter(email=email, accepted=True).all()
 
     @staticmethod
-    def check_email_accepted(email):
-        return Invite.objects.filter(email=email, accepted=True).exists()
+    def check_email_invited(email):
+        return Invite.objects.filter(email=email).exists()
