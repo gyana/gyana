@@ -68,7 +68,7 @@ class InputNodeForm(NodeForm):
                     default=False,
                 ),
             )
-            .order_by("-used_in_workflow", "updated")
+            .order_by("updated")
         )
 
         if search := self.data.get("search"):
