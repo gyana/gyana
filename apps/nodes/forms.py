@@ -57,6 +57,7 @@ class InputNodeForm(NodeForm):
         super().__init__(*args, **kwargs)
 
         self.order_fields(["search", "input_table"])
+        self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
         self.fields["input_table"].queryset = (
             Table.available.filter(project=self.instance.workflow.project)
             .exclude(
