@@ -1,11 +1,12 @@
 import re
 
 import pytest
+from django.core import mail
+from pytest_django.asserts import assertContains, assertFormError, assertRedirects
+
 from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
 from apps.invites.models import Invite
 from apps.users.models import CustomUser
-from django.core import mail
-from pytest_django.asserts import assertFormError, assertRedirects
 
 pytestmark = pytest.mark.django_db
 
@@ -45,16 +46,22 @@ def test_invite_new_user_to_team(client, logged_in_user):
 
     invite = Invite.objects.first()
     assert invite is not None
-    assert invite.accepted
+    assert not invite.accepted
 
     # signup
     r = client.post(
         "/signup/", data={"email": "invite@gyana.com", "password1": "password"}
     )
     assertRedirects(r, "/", status_code=303, target_status_code=302)
-    assertRedirects(client.get("/"), f"/users/onboarding/")
+    assertRedirects(client.get("/"), "/users/onboarding/")
 
+    invite.refresh_from_db()
+    assert invite.accepted
     assert team.members.count() == 2
+
+    # regression test: gya-265
+    r = client.get(link)
+    assertRedirects(r, "/login/", target_status_code=302)
 
 
 def test_invite_existing_user_to_team(client, logged_in_user):
@@ -77,14 +84,11 @@ def test_invite_existing_user_to_team(client, logged_in_user):
     client.force_login(invited_user)
 
     r = client.get(link)
-    assertRedirects(r, "/signup/", target_status_code=302)
+    assertRedirects(r, f"/teams/{team.id}")
 
     invite = Invite.objects.first()
     assert invite is not None
     assert invite.accepted
-
-    assertRedirects(client.get("/"), f"/teams/{team.id}")
-
     assert team.members.count() == 2
 
 
@@ -128,7 +132,8 @@ def test_resend_and_delete_invite(client, logged_in_user):
     assert Invite.objects.count() == 0
 
     link = re.search("(?P<url>https?://[^\s]+)", mail.outbox[0].body).group("url")
-    assert client.get(link).status_code == 410
+    r = client.get(link)
+    assertRedirects(r, "/login/")
 
 
 def test_cannot_invite_existing_user_or_existing_invited_user(client, logged_in_user):

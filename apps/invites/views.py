@@ -3,11 +3,13 @@ from datetime import timezone
 import analytics
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
+from invitations.views import AcceptInvite, accept_invitation
 
 from apps.base.analytics import INVITE_SENT_EVENT
 from apps.base.frames import TurboFrameListView
@@ -96,3 +98,31 @@ class InviteDelete(TeamMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("team_members:list", args=(self.team.id,))
+
+
+# patch AcceptInvite view to enable logged in user to accept invite to new team
+
+
+accept_invite_post_ = AcceptInvite.post
+
+
+def new_post(self, *args, **kwargs):
+    r = accept_invite_post_(self, *args, **kwargs)
+
+    invitation = self.object
+
+    if (
+        invitation
+        and not invitation.accepted
+        and not invitation.key_expired()
+        and self.request.user.is_authenticated
+    ):
+        accept_invitation(
+            invitation=self.object, request=self.request, signal_sender=self.__class__
+        )
+        return redirect("teams:detail", self.object.team.id)
+
+    return r
+
+
+AcceptInvite.post = new_post
