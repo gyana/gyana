@@ -13,7 +13,14 @@
     {% else %}
     <i class="{{ option.icon }}"></i>
     {% endif %}
-    {{ option.label }}
+
+    <div>
+      {{ option.label }}
+      {% if option.usedInWorkflow %}
+      <br>
+      <p class="small text-black-50">Already used in this workflow</p>
+      {% endif %}
+    </div>
   </label>
   {% endfor %}
 

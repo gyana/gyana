@@ -15,6 +15,7 @@ class InputNode(ChoiceWidget):
                 "id": option.id,
                 "image": option.integration.icon if option.integration else None,
                 "label": option.owner_name,
+                "usedInWorkflow": option.used_in_workflow,
             }
             for option in self.choices.queryset
         ]
