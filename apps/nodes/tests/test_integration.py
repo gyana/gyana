@@ -70,7 +70,7 @@ def test_input_node(client, setup):
     assert input_node.input_table.id == table.id
 
 
-def test_input_node_search(client, setup):
+def test_input_node_search(with_pg_trgm_extension, client, setup):
     table, workflow = setup
     r = client.post(
         "/nodes/api/nodes/",

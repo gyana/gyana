@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 import ibis.expr.schema as sch
 import pytest
 import waffle
+from django.db import connection
 from django.utils import timezone
 from waffle.templatetags import waffle_tags
 
@@ -18,6 +19,13 @@ class BlankMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
         return response
+
+
+@pytest.fixture
+def with_pg_trgm_extension():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
+    yield
 
 
 @pytest.fixture(autouse=True)
