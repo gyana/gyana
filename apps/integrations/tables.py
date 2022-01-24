@@ -6,6 +6,7 @@ from django.utils.html import escape, format_html
 from django_tables2.utils import AttributeDict
 
 from apps.base.tables import FaBooleanColumn, NaturalDatetimeColumn, NaturalDayColumn
+from apps.tables.models import Table
 
 from .models import Integration
 
@@ -93,6 +94,22 @@ class StructureTable(tables.Table):
 class ReferencesTable(tables.Table):
     class Meta:
         model = Integration
+        attrs = {"class": "table"}
+        fields = (
+            "name",
+            "kind",
+            "created",
+            "updated",
+        )
+
+    name = tables.Column(linkify=True)
+    created = NaturalDatetimeColumn()
+    updated = NaturalDatetimeColumn()
+
+
+class TableReferenceTable(tables.Table):
+    class Meta:
+        model = Table
         attrs = {"class": "table"}
         fields = (
             "name",

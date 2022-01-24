@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.conf import settings
 from django.db import models
 from django.utils.functional import cached_property
@@ -103,3 +105,29 @@ class Table(CloneMixin, BaseModel):
             return self.intermediate_node.workflow
         elif self.source == self.Source.CACHE_NODE:
             return self.cache_node.workflow
+
+    @property
+    def used_in_workflows(self):
+        from apps.workflows.models import Workflow
+
+        return (
+            Workflow.objects.filter(nodes__input_table=self.id)
+            .distinct()
+            .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Workflow", output_field=models.CharField()))
+        )
+
+    @property
+    def used_in_dashboards(self):
+        from apps.dashboards.models import Dashboard
+
+        return (
+            Dashboard.objects.filter(pages__widgets__table=self.id)
+            .distinct()
+            .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Dashboard", output_field=models.CharField()))
+        )
+
+    @property
+    def used_in(self):
+        return list(chain(self.used_in_workflows, self.used_in_dashboards))
