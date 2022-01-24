@@ -95,7 +95,7 @@ class CustomUser(AbstractUser):
 
     @property
     def teams_admin_of(self):
-        return self.teams.filter(membership__role=roles.ROLE_ADMIN).all()
+        return self.teams.filter(membership__role=roles.ROLE_ADMIN).distinct().all()
 
     @property
     def is_creators_only_integration(self):
