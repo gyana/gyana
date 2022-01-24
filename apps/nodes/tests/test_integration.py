@@ -80,7 +80,9 @@ def test_input_node_search(with_pg_trgm_extension, client, setup):
     input_node = Node.objects.first()
     assert input_node is not None
 
-    r = client.post(f"/nodes/{id}", data={"submit": "Save & Preview", ** {"search": "olympia"}})
+    r = client.post(
+        f"/nodes/{id}", data={"submit": "Save & Preview", **{"search": "olympia"}}
+    )
     r = client.get(f"/nodes/{input_node.id}")
     assertSelectorText(r, "label.checkbox", "olympia")
     assertSelectorLength(r, "label.checkbox", 1)
