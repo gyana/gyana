@@ -356,7 +356,7 @@ PROJECT_METADATA = {
 }
 
 GOOGLE_ANALYTICS_ID = os.environ.get("GOOGLE_ANALYTICS_ID")
-WEBSITE_GOOGLE_ANALYTICS_ID = os.environ.get("WEBSITE_GOOGLE_ANALYTICS_ID")
+WEBSITE_GTM_ID = os.environ.get("WEBSITE_GTM_ID")
 
 
 # Default primary key field type
