@@ -11,10 +11,10 @@ export default class extends Controller {
 
     // Remove css from previous selected target
     this.labelTargets.forEach((label) => {
-      label.className = label.className.replace('checkbox__checked', '')
+      label.className = label.className.replace('checkbox--checked', '')
     })
 
     // Add css to now selected element
-    currentTarget.className += 'checkbox__checked'
+    currentTarget.className += 'checkbox--checked'
   }
 }
