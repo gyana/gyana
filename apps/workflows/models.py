@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.db import models
 from django.db.models import Max
 from django.urls import reverse
@@ -5,6 +7,7 @@ from model_clone import CloneMixin
 
 from apps.base.models import BaseModel
 from apps.base.tables import ICONS
+from apps.dashboards.models import Dashboard
 from apps.projects.models import Project
 from apps.runs.models import JobRun
 from apps.tables.models import Table
@@ -142,3 +145,33 @@ class Workflow(CloneMixin, BaseModel):
             self.runs.filter(state=JobRun.State.SUCCESS).order_by("-created").first()
         )
         self.save(update_fields=["state", "last_success_run"])
+
+    @property
+    def used_in_workflows(self):
+        from apps.nodes.models import Node
+
+        return (
+            Node.objects.filter(
+                kind=Node.Kind.INPUT,
+                input_table__workflow_node__in=self.output_nodes,
+            )
+            .distinct()
+            .annotate(
+                parent_kind=models.Value("Workflow", output_field=models.CharField())
+            )
+        )
+
+    @property
+    def used_in_dashboards(self):
+        return (
+            Dashboard.objects.filter(
+                pages__widgets__table__workflow_node__in=self.output_nodes.all()
+            )
+            .distinct()
+            .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Dashboard", output_field=models.CharField()))
+        )
+
+    @property
+    def used_in(self):
+        return list(chain(self.used_in_workflows, self.used_in_dashboards))

@@ -1,8 +1,9 @@
 import django_tables2 as tables
 from django.template import Context
 from django.template.loader import get_template
+from django.utils.html import format_html
 
-from apps.base.tables import DuplicateColumn, NaturalDatetimeColumn, FaBooleanColumn
+from apps.base.tables import DuplicateColumn, FaBooleanColumn, NaturalDatetimeColumn
 
 from .models import Workflow
 
@@ -38,3 +39,37 @@ class WorkflowTable(tables.Table):
         verbose_name="Actions",
         orderable=False,
     )
+
+
+class ReferenceTable(tables.Table):
+    class Meta:
+        model = Workflow
+        fields = ("name", "used_in", "kind", "created", "updated")
+        attrs = {"class": "table"}
+
+    name = tables.Column(empty_values=())
+    kind = tables.Column(accessor="parent_kind")
+    used_in = tables.Column(empty_values=())
+    created = NaturalDatetimeColumn()
+    updated = NaturalDatetimeColumn()
+
+    def render_name(self, record):
+        if record.parent_kind == "Workflow":
+            return format_html(
+                f"<a target='_top' href={record.workflow.get_absolute_url()}>{record.workflow.name}</a>"
+            )
+
+    def render_used_in(self, record):
+        if record.parent_kind == "Workflow":
+            output_node = record.input_table.workflow_node
+            return format_html(
+                f"<a target='_top' href={output_node.get_absolute_url()}>{output_node.name}</a>"
+            )
+
+    def render_updated(self, record):
+        if record.parent_kind == "Workflow":
+            return record.workflow.updated
+
+    def render_created(self, record):
+        if record.parent_kind == "Workflow":
+            return record.workflow.created
