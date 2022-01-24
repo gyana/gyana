@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.postgres.search import TrigramSimilarity
-from django.db.models import Case, Value, When
+from django.db.models import Case, Q, Value, When
+from django.db.models.functions import Greatest
 from django.forms.widgets import HiddenInput
 from django.utils.functional import cached_property
 
@@ -54,8 +55,8 @@ class InputNodeForm(NodeForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.order_fields(["search", "input_table"])
 
+        self.order_fields(["search", "input_table"])
         self.fields["input_table"].queryset = (
             Table.available.filter(project=self.instance.workflow.project)
             .exclude(
@@ -74,21 +75,16 @@ class InputNodeForm(NodeForm):
             self.fields["input_table"].queryset = (
                 self.fields["input_table"]
                 .queryset.annotate(
-                    similarity=Case(
-                        When(
-                            integration__isnull=False,
-                            then=TrigramSimilarity("integration__name", search),
-                        ),
-                        When(
-                            workflow_node__workflow__name__isnull=False,
-                            then=TrigramSimilarity(
-                                "workflow_node__workflow__name", search
-                            ),
-                        ),
-                        default=TrigramSimilarity("bq_table", search),
-                    ),
+                    similarity=Greatest(
+                        TrigramSimilarity("integration__name", search),
+                        TrigramSimilarity("workflow_node__workflow__name", search),
+                        TrigramSimilarity("bq_table", search),
+                    )
                 )
-                .filter(similarity__gte=INPUT_SEARCH_THRESHOLD)
+                .filter(
+                    Q(similarity__gte=INPUT_SEARCH_THRESHOLD)
+                    | Q(id=getattr(self.instance.input_table, "id", None))
+                )
                 .order_by("-similarity")
             )
 
