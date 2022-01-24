@@ -61,7 +61,7 @@ def test_invite_new_user_to_team(client, logged_in_user):
 
     # regression test: gya-265
     r = client.get(link)
-    assertRedirects(r, "/login/", target_status_code=302)
+    assertRedirects(r, "/signup/", target_status_code=302)
 
 
 def test_invite_existing_user_to_team(client, logged_in_user):
@@ -133,7 +133,7 @@ def test_resend_and_delete_invite(client, logged_in_user):
 
     link = re.search("(?P<url>https?://[^\s]+)", mail.outbox[0].body).group("url")
     r = client.get(link)
-    assertRedirects(r, "/login/")
+    assertRedirects(r, "/signup/")
 
 
 def test_cannot_invite_existing_user_or_existing_invited_user(client, logged_in_user):
