@@ -103,11 +103,11 @@ class InviteDelete(TeamMixin, DeleteView):
 # patch AcceptInvite view to enable logged in user to accept invite to new team
 
 
-accept_invite_post_ = AcceptInvite.post
+original_post = AcceptInvite.post
 
 
-def new_post(self, *args, **kwargs):
-    r = accept_invite_post_(self, *args, **kwargs)
+def post(self, *args, **kwargs):
+    r = original_post(self, *args, **kwargs)
 
     invitation = self.object
 
@@ -125,4 +125,4 @@ def new_post(self, *args, **kwargs):
     return r
 
 
-AcceptInvite.post = new_post
+AcceptInvite.post = post
