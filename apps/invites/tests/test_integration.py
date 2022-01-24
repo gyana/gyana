@@ -66,6 +66,45 @@ def test_invite_new_user_to_team(client, logged_in_user):
 
 def test_invite_existing_user_to_team(client, logged_in_user):
     invited_user = CustomUser.objects.create_user(
+        "invite", email="invite@gyana.com", password="seewhatmatters", onboarded=True
+    )
+    team = logged_in_user.teams.first()
+
+    # invite
+    r = client.post(
+        f"/teams/{team.id}/invites/new",
+        data={"email": "invite@gyana.com", "role": "member"},
+    )
+    invite = Invite.objects.first()
+
+    # accept
+    assert len(mail.outbox) == 1
+    link = re.search("(?P<url>https?://[^\s]+)", mail.outbox[0].body).group("url")
+
+    invite_link = f"/invitations/accept-invite/{invite.key}"
+
+    client.logout()
+
+    r = client.get(link)
+    assertRedirects(r, f"/login/?next={invite_link}")
+
+    r = client.post(
+        f"/login/?next={invite_link}",
+        data={"login": "invite@gyana.com", "password": "seewhatmatters"},
+    )
+    assertRedirects(r, invite_link, status_code=303, fetch_redirect_response=False)
+
+    r = client.get(invite_link)
+    assertRedirects(r, f"/teams/{team.id}")
+
+    invite.refresh_from_db()
+    assert invite is not None
+    assert invite.accepted
+    assert team.members.count() == 2
+
+
+def test_invite_existing_authenticated_user_to_team(client, logged_in_user):
+    invited_user = CustomUser.objects.create_user(
         "invite", email="invite@gyana.com", onboarded=True
     )
     team = logged_in_user.teams.first()

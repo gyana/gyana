@@ -146,6 +146,9 @@ def post(self, *args, **kwargs):
         )
         return redirect("teams:detail", self.object.team.id)
 
+    if invitation.user_email_exists:
+        return redirect(f'{reverse("account_login")}?next={self.request.path}')
+
     get_invitations_adapter().stash_verified_email(self.request, invitation.email)
     return redirect(self.get_signup_redirect())
 
