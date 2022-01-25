@@ -5,10 +5,11 @@ from honeybadger import honeybadger
 
 from apps.base import clients
 from apps.base.forms import BaseModelForm, LiveFormsetMixin
+from apps.base.formsets import RequiredInlineFormset
 
 from .fivetran.client import FivetranClientError
 from .fivetran.config import ServiceTypeEnum
-from .models import Connector
+from .models import Connector, FacebookAdsCustomTable
 from .widgets import ConnectorSchemaMultiSelect
 
 
@@ -43,7 +44,7 @@ class ConnectorCreateForm(BaseModelForm):
         instance.create_integration(instance.conf.name, self._created_by, self._project)
 
 
-class ConnectorUpdateForm(LiveFormsetMixin, forms.ModelForm):
+class ConnectorUpdateForm(LiveFormsetMixin, BaseModelForm):
     class Meta:
         model = Connector
         fields = []
@@ -51,8 +52,6 @@ class ConnectorUpdateForm(LiveFormsetMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
-
-        self.instance.sync_schema_obj_from_fivetran()
 
         for schema in self.instance.schema_obj.schemas:
 
@@ -83,15 +82,34 @@ class ConnectorUpdateForm(LiveFormsetMixin, forms.ModelForm):
                 t.name_in_destination: t for t in schema.tables
             }
 
-    def clean(self):
-        cleaned_data = super().clean()
+    def post_save(self, instance):
+        cleaned_data = self.clean()
         try:
-            schema_obj = self.instance.schema_obj
+            schema_obj = instance.schema_obj
             schema_obj.mutate_from_cleaned_data(cleaned_data)
-            clients.fivetran().update_schemas(self.instance, schema_obj.to_dict())
-            self.instance.sync_schema_obj_from_fivetran()
+            clients.fivetran().update_schemas(instance, schema_obj.to_dict())
+            instance.sync_schema_obj_from_fivetran()
         except FivetranClientError as e:
             honeybadger.notify(e)
             raise ValidationError(
                 "Failed to update, please try again or reach out to support."
             )
+
+    def get_live_formsets(self):
+        return [FacebookAdCustomTableFormset]
+
+
+class FacebookAdsCustomTableForm(BaseModelForm):
+    class Meta:
+        model = FacebookAdsCustomTable
+        fields = "__all__"
+
+
+FacebookAdCustomTableFormset = forms.inlineformset_factory(
+    Connector,
+    FacebookAdsCustomTable,
+    form=FacebookAdsCustomTableForm,
+    can_delete=True,
+    extra=0,
+    formset=RequiredInlineFormset,
+)

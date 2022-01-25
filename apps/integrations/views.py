@@ -135,6 +135,9 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
             return redirect(
                 "project_integrations:load", self.project.id, self.object.id
             )
+        # only for GET request, to keep live form fast
+        if self.object.kind == Integration.Kind.CONNECTOR:
+            self.object.connector.sync_schema_obj_from_fivetran()
         return super().get(request, *args, **kwargs)
 
     def get_form_instance(self):

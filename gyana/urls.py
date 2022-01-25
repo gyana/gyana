@@ -134,8 +134,7 @@ urlpatterns = [
         {"sitemaps": {"web": WebSitemap, "wagtail": WagtailSitemap}},
         name="django.contrib.sitemaps.views.sitemap",
     ),
-    path("", include(wagtail_urls)),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
 if settings.CYPRESS_URLS:
     urlpatterns += [
@@ -144,3 +143,7 @@ if settings.CYPRESS_URLS:
 
 if settings.DEBUG:
     urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
+
+urlpatterns += [
+    path("", include(wagtail_urls)),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

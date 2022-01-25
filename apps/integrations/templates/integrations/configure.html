@@ -11,10 +11,16 @@
         id="configure-update-form"
         method="POST"
         action="{{ request.get_full_path }}"
-        {% if object.kind == 'customapi' %}
+        {% comment %} {% if object.kind == 'customapi' %} {% endcomment %}
         data-controller="live-update"
+        data-action="
+          formset:remove->live-update#updateForm 
+          formset:add->live-update#updateForm 
+          formset:remove->tf-modal#change 
+          formset:add->tf-modal#change
+        "
         enctype='multipart/form-data'
-        {% endif %}
+        {% comment %} {% endif %} {% endcomment %}
         >
         <span data-live-update-target="loading" class="hidden">
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
@@ -23,9 +29,9 @@
 
         <p class="alert mb-4">
           If you're not sure about these options, we recommend you start with the defaults and tweak them later.
-          {% if object.kind == 'connector' %}
+          {% comment %} {% if object.kind == 'connector' %}
             You can also go back to the <a href="{{ object.connector.fivetran_authorization_url }}" class="link">authorization</a> page.
-          {% endif %}
+          {% endif %} {% endcomment %}
         </p>
 
         {% include "django/forms/default_form.html" %}
