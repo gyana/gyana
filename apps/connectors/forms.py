@@ -105,12 +105,12 @@ class ConnectorPrebuiltReportsForm(LiveFormsetMixin, BaseModelForm):
         model = Connector
         fields = ["prebuilt_reports"]
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields["prebuilt_reports"].choices = zip(
-            facebook_ads.PREBUILT_REPORTS, facebook_ads.PREBUILT_REPORTS
-        )
+    prebuilt_reports = forms.MultipleChoiceField(
+        label="Prebuilt reports",
+        help_text="Select specific prebuilt reports (you can change this later)",
+        widget=forms.CheckboxSelectMultiple,
+        choices=zip(facebook_ads.PREBUILT_REPORTS, facebook_ads.PREBUILT_REPORTS),
+    )
 
     def post_save(self, instance):
         try:

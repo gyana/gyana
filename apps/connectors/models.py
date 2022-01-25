@@ -152,9 +152,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
     timeframe_months = models.CharField(
         max_length=16, choices=TimeframeMonths.choices, default=TimeframeMonths.THREE
     )
-    prebuilt_reports = ChoiceArrayField(
-        models.CharField(max_length=64, choices=[]), default=list
-    )
+    prebuilt_reports = ArrayField(models.CharField(max_length=64), default=list)
 
     @property
     def fivetran_dashboard_url(self):
@@ -337,7 +335,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
             "timeframe_months": self.timeframe_months,
             "custom_tables": [
                 forms.model_to_dict(obj)
-                for obj in self.facebookadscustomtable_set.all()
+                for obj in self.facebookadscustomreport_set.all()
             ]
             + [
                 {
