@@ -2,7 +2,11 @@ from django import forms
 
 from apps.base.account import is_scheduled_paid_only
 from apps.base.forms import BaseModelForm
-from apps.connectors.forms import ConnectorCustomTablesForm, ConnectorTablesForm
+from apps.connectors.forms import (
+    ConnectorCustomReportsForm,
+    ConnectorPrebuiltReportsForm,
+    ConnectorTablesForm,
+)
 from apps.customapis.forms import CustomApiUpdateForm
 from apps.sheets.forms import SheetUpdateForm
 from apps.uploads.forms import UploadUpdateForm
@@ -18,7 +22,8 @@ class IntegrationForm(forms.ModelForm):
 
 TAB_TO_CONNECTOR_FORM_CLASS = {
     "tables": ConnectorTablesForm,
-    "reports": ConnectorCustomTablesForm,
+    "prebuilt_reports": ConnectorPrebuiltReportsForm,
+    "custom_reports": ConnectorCustomReportsForm,
 }
 
 KIND_TO_FORM_CLASS = {

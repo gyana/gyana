@@ -11,7 +11,7 @@
         id="configure-update-form"
         method="POST"
         action="{{ request.get_full_path }}"
-        {% if object.kind == 'customapi' or request.GET.tab == 'reports' %}
+        {% if object.kind == 'customapi' or request.GET.tab == 'custom_reports' %}
         data-controller="live-update"
         data-action="
           formset:remove->live-update#updateForm 
@@ -41,13 +41,20 @@
             >
               Tables
             </a>
-            {% if object.connector.service == 'facebook_ads' %}{% endif %}
-            <a
-              href="{% url "project_integrations:configure" project.id object.id %}?tab=reports"
-              class="tabbar__link {% if request.GET.tab == 'reports' %}tabbar__link--active{% endif %}"
-            >
-              Reports
-            </a>
+            {% if object.connector.service == 'facebook_ads' %}
+              <a
+                href="{% url "project_integrations:configure" project.id object.id %}?tab=prebuilt_reports"
+                class="tabbar__link {% if request.GET.tab == 'prebuilt_reports' %}tabbar__link--active{% endif %}"
+              >
+                Prebuilt Reports
+              </a>
+              <a
+                href="{% url "project_integrations:configure" project.id object.id %}?tab=custom_reports"
+                class="tabbar__link {% if request.GET.tab == 'custom_reports' %}tabbar__link--active{% endif %}"
+              >
+                Custom Reports
+              </a>
+            {% endif %}
           </div>
         {% endif %}
 
@@ -58,7 +65,12 @@
           <p class="alert mb-4">
             For a faster initial sync and optimized row usage, only select the tables you need.
           </p>
-        {% elif request.GET.tab == 'reports' %}
+        {% elif request.GET.tab == 'prebuilt_reports' %}
+          <p>TBD</p>
+          <p class="alert mb-4">
+            TBD
+          </p>
+        {% elif request.GET.tab == 'custom_reports' %}
           <p>A report is a table derived from a reporting API.</p>
           <p class="alert mb-4">
             Take time to understand the options available to build an effective report.

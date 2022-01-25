@@ -6,10 +6,11 @@ from honeybadger import honeybadger
 from apps.base import clients
 from apps.base.forms import BaseModelForm, LiveFormsetMixin
 from apps.base.formsets import RequiredInlineFormset
+from apps.connectors.fivetran.services import facebook_ads
 
 from .fivetran.client import FivetranClientError
 from .fivetran.config import ServiceTypeEnum
-from .models import Connector, FacebookAdsCustomTable
+from .models import Connector, FacebookAdsCustomReport
 from .widgets import ConnectorSchemaMultiSelect
 
 
@@ -99,7 +100,28 @@ class ConnectorTablesForm(LiveFormsetMixin, BaseModelForm):
             )
 
 
-class ConnectorCustomTablesForm(LiveFormsetMixin, BaseModelForm):
+class ConnectorPrebuiltReportsForm(LiveFormsetMixin, BaseModelForm):
+    class Meta:
+        model = Connector
+        fields = ["prebuilt_reports"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["prebuilt_reports"].choices = zip(
+            facebook_ads.PREBUILT_REPORTS, facebook_ads.PREBUILT_REPORTS
+        )
+
+    def post_save(self, instance):
+        try:
+            instance.update_fivetran_config()
+            clients.fivetran().test(instance)
+        except FivetranClientError as e:
+            honeybadger.notify(e)
+            raise ValidationError(e)
+
+
+class ConnectorCustomReportsForm(LiveFormsetMixin, BaseModelForm):
     class Meta:
         model = Connector
         fields = []
@@ -113,19 +135,19 @@ class ConnectorCustomTablesForm(LiveFormsetMixin, BaseModelForm):
             raise ValidationError(e)
 
     def get_live_formsets(self):
-        return [FacebookAdCustomTableFormset]
+        return [FacebookAdCustomReportFormset]
 
 
-class FacebookAdsCustomTableForm(BaseModelForm):
+class FacebookAdsCustomReportForm(BaseModelForm):
     class Meta:
-        model = FacebookAdsCustomTable
+        model = FacebookAdsCustomReport
         fields = "__all__"
 
 
-FacebookAdCustomTableFormset = forms.inlineformset_factory(
+FacebookAdCustomReportFormset = forms.inlineformset_factory(
     Connector,
-    FacebookAdsCustomTable,
-    form=FacebookAdsCustomTableForm,
+    FacebookAdsCustomReport,
+    form=FacebookAdsCustomReportForm,
     can_delete=True,
     extra=0,
     formset=RequiredInlineFormset,

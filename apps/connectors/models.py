@@ -20,6 +20,33 @@ FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
 FIVETRAN_SYNC_FREQUENCY_HOURS = 6
 
 
+class ChoiceArrayField(ArrayField):
+    """
+    A field that allows us to store an array of choices.
+
+    Uses Django 1.9's postgres ArrayField
+    and a MultipleChoiceField for its formfield.
+
+    Usage:
+
+        choices = ChoiceArrayField(models.CharField(max_length=...,
+                                                    choices=(...,)),
+                                   default=[...])
+    """
+
+    def formfield(self, **kwargs):
+        defaults = {
+            "form_class": forms.MultipleChoiceField,
+            "choices": self.base_field.choices,
+            "widget": forms.CheckboxSelectMultiple,
+        }
+        defaults.update(kwargs)
+        # Skip our parent's formfield implementation completely as we don't
+        # care for it.
+        # pylint:disable=bad-super-call
+        return super(ArrayField, self).formfield(**defaults)
+
+
 class Connector(DirtyFieldsMixin, BaseModel):
     class ScheduleType(models.TextChoices):
         AUTO = "auto", "Auto"
@@ -123,7 +150,10 @@ class Connector(DirtyFieldsMixin, BaseModel):
 
     # connector specific configuration
     timeframe_months = models.CharField(
-        max_length=16, default=TimeframeMonths.THREE, choices=TimeframeMonths.choices
+        max_length=16, choices=TimeframeMonths.choices, default=TimeframeMonths.THREE
+    )
+    prebuilt_reports = ChoiceArrayField(
+        models.CharField(max_length=64, choices=[]), default=list
     )
 
     @property
@@ -308,6 +338,14 @@ class Connector(DirtyFieldsMixin, BaseModel):
             "custom_tables": [
                 forms.model_to_dict(obj)
                 for obj in self.facebookadscustomtable_set.all()
+            ]
+            + [
+                {
+                    "table_name": report.lower(),
+                    "config_type": "Prebuilt",
+                    "prebuilt_report_name": "ACTION_CANVAS_COMPONENT",
+                }
+                for report in self.prebuilt_reports or []
             ],
         }
         clients.fivetran().update(self, config={**self.config, **extra_config})
@@ -338,34 +376,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
         return self.succeeded_at == self.bigquery_succeeded_at
 
 
-class ChoiceArrayField(ArrayField):
-    """
-    A field that allows us to store an array of choices.
-
-    Uses Django 1.9's postgres ArrayField
-    and a MultipleChoiceField for its formfield.
-
-    Usage:
-
-        choices = ChoiceArrayField(models.CharField(max_length=...,
-                                                    choices=(...,)),
-                                   default=[...])
-    """
-
-    def formfield(self, **kwargs):
-        defaults = {
-            "form_class": forms.MultipleChoiceField,
-            "choices": self.base_field.choices,
-            "widget": forms.CheckboxSelectMultiple,
-        }
-        defaults.update(kwargs)
-        # Skip our parent's formfield implementation completely as we don't
-        # care for it.
-        # pylint:disable=bad-super-call
-        return super(ArrayField, self).formfield(**defaults)
-
-
-class FacebookAdsCustomTable(BaseModel):
+class FacebookAdsCustomReport(BaseModel):
     FIELD_CHOICES = zip(facebook_ads.FIELDS, facebook_ads.FIELDS)
     BREAKDOWN_CHOICES = zip(facebook_ads.BREAKDOWNS, facebook_ads.BREAKDOWNS)
     ACTION_BREAKDOWN_CHOICES = zip(
