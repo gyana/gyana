@@ -11,7 +11,7 @@
         id="configure-update-form"
         method="POST"
         action="{{ request.get_full_path }}"
-        {% comment %} {% if object.kind == 'customapi' %} {% endcomment %}
+        {% if object.kind == 'customapi' or request.GET.tab == 'reports' %}
         data-controller="live-update"
         data-action="
           formset:remove->live-update#updateForm 
@@ -20,7 +20,7 @@
           formset:add->tf-modal#change
         "
         enctype='multipart/form-data'
-        {% comment %} {% endif %} {% endcomment %}
+        {% endif %}
         >
         <span data-live-update-target="loading" class="hidden">
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
