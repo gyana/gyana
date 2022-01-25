@@ -25,6 +25,7 @@ FORMSET_LABELS = {
     "httpheaders": "HTTP Headers",
     "formdataentries": "Form Data",
     "formurlencodedentries": "Form Data",
+    "facebookadscustomtable_set": "Custom tables",
 }
 
 

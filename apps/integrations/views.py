@@ -16,7 +16,7 @@ from apps.integrations.tasks import run_integration
 from apps.projects.mixins import ProjectMixin
 from apps.runs.tables import JobRunTable
 
-from .forms import KIND_TO_FORM_CLASS, IntegrationUpdateForm
+from .forms import IntegrationUpdateForm, get_kind_to_form_class
 from .mixins import STATE_TO_URL_REDIRECT, ReadyMixin
 from .models import Integration
 from .tables import IntegrationListTable, ReferencesTable
@@ -135,16 +135,15 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
             return redirect(
                 "project_integrations:load", self.project.id, self.object.id
             )
-        # only for GET request, to keep live form fast
-        if self.object.kind == Integration.Kind.CONNECTOR:
-            self.object.connector.sync_schema_obj_from_fivetran()
         return super().get(request, *args, **kwargs)
 
     def get_form_instance(self):
         return self.object.source_obj
 
     def get_form_class(self):
-        return KIND_TO_FORM_CLASS[self.object.kind]
+        return get_kind_to_form_class(
+            self.object.kind, self.request.GET.get("tab", "tables")
+        )
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -159,17 +158,20 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
                 if formset.is_valid():
                     formset.save()
 
-        run_integration(self.object.kind, self.object.source_obj, self.request.user)
-        analytics.track(
-            self.request.user.id,
-            INTEGRATION_SYNC_STARTED_EVENT,
-            {
-                "id": self.object.id,
-                "type": self.object.kind,
-                "name": self.object.name,
-            },
-        )
-        return redirect(self.get_success_url())
+        if self.request.POST.get("submit") == "Save & Import":
+            run_integration(self.object.kind, self.object.source_obj, self.request.user)
+            analytics.track(
+                self.request.user.id,
+                INTEGRATION_SYNC_STARTED_EVENT,
+                {
+                    "id": self.object.id,
+                    "type": self.object.kind,
+                    "name": self.object.name,
+                },
+            )
+            return redirect(self.get_success_url())
+
+        return redirect(self.request.path)
 
     def get_success_url(self) -> str:
         return reverse(

@@ -44,7 +44,7 @@ class ConnectorCreateForm(BaseModelForm):
         instance.create_integration(instance.conf.name, self._created_by, self._project)
 
 
-class ConnectorUpdateForm(LiveFormsetMixin, BaseModelForm):
+class ConnectorTablesForm(LiveFormsetMixin, BaseModelForm):
     class Meta:
         model = Connector
         fields = []
@@ -52,6 +52,8 @@ class ConnectorUpdateForm(LiveFormsetMixin, BaseModelForm):
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
+
+        self.instance.sync_schema_obj_from_fivetran()
 
         for schema in self.instance.schema_obj.schemas:
 
@@ -96,11 +98,14 @@ class ConnectorUpdateForm(LiveFormsetMixin, BaseModelForm):
                 "Failed to update, please try again or reach out to support."
             )
 
+
+class ConnectorCustomTablesForm(LiveFormsetMixin, BaseModelForm):
+    class Meta:
+        model = Connector
+        fields = []
+
+    def post_save(self, instance):
         try:
-            # facebook only
-            # generate new config object
-            # push updates to fivetran
-            # run setup tests
             instance.update_fivetran_config()
             clients.fivetran().test(instance)
         except FivetranClientError as e:

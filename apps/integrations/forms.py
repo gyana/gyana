@@ -2,7 +2,7 @@ from django import forms
 
 from apps.base.account import is_scheduled_paid_only
 from apps.base.forms import BaseModelForm
-from apps.connectors.forms import ConnectorUpdateForm
+from apps.connectors.forms import ConnectorCustomTablesForm, ConnectorTablesForm
 from apps.customapis.forms import CustomApiUpdateForm
 from apps.sheets.forms import SheetUpdateForm
 from apps.uploads.forms import UploadUpdateForm
@@ -16,12 +16,22 @@ class IntegrationForm(forms.ModelForm):
         fields = ["name"]
 
 
+TAB_TO_CONNECTOR_FORM_CLASS = {
+    "tables": ConnectorTablesForm,
+    "custom_tables": ConnectorCustomTablesForm,
+}
+
 KIND_TO_FORM_CLASS = {
-    Integration.Kind.CONNECTOR: ConnectorUpdateForm,
     Integration.Kind.SHEET: SheetUpdateForm,
     Integration.Kind.UPLOAD: UploadUpdateForm,
     Integration.Kind.CUSTOMAPI: CustomApiUpdateForm,
 }
+
+
+def get_kind_to_form_class(kind, tab):
+    if kind == Integration.Kind.CONNECTOR:
+        return TAB_TO_CONNECTOR_FORM_CLASS[tab]
+    return KIND_TO_FORM_CLASS[kind]
 
 
 class IntegrationUpdateForm(BaseModelForm):
