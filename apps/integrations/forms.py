@@ -18,7 +18,7 @@ class IntegrationForm(forms.ModelForm):
 
 TAB_TO_CONNECTOR_FORM_CLASS = {
     "tables": ConnectorTablesForm,
-    "custom_tables": ConnectorCustomTablesForm,
+    "reports": ConnectorCustomTablesForm,
 }
 
 KIND_TO_FORM_CLASS = {

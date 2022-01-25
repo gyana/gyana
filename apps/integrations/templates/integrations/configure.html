@@ -26,6 +26,13 @@
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
         </span>
 
+        <p class="alert">
+          If you're not sure about these options, you can start with the defaults and tweak them later.
+          {% if object.kind == 'connector' %}
+            You can also go back to the <a href="{{ object.connector.fivetran_authorization_url }}" class="link">authorization</a> page.
+          {% endif %}
+        </p>
+
         <div class="tabbar w-full">
           <a
             href="{% url "project_integrations:configure" project.id object.id %}?tab=tables"
@@ -34,21 +41,24 @@
             Tables
           </a>
           <a
-            href="{% url "project_integrations:configure" project.id object.id %}?tab=custom_tables"
-            class="tabbar__link {% if request.GET.tab == 'custom_tables' %}tabbar__link--active{% endif %}"
+            href="{% url "project_integrations:configure" project.id object.id %}?tab=reports"
+            class="tabbar__link {% if request.GET.tab == 'reports' %}tabbar__link--active{% endif %}"
           >
-            Custom tables
+            Reports
           </a>
         </div>
 
         {% csrf_token %}
 
-        <p class="alert mb-4">
-          If you're not sure about these options, we recommend you start with the defaults and tweak them later.
-          {% comment %} {% if object.kind == 'connector' %}
-            You can also go back to the <a href="{{ object.connector.fivetran_authorization_url }}" class="link">authorization</a> page.
-          {% endif %} {% endcomment %}
-        </p>
+        {% if request.GET.tab == 'tables' %}
+          <p class="alert mb-4">
+            A table is a list of records in your data source e.g. products or ads.
+          </p>
+        {% elif request.GET.tab == 'reports' %}
+          <p class="alert mb-4">
+            A report is a table derived from data source by a reporting API.
+          </p>
+        {% endif %}
 
         {% include "django/forms/default_form.html" %}
 
