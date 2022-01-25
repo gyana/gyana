@@ -35,7 +35,7 @@
         </p>
 
         {% flag 'beta' %}
-          {% if object.kind == 'connector' %}
+          {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' %}
             <div class="tabbar w-full">
               <a
                 href="{% url "project_integrations:configure" project.id object.id %}?tab=tables"
@@ -43,20 +43,18 @@
               >
                 Tables
               </a>
-              {% if object.connector.service == 'facebook_ads' %}
-                <a
-                  href="{% url "project_integrations:configure" project.id object.id %}?tab=prebuilt_reports"
-                  class="tabbar__link {% if request.GET.tab == 'prebuilt_reports' %}tabbar__link--active{% endif %}"
-                >
-                  Prebuilt Reports
-                </a>
-                <a
-                  href="{% url "project_integrations:configure" project.id object.id %}?tab=custom_reports"
-                  class="tabbar__link {% if request.GET.tab == 'custom_reports' %}tabbar__link--active{% endif %}"
-                >
-                  Custom Reports
-                </a>
-              {% endif %}
+              <a
+                href="{% url "project_integrations:configure" project.id object.id %}?tab=prebuilt_reports"
+                class="tabbar__link {% if request.GET.tab == 'prebuilt_reports' %}tabbar__link--active{% endif %}"
+              >
+                Prebuilt Reports
+              </a>
+              <a
+                href="{% url "project_integrations:configure" project.id object.id %}?tab=custom_reports"
+                class="tabbar__link {% if request.GET.tab == 'custom_reports' %}tabbar__link--active{% endif %}"
+              >
+                Custom Reports
+              </a>
             </div>
           {% endif %}
         {% endflag %} 
