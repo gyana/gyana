@@ -147,7 +147,7 @@ class Workflow(CloneMixin, BaseModel):
         self.save(update_fields=["state", "last_success_run"])
 
     @property
-    def used_in_workflows(self):
+    def used_in_nodes(self):
         from apps.nodes.models import Node
 
         return (
@@ -155,23 +155,24 @@ class Workflow(CloneMixin, BaseModel):
                 kind=Node.Kind.INPUT,
                 input_table__workflow_node__in=self.output_nodes,
             )
-            .distinct()
+            .distinct("workflow", "input_table__workflow_node")
             .annotate(
                 parent_kind=models.Value("Workflow", output_field=models.CharField())
             )
         )
 
     @property
-    def used_in_dashboards(self):
+    def used_in_widgets(self):
+        from apps.widgets.models import Widget
+
         return (
-            Dashboard.objects.filter(
-                pages__widgets__table__workflow_node__in=self.output_nodes.all()
+            Widget.objects.filter(table__workflow_node__in=self.output_nodes)
+            .distinct("page__dashboard", "table__workflow_node")
+            .annotate(
+                parent_kind=models.Value("Dashboard", output_field=models.CharField())
             )
-            .distinct()
-            .only("name", "project", "created", "updated")
-            .annotate(kind=models.Value("Dashboard", output_field=models.CharField()))
         )
 
     @property
     def used_in(self):
-        return list(chain(self.used_in_workflows, self.used_in_dashboards))
+        return list(chain(self.used_in_nodes, self.used_in_widgets))

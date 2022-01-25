@@ -67,7 +67,7 @@ class WorkflowSettings(ProjectMixin, MultiTableMixin, TurboFrameUpdateView):
     turbo_frame_dom_id = "workflows:settings"
 
     def get_tables_data(self):
-        return [self.object.runs.all(), self.object.used_in_workflows.all()]
+        return [self.object.runs.all(), self.object.used_in]
 
     def get_success_url(self) -> str:
         return reverse(
