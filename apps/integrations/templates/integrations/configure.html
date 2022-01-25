@@ -1,4 +1,5 @@
 {% extends 'integrations/base_setup.html' %}
+{% load waffle_tags %}
 
 {% block tab %}
 
@@ -33,30 +34,32 @@
           {% endif %}
         </p>
 
-        {% if object.kind == 'connector' %}
-          <div class="tabbar w-full">
-            <a
-              href="{% url "project_integrations:configure" project.id object.id %}?tab=tables"
-              class="tabbar__link {% if not request.GET.tab or request.GET.tab == 'tables' %}tabbar__link--active{% endif %}"
-            >
-              Tables
-            </a>
-            {% if object.connector.service == 'facebook_ads' %}
+        {% flag 'beta' %}
+          {% if object.kind == 'connector' %}
+            <div class="tabbar w-full">
               <a
-                href="{% url "project_integrations:configure" project.id object.id %}?tab=prebuilt_reports"
-                class="tabbar__link {% if request.GET.tab == 'prebuilt_reports' %}tabbar__link--active{% endif %}"
+                href="{% url "project_integrations:configure" project.id object.id %}?tab=tables"
+                class="tabbar__link {% if not request.GET.tab or request.GET.tab == 'tables' %}tabbar__link--active{% endif %}"
               >
-                Prebuilt Reports
+                Tables
               </a>
-              <a
-                href="{% url "project_integrations:configure" project.id object.id %}?tab=custom_reports"
-                class="tabbar__link {% if request.GET.tab == 'custom_reports' %}tabbar__link--active{% endif %}"
-              >
-                Custom Reports
-              </a>
-            {% endif %}
-          </div>
-        {% endif %}
+              {% if object.connector.service == 'facebook_ads' %}
+                <a
+                  href="{% url "project_integrations:configure" project.id object.id %}?tab=prebuilt_reports"
+                  class="tabbar__link {% if request.GET.tab == 'prebuilt_reports' %}tabbar__link--active{% endif %}"
+                >
+                  Prebuilt Reports
+                </a>
+                <a
+                  href="{% url "project_integrations:configure" project.id object.id %}?tab=custom_reports"
+                  class="tabbar__link {% if request.GET.tab == 'custom_reports' %}tabbar__link--active{% endif %}"
+                >
+                  Custom Reports
+                </a>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endflag %} 
 
         {% csrf_token %}
 
