@@ -171,7 +171,9 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
             )
             return redirect(self.get_success_url())
 
-        return redirect(self.request.path)
+        return redirect(
+            f'{reverse("project_integrations:configure", args=(self.project.id, self.object.id))}?tab={self.request.GET.get("tab")}'
+        )
 
     def get_success_url(self) -> str:
         return reverse(

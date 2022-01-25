@@ -341,7 +341,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
                 {
                     "table_name": report.lower(),
                     "config_type": "Prebuilt",
-                    "prebuilt_report_name": "ACTION_CANVAS_COMPONENT",
+                    "prebuilt_report_name": report,
                 }
                 for report in self.prebuilt_reports or []
             ],
