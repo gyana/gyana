@@ -33,20 +33,23 @@
           {% endif %}
         </p>
 
-        <div class="tabbar w-full">
-          <a
-            href="{% url "project_integrations:configure" project.id object.id %}?tab=tables"
-            class="tabbar__link {% if request.GET.tab == 'tables' %}tabbar__link--active{% endif %}"
-          >
-            Tables
-          </a>
-          <a
-            href="{% url "project_integrations:configure" project.id object.id %}?tab=reports"
-            class="tabbar__link {% if request.GET.tab == 'reports' %}tabbar__link--active{% endif %}"
-          >
-            Reports
-          </a>
-        </div>
+        {% if object.kind == 'connector' %}
+          <div class="tabbar w-full">
+            <a
+              href="{% url "project_integrations:configure" project.id object.id %}?tab=tables"
+              class="tabbar__link {% if not request.GET.tab or request.GET.tab == 'tables' %}tabbar__link--active{% endif %}"
+            >
+              Tables
+            </a>
+            {% if object.connector.service == 'facebook_ads' %}{% endif %}
+            <a
+              href="{% url "project_integrations:configure" project.id object.id %}?tab=reports"
+              class="tabbar__link {% if request.GET.tab == 'reports' %}tabbar__link--active{% endif %}"
+            >
+              Reports
+            </a>
+          </div>
+        {% endif %}
 
         {% csrf_token %}
 

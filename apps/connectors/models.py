@@ -303,8 +303,6 @@ class Connector(DirtyFieldsMixin, BaseModel):
             pass
 
     def update_fivetran_config(self):
-        config = self.config
-
         extra_config = {
             "timeframe_months": self.timeframe_months,
             "custom_tables": [
@@ -312,10 +310,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
                 for obj in self.facebookadscustomtable_set.all()
             ],
         }
-
-        config = {**self.config, **extra_config}
-
-        clients.fivetran().update(self, config=config)
+        clients.fivetran().update(self, config={**self.config, **extra_config})
 
     @property
     def setup_state_icon(self):
