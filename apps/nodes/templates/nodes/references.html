@@ -1,0 +1,12 @@
+{% load render_table from django_tables2 %}
+
+{% include 'nodes/modal_nav_bar.html' %}
+
+{% if object.used_in|length == 0 %}
+
+<p class="text-black-50 text-center pt-4">
+  This node isn't used anywhere right now.
+</p>
+{% else %}
+  {% render_table table %}
+{% endif %}

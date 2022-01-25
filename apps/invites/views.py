@@ -1,13 +1,15 @@
-from datetime import timezone
-
 import analytics
+from django.contrib import messages
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
+from invitations.adapters import get_invitations_adapter
+from invitations.views import AcceptInvite, accept_invitation
 
 from apps.base.analytics import INVITE_SENT_EVENT
 from apps.base.frames import TurboFrameListView
@@ -96,3 +98,59 @@ class InviteDelete(TeamMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse("team_members:list", args=(self.team.id,))
+
+
+# patch AcceptInvite in django-invitations
+# - remove INVITATIONS_GONE_ON_ACCEPT_ERROR option
+# - authenticated user: accept invite, redirect to team
+# - anonymous user: redirect to signup, automatically accept afterwards (ACCEPT_INVITE_AFTER_SIGNUP=True)
+
+
+original_post = AcceptInvite.post
+
+
+def post(self, *args, **kwargs):
+    self.object = invitation = self.get_object()
+
+    # No invitation was found.
+    if not invitation:
+        get_invitations_adapter().add_message(
+            self.request, messages.ERROR, "invitations/messages/invite_invalid.txt"
+        )
+        return redirect(self.get_signup_redirect())
+
+    # The invitation was previously accepted, redirect to the login
+    # view.
+    if invitation.accepted:
+        get_invitations_adapter().add_message(
+            self.request,
+            messages.ERROR,
+            "invitations/messages/invite_already_accepted.txt",
+            {"email": invitation.email},
+        )
+        return redirect(self.get_signup_redirect())
+
+    # The key was expired.
+    if invitation.key_expired():
+        get_invitations_adapter().add_message(
+            self.request,
+            messages.ERROR,
+            "invitations/messages/invite_expired.txt",
+            {"email": invitation.email},
+        )
+        return redirect(self.get_signup_redirect())
+
+    if self.request.user.is_authenticated:
+        accept_invitation(
+            invitation=self.object, request=self.request, signal_sender=self.__class__
+        )
+        return redirect("teams:detail", self.object.team.id)
+
+    if invitation.user_email_exists:
+        return redirect(f'{reverse("account_login")}?next={self.request.path}')
+
+    get_invitations_adapter().stash_verified_email(self.request, invitation.email)
+    return redirect(self.get_signup_redirect())
+
+
+AcceptInvite.post = post

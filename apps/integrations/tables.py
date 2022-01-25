@@ -2,8 +2,6 @@ import django_tables2 as tables
 from django.db.models.aggregates import Sum
 from django.template import Context
 from django.template.loader import get_template
-from django.utils.html import escape, format_html
-from django_tables2.utils import AttributeDict
 
 from apps.base.tables import FaBooleanColumn, NaturalDatetimeColumn, NaturalDayColumn
 from apps.tables.models import Table

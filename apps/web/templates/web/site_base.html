@@ -37,14 +37,18 @@
   {% endcomment %}
   <script src="{% static "js/stimulus-bundle.js" %}"></script>
 
-  {% if WEBSITE_GOOGLE_ANALYTICS_ID %}
-  {% include "web/components/google_analytics.html" with GOOGLE_ANALYTICS_ID=WEBSITE_GOOGLE_ANALYTICS_ID %}
+  {% if WEBSITE_GTM_ID %}
+  {% include "web/components/gtm_head.html" %}
   {% endif %}
 
   {% include "web/components/intercom-visitors.html" %}
 </head>
 
 <body>
+  {% if WEBSITE_GTM_ID %}
+  {% include "web/components/gtm_body.html" %}
+  {% endif %}
+
   {% include 'web/site/header.html' %}
   {% block body %}{% endblock %}
   {% include 'web/site/footer.html' %}

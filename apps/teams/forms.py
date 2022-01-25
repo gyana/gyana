@@ -12,8 +12,7 @@ from apps.base.analytics import (
     identify_user,
     identify_user_group,
 )
-from apps.base.forms import BaseModelForm
-from apps.base.forms import LiveUpdateForm
+from apps.base.forms import BaseModelForm, LiveUpdateForm
 from apps.base.templatetags.help_utils import INTERCOM_ROOT, get_intercom
 from apps.invites.models import Invite
 from apps.teams import roles
@@ -38,9 +37,9 @@ class TeamSignupForm(SignupForm):
         email = cleaned_data["email"].lower()
 
         self._waitlist_approved = ApprovedWaitlistEmail.check_approved(email)
-        self._accepted_invite = Invite.check_email_accepted(email)
+        self._invited = Invite.check_email_invited(email)
 
-        if not self._waitlist_approved and not self._accepted_invite:
+        if not self._waitlist_approved and not self._invited:
             raise forms.ValidationError(
                 mark_safe(
                     'Gyana is currently invite only. <a href="https://www.gyana.com" class="link">Join our waitlist.</a>'
@@ -50,7 +49,7 @@ class TeamSignupForm(SignupForm):
     def save(self, request):
         user = super().save(request)
         # prefer to assign as an invite than a waitlist
-        if self._accepted_invite:
+        if self._invited:
             identify_user(user, signup_source="invite")
         elif self._waitlist_approved:
             identify_user(user, signup_source="waitlist")

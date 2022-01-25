@@ -10,6 +10,7 @@ from invitations.base_invitation import AbstractBaseInvitation
 
 from apps.teams import roles
 from apps.teams.models import Team
+from apps.users.models import CustomUser
 
 # Modified invitation model for teams with roles
 # https://github.com/bee-keeper/django-invitations/blob/master/invitations/models.py
@@ -67,10 +68,14 @@ class Invite(AbstractBaseInvitation):
     def __str__(self):
         return "Invite: {0}".format(self.email)
 
+    @property
+    def user_email_exists(self):
+        return CustomUser.objects.filter(email=self.email).exists()
+
     @staticmethod
     def accepted_by_email(email):
         return Invite.objects.filter(email=email, accepted=True).all()
 
     @staticmethod
-    def check_email_accepted(email):
-        return Invite.objects.filter(email=email, accepted=True).exists()
+    def check_email_invited(email):
+        return Invite.objects.filter(email=email).exists()

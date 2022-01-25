@@ -33,6 +33,11 @@ urlpatterns = [
         login_and_node_required(frames.FunctionInfo.as_view()),
         name="function-info",
     ),
+    path(
+        "<int:pk>/references",
+        login_and_node_required(frames.OutputReference.as_view()),
+        name="references",
+    ),
     # This is linked no-where and only used to generate the intercom
     # article article
     path(

@@ -1,5 +1,7 @@
 from django import forms
-from django.db.models import Case, Value, When
+from django.contrib.postgres.search import TrigramSimilarity
+from django.db.models import Case, Q, Value, When
+from django.db.models.functions import Greatest
 from django.forms.widgets import HiddenInput
 from django.utils.functional import cached_property
 
@@ -12,6 +14,8 @@ from apps.tables.models import Table
 
 from .models import Node
 from .widgets import InputNode, MultiSelect
+
+INPUT_SEARCH_THRESHOLD = 0.3
 
 
 class NodeForm(LiveFormsetForm):
@@ -41,29 +45,49 @@ class DefaultNodeForm(NodeForm):
 
 
 class InputNodeForm(NodeForm):
+    search = forms.CharField(required=False)
+
     class Meta:
         model = Node
         fields = ["input_table"]
-        labels = {"input_table": "Select an integration to get data from:"}
+        labels = {"input_table": "Table"}
         widgets = {"input_table": InputNode()}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        instance = kwargs.get("instance")
 
+        self.order_fields(["search", "input_table"])
+        self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
         self.fields["input_table"].queryset = (
-            Table.available.filter(project=instance.workflow.project)
+            Table.available.filter(project=self.instance.workflow.project)
             .exclude(
                 source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
             )
             .annotate(
                 used_in_workflow=Case(
-                    When(id__in=instance.workflow.input_tables_fk, then=True),
+                    When(id__in=self.instance.workflow.input_tables_fk, then=True),
                     default=False,
-                )
+                ),
             )
-            .order_by("-used_in_workflow", "updated")
+            .order_by("updated")
         )
+
+        if search := self.data.get("search"):
+            self.fields["input_table"].queryset = (
+                self.fields["input_table"]
+                .queryset.annotate(
+                    similarity=Greatest(
+                        TrigramSimilarity("integration__name", search),
+                        TrigramSimilarity("workflow_node__workflow__name", search),
+                        TrigramSimilarity("bq_table", search),
+                    )
+                )
+                .filter(
+                    Q(similarity__gte=INPUT_SEARCH_THRESHOLD)
+                    | Q(id=getattr(self.instance.input_table, "id", None))
+                )
+                .order_by("-similarity")
+            )
 
 
 class OutputNodeForm(NodeForm):

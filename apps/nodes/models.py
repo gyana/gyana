@@ -1,3 +1,5 @@
+from itertools import chain
+
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.db import models
@@ -8,6 +10,7 @@ from model_clone import CloneMixin
 
 from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import BaseModel
+from apps.dashboards.models import Dashboard
 from apps.nodes.config import NODE_CONFIG
 from apps.tables.models import Table
 from apps.workflows.models import Workflow
@@ -88,7 +91,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         on_delete=models.SET_NULL,
         null=True,
         related_name="input_nodes",
-        help_text="Select a data source",
+        help_text="Select a table from an integration or workflow",
     )
 
     # Select also uses columns
@@ -291,6 +294,28 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         workflow = self.workflow
         project = self.workflow.project
         return f'{reverse("project_workflows:detail", args=(project.id,workflow.id,))}?modal_item={self.id}'
+
+    @property
+    def used_in_workflows(self):
+        return (
+            Workflow.objects.filter(nodes__input_table__workflow_node=self)
+            .distinct()
+            .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Workflow", output_field=models.CharField()))
+        )
+
+    @property
+    def used_in_dashboards(self):
+        return (
+            Dashboard.objects.filter(pages__widgets__table__workflow_node=self)
+            .distinct()
+            .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Dashboard", output_field=models.CharField()))
+        )
+
+    @property
+    def used_in(self):
+        return list(chain(self.used_in_workflows, self.used_in_dashboards))
 
 
 class Edge(BaseModel):

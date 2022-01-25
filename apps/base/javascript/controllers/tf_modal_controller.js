@@ -1,5 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 
+const debounceTime = 300
+
 // Open a modal with the content populated by a turbo-frame
 /**
  * Modal controller with content populated by a turbo-frame.
@@ -117,8 +119,10 @@ export default class extends Controller {
     }
   }
 
-  change() {
-    this.changed = true
+  change(event) {
+    if (event.target.getAttribute("name").toLowerCase() != "search") {
+      this.changed = true
+    }
   }
 
   close(e) {
@@ -163,6 +167,17 @@ export default class extends Controller {
 
   save() {
     this.changed = false
+  }
+
+  search(event) {
+    if (this.debounce) clearTimeout(this.debounce)
+    this.debounce = setTimeout(this.handleSearch(), debounceTime)
+  }
+
+  handleSearch() {
+    this.formTarget.requestSubmit(
+      this.formTarget.querySelector("button[value*='close']")
+    )
   }
 
   handleKeyup(event) {

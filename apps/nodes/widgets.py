@@ -15,11 +15,12 @@ class InputNode(ChoiceWidget):
                 "id": option.id,
                 "image": option.integration.icon if option.integration else None,
                 "label": option.owner_name,
+                "usedInWorkflow": option.used_in_workflow,
             }
             for option in self.choices.queryset
         ]
 
-        context["widget"]["selected"] = value
+        context["widget"]["selected"] = f"{value}"
         context["widget"]["name"] = name
         return context
 
