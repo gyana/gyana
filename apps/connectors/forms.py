@@ -89,11 +89,23 @@ class ConnectorUpdateForm(LiveFormsetMixin, BaseModelForm):
             schema_obj.mutate_from_cleaned_data(cleaned_data)
             clients.fivetran().update_schemas(instance, schema_obj.to_dict())
             instance.sync_schema_obj_from_fivetran()
+
         except FivetranClientError as e:
             honeybadger.notify(e)
             raise ValidationError(
                 "Failed to update, please try again or reach out to support."
             )
+
+        try:
+            # facebook only
+            # generate new config object
+            # push updates to fivetran
+            # run setup tests
+            instance.update_fivetran_config()
+            clients.fivetran().test(instance)
+        except FivetranClientError as e:
+            honeybadger.notify(e)
+            raise ValidationError(e)
 
     def get_live_formsets(self):
         return [FacebookAdCustomTableFormset]

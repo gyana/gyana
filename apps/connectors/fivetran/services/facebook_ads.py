@@ -125,7 +125,6 @@ ACTION_BREAKDOWNS = [
     "action_video_type;",
 ]
 
-AGGREGATIONS = ["Day", "Week", "Month"]
 
 ACTION_VIDEO_FIELDS = [
     "video_thruplay_watched_actions",
@@ -173,9 +172,3 @@ def get_enabled_table_ids_for_facebook_ads(enabled_tables):
         _get_table_ids_for_report(table.name_in_destination) for table in enabled_tables
     ]
     return set(chain.from_iterable(table_ids))
-
-
-FIELDS_CHOICES = zip(FIELDS, FIELDS)
-BREAKDOWNS_CHOICES = zip(BREAKDOWNS, BREAKDOWNS)
-ACTION_BREAKDOWNS_CHOICES = zip(ACTION_BREAKDOWNS, ACTION_BREAKDOWNS)
-AGGREGATIONS_CHOICES = zip(AGGREGATIONS, AGGREGATIONS)

@@ -110,6 +110,19 @@ class FivetranClient:
 
         return res
 
+    def test(self, connector: Connector):
+
+        # https://fivetran.com/docs/rest-api/connectors#runconnectorsetuptests
+
+        res = requests.post(
+            f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}/test",
+            json={},
+            headers=settings.FIVETRAN_HEADERS,
+        ).json()
+
+        if res["code"] != "Success":
+            raise FivetranClientError(res)
+
     def get_authorize_url(self, connector: Connector, redirect_uri: str) -> str:
 
         # https://fivetran.com/docs/rest-api/connectors/connect-card#connectcard

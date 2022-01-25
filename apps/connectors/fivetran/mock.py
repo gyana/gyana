@@ -110,6 +110,9 @@ class MockFivetranClient:
     def update(self, connector, **data):
         pass
 
+    def test(self, connector):
+        pass
+
     def start_initial_sync(self, connector):
         self._started[connector.id] = timezone.now()
 

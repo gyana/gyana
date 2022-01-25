@@ -52,6 +52,13 @@ class Connector(DirtyFieldsMixin, BaseModel):
             "Delayed -  the data is delayed for a longer time than expected for the update",
         )
 
+    class TimeframeMonths(models.TextChoices):
+        THREE = "THREE", "3"
+        SIX = "SIX", "6"
+        TWELVE = "TWELVE", "12"
+        TWENTY_FOUR = "TWENTY_FOUR", "24"
+        ALL_TIME = "ALL_TIME", "All time"
+
     SETUP_STATE_TO_ICON = {
         SetupState.CONNECTED: "fa fa-check text-green",
         SetupState.INCOMPLETE: "fa fa-exclamation-circle text-orange",
@@ -113,6 +120,11 @@ class Connector(DirtyFieldsMixin, BaseModel):
     # deprecated: track the celery task
     sync_task_id = models.UUIDField(null=True)
     sync_started = models.DateTimeField(null=True)
+
+    # connector specific configuration
+    timeframe_months = models.CharField(
+        max_length=16, default=TimeframeMonths.THREE, choices=TimeframeMonths.choices
+    )
 
     @property
     def fivetran_dashboard_url(self):
@@ -290,6 +302,21 @@ class Connector(DirtyFieldsMixin, BaseModel):
             # certain connectors fail to return schema objects
             pass
 
+    def update_fivetran_config(self):
+        config = self.config
+
+        extra_config = {
+            "timeframe_months": self.timeframe_months,
+            "custom_tables": [
+                forms.model_to_dict(obj)
+                for obj in self.facebookadscustomtable_set.all()
+            ],
+        }
+
+        config = {**self.config, **extra_config}
+
+        clients.fivetran().update(self, config=config)
+
     @property
     def setup_state_icon(self):
         return self.SETUP_STATE_TO_ICON[self.setup_state]
@@ -344,17 +371,42 @@ class ChoiceArrayField(ArrayField):
 
 
 class FacebookAdsCustomTable(BaseModel):
+    FIELD_CHOICES = zip(facebook_ads.FIELDS, facebook_ads.FIELDS)
+    BREAKDOWN_CHOICES = zip(facebook_ads.BREAKDOWNS, facebook_ads.BREAKDOWNS)
+    ACTION_BREAKDOWN_CHOICES = zip(
+        facebook_ads.ACTION_BREAKDOWNS, facebook_ads.ACTION_BREAKDOWNS
+    )
+
+    class Aggregation(models.TextChoices):
+        Day = "Day", "Day"
+        Week = "Week", "Week"
+        Month = "Month", "Month"
+
+    class ActionReportTime(models.TextChoices):
+        impression = "impression", "Impression"
+        conversion = "conversion", "Conversion"
+
+    class AttributionWindow(models.TextChoices):
+        NONE = "NONE", "None"
+        DAY_1 = "DAY_1", "Day 1"
+        DAY_7 = "DAY_7", "Day 7"
+
     table_name = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
-    fields = ChoiceArrayField(
-        models.CharField(max_length=64, choices=facebook_ads.FIELDS_CHOICES)
-    )
+    fields = ChoiceArrayField(models.CharField(max_length=64, choices=FIELD_CHOICES))
     breakdowns = ChoiceArrayField(
-        models.CharField(max_length=64, choices=facebook_ads.BREAKDOWNS_CHOICES)
+        models.CharField(max_length=64, choices=BREAKDOWN_CHOICES)
     )
-    breakdowns = ChoiceArrayField(
-        models.CharField(max_length=64, choices=facebook_ads.ACTION_BREAKDOWNS_CHOICES)
+    action_breakdowns = ChoiceArrayField(
+        models.CharField(max_length=64, choices=ACTION_BREAKDOWN_CHOICES)
     )
-    aggregation = models.CharField(
-        max_length=8, choices=facebook_ads.AGGREGATIONS_CHOICES
+    aggregation = models.CharField(max_length=8, choices=Aggregation.choices)
+    action_report_time = models.CharField(
+        max_length=16, choices=ActionReportTime.choices
+    )
+    click_attribution_window = models.CharField(
+        max_length=16, choices=AttributionWindow.choices
+    )
+    view_attribution_window = models.CharField(
+        max_length=16, choices=AttributionWindow.choices
     )
     connector = models.ForeignKey(Connector, on_delete=models.CASCADE)
