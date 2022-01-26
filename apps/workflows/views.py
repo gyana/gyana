@@ -167,6 +167,7 @@ class WorkflowDuplicate(TurboUpdateView):
         for node in nodes:
             node_clone = node.make_clone({"workflow": clone})
             node_clone.data_updated = timezone.now()
+            # TODO: replace with bulkupdate
             node_clone.save()
             node_map[node] = node_clone
 

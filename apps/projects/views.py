@@ -96,14 +96,29 @@ class ProjectAutomate(ProjectTeamMixin, DetailView):
 
 
 class ProjectDuplicate(ProjectTeamMixin, TurboUpdateView):
-    template_name = "components/_duplicate.html"
     model = Project
     fields = []
     extra_context = {"object_name": "project"}
     pk_url_kwarg = "project_id"
 
     def form_valid(self, form):
-        self.clone = self.object.make_clone()
+        from apps.nodes.models import Node
+        from apps.tables.models import Table
+
+        self.clone = self.object.make_clone({"name": "Copy " + self.object.name})
+
+        tables = Table.objects.filter(project=self.clone).all()
+        input_nodes = Node.objects.filter(
+            workflow__project=self.clone,
+            kind=Node.Kind.INPUT,
+            input_table__isnull=False,
+        ).all()
+
+        for node in input_nodes:
+            node.input_table = next(
+                filter(lambda t: t.copied_from == node.input_table.id, tables)
+            )
+        Node.objects.bulk_update(input_nodes, ["input_table"])
 
         return super().form_valid(form)
 

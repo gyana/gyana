@@ -8,6 +8,7 @@ from model_clone.mixins.clone import CloneMixin
 from apps.base import clients
 from apps.base.models import BaseModel
 from apps.projects.models import Project
+from apps.tables.tasks import copy_table
 
 
 class AvailableManager(models.Manager):
@@ -56,6 +57,8 @@ class Table(CloneMixin, BaseModel):
 
     objects = models.Manager()
     available = AvailableManager()
+
+    copied_from = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return getattr(self, self.source).get_table_name()
@@ -131,3 +134,21 @@ class Table(CloneMixin, BaseModel):
     @property
     def used_in(self):
         return list(chain(self.used_in_workflows, self.used_in_dashboards))
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        from apps.integrations.models import Integration
+
+        attrs = attrs or {}
+        attrs["copied_from"] = self.id
+        if (
+            self.source == self.Source.INTEGRATION
+            and self.integration.kind == Integration.Kind.UPLOAD
+            and (integration_clone := attrs.get("integration"))
+        ):
+            attrs["project"] = integration_clone.project
+            attrs["bq_table"] = integration_clone.upload.table_id
+            attrs["bq_dataset"] = self.bq_dataset
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+
+        copy_table.delay(clone.bq_id, self.bq_id)
+        return clone

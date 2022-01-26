@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Max
 from django.urls import reverse
+from django.utils import timezone
 from model_clone import CloneMixin
 
 from apps.base.models import BaseModel
@@ -142,3 +143,25 @@ class Workflow(CloneMixin, BaseModel):
             self.runs.filter(state=JobRun.State.SUCCESS).order_by("-created").first()
         )
         self.save(update_fields=["state", "last_success_run"])
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        node_map = {}
+
+        nodes = self.nodes.all()
+        # First create the mapping between original and cloned nodes
+        for node in nodes:
+            node_clone = node.make_clone({"workflow": clone})
+            node_clone.data_updated = timezone.now()
+            node_clone.save()
+            node_map[node] = node_clone
+
+        # Then copy the relationships
+        for node in nodes:
+            node_clone = node_map[node]
+            for parent in node.parent_edges.iterator():
+                node_clone.parent_edges.create(
+                    parent_id=node_map[parent.parent].id, position=parent.position
+                )
+
+        return clone
