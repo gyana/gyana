@@ -21,7 +21,16 @@ const debounceTime = 300
  * </button>
  */
 export default class extends Controller {
-  static targets = ['modal', 'turboFrame', 'closingWarning', 'form', 'onParam']
+  static targets = [
+    'modal',
+    'turboFrame',
+    'closingWarning',
+    'form',
+    'onParam'
+  ]
+  static values = {
+    submitOnClose: Boolean
+  }
 
   initialize() {
     this.changed = false
@@ -125,11 +134,11 @@ export default class extends Controller {
     }
   }
 
-  close(e) {
+  close(event) {
     if (this.hasClosingWarningTarget && this.changed) {
       this.closingWarningTarget.removeAttribute('hidden')
     } else {
-      if (e.currentTarget.getAttribute && e.currentTarget.getAttribute('type') == 'submit') {
+      if (this.submitOnCloseValue) {
         this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='close']"))
       }
 

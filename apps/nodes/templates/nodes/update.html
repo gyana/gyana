@@ -26,11 +26,13 @@
       </div>
     </div>
     
-    <form id="node-update-form"
+    <form
+      id="node-update-form"
       class="form--no-layout overflow-hidden flex-1"
       action="{% url 'nodes:update' node.id %}"
       method="post"
-      data-tf-modal-target='form'
+      data-tf-modal-target="form"
+      data-tf-modal-submit-on-close-value="true"
       data-controller="live-update"
       data-action="
         change->tf-modal#change 
@@ -42,7 +44,7 @@
     >
 
       <div data-cy="update-sidebar" class="workflow-detail__sidebar">
-        <p class='pb-5'>{{ node.explanation }}</p>
+        <p class="pb-5">{{ node.explanation }}</p>
 
         <span data-live-update-target="loading" class="hidden">
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
