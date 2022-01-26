@@ -22,7 +22,7 @@ def send_export_email(file_path, user):
         "exports/email/export_ready_subject.txt", context
     ).strip()
     text_body = render_to_string("exports/email/export_ready_message.txt", context)
-    # message_template = get_template("exports/email/export_ready_message.html")
+    html_body = render_to_string("exports/email/export_ready_message.html", context)
 
     message = EmailMultiAlternatives(
         subject,
@@ -30,7 +30,5 @@ def send_export_email(file_path, user):
         "Gyana Notifications <notifications@gyana.com>",
         [user.email],
     )
-    # message.attach_alternative(
-    #     message_template.render({"user": user, "url": url}), "text/html"
-    # )
+    message.attach_alternative(html_body, "text/html")
     message.send()
