@@ -53,46 +53,46 @@
     {% endif %}
     {% endblock table.tfoot %}
   </table>
-  {% endblock table %}
-  
-  {% block pagination %}
-  {% if table.page and table.paginator.num_pages > 1 %}
-  <ul class="pagination">
-    {% if table.page.has_previous %}
-    {% block pagination.previous %}
-    <li class="previous">
-      <a href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}">
-        {% trans 'previous' %}
-      </a>
-    </li>
-    {% endblock pagination.previous %}
-    {% endif %}
-    {% if table.page.has_previous or table.page.has_next %}
-    {% block pagination.range %}
-    {% for p in table.page|table_page_range:table.paginator %}
-    <li {% if p == table.page.number %}class="active"{% endif %}>
-      {% if p == '...' %}
-      <a href="#">{{ p }}</a>
-      {% else %}
-      <a href="{% querystring table.prefixed_page_field=p %}">
-        {{ p }}
-      </a>
-      {% endif %}
-    </li>
-    {% endfor %}
-    {% endblock pagination.range %}
-    {% endif %}
-    {% if table.page.has_next %}
-    {% block pagination.next %}
-    <li class="next">
-      <a href="{% querystring table.prefixed_page_field=table.page.next_page_number %}">
-        {% trans 'next' %}
-      </a>
-    </li>
-    {% endblock pagination.next %}
-    {% endif %}
-  </ul>
-  {% endif %}
-  {% endblock pagination %}
+  {% endblock table %}  
 </div>
+
+{% block pagination %}
+{% if table.page and table.paginator.num_pages > 1 %}
+<ul class="pagination">
+  {% if table.page.has_previous %}
+  {% block pagination.previous %}
+  <li class="previous">
+    <a href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}">
+      {% trans 'previous' %}
+    </a>
+  </li>
+  {% endblock pagination.previous %}
+  {% endif %}
+  {% if table.page.has_previous or table.page.has_next %}
+  {% block pagination.range %}
+  {% for p in table.page|table_page_range:table.paginator %}
+  <li {% if p == table.page.number %}class="active"{% endif %}>
+    {% if p == '...' %}
+    <a href="#">{{ p }}</a>
+    {% else %}
+    <a href="{% querystring table.prefixed_page_field=p %}">
+      {{ p }}
+    </a>
+    {% endif %}
+  </li>
+  {% endfor %}
+  {% endblock pagination.range %}
+  {% endif %}
+  {% if table.page.has_next %}
+  {% block pagination.next %}
+  <li class="next">
+    <a href="{% querystring table.prefixed_page_field=table.page.next_page_number %}">
+      {% trans 'next' %}
+    </a>
+  </li>
+  {% endblock pagination.next %}
+  {% endif %}
+</ul>
+{% endif %}
+{% endblock pagination %}
 {% endblock table-wrapper %}
