@@ -151,6 +151,7 @@ class FacebookAdsCustomReportForm(LiveUpdateForm):
             "action_report_time",
             "click_attribution_window",
             "view_attribution_window",
+            "use_unified_attribution_setting",
         ]
         help_texts = {
             "table_name": "Table name",
@@ -161,6 +162,7 @@ class FacebookAdsCustomReportForm(LiveUpdateForm):
             "action_report_time": "Action Report Time",
             "click_attribution_window": "Click Attribution Window",
             "view_attribution_window": "View Attribution Window",
+            "use_unified_attribution_setting": "Use unified attribution setting",
         }
 
 
