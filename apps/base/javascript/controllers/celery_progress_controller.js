@@ -79,7 +79,7 @@ export default class extends Controller {
 
   disconnect() {
     if (!this.dontStartValue) {
-      window.removeEventListener("beforeunload", this.onUnloadCall)
+      window.removeEventListener("beforeunload", this.handleBeforeUnload)
     }
   }
 
