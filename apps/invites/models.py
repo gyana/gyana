@@ -43,6 +43,7 @@ class Invite(AbstractBaseInvitation):
             {
                 "invite_url": invite_url,
                 "site_name": current_site.name,
+                "team": self.team,
                 "email": self.email,
                 "key": self.key,
                 "inviter": self.inviter,

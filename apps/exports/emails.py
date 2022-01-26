@@ -2,27 +2,35 @@ from datetime import datetime as dt
 from datetime import timedelta
 
 from django.core.mail.message import EmailMultiAlternatives
-from django.template.loader import get_template
+from django.template.loader import get_template, render_to_string
 
 from apps.base import clients
 
 
 def send_export_email(file_path, user):
     blob = clients.get_bucket().blob(file_path)
-    url = blob.generate_signed_url(
+    download_link = blob.generate_signed_url(
         version="v4", expiration=dt.now() + timedelta(days=7), scheme="https"
     )
 
-    message_template_plain = get_template("exports/email/export_ready_message.txt")
-    message_template = get_template("exports/email/export_ready_message.html")
+    context = {
+        "user": user,
+        "download_link": download_link,
+    }
+
+    subject = render_to_string(
+        "exports/email/export_ready_subject.txt", context
+    ).strip()
+    text_body = render_to_string("exports/email/export_ready_message.txt", context)
+    # message_template = get_template("exports/email/export_ready_message.html")
 
     message = EmailMultiAlternatives(
-        "Your export is ready",
-        message_template_plain.render({"user": user, "url": url}),
+        subject,
+        text_body,
         "Gyana Notifications <notifications@gyana.com>",
         [user.email],
     )
-    message.attach_alternative(
-        message_template.render({"user": user, "url": url}), "text/html"
-    )
+    # message.attach_alternative(
+    #     message_template.render({"user": user, "url": url}), "text/html"
+    # )
     message.send()
