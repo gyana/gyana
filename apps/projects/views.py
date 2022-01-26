@@ -93,3 +93,19 @@ class ProjectAutomate(ProjectTeamMixin, DetailView):
 
     def get_success_url(self):
         return reverse("projects:automate", args=(self.object.id,))
+
+
+class ProjectDuplicate(ProjectTeamMixin, TurboUpdateView):
+    template_name = "components/_duplicate.html"
+    model = Project
+    fields = []
+    extra_context = {"object_name": "project"}
+    pk_url_kwarg = "project_id"
+
+    def form_valid(self, form):
+        self.clone = self.object.make_clone()
+
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse("projects:detail", args=(self.clone.id,))
