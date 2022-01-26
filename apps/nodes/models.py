@@ -311,6 +311,16 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     def used_in(self):
         return list(chain(self.used_in_workflows, self.used_in_dashboards))
 
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        if self.kind == self.Kind.OUTPUT and hasattr(self, "table"):
+            self.table.make_clone({"workflow_node": clone})
+        elif self.intermediate_table:
+            self.intermediate_table.make_clone({"intermediate_node": clone})
+        elif self.cache_table:
+            self.cache_table.make_clone({"cache_node": clone})
+        return clone
+
 
 class Edge(BaseModel):
     class Meta:

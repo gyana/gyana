@@ -142,6 +142,7 @@ class Page(CloneMixin, BaseModel):
     class Meta:
         unique_together = ("dashboard", "position")
 
+    # TODO: do we need some reference to control here?
     _clone_m2o_or_o2m_fields = ["widgets"]
 
     dashboard = models.ForeignKey(

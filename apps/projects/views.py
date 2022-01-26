@@ -104,6 +104,7 @@ class ProjectDuplicate(ProjectTeamMixin, TurboUpdateView):
     def form_valid(self, form):
         from apps.nodes.models import Node
         from apps.tables.models import Table
+        from apps.widgets.models import Widget
 
         self.clone = self.object.make_clone({"name": "Copy " + self.object.name})
 
@@ -119,6 +120,15 @@ class ProjectDuplicate(ProjectTeamMixin, TurboUpdateView):
                 filter(lambda t: t.copied_from == node.input_table.id, tables)
             )
         Node.objects.bulk_update(input_nodes, ["input_table"])
+
+        widgets = Widget.objects.filter(
+            page__dashboard__project=self.clone, table__isnull=False
+        ).all()
+        for widget in widgets:
+            widget.table = next(
+                filter(lambda t: t.copied_from == widget.table.id, tables)
+            )
+        Widget.objects.bulk_update(widgets, ["table"])
 
         return super().form_valid(form)
 

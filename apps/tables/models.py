@@ -142,11 +142,28 @@ class Table(CloneMixin, BaseModel):
         attrs["copied_from"] = self.id
         if (
             self.source == self.Source.INTEGRATION
-            and self.integration.kind == Integration.Kind.UPLOAD
+            and self.integration.kind
+            in [Integration.Kind.UPLOAD, Integration.Kind.SHEET]
             and (integration_clone := attrs.get("integration"))
         ):
             attrs["project"] = integration_clone.project
-            attrs["bq_table"] = integration_clone.upload.table_id
+            attrs["bq_table"] = integration_clone.source_obj.table_id
+            attrs["bq_dataset"] = self.bq_dataset
+
+        elif self.source == self.Source.WORKFLOW_NODE:
+            clone_node = attrs["workflow_node"]
+            attrs["project"] = clone_node.workflow.project
+            attrs["bq_table"] = clone_node.bq_output_table_id
+            attrs["bq_dataset"] = self.bq_dataset
+        elif self.source == self.Source.INTERMEDIATE_NODE:
+            clone_node = attrs["intermediate_node"]
+            attrs["project"] = clone_node.workflow.project
+            attrs["bq_table"] = clone_node.bq_intermediate_table_id
+            attrs["bq_dataset"] = self.bq_dataset
+        elif self.source == self.Source.CACHE_NODE:
+            clone_node = attrs["cache_node"]
+            attrs["project"] = clone_node.workflow.project
+            attrs["bq_table"] = clone_node.bq_cache_table_id
             attrs["bq_dataset"] = self.bq_dataset
         clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
 
