@@ -2,7 +2,6 @@ import { Controller } from '@hotwired/stimulus'
 
 const debounceTime = 300
 
-// Open a modal with the content populated by a turbo-frame
 /**
  * Modal controller with content populated by a turbo-frame.
  * 

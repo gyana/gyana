@@ -1,5 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 
+/**
+ * Hooks CeleryProgress to a backend task and updates accordingly.
+ */
 export default class extends Controller {
   static values = {
     done: Boolean,

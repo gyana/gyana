@@ -1,6 +1,10 @@
 import { Controller } from '@hotwired/stimulus'
 import { getApiClient } from 'apps/base/javascript/api'
 
+/**
+ * Controller for toast notifications, removes them automatically
+ * after a timeout.
+ */
 export default class extends Controller {
   static targets = ['close']
 
