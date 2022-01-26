@@ -5,6 +5,7 @@ from apps.base.forms import BaseModelForm
 from apps.connectors.forms import (
     ConnectorCustomReportsForm,
     ConnectorPrebuiltReportsForm,
+    ConnectorSettingsForm,
     ConnectorTablesForm,
 )
 from apps.customapis.forms import CustomApiUpdateForm
@@ -24,6 +25,7 @@ TAB_TO_CONNECTOR_FORM_CLASS = {
     "tables": ConnectorTablesForm,
     "prebuilt_reports": ConnectorPrebuiltReportsForm,
     "custom_reports": ConnectorCustomReportsForm,
+    "settings": ConnectorSettingsForm,
 }
 
 KIND_TO_FORM_CLASS = {

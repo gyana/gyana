@@ -115,7 +115,6 @@ class ConnectorPrebuiltReportsForm(LiveFormsetMixin, BaseModelForm):
     def post_save(self, instance):
         try:
             instance.update_fivetran_config()
-            clients.fivetran().test(instance)
         except FivetranClientError as e:
             honeybadger.notify(e)
             raise ValidationError(e)
@@ -152,3 +151,20 @@ FacebookAdCustomReportFormset = forms.inlineformset_factory(
     extra=0,
     formset=RequiredInlineFormset,
 )
+
+
+class ConnectorSettingsForm(LiveFormsetMixin, BaseModelForm):
+    class Meta:
+        model = Connector
+        fields = ["timeframe_months"]
+        labels = {"timeframe_months": "Historical Sync Timeframe"}
+        help_texts = {
+            "timeframe_months": "Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once connection is created. NOTE: The more months of reporting data you sync, the longer your initial sync will take."
+        }
+
+    def post_save(self, instance):
+        try:
+            instance.update_fivetran_config()
+        except FivetranClientError as e:
+            honeybadger.notify(e)
+            raise ValidationError(e)

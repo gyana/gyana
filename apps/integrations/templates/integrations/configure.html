@@ -1,5 +1,5 @@
 {% extends 'integrations/base_setup.html' %}
-{% load waffle_tags %}
+{% load waffle_tags cache %}
 
 {% block tab %}
 
@@ -30,7 +30,9 @@
         <p class="alert">
           If you're not sure about these options, you can start with the defaults and tweak them later.
           {% if object.kind == 'connector' %}
-            You can also go back to the <a href="{{ object.connector.fivetran_authorization_url }}" class="link">authorization</a> page.
+            {% cache 500 fivetran_authorization_url object.id %}
+              You can also go back to the <a href="{{ object.connector.fivetran_authorization_url }}" class="link">authorization</a> page.
+            {% endcache %}
           {% endif %}
         </p>
 
@@ -54,6 +56,12 @@
                 class="tabbar__link {% if request.GET.tab == 'custom_reports' %}tabbar__link--active{% endif %}"
               >
                 Custom Reports
+              </a>
+              <a
+                href="{% url "project_integrations:configure" project.id object.id %}?tab=settings"
+                class="tabbar__link {% if request.GET.tab == 'settings' %}tabbar__link--active{% endif %}"
+              >
+                Settings
               </a>
             </div>
           {% endif %}
