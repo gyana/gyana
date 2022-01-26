@@ -114,26 +114,11 @@ class ConnectorPrebuiltReportsForm(LiveFormsetMixin, BaseModelForm):
         choices=zip(facebook_ads.PREBUILT_REPORTS, facebook_ads.PREBUILT_REPORTS),
     )
 
-    def post_save(self, instance):
-        try:
-            instance.update_fivetran_config()
-        except FivetranClientError as e:
-            honeybadger.notify(e)
-            raise ValidationError(e)
-
 
 class ConnectorCustomReportsForm(LiveFormsetMixin, LiveUpdateForm):
     class Meta:
         model = Connector
         fields = []
-
-    def post_save(self, instance):
-        try:
-            instance.update_fivetran_config()
-            clients.fivetran().test(instance)
-        except FivetranClientError as e:
-            honeybadger.notify(e)
-            raise ValidationError(e)
 
     def get_live_formsets(self):
         return [FacebookAdCustomReportFormset]
@@ -184,10 +169,3 @@ class ConnectorSettingsForm(LiveFormsetMixin, BaseModelForm):
         help_texts = {
             "timeframe_months": "Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once connection is created. NOTE: The more months of reporting data you sync, the longer your initial sync will take."
         }
-
-    def post_save(self, instance):
-        try:
-            instance.update_fivetran_config()
-        except FivetranClientError as e:
-            honeybadger.notify(e)
-            raise ValidationError(e)

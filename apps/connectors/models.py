@@ -405,10 +405,10 @@ class FacebookAdsCustomReport(BaseModel):
     table_name = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
     fields = ChoiceArrayField(models.CharField(max_length=64, choices=FIELD_CHOICES))
     breakdowns = ChoiceArrayField(
-        models.CharField(max_length=64, choices=BREAKDOWN_CHOICES)
+        models.CharField(max_length=64, choices=BREAKDOWN_CHOICES), default=list, blank=True
     )
     action_breakdowns = ChoiceArrayField(
-        models.CharField(max_length=64, choices=ACTION_BREAKDOWN_CHOICES)
+        models.CharField(max_length=64, choices=ACTION_BREAKDOWN_CHOICES), default=list, blank=True
     )
     aggregation = models.CharField(
         max_length=8, choices=Aggregation.choices, default=Aggregation.Day

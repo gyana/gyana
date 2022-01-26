@@ -9,6 +9,7 @@ from django.views.generic.edit import DeleteView, UpdateView
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
+from apps.base import clients
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
 from apps.base.views import FormsetUpdateView, TurboUpdateView
 from apps.integrations.filters import IntegrationFilter
@@ -159,6 +160,13 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
                     formset.save()
 
         if self.request.POST.get("submit") == "Save & Import":
+            if (
+                self.object.kind == Integration.Kind.CONNECTOR
+                and self.object.connector.service == "facebook_ads"
+            ):
+                self.object.connector.update_fivetran_config()
+                clients.fivetran().test(self.object.connector)
+
             run_integration(self.object.kind, self.object.source_obj, self.request.user)
             analytics.track(
                 self.request.user.id,
