@@ -25,10 +25,10 @@ def send_export_email(file_path, user):
     html_body = render_to_string("exports/email/export_ready_message.html", context)
 
     message = EmailMultiAlternatives(
-        subject,
-        text_body,
-        "Gyana Notifications <notifications@gyana.com>",
-        [user.email],
+        subject=subject,
+        from_email="Gyana Notifications <notifications@gyana.com>",
+        to=[user.email],
+        body=text_body,
     )
     message.attach_alternative(html_body, "text/html")
     message.send()

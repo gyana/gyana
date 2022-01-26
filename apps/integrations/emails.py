@@ -49,6 +49,9 @@ def integration_ready_email(integration: Integration, recipient: CustomUser):
     text_body = render_to_string(
         "integrations/email/integration_ready_message.txt", context
     )
+    html_body = render_to_string(
+        "integrations/email/integration_ready_message.html", context
+    )
 
     message = EmailMultiAlternatives(
         subject=subject,
@@ -56,6 +59,6 @@ def integration_ready_email(integration: Integration, recipient: CustomUser):
         to=[recipient.email],
         body=text_body,
     )
-    # message.attach_alternative(html_body, "text/html")
+    message.attach_alternative(html_body, "text/html")
 
     return message
