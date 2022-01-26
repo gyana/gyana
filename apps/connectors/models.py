@@ -352,7 +352,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
     def report_table_names(self):
         prebuilt = [r.lower() for r in self.prebuilt_reports]
         custom = [r.table_name for r in self.facebookadscustomreport_set.all()]
-        return prebuilt + custom
+        return set(prebuilt + custom)
 
     @property
     def setup_state_icon(self):
@@ -391,6 +391,7 @@ class FacebookAdsCustomReport(BaseModel):
         Day = "Day", "Day"
         Week = "Week", "Week"
         Month = "Month", "Month"
+        Lifetime = "Lifetime", "Lifetime"
 
     class ActionReportTime(models.TextChoices):
         impression = "impression", "Impression"
@@ -409,14 +410,23 @@ class FacebookAdsCustomReport(BaseModel):
     action_breakdowns = ChoiceArrayField(
         models.CharField(max_length=64, choices=ACTION_BREAKDOWN_CHOICES)
     )
-    aggregation = models.CharField(max_length=8, choices=Aggregation.choices)
+    aggregation = models.CharField(
+        max_length=8, choices=Aggregation.choices, default=Aggregation.Day
+    )
     action_report_time = models.CharField(
-        max_length=16, choices=ActionReportTime.choices
+        max_length=16,
+        choices=ActionReportTime.choices,
+        default=ActionReportTime.impression,
     )
     click_attribution_window = models.CharField(
-        max_length=16, choices=AttributionWindow.choices
+        max_length=16,
+        choices=AttributionWindow.choices,
+        default=AttributionWindow.DAY_7,
     )
     view_attribution_window = models.CharField(
-        max_length=16, choices=AttributionWindow.choices
+        max_length=16,
+        choices=AttributionWindow.choices,
+        default=AttributionWindow.DAY_1,
     )
+    use_unified_attribution_setting = models.BooleanField(default=True)
     connector = models.ForeignKey(Connector, on_delete=models.CASCADE)

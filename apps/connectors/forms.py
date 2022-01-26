@@ -4,7 +4,7 @@ from django.forms.widgets import CheckboxInput, HiddenInput
 from honeybadger import honeybadger
 
 from apps.base import clients
-from apps.base.forms import BaseModelForm, LiveFormsetMixin
+from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveUpdateForm
 from apps.base.formsets import RequiredInlineFormset
 from apps.connectors.fivetran.services import facebook_ads
 
@@ -122,7 +122,7 @@ class ConnectorPrebuiltReportsForm(LiveFormsetMixin, BaseModelForm):
             raise ValidationError(e)
 
 
-class ConnectorCustomReportsForm(LiveFormsetMixin, BaseModelForm):
+class ConnectorCustomReportsForm(LiveFormsetMixin, LiveUpdateForm):
     class Meta:
         model = Connector
         fields = []
@@ -139,10 +139,29 @@ class ConnectorCustomReportsForm(LiveFormsetMixin, BaseModelForm):
         return [FacebookAdCustomReportFormset]
 
 
-class FacebookAdsCustomReportForm(BaseModelForm):
+class FacebookAdsCustomReportForm(LiveUpdateForm):
     class Meta:
         model = FacebookAdsCustomReport
-        fields = "__all__"
+        fields = [
+            "table_name",
+            "fields",
+            "breakdowns",
+            "action_breakdowns",
+            "aggregation",
+            "action_report_time",
+            "click_attribution_window",
+            "view_attribution_window",
+        ]
+        help_texts = {
+            "table_name": "Table name",
+            "fields": "Fields",
+            "breakdowns": "Breakdowns",
+            "action_breakdowns": "Action Breakdowns",
+            "aggregation": "Aggregation",
+            "action_report_time": "Action Report Time",
+            "click_attribution_window": "Click Attribution Window",
+            "view_attribution_window": "View Attribution Window",
+        }
 
 
 FacebookAdCustomReportFormset = forms.inlineformset_factory(
