@@ -349,6 +349,12 @@ class Connector(DirtyFieldsMixin, BaseModel):
         clients.fivetran().update(self, config={**self.config, **extra_config})
 
     @property
+    def report_table_names(self):
+        prebuilt = [r.lower() for r in self.prebuilt_reports]
+        custom = [r.table_name for r in self.facebookadscustomreport_set.all()]
+        return prebuilt + custom
+
+    @property
     def setup_state_icon(self):
         return self.SETUP_STATE_TO_ICON[self.setup_state]
 

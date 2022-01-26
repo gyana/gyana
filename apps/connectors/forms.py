@@ -71,7 +71,9 @@ class ConnectorTablesForm(LiveFormsetMixin, BaseModelForm):
                 f"{schema.name_in_destination}_tables"
             ] = forms.MultipleChoiceField(
                 choices=[
-                    (t.name_in_destination, t.display_name) for t in schema.tables
+                    (t.name_in_destination, t.display_name)
+                    for t in schema.tables
+                    if t.name_in_destination not in self.instance.report_table_names
                 ],
                 widget=ConnectorSchemaMultiSelect,
                 initial=[t.name_in_destination for t in schema.tables if t.enabled],
