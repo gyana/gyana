@@ -42,20 +42,14 @@
           <turbo-frame id="customreports:list" class="w-full" src="{% url 'connectors_customreports:list' object.connector.id %}">
             <div class='placeholder-scr placeholder-scr--fillscreen'>
               <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-              <p class='placeholder-scr__title'>Loading workflows overview...</p>
+              <p class='placeholder-scr__title'>Loading custom reports...</p>
             </div>
           </turbo-frame>
         {% endflag %}
 
-        <div class="flex flex-1 gap-7 w-full">
-          <button type="submit" name="submit" value="Save" class="button button--outline button--success flex-1">
-            Save
-          </button>
-
-          <button type="submit" name="submit" value="Save & Import" class="button button--success flex-1" data-loading-message="Validiting setup...">
-            Save & Import
-          </button>
-        </div>
+        <button type="submit" name="submit" value="submit" class="button button--success mt-4 w-full">
+          Import
+        </button>
       </form>
     </div>
   </div>

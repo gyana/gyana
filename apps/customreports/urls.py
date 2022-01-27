@@ -1,20 +1,37 @@
 from django.urls import path
 
 from . import frames, views
+from .access import login_and_customreport_required
 
 app_name = "customreports"
 connector_urlpatterns = (
     [
-        path("", frames.FacebookAdsCustomReportList.as_view(), name="list"),
-        path("new", views.FacebookAdsCustomReportCreate.as_view(), name="create"),
+        path(
+            "",
+            login_and_customreport_required(
+                frames.FacebookAdsCustomReportList.as_view()
+            ),
+            name="list",
+        ),
+        path(
+            "new",
+            login_and_customreport_required(
+                views.FacebookAdsCustomReportCreate.as_view()
+            ),
+            name="create",
+        ),
         path(
             "<hashid:pk>/update",
-            frames.FacebookAdsCustomReportUpdate.as_view(),
+            login_and_customreport_required(
+                frames.FacebookAdsCustomReportUpdate.as_view()
+            ),
             name="update",
         ),
         path(
             "<hashid:pk>/delete",
-            views.FacebookAdsCustomReportDelete.as_view(),
+            login_and_customreport_required(
+                views.FacebookAdsCustomReportDelete.as_view()
+            ),
             name="delete",
         ),
     ],

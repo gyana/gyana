@@ -50,6 +50,7 @@ class ConnectorUpdateForm(LiveFormsetMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
 
+        self._is_beta = kwargs.pop("is_beta")
         super().__init__(*args, **kwargs)
 
         self.instance.sync_schema_obj_from_fivetran()
@@ -90,6 +91,10 @@ class ConnectorUpdateForm(LiveFormsetMixin, forms.ModelForm):
             schema_obj.mutate_from_cleaned_data(cleaned_data)
             clients.fivetran().update_schemas(self.instance, schema_obj.to_dict())
             self.instance.sync_schema_obj_from_fivetran()
+
+            if self._is_beta and self.object.connector.custom_reports:
+                self.object.connector.update_fivetran_config_custom_reports()
+                clients.fivetran().test(self.object.connector)
         except FivetranClientError as e:
             honeybadger.notify(e)
             raise ValidationError(

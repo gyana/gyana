@@ -8,8 +8,8 @@ from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView, UpdateView
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
+from waffle import flag_is_active
 
-from apps.base import clients
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
 from apps.base.views import FormsetUpdateView, TurboUpdateView
 from apps.integrations.filters import IntegrationFilter
@@ -147,6 +147,7 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.update({"instance": self.object.source_obj})
+        kwargs["is_beta"] = flag_is_active(self.request, "beta")
         return kwargs
 
     def form_valid(self, form):
@@ -157,29 +158,17 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
                 if formset.is_valid():
                     formset.save()
 
-        if self.request.POST.get("submit") == "Save & Import":
-            if (
-                self.object.kind == Integration.Kind.CONNECTOR
-                and self.object.connector.service == "facebook_ads"
-            ):
-                self.object.connector.update_fivetran_config_custom_reports()
-                clients.fivetran().test(self.object.connector)
-
-            run_integration(self.object.kind, self.object.source_obj, self.request.user)
-            analytics.track(
-                self.request.user.id,
-                INTEGRATION_SYNC_STARTED_EVENT,
-                {
-                    "id": self.object.id,
-                    "type": self.object.kind,
-                    "name": self.object.name,
-                },
-            )
-            return redirect(self.get_success_url())
-
-        return redirect(
-            "project_integrations:configure", self.project.id, self.object.id
+        run_integration(self.object.kind, self.object.source_obj, self.request.user)
+        analytics.track(
+            self.request.user.id,
+            INTEGRATION_SYNC_STARTED_EVENT,
+            {
+                "id": self.object.id,
+                "type": self.object.kind,
+                "name": self.object.name,
+            },
         )
+        return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:
         return reverse(

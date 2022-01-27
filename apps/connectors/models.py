@@ -289,12 +289,15 @@ class Connector(DirtyFieldsMixin, BaseModel):
             # certain connectors fail to return schema objects
             pass
 
-    def update_fivetran_config_custom_reports(self):
-        custom_tables = [
+    @property
+    def custom_reports(self):
+        return [
             forms.model_to_dict(obj) for obj in self.facebookadscustomreport_set.all()
         ]
+
+    def update_fivetran_config(self):
         clients.fivetran().update(
-            self, config={**self.config, "custom_tables": custom_tables}
+            self, config={**self.config, "custom_tables": self.custom_reports}
         )
 
     @property
