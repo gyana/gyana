@@ -1,9 +1,16 @@
 from rest_framework import serializers
 
 from apps.filters.models import Filter
+from apps.tables.models import Table
 
 from .config import NODE_CONFIG
 from .models import Edge, Node, Workflow
+
+
+class TableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Table
+        fields = ("id", "owner_name")
 
 
 class EdgeSerializer(serializers.ModelSerializer):
@@ -16,6 +23,7 @@ class NodeSerializer(serializers.ModelSerializer):
 
     workflow = serializers.PrimaryKeyRelatedField(queryset=Workflow.objects.all())
     description = serializers.SerializerMethodField()
+    input_table = TableSerializer(many=False, required=False)
     parent_edges = EdgeSerializer(many=True, required=False)
 
     class Meta:

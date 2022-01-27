@@ -6,11 +6,12 @@ import { updateNode } from '../api'
 interface Props {
   id: string
   name: string
+  placeholder: string
   kind: string
 }
 
-const NodeName: React.FC<Props> = ({ id, name, kind }) => {
-  const [text, setText] = useState(name)
+const NodeName: React.FC<Props> = ({ id, name, placeholder, kind }) => {
+  const [text, setText] = useState(name || '')
   const updateName = useDebouncedCallback(async (name: string) => {
     await updateNode(id, { name })
     if (kind == 'output') {
@@ -37,6 +38,7 @@ const NodeName: React.FC<Props> = ({ id, name, kind }) => {
   return (
     <input
       className='input__contenteditable absolute -top-12'
+      placeholder={placeholder}
       value={text}
       onChange={(e) => setText(e.target.value)}
     />

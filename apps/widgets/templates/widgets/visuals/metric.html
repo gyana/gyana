@@ -1,10 +1,12 @@
+{% load humanize %}
+
 <div class="metric">
   {% if widget.name %}
   <h4 class="metric__title">{{ widget.name }}</h4>
   {% endif %}
 
   <h2 class="metric__value">
-    {{ metric|floatformat:widget.rounding_decimal }}
+    {{ metric|floatformat:widget.rounding_decimal|intcomma }}
   </h2>
 
   <p class="metric__comparison">
