@@ -23,6 +23,15 @@ class WorkflowTable(tables.Table):
     class Meta:
         model = Workflow
         fields = ("name", "last_success_run", "created", "updated")
+        sequence = (
+            "name",
+            "status",
+            "is_scheduled",
+            "last_success_run",
+            "created",
+            "updated",
+            "duplicate",
+        )
         attrs = {"class": "table"}
 
     name = tables.Column(linkify=True)
