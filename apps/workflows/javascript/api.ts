@@ -8,11 +8,11 @@ export const toNode = (res, position: XYPosition): Node => ({
   id: `${res.id}`,
   type: ['input', 'output', 'text'].includes(res.kind) ? res.kind : 'default',
   data: {
-    label: res.name || NODES[res.kind].displayName,
+    label: res.name,
     icon: NODES[res.kind].icon,
     kind: res.kind,
     error: res.error,
-    input: res.input_table ? res.input_table : null,
+    tableName: res.input_table ? res.input_table.owner_name : undefined,
     ...(res.kind === 'text' ? { text: res.text_text } : {}),
     description: res.description,
   },

@@ -15,7 +15,7 @@ import NodeName from './NodeName'
 import NodeDescription from './NodeDescription'
 import { ErrorIcon, WarningIcon } from './NodeIcons'
 import { NODES } from '../interfaces'
-import { getNode, updateNode } from '../api'
+import { getNode, toNode, updateNode } from '../api'
 import { GyanaEvents } from 'apps/base/javascript/events'
 
 interface Props<T = any> {
@@ -40,7 +40,7 @@ const NodeContent: React.FC<Props> = ({ id, data, showFilledIcon = true }) => {
       <NodeButtons id={id} />
       <i
         className={`
-          ${showFilledIcon ? "fas" : "fal"}
+          ${showFilledIcon ? 'fas' : 'fal opacity-80'}
           fa-fw
           ${data.icon}
           ${showContent && 'absolute opacity-10'}`
@@ -54,15 +54,21 @@ const NodeContent: React.FC<Props> = ({ id, data, showFilledIcon = true }) => {
       <div className={`p-2 ${!showContent && 'hidden'}`}>
         <NodeDescription id={id} data={data} />
       </div>
-      <NodeName id={id} name={data.label} kind={data.kind} />
+      <NodeName
+        id={id}
+        placeholder={data.tableName || NODES[data.kind].displayName}
+        name={data.label}
+        kind={data.kind}
+      />
     </>
   )
 }
 
 const InputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
+  const [stateData, setStateData] = useState(data)
   const onNodeConfigUpdate = async () => {
     const result = await getNode(id)
-    data.input = result.input
+    setStateData(toNode(result, { x: result.x, y: result.y }).data)
   }
 
   useEffect(() => {
@@ -73,7 +79,7 @@ const InputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
 
   return (
     <>
-      <NodeContent id={id} data={data} showFilledIcon={data.input} />
+      <NodeContent id={id} data={stateData} showFilledIcon={!!stateData.tableName} />
       <Handle type='source' position={Position.Right} isConnectable={isConnectable} />
     </>
   )
