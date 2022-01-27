@@ -4,7 +4,7 @@
 {% load waffle_tags %}
 
 {% block tab %}
-<div class="flex flex-col space-y-6 flex-1 pad">
+<div class="flex flex-col space-y-6 flex-1 pad overflow-hidden">
   {% if integration.is_creators_only_integration and integration.created_by == request.user %}
     <div class="card card--none">
       <div class="table__empty">
@@ -18,7 +18,7 @@
     </div>
   {% endif %}
 
-  <div class="card card--none">
+  <div class="card card--none card--flex flex-col overflow-hidden">
     <div class="tabbar">
       <a
         class="tabbar__link {% if not request.GET.view or request.GET.view == 'preview' %}tabbar__link--active{% endif %}"
@@ -52,7 +52,7 @@
       {% endif %} {% endcomment %}
     </div>
 
-    <div class="flex flex-row">
+    <div class="flex flex-row overflow-auto">
       {% if tables|length > 1 %}
         <div class="bg-gray-20 overflow-auto w-100 border-gray border-0 border-r flex-shrink-0 p-4">
           <ul class="flex flex-col space-y-2">
