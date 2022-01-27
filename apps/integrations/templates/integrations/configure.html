@@ -40,8 +40,12 @@
 
         {% include "django/forms/default_form.html" %}
 
-        <turbo-frame id="customreports:list" src="{% url 'connectors_customreports:list' object.connector.id %}">
-        </turbo-frame>
+        <label>
+          Custom reports
+          <p class="input__help-text">Build custom reports (you can change this later)</p>
+        </label>
+
+        <turbo-frame id="customreports:list" class="w-full" src="{% url 'connectors_customreports:list' object.connector.id %}"></turbo-frame>
 
         <div class="flex flex-1 gap-7 w-full">
           <button type="submit" name="submit" value="Save" class="button button--outline button--success flex-1">

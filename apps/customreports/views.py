@@ -18,7 +18,7 @@ class FacebookAdsCustomReportCreate(ConnectorMixin, TurboCreateView):
         kwargs["connector"] = self.connector
         return kwargs
 
-    def get_success_url(self) -> str:
+    def get_success_url(self):
         return reverse("connectors_customreports:list", args=(self.connector.id,))
 
 
@@ -26,5 +26,5 @@ class FacebookAdsCustomReportDelete(ConnectorMixin, DeleteView):
     template_name = "customreports/delete.html"
     model = FacebookAdsCustomReport
 
-    def get_success_url(self) -> str:
+    def get_success_url(self):
         return reverse("connectors_customreports:list", args=(self.connector.id,))

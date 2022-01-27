@@ -1,4 +1,4 @@
-from django.urls import reverse_lazy
+from django.urls import reverse
 from django_tables2 import SingleTableMixin
 
 from apps.base.frames import TurboFrameListView, TurboFrameUpdateView
@@ -31,5 +31,9 @@ class FacebookAdsCustomReportUpdate(ConnectorMixin, TurboFrameUpdateView):
     template_name = "customreports/update.html"
     model = FacebookAdsCustomReport
     form_class = FacebookAdsCustomReportUpdateForm
-    success_url = reverse_lazy("customreports:list")
     turbo_frame_dom_id = "customreports:update"
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "connectors_customreports:update", args=(self.connector.id, self.object.id)
+        )

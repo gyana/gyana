@@ -31,9 +31,8 @@ class FacebookAdsCustomReport(BaseModel):
     table_name = models.CharField(
         max_length=settings.BIGQUERY_TABLE_NAME_LENGTH, default="Untitled custom report"
     )
-    # default empty list (for create), but blank is False (>1 required for update)
     fields = ChoiceArrayField(
-        models.CharField(max_length=64, choices=FIELD_CHOICES), default=list
+        models.CharField(max_length=64, choices=FIELD_CHOICES), default=["ad_id"]
     )
     breakdowns = ChoiceArrayField(
         models.CharField(max_length=64, choices=BREAKDOWN_CHOICES),
