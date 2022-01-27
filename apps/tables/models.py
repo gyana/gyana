@@ -144,8 +144,9 @@ class Table(CloneMixin, BaseModel):
             integration_clone := attrs.get("integration")
         ):
             attrs["project"] = integration_clone.project
-            if integration_clone.kindin[
-                Integration.Kind.UPLOAD, Integration.Kind.SHEET
+            if integration_clone.kind in [
+                Integration.Kind.UPLOAD,
+                Integration.Kind.SHEET,
             ]:
 
                 attrs["bq_table"] = integration_clone.source_obj.table_id
@@ -174,7 +175,10 @@ class Table(CloneMixin, BaseModel):
             attrs["project"] = clone_node.workflow.project
             attrs["bq_table"] = clone_node.bq_cache_table_id
             attrs["bq_dataset"] = self.bq_dataset
-        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        clone = super().make_clone(
+            attrs=attrs,
+            sub_clone=sub_clone,
+        )
 
         copy_table.delay(clone.bq_id, self.bq_id)
         return clone
