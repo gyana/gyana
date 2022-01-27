@@ -1,4 +1,4 @@
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views.generic.edit import DeleteView
 
 from apps.base.views import TurboCreateView
