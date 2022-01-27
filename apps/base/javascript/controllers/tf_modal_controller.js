@@ -27,9 +27,6 @@ export default class extends Controller {
     'form',
     'onParam'
   ]
-  static values = {
-    submitOnClose: Boolean
-  }
 
   initialize() {
     this.changed = false
@@ -137,7 +134,7 @@ export default class extends Controller {
     if (this.hasClosingWarningTarget && this.changed) {
       this.closingWarningTarget.removeAttribute('hidden')
     } else {
-      if (this.submitOnCloseValue) {
+      if (this.formTarget.dataset.tfModalSubmitOnClose != undefined) {
         this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='close']"))
       }
 
