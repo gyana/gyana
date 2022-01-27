@@ -1,0 +1,16 @@
+
+{% extends "teams/settings_base.html" %}
+
+{% block app %}
+<div class="card card--sm">
+    <h1>Delete</h1>
+    <p>Are you sure you want to delete?</p>
+    <form method="post"
+          action="{% url 'customreports:delete' object.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger" > Yes </button>
+        <a href="{% url 'customreports:list' %}"
+           class="btn btn-default">No</a>
+    </form>
+</div>
+{% endblock %} 

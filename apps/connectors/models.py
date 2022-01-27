@@ -11,40 +11,12 @@ from django.utils.functional import cached_property
 from apps.base import clients
 from apps.base.models import BaseModel
 from apps.connectors.fivetran.schema import FivetranSchemaObj
-from apps.connectors.fivetran.services import facebook_ads
 from apps.integrations.models import Integration
 
 from .fivetran.config import ServiceTypeEnum, get_services_obj
 
 FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
 FIVETRAN_SYNC_FREQUENCY_HOURS = 6
-
-
-class ChoiceArrayField(ArrayField):
-    """
-    A field that allows us to store an array of choices.
-
-    Uses Django 1.9's postgres ArrayField
-    and a MultipleChoiceField for its formfield.
-
-    Usage:
-
-        choices = ChoiceArrayField(models.CharField(max_length=...,
-                                                    choices=(...,)),
-                                   default=[...])
-    """
-
-    def formfield(self, **kwargs):
-        defaults = {
-            "form_class": forms.MultipleChoiceField,
-            "choices": self.base_field.choices,
-            "widget": forms.CheckboxSelectMultiple,
-        }
-        defaults.update(kwargs)
-        # Skip our parent's formfield implementation completely as we don't
-        # care for it.
-        # pylint:disable=bad-super-call
-        return super(ArrayField, self).formfield(**defaults)
 
 
 class Connector(DirtyFieldsMixin, BaseModel):
@@ -378,55 +350,3 @@ class Connector(DirtyFieldsMixin, BaseModel):
     @property
     def latest_sync_validated(self):
         return self.succeeded_at == self.bigquery_succeeded_at
-
-
-class FacebookAdsCustomReport(BaseModel):
-    FIELD_CHOICES = zip(facebook_ads.FIELDS, facebook_ads.FIELDS)
-    BREAKDOWN_CHOICES = zip(facebook_ads.BREAKDOWNS, facebook_ads.BREAKDOWNS)
-    ACTION_BREAKDOWN_CHOICES = zip(
-        facebook_ads.ACTION_BREAKDOWNS, facebook_ads.ACTION_BREAKDOWNS
-    )
-
-    class Aggregation(models.TextChoices):
-        Day = "Day", "Day"
-        Week = "Week", "Week"
-        Month = "Month", "Month"
-        Lifetime = "Lifetime", "Lifetime"
-
-    class ActionReportTime(models.TextChoices):
-        impression = "impression", "Impression"
-        conversion = "conversion", "Conversion"
-
-    class AttributionWindow(models.TextChoices):
-        NONE = "NONE", "None"
-        DAY_1 = "DAY_1", "Day 1"
-        DAY_7 = "DAY_7", "Day 7"
-
-    table_name = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
-    fields = ChoiceArrayField(models.CharField(max_length=64, choices=FIELD_CHOICES))
-    breakdowns = ChoiceArrayField(
-        models.CharField(max_length=64, choices=BREAKDOWN_CHOICES), default=list, blank=True
-    )
-    action_breakdowns = ChoiceArrayField(
-        models.CharField(max_length=64, choices=ACTION_BREAKDOWN_CHOICES), default=list, blank=True
-    )
-    aggregation = models.CharField(
-        max_length=8, choices=Aggregation.choices, default=Aggregation.Day
-    )
-    action_report_time = models.CharField(
-        max_length=16,
-        choices=ActionReportTime.choices,
-        default=ActionReportTime.impression,
-    )
-    click_attribution_window = models.CharField(
-        max_length=16,
-        choices=AttributionWindow.choices,
-        default=AttributionWindow.DAY_7,
-    )
-    view_attribution_window = models.CharField(
-        max_length=16,
-        choices=AttributionWindow.choices,
-        default=AttributionWindow.DAY_1,
-    )
-    use_unified_attribution_setting = models.BooleanField(default=True)
-    connector = models.ForeignKey(Connector, on_delete=models.CASCADE)

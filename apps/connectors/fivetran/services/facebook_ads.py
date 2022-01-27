@@ -1,8 +1,5 @@
 from itertools import chain
 
-from django import forms
-from django.conf import settings
-
 FIELDS = [
     "account_id",
     "account_name",

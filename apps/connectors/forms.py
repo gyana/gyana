@@ -4,12 +4,12 @@ from django.forms.widgets import CheckboxInput, HiddenInput
 from honeybadger import honeybadger
 
 from apps.base import clients
-from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveUpdateForm
+from apps.base.forms import BaseModelForm, LiveFormsetMixin
 from apps.connectors.fivetran.services import facebook_ads
 
 from .fivetran.client import FivetranClientError
 from .fivetran.config import ServiceTypeEnum
-from .models import Connector, FacebookAdsCustomReport
+from .models import Connector
 from .widgets import ConnectorSchemaMultiSelect
 
 
@@ -110,19 +110,3 @@ class ConnectorUpdateForm(LiveFormsetMixin, BaseModelForm):
             raise ValidationError(
                 "Failed to update, please try again or reach out to support."
             )
-
-
-class FacebookAdsCustomReportForm(LiveUpdateForm):
-    class Meta:
-        model = FacebookAdsCustomReport
-        fields = [
-            "table_name",
-            "fields",
-            "breakdowns",
-            "action_breakdowns",
-            "aggregation",
-            "action_report_time",
-            "click_attribution_window",
-            "view_attribution_window",
-            "use_unified_attribution_setting",
-        ]
