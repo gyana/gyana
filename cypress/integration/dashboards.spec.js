@@ -28,7 +28,7 @@ describe('dashboards', () => {
     cy.contains('Save & Preview').should('not.be.disabled').click()
     cy.contains('Edinburgh')
 
-    cy.get('button[class*=tf-modal__close]').click({ force: true })
+    cy.get('button[class*=tf-modal__close]').click({ force: true, turbo: false })
     cy.get('input[value="Save & Preview"]').should('not.exist')
     cy.get(`#widget-${widgetStartId}`).contains('London')
 

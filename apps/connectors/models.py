@@ -5,6 +5,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.functional import cached_property
+from model_clone.mixins.clone import CloneMixin
 
 from apps.base import clients
 from apps.base.models import BaseModel
@@ -17,7 +18,7 @@ FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
 FIVETRAN_SYNC_FREQUENCY_HOURS = 6
 
 
-class Connector(DirtyFieldsMixin, BaseModel):
+class Connector(DirtyFieldsMixin, CloneMixin, BaseModel):
     class ScheduleType(models.TextChoices):
         AUTO = "auto", "Auto"
         MANUAL = "manual", "Manual"
@@ -61,6 +62,14 @@ class Connector(DirtyFieldsMixin, BaseModel):
         SyncState.PAUSED: "fa fa-pause",
         SyncState.RESCHEDULED: "fa fa-history",
     }
+
+    _clone_excluded_fields = [
+        "fivetran_authorized",
+        "fivetran_sync_started",
+        "bigquery_succeeded_at",
+        # TODO: should this be added later or do we need to replace the schema during duplication
+        "schema_config",
+    ]
 
     # internal fields
 
@@ -311,3 +320,16 @@ class Connector(DirtyFieldsMixin, BaseModel):
     @property
     def latest_sync_validated(self):
         return self.succeeded_at == self.bigquery_succeeded_at
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        from apps.connectors.fivetran.client import create_schema
+
+        attrs = attrs or {}
+        team = (
+            clone_integration.project.team
+            if (clone_integration := attrs.get("integration"))
+            else self.integration.project.team
+        )
+        attrs["schema"] = create_schema(team.id, self.service)
+
+        return super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)

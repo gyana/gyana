@@ -140,16 +140,25 @@ class Table(CloneMixin, BaseModel):
 
         attrs = attrs or {}
         attrs["copied_from"] = self.id
-        if (
-            self.source == self.Source.INTEGRATION
-            and self.integration.kind
-            in [Integration.Kind.UPLOAD, Integration.Kind.SHEET]
-            and (integration_clone := attrs.get("integration"))
+        if self.source == self.Source.INTEGRATION and (
+            integration_clone := attrs.get("integration")
         ):
             attrs["project"] = integration_clone.project
-            attrs["bq_table"] = integration_clone.source_obj.table_id
-            attrs["bq_dataset"] = self.bq_dataset
+            if integration_clone.kindin[
+                Integration.Kind.UPLOAD, Integration.Kind.SHEET
+            ]:
 
+                attrs["bq_table"] = integration_clone.source_obj.table_id
+                attrs["bq_dataset"] = self.bq_dataset
+            elif integration_clone.kind == Integration.Kind.CONNECTOR:
+                attrs["bq_table"] = self.bq_table
+                attrs["bq_dataset"] = self.bq_dataset.replace(
+                    self.integration.connector.schema,
+                    integration_clone.connector.schema,
+                )
+
+            elif integration_clone.kind == Integration.Kind.CUSTOMAPI:
+                raise NotImplemented
         elif self.source == self.Source.WORKFLOW_NODE:
             clone_node = attrs["workflow_node"]
             attrs["project"] = clone_node.workflow.project
