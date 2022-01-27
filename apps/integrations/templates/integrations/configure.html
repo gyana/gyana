@@ -35,16 +35,18 @@
         {% include "django/forms/default_form.html" %}
 
         {% flag 'beta' %}
-          <label>
-            Custom reports
-            <p class="input__help-text">Build custom reports (you can change this later)</p>
-          </label>
-          <turbo-frame id="customreports:list" class="w-full" src="{% url 'connectors_customreports:list' object.connector.id %}">
-            <div class='placeholder-scr placeholder-scr--fillscreen'>
-              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-              <p class='placeholder-scr__title'>Loading custom reports...</p>
-            </div>
-          </turbo-frame>
+          {% if object.connector.service == 'facebook_ads' %}
+            <label>
+              Custom reports
+              <p class="input__help-text">Build custom reports (you can change this later)</p>
+            </label>
+            <turbo-frame id="customreports:list" class="w-full" src="{% url 'connectors_customreports:list' object.connector.id %}">
+              <div class='placeholder-scr placeholder-scr--fillscreen'>
+                <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+                <p class='placeholder-scr__title'>Loading custom reports...</p>
+              </div>
+            </turbo-frame>
+          {% endif %}
         {% endflag %}
 
         <button type="submit" name="submit" value="submit" class="button button--success mt-4 w-full">

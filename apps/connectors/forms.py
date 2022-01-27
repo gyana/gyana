@@ -92,9 +92,13 @@ class ConnectorUpdateForm(LiveFormsetMixin, forms.ModelForm):
             clients.fivetran().update_schemas(self.instance, schema_obj.to_dict())
             self.instance.sync_schema_obj_from_fivetran()
 
-            if self._is_beta and self.object.connector.custom_reports:
-                self.object.connector.update_fivetran_config_custom_reports()
-                clients.fivetran().test(self.object.connector)
+            if (
+                self._is_beta
+                and self.instance.service == "facebook_ads"
+                and self.instance.custom_reports
+            ):
+                self.instance.update_fivetran_config()
+                clients.fivetran().test(self.instance)
         except FivetranClientError as e:
             honeybadger.notify(e)
             raise ValidationError(
