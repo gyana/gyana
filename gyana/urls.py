@@ -17,16 +17,19 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path, register_converter
 from django.urls.converters import IntConverter
 from rest_framework.documentation import get_schemajs_view, include_docs_urls
 from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.contrib.sitemaps import Sitemap as WagtailSitemap
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
 from apps.base.converters import HashIdConverter
 
 register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "hashid")
+
 
 from apps.appsumo import urls as appsumo_urls
 from apps.cnames import urls as cname_urls
@@ -44,6 +47,7 @@ from apps.teams import urls as team_urls
 from apps.templates import urls as template_urls
 from apps.uploads import urls as upload_urls
 from apps.users import urls as users_urls
+from apps.web.sitemaps import WebSitemap
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
@@ -124,6 +128,12 @@ urlpatterns = [
     path("", include(users_urls.accounts_urlpatterns)),
     path("cms/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": {"web": WebSitemap, "wagtail": WagtailSitemap}},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
     path("", include(wagtail_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

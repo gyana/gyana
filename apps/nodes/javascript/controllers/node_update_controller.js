@@ -1,16 +1,13 @@
 import { Controller } from '@hotwired/stimulus'
 import { GyanaEvents } from 'apps/base/javascript/events'
 
-// Dispatch events for the React App when the node name or config is updated
-
+/**
+ * Adds event listeners to node forms in order to dispatch React events.
+ * Syncs react and turbo states.
+ */
 export default class extends Controller {
   static values = {
     id: String,
-  }
-
-  sendNodeEvents() {
-    window.dispatchEvent(new CustomEvent(GyanaEvents.UPDATE_WORKFLOW))
-    window.dispatchEvent(new CustomEvent(`${GyanaEvents.UPDATE_NODE}-${this.idValue}`))
   }
 
   connect() {
@@ -25,5 +22,10 @@ export default class extends Controller {
         })
       )
     })
+  }
+
+  sendNodeEvents() {
+    window.dispatchEvent(new CustomEvent(GyanaEvents.UPDATE_WORKFLOW))
+    window.dispatchEvent(new CustomEvent(`${GyanaEvents.UPDATE_NODE}-${this.idValue}`))
   }
 }

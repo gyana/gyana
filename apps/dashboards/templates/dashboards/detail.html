@@ -1,6 +1,6 @@
 {% extends "projects/base.html" %}
 
-{% block page_head %}
+{% block head.extra %}
   {% if dashboard.font_family %}
   <link
     href="https://fonts.googleapis.com/css2?family={{ dashboard.font_family.split|join:'+' }}:wght@400&display=swap"
@@ -22,7 +22,7 @@
     }
     {% endfor %}
   </style>
-{% endblock page_head %}
+{% endblock head.extra %}
 
 {% block app %}
 <div class="dashboard__header">
@@ -135,11 +135,11 @@
   
   <div data-controller="tooltip">
     {% if not request.GET.mode or request.GET.mode == "edit" %}
-    <a href="?mode=view&page={{page.position}}" class="button button--sm button--tertiary">
+    <a href="?mode=view&dashboardPage={{page.position}}" class="button button--sm button--tertiary">
       <i class="fas fa-fw fa-eye"></i> Preview
     </a>
     {% else %}
-    <a href="?mode=edit&page={{page.position}}" class="button button--sm">
+    <a href="?mode=edit&dashboardPage={{page.position}}" class="button button--sm">
       <i class="fas fa-fw fa-pen"></i> Edit
     </a>
     {% endif %}

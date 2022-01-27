@@ -55,6 +55,7 @@ DJANGO_APPS = [
     "django.contrib.sites",
     "django.contrib.humanize",
     "django.contrib.postgres",
+    "django.contrib.sitemaps",
 ]
 
 # Put your third-party apps here
@@ -355,6 +356,7 @@ PROJECT_METADATA = {
 }
 
 GOOGLE_ANALYTICS_ID = os.environ.get("GOOGLE_ANALYTICS_ID")
+WEBSITE_GTM_ID = os.environ.get("WEBSITE_GTM_ID")
 
 
 # Default primary key field type
@@ -400,6 +402,7 @@ SEGMENT_ANALYTICS_JS_WRITE_KEY = os.environ.get("SEGMENT_ANALYTICS_JS_WRITE_KEY"
 INVITATIONS_INVITATION_MODEL = "invites.Invite"
 INVITATIONS_INVITATION_EXPIRY = 7
 INVITATIONS_ADAPTER = ACCOUNT_ADAPTER
+INVITATIONS_ACCEPT_INVITE_AFTER_SIGNUP = True
 
 HASHIDS_SALT = os.environ.get("HASHIDS_SALT", "")
 

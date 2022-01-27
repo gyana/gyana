@@ -25,7 +25,7 @@ def test_input_form(setup, node_factory):
     node = node_factory(kind=Node.Kind.INPUT, workflow=workflow)
     form = KIND_TO_FORM[node.kind](instance=node)
 
-    assert set(form.get_live_fields()) == {"input_table"}
+    assert set(form.get_live_fields()) == {"input_table", "search"}
     table_choices = list(form.fields["input_table"].choices)
     assert len(table_choices) == 2
     assert table_choices[0][0] == ""

@@ -61,13 +61,31 @@ def test_input_node(client, setup):
 
     r = client.get(f"/nodes/{input_node.id}")
     assertSelectorText(r, "label.checkbox", "olympia")
-    assertFormRenders(r, ["input_table", "name"])
+    assertFormRenders(r, ["input_table", "name", "search"])
 
     r = update_node(client, input_node.id, {"input_table": table.id})
     input_node.refresh_from_db()
 
     assert r.status_code == 303
     assert input_node.input_table.id == table.id
+
+
+def test_input_node_search(with_pg_trgm_extension, client, setup):
+    table, workflow = setup
+    r = client.post(
+        "/nodes/api/nodes/",
+        data={"kind": "input", "workflow": workflow.id, "x": 0, "y": 0},
+    )
+    assert r.status_code == 201
+    input_node = Node.objects.first()
+    assert input_node is not None
+
+    r = client.post(
+        f"/nodes/{id}", data={"submit": "Save & Preview", **{"search": "olympia"}}
+    )
+    r = client.get(f"/nodes/{input_node.id}")
+    assertSelectorText(r, "label.checkbox", "olympia")
+    assertSelectorLength(r, "label.checkbox", 1)
 
 
 def test_output_node(client, node_factory, setup):

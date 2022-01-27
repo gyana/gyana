@@ -1,6 +1,7 @@
 {% load static %}
 
 {{ form.media.js }}
+
 <div class="flex h-full">
   <div class="flex flex-col flex-1">
     {% if widget.kind == "table" %}
@@ -10,10 +11,13 @@
     {% endif %}
   </div>
 
-  <turbo-frame class="overflow-hidden flex flex-col flex-1" 
+  <turbo-frame
+    class="overflow-hidden flex flex-col flex-1" 
     id="widgets-output-{{ widget.id }}-modal"
-    src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?source=modal">
+    src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?source=modal"
+  >
     {% include 'widgets/modal_nav_bar.html' %}
+
     <div class='placeholder-scr placeholder-scr--fillscreen'>
       <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
       <p class='placeholder-scr__title'>Loading widget...</p>

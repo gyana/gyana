@@ -18,6 +18,9 @@ preview mode.
     {% else %}
     data-grid-size="1"
     {% endif %}
+    {% if object.kind == "image" %}
+    data-min-width="15"
+    {% endif %}
   >
     <div class="widget-card h-full">
       <div

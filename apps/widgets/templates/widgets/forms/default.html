@@ -28,7 +28,8 @@
     method="post"
     data-controller="live-update" 
     data-action="change->tf-modal#change submit->tf-modal#save"
-    data-tf-modal-target='form'
+    data-tf-modal-target="form"
+    data-tf-modal-submit-on-close
   >
     {% csrf_token %}
 
@@ -72,7 +73,8 @@
       formset:remove->tf-modal#change 
       formset:add->tf-modal#change
     "
-    data-tf-modal-target='form'
+    data-tf-modal-target="form"
+    data-tf-modal-submit-on-close
   >  
     {% comment %}
     The pressed button is outside the form this is just to trigger the submit

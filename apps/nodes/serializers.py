@@ -27,6 +27,7 @@ class NodeSerializer(serializers.ModelSerializer):
             "x",
             "y",
             "workflow",
+            "input_table",
             "description",
             "error",
             "text_text",

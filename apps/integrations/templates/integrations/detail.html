@@ -38,6 +38,12 @@
       >
         Detail
       </a>
+      <a
+        class="tabbar__link {% if request.GET.view == 'reference' %}tabbar__link--active{% endif %}"
+        href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=reference"
+      >
+        References
+      </a>
 
       {% comment %} TODO: {% if table_id %}
         <turbo-frame id='exports:create_integration_table' class='ml-auto'>
@@ -80,6 +86,17 @@
           class="block w-full overflow-auto"
           id="integrations:table_detail"
           src="{% url 'integrations:table_detail' object.id %}?table_id={{ request.GET.table_id }}"
+        >
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+            <p class='placeholder-scr__title'>Loading detail...</p>
+          </div>
+        </turbo-frame>
+      {% elif request.GET.view == 'reference' %}
+        <turbo-frame
+          class="block w-full overflow-auto"
+          id="integrations:table_reference"
+          src="{% url 'integrations:table_reference' object.id %}?table_id={{ request.GET.table_id }}"
         >
           <div class='placeholder-scr placeholder-scr--fillscreen'>
             <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>

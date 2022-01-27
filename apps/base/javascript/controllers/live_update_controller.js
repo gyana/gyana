@@ -78,6 +78,10 @@ export default class extends Controller {
           return false
         }
 
+        if (toEl.dataset.controller === 'codemirror') {
+          return false
+        }
+
         // Do not overwrite web component
         // TODO: Replace the entire node to re-trigger connectedCallback
         if (toEl.tagName.includes('-')) {

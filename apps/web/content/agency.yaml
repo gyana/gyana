@@ -1,0 +1,59 @@
+problems:
+  - icon: lock-closed
+    heading: Marketing tools are inflexible
+    summary: You'll never get answers with cookie cutter dashboards.
+  - icon: archive
+    heading: BI tools are outdated
+    summary: Tried getting your Facebook data into DataStudio? Reliably?
+  - icon: credit-card
+    heading: Data warehouses are expensive
+    summary: And have fun explaining every marketing strategy to a data engineer...
+solution:
+  - icon: database
+    heading: Integrations
+    summary: Live connections your analytics, ad reports, online stores, CRMs, webhooks and more.
+  - icon: cursor-click
+    heading: No more spreadsheets
+    summary: |
+      Automate anything you can do in Excel. Say goodbye to #REF! and broken VLOOKUPs.
+  - icon: chart-square-bar
+    heading: Powerful report builder
+    summary: A flexible drag-n-drop editor with 25+ widgets, interactive controls and custom themes.
+  - icon: cube
+    heading: All in one
+    summary: A single interface to manage your data flow, from source to report. Fix issues effortlessly.
+  - icon: users
+    heading: Account management
+    summary: Keep work separate and add custom permissions for sensitive data.
+  - icon: sparkles
+    heading: Custom branding
+    summary: Build reports that feel like an extension of your website, including custom domains.
+get_started:
+  - heading: Self service
+    summary: Gyana is designed for builders. Read our guides, watch videos and learn from the community.
+    external_url: help
+    cta: Visit the help center
+    icon: external-link
+    included:
+    - In-depth documentation
+    - Video walkthroughs
+    - Active community
+    - Chat support
+  - heading: Video onboarding
+    summary: We'll discuss your use case, demo the product and help you get started building your reports.
+    external_url: onboarding
+    cta: Schedule a video call
+    icon: video-camera
+    included:
+    - Free for all users
+    - Customised for you
+    - Experienced Gyana user
+  - heading: Custom solution
+    summary: Work with our in-house data architects to build your solution, or migrate from another provider.
+    external_url: sales
+    cta: Talk to us
+    icon: chat-alt-2
+    included:
+    - Dedicated solution architect
+    - Tailored package
+    - Migration service

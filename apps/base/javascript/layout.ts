@@ -3,7 +3,8 @@ import { isNode, Edge, Node, Position } from 'react-flow-renderer'
 
 const dagreGraph = new dagre.graphlib.Graph()
 dagreGraph.setDefaultEdgeLabel(() => ({}))
-dagreGraph.setGraph({ rankdir: 'LR' })
+// nodesep and ranksep should be equal to a multiple of GRID_GAP in DndFlow.tsx
+dagreGraph.setGraph({ rankdir: 'LR', nodesep: 40, ranksep: 80 })
 
 // Add some additional spacing for the absolute positioned buttons
 const BUTTON_SPACING = 40

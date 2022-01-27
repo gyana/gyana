@@ -1,6 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 
-// Open a modal with the content populated by a turbo-frame
+const debounceTime = 300
+
 /**
  * Modal controller with content populated by a turbo-frame.
  * 
@@ -19,7 +20,13 @@ import { Controller } from '@hotwired/stimulus'
  * </button>
  */
 export default class extends Controller {
-  static targets = ['modal', 'turboFrame', 'closingWarning', 'form', 'onParam']
+  static targets = [
+    'modal',
+    'turboFrame',
+    'closingWarning',
+    'form',
+    'onParam'
+  ]
 
   initialize() {
     this.changed = false
@@ -117,15 +124,17 @@ export default class extends Controller {
     }
   }
 
-  change() {
-    this.changed = true
+  change(event) {
+    if (event.target.getAttribute("name").toLowerCase() != "search") {
+      this.changed = true
+    }
   }
 
-  close(e) {
+  close(event) {
     if (this.hasClosingWarningTarget && this.changed) {
       this.closingWarningTarget.removeAttribute('hidden')
     } else {
-      if (e.currentTarget.getAttribute && e.currentTarget.getAttribute('type') == 'submit') {
+      if (this.formTarget.dataset.tfModalSubmitOnClose != undefined) {
         this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='close']"))
       }
 
@@ -163,6 +172,17 @@ export default class extends Controller {
 
   save() {
     this.changed = false
+  }
+
+  search(event) {
+    if (this.debounce) clearTimeout(this.debounce)
+    this.debounce = setTimeout(this.handleSearch(), debounceTime)
+  }
+
+  handleSearch() {
+    this.formTarget.requestSubmit(
+      this.formTarget.querySelector("button[value*='close']")
+    )
   }
 
   handleKeyup(event) {

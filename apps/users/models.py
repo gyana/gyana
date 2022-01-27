@@ -10,6 +10,7 @@ from storages.backends.gcloud import GoogleCloudStorage
 from apps.base.clients import SLUG
 from apps.base.models import BaseModel
 from apps.teams import roles
+from apps.teams.models import Team
 
 
 class CustomUser(AbstractUser):
@@ -95,7 +96,10 @@ class CustomUser(AbstractUser):
 
     @property
     def teams_admin_of(self):
-        return self.teams.filter(membership__role=roles.ROLE_ADMIN).all()
+
+        return Team.objects.filter(
+            membership__role=roles.ROLE_ADMIN, membership__user=self
+        ).all()
 
     @property
     def is_creators_only_integration(self):

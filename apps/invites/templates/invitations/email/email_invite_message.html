@@ -1,0 +1,10 @@
+{% extends "emails/base.html" %}
+
+{% block title %}
+[Gyana] Invitation to join {{ team.name }} in Gyana
+{% endblock %}
+
+{% block content %}
+<p>You have been invited to join {{ team.name }} in using Gyana.</p>
+<p>If you'd like to accept, <a href="{{ invite_url }}">click this link</a></p>.
+{% endblock %}

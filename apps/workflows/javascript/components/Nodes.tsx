@@ -15,11 +15,13 @@ import NodeName from './NodeName'
 import NodeDescription from './NodeDescription'
 import { ErrorIcon, WarningIcon } from './NodeIcons'
 import { NODES } from '../interfaces'
-import { updateNode } from '../api'
+import { getNode, updateNode } from '../api'
+import { GyanaEvents } from 'apps/base/javascript/events'
 
 interface Props<T = any> {
   id: ElementId
   data: T
+  showFilledIcon?: Boolean
 }
 
 const useGetIncomingCount = (id: string) => {
@@ -28,7 +30,7 @@ const useGetIncomingCount = (id: string) => {
   return targetElement ? getIncomers(targetElement, elements).length : 0
 }
 
-const NodeContent: React.FC<Props> = ({ id, data }) => {
+const NodeContent: React.FC<Props> = ({ id, data, showFilledIcon = true }) => {
   const [, , zoom] = useStoreState((state) => state.transform)
   const showContent = zoom >= 1.2
 
@@ -37,37 +39,54 @@ const NodeContent: React.FC<Props> = ({ id, data }) => {
       {data.error && <ErrorIcon text={data.error} />}
       <NodeButtons id={id} />
       <i
-        className={`fas fa-fw ${data.icon} ${showContent && 'absolute opacity-10'}`}
+        className={`
+          ${showFilledIcon ? "fas" : "fal"}
+          fa-fw
+          ${data.icon}
+          ${showContent && 'absolute opacity-10'}`
+        }
         data-modal-src={`/nodes/${id}`}
         data-action='dblclick->tf-modal#open'
         data-modal-item={id}
         data-modal-id='workflow-modal'
         data-modal-classes='tf-modal--full'
       ></i>
-      {showContent && (
-        <div className='p-2'>
-          <NodeDescription id={id} data={data} />
-        </div>
-      )}
+      <div className={`p-2 ${!showContent && 'hidden'}`}>
+        <NodeDescription id={id} data={data} />
+      </div>
       <NodeName id={id} name={data.label} kind={data.kind} />
     </>
   )
 }
 
-const InputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => (
-  <>
-    <NodeContent id={id} data={data} />
-    <Handle type='source' position={Position.Right} isConnectable={isConnectable} />
-  </>
-)
+const InputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
+  const onNodeConfigUpdate = async () => {
+    const result = await getNode(id)
+    data.input = result.input
+  }
+
+  useEffect(() => {
+    const eventName = `${GyanaEvents.UPDATE_NODE}-${id}`
+    window.addEventListener(eventName, onNodeConfigUpdate, false)
+    return () => window.removeEventListener(eventName, onNodeConfigUpdate)
+  }, [])
+
+  return (
+    <>
+      <NodeContent id={id} data={data} showFilledIcon={data.input} />
+      <Handle type='source' position={Position.Right} isConnectable={isConnectable} />
+    </>
+  )
+}
 
 const OutputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
   const incomingCount = useGetIncomingCount(id)
   const showWarning = incomingCount == 0
+
   return (
     <>
       {showWarning && <WarningIcon text='Save Data needs one input connection' />}
-      <NodeContent id={id} data={data} />
+      <NodeContent id={id} data={data} showFilledIcon={!showWarning} />
       <Handle type='target' position={Position.Left} id='0' isConnectable={isConnectable} />
     </>
   )
@@ -109,7 +128,7 @@ const DefaultNode: React.FC<NodeProps> = ({
           style={{ top: `${Math.round((100 * (idx + 1)) / (handles + 1))}%`, borderRadius: 0 }}
         />
       ))}
-      <NodeContent id={id} data={data} />
+      <NodeContent id={id} data={data} showFilledIcon={!showWarning} />
       <Handle type='source' position={sourcePosition} isConnectable={isConnectable} />
     </>
   )

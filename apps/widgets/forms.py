@@ -79,14 +79,14 @@ class GenericWidgetForm(LiveFormsetForm):
             if table and self.get_live_field("kind") == Widget.Kind.TABLE:
                 formsets = self.get_formsets()
                 group_columns = [
-                    form.instance.column
+                    form.data[f"{form.prefix}-column"]
                     for form in formsets["Group columns"].forms
-                    if not form.deleted
+                    if not form.deleted and form.data.get(f"{form.prefix}-column")
                 ]
                 aggregations = [
-                    form.instance.column
+                    form.data[f"{form.prefix}-column"]
                     for form in formsets["Aggregations"].forms
-                    if not form.deleted
+                    if not form.deleted and form.data.get(f"{form.prefix}-column")
                 ]
                 columns = group_columns + aggregations
                 if columns:

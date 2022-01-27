@@ -1,4 +1,6 @@
 import pytest
+import wagtail_factories
+from wagtail.core.models import Locale, Site
 
 from apps.base.tests.asserts import assertLink, assertOK
 from apps.users.models import CustomUser
@@ -10,6 +12,9 @@ def test_site_pages(client):
     r = client.get("/")
     assertOK(r)
 
+    r = client.get("/agency")
+    assertOK(r)
+
     r = client.get("/pricing")
     assertOK(r)
 
@@ -19,10 +24,10 @@ def test_site_pages(client):
     r = client.get("/about")
     assertOK(r)
 
-    r = client.get("/legal/privacy-policy")
+    r = client.get("/privacy-policy")
     assertOK(r)
 
-    r = client.get("/legal/terms-of-use")
+    r = client.get("/terms-of-use")
     assertOK(r)
 
 
@@ -32,13 +37,16 @@ def test_site_links(client):
 
     # header links
     # 3x = header, mobile menu, footer
-    assertLink(r, "/#features", "Features", total=3)
+    assertLink(r, "/agency", "Agency", total=3)
+    assertLink(r, "/#integrations", "Integrations", total=3)
+    assertLink(r, "/#workflows", "Workflows", total=3)
+    assertLink(r, "/#dashboards", "Dashboards", total=3)
     assertLink(r, "/pricing", "Pricing", total=3)
     assertLink(r, "/blog", "Blog", total=3)
-    assertLink(r, "/help", "Help Center", total=3)
-    assertLink(r, "/roadmap", "Feedback", total=3)
+    assertLink(r, "https://intercom.help/gyana", "Help Center", total=3)
+    assertLink(r, "https://feedback.gyana.com", "Feedback", total=3)
 
-    assertLink(r, "/integrations", "Learn more.")
+    assertLink(r, "/integrations", "View our integrations.")
 
     # footer links
     assertLink(r, "/about", "About", total=2)
@@ -48,8 +56,8 @@ def test_site_links(client):
         "https://c6df0725-5be1-435b-a2d7-1a90649a7bc5.site.hbuptime.com/",
         "Status page",
     )
-    assertLink(r, "/legal/privacy-policy", "Privacy")
-    assertLink(r, "/legal/terms-of-use", "Terms")
+    assertLink(r, "/privacy-policy", "Privacy")
+    assertLink(r, "/terms-of-use", "Terms")
 
     # app links
     assertLink(
@@ -62,3 +70,13 @@ def test_site_links(client):
 
     r = client.get("/pricing")
     assertLink(r, "/", "Go to app", total=2)
+
+
+def test_sitemap(client):
+    locale = Locale.objects.create(language_code="en")
+    root_page = wagtail_factories.PageFactory(parent=None, title="Root")
+    site = Site.objects.create(is_default_site=True, root_page=root_page)
+
+    # sitemap
+    r = client.get("/sitemap.xml")
+    assertOK(r)

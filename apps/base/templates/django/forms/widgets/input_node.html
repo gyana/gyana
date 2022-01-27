@@ -4,7 +4,7 @@
  {% for option in widget.options %}
   <label 
     data-node-input-target="label"
-    class="checkbox {% if option.id == widget.selected %}checkbox__checked{% endif %}"
+    class="checkbox checkbox--radio {% if option.id|stringformat:'i' == widget.selected %}checkbox--checked{% endif %}"
     id="{{ option.id }}"
     data-action="click->node-input#select click->tf-modal#preview"
   >
@@ -13,7 +13,14 @@
     {% else %}
     <i class="{{ option.icon }}"></i>
     {% endif %}
-    {{ option.label }}
+
+    <div>
+      {{ option.label }}
+      {% if option.usedInWorkflow %}
+      <br>
+      <p class="small text-black-50">Used in this workflow</p>
+      {% endif %}
+    </div>
   </label>
   {% endfor %}
 

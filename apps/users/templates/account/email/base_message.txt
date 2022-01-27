@@ -1,3 +1,5 @@
-{% autoescape off %}
-{% block content %}{% endblock %}
-{% endautoescape %}
+Hello,
+{% autoescape off %}{% block content %}{% endblock %}{% endautoescape %}
+Regards,
+Gyana team
+https://gyana.com/
