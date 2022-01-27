@@ -50,7 +50,7 @@
     class="label {{ bound_field.field.widget.attrs.class }}"
   >
     <label for="{{ bound_field.id_for_label}}">
-      <span class="flex items-center">
+      <span class="block">
         {{ bound_field.label }}
 
         {% if not bound_field.field.required and not optional == False %}
@@ -58,7 +58,7 @@
         {% endif %}
 
         <a
-          class="small link ml-auto"
+          class="small link float-right"
           data-reset-default-target="control"
           hidden
         >
