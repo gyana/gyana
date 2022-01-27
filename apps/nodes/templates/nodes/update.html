@@ -111,6 +111,15 @@
 
   {% else %}
     <div class='workflow-detail__warning'>
+      <div class="absolute top-0 right-0">
+        <button
+          class="tf-modal__close tf-modal__close--inline ml-auto"
+          data-action="click->tf-modal#forceClose"
+          data-loading-false
+        >
+          <i class="fal fa-times fa-lg"></i>
+        </button>
+      </div>
       <span class='mb-12'><i class="far fa-comment-dots fa-10x"></i></span>
       <p>This node needs to be connected to <strong>more than one node</strong> before you can configure it.</p>
     </div>

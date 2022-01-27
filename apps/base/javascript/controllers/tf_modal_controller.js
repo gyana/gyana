@@ -4,10 +4,10 @@ const debounceTime = 300
 
 /**
  * Modal controller with content populated by a turbo-frame.
- * 
+ *
  * Pass turbo-frame specific details via data attributes:
  * `data-modal-src`, `data-modal-id`
- * 
+ *
  * @example
  * <button
  *   data-action="click->tf-modal#open"
@@ -20,13 +20,7 @@ const debounceTime = 300
  * </button>
  */
 export default class extends Controller {
-  static targets = [
-    'modal',
-    'turboFrame',
-    'closingWarning',
-    'form',
-    'onParam'
-  ]
+  static targets = ['modal', 'turboFrame', 'closingWarning', 'form', 'onParam']
 
   initialize() {
     this.changed = false
@@ -50,7 +44,7 @@ export default class extends Controller {
     const params = new URLSearchParams(window.location.search)
 
     if (params.get('modal_item')) {
-      // This is a little hacky, it simulates a click because we need the 
+      // This is a little hacky, it simulates a click because we need the
       // data attributes with the turbo-frame src/id.
       this.onParamTarget.click()
     }
@@ -73,7 +67,7 @@ export default class extends Controller {
       this.turboFrameTarget.setAttribute('target', event.currentTarget.dataset.modalTarget)
     }
 
-    this.modalTarget.className = "tf-modal"
+    this.modalTarget.className = 'tf-modal'
     if (event.currentTarget.dataset.modalClasses) {
       this.modalTarget.classList.add(...event.currentTarget.dataset.modalClasses.split(' '))
     }
@@ -125,7 +119,7 @@ export default class extends Controller {
   }
 
   change(event) {
-    if (event.target.getAttribute("name").toLowerCase() != "search") {
+    if (event.target.getAttribute('name').toLowerCase() != 'search') {
       this.changed = true
     }
   }
@@ -134,7 +128,7 @@ export default class extends Controller {
     if (this.hasClosingWarningTarget && this.changed) {
       this.closingWarningTarget.removeAttribute('hidden')
     } else {
-      if (this.formTarget.dataset.tfModalSubmitOnClose != undefined) {
+      if (this.hasFormTarget && this.formTarget.dataset.tfModalSubmitOnClose != undefined) {
         this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='close']"))
       }
 
@@ -180,9 +174,7 @@ export default class extends Controller {
   }
 
   handleSearch() {
-    this.formTarget.requestSubmit(
-      this.formTarget.querySelector("button[value*='close']")
-    )
+    this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='close']"))
   }
 
   handleKeyup(event) {

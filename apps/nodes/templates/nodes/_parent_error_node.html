@@ -10,8 +10,9 @@
 
   <button
     class='link'
-    data--modal-src="/nodes/{{object.id}}"
-    data-modal-id=""
+    data-modal-src="/nodes/{{object.id}}"
+    data-modal-id="workflow-modal"
+    data-modal-classes='tf-modal--full'
     data-action='click->tf-modal#open'
     data-modal-item="{{ object.id }}"
   >
@@ -20,3 +21,12 @@
 
   it and try opening this node again.
 </p>
+<div class="absolute top-0 right-0">
+  <button
+    class="tf-modal__close tf-modal__close--inline ml-auto"
+    data-action="click->tf-modal#forceClose"
+    data-loading-false
+  >
+    <i class="fal fa-times fa-lg"></i>
+  </button>
+</div>
