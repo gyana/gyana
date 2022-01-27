@@ -17,7 +17,7 @@ from apps.integrations.tasks import run_integration
 from apps.projects.mixins import ProjectMixin
 from apps.runs.tables import JobRunTable
 
-from .forms import IntegrationUpdateForm, get_kind_to_form_class
+from .forms import KIND_TO_FORM_CLASS, IntegrationUpdateForm
 from .mixins import STATE_TO_URL_REDIRECT, ReadyMixin
 from .models import Integration
 from .tables import IntegrationListTable, ReferencesTable
@@ -142,9 +142,7 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
         return self.object.source_obj
 
     def get_form_class(self):
-        return get_kind_to_form_class(
-            self.object.kind, self.request.GET.get("tab", "tables")
-        )
+        return KIND_TO_FORM_CLASS[self.object.kind]
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

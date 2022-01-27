@@ -36,55 +36,7 @@
           {% endif %}
         </p>
 
-        {% flag 'beta' %}
-          {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' %}
-            <div class="tabbar w-full">
-              <a
-                href="{% url "project_integrations:configure" project.id object.id %}?tab=tables"
-                class="tabbar__link {% if not request.GET.tab or request.GET.tab == 'tables' %}tabbar__link--active{% endif %}"
-              >
-                Tables
-              </a>
-              <a
-                href="{% url "project_integrations:configure" project.id object.id %}?tab=prebuilt_reports"
-                class="tabbar__link {% if request.GET.tab == 'prebuilt_reports' %}tabbar__link--active{% endif %}"
-              >
-                Prebuilt Reports
-              </a>
-              <a
-                href="{% url "project_integrations:configure" project.id object.id %}?tab=custom_reports"
-                class="tabbar__link {% if request.GET.tab == 'custom_reports' %}tabbar__link--active{% endif %}"
-              >
-                Custom Reports
-              </a>
-              <a
-                href="{% url "project_integrations:configure" project.id object.id %}?tab=settings"
-                class="tabbar__link {% if request.GET.tab == 'settings' %}tabbar__link--active{% endif %}"
-              >
-                Settings
-              </a>
-            </div>
-          {% endif %}
-        {% endflag %} 
-
         {% csrf_token %}
-
-        {% if request.GET.tab == 'tables' %}
-          <p>A table is a list of records in your data source e.g. products or ads.</p>
-          <p class="alert">
-            For a faster initial sync and optimized row usage, only select the tables you need.
-          </p>
-        {% elif request.GET.tab == 'prebuilt_reports' %}
-          <p>A prebuilt report is a frequently used template for a reporting source.</p>
-          <p class="alert">
-            Pre-built reports are a great way to get familiar with a data source, before you start to build custom reports.
-          </p>
-        {% elif request.GET.tab == 'custom_reports' %}
-          <p>A custom report is a fully customised request to a reporting source.</p>
-          <p class="alert">
-            Take time to understand the options available to build an effective report.
-          </p>
-        {% endif %}
 
         {% include "django/forms/default_form.html" %}
 

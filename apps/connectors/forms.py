@@ -5,7 +5,6 @@ from honeybadger import honeybadger
 
 from apps.base import clients
 from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveUpdateForm
-from apps.base.formsets import RequiredInlineFormset
 from apps.connectors.fivetran.services import facebook_ads
 
 from .fivetran.client import FivetranClientError
@@ -45,10 +44,21 @@ class ConnectorCreateForm(BaseModelForm):
         instance.create_integration(instance.conf.name, self._created_by, self._project)
 
 
-class ConnectorTablesForm(LiveFormsetMixin, BaseModelForm):
+class ConnectorUpdateForm(LiveFormsetMixin, BaseModelForm):
     class Meta:
         model = Connector
-        fields = []
+        fields = ["timeframe_months", "prebuilt_reports"]
+        labels = {"timeframe_months": "Historical Sync Timeframe"}
+        help_texts = {
+            "timeframe_months": "Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once connection is created. NOTE: The more months of reporting data you sync, the longer your initial sync will take."
+        }
+
+    prebuilt_reports = forms.MultipleChoiceField(
+        label="Prebuilt reports",
+        help_text="Select specific prebuilt reports (you can change this later)",
+        widget=forms.CheckboxSelectMultiple,
+        choices=zip(facebook_ads.PREBUILT_REPORTS, facebook_ads.PREBUILT_REPORTS),
+    )
 
     def __init__(self, *args, **kwargs):
 
@@ -102,28 +112,6 @@ class ConnectorTablesForm(LiveFormsetMixin, BaseModelForm):
             )
 
 
-class ConnectorPrebuiltReportsForm(LiveFormsetMixin, BaseModelForm):
-    class Meta:
-        model = Connector
-        fields = ["prebuilt_reports"]
-
-    prebuilt_reports = forms.MultipleChoiceField(
-        label="Prebuilt reports",
-        help_text="Select specific prebuilt reports (you can change this later)",
-        widget=forms.CheckboxSelectMultiple,
-        choices=zip(facebook_ads.PREBUILT_REPORTS, facebook_ads.PREBUILT_REPORTS),
-    )
-
-
-class ConnectorCustomReportsForm(LiveFormsetMixin, LiveUpdateForm):
-    class Meta:
-        model = Connector
-        fields = []
-
-    def get_live_formsets(self):
-        return [FacebookAdCustomReportFormset]
-
-
 class FacebookAdsCustomReportForm(LiveUpdateForm):
     class Meta:
         model = FacebookAdsCustomReport
@@ -138,34 +126,3 @@ class FacebookAdsCustomReportForm(LiveUpdateForm):
             "view_attribution_window",
             "use_unified_attribution_setting",
         ]
-        help_texts = {
-            "table_name": "Table name",
-            "fields": "Fields",
-            "breakdowns": "Breakdowns",
-            "action_breakdowns": "Action Breakdowns",
-            "aggregation": "Aggregation",
-            "action_report_time": "Action Report Time",
-            "click_attribution_window": "Click Attribution Window",
-            "view_attribution_window": "View Attribution Window",
-            "use_unified_attribution_setting": "Use unified attribution setting",
-        }
-
-
-FacebookAdCustomReportFormset = forms.inlineformset_factory(
-    Connector,
-    FacebookAdsCustomReport,
-    form=FacebookAdsCustomReportForm,
-    can_delete=True,
-    extra=0,
-    formset=RequiredInlineFormset,
-)
-
-
-class ConnectorSettingsForm(LiveFormsetMixin, BaseModelForm):
-    class Meta:
-        model = Connector
-        fields = ["timeframe_months"]
-        labels = {"timeframe_months": "Historical Sync Timeframe"}
-        help_texts = {
-            "timeframe_months": "Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once connection is created. NOTE: The more months of reporting data you sync, the longer your initial sync will take."
-        }
