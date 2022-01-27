@@ -258,6 +258,8 @@ label.checkbox {
   gap: 0.8rem;
   height: 4.3rem;
   margin-top: 0.6rem;
+  margin-right: -0.8rem;
+  margin-left: -0.8rem;
   padding: 0.8rem;
 
   &::after {
@@ -270,7 +272,8 @@ label.checkbox {
   }
 
   &:hover {
-    background-color: var(--c-gray-20);
+    border-color: var(--c-black-10);
+    background-color: var(--c-gray-50);
     color: var(--c-blue);
     
     &::after {
