@@ -135,6 +135,8 @@ class BigQueryColumn(Column):
             return get_template("columns/float_cell.html").render(
                 {"value": value, "clean_value": round(value, 2)}
             )
+        if isinstance(value, int):
+            return get_template("columns/int_cell.html").render({"value": value})
         if isinstance(value, str) and len(value) >= 64:
             # Truncate row values above 61 characters (61 + 3 ellipsis = 64)
             self.attrs["td"] = {

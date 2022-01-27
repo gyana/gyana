@@ -1,4 +1,5 @@
-<span data-controller="tooltip">
-  {{clean_value}}
-  <p data-tooltip-target="body">{{value}}</p>
+{% load humanize %}
+
+<span data-controller="tooltip" data-tooltip-content="{{ value|intcomma }}">
+  {{ clean_value|intcomma }}
 </span>
