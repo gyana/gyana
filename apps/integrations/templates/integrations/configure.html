@@ -12,15 +12,9 @@
         id="configure-update-form"
         method="POST"
         action="{{ request.get_full_path }}"
-        {% if object.kind == 'customapi' or request.GET.tab == 'custom_reports' %}
-        data-controller="live-update"
-        data-action="
-          formset:remove->live-update#updateForm 
-          formset:add->live-update#updateForm 
-          formset:remove->tf-modal#change 
-          formset:add->tf-modal#change
-        "
-        enctype='multipart/form-data'
+        {% if object.kind == 'customapi' %}
+          data-controller="live-update"
+          enctype='multipart/form-data'
         {% endif %}
         >
         <span data-live-update-target="loading" class="hidden">
@@ -40,12 +34,18 @@
 
         {% include "django/forms/default_form.html" %}
 
-        <label>
-          Custom reports
-          <p class="input__help-text">Build custom reports (you can change this later)</p>
-        </label>
-
-        <turbo-frame id="customreports:list" class="w-full" src="{% url 'connectors_customreports:list' object.connector.id %}"></turbo-frame>
+        {% flag 'beta' %}
+          <label>
+            Custom reports
+            <p class="input__help-text">Build custom reports (you can change this later)</p>
+          </label>
+          <turbo-frame id="customreports:list" class="w-full" src="{% url 'connectors_customreports:list' object.connector.id %}">
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+              <p class='placeholder-scr__title'>Loading workflows overview...</p>
+            </div>
+          </turbo-frame>
+        {% endflag %}
 
         <div class="flex flex-1 gap-7 w-full">
           <button type="submit" name="submit" value="Save" class="button button--outline button--success flex-1">

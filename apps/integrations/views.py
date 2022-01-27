@@ -162,7 +162,7 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
                 self.object.kind == Integration.Kind.CONNECTOR
                 and self.object.connector.service == "facebook_ads"
             ):
-                self.object.connector.update_fivetran_config()
+                self.object.connector.update_fivetran_config_custom_reports()
                 clients.fivetran().test(self.object.connector)
 
             run_integration(self.object.kind, self.object.source_obj, self.request.user)

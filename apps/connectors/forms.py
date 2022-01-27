@@ -5,7 +5,6 @@ from honeybadger import honeybadger
 
 from apps.base import clients
 from apps.base.forms import BaseModelForm, LiveFormsetMixin
-from apps.connectors.fivetran.services import facebook_ads
 
 from .fivetran.client import FivetranClientError
 from .fivetran.config import ServiceTypeEnum
@@ -44,21 +43,10 @@ class ConnectorCreateForm(BaseModelForm):
         instance.create_integration(instance.conf.name, self._created_by, self._project)
 
 
-class ConnectorUpdateForm(LiveFormsetMixin, BaseModelForm):
+class ConnectorUpdateForm(LiveFormsetMixin, forms.ModelForm):
     class Meta:
         model = Connector
-        fields = ["timeframe_months", "prebuilt_reports"]
-        labels = {"timeframe_months": "Historical Sync Timeframe"}
-        help_texts = {
-            "timeframe_months": "Number of months of reporting data you'd like to include in your initial sync. This cannot be modified once connection is created. NOTE: The more months of reporting data you sync, the longer your initial sync will take."
-        }
-
-    prebuilt_reports = forms.MultipleChoiceField(
-        label="Prebuilt reports",
-        help_text="Select specific prebuilt reports (you can change this later)",
-        widget=forms.CheckboxSelectMultiple,
-        choices=zip(facebook_ads.PREBUILT_REPORTS, facebook_ads.PREBUILT_REPORTS),
-    )
+        fields = []
 
     def __init__(self, *args, **kwargs):
 
@@ -81,9 +69,7 @@ class ConnectorUpdateForm(LiveFormsetMixin, BaseModelForm):
                 f"{schema.name_in_destination}_tables"
             ] = forms.MultipleChoiceField(
                 choices=[
-                    (t.name_in_destination, t.display_name)
-                    for t in schema.tables
-                    if t.name_in_destination not in self.instance.report_table_names
+                    (t.name_in_destination, t.display_name) for t in schema.tables
                 ],
                 widget=ConnectorSchemaMultiSelect,
                 initial=[t.name_in_destination for t in schema.tables if t.enabled],
@@ -97,14 +83,13 @@ class ConnectorUpdateForm(LiveFormsetMixin, BaseModelForm):
                 t.name_in_destination: t for t in schema.tables
             }
 
-    def post_save(self, instance):
-        cleaned_data = self.clean()
+    def clean(self):
+        cleaned_data = super().clean()
         try:
-            schema_obj = instance.schema_obj
+            schema_obj = self.instance.schema_obj
             schema_obj.mutate_from_cleaned_data(cleaned_data)
-            clients.fivetran().update_schemas(instance, schema_obj.to_dict())
-            instance.sync_schema_obj_from_fivetran()
-
+            clients.fivetran().update_schemas(self.instance, schema_obj.to_dict())
+            self.instance.sync_schema_obj_from_fivetran()
         except FivetranClientError as e:
             honeybadger.notify(e)
             raise ValidationError(

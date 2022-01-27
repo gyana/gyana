@@ -51,13 +51,6 @@ class Connector(DirtyFieldsMixin, BaseModel):
             "Delayed -  the data is delayed for a longer time than expected for the update",
         )
 
-    class TimeframeMonths(models.TextChoices):
-        THREE = "THREE", "3"
-        SIX = "SIX", "6"
-        TWELVE = "TWELVE", "12"
-        TWENTY_FOUR = "TWENTY_FOUR", "24"
-        ALL_TIME = "ALL_TIME", "All time"
-
     SETUP_STATE_TO_ICON = {
         SetupState.CONNECTED: "fa fa-check text-green",
         SetupState.INCOMPLETE: "fa fa-exclamation-circle text-orange",
@@ -119,12 +112,6 @@ class Connector(DirtyFieldsMixin, BaseModel):
     # deprecated: track the celery task
     sync_task_id = models.UUIDField(null=True)
     sync_started = models.DateTimeField(null=True)
-
-    # connector specific configuration
-    timeframe_months = models.CharField(
-        max_length=16, choices=TimeframeMonths.choices, default=TimeframeMonths.THREE
-    )
-    prebuilt_reports = ArrayField(models.CharField(max_length=64), default=list)
 
     @property
     def fivetran_dashboard_url(self):
@@ -302,29 +289,14 @@ class Connector(DirtyFieldsMixin, BaseModel):
             # certain connectors fail to return schema objects
             pass
 
-    def update_fivetran_config(self):
+    def update_fivetran_config_custom_reports(self):
         extra_config = {
-            "timeframe_months": self.timeframe_months,
             "custom_tables": [
                 forms.model_to_dict(obj)
                 for obj in self.facebookadscustomreport_set.all()
             ]
-            + [
-                {
-                    "table_name": report.lower(),
-                    "config_type": "Prebuilt",
-                    "prebuilt_report_name": report,
-                }
-                for report in self.prebuilt_reports or []
-            ],
         }
         clients.fivetran().update(self, config={**self.config, **extra_config})
-
-    @property
-    def report_table_names(self):
-        prebuilt = [r.lower() for r in self.prebuilt_reports]
-        custom = [r.table_name for r in self.facebookadscustomreport_set.all()]
-        return set(prebuilt + custom)
 
     @property
     def setup_state_icon(self):
