@@ -1,0 +1,7 @@
+{% extends "account/email/base_message.txt" %}
+
+{% block content %}
+You have been invited to join {{ team.name }} in using Gyana.
+If you'd like to accept, please click the link below.
+{{ invite_url }}
+{% endblock %}

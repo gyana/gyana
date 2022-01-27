@@ -1,20 +1,23 @@
 import { Controller } from '@hotwired/stimulus'
 
-// Trigger an event on click
-
+/**
+ * Controller that helps mock a radio select using a list of
+ * table IDs.
+ * 
+ * See `input_node.html` for usage example.
+ */
 export default class extends Controller {
   static targets = ['input', 'label']
 
   select(event) {
-    const currentTarget = event.currentTarget
-    this.inputTarget.value = currentTarget.id
+    this.inputTarget.value = event.currentTarget.id
 
     // Remove css from previous selected target
     this.labelTargets.forEach((label) => {
-      label.className = label.className.replace('checkbox--checked', '')
+      label.classList.remove('checkbox--checked')
     })
 
     // Add css to now selected element
-    currentTarget.className += 'checkbox--checked'
+    event.currentTarget.classList.add('checkbox--checked')
   }
 }

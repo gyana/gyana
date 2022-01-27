@@ -90,14 +90,17 @@ class DashboardForm(forms.ModelForm):
     palette_colors = PaletteColorsField(required=False)
     background_color = forms.CharField(
         required=False,
+        initial="#ffffff",
         widget=forms.TextInput(attrs={"type": "color"}),
     )
     font_color = forms.CharField(
         required=False,
+        initial="#6a6b77",
         widget=forms.TextInput(attrs={"type": "color"}),
     )
     font_size = forms.IntegerField(
         required=False,
+        initial=14,
         widget=forms.NumberInput(
             attrs={"class": "label--third", "unit_suffix": "pixels"}
         ),

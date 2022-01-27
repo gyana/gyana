@@ -1,12 +1,17 @@
 .table {
+  border-collapse: separate;
+  border-spacing: 0;
   display: table; // Reset just in case another class overrides this.
+  height: 100%;
   width: 100%;
 
   thead {
+    position: sticky;
+    top: 0;
     width: 100%;
-    border-bottom: 1px solid var(--c-gray);
-
+    
     th {
+      border-bottom: 1px solid var(--c-gray);
       background-color: var(--c-gray-50);
       color: var(--c-black);
       font-size: 1.4rem;
@@ -67,6 +72,15 @@
       &.desc a::after {
         content: '\f0dd';
       }
+    }
+  }
+  tfoot {
+    bottom: 3.2rem;
+    position: sticky;
+    width: 100%;
+
+    td {
+      border-top: 1px solid var(--c-gray);
     }
   }
 
@@ -168,9 +182,16 @@
 }
 
 .pagination {
+  align-items: center;
+  background: var(--c-white);
+  border-top: 1px solid var(--c-gray);
+  bottom: 0;
   display: flex;
-  padding: 1.6rem;
+  gap: 1.6rem;
+  height: 3.2rem;
   justify-content: center;
+  left: 0;
+  position: sticky;
   width: 100%;
 
   li.active a {
@@ -178,13 +199,9 @@
     font-weight: 500;
   }
 
-  a {
-    padding: 1.6rem;
-
-    &:hover {
-      text-decoration: underline;
-      color: var(--c-blue-50);
-    }
+  a:hover {
+    text-decoration: underline;
+    color: var(--c-blue-50);
   }
 }
 

@@ -42,15 +42,29 @@
     </span>
   </label>
   {% elif bound_field.subwidgets|length == 1 %}
-  <div class="label {{ bound_field.field.widget.attrs.class }}">
+  <div
+    {% if bound_field.field.initial %}
+    data-controller="reset-default"
+    data-reset-default-initial-value="{{ bound_field.field.initial }}"
+    {% endif %}
+    class="label {{ bound_field.field.widget.attrs.class }}"
+  >
     <label for="{{ bound_field.id_for_label}}">
-      <span>
+      <span class="block">
         {{ bound_field.label }}
 
         {% if not bound_field.field.required and not optional == False %}
         <span class="text-black-50">- optional</span>
         {% endif %}
 
+        <a
+          class="small link float-right"
+          data-reset-default-target="control"
+          hidden
+        >
+          Reset to default
+        </a>
+        
         {% if bound_field.help_text %}
         <p class="input__help-text">{{ bound_field.help_text }}</p>
         {% endif %}

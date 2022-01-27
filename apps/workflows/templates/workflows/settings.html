@@ -1,4 +1,4 @@
-{% load render_table from django_tables2 %}
+  {% load render_table from django_tables2 %}
 {% load waffle_tags %}
 
 <section class="flex flex-col h-full whitespace-normal">
@@ -34,8 +34,16 @@
     <div class="pad">
       <p class="mb-4">All the historical runs for this workflow</p>
       <div class="card card--none">
-        {% render_table table %}
+        {% render_table tables.0 %}
       </div>
     </div> 
+
+    <div class="pad">
+      <p class="mb-4">References</p>
+      <div class="card card--none">
+        {% render_table tables.1 %}
+      </div>
+    </div> 
+
   </div>
 </section>

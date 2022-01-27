@@ -11,6 +11,10 @@ const toolbarOptions = [
   ['clean']
 ]
 
+/**
+ * Dashboard text widget controller, initilises Quill.js with the 
+ * appropriate values.
+ */
 export default class extends Controller {
   static values = {
     id: String,

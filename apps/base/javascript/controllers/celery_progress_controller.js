@@ -1,5 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 
+/**
+ * Hooks CeleryProgress to a backend task and updates accordingly.
+ */
 export default class extends Controller {
   static values = {
     done: Boolean,
@@ -79,7 +82,7 @@ export default class extends Controller {
 
   disconnect() {
     if (!this.dontStartValue) {
-      window.removeEventListener("beforeunload", this.onUnloadCall)
+      window.removeEventListener("beforeunload", this.handleBeforeUnload)
     }
   }
 

@@ -22,6 +22,7 @@
       action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
       method="post"
       data-tf-modal-target="form"
+      data-tf-modal-submit-on-close
       {% if object.kind == "image" %}
       enctype='multipart/form-data'
       {% endif %}

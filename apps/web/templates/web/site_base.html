@@ -30,11 +30,7 @@
   <link rel="stylesheet" href="{% static "css/website.css" %}" />
 
   {% comment %} TODO: Decide whether to keep use Turbo for website {% endcomment %}
-  {% comment %}
-    <script type="module">
-      import * as hotwiredTurbo from "{% static "js/turbo-bundle.js" %}";
-    </script>
-  {% endcomment %}
+  {% comment %} <script src="{% static "js/turbo-bundle.js" %}"></script> {% endcomment %}
   <script src="{% static "js/stimulus-bundle.js" %}"></script>
 
   {% if WEBSITE_GTM_ID %}
@@ -45,20 +41,17 @@
 </head>
 
 <body>
-  {% if WEBSITE_GTM_ID %}
-  {% include "web/components/gtm_body.html" %}
-  {% endif %}
-
   {% include 'web/site/header.html' %}
   {% block body %}{% endblock %}
   {% include 'web/site/footer.html' %}
 
   <script
-  type="text/javascript"
-  src="https://app.termly.io/embed.min.js"
-  data-auto-block="on"
-  data-website-uuid="20dd078f-264a-4111-8007-320b21ee3234"
+    type="text/javascript"
+    src="https://app.termly.io/embed.min.js"
+    data-auto-block="on"
+    data-website-uuid="20dd078f-264a-4111-8007-320b21ee3234"
   ></script>
+
   <button
     class="termly-cookie-preference-button"
     type="button"
@@ -67,5 +60,9 @@
   >
       Manage Cookie Preferences
   </button>
+
+  {% if WEBSITE_GTM_ID %}
+  {% include "web/components/gtm_body.html" %}
+  {% endif %}
 </body>
 </html>

@@ -3,6 +3,7 @@ from itertools import chain
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.db import models
+from django.urls.base import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
 from model_clone import CloneMixin
@@ -288,6 +289,11 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     @property
     def parents_ordered(self):
         return self.parents.order_by("child_edges")
+
+    def get_absolute_url(self):
+        workflow = self.workflow
+        project = self.workflow.project
+        return f'{reverse("project_workflows:detail", args=(project.id,workflow.id,))}?modal_item={self.id}'
 
     @property
     def used_in_workflows(self):
