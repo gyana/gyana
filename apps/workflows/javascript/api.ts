@@ -12,6 +12,7 @@ export const toNode = (res, position: XYPosition): Node => ({
     icon: NODES[res.kind].icon,
     kind: res.kind,
     error: res.error,
+    input: res.input_table ? res.input_table : null,
     ...(res.kind === 'text' ? { text: res.text_text } : {}),
     description: res.description,
   },
