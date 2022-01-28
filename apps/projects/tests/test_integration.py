@@ -1,6 +1,6 @@
-from datetime import time
-
 import pytest
+from deepdiff import DeepDiff
+from django.forms.models import model_to_dict
 from django.utils import timezone
 from pytest_django.asserts import assertContains, assertRedirects
 
@@ -13,6 +13,9 @@ from apps.base.tests.asserts import (
     assertSelectorLength,
     assertSelectorText,
 )
+from apps.nodes.models import Node
+from apps.projects.models import Project
+from apps.tables.models import Table
 from apps.users.models import CustomUser
 
 pytestmark = pytest.mark.django_db
@@ -190,5 +193,114 @@ def test_automate(client, logged_in_user, project_factory, graph_run_factory, is
     assertRedirects(r, f"/projects/{project.id}/runs", status_code=303)
 
     project.refresh_from_db()
-    print(project.daily_schedule_time)
+
     assert project.daily_schedule_time.hour == 6
+
+
+def get_project_dict(project):
+    project_dict = model_to_dict(project)
+    integrations = []
+    for integration in project.integration_set.all():
+        integration_dict = model_to_dict(integration)
+        integration_dict[integration.kind] = model_to_dict(integration.source_obj)
+        integration_dict["table_set"] = [
+            model_to_dict(table) for table in integration.table_set.all()
+        ]
+        integrations.append(integration_dict)
+
+    project_dict["integrations"] = integrations
+
+    workflows = []
+    for workflow in project.workflow_set.all():
+        workflow_dict = model_to_dict(workflow)
+        nodes = []
+        for node in workflow.nodes.all():
+            node_dict = model_to_dict(node)
+            if hasattr(node, "table"):
+                node_dict["table"] = model_to_dict(node.table)
+            if node.cache_table:
+                node_dict["cache_table"] = model_to_dict(node.cache_table)
+            if node.intermediate_table:
+                node_dict["intermediate_table"] = model_to_dict(node.intermediate_table)
+            nodes.append(node_dict)
+
+        workflow_dict["nodes"] = nodes
+        workflows.append(workflow_dict)
+    project_dict["workflows"] = workflows
+
+    dashboards = []
+    for dashboard in project.dashboard_set.all():
+        dashboard_dict = model_to_dict(dashboard)
+        pages = []
+        for page in dashboard.pages.all():
+            page_dict = model_to_dict(page)
+            page_dict["widgets"] = [
+                model_to_dict(widget) for widget in page.widgets.all()
+            ]
+            pages.append(page_dict)
+
+        dashboard_dict["pages"] = pages
+        dashboards.append(dashboard_dict)
+    project_dict["dashboards"] = dashboards
+    return project_dict
+
+
+def test_duplicate_simple_project(
+    client, project, integration_factory, upload_factory, node_factory, widget_factory
+):
+    integration = integration_factory(project=project, kind="upload")
+    upload = upload_factory(integration=integration)
+    table = integration.table_set.create(
+        bq_dataset="project.dataset",
+        bq_table=upload.table_id,
+        project=project,
+        source=Table.Source.INTEGRATION,
+    )
+
+    input_node = node_factory(workflow__project=project, input_table=table)
+    output_node = node_factory(workflow=input_node.workflow, kind="output")
+    output_node.parents.add(input_node)
+    output_table = Table(
+        workflow_node=output_node,
+        source=Table.Source.WORKFLOW_NODE,
+        bq_dataset="project.dataset",
+        project=project,
+        bq_table=output_node.bq_output_table_id,
+    )
+    output_table.save()
+    widget_factory(page__dashboard__project=project, kind="table", table=output_table)
+    project_dict = get_project_dict(project)
+
+    r = client.post(f"/projects/{project.id}/duplicate")
+    assert r.status_code == 303
+    duplicate = Project.objects.exclude(id=project.id).first()
+    assert r.url == f"/projects/{duplicate.id}"
+
+    assert duplicate.name == f"Copy {project.name}"
+    assert duplicate.integration_set.count() == 1
+    assert duplicate.workflow_set.count() == 1
+    assert duplicate.dashboard_set.count() == 1
+    assert duplicate.table_set.count() == 2
+    assert duplicate.workflow_set.first().nodes.count() == 2
+    assert duplicate.dashboard_set.first().pages.first().widgets.count() == 1
+
+    duplicate_table = duplicate.integration_set.first().table_set.first()
+    assert duplicate_table.bq_dataset == table.bq_dataset
+    assert duplicate_table.bq_table == duplicate_table.integration.upload.table_id
+
+    # Test dependencies have been removed correctly
+    duplicate_nodes = Node.objects.filter(workflow__project=duplicate)
+    duplicate_input_node = duplicate_nodes.filter(kind=Node.Kind.INPUT).first()
+    duplicate_output_node = duplicate_nodes.filter(kind=Node.Kind.OUTPUT).first()
+    assert duplicate_input_node.input_table == duplicate_table
+    assert duplicate_output_node.parents.first() == duplicate_input_node
+
+    duplicate_widget = duplicate.dashboard_set.first().pages.first().widgets.first()
+    assert duplicate_widget.table == duplicate_output_node.table
+
+    r = client.delete(f"/projects/{duplicate.id}/delete")
+    assert r.status_code == 302
+
+    new_project_dict = get_project_dict(project)
+
+    assert not DeepDiff(project_dict, new_project_dict)
