@@ -6,6 +6,10 @@ from apps.base.models import BaseModel
 from apps.connectors.fivetran.services import facebook_ads
 
 
+def default_fields():
+    return ["ad_id"]
+
+
 class FacebookAdsCustomReport(BaseModel):
     FIELD_CHOICES = zip(facebook_ads.FIELDS, facebook_ads.FIELDS)
     BREAKDOWN_CHOICES = zip(facebook_ads.BREAKDOWNS, facebook_ads.BREAKDOWNS)
@@ -33,7 +37,7 @@ class FacebookAdsCustomReport(BaseModel):
     )
     fields = ChoiceArrayField(
         models.CharField(max_length=64, choices=FIELD_CHOICES),
-        default=lambda: ["ad_id"],
+        default=default_fields,
     )
     breakdowns = ChoiceArrayField(
         models.CharField(max_length=64, choices=BREAKDOWN_CHOICES),
