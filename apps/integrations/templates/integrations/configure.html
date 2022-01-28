@@ -35,7 +35,7 @@
         {% include "django/forms/default_form.html" %}
 
         {% flag 'alpha' %}
-          {% if object.connector.service == 'facebook_ads' %}
+          {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' %}
             <label>
               Custom reports
               <p class="input__help-text">Build custom reports (you can change this later)</p>
