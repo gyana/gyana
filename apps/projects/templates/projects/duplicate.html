@@ -9,5 +9,7 @@
     action="{% url 'projects:duplicate' project.id %}"
   >
     {% csrf_token %}
-    <button type='submit' class="button button--m">Duplicate</button>
+    <button type='submit' class="button button--m">
+      <span class='beta beta__white'>Duplicate</span>
+    </button>
 </form>

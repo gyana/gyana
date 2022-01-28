@@ -6,9 +6,10 @@ from django.utils.functional import cached_property
 from model_clone.mixins.clone import CloneMixin
 
 from apps.base import clients
+from apps.base.bigquery import copy_write_truncate_bq_table
 from apps.base.models import BaseModel
 from apps.projects.models import Project
-from apps.tables.tasks import copy_table
+from apps.tables.clone import create_attrs
 
 
 class AvailableManager(models.Manager):
@@ -136,48 +137,8 @@ class Table(CloneMixin, BaseModel):
         return list(chain(self.used_in_workflows, self.used_in_dashboards))
 
     def make_clone(self, attrs=None, sub_clone=False, using=None):
-        from apps.integrations.models import Integration
+        attrs = create_attrs(attrs, self)
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
 
-        attrs = attrs or {}
-        attrs["copied_from"] = self.id
-        if self.source == self.Source.INTEGRATION and (
-            integration_clone := attrs.get("integration")
-        ):
-            attrs["project"] = integration_clone.project
-            if integration_clone.kind in [
-                Integration.Kind.UPLOAD,
-                Integration.Kind.SHEET,
-                Integration.Kind.CUSTOMAPI,
-            ]:
-
-                attrs["bq_table"] = integration_clone.source_obj.table_id
-                attrs["bq_dataset"] = self.bq_dataset
-            elif integration_clone.kind == Integration.Kind.CONNECTOR:
-                attrs["bq_table"] = self.bq_table
-                attrs["bq_dataset"] = self.bq_dataset.replace(
-                    self.integration.connector.schema,
-                    integration_clone.connector.schema,
-                )
-
-        elif self.source == self.Source.WORKFLOW_NODE:
-            clone_node = attrs["workflow_node"]
-            attrs["project"] = clone_node.workflow.project
-            attrs["bq_table"] = clone_node.bq_output_table_id
-            attrs["bq_dataset"] = self.bq_dataset
-        elif self.source == self.Source.INTERMEDIATE_NODE:
-            clone_node = attrs["intermediate_node"]
-            attrs["project"] = clone_node.workflow.project
-            attrs["bq_table"] = clone_node.bq_intermediate_table_id
-            attrs["bq_dataset"] = self.bq_dataset
-        elif self.source == self.Source.CACHE_NODE:
-            clone_node = attrs["cache_node"]
-            attrs["project"] = clone_node.workflow.project
-            attrs["bq_table"] = clone_node.bq_cache_table_id
-            attrs["bq_dataset"] = self.bq_dataset
-        clone = super().make_clone(
-            attrs=attrs,
-            sub_clone=sub_clone,
-        )
-
-        copy_table.delay(clone.bq_id, self.bq_id)
+        copy_write_truncate_bq_table(clone.bq_id, self.bq_id).result()
         return clone

@@ -11,6 +11,7 @@ from model_clone import CloneMixin
 from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import BaseModel
 from apps.dashboards.models import Dashboard
+from apps.nodes.clone import clone_tables
 from apps.nodes.config import NODE_CONFIG
 from apps.tables.models import Table
 from apps.workflows.models import Workflow
@@ -319,16 +320,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     def make_clone(self, attrs=None, sub_clone=False, using=None):
         clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
-        if self.kind == self.Kind.OUTPUT and hasattr(self, "table"):
-            self.table.make_clone({"workflow_node": clone}, sub_clone=True, using=clone)
-        elif self.intermediate_table:
-            self.intermediate_table.make_clone(
-                {"intermediate_node": clone}, sub_clone=True, using=clone
-            )
-        elif self.cache_table:
-            self.cache_table.make_clone(
-                {"cache_node": clone}, sub_clone=True, using=clone
-            )
+        clone_tables(self, clone)
         return clone
 
 

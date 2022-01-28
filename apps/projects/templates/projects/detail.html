@@ -2,6 +2,7 @@
 {% load render_table from django_tables2 %}
 {% load humanize %}
 {% load static %}
+{% load waffle_tags %}
 
 {% block app %}
 <header class="page-header">
@@ -16,9 +17,11 @@
     </p>
     {% endif %}
   </div>
+  {% flag 'beta' %}
   <turbo-frame id='projects:duplicate'>
     {% include 'projects/duplicate.html' %}
   </turbo-frame>
+  {% endflag %}
 </header>
 
 <div class="flex flex-1 items-center justify-center">

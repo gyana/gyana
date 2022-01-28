@@ -12,4 +12,10 @@
     position: absolute;
     top: -35%;
   }
+
+  &__white {
+    &::after {
+      color: var(--c-white);
+    }
+  }
 }

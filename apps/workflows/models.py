@@ -3,15 +3,14 @@ from itertools import chain
 from django.db import models
 from django.db.models import Max
 from django.urls import reverse
-from django.utils import timezone
 from model_clone import CloneMixin
 
 from apps.base.models import BaseModel
 from apps.base.tables import ICONS
-from apps.dashboards.models import Dashboard
 from apps.projects.models import Project
 from apps.runs.models import JobRun
 from apps.tables.models import Table
+from apps.workflows.clone import clone_nodes
 
 
 class Workflow(CloneMixin, BaseModel):
@@ -149,25 +148,7 @@ class Workflow(CloneMixin, BaseModel):
 
     def make_clone(self, attrs=None, sub_clone=False, using=None):
         clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
-        node_map = {}
-
-        nodes = self.nodes.all()
-        # First create the mapping between original and cloned nodes
-        for node in nodes:
-            node_clone = node.make_clone({"workflow": clone})
-            node_clone.data_updated = timezone.now()
-            # TODO: replace with bulkupdate
-            node_clone.save()
-            node_map[node] = node_clone
-
-        # Then copy the relationships
-        for node in nodes:
-            node_clone = node_map[node]
-            for parent in node.parent_edges.iterator():
-                node_clone.parent_edges.create(
-                    parent_id=node_map[parent.parent].id, position=parent.position
-                )
-
+        clone_nodes(self, clone)
         return clone
 
     @property

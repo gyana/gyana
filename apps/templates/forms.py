@@ -1,11 +1,11 @@
 from django import forms
 from django.db import transaction
 
+from apps.base.bigquery import copy_write_truncate_bq_table
 from apps.dashboards.models import Dashboard
 from apps.integrations.models import Integration
 from apps.projects.models import Project
 from apps.tables.models import Table
-from apps.templates.bigquery import copy_write_truncate_bq_table
 from apps.templates.duplicate import get_target_table_from_source_table
 from apps.widgets.models import Widget
 
