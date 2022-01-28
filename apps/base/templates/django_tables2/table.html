@@ -1,5 +1,4 @@
-{% load django_tables2 %}
-{% load i18n %}
+{% load i18n django_tables2 %}
 {% block table-wrapper %}
 
 <div class="table-container">
@@ -63,7 +62,7 @@
   {% block pagination.previous %}
   <li class="previous">
     <a href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}">
-      {% trans 'previous' %}
+      <i class="far fa-sm fa-chevron-left"></i>
     </a>
   </li>
   {% endblock pagination.previous %}
@@ -87,7 +86,7 @@
   {% block pagination.next %}
   <li class="next">
     <a href="{% querystring table.prefixed_page_field=table.page.next_page_number %}">
-      {% trans 'next' %}
+      <i class="far fa-sm fa-chevron-right"></i>
     </a>
   </li>
   {% endblock pagination.next %}
