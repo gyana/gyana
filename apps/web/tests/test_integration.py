@@ -63,6 +63,7 @@ def test_site_links(client):
     assertLink(
         r, "https://gyana-data.typeform.com/to/v2XTy0j3", "Request access", total=4
     )
+    assertLink(r, "https://gyana-data.typeform.com/to/pgpMNnAq", "Talk to us", total=2)
     assertLink(r, "/login/", "Sign in", total=2)
 
     user = CustomUser.objects.create_user("test", email="test@gyana.com")
