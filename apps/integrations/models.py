@@ -93,7 +93,7 @@ class Integration(CloneMixin, BaseModel):
 
     objects = IntegrationsManager()
 
-    _clone_o2o_fields = ["sheet", "upload"]
+    _clone_o2o_fields = ["sheet", "upload", "customapi", "connector"]
     _clone_m2o_or_o2m_fields = ["connector_set", "table_set"]
 
     STATE_TO_ICON = {

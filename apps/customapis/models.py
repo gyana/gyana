@@ -4,6 +4,7 @@ from django.db import models
 from django_cryptography.fields import encrypt
 from jsonpath_ng import parse
 from jsonpath_ng.parser import JsonPathParserError
+from model_clone.mixins import CloneMixin
 
 from apps.base.clients import SLUG
 from apps.base.models import BaseModel
@@ -31,7 +32,7 @@ def validate_body_binary(value):
         raise ValidationError("The maximum file size that can be uploaded is 10MB")
 
 
-class CustomApi(BaseModel):
+class CustomApi(CloneMixin, BaseModel):
     class HttpRequestMethod(models.TextChoices):
         GET = "GET", "GET"
         HEAD = "HEAD", "HEAD"

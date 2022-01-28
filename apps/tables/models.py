@@ -147,6 +147,7 @@ class Table(CloneMixin, BaseModel):
             if integration_clone.kind in [
                 Integration.Kind.UPLOAD,
                 Integration.Kind.SHEET,
+                Integration.Kind.CUSTOMAPI,
             ]:
 
                 attrs["bq_table"] = integration_clone.source_obj.table_id
@@ -158,8 +159,6 @@ class Table(CloneMixin, BaseModel):
                     integration_clone.connector.schema,
                 )
 
-            elif integration_clone.kind == Integration.Kind.CUSTOMAPI:
-                raise NotImplemented
         elif self.source == self.Source.WORKFLOW_NODE:
             clone_node = attrs["workflow_node"]
             attrs["project"] = clone_node.workflow.project
