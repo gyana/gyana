@@ -1,21 +1,10 @@
-{% load humanize %}
-{% load static %}
+{% load static humanize %}
 
-<div class="flex flex-col space-y-3">
-  <div class="flex items-baseline gap-3">
-    <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Integrations</h3>
+<div class="flex flex-col">
+  <div class="flex items-baseline gap-3 pad">
+    <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Integrations</h3>    
+
     {% if integrations.ready > 0 %}
-    <p class="text-black-50 ml-auto">
-      <a class="link" href="{% url 'project_integrations:list' project.id %}" data-turbo-frame="_top">
-        {{ integrations.ready|intcomma }} integration{{ integrations.ready|pluralize }}
-      </a>
-      - {{ project.num_rows|intcomma }} row{{ project.num_rows|pluralize }}
-    </p>
-    {% endif %}
-  </div>
-
-  {% if integrations.ready > 0 %}
-  <div class="card card--sm">
     <div class='flex flex-row items-center gap-3 flex-wrap'>
       {% for integration in integrations.connectors %}
         <span>
@@ -43,10 +32,39 @@
         </span>
       {% endif %}
     </div>
+    {% endif %}
+
+    {% if integrations.ready > 0 %}
+    <p class="text-black-50 ml-auto">
+      <a class="link" href="{% url 'project_integrations:list' project.id %}" data-turbo-frame="_top">
+        {{ integrations.ready|intcomma }} integration{{ integrations.ready|pluralize }}
+      </a>
+      - {{ project.num_rows|intcomma }} row{{ project.num_rows|pluralize }}
+    </p>
+    {% endif %}
+  </div>
+
+  {% if integrations.total > 0 %}
+  <div class="flex gap-8 w-full overflow-auto" style="padding: 0.8rem 1.6rem;"> 
+    {% for integration in integrations.all|slice:":12"  %}
+    <a
+      class="card card--none card--flex gap-3 items-center flex-col"
+      style="flex: 0 0 12rem; padding: 1.8rem 0.2rem;"
+      href="{% url "project_integrations:detail" project.id integration.id %}"
+      data-turbo-frame="_top"
+    >
+      <img
+        src="{% static integration.icon %}"
+        style="height: 1.6rem; width: 1.6rem;"
+        alt="{{ integration.kind }}"
+      >
+      <p class="small">{{ integration.name }}</p>
+    </a>
+    {% endfor %}
   </div>
   {% endif %}
 
-  <div class="card card--sm">
+  <div class="pad">
     {% if integrations.total == 0 %}
     <div class="table__empty">
       <a

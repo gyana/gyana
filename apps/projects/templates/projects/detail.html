@@ -3,75 +3,74 @@
 {% load humanize %}
 {% load static %}
 
+{% block app-class %}overflow-auto{% endblock app-class %}
+
 {% block app %}
 <header class="page-header">
-  <div class="mr-auto">
-    <h1>{{ project.name }}</h1>
+  <div class="flex-1 w-full overflow-hidden">
+    <h1 class="page-header__title">{{ project.name }}</h1>
     {% if project.description %}
     <p>{{ project.description }}</p>
     {% else %}
-    <p class="italic opacity-50">
-      No description provided,
-        <a class="link" href="{% url 'projects:update' object.id %}">add one</a>
+    <p class="opacity-50">
+      No project description,
+      <a class="link" href="{% url 'projects:update' object.id %}">add one</a>
     </p>
     {% endif %}
   </div>
 </header>
 
-<div class="flex flex-1 items-center justify-center">
-  <div class="flex flex-col items-left max-w-4xl" style="min-width: 42rem;">
+<div class="flex flex-col flex-1">
+  <section class="flex flex-col" style="max-width: 80rem;">
+    <turbo-frame id="integrations:overview" src="{% url 'project_integrations:overview' project.id %}">
+      <div class="flex flex-col pad">
+        <div class="flex items-baseline gap-3">
+          <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Integrations</h3>
+        </div>
 
-    <section class="flex flex-col pad">
-      <turbo-frame id="integrations:overview" src="{% url 'project_integrations:overview' project.id %}">
-        <div class="flex flex-col space-y-3">
-          <div class="flex items-baseline gap-3">
-            <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Integrations</h3>
-          </div>
-
-          <div class="card card--sm">
-            <div class='placeholder-scr placeholder-scr--fillscreen'>
-              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-              <p class='placeholder-scr__title'>Loading integrations overview...</p>
-            </div>
+        <div>
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+            <p class='placeholder-scr__title'>Loading integrations overview...</p>
           </div>
         </div>
-      </turbo-frame>
+      </div>
+    </turbo-frame>
 
-      <i class="fas fa-fw fa-chevron-down text-black-20 self-center my-6"></i>
+    <i class="fas fa-fw fa-chevron-down text-black-20 self-center"></i>
 
-      <turbo-frame id="workflows:overview" src="{% url 'project_workflows:overview' project.id %}">
-        <div class="flex flex-col space-y-3">
-          <div class="flex items-baseline gap-3">
-            <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Workflows</h3>
-          </div>
+    <turbo-frame id="workflows:overview" src="{% url 'project_workflows:overview' project.id %}">
+      <div class="flex flex-col pad">
+        <div class="flex items-baseline gap-3">
+          <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Workflows</h3>
+        </div>
 
-          <div class="card card--sm">
-            <div class='placeholder-scr placeholder-scr--fillscreen'>
-              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-              <p class='placeholder-scr__title'>Loading workflows overview...</p>
-            </div>
+        <div>
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+            <p class='placeholder-scr__title'>Loading workflows overview...</p>
           </div>
         </div>
-      </turbo-frame>
+      </div>
+    </turbo-frame>
 
-      <i class="fas fa-fw fa-chevron-down text-black-20 self-center my-6"></i>
+    <i class="fas fa-fw fa-chevron-down text-black-20 self-center"></i>
 
-      <turbo-frame id="dashboards:overview" src="{% url 'project_dashboards:overview' project.id %}">
-        <div class="flex flex-col space-y-3">
-          <div class="flex items-baseline gap-3">
-            <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Dashboards</h3>
-          </div>
+    <turbo-frame id="dashboards:overview" src="{% url 'project_dashboards:overview' project.id %}">
+      <div class="flex flex-col pad">
+        <div class="flex items-baseline gap-3">
+          <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Dashboards</h3>
+        </div>
 
-          <div class="card card--sm">
-            <div class='placeholder-scr placeholder-scr--fillscreen'>
-              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-              <p class='placeholder-scr__title'>Loading dashboards overview...</p>
-            </div>
+        <div>
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+            <p class='placeholder-scr__title'>Loading dashboards overview...</p>
           </div>
         </div>
-      </turbo-frame>
-    </section>
-  </div>
+      </div>
+    </turbo-frame>
+  </section>
 </div>
 
 {% endblock %}

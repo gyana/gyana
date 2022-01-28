@@ -65,7 +65,17 @@
   height: 9.6rem;
   justify-content: center;
   min-height: 9.6rem;
+  overflow: hidden;
   padding: 1.6rem;
+
+  &__title {
+    display: block;
+    line-height: initial;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
 }
 
 .connectors {

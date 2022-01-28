@@ -26,6 +26,7 @@ class IntegrationOverview(ProjectMixin, TurboFrameTemplateView):
         broken = queryset.broken().count()
 
         context_data["integrations"] = {
+            "all": queryset.order_by("-updated").all(),
             "total": ready + pending,
             "ready": ready,
             "attention": queryset.needs_attention().count(),
