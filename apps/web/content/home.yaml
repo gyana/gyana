@@ -54,3 +54,9 @@ use_cases:
   - description: Turn your custom analysis workflows into <strong>repeatable solutions</strong>
       to accelerate your work.
     name: Consulting
+testimonial:
+  quote: Gyana as a data manipulation tool is super powerful. We previously used industry leading tools like Supermetrics and Google Data Studio, but were always faced with fixing breaks whenever we made changes to our reporting workflow. Gyana gives us the flexibility to add new connectors, new channels and pull reports all in one place.
+  avatar: jack-paxton.png
+  logo: top-growth-marketing.jpeg
+  name: Jack Paxton
+  role: Founder, Top Growth Marketing
