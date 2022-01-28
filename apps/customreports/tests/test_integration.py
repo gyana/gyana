@@ -74,8 +74,7 @@ def test_customreports_import(
     client, project, connector_factory, facebook_ads_custom_report_factory, fivetran
 ):
 
-    connector = connector_factory(integration__project=project, service="facebook_ads")
-    facebook_ads_custom_report = facebook_ads_custom_report_factory(connector=connector)
+    connector = connector_factory(integration__project=project)
     integration = connector.integration
     fivetran.get_schemas.return_value = {}
     fivetran.get.return_value = get_mock_fivetran_connector(
@@ -83,12 +82,26 @@ def test_customreports_import(
     )
 
     CONFIGURE = f"/projects/{project.id}/integrations/{integration.id}/configure"
-    LIST = f"/connectors/{connector.id}/customreports"
 
     # connector import
-    client.post(f"{LIST}/new")  # add a new custom report
-    r = client.post(CONFIGURE, data={})
-    assertRedirects(r, f"/projects/{project.id}/integrations/{integration.id}/load")
+    client.post(CONFIGURE, data={})
 
+    assert fivetran.update.call_count == 0
+    assert fivetran.test.call_count == 0
+
+    connector.service = "facebook_ads"
+    connector.save()
+
+    client.post(CONFIGURE, data={})
+    assert fivetran.update.call_count == 0
+    assert fivetran.test.call_count == 0
+
+    facebook_ads_custom_report = facebook_ads_custom_report_factory(connector=connector)
+
+    # only called when service has custom reports
+
+    client.post(CONFIGURE, data={})
     assert fivetran.update.call_count == 1
+    assert fivetran.update.call_args.args == (connector,)
     assert fivetran.test.call_count == 1
+    assert fivetran.test.call_args.args == (connector,)
