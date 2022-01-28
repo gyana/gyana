@@ -50,7 +50,7 @@ class ConnectorUpdateForm(LiveFormsetMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
 
-        self._is_beta = kwargs.pop("is_beta")
+        self._is_alpha = kwargs.pop("is_alpha")
         super().__init__(*args, **kwargs)
 
         self.instance.sync_schema_obj_from_fivetran()
@@ -93,7 +93,7 @@ class ConnectorUpdateForm(LiveFormsetMixin, forms.ModelForm):
             self.instance.sync_schema_obj_from_fivetran()
 
             if (
-                self._is_beta
+                self._is_alpha
                 and self.instance.service == "facebook_ads"
                 and self.instance.custom_reports
             ):

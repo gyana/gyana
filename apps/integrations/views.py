@@ -147,7 +147,7 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.update({"instance": self.object.source_obj})
-        kwargs["is_beta"] = flag_is_active(self.request, "beta")
+        kwargs["is_alpha"] = flag_is_active(self.request, "alpha")
         return kwargs
 
     def form_valid(self, form):
