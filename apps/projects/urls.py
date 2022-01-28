@@ -39,7 +39,7 @@ urlpatterns = [
     ),
     path(
         "<hashid:project_id>/duplicate",
-        login_and_project_required(views.ProjectDuplicate.as_view()),
+        login_and_project_required(frames.ProjectDuplicate.as_view()),
         name="duplicate",
     ),
 ]

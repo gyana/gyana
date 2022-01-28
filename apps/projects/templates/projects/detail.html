@@ -16,13 +16,9 @@
     </p>
     {% endif %}
   </div>
-  <form
-    method="post"
-    action="{% url 'projects:duplicate' project.id %}"
-  >
-    {% csrf_token %}
-    <button type='submit' class="button button--m">Duplicate</button>
-</form>
+  <turbo-frame id='projects:duplicate'>
+    {% include 'projects/duplicate.html' %}
+  </turbo-frame>
 </header>
 
 <div class="flex flex-1 items-center justify-center">
