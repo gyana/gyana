@@ -6,7 +6,7 @@ from django.utils.functional import cached_property
 from model_clone.mixins.clone import CloneMixin
 
 from apps.base import clients
-from apps.base.bigquery import copy_write_truncate_bq_table
+from apps.base.bigquery import copy_table
 from apps.base.models import BaseModel
 from apps.projects.models import Project
 from apps.tables.clone import create_attrs
@@ -138,7 +138,4 @@ class Table(CloneMixin, BaseModel):
 
     def make_clone(self, attrs=None, sub_clone=False, using=None):
         attrs = create_attrs(attrs, self)
-        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
-
-        copy_write_truncate_bq_table(clone.bq_id, self.bq_id).result()
-        return clone
+        return super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)

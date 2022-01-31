@@ -39,7 +39,6 @@ class FivetranClient:
 
         # https://fivetran.com/docs/rest-api/connectors/config
         # database connectors require schema_prefix, rather than schema
-
         schema = create_schema(team_id, service)
         if SLUG:
             schema = f"{SLUG}_{schema}"

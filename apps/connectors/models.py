@@ -9,6 +9,7 @@ from model_clone.mixins.clone import CloneMixin
 
 from apps.base import clients
 from apps.base.models import BaseModel
+from apps.connectors.clone import update_schema
 from apps.connectors.fivetran.schema import FivetranSchemaObj
 from apps.integrations.models import Integration
 
@@ -64,13 +65,15 @@ class Connector(DirtyFieldsMixin, CloneMixin, BaseModel):
     }
 
     _clone_excluded_fields = [
-        "fivetran_authorized",
+        # TODO: right now this needs to be falsely copied
+        # otherwise the integration won't be shown on the overview page.
+        # "fivetran_authorized",
         "fivetran_sync_started",
         "bigquery_succeeded_at",
         # TODO: should this be added later or do we need to replace the schema during duplication
         "schema_config",
     ]
-
+    _clone_excluded_o2o_fields = ["integration"]
     # internal fields
 
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
@@ -322,14 +325,5 @@ class Connector(DirtyFieldsMixin, CloneMixin, BaseModel):
         return self.succeeded_at == self.bigquery_succeeded_at
 
     def make_clone(self, attrs=None, sub_clone=False, using=None):
-        from apps.connectors.fivetran.client import create_schema
-
-        attrs = attrs or {}
-        team = (
-            clone_integration.project.team
-            if (clone_integration := attrs.get("integration"))
-            else self.integration.project.team
-        )
-        attrs["schema"] = create_schema(team.id, self.service)
-
+        attrs = update_schema(attrs, self)
         return super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)

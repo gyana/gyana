@@ -320,7 +320,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     def make_clone(self, attrs=None, sub_clone=False, using=None):
         clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
-        clone_tables(self, clone)
+        clone_tables(self, clone, using)
         return clone
 
 

@@ -14,6 +14,8 @@ from apps.runs.models import JobRun
 from apps.users.models import CustomUser
 from apps.workflows.models import Workflow
 
+from .clone import clone_connector_and_tables
+
 PENDING_DELETE_AFTER_DAYS = 7
 
 
@@ -93,8 +95,7 @@ class Integration(CloneMixin, BaseModel):
 
     objects = IntegrationsManager()
 
-    _clone_o2o_fields = ["sheet", "upload", "customapi", "connector"]
-    _clone_m2o_or_o2m_fields = ["connector_set", "table_set"]
+    _clone_o2o_fields = ["sheet", "upload", "customapi"]
 
     STATE_TO_ICON = {
         State.UPDATE: ICONS["warning"],
@@ -244,3 +245,8 @@ class Integration(CloneMixin, BaseModel):
             else self.RUN_STATE_TO_INTEGRATION_STATE[self.latest_run.state]
         )
         self.save()
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        clone_connector_and_tables(self, clone, using)
+        return clone

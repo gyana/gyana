@@ -4,9 +4,11 @@ from uuid import uuid4
 
 from celery import shared_task
 from celery_progress import backend
+from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
 
+from apps.base.bigquery import copy_table
 from apps.integrations.models import Integration
 from apps.integrations.tasks import run_integration_task
 from apps.nodes.models import Node
@@ -155,26 +157,36 @@ def duplicate_project(project_id, user_id):
     user = CustomUser.objects.get(pk=user_id)
     project = Project.objects.get(pk=project_id)
 
-    clone = project.make_clone({"name": f"Copy of {project.name}"})
+    with transaction.atomic():
+        clone = project.make_clone({"name": f"Copy of {project.name}"})
 
-    tables = Table.objects.filter(project=clone).all()
-    input_nodes = Node.objects.filter(
-        workflow__project=clone,
-        kind=Node.Kind.INPUT,
-        input_table__isnull=False,
-    ).all()
+        tables = Table.objects.filter(project=clone).all()
+        input_nodes = Node.objects.filter(
+            workflow__project=clone,
+            kind=Node.Kind.INPUT,
+            input_table__isnull=False,
+        ).all()
 
-    for node in input_nodes:
-        node.input_table = next(
-            filter(lambda t: t.copied_from == node.input_table.id, tables)
-        )
-    Node.objects.bulk_update(input_nodes, ["input_table"])
+        for node in input_nodes:
+            node.input_table = next(
+                filter(lambda t: t.copied_from == node.input_table.id, tables)
+            )
+        Node.objects.bulk_update(input_nodes, ["input_table"])
 
-    widgets = Widget.objects.filter(
-        page__dashboard__project=clone, table__isnull=False
-    ).all()
-    for widget in widgets:
-        widget.table = next(filter(lambda t: t.copied_from == widget.table.id, tables))
-    Widget.objects.bulk_update(widgets, ["table"])
+        widgets = Widget.objects.filter(
+            page__dashboard__project=clone, table__isnull=False
+        ).all()
+        for widget in widgets:
+            widget.table = next(
+                filter(lambda t: t.copied_from == widget.table.id, tables)
+            )
+        Widget.objects.bulk_update(widgets, ["table"])
+
+        original_tables = Table.objects.filter(project=project).all()
+        for table in tables:
+            original_table = next(
+                filter(lambda x: table.copied_from == x.id, original_tables)
+            )
+            copy_table(original_table.bq_id, table.bq_id, table.bq_dataset).result()
 
     send_duplicate_email(user, clone)
