@@ -1,8 +1,5 @@
-from itertools import chain
-
 import pytest
 from deepdiff import DeepDiff
-from django.forms.models import model_to_dict
 from django.utils import timezone
 from pytest_django.asserts import assertContains, assertRedirects
 
@@ -15,6 +12,7 @@ from apps.base.tests.asserts import (
     assertSelectorLength,
     assertSelectorText,
 )
+from apps.base.tests.snapshot import get_instance_dict
 from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.tables.models import Table
@@ -197,47 +195,6 @@ def test_automate(client, logged_in_user, project_factory, graph_run_factory, is
     project.refresh_from_db()
 
     assert project.daily_schedule_time.hour == 6
-
-
-from django.db.models.fields.files import FileField, ImageField
-
-
-def get_instance_dict(instance, already_passed=frozenset()):
-    instance_dict = model_to_dict(
-        instance,
-        fields=[
-            f
-            for f in instance._meta.concrete_fields
-            if not isinstance(f, (ImageField, FileField))
-        ],
-    )
-    already_passed = already_passed.union(
-        frozenset((f"{instance.__class__.__name__}:{instance.id}",))
-    )
-    for field in chain(instance._meta.related_objects, instance._meta.concrete_fields):
-        if (
-            (field.one_to_one or field.many_to_one)
-            and hasattr(instance, field.name)
-            and (relation := getattr(instance, field.name))
-        ):
-            if (
-                model_id := f"{relation.__class__.__name__}:{relation.id}"
-            ) in already_passed:
-                instance_dict[field.name] = model_id
-            else:
-                instance_dict[field.name] = get_instance_dict(relation, already_passed)
-        if field.one_to_many or field.many_to_many:
-            relations = []
-            for relation in getattr(instance, field.get_accessor_name()).all():
-                if (
-                    model_id := f"{relation.__class__.__name__}:{relation.id}"
-                ) in already_passed:
-                    relations.append(model_id)
-                else:
-                    relations.append(get_instance_dict(relation, already_passed))
-            instance_dict[field.get_accessor_name()] = relations
-
-    return instance_dict
 
 
 def test_duplicate_simple_project(
