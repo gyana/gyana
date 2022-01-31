@@ -186,7 +186,7 @@ class OneDimensionForm(GenericWidgetForm):
                 fields += ["sort_by", "sort_ascending"]
             schema = (
                 Table.objects.get(pk=table).schema
-                if isinstance(table, str)
+                if isinstance(table, (str, int))
                 else table.schema
             )
 
@@ -226,7 +226,7 @@ class TwoDimensionForm(GenericWidgetForm):
 
             schema = (
                 Table.objects.get(pk=table).schema
-                if isinstance(table, str)
+                if isinstance(table, (str, int))
                 else table.schema
             )
 
@@ -274,7 +274,7 @@ class StackedChartForm(GenericWidgetForm):
 
             schema = (
                 Table.objects.get(pk=table).schema
-                if isinstance(table, str)
+                if isinstance(table, (str, int))
                 else table.schema
             )
 
