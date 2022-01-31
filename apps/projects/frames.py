@@ -34,7 +34,7 @@ class ProjectDuplicate(TurboFrameUpdateView):
     turbo_frame_dom_id = "projects:duplicate"
 
     def form_valid(self, form):
-        duplicate_project(self.object.id, self.request.user.id)
+        duplicate_project.delay(self.object.id, self.request.user.id)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
