@@ -272,3 +272,45 @@ def test_duplicate_simple_project(
     new_project_dict = get_instance_dict(project)
 
     assert not DeepDiff(project_dict, new_project_dict)
+
+
+def test_duplicate_project_with_connector(
+    client, bigquery, project, integration_factory, connector_factory
+):
+    integration = integration_factory(project=project, kind="connector")
+    connector = connector_factory(integration=integration)
+    table = integration.table_set.create(
+        bq_dataset=connector.schema,
+        bq_table="table",
+        project=project,
+        source=Table.Source.INTEGRATION,
+    )
+    project_dict = get_instance_dict(project)
+
+    r = client.post(f"/projects/{project.id}/duplicate")
+    assert r.status_code == 303
+    duplicate = Project.objects.exclude(id=project.id).first()
+
+    assert duplicate.name == f"Copy of {project.name}"
+    assert duplicate.integration_set.count() == 1
+    assert duplicate.table_set.count() == 1
+
+    connector_clone = duplicate.integration_set.first().connector
+    assert connector_clone.schema != connector.schema
+
+    table_clone = duplicate.integration_set.first().table_set.first()
+    assert table_clone.bq_dataset == connector_clone.schema
+    assert table_clone.bq_table == table.bq_table
+
+    assert bigquery.query.call_count == 1
+    assert (
+        f"CREATE OR REPLACE TABLE {table_clone.bq_id} as (SELECT * FROM {table.bq_id})"
+        == bigquery.query.call_args.args[0]
+    )
+
+    r = client.delete(f"/projects/{duplicate.id}/delete")
+    assert r.status_code == 302
+
+    new_project_dict = get_instance_dict(project)
+
+    assert not DeepDiff(project_dict, new_project_dict)
