@@ -96,7 +96,7 @@ class Integration(CloneMixin, BaseModel):
     objects = IntegrationsManager()
 
     # Connectors are explicitly cloned in make_clone call
-    _clone_excluded_o2o_fields = ["connector"]
+    _clone_o2o_fields = ["sheet", "upload", "customapi"]
 
     STATE_TO_ICON = {
         State.UPDATE: ICONS["warning"],

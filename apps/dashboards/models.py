@@ -66,7 +66,7 @@ class Dashboard(DashboardSettings, CloneMixin, BaseModel):
         PUBLIC = "public", "Public"
         PASSWORD_PROTECTED = "password_protected", "Password Protected"
 
-    _clone_excluded_m2o_or_o2m_fields = []
+    _clone_m2o_or_o2m_fields = ["pages"]
 
     name = models.CharField(max_length=255, default="Untitled")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -142,7 +142,8 @@ class Page(CloneMixin, BaseModel):
     class Meta:
         unique_together = ("dashboard", "position")
 
-    _clone_excluded_m2o_or_o2m_fields = []
+    # TODO: do we need some reference to control here?
+    _clone_m2o_or_o2m_fields = ["widgets"]
 
     dashboard = models.ForeignKey(
         Dashboard, on_delete=models.CASCADE, related_name="pages"
