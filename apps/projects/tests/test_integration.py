@@ -1,3 +1,5 @@
+from itertools import chain
+
 import pytest
 from deepdiff import DeepDiff
 from django.forms.models import model_to_dict
@@ -197,52 +199,45 @@ def test_automate(client, logged_in_user, project_factory, graph_run_factory, is
     assert project.daily_schedule_time.hour == 6
 
 
-def get_project_dict(project):
-    project_dict = model_to_dict(project)
-    integrations = []
-    for integration in project.integration_set.all():
-        integration_dict = model_to_dict(integration)
-        integration_dict[integration.kind] = model_to_dict(integration.source_obj)
-        integration_dict["table_set"] = [
-            model_to_dict(table) for table in integration.table_set.all()
-        ]
-        integrations.append(integration_dict)
+from django.db.models.fields.files import FileField, ImageField
 
-    project_dict["integrations"] = integrations
 
-    workflows = []
-    for workflow in project.workflow_set.all():
-        workflow_dict = model_to_dict(workflow)
-        nodes = []
-        for node in workflow.nodes.all():
-            node_dict = model_to_dict(node)
-            if hasattr(node, "table"):
-                node_dict["table"] = model_to_dict(node.table)
-            if node.cache_table:
-                node_dict["cache_table"] = model_to_dict(node.cache_table)
-            if node.intermediate_table:
-                node_dict["intermediate_table"] = model_to_dict(node.intermediate_table)
-            nodes.append(node_dict)
+def get_instance_dict(instance, already_passed=frozenset()):
+    instance_dict = model_to_dict(
+        instance,
+        fields=[
+            f
+            for f in instance._meta.concrete_fields
+            if not isinstance(f, (ImageField, FileField))
+        ],
+    )
+    already_passed = already_passed.union(
+        frozenset((f"{instance.__class__.__name__}:{instance.id}",))
+    )
+    for field in chain(instance._meta.related_objects, instance._meta.concrete_fields):
+        if (
+            (field.one_to_one or field.many_to_one)
+            and hasattr(instance, field.name)
+            and (relation := getattr(instance, field.name))
+        ):
+            if (
+                model_id := f"{relation.__class__.__name__}:{relation.id}"
+            ) in already_passed:
+                instance_dict[field.name] = model_id
+            else:
+                instance_dict[field.name] = get_instance_dict(relation, already_passed)
+        if field.one_to_many or field.many_to_many:
+            relations = []
+            for relation in getattr(instance, field.get_accessor_name()).all():
+                if (
+                    model_id := f"{relation.__class__.__name__}:{relation.id}"
+                ) in already_passed:
+                    relations.append(model_id)
+                else:
+                    relations.append(get_instance_dict(relation, already_passed))
+            instance_dict[field.get_accessor_name()] = relations
 
-        workflow_dict["nodes"] = nodes
-        workflows.append(workflow_dict)
-    project_dict["workflows"] = workflows
-
-    dashboards = []
-    for dashboard in project.dashboard_set.all():
-        dashboard_dict = model_to_dict(dashboard)
-        pages = []
-        for page in dashboard.pages.all():
-            page_dict = model_to_dict(page)
-            page_dict["widgets"] = [
-                model_to_dict(widget) for widget in page.widgets.all()
-            ]
-            pages.append(page_dict)
-
-        dashboard_dict["pages"] = pages
-        dashboards.append(dashboard_dict)
-    project_dict["dashboards"] = dashboards
-    return project_dict
+    return instance_dict
 
 
 def test_duplicate_simple_project(
@@ -269,14 +264,13 @@ def test_duplicate_simple_project(
     )
     output_table.save()
     widget_factory(page__dashboard__project=project, kind="table", table=output_table)
-    project_dict = get_project_dict(project)
+    project_dict = get_instance_dict(project)
 
     r = client.post(f"/projects/{project.id}/duplicate")
     assert r.status_code == 303
     duplicate = Project.objects.exclude(id=project.id).first()
-    assert r.url == f"/projects/{duplicate.id}"
 
-    assert duplicate.name == f"Copy {project.name}"
+    assert duplicate.name == f"Copy of {project.name}"
     assert duplicate.integration_set.count() == 1
     assert duplicate.workflow_set.count() == 1
     assert duplicate.dashboard_set.count() == 1
@@ -301,6 +295,6 @@ def test_duplicate_simple_project(
     r = client.delete(f"/projects/{duplicate.id}/delete")
     assert r.status_code == 302
 
-    new_project_dict = get_project_dict(project)
+    new_project_dict = get_instance_dict(project)
 
     assert not DeepDiff(project_dict, new_project_dict)
