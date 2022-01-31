@@ -44,11 +44,16 @@ def get_query_from_widget(widget: Widget, query):
     else:
         aggregations = widget.aggregations.all()
 
-    group_column = query[widget.dimension]
-    if isinstance(group_column.type(), (idt.Date, idt.Timestamp)) and widget.part:
+    if widget.kind in NO_DIMENSION_WIDGETS:
+        groups = []
+    elif (
+        (group_column := query[widget.dimension]) is not None
+        and isinstance(group_column.type(), (idt.Date, idt.Timestamp))
+        and widget.part
+    ):
         groups = [PART_MAP[widget.part](group_column).name(widget.dimension)]
     else:
-        groups = [group_column] if widget.kind not in NO_DIMENSION_WIDGETS else []
+        groups = [group_column]
     if (
         widget.kind
         in [
