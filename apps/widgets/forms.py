@@ -34,6 +34,7 @@ class GenericWidgetForm(LiveFormsetForm):
             "table",
             "kind",
             "dimension",
+            "part",
             "second_dimension",
             "sort_by",
             "sort_column",
@@ -183,6 +184,18 @@ class OneDimensionForm(GenericWidgetForm):
             fields += ["dimension"]
             if self.get_live_field("kind") != Widget.Kind.COMBO:
                 fields += ["sort_by", "sort_ascending"]
+            schema = (
+                Table.objects.get(pk=table).schema
+                if isinstance(table, str)
+                else table.schema
+            )
+
+            if (
+                (dimension := self.get_live_field("dimension"))
+                and dimension in schema
+                and isinstance(schema[dimension], (Date, Timestamp))
+            ):
+                fields += ["part"]
         return fields
 
 
@@ -210,6 +223,19 @@ class TwoDimensionForm(GenericWidgetForm):
 
         if table:
             fields += ["dimension", "second_dimension"]
+
+            schema = (
+                Table.objects.get(pk=table).schema
+                if isinstance(table, str)
+                else table.schema
+            )
+
+            if (
+                (dimension := self.get_live_field("dimension"))
+                and dimension in schema
+                and isinstance(schema[dimension], (Date, Timestamp))
+            ):
+                fields += ["part"]
         return fields
 
 
@@ -245,6 +271,20 @@ class StackedChartForm(GenericWidgetForm):
                 fields += [
                     "stack_100_percent",
                 ]
+
+            schema = (
+                Table.objects.get(pk=table).schema
+                if isinstance(table, str)
+                else table.schema
+            )
+
+            if (
+                (dimension := self.get_live_field("dimension"))
+                and dimension in schema
+                and isinstance(schema[dimension], (Date, Timestamp))
+            ):
+                fields += ["part"]
+
         return fields
 
 

@@ -6,6 +6,7 @@ from model_clone import CloneMixin
 from apps.base.clients import SLUG
 from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import BaseModel, SaveParentModel
+from apps.columns.bigquery import DatePeriod
 from apps.dashboards.models import Dashboard, Page, getFusionThemePalette
 from apps.tables.models import Table
 
@@ -108,6 +109,14 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         null=True,
     )
+    part = models.CharField(
+        max_length=16,
+        choices=DatePeriod.choices,
+        null=True,
+        blank=True,
+        help_text="Select the desired date part",
+    )
+
     second_dimension = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True
     )
