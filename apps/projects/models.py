@@ -39,10 +39,8 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
         PeriodicTask, null=True, on_delete=models.SET_NULL
     )
 
-    _clone_m2o_or_o2m_fields = [
-        "integration_set",
-        "workflow_set",
-        "dashboard_set",
+    _clone_excluded_m2o_or_o2m_fields = [
+        "tables_set",
     ]
 
     def __str__(self):

@@ -5,6 +5,11 @@ from django.forms.models import model_to_dict
 
 
 def get_instance_dict(instance, already_passed=frozenset()):
+    """Creates a nested dict version of a django model instance
+
+    Follows relationships recursively, circular relationships are terminated by putting
+    a model identificator `{model_name}:{instance.id}`.
+    Ignores image and file fields."""
     instance_dict = model_to_dict(
         instance,
         fields=[
@@ -13,9 +18,11 @@ def get_instance_dict(instance, already_passed=frozenset()):
             if not isinstance(f, (ImageField, FileField))
         ],
     )
+
     already_passed = already_passed.union(
         frozenset((f"{instance.__class__.__name__}:{instance.id}",))
     )
+    # Go through possible relationships
     for field in chain(instance._meta.related_objects, instance._meta.concrete_fields):
         if (
             (field.one_to_one or field.many_to_one)
@@ -28,6 +35,7 @@ def get_instance_dict(instance, already_passed=frozenset()):
                 instance_dict[field.name] = model_id
             else:
                 instance_dict[field.name] = get_instance_dict(relation, already_passed)
+
         if field.one_to_many or field.many_to_many:
             relations = []
             for relation in getattr(instance, field.get_accessor_name()).all():

@@ -160,6 +160,7 @@ def duplicate_project(project_id, user_id):
     with transaction.atomic():
         clone = project.make_clone({"name": f"Copy of {project.name}"})
 
+        # Replace the table dependencies of input_nodes
         tables = Table.objects.filter(project=clone).all()
         input_nodes = Node.objects.filter(
             workflow__project=clone,
@@ -173,6 +174,7 @@ def duplicate_project(project_id, user_id):
             )
         Node.objects.bulk_update(input_nodes, ["input_table"])
 
+        # Replace the widget dependencies
         widgets = Widget.objects.filter(
             page__dashboard__project=clone, table__isnull=False
         ).all()
@@ -182,6 +184,8 @@ def duplicate_project(project_id, user_id):
             )
         Widget.objects.bulk_update(widgets, ["table"])
 
+        # Copy bigquery tables in the end so we don't create instances of failed
+        # Duplications
         original_tables = Table.objects.filter(project=project).all()
         for table in tables:
             original_table = next(
