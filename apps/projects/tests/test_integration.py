@@ -198,7 +198,13 @@ def test_automate(client, logged_in_user, project_factory, graph_run_factory, is
 
 
 def test_duplicate_simple_project(
-    client, project, integration_factory, upload_factory, node_factory, widget_factory
+    client,
+    bigquery,
+    project,
+    integration_factory,
+    upload_factory,
+    node_factory,
+    widget_factory,
 ):
     integration = integration_factory(project=project, kind="upload")
     upload = upload_factory(integration=integration)
@@ -248,6 +254,17 @@ def test_duplicate_simple_project(
 
     duplicate_widget = duplicate.dashboard_set.first().pages.first().widgets.first()
     assert duplicate_widget.table == duplicate_output_node.table
+
+    assert bigquery.query.call_count == 2
+    call_queries = [arg.args[0] for arg in bigquery.query.call_args_list]
+    assert (
+        f"CREATE OR REPLACE TABLE {duplicate_table.bq_id} as (SELECT * FROM {table.bq_id})"
+        in call_queries
+    )
+    assert (
+        f"CREATE OR REPLACE TABLE {duplicate_output_node.table.bq_id} as (SELECT * FROM {output_node.table.bq_id})"
+        in call_queries
+    )
 
     r = client.delete(f"/projects/{duplicate.id}/delete")
     assert r.status_code == 302
