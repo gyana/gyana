@@ -4,12 +4,8 @@
 
 {% block content %}
   <h1 class="mb-4">{{ page.title }}</h1>
-  <div>
-    {{ page.body|richtext }}
-  </div>
-
-  <article class="overflow-y-scroll">
-    {% for block in page.stream_body %}
+  <article class="prose prose-xl" style="max-width: none;">
+    {% for block in page.body %}
         <section>{% include_block block %}</section>
     {% endfor %}
 </article>

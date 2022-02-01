@@ -4,8 +4,8 @@
 {% load menu_tags %}
 
 {% block body %}
-  <div class="w-full flex flex-col">
-    <nav class='p-6 border-b border-gray flex items-center gap-4 sticky top-0 z-50'>
+  <div class="w-full h-full flex flex-col">
+    <nav class='p-6 border-b border-gray flex items-center gap-4'>
       <a href="/learn" class="flex-1">
         <h2>
           <span class="text-indigo-600">
@@ -24,11 +24,11 @@
       </a>
     </nav>
     
-    <div class="bg-white flex overflow-auto">
+    <div class="bg-white flex flex-1 overflow-auto">
       <nav class="w-96 flex flex-col py-4 gap-4 border-r border-gray">
         {% children_menu parent_page=learn_menu_page max_levels=3 template="learn/menus/menu.html" sub_menu_template="learn/menus/menu.html" apply_active_classes=True %}
       </nav>
-      <div class="flex-1">
+      <div class="flex-1 overflow-auto">
         <nav class="flex gap-2 p-4 text-black-50">
           <a href="/learn">Home</a>
             {% for ancestor in page.get_ancestors|slice:"3:" %}
