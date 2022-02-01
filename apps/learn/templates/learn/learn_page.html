@@ -3,10 +3,31 @@
 {% load wagtailcore_tags %}
 
 {% block content %}
-  <h1 class="mb-10">{{ page.title }}</h1>
-  <article class="prose prose-xl max-w-6xl">
+  
+  <article class="p-10 prose prose-xl max-w-6xl">
+    <h1 class="mb-10">{{ page.title }}</h1>
     {% for block in page.body %}
         <section>{% include_block block %}</section>
     {% endfor %}
-</article>
+  </article>
+
+  <nav class="border-t border-b border-gray">
+    <ul class='flex gap-2'>
+      {% with page.get_prev_siblings.live.first as previous_page %}
+        {% if previous_page %}
+          <li class="border-r border-gray flex flex-col gap-2 w-64 p-4">
+            <p>Previous</p>
+            <a href="{% pageurl previous_page %}" class="bold">{{ previous_page.title }}</a>
+          </li>
+        {% endif %}
+      {% endwith %}
+      {% with page.get_next_siblings.live.first as next_page %}
+        {% if next_page %}
+          <li class="border-r border-gray flex flex-col gap-2 w-64 p-4">
+            <p>Next</p>
+            <a href="{% pageurl next_page %}" class="bold">{{ next_page.title }}</a>
+          </li>
+        {% endif %}
+      {% endwith %}
+  </nav>
 {% endblock %}

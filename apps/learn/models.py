@@ -61,3 +61,6 @@ class LearnPage(Page):
         context = super().get_context(request)
         context["learn_menu_page"] = Page.objects.get(slug="learn")
         return context
+
+    def search_preview(self):
+        return "\n".join([str(b.value) for b in self.body if b.block_type == "text"])
