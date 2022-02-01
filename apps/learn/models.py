@@ -10,9 +10,10 @@ from wagtail.search import index
 from apps.base.templatetags.help_utils import get_loom_embed_url
 from apps.base.templatetags.wagtailcustom_tags import heading_re
 
+# everything except image, embed
 RICH_TEXT_FEATURES = (
     ["h2", "h3", "h4", "bold", "italic", "ol", "ul"]
-    + ["hr", "link", "document-link", "image", "embed", "code"]
+    + ["hr", "link", "document-link", "code"]
     + ["superscript", "subscript", "strikethrough", "blockquote"]
 )
 
