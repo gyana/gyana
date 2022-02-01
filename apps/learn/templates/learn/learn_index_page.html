@@ -1,0 +1,25 @@
+{% extends 'web/base.html' %}
+
+{% block body %}
+<div class="w-full">
+  <nav class='p-6 border-b border-gray flex items-center gap-4'>
+    <a href="/learn" class="flex-1">
+      <h2>
+        <span class="text-indigo-600">
+          Gyana
+        </span>
+        <span class="text-gray-700" style="font-weight: 100;">
+          Learn
+        </span>
+      </h2>
+    </a>
+    <input type="search" class="input input--sm flex-2" placeholder="Search...">
+    </input>
+    <a href="{% url 'web:home' %}" class="flex-1 text-right p-2">
+      Go to app
+    </a>
+  </nav>
+  <div class="bg-white h-full">
+  </div>
+</div>
+{% endblock %}

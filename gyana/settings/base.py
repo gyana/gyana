@@ -126,6 +126,7 @@ PROJECT_APPS = [
     "apps.oauth2",
     "apps.blog",
     "apps.customreports",
+    "apps.learn",
 ]
 
 INSTALLED_APPS = (
