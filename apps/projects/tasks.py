@@ -184,13 +184,4 @@ def duplicate_project(project_id, user_id):
             )
         Widget.objects.bulk_update(widgets, ["table"])
 
-        # Copy bigquery tables in the end so we don't create instances of failed
-        # Duplications
-        original_tables = Table.objects.filter(project=project).all()
-        for table in tables:
-            original_table = next(
-                filter(lambda x: table.copied_from == x.id, original_tables)
-            )
-            copy_table(original_table.bq_id, table.bq_id, table.bq_dataset).result()
-
     send_duplicate_email(user, clone)
