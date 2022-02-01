@@ -31,7 +31,7 @@ def add_id_attribute(match):
     attributes = match.group(2)
     text_content = match.group(3)
     id = slugify(text_content)
-    return f'<h{n}{attributes}><a id="{id}"></a><a href="#{id}" class="no-underline hover:underline group"><i class="fa fa-link fa-sm mr-1 hidden group-hover:block"></i>{text_content}</a></h{n}>'
+    return f'<h{n}{attributes}><a id="{id}"></a><a href="#{id}">{text_content}<i class="fa fa-link fa-sm ml-2"></i></a></h{n}>'
 
 
 def with_heading_ids(self):
@@ -41,7 +41,6 @@ def with_heading_ids(self):
     substitution pass that adds fragment ids and their associated link
     elements to any headings that might be in the rich text content.
     """
-    print("WORKGIN!")
     html = __original__html__(self)
     return re.sub(heading_re, add_id_attribute, html)
 
