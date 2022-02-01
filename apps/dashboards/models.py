@@ -65,8 +65,6 @@ class Dashboard(DashboardSettings, BaseModel):
         PUBLIC = "public", "Public"
         PASSWORD_PROTECTED = "password_protected", "Password Protected"
 
-    _clone_excluded_m2o_or_o2m_fields = ["project"]
-
     name = models.CharField(max_length=255, default="Untitled")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     shared_status = models.CharField(
