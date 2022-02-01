@@ -5,16 +5,36 @@ from wagtail.core.models import Page
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.search import index
 
+from apps.base.templatetags.help_utils import get_loom_embed_url
 
-class LoomBlock(blocks.URLBlock):
+RICH_TEXT_FEATURES = (
+    ["h2", "h3", "h4", "bold", "italic", "ol", "ul"]
+    + ["hr", "link", "document-link", "image", "embed", "code"]
+    + ["superscript", "subscript", "strikethrough", "blockquote"]
+)
+
+
+class LoomBlock(blocks.StructBlock):
+    loom_id = blocks.CharBlock()
+    caption = blocks.CharBlock(required=False)
+
     class Meta:
         template = "components/embed_loom.html"
-        icon = "video"
+        icon = "media"
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
-        context["loom_url"] = value
+        context["loom_url"] = get_loom_embed_url(value["loom_id"])
         return context
+
+
+class ImageBlock(blocks.StructBlock):
+    image = ImageChooserBlock()
+    caption = blocks.CharBlock(required=False)
+
+    class Meta:
+        template = "learn/blocks/image.html"
+        icon = "image"
 
 
 class LearnPage(Page):
@@ -22,9 +42,8 @@ class LearnPage(Page):
 
     body = StreamField(
         [
-            ("heading", blocks.CharBlock(form_classname="full title")),
-            ("paragraph", blocks.RichTextBlock()),
-            ("image", ImageChooserBlock()),
+            ("text", blocks.RichTextBlock(features=RICH_TEXT_FEATURES)),
+            ("image", ImageBlock()),
             ("loom", LoomBlock()),
         ]
     )
