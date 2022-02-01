@@ -4,13 +4,20 @@ from django.utils import timezone
 from model_clone import CloneMixin
 
 
-class BaseModel(models.Model):
+class BaseModel(CloneMixin, models.Model):
     """
     Base model that includes default created / updated timestamps.
     """
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
+
+    # TODO: Because of an issue https://github.com/tj-django/django-clone/issues/549
+    # we need to make the expression falsy
+    _clone_excluded_fields = [""]
+    _clone_excluded_m2m_fields = [""]
+    _clone_excluded_m2o_or_o2m_fields = [""]
+    _clone_excluded_o2o_fields = [""]
 
     class Meta:
         abstract = True
@@ -22,9 +29,11 @@ class BaseModel(models.Model):
         return f"{self._meta.db_table}-{self.id}"
 
 
-class SaveParentModel(DirtyFieldsMixin, CloneMixin, BaseModel):
+class SaveParentModel(DirtyFieldsMixin, BaseModel):
     class Meta:
         abstract = True
+
+    _clone_excluded_m2o_or_o2m_fields = ["widget", "node"]
 
     def save(self, *args, **kwargs) -> None:
         if self.is_dirty():
