@@ -67,7 +67,7 @@
     "pk": 2,
     "fields": {
       "password": "pbkdf2_sha256$260000$N2BmQRuSSYGvpQnPKCw9fj$UhUCkfx7qdzWPNYP/XUbi3L4hvP5/7f+N4nmrqTPceM=",
-      "last_login": "2022-02-01T12:38:33.951Z",
+      "last_login": "2022-02-01T15:40:06.603Z",
       "is_superuser": true,
       "username": "admin",
       "first_name": "",
@@ -3507,7 +3507,7 @@
     "pk": 10,
     "fields": {
       "created": "2021-12-16T01:46:42.564Z",
-      "updated": "2022-02-01T12:38:11.436Z",
+      "updated": "2022-02-01T15:38:13.947Z",
       "state": "success",
       "started_at": "2021-12-16T01:46:42.563Z",
       "completed_at": "2021-12-16T01:46:46.036Z",
@@ -3545,34 +3545,38 @@
     }
   },
   {
-    "model": "learn.learnindexpage",
+    "model": "learn.learnpage",
     "pk": 5,
-    "fields": { "intro": "<p data-block-key=\"dv12q\">Learn how to use Gyana</p>" }
-  },
-  {
-    "model": "learn.learnindexpage",
-    "pk": 8,
-    "fields": { "intro": "<p data-block-key=\"rkncc\">A guide to every feature in Gyana</p>" }
+    "fields": {
+      "body": "<p data-block-key=\"ul81e\">We&#x27;ve put together courses, videos and deep dives to teach you how Gyana works.</p>"
+    }
   },
   {
     "model": "learn.learnpage",
     "pk": 6,
-    "fields": { "body": "<p data-block-key=\"8tkrm\">A quick guide to get started with Gyana</p>" }
+    "fields": { "body": "<p data-block-key=\"2iiim\">A short introduction to Gyana...</p>" }
+  },
+  {
+    "model": "learn.learnpage",
+    "pk": 7,
+    "fields": {
+      "body": "<p data-block-key=\"y651s\">Learn how to use all the features in Gyana...</p>"
+    }
+  },
+  {
+    "model": "learn.learnpage",
+    "pk": 8,
+    "fields": { "body": "<p data-block-key=\"5ze11\">How to use integrations...</p>" }
   },
   {
     "model": "learn.learnpage",
     "pk": 9,
-    "fields": { "body": "<p data-block-key=\"51pv6\">How integrations work...</p>" }
+    "fields": { "body": "<p data-block-key=\"t5ctz\">How to use workflows...</p>" }
   },
   {
     "model": "learn.learnpage",
     "pk": 10,
-    "fields": { "body": "<p data-block-key=\"snwbg\">How workflows work...</p>" }
-  },
-  {
-    "model": "learn.learnpage",
-    "pk": 11,
-    "fields": { "body": "<p data-block-key=\"tvl75\">How dashboards work...</p>" }
+    "fields": { "body": "<p data-block-key=\"kamyu\">How to use dashboards...</p>" }
   },
   {
     "model": "account.emailaddress",
@@ -3711,7 +3715,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2022-02-01T12:38:11.421Z" }
+    "fields": { "last_update": "2022-02-01T15:38:13.937Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
@@ -3828,9 +3832,9 @@
     "fields": {
       "content_type": ["blog", "blogindexpage"],
       "object_id": "3",
-      "title_norm": 1.6363636363636365,
-      "autocomplete": "'blog':1",
-      "title": "'blog':1B",
+      "title_norm": 1.0,
+      "autocomplete": "",
+      "title": "",
       "body": ""
     }
   },
@@ -3874,72 +3878,72 @@
     "model": "wagtailsearch.indexentry",
     "pk": 13,
     "fields": {
-      "content_type": ["learn", "learnindexpage"],
+      "content_type": ["learn", "learnpage"],
       "object_id": "5",
-      "title_norm": 1.7,
-      "autocomplete": "'learn':1",
-      "title": "'learn':1B",
-      "body": ""
+      "title_norm": 0.8666666666666667,
+      "autocomplete": "'gyana':3 'to':2 'university':4 'welcome':1",
+      "title": "'gyana':3B 'univers':4B 'welcom':1B",
+      "body": "'cours':5 'deep':8 'dive':9 'gyana':14 'put':3 'teach':11 'togeth':4 've':2 'video':6 'work':15"
     }
   },
   {
     "model": "wagtailsearch.indexentry",
-    "pk": 16,
+    "pk": 20,
     "fields": {
       "content_type": ["learn", "learnpage"],
       "object_id": "6",
-      "title_norm": 0.8181818181818182,
+      "title_norm": 1.25,
       "autocomplete": "'getting':1 'started':2",
       "title": "'get':1B 'start':2B",
-      "body": "'get':5 'guid':3 'gyana':8 'quick':2 'start':6"
+      "body": "'gyana':5 'introduct':3 'short':2"
     }
   },
   {
     "model": "wagtailsearch.indexentry",
     "pk": 23,
     "fields": {
-      "content_type": ["learn", "learnindexpage"],
-      "object_id": "8",
-      "title_norm": 2.0,
-      "autocomplete": "'guide':1",
+      "content_type": ["learn", "learnpage"],
+      "object_id": "7",
+      "title_norm": 2.2857142857142856,
+      "autocomplete": "'guides':1",
       "title": "'guid':1B",
-      "body": ""
+      "body": "'featur':7 'gyana':9 'learn':1 'use':4"
     }
   },
   {
     "model": "wagtailsearch.indexentry",
-    "pk": 26,
+    "pk": 28,
+    "fields": {
+      "content_type": ["learn", "learnpage"],
+      "object_id": "8",
+      "title_norm": 1.9,
+      "autocomplete": "'integrations':1",
+      "title": "'integr':1B",
+      "body": "'integr':4 'use':3"
+    }
+  },
+  {
+    "model": "wagtailsearch.indexentry",
+    "pk": 31,
     "fields": {
       "content_type": ["learn", "learnpage"],
       "object_id": "9",
-      "title_norm": 1.875,
-      "autocomplete": "'integrations':1",
-      "title": "'integr':1B",
-      "body": "'integr':2 'work':3"
+      "title_norm": 1.9,
+      "autocomplete": "'workflows':1",
+      "title": "'workflow':1B",
+      "body": "'use':3 'workflow':4"
     }
   },
   {
     "model": "wagtailsearch.indexentry",
-    "pk": 29,
+    "pk": 34,
     "fields": {
       "content_type": ["learn", "learnpage"],
       "object_id": "10",
-      "title_norm": 1.777777777777778,
-      "autocomplete": "'workflows':1",
-      "title": "'workflow':1B",
-      "body": "'work':3 'workflow':2"
-    }
-  },
-  {
-    "model": "wagtailsearch.indexentry",
-    "pk": 32,
-    "fields": {
-      "content_type": ["learn", "learnpage"],
-      "object_id": "11",
-      "title_norm": 1.7,
+      "title_norm": 1.9,
       "autocomplete": "'dashboards':1",
       "title": "'dashboard':1B",
-      "body": "'dashboard':2 'work':3"
+      "body": "'dashboard':4 'use':3"
     }
   },
   {
@@ -4043,7 +4047,7 @@
       "url_path": "/home/blog/",
       "owner": ["admin"],
       "seo_title": "",
-      "show_in_menus": true,
+      "show_in_menus": false,
       "search_description": "",
       "go_live_at": null,
       "expire_at": null,
@@ -4052,9 +4056,9 @@
       "locked_at": null,
       "locked_by": null,
       "first_published_at": "2022-01-18T10:10:49.993Z",
-      "last_published_at": "2022-02-01T13:48:46.424Z",
-      "latest_revision_created_at": "2022-02-01T13:48:46.282Z",
-      "live_revision": 11,
+      "last_published_at": "2022-01-18T10:10:49.993Z",
+      "latest_revision_created_at": "2022-01-18T10:10:49.901Z",
+      "live_revision": 1,
       "alias_of": null
     }
   },
@@ -4097,13 +4101,13 @@
     "fields": {
       "path": "000100010002",
       "depth": 3,
-      "numchild": 5,
-      "translation_key": "c9fc8807-3671-48c0-a136-21bcc5a198a4",
+      "numchild": 4,
+      "translation_key": "a627d847-2c44-499f-b3ea-667a45f14de3",
       "locale": 1,
-      "title": "Learn",
-      "draft_title": "Learn",
+      "title": "Welcome to Gyana University",
+      "draft_title": "Welcome to Gyana University",
       "slug": "learn",
-      "content_type": ["learn", "learnindexpage"],
+      "content_type": ["learn", "learnpage"],
       "live": true,
       "has_unpublished_changes": false,
       "url_path": "/home/learn/",
@@ -4117,10 +4121,10 @@
       "locked": false,
       "locked_at": null,
       "locked_by": null,
-      "first_published_at": "2022-02-01T12:39:16.259Z",
-      "last_published_at": "2022-02-01T13:48:34.474Z",
-      "latest_revision_created_at": "2022-02-01T13:48:34.275Z",
-      "live_revision": 10,
+      "first_published_at": "2022-02-01T15:41:11.424Z",
+      "last_published_at": "2022-02-01T15:41:31.638Z",
+      "latest_revision_created_at": "2022-02-01T15:41:31.549Z",
+      "live_revision": 5,
       "alias_of": null
     }
   },
@@ -4131,7 +4135,7 @@
       "path": "0001000100020001",
       "depth": 4,
       "numchild": 0,
-      "translation_key": "cfdfb7c9-b623-457b-9f38-02c465699e51",
+      "translation_key": "df0f0e9f-107a-4ea2-896c-7c5971dc9796",
       "locale": 1,
       "title": "Getting started",
       "draft_title": "Getting started",
@@ -4150,10 +4154,43 @@
       "locked": false,
       "locked_at": null,
       "locked_by": null,
-      "first_published_at": "2022-02-01T12:39:33.502Z",
-      "last_published_at": "2022-02-01T13:49:43.074Z",
-      "latest_revision_created_at": "2022-02-01T13:49:42.929Z",
-      "live_revision": 12,
+      "first_published_at": "2022-02-01T15:41:52.006Z",
+      "last_published_at": "2022-02-01T15:41:52.006Z",
+      "latest_revision_created_at": "2022-02-01T15:41:51.957Z",
+      "live_revision": 6,
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 7,
+    "fields": {
+      "path": "0001000100020002",
+      "depth": 4,
+      "numchild": 6,
+      "translation_key": "7a8f574e-c61a-4461-9456-5de5baa45ba7",
+      "locale": 1,
+      "title": "Guides",
+      "draft_title": "Guides",
+      "slug": "guides",
+      "content_type": ["learn", "learnpage"],
+      "live": true,
+      "has_unpublished_changes": false,
+      "url_path": "/home/learn/guides/",
+      "owner": ["admin"],
+      "seo_title": "",
+      "show_in_menus": true,
+      "search_description": "",
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "first_published_at": "2022-02-01T15:42:44.068Z",
+      "last_published_at": "2022-02-01T15:42:57.061Z",
+      "latest_revision_created_at": "2022-02-01T15:42:56.964Z",
+      "live_revision": 8,
       "alias_of": null
     }
   },
@@ -4161,43 +4198,10 @@
     "model": "wagtailcore.page",
     "pk": 8,
     "fields": {
-      "path": "0001000100020002",
-      "depth": 4,
-      "numchild": 6,
-      "translation_key": "d49563ab-4827-4f67-b99b-1adaa967911d",
-      "locale": 1,
-      "title": "Guide",
-      "draft_title": "Guide",
-      "slug": "guide",
-      "content_type": ["learn", "learnindexpage"],
-      "live": true,
-      "has_unpublished_changes": false,
-      "url_path": "/home/learn/guide/",
-      "owner": ["admin"],
-      "seo_title": "",
-      "show_in_menus": true,
-      "search_description": "",
-      "go_live_at": null,
-      "expire_at": null,
-      "expired": false,
-      "locked": false,
-      "locked_at": null,
-      "locked_by": null,
-      "first_published_at": "2022-02-01T12:41:57.810Z",
-      "last_published_at": "2022-02-01T12:41:57.810Z",
-      "latest_revision_created_at": "2022-02-01T12:41:57.746Z",
-      "live_revision": 6,
-      "alias_of": null
-    }
-  },
-  {
-    "model": "wagtailcore.page",
-    "pk": 9,
-    "fields": {
       "path": "00010001000200020001",
       "depth": 5,
       "numchild": 0,
-      "translation_key": "3dddbdca-8ee0-4850-99da-6d32e41c62ea",
+      "translation_key": "52c83335-a1f6-47a3-ab68-ac8df7cb0807",
       "locale": 1,
       "title": "Integrations",
       "draft_title": "Integrations",
@@ -4205,7 +4209,7 @@
       "content_type": ["learn", "learnpage"],
       "live": true,
       "has_unpublished_changes": false,
-      "url_path": "/home/learn/guide/integrations/",
+      "url_path": "/home/learn/guides/integrations/",
       "owner": ["admin"],
       "seo_title": "",
       "show_in_menus": true,
@@ -4216,21 +4220,21 @@
       "locked": false,
       "locked_at": null,
       "locked_by": null,
-      "first_published_at": "2022-02-01T12:42:20.873Z",
-      "last_published_at": "2022-02-01T12:42:20.873Z",
-      "latest_revision_created_at": "2022-02-01T12:42:20.808Z",
-      "live_revision": 7,
+      "first_published_at": "2022-02-01T15:43:08.578Z",
+      "last_published_at": "2022-02-01T15:43:54.515Z",
+      "latest_revision_created_at": "2022-02-01T15:43:54.414Z",
+      "live_revision": 13,
       "alias_of": null
     }
   },
   {
     "model": "wagtailcore.page",
-    "pk": 10,
+    "pk": 9,
     "fields": {
       "path": "00010001000200020002",
       "depth": 5,
       "numchild": 0,
-      "translation_key": "00623d01-1779-47a7-bac2-f0276acd6e6f",
+      "translation_key": "4b36cc59-b60e-414c-8a08-ed08d5b0d62c",
       "locale": 1,
       "title": "Workflows",
       "draft_title": "Workflows",
@@ -4238,7 +4242,7 @@
       "content_type": ["learn", "learnpage"],
       "live": true,
       "has_unpublished_changes": false,
-      "url_path": "/home/learn/guide/workflows/",
+      "url_path": "/home/learn/guides/workflows/",
       "owner": ["admin"],
       "seo_title": "",
       "show_in_menus": true,
@@ -4249,21 +4253,21 @@
       "locked": false,
       "locked_at": null,
       "locked_by": null,
-      "first_published_at": "2022-02-01T12:42:34.259Z",
-      "last_published_at": "2022-02-01T12:42:34.259Z",
-      "latest_revision_created_at": "2022-02-01T12:42:34.187Z",
-      "live_revision": 8,
+      "first_published_at": "2022-02-01T15:43:20.143Z",
+      "last_published_at": "2022-02-01T15:43:45.557Z",
+      "latest_revision_created_at": "2022-02-01T15:43:45.431Z",
+      "live_revision": 12,
       "alias_of": null
     }
   },
   {
     "model": "wagtailcore.page",
-    "pk": 11,
+    "pk": 10,
     "fields": {
       "path": "00010001000200020003",
       "depth": 5,
       "numchild": 0,
-      "translation_key": "d9613d80-46fb-45df-8cbe-2827b518a105",
+      "translation_key": "15243b6c-fc22-49c4-b3e2-6111c329df8e",
       "locale": 1,
       "title": "Dashboards",
       "draft_title": "Dashboards",
@@ -4271,7 +4275,7 @@
       "content_type": ["learn", "learnpage"],
       "live": true,
       "has_unpublished_changes": false,
-      "url_path": "/home/learn/guide/dashboards/",
+      "url_path": "/home/learn/guides/dashboards/",
       "owner": ["admin"],
       "seo_title": "",
       "show_in_menus": true,
@@ -4282,11 +4286,23 @@
       "locked": false,
       "locked_at": null,
       "locked_by": null,
-      "first_published_at": "2022-02-01T12:42:50.553Z",
-      "last_published_at": "2022-02-01T12:42:50.553Z",
-      "latest_revision_created_at": "2022-02-01T12:42:50.484Z",
-      "live_revision": 9,
+      "first_published_at": "2022-02-01T15:43:34.391Z",
+      "last_published_at": "2022-02-01T15:43:34.391Z",
+      "latest_revision_created_at": "2022-02-01T15:43:34.321Z",
+      "live_revision": 11,
       "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.pagerevision",
+    "pk": 1,
+    "fields": {
+      "page": 3,
+      "submitted_for_moderation": false,
+      "created_at": "2022-01-18T10:10:49.901Z",
+      "user": ["admin"],
+      "content_json": "{\"pk\": 3, \"path\": \"000100010001\", \"depth\": 3, \"numchild\": 0, \"translation_key\": \"aaefe705-543f-48d6-abe6-106cb00cd3d0\", \"locale\": 1, \"title\": \"Blog\", \"draft_title\": \"Blog\", \"slug\": \"blog\", \"content_type\": 66, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/blog/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": false, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"alias_of\": null, \"intro\": \"<p data-block-key=\\\"4e4yt\\\">Learn about tips, product updates and company culture.</p>\", \"wagtail_admin_comments\": []}",
+      "approved_go_live_at": null
     }
   },
   {
@@ -4303,25 +4319,25 @@
   },
   {
     "model": "wagtailcore.pagerevision",
-    "pk": 6,
+    "pk": 5,
     "fields": {
-      "page": 8,
+      "page": 5,
       "submitted_for_moderation": false,
-      "created_at": "2022-02-01T12:41:57.746Z",
+      "created_at": "2022-02-01T15:41:31.549Z",
       "user": ["admin"],
-      "content_json": "{\"pk\": 8, \"path\": \"0001000100020002\", \"depth\": 4, \"numchild\": 0, \"translation_key\": \"d49563ab-4827-4f67-b99b-1adaa967911d\", \"locale\": 1, \"title\": \"Guide\", \"draft_title\": \"Guide\", \"slug\": \"guide\", \"content_type\": 69, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/guide/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": false, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"alias_of\": null, \"intro\": \"<p data-block-key=\\\"rkncc\\\">A guide to every feature in Gyana</p>\", \"wagtail_admin_comments\": []}",
+      "content_json": "{\"pk\": 5, \"path\": \"000100010002\", \"depth\": 3, \"numchild\": 0, \"translation_key\": \"a627d847-2c44-499f-b3ea-667a45f14de3\", \"locale\": 1, \"title\": \"Welcome to Gyana University\", \"draft_title\": \"Welcome to Gyana University\", \"slug\": \"learn\", \"content_type\": 130, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/welcome-to-gyana-university/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-02-01T15:41:11.424Z\", \"last_published_at\": \"2022-02-01T15:41:22.137Z\", \"latest_revision_created_at\": \"2022-02-01T15:41:22.052Z\", \"live_revision\": 4, \"alias_of\": null, \"body\": \"<p data-block-key=\\\"ul81e\\\">We&#x27;ve put together courses, videos and deep dives to teach you how Gyana works.</p>\", \"wagtail_admin_comments\": []}",
       "approved_go_live_at": null
     }
   },
   {
     "model": "wagtailcore.pagerevision",
-    "pk": 7,
+    "pk": 6,
     "fields": {
-      "page": 9,
+      "page": 6,
       "submitted_for_moderation": false,
-      "created_at": "2022-02-01T12:42:20.808Z",
+      "created_at": "2022-02-01T15:41:51.957Z",
       "user": ["admin"],
-      "content_json": "{\"pk\": 9, \"path\": \"00010001000200020001\", \"depth\": 5, \"numchild\": 0, \"translation_key\": \"3dddbdca-8ee0-4850-99da-6d32e41c62ea\", \"locale\": 1, \"title\": \"Integrations\", \"draft_title\": \"Integrations\", \"slug\": \"integrations\", \"content_type\": 70, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/guide/integrations/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": false, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"alias_of\": null, \"body\": \"<p data-block-key=\\\"51pv6\\\">How integrations work...</p>\", \"wagtail_admin_comments\": []}",
+      "content_json": "{\"pk\": 6, \"path\": \"0001000100020001\", \"depth\": 4, \"numchild\": 0, \"translation_key\": \"df0f0e9f-107a-4ea2-896c-7c5971dc9796\", \"locale\": 1, \"title\": \"Getting started\", \"draft_title\": \"Getting started\", \"slug\": \"getting-started\", \"content_type\": 130, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/getting-started/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"alias_of\": null, \"body\": \"<p data-block-key=\\\"2iiim\\\">A short introduction to Gyana...</p>\", \"wagtail_admin_comments\": []}",
       "approved_go_live_at": null
     }
   },
@@ -4329,35 +4345,11 @@
     "model": "wagtailcore.pagerevision",
     "pk": 8,
     "fields": {
-      "page": 10,
+      "page": 7,
       "submitted_for_moderation": false,
-      "created_at": "2022-02-01T12:42:34.187Z",
+      "created_at": "2022-02-01T15:42:56.964Z",
       "user": ["admin"],
-      "content_json": "{\"pk\": 10, \"path\": \"00010001000200020002\", \"depth\": 5, \"numchild\": 0, \"translation_key\": \"00623d01-1779-47a7-bac2-f0276acd6e6f\", \"locale\": 1, \"title\": \"Workflows\", \"draft_title\": \"Workflows\", \"slug\": \"workflows\", \"content_type\": 70, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/guide/workflows/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": false, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"alias_of\": null, \"body\": \"<p data-block-key=\\\"snwbg\\\">How workflows work...</p>\", \"wagtail_admin_comments\": []}",
-      "approved_go_live_at": null
-    }
-  },
-  {
-    "model": "wagtailcore.pagerevision",
-    "pk": 9,
-    "fields": {
-      "page": 11,
-      "submitted_for_moderation": false,
-      "created_at": "2022-02-01T12:42:50.484Z",
-      "user": ["admin"],
-      "content_json": "{\"pk\": 11, \"path\": \"00010001000200020003\", \"depth\": 5, \"numchild\": 0, \"translation_key\": \"d9613d80-46fb-45df-8cbe-2827b518a105\", \"locale\": 1, \"title\": \"Dashboards\", \"draft_title\": \"Dashboards\", \"slug\": \"dashboards\", \"content_type\": 70, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/guide/dashboards/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": false, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"alias_of\": null, \"body\": \"<p data-block-key=\\\"tvl75\\\">How dashboards work...</p>\", \"wagtail_admin_comments\": []}",
-      "approved_go_live_at": null
-    }
-  },
-  {
-    "model": "wagtailcore.pagerevision",
-    "pk": 10,
-    "fields": {
-      "page": 5,
-      "submitted_for_moderation": false,
-      "created_at": "2022-02-01T13:48:34.275Z",
-      "user": ["admin"],
-      "content_json": "{\"pk\": 5, \"path\": \"000100010002\", \"depth\": 3, \"numchild\": 5, \"translation_key\": \"c9fc8807-3671-48c0-a136-21bcc5a198a4\", \"locale\": 1, \"title\": \"Learn\", \"draft_title\": \"Learn\", \"slug\": \"learn\", \"content_type\": 69, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-02-01T12:39:16.259Z\", \"last_published_at\": \"2022-02-01T12:39:16.259Z\", \"latest_revision_created_at\": \"2022-02-01T12:39:16.192Z\", \"live_revision\": 3, \"alias_of\": null, \"intro\": \"<p data-block-key=\\\"dv12q\\\">Learn how to use Gyana</p>\", \"wagtail_admin_comments\": []}",
+      "content_json": "{\"pk\": 7, \"path\": \"0001000100020002\", \"depth\": 4, \"numchild\": 0, \"translation_key\": \"7a8f574e-c61a-4461-9456-5de5baa45ba7\", \"locale\": 1, \"title\": \"Guides\", \"draft_title\": \"Guides\", \"slug\": \"guides\", \"content_type\": 130, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/guides/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-02-01T15:42:44.068Z\", \"last_published_at\": \"2022-02-01T15:42:44.068Z\", \"latest_revision_created_at\": \"2022-02-01T15:42:44.009Z\", \"live_revision\": 7, \"alias_of\": null, \"body\": \"<p data-block-key=\\\"y651s\\\">Learn how to use all the features in Gyana...</p>\", \"wagtail_admin_comments\": []}",
       "approved_go_live_at": null
     }
   },
@@ -4365,11 +4357,11 @@
     "model": "wagtailcore.pagerevision",
     "pk": 11,
     "fields": {
-      "page": 3,
+      "page": 10,
       "submitted_for_moderation": false,
-      "created_at": "2022-02-01T13:48:46.282Z",
+      "created_at": "2022-02-01T15:43:34.321Z",
       "user": ["admin"],
-      "content_json": "{\"pk\": 3, \"path\": \"000100010001\", \"depth\": 3, \"numchild\": 2, \"translation_key\": \"aaefe705-543f-48d6-abe6-106cb00cd3d0\", \"locale\": 1, \"title\": \"Blog\", \"draft_title\": \"Blog\", \"slug\": \"blog\", \"content_type\": 66, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/blog/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-01-18T10:10:49.993Z\", \"last_published_at\": \"2022-01-18T10:10:49.993Z\", \"latest_revision_created_at\": \"2022-01-18T10:10:49.901Z\", \"live_revision\": 1, \"alias_of\": null, \"intro\": \"<p data-block-key=\\\"4e4yt\\\">Learn about tips, product updates and company culture.</p>\", \"wagtail_admin_comments\": []}",
+      "content_json": "{\"pk\": 10, \"path\": \"00010001000200020003\", \"depth\": 5, \"numchild\": 0, \"translation_key\": \"15243b6c-fc22-49c4-b3e2-6111c329df8e\", \"locale\": 1, \"title\": \"Dashboards\", \"draft_title\": \"Dashboards\", \"slug\": \"dashboards\", \"content_type\": 130, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/guides/dashboards/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"alias_of\": null, \"body\": \"<p data-block-key=\\\"kamyu\\\">How to use dashboards...</p>\", \"wagtail_admin_comments\": []}",
       "approved_go_live_at": null
     }
   },
@@ -4377,11 +4369,23 @@
     "model": "wagtailcore.pagerevision",
     "pk": 12,
     "fields": {
-      "page": 6,
+      "page": 9,
       "submitted_for_moderation": false,
-      "created_at": "2022-02-01T13:49:42.929Z",
+      "created_at": "2022-02-01T15:43:45.431Z",
       "user": ["admin"],
-      "content_json": "{\"pk\": 6, \"path\": \"0001000100020001\", \"depth\": 4, \"numchild\": 0, \"translation_key\": \"cfdfb7c9-b623-457b-9f38-02c465699e51\", \"locale\": 1, \"title\": \"Getting started\", \"draft_title\": \"Getting started\", \"slug\": \"getting-started\", \"content_type\": 70, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/getting-started/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-02-01T12:39:33.502Z\", \"last_published_at\": \"2022-02-01T12:39:33.502Z\", \"latest_revision_created_at\": \"2022-02-01T12:39:33.436Z\", \"live_revision\": 4, \"alias_of\": null, \"body\": \"<p data-block-key=\\\"8tkrm\\\">A quick guide to get started with Gyana</p>\", \"wagtail_admin_comments\": []}",
+      "content_json": "{\"pk\": 9, \"path\": \"00010001000200020002\", \"depth\": 5, \"numchild\": 0, \"translation_key\": \"4b36cc59-b60e-414c-8a08-ed08d5b0d62c\", \"locale\": 1, \"title\": \"Workflows\", \"draft_title\": \"Workflows\", \"slug\": \"workflows\", \"content_type\": 130, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/guides/workflows/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-02-01T15:43:20.143Z\", \"last_published_at\": \"2022-02-01T15:43:20.143Z\", \"latest_revision_created_at\": \"2022-02-01T15:43:20.076Z\", \"live_revision\": 10, \"alias_of\": null, \"body\": \"<p data-block-key=\\\"t5ctz\\\">How to use workflows...</p>\", \"wagtail_admin_comments\": []}",
+      "approved_go_live_at": null
+    }
+  },
+  {
+    "model": "wagtailcore.pagerevision",
+    "pk": 13,
+    "fields": {
+      "page": 8,
+      "submitted_for_moderation": false,
+      "created_at": "2022-02-01T15:43:54.414Z",
+      "user": ["admin"],
+      "content_json": "{\"pk\": 8, \"path\": \"00010001000200020001\", \"depth\": 5, \"numchild\": 0, \"translation_key\": \"52c83335-a1f6-47a3-ab68-ac8df7cb0807\", \"locale\": 1, \"title\": \"Integrations\", \"draft_title\": \"Integrations\", \"slug\": \"integrations\", \"content_type\": 130, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/guides/integrations/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-02-01T15:43:08.578Z\", \"last_published_at\": \"2022-02-01T15:43:08.578Z\", \"latest_revision_created_at\": \"2022-02-01T15:43:08.525Z\", \"live_revision\": 9, \"alias_of\": null, \"body\": \"<p data-block-key=\\\"5ze11\\\">How to use integrations...</p>\", \"wagtail_admin_comments\": []}",
       "approved_go_live_at": null
     }
   },
@@ -4428,6 +4432,11 @@
   },
   {
     "model": "wagtailcore.pagesubscription",
+    "pk": 5,
+    "fields": { "user": ["admin"], "page": 7, "comment_notifications": true }
+  },
+  {
+    "model": "wagtailcore.pagesubscription",
     "pk": 6,
     "fields": { "user": ["admin"], "page": 8, "comment_notifications": true }
   },
@@ -4440,43 +4449,5 @@
     "model": "wagtailcore.pagesubscription",
     "pk": 8,
     "fields": { "user": ["admin"], "page": 10, "comment_notifications": true }
-  },
-  {
-    "model": "wagtailcore.pagesubscription",
-    "pk": 9,
-    "fields": { "user": ["admin"], "page": 11, "comment_notifications": true }
-  },
-  {
-    "model": "wagtailmenus.mainmenuitem",
-    "pk": 1,
-    "fields": {
-      "sort_order": 0,
-      "link_page": 3,
-      "link_url": null,
-      "url_append": "",
-      "handle": "",
-      "link_text": "",
-      "allow_subnav": true,
-      "menu": 1
-    }
-  },
-  {
-    "model": "wagtailmenus.mainmenuitem",
-    "pk": 2,
-    "fields": {
-      "sort_order": 1,
-      "link_page": 5,
-      "link_url": null,
-      "url_append": "",
-      "handle": "",
-      "link_text": "",
-      "allow_subnav": true,
-      "menu": 1
-    }
-  },
-  {
-    "model": "wagtailmenus.mainmenu",
-    "pk": 1,
-    "fields": { "site": ["localhost", 80], "max_levels": 2 }
   }
 ]
