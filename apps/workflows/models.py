@@ -3,7 +3,6 @@ from itertools import chain
 from django.db import models
 from django.db.models import Max
 from django.urls import reverse
-from model_clone import CloneMixin
 
 from apps.base.models import BaseModel
 from apps.base.tables import ICONS
@@ -13,7 +12,7 @@ from apps.runs.models import JobRun
 from apps.tables.models import Table
 
 
-class Workflow(CloneMixin, BaseModel):
+class Workflow(BaseModel):
     _clone_excluded_m2m_fields = ["runs"]
     _clone_excluded_o2o_fields = ["last_success_run", "latest_run"]
 

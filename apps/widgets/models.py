@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from model_clone import CloneMixin
 
 from apps.base.clients import SLUG
 from apps.base.core.aggregations import AggregationFunctions
@@ -34,9 +33,7 @@ class WidgetStyle(models.Model):
     rounding_decimal = models.IntegerField(default=2)
 
 
-class Widget(WidgetStyle, CloneMixin, BaseModel):
-    _clone_m2o_or_o2m_fields = ["filters", "columns", "aggregations", "charts"]
-
+class Widget(WidgetStyle, BaseModel):
     class Category(models.TextChoices):
         CONTENT = "content", "Content"
         SIMPLE = "simple", "Simple charts"
@@ -82,6 +79,8 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
         NONE = "none", "None"
         SUM = "sum", "Sum"
         MEAN = "mean", "Average"
+
+    _clone_excluded_m2o_or_o2m_fields = ["page", "table"]
 
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name="widgets")
 

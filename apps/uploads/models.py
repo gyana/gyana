@@ -3,13 +3,12 @@ from os.path import splitext
 
 from django.conf import settings
 from django.db import models
-from model_clone.mixins.clone import CloneMixin
 
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
 
 
-class Upload(CloneMixin, BaseModel):
+class Upload(BaseModel):
     class FieldDelimiter(models.TextChoices):
         COMMA = "comma", "Comma"
         TAB = "tab", "Tab"

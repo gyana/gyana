@@ -9,7 +9,6 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy
-from model_clone import CloneMixin
 
 from apps.base.models import BaseModel
 from apps.projects.models import Project
@@ -60,13 +59,13 @@ class DashboardSettings(models.Model):
     widget_border_thickness = models.IntegerField(default=1)
 
 
-class Dashboard(DashboardSettings, CloneMixin, BaseModel):
+class Dashboard(DashboardSettings, BaseModel):
     class SharedStatus(models.TextChoices):
         PRIVATE = "private", "Private"
         PUBLIC = "public", "Public"
         PASSWORD_PROTECTED = "password_protected", "Password Protected"
 
-    _clone_m2o_or_o2m_fields = ["pages"]
+    _clone_excluded_m2o_or_o2m_fields = ["project"]
 
     name = models.CharField(max_length=255, default="Untitled")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -138,12 +137,11 @@ class Dashboard(DashboardSettings, CloneMixin, BaseModel):
         return Widget.objects.filter(page__dashboard=self).all()
 
 
-class Page(CloneMixin, BaseModel):
+class Page(BaseModel):
     class Meta:
         unique_together = ("dashboard", "position")
 
-    _clone_m2o_or_o2m_fields = ["widgets"]
-
+    _clone_excluded_m2o_or_o2m_fields = ["dashboard"]
     dashboard = models.ForeignKey(
         Dashboard, on_delete=models.CASCADE, related_name="pages"
     )

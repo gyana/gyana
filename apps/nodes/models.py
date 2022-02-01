@@ -6,7 +6,6 @@ from django.db import models
 from django.urls.base import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
-from model_clone import CloneMixin
 
 from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import BaseModel
@@ -16,7 +15,7 @@ from apps.tables.models import Table
 from apps.workflows.models import Workflow
 
 
-class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
+class Node(DirtyFieldsMixin, BaseModel):
     class Meta:
         ordering = ()
 
@@ -43,21 +42,6 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         TEXT = "text", "Text"
         WINDOW = "window", "Window and Calculate"
         SENTIMENT = "sentiment", "Sentiment"
-
-    # You have to add new many-to-one relations here
-    _clone_m2o_or_o2m_fields = [
-        "filters",
-        "columns",
-        "secondary_columns",
-        "aggregations",
-        "sort_columns",
-        "edit_columns",
-        "add_columns",
-        "rename_columns",
-        "formula_columns",
-        "window_columns",
-        "convert_columns",
-    ]
 
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"

@@ -40,6 +40,8 @@ class Control(BaseModel):
     class Kind(models.TextChoices):
         DATE_RANGE = "date_range", "Date range"
 
+    _clone_excluded_m2o_or_o2m_fields = ["widget", "page"]
+
     kind = models.CharField(max_length=16, default=Kind.DATE_RANGE)
     start = models.DateTimeField(
         blank=True, null=True, help_text="Select the start date"
@@ -61,6 +63,7 @@ class Control(BaseModel):
 
 
 class ControlWidget(BaseModel):
+    _clone_excluded_m2o_or_o2m_fields = ["widget", "node", "page", "control"]
     page = models.ForeignKey(
         "dashboards.Page", on_delete=models.CASCADE, related_name="control_widgets"
     )
