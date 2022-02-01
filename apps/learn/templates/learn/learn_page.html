@@ -25,18 +25,22 @@
     <ul class='flex gap-2'>
       {% with page.get_prev_siblings.live.first as previous_page %}
         {% if previous_page %}
-          <li class="border-r border-gray flex flex-col gap-2 w-64 p-4">
-            <p>Previous</p>
-            <a href="{% pageurl previous_page %}" class="bold">{{ previous_page.title }}</a>
-          </li>
+          <a href="{% pageurl previous_page %}">
+            <li class="border-r border-gray flex flex-col gap-2 w-64 p-4">
+              <p>Previous</p>
+              <span class="bold">{{ previous_page.title }}</span>
+            </li>
+          </a>
         {% endif %}
       {% endwith %}
       {% with page.get_next_siblings.live.first as next_page %}
         {% if next_page %}
-          <li class="border-r border-gray flex flex-col gap-2 w-64 p-4">
-            <p>Next</p>
-            <a href="{% pageurl next_page %}" class="bold">{{ next_page.title }}</a>
-          </li>
+          <a href="{% pageurl next_page %}">
+            <li class="border-r border-gray flex flex-col gap-2 w-64 p-4">
+              <p>Next</p>
+              <span class="bold">{{ next_page.title }}</span>
+            </li>
+          </a>
         {% endif %}
       {% endwith %}
   </nav>
