@@ -18,6 +18,7 @@ class LearnIndexPage(Page):
         learnpages = self.get_children().live()
         # .order_by("-first_published_at")
         context["learnpages"] = learnpages
+        context["learn_menu_page"] = Page.objects.get(slug="learn")
         return context
 
 
@@ -34,6 +35,7 @@ class LearnPage(Page):
     parent_page_types = ["learn.LearnIndexPage"]
     subpage_types = []
 
-    @property
-    def readtime(self):
-        return readtime.of_html(self.body).text
+    def get_context(self, request):
+        context = super().get_context(request)
+        context["learn_menu_page"] = Page.objects.get(slug="learn")
+        return context

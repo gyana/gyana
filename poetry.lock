@@ -559,7 +559,7 @@ requests-oauthlib = ">=0.3.0"
 
 [[package]]
 name = "django-anymail"
-version = "8.4"
+version = "8.5"
 description = "Django email integration for Amazon SES, Mailgun, Mailjet, Postmark, SendGrid, SendinBlue, SparkPost and other transactional ESPs"
 category = "main"
 optional = false
@@ -629,6 +629,19 @@ deploy = ["bump2version", "readme-renderer", "changes", "git-changelog", "twine"
 development = ["pip-tools", "check-manifest", "django", "future (>=0.17.1)", "conditional (>=1.3)", "six", "tox", "tox-gh-actions", "pluggy (>=0.7)", "mock", "unittest-xml-reporting", "codacy-coverage", "flake8", "yamllint", "isort", "black"]
 lint = ["flake8", "yamllint", "isort", "black"]
 test = ["tox", "tox-gh-actions", "pluggy (>=0.7)", "mock", "unittest-xml-reporting", "codacy-coverage", "django-migration-fixer"]
+
+[[package]]
+name = "django-cogwheels"
+version = "0.3"
+description = "A consistent, user-friendly solution for adding app-specific settings your Django package, reusable app or framework."
+category = "main"
+optional = false
+python-versions = ">=3.4"
+
+[package.extras]
+development = ["Django (>=2.0,<2.1)", "ipdb", "werkzeug", "django-extensions"]
+docs = ["pyenchant (>=2.0)", "Sphinx (>=1.7.4)", "sphinxcontrib-spelling (>=1.4)", "sphinx-rtd-theme (>=0.3)"]
+testing = ["coverage"]
 
 [[package]]
 name = "django-coverage-plugin"
@@ -1352,9 +1365,9 @@ regex = "*"
 toolz = "*"
 
 [package.extras]
-all = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.3)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymysql", "requests-kerberos", "graphviz", "sqlalchemy (<1.4)", "clickhouse-sqlalchemy", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "dask[dataframe,array] (>=2021.1.1,<2021.5.0 || >2021.6.0)"]
+all = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.3)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymysql", "requests-kerberos", "graphviz", "sqlalchemy (<1.4)", "clickhouse-sqlalchemy", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "dask[array,dataframe] (>=2021.1.1,<2021.5.0 || >2021.6.0)"]
 clickhouse = ["sqlalchemy (<1.4)", "clickhouse-sqlalchemy", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
-dask = ["dask[dataframe,array] (>=2021.1.1,<2021.5.0 || >2021.6.0)"]
+dask = ["dask[array,dataframe] (>=2021.1.1,<2021.5.0 || >2021.6.0)"]
 geospatial = ["geoalchemy2", "geopandas", "shapely"]
 hdf5 = ["tables (>=3.0.0)"]
 impala = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.3)", "requests", "impyla[kerberos] (>=0.15.0)"]
@@ -2310,11 +2323,11 @@ python-versions = "*"
 
 [[package]]
 name = "tablib"
-version = "3.1.0"
+version = "3.2.0"
 description = "Format agnostic tabular data library (XLS, JSON, YAML, CSV)"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.dependencies]
 openpyxl = {version = ">=2.6.0", optional = true, markers = "extra == \"xlsx\""}
@@ -2490,6 +2503,23 @@ docs = ["sphinx (>=1.4.0)"]
 test = ["pytest (==6.0.1)", "pytest-django (==3.9.0)", "pytest-cov (==2.7.1)", "pytest-pythonpath (==0.7.3)", "psycopg2 (>=2.3.1)", "coverage (==4.5.3)", "isort (==4.3.21)", "flake8 (==3.7.8)", "flake8-blind-except (==0.1.1)", "flake8-debugger (==3.1.0)"]
 
 [[package]]
+name = "wagtailmenus"
+version = "3.0.2"
+description = "An app to help you manage menus in your Wagtail projects more consistently."
+category = "main"
+optional = false
+python-versions = ">=3.4"
+
+[package.dependencies]
+django-cogwheels = "0.3"
+
+[package.extras]
+deployment = ["transifex-client"]
+development = ["wagtail (>=2.4,<=2.9)", "django-debug-toolbar", "django-extensions", "ipdb", "werkzeug", "beautifulsoup4 (>=4.5.1,<4.6.1)", "coverage (>=4.5)", "django-webtest (>=1.9,<1.10)"]
+docs = ["pyenchant (>=2.0)", "Sphinx (>=1.7.4)", "sphinxcontrib-spelling (>=1.4)", "sphinx-rtd-theme (>=0.3)"]
+testing = ["beautifulsoup4 (>=4.5.1,<4.6.1)", "coverage (>=4.5)", "django-webtest (>=1.9,<1.10)"]
+
+[[package]]
 name = "wcwidth"
 version = "0.2.5"
 description = "Measures the displayed width of unicode strings in a terminal"
@@ -2564,7 +2594,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.*"
-content-hash = "c31c03af51c5acf8bd747a5bc7a5859901e0a798b06c05da14fa6518ff6a6650"
+content-hash = "c6ad86e15f8227c1da0c2a2f473d529c96743e1be71495b7eb87d39572ccbc06"
 
 [metadata.files]
 amqp = [
@@ -2854,8 +2884,8 @@ django-allauth = [
     {file = "django-allauth-0.44.0.tar.gz", hash = "sha256:e51af457466022f52154d74c8523ac69375120fad2acce6e239635d85e610b25"},
 ]
 django-anymail = [
-    {file = "django-anymail-8.4.tar.gz", hash = "sha256:671a338de43b8e414d48c6d16aac1df54d2f24f916e1073f9f60aef5acffaf89"},
-    {file = "django_anymail-8.4-py3-none-any.whl", hash = "sha256:2e8307e84f0a12f9283469017094a8246db9a0fc608ac17dd1027ee011ece986"},
+    {file = "django-anymail-8.5.tar.gz", hash = "sha256:677e937dc9e2671ca7631abb1d94ddc6b840beb3d53c0fbf699e866a6a9ba92f"},
+    {file = "django_anymail-8.5-py3-none-any.whl", hash = "sha256:2325932f56f914d96e0a54db850f2b246ed2277b753f75319620d051a51551e2"},
 ]
 django-appconf = [
     {file = "django-appconf-1.0.5.tar.gz", hash = "sha256:be3db0be6c81fa84742000b89a81c016d70ae66a7ccb620cdef592b1f1a6aaa4"},
@@ -2872,6 +2902,10 @@ django-celery-results = [
 django-clone = [
     {file = "django-clone-2.9.6.tar.gz", hash = "sha256:bee38eef9ee9cacd01f7a5d3947e01a40efa87c1bce6aa5f5cd4efe3ce816a01"},
     {file = "django_clone-2.9.6-py3-none-any.whl", hash = "sha256:afa0b492cf61b9676292beb568a87c84bc1cb9bc7186f1e9c117d89eb04bbc66"},
+]
+django-cogwheels = [
+    {file = "django-cogwheels-0.3.tar.gz", hash = "sha256:848a4d9f2c96c582a4a4f2e7c276dfd95ab3905748cae13bb7c4b365a6717e94"},
+    {file = "django_cogwheels-0.3-py3-none-any.whl", hash = "sha256:197bd05e7114403d7301214b3f8a371c4fb6039cf21c811f099438b167b5ed21"},
 ]
 django-coverage-plugin = [
     {file = "django_coverage_plugin-2.0.2-py3-none-any.whl", hash = "sha256:4206c85ffba0301f83aecc38e5b01b1b9a4b45a545d9456a827e3fabea18d952"},
@@ -3948,8 +3982,8 @@ statsd = [
     {file = "statsd-3.3.0.tar.gz", hash = "sha256:e3e6db4c246f7c59003e51c9720a51a7f39a396541cb9b147ff4b14d15b5dd1f"},
 ]
 tablib = [
-    {file = "tablib-3.1.0-py3-none-any.whl", hash = "sha256:26141c9cf2d5904a2228d3f5d45f8a46a3f3f2f0fbb4c33b4a1c1ddca9f31348"},
-    {file = "tablib-3.1.0.tar.gz", hash = "sha256:d64c9f6712918a3d90ec5d71b44b8bab1083e3609e4844ad2be80eb633e097ed"},
+    {file = "tablib-3.2.0-py3-none-any.whl", hash = "sha256:1ba12da7b0b17e33f5997fb1bc8ed560aae3535f5892ae5e5c01a056c47d4d78"},
+    {file = "tablib-3.2.0.tar.gz", hash = "sha256:12d8686454c721de88d8ca5adf07e1f419ef6dbcecedf65e8950d4a329daf3a0"},
 ]
 telepath = [
     {file = "telepath-0.2-py35-none-any.whl", hash = "sha256:801615094d3d964e178183099bf04020f4ff9c84ec43945d40b096df0a5767ee"},
@@ -4035,6 +4069,10 @@ wagtail = [
 wagtail-factories = [
     {file = "wagtail_factories-2.0.1-py2.py3-none-any.whl", hash = "sha256:e2bd1a22e67b70e1603fc292e97f6f998ee0169477e1f71b5c53368630f1d088"},
     {file = "wagtail_factories-2.0.1.tar.gz", hash = "sha256:3eeb55199f2c9ffbfe14979a94766d724c9e9f4d8f561df61097884e63bd537f"},
+]
+wagtailmenus = [
+    {file = "wagtailmenus-3.0.2-py3-none-any.whl", hash = "sha256:518b8e74fddcae91115313085673b72fdfc17aa4f711f0ea00dbdffa20abce33"},
+    {file = "wagtailmenus-3.0.2.tar.gz", hash = "sha256:77c2e098decc8882f8fbf4fbab6c04911a0daf744aabbfb7e4952f03e3533386"},
 ]
 wcwidth = [
     {file = "wcwidth-0.2.5-py2.py3-none-any.whl", hash = "sha256:beb4802a9cebb9144e99086eff703a642a13d6a0052920003a230f3294bbe784"},
