@@ -10,22 +10,20 @@ class LearnIndexPage(Page):
 
     content_panels = Page.content_panels + [FieldPanel("intro", classname="full")]
 
-    parent_page_types = ["wagtailcore.Page"]
-    subpage_types = ["learn.LearnPage"]
+    parent_page_types = ["wagtailcore.Page", "learn.LearnIndexPage"]
+    subpage_types = ["learn.LearnPage", "learn.LearnIndexPage"]
 
     def get_context(self, request):
         context = super().get_context(request)
-        learnpages = self.get_children().live().order_by("-first_published_at")
+        learnpages = self.get_children().live()
+        # .order_by("-first_published_at")
         context["learnpages"] = learnpages
         return context
 
 
 class LearnPage(Page):
     body = RichTextField()
-    search_fields = Page.search_fields + [
-        index.SearchField("body"),
-        index.FilterField("date"),
-    ]
+    search_fields = Page.search_fields + [index.SearchField("body")]
 
     content_panels = Page.content_panels + [
         FieldPanel("body", classname="full"),
