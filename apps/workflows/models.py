@@ -11,6 +11,8 @@ from apps.projects.models import Project
 from apps.runs.models import JobRun
 from apps.tables.models import Table
 
+from .clone import clone_nodes
+
 
 class Workflow(BaseModel):
     _clone_excluded_m2m_fields = ["runs"]
@@ -176,3 +178,8 @@ class Workflow(BaseModel):
     @property
     def used_in(self):
         return list(chain(self.used_in_nodes, self.used_in_widgets))
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        clone_nodes(self, clone)
+        return clone

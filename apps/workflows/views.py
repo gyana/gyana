@@ -153,30 +153,12 @@ class WorkflowDuplicate(TurboUpdateView):
             },
         )
 
-        clone = self.object.make_clone(
+        self.object.make_clone(
             attrs={
                 "name": "Copy of " + self.object.name,
                 "state": Workflow.State.INCOMPLETE,
             }
         )
-
-        node_map = {}
-
-        nodes = self.object.nodes.all()
-        # First create the mapping between original and cloned nodes
-        for node in nodes:
-            node_clone = node.make_clone({"workflow": clone})
-            node_clone.data_updated = timezone.now()
-            node_clone.save()
-            node_map[node] = node_clone
-
-        # Then copy the relationships
-        for node in nodes:
-            node_clone = node_map[node]
-            for parent in node.parent_edges.iterator():
-                node_clone.parent_edges.create(
-                    parent_id=node_map[parent.parent].id, position=parent.position
-                )
 
         return r
 

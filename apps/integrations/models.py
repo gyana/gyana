@@ -78,8 +78,9 @@ class Integration(BaseModel):
         ERROR = "error", "Error"
         DONE = "done", "Done"
 
-    _clone_exclude_m2o_or_o2m_fields = ["table_set"]
-    _clone_exclude_o2o_fields = ["connector"]
+    _clone_excluded_m2o_or_o2m_fields = ["table_set"]
+    _clone_excluded_o2o_fields = ["connector"]
+
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     kind = models.CharField(max_length=32, choices=Kind.choices)
 

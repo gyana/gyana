@@ -8,6 +8,8 @@ from apps.base import clients
 from apps.base.models import BaseModel
 from apps.projects.models import Project
 
+from .clone import create_attrs, duplicate_table
+
 
 class AvailableManager(models.Manager):
     def get_queryset(self):
@@ -130,3 +132,9 @@ class Table(BaseModel):
     @property
     def used_in(self):
         return list(chain(self.used_in_workflows, self.used_in_dashboards))
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        attrs = create_attrs(attrs, self)
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        duplicate_table(self, clone)
+        return clone

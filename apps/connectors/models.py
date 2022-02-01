@@ -3,7 +3,6 @@ from datetime import datetime
 from dirtyfields import DirtyFieldsMixin
 from django import forms
 from django.conf import settings
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -13,7 +12,7 @@ from apps.base.models import BaseModel
 from apps.connectors.fivetran.schema import FivetranSchemaObj
 from apps.integrations.models import Integration
 
-from .clone import update_schema
+from .clone import create_fivetran, update_schema
 from .fivetran.config import ServiceTypeEnum, get_services_obj
 
 FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
@@ -74,7 +73,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
         # TODO: should this be added later or do we need to replace the schema during duplication
         "schema_config",
     ]
-
+    _clone_excluded_o2o_fields = ["integration"]
     # internal fields
 
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
@@ -337,16 +336,8 @@ class Connector(DirtyFieldsMixin, BaseModel):
         return self.succeeded_at == self.bigquery_succeeded_at
 
     def make_clone(self, attrs=None, sub_clone=False, using=None):
-        from apps.base import clients
-
         attrs = update_schema(attrs, self)
         clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
-        client = clients.fivetran()
-        client.create(
-            clone.service,
-            clone.integration.project.team.id,
-            clone.daily_sync_time,
-            clone.schema,
-        )
+        create_fivetran(clone)
 
         return clone

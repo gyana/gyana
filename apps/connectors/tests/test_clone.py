@@ -1,8 +1,9 @@
 import pytest
+from django.db import transaction
 
 from apps.connectors.models import Connector
 
-pytestmark = pytest.mark.django_db
+pytestmark = pytest.mark.django_db(transaction=True)
 
 
 def test_connector_clone(connector_factory, fivetran):
