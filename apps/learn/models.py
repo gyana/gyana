@@ -1,3 +1,5 @@
+import re
+
 from wagtail.admin.edit_handlers import MultiFieldPanel, StreamFieldPanel
 from wagtail.core import blocks
 from wagtail.core.fields import StreamField
@@ -6,6 +8,7 @@ from wagtail.images.blocks import ImageChooserBlock
 from wagtail.search import index
 
 from apps.base.templatetags.help_utils import get_loom_embed_url
+from apps.base.templatetags.wagtailcustom_tags import heading_re
 
 RICH_TEXT_FEATURES = (
     ["h2", "h3", "h4", "bold", "italic", "ol", "ul"]
@@ -62,5 +65,18 @@ class LearnPage(Page):
         context["learn_menu_page"] = Page.objects.get(slug="learn")
         return context
 
+    @property
+    def text_blocks(self):
+        return [b for b in self.body if b.block_type == "text"]
+
+    @property
     def search_preview(self):
-        return "\n".join([str(b.value) for b in self.body if b.block_type == "text"])
+        return "\n".join([str(b.value) for b in self.text_blocks])
+
+    @property
+    def headings(self):
+        return [
+            match
+            for t in self.text_blocks
+            for match in re.findall(heading_re, str(t.value))
+        ]

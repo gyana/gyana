@@ -3,13 +3,23 @@
 {% load wagtailcore_tags %}
 
 {% block content %}
-  
-  <article class="p-10 prose prose-xl max-w-6xl">
-    <h1 class="mb-10">{{ page.title }}</h1>
-    {% for block in page.body %}
-        <section>{% include_block block %}</section>
-    {% endfor %}
-  </article>
+  <div class="flex">
+    <article class="p-10 prose prose-xl max-w-6xl flex-auto">
+      <h1 class="mb-10"><a id="{{ page.title|slugify }}"></a><a href="#{{ page.title|slugify }}">{{ page.title }}<i class="fa fa-link fa-sm ml-2"></i></a></h1>
+      {% for block in page.body %}
+          <section>{% include_block block %}</section>
+      {% endfor %}
+    </article>
+    <nav class="p-10 border-l border-gray">
+      <p class="bold mb-8">Page contents</p>
+      <ul class="flex flex-col gap-4">
+        <li><a href="#{{ page.title|slugify }}">{{ page.title }}</a></li>
+        {% for heading in page.headings %}
+          <li class="{% if heading.0 == 2 %}pl-2{% elif heading.0 == 3 %}pl-4{% else %}pl-6{% endif %}">{{ heading.2|richtext }}</li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
 
   <nav class="border-t border-b border-gray">
     <ul class='flex gap-2'>
