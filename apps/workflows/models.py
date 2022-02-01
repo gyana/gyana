@@ -15,6 +15,7 @@ from apps.tables.models import Table
 class Workflow(BaseModel):
     _clone_excluded_m2m_fields = ["runs"]
     _clone_excluded_o2o_fields = ["last_success_run", "latest_run"]
+    _clone_excluded_m2o_or_o2m_fields = ["nodes"]
 
     class State(models.TextChoices):
         INCOMPLETE = "incomplete", "Incomplete"

@@ -80,7 +80,7 @@ class Widget(WidgetStyle, BaseModel):
         SUM = "sum", "Sum"
         MEAN = "mean", "Average"
 
-    _clone_excluded_m2o_or_o2m_fields = ["page", "table"]
+    _clone_excluded_m2o_or_o2m_fields = ["table"]
 
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name="widgets")
 

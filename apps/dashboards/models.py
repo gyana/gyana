@@ -141,7 +141,6 @@ class Page(BaseModel):
     class Meta:
         unique_together = ("dashboard", "position")
 
-    _clone_excluded_m2o_or_o2m_fields = ["dashboard"]
     dashboard = models.ForeignKey(
         Dashboard, on_delete=models.CASCADE, related_name="pages"
     )

@@ -1,7 +1,8 @@
 from dirtyfields import DirtyFieldsMixin
 from django.db import models
 from django.utils import timezone
-from model_clone import CloneMixin
+
+from .clone import CloneMixin
 
 
 class BaseModel(CloneMixin, models.Model):
@@ -11,13 +12,6 @@ class BaseModel(CloneMixin, models.Model):
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True, editable=False)
-
-    # TODO: Because of an issue https://github.com/tj-django/django-clone/issues/549
-    # we need to make the expression falsy
-    _clone_excluded_fields = [""]
-    _clone_excluded_m2m_fields = [""]
-    _clone_excluded_m2o_or_o2m_fields = [""]
-    _clone_excluded_o2o_fields = [""]
 
     class Meta:
         abstract = True
