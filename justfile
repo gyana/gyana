@@ -30,9 +30,9 @@ fixtures:
     ./manage.py purge_revisions
     # natural-foreign for wagtail references to contenttypes
     # https://docs.wagtail.io/en/stable/advanced_topics/testing.html#using-dumpdata
-    ./manage.py dumpdata --natural-foreign -e blog {{ excludes }} {{ wagtail_excludes }} > cypress/fixtures/fixtures.json
+    ./manage.py dumpdata --natural-foreign -e blog learn {{ excludes }} {{ wagtail_excludes }} > cypress/fixtures/fixtures.json
     # wagtail custom page fixtures need to run after wagtailcore_locale
-    ./manage.py dumpdata blog > cypress/fixtures/fixtures-wagtail.json
+    ./manage.py dumpdata blog learn > cypress/fixtures/fixtures-wagtail.json
     yarn prettier --write cypress/fixtures/fixtures.json cypress/fixtures/fixtures-wagtail.json
 
 shell:
