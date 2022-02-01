@@ -1,5 +1,4 @@
 from django import forms
-from waffle import flag_is_active
 
 from apps.base.account import is_scheduled_paid_only
 from apps.base.forms import BaseModelForm

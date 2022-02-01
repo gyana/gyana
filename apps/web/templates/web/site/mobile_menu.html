@@ -67,7 +67,7 @@
         Feedback
       </a>
     </div>
-    <div>
+    <div class="flex flex-col gap-4">
       {% if request.user.is_authenticated %}
         <a
           href="{% url 'web:home' %}"
@@ -79,11 +79,18 @@
         <a
           href="{% external_url 'waitlist' %}"
           id="CTA_header"
-          class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-normal text-white bg-indigo-600 hover:bg-indigo-700"
+          class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-normal text-indigo-900 bg-indigo-200 hover:bg-indigo-300"
         >
-          Request access
+          Sign up
         </a>
-        <p class="mt-6 text-center text-base font-normal text-gray-600">
+        <a
+          href="{% external_url 'talk_to_us' %}"
+          id="CTA_header"
+          class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-normal text-white bg-indigo-800 hover:bg-indigo-900"
+        >
+          Talk to us
+        </a>
+        <p class="text-center text-base font-normal text-gray-600">
           Existing customer?
           <a
             href="{% url 'account_login' %}"

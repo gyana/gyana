@@ -48,8 +48,8 @@
   {% include 'dashboards/create.html' %}
 </div>
 
-<div class="pad overflow-auto">
-  <div class="card card--none mb-8">
+<div class="flex flex-col pad overflow-hidden">
+  <div class="card card--none overflow-auto mb-8">
     {% render_table table %}
 
     {% if dashboard_count == 0 %}

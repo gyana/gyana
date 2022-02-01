@@ -147,10 +147,14 @@ def test_resend_and_delete_invite(client, logged_in_user):
     assertOK(r)
     # resend form action
     assertFormRenders(r)
-    assertLink(r, f"/teams/{team.id}/invites/{invite.id}/delete", title="Delete invite")
+    assertLink(
+        r, f"/teams/{team.id}/invites/{invite.id}/delete", tooltip="Delete invite"
+    )
 
     # resend
-    r = client.get(f"/teams/{team.id}/invites/{invite.id}/resend")
+    r = client.get(
+        f"/teams/{team.id}/invites/{invite.id}/resend", tooltip="Send invite again"
+    )
     assertOK(r)
 
     r = client.post(f"/teams/{team.id}/invites/{invite.id}/resend")

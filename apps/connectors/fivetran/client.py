@@ -28,7 +28,7 @@ def create_schema(team_id, service):
 
 
 class FivetranClient:
-    def create(self, service, team_id, daily_sync_time) -> Dict:
+    def create(self, service, team_id, daily_sync_time, schema=None) -> Dict:
         from apps.base.clients import SLUG
 
         # https://fivetran.com/docs/rest-api/connectors#createaconnector
@@ -39,7 +39,8 @@ class FivetranClient:
 
         # https://fivetran.com/docs/rest-api/connectors/config
         # database connectors require schema_prefix, rather than schema
-        schema = create_schema(team_id, service)
+
+        schema = schema or create_schema(team_id, service)
         if SLUG:
             schema = f"{SLUG}_{schema}"
 
@@ -112,6 +113,19 @@ class FivetranClient:
             raise FivetranClientError(res)
 
         return res
+
+    def test(self, connector: Connector):
+
+        # https://fivetran.com/docs/rest-api/connectors#runconnectorsetuptests
+
+        res = requests.post(
+            f"{settings.FIVETRAN_URL}/connectors/{connector.fivetran_id}/test",
+            json={},
+            headers=settings.FIVETRAN_HEADERS,
+        ).json()
+
+        if res["code"] != "Success":
+            raise FivetranClientError(res)
 
     def get_authorize_url(self, connector: Connector, redirect_uri: str) -> str:
 

@@ -37,6 +37,7 @@ class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
         )
 
         context_data["dashboards"] = {
+            "all": self.project.dashboard_set.order_by("-updated").all(),
             "total": self.project.dashboard_set.count(),
             "widgets": widgets.count(),
             "incomplete": dashboards_incomplete,

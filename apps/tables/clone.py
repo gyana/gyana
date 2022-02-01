@@ -1,7 +1,11 @@
+from django.db import transaction
+
+from apps.base.bigquery import copy_table
+
+
 def create_attrs(attrs, original):
     """Depending on a table's source the bq_table and bq_dataset need to be updated.
     By default django-clone adds `copy {number}` to these because of the unique constraint.
-
     We also manually set the deoendency to a potentially new project
     """
     from apps.integrations.models import Integration
@@ -46,3 +50,10 @@ def create_attrs(attrs, original):
         attrs["bq_dataset"] = original.bq_dataset
 
     return attrs
+
+
+# Make sure this is called inside a celery task, it could take a while
+def duplicate_table(original, clone):
+    transaction.on_commit(
+        lambda: copy_table(original.bq_id, clone.bq_id, clone.bq_dataset).result()
+    )

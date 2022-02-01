@@ -4,7 +4,6 @@ from itertools import chain
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-from model_clone.mixins.clone import CloneMixin
 
 from apps.base.models import BaseModel
 from apps.base.tables import ICONS
@@ -65,7 +64,7 @@ class IntegrationsManager(models.Manager):
         )
 
 
-class Integration(CloneMixin, BaseModel):
+class Integration(BaseModel):
     class Kind(models.TextChoices):
         SHEET = "sheet", "Sheet"
         UPLOAD = "upload", "Upload"
@@ -78,6 +77,9 @@ class Integration(CloneMixin, BaseModel):
         LOAD = "load", "Load"
         ERROR = "error", "Error"
         DONE = "done", "Done"
+
+    _clone_excluded_m2o_or_o2m_fields = ["table_set"]
+    _clone_excluded_o2o_fields = ["connector"]
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     kind = models.CharField(max_length=32, choices=Kind.choices)
@@ -94,9 +96,6 @@ class Integration(CloneMixin, BaseModel):
     is_scheduled = models.BooleanField(default=False)
 
     objects = IntegrationsManager()
-
-    # Connectors are explicitly cloned in make_clone call
-    _clone_o2o_fields = ["sheet", "upload", "customapi"]
 
     STATE_TO_ICON = {
         State.UPDATE: ICONS["warning"],

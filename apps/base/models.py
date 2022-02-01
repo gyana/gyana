@@ -1,10 +1,11 @@
 from dirtyfields import DirtyFieldsMixin
 from django.db import models
 from django.utils import timezone
-from model_clone import CloneMixin
+
+from .clone import CloneMixin
 
 
-class BaseModel(models.Model):
+class BaseModel(CloneMixin, models.Model):
     """
     Base model that includes default created / updated timestamps.
     """
@@ -22,9 +23,11 @@ class BaseModel(models.Model):
         return f"{self._meta.db_table}-{self.id}"
 
 
-class SaveParentModel(DirtyFieldsMixin, CloneMixin, BaseModel):
+class SaveParentModel(DirtyFieldsMixin, BaseModel):
     class Meta:
         abstract = True
+
+    _clone_excluded_m2o_or_o2m_fields = ["widget", "node"]
 
     def save(self, *args, **kwargs) -> None:
         if self.is_dirty():

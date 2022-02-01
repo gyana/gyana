@@ -3,7 +3,6 @@ from itertools import chain
 from django.db import models
 from django.db.models import Max
 from django.urls import reverse
-from model_clone import CloneMixin
 
 from apps.base.models import BaseModel
 from apps.base.tables import ICONS
@@ -12,10 +11,13 @@ from apps.runs.models import JobRun
 from apps.tables.models import Table
 from apps.workflows.clone import clone_nodes
 
+from .clone import clone_nodes
 
-class Workflow(CloneMixin, BaseModel):
+
+class Workflow(BaseModel):
     _clone_excluded_m2m_fields = ["runs"]
     _clone_excluded_o2o_fields = ["last_success_run", "latest_run"]
+    _clone_excluded_m2o_or_o2m_fields = ["nodes"]
 
     class State(models.TextChoices):
         INCOMPLETE = "incomplete", "Incomplete"
@@ -181,3 +183,8 @@ class Workflow(CloneMixin, BaseModel):
     @property
     def used_in(self):
         return list(chain(self.used_in_nodes, self.used_in_widgets))
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        clone_nodes(self, clone)
+        return clone

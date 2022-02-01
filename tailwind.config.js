@@ -109,7 +109,11 @@ module.exports = {
         900: '#713f12',
       },
     },
-    extend: {},
+    extend: {
+      flex: {
+        2: '2 2 0%',
+      },
+    },
     container: {
       center: true,
     },

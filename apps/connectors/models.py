@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from dirtyfields import DirtyFieldsMixin
+from django import forms
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -13,13 +14,14 @@ from apps.connectors.clone import update_schema
 from apps.connectors.fivetran.schema import FivetranSchemaObj
 from apps.integrations.models import Integration
 
+from .clone import create_fivetran, update_schema
 from .fivetran.config import ServiceTypeEnum, get_services_obj
 
 FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
 FIVETRAN_SYNC_FREQUENCY_HOURS = 6
 
 
-class Connector(DirtyFieldsMixin, CloneMixin, BaseModel):
+class Connector(DirtyFieldsMixin, BaseModel):
     class ScheduleType(models.TextChoices):
         AUTO = "auto", "Auto"
         MANUAL = "manual", "Manual"
@@ -300,6 +302,17 @@ class Connector(DirtyFieldsMixin, CloneMixin, BaseModel):
             pass
 
     @property
+    def custom_reports(self):
+        return [
+            forms.model_to_dict(obj) for obj in self.facebookadscustomreport_set.all()
+        ]
+
+    def update_fivetran_config(self):
+        clients.fivetran().update(
+            self, config={**self.config, "custom_tables": self.custom_reports}
+        )
+
+    @property
     def setup_state_icon(self):
         return self.SETUP_STATE_TO_ICON[self.setup_state]
 
@@ -326,4 +339,7 @@ class Connector(DirtyFieldsMixin, CloneMixin, BaseModel):
 
     def make_clone(self, attrs=None, sub_clone=False, using=None):
         attrs = update_schema(attrs, self)
-        return super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        create_fivetran(clone)
+
+        return clone

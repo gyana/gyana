@@ -36,6 +36,7 @@ from apps.cnames import urls as cname_urls
 from apps.connectors import urls as connector_urls
 from apps.controls import urls as control_urls
 from apps.customapis import urls as api_urls
+from apps.customreports import urls as customreports_urls
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
 from apps.invites import urls as invite_urls
@@ -53,6 +54,14 @@ from apps.workflows import urls as workflow_urls
 
 schemajs_view = get_schemajs_view(title="API")
 
+
+connector_urlpatterns = [
+    path("", include("apps.connectors.urls")),
+    path(
+        "<hashid:connector_id>/customreports/",
+        include(customreports_urls.connector_urlpatterns),
+    ),
+]
 
 integration_urlpatterns = [
     path("", include(integration_urls.project_urlpatterns)),
@@ -112,7 +121,7 @@ urlpatterns = [
     path("nodes/", include("apps.nodes.urls")),
     path("uploads/", include("apps.uploads.urls")),
     path("sheets/", include("apps.sheets.urls")),
-    path("connectors/", include("apps.connectors.urls")),
+    path("connectors/", include(connector_urlpatterns)),
     path("appsumo/", include("apps.appsumo.urls")),
     path("templates/", include("apps.templates.urls")),
     path("cnames/", include("apps.cnames.urls")),
@@ -134,8 +143,7 @@ urlpatterns = [
         {"sitemaps": {"web": WebSitemap, "wagtail": WagtailSitemap}},
         name="django.contrib.sitemaps.views.sitemap",
     ),
-    path("", include(wagtail_urls)),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
 if settings.CYPRESS_URLS:
     urlpatterns += [
@@ -144,3 +152,7 @@ if settings.CYPRESS_URLS:
 
 if settings.DEBUG:
     urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
+
+urlpatterns += [
+    path("", include(wagtail_urls)),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -71,6 +71,10 @@ $card-colors: (
     text-align: center;
   }
 
+  &--flex {
+    display: flex;
+  }
+
   // Sizes
   &--sm {
     padding: 1.6rem;

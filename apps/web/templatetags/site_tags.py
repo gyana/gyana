@@ -8,6 +8,7 @@ EXTERNAL_URLS = {
     "newsletter": "http://eepurl.com/gAi94b",
     "onboarding": "https://calendly.com/lorraine-chabeda/30min",
     "sales": "mailto:joyeeta.das@gyana.com",
+    "talk_to_us": "https://gyana-data.typeform.com/to/pgpMNnAq",
     # social
     "facebook": "https://www.facebook.com/GyanaHQ",
     "twitter": "https://twitter.com/GyanaHQ",

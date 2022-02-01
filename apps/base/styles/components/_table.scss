@@ -221,6 +221,10 @@
   max-width: 56rem;
   padding: 1.6rem;
   text-align: center;
+
+  &--slim {
+    padding: 0;
+  }
 }
 
 .table__more {

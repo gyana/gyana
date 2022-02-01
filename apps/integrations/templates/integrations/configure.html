@@ -1,34 +1,53 @@
 {% extends 'integrations/base_setup.html' %}
+{% load waffle_tags cache %}
 
 {% block tab %}
 
 <div class="pad flex flex-1 justify-center items-center">
   <div class='flex flex-col flex-1 max-w-3xl'>
     <h1 class="flex items-center justify-center gap-3 mb-7">Configure import</h1>
-
     <div class="flex flex-1 justify-center items-center">
+
       <form 
         id="configure-update-form"
         method="POST"
         action="{{ request.get_full_path }}"
         {% if object.kind == 'customapi' %}
-        data-controller="live-update"
-        enctype='multipart/form-data'
+          data-controller="live-update"
+          enctype='multipart/form-data'
         {% endif %}
         >
         <span data-live-update-target="loading" class="hidden">
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
         </span>
-        {% csrf_token %}
 
-        <p class="alert mb-4">
-          If you're not sure about these options, we recommend you start with the defaults and tweak them later.
+        <p class="alert">
+          If you're not sure about these options, you can start with the defaults and tweak them later.
           {% if object.kind == 'connector' %}
-            You can also go back to the <a href="{{ object.connector.fivetran_authorization_url }}" class="link">authorization</a> page.
+            {% cache 500 fivetran_authorization_url object.id %}
+              You can also go back to the <a href="{{ object.connector.fivetran_authorization_url }}" class="link">authorization</a> page.
+            {% endcache %}
           {% endif %}
         </p>
 
+        {% csrf_token %}
+
         {% include "django/forms/default_form.html" %}
+
+        {% flag 'alpha' %}
+          {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' %}
+            <label>
+              Custom reports
+              <p class="input__help-text">Build custom reports (you can change this later)</p>
+            </label>
+            <turbo-frame id="customreports:list" class="w-full" src="{% url 'connectors_customreports:list' object.connector.id %}">
+              <div class='placeholder-scr placeholder-scr--fillscreen'>
+                <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+                <p class='placeholder-scr__title'>Loading custom reports...</p>
+              </div>
+            </turbo-frame>
+          {% endif %}
+        {% endflag %}
 
         <button type="submit" name="submit" value="submit" class="button button--success mt-4 w-full">
           Import

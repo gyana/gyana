@@ -1,5 +1,7 @@
 import ibis
+from ibis.expr import datatypes as idt
 
+from apps.columns.bigquery import PART_MAP
 from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget
 
 
@@ -22,7 +24,10 @@ def _sort(query, widget):
 
 
 def get_unique_column_names(aggregations, groups):
-    column_names = [*groups, *[aggregation.column for aggregation in aggregations]]
+    column_names = [
+        *groups,
+        *[aggregation.column for aggregation in aggregations],
+    ]
     return {
         aggregation: f"{aggregation.column}_{aggregation.function}"
         for aggregation in aggregations
@@ -39,7 +44,16 @@ def get_query_from_widget(widget: Widget, query):
     else:
         aggregations = widget.aggregations.all()
 
-    groups = [widget.dimension] if widget.kind not in NO_DIMENSION_WIDGETS else []
+    if widget.kind in NO_DIMENSION_WIDGETS:
+        groups = []
+    elif (
+        (group_column := query[widget.dimension]) is not None
+        and isinstance(group_column.type(), (idt.Date, idt.Timestamp))
+        and widget.part
+    ):
+        groups = [PART_MAP[widget.part](group_column).name(widget.dimension)]
+    else:
+        groups = [group_column]
     if (
         widget.kind
         in [
@@ -52,9 +66,11 @@ def get_query_from_widget(widget: Widget, query):
         ]
         and widget.second_dimension
     ):
-        groups += [widget.second_dimension]
+        groups += [query[widget.second_dimension]]
 
-    unique_names = get_unique_column_names(aggregations, groups)
+    unique_names = get_unique_column_names(
+        aggregations, [group.get_name() for group in groups]
+    )
 
     values = (
         [

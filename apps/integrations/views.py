@@ -8,6 +8,7 @@ from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView, UpdateView
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
+from waffle import flag_is_active
 
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
 from apps.base.views import FormsetUpdateView, TurboUpdateView
@@ -146,6 +147,8 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.update({"instance": self.object.source_obj})
+        if self.object.kind == Integration.Kind.CONNECTOR:
+            kwargs["is_alpha"] = flag_is_active(self.request, "alpha")
         return kwargs
 
     def form_valid(self, form):

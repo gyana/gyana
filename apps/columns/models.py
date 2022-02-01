@@ -5,7 +5,6 @@ from django.db import models
 from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import SaveParentModel
 from apps.nodes.models import Node
-from apps.widgets.models import Widget
 
 from .bigquery import (
     CommonOperations,
@@ -104,7 +103,7 @@ class Column(SaveParentModel):
         Node, null=True, on_delete=models.CASCADE, related_name="columns"
     )
     widget = models.ForeignKey(
-        Widget, on_delete=models.CASCADE, related_name="columns", null=True
+        "widgets.Widget", on_delete=models.CASCADE, related_name="columns", null=True
     )
     part = models.CharField(
         max_length=16,
@@ -155,7 +154,10 @@ class AggregationColumn(SaveParentModel):
         Node, on_delete=models.CASCADE, related_name="aggregations", null=True
     )
     widget = models.ForeignKey(
-        Widget, on_delete=models.CASCADE, related_name="aggregations", null=True
+        "widgets.Widget",
+        on_delete=models.CASCADE,
+        related_name="aggregations",
+        null=True,
     )
 
 

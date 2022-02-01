@@ -9,7 +9,9 @@ export default class extends Controller {
 
     // event fires twice for top level forms with data-turbo="true" (default)
     if (submitter && !submitter.disabled && !(submitter.getAttribute('data-loading-false') == '')) {
-      submitter.innerHTML = '<i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>'
+      submitter.innerHTML =
+        '<i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>' +
+        (submitter.dataset.loadingMessage || '')
       for (const el of event.target.querySelectorAll('button[type=submit]')) el.disabled = true
     }
   }

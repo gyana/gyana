@@ -1,11 +1,11 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from model_clone import CloneMixin
 
 from apps.base.clients import SLUG
 from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import BaseModel, SaveParentModel
+from apps.columns.bigquery import DatePeriod
 from apps.dashboards.models import Dashboard, Page, getFusionThemePalette
 from apps.tables.models import Table
 
@@ -34,9 +34,7 @@ class WidgetStyle(models.Model):
     rounding_decimal = models.IntegerField(default=2)
 
 
-class Widget(WidgetStyle, CloneMixin, BaseModel):
-    _clone_m2o_or_o2m_fields = ["filters", "columns", "aggregations", "charts"]
-
+class Widget(WidgetStyle, BaseModel):
     class Category(models.TextChoices):
         CONTENT = "content", "Content"
         SIMPLE = "simple", "Simple charts"
@@ -83,6 +81,8 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
         SUM = "sum", "Sum"
         MEAN = "mean", "Average"
 
+    _clone_excluded_m2o_or_o2m_fields = ["table"]
+
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name="widgets")
 
     table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True)
@@ -108,6 +108,14 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         null=True,
     )
+    part = models.CharField(
+        max_length=16,
+        choices=DatePeriod.choices,
+        null=True,
+        blank=True,
+        help_text="Select the desired date part",
+    )
+
     second_dimension = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True
     )

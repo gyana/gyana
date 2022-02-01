@@ -24,7 +24,7 @@
           </template>
         </button>
       </div>
-      <nav class="hidden md:flex space-x-10 text-indigo-500">
+      <nav class="hidden md:flex gap-x-10 text-indigo-500 lg:flex-2">
         <a
           href="{% url 'web:agency' %}"
           class="text-gray-600 font-normal hover:text-gray-900"
@@ -156,9 +156,16 @@
           <a
             href="{% external_url 'waitlist' %}"
             id="CTA_header"
-            class="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+            class="ml-4 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-indigo-900 bg-indigo-200 hover:bg-indigo-300"
           >
-            Request access
+            Sign up
+          </a>
+          <a
+            href="{% external_url 'talk_to_us' %}"
+            id="CTA_header"
+            class="ml-4 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-indigo-800 hover:bg-indigo-900"
+          >
+            Talk to us
           </a>
         {% endif %}
       </div>

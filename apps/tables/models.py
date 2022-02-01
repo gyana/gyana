@@ -3,7 +3,6 @@ from itertools import chain
 from django.conf import settings
 from django.db import models
 from django.utils.functional import cached_property
-from model_clone.mixins.clone import CloneMixin
 
 from apps.base import clients
 from apps.base.bigquery import copy_table
@@ -11,13 +10,15 @@ from apps.base.models import BaseModel
 from apps.projects.models import Project
 from apps.tables.clone import create_attrs
 
+from .clone import create_attrs, duplicate_table
+
 
 class AvailableManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().exclude(integration__ready=False)
 
 
-class Table(CloneMixin, BaseModel):
+class Table(BaseModel):
     class Meta:
         unique_together = ["bq_table", "bq_dataset"]
         ordering = ("-created",)
@@ -138,4 +139,6 @@ class Table(CloneMixin, BaseModel):
 
     def make_clone(self, attrs=None, sub_clone=False, using=None):
         attrs = create_attrs(attrs, self)
-        return super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        duplicate_table(self, clone)
+        return clone

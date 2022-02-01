@@ -20,15 +20,17 @@ export default class extends Controller {
       } else {
         const data = event.dataTransfer.getData('application/gydashboard')
 
-        // Use a hidden form to create a widget and add to canvas via turbo stream
-        this.formTarget.querySelector('[name=kind]').value = data
-        // Default width is double
-        this.formTarget.querySelector('[name=x]').value = event.offsetX - 248
-        // Default height is double
-        this.formTarget.querySelector('[name=y]').value = event.offsetY - 195
-        this.formTarget.querySelector('button').disabled = false
+        if (data && data != '') {
+          // Use a hidden form to create a widget and add to canvas via turbo stream
+          this.formTarget.querySelector('[name=kind]').value = data
+          // Default width is 495, divide by two to get the middle
+          this.formTarget.querySelector('[name=x]').value = event.offsetX - 248
+          // Default height is 390, divide by two to get the middle
+          this.formTarget.querySelector('[name=y]').value = event.offsetY - 195
+          this.formTarget.querySelector('button').disabled = false
 
-        this.formTarget.requestSubmit(this.formTarget.querySelector('button'))
+          this.formTarget.requestSubmit(this.formTarget.querySelector('button'))
+        }
       }
     }
   }

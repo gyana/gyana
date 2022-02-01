@@ -68,34 +68,26 @@
         New Integration <i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
       </button>
 
-      <ul data-popover-target="body" class="list list--bordered" style="margin-top:6px;">
-        <li class="list__item list__item--interactive">
-          <a class="" href="{% url 'project_integrations_uploads:create' project.id %}">
-            <i class="fas fa-fw fa-upload mr-4"></i> Upload CSV
-          </a>
-        </li>
+      <div data-popover-target="body" class="list list--bordered" style="margin-top:6px;">
+        <a class="list__item list__item--interactive" href="{% url 'project_integrations_uploads:create' project.id %}">
+          <i class="fas fa-fw fa-upload mr-4"></i> Upload CSV
+        </a>
 
-        <li class="list__item list__item--interactive">
-          <a class="" href="{% url 'project_integrations_sheets:create' project.id %}">
-            <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
-          </a>
-        </li>
+        <a class="list__item list__item--interactive" href="{% url 'project_integrations_sheets:create' project.id %}">
+          <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
+        </a>
 
-        <li class="list__item list__item--interactive">
-          <a class="" href="{% url 'project_integrations_connectors:create' project.id %}">
-            <i class="fas fa-fw fa-plus mr-4"></i> New Connector
-          </a>
-        </li>
+        <a class="list__item list__item--interactive" href="{% url 'project_integrations_connectors:create' project.id %}">
+          <i class="fas fa-fw fa-plus mr-4"></i> New Connector
+        </a>
 
         {% flag 'beta' %}
-        <li class="list__item list__item--interactive">
-          <a class="" href="{% url 'project_integrations_customapis:create' project.id %}">
-            <i class="fas fa-fw fa-brackets-curly mr-4"></i>
-            <span class="beta">Custom API</span>
-          </a>
-        </li>
+        <a class="list__item list__item--interactive" href="{% url 'project_integrations_customapis:create' project.id %}">
+          <i class="fas fa-fw fa-brackets-curly mr-4"></i>
+          <span class="beta">Custom API</span>
+        </a>
         {% endflag %}
-      </ul>
+      </div>
     </div>
     {% else %}
     <button disabled class="button button--sm disabled">
@@ -105,7 +97,7 @@
   </div>
 </div>
 
-<div class="pad overflow-auto">
+<div class="flex flex-col pad overflow-hidden">
   {% comment %} Click a hidden submit button for Turbo to capture event {% endcomment %}
   <form method="get" onchange="this.querySelector('button').click()">
     <button type="submit" class="hidden"></button>
@@ -116,25 +108,26 @@
   </form>
 
   {% if project.integrations_for_review > 0 %}
-    <p class="alert mb-4">
-      You have {{ project.integrations_for_review }} synced integration{{ project.integrations_for_review|pluralize }} to review.
-    </p>
+  <p class="alert mb-4">
+    You have {{ project.integrations_for_review }} synced integration{{ project.integrations_for_review|pluralize }} to review.
+  </p>
   {% endif %}
 
-  <div class="card card--none mb-8">
+  <div class="card card--none overflow-auto mb-8">
     {% render_table table %}
 
     {% if integration_count == 0 %}
     <div class="table__empty">
       <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
       <h3>You have no integrations</h3>
+
       {% if project.team.enabled %}
-        <p>
-          Upload a <a href="{% url 'project_integrations_uploads:create' project.id %}" class="link">CSV</a>,
-          connect a <a href="{% url 'project_integrations_sheets:create' project.id %}" class="link">sheet</a>, or
-          add an <a href="{% url 'project_integrations_connectors:create' project.id %}" class="link">connector</a> to see it
-          here.
-        </p>
+      <p>
+        Upload a <a href="{% url 'project_integrations_uploads:create' project.id %}" class="link">CSV</a>,
+        connect a <a href="{% url 'project_integrations_sheets:create' project.id %}" class="link">sheet</a>, or
+        add an <a href="{% url 'project_integrations_connectors:create' project.id %}" class="link">connector</a> to see it
+        here.
+      </p>
       {% endif %}
     </div>
     {% endif %}
