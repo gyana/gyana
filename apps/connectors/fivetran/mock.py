@@ -82,7 +82,7 @@ class MockFivetranClient:
         self._schema_cache = MockSchemaStore()
         self._started = {}
 
-    def create(self, service, team_id, daily_sync_time):
+    def create(self, service, team_id, daily_sync_time, schema=None):
         # duplicate the content of the first created existing connector
         connector = (
             Connector.objects.filter(service=service).order_by("id").first()

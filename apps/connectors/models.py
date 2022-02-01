@@ -13,6 +13,7 @@ from apps.base.models import BaseModel
 from apps.connectors.fivetran.schema import FivetranSchemaObj
 from apps.integrations.models import Integration
 
+from .clone import update_schema
 from .fivetran.config import ServiceTypeEnum, get_services_obj
 
 FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
@@ -63,6 +64,16 @@ class Connector(DirtyFieldsMixin, BaseModel):
         SyncState.PAUSED: "fa fa-pause",
         SyncState.RESCHEDULED: "fa fa-history",
     }
+
+    _clone_excluded_fields = [
+        # TODO: right now this needs to be falsely copied
+        # otherwise the integration won't be shown on the overview page.
+        # "fivetran_authorized",
+        "fivetran_sync_started",
+        "bigquery_succeeded_at",
+        # TODO: should this be added later or do we need to replace the schema during duplication
+        "schema_config",
+    ]
 
     # internal fields
 
@@ -324,3 +335,18 @@ class Connector(DirtyFieldsMixin, BaseModel):
     @property
     def latest_sync_validated(self):
         return self.succeeded_at == self.bigquery_succeeded_at
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        from apps.base import clients
+
+        attrs = update_schema(attrs, self)
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        client = clients.fivetran()
+        client.create(
+            clone.service,
+            clone.integration.project.team.id,
+            clone.daily_sync_time,
+            clone.schema,
+        )
+
+        return clone

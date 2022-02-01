@@ -13,6 +13,8 @@ from apps.runs.models import JobRun
 from apps.users.models import CustomUser
 from apps.workflows.models import Workflow
 
+from .clone import clone_connector_and_tables
+
 PENDING_DELETE_AFTER_DAYS = 7
 
 
@@ -76,6 +78,8 @@ class Integration(BaseModel):
         ERROR = "error", "Error"
         DONE = "done", "Done"
 
+    _clone_exclude_m2o_or_o2m_fields = ["table_set"]
+    _clone_exclude_o2o_fields = ["connector"]
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     kind = models.CharField(max_length=32, choices=Kind.choices)
 
@@ -240,3 +244,8 @@ class Integration(BaseModel):
             else self.RUN_STATE_TO_INTEGRATION_STATE[self.latest_run.state]
         )
         self.save()
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        clone_connector_and_tables(self, clone, using)
+        return clone
