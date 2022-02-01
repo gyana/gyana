@@ -56,7 +56,9 @@ def test_integration_connector_clone(
     assert Connector.objects.count() == 2
     assert Table.objects.count() == 2
     assert connector.schema != clone.connector.schema
-
+    assert clone.connector.schema.startswith(
+        f"team_{connector.integration.project.team.id:06}_{clone.connector.service}_"
+    )
     assert fivetran.create.call_count == 1
 
     clone_table = clone.table_set.first()
