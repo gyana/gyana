@@ -1,0 +1,24 @@
+{% extends 'learn/base.html' %}
+
+{% load wagtailcore_tags %}
+
+{% block content %}
+  {% if results %}
+  <ul class="flex flex-col gap-4">
+      {% for result in results %}
+          <li class="card card--sm">
+              <h4><a href="{% pageurl result %}">{{ result }}</a></h4>
+              {% if result.search_description %}
+                  {{ result.search_description|safe }}
+              {% endif %}
+
+              {{result.body|richtext|truncatechars:512}}
+          </li>
+      {% endfor %}
+  </ul>
+  {% elif request.GET.query %}
+  No results found
+  {% else %}
+  Please type something into the search box
+  {% endif %}
+{% endblock %}
