@@ -5,23 +5,6 @@ from wagtail.core.models import Page
 from wagtail.search import index
 
 
-class LearnIndexPage(Page):
-    intro = RichTextField(blank=True)
-
-    content_panels = Page.content_panels + [FieldPanel("intro", classname="full")]
-
-    parent_page_types = ["wagtailcore.Page", "learn.LearnIndexPage"]
-    subpage_types = ["learn.LearnPage", "learn.LearnIndexPage"]
-
-    def get_context(self, request):
-        context = super().get_context(request)
-        learnpages = self.get_children().live()
-        # .order_by("-first_published_at")
-        context["learnpages"] = learnpages
-        context["learn_menu_page"] = Page.objects.get(slug="learn")
-        return context
-
-
 class LearnPage(Page):
     body = RichTextField()
     search_fields = Page.search_fields + [index.SearchField("body")]
@@ -32,8 +15,12 @@ class LearnPage(Page):
 
     promote_panels = [MultiFieldPanel(Page.promote_panels, "Common page configuration")]
 
-    parent_page_types = ["learn.LearnIndexPage"]
-    subpage_types = []
+    parent_page_types = ["wagtailcore.Page", "learn.LearnPage"]
+    subpage_types = ["learn.LearnPage"]
+
+    @property
+    def readtime(self):
+        return readtime.of_html(self.body).text
 
     def get_context(self, request):
         context = super().get_context(request)
