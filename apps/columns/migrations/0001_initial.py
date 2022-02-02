@@ -3,8 +3,8 @@
 import dirtyfields.dirtyfields
 import django.core.validators
 import django.db.models.deletion
-import model_clone.mixins.clone
 from django.db import migrations, models
+from model_clone.mixins import CloneMixin
 
 
 class Migration(migrations.Migration):
@@ -87,7 +87,7 @@ class Migration(migrations.Migration):
                     },
                     bases=(
                         dirtyfields.dirtyfields.DirtyFieldsMixin,
-                        model_clone.mixins.clone.CloneMixin,
+                        CloneMixin,
                         models.Model,
                     ),
                 )
@@ -137,7 +137,7 @@ class Migration(migrations.Migration):
                     },
                     bases=(
                         dirtyfields.dirtyfields.DirtyFieldsMixin,
-                        model_clone.mixins.clone.CloneMixin,
+                        CloneMixin,
                         models.Model,
                     ),
                 )
@@ -176,7 +176,7 @@ class Migration(migrations.Migration):
                     },
                     bases=(
                         dirtyfields.dirtyfields.DirtyFieldsMixin,
-                        model_clone.mixins.clone.CloneMixin,
+                        CloneMixin,
                         models.Model,
                     ),
                 )
@@ -227,7 +227,7 @@ class Migration(migrations.Migration):
                     },
                     bases=(
                         dirtyfields.dirtyfields.DirtyFieldsMixin,
-                        model_clone.mixins.clone.CloneMixin,
+                        CloneMixin,
                         models.Model,
                     ),
                 )
@@ -280,7 +280,7 @@ class Migration(migrations.Migration):
                     },
                     bases=(
                         dirtyfields.dirtyfields.DirtyFieldsMixin,
-                        model_clone.mixins.clone.CloneMixin,
+                        CloneMixin,
                         models.Model,
                     ),
                 )
@@ -331,7 +331,7 @@ class Migration(migrations.Migration):
                     },
                     bases=(
                         dirtyfields.dirtyfields.DirtyFieldsMixin,
-                        model_clone.mixins.clone.CloneMixin,
+                        CloneMixin,
                         models.Model,
                     ),
                 )
@@ -480,7 +480,7 @@ class Migration(migrations.Migration):
                     },
                     bases=(
                         dirtyfields.dirtyfields.DirtyFieldsMixin,
-                        model_clone.mixins.clone.CloneMixin,
+                        CloneMixin,
                         models.Model,
                     ),
                 )
@@ -524,7 +524,7 @@ class Migration(migrations.Migration):
                     },
                     bases=(
                         dirtyfields.dirtyfields.DirtyFieldsMixin,
-                        model_clone.mixins.clone.CloneMixin,
+                        CloneMixin,
                         models.Model,
                     ),
                 )
@@ -685,7 +685,7 @@ class Migration(migrations.Migration):
                     },
                     bases=(
                         dirtyfields.dirtyfields.DirtyFieldsMixin,
-                        model_clone.mixins.clone.CloneMixin,
+                        CloneMixin,
                         models.Model,
                     ),
                 )
