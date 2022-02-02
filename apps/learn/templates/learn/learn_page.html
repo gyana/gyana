@@ -15,7 +15,7 @@
       <ul class="flex flex-col gap-4">
         <li><a href="#{{ page.title|slugify }}">{{ page.title }}</a></li>
         {% for heading in page.headings %}
-          <li class="{% if heading.0 == 2 %}pl-2{% elif heading.0 == 3 %}pl-4{% else %}pl-6{% endif %}">{{ heading.2|richtext }}</li>
+          <li class="{% if heading.0 == '2' %}pl-6{% elif heading.0 == '3' %}pl-12{% else %}pl-18{% endif %}">{{ heading.2|richtext }}</li>
         {% endfor %}
       </ul>
     </nav>
