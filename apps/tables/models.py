@@ -5,7 +5,6 @@ from django.db import models
 from django.utils.functional import cached_property
 
 from apps.base import clients
-from apps.base.bigquery import copy_table
 from apps.base.models import BaseModel
 from apps.projects.models import Project
 from apps.tables.clone import create_attrs
