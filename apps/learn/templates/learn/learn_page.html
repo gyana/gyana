@@ -1,0 +1,47 @@
+{% extends 'learn/base.html' %}
+
+{% load wagtailcore_tags %}
+
+{% block content %}
+  <div class="flex">
+    <article class="p-10 prose prose-xl max-w-6xl flex-auto">
+      <h1 class="mb-10"><a id="{{ page.title|slugify }}"></a><a href="#{{ page.title|slugify }}">{{ page.title }}<i class="fa fa-link fa-sm ml-2"></i></a></h1>
+      {% for block in page.body %}
+          <section>{% include_block block %}</section>
+      {% endfor %}
+    </article>
+    <nav class="p-10 border-l border-gray">
+      <p class="bold mb-8">Page contents</p>
+      <ul class="flex flex-col gap-4">
+        <li><a href="#{{ page.title|slugify }}">{{ page.title }}</a></li>
+        {% for heading in page.headings %}
+          <li class="{% if heading.0 == '2' %}pl-6{% elif heading.0 == '3' %}pl-12{% else %}pl-18{% endif %}">{{ heading.2|richtext }}</li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
+
+  <nav class="border-t border-b border-gray">
+    <ul class='flex gap-2'>
+      {% with page.get_prev_siblings.live.first as previous_page %}
+        {% if previous_page %}
+          <a href="{% pageurl previous_page %}">
+            <li class="border-r border-gray flex flex-col gap-2 w-64 p-4">
+              <p>Previous</p>
+              <span class="bold">{{ previous_page.title }}</span>
+            </li>
+          </a>
+        {% endif %}
+      {% endwith %}
+      {% with page.get_next_siblings.live.first as next_page %}
+        {% if next_page %}
+          <a href="{% pageurl next_page %}">
+            <li class="border-r border-gray flex flex-col gap-2 w-64 p-4">
+              <p>Next</p>
+              <span class="bold">{{ next_page.title }}</span>
+            </li>
+          </a>
+        {% endif %}
+      {% endwith %}
+  </nav>
+{% endblock %}

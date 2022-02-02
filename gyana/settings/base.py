@@ -95,6 +95,8 @@ THIRD_PARTY_APPS = [
     "wagtail.core",
     "modelcluster",
     "taggit",
+    "wagtail.contrib.modeladmin",
+    "wagtailmenus",
 ]
 
 # Put your project-specific apps here
@@ -126,6 +128,7 @@ PROJECT_APPS = [
     "apps.oauth2",
     "apps.blog",
     "apps.customreports",
+    "apps.learn",
 ]
 
 INSTALLED_APPS = (
@@ -185,6 +188,7 @@ TEMPLATES = [
                 "apps.web.context_processors.project_meta",
                 "apps.web.context_processors.google_analytics_id",
                 "gyana.context_processors.django_settings",
+                "wagtailmenus.context_processors.wagtailmenus",
             ],
             # equivalent of APP_DIRS=True, plus admin_tools template loader
             "loaders": [

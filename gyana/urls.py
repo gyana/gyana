@@ -126,6 +126,7 @@ urlpatterns = [
     path("templates/", include("apps.templates.urls")),
     path("cnames/", include("apps.cnames.urls")),
     path("oauth2/", include("apps.oauth2.urls")),
+    path("learn/", include("apps.learn.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),

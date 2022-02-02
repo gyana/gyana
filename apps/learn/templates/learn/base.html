@@ -1,0 +1,54 @@
+{% extends 'web/base.html' %}
+
+{% load wagtailcore_tags %}
+{% load menu_tags %}
+
+{% block body %}
+  <div class="w-full h-full flex flex-col">
+    <nav class='p-6 border-b border-gray flex items-center gap-4'>
+      <a href="/learn" class="flex-1">
+        <h2>
+          <span class="text-indigo-600">
+            Gyana
+          </span>
+          <span class="text-gray-700" style="font-weight: 100;">
+            University
+          </span>
+        </h2>
+      </a>
+      <form class="flex-2" action="{% url 'learn:search' %}" method="GET">
+        <input type="search" name="query" class="input input--sm" value="{{ request.GET.query }}" placeholder="Search...">
+      </form>
+      <a href="{% url 'web:home' %}" class="flex-1 text-right p-2">
+        {% if request.user.is_authenticated %}Go to app{% else %}Website{% endif %}
+        <i class="fa fa-sm fa-external-link ml-2"></i>
+      </a>
+    </nav>
+    
+    <div class="bg-white flex flex-1 overflow-auto">
+      <nav class="w-96 flex flex-col py-4 gap-4 border-r border-gray">
+        {% children_menu parent_page=learn_menu_page max_levels=3 template="learn/menus/menu.html" sub_menu_template="learn/menus/menu.html" apply_active_classes=True %}
+      </nav>
+      <div class="flex-1 overflow-auto">
+        <nav class="flex gap-2 px-10 py-5 border-b border-gray">
+          <a href="/learn" >Home</a>
+            {% for ancestor in page.get_ancestors|slice:"3:" %}
+              <i class="fa fa-angle-right"></i>
+              <a href="{% pageurl ancestor %}">{{ ancestor.title }}</a>
+            {% endfor %}
+          <i class="fa fa-angle-right"></i>
+          <span class="text-black-50">
+            {% if page.slug == 'learn' %}
+              Welcome to Gyana University
+            {% elif request.resolver_match.view_name == 'learn:search' %}
+              Search
+            {% else %}
+              {{ page.title }}
+            {% endif %}
+          </span>
+        </nav>
+          {% block content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

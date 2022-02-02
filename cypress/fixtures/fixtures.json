@@ -67,7 +67,7 @@
     "pk": 2,
     "fields": {
       "password": "pbkdf2_sha256$260000$N2BmQRuSSYGvpQnPKCw9fj$UhUCkfx7qdzWPNYP/XUbi3L4hvP5/7f+N4nmrqTPceM=",
-      "last_login": "2022-01-18T12:57:55.669Z",
+      "last_login": "2022-02-01T15:40:06.603Z",
       "is_superuser": true,
       "username": "admin",
       "first_name": "",
@@ -672,6 +672,7 @@
       "kind": "msline",
       "aggregator": "",
       "dimension": "date",
+      "part": null,
       "second_dimension": null,
       "name": "Bounce rate and session duration",
       "sort_by": "dimension",
@@ -709,6 +710,7 @@
       "kind": "mscolumn2d",
       "aggregator": "",
       "dimension": "Owner",
+      "part": null,
       "second_dimension": null,
       "name": "Employees by owner",
       "sort_by": "value",
@@ -746,6 +748,7 @@
       "kind": "table",
       "aggregator": "",
       "dimension": null,
+      "part": null,
       "second_dimension": null,
       "name": null,
       "sort_by": "dimension",
@@ -3504,7 +3507,7 @@
     "pk": 10,
     "fields": {
       "created": "2021-12-16T01:46:42.564Z",
-      "updated": "2022-01-18T12:57:35.118Z",
+      "updated": "2022-02-01T15:38:13.947Z",
       "state": "success",
       "started_at": "2021-12-16T01:46:42.563Z",
       "completed_at": "2021-12-16T01:46:46.036Z",
@@ -3678,7 +3681,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2022-01-18T12:57:35.106Z" }
+    "fields": { "last_update": "2022-02-01T15:38:13.937Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
@@ -3838,6 +3841,78 @@
     }
   },
   {
+    "model": "wagtailsearch.indexentry",
+    "pk": 13,
+    "fields": {
+      "content_type": ["learn", "learnpage"],
+      "object_id": "5",
+      "title_norm": 0.8666666666666667,
+      "autocomplete": "'gyana':3 'to':2 'university':4 'welcome':1",
+      "title": "'gyana':3B 'univers':4B 'welcom':1B",
+      "body": "'cours':5 'deep':8 'dive':9 'gyana':14 'put':3 'teach':11 'togeth':4 've':2 'video':6 'work':15"
+    }
+  },
+  {
+    "model": "wagtailsearch.indexentry",
+    "pk": 20,
+    "fields": {
+      "content_type": ["learn", "learnpage"],
+      "object_id": "6",
+      "title_norm": 0.95,
+      "autocomplete": "'getting':1 'started':2",
+      "title": "'get':1B 'start':2B",
+      "body": "'case':7 'complet':2 'end':3,5 'gyana':9 'use':6"
+    }
+  },
+  {
+    "model": "wagtailsearch.indexentry",
+    "pk": 23,
+    "fields": {
+      "content_type": ["learn", "learnpage"],
+      "object_id": "7",
+      "title_norm": 1.9,
+      "autocomplete": "'guides':1",
+      "title": "'guid':1B",
+      "body": "'guid':4 'gyana':7 'step':1,3 'use':6"
+    }
+  },
+  {
+    "model": "wagtailsearch.indexentry",
+    "pk": 28,
+    "fields": {
+      "content_type": ["learn", "learnpage"],
+      "object_id": "8",
+      "title_norm": 1.9,
+      "autocomplete": "'integrations':1",
+      "title": "'integr':1B",
+      "body": "'150':122 '2000':202 '2021':128 '24':167 '413d09614b2b41d3bd5a7b4514176be7':1 '80':115 'account':21,360 'ad':20,112,359 'add':457 'also':478 'altern':228,339 'alway':402,420 'analyt':32,109 'anywher':53 'api':469 'app':25,358 'armi':344 'around':452 'author':141,213 'autodetect':391,421 'autom':247 'automat':313 'avail':135 'bar':262 'basi':150 'best':132 'box':120 'browser':261 'built':191 'chang':321 'choic':133 'choos':68,160 'connect':251,414 'connector':85,97,98,116,129,180,212,222,283 'copi':274,298 'csv':16,336,349,364,376,383,395,427 'custom':204 'd':500 'daili':173 'data':13,31,34,51,60,82,105,144,158,163,195,232,276,310,347,451,463 'databas':22,356 'dataset':482,491 'dedic':221 'default':308 'demand':203 'demograph':484 'design':379 'difficulti':58 'done':306 'download':369 'drive':407 'duct':444 'e.g':483 'effortless':44 'end':126 'enterpris':193 'even':489 'excel':355 'explor':479 'export':242,362 'facebook':111 'fail':397 'file':17,350,365,396 'final':338 'first':423,439 'fivetran':188 'focus':454 'frequenc':165 'futur':435 'get':81,230,507 'go':91 'googl':18,108,215,223,244,255,281,406,411,486 'grade':194 'great':227 'guid':67 'gyana':84,277,373 'hand':440 'handl':381 'header':392,430 'high':74 'hold':436 'host':480 'hour':168 'import':59,70,291,377,399 'improv':331 'includ':354,385,467 'instead':417 'integr':6,8,50,102,196,459 'interact':207 'interest':502 'jag':388 'jot':271 'knife':345 'know':268,438 'level':75 'like':14,107 'line':424,475 'll':90,153,206 'look':63 'made':101 'make':41,320 'mani':155,234,246,462 'manual':325 'method':71 'move':449 'n8n':252 'nativ':280,375 'need':323 'new':143,309 'newlin':387 'nonsens':384 'nowaday':351 'offer':225,236 'one':94,96,139,238 'one-off':237 'one-tim':138 'open':408 'overview':3 'pabbl':250 'page':214 'paid':490 'pain':442 'partner':493 'partnership':186 'past':275,300 'plan':123,334 'platform':197 'pleas':506 'possibl':46,466 'power':182 'prioriti':39 'process':142 'project':178 'provid':494 'public':481 'quick':270 'quickest':265 'quot':386 're':56,305,327,477 're-sync':326 'readi':233 'regular':149 'row':389,431 'schedul':241 'scraper':472 'seamless':458 'second':289 'segment':485 'set':171,179 'share':293 'sheet':19,86,216,224,245,256,282,295,317,412 'sheet.new':258 'sinc':26 'someth':498 'sourc':11,106,464 'special':100 'specif':104 'support':114 'swiss':343 'swiss-armi':342 'sync':146,164,174,314,328 'tabl':156 'take':61,286 'tape':445 'three':78 'time':140,175 'togeth':447 'tool':235,248,353,446 'top':38 'touch':509 'trend':487 'tri':403,504 'troubleshoot':66 'trust':200 'type':257 'uniqu':185 'upload':88,335,371,404 'url':302 'us':297 've':190 'video':2 'way':79,266 'web':24,357,471 'webhook':468 'without':33 'write':253 'zapier':249"
+    }
+  },
+  {
+    "model": "wagtailsearch.indexentry",
+    "pk": 31,
+    "fields": {
+      "content_type": ["learn", "learnpage"],
+      "object_id": "9",
+      "title_norm": 1.9,
+      "autocomplete": "'workflows':1",
+      "title": "'workflow':1B",
+      "body": "'introduct':1 'workflow':3"
+    }
+  },
+  {
+    "model": "wagtailsearch.indexentry",
+    "pk": 34,
+    "fields": {
+      "content_type": ["learn", "learnpage"],
+      "object_id": "10",
+      "title_norm": 1.9,
+      "autocomplete": "'dashboards':1",
+      "title": "'dashboard':1B",
+      "body": "'dashboard':3 'introduct':1"
+    }
+  },
+  {
     "model": "wagtailcore.site",
     "pk": 1,
     "fields": {
@@ -3893,7 +3968,7 @@
     "fields": {
       "path": "00010001",
       "depth": 2,
-      "numchild": 2,
+      "numchild": 4,
       "translation_key": "ab44508e-9dc1-4829-ae13-585f09dce0f9",
       "locale": 1,
       "title": "Welcome to your new Wagtail site!",
@@ -3987,6 +4062,204 @@
     }
   },
   {
+    "model": "wagtailcore.page",
+    "pk": 5,
+    "fields": {
+      "path": "000100010002",
+      "depth": 3,
+      "numchild": 4,
+      "translation_key": "a627d847-2c44-499f-b3ea-667a45f14de3",
+      "locale": 1,
+      "title": "Welcome to Gyana University",
+      "draft_title": "Welcome to Gyana University",
+      "slug": "learn",
+      "content_type": ["learn", "learnpage"],
+      "live": true,
+      "has_unpublished_changes": false,
+      "url_path": "/home/learn/",
+      "owner": ["admin"],
+      "seo_title": "",
+      "show_in_menus": true,
+      "search_description": "",
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "first_published_at": "2022-02-01T15:41:11.424Z",
+      "last_published_at": "2022-02-01T15:41:31.638Z",
+      "latest_revision_created_at": "2022-02-01T15:41:31.549Z",
+      "live_revision": 5,
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 6,
+    "fields": {
+      "path": "0001000100020001",
+      "depth": 4,
+      "numchild": 0,
+      "translation_key": "df0f0e9f-107a-4ea2-896c-7c5971dc9796",
+      "locale": 1,
+      "title": "Getting started",
+      "draft_title": "Getting started",
+      "slug": "getting-started",
+      "content_type": ["learn", "learnpage"],
+      "live": true,
+      "has_unpublished_changes": false,
+      "url_path": "/home/learn/getting-started/",
+      "owner": ["admin"],
+      "seo_title": "",
+      "show_in_menus": true,
+      "search_description": "",
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "first_published_at": "2022-02-01T15:41:52.006Z",
+      "last_published_at": "2022-02-01T20:33:23.701Z",
+      "latest_revision_created_at": "2022-02-01T20:33:23.535Z",
+      "live_revision": 27,
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 7,
+    "fields": {
+      "path": "0001000100020002",
+      "depth": 4,
+      "numchild": 6,
+      "translation_key": "7a8f574e-c61a-4461-9456-5de5baa45ba7",
+      "locale": 1,
+      "title": "Guides",
+      "draft_title": "Guides",
+      "slug": "guides",
+      "content_type": ["learn", "learnpage"],
+      "live": true,
+      "has_unpublished_changes": false,
+      "url_path": "/home/learn/guides/",
+      "owner": ["admin"],
+      "seo_title": "",
+      "show_in_menus": true,
+      "search_description": "",
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "first_published_at": "2022-02-01T15:42:44.068Z",
+      "last_published_at": "2022-02-01T20:32:53.870Z",
+      "latest_revision_created_at": "2022-02-01T20:32:53.630Z",
+      "live_revision": 26,
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 8,
+    "fields": {
+      "path": "00010001000200020001",
+      "depth": 5,
+      "numchild": 0,
+      "translation_key": "52c83335-a1f6-47a3-ab68-ac8df7cb0807",
+      "locale": 1,
+      "title": "Integrations",
+      "draft_title": "Integrations",
+      "slug": "integrations",
+      "content_type": ["learn", "learnpage"],
+      "live": true,
+      "has_unpublished_changes": false,
+      "url_path": "/home/learn/guides/integrations/",
+      "owner": ["admin"],
+      "seo_title": "",
+      "show_in_menus": true,
+      "search_description": "",
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "first_published_at": "2022-02-01T15:43:08.578Z",
+      "last_published_at": "2022-02-01T23:01:58.023Z",
+      "latest_revision_created_at": "2022-02-01T23:01:57.866Z",
+      "live_revision": 48,
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 9,
+    "fields": {
+      "path": "00010001000200020002",
+      "depth": 5,
+      "numchild": 0,
+      "translation_key": "4b36cc59-b60e-414c-8a08-ed08d5b0d62c",
+      "locale": 1,
+      "title": "Workflows",
+      "draft_title": "Workflows",
+      "slug": "workflows",
+      "content_type": ["learn", "learnpage"],
+      "live": true,
+      "has_unpublished_changes": false,
+      "url_path": "/home/learn/guides/workflows/",
+      "owner": ["admin"],
+      "seo_title": "",
+      "show_in_menus": true,
+      "search_description": "",
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "first_published_at": "2022-02-01T15:43:20.143Z",
+      "last_published_at": "2022-02-01T20:35:03.793Z",
+      "latest_revision_created_at": "2022-02-01T20:35:03.637Z",
+      "live_revision": 29,
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 10,
+    "fields": {
+      "path": "00010001000200020003",
+      "depth": 5,
+      "numchild": 0,
+      "translation_key": "15243b6c-fc22-49c4-b3e2-6111c329df8e",
+      "locale": 1,
+      "title": "Dashboards",
+      "draft_title": "Dashboards",
+      "slug": "dashboards",
+      "content_type": ["learn", "learnpage"],
+      "live": true,
+      "has_unpublished_changes": false,
+      "url_path": "/home/learn/guides/dashboards/",
+      "owner": ["admin"],
+      "seo_title": "",
+      "show_in_menus": true,
+      "search_description": "",
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "first_published_at": "2022-02-01T15:43:34.391Z",
+      "last_published_at": "2022-02-01T20:35:17.203Z",
+      "latest_revision_created_at": "2022-02-01T20:35:17.050Z",
+      "live_revision": 30,
+      "alias_of": null
+    }
+  },
+  {
     "model": "wagtailcore.pagerevision",
     "pk": 1,
     "fields": {
@@ -4007,6 +4280,78 @@
       "created_at": "2022-01-18T10:13:56.513Z",
       "user": ["admin"],
       "content_json": "{\"pk\": 4, \"path\": \"0001000100010001\", \"depth\": 4, \"numchild\": 0, \"translation_key\": \"396af017-d226-47af-9f50-6b2d0d5bbe3a\", \"locale\": 1, \"title\": \"Gyana 2021, Wrapped\", \"draft_title\": \"Gyana 2021, Wrapped\", \"slug\": \"gyana-2021-wrapped\", \"content_type\": 67, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/blog/gyana-2021-wrapped/\", \"owner\": 2, \"seo_title\": \"Gyana 2021, Wrapped\", \"show_in_menus\": false, \"search_description\": \"Happy holidays everyone. Our review of Gyana in 2021, reflections on no-code data platforms and what comes next. Have a wonderful break!\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": null, \"last_published_at\": null, \"latest_revision_created_at\": null, \"live_revision\": null, \"alias_of\": null, \"date\": \"2021-12-23\", \"intro\": \"Happy holidays everyone. Our review of Gyana in 2021, reflections on no-code data platforms and what comes next. Have a wonderful break!\", \"body\": \"<p data-block-key=\\\"qp20u\\\">Happy holidays everyone.</p><p data-block-key=\\\"3lgul\\\">If you\\u2019re reading this, chances are you helped us in some way this year. So \\u2026 thank you. It means a lot, to all of us.</p><p data-block-key=\\\"6s335\\\"><b>2021 was a good year for Gyana.</b> We launched <a href=\\\"https://www.gyana.com/blog/the-next-chapter-of-gyana\\\"><b>Gyana 2.0</b></a>, built our fantastic <a href=\\\"https://www.facebook.com/groups/891928461364849\\\"><b>community</b></a> and helped thousands of customers discover new ways to <a href=\\\"https://www.gyana.com/blog/learnings-from-one-week-with-gyana\\\"><b>work with data</b></a>.</p><p data-block-key=\\\"7ut64\\\">Today, businesses who want be data-driven have only two options: spend $100k and hire a team of data engineers, or build a <a href=\\\"https://en.wikipedia.org/wiki/Rube_Goldberg_machine\\\"><b>Rube-Goldberg machine</b></a> of connectors, zaps, spreadsheets and dashboards. As you told us, in over a thousand chats and video calls.</p><p data-block-key=\\\"6cqls\\\">2021 is the year we proved, definitely, a third way is possible - the power of a custom data platform but with a no-code interface, for less than your Zoom subscription.</p><p data-block-key=\\\"cn533\\\">It took us a while to get here, but we\\u2019ve finally built something we\\u2019re really proud of. And we\\u2019re seeing the impact with our users, who have synced a total of <b>367,780,394 rows of data</b> into Gyana.</p><p data-block-key=\\\"8bf96\\\">Although on that note, I\\u2019m not sure about that word \\u201cusers\\u201d\\u2026</p><h3 data-block-key=\\\"6pl6e\\\"><b>For the builders...</b></h3><p data-block-key=\\\"aii78\\\">My number one learning in 2021 is about the appetite to build.</p><p data-block-key=\\\"3ntg9\\\">Gyana is not a community of \\u201cusers\\u201d, it\\u2019s a community of \\u201cbuilders\\u201d. Right now, you get a blank slate, a handful of tutorials, and it\\u2019s up to you to create. And you\\u2019ve exceeded our expectations, and then some.</p><p data-block-key=\\\"4vv4r\\\">Kudos to the person who built a workflow with a record <b>78 nodes</b>. It\\u2019s a thing of beauty. Really, it belongs in the Tate. You\\u2019ll never be truly appreciated, but we know what you did.</p><p data-block-key=\\\"drsgh\\\">As builders ourselves, we understand the risk you take when committing to a platform like Gyana. Thank you for trusting us. <b>It\\u2019s a privilege to watch you unleash your creativity.</b> You keep being awesome, and we\\u2019ll do our best to get out of your way.</p><h3 data-block-key=\\\"pknt\\\"><b>What next for 2022?</b></h3><p data-block-key=\\\"2gs33\\\">For 2021, we challenged ourselves to take the fundamentals of an enterprise data stack (ETL, modelling, analytics , BI, orchestration, IAM, \\u2026) and wrap it into a <b>single no-code web app that one person can manage</b>.</p><p data-block-key=\\\"2osjs\\\">In 2022, we plan to build on that foundation. Our guiding principle: whatever the data source, analysis workflow, or dashboard - <b>you can build it in Gyana</b>. Keep an eye out for hundreds of new connectors, custom APIs and dashboards themes.</p><p data-block-key=\\\"ddptv\\\">On top of that, we\\u2019ll be introducing new features to build towards our goal of the complete data platform. <b>Actions</b> enable you to use your data results to do things - like export a Google Sheet or send emails. <b>Predictions</b> will help you understand trends and forecast results using machine learning. And our <b>developer platform</b> will enable you to build your own data analytics application on Gyana - in days, not months.</p><p data-block-key=\\\"60lr9\\\">Finally, we\\u2019re going to put a <i>big</i> focus on learning and educational content. Video tutorials, pre-built templates, blog posts, walkthroughs, and a complete revamp of the website \\u2026 <b>we know how important it is and it\\u2019s coming</b>.</p><p data-block-key=\\\"1etb1\\\">Have a wonderful break!</p><p data-block-key=\\\"7raus\\\">\\u2764\\ufe0f David + the Gyana team</p>\", \"feed_image\": 2, \"category\": 1, \"author\": 1, \"wagtail_admin_comments\": []}",
+      "approved_go_live_at": null
+    }
+  },
+  {
+    "model": "wagtailcore.pagerevision",
+    "pk": 5,
+    "fields": {
+      "page": 5,
+      "submitted_for_moderation": false,
+      "created_at": "2022-02-01T15:41:31.549Z",
+      "user": ["admin"],
+      "content_json": "{\"pk\": 5, \"path\": \"000100010002\", \"depth\": 3, \"numchild\": 0, \"translation_key\": \"a627d847-2c44-499f-b3ea-667a45f14de3\", \"locale\": 1, \"title\": \"Welcome to Gyana University\", \"draft_title\": \"Welcome to Gyana University\", \"slug\": \"learn\", \"content_type\": 130, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/welcome-to-gyana-university/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-02-01T15:41:11.424Z\", \"last_published_at\": \"2022-02-01T15:41:22.137Z\", \"latest_revision_created_at\": \"2022-02-01T15:41:22.052Z\", \"live_revision\": 4, \"alias_of\": null, \"body\": \"<p data-block-key=\\\"ul81e\\\">We&#x27;ve put together courses, videos and deep dives to teach you how Gyana works.</p>\", \"wagtail_admin_comments\": []}",
+      "approved_go_live_at": null
+    }
+  },
+  {
+    "model": "wagtailcore.pagerevision",
+    "pk": 26,
+    "fields": {
+      "page": 7,
+      "submitted_for_moderation": false,
+      "created_at": "2022-02-01T20:32:53.630Z",
+      "user": ["admin"],
+      "content_json": "{\"pk\": 7, \"path\": \"0001000100020002\", \"depth\": 4, \"numchild\": 6, \"translation_key\": \"7a8f574e-c61a-4461-9456-5de5baa45ba7\", \"locale\": 1, \"title\": \"Guides\", \"draft_title\": \"Guides\", \"slug\": \"guides\", \"content_type\": 130, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/guides/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-02-01T15:42:44.068Z\", \"last_published_at\": \"2022-02-01T17:38:50.184Z\", \"latest_revision_created_at\": \"2022-02-01T17:38:50.040Z\", \"live_revision\": 25, \"alias_of\": null, \"body\": \"[{\\\"type\\\": \\\"paragraph\\\", \\\"value\\\": \\\"<p data-block-key=\\\\\\\"wfn4d\\\\\\\">Step by step guide to using Gyana...</p>\\\", \\\"id\\\": \\\"6ec9175a-0996-4c5f-a96a-b7b34cb837a0\\\"}]\", \"wagtail_admin_comments\": []}",
+      "approved_go_live_at": null
+    }
+  },
+  {
+    "model": "wagtailcore.pagerevision",
+    "pk": 27,
+    "fields": {
+      "page": 6,
+      "submitted_for_moderation": false,
+      "created_at": "2022-02-01T20:33:23.535Z",
+      "user": ["admin"],
+      "content_json": "{\"pk\": 6, \"path\": \"0001000100020001\", \"depth\": 4, \"numchild\": 0, \"translation_key\": \"df0f0e9f-107a-4ea2-896c-7c5971dc9796\", \"locale\": 1, \"title\": \"Getting started\", \"draft_title\": \"Getting started\", \"slug\": \"getting-started\", \"content_type\": 130, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/getting-started/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-02-01T15:41:52.006Z\", \"last_published_at\": \"2022-02-01T15:41:52.006Z\", \"latest_revision_created_at\": \"2022-02-01T15:41:51.957Z\", \"live_revision\": 6, \"alias_of\": null, \"body\": \"[{\\\"type\\\": \\\"paragraph\\\", \\\"value\\\": \\\"<p data-block-key=\\\\\\\"tepqz\\\\\\\">A complete end to end use case in Gyana...</p>\\\", \\\"id\\\": \\\"7e066a5d-25de-42b0-b8e7-4404faa89883\\\"}]\", \"wagtail_admin_comments\": []}",
+      "approved_go_live_at": null
+    }
+  },
+  {
+    "model": "wagtailcore.pagerevision",
+    "pk": 29,
+    "fields": {
+      "page": 9,
+      "submitted_for_moderation": false,
+      "created_at": "2022-02-01T20:35:03.637Z",
+      "user": ["admin"],
+      "content_json": "{\"pk\": 9, \"path\": \"00010001000200020002\", \"depth\": 5, \"numchild\": 0, \"translation_key\": \"4b36cc59-b60e-414c-8a08-ed08d5b0d62c\", \"locale\": 1, \"title\": \"Workflows\", \"draft_title\": \"Workflows\", \"slug\": \"workflows\", \"content_type\": 130, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/guides/workflows/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-02-01T15:43:20.143Z\", \"last_published_at\": \"2022-02-01T15:43:45.557Z\", \"latest_revision_created_at\": \"2022-02-01T15:43:45.431Z\", \"live_revision\": 12, \"alias_of\": null, \"body\": \"[{\\\"type\\\": \\\"paragraph\\\", \\\"value\\\": \\\"<p data-block-key=\\\\\\\"1br5u\\\\\\\">Introduction to workflows...</p>\\\", \\\"id\\\": \\\"bcb7d8f1-0f3c-45a9-bcf6-3aa463c82011\\\"}]\", \"wagtail_admin_comments\": []}",
+      "approved_go_live_at": null
+    }
+  },
+  {
+    "model": "wagtailcore.pagerevision",
+    "pk": 30,
+    "fields": {
+      "page": 10,
+      "submitted_for_moderation": false,
+      "created_at": "2022-02-01T20:35:17.050Z",
+      "user": ["admin"],
+      "content_json": "{\"pk\": 10, \"path\": \"00010001000200020003\", \"depth\": 5, \"numchild\": 0, \"translation_key\": \"15243b6c-fc22-49c4-b3e2-6111c329df8e\", \"locale\": 1, \"title\": \"Dashboards\", \"draft_title\": \"Dashboards\", \"slug\": \"dashboards\", \"content_type\": 130, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/guides/dashboards/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-02-01T15:43:34.391Z\", \"last_published_at\": \"2022-02-01T15:43:34.391Z\", \"latest_revision_created_at\": \"2022-02-01T15:43:34.321Z\", \"live_revision\": 11, \"alias_of\": null, \"body\": \"[{\\\"type\\\": \\\"paragraph\\\", \\\"value\\\": \\\"<p data-block-key=\\\\\\\"u6bu5\\\\\\\">Introduction to dashboards...</p>\\\", \\\"id\\\": \\\"fbe7d8d7-70ea-4410-8cd7-bed6fae74f60\\\"}]\", \"wagtail_admin_comments\": []}",
+      "approved_go_live_at": null
+    }
+  },
+  {
+    "model": "wagtailcore.pagerevision",
+    "pk": 48,
+    "fields": {
+      "page": 8,
+      "submitted_for_moderation": false,
+      "created_at": "2022-02-01T23:01:57.866Z",
+      "user": ["admin"],
+      "content_json": "{\"pk\": 8, \"path\": \"00010001000200020001\", \"depth\": 5, \"numchild\": 0, \"translation_key\": \"52c83335-a1f6-47a3-ab68-ac8df7cb0807\", \"locale\": 1, \"title\": \"Integrations\", \"draft_title\": \"Integrations\", \"slug\": \"integrations\", \"content_type\": 130, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/guides/integrations/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-02-01T15:43:08.578Z\", \"last_published_at\": \"2022-02-01T22:54:06.999Z\", \"latest_revision_created_at\": \"2022-02-01T22:54:06.800Z\", \"live_revision\": 47, \"alias_of\": null, \"body\": \"[{\\\"type\\\": \\\"loom\\\", \\\"value\\\": {\\\"loom_id\\\": \\\"413d09614b2b41d3bd5a7b4514176be7\\\", \\\"caption\\\": \\\"Video overview of our integrations\\\"}, \\\"id\\\": \\\"ee1da91f-b9a2-498c-8058-5e146eacbb17\\\"}, {\\\"type\\\": \\\"text\\\", \\\"value\\\": \\\"<p data-block-key=\\\\\\\"m0246\\\\\\\">An integration is a source of data, like a CSV file, Google Sheet, ads account, database, or web app.</p><p data-block-key=\\\\\\\"9srm3\\\\\\\">Since you can&#x27;t do data analytics without data (!), it&#x27;s our top priority to make it as effortless as possible for you to integrate data from anywhere.</p><p data-block-key=\\\\\\\"10cqi\\\\\\\">\\\\ud83d\\\\udca1 If you&#x27;re having difficulties importing data, take a look at our <a href=\\\\\\\"https://intercom.help/gyana/en/articles/5548601-my-integration-isn-t-working\\\\\\\">troubleshooting guide</a>.</p><h2 data-block-key=\\\\\\\"2bojv\\\\\\\">\\\\ud83d\\\\ude9b Choosing your import method</h2><p data-block-key=\\\\\\\"94e4n\\\\\\\">At a high level, you have three ways to get data into Gyana: <b>connectors</b>, <b>sheets</b> and <b>uploads</b>. We&#x27;ll go through them one by one.</p><h3 data-block-key=\\\\\\\"8rpis\\\\\\\">Connectors</h3><p data-block-key=\\\\\\\"co0jt\\\\\\\">Connectors are specially made integrations for specific data sources, like Google Analytics or Facebook Ads. We support 80+ connectors out of the box, with 150+ planned for the end of 2021.</p><p data-block-key=\\\\\\\"30rcs\\\\\\\">Connectors are the best choice, if available. After a one-time authorization process, new data is synced on a regular basis, and you&#x27;ll have many tables of data to choose from.</p><p data-block-key=\\\\\\\"35ngn\\\\\\\">\\\\ud83d\\\\udca1 The data sync frequency is <b>24 hours</b>. You can set the daily sync time in your project settings.</p><p data-block-key=\\\\\\\"8el4n\\\\\\\">Connectors are powered by our unique partnership with Fivetran. They&#x27;ve built an enterprise grade data integration platform that is trusted by 2000+ <a href=\\\\\\\"https://fivetran.com/customers\\\\\\\">demanding customers</a>. You&#x27;ll interact with them in the connector authorization page.</p><h3 data-block-key=\\\\\\\"5vsm1\\\\\\\">Google Sheets</h3><p data-block-key=\\\\\\\"b1r02\\\\\\\">If there&#x27;s no dedicated connector, Google Sheets offers a great alternative for getting your data ready:</p><ul><li data-block-key=\\\\\\\"8fo5u\\\\\\\">Many tools offer one-off or scheduled exports to Google Sheets</li><li data-block-key=\\\\\\\"cvm7b\\\\\\\">Many automation tools (Zapier, Pabbly Connect, n8n) write to Google Sheets</li><li data-block-key=\\\\\\\"96o79\\\\\\\">Typing sheet.new in your browser bar is the quickest way we know to quickly jot down or copy + paste data</li></ul><p data-block-key=\\\\\\\"5bqba\\\\\\\">Gyana has a native Google Sheets connector that will take a <b>few seconds</b> to import. Just share the sheet with us, copy and paste the URL, and you&#x27;re done.</p><p data-block-key=\\\\\\\"e8ste\\\\\\\">\\\\ud83d\\\\udca1 By default, new data will not automatically sync from your sheet if you make changes. You need to manually re-sync. We have improvements to this planned.</p><h3 data-block-key=\\\\\\\"2knm9\\\\\\\">Upload CSV</h3><p data-block-key=\\\\\\\"3apkp\\\\\\\">Your final alternative is the swiss-army knife of data, the CSV file. Nowadays, most tools (including Excel, databases, web apps, ads accounts) will export a CSV file that you can download and upload to Gyana.</p><p data-block-key=\\\\\\\"26rqk\\\\\\\">Our native CSV importer is designed to handle most CSV nonsense, including quoted newlines, jagged rows and autodetecting headers. If your CSV file fails to import, you can always try uploading to Google Drive, opening as a Google Sheet, and connect to that instead.</p><p data-block-key=\\\\\\\"ha2u\\\\\\\">\\\\ud83d\\\\udca1 We will always autodetect the first line of the CSV as a header row.</p><h2 data-block-key=\\\\\\\"5hqde\\\\\\\">\\\\ud83d\\\\udd2e What does the future hold?</h2><p data-block-key=\\\\\\\"8uojv\\\\\\\">We know first hand the pain of duct taping tools together to move your data around. Our focus is to add seamless integration to as many data sources as possible, including webhooks, APIs and web scrapers.</p><p data-block-key=\\\\\\\"bgk6c\\\\\\\">Down the line, we&#x27;re also exploring hosting public datasets (e.g. demographic segmentations, Google trends), and even paid datasets from partner providers. If that&#x27;s something you&#x27;d be interested in trying out, please get in touch!</p>\\\", \\\"id\\\": \\\"52b1f5e1-d73a-4985-832c-605caf7a28e5\\\"}]\", \"wagtail_admin_comments\": []}",
       "approved_go_live_at": null
     }
   },
@@ -4040,5 +4385,35 @@
     "model": "wagtailcore.pagesubscription",
     "pk": 2,
     "fields": { "user": ["admin"], "page": 4, "comment_notifications": true }
+  },
+  {
+    "model": "wagtailcore.pagesubscription",
+    "pk": 3,
+    "fields": { "user": ["admin"], "page": 5, "comment_notifications": true }
+  },
+  {
+    "model": "wagtailcore.pagesubscription",
+    "pk": 4,
+    "fields": { "user": ["admin"], "page": 6, "comment_notifications": true }
+  },
+  {
+    "model": "wagtailcore.pagesubscription",
+    "pk": 5,
+    "fields": { "user": ["admin"], "page": 7, "comment_notifications": true }
+  },
+  {
+    "model": "wagtailcore.pagesubscription",
+    "pk": 6,
+    "fields": { "user": ["admin"], "page": 8, "comment_notifications": true }
+  },
+  {
+    "model": "wagtailcore.pagesubscription",
+    "pk": 7,
+    "fields": { "user": ["admin"], "page": 9, "comment_notifications": true }
+  },
+  {
+    "model": "wagtailcore.pagesubscription",
+    "pk": 8,
+    "fields": { "user": ["admin"], "page": 10, "comment_notifications": true }
   }
 ]
