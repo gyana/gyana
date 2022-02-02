@@ -93,6 +93,16 @@
 
 .widgets .ql-toolbar.ql-snow {
   background: var(--c-white);
-  border: none;
-  border-bottom: 1px solid var(--c-gray);
+  border-bottom: none;
+  border: 1px solid var(--c-gray);
+  bottom: 100%;
+  display: none;
+  position: absolute;
+  visibility: none;
+  width: 100%;
+}
+
+.react-draggable[data-focused*=true] .ql-toolbar.ql-snow {
+  display: block;
+  visibility: visible;
 }
