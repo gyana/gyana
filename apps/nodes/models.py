@@ -45,7 +45,14 @@ class Node(DirtyFieldsMixin, BaseModel):
         SENTIMENT = "sentiment", "Sentiment"
 
     _clone_excluded_m2m_fields = ["parents", "node_set"]
-    _clone_excluded_m2o_or_o2m_fields = ["parent_edges", "child_edges"]
+    _clone_excluded_m2o_or_o2m_fields = [
+        "parent_edges",
+        "child_edges",
+        "input_table",
+        "intermediate_table",
+        "cache_table",
+    ]
+    _clone_excluded_o2o_fields = ["table", "intermediate_node", "cache_node"]
 
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"

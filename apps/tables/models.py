@@ -29,6 +29,9 @@ class Table(BaseModel):
         INTERMEDIATE_NODE = "intermediate_node", "Intermediate node"
         CACHE_NODE = "cache_node", "Cache node"
 
+    _clone_excluded_o2o_fields = ["workflow_node", "cache_node", "intermediate_node"]
+    _clone_excluded_m2o_or_o2m_fields = ["input_nodes", "exports", "widget_set"]
+
     bq_table = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
     bq_dataset = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
 

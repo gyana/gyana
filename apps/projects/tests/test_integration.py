@@ -1,5 +1,6 @@
 import pytest
 from deepdiff import DeepDiff
+from django.db import transaction
 from django.utils import timezone
 from pytest_django.asserts import assertContains, assertRedirects
 
@@ -18,7 +19,7 @@ from apps.projects.models import Project
 from apps.tables.models import Table
 from apps.users.models import CustomUser
 
-pytestmark = pytest.mark.django_db
+pytestmark = pytest.mark.django_db(transaction=True)
 
 
 def test_project_crudl(client, logged_in_user):

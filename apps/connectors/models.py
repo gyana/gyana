@@ -6,7 +6,6 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.functional import cached_property
-from model_clone.mixins.clone import CloneMixin
 
 from apps.base import clients
 from apps.base.models import BaseModel
