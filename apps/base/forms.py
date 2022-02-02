@@ -15,6 +15,7 @@ FORMSET_LABELS = {
     "add_columns": "Add columns",
     "rename_columns": "Rename columns",
     "formula_columns": "Formula columns",
+    "join_columns": "Joins",
     "filters": "Filters",
     "secondary_columns": "Select specific columns",
     "window_columns": "Window columns",

@@ -2,8 +2,8 @@ from django import forms
 from ibis.expr.datatypes import Date, Floating, Timestamp
 
 from apps.base.core.aggregations import AGGREGATION_TYPE_MAP
-from apps.base.forms import BaseLiveSchemaForm
 from apps.base.core.utils import create_column_choices
+from apps.base.forms import BaseLiveSchemaForm
 from apps.base.widgets import SelectWithDisable
 from apps.columns.models import (
     AddColumn,
@@ -12,6 +12,7 @@ from apps.columns.models import (
     ConvertColumn,
     EditColumn,
     FormulaColumn,
+    JoinColumn,
     WindowColumn,
 )
 
@@ -249,3 +250,55 @@ class ConvertColumnForm(BaseLiveSchemaForm):
         super().__init__(*args, **kwargs)
 
         self.fields["column"].choices = create_column_choices(self.schema)
+
+
+def create_left_join_choices(parents, index):
+    columns = (
+        (
+            f"Input {idx+1}",
+            sorted(
+                [(f"{idx}:{col}", col) for col in parent.schema],
+                key=lambda x: str.casefold(x[1]),
+            ),
+        )
+        for idx, parent in enumerate(parents[: index + 1])
+    )
+
+    return [("", "No column selected"), *columns]
+
+
+class JoinColumnForm(BaseLiveSchemaForm):
+    class Meta:
+        model = JoinColumn
+        fields = ["how", "left_column", "right_column"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        parents = kwargs["parent_instance"].parents_ordered.all()
+        index = (
+            int(index) if (index := self.prefix.split("-")[-1]) != "__prefix__" else 0
+        )
+
+        self.fields["left_column"] = forms.ChoiceField(
+            choices=create_left_join_choices(parents, index),
+            help_text=self.fields["left_column"].help_text,
+        )
+        self.fields["right_column"] = forms.ChoiceField(
+            choices=create_column_choices(
+                parents[index + 1].schema,
+            ),
+            help_text=self.fields["left_column"].help_text,
+        )
+
+    def get_initial_for_field(self, field, field_name):
+        if field_name == "left_column" and self.instance.left_column:
+            return f"{self.instance.left_index}:{self.instance.left_column}"
+        return super().get_initial_for_field(field, field_name)
+
+    def save(self, *args, **kwargs):
+        left_index, left_column = self.cleaned_data["left_column"].split(":")
+        self.instance.left_index = int(left_index)
+        self.instance.left_column = left_column
+
+        return super().save(*args, **kwargs)

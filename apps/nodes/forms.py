@@ -152,28 +152,6 @@ class DistinctNodeForm(NodeForm):
         return super().save(*args, **kwargs)
 
 
-class JoinNodeForm(NodeForm):
-    class Meta:
-        model = Node
-        fields = ["join_how", "join_left", "join_right"]
-        labels = {"join_how": "How", "join_left": "Left", "join_right": "Right"}
-        required = ["join_how", "join_left", "join_right"]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        parents = self.instance.parents_ordered.all()
-
-        self.fields["join_left"] = forms.ChoiceField(
-            choices=create_column_choices(parents.first().schema),
-            help_text=self.fields["join_left"].help_text,
-        )
-        self.fields["join_right"] = forms.ChoiceField(
-            choices=create_column_choices(parents.last().schema),
-            help_text=self.fields["join_right"].help_text,
-        )
-
-
 class UnionNodeForm(NodeForm):
     class Meta:
         model = Node
@@ -276,6 +254,12 @@ class ExceptNodeForm(DefaultNodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.form_description = "Remove rows that exist in a second table."
+
+
+class JoinNodeForm(DefaultNodeForm):
+    def get_formset_kwargs(self, formset):
+        parents_count = self.instance.parents.count()
+        return {"max_num": parents_count - 1, "min_num": parents_count - 1}
 
 
 KIND_TO_FORM = {

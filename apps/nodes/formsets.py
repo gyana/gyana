@@ -1,15 +1,15 @@
 # fmt: off
 from django import forms
 
-from apps.base.forms import BaseSchemaForm
+from apps.base.forms import BaseLiveSchemaForm, BaseSchemaForm
 from apps.base.formsets import RequiredInlineFormset
-from apps.base.forms import BaseLiveSchemaForm
 from apps.columns.forms import (
     AddColumnForm,
     AggregationColumnForm,
     ColumnForm,
     ConvertColumnForm,
     FormulaColumnForm,
+    JoinColumnForm,
     OperationColumnForm,
     WindowColumnForm,
 )
@@ -20,6 +20,7 @@ from apps.columns.models import (
     ConvertColumn,
     EditColumn,
     FormulaColumn,
+    JoinColumn,
     RenameColumn,
     SecondaryColumn,
     SortColumn,
@@ -142,6 +143,16 @@ ConvertColumnFormSet = forms.inlineformset_factory(
     Node, ConvertColumn, can_delete=True, form=ConvertColumnForm, extra=0, min_num=1
 )
 
+JoinColumnFormset = forms.inlineformset_factory(
+    Node,
+    JoinColumn,
+    form=JoinColumnForm,
+    can_delete=True,
+    extra=0,
+    min_num=1,
+    formset=RequiredInlineFormset,
+)
+
 KIND_TO_FORMSETS = {
     "aggregation": [ColumnFormSet, AggregationColumnFormSet],
     "sort": [SortColumnFormSet],
@@ -153,4 +164,5 @@ KIND_TO_FORMSETS = {
     "unpivot": [UnpivotColumnFormSet, SelectColumnFormSet],
     "window": [WindowColumnFormSet],
     "convert": [ConvertColumnFormSet],
+    "join": [JoinColumnFormset],
 }

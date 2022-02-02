@@ -246,3 +246,31 @@ class WindowColumn(SaveParentModel):
         validators=[bigquery_column_regex],
         help_text="Select a new column name",
     )
+
+
+class JoinColumn(SaveParentModel):
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="join_columns"
+    )
+    how = models.CharField(
+        max_length=12,
+        choices=[
+            ("inner", "Inner"),
+            ("outer", "Outer"),
+            ("left", "Left"),
+            ("right", "Right"),
+        ],
+        default="inner",
+        help_text="Select the join method, more information in the docs",
+    )
+
+    left_index = models.IntegerField(default=0)
+    left_column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        help_text="Choose the left join column",
+    )
+
+    right_column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        help_text="Choose the right join column",
+    )
