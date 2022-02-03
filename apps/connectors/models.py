@@ -8,9 +8,11 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 
 from apps.base import clients
+from apps.base.fields import ChoiceArrayField
 from apps.base.models import BaseModel
 from apps.connectors.clone import update_schema
 from apps.connectors.fivetran.schema import FivetranSchemaObj
+from apps.connectors.fivetran.services.facebook_ads import BASIC_REPORTS
 from apps.integrations.models import Integration
 
 from .clone import create_fivetran, update_schema
@@ -51,6 +53,10 @@ class Connector(DirtyFieldsMixin, BaseModel):
             "delayed",
             "Delayed -  the data is delayed for a longer time than expected for the update",
         )
+
+    class SetupMode(models.TextChoices):
+        BASIC = ("basic", "Basic")
+        ADVANCED = ("advanced", "Advanced")
 
     SETUP_STATE_TO_ICON = {
         SetupState.CONNECTED: "fa fa-check text-green",
@@ -123,6 +129,21 @@ class Connector(DirtyFieldsMixin, BaseModel):
     # deprecated: track the celery task
     sync_task_id = models.UUIDField(null=True)
     sync_started = models.DateTimeField(null=True)
+
+    # reporting connectors
+    setup_mode = models.CharField(
+        max_length=16, choices=SetupMode.choices, default=SetupMode.BASIC
+    )
+    basic_reports = ChoiceArrayField(
+        models.CharField(
+            max_length=32,
+            choices=[
+                (k, v["name"] + ": " + v["description"])
+                for (k, v) in BASIC_REPORTS.items()
+            ],
+        ),
+        default=list,
+    )
 
     @property
     def fivetran_dashboard_url(self):

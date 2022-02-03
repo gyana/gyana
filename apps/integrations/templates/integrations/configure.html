@@ -12,10 +12,10 @@
         id="configure-update-form"
         method="POST"
         action="{{ request.get_full_path }}"
-        {% if object.kind == 'customapi' %}
+        {% comment %} {% if object.kind == 'customapi' %} {% endcomment %}
           data-controller="live-update"
           enctype='multipart/form-data'
-        {% endif %}
+        {% comment %} {% endif %} {% endcomment %}
         >
         <span data-live-update-target="loading" class="hidden">
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
@@ -35,7 +35,7 @@
         {% include "django/forms/default_form.html" %}
 
         {% flag 'alpha' %}
-          {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' %}
+          {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' and object.connector.setup_mode == 'advanced' %}
             <label>
               Custom reports
               <p class="input__help-text">Build custom reports (you can change this later)</p>

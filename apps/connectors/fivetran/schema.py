@@ -117,7 +117,7 @@ class FivetranSchemaObj:
         # api_cloud only has one schema
         return set(chain(*(schema.enabled_bq_ids for schema in self.enabled_schemas)))
 
-    def mutate_from_cleaned_data(self, cleaned_data):
+    def mutate_from_cleaned_data(self, cleaned_data, allowlist=None):
         # mutate the schema_obj based on cleaned_data from form
 
         for schema in self.schemas:
@@ -127,10 +127,11 @@ class FivetranSchemaObj:
                 t for t in schema.tables if t.enabled_patch_settings["allowed"]
             ]
             for table in schema.tables:
-                # field does not exist if all unchecked
-                table.enabled = table.name_in_destination in cleaned_data.get(
+                tables_allowlist = allowlist or cleaned_data.get(
                     f"{schema.name_in_destination}_tables", []
                 )
+                # field does not exist if all unchecked
+                table.enabled = table.name_in_destination in tables_allowlist
                 # no need to patch the columns information and it can break
                 # if access issues, e.g. per column access in Postgres
                 table.columns = {}

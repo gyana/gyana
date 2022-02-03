@@ -1,10 +1,14 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms.widgets import CheckboxInput, HiddenInput
+from django.utils.html import mark_safe
 from honeybadger import honeybadger
 
 from apps.base import clients
-from apps.base.forms import BaseModelForm, LiveFormsetMixin
+from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveUpdateForm
+from apps.connectors.fivetran.services.facebook_ads import BASIC_REPORTS
+from apps.customreports.models import FacebookAdsCustomReport
+from apps.nodes.widgets import MultiSelect
 
 from .fivetran.client import FivetranClientError
 from .fivetran.config import ServiceTypeEnum
@@ -43,62 +47,94 @@ class ConnectorCreateForm(BaseModelForm):
         instance.create_integration(instance.conf.name, self._created_by, self._project)
 
 
-class ConnectorUpdateForm(LiveFormsetMixin, forms.ModelForm):
+class ConnectorUpdateForm(LiveFormsetMixin, LiveUpdateForm):
     class Meta:
         model = Connector
-        fields = []
+        fields = ["setup_mode", "basic_reports"]
+        help_texts = {
+            "setup_mode": mark_safe(
+                "Use <strong>Basic</strong> to get started, and <strong>Advanced</strong> to build custom reports and sync account data"
+            )
+        }
+        widgets = {"basic_reports": MultiSelect()}
 
     def __init__(self, *args, **kwargs):
 
         self._is_alpha = kwargs.pop("is_alpha")
         super().__init__(*args, **kwargs)
 
-        self.instance.sync_schema_obj_from_fivetran()
+        if not self.is_basic:
+            for schema in self.instance.schema_obj.schemas:
 
-        for schema in self.instance.schema_obj.schemas:
+                schema_field = f"{schema.name_in_destination}_schema"
+                tables_field = f"{schema.name_in_destination}_tables"
 
-            self.fields[f"{schema.name_in_destination}_schema"] = forms.BooleanField(
-                initial=schema.enabled,
-                label=schema.display_name,
-                widget=CheckboxInput()
-                if self.instance.conf.service_type == ServiceTypeEnum.DATABASE
-                else HiddenInput(),
-                help_text="Include or exclude this schema",
-                required=False,
-            )
-            self.fields[
-                f"{schema.name_in_destination}_tables"
-            ] = forms.MultipleChoiceField(
-                choices=[
-                    (t.name_in_destination, t.display_name) for t in schema.tables
-                ],
-                widget=ConnectorSchemaMultiSelect,
-                initial=[t.name_in_destination for t in schema.tables if t.enabled],
-                label="Tables",
-                help_text="Select specific tables (you can change this later)",
-                required=False,  # you can uncheck all options
-            )
+                schema_widget = (
+                    CheckboxInput()
+                    if self.instance.conf.service_type == ServiceTypeEnum.DATABASE
+                    else HiddenInput()
+                )
+                table_widget = ConnectorSchemaMultiSelect
+                # disabled fields that cannot be patched
+                table_widget._schema_dict = {
+                    t.name_in_destination: t for t in schema.tables
+                }
 
-            # disabled fields that cannot be patched
-            self.fields[f"{schema.name_in_destination}_tables"].widget._schema_dict = {
-                t.name_in_destination: t for t in schema.tables
-            }
+                self.fields[schema_field] = forms.BooleanField(
+                    initial=schema.enabled,
+                    label=schema.display_name,
+                    widget=schema_widget,
+                    help_text="Include or exclude this schema",
+                    required=False,
+                )
+                self.fields[tables_field] = forms.MultipleChoiceField(
+                    choices=[
+                        (t.name_in_destination, t.display_name) for t in schema.tables
+                    ],
+                    widget=ConnectorSchemaMultiSelect,
+                    initial=[t.name_in_destination for t in schema.tables if t.enabled],
+                    label="Tables",
+                    help_text="Select specific tables (you can change this later)",
+                    required=False,  # you can uncheck all options
+                )
 
-    def clean(self):
-        cleaned_data = super().clean()
+    @property
+    def is_basic(self):
+        return self.get_live_field("setup_mode") == Connector.SetupMode.BASIC
+
+    def get_live_fields(self):
+        live_fields = ["setup_mode"]
+        if self.is_basic:
+            live_fields += ["basic_reports"]
+        return live_fields
+
+    def post_save(self, instance):
+        if self.is_basic:
+            for basic_report in instance.basic_reports:
+                FacebookAdsCustomReport.objects.get_or_create(
+                    connector=instance,
+                    table_name=BASIC_REPORTS[basic_report]["config"]["table_name"],
+                    defaults=BASIC_REPORTS[basic_report]["config"],
+                )
+
+        cleaned_data = self.clean()
         try:
-            schema_obj = self.instance.schema_obj
-            schema_obj.mutate_from_cleaned_data(cleaned_data)
-            clients.fivetran().update_schemas(self.instance, schema_obj.to_dict())
-            self.instance.sync_schema_obj_from_fivetran()
+            schema_obj = instance.schema_obj
+            schema_obj.mutate_from_cleaned_data(
+                cleaned_data,
+                allowlist=instance.basic_reports if self.is_basic else None,
+            )
+            clients.fivetran().update_schemas(instance, schema_obj.to_dict())
+            instance.sync_schema_obj_from_fivetran()
 
-            if (
-                self._is_alpha
-                and self.instance.service == "facebook_ads"
-                and self.instance.custom_reports
-            ):
-                self.instance.update_fivetran_config()
-                clients.fivetran().test(self.instance)
+            # if (
+            #     self._is_alpha
+            #     and instance.service == "facebook_ads"
+            #     and instance.custom_reports
+            #     and not self.is_basic
+            # ):
+            #     instance.update_fivetran_config()
+            #     clients.fivetran().test(instance)
         except FivetranClientError as e:
             honeybadger.notify(e)
             raise ValidationError(

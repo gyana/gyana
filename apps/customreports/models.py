@@ -17,6 +17,9 @@ class FacebookAdsCustomReport(BaseModel):
         facebook_ads.ACTION_BREAKDOWNS, facebook_ads.ACTION_BREAKDOWNS
     )
 
+    class Meta:
+        unique_together = ("table_name", "connector")
+
     class Aggregation(models.TextChoices):
         Day = "Day", "Day"
         Week = "Week", "Week"
