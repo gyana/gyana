@@ -92,7 +92,12 @@ class LiveUpdateForm(BaseModelForm):
             # For the additional formset rows that added as placeholders
             # self.initial is empty.
             if field not in self.data and self.initial.get(field) is not None:
-                data[field] = self.initial[field]
+                initial = self.initial[field]
+                # e.g. for an ArrayField, each item should be a separate value (rather than one value as a list)
+                if isinstance(initial, list):
+                    data.setlist(field, initial)
+                else:
+                    data[field] = initial
             # HTML forms usually just omit unchecked checkboxes
             # For us this is undistinguishable from the field not having been shown before
             # In the LiveFormController we manually add these fields to the form data
