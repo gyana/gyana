@@ -39,7 +39,11 @@ def _get_duplicate_names(left, right):
 
 def _rename_duplicates(queries):
     column_names = list(chain(*[q.schema() for q in queries]))
-    duplicates = {name for name in column_names if column_names.count(name) > 1}
+    duplicates = {
+        name
+        for name in column_names
+        if [c.lower() for c in column_names].count(name.lower()) > 1
+    }
 
     duplicate_map = {}
     renamed_queries = []
@@ -112,8 +116,8 @@ def get_select_query(node, parent):
     return parent.drop(columns)
 
 
-def get_join_query(node, *queries):
-    renamed_queries, duplicate_map = _rename_duplicates(queries)
+def get_join_query(node, left, right, *queries):
+    renamed_queries, duplicate_map = _rename_duplicates([left, right, *queries])
 
     query = renamed_queries[0]
     drops = set()

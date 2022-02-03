@@ -312,8 +312,18 @@ class Edge(BaseModel):
 
     def save(self, *args, **kwargs):
         self.child.data_updated = timezone.now()
+
         self.child.save()
         return super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if (
+            self.child.kind == Node.Kind.JOIN
+            and (parent_num := (self.child.parents.count() - 2))
+            < self.child.join_columns.count()
+        ):
+            self.child.join_columns.last().delete()
+        return super().delete(*args, **kwargs)
 
     child = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="parent_edges"

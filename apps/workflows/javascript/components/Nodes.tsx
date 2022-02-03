@@ -43,8 +43,7 @@ const NodeContent: React.FC<Props> = ({ id, data, showFilledIcon = true }) => {
           ${showFilledIcon ? 'fas' : 'fal opacity-80'}
           fa-fw
           ${data.icon}
-          ${showContent && 'absolute opacity-10'}`
-        }
+          ${showContent && 'absolute opacity-10'}`}
         data-modal-src={`/nodes/${id}`}
         data-action='dblclick->tf-modal#open'
         data-modal-item={id}
@@ -108,10 +107,10 @@ const DefaultNode: React.FC<NodeProps> = ({
   const incomingCount = useGetIncomingCount(id)
   const updateNodeInternals = useUpdateNodeInternals()
 
-  const showWarning = data.kind === 'join' ? incomingCount != 2 : incomingCount == 0
+  const showWarning = data.kind === 'join' ? incomingCount < 2 : incomingCount == 0
   const warningMessage =
     data.kind === 'join'
-      ? 'Join needs two input connections'
+      ? 'Join needs at least two input connections'
       : `${data.label} needs at least one input connection`
 
   const maxParents = NODES[data.kind].maxParents
