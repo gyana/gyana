@@ -154,8 +154,8 @@ class FacebookAdsConnectorUpdateForm(
 
             else:
                 self._update_fivetran_schema(instance)
-                instance.update_fivetran_config()
                 if instance.custom_reports:
+                    instance.update_fivetran_config()
                     clients.fivetran().test(instance)
 
         except FivetranClientError as e:
