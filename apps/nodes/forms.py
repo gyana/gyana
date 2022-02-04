@@ -7,13 +7,14 @@ from django.utils.functional import cached_property
 
 from apps.base.core.utils import create_column_choices
 from apps.base.forms import LiveFormsetForm
+from apps.base.widgets import MultiSelect
 from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column
 from apps.nodes.formsets import KIND_TO_FORMSETS
 from apps.tables.models import Table
 
 from .models import Node
-from .widgets import InputNode, MultiSelect
+from .widgets import InputNode
 
 INPUT_SEARCH_THRESHOLD = 0.3
 

@@ -8,7 +8,6 @@ from apps.base import clients
 from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveUpdateForm
 from apps.connectors.fivetran.services.facebook_ads import BASIC_REPORTS
 from apps.customreports.models import FacebookAdsCustomReport
-from apps.nodes.widgets import MultiSelect
 
 from .fivetran.client import FivetranClientError
 from .fivetran.config import ServiceTypeEnum
@@ -56,11 +55,11 @@ class ConnectorUpdateForm(LiveFormsetMixin, LiveUpdateForm):
                 "Use <strong>Basic</strong> to get started, and <strong>Advanced</strong> to build custom reports and sync account data"
             )
         }
-        widgets = {"basic_reports": MultiSelect()}
 
     def __init__(self, *args, **kwargs):
 
-        self._is_alpha = kwargs.pop("is_alpha")
+        self._is_alpha = False
+        kwargs.pop("is_alpha")
         super().__init__(*args, **kwargs)
 
         if not self.is_basic:
@@ -103,6 +102,8 @@ class ConnectorUpdateForm(LiveFormsetMixin, LiveUpdateForm):
         return self.get_live_field("setup_mode") == Connector.SetupMode.BASIC
 
     def get_live_fields(self):
+        if not self._is_alpha:
+            return []
         live_fields = ["setup_mode"]
         if self.is_basic:
             live_fields += ["basic_reports"]

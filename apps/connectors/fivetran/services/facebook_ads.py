@@ -230,6 +230,10 @@ BASIC_REPORTS = {
     },
 }
 
+BASIC_REPORTS_CHOICES = [
+    (k, f'{v["name"]}:{v["description"]}') for k, v in BASIC_REPORTS.items()
+]
+
 
 def _get_table_ids_for_report(name):
     return [name] + [
