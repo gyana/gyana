@@ -3,11 +3,12 @@
 {% load wagtailcore_tags %}
 
 {% block content %}
-  <div class="flex">
+  <div class="flex flex-1">
     <article class="p-10 prose prose-xl max-w-6xl flex-auto">
       <h1 class="mb-10"><a id="{{ page.title|slugify }}"></a><a href="#{{ page.title|slugify }}">{{ page.title }}<i class="fa fa-link fa-sm ml-2"></i></a></h1>
+
       {% for block in page.body %}
-          <section>{% include_block block %}</section>
+        <section>{% include_block block %}</section>
       {% endfor %}
     </article>
     <nav class="p-10 border-l border-gray">
