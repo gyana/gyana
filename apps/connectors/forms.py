@@ -58,8 +58,7 @@ class ConnectorUpdateForm(LiveFormsetMixin, LiveUpdateForm):
 
     def __init__(self, *args, **kwargs):
 
-        self._is_alpha = False
-        kwargs.pop("is_alpha")
+        self._is_alpha = kwargs.pop("is_alpha")
         super().__init__(*args, **kwargs)
 
         if not self.is_basic:

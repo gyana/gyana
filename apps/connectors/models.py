@@ -12,10 +12,7 @@ from apps.base.fields import ChoiceArrayField
 from apps.base.models import BaseModel
 from apps.connectors.clone import update_schema
 from apps.connectors.fivetran.schema import FivetranSchemaObj
-from apps.connectors.fivetran.services.facebook_ads import (
-    BASIC_REPORTS,
-    BASIC_REPORTS_CHOICES,
-)
+from apps.connectors.fivetran.services.facebook_ads import BASIC_REPORTS_CHOICES
 from apps.integrations.models import Integration
 
 from .clone import create_fivetran, update_schema

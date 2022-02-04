@@ -231,7 +231,7 @@ BASIC_REPORTS = {
 }
 
 BASIC_REPORTS_CHOICES = [
-    (k, f'{v["name"]}:{v["description"]}') for k, v in BASIC_REPORTS.items()
+    (k, f'{v["name"]}: {v["description"]}') for k, v in BASIC_REPORTS.items()
 ]
 
 
