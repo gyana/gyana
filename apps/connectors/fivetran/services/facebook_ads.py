@@ -186,7 +186,7 @@ BASIC_REPORTS = {
     "BASIC_AD_PERFORMANCE": {
         "name": "Ad performance by day",
         "description": "CPC, CPM, CPP, CTR",
-        "config": {
+        "custom_table": {
             "table_name": "basic_ads_performance",
             "fields": ["ad_id", "ad_name", "cpc", "cpm", "cpp", "ctr"],
             "breakdowns": [],
@@ -201,7 +201,7 @@ BASIC_REPORTS = {
     "BASIC_ADSET_PERFORMANCE": {
         "name": "Ad Set performance by day",
         "description": "CPC, CPM, CPP, CTR",
-        "config": {
+        "custom_table": {
             "table_name": "basic_adset_performance",
             "fields": ["adset_id", "adset_name", "cpc", "cpm", "cpp", "ctr"],
             "breakdowns": [],
@@ -216,7 +216,7 @@ BASIC_REPORTS = {
     "BASIC_CAMPAIGN_PERFORMANCE": {
         "name": "Campaign performance by day",
         "description": "CPC, CPM, CPP, CTR",
-        "config": {
+        "custom_table": {
             "table_name": "basic_campaign_performance",
             "fields": ["campaign_id", "campaign_name", "cpc", "cpm", "cpp", "ctr"],
             "breakdowns": [],

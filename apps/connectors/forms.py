@@ -60,6 +60,7 @@ class ConnectorUpdateForm(LiveFormsetMixin, LiveUpdateForm):
 
         self._is_alpha = kwargs.pop("is_alpha")
         super().__init__(*args, **kwargs)
+        self._is_alpha = self._is_alpha and self.instance.service == "facebook_ads"
 
         if not self.is_basic:
             for schema in self.instance.schema_obj.schemas:
@@ -113,8 +114,10 @@ class ConnectorUpdateForm(LiveFormsetMixin, LiveUpdateForm):
             for basic_report in instance.basic_reports:
                 FacebookAdsCustomReport.objects.get_or_create(
                     connector=instance,
-                    table_name=BASIC_REPORTS[basic_report]["config"]["table_name"],
-                    defaults=BASIC_REPORTS[basic_report]["config"],
+                    table_name=BASIC_REPORTS[basic_report]["custom_table"][
+                        "table_name"
+                    ],
+                    defaults=BASIC_REPORTS[basic_report]["custom_table"],
                 )
 
         cleaned_data = self.clean()
@@ -127,14 +130,11 @@ class ConnectorUpdateForm(LiveFormsetMixin, LiveUpdateForm):
             clients.fivetran().update_schemas(instance, schema_obj.to_dict())
             instance.sync_schema_obj_from_fivetran()
 
-            if (
-                self._is_alpha
-                and instance.service == "facebook_ads"
-                and instance.custom_reports
-                and not self.is_basic
-            ):
+            if self._is_alpha:
                 instance.update_fivetran_config()
-                clients.fivetran().test(instance)
+                if instance.custom_reports and not self.is_basic:
+                    clients.fivetran().test(instance)
+
         except FivetranClientError as e:
             honeybadger.notify(e)
             raise ValidationError(
