@@ -92,7 +92,9 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project):
 
     # fivetran initial sync request will happen on post
     fivetran.get.return_value = get_mock_fivetran_connector(is_historical_sync=True)
-    r = client.post(f"{DETAIL}/configure", data={"dataset_tables": ["table_1"]})
+    r = client.post(
+        f"{DETAIL}/configure", data={"dataset_tables": ["table_1"], "submit": True}
+    )
     assertRedirects(r, f"{DETAIL}/load")
 
     assert fivetran.update_schemas.call_count == 1

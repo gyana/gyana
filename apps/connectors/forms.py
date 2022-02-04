@@ -58,9 +58,8 @@ class ConnectorUpdateForm(LiveFormsetMixin, LiveUpdateForm):
 
     def __init__(self, *args, **kwargs):
 
-        self._is_alpha = kwargs.pop("is_alpha")
+        self._is_alpha = kwargs.pop('is_alpha') and kwargs["instance"].service == "facebook_ads"
         super().__init__(*args, **kwargs)
-        self._is_alpha = self._is_alpha and self.instance.service == "facebook_ads"
 
         if not self.is_basic:
             for schema in self.instance.schema_obj.schemas:
