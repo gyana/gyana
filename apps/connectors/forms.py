@@ -127,14 +127,14 @@ class ConnectorUpdateForm(LiveFormsetMixin, LiveUpdateForm):
             clients.fivetran().update_schemas(instance, schema_obj.to_dict())
             instance.sync_schema_obj_from_fivetran()
 
-            # if (
-            #     self._is_alpha
-            #     and instance.service == "facebook_ads"
-            #     and instance.custom_reports
-            #     and not self.is_basic
-            # ):
-            #     instance.update_fivetran_config()
-            #     clients.fivetran().test(instance)
+            if (
+                self._is_alpha
+                and instance.service == "facebook_ads"
+                and instance.custom_reports
+                and not self.is_basic
+            ):
+                instance.update_fivetran_config()
+                clients.fivetran().test(instance)
         except FivetranClientError as e:
             honeybadger.notify(e)
             raise ValidationError(

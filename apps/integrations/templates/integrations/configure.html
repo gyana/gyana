@@ -12,10 +12,16 @@
         id="configure-update-form"
         method="POST"
         action="{{ request.get_full_path }}"
-        {% comment %} {% if object.kind == 'customapi' %} {% endcomment %}
+        {% if object.kind == 'customapi' %}
           data-controller="live-update"
           enctype='multipart/form-data'
-        {% comment %} {% endif %} {% endcomment %}
+        {% endif %}
+        {% flag 'alpha' %}
+          {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' %}
+            data-controller="live-update"
+            enctype='multipart/form-data'
+          {% endif %}
+        {% endflag %}
         >
         <span data-live-update-target="loading" class="hidden">
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
