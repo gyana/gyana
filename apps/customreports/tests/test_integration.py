@@ -101,7 +101,6 @@ def test_customreports_import(
     facebook_ads_custom_report = facebook_ads_custom_report_factory(connector=connector)
 
     # only called when service has custom reports
-
     client.post(CONFIGURE, data=data)
     assert fivetran.update.call_count == 1
     assert fivetran.update.call_args.args == (connector,)
