@@ -114,19 +114,26 @@ def test_invite_existing_authenticated_user_to_team(client, logged_in_user):
         f"/teams/{team.id}/invites/new",
         data={"email": "invite@gyana.com", "role": "member"},
     )
+    invite = Invite.objects.first()
+    assert invite is not None
 
     # accept
     assert len(mail.outbox) == 1
     link = re.search("(?P<url>https?://[^\s]+)", mail.outbox[0].body).group("url")
 
+    # fix gya-311: current logged in user cannot accept invite
+    r = client.get(link)
+    invite.refresh_from_db()
+    assert not invite.accepted
+
+    # login as invited user
     client.logout()
     client.force_login(invited_user)
 
     r = client.get(link)
     assertRedirects(r, f"/teams/{team.id}")
 
-    invite = Invite.objects.first()
-    assert invite is not None
+    invite.refresh_from_db()
     assert invite.accepted
     assert team.members.count() == 2
 

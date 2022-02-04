@@ -2,7 +2,7 @@
 
 import django.db.models.deletion
 from django.db import migrations, models
-from model_clone.mixins import CloneMixin
+from model_clone import CloneMixin
 
 
 class Migration(migrations.Migration):

@@ -141,9 +141,14 @@ def post(self, *args, **kwargs):
         return redirect(self.get_signup_redirect())
 
     if self.request.user.is_authenticated:
-        accept_invitation(
-            invitation=self.object, request=self.request, signal_sender=self.__class__
-        )
+        if self.request.user.email == self.object.email:
+            accept_invitation(
+                invitation=self.object, request=self.request, signal_sender=self.__class__
+            )
+        else:
+            get_invitations_adapter().add_message(
+                self.request, messages.ERROR, "invitations/messages/invite_invalid_email.txt"
+            )
         return redirect("teams:detail", self.object.team.id)
 
     if invitation.user_email_exists:
