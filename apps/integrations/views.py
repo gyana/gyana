@@ -137,7 +137,7 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
             return redirect(
                 "project_integrations:load", self.project.id, self.object.id
             )
-        # todo: comment
+        # only sync on initial get, not live form updates (post with 422 response)
         if self.object.kind == Integration.Kind.CONNECTOR:
             self.object.connector.sync_schema_obj_from_fivetran()
         return super().get(request, *args, **kwargs)

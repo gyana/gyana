@@ -143,12 +143,11 @@ class FacebookAdsConnectorUpdateForm(
         try:
             if self.is_basic:
                 for basic_report in instance.basic_reports:
+                    custom_table = BASIC_REPORTS[basic_report]["custom_table"]
                     FacebookAdsCustomReport.objects.get_or_create(
                         connector=instance,
-                        table_name=BASIC_REPORTS[basic_report]["custom_table"][
-                            "table_name"
-                        ],
-                        defaults=BASIC_REPORTS[basic_report]["custom_table"],
+                        table_name=custom_table["table_name"],
+                        defaults=custom_table,
                     )
                 self._update_fivetran_schema(instance, allowlist=instance.basic_reports)
                 instance.update_fivetran_config()
