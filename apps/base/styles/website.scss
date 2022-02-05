@@ -25,9 +25,9 @@
 @use "vendors/libcodemirror";
 @import "tippy.js/dist/tippy.css"; // This import must be AFTER any @use/at-use
 
-:root {
-  font-family: Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-}
+// :root {
+//   font-family: Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+// }
 
 // https://github.com/tailwindlabs/tailwindcss/issues/1692
 .bg-white-opacity-10 {

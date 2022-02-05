@@ -1,98 +1,92 @@
 {% load static heroicons site_tags %}
 
-<div class="bg-white">
-  <div class="pt-8 overflow-hidden sm:pt-12 lg:relative lg:py-24">
-    <div class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl lg:grid lg:grid-cols-2 lg:gap-24">
-      <div>
-        <div>
+<div class="py-8 lg:relative lg:py-32">
+  <div class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl lg:grid lg:grid-cols-2 lg:gap-24">
+    <div>
+      <a
+        href="/blog/gyana-2021-wrapped"
+        class="space-x-4 hidden sm:inline-flex"
+      >
+        <span class="rounded bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-600 tracking-wide uppercase">
+          What's new
+        </span>
+        <span class="inline-flex items-center text-sm font-normal text-indigo-600 space-x-1">
+          <span>Gyana 2021, Wrapped</span>
+          {% heroicon 'chevron-right' class="w-5 h-5" style="solid" %}
+        </span>
+      </a>
+      <div class="text-center sm:text-left my-6 sm:max-w-xl">
+        <h1 class="text-5xl font-bold text-gray-900 sm:text-6xl">
+          Build custom reports <i class="text-indigo-600">fast</i>
+        </h1>
+        <p class="mt-4 sm:text-lg text-gray-600">
+          Stop wrestling with manual exports, #N/A nightmares and stale data.
+          Start delivering insights that move your business forward.
+        </p>
+      </div>
+      <div class="my-4 flex justify-center gap-4 sm:justify-start">
+        <div class="rounded-md shadow">
           <a
-            href="/blog/gyana-2021-wrapped"
-            class="inline-flex space-x-4"
+            href="{% external_url 'waitlist' %}"
+            class="flex items-center justify-center px-8 py-3 border border-transparent rounded-md text-indigo-900 bg-indigo-200 hover:bg-indigo-300"
           >
-            <span class="rounded bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-600 tracking-wide uppercase">
-              What's new
-            </span>
-            <span class="inline-flex items-center text-sm font-normal text-indigo-600 space-x-1">
-              <span>Gyana 2021, Wrapped</span>
-              {% heroicon 'chevron-right' class="w-5 h-5" style="solid" %}
-            </span>
+            Sign up
           </a>
         </div>
-        <div class="mt-6 sm:max-w-xl">
-          <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl">
-            <div class="block">
-              Business Intelligence & Data Analytics
-            </div>
-            <div class="block text-indigo-600">for the modern web</div>
-          </h1>
-          <p class="mt-4 sm:text-lg text-gray-600">
-            Directly connect to 80+ online data sources, get the metrics you
-            need and build live dashboards and automations. No code
-            required.
-          </p>
+        <div class="rounded-md shadow">
+          <a
+            href="{% external_url 'talk_to_us' %}"
+            class="flex items-center justify-center px-8 py-3 border border-transparent rounded-md text-white bg-indigo-800 hover:bg-indigo-900"
+          >
+            Talk to us
+          </a>
         </div>
-        <div class="my-4 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
-          <div class="sm:flex sm:justify-center lg:justify-start">
-            <div class="rounded-md shadow">
-              <a
-                href="{% external_url 'waitlist' %}"
-                class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-normal rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-                id="CTA_home_01"
-              >
-                Sign up
-              </a>
-            </div>
-          </div>
-        </div>
-        <p class="mt-6 sm:mt-3 text-sm text-gray-600">
-          Join our early adopter community.
-        </p>
-        <div class="mt-6">
-          <div class="inline-flex items-center divide-x divide-gray-300">
-            <div class="flex-shrink-0 flex pr-5">
-              {% for idx in '0123'|make_list %}
-                <div class="h-6 w-6 relative">
-                  <div class="absolute">
-                    {% heroicon 'star' class="h-6 w-6 stroke-current text-yellow-600" style="solid" %}
-                  </div>
-                  <div class="absolute">
-                    {% heroicon 'star' class="h-6 w-6 text-yellow-400" style="solid" %}
-                  </div>
-                </div>
-              {% endfor %}
+      </div>
+      <div class="mt-6">
+        <div class="inline-flex items-center divide-x divide-gray-300">
+          <div class="flex-shrink-0 flex pr-5">
+            {% for idx in '0123'|make_list %}
               <div class="h-6 w-6 relative">
                 <div class="absolute">
                   {% heroicon 'star' class="h-6 w-6 stroke-current text-yellow-600" style="solid" %}
                 </div>
                 <div class="absolute">
-                  {% heroicon 'star' class="h-6 w-6 text-white" style="solid" %}
-                </div>
-                <div class="h-8 w-4 object-contain overflow-hidden absolute">
                   {% heroicon 'star' class="h-6 w-6 text-yellow-400" style="solid" %}
                 </div>
               </div>
+            {% endfor %}
+            <div class="h-6 w-6 relative">
+              <div class="absolute">
+                {% heroicon 'star' class="h-6 w-6 stroke-current text-yellow-600" style="solid" %}
+              </div>
+              <div class="absolute">
+                {% heroicon 'star' class="h-6 w-6 text-white" style="solid" %}
+              </div>
+              <div class="h-8 w-4 object-contain overflow-hidden absolute">
+                {% heroicon 'star' class="h-6 w-6 text-yellow-400" style="solid" %}
+              </div>
             </div>
-            <div class="min-w-0 flex-1 pl-5 py-1 text-sm text-gray-600 sm:py-3">
-              <span class="font-normal text-gray-900">Rated 4.7</span>
-              by over
-              <span class="font-normal text-indigo-600">
-                2,000 customers
-              </span>
-            </div>
+          </div>
+          <div class="min-w-0 flex-1 pl-5 py-1 text-sm text-gray-600 sm:py-3">
+            <span class="font-normal text-gray-900">Rated 4.7</span>
+            by over
+            <span class="font-normal text-indigo-600">
+              2,000 customers
+            </span>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="sm:mx-auto sm:max-w-3xl sm:px-6">
-      <div class="py-12 sm:relative sm:mt-12 sm:py-16 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-        <div class="relative px-4 sm:mx-auto sm:max-w-3xl sm:px-0 lg:max-w-none lg:h-full">
-          <img
-            class="w-full lg:h-full lg:w-auto lg:max-w-none"
-            src="{% static 'images/site/home/landing.jpg' %}"
-            alt="App screenshot"
-          />
-        </div>
+  <div class="sm:mx-auto sm:max-w-3xl sm:px-6">
+    <div class="py-12 sm:relative sm:mt-12 sm:py-16 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+      <div class="relative px-4 sm:mx-auto sm:max-w-3xl sm:px-0 lg:max-w-none lg:h-full">
+        <img
+          class="w-full lg:h-full lg:w-auto lg:max-w-none"
+          src="{% static 'images/site/home/landing.jpg' %}"
+          alt="App screenshot"
+        />
       </div>
     </div>
   </div>

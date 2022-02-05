@@ -4,7 +4,8 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6">
     <div class="flex justify-between items-center py-6 md:justify-start md:space-x-10">
       <div class="flex items-center justify-start lg:w-0 lg:flex-1">
-        <a href="{% url 'web:home' %}">
+        <a class="flex items-center gap-2" href="{% url 'web:home' %}">
+          <img class="h-6 w-6" src="{% static 'images/logo.png' %}">
           <span class="text-2xl text-indigo-600 font-semibold">
             Gyana
           </span>
