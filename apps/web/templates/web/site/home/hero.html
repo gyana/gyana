@@ -42,7 +42,7 @@
           </a>
         </div>
       </div>
-      <div class="mt-6">
+      <div class="mt-6 hidden sm:block">
         <div class="inline-flex items-center divide-x divide-gray-300">
           <div class="flex-shrink-0 flex pr-5">
             {% for idx in '0123'|make_list %}
@@ -80,14 +80,14 @@
   </div>
 
   <div class="sm:mx-auto sm:max-w-3xl sm:px-6">
-    <div class="py-12 sm:relative sm:mt-12 sm:py-16 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-      <div class="relative px-4 sm:mx-auto sm:max-w-3xl sm:px-0 lg:max-w-none lg:h-full">
+    <div class="sm:relative sm:mt-12 sm:py-16 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+      <div class="relative -mx-12 my-4 sm:mx-auto sm:max-w-3xl sm:px-0 lg:max-w-none lg:h-full">
         <img
           class="w-full lg:h-full lg:w-auto lg:max-w-none"
           src="{% static 'images/site/home/landing.jpg' %}"
           alt="App screenshot"
         />
       </div>
-    </div>
+   </div>
   </div>
 </div>
