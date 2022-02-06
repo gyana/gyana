@@ -25,14 +25,14 @@
           </template>
         </button>
       </div>
-      <nav class="hidden md:flex gap-x-10 text-indigo-500 lg:flex-2">
+      <nav class="hidden md:flex gap-x-10 text-indigo-500 lg:flex-1">
         <a
-          href="{% url 'web:agency' %}"
+          href="{% url 'web:integrations' %}"
           class="text-gray-600 font-normal hover:text-gray-900"
         >
-          Agency
+          Integrations
         </a>
-        <div class="relative">
+        {% comment %} <div class="relative">
           <button
             type="button"
             class="group bg-white rounded-md text-gray-600 font-normal inline-flex items-center hover:text-gray-900 focus:outline-none focus:text-gray-900"
@@ -81,7 +81,7 @@
               </div>
             </template>
           </button>
-        </div>
+        </div> {% endcomment %}
         <div class="relative">
           <button
             type="button"
