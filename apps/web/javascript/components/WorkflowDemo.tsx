@@ -1,9 +1,13 @@
 import { getLayoutedElements } from 'apps/base/javascript/layout'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
-import ReactFlow, { Background, useStoreState, useZoomPanHelper } from 'react-flow-renderer'
+import ReactFlow, { useStoreState, useZoomPanHelper } from 'react-flow-renderer'
 
 import initialElements from './initial-elements'
+
+const NODES = JSON.parse(
+  (document.getElementById('nodes') as HTMLScriptElement).textContent as string
+)
 
 const useLayout = (ref, elements, setElements) => {
   const nodes = useStoreState((state) => state.nodes)
@@ -61,13 +65,22 @@ const WorkflowDemo = () => {
   useLayout(ref, elements, setElements)
 
   return (
-    <div ref={ref} className='reactflow-wrapper h-full w-full border-gray'>
-      <ReactFlow
-        elements={elements}
-        nodesConnectable={false}
-        zoomOnScroll={false}
-        panOnScroll={false}
-      />
+    <div className='w-full h-full'>
+      <div ref={ref} className='flex-grow relative'>
+        <ReactFlow
+          elements={elements}
+          nodesConnectable={false}
+          zoomOnScroll={false}
+          panOnScroll={false}
+        />
+      </div>
+      <div className='flex-none flex gap-1 p-2 w-full flex-wrap border-b border-gray-300 justify-center'>
+        {Object.values(NODES).map((node) => (
+          <button>
+            <i className={`fa ${node.icon} fa-lg`}></i>
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

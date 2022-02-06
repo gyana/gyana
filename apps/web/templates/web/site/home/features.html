@@ -93,7 +93,7 @@
   </div>
   <div id="workflows" class="mt-24">
     <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
-      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-16 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
+      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-24 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
         <div>
           <div>
             <span class="flex-shrink-0">
@@ -169,5 +169,6 @@
   </div>
 </div>
 
+{{ node_config|json_script:"nodes" }}
 <script src="{% static "js/web-bundle.js" %}"></script>
 <link rel="stylesheet" href="{% static "css/workflow.css" %}" />

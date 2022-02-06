@@ -38,6 +38,15 @@
       }
     }
 
+    &-placeholder {
+      background-color: var(--c-gray-10);
+      border: 6px dashed var(--c-black-20);
+
+      &.selected {
+        border: 6px dashed var(--c-black);
+      }
+    }
+
     &-text {
       background-color: white;
       height: 16rem;

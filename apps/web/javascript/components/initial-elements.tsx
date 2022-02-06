@@ -55,17 +55,9 @@ export default [
   },
   {
     id: '4',
+    type: 'placeholder',
     data: {
-      label: (
-        <div className='relative w-full h-full flex items-center justify-center'>
-          <div>
-            <i className='fa fa-function fa-8x'></i>
-          </div>
-          <div className='absolute -bottom-12 left-0 right-0 text-2xl font-semibold text-gray-600'>
-            Get metrics
-          </div>
-        </div>
-      ),
+      label: '',
     },
     position: { x: 200, y: 300 },
   },
