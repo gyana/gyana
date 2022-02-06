@@ -1,19 +1,31 @@
 import { getLayoutedElements } from 'apps/base/javascript/layout'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import ReactFlow, { Background, useStoreState, useZoomPanHelper } from 'react-flow-renderer'
 
 import initialElements from './initial-elements'
 
-const onLoad = (reactFlowInstance) => {
-  reactFlowInstance.fitView()
-}
-
-const useLayout = (elements, setElements) => {
+const useLayout = (ref, elements, setElements) => {
   const nodes = useStoreState((state) => state.nodes)
   const { fitView } = useZoomPanHelper()
   const [shouldLayout, setShouldLayout] = useState(true)
   const [hasLayout, setHasLayout] = useState(false)
+
+  const observer = useMemo(
+    () =>
+      new ResizeObserver((entries) => {
+        console.log('LAYOUT')
+        setHasLayout(true)
+      }),
+    []
+  )
+
+  useEffect(() => {
+    if (observer && ref.current) {
+      observer.observe(ref.current)
+      return () => observer.disconnect()
+    }
+  }, [ref.current, observer])
 
   // https://github.com/wbkd/react-flow/issues/1353
   useEffect(() => {
@@ -35,6 +47,7 @@ const useLayout = (elements, setElements) => {
 }
 
 const WorkflowDemo = () => {
+  const ref = useRef()
   const [elements, setElements] = useState(
     initialElements.map((el) => {
       if (!el?.source) {
@@ -45,21 +58,17 @@ const WorkflowDemo = () => {
     })
   )
 
-  useLayout(elements, setElements)
+  useLayout(ref, elements, setElements)
 
   return (
-    <ReactFlow
-      elements={elements}
-      onLoad={onLoad}
-      snapToGrid={true}
-      snapGrid={[15, 15]}
-      nodesConnectable={false}
-      zoomOnScroll={false}
-      panOnScroll={false}
-      defaultZoom={100}
-    >
-      <Background color='#aaa' gap={16} />
-    </ReactFlow>
+    <div ref={ref} className='reactflow-wrapper h-full w-full border-gray'>
+      <ReactFlow
+        elements={elements}
+        nodesConnectable={false}
+        zoomOnScroll={false}
+        panOnScroll={false}
+      />
+    </div>
   )
 }
 

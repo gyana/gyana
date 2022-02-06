@@ -7,7 +7,10 @@ export default [
     data: {
       label: (
         <div className='relative'>
-          <img src='/static/images/integrations/fivetran/google_ads_account.png' />
+          <img
+            className='pointer-events-none'
+            src='/static/images/integrations/fivetran/google_ads_account.png'
+          />
           <div className='absolute -bottom-12 left-0 right-0 text-2xl font-semibold text-gray-600'>
             Google Ads
           </div>
@@ -24,7 +27,7 @@ export default [
         <div className='relative'>
           <img
             src='/static/images/integrations/fivetran/facebook_ads.svg'
-            className='h-full w-full'
+            className='h-full w-full pointer-events-none'
           />
           <div className='absolute -bottom-12 left-0 right-0 text-2xl font-semibold text-gray-600'>
             Facebook Ads
