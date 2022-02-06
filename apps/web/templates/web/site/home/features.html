@@ -7,10 +7,34 @@
     }
     @keyframes slide {
       100% {
-        transform: translateX(-50%);
+        transform: translateX(-100%);
       }
     }
   {% endfor %}
+
+  .fade-left:after {
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 24%;
+    height: 100%;
+    pointer-events: none;
+    background: linear-gradient(90deg, white 2.52%, rgba(255, 255, 255, 0) 100%);
+    z-index: 2;
+  }
+
+  .fade-right:after {
+    content: "";
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 24%;
+    height: 100%;
+    pointer-events: none;
+    background: linear-gradient(270deg, white 2.52%, rgba(255, 255, 255, 0) 100%);
+    z-index: 2;
+  }
 </style>
 
 <div
@@ -19,7 +43,7 @@
 >
   <div id="integrations" class="relative">
     <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
-      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0">
+      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:max-w-none lg:mx-0 lg:px-0">
         <div>
           <div>
             <span class="flex-shrink-0">
@@ -37,37 +61,38 @@
               After a one-time setup, our enterprise-grade connectors will sync your raw data, daily.
               <b>No more manual exports.</b>
             </p>
-            <div class="flex flex-col gap-2 overflow-hidden mt-2">
-              {% for group in services %}
-                <div class="flex gap-2 integrations-{{ forloop.counter0 }}">
-                  {% for service in group.services %}
-                    <div class="inline-flex items-center gap-2 flex-none px-2.5 py-0.5 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
-                      <img
-                        class="h-4 w-4"
-                        src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
-                        alt={{ service.name }}
-                      />
-                      {{ service.name }}
-                    </div>
-                  {% endfor %}
-                </div>
-              {% endfor %}
-            </div>
-            <a href="{% url 'web:integrations' %}" class="mt-6 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-              <span>Search Integrations</span>
+            
+            <a href="{% url 'web:integrations' %}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+              <span>View our native integrations</span>
               {% heroicon 'chevron-right' class="w-5 h-5" style="solid" %}
             </a>
           </div>
         </div>
       </div>
-      <div class="mt-12 sm:mt-16 lg:mt-0">
-        <div class="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
-          <img
-            class="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
-            src="{% static 'images/site/home/integrations.jpg' %}"
-            alt="Integrations feature"
-          />
+      <div class="mt-12 sm:mt-16 lg:mt-0 relative">
+        {% comment %} <img
+          class="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
+          src="{% static 'images/site/home/integrations.jpg' %}"
+          alt="Integrations feature"
+        /> {% endcomment %}
+        <div class="fade-left"></div>
+        <div class="flex flex-col gap-4 overflow-hidden mt-2">
+          {% for group in services %}
+            <div class="flex gap-2 integrations-{{ forloop.counter0 }}">
+              {% for service in group.services %}
+                <div class="inline-flex items-center gap-2 flex-none px-2 py-1 rounded-lg text-sm font-normal bg-indigo-100 text-gray-800">
+                  <img
+                    class="h-4 w-4"
+                    src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
+                    alt={{ service.name }}
+                  />
+                  {{ service.name }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endfor %}
         </div>
+        <div class="fade-right"></div>
       </div>
     </div>
   </div>
@@ -91,23 +116,24 @@
               metrics and automate work. Build your analysis pipeline once,
               and tweak for future projects.
             </p>
-            <div class="flex flex-wrap gap-2">
+            {% comment %} <div class="flex flex-wrap gap-2 justify-center">
               {% for node_type in node_config.values %}
-                <div class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
-                  <i class="fa {{ node_type.icon }} mr-2"></i>{{ node_type.displayName }}
+                <div class="inline-flex items-center px-2 py-1 gap-2 rounded-xl text-sm font-normal bg-indigo-100 text-gray-800">
+                  <i class="fa {{ node_type.icon }}"></i>{{ node_type.displayName }}
                 </div>
               {% endfor %}
-            </div>
+            </div> {% endcomment %}
           </div>
         </div>
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1">
         <div class="pr-4 -ml-48 sm:pr-6 md:-ml-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
-          <img
+          <workflow-demo></workflow-demo>
+          {% comment %} <img
             class="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none"
             src="{% static 'images/site/home/workflows.jpg' %}"
             alt="Workflows feature"
-          />
+          /> {% endcomment %}
         </div>
       </div>
     </div>
@@ -154,3 +180,6 @@
     </div>
   </div>
 </div>
+
+<script src="{% static "js/web-bundle.js" %}"></script>
+<link rel="stylesheet" href="{% static "css/workflow.css" %}" />

@@ -16,6 +16,7 @@ module.exports = {
     website: './apps/base/styles/website.scss',
     tailwind: './apps/base/styles/vendors/tailwind.pcss',
     turbo: './apps/base/javascript/turbo.ts',
+    web: './apps/web/javascript/workflow-demo.tsx',
     workflow: './apps/workflows/javascript/dnd-flow.tsx',
   },
   output: {
