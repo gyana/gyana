@@ -1,11 +1,25 @@
 {% load static %}
+
+<style>
+  {% for group in services %}
+    .integrations-{{ forloop.counter0 }} {
+      animation: {{ group.animation }}s linear 0s infinite normal none running slide;
+    }
+    @keyframes slide {
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+  {% endfor %}
+</style>
+
 <div
   id="features"
   class="relative bg-white pt-16 pb-32 overflow-hidden"
 >
   <div id="integrations" class="relative">
     <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
-      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0">
+      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0 overflow-hidden">
         <div>
           <div>
             <span class="flex-shrink-0">
@@ -16,12 +30,16 @@
           </div>
           <div class="mt-6">
             <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
-              Integrate all your online data
+              Connect your sources
             </h2>
             <p class="mt-4 text-lg text-gray-600 mb-4">
-              One-click connections to 80+ popular files, apps and
+              Connect to most analytics, ad reports, online stores, CRMs, webhooks and more.
+              New data is imported automatically. Get access to the raw data.
+
+
+              {% comment %} One-click connections to 80+ popular files, apps and
               databases, with more added every month. Get access to the raw
-              data, always up to date.
+              data, always up to date. {% endcomment %}
               <a
                 href="{% url 'web:integrations' %}"
                 class="text-gray-600 hover:text-indigo-600 underline"
@@ -29,45 +47,24 @@
                 View our integrations.
               </a>
             </p>
-            <div class="flex flex-wrap">
-              {% for service in services.values %}
-                <img
-                  class="h-6 w-6 p-1"
-                  src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
-                  alt={{ service.name }}
-                />
+            <div class="flex flex-col gap-2">
+              {% for group in services %}
+                <div class="flex gap-2 integrations-{{ forloop.counter0 }}">
+                  {% for service in group.services %}
+                    <div class="inline-flex items-center gap-2 flex-none px-2.5 py-0.5 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
+                      <img
+                        class="h-4 w-4"
+                        src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
+                        alt={{ service.name }}
+                      />
+                      {{ service.name }}
+                    </div>
+                  {% endfor %}
+                </div>
               {% endfor %}
             </div>
           </div>
         </div>
-        {% comment %}
-          <div class="mt-8 border-t border-gray-200 pt-6">
-            <blockquote>
-              <div>
-                <p class="text-base text-gray-600">
-                  &ldquo;Gyana contains so many connectors, including GSheet,
-                  Asana, Facebook etc. - one of the most comprehensive I saw.
-                  And you can also easily transform data using the Tables
-                  (imagining Power Query with a simpler interface)&rdquo;
-                </p>
-              </div>
-              <footer class="mt-3">
-                <div class="flex items-center space-x-3">
-                  <div class="flex-shrink-0">
-                    <img
-                      class="h-6 w-6 rounded-full"
-                      src="/img/customer/hoang.jpeg"
-                      alt=""
-                    />
-                  </div>
-                  <div class="text-base font-normal text-gray-700">
-                    Phan Vũ Hoàng, myE
-                  </div>
-                </div>
-              </footer>
-            </blockquote>
-          </div>
-        {% endcomment %}
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0">
         <div class="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
@@ -93,7 +90,7 @@
           </div>
           <div class="mt-6">
             <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
-              Automate everything with workflows
+              Prepare your data
             </h2>
             <p class="mt-4 text-lg text-gray-600 mb-4">
               A drag-n-drop visual data editor to transform data, calculate
@@ -134,7 +131,7 @@
           </div>
           <div class="mt-6">
             <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
-              Build your ideal custom dashboard
+              Build your report
             </h2>
             <p class="mt-4 text-lg text-gray-600">
               Choose from a variety of flexible visualizations and connect
@@ -150,33 +147,6 @@
             </div>
           {% endfor %}
         </div>
-        {% comment %} 
-          <div class="mt-8 border-t border-gray-200 pt-6">
-            <blockquote>
-              <div>
-                <p class="text-base text-gray-600">
-                  &ldquo;The UI and UX are great all around, and it has very
-                  powerful features for building out the tables and data
-                  functions. Very happy so far.&rdquo;
-                </p>
-              </div>
-              <footer class="mt-3">
-                <div class="flex items-center space-x-3">
-                  <div class="flex-shrink-0">
-                    <img
-                      class="h-6 w-6 rounded-full"
-                      src="https://images.unsplash.com/photo-1509783236416-c9ad59bae472?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
-                      alt=""
-                    />
-                  </div>
-                  <div class="text-base font-normal text-gray-700">
-                    Zain Lawson, Domestic Workers Unite
-                  </div>
-                </div>
-              </footer>
-            </blockquote>
-          </div>
-        {% endcomment %}
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0">
         <div class="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">

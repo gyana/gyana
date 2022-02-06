@@ -7,13 +7,15 @@
 
 {% block body %}
   {% include "web/site/home/hero.html" %}
-  {% include "web/site/home/testimonial.html" with testimonial=content.testimonial %}
-  {% comment %} {% include "web/site/home/press.html" %} {% endcomment %}
-  {% comment %} {% include "web/site/home/problem.html" %}
-  {% include "web/site/home/solution.html" %}
-
+  {% include "web/site/home/reviews.html" %}
+  {% include "web/site/home/features.html" %}
+  {% comment %}
+    {% include "web/site/home/press.html" %}
+    {% include "web/site/home/problem.html" %}
+    {% include "web/site/home/solution.html" %}
   {% include "web/site/home/use_cases.html" %}
   {% include "web/site/home/appsumo_grid.html" %} {% endcomment %}
-  {% include "web/site/home/features.html" %}
+  {% include "web/site/home/testimonial.html" with testimonial=content.testimonial %}
+  
   {% include "web/site/home/cta.html" %}
 {% endblock %}
