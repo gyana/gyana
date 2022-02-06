@@ -43,8 +43,8 @@
         </div>
       </div>
       <div class="mt-6 hidden sm:block">
-        <div class="inline-flex items-center divide-x divide-gray-300">
-          <div class="flex-shrink-0 flex pr-5">
+        <div class="inline-flex items-center gap-2">
+          <div class="flex-shrink-0 flex">
             {% for idx in '0123'|make_list %}
               <div class="h-6 w-6 relative">
                 <div class="absolute">
@@ -67,12 +67,9 @@
               </div>
             </div>
           </div>
-          <div class="min-w-0 flex-1 pl-5 py-1 text-sm text-gray-600 sm:py-3">
-            <span class="font-normal text-gray-900">Rated 4.7</span>
-            by over
-            <span class="font-normal text-indigo-600">
-              2,000 customers
-            </span>
+          <div class="min-w-0 flex-1 py-1 text-sm text-gray-600 sm:py-3">
+            Rated <span class="font-bold text-gray-900">4.7</span> on <a class="hover:text-gray-900 hover:underline" href="https://appsumo.com/products/gyana/">AppSumo</a>
+            <span class="text-gray-400">|</span> <span class="font-bold text-gray-900">101</span> reviews
           </div>
         </div>
       </div>
@@ -81,7 +78,7 @@
 
   <div class="sm:mx-auto sm:max-w-3xl">
     <div class="sm:relative lg:absolute lg:inset-y-0 lg:right-16 lg:w-1/2">
-      <div class="relative -mx-8 my-4 sm:mx-auto sm:max-w-3xl sm:px-0 lg:max-w-none lg:h-full">
+      <div class="relative -mx-8 my-4 sm:mx-auto sm:max-w-3xl sm:px-0 lg:py-8 lg:max-w-none lg:h-full">
         <img
           class="w-full lg:h-full lg:w-auto lg:max-w-none"
           src="{% static 'images/site/home/landing.jpg' %}"
