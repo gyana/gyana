@@ -1,4 +1,4 @@
-{% load static %}
+{% load static heroicons %}
 
 <style>
   {% for group in services %}
@@ -7,7 +7,7 @@
     }
     @keyframes slide {
       100% {
-        transform: translateX(-100%);
+        transform: translateX(-50%);
       }
     }
   {% endfor %}
@@ -19,7 +19,7 @@
 >
   <div id="integrations" class="relative">
     <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
-      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0 overflow-hidden">
+      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0">
         <div>
           <div>
             <span class="flex-shrink-0">
@@ -32,22 +32,12 @@
             <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
               Connect your sources
             </h2>
-            <p class="mt-4 text-lg text-gray-600 mb-4">
-              Connect to most analytics, ad reports, online stores, CRMs, webhooks and more.
-              New data is imported automatically. Get access to the raw data.
-
-
-              {% comment %} One-click connections to 80+ popular files, apps and
-              databases, with more added every month. Get access to the raw
-              data, always up to date. {% endcomment %}
-              <a
-                href="{% url 'web:integrations' %}"
-                class="text-gray-600 hover:text-indigo-600 underline"
-              >
-                View our integrations.
-              </a>
+            <p class="mt-4 mb-6 text-lg text-gray-600">
+              Connect to most popular online sources, including apps, databases, webhooks and APIs.
+              After a one-time setup, our enterprise-grade connectors will sync your raw data, daily.
+              <b>No more manual exports.</b>
             </p>
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col gap-2 overflow-hidden mt-2">
               {% for group in services %}
                 <div class="flex gap-2 integrations-{{ forloop.counter0 }}">
                   {% for service in group.services %}
@@ -63,6 +53,10 @@
                 </div>
               {% endfor %}
             </div>
+            <a href="{% url 'web:integrations' %}" class="mt-6 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+              <span>Search Integrations</span>
+              {% heroicon 'chevron-right' class="w-5 h-5" style="solid" %}
+            </a>
           </div>
         </div>
       </div>
@@ -92,14 +86,14 @@
             <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
               Prepare your data
             </h2>
-            <p class="mt-4 text-lg text-gray-600 mb-4">
+            <p class="mt-4 text-lg text-gray-600 mb-6">
               A drag-n-drop visual data editor to transform data, calculate
               metrics and automate work. Build your analysis pipeline once,
               and tweak for future projects.
             </p>
-            <div class="flex flex-wrap gap-x-2 gap-y-1 mt-2">
+            <div class="flex flex-wrap gap-2">
               {% for node_type in node_config.values %}
-                <div class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-normal bg-indigo-100 text-gray-800 mt-2">
+                <div class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
                   <i class="fa {{ node_type.icon }} mr-2"></i>{{ node_type.displayName }}
                 </div>
               {% endfor %}
@@ -133,16 +127,16 @@
             <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
               Build your report
             </h2>
-            <p class="mt-4 text-lg text-gray-600">
+            <p class="mt-4 mb-6 text-lg text-gray-600">
               Choose from a variety of flexible visualizations and connect
               to any data. Schedule daily updates, add interactive filters
               and share with your clients and collaborators.
             </p>
           </div>
         </div>
-        <div class="flex flex-wrap gap-x-2 gap-y-1 mt-2">
+        <div class="flex flex-wrap gap-2">
           {% for widget_type in widget_config.values %}
-            <div class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-normal bg-indigo-100 text-gray-800 mt-2">
+            <div class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
               <i class="fa {{ widget_type.0 }} mr-2"> </i>{{ widget_type.2 }}
             </div>
           {% endfor %}

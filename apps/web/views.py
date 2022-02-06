@@ -50,7 +50,7 @@ class Home(TemplateView):
         length = len(services)
         n = int(length / 6)
         services_grouped = [
-            {"services": services[i : i + n], "animation": random.randint(15, 150)}
+            {"services": services[i : i + n], "animation": random.randint(15, 35)}
             for i in range(0, length, n)
         ]
         return services_grouped
