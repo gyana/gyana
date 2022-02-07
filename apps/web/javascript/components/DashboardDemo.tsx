@@ -24,6 +24,7 @@ const THEME_CONFIG = [
   {
     id: 'indigo',
     palette: [
+      '#6366f1',
       '#4f46e5',
       '#4338ca',
       '#3730a3',
@@ -32,12 +33,12 @@ const THEME_CONFIG = [
       '#c7d2fe',
       '#a5b4fc',
       '#818cf8',
-      '#6366f1',
     ],
   },
   {
     id: 'green',
     palette: [
+      '#48bb78',
       '#38a169',
       '#2f855a',
       '#276749',
@@ -46,12 +47,12 @@ const THEME_CONFIG = [
       '#c6f6d5',
       '#9ae6b4',
       '#68d391',
-      '#48bb78',
     ],
   },
   {
     id: 'yellow',
     palette: [
+      '#ecc94b',
       '#d69e2e',
       '#b7791f',
       '#975a16',
@@ -60,10 +61,11 @@ const THEME_CONFIG = [
       '#fefcbf',
       '#faf089',
       '#f6e05e',
-      '#ecc94b',
     ],
   },
 ]
+
+const FONT_CONFIG = ['sans-serif', 'serif', 'monospace']
 
 const TypeButtonGroup = ({ type, setType }) => {
   return (
@@ -71,9 +73,9 @@ const TypeButtonGroup = ({ type, setType }) => {
       {TYPE_CONFIG.map((option) => (
         <button
           key={option.id}
-          className={`p-2 focus:outline-none ${
+          className={`p-2 focus:outline-none h-full ${
             type === option.id
-              ? 'text-white bg-indigo-600 hover:bg-indigo-700'
+              ? 'text-white bg-gray-600 hover:bg-gray-700'
               : 'text-gray-600 hover:text-gray-900'
           }`}
           onClick={() => setType(option.id)}
@@ -101,9 +103,31 @@ const ThemeButtonGroup = ({ theme, setTheme }) => {
   )
 }
 
+const FontButtonGroup = ({ font, setFont }) => {
+  return (
+    <div className='pad flex divide-x card card--none'>
+      {FONT_CONFIG.map((id) => (
+        <button
+          key={id}
+          style={{ fontFamily: id }}
+          className={`p-2 text-xl focus:outline-none w-10 h-full ${
+            font === id
+              ? 'text-white bg-gray-600 hover:bg-gray-700'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+          onClick={() => setFont(id)}
+        >
+          T
+        </button>
+      ))}
+    </div>
+  )
+}
+
 const DashboardDemo = () => {
   const [type, setType] = useState('pie2d')
   const [theme, setTheme] = useState('indigo')
+  const [font, setFont] = useState('sans-serif')
 
   const chartConfigs = {
     type,
@@ -114,6 +138,13 @@ const DashboardDemo = () => {
       chart: {
         xAxisName: 'Country',
         yAxisName: 'Reserves (MMbbl)',
+        baseFont: font,
+        xAxisNameFont: font,
+        yAxisNameFont: font,
+        captionFont: font,
+        labelFont: font,
+        legendItemFont: font,
+        bgColor: '#fafafc',
         theme: 'fusion',
         paletteColors: THEME_CONFIG.find((item) => item.id === theme)?.palette,
         animation: '0',
@@ -123,13 +154,14 @@ const DashboardDemo = () => {
   }
 
   return (
-    <div className='flex flex-col gap-4 h-full'>
+    <div className='p-4 lg:p-0 flex flex-col gap-4 h-full'>
       <div className='card card--none flex-grow'>
         <ReactFC {...chartConfigs} />
       </div>
-      <div className='flex-none flex flex-wrap gap-2'>
+      <div className='flex-none flex flex-wrap gap-2 justify-center'>
         <TypeButtonGroup type={type} setType={setType} />
         <ThemeButtonGroup theme={theme} setTheme={setTheme} />
+        <FontButtonGroup font={font} setFont={setFont} />
       </div>
     </div>
   )
