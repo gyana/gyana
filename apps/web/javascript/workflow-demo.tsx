@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 import { ReactFlowProvider } from 'react-flow-renderer'
 import WorkflowDemo from './components/WorkflowDemo'
 
-class ReactDndFlow extends HTMLElement {
+class WorkflowDemoWC extends HTMLElement {
   connectedCallback() {
     ReactDOM.render(
       <ReactFlowProvider>
@@ -18,4 +18,4 @@ class ReactDndFlow extends HTMLElement {
   }
 }
 
-customElements.get('workflow-demo') || customElements.define('workflow-demo', ReactDndFlow)
+customElements.get('workflow-demo') || customElements.define('workflow-demo', WorkflowDemoWC)

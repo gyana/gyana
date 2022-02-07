@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import ReactFlow, { isEdge, useStoreState, useZoomPanHelper } from 'react-flow-renderer'
 
-import initialElements from './initial-elements'
+import initialElements from './workflow-demo-elements'
 
 const NODES = JSON.parse(
   (document.getElementById('nodes') as HTMLScriptElement).textContent as string

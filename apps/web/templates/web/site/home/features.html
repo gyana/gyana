@@ -100,7 +100,8 @@
               <b>{{ workflow_statistics.node_count }}</b> nodes • <b>{{ workflow_statistics.function_count }}</b> functions • <b>Unlimited</b> flexibility
             </p>
             <div class="inline-flex items-center text-sm leading-4 font-medium text-gray-700">
-              {% heroicon 'arrow-left' class="w-5 h-5" style="solid" %}
+              <span class="block lg:hidden">{% heroicon 'arrow-down' class="w-5 h-5" style="solid" %}</span>
+              <span class="hidden lg:block">{% heroicon 'arrow-left' class="w-5 h-5" style="solid" %}</span>
               <span class="ml-2">Explore our workflow nodes</span>
             </div>
           </div>
@@ -111,7 +112,7 @@
       </div>
     </div>
   </div>
-  <div id="dashboards" class="mt-32 sm:mt-24">
+  <div id="dashboards" class="mt-48 lg:mt-24">
     <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
       <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0">
         <div>
@@ -143,11 +144,12 @@
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0">
         <div class="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
-          <img
+          {% comment %} <img
             class="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
             src="{% static 'images/site/home/dashboards.jpg' %}"
             alt="Dashboard feature"
-          />
+          /> {% endcomment %}
+          <dashboard-demo></dashboard-demo>
         </div>
       </div>
     </div>
@@ -155,5 +157,6 @@
 </div>
 
 {{ node_config|json_script:"nodes" }}
-<script src="{% static "js/web-bundle.js" %}"></script>
+<script src="{% static "js/workflow-demo-bundle.js" %}"></script>
+<script src="{% static "js/dashboard-demo-bundle.js" %}"></script>
 <link rel="stylesheet" href="{% static "css/workflow.css" %}" />
