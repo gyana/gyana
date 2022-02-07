@@ -20,18 +20,63 @@ const TYPE_CONFIG = [
   { id: 'area2d', icon: 'fa-chart-area' },
 ]
 
-const ButtonGroup = ({ config, item, setItem }) => {
+const THEME_CONFIG = [
+  {
+    id: 'indigo',
+    palette: [
+      '#4f46e5',
+      '#4338ca',
+      '#3730a3',
+      '#312e81',
+      '#e0e7ff',
+      '#c7d2fe',
+      '#a5b4fc',
+      '#818cf8',
+      '#6366f1',
+    ],
+  },
+  {
+    id: 'green',
+    palette: [
+      '#38a169',
+      '#2f855a',
+      '#276749',
+      '#22543d',
+      '#f0fff4',
+      '#c6f6d5',
+      '#9ae6b4',
+      '#68d391',
+      '#48bb78',
+    ],
+  },
+  {
+    id: 'yellow',
+    palette: [
+      '#d69e2e',
+      '#b7791f',
+      '#975a16',
+      '#744210',
+      '#fffff0',
+      '#fefcbf',
+      '#faf089',
+      '#f6e05e',
+      '#ecc94b',
+    ],
+  },
+]
+
+const TypeButtonGroup = ({ type, setType }) => {
   return (
     <div className='pad flex divide-x card card--none'>
-      {config.map((option) => (
+      {TYPE_CONFIG.map((option) => (
         <button
           key={option.id}
           className={`p-2 focus:outline-none ${
-            item === option.id
-              ? 'text-white bg-indigo-600 hover:text-indigo-700'
+            type === option.id
+              ? 'text-white bg-indigo-600 hover:bg-indigo-700'
               : 'text-gray-600 hover:text-gray-900'
           }`}
-          onClick={() => setItem(option.id)}
+          onClick={() => setType(option.id)}
         >
           <i className={`fa ${option.icon} fa-lg`}></i>
         </button>
@@ -40,8 +85,25 @@ const ButtonGroup = ({ config, item, setItem }) => {
   )
 }
 
+const ThemeButtonGroup = ({ theme, setTheme }) => {
+  return (
+    <div className='pad flex divide-x card card--none'>
+      {THEME_CONFIG.map(({ id }) => (
+        <button
+          key={id}
+          className={`p-2 focus:outline-none w-10 h-full ${
+            theme === id ? `bg-${id}-600 hover:bg-${id}-700` : `bg-${id}-100 hover:bg-${id}-200`
+          }`}
+          onClick={() => setTheme(id)}
+        ></button>
+      ))}
+    </div>
+  )
+}
+
 const DashboardDemo = () => {
-  const [type, setType] = useState('area2d')
+  const [type, setType] = useState('pie2d')
+  const [theme, setTheme] = useState('indigo')
 
   const chartConfigs = {
     type,
@@ -53,18 +115,21 @@ const DashboardDemo = () => {
         xAxisName: 'Country',
         yAxisName: 'Reserves (MMbbl)',
         theme: 'fusion',
+        paletteColors: THEME_CONFIG.find((item) => item.id === theme)?.palette,
+        animation: '0',
       },
       data: chartData,
     },
   }
 
   return (
-    <div className='flex flex-col gap-2 h-full'>
+    <div className='flex flex-col gap-4 h-full'>
       <div className='card card--none flex-grow'>
         <ReactFC {...chartConfigs} />
       </div>
-      <div className='flex-none flex flex-wrap'>
-        <ButtonGroup config={TYPE_CONFIG} item={type} setItem={setType} />
+      <div className='flex-none flex flex-wrap gap-2'>
+        <TypeButtonGroup type={type} setType={setType} />
+        <ThemeButtonGroup theme={theme} setTheme={setTheme} />
       </div>
     </div>
   )

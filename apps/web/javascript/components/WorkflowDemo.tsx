@@ -87,7 +87,7 @@ const WorkflowDemo = () => {
 
   return (
     <>
-      <div ref={ref} className='h-full w-full relative card card--none'>
+      <div ref={ref} className='h-80 w-full relative card card--none'>
         <ReactFlow
           elements={elements}
           nodesConnectable={false}
@@ -95,14 +95,14 @@ const WorkflowDemo = () => {
           panOnScroll={false}
         />
       </div>
-      <div className='mt-2 card card--none'>
+      <div className='mt-4 card card--none'>
         <div className='pad w-full grid grid-cols-10 divide-x divide-y'>
           {Object.values(NODES).map((node) => (
             <button
               key={node.icon}
               className={`p-2 focus:outline-none ${
                 selectedNode?.icon === node.icon
-                  ? 'text-white bg-indigo-600 hover:text-indigo-700'
+                  ? 'text-white bg-indigo-600 hover:bg-indigo-700'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
               onClick={() => {
