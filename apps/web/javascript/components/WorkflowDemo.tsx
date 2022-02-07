@@ -96,7 +96,7 @@ const WorkflowDemo = () => {
         />
       </div>
       <div className='mt-2 card card--none'>
-        <div className='pad w-full grid grid-cols-10 divide-x divide-y justify-center'>
+        <div className='pad w-full grid grid-cols-10 divide-x divide-y'>
           {Object.values(NODES).map((node) => (
             <button
               key={node.icon}

@@ -134,29 +134,16 @@
             </p>
           </div>
         </div>
-        <div class="flex flex-wrap gap-2">
-          {% for widget_type in widget_config.values %}
-            <div class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
-              <i class="fa {{ widget_type.0 }} mr-2"> </i>{{ widget_type.2 }}
-            </div>
-          {% endfor %}
-        </div>
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0">
-        <div class="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
-          {% comment %} <img
-            class="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
-            src="{% static 'images/site/home/dashboards.jpg' %}"
-            alt="Dashboard feature"
-          /> {% endcomment %}
-          <dashboard-demo></dashboard-demo>
-        </div>
+        <dashboard-demo></dashboard-demo>
       </div>
     </div>
   </div>
 </div>
 
 {{ node_config|json_script:"nodes" }}
-<script src="{% static "js/workflow-demo-bundle.js" %}"></script>
-<script src="{% static "js/dashboard-demo-bundle.js" %}"></script>
+<script src="{% static "js/web-workflow-demo-bundle.js" %}"></script>
+<script>window.FUSIONCHARTS_LICENCE = "{{ FUSIONCHARTS_LICENCE }}"</script>
+<script src="{% static "js/web-dashboard-demo-bundle.js" %}"></script>
 <link rel="stylesheet" href="{% static "css/workflow.css" %}" />
