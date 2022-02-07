@@ -11,40 +11,6 @@
       }
     }
   {% endfor %}
-
-  .fade-left:after {
-    content: "";
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 24%;
-    height: 100%;
-    pointer-events: none;
-    background: linear-gradient(90deg, white 2.52%, rgba(255, 255, 255, 0) 100%);
-    z-index: 2;
-  }
-
-  .fade-right:after {
-    content: "";
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    width: 24%;
-    height: 100%;
-    pointer-events: none;
-    background: linear-gradient(270deg, white 2.52%, rgba(255, 255, 255, 0) 100%);
-    z-index: 2;
-  }
-
-  .react-flow__edge.animated path {
-    animation: gyana-dashdraw .5s linear infinite !important;
-  }
-
-  @keyframes gyana-dashdraw {
-    0% {
-      stroke-dashoffset: 40;
-    }
-  }
 </style>
 
 <div
@@ -128,13 +94,6 @@
               {% heroicon 'arrow-left' class="w-5 h-5" style="solid" %}
               <span class="ml-2">Explore our workflow nodes</span>
             </div>
-            {% comment %} <div class="flex flex-wrap gap-2 justify-center">
-              {% for node_type in node_config.values %}
-                <div class="inline-flex items-center px-2 py-1 gap-2 rounded-xl text-sm font-normal bg-indigo-100 text-gray-800">
-                  <i class="fa {{ node_type.icon }}"></i>{{ node_type.displayName }}
-                </div>
-              {% endfor %}
-            </div> {% endcomment %}
           </div>
         </div>
       </div>
