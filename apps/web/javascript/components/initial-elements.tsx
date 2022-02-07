@@ -57,7 +57,11 @@ export default [
     id: '4',
     type: 'placeholder',
     data: {
-      label: '',
+      label: (
+        <div className='w-full h-full flex items-center justify-center'>
+          <i className='fa fa-question fa-8x text-gray'></i>
+        </div>
+      ),
     },
     position: { x: 200, y: 300 },
   },
@@ -78,8 +82,8 @@ export default [
     },
     position: { x: 300, y: 300 },
   },
-  { id: 'e1-3', source: '1', target: '3', animated: true },
-  { id: 'e2-3', source: '2', target: '3', animated: true },
-  { id: 'e3-4', source: '3', target: '4', animated: true },
-  { id: 'e4-5', source: '4', target: '5', animated: true },
+  { id: 'e1-3', source: '1', target: '3', style: { strokeWidth: 10, stroke: '#e6e6e6' } },
+  { id: 'e2-3', source: '2', target: '3', style: { strokeWidth: 10, stroke: '#e6e6e6' } },
+  { id: 'e3-4', source: '3', target: '4', style: { strokeWidth: 10, stroke: 'none' } },
+  { id: 'e4-5', source: '4', target: '5', style: { strokeWidth: 10, stroke: 'none' } },
 ]

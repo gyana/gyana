@@ -35,6 +35,16 @@
     background: linear-gradient(270deg, white 2.52%, rgba(255, 255, 255, 0) 100%);
     z-index: 2;
   }
+
+  .react-flow__edge.animated path {
+    animation: gyana-dashdraw .5s linear infinite !important;
+  }
+
+  @keyframes gyana-dashdraw {
+    0% {
+      stroke-dashoffset: 40;
+    }
+  }
 </style>
 
 <div
@@ -93,7 +103,7 @@
   </div>
   <div id="workflows" class="mt-24">
     <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
-      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-24 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
+      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-16 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
         <div>
           <div>
             <span class="flex-shrink-0">
@@ -106,11 +116,18 @@
             <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
               Prepare your data
             </h2>
-            <p class="mt-4 text-lg text-gray-600 mb-6">
-              A drag-n-drop visual data editor to transform data, calculate
-              metrics and automate work. Build your analysis pipeline once,
-              and tweak for future projects.
+            <p class="mt-4 text-lg text-gray-600">
+              Our visual editor makes it easy. Connect data processing steps and
+              watch as automation does all the heavy lifting for you. Your workflows
+              can be as simple or as complex as you design them.
             </p>
+            <p class="mt-4 text-sm text-gray-600 mb-6">
+              <b>{{ workflow_statistics.node_count }}</b> nodes • <b>{{ workflow_statistics.function_count }}</b> functions • <b>Unlimited</b> flexibility
+            </p>
+            <div class="inline-flex items-center text-sm leading-4 font-medium text-gray-700">
+              {% heroicon 'arrow-left' class="w-5 h-5" style="solid" %}
+              <span class="ml-2">Explore our workflow nodes</span>
+            </div>
             {% comment %} <div class="flex flex-wrap gap-2 justify-center">
               {% for node_type in node_config.values %}
                 <div class="inline-flex items-center px-2 py-1 gap-2 rounded-xl text-sm font-normal bg-indigo-100 text-gray-800">
@@ -121,7 +138,7 @@
           </div>
         </div>
       </div>
-      <div class="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1 h-96 lg:h-auto card card--none">
+      <div class="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1 h-96 lg:h-auto">
         <workflow-demo></workflow-demo>
       </div>
     </div>

@@ -40,10 +40,10 @@
 
     &-placeholder {
       background-color: var(--c-gray-10);
-      border: 6px dashed var(--c-black-20);
+      border: 6px dashed var(--c-black-10);
 
       &.selected {
-        border: 6px dashed var(--c-black);
+        border: 6px dashed var(--c-black-20);
       }
     }
 

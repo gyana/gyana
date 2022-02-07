@@ -1,7 +1,7 @@
 import { getLayoutedElements } from 'apps/base/javascript/layout'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
-import ReactFlow, { useStoreState, useZoomPanHelper } from 'react-flow-renderer'
+import ReactFlow, { isEdge, useStoreState, useZoomPanHelper } from 'react-flow-renderer'
 
 import initialElements from './initial-elements'
 
@@ -15,14 +15,7 @@ const useLayout = (ref, elements, setElements) => {
   const [shouldLayout, setShouldLayout] = useState(true)
   const [hasLayout, setHasLayout] = useState(false)
 
-  const observer = useMemo(
-    () =>
-      new ResizeObserver((entries) => {
-        console.log('LAYOUT')
-        setHasLayout(true)
-      }),
-    []
-  )
+  const observer = useMemo(() => new ResizeObserver((entries) => setHasLayout(true)), [])
 
   useEffect(() => {
     if (observer && ref.current) {
@@ -52,9 +45,10 @@ const useLayout = (ref, elements, setElements) => {
 
 const WorkflowDemo = () => {
   const ref = useRef()
+  const [selectedNode, setSelectedNode] = useState()
   const [elements, setElements] = useState(
     initialElements.map((el) => {
-      if (!el?.source) {
+      if (isEdge(el)) {
         el.sourcePosition = 'right'
         el.targetPosition = 'left'
       }
@@ -62,11 +56,38 @@ const WorkflowDemo = () => {
     })
   )
 
+  const selectNode = (node) => {
+    setElements((els) =>
+      els.map((el) => {
+        if (el.id === '4') {
+          el.type = 'default'
+          el.data = {
+            label: (
+              <div className='relative w-full h-full flex items-center justify-center'>
+                <div>
+                  <i className={`fa ${node.icon} fa-8x`}></i>
+                </div>
+                <div className='absolute -bottom-12 left-0 right-0 text-2xl font-semibold text-gray-600'>
+                  {node.displayName}
+                </div>
+              </div>
+            ),
+          }
+        }
+        if (isEdge(el)) {
+          el.animated = true
+          el.style = { strokeWidth: 10, stroke: '#e6e6e6', strokeDasharray: '35 5' }
+        }
+        return el
+      })
+    )
+  }
+
   useLayout(ref, elements, setElements)
 
   return (
-    <div className='w-full h-full'>
-      <div ref={ref} className='flex-grow relative'>
+    <>
+      <div ref={ref} className='h-full w-full relative card card--none'>
         <ReactFlow
           elements={elements}
           nodesConnectable={false}
@@ -74,14 +95,29 @@ const WorkflowDemo = () => {
           panOnScroll={false}
         />
       </div>
-      <div className='flex-none flex gap-1 p-2 w-full flex-wrap border-b border-gray-300 justify-center'>
-        {Object.values(NODES).map((node) => (
-          <button>
-            <i className={`fa ${node.icon} fa-lg`}></i>
-          </button>
-        ))}
+      <div className='mt-2 card card--none'>
+        <div className='pad w-full grid grid-cols-10 divide-x divide-y justify-center'>
+          {Object.values(NODES).map((node) => (
+            <button
+              key={node.icon}
+              className={`p-2 focus:outline-none ${
+                selectedNode?.icon === node.icon
+                  ? 'text-white bg-indigo-600 hover:text-indigo-700'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => {
+                setSelectedNode(node)
+                selectNode(node)
+              }}
+            >
+              <i className={`fa ${node.icon} fa-lg`}></i>
+            </button>
+          ))}
+          {/* empty div */}
+          <div></div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

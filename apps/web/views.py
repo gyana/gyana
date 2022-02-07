@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
 from rest_framework.decorators import api_view
 
+from apps.columns.transformer import FUNCTIONS
 from apps.connectors.fivetran.config import get_services_obj
 from apps.nodes.config import NODE_CONFIG
 from apps.teams.models import Team
@@ -59,7 +60,14 @@ class Home(TemplateView):
         context = super().get_context_data(**kwargs)
         context["content"] = get_content("home.yaml")
         context["services"] = self._get_services_grouped()
-        context["node_config"] = NODE_CONFIG
+        node_config = {
+            k: v for k, v in NODE_CONFIG.items() if k not in ["input", "output", "text"]
+        }
+        context["node_config"] = node_config
+        context['workflow_statistics'] = {
+            'node_count': len(node_config.keys()),
+            'function_count': len(FUNCTIONS)
+        }
         context["widget_config"] = WIDGET_KIND_TO_WEB
         return context
 
