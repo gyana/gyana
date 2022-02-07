@@ -171,7 +171,7 @@ const DashboardDemo = () => {
         captionFont: font,
         labelFont: font,
         legendItemFont: font,
-        bgColor: '#fafafc',
+        bgColor: '#ffffff',
         theme: 'fusion',
         paletteColors: THEME_CONFIG.find((item) => item.id === theme)?.palette,
         animation: '0',
@@ -182,8 +182,17 @@ const DashboardDemo = () => {
 
   return (
     <div className='p-4 lg:p-0 flex flex-col gap-4 h-full'>
-      <div className='card card--none flex-grow flex flex-col'>
-        <div className='w-full bg-gray-10 flex-none flex items-center justify-center gap-2 p-2'>
+      <div className='card card--none flex-grow flex flex-col bg-gray-10'>
+        <div className='w-full bg-gray-10 p-1'>
+          <div
+            className='px-2 py-1 border border-gray rounded-lg bg-white focus:outline-none'
+            contentEditable
+          >
+            <i className='fa fa-search text-gray mr-1'></i>
+            <span className='text-black-20'>https://</span>reports.{agency}.com
+          </div>
+        </div>
+        <div className='w-full bg-gray-10 flex-none flex items-center justify-center gap-2 p-2 border-b border-gray'>
           <i className={`fad fa-${agency} p-2 fa-2x text-${theme}-600`}></i>
           <h2 className='text-2xl' style={{ fontFamily: font }}>
             Report by {AGENCY_CONFIG.find((item) => item.id === agency)?.name} Inc.
