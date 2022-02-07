@@ -67,6 +67,12 @@ const THEME_CONFIG = [
 
 const FONT_CONFIG = ['sans-serif', 'serif', 'monospace']
 
+const AGENCY_CONFIG = [
+  { id: 'squirrel', name: 'Squirrel' },
+  { id: 'rabbit', name: 'Rabbit' },
+  { id: 'otter', name: 'Otter' },
+]
+
 const TypeButtonGroup = ({ type, setType }) => {
   return (
     <div className='pad flex divide-x card card--none'>
@@ -124,15 +130,36 @@ const FontButtonGroup = ({ font, setFont }) => {
   )
 }
 
+const AgencyButtonGroup = ({ agency, setAgency }) => {
+  return (
+    <div className='pad flex divide-x card card--none'>
+      {AGENCY_CONFIG.map(({ id }) => (
+        <button
+          key={id}
+          className={`p-2 text-xl focus:outline-none w-10 h-full ${
+            agency === id
+              ? 'text-white bg-gray-600 hover:bg-gray-700'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+          onClick={() => setAgency(id)}
+        >
+          <i className={`fa fa-${id}`}></i>
+        </button>
+      ))}
+    </div>
+  )
+}
+
 const DashboardDemo = () => {
   const [type, setType] = useState('pie2d')
   const [theme, setTheme] = useState('indigo')
   const [font, setFont] = useState('sans-serif')
+  const [agency, setAgency] = useState('squirrel')
 
   const chartConfigs = {
     type,
     width: '100%',
-    height: '100%',
+    height: '85%',
     dataFormat: 'json',
     dataSource: {
       chart: {
@@ -155,13 +182,22 @@ const DashboardDemo = () => {
 
   return (
     <div className='p-4 lg:p-0 flex flex-col gap-4 h-full'>
-      <div className='card card--none flex-grow'>
-        <ReactFC {...chartConfigs} />
+      <div className='card card--none flex-grow flex flex-col'>
+        <div className='w-full bg-gray-10 flex-none flex items-center justify-center gap-2 p-2'>
+          <i className={`fad fa-${agency} p-2 fa-2x text-${theme}-600`}></i>
+          <h2 className='text-2xl' style={{ fontFamily: font }}>
+            Report by {AGENCY_CONFIG.find((item) => item.id === agency)?.name} Inc.
+          </h2>
+        </div>
+        <div className='flex-grow'>
+          <ReactFC {...chartConfigs} />
+        </div>
       </div>
       <div className='flex-none flex flex-wrap gap-2 justify-center'>
         <TypeButtonGroup type={type} setType={setType} />
         <ThemeButtonGroup theme={theme} setTheme={setTheme} />
         <FontButtonGroup font={font} setFont={setFont} />
+        <AgencyButtonGroup agency={agency} setAgency={setAgency} />
       </div>
     </div>
   )
