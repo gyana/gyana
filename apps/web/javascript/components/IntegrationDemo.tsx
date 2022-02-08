@@ -34,14 +34,14 @@ const IntegrationDemo = () => {
           </div>
         ))}
 
-        <div className='flex gap-2 justify-center'>
+        <div className='flex flex-wrap gap-2 justify-center z-50 mt-2'>
           {integrations.map((item) => (
             <div
               key={item.id}
-              className='inline-flex items-center gap-2 flex-none px-2 py-1 rounded-lg text-sm font-normal focus:outline-none bg-indigo-200 border border-indigo-600 text-gray-800'
+              className='inline-flex items-center gap-2 flex-none px-2 py-1 rounded-lg text-lg font-normal focus:outline-none bg-indigo-100 border-2 border-indigo-600 text-indigo-600'
             >
               <img
-                className='h-4 w-4'
+                className='h-6 w-6 bg-white border border-white rounded'
                 src={`/static/images/integrations/fivetran/${item.icon_path}`}
                 alt={item.name}
               />
