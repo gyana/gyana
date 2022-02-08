@@ -81,7 +81,7 @@ const TypeButtonGroup = ({ type, setType }) => {
           key={option.id}
           className={`p-2 focus:outline-none h-full ${
             type === option.id
-              ? 'text-white bg-gray-600 hover:bg-gray-700'
+              ? 'text-white bg-indigo-600 hover:bg-indigo-700'
               : 'text-gray-600 hover:text-gray-900'
           }`}
           onClick={() => setType(option.id)}
@@ -118,7 +118,7 @@ const FontButtonGroup = ({ font, setFont }) => {
           style={{ fontFamily: id }}
           className={`p-2 text-xl focus:outline-none w-10 h-full ${
             font === id
-              ? 'text-white bg-gray-600 hover:bg-gray-700'
+              ? 'text-white bg-indigo-600 hover:bg-indigo-700'
               : 'text-gray-600 hover:text-gray-900'
           }`}
           onClick={() => setFont(id)}
@@ -138,7 +138,7 @@ const AgencyButtonGroup = ({ agency, setAgency }) => {
           key={id}
           className={`p-2 text-xl focus:outline-none w-10 h-full ${
             agency === id
-              ? 'text-white bg-gray-600 hover:bg-gray-700'
+              ? 'text-white bg-indigo-600 hover:bg-indigo-700'
               : 'text-gray-600 hover:text-gray-900'
           }`}
           onClick={() => setAgency(id)}
@@ -159,12 +159,10 @@ const DashboardDemo = () => {
   const chartConfigs = {
     type,
     width: '100%',
-    height: '85%',
+    height: '70%',
     dataFormat: 'json',
     dataSource: {
       chart: {
-        xAxisName: 'Country',
-        yAxisName: 'Reserves (MMbbl)',
         baseFont: font,
         xAxisNameFont: font,
         yAxisNameFont: font,
@@ -175,6 +173,7 @@ const DashboardDemo = () => {
         theme: 'fusion',
         paletteColors: THEME_CONFIG.find((item) => item.id === theme)?.palette,
         animation: '0',
+        showLegend: false,
       },
       data: chartData,
     },
@@ -187,18 +186,26 @@ const DashboardDemo = () => {
           <div
             className='px-2 py-1 border border-gray rounded-lg bg-white focus:outline-none'
             contentEditable
+            suppressContentEditableWarning
           >
             <i className='fa fa-search text-gray mr-1'></i>
             <span className='text-black-20'>https://</span>reports.{agency}.com
           </div>
         </div>
-        <div className='w-full bg-gray-10 flex-none flex items-center justify-center gap-2 p-2 border-b border-gray'>
-          <i className={`fad fa-${agency} p-2 fa-2x text-${theme}-600`}></i>
-          <h2 className='text-2xl' style={{ fontFamily: font }}>
-            Report by {AGENCY_CONFIG.find((item) => item.id === agency)?.name} Inc.
-          </h2>
+        <div className='w-full bg-gray-10 flex-none flex items-center gap-2 p-2 border-b border-gray'>
+          <div
+            className={`p-1 flex items-center justify-center bg-${theme}-100 rounded-lg border border-${theme}-400`}
+          >
+            <i className={`fad fa-${agency} p-2 fa-2x text-${theme}-600`}></i>
+          </div>
+          <div>
+            <h2 className='text-xl' style={{ fontFamily: font }}>
+              Marketing Performance Report
+            </h2>
+            <p>{AGENCY_CONFIG.find((item) => item.id === agency)?.name} Inc.</p>
+          </div>
         </div>
-        <div className='flex-grow'>
+        <div className='h-64 lg:h-auto p-2'>
           <ReactFC {...chartConfigs} />
         </div>
       </div>

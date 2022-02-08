@@ -1,34 +1,26 @@
 export default [
   {
-    label: 'Venezuela',
+    label: 'Direct',
     value: '290',
   },
   {
-    label: 'Saudi',
+    label: 'Referral',
     value: '260',
   },
   {
-    label: 'Canada',
+    label: 'Organic Search',
     value: '180',
   },
   {
-    label: 'Iran',
+    label: 'Organic Social',
     value: '140',
   },
   {
-    label: 'Russia',
+    label: 'Organic Video',
     value: '115',
   },
   {
-    label: 'UAE',
+    label: 'Paid',
     value: '100',
-  },
-  {
-    label: 'US',
-    value: '30',
-  },
-  {
-    label: 'China',
-    value: '30',
   },
 ]

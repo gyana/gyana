@@ -102,7 +102,7 @@ const WorkflowDemo = () => {
               key={node.icon}
               className={`p-2 focus:outline-none ${
                 selectedNode?.icon === node.icon
-                  ? 'text-white bg-gray-600 hover:bg-gray-700'
+                  ? 'text-white bg-indigo-600 hover:bg-indigo-700'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
               onClick={() => {
