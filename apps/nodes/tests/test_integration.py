@@ -140,18 +140,21 @@ def test_join_node(client, node_factory, setup):
     join_node.parents.add(second_input, through_defaults={"position": 1})
 
     r = client.get(f"/nodes/{join_node.id}")
+    SINGLE_FORM = {
+        "name",
+        "join_columns-0-id",
+        "join_columns-0-node",
+        "join_columns-0-how",
+        "join_columns-0-left_column",
+        "join_columns-0-right_column",
+        "join_columns-0-DELETE",
+    }
     assertOK(r)
     assertFormRenders(
         r,
         {
-            "name",
+            *SINGLE_FORM,
             *JOIN_BASE_DATA.keys(),
-            "join_columns-0-id",
-            "join_columns-0-node",
-            "join_columns-0-how",
-            "join_columns-0-left_column",
-            "join_columns-0-right_column",
-            "join_columns-0-DELETE",
         },
     )
 
@@ -171,6 +174,47 @@ def test_join_node(client, node_factory, setup):
     assert join_column.how == "outer"
     assert join_column.left_column == "id"
     assert join_column.right_column == "id"
+
+    # Check it adds the new form if a third parent is added
+    third_input = node_factory(
+        kind=Node.Kind.INPUT, input_table=table, workflow=workflow
+    )
+    join_node.parents.add(third_input, through_defaults={"position": 2})
+
+    r = client.get(f"/nodes/{join_node.id}")
+    assertOK(r)
+    assertFormRenders(
+        r,
+        {
+            *JOIN_BASE_DATA.keys(),
+            *SINGLE_FORM,
+            "join_columns-1-id",
+            "join_columns-1-node",
+            "join_columns-1-how",
+            "join_columns-1-left_column",
+            "join_columns-1-right_column",
+            "join_columns-1-DELETE",
+        },
+    )
+    join_node.join_columns.create(left_column="id", right_column="id")
+    # Remove middle parent and check that modal shows warning
+    join_node.parent_edges.filter(parent=second_input).delete()
+    r = client.get(f"/nodes/{join_node.id}")
+    assertOK(r)
+    assertSelectorText(r, "p", "This node needs to be connected to more than one node")
+
+    # Deleting the last one doesnt trigger warning and hides second join form
+    join_node.parents.add(second_input, through_defaults={"position": 1})
+    join_node.parent_edges.last().delete()
+    r = client.get(f"/nodes/{join_node.id}")
+    assertOK(r)
+    assertFormRenders(
+        r,
+        {
+            *SINGLE_FORM,
+            *JOIN_BASE_DATA.keys(),
+        },
+    )
 
 
 def test_aggregation_node(client, node_factory, setup):
