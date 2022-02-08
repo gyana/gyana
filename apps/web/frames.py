@@ -1,4 +1,5 @@
 import random
+from dataclasses import asdict
 
 from apps.base.frames import TurboFrameTemplateView
 from apps.columns.transformer import FUNCTIONS
@@ -22,7 +23,7 @@ class IntegrationsDemo(TurboFrameTemplateView):
     turbo_frame_dom_id = "web:integrations-demo"
 
     def _get_services_grouped(self):
-        services = list(get_services_obj().values())
+        services = [asdict(s) for s in get_services_obj().values()]
         random.shuffle(services)
         length = len(services)
         n = int(length / 6)

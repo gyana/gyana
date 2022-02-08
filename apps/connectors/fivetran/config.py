@@ -9,7 +9,7 @@ SERVICES = "apps/connectors/fivetran/services.yaml"
 METADATA = "apps/connectors/fivetran/metadata.yaml"
 
 
-class ServiceTypeEnum(Enum):
+class ServiceTypeEnum(str, Enum):
 
     # api_cloud = fixed tables in one schema
     # database = fixed tables in multiple schemas
