@@ -182,7 +182,7 @@ def _compute_values(client, query):
 
 
 def _update_intermediate_table(ibis_client, node, current_values):
-    cache_table = node.cache_table
+    cache_table = getattr(node, "cache_table", None)
     cache_query = ibis_client.table(
         cache_table.bq_table, database=cache_table.bq_dataset
     ).relabel({TEXT_COLUMN_NAME: f"{TEXT_COLUMN_NAME}_right"})
@@ -214,7 +214,7 @@ def _get_current_values(node):
 
 def _get_not_cached(node, current_values, ibis_client):
     """Obtain the values that haven't been analysed before"""
-    cache_table = node.cache_table
+    cache_table = getattr(node, "cache_table", None)
     return (
         current_values.difference(
             ibis_client.table(cache_table.bq_table, database=cache_table.bq_dataset)[
@@ -255,7 +255,6 @@ def _update_cache_table(node, values, scores, bq_client, uses_credits):
         )  # Make an API request.
         job.result()  # Wait for the job to complete
 
-        node.cache_table = cache_table
         cache_table.data_updated = timezone.now()
 
         # Charge the user
@@ -287,7 +286,7 @@ def get_gcp_sentiment(node_id):
 
     # If no values to analyse just refetch from cache_table
     uses_credits = len(values)
-    if node.cache_table and uses_credits == 0:
+    if hasattr(node, "cache_table") and uses_credits == 0:
 
         table = _update_intermediate_table(ibis_client, node, current_values)
         return table.bq_table, table.bq_dataset

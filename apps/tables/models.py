@@ -47,13 +47,13 @@ class Table(BaseModel):
         "nodes.Node",
         on_delete=models.CASCADE,
         null=True,
-        related_name="intermediate_node",
+        related_name="intermediate_table",
     )
     cache_node = models.OneToOneField(
         "nodes.Node",
         on_delete=models.CASCADE,
         null=True,
-        related_name="cache_node",
+        related_name="cache_table",
     )
 
     num_rows = models.IntegerField(default=0)
