@@ -185,17 +185,16 @@ def test_join_node(setup):
         kind=Node.Kind.JOIN,
         workflow=workflow,
         **DEFAULT_X_Y,
-        join_left="id",
-        join_right="id",
     )
     join_node.parents.add(input_node)
     join_node.parents.add(second_input_node, through_defaults={"position": 1})
+    join_node.join_columns.create(left_column="id", right_column="id")
 
     query = get_query_from_node(join_node)
     # Mocking the table conditionally requires a little bit more work
     # So we simply join the table with itself which leads to duplicate columns that
     # Are aliased
-    join_query = "SELECT `id_left` AS `id`, `athlete_left`, `birthday_left`, `athlete_right`,\n       `birthday_right`\nFROM (\n  SELECT *\n  FROM (\n    SELECT `id` AS `id_left`, `athlete` AS `athlete_left`,\n           `birthday` AS `birthday_left`\n    FROM `project.dataset.table`\n  ) t1\n    INNER JOIN (\n      SELECT `id` AS `id_right`, `athlete` AS `athlete_right`,\n             `birthday` AS `birthday_right`\n      FROM `project.dataset.table`\n    ) t2\n      ON t1.`id_left` = t2.`id_right`\n) t0"
+    join_query = "SELECT `id_1` AS `id`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`\nFROM (\n  SELECT *\n  FROM (\n    SELECT `id` AS `id_1`, `athlete` AS `athlete_1`, `birthday` AS `birthday_1`\n    FROM `project.dataset.table`\n  ) t1\n    INNER JOIN (\n      SELECT `id` AS `id_2`, `athlete` AS `athlete_2`, `birthday` AS `birthday_2`\n      FROM `project.dataset.table`\n    ) t2\n      ON t1.`id_1` = t2.`id_2`\n) t0"
     assert query.compile() == join_query
 
     join_node.join_how = "outer"
@@ -203,18 +202,19 @@ def test_join_node(setup):
     assert (
         query.compile()
         == """\
-SELECT *
+SELECT `id_1` AS `id`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`
 FROM (
-  SELECT `id` AS `id_left`, `athlete` AS `athlete_left`,
-         `birthday` AS `birthday_left`
-  FROM `project.dataset.table`
-) t0
-  FULL OUTER JOIN (
-    SELECT `id` AS `id_right`, `athlete` AS `athlete_right`,
-           `birthday` AS `birthday_right`
+  SELECT *
+  FROM (
+    SELECT `id` AS `id_1`, `athlete` AS `athlete_1`, `birthday` AS `birthday_1`
     FROM `project.dataset.table`
   ) t1
-    ON t0.`id_left` = t1.`id_right`"""
+    INNER JOIN (
+      SELECT `id` AS `id_2`, `athlete` AS `athlete_2`, `birthday` AS `birthday_2`
+      FROM `project.dataset.table`
+    ) t2
+      ON t1.`id_1` = t2.`id_2`
+) t0"""
     )
 
 

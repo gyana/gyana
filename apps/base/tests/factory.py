@@ -10,6 +10,7 @@ from apps.columns.models import (
     ConvertColumn,
     EditColumn,
     FormulaColumn,
+    JoinColumn,
     WindowColumn,
 )
 from apps.connectors.models import Connector
@@ -221,6 +222,14 @@ class AddColumnFactory(factory.django.DjangoModelFactory):
 class FormulaColumnFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = FormulaColumn
+
+    node = factory.SubFactory(NodeFactory)
+
+
+@register
+class JoinColumnFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = JoinColumn
 
     node = factory.SubFactory(NodeFactory)
 
