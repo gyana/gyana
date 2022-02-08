@@ -46,7 +46,6 @@ const useLayout = (ref, elements, setElements) => {
 
 const WorkflowDemo = () => {
   const ref = useRef()
-  const [selectedNode, setSelectedNode] = useState()
   const [elements, setElements] = useState(
     initialElements.map((el) => {
       if (isEdge(el)) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactFC from 'react-fusioncharts'
 import FusionCharts from 'fusioncharts'
 import ChartLibrary from 'fusioncharts/fusioncharts.charts'
@@ -156,6 +156,7 @@ const DashboardDemo = () => {
   const [theme, setTheme] = useState('indigo')
   const [font, setFont] = useState('sans-serif')
   const [agency, setAgency] = useState('squirrel')
+  const [data, setData] = useState(chartData)
 
   const { integrations, node } = useDemoStore()[0]
 
@@ -178,9 +179,18 @@ const DashboardDemo = () => {
         animation: '0',
         showLegend: false,
       },
-      data: chartData,
+      data,
     },
   }
+
+  useEffect(() => {
+    setData(
+      chartData.map(({ label, value }) => ({
+        label,
+        value: value + Math.floor(Math.random() * 240) - 120,
+      }))
+    )
+  }, [JSON.stringify({ integrations, node })])
 
   return (
     <div className='p-4 lg:p-0 flex flex-col gap-4 h-full'>
@@ -211,7 +221,7 @@ const DashboardDemo = () => {
         <div className='h-64 lg:h-auto p-2'>
           <ReactFC {...chartConfigs} />
         </div>
-        <p className='absolute bottom-0 right-0 p-2 text-gray-600 text-sm inline-flex items-center gap-1'>
+        <p className='absolute bottom-0 right-0 text-gray-600 text-sm inline-flex items-center gap-1 bg-gray-10 p-1 m-2 rounded border border-gray'>
           Data sources
           {integrations.map((integration) => (
             <img
@@ -220,7 +230,11 @@ const DashboardDemo = () => {
               alt=''
             />
           ))}
-          {node && <i className={`fa ${node.icon}`}></i>}
+          {node && (
+            <>
+              +<i className={`fa ${node.icon}`}></i>
+            </>
+          )}
         </p>
       </div>
       <div className='flex-none flex flex-wrap gap-2 justify-center'>
