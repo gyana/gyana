@@ -49,10 +49,8 @@ class Node(DirtyFieldsMixin, BaseModel):
         "parent_edges",
         "child_edges",
         "input_table",
-        "intermediate_table",
-        "cache_table",
     ]
-    _clone_excluded_o2o_fields = ["table", "intermediate_node", "cache_node"]
+    _clone_excluded_o2o_fields = ["table", "intermediate_table", "cache_table"]
 
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"
@@ -72,12 +70,7 @@ class Node(DirtyFieldsMixin, BaseModel):
     data_updated = models.DateTimeField(null=True, editable=False)
 
     error = models.CharField(max_length=300, null=True)
-    intermediate_table = models.ForeignKey(
-        Table, on_delete=models.CASCADE, null=True, related_name="intermediate_table"
-    )
-    cache_table = models.ForeignKey(
-        Table, on_delete=models.CASCADE, null=True, related_name="cache_table"
-    )
+
     # ======== Node specific columns ========= #
 
     # Input

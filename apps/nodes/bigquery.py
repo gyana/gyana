@@ -74,7 +74,7 @@ def use_intermediate_table(func):
     @wraps(func)
     def wrapper(node, parent):
 
-        table = node.intermediate_table
+        table = getattr(node, "intermediate_table", None)
         conn = clients.ibis_client()
 
         # if the table doesn't need updating we can simply return the previous computed pivot table
@@ -273,7 +273,7 @@ def get_window_query(node, query):
 
 
 def get_sentiment_query(node, parent):
-    table = node.intermediate_table
+    table = getattr(node, "intermediate_table", None)
     conn = clients.ibis_client()
 
     # if the table doesn't need updating we can simply return the previous computed table

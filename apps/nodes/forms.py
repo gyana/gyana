@@ -35,7 +35,8 @@ class NodeForm(LiveFormsetForm):
         return KIND_TO_FORMSETS.get(self.instance.kind, [])
 
     def save(self, commit=True):
-        self.instance.has_been_saved = True
+        if not self.instance.has_been_saved:
+            self.instance.has_been_saved = True
         return super().save(commit=commit)
 
 

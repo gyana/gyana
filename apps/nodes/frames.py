@@ -124,7 +124,9 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
 
     @property
     def preview_node(self):
-        if not (preview_id := self.request.GET.get("preview_node_id")):
+        if (
+            preview_id := self.request.GET.get("preview_node_id", self.object.id)
+        ) == self.object.id:
             return self.object
         return Node.objects.get(pk=preview_id)
 
