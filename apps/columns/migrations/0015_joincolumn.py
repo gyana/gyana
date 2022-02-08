@@ -19,6 +19,7 @@ def forward(apps, schema_editor):
                 node=node,
             )
             for node in Node.objects.filter(kind="join").iterator()
+            if node.join_left and node.join_right
         ]
     )
 
