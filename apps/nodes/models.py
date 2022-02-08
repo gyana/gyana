@@ -104,29 +104,7 @@ class Node(DirtyFieldsMixin, BaseModel):
     # aggregations exists on AggregationColumn as FK
 
     # Join
-    join_how = models.CharField(
-        max_length=12,
-        choices=[
-            ("inner", "Inner"),
-            ("outer", "Outer"),
-            ("left", "Left"),
-            ("right", "Right"),
-        ],
-        default="inner",
-        help_text="Select the join method, more information in the docs",
-    )
-    join_left = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
-        null=True,
-        blank=True,
-        help_text="The column from the first parent you want to join on.",
-    )
-    join_right = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
-        null=True,
-        blank=True,
-        help_text="The column from the second parent you want to join on.",
-    )
+    # See JoinColumn
 
     # Union/Except
     union_distinct = models.BooleanField(
