@@ -40,9 +40,7 @@
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 relative integration-demo flex flex-col justify-center">
         <turbo-frame id="web:integrations-demo" src="{% url 'web:integrations-demo' %}" loading="eager">
-          <div class='placeholder-scr placeholder-scr--fillscreen'>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-          </div>
+          <img src="{% static 'images/site/home/integrations-fallback.jpg' %}" alt="Integrations"/>
         </turbo-frame>
       </div>
     </div>
@@ -89,9 +87,7 @@
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1 p-4 lg:p-0 workflow-demo">
         <turbo-frame id="web:workflows-demo" src="{% url 'web:workflows-demo' %}" loading="eager">
-          <div class='placeholder-scr placeholder-scr--fillscreen h-80 lg:h-auto'>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-          </div>
+          <img src="{% static 'images/site/home/workflows-fallback.jpg' %}" alt="Workflows"/>
         </turbo-frame>
       </div>
     </div>
@@ -136,9 +132,7 @@
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 dashboard-demo">
         <turbo-frame id="web:dashboards-demo" src="{% url 'web:dashboards-demo' %}" loading="eager">
-          <div class='placeholder-scr placeholder-scr--fillscreen h-80 lg:h-auto'>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-          </div>
+          <img src="{% static 'images/site/home/dashboards-fallback.jpg' %}" alt="Dashboards"/>
         </turbo-frame>
       </div>
     </div>
