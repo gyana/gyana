@@ -163,7 +163,7 @@ const DashboardDemo = () => {
   const chartConfigs = {
     type,
     width: '100%',
-    height: '70%',
+    height: '60%',
     dataFormat: 'json',
     dataSource: {
       chart: {
@@ -212,13 +212,13 @@ const DashboardDemo = () => {
             <i className={`fad fa-${agency} p-2 fa-2x text-${theme}-600`}></i>
           </div>
           <div>
-            <h2 className='text-xl' style={{ fontFamily: font }}>
+            <h2 className='text-lg lg:text-xl' style={{ fontFamily: font }}>
               Marketing Performance Report
             </h2>
             <p>{AGENCY_CONFIG.find((item) => item.id === agency)?.name} Inc.</p>
           </div>
         </div>
-        <div className='h-64 lg:h-auto p-2'>
+        <div className='p-2'>
           <ReactFC {...chartConfigs} />
         </div>
         <p className='absolute bottom-0 right-0 text-gray-600 text-sm inline-flex items-center gap-1 bg-gray-10 p-1 m-2 rounded border border-gray'>

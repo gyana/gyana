@@ -30,16 +30,16 @@
                 {% heroicon 'external-link' class="w-5 h-5" style="solid" %}
               </a>
               <div class="inline-flex items-center text-sm leading-4 font-medium text-gray-700">
-                <span class="block lg:hidden">{% heroicon 'arrow-down' class="w-5 h-5" style="solid" %}</span>
+                <span class="mr-2 block lg:hidden">{% heroicon 'arrow-down' class="w-5 h-5" style="solid" %}</span>
                 <span>Choose your sources</span>
-                <span class="hidden lg:block">{% heroicon 'arrow-right' class="ml-2 w-5 h-5" style="solid" %}</span>
+                <span class="ml-2 hidden lg:block">{% heroicon 'arrow-right' class="w-5 h-5" style="solid" %}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 relative integration-demo">
-        <turbo-frame id="web:integrations-demo" src="{% url 'web:integrations-demo' %}" loading="lazy">
+        <turbo-frame id="web:integrations-demo" src="{% url 'web:integrations-demo' %}" loading="eager">
           <div class='placeholder-scr placeholder-scr--fillscreen'>
             <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
           </div>
@@ -80,15 +80,15 @@
               <b>{{ workflow_statistics.node_count }}</b> nodes • <b>{{ workflow_statistics.function_count }}</b> functions • <b>Unlimited</b> flexibility
             </p>
             <div class="inline-flex items-center text-sm leading-4 font-medium text-gray-700">
-              <span class="block lg:hidden">{% heroicon 'arrow-down' class="w-5 h-5" style="solid" %}</span>
-              <span class="hidden lg:block mr-2">{% heroicon 'arrow-left' class="w-5 h-5" style="solid" %}</span>
+              <span class="mr-2 block lg:hidden">{% heroicon 'arrow-down' class="w-5 h-5" style="solid" %}</span>
+              <span class="mr-2 hidden lg:block">{% heroicon 'arrow-left' class="w-5 h-5" style="solid" %}</span>
               <span>Explore our workflow nodes</span>
             </div>
           </div>
         </div>
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1 p-4 lg:p-0 workflow-demo">
-        <turbo-frame id="web:workflows-demo" src="{% url 'web:workflows-demo' %}" loading="lazy">
+        <turbo-frame id="web:workflows-demo" src="{% url 'web:workflows-demo' %}" loading="eager">
           <div class='placeholder-scr placeholder-scr--fillscreen h-80 lg:h-auto'>
             <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
           </div>
@@ -127,15 +127,15 @@
               <b>{{ widget_count }}</b> widgets • <b>Freeform</b> canvas • <b>Zero</b> constraints
             </p>
             <div class="inline-flex items-center text-sm leading-4 font-medium text-gray-700">
-              <span class="block lg:hidden">{% heroicon 'arrow-down' class="w-5 h-5" style="solid" %}</span>
+              <span class="mr-2 block lg:hidden">{% heroicon 'arrow-down' class="w-5 h-5" style="solid" %}</span>
               <span>Customize your report</span>
-              <span class="hidden lg:block">{% heroicon 'arrow-right' class="ml-2 w-5 h-5" style="solid" %}</span>
+              <span class="ml-2 hidden lg:block">{% heroicon 'arrow-right' class="w-5 h-5" style="solid" %}</span>
             </div>
           </div>
         </div>
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 dashboard-demo">
-        <turbo-frame id="web:dashboards-demo" src="{% url 'web:dashboards-demo' %}" loading="lazy">
+        <turbo-frame id="web:dashboards-demo" src="{% url 'web:dashboards-demo' %}" loading="eager">
           <div class='placeholder-scr placeholder-scr--fillscreen h-80 lg:h-auto'>
             <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
           </div>
