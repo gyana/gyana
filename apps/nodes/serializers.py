@@ -65,7 +65,7 @@ def get_select_desc(obj):
 
 
 def get_join_desc(obj):
-    return f"{obj.join_left}={obj.join_right} {obj.join_how}"
+    return f"Join {', '.join([f'Input {i+2} on {column.left_column}={column.right_column}' for i, column in enumerate(obj.join_columns.all())])}"
 
 
 def get_aggregation_desc(obj):
