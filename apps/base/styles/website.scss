@@ -86,6 +86,26 @@
   }
 }
 
-.turbo-frame-demo {
-  min-height: 18rem;
+.integration-demo {
+  height: 18rem;
+
+  @screen lg {
+    height: auto;
+  }
+}
+
+.workflow-demo {
+  height: 28rem;
+
+  @screen lg {
+    height: auto;
+  }
+}
+
+.dashboard-demo {
+  height: 40rem;
+
+  @screen lg {
+    height: auto;
+  }
 }
