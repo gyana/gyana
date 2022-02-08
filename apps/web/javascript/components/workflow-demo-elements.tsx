@@ -1,21 +1,27 @@
 import React from 'react'
 
+export const getInputNodeLabel = (idx) => {
+  const integration = window.__demo_store__.integrations[idx]
+
+  return (
+    <div className='relative'>
+      <img
+        src={`/static/images/integrations/fivetran/${integration.icon_path}`}
+        className='h-full w-full pointer-events-none p-6'
+      />
+      <div className='absolute -bottom-12 left-0 right-0 text-2xl font-semibold text-gray-600'>
+        {integration.name}
+      </div>
+    </div>
+  )
+}
+
 export default [
   {
     id: '1',
     type: 'input',
     data: {
-      label: (
-        <div className='relative'>
-          <img
-            className='pointer-events-none'
-            src='/static/images/integrations/fivetran/google_ads_account.png'
-          />
-          <div className='absolute -bottom-12 left-0 right-0 text-2xl font-semibold text-gray-600'>
-            Google Ads
-          </div>
-        </div>
-      ),
+      label: getInputNodeLabel(0),
     },
     position: { x: 0, y: 200 },
   },
@@ -23,17 +29,7 @@ export default [
     id: '2',
     type: 'input',
     data: {
-      label: (
-        <div className='relative'>
-          <img
-            src='/static/images/integrations/fivetran/facebook_ads.svg'
-            className='h-full w-full pointer-events-none'
-          />
-          <div className='absolute -bottom-12 left-0 right-0 text-2xl font-semibold text-gray-600'>
-            Facebook Ads
-          </div>
-        </div>
-      ),
+      label: getInputNodeLabel(1),
     },
     position: { x: 0, y: 400 },
   },

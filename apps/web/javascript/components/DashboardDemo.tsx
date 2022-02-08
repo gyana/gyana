@@ -12,6 +12,7 @@ FusionCharts.options.license({
 })
 
 import chartData from './dashboard-demo-data'
+import { useDemoStore } from '../state'
 
 const TYPE_CONFIG = [
   { id: 'pie2d', icon: 'fa-chart-pie' },
@@ -156,6 +157,8 @@ const DashboardDemo = () => {
   const [font, setFont] = useState('sans-serif')
   const [agency, setAgency] = useState('squirrel')
 
+  const { integrations, node } = useDemoStore()[0]
+
   const chartConfigs = {
     type,
     width: '100%',
@@ -181,7 +184,7 @@ const DashboardDemo = () => {
 
   return (
     <div className='p-4 lg:p-0 flex flex-col gap-4 h-full'>
-      <div className='card card--none flex-grow flex flex-col bg-gray-10'>
+      <div className='card card--none flex-grow flex flex-col bg-gray-10 relative'>
         <div className='w-full bg-gray-10 p-1'>
           <div
             className='px-2 py-1 border border-gray rounded-lg bg-white focus:outline-none'
@@ -208,6 +211,17 @@ const DashboardDemo = () => {
         <div className='h-64 lg:h-auto p-2'>
           <ReactFC {...chartConfigs} />
         </div>
+        <p className='absolute bottom-0 right-0 p-2 text-gray-600 text-sm inline-flex items-center gap-1'>
+          Data sources
+          {integrations.map((integration) => (
+            <img
+              className='w-4 h-4 rounded-sm'
+              src={`/static/images/integrations/fivetran/${integration.icon_path}`}
+              alt=''
+            />
+          ))}
+          {node && <i className={`fa ${node.icon}`}></i>}
+        </p>
       </div>
       <div className='flex-none flex flex-wrap gap-2 justify-center'>
         <TypeButtonGroup type={type} setType={setType} />

@@ -2,8 +2,9 @@ import { getLayoutedElements } from 'apps/base/javascript/layout'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import ReactFlow, { isEdge, useStoreState, useZoomPanHelper } from 'react-flow-renderer'
+import { useDemoStore } from '../state'
 
-import initialElements from './workflow-demo-elements'
+import initialElements, { getInputNodeLabel } from './workflow-demo-elements'
 
 const NODES = JSON.parse(
   (document.getElementById('nodes') as HTMLScriptElement).textContent as string
@@ -56,6 +57,16 @@ const WorkflowDemo = () => {
     })
   )
 
+  const [{ integrations, node }, setDemoStore] = useDemoStore(() =>
+    setElements((els) =>
+      els.map((el) => {
+        if (el.id === '1') el.data = { label: getInputNodeLabel(0) }
+        if (el.id === '2') el.data = { label: getInputNodeLabel(1) }
+        return el
+      })
+    )
+  )
+
   const selectNode = (node) => {
     setElements((els) =>
       els.map((el) => {
@@ -97,20 +108,20 @@ const WorkflowDemo = () => {
       </div>
       <div className='mt-4 card card--none'>
         <div className='pad w-full grid grid-cols-10 divide-x divide-y'>
-          {Object.values(NODES).map((node) => (
+          {Object.values(NODES).map((item) => (
             <button
-              key={node.icon}
+              key={item.icon}
               className={`p-2 focus:outline-none ${
-                selectedNode?.icon === node.icon
+                node?.icon === item.icon
                   ? 'text-white bg-indigo-600 hover:bg-indigo-700'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
               onClick={() => {
-                setSelectedNode(node)
-                selectNode(node)
+                setDemoStore({ integrations, node: item })
+                selectNode(item)
               }}
             >
-              <i className={`fa ${node.icon} fa-lg`}></i>
+              <i className={`fa ${item.icon} fa-lg`}></i>
             </button>
           ))}
           {/* empty div */}
