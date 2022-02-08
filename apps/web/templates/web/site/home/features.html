@@ -1,18 +1,5 @@
 {% load static heroicons %}
 
-<style>
-  {% for group in services %}
-    .integrations-{{ forloop.counter0 }} {
-      animation: {{ group.animation }}s linear 0s infinite normal none running slide;
-    }
-    @keyframes slide {
-      100% {
-        transform: translateX(-100%);
-      }
-    }
-  {% endfor %}
-</style>
-
 <div
   id="features"
   class="relative bg-white pt-16 pb-32 overflow-hidden"
@@ -46,24 +33,11 @@
         </div>
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 relative">
-        <div class="fade-left"></div>
-        <div class="flex flex-col gap-4 overflow-hidden mt-2">
-          {% for group in services %}
-            <div class="flex gap-2 integrations-{{ forloop.counter0 }}">
-              {% for service in group.services %}
-                <div class="inline-flex items-center gap-2 flex-none px-2 py-1 rounded-lg text-sm font-normal bg-indigo-100 text-gray-800">
-                  <img
-                    class="h-4 w-4"
-                    src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
-                    alt={{ service.name }}
-                  />
-                  {{ service.name }}
-                </div>
-              {% endfor %}
-            </div>
-          {% endfor %}
-        </div>
-        <div class="fade-right"></div>
+        <turbo-frame id="web:integrations-demo" src="{% url 'web:integrations-demo' %}" loading="lazy">
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          </div>
+        </turbo-frame>
       </div>
     </div>
   </div>
@@ -108,7 +82,11 @@
         </div>
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1 h-96 lg:h-auto p-4 lg:p-0">
-        <workflow-demo></workflow-demo>
+        <turbo-frame id="web:workflows-demo" src="{% url 'web:workflows-demo' %}" loading="lazy">
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          </div>
+        </turbo-frame>
       </div>
     </div>
   </div>
@@ -136,14 +114,12 @@
         </div>
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0">
-        <dashboard-demo></dashboard-demo>
+        <turbo-frame id="web:dashboards-demo" src="{% url 'web:dashboards-demo' %}" loading="lazy">
+          <div class='placeholder-scr placeholder-scr--fillscreen'>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          </div>
+        </turbo-frame>
       </div>
     </div>
   </div>
 </div>
-
-{{ node_config|json_script:"nodes" }}
-<script src="{% static "js/web-workflow-demo-bundle.js" %}"></script>
-<script>window.FUSIONCHARTS_LICENCE = "{{ FUSIONCHARTS_LICENCE }}"</script>
-<script src="{% static "js/web-dashboard-demo-bundle.js" %}"></script>
-<link rel="stylesheet" href="{% static "css/workflow.css" %}" />

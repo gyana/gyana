@@ -1,5 +1,3 @@
-import random
-
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
@@ -45,28 +43,16 @@ class Home(TemplateView):
 
         return cache_site(super().get)(request, *args, **kwargs)
 
-    def _get_services_grouped(self):
-        services = list(get_services_obj().values())
-        random.shuffle(services)
-        length = len(services)
-        n = int(length / 6)
-        services_grouped = [
-            {"services": services[i : i + n], "animation": random.randint(15, 35)}
-            for i in range(0, length, n)
-        ]
-        return services_grouped
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["content"] = get_content("home.yaml")
-        context["services"] = self._get_services_grouped()
         node_config = {
             k: v for k, v in NODE_CONFIG.items() if k not in ["input", "output", "text"]
         }
         context["node_config"] = node_config
-        context['workflow_statistics'] = {
-            'node_count': len(node_config.keys()),
-            'function_count': len(FUNCTIONS)
+        context["workflow_statistics"] = {
+            "node_count": len(node_config.keys()),
+            "function_count": len(FUNCTIONS),
         }
         context["widget_config"] = WIDGET_KIND_TO_WEB
         return context

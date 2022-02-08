@@ -24,6 +24,11 @@ sitmap_urlpatterns = [
 urlpatterns = sitmap_urlpatterns + [
     path("toggle-sidebar", views.toggle_sidebar),
     # frames
+    path(
+        "demo/integrations", frames.IntegrationsDemo.as_view(), name="integrations-demo"
+    ),
+    path("demo/workflows", frames.WorkflowsDemo.as_view(), name="workflows-demo"),
+    path("demo/dashboards", frames.DashboardsDemo.as_view(), name="dashboards-demo"),
     path("help", frames.HelpModal.as_view(), name="help"),
     path("changelog", frames.ChangelogModal.as_view(), name="changelog"),
 ]
