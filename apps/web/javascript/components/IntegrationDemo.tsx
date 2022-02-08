@@ -14,11 +14,12 @@ const IntegrationDemo = () => {
       <div className='fade-left'></div>
       <div className='flex flex-col gap-4 overflow-hidden mt-2'>
         {SERVICES.map((group, idx) => (
-          <div className={`flex gap-2 integrations-${idx}`}>
+          <div key={idx} className={`flex gap-2 integrations-${idx}`}>
             {group.services
               .filter((service) => !integrationIds.includes(service.id))
               .map((service) => (
                 <button
+                  key={service.id}
                   className='inline-flex items-center gap-2 flex-none px-2 py-1 rounded-lg text-sm font-normal focus:outline-none bg-indigo-100 hover:bg-indigo-200 text-gray-800'
                   onClick={() => setDemoStore({ node, integrations: [service, integrations[0]] })}
                 >
