@@ -1,5 +1,6 @@
 from django.db import transaction
 
+from apps.base import clients
 from apps.base.bigquery import copy_table
 
 
@@ -11,7 +12,7 @@ def create_attrs(attrs, original):
     from apps.integrations.models import Integration
 
     attrs = attrs or {}
-    # attrs["copied_from"] = original.id
+    attrs["copied_from"] = original.id
     if original.source == original.Source.INTEGRATION and (
         integration_clone := attrs.get("integration")
     ):
@@ -54,6 +55,14 @@ def create_attrs(attrs, original):
 
 # Make sure this is called inside a celery task, it could take a while
 def duplicate_table(original, clone):
-    transaction.on_commit(
-        lambda: copy_table(original.bq_id, clone.bq_id, clone.bq_dataset).result()
-    )
+    if (
+        clone.source == clone.Source.INTEGRATION
+        and clone.integration.kind == clone.integration.Kind.CONNECTOR
+    ):
+        client = clients.bigquery()
+        transaction.on_commit(
+            lambda: client.create_dataset(  # Create dataset if it doesn't exist yet
+                clone.bq_dataset, exists_ok=True
+            )
+        )
+    transaction.on_commit(lambda: copy_table(original.bq_id, clone.bq_id).result())

@@ -256,19 +256,17 @@ label.checkbox {
   display: flex;
   flex-direction: row;
   gap: 0.8rem;
-  height: 4.3rem;
+  height: 3rem;
   margin-top: 0.6rem;
-  margin-right: -0.8rem;
-  margin-left: -0.8rem;
   padding: 0.8rem;
 
-  &::after {
+  &::before {
     color: var(--c-gray);
     content: '\f0c8';
     font-family: 'Font Awesome 5 Pro';
     font-size: 1.8rem;
     font-weight: 500;
-    margin-left: auto;
+    // margin-left: auto;
   }
 
   &:hover {
@@ -276,13 +274,17 @@ label.checkbox {
     background-color: var(--c-gray-50);
     color: var(--c-blue);
     
-    &::after {
+    &::before {
       content: '\f14a';
     }
   }
 
-  &--radio::after {
+  &--radio::before {
     content: '\f111';
+  }
+
+  &--icon {
+    height: 4.3rem;
   }
 
   &--checked {
@@ -293,14 +295,14 @@ label.checkbox {
       color: var(--c-blue);
     }
 
-    &::after {
+    &::before {
       color: var(--c-blue);
       content: '\f14a';
     }
   }
 
-  &--checked.checkbox--radio::after,
-  &--radio:hover::after {
+  &--checked.checkbox--radio::before,
+  &--radio:hover::before {
     content: '\f192';
   }
 }
@@ -316,7 +318,7 @@ label.checkbox {
   &:checked ~ label.checkbox__enabled {
     border: 1px solid var(--c-blue);
 
-    &::after {
+    &::before {
       color: var(--c-blue);
       content: '\f14a';
     }
@@ -325,7 +327,7 @@ label.checkbox {
   &:checked ~ label.checkbox__disabled {
     border: 1px solid var(--c-gray);
 
-    &::after {
+    &::before {
       color: var(--c-gray);
       content: '\f14a';
     }
@@ -335,7 +337,7 @@ label.checkbox {
     border: 1px solid var(--c-green);
     cursor: default;
 
-    &::after {
+    &::before {
       color: var(--c-green);
       content: '\f14a';
     }

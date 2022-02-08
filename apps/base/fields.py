@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.postgres.fields import ArrayField
 
+from apps.base.widgets import MultiSelect
+
 
 class ChoiceArrayField(ArrayField):
     """
@@ -20,7 +22,7 @@ class ChoiceArrayField(ArrayField):
         defaults = {
             "form_class": forms.MultipleChoiceField,
             "choices": self.base_field.choices,
-            "widget": forms.CheckboxSelectMultiple,
+            "widget": MultiSelect,
         }
         defaults.update(kwargs)
         # Skip our parent's formfield implementation completely as we don't

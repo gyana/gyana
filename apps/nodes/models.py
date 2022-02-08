@@ -10,6 +10,7 @@ from django.utils.functional import cached_property
 from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import BaseModel
 from apps.dashboards.models import Dashboard
+from apps.nodes.clone import clone_tables
 from apps.nodes.config import NODE_CONFIG
 from apps.tables.models import Table
 from apps.workflows.models import Workflow
@@ -44,7 +45,14 @@ class Node(DirtyFieldsMixin, BaseModel):
         SENTIMENT = "sentiment", "Sentiment"
 
     _clone_excluded_m2m_fields = ["parents", "node_set"]
-    _clone_excluded_m2o_or_o2m_fields = ["parent_edges", "child_edges"]
+    _clone_excluded_m2o_or_o2m_fields = [
+        "parent_edges",
+        "child_edges",
+        "input_table",
+        "intermediate_table",
+        "cache_table",
+    ]
+    _clone_excluded_o2o_fields = ["table", "intermediate_node", "cache_node"]
 
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"
@@ -316,6 +324,11 @@ class Node(DirtyFieldsMixin, BaseModel):
     @property
     def used_in(self):
         return list(chain(self.used_in_workflows, self.used_in_dashboards))
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        clone_tables(self, clone, using)
+        return clone
 
 
 class Edge(BaseModel):

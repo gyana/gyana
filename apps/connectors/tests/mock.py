@@ -71,7 +71,7 @@ def get_mock_schema(
     if num_schemas is None:
         schema = {
             "name_in_destination": "dataset",
-            "enabled": True,
+            "enabled": schemas_disabled is None,
             "tables": tables,
         }
         schema_obj = FivetranSchemaObj(

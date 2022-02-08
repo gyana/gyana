@@ -38,7 +38,7 @@ class WorkflowOverview(ProjectMixin, TurboFrameTemplateView):
         failed = workflows.filter(state=Workflow.State.FAILED).count()
 
         context_data["workflows"] = {
-            "all": workflows.order_by("-updated").all(),
+            "all": workflows.order_by("-updated").all()[:5],
             "total": workflows.count(),
             "results": results,
             "nodes": nodes.count(),

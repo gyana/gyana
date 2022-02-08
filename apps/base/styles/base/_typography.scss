@@ -62,3 +62,27 @@ strong, .strong {
 p + p {
   margin-top: 0.6rem;
 }
+
+// /learn specific stylings
+.text-poppins {
+  font-family: "Poppins";
+}
+
+.prose h1 > a,
+.prose h2 > a,
+.prose h3 > a,
+.prose h4 > a {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+
+    & .fa {
+      display: inline-block;
+    }
+  }
+
+  & .fa {
+    display: none;
+  }
+}

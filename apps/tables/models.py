@@ -7,6 +7,7 @@ from django.utils.functional import cached_property
 from apps.base import clients
 from apps.base.models import BaseModel
 from apps.projects.models import Project
+from apps.tables.clone import create_attrs
 
 from .clone import create_attrs, duplicate_table
 
@@ -26,6 +27,9 @@ class Table(BaseModel):
         WORKFLOW_NODE = "workflow_node", "Workflow node"
         INTERMEDIATE_NODE = "intermediate_node", "Intermediate node"
         CACHE_NODE = "cache_node", "Cache node"
+
+    _clone_excluded_o2o_fields = ["workflow_node", "cache_node", "intermediate_node"]
+    _clone_excluded_m2o_or_o2m_fields = ["input_nodes", "exports", "widget_set"]
 
     bq_table = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
     bq_dataset = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
@@ -57,6 +61,8 @@ class Table(BaseModel):
 
     objects = models.Manager()
     available = AvailableManager()
+
+    copied_from = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return getattr(self, self.source).get_table_name()

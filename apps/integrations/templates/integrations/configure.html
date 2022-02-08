@@ -16,6 +16,12 @@
           data-controller="live-update"
           enctype='multipart/form-data'
         {% endif %}
+        {% flag 'alpha' %}
+          {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' %}
+            data-controller="live-update"
+            enctype='multipart/form-data'
+          {% endif %}
+        {% endflag %}
         >
         <span data-live-update-target="loading" class="hidden">
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
@@ -35,7 +41,7 @@
         {% include "django/forms/default_form.html" %}
 
         {% flag 'alpha' %}
-          {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' %}
+          {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' and object.connector.setup_mode == 'advanced' %}
             <label>
               Custom reports
               <p class="input__help-text">Build custom reports (you can change this later)</p>

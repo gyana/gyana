@@ -49,7 +49,7 @@
     {% for integration in integrations.all|slice:":12"  %}
     <a
       class="card card--none card--flex gap-3 items-center flex-col"
-      style="flex: 0 0 12rem; padding: 1.8rem 0.2rem;"
+      style="flex: 0 0 13rem; padding: 1.8rem 0.2rem;"
       href="{% url "project_integrations:detail" project.id integration.id %}"
       data-turbo-frame="_top"
     >
@@ -58,7 +58,7 @@
         style="height: 1.6rem; width: 1.6rem;"
         alt="{{ integration.kind }}"
       >
-      <p class="small">{{ integration.name }}</p>
+      <p class="truncate text-center w-full px-6 small">{{ integration.name }}</p>
     </a>
     {% endfor %}
   </div>

@@ -200,6 +200,10 @@ class Widget(WidgetStyle, BaseModel):
     def has_control(self):
         return hasattr(self, "control")
 
+    @property
+    def icon(self):
+        return WIDGET_KIND_TO_WEB[self.kind][0]
+
 
 NO_DIMENSION_WIDGETS = [
     Widget.Kind.RADAR,

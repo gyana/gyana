@@ -37,6 +37,11 @@ urlpatterns = [
         login_and_project_required(rest.project_run),
         name="run",
     ),
+    path(
+        "<hashid:project_id>/duplicate",
+        login_and_project_required(frames.ProjectDuplicate.as_view()),
+        name="duplicate",
+    ),
 ]
 
 team_urlpatterns = (

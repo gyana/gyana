@@ -66,6 +66,7 @@ class GenericWidgetForm(LiveFormsetForm):
                 source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
             )
             table = self.get_live_field("table")
+
             schema = Table.objects.get(pk=table).schema if table else None
             if "date_column" in self.fields and schema:
                 self.fields["date_column"] = forms.ChoiceField(

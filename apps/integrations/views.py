@@ -12,6 +12,7 @@ from waffle import flag_is_active
 
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
 from apps.base.views import FormsetUpdateView, TurboUpdateView
+from apps.connectors.forms import FacebookAdsConnectorUpdateForm
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import run_integration
 from apps.projects.mixins import ProjectMixin
@@ -136,19 +137,26 @@ class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
             return redirect(
                 "project_integrations:load", self.project.id, self.object.id
             )
+        # only sync on initial get, not live form updates (post with 422 response)
+        if self.object.kind == Integration.Kind.CONNECTOR:
+            self.object.connector.sync_schema_obj_from_fivetran()
         return super().get(request, *args, **kwargs)
 
     def get_form_instance(self):
         return self.object.source_obj
 
     def get_form_class(self):
+        if (
+            self.object.kind == Integration.Kind.CONNECTOR
+            and self.object.connector.service == "facebook_ads"
+            and flag_is_active(self.request, "alpha")
+        ):
+            return FacebookAdsConnectorUpdateForm
         return KIND_TO_FORM_CLASS[self.object.kind]
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.update({"instance": self.object.source_obj})
-        if self.object.kind == Integration.Kind.CONNECTOR:
-            kwargs["is_alpha"] = flag_is_active(self.request, "alpha")
         return kwargs
 
     def form_valid(self, form):

@@ -17,12 +17,12 @@
     {% for dashboard in dashboards.all|slice:":12" %}
     <a
       class="card card--none card--flex gap-3 items-center flex-col"
-      style="flex: 0 0 12rem; padding: 1.8rem 0.2rem;"
+      style="flex: 0 0 13rem; padding: 1.8rem 0.2rem;"
       href="{% url "project_dashboards:detail" project.id dashboard.id %}"
       data-turbo-frame="_top"
     >
       <i class="fas fa-fw fa-chart-pie text-black-50" style="font-size: 1.6rem"></i>
-      <p class="small">{{ dashboard.name }}</p>
+      <p class="truncate text-center w-full px-6 small">{{ dashboard.name }}</p>
     </a>
     {% endfor %}
   </div>

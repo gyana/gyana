@@ -4,14 +4,14 @@
  {% for option in widget.options %}
   <label 
     data-node-input-target="label"
-    class="checkbox checkbox--radio {% if option.id|stringformat:'i' == widget.selected %}checkbox--checked{% endif %}"
+    class="checkbox checkbox--radio checkbox--icon {% if option.id|stringformat:'i' == widget.selected %}checkbox--checked{% endif %}"
     id="{{ option.id }}"
     data-action="click->node-input#select click->tf-modal#preview"
   >
     {% if option.image %}
-    <img src="{% static option.image %}" style="width: 1.4rem;">
+    <img src="{% static option.image %}" style="width: 1.6rem;">
     {% else %}
-    <i class="{{ option.icon }}"></i>
+    <i class="{{ option.icon }}" style="font-size: 1.6rem;"></i>
     {% endif %}
 
     <div>

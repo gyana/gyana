@@ -182,6 +182,58 @@ SECONDARY_TABLES = [
     "purchase_roas",
 ]
 
+BASIC_REPORTS = {
+    "BASIC_AD_PERFORMANCE": {
+        "name": "Ad performance by day",
+        "description": "CPC, CPM, CPP, CTR",
+        "custom_table": {
+            "table_name": "basic_ads_performance",
+            "fields": ["ad_id", "ad_name", "cpc", "cpm", "cpp", "ctr"],
+            "breakdowns": [],
+            "action_breakdowns": [],
+            "aggregation": "Day",
+            "action_report_time": "impression",
+            "click_attribution_window": "DAY_7",
+            "view_attribution_window": "DAY_1",
+            "use_unified_attribution_setting": True,
+        },
+    },
+    "BASIC_ADSET_PERFORMANCE": {
+        "name": "Ad Set performance by day",
+        "description": "CPC, CPM, CPP, CTR",
+        "custom_table": {
+            "table_name": "basic_adset_performance",
+            "fields": ["adset_id", "adset_name", "cpc", "cpm", "cpp", "ctr"],
+            "breakdowns": [],
+            "action_breakdowns": [],
+            "aggregation": "Day",
+            "action_report_time": "impression",
+            "click_attribution_window": "DAY_7",
+            "view_attribution_window": "DAY_1",
+            "use_unified_attribution_setting": True,
+        },
+    },
+    "BASIC_CAMPAIGN_PERFORMANCE": {
+        "name": "Campaign performance by day",
+        "description": "CPC, CPM, CPP, CTR",
+        "custom_table": {
+            "table_name": "basic_campaign_performance",
+            "fields": ["campaign_id", "campaign_name", "cpc", "cpm", "cpp", "ctr"],
+            "breakdowns": [],
+            "action_breakdowns": [],
+            "aggregation": "Day",
+            "action_report_time": "impression",
+            "click_attribution_window": "DAY_7",
+            "view_attribution_window": "DAY_1",
+            "use_unified_attribution_setting": True,
+        },
+    },
+}
+
+BASIC_REPORTS_CHOICES = [
+    (k, f'{v["name"]}: {v["description"]}') for k, v in BASIC_REPORTS.items()
+]
+
 
 def _get_table_ids_for_report(name):
     return [name] + [

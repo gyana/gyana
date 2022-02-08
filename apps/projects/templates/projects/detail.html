@@ -2,6 +2,7 @@
 {% load render_table from django_tables2 %}
 {% load humanize %}
 {% load static %}
+{% load waffle_tags %}
 
 {% block app-class %}overflow-auto{% endblock app-class %}
 
@@ -18,10 +19,15 @@
     </p>
     {% endif %}
   </div>
+  {% flag 'beta' %}
+  <turbo-frame id='projects:duplicate'>
+    {% include 'projects/duplicate.html' %}
+  </turbo-frame>
+  {% endflag %}
 </header>
 
 <div class="flex flex-col flex-1">
-  <section class="flex flex-col" style="max-width: 80rem;">
+  <section class="flex flex-col" style="max-width: 77rem;">
     <turbo-frame id="integrations:overview" src="{% url 'project_integrations:overview' project.id %}">
       <div class="flex flex-col pad">
         <div class="flex items-baseline gap-3">

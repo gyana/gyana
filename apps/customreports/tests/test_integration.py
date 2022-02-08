@@ -3,6 +3,7 @@ from django import forms
 from pytest_django.asserts import assertRedirects
 
 from apps.base.tests.asserts import assertFormRenders, assertOK, assertSelectorLength
+from apps.connectors.models import Connector
 from apps.connectors.tests.mock import get_mock_fivetran_connector
 from apps.customreports.models import FacebookAdsCustomReport
 
@@ -82,9 +83,10 @@ def test_customreports_import(
     )
 
     CONFIGURE = f"/projects/{project.id}/integrations/{integration.id}/configure"
+    data = {"setup_mode": Connector.SetupMode.ADVANCED, "submit": True}
 
     # connector import
-    client.post(CONFIGURE, data={})
+    client.post(CONFIGURE, data=data)
 
     assert fivetran.update.call_count == 0
     assert fivetran.test.call_count == 0
@@ -92,15 +94,14 @@ def test_customreports_import(
     connector.service = "facebook_ads"
     connector.save()
 
-    client.post(CONFIGURE, data={})
+    client.post(CONFIGURE, data=data)
     assert fivetran.update.call_count == 0
     assert fivetran.test.call_count == 0
 
     facebook_ads_custom_report = facebook_ads_custom_report_factory(connector=connector)
 
     # only called when service has custom reports
-
-    client.post(CONFIGURE, data={})
+    client.post(CONFIGURE, data=data)
     assert fivetran.update.call_count == 1
     assert fivetran.update.call_args.args == (connector,)
     assert fivetran.test.call_count == 1
