@@ -260,7 +260,12 @@ class ExceptNodeForm(DefaultNodeForm):
 class JoinNodeForm(DefaultNodeForm):
     def get_formset_kwargs(self, formset):
         parents_count = self.instance.parents.count()
-        return {"max_num": parents_count - 1, "min_num": parents_count - 1}
+        names = [f"Join Input {i+2}" for i in range(parents_count)]
+        return {
+            "max_num": parents_count - 1,
+            "min_num": parents_count - 1,
+            "names": names,
+        }
 
 
 KIND_TO_FORM = {

@@ -267,10 +267,10 @@ class JoinColumn(SaveParentModel):
     left_index = models.IntegerField(default=0)
     left_column = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
-        help_text="Choose the left join column",
+        help_text="Choose the join column from Input {}",
     )
 
     right_column = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
-        help_text="Choose the right join column",
+        help_text="Choose the right join column from Input {}",
     )

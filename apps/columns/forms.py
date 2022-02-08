@@ -282,13 +282,15 @@ class JoinColumnForm(BaseLiveSchemaForm):
 
         self.fields["left_column"] = forms.ChoiceField(
             choices=create_left_join_choices(parents, index),
-            help_text=self.fields["left_column"].help_text,
+            help_text=self.fields["left_column"].help_text.format(
+                index + 1 if index == 0 else f"1 to {index+1}"
+            ),
         )
         self.fields["right_column"] = forms.ChoiceField(
             choices=create_column_choices(
                 parents[index + 1].schema,
             ),
-            help_text=self.fields["left_column"].help_text,
+            help_text=self.fields["right_column"].help_text.format(index + 2),
         )
 
     def get_initial_for_field(self, field, field_name):

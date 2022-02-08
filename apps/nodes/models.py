@@ -269,8 +269,8 @@ class Node(DirtyFieldsMixin, BaseModel):
     def join_is_valid(self):
         if self.kind == self.Kind.JOIN:
             join_count = self.join_columns.count()
-            parents = self.parent_edges.all()[:join_count]
-            positions = {p.position for p in parents}
+            parents = self.parent_edges.all()
+            positions = {p.position for p in parents[:join_count]}
             missing = set(range(join_count)).difference(positions)
             return len(parents) > 1 and not missing
         return False
@@ -338,18 +338,8 @@ class Edge(BaseModel):
 
     def save(self, *args, **kwargs):
         self.child.data_updated = timezone.now()
-
         self.child.save()
         return super().save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        if (
-            self.child.kind == Node.Kind.JOIN
-            and (parent_num := (self.child.parents.count() - 2))
-            < self.child.join_columns.count()
-        ):
-            self.child.join_columns.last().delete()
-        return super().delete(*args, **kwargs)
 
     child = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="parent_edges"
