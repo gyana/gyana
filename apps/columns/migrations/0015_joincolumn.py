@@ -18,7 +18,7 @@ def forward(apps, schema_editor):
                 how=node.join_how,
                 node=node,
             )
-            for node in Node.objects.filter(kind=Node.Kind.JOIN).iterator()
+            for node in Node.objects.filter(kind="join").iterator()
         ]
     )
 

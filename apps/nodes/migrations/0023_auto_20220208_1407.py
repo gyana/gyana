@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("nodes", "0022_alter_node_input_table"),
+        ("nodes", "0023_auto_20220208_1139"),
         ("columns", "0015_joincolumn"),
     ]
 
