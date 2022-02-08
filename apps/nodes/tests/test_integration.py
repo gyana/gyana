@@ -28,6 +28,7 @@ def base_formset(formset):
 
 COLUMNS_BASE_DATA = base_formset("columns")
 AGGREGATIONS_BASE_DATA = base_formset("aggregations")
+JOIN_BASE_DATA = base_formset("join_columns")
 
 
 def create_and_connect_node(client, kind, node_factory, table, workflow):
@@ -140,17 +141,36 @@ def test_join_node(client, node_factory, setup):
 
     r = client.get(f"/nodes/{join_node.id}")
     assertOK(r)
-    assertFormRenders(r, ["name", "join_how", "join_left", "join_right"])
+    assertFormRenders(
+        r,
+        {
+            "name",
+            *JOIN_BASE_DATA.keys(),
+            "join_columns-0-id",
+            "join_columns-0-node",
+            "join_columns-0-how",
+            "join_columns-0-left_column",
+            "join_columns-0-right_column",
+            "join_columns-0-DELETE",
+        },
+    )
 
     r = update_node(
         client,
         join_node.id,
-        {"join_how": "outer", "join_left": "id", "join_right": "id"},
+        {
+            **JOIN_BASE_DATA,
+            "join_columns-TOTAL_FORMS": 1,
+            "join_columns-0-how": "outer",
+            "join_columns-0-left_column": "0:id",
+            "join_columns-0-right_column": "id",
+        },
     )
     join_node.refresh_from_db()
-    assert join_node.join_how == "outer"
-    assert join_node.join_left == "id"
-    assert join_node.join_right == "id"
+    join_column = join_node.join_columns.first()
+    assert join_column.how == "outer"
+    assert join_column.left_column == "id"
+    assert join_column.right_column == "id"
 
 
 def test_aggregation_node(client, node_factory, setup):

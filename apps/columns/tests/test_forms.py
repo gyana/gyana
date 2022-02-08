@@ -4,14 +4,17 @@ from django.http import QueryDict
 from apps.base.core.aggregations import AggregationFunctions
 from apps.base.tests.asserts import assertFormChoicesLength
 from apps.base.tests.mock_data import TABLE
+from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.columns.forms import (
     AddColumnForm,
     AggregationColumnForm,
     ConvertColumnForm,
     FormulaColumnForm,
+    JoinColumnForm,
     OperationColumnForm,
     WindowColumnForm,
 )
+from apps.nodes.models import Node
 
 pytestmark = pytest.mark.django_db
 from apps.columns.models import EditColumn
@@ -119,6 +122,38 @@ def test_convert_form(convert_column_factory):
     assert set(form.fields.keys()) == {"hidden_live", "column", "target_type"}
     assertFormChoicesLength(form, "column", 9)
     assertFormChoicesLength(form, "target_type", 8)
+
+
+def test_join_form(
+    join_column_factory, node_factory, bigquery, integration_table_factory
+):
+    mock_bq_client_with_schema(
+        bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
+    )
+    table = integration_table_factory()
+    input_node = node_factory(kind=Node.Kind.INPUT, input_table=table)
+    second_input = node_factory(kind=Node.Kind.INPUT, input_table=table)
+    join_node = node_factory(kind=Node.Kind.JOIN)
+    join_node.parents.add(input_node)
+    join_node.parents.add(second_input, through_defaults={"position": 1})
+    join_node.save()
+
+    column = join_column_factory(node=join_node)
+    form = JoinColumnForm(
+        instance=column,
+        schema=TABLE.schema(),
+        parent_instance=column.node,
+        prefix="join-column-0",
+    )
+    assert set(form.fields.keys()) == {
+        "hidden_live",
+        "left_column",
+        "right_column",
+        "how",
+    }
+    assertFormChoicesLength(form, "left_column", 2)
+    assertFormChoicesLength(form, "right_column", 9)
+    assertFormChoicesLength(form, "how", 4)
 
 
 @pytest.mark.parametrize(
