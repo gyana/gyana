@@ -40,6 +40,7 @@ class NodeSerializer(serializers.ModelSerializer):
             "error",
             "text_text",
             "parent_edges",
+            "join_is_valid",
         )
         read_only = ["parent_edges"]
 

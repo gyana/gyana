@@ -107,7 +107,7 @@ const DefaultNode: React.FC<NodeProps> = ({
   const incomingCount = useGetIncomingCount(id)
   const updateNodeInternals = useUpdateNodeInternals()
 
-  const showWarning = data.kind === 'join' ? incomingCount < 2 : incomingCount == 0
+  const showWarning = data.kind === 'join' ? !data.join_is_valid : incomingCount == 0
   const warningMessage =
     data.kind === 'join'
       ? 'Join needs at least two input connections'

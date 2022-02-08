@@ -122,7 +122,7 @@ def get_join_query(node, left, right, *queries):
     query = renamed_queries[0]
     drops = set()
     relabels = {}
-    for idx, join in enumerate(node.join_columns.all()):
+    for idx, join in enumerate(node.join_columns.all()[: len(renamed_queries) - 1]):
         left = renamed_queries[join.left_index]
         right = renamed_queries[idx + 1]
         to_join = getattr(query, JOINS[join.how])

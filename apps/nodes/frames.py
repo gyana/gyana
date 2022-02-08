@@ -71,7 +71,11 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
         except (NodeResultNone) as e:
             self.parent_error_node = e.node
 
-        if not self.parent_error_node and (is_input or self.object.has_enough_parents):
+        if (
+            not self.parent_error_node
+            and (is_input or self.object.has_enough_parents)
+            and (self.object.kind != Node.Kind.JOIN or self.object.join_is_valid)
+        ):
             return super().get_form()
 
     def get_form_kwargs(self):

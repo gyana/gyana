@@ -252,7 +252,20 @@ class Node(DirtyFieldsMixin, BaseModel):
 
         func = NODE_FROM_CONFIG[self.kind]
         min_arity, _ = get_arity_from_node_func(func)
-        return self.parents.count() >= min_arity
+
+        return self.parents.count() >= min_arity and (
+            self.kind != self.Kind.JOIN or self.join_is_valid
+        )
+
+    @property
+    def join_is_valid(self):
+        if self.kind == self.Kind.JOIN:
+            join_count = self.join_columns.count()
+            parents = self.parent_edges.all()[:join_count]
+            positions = {p.position for p in parents}
+            missing = set(range(join_count)).difference(positions)
+            return len(parents) > 1 and not missing
+        return False
 
     def get_table_name(self):
         return f"Workflow:{self.workflow.name}:{self.name}"

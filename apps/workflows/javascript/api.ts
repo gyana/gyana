@@ -15,6 +15,7 @@ export const toNode = (res, position: XYPosition): Node => ({
     tableName: res.input_table ? res.input_table.owner_name : undefined,
     ...(res.kind === 'text' ? { text: res.text_text } : {}),
     description: res.description,
+    join_is_valid: res.join_is_valid,
   },
   position,
 })
