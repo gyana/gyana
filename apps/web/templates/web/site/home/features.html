@@ -6,12 +6,12 @@
 >
   <div id="integrations" class="relative">
     <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
-      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:max-w-none lg:mx-0 lg:px-0">
+      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-8 lg:max-w-none lg:mx-0 lg:px-0">
         <div>
           <div>
             <span class="flex-shrink-0">
-              <span class="w-10 h-10 flex items-center justify-center border-2 border-indigo-600 rounded-full">
-                <span class="text-indigo-600">01</span>
+              <span class="w-12 h-12 flex items-center justify-center bg-indigo-600 rounded-lg">
+                <span class="text-white text-3xl font-extrabold">1</span>
               </span>
             </span>
           </div>
@@ -19,12 +19,11 @@
             <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
               Connect your sources
             </h2>
-            <p class="mt-4 mb-6 text-lg text-gray-600">
+            <p class="my-4 text-lg text-gray-600">
               Connect to most popular online sources, including apps, databases, webhooks and APIs.
               After a one-time setup, our enterprise-grade connectors will sync your raw data, daily.
-              <b>No more manual exports.</b>
+              No more manual exports.
             </p>
-            
             <a href="{% url 'web:integrations' %}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
               <span>View our native integrations</span>
               {% heroicon 'chevron-right' class="w-5 h-5" style="solid" %}
@@ -43,20 +42,20 @@
   </div>
   <div id="workflows" class="mt-24">
     <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
-      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-16 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
+      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-8 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
         <div>
           <div>
             <span class="flex-shrink-0">
-              <span class="w-10 h-10 flex items-center justify-center border-2 border-indigo-600 rounded-full">
-                <span class="text-indigo-600">02</span>
+              <span class="w-12 h-12 flex items-center justify-center bg-indigo-600 rounded-lg">
+                <span class="text-white text-3xl font-extrabold">2</span>
               </span>
             </span>
           </div>
-          <div class="mt-6">
+          <div class="mt-6 flex flex-col gap-y-4">
             <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
               Prepare your data
             </h2>
-            <p class="mt-4 text-lg text-gray-600">
+            <p class="text-lg text-gray-600">
               Our visual editor makes it easy. Connect data processing steps like
               <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
                 <i class="fa fa-filter mr-2"> </i>Filter
@@ -70,13 +69,13 @@
               and watch as automation does all the heavy lifting for you. Your workflows
               can be as simple or as complex as you design them.
             </p>
-            <p class="mt-4 text-sm text-gray-600 mb-6">
+            <p class="text-sm text-gray-600">
               <b>{{ workflow_statistics.node_count }}</b> nodes • <b>{{ workflow_statistics.function_count }}</b> functions • <b>Unlimited</b> flexibility
             </p>
             <div class="inline-flex items-center text-sm leading-4 font-medium text-gray-700">
               <span class="block lg:hidden">{% heroicon 'arrow-down' class="w-5 h-5" style="solid" %}</span>
-              <span class="hidden lg:block">{% heroicon 'arrow-left' class="w-5 h-5" style="solid" %}</span>
-              <span class="ml-2">Explore our workflow nodes</span>
+              <span class="hidden lg:block mr-2">{% heroicon 'arrow-left' class="w-5 h-5" style="solid" %}</span>
+              <span>Explore our workflow nodes</span>
             </div>
           </div>
         </div>
@@ -92,24 +91,39 @@
   </div>
   <div id="dashboards" class="mt-24">
     <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
-      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-16 lg:max-w-none lg:mx-0 lg:px-0">
+      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-8 lg:max-w-none lg:mx-0 lg:px-0">
         <div>
           <div>
             <span class="flex-shrink-0">
-              <span class="w-10 h-10 flex items-center justify-center border-2 border-indigo-600 rounded-full">
-                <span class="text-indigo-600">03</span>
+              <span class="w-12 h-12 flex items-center justify-center bg-indigo-600 rounded-lg">
+                <span class="text-white text-3xl font-extrabold">3</span>
               </span>
             </span>
           </div>
-          <div class="mt-6">
+          <div class="mt-6 flex flex-col gap-y-4">
             <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
               Build your report
             </h2>
-            <p class="mt-4 mb-6 text-lg text-gray-600">
-              Choose from a variety of flexible visualizations and connect
-              to any data. Schedule daily updates, add interactive filters
-              and share with your clients and collaborators.
+            <p class="text-lg text-gray-600">
+              It's like building a presentation, but with live data sources that never break. Drag and drop charts like
+              <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
+                <i class="fa fa-chart-pie mr-2"> </i>Pie
+              </span>
+              <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
+                <i class="fa fa-filter mr-2"> </i>Funnel
+              </span>
+              <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
+                <i class="fa fa-browser mr-2"> </i>Embed
+              </span>, customize your theme and share branded links.
             </p>
+            <p class="text-sm text-gray-600">
+              <b>{{ widget_count }}</b> widgets • <b>Freeform</b> canvas • <b>Zero</b> constraints
+            </p>
+            <div class="inline-flex items-center text-sm leading-4 font-medium text-gray-700">
+              <span class="block lg:hidden">{% heroicon 'arrow-down' class="w-5 h-5" style="solid" %}</span>
+              <span>Customize your report</span>
+              <span class="hidden lg:block">{% heroicon 'arrow-right' class="ml-2 w-5 h-5" style="solid" %}</span>
+            </div>
           </div>
         </div>
       </div>

@@ -55,6 +55,7 @@ class Home(TemplateView):
             "function_count": len(FUNCTIONS),
         }
         context["widget_config"] = WIDGET_KIND_TO_WEB
+        context["widget_count"] = len(WIDGET_KIND_TO_WEB.keys())
         return context
 
 
