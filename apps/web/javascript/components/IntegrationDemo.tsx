@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDemoStore } from '../state'
+import { useDemoStore } from '../store'
 
 const SERVICES = JSON.parse(
   (document.getElementById('services') as HTMLScriptElement).textContent as string

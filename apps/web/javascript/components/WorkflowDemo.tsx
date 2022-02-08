@@ -2,7 +2,7 @@ import { getLayoutedElements } from 'apps/base/javascript/layout'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import ReactFlow, { isEdge, useStoreState, useZoomPanHelper } from 'react-flow-renderer'
-import { useDemoStore } from '../state'
+import { useDemoStore } from '../store'
 
 import initialElements, { getInputNodeLabel } from './workflow-demo-elements'
 

@@ -12,7 +12,7 @@ FusionCharts.options.license({
 })
 
 import chartData from './dashboard-demo-data'
-import { useDemoStore } from '../state'
+import { useDemoStore } from '../store'
 
 const TYPE_CONFIG = [
   { id: 'pie2d', icon: 'fa-chart-pie' },
@@ -225,9 +225,10 @@ const DashboardDemo = () => {
           Data sources
           {integrations.map((integration) => (
             <img
+              key={integration.name}
               className='w-4 h-4 rounded-sm'
               src={`/static/images/integrations/fivetran/${integration.icon_path}`}
-              alt=''
+              alt={integration.name}
             />
           ))}
           {node && (
