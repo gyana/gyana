@@ -1,4 +1,5 @@
 import pytest
+
 from apps.appsumo.models import AppsumoCode, AppsumoExtra, AppsumoReview
 from apps.teams.account import calculate_credit_statement, get_row_limit
 from apps.teams.models import CreditTransaction, Team
@@ -25,6 +26,14 @@ def test_row_limit():
 
     AppsumoExtra.objects.create(team=team, rows=100_000, reason="extra")
     assert get_row_limit(team) == 2_100_000
+
+
+def test_credit_limit():
+    team = Team.objects.create(name="Test team")
+    assert team.credits == 100
+
+    team.override_credit_limit = 1000
+    assert team.credits == 1000
 
 
 def test_current_credit_balance_new_team():
