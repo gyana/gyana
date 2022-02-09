@@ -10,7 +10,7 @@ And to activate the app index dashboard::
     ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'gyana.dashboard.CustomAppIndexDashboard'
 """
 
-from admin_tools.dashboard import AppIndexDashboard, Dashboard, modules
+from admin_tools.dashboard import Dashboard, modules
 from admin_tools.utils import get_admin_site_name
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
