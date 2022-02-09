@@ -1,16 +1,29 @@
 {% load admin_utils %}
 
-<a
-  class="sidebar__link sidebar__link--border"
-  href="{{ object|admin_url }}"
-  data-turbo="false"
->
-  <i class="fas fa-fw fa-user-cog {% if object|admin_url_found %}text-blue{% endif %}"></i>
-  {% if object|admin_url_found %}
-  <span>
-    Admin: <strong class="text-blue"> {{ object|verbose_name|capfirst }}</strong>
-  </span>
-  {% else %}
-  Admin
-  {% endif %}
-</a>
+{% if user.is_superuser %}
+  <a
+    class="sidebar__link sidebar__link--border"
+    href="{{ object|admin_url }}"
+    data-turbo="false"
+  >
+    <i class="fas fa-fw fa-user-cog {% if object|admin_url_found %}text-blue{% endif %}"></i>
+    {% if object|admin_url_found %}
+      Admin: <strong class="text-blue"> {{ object|verbose_name|capfirst }}</strong>
+    {% else %}
+      Admin
+    {% endif %}
+  </a>
+{% elif user.is_hijacked %}
+  <form class="sidebar__link sidebar__link--border" action="{% url 'hijack:release' %}" method="POST" data-turbo="false">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ object|admin_url }}" />
+    <i class="fas fa-fw fa-user-cog {% if object|admin_url_found %}text-blue{% endif %}"></i>
+    <button type="submit">
+      {% if object|admin_url_found %}
+        Admin: <strong class="text-blue"> {{ object|verbose_name|capfirst }}</strong>
+      {% else %}
+        Admin
+      {% endif %}
+    </button>
+  </form>
+{% endif %}

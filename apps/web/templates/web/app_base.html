@@ -55,8 +55,8 @@
 
       <hr class="mt-auto" />
 
-      {% if user.is_superuser %}
-      {% include "web/components/admin.html" %}
+      {% if user.is_superuser or user.is_hijacked %}
+        {% include "web/components/admin.html" %}
       {% endif %}
 
       <button
