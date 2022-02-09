@@ -27,6 +27,13 @@ def test_site_pages(client):
     r = client.get("/terms-of-use")
     assertOK(r)
 
+    r = client.get("/demo/integrations")
+    assertOK(r)
+    r = client.get("/demo/workflows")
+    assertOK(r)
+    r = client.get("/demo/dashboards")
+    assertOK(r)
+
 
 def test_site_links(client):
 

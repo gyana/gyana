@@ -21,19 +21,6 @@
               {% heroicon option.icon class="ml-2 h-5 w-5 text-white"%}
             </a>
           </div>
-          {% comment %}
-            <div class="pt-6 pb-8 px-6">
-              <h3 class="text-xs font-medium text-gray-900 tracking-wide uppercase">What's included</h3>
-              <ul role="list" class="mt-6 space-y-4">
-                {% for item in option.included %}
-                  <li class="flex space-x-3">
-                    {% heroicon 'check' class="flex-shrink-0 h-5 w-5 text-green-500" style="solid" %}
-                    <span class="text-sm text-gray-500">{{ item }}</span>
-                  </li>
-                {% endfor %}
-              </ul>
-            </div>
-          {% endcomment %}
         </div>
       {% endfor %}
     </div>
