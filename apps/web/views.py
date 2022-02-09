@@ -49,12 +49,10 @@ class Home(TemplateView):
         node_config = {
             k: v for k, v in NODE_CONFIG.items() if k not in ["input", "output", "text"]
         }
-        context["node_config"] = node_config
         context["workflow_statistics"] = {
             "node_count": len(node_config.keys()),
             "function_count": len(FUNCTIONS),
         }
-        context["widget_config"] = WIDGET_KIND_TO_WEB
         context["widget_count"] = len(WIDGET_KIND_TO_WEB.keys())
         return context
 
