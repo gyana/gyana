@@ -14,6 +14,7 @@ class PageInline(admin.TabularInline):
 @admin.register(Dashboard)
 class DashboardAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "project", "shared_status"]
+    search_fields = ["id", "name", "project__name"]
     fields = ["id", "name", "project", "shared_status"]
     readonly_fields = ["id"]
     inlines = [PageInline]
