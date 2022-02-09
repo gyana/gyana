@@ -35,6 +35,7 @@ class CustomUserAdmin(HijackUserAdminMixin, UserAdmin):
         ("Important dates", {"fields": ("last_login", "date_joined")}),
     )
     list_display = ("email", "first_name", "last_name", "is_staff")
+    search_fields = ("email", "first_name", "last_name")
     inlines = [TeamMembershipInline, EmailAddressInline]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
@@ -46,6 +47,9 @@ class CustomUserAdmin(HijackUserAdminMixin, UserAdmin):
         return super().change_view(request, object_id, form_url, extra_context)
 
     def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
         return False
 
 

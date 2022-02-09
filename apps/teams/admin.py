@@ -35,7 +35,7 @@ class TeamAdmin(SafeDeleteAdmin):
         "usage",
         "percent",
     )
-    search_fields = ("name", "members__email")
+    search_fields = ("name",)
 
     readonly_fields = ["id", "row_limit", "row_count", "row_count_calculated"]
     fields = readonly_fields + ["name", "override_row_limit"]
@@ -70,6 +70,12 @@ class TeamAdmin(SafeDeleteAdmin):
 
     def row_limit(self, instance):
         return instance.row_limit
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class FlagAdmin(WaffleFlagAdmin):
