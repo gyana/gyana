@@ -30,6 +30,25 @@ class CustomMenu(Menu):
                 models=("apps.appsumo.*", "apps.users.models.ApprovedWaitlistEmail*"),
             ),
             items.ModelList(
+                _("Feature flippers"),
+                models=("waffle.*", "apps.teams.flag.Flag"),
+            ),
+            items.ModelList(
+                _("Applications"),
+                exclude=(
+                    "allauth.*",
+                    "apps.appsumo.*",
+                    "apps.teams.*",
+                    "apps.users.*",
+                    "django_celery_beat.*",
+                    "django_celery_results.*",
+                    "django.contrib.*",
+                    "taggit.*",
+                    "waffle.*",
+                    "wagtail.*",
+                ),
+            ),
+            items.ModelList(
                 _("Administration"),
                 models=("django.contrib.*", "allauth.*", "django_celery_beat.*"),
             ),

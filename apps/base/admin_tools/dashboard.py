@@ -57,7 +57,7 @@ class CustomIndexDashboard(Dashboard):
         self.children.append(
             modules.ModelList(
                 _("Feature flippers"),
-                models=("waffle.models.*", "apps.teams.flag.Flag"),
+                models=("waffle.*", "apps.teams.flag.Flag"),
             )
         )
 
