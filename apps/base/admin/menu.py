@@ -22,12 +22,16 @@ class CustomMenu(Menu):
             items.MenuItem(_("Dashboard"), reverse("admin:index")),
             items.Bookmarks(),
             items.ModelList(
-                _("Applications"),
-                exclude=("django.contrib.*", "allauth.*", "apps.appsumo.*"),
+                _("Account management"),
+                models=("apps.users.models.CustomUser", "apps.teams.models.Team"),
             ),
-            items.ModelList(_("Appsumo"), models=("apps.appsumo.*",)),
             items.ModelList(
-                _("Administration"), models=("django.contrib.*", "allauth.*")
+                _("Appsumo & Waitlist"),
+                models=("apps.appsumo.*", "apps.users.models.ApprovedWaitlistEmail*"),
+            ),
+            items.ModelList(
+                _("Administration"),
+                models=("django.contrib.*", "allauth.*", "django_celery_beat.*"),
             ),
         ]
 
