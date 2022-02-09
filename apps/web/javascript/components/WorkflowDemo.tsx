@@ -121,7 +121,7 @@ const WorkflowDemo = () => {
                 selectNode(item)
               }}
             >
-              <i className={`fa ${item.icon} lg:fa-lg`}></i>
+              <i className={`fa ${item.icon} text-lg sm:text-xl`}></i>
             </button>
           ))}
           {/* empty div */}
