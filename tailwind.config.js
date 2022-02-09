@@ -4,12 +4,18 @@
  * @see https://tailwindcss.com/docs/configuration
  */
 module.exports = {
-  purge: [
-    './assets/**/*.js',
-    './templates/**/*.{html,tsx}',
-    './apps/*/templates/**/*.html',
-    './apps/*/javascript/**/*.tsx',
-  ],
+  purge: {
+    content: [
+      './assets/**/*.js',
+      './templates/**/*.{html,tsx}',
+      './apps/*/templates/**/*.html',
+      './apps/*/javascript/**/*.tsx',
+    ],
+    options: {
+      /** Dynamic colors on website landing page */
+      safelist: [/(bg|border|text)-(indigo|green|yellow)-\d00/],
+    },
+  },
   darkMode: false,
   theme: {
     /** All color are CSS variables set in `_colors.scss`. */
