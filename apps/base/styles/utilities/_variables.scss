@@ -50,4 +50,48 @@
   --c-red-10: #fce6e6;
 
   --c-transparent: hsla(0, 0%, 0%, 0);
+
+  // Website color variables.
+  // As above, update `tailwind.config.js` if adding or removing values
+  --c-gray-100: #f3f4f6;
+  --c-gray-200: #e5e7eb;
+  --c-gray-300: #d1d5db;
+  --c-gray-400: #9ca3af;
+  --c-gray-500: #6b7280;
+  --c-gray-600: #4b5563;
+  --c-gray-700: #374151;
+  --c-gray-800: #1f2937;
+  --c-gray-900: #111827;
+
+  --c-green-100: #dcfce7;
+  --c-green-200: #bbf7d0;
+  --c-green-300: #86efac;
+  --c-green-400: #4ade80;
+  --c-green-500: #22c55e;
+  --c-green-600: #16a34a;
+  --c-green-700: #15803d;
+  --c-green-800: #166534;
+  --c-green-900: #14532d;
+
+  --c-indigo-50: #f6fbfd;
+  --c-indigo-100: #e8f7fd;
+  --c-indigo-200: #c5e6fb;
+  --c-indigo-300: #9ecefb;
+  --c-indigo-400: #69a2fb;
+  --c-indigo-500: #3874fa;
+  --c-indigo-600: #2550f5;
+  --c-indigo-700: #203fe0;
+  --c-indigo-800: #1a31af;
+  --c-indigo-900: #152887;
+
+  --c-yellow-50: #fefce8;
+  --c-yellow-100: #fef9c3;
+  --c-yellow-200: #fef08a;
+  --c-yellow-300: #fde047;
+  --c-yellow-400: #facc15;
+  --c-yellow-500: #eab308;
+  --c-yellow-600: #ca8a04;
+  --c-yellow-700: #a16207;
+  --c-yellow-800: #854d0e;
+  --c-yellow-900: #713f12;
 }
