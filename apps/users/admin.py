@@ -16,6 +16,7 @@ class EmailAddressInline(admin.TabularInline):
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     list_display = UserAdmin.list_display
+    list_per_page = 20
 
     fieldsets = UserAdmin.fieldsets + (
         (

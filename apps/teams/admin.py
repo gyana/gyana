@@ -25,9 +25,39 @@ class TeamMembershipInline(admin.TabularInline):
 @admin.register(Team)
 class TeamAdmin(SafeDeleteAdmin):
     # Use `highlight_deleted` in place of name
-    list_display = ("id", highlight_deleted, "row_limit") + SafeDeleteAdmin.list_display
+    list_display = (
+        "id",
+        highlight_deleted,
+        "list_of_members",
+        "plan_name",
+        "plan_rows",
+        "usage",
+        "percent",
+    )
+    search_fields = ("name", "members__email")
+
     readonly_fields = ["id", "row_limit", "row_count", "row_count_calculated"]
     fields = readonly_fields + ["name", "override_row_limit"]
+    list_per_page = 20
+
+    def plan_name(self, obj):
+        return obj.plan["name"]
+
+    def list_of_members(self, obj):
+        return ", ".join([str(p) for p in obj.members.all()])
+
+    def usage(self, obj):
+        return "{:,}".format(obj.row_count)
+
+    def percent(self, obj):
+        return "{:.1%}".format(obj.row_count / obj.row_limit)
+
+    def plan_rows(self, obj):
+        return "{:,}".format(obj.row_limit)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.prefetch_related("members")
 
     inlines = [
         UserMembershipInline,
