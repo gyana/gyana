@@ -14,6 +14,7 @@ from .models import Flag, Membership, Team
 
 class UserMembershipInline(admin.TabularInline):
     model = Membership
+    readonly_fields = ["user"]
     list_display = ["user", "role"]
 
 
@@ -35,7 +36,7 @@ class TeamAdmin(SafeDeleteAdmin):
         "usage",
         "percent",
     )
-    search_fields = ("name",)
+    search_fields = ("name", "members__email")
 
     readonly_fields = ["id", "row_limit", "row_count", "row_count_calculated"]
     fields = readonly_fields + ["name", "override_row_limit"]
