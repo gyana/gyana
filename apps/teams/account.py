@@ -32,6 +32,9 @@ def get_row_limit(team: Team):
 def get_credits(team: Team):
     from apps.appsumo.account import get_deal
 
+    if team.override_credit_limit is not None:
+        return team.override_credit_limit
+
     if team.has_subscription:
         return team.plan["credits"]
 

@@ -41,6 +41,8 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
     )
 
     override_row_limit = models.BigIntegerField(null=True, blank=True)
+    override_credit_limit = models.BigIntegerField(null=True, blank=True)
+
     # row count is recalculated on a daily basis, or re-counted in certain situations
     # calculating every view is too expensive
     row_count = models.BigIntegerField(default=0)

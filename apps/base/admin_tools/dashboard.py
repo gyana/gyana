@@ -10,7 +10,7 @@ And to activate the app index dashboard::
     ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'gyana.dashboard.CustomAppIndexDashboard'
 """
 
-from admin_tools.dashboard import AppIndexDashboard, Dashboard, modules
+from admin_tools.dashboard import Dashboard, modules
 from admin_tools.utils import get_admin_site_name
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -33,25 +33,31 @@ class CustomIndexDashboard(Dashboard):
                 collapsible=False,
                 children=[
                     [_("Return to site"), "/"],
+                    [_("Go to CMS"), "/cms"],
                     [_("Change password"), reverse("%s:password_change" % site_name)],
                     [_("Log out"), reverse("%s:logout" % site_name)],
                 ],
             )
         )
 
-        # append an app list module for "Applications"
         self.children.append(
             modules.ModelList(
-                _("Applications"),
-                exclude=("django.contrib.*", "allauth.*", "apps.appsumo.*"),
+                _("Account management"),
+                models=("apps.users.models.CustomUser", "apps.teams.models.Team"),
             )
         )
 
-        # appsumo
         self.children.append(
             modules.ModelList(
-                _("Appsumo"),
-                models=("apps.appsumo.*",),
+                _("Appsumo & Waitlist"),
+                models=("apps.appsumo.*", "apps.users.models.ApprovedWaitlistEmail*"),
+            )
+        )
+
+        self.children.append(
+            modules.ModelList(
+                _("Feature flippers"),
+                models=("waffle.*", "apps.teams.flag.Flag"),
             )
         )
 
@@ -59,42 +65,9 @@ class CustomIndexDashboard(Dashboard):
         self.children.append(
             modules.ModelList(
                 _("Administration"),
-                models=("django.contrib.*", "allauth.*"),
+                models=("django.contrib.*", "allauth.*", "django_celery_beat.*"),
             )
         )
 
         # append a recent actions module
         self.children.append(modules.RecentActions(_("Recent Actions"), 5))
-
-        # # append a feed module
-        # self.children.append(
-        #     modules.Feed(
-        #         _("Latest Django News"),
-        #         feed_url="http://www.djangoproject.com/rss/weblog/",
-        #         limit=5,
-        #     )
-        # )
-
-        # # append another link list module for "support".
-        # self.children.append(
-        #     modules.LinkList(
-        #         _("Support"),
-        #         children=[
-        #             {
-        #                 "title": _("Django documentation"),
-        #                 "url": "http://docs.djangoproject.com/",
-        #                 "external": True,
-        #             },
-        #             {
-        #                 "title": _('Django "django-users" mailing list'),
-        #                 "url": "http://groups.google.com/group/django-users",
-        #                 "external": True,
-        #             },
-        #             {
-        #                 "title": _("Django irc channel"),
-        #                 "url": "irc://irc.freenode.net/django",
-        #                 "external": True,
-        #             },
-        #         ],
-        #     )
-        # )

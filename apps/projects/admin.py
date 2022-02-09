@@ -1,5 +1,6 @@
-from apps.templates.models import Template
 from django.contrib import admin, messages
+
+from apps.templates.models import Template
 
 from .models import Project
 
@@ -7,8 +8,8 @@ from .models import Project
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "description", "team", "is_template"]
-    fields = ["id", "name", "description", "team"]
-    readonly_fields = ["id"]
+    readonly_fields = ["id", "team"]
+    fields = readonly_fields + ["name", "description"]
     actions = ["promote_to_template"]
 
     @admin.action(description="Promote to template")

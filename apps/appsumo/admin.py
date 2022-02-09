@@ -53,12 +53,6 @@ class AppsumoReviewInline(admin.StackedInline):
     model = AppsumoReview
     fields = ["review_link"]
 
-    def has_add_permission(self, request, obj):
-        return False
-
-    def has_delete_permission(self, request, obj):
-        return False
-
 
 class AppsumoExtraInline(admin.StackedInline):
     model = AppsumoExtra

@@ -28,17 +28,9 @@
       </header>
 
       <div class="account__plan card card--none">
-        <div class="w-1/2">
+        <div class="w-full">
           <p>Rows used</p>
           <h4 class="h2">{{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}</h4>
-        </div>
-
-        <div class="w-1/2">
-          <p>Credits spent</p>
-          <div class="flex items-center gap-3">
-            <h4 class="h2">{{ team.current_credit_balance|intcomma }} / {{ team.credits|intcomma }}</h4>
-            {% link_article 'overview' 'credits' %}
-          </div>
         </div>
 
         <div class="w-1/3">
