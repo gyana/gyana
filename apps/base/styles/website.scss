@@ -109,3 +109,13 @@
     height: auto;
   }
 }
+
+.agency-monitoring {
+  animation: 40s linear 0s infinite normal none running agency-monitoring-slide;
+}
+
+@keyframes agency-monitoring-slide {
+  100% {
+    transform: translateX(-100%);
+  }
+}
