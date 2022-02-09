@@ -80,13 +80,14 @@ const TypeButtonGroup = ({ type, setType }) => {
       {TYPE_CONFIG.map((option) => (
         <button
           key={option.id}
-          className={`p-2 focus:outline-none h-full ${type === option.id
-            ? 'text-white bg-indigo-600 hover:bg-indigo-700'
-            : 'text-gray-600 hover:text-gray-900'
-            }`}
+          className={`p-2 text-lg lg:text-xl focus:outline-none h-full ${
+            type === option.id
+              ? 'text-white bg-indigo-600 hover:bg-indigo-700'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
           onClick={() => setType(option.id)}
         >
-          <i className={`fa ${option.icon} fa-lg`}></i>
+          <i className={`fa ${option.icon}`}></i>
         </button>
       ))}
     </div>
@@ -99,8 +100,9 @@ const ThemeButtonGroup = ({ theme, setTheme }) => {
       {THEME_CONFIG.map(({ id }) => (
         <button
           key={id}
-          className={`p-2 focus:outline-none w-10 h-full ${theme === id ? `bg-${id}-600 hover:bg-${id}-700` : `bg-${id}-100 hover:bg-${id}-200`
-            }`}
+          className={`p-2 focus:outline-none w-10 h-full ${
+            theme === id ? `bg-${id}-600 hover:bg-${id}-700` : `bg-${id}-100 hover:bg-${id}-200`
+          }`}
           onClick={() => setTheme(id)}
         ></button>
       ))}
@@ -115,10 +117,11 @@ const FontButtonGroup = ({ font, setFont }) => {
         <button
           key={id}
           style={{ fontFamily: id }}
-          className={`p-2 text-xl focus:outline-none w-10 h-full ${font === id
-            ? 'text-white bg-indigo-600 hover:bg-indigo-700'
-            : 'text-gray-600 hover:text-gray-900'
-            }`}
+          className={`p-2 text-lg lg:text-xl focus:outline-none w-10 h-full ${
+            font === id
+              ? 'text-white bg-indigo-600 hover:bg-indigo-700'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
           onClick={() => setFont(id)}
         >
           T
@@ -134,10 +137,11 @@ const AgencyButtonGroup = ({ agency, setAgency }) => {
       {AGENCY_CONFIG.map(({ id }) => (
         <button
           key={id}
-          className={`p-2 text-xl focus:outline-none w-10 h-full ${agency === id
-            ? 'text-white bg-indigo-600 hover:bg-indigo-700'
-            : 'text-gray-600 hover:text-gray-900'
-            }`}
+          className={`p-2 text-lg lg:text-xl focus:outline-none w-10 h-full ${
+            agency === id
+              ? 'text-white bg-indigo-600 hover:bg-indigo-700'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
           onClick={() => setAgency(id)}
         >
           <i className={`fa fa-${id}`}></i>

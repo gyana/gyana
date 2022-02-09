@@ -103,6 +103,7 @@ const WorkflowDemo = () => {
           nodesConnectable={false}
           zoomOnScroll={false}
           panOnScroll={false}
+          minZoom={0.1}
         />
       </div>
       <div className='mt-4 card card--none'>
@@ -110,16 +111,17 @@ const WorkflowDemo = () => {
           {Object.values(NODES).map((item) => (
             <button
               key={item.icon}
-              className={`p-2 focus:outline-none ${node?.icon === item.icon
-                ? 'text-white bg-indigo-600 hover:bg-indigo-700'
-                : 'text-gray-600 hover:text-gray-900'
-                }`}
+              className={`p-2 focus:outline-none ${
+                node?.icon === item.icon
+                  ? 'text-white bg-indigo-600 hover:bg-indigo-700'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
               onClick={() => {
                 setDemoStore({ integrations, node: item })
                 selectNode(item)
               }}
             >
-              <i className={`fa ${item.icon} fa-lg`}></i>
+              <i className={`fa ${item.icon} lg:fa-lg`}></i>
             </button>
           ))}
           {/* empty div */}
