@@ -1,27 +1,14 @@
 {% load static heroicons %}
 
-<div class="bg-indigo-700">
-  <div class="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
-    <h2 class="text-3xl font-bold text-white sm:text-4xl">
-      <span class="block">Iterate with ease, and make reporting your advantage.</span>
-    </h2>
-    <p class="mt-4 text-lg leading-6 text-indigo-200">
-      The key to a great report is feedback and continuous improvement with 
-      your stakeholders. Complex changes become fast and painless edits.
-    </p>
-  </div>
-</div>
-
 <div class="bg-white">
   <div class="max-w-4xl mx-auto px-4 py-16 sm:px-6 sm:pt-20 sm:pb-24 lg:max-w-7xl lg:pt-24 lg:px-8 flex flex-col items-left">
     <h2 class="text-3xl font-extrabold text-gray-900">
       Designed for agencies
     </h2>
     <p class="mt-4 max-w-3xl text-lg text-gray-800 text-left">
-      Gyana was built with agencies in the room, literally. Coordinating with multiple clients is complex and stressful, and we’re here to make it easier for you.
-      <strong class="text-gray-900 font-semibold">
-        Talk to us -->
-      </strong>
+      We've felt the pain of coordinating reports with multiple clients.
+      Details get dropped, deadlines missed, and it can get very stressful.
+      We designed Gyana to make it easier for you, so you can focus on delivering value.
     </p>
     <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-12 lg:gap-8">
       <div class="card card--sm">
@@ -47,7 +34,7 @@
             Account management
           </h3>
           <p class="mt-2 text-base text-gray-800">
-            Manage each client in separate, secure workspaces, with granular permissions for analysts.
+            Manage each client in separate, secure workspaces. Team collaboration with granular permissions for your analysts.
           </p>
         </div>
       </div>
@@ -88,10 +75,12 @@
         </div>
       </div>
       <div class="card card--sm">
-        <div class="flex overflow-hidden text-indigo-600">
-          {% for i in '0123456789'|make_list %}
-            <i class="fal fa-3x fa-heart-rate"></i>
-          {% endfor %}
+        <div class="overflow-hidden text-indigo-600">
+          <div class="integrations-0 flex">
+            {% for i in '01234567890123456789'|make_list %}
+              <i class="fal fa-3x fa-heart-rate"></i>
+            {% endfor %}
+          </div>
         </div>
         <div class="mt-6">
           <h3 class="text-lg font-medium text-gray-900">
