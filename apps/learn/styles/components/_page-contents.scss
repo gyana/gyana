@@ -1,4 +1,10 @@
 .page-contents {
+  padding: 1.6rem;
+  border-left: 1px solid var(--c-gray);
+  height: min-content;
+  position: sticky;
+  top: 0;
+
   a {
     &:hover {
       color: var(--c-black-50);

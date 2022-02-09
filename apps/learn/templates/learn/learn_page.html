@@ -4,7 +4,7 @@
 
 {% block content %}
   <div class="flex flex-1">
-    <article class="p-10 prose prose-xl max-w-6xl flex-auto">
+    <article class="px-10 pb-10 pt-4 prose prose-xl max-w-6xl flex-auto">
       <h1 class="mb-10">
         <a id="{{ page.title|slugify }}"></a>
         <a href="#{{ page.title|slugify }}">
@@ -17,7 +17,7 @@
       {% endfor %}
     </article>
 
-    <nav class="page-contents p-10 border-l border-gray">
+    <nav class="page-contents">
       <p class="bold mb-8">Page contents</p>
       <ul class="flex flex-col gap-4">
         <li>

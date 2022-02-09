@@ -29,12 +29,12 @@
   </nav>
   
   <div class="bg-white flex flex-1 overflow-auto">
-    <nav class="sidebar">
+    <nav class="sidebar-learn">
       {% children_menu parent_page=learn_menu_page max_levels=3 template="learn/menus/menu.html" sub_menu_template="learn/menus/menu.html" apply_active_classes=True %}
     </nav>
 
     <div class="flex flex-col flex-1 overflow-auto">
-      <nav class="flex gap-2 px-10 py-5 border-b border-gray">
+      <nav class="flex gap-2 px-10 py-5">
         <a href="/learn" >Home</a>
           {% for ancestor in page.get_ancestors|slice:"3:" %}
             <i class="fa fa-angle-right"></i>
