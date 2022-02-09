@@ -1,36 +1,154 @@
 {% load static heroicons %}
 
+<style>
+
+.gyana-spinner {
+  animation: spin 4s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ping-1 {
+  animation: ping 4s cubic-bezier(0, 0, 0.2, 1) infinite;
+  animation-delay: 1.5s;
+}
+
+.ping-2 {
+  animation: ping 4s cubic-bezier(0, 0, 0.2, 1) infinite;
+  animation-delay: 3.5s;
+}
+
+
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  30% {
+    transform: scale(1.8);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}
+</style>
+
 <div class="bg-indigo-700">
-  <div class="max-w-4xl mx-auto px-4 py-16 sm:px-6 sm:pt-20 sm:pb-24 lg:max-w-7xl lg:pt-24 lg:px-8 flex flex-col items-center">
-    <h2 class="text-3xl font-extrabold text-white">
-      Introducing Gyana
+  <div class="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
+    <h2 class="text-3xl font-bold text-white sm:text-4xl">
+      <span class="block">Iterate with ease, and make reporting your advantage.</span>
     </h2>
-    <p class="mt-4 max-w-3xl text-lg text-indigo-200 text-center">
-      Gyana is a no-code data platform designed for 2021. Business
-      intelligence, data analytics and reporting in a single visual
-      interface.
-      <strong class="text-white font-semibold">
-        Built on web, for the web.
+    <p class="mt-4 text-lg leading-6 text-indigo-200">
+      The key to a great report is feedback and continuous improvement with 
+      your stakeholders. Complex changes become fast and painless edits.
+    </p>
+    {% comment %} <div class="flex items-center justify-center gap-8 mt-8">
+      <i class="fa fa-user-astronaut fa-2x text-white ping-1"></i>
+      <i class="fad fa-sync fa-4x text-white gyana-spinner"></i>
+      <i class="fa fa-users fa-2x text-white ping-2"></i>
+    </div> {% endcomment %}
+  </div>
+</div>
+
+<div class="bg-white">
+  <div class="max-w-4xl mx-auto px-4 py-16 sm:px-6 sm:pt-20 sm:pb-24 lg:max-w-7xl lg:pt-24 lg:px-8 flex flex-col items-left">
+    <h2 class="text-3xl font-extrabold text-gray-900">
+      Designed for agencies
+    </h2>
+    <p class="mt-4 max-w-3xl text-lg text-gray-800 text-left">
+      Gyana was built with agencies in the room, literally. Coordinating with multiple clients is complex and stressful, and we’re here to make it easier for you.
+      <strong class="text-gray-900 font-semibold">
+        Talk to us -->
       </strong>
     </p>
-    <div class="mt-12 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-16">
-      {% for feature in content.solution %}
-        <div>
-          <div>
-            <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white-opacity-10">
-              {% heroicon feature.icon class="w-6 h-6 text-white" style="solid" %}
-            </span>
-          </div>
-          <div class="mt-6">
-            <h3 class="text-lg font-medium text-white">
-              {{ feature.name }}
-            </h3>
-            <p class="mt-2 text-base text-indigo-200">
-              {{ feature.description }}
-            </p>
+    <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-16 lg:gap-8">
+      <div class="card card--sm">
+        <div class="flex gap-4 overflow-hidden">
+          <span class="flex items-center gap-2 justify-center h-12 px-3 rounded-md border-2 border-indigo-600">
+            {% heroicon 'user' class="w-6 h-6 text-indigo-600" style="solid" %}
+            {% heroicon 'users' class="w-6 h-6 text-indigo-600" style="solid" %}
+            {% heroicon 'lock-closed' class="w-6 h-6 text-indigo-600" style="solid" %}
+          </span>
+          <span class="flex items-center gap-2 justify-center h-12 px-3 rounded-md border-2 border-green-600">
+            {% heroicon 'user' class="w-6 h-6 text-green-600" style="solid" %}
+            {% heroicon 'users' class="w-6 h-6 text-green-600" style="solid" %}
+            {% heroicon 'lock-closed' class="w-6 h-6 text-green-600" style="solid" %}
+          </span>
+          <span class="flex items-center gap-2 justify-center h-12 px-3 rounded-md border-2 border-yellow-600">
+            {% heroicon 'user' class="w-6 h-6 text-yellow-600" style="solid" %}
+            {% heroicon 'users' class="w-6 h-6 text-yellow-600" style="solid" %}
+            {% heroicon 'lock-closed' class="w-6 h-6 text-yellow-600" style="solid" %}
+          </span>
+        </div>
+        <div class="mt-6">
+          <h3 class="text-lg font-medium text-gray-900">
+            Account management
+          </h3>
+          <p class="mt-2 text-base text-gray-800">
+            Manage clients in separate workspaces, with granular permissions for analysts.
+          </p>
+        </div>
+      </div>
+      <div class="card card--sm">
+        <div class="flex gap-4 overflow-hidden">
+          <div class='px-2 py-1 h-12 border-2 border-gray-200 w-full rounded-lg bg-white focus:outline-none flex items-center text-xl' contenteditable="true">
+            <i class='fa fa-search text-gray mr-2'></i>
+            <span class='text-black-20'>https://</span>reports.youragency.com
           </div>
         </div>
-      {% endfor %}
+        <div class="mt-6">
+          <h3 class="text-lg font-medium text-gray-900">
+            Your own portal
+          </h3>
+          <p class="mt-2 text-base text-gray-800">
+            Design a reporting experience that feels like an extension of your website. Themes, whitelabeling, embeds and custom domains.
+          </p>
+        </div>
+      </div>
+      <div class="card card--sm">
+        <div class="flex gap-4 overflow-hidden">
+          {% for i in '123456789'|make_list %}
+            {% with minusi="-"|add:i %}
+              <span class="flex-none flex items-center justify-center h-12 w-12 rounded-md bg-indigo-{{ 10|add:minusi }}00">
+                {% heroicon 'presentation-chart-bar' class="w-8 h-8 text-white" style="solid" %}
+              </span>
+            {% endwith %}
+          {% endfor %}
+        </div>
+        <div class="mt-6">
+          <h3 class="text-lg font-medium text-gray-900">
+           Reusable templates
+          </h3>
+          <p class="mt-2 text-base text-gray-800">
+            You can copy & paste the entire report, and change the data sources.
+            No matter how complex, it will all just work.
+          </p>
+        </div>
+      </div>
+      <div class="card card--sm">
+        <div class="flex overflow-hidden text-indigo-600">
+          {% for i in '0123456789'|make_list %}
+            <i class="fal fa-3x fa-heart-rate"></i>
+          {% endfor %}
+        </div>
+        <div class="mt-6">
+          <h3 class="text-lg font-medium text-gray-900">
+            Monitoring
+          </h3>
+          <p class="mt-2 text-base text-gray-800">
+            Proactively understand report health and fix issues quickly.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
