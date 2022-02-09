@@ -9,8 +9,9 @@ from .models import Workflow
 class WorkflowAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "project", "last_success_run")
     search_fields = ["id", "name", "project__name"]
-    fields = ["id", "name", "project", "last_success_run"]
-    readonly_fields = ["id", "last_success_run"]
+    readonly_fields = ["id", "project", "last_success_run"]
+    fields = readonly_fields + ["name"]
+
     inlines = [NodeInline]
 
     def has_add_permission(self, request):
