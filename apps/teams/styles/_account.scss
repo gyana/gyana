@@ -38,6 +38,12 @@
       padding: 0.8rem 0;
       justify-content: center;
     }
+
+    .w-full {
+      border-bottom: 1px solid var(--c-gray);
+      flex: 1 0 100%;
+      padding: 1.6rem 0;
+    }
     
     .w-1\/2 {
       border-bottom: 1px solid var(--c-gray);
