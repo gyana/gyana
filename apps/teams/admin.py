@@ -19,6 +19,7 @@ class UserMembershipInline(admin.TabularInline):
 
 class TeamMembershipInline(admin.TabularInline):
     model = Membership
+    readonly_fields = ["team"]
     list_display = ["team", "role"]
 
 

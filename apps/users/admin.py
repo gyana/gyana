@@ -20,21 +20,33 @@ class CustomUserAdmin(HijackUserAdminMixin, UserAdmin):
     list_display = UserAdmin.list_display
     list_per_page = 20
     change_form_template = "users/admin/change_form.html"
-
-    fieldsets = UserAdmin.fieldsets + (
-        (
-            "Custom Fields",
-            {"fields": ("avatar",)},
-        ),
+    readonly_fields = [
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+        "last_login",
+        "date_joined",
+    ]
+    fieldsets = (
+        (None, {"fields": ("email", "password")}),
+        ("Password", {"fields": ("first_name", "last_name")}),
+        ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser")}),
+        ("Important dates", {"fields": ("last_login", "date_joined")}),
     )
-
+    list_display = ("email", "first_name", "last_name", "is_staff")
     inlines = [TeamMembershipInline, EmailAddressInline]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
-        extra_context = {'hijack_button': self.hijack_button(
-            request, CustomUser.objects.get(pk=object_id)
-        )}
+        extra_context = {
+            "hijack_button": self.hijack_button(
+                request, CustomUser.objects.get(pk=object_id)
+            )
+        }
         return super().change_view(request, object_id, form_url, extra_context)
+
+    def has_add_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(ApprovedWaitlistEmail)
