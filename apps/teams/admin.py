@@ -38,24 +38,40 @@ class TeamAdmin(SafeDeleteAdmin):
     )
     search_fields = ("name", "members__email")
 
-    readonly_fields = ["id", "row_limit", "row_count", "row_count_calculated"]
-    fields = readonly_fields + ["name", "override_row_limit"]
+    readonly_fields = [
+        "name",
+        "plan_rows",
+        "usage",
+        "percent",
+        "row_count_calculated",
+        "plan_credits",
+    ]
+    fieldsets = (
+        (None, {"fields": readonly_fields}),
+        (
+            "Manual override",
+            {"fields": ["override_row_limit", "override_credit_limit"]},
+        ),
+    )
     list_per_page = 20
+
+    def list_of_members(self, obj):
+        return ", ".join([str(p) for p in obj.members.all()])
 
     def plan_name(self, obj):
         return obj.plan["name"]
 
-    def list_of_members(self, obj):
-        return ", ".join([str(p) for p in obj.members.all()])
+    def plan_rows(self, obj):
+        return "{:,}".format(obj.row_limit)
+
+    def plan_credits(self, obj):
+        return "{:,}".format(obj.credits)
 
     def usage(self, obj):
         return "{:,}".format(obj.row_count)
 
     def percent(self, obj):
         return "{:.1%}".format(obj.row_count / obj.row_limit)
-
-    def plan_rows(self, obj):
-        return "{:,}".format(obj.row_limit)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
