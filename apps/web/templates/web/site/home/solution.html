@@ -1,47 +1,5 @@
 {% load static heroicons %}
 
-<style>
-
-.gyana-spinner {
-  animation: spin 4s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.ping-1 {
-  animation: ping 4s cubic-bezier(0, 0, 0.2, 1) infinite;
-  animation-delay: 1.5s;
-}
-
-.ping-2 {
-  animation: ping 4s cubic-bezier(0, 0, 0.2, 1) infinite;
-  animation-delay: 3.5s;
-}
-
-
-@keyframes ping {
-  0% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  30% {
-    transform: scale(1.8);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-}
-</style>
-
 <div class="bg-indigo-700">
   <div class="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
     <h2 class="text-3xl font-bold text-white sm:text-4xl">
@@ -51,11 +9,6 @@
       The key to a great report is feedback and continuous improvement with 
       your stakeholders. Complex changes become fast and painless edits.
     </p>
-    {% comment %} <div class="flex items-center justify-center gap-8 mt-8">
-      <i class="fa fa-user-astronaut fa-2x text-white ping-1"></i>
-      <i class="fad fa-sync fa-4x text-white gyana-spinner"></i>
-      <i class="fa fa-users fa-2x text-white ping-2"></i>
-    </div> {% endcomment %}
   </div>
 </div>
 
@@ -70,7 +23,7 @@
         Talk to us -->
       </strong>
     </p>
-    <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-16 lg:gap-8">
+    <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-12 lg:gap-8">
       <div class="card card--sm">
         <div class="flex gap-4 overflow-hidden">
           <span class="flex items-center gap-2 justify-center h-12 px-3 rounded-md border-2 border-indigo-600">
@@ -94,7 +47,7 @@
             Account management
           </h3>
           <p class="mt-2 text-base text-gray-800">
-            Manage clients in separate workspaces, with granular permissions for analysts.
+            Manage each client in separate, secure workspaces, with granular permissions for analysts.
           </p>
         </div>
       </div>
@@ -145,7 +98,8 @@
             Monitoring
           </h3>
           <p class="mt-2 text-base text-gray-800">
-            Proactively understand report health and fix issues quickly.
+            It's like mission control for report health. Spot issues early, identify
+            the root cause and fix it fast. No more silently broken charts.
           </p>
         </div>
       </div>
