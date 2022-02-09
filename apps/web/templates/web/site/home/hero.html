@@ -1,6 +1,6 @@
 {% load static heroicons site_tags %}
 
-<div class="py-8 lg:relative lg:py-32">
+<div class="py-8 lg:relative lg:py-32 overflow-hidden">
   <div class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl lg:grid lg:grid-cols-2 lg:gap-24">
     <div>
       <a
@@ -24,24 +24,17 @@
           Start delivering insights that move your business forward.
         </p>
       </div>
+
       <div class="my-4 flex justify-center gap-4 sm:justify-start">
-        <div class="rounded-md shadow">
-          <a
-            href="{% external_url 'waitlist' %}"
-            class="flex items-center justify-center px-8 py-3 border border-transparent rounded-md text-indigo-900 bg-indigo-200 hover:bg-indigo-300"
-          >
-            Sign up
-          </a>
-        </div>
-        <div class="rounded-md shadow">
-          <a
-            href="{% external_url 'talk_to_us' %}"
-            class="flex items-center justify-center px-8 py-3 border border-transparent rounded-md text-white bg-indigo-800 hover:bg-indigo-900"
-          >
-            Talk to us
-          </a>
-        </div>
+        <a href="{% external_url 'waitlist' %}" class="button button--secondary">
+          Sign up
+        </a>
+
+        <a href="{% external_url 'talk_to_us' %}" class="button">
+          Talk to us
+        </a>
       </div>
+
       <div class="mt-6 hidden sm:block">
         <div class="inline-flex items-center gap-2">
           <div class="flex-shrink-0 flex">
@@ -76,7 +69,7 @@
     </div>
   </div>
 
-  <div class="sm:mx-auto sm:max-w-3xl">
+  <div class="sm:mx-auto sm:max-w-3xl ">
     <div class="sm:relative lg:absolute lg:inset-y-0 lg:right-16 lg:w-1/2">
       <div class="relative -mx-8 my-4 sm:mx-auto sm:max-w-3xl sm:px-0 lg:py-8 lg:max-w-none lg:h-full">
         <img

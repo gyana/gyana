@@ -4,7 +4,7 @@ export const getInputNodeLabel = (idx) => {
   const integration = window.__demo_store__.integrations[idx]
 
   return (
-    <div className='relative'>
+    <div className='relative w-full h-full'>
       <img
         src={`/static/images/integrations/fivetran/${integration.icon_path}`}
         className='h-full w-full pointer-events-none p-6'

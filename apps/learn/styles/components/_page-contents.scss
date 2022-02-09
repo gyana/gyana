@@ -1,0 +1,11 @@
+.page-contents {
+  a {
+    &:hover {
+      color: var(--c-black-50);
+    }
+  }
+
+  a .fa {
+    display: none;
+  }
+}

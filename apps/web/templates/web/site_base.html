@@ -17,12 +17,18 @@
 
   {% include "web/components/favicon.html" %}
 
-  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  {% comment %} Only load Poppins to use for our Logo {% endcomment %}
+  <link rel="preconnect" href="//fonts.gstatic.com" />
+  <link
+    href="//fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap&text=Gyana"
+    rel="stylesheet"
+  />
 
   <link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
   <link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
   {% comment %} TODO: Decide whether to use app stylesheet to develop independently {% endcomment %}
   <link rel="stylesheet" href="{% static "css/website.css" %}" />
+  <link rel="stylesheet" href="{% static "css/website-components.css" %}" />
 
   {% comment %} TODO: Decide whether to keep use Turbo for website {% endcomment %}
   <script src="{% static "js/turbo-bundle.js" %}"></script>
@@ -36,13 +42,24 @@
 </head>
 
 <body>
-  {% include 'web/site/header.html' %}
-  {% block body %}{% endblock %}
-  {% include 'web/site/footer.html' %}
+  {% block body %}
 
+  {% block body.header %}
+    {% include "web/site/header.html" %}
+  {% endblock body.header %}
+
+  {% block body.content %}{% endblock body.content %}
+
+  {% block body.footer %}
+    {% include "web/site/footer.html" %}
+  {% endblock body.footer %}
+
+  {% endblock body %}
+
+  {% block termly %}
   <script
     type="text/javascript"
-    src="https://app.termly.io/embed.min.js"
+    src="//app.termly.io/embed.min.js"
     data-auto-block="on"
     data-website-uuid="20dd078f-264a-4111-8007-320b21ee3234"
   ></script>
@@ -53,8 +70,9 @@
     style="background: white; width: 165px; height: 30px; border-radius: 3px; border: 1px solid #5f7d9c; font-family: Roboto, Arial; font-size: 10px; color: #5f7d9c; font-weight: 600; box-sizing: border-box; cursor: pointer; padding: 0; outline: none;"
     onclick="displayPreferenceModal()"
   >
-      Manage Cookie Preferences
+    Manage Cookie Preferences
   </button>
+  {% endblock termly %}
 
   {% if WEBSITE_GTM_ID %}
   {% include "web/components/gtm_body.html" %}

@@ -1,0 +1,52 @@
+.sidebar {
+  border-right: 1px solid var(--c-gray);
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 23rem;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0 0 0 1.6rem;
+    width: 100%;
+
+    li & {
+      padding: 0 0 0 3.2rem;
+    }
+  }
+
+  a {
+    text-decoration: underline;
+    text-decoration-color: var(--c-gray);
+
+    &:hover {
+      color: var(--c-black-50);
+    }
+
+    &.active {
+      color: var(--c-blue);
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    &.ancestor {
+      font-weight: 500;
+    }
+  }
+
+  .has-children > a {
+    display: block;
+    margin: 0 0 0.8rem;
+    text-decoration: none;
+
+    i {
+      width: 1.8rem;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;;
+    }
+  }
+}

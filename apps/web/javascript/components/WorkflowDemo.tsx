@@ -97,7 +97,7 @@ const WorkflowDemo = () => {
 
   return (
     <>
-      <div ref={ref} className='h-80 w-full relative card card--none'>
+      <div ref={ref} className='h-80 w-full relative card card--none overflow-hidden'>
         <ReactFlow
           elements={elements}
           nodesConnectable={false}
@@ -110,11 +110,10 @@ const WorkflowDemo = () => {
           {Object.values(NODES).map((item) => (
             <button
               key={item.icon}
-              className={`p-2 focus:outline-none ${
-                node?.icon === item.icon
-                  ? 'text-white bg-indigo-600 hover:bg-indigo-700'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
+              className={`p-2 focus:outline-none ${node?.icon === item.icon
+                ? 'text-white bg-indigo-600 hover:bg-indigo-700'
+                : 'text-gray-600 hover:text-gray-900'
+                }`}
               onClick={() => {
                 setDemoStore({ integrations, node: item })
                 selectNode(item)

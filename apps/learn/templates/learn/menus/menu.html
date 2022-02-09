@@ -1,19 +1,20 @@
 {% load menu_tags %}
 
 {% if menu_items %}
-  <ul class="flex flex-col gap-2 pl-8 mt-2">
-    {% for item in menu_items %}
-      <li class="{{ item.active_class }}">
-        <a href="{{ item.href }}" class="{% if item.active_class == 'active' %}text-blue font-medium{% elif item.active_class == 'ancestor' %}font-medium{% endif %}">
-          {% if item.has_children_in_menu %}
-            <i class="fa {% if item.active_class %}fa-caret-down{% else %}fa-caret-right{% endif %} mr-1"></i>
-          {% endif %}
-          {{ item.text }}
-        </a>
-        {% if item.has_children_in_menu and item.active_class %}
-          {% sub_menu item %}
-        {% endif %}
-      </li>
-    {% endfor %}
-  </ul>
+<ul class="sidebar__body">
+  {% for item in menu_items %}
+  <li class="{{ item.active_class }} {% if item.has_children_in_menu %}has-children{% endif %}">
+    <a href="{{ item.href }}" class="{{ item.active_class }}">
+      {% if item.has_children_in_menu %}
+      <i class="fas {% if item.active_class %}fa-caret-down{% else %}fa-caret-right{% endif %}"></i>
+      {% endif %}
+      {{ item.text }}
+    </a>
+
+    {% if item.has_children_in_menu and item.active_class %}
+      {% sub_menu item %}
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
 {% endif %}
