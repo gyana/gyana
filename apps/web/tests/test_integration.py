@@ -12,9 +12,6 @@ def test_site_pages(client):
     r = client.get("/")
     assertOK(r)
 
-    r = client.get("/agency")
-    assertOK(r)
-
     r = client.get("/pricing")
     assertOK(r)
 
@@ -37,16 +34,13 @@ def test_site_links(client):
 
     # header links
     # 3x = header, mobile menu, footer
-    assertLink(r, "/agency", "Agency", total=3)
-    assertLink(r, "/#integrations", "Integrations", total=3)
-    assertLink(r, "/#workflows", "Workflows", total=3)
-    assertLink(r, "/#dashboards", "Dashboards", total=3)
+    assertLink(r, "/integrations", "Integrations", total=3)
     assertLink(r, "/pricing", "Pricing", total=3)
     assertLink(r, "/blog", "Blog", total=3)
     assertLink(r, "https://intercom.help/gyana", "Help Center", total=3)
     assertLink(r, "https://feedback.gyana.com", "Feedback", total=3)
 
-    assertLink(r, "/integrations", "View our integrations.")
+    assertLink(r, "/integrations", "View our native integrations")
 
     # footer links
     assertLink(r, "/about", "About", total=2)
@@ -61,7 +55,7 @@ def test_site_links(client):
 
     # app links
     assertLink(r, "https://gyana-data.typeform.com/to/v2XTy0j3", "Sign up", total=4)
-    assertLink(r, "https://gyana-data.typeform.com/to/pgpMNnAq", "Talk to us", total=2)
+    assertLink(r, "https://gyana-data.typeform.com/to/pgpMNnAq", "Talk to us", total=4)
     assertLink(r, "/login/", "Sign in", total=2)
 
     user = CustomUser.objects.create_user("test", email="test@gyana.com")
