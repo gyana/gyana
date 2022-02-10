@@ -19,6 +19,7 @@ import { duplicateNode, getWorkflowStatus, listAll } from '../api'
 import ZeroState from './ZeroState'
 import ErrorState from 'apps/base/javascript/components/ErrorState'
 import LoadingState from 'apps/base/javascript/components/LoadingState'
+import Status from 'apps/base/javascript/components/Status'
 import useDnDActions from '../hooks/useDnDActions'
 
 const GRID_GAP = 20
@@ -37,6 +38,7 @@ const DnDFlow = ({ workflowId }) => {
   const [initialLoad, setInitialLoad] = useState(LoadingStates.loading)
   const [hasBeenRun, setHasBeenRun] = useState(false)
   const [isOutOfDate, setIsOutOfDate] = useState(false)
+  const [errors, setErrors] = useState({})
   const [needsFitView, setNeedsFitView] = useState(false)
 
   const setElementsDirty = (updater) => {
@@ -70,10 +72,16 @@ const DnDFlow = ({ workflowId }) => {
   }, [needsFitView])
 
   useEffect(() => {
-    getWorkflowStatus(workflowId).then((res) => {
-      setHasBeenRun(res.hasBeenRun)
-      setIsOutOfDate(res.isOutOfDate)
-    })
+    async function workflowStatus() {
+      await getWorkflowStatus(workflowId).then((res) => {
+        console.log(res)
+        setHasBeenRun(res.hasBeenRun)
+        setIsOutOfDate(res.isOutOfDate)
+        setErrors(res.errors)
+      })
+    }
+
+    workflowStatus()
   }, [])
 
   return (
@@ -84,6 +92,8 @@ const DnDFlow = ({ workflowId }) => {
         setElements,
         hasBeenRun,
         setHasBeenRun,
+        errors,
+        setErrors,
         isOutOfDate,
         setIsOutOfDate,
         setNeedsFitView,
@@ -123,6 +133,7 @@ const DnDFlow = ({ workflowId }) => {
             <ErrorState error='Failed loading your nodes!' />
           )}
           {initialLoad === LoadingStates.loaded && elements.length === 0 && <ZeroState />}
+          {initialLoad === LoadingStates.loaded && <Status hasBeenRun={hasBeenRun} isOutOfDate={isOutOfDate} errors={errors} />}
         </ReactFlow>
       </div>
 
