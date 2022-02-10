@@ -18,7 +18,7 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesSto
 CYPRESS_URLS = True
 
 # like locmem but using JSON to store on disk
-EMAIL_BACKEND = "apps.base.cypress_mail.EmailBackend"
+EMAIL_BACKEND = "apps.cypress.mail.EmailBackend"
 
 # If using mailhog to debug emails uncomment these lines
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -44,3 +44,10 @@ MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
 
 # for code coverage
 TEMPLATES[0]["OPTIONS"]["debug"] = True
+
+ENABLE_WEBSITE = True
+
+CACHES = {
+    "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
+    "site": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
+}

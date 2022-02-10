@@ -4,12 +4,18 @@
 <div class="flex flex-col flex-1 overflow-auto">
   <div class="max-w-lg mb-auto pad">
     {% if object.kind in 'sheet|customapi' %}
-      <form method="post" action="{% url 'project_integrations:settings' project.id object.id %}" class="form">
+      <form
+        id="integration-schedule-form"
+        method="POST"
+        action="{% url 'project_integrations:settings' project.id object.id %}"
+      >
         {% csrf_token %}
 
         {% include "django/forms/default_form.html" %}
 
-        <button type="submit" class="button button--filled button--success">Save changes</button>
+        <button type="submit" class="button button--success">
+          Save changes
+        </button>
       </form>
     {% endif %}
   </div>

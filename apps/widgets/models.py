@@ -1,10 +1,11 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from model_clone import CloneMixin
 
-from apps.base.aggregations import AggregationFunctions
+from apps.base.clients import SLUG
+from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import BaseModel, SaveParentModel
+from apps.columns.bigquery import DatePeriod
 from apps.dashboards.models import Dashboard, Page, getFusionThemePalette
 from apps.tables.models import Table
 
@@ -33,10 +34,9 @@ class WidgetStyle(models.Model):
     rounding_decimal = models.IntegerField(default=2)
 
 
-class Widget(WidgetStyle, CloneMixin, BaseModel):
-    _clone_m2o_or_o2m_fields = ["filters", "columns", "aggregations", "charts"]
-
+class Widget(WidgetStyle, BaseModel):
     class Category(models.TextChoices):
+        CONTENT = "content", "Content"
         SIMPLE = "simple", "Simple charts"
         TIMESERIES = "timeseries", "Timeseries charts"
         ADVANCED = "advanced", "Advanced charts"
@@ -44,6 +44,7 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
 
     class Kind(models.TextChoices):
         TEXT = "text", "Text"
+        IMAGE = "image", "Image"
         METRIC = "metric", "Metric"
         TABLE = "table", "Table"
         # using fusioncharts name for database
@@ -71,6 +72,7 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
         )
         TIMESERIES_AREA = "timeseries-area", "Area Timeseries"
         COMBO = "mscombidy2d", "Combination chart"
+        IFRAME = "iframe", "iframe"
 
     class Aggregator(models.TextChoices):
         # These aggregators should reflect the names described in the ibis api, none is an exception
@@ -79,6 +81,8 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
         SUM = "sum", "Sum"
         MEAN = "mean", "Average"
 
+    _clone_excluded_m2o_or_o2m_fields = ["table"]
+
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name="widgets")
 
     table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True)
@@ -86,14 +90,32 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
     # Text attributes
     text_content = models.TextField(null=True, blank=True)
 
+    # iFrame attributes
+    url = models.URLField(null=True, blank=True)
+
+    # Image attributes
+    image = models.FileField(
+        upload_to=f"{SLUG}/dashboard_images" if SLUG else "dashboard_images",
+        null=True,
+        blank=True,
+    )
+
     # Chart attributes
     kind = models.CharField(max_length=32, choices=Kind.choices, default=Kind.COLUMN)
     aggregator = models.CharField(max_length=32, choices=Aggregator.choices)
-    # maximum length of bigquery column name
     dimension = models.CharField(
+        # maximum length of bigquery column name
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         null=True,
     )
+    part = models.CharField(
+        max_length=16,
+        choices=DatePeriod.choices,
+        null=True,
+        blank=True,
+        help_text="Select the desired date part",
+    )
+
     second_dimension = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True
     )
@@ -102,6 +124,9 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
         max_length=12,
         choices=(("dimension", "Dimension"), ("metric", "Metric")),
         default="dimension",
+    )
+    sort_column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, blank=True, null=True
     )
     sort_ascending = models.BooleanField(default=True)
 
@@ -134,6 +159,10 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
     show_summary_row = models.BooleanField(
         default=False, help_text="Display a summary row at the bottom of your table"
     )
+    compare_previous_period = models.BooleanField(
+        default=False, verbose_name="Compare with previous period", help_text=""
+    )
+    positive_decrease = models.BooleanField(default=False)
 
     def __str__(self):
         return f"<Widget {self.kind} on {self.table}>"
@@ -142,7 +171,11 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
     def is_valid(self) -> bool:
         """Returns bool stating whether this Widget is ready to be displayed"""
         # TODO: right now you also need to update the query in DashboardOverview dashboards/frames
+        if self.kind == self.Kind.IMAGE:
+            return True
         if self.kind == self.Kind.TEXT:
+            return True
+        if self.kind == self.Kind.IFRAME:
             return True
         if not self.table:
             return False
@@ -163,6 +196,14 @@ class Widget(WidgetStyle, CloneMixin, BaseModel):
     def category(self):
         return WIDGET_KIND_TO_WEB[self.kind][1]
 
+    @property
+    def has_control(self):
+        return hasattr(self, "control")
+
+    @property
+    def icon(self):
+        return WIDGET_KIND_TO_WEB[self.kind][0]
+
 
 NO_DIMENSION_WIDGETS = [
     Widget.Kind.RADAR,
@@ -173,7 +214,13 @@ NO_DIMENSION_WIDGETS = [
 
 # widget = (icon, category, verbose_name)
 WIDGET_KIND_TO_WEB = {
-    Widget.Kind.TEXT.value: ("fa-text", Widget.Category.SIMPLE, "Text"),
+    Widget.Kind.TEXT.value: ("fa-text", Widget.Category.CONTENT, "Text"),
+    Widget.Kind.IMAGE.value: ("fa-image", Widget.Category.CONTENT, "Image"),
+    Widget.Kind.IFRAME.value: (
+        f"fa-browser",
+        Widget.Category.CONTENT,
+        "URL Embed",
+    ),
     Widget.Kind.METRIC.value: ("fa-value-absolute", Widget.Category.SIMPLE, "Metric"),
     Widget.Kind.TABLE.value: ("fa-table", Widget.Category.SIMPLE, "Table"),
     Widget.Kind.COLUMN.value: ("fa-chart-bar", Widget.Category.SIMPLE, "Column"),

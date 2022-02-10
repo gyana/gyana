@@ -55,6 +55,7 @@ DJANGO_APPS = [
     "django.contrib.sites",
     "django.contrib.humanize",
     "django.contrib.postgres",
+    "django.contrib.sitemaps",
 ]
 
 # Put your third-party apps here
@@ -78,6 +79,24 @@ THIRD_PARTY_APPS = [
     "timezone_field",
     "django_celery_beat",
     "django_celery_results",
+    # TODO: Remove after website migration is complete
+    "heroicons",
+    # wagtail
+    "wagtail.contrib.forms",
+    "wagtail.contrib.redirects",
+    "wagtail.embeds",
+    "wagtail.sites",
+    "wagtail.users",
+    "wagtail.snippets",
+    "wagtail.documents",
+    "wagtail.images",
+    "wagtail.search",
+    "wagtail.admin",
+    "wagtail.core",
+    "modelcluster",
+    "taggit",
+    "wagtail.contrib.modeladmin",
+    "wagtailmenus",
 ]
 
 # Put your project-specific apps here
@@ -107,6 +126,9 @@ PROJECT_APPS = [
     "apps.runs.apps.RunsConfig",
     "apps.customapis",
     "apps.oauth2",
+    "apps.blog",
+    "apps.customreports",
+    "apps.learn",
 ]
 
 INSTALLED_APPS = (
@@ -127,6 +149,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "hijack.middleware.HijackUserMiddleware",
     "waffle.middleware.WaffleMiddleware",
+    "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
 LOGGING = {
@@ -165,6 +188,7 @@ TEMPLATES = [
                 "apps.web.context_processors.project_meta",
                 "apps.web.context_processors.google_analytics_id",
                 "gyana.context_processors.django_settings",
+                "wagtailmenus.context_processors.wagtailmenus",
             ],
             # equivalent of APP_DIRS=True, plus admin_tools template loader
             "loaders": [
@@ -231,6 +255,7 @@ ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_LOGOUT_REDIRECT_URL = "/login/"
 
 ACCOUNT_FORMS = {
     "login": "apps.users.forms.UserLoginForm",
@@ -336,6 +361,7 @@ PROJECT_METADATA = {
 }
 
 GOOGLE_ANALYTICS_ID = os.environ.get("GOOGLE_ANALYTICS_ID")
+WEBSITE_GTM_ID = os.environ.get("WEBSITE_GTM_ID")
 
 
 # Default primary key field type
@@ -381,6 +407,7 @@ SEGMENT_ANALYTICS_JS_WRITE_KEY = os.environ.get("SEGMENT_ANALYTICS_JS_WRITE_KEY"
 INVITATIONS_INVITATION_MODEL = "invites.Invite"
 INVITATIONS_INVITATION_EXPIRY = 7
 INVITATIONS_ADAPTER = ACCOUNT_ADAPTER
+INVITATIONS_ACCEPT_INVITE_AFTER_SIGNUP = True
 
 HASHIDS_SALT = os.environ.get("HASHIDS_SALT", "")
 
@@ -388,8 +415,8 @@ FUSIONCHARTS_LICENCE = os.environ.get("FUSIONCHARTS_LICENCE")
 
 CYPRESS_URLS = False
 
-ADMIN_TOOLS_MENU = "apps.base.menu.CustomMenu"
-ADMIN_TOOLS_INDEX_DASHBOARD = "apps.base.dashboard.CustomIndexDashboard"
+ADMIN_TOOLS_MENU = "apps.base.admin_tools.menu.CustomMenu"
+ADMIN_TOOLS_INDEX_DASHBOARD = "apps.base.admin_tools.dashboard.CustomIndexDashboard"
 
 MOCK_REMOTE_OBJECT_DELETION = False
 
@@ -444,3 +471,13 @@ MIGRATION_MODULES = {"djpaddle": "apps.teams.migrate.djpaddle"}
 
 
 WAFFLE_FLAG_MODEL = "teams.Flag"
+
+# TODO: Remove once the website is enabled
+ENABLE_WEBSITE = os.getenv("ENABLE_WEBSITE", default="False") == "True"
+
+WAGTAIL_SITE_NAME = "Gyana CMS"
+WAGTAILSEARCH_BACKENDS = {
+    "default": {
+        "BACKEND": "wagtail.search.backends.database",
+    }
+}

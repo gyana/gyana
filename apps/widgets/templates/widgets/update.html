@@ -1,6 +1,7 @@
 {% load static %}
 
 {{ form.media.js }}
+
 <div class="flex h-full">
   <div class="flex flex-col flex-1">
     {% if widget.kind == "table" %}
@@ -10,43 +11,16 @@
     {% endif %}
   </div>
 
-  <div class="flex flex-col flex-1 overflow-hidden">
-    <nav class="tabbar">
-      {% comment %} <a class="tabbar__link">
-        Help
-      </a> {% endcomment %}
+  <turbo-frame
+    class="overflow-hidden flex flex-col flex-1" 
+    id="widgets-output-{{ widget.id }}-modal"
+    src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?source=modal"
+  >
+    {% include 'widgets/modal_nav_bar.html' %}
 
-      <a class="tabbar__link tabbar__link--active">
-        Preview
-      </a>
-
-      <div class="absolute top-0 right-0">
-        <button
-          class="tf-modal__close tf-modal__close--inline"
-          type="submit"
-          data-action="click->tf-modal#close"
-          data-loading-false
-        >
-          <i class="fal fa-times fa-lg"></i>
-        </button>
-      </div>
-    </nav>
-
-    {% if widget.is_valid %}
-      <turbo-frame class="overflow-auto" id="widgets-output-{{ widget.id }}"
-                    src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}">
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-          <p class='placeholder-scr__title'>Loading widget...</p>
-        </div>
-      </turbo-frame>
-    {% else %}
-    <div class="flex-1 text-center whitespace-normal pad">
-      <div class='flex flex-col items-center justify-center' style="min-height:16rem;">
-        <i class="far fa-lightbulb-exclamation mb-1 fa-2x"></i>
-        <p>This widget needs to be configured</p>
-      </div>
+    <div class='placeholder-scr placeholder-scr--fillscreen'>
+      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+      <p class='placeholder-scr__title'>Loading widget...</p>
     </div>
-    {% endif %}
-  </div>
+  </turbo-frame>
 </div>

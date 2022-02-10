@@ -10,6 +10,8 @@ from apps.base.tests.asserts import (
     assertSelectorLength,
 )
 from apps.connectors import periodic
+from apps.connectors.fivetran.services.facebook_ads import BASIC_REPORTS
+from apps.connectors.models import Connector
 from apps.integrations.models import Integration
 
 from .mock import get_mock_fivetran_connector, get_mock_list_tables, get_mock_schema
@@ -232,3 +234,59 @@ def test_connector_search_and_categories(client, logged_in_user, project):
     assertOK(r)
     assertNotContains(r, "Google Analytics")
     assertContains(r, "Asana")
+
+
+def test_connector_basic_reports(client, project, connector_factory, fivetran):
+    connector = connector_factory(integration__project=project, service="facebook_ads")
+    integration = connector.integration
+    schema_obj = get_mock_schema(1)  # connector with a single table
+    patched_schema_obj = get_mock_schema(1, disabled=[1], schemas_disabled=True)
+    fivetran.get_schemas.return_value = schema_obj.to_dict()
+    fivetran.get.return_value = get_mock_fivetran_connector(
+        is_historical_sync=True, service="facebook_ads"
+    )
+
+    DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
+
+    r = client.get(f"{DETAIL}/configure")
+    assertOK(r)
+    assertFormRenders(
+        r,
+        ["setup_mode", "dataset_schema", "dataset_tables"],
+        formSelector="#configure-update-form",
+    )
+
+    r = client.post(
+        f"{DETAIL}/configure", data={"setup_mode": Connector.SetupMode.BASIC}
+    )
+    assert r.status_code == 422
+    assertFormRenders(
+        r, ["setup_mode", "basic_reports"], formSelector="#configure-update-form"
+    )
+
+    assert fivetran.update_schemas.call_count == 0
+    assert fivetran.update.call_count == 0
+
+    r = client.post(
+        f"{DETAIL}/configure",
+        data={
+            "setup_mode": Connector.SetupMode.BASIC,
+            "basic_reports": ["BASIC_AD_PERFORMANCE"],
+            "submit": True,
+        },
+    )
+    assertRedirects(r, f"{DETAIL}/load")
+
+    assert fivetran.update_schemas.call_count == 1
+    assert fivetran.update_schemas.call_args.args == (
+        connector,
+        patched_schema_obj.to_dict(),
+    )
+
+    assert fivetran.update.call_count == 1
+    assert fivetran.update.call_args.args == (connector,)
+    assert fivetran.update.call_args.kwargs["config"]["custom_tables"] == [
+        BASIC_REPORTS["BASIC_AD_PERFORMANCE"]["custom_table"]
+    ]
+
+    assert connector.facebookadscustomreport_set.count() == 1

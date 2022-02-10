@@ -7,7 +7,7 @@ from django.views.generic.base import View
 
 from apps.base.analytics import ONBOARDING_COMPLETED_EVENT
 from apps.base.mixins import PageTitleMixin
-from apps.base.turbo import TurboUpdateView
+from apps.base.views import TurboUpdateView
 
 from .forms import UserNameForm, UserOnboardingForm
 from .models import CustomUser

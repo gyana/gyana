@@ -1,51 +1,48 @@
-from django.core import mail
-from django.core.management import call_command
-from django.http.response import JsonResponse
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.request import Request
+from functools import cache
 
-from apps.base import clients
-from apps.base.cypress_mail import Outbox
-from apps.integrations.periodic import delete_outdated_pending_integrations
-from apps.teams.periodic import update_team_row_limits
+from django import forms
+from django.db import transaction
+from django.http.response import HttpResponse
+from django.views.generic.edit import CreateView, UpdateView
+from turbo_response.mixins import TurboFormMixin
+
+from .forms import LiveUpdateForm
 
 
-@api_view(["GET"])
-@permission_classes([AllowAny])
-def resetdb(request: Request):
-
-    # Delete all data from the database.
-    call_command("flush", interactive=False)
-
-    # Import the fixture data into the database.
-    call_command("loaddata", "cypress/fixtures/fixtures.json")
-
-    mail.outbox = Outbox()
-    mail.outbox.clear()
-
-    clients.fivetran()._schema_cache.clear()
-    clients.fivetran()._started = {}
-
-    return JsonResponse({})
+class TurboCreateView(TurboFormMixin, CreateView):
+    ...
 
 
-@api_view(["GET"])
-@permission_classes([AllowAny])
-def outbox(request: Request):
-
-    messages = mail.outbox.messages if hasattr(mail, "outbox") else []
-
-    return JsonResponse({"messages": messages, "count": len(messages)})
+class TurboUpdateView(TurboFormMixin, UpdateView):
+    ...
 
 
-@api_view(["GET"])
-@permission_classes([AllowAny])
-def periodic(request: Request):
+class FormsetUpdateView(TurboUpdateView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # When a node has no parents or parents break the form can't be constructed
 
-    # force all periodic tasks to run synchronously
+        if context.get("form"):
+            context["formsets"] = context["form"].get_formsets()
+        return context
 
-    delete_outdated_pending_integrations()
-    update_team_row_limits()
+    def post(self, request, *args: str, **kwargs) -> HttpResponse:
+        # override BaseUpdateView/ProcessFormView to check validation on formsets
+        self.object = self.get_object()
 
-    return JsonResponse({"message": "ok"})
+        form = self.get_form()
+        if form.is_valid() and all(
+            formset.is_valid() for formset in form.get_formsets().values()
+        ):
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        with transaction.atomic():
+            response = super().form_valid(form)
+            for formset in form.get_formsets().values():
+                if formset.is_valid():
+                    formset.save()
+
+        return response

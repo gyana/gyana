@@ -15,17 +15,18 @@ from apps.base.analytics import (
     NODE_UPDATED_EVENT,
     track_node,
 )
+from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.frames import (
     TurboFrameDetailView,
     TurboFrameFormsetUpdateView,
     TurboFrameUpdateView,
 )
-from apps.base.table_data import RequestConfig, get_table
 from apps.base.templates import template_exists
 
 from .bigquery import NodeResultNone, get_query_from_node
 from .forms import KIND_TO_FORM
 from .models import Node
+from .tables import ReferencesTable
 
 
 class NodeName(TurboFrameUpdateView):
@@ -46,9 +47,6 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
     model = Node
     turbo_frame_dom_id = "workflow-modal"
 
-    def get_formset_form_kwargs(self, formset):
-        return {"schema": self.object.parents.first().schema}
-
     @property
     def preview_node_id(self):
         return int(self.request.GET.get("preview_node_id", self.object.id))
@@ -57,17 +55,6 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
         context = super().get_context_data(**kwargs)
         context["workflow"] = self.object.workflow
         context["preview_node_id"] = self.preview_node_id
-
-        # Add node type to list if it requires live updates
-        context["do_live_updates"] = self.object.kind in [
-            "pivot",
-            "add",
-            "edit",
-            "aggregation",
-            "filter",
-            "unpivot",
-            "window",
-        ]
         context["parent_error_node"] = self.parent_error_node
         return context
 
@@ -76,22 +63,23 @@ class NodeUpdate(TurboFrameFormsetUpdateView):
 
     def get_form(self):
         is_input = self.object.kind == Node.Kind.INPUT
-        has_parent = self.object.parents.first() is not None
 
         try:
-            if not is_input and has_parent:
+            if not is_input and self.object.has_enough_parents:
                 get_query_from_node(self.object.parents.first())
             self.parent_error_node = None
         except (NodeResultNone) as e:
             self.parent_error_node = e.node
 
-        if not self.parent_error_node and (is_input or has_parent):
+        if not self.parent_error_node and (is_input or self.object.has_enough_parents):
             return super().get_form()
 
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
         if self.object.kind == Node.Kind.SENTIMENT:
             form_kwargs["user"] = self.request.user
+        if parent := self.object.parents.first():
+            form_kwargs["schema"] = parent.schema
         return form_kwargs
 
     def get_success_url(self) -> str:
@@ -135,7 +123,9 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
 
     @property
     def preview_node(self):
-        if not (preview_id := self.request.GET.get("preview_node_id")):
+        if (
+            preview_id := self.request.GET.get("preview_node_id", self.object.id)
+        ) == self.object.id:
             return self.object
         return Node.objects.get(pk=preview_id)
 
@@ -237,4 +227,15 @@ class FunctionInfo(TurboFrameDetailView):
 
         function_id = self.request.GET["function"]
         context["function"] = next(filter(lambda x: x["id"] == function_id, FUNCTIONS))
+        return context
+
+
+class OutputReference(TurboFrameDetailView):
+    template_name = "nodes/references.html"
+    model = Node
+    turbo_frame_dom_id = "nodes:grid"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["table"] = ReferencesTable(self.object.used_in)
         return context

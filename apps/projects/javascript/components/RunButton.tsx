@@ -28,7 +28,7 @@ const RunButton: React.FC<Props> = ({ projectId, setRunInfo }) => {
         }
       },
       // override the defaults, otherwise they will raise errors
-      onRetry: () => { },
+      onRetry: () => {},
     })
   }
 

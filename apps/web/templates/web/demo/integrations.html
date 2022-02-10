@@ -1,0 +1,19 @@
+{% load static %}
+
+<style>
+  {% for group in services %}
+    .integrations-{{ forloop.counter0 }} {
+      animation: {{ group.animation }}s linear 0s infinite normal none running slide;
+    }
+    @keyframes slide {
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+  {% endfor %}
+</style>
+
+<integration-demo></integration-demo>
+
+{{ services|json_script:"services" }}
+<script src="{% static "js/web-integration-demo-bundle.js" %}"></script>

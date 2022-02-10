@@ -1,11 +1,11 @@
 {% extends "teams/base.html" %}
 
-{% block page_head %}
+{% block head.extra %}
   <meta name="turbo-visit-control" content="reload">
   {% include "djpaddle_paddlejs.html" %}
-{% endblock %}
+{% endblock head.extra %}
 
-{% block tab %}
+{% block app %}
 
 <div class="flex flex-col justify-center items-center h-full">
   <div class="flex flex-col mb-7 text-center">

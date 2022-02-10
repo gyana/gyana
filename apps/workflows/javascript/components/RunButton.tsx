@@ -6,7 +6,7 @@ import Tippy from '@tippyjs/react'
 import { getWorkflowStatus, runWorkflow } from '../api'
 
 const RunButton: React.FC = () => {
-  const { workflowId, elements, setElements, setHasBeenRun, isOutOfDate, setIsOutOfDate } =
+  const { workflowId, elements, setElements, setHasBeenRun, errors, setErrors, isOutOfDate, setIsOutOfDate } =
     useContext(DnDContext) as IDnDContext
 
   const hasOutput = elements.some((el) => el.type === 'output')
@@ -29,12 +29,13 @@ const RunButton: React.FC = () => {
         )
         setIsOutOfDate(false)
         setHasBeenRun(false)
+        setErrors({})
         window.dispatchEvent(new Event(GyanaEvents.RUN_WORKFLOW))
         setLoading(false)
         alert('Workflow finished running!')
       },
       onError: async () => {
-        const errors = (await getWorkflowStatus(workflowId)).errors
+        setErrors((await getWorkflowStatus(workflowId)).errors)
         setElements((elements) =>
           elements.map((el) => {
             if (isNode(el)) {
@@ -55,8 +56,8 @@ const RunButton: React.FC = () => {
         alert('Workflow failed running')
       },
       // override the defaults, otherwise they will raise errors
-      onRetry: () => {},
-      onProgress: () => {},
+      onRetry: () => { },
+      onProgress: () => { },
     })
   }
 
@@ -66,8 +67,8 @@ const RunButton: React.FC = () => {
         !hasOutput
           ? 'Workflow needs a Save Data node to run'
           : !isOutOfDate
-          ? "You haven't made any new changes"
-          : 'Run workflow to create or update your output data sources'
+            ? "You haven't made any new changes"
+            : 'Run workflow to create or update your output data sources'
       }
     >
       <div className='dndflow__run-button'>
@@ -79,7 +80,7 @@ const RunButton: React.FC = () => {
             initCeleryProgress(result.task_id)
           }}
           className='button button--sm button--success'
-          disabled={!hasOutput || loading || !isOutOfDate}
+          disabled={!hasOutput || loading}
         >
           {loading ? (
             <i className='fad fa-fw fa-spinner-third fa-spin' />

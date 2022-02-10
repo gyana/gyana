@@ -2,12 +2,13 @@ import inspect
 import logging
 import re
 from functools import wraps
+from itertools import chain
 
 import ibis
 from ibis.expr.datatypes import String
 
 from apps.base import clients
-from apps.base.errors import error_name_to_snake
+from apps.base.core.utils import error_name_to_snake
 from apps.columns.bigquery import (
     aggregate_columns,
     compile_formula,
@@ -36,18 +37,27 @@ def _get_duplicate_names(left, right):
     return left_names & right_names
 
 
-def _rename_duplicates(left, right, left_col, right_col):
-    duplicates = _get_duplicate_names(left, right)
-    left = left.relabel(
-        {col: f"{col}_left" for col in left.columns if col.lower() in duplicates}
-    )
-    right = right.relabel(
-        {col: f"{col}_right" for col in right.columns if col.lower() in duplicates}
-    )
-    left_col = f"{left_col}_left" if left_col.lower() in duplicates else left_col
-    right_col = f"{right_col}_right" if right_col.lower() in duplicates else right_col
+def _rename_duplicates(queries):
+    column_names = list(chain(*[q.schema() for q in queries]))
+    duplicates = {
+        name
+        for name in column_names
+        if [c.lower() for c in column_names].count(name.lower()) > 1
+    }
 
-    return left, right, left_col, right_col
+    duplicate_map = {}
+    renamed_queries = []
+    for idx, query in enumerate(queries):
+        relabels = {
+            column: f"{column}_{idx+1}"
+            for column in query.schema()
+            if column in duplicates
+        }
+
+        renamed_queries.append(query.relabel(relabels))
+        duplicate_map[idx] = relabels
+
+    return renamed_queries, duplicate_map
 
 
 def _format_string(value):
@@ -74,7 +84,7 @@ def use_intermediate_table(func):
     @wraps(func)
     def wrapper(node, parent):
 
-        table = node.intermediate_table
+        table = getattr(node, "intermediate_table", None)
         conn = clients.ibis_client()
 
         # if the table doesn't need updating we can simply return the previous computed pivot table
@@ -106,18 +116,32 @@ def get_select_query(node, parent):
     return parent.drop(columns)
 
 
-def get_join_query(node, left, right):
+def get_join_query(node, left, right, *queries):
+    renamed_queries, duplicate_map = _rename_duplicates([left, right, *queries])
 
-    # Adding left/right to left/right if the column exists in both tables
-    left, right, left_col, right_col = _rename_duplicates(
-        left, right, node.join_left, node.join_right
+    query = renamed_queries[0]
+    drops = set()
+    relabels = {}
+    for idx, join in enumerate(node.join_columns.all()[: len(renamed_queries) - 1]):
+        left = renamed_queries[join.left_index]
+        right = renamed_queries[idx + 1]
+        to_join = getattr(query, JOINS[join.how])
+        left_col = duplicate_map[join.left_index].get(
+            join.left_column, join.left_column
+        )
+        right_col = duplicate_map[idx + 1].get(join.right_column, join.right_column)
+        query = to_join(
+            right,
+            left[left_col] == right[right_col],
+        )
+        if join.how == "inner":
+            drops.add(right_col)
+            relabels[left_col] = join.left_column
+    return (
+        query.materialize()
+        .drop(drops)
+        .relabel({key: value for key, value in relabels.items() if key not in drops})
     )
-    to_join = getattr(left, JOINS[node.join_how])
-
-    joined = to_join(right, left[left_col] == right[right_col]).materialize()
-    if node.join_how == "inner":
-        joined = joined.drop([right_col]).relabel({left_col: node.join_left})
-    return joined
 
 
 def get_aggregation_query(node, query):
@@ -273,7 +297,7 @@ def get_window_query(node, query):
 
 
 def get_sentiment_query(node, parent):
-    table = node.intermediate_table
+    table = getattr(node, "intermediate_table", None)
     conn = clients.ibis_client()
 
     # if the table doesn't need updating we can simply return the previous computed table

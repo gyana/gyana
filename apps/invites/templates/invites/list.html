@@ -5,11 +5,13 @@
   {% render_table table %}
 
   <div class="pad pad--sm">
-    <small>
-      <a href="{% url 'team_invites:create' team.id %}" class="link" data-turbo-frame="_top">
-        <i class="fa fa-fw fa-plus mr-2"></i>New Invite</a>
-      <a/>
-    </small>
+    <a
+      class="link small"
+      href="{% url 'team_invites:create' team.id %}"
+      data-turbo-frame="_top"
+    >
+      <i class="fa fa-fw fa-plus mr-2"></i>New Invite</a>
+    <a/>
   </div>
 </div>
 {% endblock %}

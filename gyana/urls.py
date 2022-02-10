@@ -17,19 +17,26 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path, register_converter
 from django.urls.converters import IntConverter
 from rest_framework.documentation import get_schemajs_view, include_docs_urls
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.contrib.sitemaps import Sitemap as WagtailSitemap
+from wagtail.core import urls as wagtail_urls
+from wagtail.documents import urls as wagtaildocs_urls
 
 from apps.base.converters import HashIdConverter
 
 register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "hashid")
+
 
 from apps.appsumo import urls as appsumo_urls
 from apps.cnames import urls as cname_urls
 from apps.connectors import urls as connector_urls
 from apps.controls import urls as control_urls
 from apps.customapis import urls as api_urls
+from apps.customreports import urls as customreports_urls
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
 from apps.invites import urls as invite_urls
@@ -41,11 +48,20 @@ from apps.teams import urls as team_urls
 from apps.templates import urls as template_urls
 from apps.uploads import urls as upload_urls
 from apps.users import urls as users_urls
+from apps.web.sitemaps import WebSitemap
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
 schemajs_view = get_schemajs_view(title="API")
 
+
+connector_urlpatterns = [
+    path("", include("apps.connectors.urls")),
+    path(
+        "<hashid:connector_id>/customreports/",
+        include(customreports_urls.connector_urlpatterns),
+    ),
+]
 
 integration_urlpatterns = [
     path("", include(integration_urls.project_urlpatterns)),
@@ -105,11 +121,12 @@ urlpatterns = [
     path("nodes/", include("apps.nodes.urls")),
     path("uploads/", include("apps.uploads.urls")),
     path("sheets/", include("apps.sheets.urls")),
-    path("connectors/", include("apps.connectors.urls")),
+    path("connectors/", include(connector_urlpatterns)),
     path("appsumo/", include("apps.appsumo.urls")),
     path("templates/", include("apps.templates.urls")),
     path("cnames/", include("apps.cnames.urls")),
     path("oauth2/", include("apps.oauth2.urls")),
+    path("learn/", include("apps.learn.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),
@@ -119,12 +136,24 @@ urlpatterns = [
     path("docs/", include_docs_urls(title="API Docs")),
     path("schemajs/", schemajs_view, name="api_schemajs"),
     path("", include(users_urls.accounts_urlpatterns)),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path("cms/", include(wagtailadmin_urls)),
+    path("documents/", include(wagtaildocs_urls)),
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": {"web": WebSitemap, "wagtail": WagtailSitemap}},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
+]
 
 if settings.CYPRESS_URLS:
     urlpatterns += [
-        path("cypress/", include("apps.base.cypress_urls")),
+        path("cypress/", include("apps.cypress.urls")),
     ]
 
 if settings.DEBUG:
     urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
+
+urlpatterns += [
+    path("", include(wagtail_urls)),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

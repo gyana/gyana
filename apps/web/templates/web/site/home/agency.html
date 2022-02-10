@@ -1,0 +1,97 @@
+{% load static heroicons %}
+
+<div class="bg-white">
+  <div class="max-w-4xl mx-auto px-4 py-16 sm:px-6 sm:pt-20 sm:pb-24 lg:max-w-7xl lg:pt-24 lg:px-8 flex flex-col items-left">
+    <h2 class="text-3xl font-extrabold text-gray-900">
+      Designed for agencies
+    </h2>
+    <p class="mt-4 max-w-3xl text-lg text-gray-800 text-left">
+      We've felt the pain of coordinating reports with multiple clients.
+      Details get dropped, deadlines missed, and it can get very stressful.
+      We designed Gyana to make it easier for you, so you can focus on delivering value.
+    </p>
+    <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-8 lg:gap-8">
+      <div class="card card--sm">
+        <div class="flex gap-4 overflow-hidden">
+          <span class="flex items-center gap-2 justify-center h-12 px-3 rounded-md border-2 border-indigo-600">
+            {% heroicon 'user' class="w-6 h-6 text-indigo-600" style="solid" %}
+            {% heroicon 'users' class="w-6 h-6 text-indigo-600" style="solid" %}
+            {% heroicon 'lock-closed' class="w-6 h-6 text-indigo-600" style="solid" %}
+          </span>
+          <span class="flex items-center gap-2 justify-center h-12 px-3 rounded-md border-2 border-green-600">
+            {% heroicon 'user' class="w-6 h-6 text-green-600" style="solid" %}
+            {% heroicon 'users' class="w-6 h-6 text-green-600" style="solid" %}
+            {% heroicon 'lock-closed' class="w-6 h-6 text-green-600" style="solid" %}
+          </span>
+          <span class="flex items-center gap-2 justify-center h-12 px-3 rounded-md border-2 border-yellow-600">
+            {% heroicon 'user' class="w-6 h-6 text-yellow-600" style="solid" %}
+            {% heroicon 'users' class="w-6 h-6 text-yellow-600" style="solid" %}
+            {% heroicon 'lock-closed' class="w-6 h-6 text-yellow-600" style="solid" %}
+          </span>
+        </div>
+        <div class="mt-6">
+          <h3 class="text-lg font-medium text-gray-900">
+            Account management
+          </h3>
+          <p class="mt-2 text-base text-gray-800">
+            Manage each client in separate, secure workspaces. Team collaboration with granular permissions for your analysts.
+          </p>
+        </div>
+      </div>
+      <div class="card card--sm">
+        <div class="flex gap-4 overflow-hidden">
+          <div class='px-2 py-1 h-12 border-2 border-gray-200 w-full rounded-lg bg-white focus:outline-none flex items-center text-lg lg:text-xl' contenteditable="true">
+            <i class='fa fa-search text-gray mr-2'></i>
+            <span class='text-black-20'>https://</span>reports.youragency.com
+          </div>
+        </div>
+        <div class="mt-6">
+          <h3 class="text-lg font-medium text-gray-900">
+            Your own portal
+          </h3>
+          <p class="mt-2 text-base text-gray-800">
+            Design a reporting experience that feels like an extension of your website. Themes, whitelabeling, embeds and custom domains.
+          </p>
+        </div>
+      </div>
+      <div class="card card--sm">
+        <div class="flex gap-4 overflow-hidden">
+          {% for i in '123456789'|make_list %}
+            {% with minusi="-"|add:i %}
+              <span class="flex-none flex items-center justify-center h-12 w-12 rounded-md bg-indigo-{{ 10|add:minusi }}00">
+                {% heroicon 'presentation-chart-bar' class="w-8 h-8 text-white" style="solid" %}
+              </span>
+            {% endwith %}
+          {% endfor %}
+        </div>
+        <div class="mt-6">
+          <h3 class="text-lg font-medium text-gray-900">
+           Reusable templates
+          </h3>
+          <p class="mt-2 text-base text-gray-800">
+            You can copy & paste the entire report, and change the data sources.
+            No matter how complex, it will all just work.
+          </p>
+        </div>
+      </div>
+      <div class="card card--sm">
+        <div class="overflow-hidden text-indigo-600">
+          <div class="agency-monitoring flex">
+            {% for i in '01234567890123456789'|make_list %}
+              <i class="fal fa-3x fa-heart-rate"></i>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="mt-6">
+          <h3 class="text-lg font-medium text-gray-900">
+            Monitoring
+          </h3>
+          <p class="mt-2 text-base text-gray-800">
+            It's like mission control for report health. Spot issues early, identify
+            the root cause and fix it fast. No more silently broken charts.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

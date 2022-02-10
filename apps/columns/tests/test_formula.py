@@ -298,7 +298,7 @@ PARAMS = [
     pytest.param(
         "date(1993,07, medals)",
         QUERY.format(
-            "PARSE_DATE('%Y%m%d', CONCAT(CONCAT(CAST(1993 AS STRING), CAST(7 AS STRING)), CAST(`medals` AS STRING)))"
+            "PARSE_DATE('%Y-%m-%d', CONCAT(CONCAT(CONCAT(CONCAT(CAST(1993 AS STRING), '-'), CAST(7 AS STRING)), '-'), CAST(`medals` AS STRING)))"
         ),
         id="date",
     ),

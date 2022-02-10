@@ -14,8 +14,10 @@ class PageInline(admin.TabularInline):
 @admin.register(Dashboard)
 class DashboardAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "project", "shared_status"]
-    fields = ["id", "name", "project", "shared_status"]
-    readonly_fields = ["id"]
+    search_fields = ["id", "name", "project__name"]
+    readonly_fields = ["id", "project"]
+    fields = readonly_fields + ["name", "shared_status"]
+
     inlines = [PageInline]
 
     def has_add_permission(self, request):

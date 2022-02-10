@@ -11,7 +11,7 @@ BS4_TYPES = [NavigableString, TemplateString, CData]
 pytestmark = pytest.mark.django_db
 
 
-def assertLink(response, url, text=None, title=None):
+def assertLink(response, url, text=None, title=None, tooltip=None, total=1):
     __tracebackhide__ = True
 
     soup = BeautifulSoup(response.content)
@@ -23,10 +23,12 @@ def assertLink(response, url, text=None, title=None):
         matches = [m for m in matches if text in m.get_text(types=BS4_TYPES)]
     elif title is not None:
         matches = [m for m in matches if title in m["title"]]
+    elif tooltip is not None:
+        matches = [m for m in matches if tooltip in m["data-tooltip-content"]]
 
     error_list = [m for m in original_matches]
 
-    assert len(matches) == 1, f"Possible matches are {error_list}"
+    assert len(matches) == total, f"Possible matches are {error_list}"
 
 
 def assertSelectorLength(response, selector, length):
@@ -56,12 +58,18 @@ def assertNotFound(response):
     assert response.status_code == 404, f"{response.status_code} != 404"
 
 
-def assertFormRenders(response, expected_fields=[]):
+def assertFormRenders(response, expected_fields=[], formSelector=None):
     __tracebackhide__ = True
 
     soup = BeautifulSoup(response.content)
 
-    matches = soup.select("form input,select,textarea")
+    if formSelector is not None:
+        matches = soup.select(
+            f"{formSelector} input,{formSelector} select,{formSelector} textarea"
+        )
+    else:
+        matches = soup.select("form input,select,textarea")
+
     IGNORE_LIST = ["csrfmiddlewaretoken", "hidden_live", "__prefix__"]
     fields = [
         m["name"]

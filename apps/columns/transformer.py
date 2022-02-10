@@ -54,8 +54,8 @@ def create_date(caller, args):
     year = _cast_string(caller)
     month = _cast_string(args[0])
     day = _cast_string(args[1])
-    text = year + month + day
-    return text.parse_date("%Y%m%d")
+    text = year + "-" + month + "-" + day
+    return text.parse_date("%Y-%m-%d")
 
 
 def create_time(caller, args):

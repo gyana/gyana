@@ -5,7 +5,7 @@ from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 
 from apps.base.analytics import PROJECT_CREATED_EVENT
-from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.base.views import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 
 from .forms import ProjectCreateForm, ProjectUpdateForm

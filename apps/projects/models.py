@@ -6,17 +6,19 @@ from django.db import models
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django_celery_beat.models import PeriodicTask
-from model_clone.mixins.clone import CloneMixin
 
 from apps.base.models import BaseModel
 from apps.cnames.models import CName
 from apps.teams.models import Team
 
 
-class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
+class Project(DirtyFieldsMixin, BaseModel):
     class Access(models.TextChoices):
         EVERYONE = ("everyone", "Everyone in your team can access")
         INVITE_ONLY = ("invite", "Only invited team members can access")
+
+    _clone_excluded_m2o_or_o2m_fields = ["table_set"]
+    _clone_excluded_m2m_fields = ["members"]
 
     name = models.CharField(max_length=255)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
@@ -38,8 +40,6 @@ class Project(DirtyFieldsMixin, CloneMixin, BaseModel):
     periodic_task = models.OneToOneField(
         PeriodicTask, null=True, on_delete=models.SET_NULL
     )
-
-    _clone_m2o_or_o2m_fields = ["integration_set", "workflow_set", "dashboard_set"]
 
     def __str__(self):
         return self.name

@@ -3,10 +3,19 @@
            | datetime
            | date
            | time
-           | sum
            | boolean
+           | sum
            | string
            | string_
+
+?boolean   : formula "<"  formula                      -> lt
+           | formula ">"  formula                      -> gt
+           | formula "=" formula                       -> eq
+           | formula ">=" formula                      -> ge
+           | formula "<=" formula                      -> le
+           | formula "!=" formula                      -> ne
+           | "FALSE"                                   -> false
+           | "TRUE"                                    -> true
 
 ?sum       : product
            | sum "+" product                           -> add
@@ -22,14 +31,6 @@
            | column
            | function
 
-?boolean   : formula "<"  formula                      -> lt
-           | formula ">"  formula                      -> gt
-           | formula "=" formula                       -> eq
-           | formula ">=" formula                      -> ge
-           | formula "<=" formula                      -> le
-           | formula "!=" formula                      -> ne
-           | "FALSE"                                   -> false
-           | "TRUE"                                    -> true
 
 
 // Following the standards defined here https://en.wikipedia.org/wiki/ISO_8601 

@@ -3,13 +3,14 @@ import hashlib
 import pandas as pd
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.db import models
+from django.db import models, transaction
 from django.utils.translation import ugettext_lazy as _
 from storages.backends.gcloud import GoogleCloudStorage
 
 from apps.base.clients import SLUG
 from apps.base.models import BaseModel
 from apps.teams import roles
+from apps.teams.models import Team
 
 
 class CustomUser(AbstractUser):
@@ -95,7 +96,10 @@ class CustomUser(AbstractUser):
 
     @property
     def teams_admin_of(self):
-        return self.teams.filter(membership__role=roles.ROLE_ADMIN).all()
+
+        return Team.objects.filter(
+            membership__role=roles.ROLE_ADMIN, membership__user=self
+        ).all()
 
     @property
     def is_creators_only_integration(self):
@@ -122,10 +126,10 @@ class ApprovedWaitlistEmailBatch(BaseModel):
         super().save(*args, **kwargs)
 
         emails = pd.read_csv(self.data.file.open(), names=["email"]).email.tolist()
-        waitlist_users = [
-            ApprovedWaitlistEmail(email=email.lower()) for email in emails
-        ]
-        ApprovedWaitlistEmail.objects.bulk_create(waitlist_users)
 
-        self.success = True
-        super().save(*args, **kwargs)
+        with transaction.atomic():
+            for email in emails:
+                ApprovedWaitlistEmail.objects.get_or_create(email=email.lower())
+
+            self.success = True
+            super().save(*args, **kwargs)

@@ -19,9 +19,33 @@
   }
 
   &__grid {
-    background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.025),rgba(0, 0, 0, 0.025) 1px, transparent 1px, transparent 15px), repeating-linear-gradient(-90deg, rgba(0, 0, 0, 0.025), rgba(0, 0, 0, 0.025) 1px, transparent 1px, transparent 15px);
+    background-image: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.025),
+        rgba(0, 0, 0, 0.025) 1px,
+        transparent 1px,
+        transparent var(--grid-size)
+      ),
+      repeating-linear-gradient(
+        -90deg,
+        rgba(0, 0, 0, 0.025),
+        rgba(0, 0, 0, 0.025) 1px,
+        transparent 1px,
+        transparent var(--grid-size)
+      );
     background-position: 1px 1px;
-    background-size: 15px 15px;
+    background-size: var(--grid-size) var(--grid-size);
+  }
+
+  #dashboard-widget-placeholder {
+    gap: 1.6rem;
+    height: auto;
+    left: 50%;
+    padding: 1.6rem;
+    position: sticky;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: max-content;
   }
 }
 
@@ -43,6 +67,11 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  &__comparison {
+    font-size: 3rem;
+    color: var(--c-black-50);
+  }
 }
 
 .widget__public-footer {
@@ -53,13 +82,27 @@
   padding-bottom: 1.6rem;
 }
 
-#editor {
+[data-controller*=widget-visuals-text] {
   border: none;
   cursor: text;
 }
 
+.widgets .ql-container.ql-snow {
+  border: none;
+}
+
 .widgets .ql-toolbar.ql-snow {
   background: var(--c-white);
-  border: none;
-  border-bottom: 1px solid var(--c-gray);
+  border-bottom: none;
+  border: 1px solid var(--c-gray);
+  bottom: 100%;
+  display: none;
+  position: absolute;
+  visibility: none;
+  width: 100%;
+}
+
+.react-draggable[data-focused*=true] .ql-toolbar.ql-snow {
+  display: block;
+  visibility: visible;
 }

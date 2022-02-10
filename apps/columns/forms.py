@@ -1,20 +1,22 @@
 from django import forms
-from ibis.expr.datatypes import Floating
+from ibis.expr.datatypes import Date, Floating, Timestamp
 
-from apps.base.aggregations import AGGREGATION_TYPE_MAP
-from apps.base.live_update_form import BaseLiveSchemaForm
-from apps.base.utils import create_column_choices
+from apps.base.core.aggregations import AGGREGATION_TYPE_MAP
+from apps.base.core.utils import create_column_choices
+from apps.base.forms import BaseLiveSchemaForm
 from apps.base.widgets import Datalist, SelectWithDisable
 from apps.columns.models import (
     AddColumn,
     AggregationColumn,
+    Column,
     ConvertColumn,
     EditColumn,
     FormulaColumn,
+    JoinColumn,
     WindowColumn,
 )
 
-from .bigquery import AllOperations
+from .bigquery import AllOperations, DatePeriod
 from .widgets import CodeMirror
 
 IBIS_TO_FUNCTION = {
@@ -28,6 +30,28 @@ IBIS_TO_FUNCTION = {
     "Time": "time_function",
     "Boolean": "boolean_function",
 }
+
+
+class ColumnForm(BaseLiveSchemaForm):
+    class Meta:
+        fields = ("column", "part")
+        model = Column
+
+    def get_live_fields(self):
+        fields = ["column"]
+        if isinstance(self.column_type, (Timestamp, Date)):
+            fields += ["part"]
+        return fields
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if "part" in self.fields and isinstance(self.column_type, Date):
+            self.fields["part"].choices = [
+                choice
+                for choice in self.fields["part"].choices
+                if choice[0] != DatePeriod.DATE.value
+            ]
 
 
 class AggregationColumnForm(BaseLiveSchemaForm):
@@ -227,3 +251,57 @@ class ConvertColumnForm(BaseLiveSchemaForm):
         super().__init__(*args, **kwargs)
 
         self.fields["column"].choices = create_column_choices(self.schema)
+
+
+def create_left_join_choices(parents, index):
+    columns = (
+        (
+            f"Input {idx+1}",
+            sorted(
+                [(f"{idx}:{col}", col) for col in parent.schema],
+                key=lambda x: str.casefold(x[1]),
+            ),
+        )
+        for idx, parent in enumerate(parents[: index + 1])
+    )
+
+    return [("", "No column selected"), *columns]
+
+
+class JoinColumnForm(BaseLiveSchemaForm):
+    class Meta:
+        model = JoinColumn
+        fields = ["how", "left_column", "right_column"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        parents = kwargs["parent_instance"].parents_ordered.all()
+        index = (
+            int(index) if (index := self.prefix.split("-")[-1]) != "__prefix__" else 0
+        )
+
+        self.fields["left_column"] = forms.ChoiceField(
+            choices=create_left_join_choices(parents, index),
+            help_text=self.fields["left_column"].help_text.format(
+                index + 1 if index == 0 else f"1 to {index+1}"
+            ),
+        )
+        self.fields["right_column"] = forms.ChoiceField(
+            choices=create_column_choices(
+                parents[index + 1].schema,
+            ),
+            help_text=self.fields["right_column"].help_text.format(index + 2),
+        )
+
+    def get_initial_for_field(self, field, field_name):
+        if field_name == "left_column" and self.instance.left_column:
+            return f"{self.instance.left_index}:{self.instance.left_column}"
+        return super().get_initial_for_field(field, field_name)
+
+    def save(self, *args, **kwargs):
+        left_index, left_column = self.cleaned_data["left_column"].split(":")
+        self.instance.left_index = int(left_index)
+        self.instance.left_column = left_column
+
+        return super().save(*args, **kwargs)

@@ -1,16 +1,24 @@
 from datetime import datetime
 
 from dirtyfields import DirtyFieldsMixin
+from django import forms
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.functional import cached_property
 
 from apps.base import clients
+from apps.base.fields import ChoiceArrayField
 from apps.base.models import BaseModel
+from apps.connectors.clone import update_schema
 from apps.connectors.fivetran.schema import FivetranSchemaObj
+from apps.connectors.fivetran.services.facebook_ads import (
+    BASIC_REPORTS,
+    BASIC_REPORTS_CHOICES,
+)
 from apps.integrations.models import Integration
 
+from .clone import create_fivetran, update_schema
 from .fivetran.config import ServiceTypeEnum, get_services_obj
 
 FIVETRAN_CHECK_SYNC_TIMEOUT_HOURS = 24
@@ -49,6 +57,10 @@ class Connector(DirtyFieldsMixin, BaseModel):
             "Delayed -  the data is delayed for a longer time than expected for the update",
         )
 
+    class SetupMode(models.TextChoices):
+        BASIC = ("basic", "Basic")
+        ADVANCED = ("advanced", "Advanced")
+
     SETUP_STATE_TO_ICON = {
         SetupState.CONNECTED: "fa fa-check text-green",
         SetupState.INCOMPLETE: "fa fa-exclamation-circle text-orange",
@@ -62,6 +74,16 @@ class Connector(DirtyFieldsMixin, BaseModel):
         SyncState.RESCHEDULED: "fa fa-history",
     }
 
+    _clone_excluded_fields = [
+        # TODO: right now this needs to be falsely copied
+        # otherwise the integration won't be shown on the overview page.
+        # "fivetran_authorized",
+        "fivetran_sync_started",
+        "bigquery_succeeded_at",
+        # TODO: should this be added later or do we need to replace the schema during duplication
+        "schema_config",
+    ]
+    _clone_excluded_o2o_fields = ["integration"]
     # internal fields
 
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
@@ -110,6 +132,14 @@ class Connector(DirtyFieldsMixin, BaseModel):
     # deprecated: track the celery task
     sync_task_id = models.UUIDField(null=True)
     sync_started = models.DateTimeField(null=True)
+
+    # reporting connectors
+    setup_mode = models.CharField(
+        max_length=16, choices=SetupMode.choices, default=SetupMode.ADVANCED
+    )
+    basic_reports = ChoiceArrayField(
+        models.CharField(max_length=32, choices=BASIC_REPORTS_CHOICES), default=list
+    )
 
     @property
     def fivetran_dashboard_url(self):
@@ -288,6 +318,19 @@ class Connector(DirtyFieldsMixin, BaseModel):
             pass
 
     @property
+    def custom_reports(self):
+        if self.setup_mode == self.SetupMode.BASIC:
+            return [BASIC_REPORTS[r]["custom_table"] for r in self.basic_reports]
+        return [
+            forms.model_to_dict(obj) for obj in self.facebookadscustomreport_set.all()
+        ]
+
+    def update_fivetran_config(self):
+        clients.fivetran().update(
+            self, config={**self.config, "custom_tables": self.custom_reports}
+        )
+
+    @property
     def setup_state_icon(self):
         return self.SETUP_STATE_TO_ICON[self.setup_state]
 
@@ -311,3 +354,10 @@ class Connector(DirtyFieldsMixin, BaseModel):
     @property
     def latest_sync_validated(self):
         return self.succeeded_at == self.bigquery_succeeded_at
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        attrs = update_schema(attrs, self)
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        create_fivetran(clone)
+
+        return clone

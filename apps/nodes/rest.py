@@ -59,8 +59,9 @@ def duplicate_node(request, pk):
     clone = node.make_clone(
         attrs={
             "name": "Copy of " + (node.name or NODE_CONFIG[node.kind]["displayName"]),
-            "x": node.x + 50,
-            "y": node.y + 50,
+            # Magic numbers: A multiple of GRID_GAP found in DnDFlow.tsx
+            "x": node.x + 80,
+            "y": node.y + 80,
         }
     )
 

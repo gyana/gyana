@@ -1,12 +1,19 @@
+{% if request.GET.source == 'modal' %}
+  {% include 'widgets/modal_nav_bar.html'%}
+{% endif %}
 <div 
   id="widgets-output-{{ widget.id }}-stream"
-  style="display: flex; flex: 1 1 0%; min-height: 0;overflow: auto;"
+  style="display: flex; flex: 1 1 0%; min-height: 0;overflow: auto; height: auto;"
 >
   {% if widget.is_valid and not error_template %}
     {% if widget.kind == "table" %}
       {% include 'widgets/visuals/grid.html' %}
     {% elif widget.kind == "text" %}
       {% include 'widgets/visuals/text.html' %}
+    {% elif widget.kind == "iframe" %}
+      {% include 'widgets/visuals/iframe.html' %}
+    {% elif widget.kind == "image" %}
+      {% include 'widgets/visuals/image.html' %}
     {% elif  widget.kind == 'metric' %}
       {% include 'widgets/visuals/metric.html' %}
     {% elif widget.kind %}

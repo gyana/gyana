@@ -1,0 +1,12 @@
+{% extends "emails/base.html" %}
+
+{% block title %}
+[Gyana] Your duplicated project is ready!
+{% endblock %}
+
+{% block content %}
+Your duplicated project <strong>{{project.name}}</strong> is ready !
+
+<a  href="{% url 'projects:detail' project.id %}">{{project.name}}</a>
+
+{% endblock %}

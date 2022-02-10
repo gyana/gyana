@@ -7,8 +7,8 @@ from turbo_response.mixins import (
     TurboFrameTemplateResponseMixin as BaseTurboFrameTemplateResponseMixin,
 )
 
-from apps.base.formset_update_view import FormsetUpdateView
-from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.base.views import TurboCreateView, TurboUpdateView
+from apps.base.views import FormsetUpdateView
 
 
 class TurboFrame500Mixin:

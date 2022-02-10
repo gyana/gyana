@@ -37,6 +37,7 @@ class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
         )
 
         context_data["dashboards"] = {
+            "all": self.project.dashboard_set.order_by("-updated").all()[:5],
             "total": self.project.dashboard_set.count(),
             "widgets": widgets.count(),
             "incomplete": dashboards_incomplete,
@@ -76,7 +77,7 @@ class DashboardPreview(TurboFrameDetailView):
         context = super().get_context_data(**kwargs)
         context["project"] = self.object.project
         context["page"] = self.object.pages.get(
-            position=self.request.GET.get("page", 1)
+            position=self.request.GET.get("dashboardPage", 1)
         )
         return context
 
@@ -100,11 +101,6 @@ class DashboardSettings(ProjectMixin, TurboFrameUpdateView):
         return context
 
     def form_invalid(self, form):
-        import logging
-        logger = logging.getLogger()
-        logger.critical("Form invalid")
-        logger.critical(form.errors)
-        logger.critical(form.non_field_errors)
         context = self.get_context_data()
         return TurboStreamResponse(
             [

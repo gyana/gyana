@@ -54,6 +54,7 @@ facebook_ad_account:
   sunset: true
 facebook_ads:
   static_config:
+    timeframe_months: SIX
     custom_tables:
       - table_name: action_canvas_component
         config_type: Prebuilt
@@ -122,7 +123,7 @@ github: {}
 google_analytics:
   static_config:
     sync_mode: AllAccounts
-    timeframe_months: ALL_TIME
+    timeframe_months: SIX
     reports:
       - table: adwords_campaigns
         config_type: Prebuilt

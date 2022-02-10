@@ -14,40 +14,60 @@ from apps.base.analytics import (
     WIDGET_CONFIGURED_EVENT,
     WIDGET_PREVIEWED_EVENT,
 )
-from apps.base.errors import error_name_to_snake
+from apps.base.core.table_data import RequestConfig, get_table
+from apps.base.core.utils import error_name_to_snake
 from apps.base.frames import (
     TurboFrameDetailView,
     TurboFrameFormsetUpdateView,
     TurboFrameListView,
     TurboFrameUpdateView,
 )
-from apps.base.table_data import RequestConfig
 from apps.base.templates import template_exists
+from apps.controls.bigquery import DATETIME_FILTERS
 from apps.dashboards.mixins import DashboardMixin
+from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, metric_to_output, table_to_output
 
 from .forms import FORMS, WidgetStyleForm
-from .models import WIDGET_CHOICES_ARRAY, Widget
+from .models import Widget
 
 
 def add_output_context(context, widget, request, control):
-    if widget.is_valid:
-        if widget.kind == Widget.Kind.TEXT:
-            pass
-        elif widget.kind == Widget.Kind.TABLE:
-            # avoid duplicating work for widget output
-            if "table" not in context:
-                table = table_to_output(widget, control)
-                context["table"] = RequestConfig(
-                    request,
-                ).configure(table)
-        elif widget.kind == Widget.Kind.METRIC:
-            context["metric"] = metric_to_output(widget, control)
-        else:
-            chart, chart_id = chart_to_output(widget, control)
-            context.update(chart)
-            context["chart_id"] = chart_id
+    if not widget.is_valid:
+        return
+    if widget.kind == Widget.Kind.TEXT:
+        pass
+    elif widget.kind == Widget.Kind.IFRAME:
+        pass
+    elif widget.kind == Widget.Kind.IMAGE:
+        pass
+    elif widget.kind == Widget.Kind.TABLE:
+        # avoid duplicating work for widget output
+        if "table" not in context:
+            table = table_to_output(widget, control)
+            context["table"] = RequestConfig(
+                request,
+            ).configure(table)
+    elif widget.kind == Widget.Kind.METRIC:
+        metric = metric_to_output(widget, control)
+        if widget.compare_previous_period and (
+            used_control := widget.control if widget.has_control else control
+        ):
+            previous_metric = metric_to_output(widget, control, True)
+            if not previous_metric:
+                context["zero_division"] = True
+            else:
+                context["change"] = (metric - previous_metric) / previous_metric * 100
+                context["period"] = DATETIME_FILTERS[used_control.date_range][
+                    "previous_label"
+                ]
+
+        context["metric"] = metric
+    else:
+        chart, chart_id = chart_to_output(widget, control)
+        context.update(chart)
+        context["chart_id"] = chart_id
 
 
 class WidgetName(TurboFrameUpdateView):
@@ -64,32 +84,28 @@ class WidgetName(TurboFrameUpdateView):
 
 
 class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
-    template_name = "widgets/update.html"
     model = Widget
     turbo_frame_dom_id = "widget-modal"
+
+    def get_template_names(self):
+        if self.object.kind == Widget.Kind.IFRAME:
+            return "widgets/update-simple.html"
+        if self.object.kind == Widget.Kind.IMAGE:
+            return "widgets/update-simple.html"
+
+        return "widgets/update.html"
 
     def get_form_class(self):
         return FORMS[self.request.POST.get("kind") or self.object.kind]
 
-    def get_formset_kwargs(self, formset):
-        kind = self.request.POST.get("kind") or self.object.kind
-        if kind == Widget.Kind.SCATTER:
-            return {"names": ["X", "Y"]}
-        if kind == Widget.Kind.BUBBLE:
-            return {"names": ["X", "Y", "Z"]}
-        return {}
-
-    def get_formset_form_kwargs(self, formset):
-        table = self.request.POST.get("table") or getattr(self.object, "table")
-        formset_kwargs = {}
-        if table is not None:
-            formset_kwargs["schema"] = (
-                table if isinstance(table, Table) else Table.objects.get(pk=table)
-            ).schema
-        return formset_kwargs
-
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
+        table = self.request.POST.get("table") or getattr(self.object, "table")
+        if table is not None:
+            kwargs["schema"] = (
+                table if isinstance(table, Table) else Table.objects.get(pk=table)
+            ).schema
+
         kwargs["project"] = self.dashboard.project
         return kwargs
 
@@ -110,10 +126,15 @@ class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["show_date_column"] = bool(
-            context["form"].get_live_field("date_column")
-        )
-        context["styleForm"] = WidgetStyleForm(instance=self.object)
+        if self.object.kind not in [
+            Widget.Kind.TEXT,
+            Widget.Kind.IFRAME,
+            Widget.Kind.IMAGE,
+        ]:
+            context["show_date_column"] = bool(
+                context["form"].get_live_field("date_column")
+            )
+            context["styleForm"] = WidgetStyleForm(instance=self.object)
 
         return context
 
@@ -326,7 +347,8 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
     paginate_by = 15
 
     def get_turbo_frame_dom_id(self):
-        return f"widgets-output-{self.object.id}"
+        source = f"-{source}" if (source := self.request.GET.get("source")) else ""
+        return f"widgets-output-{self.object.id}{source}"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -353,6 +375,25 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
                 self.object,
                 self.page.control if self.page.has_control else None,
             )
+            return RequestConfig(
+                self.request, paginate=self.get_table_pagination(table)
+            ).configure(table)
+        return type("DynamicTable", (DjangoTable,), {})(data=[])
+
+
+class WidgetInput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
+    template_name = "widgets/input.html"
+    model = Widget
+    paginate_by = 15
+
+    def get_turbo_frame_dom_id(self):
+        source = f"-{source}" if (source := self.request.GET.get("source")) else ""
+        return f"widgets-output-{self.object.id}{source}"
+
+    def get_table(self, **kwargs):
+        if self.object.table:
+            query = get_query_from_table(self.object.table)
+            table = get_table(query.schema(), query)
             return RequestConfig(
                 self.request, paginate=self.get_table_pagination(table)
             ).configure(table)

@@ -1,0 +1,6 @@
+{% extends 'admin/change_form.html' %}
+
+{% block field_sets %}
+  {{ hijack_button|safe }}
+  {{ block.super }}
+{% endblock %}

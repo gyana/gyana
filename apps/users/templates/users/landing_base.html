@@ -1,0 +1,46 @@
+{% extends "web/base.html" %}
+{% load static %}
+
+{% block body %}
+<div class="landing">
+  <div class="landing__content">
+    <header class="landing__header">
+      <h1><a href="{% url 'account_login' %}">Gyana</a></h1>
+
+      {% block header %}
+      <p>
+        Welcome, sign in to start where you left off. Account creation is 
+        currently closed but you can 
+        <a 
+          href="https://gyana-data.typeform.com/to/v2XTy0j3"
+          class="link"
+        >
+          request access
+        </a>.
+      </p>
+      {% endblock %}
+    </header>
+
+
+    {% block content %}
+    {% endblock content %}
+
+    <footer class="landing__footer">
+      {% block footer %}
+      <p>
+        By using the app, you agree to our
+        <a href="{% url 'web:terms-of-use' %}" class="link">terms of service</a>
+        and
+        <a href="{% url 'web:privacy-policy' %}" class="link">privacy policy</a>.
+      </p>
+      {% endblock %}
+    </footer>
+  </div>
+
+  <div class="landing__image">
+    {% block image %}
+      <img src="{% static 'images/landing.png' %}" />
+    {% endblock %}
+  </div>
+</div>
+{% endblock %}

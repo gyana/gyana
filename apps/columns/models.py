@@ -2,15 +2,15 @@ from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models
 
-from apps.base.aggregations import AggregationFunctions
+from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import SaveParentModel
 from apps.columns.currency_symbols import CurrencySymbols
 from apps.nodes.models import Node
-from apps.widgets.models import CombinationChart, Widget
 
 from .bigquery import (
     CommonOperations,
     DateOperations,
+    DatePeriod,
     DatetimeOperations,
     NumericOperations,
     StringOperations,
@@ -120,7 +120,14 @@ class Column(ColumnSettings, SaveParentModel):
         Node, null=True, on_delete=models.CASCADE, related_name="columns"
     )
     widget = models.ForeignKey(
-        Widget, on_delete=models.CASCADE, related_name="columns", null=True
+        "widgets.Widget", on_delete=models.CASCADE, related_name="columns", null=True
+    )
+    part = models.CharField(
+        max_length=16,
+        choices=DatePeriod.choices,
+        null=True,
+        blank=True,
+        help_text="Select the desired date part",
     )
 
 
@@ -164,7 +171,10 @@ class AggregationColumn(ColumnSettings, SaveParentModel):
         Node, on_delete=models.CASCADE, related_name="aggregations", null=True
     )
     widget = models.ForeignKey(
-        Widget, on_delete=models.CASCADE, related_name="aggregations", null=True
+        "widgets.Widget",
+        on_delete=models.CASCADE,
+        related_name="aggregations",
+        null=True,
     )
 
 
@@ -252,4 +262,32 @@ class WindowColumn(SaveParentModel):
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         validators=[bigquery_column_regex],
         help_text="Select a new column name",
+    )
+
+
+class JoinColumn(SaveParentModel):
+    node = models.ForeignKey(
+        Node, on_delete=models.CASCADE, related_name="join_columns"
+    )
+    how = models.CharField(
+        max_length=12,
+        choices=[
+            ("inner", "Inner"),
+            ("outer", "Outer"),
+            ("left", "Left"),
+            ("right", "Right"),
+        ],
+        default="inner",
+        help_text="Select the join method, more information in the docs",
+    )
+
+    left_index = models.IntegerField(default=0)
+    left_column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        help_text="Choose the join column from Input {}",
+    )
+
+    right_column = models.CharField(
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
+        help_text="Choose the right join column from Input {}",
     )

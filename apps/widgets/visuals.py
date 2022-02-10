@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 from apps.base import clients
-from apps.base.table_data import get_table
+from apps.base.core.table_data import get_table
 from apps.columns.bigquery import aggregate_columns, resolve_colname
 from apps.controls.bigquery import slice_query
 from apps.filters.bigquery import get_query_from_filters
@@ -19,12 +19,14 @@ class MaxRowsExceeded(Exception):
     pass
 
 
-def pre_filter(widget, control):
+def pre_filter(widget, control, use_previous_period=False):
     query = get_query_from_table(widget.table)
     query = get_query_from_filters(query, widget.filters.all())
 
-    if control and widget.date_column:
-        query = slice_query(query, widget.date_column, control)
+    if (
+        control := (widget.control if widget.has_control else control)
+    ) and widget.date_column:
+        query = slice_query(query, widget.date_column, control, use_previous_period)
     return query
 
 
@@ -60,7 +62,7 @@ def get_summary_row(query, widget):
     query = query.aggregate(aggregations)
     summary = clients.bigquery().get_query_results(query.compile()).rows_dict[0]
     return {
-        **summary,
+        **{key: round(value, 2) for key, value in summary.items()},
         group.column: "Total",
     }
 
@@ -70,6 +72,7 @@ def table_to_output(widget: Widget, control) -> Dict[str, Any]:
     summary = None
     if widget.columns.first():
         if widget.show_summary_row:
+            # TODO: add sorting and limit
             summary = get_summary_row(query, widget)
         query = aggregate_columns(query, widget)
 
@@ -81,11 +84,14 @@ def table_to_output(widget: Widget, control) -> Dict[str, Any]:
         }
         for col in [*widget.columns.all(), *widget.aggregations.all()]
     }
+
+    if widget.sort_column:
+        query = query.sort_by([(widget.sort_column, widget.sort_ascending)])
     return get_table(query.schema(), query, summary, settings)
 
 
-def metric_to_output(widget, control):
-    query = pre_filter(widget, control)
+def metric_to_output(widget, control, use_previous_period=False):
+    query = pre_filter(widget, control, use_previous_period)
 
     aggregation = widget.aggregations.first()
     query = getattr(query[aggregation.column], aggregation.function)().name(

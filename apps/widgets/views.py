@@ -5,7 +5,7 @@ from turbo_response.response import TurboStreamResponse
 from turbo_response.views import TurboStreamDeleteView
 
 from apps.base.analytics import WIDGET_CREATED_EVENT, WIDGET_DUPLICATED_EVENT
-from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.base.views import TurboCreateView, TurboUpdateView
 from apps.dashboards.mixins import DashboardMixin
 
 from .forms import WidgetDuplicateForm

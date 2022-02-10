@@ -1,14 +1,15 @@
 from django_tables2.views import SingleTableMixin
 
-from apps.base.bigquery import get_humanize_from_bigquery_type
+from apps.base.core.bigquery import get_humanize_from_bigquery_type
+from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.frames import TurboFrameDetailView, TurboFrameTemplateView
-from apps.base.table_data import RequestConfig, get_table
 from apps.integrations.tables import StructureTable
 from apps.projects.mixins import ProjectMixin
 from apps.tables.bigquery import get_bq_table_schema_from_table, get_query_from_table
 
 from .mixins import TableInstanceMixin
 from .models import Integration
+from .tables import TableReferenceTable
 
 
 class IntegrationOverview(ProjectMixin, TurboFrameTemplateView):
@@ -25,6 +26,7 @@ class IntegrationOverview(ProjectMixin, TurboFrameTemplateView):
         broken = queryset.broken().count()
 
         context_data["integrations"] = {
+            "all": queryset.order_by("-updated").all()[:5],
             "total": ready + pending,
             "ready": ready,
             "attention": queryset.needs_attention().count(),
@@ -73,3 +75,14 @@ class IntegrationTableDetail(TableInstanceMixin, TurboFrameDetailView):
     template_name = "integrations/table_detail.html"
     model = Integration
     turbo_frame_dom_id = "integrations:table_detail"
+
+
+class IntegrationTableReference(TableInstanceMixin, TurboFrameDetailView):
+    template_name = "integrations/table_reference.html"
+    model = Integration
+    turbo_frame_dom_id = "integrations:table_reference"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["table"] = TableReferenceTable(self.table_instance.used_in)
+        return context

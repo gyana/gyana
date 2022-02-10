@@ -1,9 +1,16 @@
 from rest_framework import serializers
 
 from apps.filters.models import Filter
+from apps.tables.models import Table
 
 from .config import NODE_CONFIG
 from .models import Edge, Node, Workflow
+
+
+class TableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Table
+        fields = ("id", "owner_name")
 
 
 class EdgeSerializer(serializers.ModelSerializer):
@@ -16,6 +23,7 @@ class NodeSerializer(serializers.ModelSerializer):
 
     workflow = serializers.PrimaryKeyRelatedField(queryset=Workflow.objects.all())
     description = serializers.SerializerMethodField()
+    input_table = TableSerializer(many=False, required=False)
     parent_edges = EdgeSerializer(many=True, required=False)
 
     class Meta:
@@ -27,10 +35,12 @@ class NodeSerializer(serializers.ModelSerializer):
             "x",
             "y",
             "workflow",
+            "input_table",
             "description",
             "error",
             "text_text",
             "parent_edges",
+            "join_is_valid",
         )
         read_only = ["parent_edges"]
 
@@ -55,7 +65,7 @@ def get_select_desc(obj):
 
 
 def get_join_desc(obj):
-    return f"{obj.join_left}={obj.join_right} {obj.join_how}"
+    return f"Join {', '.join([f'Input {i+2} on {column.left_column}={column.right_column}' for i, column in enumerate(obj.join_columns.all())])}"
 
 
 def get_aggregation_desc(obj):

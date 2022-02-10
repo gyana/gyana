@@ -25,7 +25,7 @@ def test_input_form(setup, node_factory):
     node = node_factory(kind=Node.Kind.INPUT, workflow=workflow)
     form = KIND_TO_FORM[node.kind](instance=node)
 
-    assert set(form.get_live_fields()) == {"input_table"}
+    assert set(form.get_live_fields()) == {"input_table", "search"}
     table_choices = list(form.fields["input_table"].choices)
     assert len(table_choices) == 2
     assert table_choices[0][0] == ""
@@ -87,25 +87,6 @@ def test_distinct_form(setup, node_factory):
     # test custom initial
     form = KIND_TO_FORM[node.kind](instance=node)
     assert len(form.fields["distinct_columns"].initial) == 3
-
-
-def test_join_form(setup, node_factory):
-    table, workflow = setup
-    node = create_and_connect(Node.Kind.JOIN, node_factory, table, workflow)
-    secondary_input = node_factory(
-        kind=Node.Kind.INPUT, input_table=table, workflow=workflow, x=25, y=25
-    )
-    node.parents.add(secondary_input, through_defaults={"position": 1})
-    form = KIND_TO_FORM[node.kind](instance=node)
-
-    assert set(form.fields.keys()) == {
-        "join_how",
-        "join_left",
-        "join_right",
-        "hidden_live",
-    }
-    assert get_choice_len(form, "join_left") == 9
-    assert get_choice_len(form, "join_right") == 9
 
 
 def test_union_form(setup, node_factory):
@@ -198,6 +179,7 @@ def kind_param(kind):
         kind_param(Node.Kind.WINDOW),
         kind_param(Node.Kind.EXCEPT),
         kind_param(Node.Kind.CONVERT),
+        kind_param(Node.Kind.JOIN),
     ],
 )
 def test_default_form(kind, setup, node_factory):

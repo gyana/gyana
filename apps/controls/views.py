@@ -5,7 +5,7 @@ from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 from turbo_response.views import TurboStreamDeleteView
 
-from apps.base.turbo import TurboCreateView
+from apps.base.views import TurboCreateView
 from apps.controls.models import Control, ControlWidget
 
 from .mixins import UpdateWidgetsMixin

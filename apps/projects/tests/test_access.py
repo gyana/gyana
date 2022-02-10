@@ -13,6 +13,7 @@ pytestmark = pytest.mark.django_db
         pytest.param("/projects/{}/delete", id="delete"),
         pytest.param("/projects/{}/automate", id="automate"),
         pytest.param("/projects/{}/runs", id="runs"),
+        pytest.param("/projects/{}/duplicate", id="duplicate"),
     ],
 )
 def test_project_required(client, url, user, project_factory):

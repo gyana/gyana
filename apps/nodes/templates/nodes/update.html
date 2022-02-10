@@ -1,5 +1,4 @@
-{% load help_utils %}
-{% load waffle_tags %}
+{% load help_utils humanize %}
 
 {% if parent_error_node is None %}
 
@@ -13,6 +12,7 @@
       <turbo-frame id="node-editable-title">
         {% include 'nodes/name.html' %}
       </turbo-frame>
+
       <div class="ml-auto flex flex-row gap-3 items-center">
       
         <turbo-frame id='exports:create_node'>
@@ -25,18 +25,25 @@
       </div>
     </div>
     
-    <form id="node-update-form"
-          class="form--no-layout overflow-hidden flex-1"
-          action="{% url 'nodes:update' node.id %}"
-          method="post"
-          data-tf-modal-target='form'
-          {% if do_live_updates %}
-          data-controller="live-update"
-          {% endif %}
-          data-action="change->tf-modal#change">
+    <form
+      id="node-update-form"
+      class="form--no-layout overflow-hidden flex-1"
+      action="{% url 'nodes:update' node.id %}"
+      method="post"
+      data-tf-modal-target="form"
+      data-tf-modal-submit-on-close
+      data-controller="live-update"
+      data-action="
+        change->tf-modal#change 
+        formset:remove->live-update#updateForm 
+        formset:add->live-update#updateForm 
+        formset:remove->tf-modal#change 
+        formset:add->tf-modal#change
+      "
+    >
 
       <div data-cy="update-sidebar" class="workflow-detail__sidebar">
-        <p class='pb-5'>{{ node.explanation }}</p>
+        <p class="pb-5">{{ node.explanation }}</p>
 
         <span data-live-update-target="loading" class="hidden">
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
@@ -44,6 +51,23 @@
         {% csrf_token %}
 
         {% include "django/forms/default_form.html" %}
+
+        {% if node.kind == 'sentiment' %}
+          <div class="mt-6">
+            <p class="input__help-text">
+              You've used
+              <strong>
+                {% with team=object.workflow.project.team %}
+                  {{ team.current_credit_balance|intcomma }} / {{ team.credits|intcomma }}
+                {% endwith %}
+              </strong>
+              sentiment credits. Credits refresh monthly, per team.
+              <a class="link" href="{% article_url 'overview' 'credits' %}" target="_blank">
+                Learn more.
+              </a>
+            </p>
+          </div>
+        {% endif %}
       </div>
 
       <div class='workflow-modal__footer'>
@@ -103,6 +127,15 @@
 
   {% else %}
     <div class='workflow-detail__warning'>
+      <div class="absolute top-0 right-0">
+        <button
+          class="tf-modal__close tf-modal__close--inline ml-auto"
+          data-action="click->tf-modal#forceClose"
+          data-loading-false
+        >
+          <i class="fal fa-times fa-lg"></i>
+        </button>
+      </div>
       <span class='mb-12'><i class="far fa-comment-dots fa-10x"></i></span>
       <p>This node needs to be connected to <strong>more than one node</strong> before you can configure it.</p>
     </div>

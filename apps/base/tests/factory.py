@@ -6,14 +6,17 @@ from apps.cnames.models import CName
 from apps.columns.models import (
     AddColumn,
     AggregationColumn,
+    Column,
     ConvertColumn,
     EditColumn,
     FormulaColumn,
+    JoinColumn,
     WindowColumn,
 )
 from apps.connectors.models import Connector
 from apps.controls.models import Control, ControlWidget
 from apps.customapis.models import CustomApi
+from apps.customreports.models import FacebookAdsCustomReport
 from apps.dashboards.models import Dashboard, Page
 from apps.filters.models import Filter
 from apps.integrations.models import Integration
@@ -224,6 +227,14 @@ class FormulaColumnFactory(factory.django.DjangoModelFactory):
 
 
 @register
+class JoinColumnFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = JoinColumn
+
+    node = factory.SubFactory(NodeFactory)
+
+
+@register
 class WindowColumnFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = WindowColumn
@@ -293,7 +304,22 @@ class InviteFactory(factory.django.DjangoModelFactory):
 
     sent = timezone.now()
 
+
+@register
+class ColumnFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Column
+
+
 @register
 class FlagFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Flag
+
+
+@register
+class FacebookAdsCustomReportFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = FacebookAdsCustomReport
+
+    connector = factory.SubFactory(ConnectorFactory)

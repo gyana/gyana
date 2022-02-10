@@ -22,22 +22,24 @@
 
   &__header {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
     margin-bottom: auto;
 
     h1 {
       color: var(--c-blue);
-    }
-
-    img {
-      height: 6.4rem;
-      margin-right: 1.6rem;
+      font-family: "Poppins";
+      font-weight: 600;
+      margin-bottom: 1.6rem;
     }
 
     &--appsumo {
-      justify-content: center;
+      align-items: center;
       gap: 0.8rem;
+      justify-content: center;
+
+      h1 {
+        margin: 0;
+      }
 
       img:first-child {
         height: 6.4rem;

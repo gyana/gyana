@@ -3,9 +3,12 @@ from django.http import HttpResponse
 from django.urls import reverse_lazy
 
 from apps.base.mixins import PageTitleMixin
-from apps.base.turbo import TurboUpdateView
+from apps.base.views import TurboUpdateView
 from apps.base.frames import TurboFrameUpdateView
-from apps.users.helpers import require_email_confirmation, user_has_confirmed_email_address
+from apps.users.helpers import (
+    require_email_confirmation,
+    user_has_confirmed_email_address,
+)
 
 from .forms import CustomUserChangeForm
 from .models import CustomUser
@@ -38,4 +41,3 @@ class UserProfileModal(PageTitleMixin, TurboFrameUpdateView):
             user.email = user_before_update.email
 
         return super().form_valid(form)
-

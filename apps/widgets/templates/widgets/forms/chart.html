@@ -2,12 +2,26 @@
 
 {% block widget_form %}
 
+
 {% if form.dimension %}
+<fieldset>
+<div class='formset-wrapper'>
   <label for="{{ form.dimension.id_for_label }}">
     {{ form.dimension.label }}
   </label>
   {{ form.dimension }}
+
+
+  {% if form.part %}
+  <label for="{{ form.part.id_for_label }}">
+    {{ form.part.label }}
+  </label>
+  {{ form.part }}
 {% endif %}
+</div>
+</fieldset>
+{% endif %}
+
 
 {% if form.kind.value == 'heatmap' %}
   <label for="{{ form.dimension.id_for_label }}">
@@ -29,7 +43,7 @@
     {% endwith %}
   {% endif %}
 </fieldset>
-{% if form.kind.value ==  'stackedbar2d' or form.kind.value ==  'stackedcolumn2d' or form.kind.value ==  'msline-stacked' or form.kind.value == "timeseries-line-stacked" or form.kind.value == "timeseries-column-stacked" %}
+{% if form.kind.value ==  'stackedbar2d' or form.kind.value ==  'stackedcolumn2d' or form.kind.value ==  'msline-stacked' or form.kind.value == "timeseries-line_stacked" or form.kind.value == "timeseries-column-stacked" %}
   <fieldset>
     <label for="{{ form.second_dimension.id_for_label }}">
       {{ form.second_dimension.label}}
@@ -48,6 +62,7 @@
 {% endif %}
 
 {% if form.sort_by %}
+
 <fieldset>
   <label>{{ form.sort_by.label}}</label>
 
@@ -63,5 +78,7 @@
     </div>
   </div>
 </fieldset>
+
 {% endif %}
+
 {% endblock %}

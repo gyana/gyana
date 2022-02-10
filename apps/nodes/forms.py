@@ -1,19 +1,25 @@
 from django import forms
+from django.contrib.postgres.search import TrigramSimilarity
+from django.db.models import Case, Q, Value, When
+from django.db.models.functions import Greatest
 from django.forms.widgets import HiddenInput
 from django.utils.functional import cached_property
 
-from apps.base.live_update_form import LiveUpdateForm
-from apps.base.utils import create_column_choices
+from apps.base.core.utils import create_column_choices
+from apps.base.forms import LiveFormsetForm
+from apps.base.widgets import MultiSelect
 from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column
 from apps.nodes.formsets import KIND_TO_FORMSETS
 from apps.tables.models import Table
 
 from .models import Node
-from .widgets import InputNode, MultiSelect
+from .widgets import InputNode
+
+INPUT_SEARCH_THRESHOLD = 0.3
 
 
-class NodeForm(LiveUpdateForm):
+class NodeForm(LiveFormsetForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in getattr(self.Meta, "required", []):
@@ -29,7 +35,8 @@ class NodeForm(LiveUpdateForm):
         return KIND_TO_FORMSETS.get(self.instance.kind, [])
 
     def save(self, commit=True):
-        self.instance.has_been_saved = True
+        if not self.instance.has_been_saved:
+            self.instance.has_been_saved = True
         return super().save(commit=commit)
 
 
@@ -40,18 +47,49 @@ class DefaultNodeForm(NodeForm):
 
 
 class InputNodeForm(NodeForm):
+    search = forms.CharField(required=False)
+
     class Meta:
         model = Node
         fields = ["input_table"]
-        labels = {"input_table": "Select an integration to get data from:"}
+        labels = {"input_table": "Table"}
         widgets = {"input_table": InputNode()}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        instance = kwargs.get("instance")
-        self.fields["input_table"].queryset = Table.available.filter(
-            project=instance.workflow.project
-        ).exclude(source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE])
+
+        self.order_fields(["search", "input_table"])
+        self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
+        self.fields["input_table"].queryset = (
+            Table.available.filter(project=self.instance.workflow.project)
+            .exclude(
+                source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
+            )
+            .annotate(
+                used_in_workflow=Case(
+                    When(id__in=self.instance.workflow.input_tables_fk, then=True),
+                    default=False,
+                ),
+            )
+            .order_by("updated")
+        )
+
+        if search := self.data.get("search"):
+            self.fields["input_table"].queryset = (
+                self.fields["input_table"]
+                .queryset.annotate(
+                    similarity=Greatest(
+                        TrigramSimilarity("integration__name", search),
+                        TrigramSimilarity("workflow_node__workflow__name", search),
+                        TrigramSimilarity("bq_table", search),
+                    )
+                )
+                .filter(
+                    Q(similarity__gte=INPUT_SEARCH_THRESHOLD)
+                    | Q(id=getattr(self.instance.input_table, "id", None))
+                )
+                .order_by("-similarity")
+            )
 
 
 class OutputNodeForm(NodeForm):
@@ -114,28 +152,6 @@ class DistinctNodeForm(NodeForm):
             bulk=False,
         )
         return super().save(*args, **kwargs)
-
-
-class JoinNodeForm(NodeForm):
-    class Meta:
-        model = Node
-        fields = ["join_how", "join_left", "join_right"]
-        labels = {"join_how": "How", "join_left": "Left", "join_right": "Right"}
-        required = ["join_how", "join_left", "join_right"]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        parents = self.instance.parents_ordered.all()
-
-        self.fields["join_left"] = forms.ChoiceField(
-            choices=create_column_choices(parents.first().schema),
-            help_text=self.fields["join_left"].help_text,
-        )
-        self.fields["join_right"] = forms.ChoiceField(
-            choices=create_column_choices(parents.last().schema),
-            help_text=self.fields["join_right"].help_text,
-        )
 
 
 class UnionNodeForm(NodeForm):
@@ -240,6 +256,17 @@ class ExceptNodeForm(DefaultNodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.form_description = "Remove rows that exist in a second table."
+
+
+class JoinNodeForm(DefaultNodeForm):
+    def get_formset_kwargs(self, formset):
+        parents_count = self.instance.parents.count()
+        names = [f"Join Input {i+2}" for i in range(parents_count)]
+        return {
+            "max_num": parents_count - 1,
+            "min_num": parents_count - 1,
+            "names": names,
+        }
 
 
 KIND_TO_FORM = {

@@ -11,6 +11,7 @@ pytestmark = pytest.mark.django_db
     [
         pytest.param("/nodes/{}", id="update"),
         pytest.param("/nodes/{}/grid", id="grid"),
+        pytest.param("/nodes/{}/references", id="references"),
         pytest.param("/nodes/{}/name", id="name"),
         pytest.param("/nodes/{}/credit_confirmation", id="credit_confirmation"),
         pytest.param("/nodes/{}/formula", id="formula"),

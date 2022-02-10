@@ -13,6 +13,7 @@ urlpatterns = [
         login_and_cname_required(frames.CNameStatus.as_view()),
         name="status",
     ),
+    path("success", views.CNameSuccess.as_view(), name="success"),
 ]
 
 

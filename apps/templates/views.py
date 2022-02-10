@@ -7,7 +7,7 @@ from apps.base.analytics import (
     TEMPLATE_VIEWED_EVENT,
 )
 from apps.base.frames import TurboFrameListView
-from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.base.views import TurboCreateView, TurboUpdateView
 from apps.projects.mixins import ProjectMixin
 from apps.teams.mixins import TeamMixin
 from apps.templates.forms import TemplateInstanceUpdateForm

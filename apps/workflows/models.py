@@ -1,16 +1,24 @@
+from itertools import chain
+
 from django.db import models
 from django.db.models import Max
 from django.urls import reverse
-from model_clone import CloneMixin
 
 from apps.base.models import BaseModel
-from apps.base.table import ICONS
+from apps.base.tables import ICONS
 from apps.projects.models import Project
 from apps.runs.models import JobRun
 from apps.tables.models import Table
+from apps.workflows.clone import clone_nodes
+
+from .clone import clone_nodes
 
 
-class Workflow(CloneMixin, BaseModel):
+class Workflow(BaseModel):
+    _clone_excluded_m2m_fields = []
+    _clone_excluded_o2o_fields = ["last_success_run", "latest_run"]
+    _clone_excluded_m2o_or_o2m_fields = ["runs", "nodes"]
+
     class State(models.TextChoices):
         INCOMPLETE = "incomplete", "Incomplete"
         PENDING = "pending", "Pending"
@@ -88,6 +96,26 @@ class Workflow(CloneMixin, BaseModel):
         return {node.id: node.error for node in self.nodes.exclude(error__isnull=True)}
 
     @property
+    def input_tables_fk(self):
+        return [
+            node.input_table.id
+            for node in self.input_nodes.filter(input_table__isnull=False)
+        ]
+
+    @property
+    def input_tables(self):
+        return [
+            node.input_table
+            for node in self.input_nodes.filter(input_table__isnull=False)
+        ]
+
+    @property
+    def input_nodes(self):
+        from apps.nodes.models import Node
+
+        return self.nodes.filter(kind=Node.Kind.INPUT)
+
+    @property
     def output_nodes(self):
         from apps.nodes.models import Node
 
@@ -119,3 +147,44 @@ class Workflow(CloneMixin, BaseModel):
             self.runs.filter(state=JobRun.State.SUCCESS).order_by("-created").first()
         )
         self.save(update_fields=["state", "last_success_run"])
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        clone_nodes(self, clone)
+        return clone
+
+    @property
+    def used_in_nodes(self):
+        from apps.nodes.models import Node
+
+        return (
+            Node.objects.filter(
+                kind=Node.Kind.INPUT,
+                input_table__workflow_node__in=self.output_nodes,
+            )
+            .distinct("workflow", "input_table__workflow_node")
+            .annotate(
+                parent_kind=models.Value("Workflow", output_field=models.CharField())
+            )
+        )
+
+    @property
+    def used_in_widgets(self):
+        from apps.widgets.models import Widget
+
+        return (
+            Widget.objects.filter(table__workflow_node__in=self.output_nodes)
+            .distinct("page__dashboard", "table__workflow_node")
+            .annotate(
+                parent_kind=models.Value("Dashboard", output_field=models.CharField())
+            )
+        )
+
+    @property
+    def used_in(self):
+        return list(chain(self.used_in_nodes, self.used_in_widgets))
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        clone_nodes(self, clone)
+        return clone

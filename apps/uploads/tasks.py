@@ -4,7 +4,7 @@ from celery import shared_task
 from django.db import transaction
 from django.utils import timezone
 
-from apps.base.time import catchtime
+from apps.base.core.utils import catchtime
 from apps.integrations.emails import send_integration_ready_email
 from apps.runs.models import JobRun
 from apps.tables.models import Table

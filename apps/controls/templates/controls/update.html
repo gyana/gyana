@@ -4,7 +4,7 @@
   action="{% if is_public %}
     {% url 'dashboard_controls:update-public' project.id dashboard.id object.id %}
   {% else %}
-    {% url 'dashboard_controls:update' project.id dashboard.id object.id %}
+    {% url 'dashboard_controls:update-widget' project.id dashboard.id object.id %}
   {% endif %}" 
   class="form--no-layout popover-body"
   data-controller="live-update"

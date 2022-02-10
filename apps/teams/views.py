@@ -13,7 +13,7 @@ from djpaddle.models import Plan
 from djpaddle.views import PaddlePostCheckoutApiView as BasePaddlePostCheckoutApiView
 
 from apps.base.analytics import CHECKOUT_COMPLETED_EVENT, CHECKOUT_OPENED_EVENT
-from apps.base.turbo import TurboCreateView, TurboUpdateView
+from apps.base.views import TurboCreateView, TurboUpdateView
 
 from .forms import (
     MembershipUpdateForm,
@@ -175,8 +175,10 @@ class TeamDetail(SingleTableMixin, DetailView):
         from apps.projects.models import Project
 
         self.request.session["team_id"] = self.object.id
-        self.projects = Project.objects.filter(team=self.object).filter(
-            Q(access=Project.Access.EVERYONE) | Q(members=self.request.user)
+        self.projects = (
+            Project.objects.filter(team=self.object)
+            .filter(Q(access=Project.Access.EVERYONE) | Q(members=self.request.user))
+            .distinct()
         )
 
         context = super().get_context_data(**kwargs)

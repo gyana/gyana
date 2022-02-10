@@ -18,6 +18,8 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
   // Utilised to decide the clamping on interaction as well as clamps for placement
   const stepSize = parseInt(children.props['data-grid-size']) || 15
 
+  const minWidth = children.props['data-min-width'] || 195
+
   const [x, setX] = useState(() => parseInt(children.props['data-x']) || 0)
   const [y, setY] = useState(() => parseInt(children.props['data-y']) || 0)
   const [width, setWidth] = useState(() => parseInt(children.props['data-width']) || 200)
@@ -65,31 +67,23 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
       }}
       resizeGrid={[stepSize, stepSize]}
       dragGrid={[stepSize, stepSize]}
-      minWidth='195'
+      minWidth={minWidth}
       minHeight='45'
-      onResizeStop={(...args) => {
-        const node = args[2]
-        const parent = root
-        // Clamp the dimensions to the allowed stepSize/grid
-        const width = Math.round(node.offsetWidth / stepSize) * stepSize,
-          height = Math.round(node.offsetHeight / stepSize) * stepSize
-        const { x } = args[4]
+      onResizeStop={(e, direction, ref, delta, position) => {
+        const { x, y } = position
+        const width = parseInt(ref.style.width)
+        const height = parseInt(ref.style.height)
 
-        const newWidth = width > parent.offsetWidth ? parent.offsetWidth : width
-
-        setWidth(newWidth)
+        setX(x)
+        setY(y)
+        setWidth(width)
         setHeight(height)
-
-        const newX =
-          x + newWidth > parent.offsetWidth
-            ? parent.offsetWidth - newWidth
-            : Math.round(x / stepSize) * stepSize
-        setX(newX)
 
         client.action(window.schema, ['widgets', 'api', 'partial_update'], {
           id,
-          x: Math.floor(newX),
-          width: Math.floor(newWidth),
+          x: Math.floor(x),
+          y: Math.floor(y),
+          width: width,
           height: height,
         })
       }}
@@ -111,7 +105,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
         client.action(window.schema, ['widgets', 'api', 'partial_update'], {
           id,
           x: Math.floor(newX),
-          y: newY,
+          y: Math.floor(newY),
         })
       }}
       cancel='.ql-editor'

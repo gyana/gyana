@@ -1,12 +1,10 @@
-from enum import auto
 from unittest.mock import MagicMock
 
-import celery
 import ibis.expr.schema as sch
 import pytest
 import waffle
+from django.db import connection
 from django.utils import timezone
-from ibis_bigquery.client import rename_partitioned_column
 from waffle.templatetags import waffle_tags
 
 from apps.base import clients
@@ -21,6 +19,13 @@ class BlankMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
         return response
+
+
+@pytest.fixture
+def with_pg_trgm_extension():
+    with connection.cursor() as cursor:
+        cursor.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
+    yield
 
 
 @pytest.fixture(autouse=True)

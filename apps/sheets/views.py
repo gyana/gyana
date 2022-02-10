@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.urls.base import reverse
 
 from apps.base.analytics import INTEGRATION_CREATED_EVENT, NEW_INTEGRATION_START_EVENT
-from apps.base.turbo import TurboCreateView
+from apps.base.views import TurboCreateView
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 

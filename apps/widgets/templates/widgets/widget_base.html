@@ -18,10 +18,16 @@ preview mode.
     {% else %}
     data-grid-size="1"
     {% endif %}
+    {% if object.kind == "image" %}
+    data-min-width="15"
+    {% endif %}
   >
     <div class="widget-card h-full">
       <div
-        class="widget-card__visual {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}"
+        class="
+          widget-card__visual
+          {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}
+        "
         style="
           {% if object.page.dashboard.widget_border_color %}border-color: {{ object.page.dashboard.widget_border_color }};{% endif %}
           {% if object.page.dashboard.widget_border_radius %}border-radius: {{ object.page.dashboard.widget_border_radius }}px;{% endif %}
@@ -43,12 +49,21 @@ preview mode.
           data-modal-item="{{ object.id }}"
           data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
           data-modal-id="widget-modal"
+          {% if request.GET.modal_item == object.id|stringformat:"i" %}
+          data-tf-modal-target="onParam"
+          {% endif %}
+          {% if object.kind in "iframe,image" %}
+          data-modal-classes="tf-modal--auto"
+          {% else %}
           data-modal-classes="tf-modal--full"
+          {% endif %}
         >
           <i class="fas fa-fw fa-edit"></i>
           <span data-tooltip-target="body">Edit</span>
         </button>
+        {% endif %}
 
+        {% if object.kind != "text" and object.kind != "iframe" and object.kind != "image" %}
         <button
           data-controller="tooltip"
           data-action="click->tf-modal#open"
@@ -86,6 +101,14 @@ preview mode.
           </button>
           <span data-tooltip-target="body">Delete</span>
         </form>
+
+        <button
+          class="widget-card__drag-handle cursor-move"
+          data-controller="tooltip"
+          data-tooltip-content="Drag"
+        >
+          <i class="fas fa-fw fa-arrows"></i>
+        </button>
         {% endblock widget.commands %}
       </div>
       {% endif %}

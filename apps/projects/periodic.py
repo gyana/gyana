@@ -45,6 +45,7 @@ def run_schedule_for_project(self, project_id: int):
     # wait until all the connectors we expect to sync have completed for today
     connectors_not_ready = (
         Connector.objects.filter(
+            integration__project=project,
             setup_state=Connector.SetupState.CONNECTED,
             paused=False,
             integration__ready=True,

@@ -1,18 +1,22 @@
+from itertools import chain
+
 from dirtyfields import DirtyFieldsMixin
 from django.conf import settings
 from django.db import models
+from django.urls.base import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
-from model_clone import CloneMixin
 
-from apps.base.aggregations import AggregationFunctions
+from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import BaseModel
+from apps.dashboards.models import Dashboard
+from apps.nodes.clone import clone_tables
 from apps.nodes.config import NODE_CONFIG
 from apps.tables.models import Table
 from apps.workflows.models import Workflow
 
 
-class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
+class Node(DirtyFieldsMixin, BaseModel):
     class Meta:
         ordering = ()
 
@@ -40,20 +44,13 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         WINDOW = "window", "Window and Calculate"
         SENTIMENT = "sentiment", "Sentiment"
 
-    # You have to add new many-to-one relations here
-    _clone_m2o_or_o2m_fields = [
-        "filters",
-        "columns",
-        "secondary_columns",
-        "aggregations",
-        "sort_columns",
-        "edit_columns",
-        "add_columns",
-        "rename_columns",
-        "formula_columns",
-        "window_columns",
-        "convert_columns",
+    _clone_excluded_m2m_fields = ["parents", "node_set"]
+    _clone_excluded_m2o_or_o2m_fields = [
+        "parent_edges",
+        "child_edges",
+        "input_table",
     ]
+    _clone_excluded_o2o_fields = ["table", "intermediate_table", "cache_table"]
 
     workflow = models.ForeignKey(
         Workflow, on_delete=models.CASCADE, related_name="nodes"
@@ -73,12 +70,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     data_updated = models.DateTimeField(null=True, editable=False)
 
     error = models.CharField(max_length=300, null=True)
-    intermediate_table = models.ForeignKey(
-        Table, on_delete=models.CASCADE, null=True, related_name="intermediate_table"
-    )
-    cache_table = models.ForeignKey(
-        Table, on_delete=models.CASCADE, null=True, related_name="cache_table"
-    )
+
     # ======== Node specific columns ========= #
 
     # Input
@@ -87,7 +79,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
         on_delete=models.SET_NULL,
         null=True,
         related_name="input_nodes",
-        help_text="Select a data source",
+        help_text="Select a table from an integration or workflow",
     )
 
     # Select also uses columns
@@ -105,29 +97,7 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     # aggregations exists on AggregationColumn as FK
 
     # Join
-    join_how = models.CharField(
-        max_length=12,
-        choices=[
-            ("inner", "Inner"),
-            ("outer", "Outer"),
-            ("left", "Left"),
-            ("right", "Right"),
-        ],
-        default="inner",
-        help_text="Select the join method, more information in the docs",
-    )
-    join_left = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
-        null=True,
-        blank=True,
-        help_text="The column from the first parent you want to join on.",
-    )
-    join_right = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
-        null=True,
-        blank=True,
-        help_text="The column from the second parent you want to join on.",
-    )
+    # See JoinColumn
 
     # Union/Except
     union_distinct = models.BooleanField(
@@ -261,7 +231,20 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
 
         func = NODE_FROM_CONFIG[self.kind]
         min_arity, _ = get_arity_from_node_func(func)
-        return self.parents.count() >= min_arity
+
+        return self.parents.count() >= min_arity and (
+            self.kind != self.Kind.JOIN or self.join_is_valid
+        )
+
+    @property
+    def join_is_valid(self):
+        if self.kind == self.Kind.JOIN:
+            join_count = self.join_columns.count()
+            parents = self.parent_edges.all()
+            positions = {p.position for p in parents[:join_count]}
+            missing = set(range(join_count)).difference(positions)
+            return len(parents) > 1 and not missing
+        return False
 
     def get_table_name(self):
         return f"Workflow:{self.workflow.name}:{self.name}"
@@ -285,6 +268,38 @@ class Node(DirtyFieldsMixin, CloneMixin, BaseModel):
     @property
     def parents_ordered(self):
         return self.parents.order_by("child_edges")
+
+    def get_absolute_url(self):
+        workflow = self.workflow
+        project = self.workflow.project
+        return f'{reverse("project_workflows:detail", args=(project.id,workflow.id,))}?modal_item={self.id}'
+
+    @property
+    def used_in_workflows(self):
+        return (
+            Workflow.objects.filter(nodes__input_table__workflow_node=self)
+            .distinct()
+            .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Workflow", output_field=models.CharField()))
+        )
+
+    @property
+    def used_in_dashboards(self):
+        return (
+            Dashboard.objects.filter(pages__widgets__table__workflow_node=self)
+            .distinct()
+            .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Dashboard", output_field=models.CharField()))
+        )
+
+    @property
+    def used_in(self):
+        return list(chain(self.used_in_workflows, self.used_in_dashboards))
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        clone_tables(self, clone, using)
+        return clone
 
 
 class Edge(BaseModel):

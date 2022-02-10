@@ -1,6 +1,6 @@
 from django.urls import reverse
 
-from apps.base.turbo import TurboCreateView
+from apps.base.views import TurboCreateView
 from apps.projects.mixins import ProjectMixin
 
 from .forms import CustomApiCreateForm

@@ -2,8 +2,8 @@ from django.core.cache import cache
 from ibis.expr.types import TableExpr
 
 from apps.base import clients
-from apps.base.cache import get_cache_key
 from apps.base.clients import ibis_client
+from apps.base.core.utils import md5_kwargs
 
 from .models import Table
 
@@ -22,7 +22,7 @@ FIVETRAN_COLUMNS = set(
 
 
 def _get_cache_key_for_table(table):
-    return f"cache-ibis-table-{get_cache_key(id=table.id, data_updated=str(table.data_updated))}"
+    return f"cache-ibis-table-{md5_kwargs(id=table.id, data_updated=str(table.data_updated))}"
 
 
 def get_query_from_table(table: Table) -> TableExpr:

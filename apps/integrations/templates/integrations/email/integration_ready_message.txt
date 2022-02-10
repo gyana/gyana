@@ -1,0 +1,6 @@
+{% extends "account/email/base_message.txt" %}
+
+{% block content %}
+Your integration ({{ integration_name }}) in your {{ project_name }} project is ready to be used!
+{{ integration_link }}
+{% endblock %}

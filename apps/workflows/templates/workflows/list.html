@@ -1,4 +1,4 @@
-{% extends "web/app/project_base.html" %}
+{% extends "projects/base.html" %}
 {% load render_table from django_tables2 %}
 {% load help_utils %}
 
@@ -47,8 +47,8 @@
   {% include 'workflows/create.html' %}
 </div>
 
-<div class="pad overflow-auto">
-  <div class="card card--none mb-8">
+<div class="flex flex-col pad overflow-hidden">
+  <div class="card card--none overflow-auto mb-8">
     {% render_table table %}
 
     {% if workflow_count == 0 %}

@@ -2,7 +2,7 @@ import django_tables2 as tables
 from django.template import Context
 from django.template.loader import get_template
 
-from apps.base.table import ICONS, DuplicateColumn, NaturalDatetimeColumn
+from apps.base.tables import ICONS, DuplicateColumn, NaturalDatetimeColumn
 
 from .models import Dashboard
 
@@ -24,6 +24,7 @@ class DashboardTable(tables.Table):
     class Meta:
         model = Dashboard
         fields = ("name", "created", "updated")
+        sequence = ("name", "status", "created", "updated")
         attrs = {"class": "table"}
 
     name = tables.Column(linkify=True)

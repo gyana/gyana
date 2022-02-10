@@ -1,0 +1,7 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% image value.image width-800 %}
+{% if value.caption %}
+  <p class='text-center italic'>{{ value.caption }}</p>
+{% endif %}

@@ -28,7 +28,8 @@
     method="post"
     data-controller="live-update" 
     data-action="change->tf-modal#change submit->tf-modal#save"
-    data-tf-modal-target='form'
+    data-tf-modal-target="form"
+    data-tf-modal-submit-on-close
   >
     {% csrf_token %}
 
@@ -64,8 +65,16 @@
     action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
     method="post"
     data-controller="live-update" 
-    data-action="change->tf-modal#change submit->tf-modal#save"
-    data-tf-modal-target='form'
+    data-action="
+      change->tf-modal#change 
+      submit->tf-modal#save 
+      formset:remove->live-update#updateForm 
+      formset:add->live-update#updateForm 
+      formset:remove->tf-modal#change 
+      formset:add->tf-modal#change
+    "
+    data-tf-modal-target="form"
+    data-tf-modal-submit-on-close
   >  
     {% comment %}
     The pressed button is outside the form this is just to trigger the submit
@@ -110,31 +119,6 @@
         </div>
       </div>
 
-      {% if form.date_column %}
-        <div data-controller='widget-slice' >
-          <div data-widget-slice-target ="input" class='{% if not show_date_column%}hidden{%endif%}'>
-            <p class="input__help-text">{{ form.date_column.help_text }}</p>
-            <div class='flex flex-row items-center gap-2'>
-              {{form.date_column}}
-              <button 
-                type='button'
-                data-action="widget-slice#remove"
-                class='button button--sm button--tertiary button--circle'
-              ><i class='fa fa-times'></i>
-              </button>
-            </div>
-          </div>
-        <button 
-          class="button button--sm {% if show_date_column %}hidden{%endif%}"
-          data-widget-slice-target='addButton' 
-          type='button' 
-          data-action="widget-slice#add" 
-          data-turbo='false'
-        ><i class='fa fa-plus'></i> Add date control column
-        </button>
-        </div>
-      {% endif %}
-
       <hr>
 
       {% block widget_form %}
@@ -158,7 +142,7 @@
         {% endwith %}
       {% endif %}
 
-      {% with array='name kind table date_column'%}
+      {% with array='name kind table date_column sort_column sort_ascending'%}
       {% for bound_field in form.visible_fields %}
       {% if bound_field.name not in array.split %}
         <div class="input-group">
@@ -196,17 +180,97 @@
       {% endif %}
       {% endfor %}
       {% endwith %}
-      
+        
+      {% if form.sort_column %}
+      <fieldset>
+        <label>{{ form.sort_column.label}}</label>
+
+        <div class="formset-wrapper">
+          {{ form.sort_column }}
+
+          <div>
+            <label class="input__toggle" for="{{ form.sort_ascending.id_for_label }}">
+              <p class="input__help-text">{{ form.sort_ascending.label}}</p>
+
+              {{form.sort_ascending}}
+            </label>
+          </div>
+        </div>
+      </fieldset>
+      {% endif %}
+
       {% endblock %}
 
+      {% if form.date_column %}
+        <fieldset>
+          <div class='formset-wrapper' data-controller='widget-slice' >
+            <label>Date range</label>
+            <div >
+              <div data-widget-slice-target ="input" class='{% if not show_date_column%}hidden{%endif%}'>
+                <p class="input__help-text">{{ form.date_column.help_text }}</p>
+                <div class='flex flex-row items-center gap-2'>
+                  {{form.date_column}}
+                  <button 
+                    type='button'
+                    data-action="widget-slice#remove"
+                    class='button button--sm button--tertiary button--circle'
+                  ><i class='fa fa-times'></i>
+                  </button>
+                </div>
+              </div>
+            <button 
+              class="button button--sm {% if show_date_column %}hidden{%endif%}"
+              data-widget-slice-target='addButton' 
+              type='button' 
+              data-action="widget-slice#add" 
+              data-turbo='false'
+            ><i class='fa fa-plus'></i> Add date control column
+            </button>
+            </div>
+          
+            {% if formsets.control %}
+              {% with formset=formsets.control %}
+                <fieldset data-widget-slice-target='control'>
+                  <p class='input__help-text'>You can add date range that overrides the page wide date range control.</p>
+                  {% include "components/formset.html" with formset=formset %}
+                </fieldset>
+              {% endwith %}
+            {% endif %}
+
+
+          {% if form.kind.value == 'metric' %}
+            <div class='flex flex-row' data-widget-slice-target='compare'>
+              <label class="input__toggle" for="{{ form.compare_previous_period.id_for_label }}">
+                <p class="input__help-text">{{ form.compare_previous_period.label}}</p>
+
+                {{form.compare_previous_period}}
+              </label>
+
+              <label class="ml-3 input__toggle" for="{{ form.positive_decrease.id_for_label }}">
+                <p class="input__help-text">{{ form.positive_decrease.label}}</p>
+
+                {{form.positive_decrease}}
+              </label>
+            </div>
+
+          {% endif %}
+        </div>
+       </fieldset>
+          
+
+      {% endif %}
+
+      
+
       {% for label, formset in formsets.items %}
-      {% if label != "Aggregations" and label != "Charts" and label != "Group columns" %}
+      {% if label != "Aggregations" and label != "Charts" and label != "Group columns" and label != "control"%}
         <fieldset>
           <label>{{ label }}</label>
           {% include "components/formset.html" with formset=formset %}
         </fieldset>
       {% endif %}
       {% endfor %}
+    
 
       {% for error in form.non_field_errors %}
       <p class="text-red">

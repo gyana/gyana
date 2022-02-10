@@ -1,11 +1,15 @@
+from itertools import chain
+
 from django.conf import settings
 from django.db import models
 from django.utils.functional import cached_property
-from model_clone.mixins.clone import CloneMixin
 
 from apps.base import clients
 from apps.base.models import BaseModel
 from apps.projects.models import Project
+from apps.tables.clone import create_attrs
+
+from .clone import create_attrs, duplicate_table
 
 
 class AvailableManager(models.Manager):
@@ -13,7 +17,7 @@ class AvailableManager(models.Manager):
         return super().get_queryset().exclude(integration__ready=False)
 
 
-class Table(CloneMixin, BaseModel):
+class Table(BaseModel):
     class Meta:
         unique_together = ["bq_table", "bq_dataset"]
         ordering = ("-created",)
@@ -23,6 +27,9 @@ class Table(CloneMixin, BaseModel):
         WORKFLOW_NODE = "workflow_node", "Workflow node"
         INTERMEDIATE_NODE = "intermediate_node", "Intermediate node"
         CACHE_NODE = "cache_node", "Cache node"
+
+    _clone_excluded_o2o_fields = ["workflow_node", "cache_node", "intermediate_node"]
+    _clone_excluded_m2o_or_o2m_fields = ["input_nodes", "exports", "widget_set"]
 
     bq_table = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
     bq_dataset = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
@@ -40,13 +47,13 @@ class Table(CloneMixin, BaseModel):
         "nodes.Node",
         on_delete=models.CASCADE,
         null=True,
-        related_name="intermediate_node",
+        related_name="intermediate_table",
     )
     cache_node = models.OneToOneField(
         "nodes.Node",
         on_delete=models.CASCADE,
         null=True,
-        related_name="cache_node",
+        related_name="cache_table",
     )
 
     num_rows = models.IntegerField(default=0)
@@ -54,6 +61,8 @@ class Table(CloneMixin, BaseModel):
 
     objects = models.Manager()
     available = AvailableManager()
+
+    copied_from = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return getattr(self, self.source).get_table_name()
@@ -103,3 +112,35 @@ class Table(CloneMixin, BaseModel):
             return self.intermediate_node.workflow
         elif self.source == self.Source.CACHE_NODE:
             return self.cache_node.workflow
+
+    @property
+    def used_in_workflows(self):
+        from apps.workflows.models import Workflow
+
+        return (
+            Workflow.objects.filter(nodes__input_table=self.id)
+            .distinct()
+            .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Workflow", output_field=models.CharField()))
+        )
+
+    @property
+    def used_in_dashboards(self):
+        from apps.dashboards.models import Dashboard
+
+        return (
+            Dashboard.objects.filter(pages__widgets__table=self.id)
+            .distinct()
+            .only("name", "project", "created", "updated")
+            .annotate(kind=models.Value("Dashboard", output_field=models.CharField()))
+        )
+
+    @property
+    def used_in(self):
+        return list(chain(self.used_in_workflows, self.used_in_dashboards))
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        attrs = create_attrs(attrs, self)
+        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        duplicate_table(self, clone)
+        return clone

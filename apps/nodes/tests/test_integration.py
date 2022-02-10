@@ -28,6 +28,7 @@ def base_formset(formset):
 
 COLUMNS_BASE_DATA = base_formset("columns")
 AGGREGATIONS_BASE_DATA = base_formset("aggregations")
+JOIN_BASE_DATA = base_formset("join_columns")
 
 
 def create_and_connect_node(client, kind, node_factory, table, workflow):
@@ -61,13 +62,31 @@ def test_input_node(client, setup):
 
     r = client.get(f"/nodes/{input_node.id}")
     assertSelectorText(r, "label.checkbox", "olympia")
-    assertFormRenders(r, ["input_table", "name"])
+    assertFormRenders(r, ["input_table", "name", "search"])
 
     r = update_node(client, input_node.id, {"input_table": table.id})
     input_node.refresh_from_db()
 
     assert r.status_code == 303
     assert input_node.input_table.id == table.id
+
+
+def test_input_node_search(with_pg_trgm_extension, client, setup):
+    table, workflow = setup
+    r = client.post(
+        "/nodes/api/nodes/",
+        data={"kind": "input", "workflow": workflow.id, "x": 0, "y": 0},
+    )
+    assert r.status_code == 201
+    input_node = Node.objects.first()
+    assert input_node is not None
+
+    r = client.post(
+        f"/nodes/{id}", data={"submit": "Save & Preview", **{"search": "olympia"}}
+    )
+    r = client.get(f"/nodes/{input_node.id}")
+    assertSelectorText(r, "label.checkbox", "olympia")
+    assertSelectorLength(r, "label.checkbox", 1)
 
 
 def test_output_node(client, node_factory, setup):
@@ -121,18 +140,81 @@ def test_join_node(client, node_factory, setup):
     join_node.parents.add(second_input, through_defaults={"position": 1})
 
     r = client.get(f"/nodes/{join_node.id}")
+    SINGLE_FORM = {
+        "name",
+        "join_columns-0-id",
+        "join_columns-0-node",
+        "join_columns-0-how",
+        "join_columns-0-left_column",
+        "join_columns-0-right_column",
+        "join_columns-0-DELETE",
+    }
     assertOK(r)
-    assertFormRenders(r, ["name", "join_how", "join_left", "join_right"])
+    assertFormRenders(
+        r,
+        {
+            *SINGLE_FORM,
+            *JOIN_BASE_DATA.keys(),
+        },
+    )
 
     r = update_node(
         client,
         join_node.id,
-        {"join_how": "outer", "join_left": "id", "join_right": "id"},
+        {
+            **JOIN_BASE_DATA,
+            "join_columns-TOTAL_FORMS": 1,
+            "join_columns-0-how": "outer",
+            "join_columns-0-left_column": "0:id",
+            "join_columns-0-right_column": "id",
+        },
     )
     join_node.refresh_from_db()
-    assert join_node.join_how == "outer"
-    assert join_node.join_left == "id"
-    assert join_node.join_right == "id"
+    join_column = join_node.join_columns.first()
+    assert join_column.how == "outer"
+    assert join_column.left_column == "id"
+    assert join_column.right_column == "id"
+
+    # Check it adds the new form if a third parent is added
+    third_input = node_factory(
+        kind=Node.Kind.INPUT, input_table=table, workflow=workflow
+    )
+    join_node.parents.add(third_input, through_defaults={"position": 2})
+
+    r = client.get(f"/nodes/{join_node.id}")
+    assertOK(r)
+    assertFormRenders(
+        r,
+        {
+            *JOIN_BASE_DATA.keys(),
+            *SINGLE_FORM,
+            "join_columns-1-id",
+            "join_columns-1-node",
+            "join_columns-1-how",
+            "join_columns-1-left_column",
+            "join_columns-1-right_column",
+            "join_columns-1-DELETE",
+        },
+    )
+    join_node.join_columns.create(left_column="id", right_column="id")
+    # Remove middle parent and check that modal shows warning
+    join_node.parent_edges.filter(parent=second_input).delete()
+    r = client.get(f"/nodes/{join_node.id}")
+    assertOK(r)
+    assertSelectorText(r, "p", "This node needs to be connected to more than one node")
+
+    # Deleting the last one doesnt trigger warning and hides second join form
+    join_node.parents.add(second_input, through_defaults={"position": 1})
+    join_node.parent_edges.last().delete()
+    r = client.get(f"/nodes/{join_node.id}")
+    assertOK(r)
+    assertFormRenders(
+        r,
+        {
+            *SINGLE_FORM,
+            *JOIN_BASE_DATA.keys(),
+        },
+    )
 
 
 def test_aggregation_node(client, node_factory, setup):

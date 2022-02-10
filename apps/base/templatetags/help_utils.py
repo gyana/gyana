@@ -22,6 +22,10 @@ def get_loom():
     return json.load(open(LOOM_JSON, "r"))
 
 
+def get_loom_embed_url(loom_id):
+    return f"{LOOM_ROOT}/{loom_id}?hideOwner=true"
+
+
 @register.inclusion_tag("components/link_article.html")
 def link_article(collection: str, name: str):
     # will error if does not exist (deliberate)
@@ -37,7 +41,7 @@ def link_video(name: str):
 @register.inclusion_tag("components/embed_loom.html")
 def embed_loom(video: str):
     # will error if does not exist (deliberate)
-    return {"loom_url": f"{LOOM_ROOT}/{get_loom()[video]}?hideOwner=true"}
+    return {"loom_url": get_loom_embed_url(get_loom()[video])}
 
 
 @register.simple_tag

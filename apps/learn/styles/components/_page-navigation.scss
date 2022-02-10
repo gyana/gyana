@@ -1,0 +1,26 @@
+.page-navigation {
+  display: flex;
+  padding: 0 0 1.6rem;
+
+  &__button {
+    border: 1px solid var(--c-gray);
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 18rem;
+    gap: 0.5rem;
+    justify-content: space-between;
+    padding: 1rem;
+
+    &:hover {
+      background: var(--c-gray-50);
+
+      span:first-child {
+        color: var(--c-blue);
+      }
+    }
+
+    & + & {
+      border-left: none;
+    }
+  }
+}

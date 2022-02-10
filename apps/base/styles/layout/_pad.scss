@@ -1,0 +1,9 @@
+.pad {
+  --padding: 1.6rem;
+  padding: var(--padding);
+
+  &--sm {
+    --padding: 1rem;
+    padding: var(--padding);
+  }
+} 
