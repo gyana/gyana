@@ -25,7 +25,7 @@
     id="widget-update-form"
     class="widget-update-sidebar__form"
     action="{% url 'dashboard_widgets:update-style' project.id dashboard.id object.id %}" 
-    method="post"
+    method="POST"
     data-controller="live-update" 
     data-action="change->tf-modal#change submit->tf-modal#save"
     data-tf-modal-target="form"

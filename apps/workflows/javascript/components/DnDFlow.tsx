@@ -72,16 +72,11 @@ const DnDFlow = ({ workflowId }) => {
   }, [needsFitView])
 
   useEffect(() => {
-    async function workflowStatus() {
-      await getWorkflowStatus(workflowId).then((res) => {
-        console.log(res)
-        setHasBeenRun(res.hasBeenRun)
-        setIsOutOfDate(res.isOutOfDate)
-        setErrors(res.errors)
-      })
-    }
-
-    workflowStatus()
+    getWorkflowStatus(workflowId).then((res) => {
+      setHasBeenRun(res.hasBeenRun)
+      setIsOutOfDate(res.isOutOfDate)
+      setErrors(res.errors)
+    })
   }, [])
 
   return (
