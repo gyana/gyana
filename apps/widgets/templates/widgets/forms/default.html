@@ -229,12 +229,30 @@
             </div>
           
             {% if formsets.control %}
-            {% with formset=formsets.control %}
-              <fieldset data-widget-slice-target='control'>
-                <p class='input__help-text'>You can add date range that overrides the page wide date range control.</p>
-                {% include "components/formset.html" with formset=formset %}
-              </fieldset>
-            {% endwith %}
+              {% with formset=formsets.control %}
+                <fieldset data-widget-slice-target='control'>
+                  <p class='input__help-text'>You can add date range that overrides the page wide date range control.</p>
+                  {% include "components/formset.html" with formset=formset %}
+                </fieldset>
+              {% endwith %}
+            {% endif %}
+
+
+          {% if form.kind.value == 'metric' %}
+            <div class='flex flex-row' data-widget-slice-target='compare'>
+              <label class="input__toggle" for="{{ form.compare_previous_period.id_for_label }}">
+                <p class="input__help-text">{{ form.compare_previous_period.label}}</p>
+
+                {{form.compare_previous_period}}
+              </label>
+
+              <label class="ml-3 input__toggle" for="{{ form.positive_decrease.id_for_label }}">
+                <p class="input__help-text">{{ form.positive_decrease.label}}</p>
+
+                {{form.positive_decrease}}
+              </label>
+            </div>
+
           {% endif %}
         </div>
        </fieldset>

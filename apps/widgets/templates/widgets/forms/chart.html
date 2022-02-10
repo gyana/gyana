@@ -81,22 +81,4 @@
 
 {% endif %}
 
-{% if form.kind.value == 'metric' %}
-
-<div class='flex flex-row'>
-  <label class="input__toggle" for="{{ form.compare_previous_period.id_for_label }}">
-    <p class="input__help-text">{{ form.compare_previous_period.label}}</p>
-
-    {{form.compare_previous_period}}
-  </label>
-
-  <label class="ml-3 input__toggle" for="{{ form.positive_decrease.id_for_label }}">
-    <p class="input__help-text">{{ form.positive_decrease.label}}</p>
-
-    {{form.positive_decrease}}
-  </label>
-</div>
-
-{% endif %}
-
 {% endblock %}
