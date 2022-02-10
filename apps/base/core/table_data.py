@@ -48,7 +48,7 @@ class BigQueryTableData(TableData):
     ):
         self.data = data
         # calculate before the order_by is applied, as len is not effected
-        self._len_key = f"cache-table-length-{str(hash(self.data))}"
+        self._len_key = f"cache-table-length-{hash(self.data)}"
 
     @property
     def _page_selected(self):

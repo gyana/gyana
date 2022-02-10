@@ -7,7 +7,7 @@ from django.utils.html import mark_safe
 from apps.base.account import is_scheduled_paid_only
 from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveUpdateForm
 from apps.base.formsets import RequiredInlineFormset
-from apps.base.widgets import Datalist
+from apps.base.widgets import DatalistInput
 
 from .models import (
     CustomApi,
@@ -74,9 +74,7 @@ class HttpHeaderForm(BaseModelForm):
         model = HttpHeader
         fields = ["key", "value"]
         help_texts = {"key": "KEY", "value": "VALUE"}
-        widgets = {
-            "key": Datalist(choices=[(header, header) for header in get_headers()])
-        }
+        widgets = {"key": DatalistInput(options=get_headers())}
 
 
 HttpHeaderFormset = forms.inlineformset_factory(
