@@ -460,7 +460,7 @@ PARAMS = [
     pytest.param(
         create_date_filter(DateRange.THIS_WEEK),
         QUERY.format(
-            f"(EXTRACT(year from `birthday`) = {YEAR}) AND\n      (ISOWEEK `birthday` = {WEEK})"
+            f"(EXTRACT(year from `birthday`) = {YEAR}) AND\n      (EXTRACT(ISOWEEK from `birthday`) = {WEEK})"
         ),
         id="Date on this week",
     ),
@@ -474,7 +474,7 @@ PARAMS = [
     pytest.param(
         create_date_filter(DateRange.LAST_WEEK),
         QUERY.format(
-            f"(EXTRACT(year from `birthday`) = {LAST_WEEK_YEAR}) AND\n      (ISOWEEK `birthday` = {LAST_WEEK})"
+            f"(EXTRACT(year from `birthday`) = {LAST_WEEK_YEAR}) AND\n      (EXTRACT(ISOWEEK from `birthday`) = {LAST_WEEK})"
         ),
         id="Date on last week",
     ),

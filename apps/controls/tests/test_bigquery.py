@@ -108,7 +108,7 @@ def create_previous_last_n_days(date_range, days):
         pytest.param(
             DateRange.THIS_WEEK,
             QUERY.format(
-                f"(EXTRACT(year from `birthday`) = {(TODAY - dt.timedelta(days=7)).year}) AND\n      (ISOWEEK `birthday` = {(TODAY - dt.timedelta(days=7)).isocalendar()[1]})"
+                f"(EXTRACT(year from `birthday`) = {(TODAY - dt.timedelta(days=7)).year}) AND\n      (EXTRACT(ISOWEEK from `birthday`) = {(TODAY - dt.timedelta(days=7)).isocalendar()[1]})"
             ),
             id="thisweek",
         ),
@@ -122,7 +122,7 @@ def create_previous_last_n_days(date_range, days):
         pytest.param(
             DateRange.LAST_WEEK,
             QUERY.format(
-                f"(EXTRACT(year from `birthday`) = {(TODAY - dt.timedelta(days=14)).year}) AND\n      (ISOWEEK `birthday` = {(TODAY - dt.timedelta(days=14)).isocalendar()[1]})"
+                f"(EXTRACT(year from `birthday`) = {(TODAY - dt.timedelta(days=14)).year}) AND\n      (EXTRACT(ISOWEEK from `birthday`) = {(TODAY - dt.timedelta(days=14)).isocalendar()[1]})"
             ),
             id="lastweek",
         ),
