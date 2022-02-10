@@ -170,7 +170,7 @@ TimestampValue.isoweek = isoweek
 def _isoweek(t, expr):
     (arg,) = expr.op().args
 
-    return f"ISOWEEK {t.translate(arg)}"
+    return f"EXTRACT(ISOWEEK from {t.translate(arg)})"
 
 
 class DayOfWeek(ValueOp):
