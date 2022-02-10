@@ -71,10 +71,12 @@ fuzzywuzzy = "^0.18.0"
 python-Levenshtein = "^0.12.2"
 django-timezone-field = "^4.2.1"
 django-redis = "^5.0.0"
+# Use until this closed https://github.com/celery/django-celery-beat/issues/465
 django-celery-beat = { git = "https://github.com/celery/django-celery-beat.git", rev = "fa73034be892052893e4ef17926ef3a5d4a21ea2" }
 celery-progress = "^0.1.1"
 django-celery-results = "^2.2.0"
 jsonpath-ng = "^1.5.3"
+# Use until this is merged https://github.com/georgemarshall/django-cryptography/pull/67
 django-cryptography = {git = "https://github.com/aymaneMx/django-cryptography.git"}
 django-heroicons = {git = "https://github.com/geoffbeier/django-heroicons"}
 wagtail = "^2.15.1"

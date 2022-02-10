@@ -678,15 +678,22 @@ six = ">=1.4.0"
 
 [[package]]
 name = "django-cryptography"
-version = "1.0"
+version = "1.1.dev20220110181201"
 description = "Easily encrypt data in Django"
 category = "main"
 optional = false
 python-versions = ">=3.5"
+develop = false
 
 [package.dependencies]
 cryptography = "*"
 django-appconf = "*"
+
+[package.source]
+type = "git"
+url = "https://github.com/aymaneMx/django-cryptography.git"
+reference = "master"
+resolved_reference = "1d14d3522d8d51ba67c091d6b2569f12914ce7e9"
 
 [[package]]
 name = "django-dirtyfields"
@@ -761,9 +768,9 @@ develop = false
 
 [package.source]
 type = "git"
-url = "https://github.com/saschahofmann/django-invitations.git"
+url = "https://github.com/gyana/django-invitations.git"
 reference = "patch-1"
-resolved_reference = "aea2bd6c725eb06da51fd99abcac232cbf857f06"
+resolved_reference = "141b87895901bea3700fa6dd46b657800764e83f"
 
 [[package]]
 name = "django-modelcluster"
@@ -981,7 +988,7 @@ doc = ["sphinx", "sphinx-rtd-theme", "sphinxcontrib-spelling"]
 
 [[package]]
 name = "faker"
-version = "12.1.0"
+version = "12.2.0"
 description = "Faker is a Python package that generates fake data for you."
 category = "dev"
 optional = false
@@ -1032,7 +1039,7 @@ grpcio-gcp = ["grpcio-gcp (>=0.2.2)"]
 
 [[package]]
 name = "google-api-python-client"
-version = "2.36.0"
+version = "2.37.0"
 description = "Google API Client Library for Python"
 category = "main"
 optional = false
@@ -1198,7 +1205,7 @@ testing = ["pytest"]
 
 [[package]]
 name = "google-resumable-media"
-version = "2.2.0"
+version = "2.2.1"
 description = "Utilities for Google Media Downloads and Resumable Uploads"
 category = "main"
 optional = false
@@ -1391,9 +1398,9 @@ regex = "*"
 toolz = "*"
 
 [package.extras]
-all = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.3)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymysql", "requests-kerberos", "graphviz", "sqlalchemy (<1.4)", "clickhouse-sqlalchemy", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "dask[array,dataframe] (>=2021.1.1,<2021.5.0 || >2021.6.0)"]
+all = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.3)", "requests", "impyla[kerberos] (>=0.15.0)", "psycopg2", "pymysql", "requests-kerberos", "graphviz", "sqlalchemy (<1.4)", "clickhouse-sqlalchemy", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash", "tables (>=3.0.0)", "pyarrow (>=0.12.0)", "pyspark (>=2.4.3)", "geoalchemy2", "geopandas", "shapely", "dask[dataframe,array] (>=2021.1.1,<2021.5.0 || >2021.6.0)"]
 clickhouse = ["sqlalchemy (<1.4)", "clickhouse-sqlalchemy", "clickhouse-driver (>=0.1.3)", "clickhouse-cityhash"]
-dask = ["dask[array,dataframe] (>=2021.1.1,<2021.5.0 || >2021.6.0)"]
+dask = ["dask[dataframe,array] (>=2021.1.1,<2021.5.0 || >2021.6.0)"]
 geospatial = ["geoalchemy2", "geopandas", "shapely"]
 hdf5 = ["tables (>=3.0.0)"]
 impala = ["hdfs (>=2.0.16)", "sqlalchemy (>=1.3)", "requests", "impyla[kerberos] (>=0.15.0)"]
@@ -2546,11 +2553,12 @@ test = ["pytest (==6.0.1)", "pytest-django (==3.9.0)", "pytest-cov (==2.7.1)", "
 
 [[package]]
 name = "wagtailmenus"
-version = "3.0.2"
+version = "3.1a0"
 description = "An app to help you manage menus in your Wagtail projects more consistently."
 category = "main"
 optional = false
 python-versions = ">=3.4"
+develop = false
 
 [package.dependencies]
 django-cogwheels = "0.3"
@@ -2560,6 +2568,12 @@ deployment = ["transifex-client"]
 development = ["wagtail (>=2.4,<=2.9)", "django-debug-toolbar", "django-extensions", "ipdb", "werkzeug", "beautifulsoup4 (>=4.5.1,<4.6.1)", "coverage (>=4.5)", "django-webtest (>=1.9,<1.10)"]
 docs = ["pyenchant (>=2.0)", "Sphinx (>=1.7.4)", "sphinxcontrib-spelling (>=1.4)", "sphinx-rtd-theme (>=0.3)"]
 testing = ["beautifulsoup4 (>=4.5.1,<4.6.1)", "coverage (>=4.5)", "django-webtest (>=1.9,<1.10)"]
+
+[package.source]
+type = "git"
+url = "https://github.com/gyana/wagtailmenus"
+reference = "django-4"
+resolved_reference = "f64a85ffc76a15552b75cbb5b9ae4bb311dece9b"
 
 [[package]]
 name = "wcwidth"
@@ -2579,11 +2593,11 @@ python-versions = "*"
 
 [[package]]
 name = "whitenoise"
-version = "5.3.0"
+version = "6.0.0"
 description = "Radically simplified static file serving for WSGI applications"
 category = "main"
 optional = false
-python-versions = ">=3.5, <4"
+python-versions = ">=3.7"
 
 [package.extras]
 brotli = ["brotli"]
@@ -2636,7 +2650,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.*"
-content-hash = "3bdcbfc8fed5e0a68c72da28f3ecd5c0c1bec8292b1fbcbf1dff52bcf5231a1e"
+content-hash = "8016ee14abcbd44d1be935571b30cfdd293fa8ad6d443567240eb92be9b0ff16"
 
 [metadata.files]
 amqp = [
@@ -2947,10 +2961,7 @@ django-coverage-plugin = [
     {file = "django_coverage_plugin-2.0.2-py3-none-any.whl", hash = "sha256:4206c85ffba0301f83aecc38e5b01b1b9a4b45a545d9456a827e3fabea18d952"},
     {file = "django_coverage_plugin-2.0.2.tar.gz", hash = "sha256:e91e3a0c8de2b3766a144cdd30dbbf7a79e5c532a5dcc1373ce7eaad83b358b3"},
 ]
-django-cryptography = [
-    {file = "django-cryptography-1.0.tar.gz", hash = "sha256:13de5cf8f1250744c104b9e24774d03aa6d8488959dd40cdc016934043652445"},
-    {file = "django_cryptography-1.0-py3-none-any.whl", hash = "sha256:0a99980b1cee7cc5e52f9b20b322620fea7cc124d770273e7bd285b20fd9d222"},
-]
+django-cryptography = []
 django-dirtyfields = [
     {file = "django-dirtyfields-1.8.0.tar.gz", hash = "sha256:2f9488504d18c70acf19c59045d5514711beaaaf8cc84ded136a79910778d6ba"},
     {file = "django_dirtyfields-1.8.0-py3-none-any.whl", hash = "sha256:84750ad11b6555100c0cd60057a9317c1f078dde3f65d51d0867e11894fb25a2"},
@@ -3031,8 +3042,8 @@ factory-boy = [
     {file = "factory_boy-3.2.1.tar.gz", hash = "sha256:a98d277b0c047c75eb6e4ab8508a7f81fb03d2cb21986f627913546ef7a2a55e"},
 ]
 faker = [
-    {file = "Faker-12.1.0-py3-none-any.whl", hash = "sha256:534c9410cd003b794900504d37f0afaf8275bfe8865583250799f696cf227cd3"},
-    {file = "Faker-12.1.0.tar.gz", hash = "sha256:820e55f62b428a4d55f6700358167e84a6ba3f8371e9ef39f9ca03a504dcae18"},
+    {file = "Faker-12.2.0-py3-none-any.whl", hash = "sha256:2b6e3b10bbea344d2e29c902a9783e155e750ab69a83a220b3a04abb038392bf"},
+    {file = "Faker-12.2.0.tar.gz", hash = "sha256:9d51eed0a0d93ca768101344237406ad63e6d86a3ba3ea44fd824629ef634fc5"},
 ]
 future = [
     {file = "future-0.18.2.tar.gz", hash = "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"},
@@ -3046,8 +3057,8 @@ google-api-core = [
     {file = "google_api_core-2.5.0-py2.py3-none-any.whl", hash = "sha256:7d030edbd3a0e994d796e62716022752684e863a6df9864b6ca82a1616c2a5a6"},
 ]
 google-api-python-client = [
-    {file = "google-api-python-client-2.36.0.tar.gz", hash = "sha256:533c69e8ddce6630a2ce5b98348f6a58a23df49cb92040a0086315df979404af"},
-    {file = "google_api_python_client-2.36.0-py2.py3-none-any.whl", hash = "sha256:9e8863dec46224d4375cf3834e27ffd4bce79858f0f00a6109a51e3e62b4f3c2"},
+    {file = "google-api-python-client-2.37.0.tar.gz", hash = "sha256:39bb945d00ce5f70207a312b32418c238f3ae16559e30c4ff10dac1e0ed69244"},
+    {file = "google_api_python_client-2.37.0-py2.py3-none-any.whl", hash = "sha256:8f9176e4f26c11b2561c43458da33d82425673d32298114e26d0e0a83c2011bc"},
 ]
 google-auth = [
     {file = "google-auth-2.6.0.tar.gz", hash = "sha256:ad160fc1ea8f19e331a16a14a79f3d643d813a69534ba9611d2c80dc10439dad"},
@@ -3127,8 +3138,8 @@ google-crc32c = [
     {file = "google_crc32c-1.3.0-pp37-pypy37_pp73-win_amd64.whl", hash = "sha256:7f6fe42536d9dcd3e2ffb9d3053f5d05221ae3bbcefbe472bdf2c71c793e3183"},
 ]
 google-resumable-media = [
-    {file = "google-resumable-media-2.2.0.tar.gz", hash = "sha256:9f30ce7fcd13b8ef159b2cb9583d4a9bb99e7f7b85816b112059b032f2f084a0"},
-    {file = "google_resumable_media-2.2.0-py2.py3-none-any.whl", hash = "sha256:9142a7600eba233645eedad863f78173123f374e50e1bc0eaf4f358ce08aa757"},
+    {file = "google-resumable-media-2.2.1.tar.gz", hash = "sha256:b1edfb98867c9fa25aa7af12d6468665b83c532b7349effab805a027ea8bbee5"},
+    {file = "google_resumable_media-2.2.1-py2.py3-none-any.whl", hash = "sha256:fd616af31b83d48da040c8c09b6994606e1734efb8af9acc97cf5d6070e9ba72"},
 ]
 googleapis-common-protos = [
     {file = "googleapis-common-protos-1.54.0.tar.gz", hash = "sha256:a4031d6ec6c2b1b6dc3e0be7e10a1bd72fb0b18b07ef9be7b51f2c1004ce2437"},
@@ -4121,10 +4132,7 @@ wagtail-factories = [
     {file = "wagtail_factories-2.0.1-py2.py3-none-any.whl", hash = "sha256:e2bd1a22e67b70e1603fc292e97f6f998ee0169477e1f71b5c53368630f1d088"},
     {file = "wagtail_factories-2.0.1.tar.gz", hash = "sha256:3eeb55199f2c9ffbfe14979a94766d724c9e9f4d8f561df61097884e63bd537f"},
 ]
-wagtailmenus = [
-    {file = "wagtailmenus-3.0.2-py3-none-any.whl", hash = "sha256:518b8e74fddcae91115313085673b72fdfc17aa4f711f0ea00dbdffa20abce33"},
-    {file = "wagtailmenus-3.0.2.tar.gz", hash = "sha256:77c2e098decc8882f8fbf4fbab6c04911a0daf744aabbfb7e4952f03e3533386"},
-]
+wagtailmenus = []
 wcwidth = [
     {file = "wcwidth-0.2.5-py2.py3-none-any.whl", hash = "sha256:beb4802a9cebb9144e99086eff703a642a13d6a0052920003a230f3294bbe784"},
     {file = "wcwidth-0.2.5.tar.gz", hash = "sha256:c4d647b99872929fdb7bdcaa4fbe7f01413ed3d98077df798530e5b04f116c83"},
@@ -4134,8 +4142,8 @@ webencodings = [
     {file = "webencodings-0.5.1.tar.gz", hash = "sha256:b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"},
 ]
 whitenoise = [
-    {file = "whitenoise-5.3.0-py2.py3-none-any.whl", hash = "sha256:d963ef25639d1417e8a247be36e6aedd8c7c6f0a08adcb5a89146980a96b577c"},
-    {file = "whitenoise-5.3.0.tar.gz", hash = "sha256:d234b871b52271ae7ed6d9da47ffe857c76568f11dd30e28e18c5869dbd11e12"},
+    {file = "whitenoise-6.0.0-py3-none-any.whl", hash = "sha256:5a4aff543ee860fbe40d743e556adf92ccd41b7df45697cae074afdf657056b9"},
+    {file = "whitenoise-6.0.0.tar.gz", hash = "sha256:08c42bc535f9777eea1a599289d9433f081921f97887eaf6f559446b2a080374"},
 ]
 willow = [
     {file = "Willow-1.4-py2.py3-none-any.whl", hash = "sha256:698f755fc6bfb8984ac8550f470a0cb630ec1e628287475315d4d1e7595d7337"},
