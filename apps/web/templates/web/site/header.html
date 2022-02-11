@@ -45,7 +45,7 @@
 
         <template data-popover-target="body">
           <div class="absolute z-10 -ml-4 mt-3 transform px-2 w-screen max-w-md sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2">
-            <div class="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
+            <div class="card card--none ring-1 ring-black ring-opacity-5 overflow-hidden">
               <div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
                 <a
                   {% comment %} Blog is Wagtail, this has no django-specific route {% endcomment %}
@@ -92,7 +92,7 @@
       </a>
     </nav>
 
-    <div class="hidden md:flex gap-4 items-center justify-end md:flex-1 lg:w-0">
+    <div class="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
       {% if request.user.is_authenticated %}
       <a href="{% url 'web:home' %}" class="button">
         Go to app
@@ -110,7 +110,7 @@
       </a>
       <a
         id="CTA_header"
-        class="button"
+        class="ml-4 button"
         href="{% external_url 'talk_to_us' %}"
       >
         Talk to us
