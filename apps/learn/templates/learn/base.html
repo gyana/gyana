@@ -9,8 +9,9 @@
 {% block body %}
 <div class="flex flex-1 flex-col">
   <nav class="header">
+    <img class="h-10 w-10" src="{% static 'images/logo.png' %}">
     <a class="h2" href="/learn">
-      <span class="text-poppins">
+      <span class="text-blue text-poppins">
         Gyana
       </span>
       <span class="font-normal">
@@ -37,10 +38,10 @@
       <nav class="flex gap-2 px-10 py-5">
         <a href="/learn" >Home</a>
           {% for ancestor in page.get_ancestors|slice:"3:" %}
-            <i class="fa fa-angle-right"></i>
+            <i class="far fa-fw fa-angle-right fa-sm text-black-50"></i>
             <a href="{% pageurl ancestor %}">{{ ancestor.title }}</a>
           {% endfor %}
-        <i class="fa fa-angle-right"></i>
+        <i class="far fa-fw fa-angle-right fa-sm text-black-50"></i>
         <span class="text-black-50">
           {% if page.slug == 'learn' %}
             Welcome to Gyana University
