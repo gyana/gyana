@@ -106,24 +106,24 @@ class RequestConfig(BaseRequestConfig):
 
 
 def get_type_name(type_):
-    if isinstance(type_, (dt.Floating, dt.Integer)):
+    if isinstance(type_, (dt.Floating, dt.Integer, dt.Decimal)):
         return "Numeric"
     if isinstance(type_, dt.String):
         return "String"
     if isinstance(type_, dt.Boolean):
         return "Boolean"
-    if isinstance(type_, (dt.Date, dt.Time, dt.Time)):
+    if isinstance(type_, (dt.Date, dt.Time, dt.Timestamp)):
         return "Time"
 
 
 def get_type_class(type_):
-    if isinstance(type_, (dt.Floating, dt.Integer)):
+    if isinstance(type_, (dt.Floating, dt.Integer, dt.Decimal)):
         return "column column--numeric"
     if isinstance(type_, dt.String):
         return "column column--string"
     if isinstance(type_, dt.Boolean):
         return "column column--boolean"
-    if isinstance(type_, (dt.Date, dt.Time, dt.Time)):
+    if isinstance(type_, (dt.Date, dt.Time, dt.Timestamp)):
         return "column column--time"
 
 

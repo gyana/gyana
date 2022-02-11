@@ -9,7 +9,6 @@ from apps.tables.bigquery import get_bq_table_schema_from_table, get_query_from_
 
 from .mixins import TableInstanceMixin
 from .models import Integration
-from .tables import TableReferenceTable
 
 
 class IntegrationOverview(ProjectMixin, TurboFrameTemplateView):
@@ -75,14 +74,3 @@ class IntegrationTableDetail(TableInstanceMixin, TurboFrameDetailView):
     template_name = "integrations/table_detail.html"
     model = Integration
     turbo_frame_dom_id = "integrations:table_detail"
-
-
-class IntegrationTableReference(TableInstanceMixin, TurboFrameDetailView):
-    template_name = "integrations/table_reference.html"
-    model = Integration
-    turbo_frame_dom_id = "integrations:table_reference"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["table"] = TableReferenceTable(self.table_instance.used_in)
-        return context

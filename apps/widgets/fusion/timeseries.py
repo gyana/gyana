@@ -2,6 +2,7 @@ import json
 import uuid
 from functools import partial
 
+from apps.base.core.utils import default_json_encoder
 from apps.widgets.models import COUNT_COLUMN_NAME, Widget
 
 from .fusioncharts import FusionCharts, FusionTable, TimeSeries
@@ -34,6 +35,7 @@ def to_multivariate(type_, widget, df, query):
         list(row)
         for row in zip(dimension, *[df[metric].to_list() for metric in metrics])
     ]
+    data = json.loads(json.dumps(data, default=default_json_encoder))
     fusiontable = FusionTable(schema, data)
     timeseries = TimeSeries(fusiontable)
     timeseries.AddAttribute(
@@ -64,6 +66,7 @@ def to_stack(type_, widget, df, query):
             df[metric].to_list(),
         )
     ]
+    data = json.loads(json.dumps(data, default=default_json_encoder))
     fusiontable = FusionTable(schema, data)
     timeseries = TimeSeries(fusiontable)
     timeseries.AddAttribute(

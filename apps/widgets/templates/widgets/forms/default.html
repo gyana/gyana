@@ -25,7 +25,7 @@
     id="widget-update-form"
     class="widget-update-sidebar__form"
     action="{% url 'dashboard_widgets:update-style' project.id dashboard.id object.id %}" 
-    method="post"
+    method="POST"
     data-controller="live-update" 
     data-action="change->tf-modal#change submit->tf-modal#save"
     data-tf-modal-target="form"
@@ -203,9 +203,9 @@
 
       {% if form.date_column %}
         <fieldset>
-          <div class='formset-wrapper'>
+          <div class='formset-wrapper' data-controller='widget-slice' >
             <label>Date range</label>
-            <div data-controller='widget-slice' >
+            <div >
               <div data-widget-slice-target ="input" class='{% if not show_date_column%}hidden{%endif%}'>
                 <p class="input__help-text">{{ form.date_column.help_text }}</p>
                 <div class='flex flex-row items-center gap-2'>
@@ -229,12 +229,30 @@
             </div>
           
             {% if formsets.control %}
-            {% with formset=formsets.control %}
-              <fieldset>
-                <p class='input__help-text'>You can add date range that overrides the page wide date range control.</p>
-                {% include "components/formset.html" with formset=formset %}
-              </fieldset>
-            {% endwith %}
+              {% with formset=formsets.control %}
+                <fieldset data-widget-slice-target='control'>
+                  <p class='input__help-text'>You can add date range that overrides the page wide date range control.</p>
+                  {% include "components/formset.html" with formset=formset %}
+                </fieldset>
+              {% endwith %}
+            {% endif %}
+
+
+          {% if form.kind.value == 'metric' %}
+            <div class='flex flex-row' data-widget-slice-target='compare'>
+              <label class="input__toggle" for="{{ form.compare_previous_period.id_for_label }}">
+                <p class="input__help-text">{{ form.compare_previous_period.label}}</p>
+
+                {{form.compare_previous_period}}
+              </label>
+
+              <label class="ml-3 input__toggle" for="{{ form.positive_decrease.id_for_label }}">
+                <p class="input__help-text">{{ form.positive_decrease.label}}</p>
+
+                {{form.positive_decrease}}
+              </label>
+            </div>
+
           {% endif %}
         </div>
        </fieldset>

@@ -1,0 +1,59 @@
+$button-colors: (
+  "primary",
+  "secondary",
+  "transparent",
+) !default;
+
+%primary {
+  --button-color: var(--c-white);
+  --button-background: var(--c-indigo-800);
+  --button-background--hover: var(--c-indigo-900);
+}
+
+%secondary {
+  --button-color: var(--c-indigo-900);
+  --button-background: var(--c-indigo-200);
+  --button-background--hover: var(--c-indigo-300);
+}
+
+%transparent {
+  --button-color: var(--c-gray-600);
+  --button-color--hover: var(--c-gray-900);
+  --button-background: var(--c-transparent);
+  --button-background--hover: var(--c-transparent);
+}
+
+// TODO: Docs
+.button {
+  --button-color: var(--c-white);
+  --button-color--hover: var(--button-color);
+  --button-background: var(--c-indigo-800);
+  --button-background--hover: var(--c-indigo-900);
+
+  align-items: center;
+  background: var(--button-background);
+  border-radius: 5px;
+  border: 1px solid var(--c-transparent);
+  box-shadow:
+    var(--tw-ring-offset-shadow,0 0 #0000),
+    var(--tw-ring-shadow,0 0 #0000),
+    var(--tw-shadow);
+  color: var(--button-color);
+  display: inline-flex;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+
+  &:hover,
+  &:focus {
+    background: var(--button-background--hover);
+    color: var(--button-color--hover, --button-color);
+  }
+  
+  // Color variant generation
+  @each $color in $button-colors {
+    &.button--#{$color} {
+      @extend %#{$color};
+    }
+  }
+}

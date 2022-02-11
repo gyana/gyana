@@ -17,5 +17,9 @@ class RequiredInlineFormset(BaseInlineFormSet):
     def initial_form_count(self):
         """Return the number of forms that are required in this FormSet."""
         if not self.is_bound:
-            return min(len(self.get_queryset()), self.min_num)
+            # We want to limit the provided forms right now important
+            # for the JoinNode that can have more formset forms because we dont
+            # delete the relationship if a user is removing an edge
+            # but we don't want to render more than necessary
+            return min(len(self.get_queryset()), self.max_num)
         return super().initial_form_count()

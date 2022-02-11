@@ -86,6 +86,7 @@
 <div class="flex flex-1 overflow-hidden">
   <div class="w-full dndflow">
     <dnd-flow class="w-full" workflowId="{{ object.id }}"></dnd-flow>
+
     <aside class="dnd-sidebar">
       <div class="dnd-sidebar__header">
         {% for kind, node in nodes.items %}
@@ -102,6 +103,7 @@
           {% endif %}
         {% endfor %}
       </div>
+
       {% for section in sections %}
       <div class="active pad" data-controller="collapsable">
         <h3 class="cursor-pointer" data-action="click->collapsable#toggle">

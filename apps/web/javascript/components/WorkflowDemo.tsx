@@ -97,12 +97,13 @@ const WorkflowDemo = () => {
 
   return (
     <>
-      <div ref={ref} className='h-80 w-full relative card card--none'>
+      <div ref={ref} className='h-80 w-full relative card card--none overflow-hidden'>
         <ReactFlow
           elements={elements}
           nodesConnectable={false}
           zoomOnScroll={false}
           panOnScroll={false}
+          minZoom={0.1}
         />
       </div>
       <div className='mt-4 card card--none'>
@@ -120,7 +121,7 @@ const WorkflowDemo = () => {
                 selectNode(item)
               }}
             >
-              <i className={`fa ${item.icon} fa-lg`}></i>
+              <i className={`fa ${item.icon} text-lg sm:text-xl`}></i>
             </button>
           ))}
           {/* empty div */}

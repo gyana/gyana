@@ -80,14 +80,14 @@ const TypeButtonGroup = ({ type, setType }) => {
       {TYPE_CONFIG.map((option) => (
         <button
           key={option.id}
-          className={`p-2 focus:outline-none h-full ${
+          className={`p-2 text-lg lg:text-xl focus:outline-none h-full ${
             type === option.id
               ? 'text-white bg-indigo-600 hover:bg-indigo-700'
               : 'text-gray-600 hover:text-gray-900'
           }`}
           onClick={() => setType(option.id)}
         >
-          <i className={`fa ${option.icon} fa-lg`}></i>
+          <i className={`fa ${option.icon}`}></i>
         </button>
       ))}
     </div>
@@ -117,7 +117,7 @@ const FontButtonGroup = ({ font, setFont }) => {
         <button
           key={id}
           style={{ fontFamily: id }}
-          className={`p-2 text-xl focus:outline-none w-10 h-full ${
+          className={`p-2 text-lg lg:text-xl focus:outline-none w-10 h-full ${
             font === id
               ? 'text-white bg-indigo-600 hover:bg-indigo-700'
               : 'text-gray-600 hover:text-gray-900'
@@ -137,7 +137,7 @@ const AgencyButtonGroup = ({ agency, setAgency }) => {
       {AGENCY_CONFIG.map(({ id }) => (
         <button
           key={id}
-          className={`p-2 text-xl focus:outline-none w-10 h-full ${
+          className={`p-2 text-lg lg:text-xl focus:outline-none w-10 h-full ${
             agency === id
               ? 'text-white bg-indigo-600 hover:bg-indigo-700'
               : 'text-gray-600 hover:text-gray-900'
@@ -207,9 +207,9 @@ const DashboardDemo = () => {
         </div>
         <div className='w-full bg-gray-10 flex-none flex items-center gap-2 p-2 border-b border-gray'>
           <div
-            className={`p-1 flex items-center justify-center bg-${theme}-100 rounded-lg border border-${theme}-400`}
+            className={`p-1 flex items-center justify-center bg-${theme}-100 rounded-lg border border-${theme}-400 p-2`}
           >
-            <i className={`fad fa-${agency} p-2 fa-2x text-${theme}-600`}></i>
+            <i className={`fad fa-fw fa-${agency} fa-2x text-${theme}-600`}></i>
           </div>
           <div>
             <h2 className='text-lg lg:text-xl' style={{ fontFamily: font }}>

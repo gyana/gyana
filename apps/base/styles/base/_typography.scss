@@ -1,12 +1,8 @@
-%heading {
+h1, h2, h3, h4, h5
+.h1, .h2, .h3, .h4, .h6 {
   font-weight: 500;
   line-height: inherit;
   margin: 0;
-}
-
-h1, h2, h3, h4,
-.h1, .h2, .h3, .h4 {
-  @extend %heading;
 }
 
 h1, .h1 {
@@ -61,28 +57,4 @@ strong, .strong {
 
 p + p {
   margin-top: 0.6rem;
-}
-
-// /learn specific stylings
-.text-poppins {
-  font-family: "Poppins";
-}
-
-.prose h1 > a,
-.prose h2 > a,
-.prose h3 > a,
-.prose h4 > a {
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-
-    & .fa {
-      display: inline-block;
-    }
-  }
-
-  & .fa {
-    display: none;
-  }
 }

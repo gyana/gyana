@@ -1,0 +1,20 @@
+form, .form {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column;
+  gap: 1.2rem;
+
+  &.form--no-layout {
+    align-items: inherit;
+    display: inherit;
+    flex-flow: inherit;
+    gap: inherit;
+  }
+
+  .form__description {
+    color: var(--c-black-50);
+    font-size: 1.4rem;
+    font-style: italic;
+    margin-bottom: 1.2rem;
+  }
+}

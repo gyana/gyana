@@ -14,20 +14,68 @@ from .models import Flag, Membership, Team
 
 class UserMembershipInline(admin.TabularInline):
     model = Membership
+    readonly_fields = ["user"]
     list_display = ["user", "role"]
 
 
 class TeamMembershipInline(admin.TabularInline):
     model = Membership
+    readonly_fields = ["team"]
     list_display = ["team", "role"]
 
 
 @admin.register(Team)
 class TeamAdmin(SafeDeleteAdmin):
     # Use `highlight_deleted` in place of name
-    list_display = ("id", highlight_deleted, "row_limit") + SafeDeleteAdmin.list_display
-    readonly_fields = ["id", "row_limit", "row_count", "row_count_calculated"]
-    fields = readonly_fields + ["name", "override_row_limit"]
+    list_display = (
+        "id",
+        highlight_deleted,
+        "list_of_members",
+        "plan_name",
+        "plan_rows",
+        "usage",
+        "percent",
+    )
+    search_fields = ("name", "members__email")
+
+    readonly_fields = [
+        "name",
+        "plan_rows",
+        "usage",
+        "percent",
+        "row_count_calculated",
+        "plan_credits",
+    ]
+    fieldsets = (
+        (None, {"fields": readonly_fields}),
+        (
+            "Manual override",
+            {"fields": ["override_row_limit", "override_credit_limit"]},
+        ),
+    )
+    list_per_page = 20
+
+    def list_of_members(self, obj):
+        return ", ".join([str(p) for p in obj.members.all()])
+
+    def plan_name(self, obj):
+        return obj.plan["name"]
+
+    def plan_rows(self, obj):
+        return "{:,}".format(obj.row_limit)
+
+    def plan_credits(self, obj):
+        return "{:,}".format(obj.credits)
+
+    def usage(self, obj):
+        return "{:,}".format(obj.row_count)
+
+    def percent(self, obj):
+        return "{:.1%}".format(obj.row_count / obj.row_limit)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.prefetch_related("members")
 
     inlines = [
         UserMembershipInline,
@@ -39,6 +87,12 @@ class TeamAdmin(SafeDeleteAdmin):
 
     def row_limit(self, instance):
         return instance.row_limit
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class FlagAdmin(WaffleFlagAdmin):

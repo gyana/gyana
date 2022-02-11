@@ -5,12 +5,12 @@
 <meta name="description" content="Gyana delivers the power of business intelligence and data analytics in a web interface. Build repeatable workflows and dashboards with all your online data." /> 
 {% endblock %}
 
-{% block body %}
+{% block body.content %}
   {% include "web/site/home/hero.html" %}
   {% include "web/site/home/reviews.html" %}
   {% include "web/site/home/features.html" %}
-  {% include "web/site/home/iterate.html" %} 
-  {% include "web/site/home/agency.html" %} 
+  {% include "web/site/home/iterate.html" %}
+  {% include "web/site/home/agency.html" %}
   {% include "web/site/home/testimonial.html" with testimonial=content.testimonial %}
   {% include "web/site/home/get_started.html" %}
   {% include "web/site/home/cta.html" %}

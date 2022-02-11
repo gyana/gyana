@@ -82,7 +82,7 @@ django-heroicons = {git = "https://github.com/geoffbeier/django-heroicons"}
 wagtail = "^2.15.1"
 readtime = "^1.1.1"
 deepdiff = "^5.7.0"
-# Until this is done use git branch https://github.com/jazzband/wagtailmenus/pulls
+# Until this is done use git branch https://github.com/jazzband/wagtailmenus/pull/404
 wagtailmenus = {git = "https://github.com/gyana/wagtailmenus", rev="django-4"}
 
 [tool.poetry.dev-dependencies]

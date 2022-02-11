@@ -6,6 +6,8 @@ export interface IDnDContext {
   setElements
   hasBeenRun: boolean
   setHasBeenRun: (hasBeenRun: boolean) => void
+  errors: {}
+  setErrors: (errors: {}) => void
   isOutOfDate: boolean
   setIsOutOfDate: (isOutOfDate: boolean) => void
   setNeedsFitView: (needsFitView: boolean) => void

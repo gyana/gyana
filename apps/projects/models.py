@@ -18,6 +18,7 @@ class Project(DirtyFieldsMixin, BaseModel):
         INVITE_ONLY = ("invite", "Only invited team members can access")
 
     _clone_excluded_m2o_or_o2m_fields = ["table_set"]
+    _clone_excluded_m2m_fields = ["members"]
 
     name = models.CharField(max_length=255)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)

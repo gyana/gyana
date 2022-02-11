@@ -11,6 +11,9 @@
 // Reusable components, accompanied by usage documentation.
 @use "components";
 
+// Layout classes, used for element placement.
+@use "layout";
+
 // App-specific code, not used anywhere else but a specific view or a set of them.
 // At some point, would be nice to bundle split per app.
 @use "apps";

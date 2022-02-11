@@ -175,8 +175,10 @@ class TeamDetail(SingleTableMixin, DetailView):
         from apps.projects.models import Project
 
         self.request.session["team_id"] = self.object.id
-        self.projects = Project.objects.filter(team=self.object).filter(
-            Q(access=Project.Access.EVERYONE) | Q(members=self.request.user)
+        self.projects = (
+            Project.objects.filter(team=self.object)
+            .filter(Q(access=Project.Access.EVERYONE) | Q(members=self.request.user))
+            .distinct()
         )
 
         context = super().get_context_data(**kwargs)

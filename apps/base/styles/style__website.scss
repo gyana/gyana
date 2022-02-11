@@ -10,7 +10,8 @@
 // @use "base";
 
 // Reusable components, accompanied by usage documentation.
-@use "components";
+@use "components/card";
+@use "components/popover";
 
 // App-specific code, not used anywhere else but a specific view or a set of them.
 // At some point, would be nice to bundle split per app.
@@ -105,4 +106,8 @@
   100% {
     transform: translateX(-100%);
   }
+}
+
+.text-poppins {
+  font-family: "Poppins";
 }
