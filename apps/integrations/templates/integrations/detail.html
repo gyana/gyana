@@ -38,12 +38,6 @@
       >
         Detail
       </a>
-      <a
-        class="tabbar__link {% if request.GET.view == 'reference' %}tabbar__link--active{% endif %}"
-        href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=reference"
-      >
-        References
-      </a>
 
       {% comment %} TODO: {% if table_id %}
         <turbo-frame id='exports:create_integration_table' class='ml-auto'>

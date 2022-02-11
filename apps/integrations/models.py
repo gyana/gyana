@@ -7,11 +7,11 @@ from django.utils import timezone
 
 from apps.base.models import BaseModel
 from apps.base.tables import ICONS
-from apps.dashboards.models import Dashboard
+from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.runs.models import JobRun
 from apps.users.models import CustomUser
-from apps.workflows.models import Workflow
+from apps.widgets.models import Widget
 
 from .clone import clone_connector_and_tables
 
@@ -127,15 +127,11 @@ class Integration(BaseModel):
 
     @property
     def state_icon(self):
-        if self.ready:
-            return ICONS["success"]
-        return self.STATE_TO_ICON[self.state]
+        return ICONS["success"] if self.ready else self.STATE_TO_ICON[self.state]
 
     @property
     def state_text(self):
-        if self.ready:
-            return "Success"
-        return self.STATE_TO_MESSAGE[self.state]
+        return "Success" if self.ready else self.STATE_TO_MESSAGE[self.state]
 
     @property
     def source_obj(self):
@@ -168,26 +164,30 @@ class Integration(BaseModel):
         )
 
     @property
-    def used_in_workflows(self):
+    def used_in_nodes(self):
         return (
-            Workflow.objects.filter(nodes__input_table__in=self.table_set.all())
-            .distinct()
-            .only("name", "project", "created", "updated")
-            .annotate(kind=models.Value("Workflow", output_field=models.CharField()))
+            Node.objects.filter(
+                kind=Node.Kind.INPUT, input_table__in=self.table_set.all()
+            )
+            .distinct("workflow", "input_table")
+            .annotate(
+                parent_kind=models.Value("Workflow", output_field=models.CharField())
+            )
         )
 
     @property
-    def used_in_dashboards(self):
+    def used_in_widgets(self):
         return (
-            Dashboard.objects.filter(pages__widgets__table__in=self.table_set.all())
-            .distinct()
-            .only("name", "project", "created", "updated")
-            .annotate(kind=models.Value("Dashboard", output_field=models.CharField()))
+            Widget.objects.filter(table__in=self.table_set.all())
+            .distinct("page__dashboard", "table")
+            .annotate(
+                parent_kind=models.Value("Dashboard", output_field=models.CharField())
+            )
         )
 
     @property
     def used_in(self):
-        return list(chain(self.used_in_workflows, self.used_in_dashboards))
+        return list(chain(self.used_in_nodes, self.used_in_widgets))
 
     @property
     def display_kind(self):
