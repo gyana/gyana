@@ -1,23 +1,26 @@
 {% load static site_tags %}
 
-<div class="bg-white">
-  <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-    <div class="bg-indigo-700 rounded-lg shadow-xl overflow-hidden lg:grid lg:grid-cols-2 lg:gap-4">
-      <div class="pt-10 pb-12 px-6 sm:pt-16 sm:px-16 lg:py-16 lg:pr-0 xl:py-20 xl:px-20">
-        <div class="lg:self-center">
-          <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
-            <span class="block">Ready to dive in?</span>
-          </h2>
-          <p class="mt-4 text-lg leading-6 text-indigo-200">
-            We'll be launching our public signup in the coming months. Until then, join our waitlist and we'll be in touch shortly.
-          </p>
-          <a href="{% external_url 'waitlist' %}" class="mt-8 bg-white border border-transparent rounded-md shadow px-5 py-3 inline-flex items-center text-base font-medium text-indigo-600 hover:bg-indigo-50">
-            Sign up
-          </a>
-        </div>
+<div class="bg-gray-20 border-t border-b border-gray">
+  <div class="max-w-7xl mx-auto  py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
+    <p class="text-2xl lg:text-3xl text-caveat text-indigo-600 mb-2">Try Gyana today</p>
+    <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
+      Get started building your report in minutes
+    </h2>
+    <p class="mt-4 text-lg text-gray-600 max-w-3xl">
+      Join thousands of Gyana users worldwide, discover a better way to build custom reports.
+    </p>
+    <div class="mt-6 flex gap-4">
+      <div class="flex flex-col gap-2 text-lg items-center">
+        <a href="{% external_url 'waitlist' %}" class="button button--secondary w-36">
+          Sign up
+        </a>
+        <p class="text-xs lg:text-sm text-gray-600">Build reports for free</p>
       </div>
-      <div class="-mt-6 aspect-w-5 aspect-h-3 md:aspect-w-2 md:aspect-h-1">
-        <img class="transform translate-x-6 translate-y-6 rounded-md object-cover object-left-top sm:translate-x-16 lg:translate-y-20" src="{% static 'images/site/home/dashboards.jpg' %}" alt="App screenshot">
+      <div class="flex flex-col gap-2 text-lg items-center">
+        <a href="{% external_url 'talk_to_us' %}" class="button w-36">
+          Talk to us
+        </a>
+        <p class="text-xs lg:text-sm text-gray-600">We'll build your report</p>
       </div>
     </div>
   </div>
