@@ -3,7 +3,7 @@
 <div class="py-8 lg:relative lg:py-32 overflow-hidden bg-gray-20 border-b border-gray">
   <div class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl lg:grid lg:grid-cols-2 lg:gap-24">
     <div class="relative">
-      <p class="absolute right-8 -bottom-20 lg:bottom-12 text-indigo-600 text-xl lg:text-3xl text-right text-caveat">
+      <p class="absolute right-0 -bottom-20 lg:bottom-12 text-indigo-600 text-xl lg:text-3xl text-right text-caveat">
         <span class="block">* yes, we really<span>
         <span class="block">mean <a class="link underline" href="{% url 'web:integrations' %}">any!</a></span>
       </p>
@@ -31,13 +31,18 @@
       </div>
 
       <div class="my-4 flex justify-center gap-4 sm:justify-start">
-        <a href="{% external_url 'waitlist' %}" class="button button--secondary">
-          Sign up
-        </a>
-
-        <a href="{% external_url 'talk_to_us' %}" class="button">
-          Talk to us
-        </a>
+        <div class="flex flex-col gap-2 text-lg items-center">
+          <a href="{% external_url 'waitlist' %}" class="button button--secondary w-36">
+            Sign up
+          </a>
+          <p class="text-xs lg:text-sm text-gray-600">Build reports for free</p>
+        </div>
+        <div class="flex flex-col gap-2 text-lg items-center">
+          <a href="{% external_url 'talk_to_us' %}" class="button w-36">
+            Talk to us
+          </a>
+          <p class="text-xs lg:text-sm text-gray-600">We'll build your report</p>
+        </div>
       </div>
 
       <div class="mt-6 hidden sm:block">
