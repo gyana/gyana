@@ -4,9 +4,25 @@
 
   {% for i in '0123456789'|make_list %}
     .animate-logo-{{ i }} {
-      animation: float {% random_int 4 10 %}s ease-in-out {% random_int -3 3 %}s infinite;
+      animation: float {% random_int 3 12 %}s ease-in-out {% random_int -3 3 %}s infinite;
     }
   {% endfor %}
+
+  {% for i in '0123456789'|make_list %}
+    .animate-number-{{ i }} {
+      animation: float {% random_int 3 12 %}s ease-in-out {% random_int -3 3 %}s infinite;
+    }
+  {% endfor %}
+
+  {% for i in '0123456789'|make_list %}
+    .animate-chart-{{ i }} {
+      animation: float {% random_int 3 12 %}s ease-in-out {% random_int -3 3 %}s infinite;
+    }
+  {% endfor %}
+
+  .animate-report {
+    animation: float 6s ease-in-out infinite;
+  }
 
   @keyframes float {
     0%, 100% {
